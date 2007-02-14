@@ -1,7 +1,4 @@
-	SUBROUTINE SHADE (z, cells)
-
-
-*
+       SUBROUTINE PRESET_LEVS
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -35,79 +32,35 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-*	Modified of PLOTZ to get data into proper grids for 
-*	SHADE command
-
-*	J Davison 8.26.88
-*
-*	Mod JD 4.18.90 to allow data all of the same value to be shaded. 
-*       MOD *JD* To permit use of centered levels and specify the delta Z
-*       value as well.  Added variables to CONT.INC common 8.3.95  
-*	   *jd 8.28 fix bug in dz specification
-*	*jd* 2.96 Change centered option so that data not spanning zero
-*			is centered as well.
-*	*jd* 5.96 Fix bug where if shade/lev=N option is used with constant 
-*	field, no shade results
-*       *jd* 1.98 Fix bug: shade misses top level, when top level is lt 0.
-* V510 4/00 *sh - corrected faulty logic for centered levels (delta wrong)
-* V550 11/02*acm* To use cellarray calls for rectangular shade plots, pass 
-*                 cells in as a work array.  Remove VAX includes
-* V550 12/02*acm* After levels are set, call setlab_syms to create the LEVELS symbols
-* V552  3/03*acm* Check for too many levels, as is done for FILL and CONTOUR plots.
-* v552  6/03*acm* Rename the array used for cellarray call.
-* v554  3/04*acm* In the section marked correction for rounding errors, under g77 
-*                 on linux this incorrectly uses low-order bits to reset NLEV2
-* v570  4/04*acm* The fix above went too far.  Use TM_FPEQ to see if
-*                 values are equal or close.  Also fixes this adjustment
-*                 when the range has negative values; was always incorrect.
-* v580  8/04*acm* Fix bug 957 shade/lev=1 of a constant field needs zlev(1) to be set.
-* v581  4/05*acm* For cellarray plots JTYPE had erroneously been set to 1 (?!)
-* v581 *acm* 3/05 open levels (-INF) (INF)
+* v602 *acm* 2/13/2007
+* Called when the data is loaded in to pplus memory (pplldc or pplldx)
+* to set the levels symbols at plot setup time. This means that the symbols
+* are available after a [plot_command]/SET .
 * v602 *acm*  2/07  Changes so that /SET on a 2D plot command sets up the LEVELS symbols.
-*                   (bug 1491) If WARNED_NLEV set, no need to warn on too many levels again
+*                   (bug 1491)
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
-
-	include		'axis_inc.decl'
-	include		'AXIS.INC'
-	include		'plt_inc.decl'
-	include		'PLT.INC'
-	include		'miss_inc.decl'
-	include		'MISS.INC'
 	include		'hd_inc.decl'
 	include		'HD.INC'
 	include		'cont_inc.decl'
 	include		'CONT.INC'
-	include		'zgrid_inc.decl'
-	include		'ZGRID.INC'
-	include		'zgridd_inc.decl'
-	include		'ZGRIDD.INC'
-        include         'errmsg.parm'
-        include         'shade_vars.cmn'
-
-	real		dx,dy,dz,z(nx,ny),znp,zmp
-
-	integer		i, j, cells(*), slen1, slen2
-        CHARACTER       TM_FMT*20, buff1*20, buff2*20, err_msg*40
+	include         'errmsg.parm'
+        
+        REAL dz, znp, zmp, fm, epsilon
+        INTEGER m, i, slen1, slen2
         LOGICAL         TM_FPEQ
-        parameter       (epsilon = 1e-6)
+        CHARACTER       TM_FMT*20, buff1*20, buff2*20, err_msg*40
+        PARAMETER       (epsilon = 1e-6)
 
-C       Add external stmt for linux port *jd* 12.96 RANGE is intrinsic fcn
-        external range
+        EXTERNAL range
 
-******************************************************************************
-
-C       
-C       IAUTOC = 1 means: compute levels from input data and number
-C                         of levels
+        WARNED_NLEV = .FALSE.
 
 	IF (IAUTOC.EQ.1) THEN
 
 	   IF (ZMIN.EQ.ZMAX) THEN
 
-C             NLEV2=0 is the code in pplmod_plotz
 	      NLEV2=1
               zlev(1) = zmin
 
@@ -138,31 +91,31 @@ C
 C
 C       Set levels centered about zero if centered is .true.
 C
-	         if (centered) then
-		    if (abs(znp) .gt. abs(zmp)) then
+	         IF (centered) THEN
+		    IF (abs(znp) .GT. abs(zmp)) THEN
 		       zmp = -znp
-		    else
+		    ELSE
 		       znp = -zmp
-		    endif
-	         endif
+		    ENDIF
+	         ENDIF
 
 C       Else we should allow RANGE to determine the max and min range
 C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
 
-	      else
+	      ELSE
 
 	         znp = zmin
 	         zmp = zmax
-	         if (centered) then
-		    if (abs(znp) .gt. abs(zmp)) then
+	         IF (centered) THEN
+		    if (abs(znp) .GT. abs(zmp)) THEN
 		       zmp = -znp
-		    else
+		    ELSE
 		       znp = -zmp
-		    endif
-	         endif
+		    ENDIF
+	         ENDIF
 		 CALL RANGE(znp,zmp,NLEV,ZNP,ZMP,DZ)
 
-	      endif
+	      ENDIF
 
 	      NLEV2=(ZMP-ZNP)/DZ+1 
 
@@ -183,28 +136,11 @@ c       4/04  Also fix the negative-range case.
 
               IF (NLEV2 .GT. ICNLEV) GO TO 5000
 
-
-C acm 12/01  Set LWGT for future contour line overlays.
-
 	      DO 100 I=1,NLEV2 
-
-
-                 LWGT(I)=2
-                 LDIG(I)=-1
                  ZLEV(I)=ZNP+DZ*FLOAT(I-1)
-                 IF (ABS(ZLEV(I)).LT.1.E-5*DZ) GOTO 100
-                 IF (ZLEV(I).GT.0.) THEN
-                    LWGT(I)=1
-                 ELSE
-                    LWGT(I)=3
-                 END IF
-                 LDIG(I)=JJ
-
-
  100	      CONTINUE 
 
 	   ENDIF
-
 C       
 C       Else IAUTOC != 1 means: use supplied levels
 C       
@@ -222,70 +158,25 @@ C       CONTOUR requires more than one level to work but SHADE doesn't
 
         CALL setlab_syms (ZLEV, NLEV2)
 
-
-C       DRAW
-C
-C       from ppl/include/PPL.INC:
-C
-C       JTYPE: = 2 2-d irregular rectangular grid
-C              = 1 1-d set
-C              = 0 2-d regular rectangular grid (integer)
-C              =-1 2-d second component of a vector regular grid
-C              =-2 2-d second component of a vector irregular grid
-C
-
-C  WHY HAD JTYPE BEEN SET TO 1 HERE??!! 
-
-c        IF (use_cell) JTYPE = 1
-        IF (use_cell) JTYPE = 0
-
-C       If it's a 2-d irregular grid, the irregular grid values
-C       are also stored in the Z array.  Pass them to shade_sub.
-
-
-	IF (JTYPE.EQ.2 .OR. JTYPE.EQ.-2) THEN
-
-	   CALL SHADE_SUB(Z,Z(1,NY+1),Z(1,NY+2),XX(IZSE-NX-1),
-     .        YY(IZSE-NY-1), cells)
-
-C       For all other plot types fill in XX() and YY() by
-C       multiplying the index value by the DX or DY delta values.
-
-	ELSE
-
-	   DX = (XMAX - XMIN)/(NX - 1)
-	   DY = (YMAX - YMIN)/(NY - 1)
-
-	   DO 500 I=1,NX
-	      XX(IZLEN+I)=DX*(I-1)+XMIN
- 500	   CONTINUE
-	   DO 510 J=1,NY
-	      YY(IZLEN+J)=DY*(J-1)+YMIN
- 510	   CONTINUE
-
-c *kob* 8/97 had to move the continuation marker to col 5 - it was in col 8
-c       this bombed aix compiler, though it seems to work on others
-	   CALL SHADE_SUB(Z,XX(IZLEN+1),YY(IZLEN+1),XX(IZLEN+NX+1),
-     1	       YY(IZLEN+NY+1), cells)
-
-	ENDIF
-
 	RETURN
 
 C  Error exit when too many levels specified.
-C  Arrays LWGT, LDIG, and ZLEV are length ICNLEV=500
+C  Array ZLEV is length ICNLEV=500
 
  5000   CONTINUE
-        IF (WARNED_NLEV) GOTO 5002
+
+* Set the symbols so the values can be checked
+        CALL setlab_syms (ZLEV, NLEV2)
+
+* Issue error message
         ii = ICNLEV
         buff1 = TM_FMT (REAL(ICNLEV), 20, 20, slen1)
         buff2 = TM_FMT (REAL(NLEV2), 20, 20, slen2)
         err_msg = '# of shade levels > '// buff1(1:slen1) //
      .          '  (' // buff2(1:slen2) // ')'
+        
+        WARNED_NLEV = .TRUE.
+
         CALL errmsg (ferr_out_of_range, status, err_msg, *5002)
  5002   RETURN
 	END
-
-
-
-

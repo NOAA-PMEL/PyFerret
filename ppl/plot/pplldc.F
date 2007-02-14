@@ -53,7 +53,8 @@ C              Mod *sh* 3.7.97 *sh* replace limits if curvilinear plot
 *                  which checks pplmem_nsize (new name for NSIZE) and allocates 
 *                  more if needed.
 *      *acm* 10/01  remove VMS includes
-
+* v602 *acm*  2/07  Changes so that /SET on a 2D plot command sets up the LEVELS symbols.
+*                   (bug 1491)
 c
 c	k	=0 already on an equally spaced rectangular grid
 c		=1 on a unequally spaced, but rectangular grid
@@ -83,12 +84,15 @@ C
 	INCLUDE 'PPLDAT.INC'
 	INCLUDE 'HD.INC'
 	INCLUDE 'DATA.INC'
+	INCLUDE 'CONT.INC'
 
 	LOGICAL		ITS_CURVILINEAR
-	REAL		xmn, xmx, ymn, ymx
+	REAL		xmn, xmx, ymn, ymx,
+     .                  znp, zmp, dz
 
 
 	COMMON/LDDXDY/ DX,DY
+        EXTERNAL RANGE
 C
 	call rsmnmx
 	JTYPE=0
@@ -143,6 +147,10 @@ C
 	ELSE
 	   call stmnmx(pplmem,pplmem_nsize,xmin,xmax,ymin,ymax)
 	ENDIF
+
+* Make initial settings for contour levels symbols.
+        CALL PRESET_LEVS
+
 	RETURN
         end
 

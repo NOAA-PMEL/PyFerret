@@ -82,6 +82,9 @@ C
 * v581 *acm* 3/05 open levels (-INF) (INF)
 * V581 *acm* 7/05 fix bug 1279: fill/lev=(n) gave exactly N not nlev2=approx N
 * V600 *acm* 1/06 prevent values of LOG10(0.0)
+* V602 *acm* 2/07 check status coming out of CONSEG; part of fix to bug 1485
+* v602 *acm*  2/07  Changes so that /SET on a 2D plot command sets up the LEVELS symbols.
+*                   (bug 1491) If WARNED_NLEV set, no need to warn on too many levels again
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -422,7 +425,8 @@ c *kob* 8/97 had to move the continuation marker to col 5 - it was in col 8
 c       this bombed aix compiler, though it seems to work on others
 	    CALL CONSEG(Z,NX,NY,XX(IZLEN+1),YY(IZLEN+1),NX,NY,
      1	 XFF,XOF,YFF,YOF,ZLEV,LDIG,LWGT,LCLR,NLEV2,HGT,
-     2	 NARC,CANGLE)
+     2	 NARC,CANGLE,status)
+             IF (status .NE. ferr_ok) GOTO 5002
 
 	 else if (makep.eq.'FILL') then
             nlev1 = nlev
@@ -449,12 +453,15 @@ C
 C  Error exit when too many levels specified.
 C  Arrays LWGT, LDIG, and ZLEV are length ICNLEV=500
 
- 5000   ii = ICNLEV
+ 5000   CONTINUE
+        IF (WARNED_NLEV) GOTO 5002
+        ii = ICNLEV
         buff1 = TM_FMT (REAL(ICNLEV), 20, 20, slen1)
         buff2 = TM_FMT (REAL(NLEV2), 20, 20, slen2)
         err_msg = '# of contour levels > '// buff1(1:slen1) //
      .          '  (' // buff2(1:slen2) // ')'
         CALL errmsg (ferr_out_of_range, status, err_msg, *5002)
+
  5002   return
 
 	END

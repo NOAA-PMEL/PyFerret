@@ -255,10 +255,15 @@ c!c! uncomment this...
 
 * Verify that this is the correct variable, and if not, set it correctly
 * in common..
+* 2/2007 Check for success of this NCVINQ call - if the previous cd_varid
+*        saved from earlier file does not exist in this stepfile, then 
+*        we want to go check the other vars in the file 
+
 	   CALL NCVINQ(cdfid, cd_varid(ivar), vname, vartype, nvdims, vdims,
      .		nvatts,cdfstat)
-	   IF (STR_CASE_BLIND_COMPARE ( ds_var_code(ivar), 
-     .		vname) .NE. str_match)	THEN
+	   IF ( (cdfstat .NE. NCNOERR) .OR. 
+     .          (STR_CASE_BLIND_COMPARE ( ds_var_code(ivar), vname) 
+     .		  .NE. str_match) ) THEN
 	      CALL NCINQ(cdfid, ndims, nvars, natts, recdim, cdfstat)
 	      do 50 varpos=1,nvars
 * 5/99 - fix bug which was sending cd_varid(varps) to NCVINQ instead of varpos

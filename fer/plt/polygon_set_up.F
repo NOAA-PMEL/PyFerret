@@ -115,6 +115,8 @@
 *                   turn on lon/lat formatting.
 * V600 *acm*  11/05 Fix for bug 1130, 1349: axis labels need lat/lon labels,
 *                   fixes to the precision
+* v602 *acm*  2/07  Changes so that /SET on a 2D plot command sets up the LEVELS symbols.
+*                   (bug 1491) If WARNED_NLEV set, an error was found in preset_levs
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -139,6 +141,8 @@
         include 'SWITCH.INC'
         include 'pltl_inc.decl'
         include 'PLTL.INC'
+	include	'cont_inc.decl'
+	INCLUDE 'CONT.INC'
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, no_labels, no_range, use_line,
@@ -180,7 +184,7 @@
      .			yptsmin, yptsmax, yptsmean, ydif, ymeanlog,
      .                  first, last
 
-	REAL*8		vmin, vmax, delta, ind_min, ind_max, dep_min,
+	REAL*8		vmin, vmax, ax_delta, ind_min, ind_max, dep_min,
      .			dep_max
 
 * local parameter declarations:
@@ -648,6 +652,10 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	      CALL PPLLDX_envelope(3,x_dat(start),y_dat(start),npts,
      .			   t1_date, ' ', dt_min, plot_mem_used)
 	   ENDIF
+           IF (WARNED_NLEV) THEN
+              status = ferr_out_of_range
+              GOTO 5000
+           ENDIF
 
 * ... increment number of lines on plot
 !	   nline_on     = nline_on     + 1
@@ -701,7 +709,10 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	makep = 'FILLPOL'   ! that PLOT+ kludge again
 	CALL PPLLDX_envelope(5,x_dat,x_dat,ncolor, t1_date, ' ', 
      .                       dt_min,plot_mem_used)
-
+	IF (WARNED_NLEV) THEN
+	   status = ferr_out_of_range
+           GOTO 5000
+	ENDIF
 
 * ... check for adequate PLOT+ memory to store the npts for each poly. 
 * ... Save in ppl mem rather than array lleng to remove restriction on
@@ -799,10 +810,18 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	   ELSE
 	      CALL pplld_pts_envelope (npts, plot_mem_used)
 	   ENDIF
+	   IF (WARNED_NLEV) THEN
+	      status = ferr_out_of_range
+              GOTO 5000
+	   ENDIF
 
  700    CONTINUE
  690    CONTINUE
         CALL pplld_pts_envelope (ncolor, plot_mem_used)
+	IF (WARNED_NLEV) THEN
+	   status = ferr_out_of_range
+           GOTO 5000
+	ENDIF
 
 	makep = ' '   ! that PLOT+ kludge again
 
@@ -833,7 +852,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 * most of the work is avoiding an error if there is no data range with
 * which to make a scale ...
 	IF ( .NOT.overlay ) THEN
-	   delta = unspecified_val8
+	   ax_delta = unspecified_val8
 * ... X axis
 	   IF ( pxdenig .GT. 0 ) THEN   ! explicit /XLIMITS 10/93
 	      IF (pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
@@ -846,12 +865,12 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
               cal_id = TM_GET_CALENDAR_ID ( cal_name )
 	      CALL EQUAL_RANGE( 
      .			cmnd_buff(qual_start(pxdenig):qual_end(pxdenig)),
-     .			x_dim, vmin, vmax, delta,
+     .			x_dim, vmin, vmax, ax_delta,
      .			formatted, range_rqd, cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 
               CALL AXIS_ENDS(x_ax, coord_dim, cx_grid(cx_x), vmin, 
-     .			     vmax, delta, x_is_log, x_axtyp, status )
+     .			     vmax, ax_delta, x_is_log, x_axtyp, status )
 		 IF ( status .NE. ferr_ok ) THEN
 		 first = vmin
 		 last = vmax
@@ -871,7 +890,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	      ENDIF
 	   ELSE
               CALL AXIS_ENDS(x_ax,coord_dim,cx_grid(cx_x),
-     .	       DBLE(lox),DBLE(hix), delta, x_is_log, x_axtyp, status )
+     .	       DBLE(lox),DBLE(hix), ax_delta, x_is_log, x_axtyp, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = lox
 		 last = hix
@@ -884,7 +903,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 	   iunits = TM_UNIT_ID(VAR_UNITS(cx_x))
 	   IF (iunits .EQ. 4) THEN
-	      CALL GET_AXIS_FORMAT( DBLE(lox), DBLE(hix), delta, 
+	      CALL GET_AXIS_FORMAT( DBLE(lox), DBLE(hix), ax_delta, 
      .           fmt, use_nice )
               IF (use_nice) THEN
                   ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
@@ -896,7 +915,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	   ENDIF
 
 * ... Y axis
-	   delta = unspecified_val8
+	   ax_delta = unspecified_val8
 
 	   IF ( pydenig .GT. 0 ) THEN   ! explicit /XLIMITS 10/93
 	      IF (pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
@@ -909,11 +928,11 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
               cal_id = TM_GET_CALENDAR_ID ( cal_name )
 	      CALL EQUAL_RANGE( 
      .			cmnd_buff(qual_start(pydenig):qual_end(pydenig)),
-     .			y_dim, vmin, vmax, delta,
+     .			y_dim, vmin, vmax, ax_delta,
      .			formatted, range_rqd, cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
-     .			     vmin,vmax,delta, y_is_log, y_axtyp, status )
+     .			     vmin,vmax,ax_delta, y_is_log, y_axtyp, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = vmin
 		 last = vmax
@@ -932,7 +951,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	      ENDIF
 	   ELSE
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
-     .		DBLE(loy),DBLE(hiy), delta, y_is_log, y_axtyp, status )
+     .		DBLE(loy),DBLE(hiy), ax_delta, y_is_log, y_axtyp, status )
 	      IF ( status .NE. ferr_ok ) THEN
 		 first = loy
 		 last = hiy
@@ -943,7 +962,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 	   iunits = TM_UNIT_ID(VAR_UNITS(cx_y))
 	   IF (iunits .EQ. 4) THEN
-	       CALL GET_AXIS_FORMAT( DBLE(loy), DBLE(hiy), delta, 
+	       CALL GET_AXIS_FORMAT( DBLE(loy), DBLE(hiy), ax_delta, 
      .            fmt, use_nice )
                IF (use_nice) THEN
                    ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//

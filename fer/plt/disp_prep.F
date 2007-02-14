@@ -60,7 +60,6 @@
 * V4.1+  7/25/95 - allow automatic centered levels and delta-only levels 
 * v500 - 1/26/99 - *kob* add PPLCMD call for aline reinitialization - needed for
 *                   nolabel plot overlays
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'command.parm'
@@ -72,19 +71,6 @@
 	include 'CONT.INC'	! with iautoc
 	include 'vector_inc.decl'	! with vauto
 	include 'VECTOR.INC'	! with vauto
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'	! with inclen
-	INCLUDE 'PPLV11INC:PARAMPL5.DAT'	! with inclen
-	INCLUDE 'TMAP_PPLV11INC:CONT_INC.DECL/LIST'	! with iautoc
-	INCLUDE 'PPLV11INC:CONT.INC/LIST'	! with iautoc
-	INCLUDE 'TMAP_PPLV11INC:VECTOR_INC.DECL/LIST'	! with vauto
-	INCLUDE 'PPLV11INC:VECTOR.INC/LIST'	! with vauto
-#endif
 
 * calling argument declarations:
 	INTEGER	status
@@ -118,7 +104,6 @@
 * forget line specimen definitions that were used in previous plots
         CALL PPLCMD ( from, line, 0, 'ALINE ', 1, 1 )
 
-
 * what qualifiers will effect the initialization of PLOT+
 	lev_loc = qual_given( slash_levels )
 	len_loc = qual_given( slash_length )
@@ -129,22 +114,21 @@
      .		.AND. len_loc .NE. 0
 
 * contour levels ?
-	IF ( lev_given    ) THEN
-	   CALL EQUAL_STRING( 
+
+      IF ( lev_given    ) THEN
+         CALL EQUAL_STRING( 
      .          cmnd_buff(qual_start(lev_loc):qual_end(lev_loc)),
      .			      str_buff, status )
 
+	   IF ( str_buff .NE. ' ' ) THEN
 
 * Set symbol LEV_TEXT with the users input to the LABEL command.
+	      labsym_buff = "LEV_TEXT "//str_buff
+	      ilen = TM_LENSTR1(labsym_buff)
+     	          ier = 0
+	      ist = 0
+	      CALL SETSYM (labsym_buff, ilen, ier, ist)
 
-        labsym_buff = "LEV_TEXT "//str_buff
-        ilen = TM_LENSTR1(labsym_buff)
-        ier = 0
-        ist = 0
-        CALL SETSYM (labsym_buff, ilen, ier, ist)
-
-
-	   IF ( str_buff .NE. ' ' ) THEN
 * ... pass the levels string given by the user to PLOT+
 	      str_len = TM_LENSTR1( str_buff )
 	      IF ( str_buff(1:1) .NE. '('
@@ -201,6 +185,12 @@
 	ELSE
 * ... set up for automatic levels
 	   CALL PPLCMD ( from, line, 0, 'LEV,()', 1, 1 )
+           
+* If the LEV_TEXT was already defined, remove it.
+	   labsym_buff = 'LEV_TEXT'
+	   CALL GETSYM( labsym_buff, str_buff, nc, ier )
+	   IF ( ier .EQ. 0 ) CALL DELSYM(labsym_buff,nc)
+
 	ENDIF
 
 * vector length ?

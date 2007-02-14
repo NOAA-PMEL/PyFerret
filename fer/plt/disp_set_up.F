@@ -134,11 +134,14 @@
 *                   only done in -gif mode
 * v5.53*acm*  6/03  send correct axis to AXIS_INTERVALS
 * V580 *acm* 12/04 Fix bug 1129; formatting axis for small lon/lat ranges:
-*                  send delta to routine AXIS_FORMAT
+*                  send ax_delta to routine AXIS_FORMAT
 * V600 *acm* 10/05 Fix bug 1347; for very fine axes, set the flag irregular in
-*                  AXIS_INTERVALS, and compute the delta coordinate. Then after
+*                  AXIS_INTERVALS, and compute the ax_delta coordinate. Then after
 *                  the call to pplldc, reset the plot type to regular if the
 *                  grid is in fact regular.
+* v602 *acm*  2/07  Changes so that /SET on a 2D plot command sets up the LEVELS symbols.
+*                   (bug 1491) If WARNED_NLEV set, an error was found in preset_levs
+
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -167,7 +170,10 @@ C plus those starting w/ xbox_bounds:
 	include 'command.parm'
 	include 'xcommand.cmn'
 	include 'xpplus.cmn'
-
+	include 'parampl5_dat.decl'
+	include 'PARAMPL5.DAT'	! with NPOLYGONS
+	include	'cont_inc.decl'
+	INCLUDE 'CONT.INC'
 
 *kob 1/97
 	include 'xwindow_state.cmn'
@@ -209,7 +215,7 @@ C plus those starting w/ xbox_bounds:
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
      .                  first, last
-	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, delta
+	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, ax_delta
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_explct, ttout_lun,
@@ -482,12 +488,12 @@ C   set up memory for the flag grid
               tax = grid_line(t_dim, grid)
               cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
 	      CALL EQUAL_RANGE_T( cmnd_buff(qual_start(pxlim):qual_end(pxlim)),
-     .				dim1, grid, xaxlo, xaxhi, delta,
+     .				dim1, grid, xaxlo, xaxhi, ax_delta,
      .				cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( phlim.GT.0 ) THEN
 	      CALL EQUAL_RANGE_T(cmnd_buff(qual_start(phlim):qual_end(phlim)),
-     .				 bb_xaxis, grid, xaxlo, xaxhi, delta,
+     .				 bb_xaxis, grid, xaxlo, xaxhi, ax_delta,
      .				 cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( curvilinear ) THEN
@@ -499,10 +505,10 @@ C   set up memory for the flag grid
 		 letter = 'X'
 		 GOTO 5500
 	      ENDIF
-	      delta = unspecified_val8
+	      ax_delta = unspecified_val8
 	   ELSE
 	      CALL CHOOSE_CX_WW( uvar, cx_cmnd, ctx, dim1, xaxlo, xaxhi )
-	      delta = unspecified_val8
+	      ax_delta = unspecified_val8
 	   ENDIF
 
 	   haxlo = xaxlo	! save limits so overlays
@@ -522,7 +528,7 @@ C   set up memory for the flag grid
 	      saved_calendar_id = cal_id
            ENDIF
 
-	   CALL AXIS_ENDS  ( 'X', dim1, grid, xaxlo, xaxhi, delta, is_logx,
+	   CALL AXIS_ENDS  ( 'X', dim1, grid, xaxlo, xaxhi, ax_delta, is_logx,
      .			      x_axtyp, status )
 	   IF ( status .NE. ferr_ok ) THEN
               first = xaxlo
@@ -530,7 +536,7 @@ C   set up memory for the flag grid
               GOTO 5700
            ENDIF
 
-	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi, delta,
+	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi, ax_delta,
      .						curvilinear, cx_xpos,
      .						time_axis,xstyle,no_labels)
 	   IF ( pylim .GT. 0 ) THEN
@@ -540,12 +546,12 @@ C   set up memory for the flag grid
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
 	      CALL EQUAL_RANGE_T( cmnd_buff(qual_start(pylim):qual_end(pylim)),
-     .				dim2, grid, yaxlo, yaxhi, delta,
+     .				dim2, grid, yaxlo, yaxhi, ax_delta,
      .				cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( pvlim.GT.0 ) THEN 
 	      CALL EQUAL_RANGE_T(cmnd_buff(qual_start(pvlim):qual_end(pvlim)),
-     .				 bb_yaxis, grid, yaxlo, yaxhi, delta,
+     .				 bb_yaxis, grid, yaxlo, yaxhi, ax_delta,
      .				 cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( curvilinear ) THEN
@@ -557,10 +563,10 @@ C   set up memory for the flag grid
 		 letter = 'Y'
 		 GOTO 5500
 	      ENDIF
-	      delta = unspecified_val8
+	      ax_delta = unspecified_val8
 	   ELSE
 	      CALL CHOOSE_CX_WW( uvar, cx_cmnd, ctx, dim2, yaxlo, yaxhi )
-	      delta = unspecified_val8
+	      ax_delta = unspecified_val8
 	   ENDIF
 	   vaxlo = yaxlo	! save limits so overlays
 	   vaxhi = yaxhi	! will know them
@@ -581,14 +587,14 @@ C ACM added 8/2001 save cal id if vertical time axis
 	      saved_calendar_id = cal_id
            ENDIF
 
-	   CALL AXIS_ENDS  ( 'Y', dim2, grid, yaxlo, yaxhi, delta, is_logy,
+	   CALL AXIS_ENDS  ( 'Y', dim2, grid, yaxlo, yaxhi, ax_delta, is_logy,
      .			      y_axtyp, status )
 	   IF ( status .NE. ferr_ok ) THEN
               first = xaxlo
               last  = xaxhi
               GOTO 5700
            ENDIF 
-	   CALL AXIS_FORMAT( 'Y', dim2, grid, yaxlo, yaxhi, delta,
+	   CALL AXIS_FORMAT( 'Y', dim2, grid, yaxlo, yaxhi, ax_delta,
      .						curvilinear, cx_ypos,
      .						time_axis,ystyle,no_labels)
 
@@ -629,6 +635,10 @@ C ACM added 8/2001 save cal id if vertical time axis
      .		      1, size1, 1, size2, s1_axis, s2_axis, 
      .		      n1_regrid, n2_regrid, w1_lo, w2_lo,
      .		      d1_regrid, d2_regrid, plot_mem_used)
+        IF (WARNED_NLEV) THEN
+           status = ferr_out_of_range
+           GOTO 5000
+        ENDIF
 
 * For cases where regrid was set in AXIS_INTERVALS not because of a 
 * subspan modulo axis, but because the axis precsion is too small for 

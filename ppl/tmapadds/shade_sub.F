@@ -100,6 +100,7 @@
 *                      gather up whole groups of cells of the same color but do each 
 *                      separately, checking for the branch cut.  Make more calls to 
 *                      SHADE_FILL_IT as needed to fill the longitude range.
+C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bug 1485
 
 	INCLUDE		'parampl5_dat.decl'
 	INCLUDE		'PARAMPL5.DAT'
@@ -393,8 +394,10 @@ c If all the data is missing don't make the cellarray call
 * Get range of indices for the curvi X,Y coordinates actually needed for the 
 * hlimits, vlimits that were requested.
 
-        IF (curvilinear) 
-     .     CALL CURV_COORD_RANGE (uc, ilo, ihi, jlo, jhi, status )
+        IF (curvilinear) THEN
+           CALL CURV_COORD_RANGE (uc, ilo, ihi, jlo, jhi, status )
+           IF (status .NE. ferr_ok) GOTO 1000
+        ENDIF
 
         xadd = 0.
         CALL SHADE_FILL_IT (data, nx, ny, px, py, xs, ys, xinv, yinv, 

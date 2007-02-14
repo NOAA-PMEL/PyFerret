@@ -69,6 +69,7 @@ C     v5.00 *jd* 2.99 Add fill optimization
 *     V5.81 ACM 3/05  Other routines (drawpoly, buffer_fillpoly, flush_buffered_fillpoly)
 *                     removed to their own files.
 *     v5.81 *acm* 4/05 Changes for FILL/MOD. Draw replications for curvilinear datasets
+C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bug 1485
 
 	include 	'ARFILL.INC'
         include         'GKSCM1.INC'
@@ -152,8 +153,10 @@ C acm 4/05 When plotting curvilinear data with FILL/MODULO put this logic into e
 
 	CALL get_user_coords (w,v,ndc,uc,xinv,yinv)
 
-        IF (curvilinear) 
-     .     CALL CURV_COORD_RANGE (uc, ilo, ihi, jlo, jhi, status )
+        IF (curvilinear) THEN
+           CALL CURV_COORD_RANGE (uc, ilo, ihi, jlo, jhi, status )
+           IF (status .NE. ferr_ok) GOTO 1000
+        ENDIF
       
         big = ABS(bad_val4)
         lmin = big

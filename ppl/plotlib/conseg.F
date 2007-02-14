@@ -1,5 +1,5 @@
 	subroutine conseg(z,nxs,nys,px,py,nx,ny,xf,xoff,yf,yoff,
-     *	zlev,ndecl,lwgtl,lclr,nlev,hgt,narc,ang) 
+     *	zlev,ndecl,lwgtl,lclr,nlev,hgt,narc,ang,status) 
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -79,7 +79,7 @@ C       *jc* 5.97 Major clean up and commenting
 C       *jc* 5.97 Added code for curvilinear coordinates
 C      *acm* v581 5/2005 Add CONTOUR/MOD capability for modulo
 C                 replications on curvilinear data
-
+C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bug 1485
 
 	include 'MISS.INC'
         include 'xcurvilinear.cmn'
@@ -111,6 +111,7 @@ C       Plot will be rotated by 'ang' degrees.
 	   CALL get_user_coords (w,v,ndc,uc,xinv,yinv)
 
            CALL CURV_COORD_RANGE (uc, ilo, ihi, jlo, jhi, status )
+           IF (status .NE. ferr_ok) goto 1000
         ENDIF
       
         big = ABS(bad_val4)

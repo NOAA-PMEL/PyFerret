@@ -12,6 +12,7 @@
 * V540:  9/01 *sh* - change "SYSTEM:" to "SPAWN:"
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead 
+* 2/07 *acm* - fix bug 1488; if the last item is a missing string, save that.
 
 * calling argument declarations
 	INTEGER		cx, mr, status
@@ -46,6 +47,14 @@
 
 * trim around the enclosing "{}" brackets
 	IF ( string(slen:slen) .EQ. '}' ) slen = slen - 1
+
+* dont process trailing blanks
+        i = slen
+        DO WHILE ( string(i:i) .EQ. ' ' ) 
+           slen = slen - 1
+           i = i-1
+        ENDDO
+
 	IF ( string (1:1) .EQ. '{' ) spos = 2
 	IF ( spos .GE. slen ) GOTO 5000
 
@@ -91,6 +100,9 @@
 	   ELSEIF (c .EQ. ',') THEN
 	      IF (.NOT.stored) THEN
 	        CALL SAVE_C_STRING(0,0,mr_c_pointer(mr),n-1,istat) ! NULL
+	      ENDIF
+	      IF (i.EQ.slen) THEN     ! missing string at the end of the list
+	        CALL SAVE_C_STRING(0,0,mr_c_pointer(mr),n,istat) ! NULL
 	      ENDIF
 	      n = n+1
 	      stored = .FALSE.

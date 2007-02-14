@@ -42,8 +42,11 @@
 * V581:  1/2005 ACM 
 * V600:  9/2005 acm Fix bug 1342, curvi data with 1-d coordinates.
 *                   The loop 200 controls were wrong.
-* V690:  4/2006 fix bug where if an axis is reversed (depth axis) the
+* V600:  4/2006 fix bug where if an axis is reversed (depth axis) the
 *               comparisons also need to be reversed.
+* V602:  2/2007 Fix bug 1485; when determining the range of indices to
+*               use loop over the indices used in the projection; minss_dim1
+*               minss_dim2 etc. 
 
 
 	include 'ferret.parm'
@@ -63,13 +66,27 @@
 	INTEGER i, j
         REAL xx, yy, up, dn
 
-        ilo = MAX(xpos_hiss_dim1, xpos_loss_dim1)
-        ihi = MIN(xpos_hiss_dim1, xpos_loss_dim1)
+        ilo = MAX(minss_dim1, maxss_dim1)
+        ihi = MIN(minss_dim1, maxss_dim1)
+        
         up = MAX(uc(1), uc(2))
         dn = MIN(uc(1), uc(2))
 
-	DO 100 i = xpos_loss_dim1, xpos_hiss_dim1
-        DO 100 j = xpos_loss_dim2, xpos_hiss_dim2
+* Loop over the indices to be used for the projection.
+* For map projections, a coord field may be 1D, in which case
+* set any missing indices to the unspecified-int flag.
+
+        i1 = minss_dim1
+        IF (xpos_loss_dim1 .EQ. unspecified_int4) i1 = xpos_loss_dim1
+        i2 = maxss_dim1
+        IF (xpos_hiss_dim1 .EQ. unspecified_int4) i2 = xpos_hiss_dim1
+        j1 = minss_dim2
+        IF (xpos_loss_dim2 .EQ. unspecified_int4) j1 = xpos_loss_dim2
+        j2 = maxss_dim2
+        IF (xpos_hiss_dim2 .EQ. unspecified_int4) j2 = xpos_hiss_dim2
+
+        DO 100 i = i1, i2
+        DO 100 j = j1, j2
            xx = xfield(i,j)
 	   IF ( xx .EQ. badx) THEN
               GOTO 5100 
@@ -81,13 +98,27 @@
            ENDIF
   100   CONTINUE
 
-        jlo = MAX(ypos_hiss_dim2, ypos_loss_dim2)
-        jhi = MIN(ypos_hiss_dim2, ypos_loss_dim2)
+        jlo = MAX(minss_dim2, maxss_dim2)
+        jhi = MIN(minss_dim2, maxss_dim2)
+
         up = MAX(uc(3), uc(4))
         dn = MIN(uc(3), uc(4))
 
-	DO 200 i = ypos_loss_dim1, ypos_hiss_dim1
-        DO 200 j = ypos_loss_dim2, ypos_hiss_dim2
+* Loop over the indices to be used for the projection.
+* For map projections, a coord field may be 1D, in which case
+* set any missing indices to the unspecified-int flag.
+
+        i1 = minss_dim1
+        IF (ypos_loss_dim1 .EQ. unspecified_int4) i1 = ypos_loss_dim1
+        i2 = maxss_dim1
+        IF (ypos_hiss_dim1 .EQ. unspecified_int4) i2 = ypos_hiss_dim1
+        j1 = minss_dim2
+        IF (ypos_loss_dim2 .EQ. unspecified_int4) j1 = ypos_loss_dim2
+        j2 = maxss_dim2
+        IF (ypos_hiss_dim2 .EQ. unspecified_int4) j2 = ypos_hiss_dim2
+
+        DO 200 i = i1, i2
+        DO 200 j = j1, j2
            yy = yfield(i,j)
 	   IF ( yy .EQ. bady) THEN
               GOTO 5200 
@@ -100,7 +131,7 @@
   200   CONTINUE
 
 * successful completion
-	status = 0  ! (like ferr_ok but for PLOT+)
+	status = ferr_ok
 	RETURN
 
 * error exit

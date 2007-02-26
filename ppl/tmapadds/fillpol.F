@@ -74,8 +74,6 @@ C
 * v581 *acm* 3/05 open levels (-INF) (INF)
 * V600 *acm* 8/06 Fix bugs 843, 844: poly/line and reversed axes. Apply xinv and
 *                 yinv to coordinates when drawing the lines.
-* v602 *acm*  2/07  Changes so that /SET on a 2D plot command sets up the LEVELS symbols.
-*                   (bug 1491) If WARNED_NLEV set, no need to warn on too many levels again
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -461,9 +459,7 @@ C ------------
 C  Error exit when too many levels specified.
 C  Arrays LWGT, LDIG, and ZLEV are length ICNLEV=500
 
- 5000   CONTINUE
-        IF (WARNED_NLEV) GOTO 5002
-        ii = ICNLEV
+ 5000   ii = ICNLEV
         buff1 = TM_FMT (REAL(ICNLEV), 20, 20, slen1)
         buff2 = TM_FMT (REAL(NLEV2), 20, 20, slen2)
         err_msg = '# of levels > '// buff1(1:slen1) //

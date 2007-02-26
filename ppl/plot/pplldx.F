@@ -114,8 +114,6 @@ c
 *                   memory buffer, rather than in lleng.  This way the number of
 *                   polygons that may be plotted is unlimited. Mark this with the
 *                   value of icode (first argument to pplldx_envelope)
-* v602 *acm*  2/07  Changes so that /SET on a 2D plot command sets up the LEVELS symbols.
-*                   (bug 1491)
 
 * FERRET 9-21-88: replaced include files to make all declarations explicit
 ! original:
@@ -166,7 +164,7 @@ c
 	CHARACTER BC2WHOI*14, tstrt*(*), tref*(*)
 	REAL*8 	  WHOI2BC, tstart,tstop,time,tmin
 	INTEGER	icode, npts, i, ix, iy
-	REAL	DIFF, xdt, off, rate, zmn, zmx
+	REAL	DIFF, xdt, off, rate
 	LOGICAL  flip			!  FERRET mod 10/93
 
 	REAL	    bad_flag
@@ -412,15 +410,6 @@ c
         ELSE
            ibase = ibase + npts
         ENDIF
-
-* Make initial settings for contour levels symbols.
-        zmn = zmin
-        zmx = zmax
-        zmin = ymin
-        zmax = ymax
-        CALL PRESET_LEVS
-        zmin = zmn
-        zmax = zmx
 
 	return
 	end

@@ -2,7 +2,6 @@
 * COMMON for PLOT+ with all variables declared
 * created for TMAP usage by Steve Hankin 7/88
 c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
-*  v602 *acm* 2/07 WARNED_NLEV for presetting levels on /SET
 
 	REAL	ZLEV,CANGLE
 	INTEGER	LDIG,IVCOMP
@@ -16,8 +15,7 @@ c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
 	INTEGER	NSIGC
 	
 *	Following added 8.3.95 *jd*
-	LOGICAL*4 CENTERED,SET_DELTA,NEGINF,POSINF,CONT_KEY,
-     .             WARNED_NLEV
+	LOGICAL*4 CENTERED,SET_DELTA,NEGINF,POSINF,CONT_KEY
 	REAL	DELTA
 
 * requires: INCLUDE 'PPLV11INC:CONT.INC'                                    

@@ -12,12 +12,11 @@ C***********************************************************************
 C**
 C**
 *  v581 *acm* 3/05 open levels (-INF) (INF)
-*  v602 *acm* 2/07 WARNED_NLEV for presetting levels on /SET
 c
 
 	COMMON/CONT/ ZLEV(ICNLEV),LDIG(ICNLEV),LWGT(ICNLEV),LCLR(ICNLEV),
      *	NLEV,HGT,NARC,IAUTOC,NLEV2,NSIGC,CANGLE,IVCOMP,
-     *  CENTERED,SET_DELTA,DELTA,NEGINF,POSINF,CONT_KEY,WARNED_NLEV
+     *  CENTERED,SET_DELTA,DELTA,NEGINF,POSINF,CONT_KEY
 
 
 c

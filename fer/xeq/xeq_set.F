@@ -1013,7 +1013,7 @@ c *kob* 4/97
 * ...   If STRIDE value is 1 -- ignore the command.                    (II.2.c)
            IF( delta .EQ. 1) RETURN 
 
-* ...   offset should be less than the stride value
+* ...   offset must be less than the stride value
            IF(offset .GE. delta) GOTO 6640 
 
 * jli: is there a function to get the line orientation idim ?
@@ -1496,7 +1496,7 @@ c     .					* max_mem_blks*100
      .           'it is a child axis already',
      .               *5000 )
  6640   CALL ERRMSG( ferr_invalid_command, status,
-     .           'offset should be less than stride value',
+     .           'offset must be less than stride value',
      .               *5000 )
  6650   CALL ERRMSG( ferr_invalid_command, status,
      .           'fail to create a strided axis',

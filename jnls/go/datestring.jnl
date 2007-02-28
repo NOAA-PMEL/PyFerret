@@ -20,9 +20,9 @@
 
 ! Check inputs. First 3 are required
 
-QUERY/IGNORE $1%<Usage: GO datestring year month  day  [hour]  [minute]  [second]"%
-QUERY/IGNORE $2%<Usage: GO datestring year month  day  [hour]  [minute]  [second]"%
-QUERY/IGNORE $3%<Usage: GO datestring year month  day  [hour]  [minute]  [second]"%
+QUERY/IGNORE $1%<Usage: GO datestring year month  day  [hour]  [minute]  [second]%
+QUERY/IGNORE $2%<Usage: GO datestring year month  day  [hour]  [minute]  [second]%
+QUERY/IGNORE $3%<Usage: GO datestring year month  day  [hour]  [minute]  [second]%
 
 LET DS_year = $1
 LET DS_nmon = $2

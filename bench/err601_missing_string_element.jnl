@@ -1,0 +1,6 @@
+! err601_missing_string_element.jnl
+!  Bug 1488. Seg fault when try to list a string variable
+!  when the last element is missing.
+
+let a = {"a", "b",  }
+list a

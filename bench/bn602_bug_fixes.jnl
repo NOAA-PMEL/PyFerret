@@ -17,3 +17,16 @@ GO err601_index_111.jnl
 ! Check for irregular axis actually being irregular failed; bug 1483
 GO bn_reset
 GO err601_irregular_axis.jnl
+
+
+! err601_check_missing_3arg.jnl
+! see bug 1485, check on missing coordinates for 3-argument graphics
+GO bn_reset
+GO err601_check_missing_3arg.jnl
+
+! err601_missing_string_element.jnl
+! Bug 1488; Seg fault when try to list a string variable
+!  when the last element is missing.
+GO bn_reset
+GO err601_missing_string_element.jnl
+

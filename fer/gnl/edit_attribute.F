@@ -170,6 +170,7 @@
             attlen = TM_LENSTR1(attbuff)    
          ENDIF
 
+         vlen = TM_LENSTR1(errbuff)
          IF (attype .NE. attype_old) 
      .         CALL WARN ('Changing the type of attribute '//
      .         errbuff(:vlen))
@@ -181,6 +182,7 @@
 
       ELSE 
          attype = NCFLOAT
+         vlen = TM_LENSTR1(errbuff)
          IF (attype .NE. attype_old) 
      .         CALL WARN ('Changing the type of attribute '//
      .         errbuff(:vlen))

@@ -151,7 +151,7 @@
 * V600: *acm*  6/05 - Attribute control: SHOW ATT varname[d=].attname SHOW ATT/ALL varname[d=]
 *                     SHOW DATA/ATTR [d=]
 * 9/06 *acm* 6.01  fixing bug 1439 long symbol values; change length of show_str to 2048
-
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -1512,7 +1512,16 @@
               dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
               CALL ISIT_COORD_VAR ( show_str, dset, 
      .              varname, coordvar, status )
-              IF ( status .NE. ferr_ok ) GOTO 5000
+
+              IF ( status .NE. ferr_ok ) THEN 
+                 dset = -2  ! a user-defined axis (coordinate variable)
+                 CALL ISIT_COORD_VAR ( show_str, dset, 
+     .              varname, coordvar, status )
+                    IF ( status .NE. ferr_ok ) THEN
+                    dset = cx_data_set(cx_cmnd)
+                    GOTO 5920
+                 ENDIF
+              ENDIF
 
            ELSE
 
@@ -1833,5 +1842,9 @@ c     .                               sbrief, sdetail, i2)
      .	    'SHOW ATTRIBUTE given with no attribute: '//
      .	    'Use SHOW ATT/ALL varname, or SHOW ATT varname.attname '
      .			, *5000 )
+ 5920	llen = TM_LENSTR(show_str)
+	CALL ERRMSG( ferr_invalid_command, status,
+     .   'variable, axis, or attribute does not exist'//
+     .    show_str(:llen), *5000 )
 	END
 

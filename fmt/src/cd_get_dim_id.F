@@ -40,6 +40,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * V600 6/05 *acm* Attribute control.
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 
 * include files
@@ -69,7 +70,7 @@
       CALL TM_FTOC_STRNG( dname(1:slen), fhol, flen )
 
       dset_num = dset
-      IF (dset_num .LT. -1) dset_num = -1
+      IF (dset_num .LT. -2) dset_num = -2
       dimid = NCF_GET_DIM_ID(dset_num, fhol)
 
       RETURN

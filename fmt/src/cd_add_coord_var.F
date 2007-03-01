@@ -1,4 +1,4 @@
-      SUBROUTINE CD_ADD_VAR (dset, varname, varid, title, units, 
+      SUBROUTINE CD_ADD_COORD_VAR (dset, varname, varid, units, 
      .                       type, coordvar, bad, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,8 +34,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Add a variable to the linked list structure.  dset = -1 will be the 
-* pseudo-dset containing attribute info for user variables.
+* Add a coordinate variable to the linked list structure.  dset = -2 will be the 
+* pseudo-dset containing attribute info for user-defined axes (coordinate variables).
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP
@@ -47,7 +47,7 @@
 
 * Argument declarations
 
-      CHARACTER*(*) varname, title, units
+      CHARACTER*(*) varname, units
       INTEGER dset, varid, type, coordvar, status
       REAL bad
 
@@ -60,11 +60,9 @@
       PARAMETER (flen=2048)
 #ifdef sun
       BYTE      vhol(flen)      ! c-type Hollerith string buffer
-      BYTE      thol(flen)
       BYTE      uhol(flen)
 #else
       INTEGER*1 vhol(flen)      ! c-type Hollerith string buffer
-      INTEGER*1 thol(flen)
       INTEGER*1 uhol(flen)
 #endif 
 
@@ -73,10 +71,6 @@
       buff = varname
       slen = TM_LENSTR1( buff )
       CALL TM_FTOC_STRNG( buff(1:slen), vhol, flen )
-
-      buff = title
-      slen = TM_LENSTR1( buff )
-      CALL TM_FTOC_STRNG( buff(1:slen), thol, flen )
 
       buff = units
       slen = TM_LENSTR( buff )
@@ -87,9 +81,9 @@
       badd = bad
 
       dset_num = dset
-      IF (dset_num .LT. -2) dset_num = -2
-      status = NCF_ADD_VAR( dset_num, varid, type, coordvar,
-     .                      vhol, thol, uhol, badd)
+      IF (dset_num .NE. -2) dset_num = -2
+      status = NCF_ADD_COORD_VAR( dset_num, varid, type, coordvar,
+     .                      vhol, uhol, badd)
 
       RETURN
       END

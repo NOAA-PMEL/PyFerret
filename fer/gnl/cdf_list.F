@@ -87,6 +87,7 @@
 *                  (DO 200 loop) only get attribute values from the linked list structure
 *                  if they are to be written to the output file.
 * V601 10/06 *acm* fix bug 1451, cd_write_var needs the value of mode_upcase_output.
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -125,7 +126,7 @@
      .                  recdim, cat, var, cat1, var1, iaxis,
      .			final_status, type, maxstrlen, 
      .			write_lo(4), write_hi(4), make_lo(4), make_hi(4),
-     .                  dset_last, attid
+     .                  dset_last, dset_num, attid
 
 * *kob* 3/99- up SANITARY_VAR_CODE and local variable varcode to 64 chars
 *             and VAR_UNITS to 64
@@ -399,7 +400,13 @@
            IF (type .EQ. 0) outtype = vartype
 
 * create the variable and its grid (coordinate output gets deferred)
-           CALL CD_MAKE_VAR( cdfid, dset, varcode, type, maxstrlen,
+
+* If this is a user var the axes are based on the defining dset (if any).
+           dset_num = dset
+           IF (dset.EQ.-1 .AND. cx_data_set( cx ).GT.0)
+     .        dset_num = cx_data_set( cx )  
+
+           CALL CD_MAKE_VAR( cdfid, dset_num, varcode, type, maxstrlen,
      .               grid, make_lo, make_hi, recdim, enhead, new, 
      .               edges_flag, do_bounds, mode_upcase_output, status )
 

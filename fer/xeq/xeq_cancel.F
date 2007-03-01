@@ -123,6 +123,7 @@
 *                 values in the attribute structure for the axis.
 * V602: *acm* 1/07 Changes for metafile-batch mode: When in gif mode or batch mode, 
 *                  ignore CANCEL MODE META
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -160,6 +161,7 @@
 	INTEGER		REGION_NUMBER, FIND_DSET_NUMBER,
      .                  TM_GET_LINENUM, TM_GET_GRIDNUM, 
      .			TM_GET_GRID_OF_LINE, TM_LENSTR1, STR_UPCASE,
+     .                  STR_SAME,
      .			ivp, i, blen, ier, i1, num_protected_axes,
      .			status, variable, category,
      .			idim, iqual, iset, item, ivar, nth, mr,
@@ -175,8 +177,8 @@
      .                  coordvar, do_err, canout, new_att_modulo, its_gif,
      .                  batch
 
-	CHARACTER	arg*4, buff*512, arg30*30, varname*512, 
-     .                  attname*128, show_str*12, buff2*3
+	CHARACTER	arg*4, buff*512, arg30*30, varname*512,
+     .                  attname*128, show_str*12, buff2*3, DUMMY*512
 
 * local parameter declarations:
 	INTEGER		slash_del_temp, slash_del_perm
@@ -771,7 +773,15 @@
               dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
               CALL ISIT_COORD_VAR ( buff, dset, 
      .              varname, coordvar, status )
-              IF ( status .NE. ferr_ok ) GOTO 5000
+              IF ( status .NE. ferr_ok ) THEN 
+                 dset = -2  ! a user-defined axis (coordinate variable)
+                 CALL ISIT_COORD_VAR ( buff, dset, 
+     .              varname, coordvar, status )
+                 IF ( status .NE. ferr_ok ) THEN
+                    dset = cx_data_set(cx_cmnd)
+                    GOTO 5920
+                 ENDIF
+              ENDIF
 
            ELSE
 
@@ -817,7 +827,15 @@
            dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
            CALL ISIT_COORD_VAR ( buff, dset, 
      .            varname, coordvar, status )
-           IF ( status .NE. ferr_ok ) GOTO 5000
+           IF ( status .NE. ferr_ok ) THEN 
+              dset = -2  ! a user-defined axis (coordinate variable)
+              CALL ISIT_COORD_VAR ( buff, dset, 
+     .              varname, coordvar, status )
+              IF ( status .NE. ferr_ok ) THEN
+                 dset = cx_data_set(cx_cmnd)
+                 GOTO 5920
+              ENDIF
+           ENDIF
         ENDIF
 c
 c        ELSE
@@ -901,14 +919,47 @@ c	ENDIF
         ELSE
 
 * See if the attribute  exists for the variable
-              do_err = .TRUE.
-              CALL BREAK_VARATTNAME ( buff, dset, varname, 
+           do_err = .TRUE.
+           dummy = varname  ! Save name for changing axis modulo or depth setting
+
+           CALL BREAK_VARATTNAME ( buff, dset, varname, 
      .                 attname, varid, do_err, status )
 
-              IF (attname .EQ. '') GOTO 6230
+           IF (attname .EQ. '') GOTO 6230
 
-              IF (status .NE. ferr_ok) GOTO 6220 
-              CALL CD_DELETE_ATTRIBUTE (dset, varid, attname, status )
+           IF (status .NE. ferr_ok) GOTO 6220 
+           CALL CD_DELETE_ATTRIBUTE (dset, varid, attname, status )
+
+* If this is an axis and we are changing modulo or depth setting, make the 
+* setting in the Ferret definition of the axis.
+
+           IF (coordvar) THEN
+              IF ( STR_SAME(attname, 'modulo') .EQ. 0) THEN
+                 new_att_modulo = .FALSE.
+                 new_att_modulo_len = 0.
+
+                 axis = TM_GET_LINENUM(dummy )
+                 IF ( axis .EQ. unspecified_int4 ) GOTO 6210
+                 IF ( line_modulo(axis) ) THEN
+                    line_modulo( axis ) = .FALSE.
+* ... wipe memory clear of stored variables - this could change all definitions
+*      ( could be more selective for efficiency by checking to see where this
+*      axis gets used )
+                    DO 1420 i = 1,max_mr_avail
+ 1420               IF ( mr_protected( i ) .NE. mr_deleted ) 
+     .                                CALL DELETE_VARIABLE( i )
+                 ENDIF
+
+              ENDIF
+              IF ( STR_SAME(attname, 'depth') .EQ. 0) THEN
+
+	         axis = TM_GET_LINENUM(dummy )
+                 IF ( axis .EQ. unspecified_int4 ) GOTO 6210
+                 IF ( line_direction(axis) .EQ. 'UD' ) THEN
+                    line_direction(axis) = 'DU'
+                 ENDIF
+              ENDIF
+           ENDIF   ! coordvar
 
         ENDIF
 
@@ -993,6 +1044,10 @@ c	ENDIF
      .		     'MODE GKS cannot be modified after the first GKS plot',
      .			*5000 )
  5830	CALL ERRMSG( ferr_erreq, status, 'Cannot close file', *5000 )
+ 5920   slen = TM_LENSTR(buff)
+        CALL ERRMSG( ferr_invalid_command, status,
+     .   'variable, axis, or attribute does not exist'//
+     .    buff(:slen), *5000 )
  6210	CALL ERRMSG( ferr_invalid_command, status, 'unknown axis: '//
      .		     cmnd_buff(item_start(item):item_end(item)), *5000 )
  6212	CALL ERRMSG( ferr_invalid_command, status, 'protected axis: '//

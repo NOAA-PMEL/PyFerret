@@ -57,6 +57,7 @@
 *             Replace NCVINQ for variables, with CD_GET_VAR_INFO
 *             Replace NCDINQ with CD_GET_DS_DIMS
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 * argument definitions:
 *	dset	       - Ferret dataset number for already opened CDF file
@@ -113,7 +114,7 @@
 * get the vital statistics for the data set 
 
         dset_num = dset
-        IF (dset_num .LT. -1) dset_num = -1
+        IF (dset_num .LT. -2) dset_num = -2
         istat = NCF_INQ_DS (dset_num, ndims, nvars, ngatts, recdim )
 
         IF ( istat .NE. merr_ok ) CALL TM_ERRMSG

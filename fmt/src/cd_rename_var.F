@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * V600 6/11 *acm* 
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 
 * include files
@@ -70,7 +71,7 @@
       status = atom_not_found
 
       dset_num = dset
-      IF (dset_num .LT. -1) dset_num = -1
+      IF (dset_num .LT. -2) dset_num = -2
 
       slen = TM_LENSTR1( newvarname )
       CALL TM_FTOC_STRNG( newvarname(1:slen), fhol, flen )

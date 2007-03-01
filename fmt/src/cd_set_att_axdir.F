@@ -40,6 +40,7 @@
 
 * V600 12/05 *acm* Attribute control.
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 * Argument declarations
 
@@ -50,7 +51,7 @@
       INTEGER NCF_SET_AXDIR, dset_num
 
       dset_num = dset
-      IF (dset_num .LT. -1) dset_num = -1
+      IF (dset_num .LT. -2) dset_num = -2
 
 * set axis direction for this coordinate variable 
 * (ncf_set_axdir double checks that it is a coord)

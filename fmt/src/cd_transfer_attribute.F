@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * V600 10/05 *acm* Attribute control.
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 * Argument declarations
 
@@ -51,9 +52,9 @@
 
       
       dset_num_1 = dset1
-      IF (dset_num_1 .LT. -1) dset_num_1 = -1
+      IF (dset_num_1 .LT. -2) dset_num_1 = -2
       dset_num_2 = dset2
-      IF (dset_num_2 .LT. -1) dset_num_2 = -1
+      IF (dset_num_2 .LT. -2) dset_num_2 = -2
       status = NCF_TRANSFER_ATT(dset_num_1, varid1, iatt,
      .   dset_num_2, varid2)
 

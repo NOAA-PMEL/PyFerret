@@ -85,6 +85,7 @@
 *             global_bad was not set (defaulted to 0). so for a netcdf file 
 *             without global attributes, variables having no missing value 
 *             flags got bad-flag of 0.
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 *
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -195,7 +196,7 @@ c      REAL*8  dg_bad
 * get the vital statistics for the data set 
 
         dset_num = dset
-        IF (dset_num .LT. -1) dset_num = -1
+        IF (dset_num .LT. -2) dset_num = -2
         istat = NCF_INQ_DS (dset_num, ndims, nvars, ngatts, recdim )
 
         its_epic = ds_type(dset) .EQ. 'ECDF'

@@ -1,5 +1,6 @@
 SRCS_F = \
 cd_abort_grids.F\
+cd_add_coord_var.F\
 cd_add_var.F\
 cd_assoc_grids.F\
 cd_axis_name.F\

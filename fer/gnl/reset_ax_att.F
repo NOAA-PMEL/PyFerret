@@ -40,6 +40,8 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP
 * 11/2006 
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+*                  Use pseudo-dataset of user-defined axes to keep track of attributes.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -79,8 +81,12 @@
 c... loop over datasets
 c    see if name exists as an axis name.
 
-      DO 100 dset = 1, maxdsets
-         IF ( ds_name(dset) .EQ. char_init256) GOTO 100
+      DO 100 dset = -2, maxdsets
+         IF (dset .EQ. -1 .OR. dset .EQ. 0) GOTO 100
+         
+         IF (dset .GT. 0) THEN
+            IF ( ds_name(dset) .EQ. char_init256) GOTO 100
+         ENDIF
 
          CALL CD_GET_VAR_ID (dset, name, varid, status)
 

@@ -41,6 +41,7 @@
 
 * V600 6/05 *acm* Attribute control.
 *          replaces calls to NCDINQ
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 * Argument declarations
 
@@ -62,7 +63,7 @@
 #endif 
 
       dset_num = dset
-      IF (dset_num .LT. -1) dset_num = -1
+      IF (dset_num .LT. -2) dset_num = -2
       status = NCF_INQ_DS_DIMS ( dset_num, idim, fhol, slen, npts )
       slen = MIN(slen, flen)
       CALL TM_CTOF_STRNG ( fhol, dname, slen )

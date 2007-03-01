@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * V600 6/05 *acm* Attribute control.
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 * Argument declarations
 
@@ -65,7 +66,7 @@ c#include "netcdf.inc"
 #endif 
 
       dset_num = dset
-      IF (dset_num .LT. -1) dset_num = -1
+      IF (dset_num .LT. -2) dset_num = -2
 
       status = NCF_INQ_VAR_ATT(dset_num, varid, attid, fhol, alen, attype, 
      .    attlen, attoutflag)

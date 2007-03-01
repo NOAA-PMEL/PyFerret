@@ -53,6 +53,7 @@
 *             Replace NCINQ with NCF_INQ_DS
 *             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib 
 *             from linked list structure
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -106,7 +107,7 @@
 * get number of global attributes from stored linked list structure
 
         dset_num = dset
-        IF (dset_num .LT. -1) dset_num = -1
+        IF (dset_num .LT. -2) dset_num = -2
         status = NCF_INQ_DS (dset_num, ndims, nvars, ngatts, recdim )
 
 * get global attribute pseudo-variable id

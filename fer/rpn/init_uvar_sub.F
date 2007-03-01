@@ -64,6 +64,7 @@
 * V600  4/06 *acm* - additional declarations found by Solaris compiler     
 * V601 11/06 *acm* - add user variables always to dataset -1. Previously
 *                    variables defined with LET/D= were added to that dataset.
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
@@ -82,9 +83,9 @@
 
 * internal variable declarations:
 	LOGICAL inquote
-	INTEGER	        TM_LENSTR1, TM_LENSTR, NCF_ADD_VAR, i, 
+	INTEGER	        TM_LENSTR1, TM_LENSTR, i, 
      .                  natom_rpn, rpn_order(maxatoms), i2, quote_type,
-     .                  dset_to_add, slen, iat, varid, type
+     .                  dset_to_add, slen, iat, varid, type, coordvar
 	CHARACTER	err_string*255, c*1, varname*512, attname*128
 
 * internal parameter declarations
@@ -177,6 +178,7 @@ c* copy title, units, dset, and missing flag into buffers
 * Do not add EX# expressions or child variables
 
        type = 0
+       coordvar = 0
        IF (name(1:3) .NE. 'EX#' .AND. .NOT.child) THEN
           dset_to_add = -1  ! user-variable dataset.
 
@@ -184,7 +186,7 @@ c* copy title, units, dset, and missing flag into buffers
           IF (TM_LENSTR(title) .LT. 1) title = uvar_text(uvar)
 
           CALL CD_ADD_VAR( dset_to_add, name, uvar, title, units, 
-     .         type, bad, status)
+     .         type, coordvar, bad, status)
 
           title = err_string
           IF ( status .NE. ferr_ok ) GOTO 5600

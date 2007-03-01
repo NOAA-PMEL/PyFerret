@@ -139,6 +139,7 @@
 *                 requested. This should result in an error message.
 * V602: *acm* 1/07 Changes for metafile-batch mode: When in gif mode or batch mode, 
 *                  ignore CANCEL MODE META
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1125,14 +1126,6 @@ c *kob* 4/97
      .           new_att_modulo_len, line_direction(axis), 
      .           line_regular(axis) )
 
-* ... Check the attribute structure for this axis name and change 
-*     attribute values as needed.
-
-       CALL RESET_AX_ATT (line_name(axis), new_att_units, 
-     .           new_att_t0, new_att_calendar, new_att_modulo,
-     .           new_att_modulo_len, line_direction(axis), 
-     .           line_regular(axis) )
-
 	RETURN
 
 * SET MEMORY/MWORDS=megawords
@@ -1278,7 +1271,16 @@ c     .					* max_mem_blks*100
            dset_num = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
            CALL ISIT_COORD_VAR ( buff1, dset_num, 
      .            varname, coordvar, status )
-           IF ( status .NE. ferr_ok ) GOTO 5920
+     
+           IF ( status .NE. ferr_ok ) THEN 
+              dset_num = -2  ! a user-defined axis (coordinate variable)
+              CALL ISIT_COORD_VAR ( buff1, dset_num, varname, 
+     .              coordvar, status )
+              IF ( status .NE. ferr_ok ) THEN
+                 dset = cx_data_set(cx_cmnd)
+                 GOTO 5920
+              ENDIF
+           ENDIF
 
         ELSEIF (buff1(1:1) .EQ. '.') THEN
            dset_num = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
@@ -1506,7 +1508,7 @@ c     .					* max_mem_blks*100
      .		'SET what name.attribute?', *5000 )
  5920 slen = TM_LENSTR(buff1)
       CALL ERRMSG( ferr_invalid_command, status,
-     .   'variable or attribute does not exist in dset'//
+     .   'variable, axis, or attribute does not exist'//
      .    buff1(:slen), *5000 )
  5930 slen = TM_LENSTR(buff1)
       CALL ERRMSG( ferr_invalid_command, status,

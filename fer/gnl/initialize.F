@@ -75,6 +75,8 @@
 * V420:  9/19/95 - call TM_INIT_DYN_GRIDS for dynamic (implicit) grid creation
 * Linux port *kob* 3/96 - had to add calls to use F90 data and time routine
 *		     rather than f77 default routines.
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+*                  Use pseudo-dataset of user-defined axes to keep track of attributes.
 
 #ifdef unix
         include 'tmap_errors.parm'  ! error codes
@@ -186,11 +188,14 @@
 #endif
 	today_time = today_time(:5)	! w/out seconds
 
-* initialize pseudo-dataset iun linked-list structure
-* which will contain all user variables and their attributes.
+* initialize pseudo-dataset in linked-list structure which will contain all 
+* user variables and their attributes.
+* Also another pseudo-dataset to contain user-defined coordinate variables (axes). 
 
         iset  = -1;
         CALL ncf_init_uvar_dset( iset )
+        iset  = -2;
+        CALL ncf_init_uax_dset( iset )
 
 
 *************** STATE VARIABLES ************************************************

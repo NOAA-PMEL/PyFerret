@@ -61,6 +61,8 @@
 /* *acm  11/06 v601 - new routine ncf_rename_var, for fix of bug 1471 */
 /* *acm  11/06 v601 - in ncf_delete_var_att, renumber the attid for the remaining attributes. */
 /* *acm* 12/06 v602 - new attribute assigned to coordinate vars on input, orig_file_axname */
+/* *acm*  2/07 V602   Fix bug 1492, changing attributes of coordinate variables; use pseudo-dataset 
+                      of user-defined axes to keep track of attributes. */
 
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
@@ -117,13 +119,15 @@ int  FORTRAN(ncf_get_var_outflag) (int *, int *, int *);
 int  FORTRAN(ncf_get_var_outtype) (int *, int *,  int *);
 
 int  FORTRAN(ncf_init_uvar_dset)( int *);
+int  FORTRAN(ncf_init_uax_dset)( int *);
 int  FORTRAN(ncf_add_dset)( int *, int *, char *, char *);
 int  FORTRAN(ncf_init_other_dset)( int *, char *, char *);
 int  FORTRAN(ncf_delete_dset)( int *);
 int  FORTRAN(ncf_delete_var_att)( int *, int *, char *);
 int  FORTRAN(ncf_delete_var)( int *, char *);
 
-int  FORTRAN(ncf_add_var)( int *, int *, int *, char *, char *, char *, double *);
+int  FORTRAN(ncf_add_var)( int *, int *, int *, int *, char *, char *, char *, double *);
+int  FORTRAN(ncf_add_coord_var)( int *, int *, int *, int *, char *, char *, double *);
 
 int  FORTRAN(ncf_add_var_num_att)( int *, int *, char *, int *, int *, int *, float *);
 int  FORTRAN(ncf_add_var_num_att_dp)( int *, int *, char *, int *, int *, int *, double *);
@@ -941,6 +945,99 @@ int FORTRAN(ncf_init_uvar_dset)(int *setnum)
   }
 
 /* ----
+ * Initialize new dataset to contain user-defined coordinate variables and 
+ * save in GLOBAL_ncdsetList for attribute handling 
+ */
+
+int FORTRAN(ncf_init_uax_dset)(int *setnum)
+
+{
+  ncdset nc; 
+  static int return_val=FERR_OK; /* static because it needs to exist after the return statement */
+  
+    int i;				/* loop controls */
+	int ia;
+	int iv;
+    int nc_status;		/* return from netcdf calls */
+    ncatt att;			/* attribute */
+    ncvar var;			/* variable */
+
+    strcpy(nc.fername, "UserCoordVariables");
+    strcpy(nc.fullpath, " ");
+    nc.fer_dsetnum = *setnum;
+
+    nc.ngatts = 1;
+    nc.nvars = 0;
+	nc.recdim = -1;   /* never used, but initialize anyway*/
+    nc.vars_list_initialized = FALSE;
+
+   /* set one global attribute, treat as pseudo-variable . the list of variables */
+
+       strcpy(var.name, "."); /*is this a legal name?*/
+
+       var.attrs_list_initialized = FALSE;
+
+       var.type = NC_CHAR;
+       var.outtype = NC_CHAR;
+       var.varid = 0;
+	   var.natts = nc.ngatts;
+       var.has_fillval = FALSE;
+       var.fillval = NC_FILL_FLOAT;
+	   var.all_outflag = 1;
+	   var.is_axis = FALSE;
+	   var.axis_dir = 0;
+
+	   var.attrs_list_initialized = FALSE; 
+
+		  att.outflag = 1;
+          att.type = NC_CHAR;
+          att.outtype = NC_CHAR;
+		  att.len = 21;
+          strcpy(att.name, "FerretUserCoordVariables" );
+          
+
+      /*Save attribute in linked list of attributes.*/	
+       if (!var.attrs_list_initialized) {
+          if ( (var.varattlist = list_init()) == NULL ) {
+            fprintf(stderr, "ERROR: ncf_init_uax_dset: Unable to initialize GLOBAL attributes list.\n");
+            return_val = -1;
+            return return_val; 
+          }
+          var.attrs_list_initialized = TRUE;
+	  }
+
+       list_insert_after(var.varattlist, &att, sizeof(ncatt));
+
+       /* global attributes list complete */
+
+      /*Save variable in linked list of variables for this dataset */	
+       if (!nc.vars_list_initialized) {
+          if ( (nc.dsetvarlist = list_init()) == NULL ) {
+            fprintf(stderr, "ERROR: ncf_init_uax_dset: Unable to initialize variable list.\n");
+            return_val = -1;
+            return return_val; 
+          }
+          nc.vars_list_initialized = TRUE;
+        }
+
+       list_insert_after(nc.dsetvarlist, &var, sizeof(ncvar));
+
+/* Add dataset to global nc dataset linked list*/ 
+  if (!list_initialized) {
+    if ( (GLOBAL_ncdsetList = list_init()) == NULL ) {
+      fprintf(stderr, "ERROR: ncf_init_uax_dset: Unable to initialize GLOBAL_ncDsetList.\n");
+      return_val = -1;
+      return return_val; 
+	}
+    list_initialized = TRUE;
+  }
+
+  list_insert_after(GLOBAL_ncdsetList, &nc, sizeof(ncdset));
+  return_val = FERR_OK;
+  return return_val;
+  }
+
+/* ----
  * Get file info for a dataset and save in GLOBAL_ncdsetList for attribute handling 
  */
 
@@ -1579,7 +1676,7 @@ int FORTRAN(ncf_delete_dset)(int *dset)
 /* ----
  * Add a new variable to the pseudo (user-variable) dataset.
  */
-int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, char varname[], char title[], char units[], double *bad)
+int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char varname[], char title[], char units[], double *bad)
 
 {
   ncdset *nc_ptr=NULL;
@@ -1633,7 +1730,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, char varname[], cha
   var.ndims = 4;
   var.natts = 0;  
   var.varid = *varid;
-  var.is_axis = FALSE;   /* coordinate variable */
+  var.is_axis = *coordvar;
   var.axis_dir = 0;
   var.has_fillval = FALSE;
   var.all_outflag = 1;
@@ -1720,12 +1817,116 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, char varname[], cha
           att.outflag = initialize_output_flag (att.name);
 
       /*Save attribute in linked list of attributes for this variable */	
-		if (!var.attrs_list_initialized) {
-		  if ( (var.varattlist = list_init()) == NULL ) {
-            fprintf(stderr, "ERROR: add_var: Unable to initialize variable attributes list.\n");
-            return_val = -1;
-            return return_val; 
-          }
+
+       list_insert_after(var.varattlist, &att, sizeof(ncatt));
+ /*   } */
+
+/*Save variable in linked list of variables for this dataset */
+
+    list_insert_after(nc_ptr->dsetvarlist, &var, sizeof(ncvar));
+  
+  return_val = FERR_OK;
+  return return_val;
+}
+
+/* ----
+ * Add a new variable to the pseudo user-defined coordinate variable dataset.
+ */
+int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar, char varname[], char units[], double *bad)
+
+{
+  ncdset *nc_ptr=NULL;
+  LIST *test_ptr=NULL;
+  ncatt att;
+  ncvar var;
+  int status=LIST_OK;
+  static int return_val;
+  int *i;
+  int newvar;
+  int my_len;
+  LIST *vlist=NULL;
+
+   /*
+   * Get the dataset pointer.  
+   */
+  return_val = ATOM_NOT_FOUND;  
+  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL )return return_val;
+
+   /*
+   * Get the list of variables.  See if this variable already exists.
+   */
+  newvar = FALSE;
+  vlist = ncf_get_ds_varlist(dset);
+  status = list_traverse(vlist, varname, NCF_ListTraverse_FoundVarName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) {
+    newvar = TRUE;
+  }
+
+  if (newvar == TRUE)
+  {
+  nc_ptr->nvars = nc_ptr->nvars + 1;
+  }
+  else
+   /* If this variable is not new, remove the old definition of it
+   */
+  {
+
+  list_remove_curr(vlist);
+
+  }
+
+   /*
+    * Set variable structure and insert the new variable at the end of the 
+	* variable list.
+    */
+
+  strcpy(var.name,varname);
+  var.type = *type;
+  var.outtype = *type;
+  var.ndims = 4;
+  var.natts = 0;  
+  var.varid = nc_ptr->nvars;
+  *varid = nc_ptr->nvars;
+  var.is_axis = *coordvar;
+  var.axis_dir = 0;
+  var.has_fillval = FALSE;
+  var.all_outflag = 1;
+  var.fillval = *bad;
+  var.attrs_list_initialized = FALSE;
+
+  test_ptr = list_init(); 
+  if ( (var.varattlist = list_init()) == NULL ) {
+      fprintf(stderr, "ERROR: ncf_add_coord_var: Unable to initialize attributes list.\n");
+      return_val = -1;
+      return return_val; 
+      }
+  var.attrs_list_initialized = TRUE;
+
+   /* Set up initial set of attributes*/
+
+/*  Units, if given
+ *  For the units string, allocate one more than the att.len, 
+ *  presumably for the null terminator for the string (?)*/
+
+    if (strlen(units) > 0 )
+		{
+		var.natts = var.natts+1;
+
+		att.attid = var.natts;
+		strcpy(att.name, "units");
+		att.len = strlen(units);
+		att.outflag = 1;
+		att.type = NC_CHAR;
+		att.outtype = NC_CHAR;
+		att.string = (char *) malloc((att.len+1)* sizeof(char*));
+		strcpy(att.string, units);
+
+        my_len = 1;
+	    att.vals = (double *) malloc(my_len * sizeof(double)); 
+        att.vals[0] = 0;
+
+      /*Save attribute in linked list of attributes for this variable */	
+
           var.attrs_list_initialized = TRUE;
         }
 

@@ -41,6 +41,7 @@
 
 * V600 6/05 *acm* Attribute control.
 *      6/06 *acm* missing declarations of ncf functions
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 
 * include files
@@ -73,7 +74,7 @@
       status = atom_not_found
 
       dset_num = dset
-      IF (dset_num .LT. -1) dset_num = -1
+      IF (dset_num .LT. -2) dset_num = -2
 
       buff = vname
       IF (vname(1:1) .EQ. '(' ) THEN

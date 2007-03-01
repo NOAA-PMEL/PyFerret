@@ -66,6 +66,7 @@
 * 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an character constant instead
 * V552 5/03 *acm*: increase size of var_name to 128 chars
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -116,7 +117,7 @@
      .			set_cnt, bpos, epos, ncnt, var_pos, num_names,
      .			nvar, jcnt, stp_cnt, nstp, field_type(maxezvars),
      .			num_types, i, j, name_limit, idummy(maxezvars),
-     .			l1, l2, ivar, vartype
+     .			l1, l2, ivar, vartype, coordvar
 	CHARACTER	TM_STRING*13, TM_LEFINT*4, buff*48, 
      .			line_buff*2048
 
@@ -411,6 +412,7 @@
 * Put the information into the linked-list strucure for the dataset
 * and its variables
         CALL CD_STORE_DSET (dset, status)
+        coordvar = 0
         DO 200 ivar = 1, nvar
         
 	   IF (ds_var_type(nvar) .EQ. ptype_float) THEN
@@ -423,7 +425,7 @@
 
           CALL CD_ADD_VAR( dset, ds_var_code(ivar), ivar, 
      .       ds_var_title(ivar), ds_var_units(ivar), vartype,
-     .       ds_bad_flag(ivar), status)
+     .       coordvar, ds_bad_flag(ivar), status)
   200   CONTINUE
 
 

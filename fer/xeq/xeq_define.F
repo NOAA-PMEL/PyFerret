@@ -187,6 +187,7 @@
 * V601 *acm* 9/06  fixing bug 1439 long symbol values; change length of err_string to 2048
 * V601 *acm*11/06 Fix bug 1470: on a DEFINE AXIS command which is redefining an axis, change
 *                 values in the attribute structure for the axis.
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -280,7 +281,7 @@
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, 
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
-     .            coordvar, new_att, new_att_modulo
+     .            new_att, new_att_modulo
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -297,7 +298,8 @@
      .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
      .            mon_by_d(366), d_in_mon(12), len_cal, n2, n3, s2len,
      .            prev_cal_id, j, num_indices, varid, attype_spec,
-     .            mr_perm(max_intrp), attoutflag
+     .            mr_perm(max_intrp), attoutflag, attlen, coordvar, 
+     .            dset_to_add, dir, type, attype
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
@@ -313,7 +315,7 @@
      .            basic_orients(4)*2, err_string*2048, replmsg*24,
      .		  mon_names(12)*3, varname*512, attname*128, t2*2,
      .            new_att_units*128, new_att_calendar*128,
-     .            new_att_t0*128
+     .            new_att_t0*128, dcode*2, axdir*1
 
         CHARACTER*1 tab
 #ifdef NO_INTRINSIC_IN_PARAMETER
@@ -1370,6 +1372,123 @@ C /units=months  is 1/12 of the length of the year
 	      CALL TM_DEALLO_DYN_LINE( old_line )
 
 	   ENDIF
+
+        ELSE
+
+* add newly defined axis to the user-variable dset of the linked-list strucure
+           
+           dset_to_add = -2  ! user-defined coordinate variable dataset.
+
+           err_string = buff3
+           type = NCDOUBLE
+           coordvar = 1
+           varid = 0        ! Will be returned with variable ID
+           bad_flag = bad_val4   ! coord vars dont have missing, but set to something
+           CALL CD_ADD_COORD_VAR( dset_to_add, buff3, varid,  
+     .         line_units(iline), type, coordvar, bad_flag, status)
+           IF ( status .NE. ferr_ok ) GOTO 5600
+         
+* Get direction (also used to set axis direction, below). Set the
+* point_spacing attribute. If the axis is a time axis, by default this
+* is not written to the file as the axis may be the record axis.
+
+           dcode = line_direction(iline)
+           IF (dcode .EQ. 'XX' .OR. dcode .EQ. 'WE') dir = 1
+           IF (dcode .EQ. 'YY' .OR. dcode .EQ. 'SN') dir = 2
+           IF (dcode .EQ. 'ZZ' .OR. dcode .EQ. 'UD' .OR. dcode .EQ. 'DU') dir = 3
+           IF (dcode .EQ. 'TT' .OR. dcode .EQ. 'TI') dir = 4
+
+           attname = 'point_spacing'
+           attype = NCCHAR
+           attoutflag = 1
+           IF (dir .EQ. 4) attoutflag = 0
+           IF ( line_regular(iline) ) THEN
+              attlen = 4
+              CALL CD_PUT_NEW_ATTR (dset_to_add, varid, attname, 
+     .        attype, attlen, attoutflag, 'even', dummy, status) 
+           ELSE
+              attlen = 6
+              CALL CD_PUT_NEW_ATTR (dset_to_add, varid, attname, 
+     .        attype, attlen, attoutflag, 'uneven', dummy, status) 
+           ENDIF
+
+* Axis attribute, with coordinate direction
+
+           attname = 'axis'
+           attype = NCCHAR
+           attoutflag = 1
+
+           dcode = line_direction(iline)
+           IF (dcode .EQ. 'XX' .OR. dcode .EQ. 'WE') axdir = 'X'
+           IF (dcode .EQ. 'YY' .OR. dcode .EQ. 'SN') axdir = 'Y'
+           IF (dcode .EQ. 'ZZ' .OR. dcode .EQ. 'UD' .OR. 
+     .                              dcode .EQ. 'DU') axdir = 'Z'
+           IF (dcode .EQ. 'TT' .OR. dcode .EQ. 'TI') axdir = 'T'
+           attlen = 1
+           CALL CD_PUT_NEW_ATTR (dset_to_add, varid, attname, 
+     .           attype, attlen, attoutflag, axdir, dummy, status) 
+
+* Set the axis direction
+
+           dir = 0
+           CALL CD_SET_ATT_AXDIR (dset, varid, dir, status)
+
+* Do BOUNDS here?
+
+* Modulo attribute
+
+           IF ( line_modulo(iline) ) THEN
+              attname = 'modulo'
+              attype = NCDOUBLE
+              attoutflag = 1
+              attlen = 1
+              CALL CD_PUT_NEW_ATTR_DP (dset_to_add, varid, attname, 
+     .           attype, attlen, attoutflag, buff1, line_modulo_len(iline), status) 
+           ENDIF
+
+* Positive down. 
+
+           IF (line_direction(iline) .EQ. 'UD') THEN
+              attname = 'positive'
+              attype = NCCHAR
+              attoutflag = 1
+              attlen = 4
+              CALL CD_PUT_NEW_ATTR (dset_to_add, varid, attname, 
+     .           attype, attlen, attoutflag, 'down', dummy, status) 
+           ENDIF
+
+* Do not write positive=up. This is the default Ferret behavior
+           IF (line_direction(iline) .EQ. 'DU') THEN
+              attname = 'positive'
+              attype = NCCHAR
+              attoutflag = 0
+              attlen = 2
+              CALL CD_PUT_NEW_ATTR (dset_to_add, varid, attname, 
+     .           attype, attlen, attoutflag, 'up', dummy, status) 
+           ENDIF
+
+           IF (line_direction(iline)(1:1) .EQ. 'T') THEN
+              IF (its_calendar) THEN
+                 attname = 'calendar'
+                 attype = NCCHAR
+                 attoutflag = 1
+                 attlen = TM_LENSTR1(new_att_calendar)
+                 CALL CD_PUT_NEW_ATTR (dset_to_add, varid, attname, 
+     .             attype, attlen, attoutflag, new_att_calendar, 
+     .             dummy, status) 
+
+                 attname = 'time_origin'
+                 attype = NCCHAR
+                 attoutflag = 1
+                 attlen = TM_LENSTR1(line_t0(iline))
+                 CALL CD_PUT_NEW_ATTR (dset_to_add, varid, attname, 
+     .               attype, attlen, attoutflag, line_t0(iline), 
+     .               dummy, status) 
+
+              ENDIF
+ 
+           ENDIF
+
 	ENDIF
 
 * now catalog it in memory by saving its name
@@ -1620,7 +1739,6 @@ C /units=months  is 1/12 of the length of the year
 	   ENDIF
 	ENDIF
 
-        
 * ... DEFINE ATT/OUTPUT varname.attname
       attoutflag = 0
       iqual = qual_given( slash_output ) 
@@ -1649,8 +1767,15 @@ C /units=months  is 1/12 of the length of the year
         IF (buff(1:1) .EQ. '(') THEN
            dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
            CALL ISIT_COORD_VAR ( buff, dset, varname, coordvar, status )
-           IF ( status .NE. ferr_ok ) GOTO 5000
-
+           IF ( status .NE. ferr_ok ) THEN 
+              dset = -2  ! a user-defined axis (coordinate variable)
+              CALL ISIT_COORD_VAR ( buff, dset, varname, 
+     .              coordvar, status )
+              IF ( status .NE. ferr_ok ) THEN
+                 dset = cx_data_set(cx_cmnd)
+                 GOTO 5920
+              ENDIF
+           ENDIF
         ELSE
 
 * Get the dataset if given as [d=]
@@ -1745,6 +1870,9 @@ C /units=months  is 1/12 of the length of the year
      .		'illegal argument for DEFINE AXIS/NPOINTS', *5000 )
  5590	CALL ERRMSG( ferr_prog_limit, status,
      .		'axis coordinate storage exhausted - restart FERRET', *5000 )
+ 5600   slen = TM_LENSTR1(buff3)
+        CALL ERRMSG( ferr_syntax, status,
+     .               'error initializing '//buff3(:slen), *5000 )
  5610	CALL ERRMSG( ferr_prog_limit, status,
      .		'redefine or cancel an existing viewport', *5000 )
  5620 	CALL ERRMSG( ferr_out_of_range, status,
@@ -1794,10 +1922,18 @@ C /units=months  is 1/12 of the length of the year
 5900	CALL ERRMSG( ferr_invalid_command, status,
      .		'DEFINE what name.attribute?', *5000 )
 5920    slen = TM_LENSTR1(varname)
-        buff1 = TM_FMT(FLOAT(dset), 14, 16, s2len)
-        CALL ERRMSG( ferr_invalid_command, status,
-     .		'variable does not exist in dset'//
+
+        IF (dset .GT. 0) THEN
+           buff1 = TM_FMT(FLOAT(dset), 14, 16, s2len)
+           CALL ERRMSG( ferr_invalid_command, status,
+     .		'variable or axis does not exist in dset'//
      .           buff1(:s2len)//varname(:slen), *5000 )
+        ELSE
+           CALL ERRMSG( ferr_invalid_command, status,
+     .		'variable or axis does not exist '//
+     .           varname(:slen), *5000 )
+        ENDIF
+           
 5930    buff1 = 'string'
         IF (at_type(1) .EQ.ptype_float) buff1 = 'float'
         slen = 6

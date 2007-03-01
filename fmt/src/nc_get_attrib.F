@@ -49,6 +49,7 @@
 *                     so it replaces CD_GET_ATTVAL.
 *         6/06 *acm*  replace istat with status
 *         8/06 *acm*  test for too_long should be .GT. IF (attlen .GT. maxlen) THEN
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 *
 * argument definitions:
 *	dset	 - dataset number
@@ -118,7 +119,7 @@
 * Get attribute length and value
 
       dset_num = dset
-      IF (dset_num .LT. -1) dset_num = -1
+      IF (dset_num .LT. -2) dset_num = -2
       status = NCF_GET_VAR_ATTR(dset_num, varid, ghol, fhol, attlen, dval)
 
       IF ( status .NE. merr_ok ) THEN

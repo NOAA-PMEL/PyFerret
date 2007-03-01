@@ -73,6 +73,7 @@
 *                 CD_GET_VAR_ATT_INFO just after DO 200
 * V602 *acm*11/06 Fix bug 1471; new routine CD_AXIS_OUTNAME
 * V602 *acm*12/06 Correct the setting of got_calendar 
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -121,7 +122,7 @@
       INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, varid,
      .        llen, vartype, nvdims, nvatts, iatt, attype, attlen,
      .        attoutflag, istat, maxlen, vdims(8), newid, all_outflag,
-     .        attid
+     .        attid,  dset_num
       REAL vals(10)
 
 !      LOGICAL condensed
@@ -140,7 +141,9 @@
 
 * initialize
       iaxis = grid_line(idim, grid)
-      name = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
+      dset_num = dset
+
+      name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )
 
       name_in = name
 
@@ -246,12 +249,22 @@
 ! get whatever attributes are available in the linked-list structure.
 ! use the name of the parent axis.
 
-      CALL CD_GET_VAR_ID (dset, name_in, varid, status)
+      CALL CD_GET_VAR_ID (dset_num, name_in, varid, status)
+
+* If the axis is a user-defined axis for a user-defined variable,  
+* we still dont have its info. Look in the pseudo-dataset of user-defined
+* coordinate variables.
+
+      IF (varid .EQ. 0 .AND. dset_num .EQ. -1) THEN
+         dset_num = -2
+         CALL CD_GET_VAR_ID (dset_num, name_in, varid, status)
+      ENDIF
+      
       IF (varid .GT. 0) THEN
 
 * Get axis name into original upper/lowercase form, and get nvatts.
 
-         CALL CD_GET_VAR_INFO (dset, varid, buff, vartype, 
+         CALL CD_GET_VAR_INFO (dset_num, varid, buff, vartype, 
      .                   nvdims, vdims, nvatts, coordvar, 
      .                   all_outflag, status) 
 
@@ -261,13 +274,13 @@
          IF (mode_upcase_output) CALL STR_UPCASE( name_in, buff)
 
          DO 200 iatt = 1, nvatts
-            CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, 
+            CALL CD_GET_VAR_ATT_NAME( dset_num, varid, iatt, 
      .                                attname, status)
-            CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+            CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .               iatt, attname, attype, attlen, attoutflag, status )
 
             maxlen = 140
-            got_it = NC_GET_ATTRIB ( dset, varid, attname, 
+            got_it = NC_GET_ATTRIB ( dset_num, varid, attname, 
      .               do_warn, name_in, maxlen, attlen, attoutflag, 
      .               buff, vals)
 
@@ -295,7 +308,7 @@
      .                got_positive = .TRUE.
             IF (MATCH_NAME (attname,  slen, 'POINT_SPACING', 13) .AND. 
      .          attoutflag .EQ. 1)
-     .                got_positive = .TRUE.
+     .                got_spacing = .TRUE.
             IF (MATCH_NAME (attname,  slen, 'AXIS', 4 ) .AND. 
      .          attoutflag .EQ. 1)
      .                got_axis = .TRUE.
@@ -342,9 +355,9 @@
 
         attname = 'units' 
         IF (varid .GT. 0) THEN
-           CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+           CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, 
      .                 status)
-           IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+           IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .         attid, attname,  attype, attlen, attoutflag, istat )
         ELSE
            attoutflag = 1
@@ -370,9 +383,9 @@
             
             attname = 'time_origin' 
             IF (varid .GT. 0) THEN
-               CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+               CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, 
      .                 status)
-               IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+               IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .             attid, attname, attype, attlen, attoutflag, istat )
             ELSE 
                attoutflag = 1
@@ -390,8 +403,8 @@
 
           attname = 'calendar' 
           IF (varid .GT. 0) THEN
-             CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
-             IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+             CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
+             IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .                attid, attname, attype, attlen, attoutflag, istat )
           ELSE
              attoutflag = 1
@@ -408,8 +421,8 @@
 	 IF (line_modulo_len(iaxis) .EQ. 0.0D0 ) THEN
            attname = 'modulo' 
            IF (varid .GT. 0) THEN
-              CALL CD_GET_VAR_ATT_ID(dset, varid, attname, attid,status)
-              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+              CALL CD_GET_VAR_ATT_ID(dset_num, varid, attname, attid,status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .              attid, attname, attype, attlen, attoutflag, istat )
            ELSE
               attoutflag = 1
@@ -419,8 +432,8 @@
 	 ELSE
            attname = 'modulo' 
            IF (varid .GT. 0) THEN
-              CALL CD_GET_VAR_ATT_ID(dset, varid, attname, attid,status)
-              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+              CALL CD_GET_VAR_ATT_ID(dset_num, varid, attname, attid,status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .               attid, attname, attype, attlen, attoutflag, istat )
            ELSE
               attoutflag = 1
@@ -432,12 +445,12 @@
 
       ELSE IF (got_modulo .AND. varid .GT. 0) THEN  !user wants to write modulo=false to the file
             attname = 'modulo'
-            CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
-            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+            CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
+            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .              attid, attname, attype, attlen, attoutflag, istat )
 
             maxlen = 140
-            got_it = NC_GET_ATTRIB ( dset, varid, attname, 
+            got_it = NC_GET_ATTRIB ( dset_num, varid, attname, 
      .               do_warn, name_in, maxlen, attlen, attoutflag, 
      .               buff, vals)
 
@@ -458,8 +471,8 @@
      .     (.NOT.got_positive) ) THEN
            attname = 'positive' 
            IF (varid .GT. 0) THEN
-              CALL CD_GET_VAR_ATT_ID(dset, varid, attname, attid,status)
-              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+              CALL CD_GET_VAR_ATT_ID(dset_num, varid, attname, attid,status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .              attid, attname, attype, attlen, attoutflag, istat )
            ELSE
               attoutflag = 1
@@ -475,11 +488,12 @@
 
          CONTINUE
       ELSE
-        IF ( line_regular(iaxis) .AND. (.NOT.got_spacing) ) THEN
+        IF (.NOT. got_spacing) THEN
+        IF ( line_regular(iaxis) ) THEN
            attname = 'point_spacing' 
            IF (varid .GT. 0) THEN
-              CALL CD_GET_VAR_ATT_ID(dset, varid, attname, attid,status)
-              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+              CALL CD_GET_VAR_ATT_ID(dset_num, varid, attname, attid,status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .              attid, attname, attype, attlen, attoutflag, istat )
            ELSE
               attoutflag = 1
@@ -496,9 +510,9 @@
      .     .OR. ax_type .EQ. pcdf_sub_span ) THEN
               attname = 'point_spacing' 
               IF (varid .GT. 0) THEN
-                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname, 
+                 CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, 
      .                  attid, status)
-                 IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+                 IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .               attid, attname, attype, attlen, attoutflag, istat )
               ELSE 
                  attoutflag = 1
@@ -508,6 +522,7 @@
      .             'uneven', cdfstat )
            ENDIF
         ENDIF
+        ENDIF  ! got_spacing
 
 * set up for deferred writing of coordinate values (12/00)
 	CALL CD_DEFER_COORD_WRITE(axid, grid, idim, lo, hi,
@@ -521,9 +536,9 @@
 
            attname = 'axis' 
            IF (varid .GT. 0) THEN
-              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid,
+              CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid,
      .                  status)
-              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid,
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid,
      .             attid, attname, attype, attlen, attoutflag, istat )
            ELSE
               attoutflag = 1
@@ -575,8 +590,8 @@
 
          attname = 'bounds' 
          IF (varid .GT. 0) THEN
-            CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
-            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+            CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
+            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .              attid, attname, attype, attlen, attoutflag, istat)
          ELSE
             attoutflag = 1
@@ -612,8 +627,8 @@
          edgid = NCVDEF(cdfid, name(:elen), NCDOUBLE, 1, dimid, cdfstat)
          attname = 'edges' 
          IF (varid .GT. 0) THEN
-            CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
-            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+            CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
+            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .              attid, attname, attype, attlen, attoutflag, istat )
          ELSE
             attoutflag = 1
@@ -633,6 +648,7 @@
 
 * successful completion
  1000 status = merr_ok
+
       RETURN
 
 * error messages

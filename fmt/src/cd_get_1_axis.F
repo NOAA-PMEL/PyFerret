@@ -145,6 +145,7 @@
 * V601 *acm* 9/19  Fix bug 1434; check bounds for regularly-spaced axes 
 * V602 *acm* 1/07  Fix bug 1483; checking for irregularly spaced axis failed if the delta-coordinates
 *                  on the axis varied by orders of magnitude.
+* V602  2/07 *acm* Check upper and lowercase versions of axis (coordinate_axis) attribute
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -548,14 +549,19 @@ c         ENDIF
       got_it = NC_GET_ATTRIB(dset, ivar, 'axis',
      .             do_warn, vname(:vlen), maxlen, attlen, 
      .             attoutflag, axis_dir, val)
+      istat = STR_UPCASE( axis_dir, axis_dir )
       IF (got_it) THEN
-         IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L') THEN 
+         IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L' .OR.
+     .             axis_dir.EQ.'t' .or. axis_dir.eq.'l') THEN 
             line_direction(iaxis) = 'TI'  ! time
-          ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I') THEN
+          ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I' .OR.
+     .             axis_dir.eq.'x' .or. axis_dir.eq.'i') THEN
             line_direction(iaxis) = 'XX'
-         ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J') THEN
+         ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J' .OR.
+     .            axis_dir.eq.'y' .or. axis_dir.eq.'j') THEN
             line_direction(iaxis) = 'YY'
-         ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K') THEN
+         ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K' .OR.
+     .            axis_dir.eq.'z' .or. axis_dir.eq.'k') THEN
             line_direction(iaxis) = 'DU'
          ENDIF
       ELSE

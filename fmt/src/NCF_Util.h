@@ -120,7 +120,7 @@ typedef struct {			/* attribute */
 	int outtype;
 	int attid;
 	int outflag;        /* 1 to write this attr, 0 to not write */
-	size_t len;
+	int len;
 	void *inval;        /* for inputting attributes of all types*/
 	char *string;       /* for text attributes (type = NC_CHAR) */
 	double *vals;       /* for numeric attributes of all types */

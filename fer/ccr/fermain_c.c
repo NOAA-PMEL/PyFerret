@@ -130,6 +130,7 @@
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
+/* *acm   2/07 v602 - add check for overflow on large memory requests (as in xeq_set.F, bug 1438)*/
 #include <wchar.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -210,6 +211,7 @@ main (int oargc, char *oargv[])
 
 
   /* decode the command line options: "-memsize", and "-unmapped" */
+  rmem_size = mem_size/1.E6;
   while (i<argc) {
     if (strcmp(argv[i],"-memsize")==0){
       if (++i==argc) help_text();
@@ -331,6 +333,11 @@ main (int oargc, char *oargv[])
     printf("Unable to allocate the requested %f Mwords of memory.\n",mem_size/1.E6);
     exit(0);
   }
+  if (mem_blk_size < 0)
+  { printf("internal overflow expressing %g Mwords as words %g \n",rmem_size,mem_size);
+    printf("Unable to allocate the requested %g Mwords of memory.\n",rmem_size);
+    exit(0);
+  }
  
   /* initial allocation of PPLUS memory size pointer*/
   pplmem_size = 0.5* 1.E6;  
@@ -416,8 +423,8 @@ static void command_line_run(float **memory){
       if ( ipath ) {
 	  strcat( init_command, "; GO \"" ); 
 	  strcat( init_command, script_file );
-	  strcat( init_command, "\"" ); 
-	  strcat( init_command, "\ "); 
+	  strcat( init_command, "\"" );
+	  strcat( init_command, "\ ");
 	  } else {
 	  strcat( init_command, "; GO " ); 
 	  strcat( init_command, script_file );

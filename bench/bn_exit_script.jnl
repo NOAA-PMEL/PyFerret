@@ -22,8 +22,10 @@ go exit_script_twolev
 go exit_script_twolev
 
 ! EXIT/SCRIPT from a script within a loop.
-! Should do all the repeats of the loop but not the SAY SCRIPT 
-! at each iteration of the loop
+! Should see output from 3 repeats of the loop but not
+! the SAY SCRIPT at each iteration of the repeat loop
 
+cancel mode verify
 REPEAT/I=1:3 (GO exit_script_inloop `i`; SAY loop)
 
+set mode/last verify

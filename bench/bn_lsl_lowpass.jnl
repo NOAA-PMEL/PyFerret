@@ -1,0 +1,13 @@
+! bn_lsl_lowpass.jnl
+! Test lsl_lowpass, now included as a statically-linked external function
+
+use gtsa056_2
+let my_temp = temp[x=180,y=0,k=1]
+let f_filtered = lsl_lowpass(my_temp, 40,10)
+! plot my_temp
+! plot/over f_filtered
+
+! List the output so its not just a graphical test; 
+! Compute based on the whole T region, but just list a portion.
+LIST/L=10:20 MY_TEMP[L=1:110], F_FILTERED[L=1:110]
+

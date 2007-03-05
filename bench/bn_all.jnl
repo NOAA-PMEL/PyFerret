@@ -529,6 +529,9 @@ GO bn_reset
 GO bn_set_strides.jnl
 
 GO bn_reset
+GO bn_lsl_lowpass.jnl
+
+GO bn_reset
 GO bn602_bug_fixes
 
 ! version 2.3 requires exit/command *sh* 3/92

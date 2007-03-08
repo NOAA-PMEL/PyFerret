@@ -15,7 +15,6 @@
 # 18may94 *kob* removed the "ls -1" and made it "ls" because of lack of "-1"
 #		option on SGI's
 # 30may97 *kob* Linux port - test is in /usr/bin/test
-# 30Jan07 *acm* change /usr/ucb/more to just more.
 
 
 #check for proper amount of args.  One arg is the filename or template. 
@@ -133,9 +132,9 @@ else if ( $num_args == 2 ) then
 			if ($status == 0) then    
       			   echo "* * * * * * * * in $path"
 			   if ($tag) then
-      			   	more $argv[2]
+      			   	/bin/more $argv[2]
 			   else	
-				more *$argv[2]*.spk
+				/bin/more *$argv[2]*.spk
 			   endif
       			   set found = 1
       		 	   echo " " 

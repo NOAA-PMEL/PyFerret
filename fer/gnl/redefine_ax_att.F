@@ -40,6 +40,8 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP
 * 11/2006 
+* V602  3/07 *acm* Also look for the axis in dataset -2, the pseudo-dataset 
+*                  containing information on user-defined axes
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -77,10 +79,16 @@
       maxlen = 128
 
 c... loop over datasets
+c    Dataset -2 is the pseudo-dataset containing user-defined axes.
 c    see if name exists as an axis name.
 
-      DO 100 dset = 1, maxdsets
-         IF ( ds_name(dset) .EQ. char_init256) GOTO 100
+      DO 100 dset = -2, maxdsets
+         IF (dset .EQ. -1) GOTO 100
+         IF (dset .EQ.  0) GOTO 100
+
+         IF (dset .GT. 0) THEN
+            IF ( ds_name(dset) .EQ. char_init256) GOTO 100
+         ENDIF
 
          CALL CD_GET_VAR_ID (dset, name, varid, status)
 

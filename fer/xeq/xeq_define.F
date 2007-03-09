@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_DEFINE( memory )
+ 	SUBROUTINE XEQ_DEFINE( memory )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -1401,7 +1401,6 @@ C /units=months  is 1/12 of the length of the year
            attname = 'point_spacing'
            attype = NCCHAR
            attoutflag = 1
-           IF (dir .EQ. 4) attoutflag = 0
            IF ( line_regular(iline) ) THEN
               attlen = 4
               CALL CD_PUT_NEW_ATTR (dset_to_add, varid, attname, 
@@ -1431,9 +1430,25 @@ C /units=months  is 1/12 of the length of the year
 * Set the axis direction
 
            dir = 0
-           CALL CD_SET_ATT_AXDIR (dset, varid, dir, status)
+           IF (axdir .EQ. 'X') dir = 1
+           IF (axdir .EQ. 'Y') dir = 2
+           IF (axdir .EQ. 'Z') dir = 3
+           IF (axdir .EQ. 'T') dir = 4
+           CALL CD_SET_ATT_AXDIR (dset_to_add, varid, dir, status)
 
-* Do BOUNDS here?
+* Bounds on irregular axis output by default.
+
+           IF (irreg) THEN
+              attname = 'bounds'
+              attype = NCCHAR
+              attoutflag = 1
+
+              attlen = TM_LENSTR1(buff3)
+              attlen = attlen + 5
+              buff2 = buff3(:slen)//'_bnds'
+              CALL CD_PUT_NEW_ATTR (dset_to_add, varid, attname, 
+     .           attype, attlen, attoutflag, buff2, dummy, status) 
+           ENDIF
 
 * Modulo attribute
 
@@ -1472,9 +1487,13 @@ C /units=months  is 1/12 of the length of the year
                  attname = 'calendar'
                  attype = NCCHAR
                  attoutflag = 1
-                 attlen = TM_LENSTR1(new_att_calendar)
+                 attlen = TM_LENSTR1(cal_name)
+
+* By default if an axis is on the standard Gregorian calendar we do
+* not write out the calendar attribute
+                 IF (cal_id .eq. GREGORIAN) attoutflag = 0
                  CALL CD_PUT_NEW_ATTR (dset_to_add, varid, attname, 
-     .             attype, attlen, attoutflag, new_att_calendar, 
+     .             attype, attlen, attoutflag, cal_name, 
      .             dummy, status) 
 
                  attname = 'time_origin'

@@ -1861,10 +1861,10 @@ int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar
   if ( status != LIST_OK ) {
     newvar = TRUE;
   }
+  nc_ptr->nvars = nc_ptr->nvars + 1;
 
   if (newvar == TRUE)
   {
-  nc_ptr->nvars = nc_ptr->nvars + 1;
   }
   else
    /* If this variable is not new, remove the old definition of it
@@ -1874,6 +1874,24 @@ int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar
   list_remove_curr(vlist);
 
   }
+  
+/*
+   * initialize the variable definition.
+   */
+       strcpy(var.name, " ");
+
+       var.attrs_list_initialized = FALSE;
+
+       var.type = NC_CHAR;
+       var.outtype = NC_CHAR;
+       var.varid = 0;
+	   var.natts = 0;
+       var.has_fillval = FALSE;
+       var.fillval = NC_FILL_FLOAT;
+	   var.all_outflag = 1;
+	   var.is_axis = FALSE;
+	   var.axis_dir = 0;
+
 
    /*
     * Set variable structure and insert the new variable at the end of the 

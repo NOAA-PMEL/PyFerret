@@ -122,7 +122,7 @@
       INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, varid,
      .        llen, vartype, nvdims, nvatts, iatt, attype, attlen,
      .        attoutflag, istat, maxlen, vdims(8), newid, all_outflag,
-     .        attid,  dset_num
+     .        attid, dset_num
       REAL vals(10)
 
 !      LOGICAL condensed
@@ -255,7 +255,7 @@
 * we still dont have its info. Look in the pseudo-dataset of user-defined
 * coordinate variables.
 
-      IF (varid .EQ. 0 .AND. dset_num .EQ. -1) THEN
+      IF (varid .EQ. 0 .AND. dset_num .EQ. -1 .AND. .NOT.abstract) THEN
          dset_num = -2
          CALL CD_GET_VAR_ID (dset_num, name_in, varid, status)
       ENDIF
@@ -284,13 +284,21 @@
      .               do_warn, name_in, maxlen, attlen, attoutflag, 
      .               buff, vals)
 
-            IF (attype .EQ. NCCHAR .AND. attoutflag .EQ. 1) THEN
-               llen = TM_LENSTR1(buff)
-               CALL CD_WRITE_ATTRIB (cdfid, name(:nlen), attname,
+* Write the attribute, but skip this for the point-spacing attr on record axis.
+
+            IF ( recdim  .AND. 
+     .           MATCH_NAME (attname,  TM_LENSTR1(attname), 
+     .           'POINT_SPACING', 13) ) THEN
+               got_spacing = .TRUE.
+            ELSE
+               IF (attype .EQ. NCCHAR .AND. attoutflag .EQ. 1) THEN
+                  llen = TM_LENSTR1(buff)
+                  CALL CD_WRITE_ATTRIB (cdfid, name(:nlen), attname,
      .                               buff(:llen), .FALSE., status )
-            ELSE IF (attoutflag .EQ. 1) THEN
-               CALL CD_WRITE_ATTVAL(cdfid, name(:nlen), attname,
-     .                              vals, attlen, attype, status )
+               ELSE IF (attoutflag .EQ. 1) THEN
+                  CALL CD_WRITE_ATTVAL(cdfid, name(:nlen), attname,
+     .                                 vals, attlen, attype, status )
+               ENDIF
             ENDIF
 
             slen = TM_LENSTR1(attname)
@@ -319,16 +327,20 @@
  200     CONTINUE
       ENDIF
 
-* write modulo, point_spacing etc as attributes if they exist in Ferret 
+* write modulo, t0, etc as attributes if they exist in Ferret 
 * variables line_modulo etc. This is consistent with previous Ferret behavior.
 
       attoutflag = 1  
 
+* May want to add since t0 
+
+      IF ( line_direction(iaxis) .EQ. 'TI' ) THEN
+         cal_id = TM_GET_CALENDAR_ID (line_cal_name(iaxis))
+         IF (TM_DATE_OK( line_T0(iaxis),cal_id ) ) got_units = .FALSE.
+      ENDIF
+
       IF ( line_units(iaxis) .NE. ' ' .AND. (.NOT.got_units) ) THEN
 	 units = line_units(iaxis)	 
-
-         IF ( line_direction(iaxis) .EQ. 'TI') 
-     .        cal_id = TM_GET_CALENDAR_ID (line_cal_name(iaxis))
 
 	 IF ( line_direction(iaxis) .EQ. 'WE'
      .	.AND. line_unit_code(iaxis) .EQ. pun_degrees ) THEN
@@ -417,7 +429,7 @@
       ENDIF
 
 
-      IF ( line_modulo(iaxis) .AND. (.NOT.got_calendar) ) THEN
+      IF ( line_modulo(iaxis) .AND. (.NOT.got_modulo) ) THEN
 	 IF (line_modulo_len(iaxis) .EQ. 0.0D0 ) THEN
            attname = 'modulo' 
            IF (varid .GT. 0) THEN
@@ -443,7 +455,9 @@
      .		       line_modulo_len(iaxis), cdfstat )
 	 ENDIF
 
-      ELSE IF (got_modulo .AND. varid .GT. 0) THEN  !user wants to write modulo=false to the file
+! Check if user want to write modulo=false to the file
+      ELSE IF (got_modulo .AND. (varid .GT. 0) .AND.
+     .         .NOT.line_modulo(iaxis)  ) THEN 
             attname = 'modulo'
             CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
             IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
@@ -459,7 +473,6 @@
                CALL CD_WRITE_ATTRIB(cdfid, name(:nlen), attname,
      .                               'false', .FALSE., status )
             ELSE IF (attoutflag .EQ. 1) THEN
-
                CALL CD_WRITE_ATTVAL(cdfid, name(:nlen), attname,
      .                              vals, attlen, attype, status )
             ENDIF

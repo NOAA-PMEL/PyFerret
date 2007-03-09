@@ -311,6 +311,19 @@ C Check that sample x and y are simple lists of points - same length
          GO TO 999
       ENDIF
 
+* Initialize result
+
+      DO 104 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+         DO 103 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+            DO 102 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+               DO 101 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+
+                     result(i,j,k,l) = bad_flag_result
+
+ 101           CONTINUE
+ 102        CONTINUE
+ 103     CONTINUE
+ 104  CONTINUE
 
 *  For each (xpt,ypt) pair, search the data arrays arg2,arg3
 *  for the nearest higher (x,y) lat-lon coordinates.  Interpolate 

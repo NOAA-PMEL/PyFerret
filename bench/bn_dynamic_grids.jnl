@@ -347,5 +347,6 @@ list/l=1:3 T[t=15-JAN-1982:11-FEB-1982:`24*2`]			! pseudo-var
 
 cancel var/all
 show grid/dyn
+set axis/modulo psxt
 
 set mode/last diag

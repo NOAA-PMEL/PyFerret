@@ -286,6 +286,14 @@
 
 * Write the attribute, but skip this for the point-spacing attr on record axis.
 
+            IF ( MATCH_NAME (attname,  TM_LENSTR1(attname), 
+     .           'MODULO', 6) ) THEN
+               IF (vals(1) .EQ. 0.) THEN                  ! Write line_modulo_len 
+                  vals(1) = line_modulo_len(iaxis)
+                  IF (attoutflag .EQ. 1) attype = NCFLOAT
+               ENDIF
+            ENDIF
+
             IF ( recdim  .AND. 
      .           MATCH_NAME (attname,  TM_LENSTR1(attname), 
      .           'POINT_SPACING', 13) ) THEN

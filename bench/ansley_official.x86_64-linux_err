@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ../fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 31241411 Jan 31 11:01 ../fer/ferretdods_gui
-Using external functions from ../external_functions/ext_func_v602/
+Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 41871278 Mar 12 10:16 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fresh checkout and build under x86_64-linux, Ferret v6.02
+Note: final fixes for control of attributes of axes; fix bug 1304: repeat loop containing a script and exit/script inside of script called within a loop; lsl_lowpass test
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/v602/FERRET/bench
+PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_v602/
-Beginning at Wed Jan 31 11:46:31 PST 2007
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
+Beginning at Mon Mar 12 10:18:51 PDT 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -190,6 +190,7 @@ shade/nolabel sst, x_page[j=1:12], y_page
  **ERROR: value out of legal range: Y coordinates
           missing value where val is needed
 shade/nolabel sst, x_page, asin(y_page)
+gsetviewport()   52 Viewport is not within the Normalized Device Coordinate unit square
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
  **ERROR: command syntax: illegal name: TEST*
@@ -636,7 +637,7 @@ plot/i=100/k=1 temp[x=122.5W]
 set axis/stride=2/offset=1 (AX055)
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
- **ERROR: invalid command: offset should be less than stride value
+ **ERROR: invalid command: offset must be less than stride value
 set axis/stride=2/offset=4 COADSX
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
@@ -704,4 +705,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-Ended at Wed Jan 31 11:47:50 PST 2007
+Ended at Mon Mar 12 10:20:05 PDT 2007

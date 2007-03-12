@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     43850432 Jan 24 11:29 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     48179927 Mar 12 09:55 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: metafile batch mode, including new tests of this feature
+Note: final fixes for control of attributes of axes; fix bug 1304: repeat loop containing a script and exit/script inside of script called within a loop; lsl_lowpass test
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Thu Jan 25 12:09:55 PST 2007
+Beginning at Mon Mar 12 09:57:53 PDT 2007
  	NOAA/PMEL TMAP
  	FERRET v6.02  
- 	Linux(g77) 2.4.21-32 - 01/24/07
- 	25-Jan-07 12:09     
+ 	Linux(g77) 2.4.21-32 - 03/12/07
+ 	12-Mar-07 09:57     
 
 yes? !bn500_all_shell
 yes? 
@@ -10310,8 +10310,8 @@ PPL$YPIXEL = "430"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.02"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = "25-Jan-07"
-SESSION_TIME = "12:09"
+SESSION_DATE = "12-Mar-07"
+SESSION_TIME = "09:57"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10329,8 +10329,8 @@ PPL$YPIXEL = "430"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.02"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = "25-Jan-07"
-SESSION_TIME = "12:09"
+SESSION_DATE = "12-Mar-07"
+SESSION_TIME = "09:57"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10338,8 +10338,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "25-Jan-07"
-SESSION_TIME = "12:09"
+SESSION_DATE = "12-Mar-07"
+SESSION_TIME = "09:57"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10349,13 +10349,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "25-Jan-07"
-SESSION_TIME = "12:09"
+SESSION_DATE = "12-Mar-07"
+SESSION_TIME = "09:57"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "25-Jan-07"
-SESSION_TIME = "12:09"
+SESSION_DATE = "12-Mar-07"
+SESSION_TIME = "09:57"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10389,7 +10389,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.02"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Jan 25 2007 12:10:11 "
+LAB3 = "Mar 12 2007 09:58:11 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10488,8 +10488,8 @@ PPL$YPIXEL = "430"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.02"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = "25-Jan-07"
-SESSION_TIME = "12:09"
+SESSION_DATE = "12-Mar-07"
+SESSION_TIME = "09:57"
  
  
 GO bn_reset
@@ -13889,6 +13889,7 @@ Dynamic grids:
     no implicit grids
 Dynamic axes:
     no implicit axes
+set axis/modulo psxt
  
 set mode/last diag
  
@@ -18425,10 +18426,10 @@ set window/clear
 * abstract XY contours
 set grid abstract
 set view v11
-contour/x=1:100/y=101:200/lev=(-1,1,.5) sin(x/6)*cos(y/9)
-set view-rw-rw-r--    1 ansley   tmap        23228 Jan 25 12:10 bench.mgm
--rw-rw-r--    1 ansley   tmap       415696 Jan 25 12:10 bench.mgm
- v12
+contour/x=1:100/y=101:200/lev=(-1,1,.5) sin(x-rw-rw-r--    1 ansley   tmap        23221 Mar 12 09:58 bench.mgm
+-rw-rw-r--    1 ansley   tmap       415573 Mar 12 09:58 bench.mgm
+/6)*cos(y/9)
+set view v12
 contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200 sin(x/6)*cos(y/9)
 set view v13
 contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:150 sin(x/6)*cos(y/9)
@@ -25658,9 +25659,9 @@ list/l=1 out
              SUBSET   : 5 by 12 points (X-Z)
              Y        : 0.5 to 1.5
              T        : 1951
-                1        2        3        4   abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Thu Jan 25 12:11:08 PST 2007
-     5     
+                1        2abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
+Mon Mar 12 09:59:08 PDT 2007
+        3        4        5     
                 1        2        3        4        5
  1    /  1:  438289.  438290.  438291.  438292.  438293.
  2    /  2:  439019.  439020.  439021.  439022.  439023.
@@ -31978,7 +31979,7 @@ sh data
 sh grid ndata
     GRID GSH1
  name       axis              # pts   start                end
- PSXT191_100 LONGITUDE         10mr   139.5W               130.5W
+ PSXT91_100 LONGITUDE          10mr   139.5W               130.5W
  PSYT39_51 LATITUDE            13 i   2.166S               1.833N
  PSZT1_1   DEPTH (m)            1 r-  5                    5
  TWEEKS1   TIME                21 r   20-AUG-1982 00:00    07-JAN-1983 00:00
@@ -35129,14 +35130,14 @@ go mp_aspect
  
 let yy =  if abs(y[gt=sst]) le 20 then 10 else  (100-abs(y[gt=sst]+1))/ 10.
  
-vec/noax/xskip=6/yskip=6/len=20/title="View From Space"  sst*0,(sst*0+yy)*mp_mask, xcol1,col2,col3,col4,col5
+vec/noax/xskip=6/yskip=6/len=20/title="View From Space"  sst*0,col1,col2,col3,col4,col5
 one,,1.1,24S,130E,,1e1,"word 1"
     two,,2.2,24N,130W,2S,,"word 2"
 three,,3.3,24,130,3N,3e-2," wd 3 "
 
 five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
 extra line
-_page,y_page
+(sst*0+yy)*mp_mask, x_page,y_page
 vec/over/xskip=6/yskip=6/len=20 (sst*0+yy)*mp_mask,sst*0, x_page,y_page
 vec/over/xskip=6/yskip=6/color=blue/len=20  (sst*0+yy)*mp_mask,(sst*0+yy)*mp_mask, x_page,y_page
  
@@ -35353,12 +35354,12 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 6   / 6: "extra line" " " " "   " "   " "    " "  " "    " "      " "  " " 
  
 ! insist that all columns be treated as string and name the columns
-file/format=delim/skip=1/type=textcol1,col2,col3,col4,col5
+file/format=dcol1,col2,col3,col4,col5
 12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
 12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
 12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
 12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-/var=a1,a2,a3,a4,a5 bn_delimited_read_1.dat
+elim/skip=1/type=text/var=a1,a2,a3,a4,a5 bn_delimited_read_1.dat
 show data
      currently SET data sets:
     1> ./bn_delimited_read_1.dat  (default)
@@ -35560,11 +35561,11 @@ T0 = 1-JAN-1900
 columns/type=date bn_delimited_read_date_time.dat
 list v1,v2,v3,v4,v5,v6,v7,v8
              DATA SET: ./bn_delimited_read_date_time.dat
-             X: 0.5 to 12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+  12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
 12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
 12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
 12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-4.5
+           X: 0.5 to 4.5
  Column  1: V1 is V1 (days)(Julian days since 1-Jan-1900)
  Column  2: V2 is V2 (days)(Julian days since 1-Jan-1900)
  Column  3: V3 is V3 (days)(Julian days since 1-Jan-1900)
@@ -37745,7 +37746,7 @@ load tt
  
 show axis/all
  name       axis              # pts   start                end
- PSXT      LONGITUDE          160 r   130.5E               70.5W
+ PSXT      LONGITUDE          160mr   130.5E               70.5W
  PSXU      LONGITUDE          160mr   131E                 70W
  PSYT      LATITUDE           100 i   28.836S              48.567N
  PSYU      LATITUDE           100 i   27.672S              50N
@@ -37924,7 +37925,7 @@ cancel axis month_irreg
  
 show axis/all
  name       axis              # pts   start                end
- PSXT      LONGITUDE          160 r   130.5E               70.5W
+ PSXT      LONGITUDE          160mr   130.5E               70.5W
  PSXU      LONGITUDE          160mr   131E                 70W
  PSYT      LATITUDE           100 i   28.836S              48.567N
  PSYU      LATITUDE           100 i   27.672S              50N
@@ -38236,7 +38237,7 @@ cancel axis/all
  *** NOTE: Axis is in use by grid GG3
 show axis/all
  name       axis              # pts   start                end
- PSXT      LONGITUDE          160 r   130.5E               70.5W
+ PSXT      LONGITUDE          160mr   130.5E               70.5W
  PSXU      LONGITUDE          160mr   131E                 70W
  PSYT      LATITUDE           100 i   28.836S              48.567N
  PSYU      LATITUDE           100 i   27.672S              50N
@@ -38449,7 +38450,7 @@ cancel axis/all
  
 show axis/all
  name       axis              # pts   start                end
- PSXT      LONGITUDE          160 r   130.5E               70.5W
+ PSXT      LONGITUDE          160mr   130.5E               70.5W
  PSXU      LONGITUDE          160mr   131E                 70W
  PSYT      LATITUDE           100 i   28.836S              48.567N
  PSYU      LATITUDE           100 i   27.672S              50N
@@ -46449,7 +46450,7 @@ let lstr2 = STRLEN("($alist)")
 let str3a = STRLEN("($source_list)")
  !-> DEFINE VARIABLE str3a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
 list str3a
-             VARIABLE : STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+             VARIABLE : STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+1             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
              GEOMETRY: XY 
@@ -46500,7 +46501,7 @@ DATA:
 224.60300
 224.60350
 224.60400
-.76*b19+14.7
+4.76*b18+14.76*a19+14.76*b19+14.7
           247.000
  
 !let a = 12; list a
@@ -46954,7 +46955,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASJan 25 2007 12:12:26
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASMar 12 2007 10:00:22
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47355,6 +47356,7 @@ GO bn_exit_script.jnl
 ! bn_exit_script.jnl
 ! 5/2005 ACM
 ! tests of EXIT/SCRIPT command, in combination with IF and REPEAT
+! 3/2007 add a check for exit/script within a loop (fixes for bug 1304)
  
 ! Simple EXIT/SCRIPT command in a script
 go exit_script_1
@@ -47408,6 +47410,34 @@ say "returned from exit_script_if"
 returned from exit_script_if
 say "here is the next line"
 here is the next line
+ 
+! EXIT/SCRIPT two levels down
+go exit_script_twolev
+! test exit/script called another level down
+ 
+go exit_script_if
+! test exit/script from an IF clause
+ 
+let a = 1
+if `a lt 10` then exit/script
+ !-> if 1 then exit/script
+ 
+say "returned from exit_script_if"
+returned from exit_script_if
+say "here is the next line"
+here is the next line
+ 
+! EXIT/SCRIPT from a script within a loop.
+! Should see output from 3 repeats of the loop but not
+! the SAY SCRIPT at each iteration of the repeat loop
+ 
+cancel mode verify
+1
+loop
+2
+loop
+3
+loop
  
 GO bn_reset
 cancel mode verify
@@ -48372,7 +48402,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "25-Jan-07:12:09"
+WIN_TITLE = "12-Mar-07:09:57"
  
 set win/title="set the title"
 sho sym win_title
@@ -48390,11 +48420,11 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($sessino_date):($session_time)"
- !-> set win/title=" :12:09"
+ !-> set win/title=" :09:57"
 set win/title="($session_date):($session_time)"
- !-> set win/title="25-Jan-07:12:09"
+ !-> set win/title="12-Mar-07:09:57"
 sh sym win_title
-WIN_TITLE = "25-Jan-07:12:09"
+WIN_TITLE = "12-Mar-07:09:57"
  
  
 GO bn_reset
@@ -49767,10 +49797,10 @@ sh att/all temp
 ! the attribute, behaving like DEFINE AXIS...)
  
 def att temp.pp = {1.5, 1.9, 3.45, 7}
- *** NOTE: Changing the value of attribute
- *** NOTE: Changing the length  of attribute
+ *** NOTE: Changing the value of attribute temp.pp
+ *** NOTE: Changing the length  of attribute temp.pp
 def att temp.some_text = "some different text"
- *** NOTE: Changing the value of attribute
+ *** NOTE: Changing the value of attribute temp.some_text
 sh att temp.pp
      attributes for dataset: ./ocean_atlas_temp.cdf
  TEMP.pp = 1.5, 1.9, 3.45, 7
@@ -49812,16 +49842,16 @@ sh att/all temp
  TEMP.history = From ocean_atlas_monthly 
  TEMP.units = Deg C 
 set att temp.long_name = "set title via SET ATT temp.longname"
- *** NOTE: Changing the value of attribute
+ *** NOTE: Changing the value of attribute temp.long_name
 set att temp.units = "Centigrade"
- *** NOTE: Changing the value of attribute
+ *** NOTE: Changing the value of attribute temp.units
 plot/y=0/l=1 temp
  
 ! two settings of the missing value change both the missing and bad flags
 set att temp.missing_value = 12
- *** NOTE: Changing the value of attribute
+ *** NOTE: Changing the value of attribute temp.missing_value
 set att temp.missing_value = 12
- *** NOTE: Changing the value of attribute
+ *** NOTE: Changing the value of attribute temp.missing_value
 shade/L=2 temp
  
 !-----
@@ -49881,7 +49911,7 @@ use gt4d011
 set view left; shade/y=0/L=1 temp
 set att (`temp,return=zaxis`).positive="up"
  !-> set att (PSZT1).positive="up"
- *** NOTE: Changing the value of attribute
+ *** NOTE: Changing the value of attribute (PSZT1).positive
 set view right; shade/y=0/L=1 temp
 can data gt4d011
  
@@ -49890,15 +49920,15 @@ sho att (coadsx).modulo
      attributes for dataset: ./coads_climatology.cdf
  (COADSX).modulo =   
 set att (coadsx).modulo=360
- *** NOTE: Changing the type of attribute
- *** NOTE: Changing the value of attribute
+ *** NOTE: Changing the type of attribute (coadsx).modulo
+ *** NOTE: Changing the value of attribute (coadsx).modulo
  
 ! Note here that Ferret is using the name TIME1 instead of TIME.
 ! axis still found and edited.
  
 set att (`sst,return=taxis`).time_origin="1-jan-1980"
  !-> set att (TIME4).time_origin="1-jan-1980"
- *** NOTE: Changing the value of attribute
+ *** NOTE: Changing the value of attribute (TIME4).time_origin
 list/x=130w/y=0 sst
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
@@ -50084,7 +50114,7 @@ set att temp.pp = {1.5, 1.9, 3.45, 7}
  *** NOTE: Changing the value of attribute temp.pp
  *** NOTE: Changing the length  of attribute temp.pp
 set att temp.some_text = "some different text"
- *** NOTE: Changing the value of attribute temp.some_t
+ *** NOTE: Changing the value of attribute temp.some_text
 sh att temp.pp
      attributes for dataset: ./ocean_atlas_temp.cdf
  TEMP.pp = 1.5, 1.9, 3.45, 7
@@ -50098,8 +50128,8 @@ set att temp.pp = "PP now has some text."
  *** NOTE: Changing the type of attribute temp.pp
  *** NOTE: Changing the value of attribute temp.pp
 set att temp.some_text = 745.
- *** NOTE: Changing the type of attribute temp.some_t
- *** NOTE: Changing the value of attribute temp.some_t
+ *** NOTE: Changing the type of attribute temp.some_text
+ *** NOTE: Changing the value of attribute temp.some_text
  
 ! Does changing the type of an attribute cause any trouble for a variable
 ! defined based on that variable?
@@ -50134,7 +50164,7 @@ sho att/all temp[d=1]
  
 set data ocean_atlas_temp
 set att temp.long_name = "Ocean Atlas Temperature"
- *** NOTE: Changing the value of attribute temp.long_n
+ *** NOTE: Changing the value of attribute temp.long_name
 set att temp.units = "Centigrade"
  *** NOTE: Changing the value of attribute temp.units
 shade/L=2 temp
@@ -50585,6 +50615,343 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ 
+ 
+!---!!!---
+! Manipulate attributes of axes from datasets
+! A user-defined variable is used to refer to the axes.
+ 
+use gt4d011.cdf
+let t2 = t*temp
+set att (`t2,return=xaxis`).units = "degrees"
+ !-> set att (PSXT1).units = "degrees"
+ *** NOTE: Changing the value of attribute (PSXT1).units
+sh att/all (`t2,return=xaxis`)
+ !-> sh att/all (PSXT1)
+     attributes for dataset: ./gt4d011.cdf
+ (PSXT1).units = degrees 
+ (PSXT1).point_spacing = even 
+ (PSXT1).orig_file_axname = PSXT 
+set att/output (`t2,return=xaxis`).point_spacing
+ !-> set att/output (PSXT1).point_spacing
+save/file=a.nc/clobber/L=1 t2
+ LISTing to file a.nc
+ 
+sp echo "bn_attributes.jnl --- 24 attributes of axes" >> all_ncdump.out
+ 
+sp ncdump -h a.nc >> all_ncdump.out
+define att/out (`t2,return=xaxis`).new_att = "something"
+ !-> define att/out (PSXT1).new_att = "something"
+save/file=a.nc/clobber/L=1 t2
+ LISTing to file a.nc
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+! A file variable is used to refer to the axes
+ 
+set att (`temp,return=xaxis`).units="meters"
+ !-> set att (PSXT1).units="meters"
+ *** NOTE: Changing the value of attribute (PSXT1).units
+set att (`temp,return=yaxis`).units="meters"
+ !-> set att (PSYT1).units="meters"
+ *** NOTE: Changing the value of attribute (PSYT1).units
+sho att/all (`temp,return=yaxis`)
+ !-> sho att/all (PSYT1)
+     attributes for dataset: ./gt4d011.cdf
+ (PSYT1).units = meters 
+ (PSYT1).point_spacing = uneven 
+ (PSYT1).edges = PSYTedges 
+ (PSYT1).orig_file_axname = PSYT 
+save/file=a.nc/clobber/L=1 t2
+ LISTing to file a.nc
+ 
+sp ncdump -h a.nc >> all_ncdump.out
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ 
+! User-defined axes and variables
+show axis/all
+ name       axis              # pts   start                end
+ PSXT      LONGITUDE          160mr   130.5E               70.5W
+ PSXU      LONGITUDE          160mr   131E                 70W
+ PSYT      Y (SECONDS)        100 i   -28.836              48.568
+ PSYU      LATITUDE           100 i   27.672S              50N
+ PSZT      Z (ZORRO)           27 i-  5                    3824
+ PSZW      DEPTH (m)           27 i-  10                   4149
+ ABSTRACT                 9999999 r   1                     9999999
+ EZ                         20480 r   1                    20480
+ XEVEN     X                   10 r   2                    20
+ XODD      X                   10 r   1                    19
+ YEVEN     Y                   10 r   2                    20
+ YODD      Y                   10 r   1                    19
+ ZEVEN     Z                   10 r   2                    20
+ ZODD      Z                   10 r   1                    19
+ TEVEN     TIME                10 r   03-JAN-1980 00:00    21-JAN-1980 00:00
+ TODD      TIME                10 r   02-JAN-1980 00:00    20-JAN-1980 00:00
+ XCOARSE   LONGITUDE           10mr   5.5E                 95.5E
+ XIR       LONGITUDE           10mi   0E                   0.1E
+ YCOARSE   LATITUDE            10 r   5.5N                 95.5N
+ XAX_SUBSPAN X                  6mr   41                   46
+ YFINE     LATITUDE             6 i   19.7N                19.702N
+ TAX48     TIME               367 r   01-JAN-1980 00:00    02-JAN-1982 00:00
+ XEZ1      X                    3 r   1                    3
+ XEZ2      X                    1 r   1                    1
+ YEZ       Y                    3 r   1                    3
+ ZEZ       Z                    2 r   1                    2
+ XEZ3      X                    8 r   1                    8
+ LON_FIELD_J_AXIS Y             2 r   50                   65
+ LAT_FIELD_I_AXIS X            17 r   50                   66
+ LAT_FIELD_J_AXIS Y             2 r   160                  200
+ XIRREG_SUBSPAN X               6mi   41                   46
+ LON_FIELD_I_AXIS X             7 r   160                  208
+ XIRREG    X                   10 i   1                    8281
+ TCENTURY  TIME             39448 r   01-JAN-1902 00:00    01-JAN-2010 00:00
+ TAX5DAY   TIME               159 r   15-JAN-1982 00:00    15-MAR-1984 00:00
+ XAX10     LONGITUDE           19mr   120E                 60W
+ TAX_SUBSPAN TIME               5mr   16-JAN 00:00         15-MAY 00:00
+ TIRREG_SUBSPAN TIME            5mi   16-JAN 12:00         15-MAY 05:57
+ T1980S    TIME               120 r   15-JAN-1981 00:00    15-DEC-1990 00:00
+ XTEST     X                   21 r   -10                  10
+ YTEST     Y                   21 r   -10                  10
+ X1        X                    6 r   1                    6
+ ZIRR      DEPTH (m)            4 i-  0                    70
+ X5        X                    5 r   1                    5
+ TAX1      TIME              1188 r   16-JAN 00:00         16-DEC-0099 00:01
+ ZLOG      Z                   10 i   2.7183               22026
+ Z1        Z                    3 r   1                    3
+ Z2        Z                    2 r   1                    3
+ HOPE_MONTH TIME               11 r   16-JUL-1966 00:00    16-MAY-1967 08:51
+ DAYT      T                 4998 r   1                    4998
+ YQ        Y                   46 r   -90                  90
+ Y2        Y                    3 r   1                    5
+ X3        X                    3 r   1                    3
+ X4        X                    4 r   1                    4
+ XPROJ120  X                  120 r   -1                   1
+ YPROJ120  Y                  120 r   -1                   1
+ Y5        Y                    5 r   1                    5
+ Y10       Y                  201 r   0                    10
+ OBJ_YAX   Y                   46 r   1                    10
+ XAXJ      X                    1 r   1                    1
+ OBJ_XAX   X                   46 r   1                    10
+ 'COADSX.ILLEGAL' LONGITUD     21mr   21E                  61E
+ TIME1     T                    6 r   1                    6
+ TIME2     TIME                 3 i   16-JAN-1900 06:00    17-MAY-1900 23:56
+ DLOG      X                   10 i   0.00012341           1
+ TAX2      TIME              1188 r   16-JAN 00:00         16-DEC-0099 00:01
+ TT        TIME                 2 r   07-FEB-0599 00:00    07-FEB-0600 05:49
+ X_AX      X                    3 r   211                  216.2
+ TDAYS     TIME               733 r   01-JAN-1988 00:00    01-JAN-1990 00:00
+ XAXSHIFT  LONGITUDE          360mr   180E(-180)           179E
+ XFINE     LONGITUDE            5mi   155.1W(204.9)        155.1W(204.9)
+ XQ        X                   73 r   0                    360
+ XAX       X                    1 r   1                    1
+ ZAX       Z                    3 r   1                    3
+ TJUL      TIME                12 i   16-JAN-1997 12:00    16-DEC-1997 12:00
+ AAX       X                   20 r   1                    20
+ 'COADSY.ILLEGAL' LATITUDE     16 r   35N                  65N
+ TIME      T                    2 i   0.5                  2
+ YAX       Y                    2 r   1                    2
+ TNOLEAP   TIME              1826 r   01-JAN-2000 00:00    01-JAN-2005 00:00
+ TGREG     TIME              1828 r   01-JAN-2000 00:00    01-JAN-2005 00:00
+ TAX       T                    4 r   1                    4
+ ZAX2      Z                   13 i   10                   2849
+ Y4        Y                    4 r   0.1                  0.4
+ Z4        Z                    4 r   0.01                 0.04
+ T4        T                    4 r   0.001                0.004
+ XCHANNEL  X (KM)              11 r   -50                  50
+ YRISE     Y (KM)               7 r   -30                  30
+ ZLAYER    Z (LAYER)            6 r-  1                    11
+ TCAL      TIME                24 r   15-JAN-1951 00:00    15-DEC-1952 00:00
+ XTROP     LONGITUDE          151mr   130E                 80W
+ YTROP     LATITUDE            41 r   20S                  20N
+ Y1        Y                    4 r   1                    4
+ X2        X                    4 r   1                    7
+ JMONTHS   TIME                13mr   01-JAN 00:00         31-DEC 06:00
+ MONTHT    TIME                24 r   16-JAN-1949 00:00    17-DEC-1950 01:30
+ X10       X                  201 r   0                    10
+ TIME6     TIME                20 r   01-JAN-1990 00:00    20-JAN-1990 00:00
+ L                              3 r   8                    10
+ DAYT1     TIME                10 r   01-JAN-1990 00:00    10-JAN-1990 00:00
+ XAX1_4    X                    4 r   1                    4
+ YAX1_3    Y                    3 r   1                    3
+ ZAX1_2    Z                    2 r   1                    2
+ TAX1_1    T                    1 r   1                    1
+ XAX1_9    X                    9 r   1                    9
+ YAX1_8    Y                    8 r   1                    8
+ ZAX1_7    Z                    7 r   1                    7
+ TAX1_6    T                    6 r   1                    6
+ XAX1_40   X                   40 r   1                    40
+ YAX1_30   Y                   30 r   1                    30
+ ZAX1_20   Z                   20 r   1                    20
+ TAX1_10   T                   10 r   1                    10
+ XUNEVEN   X                   10 i   0netcdf a {
+dimensions:
+	XAXLEVITR1_160161_161 = 1 ;
+	YAXLEVITR1_9090_90 = 1 ;
+	ZAXLEVITR1_1 = 1 ;
+variables:
+	double XAXLEVITR1_160161_161(XAXLEVITR1_160161_161) ;
+		XAXLEVITR1_160161_161:units = "degrees_east" ;
+		XAXLEVITR1_160161_161:modulo = " " ;
+		XAXLEVITR1_160161_161:point_spacing = "even" ;
+		XAXLEVITR1_160161_161:new_att = "something" ;
+		XAXLEVITR1_160161_161:axis = "X" ;
+	double YAXLEVITR1_9090_90(YAXLEVITR1_9090_90) ;
+		YAXLEVITR1_9090_90:units = "degrees_north" ;
+		YAXLEVITR1_9090_90:point_spacing = "even" ;
+		YAXLEVITR1_9090_90:axis = "Y" ;
+	double ZAXLEVITR1_1(ZAXLEVITR1_1) ;
+		ZAXLEVITR1_1:units = "METERS" ;
+		ZAXLEVITR1_1:positive = "down" ;
+		ZAXLEVITR1_1:point_spacing = "even" ;
+		ZAXLEVITR1_1:axis = "Z" ;
+	float TWO(ZAXLEVITR1_1, YAXLEVITR1_9090_90, XAXLEVITR1_160161_161) ;
+		TWO:missing_value = -1.e+34f ;
+		TWO:_FillValue = -1.e+34f ;
+		TWO:long_name = "2*TEMP[Y=0:15,X=180:200]" ;
+		TWO:history = "From levitus_climatology" ;
+
+// global attributes:
+		:history = "FERRET V6.02   12-Mar-07" ;
+}
+                    1
+ YUNEVEN   Y                    8 i   0                    1.8062
+ ZAX1_6    Z                    6 r   1                    6
+ TAX1_4    T                    4 r   1                    4
+ XLON      LONGITUDE           40mr   141E                 180E
+ YLAT      LATITUDE            30 r   1N                   30N
+ TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00
+ TIME3     TIME                 2mr   16-JAN 06:00         15-FEB 16:29
+ MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
+ MONTH_REG TIME                12mr   16-JAN 06:00         16-DEC 01:20
+ SEASONAL_REG TIME              4mr   15-FEB 15:43         15-NOV 14:05
+ LON_TRUE  LONGITUDE            5mr   1.875W(-1.875)       13.125E
+ LON_MODERR (meters)            5 r   0                    15
+ LON_FALSE LONGITUDE            5 r   1.875W(-1.875)       13.125E
+ LON_MOD_NOUNITS                5mr   0                    15
+ LON_USUAL LONGITUDE            5mr   0E                   15E
+ TIME_TRUE T (days)             4mi   30                   150
+ TIME_MODERR T (meters)         4 i   30                   150
+ TIME_FALSE T (days)            4 r   120                  150
+ TIME_MOD_NOUNITS T             4mr   120                  150
+ TIME_USUAL T (days)            4mr   120                  150
+ (AX020)   LATITUDE           401 r   20S                  20N
+ XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
+ YAXLEVITR1_90 LATITUDE        90 r   89.5S                0.5S
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
+ TIME4     TIME                 3mr   16-JAN-1980 06:00    17-MAR-1980 02:58
+ TIME5     TIME                 2mr   16-MAY 23:56         16-JUN 10:25
+ COADSX    LONGITUDE          180mr   21E                  19E(379)
+ COADSY    LATITUDE            90 r   89S                  89N
+ 
+def axis/x=1:200:1  x2ax
+sh att/all (x2ax)
+     attributes for dataset:                                                                                                                                                                                                                                                                 
+ (X2AX).point_spacing = even 
+ (X2AX).axis = X 
+! SET AXIS command changes attributes
+set axis/modulo x2ax
+sh att/all (x2ax)
+     attributes for dataset:                                                                                                                                                                                                                                                                 
+ (X2AX).point_spacing = even 
+ (X2AX).axis = X 
+ (X2AX).modulo =   
+ 
+! DEFINE ATTRIBUTE command changes attributes
+define attribute (x2ax).units = "degrees_east"
+sh att/all (x2ax)
+     attributes for dataset:                                                                                                                                                                                                                                                                 
+ (X2AX).point_spacing = even 
+ (X2AX).axis = X 
+ (X2AX).modulo =   
+ (X2AX).units = degrees_east 
+ 
+! Define new attribute on an axis.
+! Save file var, and a user var defined from the file var
+ 
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ 
+use levitus_climatology
+define att/out (`temp,return=xaxis`).new_att = "something"
+ !-> define att/out (XAXLEVITR1_160).new_att = "something"
+sh dat/att
+     currently SET data sets:
+    1> ./levitus_climatology.cdf  (default)
+ VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
+--------------------------------------------------------------------------------
+  
+ .                      history             CHAR    24   T      FERRET V5.22    5-Apr-01
+  
+(XAXLEVITR1_160)        units               CHAR    12   T      degrees_east
+                        modulo              CHAR    1    T
+                        point_spacing       CHAR    4    T      even
+                        orig_file_axname    CHAR    14   F      XAXLEVITR1_160
+                        new_att             CHAR    9    T      something
+  
+(YAXLEVITR1_90)         units               CHAR    13   T      degrees_north
+                        point_spacing       CHAR    4    T      even
+                        orig_file_axname    CHAR    13   F      YAXLEVITR1_90
+  
+(ZAXLEVITR1_1)          units               CHAR    6    T      METERS
+                        positive            CHAR    4    T      down
+                        orig_file_axname    CHAR    12   F      ZAXLEVITR1_1
+  
+ TEMP                   missing_value       FLOAT   1    T      -1.E+10
+                        _FillValue          FLOAT   1    T      -1.E+10
+                        long_name           CHAR    11   T      TEMPERATURE
+                        history             CHAR    24   T      From levitus_climatology
+                        units               CHAR    5    T      DEG C
+  
+save/file=a.nc/clobber/y=0:5 temp
+ LISTing to file a.nc
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+let two = 2*temp[y=0:15,x=180:200]
+save/file=a.nc/clobber/y=0:5 two
+ LISTing to file a.nc
+sp ncdump -h a.nc >> all_ncdump.out
+sp ncdump -h a.nc
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ 
+! defining more axes with attributes
+ 
+show axis x2ax
+ name       axis              # pts   start                end
+ X2AX      X                  200mr   1                    200
+   Axis span (to cell edges) = 200 (modulo length = axis span)
+def axis/x=1:2:1/modulo=360 x2ax
+Replacing definition of axis X2AX
+def axis/y=1:3:1 y3ax
+def axis/z=1:4:1/depth z4ax
+def axis/t=1:2:1 t2ax
+let a = {"alpha","a2","a3","a4","a5","a6","a7","a8","a9","a10",\
+"bravo","b2","b3","b4","b5","b6","b7","b8","b9","b10",\
+"c1","c2","c3","c4","c5","c6","c7","c8","c9","c10",\
+"d1","d2","d3","d4","d5","d6","d7","d8","d9","d10",\
+"echo","e2","e3","e4","e5","e6","e7","e8"}
+let rvar = x[gx=x2ax] + y[gy=y3ax] + z[gz=z4ax] + t[gt=t2ax]
+ 
+let axy = reshape (a,rvar)
+ 
+show att/all (z4ax)
+     attributes for dataset:                                                                                                                                                                                                                                                                 
+ (Z4AX).point_spacing = even 
+ (Z4AX).axis = Z 
+ (Z4AX).positive = down 
+set att (z4ax).positive = "up"
+ *** NOTE: Changing the value of attribute (z4ax).positive
+ 
+sp echo "bn_attributes.jnl --- 25 attributes of  user-defined axes" >> all_ncdump.out
+save/clobber/file=string4d.nc axy
+ LISTing to file string4d.nc
+sp ncdump -h string4d.nc >> all_ncdump.out
  
 !=======
 ! 10/06 *acm* Remove tests of nco funcions: we dont want to require them to be installed
@@ -52397,7 +52764,7 @@ sho dat/att
  VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
 --------------------------------------------------------------------------------
   
- .                      history             CHAR    24   T      FERRET V6.02   25-Jan-07
+ .                      history             CHAR    24   T      FERRET V6.02   12-Mar-07
   
 (PSXT91_108)            units               CHAR    12   T      degrees_east
                         modulo              DOUBLE  1    T      360
@@ -52437,7 +52804,7 @@ sho dat/att
  VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
 --------------------------------------------------------------------------------
   
- .                      history             CHAR    24   T      FERRET V6.02   25-Jan-07
+ .                      history             CHAR    24   T      FERRET V6.02   12-Mar-07
   
 (PSXT91_108)            units               CHAR    12   T      degrees_east
                         modulo              DOUBLE  1    T      360
@@ -52760,7 +53127,7 @@ list sst[i=11:15,j=50,k=1,l=50]
  
 ! --- after cancel striding
 cancel axis/stride `sst,return=xaxis`
- !-> cancel axis/stride (AX054)
+ !-> cancel axis/stride (AX052)
 list sst[i=21:30,j=50,k=1,l=50]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
@@ -52844,12 +53211,12 @@ set axis/stride=7/offset=5 `sst,return=xaxis`
  !-> set axis/stride=7/offset=5 COADSX
  *** NOTE: Stride value not an integer factor of axis length: Axis loses modulo property
 show axis `sst,return=xaxis`
- !-> show axis (AX054)
+ !-> show axis (AX052)
  name       axis              # pts   start                end
- (AX054)   LONGITUDE           26 r   29E                  19E(379)
+ (AX052)   LONGITUDE           26 r   29E                  19E(379)
    Axis span (to cell edges) = 364
 cancel axis/stride `sst,return=xaxis`
- !-> cancel axis/stride (AX054)
+ !-> cancel axis/stride (AX052)
 cancel data/all
  
 ! --- 8.3 testing strided modulo axis
@@ -52858,7 +53225,7 @@ set axis/stride=2/offset=1 `sst,return=xaxis`
  !-> set axis/stride=2/offset=1 COADSX
 shade/x=-180:180/y=-30:70/L=2 sst
 cancel axis/stride `sst,return=xaxis`
- !-> cancel axis/stride (AX054)
+ !-> cancel axis/stride (AX052)
 cancel data/all
  
 !.............9. two datasets share the same grid
@@ -53104,6 +53471,44 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+GO bn_lsl_lowpass.jnl
+! bn_lsl_lowpass.jnl
+! Test lsl_lowpass, now included as a statically-linked external function
+ 
+use gtsa056_2
+let my_temp = temp[x=180,y=0,k=1]
+let f_filtered = lsl_lowpass(my_temp, 40,10)
+! plot my_temp
+! plot/over f_filtered
+ 
+! List the output so its not just a graphical test;
+! Compute based on the whole T region, but just list a portion.
+LIST/L=10:20 MY_TEMP[L=1:110], F_FILTERED[L=1:110]
+             DATA SET: ./gtsa056_2.cdf
+             TIME: FEB-1982 to MAR-1982
+             LONGITUDE: 179.5E
+             LATITUDE: 0.166S
+             DEPTH (m): 5
+ Column  1: MY_TEMP is TEMP[X=180,Y=0,K=1]
+ Column  2: F_FILTERED is LSL_LOWPASS(MY_TEMP, 40,10)
+                    MY_TEMP  F_FILTERED
+11-FEB-1982 23 / 10:   27.50   27.51
+15-FEB-1982 00 / 11:   27.47   27.48
+18-FEB-1982 01 / 12:   27.45   27.44
+21-FEB-1982 02 / 13:   27.41   27.42
+24-FEB-1982 03 / 14:   27.37   27.40
+27-FEB-1982 04 / 15:   27.35   27.39
+02-MAR-1982 05 / 16:   27.39   27.39
+05-MAR-1982 06 / 17:   27.43   27.40
+08-MAR-1982 07 / 18:   27.41   27.41
+11-MAR-1982 08 / 19:   27.41   27.42
+14-MAR-1982 09 / 20:   27.42   27.43
+ 
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 GO bn602_bug_fixes
 ! bn602_bug_fixes.jnl
 ! test various fixes that went into version 6.02
@@ -53243,12 +53648,115 @@ SHOW GRID/Z atmos
       49>  1100                  300       950
       50>  1400                  300       1250
  
+ 
+! err601_check_missing_3arg.jnl
+! see bug 1485, check on missing coordinates for 3-argument graphics
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err601_check_missing_3arg.jnl
+! err601_check_missing_3arg.jnl
+! see bug 1485: if missing coordinates in a curvilinear dataset, we should be
+! able to still plot other portions of the data. Check was too broad.
+ 
+! Create a dataset in curvilinear coordinates with a few missing coordinates.
+use tripolar_subset
+let lon = IF geolon_vert_t gt -276 then geolon_vert_t
+let lat = geolat_vert_t
+save/clobber/file=tripolar_missing_lon.nc lon, lat, ht
+ LISTing to file tripolar_missing_lon.nc
+can data/all
+can var/all
+ 
+! Use this data. If we just look at /I=50:100 the plot works ok
+use tripolar_missing_lon
+stat/i=50:100 lon
+ 
+             IF GEOLON_VERT_T GT -276 THEN GEOLON_VERT_T
+             LONGITUDE: 177E(-183) to 81W(-81)
+             LATITUDE: 71.51N to 90.37N
+             Z:  N/A
+             T:  N/A
+             DATA SET: ./tripolar_missing_lon.nc
+ 
+ Total # of data points: 1275 (51*25*1*1)
+ # flagged as bad  data: 0
+ Minimum value: -181.5
+ Maximum value: -83.015
+ Mean    value: -121.95 (unweighted average)
+ Standard deviation: 24.836
+shade/i=50:100 HT,lon,lat
+ 
+! The STAT command loads all the coordinates, then when
+! we plot, the check of coordinates looked at all of them
+! rather than just those needed. (error  was
+! X coordinates missing value where val is needed
+ 
+can mem/all
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+stat LON, LAT
+ 
+             IF GEOLON_VERT_T GT -276 THEN GEOLON_VERT_T
+             LONGITUDE: 79E(-281) to 81E
+             LATITUDE: 71.51N to 90.37N
+             Z:  N/A
+             T:  N/A
+             DATA SET: ./tripolar_missing_lon.nc
+ 
+ Total # of data points: 4525 (181*25*1*1)
+ # flagged as bad  data: 186
+ Minimum value: -275.98
+ Maximum value: 80
+ Mean    value: -92.341 (unweighted average)
+ Standard deviation: 106.62
+ 
+             GEOLAT_VERT_T
+             LONGITUDE: 79E(-281) to 81E
+             LATITUDE: 71.51N to 90.37N
+             Z:  N/A
+             T:  N/A
+             DATA SET: ./tripolar_missing_lon.nc
+ 
+ Total # of data points: 4525 (181*25*1*1)
+ # flagged as bad  data: 0
+ Minimum value: 64.383
+ Maximum value: 90
+ Mean    value: 74.619 (unweighted average)
+ Standard deviation: 5.9864
+shade/i=50:100 HT,lon,lat
+ 
+sp rm -f tripolar_missing_lon.nc
+ 
+ 
+! err601_missing_string_element.jnl
+! Bug 1488; Seg fault when try to list a string variable
+!  when the last element is missing.
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err601_missing_string_element.jnl
+! err601_missing_string_element.jnl
+!  Bug 1488. Seg fault when try to list a string variable
+!  when the last element is missing.
+ 
+let a = {"a", "b",  }
+list a
+             VARIABLE : {"a", "b",  }
+             SUBSET   : 3 points (X)
+ 1   / 1:"a"
+ 2   / 2:"b"
+ 3   / 3:"" 
+ 
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.02  
- 	Linux(g77) 2.4.21-32 - 01/24/07
- 	25-Jan-07 12:12     
+ 	Linux(g77) 2.4.21-32 - 03/12/07
+ 	12-Mar-07 10:00     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -53957,8 +54465,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  6    /  6:  -9.00
  7    /  7:  -8.00
  8    /  8:  -7.00
- 9    /-rw-rw-r--    1 ansley   tmap        12704 Jan 25 12:12 testa.v5d
--rw-rw-r--    1 ansley   tmap        12704 Jan 25 12:12 test.v5d
+ 9    /-rw-rw-r--    1 ansley   tmap        12704 Mar 12 10:00 testa.v5d
+-rw-rw-r--    1 ansley   tmap        12704 Mar 12 10:00 test.v5d
   9:  -6.00
  10   / 10:  -5.00
  11   / 11:  -4.00
@@ -54206,15 +54714,15 @@ dimensions:
 variables:
 	double T5(T5) ;
 		T5:units = "MIN since 1901-01-15 00:00:00" ;
-		T5:time_origin = "15-JAN-1901" ;
 		T5:axis = "T" ;
+		T5:time_origin = "15-JAN-1901" ;
 	float MY_VAR(T5) ;
 		MY_VAR:missing_value = -1.e+34f ;
 		MY_VAR:_FillValue = -1.e+34f ;
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  T5 = 50757969 ;
@@ -54228,15 +54736,15 @@ dimensions:
 variables:
 	double T5(T5) ;
 		T5:units = "MIN since 1901-01-15 00:00:00" ;
-		T5:time_origin = "15-JAN-1901" ;
 		T5:axis = "T" ;
+		T5:time_origin = "15-JAN-1901" ;
 	float MY_VAR(T5) ;
 		MY_VAR:missing_value = -1.e+34f ;
 		MY_VAR:_FillValue = -1.e+34f ;
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -54259,7 +54767,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -54297,7 +54805,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  GFP3 = "" ;
@@ -54331,7 +54839,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -54370,7 +54878,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
@@ -54403,7 +54911,7 @@ dimensions:
 variables:
 	double COADSX90_90(COADSX90_90) ;
 		COADSX90_90:units = "degrees_east" ;
-		COADSX90_90:modulo = 360. ;
+		COADSX90_90:modulo = " " ;
 		COADSX90_90:point_spacing = "even" ;
 		COADSX90_90:axis = "X" ;
 	double COADSY66_66(COADSY66_66) ;
@@ -54423,7 +54931,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -54456,7 +54964,7 @@ dimensions:
 variables:
 	double COADSX90_90(COADSX90_90) ;
 		COADSX90_90:units = "degrees_east" ;
-		COADSX90_90:modulo = 360. ;
+		COADSX90_90:modulo = " " ;
 		COADSX90_90:point_spacing = "even" ;
 		COADSX90_90:axis = "X" ;
 	double COADSY66_66(COADSY66_66) ;
@@ -54476,7 +54984,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -54518,10 +55026,10 @@ dimensions:
 variables:
 	double ZIRR(ZIRR) ;
 		ZIRR:units = "METERS" ;
-		ZIRR:positive = "down" ;
 		ZIRR:point_spacing = "uneven" ;
 		ZIRR:axis = "Z" ;
 		ZIRR:bounds = "ZIRR_bnds" ;
+		ZIRR:positive = "down" ;
 	double ZIRR_bnds(ZIRR, bnds) ;
 	float T2(ZIRR) ;
 		T2:missing_value = -1.e+34f ;
@@ -54529,7 +55037,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  ZIRR = 0, 10, 40, 70 ;
@@ -54552,7 +55060,7 @@ dimensions:
 variables:
 	double COADSX81_83(COADSX81_83) ;
 		COADSX81_83:units = "degrees_east" ;
-		COADSX81_83:modulo = 360. ;
+		COADSX81_83:modulo = " " ;
 		COADSX81_83:point_spacing = "even" ;
 		COADSX81_83:axis = "X" ;
 	double COADSY46_49(COADSY46_49) ;
@@ -54573,7 +55081,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  COADSX81_83 = 181, 183, 185 ;
@@ -54637,7 +55145,7 @@ dimensions:
 variables:
 	double COADSX81_81(COADSX81_81) ;
 		COADSX81_81:units = "degrees_east" ;
-		COADSX81_81:modulo = 360. ;
+		COADSX81_81:modulo = " " ;
 		COADSX81_81:point_spacing = "even" ;
 		COADSX81_81:axis = "X" ;
 		COADSX81_81:bounds = "COADSX81_81_bnds" ;
@@ -54663,7 +55171,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -54700,7 +55208,7 @@ dimensions:
 variables:
 	double COADSX81_81(COADSX81_81) ;
 		COADSX81_81:units = "degrees_east" ;
-		COADSX81_81:modulo = 360. ;
+		COADSX81_81:modulo = " " ;
 		COADSX81_81:point_spacing = "even" ;
 		COADSX81_81:axis = "X" ;
 		COADSX81_81:edges = "COADSX81_81edges" ;
@@ -54729,7 +55237,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -54758,14 +55266,15 @@ dimensions:
 	TAX = UNLIMITED ; // (5 currently)
 variables:
 	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
 		XAX:axis = "X" ;
+		XAX:modulo = "false" ;
+		XAX:point_spacing = "uneven" ;
 		XAX:bounds = "XAX_bnds" ;
 	double XAX_bnds(XAX, bnds) ;
 	double ZAX(ZAX) ;
+		ZAX:axis = "Z" ;
 		ZAX:positive = "down" ;
 		ZAX:point_spacing = "uneven" ;
-		ZAX:axis = "Z" ;
 		ZAX:bounds = "ZAX_bnds" ;
 	double ZAX_bnds(ZAX, bnds) ;
 	double TAX(TAX) ;
@@ -54778,7 +55287,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -54852,7 +55361,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  TIME = 0.5, 2 ;
@@ -54878,7 +55387,7 @@ variables:
 		X_:_FillValue = -1.e+34f ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
 
@@ -54901,7 +55410,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
 
@@ -54916,8 +55425,8 @@ dimensions:
 variables:
 	double TCDC(TCDC) ;
 		TCDC:units = "DAYS since 0001-01-01 00:00:00" ;
-		TCDC:time_origin = "01-JAN-0001 00:00:00" ;
 		TCDC:axis = "T" ;
+		TCDC:time_origin = "01-JAN-0001 00:00:00" ;
 	float A(TCDC) ;
 		A:missing_value = -1.e+34f ;
 		A:_FillValue = -1.e+34f ;
@@ -54925,10 +55434,10 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -54938,14 +55447,15 @@ dimensions:
 	TAX = UNLIMITED ; // (5 currently)
 variables:
 	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
 		XAX:axis = "X" ;
+		XAX:modulo = 360. ;
+		XAX:point_spacing = "uneven" ;
 		XAX:bounds = "XAX_bnds" ;
 	double XAX_bnds(XAX, bnds) ;
 	double ZAX(ZAX) ;
+		ZAX:axis = "Z" ;
 		ZAX:positive = "down" ;
 		ZAX:point_spacing = "uneven" ;
-		ZAX:axis = "Z" ;
 		ZAX:bounds = "ZAX_bnds" ;
 	double ZAX_bnds(ZAX, bnds) ;
 	double TAX(TAX) ;
@@ -54958,7 +55468,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -55029,7 +55539,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -55048,7 +55558,7 @@ dimensions:
 variables:
 	double COADSX105_105(COADSX105_105) ;
 		COADSX105_105:units = "degrees_east" ;
-		COADSX105_105:modulo = 360. ;
+		COADSX105_105:modulo = " " ;
 		COADSX105_105:point_spacing = "even" ;
 		COADSX105_105:newatt = 3.f ;
 		COADSX105_105:axis = "X" ;
@@ -55069,7 +55579,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  COADSX105_105 = 229 ;
@@ -55107,7 +55617,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -55209,7 +55719,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
 netcdf a {
@@ -55244,7 +55754,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
 netcdf a {
@@ -55265,7 +55775,7 @@ variables:
 		BB:my_title = "This is my new variable bb" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  XAX1_5 = 1, 2, 3, 4, 5 ;
@@ -55290,7 +55800,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  XAX1_5 = 1, 2, 3, 4, 5 ;
@@ -55309,7 +55819,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  XAX1_5 = 1, 2, 3, 4, 5 ;
@@ -55329,7 +55839,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  XAX1_5 = 1, 2, 3, 4, 5 ;
@@ -55344,7 +55854,7 @@ dimensions:
 variables:
 	double XAX_LEV9421_380(XAX_LEV9421_380) ;
 		XAX_LEV9421_380:units = "degrees_east" ;
-		XAX_LEV9421_380:modulo = 360. ;
+		XAX_LEV9421_380:modulo = " " ;
 	double YAX_LEV94(YAX_LEV94) ;
 		YAX_LEV94:units = "degrees_north" ;
 		YAX_LEV94:point_spacing = "even" ;
@@ -55367,7 +55877,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
 netcdf a {
@@ -55379,7 +55889,7 @@ dimensions:
 variables:
 	double XAX_LEV9421_380281_340(XAX_LEV9421_380281_340) ;
 		XAX_LEV9421_380281_340:units = "degrees_east" ;
-		XAX_LEV9421_380281_340:modulo = 360. ;
+		XAX_LEV9421_380281_340:modulo = " " ;
 	double YAX_LEV94121_135(YAX_LEV94121_135) ;
 		YAX_LEV94121_135:units = "degrees_north" ;
 		YAX_LEV94121_135:point_spacing = "even" ;
@@ -55402,7 +55912,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
 netcdf a {
@@ -55414,7 +55924,7 @@ dimensions:
 variables:
 	double XAX_LEV9421_380(XAX_LEV9421_380) ;
 		XAX_LEV9421_380:units = "degrees_east" ;
-		XAX_LEV9421_380:modulo = 360. ;
+		XAX_LEV9421_380:modulo = " " ;
 	double YAX_LEV94(YAX_LEV94) ;
 		YAX_LEV94:units = "degrees_north" ;
 		YAX_LEV94:point_spacing = "even" ;
@@ -55435,7 +55945,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
 netcdf a {
@@ -55462,7 +55972,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  XAX1_5 = 1, 2, 3, 4, 5 ;
@@ -55494,7 +56004,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  XAX1_5 = 1, 2, 3, 4, 5 ;
@@ -55519,7 +56029,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -55559,7 +56069,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
 		:option = 1 ;
@@ -55656,7 +56166,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 		:dt_internal = 15. ;
 }
 bn_attributes.jnl --- 19 scale and offset attr.
@@ -55694,7 +56204,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  XC = -135.50957036625, -135.496120344706, -135.482670323162, 
@@ -55774,7 +56284,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  J = 2, 4, 6 ;
@@ -55810,18 +56320,225 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.02   25-Jan-07" ;
+		:history = "FERRET V6.02   12-Mar-07" ;
 data:
 
  B = 1 ;
+}
+bn_attributes.jnl --- 24 attributes of axes
+netcdf a {
+dimensions:
+	PSXT91_108 = 18 ;
+	PSYT35_56 = 22 ;
+	bnds = 2 ;
+	PSZT1_10 = 10 ;
+	TIME1 = UNLIMITED ; // (1 currently)
+variables:
+	double PSXT91_108(PSXT91_108) ;
+		PSXT91_108:units = "degrees_east" ;
+		PSXT91_108:modulo = 360. ;
+		PSXT91_108:point_spacing = "even" ;
+		PSXT91_108:axis = "X" ;
+	double PSYT35_56(PSYT35_56) ;
+		PSYT35_56:units = "degrees_north" ;
+		PSYT35_56:point_spacing = "uneven" ;
+		PSYT35_56:axis = "Y" ;
+		PSYT35_56:bounds = "PSYT35_56_bnds" ;
+	double PSYT35_56_bnds(PSYT35_56, bnds) ;
+	double PSZT1_10(PSZT1_10) ;
+		PSZT1_10:units = "METERS" ;
+		PSZT1_10:positive = "down" ;
+		PSZT1_10:point_spacing = "uneven" ;
+		PSZT1_10:axis = "Z" ;
+		PSZT1_10:bounds = "PSZT1_10_bnds" ;
+	double PSZT1_10_bnds(PSZT1_10, bnds) ;
+	double TIME1(TIME1) ;
+		TIME1:units = "hour since 1980-01-14 14:00:00" ;
+		TIME1:time_origin = "14-JAN-1980 14:00:00" ;
+		TIME1:axis = "T" ;
+	float T2(TIME1, PSZT1_10, PSYT35_56, PSXT91_108) ;
+		T2:missing_value = -1.e+34f ;
+		T2:_FillValue = -1.e+34f ;
+		T2:long_name = "T*TEMP" ;
+		T2:history = "From gt4d011" ;
+
+// global attributes:
+		:history = "FERRET V6.02   12-Mar-07" ;
+}
+netcdf a {
+dimensions:
+	PSXT91_108 = 18 ;
+	PSYT35_56 = 22 ;
+	bnds = 2 ;
+	PSZT1_10 = 10 ;
+	TIME1 = UNLIMITED ; // (1 currently)
+variables:
+	double PSXT91_108(PSXT91_108) ;
+		PSXT91_108:units = "degrees_east" ;
+		PSXT91_108:modulo = 360. ;
+		PSXT91_108:point_spacing = "even" ;
+		PSXT91_108:axis = "X" ;
+	double PSYT35_56(PSYT35_56) ;
+		PSYT35_56:units = "degrees_north" ;
+		PSYT35_56:point_spacing = "uneven" ;
+		PSYT35_56:axis = "Y" ;
+		PSYT35_56:bounds = "PSYT35_56_bnds" ;
+	double PSYT35_56_bnds(PSYT35_56, bnds) ;
+	double PSZT1_10(PSZT1_10) ;
+		PSZT1_10:units = "METERS" ;
+		PSZT1_10:positive = "down" ;
+		PSZT1_10:point_spacing = "uneven" ;
+		PSZT1_10:axis = "Z" ;
+		PSZT1_10:bounds = "PSZT1_10_bnds" ;
+	double PSZT1_10_bnds(PSZT1_10, bnds) ;
+	double TIME1(TIME1) ;
+		TIME1:units = "hour since 1980-01-14 14:00:00" ;
+		TIME1:time_origin = "14-JAN-1980 14:00:00" ;
+		TIME1:axis = "T" ;
+	float T2(TIME1, PSZT1_10, PSYT35_56, PSXT91_108) ;
+		T2:missing_value = -1.e+34f ;
+		T2:_FillValue = -1.e+34f ;
+		T2:long_name = "T*TEMP" ;
+		T2:history = "From gt4d011" ;
+
+// global attributes:
+		:history = "FERRET V6.02   12-Mar-07" ;
+}
+netcdf a {
+dimensions:
+	PSXT91_108 = 18 ;
+	PSYT35_56 = 22 ;
+	bnds = 2 ;
+	PSZT1_10 = 10 ;
+	TIME1 = UNLIMITED ; // (1 currently)
+variables:
+	double PSXT91_108(PSXT91_108) ;
+		PSXT91_108:units = "meters" ;
+		PSXT91_108:modulo = 360. ;
+		PSXT91_108:point_spacing = "even" ;
+		PSXT91_108:axis = "X" ;
+	double PSYT35_56(PSYT35_56) ;
+		PSYT35_56:units = "meters" ;
+		PSYT35_56:point_spacing = "uneven" ;
+		PSYT35_56:axis = "Y" ;
+		PSYT35_56:bounds = "PSYT35_56_bnds" ;
+	double PSYT35_56_bnds(PSYT35_56, bnds) ;
+	double PSZT1_10(PSZT1_10) ;
+		PSZT1_10:units = "METERS" ;
+		PSZT1_10:positive = "down" ;
+		PSZT1_10:point_spacing = "uneven" ;
+		PSZT1_10:axis = "Z" ;
+		PSZT1_10:bounds = "PSZT1_10_bnds" ;
+	double PSZT1_10_bnds(PSZT1_10, bnds) ;
+	double TIME1(TIME1) ;
+		TIME1:units = "hour since 1980-01-14 14:00:00" ;
+		TIME1:time_origin = "14-JAN-1980 14:00:00" ;
+		TIME1:axis = "T" ;
+	float T2(TIME1, PSZT1_10, PSYT35_56, PSXT91_108) ;
+		T2:missing_value = -1.e+34f ;
+		T2:_FillValue = -1.e+34f ;
+		T2:long_name = "T*TEMP" ;
+		T2:history = "From gt4d011" ;
+
+// global attributes:
+		:history = "FERRET V6.02   12-Mar-07" ;
+}
+netcdf a {
+dimensions:
+	XAXLEVITR1_160 = 160 ;
+	YAXLEVITR1_9090_90 = 1 ;
+	ZAXLEVITR1_1 = 1 ;
+variables:
+	double XAXLEVITR1_160(XAXLEVITR1_160) ;
+		XAXLEVITR1_160:units = "degrees_east" ;
+		XAXLEVITR1_160:modulo = " " ;
+		XAXLEVITR1_160:point_spacing = "even" ;
+		XAXLEVITR1_160:new_att = "something" ;
+		XAXLEVITR1_160:axis = "X" ;
+	double YAXLEVITR1_9090_90(YAXLEVITR1_9090_90) ;
+		YAXLEVITR1_9090_90:units = "degrees_north" ;
+		YAXLEVITR1_9090_90:point_spacing = "even" ;
+		YAXLEVITR1_9090_90:axis = "Y" ;
+	double ZAXLEVITR1_1(ZAXLEVITR1_1) ;
+		ZAXLEVITR1_1:units = "METERS" ;
+		ZAXLEVITR1_1:positive = "down" ;
+		ZAXLEVITR1_1:point_spacing = "even" ;
+		ZAXLEVITR1_1:axis = "Z" ;
+	float TEMP(ZAXLEVITR1_1, YAXLEVITR1_9090_90, XAXLEVITR1_160) ;
+		TEMP:missing_value = -1.e+10f ;
+		TEMP:_FillValue = -1.e+10f ;
+		TEMP:long_name = "TEMPERATURE" ;
+		TEMP:history = "From levitus_climatology" ;
+		TEMP:units = "DEG C" ;
+
+// global attributes:
+		:history = "FERRET V6.02   12-Mar-07" ;
+}
+netcdf a {
+dimensions:
+	XAXLEVITR1_160161_161 = 1 ;
+	YAXLEVITR1_9090_90 = 1 ;
+	ZAXLEVITR1_1 = 1 ;
+variables:
+	double XAXLEVITR1_160161_161(XAXLEVITR1_160161_161) ;
+		XAXLEVITR1_160161_161:units = "degrees_east" ;
+		XAXLEVITR1_160161_161:modulo = " " ;
+		XAXLEVITR1_160161_161:point_spacing = "even" ;
+		XAXLEVITR1_160161_161:new_att = "something" ;
+		XAXLEVITR1_160161_161:axis = "X" ;
+	double YAXLEVITR1_9090_90(YAXLEVITR1_9090_90) ;
+		YAXLEVITR1_9090_90:units = "degrees_north" ;
+		YAXLEVITR1_9090_90:point_spacing = "even" ;
+		YAXLEVITR1_9090_90:axis = "Y" ;
+	double ZAXLEVITR1_1(ZAXLEVITR1_1) ;
+		ZAXLEVITR1_1:units = "METERS" ;
+		ZAXLEVITR1_1:positive = "down" ;
+		ZAXLEVITR1_1:point_spacing = "even" ;
+		ZAXLEVITR1_1:axis = "Z" ;
+	float TWO(ZAXLEVITR1_1, YAXLEVITR1_9090_90, XAXLEVITR1_160161_161) ;
+		TWO:missing_value = -1.e+34f ;
+		TWO:_FillValue = -1.e+34f ;
+		TWO:long_name = "2*TEMP[Y=0:15,X=180:200]" ;
+		TWO:history = "From levitus_climatology" ;
+
+// global attributes:
+		:history = "FERRET V6.02   12-Mar-07" ;
+}
+bn_attributes.jnl --- 25 attributes of  user-defined axes
+netcdf string4d {
+dimensions:
+	X2AX = 2 ;
+	Y3AX = 3 ;
+	Z4AX = 4 ;
+	T2AX = UNLIMITED ; // (2 currently)
+	STRING1_5 = 5 ;
+variables:
+	double X2AX(X2AX) ;
+		X2AX:point_spacing = "even" ;
+		X2AX:axis = "X" ;
+		X2AX:modulo = " " ;
+	double Y3AX(Y3AX) ;
+		Y3AX:point_spacing = "even" ;
+		Y3AX:axis = "Y" ;
+	double Z4AX(Z4AX) ;
+		Z4AX:point_spacing = "even" ;
+		Z4AX:axis = "Z" ;
+		Z4AX:positive = "up" ;
+	double T2AX(T2AX) ;
+		T2AX:axis = "T" ;
+	char AXY(T2AX, Z4AX, Y3AX, X2AX, STRING1_5) ;
+		AXY:long_name = "RESHAPE (A,RVAR)" ;
+
+// global attributes:
+		:history = "FERRET V6.02   12-Mar-07" ;
 }
 -----
 end of ncdump output
  
  	NOAA/PMEL TMAP
  	FERRET v6.02  
- 	Linux(g77) 2.4.21-32 - 01/24/07
- 	25-Jan-07 12:12     
+ 	Linux(g77) 2.4.21-32 - 03/12/07
+ 	12-Mar-07 10:00     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -56004,8 +56721,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.02  
- 	Linux(g77) 2.4.21-32 - 01/24/07
- 	25-Jan-07 12:12     
+ 	Linux(g77) 2.4.21-32 - 03/12/07
+ 	12-Mar-07 10:00     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -56120,8 +56837,8 @@ can mode ignore
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.02  
- 	Linux(g77) 2.4.21-32 - 01/24/07
- 	25-Jan-07 12:12     
+ 	Linux(g77) 2.4.21-32 - 03/12/07
+ 	12-Mar-07 10:00     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -56194,9 +56911,9 @@ pplus/reset
 set mode metafile new.plt
  *** NOTE: in batch mode: ignoring SET MODE METAFILE
  
-plot/i=1:12 1./i
- 
 cancel mode metafile
+ 
+plot/i=1:12/title="after cancel mode metafile in batch mode" 1./i
  
 ! set window commands are ignored, except for set window/aspect
 set window/new
@@ -56206,4 +56923,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Thu Jan 25 12:12:59 PST 2007
+Ended at Mon Mar 12 10:00:58 PDT 2007

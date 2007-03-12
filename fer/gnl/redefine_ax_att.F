@@ -42,6 +42,7 @@
 * 11/2006 
 * V602  3/07 *acm* Also look for the axis in dataset -2, the pseudo-dataset 
 *                  containing information on user-defined axes
+* V602  3/07 *acm* Treat t0 as units; if new t0 is not defined, remove the attribute.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -129,6 +130,7 @@ c     If new units not defined, remove units attribute.
         ENDIF
 
 c ... If t0 attribute already exists, change it; otherwise add new
+c     If new t0 not defined, remove the time_origin attribute.
 
          attname = 'time_origin'
          IF (new_t0 .NE. " ") THEN
@@ -147,7 +149,13 @@ c ... If t0 attribute already exists, change it; otherwise add new
      .           attname, attype, len, new_t0, dummy, status)
             ENDIF
 
-         ENDIF
+        ELSE
+           
+            CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+            IF (status .EQ. ferr_ok) CALL CD_DELETE_ATTRIBUTE (dset, varid, 
+     .          attname, status)
+
+        ENDIF
 
 c ... direction; Change positive=up or down on Z axes; replace cartesian_axis 
 c     or axis attribute only if already an attribute

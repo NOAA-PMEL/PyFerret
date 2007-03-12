@@ -802,7 +802,7 @@ go bn_reset
 
 
 !---!!!---
-! Manipulate attribures of axes from datasets
+! Manipulate attributes of axes from datasets
 ! A user-defined variable is used to refer to the axes.
 
 use gt4d011.cdf

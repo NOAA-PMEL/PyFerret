@@ -84,6 +84,14 @@ i586:
 		GKLIB="../xgks/src/lib/libxgks.a" \
 		LIB="-L/usr/X11R6.4/lib -lX11 -lm"
 
+x86_64-linux:	
+	${MAKE} gksm2ps \
+		CC=gcc \
+		CFLAGS="-g -I/usr/lib/gcc/x86_64-redhat-linux/3.4.3/include -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
+		LDFLAGS= \
+		GKLIB="../xgks/src/lib/libxgks.a" \
+		LIB="-L/usr/X11R6/lib64 -lX11 -lm"
+
 gksm2ps:	gksm2ps.o xpreview.o \
 	resize_xgks_window.o set_background.o gksm.o batch_graphics.o
 	- $(CC) $(CFLAGS) $(LDFLAGS) -o gksm2ps gksm2ps.o xpreview.o \

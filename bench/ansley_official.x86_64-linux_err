@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 41871278 Mar 12 10:16 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
+-rwxr-xr-x  1 ansley tmap 29764733 Mar 13 08:57 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/tmap/ferret/x86_64-linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: final fixes for control of attributes of axes; fix bug 1304: repeat loop containing a script and exit/script inside of script called within a loop; lsl_lowpass test
+Note: v6.02 code, linked with DODS_3.7.5 libraries
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
-Beginning at Mon Mar 12 10:18:51 PDT 2007
+FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/x86_64-linux/ext_func/libs
+Beginning at Tue Mar 13 09:02:14 PDT 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -619,11 +619,11 @@ SET DAT/FORM=CDF this_is_not_a_file.nc
              Data set: http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf
 SET DAT/FORM=CDF  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf"
  **netCDF error
-             OPeNDAP Error: Couldn't resolve host 'noserver' (OPeNDAP/netCDF Error code 1001)
+             Unknown error 1001 (OPeNDAP/netCDF Error code 1001)
              Data set: http://noserver/a/nofile.cdf
 SET DAT/FORM=CDF  "http://noserver/a/nofile.cdf"
  **netCDF error
-             Not a netCDF file (OPeNDAP/netCDF Error code -51)
+             NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
              Data set: ./asc.nc
 SET DAT/FORM=CDF asc.nc
  **ERROR: illegal use of transformation:  not all dimensions present on grid
@@ -705,4 +705,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-Ended at Mon Mar 12 10:20:05 PDT 2007
+Ended at Tue Mar 13 09:03:39 PDT 2007

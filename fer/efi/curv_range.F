@@ -270,6 +270,21 @@ c      RETURN
          RETURN
       ENDIF
 
+* Make sure the requested range at least overlaps the range of 
+* longitude coordinates
+
+      IF (xmodulo) THEN
+         DO WHILE (xrange_lo .GT. xmax_field)
+            xrange_lo = xrange_lo - 360
+            xrange_hi = xrange_hi - 360
+         ENDDO
+         DO WHILE (xrange_hi .LT. xmin_field)
+            xrange_lo = xrange_lo + 360
+            xrange_hi = xrange_hi + 360
+         ENDDO
+      ENDIF
+
+
       IF (ydiff_lo .LT. small .AND. ydiff_hi .LT. small .AND. 
      .     xmodulo) THEN
          nrep = NINT((xrange_lo-xmin_field)/360.)

@@ -69,6 +69,8 @@
 * V510 *sh* 3/00 - added no_labels argument so /NOLABELS avoided xlab & ylab
 * V533 *sh* 7/01 - avoid using risc_buff -- conflict with PUT_LABEL
 * V580 *acm* 12/04 Fix bug 1129; formatting axis for small lon/lat ranges
+* V602 *acm*  3/07 Fix bug 1498: do not computes n_res but leave it hard-wired
+*                to 15; else the axis labels may not match data values !
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -104,8 +106,7 @@
 	REAL*8		TSTEP_TO_SECS
 	INTEGER		n_res
 
-* Compute n_res below instead...
-!	PARAMETER 	(n_res = 15)
+	PARAMETER 	(n_res = 15)
 
 * initiailize
 	tstyle = ' '
@@ -115,10 +116,6 @@
 *     still display the largest axis labels
 *  res_del	- labels will be accurate enough to resolve this delta value
 
-* Compute n_res; round up (hi-lo)/(2*del_val)  We label half of the tic marks...
-
-        n_res = INT(0.5+ ABS(hi_val - lo_val) / (2.D0*del_val) ) 
-c        n_res = 15
 	res_del = ABS( hi_val - lo_val ) / n_res
 	CALL GET_PREC_DIGITS( hi_val, lo_val, res_del, places, ndec )
 

@@ -254,9 +254,11 @@
       INTEGER i4,j4,k4,l4
       INTEGER i5,j5,k5,l5
 
+      LOGICAL need_modulo
       INTEGER ibot, itop, jbot, jtop
       INTEGER nloc, iloc, ptloc, icross
       REAL xpt, ypt, ydiff, yd
+      REAL xptmin, xptmax, xcoordmin, xcoordmax
       REAL fxbot, fxtop, fbb, ftb, fbt, ftt
       REAL xbot, xtop, ybot, ytop
       REAL frac
@@ -310,7 +312,7 @@ C Check that sample x and y are simple lists of points - same length
      .  'Arguments 4 and 5 must be 1-dimensional lists of equal length'
          GO TO 999
       ENDIF
-
+      
 * Initialize result
 
       DO 104 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
@@ -325,6 +327,58 @@ C Check that sample x and y are simple lists of points - same length
  103     CONTINUE
  104  CONTINUE
 
+* Get range of arg_2, longitude coordinates, and arg_4, xpts to sample.
+* is modulo-ing needed?
+
+      xcoordmin = ABS(bad_flag(ARG2))
+      xcoordmax = -1. * xcoordmin
+
+      k2 = arg_lo_ss(Z_AXIS,ARG2)
+      l2 = arg_lo_ss(T_AXIS,ARG2)
+
+      DO 106 j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
+      DO 105 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
+         IF (arg_2(i2,j2,k2,l2) .NE. bad_flag(ARG2)) THEN
+            xcoordmin = MIN(arg_2(i2,j2,k2,l2), xcoordmin)
+            xcoordmax = MAX(arg_2(i2,j2,k2,l2), xcoordmax)
+         ELSE
+            err_msg =
+     .      'Arg 2, curvilinear X coordinates, contains missing values'
+            GOTO 999
+         ENDIF
+  105 CONTINUE
+  106 CONTINUE
+
+
+      xptmin = ABS(bad_flag(ARG4))
+      xptmax = -1.* xptmin
+      DO 204 l4 = arg_lo_ss(T_AXIS,ARG4), arg_hi_ss(T_AXIS,ARG4)
+      DO 203 k4 = arg_lo_ss(Z_AXIS,ARG4), arg_hi_ss(Z_AXIS,ARG4)
+      DO 202 j4 = arg_lo_ss(Y_AXIS,ARG4), arg_hi_ss(Y_AXIS,ARG4)
+      DO 201 i4 = arg_lo_ss(X_AXIS,ARG4), arg_hi_ss(X_AXIS,ARG4)
+
+         IF (arg_4(i4,j4,k4,l4) .NE. bad_flag(ARG4)) THEN
+            xptmin = MIN(arg_4(i4,j4,k4,l4), xptmin)
+            xptmax = MAX(arg_4(i4,j4,k4,l4), xptmax)
+         ELSE
+            err_msg =
+     .      'Arg 2, sample x points, contains missing values'
+            GOTO 999
+         ENDIF
+  201 CONTINUE
+  202 CONTINUE
+  203 CONTINUE
+  204 CONTINUE
+
+      IF (xptmin .LT. xcoordmin) THEN
+         need_modulo = .TRUE.
+         add_xcoord = -360.
+      ENDIF
+      IF (xptmax .GT. xcoordmax) THEN
+         need_modulo = .TRUE.
+         add_xcoord = 360.
+      ENDIF
+ 
 *  For each (xpt,ypt) pair, search the data arrays arg2,arg3
 *  for the nearest higher (x,y) lat-lon coordinates.  Interpolate 
 *  arg_1 in 2 directions for the result.
@@ -344,7 +398,11 @@ C Check that sample x and y are simple lists of points - same length
 
 * Find all locations of xpt in arg_2, longitudes of data
 
+         xadd = 0.
 	 xpt = arg_4(i4,j4,k4,l4)
+         IF (need_modulo .AND. 
+     .       ((xpt .LT. xcoordmin) .OR.(xpt .GT. xcoordmax)) )
+     .    xadd = add_xcoord
 
          k2 = arg_lo_ss(Z_AXIS,ARG2)
          l2 = arg_lo_ss(T_AXIS,ARG2)
@@ -353,28 +411,31 @@ C Check that sample x and y are simple lists of points - same length
 
          DO 200 j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
             i2 = arg_lo_ss(X_AXIS,ARG2)
-c            icross = SIGN(1, (xpt - arg_2(i2,j2,k2,l2)) )
+            xcoord = arg_2(i2,j2,k2,l2) + xadd
+c               icross = SIGN(1, (xpt - xcoord) )
             icross = 1
-            IF ((xpt - arg_2(i2,j2,k2,l2)) .LT. 0.) icross = -1
+            IF ((xpt - xcoord) .LT. 0.) icross = -1
 
             DO 100 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
-c               iloc = SIGN(1, (xpt-arg_2(i2,j2,k2,l2)) )
+c               iloc = SIGN(1, (xpt-xcoord) )
+               xcoord = arg_2(i2,j2,k2,l2) + xadd
+
                iloc = 1
-               IF ((xpt-arg_2(i2,j2,k2,l2)) .LT. 0. ) iloc = -1
+               IF ((xpt-xcoord) .LT. 0. ) iloc = -1
 
                IF (icross .NE. iloc)THEN
                   nloc = nloc + 1
                   xlocations(nloc,1,1,1) = MAX(i2-1,1)
                   xlocations(nloc,2,1,1) = j2
-c                  icross = SIGN(1, (xpt - arg_2(i2,j2,k2,l2)) )
+c                  icross = SIGN(1, (xpt - xcoord) )
                   icross = 1
-                  IF ((xpt - arg_2(i2,j2,k2,l2)) .LT. 0.) icross = -1
+                  IF ((xpt - xcoord) .LT. 0.) icross = -1
                ENDIF
-
   100       CONTINUE
+
   200    CONTINUE
 
-* Which of those locations is nearest xpt in arg_3, latitudes of data?
+* Which of those locations is nearest ypt in arg_3, latitudes of data?
 
          ypt = arg_5(i5,j5,k5,l5)
          ydiff = ABS(bad_flag_result)
@@ -386,7 +447,13 @@ c                  icross = SIGN(1, (xpt - arg_2(i2,j2,k2,l2)) )
          DO 300 iloc = 1, nloc
             i3 = xlocations(iloc,1,1,1)
             j3 = xlocations(iloc,2,1,1)
-               yd = ABS(ypt - arg_3(i3,j3,k3,l3))
+            IF (arg_3(i3,j3,k3,l3) .EQ. bad_flag(ARG3)) THEN
+               err_msg =
+     .      'ARG 3, curvilinear Y coordinates, contains missing values'
+               GOTO 999
+            ENDIF
+
+            yd = ABS(ypt - arg_3(i3,j3,k3,l3))
 
             IF ( yd .LT. ydiff ) THEN
                ylocations(1) = i3
@@ -407,21 +474,21 @@ c                  icross = SIGN(1, (xpt - arg_2(i2,j2,k2,l2)) )
 *  First interpolate in x, getting values of the fcn at (x,jbot)  and (x,jtop)
 
 
-         k1 = arg_lo_ss(Z_AXIS,ARG1)
-         k2 = arg_lo_ss(Z_AXIS,ARG2)
-         k3 = arg_lo_ss(Z_AXIS,ARG3)
-         DO 500 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-
-            l1 = arg_lo_ss(T_AXIS,ARG1)
-            l2 = arg_lo_ss(T_AXIS,ARG2)
-            l3 = arg_lo_ss(T_AXIS,ARG3)
-            DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-
-               IF (ibot .GE. arg_lo_ss(X_AXIS,ARG1)  .AND. 
+         IF (ibot .GE. arg_lo_ss(X_AXIS,ARG1)  .AND. 
      .              itop .LT. arg_hi_ss(X_AXIS,ARG1) ) THEN
 
-                  xbot = arg_2(ibot,jbot,k2,l2)
-                  xtop = arg_2(itop,jbot,k2,l2)
+            k1 = arg_lo_ss(Z_AXIS,ARG1)
+            k2 = arg_lo_ss(Z_AXIS,ARG2)
+            k3 = arg_lo_ss(Z_AXIS,ARG3)
+            DO 500 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+
+               l1 = arg_lo_ss(T_AXIS,ARG1)
+               l2 = arg_lo_ss(T_AXIS,ARG2)
+               l3 = arg_lo_ss(T_AXIS,ARG3)
+               DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+
+                  xbot = arg_2(ibot,jbot,k2,l2) + xadd
+                  xtop = arg_2(itop,jbot,k2,l2) + xadd
       
                   fbb = arg_1(ibot,jbot,k1,l1) 
                   ftb = arg_1(itop,jbot,k1,l1)
@@ -433,7 +500,6 @@ c                  icross = SIGN(1, (xpt - arg_2(i2,j2,k2,l2)) )
      .                fbt .NE. bad_flag(ARG1)  .AND.
      .                ftt .NE. bad_flag(ARG1) ) THEN
 
-
                      frac = (xpt - xbot ) / (xtop - xbot)
                      fxbot = fbb + frac* (ftb - fbb)
                      fxtop = fbt + frac* (ftt - fbt)
@@ -444,29 +510,37 @@ c                  icross = SIGN(1, (xpt - arg_2(i2,j2,k2,l2)) )
      .                   jtop .LE. arg_hi_ss(Y_AXIS,ARG1) ) THEN
                         ybot = arg_3(ibot,jbot,k3,l3)
                         ytop = arg_3(ibot,jtop,k3,l3)
-
-                        frac = (ypt - ybot)/ (ytop - ybot)
-                           result(i,j,k,l) = fxbot + frac* (fxtop-fxbot)
-                        ELSE
-                              result(i,j,k,l) = bad_flag_result
+                        
+                        IF (ybot .EQ. bad_flag(ARG3) .OR. 
+     .                      ytop .EQ. bad_flag(ARG3))  THEN
+                           err_msg =
+     .       'ARG 3, curvilinear Y coordinates, contains missing values'
+                           GOTO 999
                         ENDIF
 
+                        frac = (ypt - ybot)/ (ytop - ybot)
+                        result(i,j,k,l) = fxbot + frac* (fxtop-fxbot)
                      ELSE
                         result(i,j,k,l) = bad_flag_result
-                     ENDIF		! bad_flag(ARG1) test
-                  ENDIF
+                     ENDIF
+
+                  ELSE
+                     result(i,j,k,l) = bad_flag_result
+                  ENDIF		! bad_flag(ARG1) test
 
 
-               l1 = l1 + arg_incr(T_AXIS,ARG1)
-               l2 = l2 + arg_incr(T_AXIS,ARG2)
-               l3 = l3 + arg_incr(T_AXIS,ARG3)
+                  l1 = l1 + arg_incr(T_AXIS,ARG1)
+                  l2 = l2 + arg_incr(T_AXIS,ARG2)
+                  l3 = l3 + arg_incr(T_AXIS,ARG3)
 
- 400        CONTINUE
+ 400           CONTINUE
 
-            k1 = k1 + arg_incr(Z_AXIS,ARG1)
-            k2 = k2 + arg_incr(Z_AXIS,ARG2)
-            k3 = k3 + arg_incr(Z_AXIS,ARG3)
- 500     CONTINUE
+               k1 = k1 + arg_incr(Z_AXIS,ARG1)
+               k2 = k2 + arg_incr(Z_AXIS,ARG2)
+               k3 = k3 + arg_incr(Z_AXIS,ARG3)
+ 500       CONTINUE
+
+         ENDIF  ! IF (ibot .GE. ...  .AND. itop .LT.  ...
 
          i4 = i4 + arg_incr(X_AXIS,ARG4)
          j4 = j4 + arg_incr(Y_AXIS,ARG4)

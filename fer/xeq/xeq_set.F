@@ -139,7 +139,9 @@
 *                 requested. This should result in an error message.
 * V602: *acm* 1/07 Changes for metafile-batch mode: When in gif mode or batch mode, 
 *                  ignore CANCEL MODE META
-* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables
+*                  including changes to an attributes values and settings at the
+*                  same time, e.g. set att/output var.modulo = 300
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1316,13 +1318,14 @@ c     .					* max_mem_blks*100
 
         IF (dset_num .EQ. unspecified_int4) dset_num = -1 ! user variables
 
-* change an existing attribute
-* get the data for the new value
+* change an existing attribute output flag and/or value of the attr
 
-        IF (qual_given( slash_set_attr_output ) .GT. 0) THEN
-           iflag = 1
-        ELSE
-           IF (arg_start(1) .LT. pos) arg_start(1) = pos
+        IF (qual_given( slash_set_attr_output ) .GT. 0)  iflag = 1
+
+* get the data for the new value
+        
+        IF (arg_start(1) .LT. pos) arg_start(1) = pos
+        IF (arg_end(1) .LT. len_cmnd_copy) THEN
            CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_native, 
      .              status )
            IF ( status .NE. ferr_ok ) THEN      ! 8/6/92
@@ -1387,13 +1390,15 @@ c     .					* max_mem_blks*100
            ENDIF
 
 
-        ELSE
+        ENDIF
 
 * Change attribute value
+
+        IF (arg_end(1) .LT. len_cmnd_copy) THEN
            mr = is_mr( 1 )
            CALL EDIT_ATTRIBUTE(  memory(1, mr_blk1(mr)), mr, 
      .               buff1, dset_num, attype_spec, status )
-
+  
            IF (status .EQ. ferr_ok) THEN
 
 * Update attribute information used by plotting etc (ds_units, ...)

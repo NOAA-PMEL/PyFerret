@@ -1,5 +1,5 @@
 	#
-	# platform_specific_includes.mk.i386-linux
+	# platform_specific_includes.mk.x86_64-linux
 	#
 	# This file is included in other Makefiles and defines
 	# platform specific macros
@@ -49,7 +49,7 @@
 			   -DFULL_GUI_VERSION -DX_REFRESH \
 			  -DXT_CODE  -DLINUX -DNO_PASSED_CONCAT \
 			  -Dcrptd_cat_argument \
-			  -DG77_SIGNAL -DG77 -DusingDODSf2cUnderscore \
+			  -DG77_SIGNAL -DG77  \
 			  -DNO_INTRINSIC_IN_PARAMETER -DINTERNAL_READ_FORMAT_BUG -DNO_PREPEND_STRING
 
 	CFLAGS          =    -m64 $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION   -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
@@ -78,20 +78,7 @@
 
 	HDFLIB		= -L/usr/local/src/HDF4.2r1/NewHDF/lib  -ldf -ljpeg -lz
 
-	CDFLIB		= /home/ja4/kobrien/src/linux/netcdf-3.5.0/lib/libnetcdf.a
-
-#	DODS_LIBS   	= -L/home/porter/kobrien/OPeNDAP/linux/DODS/lib   -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lz -lpthread -lm -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a -lrx /usr/lib/libz.a
-
-#	DODS_LIBS   	= -L/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.3/lib -lnc-dap -ldap -lnc-dap -ldap -L/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.3/lib -L/usr/lib64 -L/usr/kerberos/lib -L/usr/kerberos/lib64 /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.3/lib/libdap.a -lcurl /usr/lib64/libidn.so -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto -lresolv -ldl /usr/lib64/libxml2.so -lz -lm -lpthread -Wl,--rpath -Wl,/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.3/lib -Wl,--rpath -Wl,/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.3/lib
-
-
-#	DODS_LIBS   	= -L/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.5/lib -lnc-dap -ldap -lnc-dap -ldap -L/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.5/lib -L/usr/lib64 -L/usr/kerberos/lib -L/usr/kerberos/lib64 /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.5/lib/libdap.a -lcurl /usr/lib64/libidn.so -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto -lresolv -ldl /usr/lib64/libxml2.so -lz -lm -lpthread -Wl,--rpath -Wl,/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.5/lib -Wl,--rpath -Wl,/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.5/lib
-
-# This is ok (.so files)
-#	DODS_LIBS   	= -L/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.6/lib -lnc-dap -ldap -lnc-dap -ldap -L/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.6/lib -L/usr/lib64 -L/usr/kerberos/lib -L/usr/kerberos/lib64 /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.6/lib/libdap.a -lcurl /usr/lib64/libidn.so -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto -lresolv -ldl /usr/lib64/libxml2.so -lz -lm -lpthread -Wl,--rpath -Wl,/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.6/lib -Wl,--rpath -Wl,/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.7.6/lib
-
-
-	DODS_LIBS   	= -L/home/porter/kobrien/OPeNDAP/linux/DODS_v3.7.6/lib -lnc-dap -ldap -lnc-dap  -ldap   -ldapserver -ldapclient  -L/usr/lib64 -lcurl -L/usr/kerberos/lib -L/usr/kerberos/lib64 -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto -lresolv -ldl -lz -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err -lresolv -L/usr/kerberos/lib -L/usr/kerberos/lib64 -lidn -lssl -lcrypto -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto -lresolv -ldl -lz -lz -lxml2 -lz -lpthread -lm -lpthread
+	DODS_LIBS   	= -L/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/lib -lnc-dap -ldap -lnc-dap  -ldap   -ldapserver -ldapclient  -L/usr/lib64 -lcurl -L/usr/kerberos/lib -L/usr/kerberos/lib64 -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto -lresolv -ldl -lz -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err -lresolv -L/usr/kerberos/lib -L/usr/kerberos/lib64 -lidn -lssl -lcrypto -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto -lresolv -ldl -lz -lz -lxml2 -lz -lpthread -lm -lpthread
 
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
@@ -108,5 +95,5 @@
 	$(F77) $(FFLAGS) $*.f	 
 
 #
-# End of platform_specific_includes.mk.i386-linux
+# End of platform_specific_includes.mk.x86_64-linux
 #

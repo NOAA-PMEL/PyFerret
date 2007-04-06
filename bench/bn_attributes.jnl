@@ -778,6 +778,39 @@ sp echo "bn_attributes.jnl --- 23 more user-defined vars" >> all_ncdump.out
 sp ncdump a.nc >> all_ncdump.out
 
 
+!-----
+! Bug 1492, now fixed, output user-defined or redefined attributes
+
+! A new setting for the point_spacing attribute using either SET or DEFINE
+
+use coads_vwnd
+set att (`vwnd,return=xaxis`).point_spacing = "uneven"
+define att (`vwnd,return=yaxis`).point_spacing = "uneven"
+save/file=a.nc/clobber/L=1 vwnd
+
+sp echo "bn_attributes.jnl --- 24 output redefined attr" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+sp ncdump a.nc | more
+
+! new attribute written to file
+
+let t2 = 2*vwnd
+DEFINE ATT/OUTPUT  (`t2,return=yaxis`).new_att = "somthing"
+
+! shows up on the output of 
+
+SHOW ATT/ALL (`t2,return=yaxis`)
+
+! Check the new attribute is saved to a file. (if we
+! save uwnd to a file, it is output)
+
+save/file=a.nc/clobber/L=1 t2  
+
+sp ncdump a.nc | more
+
+sp echo "bn_attributes.jnl --- 25 output new attr on user-defined var" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+
 
 ! intentional errors
 
@@ -812,7 +845,7 @@ sh att/all (`t2,return=xaxis`)
 set att/output (`t2,return=xaxis`).point_spacing
 save/file=a.nc/clobber/L=1 t2
 
-sp echo "bn_attributes.jnl --- 24 attributes of axes" >> all_ncdump.out
+sp echo "bn_attributes.jnl --- 26 attributes of axes" >> all_ncdump.out
 
 sp ncdump -h a.nc >> all_ncdump.out
 define att/out (`t2,return=xaxis`).new_att = "something"
@@ -878,6 +911,6 @@ let axy = reshape (a,rvar)
 show att/all (z4ax)
 set att (z4ax).positive = "up"
 
-sp echo "bn_attributes.jnl --- 25 attributes of  user-defined axes" >> all_ncdump.out
+sp echo "bn_attributes.jnl --- 27 attributes of  user-defined axes" >> all_ncdump.out
 save/clobber/file=string4d.nc axy
 sp ncdump -h string4d.nc >> all_ncdump.out

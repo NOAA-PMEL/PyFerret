@@ -65,25 +65,6 @@ C**
 C***********************************************************************
 C**
 C**
-	CHARACTER ITIME3*14,DATE*6
-	CHARACTER ITIME*14,ITIME1*(*),ITIME2*(*),SYM*21
-	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
-	COMMON/AXLWID/XWID,YWID
-
-* Parameters for drawing tics across plot
-
-        REAL yacross
-        REAL dash1_1, dash1_2, dash1_3, dash1_4
-        REAL dash2_1, dash2_2, dash2_3, dash2_4
-        REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
-        INTEGER vcolor(*)      ! pen number 
-        LOGICAL vline          ! If true, do the lines across.
-        LOGICAL solid1, solid2   ! solid lines across at tics
-        LOGICAL dashed1, dashed2 ! dashed lines across at tics
-
-* TMAP interrupt flag
-	include 'xinterrupt.cmn'
-
 C     THIS ROUTINE PLOTS A TIME AXIS AND LABELS IT WITH THE DAY OF THE M
 C     AND THE MONTH.
 C     VARIBLES:
@@ -118,6 +99,26 @@ C
 C
 C     THIS ROUTINE WAS FIRST WRITTEN BY DAVID MANDEL IN JULY 1980.
 C
+	CHARACTER ITIME3*14,DATE*6
+	CHARACTER ITIME*14,ITIME1*(*),ITIME2*(*),SYM*21
+	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
+	COMMON/AXLWID/XWID,YWID
+
+* Parameters for drawing tics across plot
+
+        REAL yacross
+        REAL dash1_1, dash1_2, dash1_3, dash1_4
+        REAL dash2_1, dash2_2, dash2_3, dash2_4
+        REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
+        INTEGER vcolor(*)      ! pen number 
+        LOGICAL vline          ! If true, do the lines across.
+        LOGICAL solid1, solid2   ! solid lines across at tics
+        LOGICAL dashed1, dashed2 ! dashed lines across at tics
+        INTEGER ltic, color1, color2
+
+* TMAP interrupt flag
+	include 'xinterrupt.cmn'
+
 C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
 
 	IF(ITIME1(9:10).NE.'00')STOP ',1'
@@ -136,6 +137,9 @@ C set up for plotting graticules across at tic marks
      .            vgrat(3,1).GT.0 .OR.  vgrat(4,1).GT.0 )
         dashed2 = (vgrat(1,2).GT.0 .OR. vgrat(2,2).GT.0 .OR.  
      .            vgrat(3,2).GT.0 .OR.  vgrat(4,2).GT.0 )
+
+        color1 = vcolor(1)
+        color2 = vcolor(2)
 
         IF (dashed1) THEN
            dash1_1 = vgrat(1,1)
@@ -182,6 +186,7 @@ C     SET PARAMETERS.
       ITIME=ITIME1
       CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
       TDAY=T
+
       CALL PLOT(TLO,Y,0,0)
 	IF(IHR.EQ.0)THEN
 	CALL PLOTT7(TLO,Y,TFACT,YFACT,1,IHVY)
@@ -190,11 +195,64 @@ C     SET PARAMETERS.
 	ENDIF
       CALL TIME1(1,ITIME,2,' ',I3,ITIME3,60.)
       ITIME = ITIME3
-      IF(IABS(LABEL).NE.1.OR.IHR.NE.IHDB*(IHR/IHDB)) GO TO 10
+      IF(IABS(LABEL).NE.1.OR.IHR.NE.IHDB*(IHR/IHDB)) GO TO 11
 C      ELSE:
           WRITE(SYM,80) IHR
 80	FORMAT(I2.2)
 	CALL SCINOT(T,YTEMP1,0.,CSIZE,2,SYM,0,WID,TFACT,YFACT)
+  11  CONTINUE    
+
+c ----  count number of large tics. If no large tics will be drawn
+c ----  then will want to draw graticule lines at the small ones.
+
+c Set itime1, itime3 as above
+
+      ITIME=ITIME1
+      CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
+      CALL TIME1(1,ITIME,2,' ',I3,ITIME3,60.)
+      ITIME = ITIME3
+
+C      LOOP:
+       ltic = 0
+  110  CONTINUE
+
+	CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
+	CALL TIME1(1,ITIME,2,' ',I3,ITIME3,60.)
+	ITIME=ITIME3
+
+	IF(ITIME(13:14)//ITIME(1:12) .LE.
+     .       ITIME2(13:14)//ITIME2(1:12)) THEN
+           IF(IHR.EQ.0) ltic = ltic + 1
+           GO TO 110
+        ENDIF
+     
+! IF no large tics, and if graticules at just the large tics were
+! requested, then plot graticules at the small tics
+
+	IF (ltic .EQ. 0) THEN   
+           IF ( (.NOT.solid2) .AND. (solid1) ) THEN
+              solid2 = solid1
+              color2 = color1
+           ENDIF
+           IF ( (.NOT.dashed2) .AND. (dashed1) ) THEN 
+              dashed2 = dashed1
+              dash2_1 = dash1_1
+              dash2_2 = dash1_2
+              dash2_3 = dash1_3
+              dash2_4 = dash1_4
+              color2 = color1
+           ENDIF
+        ENDIF
+
+! Restore the state of ITIME, ITIME3
+      ITIME=ITIME1
+      CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
+
+      CALL TIME1(1,ITIME,2,' ',I3,ITIME3,60.)
+      ITIME = ITIME3
+
+c ----
+
 C      LOOP:
    10     CALL PLOT(T,Y,0,0)
 	  IF ( interrupted ) RETURN		! TMAP interrupt
@@ -202,7 +260,7 @@ C      LOOP:
               CALL PLOTT7(T+FLOAT(I)*TDIST,Y,TFACT,YFACT,1,-7)
      
                  IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
-                    CALL COLOR(vcolor(2))
+                    CALL COLOR(color2)
                     IF (dashed2) THEN
                        CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
                        CALL DASHES
@@ -219,7 +277,7 @@ C      LOOP:
 	IF(IHR.EQ.0)THEN
 	CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
               IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
-                 CALL COLOR(vcolor(1))
+                 CALL COLOR(color1)
                  IF (dashed1) THEN
                     CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
                     CALL DASHES
@@ -235,7 +293,7 @@ C      LOOP:
 	       CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
      
                IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
-                  CALL COLOR(vcolor(1))
+                  CALL COLOR(color1)
                   IF (dashed1) THEN
                      CALL DASHSZ(dash1_1,dash2_1,dash1_3,dash1_4)
                      CALL DASHES

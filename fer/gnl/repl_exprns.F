@@ -98,6 +98,7 @@
 * V600  6/06 *acm* - additional declarations found by Solaris compiler
 * V601 10/06 *acm* - fix bug 1447, where say `var[d=fname.cdf],return=size` failed
 *            parsing error, confusing the dot in the filename with `var.att,return=size`
+* V602  4/07 *acm* - Add RETURN=xmod,tmod
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -136,7 +137,7 @@
      .            attype, attlen, inxt, attoutflag,outflag, fertype, 
      .            attid, ieq
 	REAL	  result, val
-	REAL*8 TM_WORLD, ww
+	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
 	CHARACTER TM_FMT*16, LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
      .		  repl*(max_len), bad_str*(max_len), return_errmsg*256,
@@ -363,7 +364,7 @@
      .       'use RETURN= shape,size,grid,title,bad,t0,units,dset, '//pCR//
      .	     '  dsetnum,dsetpath,dsettitle,*size,*start,*end,'//pCR//
      .       '  *units,*axis,nc_scale,nc_offset,user_scale,user_offset,'//pCR//
-     .       '  calendar,dtype'
+     .       '  calendar,dtype,xmod,tmod'
 
 * ... RETURN=SHAPE
 
@@ -576,6 +577,34 @@
 	            GOTO 5520
                  ENDIF
               ENDIF
+
+* ... RETURN=XMOD
+	   ELSEIF ( repl .EQ. "XMOD" ) THEN
+	      repl = ' '	! default
+	      axis = CGRID_AXIS ( X_dim, cx )
+	      IF ( axis.NE.mnormal) THEN
+	         IF (line_modulo(axis)) THEN
+                    result = line_modulo_len(axis)
+
+! If axis has modulo=" ", and units are not degrees, mod len = axis len.
+                    IF (result .EQ. 0) result = SNGL(TM_WW_AXLEN(axis))
+                    repl = TM_FMT( result, use_digits, max_len, str_len)
+                 ENDIF
+	      ENDIF
+
+* ... RETURN=TMOD
+	   ELSEIF ( repl .EQ. "TMOD" ) THEN
+	      repl = ' '	! default
+	      axis = CGRID_AXIS ( T_dim, cx )
+	      IF ( axis.NE.mnormal) THEN
+	         IF (line_modulo(axis)) THEN
+                    result = line_modulo_len(axis)
+
+! If axis has modulo=" ", mod len = axis len.
+                    IF (result .EQ. 0) result = SNGL(TM_WW_AXLEN(axis))
+                    repl = TM_FMT( result, use_digits, max_len, str_len)
+                 ENDIF
+	      ENDIF
 
 * ... RETURN=*SIZE, *START, *END, *UNITS, *AXIS
 	   ELSE	

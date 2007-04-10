@@ -790,7 +790,6 @@ save/file=a.nc/clobber/L=1 vwnd
 
 sp echo "bn_attributes.jnl --- 24 output redefined attr" >> all_ncdump.out
 sp ncdump a.nc >> all_ncdump.out
-sp ncdump a.nc | more
 
 ! new attribute written to file
 
@@ -805,8 +804,6 @@ SHOW ATT/ALL (`t2,return=yaxis`)
 ! save uwnd to a file, it is output)
 
 save/file=a.nc/clobber/L=1 t2  
-
-sp ncdump a.nc | more
 
 sp echo "bn_attributes.jnl --- 25 output new attr on user-defined var" >> all_ncdump.out
 sp ncdump a.nc >> all_ncdump.out
@@ -889,7 +886,6 @@ sp ncdump -h a.nc >> all_ncdump.out
 let two = 2*temp[y=0:15,x=180:200]
 save/file=a.nc/clobber/y=0:5 two
 sp ncdump -h a.nc >> all_ncdump.out
-sp ncdump -h a.nc 
 go bn_reset
 
 ! defining more axes with attributes

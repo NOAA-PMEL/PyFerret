@@ -13,7 +13,7 @@
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \
-			  -I. -I$(TMAP_LOCAL)/include/readline -I/home/porter/kobrien/OPeNDAP/linux/DODS_v3.7.6/include/libnc-dap 
+			  -I. -I$(TMAP_LOCAL)/include/readline -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/include/libnc-dap 
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			   -I../include -I../../fmt/cmn \
@@ -40,7 +40,8 @@
 	#   for http://gcc.gnu.org/ml/gcc-bugs/2000-04/msg00716.html for info
 
 	CPP		= /lib/cpp
-	CPP_FLAGS       = $(INCLUDES) -I/home/porter/kobrien/OPeNDAP/linux/DODS_v3.7.6/include/libnc-dap -P -Dunix   \
+	CPP_FLAGS       = $(INCLUDES)  -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/include/libnc-dap \
+			  -P -Dunix   \
 			  -DNO_OPEN_SHARED \
 			  -DNO_OPEN_RECORDTYPE -DNO_SNGL  \
 			  -DX_REFRESH -Dreclen_in_bytes  \
@@ -53,7 +54,7 @@
 			  -DNO_INTRINSIC_IN_PARAMETER -DINTERNAL_READ_FORMAT_BUG -DNO_PREPEND_STRING
 
 	CFLAGS          =    -m64 $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION   -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
-	FFLAGS          =    -m64 $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore -fdollar-ok  -fintrin-case-any -ffixed-line-length-132  -I/home/porter/kobrien/OPeNDAP/linux/DODS_v3.7.6/include/libnc-dap  $(FINCLUDES)
+	FFLAGS          =    -m64 $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore -fdollar-ok  -fintrin-case-any -ffixed-line-length-132  -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/include/libnc-dap  $(FINCLUDES)
 	PPLUS_FFLAGS    =    -m64 $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore  -fdollar-ok  -fintrin-case-any -ffixed-line-length-132  $(FINCLUDES)
 
 

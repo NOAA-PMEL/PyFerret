@@ -288,7 +288,8 @@
 
             IF ( MATCH_NAME (attname,  TM_LENSTR1(attname), 
      .           'MODULO', 6) ) THEN
-               IF (vals(1) .EQ. 0.) THEN                  ! Write line_modulo_len 
+               IF (attype .NE. NCCHAR .AND. vals(1) .EQ. 0.) THEN
+! Write line_modulo_len 
                   vals(1) = line_modulo_len(iaxis)
                   IF (attoutflag .EQ. 1) attype = NCFLOAT
                ENDIF

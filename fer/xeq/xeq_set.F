@@ -193,7 +193,7 @@
      .                  cal_id, day, month, year, hour, minute, second,
      .                  units, since_t0, len_test, len_mchars, slen,
      .                  attype_spec, pos, mr, varid, uvar, cat, iflag, 
-     .                  ivar, dot, strided_axis, igrd, offset
+     .                  isetout, ivar, dot, strided_axis, igrd, offset
         REAL*8          TM_WW_AXLEN, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi
 	REAL		val_buf
@@ -1320,12 +1320,18 @@ c     .					* max_mem_blks*100
 
 * change an existing attribute output flag and/or value of the attr
 
-        IF (qual_given( slash_set_attr_output ) .GT. 0)  iflag = 1
+        iflag = 0
+        isetout = 0
+        IF (qual_given( slash_set_attr_output ) .GT. 0) THEN
+           iflag = 1
+           isetout = 1
+        ENDIF
 
 * get the data for the new value
         
         IF (arg_start(1) .LT. pos) arg_start(1) = pos
-        IF (arg_end(1) .LT. len_cmnd_copy) THEN
+        IF ( (iflag .EQ. 1 .AND. arg_end(1) .LT. len_cmnd_copy) .OR. 
+     .       (isetout .EQ. 0) ) THEN
            CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_native, 
      .              status )
            IF ( status .NE. ferr_ok ) THEN      ! 8/6/92
@@ -1389,12 +1395,12 @@ c     .					* max_mem_blks*100
      .               iflag, status)
            ENDIF
 
-
         ENDIF
 
 * Change attribute value
 
-        IF (arg_end(1) .LT. len_cmnd_copy) THEN
+        IF ( (iflag .EQ. 1 .AND. arg_end(1) .LT. len_cmnd_copy) .OR.
+     .       (isetout .EQ. 0) ) THEN 
            mr = is_mr( 1 )
            CALL EDIT_ATTRIBUTE(  memory(1, mr_blk1(mr)), mr, 
      .               buff1, dset_num, attype_spec, status )
@@ -1406,6 +1412,7 @@ c     .					* max_mem_blks*100
               IF (cat .EQ. cat_user_var .OR. cat .EQ. cat_file_var)
      .           CALL UPDATE_ATTRIBUTES (dset_num, uvar)
            ENDIF
+
         ENDIF
 
 	RETURN

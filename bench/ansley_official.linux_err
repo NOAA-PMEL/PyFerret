@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     48179927 Mar 12 09:55 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     47737706 Apr 10 14:21 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: final fixes for control of attributes of axes; fix bug 1304: repeat loop containing a script and exit/script inside of script called within a loop; lsl_lowpass test
+Note: Ferret v6.02 with DODS v3.7.6
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Mon Mar 12 09:57:53 PDT 2007
+Beginning at Tue Apr 10 14:28:42 PDT 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -99,13 +99,13 @@ MESSAGE/CONTINUE `sst*/3,return=lunits`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype
+            calendar,dtype,xmod,tmod
           sst,return=Xsize
 MESSAGE/CONTINUE `sst,return=Xsize`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype
+            calendar,dtype,xmod,tmod
           sst,return=trash
 MESSAGE/CONTINUE `sst,return=trash`
  **ERROR: unknown data set: NOEXIST
@@ -462,7 +462,7 @@ ls: input.txt: No such file or directory
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype
+            calendar,dtype,xmod,tmod
           axy, return=xx
 MESSAGE/CONTINUE `axy, return=xx`
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
@@ -619,11 +619,11 @@ SET DAT/FORM=CDF this_is_not_a_file.nc
              Data set: http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf
 SET DAT/FORM=CDF  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf"
  **netCDF error
-             OPeNDAP Error: Couldn't resolve host 'noserver' (OPeNDAP/netCDF Error code 1001)
+             Unknown error 1001 (OPeNDAP/netCDF Error code 1001)
              Data set: http://noserver/a/nofile.cdf
 SET DAT/FORM=CDF  "http://noserver/a/nofile.cdf"
  **netCDF error
-             Not a netCDF file (OPeNDAP/netCDF Error code -51)
+             NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
              Data set: ./asc.nc
 SET DAT/FORM=CDF asc.nc
  **ERROR: illegal use of transformation:  not all dimensions present on grid
@@ -705,4 +705,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-Ended at Mon Mar 12 10:00:58 PDT 2007
+Ended at Tue Apr 10 14:31:57 PDT 2007

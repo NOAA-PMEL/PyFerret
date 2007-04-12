@@ -80,9 +80,11 @@ C       *jc* 5.97 Added code for curvilinear coordinates
 C      *acm* v581 5/2005 Add CONTOUR/MOD capability for modulo
 C                 replications on curvilinear data
 C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bug 1485
+C V602 *acm* 4/07 ferr_ok needs to be declared (in errmsg.parm)
 
 	include 'MISS.INC'
         include 'xcurvilinear.cmn'
+        include 'errmsg.parm'
 
 	dimension z(nxs,nys),px(nx),py(ny)
 	dimension zlev(2),ndecl(2),lwgtl(2),lclr(2)

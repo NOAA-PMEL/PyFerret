@@ -90,6 +90,9 @@
 * v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
 * V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
 *                   varname.attname
+* V603 5/07 *acm* - Fix bug 1507: if start = end, then definition of name leaves name
+*                   blank. assign a longer string to name and then just send the first
+*                   character to GET_VAR_CONTEXT
 
 * calling argument declarations:
 	INTEGER	status
@@ -482,6 +485,10 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 
 	name = buff(start:end)
 	len_name = end - start + 1
+        
+* Fix bug 1507: if start = end, then the above assignment leaves name blank (!)
+        IF (len_name .EQ. 1) name = buff(start:end+1)
+
 * ... the context stack is already pushed from above
 	CALL GET_VAR_CONTEXT (  name(:len_name),
      .				lo_cx,

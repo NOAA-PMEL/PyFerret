@@ -91,6 +91,9 @@
 * V533: 6/01 *sh* - added @EVNT
 * V541: 2/02 *sh* - added support for modulo lengths (subspan modulo)
 * V554 1/04 *acm* - additions for /RANGE repeat loop control
+* V603 4/07 *acm* - Fix bug 636;  Resolve any wierd cx_grid definitions leftover from get_context_mods
+*                   before calling COMPLETE_MISSING_LIMITS. Bug occured from regridding a variable to 
+*                   its own axis with [gt=var]
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -284,7 +287,16 @@
         ENDIF
 
 * 3/99 complete missing context limits as full-span: to improve cache hits
-	CALL COMPLETE_MISSING_LIMITS( cx )
+
+*      first resolve any wierd cx_grid definitions leftover from  get_context_mods
+	IF (cx_grid(cx) .LT. unspecified_int4) THEN 
+	   CALL GET_UVAR_GRID( uvar_pointer,cx_data_set(cx),status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	   cx_grid(cx) =
+     .		KNOWN_GRID(cx_data_set(cx),cat_user_var,uvar_pointer)
+	ENDIF
+        
+        CALL COMPLETE_MISSING_LIMITS( cx )
 
 * check in memory to see if we already have the data 
 	CALL FIND_MEM_VAR( cx, mr, search_by_value )

@@ -154,7 +154,7 @@ while ($#argv != 0)
 	   goto help
 	 endif
 
-	 head -1 $argv[1] | grep -s ^GKSM > /dev/null
+	 head -n 1 $argv[1] | grep -s ^GKSM > /dev/null
 
 	 if ($status == 0) then
 	   set gksm2ps_files     = "$gksm2ps_files $argv[1]"

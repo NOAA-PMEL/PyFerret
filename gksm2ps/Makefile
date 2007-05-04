@@ -36,6 +36,13 @@ solaris:
 		LDFLAGS="-z muldefs" \
 		GKLIB="../xgks/src/lib/libxgks.a" \
 		LIB="-lnsl -L/usr/openwin/lib -lX11 -lm"
+solaris8:	
+	${MAKE} gksm2ps \
+		CC=cc \
+		CFLAGS="-I../xgks/port -I../xgks/src/lib -I/usr/openwin/share/include -I../xgks/src/lib/gksm $(G)" \
+		LDFLAGS="-z muldefs" \
+		GKLIB="../xgks/src/lib/libxgks.a" \
+		LIB="-lnsl -L/usr/openwin/lib -lX11 -lm"
 iris4d:
 	${MAKE} gksm2ps \
 		CC=cc \

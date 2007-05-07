@@ -60,7 +60,7 @@
 *             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib from linked list structure
 *             CD_GET_ATTVAL replaced by NC_GET_ATTRIB, which now returns  
 *               strings or real values according to attrib type
-
+* V602 *acm* make sure lena=length of attr name is defined before writing warning
 
 * argument definitions:
 *	dset	 - dataset id number for already opened CDF file
@@ -126,6 +126,7 @@
 * error exit
  5000 CONTINUE
 c      IF (do_warn) THEN
+c       lena = TM_LENSTR1( aname )
 c	CALL TM_NOTE('Undecipherable value of netCDF attribute '//
 c     .		      attrib(:lena)//' on variable '//vname, tooplu)
 c	CALL TM_NOTE('"buff(:TM_LENSTR1(buff))"', tooplu)

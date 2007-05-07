@@ -51,6 +51,7 @@
 * V581 -  5/05 *acm - increase reading buffer size to 1024.  Newer netCDF 
 *                     libraries have apparently lifted the restriction.
 *                     This lets us increase the size of e.g. the title attribute.
+* V602 *acm* make sure lena=length of attr name is defined before writing warning
 * 
 
 * argument definitions:
@@ -131,6 +132,7 @@
 
 * warning exit
  5000 lenb = TM_LENSTR1( buff )
+      lena = TM_LENSTR1( attrib )
       buff = buff(:lenb)//': "'//attrib(:lena)//
      .             '" in netCDF variable: '//vname
       lenb = TM_LENSTR1( buff )

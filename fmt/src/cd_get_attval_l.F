@@ -46,6 +46,8 @@
 * 1/03 - *kob* g77 port - need to use risc_buff and also local var 
 *                         tmp_buff for arbitrary  string concats 
 * V600 *ACM* attribute control. 
+* V602 *acm* make sure lena=length of attr name is defined before writing warning
+*
 *             Replace NCAINQ with CD_GET_VAR_ATT_INFO
 *             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib from 
 *               linked list structure
@@ -140,6 +142,7 @@
  
 * *kob* 1/03 - add risc_buff - needed for g77 port
       IF (do_warn) THEN
+        lena = TM_LENSTR1( attrib )
 	risc_buff = attrib(:lena)
 	tmp_buff = vname
 	CALL TM_NOTE('Undecipherable value of netCDF attribute '//

@@ -50,7 +50,8 @@
 *         6/06 *acm*  replace istat with status
 *         8/06 *acm*  test for too_long should be .GT. IF (attlen .GT. maxlen) THEN
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-*
+* V602 *acm* make sure lena=length of attr name is defined before writing warning
+
 * argument definitions:
 *	dset	 - dataset number
 *       varid    - variable id 
@@ -156,6 +157,8 @@
 * warning exit
 
  5000 lenb = TM_LENSTR1( string )
+ 
+      lena = TM_LENSTR1( attrib )
       string = string(:lenb)//': "'//attrib(:lena)//
      .             '" in netCDF variable: '//vname
       lenb = TM_LENSTR1( string )

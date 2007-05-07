@@ -66,10 +66,15 @@
 *              region we are using extends beyond the core range of the 
 *              axis, then we need to set it to irregular within this routine.
 * V600  10/05  change to a comment only, added when fixing bug1347.
+* V603   5/07  Fixes for bug 900 and 1487. If the start or end point is the 
+*              modulo subspan void point, return the actual first or last axis 
+*              point instead.
 
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
+        include 'tmap_dims.parm'
+        include 'xtm_grid.cmn_text'  
 
 * calling argument declarations:
 	LOGICAL	curvilinear, regrid, irregular
@@ -79,8 +84,9 @@
 	CHARACTER*1 horiz_or_vert
 
 * internal variable declarations:
-	LOGICAL	BKWD_AXIS
-	INTEGER	lo_cx, hi_cx, grid, i
+	LOGICAL	BKWD_AXIS, TM_ITS_SUBSPAN_MODULO, is_subspan,
+     .          void_at_start, void_at_end
+	INTEGER	CGRID_AXIS, lo_cx, hi_cx, grid, i, iaxis
 
 * initialize
 	grid   = mr_grid( mr )
@@ -96,23 +102,6 @@
 	ELSE
 	   CALL MAKE_AXIS( grid, idim, lo_ss, hi_ss, axis(lo_ss) )
 	ENDIF
-        
-* If this is a sub-span modulo axis outside its core range, treat it as
-* irregular: will need to use regridding to get the data (possibly missing
-* values).
-* This test will mark as irregular any axis whose precision cannot be
-* resolved in single precision.  Keep this setting for now, computing
-* the grid interval.  For regular grids, reset the plot type (jtype)
-* with a call to set_regular_plot at the end of disp_set_up.
-
-        IF (hi_cx - lo_cx .GT. 2) THEN
-           IF (axis(lo_cx+1) - axis(lo_cx) .NE. 
-     .         axis(lo_cx+2) - axis(lo_cx+1) ) 
-     .             irregular = .TRUE.
-           IF (axis(hi_cx) - axis(hi_cx-1) .NE. 
-     .         axis(hi_cx-1) - axis(hi_cx-2) ) 
-     .             irregular = .TRUE.
-        ENDIF
 
 * single point?  Fake up some reasonable values.
         IF ( lo_ss .EQ. hi_ss ) THEN
@@ -130,14 +119,31 @@
 * determine if regridding is needed within the (cx) region to be plotted
 * ... and determine smallest grid interval
 	regrid = .FALSE.		! assume it's not needed
-        d_regrid = axis( lo_cx + 1 ) - axis( lo_cx )
+        d_regrid = axis( lo_cx + 1 ) - axis( lo_cx )   
 
-        IF (irregular) THEN
+        iaxis = CGRID_AXIS(idim,cx)
+        is_subspan = TM_ITS_SUBSPAN_MODULO( iaxis  )
+        void_at_start = is_subspan .AND. (lo_ss.EQ.0)
+        void_at_end  = is_subspan .AND. (hi_ss.EQ.line_dim(iaxis)+1 )
+
+        IF (irregular .OR. is_subspan) THEN
 	   DO 200 i = lo_cx+1, hi_cx-1
 * ... test within precision limits that may be visible in a plot
+
 	      IF (ABS((axis(i+1)-axis(i))/d_regrid - 1.0) .GT. 3.E-6) THEN
-		   regrid = .TRUE.
 		   d_regrid = MIN( d_regrid, axis(i+1)-axis(i) )
+		   regrid = .TRUE.
+
+*     If irregularity is found only because of the void point on the axis,
+*     set regrid flag back to false
+
+                   IF (is_subspan .AND. void_at_start .AND. i.EQ.lo_cx+1)
+     .                regrid = .FALSE.
+                   IF (is_subspan .AND. void_at_end .AND. i.EQ.hi_cx-1)
+     .                regrid = .FALSE.
+                   IF (is_subspan .AND. (i.EQ.-1 .OR. i.EQ.0) )
+     .                regrid = .FALSE.
+
 	      ENDIF
  200	   CONTINUE
 	ENDIF
@@ -145,6 +151,15 @@
 * regridding parameters
 	lo_world = axis(lo_cx)
 	hi_world = axis(hi_cx)
+
+* If the start or end point is the modulo subspan void point, return
+* the actual first or last axis point instead.
+
+        IF (is_subspan) THEN
+           IF (void_at_start) lo_world = axis(lo_cx+1)
+           IF (void_at_end  ) hi_world = axis(hi_cx-1)
+        ENDIF
+
 	n_regrid = INT( (hi_world - lo_world) / d_regrid ) + 1
 
 * plot vertical z axes upside down ?

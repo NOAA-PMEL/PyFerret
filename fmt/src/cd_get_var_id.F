@@ -42,7 +42,8 @@
 * V600 6/05 *acm* Attribute control.
 *      6/06 *acm* missing declarations of ncf functions
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-
+*           *acm* Get rid of call to isit_coord_var, which could get us in 
+*                 an endless loop (isit_coord_var calls cd_get_var_id).
 
 * include files
 #include "gt_lib.parm"
@@ -61,7 +62,7 @@
       CHARACTER*512 buff
       LOGICAL coordvar
       INTEGER TM_LENSTR1, NCF_GET_VAR_ID, NCF_GET_VAR_ID_CASE,
-     .        slen, flen, dset_num
+     .        slen, flen, dir, dset_num
       PARAMETER (flen=512)      ! size of variable name string
 
 #ifdef sun
@@ -78,7 +79,16 @@
 
       buff = vname
       IF (vname(1:1) .EQ. '(' ) THEN
-         CALL ISIT_COORD_VAR ( vname, dset, buff, coordvar, status )
+         slen = INDEX(buff,')') - 1 
+         IF (slen .LE. 0) slen = TM_LENSTR1(buff)
+         buff = vname(2:slen)
+         buff(slen:slen) = ""
+         slen = slen - 1
+       
+         CALL TM_FTOC_STRNG( buff(1:slen), fhol, flen )
+         status = NCF_GET_VAR_ID(dset_num, varid, fhol)
+         status = NCF_GET_VAR_AXFLAG (dset, varid, coordvar, dir)
+
          IF (.NOT. coordvar) GOTO 5000
       ENDIF 
        

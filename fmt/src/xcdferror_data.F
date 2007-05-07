@@ -48,14 +48,10 @@
 *		        : xlf to blow up.  Same statments in also cause OSF f77
 #include "netcdf.inc"
 *			: the hacked file netcdf.inc.no_externals
-#ifdef unix
+
 	include 'netcdf.decl'
 	include 'xcdferror.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-	INCLUDE 'TMAP_FORMAT:XCDFERROR.CMN_TEXT'
-#endif
+
 
       DATA cdferrmsg( NCEBADID ) 
      .               / 'Not a netcdf id'/

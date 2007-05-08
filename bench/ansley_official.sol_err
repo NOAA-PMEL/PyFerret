@@ -1,24 +1,24 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/solaris8/FERRET/fer/ferretdods_gui
--rwxr-xr-x   1 ansley   tmap     55559884 Oct  5 09:53 /home/porter/ansley/solaris8/FERRET/fer/ferretdods_gui
-Using external functions from /opt/local/ferret/ferret/ext_func/libs
-Running the tests of external functions y
+Running FERRET version ../fer/ferretdods_gui
+-rwxr-xr-x   1 ansley   tmap     55795020 May  4 11:12 ../fer/ferretdods_gui
+Using external functions from  ../external_functions/ext_func_solaris8
+Running the tests of external functions  y
 Benchmark run by ansley
-Note: fixes for v6.01 release
+Note:  build v602 ferret with previous OPeNDAP libraries.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/solaris8/FERRET/bench
+PWD=/home/porter/ansley/build_v602/solaris8/FERRET/bench
 FER_DIR=.
 FER_DSETS=.
 FER_WEB_BROWSER=netscape -ncols 60
-FER_EXTERNAL_FUNCTIONS=/opt/local/ferret/ferret/ext_func/libs
+FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_solaris8
 FER_GO=. /opt/local/ferret/ferret/go /opt/local/ferret/ferret/examples /opt/local/ferret/ferret/contrib
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /opt/local/ferret/ferret/ppl
 FER_DAT=.
-Beginning at Thu Oct 5 09:55:14 PDT 2006
+Beginning at Fri May 4 11:39:11 PDT 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -96,13 +96,13 @@ MESSAGE/CONTINUE `sst*/3,return=lunits`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype
+            calendar,dtype,xmod,tmod
           sst,return=Xsize
 MESSAGE/CONTINUE `sst,return=Xsize`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype
+            calendar,dtype,xmod,tmod
           sst,return=trash
 MESSAGE/CONTINUE `sst,return=trash`
  **ERROR: unknown data set: NOEXIST
@@ -187,6 +187,7 @@ shade/nolabel sst, x_page[j=1:12], y_page
  **ERROR: value out of legal range: Y coordinates
           missing value where val is needed
 shade/nolabel sst, x_page, asin(y_page)
+gsetviewport()   52 Viewport is not within the Normalized Device Coordinate unit square
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
  **ERROR: command syntax: illegal name: TEST*
@@ -388,6 +389,10 @@ Bailing out of external function "ffta":
 	 Time axis must be a regular axis
  **ERROR: error in external function
 LIST vw_fft
+ERROR in efcn_gather_info(): samplexy_curv_avg_init_ is not found.
+  dlerror: ld.so.1: ferretdods_gui: fatal: samplexy_curv_avg_init_: can't find symbol
+ERROR in efcn_gather_info(): samplexy_curv_nrst_init_ is not found.
+  dlerror: ld.so.1: ferretdods_gui: fatal: samplexy_curv_nrst_init_: can't find symbol
  **ERROR: illegal limits: VWND does not contain L=102:150
           Data are available in L =    1:60
 list tsorted_indices, tsorted_wnd
@@ -459,7 +464,7 @@ input.txt: No such file or directory
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype
+            calendar,dtype,xmod,tmod
           axy, return=xx
 MESSAGE/CONTINUE `axy, return=xx`
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
@@ -613,15 +618,15 @@ set var/outtype=garbage broiled
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **netCDF error
-             No(OPeNDAP/netCDF Error code 2)
+             OPeNDAP Error: Empty reply from server (OPeNDAP/netCDF Error code 1001)
              Data set: http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf
 SET DAT/FORM=CDF  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf"
  **netCDF error
-             OPeND(OPeNDAP/netCDF Error code 1001)
+             OPeNDAP Error: Couldn't resolve host 'noserver' (OPeNDAP/netCDF Error code 1001)
              Data set: http://noserver/a/nofile.cdf
 SET DAT/FORM=CDF  "http://noserver/a/nofile.cdf"
  **netCDF error
-             Not (OPeNDAP/netCDF Error code -51)
+             Not a netCDF file (OPeNDAP/netCDF Error code -51)
              Data set: ./asc.nc
 SET DAT/FORM=CDF asc.nc
  **ERROR: illegal use of transformation:  not all dimensions present on grid
@@ -631,6 +636,18 @@ shade sst[t=@AVE,Z=@ave]
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=100/k=1 temp[x=122.5W]"
 plot/i=100/k=1 temp[x=122.5W]
+ **ERROR: invalid command: it is a child axis already
+set axis/stride=2/offset=1 (AX043)
+ **ERROR: invalid command: not a strided axis: COADSX
+cancel axis/stride COADSX
+ **ERROR: invalid command: offset must be less than stride value
+set axis/stride=2/offset=4 COADSX
+ **ERROR: invalid command: not a strided axis: COADSX
+cancel axis/stride COADSX
+ **ERROR: invalid command: unknown axis: NORMAL
+set axis/stride=2 NORMAL
+ *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
+ *** NOTE: They will not be convertible:
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  **ERROR: invalid command: string/numeric data type mix-up: WRITEV5D
@@ -691,6 +708,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
- **ERROR: invalid command: Batch FRAME only works for GIF files
-frame/file=bnplot.ps
-Ended at Thu Oct 5 09:59:35 PDT 2006
+Ended at Fri May 4 11:43:38 PDT 2007

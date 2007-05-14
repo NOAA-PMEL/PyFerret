@@ -3,7 +3,7 @@ ave_scat2grid_t.F\
 compressi.F\
 compressj.F\
 compressk.F\
-compressl.F\
+        compressl.F\
 compressi_by.F\
 compressj_by.F\
 compressk_by.F\
@@ -35,6 +35,7 @@ fft_im.F\
 fft_inverse.F\
 fftinv_subs.F\
 fft_re.F\
+fill_xy.F\
 findhi.F\
 findlo.F\
 flag2ddups.F\
@@ -83,6 +84,18 @@ sortj.F\
 sortk.F\
 sortl.F\
 tauto_cor.F\
+tax_datestring.F\
+tax_day.F\
+tax_dayfrac.F\
+tax_jday1900.F\
+tax_jday.F\
+tax_month.F\
+tax_times.F\
+tax_subs.F\
+tax_tstep.F\
+tax_units.F\
+tax_year.F\
+tax_yearfrac.F\
 tcat.F\
 transpose_xt.F\
 transpose_xy.F\

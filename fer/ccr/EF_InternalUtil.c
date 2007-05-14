@@ -638,6 +638,44 @@ void FORTRAN(nco_init)(int *);
 void FORTRAN(nco_result_limits)(int *);
 void FORTRAN(nco_compute)(int *, float *, float *, float *);
 
+
+void FORTRAN(tax_datestring_init)(int *);
+void FORTRAN(tax_datestring_compute)(int *, float *, float *, float *, float *);
+
+void FORTRAN(tax_day_init)(int *);
+void FORTRAN(tax_day_compute)(int *, float *, float *, float *);
+
+void FORTRAN(tax_dayfrac_init)(int *);
+void FORTRAN(tax_dayfrac_compute)(int *, float *, float *, float *);
+
+void FORTRAN(tax_jday1900_init)(int *);
+void FORTRAN(tax_jday1900_compute)(int *, float *, float *, float *);
+
+void FORTRAN(tax_jday_init)(int *);
+void FORTRAN(tax_jday_compute)(int *, float *, float *, float *);
+
+void FORTRAN(tax_month_init)(int *);
+void FORTRAN(tax_month_compute)(int *, float *, float *, float *);
+
+void FORTRAN(tax_times_init)(int *);
+void FORTRAN(tax_times_compute)(int *, float *, float *);
+
+void FORTRAN(tax_tstep_init)(int *);
+void FORTRAN(tax_tstep_compute)(int *, float *, float *, float *);
+
+void FORTRAN(tax_units_init)(int *);
+void FORTRAN(tax_units_compute)(int *, float *, float*);
+
+void FORTRAN(tax_year_init)(int *);
+void FORTRAN(tax_year_compute)(int *, float *, float *, float *);
+
+void FORTRAN(tax_yearfrac_init)(int *);
+void FORTRAN(tax_yearfrac_compute)(int *, float *, float *, float *);
+
+void FORTRAN(fill_xy_init)(int *);
+void FORTRAN(fill_xy_compute)(int *, float *, float *, float *, float *);
+
+
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -685,7 +723,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 88
+#define N_INTEF 100
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -759,26 +797,38 @@ struct {
    strcpy(I_EFnames[65].funcname, "sortk");
    strcpy(I_EFnames[66].funcname, "sortl");
    strcpy(I_EFnames[67].funcname, "tauto_cor");
-   strcpy(I_EFnames[68].funcname, "tcat");
-   strcpy(I_EFnames[69].funcname, "treverse");
-   strcpy(I_EFnames[70].funcname, "transpose_xt");
-   strcpy(I_EFnames[71].funcname, "transpose_xy");
-   strcpy(I_EFnames[72].funcname, "transpose_xz");
-   strcpy(I_EFnames[73].funcname, "transpose_yt");
-   strcpy(I_EFnames[74].funcname, "transpose_yz");
-   strcpy(I_EFnames[75].funcname, "transpose_zt");
-   strcpy(I_EFnames[76].funcname, "xcat");
-   strcpy(I_EFnames[77].funcname, "xreverse");
-   strcpy(I_EFnames[78].funcname, "ycat");
-   strcpy(I_EFnames[79].funcname, "yreverse");
-   strcpy(I_EFnames[80].funcname, "xauto_cor");
-   strcpy(I_EFnames[81].funcname, "zaxreplace_avg");
-   strcpy(I_EFnames[82].funcname, "zaxreplace_bin");
-   strcpy(I_EFnames[83].funcname, "zaxreplace_lin");
-   strcpy(I_EFnames[84].funcname, "zaxreplace_rev");
-   strcpy(I_EFnames[85].funcname, "zaxreplace_zlev");
-   strcpy(I_EFnames[86].funcname, "zcat");
-   strcpy(I_EFnames[87].funcname, "zreverse");
+   strcpy(I_EFnames[68].funcname, "tax_datestring");
+   strcpy(I_EFnames[69].funcname, "tax_day");
+   strcpy(I_EFnames[70].funcname, "tax_dayfrac");
+   strcpy(I_EFnames[71].funcname, "tax_jday1900");
+   strcpy(I_EFnames[72].funcname, "tax_jday");
+   strcpy(I_EFnames[73].funcname, "tax_month");
+   strcpy(I_EFnames[74].funcname, "tax_times");
+   strcpy(I_EFnames[75].funcname, "tax_tstep");
+   strcpy(I_EFnames[76].funcname, "tax_units");
+   strcpy(I_EFnames[77].funcname, "tax_year");
+   strcpy(I_EFnames[78].funcname, "tax_yearfrac");
+   strcpy(I_EFnames[79].funcname, "xunits_data");
+   strcpy(I_EFnames[80].funcname, "tcat");
+   strcpy(I_EFnames[81].funcname, "treverse");
+   strcpy(I_EFnames[82].funcname, "transpose_xt");
+   strcpy(I_EFnames[83].funcname, "transpose_xy");
+   strcpy(I_EFnames[84].funcname, "transpose_xz");
+   strcpy(I_EFnames[85].funcname, "transpose_yt");
+   strcpy(I_EFnames[86].funcname, "transpose_yz");
+   strcpy(I_EFnames[87].funcname, "transpose_zt");
+   strcpy(I_EFnames[88].funcname, "xcat");
+   strcpy(I_EFnames[89].funcname, "xreverse");
+   strcpy(I_EFnames[90].funcname, "ycat");
+   strcpy(I_EFnames[91].funcname, "yreverse");
+   strcpy(I_EFnames[92].funcname, "xauto_cor");
+   strcpy(I_EFnames[93].funcname, "zaxreplace_avg");
+   strcpy(I_EFnames[94].funcname, "zaxreplace_bin");
+   strcpy(I_EFnames[95].funcname, "zaxreplace_lin");
+   strcpy(I_EFnames[96].funcname, "zaxreplace_rev");
+   strcpy(I_EFnames[97].funcname, "zaxreplace_zlev");
+   strcpy(I_EFnames[98].funcname, "zcat");
+   strcpy(I_EFnames[99].funcname, "zreverse");
 /*    
  *  ------------------------------------ 
  */
@@ -3019,6 +3069,44 @@ else if ( !strcmp(name,"nco_compute_") ) return (void *)FORTRAN(nco_compute);
 else if ( !strcmp(name,"nco_attr_init_") ) return (void *)FORTRAN(nco_attr_init);
 else if ( !strcmp(name,"nco_attr_result_limits_") ) return (void *)FORTRAN(nco_attr_result_limits);
 else if ( !strcmp(name,"nco_attr_compute_") ) return (void *)FORTRAN(nco_attr_compute);
+
+
+else if ( !strcmp(name,"tax_datestring_init_") ) return (void *)FORTRAN(tax_datestring_init);
+else if ( !strcmp(name,"tax_datestring_compute_") ) return (void *)FORTRAN(tax_datestring_compute);
+
+else if ( !strcmp(name,"tax_day_init_") ) return (void *)FORTRAN(tax_day_init);
+else if ( !strcmp(name,"tax_day_compute_") ) return (void *)FORTRAN(tax_day_compute);
+
+else if ( !strcmp(name,"tax_dayfrac_init_") ) return (void *)FORTRAN(tax_dayfrac_init);
+else if ( !strcmp(name,"tax_dayfrac_compute_") ) return (void *)FORTRAN(tax_dayfrac_compute);
+
+else if ( !strcmp(name,"tax_jday1900_init_") ) return (void *)FORTRAN(tax_jday1900_init);
+else if ( !strcmp(name,"tax_jday1900_compute_") ) return (void *)FORTRAN(tax_jday1900_compute);
+
+else if ( !strcmp(name,"tax_jday_init_") ) return (void *)FORTRAN(tax_jday_init);
+else if ( !strcmp(name,"tax_jday_compute_") ) return (void *)FORTRAN(tax_jday_compute);
+
+else if ( !strcmp(name,"tax_month_init_") ) return (void *)FORTRAN(tax_month_init);
+else if ( !strcmp(name,"tax_month_compute_") ) return (void *)FORTRAN(tax_month_compute);
+
+else if ( !strcmp(name,"tax_times_init_") ) return (void *)FORTRAN(tax_times_init);
+else if ( !strcmp(name,"tax_times_compute_") ) return (void *)FORTRAN(tax_times_compute);
+
+else if ( !strcmp(name,"tax_tstep_init_") ) return (void *)FORTRAN(tax_tstep_init);
+else if ( !strcmp(name,"tax_tstep_compute_") ) return (void *)FORTRAN(tax_tstep_compute);
+
+else if ( !strcmp(name,"tax_units_init_") ) return (void *)FORTRAN(tax_units_init);
+else if ( !strcmp(name,"tax_units_compute_") ) return (void *)FORTRAN(tax_units_compute);
+
+else if ( !strcmp(name,"tax_year_init_") ) return (void *)FORTRAN(tax_year_init);
+else if ( !strcmp(name,"tax_year_compute_") ) return (void *)FORTRAN(tax_year_compute);
+
+else if ( !strcmp(name,"tax_yearfrac_init_") ) return (void *)FORTRAN(tax_yearfrac_init);
+else if ( !strcmp(name,"tax_yearfrac_compute_") ) return (void *)FORTRAN(tax_yearfrac_compute);
+
+else if ( !strcmp(name,"fill_xy_init_") ) return (void *)FORTRAN(fill_xy_init);
+else if ( !strcmp(name,"fill_xy_compute_") ) return (void *)FORTRAN(fill_xy_compute);
+
 
  }
 /*  End of function pointer list for internally-linked External Functions

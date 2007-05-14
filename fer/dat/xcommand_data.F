@@ -172,6 +172,7 @@
 *       7/06 *jli* - add SET AXIS/STRIDE /OFFSET for grid striding
 *       7/06 *jli* - add CANCEL AXIS/STRIDES
 *       *acm* 7/06 -     CANCEL ATTRIBUTE /OUTPUT /DATA
+* V603: 5/07 *acm* - Fix bug found by Andy Jacobson, in line 1465 index should be 30 not 29.
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -1462,7 +1463,7 @@
 
 * **** - command # 30
 	DATA commands(30)			/ '****'	/
-        DATA its_action_command(29)             / .FALSE.       /
+        DATA its_action_command(30)             / .FALSE.       /
 	DATA num_subcommands(30)		/ nsub30	/
 	DATA subcommand_pointer(30)		/ nsub_at30	/
 * **** '    '

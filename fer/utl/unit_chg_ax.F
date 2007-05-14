@@ -43,14 +43,10 @@
 *
 * V200:   1/12/90
 * V420: send back the transformation that has been applied
+* V603 5/07  *acm* - added MODNBD modulo regridding statistic
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	cx, idim, trans
@@ -75,7 +71,8 @@
      .	      .OR. cx_trans(idim,cx) .EQ. trans_good_pt
      .	      .OR. ( cx_unstand_grid(cx)
      .	       .AND. (cx_regrid_trans(idim,cx).EQ.prgrd_good_pt
-     .		 .OR. cx_regrid_trans(idim,cx).EQ.prgrd_modngd)  ) ) THEN
+     .		 .OR. cx_regrid_trans(idim,cx).EQ.prgrd_modngd
+     .		 .OR. cx_regrid_trans(idim,cx).EQ.prgrd_modnbd)  ) ) THEN
 	      trans = punit_mod_npoints
 	      GOTO 200
 	   ENDIF

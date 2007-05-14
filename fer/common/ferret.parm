@@ -25,6 +25,7 @@
 * V600 8/05 *acm* Add category cat_attrib_val, and param alg_attrib_val
 * V602 11/06 *acm* - Change unspecified_int4 to -999. Fixes bug 1463 where
 *                    where an index value of -111 was confused with this flag
+* V603 5/07  *acm* - added MODNBD modulo regridding statistic
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -330,6 +331,7 @@
      .			prgrd_modulo,
      .			prgrd_modvar,
      .			prgrd_modngd,
+     .			prgrd_modnbd,
      .			prgrd_modsum,
      .			prgrd_modmin,
      .			prgrd_modmax,
@@ -352,10 +354,11 @@
      .			prgrd_modulo		= 12,
      .			prgrd_modvar		= 13,
      .			prgrd_modngd		= 14,
-     .			prgrd_modsum		= 15,
-     .			prgrd_modmin		= 16,
-     .			prgrd_modmax		= 17,
-     .			prgrd_nearest		= 18,
+     .			prgrd_modnbd		= 15,
+     .			prgrd_modsum		= 16,
+     .			prgrd_modmin		= 17,
+     .			prgrd_modmax		= 18,
+     .			prgrd_nearest		= 19,
      .			prgrd_from_source	= -6,
      .			prgrd_from_ntrmed	= -7,
      .			pinterpolate		= 0 )

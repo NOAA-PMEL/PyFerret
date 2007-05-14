@@ -78,6 +78,7 @@
 *                     in incorrect results when a larger then needed chunk
 *                     of source data is already in4/15/03 memory
 * V554:  3/04 *acm* Fix the check for done_by_strides.
+* V603 5/07  *acm* - added MODNBD modulo regridding statistic
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -300,11 +301,18 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 * ... of the modulo calculations.
 * ... For modvar (variance) also allocate a temp space for the average
 * ... which is needed in the process of computing the variance
+* ... For modnbd (number of invalid points) also allocate a temp space for 
+* ... the count of number of bad values 
 	   ave_mr = dummy_mr	! component 3 default
-!    ... (actually, CREATE_TEMP_MEM_VAR would be faster and simpler ...)
-	   CALL NEW_MR_W_EDGES(memory,cx_valid,dst_cx,ngd_mr,status)
+
+	   CALL CREATE_TEMP_MEM_VAR(cx_valid,ngd_mr,status)
 	   IF ( status .NE. ferr_ok ) GOTO 5200
 	   mr_regrid_trans ( axis, ngd_mr ) =  prgrd_modngd
+
+	   CALL CREATE_TEMP_MEM_VAR(cx_valid,nbd_mr,status)
+	   IF ( status .NE. ferr_ok ) GOTO 5300
+	   mr_regrid_trans ( axis, nbd_mr ) =  prgrd_modnbd
+
 	   IF ( rgrd_trans .EQ. prgrd_modvar ) THEN
 	      CALL NEW_MR_W_EDGES(memory,cx_valid,dst_cx,ave_mr,status)
 	      IF ( status .NE. ferr_ok ) GOTO 5100
@@ -313,16 +321,19 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 
 * set up 4D array limits and do the regridding
 	   mrlist(3) = ngd_mr
-	   mrlist(4) = ave_mr
-	   CALL NON_ARRAY_SUBSC( mrlist, 4 )
+	   mrlist(4) = nbd_mr
+	   mrlist(5) = ave_mr
+	   CALL NON_ARRAY_SUBSC( mrlist, 5 )
 	   CALL MODULO_REGRID( cx_valid, axis, rgrd_trans,
      .			memory(1,mr_blk1(src_mr)), src_mr,
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
      .			memory(1,mr_blk1(ngd_mr)), ngd_mr,
+     .			memory(1,mr_blk1(nbd_mr)), nbd_mr,
      .			memory(1,mr_blk1(ave_mr)), ave_mr )
 
 * ... delete temporary variables
 	   CALL DELETE_VARIABLE( ngd_mr )
+	   CALL DELETE_VARIABLE( nbd_mr )
 	   IF ( rgrd_trans .EQ.  prgrd_modvar ) THEN
 	      CALL DELETE_VARIABLE( ave_mr )
 	   ENDIF
@@ -353,6 +364,7 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
      .		//alg_regrid_code(rgrd_trans), *5000)
  5100	CALL DELETE_VARIABLE( dst_mr )
  5200	CALL DELETE_VARIABLE( ngd_mr )
+ 5300	CALL DELETE_VARIABLE( nbd_mr )
 	GOTO 5000
 	END	
 

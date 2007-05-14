@@ -1,5 +1,6 @@
 	SUBROUTINE MODULO_REGRID( cx_lims, axis, trans,
-     .			src, msrc, dst, mdst, ngd, mngd, ave, mave)
+     .			src, msrc, dst, mdst, ngd, 
+     .			mngd, nbd, mnbd, ave, mave)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -58,6 +59,7 @@
 * V561: *acm*  4/04 - (old fix got checked in, then an old version got checked in!!)
 *                     add checks on source points when computing sum of squared deviations
 *                     for MODVAR
+* V603 5/07  *acm* - added MODNBD modulo regridding statistic
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'		! for line_dim
@@ -68,12 +70,13 @@
 	include 'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER	cx_lims, axis, trans, msrc, mdst, mngd, mave
+	INTEGER	cx_lims, axis, trans, msrc, mdst, mngd, mnbd, mave
 
 	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
      .		dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
      .		ngd( m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,m3lot:m3hit ),
-     .		ave( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,m4lot:m4hit )
+     .		nbd( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,m4lot:m4hit ),
+     .		ave( m5lox:m5hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit )
 
 * local variable declarations:
 	INTEGER	ISUBSCR_CX, TM_MODULO_LINE_DIM,
@@ -107,6 +110,7 @@
         DO 10 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
         DO 10 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 	   ngd(i, j, k, l) = 0.0
+	   nbd(i, j, k, l) = 0.0
 
 	   IF ( trans .EQ. prgrd_modulo ) THEN
 	      dst(i,j,k,l) = 0.0
@@ -116,6 +120,8 @@
 	      dst(i,j,k,l) = 0.0
 	      ave(i,j,k,l) = 0.0
 	   ELSEIF ( trans .EQ. prgrd_modngd ) THEN
+	      dst(i,j,k,l) = 0.0
+	   ELSEIF ( trans .EQ. prgrd_modnbd ) THEN
 	      dst(i,j,k,l) = 0.0
 	   ELSEIF ( trans .EQ. prgrd_modmin ) THEN
 	      dst(i,j,k,l) = arbitrary_large_val4
@@ -156,7 +162,12 @@
                  DO 110 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 
 * ... ignore missing source data
-	         IF ( src( srcss,j,k,l ) .EQ. bad_src ) GOTO 110
+	         IF ( src( srcss,j,k,l ) .EQ. bad_src ) THEN
+                    nbd(dstss,j,k,l) = nbd(dstss,j,k,l) + 1.
+                    IF ( trans .EQ. prgrd_modnbd ) 
+     .                  dst(dstss,j,k,l) = nbd(dstss,j,k,l)
+                    GOTO 110
+                 ENDIF
 
 * ... count this point
 	         ngd(dstss,j,k,l) = ngd(dstss,j,k,l) + 1.
@@ -203,7 +214,12 @@
                  DO 210 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * ... ignore missing source data
-	         IF ( src( i,srcss,k,l ) .EQ. bad_src ) GOTO 210
+	         IF ( src( i,srcss,k,l ) .EQ. bad_src ) THEN
+                    nbd(i,dstss,k,l) = nbd(i,dstss,k,l) + 1.
+                    IF ( trans .EQ. prgrd_modnbd ) 
+     .                 dst(i,dstss,k,l) = nbd(i,dstss,k,l)
+                    GOTO 210
+                 ENDIF
 
 * ... count this point
 	         ngd(i,dstss,k,l) = ngd(i,dstss,k,l) + 1.
@@ -250,7 +266,12 @@
                  DO 310 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * ... ignore missing source data
-	         IF ( src( i,j,srcss,l ) .EQ. bad_src ) GOTO 310
+	         IF ( src( i,j,srcss,l ) .EQ. bad_src ) THEN
+                    nbd(i,j,dstss,l) = nbd(i,j,dstss,l) + 1.
+                    IF ( trans .EQ. prgrd_modnbd ) 
+     .                  dst(i,j,dstss,l) = nbd(i,j,dstss,l)
+                    GOTO 310
+                 ENDIF
 
 * ... count this point
 	         ngd(i,j,dstss,l) = ngd(i,j,dstss,l) + 1.
@@ -302,7 +323,12 @@
                  DO 410 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * ... ignore missing source data
-	         IF ( src( i,j,k,srcss ) .EQ. bad_src ) GOTO 410
+	         IF ( src( i,j,k,srcss ) .EQ. bad_src ) THEN
+                    nbd(i,j,k,dstss) = nbd(i,j,k,dstss) + 1.
+                    IF ( trans .EQ. prgrd_modnbd ) 
+     .                  dst(i,j,k,dstss) = nbd(i,j,k,dstss)
+                    GOTO 410
+                 ENDIF
 
 * ... count this point
 	         ngd(i,j,k,dstss) = ngd(i,j,k,dstss) + 1.
@@ -330,6 +356,7 @@
 	ENDIF
 
 	IF ( trans .EQ. prgrd_modngd ) RETURN
+	IF ( trans .EQ. prgrd_modnbd ) RETURN
 
 * for all axis orientations
 * ... fill in missing values where there were zero source points

@@ -80,15 +80,11 @@
 * V533   6/01 - *sh* - added transformation @EVNT
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use character constant instead
-* V554 1/04 *acm* - additions for /RANGE repeat loop control; alg_cvar, countervar_name
+* V554 1/04  *acm* - additions for /RANGE repeat loop control; alg_cvar, countervar_name
+* V603 5/07  *acm* - added MODNBD modulo regridding statistic
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'xalgebra.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-#endif
 
 	CHARACTER*1	rubout
 #ifdef NO_INTRINSIC_IN_PARAMETER
@@ -638,6 +634,8 @@ c     .     alg_trans_dflt_arg( 38) / bad_val4      /
      .		alg_regrid_code ( prgrd_modvar )	/ 'MODVAR'	/
      .		alg_regrid_title( prgrd_modngd )	/ '# gd mod pts'/,
      .		alg_regrid_code ( prgrd_modngd )	/ 'MODNGD'	/
+     .		alg_regrid_title( prgrd_modnbd )	/ '# bad mod pts'/,
+     .		alg_regrid_code ( prgrd_modnbd )	/ 'MODNBD'	/
      .		alg_regrid_title( prgrd_modsum )	/ 'modulo sum'	/,
      .		alg_regrid_code ( prgrd_modsum )	/ 'MODSUM'	/
      .		alg_regrid_title( prgrd_modmin )	/ 'modulo min'	/,
@@ -647,9 +645,13 @@ c     .     alg_trans_dflt_arg( 38) / bad_val4      /
      .		alg_regrid_title( prgrd_nearest )	/ 'nearst coord'/,
      .		alg_regrid_code ( prgrd_nearest )	/ 'NRST'	/
      .		(alg_regrid_title(i),i=prgrd_nearest+1,max_regrid_trans)
-     .				/12*unspecified_name4/,
+     .				/11*unspecified_name4/,
      .		(alg_regrid_code (i),i=prgrd_nearest+1,max_regrid_trans)
-     .				/12*unspecified_name4/
+     .			/(max_regrid_trans-prgrd_nearest)*unspecified_name4/
+c     .		(alg_regrid_title(i),i=prgrd_nearest+1,max_regrid_trans)
+c     .			/(max_regrid_trans-prgrd_nearest)*unspecified_name4/,
+c     .		(alg_regrid_code (i),i=prgrd_nearest+1,max_regrid_trans)
+c     .				/11*unspecified_name4/
 
 * translation table for substituting 1D transformations with 4D transforms
 	DATA	num_4d_trans/ 5 /

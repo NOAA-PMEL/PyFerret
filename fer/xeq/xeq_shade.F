@@ -91,6 +91,8 @@
 *                  argument to /KEY, then compare to see if it equals uppercase 'CON'
 * V602 *acm* 11/06 Fix bug 1472: Where single-level color plot is requested, use levels (1) 
 *                  setting rather than sending the data value; avoids precision problems.
+* V603 *acm*  5/07 Fix bug 904: if SHADE/LINE, then set iautoc and NLEV2 to re-use the
+*                  contour levels from the shade plot.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -346,6 +348,8 @@ c done in disp_set_up.
 		 CALL PPLCMD ( ' ', ' ', 0,
      .			'SHADE/OVER/' //ppl_wait//' ' , 1, 1 )
 	         IF ( ppl_interrupted ) GOTO 1000
+	         iautoc = 0 ! reuse levels from last plot
+	         nlev = nlev2
 		 CALL PPLCMD ( ' ', ' ', 0,
      .			'CONTOUR/OVER/' //ppl_wait//' ' , 1, 1 )
 	      else
@@ -358,6 +362,8 @@ c done in disp_set_up.
 		 CALL PPLCMD ( ' ', ' ', 0,
      .			'SHADE/LATCH/'//ppl_wait//' ', 1, 1 )
 	         IF ( ppl_interrupted ) GOTO 1000
+	         iautoc = 0 ! reuse levels from last plot
+	         nlev = nlev2
 		 CALL PPLCMD ( ' ', ' ', 0,
      .			'CONTOUR/OVER/' //ppl_wait//' ' , 1, 1 )
 	      else

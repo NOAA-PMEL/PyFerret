@@ -83,6 +83,10 @@ C
 * V581 *acm* 7/05 fix bug 1279: fill/lev=(n) gave exactly N not nlev2=approx N
 * V600 *acm* 1/06 prevent values of LOG10(0.0)
 * V602 *acm* 2/07 check status coming out of CONSEG; part of fix to bug 1485
+* V603 *acm* 5/07 Compute sig figs for labels along contours, and dash characteristics
+*                 even when re-using previous levels. Those levels may have come from
+*                 a previous SHADE plot as in SHADE/LINE and therefore the levels were
+*                 set but not the contour label and line characteristics.
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -225,7 +229,7 @@ C       =3 dashed line
 C       
 C       Else IAUTOC != 1 means: use supplied levels
 C       
-	ELSE
+	ELSE  ! iautoc = 0
 
 	   IF (ZMIN.EQ.ZMAX) THEN
 	      NLEV2=0
@@ -233,6 +237,33 @@ C
 	      NLEV2=NLEV
               IF (neginf) zlev(1) = MIN( zlev(1), zmin-1. )
               IF (posinf) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
+
+C Compute the digits in the contour levels, and line characteristics
+C these will not have been set before on, say a previous SHADE plot
+
+	      IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
+
+	      IF (ZMP-ZNP .EQ. 0) THEN
+                 JJ=NSIGC
+              ELSE
+                 JJ=NSIGC-IFIX(ALOG10(ABS(ZMP-ZNP))+.5)
+              ENDIF
+              IF (JJ.LE.0) JJ=-1
+
+              IF (NLEV2 .GT. ICNLEV) GO TO 5000
+
+	      DO 105 I=1,NLEV2
+		 LWGT(I)=2
+		 LDIG(I)=-1
+		 IF (ABS(ZLEV(I)).LT.1.E-5*DZ) GOTO 105
+		 IF (ZLEV(I).GT.0.) THEN
+		    LWGT(I)=1
+		 ELSE
+		    LWGT(I)=3
+		 END IF
+		 LDIG(I)=JJ
+ 105	      CONTINUE
+
 	   ENDIF
 
 	END IF

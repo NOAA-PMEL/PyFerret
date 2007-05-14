@@ -4,6 +4,11 @@
  * Utility functions for reading binary data
  *
  * $Id$
+ 
+/* *acm*  5/07 v603 - fix prototype of createBinaryRead to use MAXDIMS rather 
+                      than hardwired to 4; to match what is in .c file.
+					  (Found by Andy Jacobson doing the MAC build.)
+					 
  */
 
 #define MEM_INFO_BLOCKSIZE      1048576	/* Max mem chunk size */
@@ -46,7 +51,7 @@ typedef struct _FileInfo {
   int doSwap;			/* Swap bytes */
 } FileInfo;
 
-extern FileInfo *createBinaryReader(char *, int[4], int[4], int, int);
+extern FileInfo *createBinaryReader(char *, int[MAXDIMS], int[MAXDIMS], int, int);
 extern void deleteBinaryReader(FileInfo *);
 extern int addVar(FileInfo *, float *, int, int);
 extern int readBinary(FileInfo *);

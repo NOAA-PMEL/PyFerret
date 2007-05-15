@@ -59,7 +59,9 @@
 * V510: 8/99 *sh* - g=unknown_uvar is allowed now. If happening, then skip
 *	final steps of context getting
 * V533: 6/01 *sh* - set data type
-	
+* V603: 5/07 *acm*  Fix for bug 1475, before confine_axis check cx_by_ss(idim,cx)
+*                   and if its true check for transformation reducing range to a pt
+
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
@@ -121,6 +123,19 @@
 	      cx_dset_gvn(var_cx) = .TRUE.
 	   ENDIF
 	ENDIF
+
+c Fix for bug 1475
+c FLESH_OUT_AXIS has a check for whether there is a transformation that
+c reduces the range to a point and if so sets cx_by_ss(idim,cx)=.FALSE.
+
+* flesh out the context on each axis with grid-related positions
+* seeing if cx_by_ss(idim,cx) should really be in effect
+	DO 11 idim = 1, 4
+	   IF ( cx_by_ss(idim,var_cx) ) THEN
+              CALL FLESH_OUT_AXIS( idim, var_cx, status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+           ENDIF
+ 11	CONTINUE
 
 * confine limits to grid
 	CALL CONFINE_CONTEXT ( var_cx, status )

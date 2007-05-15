@@ -106,6 +106,8 @@
 * V600 *acm* 3/06  fixing bugs 439&1390, pass cmnd_num to repl_exprns so we can decide
 *                  if the command is an action command, and so whether to apply command
 *                  context to grave-accent expressions.
+* v603 *acm* 5/07  fix bug 919; null symbol entered as the command produced an error;
+*                  the fix is to return at statement 500 if word_num = 0
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -573,7 +575,9 @@ cc  Allow it to be zero-length
 * first word must be command name
 * legal syntax of command ?  (avoid, e.g., "LISTX=160W")
 
- 500    IF ( .NOT.TM_LEGAL_NAME(cmnd_buff(arg_start(1):arg_end(1))) )
+ 500    CONTINUE
+        IF ( word_num .EQ. 0 ) RETURN
+        IF ( .NOT.TM_LEGAL_NAME(cmnd_buff(arg_start(1):arg_end(1))) )
      .                                                        THEN
            word_num = 1
            GOTO 5025

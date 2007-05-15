@@ -35,6 +35,9 @@
 *
 * Steve Hankin
 * Dac, 2000
+*  5/2007 *acm* Fixing bug 1510. Return the result from date_decode as
+*               an argument rather than a return from function; under
+*               64-bit the return always yielded 0.
 
 * This function reads a GODAE (FNMOC) ship observations file (name passed
 * in) and returns the variables in a multi-dimensional array NoxNv where
@@ -182,7 +185,8 @@
 
         INTEGER slen
         CHARACTER str_date*12
-        REAL DATE_DECODE, res
+c        REAL DATE_DECODE, res
+        REAL res
         INTEGER TM_LENSTR1
 
 * NOTE: THIS ROUTINE NEEDS TO BE UPDATES WHEN FERRET SUPPORTS GRIDS OF STRINGS
@@ -192,7 +196,8 @@
         slen = MIN(TM_LENSTR1(str_date)+1,12)
         str_date(slen:slen) = CHAR(0)
 
-        res = DATE_DECODE(str_date)
+c        res = DATE_DECODE(str_date)
+        CALL DATE_DECODE(str_date, res)
         IF ( res .EQ. -1E34 ) THEN
           result(memreslox,memresloy,memresloz,memreslot) =
      .                  bad_flag_result

@@ -86,6 +86,8 @@
 * *kob* 2/03 - replace call to intrinsic func CHAR with its octal
 *              constant equivalent - needed for g77 port
 * *kob* 4/06 - back off my_readline call - needed for 64-bit port
+* v603 *acm* 5/07 Housekeeping: initialize arg_start and arg_end
+*                 before call to parse_command
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -108,7 +110,6 @@
 #else
         PARAMETER ( backslash = char(92) )
 #endif
-#ifdef unix
 	include 'errmsg.parm'
 	include 'ferret.parm'
 	include 'command.parm'
@@ -117,20 +118,6 @@
 	include 'xcontrol.cmn'
 	include 'xinterrupt.cmn'
 	include 'xgui.cmn'
-#else
-	INTEGER	SMG$READ_COMPOSED_LINE, vax_code
-
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-	INCLUDE 'FERRET_CMN:XGUI.CMN'
-	INCLUDE '($SMGDEF)'
-	EXTERNAL SMG$_EOF	! those losers removed it from _SMGDEF *MR*
-#endif
 
 * initialize
 	gui_status = ferr_ok	! start w/ a clean bill o' health
@@ -269,6 +256,12 @@ c        IF(has_more.NE.1) goto 210
 	ENDIF
 
 *************** DECODE THE COMMAND LINE ***************************************
+
+        DO 400 i = 1, max_arg_list
+           arg_start(i) = 0
+           arg_end(i) = 0
+ 400    CONTINUE
+
 	CALL PARSE_COMMAND ( memory, cmnd_buff,
      .			     max_arg_list, max_qual_list,
      .			     len_cmnd, cmnd_num, subcmnd_num, 

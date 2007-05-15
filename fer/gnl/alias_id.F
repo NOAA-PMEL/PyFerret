@@ -42,7 +42,9 @@
 
 * V230:  7/29/92 - from ALIAS_COMMAND
 * V320:  8/18/94 - *KOB* IBM port - changed declaration of MATCH4 from	
-				    integer to logical
+*				    integer to logical
+* V603   5/07    - *acm* Just return if the test string is length 0.
+
 * calling argument declarations:
 	CHARACTER string*(*)
 
@@ -51,17 +53,13 @@
      .          len_test, len_mchars
 	LOGICAL	MATCH4
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xcommand.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'
-#endif
 
 * length of test string
         alen = TM_LENSTR1( string )
         len_test = TM_LENSTR(string(:alen))
+        IF (len_test .EQ. 0) GOTO 200
 * against possible aliases
 	DO 100 i = 1, total_num_alias
            IF ( alias(i) .EQ. unspecified_name4 ) GOTO 100
@@ -74,6 +72,6 @@
  100	CONTINUE
 
 * no match
-        ALIAS_ID = unspecified_int4
+ 200    ALIAS_ID = unspecified_int4
 	RETURN
 	END

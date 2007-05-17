@@ -188,6 +188,10 @@
 * V601 *acm*11/06 Fix bug 1470: on a DEFINE AXIS command which is redefining an axis, change
 *                 values in the attribute structure for the axis.
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V603  5/07 *acm* Fix bug 1511: if DEFINE AXIS or DEFINE ATT change a time
+*                  origin, include the origin in the units attribute as "since t0"
+*                  If units attribute is changed for a time axis, get the time
+*                  origin if it exists and append it to the units string.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -278,7 +282,7 @@
 
 * local variable declarations:
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
-     .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, 
+     .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
      .            new_att, new_att_modulo
@@ -299,7 +303,7 @@
      .            mon_by_d(366), d_in_mon(12), len_cal, n2, n3, s2len,
      .            prev_cal_id, j, num_indices, varid, attype_spec,
      .            mr_perm(max_intrp), attoutflag, attlen, coordvar, 
-     .            dset_to_add, dir, type, attype
+     .            dset_to_add, dir, type, attype, attid 
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
@@ -315,7 +319,8 @@
      .            basic_orients(4)*2, err_string*2048, replmsg*24,
      .		  mon_names(12)*3, varname*512, attname*128, t2*2,
      .            new_att_units*128, new_att_calendar*128,
-     .            new_att_t0*128, dcode*2, axdir*1
+     .            new_att_t0*128, dcode*2, axdir*1, t0string*128, 
+     .            ustring*128
 
         CHARACTER*1 tab
 #ifdef NO_INTRINSIC_IN_PARAMETER
@@ -785,7 +790,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 
 * /UNITS = DEGREES,METERS, ... SECONDS (or supply defaults)
         buff1 = ' '
-        new_att_units = " "
+        new_att_units = ' ' 
 	iqual = qual_given( slash_units )
 	IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
@@ -1245,7 +1250,6 @@ C /units=months  is 1/12 of the length of the year
      .                         status )
 	   IF ( buff2 .EQ. ' ' .OR. status .NE. ferr_ok ) GOTO 5540
            new_att_t0 = buff2
-
 	ELSE
 	   WRITE (buff2,3550) mon_names(1)
  3550      FORMAT ('15-', A3, '-1901')		! default
@@ -1262,6 +1266,26 @@ C /units=months  is 1/12 of the length of the year
 	      ENDIF
 	   ENDIF
 	ENDIF
+
+* Combine new attribute units and/or time origin to express
+* the units attribute as units since time-origin
+
+        IF (orient .EQ. t_dim) THEN
+           IF (new_att_units .NE. ' ') THEN
+              i1 = TM_LENSTR1(new_att_units)
+              new_att_units = new_att_units(1:i1)//' since ' 
+     .            // new_att_t0
+              IF (new_att_t0 .EQ. ' ') 
+     .            new_att_units = new_att_units(1:i1)//' since ' 
+     .            // line_t0(iline)
+           ELSE
+              IF (new_att_t0 .NE. ' ') THEN
+                 i1 = TM_LENSTR1(line_units(iline))
+                 new_att_units = line_units(iline)(1:i1)//' since ' 
+     .            // new_att_t0
+              ENDIF
+           ENDIF
+        ENDIF
 
 * save the line in memory - but don't catalog its name
 	line_dim      ( iline ) = npoints
@@ -1841,6 +1865,80 @@ C /units=months  is 1/12 of the length of the year
         ENDIF
 
 
+* If the time origin was changed or added, also change units to say
+* "units since time origin" using the new time origin info.
+        
+        iline = TM_GET_LINENUM( varname )
+
+        slen = TM_LENSTR1(attname)
+        IF (MATCH_NAME (attname,  slen, 'TIME_ORIGIN', 11)  .AND.
+     .         ( line_direction(iline) .EQ. 'TI' .OR.
+     .          line_direction(iline) .EQ. 'TT' ) ) THEN
+           CALL CD_GET_VAR_ATT_ID (dset, varid, 'UNITS', attid, status)
+           IF (status .NE. ferr_ok) GOTO 5960
+           got_it = NC_GET_ATTRIB ( dset, varid, 'units',
+     .                              .TRUE., varname, 128,
+     .                              attlen, attoutflag, ustring, 
+     .                              val_buf )
+           got_it = NC_GET_ATTRIB ( dset, varid, 'time_origin',
+     .                              .TRUE., varname, 128,
+     .                              attlen, attoutflag, t0string, 
+     .                              val_buf )
+           vax_code = STR_UPCASE (buff2, ustring)
+           slen = INDEX(buff2, 'SINCE')
+           IF (slen .GT. 0) THEN
+              slen = slen - 2
+           ELSE
+              slen = TM_LENSTR1(ustring)
+           ENDIF
+           buff3 = ustring(1:slen) // ' since ' // t0string
+           attlen = TM_LENSTR1(buff3)
+
+           ustring = 'units'
+           CALL CD_REPLACE_ATTR (dset, varid, ustring, NCCHAR, 
+     .         attlen, buff3, val_buf, status)
+        ENDIF
+
+* If the units were changed on a time axis, add "since time origin"
+           
+        slen = TM_LENSTR1(attname)
+        IF (MATCH_NAME (attname,  slen, 'UNITS', 5)  .AND.
+     .     ( line_direction(iline) .EQ. 'TI' .OR.
+     .       line_direction(iline) .EQ. 'TT' ) ) THEN
+           CALL CD_GET_VAR_ATT_ID (dset, varid, 'TIME_ORIGIN', 
+     .              attid, status)
+           IF (status .EQ. ferr_ok) THEN 
+              got_it = NC_GET_ATTRIB ( dset, varid, 'time_origin',
+     .                                .TRUE., varname, 128,
+     .                                attlen, attoutflag, t0string, 
+     .                                val_buf )
+              got_it = NC_GET_ATTRIB ( dset, varid, 'units',
+     .                                .TRUE., varname, 128,
+     .                                attlen, attoutflag, ustring, 
+     .                                val_buf )
+
+              vax_code =  STR_UPCASE (buff2, ustring)
+              slen = INDEX(buff2, 'SINCE')
+              IF (slen .GT. 0) THEN
+                 slen = slen - 2
+              ELSE
+                 slen = TM_LENSTR1(ustring)
+              ENDIF
+              buff3 = ustring(1:attlen) // ' since ' // t0string
+              attlen = TM_LENSTR1(buff3)
+
+              CALL CD_REPLACE_ATTR (dset, varid, attname, NCCHAR, 
+     .            attlen, buff3, val_buf, status)
+           ENDIF
+        ENDIF
+
+
+* Update attribute information used by plotting etc (ds_units, ...)
+            CALL FIND_VAR_NAME (dset, varname, cat, uvar)
+            IF (cat .EQ. cat_user_var .OR. cat .EQ. cat_file_var)
+     .           CALL UPDATE_ATTRIBUTES (dset, uvar)
+
+
 	RETURN
 
 * error exit
@@ -1966,5 +2064,10 @@ C /units=months  is 1/12 of the length of the year
 5940    slen = TM_LENSTR1(buff2)
         CALL ERRMSG( ferr_invalid_command, status,
      .		'attribute type must be string or float'// buff2(:slen), *5000 )
+
+5960  slen = TM_LENSTR(buff1)
+      CALL ERRMSG( ferr_invalid_command, status,
+     .   'cannot set T0 unless Units are also set'//
+     .    buff1(:slen), *5000 )
 
 	END

@@ -119,12 +119,12 @@ C	VAX/VMS
 C
 	DIMENSION IZMRKD(3)
 	DATA IZMRKD/12,16,3/
-C
-C	END VAX/VMS
-C
+
 C
 C       IAUTOC = 1 means: compute levels from input data and number
 C                         of levels
+
+c ZMAX and ZMIN are the min and max of the data.
 
 	IF (IAUTOC.EQ.1) THEN
 
@@ -231,8 +231,19 @@ C       Else IAUTOC != 1 means: use supplied levels
 C       
 	ELSE  ! iautoc = 0
 
+C	FIND MIN AND MAX as in lev.F from the Z levels.
+
+	   ZMIN=ZLEV(1)
+	   IF (neginf) ZMIN = ZLEV(2)
+	   ZMAX=ZMIN
+	   DO 110 I=2,NLEV
+	      IF(ZLEV(I).GT.ZMAX)ZMAX=ZLEV(I)
+	      IF(ZLEV(I).LT.ZMIN)ZMIN=ZLEV(I)
+110        CONTINUE
+
 	   IF (ZMIN.EQ.ZMAX) THEN
-	      NLEV2=0
+c	      NLEV2=0
+	      NLEV2=1
 	   ELSE
 	      NLEV2=NLEV
               IF (neginf) zlev(1) = MIN( zlev(1), zmin-1. )
@@ -241,6 +252,10 @@ C
 C Compute the digits in the contour levels, and line characteristics
 C these will not have been set before on, say a previous SHADE plot
 
+              znp = zmin
+              zmp = zmax
+              dz = 0
+              IF (set_delta) dz = delta
 	      IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
 
 	      IF (ZMP-ZNP .EQ. 0) THEN
@@ -270,7 +285,7 @@ C these will not have been set before on, say a previous SHADE plot
 
 * Now that the levels are set, create the LEVELS symbols
 
-        CALL setlab_syms (ZLEV, NLEV2)
+        CALL setlab_syms (ZLEV, MAX(NLEV2,1) )
 
 
 C       DRAW CONTOUR
@@ -447,7 +462,7 @@ C       multiplying the index value by the DX or DY delta values.
 
 * Now that the levels are set, create the LEVELS symbols
 
-        CALL setlab_syms (ZLEV, NLEV2)
+        CALL setlab_syms (ZLEV, MAX(NLEV2,1) )
 
 	 if (makep.eq.'CONTOUR') then
 c *kob* 8/97 had to move the continuation marker to col 5 - it was in col 8

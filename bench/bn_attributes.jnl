@@ -910,3 +910,39 @@ set att (z4ax).positive = "up"
 sp echo "bn_attributes.jnl --- 27 attributes of  user-defined axes" >> all_ncdump.out
 save/clobber/file=string4d.nc axy
 sp ncdump -h string4d.nc >> all_ncdump.out
+
+go bn_reset
+! For SET ATT timeaxis.units or SET ATT timeaxis.time_origin
+! include the correct time origin as part of the units attribute.
+
+! Note original attributes
+use coads_climatology
+show att/all (`sst,return=taxis`)
+
+! change units to days since time origin
+set att (`sst,return=taxis`).units="days"
+show att/all (`sst,return=taxis`)
+
+define attribute (`sst,return=taxis`).units = "months"
+show att/all (`sst,return=taxis`)
+
+! change time origin and also units to include time origin
+set att (`sst,return=taxis`).time_origin = "1-mar-1955"
+show att/all (`sst,return=taxis`)
+
+define attribute (`sst,return=taxis`).time_origin = "15-jan-2002"
+show att/all (`sst,return=taxis`)
+
+! Likewise on DEFINE AXIS or SET AXIS, change units to
+! include the correct since time_origin.
+
+use coads_climatology
+show att/all (`sst,return=taxis`)
+def axis/t=1:12:1/unit=months/t0="1-jan-0001" time
+show att/all (`sst,return=taxis`)
+
+set axis/t0="15-jan-0000" time
+show att/all (`sst,return=taxis`)
+
+set axis/units=days time
+show att/all (`sst,return=taxis`)

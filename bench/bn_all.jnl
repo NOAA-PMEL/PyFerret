@@ -537,6 +537,14 @@ GO bn_return_xmod_tmod.jnl
 GO bn_reset
 GO bn602_bug_fixes
 
+
+! ******** V6.03 Additions below ***********
+GO bn_reset
+GO bn_modnbd.jnl
+
+GO bn_reset
+GO bn603_bug_fixes
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

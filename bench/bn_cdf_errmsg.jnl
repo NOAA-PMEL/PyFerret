@@ -7,7 +7,10 @@ set mode ignore
 ! bad file names; file missing or misspelled 
 use this_is_not_a_file.nc
 
-use  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf"
+
+!! Change to another server, our server down...
+!!use  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf"
+use "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf"
 
 ! bad server
 use  "http://noserver/a/nofile.cdf"
@@ -21,3 +24,4 @@ sp mv asc.dat asc.nc
 use asc.nc
 
 set mode/last ignore
+

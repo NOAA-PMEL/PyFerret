@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     47737706 Apr 10 14:21 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     50473760 May  3 09:50 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Ferret v6.02 with DODS v3.7.6
+Note: test fix for bug 636, segfault on var[gt=b] regridding, when the axis of var and b are the same"
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Tue Apr 10 14:28:42 PDT 2007
+Beginning at Thu May 3 10:12:42 PDT 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -615,9 +615,9 @@ set var/outtype=garbage broiled
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **netCDF error
-             No such file or directory (OPeNDAP/netCDF Error code 2)
-             Data set: http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf
-SET DAT/FORM=CDF  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf"
+             Operation not permitted (OPeNDAP/netCDF Error code 1)
+             Data set: http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf
+SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf"
  **netCDF error
              Unknown error 1001 (OPeNDAP/netCDF Error code 1001)
              Data set: http://noserver/a/nofile.cdf
@@ -634,7 +634,7 @@ shade sst[t=@AVE,Z=@ave]
            - its a 2D region: "plot/i=100/k=1 temp[x=122.5W]"
 plot/i=100/k=1 temp[x=122.5W]
  **ERROR: invalid command: it is a child axis already
-set axis/stride=2/offset=1 (AX055)
+set axis/stride=2/offset=1 (AX043)
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
  **ERROR: invalid command: offset must be less than stride value
@@ -705,4 +705,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-Ended at Tue Apr 10 14:31:57 PDT 2007
+Ended at Thu May 3 10:15:49 PDT 2007

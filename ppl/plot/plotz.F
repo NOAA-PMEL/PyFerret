@@ -255,8 +255,10 @@ C these will not have been set before on, say a previous SHADE plot
               znp = zmin
               zmp = zmax
               dz = 0
-              IF (set_delta) dz = delta
-	      IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
+              IF (set_delta) THEN
+                 dz = delta
+	         IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
+              ENDIF
 
 	      IF (ZMP-ZNP .EQ. 0) THEN
                  JJ=NSIGC

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     48095099 May 14 10:13 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     48095243 May 14 10:50 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: new modnbd script, fix for bug 904 with a script to test that; tax_* functions internally linked
+Note: test fix for bug 1475, call flesh_out_axis before confine_context in get_var_context.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Mon May 14 10:15:50 PDT 2007
+Beginning at Mon May 14 11:03:00 PDT 2007
  	NOAA/PMEL TMAP
  	FERRET v6.02  
  	Linux(g77) 2.4.21-32 - 05/14/07
- 	14-May-07 10:15     
+ 	14-May-07 11:03     
 
 yes? !bn500_all_shell
 yes? 
@@ -10311,7 +10311,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.02"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
 SESSION_DATE = "14-May-07"
-SESSION_TIME = "10:15"
+SESSION_TIME = "11:03"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10330,7 +10330,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.02"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
 SESSION_DATE = "14-May-07"
-SESSION_TIME = "10:15"
+SESSION_TIME = "11:03"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10339,7 +10339,7 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "14-May-07"
-SESSION_TIME = "10:15"
+SESSION_TIME = "11:03"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10350,12 +10350,12 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "14-May-07"
-SESSION_TIME = "10:15"
+SESSION_TIME = "11:03"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "14-May-07"
-SESSION_TIME = "10:15"
+SESSION_TIME = "11:03"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10389,7 +10389,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.02"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "May 14 2007 10:16:07 "
+LAB3 = "May 14 2007 11:03:17 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10489,7 +10489,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.02"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
 SESSION_DATE = "14-May-07"
-SESSION_TIME = "10:15"
+SESSION_TIME = "11:03"
  
  
 GO bn_reset
@@ -13429,6 +13429,18 @@ LET/QUIET a = temp[x=130w:120W:3]
 ! changes on 11/29 in CONFINE_AXIS this no longer an error ... a bit mysterious
 ! changes on 4/98 in CONFINE_AXIS this is once again an error
 set mode ignore; list a; cancel mode ignore	! SET REGION mis-applied
+             VARIABLE : TEMP[X=130W:120W:3]
+             FILENAME : gtsa056_1.cdf
+             SUBSET   : 4 by 5 points (LONGITUDE-LATITUDE)
+             DEPTH (m): 5
+             TIME     : 15-JAN-1982 14:00
+               130W     127W     124W     121W    
+                 1        2        3        4
+ 1.5N  / 50:  24.7030  24.2283  25.0596  25.3824
+ 1.17N / 49:  24.4664  24.0441  24.7395  24.9891
+ 0.83N / 48:  24.2617  23.8736  24.4085  24.5531
+ 0.5N  / 47:  24.1085  23.7576  24.0884  24.1823
+ 0.17N / 46:  24.0229  23.7029  23.8301  23.9069
 list a[i=1:4]
              VARIABLE : TEMP[X=130W:120W:3]
              FILENAME : gtsa056_1.cdf
@@ -13745,6 +13757,18 @@ LET/QUIET a = temp[x=90w:60W:4]
 ! changes on 11/29 in CONFINE_AXIS this no longer an error ... a bit mysterious
 ! changes on 4/98 in CONFINE_AXIS this is once again an error
 set mode ignore; list a; cancel mode ignore	! SET REGION mis-applied
+             VARIABLE : TEMP[X=90W:60W:4]
+             FILENAME : gtsa056_1.cdf
+             SUBSET   : 8 by 5 points (LONGITUDE-LATITUDE)
+             DEPTH (m): 5
+             TIME     : 15-JAN-1982 14:00
+                90W      86W      82W      78W      74W      70W      66W      62W    
+                 1        2        3        4        5        6        7        8
+ 1.5N  / 50:  27.2194  27.5576  27.9470     ....     ....     ....  29.3528  29.4885
+ 1.17N / 49:  27.1122  27.4131  27.8883     ....     ....     ....  29.3882  29.5084
+ 0.83N / 48:  26.9645  27.2528  27.7639     ....     ....     ....  29.4644  29.5380
+ 0.5N  / 47:  26.7776  27.0851  27.5584     ....     ....     ....  29.5482  29.5745
+ 0.17N / 46:  26.5410  26.8980  27.2770     ....     ....     ....  29.6283  29.6082
 list a[i=1:6]
              VARIABLE : TEMP[X=90W:60W:4]
              FILENAME : gtsa056_1.cdf
@@ -15050,9 +15074,9 @@ stat temp[g=u] - temp[g=u@ave,gx=u@lin,gy=u@lin,gz=u@lin,gt=u@lin]  ! == 0
  strip regrid on X: TEMP --> PS3DU2           @LIN
  strip regrid on Y: TEMP --> XNTERMED         @LIN
  reading TEMP     M:102 I:  100  106  J:   45   50  K:    1    2  L:    3    4
- regrid  TEMP     M: 97 I:  100  106  J:   45   49  K:    1    2  L:    3    4
+ regrid  TEMP     M: 98 I:  100  106  J:   45   49  K:    1    2  L:    3    4
  regrid  TEMP     M: 85 I:  100  105  J:   45   49  K:    1    2  L:    3    4
- -DELETE TEMP     M: 97 I:  100  106  J:   45   49  K:    1    2  L:    3    4
+ -DELETE TEMP     M: 98 I:  100  106  J:   45   49  K:    1    2  L:    3    4
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  
              TEMP[G=U] - TEMP[G=U@AVE,GX=U@LIN,GY=U@LIN,GZ=U@LIN,GT=U@LIN]
@@ -15069,14 +15093,14 @@ stat temp[g=u] - temp[g=u@ave,gx=u@lin,gy=u@lin,gz=u@lin,gt=u@lin]  ! == 0
  Mean    value: 0 (unweighted average)
  Standard deviation: 0
 stat temp[g=u,gx=@ave] - temp[gx=@ave,g=u]    ! == 0
- -DELETE EX#1     M: 97 I:  100  105  J:   45   49  K:    1    2  L:    3    4
+ -DELETE EX#1     M: 98 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  eval    EX#1     C:  4 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  strip regrid on X: TEMP --> PS3DU2           @AVE
  strip regrid on Y: TEMP --> XNTERMED         @LIN
- reading TEMP     M: 97 I:  100  106  J:   45   50  K:    1    2  L:    3    4
+ reading TEMP     M: 98 I:  100  106  J:   45   50  K:    1    2  L:    3    4
  regrid  TEMP     M: 84 I:  100  106  J:   45   49  K:    1    2  L:    3    4
  regrid  TEMP     M: 80 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  -DELETE TEMP     M: 84 I:  100  106  J:   45   49  K:    1    2  L:    3    4
@@ -15705,10 +15729,10 @@ LIST temp[g=g5day,gy=g5day@ave]
  strip regrid on T: TEMP --> YNTERMED         @LIN
  reading TEMP     M:109 I:  100  106  J:   45   50  K:    1    2  L:    2    5
  regrid  TEMP     M:101 I:  100  106  J:   45   50  K:    1    2  L:    2    3
- regrid  TEMP     M: 98 I:  100  106  J:   45   49  K:    1    2  L:    2    3
+ regrid  TEMP     M: 97 I:  100  106  J:   45   49  K:    1    2  L:    2    3
  -DELETE TEMP     M:101 I:  100  106  J:   45   50  K:    1    2  L:    2    3
  regrid  TEMP     M:101 I:  100  105  J:   45   49  K:    1    2  L:    2    3
- -DELETE TEMP     M: 98 I:  100  106  J:   45   49  K:    1    2  L:    2    3
+ -DELETE TEMP     M: 97 I:  100  106  J:   45   49  K:    1    2  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: G5DAY on X@LIN, on Y@AVE, on T@LIN
              FILENAME : gtsa056_1.cdf
@@ -15748,7 +15772,7 @@ LIST temp[g=g5day,gz=g5day@ave]
  strip regrid on X: TEMP --> G5DAY            @LIN
  strip regrid on Y: TEMP --> XNTERMED         @LIN
  strip regrid on T: TEMP --> YNTERMED         @LIN
- reading TEMP     M: 98 I:  100  106  J:   45   50  K:    1    2  L:    2    5
+ reading TEMP     M: 97 I:  100  106  J:   45   50  K:    1    2  L:    2    5
  regrid  TEMP     M: 94 I:  100  106  J:   45   50  K:    1    2  L:    2    3
  regrid  TEMP     M: 78 I:  100  106  J:   45   49  K:    1    2  L:    2    3
  -DELETE TEMP     M: 94 I:  100  106  J:   45   50  K:    1    2  L:    2    3
@@ -16801,8 +16825,8 @@ plot/over temp[g=u,gx=u@ave]
  reading TEMP     M: 85 I:    1  141  J:   44   46  K:    1    1  L:    2    3
  -DELETE TEMP     M: 99 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  regrid  TEMP     M: 99 I:    1  141  J:   44   45  K:    1    1  L:    2    3
- -DELETE TEMP     M: 97 I:  100  106  J:   45   50  K:    1    2  L:    3    4
- regrid  TEMP     M: 97 I:    1  140  J:   44   45  K:    1    1  L:    2    3
+ -DELETE TEMP     M: 98 I:  100  106  J:   45   50  K:    1    2  L:    3    4
+ regrid  TEMP     M: 98 I:    1  140  J:   44   45  K:    1    1  L:    2    3
  -DELETE TEMP     M: 99 I:    1  141  J:   44   45  K:    1    1  L:    2    3
  doing moduloing TEMP on X axis:     1   140
  -DELETE TEMP     M: 84 I:  100  106  J:   45   50  K:    1    2  L:    3    4
@@ -16977,7 +17001,7 @@ plot/over temp[g=g5_10]
  regrid  TEMP     M:101 I:    7    7  J:    5   88  K:    1    1  L:    2    3
  -DELETE TEMP     M:109 I:   50   51  J:    5   88  K:    1    1  L:    2    3
  doing --> TEMP[Z=5@ITP,D=1]
- -DELETE TEMP     M: 98 I:  100  106  J:   45   50  K:    1    2  L:    2    5
+ -DELETE TEMP     M: 97 I:  100  106  J:   45   50  K:    1    2  L:    2    5
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
 PPL plot 92   complete
@@ -18426,9 +18450,7 @@ set window/clear
 * abstract XY contours
 set grid abstract
 set view v11
-contour/x=1:100/y=101:200/lev=(-1,1,.5) sin(x-rw-rw-r--    1 ansley   tmap        29642 May 14 10:16 bench.mgm
--rw-rw-r--    1 ansley   tmap       496408 May 14 10:16 bench.mgm
-/6)*cos(y/9)
+contour/x=1:100/y=101:200/lev=(-1,1,.5) sin(x/6)*cos(y/9)
 set view v12
 contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200 sin(x/6)*cos(y/9)
 set view v13
@@ -18492,7 +18514,9 @@ GO bn_movie
 ! - test on-HDF movie creation by Program FERRET
 ! - FERRET ver 3.10 10/93
  
-! ===> NOTE:  This may fail with an X error if the movie window is iconified
+! ===> NOTE:  This may fail with an X error if the movie window is iconifie-rw-rw-r--    1 ansley   tmap        29645 May 14 11:03 bench.mgm
+-rw-rw-r--    1 ansley   tmap       496422 May 14 11:03 bench.mgm
+d
  
 sp rm bench.mgm
 SHOW MOVIE
@@ -25743,7 +25767,9 @@ sp ncdump out.cdf >> all_ncdump.out
 GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
+ TEMPORARY data cleared from mabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
+Mon May 14 11:04:17 PDT 2007
+emory
 GO err491_gmax.jnl
 ! err491_gmax.jnl
 ! 9 Dec. 1998 *sh*
@@ -25799,9 +25825,7 @@ stat/i=1:3/j=1:3 a
  
              X+Y
              X: 0.5 to 3.5
-             Y: abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Mon May 14 10:17:08 PDT 2007
-0.5 to 3.5
+             Y: 0.5 to 3.5
              Z:  N/A
              T:  N/A
              DATA SET: N/A
@@ -35050,7 +35074,14 @@ list a[i=@shf]
 list a[i=@shf:-1]
              VARIABLE : {"a","b","c","d"}
                         shifted by -1 pts on X
-             SUBSET   : 4 points (X)
+             SUBSEcol1,col2,col3,col4,col5
+one,,1.1,24S,130E,,1e1,"word 1"
+    two,,2.2,24N,130W,2S,,"word 2"
+three,,3.3,24,130,3N,3e-2," wd 3 "
+
+five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
+extra line
+T   : 4 points (X)
  1   / 1:"" 
  2   / 2:"a"
  3   / 3:"b"
@@ -35120,13 +35151,6 @@ fill/l=1/axes sst
 can view
 polygon/thick/color=red/palette=blue/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
  
-col1,col2,col3,col4,col5
-one,,1.1,24S,130E,,1e1,"word 1"
-    two,,2.2,24N,130W,2S,,"word 2"
-three,,3.3,24,130,3N,3e-2," wd 3 "
-
-five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
-extra line
 GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
@@ -35354,8 +35378,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
  Column  3: V3
  Column  4: V4
  Column  5: V5
- Colucol1,col2,col3,col4,col5
-mn  6: V6
+ Column  6: V6
  Column  7: V7
  Column  8: V8
  Column  9: V9
@@ -35420,7 +35443,12 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 6   / 6:......     ....     ....     ....     ....     ..........     ....
  
 ! insist that all columns be treated as latitude
-file/format=delim/skip=1/type=latitude bn_delimited_read_1.dat
+file/format=dcol1,col2,col3,col4,col5
+12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+elim/skip=1/type=latitude bn_delimited_read_1.dat
 list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
              DATA SET: ./bn_delimited_read_1.dat
              X: 0.5 to 6.5
@@ -35448,11 +35476,7 @@ define axis/x=1:1:1 x1
 Replacing definition of axis X1
 define grid/x=x1 g1
 Replacing definition of grid G1
-columns/g12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-rid=g1 bn_delimited_read_1.dat
+columns/grid=g1 bn_delimited_read_1.dat
  ! note 10 columns because auto-analysis of file doesnt stop at 1st record
 list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
              DATA SET: ./bn_delimited_read_1.dat
@@ -35644,11 +35668,7 @@ show data 2
        (Time of day)
  V6       V6                               1:4       ...       ...       ...
        (Time of day)
- V712/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-       V7                               1:4       ...       ...       ...
+ V7       V7                               1:4       ...       ...       ...
        (Time of day)
  V8       V8                               1:4       ...       ...       ...
        (Time of day)
@@ -35704,7 +35724,11 @@ list v1,v3,v5,v7
               V1     V3       V5       V7
 1   / 1:  36493.0  12.0000  36493.0  12.0000
 2   / 2:  36494.0   1.0037  36494.0   1.0037
-3   / 3:     ....     ....  36495.0   2.0000
+3   / 3:     ...12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+.     ....  36495.0   2.0000
 4   / 4:  36496.0   3.0000  36496.0   3.0000
 show data 2
      currently SET data sets:
@@ -46455,57 +46479,6 @@ let str2a = STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.
 list str2a
              VARIABLE : STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
           162.000
-             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
-             LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
-             LATITUDE : 19.7N to 19.7N
-             GEOMETRY: XY 
-             SIZE:  5  6  
-             FORTRAN FORMAT: (f9.5)
-             MISSING VALUES FLAG: -9.9999998E+33
-X COORDINATES: LON
-204.89923
-204.89975
-204.90025
-204.90076
-204.90126
-Y COORDINATES: LAT
- 19.70020
- 19.70071
- 19.70122
- 19.70173
- 19.70223
- 19.70274
-DATA:
-224.59943
-224.59995
-224.60045
-224.60095
-224.60146
-224.59995
-224.60046
-224.60097
-224.60147
-224.60197
-224.60045
-224.60097
-224.60147
-224.60197
-224.60248
-224.60097
-224.60149
-224.60199
-224.60249
-224.60300
-224.60146
-224.60197
-224.60248
-224.60298
-224.60349
-224.60197
-224.60249
-224.60300
-224.60350
-224.60400
  
 def sym aLIST = Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.7
  
@@ -46574,7 +46547,58 @@ let myvar = x[gx=xfine] + y[gy=yfine]
 set list/prec=8
 list/form=tab myvar
              VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+             LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
+             LATITUDE : 19.7N to 19.7N
+             GEOMETRY: XY 
+             SIZE:  5  6  
+             FORTRAN FORMAT: (f9.5)
+             MISSING VALUES FLAG: -9.9999998E+33
+X COORDINATES: LON
+204.89923
+204.89975
+204.90025
+204.90076
+204.90126
+Y COORDINATES: LAT
+ 19.70020
+ 19.70071
+ 19.70122
+ 19.70173
+ 19.70223
+ 19.70274
+DATA:
+224.59943
+224.59995
+224.60045
+224.60095
+224.60146
+224.59995
+224.60046
+224.60097
+224.60147
+224.60197
+224.60045
+224.60097
+224.60147
+224.60197
+224.60248
+224.60097
+224.60149
+224.60199
+224.60249
+224.60300
+224.60146
+224.60197
+224.60248
+224.60298
+224.60349
+224.60197
+224.60249
+224.60300
+224.60350
+224.60400
+9.9999998E+33
              SUBSET   : 5 by 6 points (LONGITUDE-LATITUDE)
 coordinates	155.1W   	155.1W   	155.1W   	155.1W   	155.1W   
 19.7N	224.59943	224.59995	224.60045	224.60095	224.60146
@@ -46977,7 +47001,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASMay 14 2007 10:18:24
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASMay 14 2007 11:05:32
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -48422,7 +48446,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "14-May-07:10:15"
+WIN_TITLE = "14-May-07:11:03"
  
 set win/title="set the title"
 sho sym win_title
@@ -48440,11 +48464,11 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($sessino_date):($session_time)"
- !-> set win/title=" :10:15"
+ !-> set win/title=" :11:03"
 set win/title="($session_date):($session_time)"
- !-> set win/title="14-May-07:10:15"
+ !-> set win/title="14-May-07:11:03"
 sh sym win_title
-WIN_TITLE = "14-May-07:10:15"
+WIN_TITLE = "14-May-07:11:03"
  
  
 GO bn_reset
@@ -53987,7 +54011,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.02  
  	Linux(g77) 2.4.21-32 - 05/14/07
- 	14-May-07 10:18     
+ 	14-May-07 11:06     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -54696,8 +54720,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  6    /  6:  -9.00
  7    /  7:  -8.00
  8    /  8:  -7.00
- 9    /-rw-rw-r--    1 ansley   tmap        12704 May 14 10:18 testa.v5d
--rw-rw-r--    1 ansley   tmap        12704 May 14 10:18 test.v5d
+ 9    /-rw-rw-r--    1 ansley   tmap        12704 May 14 11:06 testa.v5d
+-rw-rw-r--    1 ansley   tmap        12704 May 14 11:06 test.v5d
   9:  -6.00
  10   / 10:  -5.00
  11   / 11:  -4.00
@@ -56863,7 +56887,7 @@ end of ncdump output
  	NOAA/PMEL TMAP
  	FERRET v6.02  
  	Linux(g77) 2.4.21-32 - 05/14/07
- 	14-May-07 10:18     
+ 	14-May-07 11:06     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57047,7 +57071,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.02  
  	Linux(g77) 2.4.21-32 - 05/14/07
- 	14-May-07 10:18     
+ 	14-May-07 11:06     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57163,7 +57187,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.02  
  	Linux(g77) 2.4.21-32 - 05/14/07
- 	14-May-07 10:18     
+ 	14-May-07 11:06     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57248,4 +57272,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Mon May 14 10:19:00 PDT 2007
+Ended at Mon May 14 11:06:10 PDT 2007

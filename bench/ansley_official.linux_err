@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     48095243 May 14 10:50 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     48095250 May 14 12:18 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: test fix for bug 1475, call flesh_out_axis before confine_context in get_var_context.
+Note: fix bug 919 parsing when command is a null symbol
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Mon May 14 11:03:00 PDT 2007
+Beginning at Mon May 14 12:36:58 PDT 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -523,8 +523,6 @@ def axis/t/cal=nogood/t=1-jan-2000:1-jan-2010:1/units=months tax
 Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
 Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
 Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
- **ERROR: command syntax
- 
  **ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification
 plot/sym/siz=0.3 0*t[gt=vwnd]
  **ERROR: First argument is a letter of the alphabet
@@ -699,4 +697,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-Ended at Mon May 14 11:06:10 PDT 2007
+Ended at Mon May 14 12:40:18 PDT 2007

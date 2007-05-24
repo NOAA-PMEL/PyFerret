@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     50473760 May  3 09:50 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     47739168 May  8 09:24 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: test fix for bug 636, segfault on var[gt=b] regridding, when the axis of var and b are the same"
+Note: dataset names are 2048, except for stepfiles which are 512 (otherwise xstep_files_data takes too much memory and cannot build!)
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Thu May 3 10:12:42 PDT 2007
+Beginning at Tue May 8 09:54:14 PDT 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -705,4 +705,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-Ended at Thu May 3 10:15:49 PDT 2007
+Ended at Tue May 8 09:57:27 PDT 2007

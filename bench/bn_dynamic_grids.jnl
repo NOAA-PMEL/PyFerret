@@ -10,6 +10,7 @@
 !			      log files when compared to pre beta5001.1 logs.  The 
 !			      numericals results found here are verified to be correct
 ! V550 11/02 *sh* - documentation change only reflecting new modulo behavior
+! V603  5/07 *acm*  documentation changew - some of the context errors have gone away.
 
 ! deliberate dynamic grid errors
 
@@ -281,6 +282,7 @@ list a[x=135w:125w:3]
 LET/QUIET a = temp[x=130w:120W:3]
 ! changes on 11/29 in CONFINE_AXIS this no longer an error ... a bit mysterious
 ! changes on 4/98 in CONFINE_AXIS this is once again an error
+! Changes 5/2007 in GET_VAR_CONTEXT this is no longer an error (acm) !
 set mode ignore; list a; cancel mode ignore	! SET REGION mis-applied
 list a[i=1:4]
 list a[i=1:4:2]
@@ -328,6 +330,7 @@ list a[x=85w:45w:5]
 LET/QUIET a = temp[x=90w:60W:4]
 ! changes on 11/29 in CONFINE_AXIS this no longer an error ... a bit mysterious
 ! changes on 4/98 in CONFINE_AXIS this is once again an error
+! Changes 5/2007 in GET_VAR_CONTEXT this is no longer an error (acm) !
 set mode ignore; list a; cancel mode ignore	! SET REGION mis-applied
 list a[i=1:6]
 list a[i=1:6:2]

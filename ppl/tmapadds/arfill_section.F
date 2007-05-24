@@ -122,6 +122,7 @@ c
                zt(2)=z(ii+1,jj)
                if (i.eq.nx) then
                   xt(2)=x_extra
+                  zt(2)=z(ilo,jj)
                else
                   xt(2)=x(i+1)
                end if
@@ -129,10 +130,12 @@ c
               
                zt(3)=z(ii+1,jj+1)
                if (i.eq.nx) then
-                  xt(3) = x_extra
+                  xt(3)=x_extra
+                  zt(3)=z(ilo,jj+1)
                else
                   xt(3)=x(i+1)
                end if
+
                if (j.eq.ny) then
                   yt(3)=y_extra
                else
@@ -154,6 +157,7 @@ c
               zt(2)=z(ii+1,jj+1)
               if (i.eq.nx) then
                  xt(2) = x_extra
+                 zt(2) = z(ilo,jj+1)
               else
                  xt(2)=x(i+1)
               end if

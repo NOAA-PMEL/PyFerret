@@ -101,6 +101,7 @@
 *                      separately, checking for the branch cut.  Make more calls to 
 *                      SHADE_FILL_IT as needed to fill the longitude range.
 C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bug 1485
+* V603 *acm* 5/07 Fix part 1 of bug 1302; if xmodulo is true, then set dim1_modulo true.
 
 	INCLUDE		'parampl5_dat.decl'
 	INCLUDE		'PARAMPL5.DAT'
@@ -397,6 +398,7 @@ c If all the data is missing don't make the cellarray call
         IF (curvilinear) THEN
            CALL CURV_COORD_RANGE (uc, ilo, ihi, jlo, jhi, status )
            IF (status .NE. ferr_ok) GOTO 1000
+           IF (xmodulo) dim1_modulo = .TRUE.
         ENDIF
 
         xadd = 0.

@@ -164,6 +164,11 @@ C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
 
 	      NLEV2=(ZMP-ZNP)/DZ+1 
 
+              IF (.NOT. set_delta) THEN  ! save dz for setlab_syms
+                 set_delta = .TRUE.
+                 delta = dz
+              ENDIF
+
 C       Handle rounding errors *jd* 6.27.95/12.30.97
 
 c *acm* 3/04 under g77 on linux this incorrectly uses
@@ -212,8 +217,13 @@ C       Mod 4.18.90 to allow just on level to be SHADEd
 C       CONTOUR requires more than one level to work but SHADE doesn't
 
 	   NLEV2=NLEV
-              IF (neginf) zlev(1) = MIN( zlev(1), zmin-1. )
-              IF (posinf) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
+	   IF (neginf) zlev(1) = MIN( zlev(1), zmin-1. )
+	   IF (posinf) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
+
+	   IF (.NOT.set_delta .AND. dz.NE.0) THEN  ! save dz for setlab_syms
+              set_delta = .TRUE.
+              delta = dz
+	   ENDIF
 	END IF  
 
 * Now that the levels are set, create the LEVELS symbols

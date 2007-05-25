@@ -299,6 +299,11 @@ C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
 
 	      NLEV2=(ZMP-ZNP)/DZ+1 
 
+              IF (.NOT. set_delta) THEN  ! save dz for setlab_syms
+                 set_delta = .TRUE.
+                 delta = dz
+              ENDIF
+
 C       Handle rounding errors *jd* 6.27.95/12.30.97
 C acm 4/04 use TM_FPEQ to fix precision problem as in shade.F
 
@@ -329,8 +334,13 @@ C       Mod 4.18.90 to allow just on level to be SHADEd
 C       CONTOUR requires more than one level to work but SHADE doesn't
 
 	   NLEV2=NLEV
-              IF (neginf) zlev(1) = MIN( zlev(1), zmin-1. )
-              IF (posinf) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
+	   IF (neginf) zlev(1) = MIN( zlev(1), zmin-1. )
+	   IF (posinf) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
+              
+	   IF (.NOT.set_delta .AND. dz.NE.0) THEN  ! save dz for setlab_syms
+              set_delta = .TRUE.
+              delta = dz
+	   ENDIF
 	END IF 
 
 C ------------

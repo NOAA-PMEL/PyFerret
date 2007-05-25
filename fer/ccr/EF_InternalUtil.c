@@ -70,6 +70,8 @@
 * v6.0 *acm*  5/06 many more functions internally linked.
 * V6.0 *acm*  5/06 string results for external functions
 * v6.0 *acm*  5/06 internal_dlsym was missing the nco functions.
+* V6.03 *acm& 5/07 Add tax_ functions, fill_xy to the statically-linked functions
+
 
 /* .................... Includes .................... */
  
@@ -723,7 +725,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 100
+#define N_INTEF 101
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -760,75 +762,76 @@ struct {
    strcpy(I_EFnames[28].funcname, "fft_im");
    strcpy(I_EFnames[29].funcname, "fft_inverse");
    strcpy(I_EFnames[30].funcname, "fft_re");
-   strcpy(I_EFnames[31].funcname, "findhi");
-   strcpy(I_EFnames[32].funcname, "findlo");
-   strcpy(I_EFnames[33].funcname, "is_element_of");
-   strcpy(I_EFnames[34].funcname, "is_element_of_str");
-   strcpy(I_EFnames[35].funcname, "labwid");
-   strcpy(I_EFnames[36].funcname, "lanczos");
-   strcpy(I_EFnames[37].funcname, "lsl_lowpass");
-   strcpy(I_EFnames[38].funcname, "minutes24");
-   strcpy(I_EFnames[39].funcname, "nco");
-   strcpy(I_EFnames[40].funcname, "nco_attr");
-   strcpy(I_EFnames[41].funcname, "rect_to_curv");
-   strcpy(I_EFnames[42].funcname, "sampleij");
-   strcpy(I_EFnames[43].funcname, "samplet_date");
-   strcpy(I_EFnames[44].funcname, "samplexy");
-   strcpy(I_EFnames[45].funcname, "samplexy_curv");
-   strcpy(I_EFnames[46].funcname, "samplexy_closest");
-   strcpy(I_EFnames[47].funcname, "samplexz");
-   strcpy(I_EFnames[48].funcname, "sampleyz");
-   strcpy(I_EFnames[49].funcname, "scat2ddups");
-   strcpy(I_EFnames[50].funcname, "scat2grid_t");
-   strcpy(I_EFnames[51].funcname, "scat2gridgauss_xy");
-   strcpy(I_EFnames[52].funcname, "scat2gridgauss_xz");
-   strcpy(I_EFnames[53].funcname, "scat2gridgauss_yz");
-   strcpy(I_EFnames[54].funcname, "scat2gridgauss_xt");
-   strcpy(I_EFnames[55].funcname, "scat2gridgauss_yt");
-   strcpy(I_EFnames[56].funcname, "scat2gridgauss_zt");
-   strcpy(I_EFnames[57].funcname, "scat2gridlaplace_xy");
-   strcpy(I_EFnames[58].funcname, "scat2gridlaplace_xz");
-   strcpy(I_EFnames[59].funcname, "scat2gridlaplace_yz");
-   strcpy(I_EFnames[60].funcname, "scat2gridlaplace_xt");
-   strcpy(I_EFnames[61].funcname, "scat2gridlaplace_yt");
-   strcpy(I_EFnames[62].funcname, "scat2gridlaplace_zt");
-   strcpy(I_EFnames[63].funcname, "sorti");
-   strcpy(I_EFnames[64].funcname, "sortj");
-   strcpy(I_EFnames[65].funcname, "sortk");
-   strcpy(I_EFnames[66].funcname, "sortl");
-   strcpy(I_EFnames[67].funcname, "tauto_cor");
-   strcpy(I_EFnames[68].funcname, "tax_datestring");
-   strcpy(I_EFnames[69].funcname, "tax_day");
-   strcpy(I_EFnames[70].funcname, "tax_dayfrac");
-   strcpy(I_EFnames[71].funcname, "tax_jday1900");
-   strcpy(I_EFnames[72].funcname, "tax_jday");
-   strcpy(I_EFnames[73].funcname, "tax_month");
-   strcpy(I_EFnames[74].funcname, "tax_times");
-   strcpy(I_EFnames[75].funcname, "tax_tstep");
-   strcpy(I_EFnames[76].funcname, "tax_units");
-   strcpy(I_EFnames[77].funcname, "tax_year");
-   strcpy(I_EFnames[78].funcname, "tax_yearfrac");
-   strcpy(I_EFnames[79].funcname, "xunits_data");
-   strcpy(I_EFnames[80].funcname, "tcat");
-   strcpy(I_EFnames[81].funcname, "treverse");
-   strcpy(I_EFnames[82].funcname, "transpose_xt");
-   strcpy(I_EFnames[83].funcname, "transpose_xy");
-   strcpy(I_EFnames[84].funcname, "transpose_xz");
-   strcpy(I_EFnames[85].funcname, "transpose_yt");
-   strcpy(I_EFnames[86].funcname, "transpose_yz");
-   strcpy(I_EFnames[87].funcname, "transpose_zt");
-   strcpy(I_EFnames[88].funcname, "xcat");
-   strcpy(I_EFnames[89].funcname, "xreverse");
-   strcpy(I_EFnames[90].funcname, "ycat");
-   strcpy(I_EFnames[91].funcname, "yreverse");
-   strcpy(I_EFnames[92].funcname, "xauto_cor");
-   strcpy(I_EFnames[93].funcname, "zaxreplace_avg");
-   strcpy(I_EFnames[94].funcname, "zaxreplace_bin");
-   strcpy(I_EFnames[95].funcname, "zaxreplace_lin");
-   strcpy(I_EFnames[96].funcname, "zaxreplace_rev");
-   strcpy(I_EFnames[97].funcname, "zaxreplace_zlev");
-   strcpy(I_EFnames[98].funcname, "zcat");
-   strcpy(I_EFnames[99].funcname, "zreverse");
+   strcpy(I_EFnames[31].funcname, "fill_xy");
+   strcpy(I_EFnames[32].funcname, "findhi");
+   strcpy(I_EFnames[33].funcname, "findlo");
+   strcpy(I_EFnames[34].funcname, "is_element_of");
+   strcpy(I_EFnames[35].funcname, "is_element_of_str");
+   strcpy(I_EFnames[36].funcname, "labwid");
+   strcpy(I_EFnames[37].funcname, "lanczos");
+   strcpy(I_EFnames[38].funcname, "lsl_lowpass");
+   strcpy(I_EFnames[39].funcname, "minutes24");
+   strcpy(I_EFnames[40].funcname, "nco");
+   strcpy(I_EFnames[41].funcname, "nco_attr");
+   strcpy(I_EFnames[42].funcname, "rect_to_curv");
+   strcpy(I_EFnames[43].funcname, "sampleij");
+   strcpy(I_EFnames[44].funcname, "samplet_date");
+   strcpy(I_EFnames[45].funcname, "samplexy");
+   strcpy(I_EFnames[46].funcname, "samplexy_curv");
+   strcpy(I_EFnames[47].funcname, "samplexy_closest");
+   strcpy(I_EFnames[48].funcname, "samplexz");
+   strcpy(I_EFnames[49].funcname, "sampleyz");
+   strcpy(I_EFnames[50].funcname, "scat2ddups");
+   strcpy(I_EFnames[51].funcname, "scat2grid_t");
+   strcpy(I_EFnames[52].funcname, "scat2gridgauss_xy");
+   strcpy(I_EFnames[53].funcname, "scat2gridgauss_xz");
+   strcpy(I_EFnames[54].funcname, "scat2gridgauss_yz");
+   strcpy(I_EFnames[55].funcname, "scat2gridgauss_xt");
+   strcpy(I_EFnames[56].funcname, "scat2gridgauss_yt");
+   strcpy(I_EFnames[57].funcname, "scat2gridgauss_zt");
+   strcpy(I_EFnames[58].funcname, "scat2gridlaplace_xy");
+   strcpy(I_EFnames[59].funcname, "scat2gridlaplace_xz");
+   strcpy(I_EFnames[60].funcname, "scat2gridlaplace_yz");
+   strcpy(I_EFnames[61].funcname, "scat2gridlaplace_xt");
+   strcpy(I_EFnames[62].funcname, "scat2gridlaplace_yt");
+   strcpy(I_EFnames[63].funcname, "scat2gridlaplace_zt");
+   strcpy(I_EFnames[64].funcname, "sorti");
+   strcpy(I_EFnames[65].funcname, "sortj");
+   strcpy(I_EFnames[66].funcname, "sortk");
+   strcpy(I_EFnames[67].funcname, "sortl");
+   strcpy(I_EFnames[68].funcname, "tauto_cor");
+   strcpy(I_EFnames[69].funcname, "tax_datestring");
+   strcpy(I_EFnames[70].funcname, "tax_day");
+   strcpy(I_EFnames[71].funcname, "tax_dayfrac");
+   strcpy(I_EFnames[72].funcname, "tax_jday1900");
+   strcpy(I_EFnames[73].funcname, "tax_jday");
+   strcpy(I_EFnames[74].funcname, "tax_month");
+   strcpy(I_EFnames[75].funcname, "tax_times");
+   strcpy(I_EFnames[76].funcname, "tax_tstep");
+   strcpy(I_EFnames[77].funcname, "tax_units");
+   strcpy(I_EFnames[78].funcname, "tax_year");
+   strcpy(I_EFnames[79].funcname, "tax_yearfrac");
+   strcpy(I_EFnames[80].funcname, "xunits_data");
+   strcpy(I_EFnames[81].funcname, "tcat");
+   strcpy(I_EFnames[82].funcname, "treverse");
+   strcpy(I_EFnames[83].funcname, "transpose_xt");
+   strcpy(I_EFnames[84].funcname, "transpose_xy");
+   strcpy(I_EFnames[85].funcname, "transpose_xz");
+   strcpy(I_EFnames[86].funcname, "transpose_yt");
+   strcpy(I_EFnames[87].funcname, "transpose_yz");
+   strcpy(I_EFnames[88].funcname, "transpose_zt");
+   strcpy(I_EFnames[89].funcname, "xcat");
+   strcpy(I_EFnames[90].funcname, "xreverse");
+   strcpy(I_EFnames[91].funcname, "ycat");
+   strcpy(I_EFnames[92].funcname, "yreverse");
+   strcpy(I_EFnames[93].funcname, "xauto_cor");
+   strcpy(I_EFnames[94].funcname, "zaxreplace_avg");
+   strcpy(I_EFnames[95].funcname, "zaxreplace_bin");
+   strcpy(I_EFnames[96].funcname, "zaxreplace_lin");
+   strcpy(I_EFnames[97].funcname, "zaxreplace_rev");
+   strcpy(I_EFnames[98].funcname, "zaxreplace_zlev");
+   strcpy(I_EFnames[99].funcname, "zcat");
+   strcpy(I_EFnames[100].funcname, "zreverse");
 /*    
  *  ------------------------------------ 
  */

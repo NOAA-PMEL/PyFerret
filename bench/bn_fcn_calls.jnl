@@ -1,24 +1,7 @@
 ! Simple tests of external functions 
 ! these are not otherwise tested in the benchmarkd
 ! ACM 23-Aug-2006
+! 05/07 *acm* move tests of date1900, tax_* functions and 
+!             fill_xy to bn_internal_external_functions.jnl
 
-list date1900("23-aug-06")
-
-! tax_ functions 
-use gt4d011
-
-list/L=15:20 tax_datestring(t[gt=temp],temp,"hour")
-list/L=15:20 tax_datestring(t[gt=temp],temp,"day")
-list/L=15:20 tax_dayfrac(t[gt=temp],temp), tax_dayfrac(t[gt=temp],temp)*24.
-list/L=15:20 tax_day(t[gt=temp],temp), tax_jday(t[gt=temp],temp) 
-list/L=15:20 tax_month(t[gt=temp],temp), tax_yearfrac(t[gt=temp],temp)
-list/L=15:20 tax_year(t[gt=temp],temp)
-list tax_units(temp)
-
-! fill_xy
-can data/all
-use coads_climatology
-let mask = 0*x[gx=sst] + y[gy=sst]  + 1
-shade fill_xy(sst[l=1], mask[l=1], 1)
-shade fill_xy(sst[l=1], mask[l=1], 4)
-
+exit

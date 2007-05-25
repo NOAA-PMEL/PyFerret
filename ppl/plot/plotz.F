@@ -188,11 +188,6 @@ C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
 
 	      NLEV2=(ZMP-ZNP)/DZ+1
 
-              IF (.NOT. set_delta) THEN  ! save dz for setlab_syms
-                 set_delta = .TRUE.
-                 delta = dz
-              ENDIF
-
 C       Handle rounding errors *jd* 6.27.95
 C       JC_TODO This is where the rounding error for negative plots probably exists
 
@@ -285,11 +280,6 @@ C these will not have been set before on, say a previous SHADE plot
 		 END IF
 		 LDIG(I)=JJ
  105	      CONTINUE
-
-	      IF (.NOT.set_delta .AND. dz.NE.0) THEN  ! save dz for setlab_syms
-                 set_delta = .TRUE.
-                 delta = dz
-	      ENDIF
 
 	   ENDIF
 

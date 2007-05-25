@@ -58,7 +58,7 @@
 
 * Internal arguments
 
-      REAL zmax, zmin, dz
+      REAL zmax, zmin, dz, diff, diff_dz
 
       CHARACTER ppl_buff*2048, TM_FMT*10, buff*10
       INTEGER TM_LENSTR1, i, ier, ilen, slen 
@@ -115,7 +115,9 @@
          ELSE
             reglevs = .TRUE.
             DO 100 i=3,nlevels
-               IF(.NOT. TM_FPEQ(dz,(zlevels(i)-zlevels(i-1))) ) reglevs=.FALSE.
+               diff = ABS( zlevels(i)-zlevels(i-1) )
+               diff_dz = ABS(diff - dz)
+               IF(diff_dz .GT. 1.e-6 ) reglevs=.FALSE.
   100       CONTINUE
             IF (reglevs) THEN
                buff = TM_FMT(dz, -2, 10, slen)

@@ -9,8 +9,8 @@ set view left; shade/x=120e:80w sst  ! works correctly
 
 set view right; fill/x=120e:80w sst
 
-sh sym ppl$xmin, ppl$xmax    ! should be 25, 279
-sh sym ppl$xlow, ppl$xhigh   ! should be 163,257
+sh sym ppl$xmin, ppl$xmax    ! should be 131, 279
+sh sym ppl$xlow, ppl$xhigh   ! should be 165, 259
 
 sp rm -f err581_subspanx_fill_bug.nc
 can view

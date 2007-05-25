@@ -32,7 +32,9 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # Targets
 #
 
-all:	ferret_cmn tax
+#all:	ferret_cmn tax
+
+all:	ferret_cmn
 
 tax:    tax_year.so tax_month.so tax_day.so tax_units.so \
 	tax_dayfrac.so tax_jday.so tax_jday1900.so tax_yearfrac.so\

@@ -1,18 +1,14 @@
 \cancel mode verify
 ! polymark_datekey.jnl
 ! 11/05 ACM 
-!
-! 10/06 ACM Fix bug with the last label on the axis: rounding error between the 
-! time region setting and the time coordinate used to form the label: use tend 
-! instead.
-!
+
 ! Description: Plot symbols colored by values of a variable along a track
 !              and labelled with dates from a time axis
 !
 !              Needs a basemap or other underlying plot to define scaling
 !              parameters.
 
-! Usage:                    $1              $2   $3    $4       $5      $6     $7
+! Usage:                    $1              $2   $3    $4       $5      $6     $7      [*8]
 ! Yes?	GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar
 ! $1 - the plot command with qualifiers (eg POLYGON/OVER/KEY)
 ! $2 - X coordinates of track 
@@ -21,6 +17,8 @@
 ! $5 - shape of the symbol, as defined by polyshape.jnl 
 ! $6 - scale the values by this factor (optional, default 1)
 ! $7 - variable on the time axis to use for labelling the key
+! $8 - optional; precision of labelling time axis; "days", "hours" etc
+!      If not specified, the script uses the units of the time axis.
 
 !      shape names include:
 !           triangle           delta           square
@@ -38,12 +36,16 @@
 !       yes? def view/x=0:0.8/y=0:1 xview
 !       yes? set view xview
 !
-!       yes? def axis/t=1-jan-1990:1-mar-1990:1/units=days timeax
+!       yes? def axis/t=1-jan-1990:1-mar-1990:24/units=hours timeax
 !       yes? let lpts = L[gt=timeax]
 !       yes? let xpts = 180 + 50*COS(2*3.14*lpts/60)
 !       yes? let ypts = 15 + 20*sin(2*3.14*lpts/60)
 !       yes? let taxvar = t[gt=timeax]
 !
+!       yes? GO basemap x=120:250 Y=25s:65n 20
+!       yes? GO polymark_datekey polygon/over/key  xpts,ypts,lpts,ex,0.5,taxvar,days
+!
+!          ! compare, without the last argument - dates labelled with hours as well.
 !       yes? GO basemap x=120:250 Y=25s:65n 20
 !       yes? GO polymark_datekey polygon/over/key  xpts,ypts,lpts,ex,0.5,taxvar
 
@@ -56,6 +58,7 @@ QUERY/IGNORE $3"<usage: yes? GO polymark_datekey polygon_command xpts ypts [valu
 LET/QUIET PLMxpoly = ($2)
 LET/QUIET PLMypoly = ($3)
 LET/QUIET PLMpolydata = $4"0"
+DEFINE SYMBOL dateunits = $8"`PLMxpoly,return=tunits`"
 
 ! determine the orientation of the data (and check that it is 1D or a point)
 DEFINE SYMBOL PLMax `PLMxpoly,return=shape`
@@ -83,48 +86,28 @@ $1/coord_ax=($PLMpoly_ax)/set  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLM
 ppl shakey 1,1,0.0000001,100
 ppl fillpol/over
 
-
 ! set up the date/time labels for the color key
+! (see insitu_setup.jnl)
 
+LET TLAB_tstart = `$7[L=@min]`
 
-let TLAB_tstart = `$7[L=@min]`
-define symbol TLAB_tstart = `TLAB_tstart`
+LET TLAB_tend = `$7[L=@max]`
 
-let TLAB_tend = `$7[L=@max]`
-define symbol TLAB_tend = `TLAB_tend`
+LET TLAB_nstep = `($LEV_num)-1`
 
-let TLAB_tstep = int((`TLAB_tend`-`TLAB_tstart`)/4)
-define symbol TLAB_tstep = `TLAB_tstep`
+LET TLAB_tstep = (`TLAB_tend`-`TLAB_tstart`) / (`tlab_nstep`)
 
-! Save any region settings that are in effect
-DEFINE REGION/DEFAULT SAVE
+let tdate = `TLAB_tstart`
 
-set region/t=`($TLAB_tstart)+0*($TLAB_tstep)`:($TLAB_tend)
-define symbol day_0_fourth `$7,return=tstart,prec=3`
+REPEAT/RANGE=1:`TLAB_nstep+1`/name=m (LET datelab = tax_datestring(tdate, PLMxpoly, "($dateunits)");\
+  let yloc = (($ppl$ylen)*`m-1`)/`TLAB_nstep`-.05; \
+  let md = MOD(`m`,2);\
+  label/nouser `($ppl$xlen)+.6`,`yloc`,-1,0,.1 "`datelab`";\
+  let tdate = `tdate` + `TLAB_tstep`)
 
-set region/t=`($TLAB_tstart)+1*($TLAB_tstep)`:($TLAB_tend)
-define symbol day_1_fourth `$7,return=tstart,prec=3`
+!  IF `md EQ 1` THEN  label/nouser `($ppl$xlen)+.6`,`yloc`,-1,0,.1 "`datelab`";\
 
-set region/t=`($TLAB_tstart)+2*($TLAB_tstep)`:($TLAB_tend)
-define symbol day_2_fourth `$7,return=tstart,prec=3`
-
-set region/t=`($TLAB_tstart)+3*($TLAB_tstep)`:($TLAB_tend)
-define symbol day_3_fourth `$7,return=tstart,prec=3`
-
-cancel region/t
-define symbol day_4_fourth `$7,return=tend,prec=3`
-
-CANCEL REGION/T
-SET REGION SAVE
-
-label/nouser `($ppl$xlen)+.6`,`(($ppl$ylen)*0)/4-.05`,-1,0,.1 ($day_0_fourth)
-label/nouser `($ppl$xlen)+.6`,`(($ppl$ylen)*1)/4-.05`,-1,0,.1 ($day_1_fourth)
-label/nouser `($ppl$xlen)+.6`,`(($ppl$ylen)*2)/4-.05`,-1,0,.1 ($day_2_fourth)
-label/nouser `($ppl$xlen)+.6`,`(($ppl$ylen)*3)/4-.05`,-1,0,.1 ($day_3_fourth)
-label/nouser `($ppl$xlen)+.6`,`(($ppl$ylen)*4)/4-.05`,-1,0,.1 ($day_4_fourth)
-
-
-cancel symbol PLM*
-cancel variable PLM*
+! cancel symbol PLM*
+! cancel variable PLM*
 set mode/last verify
 

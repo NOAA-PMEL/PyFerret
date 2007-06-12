@@ -63,6 +63,10 @@
 *
 *  ACM 10/03 Pass the ibkwd flag to wrt_v5d_steps. Flip the data in Z only
 *            if the Z axis is a depth axis.
+*  ACM  6/07 Remove Loop 400 in routine settimes: time axes have already been 
+*            tested for whether they are monotonic. This fixes bug 1516. We can go
+*            across the 1999-2000 year boundary, but still only works if the year
+*            span is within 1950 - 2049.
 *
 *
 * In this subroutine we provide information about
@@ -400,9 +404,9 @@
  
 *  Names of Vis5D utility functions.
 
-      INTEGER v5dcreate
-      INTEGER v5dsetlowlev
-      INTEGER v5dclose
+c      INTEGER v5dcreate
+c      INTEGER v5dsetlowlev
+c      INTEGER v5dclose
 
 *  names, units, characteristics of variables to send to Vis5D utility functions.
 
@@ -629,7 +633,7 @@ c
 
       REAL*4 g(nr, nc, nlev)
 
-      INTEGER v5dwrite
+c      INTEGER v5dwrite
 
 *  Get subscript limits.
 
@@ -993,7 +997,6 @@ C  Check number of columns and rows against Vis5D maxima.
 
          DO 300 l = 1, numtimes
 
-
 *  If datebuf is in form "DD-MON-YYYY HH:MM:SS".  Read date and time; convert
 *  to Vis5D time and date stamps.
 
@@ -1029,29 +1032,6 @@ C  Check number of columns and rows against Vis5D maxima.
   300    CONTINUE
 
       ENDIF		! IF (numtimes .EQ. 1) 
-
-      lastdate = datestamp(1)
-      lasttime = timestamp(1)
-
-      DO 400 l = 2, numtimes
-
-         thisdate = datestamp(l) 
-         thistime = timestamp(l)
-
-         IF ( (lastdate .GT. thisdate)  .OR. 
-     .        ( (lastdate .EQ. thisdate) .AND.  
-     .          (lasttime .GE. thistime) ) ) THEN
-
-            WRITE (err_msg,*) 
-     .     'Times must be strictly increasing ', datebuf(l-1),  
-     .     ' ', datebuf(l) 
-            GO TO 999
-         ENDIF
-
-         lasttime = thistime
-         lastdate = thisdate
-
-  400 CONTINUE
 
 
   110 FORMAT (i2, 1x, a3, 1x, i4)

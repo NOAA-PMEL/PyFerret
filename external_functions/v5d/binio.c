@@ -1,25 +1,33 @@
 
-/* Vis5D version 5.0 */
-
 /*
-Vis5D system for visualizing five dimensional gridded data sets
-Copyright (C) 1990 - 1997 Bill Hibbard, Johan Kellum, Brian Paul,
-Dave Santek, and Andre Battaiola.
+ * Vis5D system for visualizing five dimensional gridded data sets.
+ * Copyright (C) 1990 - 2000 Bill Hibbard, Johan Kellum, Brian Paul,
+ * Dave Santek, and Andre Battaiola.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * As a special exception to the terms of the GNU General Public
+ * License, you are permitted to link Vis5D with (and distribute the
+ * resulting source and executables) the LUI library (copyright by
+ * Stellar Computer Inc. and licensed for distribution with Vis5D),
+ * the McIDAS library, and/or the NetCDF library, where those
+ * libraries are governed by the terms of their own licenses.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 1, or (at your option)
-any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+#include "config.h"
 
 /*
  * Functions to do binary I/O of floats, ints.
@@ -27,8 +35,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  * >>>> These functions are built on top of Unix I/O functions, not stdio! <<<<
  *
  * The file format is assumed to be BIG-ENDIAN.
- * If this code is compiled with -DLITTLE and executes on a little endian
- * CPU then byte-swapping will be done.
+ * If the configure script detects a little endian
+ * CPU then byte-swapping will be done.  
  *
  * If an ANSI compiler is used prototypes and ANSI function declarations
  * are used.  Otherwise use K&R conventions.
@@ -284,7 +292,7 @@ int read_int2_array( int f, short *iarray, int n )
    int nread = read( f, iarray, n*2 );
    if (nread<=0)
       return 0;
-#ifdef LITTLE
+#ifndef WORDS_BIGENDIAN
    flip2( (const unsigned short *) iarray, (unsigned short *) iarray, nread/2);
 #endif
    return nread/2;
@@ -320,7 +328,7 @@ int read_uint2_array( int f, unsigned short *iarray, int n )
    int nread = read( f, iarray, n*2 );
    if (nread<=0)
       return 0;
-#ifdef LITTLE
+#ifndef WORDS_BIGENDIAN
    flip2( iarray, iarray, nread/2 );
 #endif
    return nread/2;
@@ -337,7 +345,7 @@ int read_uint2_array( int f, unsigned short *iarray, int n )
  */
 int read_int4( int f, int *i )
 {
-#ifdef LITTLE
+#ifndef WORDS_BIGENDIAN
    /* read big endian and convert to little endian */
    unsigned int n;
    if (read( f, &n, 4 )==4) {
@@ -398,7 +406,7 @@ int read_int4_array( int f, int *iarray, int n )
    int nread = read( f, iarray, 4*n );
    if (nread<=0)
      return 0;
-#  ifdef LITTLE
+#  ifndef WORDS_BIGENDIAN
       flip4( (const unsigned int *) iarray, (unsigned int *) iarray, nread/4 );
 #  endif
    return nread/4;
@@ -425,7 +433,7 @@ int read_float4( int f, float *x )
     }
     return 0;
 #else
-#  ifdef LITTLE
+#  ifndef WORDS_BIGENDIAN
       unsigned int n, *iptr;
       if (read( f, &n, 4 )==4) {
          iptr = (unsigned int *) x;
@@ -474,7 +482,7 @@ int read_float4_array( int f, float *x, int n )
    int nread = read( f, x, 4*n );
    if (nread<=0)
       return 0;
-#ifdef LITTLE
+#ifndef WORDS_BIGENDIAN
    flip4( (const unsigned int *) x, (unsigned int*) x, nread/4 );
 #endif
    return nread/4;
@@ -497,7 +505,7 @@ int read_block( int f, void *data, int elements, int elsize )
       return read( f, data, elements );
    }
    else if (elsize==2) {
-#ifdef LITTLE
+#ifndef WORDS_BIGENDIAN
       int n;
       n = read( f, data, elements*2 ) / 2;
       if (n==elements) {
@@ -510,7 +518,7 @@ int read_block( int f, void *data, int elements, int elsize )
 #endif
    }
    else if (elsize==4) {
-#ifdef LITTLE
+#ifndef WORDS_BIGENDIAN
       int n;
       n = read( f, data, elements*4 ) / 4;
       if (n==elements) {
@@ -566,11 +574,11 @@ int write_int2_array( int f, const short *iarray, int n )
    exit(1);
 #else
    int nwritten;
-#ifdef LITTLE
+#ifndef WORDS_BIGENDIAN
    flip2( (const unsigned short *) iarray, (unsigned short *) iarray, n );
 #endif
    nwritten = write( f, iarray, 2*n );
-#ifdef LITTLE
+#ifndef WORDS_BIGENDIAN
    flip2( (const unsigned short *) iarray, (unsigned short *) iarray, n );
 #endif
    if (nwritten<=0)
@@ -607,11 +615,11 @@ int write_uint2_array( int f, const unsigned short *iarray, int n )
       return nwritten/2;
 #else
    int nwritten;
-#ifdef LITTLE
+#ifndef WORDS_BIGENDIAN
    flip2( iarray, (unsigned short *) iarray, n );
 #endif
    nwritten = write( f, iarray, 2*n );
-#ifdef LITTLE
+#ifndef WORDS_BIGENDIAN
    flip2( iarray, (unsigned short *) iarray, n );
 #endif
    if (nwritten<=0)
@@ -635,7 +643,7 @@ int write_int4( int f, int i )
    i = i << 32;
    return write( f, &i, 4 ) > 0;
 #else
-#  ifdef LITTLE
+#  ifndef WORDS_BIGENDIAN
      i = FLIP4( i );
 #  endif
    return write( f, &i, 4 ) > 0;
@@ -675,7 +683,7 @@ int write_int4_array( int f, const int *i, int n )
    else
       return nwritten / 4;
 #else
-#  ifdef LITTLE
+#  ifndef WORDS_BIGENDIAN
       int nwritten;
       flip4( (const unsigned int *) i, (unsigned int *) i, n );
       nwritten = write( f, i, 4*n );
@@ -705,7 +713,7 @@ int write_float4( int f, float x )
    c_to_if( (long *) buffer, (const long *) &x );
    return write( f, buffer, 4 ) > 0;
 #else
-#  ifdef LITTLE
+#  ifndef WORDS_BIGENDIAN
       float y;
       unsigned int *iptr = (unsigned int *) &y, temp;
       y = (float) x;
@@ -745,7 +753,7 @@ int write_float4_array( int f, const float *x, int n )
    else
       return nwritten / 4;
 #else
-#  ifdef LITTLE
+#  ifndef WORDS_BIGENDIAN
       int nwritten;
       flip4( (const unsigned int *) x, (unsigned int *) x, n );
       nwritten = write( f, x, 4*n );
@@ -776,7 +784,7 @@ int write_block( int f, const void *data, int elements, int elsize )
       return write( f, data, elements );
    }
    else if (elsize==2) {
-#ifdef LITTLE
+#ifndef WORDS_BIGENDIAN
       int n;
       flip2( (const unsigned short *) data, (unsigned short *) data, elements);
       n = write( f, data, elements*2 ) / 2;
@@ -787,7 +795,7 @@ int write_block( int f, const void *data, int elements, int elsize )
 #endif
    }
    else if (elsize==4) {
-#ifdef LITTLE
+#ifndef WORDS_BIGENDIAN
       int n;
       flip4( (const unsigned int *) data, (unsigned int *) data, elements );
       n = write( f, data, elements*4 ) / 4;

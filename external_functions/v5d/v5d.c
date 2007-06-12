@@ -1,28 +1,40 @@
 /* v5d.c */
 
-/* Vis5D version 4.3 */
 
 /*
-Vis5D system for visualizing five dimensional gridded data sets
-Copyright (C) 1990 - 1997 Bill Hibbard, Johan Kellum, Brian Paul,
-Dave Santek, and Andre Battaiola.
+ * Vis5D system for visualizing five dimensional gridded data sets.
+ * Copyright (C) 1990 - 2000 Bill Hibbard, Johan Kellum, Brian Paul,
+ * Dave Santek, and Andre Battaiola.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * As a special exception to the terms of the GNU General Public
+ * License, you are permitted to link Vis5D with (and distribute the
+ * resulting source and executables) the LUI library (copyright by
+ * Stellar Computer Inc. and licensed for distribution with Vis5D),
+ * the McIDAS library, and/or the NetCDF library, where those
+ * libraries are governed by the terms of their own licenses.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ 
+Note: Ansley Manke 10/98. Ferret-external-functions version of this file, with 
+MAXVARS changed to MAX_V5_VARS. Make the same change in v5d.h, v5d.c, and 
+v5df_fer.h
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 1, or (at your option)
-any later version.
+ */
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-
-*/
+#include "config.h"
 
 
 /* this should be updated when the file version changes */
@@ -31,7 +43,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
 /*
- * New grid file format for VIS-5D:
+ * New grid file format for Vis5d:
  *
  * The header is a list of tagged items.  Each item has 3 parts:
  *    1. A tag which is a 4-byte integer identifying the type of item.
@@ -61,15 +73,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * April 13, 1995, brianp
  *   finished Cray support for 2-byte and 4-byte compress modes
-
-
-
-Note:  Ansley Manke 10/98.  Ferret-external-functions version of this file. 
-The v5d.c in the Vis5d version 5.0 source code has lines of the form 
-v5dcreate( void ).  This version does not work (v5dcreate not found). The 
-following  is from the version 4.3 code where such lines are v5dcreate_( void ).  Change MAXVARS to MAX_V5_VARS  for compatibility with ferret.
-
-Make the same change in v5d.h, v5d.c, and v5df_fer.h
  */
 
 
@@ -83,6 +86,17 @@ Make the same change in v5d.h, v5d.c, and v5df_fer.h
 #include "binio.h"
 #include "v5d.h"
 #include "vis5d.h"
+
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_STAT_H
+#  include <sys/stat.h>
+#endif
+#ifdef HAVE_FCNTL_H
+#  include <fcntl.h>
+#endif
+
 #ifndef SEEK_SET
 #  define SEEK_SET 0
 #endif
@@ -162,6 +176,8 @@ Make the same change in v5d.h, v5d.c, and v5df_fer.h
 #define TAG_CENTROW      3011       /* real*4 CentralRow       (PHASED OUT) */
 #define TAG_CENTCOL      3012       /* real*4 CentralCol       (PHASED OUT) */
 #define TAG_ROTATION     3013       /* real*4 Rotation         (PHASED OUT) */
+#define TAG_ROWINCKM     3014       /* real*4 RowIncKm         (PHASED OUT) */
+#define TAG_COLINCKM     3015       /* real*4 ColIncKm         (PHASED OUT) */
 
 
 #define TAG_END                9999
@@ -240,7 +256,8 @@ static int copy_string( char *dst, const char *src, int maxlen )
 
 
 /*
- * Convert a date from YYDDD format to days since Jan 1, 1900.
+ * Convert a date from YYDDD format to days since Dec 31, 1899,
+ * which was Sunday, so it's easy to calculate a weekday.
  */
 int v5dYYDDDtoDays( int yyddd )
 {
@@ -248,8 +265,11 @@ int v5dYYDDDtoDays( int yyddd )
 
    iy = yyddd / 1000;
    id = yyddd - 1000*iy;
-   if (iy < 50) iy += 100; /* WLH 31 July 96 << 31 Dec 99 */
-   idays = 365*iy + (iy-1)/4 + id;
+   if (iy >= 1900)
+     iy -= 1900;
+   else if (iy < 50)
+     iy += 100; /* WLH 31 July 96 << 31 Dec 99 */
+   idays = 365*iy + (iy-1)/4 - (iy-1)/100 + (iy+299)/400 + id;
 
    return idays;
 }
@@ -272,18 +292,40 @@ int v5dHHMMSStoSeconds( int hhmmss )
 
 
 /*
- * Convert a day since Jan 1, 1900 to YYDDD format.
+ * Convert a day since Dec 31, 1899 to YYDDD format.
  */
 int v5dDaysToYYDDD( int days )
 {
    int iy, id, iyyddd;
+   int leaps;
 
-   iy = (4*days)/1461;
-   id = days-(365*iy+(iy-1)/4);
-   if (iy > 99) iy = iy - 100; /* WLH 31 July 96 << 31 Dec 99 */
-   /* iy = iy + 1900; is the right way to fix this, but requires
-      changing all places where dates are printed - procrastinate */
-   iyyddd = iy*1000+id;
+   /*
+     Julian day starts from 1, it is easier to calculate from 0
+   */
+   days--;
+
+   /*
+     Every 400 years is a leap year.
+     400 years have 97 leap years.
+     We start at 1900, so add 300 years first.
+     300 years have 72 leap years.
+   */
+   leaps = (days+(300*365+72))/(400*365+97);
+
+   /*
+     Every 100 years is not a leap year.
+     100 years have 24 leap years.
+   */
+   leaps -= (days-leaps)/(365*100+24);
+
+   /*
+     4 years have 1 leap year.
+    */
+   leaps += (days-leaps)/(365*4+1);
+
+   iy = (days-leaps) / 365;
+   id = days-leaps-365*iy + 1;
+   iyyddd = (iy+1900)*1000+id;
 
    return iyyddd;
 }
@@ -328,7 +370,7 @@ void v5dPrintStruct( const v5dstruct *v )
       }
    }
    else {
-      printf("File format: comp5d  (VIS-5D 3.3 or older)\n");
+      printf("File format: comp5d  (Vis5d 3.3 or older)\n");
    }
 
    if (v->CompressMode==1) {
@@ -338,7 +380,7 @@ void v5dPrintStruct( const v5dstruct *v )
       printf("Compression:  %d bytes per gridpoint.\n", v->CompressMode);
    }
    printf("header size=%d\n", v->FirstGridPos);
-   printf("sizeof(v5dstruct)=%d\n", sizeof(v5dstruct) );
+   printf("sizeof(v5dstruct)=%d\n", (int) sizeof(v5dstruct) );
    printf("\n");
 
    printf("NumVars = %d\n", v->NumVars );
@@ -359,10 +401,10 @@ void v5dPrintStruct( const v5dstruct *v )
    printf("\n");
 
    printf("NumTimes = %d\n", v->NumTimes );
-   printf("Step    Date(YYDDD)    Time(HH:MM:SS)   Day\n");
+   printf("Step    Date(YYYYDDD)    Time(HH:MM:SS)   Day\n");
    for (time=0;time<v->NumTimes;time++) {
       int i = v->TimeStamp[time];
-      printf("%3d        %05d       %5d:%02d:%02d     %s\n",
+      printf("%3d        %7d       %5d:%02d:%02d     %s\n",
              time+1,
              v->DateStamp[time],
              i/10000, (i/100)%100, i%100,
@@ -385,14 +427,14 @@ void v5dPrintStruct( const v5dstruct *v )
          printf("Unequally spaced levels in km:\n");
          printf("Level\tHeight(km)\n");
          for (i=0;i<maxnl;i++) {
-            printf("%3d     %10.3f\n", i+1, v->VertArgs[i] );
+            printf("%3d\t%-15.8f\n", i+1, v->VertArgs[i] );
          }
          break;
       case 3:
          printf("Unequally spaced levels in mb:\n");
          printf("Level\tPressure(mb)\n");
          for (i=0;i<maxnl;i++) {
-            printf("%3d     %10.3f\n", i+1, height_to_pressure(v->VertArgs[i]) );
+            printf("%3d\t%-15.8f\n", i+1, height_to_pressure(v->VertArgs[i]) );
          }
          break;
       default:
@@ -448,6 +490,25 @@ void v5dPrintStruct( const v5dstruct *v )
          printf("\tCenter Latitude: %f\n", v->ProjArgs[4] );
          printf("\tCenter Longitude: %f\n", v->ProjArgs[5] );
          printf("\tRotation: %f degrees\n", v->ProjArgs[6] );
+         break;
+      case 5:
+         printf("Mercator:\n");
+         printf("\tCenter Latitude: %f\n", v->ProjArgs[0] );
+         printf("\tCenter Longitude: %f\n", v->ProjArgs[1] );
+         printf("\tRow Increment: %f Kilometers\n", v->ProjArgs[2] );
+         printf("\tCol Increment: %f Kilometers\n", v->ProjArgs[3] );
+         break;
+      /* ZLB 02-09-2000 */
+      case -1:
+         printf("Generic unequally spaced projection:\n");
+         printf("Column\tPosition\n");
+         for (i=0;i<v->Nc;i++) {
+            printf("%3d\t%-15.8f\n", i+1, v->ProjArgs[i+v->Nr] );
+         }
+         printf("Row\tPosition\n");
+         for (i=0;i<v->Nr;i++) {
+            printf("%3d\t%-15.8f\n", i+1, v->ProjArgs[i] );
+         }
          break;
       default:
          printf("Bad projection number: %d\n", v->Projection );
@@ -552,6 +613,8 @@ static void compute_ga_gb( int nr, int nc, int nl,
    gridmin = BIGVALUE;
    gridmax = SMALLVALUE;
    j = 0;
+
+
    for (lev=0;lev<nl;lev++) {
       float min, max;
       min = BIGVALUE;
@@ -563,6 +626,7 @@ static void compute_ga_gb( int nr, int nc, int nl,
             max = data[j];
          j++;
       }
+
       if (min<gridmin)
         gridmin = min;
       if (max>gridmax)
@@ -637,9 +701,16 @@ static void compute_ga_gb( int nr, int nc, int nl,
 #ifdef ORIGINAL
          ival = dmax / 254.0;
          mval = gridmin;
+
          for (lev=0; lev<nl; lev++) {
             ga[lev] = ival;
-            gb[lev] = mval + ival * (int) ( (levmin[lev]-mval) / ival ); 
+            /* WLH 2 Aug 2000 */
+            if (levmin[lev] > levmax[lev]) {
+              gb[lev] = 0.0;
+            }
+            else {
+              gb[lev] = mval + ival * (int) ( (levmin[lev]-mval) / ival ); 
+            }
          }
 #else
          for (lev=0; lev<nl; lev++) {
@@ -657,9 +728,16 @@ static void compute_ga_gb( int nr, int nc, int nl,
       else if (compressmode == 2) {
          ival = dmax / 65534.0;
          mval = gridmin;
+
          for (lev=0; lev<nl; lev++) {
             ga[lev] = ival;
-            gb[lev] = mval + ival * (int) ( (levmin[lev]-mval) / ival );
+            /* WLH 2 Aug 2000 */
+            if (levmin[lev] > levmax[lev]) {
+              gb[lev] = 0.0;
+            }
+            else {
+              gb[lev] = mval + ival * (int) ( (levmin[lev]-mval) / ival ); 
+            }
          }
       }
       else {
@@ -712,7 +790,12 @@ void v5dCompressGrid( int nr, int nc, int nl, int compressmode,
       p = 0;
       for (lev=0;lev<nl;lev++) {
          float one_over_a, b;
-         b = gb[lev] - 0.0001;  /* subtract an epsilon so the int((d-b)/a) */
+/* WLH 5 Nov 98
+         b = gb[lev] - 0.0001;
+*/
+         /* WLH 5 Nov 98 */
+         b = gb[lev];
+                                /* subtract an epsilon so the int((d-b)/a) */
                                 /* expr below doesn't get mis-truncated. */
          if (ga[lev]==0.0) {
             one_over_a = 1.0;
@@ -725,12 +808,13 @@ void v5dCompressGrid( int nr, int nc, int nl, int compressmode,
                compdata1[p] = 255;
             }
             else {
+/* MJK 1.19.99
                compdata1[p] = (V5Dubyte) (int) ((data[p]-b) * one_over_a);
-               /* Johan 2/25/98 */
+*/
+               compdata1[p] = (V5Dubyte) rint((data[p]-b) * one_over_a);
                if (compdata1[p] >= 255){
                   compdata1[p] = (V5Dubyte) (int) (255.0 - .0001);
                }
-               /* end Johan */
             }
          }
       }
@@ -741,7 +825,12 @@ void v5dCompressGrid( int nr, int nc, int nl, int compressmode,
       p = 0;
       for (lev=0;lev<nl;lev++) {
          float one_over_a, b;
+/* WLH 5 Nov 98
          b = gb[lev] - 0.0001;
+*/
+         /* WLH 5 Nov 98 */
+         b = gb[lev];
+
          if (ga[lev]==0.0) {
             one_over_a = 1.0;
          }
@@ -756,7 +845,10 @@ void v5dCompressGrid( int nr, int nc, int nl, int compressmode,
                compvalue = 65535;
             }
             else {
+/* MJK 3.2.99
                compvalue = (V5Dushort) (int) ((data[p]-b) * one_over_a);
+*/
+               compvalue = (V5Dushort) rint((data[p]-b) * one_over_a);
             }
             compdata1[p*2+0] = compvalue >> 8;     /* upper byte */
             compdata1[p*2+1] = compvalue & 0xffu;  /* lower byte */
@@ -767,7 +859,17 @@ void v5dCompressGrid( int nr, int nc, int nl, int compressmode,
                compdata2[p] = 65535;
             }
             else {
+               compdata2[p] = (V5Dushort) rint((data[p]-b) * one_over_a);
+
+/*
                compdata2[p] = (V5Dushort) (int) ((data[p]-b) * one_over_a);
+*/
+/* MJK 3.24.99 I put this here so if the value is close
+   to the missing value and get's rounded up it won't come out
+   as missing data */
+               if (compdata2[p] == 65535){
+                  compdata2[p] = 65534;
+               }
             }
          }
          /* TODO: byte-swapping on little endian??? */
@@ -1020,7 +1122,7 @@ int v5dVerifyStruct( const v5dstruct *v )
       int date1 = v5dYYDDDtoDays( v->DateStamp[i] );
       int time0 = v5dHHMMSStoSeconds( v->TimeStamp[i-1] );
       int time1 = v5dHHMMSStoSeconds( v->TimeStamp[i] );
-      if (time1<=time0 && date1<=date0) {
+      if (date1<date0 || (time1<=time0 && date1==date0)) {
          printf("Timestamp for step %d must be later than step %d\n", i, i-1);
          invalid = 1;
       }
@@ -1194,8 +1296,38 @@ int v5dVerifyStruct( const v5dstruct *v )
             invalid = 1;
          }
          break;
+      case 5: /*Mercator*/
+         if (v->ProjArgs[2] == 0.0){
+            printf("Row Increment(Km) can not be 0.0\n");
+            invalid = 1;
+         }
+         if (v->ProjArgs[3] == 0.0){
+            printf("Column Increment(Km) can not be 0.0\n");
+            invalid = 1;
+         }
+         break;
+      /* ZLB 02-09-2000 */
+      case -1:  /* Generic non equally spaced */
+         for (i=1;i<v->Nr;i++) {
+            if (v->ProjArgs[i] <= v->ProjArgs[i-1]) {
+               printf("Row[%d]=%f >= Row[%d]=%f, row coordinates must increase\n",
+                      i, v->ProjArgs[i], i-1, v->ProjArgs[i-1] );
+               invalid = 1;
+               break;
+            }
+         }
+         if (invalid) break;
+         for (i=v->Nr+1;i<v->Nr+v->Nc;i++) {
+            if (v->ProjArgs[i] <= v->ProjArgs[i-1]) {
+               printf("Column[%d]=%f >= Column[%d]=%f, Column coordinates must increase\n",
+                      i-v->Nr, v->ProjArgs[i], i-v->Nr-1, v->ProjArgs[i-1] );
+               invalid = 1;
+               break;
+            }
+         }
+         break;
       default:
-         printf("Projection = %d, must be in 0..4\n", v->Projection );
+         printf("Projection = %d, must be in -1..5\n", v->Projection);
          invalid = 1;
    }
 
@@ -1629,8 +1761,9 @@ static int read_v5d_header( v5dstruct *v )
             read_bytes( f, v->FileVersion, 10 );
             /* Check if reading a file made by a future version of Vis5D */
             if (strcmp(v->FileVersion, FILE_VERSION)>0) {
-               printf("Warning: Trying to read a version %s file, you should");
-               printf(" upgrade Vis5D.\n");
+               /* WLH 6 Oct 98 */
+               printf("Warning: Trying to read a version %s file,", v->FileVersion);
+               printf(" you should upgrade Vis5D.\n");
             }
             break;
          case TAG_NUMTIMES:
@@ -1752,7 +1885,9 @@ static int read_v5d_header( v5dstruct *v )
          case TAG_PROJECTION:
             assert( length==4 );
             read_int4( f, &v->Projection );
-            if (v->Projection<0 || v->Projection>4) { /* WLH 4-21-95 */
+	    /* WLH 4-21-95 */
+	    /* ZLB 04-06-02 */
+            if (v->Projection<-1 || v->Projection>5) {
                printf("Error while reading header, bad projection (%d)\n",
                        v->Projection );
                return 0;
@@ -1806,6 +1941,24 @@ static int read_v5d_header( v5dstruct *v )
                SKIP( 4 );
             }
             break;
+         case TAG_ROWINCKM:
+            assert( length==4 );
+            if (v->Projection==5){
+               read_float4( f, &v->ProjArgs[2] );
+            }
+            else {
+               SKIP( 4 );
+            }
+            break;
+         case TAG_COLINCKM:
+            assert( length==4 );
+            if (v->Projection==5){
+               read_float4( f, &v->ProjArgs[3] );
+            }
+            else {
+               SKIP( 4 );
+            }
+            break;
          case TAG_LAT1:
             assert( length==4 );
             if (v->Projection==2) {
@@ -1847,7 +2000,7 @@ static int read_v5d_header( v5dstruct *v )
             if (v->Projection==2) {
                read_float4( f, &v->ProjArgs[4] );
             }
-            else if (v->Projection==3) {
+            else if (v->Projection==3 || v->Projection==5) {
                read_float4( f, &v->ProjArgs[1] );
             }
             else if (v->Projection==4) { /* WLH 4-21-95 */
@@ -1859,7 +2012,7 @@ static int read_v5d_header( v5dstruct *v )
             break;
          case TAG_CENTLAT:
             assert( length==4 );
-            if (v->Projection==3) {
+            if (v->Projection==3 || v->Projection==5) {
                read_float4( f, &v->ProjArgs[0] );
             }
             else if (v->Projection==4) { /* WLH 4-21-95 */
@@ -2134,6 +2287,8 @@ static int write_v5d_header( v5dstruct *v )
    int var, time, filler, maxnl;
    int f;
    int newfile;
+   /* ZLB */
+   int n;
 
    if (v->FileFormat!=0) {
       printf("Error: v5d library can't write comp5d format files.\n");
@@ -2247,16 +2402,32 @@ static int write_v5d_header( v5dstruct *v )
    /* Vertical Coordinate System */
    WRITE_TAG( v, TAG_VERTICAL_SYSTEM, 4 );
    write_int4( f, v->VerticalSystem );
+   /* ZLB 02-09-2000 */
+#if 0
    WRITE_TAG( v, TAG_VERT_ARGS, 4+4*MAXVERTARGS );
    write_int4( f, MAXVERTARGS );
    write_float4_array( f, v->VertArgs, MAXVERTARGS );
+#else
+   n = ( v->VerticalSystem == 0 || v->VerticalSystem == 1 ) ? 2 : maxnl;
+   WRITE_TAG( v, TAG_VERT_ARGS, 4+4*n );
+   write_int4( f, n );
+   write_float4_array( f, v->VertArgs, n );
+#endif
 
    /* Map Projection */
    WRITE_TAG( v, TAG_PROJECTION, 4 );
    write_int4( f, v->Projection );
+   /* ZLB 02-09-2000 */
+#if 0
    WRITE_TAG( v, TAG_PROJ_ARGS, 4+4*MAXPROJARGS );
    write_int4( f, MAXPROJARGS );
    write_float4_array( f, v->ProjArgs, MAXPROJARGS );
+#else
+   n= ( v->Projection != -1 ) ? 10 : v->Nc + v->Nr;
+   WRITE_TAG( v, TAG_PROJ_ARGS, 4+4*n );
+   write_int4( f, n );
+   write_float4_array( f, v->ProjArgs, n );
+#endif
 
    /* write END tag */
    if (newfile) {
@@ -2529,10 +2700,69 @@ int v5dCloseFile( v5dstruct *v )
 /*****           Simple v5d file writing functions.               *****/
 /**********************************************************************/
 
+/* JPE 09-19-2000
+ * Create a new v5d structure specifying both a map projection and vertical
+ * coordinate system.  See README file for argument details.
+ * Return:  1 = ok, 0 = error.
+ */
+int v5dCreateStruct(v5dstruct *v, int numtimes, int numvars,
+               int nr, int nc, const int nl[],
+               const char varname[MAX_V5_VARS][10],
+               const int timestamp[], const int datestamp[],
+               int compressmode,
+               int projection,
+               const float proj_args[],
+               int vertical,
+               const float vert_args[] )
+{
+   int var, time, maxnl, i;
+
+
+   v->NumTimes = numtimes;
+   v->NumVars = numvars;
+   v->Nr = nr;
+   v->Nc = nc;
+   maxnl = nl[0];
+   for (var=0;var<numvars;var++) {
+      if (nl[var]>maxnl) {
+         maxnl = nl[var];
+      }
+      v->Nl[var] = nl[var];
+      v->LowLev[var] = 0;
+      strncpy( v->VarName[var], varname[var], 10 );
+      v->VarName[var][9] = 0;
+   }
+
+   /* time and date for each timestep */
+   for (time=0;time<numtimes;time++) {
+      v->TimeStamp[time] = timestamp[time];
+      v->DateStamp[time] = datestamp[time];
+   }
+
+   v->CompressMode = compressmode;
+
+   /* Map projection and vertical coordinate system */
+   v->Projection = projection;
+   memcpy( v->ProjArgs, proj_args, MAXPROJARGS*sizeof(float) );
+
+   v->VerticalSystem = vertical;
+   if (vertical == 3) {
+     /* convert pressures to heights */
+     for (i=0; i< maxnl; i++) {
+       if (vert_args[i] > 0.000001) {
+         v->VertArgs[i] = pressure_to_height(vert_args[i]);
+       }
+       else v->VertArgs[i] = 0.0;
+     }
+   }
+   else {
+     memcpy( v->VertArgs, vert_args, MAXVERTARGS*sizeof(float) );
+   }
+	return 0;
+}
 
 
 static v5dstruct *Simple = NULL;
-
 
 
 /*
@@ -2550,51 +2780,12 @@ int v5dCreate( const char *name, int numtimes, int numvars,
                int vertical,
                const float vert_args[] )
 {
-   int var, time, maxnl, i;
+
 
    /* initialize the v5dstruct */
    Simple = v5dNewStruct();
-
-   Simple->NumTimes = numtimes;
-   Simple->NumVars = numvars;
-   Simple->Nr = nr;
-   Simple->Nc = nc;
-   maxnl = nl[0];
-   for (var=0;var<numvars;var++) {
-      if (nl[var]>maxnl) {
-         maxnl = nl[var];
-      }
-      Simple->Nl[var] = nl[var];
-      Simple->LowLev[var] = 0;
-      strncpy( Simple->VarName[var], varname[var], 10 );
-      Simple->VarName[var][9] = 0;
-   }
-
-   /* time and date for each timestep */
-   for (time=0;time<numtimes;time++) {
-      Simple->TimeStamp[time] = timestamp[time];
-      Simple->DateStamp[time] = datestamp[time];
-   }
-
-   Simple->CompressMode = compressmode;
-
-   /* Map projection and vertical coordinate system */
-   Simple->Projection = projection;
-   memcpy( Simple->ProjArgs, proj_args, MAXPROJARGS*sizeof(float) );
-
-   Simple->VerticalSystem = vertical;
-   if (vertical == 3) {
-     /* convert pressures to heights */
-     for (i=0; i<MAXVERTARGS; i++) {
-       if (vert_args[i] > 0.000001) {
-         Simple->VertArgs[i] = pressure_to_height(vert_args[i]);
-       }
-       else Simple->VertArgs[i] = 0.0;
-     }
-   }
-   else {
-     memcpy( Simple->VertArgs, vert_args, MAXVERTARGS*sizeof(float) );
-   }
+   v5dCreateStruct(Simple, numtimes,numvars,nr,nc,nl,varname,timestamp,datestamp,
+						 compressmode, projection, proj_args, vertical, vert_args);
 
    /* create the file */
    if (v5dCreateFile( name, Simple )==0) {
@@ -2605,6 +2796,9 @@ int v5dCreate( const char *name, int numtimes, int numvars,
       return 1;
    }
 }
+
+
+
 
 
 
@@ -2728,7 +2922,7 @@ int v5dWrite( int time, int var, const float data[] )
  * Close a v5d file after the last grid has been written to it.
  * Return:  1 = ok, 0 = error
  */
-int v5dClose_( void )
+int v5dClose( void )
 {
    if (Simple) {
      int ok = v5dCloseFile( Simple );
@@ -2747,20 +2941,13 @@ int v5dClose_( void )
 /*****                FORTRAN-callable simple output              *****/
 /**********************************************************************/
 
+#ifdef F77_FUNC
 
 /*
  * Create a v5d file.  See README file for argument descriptions.
  * Return:  1 = ok, 0 = error.
  */
-#ifdef UNDERSCORE
-   int v5dcreate_
-#else
-#  ifdef _CRAY
-     int V5DCREATE
-#  else
-     int v5dcreate_
-#  endif
-#endif
+int F77_FUNC(v5dcreate,V5DCREATE)
            ( const char *name, const int *numtimes, const int *numvars,
              const int *nr, const int *nc, const int nl[],
              const char varname[][10],
@@ -2863,6 +3050,14 @@ int v5dClose_( void )
       case 4:
          args = 7;
          break;
+/* MJK 12.12.99 */
+      case 5:
+         args = 4;
+         break;
+      /* ZLB 02-09-2000 */
+      case -1:
+         args = *nr + *nc;
+         break;
       default:
          args = 0;
          printf("Error: projection invalid\n");
@@ -2921,15 +3116,7 @@ int v5dClose_( void )
  * Create a simple v5d file.  See README file for argument descriptions.
  * Return:  1 = ok, 0 = error.
  */
-#ifdef UNDERSCORE
-  int v5dcreatesimple_
-#else
-#  ifdef _CRAY
-     int V5DCREATESIMPLE
-#  else
-     int v5dcreatesimple_
-#  endif
-#endif
+int F77_FUNC(v5dcreatesimple,V5DCREATESIMPLE)
            ( const char *name, const int *numtimes, const int *numvars,
              const int *nr, const int *nc, const int *nl,
              const char varname[][10],
@@ -2959,16 +3146,7 @@ int v5dClose_( void )
    vertarg[0] = *bottomhgt;
    vertarg[1] = *hgtinc;
 
-#ifdef UNDERSCORE
-   return v5dcreate_
-#else
-#  ifdef _CRAY
-   return V5DCREATE
-#  else
-
-   return v5dcreate_
-#  endif
-#endif
+   return F77_FUNC(v5dcreate,V5DCREATE)
                    ( name, numtimes, numvars, nr, nc, varnl,
                      varname, timestamp, datestamp, &compressmode,
                      &projection, projarg, &vertical, vertarg );
@@ -2981,15 +3159,7 @@ int v5dClose_( void )
  * Input: lowlev - array [NumVars] of ints
  * Return:  1 = ok, 0 = error
  */
-#ifdef UNDERSCORE
-   int v5dsetlowlev_
-#else
-#  ifdef _CRAY
-     int V5DSETLOWLEV
-#  else
-     int v5dsetlowlev_
-#  endif
-#endif
+int F77_FUNC(v5dsetlowlev,V5DSETLOWLEV)
           ( int *lowlev )
 {
    return v5dSetLowLev(lowlev);
@@ -3003,18 +3173,13 @@ int v5dClose_( void )
  *        units - a character string
  * Return:  1 = ok, 0 = error
  */
-#ifdef UNDERSCORE
-   int v5dsetunits_
-#else
-#  ifdef _CRAY
-     int V5DSETUNITS
-#  else
-     int v5dsetunits_
-#  endif
-#endif
+int F77_FUNC(v5dsetunits,V5DSETUNITS)
           ( int *var, char *name )
 {
-   return v5dSetUnits( *var, name );
+   char buf[20];
+   copy_string( buf, name, 20 );
+
+   return v5dSetUnits( *var, buf );
 }
 
 
@@ -3026,15 +3191,7 @@ int v5dClose_( void )
  *         data - array [nr*nc*nl] of floats
  * Return:  1 = ok, 0 = error
  */
-#ifdef UNDERSCORE
-   int v5dwrite_
-#else
-#  ifdef _CRAY
-     int V5DWRITE
-#  else
-     int v5dwrite_
-#  endif
-#endif
+int F77_FUNC(v5dwrite,V5DWRITE)
           ( const int *time, const int *var, const float *data )
 {
    return v5dWrite( *time, *var, data );
@@ -3049,15 +3206,7 @@ int v5dClose_( void )
  *         mcfile, mcgrid - McIDAS grid file number and grid number
  * Return:  1 = ok, 0 = errror (bad time or var)
  */
-#ifdef UNDERSCORE
-   int v5dmcfile_
-#else
-#  ifdef _CRAY
-     int V5DMCFILE
-#  else
-     int v5dmcfile_
-#  endif
-#endif
+int F77_FUNC(v5dmcfile,V5DMCFILE)
          ( const int *time, const int *var,
            const int *mcfile, const int *mcgrid )
 {
@@ -3080,15 +3229,70 @@ int v5dClose_( void )
 /*
  * Close a simple v5d file.
  */
-#ifdef UNDERSCORE
-   int v5dclose_( void )
-#else
-#  ifdef _CRAY
-     int V5DCLOSE( void )
-#  else
-     int v5dclose_( void )
-#  endif
-#endif
+int F77_FUNC(v5dclose,V5DCLOSE)()
 {
-   return v5dClose_();
+   return v5dClose();
 }
+
+
+/*
+ * Open a pre-existing v5d file for appending.
+ */
+int F77_FUNC(v5dupdate,V5DUPDATE)
+         ( const char *name )
+{
+   char filename[100];
+
+   /* copy name to filename and remove trailing spaces if any */
+   copy_string( filename, name, 100 );
+   Simple = v5dNewStruct();
+   if (!Simple)
+      return 0;
+   if (!v5dUpdateFile ( filename, Simple ))
+      return 0;
+   return 1;
+}
+
+
+/*
+ * Update the timestep count and the vector defining timesteps.
+ * This is useful for incremental output from fortran model code.
+ * Each timestep can be appended to the v5d file independently.
+ */
+int F77_FUNC(v5dupdatetimes,V5DUPDATETIMES)
+          ( const int *numtimes,
+            const int timestamp[], const int datestamp[] )
+{
+   int time;
+
+   if (!Simple) {
+      printf("Error: must call v5dupdate before v5dupdatetimes\n");
+      return 0;
+   }
+   /*
+    * Check for uninitialized arguments
+    */
+   if (*numtimes < 1) {
+      printf("Error: v5dupdatetimes: numtimes invalid: %d\n", *numtimes);
+      return 0;
+   }
+
+   for (time = 0; time < *numtimes; time++) {
+      if (timestamp[time] < 0) {
+         printf("Error: v5dupdatetimes: times(%d) invalid: %d\n", time+1,timestamp[time]);
+         return 0;
+      }
+      if (datestamp[time] < 0) {
+         printf("Error: v5dupdatetimes: dates(%d) invalid: %d\n", time+1,datestamp[time]);
+         return 0;
+      }
+   }
+   Simple->NumTimes = *numtimes;
+   for (time = 0; time < *numtimes; time++) {
+      Simple->TimeStamp[time] = timestamp[time];
+      Simple->DateStamp[time] = datestamp[time];
+   }
+   return 1;
+}
+
+#endif /* F77_FUNC */

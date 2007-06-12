@@ -1,37 +1,41 @@
-/* $Id$ */
-
-/* Vis5D version 5.2 */
-
 /*
-Vis5D system for visualizing five dimensional gridded data sets
-Copyright (C) 1990 - 1996 Bill Hibbard, Brian Paul, Dave Santek,
-and Andre Battaiola.
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 1, or (at your option)
-any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-Note: Ansley Manke 10/98. Ferret-external-functions version of this file, with 
+ * Vis5D system for visualizing five dimensional gridded data sets.
+ * Copyright (C) 1990 - 2000 Bill Hibbard, Johan Kellum, Brian Paul,
+ * Dave Santek, and Andre Battaiola.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * As a special exception to the terms of the GNU General Public
+ * License, you are permitted to link Vis5D with (and distribute the
+ * resulting source and executables) the LUI library (copyright by
+ * Stellar Computer Inc. and licensed for distribution with Vis5D),
+ * the McIDAS library, and/or the NetCDF library, where those
+ * libraries are governed by the terms of their own licenses.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+Note: Ansley Manke 6/07. Ferret-external-functions version of this file, with 
 MAXVARS changed to MAX_V5_VARS. Make the same change in v5d.h, v5d.c, and 
 v5df_fer.h
-
-*/
-
-
+ */
 
 #ifndef V5D_H
 #define V5D_H
 
+/* SGJ: use extern "C" if included from a C++ file: */
+#ifdef __cplusplus
+extern "C" {
+#endif				/* __cplusplus */
 
 /*
  * A numeric version number which we can test for in utility programs which
@@ -45,7 +49,7 @@ v5df_fer.h
  * If V5D_VERSION is not defined, then its value is considered to be zero.
  */
 
-#define V5D_VERSION 50
+#define V5D_VERSION 42
 
 
 /*
@@ -62,12 +66,13 @@ typedef unsigned short V5Dushort;   /* Must be 2 byte, except for cray */
 
 
 /* Limits on 5-D grid size:  (must match those in v5df.h!!!) */
-#define MAX_V5_VARS      30
+#define MAX_V5_VARS     200
 #define MAXTIMES    400
 #define MAXROWS     400
-#define MAXCOLUMNS  800 
-#define MAXLEVELS   100
+#define MAXCOLUMNS  400 
+#define MAXLEVELS   400
 
+#define MAXRECS     10000
 
 /************************************************************************/
 /***                                                                  ***/
@@ -76,7 +81,6 @@ typedef unsigned short V5Dushort;   /* Must be 2 byte, except for cray */
 /*** converters, etc.                                                 ***/
 /***                                                                  ***/
 /************************************************************************/
-
 extern int v5dCreateSimple( const char *name,
                             int numtimes, int numvars,
                             int nr, int nc, int nl,
@@ -120,7 +124,8 @@ extern int v5dSetUnits( int var, const char *units );
 /***                                                                  ***/
 /************************************************************************/
 
-#define MAXPROJARGS 100
+/* ZLB 02-09-2000 */
+#define MAXPROJARGS (MAXROWS+MAXCOLUMNS+1)
 #define MAXVERTARGS (MAXLEVELS+1)
 
 /*
@@ -183,7 +188,7 @@ typedef struct {
                 NOTES: X coordinates increase to the right, Y increase upward.
                 NOTES: Coordinate system is right-handed.
         ELSE IF Projection==1 THEN
-                -- Cylindrical equidistant (Old VIS-5D)
+                -- Cylindrical equidistant (Old Vis5d)
                 -- Rectilinear grid in lat/lon
                 ProjArgs[0] = Latitude of grid row 0, north bound, in degrees
                 ProjArgs[1] = Longitude of grid column 0, west bound, in deg.
@@ -216,6 +221,20 @@ typedef struct {
                 ProjArgs[4] = Earth latitude of (0, 0) on rotated globe
                 ProjArgs[5] = Earth longitude of (0, 0) on rotated globe
                 ProjArgs[6] = Clockwise rotation of rotated globe in degrees
+        ELSE IF Projection == 5 THEN
+                -- Mercator
+                ProjArgs[0] = Latitude of center of projection
+                ProjArgs[1] = Longitude of center of projection
+                ProjArgs[2] = Row Increment in Kilometers
+                ProjArgs[3] = Column Increment in Kilometers
+        ELSE IF Projection==-1 THEN
+        	ProjArgs[0]    = coordinate of latitude[0] (row[0])
+        	...
+        	ProjArgs[n]    = coordinate of latitude[n] (row[n])
+
+        	ProjArgs[NR]   = coordinate of latitude[0] (column[0])
+        	...
+        	ProjArgs[NR+n] = coordinate of latitude[n] (column[n])
         ENDIF
         */
 
@@ -306,6 +325,21 @@ extern int v5dWriteCompressedGrid( const v5dstruct *v,
 
 extern int v5dWriteGrid( v5dstruct *v, int time, int var, const float data[] );
 
+  /* JPE added 09-19-2000  */
+extern int v5dCreateStruct( v5dstruct *v, int numtimes, int numvars,
+										int nr, int nc, const int nl[],
+										const char varname[MAX_V5_VARS][10],
+										const int timestamp[], const int datestamp[],
+										int compressmode,
+										int projection,
+										const float proj_args[],
+										int vertical,
+										const float vert_args[] );
 
+
+
+#ifdef __cplusplus
+}                               /* extern "C" */
+#endif				/* __cplusplus */
 
 #endif

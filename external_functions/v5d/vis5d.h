@@ -1,26 +1,30 @@
-/* $Id$ */
-
-/* Vis5D version 4.3 */
-
 /*
-Vis5D system for visualizing five dimensional gridded data sets
-Copyright (C) 1990-1997 Bill Hibbard, Brian Paul, Dave Santek,
-and Andre Battaiola.
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 1, or (at your option)
-any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ * Vis5D system for visualizing five dimensional gridded data sets.
+ * Copyright (C) 1990 - 2000 Bill Hibbard, Johan Kellum, Brian Paul,
+ * Dave Santek, and Andre Battaiola.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * As a special exception to the terms of the GNU General Public
+ * License, you are permitted to link Vis5D with (and distribute the
+ * resulting source and executables) the LUI library (copyright by
+ * Stellar Computer Inc. and licensed for distribution with Vis5D),
+ * the McIDAS library, and/or the NetCDF library, where those
+ * libraries are governed by the terms of their own licenses.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 
 
 /*
@@ -42,7 +46,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  * malloc/free and not deallocate graphics (ok for systems with a lot
  * of memory (>=128MB)).
  */
-#define MBS 32
+#ifdef VIS5D_MAX_MEM /* from config.h, via configure --with-memory=MB */
+#  define MBS VIS5D_MAX_MEM
+#else
+#  define MBS 0
+#endif
 
 
 
@@ -66,12 +74,15 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 /* Default animation rate in milliseconds: */
 #define ANIMRATE 100
 
+#define	DEFAULT_MAXTMESH	-1	/* no max	*/
+#define	DEFAULT_VSTRIDE		4	
+
 
 /* Default scale and exponent values for logrithmic vertical coordinate system: */
 #define DEFAULT_LOG_SCALE  1012.5
 #define DEFAULT_LOG_EXP  -7.2
 
-
+#define DEFAULT_SOUNDFONTNAME "6x12"
 
 /**********************************************************************/
 /**********************************************************************/

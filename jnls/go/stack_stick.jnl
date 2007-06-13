@@ -87,18 +87,17 @@ ppl axlsze,0,0
 plot/SET_UP/noy/axes=0,0,1,0/nolab/color=white/k=`ks` $1*0
    PPL PLOT
 let zlab = zz[k=`ks`]
-label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"
+LABEL/NOUSER `-1*0.1*($ppl$xorg)`, `($ppl$ylen)/2`, 1, 0, 0.12, "`zlab`"; \
 ppl tics,.125,.25,.125,.25
 ppl axlint,2,2
 ppl axlsze,0.1,0.1
 ppl axatic 5,5
 
-
 set view rt_`ks`
 cancel mode logo
-! Unlabel 1 removes the depth label...
+! Unlabel ($labnum_z) removes the depth label...
 plot/noy/k=`ks`/axes=0,0,0,1/vlimits=$3:$4/title=" "/set $1, $2
-   go unlabel 1
+   go unlabel ($labnum_z)
    ppl yaxis $3 $4 `($4-$3)/4`
    ppl tics,0,0,0,0; ppl axlsze,0,0
    ppl ylab " "
@@ -109,7 +108,7 @@ repeat/range=`ks+1`:`ke`/name=m (  set view lf_`m`; \
      plot/SET_UP/noy/axes=0,0,1,0/nolab/color=white/k=`ks` $1*0; \
      PPL PLOT; \
    let zlab = zz[k=`m`]; \
-   label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"; \
+   LABEL/NOUSER `-1*0.1*($ppl$xorg)`, `($ppl$ylen)/2`, 1, 0, 0.12, "`zlab`"; \
    ppl tics,.125,.25,.125,.25; \ 
    ppl axlint,2,2; \
    ppl axlsze,0.1,0.1; \

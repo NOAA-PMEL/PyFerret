@@ -1,7 +1,7 @@
 \cancel mode verify
 
 ! convert speed and direction to vector components.
-! call stack_stick.jnl to draw stack plot
+! Then call stack_stick.jnl to draw stack plot
 
 !  GO water_vector_stack spd dir lower_y upper_y
 
@@ -11,17 +11,10 @@
 ! $3 lower limit on Y axes for all plots
 ! $4 upper limit on Y axes for all plots
 
-! Example 1
-!   yes? set data "http://stout.pmel.noaa.gov/xwang_las_test-FDS/LAS/ndbc-adcp-44030/water_spd-ndbc-adcp-44030"
-!   yes? set data "http://stout.pmel.noaa.gov/xwang_las_test-FDS/LAS/ndbc-adcp-44030/water_dir-ndbc-adcp-44030"
-!   yes? set region/t=1-jun-2005:1-jul-2005/k=1:4
-!   yes? go water_vector_stack water_spd[d=1] water_dir[d=2] -30 30
-
-
-! Example 2
-!   yes? set data "/home/porter/ansley/ans_ferret/xiaoping/44029a2007.nc"
+! Example 
+!   yes? set data 44029a2007.nc
+!   yes? set region/t=1-mar-2007:15-apr-2007/k=1:10
 !   yes? go water_vector_stack.jnl water_spd water_dir -40 40
-
 
  can mode logo
 

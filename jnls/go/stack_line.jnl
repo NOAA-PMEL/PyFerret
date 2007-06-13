@@ -1,0 +1,122 @@
+\cancel mode verify
+
+! stack_line.jnl
+! stack line plots of a variable at each depth
+! acm 6/2007
+
+! See the example in call_stack_line.jnl
+
+! go stack_line zvar [yaxmin] [yaxmax]
+
+! If arguments 2 and 3 are not specified, they are computed from the data.
+! $1 A variable to plot, defined in Z and one other dimension
+! $2 optional lower limit on Y axes for all plots
+! $3 optional upper limit on Y axes for all plots
+
+! Example 1) 
+!   yes? USE levitus_climatology
+!   yes? LET/units="Deg C" yvar = temp[x=300]
+!   yes? go stack_line yvar
+
+QUERY/IGNORE $1%<Usage: GO stack_line  var [yaxmin] [yaxmax]
+
+cancel view
+
+! Set up parameters for defining the viewports and making the plots.
+
+let zz = z[gz=$1]
+
+let ks = `zz,return=kstart`
+let ke = `zz,return=kend`
+let nz = `zz,return=ksize`
+
+let y2 = 0.9
+let del = 0.8/`nz`
+let y1 = `y2 - del` + 0.02
+
+! This viewport will be used to draw the time axis at the bottom 
+! and to label the z axes.
+
+def view/axes/xlim=0.1:0.9/ylim=0.095:0.9 tv
+
+! Define viewports for all the stacked plots.
+!
+! The rt_* viewports, one for each depth being plotted are used to plot the right-
+! hand axes giving the data range for each Z lavel.
+
+! The lf_* viewports are the same size and shape. They will be used to plot the
+! left-hand axis with the corresponding depth
+
+repeat/range=`ks`:`ke`/name=m (def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` rt_`m`; \
+                          def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` lf_`m`; \
+                          let y1 = `y1 - del`; let y2 = `y2 - del`)
+
+! Get the y axis range to use if not specified by the user; %range returns the
+! plot range that Ferret would automatically use.
+IF ($2"1|*>0") THEN
+!   PLOT/SET XSEQUENCE(($1))
+   ppl %RANGE `($1)[x=@min,y=@min,z=@min,t=@min]`, `($1)[x=@max,y=@max,z=@max,t=@max]`, 2
+   LET xlo = ($PPL$RANGE_LOW)
+   LET xhi = ($PPL$RANGE_HIGH)
+ELSE
+   LET xlo = ($2)
+   LET xhi = ($3)
+ENDIF
+
+! Draw the time axis by plotting a variable having no data in the vertical range.
+! Label the vertical stacks of axes in the middle.
+
+set view tv
+let/bad=9999 all_zero = if missing($1,0) then 0 else 0*$1
+plot/noy/ax=0,1,0,0/nolab/k=`ke`/vlim=100:200 all_zero 
+
+label/nouser `($ppl$xlen)/2`,-0.6, 0, 0, 0.14 "`$1,return=title`"
+label/nouser -0.6, `($ppl$ylen)/2`, 0, 90, 0.12 "Depth (`$1,return=zunits`)"
+label/nouser `($ppl$xlen)+0.4`, `($ppl$ylen)/2`, 0, 90, 0.12 "Each line, `xlo` - `xhi` (`$1,return=units`)"
+
+! This label on the right, is replaced by making a key at the bottom.
+!label/nouser `($ppl$xlen)+0.7`, `($ppl$ylen)/2`, 0, 90, 0.12 "`$1,return=units`"
+
+! Draw a plot for each series, labelling on the left with the depth.
+
+! Put most of the labels on , except for the title, depth, and yaxis label.
+
+set view lf_`ks`
+PPL tics,0,0,0,0
+PPL axlsze,0,0
+PLOT/SET_UP/NOY/AXES=0,0,1,0/NOLAB/COLOR=white/k=`ks` $1*0
+PPL PLOT
+LET zlab = zz[k=`ks`]
+LABEL/NOUSER `-1*0.1*($ppl$xorg)`, `($ppl$ylen)/2`, 1, 0, 0.12, "`zlab`"
+PPL TICS,.125,.25,.125,.25
+PPL AXLINT,2,2
+PPL AXLSZE,0.1,0.1
+PPL AXATIC 5,5
+
+SET VIEW rt_`ks`
+CANCEL MODE logo
+! Unlabel 1 removes the depth label...
+PLOT/NOY/K=`ks`/AXES=0,0,0,1/VLIMITS=`xlo`:`xhi`/TITLE=" "/SET $1
+   GO unlabel ($labnum_z)
+   PPL YAXIS `xlo` `xhi` `(xhi-xlo)/4`
+   PPL TICS,0,0,0,0
+   PPL AXLSZE,0,0
+   PPL YLAB " "
+PPL PLOT
+
+REPEAT/RANGE=`ks+1`:`ke`/NAME=m (  SET VIEW lf_`m`; \
+   PPL TICS,0,0,0,0; PPL AXLSZE,0,0; \
+     PLOT/SET_UP/NOY/AXES=0,0,1,0/NOLAB/COLOR=WHITE/K=`ks` $1*0; \
+     PPL PLOT; \
+   LET zlab = zz[k=`m`]; \
+   LABEL/NOUSER `-1*0.1*($ppl$xorg)`, `($ppl$ylen)/2`, 1, 0, 0.12, "`zlab`"; \
+   PPL TICS,.125,.25,.125,.25; \ 
+   PPL AXLINT,2,2; \
+   PPL AXLSZE,0.1,0.1; \
+   PPL AXATIC 5,5;\
+   ; \
+   SET VIEW rt_`m`; \
+   PLOT/NOY/K=`m`/AXES=0,0,0,1/VLIMITS=`xlo`:`xhi`/NOLAB/SET $1; \
+     PPL YAXIS `xlo` `xhi` `(xhi-xlo)/4` ;  PPL TICS,0,0,0,0; PPL AXLSZE,0,0; PPL PLOT) 
+
+SET MODE/LAST verify

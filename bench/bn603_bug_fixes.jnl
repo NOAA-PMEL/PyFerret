@@ -8,7 +8,11 @@ GO bn_reset
 GO err602_shade_line_lev.jnl
 
 ! Fix for bug 1302
-! Daw correct SHADE and FILL plots across the modulo branch cut.
+! Draw correct SHADE and FILL plots across the modulo branch cut.
 GO bn_reset
 GO err602_curvi_modulo_cut
 
+! Fix for bug 1388
+! SET LIST/PREC worked for multi-var listings, LIST/PREC= var1,var2 did not
+GO bn_reset
+GO err602_list_prec

@@ -1,0 +1,22 @@
+! err602_list_prec.jnl
+! fixes for bug 1388: SET LIST/PREC worked for multi-variable listings,
+! but LIST/PRECISION= did not.
+
+use gt4d011.cdf
+
+! Here is a listing with default precision
+LIST/NOHEAD/I=91:94/J=37/K=1/L=1 temp,salt
+
+! Previously this did not have the effect of changing the precision.
+LIST/NOHEAD/I=91:94/J=37/K=1/L=1/PREC=3 temp,salt
+
+! This has always worked
+SET LIST/PREC=7
+LIST/NOHEAD/I=91:94/J=37/K=1/L=1 temp,salt
+
+! This should override the SET LIST/PREC setting
+LIST/NOHEAD/I=91:94/J=37/K=1/L=1/PREC=2 TEMP,SALT
+
+! And then things should go back to the SET LIST/PREC setting
+LIST/NOHEAD/I=91:94/J=37/K=1/L=1 TEMP,SALT
+

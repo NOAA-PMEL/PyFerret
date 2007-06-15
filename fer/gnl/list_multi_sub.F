@@ -72,7 +72,13 @@
 *                    variable names on columns, before listing data
 * V602: *acm 11/06 - fix bug 1451 when list/form=comma or /format=tab,
 *                    and there is missing data, output a comma or tab
-*                    placeholder for the missing values
+*                    placeholder for the missing values'
+* V603: *acm* 6/07 - Fix bug 1388. LIST/PREC= did not work on multi-variable 
+*                    listings but SET LIST/PREC=; LIST  did. The code to get
+*                    the value of /PREC= was inside an IF block only executed for
+*                    tab and comma formatting, and there was also an inconsistency
+*                    in how the two flags were used: prec_digits(for LIST/PREC=) and
+*                    list_digits(setting from SET LIST/PREC=)
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -161,16 +167,17 @@
 	      tab_or_comma = CHAR(9)
            ENDIF
               
+	ENDIF
+
 * determine precision for outputting values
-           lp = qual_given( slash_precision ) 
-	   IF ( lp .GT. 0 ) THEN
-	      CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
+	lp = qual_given( slash_precision ) 
+	IF ( lp .GT. 0 ) THEN
+           CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
      .                     value, status )
-              IF ( status .NE. ferr_ok ) GOTO 5000
-	      prec_digits = MAX(1.,MIN(value, 16.))	! 1 to 16	   
-	   ELSE
-	      prec_digits = list_digits
-	   ENDIF
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           prec_digits = MAX(1.,MIN(value, 16.))	! 1 to 16	   
+	ELSE
+           prec_digits = list_digits
 	ENDIF
 
 * determine list limits checking for conformable shapes of data to list
@@ -424,7 +431,7 @@
 
 * . . . how many digits right and left of decimal point ?
 	      biggest = MAX( ABS( small ), big )
-	      CALL GET_SIG_DIGITS( biggest, list_digits, nleft, nright )
+	      CALL GET_SIG_DIGITS( biggest, prec_digits, nleft, nright )
 	      nleft = MAX( 1, nleft )			! at least "0" to left
 	   ENDIF
 
@@ -440,7 +447,7 @@
 	      WRITE ( bad_fmt(ivar), 3002 ) min_width
  3002	FORMAT ( '(A',I2,')' )	
 	   ELSE
-	      CALL VAR_DATA_FMT( nleft, nright, list_digits, min_width,
+	      CALL VAR_DATA_FMT( nleft, nright, prec_digits, min_width,
      .			         width(ivar), good_fmt(ivar), bad_fmt(ivar) )
 	   ENDIF
 

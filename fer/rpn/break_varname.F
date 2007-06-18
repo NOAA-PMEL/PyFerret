@@ -44,6 +44,9 @@
 *
 * V600 6/05 *acm* Attribute control.
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* V604 6/07 *acm* Fix bug 1518 If we didnt find the varid in the dataset,
+*                 it may  be a user var(as in break_varattname, where the bug
+*                 occurred, but make the same change here.)
 
 	include	'ferret.parm'
 	include 'errmsg.parm'	
@@ -126,6 +129,15 @@
 * pseudovariable that refers to global attributes)
 
         CALL CD_GET_VAR_ID (dset, varname, varid, status)
+
+* If we didnt find the name in the dataset, it may be a  user var,
+* which just depends on that data set
+
+        IF (status  .NE. ferr_ok) THEN
+           CALL CD_GET_VAR_ID (-1, varname, varid, status)
+           IF (status .EQ. ferr_ok) dset = -1
+        ENDIF
+
 
         IF (status .NE. ferr_ok) THEN
            status = ferr_unknown_variable

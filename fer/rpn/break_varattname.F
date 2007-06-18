@@ -47,6 +47,8 @@
 *                 axis name in the attribute structure differ because Ferret
 *                 needed to rename an axis on file initialization for uniqueness;
 *                 we use the Ferret name throughout, restoring it only on output.
+* V604 6/07 *acm* Fix bug 1518 If we didnt find the varid in the dataset, it may 
+*                 be a user var
 
 	include	'ferret.parm'
 	include 'errmsg.parm'	
@@ -210,6 +212,14 @@
         ENDIF 
 
         CALL CD_GET_VAR_ID (dset, varname, varid, status)
+
+* If we didnt find the name in the dataset, it may be a  user var,
+* which just depends on that data set
+
+        IF (status  .NE. ferr_ok) THEN
+           CALL CD_GET_VAR_ID (-1, varname, varid, status)
+           IF (status .EQ. ferr_ok) dset = -1
+        ENDIF
 
 * If this is a coord var and the name matched an existing different axis 
 * name on input, then Ferret appends a digit to the name. 

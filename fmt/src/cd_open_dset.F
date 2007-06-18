@@ -99,10 +99,11 @@
 ! kob 7/95
 	include 'xsys_names.cmn_text'	            
 
+! The ones without trailing underscore are declared in netcdf.inc
 #ifdef usingDODSf2cUnderscore
 	INTEGER NF_OPEN_
 	CHARACTER*80 NF_STRERROR_
-#endif 
+#endif  
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -112,14 +113,14 @@
      .        do_warn, file_exists
       PARAMETER (do_warn = .TRUE. )
       REAL val
-      INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME,
+      INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME, STR_UPCASE
      .        ndims, nvars, ngatts, recdim, cdfstat, i, istep
       INTEGER len, iin, iout, ilast, dlen
       CHARACTER ch*1
 * *kob* 4/99
 * *kob* 11/00 - increase size of below to accomidate DODS files in mc sets
       CHARACTER*512 TM_INQ_PATH, cdf_file, raw_file
-      CHARACTER*80 TM_FMT, buff  ! for nf_ error message
+      CHARACTER*132 TM_FMT, buff, upstr  ! for nf_ error message
       CHARACTER*10 errcode
 
 #ifdef FORTRAN_90
@@ -237,13 +238,20 @@ cc	   	cdfid = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
 #else
         buff =  NF_STRERROR(cdfstat)
 #endif  
+
+        i = STR_UPCASE(upstr,buff)
+        IF (STR_SAME(upstr(1:13), 'UNKNOWN ERROR') .EQ. 0) THEN
+           buff = 'Unable to access remote URL: Data server '//
+     .    'unavailable or file cannot be opened'
+        ENDIF
+
         dlen = TM_LENSTR1(buff)
+
         val = cdfstat
         errcode = TM_FMT(val, 0, 10, len)
         buff(dlen+2:)  = '(OPeNDAP/netCDF Error code '//
-     .      errcode(1:TM_LENSTR1(errcode))//')'
+     .   errcode(1:TM_LENSTR1(errcode))//') '
         dlen = TM_LENSTR1(buff)
-
 
         CALL TM_ERRMSG
      .     ( merr_nc_open, status, 'CD_OPEN_DSET', dset,

@@ -946,3 +946,9 @@ show att/all (`sst,return=taxis`)
 
 set axis/units=days time
 show att/all (`sst,return=taxis`)
+
+! Fix bug 1518: previously var.attnames for a user-defined variable resulted in an error
+use coads_climatology
+let sst2 = 2*sst
+set att/like=sst sst2
+list sst2.attnames

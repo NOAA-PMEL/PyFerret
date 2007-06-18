@@ -59,6 +59,8 @@ Note: for **unknown reasons** this routine will not compile using the stock
 	     values were required (ie, if using a lot of colors
 
 *kob* 6/12/96 - explicit cast of image->data to eliminate compiler complaints
+*acm* 6/18/07 - renamed compress to wcompress because of conflict under x86-64_linux 
+                with /usr/lib64/libz.a(compress.o)
 
  Routine for writing out GIF files, using pd GIFEncode routine */
 
@@ -317,8 +319,8 @@ ifunptr GetPixel;
  
         fputc( InitCodeSize, fp );                      /* Write out the initial code size */
  
- 
-        compress( InitCodeSize+1, fp, GetPixel );               /* Actually compress data */
+ /* renamed from compress because of conflict under x86-64_linux with  /usr/lib64/libz.a(compress.o) */
+        wcompress( InitCodeSize+1, fp, GetPixel );               /* Actually compress data */
  
  
  
@@ -433,7 +435,7 @@ static FILE *g_outfile;
 static int ClearCode;
 static int EOFCode;
  
-compress( init_bits, outfile, ReadValue )
+wcompress( init_bits, outfile, ReadValue )
 int init_bits;
 FILE *outfile;
 ifunptr ReadValue;

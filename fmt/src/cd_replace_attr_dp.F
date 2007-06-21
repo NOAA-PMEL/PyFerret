@@ -42,12 +42,13 @@
 
 * V601 11/06 *acm* Attribute control, adding double precision attribute value
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V604  6/07 *acm* Declare VALS as double precision! 
 
 * Argument declarations
 
       CHARACTER*(*) attname, string
       INTEGER dset, varid, attype, attlen, status
-      REAL vals(*)
+      REAL*8 vals(*)
 
 * Internal declarations
 

@@ -41,7 +41,8 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * V600 6/05 *acm* Attribute control.
-* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V602 2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V604 6/07 *acm* Translate attname to hollerith before NCF_INQ_VAR_ATT 
 
 * Argument declarations
 
@@ -67,6 +68,9 @@ c#include "netcdf.inc"
 
       dset_num = dset
       IF (dset_num .LT. -2) dset_num = -2
+
+      slen = TM_LENSTR1( attname )
+      CALL TM_FTOC_STRNG( attname(1:slen), fhol, flen )
 
       status = NCF_INQ_VAR_ATT(dset_num, varid, attid, fhol, alen, attype, 
      .    attlen, attoutflag)

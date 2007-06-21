@@ -68,6 +68,8 @@
 *                 the correct error message is passed in here. Process these under
 *                 merr_nc_open, separately from other netcdf errors. Report the
 *                 netCDF / OPeNDAP error code.
+* V604 *acm* 6/07 Allow longer strings for OPeNDAP file-open errors. Call these
+*                 **Internet Data error 
 
 * arguments:
 *	status_in	- error code from calling program
@@ -103,8 +105,8 @@
 	INTEGER		status_in, status_out, dset_num, sf_num
 
 * local definitions
-	CHARACTER*132	TM_CMPRSS, expbuff, fndbuff
-	CHARACTER*256	errbuf	! introduced for GUI-SPLIT messages
+	CHARACTER*512	TM_CMPRSS, expbuff, fndbuff
+	CHARACTER*512	errbuf	! introduced for GUI-SPLIT messages
         CHARACTER*1028  symbuf  ! for symbol FER_LAST_ERROR
 	INTEGER		sf_len, des_len, TM_LENSTR1, msg_len, exp_len,
      .			fnd_len, rtn_len, len_symbuf, ier, ist, cdferr
@@ -112,6 +114,8 @@
 * initialize
 	status_out = status_in	! transfer error code to output
 	errbuf = ' '
+        expbuff = ' '
+        fndbuff = ' '
 
 * initialize string for symbol FER_LAST_ERROR
 
@@ -185,7 +189,7 @@ D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs:
              msg_len = TM_LENSTR1(errbuf)
              symbuf(len_symbuf:) = errbuf(:msg_len)
              len_symbuf = len_symbuf + msg_len + 1
-1001	     FORMAT(' **netCDF error')
+1001	     FORMAT(' **Internet Data error')
           ELSE
 
              msg_len = TM_LENSTR1(msg_regular(status_in - pregular))
@@ -258,11 +262,15 @@ D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs:
 * Output any info in expected and found strings (if any present)
 	errbuf = ' '
 	IF (expected .NE. no_errstring) THEN
-	  expbuff = TM_CMPRSS(expected)
+cc	  expbuff = TM_CMPRSS(expected)
+	  exp_len = TM_LENSTR1(expected)
+          expbuff = expected(1:exp_len)
+
 	  exp_len = TM_LENSTR1(expbuff)
 	  IF (found .NE. no_errstring) THEN
-	    fndbuff = TM_CMPRSS(found)
-	    fnd_len = TM_LENSTR1(fndbuff)
+cc	    fndbuff = TM_CMPRSS(found)
+	    fnd_len = TM_LENSTR1(found)
+	    fndbuff = found(1:fnd_len)
 	    WRITE (errbuf,1200) expbuff(1:exp_len),
      .				      fndbuff(1:fnd_len)
 	    CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)

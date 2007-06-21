@@ -72,6 +72,7 @@
 * V600 *acm* 7/06 - To return correct netCDF error messages, call NF_OPEN and
 *                   NF_STRERROR instead of NCOPN. Requires DODS library v3.5.2 or
 *                   higher.
+* V604 *acm* 6/07 Allow longer strings for OPeNDAP file-open errors.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -102,7 +103,11 @@
 ! The ones without trailing underscore are declared in netcdf.inc
 #ifdef usingDODSf2cUnderscore
 	INTEGER NF_OPEN_
-	CHARACTER*80 NF_STRERROR_
+	CHARACTER*512 NF_STRERROR_
+
+#else      ! these declarations are in netcdf.inc
+#	INTEGER NF_OPEN
+#	CHARACTER*512 NF_STRERROR
 #endif  
 
 * local variable declarations:
@@ -120,13 +125,18 @@
 * *kob* 4/99
 * *kob* 11/00 - increase size of below to accomidate DODS files in mc sets
       CHARACTER*512 TM_INQ_PATH, cdf_file, raw_file
-      CHARACTER*132 TM_FMT, buff, upstr  ! for nf_ error message
+      CHARACTER*132 TM_FMT
+      CHARACTER*512 buff, upstr  ! for nf_ error message
       CHARACTER*10 errcode
 
 #ifdef FORTRAN_90
 	INTEGER HEX40
 	DATA HEX40/Z'40'/
 #endif
+
+        buff = ' '
+        upstr = ' '
+        errcode = ' '
 
 ****** DODS *********
 * If this is a DODS remote file - see if it is cached (11/96)

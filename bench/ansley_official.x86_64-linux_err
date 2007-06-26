@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/build_v603/FERRET_x86_64-linux/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 33464111 Jun 18 13:36 /home/porter/ansley/build_v603/FERRET_x86_64-linux/fer/ferretdods_gui
-Using external functions from ../external_functions/ext_func_x86_64-linux/
+Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 44609129 Jun 21 11:54 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/build_v603/FERRET_x86_64-linux/external_functions/ext_func_x86_64-linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  build of Ferret v6.03 on FERRET_x86_64-linux
+Note: OPeNDAP error translation for DODS file-open errors (and skip tests of v5d)
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/build_v603/FERRET_x86_64-linux/bench
+PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_x86_64-linux/
-Beginning at Mon Jun 18 13:48:34 PDT 2007
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v603/FERRET_x86_64-linux/external_functions/ext_func_x86_64-linux
+Beginning at Thu Jun 21 11:55:24 PDT 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -279,7 +279,7 @@ list/format=cdf/append/file=test_abs.cdf ijl2
              # of dims in variable IJKL is inconsist. w/ CDF file
 list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]
  **TMAP ERR: error in line definition
-             disordered output coordinate value: 363 Axis: TCENTURY
+             disordered output coordinate value:         363  Axis: TCENTURY
 list/format=cdf/l=13/append/file=test_abs.cdf l1
  **ERROR: regridding: no target grid specified
 load temp[g=@lin]
@@ -606,12 +606,12 @@ set var/outtype=garbage broiled
  **TMAP ERR: non-existent or not on line
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
- **netCDF error
+ **Internet Data error
              Operation not permitted (OPeNDAP/netCDF Error code 1)
              Data set: http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf
 SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf"
- **netCDF error
-             Unable to access remote URL: Data server unavailable or file cannot be opened (OPeNDAP/netCDF Error code 1001)
+ **Internet Data error
+             OPeNDAP Error: Couldn't resolve host 'noserver' (OPeNDAP/netCDF Error code 1001)
              Data set: http://noserver/a/nofile.cdf
 SET DAT/FORM=CDF  "http://noserver/a/nofile.cdf"
  **netCDF error
@@ -695,4 +695,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-Ended at Mon Jun 18 13:49:43 PDT 2007
+Ended at Thu Jun 21 11:56:38 PDT 2007

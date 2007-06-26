@@ -53,6 +53,7 @@
 * 3/12/93 *sh* : allow unlimited columns in EZ data set
 * 11/99 *sh* - change "grid lines" to "axes" in error message
 * V600 6/05 *acm* new error merr_attalready; attribute already defined
+* V604 6/07 *acm* New merr_remote_open for errors opening remote datasets
 
 	include 'tmap_errors.parm'		! parameter definitions
 	include 'xerror_text.cmn_text'	! common declaration
@@ -147,5 +148,11 @@
      .	msg_regular(merr_badcolmn-pregular)
      .		/'# of columns not a multiple of # of vars          '/,
      .	msg_regular(merr_attalready-pregular)
-     .		/'attribute already defined                         '/
+     .		/'attribute already defined                         '/,
+     .	msg_regular(merr_badfileatt-pregular)
+     .		/'attribute reading error                           '/,
+     .	msg_regular(merr_nc_open-pregular)
+     .		/'error opening netCDF file                         '/,
+     .	msg_regular(merr_remote_open-pregular)
+     .		/'error opening remote data file                    '/
 	END

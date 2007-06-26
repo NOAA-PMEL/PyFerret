@@ -119,7 +119,8 @@
       PARAMETER (do_warn = .TRUE. )
       REAL val
       INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME, STR_UPCASE
-     .        ndims, nvars, ngatts, recdim, cdfstat, i, istep
+     .        ndims, nvars, ngatts, recdim, cdfstat, i, istep, 
+     .        err_status
       INTEGER len, iin, iout, ilast, dlen
       CHARACTER ch*1
 * *kob* 4/99
@@ -137,11 +138,14 @@
         buff = ' '
         upstr = ' '
         errcode = ' '
+        err_status = merr_nc_open
 
 ****** DODS *********
 * If this is a DODS remote file - see if it is cached (11/96)
 	remote_dods_id = -1	! the default: "NO"
 	IF ( ds_des_name(dset)(1:7) .EQ. 'http://') THEN
+
+	   err_status = merr_remote_open
 
 * ... have they specifically indicated "(no cache)"
 	   IF ( TM_HAS_STRING(ds_des_name(dset),'(no cach') ) THEN
@@ -190,19 +194,23 @@ cc	   remote_dods_id = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
            cdfstat = NF_OPEN(ds_des_name(dset), NF_NOWRITE, cdfid) 
 #endif 
 
-	   IF ( cdfstat .NE. NCNOERR ) GOTO 5150
+	   IF ( cdfstat .NE. NCNOERR ) THEN
+              GOTO 5150
+           ENDIF
            
            ds_des_name(dset) = cdf_file	! replace remote with cache!
 	ENDIF
 ****** END DODS *********
 
-* open the netCDF file and get its vital statistics
+* open the netCDF file and get its vital statisticsn
  50      CALL NCPOPT(0)  ! no error processing by netCDF
 * check for mutli-file netcdf datasets then loop through the list
 * of stepfiles to find the first one that is on line    *kob* 7/95
 * * kob*  bug fix in loop logic 9/18/96
         IF (STR_SAME(ds_type(dset), '  MC') .EQ. 0) THEN
  		DO 100 i=1,maxstepfiles
+                     err_status = merr_nc_open
+
 		     IF (sf_setnum(i) .NE. dset) GOTO 100
 		     cdf_file = TM_INQ_PATH(sf_name(i),tmap_tsteps,
      .                                      ' ',.FALSE., status)
@@ -214,6 +222,8 @@ cc	   	         cdfid = NCOPN(cdf_file, NCNOWRIT, cdfstat)
 #else
 			 cdfstat = NF_OPEN(cdf_file, NF_NOWRITE, cdfid) 
 #endif 
+                         IF ( cdf_file(1:7) .EQ. 'http://') THEN 
+     .                       err_status = merr_remote_open
 
 			 mc_init_stepfile(dset) = i
 			 IF ( cdfstat .EQ. NCNOERR) GOTO 110
@@ -264,11 +274,11 @@ cc	   	cdfid = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
         dlen = TM_LENSTR1(buff)
 
         CALL TM_ERRMSG
-     .     ( merr_nc_open, status, 'CD_OPEN_DSET', dset,
+     .     ( err_status, status, 'CD_OPEN_DSET', dset,
      .        no_stepfile, buff, no_errstring, *5900 )
 
  5150   CALL TM_ERRMSG
-     .     ( merr_nc_open, status, 'CD_OPEN_DSET', dset,
+     .     ( err_status, status, 'CD_OPEN_DSET', dset,
      .        no_varid, 'Unable to access remote URL', no_errstring,
      .		*5900 )
 *kob* 9/18

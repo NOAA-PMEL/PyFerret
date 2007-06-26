@@ -189,7 +189,17 @@ D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs:
              msg_len = TM_LENSTR1(errbuf)
              symbuf(len_symbuf:) = errbuf(:msg_len)
              len_symbuf = len_symbuf + msg_len + 1
-1001	     FORMAT(' **Internet Data error')
+1001	     FORMAT(' **netCDF error')
+
+          ELSE IF (status_in .EQ. merr_remote_open) THEN
+	     msg_len = TM_LENSTR1(expected)
+	     WRITE (errbuf,1002) 
+	     CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
+             msg_len = TM_LENSTR1(errbuf)
+             symbuf(len_symbuf:) = errbuf(:msg_len)
+             len_symbuf = len_symbuf + msg_len + 1
+1002	     FORMAT(' **Internet Data error')
+
           ELSE
 
              msg_len = TM_LENSTR1(msg_regular(status_in - pregular))

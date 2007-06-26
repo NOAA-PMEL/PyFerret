@@ -178,7 +178,7 @@
       character*80   nf_inq_libvers
 !      external       nf_inq_libvers
 
-      character*80   nf_strerror
+      character*512   nf_strerror
 !                         (integer             ncerr)
 !      external       nf_strerror
 
@@ -1229,7 +1229,7 @@
 !     
 !     advisory maximums:
 !     
-      parameter(maxncop = 32)
+      parameter(maxncop = 100)
       parameter(maxncdim = 100)
       parameter(maxncatt = 2000)
       parameter(maxncvar = 2000)

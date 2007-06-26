@@ -146,6 +146,9 @@
 * V602 *acm* 1/07  Fix bug 1483; checking for irregularly spaced axis failed if the delta-coordinates
 *                  on the axis varied by orders of magnitude.
 * V602  2/07 *acm* Check upper and lowercase versions of axis (coordinate_axis) attribute
+* V604  6/07 *acm* Further fixes for finely-spaced axes (see bug 1483); compute only one epsilion23
+*                  for checking regularity of axes. For checking axis length of 360, use TM_FPEQ
+*                  to allow for numerical accuracy of bounds for axes of exactly length360.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -191,6 +194,7 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
       LOGICAL NC_GET_ATTRIB, CD_GET_ATTVAL, TM_CHECK_BOX_LOC,
      .        TM_HAS_STRING, TM_FPEQ_EPS, TM_DFPEQ, CD_GET_ATTVALC, 
      .        CD_GET_ATTVAL_L, TM_CHECK_BNDS, TM_CHECK_BNDS_CENTERED, 
+     .        TM_FPEQ,
      .        got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time, 
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
@@ -882,10 +886,10 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         last_coord = line_mem(ipte)
         firs_coord = line_mem(ipt1)
         first_delta = line_mem(ipt1+1) - line_mem(ipt1)
+        epsilon = epsilon_23 * 2.*(ABS(line_mem(ipte)) / delta )
 
         DO 360 i=ipt1+2,ipte
            delta = line_mem(i) - line_mem(i-1)
-           epsilon = epsilon_23 * 2.*(ABS(line_mem(i)) / delta )
            IF (.NOT. TM_FPEQ_EPS(epsilon, first_delta, delta) ) GOTO 380
   360   CONTINUE
 
@@ -1114,12 +1118,15 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         axwwlen = TM_WW_AXLEN(iaxis)
 
         IF ( line_direction(iaxis).EQ.'WE'
-     . .AND. units.EQ.4
-     . .AND. axwwlen .LE. 360.D0
-     . .AND. (.NOT.setmodfalse)                    ) THEN
-           line_modulo(iaxis) = .TRUE.
-           IF (line_modulo_len(iaxis).EQ.0.0D0)
+     .       .AND. units.EQ.4
+     .       .AND. (.NOT.setmodfalse) ) THEN
+
+           delta = axwwlen ! single precision
+           IF (TM_FPEQ(delta, 360.0) .OR. delta .LT. 360.0) THEN
+              line_modulo(iaxis) = .TRUE.
+              IF (line_modulo_len(iaxis).EQ.0.0D0)
      .                    line_modulo_len(iaxis) = 360.D0
+           ENDIF
         ENDIF
 
 * if it is a calendar time axis and the first point is in year 0000 or 0001

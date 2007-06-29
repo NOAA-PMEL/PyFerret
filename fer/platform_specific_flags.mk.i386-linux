@@ -83,9 +83,7 @@
 
 #       DODS_LIBS       = -L/home/porter/ansley/OPeNDAP/linux/DODS_v3.7.6/lib -lnc-dap -ldap -lnc-dap -ldap -lxml2  -lz -lpthread -lm -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a /usr/lib/libz.a
 
-
-	DODS_LIBS   	= -L/home/porter/ansley/OPeNDAP/linux/DODS_v3.7.6/lib -lnc-dap -ldap -lnc-dap  -ldap -ldapserver -ldapclient -lxml2  -lz -lpthread -lm -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a /usr/lib/libz.a
-
+	DODS_LIBS   	= -L/home/porter/ansley/OPeNDAP/linux/DODS_3.7.7_libnc_from_svn/lib -lnc-dap -ldap -lnc-dap -ldap -ldapserver -ldapclient /usr/lib/libxml2.a /usr/lib/libz.a -lpthread /usr/lib/libm.a /usr/lib/libcurl.a -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a /usr/lib/libz.a
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 

@@ -13,7 +13,7 @@
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \
-			  -I. -I$(TMAP_LOCAL)/include/readline -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/include/libnc-dap 
+			  -I. -I$(TMAP_LOCAL)/include/readline -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_20Jun07_from_svn/include/libnc-dap 
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			   -I../include -I../../fmt/cmn \
@@ -40,7 +40,7 @@
 	#   for http://gcc.gnu.org/ml/gcc-bugs/2000-04/msg00716.html for info
 
 	CPP		= /lib/cpp
-	CPP_FLAGS       = $(INCLUDES)  -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/include/libnc-dap \
+	CPP_FLAGS       = $(INCLUDES)  -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_20Jun07_from_svn/include/libnc-dap \
 			  -P -Dunix   \
 			  -DNO_OPEN_SHARED \
 			  -DNO_OPEN_RECORDTYPE -DNO_SNGL  \
@@ -54,7 +54,7 @@
 			  -DNO_INTRINSIC_IN_PARAMETER -DINTERNAL_READ_FORMAT_BUG -DNO_PREPEND_STRING
 
 	CFLAGS          =    -m64 $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION   -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
-	FFLAGS          =    -m64 $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore -fdollar-ok  -fintrin-case-any -ffixed-line-length-132  -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/include/libnc-dap  $(FINCLUDES)
+	FFLAGS          =    -m64 $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore -fdollar-ok  -fintrin-case-any -ffixed-line-length-132  -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_20Jun07_from_svn/include/libnc-dap  $(FINCLUDES)
 	PPLUS_FFLAGS    =    -m64 $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore  -fdollar-ok  -fintrin-case-any -ffixed-line-length-132  $(FINCLUDES)
 
 
@@ -69,7 +69,7 @@
 	 
 
 
-	SYSLIB		= -L/usr/X11R6/lib64  -lm -ldl /usr/X11R6/lib64/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib64/libXm.a -lXt -lXext -lX11 -lXp /usr/X11R6/lib64/libXmu.a -lSM       -lICE        -lc /usr/lib/gcc/x86_64-redhat-linux/3.4.4/libg2c.a
+	SYSLIB		= -L/usr/X11R6/lib64  -lm -ldl /usr/X11R6/lib64/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib64/libXm.a -lXt -lXext /usr/X11R6/lib64/libX11.a -lXp /usr/X11R6/lib64/libXmu.a -lSM       -lICE        -lc /usr/lib/gcc/x86_64-redhat-linux/3.4.4/libg2c.a
 
 	TMLIB		= ../lib/tmap_lib.a
 
@@ -79,7 +79,13 @@
 
 	HDFLIB		= -L/usr/local/src/HDF4.2r1/NewHDF/lib  -ldf -ljpeg -lz
 
-	DODS_LIBS   	= -L/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/lib -lnc-dap -ldap -lnc-dap  -ldap   -ldapserver -ldapclient  -L/usr/lib64 -lcurl -L/usr/kerberos/lib -L/usr/kerberos/lib64 -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto -lresolv -ldl -lz -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err -lresolv -L/usr/kerberos/lib -L/usr/kerberos/lib64 -lidn -lssl -lcrypto -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto -lresolv -ldl -lz -lz -lxml2 -lz -lpthread -lm -lpthread
+#	DODS_LIBS   	= -L/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/lib /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/lib/libnc-dap.a /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/lib/libdap.a /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/lib/libnc-dap.a  /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/lib/libdap.a   /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/lib/libdapserver.a /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6/lib/libdapclient.a  -L/usr/lib64.a /usr/lib64/libcurl.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libgssapi_krb5.a -lkrb5 -lcom_err /usr/lib64/libk5crypto.a /usr/lib64/libresolv.a -ldl /usr/lib64/libz.a /usr/lib64/libgssapi_krb5.a -lkrb5 /usr/lib64/libk5crypto.a -lcom_err /usr/lib64/libresolv.a /usr/lib64/libidn.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libgssapi_krb5.a -lkrb5 -lcom_err /usr/lib64/libk5crypto.a /usr/lib64/libresolv.a -ldl /usr/lib64/libz.a /usr/lib64/libz.a /usr/lib64/libxml2.a /usr/lib64/libz.a -lpthread /usr/lib64/libm.a -lpthread
+
+
+#	DODS_LIBS   	= -L/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.6_libnc_from_svn/lib/ -lnc-dap -ldap -lnc-dap  -ldap  -lnc-dap  -ldapserver -ldapclient  -lnc-dap -L/usr/lib64.a /usr/lib64/libcurl.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libgssapi_krb5.a -lkrb5 -lcom_err /usr/lib64/libk5crypto.a /usr/lib64/libresolv.a -ldl /usr/lib64/libz.a /usr/lib64/libgssapi_krb5.a -lkrb5 /usr/lib64/libk5crypto.a -lcom_err /usr/lib64/libresolv.a /usr/lib64/libidn.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libgssapi_krb5.a -lkrb5 -lcom_err /usr/lib64/libk5crypto.a /usr/lib64/libresolv.a -ldl /usr/lib64/libz.a /usr/lib64/libz.a /usr/lib64/libxml2.a /usr/lib64/libz.a -lpthread /usr/lib64/libm.a -lpthread
+
+
+	DODS_LIBS   	= -L/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.7.7_libnc_from_svn/lib/ -lnc-dap -ldap -lnc-dap  -ldap  -lnc-dap  -ldapserver -ldapclient  -lnc-dap -L/usr/lib64.a /usr/lib64/libcurl.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libgssapi_krb5.a -lkrb5 -lcom_err /usr/lib64/libk5crypto.a /usr/lib64/libresolv.a -ldl /usr/lib64/libz.a /usr/lib64/libgssapi_krb5.a -lkrb5 /usr/lib64/libk5crypto.a -lcom_err /usr/lib64/libresolv.a /usr/lib64/libidn.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libgssapi_krb5.a -lkrb5 -lcom_err /usr/lib64/libk5crypto.a /usr/lib64/libresolv.a -ldl /usr/lib64/libz.a /usr/lib64/libz.a /usr/lib64/libxml2.a /usr/lib64/libz.a -lpthread /usr/lib64/libm.a -lpthread
 
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o

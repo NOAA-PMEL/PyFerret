@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/build_v603/FERRET_linux/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     41278592 Jun 18 14:00 /home/porter/ansley/build_v603/FERRET_linux/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     41322874 Jun 29 09:26 /home/porter/ansley/build_v603/FERRET_linux/fer/ferretdods_gui
 Using external functions from ../external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix bug 1518 varname.attnames for user-defined variables; override Unknown Error message on dods file open error       
+Note: tagged v6.04; changes to run v5d tests with current version of this external function.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/build_v603/FERRET_linux/bench
+PWD=/home/porter/ansley/linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -21,7 +21,8 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_linux
-Beginning at Mon Jun 18 14:03:15 PDT 2007
+FER_EXTERNAL_FU=
+Beginning at Tue Jul 3 13:10:38 PDT 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -279,7 +280,7 @@ list/format=cdf/append/file=test_abs.cdf ijl2
              # of dims in variable IJKL is inconsist. w/ CDF file
 list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]
  **TMAP ERR: error in line definition
-             disordered output coordinate value: 363 Axis: TCENTURY
+             disordered output coordinate value:         363  Axis: TCENTURY
 list/format=cdf/l=13/append/file=test_abs.cdf l1
  **ERROR: regridding: no target grid specified
 load temp[g=@lin]
@@ -385,14 +386,6 @@ Bailing out of external function "ffta":
 	 Time axis must be a regular axis
  **ERROR: error in external function
 LIST vw_fft
-
-   ERROR in External Function samplexy_curv_avg:
-   Dynamic linking call dlopen() returns --
-   "../external_functions/ext_func_linux/samplexy_curv_avg.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function samplexy_curv_nrst:
-   Dynamic linking call dlopen() returns --
-   "../external_functions/ext_func_linux/samplexy_curv_nrst.so: cannot open shared object file: No such file or directory".
  **ERROR: illegal limits: VWND does not contain L=102:150
           Data are available in L =    1:60
 list tsorted_indices, tsorted_wnd
@@ -614,12 +607,12 @@ set var/outtype=garbage broiled
  **TMAP ERR: non-existent or not on line
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
- **netCDF error
+ **Internet Data error
              Operation not permitted (OPeNDAP/netCDF Error code 1)
              Data set: http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf
 SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf"
- **netCDF error
-             Unable to access remote URL: Data server unavailable or file cannot be opened (OPeNDAP/netCDF Error code 1001)
+ **Internet Data error
+             OPeNDAP Error: Couldn't resolve host 'noserver' (OPeNDAP/netCDF Error code 1001)
              Data set: http://noserver/a/nofile.cdf
 SET DAT/FORM=CDF  "http://noserver/a/nofile.cdf"
  **netCDF error
@@ -634,7 +627,7 @@ shade sst[t=@AVE,Z=@ave]
            - its a 2D region: "plot/i=100/k=1 temp[x=122.5W]"
 plot/i=100/k=1 temp[x=122.5W]
  **ERROR: invalid command: it is a child axis already
-set axis/stride=2/offset=1 (AX043)
+set axis/stride=2/offset=1 (AX054)
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
  **ERROR: invalid command: offset must be less than stride value
@@ -645,26 +638,10 @@ cancel axis/stride COADSX
 set axis/stride=2 NORMAL
  *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
  *** NOTE: They will not be convertible:
-
-   ERROR in External Function add_9:
-   Dynamic linking call dlopen() returns --
-   "../external_functions/ext_func_linux/add_9.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function avet:
-   Dynamic linking call dlopen() returns --
-   "../external_functions/ext_func_linux/avet.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function pass_thru:
-   Dynamic linking call dlopen() returns --
-   "../external_functions/ext_func_linux/pass_thru.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function storage:
-   Dynamic linking call dlopen() returns --
-   "../external_functions/ext_func_linux/storage.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function add_9:
-   Dynamic linking call dlopen() returns --
-   "../external_functions/ext_func_linux/add_9.so: cannot open shared object file: No such file or directory".
+ **ERROR: command syntax: unknown region name: @w
+set region/@w
+ **ERROR: invalid command: string/numeric data type mix-up: WRITEV5D
+load WRITEV5D(tr[i=95:100,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,55.0)
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -721,4 +698,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-Ended at Mon Jun 18 14:06:14 PDT 2007
+Ended at Tue Jul 3 13:13:39 PDT 2007

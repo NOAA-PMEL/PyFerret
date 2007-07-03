@@ -280,8 +280,17 @@ c                status = err_ww_lims
 
  5900	buff = CX_DIM_STR(idim, cx, ':',full_precision,slen)
 	risc_buff = buff(:slen)
-	CALL ERRMSG( ferr_limits, status,
+        IF ( cx_hi_ss(cx,idim) .NE. cx_lo_ss(cx,idim) ) THEN
+	   CALL ERRMSG( ferr_limits, status,
      .		err_str(:lenstr)//' is not in the range '//risc_buff//
      .		pCR//'Axis extremes are '//CX_DIM_STR(idim, cx_buff, 
      .					  ':',full_precision,slen), *5000 )
+
+        ELSE
+	   CALL ERRMSG( ferr_limits, status,
+     .		err_str(:lenstr)//' does not exist at '//risc_buff//
+     .		pCR//'Axis extremes are '//CX_DIM_STR(idim, cx_buff, 
+     .					  ':',full_precision,slen), *5000 )
+        ENDIF
+
 	END

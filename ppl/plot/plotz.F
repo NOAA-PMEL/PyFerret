@@ -87,6 +87,8 @@ C
 *                 even when re-using previous levels. Those levels may have come from
 *                 a previous SHADE plot as in SHADE/LINE and therefore the levels were
 *                 set but not the contour label and line characteristics.
+* V603 *acm* 7/07 Fix bug 1335, zero contours not dark. zlev(i) not seen as 0. Fix by 
+*                 using TM_FPEQ to compare zlev(i) to 0., within machine accuracy.
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -103,14 +105,18 @@ C
 	include 'xcurvilinear.cmn'
         INCLUDE 'errmsg.parm'
 
+* Argument declarations
 **	DIMENSION Z(NX,NY)
 	REAL	  Z(NX,NY)
-        INTEGER   status, slen1, slen2, nlev1
-        CHARACTER TM_FMT*20, buff1*20, buff2*20, err_msg*40
         REAL      XF,YF
         REAL*8    XLPLOT,YLPLOT,XHPLOT,YHPLOT
+
+* Local declarations
+        INTEGER   status, slen1, slen2, nlev1
+        CHARACTER TM_FMT*20, buff1*20, buff2*20, err_msg*40
         REAL*8    DXFF, DXOF, DYFF, DYOF
         REAL      XFF, XOF, YFF, YOF
+        LOGICAL   TM_FPEQ
 
 C*       *jd* Linux port 12.96 add EXTERNAL calls below
         external scale, range
@@ -216,6 +222,7 @@ C       =3 dashed line
 		 LDIG(I)=-1
 		 ZLEV(I)=ZNP+DZ*FLOAT(I-1)
 		 IF (ABS(ZLEV(I)).LT.1.E-5*DZ) GOTO 100
+                 IF ( TM_FPEQ( ABS(ZLEV(I)) ,0.) ) GOTO 100
 		 IF (ZLEV(I).GT.0.) THEN
 		    LWGT(I)=1
 		 ELSE
@@ -273,6 +280,7 @@ C these will not have been set before on, say a previous SHADE plot
 		 LWGT(I)=2
 		 LDIG(I)=-1
 		 IF (ABS(ZLEV(I)).LT.1.E-5*DZ) GOTO 105
+                 IF ( TM_FPEQ( ABS(ZLEV(I)) ,0.) ) GOTO 105
 		 IF (ZLEV(I).GT.0.) THEN
 		    LWGT(I)=1
 		 ELSE

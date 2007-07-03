@@ -61,12 +61,16 @@ C**
 * v581 *acm* 3/05 open levels (-INF) (INF)
 * V600 *acm* 8/05 Fix bug 1335: move the initialization of LWGT(j) = 2 to 
 *                 before the possible resetting of zlev if posinf true.
+* V603 *acm* 7/07 As done in plotz.F, use TM_FPEQ to compare zlev(i) to 0.,
+*                 within machine accuracy.
 
 	parameter	(epsilon = 1e-6)
 
 
 	DIMENSION VAL(4),INTIF(4)
         INTEGER ntop
+        LOGICAL   TM_FPEQ
+
 
 	IF(LABEL.EQ.' ')THEN
 	    NLEV=10
@@ -146,7 +150,7 @@ C
                    ZLEV(J)=VAL(1)+VAL(3)*(I-1)
 CC		Bug fix for non zero levels that ought to be zero *jd*
 		   IF (ABS(ZLEV(J)) .LT. EPSILON*ABS(VAL(1))) ZLEV(J)=0.0	
-		   IF(ZLEV(J).EQ.0.0)GOTO 100
+                   IF ( TM_FPEQ( ABS(ZLEV(I)) ,0.) ) GOTO 100
                 ENDIF
 
 		IF(ZLEV(J).GT.0)THEN

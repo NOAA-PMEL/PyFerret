@@ -5,19 +5,21 @@
 
 sp rm -f testa.v5d
 let a = "testa.v5d"
-use levitus_climatology
-load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
+
+use gt4d011.cdf
+def axis/y=1:100:1/units=degrees yax
+let tr = temp[gy=yax@asn]
+go vis5d_write " " tr
+
+load WRITEV5D(tr[i=95:100,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
 
 can region
-use coads_climatology
-let vflag = writev5d(sst, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
+let vflag = writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
 load vflag
 
-use levitus_climatology
-
 sp rm -f test.v5d
-load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
+load WRITEV5D(tr[i=95:100,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
 
 ! removed because it is internal and largely unintelligible
@@ -27,5 +29,5 @@ sp ls -l test.v5d
 
 ! test error: non-string argument passed
 set mode ignore
-  load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,55.0)
+  load WRITEV5D(tr[i=95:100,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,55.0)
 set mode/last ignore

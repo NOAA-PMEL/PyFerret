@@ -2,10 +2,14 @@
 ! 5/99 ACM
 
 
-!  Write climatology data to a Vis5D file.  The first argument to the 
+!  Write data to a Vis5D file.  The first argument to the 
 !  GO script is the file, arguments 2 through 9 are variable names to be written.
- 
-can region
-use coads_climatology
+! 7/2007 Funtion doesnt want to write a variable that doesnt have a vertical variation.
+!        To get a basic test of the function, make some data on a regularly-spaced xy grid.
 
-GO vis5d_write " " sst 
+can region
+
+use gt4d011.cdf
+def axis/y=1:100:1/units=degrees yax
+let tr = temp[gy=yax@asn]
+go vis5d_write " " tr

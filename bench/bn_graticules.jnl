@@ -52,8 +52,8 @@ can view
 
 ! HLOG and VLOG
 
-def axis/x dlog = exp(-1*(10-i[i=1:10]))
-let fcn = (i[gx=dlog])^2
+def axis/x ddlog = exp(-1*(10-i[i=1:10]))
+let fcn = (i[gx=ddlog])^2
 plot/thick/hlog/vlog/grat="large(color=red),small=(color=lightblue)" fcn
 
 ! Time axes

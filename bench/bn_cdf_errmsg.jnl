@@ -10,7 +10,15 @@ use this_is_not_a_file.nc
 
 !! Change to another server, our server down...
 !!use  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf"
-use "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf"
+!! Not working either as of 7/5/2007
+!! use "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf"
+
+! This is a valid address
+!use "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauy/dods"
+
+! change the variable name to something nonexistent
+use "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
+
 
 ! bad server
 use  "http://noserver/a/nofile.cdf"

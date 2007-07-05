@@ -8,10 +8,15 @@
 !! Change to another dataset, our server down...
 !!use  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/bn_strides.cdf"
 !!sh data
-!!plot/i=1/j=1 xytvar
+!!plot/i=1/j=1 temp
 !!ppl list labels
 
-set data "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/COADS_climatology.nc"
+!!set data "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/COADS_climatology.nc"
+!!sh data
+!!plot/x=180/y=0 airt 
+!!ppl list labels
+
+set data "http://apdrc.soest.hawaii.edu/thredds/dodsC/woa/1994/annual"
 sh data
-plot/x=180/y=0 airt 
+plot/x=180/y=0 otemp 
 ppl list labels

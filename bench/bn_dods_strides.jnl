@@ -25,6 +25,11 @@ set region/i=3:6/j=2:4/k=1:2/l=1
 ! use "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/bn_strides.cdf"
 set data "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 
+
+!! If the above is also down, here is a good one.
+!!set data "http://iridl.ldeo.columbia.edu/SOURCES/.NOAA/.NCEP/.EMC/.CMB/.Pacific/.monthly/dods"
+
+
 list temp
 canc data/all
 

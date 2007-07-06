@@ -35,9 +35,11 @@ PLATFORM = Solaris 5.8
 
 CC              = cc
 RANLIB          = /bin/touch
-CFLAGS          = -Dsolaris -DUSG -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
-FFLAGS          = -e -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES) -Dunix -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DusingDODSf2cUnderscore
-PPLUS_FFLAGS    = -e -Nl160 -Dxgks -DusingDODSf2cUnderscore -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Dunix $(FINCLUDES)
+CPP_FLAGS       = -DNO_PASSED_CONCAT \
+-DG77_SIGNAL -DG77 -Dcrptd_cat_argument
+CFLAGS          = $(CPP_FLAGS) -Dsolaris -DUSG -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
+FFLAGS          = $(CPP_FLAGS) -e -Nl160  -ffixed-line-length-132 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES) -Dunix -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DusingDODSf2cUnderscore -DNO_INTRINSIC_IN_PARAMETER 
+PPLUS_FFLAGS    = -e -Nl160  -ffixed-line-length-132 -Dxgks -DusingDODSf2cUnderscore -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Dunix $(FINCLUDES)
 
 #
 # Below this line are macro definitions used only for the final linking of the executable
@@ -91,7 +93,9 @@ HDFLIB		= /opt/local/lib/libdf.a
 # Also some libraries e.g./usr/local/BerkeleyDB.4.2/lib because they
 # are listed as required by libiconv.so, see /usr/local/lib/libiconv.la
 
-DODS_LIBS       =  -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libnc-dap.a /home/porter/tmap/OPeNDAP/solaris/v362/lib/libdap.a -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libcurl.a -lssl -lcrypto -ldl -lsocket -lnsl -lz -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libxml2.a -lz -lpthread -lssl -lcrypto  -ldl -lz -L/usr/local/lib  -L/usr/local/BerkeleyDB.4.2/lib -L/usr/local/ssl/lib -L/usr/openwin/lib -L/usr/lib /usr/local/lib/libiconv.so -lm -lsocket -lnsl -lpthread /usr/local/lib/libgcc_s.so.1
+#DODS_LIBS       =  -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libnc-dap.a /home/porter/tmap/OPeNDAP/solaris/v362/lib/libdap.a -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libcurl.a -lssl -lcrypto -ldl -lsocket -lnsl -lz -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libxml2.a -lz -lpthread -lssl -lcrypto  -ldl -lz -L/usr/local/lib  -L/usr/local/BerkeleyDB.4.2/lib -L/usr/local/ssl/lib -L/usr/openwin/lib -L/usr/lib /usr/local/lib/libiconv.so -lm -lsocket -lnsl -lpthread /usr/local/lib/libgcc_s.so.1
+
+DODS_LIBS       =  -L/home/porter/ansley/OPeNDAP/solaris8/DODS_v3.7.7_libnc_from_svn/lib /home/porter/ansley/OPeNDAP/solaris8/DODS_v3.7.7_libnc_from_svn/liblibnc-dap.a /home/porter/ansley/OPeNDAP/solaris8/DODS_v3.7.7_libnc_from_svn/liblibdap.a -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libcurl.a -lssl -lcrypto -ldl -lsocket -lnsl -lz -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libxml2.a -lz -lpthread -lssl -lcrypto  -ldl -lz -L/usr/local/lib  -L/usr/local/BerkeleyDB.4.2/lib -L/usr/local/ssl/lib -L/usr/openwin/lib -L/usr/lib /usr/local/lib/libiconv.so -lm -lsocket -lnsl -lpthread /usr/local/lib/libgcc_s.so.1
 
 TERMCAPLIB      =-ltermcap
 

@@ -78,7 +78,7 @@
 
       SUBROUTINE minutes24_init (id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
 
@@ -130,7 +130,7 @@
 
       SUBROUTINE minutes24_result_limits(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id
 
@@ -154,8 +154,8 @@
 *
       SUBROUTINE minutes24_compute (id, arg_1, result)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
       REAL bad_flag_result

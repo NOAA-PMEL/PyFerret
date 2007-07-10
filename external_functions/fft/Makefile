@@ -40,7 +40,9 @@ SUB_OBJS = fftinv_subs.o
 
 # all:	ferret_cmn fftinv_subs.o fft_im.so fft_re.so fft_inverse.so lsl_lowpass.so fft_amp.so fft_phas.so
 
-all:	ferret_cmn fftinv_subs.o lsl_lowpass.so fft_amp.so fft_phas.so ffta_sample.so
+# all:	ferret_cmn fftinv_subs.o lsl_lowpass.so fft_amp.so fft_phas.so ffta_sample.so
+
+all:	ferret_cmn fftinv_subs.o 
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

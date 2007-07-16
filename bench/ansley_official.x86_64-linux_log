@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/build_v604/FERRET_x86_64-linux/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 43227022 Jul  3 10:22 /home/porter/ansley/build_v604/FERRET_x86_64-linux/fer/ferretdods_gui
-Using external functions from ../external_functions/ext_func_x86_64-linux
+Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 44614828 Jul 16 13:33 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: checkout of v6.04, and with vis5d function restored (even though we dont have vis5d installed as a tool on this machine)
+Note:  fix bug 1519 in plotz.F (also, skipping all remote opendap tests, servers down)
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/build_v604/FERRET_x86_64-linux/bench
+PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,12 +20,12 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_x86_64-linux
-Beginning at Tue Jul 3 14:13:29 PDT 2007
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
+Beginning at Mon Jul 16 13:47:25 PDT 2007
  	NOAA/PMEL TMAP
  	FERRET v6.04  
- 	Linux(g77) 2.6.9-22. - 07/03/07
- 	 3-Jul-07 14:13     
+ 	Linux(g77) 2.6.9-22. - 07/16/07
+ 	16-Jul-07 13:47     
 
 yes? !bn500_all_shell
 yes? 
@@ -10310,8 +10310,8 @@ PPL$YPIXEL = "430"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.04"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = " 3-Jul-07"
-SESSION_TIME = "14:13"
+SESSION_DATE = "16-Jul-07"
+SESSION_TIME = "13:47"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10329,8 +10329,8 @@ PPL$YPIXEL = "430"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.04"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = " 3-Jul-07"
-SESSION_TIME = "14:13"
+SESSION_DATE = "16-Jul-07"
+SESSION_TIME = "13:47"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10338,8 +10338,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 3-Jul-07"
-SESSION_TIME = "14:13"
+SESSION_DATE = "16-Jul-07"
+SESSION_TIME = "13:47"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10349,13 +10349,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 3-Jul-07"
-SESSION_TIME = "14:13"
+SESSION_DATE = "16-Jul-07"
+SESSION_TIME = "13:47"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 3-Jul-07"
-SESSION_TIME = "14:13"
+SESSION_DATE = "16-Jul-07"
+SESSION_TIME = "13:47"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10389,7 +10389,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.04"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Jul  3 2007 14:13:36 "
+LAB3 = "Jul 16 2007 13:47:31 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10488,8 +10488,8 @@ PPL$YPIXEL = "430"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.04"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = " 3-Jul-07"
-SESSION_TIME = "14:13"
+SESSION_DATE = "16-Jul-07"
+SESSION_TIME = "13:47"
  
  
 GO bn_reset
@@ -18510,8 +18510,8 @@ MESSAGE/CONTINUE  ***** Remember to run it separately
  
 GO bn_reset
 cancel mode verify
- PERMANENT data cleared f-rw-rw-r--  1 ansley tmap 23222 Jul  3 14:13 bench.mgm
--rw-rw-r--  1 ansley tmap 415586 Jul  3 14:13 bench.mgm
+ PERMANENT data cleared f-rw-rw-r--  1 ansley tmap 23223 Jul 16 13:47 bench.mgm
+-rw-rw-r--  1 ansley tmap 415659 Jul 16 13:47 bench.mgm
 rom memory
  TEMPORARY data cleared from memory
 GO bn_movie
@@ -25764,7 +25764,7 @@ sp ncdump out.cdf >> all_ncdump.out
  
 save/append/file=out.cdf my_var[l=2]
  LIabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Tue Jul  3 14:13:50 PDT 2007
+Mon Jul 16 13:47:42 PDT 2007
 STing to file out.cdf
 sp echo "err491_dp_time_write.jnl --- 2 after append" >> all_ncdump.out
 sp ncdump out.cdf >> all_ncdump.out
@@ -27212,14 +27212,14 @@ canc data/all
 cancel region
 set region/i=1:4/j=1:3/l=1:2
 use bn_strides
-show grid temp
+show grid xytvar
     GRID GPC5
  name       axis              # pts   start                end
  XLON      LONGITUDE           40mr   141E                 180E
  YLAT      LATITUDE            30 r   1N                   30N
  normal    Z
  TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00
-list temp
+list xytvar
              VARIABLE : L*1000 + J*10 + I
              FILENAME : bn_strides.cdf
              SUBSET   : 4 by 3 by 2 points (LONGITUDE-LATITUDE-TIME)
@@ -27236,14 +27236,14 @@ list temp
 canc data/all
  
 use/order=yx bn_strides
-show grid temp
+show grid xytvar
     GRID GPC5
  name       axis              # pts   start                end
  YLAT      X (degrees_nor      30 r   1                    30
  XLON      Y (degrees_eas      40mr   141                  180
  normal    Z
  TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00
-list temp
+list xytvar
              VARIABLE : L*1000 + J*10 + I
              FILENAME : bn_strides.cdf
              SUBSET   : 4 by 3 by 2 points (X (degrees_north)-Y (degrees_east)-TIME)
@@ -27260,14 +27260,14 @@ list temp
 canc data/all
  
 use/order=tyx bn_strides
-show grid temp
+show grid xytvar
     GRID GPC5
  name       axis              # pts   start                end
  TTIME     X (DAYS)            20 r   34319                34338
  YLAT      LATITUDE            30 r   1N                   30N
  normal    Z
  XLON      T (degrees_eas      40mr   141                  180
-list temp
+list xytvar
              VARIABLE : L*1000 + J*10 + I
              FILENAME : bn_strides.cdf
              SUBSET   : 4 by 3 by 2 points (X (DAYS)-LATITUDE-T (degrees_east))
@@ -27284,14 +27284,14 @@ list temp
 canc data/all
  
 use/order=txy bn_strides
-show grid temp
+show grid xytvar
     GRID GPC5
  name       axis              # pts   start                end
  TTIME     X (DAYS)            20 r   34319                34338
  XLON      Y (degrees_eas      40mr   141                  180
  normal    Z
  YLAT      T (degrees_nor      30 r   1                    30
-list temp
+list xytvar
              VARIABLE : L*1000 + J*10 + I
              FILENAME : bn_strides.cdf
              SUBSET   : 4 by 3 by 2 points (X (DAYS)-Y (degrees_east)-T (degrees_north))
@@ -27309,14 +27309,14 @@ canc data/all
  
 ! map into Z instead of T
 use/order=zxy bn_strides
-show grid temp
+show grid xytvar
     GRID GPC5
  name       axis              # pts   start                end
  TTIME     X (DAYS)            20 r   34319                34338
  XLON      Y (degrees_eas      40mr   141                  180
  YLAT      Z (degrees_nor      30 r   1                    30
  normal    T
-list/k=1:2 temp
+list/k=1:2 xytvar
              VARIABLE : L*1000 + J*10 + I
              FILENAME : bn_strides.cdf
              SUBSET   : 4 by 3 by 2 points (X (DAYS)-Y (degrees_east)-Z (degrees_north))
@@ -27334,14 +27334,14 @@ canc data/all
  
 ! ambiguous mapping
 use/order=tx bn_strides
-show grid temp
+show grid xytvar
     GRID GPC5
  name       axis              # pts   start                end
  TTIME     X (DAYS)            20 r   34319                34338
  XLON      Y (degrees_eas      40mr   141                  180
  normal    Z
  YLAT      T (degrees_nor      30 r   1                    30
-list temp
+list xytvar
              VARIABLE : L*1000 + J*10 + I
              FILENAME : bn_strides.cdf
              SUBSET   : 4 by 3 by 2 points (X (DAYS)-Y (degrees_east)-T (degrees_north))
@@ -27359,7 +27359,7 @@ canc data/all
  
 ! final "z" goes beyond the 3D -- no effect
 use/order=txyz bn_strides
-show grid temp
+show grid xytvar
     GRID GPC5
  name       axis              # pts   start                end
  TTIME     X (DAYS)            20 r   34319                34338
@@ -27391,7 +27391,7 @@ SHOW DATA
  BIGVAR   VAR                              1:40      1:30      1:20      1:10
  UNEVENVAR
           L*1000 + K*100 + J[GY=YUNEVEN]*  1:10      1:8       1:6       1:4
- temp   L*1000 + J*10 + I                1:40      1:30      ...       1:20
+ XYTVAR   L*1000 + J*10 + I                1:40      1:30      ...       1:20
  
  
 ! basic strides
@@ -28426,11 +28426,11 @@ canc data/all
  -DELETE BIGVAR   M:150 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_10
  
-! now with temp
+! now with xytvar
 cancel region
 set region/i=1:4/j=1:3/l=1:2
 use bn_strides
-show grid temp
+show grid xytvar
  getgrid EX#1     C:  6 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GPC5            XLON      YLAT      NORMAL    TTIME
     GRID GPC5
@@ -28439,7 +28439,7 @@ show grid temp
  YLAT      LATITUDE            30 r   1N                   30N
  normal    Z
  TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00
-list temp[i=1:7:2]
+list xytvar[i=1:7:2]
  dealloc  dynamic grid GPC5            XLON      YLAT      NORMAL    TTIME
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          (AX027)   YLAT      NORMAL    TTIME
@@ -28447,10 +28447,10 @@ list temp[i=1:7:2]
  allocate dynamic grid (G024)          (AX027)   YLAT      NORMAL    TTIME
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G024)          (AX027)   YLAT      NORMAL    TTIME
- strip regrid on X: temp --> (G024)           @XACT
- rdstride temp   C:  7 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
- nulrgd  temp   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:150 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
+ strip regrid on X: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
+ nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:150 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G024)          (AX027)   YLAT      NORMAL    TTIME
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X
@@ -28466,19 +28466,19 @@ list temp[i=1:7:2]
  3N   / 3:  2031.00  2033.00  2035.00  2037.00
  2N   / 2:  2021.00  2023.00  2025.00  2027.00
  1N   / 1:  2011.00  2013.00  2015.00  2017.00
-list temp[j=2:6:2]
+list xytvar[j=2:6:2]
  dealloc  dynamic grid (G024)          (AX027)   YLAT      NORMAL    TTIME
- -DELETE temp   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          XLON      (AX023)   NORMAL    TTIME
  dealloc  dynamic grid (G024)          XLON      (AX023)   NORMAL    TTIME
  allocate dynamic grid (G024)          XLON      (AX023)   NORMAL    TTIME
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G024)          XLON      (AX023)   NORMAL    TTIME
- strip regrid on Y: temp --> (G024)           @XACT
- rdstride temp   C:  7 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
- nulrgd  temp   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:144 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
+ strip regrid on Y: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
+ nulrgd  XYTVAR   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:144 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G024)          XLON      (AX023)   NORMAL    TTIME
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on Y
@@ -28494,19 +28494,19 @@ list temp[j=2:6:2]
  6N   / 3:  2061.00  2062.00  2063.00  2064.00
  4N   / 2:  2041.00  2042.00  2043.00  2044.00
  2N   / 1:  2021.00  2022.00  2023.00  2024.00
-list temp[i=1:7:2,j=2:6:2,l=3:5:2]
+list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  dealloc  dynamic grid (G024)          XLON      (AX023)   NORMAL    TTIME
- -DELETE temp   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
  dealloc  dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
  allocate dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
- strip regrid on X: temp --> (G024)           @XACT
- rdstride temp   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
- nulrgd  temp   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:150 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
+ strip regrid on X: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
+ nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:150 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
  dealloc  dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
@@ -28523,11 +28523,11 @@ list temp[i=1:7:2,j=2:6:2,l=3:5:2]
  4N   / 2:  5041.00  5043.00  5045.00  5047.00
  2N   / 1:  5021.00  5023.00  5025.00  5027.00
 canc data/all
- -DELETE temp   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
  
 use/order=yx bn_strides
-show grid temp
+show grid xytvar
  getgrid EX#1     C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GPC5            YLAT      XLON      NORMAL    TTIME
     GRID GPC5
@@ -28536,7 +28536,7 @@ show grid temp
  XLON      Y (degrees_eas      40mr   141                  180
  normal    Z
  TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00
-list temp[i=1:7:2]
+list xytvar[i=1:7:2]
  dealloc  dynamic grid GPC5            YLAT      XLON      NORMAL    TTIME
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          (AX025)   XLON      NORMAL    TTIME
@@ -28544,10 +28544,10 @@ list temp[i=1:7:2]
  allocate dynamic grid (G024)          (AX025)   XLON      NORMAL    TTIME
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G024)          (AX025)   XLON      NORMAL    TTIME
- strip regrid on X: temp --> (G024)           @XACT
- rdstride temp   C:  7 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
- nulrgd  temp   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:144 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
+ strip regrid on X: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
+ nulrgd  XYTVAR   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:144 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G024)          (AX025)   XLON      NORMAL    TTIME
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X
@@ -28563,19 +28563,19 @@ list temp[i=1:7:2]
  141   / 1:  2011.00  2031.00  2051.00  2071.00
  142   / 2:  2012.00  2032.00  2052.00  2072.00
  143   / 3:  2013.00  2033.00  2053.00  2073.00
-list temp[j=2:6:2]
+list xytvar[j=2:6:2]
  dealloc  dynamic grid (G024)          (AX025)   XLON      NORMAL    TTIME
- -DELETE temp   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          YLAT      (AX026)   NORMAL    TTIME
  dealloc  dynamic grid (G024)          YLAT      (AX026)   NORMAL    TTIME
  allocate dynamic grid (G024)          YLAT      (AX026)   NORMAL    TTIME
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G024)          YLAT      (AX026)   NORMAL    TTIME
- strip regrid on Y: temp --> (G024)           @XACT
- rdstride temp   C:  7 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
- nulrgd  temp   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:150 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
+ strip regrid on Y: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
+ nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:150 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G024)          YLAT      (AX026)   NORMAL    TTIME
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on Y
@@ -28591,19 +28591,19 @@ list temp[j=2:6:2]
  142   / 1:  2012.00  2022.00  2032.00  2042.00
  144   / 2:  2014.00  2024.00  2034.00  2044.00
  146   / 3:  2016.00  2026.00  2036.00  2046.00
-list temp[i=1:7:2,j=2:6:2,l=3:5:2]
+list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  dealloc  dynamic grid (G024)          YLAT      (AX026)   NORMAL    TTIME
- -DELETE temp   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
  dealloc  dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
  allocate dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
- strip regrid on X: temp --> (G024)           @XACT
- rdstride temp   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
- nulrgd  temp   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:144 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
+ strip regrid on X: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
+ nulrgd  XYTVAR   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:144 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
  dealloc  dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
@@ -28620,11 +28620,11 @@ list temp[i=1:7:2,j=2:6:2,l=3:5:2]
  144   / 2:  5014.00  5034.00  5054.00  5074.00
  146   / 3:  5016.00  5036.00  5056.00  5076.00
 canc data/all
- -DELETE temp   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
  
 use/order=tyx bn_strides
-show grid temp
+show grid xytvar
  getgrid EX#1     C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GPC5            TTIME     YLAT      NORMAL    XLON
     GRID GPC5
@@ -28633,7 +28633,7 @@ show grid temp
  YLAT      LATITUDE            30 r   1N                   30N
  normal    Z
  XLON      T (degrees_eas      40mr   141                  180
-list temp[i=1:7:2]
+list xytvar[i=1:7:2]
  dealloc  dynamic grid GPC5            TTIME     YLAT      NORMAL    XLON
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          (AX027)   YLAT      NORMAL    XLON
@@ -28641,10 +28641,10 @@ list temp[i=1:7:2]
  allocate dynamic grid (G024)          (AX027)   YLAT      NORMAL    XLON
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G024)          (AX027)   YLAT      NORMAL    XLON
- strip regrid on X: temp --> (G024)           @XACT
- rdstride temp   C:  7 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
- nulrgd  temp   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:150 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
+ strip regrid on X: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
+ nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:150 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G024)          (AX027)   YLAT      NORMAL    XLON
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X
@@ -28660,19 +28660,19 @@ list temp[i=1:7:2]
  3N   / 3:  1032.00  3032.00  5032.00  7032.00
  2N   / 2:  1022.00  3022.00  5022.00  7022.00
  1N   / 1:  1012.00  3012.00  5012.00  7012.00
-list temp[j=2:6:2]
+list xytvar[j=2:6:2]
  dealloc  dynamic grid (G024)          (AX027)   YLAT      NORMAL    XLON
- -DELETE temp   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          TTIME     (AX023)   NORMAL    XLON
  dealloc  dynamic grid (G024)          TTIME     (AX023)   NORMAL    XLON
  allocate dynamic grid (G024)          TTIME     (AX023)   NORMAL    XLON
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G024)          TTIME     (AX023)   NORMAL    XLON
- strip regrid on Y: temp --> (G024)           @XACT
- rdstride temp   C:  7 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
- nulrgd  temp   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:144 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
+ strip regrid on Y: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
+ nulrgd  XYTVAR   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:144 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G024)          TTIME     (AX023)   NORMAL    XLON
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on Y
@@ -28688,19 +28688,19 @@ list temp[j=2:6:2]
  6N   / 3:  1062.00  2062.00  3062.00  4062.00
  4N   / 2:  1042.00  2042.00  3042.00  4042.00
  2N   / 1:  1022.00  2022.00  3022.00  4022.00
-list temp[i=1:7:2,j=2:6:2,l=3:5:2]
+list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  dealloc  dynamic grid (G024)          TTIME     (AX023)   NORMAL    XLON
- -DELETE temp   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
  dealloc  dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
  allocate dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
- strip regrid on X: temp --> (G024)           @XACT
- rdstride temp   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
- nulrgd  temp   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:150 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
+ strip regrid on X: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
+ nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:150 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
  dealloc  dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X, 2 deg on Y, 2 deg on T
@@ -28717,11 +28717,11 @@ list temp[i=1:7:2,j=2:6:2,l=3:5:2]
  4N   / 2:  1045.00  3045.00  5045.00  7045.00
  2N   / 1:  1025.00  3025.00  5025.00  7025.00
 canc data/all
- -DELETE temp   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
  
 use/order=txy bn_strides
-show grid temp
+show grid xytvar
  getgrid EX#1     C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GPC5            TTIME     XLON      NORMAL    YLAT
     GRID GPC5
@@ -28730,7 +28730,7 @@ show grid temp
  XLON      Y (degrees_eas      40mr   141                  180
  normal    Z
  YLAT      T (degrees_nor      30 r   1                    30
-list temp[i=1:7:2]
+list xytvar[i=1:7:2]
  dealloc  dynamic grid GPC5            TTIME     XLON      NORMAL    YLAT
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          (AX025)   XLON      NORMAL    YLAT
@@ -28738,10 +28738,10 @@ list temp[i=1:7:2]
  allocate dynamic grid (G024)          (AX025)   XLON      NORMAL    YLAT
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G024)          (AX025)   XLON      NORMAL    YLAT
- strip regrid on X: temp --> (G024)           @XACT
- rdstride temp   C:  7 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
- nulrgd  temp   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:144 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
+ strip regrid on X: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
+ nulrgd  XYTVAR   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:144 I:    1    7  J:    1    3  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G024)          (AX025)   XLON      NORMAL    YLAT
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X
@@ -28757,19 +28757,19 @@ list temp[i=1:7:2]
  141   / 1:  1021.00  3021.00  5021.00  7021.00
  142   / 2:  1022.00  3022.00  5022.00  7022.00
  143   / 3:  1023.00  3023.00  5023.00  7023.00
-list temp[j=2:6:2]
+list xytvar[j=2:6:2]
  dealloc  dynamic grid (G024)          (AX025)   XLON      NORMAL    YLAT
- -DELETE temp   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          TTIME     (AX026)   NORMAL    YLAT
  dealloc  dynamic grid (G024)          TTIME     (AX026)   NORMAL    YLAT
  allocate dynamic grid (G024)          TTIME     (AX026)   NORMAL    YLAT
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G024)          TTIME     (AX026)   NORMAL    YLAT
- strip regrid on Y: temp --> (G024)           @XACT
- rdstride temp   C:  7 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
- nulrgd  temp   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:150 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
+ strip regrid on Y: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
+ nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:150 I:    1    4  J:    2    6  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G024)          TTIME     (AX026)   NORMAL    YLAT
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on Y
@@ -28785,19 +28785,19 @@ list temp[j=2:6:2]
  142   / 1:  1022.00  2022.00  3022.00  4022.00
  144   / 2:  1024.00  2024.00  3024.00  4024.00
  146   / 3:  1026.00  2026.00  3026.00  4026.00
-list temp[i=1:7:2,j=2:6:2,l=3:5:2]
+list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  dealloc  dynamic grid (G024)          TTIME     (AX026)   NORMAL    YLAT
- -DELETE temp   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
  dealloc  dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
  allocate dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
- strip regrid on X: temp --> (G024)           @XACT
- rdstride temp   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
- nulrgd  temp   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:144 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
+ strip regrid on X: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
+ nulrgd  XYTVAR   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:144 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
  dealloc  dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X, 2 deg on Y, 2 deg on T
@@ -28814,12 +28814,12 @@ list temp[i=1:7:2,j=2:6:2,l=3:5:2]
  144   / 2:  1054.00  3054.00  5054.00  7054.00
  146   / 3:  1056.00  3056.00  5056.00  7056.00
 canc data/all
- -DELETE temp   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:150 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
  
 ! map into Z instead of T
 use/order=zxy bn_strides
-show grid temp
+show grid xytvar
  getgrid EX#1     C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GPC5            TTIME     XLON      YLAT      NORMAL
     GRID GPC5
@@ -28828,7 +28828,7 @@ show grid temp
  XLON      Y (degrees_eas      40mr   141                  180
  YLAT      Z (degrees_nor      30 r   1                    30
  normal    T
-list/k=1:2 temp[i=1:7:2]
+list/k=1:2 xytvar[i=1:7:2]
  dealloc  dynamic grid GPC5            TTIME     XLON      YLAT      NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          (AX027)   XLON      YLAT      NORMAL
@@ -28837,10 +28837,10 @@ list/k=1:2 temp[i=1:7:2]
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    3  K:    1    2  L:    1    2
  allocate dynamic grid (G024)          (AX027)   XLON      YLAT      NORMAL
- strip regrid on X: temp --> (G024)           @XACT
- rdstride temp   C:  8 I:    1    7  J:    1    3  K:    1    2  L: -999 -999
- nulrgd  temp   M:144 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
- -DELETE temp   M:150 I:    1    7  J:    1    3  K:    1    2  L: -999 -999
+ strip regrid on X: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  8 I:    1    7  J:    1    3  K:    1    2  L: -999 -999
+ nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
+ -DELETE XYTVAR   M:150 I:    1    7  J:    1    3  K:    1    2  L: -999 -999
  dealloc  dynamic grid (G024)          (AX027)   XLON      YLAT      NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X
@@ -28856,9 +28856,9 @@ list/k=1:2 temp[i=1:7:2]
  141   / 1:  1021.00  3021.00  5021.00  7021.00
  142   / 2:  1022.00  3022.00  5022.00  7022.00
  143   / 3:  1023.00  3023.00  5023.00  7023.00
-list/k=1:2 temp[j=2:6:2]
+list/k=1:2 xytvar[j=2:6:2]
  dealloc  dynamic grid (G024)          (AX027)   XLON      YLAT      NORMAL
- -DELETE temp   M:144 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
+ -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          TTIME     (AX023)   YLAT      NORMAL
  dealloc  dynamic grid (G024)          TTIME     (AX023)   YLAT      NORMAL
@@ -28866,10 +28866,10 @@ list/k=1:2 temp[j=2:6:2]
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    3  K:    1    2  L:    1    2
  allocate dynamic grid (G024)          TTIME     (AX023)   YLAT      NORMAL
- strip regrid on Y: temp --> (G024)           @XACT
- rdstride temp   C:  8 I:    1    4  J:    2    6  K:    1    2  L: -999 -999
- nulrgd  temp   M:150 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
- -DELETE temp   M:144 I:    1    4  J:    2    6  K:    1    2  L: -999 -999
+ strip regrid on Y: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  8 I:    1    4  J:    2    6  K:    1    2  L: -999 -999
+ nulrgd  XYTVAR   M:150 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
+ -DELETE XYTVAR   M:144 I:    1    4  J:    2    6  K:    1    2  L: -999 -999
  dealloc  dynamic grid (G024)          TTIME     (AX023)   YLAT      NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on Y
@@ -28885,19 +28885,19 @@ list/k=1:2 temp[j=2:6:2]
  142   / 1:  1022.00  2022.00  3022.00  4022.00
  144   / 2:  1024.00  2024.00  3024.00  4024.00
  146   / 3:  1026.00  2026.00  3026.00  4026.00
-list temp[i=1:7:2,j=2:6:2,k=3:5:2]
+list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
  dealloc  dynamic grid (G024)          TTIME     (AX023)   YLAT      NORMAL
- -DELETE temp   M:150 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
+ -DELETE XYTVAR   M:150 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   NORMAL
  dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   NORMAL
  allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   NORMAL
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   NORMAL
- strip regrid on X: temp --> (G024)           @XACT
- rdstride temp   C:  7 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
- nulrgd  temp   M:144 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
- -DELETE temp   M:150 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
+ strip regrid on X: XYTVAR --> (G024)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
+ nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
+ -DELETE XYTVAR   M:150 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
  dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X, 2 deg on Y, 2 deg on Z
@@ -28914,7 +28914,7 @@ list temp[i=1:7:2,j=2:6:2,k=3:5:2]
  144   / 2:  1054.00  3054.00  5054.00  7054.00
  146   / 3:  1056.00  3056.00  5056.00  7056.00
 canc data/all
- -DELETE temp   M:144 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
+ -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
  dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   NORMAL
  
  
@@ -42533,9 +42533,8 @@ can view
  
 ! HLOG and VLOG
  
-def axis/x dlog = exp(-1*(10-i[i=1:10]))
-Replacing definition of axis DLOG
-let fcn = (i[gx=dlog])^2
+def axis/x ddlog = exp(-1*(10-i[i=1:10]))
+let fcn = (i[gx=ddlog])^2
 plot/thick/hlog/vlog/grat="large(color=red),small=(color=lightblue)" fcn
  
 ! Time axes
@@ -43543,7 +43542,7 @@ define grid/like=unevenvar dgrid
  dealloc  dynamic grid GPC3            XAX1_40   YAX1_30   ZAX1_20   TAX1_10
  getgrid EX#1     C:  8 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GPC4            XUNEVEN   YUNEVEN   ZAX1_6    TAX1_4
-define grid/like=temp egrid
+define grid/like=xytvar egrid
  dealloc  dynamic grid GPC4            XUNEVEN   YUNEVEN   ZAX1_6    TAX1_4
  getgrid EX#1     C:  9 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GPC5            XLON      YLAT      NORMAL    TTIME
@@ -43882,22 +43881,22 @@ canc data/all
  -DELETE BIGVAR   M:145 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  dealloc  dynamic grid (G028)          (AX054)   (AX044)   (AX046)   TAX1_10
  
-! now with temp
+! now with xytvar
 cancel region
 set region/i=1:4/j=1:3/l=1:2
 use bn_strides
  
-list temp[i=1:7:2,j=2:6:2,l=3:5:2]
+list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G028)          (AX053)   (AX046)   NORMAL    (AX044)
  dealloc  dynamic grid (G028)          (AX053)   (AX046)   NORMAL    (AX044)
  allocate dynamic grid (G028)          (AX053)   (AX046)   NORMAL    (AX044)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G028)          (AX053)   (AX046)   NORMAL    (AX044)
- strip regrid on X: temp --> (G028)           @XACT
- rdstride temp   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
- nulrgd  temp   M:148 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:145 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
+ strip regrid on X: XYTVAR --> (G028)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
+ nulrgd  XYTVAR   M:148 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:145 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
  dealloc  dynamic grid (G028)          (AX053)   (AX046)   NORMAL    (AX044)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
@@ -43915,9 +43914,9 @@ list temp[i=1:7:2,j=2:6:2,l=3:5:2]
  2N   / 1:  5021.00  5023.00  5025.00  5027.00
  
 use/order=tyx bn_strides
-show grid temp
+show grid xytvar
  dealloc  dynamic grid (G028)          (AX053)   (AX046)   NORMAL    (AX044)
- -DELETE temp   M:148 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:148 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  getgrid EX#1     C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
     GRID EGRID
  name       axis              # pts   start                end
@@ -43926,7 +43925,7 @@ show grid temp
  normal    Z
  TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00
  
-list temp[i=1:7:2,j=2:6:2,l=3:5:2]
+list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  dealloc  dynamic grid EGRID           XLON      YLAT      NORMAL    TTIME
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G028)          (AX046)   (AX053)   NORMAL    (AX052)
@@ -43934,10 +43933,10 @@ list temp[i=1:7:2,j=2:6:2,l=3:5:2]
  allocate dynamic grid (G028)          (AX046)   (AX053)   NORMAL    (AX052)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  allocate dynamic grid (G028)          (AX046)   (AX053)   NORMAL    (AX052)
- strip regrid on X: temp --> (G028)           @XACT
- rdstride temp   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
- nulrgd  temp   M:145 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE temp   M:148 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
+ strip regrid on X: XYTVAR --> (G028)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
+ nulrgd  XYTVAR   M:145 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:148 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
  dealloc  dynamic grid (G028)          (AX046)   (AX053)   NORMAL    (AX052)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
@@ -43954,12 +43953,12 @@ list temp[i=1:7:2,j=2:6:2,l=3:5:2]
  4N   / 2:  5041.00  5043.00  5045.00  5047.00
  2N   / 1:  5021.00  5023.00  5025.00  5027.00
 canc data/all
- -DELETE temp   M:145 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:145 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G028)          (AX046)   (AX053)   NORMAL    (AX052)
  
 ! map into Z instead of T
 use/order=zxy bn_strides
-show grid temp
+show grid xytvar
  getgrid EX#1     C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GPC5            TTIME     XLON      YLAT      NORMAL
     GRID GPC5
@@ -43969,7 +43968,7 @@ show grid temp
  YLAT      Z (degrees_nor      30 r   1                    30
  normal    T
  
-list temp[i=1:7:2,j=2:6:2,k=3:5:2]
+list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
  dealloc  dynamic grid GPC5            TTIME     XLON      YLAT      NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G028)          (AX050)   (AX052)   (AX053)   NORMAL
@@ -43977,10 +43976,10 @@ list temp[i=1:7:2,j=2:6:2,k=3:5:2]
  allocate dynamic grid (G028)          (AX050)   (AX052)   (AX053)   NORMAL
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K:    1    2  L:    1    2
  allocate dynamic grid (G028)          (AX050)   (AX052)   (AX053)   NORMAL
- strip regrid on X: temp --> (G028)           @XACT
- rdstride temp   C:  7 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
- nulrgd  temp   M:148 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
- -DELETE temp   M:145 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
+ strip regrid on X: XYTVAR --> (G028)           @XACT
+ rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
+ nulrgd  XYTVAR   M:148 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
+ -DELETE XYTVAR   M:145 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
  dealloc  dynamic grid (G028)          (AX050)   (AX052)   (AX053)   NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X, 2 deg on Y, 2 deg on Z
@@ -43997,7 +43996,7 @@ list temp[i=1:7:2,j=2:6:2,k=3:5:2]
  144   / 2:  1054.00  3054.00  5054.00  7054.00
  146   / 3:  1056.00  3056.00  5056.00  7056.00
 canc data/all
- -DELETE temp   M:148 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
+ -DELETE XYTVAR   M:148 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
  dealloc  dynamic grid (G028)          (AX050)   (AX052)   (AX053)   NORMAL
  
  
@@ -46556,7 +46555,58 @@ let lstr1 = STRLEN("+")
  
 let str2a = STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
 list str2a
-             VARIABLE : STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
+             VARIABLE : STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.6             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+             LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
+             LATITUDE : 19.7N to 19.7N
+             GEOMETRY: XY 
+             SIZE:  5  6  
+             FORTRAN FORMAT: (f9.5)
+             MISSING VALUES FLAG: -9.9999998E+33
+X COORDINATES: LON
+204.89923
+204.89975
+204.90025
+204.90076
+204.90126
+Y COORDINATES: LAT
+ 19.70020
+ 19.70071
+ 19.70122
+ 19.70173
+ 19.70223
+ 19.70274
+DATA:
+224.59943
+224.59995
+224.60045
+224.60095
+224.60146
+224.59995
+224.60046
+224.60097
+224.60147
+224.60197
+224.60045
+224.60097
+224.60147
+224.60197
+224.60248
+224.60097
+224.60149
+224.60199
+224.60249
+224.60300
+224.60146
+224.60197
+224.60248
+224.60298
+224.60349
+224.60197
+224.60249
+224.60300
+224.60350
+224.60400
+2,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
           162.000
  
 def sym aLIST = Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.7
@@ -46653,58 +46703,7 @@ coordinates,155.1W   ,155.1W   ,155.1W   ,155.1W   ,155.1W
  
 list/clobber/head=enh/form=(f9.5)/file=fine.dat myvar
  LISTing to file fine.dat
-sp cat fin             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
-             LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
-             LATITUDE : 19.7N to 19.7N
-             GEOMETRY: XY 
-             SIZE:  5  6  
-             FORTRAN FORMAT: (f9.5)
-             MISSING VALUES FLAG: -9.9999998E+33
-X COORDINATES: LON
-204.89923
-204.89975
-204.90025
-204.90076
-204.90126
-Y COORDINATES: LAT
- 19.70020
- 19.70071
- 19.70122
- 19.70173
- 19.70223
- 19.70274
-DATA:
-224.59943
-224.59995
-224.60045
-224.60095
-224.60146
-224.59995
-224.60046
-224.60097
-224.60147
-224.60197
-224.60045
-224.60097
-224.60147
-224.60197
-224.60248
-224.60097
-224.60149
-224.60199
-224.60249
-224.60300
-224.60146
-224.60197
-224.60248
-224.60298
-224.60349
-224.60197
-224.60249
-224.60300
-224.60350
-224.60400
-e.dat
+sp cat fine.dat
 sp rm -f fine.dat
  
 cancel list/precision
@@ -47060,42 +47059,15 @@ GO err570_dods_url_label.jnl
 !!plot/i=1/j=1 temp
 !!ppl list labels
  
-set data "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/COADS_climatology.nc"
-sh data
-     currently SET data sets:
-    1> http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/COADS_climatology.nc  (default)
- name     title                             I         J         K         L
- SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:12
- AIRT     AIR TEMPERATURE                  1:180     1:90      ...       1:12
- SPEH     SPECIFIC HUMIDITY                1:180     1:90      ...       1:12
- WSPD     WIND SPEED                       1:180     1:90      ...       1:12
- UWND     ZONAL WIND                       1:180     1:90      ...       1:12
- VWND     MERIDIONAL WIND                  1:180     1:90      ...       1:12
- SLP      SEA LEVEL PRESSURE               1:180     1:90      ...       1:12
+!!set data "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/COADS_climatology.nc"
+!!sh data
+!!plot/x=180/y=0 airt
+!!ppl list labels
  
-plot/x=180/y=0 airt
-ppl list labels
- @ACAIR TEMPERATURE (DEG C)                                                     
-                                                                                
- @ASDEG C                                                                       
-
-          XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 6.04
- LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
- LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASJul  3 2007 14:14:26
- LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
- LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 5  0.000E+00  6.600E+00 0.120    0  SYSTEM  @ASLATITUDE : 1S
- LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 6  8.000E+00  6.600E+00 0.120    0  SYSTEM  @ASDATA SET: COADS_climatology
- LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
- LAB 7  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
- LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 8  8.000E+00  6.820E+00 0.090    0  SYSTEM  @ASDODS URL: http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/
- LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
+! set data "http://apdrc.soest.hawaii.edu/thredds/dodsC/woa/1994/annual"
+! sh data
+! plot/x=180/y=0 otemp
+! ppl list labels
  
  
 ! Fix for bug 906: auto-formatting of labels on color keys loses precision
@@ -47165,12 +47137,27 @@ ppl shade
 can view
  
 ! many levels: triangles forced to be 5% of total key length
+! (add SHOW SYM LEV* to catch behavior of bug 1519 which
+!  did not plot color in the entire area for FILL plots.)
  
 set view left
 fill/x=20e:150e/lev=(-inf),(4,28,0.5)(inf) sst[l=1]
+sh sym lev*
+LEV_TEXT = "(-INF),(4,28,0.5)(INF)"
+LEV_MIN = "-2.8"
+LEV_MAX = "32"
+LEV_NUM = "51"
+LEV_DEL = "irregular"
  
 set view right
 shade/lev=(-inf),(4,28,0.5)(inf)/key=cont sst[l=1]
+sh sym lev*
+LEV_TEXT = "(-INF),(4,28,0.5)(INF)"
+LEV_MIN = "-2.8"
+LEV_MAX = "32"
+LEV_NUM = "51"
+LEV_DEL = "irregular"
+ 
  
 can view
  
@@ -48529,7 +48516,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "3-Jul-07:14:13"
+WIN_TITLE = "16-Jul-07:13:47"
  
 set win/title="set the title"
 sho sym win_title
@@ -48547,11 +48534,11 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($sessino_date):($session_time)"
- !-> set win/title=" :14:13"
+ !-> set win/title=" :13:47"
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 3-Jul-07:14:13"
+ !-> set win/title="16-Jul-07:13:47"
 sh sym win_title
-WIN_TITLE = "_3-Jul-07:14:13"
+WIN_TITLE = "16-Jul-07:13:47"
  
  
 GO bn_reset
@@ -50907,7 +50894,8 @@ show axis/all
  'COADSX.ILLEGAL' LONGITUD     21mr   21E                  61E
  TIME1     T                    6 r   1                    6
  TIME2     TIME                 3 i   16-JAN-1900 06:00    17-MAY-1900 23:56
- DLOG      X                   10 i   0.00012341           1
+ DLOG      Z                   20 i-  2.7183               4.8517E+08
+ DDLOG     X                   10 i   0.00012341           1
  TAX2      TIME              1188 r   16-JAN 00:00         16-DEC-0099 00:01
  TT        TIME                 2 r   07-FEB-0599 00:00    07-FEB-0600 05:49
  X_AX      X                    3 r   211                  216.2
@@ -51492,7 +51480,15 @@ use this_is_not_a_file.nc
  
 !! Change to another server, our server down...
 !!use  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf"
-use "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf"
+!! Not working either as of 7/5/2007
+!! use "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf"
+ 
+! This is a valid address
+!use "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauy/dods"
+ 
+! change the variable name to something nonexistent
+use "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
+ 
  
 ! bad server
 use  "http://noserver/a/nofile.cdf"
@@ -53023,7 +53019,7 @@ sho dat/att
  VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
 --------------------------------------------------------------------------------
   
- .                      history             CHAR    24   T      FERRET V6.04    3-Jul-07
+ .                      history             CHAR    24   T      FERRET V6.04   16-Jul-07
   
 (PSXT91_108)            units               CHAR    12   T      degrees_east
                         modulo              DOUBLE  1    T      360
@@ -53063,7 +53059,7 @@ sho dat/att
  VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
 --------------------------------------------------------------------------------
   
- .                      history             CHAR    24   T      FERRET V6.04    3-Jul-07
+ .                      history             CHAR    24   T      FERRET V6.04   16-Jul-07
   
 (PSXT91_108)            units               CHAR    12   T      degrees_east
                         modulo              DOUBLE  1    T      360
@@ -54287,8 +54283,8 @@ LIST/NOHEAD/I=91:94/J=37/K=1/L=1 TEMP,SALT
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.04  
- 	Linux(g77) 2.6.9-22. - 07/03/07
- 	 3-Jul-07 14:14     
+ 	Linux(g77) 2.6.9-22. - 07/16/07
+ 	16-Jul-07 13:48     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -54997,8 +54993,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  6    /  6:  -9.00
  7    /  7:  -8.00
  8    /  8:  -7.00
- 9    /-rw-rw-r--  1 ansley tmap 29712 Jul  3 14:14 testa.v5d
--rw-rw-r--  1 ansley tmap 29712 Jul  3 14:14 test.v5d
+ 9    /-rw-rw-r--  1 ansley tmap 29712 Jul 16 13:48 testa.v5d
+-rw-rw-r--  1 ansley tmap 29712 Jul 16 13:48 test.v5d
   9:  -6.00
  10   / 10:  -5.00
  11   / 11:  -4.00
@@ -55179,7 +55175,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55202,7 +55198,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55226,7 +55222,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55265,7 +55261,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55300,7 +55296,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55340,7 +55336,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55394,7 +55390,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55448,7 +55444,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55502,7 +55498,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55547,7 +55543,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55638,7 +55634,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55705,7 +55701,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55756,7 +55752,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55831,7 +55827,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -55858,7 +55854,7 @@ variables:
 		X_:_FillValue = -9.9999998e+33f ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 
 data:
@@ -55882,7 +55878,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 
 data:
@@ -55907,10 +55903,10 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -55941,7 +55937,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56013,7 +56009,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56054,7 +56050,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56093,7 +56089,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56196,7 +56192,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
 netcdf a {
@@ -56231,7 +56227,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
 netcdf a {
@@ -56252,7 +56248,7 @@ variables:
 		BB:my_title = "This is my new variable bb" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56278,7 +56274,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56298,7 +56294,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56319,7 +56315,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56358,7 +56354,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
 netcdf a {
@@ -56393,7 +56389,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
 netcdf a {
@@ -56426,7 +56422,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
 netcdf a {
@@ -56453,7 +56449,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56486,7 +56482,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56512,7 +56508,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56553,7 +56549,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
 		:option = 1 ;
@@ -56650,7 +56646,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 		:dt_internal = 15. ;
 }
 bn_attributes.jnl --- 19 scale and offset attr.
@@ -56688,7 +56684,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56769,7 +56765,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56806,7 +56802,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56843,7 +56839,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56891,7 +56887,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 
 data:
 
@@ -56946,7 +56942,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 }
 netcdf a {
 dimensions:
@@ -56985,7 +56981,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 }
 netcdf a {
 dimensions:
@@ -57024,7 +57020,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 }
 netcdf a {
 dimensions:
@@ -57055,7 +57051,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 }
 netcdf a {
 dimensions:
@@ -57085,7 +57081,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
 netcdf string4d {
@@ -57113,15 +57109,15 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.04    3-Jul-07" ;
+		:history = "FERRET V6.04   16-Jul-07" ;
 }
 -----
 end of ncdump output
  
  	NOAA/PMEL TMAP
  	FERRET v6.04  
- 	Linux(g77) 2.6.9-22. - 07/03/07
- 	 3-Jul-07 14:14     
+ 	Linux(g77) 2.6.9-22. - 07/16/07
+ 	16-Jul-07 13:48     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57304,8 +57300,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.04  
- 	Linux(g77) 2.6.9-22. - 07/03/07
- 	 3-Jul-07 14:14     
+ 	Linux(g77) 2.6.9-22. - 07/16/07
+ 	16-Jul-07 13:48     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57420,8 +57416,8 @@ can mode ignore
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.04  
- 	Linux(g77) 2.6.9-22. - 07/03/07
- 	 3-Jul-07 14:14     
+ 	Linux(g77) 2.6.9-22. - 07/16/07
+ 	16-Jul-07 13:48     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57506,4 +57502,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Tue Jul 3 14:14:46 PDT 2007
+Ended at Mon Jul 16 13:48:33 PDT 2007

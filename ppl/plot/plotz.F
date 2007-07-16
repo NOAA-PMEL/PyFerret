@@ -89,6 +89,8 @@ C
 *                 set but not the contour label and line characteristics.
 * V603 *acm* 7/07 Fix bug 1335, zero contours not dark. zlev(i) not seen as 0. Fix by 
 *                 using TM_FPEQ to compare zlev(i) to 0., within machine accuracy.
+* V604 *acm& 7/07 Fix bug 1519. The setting of levels info was incorrectly resetting the
+*                 highest and lowest level when doing (-inf) and (inf) levels spec.
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -115,7 +117,7 @@ C
         INTEGER   status, slen1, slen2, nlev1
         CHARACTER TM_FMT*20, buff1*20, buff2*20, err_msg*40
         REAL*8    DXFF, DXOF, DYFF, DYOF
-        REAL      XFF, XOF, YFF, YOF
+        REAL      XFF, XOF, YFF, YOF, DMIN, DMAX, DZMAX
         LOGICAL   TM_FPEQ
 
 C*       *jd* Linux port 12.96 add EXTERNAL calls below
@@ -240,15 +242,18 @@ C
 
 C	FIND MIN AND MAX as in lev.F from the Z levels.
 
-	   ZMIN=ZLEV(1)
-	   IF (neginf) ZMIN = ZLEV(2)
-	   ZMAX=ZMIN
+	   DMIN=ZLEV(1)
+	   IF (neginf) DMIN = ZLEV(2)
+	   DMAX=DMIN
+           DZMAX = 0.
 	   DO 110 I=2,NLEV
-	      IF(ZLEV(I).GT.ZMAX)ZMAX=ZLEV(I)
-	      IF(ZLEV(I).LT.ZMIN)ZMIN=ZLEV(I)
+	      IF(ZLEV(I).GT.DMAX)DMAX=ZLEV(I)
+	      IF(ZLEV(I).LT.DMIN)DMIN=ZLEV(I)
+              DZ = ZLEV(I)-ZLEV(I-1)
+              IF (DZ .GT. DZMAX) DZMAX = DZ
 110        CONTINUE
 
-	   IF (ZMIN.EQ.ZMAX) THEN
+	   IF (DMIN.EQ.DMAX) THEN
 c	      NLEV2=0
 	      NLEV2=1
 	   ELSE
@@ -259,12 +264,12 @@ c	      NLEV2=0
 C Compute the digits in the contour levels, and line characteristics
 C these will not have been set before on, say a previous SHADE plot
 
-              znp = zmin
-              zmp = zmax
+              znp = dmin
+              zmp = dmax
               dz = 0
               IF (set_delta) THEN
                  dz = delta
-	         IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
+	         IF (ZNP + DZMAX*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
               ENDIF
 
 	      IF (ZMP-ZNP .EQ. 0) THEN
@@ -279,7 +284,7 @@ C these will not have been set before on, say a previous SHADE plot
 	      DO 105 I=1,NLEV2
 		 LWGT(I)=2
 		 LDIG(I)=-1
-		 IF (ABS(ZLEV(I)).LT.1.E-5*DZ) GOTO 105
+		 IF (ABS(ZLEV(I)).LT.1.E-5*DZMAX) GOTO 105
                  IF ( TM_FPEQ( ABS(ZLEV(I)) ,0.) ) GOTO 105
 		 IF (ZLEV(I).GT.0.) THEN
 		    LWGT(I)=1

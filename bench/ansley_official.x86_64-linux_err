@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 44614828 Jul 16 13:33 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
+Running FERRET version /home/porter/ansley/build_v604/FERRET_x86_64-linux/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 34055923 Jul 19 10:08 /home/porter/ansley/build_v604/FERRET_x86_64-linux/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/build_v604/FERRET_x86_64-linux/external_functions/ext_func_x86_64-linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  fix bug 1519 in plotz.F (also, skipping all remote opendap tests, servers down)
+Note: longer names for filenames; workaround in TM_INQ_PATH for checking dods cache when files long (INQUIRE bug)
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
+PWD=/home/porter/ansley/build_v604/FERRET_x86_64-linux/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
-Beginning at Mon Jul 16 13:47:25 PDT 2007
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v604/FERRET_x86_64-linux/external_functions/ext_func_x86_64-linux
+Beginning at Thu Jul 19 11:11:46 PDT 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -701,4 +701,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-Ended at Mon Jul 16 13:48:33 PDT 2007
+Ended at Thu Jul 19 11:12:57 PDT 2007

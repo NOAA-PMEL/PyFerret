@@ -92,7 +92,7 @@ xx        include 'netcdf.decl'  ! untested
 * local variable declarations:
       INTEGER TM_LENSTR1, 
      .        vlen, alen, slen, cdfstat, varid, attype, attlen
-      CHARACTER buff*256
+      CHARACTER buff*2048
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -117,16 +117,22 @@ xx        include 'netcdf.decl'  ! untested
       CALL NCAINQ( cdfid, varid, att(:alen), attype, attlen, cdfstat )
       IF ( cdfstat .EQ. NCNOERR ) THEN
          IF ( attype.NE.NCBYTE .AND. attype.NE.NCCHAR ) GOTO 5200
-         IF ( attlen+slen .GT. 256 ) THEN
+         IF ( attlen+slen .GT. 2048 .AND. append ) THEN
             buff = att
             CALL TM_NOTE( 'CDF attribute '//buff(:alen)//
      .           ' is too long', tt )
-            IF ( attlen .GT. 250 ) THEN
+            IF ( attlen .GT. 2046 ) THEN
                CALL TM_NOTE( 'no text could be appended', tt )
                GOTO 1000
             ELSE
                CALL TM_NOTE( 'it may be truncated', tt )
             ENDIF
+         ENDIF
+         IF ( attlen .GT. 2048 .AND. (.NOT.append) ) THEN
+            buff = att
+            CALL TM_NOTE( 'CDF attribute '//buff(:alen)//
+     .           ' is too long', tt )
+            CALL TM_NOTE( 'it may be truncated', tt )
          ENDIF
       ENDIF
 
@@ -136,7 +142,7 @@ xx        include 'netcdf.decl'  ! untested
 
       IF ( cdfstat.EQ.NCNOERR .AND. append ) THEN
 * append to the attribute
-         CALL NCAGTC( cdfid, varid, att(:alen), buff, 256, cdfstat )
+         CALL NCAGTC( cdfid, varid, att(:alen), buff, 2048, cdfstat )
          risc_buff = string
          CALL NCAPTC( cdfid, varid, att(:alen), NCCHAR, attlen+slen,
      .             buff(:attlen)//risc_buff, cdfstat )

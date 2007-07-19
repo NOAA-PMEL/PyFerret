@@ -1,5 +1,5 @@
       CHARACTER*(*)FUNCTION TM_INQ_PATH
-     .				( fname, path, def_ext, do_errmsg, status )
+     .   ( fname, path, def_ext, do_errmsg, status )
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -86,19 +86,10 @@
 	CHARACTER*(*)	fname, path, def_ext
 
 * Parameter and common files
-#ifdef unix
 	include 'tmap_errors.parm'		! error codes
 #include "gt_lib.parm"
 	include 'xrisc_buff.cmn'
 
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! Error codes
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XRISC_BUFF.CMN'
-
-        INCLUDE '($SSDEF)' 
-        INTEGER  LIB$SYS_TRNLOG, log_status
-#endif
 
 * local valiable declarations
 #ifdef AIX_XLF
@@ -111,8 +102,8 @@
 
 * path may be an environment variable (UNIX) with a path list or
 * a logical name (VMS).  Failing that, it is ignored.
+*
 
-#ifdef unix
 * reset postslash to 0 every time code enters here. If not reset, it causes
 * a problem with the relative version numbers, cutting off first character
 * of filename.
@@ -170,7 +161,6 @@
 * Otherwise, use the environment paths.
       ELSE
          CALL GETENV( path, path_list )    ! ' ' if no translation
-!	 IF ( path_list .EQ. ' ' ) GOTO 5204 ! an error but we want to allow it
          plen = TM_LENSTR1( path_list )
          IF ( plen .LT. LEN(path_list) ) THEN
             plen = plen + 1                ! mandatory ' ' at end
@@ -179,39 +169,28 @@
          ENDIF
       ENDIF
 
-#else
-!!! VMS version untested as of 3/91 !!!
-* explicit path given ?  usable logical provided ?
-      IF ( path .EQ. ' ' ) THEN
-         path_list = ' '
-         plen = 1
-      ELSEIF ( INDEX( fname ,':' ).GT.0
-     .    .OR. INDEX( fname ,']' ).GT.0 ) THEN
-         path_list = ' '
-         plen = 1
-      ELSE
-         log_status = LIB$SYS_TRNLOG( path, ,path_list )
-         IF ( log_status .EQ. ss$_notran ) THEN
-            path_list = ' '
-         ELSE
-            plen = TM_LENSTR1( path )
-            path_list = path( :plen )//':'
-            plen = plen + 1
-         ENDIF
-      ENDIF
-#endif
-
 * evaluate the path
 * Send path and filename seperately to tm_path_list.
       IF (postslash .EQ. 0) postslash = 1
-      IF (postslash .LE. flen) THEN
-         TM_INQ_PATH = TM_PATH_LIST( path_list(:plen), 
+
+! The INQUIRE statement inside TM_PATH_LIST fails on names longer 
+! than 256 chars causing a BUS error, so dont look in the DODS 
+! cache for the file.
+      flen = TM_LENSTR1(fname)
+      IF (flen .GT. 256 .AND.
+     .  STR_SAME(path, 'FER_DODS_CACHE_DIR').EQ.0 ) THEN 
+         status = merr_notmounted
+
+      ELSE
+         IF (postslash .LE. flen) THEN
+            TM_INQ_PATH = TM_PATH_LIST( path_list(:plen), 
      .                               fname(postslash:),def_ext, 
      .                               do_errmsg, status )
-      ELSE   ! this option if entire name is an environment var
-         TM_INQ_PATH = TM_PATH_LIST( path_list(:plen), 
+         ELSE   ! this option if entire name is an environment var
+            TM_INQ_PATH = TM_PATH_LIST( path_list(:plen), 
      .                               ' ',def_ext, 
      .                               do_errmsg, status )
+         ENDIF
       ENDIF
 
       RETURN

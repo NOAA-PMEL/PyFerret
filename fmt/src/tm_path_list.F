@@ -1,5 +1,5 @@
-	CHARACTER*(*) FUNCTION TM_PATH_LIST( path_list, fname, def_ext,
-     .                                       do_errmsg, status )
+	CHARACTER*(*) FUNCTION TM_PATH_LIST( path_list, fname, 
+     .                               def_ext, do_errmsg, status )
 
 *
 *
@@ -78,6 +78,7 @@
 * v5.50 10/02 *acm*- path_buff longer to accomodate longer s_filename 
 *                    in descript.def
 * v5.42 10/02 *kob* - Increase size of temp_fname to 512
+* V6.04  7/07 *acm* - increase size of dataset names to 1024. 
 
 
 * calling argument declarations:
@@ -91,15 +92,15 @@
 * local variable declarations
       LOGICAL TM_F7721BUG_INQUIRE   ! temporary bug fix for f772.1
       INTEGER slen
-      PARAMETER ( slen = 64)
+      PARAMETER ( slen = 1024)
       INTEGER TM_LENSTR1, TM_LENSTR
       INTEGER start, end, plen, flen, len_pbuff, postslash, i
       INTEGER tilde, tilde_len, dot,path_len,lext           
       INTEGER vers_int,vers_len,end_tilde,path_tries
       LOGICAL file_exist,pos_ver,zero_ver
       LOGICAL relative, dot_next_to_tilde, retry_ext
-      CHARACTER  ext*8, path_buff*512,suffix*16,TM_LEFINT*8
-      CHARACTER  tilde_buff*8,vers_no*8,temp_fname*512
+      CHARACTER  ext*8, path_buff*1024,suffix*16,TM_LEFINT*8
+      CHARACTER  tilde_buff*8,vers_no*8,temp_fname*1024
 
 	
 *
@@ -127,7 +128,6 @@
       pos_ver= .false.
       zero_ver = .false.
       dot_next_to_tilde = .false.
-
 
 * check for relative version number in file name. eg ferret.jnl.~nnn~
 * If nnn > or = 0 then relative is false, else it is true.
@@ -197,6 +197,9 @@
       ENDIF
 
 * does the filename contain its own path ?
+
+      flen = TM_LENSTR1( fname )
+
       IF ( path_list .EQ. ' ' ) THEN
          IF ( fname .EQ. ' ' ) GOTO 1000   ! INQUIRE bug: blank name exists
          path_buff = fname(:flen)//ext
@@ -265,12 +268,17 @@
 * on June 9 this comment was removed from the ifdef line
 * On 11/96 the ifdef sun was changed to ifdef inquire_not_nfs_compatible
 * (and the ifdef logic was reversed)
+* 7/2007 When increasing length of dataset names, in particular for long 
+* DODS file names. Apparently the first argument to INQUIRE cannot be 
+* longer than 256, it causes a bus error, overwriting other vars. This
+* is handled in the calling routine tm_inq_path.
+
 #ifdef inquire_not_nfs_compatible
 ! temporary routine needed because of incompatibility between DEC f772.1 and
 ! Multinet nfs-mounted files (files sometimes not found)  *sh* 10/21/92
       file_exist = TM_F7721BUG_INQUIRE( path_buff( :len_pbuff ) )
 #else
-      INQUIRE (	        FILE		= path_buff( :len_pbuff ) ,
+      INQUIRE ( FILE		= path_buff( :len_pbuff ) ,
      .			EXIST		= file_exist,
      .			ERR 		= 5000)
 * took out NAME statement because v3.0 of f77 didn't dig it ------kob 10/8/91

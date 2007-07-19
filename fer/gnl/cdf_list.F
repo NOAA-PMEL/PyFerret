@@ -88,6 +88,9 @@
 *                  if they are to be written to the output file.
 * V601 10/06 *acm* fix bug 1451, cd_write_var needs the value of mode_upcase_output.
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V604  7/07 *acm* Fix bug 1520, if a var has only a _FillValue attribute, and not a 
+*                  missing_value one, then neither was written to the output file.
+*                  Both should be written.
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -482,8 +485,17 @@
                  attname = 'missing_value'
                  CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
      .                  istat)
-                 IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+                 IF (attid .GT. 0) THEN
+                    CALL CD_GET_VAR_ATT_INFO (dset, varid, 
      .                attid, aname, attype, attlen, attoutflag, istat )
+                 ELSE
+                     attname = '_FillValue'
+                   CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .                  istat)
+                   IF (attid .GT. 0) 
+     .                CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .                attid, aname, attype, attlen, attoutflag, istat )
+                 ENDIF
 
 * If the data is numeric, see if the missing flag needs to be rescaled, 
 * or converted to the output type

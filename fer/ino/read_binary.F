@@ -11,6 +11,7 @@
 * V552 4/03 *acm* Up VAR_CODE to 128 characters
 * V552 5/03 *acm* Use ds_des_name(data_set) when opening the data; it has
 *                 the pathname as well as the filename
+* v604 *acm* 7/07 increase length of ds_name
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -44,7 +45,8 @@
 	INTEGER         lengths(5), permutes(5), skip, doRead
 	LOGICAL         firstTime
 	CHARACTER	VAR_CODE*128
-	CHARACTER*256   cname,cerrmsg,ferrmsg
+	CHARACTER*256   cerrmsg,ferrmsg
+        CHARACTER*1024  cname
 
 * --- end of introductory code ---
 

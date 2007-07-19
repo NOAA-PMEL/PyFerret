@@ -50,6 +50,7 @@
 * V510: 5/00 *sh* - BUG fix: special grids exceed "6"
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
+* v604 *acm* 7/07 increase length of ds_name
 
 	include	'tmap_dims.parm'
 #	include	"tmap_dset.parm"
@@ -95,7 +96,7 @@
 * make sure it isn't implicitly used by a cvar that depends on file variables
 * NOTE: cvars are irrelevant as of V500 ...
 !	DO 25 dset = 1, maxdsets
-!	   IF ( ds_name(dset) .EQ. char_init256) GOTO 25
+!	   IF ( ds_name(dset) .EQ. char_init1024) GOTO 25
 !	   DO 20 cvar = 1, num_calc_vars
 ! 20	   IF ( cvar_grid(cvar,dset) .EQ. grid ) GOTO 5100
 ! 25	CONTINUE

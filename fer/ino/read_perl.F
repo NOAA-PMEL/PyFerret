@@ -7,8 +7,8 @@
 * written for VAX computer under VMS operating system
 *
 * 9/99 *js*  First version hacked from read_binary
-* V552 *acm* 4/03- up VAR_CODE  to 128 chars
-
+* V552 *acm* 4/03- up VAR_CODE  to 128
+* v604 *acm* 7/07 increase length of ds_name
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -42,7 +42,8 @@
 	INTEGER         lengths(5)
 	LOGICAL         firstTime
 	CHARACTER	VAR_CODE*128
-	CHARACTER*256   cname,cerrmsg,ferrmsg
+	CHARACTER*256   cerrmsg,ferrmsg
+	CHARACTER*1024  cname
 
 * --- end of introductory code ---
 

@@ -93,6 +93,7 @@
 * V581 *acm* 3/05 allow "USE myfile.des"  previously this only worked if
 *                  the file extension was left off.
 * V581: *acm*/3/05 - increase length of strings for dataset title to 1024
+* V604: *acm*/7/07 - increase length of dataset names to 1024
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -137,9 +138,10 @@
 	CHARACTER*13	TM_STRING
 	CHARACTER	def_ext*4, def_cdf*4, def_nc*3, ext*4, 
      .                  cdf_path*12, path*12
-        CHARACTER*256   TM_CLEAN_FILENAME
+        CHARACTER*1024   TM_CLEAN_FILENAME
 	CHARACTER*42	reading_nml
-	CHARACTER*256   TM_INQ_PATH, des_name
+	CHARACTER*512   TM_INQ_PATH
+	CHARACTER*1024  des_name
 	INTEGER*4	set_cnt, lunit, cnt, aux_cnt, tcnt, dlen, dlen2,
      .			rcnt, parm_cnt, grd_cnt, equal_pos, istat
 	INTEGER*4	TM_LENSTR, TM_LENSTR1, STR_SAME,ic
@@ -302,7 +304,7 @@
 
 * Assign data set number, exiting if maximum number of data sets are open
 	DO 110 set_cnt = 1,maxdsets
-	  IF (ds_name(set_cnt) .EQ. char_init256) THEN
+	  IF (ds_name(set_cnt) .EQ. char_init1024) THEN
 	    dset_num = set_cnt
 	    ds_des_name(dset_num) = des_name
             ds_name(dset_num) = TM_CLEAN_FILENAME( dset_name )

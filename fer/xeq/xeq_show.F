@@ -152,6 +152,7 @@
 *                     SHOW DATA/ATTR [d=]
 * 9/06 *acm* 6.01  fixing bug 1439 long symbol values; change length of show_str to 2048
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* v604 *acm* 7/07 increase length of ds_name
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -701,7 +702,7 @@
 	   IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 
-	   IF ( ds_name(iset) .EQ. char_init256
+	   IF ( ds_name(iset) .EQ. char_init1024
      .	   .OR. (only_1 .AND. iset .NE. dset) ) GOTO 790
 
 * ... is it the default data set?
@@ -1002,7 +1003,7 @@
      .			' Created by DEFINE VARIABLE:', 0)
 * ... locate the highest data set number in use
 	      DO 1035 i1 = maxdsets, 1, -1
-	         IF ( ds_name(i1) .NE. char_init256) GOTO 1040
+	         IF ( ds_name(i1) .NE. char_init1024) GOTO 1040
  1035	      CONTINUE
  1040	      DO 1060 dset = 1, i1
 * ... loop through the currently initialized data sets

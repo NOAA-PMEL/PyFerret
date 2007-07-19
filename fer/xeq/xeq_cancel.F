@@ -124,6 +124,7 @@
 * V602: *acm* 1/07 Changes for metafile-batch mode: When in gif mode or batch mode, 
 *                  ignore CANCEL MODE META
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* v604 *acm* 7/07 increase length of ds_name
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -315,7 +316,7 @@
 
 * ... check for valid number given
 	         IF ( iset .LT. 1 .OR. iset .GT. maxdsets ) GOTO 5030
-	         IF (  ds_name( iset ) .EQ. char_init256) THEN
+	         IF (  ds_name( iset ) .EQ. char_init1024) THEN
 	            IF ( report_error ) THEN
 	               GOTO 5030
 	            ELSE
@@ -352,7 +353,7 @@
 * ... if only one set remains then point to it
 	   iset = unspecified_int4
 	   DO 715 i = 1, maxdsets
-	     IF ( ds_name(i) .EQ. char_init256) GOTO 715
+	     IF ( ds_name(i) .EQ. char_init1024) GOTO 715
 	     IF ( iset .EQ. unspecified_int4 ) THEN
 	         iset = i
 	     ELSE
@@ -363,7 +364,7 @@
 
 	ELSEIF ( slash_all ) THEN
 	   DO 720 iset = 1, maxdsets
-	      IF ( ds_name(iset) .EQ. char_init256) GOTO 720
+	      IF ( ds_name(iset) .EQ. char_init1024) GOTO 720
 	      CALL CANCEL_DATA_SET( iset, status )
  720	   CONTINUE
 	ELSE

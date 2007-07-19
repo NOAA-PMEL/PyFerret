@@ -43,6 +43,7 @@
 * V602  3/07 *acm* Also look for the axis in dataset -2, the pseudo-dataset 
 *                  containing information on user-defined axes
 * V602  3/07 *acm* Treat t0 as units; if new t0 is not defined, remove the attribute.
+* v604 *acm* 7/07 increase length of ds_name
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -88,7 +89,7 @@ c    see if name exists as an axis name.
          IF (dset .EQ.  0) GOTO 100
 
          IF (dset .GT. 0) THEN
-            IF ( ds_name(dset) .EQ. char_init256) GOTO 100
+            IF ( ds_name(dset) .EQ. char_init1024) GOTO 100
          ENDIF
 
          CALL CD_GET_VAR_ID (dset, name, varid, status)

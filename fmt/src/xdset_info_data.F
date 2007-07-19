@@ -64,6 +64,7 @@
 * v540 *acm* 10/01  remove VMS include statements
 * v552 *acm*  4/03 Initialize ds_var_off, ds_var_scale, ds_var_scaleit
 * v552 *acm*  5/03 change ds_var_code length to 128
+* v604 *acm* 7/07 increase length of ds_name, ds_des_name
 
 #include "tmap_dset.parm"		
 	include 'tmap_dims.parm'		! parameter definitions
@@ -104,8 +105,8 @@
 	DATA	ds_alert_on_output	/maxdsets*.FALSE./
 	DATA	ds_message		/maxdsets*char_init80/
 ********************************************************************************
-	DATA	ds_des_name		/maxdsets*char_init256/
-	DATA	ds_name			/maxdsets*char_init256/
+	DATA	ds_des_name		/maxdsets*char_init1024/
+	DATA	ds_name			/maxdsets*char_init1024/
 	DATA	ds_1step		/maxdsets*real8_init/
 	DATA	ds_lastep		/maxdsets*real8_init/
 	DATA	ds_delstep		/maxdsets*real8_init/

@@ -67,7 +67,7 @@
 *                         statements.  use an character constant instead
 * V552 5/03 *acm*: increase size of var_name to 128 chars
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-
+* v604 *acm* 7/07 increase length of ds_name, ds_des_name
 
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
@@ -124,7 +124,7 @@
 *
 * Assign data set number, exiting if maximum number of data sets are open
 	DO 100 set_cnt = 1,maxdsets
-	  IF (ds_name(set_cnt) .EQ. char_init256) THEN
+	  IF (ds_name(set_cnt) .EQ. char_init1024) THEN
 	    dset = set_cnt
 	    ds_des_name(dset) = filename
 * Parse input line to obtain just filename without directory or extension

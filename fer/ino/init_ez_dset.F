@@ -67,6 +67,7 @@
 * V540 *sh* 10/01 - bug fig -- process TMAP error from ez_init_dset
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead 
+* v604 *acm* 7/07 increase length of ds_name
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -91,7 +92,7 @@
 	INTEGER		TM_LENSTR1, TM_DSET_NUMBER, GRID_FROM_NAME,
      .			tmap_status, loc, skip, grid, columns,
      .			order(5), idim
-	CHARACTER	TM_INQ_PATH*256, var_list*500,
+	CHARACTER	TM_INQ_PATH*1024, var_list*500,
      .			path_name*256, ezform*80, title*128, grid_name*16,
      .			type*500, ctype*16, delim*24
 	REAL		rval

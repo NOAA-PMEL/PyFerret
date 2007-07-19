@@ -54,6 +54,7 @@
 * V533      8/01 *acm* - calendar axis additions: SECS_FROM_BC needs cal_id
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
+* v604 *acm* 7/07 increase length of ds_name
 
         include 'tmap_dims.parm'
 #       include "tmap_dset.parm"
@@ -142,7 +143,7 @@
 * DSET
 * list of open data sets
  300	DO 310 i = 1,  maxdsets
-	   IF ( ds_name(i) .NE. char_init256) THEN
+	   IF ( ds_name(i) .NE. char_init1024) THEN
 	      slen = TM_LENSTR1(ds_name(i))
 	      CALL CSTRING_INSERT( ds_name(i),
      .				slen, ctext, ntext, insert_pt)
@@ -307,7 +308,7 @@
 * VPORTS  *************
 * list of defined viewports
  1600	CONTINUE
-* VCURRENT  *************
+* VCURRENT  *************o
 * name of current viewport
  1700	CONTINUE
 * VIEW  (vport) *************
@@ -319,7 +320,7 @@
 * DCURRENT
 * name of current data set
  1900	DO 1910 dset = 1, maxdsets
-           IF ( ds_name(dset) .EQ. char_init256) GOTO 1910
+           IF ( ds_name(dset) .EQ. char_init1024) GOTO 1910
 	   IF ( dset .EQ. cx_data_set(cx_last) ) THEN
 	      slen = TM_LENSTR1(ds_name(dset))
 	      CALL CSTRING_INSERT( ds_name(dset),

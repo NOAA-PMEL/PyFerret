@@ -47,6 +47,7 @@
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
 * V581 *acm*/3/05 - increase length of strings for dataset title to 1024 
+* v604 *acm* 7/07 increase length of ds_name, ds_des_name
 
 * Arguments:
 *	dset	- data set number
@@ -76,7 +77,7 @@
 	INTEGER*4	vcnt, scnt
 *
 * Does data set exist?
-	IF (ds_name(dset) .EQ. char_init256) GOTO 9000
+	IF (ds_name(dset) .EQ. char_init1024) GOTO 9000
 *
 * Defining title?
 	IF (title .NE. char_init1024) ds_title(dset) = title

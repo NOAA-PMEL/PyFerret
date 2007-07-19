@@ -73,6 +73,7 @@
 *                   NF_STRERROR instead of NCOPN. Requires DODS library v3.5.2 or
 *                   higher.
 * V604 *acm* 6/07 Allow longer strings for OPeNDAP file-open errors.
+* v604 *acm* 7/07 increase length of ds_des_name
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -103,11 +104,11 @@
 ! The ones without trailing underscore are declared in netcdf.inc
 #ifdef usingDODSf2cUnderscore
 	INTEGER NF_OPEN_
-	CHARACTER*512 NF_STRERROR_
+	CHARACTER*1024 NF_STRERROR_
 
 #else      ! these declarations are in netcdf.inc
 #	INTEGER NF_OPEN
-#	CHARACTER*512 NF_STRERROR
+#	CHARACTER*1024 NF_STRERROR
 #endif  
 
 * local variable declarations:
@@ -125,10 +126,9 @@
       CHARACTER ch*1
 * *kob* 4/99
 * *kob* 11/00 - increase size of below to accomidate DODS files in mc sets
-      CHARACTER*512 TM_INQ_PATH, cdf_file, raw_file
-      CHARACTER*132 TM_FMT
-      CHARACTER*512 buff, upstr  ! for nf_ error message
-      CHARACTER*10 errcode
+      CHARACTER*1024 TM_INQ_PATH, cdf_file, raw_file
+      CHARACTER*10 TM_FMT, errcode
+      CHARACTER*1024 buff, upstr  ! for nf_ error message
 
 #ifdef FORTRAN_90
 	INTEGER HEX40

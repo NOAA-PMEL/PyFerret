@@ -40,6 +40,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP 
 
 * V600 6/05 *acm* Attribute control.
+* v604 *acm* 7/07 increase length of ds_name, ds_des_name
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -62,13 +63,13 @@
 
 * local variable declarations:
       INTEGER NCF_ADD_DSET, TM_LENSTR1, i, j, cdfstat
-      CHARACTER   buff*256
+      CHARACTER   buff*1024
 
 * For saving dataset information in linked list
 
       INTEGER NCF_GET_DSNUM, llen, slen1, slen2
-      PARAMETER (slen1=256)      ! size of ds_name string
-      PARAMETER (slen2=256)      ! size of ds_des_name string (should this be even longer??)
+      PARAMETER (slen1=1024)      ! size of ds_name string
+      PARAMETER (slen2=1024)      ! size of ds_des_name string (should this be even longer??)
 
 #ifdef sun
       BYTE      fhol_dsname(slen1)      ! c-type Hollerith string buffer

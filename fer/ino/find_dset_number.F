@@ -62,6 +62,7 @@
 * v580 *acm*11/04  Fix bug 1102; under linux, var[d=5coads] is read as dset=5
 * V600 *acm* 2/06  fix bug 1392, cancelling datasets
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* v604 *acm* 7/07 increase length of ds_name
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -79,7 +80,7 @@
      .		        cdf_name, des_name, full_name_used, nc_name
 	INTEGER		STR_CASE_BLIND_COMPARE, TM_LENSTR1,
      .			vax_code, dset, full_len, short_len, status
-	CHARACTER	TM_INQ_PATH*256, buff*256
+	CHARACTER	TM_INQ_PATH*1024, buff*1024
 	CHARACTER*13	TM_STRING, buff13, vbuff
         REAL*8          val
 
@@ -147,7 +148,7 @@ c *kob* 4/97
 * compare with filenames stored by the TMAP library
 	   DO 100 dset = 1, maxdsets
 
-	      IF ( ds_name(dset) .EQ. char_init256) GOTO 100
+	      IF ( ds_name(dset) .EQ. char_init1024) GOTO 100
 
 * special name match checks to account for implied .cdf or .des   5/93
 	      IF ( TM_HAS_STRING(ds_type(dset),'CDF')) THEN
@@ -175,7 +176,7 @@ c *kob* 4/97
 
 	   DO 200 dset = 1, maxdsets
 
-	      IF ( ds_des_name(dset) .EQ. char_init256) GOTO 200
+	      IF ( ds_des_name(dset) .EQ. char_init1024) GOTO 200
 
 * special name match checks to account for implied .cdf or .des   5/93
 	      IF ( TM_HAS_STRING(ds_type(dset),'CDF')) THEN
@@ -209,7 +210,7 @@ c *kob* 4/97
 
 	   DO 300 dset = 1, maxdsets
 
-	      IF ( ds_des_name(dset) .EQ. char_init256) GOTO 300
+	      IF ( ds_des_name(dset) .EQ. char_init1024) GOTO 300
 	      vax_code = STR_CASE_BLIND_COMPARE( ds_des_name(dset),
      .						    buff )
 

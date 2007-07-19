@@ -49,6 +49,7 @@
 * V540 10/01 *sh* - when title is modified, reset titl_mod to blank
 *      *acm* 10/01 increase length of ds_name
 *      *acm* 10/01  remove VMS include statements
+* v604 *acm* 7/07 increase length of ds_name, ds_des_name
 
 * Arguments:
 *	dset	- data set number
@@ -81,7 +82,7 @@
 * Local definitions
 *
 * Does data set exist?
-	IF (ds_name(dset) .EQ. char_init256) GOTO 9100
+	IF (ds_name(dset) .EQ. char_init1024) GOTO 9100
 *
 * Defining variable title?
   200	IF (title .NE. char_init80) THEN

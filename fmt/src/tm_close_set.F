@@ -79,6 +79,7 @@
 * V581 *acm*/3/05 - increase length of strings for dataset title to 1024 
 * V600 *acm* 6/05 - Attribute control.
 * V600 *acm* 2/06 - restore default values of ds_var_scale, ds_var_off, ds_var_scaleit
+* v604 *acm* 7/07 increase length of ds_name, ds_des_name
 
 * arguments:
 *	ds_num	- data set number (see COMMON /XSTEP_FILES/)
@@ -96,7 +97,7 @@
 	INTEGER   ds_num,status,f_num,ivar,iparm,iaux
 
 * initialize: do we have an open set?
-	IF (ds_name(ds_num) .EQ. char_init256) GOTO 9000
+	IF (ds_name(ds_num) .EQ. char_init1024) GOTO 9000
 
 * save the data format
         its_cdf = ds_type(ds_num) .EQ. 'CDF'
@@ -132,8 +133,8 @@
 	ds_alert_on_output(ds_num)	= 	.FALSE.
 	ds_message(ds_num)		=	char_init80
 ********************************************************************************
-	ds_des_name(ds_num)		=	char_init256
-	ds_name(ds_num)			=	char_init256
+	ds_des_name(ds_num)		=	char_init1024
+	ds_name(ds_num)			=	char_init1024
 	ds_1step(ds_num)		=	real8_init
 	ds_lastep(ds_num)		=	real8_init
 	ds_delstep(ds_num)		=	real8_init

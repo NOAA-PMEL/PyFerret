@@ -146,6 +146,7 @@
 *                  origin, include the origin in the units attribute as "since t0"
 *                  If units attribute is changed for a time axis, get the time
 *                  origin if it exists and append it to the units string.
+* v604 *acm* 7/07 increase length of ds_name
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -433,7 +434,7 @@ c *kob* 4/97
 	      IF   ( dset_num .LT. 1
      .	      .OR.   dset_num .GT. maxdsets
      .	      .OR.   dset_num .GT. max_gfdl_dsets )		GOTO 5110
-	      IF ( ds_name( dset_num ) .EQ. char_init256)	GOTO 5110
+	      IF ( ds_name( dset_num ) .EQ. char_init1024)	GOTO 5110
 	      GOTO 745
 	   ENDIF
 

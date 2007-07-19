@@ -74,6 +74,7 @@
 *
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use character constant instead
+* v604 *acm* 7/07 increase length of ds_name, ds_des_name
 
 * Arguments:
 *	dset	- data set number
@@ -137,7 +138,7 @@
 
 
 * Does data set exist?
-	IF (ds_name(dset) .EQ. char_init256) GOTO 9300
+	IF (ds_name(dset) .EQ. char_init1024) GOTO 9300
 *
 * Locate Step file entry
 	DO 10 sfcnt = 1,maxstepfiles

@@ -106,10 +106,14 @@
 	INTEGER NF_OPEN_
 	CHARACTER*1024 NF_STRERROR_
 
-#else      ! these declarations are in netcdf.inc
-#	INTEGER NF_OPEN
-#	CHARACTER*1024 NF_STRERROR
 #endif  
+
+! Completely comment out these; they are elsewhere and Solaris doesnt like
+! them there with # marks
+
+! #else      ! these declarations are in netcdf.inc
+! #	INTEGER NF_OPEN
+! #	CHARACTER*1024 NF_STRERROR
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...

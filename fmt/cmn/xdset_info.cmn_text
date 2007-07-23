@@ -18,6 +18,7 @@
 * V552 *acm* 5/03 increase ds_var_code to 128 characters
 *                 NOTE this is the max: NetCDF parameter NC_MAX_NAME = 128
 * V581 *acm* 3/05 increase ds_title, ds_mod_title to 1024
+* v604 *acm* 7/07 increase length of ds_name, ds_des_name
 *                 
 
 	COMMON/XDSET_INFO/
@@ -108,8 +109,8 @@
      .                  string_array_result1
 
 * additional calculated or derived values pertaining to data sets
-	CHARACTER*256	ds_name
-	CHARACTER*256	ds_des_name
+	CHARACTER*1024	ds_name
+	CHARACTER*1024	ds_des_name
 	INTEGER*4	ds_open,ds_basic_axes,ds_time_axis
 	LOGICAL		ds_regsteps, ds_var_scaleit, is_mc
 	REAL*8		ds_1step,ds_lastep,ds_delstep,

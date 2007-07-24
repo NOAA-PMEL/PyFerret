@@ -543,6 +543,9 @@ GO bn_reset
 GO bn_modnbd.jnl
 
 GO bn_reset
+GO bn_fifty_files.jnl
+
+GO bn_reset
 GO bn603_bug_fixes
 
 ! version 2.3 requires exit/command *sh* 3/92

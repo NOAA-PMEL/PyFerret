@@ -1,0 +1,55 @@
+! bn_fifty_files.jnl
+! We build OPeNDAP so that 100 files can be opened at a time.
+! Test with fifty.
+
+
+use 123456789000101_100101_test_numeric.nc
+use a1478.nc
+use a_cartesian_bug1179.nc
+use adouble_2D.nc
+use adouble.nc
+use b1478.nc
+use bad_taxis.nc
+use bounds_noenclose.nc
+use dstitle.nc
+use err542_poly_over_calendar.nc
+use err600_upcase.nc
+use err_calendar.nc
+use gappy_bounds.nc
+use illeg_axname.nc
+use longtitle1000.nc
+use missing_scale_off.nc
+use modfalse.nc
+use modulo_lon_time.nc
+use mylon.nc
+use nan_missing.nc
+use noglobalhistory.nc
+use ss_small.nc
+use sstnok_short.nc
+use sstok_short.nc
+use test0.nc
+use test_nan.nc
+use time_axis_seconds.nc
+use tripolar_subset.nc
+use varyscale_1.nc
+use varyscale_2.nc
+use xz_nozattrib.nc
+use z_wide_variation.nc
+use bn_strides.cdf
+use clim_airt_lev.cdf
+use climatological_axes.cdf
+use coads_climatology.cdf
+use coads_vwnd.cdf
+use err491_attval.cdf
+use geo_borders.cdf
+use gt4d011.cdf
+use gtbc011.cdf
+use gtsa056_1.cdf
+use gtsa056_2.cdf
+use levitus_climatology.cdf
+use non_COARDS.cdf
+use ocean_atlas_temp.cdf
+use reverse_axes.cdf
+use TAO_SST_clim.cdf
+use test_strides.cdf
+use weird_name1.cdf

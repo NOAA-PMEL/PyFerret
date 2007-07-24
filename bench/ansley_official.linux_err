@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/build_v603/FERRET_linux/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     41322874 Jun 29 09:26 /home/porter/ansley/build_v603/FERRET_linux/fer/ferretdods_gui
+Running FERRET version ../fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     41496623 Jul 24 10:31 ../fer/ferretdods_gui
 Using external functions from ../external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: tagged v6.04; changes to run v5d tests with current version of this external function.
+Note: build of v6.04 for release
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/linux/FERRET/bench
+PWD=/home/porter/ansley/build_v604/FERRET_linux/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -21,8 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_linux
-FER_EXTERNAL_FU=
-Beginning at Tue Jul 3 13:10:38 PDT 2007
+Beginning at Tue Jul 24 11:08:39 PDT 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -225,7 +224,7 @@ list temp[i=2:5,gx=130e:80w:10]
 list temp[gx=130e:80w]
  **ERROR: variable unknown or not in data set: NOEXIST
 list temp[gx=u]	+ noexist
- **ERROR: illegal limits: TEMP on grid (G004) is not in the range K=30
+ **ERROR: illegal limits: TEMP on grid (G004) does not exist at K=30
           Axis extremes are K=1:27
 list temp[gx=u,k=30]
  **ERROR: illegal limits: TEMP does not contain K=20
@@ -241,7 +240,7 @@ list tu
 list tu
  **ERROR: variable unknown or not in data set: NOEXIST
 list tu
- **ERROR: illegal limits: TEMP on grid (G004) is not in the range K=30
+ **ERROR: illegal limits: TEMP on grid (G004) does not exist at K=30
           Axis extremes are K=1:27
 list tu
  **ERROR: illegal limits: TEMP does not contain K=20
@@ -463,7 +462,7 @@ MESSAGE/CONTINUE `axy, return=xx`
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
  *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
  *** NOTE: A dummy axis of subscripts will be used
- **ERROR: illegal limits: "DUMMY" is not in the range T=-6.3E+10
+ **ERROR: illegal limits: "DUMMY" does not exist at T=-6.3E+10
           Axis extremes are T=0.5:32
 list/t=1-jan-1990 dummy
  **ERROR: invalid command: Can SET VARIABLE/OFFSET= only with NetCDF datasets
@@ -504,7 +503,7 @@ repeat/range=3:1:-1/name=a list a
 repeat/range=3:1:-1/name=a list a
  **ERROR: command syntax: nested REPEAT loops with the same counter name a
 repeat/range=3:1:-1/name=a list a
- **ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982
+ **ERROR: illegal limits: "TEMP" does not exist at T=AUG-1980:JAN-1982
           Axis extremes are T=AUG-1982:JAN-1983
 list/t=1-aug-1980:1-jan-1982/i=92/j=35 temp
  **ERROR: improper grid or axis definition: BOUNDS specified do not enclose coordinate points
@@ -608,9 +607,13 @@ set var/outtype=garbage broiled
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-             Operation not permitted (OPeNDAP/netCDF Error code 1)
-             Data set: http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf
-SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf"
+             OPeNDAP Error: Error while reading the URL: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods.dds?.
+The OPeNDAP server returned the following message:
+Not Found: The data source or server could not be found.
+        Often this means that the OPeNDAP server is missing or needs attention;
+        Please contact the server administrator. (OPeNDAP/netCDF Error code 1001)
+             Data set: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods
+SET DAT/FORM=CDF "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
  **Internet Data error
              OPeNDAP Error: Couldn't resolve host 'noserver' (OPeNDAP/netCDF Error code 1001)
              Data set: http://noserver/a/nofile.cdf
@@ -638,6 +641,24 @@ cancel axis/stride COADSX
 set axis/stride=2 NORMAL
  *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
  *** NOTE: They will not be convertible:
+ *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
+ *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
+ *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: bounds "TAX_bnds" do not enclose point on axis TAX
+ *** NOTE: Substituting coordinate midpoints
+ *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
+ *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
+ *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
+ *** NOTE: They will not be convertible:
+ *** NOTE: Evenly spaced axis has edges definition: XUNEVEN - ignored
+ *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
+ *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
+ *** NOTE: A dummy axis of subscripts will be used
+ **TMAP ERR: non-existent or not on line
+             test_strides.cdf
+SET DAT/FORM=CDF test_strides.cdf
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  **ERROR: invalid command: string/numeric data type mix-up: WRITEV5D
@@ -698,4 +719,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-Ended at Tue Jul 3 13:13:39 PDT 2007
+Ended at Tue Jul 24 11:12:04 PDT 2007

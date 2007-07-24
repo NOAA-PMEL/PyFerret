@@ -2,6 +2,7 @@
 ! We build OPeNDAP so that 100 files can be opened at a time.
 ! Test with fifty.
 
+set mode ignore_error
 
 use 123456789000101_100101_test_numeric.nc
 use a1478.nc
@@ -53,3 +54,6 @@ use reverse_axes.cdf
 use TAO_SST_clim.cdf
 use test_strides.cdf
 use weird_name1.cdf
+
+cancel mode ignore_error
+

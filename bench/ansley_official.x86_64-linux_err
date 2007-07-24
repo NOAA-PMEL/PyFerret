@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/build_v604/FERRET_x86_64-linux/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 34055923 Jul 19 10:08 /home/porter/ansley/build_v604/FERRET_x86_64-linux/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/build_v604/FERRET_x86_64-linux/external_functions/ext_func_x86_64-linux
+Running FERRET version ../fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 34056171 Jul 24 11:28 ../fer/ferretdods_gui
+Using external functions from ../external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: longer names for filenames; workaround in TM_INQ_PATH for checking dods cache when files long (INQUIRE bug)
+Note: fresh checkout and build; ferret_v604
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build_v604/FERRET_x86_64-linux/bench
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v604/FERRET_x86_64-linux/external_functions/ext_func_x86_64-linux
-Beginning at Thu Jul 19 11:11:46 PDT 2007
+FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_x86
+Beginning at Tue Jul 24 11:59:44 PDT 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -641,6 +641,24 @@ cancel axis/stride COADSX
 set axis/stride=2 NORMAL
  *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
  *** NOTE: They will not be convertible:
+ *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
+ *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
+ *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: bounds "TAX_bnds" do not enclose point on axis TAX
+ *** NOTE: Substituting coordinate midpoints
+ *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
+ *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
+ *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
+ *** NOTE: They will not be convertible:
+ *** NOTE: Evenly spaced axis has edges definition: XUNEVEN - ignored
+ *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
+ *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
+ *** NOTE: A dummy axis of subscripts will be used
+ **TMAP ERR: non-existent or not on line
+             test_strides.cdf
+SET DAT/FORM=CDF test_strides.cdf
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  **ERROR: invalid command: string/numeric data type mix-up: WRITEV5D
@@ -701,4 +719,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-Ended at Thu Jul 19 11:12:57 PDT 2007
+Ended at Tue Jul 24 12:00:58 PDT 2007

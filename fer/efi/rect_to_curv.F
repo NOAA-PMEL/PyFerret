@@ -430,9 +430,9 @@ c     .     in_lon_lat(1,2,1,1) )
      .                    verbose, bad_flag(ARG1), bad_flag_result,
      .                    missing_permit)
 
-            l1 = l1 + arg_incr(T_AXIS,ARG1)
+            k1 = k1 + arg_incr(Z_AXIS,ARG1)
          ENDDO
-         k1 = k1 + arg_incr(Z_AXIS,ARG1)
+         l1 = l1 + arg_incr(T_AXIS,ARG1)
       ENDDO
 
 

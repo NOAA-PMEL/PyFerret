@@ -130,6 +130,9 @@
 * V600  *acm* 4/06 change how mr_perm is passed to LIST_CMND_DATA,due to 64-bit problems  
 * V602  *acm* 1/07 Use risc_buff rather than the local variable buff for reading inputs 
 *                  and for the title - fixing bug 1482
+* V604  *acm* 7/07 Dataset names have been increased to 1024, but on output this runs into
+*                  conflicts with Fortran INQUIRE and OPEN calls. Disallow output names
+*                  longer than 256 characters.
 
         include 'tmap_errors.parm'
 	include	'ferret.parm'
@@ -177,7 +180,6 @@
      .			slash_clobber = 27+1,
      .                  slash_quiet   = 28+1)
 
-* one lonely function declaration
 	LOGICAL is_secure
 
 * formatting information given ?
@@ -400,7 +402,10 @@ c     .		 .AND. .NOT.do_comma_del
 	      raw_name = AUTO_FILENAME( raw_name, cx, mr, rlen )
 	   ENDIF
 !	   rlen = TM_LENSTR1( raw_name )      ! ever used ???
+           slen = TM_LENSTR1(raw_name)
+           IF (slen .GT. 256 ) GOTO 5090
 	   INQUIRE( FILE = raw_name, NAME = filename, EXIST = fexist )
+
 	   flen = TM_LENSTR1( filename )
 * ... forced heading ?
 ! (3/90)	   IF ( .NOT.fexist .AND. list_at_eof ) heading = .TRUE.
@@ -698,6 +703,11 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
      .		'In GUI mode LIST/FORMAT reguires a named /FILE=', *1000 )
  5080	CALL ERRMSG( ferr_invalid_command, status,
      .			'/ORDER not allowed with V permutation (yet)', *1000 )
+     
+ 5090	CALL ERRMSG( ferr_prog_limit, status,
+     .  'Cannot write to file w/ name longer than 256 characters: '//pCR//
+     .  'Limitation of Fortran INQUIRE and OPEN calls '	
+     .			, *5000 )
 	END
 
 

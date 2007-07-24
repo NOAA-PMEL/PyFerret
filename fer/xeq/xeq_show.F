@@ -153,6 +153,9 @@
 * 9/06 *acm* 6.01  fixing bug 1439 long symbol values; change length of show_str to 2048
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * v604 *acm* 7/07 increase length of ds_name
+* V604  *acm* 7/07 Dataset names have been increased to 1024, but on output this runs into
+*                  conflicts with Fortran INQUIRE and OPEN calls. Disallow output names
+*                  longer than 256 characters.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -410,6 +413,8 @@
 #endif
            ENDIF
            IF ( status .NE. ferr_ok ) GOTO 5000
+           llen = TM_LENSTR1(raw_name)
+           IF (llen .GT. 256 ) GOTO 5080
 	   INQUIRE( FILE = raw_name, NAME = raw_name, EXIST = fexist )
 	   flen = TM_LENSTR1( raw_name )
 * ... append or not ?
@@ -1843,9 +1848,12 @@ c     .                               sbrief, sdetail, i2)
      .	    'SHOW ATTRIBUTE given with no attribute: '//
      .	    'Use SHOW ATT/ALL varname, or SHOW ATT varname.attname '
      .			, *5000 )
+ 5080	CALL ERRMSG( ferr_prog_limit, status,
+     .  'Cannot append to file w/ name longer than 256 characters: '//pCR//
+     .  'Limitation of Fortran INQUIRE and OPEN calls '	
+     .			, *5000 )
  5920	llen = TM_LENSTR(show_str)
 	CALL ERRMSG( ferr_invalid_command, status,
      .   'variable, axis, or attribute does not exist'//
      .    show_str(:llen), *5000 )
 	END
-

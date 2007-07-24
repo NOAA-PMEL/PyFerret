@@ -2262,11 +2262,11 @@ int  FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *atty
     */
   if (att_ptr->type == NC_CHAR)
   {
-	  free(att_ptr->string);
+	  /*free(att_ptr->string);
   }
   else
   {
-	  free(att_ptr->vals);
+	  free(att_ptr->vals);*/
   }
   
 
@@ -2357,6 +2357,7 @@ int  FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *a
    /*
     * Free the memory used by the string or values 
     */
+  /*
   if (att_ptr->type == NC_CHAR)
   {
 	  free(att_ptr->string);
@@ -2365,6 +2366,7 @@ int  FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *a
   {
 	  free(att_ptr->vals);
   }
+  */
   
 
    /*

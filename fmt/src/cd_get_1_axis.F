@@ -283,6 +283,8 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
       got_it = NC_GET_ATTRIB(dset, ivar, spacing_attr(1:spacing_atlen),
      .                       do_warn, vname(:vlen), maxlen, attlen, 
      .                       attoutflag, buff, val)
+
+      line_regular(iaxis) = .FALSE.
       IF ( got_it ) THEN
          line_regular(iaxis) = buff(1:1).EQ.'e' .OR. buff(1:1).EQ.'E'
       ELSE
@@ -886,7 +888,8 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         last_coord = line_mem(ipte)
         firs_coord = line_mem(ipt1)
         first_delta = line_mem(ipt1+1) - line_mem(ipt1)
-        epsilon = epsilon_23 * 2.*(ABS(line_mem(ipte)) / delta )
+        epsilon = epsilon_23 * 2.*(ABS(line_mem(ipte)) / first_delta )
+        epsilon = epsilon_23 * 2.*(ABS(line_mem(ipt1)) / first_delta )
 
         DO 360 i=ipt1+2,ipte
            delta = line_mem(i) - line_mem(i-1)

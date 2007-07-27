@@ -13,12 +13,17 @@ ppl shade
 can view
 
 ! many levels: triangles forced to be 5% of total key length
+! (add SHOW SYM LEV* to catch behavior of bug 1519 which 
+!  did not plot color in the entire area for FILL plots.)
 
 set view left
 fill/x=20e:150e/lev=(-inf),(4,28,0.5)(inf) sst[l=1]
+sh sym lev*
 
 set view right
 shade/lev=(-inf),(4,28,0.5)(inf)/key=cont sst[l=1]
+sh sym lev*
+
 
 can view
 

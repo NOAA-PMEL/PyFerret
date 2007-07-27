@@ -1,0 +1,7 @@
+! bn604_bug_fixes.jnl
+! test various fixes that went into version 6.05
+! 27-July-2007 ACM
+
+! Fix for Bug 1524: irregular axis detected as REGULAR
+GO bn_reset
+GO err604_irreg_axis.jnl

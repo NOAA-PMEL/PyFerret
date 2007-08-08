@@ -263,37 +263,41 @@ c	      NLEV2=0
 
 C Compute the digits in the contour levels, and line characteristics
 C these will not have been set before on, say a previous SHADE plot
+C 8/07 ACM. Do this computation only for auto-level setting. If the user
+C      has set levels, this is already done (and the values are different).
 
-              znp = dmin
-              zmp = dmax
-              dz = 0
-              IF (set_delta) THEN
-                 dz = delta
-	         IF (ZNP + DZMAX*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
-              ENDIF
+              IF (iautoc .EQ. 1) THEN
+                 znp = dmin
+                 zmp = dmax
+                 dz = 0
+                 IF (set_delta) THEN
+                    dz = delta
+	            IF (ZNP + DZMAX*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
+                 ENDIF
 
-	      IF (ZMP-ZNP .EQ. 0) THEN
-                 JJ=NSIGC
-              ELSE
-                 JJ=NSIGC-IFIX(ALOG10(ABS(ZMP-ZNP))+.5)
-              ENDIF
-              IF (JJ.LE.0) JJ=-1
+	         IF (ZMP-ZNP .EQ. 0) THEN
+                    JJ=NSIGC
+                 ELSE
+                    JJ=NSIGC-IFIX(ALOG10(ABS(ZMP-ZNP))+.5)
+                 ENDIF
+                 IF (JJ.LE.0) JJ=-1
 
-              IF (NLEV2 .GT. ICNLEV) GO TO 5000
+                 IF (NLEV2 .GT. ICNLEV) GO TO 5000
 
-	      DO 105 I=1,NLEV2
-		 LWGT(I)=2
-		 LDIG(I)=-1
-		 IF (ABS(ZLEV(I)).LT.1.E-5*DZMAX) GOTO 105
-                 IF ( TM_FPEQ( ABS(ZLEV(I)) ,0.) ) GOTO 105
-		 IF (ZLEV(I).GT.0.) THEN
-		    LWGT(I)=1
-		 ELSE
-		    LWGT(I)=3
-		 END IF
-		 LDIG(I)=JJ
- 105	      CONTINUE
-
+	         DO 105 I=1,NLEV2
+		    LWGT(I)=2
+		    LDIG(I)=-1
+		    IF (ABS(ZLEV(I)).LT.1.E-5*DZMAX) GOTO 105
+                    IF ( TM_FPEQ( ABS(ZLEV(I)) ,0.) ) GOTO 105
+		    IF (ZLEV(I).GT.0.) THEN
+		       LWGT(I)=1
+		    ELSE
+		       LWGT(I)=3
+		    END IF
+		    LDIG(I)=JJ
+ 105	         CONTINUE
+   
+	      ENDIF
 	   ENDIF
 
 	END IF

@@ -219,6 +219,12 @@
      .       progname_mod(:len_progname_mod)//' '//today_date, status )
         IF ( status .NE. merr_ok ) GOTO 5800
 
+* update Conventions attribute in the file
+        buff1 = 'CF-1.0'
+
+        CALL CD_CONVENTIONS_OUT( append, cdfid, buff1, status )
+        IF ( status .NE. merr_ok ) GOTO 5800
+
 * optional title for data set
 	IF ( title .NE. ' ' ) THEN
 	   CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'title',

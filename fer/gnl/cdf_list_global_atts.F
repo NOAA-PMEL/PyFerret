@@ -73,7 +73,8 @@
            slen = TM_LENSTR1(attname)
 
            IF ( MATCH_NAME (attname,  slen, 'HISTORY', 7 ) .OR. 
-     .          MATCH_NAME (attname,  slen, 'TITLE', 5 ) ) THEN
+     .          MATCH_NAME (attname,  slen, 'TITLE', 5 ) .OR. 
+     .          MATCH_NAME (attname,  slen, 'CONVENTIONS', 11 ) ) THEN
               slen = 0   ! done elsewhere
            ELSE
               CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, aname, 

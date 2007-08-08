@@ -1,4 +1,4 @@
-	SUBROUTINE CD_STAMP_OUT(append, cdfid, string, status)
+	SUBROUTINE CD_CONVENTIONS_OUT(append, cdfid, string, status)
 
 *
 *
@@ -35,19 +35,17 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Put a "history" stamp into the current netCDF output file
+* Put a "conventions" attribute into the current netCDF output file
 
-* Programmer Steve Hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* Programmer Ansley Manke
+* NOAA/PMEL, Seattle, WA - TMAP
 
-* revision 0.0 - 3/92
-* 10/96 *kob* - Linux port - had to move variable assignments off of
-*		declaration line.
+* 7/2007 from CD_STAMP_OUT
 
 * argument definitions:
 *       append  - logical control to create or append
 *       cdfid   - returned pointer to open CDF file
-*       string  - history string to add
+*       string  - conventions string to add
 *	status	- return status
 
 * argument declarations:
@@ -62,30 +60,28 @@
         include 'cd_lib.parm'
 
 * local variable declarations:
-* *kob* explicit definitions not allowed on decl line in linux...
-*       moved it to parameter line 10/96
-      INTEGER TM_LENSTR1, hlen, slen
-      LOGICAL CD_GET_ATTRIB, got_it,
-     .        do_warn
+
+      INTEGER TM_LENSTR1, clen, slen
+      LOGICAL CD_GET_ATTRIB, got_it, do_warn
       PARAMETER (do_warn = .TRUE. )
-      CHARACTER*132 history
+      CHARACTER*132 buff
 
 * initialize
       slen = MIN( TM_LENSTR1(string), 120 )
 
-* update (or create) history record
-      got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'history',
-     .                     .NOT.do_warn, ' ', history, 132 )
-      hlen = TM_LENSTR1( history )
+* update (or create) conventions record
+      got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'Conventions',
+     .                     .NOT.do_warn, ' ', buff, 132 )
+      clen = TM_LENSTR1( buff )
 
-* is the last history stamp the same as this ?
-      IF ( hlen .GE. slen ) THEN
-         IF ( history(hlen-slen+1:hlen) .EQ. string(:slen) ) RETURN
+* is the last conventions stamp the same as this ?
+      IF ( clen .GE. slen ) THEN
+         IF ( buff(clen-slen+1:clen) .EQ. string(:slen) ) RETURN
       ENDIF
 
-* insert new signature
-      CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'history', string(:slen),
-     .                     append, status )
+* insert new attribute
+      CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'Conventions',
+     .                     string(:slen), append, status )
       IF ( status .NE. merr_ok ) GOTO 5000
 
 * successful completion

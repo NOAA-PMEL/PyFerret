@@ -67,3 +67,12 @@ SHO VAR/XML
 CAN DATA gtsa056_2
 SHOW VAR/XML
 
+! 8/7/2007
+! new form for output of a var whose definition contains quotes
+CANCEL DATA/ALL
+CANCEL VAR/ALL
+
+USE coads_climatology 
+LET t3 = sst[x=180,y=1,t="15-jan-0000:00:00":"15-feb-0000:00:00"@AVE]
+SHOW VAR/XML
+

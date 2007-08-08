@@ -40,6 +40,8 @@
 *  7-Feb-2005 acm  (bug 1165) fix string vars so they are output with 
 *                  surrounding &quot;
 * V602 12/06 *acm* remove extra call to GRID_FROM_NAME_XML
+* V606  8/07 *acm* when there are quotes within the var definition, as in
+*                  a date specification change these to &quot; for valid xml.
 
         include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -57,10 +59,10 @@
 	
 * local variable declarations:
 	INTEGER TM_LENSTR1, GRID_FROM_NAME_XML,
-     .          slen, llen, grid, cx_expr, status
+     .          slen, llen, grid, cx_expr, i, j, status
 	CHARACTER FULL_UVAR_NAME*150, TM_FMT*12,
-     .            buff*150
-        LOGICAL save_mode_ignore, save_silent_err
+     .            buff*150, buff2*170, c*1
+        LOGICAL TM_HAS_STRING, save_mode_ignore, save_silent_err
 
  2020   FORMAT ('<var name="', A, '" def="', A, '">' )
  2030   FORMAT( '<units>', A, '</units>' )
@@ -112,6 +114,22 @@
         IF ( uvar_text(uvar)(1:1) .EQ.'"' .AND.
      .       uvar_text(uvar)(llen:llen) .EQ.'"' ) THEN
            buff = '&quot;' // uvar_text(uvar)(2:llen-1) // '&quot;'
+           llen = TM_LENSTR1(buff)
+        ENDIF
+        IF ( TM_HAS_STRING( buff, '"') ) THEN
+           j = 1
+           buff2(1:1) = buff(1:1)
+           DO 100 i = 1, llen
+              c = buff(i:i)
+              IF (c .EQ.'"') THEN
+                 buff2 = buff2(1:j) // '&quot;'
+                 j = j + 6
+              ELSE
+                 buff2 = buff2(1:j) // c
+                 IF (i.GT.1) j = j + 1
+              ENDIF
+ 100       CONTINUE
+           buff = buff2
            llen = TM_LENSTR1(buff)
         ENDIF
 

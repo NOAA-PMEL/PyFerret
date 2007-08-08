@@ -83,12 +83,13 @@
 * V6.03  5/25/07  Version 6.03
 * V6.04  7/02/07  Version 6.04
 * V6.05  7/27/07  Version 6.05
+* V6.06  8/08/07  Version 6.08 for LAS
 
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.05   /
+	DATA revision_level	/  6.06   /
 !	DATA progname_mod	/ '(GUI BETA v1)' / ! ==> xrevision_type_data.F
 !	DATA len_progname_mod	/  13       /	    ! ==> xrevision_type_data.F
 	END

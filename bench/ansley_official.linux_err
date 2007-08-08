@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version ../fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     41496623 Jul 24 10:31 ../fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     41496623 Jul 27 11:42 ../fer/ferretdods_gui
 Using external functions from ../external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: build of v6.04 for release
+Note: fix bug 1524, release of v6.05
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/build_v604/FERRET_linux/bench
+PWD=/home/porter/ansley/build_v605/FERRET_linux/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_linux
-Beginning at Tue Jul 24 11:08:39 PDT 2007
+Beginning at Fri Jul 27 11:55:48 PDT 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -452,6 +452,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
  *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
  *** NOTE: A dummy axis of subscripts will be used
+rm: cannot remove `input.txt': No such file or directory
 ls: input.txt: No such file or directory
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
@@ -630,7 +631,7 @@ shade sst[t=@AVE,Z=@ave]
            - its a 2D region: "plot/i=100/k=1 temp[x=122.5W]"
 plot/i=100/k=1 temp[x=122.5W]
  **ERROR: invalid command: it is a child axis already
-set axis/stride=2/offset=1 (AX054)
+set axis/stride=2/offset=1 (AX043)
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
  **ERROR: invalid command: offset must be less than stride value
@@ -651,7 +652,6 @@ set axis/stride=2 NORMAL
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
  *** NOTE: They will not be convertible:
- *** NOTE: Evenly spaced axis has edges definition: XUNEVEN - ignored
  *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
@@ -719,4 +719,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-Ended at Tue Jul 24 11:12:04 PDT 2007
+Ended at Fri Jul 27 11:59:20 PDT 2007

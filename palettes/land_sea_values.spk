@@ -1,0 +1,21 @@
+! Colors similar to land_sea, given by_value
+
+RGB_Mapping By_Value
+
+   
+! Val    R    G    B
+-8000   0.   0.  40.         ! dark blue
+-6000  20.  20.  50.
+-4000  30.  30. 100.
+-300   50. 100. 100.        ! turq
+ -0.1  90. 100. 100.        ! light green-blue
+   0.   0.  90.   0.    ! green
+  600  80. 100.  20.    ! lt green
+ 1200 100. 100.   0.    ! yellow
+ 4000  75.  40.   0.    ! brown
+ 5000  40.  19.   0.     ! dark brown
+
+! 5000  75.  70.  65.    ! gray-brown 
+! 5000  60.  30.   0. ! rust
+! 5000  30   22   15     ! dark brown
+

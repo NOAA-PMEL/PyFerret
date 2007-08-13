@@ -1,0 +1,19 @@
+! bn_set_var_name.jnl
+! This has been in Ferret since v5.3 but never a benchmark test of it!
+! ACM 8/2007
+
+USE coads_climatology
+
+! Use SET VAR/NAME= to give a variable from the file a new name.
+SET VAR/NAME=my_sst sst
+SHOW DATA
+
+LIST/X=179:183/Y=40/L=4 my_sst
+
+! Now use a LET command to "fix" the data in any way we wish
+! Give it the original name, and now it has the new characteristics
+! but the old name.
+
+LET sst = 3*my_sst
+LIST/X=179:183/Y=40/L=4 sst
+

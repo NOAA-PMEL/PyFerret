@@ -66,7 +66,6 @@
 * V450:  3/4/97 - Mod to support metafile-only (no X) output through a
 *		cuckoo's egg implantation of meta_wsid in place of wsid
 
-#ifdef unix
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
@@ -83,24 +82,8 @@
 	include	'PLTCOM.DAT'	! with gksopn
 	include	'ppl_in_ferret.cmn'	! with ppl_in_ferret
 !	include	'gksdefs.bnd'		! gks parameters
-#else
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XGKS_DEVICES.CMN'
-	INCLUDE	'TMAP_PPLV11INC:SYSTEM_INC.DECL'	! with echof
-	INCLUDE	'PPLV11INC:SYSTEM.INC'	! with echof
-	INCLUDE	'TMAP_PPLV11INC:PLT_INC.DECL/LIST'	! with icode
-	INCLUDE	'PPLV11INC:PLT.INC/LIST'	! with icode
-	INCLUDE	'TMAP_PPLV11INC:GKSCM1_INC.DECL/LIST'	! with wsid
-	INCLUDE	'PPLV11INC:GKSCM1.INC/LIST'	! with wsid
-	INCLUDE	'TMAP_PPLV11INC:SWITCH_INC.DECL/LIST'	! with deflts
-	INCLUDE	'PPLV11INC:SWITCH.INC/LIST'	! with deflts
-	INCLUDE	'TMAP_PPLV11INC:PLTCOM_DAT.DECL/LIST'	! with gksopn
-	INCLUDE	'PPLV11INC:PLTCOM.DAT/LIST'	! with gksopn
-	INCLUDE	'PPLV11INC:PPL_in_FERRET.CMN'	! with PPL_in_FERRET
-!	INCLUDE	'SYS$LIBRARY:GKSDEFS.BND'		! GKS parameters
-#endif
+        INCLUDE 'lunits_inc.decl'   ! std err unit number
+	INCLUDE 'LUNITS.INC'
 	
 * internal parameter declarations:
 	CHARACTER	dummy_filename*1
@@ -122,6 +105,10 @@
 * tell PPLUS that it is under FERRET control without viewports
 	PPL_in_FERRET = .TRUE.
 	PPL_viewports_active = .FALSE.
+
+* Give PPLUS the unit number for std error, to write error messages
+
+        lerror = err_lun
 
 * set PPLUS /WAIT vs /NOWAIT mode directly from FERRET mode
 	deflts(5) = mode_wait	! sets swait default

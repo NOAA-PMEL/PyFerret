@@ -1,6 +1,8 @@
 * LUNITS_INC.DECL - converted to Unix 2.26.91         
 * COMMON for PLOT+ with all variables declared
 * created for TMAP usage by Steve Hankin 7/88
+* v6.06 ACM add lerror; unit number for std error
 	INTEGER	LTTOUT
 	INTEGER	LMULT
+	INTEGER	LERROR
 * requires: INCLUDE 'PPLV11INC:LUNITS.INC'                                  

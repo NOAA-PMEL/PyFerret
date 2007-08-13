@@ -12,9 +12,10 @@ C***********************************************************************
 C**
 C**
 c
-	COMMON/LUNITS/LTTOUT,LMULT
+	COMMON/LUNITS/LTTOUT,LMULT,LERROR
 c
 c	lttout	logical unit for output to keyboard
 c	lmult	logical unit for multzzz.dat i/o
+c       lerror  logical unit for std error
 c
 c*******************************************************************

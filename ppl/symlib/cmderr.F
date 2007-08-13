@@ -79,15 +79,12 @@ C
 C       11-Dec-2003 ACM Add the string **ERROR before the error message,
 C                       to be consistent with Ferret error messages.
 C  
-#ifdef unix
+C    V6.06 ACM Write error messages to Standard Error, unit number is LERROR
+
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'CMDCOM.INC'
 	INCLUDE 'LUNITS.INC'
-#else
-	INCLUDE 'cmdinc:SYSTEM.INC'
-	INCLUDE 'cmdinc:CMDCOM.INC'
-	include 'pplinc:lunits.inc'
-#endif
+
 	CHARACTER LINE*(*),frmt*30
 	CHARACTER ERRMES(11)*30
 	DATA ERRMES/'Symbol not found','Unmatched ''',
@@ -96,14 +93,14 @@ C
      *	'Unmatched "','WHILE levels improperly nested',
      *	'Syntax error','Unmatched (','Maximum no. levels exceeded'/
 	IF(IER.EQ.0)RETURN
-	WRITE(LTTOUT,999)' **ERROR',ERRMES(IER)
+	WRITE(LERROR,999)' **ERROR',ERRMES(IER)
 999	FORMAT(A8,1X,A30)
-	WRITE(LTTOUT,998)' ',LINE(:ILEN)
+	WRITE(LERROR,998)' ',LINE(:ILEN)
 998	FORMAT(A1,1X,A)
 	IF(IPOS.LE.ILEN)THEN
 	    WRITE(FRMT,997)IPOS
 997	    FORMAT('(A1,',I3.3,'X,''^'')')
-	    WRITE(LTTOUT,FRMT)' '
+	    WRITE(LERROR,FRMT)' '
 	ENDIF
 	IF(ECHOF)THEN
 	    WRITE(ECHLUN,999)'C ERROR',ERRMES(IER)

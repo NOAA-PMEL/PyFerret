@@ -554,7 +554,10 @@ GO bn_reset
 GO bn_set_var_name.jnl
 
 GO bn_reset
-GO bn_ppl_errors.jnl
+! This routine executes a ppl error which exits us from Ferret
+! when run in the benchmark suite. Should test this, but dont do it
+! here, for now.
+!GO bn_ppl_errors.jnl
 
 GO bn_reset
 GO bn605_bug_fixes

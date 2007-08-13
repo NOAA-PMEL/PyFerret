@@ -8,12 +8,12 @@ USE coads_climatology
 SET VAR/NAME=my_sst sst
 SHOW DATA
 
-LIST/X=179:183/Y=40/L=4 my_sst
+LIST/X=179:183/Y=40/L=3 my_sst
 
 ! Now use a LET command to "fix" the data in any way we wish
 ! Give it the original name, and now it has the new characteristics
 ! but the old name.
 
 LET sst = 3*my_sst
-LIST/X=179:183/Y=40/L=4 sst
+LIST/X=179:183/Y=40/L=3 sst
 

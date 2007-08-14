@@ -69,7 +69,7 @@
 	 
 
 
-	SYSLIB		= -L/usr/X11R6/lib64  -lm -ldl /usr/X11R6/lib64/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib64/libXm.a -lXt -lXext /usr/X11R6/lib64/libX11.a -lXp /usr/X11R6/lib64/libXmu.a -lSM       -lICE        -lc /usr/lib/gcc/x86_64-redhat-linux/3.4.4/libg2c.a
+	SYSLIB		= -L/usr/X11R6/lib64  -lm -ldl /usr/X11R6/lib64/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib64/libXm.a /usr/X11R6/lib64/libXt.a /usr/X11R6/lib64/libXext.a /usr/X11R6/lib64/libX11.a /usr/X11R6/lib64/libXp.a /usr/X11R6/lib64/libXmu.a /usr/X11R6/lib64/libSM.a /usr/X11R6/lib64/libICE.a -lc /usr/lib/gcc/x86_64-redhat-linux/3.4.4/libg2c.a
 
 	TMLIB		= ../lib/tmap_lib.a
 

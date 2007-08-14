@@ -71,7 +71,7 @@
 	 
 
 
-	SYSLIB		= -L/usr/X11R6/lib  -lm -ldl /usr/X11R6/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib/libXm.a -lXt -lXext -lX11 -lXp /usr/X11R6/lib/libXmu.a -lSM       -lICE        -lc /usr/lib/gcc-lib/i386-redhat-linux/3.2.3/libg2c.a
+	SYSLIB		= -L/usr/X11R6/lib  -lm -ldl /usr/X11R6/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib/libXm.a /usr/X11R6/lib/libXt.a /usr/X11R6/lib/libXext.a /usr/X11R6/lib/libX11.a /usr/X11R6/lib/libXp.a /usr/X11R6/lib/libXmu.a /usr/X11R6/lib/libSM.a /usr/X11R6/lib/libICE.a -lc /usr/lib/gcc-lib/i386-redhat-linux/3.2.3/libg2c.a
 
 	TMLIB		= ../lib/tmap_lib.a
 

@@ -49,26 +49,22 @@
 * V420: initialize the no-cache memory hash pointer
 * V500: 4/99 *sh* - set mode desperate while we're at it
 * V510: 2/00 *sh* initialize additional new hash piles
+* V606: 8/07 *acm* Set a symbol with the current memory setting
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'ferret.parm'
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER block_size, number_of_blocks
 
 * internal variable declarations
 	INTEGER	bigblk, mv
+      INTEGER i1, i2, len
+      CHARACTER*30 TM_FMT, sym_name, buff
 
 * initialize memory configuration
 	mem_blk_size = block_size
@@ -98,12 +94,24 @@
  110	CONTINUE
 	mv_flink(max_mr_avail) = 0	     ! make list circular
 
-
 * set MODE DESPERATE to 1/10 of full memory size
 * the reason so small is that Ferret memory management is not aware of
 * large hierarchies of definitions -- so a command like "LIST var"
 * may involve far more data than the transformations of "var" alone
 	mode_arg(pmode_desparate,1) = 0.1 *  block_size *  number_of_blocks
 
+* Set a symbol with the current memory setting; the same value as seen with SHOW MEM 
+
+* if this symbol already exists then delete it
+      sym_name = 'FERRET_MEMORY' 
+	CALL GETSYM(sym_name, buff, i2, i1 )
+	IF ( i1 .EQ. 0 ) CALL DELSYM(sym_name,i1)
+
+* define the symbol
+      buff = TM_FMT(max_mem_blks*mem_blk_size/1.E6,3,12,len)
+
+	CALL PUTSYM( sym_name, buff, len, i2)
+! ... no check on returned error code (could be "internal error")
 	RETURN
 	END
+

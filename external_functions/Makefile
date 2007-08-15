@@ -14,7 +14,7 @@
 # Macro Definitions
 #
 
-DIRS = closest_in_list contributed cat cmprsi_by convolve date_and_time examples extrema fft gridding hinterp lanczos ncedit sort tax_times transpose v5d zaxr gridding obs_viz 
+DIRS = closest_in_list contributed cat cmprsi_by convolve date_and_time examples extrema fft gridding hinterp lanczos ncedit sort statistics tax_times transpose v5d zaxr gridding obs_viz 
 
 #
 # Targets

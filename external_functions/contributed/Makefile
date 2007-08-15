@@ -10,6 +10,7 @@
 #
 # *acm* 1/2001 - incorporate "make debug" as per SH Makefiles
 #  acm  2/2001   debug macros
+#  acm  5/2007   removed fill_xy from target list; now statically-linked.
 #
 # include platform specific macro definitions
 #
@@ -34,9 +35,8 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 # Targets
 #
-all:    ferret_cmn fill_xy.so
 
-more:    ferret_cmn chdir.so neutral.so pco2.so
+all:    ferret_cmn chdir.so neutral.so fill_xy.so pco2.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

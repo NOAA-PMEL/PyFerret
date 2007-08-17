@@ -1,0 +1,40 @@
+! TernaryDiagram : plotting mixtures of 3 variables in a triangular/ternary diagram
+!
+! define horizontal and vertical axes on which to draw triangle (2 wide;root3 high)
+!
+! Contributed by Mick Spillane, 8/2007
+! See his note in the Ferret Users List for an example plot 17-Aug-2007
+!
+!             A (1,root3)
+!           / | \             A point P lies at the intersection of three lines
+!          /  |/ \            that are parallel to the sides of the triangle ABC.
+!         /   /   \           The fractions Fa, Fb, Fc at P are the fractional
+!        /   /|    \          distances of each of these lines from its vertex,
+!       /   / |     \         with 100% at the vertex and 0% at the opposite side.
+!      / \ /  |      \        With vertices drawn as shown and P=(x,y):
+!     /---P---|-------\              Fa = y/root3
+!    /   / \  |        \             Fb = 1 - x'/root3, x'=xcos30-ysin30
+!   B___/___\_|_________C            Fc = 1-Fa-Fb
+! (0,0)               (2,0)   A triangular mask for the region is defined by:
+!                                      if(y < root3*(1-abs(x-1))then 1
+
+! choose a suitable resolution to represent the region
+let root3=3^0.5 ; def axis/y=0:2/npoints=201 yax
+def axis/x=0:2/npoints=201 xax ; def grid/x=xax/y=yax grd
+
+let mask=if(y[g=grd] le root3*(1-abs(x[g=grd]-1)))then 1
+let Fa=mask*y[g=grd]/root3
+let Fb=1-0.5*mask*(x[g=grd]+y[g=grd]/root3)
+let Fc=1-Fa-Fb
+
+! demo plot - first fix aspect ratio and turn off axes
+ppl axlen,5,5 ; ppl axset,0,0,0,0
+! ... then shade Fa and add Fb, Fd as contours
+shade/nolab Fa ; cont/o/nolab/spacing=0.8 Fb ; cont/o/nolab/spacing=0.8 Fc
+! add frame and vertex labels
+plot/o/nolab/vs/line=7 {0,2,1,0},{0,0,`root3`,0}
+label  1.0 `root3+0.05` 0 0 0.2 A
+label -0.1    0        -1 0 0.2 B
+label  2.1    0         1 0 0.2 C
+
+quit

@@ -102,7 +102,7 @@
 	LOGICAL re_verify, do_verify, prefix_verify, arg1_quoted
 	INTEGER	TM_LENSTR, TM_LENSTR1,
      .		iqual, ilist, cmnd_len, double_eof,
-     .          has_more
+     .          has_more, i
 
         CHARACTER*1 backslash
 #ifdef NO_INTRINSIC_IN_PARAMETER

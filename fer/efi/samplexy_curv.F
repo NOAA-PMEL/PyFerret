@@ -257,7 +257,7 @@
       LOGICAL need_modulo
       INTEGER ibot, itop, jbot, jtop
       INTEGER nloc, iloc, ptloc, icross
-      REAL xpt, ypt, ydiff, yd
+      REAL xpt, ypt, ydiff, yd, add_xcoord, xadd, xcoord
       REAL xptmin, xptmax, xcoordmin, xcoordmax
       REAL fxbot, fxtop, fbb, ftb, fbt, ftt
       REAL xbot, xtop, ybot, ytop

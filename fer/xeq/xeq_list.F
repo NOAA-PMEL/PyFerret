@@ -160,7 +160,7 @@
      .			rlen, flen, reclen, i, cx1, qfile, idim,
      .			ndim, wkblk, perm(5), mr_perm(max_intrp),
      .                  npermuted, recsofar, do_stream_phase, nvars, 
-     .                  edges_flag, nn
+     .                  edges_flag, nn, slen
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
      .			fstatus*8, faccess*12, fformatted*12,
      .			cdf_recax*1,

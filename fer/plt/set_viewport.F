@@ -72,7 +72,7 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 
 * internal variable declarations:
 	LOGICAL clip, newstyle_vp
-	INTEGER	iseg, i, old_vp
+	INTEGER	iseg, i, old_vp, istate
 	REAL	scale, fctx, fcty, xclip, yclip, xfrac, yfrac,
      .          xcei, ycei, xoei, yoei, xcv, xov, ycv, yov
 

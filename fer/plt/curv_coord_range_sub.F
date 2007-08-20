@@ -63,7 +63,7 @@
      .		       ypos_loss_dim2:ypos_hiss_dim2)
 
 * internal variable declarations:
-	INTEGER i, j
+	INTEGER i, j, i1, i2, j1, j2
         REAL xx, yy, up, dn
 
         ilo = MAX(minss_dim1, maxss_dim1)

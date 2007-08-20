@@ -193,14 +193,15 @@
 	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, GRID_FROM_NAME,
      .                  TM_GET_LINENUM, LIB_GET_LUN, TM_LENSTR, TM_LENSTR1, 
      .                  TM_UNIT_ID, TM_GET_CALENDAR_ID, FIND_DSET_NUMBER, 
-     .			equal_pos, colon_pos, dset_num, ich,
+     .			STR_UPCASE, equal_pos, colon_pos, dset_num, ich,
      .			status, tmap_status, mode, idim, iarg, item, lp, iv,
      .			cx, i, grid, axis, loc, perm(4), buff_len, 
      .                  cal_id, day, month, year, hour, minute, second,
      .                  units, since_t0, len_test, len_mchars, slen, len,
      .                  attype_spec, pos, mr, varid, uvar, cat, iflag, 
      .                  isetout, ivar, dot, strided_axis, igrd, offset,
-     .                  attid, attype, attoutflag, attlen
+     .                  attid, attype, attoutflag, attlen, i1, dset,
+     .                  istat
         REAL*8          TM_WW_AXLEN, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi
 	REAL		val_buf
@@ -1456,7 +1457,7 @@ c     .					* max_mem_blks*100
      .                                   .TRUE., varname, 128,
      .                                   attlen, attoutflag, ustring, 
      .                                   val_buf )
-               vax_code =  STR_UPCASE (buff2, ustring)
+               istat =  STR_UPCASE (buff2, ustring)
                slen = INDEX(buff2, 'SINCE')
                IF (slen .GT. 0) THEN
                   slen = slen - 2
@@ -1489,7 +1490,7 @@ c     .					* max_mem_blks*100
      .                                   .TRUE., varname, 128,
      .                                   attlen, attoutflag, ustring, 
      .                                   val_buf )
-                 vax_code = STR_UPCASE (buff2, ustring)
+                 istat = STR_UPCASE (buff2, ustring)
                  slen = INDEX(buff2, 'SINCE')
                  IF (slen .GT. 0) THEN
                     slen = slen - 2

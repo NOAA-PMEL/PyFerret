@@ -283,9 +283,10 @@
 * local variable declarations:
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, MATCH_NAME,
+     .            NC_GET_ATTRIB, TM_LENSTR,
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
-     .            new_att, new_att_modulo
+     .            new_att, new_att_modulo, got_it
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -307,7 +308,8 @@
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
-     .            xoei,  yoei,   xcei,  ycei, scale, val
+     .            xoei,  yoei,   xcei,  ycei, scale, val,
+     .            dummy, val_buf
 
 	REAL*8	  SECS_FROM_BC, TM_WW_AXLEN,
      .		  bc_to_t0, start, new_ww, delta, end, secs2start,

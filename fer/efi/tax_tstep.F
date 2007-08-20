@@ -124,7 +124,7 @@
       CHARACTER*80 err_msg
       
       CHARACTER*20 t0string
-      INTEGER t0year, t0day
+      INTEGER t0year, t0day, slen
       CHARACTER*3 t0mon
 
       REAL*8 ddate
@@ -262,9 +262,10 @@
       SUBROUTINE second_since_t0(t0string, datebuf, secondsincet0)
 
       CHARACTER*20 t0string, datebuf
+      CHARACTER*80 err_msg
       INTEGER minutesincet0, secondsincet0
 
-      INTEGER isecond, t0second
+      INTEGER isecond, t0second, t0hour
 
       t0hour = 0
 
@@ -309,9 +310,10 @@
       SUBROUTINE minute_since_t0(t0string, datebuf, minutesincet0)
 
       CHARACTER*20 t0string, datebuf
+      CHARACTER*80 err_msg
       INTEGER minutesincet0, hoursincet0
 
-      INTEGER iminute, t0minute
+      INTEGER iminute, t0minute, t0hour
 
       t0hour = 0
 
@@ -355,6 +357,8 @@
       SUBROUTINE hour_since_t0(t0string, datebuf, hoursincet0)
 
       CHARACTER*20 t0string, datebuf
+      CHARACTER*80 err_msg
+
       INTEGER hoursincet0, daysincet0
        
       INTEGER ihour, t0hour      
@@ -402,6 +406,8 @@
       SUBROUTINE day_since_t0(t0string, datebuf, daysincet0)
 
       CHARACTER*20 t0string, datebuf
+      CHARACTER*80 err_msg
+
       INTEGER daysincet0
 
       INTEGER t0day, t0year
@@ -526,6 +532,7 @@
       SUBROUTINE month_since_t0(t0string, datebuf, monthsincet0)
 
       CHARACTER*20 t0string, datebuf
+      CHARACTER*80 err_msg
       INTEGER monthsincet0
       CHARACTER*3 t0mon, cmon
       CHARACTER*3 months(12)
@@ -574,6 +581,7 @@
       SUBROUTINE year_since_t0(t0string, datebuf, yearsincet0)
 
       CHARACTER*20 t0string, datebuf
+      CHARACTER*80 err_msg
       INTEGER yearsincet0
       INTEGER iyear, t0year
 

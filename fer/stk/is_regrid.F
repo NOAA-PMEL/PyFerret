@@ -99,9 +99,9 @@
      .		xy_ave, valid, valid_y, has_impl_save, done_by_strides,
      .		itsa_string
 	INTEGER hi_isp, lo_isp, axis, cx_valid, idim,
-     .		rgrd_trans, mrlist(4), wk_size, wk_size2,
+     .		rgrd_trans, mrlist(5), wk_size, wk_size2,
      .		dst_cx, src_cx, dst_mr, src_mr, ngd_mr, ave_mr,
-     .		blk1, axis_list(4), naxis, i
+     .		blk1, axis_list(4), naxis, i, nbd_mr
 	CHARACTER dtype*4
 
 *        ... interpretation stack setup at the time this is called ...

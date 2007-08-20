@@ -1872,68 +1872,69 @@ C /units=months  is 1/12 of the length of the year
         
         iline = TM_GET_LINENUM( varname )
 
-        slen = TM_LENSTR1(attname)
-        IF (MATCH_NAME (attname,  slen, 'TIME_ORIGIN', 11)  .AND.
-     .         ( line_direction(iline) .EQ. 'TI' .OR.
-     .          line_direction(iline) .EQ. 'TT' ) ) THEN
-           CALL CD_GET_VAR_ATT_ID (dset, varid, 'UNITS', attid, status)
-           IF (status .NE. ferr_ok) GOTO 5960
-           got_it = NC_GET_ATTRIB ( dset, varid, 'units',
-     .                              .TRUE., varname, 128,
-     .                              attlen, attoutflag, ustring, 
-     .                              val_buf )
-           got_it = NC_GET_ATTRIB ( dset, varid, 'time_origin',
-     .                              .TRUE., varname, 128,
-     .                              attlen, attoutflag, t0string, 
-     .                              val_buf )
-           vax_code = STR_UPCASE (buff2, ustring)
-           slen = INDEX(buff2, 'SINCE')
-           IF (slen .GT. 0) THEN
-              slen = slen - 2
-           ELSE
-              slen = TM_LENSTR1(ustring)
-           ENDIF
-           buff3 = ustring(1:slen) // ' since ' // t0string
-           attlen = TM_LENSTR1(buff3)
-
-           ustring = 'units'
-           CALL CD_REPLACE_ATTR (dset, varid, ustring, NCCHAR, 
-     .         attlen, buff3, val_buf, status)
-        ENDIF
-
-* If the units were changed on a time axis, add "since time origin"
-           
-        slen = TM_LENSTR1(attname)
-        IF (MATCH_NAME (attname,  slen, 'UNITS', 5)  .AND.
-     .     ( line_direction(iline) .EQ. 'TI' .OR.
-     .       line_direction(iline) .EQ. 'TT' ) ) THEN
-           CALL CD_GET_VAR_ATT_ID (dset, varid, 'TIME_ORIGIN', 
-     .              attid, status)
-           IF (status .EQ. ferr_ok) THEN 
-              got_it = NC_GET_ATTRIB ( dset, varid, 'time_origin',
-     .                                .TRUE., varname, 128,
-     .                                attlen, attoutflag, t0string, 
-     .                                val_buf )
+        IF (iline .NE. unspecified_int4) THEN
+           slen = TM_LENSTR1(attname)
+           IF (MATCH_NAME (attname,  slen, 'TIME_ORIGIN', 11)  .AND.
+     .            ( line_direction(iline) .EQ. 'TI' .OR.
+     .             line_direction(iline) .EQ. 'TT' ) ) THEN
+              CALL CD_GET_VAR_ATT_ID (dset, varid, 'UNITS', attid, status)
+              IF (status .NE. ferr_ok) GOTO 5960
               got_it = NC_GET_ATTRIB ( dset, varid, 'units',
-     .                                .TRUE., varname, 128,
-     .                                attlen, attoutflag, ustring, 
-     .                                val_buf )
-
-              vax_code =  STR_UPCASE (buff2, ustring)
+     .                                 .TRUE., varname, 128,
+     .                                 attlen, attoutflag, ustring, 
+     .                                 val_buf )
+              got_it = NC_GET_ATTRIB ( dset, varid, 'time_origin',
+     .                                 .TRUE., varname, 128,
+     .                                 attlen, attoutflag, t0string, 
+     .                                 val_buf )
+              vax_code = STR_UPCASE (buff2, ustring)
               slen = INDEX(buff2, 'SINCE')
               IF (slen .GT. 0) THEN
                  slen = slen - 2
               ELSE
                  slen = TM_LENSTR1(ustring)
               ENDIF
-              buff3 = ustring(1:attlen) // ' since ' // t0string
+              buff3 = ustring(1:slen) // ' since ' // t0string
               attlen = TM_LENSTR1(buff3)
-
-              CALL CD_REPLACE_ATTR (dset, varid, attname, NCCHAR, 
+   
+              ustring = 'units'
+              CALL CD_REPLACE_ATTR (dset, varid, ustring, NCCHAR, 
      .            attlen, buff3, val_buf, status)
            ENDIF
-        ENDIF
 
+* If the units were changed on a time axis, add "since time origin"
+           
+           slen = TM_LENSTR1(attname)
+           IF (MATCH_NAME (attname,  slen, 'UNITS', 5)  .AND.
+     .        ( line_direction(iline) .EQ. 'TI' .OR.
+     .          line_direction(iline) .EQ. 'TT' ) ) THEN
+              CALL CD_GET_VAR_ATT_ID (dset, varid, 'TIME_ORIGIN', 
+     .                 attid, status)
+              IF (status .EQ. ferr_ok) THEN 
+                 got_it = NC_GET_ATTRIB ( dset, varid, 'time_origin',
+     .                                   .TRUE., varname, 128,
+     .                                   attlen, attoutflag, t0string, 
+     .                                   val_buf )
+                 got_it = NC_GET_ATTRIB ( dset, varid, 'units',
+     .                                   .TRUE., varname, 128,
+     .                                   attlen, attoutflag, ustring, 
+     .                                   val_buf )
+   
+                 vax_code =  STR_UPCASE (buff2, ustring)
+                 slen = INDEX(buff2, 'SINCE')
+                 IF (slen .GT. 0) THEN
+                    slen = slen - 2
+                 ELSE
+                    slen = TM_LENSTR1(ustring)
+                 ENDIF
+                 buff3 = ustring(1:attlen) // ' since ' // t0string
+                 attlen = TM_LENSTR1(buff3)
+   
+                 CALL CD_REPLACE_ATTR (dset, varid, attname, NCCHAR, 
+     .               attlen, buff3, val_buf, status)
+           ENDIF
+        ENDIF
+        ENDIF ! (axis .NE. unspecified_int4)
 
 * Update attribute information used by plotting etc (ds_units, ...)
             CALL FIND_VAR_NAME (dset, varname, cat, uvar)

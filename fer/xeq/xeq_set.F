@@ -1442,68 +1442,70 @@ c     .					* max_mem_blks*100
 * "units since time origin" using the new time origin info.
            
            axis = TM_GET_LINENUM( varname )
-           slen = TM_LENSTR1(attname)
-           IF ( MATCH_NAME (attname,  slen, 'TIME_ORIGIN', 11) .AND.
-     .         ( line_direction(axis) .EQ. 'TI' .OR.
-     .          line_direction(axis) .EQ. 'TT' ) ) THEN
-              CALL CD_GET_VAR_ATT_ID (dset_num, varid, 'UNITS', attid, status)
-              IF (status .NE. ferr_ok) GOTO 5960
-
-               got_it = NC_GET_ATTRIB ( dset_num, varid, 'time_origin',
-     .                                   .TRUE., varname, 128,
-     .                                   attlen, attoutflag, t0string, 
+           IF (axis .NE. unspecified_int4) THEN
+              slen = TM_LENSTR1(attname)
+              IF ( MATCH_NAME (attname,  slen, 'TIME_ORIGIN', 11) .AND.
+     .            ( line_direction(axis) .EQ. 'TI' .OR.
+     .             line_direction(axis) .EQ. 'TT' ) ) THEN
+                 CALL CD_GET_VAR_ATT_ID (dset_num, varid, 'UNITS', attid, status)
+                 IF (status .NE. ferr_ok) GOTO 5960
+   
+                  got_it = NC_GET_ATTRIB ( dset_num, varid, 'time_origin',
+     .                                      .TRUE., varname, 128,
+     .                                         attlen, attoutflag, t0string, 
      .                                   val_buf )
-               got_it = NC_GET_ATTRIB ( dset_num, varid, 'units',
-     .                                   .TRUE., varname, 128,
-     .                                   attlen, attoutflag, ustring, 
-     .                                   val_buf )
-               istat =  STR_UPCASE (buff2, ustring)
-               slen = INDEX(buff2, 'SINCE')
-               IF (slen .GT. 0) THEN
-                  slen = slen - 2
-               ELSE
-                  slen = TM_LENSTR1(ustring)
+                  got_it = NC_GET_ATTRIB ( dset_num, varid, 'units',
+     .                                      .TRUE., varname, 128,
+     .                                      attlen, attoutflag, ustring, 
+     .                                      val_buf )
+                  istat =  STR_UPCASE (buff2, ustring)
+                  slen = INDEX(buff2, 'SINCE')
+                  IF (slen .GT. 0) THEN
+                     slen = slen - 2
+                  ELSE
+                     slen = TM_LENSTR1(ustring)
+                  ENDIF
+                  buff3 = ustring(1:slen) // ' since ' // t0string
+                  attlen = TM_LENSTR1(buff3)
+   
+                  ustring = 'units'
+                  CALL CD_REPLACE_ATTR (dset_num, varid, ustring, 
+     .               NCCHAR, attlen, buff3, val_buf, status)
                ENDIF
-               buff3 = ustring(1:slen) // ' since ' // t0string
-               attlen = TM_LENSTR1(buff3)
-
-               ustring = 'units'
-               CALL CD_REPLACE_ATTR (dset_num, varid, ustring, 
-     .            NCCHAR, attlen, buff3, val_buf, status)
-            ENDIF
 
 * If the units were changed on a time axis, add "since time origin"
            
-           slen = TM_LENSTR1(attname)
-           IF (MATCH_NAME (attname,  slen, 'units', 5)  .AND.
-     .         ( line_direction(axis) .EQ. 'TI' .OR.
-     .          line_direction(axis) .EQ. 'TT' ) ) THEN
-              CALL CD_GET_VAR_ATT_ID (dset_num, varid, 'time_origin', 
-     .              attid, status)
-              IF (status .EQ. ferr_ok) THEN 
+              slen = TM_LENSTR1(attname)
+              IF (MATCH_NAME (attname,  slen, 'units', 5)  .AND.
+     .            ( line_direction(axis) .EQ. 'TI' .OR.
+     .             line_direction(axis) .EQ. 'TT' ) ) THEN
+                 CALL CD_GET_VAR_ATT_ID (dset_num, varid, 'time_origin', 
+     .                 attid, status)
+                 IF (status .EQ. ferr_ok) THEN 
 
-                 got_it = NC_GET_ATTRIB ( dset_num, varid, 'time_origin',
-     .                                   .TRUE., varname, 128,
-     .                                   attlen, attoutflag, t0string, 
-     .                                   val_buf )
-                 got_it = NC_GET_ATTRIB ( dset_num, varid, 'units',
-     .                                   .TRUE., varname, 128,
-     .                                   attlen, attoutflag, ustring, 
-     .                                   val_buf )
-                 istat = STR_UPCASE (buff2, ustring)
-                 slen = INDEX(buff2, 'SINCE')
-                 IF (slen .GT. 0) THEN
-                    slen = slen - 2
-                 ELSE
-                    slen = TM_LENSTR1(ustring)
-                 ENDIF
-                 buff3 = ustring(1:slen) // ' since ' // t0string
-                 attlen = TM_LENSTR1(buff3)
-
-                 CALL CD_REPLACE_ATTR (dset_num, varid, attname, 
-     .               NCCHAR, attlen, buff3, val_buf, status)
+                    got_it = NC_GET_ATTRIB ( dset_num, varid, 'time_origin',
+     .                                      .TRUE., varname, 128,
+     .                                      attlen, attoutflag, t0string, 
+     .                                      val_buf )
+                    got_it = NC_GET_ATTRIB ( dset_num, varid, 'units',
+     .                                      .TRUE., varname, 128,
+     .                                      attlen, attoutflag, ustring, 
+     .                                      val_buf )
+                    istat = STR_UPCASE (buff2, ustring)
+                    slen = INDEX(buff2, 'SINCE')
+                    IF (slen .GT. 0) THEN
+                       slen = slen - 2
+                    ELSE
+                       slen = TM_LENSTR1(ustring)
+                    ENDIF
+                    buff3 = ustring(1:slen) // ' since ' // t0string
+                    attlen = TM_LENSTR1(buff3)
+   
+                    CALL CD_REPLACE_ATTR (dset_num, varid, attname, 
+     .                  NCCHAR, attlen, buff3, val_buf, status)
+                  ENDIF
                ENDIF
-            ENDIF
+            ENDIF ! (axis .NE. unspecified_int4)
 
 * Update attribute information used by plotting etc (ds_units, ...)
             CALL FIND_VAR_NAME (dset_num, varname, cat, uvar)

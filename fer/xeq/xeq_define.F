@@ -2067,7 +2067,7 @@ C /units=months  is 1/12 of the length of the year
         CALL ERRMSG( ferr_invalid_command, status,
      .		'attribute type must be string or float'// buff2(:slen), *5000 )
 
-5960  slen = TM_LENSTR(buff1)
+5960  slen = TM_LENSTR1(buff1)
       CALL ERRMSG( ferr_invalid_command, status,
      .   'cannot set T0 unless Units are also set'//
      .    buff1(:slen), *5000 )

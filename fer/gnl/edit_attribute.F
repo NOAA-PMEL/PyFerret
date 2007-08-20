@@ -263,6 +263,7 @@
 	CALL PARSE_NAM_DSET( varname, cx_last, dset,
      .			     cat, var, mod_cx, status )
 
+        IF (var .EQ. munknown_var_name)  GOTO 5000
 	IF ( cat .EQ. cat_file_var ) ez = ds_type(dset) .EQ. pds_type_ez
 
 	   ncfile = (TM_HAS_STRING(ds_type(dset), 'CDF') .OR.

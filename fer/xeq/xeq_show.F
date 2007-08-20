@@ -1591,6 +1591,9 @@
                     IF (dset .EQ. -1) THEN
                        risc_buff = 
      .                   '     attributes for user-defined variables'
+                    ELSE IF (dset .EQ. -2) THEN
+                       risc_buff = 
+     .                   '     attributes for coordinate axis'
                     ELSE
                        llen = TM_LENSTR1(ds_des_name(dset))
                        WRITE ( risc_buff, 4800 ) ds_des_name(dset)(:llen)

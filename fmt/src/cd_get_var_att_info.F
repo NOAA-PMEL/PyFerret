@@ -47,7 +47,8 @@
 * Argument declarations
 
       CHARACTER*(*) attname
-      INTEGER dset, varid, attid, attype, attlen, attoutflag, status
+      INTEGER dset, varid, attid, attype, attlen, attoutflag, 
+     .        slen, status
 
 * Internal declarations
 

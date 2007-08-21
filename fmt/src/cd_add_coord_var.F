@@ -53,7 +53,8 @@
 
 * Internal declarations
 
-      INTEGER TM_LENSTR1, TM_LENSTR, NCF_ADD_VAR, slen, flen, dset_num
+      INTEGER TM_LENSTR1, TM_LENSTR, NCF_ADD_VAR, NCF_ADD_COORD_VAR, 
+     .        slen, flen, dset_num
       REAL*8 badd
       CHARACTER*2048 buff
 

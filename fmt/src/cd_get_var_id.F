@@ -62,7 +62,7 @@
       CHARACTER*512 buff
       LOGICAL coordvar
       INTEGER TM_LENSTR1, NCF_GET_VAR_ID, NCF_GET_VAR_ID_CASE,
-     .        slen, flen, dir, dset_num
+     .        NCF_GET_VAR_AXFLAG, slen, flen, dir, dset_num
       PARAMETER (flen=512)      ! size of variable name string
 
 #ifdef sun

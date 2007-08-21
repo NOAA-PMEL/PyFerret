@@ -123,7 +123,7 @@
      .        do_warn, file_exists
       PARAMETER (do_warn = .TRUE. )
       REAL val
-      INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME, STR_UPCASE
+      INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME, STR_UPCASE,
      .        ndims, nvars, ngatts, recdim, cdfstat, i, istep, 
      .        err_status
       INTEGER len, iin, iout, ilast, dlen
@@ -226,8 +226,8 @@ cc	   	         cdfid = NCOPN(cdf_file, NCNOWRIT, cdfstat)
 #else
 			 cdfstat = NF_OPEN(cdf_file, NF_NOWRITE, cdfid) 
 #endif 
-                         IF ( cdf_file(1:7) .EQ. 'http://') THEN 
-     .                       err_status = merr_remote_open
+                         IF ( cdf_file(1:7) .EQ. 'http://')
+     .                        err_status = merr_remote_open
 
 			 mc_init_stepfile(dset) = i
 			 IF ( cdfstat .EQ. NCNOERR) GOTO 110

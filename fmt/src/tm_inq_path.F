@@ -97,7 +97,7 @@
 #else
         CHARACTER TM_PATH_LIST*8192, path_list*8192
 #endif
-        INTEGER TM_LENSTR1, plen,flen,i,postslash
+        INTEGER TM_LENSTR1, STR_SAME, plen,flen,i,postslash
 !!!! bug 2/93        EQUIVALENCE ( path_list, risc_buff )
 
 * path may be an environment variable (UNIX) with a path list or

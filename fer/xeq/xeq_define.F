@@ -192,6 +192,7 @@
 *                  origin, include the origin in the units attribute as "since t0"
 *                  If units attribute is changed for a time axis, get the time
 *                  origin if it exists and append it to the units string.
+* V606  8/07 *acm* DEFINE AXIS/QUIET
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -243,7 +244,8 @@
      .              slash_bounds,
      .              slash_type,
      .              slash_dset,
-     .              slash_output
+     .              slash_output,
+     .              slash_def_ax_quiet
 
 	LOGICAL	    explct_defn
 	PARAMETER ( slash_dflt   = 9,
@@ -274,7 +276,8 @@
      .              slash_bounds     = 1+14,
      .              slash_type       = 1+1,
      .              slash_dset       = 1+0,
-     .              slash_output     = 1+2,
+     .              slash_output     = 1+2.,
+     .              slash_def_ax_quiet = 1+15,
      .		    explct_defn  = .FALSE. )
 
 * calling argument declarations:
@@ -1375,14 +1378,16 @@ C /units=months  is 1/12 of the length of the year
            ENDIF
 	ENDIF
 
-
 * check for redefinitions
 	IF ( dup_name ) THEN
 	   IF ( TM_LINE_MATCH( old_line, iline ) ) THEN
 	      RETURN					! dup name/dup def
 	   ELSE
 * ... redefinition makes all past assumptions incorrect
-	      CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+
+* Dont write message if DEF AX/QUIET
+            IF (qual_given( slash_def_ax_quiet ) .EQ. 0 )
+     .	      CALL SPLIT_LIST(pttmode_ops, ttout_lun,
      .			replmsg//'axis '//line_name( old_line ), 0)
 
 * ... Check the attribute structure for this axis name and change 

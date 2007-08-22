@@ -173,6 +173,7 @@
 *       7/06 *jli* - add CANCEL AXIS/STRIDES
 *       *acm* 7/06 -     CANCEL ATTRIBUTE /OUTPUT /DATA
 * V603: 5/07 *acm* - Fix bug found by Andy Jacobson, in line 1465 index should be 30 not 29.
+* V606  8/07 *acm* - DEFINE AXIS/QUIET
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -982,7 +983,7 @@
 	   DATA subcommands      (nsub_at10 + 4)/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at10 + 4)/ nqual10e	/
 	   DATA qualifier_pointer(nsub_at10 + 4)/ nqual_at10e	/
-* DEFINE AXIS /X/Y/Z/T /FILE /UNITS ...
+* DEFINE AXIS /X/Y/Z/T /FILE /UNITS /QUIET ...
 		DATA qualifiers  (nqual_at10e+ 0)/ 'X'	  /
 		DATA qualifiers  (nqual_at10e+ 1)/ 'Y'	  /
 		DATA qualifiers  (nqual_at10e+ 2)/ 'Z'	  /
@@ -998,6 +999,11 @@
 		DATA qualifiers  (nqual_at10e+ 12)/ 'EDGES' /
 		DATA qualifiers  (nqual_at10e+ 13)/ 'CALENDAR' /
 		DATA qualifiers  (nqual_at10e+ 14)/ 'BOUNDS' /
+		DATA qualifiers  (nqual_at10e+ 15)/ 'QUIET' /
+		DATA qualifiers  (nqual_at10e+ 16)/ '****' /
+		DATA qualifiers  (nqual_at10e+ 17)/ '****' /
+		DATA qualifiers  (nqual_at10e+ 18)/ '****' /
+		DATA qualifiers  (nqual_at10e+ 19)/ '****' /
 * DEFINE VIEW
 	   DATA subcommands      (nsub_at10 + 5)/ 'VIEWPORT'	/
 	   DATA num_qualifs      (nsub_at10 + 5)/ nqual10f	/

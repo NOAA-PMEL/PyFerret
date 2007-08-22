@@ -61,8 +61,9 @@
 * V530: 9/00 *sh* - increase rbuff size to allow longer "(isiz*jsiz*ksiz*lsiz)"
 *		  - added support for string variables
 * V532: 5/01 *sh* - minor bug fix: "small" and "large" init'ed to wrong dtype
+* V606: 7/08 *acm*- define symbols with the latest results of a call to STAT
+*                   STAT_MIN, STAT_MAX, STAT_MEAN, STAT_STD
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xvariables.cmn'
 	include	'xmem_subsc.cmn'
@@ -71,12 +72,6 @@
 * special equivalence needed only with risc compiler: bug fix
         CHARACTER rbuff(4)*24
         EQUIVALENCE ( rbuff, risc_buff )
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL	full
@@ -86,12 +81,12 @@
 * internal variable declarations:
 	INTEGER	TM_LENSTR1, CGRID_SIZE, GET_MAX_STRING_LEN,
      .		i, j, k, l, nbad, ngood, ntot, idim,
-     .		len_line, len_set_name, grid, slen
+     .		len_line, len_set_name, grid, slen, i1, i2
 	REAL	datum, bad, std_dev, large, small, mean, sumsq_dev, dev
 	REAL*8	sum
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, vname_buff
 	CHARACTER	TM_FMT*12, LEFINT*8, AX_TITLE*32, CX_SIZE_STR*24,
-     .			line_buff*130, title*32, bl13*13
+     .			line_buff*130, title*32, bl13*13, symbuff*30
 	PARAMETER (bl13 = '             ' )
 
 * local parameter declarations:
@@ -222,6 +217,27 @@
      .			' Mean    value: '//rbuff(3)(:slen)//
      .					' (unweighted average)', 0)
 	ENDIF
+
+! Define Ferret symbols with min, max, mean
+	IF ( mr_type(mv) .NE. ptype_string ) THEN
+           symbuff = 'STAT_MIN'
+	   CALL GETSYM( symbuff, title, i2, i1 )
+	   IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+           slen = TM_LENSTR1(rbuff(1))
+      	   CALL PUTSYM( symbuff, rbuff(1), slen, i2)
+           symbuff = 'STAT_MAX'
+	   CALL GETSYM( symbuff, title, i2, i1 )
+	   IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+           slen = TM_LENSTR1(rbuff(2))
+      	   CALL PUTSYM( symbuff, rbuff(2), slen, i2)
+           symbuff = 'STAT_MEAN'
+	   CALL GETSYM( symbuff, title, i2, i1 )
+	   IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+           slen = TM_LENSTR1(rbuff(3))
+      	   CALL PUTSYM( symbuff, rbuff(3), slen, i2)
+        ENDIF
+
+
 	IF ( full .AND. ngood.GT.1 ) THEN
            IF ( sumsq_dev .GE. 3.E35 ) THEN
               rbuff(1) = ' **too big**' 
@@ -230,8 +246,16 @@
            ENDIF
 	   CALL SPLIT_LIST(pttmode_explct, lun,
      .			' Standard deviation: '//rbuff(1), 0)
+
+! Define Ferret symbol with std
+	   IF ( mr_type(mv) .NE. ptype_string ) THEN
+              symbuff = 'STAT_STD'
+	      CALL GETSYM( symbuff, title, i2, i1 )
+	      IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+              slen = TM_LENSTR1(rbuff(1))
+      	      CALL PUTSYM( symbuff, rbuff(1), slen, i2)
+           ENDIF
 	ENDIF
 
 	RETURN
 	END
-

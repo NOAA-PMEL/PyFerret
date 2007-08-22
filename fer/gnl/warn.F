@@ -46,7 +46,7 @@
 * V314: 8/22/94 *kob* IBM port - need to use risc buff for char. concat 
 * V400: 11/94 - send warnings to GUI via 
 * V320: 2/95 - use TMAP routine tm_note
-* V600  8/07 ACM Send Notes to std error.
+* V606  8/07 ACM Send Notes to std error.
 
 #ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'

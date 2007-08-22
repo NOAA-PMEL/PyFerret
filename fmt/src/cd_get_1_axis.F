@@ -551,7 +551,7 @@ c         ENDIF
 * ... First check for an AXIS attribute
 
       axis_dir = char_init01
-      maxlen = 2
+      maxlen = 1
       got_it = NC_GET_ATTRIB(dset, ivar, 'axis',
      .             do_warn, vname(:vlen), maxlen, attlen, 
      .             attoutflag, axis_dir, val)
@@ -579,7 +579,7 @@ c         ENDIF
 
       IF (line_direction(iaxis) .EQ. 'NA') THEN
 
-         maxlen = 2
+         maxlen = 1
          got_it = NC_GET_ATTRIB(dset, ivar, 'cartesian_axis',
      .              do_warn, vname(:vlen), maxlen, attlen, 
      .              attoutflag, axis_dir, val)

@@ -53,24 +53,26 @@
 * v500: 1/26/99 - *kob* update help to reflect current options
 
 * V5.6  3/2004 - update help to point only to web resources and SHOW commands
+* V606  8/07 *acm* Send informational and error messages that are returned from 
+*                  commands via SPLIT_LIST to std error rather than std out.
 
         include 'ferret.parm'
         include 'xprog_state.cmn'
 
 
-	CALL SPLIT_LIST(pttmode_help, ttout_lun,
+	CALL SPLIT_LIST(pttmode_help, err_lun,
      .   ' Detailed help is available online at www.ferret.noaa.gov'
      .								, 0)
 
-	CALL SPLIT_LIST(pttmode_help, ttout_lun,
+	CALL SPLIT_LIST(pttmode_help, err_lun,
      .   ' To obtain a list of FERRET commands type    SHOW COMMANDS'
      .								, 0)
 
-	CALL SPLIT_LIST(pttmode_help, ttout_lun,
+	CALL SPLIT_LIST(pttmode_help, err_lun,
      .' To obtain a list of FERRET functions type    SHOW FUNCTIONS'
      .								, 0)
 
-	CALL SPLIT_LIST(pttmode_help, ttout_lun,
+	CALL SPLIT_LIST(pttmode_help, err_lun,
      .' To obtain a list of FERRET transforms type    SHOW TRANSFORM'
      .								, 0)
 

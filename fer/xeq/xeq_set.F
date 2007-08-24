@@ -147,6 +147,8 @@
 *                  If units attribute is changed for a time axis, get the time
 *                  origin if it exists and append it to the units string.
 * v604 *acm* 7/07 increase length of ds_name
+* V606  8/07 *acm* Send informational and error messages that are returned from 
+*                  commands via SPLIT_LIST to std error rather than std out.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1163,7 +1165,7 @@ c *kob* 4/97
 * SET MEMORY/MWORDS=megawords
  1300	IF ( num_args .GT. 0 ) GOTO 5800
 	if (is_secure()) then
-	   call SPLIT_LIST(pttmode_help, ttout_lun,
+	   call SPLIT_LIST(pttmode_help, err_lun,
      1	        'This command is not allowed.', 0)
 	   return
 	endif
@@ -1195,7 +1197,7 @@ c     .					* max_mem_blks*100
 	DO 1310 i = 1,max_mr_avail
 	   IF ( mr_protected(i) .NE. mr_deleted ) CALL DELETE_VARIABLE(i)
  1310	CONTINUE
-	CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+	CALL SPLIT_LIST(pttmode_ops, err_lun,
      .			' Cached data cleared from memory', 0)
 
         RETURN

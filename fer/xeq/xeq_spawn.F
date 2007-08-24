@@ -48,16 +48,12 @@
 * 10.28.98 *js* Disable command if secure mode set
 * V500:  1/99 - correct the handing of qutes as in SPAWN "date"
 *		with call to ALL_1_ARG
+* V606  8/07 *acm* Send informational and error messages that are returned from 
+*                  commands via SPLIT_LIST to std error rather than std out.
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-#endif
 
 	LOGICAL IS_SECURE
 
@@ -65,16 +61,16 @@
 	CALl ALL_1_ARG
 	IF ( num_args .GT. 0 ) THEN
 	   if (IS_SECURE()) then
-	      call SPLIT_LIST(pttmode_help, ttout_lun,
+	      call SPLIT_LIST(pttmode_help, err_lun,
      1	        'This command is not allowed.', 0)
 	   else
 	      call system( cmnd_buff(arg_start(1):arg_end(1)) )
 	   end if
 	ELSE
 * user can get choice of shells with "SPAWN csh", or whatever.
-	   CALL SPLIT_LIST(pttmode_help, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_help, err_lun,
      .    	' Use "^Z" for shell prompt.  Type "fg" to return.', 0)
-	   CALL SPLIT_LIST(pttmode_help, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_help, err_lun,
      .    	' Or type "SPAWN csh" (or shell of your choice) '
      .    	//'and "exit" to return', 0)
       ENDIF

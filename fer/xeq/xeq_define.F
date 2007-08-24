@@ -193,6 +193,8 @@
 *                  If units attribute is changed for a time axis, get the time
 *                  origin if it exists and append it to the units string.
 * V606  8/07 *acm* DEFINE AXIS/QUIET
+* V606  8/07 *acm* Send informational and error messages that are returned from 
+*                  commands via SPLIT_LIST to std error rather than std out.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -524,7 +526,7 @@
 * was defined so new dynamic axes weren't wiped out
 	IF ( dup_name ) THEN
 * ... redefinition makes all past assumptions incorrect
-	   CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_ops, err_lun,
      .			replmsg//'grid '//grid_name(old_grid), 0)
 	   CALL PURGE_MR_GRID( old_grid, status )
 	   IF ( status .NE. merr_ok ) GOTO 5000
@@ -646,7 +648,7 @@
 	      IF ( uvar_dset(i1) .EQ. dset ) THEN
 !	         IF ( qual_given(slash_let_quiet) .EQ. 0 ) THEN
 !	            err_string = FULL_UVAR_NAME(i1,i2)	! buffer
-!	            CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+!	            CALL SPLIT_LIST(pttmode_ops, err_lun,
 !     .			replmsg// 'variable '//err_string(:i2), 0)
 !	         ENDIF
 	         CALL DELETE_USER_VAR(i1)
@@ -1387,7 +1389,7 @@ C /units=months  is 1/12 of the length of the year
 
 * Dont write message if DEF AX/QUIET
             IF (qual_given( slash_def_ax_quiet ) .EQ. 0 )
-     .	      CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+     .	      CALL SPLIT_LIST(pttmode_ops, err_lun,
      .			replmsg//'axis '//line_name( old_line ), 0)
 
 * ... Check the attribute structure for this axis name and change 
@@ -1559,7 +1561,7 @@ C /units=months  is 1/12 of the length of the year
 	ELSE
 * ... name in use - flag segments in this viewport as deleted
 	   IF ( ivp .EQ. mvp_dflt ) GOTO 5640
-	   CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_ops, err_lun,
      .			'Re-defining viewport '//vp_name(ivp), 0)
 	   DO 614 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
  614	   CALL GDSG( iseg ) 

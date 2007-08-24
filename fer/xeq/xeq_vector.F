@@ -88,7 +88,8 @@
 * V550: *acm*11/02 add argument is_shade to DISP_SET_UP call (not used by vector)
 * V552: *acm* 5/03 add argument use_cell to DISP_SET_UP call (not used by vector)
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
-
+* V606  8/07 *acm* Send informational and error messages that are returned from 
+*                  commands via SPLIT_LIST to std error rather than std out.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -388,7 +389,7 @@ c in disp_set_up.  So only put 'No Valid Data' label when not an overlay.
 	      IF ( x_skip .NE. 1 ) THEN
 	         risc_buff = ' '	         
 	         WRITE ( risc_buff, 3000 ) x_skip, 'X'
-	         CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	         CALL SPLIT_LIST(pttmode_explct, err_lun, risc_buff, 0)
 	      ENDIF
 	   ENDIF
 	   loc = qual_given( slash_vect_yskip )
@@ -407,7 +408,7 @@ c in disp_set_up.  So only put 'No Valid Data' label when not an overlay.
 	      IF ( y_skip .NE. 1 ) THEN 
 	         risc_buff = ' '	         
 	         WRITE ( risc_buff, 3000 ) y_skip, 'Y'
-	         CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	         CALL SPLIT_LIST(pttmode_explct, err_lun, risc_buff, 0)
 	      ENDIF
 	   ENDIF
  3000	   FORMAT (' Using every ',I3,'th vector in the ',

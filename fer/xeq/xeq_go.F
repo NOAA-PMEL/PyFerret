@@ -59,6 +59,8 @@
 *    12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * V411: 9/11/95 (IBM port) variable go_help assigned to integer expression
 * V510 *sh* 3/00 -- increase allowed path name length
+* V606  8/07 *acm* Send informational and error messages that are returned from 
+*                  commands via SPLIT_LIST to std error rather than std out.
 
 
 ! Note: A known "bug" of the 12/94 GO_FILE symbol is that the PLOT+ symbol
@@ -106,13 +108,13 @@
 * check syntax
 	IF     ( num_args .EQ. 0 ) THEN
 	   IF (go_help) THEN
-	      CALL SPLIT_LIST(pttmode_help, ttout_lun,
+	      CALL SPLIT_LIST(pttmode_help, err_lun,
      .			' Use the GO command to name a file of FERRET'//
      .			' commands to be executed.', 0)
-	      CALL SPLIT_LIST(pttmode_help, ttout_lun,
+	      CALL SPLIT_LIST(pttmode_help, err_lun,
      .			 '     e.g.   yes? GO filename', 0)
-	      CALL SPLIT_LIST(pttmode_help, ttout_lun, ' ', 1)
-	      CALL SPLIT_LIST(pttmode_help, ttout_lun,
+	      CALL SPLIT_LIST(pttmode_help, err_lun, ' ', 1)
+	      CALL SPLIT_LIST(pttmode_help, err_lun,
      .			' Use "GO/HELP filename" to read documentation in '//
      .			' the file to be executed.', 0)
 	      RETURN
@@ -133,7 +135,7 @@
 
 * display HELP lines using the "more" command on the system
 	IF (go_help) THEN
-	   CALL SPLIT_LIST(pttmode_help, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_help, err_lun,
      .		' Full path name: '//cbuff(:TM_LENSTR1(cbuff)), 0) 
 
 	   CALL SYSTEM( 'more -d '//cbuff(:TM_LENSTR1(cbuff)) )

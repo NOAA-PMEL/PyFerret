@@ -133,6 +133,8 @@
 * V604  *acm* 7/07 Dataset names have been increased to 1024, but on output this runs into
 *                  conflicts with Fortran INQUIRE and OPEN calls. Disallow output names
 *                  longer than 256 characters.
+* V606  8/07 *acm* Send informational and error messages that are returned from 
+*                  commands via SPLIT_LIST to std error rather than std out.
 
         include 'tmap_errors.parm'
 	include	'ferret.parm'
@@ -235,7 +237,7 @@
 	
 * Verboten to list to file if in secure mode
 	IF (is_secure() .AND. .NOT. list_to_tty) then
-	   call SPLIT_LIST(pttmode_help, ttout_lun,
+	   call SPLIT_LIST(pttmode_help, err_lun,
      1	        'This command is not allowed.', 0)
 	   return
 	ENDIF
@@ -457,7 +459,7 @@ c     .		 .AND. .NOT.do_comma_del
 
            IF (.NOT.(do_EPIC) .AND. do_stream_phase.EQ.0 
      .                    .AND. .NOT.(quiet) )
-     . 	          CALL SPLIT_LIST(pttmode_bull, ttout_lun,
+     . 	          CALL SPLIT_LIST(pttmode_bull, err_lun,
      .		  ' LISTing to file '//raw_name(1:TM_LENSTR1(raw_name))
      .								,0)
 

@@ -124,7 +124,9 @@
 * V602: *acm* 1/07 Changes for metafile-batch mode: When in gif mode or batch mode, 
 *                  ignore CANCEL MODE META
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-* v604 *acm* 7/07 increase length of ds_name
+* v604 *acm* 7/07 increase length of
+* V606  8/07 *acm* Send informational and error messages that are returned from 
+*                  commands via SPLIT_LIST to std error rather than std out.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -267,9 +269,9 @@
      .	      .OR. del_temp .AND. .NOT.perm_var )
      .				CALL DELETE_VARIABLE( mr )
  410	   CONTINUE
-	IF ( del_perm ) CALL SPLIT_LIST(pttmode_ops, ttout_lun, 
+	IF ( del_perm ) CALL SPLIT_LIST(pttmode_ops, err_lun, 
      .			' PERMANENT data cleared from memory', 0)
-	IF ( del_temp ) CALL SPLIT_LIST(pttmode_ops, ttout_lun, 
+	IF ( del_temp ) CALL SPLIT_LIST(pttmode_ops, err_lun, 
      .			' TEMPORARY data cleared from memory', 0) 
 	RETURN
 

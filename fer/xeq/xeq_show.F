@@ -156,6 +156,9 @@
 * V604  *acm* 7/07 Dataset names have been increased to 1024, but on output this runs into
 *                  conflicts with Fortran INQUIRE and OPEN calls. Disallow output names
 *                  longer than 256 characters.
+* V606  8/07 *acm* Send informational and error messages that are returned from 
+*                  commands via SPLIT_LIST to std error rather than std out, but not
+*                  the outputs of SHOW commands. These go to std out.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -358,7 +361,7 @@
 * show a particular named axis
 
 400	IF ( num_args .EQ. 0 .AND. .NOT.slash_all ) THEN
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_explct, err_lun,
      .			'SHOW what axis ?', 0)
 	   RETURN
 	ENDIF
@@ -606,7 +609,7 @@
  500	IF ( num_uvars_in_cmnd .EQ. cmnd_uvars_not_given ) THEN
 	   WRITE ( risc_buff, '(8X,A)' ) 
      .				'SET EXPRESSION has not been given or implied'
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	   CALL SPLIT_LIST(pttmode_explct, err_lun, risc_buff, 0)
 	   risc_buff = ' '
 	ELSE
 	   WRITE ( risc_buff, '(8X,A)' ) 'current output expression(s):'

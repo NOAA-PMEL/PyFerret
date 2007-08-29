@@ -5,3 +5,7 @@
 ! Fix for Bug 1524: irregular axis detected as REGULAR
 GO bn_reset
 GO err604_irreg_axis.jnl
+
+! SHOW FUNCTIONS caused a crash or a message
+GO bn_reset
+GO err605_show_func.jnl

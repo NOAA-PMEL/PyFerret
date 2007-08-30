@@ -71,7 +71,8 @@
 * V6.0 *acm*  5/06 string results for external functions
 * v6.0 *acm*  5/06 internal_dlsym was missing the nco functions.
 * V6.03 *acm& 5/07 Add tax_ functions, fill_xy to the statically-linked functions
-
+* V6.07 *acm* 8/07 remove xunits_data from list of I_EFnames; it should never 
+*                  have been there.
 
 /* .................... Includes .................... */
  
@@ -725,7 +726,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 101
+#define N_INTEF 100
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -811,27 +812,26 @@ struct {
    strcpy(I_EFnames[77].funcname, "tax_units");
    strcpy(I_EFnames[78].funcname, "tax_year");
    strcpy(I_EFnames[79].funcname, "tax_yearfrac");
-   strcpy(I_EFnames[80].funcname, "xunits_data");
-   strcpy(I_EFnames[81].funcname, "tcat");
-   strcpy(I_EFnames[82].funcname, "treverse");
-   strcpy(I_EFnames[83].funcname, "transpose_xt");
-   strcpy(I_EFnames[84].funcname, "transpose_xy");
-   strcpy(I_EFnames[85].funcname, "transpose_xz");
-   strcpy(I_EFnames[86].funcname, "transpose_yt");
-   strcpy(I_EFnames[87].funcname, "transpose_yz");
-   strcpy(I_EFnames[88].funcname, "transpose_zt");
-   strcpy(I_EFnames[89].funcname, "xcat");
-   strcpy(I_EFnames[90].funcname, "xreverse");
-   strcpy(I_EFnames[91].funcname, "ycat");
-   strcpy(I_EFnames[92].funcname, "yreverse");
-   strcpy(I_EFnames[93].funcname, "xauto_cor");
-   strcpy(I_EFnames[94].funcname, "zaxreplace_avg");
-   strcpy(I_EFnames[95].funcname, "zaxreplace_bin");
-   strcpy(I_EFnames[96].funcname, "zaxreplace_lin");
-   strcpy(I_EFnames[97].funcname, "zaxreplace_rev");
-   strcpy(I_EFnames[98].funcname, "zaxreplace_zlev");
-   strcpy(I_EFnames[99].funcname, "zcat");
-   strcpy(I_EFnames[100].funcname, "zreverse");
+   strcpy(I_EFnames[80].funcname, "tcat");
+   strcpy(I_EFnames[81].funcname, "treverse");
+   strcpy(I_EFnames[82].funcname, "transpose_xt");
+   strcpy(I_EFnames[83].funcname, "transpose_xy");
+   strcpy(I_EFnames[84].funcname, "transpose_xz");
+   strcpy(I_EFnames[85].funcname, "transpose_yt");
+   strcpy(I_EFnames[86].funcname, "transpose_yz");
+   strcpy(I_EFnames[87].funcname, "transpose_zt");
+   strcpy(I_EFnames[88].funcname, "xcat");
+   strcpy(I_EFnames[89].funcname, "xreverse");
+   strcpy(I_EFnames[90].funcname, "ycat");
+   strcpy(I_EFnames[91].funcname, "yreverse");
+   strcpy(I_EFnames[92].funcname, "xauto_cor");
+   strcpy(I_EFnames[93].funcname, "zaxreplace_avg");
+   strcpy(I_EFnames[94].funcname, "zaxreplace_bin");
+   strcpy(I_EFnames[95].funcname, "zaxreplace_lin");
+   strcpy(I_EFnames[96].funcname, "zaxreplace_rev");
+   strcpy(I_EFnames[97].funcname, "zaxreplace_zlev");
+   strcpy(I_EFnames[98].funcname, "zcat");
+   strcpy(I_EFnames[99].funcname, "zreverse");
 /*    
  *  ------------------------------------ 
  */

@@ -10,8 +10,8 @@
 ! Arguments 3 and 4 are required, so we can draw a single key for 
 ! the length of a standard vector at the bottom.
 
-! $1 U component
-! $2 V component
+! $1 U component  -- Depends only on Z and one other dimension
+! $2 V component  -- Depends only on Z and one other dimension
 ! $3 lower limit on Y axes for all plots
 ! $4 upper limit on Y axes for all plots
 

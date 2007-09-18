@@ -139,6 +139,9 @@
 *                  AXIS_INTERVALS, and compute the delta coordinate. Then after
 *                  the call to pplldc, reset the plot type to regular if the
 *                  grid is in fact regular.
+* V608 *acm* 09/07 Define symbols AX_HORIZ and AX_VERT with the x,y,z,t direction 
+*                  of the axes as they will appear on the plot.
+
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -185,9 +188,10 @@ C plus those starting w/ xbox_bounds:
 	CHARACTER*1020	COMPOUND_TITLE, COMPOUND_KEY, plot_title
 	CHARACTER	TM_FMT*16, LEFINT*8, LEFT_REAL*16,
      .                  xstyle*3, ystyle*3, cmnd_name*8, year*4, buff*8,
-     .			letter*1, buff1*16, buff2*16,
+     .			letter*1, buff1*16, buff2*16, buff30*30,
      .                  TM_GET_CALENDAR_NAME*32, cal_name_1*32, 
      .                  cal_name_2*32
+        CHARACTER*1     axdir(4)
 
 	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, user_title, time_axis,
      .			regrid_1, regrid_2, no_y_rng, edges_ok,
@@ -210,6 +214,8 @@ C plus those starting w/ xbox_bounds:
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
      .                  first, last
 	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, delta
+
+        DATA axdir / 'X', 'Y', 'Z', 'T' /
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_explct, ttout_lun,
@@ -390,6 +396,15 @@ C   set up memory for the flag grid
 	hi2  = cx_hi_ss( ctx, dim2 )
 	size1 = hi1 - lo1 + 1
 	size2 = hi2 - lo2 + 1
+
+* Define symbols AX_HORIZ and AX_VERT with the x,y,z,t direction 
+* of the axes as they will appear on the plot.
+
+        buff30 = 'AX_HORIZ'
+        slen = 1
+        CALL PUTSYM (buff30, axdir(dim1), slen, status)
+        buff30 = 'AX_VERT'
+        CALL PUTSYM (buff30, axdir(dim2), slen, status)
 
 * check that there is some valid data
 	no_x_rng = NO_GRID_RANGE( memory(1,xblk1), size, mvx_temp, valx1 )

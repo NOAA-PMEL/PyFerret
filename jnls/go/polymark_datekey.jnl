@@ -9,7 +9,7 @@
 !              parameters.
 
 ! Usage:                    $1              $2   $3    $4       $5      $6     $7      [*8]
-! Yes?	GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar
+! Yes?	GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar [tunits]
 ! $1 - the plot command with qualifiers (eg POLYGON/OVER/KEY)
 ! $2 - X coordinates of track 
 ! $3 - Y coordinates of track 
@@ -43,24 +43,39 @@
 !       yes? let taxvar = t[gt=timeax]
 !
 !       yes? GO basemap x=120:250 Y=25s:65n 20
-!       yes? GO polymark_datekey polygon/over/key  xpts,ypts,lpts,ex,0.5,taxvar,days
+!       yes? GO polymark_datekey polygon/over/key/nolab  xpts,ypts,lpts,ex,0.5,taxvar,days
 !
 !          ! compare, without the last argument - dates labelled with hours as well.
 !       yes? GO basemap x=120:250 Y=25s:65n 20
-!       yes? GO polymark_datekey polygon/over/key  xpts,ypts,lpts,ex,0.5,taxvar
+!       yes? GO polymark_datekey polygon/over/key/nolab  xpts,ypts,lpts,ex,0.5,taxvar
 
 ! argument check
-QUERY/IGNORE $1"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] [timevar]"
-QUERY/IGNORE $2"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] [timevar]"
-QUERY/IGNORE $3"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] [timevar]"
+QUERY/IGNORE $1"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar [timunits]"
+QUERY/IGNORE $2"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar [timunits]"
+QUERY/IGNORE $3"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar [timunits]"
+QUERY/IGNORE $7"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar [timunits]"
 
 ! save the input expressions into simple variable definitions
 LET/QUIET PLMxpoly = ($2)
 LET/QUIET PLMypoly = ($3)
 LET/QUIET PLMpolydata = $4"0"
-DEFINE SYMBOL dateunits = $8"`PLMxpoly,return=tunits`"
+LET/QUIET PLMtdata = $7"0"
 
-! determine the orientation of the data (and check that it is 1D or a point)
+! If time units for labelling the key given in arg 8, use that, else units from T axis 
+! If somehow an unformatted T axis, will label with just numbers
+
+IF ($8"0|*>1") THEN
+   DEFINE SYMBOL PLM_tunits = $8
+ELSE
+   DEFINE SYMBOL PLM_tunits = "`PLMtdata,RETURN=tunits`"
+   IF `STRCMP(($PLM_tunits), " ") EQ 0` THEN 
+      DEFINE SYMBOL PLM_tunits = none
+   ELSE 
+      DEFINE SYMBOL PLM_tunits = `PLMtdata,RETURN=tunits`
+   ENDIF
+ENDIF
+
+! determine the orientation of the data (and check that it is 1D Time line, or a point)
 DEFINE SYMBOL PLMax `PLMxpoly,return=shape`
 DEFINE SYMBOL PLMpoly_ax ($PLMax"|POINT>Z|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a point or line")
 
@@ -89,9 +104,9 @@ ppl fillpol/over
 ! set up the date/time labels for the color key
 ! (see insitu_setup.jnl)
 
-LET TLAB_tstart = `$7[L=@min]`
+LET TLAB_tstart = `PLMtdata[L=@min]`
 
-LET TLAB_tend = `$7[L=@max]`
+LET TLAB_tend = `PLMtdata[L=@max]`
 
 LET TLAB_nstep = `($LEV_num)-1`
 
@@ -99,11 +114,20 @@ LET TLAB_tstep = (`TLAB_tend`-`TLAB_tstart`) / (`tlab_nstep`)
 
 let tdate = `TLAB_tstart`
 
-REPEAT/RANGE=1:`TLAB_nstep+1`/name=m (LET datelab = tax_datestring(tdate, PLMxpoly, "($dateunits)");\
+IF ($PLM_tunits"none>0|*>1") THEN
+   REPEAT/RANGE=1:`TLAB_nstep+1`/name=m (\ 
+  LET datelab = tax_datestring(tdate, PLMtdata, "($PLM_tunits)") ;\
   let yloc = (($ppl$ylen)*`m-1`)/`TLAB_nstep`-.05; \
   let md = MOD(`m`,2);\
   label/nouser `($ppl$xlen)+.6`,`yloc`,-1,0,.1 "`datelab`";\
   let tdate = `tdate` + `TLAB_tstep`)
+ELSE
+   REPEAT/RANGE=1:`TLAB_nstep+1`/name=m (LET datelab = tdate;\
+  let yloc = (($ppl$ylen)*`m-1`)/`TLAB_nstep`-.05; \
+  let md = MOD(`m`,2);\
+  label/nouser `($ppl$xlen)+.6`,`yloc`,-1,0,.1 "`datelab`";\
+  let tdate = `tdate` + `TLAB_tstep`)
+ENDIF
 
 !  IF `md EQ 1` THEN  label/nouser `($ppl$xlen)+.6`,`yloc`,-1,0,.1 "`datelab`";\
 

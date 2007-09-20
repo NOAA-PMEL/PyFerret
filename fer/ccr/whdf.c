@@ -71,6 +71,8 @@ void wHDF(file, image,r,g,b)
 {
 #ifdef __CYGWIN__
   fprintf(stderr, "wHDF not supported on this platform\n");
+#elif SOLARIS9_10
+  fprintf(stderr, "wHDF not supported on this platform\n");
 #else
 
   char *data,*pdata;

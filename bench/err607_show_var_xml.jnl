@@ -1,0 +1,15 @@
+! Bug 1539 SHOW VAR/XML didnt show all vars.
+
+
+yes? set data levitus_climatology
+yes? set data coads_climatology
+
+yes? let temp_1_regrid=temp[d=1,z=5.00:75.00@ave]
+yes? let sst_2_regrid=sst[d=2,t="15-Oct":"15-Dec"@ave]
+yes? let sst_final=sst_2_regrid[d=2,gxy=temp_1_regrid[d=1]]
+
+! This shows all 3 vars
+yes? show var
+
+! But this showed only sst_final and sst_2_regrid (twice)
+yes? show var/xml

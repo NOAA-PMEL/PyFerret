@@ -1,0 +1,7 @@
+! bn608_bug_fixes.jnl
+! test various fixes that went into version 6.08
+! 24-Sep ACM
+
+! Fix for Bug 1539: SHOW VAR/XML
+GO bn_reset
+GO err607_show_var_xml

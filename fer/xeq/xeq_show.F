@@ -156,9 +156,6 @@
 * V604  *acm* 7/07 Dataset names have been increased to 1024, but on output this runs into
 *                  conflicts with Fortran INQUIRE and OPEN calls. Disallow output names
 *                  longer than 256 characters.
-* V606  8/07 *acm* Send informational and error messages that are returned from 
-*                  commands via SPLIT_LIST to std error rather than std out, but not
-*                  the outputs of SHOW commands. These go to std out.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -260,7 +257,7 @@
      .          j, num_indices, varid, attlen, maxlen, attype,
      .          vtype, nvdims, vdims(8), nvatts, iatt, dset_last,
      .          llen, loc, cat, var, attoutflag, all_outflag, dot, 
-     .          vseq, attid
+     .          vseq, attid, save_deleted_list_result(max_uvar)
 	REAL	xtemp, ytemp, attvals(10)
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
      .		default*10, show_str*2048, arg*24, name*32, arg30*30
@@ -361,7 +358,7 @@
 * show a particular named axis
 
 400	IF ( num_args .EQ. 0 .AND. .NOT.slash_all ) THEN
-	   CALL SPLIT_LIST(pttmode_explct, err_lun,
+	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
      .			'SHOW what axis ?', 0)
 	   RETURN
 	ENDIF
@@ -609,7 +606,7 @@
  500	IF ( num_uvars_in_cmnd .EQ. cmnd_uvars_not_given ) THEN
 	   WRITE ( risc_buff, '(8X,A)' ) 
      .				'SET EXPRESSION has not been given or implied'
-	   CALL SPLIT_LIST(pttmode_explct, err_lun, risc_buff, 0)
+	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 	   risc_buff = ' '
 	ELSE
 	   WRITE ( risc_buff, '(8X,A)' ) 'current output expression(s):'
@@ -965,8 +962,12 @@
                     CALL deleted_list_get_undel(uvar_num_items_head,
      .                                         deleted_list_result(1),
      .                                         max_uvar, num_indices )
+                    DO 1012, ii = 1, max_uvar
+                      save_deleted_list_result(ii) = 
+     .                       deleted_list_result(ii)
+ 1012	            CONTINUE
                     DO 1015 j = 1, num_indices
-                       ivar = deleted_list_result(j)
+                       ivar = save_deleted_list_result(j)
 	               IF ( uvar_parent(ivar).NE.0
      .		      .AND. .NOT.mode_diagnostic   ) GOTO 1015     ! 7/97
 !	               IF (MATCH_NAME(arg,uvar_name_code(ivar)))
@@ -990,8 +991,11 @@
               CALL deleted_list_get_undel(uvar_num_items_head,
      .                                    deleted_list_result(1),
      .                                    max_uvar, num_indices )
+              DO 1022, ii = 1, max_uvar
+                save_deleted_list_result(ii) = deleted_list_result(ii)
+ 1022         CONTINUE
               DO 1030 j = 1, num_indices
-                 i = deleted_list_result(j)
+                 i = save_deleted_list_result(j)
 	         IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) GOTO 1030
 	         IF ( rqst_dset .NE. uvar_dset(i)	  ) GOTO 1030
 	         IF ( uvar_parent(i).NE.0
@@ -1020,8 +1024,13 @@
                  CALL deleted_list_get_undel(uvar_num_items_head,
      .                                      deleted_list_result(1),
      .                                      max_uvar, num_indices )
+     
+                 DO 1042, ii = 1, max_uvar
+                    save_deleted_list_result(ii) = 
+     .		      deleted_list_result(ii)
+ 1042            CONTINUE
                  DO 1050 j = 1, num_indices
-                    i = deleted_list_result(j)
+                    i = save_deleted_list_result(j)
 	            IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) GOTO 1050
 	            IF ( dset .NE. uvar_dset(i)		     ) GOTO 1050
 	            IF ( uvar_parent(i).NE.0
@@ -1044,8 +1053,12 @@
               CALL deleted_list_get_undel(uvar_num_items_head,
      .                                    deleted_list_result(1),
      .                                    max_uvar, num_indices )
+              DO 1062, ii = 1, max_uvar
+                    save_deleted_list_result(ii) = 
+     .		      deleted_list_result(ii)
+ 1062         CONTINUE
               DO 1070 j = 1, num_indices
-                 i = deleted_list_result(j)
+                 i = save_deleted_list_result(j)
 	         IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) GOTO 1070
 	         IF ( uvar_dset(i) .NE. unspecified_int4  ) GOTO 1070
 	         IF ( uvar_parent(i).NE.0
@@ -1073,8 +1086,12 @@
               CALL deleted_list_get_undel(uvar_num_items_head,
      .                                    deleted_list_result(1),
      .                                    max_uvar, num_indices )
+              DO 1072, ii = 1, max_uvar
+                    save_deleted_list_result(ii) = 
+     .		      deleted_list_result(ii)
+ 1072         CONTINUE
               DO 1080 j = 1, num_indices
-                 i = deleted_list_result(j)
+                 i = save_deleted_list_result(j)
 	         IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) GOTO 1080
 	         IF ( uvar_dset(i) .NE. pdset_irrelevant  ) GOTO 1080
 	         IF ( uvar_parent(i).NE.0

@@ -177,7 +177,9 @@
 * Default contents as per TMAP "Format record" (is it EPIC? 3/93)
 * -kob- only set ds_type to cdf if it isn't already set to MC 7/95
 
-        IF ( CD_ISIT_EPIC(dset, status) ) THEN
+        IF ( ds_des_name(dset)(1:7) .EQ. 'http://') THEN
+           ds_type(dset) = 'CDF'
+        ELSEIF ( CD_ISIT_EPIC(dset, status) ) THEN
            ds_type(dset) = 'ECDF'
         ELSEIF ( ds_type(dset) .NE. '  MC' ) THEN
            ds_type(dset) = 'CDF'

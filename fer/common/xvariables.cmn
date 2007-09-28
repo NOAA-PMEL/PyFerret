@@ -45,7 +45,7 @@
 * v5.50 *acm*9/02 - up max_uvar from 400 to 2000
 * v552  *acm4/03 - increase uvar_name_code to 128 (also change test in xeq_define)
 * V600 2/06 *kob* - declare uvar_name_code_head etc as double, for 64-bit build
-
+* V608 9/07 *acm*  increase uvar_text_len to 2048; var defs can contain long URLs
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -184,7 +184,7 @@
      .			max_intrp
 	PARAMETER     (	max_uvar      	  =2000,! total # uvars incl. "EX#."
      .			max_uvar_items    = 100,! complexity of uvar expression
-     .			uvar_text_len	  = 512,! max length of uvar expression
+     .			uvar_text_len	  = 2048,! max length of uvar expression
      .			max_intrp	  = 200  )
 
 ********************************************************************************
@@ -329,7 +329,7 @@
 
 	CHARACTER*128	uvar_title, uvar_name_code
 	CHARACTER*64	uvar_units
-	CHARACTER*512	uvar_text	
+	CHARACTER*2048	uvar_text	
 	LOGICAL		uvar_title_w_text,
      .			uvar_need_dset,
      .			uvar_mod_pseudo,

@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ../fer/ferret_v607
--rwxr-xr-x    1 ansley   tmap     42829840 Aug 29 14:19 ../fer/ferret_v607
+Running FERRET version /home/porter/ansley/build_v608/FERRET_linux/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     47574460 Sep 28 09:08 /home/porter/ansley/build_v608/FERRET_linux/fer/ferretdods_gui
 Using external functions from ../external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Fix bug where XUNITS_DATA was listed in EF_InternalUtil.c even though it is not an ef. caused crash or error message on SHOW FUNC/BRIEF
+Note: set new symbols horiz and vert axis for plots, fixes for FTDS long URL bug 1540
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/build_v607/FERRET_linux/bench
+PWD=/home/porter/ansley/build_v608/FERRET_linux/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -21,11 +21,9 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_linux
-Beginning at Wed Aug 29 14:44:52 PDT 2007
+Beginning at Fri Sep 28 09:16:54 PDT 2007
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-        SET EXPRESSION has not been given or implied
-        SET EXPRESSION has not been given or implied
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -2365,6 +2363,10 @@ SET DAT/FORM=CDF test_strides.cdf
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2447,4 +2449,4 @@ Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: in batch mode: ignoring SET MODE METAFILE
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Aug 29 14:49:44 PDT 2007
+Ended at Fri Sep 28 09:20:46 PDT 2007

@@ -400,11 +400,11 @@ C   set up memory for the flag grid
 * Define symbols AX_HORIZ and AX_VERT with the x,y,z,t direction 
 * of the axes as they will appear on the plot.
 
-        buff30 = 'AX_HORIZ'
-        slen = 1
-        CALL PUTSYM (buff30, axdir(dim1), slen, status)
-        buff30 = 'AX_VERT'
-        CALL PUTSYM (buff30, axdir(dim2), slen, status)
+        buff1 = axdir(dim1)
+	CALL PPLCMD ( from, line, 0, 'SET AX_HORIZ '//buff1, 1, 1 )
+
+        buff1 = axdir(dim2)
+        CALL PPLCMD ( from, line, 0, 'SET AX_VERT '//buff1, 1, 1 )
 
 * check that there is some valid data
 	no_x_rng = NO_GRID_RANGE( memory(1,xblk1), size, mvx_temp, valx1 )

@@ -121,7 +121,8 @@
 * internal variable declarations:
         LOGICAL         TM_LEGAL_NAME, MATCH_NAME, 
      .			itsa_uvar, need_doc, new, formatted, flushed,
-     .			itsa_string, output_units, output_title
+     .			itsa_string, output_units, output_title,
+     .                  output_history
 	INTEGER		TM_LENSTR1, ISUBSCR_CX, GET_MAX_C_STRING_LEN,
      .			MGRID_SIZE,
      .			cx, mr, dset, grid, cdfid, ivar, nready,
@@ -189,7 +190,8 @@
      .                  outtype
         LOGICAL         NC_GET_ATTRIB, NC_GET_ATTRIB_DP,
      .                  full_precision, DODS_cache, range_not_rqd,
-     .                  got_it, got_title, got_units, do_warn, coordvar
+     .                  got_it, got_title, got_units, got_history,
+     .                  do_warn, coordvar
 
         PARAMETER     ( buff_size = 2048,
      .			sslimits0 = 1+19-1,
@@ -277,8 +279,10 @@
            varcode = SANITARY_VAR_CODE( cat, var )
            got_title = .FALSE.
            got_units = .FALSE.
+           got_history = .FALSE.
            output_title = .FALSE.
            output_units = .FALSE.
+           output_history = .TRUE.
 	   itsa_string = cx_type(cx) .EQ. ptype_string
 
 * is it in the linked-list for dset. If so get attr info, including original 
@@ -614,6 +618,12 @@
                        ENDIF
 
                        IF (MATCH_NAME (attname,  slen,
+     .                           'HISTORY',  7 )) THEN
+                          got_history = .TRUE.
+                          output_history = (attoutflag.EQ.1)
+                       ENDIF
+
+                       IF (MATCH_NAME (attname,  slen,
      .                           'SCALE_FACTOR', 12 )) THEN
                           got_it = NC_GET_ATTRIB ( dset, varid, attname, 
      .                       do_warn, varcode, buff_size, attlen,
@@ -793,19 +803,24 @@
 
               ELSEIF ( cx_data_set(cx) .NE. pdset_irrelevant .AND.
      .                 cx_data_set(cx) .NE. -1) THEN
-* data set of origin for user variable
 
-                 attoutflag = 1
-                 buff = 'From '
-                 CALL GET_SHORT_DSET_NAME(cx_data_set(cx), buff(6:), lbuff)
-                 lbuff = TM_LENSTR1( buff )
-                 status = ferr_ok
+* Write history attribute containing the data set of origin for user variable, 
+* if the user has not created a history attribute for the variable.
 
-                 IF (all_outflag .NE. 0 .AND. attoutflag .NE. 0)
-     .               CALL CD_WRITE_ATTRIB(cdfid, varcode, 'history', 
+                 IF (.NOT. got_history .AND. all_outflag .NE. 0 .AND. 
+     .             output_history ) THEN
+
+                    attoutflag = 1
+                    buff = 'From '
+                    CALL GET_SHORT_DSET_NAME(cx_data_set(cx), buff(6:), lbuff)
+                    lbuff = TM_LENSTR1( buff )
+                    status = ferr_ok
+
+                    IF (all_outflag .NE. 0 .AND. attoutflag .NE. 0)
+     .                 CALL CD_WRITE_ATTRIB(cdfid, varcode, 'history', 
      .                              buff(:lbuff), .FALSE., status )
-                 IF ( status .NE. merr_ok ) GOTO 5800
-
+                    IF ( status .NE. merr_ok ) GOTO 5800
+                 ENDIF
               ENDIF
 
 * units

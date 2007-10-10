@@ -5,3 +5,7 @@
 ! Fix for Bug 1539: SHOW VAR/XML
 GO bn_reset
 GO err607_show_var_xml
+
+! err607_set_new_history_att.jnl
+GO bn_reset
+GO err607_set_new_history_att

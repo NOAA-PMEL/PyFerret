@@ -62,7 +62,8 @@
 /* *acm  11/06 v601 - in ncf_delete_var_att, renumber the attid for the remaining attributes. */
 /* *acm* 12/06 v602 - new attribute assigned to coordinate vars on input, orig_file_axname */
 /* *acm*  2/07 V602   Fix bug 1492, changing attributes of coordinate variables; use pseudo-dataset 
-                      of user-defined axes to keep track of attributes. */
+                      of user-defined axes to keep track of attributes. 
+* *acm* 10/07 V608   Fixes for memory leak; deallocate elements of structures */
 
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
@@ -1059,11 +1060,28 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 	ncatt att;			/* attribute */
 	ncatt att0;			/* initialize attribute */
 	ncvar var;			/* variable */
+	ncvar var0;			/* initialize variable */
 	int bad_file_attr = 243; /* matches merr_badfileatt in tmap_errors.parm*/
 	
 	strcpy(nc.fername, name);
 	strcpy(nc.fullpath, path);
 	nc.fer_dsetnum = *setnum;
+	
+	/* Set variable with initialization values*/
+
+	strcpy(var0.name, " ");
+	var0.type = NC_CHAR;
+	var0.outtype = NC_CHAR;
+	var0.ndims = 0;
+    var0.dims[0] = 1;
+	var0.natts = 0;
+	var0.varid = 0;
+	var0.is_axis = 0;
+	var0.axis_dir = 0;
+	var0.has_fillval = 0;
+	var0.all_outflag= 0; 
+	var0.fillval = 0;
+	var0.attrs_list_initialized = FALSE;
 	
 	/* Set attribute with initialization values*/
 	
@@ -1105,8 +1123,10 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 	
 	/* get global attributes */
 	
+
 	if (nc.ngatts > 0)
 		{
+			var = var0;
 			strcpy(var.name, ".");
 			
 			var.attrs_list_initialized = FALSE;
@@ -1185,6 +1205,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
   	      }
 					
 					list_insert_after(var.varattlist, &att, sizeof(ncatt));
+
 				}    /* global attributes list complete */
 			
       /*Save variable in linked list of variables for this dataset */	
@@ -1206,6 +1227,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 	if (nc.nvars > 0)
 		for (iv = 0; iv < nc.nvars; iv++)
 			{
+				var = var0;
 				nc_status = nc_inq_var(*ncid, iv, var.name, &var.type, &var.ndims,
 															 var.dims, &var.natts);
 				if (nc_status != NC_NOERR) return nc_status;
@@ -1639,8 +1661,10 @@ int FORTRAN(ncf_delete_dset)(int *dset)
   ncatt *att_ptr=NULL;
   static int return_val;
   LIST *varlist;
+  LIST *attlist;
   LIST *dummy;
-  int ivar;
+  int ivar, i, status, isiz, var1, varn;
+  int *vid;
 
 /* Find the dataset
  */ 
@@ -1654,20 +1678,82 @@ int FORTRAN(ncf_delete_dset)(int *dset)
 
   varlist = ncf_get_ds_varlist(dset);
   var_ptr=(ncvar *)list_front(varlist); 
-  for (ivar = 0; ivar< nc_ptr->nvars ;ivar ++ )
+
+  var1 = 1;
+  varn = nc_ptr->nvars;
+
+ /* If there are global attributes for the dataset these are in variable 0 and the 
+    total number of variables is one larger. */
+
+  if (nc_ptr->ngatts > 0)  
+	  {
+	  var1 = 0;
+	  /*varn = varn + 1;*/ }
+
+  for (ivar = var1; ivar<= varn ;ivar ++ )
   {  
-/*	 list_free(var_ptr->varattlist, LIST_DEALLOC); */ /* removed here just for testing...*/
-     list_remove_curr(varlist);
+	 /* list_free(var_ptr->varattlist, LIST_DEALLOC); */
+
+  if (var_ptr->natts > 0)
+  {
+  vid = &ivar;
+
+  /* 
+   *  Free the attribute string or values  !!!!
+   */
+
+  attlist = ncf_get_ds_var_attlist(dset, vid);
+
+  isiz = list_size(attlist);
+  isiz = var_ptr->natts;
+  for (i = 1; i <= var_ptr->natts; i++ )
+	  {
+
+	  status = list_traverse(attlist, &i, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+	  if ( status != LIST_OK ) 
+		  {
+		  return_val = ATOM_NOT_FOUND;
+		  return return_val;
+		  }
+
+	  att_ptr=(ncatt *)list_curr(attlist); 
+
+   /*
+    * Free the memory used by the string or values 
+    */
+ 
+	  if (att_ptr->type == NC_CHAR)
+	  {
+	    free(att_ptr->string);
+	  }
+	  else
+ 	  {
+	    free(att_ptr->vals);
+       }
+
+	  isiz = list_size(attlist);
+      list_remove_curr (attlist);
+	  isiz = list_size(attlist);
+
+	  }  /* end of iatt loop */
+      free(attlist);
+
+  }  /* var_ptr->natts > 0 */
+  isiz = list_size(varlist);
+  list_remove_curr(varlist);
+  isiz = list_size(varlist);
 
      /* Point to next variable */
-     dummy = list_mvnext(varlist);
-     var_ptr=(ncvar *)list_curr(varlist); 
-  }
+  if (isiz > 0) { var_ptr=(ncvar *)list_curr(varlist);  }
+
+  }  /* end of ivar loop */
+  free(varlist);
 
 /* Remove dataset from dataset list */
 
-
+  isiz = list_size(GLOBAL_ncdsetList);
   list_remove_curr(GLOBAL_ncdsetList);
+  isiz = list_size(GLOBAL_ncdsetList);
 
   return_val = FERR_OK;
   return return_val;
@@ -1946,10 +2032,8 @@ int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar
       /*Save attribute in linked list of attributes for this variable */	
 
           var.attrs_list_initialized = TRUE;
+          list_insert_after(var.varattlist, &att, sizeof(ncatt));
         }
-
-       list_insert_after(var.varattlist, &att, sizeof(ncatt));
- /*   } */
 
 /*Save variable in linked list of variables for this dataset */
 
@@ -2112,8 +2196,8 @@ int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *a
   int status=LIST_OK;
   int return_val;
   int i;
-  LIST *varlist;
-  LIST *varattlist;
+  LIST *varlist=NULL;
+  LIST *varattlist=NULL;
 
    /*
     * Get the list of variables, find pointer to variable varid.
@@ -2262,11 +2346,11 @@ int  FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *atty
     */
   if (att_ptr->type == NC_CHAR)
   {
-	  /*free(att_ptr->string);
+	  free(att_ptr->string);
   }
   else
   {
-	  free(att_ptr->vals);*/
+	  free(att_ptr->vals);
   }
   
 
@@ -2357,7 +2441,7 @@ int  FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *a
    /*
     * Free the memory used by the string or values 
     */
-  /*
+ 
   if (att_ptr->type == NC_CHAR)
   {
 	  free(att_ptr->string);
@@ -2366,9 +2450,7 @@ int  FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *a
   {
 	  free(att_ptr->vals);
   }
-  */
   
-
    /*
     * Keep the name and ID. Reset type, length, and values
     *  For string attributes, allocate one more than the att.len, 
@@ -2421,7 +2503,7 @@ int  FORTRAN(ncf_delete_var_att)( int *dset, int *varid, char attname[])
   ncvar *var_ptr=NULL;
   int status=LIST_OK;
   int return_val;
-  int i;
+  int i, isiz;
   int att_to_remove;
   LIST *varlist;
   LIST *varattlist;
@@ -2490,7 +2572,9 @@ int  FORTRAN(ncf_delete_var_att)( int *dset, int *varid, char attname[])
     return return_val;
     }
 
+  isiz = list_size(varattlist);
   list_remove_curr(varattlist);
+  isiz = list_size(varattlist);
   
    /* Decrement number of attributes for the variable.  
    */
@@ -2904,8 +2988,12 @@ int  FORTRAN(ncf_delete_var)( int *dset, char varname[])
   ncvar *var_ptr=NULL;
   ncatt *att_ptr=NULL;
   int status=LIST_OK;
+  int return_vali;
   int return_val;
   LIST *varlist;
+  LIST *attlist;
+  int i, ivar, isiz;
+  int *vid;
 
  /* Find the dataset based on its integer ID 
  */
@@ -2927,9 +3015,55 @@ int  FORTRAN(ncf_delete_var)( int *dset, char varname[])
    * variable from the dataset list
    */
   var_ptr=(ncvar *)list_curr(varlist); 
-/*  list_free(var_ptr->varattlist, LIST_DEALLOC); */ /* removed just for debugging...*/
+  
+  /* list_free(var_ptr->varattlist, LIST_DEALLOC); */
 
+   /*
+    * Get the list of attributes for the variable 
+    */
+  ivar = var_ptr->varid;
+  vid = &ivar;
+  attlist = ncf_get_ds_var_attlist(dset, vid);
+
+  /* 
+   *  Free the attribute string or values 
+   */
+
+  for (i = 1; i <= var_ptr->natts; i++ )
+	  {
+
+	  status = list_traverse(attlist, &i, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+	  if ( status != LIST_OK ) 
+		  {
+		  return_val = ATOM_NOT_FOUND;
+		  return return_val;
+		  }
+
+	  att_ptr=(ncatt *)list_curr(attlist); 
+
+
+   /*
+    * Free the memory used by the string or values 
+    */
+ 
+	  if (att_ptr->type == NC_CHAR)
+	  {
+	    free(att_ptr->string);
+	  }
+	  else
+ 	  {
+	    free(att_ptr->vals);
+       }
+      isiz = list_size(attlist);
+      list_remove_curr (attlist);
+      isiz = list_size(attlist);
+
+	  }  /* end of iatt loop */
+      free (attlist);
+
+  isiz = list_size(varlist);
   list_remove_curr(varlist);
+  isiz = list_size(varlist);
   
    /* Decrement number of variables in the dataset.  
     */
@@ -2939,7 +3073,6 @@ int  FORTRAN(ncf_delete_var)( int *dset, char varname[])
   return_val = FERR_OK;
   return return_val;
   }
-
 
 /* ---- 
  * For attributes that Ferret always writes, set the output flag to 1

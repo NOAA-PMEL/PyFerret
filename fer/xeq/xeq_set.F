@@ -580,7 +580,10 @@ c *kob* 4/97
                     CALL WARN ('in GIF mode: ignoring SET MODE METAFILE')
                     mode_metafile = .FALSE.
                  ELSE IF ( batch ) THEN
-                    CALL WARN ('in batch mode: ignoring SET MODE METAFILE')
+                    CALL WARN ('in batch mode: SET MODE METAFILE '//
+     .                 'only changes the name of the metafile')
+	  	    IF ( buff2 .NE. ' ' ) CALL PPLCMD
+     .			( from, line, 0, 'PLTNME '//buff2, 1, 1 )
                     mode_metafile = .FALSE.
                  ELSE
  	            IF ( .NOT.pplus_started ) CALL START_PPLUS     ! 1/94

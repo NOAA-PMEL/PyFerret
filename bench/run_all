@@ -281,9 +281,10 @@ end
 mv bnplot.gif.~1~ bnplot-1.gif
 mv bnplot.gif.~2~ bnplot-2.gif
 
-mv bat.plt bat.plt_9
+mv new.plt bat.plt_9
+mv bat.plt bat.plt_8
 set count = 1
-while ($count < 9)
+while ($count < 8)
     mv bat.plt.~$count~ bat.plt_$count
     @ count++
 end

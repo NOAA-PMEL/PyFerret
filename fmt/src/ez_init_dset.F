@@ -68,6 +68,9 @@
 * V552 5/03 *acm*: increase size of var_name to 128 chars
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
+* V608 *acm* 10/07 Fixes for memory leak; when initializing dataset this
+*                  routine was putting vars from other datasets into the
+*                  linked-list structure.
 
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
@@ -113,11 +116,11 @@
         LOGICAL         TM_LEGAL_NAME, vars_gvn, its_delimited
 	CHARACTER*24	type_names(maxezvars)
 	CHARACTER*128	var_names(maxezvars)
-	INTEGER*4	TM_LENSTR1,
+	INTEGER*4	TM_LENSTR1, STR_SAME,
      .			set_cnt, bpos, epos, ncnt, var_pos, num_names,
      .			nvar, jcnt, stp_cnt, nstp, field_type(maxezvars),
      .			num_types, i, j, name_limit, idummy(maxezvars),
-     .			l1, l2, ivar, vartype, coordvar
+     .			l1, l2, ivar, vartype, coordvar, varid
 	CHARACTER	TM_STRING*13, TM_LEFINT*4, buff*48, 
      .			line_buff*2048
 
@@ -408,30 +411,36 @@
      .				    ds_file_info_ptr(dset)   )
 	ENDIF
 
-*
+
 * Put the information into the linked-list strucure for the dataset
 * and its variables
+
         CALL CD_STORE_DSET (dset, status)
         coordvar = 0
-        DO 200 ivar = 1, nvar
-        
-	   IF (ds_var_type(nvar) .EQ. ptype_float) THEN
-	      vartype = NCFLOAT
-	   ELSEIF  (ds_var_type(nvar) .EQ. ptype_string) THEN
-	      vartype = NCCHAR
-	   ELSE
-              vartype = NCFLOAT
-           ENDIF
+        varid = 0
 
-          CALL CD_ADD_VAR( dset, ds_var_code(ivar), ivar, 
-     .       ds_var_title(ivar), ds_var_units(ivar), vartype,
-     .       coordvar, ds_bad_flag(ivar), status)
+        DO 200 ivar = 1, maxvars
+           IF (ds_var_setnum(ivar) .EQ. set_not_open) GOTO 210
+           IF (ds_var_setnum(ivar) .EQ. dset .AND.
+     .         STR_SAME(ds_var_code(ivar) , '-' ) .NE. 0) THEN
+
+              varid = varid + 1
+	      IF (ds_var_type(ivar) .EQ. ptype_float) THEN
+	         vartype = NCFLOAT
+	      ELSEIF  (ds_var_type(ivar) .EQ. ptype_string) THEN
+	         vartype = NCCHAR
+	      ELSE
+                 vartype = NCFLOAT
+              ENDIF
+        
+              CALL CD_ADD_VAR( dset, ds_var_code(ivar), varid, 
+     .          ds_var_title(ivar), ds_var_units(ivar), vartype,
+     .          coordvar, ds_bad_flag(ivar), status)
+           ENDIF
   200   CONTINUE
 
-
-
 * All done
-	status = merr_ok
+  210   status = merr_ok
 	GOTO 9999
 *
 * ERROR MESSAGES

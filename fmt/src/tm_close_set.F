@@ -80,6 +80,7 @@
 * V600 *acm* 6/05 - Attribute control.
 * V600 *acm* 2/06 - restore default values of ds_var_scale, ds_var_off, ds_var_scaleit
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
+* V608 *acm* 10/07 Fixes for memory leak; call NCF_DELETE_DSET as a function
 
 * arguments:
 *	ds_num	- data set number (see COMMON /XSTEP_FILES/)
@@ -94,7 +95,7 @@
 
 * internal variable declarations
         LOGICAL   its_cdf
-	INTEGER   ds_num,status,f_num,ivar,iparm,iaux
+	INTEGER   NCF_DELETE_DSET, ds_num,status,f_num,ivar,iparm,iaux
 
 * initialize: do we have an open set?
 	IF (ds_name(ds_num) .EQ. char_init1024) GOTO 9000
@@ -225,7 +226,8 @@
 	  vf_lastvar(f_num)		=	int4_init
   140   CONTINUE
 
-        CALL NCF_DELETE_DSET(ds_num)
+        status = NCF_DELETE_DSET(ds_num)
+        GOTO 9900
 
  9000	status = merr_ok
 

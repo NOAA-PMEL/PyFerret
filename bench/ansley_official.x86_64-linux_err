@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/build_v608/FERRET_x86/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 37716362 Oct 10 15:03 /home/porter/ansley/build_v608/FERRET_x86/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/build_v608/FERRET_x86/external_functions/ext_func_x86
+-rwxr-xr-x  1 ansley tmap 37656516 Oct 12 13:52 /home/porter/ansley/build_v608/FERRET_x86/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/build_v608/FERRET_x86/external_functions/ext_func_x86/
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  fix small bug, ability to define the history attribute of a user-defined var which comes from a dataset variable, overriding the From Dataset that is automatically written." 
+Note: Remiks fixes, plus my tweak on NCF_Util.c, for memory leak bug; v6.08 for testing at GFDL
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build_v608/FERRET_x86/bench
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v608/FERRET_x86/external_functions/ext_func_x86
-Beginning at Wed Oct 10 15:30:30 PDT 2007
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v608/FERRET_x86/external_functions/ext_func_x86/
+Beginning at Fri Oct 12 14:12:17 PDT 2007
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: unknown command qualifier: help
@@ -128,7 +128,10 @@ list/l=1/x=180/y=0 airt[d=gt4d011]
  **ERROR: invalid command: CANCEL what?
 can var
  LISTing to file v12file.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file v1file.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: invalid command: ELSE can only be used between IF and ENDIF
@@ -390,32 +393,54 @@ list a
  *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0p.cdf
  LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_abs.cdf
  LISTing to file test_abs.cdf
  LISTing to file test_abs.cdf
  LISTing to file test_abs.cdf
  LISTing to file test_abs.cdf
  LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_abs.cdf
- LISTing to file test_abs.cdf
- LISTing to file test_abs.cdf
- LISTing to file test_abs.cdf
- LISTing to file test_abs.cdf
- LISTing to file test_abs.cdf
- LISTing to file test_abs.cdf
- LISTing to file test_abs.cdf
- LISTing to file test_abs.cdf
- LISTing to file test_abs.cdf
- LISTing to file test_abs.cdf
- LISTing to file test_abs.cdf
- LISTing to file test_abs.cdf
- LISTing to file test_abs.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_abs.cdf
  *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
  *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
@@ -425,6 +450,7 @@ list a
  LISTing to file FL.cdf
  *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file FTLON.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/l=1:10/file=test_abs.cdf l
  LISTing to file test_abs.cdf
@@ -446,47 +472,83 @@ list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]
 list/format=cdf/l=13/append/file=test_abs.cdf l1
  LISTing to file FI.cdf
  LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_fil0.cdf
  LISTing to file test_fil0.cdf
  LISTing to file test_fil0.cdf
  LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_fil0.cdf
- LISTing to file test_fil0.cdf
- LISTing to file test_fil0.cdf
- LISTing to file test_fil0.cdf
- LISTing to file test_fil0.cdf
- LISTing to file test_fil0.cdf
- LISTing to file test_fil0.cdf
- LISTing to file test_fil0.cdf
- LISTing to file test_fil0.cdf
- LISTing to file test_fil0.cdf
- LISTing to file test_fil0.cdf
- LISTing to file test_fil0.cdf
- LISTing to file test_fil0.cdf
- LISTing to file test_fil0.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_fil.cdf
  LISTing to file test_fil.cdf
  LISTing to file test_fil.cdf
  LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
- LISTing to file test_fil.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: regridding: no target grid specified
@@ -707,6 +769,7 @@ Replacing definition of axis TCAL
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file out.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file out.cdf
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -823,6 +886,7 @@ Replacing definition of axis TWEEKS
 Replacing definition of axis TWEEKS
 Replacing definition of axis TWEEKS
  LISTing to file calsst.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  *** NOTE: /UNIT=MONTHS  ... using 1/12 of 360.00 days
 Replacing definition of grid TGRID
 Replacing definition of axis TDAYS
@@ -905,6 +969,7 @@ list strcat ("All work and no play")
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test_modulo.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
@@ -967,10 +1032,6 @@ Replacing definition of grid G1
              Data set: ./bn_delimited_read_date_time.dat
 SET DATA/FORM=delimited/type="d, da2,date2"  bn_delimited_read_date_time.dat
  **TMAP ERR: syntax error in string
-             Unrecognized field type: DA2
-             Data set: ./bn_delimited_read_date_time.dat
-SET DATA/FORM=delimited/type="da,da2,date2"  bn_delimited_read_date_time.dat
- **TMAP ERR: syntax error in string
              Unrecognized field type: DATE2
              Data set: ./bn_delimited_read_date_time.dat
 SET DATA/FORM=delimited/type="da,da, date2"  bn_delimited_read_date_time.dat
@@ -987,7 +1048,11 @@ SET DATA/EZ/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test_good_order.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_bad_order.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis T2
@@ -1014,12 +1079,15 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file profiles.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file profiles.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test_100x100.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  Cached data cleared from memory
  Cached data cleared from memory
  PERMANENT data cleared from memory
@@ -1031,6 +1099,10 @@ Replacing definition of axis YAX
 Replacing definition of grid MYGRID
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file longax.dat
@@ -1338,23 +1410,43 @@ Replacing definition of axis TAX2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test_mod.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_mod.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_mod.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  **ERROR: improper grid or axis definition: Axis length exceeds modulo length
 define axis/x=130e:500:10/modulo=360 xsub
  LISTing to file test_mod.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_mod.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_mod.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_mod.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_mod.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_mod.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_mod.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_subspan_modulo.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_subspan_modulo.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file test_subspan_modulo.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_subspan_modulo.nc
- LISTing to file test_subspan_modulo.nc
- LISTing to file test_subspan_modulo.nc
- LISTing to file test_subspan_modulo.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file test_subspan_modulo.nc
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
@@ -1450,6 +1542,7 @@ Replacing definition of axis Z1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file clim.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1471,11 +1564,13 @@ SET VAR/SCALE=10 x2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file longvname.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file longvname.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1483,18 +1578,29 @@ SET VAR/SCALE=10 x2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file eofsp.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file eofti.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file eofst.cdf
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file confuse_xz.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file confuse_yz.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file confuse_yt.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file confuse_yzt.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file confuse_xz.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file confuse_yz.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file confuse_yt.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file confuse_yzt.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis YQ
@@ -1632,10 +1738,14 @@ Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
- LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
 Replacing definition of axis TAX
 Replacing definition of axis TAX
@@ -1666,14 +1776,18 @@ Replacing definition of axis XAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
  LISTing to file irrxzt.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
  *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
  *** NOTE: This will result in incorrect box sizes on record axis: MONTH_REG
  *** NOTE: Write the data initially with the /BOUNDS qualifier
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
  *** NOTE: Axis definition error on axis: TGAP
  *** NOTE: Bounds given describe non-contiguous axis cells
@@ -1716,7 +1830,9 @@ Replacing definition of axis ZAX
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
  LISTing to file xlong.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file xlongshift.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TAX
@@ -1782,7 +1898,9 @@ plot/sym/siz=0.3 0*t[gt=vwnd]
  *** NOTE: /UNIT=MONTHS  ... using 1/12 of 365.00 days
 Replacing definition of axis TAX
  LISTing to file aa.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file cc.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1823,6 +1941,7 @@ list/l=1/j=40/i=0:300:0 sst
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file 10a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1872,6 +1991,7 @@ Replacing definition of axis COADSY.ILLEGAL
  TEMPORARY data cleared from memory
 Replacing definition of axis TIME
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1913,6 +2033,7 @@ DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/T/CALENDAR=noleap myt
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file t0_cdc.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file my_cdc_timeaxis.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1928,6 +2049,7 @@ Replacing definition of axis TGREG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file revision.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1965,6 +2087,7 @@ Replacing definition of axis XAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
  LISTing to file irrxzt.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
 Replacing definition of axis ZAX
 Replacing definition of axis ZAX2
  PERMANENT data cleared from memory
@@ -2046,9 +2169,15 @@ set att (COADSX81_81).axis = "Z"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -2057,7 +2186,12 @@ set att (COADSX81_81).axis = "Z"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
@@ -2066,6 +2200,7 @@ Replacing definition of grid MYGRID
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_SHORT to match output type of variable NC_FLOAT
  LISTing to file a.nc
@@ -2089,11 +2224,11 @@ Replacing definition of grid MYGRID
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
  *** NOTE: Changing the value of attribute (COADSX).point_spacing
  *** NOTE: Changing the value of attribute (COADSY).point_spacing
  LISTing to file a.nc
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
  ** netCDF error:                                     
@@ -2107,16 +2242,20 @@ set var/outtype=garbage broiled
  TEMPORARY data cleared from memory
  *** NOTE: Changing the value of attribute (PSXT1).units
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  *** NOTE: Changing the value of attribute (PSXT1).units
  *** NOTE: Changing the value of attribute (PSYT1).units
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis X2AX
@@ -2172,6 +2311,7 @@ SET DAT/FORM=CDF asc.nc
  TEMPORARY data cleared from memory
 Replacing definition of axis XIR
  LISTing to file xyir.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
@@ -2193,18 +2333,23 @@ shade sst[t=@AVE,Z=@ave]
  TEMPORARY data cleared from memory
  *** NOTE: /UNIT=MONTHS  ... using 1/12 of 360.00 days
  LISTing to file t3file.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file 0000_a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file subdir/a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file subdir/0000_a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 Replacing definition of axis TAX
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  *** NOTE: Not deleted: TAX
  *** NOTE: Axis is in use by grid GFORMAT
  PERMANENT data cleared from memory
@@ -2230,6 +2375,7 @@ Replacing definition of axis XAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file b.nc
@@ -2300,6 +2446,7 @@ set axis/stride=2 NORMAL
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file noleap.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2309,6 +2456,8 @@ set axis/stride=2 NORMAL
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file tripolar_missing_lon.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2368,6 +2517,7 @@ SET DAT/FORM=CDF test_strides.cdf
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -2450,6 +2600,6 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
- *** NOTE: in batch mode: ignoring SET MODE METAFILE
+ *** NOTE: in batch mode: SET MODE METAFILE only changes the name of the metafile
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Oct 10 15:31:43 PDT 2007
+Ended at Fri Oct 12 14:13:26 PDT 2007

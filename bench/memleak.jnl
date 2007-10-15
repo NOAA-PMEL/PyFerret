@@ -1,0 +1,7 @@
+ ! Run TOP and watch memory use as this runs; memory leak fixed by Remik 
+ ! 12-Oct-2007 Ferret v6.08 
+
+! Can use j=1:1000 on slower machines ...
+
+can mode verif; rep/i=1:50 rep/j=1:5000 let a = 0
+

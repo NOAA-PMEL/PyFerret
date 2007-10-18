@@ -522,7 +522,7 @@
                        IF (attype .NE. outtype .AND. istat .EQ. ferr_ok)  THEN
                           alen = TM_LENSTR1(typnam(attype))
                           slen = TM_LENSTR1(typnam(outtype))
-                          CALL WARN (
+                          IF (dset .GT. 0) CALL WARN (
      .                      'Converting data type of missing_value '//
      .                       typnam(attype)(1:alen)//
      .                      ' to match output type of variable '//

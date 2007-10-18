@@ -37,6 +37,8 @@
 *               they have not already been set.  Called by setax.
 ** v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 *  v552 *acm* 4/03 buff was too short a string
+*  v608 *acm* 10/07 Formatting very small numbers resulted in 0.
+*               (bug 1542). Use same formatting as in axis_end_syms.F
 
 * Calling argument declarations
 
@@ -45,28 +47,28 @@
 
 * Internal arguments
 
-      CHARACTER axval*255, ppl_buff*2048, buff*9, TM_FMT*8
-      INTEGER nc, ier, ilen, slen 
+      CHARACTER axval*255, ppl_buff*2048, buff*15
+      INTEGER TM_LENSTR1, nc, ier, ilen 
 
       buff = dir//'AXIS_MIN'
       CALL GETSYM(buff,axval,nc,ier)
       IF (ier .EQ. 1) THEN
-         buff = TM_FMT(axlo,-3,8,slen)
+         WRITE ( buff, '(1PG15.7)' ) axlo
          ppl_buff = dir // 'AXIS_MIN '// buff
          ier = 0
          ist = 0
-         ilen = 10+slen
+         ilen = TM_LENSTR1(ppl_buff)
          CALL SETSYM (ppl_buff, ilen, ier, ist)
       ENDIF
 
       buff = dir//'AXIS_MAX'
       CALL GETSYM(buff,axval,nc,ier)
       IF (ier .EQ. 1) THEN
-         buff = TM_FMT(axhi,-3,8,slen)
+         WRITE ( buff, '(1PG15.7)' ) axhi
          ppl_buff = dir // 'AXIS_MAX '// buff
          ier = 0
          ist = 0
-         ilen = 10+slen
+         ilen = TM_LENSTR1(ppl_buff)
          CALL SETSYM (ppl_buff, ilen, ier, ist)
       ENDIF
 

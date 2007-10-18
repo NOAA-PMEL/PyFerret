@@ -1,0 +1,8 @@
+! err607_lev_errmsg.F
+! Make the error message more detailed, saying it is the choice of
+! number of contours that caused the error.
+
+SET MODE ignore
+SHADE/LEV=300/I=1:100/J=1:100 i+j
+
+SET MODE/LAST ignore

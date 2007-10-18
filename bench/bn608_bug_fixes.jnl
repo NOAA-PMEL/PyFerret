@@ -1,4 +1,4 @@
-! bn608_bug_fixes.jnl
+! bn608_bug_fixes
 ! test various fixes that went into version 6.08
 ! 24-Sep ACM
 
@@ -6,6 +6,14 @@
 GO bn_reset
 GO err607_show_var_xml
 
-! err607_set_new_history_att.jnl
+! err607_set_new_history_att
 GO bn_reset
 GO err607_set_new_history_att
+
+! Symbols YAXIS_MIN, YAXIS_MAX were 0 when values small
+GO bn_reset
+GO err607_axis_minmax_syms
+
+! Error message for too many contour levels requested
+GO bn_reset
+GO err607_lev_errmsg

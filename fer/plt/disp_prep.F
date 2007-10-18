@@ -237,7 +237,8 @@
  5120	CALL ERRMSG( ferr_syntax, status,
      .		'LEVELS=xxD with xx value missing', *5000 )
  5150	CALL ERRMSG( ferr_invalid_command, status,
-     .		'"'//str_buff(:str_len)//'": must be between 1 and 250',
+     .		'"'//str_buff(:str_len)//
+     . '": Number of contour levels must be between 1 and 250',
      .		*5000 )
  5200	CALL ERRMSG( ferr_invalid_command, status,
      .		'zero vector length on /LENGTH=', *5000 )

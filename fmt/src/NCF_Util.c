@@ -1,5 +1,4 @@
 
-
 /*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -65,6 +64,7 @@
 /* *acm*  2/07 V602   Fix bug 1492, changing attributes of coordinate variables; use pseudo-dataset */ 
 /*                       of user-defined axes to keep track of attributes. */
 /* *acm* 10 07        Patches for memory-leak fixes from Remiz Ziemlinski */
+/* *acm* 10/07        Further fixes by Remik, initializing att.vals, att.string to NULL */
 
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
@@ -871,7 +871,8 @@ int FORTRAN(ncf_init_uvar_dset)(int *setnum)
     int nc_status;		/* return from netcdf calls */
     ncatt att;			/* attribute */
     ncvar var;			/* variable */
-
+		att.vals = NULL;
+		att.string = NULL;
     strcpy(nc.fername, "UserVariables");
     strcpy(nc.fullpath, " ");
     nc.fer_dsetnum = *setnum;
@@ -900,12 +901,13 @@ int FORTRAN(ncf_init_uvar_dset)(int *setnum)
 
 	   var.attrs_list_initialized = FALSE; 
 
-		  att.outflag = 1;
-          att.type = NC_CHAR;
-          att.outtype = NC_CHAR;
-		  att.len = 21;
-          strcpy(att.name, "FerretUserVariables" );
-          
+		 att.outflag = 1;
+		 att.type = NC_CHAR;
+		 att.outtype = NC_CHAR;
+		 att.len = 21;
+		 strcpy(att.name, "FerretUserVariables" );
+		 att.string = (char*)malloc(2*sizeof(char));
+		 strcpy(att.string, " ");
 
       /*Save attribute in linked list of attributes for variable .*/	
        if (!var.attrs_list_initialized) {
@@ -965,7 +967,8 @@ int FORTRAN(ncf_init_uax_dset)(int *setnum)
     int nc_status;		/* return from netcdf calls */
     ncatt att;			/* attribute */
     ncvar var;			/* variable */
-
+		att.vals = NULL;
+		att.string = NULL;
     strcpy(nc.fername, "UserCoordVariables");
     strcpy(nc.fullpath, " ");
     nc.fer_dsetnum = *setnum;
@@ -993,12 +996,13 @@ int FORTRAN(ncf_init_uax_dset)(int *setnum)
 
 	   var.attrs_list_initialized = FALSE; 
 
-		  att.outflag = 1;
-          att.type = NC_CHAR;
-          att.outtype = NC_CHAR;
-		  att.len = 21;
-          strcpy(att.name, "FerretUserCoordVariables" );
-          
+		 att.outflag = 1;
+		 att.type = NC_CHAR;
+		 att.outtype = NC_CHAR;
+		 att.len = 21;
+		 strcpy(att.name, "FerretUserCoordVariables" );
+     att.string = (char*)malloc(2*sizeof(char));
+		 strcpy(att.string, " ");
 
       /*Save attribute in linked list of attributes.*/	
        if (!var.attrs_list_initialized) {
@@ -1066,6 +1070,8 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 	int bad_file_attr = 243; /* matches merr_badfileatt in tmap_errors.parm*/
 	size_t len;
 
+	att.vals = NULL;
+	att.string = NULL;
 	strcpy(nc.fername, name);
 	strcpy(nc.fullpath, path);
 	nc.fer_dsetnum = *setnum;
@@ -1159,12 +1165,12 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 								att.type = NC_CHAR;
 								att.outtype = NC_CHAR;
 								att.len = 1;
-								att.string = (char *) malloc(2* sizeof(char*));
+								att.string = (char *) malloc(2* sizeof(char));
 								strcpy (att.string," ");
               }
               switch (att.type) {
               case NC_CHAR:
-								att.string = (char *) malloc((att.len+1)* sizeof(char*));
+								att.string = (char *) malloc((att.len+1)* sizeof(char));
 								
 								nc_status = nc_get_att_text(*ncid, NC_GLOBAL, att.name, att.string );
 								if (nc_status != NC_NOERR) return nc_status;
@@ -1252,7 +1258,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 							{ att.type = NC_CHAR;
 								att.outtype = NC_CHAR;
 								att.len = 1;
-								att.string = (char *) malloc((att.len+1)* sizeof(char*));
+								att.string = (char *) malloc((att.len+1)* sizeof(char));
 								strcpy (att.string," ");
 								att.vals = (double *) malloc(1 * sizeof(double));
 								att.vals[0] = 0;
@@ -1261,7 +1267,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 					} else {
 						nc_status = nc_get_att_double(*ncid, iv, "_FillValue",
 																					&var.fillval ); }
-					att.string = (char *) malloc(2*sizeof(char*));
+					att.string = (char *) malloc(2*sizeof(char));
 					strcpy(att.string," ");
 		    }
 				else  /* set to default NC value*/ 
@@ -1289,7 +1295,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 							break;
 						default:
 							break;
-							att.string = (char *) malloc(2*sizeof(char*));
+							att.string = (char *) malloc(2*sizeof(char));
 							strcpy (att.string, " ");
 						}
 					}
@@ -1371,11 +1377,11 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 												{att.type = NC_CHAR;
 													att.outtype = NC_CHAR;
 													att.len = 1;
-													att.string = (char *) malloc((att.len+1)* sizeof(char*));
+													att.string = (char *) malloc((att.len+1)* sizeof(char));
 													strcpy (att.string, " ");
 													return_val = bad_file_attr;
 												}
-											att.string = (char *) malloc(2*sizeof(char*));
+											att.string = (char *) malloc(2*sizeof(char));
 											strcpy(att.string, " ");
 											break;
 										}
@@ -1489,7 +1495,8 @@ int FORTRAN(ncf_init_other_dset)(int *setnum, char name[], char path[])
     int nc_status;		/* return from netcdf calls */
     ncatt att;			/* attribute */
     ncvar var;			/* variable */
-
+		att.vals = NULL;
+		att.string = NULL;
     strcpy(nc.fername, name);
     strcpy(nc.fullpath, path);
     nc.fer_dsetnum = *setnum;
@@ -1528,7 +1535,7 @@ int FORTRAN(ncf_init_other_dset)(int *setnum, char name[], char path[])
 		  att.len = strlen(name);
           strcpy(att.name, "history" );
 
-	      att.string = (char *) malloc((att.len+1)* sizeof(char*));
+	      att.string = (char *) malloc((att.len+1)* sizeof(char));
 		  strcpy(att.string, name );
 
       /*Save attribute in linked list of attributes for variable .*/	
@@ -1658,23 +1665,13 @@ void ncf_free_attlist(ncvar* varptr)
 	while(status) {		
 		att = (ncatt*) lp->data;
 
-/*		if (att->string != NULL) {
-			free(att->string);
-		}
+		if (att->string != NULL) {
+		 	free(att->string);
+	 	}
 
-		if (att->vals != NULL) {
-			free(att->vals);
+ 		if (att->vals != NULL) {
+	 		free(att->vals);
 		}
-*/
-
-		if (att->type == NC_CHAR) {
-			free(att->string);
-		}
-
-		else {
-			free(att->vals);
-		}
-
 
 		if (lp->next  == NULL) {
 			status = FALSE;
@@ -1746,7 +1743,8 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
   LIST *vlist=NULL;
 	ncvar* var_ptr;
 	LIST_ELEMENT *lp;
-
+	att.vals = NULL;
+	att.string = NULL;
    /*
    * Get the dataset pointer.  
    */
@@ -1853,8 +1851,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
 		att.attid = var.natts;
 		strcpy(att.name,"missing_value");
 		att.len = 1;
-		att.string = NULL;/*(char *) malloc((att.len+1)* sizeof(char));
-												strcpy(att.string, " ");*/
+		att.string = NULL;
 		att.type = NC_DOUBLE;
 		att.outtype = NC_DOUBLE;
 		att.vals = (double *) malloc(att.len * sizeof(double));
@@ -1893,7 +1890,8 @@ int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar
   int newvar;
   int my_len;
   LIST *vlist=NULL;
-
+	att.vals = NULL;
+	att.string = NULL;
    /*
    * Get the dataset pointer.  
    */
@@ -1982,7 +1980,7 @@ int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar
 		att.outflag = 1;
 		att.type = NC_CHAR;
 		att.outtype = NC_CHAR;
-		att.string = (char *) malloc((att.len+1)* sizeof(char*));
+		att.string = (char *) malloc((att.len+1)* sizeof(char));
 		strcpy(att.string, units);
 
         my_len = 1;
@@ -2020,7 +2018,8 @@ int  FORTRAN(ncf_add_var_num_att)( int *dset, int *varid, char attname[], int *a
   int i;
   LIST *varlist;
   LIST *varattlist;
-
+	att.vals = NULL;
+	att.string = NULL;
    /*
     * Get the list of variables, find pointer to variable varid.
     */
@@ -2061,6 +2060,7 @@ int  FORTRAN(ncf_add_var_num_att)( int *dset, int *varid, char attname[], int *a
   att.outtype = NC_FLOAT;
   att.len = *attlen;
   att.outflag = *outflag;
+	att.string = NULL;
   att.vals = (double *) malloc(*attlen * sizeof(double));
 
   for (i = 0; i<*attlen;i++ )
@@ -2090,7 +2090,8 @@ int  FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[], int
   int i;
   LIST *varlist;
   LIST *varattlist;
-
+	att.vals = NULL;
+	att.string = NULL;
    /*
     * Get the list of variables, find pointer to variable varid.
     */
@@ -2131,6 +2132,7 @@ int  FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[], int
   att.outtype = NC_FLOAT;
   att.len = *attlen;
   att.outflag = *outflag;
+	att.string = NULL;
   att.vals = (double *) malloc(*attlen * sizeof(double));
 
   for (i = 0; i<*attlen;i++ )
@@ -2160,7 +2162,8 @@ int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *a
   int i;
   LIST *varlist;
   LIST *varattlist;
-
+	att.vals = NULL;
+	att.string = NULL;
    /*
     * Get the list of variables, find pointer to variable varid.
     */
@@ -2217,7 +2220,7 @@ int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *a
   att.outtype = NC_FLOAT;
   att.len = *attlen;
   att.outflag = *outflag;
-  att.string = (char *) malloc((att.len+1)* sizeof(char*));
+  att.string = (char *) malloc((att.len+1)* sizeof(char));
   strcpy(att.string, attstring);
 
       /*Save attribute in linked list of attributes for this variable */	
@@ -2331,7 +2334,7 @@ int  FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *atty
 		  att_ptr->type = NC_CHAR;
 		  att_ptr->outtype = NC_CHAR;
 		  att_ptr->len = 1;
-			att_ptr->string = (char *) malloc(2*sizeof(char*));
+			att_ptr->string = (char *) malloc(2*sizeof(char));
 		  strcpy(att_ptr->string," ");
 	  }
    else
@@ -2340,7 +2343,7 @@ int  FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *atty
 		   {
 		   case NC_CHAR:
 			   i = (*attlen+1);   /* this line for debugging*/
-	        att_ptr->string = (char *) malloc((*attlen+1)* sizeof(char*));
+	        att_ptr->string = (char *) malloc((*attlen+1)* sizeof(char));
             strcpy(att_ptr->string,attstring);
             break;
 			
@@ -2431,7 +2434,7 @@ int  FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *a
 		  att_ptr->type = NC_CHAR;
 		  att_ptr->outtype = NC_CHAR;
 		  att_ptr->len = 1;
-			att_ptr->string = (char *) malloc(2* sizeof(char*));
+			att_ptr->string = (char *) malloc(2* sizeof(char));
 		  strcpy(att_ptr->string," ");
 	  }
    else
@@ -2440,7 +2443,7 @@ int  FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *a
 		   {
 		   case NC_CHAR:
 			   i = (*attlen+1);   /* this line for debugging*/
-	        att_ptr->string = (char *) malloc((*attlen+1)* sizeof(char*));
+	        att_ptr->string = (char *) malloc((*attlen+1)* sizeof(char));
             strcpy(att_ptr->string,attstring);
             break;
 			
@@ -2856,7 +2859,8 @@ int  FORTRAN(ncf_transfer_att)(int *dset1, int *varid1, int *iatt, int *dset2, i
   LIST *varlist2;
   LIST *varattlist1;
   LIST *varattlist2;
-
+	att.vals = NULL;
+	att.string = NULL;
    /*
     * Get the list of variables in dset1, find pointer to variable varid1.
     */
@@ -2920,7 +2924,7 @@ int  FORTRAN(ncf_transfer_att)(int *dset1, int *varid1, int *iatt, int *dset2, i
   
   if (att_ptr1->type == NC_CHAR)
   {
-	  att.string = (char *) malloc((att_ptr1->len+1)* sizeof(char*)); 
+	  att.string = (char *) malloc((att_ptr1->len+1)* sizeof(char)); 
 	  strcpy(att.string, att_ptr1->string);
   }
   else

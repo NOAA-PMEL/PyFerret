@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/build_v608/FERRET_linux/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     47574460 Sep 28 09:08 /home/porter/ansley/build_v608/FERRET_linux/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     47606814 Oct 18 10:50 /home/porter/ansley/build_v608/FERRET_linux/fer/ferretdods_gui
 Using external functions from ../external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: set new symbols horiz and vert axis for plots, fixes for FTDS long URL bug 1540
+Note: fix for bug 1542:  YAXIS_MIN, YAXIS_MAX when small; more-detailed err message for too many contours reqrequested
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build_v608/FERRET_linux/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_linux
-Beginning at Fri Sep 28 09:16:54 PDT 2007
+Beginning at Thu Oct 18 11:21:38 PDT 2007
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: unknown command qualifier: help
@@ -966,10 +966,6 @@ Replacing definition of grid G1
              Unrecognized field type: D
              Data set: ./bn_delimited_read_date_time.dat
 SET DATA/FORM=delimited/type="d, da2,date2"  bn_delimited_read_date_time.dat
- **TMAP ERR: syntax error in string
-             Unrecognized field type: DA2
-             Data set: ./bn_delimited_read_date_time.dat
-SET DATA/FORM=delimited/type="da,da2,date2"  bn_delimited_read_date_time.dat
  **TMAP ERR: syntax error in string
              Unrecognized field type: DATE2
              Data set: ./bn_delimited_read_date_time.dat
@@ -2057,7 +2053,12 @@ set att (COADSX81_81).axis = "Z"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
@@ -2089,7 +2090,6 @@ Replacing definition of grid MYGRID
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
  *** NOTE: Changing the value of attribute (COADSX).point_spacing
  *** NOTE: Changing the value of attribute (COADSY).point_spacing
  LISTing to file a.nc
@@ -2367,6 +2367,17 @@ SET DAT/FORM=CDF test_strides.cdf
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: "300": Number of contour levels must be between 1 and 250
+SHADE/LEV=300/I=1:100/J=1:100 i+j
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2447,6 +2458,6 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
- *** NOTE: in batch mode: ignoring SET MODE METAFILE
+ *** NOTE: in batch mode: SET MODE METAFILE only changes the name of the metafile
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Sep 28 09:20:46 PDT 2007
+Ended at Thu Oct 18 11:25:21 PDT 2007

@@ -1,4 +1,5 @@
 
+
 /*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -64,7 +65,8 @@
 /* *acm*  2/07 V602   Fix bug 1492, changing attributes of coordinate variables; use pseudo-dataset */ 
 /*                       of user-defined axes to keep track of attributes. */
 /* *acm* 10 07        Patches for memory-leak fixes from Remiz Ziemlinski */
-/* *acm* 10/07        Further fixes by Remik, initializing att.vals, att.string to NULL */
+/* *acm* 10/07        Further fixes by Remik, initializing att.vals, att.string to NULL,
+                        set var.ndims = 0 in ncf_init_other_dset */
 
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
@@ -217,13 +219,14 @@ int  FORTRAN(ncf_inq_ds_dims)( int *dset, int *idim, char dname[], int *namelen,
 {
   ncdset *nc_ptr=NULL;
   ncvar *var_ptr=NULL;
-  int i;
+  int i, ivar;
   int ndx;
   int the_dim;
   int outdims;
   int status=LIST_OK;
   int return_val;
   LIST *varlist;
+	LIST_ELEMENT *lp;
 
   return_val = ATOM_NOT_FOUND;  
   if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL )return return_val;
@@ -237,8 +240,8 @@ int  FORTRAN(ncf_inq_ds_dims)( int *dset, int *idim, char dname[], int *namelen,
     return_val = ATOM_NOT_FOUND;
     return return_val;
   }
-  
-  var_ptr=(ncvar *)list_curr(varlist); 
+
+  var_ptr=(ncvar *)list_curr(varlist); 	
 
   strcpy(newvarname, var_ptr->name);
   *len_newvarname = strlen(newvarname);
@@ -247,7 +250,7 @@ int  FORTRAN(ncf_inq_ds_dims)( int *dset, int *idim, char dname[], int *namelen,
   *nvatts = var_ptr->natts;
   *outflag = var_ptr->all_outflag;
   *coord_var = var_ptr->is_axis;
-   
+
    for (i=0; i <var_ptr->ndims ;i++ )
   {
 	  the_dim =  var_ptr->dims[i];
@@ -313,6 +316,7 @@ int  FORTRAN(ncf_inq_var_att)( int *dset, int *varid, int *attid, char attname[]
   int i;
   LIST *varlist;
   LIST *varattlist;
+	LIST_ELEMENT* lp;
 
    /*
    * Get the list of variables.  
@@ -1521,8 +1525,8 @@ int FORTRAN(ncf_init_other_dset)(int *setnum, char name[], char path[])
        var.fillval = NC_FILL_FLOAT;
 	   var.all_outflag = 1;
 	   var.is_axis = FALSE;
-	   var.axis_dir = 0;
-
+	   var.axis_dir = 0;		
+		 var.ndims = 0;
 	   var.attrs_list_initialized = FALSE; 
 
    /* set one global attribute, history */
@@ -1743,8 +1747,10 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
   LIST *vlist=NULL;
 	ncvar* var_ptr;
 	LIST_ELEMENT *lp;
+	ncatt* att_ptr;
 	att.vals = NULL;
 	att.string = NULL;
+
    /*
    * Get the dataset pointer.  
    */
@@ -1870,7 +1876,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
 /*Save variable in linked list of variables for this dataset */
 
     list_insert_after(nc_ptr->dsetvarlist, &var, sizeof(ncvar));
-  
+
   return_val = FERR_OK;
   return return_val;
 }

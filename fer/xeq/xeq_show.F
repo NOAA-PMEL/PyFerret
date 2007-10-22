@@ -962,9 +962,9 @@
                     CALL deleted_list_get_undel(uvar_num_items_head,
      .                                         deleted_list_result(1),
      .                                         max_uvar, num_indices )
-                    DO 1012, ii = 1, max_uvar
-                      save_deleted_list_result(ii) = 
-     .                       deleted_list_result(ii)
+                    DO 1012, i2 = 1, max_uvar
+                      save_deleted_list_result(i2) = 
+     .                       deleted_list_result(i2)
  1012	            CONTINUE
                     DO 1015 j = 1, num_indices
                        ivar = save_deleted_list_result(j)
@@ -991,8 +991,8 @@
               CALL deleted_list_get_undel(uvar_num_items_head,
      .                                    deleted_list_result(1),
      .                                    max_uvar, num_indices )
-              DO 1022, ii = 1, max_uvar
-                save_deleted_list_result(ii) = deleted_list_result(ii)
+              DO 1022, i2 = 1, max_uvar
+                save_deleted_list_result(i2) = deleted_list_result(i2)
  1022         CONTINUE
               DO 1030 j = 1, num_indices
                  i = save_deleted_list_result(j)
@@ -1025,9 +1025,9 @@
      .                                      deleted_list_result(1),
      .                                      max_uvar, num_indices )
      
-                 DO 1042, ii = 1, max_uvar
-                    save_deleted_list_result(ii) = 
-     .		      deleted_list_result(ii)
+                 DO 1042, i2 = 1, max_uvar
+                    save_deleted_list_result(i2) = 
+     .		      deleted_list_result(i2)
  1042            CONTINUE
                  DO 1050 j = 1, num_indices
                     i = save_deleted_list_result(j)
@@ -1053,9 +1053,9 @@
               CALL deleted_list_get_undel(uvar_num_items_head,
      .                                    deleted_list_result(1),
      .                                    max_uvar, num_indices )
-              DO 1062, ii = 1, max_uvar
-                    save_deleted_list_result(ii) = 
-     .		      deleted_list_result(ii)
+              DO 1062, i2 = 1, max_uvar
+                    save_deleted_list_result(i2) = 
+     .		      deleted_list_result(i2)
  1062         CONTINUE
               DO 1070 j = 1, num_indices
                  i = save_deleted_list_result(j)
@@ -1086,9 +1086,9 @@
               CALL deleted_list_get_undel(uvar_num_items_head,
      .                                    deleted_list_result(1),
      .                                    max_uvar, num_indices )
-              DO 1072, ii = 1, max_uvar
-                    save_deleted_list_result(ii) = 
-     .		      deleted_list_result(ii)
+              DO 1072, i2 = 1, max_uvar
+                    save_deleted_list_result(i2) = 
+     .		      deleted_list_result(i2)
  1072         CONTINUE
               DO 1080 j = 1, num_indices
                  i = save_deleted_list_result(j)

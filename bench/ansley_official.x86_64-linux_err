@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/build_v608/FERRET_x86/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 37656636 Oct 18 10:16 /home/porter/ansley/build_v608/FERRET_x86/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 37656605 Oct 22 11:40 /home/porter/ansley/build_v608/FERRET_x86/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/build_v608/FERRET_x86/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for bug 1542; YAXIS_MIN, YAXIS_MAX when small; more-detailed err message for too many contours requested
+Note:  Another Remik  fix for attribute-handling; initialize ndims for varid=0
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build_v608/FERRET_x86/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v608/FERRET_x86/external_functions/ext_func_x86
-Beginning at Thu Oct 18 10:29:41 PDT 2007
+Beginning at Mon Oct 22 11:41:01 PDT 2007
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: unknown command qualifier: help
@@ -2460,4 +2460,4 @@ Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: in batch mode: SET MODE METAFILE only changes the name of the metafile
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Oct 18 10:30:50 PDT 2007
+Ended at Mon Oct 22 11:42:15 PDT 2007

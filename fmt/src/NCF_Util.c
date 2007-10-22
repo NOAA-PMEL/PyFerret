@@ -2044,7 +2044,7 @@ int  FORTRAN(ncf_add_var_num_att)( int *dset, int *varid, char attname[], int *a
   varattlist = ncf_get_ds_var_attlist(dset, varid);
 
   status = list_traverse(varattlist, attname, NCF_ListTraverse_FoundVarAttName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status == LIST_OK ) {\
+  if ( status == LIST_OK ) {
     att_ptr=(ncatt *)list_curr(varattlist); 
     return_val = -1* att_ptr->attid; 
     return return_val;
@@ -2116,7 +2116,7 @@ int  FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[], int
   varattlist = ncf_get_ds_var_attlist(dset, varid);
 
   status = list_traverse(varattlist, attname, NCF_ListTraverse_FoundVarAttName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status == LIST_OK ) {\
+  if ( status == LIST_OK ) {
     att_ptr=(ncatt *)list_curr(varattlist); 
     return_val = -1* att_ptr->attid; 
     return return_val;
@@ -2200,7 +2200,7 @@ int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *a
   varattlist = ncf_get_ds_var_attlist(dset, varid);
 
   status = list_traverse(varattlist, attname, NCF_ListTraverse_FoundVarAttName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status == LIST_OK ) {\
+  if ( status == LIST_OK ) {
     att_ptr=(ncatt *)list_curr(varattlist); 
     return_val = -1* att_ptr->attid; 
 

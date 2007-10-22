@@ -647,7 +647,7 @@ c     .     alg_trans_dflt_arg( 38) / bad_val4      /
      .		(alg_regrid_title(i),i=prgrd_nearest+1,max_regrid_trans)
      .				/11*unspecified_name4/,
      .		(alg_regrid_code (i),i=prgrd_nearest+1,max_regrid_trans)
-     .			/(max_regrid_trans-prgrd_nearest)*unspecified_name4/
+     .				/11*unspecified_name4/
 c     .		(alg_regrid_title(i),i=prgrd_nearest+1,max_regrid_trans)
 c     .			/(max_regrid_trans-prgrd_nearest)*unspecified_name4/,
 c     .		(alg_regrid_code (i),i=prgrd_nearest+1,max_regrid_trans)

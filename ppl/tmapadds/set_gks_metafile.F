@@ -54,8 +54,8 @@
 *       *js* 7.25.97 Added 'C' callable save_metafile_name to save string
 *               in variable 'meta_file'
 * v552 *acm* 3/03 Longer strings.
-
-	LOGICAL		ITS_BATCH_GRAPHICS, batch
+* V608 *acm*10/07  true batch mode for metafiles; flag meta_batch
+*         distinguises this case from other batch modes.
 
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
@@ -71,10 +71,13 @@
 	character*2048	str
 	character*5	kdefws
 
+	LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
+        LOGICAL its_meta, batch, meta_batch
+
 #ifdef unix
         logical         xwindows
 #else
-        integer         trnlnm,xwindows,namelen
+        integer         trnlnm,xwindows
 	character*256	name
 	external	trnlnm
 #endif
@@ -90,7 +93,9 @@
 #endif
 
 * Metafile output only?
-	batch = ITS_BATCH_GRAPHICS()
+        its_meta = ITS_META_GRAPHICS()
+        batch = ITS_BATCH_GRAPHICS()
+        meta_batch = batch .AND. its_meta
 
 *	MASSAGE COMMAND STRING OF FORM "WS=xxx,META"
 	call upnsquish (label,str,end)	 	 	   	
@@ -192,7 +197,8 @@
 	      endif
 ! 3/97: although the metafile is in fact opened we are going to make it
 ! look like the output workstation to all other software layers
-	      IF ( batch ) THEN
+c	      IF ( batch .AND. (.NOT.meta_batch)) THEN
+	      IF ( batch) THEN
 	         meta_actv = .false.
 	         meta_open = .false.
 	      ELSE

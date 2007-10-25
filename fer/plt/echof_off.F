@@ -1,4 +1,4 @@
-	SUBROUTINE CLEAR_WINDOW( wid )
+	SUBROUTINE ECHOF_OFF
 
 *
 *
@@ -34,50 +34,13 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* clear full window and close metafile
+* *acm* V6.08 10/07 Turn off the flag echof for batch mode, so we can set metafile
+* names without writing spurious stiff to fort.23
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V200:   4/2/90
-* V230: 11/19/92 - clear protected colors
-* V411:  9/5/95 - explicitly delete each segment before calling GCLRWK
-*	to avoid XGKS memory leak in that routine
-* V602: *acm* 1/07 Changes for metafile-batch mode
+	include	'system_inc.decl'	! with echof
+	include	'SYSTEM.INC'	        ! with echof
 
-	include 'plot_setup.parm'
-	include 'xplot_state.cmn'		! viewport info
-
-* calling argument declarations:
-	INTEGER	wid, ivp, iseg, istate
-
-* internal variable declarations:
-
-! --- start of 9/95 addition
-* explicitly delete segments to avoid XGKS memory leak
-	DO 200 ivp =  mvp_dflt, max_viewport
-	   IF ( vp_segn(ivp) .NE. 0 ) THEN 
-	      DO 100 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
- 100	      CALL GDSG( iseg ) 
-	   ENDIF
-*  and mark segment as deleted
-	   vp_seg0(ivp) = 0
-	   vp_segn(ivp) = 0
- 200	CONTINUE
-! --- end of 9/95 addition
-
-* tell GKS to clear the named "workstation" (window)
-
-        CALL GQOPS (istate)
-	IF (istate .GE. 2) CALL GCLRWK(wid,0)
-
-* tell PPLUS to close the metafile if it's open
-	CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )
-
-* tell PPLUS to release protected colors (on viewports and overlays)
-        CALL PPL_SHASET( 'RESET' )
+	echof = .FALSE.
 
 	RETURN
 	END

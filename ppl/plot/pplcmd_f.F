@@ -239,7 +239,7 @@ CCCCCCC data	        tmapdebug/.false./
 
 * *acm*  For batch metafile 
 	LOGICAL ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS,
-     .          its_meta, batch, meta_batch
+     .          its_meta, batch, meta_batch, its_open
 
 	CHARACTER DTE*10,TEMP*2048,TEMP2*2048,FILE*81,FROM*80,LINE*2048
 	CHARACTER SYM*30,ICOM7*7
@@ -1309,8 +1309,10 @@ C	CLSPLT
 	    its_meta = ITS_META_GRAPHICS()
 	    batch = ITS_BATCH_GRAPHICS()
 	    meta_batch = batch .AND. its_meta
+            its_open = meta_open
+            if (meta_batch .and. ws_state.GT.0) its_open = .true.
 
-	    if (meta_open .and. .not. meta_clsplt .and. .not. first_meta) then
+	    if (its_open .and. .not. meta_clsplt .and. .not. first_meta) then
 	       if (meta_actv .OR. meta_batch) call gdawk (meta_wsid)
 	       call gclwk (meta_wsid)
 	       close (meta_lun)

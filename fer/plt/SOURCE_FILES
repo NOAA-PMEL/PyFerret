@@ -20,6 +20,7 @@ disp_labels.F\
 disp_prep.F\
 disp_reset.F\
 disp_set_up.F\
+echof_off.F\
 equal_color.F\
 equal_range.F\
 equal_range_t.F\

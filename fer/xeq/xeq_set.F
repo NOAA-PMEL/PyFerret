@@ -580,6 +580,7 @@ c *kob* 4/97
                     CALL WARN ('in GIF mode: ignoring SET MODE METAFILE')
                     mode_metafile = .FALSE.
                  ELSE IF ( batch ) THEN
+                    CALL ECHOF_OFF  ! so we dont get things written to fort.23
                     CALL WARN ('in batch mode: SET MODE METAFILE '//
      .                 'only changes the name of the metafile')
 	  	    IF ( buff2 .NE. ' ' ) CALL PPLCMD

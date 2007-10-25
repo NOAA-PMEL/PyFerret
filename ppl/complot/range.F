@@ -108,6 +108,11 @@ C
         DINT = 10.0 * POW
       ENDIF
 C
+C Note that for some values of these numbers, UMIN, UMAX, and DINT
+C the value of FM may be slightly larger or slightly smaller than
+C the intended value, and so may behave differently from one compiler/machine
+C to another (seen on Solaris vs Linux, in the Y axis of PLOT/i=1:12 1./i
+
 C     CALCULATE THE MINIMUM VALUE OF THE RANGE.
 C
       FM = UMIN / DINT

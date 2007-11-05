@@ -7,6 +7,8 @@
 # *jd* 4.27.99  - add FER_WEB_BROWSER
 # *jd* 4.27.99  - add FER_EXTERNAL_FUNCTIONS
 # *kob* 5.99 - change dir for FER_EXTERNAL_FUNCTIONS
+# *acm* 11/07  change FER_DSETS to reside under FER_DIR by default
+#              change to if PATH command as suggested by A. Wittenberg
 
 #
 # If you are installing FERRET for the first time at your site we ask
@@ -31,9 +33,10 @@
 # The environment variable FER_DSETS should be the pathname of
 # the directory named `fer_dsets' you created to install the FERRET program.
 
-# !!!! You must customize the following line:
+# If you set a different directory for the datasets, then customize the
+# following line:
 # This directory will contain FERRET demonstration data files (30+ Mbytes)
-   setenv FER_DSETS 	  my_big_data_disk/fer_dsets
+   setenv FER_DSETS 	  $FER_DIR/fer_dsets
 
 # System Manager: Check this PATH modification for your system security.
 # If you prefer not to modify PATH here you may comment out the following few
@@ -41,7 +44,7 @@
 # create ferret links in /usr/local/bin.
 # This logic will replace any previous $FER_DIR in PATH so this
 # file may be sourced repeatedly in a single session
-   if ( $PATH !~ *ferret* ) then
+   if ( $PATH !~ "*ferret*" ) then
         echo appending ferret path
        setenv PATH {$PATH}:$FER_DIR/bin
    else

@@ -61,8 +61,10 @@
 * V530: 9/00 *sh* - increase rbuff size to allow longer "(isiz*jsiz*ksiz*lsiz)"
 *		  - added support for string variables
 * V532: 5/01 *sh* - minor bug fix: "small" and "large" init'ed to wrong dtype
-* V606: 7/08 *acm*- define symbols with the latest results of a call to STAT
+* V606: 7/07 *acm*- define symbols with the latest results of a call to STAT
 *                   STAT_MIN, STAT_MAX, STAT_MEAN, STAT_STD
+* V608:10/07 *acm*- If all missing then set these symbols to 'bad'. Also set
+*                   symbols STAT_NGOOD, STAT_NBAD
 
 	include 'ferret.parm'
 	include 'xvariables.cmn'
@@ -219,6 +221,11 @@
 	ENDIF
 
 ! Define Ferret symbols with min, max, mean
+        IF (ngood .EQ. 0) THEN 
+           rbuff(1) = 'bad'
+           rbuff(2) = 'bad'
+           rbuff(3) = 'bad'
+        ENDIF
 	IF ( mr_type(mv) .NE. ptype_string ) THEN
            symbuff = 'STAT_MIN'
 	   CALL GETSYM( symbuff, title, i2, i1 )
@@ -247,15 +254,45 @@
 	   CALL SPLIT_LIST(pttmode_explct, lun,
      .			' Standard deviation: '//rbuff(1), 0)
 
-! Define Ferret symbol with std
+! Define Ferret symbols with std 
 	   IF ( mr_type(mv) .NE. ptype_string ) THEN
               symbuff = 'STAT_STD'
 	      CALL GETSYM( symbuff, title, i2, i1 )
 	      IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
               slen = TM_LENSTR1(rbuff(1))
       	      CALL PUTSYM( symbuff, rbuff(1), slen, i2)
+
            ENDIF
 	ENDIF
+
+	IF ( full .AND. ngood.LE.1 .AND.
+     .        mr_type(mv) .NE. ptype_string) THEN
+           symbuff = 'STAT_STD'
+           CALL GETSYM( symbuff, title, i2, i1 )
+           IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+           slen = 3
+           CALL PUTSYM( symbuff, 'bad', slen, i2)
+	ENDIF
+
+! Define Ferret symbols with ngood and nbad
+	IF ( full .AND. mr_type(mv) .NE. ptype_string ) THEN
+
+           symbuff = 'STAT_NGOOD'
+           CALL GETSYM( symbuff, title, i2, i1 )
+           IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+           datum = ngood
+           rbuff(1) = TM_FMT(datum , sig_fig, 12, slen)
+           slen = TM_LENSTR1(rbuff(1))
+           CALL PUTSYM( symbuff, rbuff(1), slen, i2)
+
+           symbuff = 'STAT_NBAD'
+           CALL GETSYM( symbuff, title, i2, i1 )
+           IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+           datum = nbad
+           rbuff(1) = TM_FMT(datum , sig_fig, 12, slen)
+           slen = TM_LENSTR1(rbuff(1))
+           CALL PUTSYM( symbuff, rbuff(1), slen, i2)
+        ENDIF
 
 	RETURN
 	END

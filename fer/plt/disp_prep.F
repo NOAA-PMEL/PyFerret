@@ -60,7 +60,9 @@
 * V4.1+  7/25/95 - allow automatic centered levels and delta-only levels 
 * v500 - 1/26/99 - *kob* add PPLCMD call for aline reinitialization - needed for
 *                   nolabel plot overlays
-#ifdef unix
+* V608 - 10/07   - *acm* Give more detail int he error message when the number 
+*                  of contour levels given is too large
+
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'command.parm'
@@ -72,19 +74,6 @@
 	include 'CONT.INC'	! with iautoc
 	include 'vector_inc.decl'	! with vauto
 	include 'VECTOR.INC'	! with vauto
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'	! with inclen
-	INCLUDE 'PPLV11INC:PARAMPL5.DAT'	! with inclen
-	INCLUDE 'TMAP_PPLV11INC:CONT_INC.DECL/LIST'	! with iautoc
-	INCLUDE 'PPLV11INC:CONT.INC/LIST'	! with iautoc
-	INCLUDE 'TMAP_PPLV11INC:VECTOR_INC.DECL/LIST'	! with vauto
-	INCLUDE 'PPLV11INC:VECTOR.INC/LIST'	! with vauto
-#endif
 
 * calling argument declarations:
 	INTEGER	status

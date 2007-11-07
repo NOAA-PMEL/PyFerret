@@ -281,6 +281,7 @@
            got_units = .FALSE.
            got_history = .FALSE.
            output_title = .FALSE.
+           output_title = .TRUE.  ! output the var long_name by default
            output_units = .FALSE.
            output_history = .TRUE.
 	   itsa_string = cx_type(cx) .EQ. ptype_string
@@ -645,42 +646,21 @@
               ENDIF ! varid GT 0
 
 * variable title
-* First get from Ferret variables by means of VAR_TITLE, and
-* only if this fails from attribute structure.
-
-              got_title = .FALSE.
-              buff = VAR_TITLE( cx ) !!
-              lbuff = TM_LENSTR1( buff )
-
-              IF ( buff .NE. ' ' .AND. all_outflag .NE. 0 .AND.
-     .             output_title ) THEN
-                 CALL CD_WRITE_ATTRIB(cdfid, varcode, 'long_name',
-     .                              buff(:lbuff), .FALSE., status )
-                 IF ( status .NE. merr_ok ) GOTO 5800
-                 got_title = .TRUE.
-              ENDIF
+* May already have this from Ferret variables from attribute structure, or if there
+* is no long_name attribute, get it by means of VAR_TITLE.
 
               IF (.NOT. got_title) THEN
-                 
-                 attoutflag = 1
-                 IF (varid .GT. 0) THEN
-                    CALL CD_GET_VAR_ATT_ID (dset, varid, 'long_name', 
-     .                     attid, istat)
-                    IF (attid .GT. 0) THEN
-                       CALL CD_GET_VAR_ATT_INFO (dset, 
-     .                     varid, attid, aname, attype, attlen, 
-     .                     attoutflag, istat )
-                    ELSE
-                       attoutflag = 1
-                       buff = varcode
-                    ENDIF
-                 ENDIF
+                 buff = VAR_TITLE( cx ) !!
                  lbuff = TM_LENSTR1( buff )
 
-                 IF (attoutflag .EQ. 1) 
-     .               CALL CD_WRITE_ATTRIB(cdfid, varcode, 'long_name',
+                 IF ( buff .NE. ' ' .AND. all_outflag .NE. 0 .AND.
+     .                output_title ) THEN
+                    CALL CD_WRITE_ATTRIB(cdfid, varcode, 'long_name',
      .                              buff(:lbuff), .FALSE., status )
-                 IF ( status .NE. merr_ok ) GOTO 5800
+                    IF ( status .NE. merr_ok ) GOTO 5800
+                    got_title = .TRUE.
+                 ENDIF
+
               ENDIF
 
 * modifier to variable title

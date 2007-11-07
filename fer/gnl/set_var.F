@@ -68,6 +68,8 @@
 *                    back the result as an argument. Needed for port to 64-bit 
 * V601 10/06 *acm* - When units, title, or missing is set, change the corresponding
 *                    value or string in the attribute linked-list structure.
+* V608 11/07 *acm* - If doing SET VAR/UNITS, /TITLE, /BAD on a a user variable,
+*                    and that attribute was not previously set, add it.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -81,6 +83,7 @@
 	include 'xprog_state.cmn'
 	include 'xvariables.cmn'
 	include 'xrisc.cmn'
+        include 'netcdf.inc'
 
 * calling argument declarations
 	INTEGER		status
@@ -327,7 +330,7 @@
      .       CALL CD_PUT_NEW_ATTR (dset, varid, 
      .        'Ferret_Precision_Note', 2, 61, 1, 
      .        'This variable written by Ferret was converted from '//
-     .        'FLOAT to DOUBLE', 1, status )
+     .        'FLOAT to DOUBLE', 1., status )
 
            IF (status .NE. ferr_ok) GOTO 5000
 
@@ -453,6 +456,7 @@
      .                                  LEN(newname))
 
            dset = -1 ! user variables
+           CALL CD_GET_VAR_ID (dset, vname, varid, status)
 
 	   IF ( units .NE. char_init16 ) THEN
               uvar_units( var )  = units
@@ -465,6 +469,11 @@
      .             attname, attype, attlen, attoutflag, status )
                  CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
      .           units, dummy, status)
+              ELSE
+                 attype = NCCHAR
+                 attoutflag = 1
+                 CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
+     .              attlen, attoutflag, units, dummy, status )
               ENDIF
            ENDIF
      
@@ -479,6 +488,11 @@
      .             attname, attype, attlen, attoutflag, status )
                  CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
      .           title, dummy, status)
+              ELSE
+                 attype = NCCHAR
+                 attoutflag = 1
+                 CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
+     .              attlen, attoutflag, title, dummy, status )
               ENDIF
            ENDIF
 
@@ -494,6 +508,11 @@
      .             attname, attype, attlen, attoutflag, status )
                  CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
      .           buf, bad, status)
+              ELSE
+                 attype = NCFLOAT
+                 attoutflag = 1
+                 CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
+     .              attlen, attoutflag, buf, bad, status )
               ENDIF
 
               attname = '_FillValue'
@@ -503,6 +522,11 @@
      .             attname, attype, attlen, attoutflag, status )
                  CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
      .           buf, bad, status)
+              ELSE
+                 attype = NCFLOAT
+                 attoutflag = 1
+                 CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
+     .              attlen, attoutflag, buf, bad, status )
               ENDIF
 	   ENDIF
 

@@ -63,6 +63,9 @@ C**
 *                 before the possible resetting of zlev if posinf true.
 * V603 *acm* 7/07 As done in plotz.F, use TM_FPEQ to compare zlev(i) to 0.,
 *                 within machine accuracy.
+* V608 *cam*10/07 The above fix refered to TM_FPEQ( ABS(ZLEV(I)) ,0.) ) 
+*                 It should be ZLEV(I). Fixes bug 1546.
+
 
 	parameter	(epsilon = 1e-6)
 
@@ -150,7 +153,7 @@ C
                    ZLEV(J)=VAL(1)+VAL(3)*(I-1)
 CC		Bug fix for non zero levels that ought to be zero *jd*
 		   IF (ABS(ZLEV(J)) .LT. EPSILON*ABS(VAL(1))) ZLEV(J)=0.0	
-                   IF ( TM_FPEQ( ABS(ZLEV(I)) ,0.) ) GOTO 100
+                   IF ( TM_FPEQ( ABS(ZLEV(J)) ,0.) ) GOTO 100
                 ENDIF
 
 		IF(ZLEV(J).GT.0)THEN

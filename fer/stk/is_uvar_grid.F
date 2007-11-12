@@ -330,6 +330,13 @@
 	ELSE
 	   cx_type(hi_cx) = ptype_float
 	ENDIF
+
+* The attribute handling needed to know if this was a dataset variable (dset > 0) 
+* or a user-defined variable that depends on a dataset (dset=-1). Now reset the
+* dataset to the value from cx_data_set
+
+        dset = cx_data_set(hi_cx)
+        IF (dset .EQ. pdset_irrelevant) dset = -1
         
 * set the X axis limits equal to the length of the array
 c	cx_lo_ss(hi_cx, x_dim) = 1

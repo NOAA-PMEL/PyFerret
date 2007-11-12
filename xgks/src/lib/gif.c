@@ -863,6 +863,7 @@ GIFcellArray(Metafile *mf, int num, Gpoint *ll, Gpoint *ur, Gpoint *lr, Gint row
 	double accum;
 	int tox, toy;
 	int i, j, p;
+	int num_pt;
 
     mf_cgmo		**cgmo	= &mf->cgmo;
     for (imf = 0; imf < num; ++imf) {

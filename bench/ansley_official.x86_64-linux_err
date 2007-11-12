@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/build_v608/FERRET_x86/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 37656605 Oct 22 11:40 /home/porter/ansley/build_v608/FERRET_x86/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/build_v608/FERRET_x86/external_functions/ext_func_x86
+Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 46976962 Nov 12 12:13 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  Another Remik  fix for attribute-handling; initialize ndims for varid=0
+Note: all checkins for v6.08 release
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/build_v608/FERRET_x86/bench
+PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v608/FERRET_x86/external_functions/ext_func_x86
-Beginning at Mon Oct 22 11:41:01 PDT 2007
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
+Beginning at Mon Nov 12 12:30:13 PST 2007
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: unknown command qualifier: help
@@ -2460,4 +2460,4 @@ Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: in batch mode: SET MODE METAFILE only changes the name of the metafile
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Oct 22 11:42:15 PDT 2007
+Ended at Mon Nov 12 12:31:30 PST 2007

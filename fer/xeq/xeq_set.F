@@ -149,6 +149,7 @@
 * v604 *acm* 7/07 increase length of ds_name
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out.
+* V608 11/07 *acm* In Batch mode, MODE METAFILE is always .TRUE.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -585,7 +586,7 @@ c *kob* 4/97
      .                 'only changes the name of the metafile')
 	  	    IF ( buff2 .NE. ' ' ) CALL PPLCMD
      .			( from, line, 0, 'PLTNME '//buff2, 1, 1 )
-                    mode_metafile = .FALSE.
+                    mode_metafile = .TRUE.
                  ELSE
  	            IF ( .NOT.pplus_started ) CALL START_PPLUS     ! 1/94
 	  	    IF ( buff2 .NE. ' ' ) CALL PPLCMD

@@ -359,7 +359,7 @@
 	external 	lnblk
 
         integer         mapping,percentage,value,level 
-
+        INTEGER         TM_LENSTR1, ilen, slen
 *******************************************************************************
 
 *       DEFAULT MAPPING IS PERCENT FOR COMPATIBILITY WITH ORIGINAL SYSTEM
@@ -441,9 +441,21 @@
            value          = index (test_str, 'BY_VALUE')
            level          = index (test_str, 'BY_LEVEL') 
 
-           if (percentage .ne. 0) rgb_mapping = percent
-           if (value .ne. 0)      rgb_mapping = by_value
-           if (level .ne. 0)      rgb_mapping = by_level
+           if (percentage .ne. 0) then
+              rgb_mapping = percent
+           else if (value .ne. 0) then
+              rgb_mapping = by_value
+           else if (level .ne. 0) then
+              rgb_mapping = by_level
+           else
+              ilen = TM_LENSTR1(instr)
+              slen = TM_LENSTR1(sfile)
+              CALL WARN ('RGB_Mapping type not recognized, given '//
+     .         'in palette file '//sfile(1:slen)//' as '//instr(1:ilen))
+              CALL WARN ('Must be percent, by_value or by_level. '//
+     .         'Defaulting to percent')
+           endif
+              
 
 *	   RESET SPECTRUM TO GRAY SCALE
            if (rgb_mapping .eq. by_value) then
@@ -592,7 +604,7 @@
 *	PROTECT PREVIOUSLY USED COLORS
 	if (str .eq. 'PROTECT') then
 	   protect_used_colors = .true.
-	elseif (str .eq. 'RESET') then
+	else if (str .eq. 'RESET') then
 *	SET THEM TO BE REUSED
 	   protect_used_colors = .false.
 	   lo_color_ndx(wsid) = 0

@@ -55,7 +55,7 @@
       REAL    minrowx, maxrowx, big
       INTEGER GET_NDX, i, j, i1, fill_ndx, npt, pt1, next_ndx,
      .        jtop
-      LOGICAL BAD_XY_COORD
+      LOGICAL BAD_XY_COORD, first, xfield_is_modulo
       CHARACTER*128 buff
 
       big = ABS(bad_val4)
@@ -63,6 +63,7 @@
       status = ferr_ok
       lmin = -1*big
       lmax = big
+
 
 *  check for consistency: data range 1:ny, index range jlo:jhi  
 *  If inconsistent, use whole Y range given by ny
@@ -83,6 +84,7 @@
 *  Likewise for X, if this is not an x modulo plot
 
       IF (curvilinear .AND. (.NOT. xmodulo) ) THEN
+c      IF (curvilinear ) THEN
          IF (ilo .LT. 1 .OR. ihi .GT. nx+1) THEN  
             ilo = 1
             itop = nx
@@ -97,6 +99,7 @@
 
 *	LAY FILL DOWN ON SCREEN IN PROPER PLACE
 
+        first = .TRUE.  ! for curvilinear curv_coord_add_sub
 	DO 50 j = jlo, jtop
 
 ! initialize these so that the check in BAD_XY_COORD doesn't get caught
@@ -111,6 +114,7 @@
 
            minrowx = big
            maxrowx = -1.*big
+
 
 * ... outer: DO WHILE i LE itop ...
 40	   i = i + 1					! To line 50 JD 5.16.90
@@ -169,7 +173,7 @@
  52	      CONTINUE
 	      npt = 2*npt
 	      CALL CURV_COORD_ADD (px, py, npt, xinv, yinv, xadd,
-     .                        status) ! xform the pts
+     .            first, xfield_is_modulo, status) ! xform the pts
                
               minrowx = MIN( minrowx, px(1) )
               minrowx = MIN( minrowx, px(2) )

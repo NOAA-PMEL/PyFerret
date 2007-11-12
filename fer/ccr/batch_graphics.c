@@ -83,10 +83,13 @@ void FORTRAN(set_batch_graphics)(char *outfile)
 {
   int length;
   char * result;
+  int modestate;
+
 
   assert(outfile);
   length = strlen(outfile);
-  FORTRAN(save_metafile_name)(outfile, &length);
+  modestate = 1;
+  FORTRAN(save_metafile_name)(outfile, &length, &modestate);
   its_batch = -1;
 
   result = strstr(outfile,".gif"); 

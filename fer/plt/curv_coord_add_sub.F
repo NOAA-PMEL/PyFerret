@@ -1,5 +1,6 @@
 	SUBROUTINE CURV_COORD_ADD_SUB( xi, yj, npt, xfield, yfield,
-     .				   xinv, yinv, xadd, status )
+     .				   xinv, yinv, xadd, first, 
+     .				   xfield_is_modulo, status )
 
 *
 *
@@ -53,6 +54,7 @@
 	include	'xcurvilinear.cmn'
 
 * calling argument declarations:
+        LOGICAL first, xfield_is_modulo
 	INTEGER npt, status
 	REAL    xi(npt), yj(npt),
      .		xfield(xpos_loss_dim1:xpos_hiss_dim1,
@@ -64,10 +66,12 @@
 * internal variable declarations:
 
 	INTEGER xlo_dim1, xhi_dim1, xlo_dim2, xhi_dim2,
-     .		ylo_dim1, yhi_dim1, ylo_dim2, yhi_dim2, i
+     .		ylo_dim1, yhi_dim1, ylo_dim2, yhi_dim2, 
+     .          i, j, nx, ny, count_outliers
 	REAL xfrac, yfrac, xit, yjt,
      .	     x11, x12, x21, x22,
-     .	     y11, y12, y21, y22
+     .	     y11, y12, y21, y22,
+     .       dxmin, dxmax, dx_approx
 	CHARACTER*1 dim
 
         REAL branch_test, lon_degrees
@@ -75,14 +79,44 @@
         branch_test = 190.
         lon_degrees = 360.
 
-	DO 100 i = 1, npt
+* See if the xfield extends over 360 degrees. Do the outer values 
+* differ by about 360 ( relative to the size of the grid)?
+* Allow a few odd ones, perhaps at the edges of the domain.
 
+        xfield_is_modulo = .FALSE.
+        IF (dim1_modulo .AND. first) THEN
+           nx = xpos_hiss_dim1-xpos_loss_dim1
+           ny = xpos_hiss_dim2-xpos_loss_dim2
+           dx_approx = 360./FLOAT(nx)
+           dx_approx = ABS( xfield(xpos_hiss_dim1,ny/2) + 
+     .       xfield(xpos_loss_dim1,ny/2) )/FLOAT(nx)
+           count_outliers = 0
+   
+           dxmin = 100000.
+           dxmax = -100000.
+           DO j = xpos_loss_dim2,xpos_hiss_dim2
+              diff = xfield(xpos_hiss_dim1,j) - xfield(xpos_loss_dim1,j)
+              dxmin = MIN(dxmin, diff)
+              dxmax = MAX(dxmax, diff)
+              IF (ABS(diff-360.) .GT. 2.*dx_approx) 
+     .            count_outliers = count_outliers+1
+           ENDDO
+   
+           min_outliers = max(1,ny/20)
+           xfield_is_modulo = count_outliers .LT. min_outliers
+
+           first = .FALSE.
+        ENDIF
+   
+   	DO 100 i = 1, npt
+   
 * transfer coordinate pair to temporary variables
-	xit = xi(i)
-	yjt = yj(i)
+   	xit = xi(i)
+   	yjt = yj(i)
 
 * clip to the limits of the axis subscripts
-	IF ( .NOT.(dim1_modulo.OR.dim1_edges) ) THEN
+c	IF ( .NOT.(dim1_modulo.OR.dim1_edges) ) THEN
+	IF ( .NOT.(xfield_is_modulo.OR.dim1_edges) ) THEN
 	   IF (xit .LT. minss_dim1) xit = minss_dim1
 	   IF (xit .GT. maxss_dim1) xit = maxss_dim1
 	ENDIF
@@ -117,11 +151,20 @@
 *   that are at most one point beyond the edge of the coordinate fields.
 *   This is consistent with the index requirements of CONTOUR and SHADE
 * e.g. an input of xi=0.5 would result in xlo_dim1=N, xhi_dim1=1
-	IF ( dim1_modulo ) THEN
-	   IF ( xlo_dim1 .LT. minss_dim1 ) xlo_dim1 = maxss_dim1
-	   IF ( xlo_dim1 .GT. maxss_dim1 ) xlo_dim1 = minss_dim1
-	   IF ( xhi_dim1 .LT. minss_dim1 ) xhi_dim1 = maxss_dim1
-	   IF ( xhi_dim1 .GT. maxss_dim1 ) xhi_dim1 = minss_dim1
+
+        IF ( dim1_modulo .AND. xfield_is_modulo) THEN
+	   IF ( xlo_dim1 .LT. minss_dim1 ) THEN
+              xlo_dim1 = maxss_dim1
+           ENDIF
+	   IF ( xlo_dim1 .GT. maxss_dim1 ) THEN
+              xlo_dim1 = minss_dim1
+           ENDIF
+	   IF ( xhi_dim1 .LT. minss_dim1 ) THEN
+              xhi_dim1 = maxss_dim1
+           ENDIF
+	   IF ( xhi_dim1 .GT. maxss_dim1 ) THEN
+              xhi_dim1 = minss_dim1
+           ENDIF
 	ENDIF
 	IF ( dim2_modulo ) THEN
 	   IF ( xlo_dim2 .LT. minss_dim2 ) xlo_dim2 = maxss_dim2

@@ -80,13 +80,11 @@ void save_arg_pointers_( float *xpos_arr, float *ypos_arr )
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 void curv_coord_sub ( float *xi, float *yi, int *n,
                       float *xpos_cache, float *ypos_cache,
-                      float *xinv, float *yinv,
-		      int *status );
+                      float *xinv, float *yinv, int *status );
 #else
 void curv_coord_sub_( float *xi, float *yi, int *n,
                       float *xpos_cache, float *ypos_cache,
-                      float *xinv, float *yinv,
-		      int *status );
+                      float *xinv, float *yinv, int *status );
 #endif
 
 
@@ -95,12 +93,12 @@ void curv_coord_sub_( float *xi, float *yi, int *n,
 void curv_coord_add_sub ( float *xi, float *yi, int *n,
                       float *xpos_cache, float *ypos_cache,
                       float *xinv, float *yinv, float *xadd,
-		      int *status );
+		              int *first, int*xfield_is_modulo, int *status );
 #else
 void curv_coord_add_sub_( float *xi, float *yi, int *n,
                       float *xpos_cache, float *ypos_cache,
                       float *xinv, float *yinv, float *xadd,
-		      int *status );
+		              int *first, int*xfield_is_modulo, int *status );
 #endif
 
 /* prototype for FORTRAN subroutine to be called */
@@ -145,17 +143,17 @@ arrays of X and Y positions available, with an offset in the X coords
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 void curv_coord_add(float *xi, float *yi, int *n,
-		 float *xinv, float *yinv, float *xadd, int *status)
+		 float *xinv, float *yinv, float *xadd, int *first, int*xfield_is_modulo, int *status)
 #else
 void curv_coord_add_(float *xi, float *yi, int *n,
-		 float *xinv, float *yinv, float *xadd, int *status)
+		 float *xinv, float *yinv, float *xadd, int *first, int*xfield_is_modulo, int *status)
 #endif
 {
   extern float *xpos_cache, *ypos_cache;
 #ifdef NO_ENTRY_NAME_UNDERSCORES
-  curv_coord_add_sub(  xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, xadd, status );
+  curv_coord_add_sub(  xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, xadd, first, xfield_is_modulo, status );
 #else
-  curv_coord_add_sub_( xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, xadd, status );
+  curv_coord_add_sub_( xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, xadd, first, xfield_is_modulo, status );
 #endif
   return;
 }

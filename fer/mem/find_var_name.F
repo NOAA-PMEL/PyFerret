@@ -84,7 +84,7 @@
 
 * internal variable declarations:
 	INTEGER		TM_LENSTR, ivar, uvdset, len_test, len_mchars,
-     .                  j, num_indices, varid, status
+     .                  j, num_indices, varid, dset, status
 	LOGICAL		MATCH_QUOTED_NAME, single_dset, do_err
         CHARACTER       varname*512, attname*128
         CHARACTER*258   buff
@@ -94,10 +94,11 @@
 	single_dset = dset_num .NE. unspecified_int4
         len_test = TM_LENSTR(test_name)
         category = 0
+        dset = dset_num
 
         IF (INDEX(test_name, '.') .GT. 0) THEN
            do_err = .TRUE.
-           CALL BREAK_VARATTNAME ( test_name, dset_num, varname, 
+           CALL BREAK_VARATTNAME ( test_name, dset, varname, 
      .                             attname, varid, do_err, status )
            IF (status .EQ. ferr_ok) THEN
               category = cat_attrib_val
@@ -181,7 +182,7 @@
 * ... first check for an explicitly named data set
 *	   DO 40 ivar = 1, max_uvar
 *	      IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 40
-*	      IF ( uvar_dset( ivar ) .NE. dset_num ) GOTO 40
+*	      IF ( uvar_dset( ivar ) .NE. dset ) GOTO 40
 *              len_mchars = TM_LENSTR(uvar_name_code(ivar))
 *	      IF ( MATCH_QUOTED_NAME(test_name,len_test, uvar_name_code(ivar), len_mchars))
 *	1	   THEN
@@ -193,7 +194,7 @@
 	IF ( single_dset ) THEN
            DO 40 j = 1, num_indices
               ivar = string_array_result(j)
-	      IF ( uvar_dset( ivar ) .NE. dset_num ) GOTO 40
+	      IF ( uvar_dset( ivar ) .NE. dset ) GOTO 40
               IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 40
               category = cat_user_var
 	      variable = ivar
@@ -253,7 +254,7 @@
 
 * check file variables from this data set
 *	DO 200 ivar = 1, maxvars
-*	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset_num ) GOTO 200
+*	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset ) GOTO 200
 *           len_mchars = TM_LENSTR(ds_var_code(ivar))
 *	   IF ( MATCH_QUOTED_NAME( test_name,len_test, ds_var_code( ivar ),len_mchars)) 
 *        1    THEN
@@ -271,7 +272,7 @@
      .                                num_indices)
         DO 200 j = 1, num_indices
            ivar = string_array_result(j)
-	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset_num ) GOTO 200
+	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset ) GOTO 200
  	   category = cat_file_var
 	   variable = ivar
            test_name = buff
@@ -310,8 +311,8 @@
 
 * check table of calculatable variables (padded to 8 characters)
 *   but only if this is a Philander-Seigle model output
-	IF ( dset_num.GE.1 .AND. dset_num.LE.maxdsets ) THEN
-	   IF (dp_phil_sieg(dset_num).OR.dp_cox(dset_num)) THEN
+	IF ( dset.GE.1 .AND. dset.LE.maxdsets ) THEN
+	   IF (dp_phil_sieg(dset).OR.dp_cox(dset)) THEN
 	      DO 300 ivar = 1, num_calc_vars
                  len_mchars = TM_LENSTR(cvar_name_code(ivar))
 	         IF (MATCH_QUOTED_NAME(test_name,len_test,cvar_name_code(ivar)//'    ',len_mchars))

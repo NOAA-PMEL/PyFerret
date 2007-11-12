@@ -340,6 +340,7 @@ c        ENDIF
        ENDIF
 
 * successful completion
+        dset_in = dset
  1000	status = ferr_ok
 
 	RETURN

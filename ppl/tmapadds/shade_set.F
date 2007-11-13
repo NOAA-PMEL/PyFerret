@@ -51,6 +51,8 @@
 *                  of spectrum levels allowed to be specified in a palette file.
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 * V602: *acm* 1/07 Changes for metafile-batch mode
+* V608: *acm*11/07 the text for RGB_mapping must be palette, by_value, or by_level; issue
+*                  a warning if its not one of these. Fixes bug 1549
 
         include         'shade_vars.cmn'
         include 	'cmrdl_inc.decl'            

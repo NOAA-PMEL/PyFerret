@@ -67,11 +67,11 @@
 
 	INTEGER xlo_dim1, xhi_dim1, xlo_dim2, xhi_dim2,
      .		ylo_dim1, yhi_dim1, ylo_dim2, yhi_dim2, 
-     .          i, j, nx, ny, count_outliers
+     .          i, j, nx, ny, count_outliers, min_outliers, mid_y
 	REAL xfrac, yfrac, xit, yjt,
      .	     x11, x12, x21, x22,
      .	     y11, y12, y21, y22,
-     .       dxmin, dxmax, dx_approx
+     .       diff, dx_approx
 	CHARACTER*1 dim
 
         REAL branch_test, lon_degrees
@@ -88,21 +88,18 @@
            nx = xpos_hiss_dim1-xpos_loss_dim1
            ny = xpos_hiss_dim2-xpos_loss_dim2
            dx_approx = 360./FLOAT(nx)
-           dx_approx = ABS( xfield(xpos_hiss_dim1,ny/2) + 
-     .       xfield(xpos_loss_dim1,ny/2) )/FLOAT(nx)
+           mid_y = xpos_loss_dim2 + INT(ny/2)
+           dx_approx = ABS( xfield(xpos_hiss_dim1,mid_y) + 
+     .       xfield(xpos_loss_dim1,mid_y) )/FLOAT(nx)
            count_outliers = 0
-   
-           dxmin = 100000.
-           dxmax = -100000.
+
            DO j = xpos_loss_dim2,xpos_hiss_dim2
               diff = xfield(xpos_hiss_dim1,j) - xfield(xpos_loss_dim1,j)
-              dxmin = MIN(dxmin, diff)
-              dxmax = MAX(dxmax, diff)
               IF (ABS(diff-360.) .GT. 2.*dx_approx) 
      .            count_outliers = count_outliers+1
            ENDDO
    
-           min_outliers = max(1,ny/20)
+           min_outliers = max(1,INT(ny/20))
            xfield_is_modulo = count_outliers .LT. min_outliers
 
            first = .FALSE.

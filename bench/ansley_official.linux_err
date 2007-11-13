@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/build_v608/FERRET_linux/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     47634950 Oct 19 12:41 /home/porter/ansley/build_v608/FERRET_linux/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     52658380 Nov 13 13:25 /home/porter/ansley/build_v608/FERRET_linux/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/build_v608/FERRET_linux/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Remiks fix for attribute-handling; initializing attribute vals and string to NULL
+Note: checkins for v6.08 release
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build_v608/FERRET_linux/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v608/FERRET_linux/external_functions/ext_func_linux
-Beginning at Fri Oct 19 12:49:25 PDT 2007
+Beginning at Tue Nov 13 13:29:10 PST 2007
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: unknown command qualifier: help
@@ -2460,4 +2460,4 @@ Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: in batch mode: SET MODE METAFILE only changes the name of the metafile
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Oct 19 12:53:05 PDT 2007
+Ended at Tue Nov 13 13:33:04 PST 2007

@@ -127,7 +127,6 @@
 * v604 *acm* 7/07 increase length of
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out.
-* V608 11/07 *acm* In Batch mode, MODE METAFILE is always .TRUE.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -390,28 +389,6 @@
 	         IF ( mode.EQ.pmode_verify
      .	        .AND. mode_arg(mode,1).EQ.3
      .	        .AND. csp .GT. 0 ) GOTO 820
-
-* ... mode metafile may require immediate communication with PPLUS
-	         IF ( mode .EQ. pmode_metafile ) THEN
-                 
-*     When in gif mode or batch mode, ignore CANCEL MODE META
-	            its_gif = ITS_GIF_GRAPHICS()
-	            batch = ITS_BATCH_GRAPHICS()
-                    IF ( its_gif ) THEN
-                       mode_metafile = .FALSE.
-                    ELSE IF ( batch ) THEN
-                    CALL WARN ('in batch mode: CANCEL MODE METAFILE '//
-     .                 'ignored')
-                       mode_metafile = .TRUE.
-                    ELSE
- 	               IF ( gksopn ) THEN
-                          CALL SEND_PLTYPE( mode_metafile )
-                          CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )  ! 2/93
-                       ENDIF
-                    ENDIF
-                    IF (its_gif .OR. batch) GOTO 820
-                 ENDIF
-
 * ... push the mode stack adding on a FALSE (because it's CANCEL)
 	         DO 806 i = mode_stack_size, 2, -1
 	            mode_state(mode,i) = mode_state(mode,i-1) 
@@ -427,6 +404,22 @@
      .		.AND. (mode_state(mode,1) .NEQV. mode_state(mode,2))) THEN
 	            CALL DELETE_TRANSFORMED_VARS( status )
 	            IF ( status .NE. ferr_ok ) RETURN
+* ... mode metafile may require immediate communication with PPLUS
+	         ELSEIF ( mode .EQ. pmode_metafile ) THEN
+                 
+*     When in gif mode or batch mode, ignore CANCEL MODE META
+	            its_gif = ITS_GIF_GRAPHICS()
+	            batch = ITS_BATCH_GRAPHICS()
+                    IF ( its_gif ) THEN
+                       mode_metafile = .FALSE.
+                    ELSE IF ( batch ) THEN
+                       mode_metafile = .FALSE.
+                    ELSE
+ 	               IF ( gksopn ) THEN
+                          CALL SEND_PLTYPE( mode_metafile )
+                          CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )  ! 2/93
+                       ENDIF
+                    ENDIF
 
 * ... mode REFRESH sends message to gnu READLINE routine to turn off refresh
 	         ELSEIF ( mode .EQ. pmode_Xwindows ) THEN
@@ -901,7 +894,7 @@ c	ENDIF
 
               DO 1410 iatt = 1, nvatts
                  CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, attname, 
-     .    status)
+     .                                     status)
                  CALL CD_SET_ATT_FLAG(dset, varid, attname, iflag, status)
  1410         CONTINUE
 

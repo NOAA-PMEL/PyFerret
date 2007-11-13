@@ -83,8 +83,8 @@
 * differ by about 360 ( relative to the size of the grid)?
 * Allow a few odd ones, perhaps at the edges of the domain.
 
-        xfield_is_modulo = .FALSE.
         IF (dim1_modulo .AND. first) THEN
+           xfield_is_modulo = .FALSE.
            nx = xpos_hiss_dim1-xpos_loss_dim1
            ny = xpos_hiss_dim2-xpos_loss_dim2
            dx_approx = 360./FLOAT(nx)

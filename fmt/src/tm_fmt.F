@@ -230,6 +230,8 @@
 	      str_len = slen
 	   ELSE
 	      str_len = MIN( slen, sig_needed+xtra)
+* Correct for too-small number of slots when writing a number w neg exponent.
+              IF (pow10 .LT. 0) str_len = str_len + sig_max
 	      WRITE ( fmt, 3000 ) str_len, str_len-(xtra+1)
  3000	      FORMAT( '(1PG',I2,'.',I2,')' )
 	      WRITE ( TM_FMT, fmt ) val

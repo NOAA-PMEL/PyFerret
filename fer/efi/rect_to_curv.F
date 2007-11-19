@@ -41,7 +41,9 @@
 !
 ! mjh@gfdl.gov
 ! 2/20/2003
-!
+!  
+! 11/19/2007 fix bug 1553 looping over k,l
+! 
 ! In this subroutine we provide information about
 ! the function.  The user configurable information 
 ! consists of the following:
@@ -414,13 +416,13 @@ c     .     in_lon_lat(1,2,1,1) )
 
       i1 = arg_lo_ss(X_AXIS,ARG1)
       j1 = arg_lo_ss(Y_AXIS,ARG1)
-      k1 = arg_lo_ss(Z_AXIS,ARG1)
-      l1 = arg_lo_ss(T_AXIS,ARG1)
 
       i = res_lo_ss(X_AXIS)
       j = res_lo_ss(Y_AXIS)
 
+      l1 = arg_lo_ss(T_AXIS,ARG1)
       DO l = res_lo_ss(T_AXIS),res_hi_ss(T_AXIS)
+         k1 = arg_lo_ss(Z_AXIS,ARG1)
          DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
             CALL horiz_interp_bili ( wti, wtj, i_lon, j_lat,  

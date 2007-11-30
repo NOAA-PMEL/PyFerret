@@ -235,7 +235,7 @@ case printer:
 
    breaksw
 case file:
-   if ($got_gksm2ps_files)gksm2ps $translator_args $gksm2ps_files 
+   if ($got_gksm2ps_files) gksm2ps $translator_args $gksm2ps_files 
    if ($got_mtt_files)    mtt     $translator_args $mtt_files 
    breaksw
 case Xwindow:

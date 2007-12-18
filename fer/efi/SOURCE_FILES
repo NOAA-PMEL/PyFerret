@@ -111,7 +111,6 @@ ycat.F\
 yreverse.F\
 zaxreplace_avg.F\
 zaxreplace_bin.F\
-zaxreplace_lin.F\
 zaxreplace_rev.F\
 zaxreplace_zlev.F\
 zcat.F\

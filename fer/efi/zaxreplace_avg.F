@@ -38,6 +38,11 @@
 * 11/2001  clarify function description
 *  7/2003  Bug fix; last source point wasnt associated with a dest box
 *          when the destination axis continues beyond the source range
+* 12/2007  Bug 1557 fix: the function already worked for second argument 
+*          varying in xyt. But gaps not treated correctly: for each k, we 
+*          start next k average with remaining weighted part of the last box
+*          When missing data encountered, use this remaining part, then zero
+*          out the variables that held it.
 *
 *
 * Replace Z axis, using weighted averaging over bins
@@ -405,6 +410,8 @@ c      CHARACTER*132 err_msg
                   IF (nsrc_hi .LT. nsrc_lo) THEN
                      IF (wtdsum .NE. 0.) THEN
                         result(i,j,k,l) = sum / wtdsum
+                        sum = 0.
+                        wtdsum = 0.
                      ELSE
                         result(i,j,k,l) = bad_flag_result
                      ENDIF

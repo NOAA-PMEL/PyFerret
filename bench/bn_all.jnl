@@ -568,6 +568,9 @@ GO bn605_bug_fixes
 GO bn_reset
 GO bn608_bug_fixes
 
+GO bn_reset
+GO bn61_bug_fixes
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

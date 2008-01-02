@@ -1,0 +1,13 @@
+! bn608_bug_fixes
+! test various fixes that went into version 6.1
+! 2-Jan-2008 ACM
+
+! Fix for Bug 1556: 
+! Error processing parentheses on abstract axis names.
+GO bn_reset
+GO err608_bug1556
+
+! Fix for Bug 1538:
+! Precision of immediate-mode output of negative values
+GO bn_reset
+GO err608_precision_neg_numbers

@@ -86,8 +86,14 @@
 * name if the axis name was changed on inupt. (If name matched an existing 
 * line name, then Ferret has changed the name for uniqueness.)
 
-      CALL CD_GET_VAR_ID (dset, varname, varid, status)  
+* Do not try to get the axis name if its in parentheses. These names are
+* dynamic axis names.
+
+      status = merr_ok + 1
+      IF (varname(1:1) .NE. '(') 
+     .   CALL CD_GET_VAR_ID (dset, varname, varid, status)  
      
+      got_it = .FALSE.
       IF (status .EQ. merr_ok) THEN
          attname = 'orig_file_axname' 
          alen = 18
@@ -117,8 +123,11 @@
          CD_AXIS_OUTNAME = ww_dim_name(idim)//'AX'
          nlen = 3
 
-* if it's a dynamic axis remove the parentheses
-      ELSEIF ( line_name(iaxis)(1:1) .EQ. '(' ) THEN
+* if it's a dynamic axis and if we didnt recover the 
+* original name from the linked-list information,
+* remove the parentheses
+      ELSEIF ( line_name(iaxis)(1:1) .EQ. '(' .AND.
+     .         .NOT.got_it ) THEN
 	 IF ( nlen .LE. 2) nlen = 3			! should never happen
          CD_AXIS_OUTNAME = line_name(iaxis)(2:nlen-1)
 	 nlen = nlen - 2

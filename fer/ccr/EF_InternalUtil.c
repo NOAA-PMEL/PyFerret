@@ -621,9 +621,6 @@ void FORTRAN(zaxreplace_bin_work_size)(int *);
 void FORTRAN(zaxreplace_bin_compute)(int *, float *, float *, float *, 
              float *, float *, float *, float *, float *, float *, float *, float *);
 
-void FORTRAN(zaxreplace_lin_init)(int *);
-void FORTRAN(zaxreplace_lin_compute)(int *, float *, float *, float *, float *);
-
 void FORTRAN(zaxreplace_rev_init)(int *);
 void FORTRAN(zaxreplace_rev_work_size)(int *);
 void FORTRAN(zaxreplace_rev_compute)(int *, float *, float *, float *, 
@@ -726,7 +723,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 100
+#define N_INTEF 99
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -827,11 +824,10 @@ struct {
    strcpy(I_EFnames[92].funcname, "xauto_cor");
    strcpy(I_EFnames[93].funcname, "zaxreplace_avg");
    strcpy(I_EFnames[94].funcname, "zaxreplace_bin");
-   strcpy(I_EFnames[95].funcname, "zaxreplace_lin");
-   strcpy(I_EFnames[96].funcname, "zaxreplace_rev");
-   strcpy(I_EFnames[97].funcname, "zaxreplace_zlev");
-   strcpy(I_EFnames[98].funcname, "zcat");
-   strcpy(I_EFnames[99].funcname, "zreverse");
+   strcpy(I_EFnames[95].funcname, "zaxreplace_rev");
+   strcpy(I_EFnames[96].funcname, "zaxreplace_zlev");
+   strcpy(I_EFnames[97].funcname, "zcat");
+   strcpy(I_EFnames[98].funcname, "zreverse");
 /*    
  *  ------------------------------------ 
  */
@@ -3049,10 +3045,6 @@ else if ( !strcmp(name,"zaxreplace_avg_compute_") ) return (void *)FORTRAN(zaxre
 else if ( !strcmp(name,"zaxreplace_bin_init_") ) return (void *)FORTRAN(zaxreplace_bin_init);
 else if ( !strcmp(name,"zaxreplace_bin_work_size_") ) return (void *)FORTRAN(zaxreplace_bin_work_size);
 else if ( !strcmp(name,"zaxreplace_bin_compute_") ) return (void *)FORTRAN(zaxreplace_bin_compute);
-
-/* zaxreplace_lin.F */
-else if ( !strcmp(name,"zaxreplace_lin_init_") ) return (void *)FORTRAN(zaxreplace_lin_init);
-else if ( !strcmp(name,"zaxreplace_lin_compute_") ) return (void *)FORTRAN(zaxreplace_lin_compute);
 
 /* zaxreplace_rev.F */
 else if ( !strcmp(name,"zaxreplace_rev_init_") ) return (void *)FORTRAN(zaxreplace_rev_init);

@@ -46,6 +46,10 @@
 * v552  *acm4/03 - increase uvar_name_code to 128 (also change test in xeq_define)
 * V600 2/06 *kob* - declare uvar_name_code_head etc as double, for 64-bit build
 * V608 9/07 *acm*  increase uvar_text_len to 2048; var defs can contain long URLs
+* V609 1/08 *acm*  increase max_mrs, pmv_npiles, max_intrp and max_uvar_items. 
+*                  The first 3 of these needed for LAS scripts doing comparisons 
+*                  along with seasonal averages; max_uvar_items reported once or 
+*                  twice as a limit that users have run into.
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -165,12 +169,12 @@
      .			pmv_adjoint_var_pile,
      .			pmv_lowest_head,
      .			dummy_mr
-	PARAMETER     ( max_mrs   = 151,
+	PARAMETER     ( max_mrs   = 301,
      .			dummy_mr  = max_mrs,
      .			max_mr_avail = max_mrs - 1,
      .			pmem_blk_size = 2*(160*100*4/10), !2* 9/01 see ferret.h
      .			pmax_mem_blks   = 500,
-     .			pmv_npiles     = 149,	! prime # of hash piles
+     .			pmv_npiles     = 299,	! prime # of hash piles
      .			pmv_nocache_pile = -pmv_npiles - 1,
      .			pmv_work_var_pile = -pmv_npiles - 2,
      .			pmv_adjoint_var_pile = -pmv_npiles - 3,
@@ -183,9 +187,10 @@
      .			uvar_dset,
      .			max_intrp
 	PARAMETER     (	max_uvar      	  =2000,! total # uvars incl. "EX#."
-     .			max_uvar_items    = 100,! complexity of uvar expression
+     .			max_uvar_items    = 200,! complexity of uvar expression
      .			uvar_text_len	  = 2048,! max length of uvar expression
-     .			max_intrp	  = 200  )
+c     .			max_intrp	  = 200  )
+     .			max_intrp	  = 400  )
 
 ********************************************************************************
 ******				COMMON DECLARATION			  ******

@@ -510,74 +510,70 @@
 
 * 9/95 - COMMA OR TAB DELIMITED OUTPUT ... some frills  but not too many
 * (note that indent levels aren't changed for k and l loops)
-* If /NOROWHEAD then do not list coordinates.
-
 	ELSEIF ( do_comma_del .OR. do_tab_del ) THEN
-           IF ( do_comma_del ) THEN
-	      tab_or_comma = ','
-           ELSEIF( do_tab_del ) THEN
-	      tab_or_comma = CHAR(9)
-           ENDIF
-           IF (.NOT.norow) THEN
 * ... column headings for tab and comma-delimited output (9/95)
-	      line_buff(1:line_length) = 'coordinates'//tab_or_comma
-	      alen = 12
+	   IF ( do_comma_del ) THEN
+	      tab_or_comma = ','
+	   ELSEIF( do_tab_del ) THEN
+	      tab_or_comma = CHAR(9)
+	   ENDIF
+	   line_buff(1:line_length) = 'coordinates'//tab_or_comma
+	   alen = 12
 
 * Get number of decimal places for formatting the row coordinates
 
-              ndig(row_ax)= ax_dec_pt(row_ax)
-              CALL NDIG_COORDS (grid, row_ax, lo1, hi1, del1, 
-     .           bad_data, ndig(row_ax), ax_dec_pt(row_ax) )
+           ndig(row_ax)= ax_dec_pt(row_ax)
+           CALL NDIG_COORDS (grid, row_ax, lo1, hi1, del1, 
+     .        bad_data, ndig(row_ax), ax_dec_pt(row_ax) )
 
 * Get number of decimal places for formatting the column coordinates
 
-              ndig(col_ax) = ax_dec_pt(col_ax)
-              CALL NDIG_COORDS (grid, col_ax, lo2, hi2, del2, 
-     .           bad_data, ndig(col_ax), ax_dec_pt(col_ax) )
+           ndig(col_ax) = ax_dec_pt(col_ax)
+           CALL NDIG_COORDS (grid, col_ax, lo2, hi2, del2, 
+     .        bad_data, ndig(col_ax), ax_dec_pt(col_ax) )
 
 * Get number of decimal places for formatting coordinate labels
 
-              ndig(perm(3)) = ax_dec_pt(perm(3))
-	      IF ( ndim .GE. 3 .AND. valid(3) .AND. 
-     .             ax_dec_pt(perm(3)) .GE. 0 ) 
-     .           CALL NDIG_COORDS (grid, perm(3), lo3, hi3, del3, 
-     .              bad_data, ndig(perm(3)), ax_dec_pt(perm(3)) )
+           ndig(perm(3)) = ax_dec_pt(perm(3))
+	   IF ( ndim .GE. 3 .AND. valid(3) .AND. 
+     .          ax_dec_pt(perm(3)) .GE. 0 ) 
+     .        CALL NDIG_COORDS (grid, perm(3), lo3, hi3, del3, 
+     .           bad_data, ndig(perm(3)), ax_dec_pt(perm(3)) )
 
-              ndig(perm(4)) = ax_dec_pt(perm(4))
-	      IF ( ndim .GE. 4 .AND. valid(4) ) 
-     .           CALL NDIG_COORDS (grid, perm(4), lo4, hi4, del4, 
-     .              bad_data, ndig(perm(4)), ax_dec_pt(perm(4)) )
+           ndig(perm(4)) = ax_dec_pt(perm(4))
+	   IF ( ndim .GE. 4 .AND. valid(4) ) 
+     .        CALL NDIG_COORDS (grid, perm(4), lo4, hi4, del4, 
+     .           bad_data, ndig(perm(4)), ax_dec_pt(perm(4)) )
 
 * Write coordinates
 
-	      DO 330 i = lo1, hi1, del1
-	         val8 = TM_WORLD( i, grid, row_ax, box_middle )
-	         width = FIELD_WIDTH(val8, grid, row_ax, ndig(row_ax),
+	   DO 330 i = lo1, hi1, del1
+	      val8 = TM_WORLD( i, grid, row_ax, box_middle )
+	      width = FIELD_WIDTH(val8, grid, row_ax, ndig(row_ax),
      .					numbers)
-	         alen = alen + width
-	         IF ( alen .GT. max_line_len ) THEN
-	            line_buff(max_line_len-18:max_line_len) = 
+	      alen = alen + width
+	      IF ( alen .GT. max_line_len ) THEN
+	         line_buff(max_line_len-18:max_line_len) = 
      .			'** line too long **'
-	            alen = max_line_len
-	            GOTO 331
-	         ENDIF
-	         CALL TRANSLATE_TO_WORLD
-     .		         ( val8,
-     .		   	   row_ax,
-     .			   grid,
-     .			   ndig(row_ax),
-     .			   line_buff(alen-(width-1):alen) )
-	         IF ( i .LT. hi1 ) THEN
-	            alen = alen + 1
-	            line_buff(alen:alen) = tab_or_comma
-	         ENDIF
- 330	      CONTINUE
- 331	      CALL SPLIT_LIST(pttmode_explct, list_lun,
+	         alen = max_line_len
+	         GOTO 331
+	      ENDIF
+	      CALL TRANSLATE_TO_WORLD
+     .		      ( val8,
+     .			row_ax,
+     .			grid,
+     .			ndig(row_ax),
+     .			line_buff(alen-(width-1):alen) )
+	      IF ( i .LT. hi1 ) THEN
+	         alen = alen + 1
+	         line_buff(alen:alen) = tab_or_comma
+	      ENDIF
+ 330	   CONTINUE
+ 331	   CALL SPLIT_LIST(pttmode_explct, list_lun,
      .				line_buff(:alen), alen )
-           ENDIF  ! not norow
 	   DO 350 l = lo4, hi4, del4
 * ... label the block of blocks (4th dimension)
-	      IF ( ndim .GE. 4 .AND. valid(4) .AND..NOT.norow) THEN
+	      IF ( ndim .GE. 4 .AND. valid(4) ) THEN
 	         CALL POS_LAB( l, cx, perm(4),
      .			    ndig(perm(4)), line_buff, alen )
 	         CALL SPLIT_LIST(pttmode_explct, list_lun,
@@ -585,7 +581,7 @@
 	      ENDIF
 	   DO 350 k = lo3, hi3, del3
 * ... label a single block (3rd dimension)
-	      IF ( ndim .GE. 3 .AND. valid(3)  .AND..NOT.norow) THEN
+	      IF ( ndim .GE. 3 .AND. valid(3) ) THEN
 	         CALL POS_LAB( k, cx, perm(3),
      .			       ndig(perm(3)), line_buff, alen )
 	         CALL SPLIT_LIST(pttmode_explct, list_lun,
@@ -594,39 +590,27 @@
 	   DO 350 j = lo2, hi2, del2
 	      IF ( interrupted ) RETURN
 * ...  create label for this row
-                 IF (norow) THEN
-                    alen = 1
-                 ELSE
-	            IF ( ndim .GE. 2 .AND. valid(2) ) THEN
-	               CALL TRANSLATE_TO_WORLD
-     .		        ( TM_WORLD( j, grid, col_ax, box_middle ),
-     .			  col_ax, grid, ndig(col_ax), line_buff(:16) )
-	               alen = TM_LENSTR1(line_buff(:16))
-	            ELSE	! 1D row-only (will this ever happen?)
-	               line_buff(1:5) = 'row 1'	
-	               alen = 5
-	            ENDIF
-                 ENDIF
+	         IF ( ndim .GE. 2 .AND. valid(2) ) THEN
+	            CALL TRANSLATE_TO_WORLD
+     .		      ( TM_WORLD( j, grid, col_ax, box_middle ),
+     .			col_ax, grid, ndig(col_ax), line_buff(:16) )
+	            alen = TM_LENSTR1(line_buff(:16))
+	         ELSE	! 1D row-only (will this ever happen?)
+	            line_buff(1:5) = 'row 1'	
+	            alen = 5
+	         ENDIF
 * ...  and append the values for this row
 	         DO 340 i = lo1, hi1, del1
 	            IF ( itsa_string ) THEN
-	               IF (alen .GT. 1) THEN
-                          line_buff = line_buff(:alen)//tab_or_COMMA
-                          alen = alen + 1
-                       ENDIF
-	               line_buff = line_buff(:alen)//
-     .			 GET_STRING_ELEMENT(
-     .			 m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
-     .			 grid_data,i,j,k,l,max_line_len,vlen )
+	               line_buff = line_buff(:alen)//tab_or_COMMA//
+     .			GET_STRING_ELEMENT(
+     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
+     .			grid_data,i,j,k,l,max_line_len,vlen )
 	            ELSE
-	               IF (alen .GT. 1) THEN
-                          line_buff = line_buff(:alen)//tab_or_COMMA
-                          alen = alen + 1
-                       ENDIF
-                       line_buff = line_buff(:alen)//
-     .                   TM_FMT(grid_data(i,j,k,l),prec_digits,16,vlen)
+	               line_buff = line_buff(:alen)//tab_or_COMMA//
+     .			TM_FMT(grid_data(i,j,k,l),prec_digits,16,vlen)
 	            ENDIF
-	            alen = alen+vlen
+	            alen = alen+vlen+1
 	            IF ( alen .GT. max_line_len ) THEN
 	               line_buff(max_line_len-18:max_line_len) = 
      .			'** line too long **'
@@ -637,8 +621,6 @@
  341	         CALL SPLIT_LIST(pttmode_explct, list_lun,
      .				line_buff(:alen), alen )
  350	   CONTINUE
-
-
 * done - go home
 	   RETURN
 	ENDIF
@@ -775,7 +757,7 @@
 
 	DO 530 l = lo4, hi4, del4
 * label the block of blocks (4th dimension)
-	   IF ( ndim .GE. 4 .AND. valid(4) .AND..NOT.norow) THEN
+	   IF ( ndim .GE. 4 .AND. valid(4) ) THEN
 	      CALL POS_LAB( l, cx, perm(4),
      .			    ax_dec_pt(perm(4)), line_buff, alen )
 	      CALL SPLIT_LIST(pttmode_explct, list_lun,
@@ -784,7 +766,7 @@
 
 	   DO 520 k = lo3, hi3, del3
 *    label a single block (3rd dimension)
-	      IF ( ndim .GE. 3 .AND. valid(3)  .AND..NOT.norow) THEN
+	      IF ( ndim .GE. 3 .AND. valid(3) ) THEN
 	         CALL POS_LAB( k, cx, perm(3),
      .			       ax_dec_pt(perm(3)), line_buff, alen )
 	         CALL SPLIT_LIST(pttmode_explct, list_lun,

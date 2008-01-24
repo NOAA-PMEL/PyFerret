@@ -79,7 +79,6 @@
 *                    tab and comma formatting, and there was also an inconsistency
 *                    in how the two flags were used: prec_digits(for LIST/PREC=) and
 *                    list_digits(setting from SET LIST/PREC=)
-* V61: *acm* 11/07   If the /NOROWLAB qualifier was given, do not do block labels either.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -518,13 +517,12 @@
 * etc. for a 4D field
 
 * If the /NOROWLAB qualifier was given, do not do the "coord/sub:" on each data line
-* If the /NOROWLAB qualifier was given, do not do block labels either.
 
 	point = -1                    ! bug fix 4/93
 	DO 600 i4 = lo4, hi4, del4
 * label the block of block of blocks (4th dimension)
 	   risc_buff = ' '
-	   IF ( hi4 .GT. lo4 .AND..NOT.norow) THEN
+	   IF ( hi4 .GT. lo4 ) THEN
 	      CALL POS_LAB( i4, valid_ax(4), perm(4),
      .			    ax_dec_pt(perm(4)), line_buff, alen )
 	      WRITE (risc_buff, 3050) line_buff(:alen)
@@ -533,7 +531,7 @@
 	   ENDIF
 	DO 600 i3 = lo3, hi3, del3
 * label the block of blocks (3rd dimension)
-	   IF ( hi3 .GT. lo3  .AND..NOT.norow) THEN
+	   IF ( hi3 .GT. lo3 ) THEN
 	      CALL POS_LAB( i3, valid_ax(3), perm(3),
      .			    ax_dec_pt(perm(3)), line_buff, alen )
 	      WRITE (risc_buff, 3050) line_buff(:alen)
@@ -541,7 +539,7 @@
 	   ENDIF
 	DO 600 i2 = lo2, hi2, del2
 * label the block of blocks (3rd dimension)
-	   IF ( hi2 .GT. lo2  .AND..NOT.norow) THEN
+	   IF ( hi2 .GT. lo2 ) THEN
 	      CALL POS_LAB( i2, valid_ax(2), perm(2),
      .			    ax_dec_pt(perm(2)), line_buff, alen )
 	      WRITE (risc_buff, 3050) line_buff(:alen)

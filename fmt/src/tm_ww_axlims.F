@@ -54,7 +54,7 @@
 	  lo = unspecified_val8
 	  hi = unspecified_val8
 	ELSEIF ( line_regular(axis) ) THEN
-	  lo = line_start(axis) - 0.5*line_delta(axis)
+	  lo = line_start(axis) - 0.5D0*line_delta(axis)
 	  hi = lo + line_dim(axis)*line_delta(axis)
 	ELSE
 	  isub1 = line_subsc1(axis)

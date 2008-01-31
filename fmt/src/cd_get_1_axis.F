@@ -149,6 +149,8 @@
 * V604  6/07 *acm* Further fixes for finely-spaced axes (see bug 1483); compute only one epsilion23
 *                  for checking regularity of axes. For checking axis length of 360, use TM_FPEQ
 *                  to allow for numerical accuracy of bounds for axes of exactly length360.
+* V61   1/08 *acm* Fix bug 1559: Sanity-checking the modulo length can run into precision
+*                  problems, in particular if the axis coordinates in the file are single-precision.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -229,7 +231,6 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
       REAL*8   TM_SECS_FROM_BC, first, secs2firststep, secs1590,
      .         t0_secs, last_coord, firs_coord, secsperyear, secs2start,
      .         days_neg4713, days_1901_may68, secs_to_1901, secs_to_1968 
-
 
 * parameter declarations
         REAL*8          psecs_per_day
@@ -1158,10 +1159,18 @@ c           secsperyear = cals_yeardays(cal_id)* 24*60*60
 * sanity check the modulo length
 * a whisker too small is assumed a precision error
 * a whisker larger is assumed to be deliberate
+* ACM 1/08 
+* If a whisker too large, this may be a precision error 
+* In particular this happens converting single float coordinates to
+* double coordinate storage. If coords are single precision do the 
+* check in single precision.
+
         IF (line_modulo(iaxis).AND.line_modulo_len(iaxis).NE.0.D0) THEN
            IF (line_modulo_len(iaxis) .LT. axwwlen) THEN
-             line_modulo_len(iaxis) = 0.0D0
+c             line_modulo_len(iaxis) = 0.0D0
              ok = TM_DFPEQ(axwwlen, line_modulo_len(iaxis)) 
+             IF (vartype .EQ. ncfloat) 
+     .          ok = TM_FPEQ(axwwlen, line_modulo_len(iaxis)) 
              IF (.NOT.  ok)
      .          CALL TM_NOTE(
      .          'Ignored modulo length exceeding axis length: '

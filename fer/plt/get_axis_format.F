@@ -37,6 +37,9 @@
 * ACM 5/2005
 * set up the format for PPLUS to properly label the axis tics
 * Extracted from axis_format.F
+* 
+* 2/2008 ACM If the lo and hi value on the axis are the same '
+* (which may happen in a PLOT/VS plot) we got a divide by zero.
 
 * calling argument declarations:
 	CHARACTER	fmt*4
@@ -55,7 +58,8 @@
 
 * Compute n_res; round up (hi-lo)/(2*del_val)  We label half of the tic marks...
 
-        n_res = INT(0.5+ ABS(hi_val - lo_val) / (2.D0*del_val) ) 
+        n_res = INT(0.5+ ABS(hi_val - lo_val) / (2.D0*del_val) )
+        IF (n_res .EQ. 0) n_res = del_val
 	res_del = ABS( hi_val - lo_val ) / n_res
 	CALL GET_PREC_DIGITS( hi_val, lo_val, res_del, places, ndec )
 

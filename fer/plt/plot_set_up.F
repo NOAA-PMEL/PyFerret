@@ -126,6 +126,9 @@
 *                  send delta to routine AXIS_FORMAT
 * V580 *acm* 10/05 Fix for bug 1349, longitude/latitude axis formatting. Need 
 *                  to set the format to use as well as the label.
+* V610 *acm*  2/08 Fix bug 1560. In the lon/lat axis formatting, check whether 
+*                  the unit is longitude or latitude. PLOT/VS plots may have 
+*                  either one of these on either axis.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -157,7 +160,8 @@
  
 * V500 *kob* 3/99- up VAR_CODE and VAR_UNITS to 64 chars
 * internal variable declarations:
-	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, flip, time_axis,
+	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, TM_HAS_STRING,
+     .                  flip, time_axis,
      .			all_1_dep, all_1_ind, formatted, user_title,
      .			indep_is_log, dep_is_log, use_nice
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title
@@ -368,13 +372,20 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * for /VS plots turn on lon/lat axis formatting, if lon/lat units	 
        	  
                IF (.NOT.overlay) THEN	 
-                  iunits = TM_UNIT_ID(VAR_UNITS(cx_x))
+                  buff1 = VAR_UNITS(cx_x)
+                  iunits = TM_UNIT_ID(buff1)
                   IF (iunits .EQ. 4) THEN
 	             CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, 
      .                  fmt, use_nice )
                      IF (use_nice) THEN
-                         ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
+                        IF (TM_HAS_STRING(buff1, '_e') .OR.
+     .                      TM_HAS_STRING(buff1, '_E') ) THEN
+                            ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                     ',''''LONE'''')' 
+                        ELSE
+                            ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .                     ',''''LAT'''')'
+                        ENDIF
                         CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
                      ENDIF
                   ENDIF	 
@@ -384,20 +395,41 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
        	 
                cx_x = cx_list(1)	 
                cx_y = cx_list(2) 	 
-               IF (.NOT.overlay) THEN	 
-                  iunits = TM_UNIT_ID(VAR_UNITS(cx_x))	 
+               IF (.NOT.overlay) THEN
+                  buff1 = VAR_UNITS(cx_x)
+                  iunits = TM_UNIT_ID(buff1) 
                   IF (iunits .EQ. 4) THEN	 
-                     CALL PPLCMD ( from, line, 0, 'XFOR (I7,''''LONE'''')', 1, 1 )	 
-                  else	 
+	             CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, 
+     .                  fmt, use_nice )
+                     IF (use_nice) THEN
+                        IF (TM_HAS_STRING(buff1, '_e') .OR.
+     .                      TM_HAS_STRING(buff1, '_E') ) THEN
+                            ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .                     ',''''LONE'''')'
+                        ELSE
+                            ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .                     ',''''LAT'''')'
+                        ENDIF
+                        CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+                     ENDIF
+                  ELSE	 
                      CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )	 
-                  endif	 
+                  ENDIF	 
             	 
-                  iunits = TM_UNIT_ID(VAR_UNITS(cx_y))	 
-                  IF (iunits .EQ. 4) THEN	 
-                     CALL PPLCMD ( from, line, 0, 'YFOR (I7,''''LAT'''')', 1, 1 )	 
-                  else	 
+                  buff1 = VAR_UNITS(cx_y)	 
+                  iunits = TM_UNIT_ID(buff1)	 
+                  IF (iunits .EQ. 4) THEN
+                     IF (TM_HAS_STRING(buff1, '_e') .OR.
+     .                   TM_HAS_STRING(buff1, '_E') ) THEN
+                        CALL PPLCMD ( from, line, 0, 
+     .                    'YFOR (I7,''''LONE'''')', 1, 1 )	
+                     ELSE
+                        CALL PPLCMD ( from, line, 0, 
+     .                    'YFOR (I7,''''LAT'''')', 1, 1 )	
+                     ENDIF
+                  ELSE	 
                      CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )	 
-                  endif	 
+                  ENDIF	 
                ELSE
 	          CALL PPLCMD ( from, line, 0, indep_ax//'FOR 0', 1, 1 )
                ENDIF
@@ -512,7 +544,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	         dep_min = DBLE( lo )
 	         dep_max = DBLE( hi )
                  cx_y = cx_list(2) 	
-                 iunits = TM_UNIT_ID(VAR_UNITS(cx_y))
+                 buff1 = VAR_UNITS(cx_y)
+                 iunits = TM_UNIT_ID(buff1)
                  IF (iunits .EQ. 4) THEN
 	            CALL AXIS_ENDS(dep_ax,dep_dim,grid1,dep_min,dep_max,
      .                      delta, dep_is_log, dep_axtyp, status)
@@ -520,8 +553,14 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	            CALL GET_AXIS_FORMAT( dep_min, dep_max, delta, 
      .                 fmt, use_nice )
                     IF (use_nice) THEN
-                        ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
-     .                    ',''''LONE'''')' 
+                       IF (TM_HAS_STRING(buff1, '_e') .OR.
+     .                      TM_HAS_STRING(buff1, '_E') ) THEN
+                           ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .                       ',''''LONE'''')' 
+                       ELSE
+                           ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .                       ',''''LAT'''')'
+                       ENDIF
                        CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
                     ENDIF
                  ENDIF

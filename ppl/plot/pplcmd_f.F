@@ -109,8 +109,13 @@ C V600: *acm* 4/06 Change how RANGE_DM is applied when using DM or DMS axis labe
 C V600: *acm* 5/06 Allow seconds in DMS axis labelling; had removed this.
 C V600 *acm* 5/2006 LINECOLORS User can change the number of line colors.
 C V602  1/07 *acm* true batch mode for metafiles; flag meta_batch
-C                  distinguises this case from other batch modes.
-
+C                 distinguises this case from other batch modes.
+C V610 *acm* 11/2007 For build using PGI Fortran compilers at ECMWF 
+C                 The code testing the Format for axis labels balks at
+C                 writing a 0 using an F format. See changes at lines 
+C                 WRITE(err_msg,label,ERR=1999) 0.  Need to check for an I
+C                 format and write 0, else write 0.0.
+c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
 c	isi	length of line in characters
@@ -241,6 +246,8 @@ CCCCCCC data	        tmapdebug/.false./
 	LOGICAL ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS,
      .          its_meta, batch, meta_batch, its_open
 
+
+        LOGICAL TM_HAS_STRING
 	CHARACTER DTE*10,TEMP*2048,TEMP2*2048,FILE*81,FROM*80,LINE*2048
 	CHARACTER SYM*30,ICOM7*7
 	CHARACTER FROMI*10,LINEI*10
@@ -738,7 +745,11 @@ c              xhi = xmx
         IFRX=LABEL
         slen = TM_LENSTR(LABEL)
         IF (slen .GT. 1) THEN
-           WRITE(err_msg,label,ERR=1999) 0
+           IF (TM_HAS_STRING( label, '(I')) THEN
+              WRITE(err_msg,label,ERR=1999) 0
+           ELSE
+              WRITE(err_msg,label,ERR=1999) 0.0
+           ENDIF
         ENDIF
 	GOTO 10
 C     YFOR
@@ -762,7 +773,11 @@ c              yhi = ymx
         IFRY=LABEL
         slen = TM_LENSTR(LABEL)
         IF (slen .GT. 1) THEN
-           WRITE(err_msg,label,ERR=1999) 0
+           IF (TM_HAS_STRING( label, '(I')) THEN
+              WRITE(err_msg,label,ERR=1999) 0
+           ELSE
+              WRITE(err_msg,label,ERR=1999) 0.0
+           ENDIF
         ENDIF
 	GOTO 10
         
@@ -1546,7 +1561,13 @@ C	VECKEY
 c Check if LABEL is a valid format: 
 c do a test write to the string err_msg, using label as a format
            slen = TM_LENSTR(LABEL)
-           IF (slen .GT. 1) WRITE(err_msg,label,ERR=1999) 0
+           IF (slen .GT. 1) THEN 
+              IF (TM_HAS_STRING( label, '(I')) THEN
+                 WRITE(err_msg,label,ERR=1999) 0
+              ELSE
+                 WRITE(err_msg,label,ERR=1999) 0.0
+              ENDIF
+           ENDIF
         ENDIF
 	VUSER=SUSER
 	VKEY=M.GE.2

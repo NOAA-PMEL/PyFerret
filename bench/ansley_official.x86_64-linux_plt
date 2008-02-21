@@ -1,4 +1,6 @@
 PLTNME bnplot.plt
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_plot.jnl
 NLINES
 PLTYPE 3 META
 XFOR
@@ -1608,6 +1610,8 @@ SHASET SPECTRUM=blue
 FILLPOL/NOWAIT/LINE/FILL
 SHASET PROTECT
 SHASET SPECTRUM
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_curv.jnl
 PLTYPE 3
 CLSPLT
 SHASET PROTECT
@@ -1638,6 +1642,8 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_sinusoida-
+l.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -1670,6 +1676,8 @@ YFOR,(F8.1)
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
 PLTNME bnplot.plt
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_orthograp-
+hic.jnl
 PLTYPE 3 META
 XFOR
 YFOR
@@ -1702,6 +1710,7 @@ YFOR,(F8.1)
 CONSET    0.080,   2, , , , , ,   5.00
 SHAKEY 1,1
 FILL/LATCH/NOWAIT
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_land.jnl
 ALINE
 LEV,()
 VECSET
@@ -1716,8 +1725,12 @@ pen 1 1
 plot/overlay
 pen 1 1
 pen 1 1
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_label.jnl
 %LABEL 0.31344, 0.10001, -1, 0, .1  @IISeattle
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_label.jnl
 %LABEL -0.091986, -0.42733, -1, 0, .1  @IIHawaii
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_graticule-
+.jnl
 window off
 ALINE
 LEV,()
@@ -1736,6 +1749,8 @@ PEN    1   1
 LINE    1 1 0
 PLOT/OVER/NOWAIT
 window on
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_graticule-
+.jnl
 window off
 ALINE
 LEV,()
@@ -1754,9 +1769,11 @@ PEN    1  11
 LINE    1 1 0
 PLOT/OVER/NOWAIT
 window on
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_label.jnl
 %LABEL -0.35355, 0.066987, 0, -22, .15  @p5@DRThe Bering Sea
 PLTYPE 3
 CLSPLT
+SET LAST_GO_FILE ./bn_mp_zoo.jnl
 CLSPLT
 SHASET RESET
 AXLEN        3.267       2.667
@@ -1770,10 +1787,13 @@ SET VP_XLO 0
 SET VP_XHI 0.333
 SET VP_YLO 0.666
 SET VP_YHI 0.999
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/margins.jnl
 set junk            1
 delete junk
 origin 0.2,0.6
 axlen 5.067,4.667
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_hammer.jn-
+l
 PLTYPE 3
 XFOR
 YFOR
@@ -1823,6 +1843,9 @@ SET VP_XLO 0.333
 SET VP_XHI 0.666
 SET VP_YLO 0.666
 SET VP_YHI 0.999
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_sinusoida-
+l.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/margins.jnl
 set junk            1
 delete junk
 origin 0.2,0.6
@@ -1874,6 +1897,9 @@ SET VP_XLO 0.666
 SET VP_XHI 0.999
 SET VP_YLO 0.666
 SET VP_YHI 0.999
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_lambert_c-
+yl.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/margins.jnl
 set junk            1
 delete junk
 origin 0.2,0.6
@@ -1925,6 +1951,8 @@ SET VP_XLO 0
 SET VP_XHI 0.333
 SET VP_YLO 0.333
 SET VP_YHI 0.666
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_bonne.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/margins.jnl
 set junk            1
 delete junk
 origin 0.2,0.6
@@ -1976,6 +2004,9 @@ SET VP_XLO 0.333
 SET VP_XHI 0.666
 SET VP_YLO 0.333
 SET VP_YHI 0.666
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_mcbryde_f-
+pp.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/margins.jnl
 set junk            1
 delete junk
 origin 0.2,0.6
@@ -2027,6 +2058,9 @@ SET VP_XLO 0.666
 SET VP_XHI 0.999
 SET VP_YLO 0.333
 SET VP_YHI 0.666
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_polyconic-
+.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/margins.jnl
 set junk            1
 delete junk
 origin 0.2,0.6
@@ -2078,6 +2112,9 @@ SET VP_XLO 0
 SET VP_XHI 0.333
 SET VP_YLO 0
 SET VP_YHI 0.333
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_orthograp-
+hic.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/margins.jnl
 set junk            1
 delete junk
 origin 0.2,0.6
@@ -2129,6 +2166,9 @@ SET VP_XLO 0.333
 SET VP_XHI 0.666
 SET VP_YLO 0
 SET VP_YHI 0.333
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_stereogra-
+phic_eq.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/margins.jnl
 set junk            1
 delete junk
 origin 0.2,0.6
@@ -2180,6 +2220,9 @@ SET VP_XLO 0.666
 SET VP_XHI 0.999
 SET VP_YLO 0
 SET VP_YHI 0.333
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_stereogra-
+phic_north.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/margins.jnl
 set junk            1
 delete junk
 origin 0.2,0.6
@@ -2232,6 +2275,8 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_sinusoida-
+l.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -2533,6 +2578,8 @@ CLSPLT
 SHASET RESET
 PLTYPE 3
 CLSPLT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_symbols.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -2583,6 +2630,13 @@ LABSET,,, 0.120
 SET LABY
 TITLE  0.200 @ACSIN(I/6)+Y+Z
 SET LABTIT SIN(I/6)+Y+Z
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_comma_delimited.jnl
+SET LAST_GO_FILE ./bn_comma_delimited.sub
+SET LAST_GO_FILE ./bn_comma_delimited.sub
+SET LAST_GO_FILE ./bn_comma_delimited.sub
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_dynamic_grids.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -2652,6 +2706,15 @@ LABS/NOUSER   8   3.64   3.34   0 @ASNo Valid Data
 HLABS   8  0.200
 SET LAB8 No Valid Data
 SHADE/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_cdf.jnl
+SET LAST_GO_FILE ./bn_cdf.sub1
+SET LAST_GO_FILE ./bn_cdf.sub2
+SET LAST_GO_FILE ./bn_cdf.sub3
+SET LAST_GO_FILE ./bn_cdf.sub4
+SET LAST_GO_FILE ./bn_cdf_reversed.sub
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_regrid_transforms.jnl
 CLSPLT
 SHASET RESET
 AXLEN        7.274       6.674
@@ -3451,6 +3514,8 @@ HLABS  26  0.058
 SET LAB26  on Y@LIN, on T@AS]
 SET LABKEY TEMP[G=G5DAY on X@LIN, on Y@LIN, on T@AS]
 PLOT/OVER/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_axis_limits.jnl
 SIZE        9.128       9.728
 CLSPLT
 SHASET RESET
@@ -3713,6 +3778,7 @@ LIMITS -0.99999998E+34 YEQ
 PEN    1   1
 LINE    1 1 0
 NLINES
+SET LAST_GO_FILE ./bn_axis_limits.sub1
 CLSPLT
 SHASET RESET
 CLSPLT
@@ -4633,6 +4699,7 @@ SET LABX
 TITLE  0.200 @ACSIN(T/500)
 SET LABTIT SIN(T/500)
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_axis_limits.sub2
 CLSPLT
 SHASET RESET
 SHASET PROTECT
@@ -5646,6 +5713,8 @@ SET VP_YLO 0
 SET VP_YHI 1
 CLSPLT
 SHASET RESET
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_movie.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -6691,6 +6760,10 @@ SET LAB6 SIN(I/10-K*3.14/15)*COS(J/7+3.14/2)
 CONSET    0.080,   2, , , , , ,   5.00
 SHAKEY 0,1
 CONTOUR/OVER/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_ez_order.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_user.jnl
 SIZE        9.128       9.728
 CLSPLT
 SHASET RESET
@@ -6705,6 +6778,14 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polar_2d.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/convert_to_p-
+olar_2d.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/projected_ma-
+p_grid.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polar_map_in-
+v_eqns.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/box_plot.jnl
 tics 0,0,0,0
 axlabp 0,0
 PLTYPE 3
@@ -6849,6 +6930,7 @@ HLABS   4  0.080
 SET LAB4 YPTS
 SET LABKEY YPTS
 PLOT/OVER/NOWAIT
+SET LAST_GO_FILE ./objective.jnl
 SHASET PROTECT
 AXLEN       10.031       1.787
 SET VP_WIDTH 12.231
@@ -6936,6 +7018,7 @@ CONSET    0.080,   2, , , , , ,   5.00
 SHAKEY 1,1
 FILL/LATCH/NOWAIT
 shaset reset
+SET LAST_GO_FILE ./objective.jnl
 SHASET PROTECT
 AXLEN       10.031       1.787
 SET VP_WIDTH 12.231
@@ -7041,6 +7124,52 @@ AXLEN        8.740       5.405
 SET VP_WIDTH 10.94
 SET VP_HEIGHT 8.205
 ORIGIN        1.200       1.400
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_stream.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_mc.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_negative_t.jnl
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_negative_t.sub
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_xact_regrid.jnl
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_xact_regrid.sub
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_gc_functions.jnl
 CLSPLT
 SHASET RESET
 AXLEN        8.740       5.405
@@ -7319,6 +7448,8 @@ SET LAB5 T (HOURS) : 1
 SET LABnum_T 5
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn491_bug_fixes.jnl
 CLSPLT
 SHASET RESET
 AXLEN        8.740       5.405
@@ -7363,6 +7494,10 @@ AXLEN        8.740       5.405
 SET VP_WIDTH 10.94
 SET VP_HEIGHT 8.205
 ORIGIN        1.200       1.400
+SET LAST_GO_FILE ./err490_cdf_childax.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err490_command_parser.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/ptest.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -7414,6 +7549,28 @@ LABSET,,, 0.120
 SET LABY I*SIN(I/20)
 PLOT/LATCH/NOWAIT
 %LABEL/nou 8.44  -1.1 0 0 .16 a b c d e f g h i j k l m n o p
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err490_repeat_first_echo.jnl
+SET LAST_GO_FILE ./err490_fixed_var_size.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err490_l_ave.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err490_neg_time_show_grid.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_explicit_limits.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_asn.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_attrib_dp.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_odd_variable_name.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_test_stream.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_define_axes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_pattern.jnl
 CLSPLT
 SHASET RESET
 AXLEN        8.740       5.405
@@ -7468,6 +7625,7 @@ CONTOUR/OVER/NOWAIT
 SHASET PROTECT
 SHASET SPECTRUM
 PATSET PATTERN
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/land.jnl
 ALINE
 LEV,()
 VECSET
@@ -7540,6 +7698,7 @@ SHASET PROTECT
 SHASET SPECTRUM
 PATSET PATTERN
 %LABEL/user,200,-30,-1,0,.15,@trAIRT gt 25 and lt 27 deg. C
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/land.jnl
 ALINE
 LEV,()
 VECSET
@@ -7568,6 +7727,8 @@ SET VP_YLO 0
 SET VP_YHI 1
 PLTYPE 3
 CLSPLT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_polygon.jnl
 SIZE       14.980       5.992
 CLSPLT
 SHASET RESET
@@ -7646,6 +7807,16 @@ SHASET PROTECT
 FILLPOL/OVER/NOWAIT/LINE
 PLTYPE 3
 CLSPLT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn500_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_RESHAPE_ctx.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_delete_child_var.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_dp_time_write.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_gmax.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -7708,6 +7879,14 @@ HLABS   5  0.080
 SET LAB5 TS[G=24 hour on T@AVE]
 SET LABKEY TS[G=24 hour on T@AVE]
 PLOT/OVER/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_grid_from_name.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_let_d.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_long_gif_name.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/ptest.jnl
+NLINES
 PLTYPE 3
 XFOR
 YFOR
@@ -7757,6 +7936,14 @@ YLAB @ASI*SIN(I/20)
 LABSET,,, 0.120
 SET LABY I*SIN(I/20)
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_sh_var_templates.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_single_char_replace.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_spawn_quotes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_time_regridding.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -7924,6 +8111,28 @@ HLABS  14  0.064
 SET LAB14 BAD[T=@SBX:3]
 SET LABKEY BAD[T=@SBX:3]
 PLOT/OVER/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err491_unknown_function.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err500_IF_THEN_ELSE_quote.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_sample.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_strides_revs_perms.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_non_COARDS_netCDF.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_cache_hits.jnl
+SET LAST_GO_FILE ./bn_cache_hits.sub
+SET LAST_GO_FILE ./bn_cache_hits.sub
+SET LAST_GO_FILE ./bn_cache_hits_gcfcn.sub
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_regrid_to_user.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_calendar.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_dash_dot.jnl
+NLINES
 PLTYPE 3
 XFOR
 YFOR
@@ -8046,6 +8255,8 @@ SET LAB3 'date' 'time'
 ALINE
 LEV,()
 VECSET
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_flowlines.jnl
 SIZE        9.474       9.474
 CLSPLT
 SHASET RESET
@@ -8226,6 +8437,7 @@ LABS/NOUSER   9   0.37  -0.55   1 @ASU , V
 HLABS   9  0.080
 SET LAB9 U , V
 FLOWLINE/OVER/NOWAIT    5
+SET LAST_GO_FILE ./bn_reset.jnl
 PLTNME flowlines.plt
 PLTYPE 3 META
 XFOR
@@ -8290,6 +8502,9 @@ SET LAB4  -1*COS(J/10)*10+I-20
 FLOWLINE/OVER/NOWAIT    4
 PLTYPE 3
 CLSPLT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_sinusoida-
+l.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -8361,6 +8576,8 @@ XLAB
 YLAB
 FLOWLINE/OVER/NOWAIT    5
 AXSET   1  1  1  1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_logaxes.jnl
 CLSPLT
 SHASET RESET
 AXLEN        7.274       1.937
@@ -8676,6 +8893,36 @@ LIMITS -0.99999998E+34 YEQ
 PEN    1   1
 LINE    1 1 0
 NLINES
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_internal_external_functions.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bench_fft.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bench_gridding.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bench_sort.jnl
+SET LAST_GO_FILE ./bench_sorti.jnl
+SET LAST_GO_FILE ./bench_sortj.jnl
+SET LAST_GO_FILE ./bench_sortk.jnl
+SET LAST_GO_FILE ./bench_sortl.jnl
+SET LAST_GO_FILE ./bench_samplexy.jnl
+SET LAST_GO_FILE ./bench_samplet_date.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bench_eof.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bench_compress_by.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bench_compress.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bench_internal_string_functions.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_ef_bench_extrema.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_ef_err541_date_delim.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_ef_zaxr_fcns.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_ef_curv_to_rect.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -8914,6 +9161,10 @@ SET LAB6
 SET LABnum_DATITL 6
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_modulo_strides.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_axis_viewports.jnl
 CLSPLT
 SHASET RESET
 SIZE        9.474       9.474
@@ -9773,6 +10024,7 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/ptest.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -9825,6 +10077,10 @@ SET LABY I*SIN(I/20)
 PLOT/LATCH/NOWAIT
 list xaxis
 list yaxis
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_strings.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_axcontrol.jnl
 CLSPLT
 SHASET RESET
 AXLEN        4.499       3.899
@@ -10446,7 +10702,13 @@ SHASET PROTECT
 SHASET SPECTRUM
 AXSET   1  1  1  1
 AXLABP -1,-1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_vec_curv.jnl
 PLTNME vec_curv.plt
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_orthograp-
+hic.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_aspect.jn-
+l
 SIZE        9.128       9.728
 CLSPLT
 SHASET RESET
@@ -10547,6 +10809,10 @@ SET LAB6  (SST*0+YY)*MP_MASK
 VECTOR/OVER/NOWAIT    6   6
 PLTYPE 3
 CLSPLT
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_sinusoida-
+l.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_aspect.jn-
+l
 SIZE       12.025       7.686
 CLSPLT
 SHASET RESET
@@ -10810,6 +11076,13 @@ SET VP_YLO 0
 SET VP_YHI 1
 PLTYPE 3
 CLSPLT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_delimited_read.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn541_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_polymissing.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -10950,6 +11223,8 @@ LABSET,,, 0.120
 SET LABY YPTS+YTRIANGLE
 SHAKEY 1,1
 FILLPOL/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_ill_format.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -11036,6 +11311,10 @@ SET LABX
 TITLE  0.200 @AC0.001 - 0.002/ I
 SET LABTIT 0.001 - 0.002/ I
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_write_order.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_ax_ave.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -11180,6 +11459,8 @@ HLABS   9  0.120
 SET LAB9 SST[G=731 hour on T@AVE]
 SET LABKEY SST[G=731 hour on T@AVE]
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_axset.jnl
 CLSPLT
 SHASET RESET
 AXLEN        2.739       4.616
@@ -11551,6 +11832,8 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_vs_dash.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -11847,6 +12130,9 @@ HLABS  11  0.064
 SET LAB11 20*SIN(YPTS)+950
 SET LABKEY 20*SIN(YPTS)+950
 PLOT/OVER/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_poly_overlay.jnl
+NLINES
 PLTYPE 3
 XFOR
 YFOR
@@ -11931,6 +12217,8 @@ PATSET SAVE
 PATSET PATTERN=default
 SHADE/OVER/NOWAIT
 PATSET PATTERN
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_axis_symbols.jnl
 CLSPLT
 SHASET RESET
 AXLEN        2.537       6.674
@@ -12067,6 +12355,14 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_parse_repeat.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_cd_use_recdim.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_samplexy_missing.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_strides_rev.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -12125,6 +12421,8 @@ SHAKEY 1,1
 SHADE/LATCH/NOWAIT
 list stats
 list data
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_data_type.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -12171,6 +12469,8 @@ SET LABY
 TITLE  0.200 @ACIF {1,3,5} GE 3 THEN 1
 SET LABTIT IF {1,3,5} GE 3 THEN 1
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_modscat.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -12249,6 +12549,27 @@ HLABS   7  0.080
 SET LAB7 YPTS
 SET LABKEY YPTS
 PLOT/OVER/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err540_use.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_cancel_axes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_cancel_axes_1.sub
+SET LAST_GO_FILE ./bn_cancel_axes_1.sub
+SET LAST_GO_FILE ./bn_cancel_axes_1.sub
+SET LAST_GO_FILE ./bn_cancel_axes_1.sub
+SET LAST_GO_FILE ./bn_cancel_axes_1.sub
+SET LAST_GO_FILE ./bn_cancel_axes_1.sub
+SET LAST_GO_FILE ./bn_cancel_axes_1.sub
+SET LAST_GO_FILE ./bn_cancel_axes_1.sub
+SET LAST_GO_FILE ./bn_cancel_axes_1.sub
+SET LAST_GO_FILE ./bn_cancel_axes_1.sub
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn542_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err541_fill_tics.jnl
 tics 0.,.35,0.,.35,0,0
 CLSPLT
 SHASET RESET
@@ -12412,6 +12733,29 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err541_non_gregorian.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err541_string4d.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err541_cancel_axes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_subspan_modulo.jnl
+SET LAST_GO_FILE ./bn_subspan_modulo.sub1
+SET LAST_GO_FILE ./bn_subspan_modulo.sub1
+SET LAST_GO_FILE ./bn_subspan_modulo.sub1
+SET LAST_GO_FILE ./bn_subspan_modulo.sub1
+SET LAST_GO_FILE ./bn_subspan_modulo.sub1
+SET LAST_GO_FILE ./bn_subspan_modulo.sub1
+SET LAST_GO_FILE ./bn_subspan_modulo.sub1
+SET LAST_GO_FILE ./bn_subspan_modulo.sub1
+SET LAST_GO_FILE ./bn_subspan_modulo.sub1
+SET LAST_GO_FILE ./bn_subspan_modulo.sub1
+SET LAST_GO_FILE ./bn_subspan_modulo.sub2
+SET LAST_GO_FILE ./bn_subspan_modulo.sub2
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_dots.jnl
 PLTNME dots.plt
 NLINES
 PLTYPE 3 META
@@ -12550,6 +12894,8 @@ TITLE  0.200 @AC0.*(I+J)  , 0*(I+J)
 SET LABTIT 0.*(I+J)  , 0*(I+J)
 VECKEY/NOUSER    3.1  -1.2
 VECTOR/LATCH/NOWAIT    1   1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_lev_symbols.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -12774,6 +13120,9 @@ SET LAB5 I*J
 CONSET    0.080,   2, , , , , ,   5.00
 SHAKEY 0,1
 CONTOUR/OVER/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_mode_logo_lab.jnl
 CLSPLT
 SHASET RESET
 AXLEN        2.705       4.632
@@ -12881,6 +13230,7 @@ SET VP_XLO 0.66
 SET VP_XHI 1
 SET VP_YLO 0.5
 SET VP_YHI 1
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/ptest.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -13124,6 +13474,12 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_modulo_attribute.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn550_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err542_poly_over_calendar.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -13203,6 +13559,10 @@ SET LABKEY polygon
 SHAKEY 0,1
 SHASET PROTECT
 FILLPOL/OVER/NOWAIT/LINE
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn551_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err550_view_axes_fill.jnl
 SIZE       13.399       6.699
 CLSPLT
 SHASET RESET
@@ -14075,6 +14435,8 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err550_view_axes_position.jnl
 CLSPLT
 SHASET RESET
 AXLEN        6.287       2.358
@@ -14189,6 +14551,8 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err550_shade_limits.jnl
 CLSPLT
 SHASET RESET
 AXLEN        8.740       1.303
@@ -14331,6 +14695,14 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err550_redefine_calendar_axis.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err550_define_axis_expression.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err550_nc_seconds.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err550_dots_thickpens.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -14366,6 +14738,7 @@ SET LABY
 TITLE  0.200 @ACI (axis ABSTRACT)
 SET LABTIT I (axis ABSTRACT)
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_multi_line_labels.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -14888,6 +15261,10 @@ title "@P2@ACRED title in AC font<NL>put P2 first then AC otherwise th-
 e at sign in front of P2 not recognized"
 plot
 rlabs,4,0
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn552_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err551_axes_set.jnl
 CLSPLT
 SHASET RESET
 AXLEN        8.740       1.303
@@ -14996,6 +15373,8 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err551_num_levels.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -15196,6 +15575,9 @@ YLAB @AS15  + 20*SIN(2*3.14*I[I=1:50]/60)
 LABSET,,, 0.120
 SET LABY 15  + 20*SIN(2*3.14*I[I=1:50]/60)
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polymark.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polyshape.jn-
+l
 NLINES
 PLTYPE 3
 XFOR
@@ -15250,6 +15632,36 @@ SHAKEY 1,1
 FILLPOL/NOWAIT
 CLSPLT
 SHASET RESET
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err551_invalid_calendar.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err551_strings.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err551_2dave.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err551_return_message.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err551_streamread_directory.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err551_regrid_undef_grid.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err551_repeat_sym.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err551_modulo_nc_regrid.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err551_fft_freqaxis.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err551_no_taxis_errmsg.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_set_var_scale_off.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_longvarnames.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_shakey.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -15425,7 +15837,9 @@ SET LAB4
 SET LABnum_DATITL 4
 SHAKEY 1,1
 shakey ,0,-.12,2,,,1.3,,6.905,7.305
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/unlabel.jnl
 LABS/NOUSER 4,0,0 @AS
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/unlabel.jnl
 LABS/NOUSER 5,0,0 @AS
 shade
 list shakey
@@ -15633,6 +16047,8 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_eof_4d.jnl
 CLSPLT
 SHASET RESET
 AXLEN        3.464       3.637
@@ -16233,6 +16649,10 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_abstract_axis_names.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_many_polygons.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -16286,6 +16706,9 @@ SET LAB3
 SET LABnum_DATITL 3
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polymark.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polyshape.jn-
+l
 NLINES
 PLTYPE 3
 XFOR
@@ -16461,6 +16884,9 @@ LABSET,,, 0.120
 SET LABY YTRIANGLE+YPTS
 SHAKEY 1,1
 FILLPOL/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_fill_irregular.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -16766,6 +17192,18 @@ SET LABnum_DATITL 4
 CONSET    0.080,   2, , , , , ,   5.00
 SHAKEY 1,1
 FILL/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_xml_output.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_test_nan.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn553_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_numeric_filename.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_long_string_var_name.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err551_colorkey.jnl
 CLSPLT
 SHASET RESET
 AXLEN        3.464       3.637
@@ -16983,6 +17421,8 @@ SHAKEY 1,1
 axlen 6
 shakey 1,1,.12
 shade
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_graticules.jnl
 axnmtc,2,2
 NLINES
 PLTYPE 3
@@ -18369,6 +18809,20 @@ SET LABY
 TITLE  0.200 @ACCOS(I/5)
 SET LABTIT COS(I/5)
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_repeat_range.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn554_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_regionname_lengths.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_timeregion.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_contour_fine_grid.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_mercator.-
+jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/mp_aspect.jn-
+l
 SIZE        8.450      10.480
 CLSPLT
 SHASET RESET
@@ -18495,6 +18949,8 @@ SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
 SHASET RESET
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_symsize.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -18552,6 +19008,8 @@ HLABS   4  0.080
 SET LAB4 I
 SET LABKEY I
 PLOT/OVER/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_shakey_labels.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -18650,10 +19108,20 @@ SET LABTIT (I+J)/10
 SHAKEY 1,1
 shakey 1, , , , -1
 shade
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_xaxis_nsmtc.jnl
 %xaxis/nouser 1,100,10,1,4
 %xaxis/nouser 1,100,10,2,6
 %yaxis/nouser 1,100,10,1,4
 %yaxis/nouser 1,100,10,2,6
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_year_yr.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_stride_def_grid.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_axis_too_long.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_lev_c.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -18751,6 +19219,8 @@ CONSET    0.080,   2, , , , , ,   5.00
 SHAKEY 1,1
 FILL/LATCH/NOWAIT
 list shakey
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_lon_ax_0_label.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -18813,6 +19283,12 @@ SET LAB6
 SET LABnum_DATITL 6
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_list_string_numeric.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_set_axis_depth.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_symbol_lev.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -18963,6 +19439,9 @@ YLAB @AS15  + 20*SIN(2*3.14*I[I=1:50]/60)
 LABSET,,, 0.120
 SET LABY 15  + 20*SIN(2*3.14*I[I=1:50]/60)
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polymark.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polyshape.jn-
+l
 NLINES
 PLTYPE 3
 XFOR
@@ -19024,6 +19503,20 @@ LABSET,,, 0.120
 SET LABY PLMYPOLY+PLMYPOLYMARK
 SHAKEY 1,1
 FILLPOL/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_stride_modulo.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err553_list_width.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_bounds.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_all_leap.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset_attributes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn570_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err560_shade_levels.jnl
 CLSPLT
 SHASET RESET
 AXLEN        8.000       1.600
@@ -19156,6 +19649,10 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err560_mc_irreg_t.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err560_shade_noleap.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -19212,6 +19709,10 @@ HLABS   4  0.120
 SET LAB4 CALENDAR: NOLEAP
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err560_regridding_gaps.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err560_leap_years.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -19255,6 +19756,8 @@ SET LABY
 TITLE  0.189 @ACTSEQUENCE({55,65}) (regrid: 365 day on T@ASN)
 SET LABTIT TSEQUENCE({55,65}) (regrid: 365 day on T@ASN)
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err560_century.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -19398,6 +19901,12 @@ SET LABY
 TITLE  0.200 @ACT (axis TT)
 SET LABTIT T (axis TT)
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_modstats.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_mc_vary_scale.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_plot_nokey.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -19600,6 +20109,11 @@ LIMITS -0.99999998E+34 YEQ
 PEN    1   3
 LINE    1 1 0
 PLOT/OVER/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn580_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_singlecolor.jnl
+NLINES
 PLTYPE 3
 XFOR
 YFOR
@@ -19821,6 +20335,8 @@ LABSET,,, 0.120
 SET LABY {1,2,1}
 SHAKEY 1,1
 FILLPOL/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_shakeylab.jnl
 dfltfnt cr
 CLSPLT
 SHASET RESET
@@ -20234,6 +20750,10 @@ SET LABnum_DATITL 6
 SHAKEY 1,1
 shakey 1, 1, 0.1, 0, -2, 8,  8.97,  9.27, 1.4, 4.333
 shade
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_null_symbol.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_parse_labelcommand.jnl
 CLSPLT
 SHASET RESET
 AXLEN        8.000       6.000
@@ -20333,6 +20853,10 @@ PLOT/LATCH/NOWAIT
 94123456789512345678961234567897123456789812345678991234567890<nl>abcd-
 efghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv-
 wxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_compressk_by.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_long_label.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -20381,6 +20905,8 @@ PLOT/LATCH/NOWAIT
 76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.-
 76*b19+14.76*a20+<nl>14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22-
 +14.76*a23+14.76*b23+14.76*a24+14.76*b24
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_ppl_poly.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -20419,6 +20945,12 @@ YFOR 0
 SHAKEY 1,1
 shakey 1, 1, .1
 polygon
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_list_tab_coords.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_many_variables.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_cnnn_multiline.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -20473,6 +21005,10 @@ PLOT/LATCH/NOWAIT
 %LABEL 0.5, 0.7, 0, 0, 0.2, "@C002this<NL>@c003does<NL>@C004not."
 %LABEL 0.8, 0.7, 0, 0, 0.2, "@C002this<NL>does<NL>not @C004either."
 %LABEL 0.1, 0.3, 0, 0, 0.2, "greek<NL>@SGt@SR_y<NL<NL>works"
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_fine_grid_list.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_hlimit_onepoint.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -20572,6 +21108,14 @@ PEN    1   1
 LINE    1   1   3
 MARKH    1   0.300
 NLINES
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_index111.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_sh_dat_nan.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_time_range.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_poly_over_julian.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -20667,6 +21211,14 @@ SHASET SPECTRUM=green
 FILLPOL/OVER/NOWAIT
 SHASET PROTECT
 SHASET SPECTRUM
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_coaching.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_dollar_zero.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_illegal_stride.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_thick_colors.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -20950,6 +21502,11 @@ HLABS   7  0.080
 SET LAB7 I*SIN(I/14)
 SET LABKEY I*SIN(I/14)
 PLOT/OVER/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_digit_filename.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_dods_url_label.jnl
+NLINES
 PLTYPE 3
 XFOR
 YFOR
@@ -21020,6 +21577,8 @@ TITLE  0.179 @ACAnnual LTM Ocean Temp. on Multiple Levels (degC)
 SET LABTIT Annual LTM Ocean Temp. on Multiple Levels (degC)
 PLOT/LATCH/NOWAIT
 list labels
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_keylabels.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -21068,6 +21627,8 @@ TITLE  0.200 @AC370 + X[X=1:10:1] + 0.2*Y[Y=1:10:1]
 SET LABTIT 370 + X[X=1:10:1] + 0.2*Y[Y=1:10:1]
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err570_poly_lonlat_axis.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -21164,13 +21725,13 @@ XAXIS  0.1199121E+03  0.1482624E+03  0.2000000E+01
 SET XAXIS_MIN   119.91209
 SET XAXIS_MAX    148.2624
 XFOR,(I7,''LONE'')
-XFOR (I7,''LONE'')
+XFOR,(I7,''LONE'')
 YFOR (I7,''LAT'')
 LIMITS -0.99999998E+34 XEQ
 YAXIS  0.1787087E+01  0.2800225E+02  0.2000000E+01
 SET YAXIS_MIN   1.7870867
 SET YAXIS_MAX    28.00225
-YFOR,(I7,''LONE'')
+YFOR,(I7,''LAT'')
 LIMITS -0.99999998E+34 YEQ
 PEN    1   1
 LINE    1   1   3
@@ -21190,6 +21751,8 @@ YLAB @ASlatitude (degrees_north)
 LABSET,,, 0.120
 SET LABY latitude (degrees_north)
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_inf_levels.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -21764,6 +22327,9 @@ SHASET PROTECT
 SHASET SPECTRUM
 AXSET   1  1  1  1
 S_KEY 0
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polymark.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polyshape.jn-
+l
 NLINES
 PLTYPE 3
 XFOR
@@ -21825,6 +22391,11 @@ LABSET,,, 0.120
 SET LABY PLMYPOLY+PLMYPOLYMARK
 SHAKEY 1,1
 FILLPOL/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_regulart.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_labwid.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/ptest.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -21869,6 +22440,10 @@ PLOT/LATCH/NOWAIT
 %LABEL/nouser 0,3,-1,0,.15,"@P2@IILine1<NL>@IIA LONGER LINE"
 %LABEL/nouser 2.0192, 3, -1, 0, .15,  "@P4@IIMulti-line<NL>Length is l-
 ongest of ALL lines<NL>Line three"
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_redefine_taxis_mc.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_illegal_axisname.jnl
 CLSPLT
 SHASET RESET
 AXLEN        8.000       1.600
@@ -22003,6 +22578,23 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_exit_script.jnl
+SET LAST_GO_FILE ./exit_script_1.jnl
+SET LAST_GO_FILE ./exit_script_if.jnl
+SET LAST_GO_FILE ./exit_script_loop.jnl
+SET LAST_GO_FILE ./exit_script_if_loop.jnl
+SET LAST_GO_FILE ./exit_script_twolev.jnl
+SET LAST_GO_FILE ./exit_script_if.jnl
+SET LAST_GO_FILE ./exit_script_twolev.jnl
+SET LAST_GO_FILE ./exit_script_if.jnl
+SET LAST_GO_FILE ./exit_script_inloop.jnl
+SET LAST_GO_FILE ./exit_script_inloop.jnl
+SET LAST_GO_FILE ./exit_script_inloop.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_exit_cycle.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_curv_mod.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -22069,6 +22661,8 @@ SET LAB4 HT[X=80E(-280):80E,Y=71.89N:90N]
 CONSET    0.080,   2, , , , , ,   5.00
 SHAKEY 0,1
 CONTOUR/OVER/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_shade_keycont.jnl
 CLSPLT
 SHASET RESET
 AXLEN        3.081       4.104
@@ -22278,7 +22872,9 @@ SET LABnum_DATITL 4
 SHAKEY 1,1
 S_KEY 1
 shakey ,0,-.12,2,,,1.3,,5.604,6.004
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/unlabel.jnl
 LABS/NOUSER 4,0,0 @AS
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/unlabel.jnl
 LABS/NOUSER 5,0,0 @AS
 shade
 list shakey
@@ -22575,7 +23171,9 @@ CONSET    0.080,   2, , , , , ,   5.00
 SHAKEY 1,1
 S_KEY 1
 shakey ,0,-.12,2,,,1.3,,5.604,6.004
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/unlabel.jnl
 LABS/NOUSER 4,0,0 @AS
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/unlabel.jnl
 LABS/NOUSER 5,0,0 @AS
 fill
 list shakey
@@ -22662,6 +23260,22 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn581_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_irreg_bounds.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_cartesian_depth.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_long_title.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_use_des.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_use_des.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_long_dsettitle.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_long_veckey.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -22702,6 +23316,14 @@ SET LABTIT J-20+(I-I)  , I-20+(J-J)
 VECKEY/NOUSER    3.5  -1.2
 veckey,1,-3,,"(f4.0," x10^-^2 N m^-^2")"
 vector
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_cal360_region.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_def_tax_norange.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_cdb.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_def_view_axes.jnl
 CLSPLT
 SHASET RESET
 PLTNME viewaxes.plt
@@ -22718,6 +23340,7 @@ SET VP_XLO 0.098
 SET VP_XHI 0.485
 SET VP_YLO 0.062
 SET VP_YHI 0.538
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/ptest.jnl
 NLINES
 PLTYPE 3 META
 XFOR
@@ -22826,6 +23449,8 @@ SET VP_YLO 0
 SET VP_YHI 1
 PLTYPE 3
 CLSPLT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_lev_del.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -22865,6 +23490,10 @@ SET LABTIT COS(I/10)*9*SIN(J/5)
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
 S_KEY 0
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_strfloat_errors.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_arg_case.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -23015,6 +23644,12 @@ SET LABY
 TITLE  0.200 @ACSIN(I)
 SET LABTIT SIN(I)
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_cdc_timeaxis.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err580_show_axis_t.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_nlev.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -23069,6 +23704,8 @@ CONSET    0.080,   2, , , , , ,   5.00
 SHAKEY 1,1
 FILL/LATCH/NOWAIT
 S_KEY 0
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_vs_poly_axis.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -23094,13 +23731,13 @@ XAXIS  0.1446160E+03  0.1446980E+03  0.1000000E-01
 SET XAXIS_MIN   144.61600
 SET XAXIS_MAX    144.6980
 XFOR,(F8.2,''LONE'')
-XFOR (I7,''LONE'')
+XFOR,(F8.2,''LONE'')
 YFOR (I7,''LAT'')
 LIMITS -0.99999998E+34 XEQ
 YAXIS  0.3230800E+02  0.3239720E+02  0.1000000E-01
 SET YAXIS_MIN   32.307999
 SET YAXIS_MAX    32.39720
-YFOR,(F8.2,''LONE'')
+YFOR,(F8.2,''LAT'')
 LIMITS -0.99999998E+34 YEQ
 PEN    1   1
 LINE    1   1   3
@@ -23169,6 +23806,13 @@ LABSET,,, 0.120
 SET LABY LATITUDES (degrees_north)
 SHAKEY 1,1
 FILLPOL/NOWAIT/LINE/FILL
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_tab_comma_multivar.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_element_functions.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_long_revision_num.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/ptest.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -23210,6 +23854,9 @@ YLAB @ASI*SIN(I/20)
 LABSET,,, 0.120
 SET LABY I*SIN(I/20)
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_window_title.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/ptest.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -23251,6 +23898,7 @@ YLAB @ASI*SIN(I/20)
 LABSET,,, 0.120
 SET LABY I*SIN(I/20)
 PLOT/LATCH/NOWAIT
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/ptest.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -23302,6 +23950,10 @@ AXLEN        8.000       6.000
 SET VP_WIDTH 10.2
 SET VP_HEIGHT 8.8
 ORIGIN        1.200       1.400
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_last_error.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_deg_min.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -23378,13 +24030,13 @@ XAXIS  0.1446160E+03  0.1446980E+03  0.1000000E-01
 SET XAXIS_MIN   144.61600
 SET XAXIS_MAX    144.6980
 XFOR,(F8.2,''LONE'')
-XFOR (I7,''LONE'')
+XFOR,(F8.2,''LONE'')
 YFOR (I7,''LAT'')
 LIMITS -0.99999998E+34 XEQ
 YAXIS  0.3230800E+02  0.3239720E+02  0.1000000E-01
 SET YAXIS_MIN   32.307999
 SET YAXIS_MAX    32.39720
-YFOR,(F8.2,''LONE'')
+YFOR,(F8.2,''LAT'')
 LIMITS -0.99999998E+34 YEQ
 PEN    1   1
 LINE    1   1   3
@@ -23427,13 +24079,13 @@ XAXIS  0.1446160E+03  0.1446980E+03  0.1000000E-01
 SET XAXIS_MIN   144.61600
 SET XAXIS_MAX    144.6980
 XFOR,(F8.2,''LONE'')
-XFOR (I7,''LONE'')
+XFOR,(F8.2,''LONE'')
 YFOR (I7,''LAT'')
 LIMITS -0.99999998E+34 XEQ
 YAXIS  0.3230800E+02  0.3239720E+02  0.1000000E-01
 SET YAXIS_MIN   32.307999
 SET YAXIS_MAX    32.39720
-YFOR,(F8.2,''LONE'')
+YFOR,(F8.2,''LAT'')
 LIMITS -0.99999998E+34 YEQ
 PEN    1   1
 LINE    1   1   3
@@ -23453,6 +24105,8 @@ yfor (dms)
 axlint,3,1
 plot
 axlint,2,2
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_dp_readscale.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -23498,6 +24152,19 @@ TITLE  0.200 @ACYVAR[GX=XIR@ASN]
 SET LABTIT YVAR[GX=XIR@ASN]
 xvaloff 140
 plot
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_bounds_defineax.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_attributes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -23761,6 +24428,8 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -23819,6 +24488,23 @@ SET LABnum_DATITL 4
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
 S_KEY 0
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_transforms.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_linecolors.jnl
 CLSPLT
 SHASET RESET
 AXLEN        8.000       6.000
@@ -24282,6 +24968,12 @@ AXLEN        8.000       6.000
 SET VP_WIDTH 10.2
 SET VP_HEIGHT 8.8
 ORIGIN        1.200       1.400
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_cdf_errmsg.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn600_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_hlim_axislab.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -24370,6 +25062,12 @@ SHAKEY 1,1
 FILL/LATCH/NOWAIT
 S_KEY 0
 list xaxis
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_list_stray_chars.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_sho_func_pattern_match.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_subspanx_fill_bug.jnl
 CLSPLT
 SHASET RESET
 AXLEN        2.900       6.000
@@ -24525,6 +25223,12 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_use_bounds.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_des_scale.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_contour_zero_lev.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -24580,6 +25284,8 @@ CONSET    0.080,   2, , , , , ,   5.00
 SHAKEY 0,1
 CONTOUR/LATCH/NOWAIT
 S_KEY 0
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_shakey_inf.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -24635,6 +25341,9 @@ CONSET    0.080,   2, , , , , ,   5.00
 SHAKEY 1,1
 shakey 1,0,.12,0,0,4,2,8,7.1,7.4
 fill
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_if_conditional.jnl
+SET LAST_GO_FILE ./non_std_refmap.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -24681,6 +25390,14 @@ PEN    1   8
 LINE    1 1 0
 PLOT/OVER/NOWAIT
 SHASET SPECTRUM= rainbow
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_illegal_trans.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_missing_scale_off.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_cal_dates_output.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_noleap_mod.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -24746,6 +25463,14 @@ SET LABnum_DATITL 5
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
 S_KEY 0
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_cancel_data.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_since_units.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_exp_spaces.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_command_cx.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -24765,6 +25490,12 @@ ALINE
 LEV,()
 VECSET
 NLINES
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_define_1pt_bounds.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_strrindex.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err581_poly_rev.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -24823,6 +25554,9 @@ SET LABnum_DATITL 4
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
 S_KEY 0
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polymark.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polyshape.jn-
+l
 ALINE
 LEV,()(-5,30,1)
 VECSET
@@ -24896,6 +25630,9 @@ SET LABnum_DATITL 4
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
 S_KEY 0
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polymark.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polyshape.jn-
+l
 ALINE
 LEV,()(-5,30,1)
 VECSET
@@ -24973,6 +25710,9 @@ SET LABnum_DATITL 4
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
 S_KEY 0
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polymark.jnl
+SET LAST_GO_FILE /home/porter/tmap/ferret/x86_64-linux/go/polyshape.jn-
+l
 ALINE
 LEV,()(-5,30,1)
 VECSET
@@ -25058,6 +25798,38 @@ SHASET SPECTRUM=yellow
 FILLPOL/OVER/NOWAIT/LINE/FILL
 SHASET PROTECT
 SHASET SPECTRUM
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn601_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_long_bounds_name.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_check_bounds_regular.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_long_symbol_string.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_missing_flag.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_returnsize.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_if_comments_tab.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_set_var_title.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_var_label.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_upcase.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_let_d.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_nc_des_order.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_reset_redefine_axis.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_ferret_axis_names.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_tab_comma_missingdat.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_vec_aspect.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -25191,6 +25963,12 @@ HLABS   2  0.090
 SET LAB2 adjustment for differing X/Y scales: 0.915
 SET LABnum_ASPECT 2
 VECTOR/OVER/NOWAIT    1   1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_save_two.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err600_nc_des_order.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_set_strides.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -25245,6 +26023,20 @@ SET LABnum_DATITL 3
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
 S_KEY 0
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_lsl_lowpass.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_return_xmod_tmod.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn602_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err601_sho_ax_xml_calendar.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err601_index_111.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err601_irregular_axis.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err601_check_missing_3arg.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -25341,6 +26133,16 @@ SET LABnum_DATITL 2
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
 S_KEY 0
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err601_missing_string_element.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_modnbd.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_fifty_files.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn603_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err602_shade_line_lev.jnl
 CLSPLT
 SHASET RESET
 AXLEN        3.081       4.104
@@ -25558,6 +26360,8 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err602_curvi_modulo_cut.jnl
 CLSPLT
 SHASET RESET
 AXLEN        8.000       1.600
@@ -25715,6 +26519,27 @@ SET VP_XLO 0
 SET VP_XHI 1
 SET VP_YLO 0
 SET VP_YHI 1
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err602_list_prec.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_set_var_name.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn_memory_symbol.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn605_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err604_irreg_axis.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err605_show_func.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn608_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err607_show_var_xml.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err607_set_new_history_att.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err607_axis_minmax_syms.jnl
 NLINES
 PLTYPE 3
 XFOR
@@ -25906,6 +26731,8 @@ SET LABTIT X[GX=XAX] + Y[GY=YAX]
 SHAKEY 1,1
 SHADE/LATCH/NOWAIT
 S_KEY 0
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err607_lev_errmsg.jnl
 PLTYPE 3
 XFOR
 YFOR
@@ -25921,3 +26748,9 @@ WINDOW ON
 AXTYPE 1,1
 SHASET RESET
 ALINE
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./bn61_bug_fixes.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err608_bug1556.jnl
+SET LAST_GO_FILE ./bn_reset.jnl
+SET LAST_GO_FILE ./err608_precision_neg_numbers.jnl

@@ -61,7 +61,7 @@
 * V510 *sh* 3/00 -- increase allowed path name length
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out.
-
+* V609  2/08 *acm* Always define a symbol LAST_GO_FILE with the name of the jnl script.
 
 ! Note: A known "bug" of the 12/94 GO_FILE symbol is that the PLOT+ symbol
 !	GO_FILE gets defined only **after** PLOT+ has already placed a window
@@ -69,7 +69,6 @@
 !       GO file to create a plot contains the first command that opens
 !       an output window the symbol GO_FILE will **not** be defined.
 
-#ifdef unix
         include 'tmap_errors.parm'
 	include 'ferret.parm'
 	include 'command.parm'
@@ -79,17 +78,6 @@
 	include 'xplot_state.cmn'		! 12/94
 	include 'xcontrol.cmn'
 	include 'xrisc.cmn'
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'		! 12/94
-	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 * internal variable declarations:
 	LOGICAL	go_help
@@ -177,6 +165,10 @@
 * (Note: we check for csp.eq.1 instead of 0 because csp was just pushed)
 	IF ( pplus_started .AND. csp.EQ.1 ) CALL PPLCMD
      .		( from, line, 0, 'SET GO_FILE '//cbuff, 1, 1 )
+
+* define the symbol 'LAST_GO_FILE' no matter what...
+	CALL PPLCMD
+     .		( from, line, 0, 'SET LAST_GO_FILE '//cbuff, 1, 1 )
 
 * successful completion
 	RETURN

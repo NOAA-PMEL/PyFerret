@@ -568,6 +568,12 @@ GO bn605_bug_fixes
 GO bn_reset
 GO bn608_bug_fixes
 
+
+! ******** V6.1 Additions below ***********
+
+GO bn_reset
+GO bn_shade_trim
+
 GO bn_reset
 GO bn61_bug_fixes
 

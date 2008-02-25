@@ -1,0 +1,21 @@
+! bn_shade_trim.jnl
+! Test new qualifier SHADE/TRIM which trims the region of 
+! shade plot as is done by FILL. For LAS scripts which do
+! shade underlay for FILL plots.
+
+USE ocean_atlas_temp
+
+! See the region used by FILL
+SET VIEW upper
+FILL temp[L=2,X=180:200,Y=30:44]
+SHOW SYM xaxis_min, xaxis_max, yaxis_min, yaxis_max
+
+! See the larger region used by default for SHADE
+SHADE temp[L=2,X=180:200,y=30:44]
+SHOW SYM xaxis_min, xaxis_max, yaxis_min, yaxis_max
+
+! SHADE/TRIM trims the region as for a FILL plot 
+SET VIEW lower
+SHADE/TRIM temp[L=2,X=180:200,y=30:44]
+SHOW SYM xaxis_min, xaxis_max, yaxis_min, yaxis_max
+

@@ -45,6 +45,7 @@
 *                   calendar name.
  
 	include 'tmap_dims.parm'
+#	include "tmap_dset.parm"
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xunits.cmn_text'
@@ -55,20 +56,33 @@
 	include 'calendar.decl'
 	include 'calendar.cmn'
 	include 'xrisc.cmn'
+        include 'errmsg.parm'
+        include 'netcdf.inc'
+	include 'xdset_info.cmn_text'
 
 * calling argument declarations
 	INTEGER 	lun, line
 
 * local variable declarations:
 	LOGICAL		TM_ITS_SUBSPAN_MODULO
-	INTEGER		idim, orient, slen
+	INTEGER		idim, orient, slen, iset, dset
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id, status
 	CHARACTER	TM_FMT*32, buff*80, outbuff*20
+
+        LOGICAL         NC_GET_ATTRIB, got_it, coordvar, new
+        INTEGER         STR_SAME, 
+     .                  ivar,  llen,
+     .                  varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
+     .                  len_attbuff, attoutflag, all_outflag, attid, 
+     .                  attlen, attype
+        CHARACTER       vname*128, attname*128, attbuff*2048
+	REAL            vals(10)
 
  2020	FORMAT ( '<time_origin>', A, '</time_origin>' )
  2030	FORMAT ( '<calendar>', A, '</calendar>' )
  2040	FORMAT ( '<modulo_length>', A, '</modulo_length>' )
  2050	FORMAT ( '</axis>' )
+ 2075   FORMAT( '<', A, '>', A, '</', A, '>' )
 
 * determine orientation
 
@@ -103,7 +117,8 @@
 	grid_line(idim, mgrid_buff) = line
 
 * report basic facts using code from SHOW_GRID
-	CALL LINE_FACTS_XML( ttout_lun, idim, mgrid_buff, orient )
+	CALL LINE_FACTS_XML( ttout_lun, idim, mgrid_buff, orient, status )
+        IF (status .NE. ferr_ok) GOTO 1000
 
 * report /T0= for formatted time axis
 	IF ( line_direction(line) .EQ. 'TI' ) THEN
@@ -140,8 +155,87 @@
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	ENDIF
 
+        
+* Get the dataset (show line/xml only used for axes in datasets)
+
+        vname = line_name(line)
+	DO 300 iset = 1, maxdsets
+	   IF ( ds_name(iset) .EQ. char_init1024) GOTO 1000
+           CALL CD_GET_VAR_ID (iset, vname, varid, status)
+           IF (status .EQ. ferr_ok) GOTO 50
+  300   CONTINUE
+   50   dset = iset
+
+* other attributes
+
+        CALL CD_GET_VAR_INFO (dset, varid, vname, vtype, nvdims,
+     .           vdims, nvatts, coordvar, all_outflag, status)
+
+* Data type of the axis in the file...
+
+        IF (vtype .EQ. ncbyte ) THEN
+           risc_buff = '<infile_datatype>BYTE</infile_datatype>'
+        ELSE IF (vtype .EQ. ncchar ) THEN
+           risc_buff = '<infile_datatype>CHAR</infile_datatype>'
+        ELSE IF (vtype .EQ. ncshort ) THEN
+           risc_buff = '<infile_datatype>SHORT</infile_datatype>'
+        ELSE IF (vtype .EQ. nclong ) THEN
+           risc_buff = '<infile_datatype>LONG</infile_datatype>'
+        ELSE IF (vtype .EQ. ncfloat ) THEN
+           risc_buff = '<infile_datatype>FLOAT</infile_datatype>'
+        ELSE IF (vtype .EQ. ncdouble ) THEN
+           risc_buff = '<infile_datatype>DOUBLE</infile_datatype>'
+        ENDIF
+	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+* All attributes not already listed.
+
+        DO 200 iatt = 1, nvatts
+           CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
+     .              attype, attlen, attoutflag, status )
+
+           new = .TRUE.
+           new = (STR_SAME(attname, 'direction') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'units') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'length') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'positive') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'modulo') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'modulo_length') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'start') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'end') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'time_origin') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'calendar') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'point_spacing') .NE. 0)
+
+           IF (new) THEN
+              blen = 2048  ! len of attbuff
+              got_it = NC_GET_ATTRIB (dset, varid, attname, 
+     .                                .TRUE., vname, blen, attlen, 
+     .                                attoutflag, attbuff, vals)
+
+              IF (attype .NE. NCCHAR) THEN
+                 blen = 1
+                 attbuff = ' '
+                 DO 150 i = 1, attlen
+                    buff = TM_FMT(vals(i), 7, 14, llen)
+                    attbuff(blen:blen+llen+1) = buff//' '
+                    blen = blen + llen + 1
+ 150                   CONTINUE
+              ELSE 
+                 blen = TM_LENSTR1(attbuff)
+              ENDIF
+
+              slen = TM_LENSTR1(attname)
+	         WRITE (risc_buff, 2075) attname(1:slen), 
+     .                  attbuff(1:blen),  attname(1:slen)
+              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+           ENDIF
+
+ 200    CONTINUE
 * closer tag
 
+ 1000   CONTINUE
         WRITE ( risc_buff, 2050 ) 
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 

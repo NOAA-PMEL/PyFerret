@@ -1,4 +1,4 @@
-	SUBROUTINE LINE_FACTS_XML( lun, idim, grid, orient )
+	SUBROUTINE LINE_FACTS_XML( lun, idim, grid, orient, status )
 
 *
 *
@@ -56,6 +56,7 @@
 	include	'ferret.parm'
 	include 'xtext_info.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+        include 'errmsg.parm'
 
 * calling argument declarations
 	INTEGER	  lun, idim, grid, orient
@@ -99,10 +100,12 @@
 	   title = 'unknown'
 	   WRITE ( risc_buff, 2010 ) title, ww_dim_name( idim )
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           status = 0
 	ELSEIF ( line .EQ. mnormal ) THEN
 	   title = 'normal'
 	   WRITE ( risc_buff, 2010 ) title, ww_dim_name( idim )
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           status = 0
 	ELSE
   
 * header
@@ -224,6 +227,7 @@
            ENDIF
            CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
+           status = ferr_ok
 	ENDIF
 	RETURN
 	END

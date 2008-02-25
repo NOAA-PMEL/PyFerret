@@ -72,6 +72,7 @@ snapit_ris8.F\
 start_pplus.F\
 store_palette.F\
 taxis_style.F\
+trim_axis_ends.F\
 swap_active_window.F\
 viewport_number.F\
 vp_axlim2lim.F\

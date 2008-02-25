@@ -143,6 +143,7 @@
      .		in_get_grid_mode,
      .          its_script,
      .          grat_on,
+     .          shade_trim,
      .          silent_err
 
 
@@ -198,7 +199,7 @@
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,
      .		genl_storage, its_script, grat_on,
-     .          silent_err,
+     .          shade_trim, silent_err,
      .		ppl_wait, mode_name,
      .          scriptfile_name
 

@@ -1217,7 +1217,7 @@
 	   DATA subcommands      (nsub_at18 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at18 + 0)	/ nqual18a	/
 	   DATA qualifier_pointer(nsub_at18 + 0)	/ nqual_at18a	/
-* SHADE/I/J/K/L/X/Y/Z/T/D/OVERLAY/SET_UP/FRAME/TRANSPOSE
+* SHADE/I/J/K/L/X/Y/Z/T/D/OVERLAY/SET_UP/FRAME/TRANSPOSE/TRIM
 		DATA qualifiers  (nqual_at18a+0)/ 'I'	/
 		DATA qualifiers  (nqual_at18a+1)/ 'J'	/
 		DATA qualifiers  (nqual_at18a+2)/ 'K'	/
@@ -1231,7 +1231,7 @@
 		DATA qualifiers  (nqual_at18a+10)/ 'FRAME'/	!/frame
 		DATA qualifiers  (nqual_at18a+11)/ 'D'   /	!/data_set
 		DATA qualifiers  (nqual_at18a+12)/ 'TRANPOSE'/	!/transpose
-		DATA qualifiers  (nqual_at18a+13)/ '****'/	!/ ****
+		DATA qualifiers  (nqual_at18a+13)/ 'TRIM'/	!/trim
 		DATA qualifiers  (nqual_at18a+14)/ 'LINE'/	!/lines
 		DATA qualifiers  (nqual_at18a+15)/ 'NOLABEL'/	!/nolabel
 		DATA qualifiers  (nqual_at18a+16)/ 'LEVELS'/	!/levels_same

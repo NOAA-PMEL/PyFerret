@@ -31,6 +31,7 @@
 * V600: *acm* 2/06 - add SET VARIABLE/OUTTYPE
 *       *jli* 7/06 - add SET AXIS /STRIDE /OFFSET
 *       *acm* 7/06 - add CANCEL ATTRIBUTE /OUTPUT /DATA
+* V609: *acm* 2/08 - add SHADE/TRIM
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -192,6 +193,7 @@
      .			slash_shad_vgrat,
      .			slash_shad_grat,
      .			slash_shad_mod,
+     .			slash_shad_trim,
      .
      .			slash_plot_over_plot,
      .			slash_plot_set_up,
@@ -392,6 +394,7 @@
      .			slash_shad_set_up	= 1+9,
      .			slash_shad_frame	= 1+10,
      .			slash_shad_transpz	= 1+12,
+     .			slash_shad_trim		= 1+13,
      .			slash_shad_line		= 1+14,
      .			slash_shad_nolabels	= 1+15,
      .			slash_shad_lev_same	= 1+16,

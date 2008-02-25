@@ -93,6 +93,8 @@
 *                  setting rather than sending the data value; avoids precision problems.
 * V603 *acm*  5/07 Fix bug 904: if SHADE/LINE, then set iautoc and NLEV2 to re-use the
 *                  contour levels from the shade plot.
+* V609: *acm* 2/08 - add SHADE/TRIM
+
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -151,6 +153,7 @@
         spectrum  = sp .GT. 0 
         patt      = qual_given( slash_shad_pattern   )
         pattern   = patt .GT. 0
+        shade_trim = qual_given( slash_shad_trim   ) .GT.0
 	
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 * ... default orientation for YT and ZT contours has time on horizontal

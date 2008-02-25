@@ -517,6 +517,8 @@ C   set up memory for the flag grid
 	      delta = unspecified_val8
 	   ELSE
 	      CALL CHOOSE_CX_WW( uvar, cx_cmnd, ctx, dim1, xaxlo, xaxhi )
+              IF (shade_trim) CALL TRIM_AXIS_ENDS( uvar, cx_cmnd, ctx, 
+     .                        dim1, xaxlo, xaxhi )
 	      delta = unspecified_val8
 	   ENDIF
 
@@ -575,6 +577,8 @@ C   set up memory for the flag grid
 	      delta = unspecified_val8
 	   ELSE
 	      CALL CHOOSE_CX_WW( uvar, cx_cmnd, ctx, dim2, yaxlo, yaxhi )
+              IF (shade_trim) CALL TRIM_AXIS_ENDS( uvar, cx_cmnd, ctx, 
+     .                        dim2, yaxlo, yaxhi )
 	      delta = unspecified_val8
 	   ENDIF
 	   vaxlo = yaxlo	! save limits so overlays

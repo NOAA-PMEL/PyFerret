@@ -43,6 +43,7 @@
 * V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
 * V602 *acm*11/06 - Fix bug 1468, wrong string was written instead of the
 *                   calendar name.
+* V6.1  2/2008 *acm* Use attribute structure to get all attributes for the axis.
  
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"

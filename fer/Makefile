@@ -117,6 +117,17 @@ DODS_gui_debug: .FRC
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=" \
 		"DEBUG_TITLE=alpha" all
                 
+DODS_gui_debug_valgrind: .FRC
+	(cd ccr; $(CC) -O0 -g -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
+	$(MAKE) update
+	$(MAKE) "CFLAGS = -O0 -g $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g -O0"\
+		"EXECNAME=ferretdods_gui" \
+		"GUILIB = -L../lib -lgui ../list-2.1/liblist.a" \
+		"MOVIELIB="  \
+                "LD = g++" "CDFLIB = $(DODS_LIBS)" \
+		"FFLAGS = $(FFLAGS) -O0  -Ddebug" "GUI_FAKES=" \
+		"DEBUG_TITLE=alpha" all
+                
 profiling: .FRC
 	(cd ccr; $(CC) -g $(PROF_FLAGS) -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
 	$(MAKE) update

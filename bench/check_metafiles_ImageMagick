@@ -5,6 +5,14 @@
 # acm   4/05 add more .plt files for checking, new directory metafile_masters_v580
 # acm  12/06 Use ImageMagick to actually compare the contents of ps and gif files when they differ
 
+# ALSO NOTE THE compare utility (on stout)
+# Here is a way to compare two images by subtracting them using ImageMagick's
+# "composite" utility.
+# 
+#   composite -compose subtract input1.png input2.png output.png
+# 
+# Pixels which are the same in both input images will be black in the output
+# image.
 
 # Clean up anything left from a previous check_metafiles_ImageMagick
 

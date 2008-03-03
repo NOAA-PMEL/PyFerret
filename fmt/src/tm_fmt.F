@@ -59,6 +59,8 @@
 * *acm* 11/05  incoming value may be Inf (e.g. in a STAT, if data contains Inf)
 * *acm*  1/06  When val is 0, log10(aval) is infinite.  Causes crash on IRIX;
 *              take care of val=0 case individually.
+* *acm*  V6.1 3/08  further corrections to last fix when writing a value with 
+*              negative exponent
 
 * calling arguments:
 * val		- REAL*4 value to be converted
@@ -232,6 +234,8 @@
 	      str_len = MIN( slen, sig_needed+xtra)
 * Correct for too-small number of slots when writing a number w neg exponent.
               IF (pow10 .LT. 0) str_len = str_len + sig_max
+              IF (str_len .GT. slen) str_len = slen
+              IF (str_len-(xtra+1) .LT. 0) xtra = 1
 	      WRITE ( fmt, 3000 ) str_len, str_len-(xtra+1)
  3000	      FORMAT( '(1PG',I2,'.',I2,')' )
 	      WRITE ( TM_FMT, fmt ) val

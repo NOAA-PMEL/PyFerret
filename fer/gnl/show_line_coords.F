@@ -49,6 +49,7 @@
 * V581 *acm*  6/05 Fix bug in show axis/t with non-standard calendars; RESET_SECS_FROM_BC
 * V581 *acm*  6/05 Fix call to TM_GET_CALENDAR_ID (did this ever work with the
 *                  argument grid rather than calendar name?!)
+* V601 *acm*  3/08 Allow more figs when writing values with negative exponents.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -71,7 +72,7 @@
      .          TM_GET_CALENDAR_ID, axis,
      .		lo, hi, i, line, loest, hiest, dlen,
      .		ndec, status, delta, exlen, cal_id,
-     .          prev_cal_id
+     .          prev_cal_id, less_figs
 	CHARACTER TM_FMT*14, buff*14, pt_str*20, lo_str*20, extra*24
 	REAL	BOX_SIZE
 	REAL*8	TM_WORLD, SECS_TO_TSTEP,
@@ -191,7 +192,12 @@
 	   IF ( calendar ) extra = 
      .	         	TM_FMT( SNGL(pt_val8), sig_figs, 14, dlen )
            buff = TM_FMT(
-     .                       BOX_SIZE(i,grid,idim), sig_figs, 14, dlen )
+     .                       BOX_SIZE(i,grid,idim), sig_figs, 9, dlen )
+           IF (dlen .GT. 9) THEN
+              less_figs = sig_figs - 3
+              buff = TM_FMT(
+     .            BOX_SIZE(i,grid,idim), less_figs, 9, dlen )
+           ENDIF
 	   risc_buff = ' '
 	   WRITE ( risc_buff, 3040 ) 
      .			i, pt_str,
@@ -201,7 +207,9 @@
  120	CONTINUE
 
  3030	FORMAT ( T8,A1,T14,A1,T34,A1,'BOX  ',T44,A1,'BOXLO',T62,A28 )
- 3040	FORMAT ( T3,I6,'> ',T12,A20,T34,A9,T44,A20,T66,A14 )
+c 3040   FORMAT ( T3,I6,'> ',T12,A20,T34,A9,T44,A20,T66,A14 )
+ 3040   FORMAT ( T3,I6,'> ',T12,A20,T34,A10,T45,A20,T67,A14 )
+c 3040	FORMAT ( T3,I6,'> ',T12,A20,T34,A12,T48,A20,T70,A14 )
 
 * successful completion
  1000	RETURN

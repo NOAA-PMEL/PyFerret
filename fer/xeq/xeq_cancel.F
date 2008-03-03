@@ -127,6 +127,7 @@
 * v604 *acm* 7/07 increase length of
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out.
+* V610  *acm* 3/08 Fixes for metafile batch mode
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -414,6 +415,10 @@
                        mode_metafile = .FALSE.
                     ELSE IF ( batch ) THEN
                        mode_metafile = .FALSE.
+ 	               IF ( gksopn ) THEN
+                          CALL SEND_PLTYPE( mode_metafile )
+                          CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )  ! 2/93
+                       ENDIF
                     ELSE
  	               IF ( gksopn ) THEN
                           CALL SEND_PLTYPE( mode_metafile )
@@ -497,6 +502,13 @@
 * CANCEL VIEWPORT
  1000	IF ( num_items .EQ. 0 ) THEN
 * return to default(full) viewport
+           batch = ITS_BATCH_GRAPHICS()
+           IF (batch) THEN
+              IF ( gksopn ) THEN
+                 CALL SEND_PLTYPE( mode_metafile )
+                 CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )  ! 2/93
+              ENDIF
+           ENDIF
 	   CALL SET_VIEWPORT( mvp_dflt )	   
 	ELSE
 * cancel a viewport definition

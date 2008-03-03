@@ -53,9 +53,12 @@
 *		cuckoo's egg implantation of meta_wsid in place of wsid
 *       *js* 7.25.97 Added 'C' callable save_metafile_name to save string
 *               in variable 'meta_file'
+*       *acm* 2.08 Added 'C' callable get_metafile_name to retrieve string
+*               in variable 'meta_file' and return it.
 * v552 *acm* 3/03 Longer strings.
 * V608 *acm*10/07  true batch mode for metafiles; flag meta_batch
 *         distinguises this case from other batch modes.
+* V610  *acm* 3/08 Fixes for metafile batch mode
 
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
@@ -227,6 +230,16 @@ c	      IF ( batch .AND. (.NOT.meta_batch)) THEN
 	integer*1 mname(clen)
 #endif  
 	call tm_ctof_strng(mname, meta_file, clen)
+	return
+	end
+	
+
+	subroutine get_metafile_name(filename)
+	implicit none
+	include 'gkscm2.cmn'
+        character*(*) filename
+
+	filename = meta_file
 	return
 	end
 	

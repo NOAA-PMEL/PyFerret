@@ -40,6 +40,7 @@
 *       *jd* 3.10.92 Brought over to Sun
 *	*jd* 1.14.94 Mod for background setting in xgks
 *       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
+* V610  *acm* 3/08 Fixes for metafile batch mode
 
 #ifdef unix
 #   ifndef atc_gks
@@ -83,7 +84,7 @@
 #endif
 	      call gqpcr (wstype,i,err,val(red),val(green),val(blue))
 	      if (err .ne. 0) goto 5
-	      call gscr (wsid,i,val(red),val(green),val(blue))
+	      if (meta_actv) call gscr (wsid,i,val(red),val(green),val(blue))
 	      if (meta_actv .and. .not. meta_clsplt) 
      .		call gscr (meta_wsid,i,val(red),val(green),val(blue))
 5	   continue
@@ -108,7 +109,7 @@
 10	continue
 
 #ifndef xgks
-	call gscr (wsid,ndx,val(red),val(green),val(blue))
+	if (meta_actv) call gscr (wsid,ndx,val(red),val(green),val(blue))
 #else
 *	FOR X, PERMIT ONLY WHITE OR BLACK BACKGROUNDS FOR NOW
 	if (ndx .eq. 0) then
@@ -120,7 +121,8 @@
 	       call set_background (wsid,white)
 	   endif
 	else
-	   call gscr (wsid,ndx,val(red),val(green),val(blue))
+	   if (meta_actv) 
+     .        call gscr (wsid,ndx,val(red),val(green),val(blue))
 	endif
 #endif
 
@@ -146,7 +148,7 @@
  1000   continue
 
 #ifndef atc_gks
-        call guwk (wsid,gpostp)
+        if (meta_actv) call guwk (wsid,gpostp)
 #endif
 
         return

@@ -53,6 +53,7 @@
 * V602: *acm* 1/07 Changes for metafile-batch mode
 * V608: *acm*11/07 the text for RGB_mapping must be palette, by_value, or by_level; issue
 *                  a warning if its not one of these. Fixes bug 1549
+* V610  *acm* 3/08 Fixes for metafile batch mode
 
         include         'shade_vars.cmn'
         include 	'cmrdl_inc.decl'            
@@ -138,7 +139,7 @@
 #else
  	   if (.not. protect_used_colors) 
      .   	call set_fill_area_rep (wsid,wstype)
-           call guwk (wsid,gpostp)	
+           if (meta_actv) call guwk (wsid,gpostp)	
 
 #endif
 *4.91   if (meta_actv) call set_fill_area_rep (meta_wsid,meta_wstype)

@@ -54,10 +54,10 @@ C     for compatibility with Ferret use of symbols.
 * V510 4/99 *jd* increased initialization sizes for bigger NLINES
 * V510 9/99 *sh* increased initialization sizes for bigger NLINES
 *      3/00 *sh* reduceded initialization sizes for NLINES variables
-*`		(except lleng())
+* 		(except lleng())
+* V610 2/08 *acm*increase default number of contour levels to NLEV=40 
 
 
-#ifdef unix
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'AXIS.INC'
 	INCLUDE 'AXISL.INC'
@@ -100,50 +100,6 @@ C     for compatibility with Ferret use of symbols.
 	INCLUDE 'VIEW.INC'
 	INCLUDE 'ZGRID.INC'
 	INCLUDE 'ZGRIDD.INC'
-#else
-	INCLUDE 'pplv11inc:PARAMPL5.DAT'
-	INCLUDE 'pplv11inc:AXIS.INC'
-	INCLUDE 'pplv11inc:AXISL.INC'
-	INCLUDE 'pplv11inc:AXLWID.INC'
-	INCLUDE 'pplv11inc:CMRD.INC'
-	INCLUDE 'pplv11inc:CMDCOM.INC'
-	INCLUDE 'pplv11inc:CMRDL.INC'
-	INCLUDE 'pplv11inc:COMEPL.INC'
-	INCLUDE 'pplv11inc:COMEPV.INC'
-	INCLUDE 'pplv11inc:CONLAB.INC'
-	INCLUDE 'pplv11inc:CONT.INC'
-	INCLUDE 'pplv11inc:DASHZZ.INC'
-	INCLUDE 'pplv11inc:DATA.INC'
-	INCLUDE 'pplv11inc:DSFSVE.INC'
-	INCLUDE 'pplv11inc:EPICLUN.INC'
-	INCLUDE 'pplv11inc:FILNAM.INC'
-	INCLUDE 'pltv11inc:GKSCM1.INC'
-	INCLUDE 'pplv11inc:HAB.INC'
-	INCLUDE 'pplv11inc:HD.INC'
-	INCLUDE 'pplv11inc:LABCOM.INC'
-	INCLUDE 'pplv11inc:LABELS.INC'
-	INCLUDE 'pplv11inc:LINES.INC'
-	INCLUDE 'pplv11inc:LUNITS.INC'
-	INCLUDE 'pplv11inc:MISS.INC'
-	INCLUDE 'pplv11inc:MPLOT.INC'
-	INCLUDE 'pplv11inc:MPLOTS.INC'
-	INCLUDE 'pplv11inc:MPLOTX.INC'
-	INCLUDE 'pplv11inc:PEN.INC'
-	INCLUDE 'pplv11inc:PLT.INC'
-	INCLUDE 'pplv11inc:PLTL.INC'
-	INCLUDE 'pplv11inc:PPLDAT.INC'
-	INCLUDE 'pplv11inc:SWITCH.INC'
-	INCLUDE 'pplv11inc:SYMKEY.INC'
-	INCLUDE 'pplv11inc:SYSTEM.INC'
-	INCLUDE 'pplv11inc:TAXIS.INC'
-	INCLUDE 'pplv11inc:TICS.INC'
-	INCLUDE 'pplv11inc:TICS2.INC'
-	INCLUDE 'pplv11inc:XYLABP.INC'
-	INCLUDE 'pplv11inc:VECTOR.INC'
-	INCLUDE 'pplv11inc:VIEW.INC'
-	INCLUDE 'pplv11inc:ZGRID.INC'
-	INCLUDE 'pplv11inc:ZGRIDD.INC'
-#endif
 C
 	DATA XLO,XHI,XTIC,XLEN,XCSIZE,IAUTOX,ITYPEX/3*0.,8.,.10,1,1/
 	DATA NMTCX,LINTX,LABELX,NSIGX,NTICX,XORG/0,2,-1,2,5,1.4/
@@ -165,7 +121,7 @@ C
 	DATA CONPRE,CONPST/' ',' '/
 C
 C
-	DATA ZLEV,LDIG,LWGT,LCLR,NLEV,HGT/500*0.0,1500*0,10,.08/
+	DATA ZLEV,LDIG,LWGT,LCLR,NLEV,HGT/500*0.0,1500*0,40,.08/
 	DATA NARC,IAUTOC,NLEV2,NSIGC,CANGLE,IVCOMP/1,1,0,2,0.0,1/
 C
 	DATA DASHLN,SPACLN,DSLAB/.04,.04,5.0/

@@ -91,6 +91,7 @@
 *                 digits are needed, keep track of digits added; need to increase the  
 *                 argument klab_len by the same amount in subsequent calls to TM_FMT_DIGITS  
 *                 when we are writing the numeric labels on the key. 
+* V610 *acm* 3/08 For larger default number of levels, make fewer labels when the key is short.
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -333,7 +334,7 @@
 
 *	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
 	if (klab_incr .eq. 0) then
-	   incr = shd_levels/25 + 1
+	   incr = (shd_levels/25)* width/vwidth + 1   ! short plot, label fewer
 	else
 	   incr = klab_incr
 	end if
@@ -544,7 +545,7 @@ cc	   karht = amin1 (0.12*1000.0,460.0*rem/real (max_len))/1000.0
 	end if
 
 	if (klab_incr .eq. 0) then
-	   incr = shd_levels/25 + 1
+	   incr = (shd_levels/25)* height/vheight + 1   ! short plot, label fewer
 	else
 	   incr = klab_incr
 	end if

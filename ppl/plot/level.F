@@ -36,6 +36,7 @@
 *
 C**    @(#)level.F	1.1    3/10/88
 C** V600:  1/06 *acm*  prevent values of LOG10(0.0)
+* V610 *acm* 3/08 - add new MODE NLEVELS; default number of levels is now 40
 C**
 C**
 C***********************************************************************
@@ -56,7 +57,7 @@ C**
 	NLEV=M 
 	IF(M.LE.1)THEN 
 	    NLEV=IFIX(P(1)) 
-	    IF(M.EQ.0)NLEV=10 
+	    IF(M.EQ.0)NLEV=NLEV_DFLT
 	    IAUTOC=1 
 	    GOTO 10 
 	ELSE 

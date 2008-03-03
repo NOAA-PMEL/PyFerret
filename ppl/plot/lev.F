@@ -63,8 +63,9 @@ C**
 *                 before the possible resetting of zlev if posinf true.
 * V603 *acm* 7/07 As done in plotz.F, use TM_FPEQ to compare zlev(i) to 0.,
 *                 within machine accuracy.
-* V608 *cam*10/07 The above fix refered to TM_FPEQ( ABS(ZLEV(I)) ,0.) ) 
+* V608 *acm*10/07 The above fix refered to TM_FPEQ( ABS(ZLEV(I)) ,0.) ) 
 *                 It should be ZLEV(I). Fixes bug 1546.
+* V610 *acm* 3/08 - add new MODE NLEVELS; default number of levels is now 40
 
 
 	parameter	(epsilon = 1e-6)
@@ -76,7 +77,7 @@ C**
 
 
 	IF(LABEL.EQ.' ')THEN
-	    NLEV=10
+	    NLEV=NLEV_DFLT
 	    IAUTOC=1
 	    GOTO 10
 	ENDIF
@@ -120,7 +121,7 @@ C	SET CONTOUR LEVELS
 C
 	    IF(INTIF(1).EQ.0)THEN
 		IAUTOC=1
-		NLEV=10
+		NLEV=NLEV_DFLT
 		GOTO 200
 	    ENDIF
 	    IF(INTIF(3).EQ.1.AND.VAL(3).EQ.0.)THEN

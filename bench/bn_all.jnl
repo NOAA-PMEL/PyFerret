@@ -100,6 +100,7 @@ SET MODE VERIFY
 !             on a system in order for it to pass the benchmarks.
 !
 ! 11/06 *acm* New bn602_bug_fixes for version 6.02
+* V610  *acm* 3/08 - add new MODE NLEVELS
 
 
 GO bn_reset
@@ -573,6 +574,9 @@ GO bn608_bug_fixes
 
 GO bn_reset
 GO bn_shade_trim
+
+GO bn_reset
+GO bn_mode_nlevels
 
 GO bn_reset
 GO bn61_bug_fixes

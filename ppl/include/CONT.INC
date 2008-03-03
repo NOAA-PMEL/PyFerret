@@ -11,11 +11,12 @@ C**
 C***********************************************************************
 C**
 C**
-*  v581 *acm* 3/05 open levels (-INF) (INF)
-c
+* v581  *acm* 3/05 open levels (-INF) (INF)
+* V610  *acm* 3/08 - add new MODE NLEVELS
+
 
 	COMMON/CONT/ ZLEV(ICNLEV),LDIG(ICNLEV),LWGT(ICNLEV),LCLR(ICNLEV),
-     *	NLEV,HGT,NARC,IAUTOC,NLEV2,NSIGC,CANGLE,IVCOMP,
+     *	NLEV,NLEV_DFLT,HGT,NARC,IAUTOC,NLEV2,NSIGC,CANGLE,IVCOMP,
      *  CENTERED,SET_DELTA,DELTA,NEGINF,POSINF,CONT_KEY
 
 

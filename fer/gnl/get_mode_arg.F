@@ -61,6 +61,7 @@
 * V500: 4/99 *sh* - added MODE STUPID:weak_cache
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 * V600: *acm* 5/06 - add new MODE LINECOLORS:[arg]
+* V610  *acm* 3/08 - add new MODE NLEVELS:argument
 
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -152,27 +153,40 @@
 	   IF ( iarg.LT.6 ) GOTO 5010
 	   arg = iarg
 
+	ELSEIF ( mode .EQ. pmode_nlevels ) THEN
+	   READ ( text, '(BN,I10)', ERR=5020 ) iarg
+	   IF ( iarg.LT.1 .OR. iarg .GT. 250 ) GOTO 5020
+	   arg = iarg
+
         ELSE
 	   GOTO 5010	! mode does not accept argument
 	ENDIF
 
 * successful completion
  1000	RETURN
-
+        
 * error exit
- 5000 	RETURN
-#ifdef NO_PASSED_CONCAT	
+ 5000   RETURN
+#ifdef NO_PASSED_CONCAT
  5010   tlen = TM_LENSTR1(text)
-	risc_buff = text(:tlen)
-	CALL ERRMSG( ferr_out_of_range, status,
-     .		     'illegal mode argument < 6'//risc_buff, *5500 )
+        risc_buff = text(:tlen)
+        CALL ERRMSG( ferr_out_of_range, status,
+     .               'illegal mode argument < 6'//risc_buff, *5500 )
+ 5020   tlen = TM_LENSTR1(text)
+        risc_buff = text(:tlen)
+        CALL ERRMSG( ferr_out_of_range, status,
+     .   'illegal mode argument must be in [1,250] '//risc_buff, *5500 )
 #else
  5010   tlen = TM_LENSTR1(text)
-	CALL ERRMSG( ferr_out_of_range, status,
-     .		     'illegal mode argument < 6 '//text(:tlen), *5500 )
+        CALL ERRMSG( ferr_out_of_range, status,
+     .               'illegal mode argument < 6 '//text(:tlen), *5500 )
+ 5020   tlen = TM_LENSTR1(text)
+        CALL ERRMSG( ferr_out_of_range, status,
+     .   'illegal mode argument must be in [1,250] '//text(:tlen), *5500 )
 #endif
- 5500	IF ( mode .EQ. pmode_verify ) CALL WARN(
-     .		'Legal VERIFY arguments are DEFAULT, ALL, and ALWAYS')
-	GOTO 5000
+ 5500   IF ( mode .EQ. pmode_verify ) CALL WARN(
+     .          'Legal VERIFY arguments are DEFAULT, ALL, and ALWAYS')
+        GOTO 5000
 
-	END
+        END
+

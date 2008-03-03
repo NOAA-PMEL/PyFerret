@@ -65,6 +65,9 @@
 * V450:  TEMPORARY EXPERIMENTAL change to test metafile-only output
 * V450:  3/4/97 - Mod to support metafile-only (no X) output through a
 *		cuckoo's egg implantation of meta_wsid in place of wsid
+* V610 *acm* 3/08 - add new MODE NLEVELS; Store the setting for the default
+*                   number of contour/fill levels.
+
 
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'
@@ -153,6 +156,10 @@
 
 * set up the default spectrum
         CALL PPL_SHASET( 'SPECTRUM=default' )
+
+* Set default (initial) number of color levels
+
+        CALL SET_DEFAULT_NLEVELS( mode_arg(pmode_nlevels, 1) )
 
 * set up axis lengths and PLOT+ symbols
 	CALL SET_VIEWPORT( mvp_dflt )

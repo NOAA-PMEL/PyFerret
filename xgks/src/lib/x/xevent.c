@@ -198,7 +198,9 @@ ProcessEvents()
     void
 xProcessEvents()
 {
-    assert(SigCount > 0);
+/*    acm acm 9/12/2007   */
+/*    assert(SigCount > 0);   */
+    assert(SigCount >= 0);
     ProcessEvents();
 }
 

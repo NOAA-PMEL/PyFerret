@@ -44,6 +44,7 @@ query_display_size.F\
 query_xgks_wkstn.F\
 say_interrupted.F\
 set_default_colors.F\
+set_default_nlevels.F\
 set_fill_area_rep.F\
 set_fill_ndx.F\
 set_gks_metafile.F\

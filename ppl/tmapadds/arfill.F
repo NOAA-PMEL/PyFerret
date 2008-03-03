@@ -158,7 +158,7 @@ C acm 4/05 When plotting curvilinear data with FILL/MODULO put this logic into e
            IF (status .NE. ferr_ok) GOTO 1000
         ENDIF
       
-        big = ABS(bad_val4)
+        big = ABS(badx)
         lmin = big
         lmax = -1*big
         xadd = 0.
@@ -174,6 +174,8 @@ C acm 4/05 When plotting curvilinear data with FILL/MODULO put this logic into e
            nright = 0
            IF (lmin .GT. uc(1) ) nleft =  1 + INT(lmin - uc(1) )/ 360
            IF (lmax .LT. uc(2) ) nright = 1 + INT(uc(2) - lmax )/ 360
+           nleft = MAX(nleft,1)
+           nright = MAX(nright,1)
 
            IF (nleft .GT. 0) THEN
               xadd = 0.

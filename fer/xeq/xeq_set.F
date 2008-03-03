@@ -149,6 +149,8 @@
 * v604 *acm* 7/07 increase length of ds_name
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out.
+* V610  *acm* 3/08 - add new MODE NLEVELS
+* V610  *acm* 3/08 Fixes for metafile batch mode
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -195,7 +197,8 @@
 	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, GRID_FROM_NAME,
      .                  TM_GET_LINENUM, LIB_GET_LUN, TM_LENSTR, TM_LENSTR1, 
      .                  TM_UNIT_ID, TM_GET_CALENDAR_ID, FIND_DSET_NUMBER, 
-     .			STR_UPCASE, equal_pos, colon_pos, dset_num, ich,
+     .			STR_UPCASE, STR_SAME, 
+     .                  equal_pos, colon_pos, dset_num, ich,
      .			status, tmap_status, mode, idim, iarg, item, lp, iv,
      .			cx, i, grid, axis, loc, perm(4), buff_len, 
      .                  cal_id, day, month, year, hour, minute, second,
@@ -580,10 +583,15 @@ c *kob* 4/97
                     CALL WARN ('in GIF mode: ignoring SET MODE METAFILE')
                     mode_metafile = .FALSE.
                  ELSE IF ( batch ) THEN
-                    CALL WARN ('in batch mode: SET MODE METAFILE '//
-     .                 'only changes the name of the metafile')
-	  	    IF ( buff2 .NE. ' ' ) CALL PPLCMD
+                    CALL ECHOF_OFF
+	  	    IF ( buff2 .NE. ' ' ) THEN
+                       CALL PPLCMD
      .			( from, line, 0, 'PLTNME '//buff2, 1, 1 )
+                    ELSE
+                       CALL GET_METAFILE_NAME(ustring)
+                       IF (STR_SAME(ustring,'dummy.plt') .EQ. 0) CALL PPLCMD
+     .			( from, line, 0, 'PLTNME metafile.plt', 1, 1 )
+                    ENDIF
                     mode_metafile = .FALSE.
                  ELSE
  	            IF ( .NOT.pplus_started ) CALL START_PPLUS     ! 1/94
@@ -640,6 +648,10 @@ c *kob* 4/97
                     CALL WARN ('New number of line colors will take '//
      .                'effect on next new window: SET WIN/NEW')
                  ENDIF
+
+* ... mode nlevels sets the default number of contour intervals.
+              ELSEIF ( mode .EQ. pmode_nlevels ) THEN
+                 CALL SET_DEFAULT_NLEVELS( mode_arg(pmode_nlevels, 1) )
 
 	      ENDIF
 	      GOTO 820

@@ -61,7 +61,7 @@
 * V510 *sh* 3/00 -- increase allowed path name length
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out.
-* V609  2/08 *acm* Always define a symbol LAST_GO_FILE with the name of the jnl script.
+* V610  2/08 *acm* Always define a symbol LAST_GO_FILE with the name of the jnl script.
 
 ! Note: A known "bug" of the 12/94 GO_FILE symbol is that the PLOT+ symbol
 !	GO_FILE gets defined only **after** PLOT+ has already placed a window
@@ -167,8 +167,13 @@
      .		( from, line, 0, 'SET GO_FILE '//cbuff, 1, 1 )
 
 * define the symbol 'LAST_GO_FILE' no matter what...
-	CALL PPLCMD
-     .		( from, line, 0, 'SET LAST_GO_FILE '//cbuff, 1, 1 )
+
+	ier = 0
+	ist = 0
+	len_string = TM_LENSTR1( cbuff )
+
+	CALL SETSYM ('LAST_GO_FILE '//cbuff, 12+len_string, 
+     .                 ier, ist)
 
 * successful completion
 	RETURN

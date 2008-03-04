@@ -369,7 +369,7 @@ C  variables for checking axis characteristics (modulo axes)
          IF (arg_lo_ss(m,ARG1) .GE. 1) THEN
             i1 = arg_lo_ss(m,ARG1)
             i1n = arg_hi_ss(m,ARG1)
-            if (i1n-i1 .NE. 0) nypts = 1 + (i1n - i1)
+            if (i1n-i1 .GE. 0) nypts = 1 + (i1n - i1)
          ENDIF
  100  CONTINUE
 
@@ -377,7 +377,7 @@ C  variables for checking axis characteristics (modulo axes)
          IF (arg_lo_ss(m,ARG2) .GE. 1) THEN
             i2 = arg_lo_ss(m,ARG2)
             i2n = arg_hi_ss(m,ARG2)
-            if (i2n-i2 .NE. 0) nzpts = 1 + (i2n - i2)
+            if (i2n-i2 .GE. 0) nzpts = 1 + (i2n - i2)
          ENDIF
  110  CONTINUE
 

@@ -334,7 +334,9 @@
 
 *	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
 	if (klab_incr .eq. 0) then
-	   incr = (shd_levels/25)* width/vwidth + 1   ! short plot, label fewer
+	   incr = (shd_levels/25) + 1
+           IF (width/vwidth .GT. 1.5) incr = 2*incr
+!	   incr = (shd_levels/25)* width/vwidth + 1   ! short plot, fewer labels
 	else
 	   incr = klab_incr
 	end if
@@ -545,7 +547,8 @@ cc	   karht = amin1 (0.12*1000.0,460.0*rem/real (max_len))/1000.0
 	end if
 
 	if (klab_incr .eq. 0) then
-	   incr = (shd_levels/25)* height/vheight + 1   ! short plot, label fewer
+	   incr = (shd_levels/25) + 1
+           IF (height/vheight .GT. 1.5) incr = 2*incr   ! short plot, fewer labels
 	else
 	   incr = klab_incr
 	end if

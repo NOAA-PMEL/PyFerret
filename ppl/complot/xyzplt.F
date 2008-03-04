@@ -48,6 +48,16 @@ C	      70 XINTER = XMXMN(IAND(LOWFLG,3))
 C	      logic to deal with a pair of points whose connecting segment
 C		crosses the corner of the window is wrong
 C	      ...bounds checking is OFF to match Denbo's compile stmt
+
+
+C ACM 11/07. Stray line in some cases caused by IAND at label 70
+C            see bench/outside_the_lines.jnl
+
+C ACM 11/07. Potential precision loss in using this kind of test - 
+C            values of YINTR, YMIN, etc may be 5 digits.
+
+c      IF(YINTER + 0.001 .LT. YMIN .OR. YINTER - 0.001 .GT. YMAX)
+
 ****************************************************************
 C     CALL XYZPLT
 
@@ -62,6 +72,7 @@ C      DIMENSION XMXMN(2),YMXMN(2)
       REAL XMXMN(2),YMXMN(2)
       EQUIVALENCE (XMXMN(1),XMAX),(YMXMN(1),YMAX)
       REAL xinter, yinter, zinter, dx, dy, dz, cosx, cosy, cosz, dist
+      integer ii
 
 #ifdef unix
       include 'pltcom_dat.decl'
@@ -216,21 +227,39 @@ C     CALCULATE THE INTERCEPT.
 C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON THE BOUNDARY
 C     OF THE WINDOW
 
-      IF(XINTER + 0.001 .GE. XMIN .AND. XINTER - 0.001 .LE. XMAX)
+c      IF(XINTER + 0.001 .GE. XMIN .AND. XINTER - 0.001 .LE. XMAX)
+c     * GOTO 80
+      IF(XINTER*1.001 .GE. XMIN .AND. XINTER*0.999 .LE. XMAX)
      * GOTO 80
 
 C     THE POINT IS OUTSIDE THE VERTICAL LIMITS OF THE WINDOW.
 C     CALCULATE THE INTERCEPT.
 
+  70  CONTINUE
 #ifdef unix
 # ifdef NEED_IAND
- 70   XINTER = XMXMN(IAND(LOWFLG,3))
+      XINTER = XMXMN(IAND(LOWFLG,3))
+       ii = IAND(LOWFLG,3)
 # else
- 70   XINTER = XMXMN(AND(LOWFLG,3))
+      XINTER = XMXMN(AND(LOWFLG,3))
+       ii = AND(LOWFLG,3)
 # endif
 #else
- 70   XINTER = XMXMN(IAND(LOWFLG,3))
+      XINTER = XMXMN(IAND(LOWFLG,3))
+       ii = IAND(LOWFLG,3)
 #endif 
+
+C ACM 11/07.  IAND(LOWFLG,3) takes on these values, but XMXMN is dimension 2
+C             0 if LOWFLG is 0,4,8,...
+C             1 IF LOWFLG is 1,5,9,...
+C             2 if LOWFLG is 2,6,10,...
+C             3 if LOWFLG is 3,7,11,...
+
+      IF  (ii .GE. 1 .AND. ii .LE. 2) THEN
+         XINTR =  XMXMN(ii)
+      ELSE
+         GOTO 190
+      ENDIF
 
       YINTER = (YNEW - YOLD) * (XINTER - XOLD) / (XNEW - XOLD) +
      * YOLD
@@ -240,7 +269,9 @@ C     CALCULATE THE INTERCEPT.
 C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON THE BOUNDARY
 C     OF THE WINDOW.
 
-      IF(YINTER + 0.001 .LT. YMIN .OR. YINTER - 0.001 .GT. YMAX)
+c      IF(YINTER + 0.001 .LT. YMIN .OR. YINTER - 0.001 .GT. YMAX)
+c     * GO TO 190
+      IF(YINTER*1.001 .LT. YMIN .OR. YINTER*0.999 .GT. YMAX)
      * GO TO 190
 
 C     TRANSFORM THE INTERCEPT TO THE SCREEN COORDINATE SYSTEM.
@@ -258,10 +289,14 @@ C     LOSFLG = 0
 ******************************************************************
 C FERRET mod - bypass GKS clipping - 9-19-88
       IF ( ptype .LT. 3 ) THEN
-          IF(AOLD - 0.001 .GT. AMAX)LOSFLG = 1
-          IF(AOLD + 0.001 .LT. AMIN)LOSFLG = 2
-          IF(BOLD - 0.001 .GT. BMAX)LOSFLG = LOSFLG + 4
-          IF(BOLD + 0.001 .LT. BMIN)LOSFLG = LOSFLG + 8
+c          IF(AOLD - 0.001 .GT. AMAX)LOSFLG = 1
+c          IF(AOLD + 0.001 .LT. AMIN)LOSFLG = 2
+c          IF(BOLD - 0.001 .GT. BMAX)LOSFLG = LOSFLG + 4
+c          IF(BOLD + 0.001 .LT. BMIN)LOSFLG = LOSFLG + 8
+          IF(AOLD*0.999 .GT. AMAX)LOSFLG = 1
+          IF(AOLD*1.001 .LT. AMIN)LOSFLG = 2
+          IF(BOLD*0.999 .GT. BMAX)LOSFLG = LOSFLG + 4
+          IF(BOLD*1.001 .LT. BMIN)LOSFLG = LOSFLG + 8
        ENDIF
 C end of FERRET mod
 ******************************************************************
@@ -303,8 +338,11 @@ C     CALCULATE THE INTERCEPT.
 C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON THE BOUNDARY
 C     OF THE WINDOW.
 
-      IF(XINTER + 0.001 .GE. XMIN .AND. XINTER - 0.001 .LE. XMAX)
+c      IF(XINTER + 0.001 .GE. XMIN .AND. XINTER - 0.001 .LE. XMAX)
+c     * GO TO 110
+      IF(XINTER*1.001 .GE. XMIN .AND. XINTER*0.999 .LE. XMAX)
      * GO TO 110
+
 
 C     THE POINT IS OUTSIDE THE VERTICAL LIMITS OF THE WINDOW.
 C     CALCULATE THE INTERCEPT.

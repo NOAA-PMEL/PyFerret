@@ -23,6 +23,7 @@
 #  v5.4 10/01 *kob* - add the removal of .f files - for linux
 #  v5.41 4/02 *acm* - Add -g flag for debug compiles of C code.  
 # v5.54  8/04 *acm* - Add target "profiling", to compile with -pg option.
+# v6.1 beta 3/06 *acm* - For Beta release to GFDL, add (beta) as DEBUG_TITLE
 # 
 # include platform specific macro definitions
 #
@@ -141,7 +142,8 @@ profiling: .FRC
 
 DODS_gui: .FRC
 	(cd ccr; $(CC) -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
-	$(MAKE) update
+#	      	$(MAKE) update
+	$(MAKE) "DEBUG_TITLE=beta" update
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG="\
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui ../list-2.1/liblist.a" \

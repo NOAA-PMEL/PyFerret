@@ -48,6 +48,8 @@
 * V300 4/93 - crash if precision exceeds 6
 * V530: *acm* 12/00 add calendar types; cal_id
 * V600 - SECS_TO_DATE --> SECS_TO_DATE_OUT for better formatting
+* V610: *acm*  2/08 Fix bug 762: if the axis is not modulo, always list the
+*                   year (previously never listed year 0 or year 1)
 
 * Arguments:
 *	grid	 - grid containing a time axis
@@ -70,6 +72,7 @@
 	REAL*8		tstep
 *
 * Local definitions
+        LOGICAL         modulo
 	CHARACTER*20	SECS_TO_DATE_OUT, buff, dms
 	INTEGER		axis, status, prec,
      .                  TM_GET_CALENDAR_ID, cal_id
@@ -93,6 +96,8 @@
 	   RETURN
 	ENDIF
 
+        modulo = line_modulo(axis)
+
 * get the calendar type
 
         cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
@@ -111,7 +116,7 @@
 !	this_secs = ( DNINT(this_secs/prec_fact(prec)) + 0.5 ) * prec_fact(prec)
 
 * Convert to date
-	date = SECS_TO_DATE_OUT(this_secs, cal_id, prec)
+	date = SECS_TO_DATE_OUT(this_secs, cal_id, modulo, prec)
 
 
 * Finished

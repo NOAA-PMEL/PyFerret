@@ -1,5 +1,5 @@
 	CHARACTER*(*) FUNCTION SECS_TO_DATE_OUT ( num_secs, cal_id, 
-     .            prec )
+     .            modulo, prec )
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -46,12 +46,15 @@
 * revision 0.0 - code pulled from TM_SECS_TO_DATE
 * revision 1.0 - 2/22/89 - calls TM_SECS_TO_DATE
 * V530: *acm* 12/00 add calendar types; cal_id
+* V610: *acm*  2/08 Fix bug 762: if the axis is not modulo, always list the
+*                   year (previously never listed year 0 or year 1)
 
 * Calling argument declarations:
 	REAL*8		num_secs
 	INTEGER		cal_id, prec
 
 * internal variable declarations
+        LOGICAL         modulo
 	INTEGER		year, month, day, hour, minute, second, status
 	CHARACTER	TM_SECS_TO_DATE*20, temp_str*20
         CHARACTER*3     month_names(12)
@@ -65,11 +68,11 @@
      .		             hour, minute, second, status)
 
 * Select the requested precision and form the string.  If year = 0000 
-* or 0001 do not write the year
+* or 0001 and the axis is modulo, do not write the year
 
 	IF ( prec .GE. 6 ) THEN		! full precision
 
-	   IF (year .GT. 1) THEN
+	   IF (year .GT. 1 .OR. .NOT.modulo) THEN
               WRITE (temp_str,1000,ERR=5000) day, month_names(month), 
      .               year, hour, minute, second
            ELSE
@@ -82,7 +85,7 @@
 
 
 	ELSEIF ( prec .EQ. 5 ) THEN	! dd-mmm-yyyy hh:mm
-	   IF (year .GT. 1) THEN
+	   IF (year .GT. 1 .OR. .NOT.modulo) THEN
               WRITE (temp_str,1020,ERR=5000) day, month_names(month), 
      .               year, hour, minute
            ELSE
@@ -94,7 +97,7 @@
 1030	   FORMAT(I2.2,'-',A3,' ',I2.2,':',I2.2)
 
 	ELSEIF ( prec .EQ. 4 ) THEN	! dd-mmm-yyyy hh
-	   IF (year .GT. 1) THEN
+	   IF (year .GT. 1 .OR. .NOT.modulo) THEN
               WRITE (temp_str,1040,ERR=5000) day, month_names(month), 
      .               year, hour
            ELSE
@@ -106,7 +109,7 @@
 1050	   FORMAT(I2.2,'-',A3,' ',I2.2)
 
 	ELSEIF ( prec .EQ. 3 ) THEN	! dd-mmm-yyyy
-	   IF (year .GT. 1) THEN
+	   IF (year .GT. 1 .OR. .NOT.modulo) THEN
               WRITE (temp_str,1060,ERR=5000) day, month_names(month), 
      .               year
            ELSE
@@ -117,7 +120,7 @@
 1070	   FORMAT(I2.2,'-',A3)
 
 	ELSEIF ( prec .EQ. 2 ) THEN	! mmm-yyyy
-	   IF (year .GT. 1) THEN
+	   IF (year .GT. 1 .OR. .NOT.modulo) THEN
               WRITE (temp_str,1080,ERR=5000) month_names(month), year
            ELSE
               WRITE (temp_str,1090,ERR=5000) month_names(month)
@@ -127,7 +130,7 @@
 1090	   FORMAT(A3)
 
 	ELSE				! yyyy
-	   IF (year .GT. 1) THEN
+	   IF (year .GT. 1 .OR. .NOT.modulo) THEN
               WRITE (temp_str,1100,ERR=5000) year
            ELSE
               temp_str = ' '

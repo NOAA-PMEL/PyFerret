@@ -1,0 +1,23 @@
+! bn_mode_nlevels.jnl
+! 3-mar-2008
+! v6.1 MODE NLEVELS (default is 40)
+
+show mode nlevels
+use levitus_climatology
+
+shade temp
+show sym lev*
+
+! Old default value was 10
+set mode nlevels 10
+shade temp
+show sym lev*
+
+! set even higher
+set mode nlevels 80
+shade temp
+show sym lev*
+
+! restore (new) default
+set mode nlevels 40
+

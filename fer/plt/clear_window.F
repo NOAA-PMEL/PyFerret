@@ -49,18 +49,22 @@
 
 	include 'plot_setup.parm'
 	include 'xplot_state.cmn'		! viewport info
+	include	'pltcom_dat.decl'	! with gksopn
+	include	'PLTCOM.DAT'	! with gksopn
 
 * calling argument declarations:
 	INTEGER	wid, ivp, iseg, istate
 
 * internal variable declarations:
 
+        CALL GQOPS (istate)
+
 ! --- start of 9/95 addition
 * explicitly delete segments to avoid XGKS memory leak
 	DO 200 ivp =  mvp_dflt, max_viewport
 	   IF ( vp_segn(ivp) .NE. 0 ) THEN 
 	      DO 100 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
- 100	      CALL GDSG( iseg ) 
+ 100	       IF ( gksopn .AND. (istate .GE. 2) ) CALL GDSG( iseg ) 
 	   ENDIF
 *  and mark segment as deleted
 	   vp_seg0(ivp) = 0

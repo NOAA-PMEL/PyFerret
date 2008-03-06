@@ -58,6 +58,13 @@
 	linestart(numlines) = 1
 	lineend(numlines) = inlen
 
+* If the label ends in <NL> then ignore that.
+
+        IF (inlen .GE. 4) THEN
+           ICODE = str_upcase (newline, instring(inlen-3:inlen))  
+           IF (newline .EQ. '<NL>') inlen = inlen-3
+        ENDIF
+
 * Locate next character
 
 100	CONTINUE
@@ -92,7 +99,7 @@
 500	lincnt = lincnt + 1
 	linestart(lincnt) = nchar
 	lineend(lincnt) = max(nchar,nlin-5)
-	IF (nlin .LT. inlen) GOTO 100
+	IF (nlin .LE. inlen) GOTO 100
 
 * if at end of string loop at 100 will catch it
 

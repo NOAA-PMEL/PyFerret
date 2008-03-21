@@ -278,7 +278,10 @@ c     .	( mode_name(i),i=pmode_nlevels+1,max_modes )/pmode_unused/
      .		(mode_arg  ( pmode_upcase_output,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_nlevels,i), i=1,mode_stack_size)
-     .				/ mode_stack_size*40 /
+     .				/ mode_stack_size*10 /
+
+* If the value of nlevels is changed, also change it in plot/ppldata.F
+
 
 * for MODE WAIT
 	DATA	ppl_wait / 'NOWAIT' /

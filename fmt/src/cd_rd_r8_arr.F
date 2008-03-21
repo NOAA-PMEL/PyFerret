@@ -44,6 +44,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 2/92
+* V6.1 3/08 ACM If the data type is double and we return without converting 
+*           the data, we still need to set status to merr_ok.
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -81,6 +83,7 @@
 
 * convert data types
       IF (dtype.EQ.NCDOUBLE) THEN
+         status = merr_ok
          RETURN
       ELSEIF (dtype.EQ.NCBYTE .OR. dtype.EQ.NCCHAR) THEN
          CALL TM_I1_to_R8( dvals, dvals, n)

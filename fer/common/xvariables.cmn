@@ -50,6 +50,7 @@
 *                  The first 3 of these needed for LAS scripts doing comparisons 
 *                  along with seasonal averages; max_uvar_items reported once or 
 *                  twice as a limit that users have run into.
+* V61  3/08 *acm*  increase max_mrs again to 501.
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -169,7 +170,7 @@
      .			pmv_adjoint_var_pile,
      .			pmv_lowest_head,
      .			dummy_mr
-	PARAMETER     ( max_mrs   = 301,
+	PARAMETER     ( max_mrs   = 501,
      .			dummy_mr  = max_mrs,
      .			max_mr_avail = max_mrs - 1,
      .			pmem_blk_size = 2*(160*100*4/10), !2* 9/01 see ferret.h

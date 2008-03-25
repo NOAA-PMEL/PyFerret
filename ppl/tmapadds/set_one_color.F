@@ -84,7 +84,8 @@
 #endif
 	      call gqpcr (wstype,i,err,val(red),val(green),val(blue))
 	      if (err .ne. 0) goto 5
-	      if (meta_actv) call gscr (wsid,i,val(red),val(green),val(blue))
+cc	      if (meta_actv) call gscr (wsid,i,val(red),val(green),val(blue))
+	      call gscr (wsid,i,val(red),val(green),val(blue))
 	      if (meta_actv .and. .not. meta_clsplt) 
      .		call gscr (meta_wsid,i,val(red),val(green),val(blue))
 5	   continue
@@ -109,7 +110,8 @@
 10	continue
 
 #ifndef xgks
-	if (meta_actv) call gscr (wsid,ndx,val(red),val(green),val(blue))
+cc	if (meta_actv) call gscr (wsid,ndx,val(red),val(green),val(blue))
+	call gscr (wsid,ndx,val(red),val(green),val(blue))
 #else
 *	FOR X, PERMIT ONLY WHITE OR BLACK BACKGROUNDS FOR NOW
 	if (ndx .eq. 0) then
@@ -121,13 +123,15 @@
 	       call set_background (wsid,white)
 	   endif
 	else
-	   if (meta_actv) 
-     .        call gscr (wsid,ndx,val(red),val(green),val(blue))
+cc	   if (meta_actv) 
+cc     .        call gscr (wsid,ndx,val(red),val(green),val(blue))
+	   call gscr (wsid,ndx,val(red),val(green),val(blue))
 	endif
 #endif
 
 	if (meta_actv .and. .not. meta_clsplt) then
 #ifndef xgks
+           call gscr (meta_wsid,ndx,val(red),val(green),val(blue))
            call gscr (meta_wsid,ndx,val(red),val(green),val(blue))
 #else
 *	   FOR X, PLACE NO INDEX 0 IN METAFILE, AND INDEX 1 CANNOT BE WHITE
@@ -148,7 +152,8 @@
  1000   continue
 
 #ifndef atc_gks
-        if (meta_actv) call guwk (wsid,gpostp)
+cc       if (meta_actv) call guwk (wsid,gpostp)
+        call guwk (wsid,gpostp)
 #endif
 
         return

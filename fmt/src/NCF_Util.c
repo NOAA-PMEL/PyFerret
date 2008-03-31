@@ -3052,6 +3052,12 @@ int initialize_output_flag (char *attname)
 	if (strcmp(attname,"history")==0)
 	{return_val = 1;
 	}
+	if (strcmp(attname,"bounds")==0)
+	{return_val = 1;
+	}
+	if (strcmp(attname,"edges")==0)
+	{return_val = 1;
+	}
 	return return_val;
 
 }

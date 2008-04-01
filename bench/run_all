@@ -154,8 +154,10 @@ else
 endif
 
 #Set up for metafile/gif testing
+set check_met = check_metafiles
+
 if ($machine == "linux" || $machine == "ia64-linux") then
-   cp -f check_metafiles_linux check_metafiles
+   set check_met = check_metafiles_linux
 endif
 
 echo "Log output in $log_file  Errors in $err_file" 
@@ -300,7 +302,7 @@ endif
 
 #let's check the plt and gif and ps files to make sure they look okay
 echo "Checking PLT, GIF and PS files......."
-./check_metafiles
+$check_met
 
 # save size of log file as part of the history record
 ls -l $log_file >>&  $bench_hist

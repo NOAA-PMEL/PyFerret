@@ -13,7 +13,6 @@ set win/new
 set win/title=""/new
 sho sym win_title
 
-set win/title="($sessino_date):($session_time)"
 set win/title="($session_date):($session_time)"
 sh sym win_title
 

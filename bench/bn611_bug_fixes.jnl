@@ -1,0 +1,5 @@
+! bn611_bug_fixes.jnl
+! Fixes that go into v6.11 release
+
+GO bn_reset
+GO err61_write_bounds

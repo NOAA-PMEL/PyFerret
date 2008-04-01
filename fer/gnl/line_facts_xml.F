@@ -62,13 +62,18 @@
 	INTEGER	  lun, idim, grid, orient
 
 * local variable declarations:
-	LOGICAL	BKWD_AXIS, GEOG_LABEL, calendar
+	LOGICAL	BKWD_AXIS, GEOG_LABEL, calendar, new
 	INTEGER TM_LENSTR, TM_LENSTR1, TM_GET_CALENDAR_ID, 
-     .          line, slen, llen, ndec, cal_id, status
+     .          line, slen, llen, ndec, cal_id, status,
+     .            varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
+     .            len_attbuff, attoutflag, all_outflag, attid, 
+     .            attlen, attype
 	CHARACTER TM_FMT*16, show_str*16, lo_str*20, hi_str*20, 
-     .            title*32, buff*20, outbuff*20
+     .            title*32, outbuff*20, 
+     .            attname*128, attbuff*2048, buff*14
         CHARACTER*1 idir(4)
 	REAL*8	TM_WORLD, lo_val8, hi_val8
+	REAL      vals(10)
 
 * local parameter declarations:
 	INTEGER		sig_figs
@@ -77,19 +82,20 @@
 
  2010	FORMAT ( '<axis name="', A8, 5x, A1, '">' )
  2020	FORMAT ( '<axis name="', A, '">' )
- 2030	FORMAT ( '<direction>', A, '</direction>' )
- 2040	FORMAT ( '<units>', A)
- 2045   FORMAT ( ' since ', A, '</units>' )
- 2046   FORMAT ( '</units>' )
- 2050	FORMAT ( '<length>', A, '</length>' )
- 2060	FORMAT ( '<positive>down</positive>' )
- 2070	FORMAT ( '<point_spacing>even</point_spacing>' )
- 2080	FORMAT ( '<point_spacing>uneven</point_spacing>' )
+ 2030	FORMAT ( '<attribute name="direction" value="', A, '" />' )
+ 2040	FORMAT ( '<attribute name="units" value="', A, '" />')
+ 2045   FORMAT
+     .   ( '<attribute name="units " value="', A, ' since ', A, '"</' )
+ 2050	FORMAT ( '<attribute name="length" value="', A, '" />' )
+ 2060	FORMAT ( '<attribute name="positive" value="down" />' )
+ 2070	FORMAT ( '<attribute name="point_spacing" value="even" />' )
+ 2080	FORMAT ( '<attribute name="point_spacing" value="uneven" />' )
 
- 2090	FORMAT ( '<modulo>yes</modulo>' )
- 2100	FORMAT ( '<modulo>no</modulo>' )
- 2110	FORMAT ( '<start>', A, '</start>' )
- 2120	FORMAT ( '<end>', A, '</end>' )
+ 2090	FORMAT ( '<attribute name="modulo value="yes" />' )
+ 2100	FORMAT ( '<attribute name="modulo value="no" />' )
+ 2110	FORMAT ( '<attribute name="start" value="', A, '" />' )
+ 2120	FORMAT ( '<attribute name="end" value="', A, '" />' )
+ 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
 
 * pull line from grid table
 	line = grid_line( idim, grid )
@@ -128,7 +134,7 @@
      .           .AND. slen.GT.0) THEN
               
               WRITE ( risc_buff, 2040 ) line_units(line)(1:slen)
-              llen = TM_LENSTR1(risc_buff)
+              llen = slen
 
               IF ( line_direction(line) .EQ. 'TI' ) THEN
               
@@ -144,10 +150,9 @@
                  CALL TM_DATE_REFORMAT (buff, 1, cal_id, outbuff, 2,
      .                                  .TRUE., status) 
                  slen = TM_LENSTR1(outbuff)
-                 llen = TM_LENSTR1(risc_buff)
-                 WRITE (risc_buff(llen+1:), 2045) outbuff(:slen)
-              ELSE
-                 WRITE (risc_buff(llen+1:), 2046)
+                 WRITE (risc_buff, 2045) 
+     .                line_units(line)(1:llen), outbuff(:slen)
+
               ENDIF
 
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -204,7 +209,6 @@
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
 
-
 * axis oriented backwards ?
 	   IF ( BKWD_AXIS(idim, grid) ) THEN
               WRITE ( risc_buff, 2060 ) 
@@ -226,6 +230,52 @@
               WRITE ( risc_buff, 2100 ) 
            ENDIF
            CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+
+
+* All attributes not already listed.
+
+           DO 200 iatt = 1, nvatts
+              CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
+     .              attype, attlen, attoutflag, status )
+
+              new = .TRUE.
+              new = (STR_SAME(attname, 'direction') .NE. 0)     .AND. 
+     .              (STR_SAME(attname, 'units') .NE. 0)         .AND. 
+     .              (STR_SAME(attname, 'length') .NE. 0)        .AND. 
+     .              (STR_SAME(attname, 'positive') .NE. 0)      .AND. 
+     .              (STR_SAME(attname, 'point_spacing') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'modulo') .NE. 0)        .AND. 
+     .              (STR_SAME(attname, 'start') .NE. 0)         .AND. 
+     .              (STR_SAME(attname, 'end') .NE. 0)
+
+              IF (new) THEN
+                 blen = 2048  ! len of attbuff
+                 got_it = NC_GET_ATTRIB (dset, varid, attname, 
+     .                                .TRUE., uvarname, blen, attlen, 
+     .                                attoutflag, attbuff, vals)
+
+                 IF (attype .NE. NCCHAR) THEN
+                    blen = 1
+                    attbuff = ' '
+                    DO 150 i = 1, attlen
+                       buff = TM_FMT(vals(i), 7, 14, llen)
+                       attbuff(blen:blen+llen+1) = buff//' '
+                       blen = blen + llen + 1
+ 150                   CONTINUE
+                 ELSE 
+                    blen = TM_LENSTR1(attbuff)
+                 ENDIF
+
+                 slen = TM_LENSTR1(attname)
+	         WRITE (risc_buff, 2075) attname(1:slen), 
+     .                  attbuff(1:blen)
+                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+              ENDIF
+
+ 200       CONTINUE
+
 
            status = ferr_ok
 	ENDIF

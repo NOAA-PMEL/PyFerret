@@ -76,20 +76,19 @@
      .            attlen, attype, status
 	REAL      vals(10)
 
-        LOGICAL   NC_GET_ATTRIB, got_it, coordvar, new
+        LOGICAL   NC_GET_ATTRIB, got_it, coordvar, newatt
 
         CHARACTER TM_FMT*16, show_str*16
         CHARACTER uvarname*150, attname*128, attbuff*2048, buff*14
 
  2020   FORMAT ('<var name="', A, '">' )
- 2025   FORMAT ('<definition="', A, '">' )
- 2030   FORMAT( '<units>', A, '</units>' )
- 2040   FORMAT( '<long_name>', A, '</long_name>' )
- 2050   FORMAT( '<history>', A, '</history>' )
- 2060   FORMAT( '<_FillValue>', A, '</_FillValue>' )
- 2070   FORMAT( '<missing_value>', A, '</missing_value>' ) 
- 2075   FORMAT( '<', A, '>', A, '</', A, '>' )
- 2080   FORMAT( '<grid>', A, '</grid>' )
+ 2025   FORMAT ('<attribute name="definition="', A, '">' )
+ 2030   FORMAT( '<attribute name="units" value="', A, '" />' )
+ 2040   FORMAT( '<attribute name="long_name" value="', A, '" />' )
+ 2050   FORMAT( '<attribute name="history" value="', A, '" />' )
+ 2060   FORMAT( '<attribute name="_FillValue" value="', A, '" />' )
+ 2070   FORMAT( '<attribute name="missing_value" value="', A, '" />' ) 
+ 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
  2090   FORMAT ('</var>')
 
 * describe the variables in the set, including a report on the axes of this grid.
@@ -147,10 +146,13 @@
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
            IF (ds_var_type(ivar) .EQ. ptype_string ) THEN
-              risc_buff = '<ferret_datatype>STRING</ferret_datatype>'
+                risc_buff = 
+     .         '<attribute name="ferret_datatype" value="STRING" />'
            ELSE
-              risc_buff = '<ferret_datatype>FLOAT</ferret_datatype>' 
+                risc_buff = 
+     .         '<attribute name="ferret_datatype" value="FLOAT" />'
            ENDIF
+
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * other attributes
@@ -163,18 +165,25 @@
 * Data type of the variable in the file...
 
            IF (vtype .EQ. ncbyte ) THEN
-              risc_buff = '<infile_datatype>BYTE</infile_datatype>'
+              risc_buff = 
+     .         '<attribute name="infile_datatype" value="BYTE" />'
            ELSE IF (vtype .EQ. ncchar ) THEN
-              risc_buff = '<infile_datatype>CHAR</infile_datatype>'
+              risc_buff = 
+     .         '<attribute name="infile_datatype" value="CHAR" />'
            ELSE IF (vtype .EQ. ncshort ) THEN
-              risc_buff = '<infile_datatype>SHORT</infile_datatype>'
+              risc_buff = 
+     .         '<attribute name="infile_datatype" value="SHORT" />'
            ELSE IF (vtype .EQ. nclong ) THEN
-              risc_buff = '<infile_datatype>LONG</infile_datatype>'
+              risc_buff = 
+     .         '<attribute name="infile_datatype" value="LONG" />'
            ELSE IF (vtype .EQ. ncfloat ) THEN
-              risc_buff = '<infile_datatype>FLOAT</infile_datatype>'
+              risc_buff = 
+     .         '<attribute name="infile_datatype" value="FLOAT" />'
            ELSE IF (vtype .EQ. ncdouble ) THEN
-              risc_buff = '<infile_datatype>DOUBLE</infile_datatype>'
+              risc_buff = 
+     .         '<attribute name="infile_datatype" value="DOUBLE" />'
            ENDIF
+
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * All attributes not already listed.
@@ -183,14 +192,14 @@
               CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
      .              attype, attlen, attoutflag, status )
 
-              new = .TRUE.
-              new = (STR_SAME(attname, 'units') .NE. 0)         .AND. 
+              newatt = .TRUE.
+              newatt = (STR_SAME(attname, 'units') .NE. 0)      .AND. 
      .              (STR_SAME(attname, 'long_name') .NE. 0)     .AND. 
      .              (STR_SAME(attname, 'history') .NE. 0)       .AND. 
      .              (STR_SAME(attname, 'missing_value') .NE. 0) .AND. 
      .              (STR_SAME(attname, '_FillValue') .NE. 0)
 
-              IF (new) THEN
+              IF (newatt) THEN
                  blen = 2048  ! len of attbuff
                  got_it = NC_GET_ATTRIB (dset, varid, attname, 
      .                                .TRUE., uvarname, blen, attlen, 
@@ -203,14 +212,14 @@
                        buff = TM_FMT(vals(i), 7, 14, llen)
                        attbuff(blen:blen+llen+1) = buff//' '
                        blen = blen + llen + 1
- 150                   CONTINUE
+ 150                CONTINUE
                  ELSE 
                     blen = TM_LENSTR1(attbuff)
                  ENDIF
 
                  slen = TM_LENSTR1(attname)
 	         WRITE (risc_buff, 2075) attname(1:slen), 
-     .                  attbuff(1:blen),  attname(1:slen)
+     .                  attbuff(1:blen)
                  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
               ENDIF
@@ -268,9 +277,11 @@
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
              IF (uvar_data_type(ivar,dset) .EQ. ptype_string ) THEN
-                risc_buff = '<ferret_datatype>STRING</ferret_datatype>'
+                risc_buff = 
+     .         '<attribute name="ferret_datatype" value="STRING" />'
              ELSE
-                risc_buff = '<ferret_datatype>FLOAT</ferret_datatype>' 
+                risc_buff = 
+     .         '<attribute name="ferret_datatype" value="FLOAT" />'
              ENDIF
 
              grid = GRID_FROM_NAME_XML( uvarname, cx_last, cx_expr, status )

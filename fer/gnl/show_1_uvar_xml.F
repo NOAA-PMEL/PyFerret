@@ -59,18 +59,22 @@
 	
 * local variable declarations:
 	INTEGER TM_LENSTR1, GRID_FROM_NAME_XML,
-     .          slen, llen, grid, cx_expr, i, j, status
+     .          slen, llen, grid, cx_expr, i, j, status,
+     .            varid, vtype, nvdims, vdims(8), nvatts, blen, 
+     .            len_attbuff, attoutflag, all_outflag, attid, 
+     .            attlen, attype
 	CHARACTER FULL_UVAR_NAME*150, TM_FMT*12,
-     .            buff*150, buff2*170, c*1
-        LOGICAL TM_HAS_STRING, save_mode_ignore, save_silent_err
+     .            buff*150, buff2*170, c*1, 
+     .            attname*128, attbuff*2048
+	REAL      vals(10)
+        LOGICAL TM_HAS_STRING, save_mode_ignore, save_silent_err, new
 
  2020   FORMAT ('<var name="', A, '" def="', A, '">' )
- 2030   FORMAT( '<units>', A, '</units>' )
- 2040   FORMAT( '<long_name>', A, '</long_name>' )
- 2070   FORMAT( '<missing_value>', A, '</missing_value>' )
- 2080   FORMAT( '<grid>', A, '</grid>' )
+ 2030   FORMAT( '<attribute name="units" value="', A, '" />' )
+ 2040   FORMAT( '<attribute name="long_name" value="', A, '" />' )
+ 2070   FORMAT( '<attribute name="missing_value" value="', A, '" />' )
+ 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
  2090   FORMAT ('</var>')
-
 
 * initialize
 	IF (uvar_num_items(uvar) .EQ. uvar_deleted  ) RETURN
@@ -157,6 +161,47 @@
         buff = TM_FMT(uvar_bad_data(uvar), 16,16,slen)
         WRITE ( risc_buff, 2070 ) buff(1:slen)
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+
+* All attributes not already listed.
+
+           DO 200 iatt = 1, nvatts
+              CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
+     .              attype, attlen, attoutflag, status )
+
+              new = .TRUE.
+              new = (STR_SAME(attname, 'units') .NE. 0)         .AND. 
+     .              (STR_SAME(attname, 'long_name') .NE. 0)     .AND. 
+     .              (STR_SAME(attname, 'history') .NE. 0)       .AND. 
+     .              (STR_SAME(attname, 'missing_value') .NE. 0) .AND. 
+     .              (STR_SAME(attname, '_FillValue') .NE. 0)
+
+              IF (new) THEN
+                 blen = 2048  ! len of attbuff
+                 got_it = NC_GET_ATTRIB (dset, varid, attname, 
+     .                                .TRUE., uvarname, blen, attlen, 
+     .                                attoutflag, attbuff, vals)
+
+                 IF (attype .NE. NCCHAR) THEN
+                    blen = 1
+                    attbuff = ' '
+                    DO 150 i = 1, attlen
+                       buff = TM_FMT(vals(i), 7, 14, llen)
+                       attbuff(blen:blen+llen+1) = buff//' '
+                       blen = blen + llen + 1
+ 150                   CONTINUE
+                 ELSE 
+                    blen = TM_LENSTR1(attbuff)
+                 ENDIF
+
+                 slen = TM_LENSTR1(attname)
+	         WRITE (risc_buff, 2075) attname(1:slen), 
+     .                  attbuff(1:blen)
+                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+              ENDIF
+
+ 200       CONTINUE
 
 * ... grid
 

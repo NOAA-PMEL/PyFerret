@@ -79,11 +79,11 @@
         CHARACTER       vname*128, attname*128, attbuff*2048
 	REAL            vals(10)
 
- 2020	FORMAT ( '<time_origin>', A, '</time_origin>' )
- 2030	FORMAT ( '<calendar>', A, '</calendar>' )
- 2040	FORMAT ( '<modulo_length>', A, '</modulo_length>' )
+ 2020	FORMAT ( '<attribute name="time_origin" value="', A, '" />' )
+ 2030	FORMAT ( '<attribute name="calendar" value="', A, '" />' )
+ 2040	FORMAT ( '<attribute name="modulo_length" value="', A, '" />' )
  2050	FORMAT ( '</axis>' )
- 2075   FORMAT( '<', A, '>', A, '</', A, '>' )
+ 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
 
 * determine orientation
 
@@ -175,19 +175,26 @@
 * Data type of the axis in the file...
 
         IF (vtype .EQ. ncbyte ) THEN
-           risc_buff = '<infile_datatype>BYTE</infile_datatype>'
+           risc_buff = 
+     .         '<attribute name="infile_datatype" value="BYTE" />'
         ELSE IF (vtype .EQ. ncchar ) THEN
-           risc_buff = '<infile_datatype>CHAR</infile_datatype>'
+           risc_buff = 
+     .         '<attribute name="infile_datatype" value="CHAR" />'
         ELSE IF (vtype .EQ. ncshort ) THEN
-           risc_buff = '<infile_datatype>SHORT</infile_datatype>'
+           risc_buff = 
+     .         '<attribute name="infile_datatype" value="SHORT" />'
         ELSE IF (vtype .EQ. nclong ) THEN
-           risc_buff = '<infile_datatype>LONG</infile_datatype>'
+           risc_buff = 
+     .         '<attribute name="infile_datatype" value="LONG" />'
         ELSE IF (vtype .EQ. ncfloat ) THEN
-           risc_buff = '<infile_datatype>FLOAT</infile_datatype>'
+           risc_buff = 
+     .         '<attribute name="infile_datatype" value="FLOAT" />'
         ELSE IF (vtype .EQ. ncdouble ) THEN
-           risc_buff = '<infile_datatype>DOUBLE</infile_datatype>'
+           risc_buff = 
+     .         '<attribute name="infile_datatype" value="DOUBLE" />'
         ENDIF
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * All attributes not already listed.
 
@@ -228,7 +235,7 @@
 
               slen = TM_LENSTR1(attname)
 	         WRITE (risc_buff, 2075) attname(1:slen), 
-     .                  attbuff(1:blen),  attname(1:slen)
+     .                  attbuff(1:blen)
               CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
            ENDIF

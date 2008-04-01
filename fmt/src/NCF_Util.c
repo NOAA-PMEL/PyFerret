@@ -67,6 +67,8 @@
 /* *acm* 10 07        Patches for memory-leak fixes from Remiz Ziemlinski */
 /* *acm* 10/07        Further fixes by Remik, initializing att.vals, att.string to NULL,
                         set var.ndims = 0 in ncf_init_other_dset */
+/* *acm*  3/08        Fix bug 1534; needed to initialize attribute output flag for
+                      the bounds attribute on coordinate axes.*/
 
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
@@ -3053,9 +3055,6 @@ int initialize_output_flag (char *attname)
 	{return_val = 1;
 	}
 	if (strcmp(attname,"bounds")==0)
-	{return_val = 1;
-	}
-	if (strcmp(attname,"edges")==0)
 	{return_val = 1;
 	}
 	return return_val;

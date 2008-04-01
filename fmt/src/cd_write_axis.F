@@ -74,6 +74,8 @@
 * V602 *acm*11/06 Fix bug 1471; new routine CD_AXIS_OUTNAME
 * V602 *acm*12/06 Correct the setting of got_calendar 
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V61+  3/08 *acm* (After fixing bug 1534), check for attoutflag on bounds 
+*                  attribute before writing bounds attribute and values.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -274,8 +276,7 @@
          IF (mode_upcase_output) CALL STR_UPCASE( name_in, buff)
 
          DO 200 iatt = 1, nvatts
-            CALL CD_GET_VAR_ATT_NAME( dset_num, varid, iatt, 
-     .                                attname, status)
+            attoutflag = 0
             CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .               iatt, attname, attype, attlen, attoutflag, status )
 
@@ -587,9 +588,25 @@
 
 * does it need axis bounds definitions ?
 
+
+* Has the user explicitly asked not to write bounds for the variable?
+* If so mark this with the value attoutflag = 2
+
+      attname = 'bounds' 
+      attoutflag = 0
+      IF (varid .GT. 0) THEN
+         CALL CD_GET_VAR_ATT_ID(dset_num, varid, attname, attid,status)
+         IF (attid .GT. 0) THEN
+            CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .      attid, attname, attype, attlen, attoutflag, istat )
+            IF (attoutflag .EQ. 0) attoutflag = 2
+         ENDIF
+      ENDIF
+
       IF (  (ax_type.EQ.pcdf_full_span .OR. ax_type.EQ.pcdf_sub_span)
      .  .AND. ( .NOT.line_regular(iaxis) .OR. do_bounds) 
-     .  .AND. ( edges_flag .EQ. 0) ) THEN
+     .  .AND. ( edges_flag .EQ. 0) 
+     .  .AND. ( attoutflag .NE. 2) ) THEN
 
          name = name(:nlen)//'_bnds'
          elen = nlen + 5
@@ -613,8 +630,12 @@
          attname = 'bounds' 
          IF (varid .GT. 0) THEN
             CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
-            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+            IF (attid .GT. 0) THEN
+               CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .              attid, attname, attype, attlen, attoutflag, istat)
+            ELSE
+               attoutflag = 1
+            ENDIF 
          ELSE
             attoutflag = 1
          ENDIF
@@ -650,8 +671,12 @@
          attname = 'edges' 
          IF (varid .GT. 0) THEN
             CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
-            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
-     .              attid, attname, attype, attlen, attoutflag, istat )
+            IF (attid .GT. 0) THEN
+               CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .              attid, attname, attype, attlen, attoutflag, istat)
+            ELSE
+               attoutflag = 1
+            ENDIF 
          ELSE
             attoutflag = 1
          ENDIF

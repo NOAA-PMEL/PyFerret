@@ -85,14 +85,14 @@
  2030	FORMAT ( '<attribute name="direction" value="', A, '" />' )
  2040	FORMAT ( '<attribute name="units" value="', A, '" />')
  2045   FORMAT
-     .   ( '<attribute name="units " value="', A, ' since ', A, '"</' )
+     .   ( '<attribute name="units " value="', A, ' since ', A, ' "/>' )
  2050	FORMAT ( '<attribute name="length" value="', A, '" />' )
  2060	FORMAT ( '<attribute name="positive" value="down" />' )
  2070	FORMAT ( '<attribute name="point_spacing" value="even" />' )
  2080	FORMAT ( '<attribute name="point_spacing" value="uneven" />' )
 
- 2090	FORMAT ( '<attribute name="modulo value="yes" />' )
- 2100	FORMAT ( '<attribute name="modulo value="no" />' )
+ 2090	FORMAT ( '<attribute name="modulo" value="yes" />' )
+ 2100	FORMAT ( '<attribute name="modulo" value="no" />' )
  2110	FORMAT ( '<attribute name="start" value="', A, '" />' )
  2120	FORMAT ( '<attribute name="end" value="', A, '" />' )
  2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )

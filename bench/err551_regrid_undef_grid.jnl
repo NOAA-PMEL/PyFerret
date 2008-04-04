@@ -44,7 +44,7 @@ can data/all
 can var/all
 
 ! Convoluted definitions, LIST needs data on a grid not yet loaded.
-use clim_airt_lev
+use clim_airt_lev.cdf
 def axis/t=16-JUL-1966:16-MAY-1967:1/unit=month hope_month
 use climatological_axes
 can dat climatological_axes

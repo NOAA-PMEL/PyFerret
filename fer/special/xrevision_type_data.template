@@ -10,6 +10,7 @@
 	INCLUDE 'FERRET_CMN:XREVISION_TYPE.CMN'
 #endif
 
-	DATA revision_type	/ 'mmmmmmmm' /
+c	DATA revision_type	/ 'mmmmmmmm' /
+	DATA revision_type	/ '(beta)' /
 
 	END

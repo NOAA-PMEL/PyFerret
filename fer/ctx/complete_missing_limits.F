@@ -66,6 +66,9 @@
 * v602 *acm* 12/06 use TM_GET_GRIDNUM ('ABSTRACT') to get the grid number of the grid
 *                  of abstract axes; mgrid_abstract and saved_abstract_grid refer to the
 *                  grid of a SET GRID gridname command.
+* v6.11 *acm* 4/08 But, what about when we WANT the grid of a SET GRID gridname command?
+*                  reverting to the previous call until I can find out what the reason was
+*                  for this change.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -104,8 +107,14 @@
 !!           IF (grr .EQ. unspecified_int4) grr = mgrid_abstract
 
 !	   mabstract = grid_line( idim, mgrid_abstract )
-	   mabstract = grid_line( idim,  grr)
 
+c!	   mabstract = grid_line( idim,  grr)
+
+c! testing... restore the above which was changed in v6.02
+           grr = saved_abstract_grid
+           IF (grr .EQ. unspecified_int4) grr = mgrid_abstract
+	   mabstract = grid_line( idim, mgrid_abstract )
+c!
 
 	   IF ( cx_by_ss(idim, cx) ) THEN
 	      its_unspec = cx_lo_ss(cx,idim) .EQ. unspecified_int4

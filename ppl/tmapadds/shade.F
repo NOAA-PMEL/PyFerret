@@ -64,6 +64,9 @@
 * v580  8/04*acm* Fix bug 957 shade/lev=1 of a constant field needs zlev(1) to be set.
 * v581  4/05*acm* For cellarray plots JTYPE had erroneously been set to 1 (?!)
 * v581 *acm* 3/05 open levels (-INF) (INF)
+* v611 *acm* 4/08 Fix bug 1567: Set jj as in PLOTZ so SHADE/LINE gets labels with 
+*                 enough precision
+
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -164,7 +167,16 @@ C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
 
 	      NLEV2=(ZMP-ZNP)/DZ+1 
 
-C       Handle rounding errors *jd* 6.27.95/12.30.97
+c *acm* 4/08 Set jj as in plotz
+
+	      IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
+
+	      IF (ZMP-ZNP .EQ. 0) THEN
+                 JJ=NSIGC
+              ELSE
+                 JJ=NSIGC-IFIX(ALOG10(ABS(ZMP-ZNP))+.5)
+              ENDIF
+              IF (JJ.LE.0) JJ=-1
 
 c *acm* 3/04 under g77 on linux this incorrectly uses
 c            low-order bits to reset NLEV2 example:

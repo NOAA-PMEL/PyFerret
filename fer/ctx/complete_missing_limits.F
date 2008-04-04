@@ -66,9 +66,11 @@
 * v602 *acm* 12/06 use TM_GET_GRIDNUM ('ABSTRACT') to get the grid number of the grid
 *                  of abstract axes; mgrid_abstract and saved_abstract_grid refer to the
 *                  grid of a SET GRID gridname command.
-* v6.11 *acm* 4/08 But, what about when we WANT the grid of a SET GRID gridname command?
-*                  reverting to the previous call until I can find out what the reason was
-*                  for this change.
+* v6.11 *acm* 4/08 Fix bug 1558: revert previous changes.
+*                  When we WANT the grid of a SET GRID gridname command, need to use
+*                  mgrid_abstract and saved_abstract_grid. I no longer know the reason 
+*                  for the previous change; it does not seem to fix any listed bug and
+*                  reverting does not break anything...
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'

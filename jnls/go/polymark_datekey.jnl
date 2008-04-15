@@ -15,7 +15,7 @@
 ! $3 - Y coordinates of track 
 ! $4 - variable whose values will be plotted along the track (eg SST)
 ! $5 - shape of the symbol, as defined by polyshape.jnl 
-! $6 - scale the values by this factor (optional, default 1)
+! $6 - scale the symbol size by this factor (optional, default 1)
 ! $7 - variable on the time axis to use for labelling the key
 ! $8 - optional; precision of labelling time axis; "days", "hours" etc
 !      If not specified, the script uses the units of the time axis.

@@ -1,0 +1,6 @@
+! Test the test_opendap function: returns 0 if successful, or error code if not.
+
+list test_opendap ("http://test.opendap.org/opendap/data/nc/test.nc")
+list test_opendap ("http://test.opendap.NOT.org/opendap/data/nc/test.nc")
+
+

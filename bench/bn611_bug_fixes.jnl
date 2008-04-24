@@ -6,3 +6,6 @@ GO err61_write_bounds
 
 GO bn_reset
 GO err61_context_scalar_strings
+
+GO bn_reset
+GO err61_exit_script

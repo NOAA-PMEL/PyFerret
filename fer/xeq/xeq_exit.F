@@ -67,6 +67,7 @@
 * V602: *acm*  3/07 - Fix bug 1304. If a script is executed with a loop, and
 *                     exit/script is called, then exit just out of the script,
 *                     not all the way back up out of the loop.
+* V6.11 *acm*  4/08 - Fis bug 1566; EXIT/SCRIPT and IF blocks.
 	
         include 'tmap_dims.parm'
 	include 'command.parm'
@@ -105,14 +106,19 @@
 * Exit from current script.  Need to do check to make sure this
 * wasn't executed from waiting Ferret prompt, ie not in a script
 * Fix bug 1304 here; count pop up to the *GO current script*
+* Fix bug 1566 here; multi-linen IFs are not listed in cs_cmnd_num()
+* instead we need to check if_cs
 
 	   IF (csp .GT. 0) THEN
               pop = 1
               DO 300 i = csp, 1, -1
-                 IF (cs_cmnd_num(i) .EQ. cmnd_go) GOTO 400  ! Reached the next GO level
                  IF (cs_cmnd_num(i) .EQ. cmnd_repeat) pop = pop + 1
                  IF (cs_cmnd_num(i) .EQ. cmnd_if) pop = pop + 1
+                 
+	         IF (if_cs(ifstk) .EQ. i) pop = pop + 1
+
                  IF (cs_cmnd_num(i) .EQ. cmnd_semicolon) pop = pop + 1
+                 IF (cs_cmnd_num(i) .EQ. cmnd_go) GOTO 400  ! Reached the next GO level
  300	      CONTINUE
               GOTO 400
 	   ENDIF

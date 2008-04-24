@@ -97,6 +97,7 @@ tax_units.F\
 tax_year.F\
 tax_yearfrac.F\
 tcat.F\
+test_opendap.F\
 transpose_xt.F\
 transpose_xy.F\
 transpose_xz.F\

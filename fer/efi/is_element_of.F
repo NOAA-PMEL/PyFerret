@@ -204,13 +204,13 @@ C  Check for values matching arg2
       k = res_lo_ss(Z_AXIS)
       l = res_lo_ss(T_AXIS)
 
-      result(i,j,k,l) = 0.
 
       DO 400 i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS, ARG2)
       DO 300 j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS, ARG2)
       DO 200 k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS, ARG2)
       DO 100 l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS, ARG2)
 
+         result(i,j,k,l) = 0.
          DO 410 i1=arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS, ARG1)
          DO 310 j1=arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS, ARG1)
          DO 210 k1=arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS, ARG1)
@@ -230,9 +230,13 @@ C  Check for values matching arg2
  310     CONTINUE
  410     CONTINUE
 
+      l = l + res_incr(T_AXIS)
  100  CONTINUE
+      k = k + res_incr(Z_AXIS)
  200  CONTINUE
+      j = j + res_incr(Y_AXIS)
  300  CONTINUE
+      i = i + res_incr(X_AXIS)
  400  CONTINUE
       
 9000  RETURN

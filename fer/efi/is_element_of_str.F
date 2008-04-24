@@ -239,10 +239,13 @@ C  Check for strings matching arg2
                   GO TO 9000
                ENDIF
             ENDIF
-
+         l = l + res_incr(T_AXIS)
  110     CONTINUE
+         k = k + res_incr(Z_AXIS)
  210     CONTINUE
+         j = j + res_incr(Y_AXIS)
  310     CONTINUE
+         i = i + res_incr(X_AXIS)
  410     CONTINUE
 
  100  CONTINUE

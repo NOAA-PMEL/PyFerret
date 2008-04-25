@@ -85,6 +85,7 @@
 *                  the precision in xtm. See also plotz.F, setax.F
 * V602  1/07 *acm* true batch mode for metafiles; flag meta_batch
 *                  distinguises this case from other batch modes.
+* V6.11 4/08 *acm* Fixes for bug 1571
 
 *****************************************************
 
@@ -459,8 +460,10 @@ C ACM Add FLOWLINE call based on VECFLD
  200	       continue
 	    end if
 
-	    CALL DAXIS(XF,YF,NMX,NMY)
-	    CALL DAXIS_BOX
+cc            IF (.NOT.SOVER) THEN
+	       CALL DAXIS(XF,YF,NMX,NMY)
+	       CALL DAXIS_BOX
+cc            ENDIF
 ***************************************************
 	ENDIF
 

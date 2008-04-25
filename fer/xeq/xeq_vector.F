@@ -90,6 +90,7 @@
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out.
+* V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -456,7 +457,7 @@ c in disp_set_up.  So only put 'No Valid Data' label when not an overlay.
         ENDIF
 
 * restore axes? (5/29/97  revised 3/2002
-        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
+c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000

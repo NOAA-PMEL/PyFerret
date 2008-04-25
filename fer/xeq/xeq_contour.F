@@ -106,6 +106,7 @@
 * V603 *acm*  5/07 as in xeq_shade, for fix of bug 904: if FILL/LINE, then set iautoc and 
 *                  NLEV2 to re-use the contour levels from the shade plot. The bug does not
 *                  seem to occur on fill plots, but might as well not recompute levels.
+* V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -478,7 +479,7 @@ c done in disp_set_up.
 
 * restore axes? (5/29/97  revised 3/2002 
 
-        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
+c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
 * restore default (non-continuous) key style?
         IF (continuous_key ) CALL PPLCMD (from, line, 0, 'S_KEY 0', 1, 1 )

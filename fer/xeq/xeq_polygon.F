@@ -61,6 +61,7 @@
 * V600 *acm* 5/06  with MODE LINECOLORS, number of lines not limited to num_fancy_lines
 * V602 *acm* 11/06 Fix bug 1472: Where single-level color plot is requested, use levels (1) 
 *                  setting rather than sending the data value; avoids precision problems.
+* V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -402,7 +403,7 @@ c           nlev = 1
            ENDIF
 
 * restore axes? (5/29/97) revised 3/02
-	IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
+c	IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
 * restore default (non-continuous) key style?
         IF (continuous_key ) CALL PPLCMD (from, line, 0, 'S_KEY 0', 1, 1 )

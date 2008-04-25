@@ -87,6 +87,7 @@
 *                  argument to /STEP, then compare to see if it equals uppercase 'CON'
 * V600 *acm* 5/06  increase length of buff, for longer arugments to /DASH=
 * V600 *acm* 5/06  with MODE LINECOLORS, number of lines not limited to num_fancy_lines
+* V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -461,7 +462,7 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
 	ENDIF
 
 * restore axes? (5/29/97  revised 3/2002
-        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
+!        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
 * restore dash settings? (5/29/97  revised 3/2002
         IF ( do_dash .EQ. 1 ) CALL PPL_DASH_RESTORE

@@ -118,7 +118,17 @@ DODS_gui_debug: .FRC
                 "LD = g++" "CDFLIB = $(DODS_LIBS)" \
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=" \
 		"DEBUG_TITLE=alpha" all
-                
+
+DODS_debug: .FRC
+	(cd ccr; $(CC) -g -c $(CFLAGS) gui_init.c)
+	$(MAKE) update
+	$(MAKE) "CFLAGS = -g $(CFLAGS)" "DEBUG=-g "\
+		"EXECNAME=ferretdods"  \
+		"GUI_FAKES=special/gui_fakes.o"\
+                "LD = g++" "CDFLIB = $(DODS_LIBS)" \
+		"FFLAGS = $(FFLAGS) -Ddebug"  \
+		"DEBUG_TITLE=alpha" all
+
 DODS_gui_debug_valgrind: .FRC
 	(cd ccr; $(CC) -O0 -g -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
 	$(MAKE) update
@@ -150,7 +160,17 @@ DODS_gui: .FRC
 		"MOVIELIB="  \
                 "LD = g++" "CDFLIB = $(DODS_LIBS)" \
 		"FFLAGS = $(FFLAGS)" "GUI_FAKES=" \
-		"DEBUG_TITLE=" all
+		"DEBUG_TITLE=alpha" all
+
+DODS_only: .FRC
+	(cd ccr; $(CC) -c $(CFLAGS) gui_init.c)
+	$(MAKE) update
+	$(MAKE) "CFLAGS = $(CFLAGS)" "DEBUG="\
+		"EXECNAME=ferretdods"  \
+		"GUI_FAKES=special/gui_fakes.o"\
+                "LD = g++" "CDFLIB = $(DODS_LIBS)" \
+		"FFLAGS = $(FFLAGS) -Ddebug"  \
+		"DEBUG_TITLE=alpha" all
 
 DODS_gui_static: .FRC
 	(cd ccr; $(CC) -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)

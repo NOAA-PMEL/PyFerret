@@ -41,7 +41,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # all:    ferret_cmn is_element_of.so is_element_of_str.so element_index.so element_index_str.so sampleyz.so samplexz.so samplexy_closest.so samplexy_curv.so
 
 # all:    ferret_cmn is_element_of.so samplexy_curv_avg.so samplexy_curv_nrst.so
-all:    ferret_cmn samplexyt.so  scat2grid_bin_xy.so
+all:    ferret_cmn samplexyt.so  
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

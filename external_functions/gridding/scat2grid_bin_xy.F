@@ -234,8 +234,8 @@
       INTEGER i1, i2, j1, k1, l1
       INTEGER i4, i4n, j5, j5n
 
-      INTEGER nxpts, nypts, nscat
-      INTEGER nx, ny    
+      INTEGER nxpts, nypts, nscat, nput
+      INTEGER nx, ny
       INTEGER i1n, i2n
 
       REAL x1, y1, xf, yf, tol
@@ -302,11 +302,11 @@ C  variables for checking axis characteristics (modulo axes)
 
 *  Check that xax is a X axis and yax a Y axis
 
-      IF (i4 .EQ. ef_unspecified_int5) THEN
+      IF (i4 .EQ. ef_unspecified_int4) THEN
          WRITE (errtxt, *) 'Fourth argument must be a X axis'
          GO TO 999
       ENDIF
-      IF (j5 .EQ. ef_unspecified_int5) THEN
+      IF (j5 .EQ. ef_unspecified_int4) THEN
          WRITE (errtxt, *) 'Fifth argument must be a Y axis'
          GO TO 999
       ENDIF

@@ -355,7 +355,8 @@ C  variables for checking axis characteristics (modulo axes)
       ENDIF
 
    10 FORMAT(
-     . 'Arguments 2, 3, and 4 must be 1-dimensional lists of equal length')
+     . 'Arguments 2, 3, and 4 must be 1-dimensional ',
+     . 'lists of equal length')
 
 *  Get x, y, t coordinates of the data to be sampled.
 

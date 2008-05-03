@@ -26,10 +26,14 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 .F.so:
-	rm -f $*.f
-	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e        's/de        /de /g' | sed -e  's/de         /de /g' > $*.f	 
-	$(F77) $(FFLAGS) $*.f
-	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o -o $*.so
+	$(F77) $(FFLAGS) $<
+	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
+
+.c.o:
+	cc ${CFLAGS} $<
+
+.f.o:
+	$(F77) $(FFLAGS) $<
 
 #
 # Targets

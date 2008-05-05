@@ -129,12 +129,14 @@
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
      .     arg_incr(4,EF_MAX_ARGS)
 
+      INTEGER nx
 *
 *     Use utility functions to get context information about the arguments.
 *     Set the abstract X axis.
 *
 *     Use utility functions to get context information about the 
 *     1st argument, to set the abstract axis lo and hi indices.
+
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
@@ -158,6 +160,7 @@
 *
       SUBROUTINE test_opendap_compute(id, arg_1, result)
 
+      INTEGER id
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 

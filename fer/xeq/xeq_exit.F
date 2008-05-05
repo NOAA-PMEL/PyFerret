@@ -77,7 +77,7 @@
 	include 'xprog_state.cmn'
 
 	INTEGER status
-	INTEGER i, pop
+	INTEGER i, pop, ifloop
 	LOGICAL GO_FILE_INPUT
 
 * make sure no arguments were given
@@ -115,10 +115,18 @@
                  IF (cs_cmnd_num(i) .EQ. cmnd_repeat) pop = pop + 1
                  IF (cs_cmnd_num(i) .EQ. cmnd_if) pop = pop + 1
                  
-	         IF (if_cs(ifstk) .EQ. i) pop = pop + 1
+! Pop out of possibly nested if in current script (fixes bug 1566)
+                 IF (ifstk .GT. 0) THEN 
+                 IF (if_cs(ifstk) .EQ. i) THEN 
+                    DO WHILE (if_cs(ifstk) .EQ. i .AND. ifstk.GT.1)
+                       ifstk = ifstk - 1
+                    ENDDO
+                    ifstk = ifstk + 1  ! ifstk will be popped once by POP_CS 
+                 ENDIF
+                 ENDIF
 
                  IF (cs_cmnd_num(i) .EQ. cmnd_semicolon) pop = pop + 1
-                 IF (cs_cmnd_num(i) .EQ. cmnd_go) GOTO 400  ! Reached the next GO level
+                 IF (cs_cmnd_num(i) .EQ. cmnd_go) GOTO 400  ! Reached the next GO level(fixes bug 1566)
  300	      CONTINUE
               GOTO 400
 	   ENDIF

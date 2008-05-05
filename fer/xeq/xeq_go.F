@@ -83,7 +83,7 @@
 	LOGICAL	go_help
 	INTEGER	LIB_GET_LUN, TM_LENSTR1,
      .		temp_lun, status, TMAP_status,
-     .          file_opened
+     .          file_opened, ier, ist, len_string
         CHARACTER TM_INQ_PATH*256, cbuff*256
 
 * internal parameter declarations

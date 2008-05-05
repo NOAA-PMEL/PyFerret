@@ -58,11 +58,12 @@
         LOGICAL first
 	
 * local variable declarations:
-	INTEGER TM_LENSTR1, GRID_FROM_NAME_XML,
+        LOGICAL NC_GET_ATTRIB, got_it, coordvar
+	INTEGER TM_LENSTR1, GRID_FROM_NAME_XML, STR_SAME,
      .          slen, llen, grid, cx_expr, i, j, status,
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
-     .            attlen, attype
+     .            attlen, attype, iatt, dset, ncchar
 	CHARACTER FULL_UVAR_NAME*150, TM_FMT*12,
      .            buff*150, buff2*170, c*1, 
      .            attname*128, attbuff*2048
@@ -164,44 +165,49 @@
 
 
 * All attributes not already listed.
+ 
+	dset = 0
+	CALL CD_GET_VAR_INFO (dset, varid, vname, vtype, nvdims, 
+     .            vdims, nvatts, coordvar, all_outflag, status)
+	IF (status .NE. ferr_ok) GOTO 1000
 
-           DO 200 iatt = 1, nvatts
-              CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
+	DO 200 iatt = 1, nvatts
+           CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
      .              attype, attlen, attoutflag, status )
 
-              new = .TRUE.
-              new = (STR_SAME(attname, 'units') .NE. 0)         .AND. 
+           new = .TRUE.
+           new = (STR_SAME(attname, 'units') .NE. 0)         .AND. 
      .              (STR_SAME(attname, 'long_name') .NE. 0)     .AND. 
      .              (STR_SAME(attname, 'history') .NE. 0)       .AND. 
      .              (STR_SAME(attname, 'missing_value') .NE. 0) .AND. 
      .              (STR_SAME(attname, '_FillValue') .NE. 0)
 
-              IF (new) THEN
-                 blen = 2048  ! len of attbuff
-                 got_it = NC_GET_ATTRIB (dset, varid, attname, 
-     .                                .TRUE., uvarname, blen, attlen, 
+           IF (new) THEN
+              blen = 2048  ! len of attbuff
+              got_it = NC_GET_ATTRIB (dset, varid, attname, 
+     .                                .TRUE., vname, blen, attlen, 
      .                                attoutflag, attbuff, vals)
 
-                 IF (attype .NE. NCCHAR) THEN
-                    blen = 1
-                    attbuff = ' '
-                    DO 150 i = 1, attlen
-                       buff = TM_FMT(vals(i), 7, 14, llen)
-                       attbuff(blen:blen+llen+1) = buff//' '
-                       blen = blen + llen + 1
- 150                   CONTINUE
-                 ELSE 
-                    blen = TM_LENSTR1(attbuff)
-                 ENDIF
-
-                 slen = TM_LENSTR1(attname)
-	         WRITE (risc_buff, 2075) attname(1:slen), 
-     .                  attbuff(1:blen)
-                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-
+              IF (attype .NE. NCCHAR) THEN
+                 blen = 1
+                 attbuff = ' '
+                 DO 150 i = 1, attlen
+                    buff = TM_FMT(vals(i), 7, 14, llen)
+                   attbuff(blen:blen+llen+1) = buff//' '
+                    blen = blen + llen + 1
+ 150             CONTINUE
+              ELSE 
+                 blen = TM_LENSTR1(attbuff)
               ENDIF
 
- 200       CONTINUE
+              slen = TM_LENSTR1(attname)
+              WRITE (risc_buff, 2075) attname(1:slen), attbuff(1:blen)
+              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+           ENDIF
+
+ 200    CONTINUE
+1000    CONTINUE
 
 * ... grid
 

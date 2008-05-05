@@ -57,17 +57,19 @@
 	include 'xtext_info.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
         include 'errmsg.parm'
+	include 'xdset_info.cmn_text'
 
 * calling argument declarations
 	INTEGER	  lun, idim, grid, orient
 
 * local variable declarations:
-	LOGICAL	BKWD_AXIS, GEOG_LABEL, calendar, new
+	LOGICAL	BKWD_AXIS, GEOG_LABEL, NC_GET_ATTRIB,
+     .          calendar, new, got_it
 	INTEGER TM_LENSTR, TM_LENSTR1, TM_GET_CALENDAR_ID, 
-     .          line, slen, llen, ndec, cal_id, status,
+     .          STR_SAME, line, slen, llen, ndec, cal_id, status,
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
-     .            attlen, attype
+     .            attlen, attype, iatt, ncchar, iset, dset
 	CHARACTER TM_FMT*16, show_str*16, lo_str*20, hi_str*20, 
      .            title*32, outbuff*20, 
      .            attname*128, attbuff*2048, buff*14
@@ -231,9 +233,14 @@
            ENDIF
            CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-
-
 * All attributes not already listed.
+ 
+           DO 100 iset = 1, maxdsets
+	     IF ( ds_name(iset) .EQ. char_init1024) GOTO 1000
+             CALL CD_GET_VAR_ID (iset, line_name(line), varid, status)
+             IF (status .EQ. ferr_ok) GOTO 50
+  100      CONTINUE
+   50      dset = iset
 
            DO 200 iatt = 1, nvatts
               CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
@@ -252,8 +259,8 @@
               IF (new) THEN
                  blen = 2048  ! len of attbuff
                  got_it = NC_GET_ATTRIB (dset, varid, attname, 
-     .                                .TRUE., uvarname, blen, attlen, 
-     .                                attoutflag, attbuff, vals)
+     .                        .TRUE., line_name(line), blen, attlen, 
+     .                        attoutflag, attbuff, vals)
 
                  IF (attype .NE. NCCHAR) THEN
                     blen = 1
@@ -276,8 +283,8 @@
 
  200       CONTINUE
 
-
-           status = ferr_ok
+1000    CONTINUE
+        status = ferr_ok
 	ENDIF
 	RETURN
 	END

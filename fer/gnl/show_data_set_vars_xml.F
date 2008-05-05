@@ -73,7 +73,7 @@
      .            ivar, slen, llen, grid, cx_expr, dset_save,
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
-     .            attlen, attype, status
+     .            attlen, attype, iatt, status
 	REAL      vals(10)
 
         LOGICAL   NC_GET_ATTRIB, got_it, coordvar, newatt

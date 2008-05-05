@@ -65,7 +65,7 @@
 	INTEGER 	lun, line
 
 * local variable declarations:
-	LOGICAL		TM_ITS_SUBSPAN_MODULO
+	LOGICAL		TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB, got_it
 	INTEGER		idim, orient, slen, iset, dset
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id, status
 	CHARACTER	TM_FMT*32, buff*80, outbuff*20
@@ -75,7 +75,7 @@
      .                  ivar,  llen,
      .                  varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
      .                  len_attbuff, attoutflag, all_outflag, attid, 
-     .                  attlen, attype
+     .                  attlen, attype, iatt, dset, ncchar
         CHARACTER       vname*128, attname*128, attbuff*2048
 	REAL            vals(10)
 

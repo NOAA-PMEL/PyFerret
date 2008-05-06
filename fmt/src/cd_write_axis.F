@@ -76,6 +76,9 @@
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * V61+  3/08 *acm* (After fixing bug 1534), check for attoutflag on bounds 
 *                  attribute before writing bounds attribute and values.
+* V61_ 5/08 *acm*  Fix bug1574: If the axis is a user-defined axis, get its
+*                  information from the attribute structure; previously only
+*                  did this for user variables.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -253,11 +256,10 @@
 
       CALL CD_GET_VAR_ID (dset_num, name_in, varid, status)
 
-* If the axis is a user-defined axis for a user-defined variable,  
-* we still dont have its info. Look in the pseudo-dataset of user-defined
-* coordinate variables.
+* If the axis is a user-defined axis, we still dont have its info. Look in 
+* the pseudo-dataset of user-defined coordinate variables.
 
-      IF (varid .EQ. 0 .AND. dset_num .EQ. -1 .AND. .NOT.abstract) THEN
+      IF (varid .EQ. 0 .AND. .NOT.abstract) THEN
          dset_num = -2
          CALL CD_GET_VAR_ID (dset_num, name_in, varid, status)
       ENDIF

@@ -70,12 +70,12 @@
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id, status
 	CHARACTER	TM_FMT*32, buff*80, outbuff*20
 
-        LOGICAL         NC_GET_ATTRIB, got_it, coordvar, new
+        LOGICAL         coordvar, new
         INTEGER         STR_SAME, 
      .                  ivar,  llen,
      .                  varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
      .                  len_attbuff, attoutflag, all_outflag, attid, 
-     .                  attlen, attype, iatt, dset, ncchar
+     .                  attlen, attype, iatt
         CHARACTER       vname*128, attname*128, attbuff*2048
 	REAL            vals(10)
 

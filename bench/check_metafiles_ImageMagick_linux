@@ -40,7 +40,12 @@ foreach plt_file ($plt_files)
        ls -laF $plt_file.diff.ps
        rm -f $plt_file.diff.ps
        compare $plt_file.ps $plt_file.meta.ps $plt_file.diff.ps
-       display $plt_file.diff.ps
+       display -geometry 640x480+200+200 $plt_file.diff.ps &
+       display -geometry 640x480+200+200 $plt_file.ps &
+       display -geometry 640x480+200+200 $plt_file.meta.ps  
+       echo ' '
+       echo -n 'continue? (y or n)'
+       set ans =($<)
 
        set err_plt = 1
     endif
@@ -55,7 +60,13 @@ foreach gif_file ($gif_files)
        echo "gif files differ $gif_file size $size metafile_masters_v61/ size $size2" 
        rm -f $gif_file.diff_gif.gif
        compare $gif_file metafile_masters_v61/$gif_file $gif_file.diff_gif.gif
-       xv $gif_file.diff_gif.gif
+       display -geometry 640x480+200+200 $gif_file.diff_gif.gif &
+       display -geometry 640x480+200+200  $gif_file &
+       display -geometry 640x480+200+200  metafile_masters_v61/$gif_file
+       echo ' '
+       echo -n 'continue? (y or n)'
+       set ans =($<)
+
        set err_gif = 1
     endif
 end
@@ -68,7 +79,13 @@ foreach ps_file ($ps_files)
        echo "plt files differ $ps_file size $size metafile_masters_v61/ size $size2" 
        rm -f $ps_file.diff_ps.ps
        compare $ps_file metafile_masters_v61/$ps_file $ps_file.diff_ps.ps
-       display $ps_file.diff_ps.ps
+       display -geometry 640x480+200+200 $ps_file.diff_ps.ps &
+       display -geometry 640x480+200+200 $ps_file &
+       display -geometry 640x480+200+200 metafile_masters_v61/$ps_file
+       echo ' '
+       echo -n 'continue? (y or n)'
+       set ans =($<)
+
        set err_ps = 1
     endif
 end
@@ -86,7 +103,12 @@ foreach mb_file ($mb_files)
        Fprint -R -o $mb_file.ps $mb_file
        Fprint -R -o master_$mb_file.ps metafile_masters_v61/$mb_file
        compare $mb_file.ps master_$mb_file.ps diff_$mb_file.ps
-       display diff_$mb_file.ps
+       display -geometry 640x480+200+200 diff_$mb_file.ps &
+       display -geometry 640x480+200+200 diff_$mb_file.ps &
+       display -geometry 640x480+200+200diff_$mb_file.ps
+       echo ' '
+       echo -n 'continue? (y or n)'
+       set ans =($<)
    endif
 end
 

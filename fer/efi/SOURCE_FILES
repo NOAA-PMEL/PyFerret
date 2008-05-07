@@ -3,7 +3,7 @@ ave_scat2grid_t.F\
 compressi.F\
 compressj.F\
 compressk.F\
-        compressl.F\
+compressl.F\
 compressi_by.F\
 compressj_by.F\
 compressk_by.F\
@@ -62,6 +62,8 @@ samplet_date.F\
 samplexy.F\
 samplexy_closest.F\
 samplexy_curv.F\
+samplexy_curv_avg.F\
+samplexy_curv_nrst.F\
 samplexz.F\
 sampleyz.F\
 scat2ddups.F\

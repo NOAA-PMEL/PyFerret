@@ -85,6 +85,7 @@
 
 * FRAME/TRANSPARENT[=color]
 
+	transparent = 0
 	qp = qual_given( slash_frame_transp )
 	IF (qp .GT. 0 .AND. .NOT. animate) THEN
 	   IF ( .NOT. batch ) CALL WARN 

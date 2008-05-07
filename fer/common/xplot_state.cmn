@@ -9,6 +9,7 @@
 * 9/01 V540 *sh* - add vp_by_axis
 * 5/06 v600 *acm*  Flag no_plot_yet: changes so user can change the number of 
 *                  line colors.
+* V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
 
 	INTEGER		max_windows,
      .			max_viewport,
@@ -36,7 +37,8 @@
      .			vp_seg0,
      .			vp_segn,
      .			curr_seg_name,
-     .			saved_calendar_id
+     .			saved_calendar_id,
+     .			transparent
 
 	REAL		wn_scale,
      .			vp_size ,
@@ -48,13 +50,14 @@
      .			ylowlef,
      .			saved_dt_min
 
-	CHARACTER	vp_name*16, saved_t1_date*14
+	CHARACTER	vp_name*16, saved_t1_date*14, transparent_color*10
 
 	COMMON / XPLOT_STATE /
      .			pplus_started,
      .			ppl_interrupted,
      .			curr_seg_name,
      .			saved_calendar_id,
+     .			transparent,
      .
      .			wn_open	 ( max_windows ),
      .			wn_active( max_windows ),
@@ -79,4 +82,5 @@
      .			v_logaxis,
      .                  no_plot_yet,
      .			saved_dt_min,
-     .			saved_t1_date
+     .			saved_t1_date,
+     .			transparent_color

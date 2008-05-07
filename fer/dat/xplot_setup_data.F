@@ -40,6 +40,7 @@
 * revision 0.1 - 9/12/88 - reduced number of defined colors to 10
 * V200: 12/21/89
 * V540: *sh* 9/01 - added xwhitelo, ywhitelo, ...
+* V561: *acm*5/08 - added transparent (for gif-mode frame)
 
 	include 'ferret.parm'
 	include 'xplot_setup.cmn'
@@ -66,6 +67,7 @@
      .		xwhitelo	/ 1.2 /,	! PLOT+ xorigin
      .		ywhitelo	/ 1.4 /,	! PLOT+ yorigin
      .		xwhitehi	/ 1.0 /,
-     .		ywhitehi	/ 1.4 /
+     .		ywhitehi	/ 1.4 /,
+     .		transparent	/ 0 /
 
 	END

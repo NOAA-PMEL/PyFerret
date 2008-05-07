@@ -55,17 +55,19 @@
 * V500: 4/99 *sh* increased filename string length from 128 to 255
 * V602: *acm* 1/07 Changes for metafile-batch mode: Ignore FRAME in 
 *                  batch mode, except when in batch GIF mode.
+* V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT[=color]
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'slash.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
+	include 'xplot_setup.cmn'
 
 * internal variable declarations:
 	LOGICAL		ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
      .                  is_format, is_file, its_gif, batch
-	INTEGER		TM_LENSTR1, status, loc, flen
+	INTEGER		TM_LENSTR1, STR_SAME, status, loc, flen
 	CHARACTER	format*3, filename*255
 
 * initialize
@@ -80,6 +82,20 @@
         IF (batch .AND. .NOT.its_gif) RETURN
 
 * decode the qualifiers, if any
+
+* FRAME/TRANSPARENT[=color]
+
+	qp = qual_given( slash_frame_transp )
+	IF (qp .GT. 0 .AND. .NOT. animate) THEN
+	   IF ( .NOT. batch ) CALL WARN 
+     . ('ignoring FRAME/TRANSPARENT. It takes effect only in GIF mode')
+           transparent = 1
+           CALL EQUAL_STR_LC( cmnd_buff(qual_start(qp):qual_end(qp)),
+     .                transparent_color, status )
+           IF (STR_SAME(transparent_color, ' ') .EQ. 0)
+     .                transparent_color = 'white'
+        ENDIF
+
 * FRAME/FORMAT="HDF" or "GIF"
 	IF ( is_format ) THEN
 	   loc = qual_given( slash_frame_format )

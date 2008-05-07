@@ -174,6 +174,7 @@
 *       *acm* 7/06 -     CANCEL ATTRIBUTE /OUTPUT /DATA
 * V603: 5/07 *acm* - Fix bug found by Andy Jacobson, in line 1465 index should be 30 not 29.
 * V606  8/07 *acm* - DEFINE AXIS/QUIET
+* V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -1147,10 +1148,10 @@
 	   DATA subcommands      (nsub_at15 + 0)/ '    '	/
 	   DATA num_qualifs      (nsub_at15 + 0)/ nqual15a	/
 	   DATA qualifier_pointer(nsub_at15 + 0)/ nqual_at15a	/
-* FRAME/FORMAT=GIF_or_HDF/FILE=filename/ **** / ****
+* FRAME/FORMAT=GIF_or_HDF/FILE=filename/TRANSPARENT[=color]
 		DATA qualifiers  (nqual_at15a+0)/ 'FORMAT'	/
 		DATA qualifiers  (nqual_at15a+1)/ 'FILE'	/
-		DATA qualifiers  (nqual_at15a+2)/ '****'	/
+		DATA qualifiers  (nqual_at15a+2)/ 'TRANSPARENT'	/
 		DATA qualifiers  (nqual_at15a+3)/ '****'	/
 
 * REPEAT - command # 16

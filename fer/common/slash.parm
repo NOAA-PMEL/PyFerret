@@ -32,6 +32,7 @@
 *       *jli* 7/06 - add SET AXIS /STRIDE /OFFSET
 *       *acm* 7/06 - add CANCEL ATTRIBUTE /OUTPUT /DATA
 * V609: *acm* 2/08 - add SHADE/TRIM
+* V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -226,6 +227,7 @@
      .
      .			slash_frame_format,
      .			slash_frame_file,
+     .			slash_frame_transp,
      .
      .			slash_stat_brief,
      .
@@ -437,6 +439,7 @@
      .
      .			slash_frame_format	= 0 + 1,
      .			slash_frame_file	= 1 + 1,
+     .			slash_frame_transp	= 2 + 1,
      .
      .			slash_stat_brief	= 0 + 1,
 

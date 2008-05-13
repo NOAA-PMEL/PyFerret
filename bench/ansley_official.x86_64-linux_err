@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 49674435 May  5 13:05 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 50580256 May 13 14:05 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Test fix for bug 1574: write user-defined attribute on coordinate axes
+Note: fix bug 1578 var[spec].attname caused crash or error
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Mon May 5 13:29:55 PDT 2008
+Beginning at Tue May 13 14:20:52 PDT 2008
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1973,6 +1973,8 @@ sho att/all
 show att/all temp[d=2]
  **ERROR: unknown data set: d=2
 show att/all temp[d=2]
+ **ERROR: unknown data set: d=2
+show att/all temp[d=2]
  **ERROR: variable unknown or not in data set: temp[d=2]
 show att/all temp[d=2]
  **ERROR: variable unknown or not in data set: salt
@@ -2412,6 +2414,16 @@ Replacing definition of axis XAX
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2493,4 +2505,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon May 5 13:31:14 PDT 2008
+Ended at Tue May 13 14:22:26 PDT 2008

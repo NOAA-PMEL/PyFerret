@@ -5,7 +5,17 @@ GO bn_reset
 GO err61_write_bounds
 
 GO bn_reset
+GO err61_poly_shade_over_noaxes
+
+GO bn_reset
 GO err61_context_scalar_strings
 
 GO bn_reset
 GO err61_exit_script
+
+GO bn_reset
+GO err61_new_attr_on_axis
+
+GO bn_reset
+GO bn_varcontext_attributes.jnl
+

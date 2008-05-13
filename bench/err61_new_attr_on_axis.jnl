@@ -1,0 +1,22 @@
+! err61_new_attr_on_axis.jnl
+! For any var or axis, allow adding an attribute
+! Fix for bug 1574
+
+use ocean_atlas_temp
+sh dat
+define att/output (`temp,return=xaxis`).long_name = "Here is a long name for the x axis of TEMP"
+save/file=a.nc/clobber/j=50/l=2 temp
+sp ncdump -h a.nc >> all_ncdump.out
+
+! It is saved even on a subset of the axis
+save/file=a.nc/clobber/i=1:12/j=50/l=2 temp
+sp ncdump -h a.nc >> all_ncdump.out
+
+DEFINE AXIS/y=-60:60:2/units=deg yaxis
+LET v = y[gy=yaxis]
+
+DEFINE att/output (yaxis).standard_name = "latitude" 
+
+save/file=a.nc/clobber v
+sp ncdump -h a.nc >> all_ncdump.out
+

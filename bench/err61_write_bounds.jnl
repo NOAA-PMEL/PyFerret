@@ -5,7 +5,7 @@
 def ax/x/edges xax={1,2,4,8,9}
 let a = x[gx=xax]
 save/clobber/file=a.nc a
-sp ncdump a.nc
+sp ncdump a.nc >> all_ncdump.out
 
 ! This is the original bug report
 ! The bounds attribute was written but the values were bad,

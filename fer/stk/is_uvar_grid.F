@@ -93,6 +93,8 @@
 * V603 5/07 *acm* - Fix bug 1507: if start = end, then definition of name leaves name
 *                   blank. assign a longer string to name and then just send the first
 *                   character to GET_VAR_CONTEXT
+* V611 5/08 *acm* Fix bug 1578; dataset specifiers applied correctly var[d=1].attname
+
 
 * calling argument declarations:
 	INTEGER	status
@@ -109,10 +111,10 @@
      .		i, dset, uvar, item, itype, idim, gnum, nitem, uv_grd,
      .		var, len_name, pass_number, cx_save, this_dset,
      .		ifthen_data_type, varid, alen, attype, attlen,
-     .          attoutflag, attid
+     .          attoutflag, attid, bracket, dot, dsloc, endbracket
 
 	CHARACTER VAR_CODE*4, name*512, buff*2048, varname*512, 
-     .            attname*128, aname*128
+     .            attname*128, aname*128, newname*512
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -271,6 +273,34 @@
  315	name = uvar_text(uvar)(start:end)
 	len_name = end-start+1
 
+! If there is a region spec on the variable, ignore it. If the region spec
+! is after the attribute name, we will apply it to the attribute.
+! e.g. var[d=1,x=180:300].units, just return the units; x=180:300 is irrelevent
+!      var.special_params[i=1:3] want to return items 1 thru 3 of the attribute
+
+        bracket = INDEX(name, '[')
+        IF (bracket .GT. 0) THEN
+           dot = INDEX(name, '.')
+           IF (dot .GT. bracket) THEN
+              dsloc = MAX(INDEX(name, 'd='), INDEX(name, 'D=') )
+              IF (dsloc .GT. 0) THEN 
+                 DO 360 i = dsloc+1, len_name
+                    IF (name(i:i) .EQ. ',') GOTO 370
+                    IF (name(i:i) .EQ. ']') GOTO 370
+ 360             CONTINUE
+ 370             CONTINUE
+                 endbracket = INDEX(name, ']')
+                 newname = name(1:bracket)//'d='//name(dsloc+2:i-1)//']'//name(endbracket+1:len_name)
+                 len_name = TM_LENSTR1(newname)
+                 name = newname
+              ELSE
+                 endbracket = INDEX(name, ']')
+                 newname = name(1:bracket-1)//name(endbracket+1:len_name)
+                 len_name = TM_LENSTR1(newname)
+                 name = newname
+              ENDIF
+           ENDIF
+        ENDIF
 
  	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
@@ -284,10 +314,15 @@
         dset = cx_data_set(hi_cx)
         IF (dset .EQ. pdset_irrelevant) dset = -1
         do_err = .TRUE.
+        varname = ' '
         attname = ' '
-        name = ' '
-        CALL  BREAK_VARATTNAME (  uvar_text(uvar)(start:end), dset, 
-     .                            varname, attname, varid, do_err, status )
+        CALL  BREAK_VARATTNAME (  name(:len_name), dset, varname, 
+     .                            attname, varid, do_err, status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+
+        uvar_text(uvar) = name
+	uvar_item_start( item, uvar ) = 1
+	uvar_item_end  ( item, uvar ) = len_name
 
 * Get attribute type and length
         

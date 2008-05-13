@@ -49,6 +49,7 @@
 *                 we use the Ferret name throughout, restoring it only on output.
 * V604 6/07 *acm* Fix bug 1518 If we didnt find the varid in the dataset, it may 
 *                 be a user var
+* V611 5/08 *acm* Fix bug 1578; dataset specifiers applied correctly var[d=1].attname
 
 	include	'ferret.parm'
 	include 'errmsg.parm'	
@@ -68,7 +69,7 @@
      .          dset, tlen, alen, vlen, dot, dotdot, varid, attlen, 
      .          attype, end_att, short_len, attid, vartype, nvdims, 
      .          nvatts, vdims(8), vax_code, ndims, nvars, ngatts, 
-     .          recdim, iatt, attoutflag, all_outflag, first, second, ic
+     .          recdim, iatt, attoutflag, all_outflag, first, second
         REAL*8 val
         CHARACTER*128 err_string, buff
 
@@ -80,25 +81,24 @@
         dset = dset_in
         IF (dset .EQ. unspecified_int4) dset = -1   ! try user variables.
 
-        risc_buff = text
-        tlen = MIN( size_rbuff, TM_LENSTR(text) )
+        tlen = TM_LENSTR(text)
 
         tlen = MIN(tlen, LEN(varname))
         tlen = MIN(tlen, LEN(attname))
 
-        IF (tlen .LT. 1 .OR. INDEX(risc_buff,'.') .EQ. 0 ) THEN
-           varname = risc_buff
+        IF (tlen .LT. 1 .OR. INDEX(text,'.') .EQ. 0 ) THEN
+           varname = text
            attname = ""
            status = ferr_not_attribute
            GOTO 1000
         ENDIF
 
-        dot = INDEX(risc_buff,'.')
-        dotdot = INDEX(risc_buff,'..')
+        dot = INDEX(text,'.')
+        dotdot = INDEX(text,'..')
         IF (dotdot .GT. 0) dot = dotdot + 1
 
         IF (dot .EQ. 1  .AND.  tlen .EQ. 1) THEN
-           varname = risc_buff
+           varname = text
            attname = ""
            status = ferr_not_attribute
            GOTO 1000
@@ -108,17 +108,17 @@
 * be varname.attname See if its all within quotes, if so this is a 
 * variable name containg a dot.
 
-	first = INDEX(risc_buff(1:tlen), "'" )
-	second = INDEX(risc_buff(2:tlen), "'" )
+	first = INDEX(text(1:tlen), "'" )
+	second = INDEX(text(2:tlen), "'" )
         IF (dot .GT. first .AND. dot .LT. second) THEN
-           varname = risc_buff
+           varname = text
            attname = ""
            status = ferr_not_attribute
            GOTO 5000
         ENDIF
 
-        varname = risc_buff(:dot-1)
-        attname = risc_buff(dot+1:tlen)
+        varname = text(:dot-1)
+        attname = text(dot+1:tlen)
 
 * Is the dot a decimal point within an expression, as in LIST a[y=0.5:9.5]
 * or LIST a[gx=sst[d=1],y=1.5] Look for opening bracket in varname and
@@ -126,7 +126,7 @@
 
         IF ((INDEX(varname,'[') .GT. 0)  .AND. 
      .      (INDEX(attname,']') .GT. 0)) THEN
-           varname = risc_buff
+           varname = text
            attname = ""
            GOTO 1000
         ENDIF
@@ -217,37 +217,10 @@
 * which just depends on that data set
 
         IF (status  .NE. ferr_ok) THEN
-           CALL CD_GET_VAR_ID (-1, varname, varid, status)
+           dset = -1
+           CALL CD_GET_VAR_ID (dset, varname, varid, status)
            IF (status .EQ. ferr_ok) dset = -1
         ENDIF
-
-* If this is a coord var and the name matched an existing different axis 
-* name on input, then Ferret appends a digit to the name. 
-
-cc  ACM 11/2006 V6.01:  Instead, we will use the ferret internal axis names 
-cc  everywhere, except on output, where we will get the original axis name 
-cc  from the attribute orig_file_axname, which is created when needed on 
-cc  dataset initialization...
-cc
-c        buff = varname
-c
-c        IF (status .NE. ferr_ok .AND. 
-c     .      varname(1:1) .EQ. '('  .AND.
-c     .      varname(vlen:vlen) .EQ. ')' ) THEN
-
-* test that only extra digits were added
-c            DO 80 ic = vlen, 1, -1
-c	       c = varname(ic:ic)
-c	       IF (  c .LT. '0' .OR. c .GT. '9' ) GOTO 90
-c
-c* axis names must be enclosed in parentheses to get a varid returned from cd_get_var_id
-c               buff = varname(1:ic-1)//')'
-c               CALL CD_GET_VAR_ID (dset, buff, varid, status)
-c
-c               IF (varid .GT. 0) GOTO 90
-c
-c 80	    CONTINUE
-c        ENDIF
 
         IF (status .NE. ferr_ok .AND. 
      .      (STR_SAME(varname(:vlen), '.') .NE. 0) ) THEN
@@ -264,11 +237,11 @@ c        ENDIF
            GOTO 5100
         ENDIF
 
-        IF (coordvar .AND. INDEX( risc_buff(:dot-1), '(' ) .EQ. 0 ) THEN
-           status = ferr_syntax
-           err_string = "enclose coordinate variable name in parentheses"
-           GOTO 5300
-        ENDIF
+       IF (coordvar .AND. INDEX( text(:dot-1), '(' ) .EQ. 0 ) THEN
+          status = ferr_syntax
+          err_string = "enclose coordinate variable name in parentheses"
+          GOTO 5300
+       ENDIF
  
         err_string = 'attribute '//attname//
      .              ' not found for variable '// varname(:vlen)
@@ -351,11 +324,12 @@ c        ENDIF
 
  5000	CONTINUE
 	RETURN
- 5100	CALL ERRMSG( ferr_syntax, status, risc_buff(:tlen), *5000 )
+ 5100	CALL ERRMSG( ferr_syntax, status, text(:tlen), *5000 )
         RETURN
 
  5200	IF (do_err) THEN
-           CALL ERRMSG( status, status, risc_buff(:tlen)//pCR//err_string, 
+           buff = text(:tlen)
+           CALL ERRMSG( status, status, buff(:tlen)//pCR//err_string, 
      .               *5000 )
         ELSE
            RETURN

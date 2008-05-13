@@ -63,6 +63,7 @@
 * V550: 10/02 *acm*- Look for @ in full_var_name when determining name_len
 * V554 1/04 *acm* - add category cat_counter_var
 * V600: 9/05 *acm* - add category cat_attrib_val
+* V611 5/08 *acm* Fix bug 1578; dataset specifiers applied correctly var[d=1].attname
 
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
@@ -77,7 +78,7 @@
 	INTEGER		var_cx, mods_cx, status
 
 * internal variable declarations:
-	INTEGER		STR_SAME,
+	INTEGER		STR_SAME, TM_LENSTR1, 
      .                  full_name_len, left_bracket, right_bracket, 
      .			name_len, atsign, idim,  brac_nest, i,
      .                  dset, varid, attype, attlen, attoutflag,
@@ -85,11 +86,13 @@
  	LOGICAL		name_only, do_err
 * 1/97 addition
 	INTEGER	num_it, it_start(max_item_list), it_end(max_item_list)
-        CHARACTER varname*512, attname*128
+        CHARACTER varname*512, attname*128, newname*512
+
+        newname = full_var_name
 
 * separate simple name from possible modifiers
-	full_name_len = LEN   ( full_var_name )
-	left_bracket  = INDEX ( full_var_name, '[' )
+	full_name_len = TM_LENSTR1 ( newname )
+	left_bracket  = INDEX ( newname, '[' )
 	name_only     = left_bracket .EQ. 0
 	IF ( name_only ) THEN
 	   name_len = full_name_len
@@ -99,9 +102,9 @@
 	   brac_nest = 1
 	   right_bracket = 0	! default to catch syntax errors
 	   DO 200 i = left_bracket+1,full_name_len
-	      IF ( full_var_name(i:i) .EQ. "[" ) THEN
+	      IF ( newname(i:i) .EQ. "[" ) THEN
 	         brac_nest = brac_nest + 1
-	      ELSEIF ( full_var_name(i:i) .EQ. "]" ) THEN
+	      ELSEIF ( newname(i:i) .EQ. "]" ) THEN
 	         brac_nest = brac_nest - 1
 	         IF ( brac_nest .EQ. 0 ) THEN
 	            right_bracket = i
@@ -113,10 +116,22 @@
      .	     .OR. name_len      .LE. 0			) GOTO 5000
 	ENDIF
 
+        IF (left_bracket .GT. 0) THEN
+           dot = INDEX ( newname, '.' )
+           IF (dot .GT. right_bracket) THEN  ! this is a var[d=].attribute
+              newname = full_var_name(1:left_bracket-1)//
+     .         full_var_name(left_bracket:right_bracket)//
+     .         full_var_name(right_bracket+1:full_name_len)
+              full_name_len = TM_LENSTR1(newname)
+              name_len = full_name_len
+              name_only = .TRUE.
+           ENDIF
+        ENDIF
+
 * If full_var_name is b@asn, which can occur if b not yet loaded, return 
 * name_len is just up to the @
 
-        atsign = INDEX ( full_var_name, '@' )
+        atsign = INDEX ( newname, '@' )
         IF (atsign .GT. 0  .AND. name_only) THEN
            name_len = atsign - 1
     	   IF (   name_len      .LE. 0			) GOTO 5000
@@ -124,7 +139,7 @@
 
 * break up the "[...,...,...]" into comma-separated arguments
 	IF ( .NOT.name_only ) THEN
-	   CALL PARSE_COMMA_LIST (	full_var_name,
+	   CALL PARSE_COMMA_LIST (	newname,
      .					left_bracket  + 1,
      .					right_bracket - 1,
      .					max_item_list,
@@ -139,7 +154,7 @@
 
 *interpret the list of items - unknown items represent errors
 	CALL GET_CONTEXT_MODS (	var_cx,
-     .				full_var_name,
+     .				newname,
      .				mods_cx,
      .				max_item_list,
      .				num_it,
@@ -158,9 +173,9 @@
 	IF ( status .NE. ferr_ok ) GOTO 5900
 
 * identify the simple variable name
-
+ 111    continue  ! testing
         CALL FIND_VAR_NAME( cx_data_set( var_cx ),
-     .			    full_var_name(1:name_len),
+     .			    newname(1:name_len),
      .			    cx_category( var_cx ),
      .			    cx_variable( var_cx ) )
 
@@ -178,7 +193,7 @@
            do_err = .TRUE.
            dset = cx_data_set(var_cx)
            IF (dset .EQ. unspecified_int4) dset = -1  
-           CALL  BREAK_VARATTNAME ( full_var_name(1:name_len),
+           CALL  BREAK_VARATTNAME ( newname(1:name_len),
      .                              dset, varname, 
      .                              attname, varid, do_err, status )
 

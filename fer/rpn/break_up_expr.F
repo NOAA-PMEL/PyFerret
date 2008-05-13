@@ -56,6 +56,7 @@
 * V540:12/01 *acm*- for parsing expr like def axis/x x1={ 1, 2 } dont include
 *                   the brackets in risc_buff
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
+* V611 5/08 *acm* Fix bug 1578; dataset specifiers applied correctly var[d=1].attname
 
 	include	'ferret.parm'
 	include 'errmsg.parm'	
@@ -121,6 +122,22 @@ c        tlen = MIN( size_rbuff, LEN(text) )
            DO 80 i = 1, paren-1
               startparen = INDEX(text(i:paren), '(' )
    80      CONTINUE
+           text(startparen:startparen) = 'A'
+           TEXT(paren:paren) = 'A'
+        ENDIF
+
+* a similar hack when the expression is (coordvar)[spec].attname 
+* ALG_BREAK_UP can parse this, but doesnt like more complicated expressions
+* like (coordvar).attname[d=2] Could make more cases in alg_break_up, but
+* instead avoid the confusion about the meaning of the parentheses by 
+* temporarily removing them.
+
+        IF ( INDEX(text, ')[' )  .NE. 0 .AND. 
+     .       INDEX(text, '].' )  .NE. 0) THEN
+           paren = INDEX(text, ')[' )
+           DO 90 i = 1, paren-1
+              startparen = INDEX(text(i:paren), '(' )
+   90      CONTINUE
            text(startparen:startparen) = 'A'
            TEXT(paren:paren) = 'A'
         ENDIF

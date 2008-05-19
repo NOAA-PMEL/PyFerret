@@ -16,7 +16,7 @@ flowline.F\
 flowline_sub.F\
 flush_buffered_fillpoly.F\
 getlabfonts.F\
-get_color_background.F\
+get_background_color.F\
 get_ndx.F\
 get_pix.F\
 get_user_coords.F\

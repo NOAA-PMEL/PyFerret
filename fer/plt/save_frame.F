@@ -56,7 +56,8 @@
 	CHARACTER*(*)	filename, format
 
 * internal variable declarations:
-	INTEGER		TM_LENSTR1, i, elen, flen, wsid
+	INTEGER		TM_LENSTR1, i, elen, flen, wsid, type, error
+        REAL            red, green, blue
 	CHARACTER	errstr*128
 	logical         ITS_BATCH_GRAPHICS
 
@@ -101,6 +102,7 @@
 * if running in batch mode, take care of metafiles rather than
 * dumping window
 	if (ITS_BATCH_GRAPHICS()) then
+           CALL GET_BACKGROUND_COLOR (red, green, blue)
 	   call put_frame_batch(wsid, fnmhol, fmthol, errhol, status)
 	else
 * capture the bitmap (C routine)

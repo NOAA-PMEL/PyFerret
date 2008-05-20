@@ -33,10 +33,11 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*  v5.5  *acm* 11/2002 New symbols to save LABEL levels
+*  v5.5  *acm* 11/2002 New symbols to save levels
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 * V581 *acm* 3/05 fix bug 1205: If delta was set by user (with SHADE/LEV=.4d), then 
 *                 use the given delta rather than trying to compute it for LEV_DEL
+* V62 *acm*  5/08 Fix bug 1581. NLEV used is acutally one less
 
 *    LEV_MIN  - lowest level used on last CONTOUR, SHADE, or FILL call.
 *    LEV_MAX -  highest level used last
@@ -86,7 +87,7 @@
 
 * Number of levels used 
 
-      zmax = nlevels
+      zmax = MAX(nlevels-1,1)
       buff = TM_FMT(zmax, -2, 10, slen)
 
       ppl_buff = "LEV_NUM "//buff

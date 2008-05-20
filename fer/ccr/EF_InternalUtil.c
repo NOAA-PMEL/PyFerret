@@ -524,6 +524,18 @@ void FORTRAN(samplexy_curv_work_size)(int *);
 void FORTRAN(samplexy_curv_compute)(int *, float *, float *,
       float *, float *, float *, float *, float *);
 
+void FORTRAN(samplexy_curv_avg_init)(int *);
+void FORTRAN(samplexy_curv_avg_result_limits)(int *);
+void FORTRAN(samplexy_curv_avg_work_size)(int *);
+void FORTRAN(samplexy_curv_avg_compute)(int *, float *, float *,
+      float *, float *, float *, float *, float *);
+
+void FORTRAN(samplexy_curv_nrst_init)(int *);
+void FORTRAN(samplexy_curv_nrst_result_limits)(int *);
+void FORTRAN(samplexy_curv_nrst_work_size)(int *);
+void FORTRAN(samplexy_curv_nrst_compute)(int *, float *, float *,
+      float *, float *, float *, float *, float *);
+
 void FORTRAN(samplexy_closest_init)(int *);
 void FORTRAN(samplexy_closest_result_limits)(int *);
 void FORTRAN(samplexy_closest_work_size)(int *);
@@ -726,7 +738,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 100
+#define N_INTEF 102
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -778,60 +790,62 @@ struct {
    strcpy(I_EFnames[43].funcname, "sampleij");
    strcpy(I_EFnames[44].funcname, "samplet_date");
    strcpy(I_EFnames[45].funcname, "samplexy");
-   strcpy(I_EFnames[46].funcname, "samplexy_curv");
-   strcpy(I_EFnames[47].funcname, "samplexy_closest");
-   strcpy(I_EFnames[48].funcname, "samplexz");
-   strcpy(I_EFnames[49].funcname, "sampleyz");
-   strcpy(I_EFnames[50].funcname, "scat2ddups");
-   strcpy(I_EFnames[51].funcname, "scat2grid_t");
-   strcpy(I_EFnames[52].funcname, "scat2gridgauss_xy");
-   strcpy(I_EFnames[53].funcname, "scat2gridgauss_xz");
-   strcpy(I_EFnames[54].funcname, "scat2gridgauss_yz");
-   strcpy(I_EFnames[55].funcname, "scat2gridgauss_xt");
-   strcpy(I_EFnames[56].funcname, "scat2gridgauss_yt");
-   strcpy(I_EFnames[57].funcname, "scat2gridgauss_zt");
-   strcpy(I_EFnames[58].funcname, "scat2gridlaplace_xy");
-   strcpy(I_EFnames[59].funcname, "scat2gridlaplace_xz");
-   strcpy(I_EFnames[60].funcname, "scat2gridlaplace_yz");
-   strcpy(I_EFnames[61].funcname, "scat2gridlaplace_xt");
-   strcpy(I_EFnames[62].funcname, "scat2gridlaplace_yt");
-   strcpy(I_EFnames[63].funcname, "scat2gridlaplace_zt");
-   strcpy(I_EFnames[64].funcname, "sorti");
-   strcpy(I_EFnames[65].funcname, "sortj");
-   strcpy(I_EFnames[66].funcname, "sortk");
-   strcpy(I_EFnames[67].funcname, "sortl");
-   strcpy(I_EFnames[68].funcname, "tauto_cor");
-   strcpy(I_EFnames[69].funcname, "tax_datestring");
-   strcpy(I_EFnames[70].funcname, "tax_day");
-   strcpy(I_EFnames[71].funcname, "tax_dayfrac");
-   strcpy(I_EFnames[72].funcname, "tax_jday1900");
-   strcpy(I_EFnames[73].funcname, "tax_jday");
-   strcpy(I_EFnames[74].funcname, "tax_month");
-   strcpy(I_EFnames[75].funcname, "tax_times");
-   strcpy(I_EFnames[76].funcname, "tax_tstep");
-   strcpy(I_EFnames[77].funcname, "tax_units");
-   strcpy(I_EFnames[78].funcname, "tax_year");
-   strcpy(I_EFnames[79].funcname, "tax_yearfrac");
-   strcpy(I_EFnames[80].funcname, "tcat");
-   strcpy(I_EFnames[81].funcname, "test_opendap");
-   strcpy(I_EFnames[82].funcname, "treverse");
-   strcpy(I_EFnames[83].funcname, "transpose_xt");
-   strcpy(I_EFnames[84].funcname, "transpose_xy");
-   strcpy(I_EFnames[85].funcname, "transpose_xz");
-   strcpy(I_EFnames[86].funcname, "transpose_yt");
-   strcpy(I_EFnames[87].funcname, "transpose_yz");
-   strcpy(I_EFnames[88].funcname, "transpose_zt");
-   strcpy(I_EFnames[89].funcname, "xcat");
-   strcpy(I_EFnames[90].funcname, "xreverse");
-   strcpy(I_EFnames[91].funcname, "ycat");
-   strcpy(I_EFnames[92].funcname, "yreverse");
-   strcpy(I_EFnames[93].funcname, "xauto_cor");
-   strcpy(I_EFnames[94].funcname, "zaxreplace_avg");
-   strcpy(I_EFnames[95].funcname, "zaxreplace_bin");
-   strcpy(I_EFnames[96].funcname, "zaxreplace_rev");
-   strcpy(I_EFnames[97].funcname, "zaxreplace_zlev");
-   strcpy(I_EFnames[98].funcname, "zcat");
-   strcpy(I_EFnames[99].funcname, "zreverse");
+   strcpy(I_EFnames[46].funcname, "samplexy_closest");
+   strcpy(I_EFnames[47].funcname, "samplexy_curv");
+   strcpy(I_EFnames[48].funcname, "samplexy_curv_avg");
+   strcpy(I_EFnames[49].funcname, "samplexy_curv_nrst");
+   strcpy(I_EFnames[50].funcname, "samplexz");
+   strcpy(I_EFnames[51].funcname, "sampleyz");
+   strcpy(I_EFnames[52].funcname, "scat2ddups");
+   strcpy(I_EFnames[53].funcname, "scat2grid_t");
+   strcpy(I_EFnames[54].funcname, "scat2gridgauss_xy");
+   strcpy(I_EFnames[55].funcname, "scat2gridgauss_xz");
+   strcpy(I_EFnames[56].funcname, "scat2gridgauss_yz");
+   strcpy(I_EFnames[57].funcname, "scat2gridgauss_xt");
+   strcpy(I_EFnames[58].funcname, "scat2gridgauss_yt");
+   strcpy(I_EFnames[59].funcname, "scat2gridgauss_zt");
+   strcpy(I_EFnames[60].funcname, "scat2gridlaplace_xy");
+   strcpy(I_EFnames[61].funcname, "scat2gridlaplace_xz");
+   strcpy(I_EFnames[62].funcname, "scat2gridlaplace_yz");
+   strcpy(I_EFnames[63].funcname, "scat2gridlaplace_xt");
+   strcpy(I_EFnames[64].funcname, "scat2gridlaplace_yt");
+   strcpy(I_EFnames[65].funcname, "scat2gridlaplace_zt");
+   strcpy(I_EFnames[66].funcname, "sorti");
+   strcpy(I_EFnames[67].funcname, "sortj");
+   strcpy(I_EFnames[68].funcname, "sortk");
+   strcpy(I_EFnames[69].funcname, "sortl");
+   strcpy(I_EFnames[70].funcname, "tauto_cor");
+   strcpy(I_EFnames[71].funcname, "tax_datestring");
+   strcpy(I_EFnames[72].funcname, "tax_day");
+   strcpy(I_EFnames[73].funcname, "tax_dayfrac");
+   strcpy(I_EFnames[74].funcname, "tax_jday1900");
+   strcpy(I_EFnames[75].funcname, "tax_jday");
+   strcpy(I_EFnames[76].funcname, "tax_month");
+   strcpy(I_EFnames[77].funcname, "tax_times");
+   strcpy(I_EFnames[78].funcname, "tax_tstep");
+   strcpy(I_EFnames[79].funcname, "tax_units");
+   strcpy(I_EFnames[80].funcname, "tax_year");
+   strcpy(I_EFnames[81].funcname, "tax_yearfrac");
+   strcpy(I_EFnames[82].funcname, "tcat");
+   strcpy(I_EFnames[83].funcname, "test_opendap");
+   strcpy(I_EFnames[84].funcname, "treverse");
+   strcpy(I_EFnames[85].funcname, "transpose_xt");
+   strcpy(I_EFnames[86].funcname, "transpose_xy");
+   strcpy(I_EFnames[87].funcname, "transpose_xz");
+   strcpy(I_EFnames[88].funcname, "transpose_yt");
+   strcpy(I_EFnames[89].funcname, "transpose_yz");
+   strcpy(I_EFnames[90].funcname, "transpose_zt");
+   strcpy(I_EFnames[91].funcname, "xcat");
+   strcpy(I_EFnames[92].funcname, "xreverse");
+   strcpy(I_EFnames[93].funcname, "ycat");
+   strcpy(I_EFnames[94].funcname, "yreverse");
+   strcpy(I_EFnames[95].funcname, "xauto_cor");
+   strcpy(I_EFnames[96].funcname, "zaxreplace_avg");
+   strcpy(I_EFnames[97].funcname, "zaxreplace_bin");
+   strcpy(I_EFnames[98].funcname, "zaxreplace_rev");
+   strcpy(I_EFnames[99].funcname, "zaxreplace_zlev");
+   strcpy(I_EFnames[100].funcname, "zcat");
+   strcpy(I_EFnames[101].funcname, "zreverse");
 /*    
  *  ------------------------------------ 
  */
@@ -2671,6 +2685,18 @@ else if ( !strcmp(name,"samplexy_curv_init_") ) return (void *)samplexy_curv_ini
 else if ( !strcmp(name,"samplexy_curv_result_limits_") ) return (void *)samplexy_curv_result_limits_;
 else if ( !strcmp(name,"samplexy_curv_work_size_") ) return (void *)samplexy_curv_work_size_;
 else if ( !strcmp(name,"samplexy_curv_compute_") ) return (void *)samplexy_curv_compute_;
+
+/* samplexy_curv_avg.F */
+else if ( !strcmp(name,"samplexy_curv_avg_init_") ) return (void *)samplexy_curv_avg_init_;
+else if ( !strcmp(name,"samplexy_curv_avg_result_limits_") ) return (void *)samplexy_curv_avg_result_limits_;
+else if ( !strcmp(name,"samplexy_curv_avg_work_size_") ) return (void *)samplexy_curv_avg_work_size_;
+else if ( !strcmp(name,"samplexy_curv_avg_compute_") ) return (void *)samplexy_curv_avg_compute_;
+
+/* samplexy_curv_nrst.F */
+else if ( !strcmp(name,"samplexy_curv_nrst_init_") ) return (void *)samplexy_curv_nrst_init_;
+else if ( !strcmp(name,"samplexy_curv_nrst_result_limits_") ) return (void *)samplexy_curv_nrst_result_limits_;
+else if ( !strcmp(name,"samplexy_curv_nrst_work_size_") ) return (void *)samplexy_curv_nrst_work_size_;
+else if ( !strcmp(name,"samplexy_curv_nrst_compute_") ) return (void *)samplexy_curv_nrst_compute_;
 
 /* samplexy_closest.F */
 else if ( !strcmp(name,"samplexy_closest_init_") ) return (void *)samplexy_closest_init_;

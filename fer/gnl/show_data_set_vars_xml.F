@@ -81,14 +81,28 @@
         CHARACTER TM_FMT*16, show_str*16
         CHARACTER uvarname*150, attname*128, attbuff*2048, buff*14
 
+C New form for attribute output, dont implement it yet. (Check the
+C Write statement that uses number 2075 when we change to using these.)
+
+c 2020   FORMAT ('<var name="', A, '">' )
+c 2025   FORMAT ('<attribute name="definition="', A, '">' )
+c 2030   FORMAT( '<attribute name="units" value="', A, '" />' )
+c 2040   FORMAT( '<attribute name="long_name" value="', A, '" />' )
+c 2050   FORMAT( '<attribute name="history" value="', A, '" />' )
+c 2060   FORMAT( '<attribute name="_FillValue" value="', A, '" />' )
+c 2070   FORMAT( '<attribute name="missing_value" value="', A, '" />' ) 
+c 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
+c 2090   FORMAT ('</var>')
+
  2020   FORMAT ('<var name="', A, '">' )
- 2025   FORMAT ('<attribute name="definition="', A, '">' )
- 2030   FORMAT( '<attribute name="units" value="', A, '" />' )
- 2040   FORMAT( '<attribute name="long_name" value="', A, '" />' )
- 2050   FORMAT( '<attribute name="history" value="', A, '" />' )
- 2060   FORMAT( '<attribute name="_FillValue" value="', A, '" />' )
- 2070   FORMAT( '<attribute name="missing_value" value="', A, '" />' ) 
- 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
+ 2025   FORMAT ('<definition="', A, '">' )
+ 2030   FORMAT( '<units>', A, '</units>' )
+ 2040   FORMAT( '<long_name>', A, '</long_name>' )
+ 2050   FORMAT( '<history>', A, '</history>' )
+ 2060   FORMAT( '<_FillValue>', A, '</_FillValue>' )
+ 2070   FORMAT( '<missing_value>', A, '</missing_value>' ) 
+ 2075   FORMAT( '<', A, '>', A, '</', A, '>' )
+ 2080   FORMAT( '<grid>', A, '</grid>' )
  2090   FORMAT ('</var>')
 
 * describe the variables in the set, including a report on the axes of this grid.
@@ -241,8 +255,11 @@
 	   IF (uvar_dset(ivar) .EQ. dset) THEN
 
 * ... output variable code, units, grid, and type
+*     Skip intermediate variables by checking uvar_parent
 
              uvarname = uvar_name_code(ivar)
+             IF (uvar_parent(ivar) .NE. 0) GOTO 600
+            
              slen = TM_LENSTR1(uvarname)
              WRITE ( risc_buff, 2020 ) uvarname(1:slen)
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

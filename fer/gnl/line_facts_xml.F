@@ -82,22 +82,43 @@
 	PARAMETER     ( sig_figs = 5 )
         DATA idir/'I', 'J', 'K', 'L'/
 
+C New form for attribute output, dont implement it yet. (Check the
+C Write statement that uses number 2075 when we change to using these.)
+
+c 2010	FORMAT ( '<axis name="', A8, 5x, A1, '">' )
+c 2020	FORMAT ( '<axis name="', A, '">' )
+c 2030	FORMAT ( '<attribute name="direction" value="', A, '" />' )
+c 2040	FORMAT ( '<attribute name="units" value="', A, '" />')
+c 2045   FORMAT
+c     .   ( '<attribute name="units " value="', A, ' since ', A, ' "/>' )
+c 2050	FORMAT ( '<attribute name="length" value="', A, '" />' )
+c 2060	FORMAT ( '<attribute name="positive" value="down" />' )
+c 2070	FORMAT ( '<attribute name="point_spacing" value="even" />' )
+c 2080	FORMAT ( '<attribute name="point_spacing" value="uneven" />' )
+c
+c 2090	FORMAT ( '<attribute name="modulo" value="yes" />' )
+c 2100	FORMAT ( '<attribute name="modulo" value="no" />' )
+c 2110	FORMAT ( '<attribute name="start" value="', A, '" />' )
+c 2120	FORMAT ( '<attribute name="end" value="', A, '" />' )
+c 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
+
  2010	FORMAT ( '<axis name="', A8, 5x, A1, '">' )
  2020	FORMAT ( '<axis name="', A, '">' )
- 2030	FORMAT ( '<attribute name="direction" value="', A, '" />' )
- 2040	FORMAT ( '<attribute name="units" value="', A, '" />')
- 2045   FORMAT
-     .   ( '<attribute name="units " value="', A, ' since ', A, ' "/>' )
- 2050	FORMAT ( '<attribute name="length" value="', A, '" />' )
- 2060	FORMAT ( '<attribute name="positive" value="down" />' )
- 2070	FORMAT ( '<attribute name="point_spacing" value="even" />' )
- 2080	FORMAT ( '<attribute name="point_spacing" value="uneven" />' )
+ 2030	FORMAT ( '<direction>', A, '</direction>' )
+ 2040	FORMAT ( '<units>', A)
+ 2045   FORMAT ( ' since ', A, '</units>' )
+ 2046   FORMAT ( '</units>' )
+ 2050	FORMAT ( '<length>', A, '</length>' )
+ 2060	FORMAT ( '<positive>down</positive>' )
+ 2070	FORMAT ( '<point_spacing>even</point_spacing>' )
+ 2080	FORMAT ( '<point_spacing>uneven</point_spacing>' )
 
- 2090	FORMAT ( '<attribute name="modulo" value="yes" />' )
- 2100	FORMAT ( '<attribute name="modulo" value="no" />' )
- 2110	FORMAT ( '<attribute name="start" value="', A, '" />' )
- 2120	FORMAT ( '<attribute name="end" value="', A, '" />' )
- 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
+ 2090	FORMAT ( '<modulo>yes</modulo>' )
+ 2100	FORMAT ( '<modulo>no</modulo>' )
+ 2110	FORMAT ( '<start>', A, '</start>' )
+ 2120	FORMAT ( '<end>', A, '</end>' )
+ 
+ 2075   FORMAT( '<', A, '>', A, '</', A, '>' )
 
 * pull line from grid table
 	line = grid_line( idim, grid )
@@ -276,7 +297,7 @@
 
                  slen = TM_LENSTR1(attname)
 	         WRITE (risc_buff, 2075) attname(1:slen), 
-     .                  attbuff(1:blen)
+     .                  attbuff(1:blen), attname(1:slen)
                  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
               ENDIF

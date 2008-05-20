@@ -79,11 +79,21 @@
         CHARACTER       vname*128, attname*128, attbuff*2048
 	REAL            vals(10)
 
- 2020	FORMAT ( '<attribute name="time_origin" value="', A, '" />' )
- 2030	FORMAT ( '<attribute name="calendar" value="', A, '" />' )
- 2040	FORMAT ( '<attribute name="modulo_length" value="', A, '" />' )
+C New form for attribute output, dont implement it yet. (Check the
+C Write statement that uses number 2075 when we change to using these.)
+
+c 2020	FORMAT ( '<attribute name="time_origin" value="', A, '" />' )
+c 2030	FORMAT ( '<attribute name="calendar" value="', A, '" />' )
+c 2040	FORMAT ( '<attribute name="modulo_length" value="', A, '" />' )
+c 2050	FORMAT ( '</axis>' )
+c 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
+
+ 2020	FORMAT ( '<time_origin>', A, '</time_origin>' )
+ 2030	FORMAT ( '<calendar>', A, '</calendar>' )
+ 2040	FORMAT ( '<modulo_length>', A, '</modulo_length>' )
  2050	FORMAT ( '</axis>' )
- 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
+ 2075   FORMAT( '<', A, '>', A, '</', A, '>' )
+
 
 * determine orientation
 
@@ -235,7 +245,7 @@
 
               slen = TM_LENSTR1(attname)
 	         WRITE (risc_buff, 2075) attname(1:slen), 
-     .                  attbuff(1:blen)
+     .                  attbuff(1:blen), attname(1:slen)
               CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
            ENDIF

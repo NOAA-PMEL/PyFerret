@@ -70,12 +70,24 @@
 	REAL      vals(10)
         LOGICAL TM_HAS_STRING, save_mode_ignore, save_silent_err, new
 
+C New form for attribute output, dont implement it yet. (Check the
+C Write statement that uses number 2075 when we change to using these.)
+
+c 2020   FORMAT ('<var name="', A, '" def="', A, '">' )
+c 2030   FORMAT( '<attribute name="units" value="', A, '" />' )
+c 2040   FORMAT( '<attribute name="long_name" value="', A, '" />' )
+c 2070   FORMAT( '<attribute name="missing_value" value="', A, '" />' )
+c 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
+c 2090   FORMAT ('</var>')
+
  2020   FORMAT ('<var name="', A, '" def="', A, '">' )
- 2030   FORMAT( '<attribute name="units" value="', A, '" />' )
- 2040   FORMAT( '<attribute name="long_name" value="', A, '" />' )
- 2070   FORMAT( '<attribute name="missing_value" value="', A, '" />' )
- 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
+ 2030   FORMAT( '<units>', A, '</units>' )
+ 2040   FORMAT( '<long_name>', A, '</long_name>' )
+ 2070   FORMAT( '<missing_value>', A, '</missing_value>' )
+ 2075   FORMAT( '<', A, '>', A, '</', A, '>' )
+ 2080   FORMAT( '<grid>', A, '</grid>' )
  2090   FORMAT ('</var>')
+
 
 * initialize
 	IF (uvar_num_items(uvar) .EQ. uvar_deleted  ) RETURN
@@ -201,7 +213,8 @@
               ENDIF
 
               slen = TM_LENSTR1(attname)
-              WRITE (risc_buff, 2075) attname(1:slen), attbuff(1:blen)
+              WRITE (risc_buff, 2075) attname(1:slen), attbuff(1:blen),
+     .               attname(1:slen)
               CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
            ENDIF

@@ -102,7 +102,6 @@
 * if running in batch mode, take care of metafiles rather than
 * dumping window
 	if (ITS_BATCH_GRAPHICS()) then
-           CALL GET_BACKGROUND_COLOR (red, green, blue)
 	   call put_frame_batch(wsid, fnmhol, fmthol, errhol, status)
 	else
 * capture the bitmap (C routine)

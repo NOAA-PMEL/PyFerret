@@ -1,0 +1,301 @@
+\ cancel mode verify
+! 
+! Description : color_vector : GO file to make color/shaded vectors (in both base
+!                  plot and overlay modes) according to specified color palette and 
+!                  shading levels.
+!
+! Arguments/INPUT : following predefined (in the script which calls color_vector)
+!               symbols with proper entries
+!
+!           vec_cmd       : vector command without /LENGTH, /XSKIP, /YSKIP, /COLOR
+!                              qualifiers (see other options below). However, a 
+!                              /OVER qualifier will work just fine.
+!           vec_u         : u var name, no [],(),*,/,+,-, ^ fields
+!           vec_v         : v var name, no [],(),*,/,+,-, ^ fields
+!           vec_len       : value for /LENGTH qualifier
+!           vec_xskip     : value for /XSKIP qualifier
+!           vec_yskip     : value for /YSKIP qualifier
+!           vec_arrowkey  : YES or NO, for scale/key vector
+!           vec_veckey    : arguments to "PPL VECKEY" command
+!           vec_lo        : low   value for color levels
+!           vec_hi        : high  value for color levels
+!           vec_delta     : delta value for color levels
+!           vec_pal       : palette file name (should be present in pwd or $FER_DIR/ppl)
+!           vec_colorkey  : YES or NO, for color bar/key
+!           vec_shakey    : arguments to "PPL SHAKEY" command    
+!           vec_otherppl  : other ppl commands like "ppl xfor", "ppl yfor" etc.
+!                              (if none, just use any word other than "ppl")
+!
+! Output : A nice colorfull vector plot with specified coloring levels and palette.
+!
+! Usage  : go  color_vector                    ! NO ARGUMENTS with GO command
+!
+! Example : Please see color_vector_demo.jnl
+!
+! Notes : 1. color_vector will work only with two argument vector command form
+!               (ie. no support for curvilinear version) for regurlarly spaced 
+!               (dx=constant, dy=constant) gridded data.
+!         2. All input symbols (vec_*) is assumed to be defined in the main script.
+!         3. Specified palette file (vec_pal) should exist either in PWD or 
+!               $FER_DIR/ppl
+!         4. PPL and Viewport settings should be done before the plot.
+!
+! Known Problems :
+!         1. PPL Colors 1 and 6 will be set back to their defaults.
+!         2. This script will work only with PERCENTAGE based palette (.spk) files,
+!               which have entries for 0% and 100%. Header lines at beginning and 
+!               blank lines towards the end are OK.
+!
+! To do : 1. Auto lo:hi:delta estimatation.
+!         2. Automize the placement of color key and vector key.
+!         3. Add examples with multi_view.
+!         4. Color options for veckey.
+!         5. Add curvilinear compatibility.
+!         6. Coloring based on another field.
+!         7. Options for By_Value and By_Level patelles 
+!                 (User Manual Ch6 Sec5.2.  Shade and fill colors).
+!
+! Got Questions/Comments? Please let me know.
+!
+! Related Posts :
+!      palette viewer
+!         http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2007/msg00372.html
+!      palette maker 
+!         http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2007/msg00410.html
+!      rgb colors 
+!         http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2006/msg00725.html
+!         http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2006/msg00736.html
+!
+! Written By : Jaison Kurian (jaison@caos.iisc.ernet.in, jaison@atmos.ucla.edu)
+! Written On : Jan/04/2008 (based on a draft completed on May/28/2007) 
+!
+!-------------------------------------------------------------------------------------
+
+!-----safe guards---------------
+
+   define region/default save
+   can region/x/I
+
+!-----check for palette file
+
+   let vec_pal_chk = STRINDEX("($vec_pal)","/")
+   IF `vec_pal_chk GT 0` THEN
+       say ; say " WARNING (color_vector) : Palette file name should be like rainbow or"
+             say "         rainbow.spk. Requested ($vec_pal) contains '/' & hence not accepted."
+             say "         Using default palette rainbow.spk." ; say  
+	     define symbol vec_pal = rainbow 
+   ENDIF
+   let vec_pal_ext = STRINDEX("($vec_pal)",".spk")
+   IF `vec_pal_ext GT 0` THEN
+       let vec_pal_1 = "($vec_pal)" 
+   ELSE 
+       let vec_pal_1 = "($vec_pal)" + ".spk"
+   ENDIF
+
+   define symbol found_pal = NO
+   let fer_dir             = {spawn:"echo $FER_DIR"}
+   let vec_fex_1           = {spawn:"ls `fer_dir`/ppl/`vec_pal_1`"}
+   define symbol fer_pal   = `fer_dir`/ppl
+   IF `STRLEN(vec_fex_1[i=1]) GT 0` THEN
+       define symbol found_pal = YES
+       define symbol vec_pal_2 = "($fer_pal)/`vec_pal_1`"
+   ELSE 
+       let vec_fex_2 = {spawn:"ls `vec_pal_1`"}
+       IF `STRLEN(vec_fex_2[i=1]) GT 0` THEN
+           define symbol found_pal = YES
+           define symbol vec_pal_2 = "./`vec_pal_1`"
+       ENDIF
+   ENDIF
+
+   IF ($found_pal) THEN
+      say ; say " NOTE (color_vector) : Using palette file `($vec_pal_2)`" ; say
+   ELSE 
+      say ; say " ERROR (color_vector) : Requested palette file ($vec_pal) DOES NOT FOUND"
+            say "         in pwd and ($fer_pal)"
+	    say "         ......Quitting " ; say ;  EXIT/PROMPT
+   ENDIF
+
+!--read palette file and interpolate rgb values
+
+   let vec_pal_lines = {spawn:"cat `($vec_pal_2)` | wc -l"}
+   define axis/x=1:`vec_pal_lines`:1 xpal
+   define grid/x=xpal gpal
+
+   FILE/grid=gpal/format=delimited/var=vec_spk_head ($vec_pal_2)
+   let vec_spk_skip = -1
+   REPEAT/RANGE=1:`vec_pal_lines`:1/name=vec_hd (;\
+      define symbol vec_hdr = `vec_hd` ;\
+      IF `SUBSTRING(vec_spk_head[i=($vec_hdr)],1,1) EQ "0"` THEN ;\
+         let vec_spk_skip = `($vec_hdr) - 1` ;\
+         EXIT/LOOP ;\
+      ENDIF   ;\
+   )
+   IF `vec_spk_skip LT 0` THEN 
+      say ; say " ERROR (color_vector) : Requested palette file ($vec_pal) DOES NOT have entry for 0%."
+            say "         Palette files should be PERCENTAGE based and should have"
+	    say "         entries for 0% and 100%......Quitting " ; say ;  EXIT/PROMPT
+
+   ENDIF
+   cancel data `vec_pal_1`
+
+   FILE/grid=gpal/skip=`vec_spk_skip`/var="vec_perc,vec_r,vec_g,vec_b" ($vec_pal_2)
+   define axis/x/from_data xperc=vec_perc[d=`vec_pal_1`]
+
+   let vec_perc_0   = vec_perc[d=`vec_pal_1`,i=1]
+   let vec_perc_100 = vec_perc[d=`vec_pal_1`,i=@MAX]
+
+   let vec_spk_chk = IF `vec_perc_0 NE 0` OR `vec_perc_100 NE 100` THEN 1 ELSE 0
+   IF `vec_spk_chk EQ 1` THEN
+      say ; say " ERROR (color_vector) : COULD NOT locate entries for 0% and/or 100% "
+            say "         in requested palette file ($vec_pal)."
+            say "         Palette files should be PERCENTAGE based and should have"
+	    say "         entries for 0% and 100%......Quitting " ; say ;  EXIT/PROMPT
+
+   ENDIF
+
+   let vec_r1 = vec_r[gx=xperc@ASN]
+   let vec_g1 = vec_g[gx=xperc@ASN]
+   let vec_b1 = vec_b[gx=xperc@ASN]
+
+   define axis/x=`($vec_lo)`:`($vec_hi)`:`($vec_delta)` xclevs
+   let vec_col_levs = `x[gx=xclevs],r=iend` - 1
+   define axis/x=0:100/npoints=`vec_col_levs` xpal_levs
+   let vec_red   = vec_r1[gx=xpal_levs]
+   let vec_green = vec_g1[gx=xpal_levs]
+   let vec_blue  = vec_b1[gx=xpal_levs]
+
+!--determine whether the first plot is an /over plot or not
+
+   ppl set vec_cmd_1 $EDIT (vec_cmd, COLLAPSE) 
+   let vec_cmd_2 = DNCASE("($vec_cmd_1)")
+   let vec_cmd_o = STRINDEX(vec_cmd_2,"/ov")
+   IF `vec_cmd_o GT 0` THEN
+        define symbol vec_ppl = ppl vector/over
+   ELSE 
+        define symbol vec_ppl = ppl vector
+   ENDIF
+
+!--check for undesired qualifiers in vec_cmd
+
+   let vec_cmd_chk = STRINDEX(vec_cmd_2,"/xs")
+   IF `vec_cmd_chk GT 0` THEN
+       say ; say " WARNING (color_vector) : Qualifier /XSKIP is not effective with vec_cmd."
+             say "                             Instead, use vec_xskip." ; say 
+   ENDIF 
+
+   let vec_cmd_chk = STRINDEX(vec_cmd_2,"/ys")
+   IF `vec_cmd_chk GT 0` THEN
+       say ; say " WARNING (color_vector) : Qualifier /YSKIP is not effective with vec_cmd."
+             say "                             Instead, use vec_yskip." ; say 
+   ENDIF 
+
+   let vec_cmd_chk = STRINDEX(vec_cmd_2,"/le")
+   IF `vec_cmd_chk GT 0` THEN
+       say ; say " WARNING (color_vector) : Qualifier /LENGTH is not effective with vec_cmd."
+             say "                             Instead, use vec_len." ; say 
+   ENDIF 
+
+   let vec_cmd_chk = STRINDEX(vec_cmd_2,"/c")
+   IF `vec_cmd_chk GT 0` THEN
+       say ; say " WARNING (color_vector) : Qualifier /COLOR is not effective with vec_cmd."
+             say "         Instead, use symbol vec_pal in main script." ; say 
+   ENDIF 
+
+   let vec_cmd_chk = STRINDEX(vec_cmd_2,"/p")
+   IF `vec_cmd_chk GT 0` THEN
+       say ; say " WARNING (color_vector) : Qualifier /PEN is not effective with vec_cmd."
+             say "          Instead, use symbol vec_pal in main script." ; say 
+   ENDIF 
+
+!---apply xskip and yskip and sample the data accordingly
+!         assume : data dx and dy are constant
+
+   set region save
+
+   IF `($vec_xskip) LT 1` THEN
+       say ; say " ERROR : color_vector : vec_xskip should be .GE. 1. Quitting.... "
+             say ; EXIT/PROMPT
+   ENDIF
+
+   IF `($vec_yskip) LT 1` THEN
+       say ; say " ERROR : color_vector : vec_yskip should be .GE. 1. Quitting.... "
+             say ; EXIT/PROMPT
+   ENDIF
+
+
+   IF `($vec_xskip) EQ 1` THEN
+       let vec_u_xk  = ($vec_u)
+       let vec_v_xk  = ($vec_v)
+   ELSE 
+       let vec_is    = `($vec_u),r=istart` ; let vec_ie    = `($vec_u),r=iend`
+       define axis/x=`vec_is`:`vec_ie`:`($vec_xskip)` xvec_abs
+       let vec_xs    = x[gx=($vec_u),i=`vec_is`]
+       let vec_xe    = x[gx=($vec_u),i=`vec_ie`]
+       let vec_dx    = x[gx=($vec_u),i=2]-x[gx=($vec_u),i=1]
+       define axis/x=`vec_xs`:`vec_xe`:`vec_dx*($vec_xskip)`/units=longitudes xvec_lon
+       let vec_u_xk_abs = SAMPLEI(($vec_u),x[gx=xvec_abs])
+       let vec_u_xk     = vec_u_xk_abs[gx=xvec_lon@ASN]
+       let vec_v_xk_abs = SAMPLEI(($vec_v),x[gx=xvec_abs])
+       let vec_v_xk     = vec_v_xk_abs[gx=xvec_lon@ASN]
+   ENDIF
+   
+   IF `($vec_yskip) EQ 1` THEN
+       let vec_u_xyk  = vec_u_xk
+       let vec_v_xyk  = vec_v_xk
+   ELSE
+       let vec_js    = `($vec_u),r=jstart` ; let vec_je    = `($vec_u),r=jend`
+       define axis/y=`vec_js`:`vec_je`:`($vec_yskip)` yvec_abs 
+       let vec_ys    = y[gy=($vec_u),j=`vec_js`]
+       let vec_ye    = y[gy=($vec_u),j=`vec_je`]
+       let vec_dy    = y[gy=($vec_u),j=2]-y[gy=($vec_u),j=1]
+       define axis/y=`vec_ys`:`vec_ye`:`vec_dy*($vec_yskip)`/units=latitudes  yvec_lat
+       let vec_u_yk_abs = SAMPLEJ(vec_u_xk,y[gy=yvec_abs])
+       let vec_u_xyk    = vec_u_yk_abs[gy=yvec_lat@ASN]
+       let vec_v_yk_abs = SAMPLEJ(vec_v_xk,y[gy=yvec_abs])
+       let vec_v_xyk    = vec_v_yk_abs[gy=yvec_lat@ASN]
+   ENDIF 
+
+! plot vectors
+
+   let vec_sp_xyk = (vec_u_xyk^2 + vec_v_xyk^2)^0.5  
+
+   define symbol vec_cmd_p = vector/ov/nolab/nokey/len=(\$vec_len)/xskip=1/yskip=1 
+
+   ppl color 1, 0,0,0  
+   REPEAT/RANGE=1:`vec_col_levs`:1/NAME=cv (;\
+       def sym vec_clv  = `cv`                ;\
+       def sym vec_clvp1= `cv+1`              ;\
+       let     vec_lv1  = `x[gx=xclevs,i=($vec_clv)] ` ;\
+       let     vec_lv2  = `x[gx=xclevs,i=($vec_clvp1)] ` ;\
+       ppl color 6, `vec_red[i=($vec_clv)]`,`vec_green[i=($vec_clv)]`,`vec_blue[i=($vec_clv)]`;\
+       IF `($vec_clv) EQ 1` THEN  ;\
+          let vec_mask   =  IF vec_sp_xyk GE vec_lv1 AND vec_sp_xyk LE vec_lv2 THEN 1;\
+          let vec_uu = vec_u_xyk * vec_mask ; let vec_vv = vec_v_xyk * vec_mask ;\
+          ($vec_cmd)/color=1/set/len=($vec_len) vec_uu, vec_vv ;\ 
+          IF ($vec_arrowkey) THEN ; ppl veckey ($vec_veckey) ; ENDIF ;\
+	  let vec_chk_ppl = SUBSTRING("($vec_otherppl)",1,3) ;\
+	  IF `vec_chk_ppl EQ "ppl"` THEN ;  ($vec_otherppl) ; ENDIF ;\
+          ($vec_ppl),1,1  ;\ 
+          ($vec_cmd_p)/color=6 vec_uu, vec_vv ;\ 
+       ELSE  ;\
+          let vec_mask   =  IF vec_sp_xyk GT vec_lv1 AND vec_sp_xyk LE vec_lv2 THEN 1 ;\
+          let vec_uu = vec_u_xyk * vec_mask ; let vec_vv = vec_v_xyk * vec_mask  ;\
+          ($vec_cmd_p)/color=6 vec_uu, vec_vv ;\
+       ENDIF ;\
+   )
+
+   ! get the colorkey with proper levels and labels
+   IF ($vec_colorkey) THEN
+      poly/fill/pal=($vec_pal)/lev=(`($vec_lo)`,`($vec_hi)`,`($vec_delta)`)\
+                       /nolab/key/ov/set {1000,1000,1000,1000},{1000,1000,1000,1000}
+      ppl shakey ($vec_shakey)
+      ppl fillpol/over
+   ENDIF
+
+!-----set back default behaviour
+
+   cancel data `vec_pal_1`
+
+   set region save
+   ppl color 1
+   ppl color 6

@@ -1,0 +1,175 @@
+\ cancel mode verify
+! 
+! Description : flip_palette : Flip (reverse) the color scheme for a given palette.
+! 
+! Arguments/INPUT : $1 (mandatory) : palette file to be flipped/reversed. ".spk"
+!                                       extension can be skipped.
+!                   $2 (optional)  : name of new reversed palette file. ".spk"
+!                                       extension can be skipped.
+! 
+! OUTPUT          : palette file $2.spk (or $1_rev.spk, default) with reversed 
+!                         color levels 
+!
+! Usage   : go flip_palette rainbow            ! output is "rainbow_rev.spk"
+!           go flip_palette rainbow newpalette ! output is "newpalette.spk"
+!
+! Example : yes? set data levitus_climatology
+!           yes? shade/k=1/lev=(-5,30,1)/palette=rainbow temp 
+!           yes? go flip_palette rainbow
+!           yes? shade/k=1/lev=(-5,30,1)/palette=rainbow_rev temp
+!
+! Known Problems :
+!         1. This script will work only with PERCENTAGE based palette (.spk) files,
+!               which have entries for 0% and 100%. Header lines at beginning and 
+!               blank lines towards the end are OK.
+!
+! Related postings : 
+!      palette viewer
+!         http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2007/msg00372.html
+!      palette maker 
+!         http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2007/msg00410.html
+!      color_vector
+!         http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2008/msg00054.html
+!
+! Written By : Jaison Kurian (jaison@atmos.ucla.edu)
+! Written On : June/16/2008 (based on color_vector.jnl)
+!
+!----------------------------------------------------------------------------
+
+!-----safe guards---------------
+
+   define region/default save
+   can region/x/I
+
+!-----check for palette file
+
+   define symbol flp_pal = $1"<FATAL (flip_palette) : You must supply 1st argument, palette filename. Quitting......"
+   define symbol flp_chk = $2"flpjunk"
+
+   let flp_pal_chk = STRINDEX("($flp_pal)","/")
+   IF `flp_pal_chk GT 0` THEN
+       say ; say " WARNING (flip_palette) : Palette file name should be like rainbow or"
+             say "         rainbow.spk. Requested ($flp_pal) contains '/' & hence not accepted."
+             say "         Using default palette rainbow.spk." ; say  
+	     define symbol flp_pal = rainbow 
+   ENDIF
+   let flp_pal_ext = STRINDEX("($flp_pal)",".spk")
+   IF `flp_pal_ext GT 1` THEN
+       let flp_pal_1 = "($flp_pal)" 
+   ELSE 
+       let flp_pal_1 = "($flp_pal)" + ".spk"
+   ENDIF
+
+   define symbol found_pal = 0
+   let fer_dir             = {spawn:"echo $FER_DIR"}
+   let flp_fex_1           = {spawn:"ls `fer_dir`/ppl/`flp_pal_1` 2> /dev/null"}
+   define symbol fer_pal   = `fer_dir`/ppl
+   IF `STRLEN(flp_fex_1[i=1]) GT 0` THEN
+       define symbol found_pal = 1
+       define symbol flp_pal_2 = "($fer_pal)/`flp_pal_1`"
+   ELSE 
+       let flp_fex_2 = {spawn:"ls `flp_pal_1` 2> /dev/null"}
+       IF `STRLEN(flp_fex_2[i=1]) GT 0` THEN
+           define symbol found_pal = 1
+           define symbol flp_pal_2 = "./`flp_pal_1`"
+       ENDIF
+   ENDIF
+
+   IF `($found_pal) NE 1` THEN
+      say ; say " ERROR (flip_palette) : Requested palette file ($flp_pal) DOES NOT FOUND"
+            say "         in pwd and ($fer_pal)"
+	    say "         ......Quitting " ; say ;  EXIT/PROMPT
+   ENDIF
+
+
+!--create output palette name
+
+   let flp_pal_len = STRLEN(flp_pal_1)
+   IF `"($flp_chk)" EQ "flpjunk"` THEN
+      let flp_out  = SUBSTRING("($flp_pal)",1,`flp_pal_len-4`) + "_rev.spk"
+   ELSE 
+      let flp_out_ext = STRINDEX("($flp_chk)",".spk")
+      IF `flp_out_ext GT 1` THEN
+          let flp_out = "($flp_chk)"
+      ELSE 
+          let flp_out = "($flp_chk)" + ".spk"
+      ENDIF
+   ENDIF
+
+!--read palette file 
+
+   let flp_pal_lines = {spawn:"cat `($flp_pal_2)` | wc -l"}
+   define axis/x=1:`flp_pal_lines`:1 xpal
+   define grid/x=xpal gpal
+
+   !--get number of header lines to skip 
+
+   FILE/grid=gpal/format=delimited/var=flp_spk_head ($flp_pal_2)
+   let flp_spk_skip = -1
+   REPEAT/RANGE=1:`flp_pal_lines`:1/name=flp_hd (;\
+      define symbol flp_hdr = `flp_hd` ;\
+      IF `SUBSTRING(flp_spk_head[i=($flp_hdr)],1,1) EQ "0"` THEN ;\
+         let flp_spk_skip = `($flp_hdr) - 1` ;\
+         EXIT/LOOP ;\
+      ENDIF   ;\
+   )
+   IF `flp_spk_skip LT 0` THEN 
+      say ; say " ERROR (flip_palette) : Requested palette file ($flp_pal) DOES NOT have entry for 0%."
+            say "         Palette files should be PERCENTAGE based and should have"
+	    say "         entries for 0% and 100%......Quitting " ; say ;  EXIT/PROMPT
+
+   ENDIF
+
+   cancel data `flp_pal_1`
+
+   !--check whether 0% and 100% entries exists
+
+   FILE/grid=gpal/skip=`flp_spk_skip`/var="flp_perc,flp_r,flp_g,flp_b" ($flp_pal_2)
+
+   let flp_perc_0   = flp_perc[d=`flp_pal_1`,i=1]
+   let flp_perc_100 = flp_perc[d=`flp_pal_1`,i=@MAX]
+
+   let flp_spk_chk = IF `flp_perc_0 NE 0` OR `flp_perc_100 NE 100` THEN 1 ELSE 0
+   IF `flp_spk_chk EQ 1` THEN
+      say ; say " ERROR (flip_palette) : COULD NOT locate entries for 0% and/or 100% "
+            say "         in requested palette file ($flp_pal)."
+            say "         Palette files should be PERCENTAGE based and should have"
+	    say "         entries for 0% and 100%......Quitting " ; say ;  EXIT/PROMPT
+
+   ENDIF
+
+!-- OK. Now flip the colors, with proper percentage values
+
+   let flp_pr   = ABS( COMPRESSI(flp_perc)-100 )
+   let flp_levs = flp_pr[i=@NGD] 
+   let flp_r1   = COMPRESSI(flp_r)
+   let flp_g1   = COMPRESSI(flp_g)
+   let flp_b1   = COMPRESSI(flp_b)
+
+   sp rm -f `flp_out`
+   let pwdir  = {spawn:"pwd"}
+   let cdate  = {spawn:"date +%b/%d/%Y\ %H\:%M\:%S"}
+   sp echo "\!  Ferret Palette File, with reversed colors using flip_palette.jnl." > `flp_out`
+   sp echo "\!           Reference palette is ($flp_pal_2)" >> `flp_out`
+   sp echo "\!           PWD  : `pwdir`" >> `flp_out`
+   sp echo "\!           Date : `cdate`" >> `flp_out`
+   sp echo "\!  -----------------------------------------------------------------" >> `flp_out`
+
+   define symbol flp_cmd = list/nohead/format=(4(3x,f8.4))/file=`flp_out`/append/quiet
+   REPEAT/RANGE=1:`flp_levs`:1/NAME=fv (;\
+      define symbol lb = `flp_levs-fv+1` ;\
+      ($flp_cmd) flp_pr[i=($lb)], flp_r1[i=($lb)], flp_g1[i=($lb)], flp_b1[i=($lb)] ;\
+   )
+
+!--Print status
+ 
+   say ; say "     NOTE (flip_palette) : Created new flipped palette file `flp_out`" ; say
+
+!--clean up
+
+   cancel data `flp_pal_1`
+   cancel var flp_*  ; cancel symbol flp_*
+
+!--set back default behaviour
+
+   set region save

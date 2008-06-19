@@ -125,11 +125,10 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
-      INTEGER my_lo_l, my_hi_l
+      INTEGER nx, my_lo_l, my_hi_l
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
      .     arg_incr(4,EF_MAX_ARGS)
 
-      INTEGER nx
 *
 *     Use utility functions to get context information about the arguments.
 *     Set the abstract X axis.

@@ -255,8 +255,11 @@
       LOGICAL need_modulo
       INTEGER ibot, itop, jbot, jtop
       INTEGER nloc, iloc, ptloc, icross
+      INTEGER ii, jj
       REAL xpt, ypt, ydiff, yd
       REAL xptmin, xptmax, xcoordmin, xcoordmax
+      REAL add_xcoord, xadd, xcoord, dd
+      REAL xbot, xtop, ybot, ytop, dmin
       CHARACTER*255 err_msg
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)

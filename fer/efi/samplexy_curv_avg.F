@@ -261,6 +261,7 @@
       REAL xptmin, xptmax, xcoordmin, xcoordmax
       REAL fbb, ftb, fbt, ftt
       REAL sum, count
+      REAL add_xcoord, xadd, xcoord
       CHARACTER*255 err_msg
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)

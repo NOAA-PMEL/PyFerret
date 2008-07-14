@@ -129,6 +129,10 @@
 * V610 *acm*  2/08 Fix bug 1560. In the lon/lat axis formatting, check whether 
 *                  the unit is longitude or latitude. PLOT/VS plots may have 
 *                  either one of these on either axis.
+* V612 *acm*  7/08 Prev. fix was that variables with units of "degrees_e" and 
+*                  "degrees_n" get longitude/latitude units on a PLOT/VS plot. 
+*                  Also allow units of "longitude" or "latitude" to trigger 
+*                  lon/lat labels.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -379,7 +383,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .                  fmt, use_nice )
                      IF (use_nice) THEN
                         IF (TM_HAS_STRING(buff1, '_e') .OR.
-     .                      TM_HAS_STRING(buff1, '_E') ) THEN
+     .                      TM_HAS_STRING(buff1, 'lon') ) THEN
                             ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                     ',''''LONE'''')' 
                         ELSE
@@ -403,7 +407,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .                  fmt, use_nice )
                      IF (use_nice) THEN
                         IF (TM_HAS_STRING(buff1, '_e') .OR.
-     .                      TM_HAS_STRING(buff1, '_E') ) THEN
+     .                      TM_HAS_STRING(buff1, 'lon') ) THEN
                             ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                     ',''''LONE'''')'
                         ELSE
@@ -420,7 +424,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                   iunits = TM_UNIT_ID(buff1)	 
                   IF (iunits .EQ. 4) THEN
                      IF (TM_HAS_STRING(buff1, '_e') .OR.
-     .                   TM_HAS_STRING(buff1, '_E') ) THEN
+     .                   TM_HAS_STRING(buff1, 'lon') ) THEN
                         CALL PPLCMD ( from, line, 0, 
      .                    'YFOR (I7,''''LONE'''')', 1, 1 )	
                      ELSE
@@ -554,7 +558,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .                 fmt, use_nice )
                     IF (use_nice) THEN
                        IF (TM_HAS_STRING(buff1, '_e') .OR.
-     .                      TM_HAS_STRING(buff1, '_E') ) THEN
+     .                      TM_HAS_STRING(buff1, 'lon') ) THEN
                            ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                       ',''''LONE'''')' 
                        ELSE

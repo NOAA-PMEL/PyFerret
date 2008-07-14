@@ -141,7 +141,9 @@ C  X label
         penprefix = ""
 
         DO 30 j = 1, numlines
-	IF(LABELX.LT.0)THEN
+cc For fixing bug 1582: missing label on horizontal axis. 
+cc This crept in with multi-line labels. no need for IF(LABELX.LT.0) here.
+cc	IF(LABELX.LT.0)THEN
 
            CALL getlabfonts (xlab, lnbeg, lnend, j, npnew, nfnew, 
      .           newfont, newpen, nchr)
@@ -167,7 +169,7 @@ C  Set up to use any font settings from this line on subsequent lines.
               nfont = 3
            ENDIF
 
-        ENDIF
+cc        ENDIF
 30      CONTINUE
 
 C  Main label

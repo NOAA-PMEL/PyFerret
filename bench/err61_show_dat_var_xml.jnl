@@ -1,0 +1,39 @@
+! err61_show_dat_var_xml.jnl
+! See bug 1580. Intermediate variablels associated with a 
+! variable that uses a grid-changing function should be 
+! skipped when writing variables by SHOW DATA/VAR/XML
+
+! Define some varibles as in some of the tests of
+! zaxreplace. Write to files.
+
+! Define some variables as in some of the benchmark
+! tests of zaxreplace. Write to files.
+
+LET ddat = ZSEQUENCE({1126,1136,1146,1156,1166})
+LET cycle = ZSEQUENCE({346, 347, 349, 350, 351})
+DEFINE AXIS/Z=10:50:10 zaxis_orig
+LET cycle_orig = cycle[GZ=zaxis_orig@ASN]
+LET ddat_orig = ddat[GZ=zaxis_orig@ASN]
+
+SAVE/CLOBBER/FILE=z1.nc ddat_orig
+SAVE/CLOBBER/FILE=z2.nc cycle_orig
+
+! Now use this data and define a user variable 
+! associated with datset 2 using ZAXREPLACE
+
+CAN DAT/ALL; CAN VAR/ALL
+USE z1
+USE z2
+DEFINE AXIS/Z=345:353:1 zaxis_des
+LET dummy = Z[GZ=zaxis_des]
+LET/D=2 ddat_a = ZAXREPLACE(ddat_orig[d=1], cycle_orig[d=2], dummy)
+
+! Note how there are intermediate variables associated with the 
+! regridding operation
+
+SHOW DATA
+
+! Those intermediate variables should be skipped
+! for SHOW DATA/VAR/XML 
+
+SHOW DATA/VAR/XML

@@ -17,5 +17,8 @@ GO bn_reset
 GO err61_new_attr_on_axis
 
 GO bn_reset
-GO bn_varcontext_attributes.jnl
+GO bn_varcontext_attributes
+
+GO bn_reset 
+GO err61_show_dat_var_xml
 

@@ -277,6 +277,8 @@
 	ENDIF
 
 * show the data-set-specific user-defined variables
+* Skip intermediate variables by checking uvar_parent
+
 	first_time = .TRUE.
 *	DO 600 i = 1, max_uvar
 *	   IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 600
@@ -285,7 +287,8 @@
      .                              max_uvar, num_indices )
         DO 600 j = 1, num_indices
            i = deleted_list_result(j)
-	   IF (uvar_dset(i) .EQ. dset) THEN
+	   IF (uvar_dset(i) .EQ. dset .AND.
+     .         uvar_parent(i) .EQ. 0   ) THEN
 	      IF ( first_time ) THEN
 	         CALL SPLIT_LIST(pttmode_explct, lun,
      .			' ------------------------------', 31) 

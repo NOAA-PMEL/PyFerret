@@ -58,7 +58,7 @@
 			   -DFULL_GUI_VERSION -DX_REFRESH \
 			  -DXT_CODE -Dsun4 -DLINUX -DNO_PASSED_CONCAT \
 			  -Dcrptd_cat_argument \
-			  -DG77_SIGNAL -DG77 -DusingDODSf2cUnderscore \
+			  -DG77_SIGNAL -DG77  -DusingDODSf2cUnderscore \
 			  -DNO_INTRINSIC_IN_PARAMETER -DINTERNAL_READ_FORMAT_BUG
 
 	CFLAGS          =  $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -m486  -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
@@ -88,8 +88,6 @@
 	HDFLIB		= -L/usr/local/src/HDF/lib  -ldf -ljpeg -lz
 
 	CDFLIB		= -lnetcdf
-
-	DODS_LIBS   	= -L/home/flat/kobrien/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lz -lpthread -lm -L/home/flat/kobrien/DODS/lib -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a -lrx /usr/lib/libz.a
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 

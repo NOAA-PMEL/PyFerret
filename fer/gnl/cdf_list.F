@@ -91,6 +91,8 @@
 * V604  7/07 *acm* Fix bug 1520, if a var has only a _FillValue attribute, and not a 
 *                  missing_value one, then neither was written to the output file.
 *                  Both should be written.
+* V612 8/08  *acm* Fix bug 1587: so that correct bounds are written for axes of a user-defined 
+*                  variable, send the dataset number of the underlying dataset to cd_write_var
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -919,10 +921,10 @@
 
 * write the data for this variable
 
-           CALL CD_WRITE_VAR ( memory, cdfid, dset, varcode, grid, write_lo, 
-     .                        write_hi, memory(1,mr_blk1(mr)), edges_flag,
-     .                        do_bounds, scalefac, addoff, bad, 
-     .                        mode_upcase_output, status )
+           CALL CD_WRITE_VAR ( memory, cdfid, dset_num, varcode, grid, 
+     .                        write_lo, write_hi, memory(1,mr_blk1(mr)), 
+     .                        edges_flag, do_bounds, scalefac, addoff, 
+     .                        bad, mode_upcase_output, status )
            IF ( status .NE. merr_ok ) GOTO 5800
  500	CONTINUE
 

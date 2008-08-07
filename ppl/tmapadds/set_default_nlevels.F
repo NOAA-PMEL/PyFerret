@@ -34,8 +34,9 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* V610 *acm* 3/08 - add new MODE NLEVELS; default number of levels is now 40
-* Store a new setting for the default number of contour/fill levels.
+* V610 *acm* 3/08 - add new MODE NLEVELS; default number of levels is still 10,
+* see fer/dat/xprog_state_data.F. Store a new setting for the default number of 
+* contour/fill levels, set by MODE NLEVELS 
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'cont_inc.decl'

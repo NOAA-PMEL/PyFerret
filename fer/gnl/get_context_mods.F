@@ -137,6 +137,10 @@
 * v554 11/03*acm* - changing a comment, only. 
 * v5.80 *acm* 11/04 use cx_cal_id to store the calendar used when
 *                   computing world coordinates.
+* v6.12 *acm*  7/08 Fix bug 1585: allow for alternative calendars. See if 
+*                   there is a calendar definition for the grid and axis, 
+*                   and set the calendar ID before translating the date string 
+*                   to an axis coordinate.
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -190,7 +194,8 @@
      .			impl_grid, axis, other, naxes
 	CHARACTER*(1)	UPPER_CASE, region_qual(4,2), other_qual(2),
      .			letter, letter2
-	CHARACTER	name*512, comment*12, transnam*6, buff*32
+	CHARACTER	name*512, comment*12, transnam*6, buff*32, 
+     .                  cal_name*32, letters*3
 	REAL*8		temp
 	INTEGER		dstart, dend, lbrac, state, gdset, itest, nend
 
@@ -277,6 +282,43 @@
 	      cx_dset_gvn( mods_cx ) = .TRUE.
 	   ENDIF
  50	CONTINUE
+
+c - - 
+
+
+* Look for /CALENDAR= (this may be an axis def)
+        cal_id = 0
+	DO 52 item = 1, list_len
+	   istart = it_start(item)
+	   iend   = it_end  (item)
+	   risc_buff  = text_buff(istart:iend)		! for RISC/FORTRAN
+	   len_rbuff  = MIN(size_rbuff, iend-istart+1)	! for RISC/FORTRAN
+	   vax_code = STR_UPCASE(letters,text_buff(istart:istart+2))
+	   IF (letters .EQ. 'CAL') THEN
+
+	      equal_pos = ATOM_POS( text_buff(istart:iend), '=' )
+	      IF ( equal_pos .EQ. atom_not_found
+     .	      .OR. equal_pos .EQ. atom_illegal_pos ) GOTO 5112
+	      equal_pos = equal_pos + istart - 1
+	      name = text_buff(equal_pos+1:iend)
+              vax_code = STR_UPCASE(name,text_buff(equal_pos+1:iend))
+              cal_name = name
+
+* 9/01 CF conventions have adopted the name 360_day for a 360-day year.
+
+              IF (name .EQ. '360') cal_name = '360_DAY' 
+              IF (name .EQ. 'D360') cal_name = '360_DAY' 
+              IF (name .EQ. 'STANDARD') cal_name = 'GREGORIAN' 
+              IF (name(1:6) .EQ. 'COMMON') cal_name = 'NOLEAP' 
+              IF (name(1:6) .EQ. '365_DA') cal_name = 'NOLEAP' 
+              IF (name(1:6) .EQ. '366_DA') cal_name = 'ALL_LEAP' 
+              cal_id = TM_GET_CALENDAR_ID (cal_name)
+	   ENDIF
+
+ 52	CONTINUE
+
+c - -
+
 
 * loop through list of other ( non /@ ) items provided
 	DO 500 item = 1, list_len
@@ -668,12 +710,14 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
         ENDIF
 
 *  See if we can find out the calendar, if grid/axis is known
-	IF (grid .EQ. unspecified_int4  .AND.  
-     .	    axis .EQ. unspecified_int4)  THEN 
-	   cal_id = 1
-	ELSE
-	   IF (axis .EQ. unspecified_int4) axis = grid_line(t_dim, grid)
-	   cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
+        IF (cal_id .EQ. 0) THEN
+           IF (grid .EQ. unspecified_int4  .AND.  
+     .	       axis .EQ. unspecified_int4)  THEN 
+              cal_id = 1
+	   ELSE
+	      IF (axis .EQ. unspecified_int4) axis = grid_line(t_dim, grid)
+	      cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
+	   ENDIF
 	ENDIF
 
 * is there a first value given ?
@@ -906,6 +950,8 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
      .	 'unknown region name: '//risc_buff(:len_rbuff),*5000)
  5110	CALL ERRMSG( ferr_syntax, status, 
      .	 'What data set ?: '//risc_buff(:len_rbuff),*5000)
+ 5112	CALL ERRMSG( ferr_syntax, status, 
+     .	 'What calendar ?: '//risc_buff(:len_rbuff),*5000)
  5120	CALL ERRMSG( ferr_syntax, status, 
      .	 'What grid ?: '//risc_buff(:len_rbuff),*5000)
  5130   CALL ERRMSG( ferr_syntax, status, 

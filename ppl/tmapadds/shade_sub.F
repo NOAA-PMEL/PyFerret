@@ -409,15 +409,17 @@ c If all the data is missing don't make the cellarray call
 *	MODULO REPLICATIONS TO FILL OUT uc(1) TO uc(2)
 
         IF (xmodulo .AND. curvilinear) THEN
+           xrange = 360
+           IF (.NOT. units_degrees) xrange = wwxmax - wwxmin
            nleft = 0
            nright = 0
-           IF (lmin .GT. uc(1) ) nleft =  1 + INT(lmin - uc(1) )/ 360
-           IF (lmax .LT. uc(2) ) nright = 1 + INT(uc(2) - lmax )/ 360
+           IF (lmin .GT. uc(1) ) nleft =  1 + INT(lmin - uc(1) )/ xrange
+           IF (lmax .LT. uc(2) ) nright = 1 + INT(uc(2) - lmax )/ xrange
 
            IF (nleft .GT. 0) THEN
               xadd = 0.
               DO 100 i = 1, nleft
-                 xadd = xadd - 360.
+                 xadd = xadd - xrange
                  CALL SHADE_FILL_IT (data, nx, ny, px, py, xs, ys,
      .                         xinv, yinv,  xadd, lmin, lmax, ilo, 
      .                         ihi, jlo, jhi, status)
@@ -428,7 +430,7 @@ c If all the data is missing don't make the cellarray call
            IF (nright .GT. 0) THEN
               xadd = 0.
               DO 110 i = 1, nright
-                 xadd = xadd + 360.
+                 xadd = xadd + xrange
                  CALL SHADE_FILL_IT (data, nx, ny, px, py, xs, ys,
      .                         xinv, yinv,  xadd, lmin, lmax, ilo, 
      .                         ihi, jlo, jhi, status)

@@ -1,6 +1,9 @@
 * COMMON/XCURVILINEAR -- COMMON to communicate arrays of X and Y positions
 *		to PLOT+ for curvilinear plotting
 
+* V612: 7/08 *acm*  Fix bug 1589; units_degrees flag stores whether the units of 
+*                   the x coordinates are something other than degrees
+
 	COMMON/ XCURVILINEAR/
      .		curvilinear,
      .		dim1_modulo, dim2_modulo,
@@ -22,7 +25,8 @@
      .		xspan_1_dim2,
      .		yspan_1_dim1,
      .		yspan_1_dim2,
-     .          xmodulo
+     .          xmodulo,
+     .          units_degrees
 
 	LOGICAL	curvilinear,
      .		dim1_modulo, dim2_modulo,
@@ -31,7 +35,8 @@
      .		xspan_1_dim2,
      .		yspan_1_dim1,
      .		yspan_1_dim2,
-     .          xmodulo
+     .          xmodulo,
+     .          units_degrees
 	INTEGER
      .		minss_dim1, maxss_dim1,
      .		minss_dim2, maxss_dim2,

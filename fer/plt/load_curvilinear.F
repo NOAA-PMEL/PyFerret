@@ -45,6 +45,8 @@
 
 * V450: 3/97
 * V541:  2/02 *sh - allow for subspan modulo axes
+* V612: 7/08 *acm*  Fix bug 1589; see if the units of the coordinates are degrees
+*                   and set a flag.
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -60,16 +62,17 @@
      .		mr_xpos, mr_ypos, cx_xpos, cx_ypos, cx_val, status
 
 * internal variable declarations:
-	LOGICAL ITSA_MODULO_AXIS, ITSA_MODULO_CURVI_AXIS,
+	LOGICAL ITSA_MODULO_AXIS, ITSA_MODULO_CURVI_AXIS, TM_HAS_STRING,
      .		xspan_n_dim1, xspan_n_dim2,
      .		yspan_n_dim1, yspan_n_dim2,
      .		xspan_np1_dim1, xspan_np1_dim2,
      .		yspan_np1_dim1, yspan_np1_dim2
 
-	INTEGER	CAXIS_MODLEN,
+	INTEGER	CAXIS_MODLEN, STR_SAME,
      .		dim, x1span, x2span, y1span, y2span,
-     .          span_dim1, span_dim2
+     .          span_dim1, span_dim2, i1, i2, i3
 	CHARACTER*1	fieldname
+	CHARACTER*64	VAR_UNITS, xcoord_units
 
 * missing value flags
 	badx = mr_bad_data(mr_xpos)
@@ -193,6 +196,16 @@
      .		.AND.
      .		         ITSA_MODULO_CURVI_AXIS(xpos,ypos,mr_xpos,mr_ypos,2)
 	ENDIF
+
+* See what the units of the curvi coordinate fields are. Set a flag if the
+* x coordinates are degrees.
+
+        units_degrees = .FALSE.
+        xcoord_units = VAR_UNITS (cx_xpos)
+        IF  (TM_HAS_STRING(xcoord_units,'lon') .OR.
+     .       TM_HAS_STRING(xcoord_units,'deg') .OR.
+     .       STR_SAME(xcoord_units(1:3),'   ') .EQ. 0   ) 
+     .       units_degrees = .TRUE.
 
 * save the memory pointers to the arrays, themselves
 	CALL SAVE_ARG_POINTERS( xpos, ypos )

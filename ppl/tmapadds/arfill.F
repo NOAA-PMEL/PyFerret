@@ -170,17 +170,19 @@ C acm 4/05 When plotting curvilinear data with FILL/MODULO put this logic into e
        if (status .eq. ferr_interrupt) go to 1000
 
         IF (xmodulo .AND. curvilinear) THEN
+           xrange = 360
+           IF (.NOT. units_degrees) xrange = wwxmax - wwxmin
            nleft = 0
            nright = 0
-           IF (lmin .GT. uc(1) ) nleft =  1 + INT(lmin - uc(1) )/ 360
-           IF (lmax .LT. uc(2) ) nright = 1 + INT(uc(2) - lmax )/ 360
+           IF (lmin .GT. uc(1) ) nleft =  1 + INT(lmin - uc(1) )/ xrange
+           IF (lmax .LT. uc(2) ) nright = 1 + INT(uc(2) - lmax )/ xrange
            nleft = MAX(nleft,1)
            nright = MAX(nright,1)
 
            IF (nleft .GT. 0) THEN
               xadd = 0.
               DO 100 i = 1, nleft
-                 xadd = xadd - 360.
+                 xadd = xadd - xrange
                  CALL ARFILL_SECTION(x, y, z, zlev, nx, ny, nlev, 
      .               nnx, nny, x_extra, y_extra, lmin, lmax, ilo, 
      .               ihi, jlo, jhi, xadd, status)
@@ -191,7 +193,7 @@ C acm 4/05 When plotting curvilinear data with FILL/MODULO put this logic into e
            IF (nright .GT. 0) THEN
               xadd = 0.
               DO 110 i = 1, nright
-                 xadd = xadd + 360.
+                 xadd = xadd + xrange
                  CALL ARFILL_SECTION(x, y, z, zlev, nx, ny, nlev, 
      .               nnx, nny, x_extra, y_extra, lmin, lmax, ilo, 
      .               ihi, jlo, jhi, xadd, status)

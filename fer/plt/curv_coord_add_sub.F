@@ -47,6 +47,8 @@
 *                   if so correct the interpolants. Allows the
 *                   calling routine to add a modulo offset to the
 *                   longitudes.
+* V612: 7/08 *acm*  Fix bug 1589; if the units of the coordinates are not degrees
+*                   then dont try to see if we are near the branch cut.
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -243,27 +245,31 @@ C Check to see if any of the longitudes have crossed a branch cut.
 C add or subtract local coordinates to correct for this. Puts all 
 C coordinates on the same branch as x11
 
-       IF (ABS(x11-x12) .GT. branch_test) THEN
-           IF (x11 .GT. x12) THEN
-              x12 = x12 + lon_degrees
-           ELSE
-              x12 = x12 - lon_degrees
+       IF (units_degrees) THEN
+
+          IF (ABS(x11-x12) .GT. branch_test) THEN
+              IF (x11 .GT. x12) THEN
+                 x12 = x12 + lon_degrees
+              ELSE
+                 x12 = x12 - lon_degrees
+              ENDIF
            ENDIF
-        ENDIF
-        IF (ABS(x11-x21) .GT. branch_test) THEN
-           IF (x11 .GT. x21) THEN
-              x21 = x21 + lon_degrees
-           ELSE
-              x21 = x21 - lon_degrees
+           IF (ABS(x11-x21) .GT. branch_test) THEN
+              IF (x11 .GT. x21) THEN
+                 x21 = x21 + lon_degrees
+              ELSE
+                 x21 = x21 - lon_degrees
+              ENDIF
            ENDIF
-        ENDIF
-        IF (ABS(x11-x22) .GT. branch_test)   THEN
-           IF (x11 .GT. x22) THEN
-              x22 = x22 + lon_degrees
-           ELSE
-              x22 = x22 - lon_degrees
+           IF (ABS(x11-x22) .GT. branch_test)   THEN
+              IF (x11 .GT. x22) THEN
+                 x22 = x22 + lon_degrees
+              ELSE
+                 x22 = x22 - lon_degrees
+              ENDIF
            ENDIF
-        ENDIF
+
+        ENDIF ! units_degrees
 
 * perform the interpolation
 	xi(i) = (x11*(1.-xfrac) + x12*(xfrac)) * (1.-yfrac)
@@ -277,7 +283,7 @@ C coordinates on the same branch as x11
 
         x11 = xi(1)
         DO 108 i = 2, npt
-           IF (ABS(x11-xi(i)) .GT. branch_test) THEN
+           IF (ABS(x11-xi(i)) .GT. branch_test .AND. units_degrees) THEN
               IF (x11 .GT. xi(i)) THEN
                  xi(i) = xi(i) + lon_degrees
               ELSE

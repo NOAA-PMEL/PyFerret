@@ -1716,8 +1716,8 @@ pen 1 1
 plot/overlay
 pen 1 1
 pen 1 1
-%LABEL 0.31344, 0.10001, -1, 0, .1  @IISeattle
-%LABEL -0.091986, -0.42733, -1, 0, .1  @IIHawaii
+%LABEL 0.3134439, 0.1000077, -1, 0, .1  @IISeattle
+%LABEL -0.09198575, -0.42733, -1, 0, .1  @IIHawaii
 window off
 ALINE
 LEV,()
@@ -1754,7 +1754,7 @@ PEN    1  11
 LINE    1 1 0
 PLOT/OVER/NOWAIT
 window on
-%LABEL -0.35355, 0.066987, 0, -22, .15  @p5@DRThe Bering Sea
+%LABEL -0.3535533, 0.06698728, 0, -22, .15  @p5@DRThe Bering Sea
 PLTYPE 3
 CLSPLT
 CLSPLT
@@ -18428,12 +18428,12 @@ SET LABY
 TITLE  0.200 @ACCOS(I/5)
 SET LABTIT COS(I/5)
 PLOT/LATCH/NOWAIT
-SIZE        8.450      10.480
+SIZE        8.454      10.475
 CLSPLT
 SHASET RESET
-AXLEN        6.250       7.680
-SET VP_WIDTH 8.45
-SET VP_HEIGHT 10.48
+AXLEN        6.254       7.675
+SET VP_WIDTH 8.454
+SET VP_HEIGHT 10.475
 ORIGIN        1.200       1.400
 SET VP_SCALE 1
 SET VP_RT_MARGIN 1
@@ -18492,7 +18492,7 @@ LABS/NOUSER   4   6.25   8.28   1 @ASDATA SET: ss_small
 HLABS   4  0.120
 SET LAB4 DATA SET: ss_small
 SET LABnum_DSET   4
-LABS/NOUSER   5   3.12   8.01   0 @A
+LABS/NOUSER   5   3.13   8.01   0 @A
 HLABS   5  0.120
 SET LAB5
 SET LABnum_DATITL 5
@@ -21928,8 +21928,8 @@ LABSET,,, 0.120
 SET LABY I*SIN(I/20)
 PLOT/LATCH/NOWAIT
 %LABEL/nouser 0,3,-1,0,.15,"@P2@IILine1<NL>@IIA LONGER LINE"
-%LABEL/nouser 2.0192, 3, -1, 0, .15,  "@P4@IIMulti-line<NL>Length is l-
-ongest of ALL lines<NL>Line three"
+%LABEL/nouser 2.019231, 3, -1, 0, .15,  "@P4@IIMulti-line<NL>Length is-
+ longest of ALL lines<NL>Line three"
 CLSPLT
 SHASET RESET
 AXLEN        8.000       1.600

@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/build_v612/FERRET_x86/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 40249998 Jun 19 14:16 /home/porter/ansley/build_v612/FERRET_x86/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/build_v612/FERRET_x86/external_functions/ext_func_x86
+Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 49356191 Aug  4 12:59 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/tmap/ferret/x86_64-linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: build v6.12 for Ned and gang to take out to sea
+Note: NO VALID DATA labels on 1D plots
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/build_v612/FERRET_x86/bench
+PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,12 +20,12 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v612/FERRET_x86/external_functions/ext_func_x86
-Beginning at Thu Jun 19 14:52:26 PDT 2008
+FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/x86_64-linux/ext_func/libs
+Beginning at Mon Aug 4 17:20:07 PDT 2008
  	NOAA/PMEL TMAP
  	FERRET v6.12  
- 	Linux(g77) 2.6.9-22. - 06/19/08
- 	19-Jun-08 14:52     
+ 	Linux(g77) 2.6.9-22. - 08/04/08
+ 	 4-Aug-08 17:20     
 
 yes? !bn500_all_shell
 yes? 
@@ -143,6 +143,7 @@ SET MODE VERIFY
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_syntax
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -1065,6 +1066,7 @@ cancel mode metafile      !9/97
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_dollar hello    ! test command arg
 ! test this with GO journal hello
  
@@ -1238,6 +1240,7 @@ set mode/last ignore
 ! added in bn400
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_grave
 ! bn420_grave
 ! benchmark to test evaluation of grave accent-enclosed expressions
@@ -1552,6 +1555,7 @@ set mode/last ignore_errors
 ! added in bn420
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_letd
 ! bn420_letd.jnl
 ! 9/1/95
@@ -1830,6 +1834,7 @@ list q[d=v12file]
 ! added in bn430
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_if
 ! bn430_if
 ! 5/6/96
@@ -1916,6 +1921,7 @@ IF yes THEN
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_expressions
 ! bn450_expressions.JNL
 ! test all manner of expressions
@@ -2447,6 +2453,7 @@ LIST/L=5:7 TBOXLO, TBOXHI
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_geometry
 ! bn200_geometry.JNL
 ! benchmark various geometries for accessing FERRET data
@@ -3743,6 +3750,7 @@ SET MODE/LAST IGNORE_ERRORS
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 set mode ignore		! needed for AIX   11/94
 GO bn_output
 ! bn200_output.JNL
@@ -6724,6 +6732,7 @@ can mode ignore		! needed for AIX
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_in_plane
 ! bn200_in_plane.JNL
 ! benchmark various geometries with in-plane transformation applied (@SBX)
@@ -7241,6 +7250,7 @@ LIST/ORDER=T v[t=@sbx,i=@ave,j=@ave,k=@ave]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_compress
 ! bn200_compress.JNL
 ! benchmark various geometries obtained by compressing FERRET data with @AVE
@@ -7750,6 +7760,7 @@ LIST/ORDER=X v[i=@ave,j=@ave,k=@ave,l=@ave]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_interpolate
 ! bn200_interpolate.JNL
 ! benchmark interpolation along various axes
@@ -8148,6 +8159,7 @@ LIST v[@xpt,@ypt,@zpt,@tpt]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_regrid
 ! bn200_regrid.JNL
 ! test regridding
@@ -9398,6 +9410,7 @@ list a24[g=g48]-a48
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_ez		! changed from bn200_ez 8/10/95
 ! bn401_ez.JNL
 ! test all manner of accessing non-TMAP data files
@@ -9819,6 +9832,7 @@ PPL ECHO ON		! added 10/27/93
 set mode metafile bnplot.plt
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_plot		! upgraded from bn320_plot 10/1/97 *kob*
 ! bn450_plot.JNL - updated 9/97 from bn320_plot.jnl
 ! upgraded from bn320 to provide method for testing batch mode.  Also remove
@@ -10023,6 +10037,7 @@ set mode/last logo
 ! moved to right after bn450_plot to capture metafiles *kob* 2/98
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 ! 2/98 changed bn450_curv to bn491_curv - just some cosmetic changes *kob*
 GO bn_curv
 cancel mode ignore
@@ -10210,6 +10225,7 @@ cancel mode metafile
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_symbols	! added 6/22/95
 ! bn420_symbols
 ! benchmark to test machinery of symbol definition and use
@@ -10229,13 +10245,13 @@ GO bn_symbols	! added 6/22/95
  
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "430"
-PPL$YPIXEL = "430"
+PPL$XPIXEL = "358"
+PPL$YPIXEL = "358"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.12"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "19-Jun-08"
-SESSION_TIME = "14:52"
+SESSION_DATE = " 4-Aug-08"
+SESSION_TIME = "17:20"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10248,13 +10264,13 @@ define symbol t_($s1) = hi	! define "t_hello" as a symbol
  
 ! exercise SHOW SYMBOL
 show symbol/all
-PPL$XPIXEL = "430"
-PPL$YPIXEL = "430"
+PPL$XPIXEL = "358"
+PPL$YPIXEL = "358"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.12"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "19-Jun-08"
-SESSION_TIME = "14:52"
+SESSION_DATE = " 4-Aug-08"
+SESSION_TIME = "17:20"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10262,8 +10278,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "19-Jun-08"
-SESSION_TIME = "14:52"
+SESSION_DATE = " 4-Aug-08"
+SESSION_TIME = "17:20"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10273,13 +10289,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "19-Jun-08"
-SESSION_TIME = "14:52"
+SESSION_DATE = " 4-Aug-08"
+SESSION_TIME = "17:20"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "19-Jun-08"
-SESSION_TIME = "14:52"
+SESSION_DATE = " 4-Aug-08"
+SESSION_TIME = "17:20"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10313,7 +10329,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.12"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Jun 19 2008 14:52:36 "
+LAB3 = "Aug  4 2008 17:20:13 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10405,17 +10421,18 @@ say ($delayed_eval)         ! translate symbol and then evaluate
 ! cleanup
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "430"
-PPL$YPIXEL = "430"
+PPL$XPIXEL = "358"
+PPL$YPIXEL = "358"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.12"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "19-Jun-08"
-SESSION_TIME = "14:52"
+SESSION_DATE = " 4-Aug-08"
+SESSION_TIME = "17:20"
  
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_comma_delimited	! added 10/2/95
 ! bn420_comma_delimited
  
@@ -12077,6 +12094,7 @@ coordinates,1     ,2     ,3     ,4     ,5
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_dynamic_grids	! added 9/27/95, V420 ->V491 4/98
 ! bn420_dynamic_grids
 ! 9/95-9/11/95 - test the creation, destruction, and use of dynamic grids
@@ -13835,6 +13853,7 @@ set mode/last diag
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_cdf
 ! bn320_cdf
 ! benchmark to test netCDF input and output
@@ -14722,6 +14741,7 @@ list/x=180 fcn_rev_sub
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_regrid_transforms
 ! bn500_regrid_transforms
 ! benchmark to test regridding transformations and syntax
@@ -17984,6 +18004,7 @@ set mode/last diag
  
 GO bn_reset		! reordered reset before next test: 2/94
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_axis_limits	! added 10/27/93
 !bn301_axis_limits.jnl
 ! exercise the new-V301 /XLIMITS and /YLIMITS qualifiers
@@ -18130,7 +18151,9 @@ cancel mode calendar
 set view v41
 contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=1-jan-1978:1-jan-1984 sin(x/3)*sin(t/100)
 set view v42
-contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28110:29115 sin(x/3)*sin(t/100)
+contour/x=160E:160-rw-rw-r--  1 ansley tmap 19113 Aug  4 17:20 bench.mgm
+-rw-rw-r--  1 ansley tmap 341414 Aug  4 17:20 bench.mgm
+W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28110:29115 sin(x/3)*sin(t/100)
 set view v43  ! intentionally blank
 contour/x=160E:160W/t=28000:29000/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=1-jan-1975:1-jan-1978 sin(x/3)*sin(t/100)
 set view v44
@@ -18141,9 +18164,7 @@ SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94
  
 !GO bn_reset
 !GO bn301_mem_mgmt
-MESSAGE/CONTINUE  ***** bn301_mem_mgmt has been removed from r-rw-rw-r--  1 ansley tmap 23233 Jun 19 14:52 bench.mgm
--rw-rw-r--  1 ansley tmap 415733 Jun 19 14:52 bench.mgm
-un_all.
+MESSAGE/CONTINUE  ***** bn301_mem_mgmt has been removed from run_all.
 ***** bn301_mem_mgmt has been removed from run_all.
 MESSAGE/CONTINUE  ***** Its too slow!!!
 ***** Its too slow
@@ -18152,6 +18173,7 @@ MESSAGE/CONTINUE  ***** Remember to run it separately
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_movie
 ! bn301_movie.JNL
 ! - test on-HDF movie creation by Program FERRET
@@ -18196,6 +18218,7 @@ sp ls -l bench.mgm
 ! added in bn311
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_ez_order	! was bn311 until 9/95
 ! bn420_ez_order
 ! updated from bn311_ez_order 9/95 - improved testing of /FORMAT=STREAM
@@ -19213,6 +19236,7 @@ CANCEL DATA/ALL
 ! added in bn312  6/3/94
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 ! cancel mode metafile   ! needed temporarily 6/94: PLOT+/XGKS interaction bug
 GO bn_user
 ! bn312_user.jnl
@@ -19307,6 +19331,7 @@ set window 1		! clean up
 ! added in bn420  1/96
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_stream
 ! bn420_stream.jnl
  
@@ -19372,6 +19397,7 @@ cancel data stream_data_link.unf
 !added in bn430 9/96 *kob*
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_mc
 !bn430_mc.jnl
 ! kob - 9/5/96
@@ -19817,6 +19843,7 @@ CAN MODE VERIFY
 !added in bn450 10/97 *kob*
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_negative_t
 ! bn450_negative_t - 10/97
  
@@ -20844,6 +20871,7 @@ CANCEL MODE ignore_error
 !added in bn450 10/97 *kob*
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_xact_regrid
 ! BN450_xact_regrid.jnl
  
@@ -22245,6 +22273,7 @@ LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse
 ! replace w/ bn500 *kob* 5/99
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_gc_functions
 ! bn500_gc_functions.jnl
  
@@ -22832,6 +22861,7 @@ shade/x=0/l=1/ylim=0:200:-20/lev ZAXREPLACE(flow[z=0:200],depth[z=0:200],z[z=0:2
 ! properly echo commands  *kob*
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn491_bug_fixes.jnl
 ! bn491_bug_fixes.jnl
 ! test various fixes that went into version 4.91
@@ -22874,6 +22904,7 @@ message/continue ********File successfully written******
 ! command parser
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err490_command_parser
 ! err490_command_parser.jnl 12/1/98 - reported by billy kessler
  
@@ -22907,6 +22938,7 @@ message/continue ****Variable defined successfully******
 !repeat error
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err490_repeat_first_echo
 ! err490_repeat_first_echo (created later 23/98)
  
@@ -23114,6 +23146,7 @@ list tgap[t=-5:-8@fav]  ! value at T=-6 should be -6
 ! l=@ave compression failure
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err490_l_ave.jnl
 ! err490_lave.jnl 12/1/97 - *sh* (reported by Weimin Wang)
 ! L=@AVE is failing to compress to a point
@@ -23197,6 +23230,7 @@ quit
 ! neg time axis grid failure
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err490_neg_time_show_grid.jnl
 ! err490_neg_time_show_grid
  
@@ -23339,6 +23373,7 @@ show grid/t=15-JAN-1982:15-JAN-1983 temp
 !explicit limit problem
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_explicit_limits.jnl
 ! err491_explicit_limits
 ! 2/98 *sh*
@@ -23387,6 +23422,7 @@ list timestamp[i=1:1]
 !regridding by association problem  *kob* 4/98
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_asn.jnl
 ! err491_asn.jnl 4/98 *sh* (extracted from bug reported by Jennifer Adams)
 ! Ferret crashes on regridding by association where destination
@@ -23466,6 +23502,7 @@ exit/script
 !double precision attribute problem *kob* 4/98
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_attrib_dp.jnl
 ! err491_attrib_dp.jnl
 ! kob  4/23/98
@@ -23624,6 +23661,7 @@ list elev
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_odd_variable_name
 use weird_name1.cdf
 sh data
@@ -23884,6 +23922,7 @@ list 'v2-and-minus'[i=5:15@ddc] ! Now the proper syntax
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_test_stream
  
 canc data/all
@@ -24545,6 +24584,7 @@ list num1
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_define_axes
 ! bn_define_axes.jnl
 ! *sh* 5/99
@@ -25015,10 +25055,12 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 ! GO bn_external_functions  ! move to tests of shared-obj efs.
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_pattern
 ! pattern_bench.jnl
 ! Quick demo of Ferret pattern feature *jd* 12.18.98
@@ -25066,6 +25108,7 @@ can mode meta
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_polygon
 ! Demo of new POLYGON command
 ! *jd * 3.99
@@ -25089,6 +25132,7 @@ can mode meta
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn500_bug_fixes
 ! bn500_bug_fixes.jnl
 ! test various fixes that went into version 5.00
@@ -25096,6 +25140,7 @@ GO bn500_bug_fixes
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_RESHAPE_ctx.jnl
 ! err491_RESHAPE_ctx
  
@@ -25211,6 +25256,7 @@ list/l=1 out
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_delete_child_var.jnl
 ! err491_delete_child_var.jnl
 ! *sh* 4/99
@@ -25241,13 +25287,16 @@ LET ypolymark = XSEQUENCE(ypolyshape) * 1
  
 list  ypolymark	! incorrect values: 10, 20, 30
              VARIABLE : XSEQUENCE(YPOLYSHAPE) * 1
-             SUBSET   : 3 points (X)
+      abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
+Mon Aug  4 17:20:25 PDT 2008
+       SUBSET   : 3 points (X)
  1   / 1:  10.0000
  2   / 2:  20.0000
  3   / 3:  30.0000
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_dp_time_write.jnl
 ! err491_dp_time_write.jnl
 ! *sh* 10/98
@@ -25270,6 +25319,7 @@ sp ncdump out.cdf >> all_ncdump.out
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_gmax.jnl
 ! err491_gmax.jnl
 ! 9 Dec. 1998 *sh*
@@ -25286,13 +25336,12 @@ load ts[gt=t24@max]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_grid_from_name.jnl
 ! err491_grid_from_name.jnl
 ! *sh* 3/99
  
-! implicit grid, such as "Z[gz=zax]", are allowed iabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Thu Jun 19 14:52:49 PDT 2008
-n places they shouldn't be
+! implicit grid, such as "Z[gz=zax]", are allowed in places they shouldn't be
  
 ! fixed with change to GRID_FROM_NAME (and PARSE_NAM_DSET_GRD)
  
@@ -25312,6 +25361,7 @@ can mode ignore
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_let_d.jnl
 ! err491_let_d.jnl
 ! *sh* 10/98
@@ -25338,6 +25388,7 @@ stat/i=1:3/j=1:3 a
 ! 3/01 *kob* uncomment the below - seems to run on all systems
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_long_gif_name.jnl
 ! err491_long_gif_name.jnl
 ! *sh* 4/99 - test 175 character gif name
@@ -25360,6 +25411,7 @@ spawn ls abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstu
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_sh_var_templates.jnl
 ! SHOW VARIABLE templates are not robust
  
@@ -25374,6 +25426,7 @@ sho var mld*dec		! works
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_single_char_replace.jnl
 ! err491_single_char_replace.jnl
  
@@ -25392,6 +25445,7 @@ hh
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_spawn_quotes.jnl
 ! err491_spawn_quotes.jnl
  
@@ -25402,6 +25456,7 @@ SPAWN "date"
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_time_regridding.jnl
 ! err491_time_regridding.jnl
 ! from Jon 10/16/98
@@ -25437,6 +25492,7 @@ plot/over bad[t=@sbx:3]
 ! 3/01 *kob* uncomment the below - seems to run on all systems
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err491_unknown_function.jnl
 ! err491_unknown_function
 ! 3/99 *sh*
@@ -25453,6 +25509,7 @@ stat i, noname(i)
 ! *kob* added 6/11/1999
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err500_IF_THEN_ELSE_quote.jnl
 ! err500_IF_THEN_ELSE_quote.jnl
  
@@ -25468,6 +25525,7 @@ I is too big
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_sample			! internal (optimized) SAMPLE* functions
 ! bn_sample.jnl
 ! 10/99 *sh*
@@ -26552,6 +26610,7 @@ list SAMPLEL(X[x=110:200:10],{3,4,7})	! normal axis
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_strides_revs_perms	! netCDF fancy reads
 ! bn_strides_revs_perms.jnl
 ! *sh* 6/99
@@ -28584,6 +28643,7 @@ canc data/all
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_non_COARDS_netCDF		! non-standard netCDF files
 ! bn_non_COARDS_netCDF.jnl
 ! *sh* 3/99
@@ -28795,6 +28855,7 @@ list HAS_BACKWARDS_AXIS
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_cache_hits		! cache hits on unspecified (full) regions
 ! bn_cache_hits.jnl
  
@@ -30815,6 +30876,7 @@ cancel mode verify
  -DELETE I        M:475 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE str      M:345 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE str      M:375 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+SESSION_DATE = " 4-Aug-08"
 GO bn_regrid_to_user		! G=user_var and related
 ! bn_regrid_to_user
 ! 8/99 *sh*
@@ -31252,6 +31314,7 @@ Dynamic axes:
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_calendar
 ! bn_calendar.jnl
 ! Version 5.3
@@ -31534,6 +31597,7 @@ T0 = 1-JAN-1980
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_dash_dot
 ! new PLOT/DASH and PLOT/SYMBOL=DOT  qualifiers
 ! *acm* 5/01
@@ -31557,6 +31621,7 @@ plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_flowlines
 ! bn_flowlines.jnl
 ! VECTOR/FLOW
@@ -31577,6 +31642,7 @@ vector/flow/over/len=10  u,v
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 set mode meta flowlines.plt
 can mode logo
  
@@ -31589,6 +31655,7 @@ can mode meta
 ! curvilinear flowline plots
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
  
 use coads_climatology
 go mp_sinusoidal
@@ -31608,6 +31675,7 @@ set mode logo
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_logaxes
 !  Test the qualifiers /HLOG and /VLOG for setting
 !  log axes.  On a depth axis, inverse log plot.
@@ -31649,6 +31717,7 @@ plot/hlog fcn
 !       the bn_external_function jnl file.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_internal_external_functions
 ! test internal external functions.  These moved from bn_external_functions
 !  6/01 because on systems w/out external functions support, the internal
@@ -31662,6 +31731,7 @@ GO bn_internal_external_functions
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 go bench_fft
 ! Benchmark Ferret script for FFT.  Uses analytic function of time.
  
@@ -31790,6 +31860,7 @@ CANCEL MODE IGNORE_ERRORS
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 go bench_gridding
 ! bench_gridding.jnl
 ! *acm* 8/99
@@ -31901,6 +31972,7 @@ list/x=4:5/y=1 sgrid
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 go bench_sort
  
  
@@ -32571,6 +32643,7 @@ list my_vwnd
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 go bench_eof
 ! Benchmark for EOF functions
 ! Statically linked as of ferret V5.34
@@ -32620,6 +32693,7 @@ list/i=1:2 eoftime
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 go bench_compress_by
 let mask = {1,,1,,1} + 0*L[l=101:102] + 0*K[k=10:11]
 list compressi_by({10,20,30,40,50},mask)
@@ -32657,6 +32731,7 @@ list compressi_by({10,20,30,40,50},mask2)
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 go bench_compress
  ! NOAA/PMEL TMAP
  ! Program FERRET
@@ -32805,6 +32880,7 @@ list compressk(a[i=91,j=35,l=1])
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bench_internal_string_functions
 ! test internal string functions:
 !       strlen
@@ -32899,6 +32975,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_ef_bench_extrema.jnl
 ! bench_extrema.jnl
 !  benchmark tests for findhi and findlo
@@ -32955,6 +33032,7 @@ list a[i=@ngd]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_ef_err541_date_delim.jnl
 ! err541_date_delim.jnl
 ! Fix errors occurring with delimted reads - four digit years were
@@ -33027,6 +33105,7 @@ if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_ef_zaxr_fcns.jnl
 ! bn_ef_zaxr_functions.jnl
 ! 04-apr-05 *acm* move to tests of shared-obj efs.
@@ -33078,6 +33157,7 @@ list ddat_a, ddat_b, ddat_c
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_ef_curv_to_rect.jnl
 ! bn_ef_curv_to_rect.jnl
 ! Test of curvilinear to rectilinear regridding
@@ -33101,6 +33181,10 @@ CURV_TO_RECT_MAP(lon_in,lat_in,grid_out,radius)
     grid_out: Any variable on destination Longitude-Latitude grid, Lon and Lat (degrees)
     radius: Source points falling within radius are included in mapping to destination point (degrees)
 CURV_TO_RECT(V,mapping)
+    Apply mapping to regrid from curvilinear to rectangular grid
+    V: Variable to regrid, on curvilinear grid V(x,y,z,t)
+    mapping: mapping computed by curv_to_rect_MAP
+CURV_TO_RECT_FSU(V,mapping)
     Apply mapping to regrid from curvilinear to rectangular grid
     V: Variable to regrid, on curvilinear grid V(x,y,z,t)
     mapping: mapping computed by curv_to_rect_MAP
@@ -33221,6 +33305,7 @@ shade fill_xy(sst[l=1], mask[l=1], 4)
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_modulo_strides
 ! bn_modulo_strides.jnl
 ! 6/01 *sh*
@@ -33617,6 +33702,7 @@ list/nohead str[i=105:145:5]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_axis_viewports
 ! bn_axis_viewports
 ! *sh* 9/01
@@ -33678,7 +33764,6 @@ ppl axlen `1.2 + ($xaxl) + 1.0`,`1.4 + ($yaxl) + 1.4`
  !-> ppl axlen 6.937,7.537
 plot/vs/hlim=-1.2:`($xaxl)+1.0`:0.2/vlim=-1.4:`($yaxl)+1.4`:0.2/nolab/nolab {0,($xaxl)}, {0,($yaxl)}
  !-> plot/vs/hlim=-1.2:5.737:0.2/vlim=-1.4:6.137:0.2/nolab/nolab {0,4.737}, {0,4.737}
-!pause
  
 ! again with scale determined automatically
 ! make guide lines
@@ -33729,9 +33814,7 @@ ppl axlen `1.2 + ($xaxl) + 1.0`,`1.4 + ($yaxl) + 1.4`
  !-> ppl axlen 6.937,7.537
 plot/vs/hlim=-1.2:`($xaxl)+1.0`:0.2/vlim=-1.4:`($yaxl)+1.4`:0.2/nolab/line {0,($xaxl)}, {0,($yaxl)}
  !-> plot/vs/hlim=-1.2:5.737:0.2/vlim=-1.4:6.137:0.2/nolab/line {0,4.737}, {0,4.737}
-!pause
  
-!
 set wind/clear
  
 ! a full window plot
@@ -33743,9 +33826,7 @@ show view mid
  
  MID              0.72   0.25,0.75   0.25,0.75   axes
    current viewport is ALLAX
-!pause
  
-!
 set wind/clear
  
 def view/axes/xlim=0:0.5/ylim=0:0.5/text=1 llax
@@ -33828,9 +33909,6 @@ ppl list yaxis
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 1.40E+00  AUTO LABELLING
  
-!pause
- 
-!
 ! again with viewport scaling determined automatically
 set wind/clear
  
@@ -33937,7 +34015,6 @@ ppl list yaxis
           LEFT AXIS= ON  RIGHT AXIS= ON 
          AUTO    NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          YORG= 1.40E+00  AUTO LABELLING
-!pause
  
 cancel view
 go ptest
@@ -33965,6 +34042,7 @@ ppl list yaxis
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_strings
 ! bn_strings.jnl
  
@@ -34526,6 +34604,7 @@ list a[i=@rsum]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_axcontrol
  ! NOAA/PMEL TMAP
  ! Program FERRET (alpha)
@@ -34535,6 +34614,13 @@ GO bn_axcontrol
 define axis/t=1-jan-0001:20-jan-0001:1 begtime
 let tpts = t[gt=begtime]
 set view ul
+col1,col2,col3,col4,col5
+one,,1.1,24S,130E,,1e1,"word 1"
+    two,,2.2,24N,130W,2S,,"word 2"
+three,,3.3,24,130,3N,3e-2," wd 3 "
+
+five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
+extra line
 plot/axes=1,0,0,1 sin(tpts/15)
  
 set view ur
@@ -34568,6 +34654,7 @@ polygon/thick/color=red/palette=blue/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_vec_curv
 ! bn_vec_curv.jnl
 !
@@ -34638,18 +34725,12 @@ let mypage = my + 0*mx
 vec/title="Stretched grid" a,b,mxpage,mypage
  
 can view
-can mode mcol1,col2,col3,col4,col5
-one,,1.1,24S,130E,,1e1,"word 1"
-    two,,2.2,24N,130W,2S,,"word 2"
-three,,3.3,24,130,3N,3e-2," wd 3 "
-
-five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
-extra line
-eta
+can mode meta
 set mode logo
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_delimited_read
 ! bn_delimited_read.jnl
 ! 10/01 *sh*
@@ -34846,8 +34927,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
  Column  2: V2
  Column  3: V3
  Column  4: V4
- Column  5:col1,col2,col3,col4,col5
- V5
+ Column  5: V5
  Column  6: V6
  Column  7: V7
  Column  8: V8
@@ -34880,7 +34960,12 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 1   / 1:......  1.10000 -24.0000     ....     ....   10.000......     ....
 2   / 2:......  2.20000  24.0000     ....  -2.0000     ..........     ....
 3   / 3:......  3.30000  24.0000  130.000   3.0000    0.030......     ....
-4   / 4:......     ....     ....     ....     ....     ..........     ....
+4   / 4:......   col1,col2,col3,col4,col5
+12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+  ....     ....     ....     ....     ..........     ....
 5   / 5:......  4.40000 -24.0000 -130.000  91.0000 -400.000......  77.0000
 6   / 6:......     ....     ....     ....     ....     ..........     ....
  
@@ -34953,11 +35038,7 @@ list v1,v2
  
 ! ==========
 ! look at the date/time file
-spawn cat bn_delimited_12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-read_date_time.dat
+spawn cat bn_delimited_read_date_time.dat
  
 ! try the file as-is
 ! Note that record 3 has syntax errors in the first 4 fields
@@ -35124,11 +35205,7 @@ show data 2
  V7       V7                               1:4       ...       ...       ...
        (Time of day)
  V8       V8                               1:4       ...       ...       ...
-       (T12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-ime of day)
+       (Time of day)
  
  
 columns/type="da,-,ti,-,date,-,time,-"  bn_delimited_read_date_time.dat
@@ -35169,7 +35246,11 @@ list V1,V2,V3,V4
  Column  4: V4
               V1     V2               V3              V4
 1   / 1:  12.0000  1.00000 "99,1999-03-01,12:0..."  1.00000
-2   / 2:  12.0000  2.00000 "99,1999-03-02,01:0..."  2.00000
+2   / 2:  12.012/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+000  2.00000 "99,1999-03-02,01:0..."  2.00000
 3   / 3:  12.0000  3.00000 "99x,1999-03-03x,2:..."  3.00000
 4   / 4:  12.0000  4.00000 "99,1999-03-04,03:0..."  4.00000
 ! ---
@@ -35711,6 +35792,7 @@ cancel mode ignore
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn541_bug_fixes
 ! bn541_bug_fixes.jnl
 ! test various fixes that went into version 5.41
@@ -35718,6 +35800,7 @@ GO bn541_bug_fixes
 !
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
  
 ! tics on horiz log axes were wrong; (plot only)
 ! GO bn_reset
@@ -35727,6 +35810,7 @@ cancel mode verify
 !missing vertices in polygon call
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_polymissing
 ! err540_polymissing.jnl
 ! 3/02 *acm*
@@ -35758,6 +35842,7 @@ polygon  xvertex1,yvertex,values
 ! formatting axis label numbers
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_ill_format.jnl
 ! err540_ill_format.jnl
 ! 3/02 *acm*
@@ -35776,6 +35861,7 @@ plot/trans/i=1:100  0.001 - 0.002/ i
 ! variable permutation in netCDF writes
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_write_order
 ! err540_write_order.jnl
 ! *sh* 3/02
@@ -35854,6 +35940,7 @@ sp rm -f test_bad_order.cdf
 !@AVE error when plotting unlike grids together
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_ax_ave
 !err540_ax_ave.jnl
 ! 3/02 *acm
@@ -35870,6 +35957,7 @@ plot/x=140w/y=0/sym/line sst,sst[gt=t2@ave]
 !Make PPL AXSET settings persist, but not settings made w/ qualifiers /AXES= or /NOAXES
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_axset
 !err540_axset.jnl
 ! 3/02 *acm
@@ -35905,6 +35993,7 @@ CAN VIEW
 !Previously couldn't do PLOT/VS/DASH, but no reason not to allow it.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_vs_dash
 ! PLOT/VS/DASH  previously was not allowed.
  
@@ -35948,6 +36037,7 @@ plot/over/thick/dash/color=blue 50*sin(ypts/3)+700, 30*cos(ypts/3)+800, 20*cos(y
 !overlay on polygon plots
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_poly_overlay
 !overlay on polygon plots
  
@@ -35957,6 +36047,7 @@ shade/over/i=1:2/j=0:2/patt i+j
 !polytube failed on plot/over; go polytube, because YAXIS_MIN, _MAX not defined.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_axis_symbols
 ! err540_axis_symbols.jnl
 ! 3/02 *acm*
@@ -35991,6 +36082,7 @@ can view
 !nested repeat loops and parsing parentheses
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_parse_repeat
 ! err540_parse_repeat.jnl
 ! 3/03 *acm
@@ -36036,6 +36128,7 @@ why not
 ! appending a scalar to NetCDF file
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_cd_use_recdim
 ! err540_cd_use_recdim
 ! 3/02 *sh*
@@ -36078,6 +36171,7 @@ sp rm -f profiles.nc
 !missing data in xpts,ypts sample points wasnt checked
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_samplexy_missing
 ! err540_samplexy_missing.jnl
 ! 3/03 *acm
@@ -36110,6 +36204,7 @@ list asst
 ! test the fixed delta stride bug
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_strides_rev.jnl
 ! err540_strides_rev.jnl
  
@@ -36538,6 +36633,7 @@ set mem/size=6.4
 ! unknown data type for clauses with constants only
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_data_type.jnl
 ! err540_data_type
 ! 2/19/02 *sh*
@@ -36570,6 +36666,7 @@ plot IF {1,3,5} GE 3 THEN 1  ! data type unknown
 ! gridding scattered points to modulo axis had bug
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_modscat.jnl
 ! test gridding scattered points to modulo axis.
 ! Show Southern hemisphere.
@@ -36593,6 +36690,7 @@ plot/vs/over xpts[i=1:1000]+360, ypts[i=1:1000]
 ! make sure the USE bug reported 5/01 by A Wittenberg is fixed
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err540_use.jnl
 ! err540_use.jnl
 !
@@ -36681,6 +36779,7 @@ list b[d=1]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_cancel_axes
  
 let ind1 = 1*i
@@ -36692,6 +36791,7 @@ set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 ! longax cancel axis axname
 repeat/k=1:10 go bn_cancel_axes_1.sub
 !-> REPEAT: K=1
@@ -36817,6 +36917,7 @@ can data longax.dat
  
  go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 ! longax cancel axis/all
  
 ! Note: cancel axes/all tested in err541_cancel_axes.jnl
@@ -36827,6 +36928,7 @@ cancel mode verify
 ! test remaining axes are intact when we cancel one.
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 define axis/x ax1={2,4,5,6,9}
 define axis/x ax2={30,60,90,100}
 sh axis/x ax2
@@ -36933,6 +37035,7 @@ T0 = 01-JAN-0000 00:00:00
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn542_bug_fixes
 ! bn542_bug_fixes.jnl
 ! test various fixes that went into version 5.42
@@ -36942,6 +37045,7 @@ GO bn542_bug_fixes
 ! Interior tics disappear on FILL plots
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err541_fill_tics
 ! pplus tics bug - pre 5.42, fill plots overlaid interior tics.
  
@@ -36961,6 +37065,7 @@ cancel view
 ! are used rather than date specifications
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err541_non_gregorian
 !From Andrew Wittenberg, non-Gregorian time axis bug 01 Oct 2002
 ! pre-542, second axis has just one point.
@@ -36993,6 +37098,7 @@ CALENDAR = JULIAN
 ! Could not write or read a NetCDF file with a 4-D string variable.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err541_string4d
  ! Write a 4-D NetCDF file with a string variable.
  
@@ -37094,6 +37200,7 @@ list axy
 ! Cancel axis/all did not check whether axes were in use
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err541_cancel_axes
 ! Check that an axis in use cannot be cancelled.
  
@@ -37623,6 +37730,7 @@ show axis/all
 ! 5/4/05 *acm* Move to bn_ef_err541_date_delim; pulling all jnls that call shared-obj efs out
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 ! GO err541_date_delim
  
  
@@ -37630,6 +37738,7 @@ cancel mode verify
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_subspan_modulo
 ! bn_subspan_modulo.jnl
 ! *sh* 11/02
@@ -38876,6 +38985,7 @@ list $1_strings[i=1013:1024] 	! via IS_MODULO
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_dots
 ! PLOT/SYMBOL=DOT  qualifiers
 ! *acm* 12/02
@@ -38899,6 +39009,7 @@ set mode logo
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_lev_symbols
 ! Test symbols which capture the latest LEVELS settings
 ! LEV_TEXT  The argument, if any, to the LEV qualifier
@@ -38974,10 +39085,12 @@ LEV_DEL = "none"
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 ! GO bench_extrema  ! moved to bn_ef_bench_extrema; tests of shared-obj efs.
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_mode_logo_lab
  
 ! bn_mode_logo_lab.jnl
@@ -39068,6 +39181,7 @@ set mode labels
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_modulo_attribute
 ! Ferret V5.50 m
  
@@ -39132,6 +39246,7 @@ T0 = 01-JAN-0000 00:00:00
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn550_bug_fixes
 ! bn550_bug_fixes.jnl
 ! test various fixes that went into version 5.5
@@ -39141,6 +39256,7 @@ GO bn550_bug_fixes
 ! Polygon/overlay calendar axis bug
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err542_poly_over_calendar
 ! POLY/OVER when data has a non-standard calendar caused
 ! calendar mismatch error, even on a plot with no time axis.
@@ -39154,6 +39270,7 @@ poly/over/color=red/line=2/title="polygon" {220,240,280,250},{-20,70,40,-30}
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn551_bug_fixes
 ! bn551_bug_fixes.jnl
 ! test various fixes that went into version 5.51
@@ -39165,6 +39282,7 @@ GO bn551_bug_fixes
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err550_view_axes_fill.jnl
 ! err550_view_axes_fill.jnl
 ! acm 2/5/03
@@ -39247,6 +39365,7 @@ set win/aspect=0.75
 ! defined as a VIEW/AXES viewport.
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err550_view_axes_position.jnl
 ! err550_view_axes_position.jnl
 ! acm 2/5/03
@@ -39267,6 +39386,7 @@ can view
 ! SHADE bug: hlimits, vlimits without effect
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err550_shade_limits.jnl
 ! err550_shade_limits.jnl
 ! acm 2/5/03
@@ -39283,6 +39403,7 @@ can view
 ! Redefining an axis with a new calendar definition
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err550_redefine_calendar_axis.jnl
 ! err550_redefine_calendar_axis.jnl
 ! different calendar axis not recognized as a different specifier,
@@ -39306,6 +39427,7 @@ CALENDAR = JULIAN
 ! Bug in defining axis from an expression.
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err550_define_axis_expression.jnl
 ! err550_define_axis_expression.jnl
 ! reported by A. Wittenberg.
@@ -39357,6 +39479,7 @@ list x[gx=xax]
 ! Bug in reading seconds from time origin in nc file.
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err550_nc_seconds.jnl
 ! err550_nc_seconds.jnl
 ! 2/12/03 ACM
@@ -39383,6 +39506,7 @@ list t[gt=height]    ! Seconds should be 36, 37, 38...
 ! Bug in plotting polymarker dots with pen numbers gt 6
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err550_dots_thickpens.jnl
 ! err550_dots_thickpens.jnl
 ! For pen code higher than 6, get *  rather than dot.
@@ -39523,6 +39647,7 @@ ppl rlabs,4,0
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn552_bug_fixes
 ! bn552_bug_fixes.jnl
 ! test various fixes that went into version 5.52
@@ -39533,6 +39658,7 @@ GO bn552_bug_fixes
 ! Default behavior (all axes on) was not reset after a plot/set/AXES=
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err551_axes_set.jnl
 ! Default behavior (all axes on) was not reset after a PLOT/SET/AXES=
  
@@ -39554,6 +39680,7 @@ CAN view
 ! test on SHADE and POLYGON plots, and these crashed Ferret.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err551_num_levels.jnl
 ! Test whether too many levels specified. Previous to v552, no
 ! test was made on SHADE and POLYGON plots, and these crashed Ferret.
@@ -39580,6 +39707,7 @@ SET WIN/CLEAR
 ! Check for invalid value of calendar attribute on reading NetCDF files.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err551_invalid_calendar.jnl
 ! check on input for invalid calendar name
 ! If file gives calendar attribute with unrecognized name,
@@ -39597,6 +39725,7 @@ sh data
 ! String bug fixes *kob*
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err551_strings.jnl
  
  
@@ -39666,6 +39795,7 @@ list strcmp("b", mystring)
 ! 2-D @AVE bug fix
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err551_2dave.jnl
 ! Bug in 2-D averaging, if source data thats loaded has a
 ! larger range than the dest data, code didnt check whether
@@ -39695,6 +39825,7 @@ list/l=1/y=20 sst[gx=xax@ave,gy=yax@ave]
 ! RETURN error message, and new var,RETURN=dsettitle  argument
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err551_return_message.jnl
  ! err551_return_message.jnl
  ! 4/15/03 ACM
@@ -39718,6 +39849,7 @@ SET MODE/LAST IGNORE_ERROR
 !  file/form=stream didnt see file in another directory
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err551_streamread_directory.jnl
 ! Bug: file/form=stream doesnt see file in another directory
  
@@ -39747,6 +39879,7 @@ list a
 ! GXY=var  regridding syntax, when the variable hasnt been loaded
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err551_regrid_undef_grid.jnl
 ! err551_regrid_undef_grid.jnl
 ! 5/03 *acm* based on bn_regrid_to_user; more testing of multi-axis GXY=var
@@ -39884,6 +40017,7 @@ list dzdt_anom
 ! Symbol substituted on each repetition of REPEAT
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err551_repeat_sym.jnl
  
 ! This had worked, but stopped working in v541
@@ -39911,6 +40045,7 @@ def sym a 0; rep/i=1:3:1 (def sym a `i`; say ($a))
 ! another time axis, some times have missing data
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err551_modulo_nc_regrid.jnl
 ! data from nc file with time axis having modulo=value, when regridded
 ! to another time axis, some times have missing data
@@ -39974,6 +40109,7 @@ list/l=23:27 vwnd_clim[gt=vwnd[d=1]]
 ! FFT frequency axis not computed accurately enough.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err551_fft_freqaxis.jnl
  
 DEFINE AXIS/t=1:4998:1 dayt
@@ -40001,6 +40137,7 @@ list `tpts,return=lend`
 ! No error message on request for time on bad time axis
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO err551_no_taxis_errmsg.jnl
 ! The time axis is bad, having repeated values, so an abstract axis is
 ! used by Ferret and the list/t=time should result in an error.
@@ -40014,6 +40151,7 @@ SET MODE/LAST IGNORE_ERROR
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_set_var_scale_off.jnl
 ! Qualifiers /SCALEFACTOR=  and /OFFSET  for SET VARIABLE.
 ! Only for NetCDF datasets
@@ -40062,6 +40200,7 @@ SET MODE/LAST IGNORE_ERROR
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_longvarnames.jnl
 ! variable names up to 128 characters long
 ! 3/2006 make them 127 to be able to add the null terminator for C strings
@@ -40110,6 +40249,7 @@ SHOW GRID
 ! save to a file a variable that is 128 long
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
  
 LET a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L234567 = {12,14,20,28,22,10}
 SAVE/CLOBBER/FILE=longvname.nc a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L234567
@@ -40117,6 +40257,7 @@ SAVE/CLOBBER/FILE=longvname.nc a234567890b234567890c234567890d234567890e23456789
 ! read from the file
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 USE longvname
 LIST a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L234567
              VARIABLE : {12,14,20,28,22,10}
@@ -40132,11 +40273,13 @@ LIST a234567890b234567890c234567890d234567890e234567890f234567890g234567890h2345
 ! save a 4-D variable
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 LET a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L234567 = I[I=1:5] * J[J=1:4] * K[K=1:3] + L[L=1:3]
 SAVE/CLOBBER/FILE=longvname.nc a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L234567
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 USE longvname.nc
 lIST/I=1/J=2 a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L234567
              VARIABLE : I[I=1:5] * J[J=1:4] * K[K=1:3] + L[L=1:3]
@@ -40164,6 +40307,7 @@ LIST/K=2/L=3 a234567890b234567890c234567890d234567890e234567890f234567890g234567
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_shakey.jnl
 ! Changes to shade key:
 ! - Default size is a little bigger
@@ -40294,6 +40438,7 @@ can view
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_eof_4d.jnl
  
 ! dataset with 4 dimensions; compute EOF at each vertical level.
@@ -40501,6 +40646,7 @@ list/nohead/i=1:5/j=3/k=9 eofst
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_abstract_axis_names.jnl
 ! bn_abstract_axis_names.jnl
 ! acm 6/12/03
@@ -40687,6 +40833,7 @@ can data 1
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_many_polygons.jnl
 ! testing large number of polygons in a plot.  Map plot has
 ! 130501 polygons; previously we had an upper limit of 100K polygons
@@ -40718,10 +40865,12 @@ polygon xtriangle+xpts, ytriangle+ypts, i[i=1:10]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 ! GO bn_zaxr_fcns.jnl ! move to tests of shared-obj efs.
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_fill_irregular.jnl
 ! FILL on vars with irregular axes
  
@@ -40747,6 +40896,7 @@ fill/x=180 sst
 ! ******** V5.53 Additions below ***********
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_xml_output.jnl
 !bn_xml_output.jnl
 ! new-V553 output in XML-style format
@@ -41196,6 +41346,7 @@ SHOW VAR/XML
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_test_nan.jnl
 !bn_test_nan.jnl
 ! test to make sure that NaN is able to be set by user
@@ -41275,6 +41426,7 @@ can var/all
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn553_bug_fixes.jnl
 ! bn553_bug_fixes.jnl
 ! test various fixes that went into version 5.52
@@ -41284,6 +41436,7 @@ GO bn553_bug_fixes.jnl
 ! Make sure numeric filenames works
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_numeric_filename.jnl
 ! err553_numeric_filename.jnl
 ! 9/03 kob
@@ -41319,6 +41472,7 @@ list vwnd_clim
 ! Make sure long string variables work
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_long_string_var_name.jnl
 ! err553_long_string_var_name.jnl
 ! 9/03 kob
@@ -41342,6 +41496,7 @@ list a
 ! Fixes for colorbar key labelling
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err551_colorkey.jnl
  
 ! colorkey label bugs
@@ -41366,6 +41521,7 @@ ppl shade
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_graticules.jnl
 ! /GRAT, /HGRAT and /VGRAT to set graticule lines
 ! ACM March 12, 2004
@@ -41473,6 +41629,7 @@ can mode graticule
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_repeat_range.jnl
 ! REPEAT/RANGE=[/NAME=]  for looping without depending
 ! on the grid\
@@ -41973,6 +42130,7 @@ cancel mode ignore
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn554_bug_fixes.jnl
 ! bn554_bug_fixes.jnl
 ! test various fixes that went into version 5.54
@@ -41982,6 +42140,7 @@ GO bn554_bug_fixes.jnl
 ! Test use of longer strings in region names
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_regionname_lengths.jnl
 ! In v5.50, we upped the region name storage to
 ! allow 24-characters.  Wasnt fully implemented.
@@ -42028,6 +42187,7 @@ SET MODE/LAST IGNORE_ERRORS
 ! Reqests for data at times outside range of data
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_timeregion.jnl
 ! try to apply a region whose limits are both below,
 ! or both above, the data bounds. In v5.53 the error
@@ -42046,6 +42206,7 @@ SET MODE/LAST IGNORE_ERRORS
 ! Contour plot on fine grid has precision problems
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_contour_fine_grid.jnl
 ! err553_contour_find_grid.jnl
 ! 11/21/03 ACM
@@ -42081,6 +42242,7 @@ PPLUS/RESET   ! reset aspect ratio
 ! PLOT/SYM/SIZE= did not change the size
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_symsize.jnl
 ! PLOT/SYM/SIZE= does not change the size from the default.
 ! acm 11/03
@@ -42091,6 +42253,7 @@ plot/over/i=1:10/sym=20/siz=0.2 i
 ! test labels on shade keys; consistent number of digits set by 5th shakey arg
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_shakey_labels.jnl
 ! The 5th argument to shakey is supposed to define
 ! number of digits in the label.
@@ -42107,6 +42270,7 @@ ppl shade
 ! couldnt set the number of small tics with arg to %xaxis, %yaxis commands
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_xaxis_nsmtc.jnl
 ! Bug: 5th argument failed to set the number of small
 ! tics for the axis.
@@ -42123,6 +42287,7 @@ ppl %yaxis/nouser 1,100,10,2,6
 ! vs DEFINE AXIS/UNIT=yr
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_year_yr.jnl
 ! err553_year_yr.jnl
 ! 2/2004 ACM
@@ -42314,6 +42479,7 @@ can mode ignore
 ! strides, Ferret did a regridding instead.  Test the fix for this
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_stride_def_grid.jnl
  
 use gtsa056_2.cdf
@@ -43038,6 +43204,7 @@ canc data/all
 ! DEFINE AXIS can get the axis too long (bug 673)
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_axis_too_long.jnl
 ! From Ned Cokelet
 ! First definition of axis had last grid cell completely
@@ -43068,6 +43235,7 @@ LIST X[GX=x_ax], XBOXLO[GX=x_ax], XBOXHI[GX=x_ax]
 ! non-centered shade key
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_lev_c.jnl
  ! under linux only, this has a non-centered shade key
  
@@ -43097,6 +43265,7 @@ ppl list shakey
 ! At lon = 0, we used to have an E; remove this.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_lon_ax_0_label.jnl
 ! Label longitude axes with the degree sign only
 ! at x=0 (previously had an E).
@@ -43110,6 +43279,7 @@ shade/x=-20:20/y=-40:40/L=1 sst
 ! Errors listing string and numeric data together
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_list_string_numeric.jnl
 ! err553_list_string_numeric.jnl
 ! 2/2004 ACM
@@ -43205,6 +43375,7 @@ list/i=3:4/l=1:2 b, c, v
 ! Bug in setting axis to depth when reading from nc file
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_set_axis_depth.jnl
  ! NOAA/PMEL TMAP
  ! FERRET v5.53
@@ -43224,6 +43395,7 @@ q
 ! Set symbols showing levels settings when poly command is called
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_symbol_lev.jnl
 ! err553_symbol_lev.jnl
 ! 2/2004 ACM
@@ -43281,6 +43453,7 @@ can sym lev*
 ! Fixes for modulo striding bugs
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_stride_modulo.jnl
 ! err553_stride_modulo_neg.jnl
 ! *acm* 3/31/2004
@@ -43383,6 +43556,7 @@ can mem; list/y=0 var[i=68]
 ! Fixes bug creating format for listing a very long line
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err553_list_width.jnl
 ! err553_list_width.jnl
 ! *acm* 4/1/2004
@@ -43414,6 +43588,7 @@ can mode ignore
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_bounds.jnl
  
 ! bn_bounds.jnl
@@ -43760,6 +43935,7 @@ sh axis/t tax
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_all_leap.jnl
 ! bn_all_leap.jnl
 ! ACM 6/2004
@@ -43813,6 +43989,7 @@ can mode ignore
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_reset_attributes.jnl
 ! bn_reset_attributes.jnl
 ! acm 6/14/2004
@@ -44161,6 +44338,7 @@ list x[gx=xax]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn570_bug_fixes.jnl
 ! bn554_bug_fixes.jnl
 ! test various fixes that went into version 5.70
@@ -44170,6 +44348,7 @@ GO bn570_bug_fixes.jnl
 ! Test use of automatic levels in SHADE
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err560_shade_levels.jnl
 ! err560_shade_levels.jnl  *acm* 4/28/04
 ! Missing levels on SHADE auto-level
@@ -44186,6 +44365,7 @@ can view
 ! Test use of reading irregular-time mc datasets
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err560_mc_irreg_t.jnl
 ! err560_mc_irreg_t.jnl
 ! 4/2004  ACM
@@ -44222,6 +44402,7 @@ list/x=180/y=0/t=2000 sst
 ! Crashed on SHADE of variable with NOLEAP axis, and subregion.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err560_shade_noleap.jnl
 ! err560_shade_noleap.jnl
 ! 4/30/04 ACM
@@ -44239,6 +44420,7 @@ shade/t=4-jan-2000:10-nov-2000 a
 ! -111, was treated as missing rather than a valid index.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err560_regridding_gaps.jnl
 ! err560_regrid
 !
@@ -44364,6 +44546,7 @@ sp rm xlongshift.nc
 ! bug in drawing the time axis.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err560_leap_years.jnl
 ! err560_leap_years.jnl
 ! Fixes for bug 882, inconsistency in computing whether
@@ -44382,6 +44565,7 @@ plot v[gt=tax@asn]
 ! Century portion of years were not properly tested in numdm1.F
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err560_century
 ! err560_century.jnl.jnl  *acm* 4/28/04
 ! Century portion of years were not properly tested in numdm1.F
@@ -44405,6 +44589,7 @@ plot t[gt=tt]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_modstats.jnl
 ! bn_modstats.jnl
 ! acm 8/25/04
@@ -44557,6 +44742,7 @@ list var[gt=month_reg@modngd]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_mc_vary_scale.jnl
 ! bn_mc_vary_scale.jnl
 !   Allow stepfiles to have different internal scale and offset.
@@ -44638,6 +44824,7 @@ I / *:     2.00000 -0.0200000
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_plot_nokey.jnl
 ! bn_plot_nokey.jnl (bug 1089)
 ! 22-nov-2004
@@ -44660,6 +44847,7 @@ PLOT/OVER/NOKEY/X=180/Y=1/K=1 temp
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn580_bug_fixes.jnl
 ! bn580_bug_fixes.jnl
 ! test various fixes that went into version 5.80
@@ -44669,6 +44857,7 @@ GO bn580_bug_fixes.jnl
 ! POLYGON (or SHADE) plots with a single level had no fill color
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_singlecolor.jnl
 ! err570_singlecolor.jnl
 ! 7/6/2004
@@ -44712,6 +44901,7 @@ poly/lev=2 {0,1,2},{1,2,1},a ! OR lev=1
 ! colorbar labels too close to the bar, when user sets bar location
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_shakeylab.jnl
  
 ! err570_shakeylab.jnl
@@ -44770,6 +44960,7 @@ ppl shade
 ! Null input gives wierd error message
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_null_symbol.jnl
 ! err570_null_symbol.jnl
 ! null input -- > wierd error message see bug 919
@@ -44787,6 +44978,7 @@ can mode ignore
 ! Replace text expression with its value: string variable was too short
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_parse_labelcommand.jnl
 ! err570_parse_labelcommand.jnl
 ! fix for bug 956.
@@ -44817,6 +45009,7 @@ label/nouser 3.6,`($ppl$ylen)+0.2`,0,0,0.08, `tsulab`
 ! result of COMPRESSK_BY function does not vary in X
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_compressk_by.jnl
 ! err570_compress_by.jnl
 ! fix for bug 925
@@ -44910,6 +45103,7 @@ list tlev[k=1]
 ! Command parsing on PPL side had string lengths too short
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_long_label.jnl
 ! err570_long_label.jnl
 ! Fix for bug 956
@@ -44960,6 +45154,7 @@ set mode/last verify
 ! Allow PPL POLYGON after a POLY/SET (previously was PPL FILLPOL)
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_ppl_poly.jnl
 ! err570_ppl_poly.jnl
  
@@ -44982,6 +45177,7 @@ ppl polygon
 ! Fix formatting of coordinates on LIST/FORMAT=tab or /FORMAT=comma
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_list_tab_coords.jnl
 ! err570_list_tab_coords.jnl
 ! acm 9/7/04
@@ -45025,6 +45221,7 @@ coordinates,100E     ,100E     ,100.1E   ,100.1E
 ! Fix bug in HASH_CX for large numbers of varibles
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_many_variables.jnl
 ! err570_many_variables.jnl
 ! 27-sep-2004  ACM
@@ -45267,7 +45464,76 @@ let lstr2 = STRLEN("($alist)")
 let str3a = STRLEN("($source_list)")
  !-> DEFINE VARIABLE str3a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
 list str3a
-             VARIABLE : STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.7             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+             VARIABLE : STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.7
+          247.000
+ 
+!let a = 12; list a
+ 
+LET STR3 = STRLEN("abcd")
+list str3
+             VARIABLE : STRLEN("abcd")
+          4.00000
+ 
+let str4a = STRLEN("($source_list)")
+ !-> DEFINE VARIABLE str4a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
+ 
+list str4a
+             VARIABLE : STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.7
+          247.000
+ 
+ 
+! Fix bug in @CNNN within multi-line labels
+GO bn_reset
+cancel mode verify
+SESSION_DATE = "         "
+GO err570_cnnn_multiline.jnl
+! Changing pen with @Cnnn did not work in
+! multi-line labels
+ 
+plot/hl=0:1/vl=0:1/vs 0,0
+label 0.2, 0.7, 0, 0, 0.2, "@p2This<NL>@P3works<NL>@p4fine."
+label 0.5, 0.7, 0, 0, 0.2, "@C002this<NL>@c003does<NL>@C004not."
+label 0.8, 0.7, 0, 0, 0.2, "@C002this<NL>does<NL>not @C004either."
+ 
+label 0.1, 0.3, 0, 0, 0.2, "greek<NL>@SGt@SR_y<NL<NL>works"
+ 
+! For a very fine grid, coordinates not listed with enough precision.
+GO bn_reset
+cancel mode verify
+SESSION_DATE = "         "
+GO err570_fine_grid_list.jnl
+! err570_fine_grid_list.jnl
+! ACM 10/2004
+! ACM  6/2007 CANCEL LIST/PREC at the end to restore the default state.
+ 
+! For a very fine grid in longitude and latitude, the coordinates
+! are not listed with enough precision to resolve them.
+ 
+ 
+let hlon= {204.89923, 204.89975, 204.90025, 204.90076, 204.90126}
+let hlat = { 19.70020, 19.70071, 19.70122, 19.70173, 19.70223, 19.70274}
+ 
+def axis/x/units=lon xfine = hlon
+def axis/y/units=lat yfine = hlat
+ 
+let myvar = x[gx=xfine] + y[gy=yfine]
+ 
+set list/prec=8
+list/form=tab myvar
+             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+             BAD FLAG : -9.9999998E+33
+             SUBSET   : 5 by 6 points (LONGITUDE-LATITUDE)
+coordinates	155.1W   	155.1W   	155.1W   	155.1W   	155.1W   
+19.7N	224.59943	224.59995	224.60045	224.60095	224.60146
+19.7N	224.59995	224.60046	224.60097	224.60147	224.60197
+19.7N	224.60045	224.60097	224.60147	224.60197	224.60248
+19.7N	224.60097	224.60149	224.60199	224.6025	224.603
+19.7N	224.60146	224.60197	224.60248	224.60298	224.60349
+19.7N	224.60197	224.6025	224.603	224.6035	224.604
+ 
+set list/prec=8
+list/form=comma myvar
+             VARIABLE : X[GX=XFINE] + Y[GY=YFIN             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
              GEOMETRY: XY 
@@ -45318,74 +45584,7 @@ DATA:
 224.60300
 224.60350
 224.60400
-6*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.7
-          247.000
- 
-!let a = 12; list a
- 
-LET STR3 = STRLEN("abcd")
-list str3
-             VARIABLE : STRLEN("abcd")
-          4.00000
- 
-let str4a = STRLEN("($source_list)")
- !-> DEFINE VARIABLE str4a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
- 
-list str4a
-             VARIABLE : STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.7
-          247.000
- 
- 
-! Fix bug in @CNNN within multi-line labels
-GO bn_reset
-cancel mode verify
-GO err570_cnnn_multiline.jnl
-! Changing pen with @Cnnn did not work in
-! multi-line labels
- 
-plot/hl=0:1/vl=0:1/vs 0,0
-label 0.2, 0.7, 0, 0, 0.2, "@p2This<NL>@P3works<NL>@p4fine."
-label 0.5, 0.7, 0, 0, 0.2, "@C002this<NL>@c003does<NL>@C004not."
-label 0.8, 0.7, 0, 0, 0.2, "@C002this<NL>does<NL>not @C004either."
- 
-label 0.1, 0.3, 0, 0, 0.2, "greek<NL>@SGt@SR_y<NL<NL>works"
- 
-! For a very fine grid, coordinates not listed with enough precision.
-GO bn_reset
-cancel mode verify
-GO err570_fine_grid_list.jnl
-! err570_fine_grid_list.jnl
-! ACM 10/2004
-! ACM  6/2007 CANCEL LIST/PREC at the end to restore the default state.
- 
-! For a very fine grid in longitude and latitude, the coordinates
-! are not listed with enough precision to resolve them.
- 
- 
-let hlon= {204.89923, 204.89975, 204.90025, 204.90076, 204.90126}
-let hlat = { 19.70020, 19.70071, 19.70122, 19.70173, 19.70223, 19.70274}
- 
-def axis/x/units=lon xfine = hlon
-def axis/y/units=lat yfine = hlat
- 
-let myvar = x[gx=xfine] + y[gy=yfine]
- 
-set list/prec=8
-list/form=tab myvar
-             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
-             BAD FLAG : -9.9999998E+33
-             SUBSET   : 5 by 6 points (LONGITUDE-LATITUDE)
-coordinates	155.1W   	155.1W   	155.1W   	155.1W   	155.1W   
-19.7N	224.59943	224.59995	224.60045	224.60095	224.60146
-19.7N	224.59995	224.60046	224.60097	224.60147	224.60197
-19.7N	224.60045	224.60097	224.60147	224.60197	224.60248
-19.7N	224.60097	224.60149	224.60199	224.6025	224.603
-19.7N	224.60146	224.60197	224.60248	224.60298	224.60349
-19.7N	224.60197	224.6025	224.603	224.6035	224.604
- 
-set list/prec=8
-list/form=comma myvar
-             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+E]
              BAD FLAG : -9.9999998E+33
              SUBSET   : 5 by 6 points (LONGITUDE-LATITUDE)
 coordinates,155.1W   ,155.1W   ,155.1W   ,155.1W   ,155.1W   
@@ -45406,6 +45605,7 @@ cancel list/precision
 ! Plot using /HLIM
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_hlimit_onepoint
 !err570_hlimit_onepoint.jnl
 ! 15-Oct-2004  ACM
@@ -45428,6 +45628,7 @@ set mode/last ignore_error
 ! caused a segfault.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_index111.jnl
 ! err570_index111.jnl
 ! 3-nov-04 ACM
@@ -45474,6 +45675,7 @@ LIST/T=1-jan-1997:1-jan-1998 s2[GT=s1@NRST]
 ! crashed on trying to format value for the output buffer.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_sh_dat_nan.jnl
 ! err570_sh_dat_nan.jnl
 ! 4-Nov-2004 acm
@@ -45499,6 +45701,7 @@ show data/full
 ! Time reqest out of range on NOLEAP axes.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_time_range.jnl
 ! err570_time_range.jnl  bug1080
 ! time request out of range with calendar axis and RETURN=
@@ -45523,6 +45726,7 @@ set var/units="`a[gx=var1_grid_,gy=var1_grid_,d=2,t="16-Jan-1861 12:00:00"],retu
 ! a non-standard calendar axis
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_poly_over_julian.jnl
 ! err570_poly_over_julian.jnl
 ! ACM 11/12/04
@@ -45545,6 +45749,7 @@ poly/ov/pal=green {400,900,900,400}, {25.5,25.5,26.5,25.5}
 ! string substitution returns the user-given error message
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_coaching hello
 ! err570_coaching.jnl
 ! ACM 11/12/04  Bug 1077
@@ -45589,6 +45794,7 @@ set mode/last ignore_errors
 ! name of the script
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_dollar_zero.jnl
 ! err570_dollar_zero.jnl
 ! (bug 485) Got a command syntax error;
@@ -45604,6 +45810,7 @@ SET MODE/LAST ignore_error
 ! Fix for bug 596; list/i=0:300:0 var crashed Ferret
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_illegal_stride.jnl
 ! err570_illegal_stride.jnl
 ! (bug 596) list/i=0:300:0 var crashed Ferret
@@ -45617,6 +45824,7 @@ SET MODE/LAST ignore_error
 ! Fix for bug 1085; /THICK without color specifier caused all lines to revert to black
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_thick_colors.jnl
 ! err570_thick_colors.jnl  bug1085
 ! /THICK without color specifier causes all lines to revert to black
@@ -45642,6 +45850,7 @@ PLOT/OVER/VS/LINE/THICK=1/I=1:314 i*cos(i/14), i*sin(i/14)
 ! starts with a digit.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_digit_filename.jnl
 ! err570_digit_filename.jnl
 ! Bug 1102: under linux, var[d=filename] fails if filename
@@ -45707,6 +45916,7 @@ list a[i=1:4,d=10a.nc]
 ! Fix for bug 1098: DODS URL label was cut off
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_dods_url_label.jnl
 ! err570_dods_url_label.jnl
 !
@@ -45745,7 +45955,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASJun 19 2008 14:53:22
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASAug  4 2008 17:21:04
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 179.9E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -45764,6 +45974,7 @@ ppl list labels
 ! Fix for bug 906: auto-formatting of labels on color keys loses precision
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_keylabels.jnl
 ! err570_keylabels.jnl
 ! 11/2004
@@ -45779,6 +45990,7 @@ shade/lev=(370,382,0.5) a
 ! where polygon arguments have latitude or longitude units
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err570_poly_lonlat_axis.jnl
 ! err570_poly_lonlat_axis.jnl
 ! 12/14/04
@@ -45805,6 +46017,7 @@ PLOT/VS XT, YT
 ! ******** V5.81 Additions below ***********
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_inf_levels.jnl
 ! Run FERRET/fer/ferretdods_gui
 ! test open upper and lower levels (-INF) (INF)
@@ -45899,6 +46112,7 @@ go polymark poly/key/title="polygons"/lev=(-inf)(4,26,1)(inf), lon, lat, xsequen
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_regulart.jnl
 ! bn_regulart.jnl
 ! 5/12/2005 ACM
@@ -45946,6 +46160,7 @@ list/l=1:6 t[gt=tcoads], tbox[gt=tcoads]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_labwid.jnl
 ! LABWID returns the length in Denbo inches of the
 ! string.  For multi-line strings, returns length of
@@ -46001,6 +46216,7 @@ label/nouser `wid`, 3, -1, 0, .15,  "@P4@IIMulti-line<NL>Length is longest of AL
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_redefine_taxis_mc.jnl
 ! bn_redefine_taxis_mc.jnl
 ! ACM 15-Apr-2005
@@ -46067,6 +46283,7 @@ list/x=180/y=0 sst
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_illegal_axisname.jnl
 ! Some OPenDAP HDF files have illegal axis names, e.g. with a dot in the name.
 ! This is a test of using such names, in a redefinition of the axes of the data.
@@ -46123,6 +46340,7 @@ can view
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_exit_script.jnl
 ! bn_exit_script.jnl
 ! 5/2005 ACM
@@ -46212,6 +46430,7 @@ loop
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_exit_cycle.jnl
 ! bn_exit_cycle.jnl
 ! 5/2005 ACM
@@ -46243,6 +46462,7 @@ loop finished 16384 gt 10000
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_curv_mod.jnl
 ! bn_curv_mod
 ! Test of fill/mod and contour/mod
@@ -46264,6 +46484,7 @@ contour/over/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_shade_keycont.jnl
 ! Continuous shade key
 ! test setting it and whether default is restored on next command.
@@ -46362,6 +46583,7 @@ can view
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn581_bug_fixes.jnl
 ! bn581_bug_fixes.jnl
 ! test various fixes that went into version 5.81
@@ -46371,6 +46593,7 @@ GO bn581_bug_fixes.jnl
 ! Bug 1160 short axis with irreg bounds seen as regular.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_irreg_bounds.jnl
 ! err580_irreg_bounds.jnl
 ! Define a short irregular time axis with some time_bounds,
@@ -46417,6 +46640,7 @@ yes? show grid/t a
 ! Bug 1179 Cartesian_axis and positive="down" resulted in depth axis not being recognized
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_cartesian_depth.jnl
  ! err580_cartesian_depth.jnl
 ! cartesian_axis attribute
@@ -46436,6 +46660,7 @@ sh grid temp
 ! Bug 1181 Titles were truncated at 80 characters
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_long_title.jnl
  
  ! err580_long_title.jnl
@@ -46449,6 +46674,7 @@ sp ncdump longtitle.nc >> all_ncdump.out
 ! Bug 1180 Allow "use filename.des"
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_use_des.jnl
 ! err580_use_des.jnl
 ! Allow "use filename.des"   (previously gave an "is this a CDF file?" error)
@@ -46465,6 +46691,7 @@ sh data
 ! Bug 1180 Allow "use filename.des"
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_use_des.jnl
 ! err580_use_des.jnl
 ! Allow "use filename.des"   (previously gave an "is this a CDF file?" error)
@@ -46480,6 +46707,7 @@ sh data
 ! fix for bug 1181: dataset title was limited to 80 characters.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_long_dsettitle.jnl
 ! err580_long_dsettitle
 ! fix for bug 1181
@@ -46502,6 +46730,7 @@ sp ncdump longtitle.nc >> all_ncdump.out
 ! fix for bug 1200:crash due to the long veckey format spec.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_long_veckey.jnl
 ! err580_long_veckey.jnl
 ! Bug 1200 The following caused a crash due to the long veckey format spec.
@@ -46514,6 +46743,7 @@ ppl vector
 ! fix for bug 1201: mistranslation of time region.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_cal360_region.jnl
 ! err580_cal360_region.jnl
 ! Wrong output region: the set region mistakenly tranlated
@@ -46533,6 +46763,7 @@ default region:
 ! fix for bug 1203: crash if time range left off.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_def_tax_norange.jnl
 ! err580_def_t_norange.jnl
 ! bug 1203. without the T range, these statements cause a STOP.
@@ -46545,6 +46776,7 @@ DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/T/CALENDAR=noleap myt
 ! fix for bug 1207: closest distance and closest index transformations.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_cdb.jnl
 ! err580_cdb.jnl
 ! bug 1207
@@ -46588,6 +46820,7 @@ list var[i=5@cia:10]
 ! fix for bug 1214: crash on repeating a SET VIEW when viewport defined with /AXES
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_def_view_axes.jnl
 ! err580_def_view_axes.jnl
 ! BUG 1214
@@ -46629,6 +46862,7 @@ sp rm -f viewaxes.plt*
 ! fix for bug 1205: symbol LEV_DEL wrong when single level specified
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_lev_del.jnl
 ! err580_lev_del.jnl
 ! demonstrates bug 1205; precision of LEV_DEL when single level specified.
@@ -46648,6 +46882,7 @@ LEV_DEL = "0.4"
 ! Fix for bug 1174: strfloat_c("nonsense") gave result of 0 rather than missing.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_strfloat_errors.jnl
 ! err580_strfloat_errors.jnl
 ! Previously a nonsense input gave a result of 0.
@@ -46669,6 +46904,7 @@ list/prec=6 strfloat(b)
 ! Fixes for bugs 1249, 1250: uppercase not recognized for qualifier argument
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_arg_case.jnl
 ! err580_arg_case.jnl
 ! 5/2005
@@ -46688,6 +46924,7 @@ plot/step=CONN/i=1:10 sin(i)
 ! Fixes for bugs 1019: kludge for CDC time axes made time origin incorrect on outputs
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_cdc_timeaxis.jnl
 ! err580_cdc_timeaxis.jnl
 ! 6/3/05
@@ -46737,6 +46974,7 @@ sp rm -f my_cdc_timeaxis.nc
 ! Fix for bug 1272: show axis/t= with NOLEAP calendar
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err580_show_axis_t.jnl
 ! err580_show_axis_t
 ! bug 1272: wrong range shown when nonstd calendar
@@ -46783,6 +47021,7 @@ T0 = 15-JAN-1901
 ! Fix for bug 1279 which was only in the first iteration of v5.81 release
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_nlev.jnl
 ! err580_nlev.jnl
 ! bug 1279
@@ -46797,6 +47036,7 @@ fill/lev=30 sst[l=2]
 ! acm 8/29/2005
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_vs_poly_axis.jnl
 ! err581_vs_poly_axis.jnl
 ! Test fix of bug 1349: formatted axis labels on PLOT/VS and POLYGON plot
@@ -46827,6 +47067,7 @@ POLYGON/LINE/fill xp, yp, ypts
 ! ******** V6.00 Additions below ***********
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_tab_comma_multivar.jnl
 ! bn_tab_comma_multivar.jnl
 !
@@ -46872,6 +47113,7 @@ COUNTRY	ID	AA	BB	NEWCOUNTRY	THE_DATA_VAR
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_element_functions.jnl
  ! NOAA/PMEL TMAP
  ! FERRET v5.81
@@ -46963,6 +47205,7 @@ list element_index_str (axy[k=1:2,j=1:2], {"a10", "a2", "d4", "c5"})
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_long_revision_num.jnl
 ! bn_long_revision_num.jnl
 ! ACM 8/30/05
@@ -47097,6 +47340,7 @@ sho command
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_window_title.jnl
 ! bn_window_title.jnl
 ! Define a title for windows rather than just FERRET_1, FERRET_2, ...
@@ -47109,7 +47353,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "19-Jun-08:14:52"
+WIN_TITLE = "4-Aug-08:17:20"
  
 set win/title="set the title"
 sho sym win_title
@@ -47134,6 +47378,7 @@ WIN_TITLE = "_________:"
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_last_error.jnl
 ! bn_last_error.jnl
 ! acm Nov 2005
@@ -47189,6 +47434,7 @@ FER_LAST_ERROR = "**ERROR: error in external function. Bailing out of external f
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_deg_min.jnl
 ! bn_deg_min.jnl
 ! label axes with degrees and minutes rather than degrees and decimal degrees.
@@ -47226,6 +47472,7 @@ ppl axlint,2,2
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_dp_readscale.jnl
 ! bn_dp_readscale.jnl
 ! 9-Feb-2006 ACM
@@ -47305,6 +47552,7 @@ cancel list/precision
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_bounds_defineax.jnl
 ! bn_bounds_defineax.jnl
 ! 3/22/2006
@@ -47510,6 +47758,7 @@ list zboxlo[gz=zax2], z[gz=zax2], zboxhi[gz=zax2]
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 go bn_attributes.jnl
 ! bn_attributes
 ! test attribute handling on netcdf intput/output and
@@ -47852,6 +48101,7 @@ can mode ignore
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! attributes of string variables
@@ -47867,6 +48117,7 @@ sp ncdump a.nc >> all_ncdump.out
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! Demonstrate `var,return=` output for attributes
@@ -47911,6 +48162,7 @@ say `broiled.acf,return=size`
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! define variables to contain attribute value(s)
@@ -47942,6 +48194,7 @@ list s
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! Variables containing number of variables, attributes, dimensions,
@@ -48143,6 +48396,7 @@ let anames = `names[i=2]`.attnames
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
  
 !-----
@@ -48182,6 +48436,7 @@ say `(yax_lev94).nattrs[d=1]`
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! more on access to attribute names and values as variables
@@ -48316,6 +48571,7 @@ list a[i=1]
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! keyword . to refer to global properties and attributes
@@ -48442,6 +48698,7 @@ list/d=2 pp
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! Editing attributes: add new attributes to a variable.
@@ -48494,6 +48751,7 @@ sh att/all temp[d=1]
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! Edit existing attributes on variables
@@ -48662,6 +48920,7 @@ can view
 can mode ignore
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! Edit attributes: inherit all attrs from another variable
@@ -48737,6 +48996,7 @@ sh att/all temp2
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! Edit attributes, changing type
@@ -48825,6 +49085,7 @@ list pq
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 ! When we CANCEL MODE upcase_output, writing a netcdf file preserves
 ! case of variable and axis names. This file has lower case and some
@@ -48846,6 +49107,7 @@ set mode/last upcase_output
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
  
@@ -48893,6 +49155,7 @@ sp ncdump -c a.nc >> all_ncdump.out
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
  
 !-----
@@ -48956,6 +49219,7 @@ sp ncdump -h a.nc >> all_ncdump.out
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! Read EZ ascii, delimited, and stream data files,
@@ -49025,6 +49289,7 @@ sh att/all num
  NUM.new = a string attribute 
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! manipulate attributes of user-defined variables
@@ -49077,6 +49342,7 @@ sp ncdump -h a.nc >> all_ncdump.out
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
  
@@ -49097,6 +49363,7 @@ sp ncdump a.nc  >> all_ncdump.out
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! Set type of data on output, uses netcdf call to output
@@ -49164,6 +49431,7 @@ can data test0
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 !-----
 ! More tests of user-defined variables. Bug 1427, now fixed, problem with varid of user vars
@@ -49237,6 +49505,7 @@ set var/outtype=garbage broiled
 can mode ignore
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
  
 !---!!!---
@@ -49283,6 +49552,7 @@ save/file=a.nc/clobber/L=1 t2
 sp ncdump -h a.nc >> all_ncdump.out
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 ! User-defined axes and variables
 show axis/all
@@ -49457,6 +49727,7 @@ sh att/all (x2ax)
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 use levitus_climatology
 define att/out (`temp,return=xaxis`).new_att = "something"
@@ -49497,6 +49768,7 @@ save/file=a.nc/clobber/y=0:5 two
 sp ncdump -h a.nc >> all_ncdump.out
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
  
 ! defining more axes with attributes
  
@@ -49530,6 +49802,7 @@ sp ncdump -h string4d.nc >> all_ncdump.out
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 ! For SET ATT timeaxis.units or SET ATT timeaxis.time_origin
 ! include the correct time origin as part of the units attribute.
  
@@ -49645,6 +49918,7 @@ list sst2.attnames
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 go bn_transforms.jnl
 ! Test the transforms
  
@@ -49852,6 +50126,7 @@ list/L=1/y=11:23/x=93w sst, sst[y=@shn] , sst[y=@spz], sst[y=@sum], sst[y=@swl],
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 go bn_linecolors.jnl
 ! bn_linecolors.jnl
 ! 5/2006 ACM
@@ -49900,6 +50175,7 @@ set win/new
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 go bn_cdf_errmsg.jnl
 ! bn_cdf_errmsg.jnl
 ! ACM 7/13/2006
@@ -49939,6 +50215,7 @@ set mode/last ignore
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn600_bug_fixes.jnl
 ! bn600_bug_fixes.jnl
 ! test various fixes that went into version 6.00
@@ -49948,6 +50225,7 @@ GO bn600_bug_fixes.jnl
 ! Bug 1129 axis formatting when /HLIM sets axis length < 0.15 deg
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_hlim_axislab.jnl
 ! err581_hlim_axislab.jn
 ! bug 1129
@@ -49982,6 +50260,7 @@ ppl list xaxis
 ! Bug 1275 stray characters appear in data lines listing string data
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_list_stray_chars.jnl
 ! err581_list_stray_chars.jnl
 ! 8/2005 (acm) bug 1275  stray characters in data listing
@@ -50019,6 +50298,7 @@ list/i=1:5 id, country, type
 ! pattern matching for SHO FUNC failed to match all EF's
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_sho_func_pattern_match.jnl
 ! err581_sho_func_pattern_match.jnl
 ! bug 1186
@@ -50055,6 +50335,7 @@ IS_ELEMENT_OF_STR(VAR,VALUES)
 ! FILL on data with subspan modulo axis, got wrong data
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_subspanx_fill_bug.jnl
 ! err581_subspanx_fill_bug.jnl
 ! bug 900: subspan longitude axis and hlimits gets wrong data
@@ -50080,6 +50361,7 @@ can view
 ! bug 1318 Spurious error message on USE file where file has axes with bounds.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_use_bounds.jnl
 ! err581_use_bounds.jnl
 ! bug 1318 Spurious error message on USE file where file has axes with bounds.
@@ -50095,6 +50377,7 @@ use xyir
 ! Bug 1332 variable not scaled unless it is first variable in stepfile.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_des_scale.jnl
 ! err581_des_scale.jnl  bug 1332. When using a descriptor file and
 ! a varriable has scale_factor and/or add_offset attributes, the
@@ -50158,6 +50441,7 @@ say `sst, return=nc_offset`
 ! Bug 1335 Zero-contour should be dark line.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_contour_zero_lev.jnl
 ! err581_contour_zero_lev.jnl
 ! acm 9/7/2005
@@ -50170,6 +50454,7 @@ contour/lev=(-20,20,2) sst[L=1] - 20
 ! Bug 1339, code hangs with this combination of (-INF)(INF) levels and shakey
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_shakey_inf.jnl
 ! err581_shakey_inf.jnl
 ! acm 9/7/2005
@@ -50185,6 +50470,7 @@ ppl fill
 ! Bug 918, immediate mode parsing in IF blocks
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_if_conditional.jnl
 ! err581_if_conditional.jnl  bug 918.
 ! acm 10/2005
@@ -50406,6 +50692,7 @@ palette rainbow
 ! Ungraceful STOP if we asl for multi-var transformations on axis where there is no data
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_illegal_trans.jnl
 ! err581_illegal_trans.jnl
 ! Ungraceful STOP if we do @VAR on an axis where there is no data
@@ -50422,6 +50709,7 @@ can mode ignore_error
 ! missing flag gets scaled by scale and offset factors!
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_missing_scale_off.jnl
 ! err581_missing_scale_off.jnl
 ! ACM 11/8/05
@@ -50455,6 +50743,7 @@ list tt
 ! SHOW GRID and other output have wrong dates, non-std calendar axesv
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_cal_dates_output.jnl
 ! err581_cal_dates_output.jnl
 ! bug 1363:
@@ -50481,6 +50770,7 @@ sho grid t3
 ! STOP on shade command when modulo-regridding a time-limited nonstd calendar
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_noleap_mod.jnl
 ! err581_noleap_mod.jnl
 ! This is bug 1365: STOP on shade command
@@ -50500,6 +50790,7 @@ shade/y=0/k=1 a_clim
 ! CANCEL DATA errors
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_cancel_data.jnl
 ! err581_cancel_data.jnl
  
@@ -50552,6 +50843,7 @@ sp rm -f subdir/0000_a.nc
 ! CANCEL DATA errors
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_since_units.jnl
 ! err581_since_units.jnl
 ! bug 1394: units of months_since_event
@@ -50584,6 +50876,7 @@ list a
 ! CANCEL DATA errors
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_exp_spaces.jnl
 ! err581_exp_spaces.jnl
 ! bug 1395
@@ -50640,6 +50933,7 @@ can mode ignore
 ! bugs 439,1390: applying command context
 GO bn_reset.jnl
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_command_cx.jnl
 ! err590_command_cx.jnl
 ! bugs 439 and 1390: the command context should apply to immed. mode evaluation
@@ -50666,6 +50960,7 @@ can mode ignore
 ! bug 1401: define 1-point axis with bounds; gets bounds wrong
 GO bn_reset.jnl
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_define_1pt_bounds.jnl
 ! err581_define_1pt_bounds.jnl
 ! see bug 1401:
@@ -50709,6 +51004,7 @@ yes? list xboxlo[gx=xax],xboxhi[gx=xax],x[gx=xax]
 ! Bug in strrindex when 1st argument is a list of strings
 GO bn_reset.jnl
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_strrindex.jnl
 ! err581_strrindex.jnl
 ! 5/2/2006
@@ -50728,6 +51024,7 @@ list strrindex(var,"s")
 ! POLYGON/LINE over a depth axis.
 GO bn_reset.jnl
 cancel mode verify
+SESSION_DATE = "         "
 GO err581_poly_rev.jnl
 ! err581_poly_rev.jnl
 ! POLYGON/LINE mis-locates the line when there is a depth or
@@ -50779,6 +51076,7 @@ yes? poly/ov/col=2/pal=yellow {1,2,3,1},{0,2,1,0}
 ! ******** V6.01 Additions below ***********
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn601_bug_fixes.jnl
 ! bn601_bug_fixes.jnl
 ! test various fixes that went into version 6.01
@@ -50788,6 +51086,7 @@ GO bn601_bug_fixes.jnl
 ! Bug 1443
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_long_bounds_name
 ! err600_long_bounds_name.jnl
 ! Long name for bounds attribute was not read by Ferret
@@ -50820,6 +51119,7 @@ list  x[gx=var], xbox[gx=var], xboxlo[gx=var], xboxhi[gx=var]
 ! bug1434
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_check_bounds_regular.jnl
 ! err600_check_bounds_regular.jnl
 ! Previously TM_CHECK_BNDS had not been used to check bounds on regular axes.
@@ -50840,6 +51140,7 @@ use b
 ! Bug 1439
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_long_symbol_string.jnl
 ! err600_longsym_symbol_string.jnl
 ! Long values for symbols: previously strings were cut off at 255 characters.
@@ -50883,6 +51184,7 @@ CANCEL SYMBOL longsym*
 ! bug 1445
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_missing_flag.jnl
 ! noglobalhistory.nc has no global history attribute, and
 ! also the variable B has no missing or fill value flag
@@ -50906,6 +51208,7 @@ list b
 ! ( a parsing error, confusing the dot in the filename with dot in `var.att,return=size` )
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_returnsize.jnl
 ! err600_returnsize.jnl
 ! ACM 10-4-2006
@@ -50933,6 +51236,7 @@ say `(($the_x_axis)).units,return=size`
 ! thrown off and we got an error about an invalid ENDIF
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_if_comments_tab.jnl
 ! err600_if_comments_tab.jnl
 ! ACM 10-4-2006
@@ -50952,6 +51256,7 @@ ENDIF
 ! Bug 1454 Settings made by SET VAR/TITLE=/UNITS= were not saved in output file
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_set_var_title.jnl
 ! err600_set_var_title.jnl
 ! Bug 1454
@@ -51009,6 +51314,7 @@ use a.nc
 ! be labelled with the var name but it only has units label
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_var_label.jnl
 ! err600_var_label.jnl
 ! bug1442
@@ -51054,6 +51360,7 @@ list/i=70/l=1/j=30/k=1 temp
 ! Bug 1461 upcasing of axis name on creating bounds variable for output
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_upcase.jnl
  ! err600_upcase.jnl
  ! 10/23/2006
@@ -51078,6 +51385,7 @@ SET MODE/LAST ignore_error
 ! structure fail, and the list of variable names was incorrect.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_let_d.jnl
 ! err600_let_d.jnl
 ! Making a LET/D= assignment caused the return of dimension
@@ -51103,6 +51411,7 @@ list ..varnames
 ! Bug 1459 order of multiple descriptor file opening causes netCDF error
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_nc_des_order.jnl
 ! err600_nc_des_order.jnl
 ! 11/07/2006 ACM
@@ -51160,6 +51469,7 @@ stat rose[j=12,d=1]
 ! in the attribute structure.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_reset_redefine_axis.jnl
 ! err600_reset_redefine_axis.jnl
 ! Bug 1470; redefine or reset attributes of an axis
@@ -51294,6 +51604,7 @@ show axis ($zax)
 ! orig_file_axname keeps the input name.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_ferret_axis_names.jnl
 ! err600_ferret_axis_names.jnl
 ! If Ferret needed to rename an axis on file initialization for uniqueness,
@@ -51432,6 +51743,7 @@ sho dat/att
 ! should output a comma or tab as placeholder for the missing value
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_tab_comma_missingdat.jnl
 ! err600_tab_comma_missingdat.jnl
 ! 11/21/2006 acm
@@ -51504,6 +51816,7 @@ list/form=tab a,b,a
 ! VECTOR/ASPECT plots are wrong (incorrect fix for bug 1348)
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_vec_aspect.jnl
 ! err600_vec_aspect.jnl
 ! VECTOR/ASPECT plots are wrong (incorrect fix for bug 1348)
@@ -51527,6 +51840,7 @@ vec/asp/over a,b
 ! when checking whether 2nd variable has same grid.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_save_two.jnl
 ! err600_save_two.jnl
 ! 12/11/2006
@@ -51544,6 +51858,7 @@ save/clobber/file="out.nc" olr[d=1], swdn_toa[d=2]
 ! Bug 1459 order of multiple descriptor file opening causes netCDF error
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err600_nc_des_order.jnl
 ! err600_nc_des_order.jnl
 ! 11/07/2006 ACM
@@ -51599,6 +51914,7 @@ stat rose[j=12,d=1]
 ! ******** V6.02 Additions below ***********
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_set_strides.jnl
 ! bn_set_strides.jnl
 ! Jing Li, 11/2006
@@ -52041,6 +52357,7 @@ T0 = 01-JAN-0000 00:00:00
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_lsl_lowpass.jnl
 ! bn_lsl_lowpass.jnl
 ! Test lsl_lowpass, now included as a statically-linked external function
@@ -52077,6 +52394,7 @@ LIST/L=10:20 MY_TEMP[L=1:110], F_FILTERED[L=1:110]
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_return_xmod_tmod.jnl
 ! New `var,return=xmod` `var,return=tmod`
 ! Return modulo lengths, or blank if not modulo
@@ -52148,6 +52466,7 @@ say `axy,return=xmod`
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn602_bug_fixes
 ! bn602_bug_fixes.jnl
 ! test various fixes that went into version 6.02
@@ -52157,6 +52476,7 @@ GO bn602_bug_fixes
 ! bug 1468: SHOW AXIS/ALL/XML listed the wrong info for the calendar
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err601_sho_ax_xml_calendar.jnl
 ! err601_sho_ax_xml_calendar.jnl
 ! 11/8/2006 ACM
@@ -52187,6 +52507,7 @@ sh axis/xml timenoleap
 ! with unspecified_int4.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err601_index_111.jnl
  
 ! err601_index_111.jnl
@@ -52213,6 +52534,7 @@ list x[gx=sst,x=-193:-203]
 ! Check for irregular axis actually being irregular failed; bug 1483
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err601_irregular_axis.jnl
 ! err601_irregular_axis.jnl
 ! V6.0 had a new scheme to check for irregular axes; for an axis
@@ -52285,6 +52607,7 @@ SHOW GRID/Z atmos
 ! see bug 1485, check on missing coordinates for 3-argument graphics
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err601_check_missing_3arg.jnl
 ! err601_check_missing_3arg.jnl
 ! see bug 1485: if missing coordinates in a curvilinear dataset, we should be
@@ -52362,6 +52685,7 @@ sp rm -f tripolar_missing_lon.nc
 !  when the last element is missing.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err601_missing_string_element.jnl
 ! err601_missing_string_element.jnl
 !  Bug 1488. Seg fault when try to list a string variable
@@ -52380,6 +52704,7 @@ list a
 ! ******** V6.03 Additions below ***********
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_modnbd.jnl
 ! Test MODNBD regridding statistic.
  
@@ -52447,6 +52772,7 @@ list var[gt=month_reg@MODNGD], var[gt=month_reg@MODNBD], var[gt=month_reg@MODNGD
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_fifty_files.jnl
 ! bn_fifty_files.jnl
 ! We build OPeNDAP so that 100 files can be opened at a time.
@@ -52516,6 +52842,7 @@ cancel mode ignore_error
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn603_bug_fixes
 ! bn603_bug_fixes.jnl
 ! test various fixes that went into version 6.03
@@ -52525,6 +52852,7 @@ GO bn603_bug_fixes
 ! SHADE/LEV did not keep same levels after a SHADE/LINE
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err602_shade_line_lev.jnl
 ! err602_shade_line_lev.jnl
 ! Bug 904.
@@ -52567,6 +52895,7 @@ cancel view
 ! Draw correct SHADE and FILL plots across the modulo branch cut.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err602_curvi_modulo_cut
 ! err602_curvi_modulo_cut.jnl
 ! 5/07  bug 1302
@@ -52591,6 +52920,7 @@ cancel view
 ! SET LIST/PREC worked for multi-var listings, LIST/PREC= var1,var2 did not
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err602_list_prec
 ! err602_list_prec.jnl
 ! fixes for bug 1388: SET LIST/PREC worked for multi-variable listings,
@@ -52639,6 +52969,7 @@ LIST/NOHEAD/I=91:94/J=37/K=1/L=1 TEMP,SALT
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_set_var_name.jnl
 ! bn_set_var_name.jnl
 ! This has been in Ferret since v5.3 but never a benchmark test of it!
@@ -52687,6 +53018,7 @@ LIST/X=179:183/Y=40/L=3 sst
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 ! This routine executes a ppl error which exits us from Ferret
 ! when run in the benchmark suite. Should test this, but dont do it
 ! here, for now.
@@ -52694,6 +53026,7 @@ cancel mode verify
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_memory_symbol
 ! bn_memory_symbol.jnl
 ! Ferret v6.06 15-Aug-07
@@ -52722,6 +53055,7 @@ show memory
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn605_bug_fixes
 ! bn604_bug_fixes.jnl
 ! test various fixes that went into version 6.05
@@ -52730,6 +53064,7 @@ GO bn605_bug_fixes
 ! Fix for Bug 1524: irregular axis detected as REGULAR
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err604_irreg_axis.jnl
 ! Bug 1524: irregular axis detected as REGULAR!
  
@@ -52763,6 +53098,7 @@ list t[gt=month_irreg], tbox[gt=month_irreg]
 ! SHOW FUNCTIONS caused a crash or a message
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err605_show_func.jnl
 ! err605_show_func.jnl
 ! Reported by Andrew W.
@@ -52922,26 +53258,114 @@ ADD_9(A,B,C,D,E,F,G,H,I)
 AVET(A)
 CLOSEST_IN_ZLIST(target,zlist)
 CMPRSI_BY(dat,mask)
+C_RANGE_TEST(LONGITUDES,LATITUDES,xrange_lo,xrange_hi,yrange_lo,yrange_hi,modulo flag for X coordinates)
+CURV_TO_RECT_FSU(V,mapping)
 DATES(var)
 FACTORIAL(A)
+FFTA_2(A,b)
+FFTA_3(A,b,nfreq)
+FFTABST(A,b)
+FFT_AMP(A)
+FFTA_SAMPLE(A)
+FFT_PHAS(A)
+FILL_XY(A,B,C)
+INDEX_TO_GRID(I,J,VAL,D)
 LIST_GOOD(A)
+LSL_LOWPASS(A,cutoff_period,filter_span)
 PASS_THRU(A)
 PERCENT_GOOD_T(A)
+PICKT(VAR,MASK)
+PICKX(VAR,MASK)
+PICKY(VAR,MASK)
+PICKZ(VAR,MASK)
+RR_ADV_SX(U,SALT)
+RR_ADV_SY(V,SALT)
+RR_ADV_SZ(U,W,SALT)
+RR_ADV_TX(U,TEMP)
+RR_ADV_TY(V,TEMP)
+RR_ADV_TZ(U,W,TEMP)
+RR_ADV_UMETRIC(U,V)
+RR_ADV_UX(U,TEMP)
+RR_ADV_UY(U,V,TEMP)
+RR_ADV_UZ(U,W,TEMP)
+RR_ADV_VMETRIC(V)
+RR_ADV_VX(U,V,TEMP)
+RR_ADV_VY(V,TEMP)
+RR_ADV_VZ(V,W,TEMP)
+RR_AV(U,V,TEMP,SALT)
+ START INIT
+ INIT DONE
+RR_CROSS_SPECTRUM_ABS(S1,S2,Nf,P)
+ START INIT
+ INIT DONE
+RR_CROSS_SPECTRUM(S1,S2,Nf,P)
+RR_DIFF_SX(U,SALT)
+RR_DIFF_SY(U,SALT)
+RR_DIFF_SZ(U,V,TEMP,SALT,SFLX)
+RR_DIFF_TX(U,TEMP)
+RR_DIFF_TY(U,TEMP)
+RR_DIFF_TZ(U,V,TEMP,SALT,HFLX)
+RR_DIFF_UMETRIC(U,V)
+RR_DIFF_UX(U,TEMP)
+RR_DIFF_UY(U,TEMP)
+RR_DIFF_UZ(U,V,TEMP,SALT,TAUX)
+RR_DIFF_VMETRIC(U,V)
+RR_DIFF_VX(V,TEMP)
+RR_DIFF_VY(V,TEMP)
+RR_DIFF_VZ(U,V,TEMP,SALT,TAUY)
+RR_DSDT(SALT)
+RR_DTDT(TEMP)
+RR_DUDT(U)
+RR_DVDT(V)
+RR_FLUX_SX(U,SALT)
+RR_FLUX_SY(V,SALT)
+RR_FLUX_SZ(U,W,SALT)
+RR_FLUX_TX(U,TEMP)
+RR_FLUX_TY(V,TEMP)
+RR_FLUX_TZ(U,W,TEMP)
+RR_FLUX_UX(U,TEMP)
+RR_FLUX_UY(U,V,TEMP)
+RR_FLUX_UZ(U,W,TEMP)
+RR_FLUX_VX(U,V,TEMP)
+RR_FLUX_VY(V,TEMP)
+RR_FLUX_VZ(V,W,TEMP)
+RR_FV(V)
+RR_GEOPOTENTIAL_HEIGHT(TEMP,SALT)
+RR_GRAD_PBC_U(U,TEMP,SALT)
+RR_GRAD_PBC_V(U,TEMP,SALT)
+RR_GRAD_PS_U(U,SURF_PRESS)
+RR_GRAD_PS_V(U,SURF_PRESS)
+RR_TAUX(U,V,AIRT,SST)
+RR_TAUY(U,V,AIRT,SST)
+RR_UUX_QIAO(u4,u1,u3)
+RR_VUY_QIAO(v4,u2,u5)
+RR_W_QIAO(u4,u1,u3,v2,v5)
+RR_WUZ_QIAO(w,u4)
 SAMPLEXY_CURV_AVG(DAT_TO_SAMPLE,DAT_LON,DAT_LAT,XPTS,YPTS)
 SAMPLEXY_CURV_NRST(DAT_TO_SAMPLE,DAT_LON,DAT_LAT,XPTS,YPTS)
 SAMPLEXYT(DAT_TO_SAMPLE,XPTS,YPTS,TPTS)
 SCAT2GRID_BIN_XY(XPTS,YPTS,F,XAXPTS,YAXPTS)
+SCATGRID_NOBS_XYT(XPTS,YPTS,TPTS,XAXPTS,YAXPTS,TAXPTS)
 STORAGE(A)
 STRING_ARG(A,string)
 STUDENT_T_CUTOFF(P,nf)
 SUBTRACT(A,B)
+TAX_DATESTRING(A,B,C)
+TAX_DAYFRAC(A,B)
+TAX_DAY(A,B)
 TAX_INDEX_DATESTRING(A,B,C)
+TAX_JDAY1900(A,B)
+TAX_JDAY(A,B)
+TAX_MONTH(A,B)
+TAX_UNITS(A)
+TAX_YEARFRAC(A,B)
+TAX_YEAR(A,B)
 WRITEV5D(V1,V2,V3,V4,V5,V6,V7,V8,FILENAME)
-ZAXREPLACE_XYT(V,THICKNESS,ZAX)
  
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn608_bug_fixes
 ! bn608_bug_fixes
 ! test various fixes that went into version 6.08
@@ -52950,6 +53374,7 @@ GO bn608_bug_fixes
 ! Fix for Bug 1539: SHOW VAR/XML
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err607_show_var_xml
 ! Bug 1539 SHOW VAR/XML didnt show all vars.
  
@@ -53005,6 +53430,7 @@ show var/xml
 ! err607_set_new_history_att
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err607_set_new_history_att
 ! err607_set_new_history_att.jnl
 ! Previously if we set a history attribute on a user-defined variable that
@@ -53033,6 +53459,7 @@ show att/all var
 ! Symbols YAXIS_MIN, YAXIS_MAX were 0 when values small
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err607_axis_minmax_syms
 ! Bug 1542
 ! Symbols YAXIS_MIN, YAXIS_MAX were 0 when values small
@@ -53075,6 +53502,7 @@ YAXNAM = "YAX_LEV94"
 ! Error message for too many contour levels requested
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err607_lev_errmsg
 ! err607_lev_errmsg.F
 ! Make the error message more detailed, saying it is the choice of
@@ -53090,6 +53518,7 @@ SET MODE/LAST ignore
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_shade_trim
 ! bn_shade_trim.jnl
 ! Test new qualifier SHADE/TRIM which trims the region of
@@ -53127,6 +53556,7 @@ YAXIS_MAX = "43.50000"
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_mode_nlevels
 ! bn_mode_nlevels.jnl
 ! 3-mar-2008
@@ -53171,6 +53601,7 @@ set mode nlevels 40
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn61_bug_fixes
 ! bn608_bug_fixes
 ! test various fixes that went into version 6.1
@@ -53180,6 +53611,7 @@ GO bn61_bug_fixes
 ! Error processing parentheses on abstract axis names.
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err608_bug1556
 ! err608_bug1556.jnl
 ! Error processing parentheses on abstract axis names.
@@ -53207,6 +53639,7 @@ SAVE/FILE=a.nc/CLOBBER sst[i=1:5:1,j=1:5:1,l=1:1:1]
 ! Precision of immediate-mode output of negative values
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err608_precision_neg_numbers
 ! err608_precision_neg_numbers.jnl
 ! ACM 1/2/2008
@@ -53230,6 +53663,7 @@ SAY `1.23456789e-15,prec=10`
 ! ******** V6.11 Additions below ***********
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn_test_opendap
 ! Test the test_opendap function: returns 0 if successful, or error code if not.
  
@@ -53246,12 +53680,14 @@ list test_opendap ("http://test.opendap.NOT.org/opendap/data/nc/test.nc")
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO bn611_bug_fixes
 ! bn611_bug_fixes.jnl
 ! Fixes that go into v6.11 release
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err61_write_bounds
 ! err61_write_bounds.jnl
 ! test fixes for bugzilla 1534: write correct bounds
@@ -53281,6 +53717,7 @@ sp ncdump a.nc >> all_ncdump.out
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err61_poly_shade_over_noaxes
 ! err61_poly_shade_over_noaxes.jnl
 ! See bug 1571
@@ -53335,6 +53772,7 @@ go polymark poly/lev=(-5,30,1)/fill/line=1/nolab/over v1 v2 v3 circle 2
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err61_context_scalar_strings
 ! err61_context_scalar_strings.jnl
 ! Bug 1558, first present in Ferret v6.02
@@ -53351,6 +53789,7 @@ say `"a" EQ "a"`
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = "         "
 GO err61_exit_script
 ! Bug 1566 Andrew Wittenberb
 !
@@ -53495,11 +53934,13 @@ if 1 then
 exit/script
  
 set mode/last verify
+SESSION_DATE = "         "
      currently SET data sets:
     1> ./ocean_atlas_temp.cdf  (default)
  name     title                             I         J         K         L
  TEMP     Temperature                      1:360     1:180     1:1       1:2
  
+SESSION_DATE = "         "
      attributes for dataset: ./ocean_atlas_temp.cdf
  TEMP.units = Deg C 
              VARIABLE : ..DIMNAMES[D=ocean_atlas_temp]
@@ -53530,6 +53971,7 @@ set mode/last verify
  18   / 18:"PSYT36_55" 
  19   / 19:"PSZW1_10"  
  20   / 20:"PSYU35_56" 
+SESSION_DATE = "         "
              VARIABLE : TEMP.NATTRS
              FILENAME : ocean_atlas_temp.cdf
           5.000000
@@ -53540,6 +53982,7 @@ set mode/last verify
              VARIABLE : constant
           4.000000
 3
+SESSION_DATE = "         "
              VARIABLE : TEMP.UNITS
              FILENAME : ocean_atlas_temp.cdf
         "Deg C"
@@ -53553,6 +53996,7 @@ set mode/last verify
              FILENAME : coads_climatology.cdf
              X        : 2
         "COADSY"
+SESSION_DATE = "         "
              VARIABLE : SST.LONG_NAME
              FILENAME : coads_climatology.cdf
         "SEA SURFACE TEMPERATURE"
@@ -53562,16 +54006,120 @@ set mode/last verify
              VARIABLE : SST[d=coads_climatology].HISTORY
              FILENAME : levitus_climatology.cdf
         "From coads_climatology"
+SESSION_DATE = "         "
              VARIABLE : (XAXLEVITR1_160)[d=levitus_climatology].MODULO
              FILENAME : coads_climatology.cdf
         " "
              VARIABLE : (YAXLEVITR1_90).POINT_SPACING[D=levitus_climatology]
              FILENAME : levitus_climatology.cdf
         "even"
+SESSION_DATE = "         "
+     currently SET data sets:
+    1> ./z1.nc
+ name     title                             I         J         K         L
+ DDAT_ORIG
+          DDAT[GZ=ZAXIS_ORIG@ASN]          ...       ...       1:5       ...
+ 
+    2> ./z2.nc  (default)
+ name     title                             I         J         K         L
+ CYCLE_ORIG
+          CYCLE[GZ=ZAXIS_ORIG@ASN]         ...       ...       1:5       ...
+ ------------------------------
+ DDAT_A[D=z2] = ZAXREPLACE(DDAT_ORIG[D=1], CYCLE_ORIG[D=2], DUMMY)
+ 
+<datasets>
+<dataset name="./z1.nc" default="false">
+<title> </title>
+<var name="DDAT_ORIG">
+<long_name>DDAT[GZ=ZAXIS_ORIG@ASN]</long_name>
+<_FillValue>-1.000000E+34</_FillValue>
+<missing_value>-1.000000E+34</missing_value>
+<attribute name="ferret_datatype" value="FLOAT" />
+<attribute name="infile_datatype" value="FLOAT" />
+<grid name="GII1">
+<axes>
+<zaxis>ZAXIS_ORIG</zaxis>
+</axes>
+</grid>
+</var>
+</dataset>
+<dataset name="./z2.nc" default="true">
+<title> </title>
+<var name="CYCLE_ORIG">
+<long_name>CYCLE[GZ=ZAXIS_ORIG@ASN]</long_name>
+<_FillValue>-1.000000E+34</_FillValue>
+<missing_value>-1.000000E+34</missing_value>
+<attribute name="ferret_datatype" value="FLOAT" />
+<attribute name="infile_datatype" value="FLOAT" />
+<grid name="GIX1">
+<axes>
+<zaxis>ZAXIS_ORIG</zaxis>
+</axes>
+</grid>
+</var>
+<var name="DDAT_A">
+<_FillValue>-1.000000E+34</_FillValue>
+<missing_value>-1.000000E+34</missing_value>
+<grid name="(G107)">
+<axes>
+<zaxis>ZAXIS_DES</zaxis>
+</axes>
+</grid>
+</var>
+</dataset>
+</datasets>
+SESSION_DATE = "         "
+ @ACSEA SURFACE TEMPERATURE (Deg C) No Valid Data                               
+ @ASLONGITUDE                                                                   
+ @ASDeg C                                                                       
+
+          XPOS       YPOS     HGT   ROT   UNITS
+ LAB 1  0.000E+00  4.850E+00 0.120    0  SYSTEM  @ASLATITUDE : 39N
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ LAB 2  0.000E+00  4.650E+00 0.120    0  SYSTEM  @ASTIME : JAN
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ LAB 3  3.200E+00  4.650E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
+ LAB 4  1.600E+00  4.380E+00 0.120    0  SYSTEM  @A
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
+ LAB 5  1.600E+00  2.030E+00 0.200    0  SYSTEM  @ASNo Valid Data
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
+ @ACSEA SURFACE TEMPERATURE (Deg C)                                             
+ @ASLONGITUDE                                                                   
+ @ASDeg C                                                                       
+
+          XPOS       YPOS     HGT   ROT   UNITS
+ LAB 1  0.000E+00  4.850E+00 0.120    0  SYSTEM  @ASLATITUDE : 9N
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ LAB 2  0.000E+00  4.650E+00 0.120    0  SYSTEM  @ASTIME : JAN
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ LAB 3  3.200E+00  4.650E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
+ LAB 4  1.600E+00  4.380E+00 0.120    0  SYSTEM  @A
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
+ LAB 5 -3.700E-01 -5.500E-01 0.080    0  SYSTEM  @ASSST[Y=39N] No Valid Data
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+                                                                                
+ @ASLONGITUDE                                                                   
+ @ASDeg C                                                                       
+
+          XPOS       YPOS     HGT   ROT   UNITS
+ LAB 1  0.000E+00  4.570E+00 0.120    0  SYSTEM  @ASTIME : JAN
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ LAB 2  3.200E+00  4.570E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
+ LAB 3  1.600E+00  4.300E+00 0.120    0  SYSTEM  @A
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
+ LAB 4  1.990E+00 -8.000E-01 0.102    0  SYSTEM  @ASSST[Y=9N]
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ LAB 5  1.990E+00 -9.900E-01 0.057    0  SYSTEM  @ASSST[Y=49N] No Valid Data
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ LAB 6  1.990E+00 -1.230E+00 0.102    0  SYSTEM  @ASSST[Y=19N]
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
  	NOAA/PMEL TMAP
  	FERRET v6.12  
- 	Linux(g77) 2.6.9-22. - 06/19/08
- 	19-Jun-08 14:53     
+ 	Linux(g77) 2.6.9-22. - 08/04/08
+ 	 4-Aug-08 17:21     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -53585,6 +54133,7 @@ SET MODE VERIFY
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_ef_external_functions.jnl
 ! Tests of external functions that are distributed as shared object files.
  
@@ -54280,11 +54829,11 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  8    /  8:  -7.00
  9    /  9:  -6.00
  10   / 10:  -5.00
- 11   / 11:  -4.00
+ 11   / 11:  --rw-rw-r--  1 ansley tmap 30464 Aug  4 17:21 testa.v5d
+-rw-rw-r--  1 ansley tmap 30464 Aug  4 17:21 test.v5d
+4.00
  12   / 12:  -3.00
- 13-rw-rw-r--  1 ansley tmap 29712 Jun 19 14:53 testa.v5d
--rw-rw-r--  1 ansley tmap 29712 Jun 19 14:53 test.v5d
-   / 13:  -2.00
+ 13   / 13:  -2.00
  14   / 14:  -1.00
  15   / 15:   0.00
  16   / 16:   1.00
@@ -54367,6 +54916,7 @@ set mode/last ignore_errors
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 go bench_v5d
 ! benchmark for Vis5D external function
 ! 5/99 ACM
@@ -54387,6 +54937,7 @@ To view the file with Vis5D say:   GO vis5d_start vis5d_out.v5d
  
 GO bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 GO bn_ef_v5d_strings.jnl
 ! bn_ef_v5d_strings.jnl
 ! Taken out of bn_strings, because it calls so file writev5d.
@@ -54425,6 +54976,7 @@ set mode/last ignore
  
 go bn_reset
 cancel mode verify
+SESSION_DATE = " 4-Aug-08"
 go bn_fcn_calls.jnl
 ! Simple tests of external functions
 ! these are not otherwise tested in the benchmarkd
@@ -54454,7 +55006,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.12   19-Jun-08" ;
+		:history = "FERRET V6.12    4-Aug-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54477,7 +55029,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.12   19-Jun-08" ;
+		:history = "FERRET V6.12    4-Aug-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54501,7 +55053,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.12   19-Jun-08" ;
+		:history = "FERRET V6.12    4-Aug-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54540,7 +55092,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.12   19-Jun-08" ;
+		:history = "FERRET V6.12    4-Aug-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54575,7 +55127,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.12   19-Jun-08" ;
+		:history = "FERRET V6.12    4-Aug-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56596,8 +57148,8 @@ end of ncdump output
  
  	NOAA/PMEL TMAP
  	FERRET v6.12  
- 	Linux(g77) 2.6.9-22. - 06/19/08
- 	19-Jun-08 14:53     
+ 	Linux(g77) 2.6.9-22. - 08/04/08
+ 	 4-Aug-08 17:21     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -56768,8 +57320,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.12  
- 	Linux(g77) 2.6.9-22. - 06/19/08
- 	19-Jun-08 14:53     
+ 	Linux(g77) 2.6.9-22. - 08/04/08
+ 	 4-Aug-08 17:21     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -56882,8 +57434,8 @@ can mode ignore
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.12  
- 	Linux(g77) 2.6.9-22. - 06/19/08
- 	19-Jun-08 14:53     
+ 	Linux(g77) 2.6.9-22. - 08/04/08
+ 	 4-Aug-08 17:21     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -56966,4 +57518,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Thu Jun 19 14:53:53 PDT 2008
+Ended at Mon Aug 4 17:21:29 PDT 2008

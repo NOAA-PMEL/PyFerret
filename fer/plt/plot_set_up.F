@@ -2,8 +2,8 @@
      .				overlay, transpz, versus, no_labels,
      .				symbol, sym_size, color, use_line,
      .				step_inc, do_dash, dashstyle,
-     .                          is_logx, is_logy, nokey,
-     .				mv_list, cx_list, nmv,
+     .                          is_logx, is_logy, nokey, all_1_dep,
+     .				only_val, mv_list, cx_list, nmv,
      .				indep_dat, dep_dat, status )
 
 *
@@ -133,6 +133,10 @@
 *                  "degrees_n" get longitude/latitude units on a PLOT/VS plot. 
 *                  Also allow units of "longitude" or "latitude" to trigger 
 *                  lon/lat labels.
+* V612 *acm*  8/08 Fixing bug 1038. No Valid Data labeled as on 2D plots. If 
+*                  there is no valid data, send that information back, so a
+*                  label can be added to the plot. If this is an overlay, add
+*                  No Valid Data to the label.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -155,19 +159,20 @@
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, versus, no_labels, use_line,
-     .			is_logx, is_logy, nokey
+     .			is_logx, is_logy, nokey, all_1_dep
 	INTEGER		symbol, color, step_inc, do_dash,
      .			nmv, mv_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks ), sym_size,
-     .                  dashstyle(*)
+     .                  dashstyle(*), only_val
 	REAL		indep_dat(*), dep_dat(*)     ! dynamic space allocation
  
 * V500 *kob* 3/99- up VAR_CODE and VAR_UNITS to 64 chars
 * internal variable declarations:
 	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, TM_HAS_STRING,
      .                  flip, time_axis,
-     .			all_1_dep, all_1_ind, formatted, user_title,
-     .			indep_is_log, dep_is_log, use_nice
+     .			all_1_ind, formatted, user_title,
+     .			indep_is_log, dep_is_log, use_nice,
+     .                  this_no_range(50)
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
@@ -187,7 +192,7 @@
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
         INTEGER         TM_UNIT_ID, cx_x , cx_y, iunits	 
-	REAL		only_val, val1, dt_min, lo, hi, dep_len, 
+	REAL		val1, dt_min, lo, hi, dep_len, 
      .			ind_len, xkeypos, ykeypos, xkeysize, ykeysize, 
      .			lab_ht, first, last
 	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP,
@@ -596,8 +601,12 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 * ... check that there is a range of dependent data for PLOT+ auto-scaling
 * ... when all the variables are considered together
-	all_1_dep = all_1_dep .AND. 
-     .		NO_LINE_RANGE( dep_dat, nload, mr_bad_data(mv), val1 )
+        
+        this_no_range(ipl) = NO_LINE_RANGE( 
+     .       dep_dat, nload, mr_bad_data(mv), val1 )
+	all_1_dep = all_1_dep .AND. this_no_range(ipl)
+        IF (this_no_range(ipl) .AND. val1.NE.mr_bad_data(mv) )
+     .           this_no_range(ipl) = .FALSE. ! Keep the value for putting NO VALID on labels
 ! 10/99	IF ( val1 .EQ. mr_bad_data(mv) ) CALL ERRMSG( ferr_no_range, status,
 !     .		'all data points are bad: '//VAR_CODE(mr_category(mv),
 !     .						      mr_variable(mv) ),*5000)
@@ -812,6 +821,10 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ELSE
 	         plot_title = KEY_STRING( cx_list(ipl), cx_xtra_doc, slen )
 	      ENDIF
+              IF (this_no_range(ipl)) THEN
+                 plot_title(slen+1:slen+14) = ' No Valid Data'
+                 slen = slen + 14
+              ENDIF
               IF (.NOT. nokey) THEN
 	         CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
      .			    lab_ht, style, justify, plot_title(:slen))
@@ -852,6 +865,10 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ELSE
 	         plot_title = FULL_VAR_TITLE( cx_list(ipl), slen )
 	      ENDIF
+              IF (this_no_range(ipl)) THEN
+                 plot_title(slen+1:slen+14) = ' No Valid Data'
+                 slen = slen + 14
+              ENDIF
 	      IF ( ndv .EQ. 1 .OR. user_title ) THEN
 	         IF ( versus ) THEN     ! ("xlen" changed to "dep_len" 11/92)
 	            CALL BOX_LABEL( dep_lab,

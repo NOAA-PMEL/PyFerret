@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/build_v612/FERRET_x86/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 40249998 Jun 19 14:16 /home/porter/ansley/build_v612/FERRET_x86/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/build_v612/FERRET_x86/external_functions/ext_func_x86
+Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 49356191 Aug  4 12:59 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/tmap/ferret/x86_64-linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: build v6.12 for Ned and gang to take out to sea
+Note: NO VALID DATA labels on 1D plots
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/build_v612/FERRET_x86/bench
+PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v612/FERRET_x86/external_functions/ext_func_x86
-Beginning at Thu Jun 19 14:52:26 PDT 2008
+FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/x86_64-linux/ext_func/libs
+Beginning at Mon Aug 4 17:20:07 PDT 2008
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2424,6 +2424,12 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file z1.nc
+ LISTing to file z2.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2505,4 +2511,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jun 19 14:53:53 PDT 2008
+Ended at Mon Aug 4 17:21:29 PDT 2008

@@ -88,6 +88,10 @@
 * V600 *acm* 5/06  increase length of buff, for longer arugments to /DASH=
 * V600 *acm* 5/06  with MODE LINECOLORS, number of lines not limited to num_fancy_lines
 * V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
+* V612 *acm*  8/08 Fixing bug 1038. No Valid Data labeled as on 2D plots. If 
+*                  there is no valid data, get the info from plot_set_up and add 
+*                  a to the plot. If this is an overlay, that is added to the label
+*                  in plot_set_up.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -115,7 +119,7 @@
 * internal variable declarations:
 	LOGICAL		overlay, transpz, versus,
      .			no_labels, set_up, noaxes, axes, use_line,
-     .			is_logh, is_logv, nokey
+     .			is_logh, is_logv, nokey, no_data, no_range
 	INTEGER		TM_LENSTR1, STR_UPCASE,
      .                  symbol, color, status,
      .			loc, limit, slen, thick, step_inc,
@@ -124,7 +128,7 @@
      .			do_dash, s1, s2, it_start(4), it_end(4),
      .			nparm, dot_sym, num_it, i, iax(4), i1,
      .                  loch, locv
-	REAL		val, sym_size, dashstyle(4)
+	REAL		val, sym_size, dashstyle(4), only_val
 	CHARACTER	LEFINT*4, buff*128
 
 * internal parameter declarations
@@ -388,6 +392,8 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
      .				is_logh, 
      .				is_logv,
      .                          nokey,
+     .				no_range,
+     .				only_val,
      .				is_mr,
      .				is_cx,
      .				num_uvars_in_cmnd,
@@ -396,7 +402,18 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
+c when it's an overlay, 'No Valid Data' is part of the plot key,
+c done in plot_set_up.
 
+* is the no valid input data?
+              no_data =  no_range .AND. only_val.EQ.bad_val4
+
+              IF (.NOT. overlay .AND. no_data) 
+     .                  CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
+     .                  ppl_centered, letsize_title,
+     .                  'No Valid Data',
+     .                  lab_loc_axlen_times, lab_loc_axlen_times )
+              
 * turn off axes? 
 	IF ( noaxes ) THEN 
            DO 400 i = 1, 4

@@ -232,6 +232,7 @@
   90    CONTINUE
         CALL CD_GET_VAR_INFO (dset, varid, buff, vartype, nvdims, 
      .                vdims, nvatts, coordvar, all_outflag, status) 
+        varname = buff  ! get varname in original upper- or lowercase form
 
         IF ( INDEX(attname,'.') .GT. 0 ) THEN
            GOTO 5100

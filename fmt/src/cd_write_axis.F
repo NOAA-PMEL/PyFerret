@@ -121,7 +121,7 @@
      .       got_positive, got_spacing, got_axis, got_cartesian, got_it,
      .       coordvar
       PARAMETER (do_warn = .TRUE. )
-      INTEGER TM_LENSTR1, CD_AXLEN,
+      INTEGER TM_LENSTR1, CD_AXLEN, STR_SAME, 
      .        dimid, iaxis, axid, cdfstat, lo, hi,
      .        nlen, elen, axlen, slen, edgid, bndid, npts, dim2d(2)
       INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, varid,
@@ -286,6 +286,12 @@
             got_it = NC_GET_ATTRIB ( dset_num, varid, attname, 
      .               do_warn, name_in, maxlen, attlen, attoutflag, 
      .               buff, vals)
+
+* If the user has not asked for bounds and if its a regular axis then
+* do not write bounds attribute. (The bounds themselves arent written.)
+         IF ( (STR_SAME(attname, 'bounds') .EQ. 0) .AND. 
+     .        ((line_regular(iaxis)) .AND. (.NOT.do_bounds)) ) 
+     .               attoutflag = 0
 
 * Write the attribute, but skip this for the point-spacing attr on record axis.
 

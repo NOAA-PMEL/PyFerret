@@ -3,6 +3,7 @@
 *
 * Ansley Manke
 * March 1, 2005
+* V62  6/08 *acm* Increase attribute buffer size to 2048
 *
 * This function spawns a netCDF edit call, ncatted to edit 
 * an attribute (e.g. new attribute, edit or delete atttibute,
@@ -127,9 +128,9 @@
       CHARACTER*1 battval
       CHARACTER*1 mode, atttype
       CHARACTER*3 atttype_in
-      CHARACTER*1024 filename, attributevalue
+      CHARACTER*1024 filename
       CHARACTER*254 variablename, attributename, errmsg
-      CHARACTER*2048 buff
+      CHARACTER*2048 buff, attributevalue
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)

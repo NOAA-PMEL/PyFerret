@@ -64,33 +64,40 @@
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
-      INTEGER TM_LENSTR1, hlen, slen
+      INTEGER TM_LENSTR1, STR_SAME, hlen, slen
       LOGICAL CD_GET_ATTRIB, got_it,
-     .        do_warn
+     .        do_warn, append_flag
       PARAMETER (do_warn = .TRUE. )
-      CHARACTER*132 history
+      CHARACTER*2048 history
 
 * initialize
       slen = MIN( TM_LENSTR1(string), 120 )
 
 * update (or create) history record
       got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'history',
-     .                     .NOT.do_warn, ' ', history, 132 )
+     .                     .NOT.do_warn, ' ', history, 2048 )
       hlen = TM_LENSTR1( history )
 
 * is the last history stamp the same as this ?
       IF ( hlen .GE. slen ) THEN
-         IF ( history(hlen-slen+1:hlen) .EQ. string(:slen) ) RETURN
+         IF (STR_SAME( history(hlen-slen+1:hlen), string(:slen) ) 
+     .      .EQ. 0) RETURN
       ENDIF
+
+* is the last history stamp just a FERRET Vxx  date?
+* If so just replace with the current FERRET Vxxx ...
+      append_flag = append
+      IF ( STR_SAME (history(1:8), 'FERRET V') .EQ.0 .AND.
+     .     hlen .LE. 30 ) append_flag = .FALSE.
 
 * insert new signature
       CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'history', string(:slen),
-     .                     append, status )
+     .                     append_flag, status )
       IF ( status .NE. merr_ok ) GOTO 5000
 
 * successful completion
       status = merr_ok
-*      RETURN
+      RETURN
 
 * error exit
  5000 RETURN

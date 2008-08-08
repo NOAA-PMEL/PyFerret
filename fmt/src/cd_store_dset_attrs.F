@@ -41,6 +41,7 @@
 
 * V600 6/05 *acm* Attribute control.
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
+* v62  *acm* 6/08 cleanup; no need for the variable called buff.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -63,7 +64,6 @@
 
 * local variable declarations:
       INTEGER NCF_ADD_DSET, TM_LENSTR1, i, j, cdfstat
-      CHARACTER   buff*1024
 
 * For saving dataset information in linked list
 

@@ -589,9 +589,12 @@ GO bn_test_opendap
 GO bn_reset
 GO bn611_bug_fixes
 
-! ******** V6.12 Additions below ***********
+! ******** V6.13 Additions below ***********
 GO bn_reset
 GO bn_no_valid_on_plot
+
+GO bn_reset
+GO bn613_bug_fixes
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

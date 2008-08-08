@@ -77,12 +77,13 @@
 	LOGICAL		exp_fmt, negative, fixed_pt
 	INTEGER		slen, sig_left, sig_full, nleft, nright, full,
      .			sig_max, full10, xtra, sig_needed, pow10,
-     .			chk10, chk10_save, waste
+     .			chk10, chk10_save, waste, i
 	REAL		aval, l10
 	CHARACTER*10	fmt
 
 * local parameters:
-	INTEGER		TM_CHECK_NAN, TM_CHECK_INF, max_int_len, sig_min
+	INTEGER		TM_CHECK_NAN, TM_CHECK_INF, TM_LENSTR1, 
+     .                  max_int_len, sig_min
 	REAL		eps, one_m_eps
 	PARAMETER     ( max_int_len = 8,
      .			sig_min     = 1,		! minimum sig. digits
@@ -275,6 +276,19 @@
                   TM_FMT(1:1) = '0'
 	       ENDIF	
 	   ENDIF
+* Precision in computation of value of FULL can cause an extra
+* digit at the end, and so trailing 0s may still exist. Remove them.
+           slen = TM_LENSTR1( TM_FMT )
+           DO 3300 i = slen,1,-1
+              IF (TM_FMT(i:i) .EQ. '0') THEN
+                 TM_FMT(i:i) = ' '
+                 str_len = str_len - 1
+              ELSE
+                 GOTO 3400
+              ENDIF
+ 3300      CONTINUE
+ 3400      CONTINUE
+
 	ENDIF
 	RETURN
 

@@ -1,0 +1,15 @@
+! err611_exit_if.jnl
+!
+! Bug 1587
+! This only in v6.11 GFDL release bug 
+! Fixed in xeq_exit.F
+
+yes? sp echo if 1 then > a.jnl
+yes? sp echo exit/script >> a.jnl
+yes? sp echo endif >> a.jnl
+yes? sp echo go a > b.jnl
+yes? sp echo say hello >> b.jnl
+yes? go b  !the following fails to say "hello"
+go a
+if 1 then
+exit/script

@@ -1,0 +1,14 @@
+! err611_save_irreg.jnl
+!
+! bug1588  
+
+def axis/t time = {0,1,3}
+let a = t[gt=time]
+save/clob/file=a.nc a
+can var a
+can dat/all
+use a.nc
+save/clob/file=b.nc a
+let b = a
+list b
+save/clob/file=b.nc b

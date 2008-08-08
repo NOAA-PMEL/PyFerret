@@ -103,6 +103,8 @@ str_same.F\
 str_upcase.F\
 nc_get_attrib.F\
 nc_get_attrib_dp.F\
+nc_get_attrib_float.F\
+nc_get_attrib_string.F\
 tm_abstract_axis.F\
 tm_add_message.F\
 tm_allo_dyn_grid.F\

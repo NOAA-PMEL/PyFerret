@@ -14,5 +14,15 @@ set win/title=""/new
 sho sym win_title
 
 set win/title="($session_date):($session_time)"
-sh sym win_title
 
+! If the date or time starts with a blank then we get an extra 
+! underscore in the window title. Evaluating the symbols into
+! new ones gets rid of this blank at the start.
+
+DEFINE SYMBOL the_date = ($session_date)
+DEFINE SYMBOL the_time = ($session_time)
+SET WIN/TITLE="($the_date):($the_time)"
+
+can win/all
+set win/new
+sh sym win_title

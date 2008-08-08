@@ -53,9 +53,13 @@
 
       IF ( INDEX(expression,'[') .GT. 0 ) THEN
 
-         dset = pdset_irrelevant	! default (not used ...)
          CALL PARSE_NAM_DSET(expression, cx_last, dset, category, 
      .                       ivar, mods_cx, status)
+         IF (status .NE. ferr_ok) THEN
+            dset = pdset_irrelevant	! default (not used ...)
+            CALL PARSE_NAM_DSET(expression, cx_last, dset, category, 
+     .                       ivar, mods_cx, status)
+         ENDIF
          IF (status .NE. ferr_ok) GOTO 5010
          slen = INDEX(expression,'[') 
          elen = INDEX(expression,']')

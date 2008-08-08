@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     56057544 May 27 10:58 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
+Running FERRET version /home/porter/ansley/build_v613/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     47562347 Aug  8 11:20 /home/porter/ansley/build_v613/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/build_v613/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: test fix for bug 1582: lost the x axis label if labels moved to upper axis 
+Note: v6.13 for GFDL testing
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/linux/FERRET/bench
+PWD=/home/porter/ansley/build_v613/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Tue May 27 11:08:15 PDT 2008
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v613/FERRET/external_functions/ext_func_linux
+Beginning at Fri Aug 8 11:42:12 PDT 2008
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2428,6 +2428,38 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file z1.nc
+ LISTing to file z2.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TIME
+Replacing definition of axis TIME
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TIME
+ LISTing to file a.nc
+ LISTing to file b.nc
+ LISTing to file b.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TIME
+Replacing definition of axis TIME
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TIME
+ LISTing to file a.nc
+ LISTing to file b.nc
+ LISTing to file b.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2509,4 +2541,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue May 27 11:12:28 PDT 2008
+Ended at Fri Aug 8 11:46:25 PDT 2008

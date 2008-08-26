@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 49366584 Aug  7 13:52 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 49366584 Aug  7 14:19 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/tmap/ferret/x86_64-linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixing bug 1587: Writing bounds for coordinates of user-defined variables; in cdf_list need to send the dataset number for the underlying file variable to CD_WRITE_VAR
+Note: test the fixes for bug 1588, in xeq_exit.F
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/x86_64-linux/ext_func/libs
-Beginning at Thu Aug 7 13:53:41 PDT 2008
+Beginning at Thu Aug 7 14:42:09 PDT 2008
  	NOAA/PMEL TMAP
  	FERRET v6.12  
  	Linux(g77) 2.6.9-22. - 08/07/08
- 	 7-Aug-08 13:53     
+ 	 7-Aug-08 14:42     
 
 yes? !bn500_all_shell
 yes? 
@@ -10235,7 +10235,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.12"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 SESSION_DATE = " 7-Aug-08"
-SESSION_TIME = "13:53"
+SESSION_TIME = "14:42"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10254,7 +10254,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.12"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 SESSION_DATE = " 7-Aug-08"
-SESSION_TIME = "13:53"
+SESSION_TIME = "14:42"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10263,7 +10263,7 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = " 7-Aug-08"
-SESSION_TIME = "13:53"
+SESSION_TIME = "14:42"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10274,12 +10274,12 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = " 7-Aug-08"
-SESSION_TIME = "13:53"
+SESSION_TIME = "14:42"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = " 7-Aug-08"
-SESSION_TIME = "13:53"
+SESSION_TIME = "14:42"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10313,7 +10313,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.12"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Aug  7 2008 13:53:49 "
+LAB3 = "Aug  7 2008 14:42:16 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10411,7 +10411,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.12"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 SESSION_DATE = " 7-Aug-08"
-SESSION_TIME = "13:53"
+SESSION_TIME = "14:42"
  
  
 GO bn_reset
@@ -18141,8 +18141,8 @@ SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94
  
 !GO bn_reset
 !GO bn301_mem_mgmt
-MESSAGE/CONTINUE  ***** bn301_mem_mgmt has bee-rw-rw-r--  1 ansley tmap 23228 Aug  7 13:53 bench.mgm
--rw-rw-r--  1 ansley tmap 415667 Aug  7 13:53 bench.mgm
+MESSAGE/CONTINUE  ***** bn301_mem_mgmt has bee-rw-rw-r--  1 ansley tmap 23236 Aug  7 14:42 bench.mgm
+-rw-rw-r--  1 ansley tmap 415746 Aug  7 14:42 bench.mgm
 n removed from run_all.
 ***** bn301_mem_mgmt has been removed from run_all.
 MESSAGE/CONTINUE  ***** Its too slow!!!
@@ -25291,7 +25291,7 @@ GO err491_grid_from_name.jnl
 ! *sh* 3/99
  
 ! implicit grid, such as "Z[gz=zax]", are allowed inabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Thu Aug  7 13:54:03 PDT 2008
+Thu Aug  7 14:42:31 PDT 2008
  places they shouldn't be
  
 ! fixed with change to GRID_FROM_NAME (and PARSE_NAM_DSET_GRD)
@@ -45740,7 +45740,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASAug  7 2008 13:54:45
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASAug  7 2008 14:43:08
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 179.9E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47104,7 +47104,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "7-Aug-08:13:53"
+WIN_TITLE = "7-Aug-08:14:42"
  
 set win/title="set the title"
 sho sym win_title
@@ -53754,7 +53754,7 @@ set mode/last verify
  	NOAA/PMEL TMAP
  	FERRET v6.12  
  	Linux(g77) 2.6.9-22. - 08/07/08
- 	 7-Aug-08 13:55     
+ 	 7-Aug-08 14:43     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -54465,8 +54465,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  10   / 10:  -5.00
  11   / 11:  -4.00
  12   / 12:  -3.00
- 13-rw-rw-r--  1 ansley tmap 30464 Aug  7 13:55 testa.v5d
--rw-rw-r--  1 ansley tmap 30464 Aug  7 13:55 test.v5d
+ 13-rw-rw-r--  1 ansley tmap 30464 Aug  7 14:43 testa.v5d
+-rw-rw-r--  1 ansley tmap 30464 Aug  7 14:43 test.v5d
    / 13:  -2.00
  14   / 14:  -1.00
  15   / 15:   0.00
@@ -56780,7 +56780,7 @@ end of ncdump output
  	NOAA/PMEL TMAP
  	FERRET v6.12  
  	Linux(g77) 2.6.9-22. - 08/07/08
- 	 7-Aug-08 13:55     
+ 	 7-Aug-08 14:43     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -56952,7 +56952,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.12  
  	Linux(g77) 2.6.9-22. - 08/07/08
- 	 7-Aug-08 13:55     
+ 	 7-Aug-08 14:43     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57066,7 +57066,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.12  
  	Linux(g77) 2.6.9-22. - 08/07/08
- 	 7-Aug-08 13:55     
+ 	 7-Aug-08 14:43     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57149,4 +57149,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Thu Aug 7 13:55:14 PDT 2008
+Ended at Thu Aug 7 14:43:38 PDT 2008

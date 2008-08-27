@@ -42,18 +42,22 @@
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
+
+* 8/08 *acm* See Bug 1483
 *
 * revision 0.00 - 11/21/85
 * revision 0.10 - 10/23/87 - all variables explicitly declared
 *
 * calling arguments:
-	REAL	eps, a, b
+	REAL*8	eps, a, b, abmin
+
+        abmin = MIN(abs(a), abs(b))
 
 * treat relative error case (non-zero) separate fron zero case
 
 	IF  (a.NE.0.0   .AND.  b.NE.0.0 )  THEN
 
-	   TM_FPEQ_EPS =  ABS(a-b) .LE. ABS(b)*eps		! relative error
+	   TM_FPEQ_EPS =  (ABS(a-b) .LE. ABS(abmin)*eps)  ! relative error
 
 	ELSE
 

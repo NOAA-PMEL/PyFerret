@@ -91,8 +91,8 @@ xx        include 'netcdf.decl'  ! untested
 
 * local variable declarations:
       INTEGER TM_LENSTR1, 
-     .        vlen, alen, slen, cdfstat, varid, attype, attlen
-      CHARACTER buff*1024
+     .        vlen, alen, slen, cdfstat, varid, attype, attlen, len_app
+      CHARACTER buff*2048
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -117,7 +117,7 @@ xx        include 'netcdf.decl'  ! untested
       CALL NCAINQ( cdfid, varid, att(:alen), attype, attlen, cdfstat )
       IF ( cdfstat .EQ. NCNOERR ) THEN
          IF ( attype.NE.NCBYTE .AND. attype.NE.NCCHAR ) GOTO 5200
-         IF ( attlen+slen .GT. 1024 .AND. append ) THEN
+         IF ( attlen+slen .GT. 2048 .AND. append ) THEN
             buff = att
             CALL TM_NOTE( 'CDF attribute '//buff(:alen)//
      .           ' is too long', tt )
@@ -128,7 +128,7 @@ xx        include 'netcdf.decl'  ! untested
                CALL TM_NOTE( 'it may be truncated', tt )
             ENDIF
          ENDIF
-         IF ( attlen .GT. 1024 .AND. (.NOT.append) ) THEN
+         IF ( attlen .GT. 2048 .AND. (.NOT.append) ) THEN
             buff = att
             CALL TM_NOTE( 'CDF attribute '//buff(:alen)//
      .           ' is too long', tt )
@@ -142,10 +142,25 @@ xx        include 'netcdf.decl'  ! untested
 
       IF ( cdfstat.EQ.NCNOERR .AND. append ) THEN
 * append to the attribute
-         CALL NCAGTC( cdfid, varid, att(:alen), buff, 1024, cdfstat )
+         CALL NCAGTC( cdfid, varid, att(:alen), buff, 2048, cdfstat )
+         IF ( cdfstat .NE. NCNOERR ) THEN
+            buff = att
+            CALL TM_NOTE( 'CDF attribute in existing file '
+     .        //buff(:alen)//' is too long. Cannot append to it', tt)
+            GOTO 1000
+         ENDIF
+            
          risc_buff = string
-         CALL NCAPTC( cdfid, varid, att(:alen), NCCHAR, attlen+slen,
-     .             buff(:attlen)//risc_buff, cdfstat )
+         len_app = 2048 - attlen - 1
+         IF (len_app .GT. 0) THEN
+            CALL NCAPTC( cdfid, varid, att(:alen), 
+     .             NCCHAR, attlen+slen,
+     .             buff(:attlen)//risc_buff(1:len_app), cdfstat )
+         ELSE
+            CALL NCAPTC( cdfid, varid, att(:alen), 
+     .             NCCHAR, attlen+slen,
+     .             buff(:attlen), cdfstat )
+         ENDIF
       ELSE
 * write the attribute
          CALL NCAPTC( cdfid, varid, att(:alen), NCCHAR, slen,

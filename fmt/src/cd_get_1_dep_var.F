@@ -86,7 +86,8 @@
         external xio_data
 
 
-      LOGICAL NC_GET_ATTRIB, CD_GET_BOUNDS,
+      LOGICAL NC_GET_ATTRIB_FLOAT, NC_GET_ATTRIB_STRING, 
+     .        NC_GET_ATTRIB, CD_GET_BOUNDS,
      .        got_it, got_bad, got_missing, tf2,
      .        do_warn, coordvar
       PARAMETER (do_warn = .TRUE. )
@@ -170,29 +171,27 @@
 
           IF (nvatts .GT. 0) THEN
              maxlen = 128
-             got_it = NC_GET_ATTRIB( dset, ivcd, 'long_name',
+             got_it = NC_GET_ATTRIB_STRING( dset, ivcd, 'long_name',
      .                     .NOT.do_warn, vname(:vlen), maxlen, attlen, 
-     .                     attoutflag, ds_var_title(ivtm), val)
+     .                     attoutflag, ds_var_title(ivtm))
 
              maxlen = 128
-             got_it = NC_GET_ATTRIB( dset, ivcd, 'long_name_mod',
+             got_it = NC_GET_ATTRIB_STRING( dset, ivcd, 'long_name_mod',
      .                     .NOT.do_warn, vname(:vlen), maxlen, attlen, 
-     .                     attoutflag, ds_var_titl_mod(ivtm), val)
+     .                     attoutflag, ds_var_titl_mod(ivtm))
 
              maxlen = 64
-             got_it = NC_GET_ATTRIB( dset, ivcd, 'units',
+             got_it = NC_GET_ATTRIB_STRING( dset, ivcd, 'units',
      .                     do_warn, vname(:vlen), maxlen, attlen, 
-     .                     attoutflag, ds_var_units(ivtm), val)
+     .                     attoutflag, ds_var_units(ivtm))
 
-             maxlen = 1
-             got_it = NC_GET_ATTRIB( dset, ivcd, 'scale_factor',
-     .                     do_warn, vname(:vlen), maxlen, attlen, 
-     .                     attoutflag, buff, cd_scale_factor(ivtm))
+             got_it = NC_GET_ATTRIB_FLOAT( dset, ivcd, 'scale_factor',
+     .                     do_warn, vname(:vlen), attlen, 
+     .                     attoutflag, cd_scale_factor(ivtm))
 
-             maxlen = 1
-             tf2    = NC_GET_ATTRIB( dset, ivcd, 'add_offset',
-     .                     do_warn, vname(:vlen), maxlen, attlen, 
-     .                     attoutflag, buff, cd_add_offset(ivtm))
+             tf2    = NC_GET_ATTRIB_FLOAT( dset, ivcd, 'add_offset',
+     .                     do_warn, vname(:vlen), attlen, 
+     .                     attoutflag, cd_add_offset(ivtm))
 
              cd_scaled(ivtm) = got_it .OR. tf2
 
@@ -201,15 +200,14 @@
 * For the NOAA COOP standard the missing_value flag must be stored in the
 * packed data type.  If so it must be unpacked.  (2/95)
 
-             maxlen = 1
-             got_bad = NC_GET_ATTRIB( dset, ivcd, 'missing_value',
-     .                do_warn, vname(:vlen), maxlen, attlen,
-     .                attoutflag, buff,  ds_bad_flag(ivtm))
+             got_bad = NC_GET_ATTRIB_FLOAT( dset, ivcd, 'missing_value',
+     .                do_warn, vname(:vlen), attlen,
+     .                attoutflag, ds_bad_flag(ivtm))
 
-             maxlen = 1
-             got_missing = NC_GET_ATTRIB( dset, ivcd, '_FillValue',
-     .                do_warn, vname(:vlen),  maxlen, attlen, 
-     .                attoutflag, buff, ds_missing_flag(ivtm))
+             aname = '_FillValue'
+             got_missing = NC_GET_ATTRIB_FLOAT( dset, ivcd, '_FillValue',
+     .                do_warn, vname(:vlen), attlen, 
+     .                attoutflag, ds_missing_flag(ivtm))
 
 * ... need to unpack the missing_value flag?
 *     (note that the netCDF library insists on _FillValue's data type)

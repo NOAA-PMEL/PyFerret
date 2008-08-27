@@ -151,6 +151,8 @@
 *                  to allow for numerical accuracy of bounds for axes of exactly length360.
 * V61   1/08 *acm* Fix bug 1559: Sanity-checking the modulo length can run into precision
 *                  problems, in particular if the axis coordinates in the file are single-precision.
+* V612  8/08 *adm* If the file has a point-spacing=uneven attribute, mark the axis as irreg
+*                  and do not do all the testing for regular axis.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -200,7 +202,7 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
      .        got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time, 
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
-     .        got_edges, got_bnds, coordvar
+     .        got_edges, got_bnds, coordvar, its_irregular
 
       INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,      
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, 
@@ -286,8 +288,10 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
      .                       attoutflag, buff, val)
 
       line_regular(iaxis) = .FALSE.
+      its_irregular = .FALSE.
       IF ( got_it ) THEN
          line_regular(iaxis) = buff(1:1).EQ.'e' .OR. buff(1:1).EQ.'E'
+         its_irregular = .NOT.line_regular(iaxis)
       ELSE
          line_regular(iaxis) = .FALSE. ! default
       ENDIF
@@ -885,6 +889,8 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
 * Check if axis is actually regularly spaced (though not flagged as "even")
 * Fix bug 1483; look at each delta rather than trying to compare with first delta.
+
+        IF (its_irregular) GOTO 380  ! If the file says its irreg, treat is at such
 
         last_coord = line_mem(ipte)
         firs_coord = line_mem(ipt1)

@@ -45,6 +45,10 @@
 * V600: *acm*6/06 - fix bug1419. for modulo axes, index at the end of the last 
 *                   cell may round up to the next modulo replication 
 * V600 *acm* 6/06 - fix declarations, found by solaris compiler
+* V612 *acm* 8/08 - Bug 1594. For 64-bit, when translating to within axis 
+*                   limits, the comparison IF (wcoord .GT. aend) yielded FALSE 
+*                   when in fact the coordinate values should be equal. Use 
+*                   TM_FPEQ to test for equality first.
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -60,7 +64,7 @@
 	LOGICAL	TM_FPEQ, TM_ITS_SUBSPAN_MODULO, regular
 	INTEGER	lo_look, hi_look, axis, ibot, itop, look,
      .		line_len, isubsc, num_mod
-	REAL 	subsc
+	REAL 	subsc, wc, ae
 	REAL*8	SECS_TO_TSTEP, TM_WORLD, TM_WW_AXLEN,
      .		wwindex, wcoord, half_way, start, aend, span, first, last
 
@@ -120,7 +124,10 @@
 	   ENDIF
 
 * ... now translate to within axis limits saving modulo number
-	   IF     ( wcoord .GT. aend  ) THEN
+
+           wc = wcoord
+           ae = aend
+           IF (.NOT.TM_FPEQ(wc, ae) .AND. (wcoord .GT. aend)) THEN
 	      num_mod = ( wcoord - start ) / span
 ! 10/92 bug fix: if wcoord is an exact multiple of length (e.g. wccord=24.
 !       start=0., span=12.) then modulo remap to top of ax rather than bottom

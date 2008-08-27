@@ -188,14 +188,18 @@
 
 #ifdef usingDODSf2cUnderscore 
       INTEGER NF_OPEN_
+      CHARACTER*1024 NF_STRERROR_
 #else
       INTEGER NF_OPEN
+      CHARACTER*1024 NF_STRERROR
 #endif 
+      EXTERNAL NCCLOS
 
       INTEGER i,j,k,l
       INTEGER i1,j1,k1,l1
       INTEGER arg, istatus, slen, cdfid
       CHARACTER*2048 filename
+      CHARACTER*1024 errbuff
       INTEGER nf_nowrite
       PARAMETER (nf_nowrite = 0)
 
@@ -220,14 +224,19 @@
 
 #ifdef usingDODSf2cUnderscore 
            istatus = NF_OPEN_(filename, NF_NOWRITE, cdfid) 
+           IF (istatus .NE. 0) errbuff = NF_STRERROR_(istatus)
+* close the netCDF file
+         IF (istatus .EQ. 0) CALL NCCLOS( cdfid, istatus )
+
 #else
            istatus = NF_OPEN(filename, NF_NOWRITE, cdfid) 
+           IF (istatus .NE. 0) errbuff = NF_STRERROR(istatus)
+* close the netCDF file
+         IF (istatus .EQ. 0) CALL NCCLOS( cdfid, istatus )
 #endif 
 
          result(i,j,k,l) = istatus
-   
-* close the netCDF file
-         IF (istatus .EQ. 0) CALL NCCLOS( cdfid, istatus )
+
 
          i = i + 1
  100  CONTINUE

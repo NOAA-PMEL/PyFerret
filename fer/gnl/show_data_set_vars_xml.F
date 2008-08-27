@@ -159,13 +159,20 @@ c 2090   FORMAT ('</var>')
            WRITE ( risc_buff, 2070 ) show_str(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
+c           IF (ds_var_type(ivar) .EQ. ptype_string ) THEN
+c                risc_buff = 
+c     .         '<attribute name="ferret_datatype" value="STRING" />'
+c           ELSE
+c                risc_buff = 
+c     .         '<attribute name="ferret_datatype" value="FLOAT" />'
+c           ENDIF
+           
            IF (ds_var_type(ivar) .EQ. ptype_string ) THEN
-                risc_buff = 
-     .         '<attribute name="ferret_datatype" value="STRING" />'
+              risc_buff = '<ferret_datatype>STRING</ferret_datatype>'
            ELSE
-                risc_buff = 
-     .         '<attribute name="ferret_datatype" value="FLOAT" />'
+              risc_buff = '<ferret_datatype>FLOAT</ferret_datatype>' 
            ENDIF
+
 
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
@@ -178,25 +185,40 @@ c 2090   FORMAT ('</var>')
 
 * Data type of the variable in the file...
 
+c           IF (vtype .EQ. ncbyte ) THEN
+c              risc_buff = 
+c     .         '<attribute name="infile_datatype" value="BYTE" />'
+c           ELSE IF (vtype .EQ. ncchar ) THEN
+c              risc_buff = 
+c     .         '<attribute name="infile_datatype" value="CHAR" />'
+c           ELSE IF (vtype .EQ. ncshort ) THEN
+c              risc_buff = 
+c     .         '<attribute name="infile_datatype" value="SHORT" />'
+c           ELSE IF (vtype .EQ. nclong ) THEN
+c              risc_buff = 
+c     .         '<attribute name="infile_datatype" value="LONG" />'
+c           ELSE IF (vtype .EQ. ncfloat ) THEN
+c              risc_buff = 
+c     .         '<attribute name="infile_datatype" value="FLOAT" />'
+c           ELSE IF (vtype .EQ. ncdouble ) THEN
+c              risc_buff = 
+c     .         '<attribute name="infile_datatype" value="DOUBLE" />'
+c           ENDIF
+           
            IF (vtype .EQ. ncbyte ) THEN
-              risc_buff = 
-     .         '<attribute name="infile_datatype" value="BYTE" />'
+              risc_buff = '<infile_datatype>BYTE</infile_datatype>'
            ELSE IF (vtype .EQ. ncchar ) THEN
-              risc_buff = 
-     .         '<attribute name="infile_datatype" value="CHAR" />'
+              risc_buff = '<infile_datatype>CHAR</infile_datatype>'
            ELSE IF (vtype .EQ. ncshort ) THEN
-              risc_buff = 
-     .         '<attribute name="infile_datatype" value="SHORT" />'
+              risc_buff = '<infile_datatype>SHORT</infile_datatype>'
            ELSE IF (vtype .EQ. nclong ) THEN
-              risc_buff = 
-     .         '<attribute name="infile_datatype" value="LONG" />'
+              risc_buff = '<infile_datatype>LONG</infile_datatype>'
            ELSE IF (vtype .EQ. ncfloat ) THEN
-              risc_buff = 
-     .         '<attribute name="infile_datatype" value="FLOAT" />'
+              risc_buff = '<infile_datatype>FLOAT</infile_datatype>'
            ELSE IF (vtype .EQ. ncdouble ) THEN
-              risc_buff = 
-     .         '<attribute name="infile_datatype" value="DOUBLE" />'
+              risc_buff = '<infile_datatype>DOUBLE</infile_datatype>'
            ENDIF
+
 
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 

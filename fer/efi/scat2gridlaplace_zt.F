@@ -56,6 +56,10 @@
 *              breaks if the output axes are limited by some context.
 *              use ef_set_axis_extend to force the regridding to be
 *              done on the unrestricted output grid.
+*  8/26/2008   The functions call zgrid from the PPLUS code. This function has
+*              some hard-wired workspace limited to 50K points. Instead allocate
+*              work arrays here and pass them to zgrid_laplace.F in this directory
+*              with no changes other than the work array declarations.
 
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -116,7 +120,7 @@
      .      IMPLIED_BY_ARGS,  IMPLIED_BY_ARGS)
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
-      CALL ef_set_num_work_arrays(id, 6)
+      CALL ef_set_num_work_arrays(id, 8)
 
 * Horizontal grid is determined by arguments 4 and 5, the result's z and t axes. 
 
@@ -215,7 +219,7 @@
       nyin = 1 + arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1)
       nzin = 1 + arg_hi_ss(Z_AXIS,ARG1) - arg_lo_ss(Z_AXIS,ARG1)
       ntin = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
-      nin = 3* max(nxin,nyin,nzin,ntin)
+      nin = max(nxin,nyin,nzin,ntin)
 
       nzout = 1 + arg_hi_ss(Z_AXIS,ARG4) - arg_lo_ss(Z_AXIS,ARG4)
       ntout = 1 + arg_hi_ss(T_AXIS,ARG5) - arg_lo_ss(T_AXIS,ARG5)
@@ -244,6 +248,12 @@
 * fscat - scattered points with gaps removed.
       CALL ef_set_work_array_dims (id, 6, 1, 1, 1, 1, nin, 1, 1, 1)
 
+* zgrid_laplace work array zpij
+      CALL ef_set_work_array_dims (id, 7, 1, 1, 1, 1, nin, 1, 1, 1)
+
+* zgrid_laplace work array knxt
+      CALL ef_set_work_array_dims (id, 8, 1, 1, 1, 1, nin, 1, 1, 1)
+
 ************************************************************************
 
       RETURN 
@@ -254,7 +264,7 @@
 *
       SUBROUTINE scat2gridlaplace_zt_compute(id, arg_1, arg_2, 
      .     arg_3, arg_4, arg_5, arg_6, arg_7, result, zax, tax,
-     .     zgridded, zscat, tscat, fscat)
+     .     zgridded, zscat, tscat, fscat, zpij, knxt)
 
 *  arg_1  zpts \
 *  arg_2  tpts  > scattered z,t,f(z,t) triples to be gridded. F can be fcn of z,t
@@ -282,8 +292,8 @@
      .     mem5lot:mem5hit)
       REAL arg_6(mem6lox:mem6hix, mem6loy:mem6hiy, mem6loz:mem6hiz, 
      .     mem6lot:mem6hit)
-      REAL arg_7(mem6lox:mem6hix, mem6loy:mem6hiy, mem6loz:mem6hiz, 
-     .     mem6lot:mem6hit)
+      REAL arg_7(mem7lox:mem7hix, mem7loy:mem7hiy, mem7loz:mem7hiz, 
+     .     mem7lot:mem7hit)
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .     memresloz:memreshiz, memreslot:memreshit)
 
@@ -328,6 +338,10 @@
      .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
       REAL fscat(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
      .               wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
+      REAL zpij(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
+     .               wrk7loz:wrk7hiz, wrk7lot:wrk7hit)
+      REAL knxt(wrk8lox:wrk8hix, wrk8loy:wrk8hiy,
+     .               wrk8loz:wrk8hiz, wrk8lot:wrk8hit)
 
       CHARACTER*250 errtxt
 
@@ -482,8 +496,8 @@ C  Get coordinates of output axes.
 
 *  Grid the data. 
 
-         CALL zgrid (zgridded, nzsize, ntsize, nz, nt, z1, t1, 
-     .              dz, dt, zscat, tscat, fscat, nscat, cay, nrng)
+         call zgrid_laplace (zgridded, nzsize, ntsize, nz, nt, z1, t1, 
+     .      dz, dt, zscat, tscat, fscat, zpij, knxt, nscat, cay, nrng)
 
 
 *  Put zgridded into result variable.  Use "bad_flag_result" rather than

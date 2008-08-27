@@ -117,7 +117,8 @@ zaxreplace_bin.F\
 zaxreplace_rev.F\
 zaxreplace_zlev.F\
 zcat.F\
-zreverse.F
+zreverse.F\
+zgrid_laplace.F
 SRCS_C = \
 date_decode.c\
 time_decode.c

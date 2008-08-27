@@ -55,7 +55,9 @@ C     for compatibility with Ferret use of symbols.
 * V510 9/99 *sh* increased initialization sizes for bigger NLINES
 *      3/00 *sh* reduceded initialization sizes for NLINES variables
 * 		(except lleng())
-* V610 2/08 *acm*increase default number of contour levels to NLEV=40 
+* V610 2/08 *acm*increase default number of contour levels to NLEV=40 (MODE NLEVELS)
+* V610 2/08 *acm*keep default number of contour levels to old value of NLEV=10 
+*                If this is changed, also change it in fer/dat/xprog_state_data.F
 
 
 	INCLUDE 'PARAMPL5.DAT'
@@ -121,7 +123,8 @@ C
 	DATA CONPRE,CONPST/' ',' '/
 C
 C
-	DATA ZLEV,LDIG,LWGT,LCLR,NLEV,HGT/500*0.0,1500*0,40,.08/
+c*	DATA ZLEV,LDIG,LWGT,LCLR,NLEV,HGT/500*0.0,1500*0,40,.08/
+	DATA ZLEV,LDIG,LWGT,LCLR,NLEV,HGT/500*0.0,1500*0,10,.08/
 	DATA NARC,IAUTOC,NLEV2,NSIGC,CANGLE,IVCOMP/1,1,0,2,0.0,1/
 C
 	DATA DASHLN,SPACLN,DSLAB/.04,.04,5.0/

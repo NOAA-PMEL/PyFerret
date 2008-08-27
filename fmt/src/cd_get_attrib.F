@@ -52,6 +52,8 @@
 *                     libraries have apparently lifted the restriction.
 *                     This lets us increase the size of e.g. the title attribute.
 * V602 *acm* make sure lena=length of attr name is defined before writing warning
+* V62  6/08 *acm* Increase reading buffer size to 2048 and check the status flag when
+*            reading the attribute values.
 * 
 
 * argument definitions:
@@ -111,22 +113,28 @@
 !          GOTO 5000
       ELSE
          CALL NCAGTC(cdfid,varid,attrib,buff,slen,cdfstat)
+         IF (cdfstat .NE. NCNOERR ) THEN
+            too_long = .TRUE.
+            CD_GET_ATTRIB = .FALSE.
+            GOTO 5000
+         ELSE
 * ... f77 vs c bug:
 * ... replace trailing nulls with blanks for FORTRAN strings
             DO 100 i = attlen, 1, -1
                IF ( ICHAR(buff(i:i)) .EQ. 0 ) THEN
                buff(i:i) = ' '
                ENDIF
- 100     CONTINUE
-         CD_GET_ATTRIB = .TRUE.
-         string = buff
-         IF ( TM_LENSTR1(buff(:attlen)) .GT. slen ) THEN
-            too_long = .TRUE.
-            buff = 'attribute truncated'	! warning msg
-            GOTO 5000
+ 100        CONTINUE
+            CD_GET_ATTRIB = .TRUE.
+            string = buff
+            IF ( TM_LENSTR1(buff(:attlen)) .GT. slen ) THEN
+               too_long = .TRUE.
+               buff = 'attribute truncated'	! warning msg
+               GOTO 5000
+            ENDIF
+
 	 ENDIF
       ENDIF
-
 
       RETURN
 

@@ -46,6 +46,8 @@
 *                         we can get all the info on dataset-specific user-defined
 *                         variables in all files.
 * V6.1  2/2008 *acm* Use attribute structure to get all attributes for the variable.
+* V612  8/2007 *acm* Revert to old xml style output for infile_datatype and 
+*                    ferret_datatype attributes
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"

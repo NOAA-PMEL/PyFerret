@@ -44,7 +44,9 @@
 * V602 *acm*11/06 - Fix bug 1468, wrong string was written instead of the
 *                   calendar name.
 * V6.1  2/2008 *acm* Use attribute structure to get all attributes for the axis.
- 
+* V612  8/2007 *acm* Revert to old xml style output for infile_datatype and 
+*                    ferret_datatype attributes
+
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xtm_grid.cmn_text'

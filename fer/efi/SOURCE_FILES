@@ -68,6 +68,7 @@ samplexz.F\
 sampleyz.F\
 scat2ddups.F\
 scat2grid_bin_xy.F\
+scat2gridgauss_xy.F\
 scat2gridgauss_xz.F\
 scat2gridgauss_yz.F\
 scat2gridlaplace_xy.F\

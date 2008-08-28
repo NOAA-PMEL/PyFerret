@@ -20531,7 +20531,7 @@ PLOT/LATCH/NOWAIT
 %LABEL 0.2, 0.7, 0, 0, 0.2, "@p2This<NL>@P3works<NL>@p4fine."
 %LABEL 0.5, 0.7, 0, 0, 0.2, "@C002this<NL>@c003does<NL>@C004not."
 %LABEL 0.8, 0.7, 0, 0, 0.2, "@C002this<NL>does<NL>not @C004either."
-%LABEL 0.1, 0.3, 0, 0, 0.2, "greek<NL>@SGt@SR_y<NL<NL>works"
+%LABEL 0.1, 0.3, 0, 0, 0.2, "greek<NL>@SGt@SR_y<NL>works"
 NLINES
 PLTYPE 3
 XFOR
@@ -23358,6 +23358,24 @@ AXLEN        8.000       6.000
 SET VP_WIDTH 10.2
 SET VP_HEIGHT 8.8
 ORIGIN        1.200       1.400
+SIZE       10.200       8.800
+AXLEN        8.000       6.000
+SET VP_WIDTH 10.2
+SET VP_HEIGHT 8.8
+ORIGIN        1.200       1.400
+CLSPLT
+SHASET RESET
+AXLEN        8.000       6.000
+SET VP_WIDTH 10.2
+SET VP_HEIGHT 8.8
+ORIGIN        1.200       1.400
+SET VP_SCALE 1
+SET VP_RT_MARGIN 1
+SET VP_TOP_MARGIN 1.4
+SET VP_XLO 0
+SET VP_XHI 1
+SET VP_YLO 0
+SET VP_YHI 1
 SIZE       10.200       8.800
 AXLEN        8.000       6.000
 SET VP_WIDTH 10.2

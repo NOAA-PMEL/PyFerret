@@ -49,7 +49,7 @@
 * revision 0.10 - 10/23/87 - all variables explicitly declared
 *
 * calling arguments:
-	REAL*8	eps, a, b, abmin
+	REAL	eps, a, b, abmin
 
         abmin = MIN(abs(a), abs(b))
 

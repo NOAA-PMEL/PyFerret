@@ -89,12 +89,13 @@
 * V6.10  3/25/08  Version 6.1
 * V6.11  4/02/08  Version 6.11 internal release
 * V6.12  5/20/08  Version 6.12
+* V6.13  8/28/08  Version 6.13
 
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.12   /
+	DATA revision_level	/  6.13   /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

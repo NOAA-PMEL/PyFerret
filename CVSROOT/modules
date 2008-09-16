@@ -49,7 +49,7 @@ godae godae &xml
 
 FERRET &fer &ppl &fmt &gksm2ps &list-2.1 &readline-4.1 &readline &xgks &external_functions &bench
 
-FERRET_AT &fer &ppl &fmt &gksm2ps &list-2.1 &readline &xgks &external_functions &bench &fer_top_add
+FERRET_AT &fer &ppl &fmt &gksm2ps &list-2.1 &readline &xgks &external_functions &bench &top_add
 
 # LAS with servlet code 
 las -d las lasxml &xml &las_servlet

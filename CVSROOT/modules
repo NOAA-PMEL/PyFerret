@@ -29,7 +29,13 @@ fer	fer
 ppl	ppl
 fmt 	fmt
 gksm2ps gksm2ps
-bench 	bench
+bench   bench
+list-2.1        list-2.1
+readline        readline
+xgks    xgks
+external_functions      external_functions
+bench   bench
+fer_top_add     fer_top_add
 
 #new one
 corba 	corba
@@ -43,6 +49,8 @@ lasxml lasxml &xml
 godae godae &xml
 
 FERRET &fer &ppl &fmt &gksm2ps &list-2.1 &readline-4.1 &readline &xgks &external_functions &bench
+
+FERRET_AT &fer &ppl &fmt &gksm2ps &list-2.1 &readline &xgks &external_functions &bench &fer_top_add
 
 # LAS with servlet code 
 las -d las lasxml &xml &las_servlet

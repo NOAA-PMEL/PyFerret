@@ -34,7 +34,8 @@ list-2.1        list-2.1
 readline        readline
 xgks    xgks
 external_functions      external_functions
-fer_top_add     fer_top_add
+top_add     top_add
+build_support     build_support
 
 #new one
 corba 	corba
@@ -49,7 +50,7 @@ godae godae &xml
 
 FERRET &fer &ppl &fmt &gksm2ps &list-2.1 &readline-4.1 &readline &xgks &external_functions &bench
 
-FERRET_AT &fer &ppl &fmt &gksm2ps &list-2.1 &readline &xgks &external_functions &bench &top_add
+FERRET_AT &fer &ppl &fmt &gksm2ps &list-2.1 &readline &xgks &external_functions &bench &top_add &build_support
 
 # LAS with servlet code 
 las -d las lasxml &xml &las_servlet

@@ -10,6 +10,7 @@
 			  -I/usr/include \
 			  -I/usr/include/X11 \
 			  -I$(TMAP_LOCAL)/include \
+			  -I/home/porter/ansley/netcdf-3.6.3/prebuilt_i386/include \
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \
@@ -78,7 +79,7 @@
 	READLINELIB	= ../readline-4.1/libreadline.a 
 
 	HDFLIB		= -L/usr/local/src/HDF/lib  -ldf -ljpeg -lz
-        CDFLIB          = /home/porter/ansley/netcdf-3.6.3/i386-linux/lib/libnetcdf.a /home/porter/ansley/netcdf-3.6.3/i386-linux/lib/libnetcdff.a
+        CDFLIB          = /home/porter/ansley/netcdf-3.6.3/i386-linux/lib/libnetcdf.a 
 #
 # Note we need libcurl.a from /usr/local/lib, not the one in /usr/lib/ so that OPeNDAP 
 # password authentication can work. Note that the order of libraries given by the ncdap-config

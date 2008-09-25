@@ -1,5 +1,5 @@
 *
-* element_index_str_n.F
+* element_index_str.F
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -76,7 +76,7 @@
 *
 
 
-      SUBROUTINE element_index_str_n_init(id)
+      SUBROUTINE element_index_str_init(id)
 
       INCLUDE 'EF_Util.cmn'
 
@@ -90,7 +90,7 @@
       WRITE (fcn_desc, 10)
    10 FORMAT (
      .'Return index value in ARG2 for each string in ARG1 ',
-     .'(case sensitive matching)')
+     .'(case insensitive matching)')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 2)
@@ -123,7 +123,7 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE element_index_str_n_compute(id, arg_1, arg_2, result)
+      SUBROUTINE element_index_str_compute(id, arg_1, arg_2, result)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
@@ -157,8 +157,9 @@
       INTEGER i, j, k, l
       INTEGER i2, j2, k2, l2
       INTEGER slen1, slen2
+      INTEGER STR_UPCASE, status
       CHARACTER text1*20, text2*20
-
+      CHARACTER text1up*20, text2up*20
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -187,9 +188,11 @@ C  Check for strings matching arg2
      .                                     i2,j2,k2,l2, slen2, text2)
 
             IF (slen1 .EQ. slen2) THEN
-              IF (text1(:slen1) .EQ. text2(:slen2)) THEN
+              status = STR_UPCASE(text1up,text1)
+              status = STR_UPCASE(text2up,text2)
+              IF (text1up(:slen1) .EQ. text2up(:slen2)) THEN
                  result(i,j,k,l) = i2
-                 GOTO 9000
+                 GO TO 9000
               ENDIF
             ENDIF
 

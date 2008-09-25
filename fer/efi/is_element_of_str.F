@@ -90,7 +90,7 @@
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
    10 FORMAT ('Returns 1 if first argument contains any of the ',
-     .        'values in argument 2, else 0')
+     .        'values in 2nd argument (case sensitive), else 0')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 2)
@@ -102,15 +102,16 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'VAR')
-      CALL ef_set_arg_desc(id, arg, 'data to test')
+      CALL ef_set_arg_desc(id, arg, 'string')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'VALUES')
-      CALL ef_set_arg_desc(id, arg, 'strings to search for')
+      CALL ef_set_arg_desc(id, arg, 'strings to search')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
+
 
 *                                                                     ^
 *                                                                     |
@@ -212,7 +213,6 @@ C  Check for strings matching arg2
       k = res_lo_ss(Z_AXIS)
       l = res_lo_ss(T_AXIS)
 
-      result(i,j,k,l) = 0.
 
       DO 400 i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS, ARG2)
       DO 300 j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS, ARG2)
@@ -233,6 +233,7 @@ C  Check for strings matching arg2
             CALL ef_get_string_arg_element(id, arg, arg_2, 
      .                                     i2,j2,k2,l2, slen2, text2)
 
+            result(i,j,k,l) = 0.
             IF (slen1 .EQ. slen2) THEN
                IF (text1(:slen1) .EQ. text2(:slen2)) THEN
                   result(i,j,k,l) = 1.

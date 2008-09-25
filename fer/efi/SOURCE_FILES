@@ -21,6 +21,7 @@ date1900.F\
 days1900toymdhms.F\
 element_index.F\
 element_index_str.F\
+element_index_str_n.F\
 eof_space.F\
 eof_stat.F\
 eof_tfunc.F\
@@ -42,6 +43,7 @@ flag2ddups.F\
 gausswt.F\
 is_element_of.F\
 is_element_of_str.F\
+is_element_of_str_n.F\
 labwid.F\
 lanczos.F\
 lsl_lowpass.F\

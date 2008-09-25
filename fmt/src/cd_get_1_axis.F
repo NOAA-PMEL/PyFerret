@@ -212,7 +212,7 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
      .        edgid, spacing_atlen, epic_t2var, since_T0,
      .        cal_id, year, month, day, hour, minute, second, slen, nc,
      .        blen, bndid, startpts(2), numpts(2), next_line_storage,
-     .        newaxis, d1s, d1e, d2s, d2e, len_cal, attoutflag, maxlen,
+     .        d1s, d1e, d2s, d2e, len_cal, attoutflag, maxlen,
      .        all_outflag, dir, attlen
 
       REAL    rbuff, delta, first_delta, val, epsilon
@@ -1183,26 +1183,6 @@ c             line_modulo_len(iaxis) = 0.0D0
      .          //vname(:vlen), tt )
            ENDIF
         ENDIF
-
-
-* If a dynamic axis was created as part of bounds checking, give it 
-* all the same settings (except name, length, and line_subsc1 which 
-* are already set
-        IF (newaxis .NE. 0) THEN
-            line_regular(newaxis) = line_regular(iaxis)
-            line_units(newaxis) = line_units(iaxis)
-            line_unit_code(newaxis) = line_unit_code(iaxis)
-            line_tunit(newaxis) = line_tunit(iaxis) 
-            line_cal_name(newaxis) = line_cal_name(iaxis)
-            line_t0(newaxis) = line_t0(iaxis)
-            line_modulo(newaxis) = line_modulo(iaxis)
-            line_modulo_len(newaxis) = line_modulo_len(iaxis)
-            line_direction(newaxis) = line_direction(newaxis)
-            line_start(newaxis) = line_start(iaxis) 
-            line_delta(newaxis) = line_delta(iaxis) 
-            line_regular(newaxis) = line_regular(iaxis) 
-            reversed(newaxis) = reversed(iaxis)
-         ENDIF
 
 * Save the line direction in the linked-list structure for the coordinate variable
 

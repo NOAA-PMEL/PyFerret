@@ -594,6 +594,9 @@ GO bn_reset
 GO bn_no_valid_on_plot
 
 GO bn_reset
+GO bn_median
+
+GO bn_reset
 GO bn613_bug_fixes
 
 ! version 2.3 requires exit/command *sh* 3/92

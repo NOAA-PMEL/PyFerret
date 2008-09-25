@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 49440740 Sep 15 11:41 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 49507442 Sep 25 14:59 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for ticket 1598 SET ATT after SET DATA/RESTORE
+Note: new median transformation; new case-insensitive functions is_element_of_str_n element_index_str_n
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Mon Sep 15 11:42:36 PDT 2008
+Beginning at Thu Sep 25 15:16:07 PDT 2008
  	NOAA/PMEL TMAP
  	FERRET v6.13  
- 	Linux(g77) 2.6.9-22. - 09/15/08
- 	15-Sep-08 11:42     
+ 	Linux(g77) 2.6.9-22. - 09/25/08
+ 	25-Sep-08 15:16     
 
 yes? !bn500_all_shell
 yes? 
@@ -10229,13 +10229,13 @@ GO bn_symbols	! added 6/22/95
  
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "430"
-PPL$YPIXEL = "430"
+PPL$XPIXEL = "317"
+PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.13"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "15-Sep-08"
-SESSION_TIME = "11:42"
+SESSION_DATE = "25-Sep-08"
+SESSION_TIME = "15:16"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10248,13 +10248,13 @@ define symbol t_($s1) = hi	! define "t_hello" as a symbol
  
 ! exercise SHOW SYMBOL
 show symbol/all
-PPL$XPIXEL = "430"
-PPL$YPIXEL = "430"
+PPL$XPIXEL = "317"
+PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.13"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "15-Sep-08"
-SESSION_TIME = "11:42"
+SESSION_DATE = "25-Sep-08"
+SESSION_TIME = "15:16"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10262,8 +10262,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "15-Sep-08"
-SESSION_TIME = "11:42"
+SESSION_DATE = "25-Sep-08"
+SESSION_TIME = "15:16"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10273,13 +10273,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "15-Sep-08"
-SESSION_TIME = "11:42"
+SESSION_DATE = "25-Sep-08"
+SESSION_TIME = "15:16"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "15-Sep-08"
-SESSION_TIME = "11:42"
+SESSION_DATE = "25-Sep-08"
+SESSION_TIME = "15:16"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10313,7 +10313,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.13"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Sep 15 2008 11:42:42 "
+LAB3 = "Sep 25 2008 15:16:14 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10405,13 +10405,13 @@ say ($delayed_eval)         ! translate symbol and then evaluate
 ! cleanup
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "430"
-PPL$YPIXEL = "430"
+PPL$XPIXEL = "317"
+PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.13"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "15-Sep-08"
-SESSION_TIME = "11:42"
+SESSION_DATE = "25-Sep-08"
+SESSION_TIME = "15:16"
  
  
 GO bn_reset
@@ -18141,8 +18141,8 @@ SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94
  
 !GO bn_reset
 !GO bn301_mem_mgmt
-MESSAGE/CONTINUE  ***** bn301_mem_mgmt has bee-rw-rw-r--  1 ansley tmap 23236 Sep 15 11:42 bench.mgm
--rw-rw-r--  1 ansley tmap 415788 Sep 15 11:42 bench.mgm
+MESSAGE/CONTINUE  ***** bn301_mem_mgmt has bee-rw-rw-r--  1 ansley tmap 16413 Sep 25 15:16 bench.mgm
+-rw-rw-r--  1 ansley tmap 290220 Sep 25 15:16 bench.mgm
 n removed from run_all.
 ***** bn301_mem_mgmt has been removed from run_all.
 MESSAGE/CONTINUE  ***** Its too slow!!!
@@ -25291,7 +25291,7 @@ GO err491_grid_from_name.jnl
 ! *sh* 3/99
  
 ! implicit grid, such as "Z[gz=zax]", are allowed inabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Mon Sep 15 11:42:53 PDT 2008
+Thu Sep 25 15:16:25 PDT 2008
  places they shouldn't be
  
 ! fixed with change to GRID_FROM_NAME (and PARSE_NAM_DSET_GRD)
@@ -31993,20 +31993,12 @@ SAMPLEYZ(DAT_TO_SAMPLE,YPTS,ZPTS)
     DAT_TO_SAMPLE: variable (x,y,z,t) to sample
     YPTS: Y values of sample points
     ZPTS: Z values of sample points
-SAMPLEXY_CURV_AVG(DAT_TO_SAMPLE,DAT_LON,DAT_LAT,XPTS,YPTS)
-    Returns data sampled at a set of (X,Y) points, using unweighted averaging
+SAMPLEXYT(DAT_TO_SAMPLE,XPTS,YPTS,TPTS)
+    Returns data sampled at a set of (X,Y,T) points, using linear interpolation
     DAT_TO_SAMPLE: variable (x,y,z,t) to sample
-    DAT_LON: longitudes of input variable
-    DAT_LAT: latitudes of input variable
     XPTS: X values of sample points
     YPTS: Y values of sample points
-SAMPLEXY_CURV_NRST(DAT_TO_SAMPLE,DAT_LON,DAT_LAT,XPTS,YPTS)
-    Returns data at a set of (X,Y) points, from nearest loc on XY curvilinear grid
-    DAT_TO_SAMPLE: variable (x,y,z,t) to sample
-    DAT_LON: longitudes of input variable
-    DAT_LAT: latitudes of input variable
-    XPTS: X values of sample points
-    YPTS: Y values of sample points
+    TPTS: T values of sample points
  
 go bench_sorti.jnl
  
@@ -33095,6 +33087,10 @@ CURV_TO_RECT_MAP(lon_in,lat_in,grid_out,radius)
     grid_out: Any variable on destination Longitude-Latitude grid, Lon and Lat (degrees)
     radius: Source points falling within radius are included in mapping to destination point (degrees)
 CURV_TO_RECT(V,mapping)
+    Apply mapping to regrid from curvilinear to rectangular grid
+    V: Variable to regrid, on curvilinear grid V(x,y,z,t)
+    mapping: mapping computed by curv_to_rect_MAP
+CURV_TO_RECT_FSU(V,mapping)
     Apply mapping to regrid from curvilinear to rectangular grid
     V: Variable to regrid, on curvilinear grid V(x,y,z,t)
     mapping: mapping computed by curv_to_rect_MAP
@@ -34458,14 +34454,7 @@ list/nohead 1 - {"a","b"}
  1   / 1:....
  2   / 2:....
 list/nohead SIN({"a","b","c"})
- 1   / 1:....col1,col2,col3,col4,col5
-one,,1.1,24S,130E,,1e1,"word 1"
-    two,,2.2,24N,130W,2S,,"word 2"
-three,,3.3,24,130,3N,3e-2," wd 3 "
-
-five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
-extra line
-
+ 1   / 1:....
  2   / 2:....
  3   / 3:....
 list/nohead MAX("a",{"a","b","c"})
@@ -34477,7 +34466,14 @@ list/nohead MAX(1,{"a","b","c"})
  2   / 2:....
  3   / 3:....
  
-! transformations applied to strings
+! transformations applied col1,col2,col3,col4,col5
+one,,1.1,24S,130E,,1e1,"word 1"
+    two,,2.2,24N,130W,2S,,"word 2"
+three,,3.3,24,130,3N,3e-2," wd 3 "
+
+five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
+extra line
+to strings
 let a = {"a","b","c","d"}
 list a[i=@shf]
              VARIABLE : {"a","b","c","d"}
@@ -34840,15 +34836,15 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
         V1  V2    V3       V4       V5       V6       V7    V8 V9    V10
 1   / 1:......  1.10000     ....     ....     ....   10.000......     ....
 2   / 2:......  2.20000     ....     ....     ....     ..........     ....
-3   / 3:......  3col1,col2,col3,col4,col5
+3   / 3:......  3.30000  24.0000  130.000     ....    0.030......     ....
+4   / 4:......     ....     ....     ....     ....     ..........     ....
+5   / 5:......  4.40000 -24.0000 -130.000  91.0000 -400.000......  77.0000
+6col1,col2,col3,col4,col5
 12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
 12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
 12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
 12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-.30000  24.0000  130.000     ....    0.030......     ....
-4   / 4:......     ....     ....     ....     ....     ..........     ....
-5   / 5:......  4.40000 -24.0000 -130.000  91.0000 -400.000......  77.0000
-6   / 6:......     ....     ....     ....     ....     ..........     ....
+   / 6:......     ....     ....     ....     ....     ..........     ....
  
 ! insist that all columns be treated as latitude
 file/format=delim/skip=1/type=latitude bn_delimited_read_1.dat
@@ -35118,16 +35114,16 @@ list v1,v3,v5,v7
              X: 0.5 to 4.5
  Column  1: V1 is V1 (days)(Julian days since 1-Jan-1900)
  Column  2: V3 is V3 (hours)(Time of day)
- Column  3: V5 is V5 (days)(Jul12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-ian days since 1-Jan-1900)
+ Column  3: V5 is V5 (days)(Julian days since 1-Jan-1900)
  Column  4: V7 is V7 (hours)(Time of day)
               V1     V3       V5       V7
 1   / 1:  36493.0  12.0000  36493.0  12.0000
 2   / 2:  36494.0   1.0037  36494.0   1.0037
-3   / 3:     ....     ....  36495.0   2.0000
+3   / 3:12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+     ....     ....  36495.0   2.0000
 4   / 4:  36496.0   3.0000  36496.0   3.0000
 show data 2
      currently SET data sets:
@@ -45263,7 +45259,10 @@ list str3
           4.00000
  
 let str4a = STRLEN("($source_list)")
- !-> DEFINE VARIABLE str4a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+ !-> DEFINE VARIABLE str4a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
+ 
+list str4a
+             VARIABLE : STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.7             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
              GEOMETRY: XY 
@@ -45314,10 +45313,7 @@ DATA:
 224.60300
 224.60350
 224.60400
-14.76*a23+14.76*b23")
- 
-list str4a
-             VARIABLE : STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.7
+6*b18+14.76*a19+14.76*b19+14.7
           247.000
  
  
@@ -45730,7 +45726,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASSep 15 2008 11:43:26
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASSep 25 2008 15:16:57
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 179.9E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -46918,7 +46914,7 @@ list is_element_of_str (axy[k=1:2,j=1:2], "A10")
              VARIABLE : IS_ELEMENT_OF_STR (AXY[K=1:2,J=1:2], "A10")
              FILENAME : string4d.nc
              X        : 1
-          0.000
+          0.0000
 list is_element_of_str (axy[k=1:2,j=1:2], {"B0", "QQ", "d4", "m5"})
              VARIABLE : IS_ELEMENT_OF_STR (AXY[K=1:2,J=1:2], {"B0", "QQ", "d4", "m5"})
              FILENAME : string4d.nc
@@ -46926,6 +46922,42 @@ list is_element_of_str (axy[k=1:2,j=1:2], {"B0", "QQ", "d4", "m5"})
           1.000
 list element_index_str (axy[k=1:2,j=1:2], {"a10", "a2", "d4", "c5"})
              VARIABLE : ELEMENT_INDEX_STR (AXY[K=1:2,J=1:2], {"a10", "a2", "d4", "c5"})
+             FILENAME : string4d.nc
+             SUBSET   : 2 by 2 by 2 by 2 points (X-Y-Z-T)
+             1      2    
+             1      2
+ ---- L:1 T:   1
+ ---- K:1 Z:   1
+ 1   / 1:   ....  2.000
+ 2   / 2:   ....   ....
+ ---- K:2 Z:   2
+ 1   / 1:   ....   ....
+ 2   / 2:   ....  1.000
+ ---- L:2 T:   2
+ ---- K:1 Z:   1
+ 1   / 1:  4.000   ....
+ 2   / 2:   ....   ....
+ ---- K:2 Z:   2
+ 1   / 1:   ....   ....
+ 2   / 2:   ....  3.000
+ 
+list is_element_of_str_n (axy[k=1:2,j=1:2], "a10")
+             VARIABLE : IS_ELEMENT_OF_STR_N (AXY[K=1:2,J=1:2], "a10")
+             FILENAME : string4d.nc
+             X        : 1
+          1.000
+list is_element_of_str_n (axy[k=1:2,j=1:2], "A10")
+             VARIABLE : IS_ELEMENT_OF_STR_N (AXY[K=1:2,J=1:2], "A10")
+             FILENAME : string4d.nc
+             X        : 1
+          2.000
+list is_element_of_str_n (axy[k=1:2,j=1:2], {"B0", "QQ", "d4", "m5"})
+             VARIABLE : IS_ELEMENT_OF_STR_N (AXY[K=1:2,J=1:2], {"B0", "QQ", "d4", "m5"})
+             FILENAME : string4d.nc
+             X        : 1
+          1.000
+list element_index_str_n (axy[k=1:2,j=1:2], {"a10", "a2", "d4", "c5"})
+             VARIABLE : ELEMENT_INDEX_STR_N (AXY[K=1:2,J=1:2], {"a10", "a2", "d4", "c5"})
              FILENAME : string4d.nc
              SUBSET   : 2 by 2 by 2 by 2 points (X-Y-Z-T)
              1      2    
@@ -47094,7 +47126,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "15-Sep-08:11:42"
+WIN_TITLE = "25-Sep-08:15:16"
  
 set win/title="set the title"
 sho sym win_title
@@ -50040,7 +50072,11 @@ ELEMENT_INDEX(VAR,VALUES)
     VAR: data to mask
     VALUES: list of values to match
 ELEMENT_INDEX_STR(VAR,STRINGS)
-    Return index value in ARG2 for each string in ARG1
+    Return index value in ARG2 for each string in ARG1 (case insensitive matching)
+    VAR: string data to mask (STRING)
+    STRINGS: list of strings to match (STRING)
+ELEMENT_INDEX_STR_N(VAR,STRINGS)
+    Return index value in ARG2 for each string in ARG1 (case sensitive matching)
     VAR: string data to mask (STRING)
     STRINGS: list of strings to match (STRING)
 IS_ELEMENT_OF(VAR,VALUES)
@@ -50048,6 +50084,14 @@ IS_ELEMENT_OF(VAR,VALUES)
     VAR: data to test
     VALUES: values to search for
 IS_ELEMENT_OF_STR(VAR,VALUES)
+    Returns 1 if first argument contains any of the values in 2nd argument (case sen
+    VAR: string (STRING)
+    VALUES: strings to search (STRING)
+IS_ELEMENT_OF_STR_N(VAR,VALUES)
+    Returns 1 if 1st arg contains any of the values in 2nd arg, 2 if case-insensitve
+    VAR: string (STRING)
+    VALUES: strings to search (STRING)
+IS_ELEMENT_OF_STR_NOCASE(VAR,VALUES)
     Returns 1 if first argument contains any of the values in argument 2, else 0
     VAR: data to test (STRING)
     VALUES: strings to search for (STRING)
@@ -52836,6 +52880,7 @@ DATE1900(formatted date)
 DAYS1900TOYMDHMS(day1900)
 ELEMENT_INDEX(VAR,VALUES)
 ELEMENT_INDEX_STR(VAR,STRINGS)
+ELEMENT_INDEX_STR_N(VAR,STRINGS)
 EOF_STAT(A,frac_timeser)
 EOF_TFUNC(A,frac_timeser)
 EOF_SPACE(A,frac_timeser)
@@ -52852,6 +52897,7 @@ FINDHI(A,XRANGE,YRANGE)
 FINDLO(A,XRANGE,YRANGE)
 IS_ELEMENT_OF(VAR,VALUES)
 IS_ELEMENT_OF_STR(VAR,VALUES)
+IS_ELEMENT_OF_STR_N(VAR,VALUES)
 LABWID(STR,HT)
 LANCZOS(A,F1,F2,N)
 LSL_LOWPASS(A,cutoff_period,filter_span)
@@ -52924,19 +52970,23 @@ ADD_9(A,B,C,D,E,F,G,H,I)
 AVET(A)
 CLOSEST_IN_ZLIST(target,zlist)
 CMPRSI_BY(dat,mask)
+CURV_TO_RECT_FSU(V,mapping)
 DATES(var)
 FACTORIAL(A)
-FILL_XY(A,B,C)
-INDEX_TO_GRID(I,J,VAL,D)
+IS_ELEMENT_OF_STR_NOCASE(VAR,VALUES)
 LIST_GOOD(A)
 PASS_THRU(A)
 PERCENT_GOOD_T(A)
-SAMPLEXY_CURV_AVG(DAT_TO_SAMPLE,DAT_LON,DAT_LAT,XPTS,YPTS)
-SAMPLEXY_CURV_NRST(DAT_TO_SAMPLE,DAT_LON,DAT_LAT,XPTS,YPTS)
+SAMPLEXYT(DAT_TO_SAMPLE,XPTS,YPTS,TPTS)
+SCAT2GRID_BIN_XY(XPTS,YPTS,F,XAXPTS,YAXPTS)
+SCATGRID_NOBS_XYT(XPTS,YPTS,TPTS,XAXPTS,YAXPTS,TAXPTS)
 STORAGE(A)
 STRING_ARG(A,string)
+STUDENT_T_CUTOFF(P,nf)
 SUBTRACT(A,B)
+TAX_INDEX_DATESTRING(A,B,C)
 WRITEV5D(V1,V2,V3,V4,V5,V6,V7,V8,FILENAME)
+ZAXREPLACE_XYT(V,THICKNESS,ZAX)
  
  
 GO bn_reset
@@ -53329,7 +53379,7 @@ go polymark poly/lev=(-5,30,1)/fill/line=1/nolab/over v1 v2 v3 circle 2
  
  
  
- 
+cancel viewports
  
  
 GO bn_reset
@@ -53643,28 +53693,28 @@ hello
  @ASDeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  0.000E+00  4.850E+00 0.120    0  SYSTEM  @ASLATITUDE : 39N
+ LAB 1  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLATITUDE : 39N
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 2  0.000E+00  4.650E+00 0.120    0  SYSTEM  @ASTIME : JAN
+ LAB 2  0.000E+00  6.600E+00 0.120    0  SYSTEM  @ASTIME : JAN
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 3  3.200E+00  4.650E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
+ LAB 3  8.000E+00  6.600E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
- LAB 4  1.600E+00  4.380E+00 0.120    0  SYSTEM  @A
+ LAB 4  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 5  1.600E+00  2.030E+00 0.200    0  SYSTEM  @ASNo Valid Data
+ LAB 5  4.000E+00  3.000E+00 0.200    0  SYSTEM  @ASNo Valid Data
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  @ACSEA SURFACE TEMPERATURE (Deg C)                                             
  @ASLONGITUDE                                                                   
  @ASDeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  0.000E+00  4.850E+00 0.120    0  SYSTEM  @ASLATITUDE : 9N
+ LAB 1  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLATITUDE : 9N
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 2  0.000E+00  4.650E+00 0.120    0  SYSTEM  @ASTIME : JAN
+ LAB 2  0.000E+00  6.600E+00 0.120    0  SYSTEM  @ASTIME : JAN
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 3  3.200E+00  4.650E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
+ LAB 3  8.000E+00  6.600E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
- LAB 4  1.600E+00  4.380E+00 0.120    0  SYSTEM  @A
+ LAB 4  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 5 -3.700E-01 -5.500E-01 0.080    0  SYSTEM  @ASSST[Y=39N] No Valid Data
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -53673,18 +53723,490 @@ hello
  @ASDeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  0.000E+00  4.570E+00 0.120    0  SYSTEM  @ASTIME : JAN
+ LAB 1  0.000E+00  6.600E+00 0.120    0  SYSTEM  @ASTIME : JAN
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 2  3.200E+00  4.570E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
+ LAB 2  8.000E+00  6.600E+00 0.120    0  SYSTEM  @ASDATA SET: coads_climatology
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
- LAB 3  1.600E+00  4.300E+00 0.120    0  SYSTEM  @A
+ LAB 3  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 4  1.990E+00 -8.000E-01 0.102    0  SYSTEM  @ASSST[Y=9N]
+ LAB 4  2.530E+00 -8.000E-01 0.120    0  SYSTEM  @ASSST[Y=9N]
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 5  1.990E+00 -9.900E-01 0.057    0  SYSTEM  @ASSST[Y=49N] No Valid Data
+ LAB 5  5.780E+00 -7.900E-01 0.119    0  SYSTEM  @ASSST[Y=49N] No Valid Data
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 6  1.990E+00 -1.230E+00 0.102    0  SYSTEM  @ASSST[Y=19N]
+ LAB 6  2.530E+00 -1.040E+00 0.120    0  SYSTEM  @ASSST[Y=19N]
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+             DATA SET: ./gtsa056_2.cdf
+             TIME: DEC-1981 to JAN-1983
+             LONGITUDE: 180E
+             LATITUDE: 0
+             DEPTH (m): 5
+ Column  1: VAR is U[X=180,Y=0,K=1,T=1-JAN-1982:1-JAN-1983]
+ Column  2: VAR[T=@MED:3] is U[X=180,Y=0,K=1,T=1-JAN-1982:1-JAN-1983] (median smoothed by 3 pts on T)
+ Column  3: VAR[T=@MED:6] is U[X=180,Y=0,K=1,T=1-JAN-1982:1-JAN-1983] (median smoothed by 6 pts on T)
+                           VAR     VAR       VAR
+31-DEC-1981 09 /  -4:   3.51366      ....      ....
+03-JAN-1982 10 /  -3:   3.69700   3.51366      ....
+06-JAN-1982 11 /  -2:   1.56106   1.56106      ....
+09-JAN-1982 12 /  -1:   0.52673   0.52673   0.52673
+12-JAN-1982 13 /   0:   0.52554   0.52554   0.52554
+15-JAN-1982 14 /   1: -45.53620 -45.53620 -45.53620
+18-JAN-1982 15 /   2: -49.79790 -49.79790 -49.79790
+21-JAN-1982 16 /   3: -52.23251 -52.23251 -52.23251
+24-JAN-1982 17 /   4: -54.15411 -54.15411 -54.15411
+27-JAN-1982 18 /   5: -56.44069 -56.44069 -56.44069
+30-JAN-1982 19 /   6: -59.21778 -59.21778 -59.21778
+02-FEB-1982 20 /   7: -61.84206 -61.84206 -61.84206
+05-FEB-1982 21 /   8: -64.70366 -64.70366 -64.70366
+08-FEB-1982 22 /   9: -67.27510 -67.27510 -64.70366
+11-FEB-1982 23 /  10: -68.35828 -67.35130 -64.70366
+15-FEB-1982 00 /  11: -67.35130 -67.35130 -64.70366
+18-FEB-1982 01 /  12: -64.42604 -64.42604 -67.27510
+21-FEB-1982 02 /  13: -62.08092 -63.82829 -67.35130
+24-FEB-1982 03 /  14: -63.82829 -63.82829 -64.42604
+27-FEB-1982 04 /  15: -69.10789 -69.10789 -64.33319
+02-MAR-1982 05 /  16: -71.31609 -69.10789 -63.82829
+05-MAR-1982 06 /  17: -64.33319 -64.33319 -63.82829
+08-MAR-1982 07 /  18: -54.15173 -54.15173 -54.15173
+11-MAR-1982 08 /  19: -47.38350 -47.38350 -47.38350
+14-MAR-1982 09 /  20: -43.45355 -43.45355 -43.45355
+17-MAR-1982 10 /  21: -41.05037 -41.05037 -41.05037
+20-MAR-1982 11 /  22: -39.53970 -39.53970 -39.53970
+23-MAR-1982 12 /  23: -37.74268 -37.74268 -37.74268
+26-MAR-1982 13 /  24: -34.35009 -34.35009 -34.35009
+29-MAR-1982 14 /  25: -29.43275 -29.43275 -29.43275
+01-APR-1982 15 /  26: -22.96276 -22.96276 -22.96276
+04-APR-1982 16 /  27: -16.55120 -16.55120 -16.55120
+07-APR-1982 17 /  28: -11.59327 -11.59327 -11.59327
+10-APR-1982 18 /  29:  -6.97640  -6.97640  -6.97640
+13-APR-1982 19 /  30:  -2.21320  -2.21320  -2.21320
+16-APR-1982 20 /  31:   1.70494   1.70494   1.70494
+19-APR-1982 21 /  32:   4.33845   4.33845   4.33845
+22-APR-1982 22 /  33:   5.99392   5.90845   4.93737
+25-APR-1982 23 /  34:   5.90845   5.90845   5.90845
+29-APR-1982 00 /  35:   4.93737   5.90845   5.99392
+02-MAY-1982 01 /  36:   6.06227   6.06227   6.06227
+05-MAY-1982 02 /  37:   8.54661   8.54661   8.54661
+08-MAY-1982 03 /  38:  10.87646  10.87646   8.54661
+11-MAY-1982 04 /  39:  12.02516  10.87646   8.54661
+14-MAY-1982 05 /  40:  10.19196  10.19196   8.54661
+17-MAY-1982 06 /  41:   7.23021   7.23021   7.23021
+20-MAY-1982 07 /  42:   5.18837   5.18837   5.18837
+23-MAY-1982 08 /  43:   4.04589   4.04589   4.04589
+26-MAY-1982 09 /  44:   3.84833   3.86178   3.86178
+29-MAY-1982 10 /  45:   3.86178   3.84833   3.84833
+01-JUN-1982 11 /  46:   3.40679   3.40679   3.40679
+04-JUN-1982 12 /  47:   2.77956   2.77956   2.77956
+07-JUN-1982 13 /  48:   1.87274   1.87274   1.87274
+10-JUN-1982 14 /  49:   0.43153   0.43153   0.43153
+13-JUN-1982 15 /  50:  -0.89128  -0.89128  -0.89128
+16-JUN-1982 16 /  51:  -2.19076  -2.19076  -2.19076
+19-JUN-1982 17 /  52:  -3.94636  -3.94636  -3.94636
+22-JUN-1982 18 /  53:  -5.74792  -5.74792  -5.61213
+25-JUN-1982 19 /  54:  -6.40100  -6.14065  -5.61213
+28-JUN-1982 20 /  55:  -6.14065  -6.14065  -5.61213
+01-JUL-1982 21 /  56:  -5.61213  -5.61213  -5.74792
+04-JUL-1982 22 /  57:  -5.09964  -5.27725  -6.14065
+07-JUL-1982 23 /  58:  -5.27725  -5.27725  -6.14065
+11-JUL-1982 00 /  59:  -6.35669  -6.35669  -6.35669
+14-JUL-1982 01 /  60:  -7.86641  -7.86641  -7.86641
+17-JUL-1982 02 /  61:  -9.40509  -9.40509  -9.40509
+20-JUL-1982 03 /  62: -11.22616 -11.22616 -11.22616
+23-JUL-1982 04 /  63: -13.37603 -13.37603 -13.37603
+26-JUL-1982 05 /  64: -15.10495 -15.10495 -15.10495
+29-JUL-1982 06 /  65: -16.13955 -16.13955 -15.10495
+01-AUG-1982 07 /  66: -16.44315 -16.13955 -15.10495
+04-AUG-1982 08 /  67: -15.69510 -15.69510 -15.10495
+07-AUG-1982 09 /  68: -13.68382 -13.68382 -13.68382
+10-AUG-1982 10 /  69: -12.11441 -12.11441 -12.11441
+13-AUG-1982 11 /  70: -11.35948 -11.35948 -12.11441
+16-AUG-1982 12 /  71: -10.31693 -11.13844 -12.11441
+19-AUG-1982 13 /  72: -11.13844 -11.13844 -12.11441
+22-AUG-1982 14 /  73: -15.55307 -15.55307 -15.55307
+25-AUG-1982 15 /  74: -20.50401 -20.50401 -15.55307
+28-AUG-1982 16 /  75: -21.30942 -20.50401 -15.55307
+31-AUG-1982 17 /  76: -16.91123 -16.91123 -16.91123
+03-SEP-1982 18 /  77: -12.29312 -13.55513 -20.50401
+06-SEP-1982 19 /  78: -13.55513 -13.55513 -21.30942
+09-SEP-1982 20 /  79: -23.72499 -23.72499 -23.72499
+12-SEP-1982 21 /  80: -38.57696 -38.57696 -38.57696
+15-SEP-1982 22 /  81: -64.92081 -64.92081 -49.47382
+18-SEP-1982 23 /  82: -87.90892 -70.64171 -49.47382
+22-SEP-1982 00 /  83: -70.64171 -70.64171 -49.47382
+25-SEP-1982 01 /  84: -49.47382 -49.47382 -49.47382
+28-SEP-1982 02 /  85: -34.56729 -34.56729 -34.56729
+01-OCT-1982 03 /  86: -30.38684 -30.38684 -31.31402
+04-OCT-1982 04 /  87: -29.62112 -30.38684 -30.38684
+07-OCT-1982 05 /  88: -31.31402 -29.62112 -30.38684
+10-OCT-1982 06 /  89: -28.38874 -28.38874 -30.38684
+13-OCT-1982 07 /  90: -27.59164 -28.38874 -31.31402
+16-OCT-1982 08 /  91: -37.55639 -37.55639 -32.95644
+19-OCT-1982 09 /  92: -48.15360 -44.07525 -32.95644
+22-OCT-1982 10 /  93: -44.07525 -44.07525 -32.95644
+25-OCT-1982 11 /  94: -32.95644 -32.95644 -32.95644
+28-OCT-1982 12 /  95: -28.78361 -29.49211 -32.95644
+31-OCT-1982 13 /  96: -29.49211 -29.49211 -32.95644
+03-NOV-1982 14 /  97: -29.94868 -29.94868 -32.95644
+06-NOV-1982 15 /  98: -34.09573 -34.09573 -29.94868
+09-NOV-1982 16 /  99: -37.74237 -34.09573 -29.94868
+12-NOV-1982 17 / 100: -33.57621 -33.57621 -29.94868
+15-NOV-1982 18 / 101: -26.73376 -26.73376 -26.73376
+18-NOV-1982 19 / 102: -20.30906 -20.30906 -20.30906
+21-NOV-1982 20 / 103: -14.65693 -14.65693 -14.65693
+24-NOV-1982 21 / 104:  -9.71985  -9.71985 -13.41848
+27-NOV-1982 22 / 105:  -7.81684  -9.71985 -13.41848
+30-NOV-1982 23 / 106: -10.06812 -10.06812 -11.97891
+04-DEC-1982 00 / 107: -13.41848 -13.41848 -10.06812
+07-DEC-1982 01 / 108: -15.06836 -13.41848 -10.06812
+10-DEC-1982 02 / 109: -11.97891 -11.97891 -10.06812
+13-DEC-1982 03 / 110:  -4.63116  -4.63116  -4.63116
+16-DEC-1982 04 / 111:   0.77075   0.77075   0.77075
+19-DEC-1982 05 / 112:   1.06240   1.06240   1.06240
+22-DEC-1982 06 / 113:   2.75400   2.75400   2.75400
+25-DEC-1982 07 / 114:   9.06758   9.06758      ....
+28-DEC-1982 08 / 115:  10.80434   9.06758      ....
+31-DEC-1982 09 / 116:   4.21162      ....      ....
+             DATA SET: ./coads_climatology.cdf
+             LONGITUDE: 20E to 20E(380)
+             LATITUDE: 1S
+             TIME: FEB-0002
+ Column  1: VAR is SST[Y=0,L=10]
+ Column  2: VAR[X=@MED:3] is SST[Y=0,L=10] (median smoothed by 3 pts on X)
+ Column  3: VAR[X=@MED:6] is SST[Y=0,L=10] (median smoothed by 6 pts on X)
+                   VAR     VAR       VAR
+21E    /   1:      ....      ....      ....
+23E    /   2:      ....      ....      ....
+25E    /   3:      ....      ....      ....
+27E    /   4:      ....      ....      ....
+29E    /   5:      ....      ....      ....
+31E    /   6:      ....      ....      ....
+33E    /   7:      ....      ....      ....
+35E    /   8:      ....      ....  27.44420
+37E    /   9:      ....      ....  27.05214
+39E    /  10:      ....  27.44420  26.67870
+41E    /  11:  27.44420  27.05214  26.96079
+43E    /  12:  26.66007  26.67870  27.24288
+45E    /  13:  26.67870  26.67870  27.27465
+47E    /  14:  27.24288  27.24288  27.30642
+49E    /  15:  27.30642  27.30642  27.30642
+51E    /  16:  27.61711  27.61711  27.61711
+53E    /  17:  27.84356  27.84356  27.84356
+55E    /  18:  28.07440  28.07440  28.07440
+57E    /  19:  28.10649  28.10649  28.10649
+59E    /  20:  28.13707  28.13707  28.13707
+61E    /  21:  28.30962  28.30962  28.30962
+63E    /  22:  28.46727  28.39278  28.32364
+65E    /  23:  28.39278  28.39278  28.32930
+67E    /  24:  28.32930  28.32930  28.39278
+69E    /  25:  28.32364  28.32930  28.42136
+71E    /  26:  28.42136  28.42136  28.40801
+73E    /  27:  28.66560  28.54509  28.40801
+75E    /  28:  28.54509  28.54509  28.42136
+77E    /  29:  28.40801  28.40801  28.45161
+79E    /  30:  28.33434  28.40801  28.54509
+81E    /  31:  28.60075  28.45161  28.54509
+83E    /  32:  28.45161  28.56272  28.56272
+85E    /  33:  28.56272  28.56272  28.60075
+87E    /  34:  28.75346  28.68815  28.60075
+89E    /  35:  28.68815  28.71204  28.67367
+91E    /  36:  28.71204  28.68815  28.68815
+93E    /  37:  28.51891  28.67367  28.71204
+95E    /  38:  28.67367  28.67367  28.68815
+97E    /  39:  29.04770  28.71465  28.67367
+99E    /  40:  28.71465  28.71465  28.51891
+101E   /  41:  27.52206  28.06696  28.06696
+103E   /  42:  28.06696  27.90401  27.90401
+105E   /  43:  27.90401  27.90401  27.90401
+107E   /  44:  27.60825  27.77387  27.83894
+109E   /  45:  27.77387  27.77387  27.90401
+111E   /  46:  29.35000  28.56194  27.90401
+113E   /  47:      ....  29.35000  28.46742
+115E   /  48:      ....  28.47255  28.46998
+117E   /  49:  28.47255  28.46998  28.72980
+119E   /  50:  28.46742  28.46998  28.72980
+121E   /  51:      ....  28.72724  28.56840
+123E   /  52:  28.98706  29.15170  28.52580
+125E   /  53:  29.31635  28.98706  28.52580
+127E   /  54:  28.56840  28.56840  28.52580
+129E   /  55:  28.48319  28.48319  28.55616
+131E   /  56:  28.45271  28.46796  28.49935
+133E   /  57:  28.46796  28.46796  28.49677
+135E   /  58:  28.55616  28.49935  28.49677
+137E   /  59:  28.49935  28.49935  28.49935
+139E   /  60:  28.49677  28.49935  28.55616
+141E   /  61:  28.62865  28.62865  28.62865
+143E   /  62:  28.90950  28.90950  28.90950
+145E   /  63:  29.28674  29.28674  29.22019
+147E   /  64:  29.32098  29.32098  29.28674
+149E   /  65:  29.40269  29.32098  29.32098
+151E   /  66:  29.22019  29.40269  29.32098
+153E   /  67:  29.40378  29.33564  29.32098
+155E   /  68:  29.33564  29.33564  29.22019
+157E   /  69:  29.15255  29.15255  29.22019
+159E   /  70:  28.90074  29.15255  29.20100
+161E   /  71:  29.20100  29.20100  29.18785
+163E   /  72:  29.69442  29.20100  29.16577
+165E   /  73:  29.18785  29.18785  29.16577
+167E   /  74:  29.16577  29.16577  29.16577
+169E   /  75:  28.89708  28.89708  29.16577
+171E   /  76:  28.55077  28.85791  29.16577
+173E   /  77:  28.85791  28.85791  28.89708
+175E   /  78:  29.51504  29.17324  28.85791
+177E   /  79:  29.17324  29.17324  28.55077
+179E   /  80:  28.36456  28.36456  28.36456
+179W   /  81:  28.29276  28.29276  28.29276
+177W   /  82:  28.05994  28.19440  28.19440
+175W   /  83:  28.19440  28.05994  28.05994
+173W   /  84:  27.73903  27.73903  27.73903
+171W   /  85:  27.72610  27.72610  27.72610
+169W   /  86:  27.23680  27.44867  27.47494
+167W   /  87:  27.44867  27.44867  27.44867
+165W   /  88:  27.47494  27.44867  27.23680
+163W   /  89:  27.12510  27.12510  27.12510
+161W   /  90:  26.98823  26.98823  26.98823
+159W   /  91:  26.58896  26.58896  26.78296
+157W   /  92:  26.37236  26.58896  26.73589
+155W   /  93:  26.73589  26.73589  26.60756
+153W   /  94:  26.78296  26.73589  26.58896
+151W   /  95:  26.60756  26.60756  26.37236
+149W   /  96:  26.34472  26.34472  26.47514
+147W   /  97:  26.04309  26.34472  26.37190
+145W   /  98:  26.37190  26.37190  26.37190
+143W   /  99:  26.47514  26.37190  26.34472
+141W   / 100:  26.15240  26.47514  26.15240
+139W   / 101:  26.51967  26.15240  26.15240
+137W   / 102:  25.44006  26.12399  26.15240
+135W   / 103:  26.12399  25.77365  26.12399
+133W   / 104:  25.77365  26.12399  25.93138
+131W   / 105:  26.34678  25.93138  25.77365
+129W   / 106:  25.93138  25.93138  25.77365
+127W   / 107:  25.62894  25.62894  25.73420
+125W   / 108:  25.43896  25.54997  25.62894
+123W   / 109:  25.54997  25.54997  25.54997
+121W   / 110:  25.73420  25.54997  25.46695
+119W   / 111:  25.38287  25.46695  25.44266
+117W   / 112:  25.46695  25.38287  25.44266
+115W   / 113:  24.65688  25.44266  25.44266
+113W   / 114:  25.44266  25.29029  25.38287
+111W   / 115:  25.29029  25.44266  25.44266
+109W   / 116:  25.45399  25.36251  25.44266
+107W   / 117:  25.36251  25.45399  25.45399
+105W   / 118:  25.64758  25.51842  25.51842
+103W   / 119:  25.51842  25.60328  25.59809
+101W   / 120:  25.60328  25.59809  25.60328
+99W    / 121:  25.59809  25.60328  25.63063
+97W    / 122:  25.66241  25.66241  25.60328
+95W    / 123:  25.74985  25.66241  25.63063
+93W    / 124:  25.63063  25.63063  25.66241
+91W    / 125:  25.59060  25.63063  25.74985
+89W    / 126:  26.05809  26.02355  25.74985
+87W    / 127:  26.02355  26.02355  25.92824
+85W    / 128:  25.92824  25.92824  25.95787
+83W    / 129:  25.65884  25.92824  25.98750
+81W    / 130:  25.98750  25.82317  25.95787
+79W    / 131:      ....  25.98750  25.92824
+77W    / 132:      ....      ....  25.82317
+75W    / 133:      ....      ....  25.98750
+73W    / 134:      ....      ....      ....
+71W    / 135:      ....      ....      ....
+69W    / 136:      ....      ....      ....
+67W    / 137:      ....      ....      ....
+65W    / 138:      ....      ....      ....
+63W    / 139:      ....      ....  27.80000
+61W    / 140:      ....      ....  27.72368
+59W    / 141:      ....  27.80000  27.64737
+57W    / 142:  27.80000  27.72368  27.67535
+55W    / 143:  27.64737  27.64737  27.64737
+53W    / 144:  27.43500  27.64737  27.64120
+51W    / 145:  27.70333  27.43500  27.64737
+49W    / 146:  27.21667  27.63503  27.64737
+47W    / 147:  27.63503  27.63503  27.70333
+45W    / 148:  27.76509  27.76509  27.70333
+43W    / 149:  27.77151  27.77151  27.63503
+41W    / 150:  27.82570  27.77151  27.63503
+39W    / 151:  27.61404  27.61404  27.61404
+37W    / 152:  27.58856  27.58856  27.60443
+35W    / 153:  27.54708  27.58856  27.58856
+33W    / 154:  27.60443  27.54708  27.58856
+31W    / 155:  27.41961  27.43893  27.54708
+29W    / 156:  27.43893  27.43893  27.43893
+27W    / 157:  27.60692  27.43893  27.41961
+25W    / 158:  27.34353  27.34353  27.39210
+23W    / 159:  27.34215  27.34353  27.34353
+21W    / 160:  27.39210  27.34215  27.34215
+19W    / 161:  27.25647  27.34107  27.34107
+17W    / 162:  27.34107  27.25647  27.34107
+15W    / 163:  27.05237  27.09954  27.34107
+13W    / 164:  27.09954  27.09954  27.34107
+11W    / 165:  27.56437  27.48385  27.41605
+9W     / 166:  27.48385  27.48385  27.48385
+7W     / 167:  27.41605  27.48385  27.56437
+5W     / 168:  27.59767  27.59767  27.59767
+3W     / 169:  27.98330  27.98330  27.98330
+1W     / 170:  28.00881  28.00881  28.00881
+1E     / 171:  28.25629  28.25629  28.25629
+3E     / 172:  28.44664  28.35236  28.25629
+5E     / 173:  28.35236  28.38429  28.30433
+7E     / 174:  28.38429  28.35236  28.35236
+9E     / 175:  28.23083  28.30756  28.36833
+11E    / 176:      ....  28.23083  28.35236
+13E    / 177:      ....      ....  28.30756
+15E    / 178:      ....      ....  28.23083
+17E    / 179:      ....      ....      ....
+19E    / 180:      ....      ....      ....
+             DATA SET: ./coads_climatology.cdf
+             LATITUDE: 90S to 90N
+             LONGITUDE: 179E
+             TIME: FEB-0002
+ Column  1: VAR is SST[X=180,L=10]
+ Column  2: VAR[Y=@MED:3] is SST[X=180,L=10] (median smoothed by 3 pts on Y)
+ Column  3: VAR[Y=@MED:6] is SST[X=180,L=10] (median smoothed by 6 pts on Y)
+                 VAR     VAR       VAR
+89S   /  1:      ....      ....      ....
+87S   /  2:      ....      ....      ....
+85S   /  3:      ....      ....      ....
+83S   /  4:      ....      ....  -0.57028
+81S   /  5:      ....      ....  -0.38270
+79S   /  6:      ....  -0.57028  -0.33490
+77S   /  7:  -0.57028  -0.38270  -0.41637
+75S   /  8:  -0.19513  -0.33490  -0.33490
+73S   /  9:  -0.33490  -0.33490  -0.26501
+71S   / 10:  -0.49785  -0.33490  -0.19513
+69S   / 11:   0.07992   0.07992   0.07992
+67S   / 12:   0.47697   0.47697   0.47697
+65S   / 13:   1.46832   1.46832   1.46832
+63S   / 14:   3.31647   3.31647   3.31647
+61S   / 15:   4.48531   4.48531   4.48531
+59S   / 16:   6.58765   6.58765   6.58765
+57S   / 17:   7.31971   7.31971   7.31971
+55S   / 18:   7.93651   7.93651   7.93651
+53S   / 19:   8.81116   8.81116   8.81116
+51S   / 20:  10.23217  10.23217  10.23217
+49S   / 21:  11.51848  11.51848  11.51848
+47S   / 22:  13.52531  13.52531  13.52531
+45S   / 23:  14.79412  14.79412  14.79412
+43S   / 24:  16.97310  16.97310  16.97310
+41S   / 25:  18.79138  18.79138  18.79138
+39S   / 26:  19.81170  19.81170  19.81170
+37S   / 27:  20.63766  20.63766  20.63766
+35S   / 28:  21.41768  21.41768  21.41768
+33S   / 29:  22.18863  22.18863  22.18863
+31S   / 30:  23.13486  23.13486  23.13486
+29S   / 31:  24.07815  24.07815  24.07815
+27S   / 32:  24.75977  24.75977  24.75977
+25S   / 33:  25.73744  25.73744  25.73744
+23S   / 34:  26.91453  26.91453  26.91453
+21S   / 35:  27.52764  27.52764  27.52764
+19S   / 36:  28.32244  28.32244  28.32244
+17S   / 37:  28.56983  28.56983  28.56983
+15S   / 38:  29.05953  29.05953  29.05953
+13S   / 39:  29.43250  29.23719  29.23170
+11S   / 40:  29.23719  29.32561  29.23170
+9S    / 41:  29.32561  29.23719  29.23170
+7S    / 42:  29.23170  29.23170  29.23170
+5S    / 43:  28.96976  28.96976  28.96976
+3S    / 44:  28.39779  28.39779  28.44243
+1S    / 45:  28.36456  28.39779  28.39779
+1N    / 46:  28.44243  28.36456  28.36456
+3N    / 47:  28.12380  28.12380  28.12380
+5N    / 48:  27.96369  27.96369  27.96369
+7N    / 49:  27.88779  27.88779  27.88779
+9N    / 50:  27.65248  27.65248  27.65248
+11N   / 51:  27.13949  27.13949  27.13949
+13N   / 52:  26.79059  26.79059  26.79059
+15N   / 53:  26.42166  26.42166  26.42166
+17N   / 54:  25.94518  25.94518  25.94518
+19N   / 55:  25.39815  25.39815  25.39815
+21N   / 56:  24.91506  24.91506  24.91506
+23N   / 57:  23.80874  23.80874  23.80874
+25N   / 58:  22.72276  22.72276  22.72276
+27N   / 59:  21.24890  21.24890  21.24890
+29N   / 60:  18.91795  18.91795  18.91795
+31N   / 61:  17.58621  17.58621  17.58621
+33N   / 62:  16.16109  16.16109  16.16109
+35N   / 63:  15.10062  15.10062  15.10062
+37N   / 64:  13.72601  13.72601  13.72601
+39N   / 65:  12.01487  12.01487  12.01487
+41N   / 66:  10.29831  10.29831  10.29831
+43N   / 67:   8.32073   8.32073   8.32073
+45N   / 68:   6.07994   6.07994   6.07994
+47N   / 69:   4.40066   4.40066   4.40066
+49N   / 70:   3.46045   3.46045   3.46045
+51N   / 71:   3.44606   3.44606   3.44606
+53N   / 72:   3.16233   3.16233   3.16233
+55N   / 73:   2.57942   2.57942   2.57942
+57N   / 74:   1.98686   1.98686   1.98686
+59N   / 75:   1.30889   1.30889   1.30889
+61N   / 76:   0.44563   0.78807   1.04848
+63N   / 77:   0.78807   0.45000   0.78807
+65N   / 78:   0.45000   0.61904   0.61904
+67N   / 79:      ....   0.45000   0.45000
+69N   / 80:      ....      ....   0.61904
+71N   / 81:      ....      ....   0.45000
+73N   / 82:      ....      ....      ....
+75N   / 83:      ....      ....      ....
+77N   / 84:      ....      ....      ....
+79N   / 85:      ....      ....      ....
+81N   / 86:      ....      ....      ....
+83N   / 87:      ....      ....      ....
+85N   / 88:      ....      ....      ....
+87N   / 89:      ....      ....      ....
+89N   / 90:      ....      ....      ....
+             Z: -10 to 1010
+ Column  1: VAR is COS(Z[GZ=ZAX]/30) + RANDU(1+K[GZ=ZAX])
+ Column  2: VAR[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU(1+K[GZ=ZAX]) (median smoothed by 3 pts on Z)
+ Column  3: VAR[Z=@MED:8] is COS(Z[GZ=ZAX]/30) + RANDU(1+K[GZ=ZAX]) (median smoothed by 8 pts on Z)
+                  VAR     VAR        VAR
+0      /  1:  1.900075      ....       ....
+20     /  2:  1.322209  1.322209       ....
+40     /  3:  0.328140  0.328140       ....
+60     /  4: -0.253715 -0.157475       ....
+80     /  5: -0.157475 -0.253715  0.3281404
+100    /  6: -0.785400 -0.157475  0.3281404
+120    /  7:  0.240523  0.240523  0.3281404
+140    /  8:  0.390383  0.390383  0.3903828
+160    /  9:  1.017953  1.017953  0.7998058
+180    / 10:  1.830546  1.294679  0.7998058
+200    / 11:  1.294679  1.475650  0.7998058
+220    / 12:  1.475650  1.294679  0.7998058
+240    / 13:  0.799806  0.799806  0.7998058
+260    / 14: -0.184186 -0.184186  0.3766042
+280    / 15: -0.290613 -0.184186  0.3766042
+300    / 16:  0.066539  0.066539  0.3766042
+320    / 17:  0.155203  0.155203  0.3766042
+340    / 18:  0.376604  0.376604  0.3766042
+360    / 19:  0.849482  0.849482  0.3766042
+380    / 20:  1.607281  1.463201  0.3766042
+400    / 21:  1.463201  1.463201  0.3766042
+420    / 22:  0.883098  0.883098  0.3766042
+440    / 23:  0.343855  0.343855  0.8494825
+460    / 24: -0.819181 -0.781443  0.8830977
+480    / 25: -0.781443 -0.781443  0.8830977
+500    / 26: -0.267552 -0.267552  0.8830977
+520    / 27:  0.930532  0.930532  0.9305322
+540    / 28:  1.141962  1.116576  0.9305322
+560    / 29:  1.116576  1.116576  0.9305322
+580    / 30:  1.116155  1.116576  0.9305322
+600    / 31:  1.173162  1.116155  0.9305322
+620    / 32: -0.073055 -0.073055  0.5328265
+640    / 33: -0.215296 -0.215296  0.5328265
+660    / 34: -0.344919 -0.344919  0.5328265
+680    / 35: -0.594703 -0.344919  0.5328265
+700    / 36:  0.532827  0.532827  0.5328265
+720    / 37:  0.982648  0.982648  0.6848525
+740    / 38:  1.726194  1.726194  0.6848525
+760    / 39:  1.888630  1.726194  0.6848525
+780    / 40:  0.983643  0.983643  0.6848525
+800    / 41:  0.684853  0.684853  0.6848525
+820    / 42: -0.206728 -0.206728  0.6689867
+840    / 43: -0.436781 -0.436781  0.6689867
+860    / 44: -0.891323 -0.436781  0.6689867
+880    / 45:  0.365334  0.365334  0.6689867
+900    / 46:  0.668987  0.668987  0.5936631
+920    / 47:  0.883534  0.883534  0.5936631
+940    / 48:  1.757336  1.696144       ....
+960    / 49:  1.696144  1.696144       ....
+980    / 50:  0.593663  0.593663       ....
+1000   / 51:  0.519983      ....       ....
              VARIABLE : T
                         axis TIME
              SUBSET   : 6 points (TIME)
@@ -53744,8 +54266,8 @@ hello
 25920000
  	NOAA/PMEL TMAP
  	FERRET v6.13  
- 	Linux(g77) 2.6.9-22. - 09/15/08
- 	15-Sep-08 11:43     
+ 	Linux(g77) 2.6.9-22. - 09/25/08
+ 	25-Sep-08 15:17     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -54456,8 +54978,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  10   / 10:  -5.00
  11   / 11:  -4.00
  12   / 12:  -3.00
- 13-rw-rw-r--  1 ansley tmap 29712 Sep 15 11:43 testa.v5d
--rw-rw-r--  1 ansley tmap 29712 Sep 15 11:43 test.v5d
+ 13-rw-rw-r--  1 ansley tmap 29712 Sep 25 15:17 testa.v5d
+-rw-rw-r--  1 ansley tmap 29712 Sep 25 15:17 test.v5d
    / 13:  -2.00
  14   / 14:  -1.00
  15   / 15:   0.00
@@ -54628,7 +55150,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.13   15-Sep-08" ;
+		:history = "FERRET V6.13   25-Sep-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54651,7 +55173,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.13   15-Sep-08" ;
+		:history = "FERRET V6.13   25-Sep-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54675,7 +55197,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.13   15-Sep-08" ;
+		:history = "FERRET V6.13   25-Sep-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54714,7 +55236,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.13   15-Sep-08" ;
+		:history = "FERRET V6.13   25-Sep-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54749,7 +55271,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.13   15-Sep-08" ;
+		:history = "FERRET V6.13   25-Sep-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56770,8 +57292,8 @@ end of ncdump output
  
  	NOAA/PMEL TMAP
  	FERRET v6.13  
- 	Linux(g77) 2.6.9-22. - 09/15/08
- 	15-Sep-08 11:43     
+ 	Linux(g77) 2.6.9-22. - 09/25/08
+ 	25-Sep-08 15:17     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -56942,8 +57464,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.13  
- 	Linux(g77) 2.6.9-22. - 09/15/08
- 	15-Sep-08 11:43     
+ 	Linux(g77) 2.6.9-22. - 09/25/08
+ 	25-Sep-08 15:17     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57056,8 +57578,8 @@ can mode ignore
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.13  
- 	Linux(g77) 2.6.9-22. - 09/15/08
- 	15-Sep-08 11:43     
+ 	Linux(g77) 2.6.9-22. - 09/25/08
+ 	25-Sep-08 15:17     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57140,4 +57662,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Mon Sep 15 11:43:55 PDT 2008
+Ended at Thu Sep 25 15:17:26 PDT 2008

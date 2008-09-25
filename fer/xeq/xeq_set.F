@@ -151,6 +151,8 @@
 *                  commands via SPLIT_LIST to std error rather than std out.
 * V610  *acm* 3/08 - add new MODE NLEVELS
 * V610  *acm* 3/08 Fixes for metafile batch mode
+* V613  *acm* 9/08 Correct for bug 1598: in SET ATTRIBUTE, initialize dataset number so a 
+*                  SET ATT command always computes the dataset number.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1221,6 +1223,7 @@ c     .					* max_mem_blks*100
  1400 IF ( num_args .LT. 1 ) GOTO 5900
       CALL NAME_EQUAL_STRING_VATT ( buff1, pos, status )
       IF ( status .NE. ferr_ok )  GOTO 5000
+      dset_num = unspecified_int4
 
       loc = qual_given( slash_set_attr_like ) 
 

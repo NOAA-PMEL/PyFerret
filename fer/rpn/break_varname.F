@@ -56,7 +56,7 @@
 	include 'gfdl_vms.parm'	
 
 * calling argument declaration:
-	INTEGER		dset_in, varid, status
+	INTEGER		dset_in, varid, dset_try, status
 	CHARACTER*(*)	text, varname, attname
 
 * internal variable declarations:
@@ -134,7 +134,8 @@
 * which just depends on that data set
 
         IF (status  .NE. ferr_ok) THEN
-           CALL CD_GET_VAR_ID (-1, varname, varid, status)
+           dset_try = -1
+           CALL CD_GET_VAR_ID (dset_try, varname, varid, status)
            IF (status .EQ. ferr_ok) dset = -1
         ENDIF
 

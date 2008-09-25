@@ -2051,10 +2051,9 @@ C /units=months  is 1/12 of the length of the year
 5920    slen = TM_LENSTR1(varname)
 
         IF (dset .GT. 0) THEN
-           buff1 = TM_FMT(FLOAT(dset), 14, 16, s2len)
            CALL ERRMSG( ferr_invalid_command, status,
-     .		'variable or axis does not exist in dset'//
-     .           buff1(:s2len)//varname(:slen), *5000 )
+     .		'variable or axis undefined or not in dataset '//
+     .            varname(:slen), *5000 )
         ELSE
            CALL ERRMSG( ferr_invalid_command, status,
      .		'variable or axis does not exist '//

@@ -129,7 +129,7 @@
      .			DO_4D_VAR,DO_4D_NGD,DO_4D_NBD,
      .			DO_NEAREST_DIST_ABOVE, DO_NEAREST_DIST_BELOW,
      .			DO_NEAREST_INDEX_ABOVE,DO_NEAREST_INDEX_BELOW,
-     .			DO_EVENT
+     .			DO_EVENT, DO_SMTH_MEDIAN
 
 * calling arguments:
 * in	isp_base	- stack level at which to begin calculations
@@ -538,6 +538,8 @@ c	   GOTO 5000
 	      CALL IS_TRANS( memory, DO_SMTH_BINML, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_hanng		) THEN
 	      CALL IS_TRANS( memory, DO_SMTH_HANNG, *2500, status )
+	   ELSEIF ( act .EQ. isact_smth_median		) THEN
+	      CALL IS_TRANS( memory, DO_SMTH_MEDIAN, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_parzn		) THEN
 	      CALL IS_TRANS( memory, DO_SMTH_PARZN, *2500, status )
 	   ELSEIF ( act .EQ. isact_smth_welch		) THEN

@@ -588,13 +588,13 @@
      .		alg_trans_num  ( 37 )	/ trans_event_mask	/,
      .		alg_trans_its_int ( 37)	/ .FALSE.		/,
      .		alg_trans_has_arg ( 37)	/ .TRUE.		/,
-     .		alg_trans_dflt_arg( 37)	/ 0.0			/
-     .		alg_trans_text ( 38 )	/ rubout 		/,   ! unused
-     .		alg_trans_title( 38 )	/ ' '			/,
-     .		alg_trans_num  ( 38 )	/ unspecified_int4	/,
-     .		alg_trans_its_int ( 38)	/ .FALSE.		/,
-     .		alg_trans_has_arg ( 38)	/ .FALSE.		/,
-     .		alg_trans_dflt_arg( 38)	/ bad_val4		/
+     .		alg_trans_dflt_arg( 37)	/ 0.0			/,
+     .		alg_trans_text ( 38 )	/ 'MED' 		/,
+     .		alg_trans_title( 38 )	/ 'median smoothed'     /,
+     .		alg_trans_num  ( 38 )	/ trans_smth_median	/,
+     .		alg_trans_its_int ( 38)	/ .TRUE.		/,
+     .		alg_trans_has_arg ( 38)	/ .TRUE.		/,
+     .		alg_trans_dflt_arg( 38)	/ 3		/
 c     .     alg_trans_text ( 38 )   / 'RDC'         /,   ! hidden
 c     .     alg_trans_title( 38 )   / 'reduced'     /,
 c     .     alg_trans_num  ( 38 )   / trans_reduced /,

@@ -78,6 +78,7 @@ grid_subscript_extremes.F\
 grid_subscript_extremes_no_mod.F\
 grid_world_extremes.F\
 heap2.F\
+heap2_v.F\
 hunt_r4.F\
 igrid.F\
 inherit_attrs.F\

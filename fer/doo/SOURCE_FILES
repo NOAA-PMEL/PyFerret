@@ -35,6 +35,7 @@ do_interpolate.F\
 do_lin_regrid.F\
 do_locate.F\
 do_max.F\
+do_smth_median.F\
 do_min.F\
 do_nbad.F\
 do_nearest.F\
@@ -64,6 +65,7 @@ geog_cos_factor.F\
 get_linear_coef.F\
 hanng_wt.F\
 lin_regrid_1_axis.F\
+median.F\
 modulo_regrid.F\
 nearest_ptr_regrid_1_axis.F\
 nearest_regrid_1_axis.F\

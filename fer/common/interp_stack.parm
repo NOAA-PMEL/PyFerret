@@ -80,6 +80,7 @@
      .			isact_deriv_bkwd,
      .			isact_max,
      .			isact_min,
+     .			isact_smth_median,
      .			isact_smth_box,
      .			isact_smth_binml,
      .			isact_smth_hanng,
@@ -141,7 +142,8 @@
      .		isact_good_pt		= isact_trans_code + trans_good_pt,
      .		isact_bad_pt		= isact_trans_code + trans_bad_pt,
      .		isact_fill_interp	= isact_trans_code + trans_fill_interp,
-     .		isact_fill_near		= isact_trans_code + trans_fill_near )
+     .		isact_fill_near		= isact_trans_code + trans_fill_near,
+     .		isact_smth_median	= isact_trans_code + trans_smth_median )
 	PARAMETER (
      .		isact_nrst_dist_abv = isact_trans_code + trans_nrst_dist_abv,
      .		isact_nrst_dist_blw = isact_trans_code + trans_nrst_dist_blw,

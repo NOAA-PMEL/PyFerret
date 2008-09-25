@@ -15,3 +15,8 @@ list is_element_of_str (axy[k=1:2,j=1:2], "A10")
 list is_element_of_str (axy[k=1:2,j=1:2], {"B0", "QQ", "d4", "m5"})
 list element_index_str (axy[k=1:2,j=1:2], {"a10", "a2", "d4", "c5"})
 
+list is_element_of_str_n (axy[k=1:2,j=1:2], "a10")
+list is_element_of_str_n (axy[k=1:2,j=1:2], "A10")
+list is_element_of_str_n (axy[k=1:2,j=1:2], {"B0", "QQ", "d4", "m5"})
+list element_index_str_n (axy[k=1:2,j=1:2], {"a10", "a2", "d4", "c5"})
+

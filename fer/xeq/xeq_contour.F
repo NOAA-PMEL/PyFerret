@@ -107,6 +107,9 @@
 *                  NLEV2 to re-use the contour levels from the shade plot. The bug does not
 *                  seem to occur on fill plots, but might as well not recompute levels.
 * V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
+* V614  *acm* 10/08 - add new MODE allbad_lab to control the NO VALID DATA label.
+*                  Put it on plots only when this mode is set.
+
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -333,9 +336,9 @@ c           nlev = 1
               CALL PPLCMD ( from, line, 0, 'SHAKEY 0,1', 1, 1 )
 
 c when it's an overlay, 'No Valid Data' is part of the plot key,
-c done in disp_set_up.
+c done in disp_set_up. If mode_allbad_lab is false then leave this off.
 
-        IF (.NOT. overlay .AND. no_data) 
+        IF (.NOT. overlay .AND. no_data .AND. mode_allbad_lab) 
      .                  CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
      .                  ppl_centered, letsize_title,
      .                  'No Valid Data',

@@ -92,6 +92,8 @@
 *                  there is no valid data, get the info from plot_set_up and add 
 *                  a to the plot. If this is an overlay, that is added to the label
 *                  in plot_set_up.
+* V612 *acm* 10/08 No Valid Data labeled If there is no valid data, only add this
+*                  information to the label in plot_set_up. (see bugs 1038 and 1565)
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -402,18 +404,6 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
-c when it's an overlay, 'No Valid Data' is part of the plot key,
-c done in plot_set_up.
-
-* is the no valid input data?
-              no_data =  no_range .AND. only_val.EQ.bad_val4
-
-              IF (.NOT. overlay .AND. no_data) 
-     .                  CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
-     .                  ppl_centered, letsize_title,
-     .                  'No Valid Data',
-     .                  lab_loc_axlen_times, lab_loc_axlen_times )
-              
 * turn off axes? 
 	IF ( noaxes ) THEN 
            DO 400 i = 1, 4

@@ -137,6 +137,9 @@
 *                  there is no valid data, send that information back, so a
 *                  label can be added to the plot. If this is an overlay, add
 *                  No Valid Data to the label.
+* V614  *acm* 10/08 - add new MODE allbad_lab to control the NO VALID DATA label.
+*                  Put it on plots only when this mode is set.
+
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -821,7 +824,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ELSE
 	         plot_title = KEY_STRING( cx_list(ipl), cx_xtra_doc, slen )
 	      ENDIF
-              IF (this_no_range(ipl)) THEN
+              IF (this_no_range(ipl) .AND. mode_allbad_lab) THEN
                  plot_title(slen+1:slen+14) = ' No Valid Data'
                  slen = slen + 14
               ENDIF
@@ -865,7 +868,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ELSE
 	         plot_title = FULL_VAR_TITLE( cx_list(ipl), slen )
 	      ENDIF
-              IF (this_no_range(ipl)) THEN
+              IF (this_no_range(ipl) .AND. mode_allbad_lab) THEN
                  plot_title(slen+1:slen+14) = ' No Valid Data'
                  slen = slen + 14
               ENDIF

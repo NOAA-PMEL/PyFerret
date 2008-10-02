@@ -1,8 +1,7 @@
 ! bn_no_valid_on_plot.jnl
 ! Bug 1038 points out that the No Valid Data label that is
 ! put onto 2D plot if there is no good data, is not put onto
-! 1D plots.  Add it. If the all-invalid plot is an overlay,
-! add it to the variable title so it shows up in the key
+! 1D plots.  Add it to the variable title so it shows up in the key
 !
 ! Plot a region where there is no data
 use coads_climatology
@@ -18,3 +17,16 @@ ppl list labels
 ! For plots with multi lines in one plot command, mark each if no data
 plot/x=56e:100e sst[L=1,y=10], sst[L=1,y=50], sst[L=1,y=20]
 ppl list labels
+
+! For 2D plots create a new MODE allbad_lab which if on, puts
+! the NO VALID DATA across the middle of the plot when there is
+! no data, but allows us to turn this off.
+
+CANCEL MODE allbad_lab
+SHADE/Y=80:90 sst[L=1]
+FILL/Y=80:90 sst[L=1]
+CONTOUR/Y=80:90 sst[L=1]
+
+VECTOR/Y=80:90 sst[L=1], sst[L=1]
+
+SET MODE/last allbad_lab

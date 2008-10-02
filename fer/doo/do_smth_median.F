@@ -1,7 +1,7 @@
 	INTEGER FUNCTION DO_SMTH_MEDIAN(	idim, arg,
      .					com, com_mr, com_cx,
      .					res, res_mr, res_cx,
-     .					wt	)
+     .					work	)
 
 *
 *
@@ -47,7 +47,7 @@
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
-	REAL	arg, wt(*), com(*), res(*)
+	REAL	arg, work(*), com(*), res(*)
 
 * internal variable declarations
 	LOGICAL	even
@@ -74,7 +74,7 @@
 * now convolve this along the desired axis of the grid
 	CALL MEDIAN(	idim, wlen,
      .			com, com_mr, com_cx,
-     .			res, res_mr, res_cx )
+     .			res, res_mr, res_cx, work )
 
 * success
 	DO_SMTH_MEDIAN = ferr_ok

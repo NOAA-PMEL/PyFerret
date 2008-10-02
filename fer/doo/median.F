@@ -1,6 +1,7 @@
 	SUBROUTINE MEDIAN(	idim, wlen, 
      .				com, com_mr, com_cx,
-     .				res, res_mr, res_cx )
+     .				res, res_mr, res_cx, 
+     .				list )
 
 *
 *
@@ -40,9 +41,9 @@
 * Compute the median of the requested length, along axis idim
 * note: the component context may not be of adequate size for the full
 *	calculation.  Missing data flags will be inserted where computation is
-*	impossible
-* also: when bad data points are encountered in the component data all
-*	result data depending on it are flagged as bad, too
+*	impossible. If there is any data present in the window, the median
+*       is computed based on that data. Medians are computed with the data
+*       that is available in partial windows at the edges of the domain. 
 
 * programmer - ansley manke based on convolve.
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
@@ -55,7 +56,8 @@
 * calling argument declarations:
 	INTEGER	idim, wlen, com_mr, com_cx, res_mr, res_cx
 	REAL	com( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
+     .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
+     .          list(*)
 
 * internal variable declarations:
 	LOGICAL TM_ITS_SUBSPAN_MODULO, has_mod_void, even
@@ -63,11 +65,7 @@
      .		i, j, k, l, ii, lo_sub(4), hi_sub(4), lo_lim, hi_lim,
      .		hlen, lo_modlim, hi_modlim, nmod, nmod_prev, 
      .		modlen, median_loc
-	REAL	list(30), bad_com, bad_res, comp
-
-!!! For testing I have set work array of length 30 for the sorting.
-!!! Need to allocate work space...
-
+	REAL    bad_com, bad_res, comp
 
 * internal (convenience) equivalences
 	INTEGER	lo_s1, lo_s2, lo_s3, lo_s4, hi_s1, hi_s2, hi_s3, hi_s4
@@ -131,8 +129,7 @@
      .          .AND. i+ii .LE. hi_lim ) THEN
                     comp = com(i+ii,j,k,l)
                  ELSE
-                    res(i,j,k,l) = bad_res
-                    GOTO 110
+                    comp = bad_com
                  ENDIF
 
 	         IF ( comp .NE. bad_com ) THEN
@@ -190,8 +187,7 @@
      .          .AND. j+ii .LE. hi_lim ) THEN
                     comp = com(i,j+ii,k,l)
                  ELSE
-                    res(i,j,k,l) = bad_res
-                    GOTO 210
+                    comp = bad_com
                  ENDIF
 
 	         IF ( comp .NE. bad_com ) THEN
@@ -249,8 +245,7 @@
      .          .AND. k+ii .LE. hi_lim ) THEN
                     comp = com(i,j,k+ii,l)
                  ELSE
-                    res(i,j,k,l) = bad_res
-                    GOTO 310
+                    comp = bad_com
                  ENDIF
 
 	         IF ( comp .NE. bad_com ) THEN
@@ -308,8 +303,7 @@
      .          .AND. l+ii .LE. hi_lim ) THEN
                     comp = com(i,j,k,l+ii)
                  ELSE
-                    res(i,j,k,l) = bad_res
-                    GOTO 410
+                    comp = bad_com
                  ENDIF
 
 	         IF ( comp .NE. bad_com ) THEN

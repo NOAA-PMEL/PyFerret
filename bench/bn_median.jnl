@@ -3,19 +3,19 @@
 use gtsa056_2.cdf
 let var = u[x=180,y=0,k=1,t=1-jan-1982:1-jan-1983]
 plot var,var[t=@med:3], var[t=@med:6]
-list var,var[t=@med:3], var[t=@med:6]
+list/t=1-dec-1982:1-jan-1983 var,var[t=@med:3], var[t=@med:6]
 
 use coads_climatology
 let var= sst[y=0,L=10]
 plot var,var[x=@med:3], var[x=@med:6]
-list var,var[x=@med:3], var[x=@med:6]
+list/x=80w:50w var,var[x=@med:3], var[x=@med:6]
 
 let var= sst[x=180,L=10]
 plot var,var[y=@med:3], var[y=@med:6]
-list var,var[y=@med:3], var[y=@med:6]
+list/y=-20:0 var,var[y=@med:3], var[y=@med:6]
 
 define axis/z=0:1000:20/depth zax
 let var = cos(z[gz=zax]/30) + randu(1+k[gz=zax])
 plot/trans var, var[z=@med:3], var[z=@med:8]
-list var, var[z=@med:3], var[z=@med:8]
+list/z=1:140 var, var[z=@med:3], var[z=@med:8]
 

@@ -18,15 +18,15 @@ ppl list labels
 plot/x=56e:100e sst[L=1,y=10], sst[L=1,y=50], sst[L=1,y=20]
 ppl list labels
 
-! For 2D plots create a new MODE allbad_lab which if on, puts
+! For 2D plots create a new MODE NODATA_LAB which if on, puts
 ! the NO VALID DATA across the middle of the plot when there is
 ! no data, but allows us to turn this off.
 
-CANCEL MODE allbad_lab
+CANCEL MODE nodata_lab
 SHADE/Y=80:90 sst[L=1]
 FILL/Y=80:90 sst[L=1]
 CONTOUR/Y=80:90 sst[L=1]
 
 VECTOR/Y=80:90 sst[L=1], sst[L=1]
 
-SET MODE/last allbad_lab
+SET MODE/last nodata_lab

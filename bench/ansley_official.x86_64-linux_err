@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 49507442 Sep 25 14:59 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
+Running FERRET version /home/porter/ansley/build_v614/x86/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 39977600 Oct 15 10:47 /home/porter/ansley/build_v614/x86/FERRET/fer/ferretdods_gui
+Using external functions from ../external_functions/ext_func_x86/
 Running the tests of external functions y
-Benchmark run by ansley
-Note: new median transformation; new case-insensitive functions is_element_of_str_n element_index_str_n
+Benchmark run by externalansley
+Note:  test new MODE NODATA_LAB
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
+PWD=/home/porter/ansley/build_v614/x86/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Thu Sep 25 15:16:07 PDT 2008
+FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_x86/
+Beginning at Wed Oct 15 13:21:01 PDT 2008
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2444,9 +2444,12 @@ Replacing definition of axis TIME
  LISTing to file b.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ Using every   5th vector in the X direction
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis ZAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2461,6 +2464,10 @@ Replacing definition of axis TIME
  LISTing to file a.nc
  LISTing to file b.nc
  LISTing to file b.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Units on axis "ENS" are not recognized: count
+ *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2546,4 +2553,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Sep 25 15:17:26 PDT 2008
+Ended at Wed Oct 15 13:22:32 PDT 2008

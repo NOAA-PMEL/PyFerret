@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/build_v614/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     46750029 Oct  2 11:04 /home/porter/ansley/build_v614/linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/build_v614/linux/FERRET/external_functions/ext_func_linux/
+Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     53646430 Oct 15 09:59 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  v6.14 for GFDL: new mode ALLBAD_LABEL controls writing of NO VALID DATA on 2d plots and in the labels of 1D plots (see bugs  1038 and 1565)
+Note: test MODE NODATA_LAB turns off the No Valid Data label on plots
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/build_v614/linux/FERRET/bench
+PWD=/home/porter/ansley/linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v614/linux/FERRET/external_functions/ext_func_linux/
-Beginning at Thu Oct 2 11:43:40 PDT 2008
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
+Beginning at Wed Oct 15 10:07:39 PDT 2008
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2342,9 +2342,6 @@ set axis/stride=2 NORMAL
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
- **TMAP ERR: non-existent or not on line
-             test_strides.cdf
-SET DAT/FORM=CDF test_strides.cdf
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2464,6 +2461,10 @@ Replacing definition of axis TIME
  LISTing to file b.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Units on axis "ens" are not recognized: count
+ *** NOTE: They will not be convertible:
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -2547,4 +2548,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Oct 2 11:47:39 PDT 2008
+Ended at Wed Oct 15 10:11:36 PDT 2008

@@ -1,6 +1,9 @@
 ! bn613_bug_fixes.jnl
 ! Fixes that go into v6.13 release
 
+GO bn_reset
+GO err611_axislab
+
 GO bn_reset 
 GO err61_360_calendar
 

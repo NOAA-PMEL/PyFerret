@@ -1,0 +1,10 @@
+! err611_axislab.jnl
+! Fix bug 1582: Horizontal axis label disappeared
+! if PPL AXLABP moves it to the upper axis
+
+plot/set/i=1:100 sin(i/6)
+ppl axlabp,1,-1
+ppl xlab TEMP(C)
+ppl ylab DEPTH
+ppl plot
+

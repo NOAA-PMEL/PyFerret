@@ -6,24 +6,23 @@
 ! delta 0.05.  If we give a range in x of -180:180 this is returned as index 
 ! 1:1  not 1:7200.  If we give a range of x=0:360 the correct range is used.
 
-LET a = test_opendap ("http://apdrc.soest.hawaii.edu/dods/public_data/satellite_product/GHRSST/ghrsst_global")
-IF `a EQ 0` THEN
+! File saved from 
+!use/order=xytz "http://apdrc.soest.hawaii.edu/dods/public_data/satellite_product/GHRSST/ghrsst_global"
+! save/clobber/file=fine_x_axis.nc sst[i=1:7200,y=0,L=1]
 
-use "http://apdrc.soest.hawaii.edu/dods/public_data/satellite_product/GHRSST/ghrsst_global"
+use fine_x_axis
 sh grid sst
 
 ! This first was wrong, returned data at x=-180
-list/x=180/j=1800/L=1 sst
+list/x=180 sst
 
-list/i=7200/j=1800/L=1 sst
-list/x=-180/j=1800/L=1 sst
-list/i=1/j=1800/L=1 sst
+list/i=7200 sst
+list/x=-180 sst
+list/i=1 sst
 
-! This gave a range in x of no points, so size was 3600 should be 25923600
-let the_plot_var = sst[t=15-apr-2006,x=-180:180]
+! This gave a range in x of no points, so size was 1 should be 7200
+let the_plot_var = sst[x=-180:180]
 say `the_plot_var,return=size`
 
-let the_plot_var = sst[t=15-apr-2006,x=0:360]
+let the_plot_var = sst[x=0:360]
 say `the_plot_var,return=size`
-
-ENDIF

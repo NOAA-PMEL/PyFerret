@@ -98,7 +98,7 @@
 * V600: *acm* 5/06 - add new MODE LINECOLORS:[arg],Flag no_plot_yet
 * V600  *acm* 6/06 - add new MODE UPCASE_OUTPUT
 * V610  *acm* 3/08 - add new MODE NLEVELS
-* V614  *acm* 10/08 - add new MODE ALLBAD_LAB
+* V614  *acm* 10/08 - add new MODE NODATA_LAB
 
 	include 'ferret.parm'
 	include 'movies.parm'
@@ -193,7 +193,7 @@
      .					/ mode_stack_size*.TRUE.   /,
      .		(mode_state( pmode_nlevels,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.   /,
-     .		(mode_state( pmode_allbad_lab,i), i=1,mode_stack_size)
+     .		(mode_state( pmode_nodata_lab,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.   /
 	DATA	mode_name ( pmode_diagnostic  )	/ 'DIAGNOSTIC  ' /,
      .		mode_name ( pmode_verify      )	/ 'VERIFY      ' /,
@@ -222,11 +222,11 @@
      .		mode_name ( pmode_linecolors  )	/ 'LINECOLORS'   /,
      .		mode_name ( pmode_upcase_output)/ 'UPCASE_OUTPUT'/,
      .		mode_name ( pmode_nlevels     ) / 'NLEVELS' /,
-     .		mode_name ( pmode_allbad_lab  ) / 'ALLBAD_LAB' /,
+     .		mode_name ( pmode_nodata_lab  ) / 'NODATA_LAB' /,
      .		mode_name ( 29     ) / pmode_unused /,
      .		mode_name ( 30     ) / pmode_unused /
 c	DATA  
-c     .	( mode_name(i),i=pmode_allbad_lab+1,max_modes )/pmode_unused/
+c     .	( mode_name(i),i=pmode_nodata_lab+1,max_modes )/pmode_unused/
 
 	DATA	(mode_arg  ( pmode_diagnostic  ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*99 /,
@@ -282,7 +282,7 @@ c     .	( mode_name(i),i=pmode_allbad_lab+1,max_modes )/pmode_unused/
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_nlevels,i), i=1,mode_stack_size)
      .				/ mode_stack_size*10 /,
-     .		(mode_arg  ( pmode_allbad_lab,i), i=1,mode_stack_size)
+     .		(mode_arg  ( pmode_nodata_lab,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /
 
 * If the value of nlevels is changed, also change it in plot/ppldata.F

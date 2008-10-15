@@ -33,7 +33,7 @@
 *       *jli* 8/06 - add plist_xml
 * V602 *acm*  1/07 - increase length of string list_format to resolve bug 1482
 * V610  *acm* 3/08 - add new MODE NLEVELS
-* V614  *acm* 10/08 - add new MODE allbad_lab
+* V614  *acm* 10/08 - add new MODE NODATA_LAB
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -59,7 +59,7 @@
      .			pmode_gks, pmode_xwindows, pmode_metafile,
      .			pmode_ppllist, pmode_gui, pmode_logo, pmode_labels,
      .                  pmode_grat, pmode_linecolors, pmode_upcase_output,
-     .                  pmode_nlevels, pmode_allbad_lab
+     .                  pmode_nlevels, pmode_nodata_lab
 
 	PARAMETER     ( pmode_diagnostic	= 1,
      .			pmode_verify		= 2,
@@ -89,7 +89,7 @@
      .                  pmode_linecolors        = 25,
      .                  pmode_upcase_output     = 26,
      .                  pmode_nlevels           = 27,
-     .                  pmode_allbad_lab       = 28)
+     .                  pmode_nodata_lab       = 28)
 
 	CHARACTER	pmode_unused*10
 	PARAMETER     ( pmode_unused = '%% unused %%' )
@@ -219,7 +219,7 @@
      .			mode_gks, mode_xwindows, mode_metafile,
      .			mode_ppllist, mode_gui, mode_logo, mode_labels,
      .                  mode_grat, mode_linecolors, mode_upcase_output, 
-     .                  mode_nlevels, mode_allbad_lab
+     .                  mode_nlevels, mode_nodata_lab
 	EQUIVALENCE
      .		( mode_state( pmode_diagnostic  ,1), mode_diagnostic  ),
      .		( mode_state( pmode_verify      ,1), mode_verify      ),
@@ -248,7 +248,7 @@
      .		( mode_state( pmode_linecolors  ,1), mode_linecolors  ),
      .		( mode_state( pmode_upcase_output,1),mode_upcase_output),
      .		( mode_state( pmode_nlevels     ,1), mode_nlevels),
-     .		( mode_state( pmode_allbad_lab ,1), mode_allbad_lab)
+     .		( mode_state( pmode_nodata_lab ,1), mode_nodata_lab)
 
 * axis label modes
 	LOGICAL		ax_fmt(4)

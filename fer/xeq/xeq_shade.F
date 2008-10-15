@@ -95,7 +95,7 @@
 *                  contour levels from the shade plot.
 * V609: *acm* 2/08 - add SHADE/TRIM
 * V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
-* V614  *acm* 10/08 - add new MODE allbad_lab to control the NO VALID DATA label.
+* V614  *acm* 10/08 - add new MODE NODATA_LAB to control the NO VALID DATA label.
 *                  Put it on plots only when this mode is set.
 
 
@@ -258,9 +258,9 @@ c              nlev = 1
               CALL PPLCMD ( from, line, 0, 'SHAKEY 0,1', 1, 1 )
 
 c when it's an overlay, 'No Valid Data' is part of the plot key,
-c done in disp_set_up. If mode_allbad_lab is false then leave this off.
+c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 
-              IF (.NOT. overlay .AND. no_data .AND. mode_allbad_lab) 
+              IF (.NOT. overlay .AND. no_data .AND. mode_nodata_lab) 
      .                  CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
      .                  ppl_centered, letsize_title,
      .                  'No Valid Data',

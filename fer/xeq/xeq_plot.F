@@ -404,6 +404,12 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
+c when it's an overlay, 'No Valid Data' is part of the plot key,
+c done in plot_set_up.
+
+* is the no valid input data?
+              no_data =  no_range .AND. only_val.EQ.bad_val4
+
 * turn off axes? 
 	IF ( noaxes ) THEN 
            DO 400 i = 1, 4

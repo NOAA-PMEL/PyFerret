@@ -22,3 +22,5 @@ vec/y=40:50/x=70e:110e/L=1 uwnd,vwnd
 contour/y=40:50/x=70e:110e/L=1 vwnd
 contour/fill/y=40:50/x=70e:110e/L=1 vwnd
 
+set mode/last nodata_lab
+

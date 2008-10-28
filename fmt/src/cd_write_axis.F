@@ -682,6 +682,7 @@
             IF (attid .GT. 0) THEN
                CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .              attid, attname, attype, attlen, attoutflag, istat)
+               IF (edges_flag .GT. 0) attoutflag = 1
             ELSE
                attoutflag = 1
             ENDIF 

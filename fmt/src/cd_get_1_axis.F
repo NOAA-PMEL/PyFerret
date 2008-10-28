@@ -151,8 +151,9 @@
 *                  to allow for numerical accuracy of bounds for axes of exactly length360.
 * V61   1/08 *acm* Fix bug 1559: Sanity-checking the modulo length can run into precision
 *                  problems, in particular if the axis coordinates in the file are single-precision.
-* V612  8/08 *adm* If the file has a point-spacing=uneven attribute, mark the axis as irreg
+* V612  8/08 *acm* If the file has a point-spacing=uneven attribute, mark the axis as irreg
 *                  and do not do all the testing for regular axis.
+* V62  10/08 *acm* Add PROLEPTIC_GREGORIAN to the calendars recognized; same as GREGORIAN
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -337,6 +338,7 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
 
          IF (buff(1:3) .EQ. '360') buff = '360_DAY' 
          IF (buff .EQ. 'STANDARD') buff = 'GREGORIAN' 
+         IF (buff .EQ. 'PROLEPTIC_GREGORIAN') buff = 'GREGORIAN' 
          IF (buff(1:6) .EQ. 'COMMON') buff = 'NOLEAP' 
          IF (buff(1:3) .EQ. '365') buff = 'NOLEAP' 
          IF (buff(1:3) .EQ. '366') buff = 'ALL_LEAP' 

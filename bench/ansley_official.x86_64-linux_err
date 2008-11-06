@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/build_v614/x86/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 39977600 Oct 15 10:47 /home/porter/ansley/build_v614/x86/FERRET/fer/ferretdods_gui
-Using external functions from ../external_functions/ext_func_x86/
+Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 49606518 Oct 28 10:20 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
-Benchmark run by externalansley
-Note:  test new MODE NODATA_LAB
+Benchmark run by ansley
+Note:  minor fixes to writing axes with /EDGES and to the length of a message written on opening files
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/build_v614/x86/FERRET/bench
+PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_x86/
-Beginning at Wed Oct 15 13:21:01 PDT 2008
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
+Beginning at Tue Oct 28 10:22:30 PDT 2008
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2287,7 +2287,7 @@ Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: invalid command: it is a child axis already
-set axis/stride=2/offset=1 (AX043)
+set axis/stride=2/offset=1 (AX052)
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
  **ERROR: invalid command: offset must be less than stride value
@@ -2553,4 +2553,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Oct 15 13:22:32 PDT 2008
+Ended at Tue Oct 28 10:23:48 PDT 2008

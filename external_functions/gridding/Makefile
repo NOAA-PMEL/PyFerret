@@ -9,7 +9,7 @@
 #
 # ACM 2/2001  debug macros
 #
-# include platform specific macro definitions
+#  include platform specific macro definitions
 #
 
 include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
@@ -43,7 +43,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # all:    ferret_cmn ave_scat2grid_t.so scat2grid_t.so
 # all:    ferret_cmn nobs.o index_to_grid.so scatgrid_nobs_xy.so scatgrid_nobs_xz.so scatgrid_nobs_xt.so scatgrid_nobs_yz.so scatgrid_nobs_yt.so scatgrid_nobs_zt.so scat2grid_bin_xy.so
 
-all:    ferret_cmn scat2grid_bin_xy.so scatgrid_nobs_xyt.so
+all:    ferret_cmn scat2grid_bin_xy.so scatgrid_nobs_xyt.so 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

@@ -67,7 +67,9 @@
 * V540 *sh* 10/01 - bug fig -- process TMAP error from ez_init_dset
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead 
-* v604 *acm* 7/07 increase length of ds_name
+* v604 *acm* 7/07  increase length of ds_name
+* v614 *acm* 11/08 robust fix for bug 287: filenames beginning with digits. 
+*                  Check if the filename contains characters other than digits.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -91,7 +93,7 @@
 	LOGICAL         have_type
 	INTEGER		TM_LENSTR1, TM_DSET_NUMBER, GRID_FROM_NAME,
      .			tmap_status, loc, skip, grid, columns,
-     .			order(5), idim
+     .			order(5), idim, s1, slen, ndigits
 	CHARACTER	TM_INQ_PATH*1024, var_list*500,
      .			path_name*256, ezform*80, title*128, grid_name*16,
      .			type*500, ctype*16, delim*24
@@ -129,6 +131,21 @@
 #else
 	   READ (dset_name,'(I)',ERR=100) dset	! 10/95
 #endif
+
+* Is this a dataset name that starts with a number ?
+* (some compilers get an error on the above read if
+*  dset_namecontains other than digits, some do not.)
+
+	   slen = TM_LENSTR1(dset_name)
+	   ndigits = 1
+	   IF (dset .GE. 10) ndigits = 2
+	   IF (slen .GT. ndigits) THEN
+              s1 = ndigits + 1
+              DO 80, i = s1,slen
+	         IF (.NOT. TM_DIGIT(dset_name(i:i)) ) GOTO 100
+  80	      CONTINUE
+           ENDIF
+	      
 	   by_number = .TRUE.
 	   already_init = .TRUE.
 	   GOTO 200

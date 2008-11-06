@@ -19,7 +19,7 @@
 *                 NOTE this is the max: NetCDF parameter NC_MAX_NAME = 128
 * V581 *acm* 3/05 increase ds_title, ds_mod_title to 1024
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
-* v62  *acm*10/08 increase length of ds_message
+* v62  *acm*10/08 increase length of ds_message 
 *                
 
 	COMMON/XDSET_INFO/

@@ -298,7 +298,6 @@ deleted_list_modify.c\
 my_close.c\
 my_open.c\
 my_readline.c\
-nap.c\
 NCF_Util.c\
 str_case_blind_compare_sub.c\
 str_upcase_sub.c\

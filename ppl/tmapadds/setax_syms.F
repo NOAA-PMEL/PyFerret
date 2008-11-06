@@ -47,7 +47,7 @@
 
 * Internal arguments
 
-      CHARACTER axval*255, ppl_buff*2048, buff*15
+      CHARACTER axval*255, ppl_buff*2048, buff*30
       INTEGER TM_LENSTR1, nc, ier, ilen 
 
       buff = dir//'AXIS_MIN'

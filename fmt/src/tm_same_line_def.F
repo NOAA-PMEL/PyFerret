@@ -60,6 +60,8 @@
 
 * V570 5/04 *acm* - Use TM_DFPEQ to weaken  irregular coords check
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
+* V614 *acm* 10/08 - Fix bug 1595, comparisons of xx1 and -1*xx2 did
+*                   not take into account that the values may be zero.
 
 * Include files
 	include 'tmap_dims.parm'
@@ -135,7 +137,9 @@
 * first check the grid points
 	      xx1 = TM_WORLD_AX(j, line1, box_middle)
 	      xx2 = TM_WORLD_AX(j, line2, box_middle)
-	      IF ( TM_DFPEQ(ABS(xx1), -1*ABS(xx2)) ) GOTO 1000
+	      IF (.NOT. TM_DFPEQ(ABS(xx1), 0.D0) ) THEN
+	         IF ( TM_DFPEQ(ABS(xx1), -1*ABS(xx2)) ) GOTO 1000
+              ENDIF
               IF ( ABS(xx2) .LT. max_sp_compare ) THEN
 * ... single precision comparison
 	         IF ( SNGL(xx2) .EQ. SNGL(xx1) ) GOTO 100
@@ -153,7 +157,9 @@
 * now the grid cell bounds
 	      xx1 = TM_WORLD_AX(j, line1, box_lo_lim)
 	      xx2 = TM_WORLD_AX(j, line2, box_lo_lim)
-	      IF ( TM_DFPEQ(ABS(xx1), -1*ABS(xx2)) ) GOTO 1000
+	      IF (.NOT. TM_DFPEQ(ABS(xx1), 0.D0) )  THEN
+	         IF ( TM_DFPEQ(ABS(xx1), -1*ABS(xx2)) ) GOTO 1000
+              ENDIF
               IF ( ABS(xx2) .LT. max_sp_compare ) THEN
 * ... single precision comparison
 	         IF ( SNGL(xx2) .EQ. SNGL(xx1) ) GOTO 100
@@ -172,7 +178,9 @@
 * finally the upper limit of the top cell
 	    xx1 = TM_WORLD_AX(j, line1, box_hi_lim)
 	    xx2 = TM_WORLD_AX(j, line2, box_hi_lim)
-	    IF ( TM_DFPEQ(ABS(xx1), -1*ABS(xx2)) ) GOTO 1000
+	      IF (.NOT. TM_DFPEQ(ABS(xx1), 0.D0) )  THEN
+	         IF ( TM_DFPEQ(ABS(xx1), -1*ABS(xx2)) ) GOTO 1000
+              ENDIF
             IF ( ABS(xx2) .LT. max_sp_compare ) THEN
 * ... single precision comparison
 	       IF ( SNGL(xx2) .EQ. SNGL(xx1) ) GOTO 500

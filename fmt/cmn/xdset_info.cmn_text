@@ -19,7 +19,8 @@
 *                 NOTE this is the max: NetCDF parameter NC_MAX_NAME = 128
 * V581 *acm* 3/05 increase ds_title, ds_mod_title to 1024
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
-*                 
+* v62  *acm*10/08 increase length of ds_message
+*                
 
 	COMMON/XDSET_INFO/
      .		ds_1step(maxdsets),ds_lastep(maxdsets),
@@ -89,7 +90,7 @@
 
 * "MESSAGE RECORD"
 	LOGICAL*2	ds_alert_on_open,ds_alert_on_output
-	CHARACTER*80	ds_message
+	CHARACTER*1024	ds_message
 
 * "VARIABLE RECORD (one record per file variable)
 	CHARACTER*1	ds_precision

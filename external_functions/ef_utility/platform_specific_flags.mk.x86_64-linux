@@ -24,7 +24,7 @@ SYSLIBS         = -lc
 CPP             = /lib/cpp
 CPP_FLAGS       = -P -traditional $(INCLUDES)
 CFLAGS_DEBUG	= -g -Ddebug
-FFLAGS_DEBUG	= -g -C -Ddebug
+FFLAGS_DEBUG	= -g -Ddebug
 
 .F.o:
 	rm -f $*.f

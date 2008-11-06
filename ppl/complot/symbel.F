@@ -136,7 +136,9 @@ C
 * Mod to specify external references for SCALE and RANGE * Linux *kob* 1.97
         external scale, size
 
+* Initialize 
 
+        ICHR = ' '
 
 C
 C	DEFINE THE SCALE FACTOR TO BE THE AMOUNT OF MAGNIFICATION

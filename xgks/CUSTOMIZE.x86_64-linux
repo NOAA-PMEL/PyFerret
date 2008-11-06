@@ -30,7 +30,7 @@ CFLAGS='-O2'
 # Installation prefix (default is `../..'):
 prefix=..
 
-FC='g77 -fno-second-underscore -fno-backslash -fdollar-ok -fugly-init -fugly-logint -fintrin-case-any -ffixed-line-length-132  ' 
+FC='g77 -fno-second-underscore -fno-backslash -fdollar-ok -fugly-init -fugly-logint -fintrin-case-any -ffixed-line-length-132 -ffast-math ' 
 OS=linux
 
 LD_X11='-L/usr/X11R6/lib64 -lX11'

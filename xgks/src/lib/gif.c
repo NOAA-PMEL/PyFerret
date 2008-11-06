@@ -564,25 +564,80 @@ GIFmoClose(Metafile *mf)
   return status;
 }
 
+/*
+/*int GIFFlush(Metafile *mf, char *filename)  */
+/*{  */
+/*  mf_cgmo *cgmo	= mf->cgmo;  */
+/*  GIFmetafile *meta = find_meta(cgmo);  */
+/*  int status = 1;  */
+/*  */
+/* /* File w/ ".gif" only are not created (Ferret hack) */  
+/*  if (strcasecmp(filename, ".gif") != 0){  */
+/*    FILE *fp = fopen(filename, "w");  */
+/*    if (fp != NULL && meta != 0){  */
+/*      status = OK;  */
+/*      gdImageGif(meta->image, fp);  */
+/*      fclose(fp);  */
+/*    }  */
+/*  } else {  */
+/*    status = OK;  */
+/*  }  */
+/*  return status;  */
+/*}  */
+
+/* TEST GIFFlush for transparency   */
+
 int GIFFlush(Metafile *mf, char *filename)
 {
-  mf_cgmo *cgmo	= mf->cgmo;
-  GIFmetafile *meta = find_meta(cgmo);
-  int status = 1;
+ mf_cgmo *cgmo = mf->cgmo;
+ GIFmetafile *meta = find_meta(cgmo);
+ int status = 1;
+ int white;
 
-  /* File w/ ".gif" only are not created (Ferret hack) */
-  if (strcasecmp(filename, ".gif") != 0){
-    FILE *fp = fopen(filename, "w");
-    if (fp != NULL && meta != 0){
-      status = OK;
-      gdImageGif(meta->image, fp);
-      fclose(fp);
-    }
-  } else {
-    status = OK;
-  }
-  return status;
+ /* File w/ ".gif" only are not created (Ferret hack) */
+ if (strcasecmp(filename, ".gif") != 0){
+   FILE *fp = fopen(filename, "w");
+   if (fp != NULL && meta != 0){
+     status = OK;
+     gdImageGif(meta->image, fp);
+     fclose(fp);
+
+/* start test */
+     FILE *inLog;
+     FILE *ouLog;
+     int red;
+     gdImagePtr logImg;
+     inLog = fopen("/home/porter/ansley/x86_64-linux/FERRET/fer/tst.gif","rb");
+     ouLog = fopen("/home/porter/ansley/x86_64-linux/FERRET/fer/tst4.gif","w");
+
+     logImg = gdImageCreateFromGif(inLog);
+     /* Try to allocate red directly */
+     /*
+     red = gdImageColorAllocate(logImg, 255, 255, 255);
+      */
+     /* If we fail to allocate red... */
+     /*if (red == (-1)) {*/
+         /* Find the closest color instead. */
+         white = gdImageColorClosest(logImg, 255, 255, 255);
+         red   = gdImageColorClosest(logImg, 255, 0, 0);
+     /*}*/
+     /*red = gdImageColorClosest(logImg, 255, 0, 0);*/
+     if(white != (-1)){
+         /*gdImageDashedLine(logImg, 0, 0, 199, 199, red);*/
+         /*gdImageFilledRectangle(logImg, 0, 0, 199, 199, red);*/
+         gdImageColorTransparent(logImg,white);
+     }
+     gdImageGif(logImg, ouLog);
+     fclose(inLog);
+     fclose(ouLog);
+     gdImageDestroy(logImg);
+   }
+ } else {
+   status = OK;
+ }
+ return status;
 }
+
 
 void GIFresize(WS_STATE_PTR ws, Gpoint size)
 {

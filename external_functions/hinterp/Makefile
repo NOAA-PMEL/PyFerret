@@ -42,7 +42,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 # all:	ferret_cmn  rect_to_curv.so curv_to_rect_map.so curv_to_rect.so curv_range.so
-all:	ferret_cmn 
+all:	ferret_cmn  curv_to_rect_fsu.so 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

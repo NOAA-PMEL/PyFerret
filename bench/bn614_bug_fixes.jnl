@@ -18,3 +18,6 @@ GO err611_wrong_fineaxis_range
 
 GO bn_reset
 GO err611_digit_filename
+
+GO bn_reset
+GO err611_parse_semicolon

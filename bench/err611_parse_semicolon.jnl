@@ -1,0 +1,11 @@
+! err611_parse_semicolon.jnl
+! Bug 1608. The first time it was issued, the first command
+! below was split into two at the ;
+! Test this and some other combinations
+
+say "c ; d"
+say "c //d"
+say "c (d"
+say "c (d"; say "a ; b"
+say "c (d; say a ; b"
+

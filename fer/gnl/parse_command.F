@@ -109,6 +109,7 @@
 * v603 *acm* 5/07  fix bug 919; null symbol entered as the command produced an error;
 *                  the fix is to return at statement 500 if word_num = 0
 * v612 *acm* 7/08  Fix bug 1583: precision of grave-accent expressions upped from 5 to 7.
+* v62  *acm*11/08  Fix bug 1608: semicolon inside double quotes.
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -165,7 +166,7 @@
      .		isubcmnd_ptr, iword, last_qual, iqual_word, iterm,
      .		iqual, iqual_ptr, iarg, i, nparen, nsubst_passes,
      .		grave_start, grave_end, in, out, nest,
-     .		paren_level,len_test,len_mchars
+     .		paren_level,len_test,len_mchars, m
 	CHARACTER c1*1
 
 * local parameter declarations:
@@ -326,9 +327,7 @@
                  nparen = nparen + 1
               ELSEIF ( c1 .EQ. ')' ) THEN
                  nparen = nparen - 1
-              ELSEIF ( c1 .EQ. '"' .AND. doub_quote ) THEN
-                 surround_quote = .NOT.surround_quote
-              ELSEIF ( c1 .EQ. "'" .AND. .NOT.doub_quote ) THEN
+              ELSEIF ( c1 .EQ. '"' ) THEN
                  surround_quote = .NOT.surround_quote
               ELSEIF ( c1 .EQ. ';' ) THEN
 	         escape = i.GT.1

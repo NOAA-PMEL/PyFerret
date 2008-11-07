@@ -603,6 +603,9 @@ GO bn614_bug_fixes
 GO bn_reset
 GO bn_mode_nodata_lab
 
+GO bn_reset
+GO proleptic_gregorian_calendar
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

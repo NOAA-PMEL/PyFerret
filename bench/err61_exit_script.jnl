@@ -13,7 +13,6 @@
 !        Linux(g77) 2.4.21-32 - 11/13/07
 !         7-Mar-08 18:32     
 
-!can mode verify
 sp rm -f b1566.jnl
 sp echo if 1 then > b1566.jnl
 sp echo if 1 then >> b1566.jnl
@@ -28,5 +27,4 @@ rep/l=1:7 go b1566.jnl
 rep/l=1:7 go b1566.jnl
 rep/l=1:7 go b1566.jnl
 
-set mode/last verify 
 

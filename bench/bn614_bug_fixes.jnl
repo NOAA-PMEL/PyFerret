@@ -21,3 +21,6 @@ GO err611_digit_filename
 
 GO bn_reset
 GO err611_parse_semicolon
+
+GO bn_reset
+GO err611_ov_ax

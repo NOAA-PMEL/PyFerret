@@ -1,0 +1,16 @@
+! err611_ov_ax.jnl
+!
+! bug 1609
+!
+! in the two lower panels, the plot/over/ax=0,0,0,0
+! messes up the ppl axlabp setting in the last command
+!
+
+can v
+set v ul; ppl axlabp -1 -1; plot/nolab {-1,1,6}
+plot/ov/vs/nolab/line=2 {1,2,2,1},{0,0,3,0}
+set v ur; ppl axlabp 0 0; plot/nolab {-1,1,6}
+
+set v ll; ppl axlabp -1 -1; plot/nolab {-1,1,6}
+plot/ov/vs/nolab/line=2/ax=0,0,0,0 {1,2,2,1},{0,0,3,0}
+set v lr; ppl axlabp 0 0; plot/nolab {-1,1,6}

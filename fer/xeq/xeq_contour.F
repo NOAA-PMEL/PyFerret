@@ -109,7 +109,8 @@
 * V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
 * V614  *acm* 10/08 - add new MODE NODATA_LAB to control the NO VALID DATA label.
 *                  Put it on plots only when this mode is set.
-
+* V6.2  *acm* 11/08Fix bug 1609: If the plot is an overlay then do not process /AXES=
+*                  or /NOAXES. Axes are never drawn for overlays anyway.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -167,6 +168,10 @@
 	fill      = qual_given( slash_cont_fill      ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	axes      = qual_given( slash_cont_axes      ).GT.0
+        IF (overlay) THEN
+	   noaxes = .FALSE.
+	   axes = .FALSE.
+	ENDIF
         sp        = qual_given( slash_cont_spectrum  )
         spectrum  = sp .GT. 0 .AND. fill
         is_shade  = .FALSE.
@@ -380,8 +385,8 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 * turn on (one or more) axes? (7/11/01)
 
 * ... PLOT/AXES=(TOP,BOTTOM,LEFT,RIGHT)
-	loc = qual_given( slash_cont_axes )
-	IF ( loc .GT. 0) THEN
+	IF ( axes ) THEN
+           loc = qual_given( slash_cont_axes )
 	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )
            IF ( status .NE. ferr_ok ) GOTO 5000

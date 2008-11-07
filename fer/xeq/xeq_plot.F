@@ -94,6 +94,8 @@
 *                  in plot_set_up.
 * V612 *acm* 10/08 No Valid Data labeled If there is no valid data, only add this
 *                  information to the label in plot_set_up. (see bugs 1038 and 1565)
+* V6.2  *acm* 11/08Fix bug 1609: If the plot is an overlay then do not process /AXES=
+*                  or /NOAXES. Axes are never drawn for overlays anyway.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -165,6 +167,10 @@ CC       => Set values here instead.
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	axes      = qual_given( slash_plot_axes      ).GT.0
+        IF (overlay) THEN
+	   noaxes = .FALSE.
+	   axes = .FALSE.
+	ENDIF
 	is_logh   = qual_given( slash_is_logh        ).GT.0
 	is_logv   = qual_given( slash_is_logv        ).GT.0
 
@@ -420,8 +426,8 @@ c done in plot_set_up.
 * turn on (one or more) axes? (7/11/01)
 
 * ... PLOT/AXES=(TOP,BOTTOM,LEFT,RIGHT)
-	loc = qual_given( slash_plot_axes )
-	IF ( loc .GT. 0) THEN
+	IF ( axes ) THEN
+           loc = qual_given( slash_plot_axes )
 	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
@@ -475,7 +481,7 @@ c done in plot_set_up.
 	ENDIF
 
 * restore axes? (5/29/97  revised 3/2002
-!        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
+c        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
 * restore dash settings? (5/29/97  revised 3/2002
         IF ( do_dash .EQ. 1 ) CALL PPL_DASH_RESTORE

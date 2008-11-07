@@ -62,6 +62,8 @@
 * V602 *acm* 11/06 Fix bug 1472: Where single-level color plot is requested, use levels (1) 
 *                  setting rather than sending the data value; avoids precision problems.
 * V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
+* V6.2  *acm* 11/08Fix bug 1609: If the plot is an overlay then do not process /AXES=
+*                  or /NOAXES. Axes are never drawn for overlays anyway.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -135,8 +137,12 @@ CC       => Set values here instead.
 	no_labels = qual_given( slash_plot_nolabels  ).GT.0
 	transpz   = qual_given( slash_plot_transpz   ).GT.0
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
-	axes      = qual_given( slash_polygon_axes   ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
+	axes      = qual_given( slash_polygon_axes   ).GT.0
+        IF (overlay) THEN
+	   noaxes = .FALSE.
+	   axes = .FALSE.
+	ENDIF
 	coord_ax  = qual_given( slash_plot_vs	     )		! integer
 	is_logh   = qual_given( slash_is_logh        ).GT.0
 	is_logv   = qual_given( slash_is_logv        ).GT.0 

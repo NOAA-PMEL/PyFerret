@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 49606940 Nov  6 15:38 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 49607092 Nov  7 12:30 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: new benchmark   test for proleptic_gregorian calendar attribute
+Note:  fix for bug 1609: skip processing of /AX= or /NOAX if the plot is an overlay. Also changes to MODE VERIFY so more output is echoed to the benchmark log files in the v611 and v614 addiitons
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Fri Nov 7 09:52:36 PST 2008
+Beginning at Fri Nov 7 12:53:08 PST 2008
  	NOAA/PMEL TMAP
  	FERRET v6.14  
- 	Linux(g77) 2.6.9-22. - 11/06/08
- 	 7-Nov-08 09:52     
+ 	Linux(g77) 2.6.9-22. - 11/07/08
+ 	 7-Nov-08 12:53     
 
 yes? !bn500_all_shell
 yes? 
@@ -10238,7 +10238,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.14"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 SESSION_DATE = " 7-Nov-08"
-SESSION_TIME = "09:52"
+SESSION_TIME = "12:53"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10257,7 +10257,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.14"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 SESSION_DATE = " 7-Nov-08"
-SESSION_TIME = "09:52"
+SESSION_TIME = "12:53"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10266,7 +10266,7 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = " 7-Nov-08"
-SESSION_TIME = "09:52"
+SESSION_TIME = "12:53"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10277,12 +10277,12 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = " 7-Nov-08"
-SESSION_TIME = "09:52"
+SESSION_TIME = "12:53"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = " 7-Nov-08"
-SESSION_TIME = "09:52"
+SESSION_TIME = "12:53"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10316,7 +10316,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.14"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Nov  7 2008 09:52:43 "
+LAB3 = "Nov  7 2008 12:53:18 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10414,7 +10414,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.14"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 SESSION_DATE = " 7-Nov-08"
-SESSION_TIME = "09:52"
+SESSION_TIME = "12:53"
  
  
 GO bn_reset
@@ -18140,8 +18140,8 @@ set view v44
 contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28000:29000:-400/trans sin(x/3)*sin(t/100)
  
 cancel viewports	! clean-up
-SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94-rw-rw-r--  1 ansley tmap 16406 Nov  7 09:52 bench.mgm
--rw-rw-r--  1 ansley tmap 347405 Nov  7 09:52 bench.mgm
+SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94-rw-rw-r--  1 ansley tmap 16404 Nov  7 12:53 bench.mgm
+-rw-rw-r--  1 ansley tmap 290116 Nov  7 12:53 bench.mgm
 
  
 !GO bn_reset
@@ -25291,7 +25291,7 @@ GO bn_reset
 cancel mode verify
 GO err491_grid_from_name.jnl
 ! err491_gridabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Fri Nov  7 09:52:58 PST 2008
+Fri Nov  7 12:53:29 PST 2008
 _from_name.jnl
 ! *sh* 3/99
  
@@ -45746,7 +45746,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASNov  7 2008 09:53:31
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASNov  7 2008 12:54:02
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 179.9E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47146,7 +47146,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "7-Nov-08:09:52"
+WIN_TITLE = "7-Nov-08:12:53"
  
 set win/title="set the title"
 sho sym win_title
@@ -53441,7 +53441,6 @@ GO err61_exit_script
 !        Linux(g77) 2.4.21-32 - 11/13/07
 !         7-Mar-08 18:32
  
-!can mode verify
 sp rm -f b1566.jnl
 sp echo if 1 then > b1566.jnl
 sp echo if 1 then >> b1566.jnl
@@ -53568,20 +53567,76 @@ if 1 then
 if 1 then
 exit/script
  
-set mode/last verify
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err61_new_attr_on_axis
+! err61_new_attr_on_axis.jnl
+! For any var or axis, allow adding an attribute
+! Fix for bug 1574
+ 
+use ocean_atlas_temp
+sh dat
      currently SET data sets:
     1> ./ocean_atlas_temp.cdf  (default)
  name     title                             I         J         K         L
  TEMP     Temperature                      1:360     1:180     1:1       1:2
  
+define att/output (`temp,return=xaxis`).long_name = "Here is a long name for the x axis of TEMP"
+ !-> define att/output (XAX_LEV9421_380).long_name = "Here is a long name for the x axis of TEMP"
+save/file=a.nc/clobber/j=50/l=2 temp
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+! It is saved even on a subset of the axis
+save/file=a.nc/clobber/i=1:12/j=50/l=2 temp
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+DEFINE AXIS/y=-60:60:2/units=deg yaxis
+LET v = y[gy=yaxis]
+ 
+DEFINE att/output (yaxis).standard_name = "latitude"
+ 
+save/file=a.nc/clobber v
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO bn_varcontext_attributes
+! Examples from bn_attributes, where instead of var.att[specifiers]
+! we use var[specifiers].att  where appropriate.
+ 
+!-----
+ 
+! SHOW ATTRIBUTE examples
+ 
+can data/all
+can var/all
+ 
+use ocean_atlas_temp
+use gt4d011
+use levitus_climatology
+ 
+sh att temp[d=1].units
      attributes for dataset: ./ocean_atlas_temp.cdf
  TEMP.units = Deg C 
+ 
+ 
+! note .[d=1].dimnames does not work
+use coads_climatology
+use gt4d011
+ 
+let vnames = ..dimnames[d=1]
+let lnames = ..dimnames[d=2]
+list vnames
              VARIABLE : ..DIMNAMES[D=ocean_atlas_temp]
              SUBSET   : 4 points (X)
  1   / 1:"XAX_LEV9421_380"
  2   / 2:"YAX_LEV94"      
  3   / 3:"ZAXLEVIT191_1"  
  4   / 4:"TIME3"          
+list lnames
              VARIABLE : ..DIMNAMES[D=gt4d011]
              SUBSET   : 20 points (X)
  1    /  1:"PSXT1"     
@@ -53604,44 +53659,177 @@ set mode/last verify
  18   / 18:"PSYT36_55" 
  19   / 19:"PSZW1_10"  
  20   / 20:"PSYU35_56" 
+ 
+go bn_reset
+cancel mode verify
+ 
+ 
+!-----
+! more on number of attributes
+ 
+use levitus_climatology
+use ocean_atlas_temp
+let nat = temp.nattrs
+list nat
              VARIABLE : TEMP.NATTRS
              FILENAME : ocean_atlas_temp.cdf
           5.000000
+ 
+list (`temp,return=xaxis`)[d=2].nattrs
+ !-> list (XAX_LEV9421_380)[d=2].nattrs
              VARIABLE : (XAX_LEV9421_380)[d=ocean_atlas_temp].NATTRS
              FILENAME : ocean_atlas_temp.cdf
           4.000000
+ 
+use gt4d011
+say `temp[d=1].nattrs`
+ !-> MESSAGE/CONTINUE 5
 5
+ 
+def sym xaxnam  "(`temp[d=1],return=xaxis`)"
+ !-> def sym xaxnam  "(XAXLEVITR1_160)"
+def sym yaxnam  "(`temp[d=1],return=yaxis`)"
+ !-> def sym yaxnam  "(YAXLEVITR1_90)"
+list `($xaxnam)[d=1].nattrs`
+ !-> list 4
              VARIABLE : constant
           4.000000
+say `($yaxnam)[d=1].nattrs`
+ !-> MESSAGE/CONTINUE 3
 3
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! more on access to attribute names and values as variables
+ 
+use coads_climatology
+use levitus_climatology
+use ocean_atlas_temp
+use gt4d011
+ 
+let a = temp.units
+list/d=3 a
              VARIABLE : TEMP.UNITS
              FILENAME : ocean_atlas_temp.cdf
         "Deg C"
+list temp[d=3].units
              VARIABLE : TEMP[d=ocean_atlas_temp].UNITS
              FILENAME : gt4d011.cdf
         "Deg C"
+list/d=3 temp.history
              VARIABLE : TEMP.HISTORY
              FILENAME : ocean_atlas_temp.cdf
         "From ocean_atlas_monthly"
+ 
+can data/all
+can var/all
+ 
+use coads_climatology
+! This syntax does not work:
+! list sst[d=1].dimnames[i=2]
+ 
+! But this does
+let a = sst[d=1].dimnames
+list a[i=2]
              VARIABLE : SST[d=coads_climatology].DIMNAMES
              FILENAME : coads_climatology.cdf
              X        : 2
         "COADSY"
+ 
+go bn_reset
+cancel mode verify
+ 
+! When the variable context is given in an attribute
+! spec, we want to ignore the information except for the
+! dataset, and just return the attribute of the variable.
+ 
+use coads_climatology
+define symbol ferret_plot_var sst[x=30:39,y=-90:90]
+list ($ferret_plot_var).long_name
+ !-> list sst[x=30:39,y=-90:90].long_name
              VARIABLE : SST.LONG_NAME
              FILENAME : coads_climatology.cdf
         "SEA SURFACE TEMPERATURE"
+ 
+use coads_climatology
+define symbol ferret_plot_var sst[d=1,x=30:35,y=-90:90]
+list ($ferret_plot_var).units
+ !-> list sst[d=1,x=30:35,y=-90:90].units
              VARIABLE : SST[d=coads_climatology].UNITS
              FILENAME : coads_climatology.cdf
         "Deg C"
+ 
+use coads_climatology
+use levitus_climatology
+define symbol ferret_plot_var sst[d=1,x=30:35,y=-90:90]
+list ($ferret_plot_var).history
+ !-> list sst[d=1,x=30:35,y=-90:90].history
              VARIABLE : SST[d=coads_climatology].HISTORY
              FILENAME : levitus_climatology.cdf
         "From coads_climatology"
+ 
+go bn_reset
+cancel mode verify
+ 
+use levitus_climatology
+use coads_climatology
+ 
+def sym xaxnam  "(`temp[d=1],return=xaxis`)"
+ !-> def sym xaxnam  "(XAXLEVITR1_160)"
+def sym yaxnam  "(`temp[d=1],return=yaxis`)"
+ !-> def sym yaxnam  "(YAXLEVITR1_90)"
+ 
+list ($xaxnam)[d=1].modulo
+ !-> list (XAXLEVITR1_160)[d=1].modulo
              VARIABLE : (XAXLEVITR1_160)[d=levitus_climatology].MODULO
              FILENAME : coads_climatology.cdf
         " "
+list ($yaxnam).point_spacing[d=1]
+ !-> list (YAXLEVITR1_90).point_spacing[d=1]
              VARIABLE : (YAXLEVITR1_90).POINT_SPACING[D=levitus_climatology]
              FILENAME : levitus_climatology.cdf
         "even"
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err61_show_dat_var_xml
+! err61_show_dat_var_xml.jnl
+! See bug 1580. Intermediate variablels associated with a
+! variable that uses a grid-changing function should be
+! skipped when writing variables by SHOW DATA/VAR/XML
+ 
+! Define some varibles as in some of the tests of
+! zaxreplace. Write to files.
+ 
+! Define some variables as in some of the benchmark
+! tests of zaxreplace. Write to files.
+ 
+LET ddat = ZSEQUENCE({1126,1136,1146,1156,1166})
+LET cycle = ZSEQUENCE({346, 347, 349, 350, 351})
+DEFINE AXIS/Z=10:50:10 zaxis_orig
+LET cycle_orig = cycle[GZ=zaxis_orig@ASN]
+LET ddat_orig = ddat[GZ=zaxis_orig@ASN]
+ 
+SAVE/CLOBBER/FILE=z1.nc ddat_orig
+SAVE/CLOBBER/FILE=z2.nc cycle_orig
+ 
+! Now use this data and define a user variable
+! associated with datset 2 using ZAXREPLACE
+ 
+CAN DAT/ALL; CAN VAR/ALL
+USE z1
+USE z2
+DEFINE AXIS/Z=345:353:1 zaxis_des
+LET dummy = Z[GZ=zaxis_des]
+LET/D=2 ddat_a = ZAXREPLACE(ddat_orig[d=1], cycle_orig[d=2], dummy)
+ 
+! Note how there are intermediate variables associated with the
+! regridding operation
+ 
+SHOW DATA
      currently SET data sets:
     1> ./z1.nc
  name     title                             I         J         K         L
@@ -53655,6 +53843,11 @@ set mode/last verify
  ------------------------------
  DDAT_A[D=z2] = ZAXREPLACE(DDAT_ORIG[D=1], CYCLE_ORIG[D=2], DUMMY)
  
+ 
+! Those intermediate variables should be skipped
+! for SHOW DATA/VAR/XML
+ 
+SHOW DATA/VAR/XML
 <datasets>
 <dataset name="./z1.nc" default="false">
 <title> </title>
@@ -53696,6 +53889,16 @@ set mode/last verify
 </var>
 </dataset>
 </datasets>
+ 
+GO bn_reset
+cancel mode verify
+GO err61_360_calendar
+! err61_360_calendar.jnl
+!
+ 
+! This first has always been ok
+define axis/t=28-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 time
+list t[gt=time]
              VARIABLE : T
                         axis TIME
              SUBSET   : 6 points (TIME)
@@ -53706,13 +53909,76 @@ set mode/last verify
  04-MAR-1909 00 / 4:  63.00000
  06-MAR-1909 00 / 5:  65.00000
  08-MAR-1909 00 / 6:  67.00000
+ 
+! Should be able to specify 30-feb-1909 for a 360-day calendar but it
+! resulted in an error
+define axis/t=30-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 time
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err611_exit_if.jnl
+! err611_exit_if.jnl
+!
+! Bug 1587
+! This only in v6.11 GFDL release bug
+! Fixed in xeq_exit.F
+ 
+yes? sp echo if 1 then > a.jnl
+yes? sp echo exit/script >> a.jnl
+yes? sp echo endif >> a.jnl
+yes? sp echo go a > b.jnl
+yes? sp echo say hello >> b.jnl
+yes? go b  !the following fails to say "hello"
+go a
+if 1 then
+exit/script
+say hello
 hello
+go a
+if 1 then
+exit/script
+if 1 then
+exit/script
+ 
+GO bn_reset
+cancel mode verify
+GO err611_save_irreg.jnl
+! err611_save_irreg.jnl
+!
+! bug1588
+ 
+def axis/t time = {0,1,3}
+let a = t[gt=time]
+save/clob/file=a.nc a
+can var a
+can dat/all
+use a.nc
+save/clob/file=b.nc a
+let b = a
+list b
              VARIABLE : A
              FILENAME : a.nc
              SUBSET   : 3 points (T)
  0   / 1:  0.000000
  1   / 2:  1.000000
  3   / 3:  3.000000
+save/clob/file=b.nc b
+ 
+ 
+! ******** V6.13 Additions below ***********
+GO bn_reset
+cancel mode verify
+GO bn_no_valid_on_plot
+! bn_no_valid_on_plot.jnl
+! Bug 1038 points out that the No Valid Data label that is
+! put onto 2D plot if there is no good data, is not put onto
+! 1D plots.  Add it to the variable title so it shows up in the key
+!
+! Plot a region where there is no data
+use coads_climatology
+plot/x=56e:100e/y=40 sst[L=1]
+ppl list labels
  @ACSEA SURFACE TEMPERATURE (Deg C) No Valid Data                               
  @ASLONGITUDE                                                                   
  @ASDeg C                                                                       
@@ -53726,6 +53992,12 @@ hello
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
  LAB 4  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
+ 
+! and now valid data overlaid with all-missing data
+ 
+plot/x=56e:100e/y=10 sst[L=1]
+plot/over/x=56e:100e/y=40 sst[L=1]
+ppl list labels
  @ACSEA SURFACE TEMPERATURE (Deg C)                                             
  @ASLONGITUDE                                                                   
  @ASDeg C                                                                       
@@ -53741,6 +54013,10 @@ hello
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 5 -3.700E-01 -5.500E-01 0.080    0  SYSTEM  @ASSST[Y=39N] No Valid Data
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ 
+! For plots with multi lines in one plot command, mark each if no data
+plot/x=56e:100e sst[L=1,y=10], sst[L=1,y=50], sst[L=1,y=20]
+ppl list labels
                                                                                 
  @ASLONGITUDE                                                                   
  @ASDeg C                                                                       
@@ -53758,6 +54034,29 @@ hello
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
  LAB 6  2.530E+00 -1.040E+00 0.120    0  SYSTEM  @ASSST[Y=19N]
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ 
+! For 2D plots create a new MODE NODATA_LAB which if on, puts
+! the NO VALID DATA across the middle of the plot when there is
+! no data, but allows us to turn this off.
+ 
+CANCEL MODE nodata_lab
+SHADE/Y=80:90 sst[L=1]
+FILL/Y=80:90 sst[L=1]
+CONTOUR/Y=80:90 sst[L=1]
+ 
+VECTOR/Y=80:90 sst[L=1], sst[L=1]
+ 
+SET MODE/last nodata_lab
+ 
+GO bn_reset
+cancel mode verify
+GO bn_median
+! Test median smoothing tranform
+ 
+use gtsa056_2.cdf
+let var = u[x=180,y=0,k=1,t=1-jan-1982:1-jan-1983]
+plot var,var[t=@med:3], var[t=@med:6]
+list/t=1-dec-1982:1-jan-1983 var,var[t=@med:3], var[t=@med:6]
              DATA SET: ./gtsa056_2.cdf
              TIME: NOV-1982 to JAN-1983
              LONGITUDE: 180E
@@ -53778,6 +54077,11 @@ hello
 25-DEC-1982 07 / 114:   9.06758   9.06758   3.48281
 28-DEC-1982 08 / 115:  10.80434   9.06758   4.21162
 31-DEC-1982 09 / 116:   4.21162   7.50798   6.63960
+ 
+use coads_climatology
+let var= sst[y=0,L=10]
+plot var,var[x=@med:3], var[x=@med:6]
+list/x=80w:50w var,var[x=@med:3], var[x=@med:6]
              DATA SET: ./coads_climatology.cdf
              LONGITUDE: 80W to 50W
              LATITUDE: 1S
@@ -53801,6 +54105,10 @@ hello
 55W   / 143:  27.64737  27.64737  27.64737
 53W   / 144:  27.43500  27.64737  27.64120
 51W   / 145:  27.70333  27.43500  27.64737
+ 
+let var= sst[x=180,L=10]
+plot var,var[y=@med:3], var[y=@med:6]
+list/y=-20:0 var,var[y=@med:3], var[y=@med:6]
              DATA SET: ./coads_climatology.cdf
              LATITUDE: 20S to 0
              LONGITUDE: 179E
@@ -53819,6 +54127,11 @@ hello
 5S    / 43:  28.96976  28.96976  28.96976
 3S    / 44:  28.39779  28.39779  28.44243
 1S    / 45:  28.36456  28.39779  28.39779
+ 
+define axis/z=0:1000:20/depth zax
+let var = cos(z[gz=zax]/30) + randu(1+k[gz=zax])
+plot/trans var, var[z=@med:3], var[z=@med:8]
+list/z=1:140 var, var[z=@med:3], var[z=@med:8]
              Z: 1 to 140
  Column  1: VAR is COS(Z[GZ=ZAX]/30) + RANDU(1+K[GZ=ZAX])
  Column  2: VAR[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU(1+K[GZ=ZAX]) (median smoothed by 3 pts on Z)
@@ -53832,6 +54145,37 @@ hello
 100   / 6: -0.785400 -0.157475  0.3281404
 120   / 7:  0.240523  0.240523  0.3281404
 140   / 8:  0.390383  0.390383  0.3903828
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO bn614_bug_fixes
+! bn614_bug_fixes.jnl
+! Fixes that go into v6.14 release
+ 
+GO bn_reset
+cancel mode verify
+GO err611_axislab
+! err611_axislab.jnl
+! Fix bug 1582: Horizontal axis label disappeared
+! if PPL AXLABP moves it to the upper axis
+ 
+plot/set/i=1:100 sin(i/6)
+ppl axlabp,1,-1
+ppl xlab TEMP(C)
+ppl ylab DEPTH
+ppl plot
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err61_360_calendar
+! err61_360_calendar.jnl
+!
+ 
+! This first has always been ok
+define axis/t=28-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 time
+list t[gt=time]
              VARIABLE : T
                         axis TIME
              SUBSET   : 6 points (TIME)
@@ -53842,19 +54186,88 @@ hello
  04-MAR-1909 00 / 4:  63.00000
  06-MAR-1909 00 / 5:  65.00000
  08-MAR-1909 00 / 6:  67.00000
+ 
+! Should be able to specify 30-feb-1909 for a 360-day calendar but it
+! resulted in an error
+define axis/t=30-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 time
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err611_exit_if.jnl
+! err611_exit_if.jnl
+!
+! Bug 1587
+! This only in v6.11 GFDL release bug
+! Fixed in xeq_exit.F
+ 
+yes? sp echo if 1 then > a.jnl
+yes? sp echo exit/script >> a.jnl
+yes? sp echo endif >> a.jnl
+yes? sp echo go a > b.jnl
+yes? sp echo say hello >> b.jnl
+yes? go b  !the following fails to say "hello"
+go a
+if 1 then
+exit/script
+say hello
 hello
+go a
+if 1 then
+exit/script
+if 1 then
+exit/script
+ 
+GO bn_reset
+cancel mode verify
+GO err611_save_irreg.jnl
+! err611_save_irreg.jnl
+!
+! bug1588
+ 
+def axis/t time = {0,1,3}
+let a = t[gt=time]
+save/clob/file=a.nc a
+can var a
+can dat/all
+use a.nc
+save/clob/file=b.nc a
+let b = a
+list b
              VARIABLE : A
              FILENAME : a.nc
              SUBSET   : 3 points (T)
  0   / 1:  0.000000
  1   / 2:  1.000000
  3   / 3:  3.000000
+save/clob/file=b.nc b
+ 
+GO bn_reset
+cancel mode verify
+GO err611_wrong_fineaxis_range
+! err611_wrong_fineaxis_range.jnl
+! Bug 1594
+ 
+! (bug was on 64-bit machine only)
+! 7200-point axis in longitude. The coordinates run from -179.725 to 179.725,
+! delta 0.05.  If we give a range in x of -180:180 this is returned as index
+! 1:1  not 1:7200.  If we give a range of x=0:360 the correct range is used.
+ 
+! File saved from
+!use/order=xytz "http://apdrc.soest.hawaii.edu/dods/public_data/satellite_product/GHRSST/ghrsst_global"
+! save/clobber/file=fine_x_axis.nc sst[i=1:7200,y=0,L=1]
+ 
+use fine_x_axis
+sh grid sst
     GRID GPY1
  name       axis              # pts   start                end
  LON       LONGITUDE         7200mr   179.98W(-179.98)     179.98E
  LAT1800_1800 LATITUDE          1 r   0.025S               0.025S
  ENS       Z (count)            1 r   1                    1
  TIME11    TIME                 1 r   01-APR-2006 00:00    01-APR-2006 00:00
+ 
+! This first was wrong, returned data at x=-180
+list/x=180 sst
              VARIABLE : sea surface temperature [degc]
              FILENAME : fine_x_axis.nc
              LONGITUDE: 180E
@@ -53862,6 +54275,8 @@ hello
              Z (count): 1
              TIME     : APR-2006
           27.53000
+ 
+list/i=7200 sst
              VARIABLE : sea surface temperature [degc]
              FILENAME : fine_x_axis.nc
              LONGITUDE: 180E
@@ -53869,6 +54284,7 @@ hello
              Z (count): 1
              TIME     : APR-2006
           27.53000
+list/x=-180 sst
              VARIABLE : sea surface temperature [degc]
              FILENAME : fine_x_axis.nc
              LONGITUDE: 180W(-180)
@@ -53876,6 +54292,7 @@ hello
              Z (count): 1
              TIME     : APR-2006
           27.50000
+list/i=1 sst
              VARIABLE : sea surface temperature [degc]
              FILENAME : fine_x_axis.nc
              LONGITUDE: 180W(-180)
@@ -53883,44 +54300,91 @@ hello
              Z (count): 1
              TIME     : APR-2006
           27.50000
+ 
+! This gave a range in x of no points, so size was 1 should be 7200
+let the_plot_var = sst[x=-180:180]
+say `the_plot_var,return=size`
+ !-> MESSAGE/CONTINUE 7200
 7200
+ 
+let the_plot_var = sst[x=0:360]
+say `the_plot_var,return=size`
+ !-> MESSAGE/CONTINUE 7200
 7200
+ 
+GO bn_reset
+cancel mode verify
+GO err611_digit_filename
+! err611_digit_filename.jnl
+! Under linux, FILE command fails if filename
+! starts with digit(s)
+ 
+! bug 287 (never had a benchmark test)
+ 
+REPEAT/RANGE=1:12:2/NAME=m \
+  (LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=`m`a.dat i; \
+   FILE/VAR="a`m`" `m`a.dat; LIST a`m`)
+!-> REPEAT: M:1
+ !-> LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=1a.dat i
+ !-> SET DATA/EZ/VAR="a1" 1a.dat
+ !-> LIST a1
              VARIABLE : A1
              FILENAME : 1a.dat
              SUBSET   : 3 points (X)
  1   / 1:  1.000000
  2   / 2:  2.000000
  3   / 3:  3.000000
+!-> REPEAT: M:3
+ !-> LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=3a.dat i
+ !-> SET DATA/EZ/VAR="a3" 3a.dat
+ !-> LIST a3
              VARIABLE : A3
              FILENAME : 3a.dat
              SUBSET   : 3 points (X)
  1   / 1:  1.000000
  2   / 2:  2.000000
  3   / 3:  3.000000
+!-> REPEAT: M:5
+ !-> LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=5a.dat i
+ !-> SET DATA/EZ/VAR="a5" 5a.dat
+ !-> LIST a5
              VARIABLE : A5
              FILENAME : 5a.dat
              SUBSET   : 3 points (X)
  1   / 1:  1.000000
  2   / 2:  2.000000
  3   / 3:  3.000000
+!-> REPEAT: M:7
+ !-> LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=7a.dat i
+ !-> SET DATA/EZ/VAR="a7" 7a.dat
+ !-> LIST a7
              VARIABLE : A7
              FILENAME : 7a.dat
              SUBSET   : 3 points (X)
  1   / 1:  1.000000
  2   / 2:  2.000000
  3   / 3:  3.000000
+!-> REPEAT: M:9
+ !-> LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=9a.dat i
+ !-> SET DATA/EZ/VAR="a9" 9a.dat
+ !-> LIST a9
              VARIABLE : A9
              FILENAME : 9a.dat
              SUBSET   : 3 points (X)
  1   / 1:  1.000000
  2   / 2:  2.000000
  3   / 3:  3.000000
+!-> REPEAT: M:11
+ !-> LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=11a.dat i
+ !-> SET DATA/EZ/VAR="a11" 11a.dat
+ !-> LIST a11
              VARIABLE : A11
              FILENAME : 11a.dat
              SUBSET   : 3 points (X)
  1   / 1:  1.000000
  2   / 2:  2.000000
  3   / 3:  3.000000
+SHOW DATA
      currently SET data sets:
     1> ./1a.dat
  name     title                             I         J         K         L
@@ -53946,27 +54410,107 @@ hello
  name     title                             I         J         K         L
  A11      A11                              1:3       ...       ...       ...
  
+ 
+GO bn_reset
+cancel mode verify
+GO err611_parse_semicolon
+! err611_parse_semicolon.jnl
+! Bug 1608. The first time it was issued, the first command
+! below was split into two at the ;
+! Test this and some other combinations
+ 
+say "c ; d"
 c ; d
+say "c //d"
 c //d
+say "c (d"
 c (d
+say "c (d"; say "a ; b"
 "c (d"; say "a ; b"
+say "c (d; say a ; b"
 c (d; say a ; b
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err611_ov_ax
+! err611_ov_ax.jnl
+!
+! bug 1609
+!
+! in the two lower panels, the plot/over/ax=0,0,0,0
+! messes up the ppl axlabp setting in the last command
+!
+ 
+can v
+set v ul; ppl axlabp -1 -1; plot/nolab {-1,1,6}
+plot/ov/vs/nolab/line=2 {1,2,2,1},{0,0,3,0}
+set v ur; ppl axlabp 0 0; plot/nolab {-1,1,6}
+ 
+set v ll; ppl axlabp -1 -1; plot/nolab {-1,1,6}
+plot/ov/vs/nolab/line=2/ax=0,0,0,0 {1,2,2,1},{0,0,3,0}
+set v lr; ppl axlabp 0 0; plot/nolab {-1,1,6}
+ 
+! ******** V6.14 Additions below ***********
+GO bn_reset
+cancel mode verify
+GO bn_mode_nodata_lab
+! bn_mode_nodata_lab
+! turns off the No Valid Data label on plots
+! (for line plots this is added to the plot label,
+!  if the mode is SET).
+ 
+SHOW MODE nodata_lab
       MODE            STATE        ARGUMENT
       NODATA_LAB       SET
+ 
+use coads_climatology
+let uwnd = sst
+let vwnd = -1*sst
+ 
+plot/y=50/x=70e:110e/L=1 sst
+shade/y=40:50/x=70e:110e/L=1 sst
+vec/y=40:50/x=70e:110e/L=1 uwnd,vwnd
+contour/y=40:50/x=70e:110e/L=1 vwnd
+contour/fill/y=40:50/x=70e:110e/L=1 vwnd
+ 
+can mode nodata_lab
+plot/y=50/x=70e:110e/L=1 sst
+shade/y=40:50/x=70e:110e/L=1 sst
+vec/y=40:50/x=70e:110e/L=1 uwnd,vwnd
+contour/y=40:50/x=70e:110e/L=1 vwnd
+contour/fill/y=40:50/x=70e:110e/L=1 vwnd
+ 
+set mode/last nodata_lab
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO proleptic_gregorian_calendar
+! proleptic_gregorian_calendar.jnl
+! Allow PROLEPTIC_GREGORIAN as a calendar attribute
+! for the default Ferret calendar.
+ 
+set data proleptic_gregorian.nc
+show data
      currently SET data sets:
     1> ./proleptic_gregorian.nc  (default)
  name     title                             I         J         K         L
  MY_DATA  SIN(L[GT=TDAYS])                 ...       ...       ...       1:32
  
+show axis tdays
  name       axis              # pts   start                end
  TDAYS     TIME               733 r   01-JAN-1988 00:00    01-JAN-1990 00:00
 T0 = 15-JAN-1901
 CALENDAR = ALL_LEAP
    Axis span (to cell edges) = 733
+ 
+! version 2.3 requires exit/command *sh* 3/92
+exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.14  
- 	Linux(g77) 2.6.9-22. - 11/06/08
- 	 7-Nov-08 09:53     
+ 	Linux(g77) 2.6.9-22. - 11/07/08
+ 	 7-Nov-08 12:54     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -54677,8 +55221,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  10   / 10:  -5.00
  11   / 11:  -4.00
  12   / 12:  -3.00
- 13-rw-rw-r--  1 ansley tmap 29712 Nov  7 09:53 testa.v5d
--rw-rw-r--  1 ansley tmap 29712 Nov  7 09:53 test.v5d
+ 13-rw-rw-r--  1 ansley tmap 29712 Nov  7 12:54 testa.v5d
+-rw-rw-r--  1 ansley tmap 29712 Nov  7 12:54 test.v5d
    / 13:  -2.00
  14   / 14:  -1.00
  15   / 15:   0.00
@@ -56991,8 +57535,8 @@ end of ncdump output
  
  	NOAA/PMEL TMAP
  	FERRET v6.14  
- 	Linux(g77) 2.6.9-22. - 11/06/08
- 	 7-Nov-08 09:53     
+ 	Linux(g77) 2.6.9-22. - 11/07/08
+ 	 7-Nov-08 12:54     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57163,8 +57707,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.14  
- 	Linux(g77) 2.6.9-22. - 11/06/08
- 	 7-Nov-08 09:53     
+ 	Linux(g77) 2.6.9-22. - 11/07/08
+ 	 7-Nov-08 12:54     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57277,8 +57821,8 @@ can mode ignore
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.14  
- 	Linux(g77) 2.6.9-22. - 11/06/08
- 	 7-Nov-08 09:54     
+ 	Linux(g77) 2.6.9-22. - 11/07/08
+ 	 7-Nov-08 12:54     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57361,4 +57905,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Fri Nov 7 09:54:00 PST 2008
+Ended at Fri Nov 7 12:54:31 PST 2008

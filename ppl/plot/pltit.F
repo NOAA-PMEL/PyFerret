@@ -460,10 +460,10 @@ C ACM Add FLOWLINE call based on VECFLD
  200	       continue
 	    end if
 
-cc            IF (.NOT.SOVER) THEN
+            IF (.NOT.SOVER) THEN
 	       CALL DAXIS(XF,YF,NMX,NMY)
 	       CALL DAXIS_BOX
-cc            ENDIF
+            ENDIF
 ***************************************************
 	ENDIF
 

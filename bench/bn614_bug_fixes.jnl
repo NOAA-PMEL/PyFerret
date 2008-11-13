@@ -24,3 +24,6 @@ GO err611_parse_semicolon
 
 GO bn_reset
 GO err611_ov_ax
+
+GO bn_reset
+GO err611_context_after_error

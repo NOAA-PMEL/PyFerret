@@ -144,6 +144,7 @@
 *	uvar_lo/hi_ss	- when uvlims are given in expression this tells what
 *	uvar_lo/hi_ww	- when uvlims are given in expression this tells what
 *	uvar_bad_data	- missing value flag to be used for this variable
+*	has_uvar_gc	- variable is a grid-changing variable
 
 *	isp	 	- interpretation stack pointer
 *	is_act   	- activity currently in progress
@@ -282,7 +283,8 @@ c     .			max_intrp	  = 200  )
      .		is_sum  	( max_intrp ),
      .
      .          deleted_list_result (max_uvar),
-     .          string_array_result (max_uvar)
+     .          string_array_result (max_uvar),
+     .		has_uvar_gc
 
 ********************************************************************************
 ******			COMMON VARIABLE TYPE DECLARATIONS		  ******
@@ -339,7 +341,8 @@ c     .			max_intrp	  = 200  )
 	LOGICAL		uvar_title_w_text,
      .			uvar_need_dset,
      .			uvar_mod_pseudo,
-     .			uvar_by_ss
+     .			uvar_by_ss,
+     .			has_uvar_gc
 	REAL*8          uvar_name_code_head,
      .                  uvar_name_code_padding,       
      .                  uvar_num_items_head,

@@ -96,6 +96,8 @@
 * V611 5/08 *acm* Fix bug 1578; dataset specifiers applied correctly var[d=1].attname
 * V615 11/08*acm* Fix bug 1421: if variable in expr is undefined call DEALLO_UNFORMED_GRID
 *                 to correctly back out of the dynamic grid that was partially defined.
+* V615 11/08*acm* - fixing bug 1523. If the variable contains a grid-changing function,
+*                 mark it as such for repl_exprns to get the correct size.
 
 * calling argument declarations:
 	INTEGER	status
@@ -147,6 +149,8 @@
 	dset   = cx_data_set( lo_cx )
 	nitem  = uvar_num_items( uvar )
 	its_gc = ITSA_GCVAR(uvar)
+	its_gc = ITSA_GCVAR(uvar)
+	has_uvar_gc = has_uvar_gc .OR. its_gc  ! for repl_exprns fixing bug 1523
 * ... initialization to support 2/99 pass-2 changes
 	pass_number = 1
 ! 4/99

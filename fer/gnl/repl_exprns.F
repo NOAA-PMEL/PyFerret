@@ -99,6 +99,8 @@
 * V601 10/06 *acm* - fix bug 1447, where say `var[d=fname.cdf],return=size` failed
 *            parsing error, confusing the dot in the filename with `var.att,return=size`
 * V602  4/07 *acm* - Add RETURN=xmod,tmod
+* V615 11/08 *acm* - fixing bug 1523. If the variable contains a grid-changing 
+*                    function, we will do a full evaluation to get its size
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -128,7 +130,7 @@
 
 * internal variable declarations:
 	LOGICAL   need_formatting, zero_fill, coordvar,
-     .            do_err
+     .            do_err, do_eval
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  FIND_DSET_NUMBER, str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
@@ -319,6 +321,7 @@
  160	IF ( info_query ) THEN
 * ... evaluate the context without computing the expression
 *	this is a major performance consideration, but not 100% reliable
+	   has_uvar_gc = .FALSE.
 	   CALL GET_NEW_CX( cx_last, cx_cmnd, apply_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
            ist = istart
@@ -345,8 +348,9 @@
 * TRANSPOSE - ALL "IMPOSED" AXES PRESENT THE RISK OF WRONG RESULTS
 
                  DO 190 idim = 1, 4
-	            IF ( cx_hi_ww(idim, cx) .EQ. unspecified_val8
-     .	           .AND. CGRID_AXIS(idim, cx) .NE. mnormal ) THEN
+		    do_eval = ( cx_hi_ww(idim, cx) .EQ. unspecified_val8
+     .	                        .AND. CGRID_AXIS(idim, cx) .NE. mnormal )
+	            IF ( do_eval .OR. has_uvar_gc) THEN
 	               CALL EVAL_EXPR ( memory, cx_last,
      .		                     cmnd(istart:iend), apply_cx, status )
 	               IF ( status .NE. ferr_ok ) GOTO 5000

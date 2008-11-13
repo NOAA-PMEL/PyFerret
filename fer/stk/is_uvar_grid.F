@@ -94,7 +94,8 @@
 *                   blank. assign a longer string to name and then just send the first
 *                   character to GET_VAR_CONTEXT
 * V611 5/08 *acm* Fix bug 1578; dataset specifiers applied correctly var[d=1].attname
-
+* V615 11/08*acm* Fix bug 1421: if variable in expr is undefined call DEALLO_UNFORMED_GRID
+*                 to correctly back out of the dynamic grid that was partially defined.
 
 * calling argument declarations:
 	INTEGER	status
@@ -241,7 +242,10 @@
      .				lo_cx,
      .				hi_cx,
      .				status )
-	IF ( status .NE. ferr_ok ) GOTO 5000
+	IF ( status .NE. ferr_ok ) THEN
+	   CALL DEALLO_UNFORMED_GRID
+	   GOTO 5000
+	ENDIF
 * handle variable regridded to a uvar which has unknown grid (8/99) 
 	IF ( cx_unstand_grid(hi_cx)
      . .AND. cx_grid(hi_cx) .LT. unspecified_int4 ) GOTO 800

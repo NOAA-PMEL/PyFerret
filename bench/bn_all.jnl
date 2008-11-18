@@ -604,7 +604,7 @@ GO bn_reset
 GO bn_mode_nodata_lab
 
 GO bn_reset
-GO proleptic_gregorian_calendar
+GO bn_proleptic_gregorian_calendar
 
 GO bn_reset
 GO bn_string_ngd_nbd

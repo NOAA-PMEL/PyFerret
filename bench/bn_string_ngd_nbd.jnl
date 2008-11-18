@@ -71,6 +71,6 @@ list bv[L=@ngd]
 
 list av[i=@nbd,j=@nbd,k=@nbd]
 list bv[i=@nbd,j=@nbd,k=@nbd]
-pause
+
 list bv[i=@ngd,j=@ngd,k=@ngd,L=@ngd]
 list av[i=@ngd,j=@ngd,k=@ngd,L=@ngd]

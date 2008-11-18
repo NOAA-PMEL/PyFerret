@@ -12,6 +12,8 @@ do_4d_ave.F\
 do_4d_int_def.F\
 do_4d_nbd.F\
 do_4d_ngd.F\
+do_4d_string_goodbad.F\
+do_4d_string_trans.F\
 do_4d_trans.F\
 do_4d_var.F\
 do_asn_regrid.F\
@@ -54,6 +56,7 @@ do_smth_box.F\
 do_smth_hanng.F\
 do_smth_parzn.F\
 do_smth_welch.F\
+do_string_goodbad.F\
 do_string_shift.F\
 do_sum.F\
 do_var_sub.F\

@@ -93,8 +93,9 @@
 
 * internal variable declarations:
 * ... "res"="result" , "com"="component"
-	LOGICAL	ITSA_FILL_TRANS, its_4d
-	INTEGER CX_DIM_LEN, MGRID_SIZE_DELTA, slen, cx_valid,
+	LOGICAL	ITSA_FILL_TRANS, its_4d, string_bad_good, string_com
+	INTEGER CX_DIM_LEN, MGRID_SIZE_DELTA, DO_4D_STRING_TRANS,
+     .		slen, cx_valid,
      .		res_isp, com_isp, res_cx, com_cx, com_mr, res_mr, idim,
      .		trans, grid, lo_off, hi_off, ss_lo, ss_hi, wksiz, wkblk,
      .		mrlist(2), axes(4), idim1, i, ndim
@@ -114,6 +115,8 @@
 	trans	= cx_trans( idim1, res_cx )
 	arg	= cx_trans_arg( idim1, res_cx )
 	grid    = cx_grid( com_cx )
+	string_bad_good = .FALSE.
+	string_com = .FALSE.
 
 * determine if this is a 1D or a 4D (multiple axis) transformation
 	its_4d = .FALSE.
@@ -171,7 +174,7 @@
 * create a result context based on the received component
 	cx_valid= cx_buff
 	CALL TRANSFER_CONTEXT( com_cx, cx_valid )
-	DO 300 i = 1, ndim
+		DO 300 i = 1, ndim
 	   idim = axes(i)
 * ... if the requested region was unknown use the component region
 	   IF ( cx_lo_ss(res_cx,idim).EQ.unspecified_int4
@@ -225,11 +228,24 @@
 
 * the context is ready - carve out memory space for it
 	CALL TRANSFER_CONTEXT( cx_valid, res_cx )
+	
+	IF ( cx_type(com_cx) .EQ. ptype_string ) THEN
+	   string_com = .TRUE.
+	   IF (trans .EQ. trans_good_pt    .OR.
+     .         trans .EQ. trans_bad_pt     .OR.
+     .         trans .EQ. trans_4d_good_pt .OR.
+     .         trans .EQ. trans_4d_bad_pt ) THEN
+              string_bad_good = .TRUE.
+              cx_type(res_cx) = ptype_float
+           ENDIF
+        ENDIF
+
 	CALL CREATE_MEM_VAR( res_cx, res_mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	is_mr( res_isp ) = res_mr
-	IF ( mr_type(res_mr) .EQ. ptype_string ) THEN
-* ... only applicable to @SHF transformation
+	IF ( mr_type(res_mr) .EQ. ptype_string .AND.
+     .       (.NOT.string_bad_good)) THEN
+* ... only applicable to @SHF transformation; else will return a null string.
            CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
      .                               memory(1, mr_blk1(res_mr)),
      .                               mr_c_pointer(res_mr)      )
@@ -306,11 +322,23 @@
 	CALL NON_ARRAY_SUBSC( mrlist, 2 )
 
 * transformations applied to string arguments
-	IF ( mr_type(com_mr) .EQ. ptype_string ) THEN
+	IF ( string_com ) THEN
 	   IF (trans .EQ. trans_shift) THEN
 	      CALL DO_STRING_SHIFT ( idim, arg,
      .		memory( 1, mr_blk1(com_mr) ), com_mr, com_cx, ! component
      .		memory( 1, mr_blk1(res_mr) ), res_mr, res_cx) ! result
+	   ELSEIF (string_bad_good) THEN
+	   
+	      IF (its_4d) THEN
+	         status = DO_4D_STRING_TRANS( trans,
+     .		 memory( 1, mr_blk1(com_mr) ), com_mr, com_cx, ! component
+     .		 memory( 1, mr_blk1(res_mr) ), res_mr, res_cx) ! result
+	         IF ( status .NE. ferr_ok ) GOTO 5000
+              ELSE
+ 	         CALL DO_STRING_GOODBAD ( idim, trans,
+     .		 memory( 1, mr_blk1(com_mr) ), com_mr, com_cx, ! component
+     .		 memory( 1, mr_blk1(res_mr) ), res_mr, res_cx) ! result                            ! result
+	      ENDIF
 	   ELSE
 	     CALL SET_NULL_C_STRING_ARRAY(mr_c_pointer(res_mr),
      .                                    MGRID_SIZE_DELTA(res_mr) )
@@ -337,6 +365,7 @@
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * do the transform
+
 	status = ROUTINE( idim, arg,
      .		memory( 1, mr_blk1(com_mr) ), com_mr, com_cx, ! component
      .		memory( 1, mr_blk1(res_mr) ), res_mr, res_cx, ! result

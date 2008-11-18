@@ -53,7 +53,7 @@
 	INTEGER	cx
 
 * internal variable declarations:
-	INTEGER	dset, data_set, category, variable
+	INTEGER	dset, data_set, category, variable, idim, trans
 
 * initialize
 	category = cx_category(cx)
@@ -99,6 +99,19 @@
 	   STOP 'KNOWN_TYP'
 
 	ENDIF
+
+* For string variables the result data type of @NGD and @NBD is float.  
+	IF (cx_type(cx) .EQ. ptype_string) THEN
+	   DO 100, idim = 1, 4
+	      trans = cx_trans(idim, cx) 
+	      IF (trans .EQ. trans_good_pt    .OR.
+     .            trans .EQ. trans_bad_pt     .OR.
+     .            trans .EQ. trans_4d_good_pt .OR.
+     .            trans .EQ. trans_4d_bad_pt ) THEN
+                  cx_type(cx) = ptype_float
+       	       ENDIF
+ 100	   CONTINUE
+        ENDIF
 
 	RETURN
 	END

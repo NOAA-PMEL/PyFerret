@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 49616907 Nov 13 14:58 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 49654395 Nov 18 12:03 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for  bug1523 including a new benchmark test
+Note: added NGD and NBD transformations for string variables; null strings count as bad. New benchmark script bn_string_ngd_nbd.jnl
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Thu Nov 13 14:59:31 PST 2008
+Beginning at Tue Nov 18 12:04:27 PST 2008
  	NOAA/PMEL TMAP
  	FERRET v6.15  
- 	Linux(g77) 2.6.9-22. - 11/13/08
- 	13-Nov-08 14:59     
+ 	Linux(g77) 2.6.9-22. - 11/18/08
+ 	18-Nov-08 12:04     
 
 yes? !bn500_all_shell
 yes? 
@@ -10237,8 +10237,8 @@ PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.15"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "13-Nov-08"
-SESSION_TIME = "14:59"
+SESSION_DATE = "18-Nov-08"
+SESSION_TIME = "12:04"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10256,8 +10256,8 @@ PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.15"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "13-Nov-08"
-SESSION_TIME = "14:59"
+SESSION_DATE = "18-Nov-08"
+SESSION_TIME = "12:04"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10265,8 +10265,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "13-Nov-08"
-SESSION_TIME = "14:59"
+SESSION_DATE = "18-Nov-08"
+SESSION_TIME = "12:04"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10276,13 +10276,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "13-Nov-08"
-SESSION_TIME = "14:59"
+SESSION_DATE = "18-Nov-08"
+SESSION_TIME = "12:04"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "13-Nov-08"
-SESSION_TIME = "14:59"
+SESSION_DATE = "18-Nov-08"
+SESSION_TIME = "12:04"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10316,7 +10316,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.15"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Nov 13 2008 14:59:38 "
+LAB3 = "Nov 18 2008 12:04:34 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10413,8 +10413,8 @@ PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.15"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "13-Nov-08"
-SESSION_TIME = "14:59"
+SESSION_DATE = "18-Nov-08"
+SESSION_TIME = "12:04"
  
  
 GO bn_reset
@@ -18140,8 +18140,8 @@ set view v44
 contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28000:29000:-400/trans sin(x/3)*sin(t/100)
  
 cancel viewports	! clean-up
-SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94-rw-rw-r--  1 ansley tmap 16411 Nov 13 14:59 bench.mgm
--rw-rw-r--  1 ansley tmap 290201 Nov 13 14:59 bench.mgm
+SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94-rw-rw-r--  1 ansley tmap 16407 Nov 18 12:04 bench.mgm
+-rw-rw-r--  1 ansley tmap 314440 Nov 18 12:04 bench.mgm
 
  
 !GO bn_reset
@@ -25291,7 +25291,7 @@ GO bn_reset
 cancel mode verify
 GO err491_grid_from_name.jnl
 ! err491_gridabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Thu Nov 13 14:59:50 PST 2008
+Tue Nov 18 12:04:49 PST 2008
 _from_name.jnl
 ! *sh* 3/99
  
@@ -45746,7 +45746,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASNov 13 2008 15:00:23
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASNov 18 2008 12:05:23
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 179.9E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47146,7 +47146,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "13-Nov-08:14:59"
+WIN_TITLE = "18-Nov-08:12:04"
  
 set win/title="set the title"
 sho sym win_title
@@ -52777,8 +52777,10 @@ sh sym ferret_memory
 FERRET_MEMORY = "0.05"
  
 set mem/siz=100000  ! too large to allow
+Unable to allocate 1215.752192 Mwords of memory.
+Restoring previous memory of 0.050000 Mwords.
 sho sym ferret_memory
-FERRET_MEMORY = "1216"
+FERRET_MEMORY = "0.05"
  
 set mem/siz=6.4  ! return to the default setting
 show memory
@@ -54932,7 +54934,7 @@ set mode/last nodata_lab
  
 GO bn_reset
 cancel mode verify
-GO proleptic_gregorian_calendar
+GO bn_proleptic_gregorian_calendar
 ! proleptic_gregorian_calendar.jnl
 ! Allow PROLEPTIC_GREGORIAN as a calendar attribute
 ! for the default Ferret calendar.
@@ -54951,12 +54953,331 @@ T0 = 15-JAN-1901
 CALENDAR = ALL_LEAP
    Axis span (to cell edges) = 733
  
+GO bn_reset
+cancel mode verify
+GO bn_string_ngd_nbd
+! @NGD and @NBD for strings
+! Bad data is taken to be the null string
+! Compare with results for numeric data
+! *ACM 11/2008
+ 
+let a = {"a","b",,"cd"}
+list a[i=@ngd]
+             VARIABLE : {"a","b",,"cd"} (# of points)
+             X        : 0.5 to 4.5 (number of valid)
+          3.000000
+ 
+let a = {"a","b",,"c",,"d",,,"e","f","g","h"}
+let b = { 3,  3 ,, 3 ,, 3 ,,, 3,  3,  3,  3}
+list a[i=@nbd]
+             VARIABLE : {"a","b",,"c",,"d",,,"e","f","g","h"} (# of points)
+             X        : 0.5 to 12.5 (number flagged bad)
+          4.000000
+list b[i=@nbd]
+             VARIABLE : { 3,  3 ,, 3 ,, 3 ,,, 3,  3,  3,  3} (# of points)
+             X        : 0.5 to 12.5 (number flagged bad)
+          4.000000
+ 
+define axis/x=1:3:1 xax
+define axis/y=1:4:1 yax
+let v = x[gx=xax] + y[gy=yax]
+ 
+let av = reshape (a,v)
+let bv = reshape (b,v)
+list av[i=@ngd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 4 points (Y)
+             X        : 0.5 to 3.5 (number of valid)
+ 1   / 1:  2.000000
+ 2   / 2:  2.000000
+ 3   / 3:  1.000000
+ 4   / 4:  3.000000
+list bv[i=@ngd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 4 points (Y)
+             X        : 0.5 to 3.5 (number of valid)
+ 1   / 1:  2.000000
+ 2   / 2:  2.000000
+ 3   / 3:  1.000000
+ 4   / 4:  3.000000
+list av[j=@ngd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 3 points (X)
+             Y        : 0.5 to 4.5 (number of valid)
+ 1   / 1:  3.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+list bv[j=@ngd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 3 points (X)
+             Y        : 0.5 to 4.5 (number of valid)
+ 1   / 1:  3.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+list av[i=@ngd,j=@ngd]
+             VARIABLE : RESHAPE (A,V)
+             X        : 0.5 to 3.5 (XY # valid)
+             Y        : 0.5 to 4.5 (XY # valid)
+          8.000000
+list bv[i=@ngd,j=@ngd]
+             VARIABLE : RESHAPE (B,V)
+             X        : 0.5 to 3.5 (XY # valid)
+             Y        : 0.5 to 4.5 (XY # valid)
+          8.000000
+ 
+ 
+define axis/x=1:3:1 xax
+define axis/z=1:4:1 zax
+let v = x[gx=xax] + z[gz=zax]
+ 
+let av = reshape (a,v)
+list av[i=@nbd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 4 points (Z)
+             X        : 0.5 to 3.5 (number flagged bad)
+ 1   / 1:  1.000000
+ 2   / 2:  1.000000
+ 3   / 3:  2.000000
+ 4   / 4:  0.000000
+list bv[i=@nbd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 4 points (Z)
+             X        : 0.5 to 3.5 (number flagged bad)
+ 1   / 1:  1.000000
+ 2   / 2:  1.000000
+ 3   / 3:  2.000000
+ 4   / 4:  0.000000
+list av[k=@nbd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 3 points (X)
+             Z        : 0.5 to 4.5 (number flagged bad)
+ 1   / 1:  1.000000
+ 2   / 2:  2.000000
+ 3   / 3:  1.000000
+list bv[k=@nbd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 3 points (X)
+             Z        : 0.5 to 4.5 (number flagged bad)
+ 1   / 1:  1.000000
+ 2   / 2:  2.000000
+ 3   / 3:  1.000000
+list av[i=@nbd,k=@nbd]
+             VARIABLE : RESHAPE (A,V)
+             X        : 0.5 to 3.5 (XZ # bad)
+             Z        : 0.5 to 4.5 (XZ # bad)
+          4.000000
+list bv[i=@nbd,k=@nbd]
+             VARIABLE : RESHAPE (B,V)
+             X        : 0.5 to 3.5 (XZ # bad)
+             Z        : 0.5 to 4.5 (XZ # bad)
+          4.000000
+ 
+define axis/x=1:3:1 xax
+define axis/t=1:4:1 tax
+let v = x[gx=xax] + t[gt=tax]
+ 
+let av = reshape (a,v)
+list av[i=@ngd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 4 points (T)
+             X        : 0.5 to 3.5 (number of valid)
+ 1   / 1:  2.000000
+ 2   / 2:  2.000000
+ 3   / 3:  1.000000
+ 4   / 4:  3.000000
+list bv[i=@ngd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 4 points (T)
+             X        : 0.5 to 3.5 (number of valid)
+ 1   / 1:  2.000000
+ 2   / 2:  2.000000
+ 3   / 3:  1.000000
+ 4   / 4:  3.000000
+list av[L=@ngd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 3 points (X)
+             T        : 0.5 to 4.5 (number of valid)
+ 1   / 1:  3.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+list bv[L=@ngd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 3 points (X)
+             T        : 0.5 to 4.5 (number of valid)
+ 1   / 1:  3.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+list av[i=@ngd,L=@ngd]
+             VARIABLE : RESHAPE (A,V)
+             X        : 0.5 to 3.5 (XT # valid)
+             T        : 0.5 to 4.5 (XT # valid)
+          8.000000
+list bv[i=@ngd,L=@ngd]
+             VARIABLE : RESHAPE (B,V)
+             X        : 0.5 to 3.5 (XT # valid)
+             T        : 0.5 to 4.5 (XT # valid)
+          8.000000
+ 
+!4D variable
+let a = {"a","b",,"c",,"d",,,"e","f","g","h","ab","bb",,"cb",,"db",,,"eb","fb","gb","hb"}
+let b = {3,3,,3,,3,,,3,3,3,3,3,3,,3,,3,,,3,3,3,3}
+ 
+define axis/x=1:2:1 xax
+define axis/y=1:2:1 yax
+define axis/z=1:3:1 zax
+define axis/t=1:2:1 tax
+let v = x[gx=xax] + y[gy=yax] + z[gz=zax] + t[gt=tax]
+ 
+let av = reshape (a,v)
+list av[i=@nbd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 2 by 3 by 2 points (Y-Z-T)
+             X        : 0.5 to 2.5 (number flagged bad)
+              1         2      
+               1         2
+ ---- L:1 T:   1
+ 1   / 1:  0.000000  1.000000
+ 2   / 2:  1.000000  2.000000
+ 3   / 3:  0.000000  0.000000
+ ---- L:2 T:   2
+ 1   / 1:  0.000000  1.000000
+ 2   / 2:  1.000000  2.000000
+ 3   / 3:  0.000000  0.000000
+list bv[i=@nbd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 2 by 3 by 2 points (Y-Z-T)
+             X        : 0.5 to 2.5 (number flagged bad)
+              1         2      
+               1         2
+ ---- L:1 T:   1
+ 1   / 1:  0.000000  1.000000
+ 2   / 2:  1.000000  2.000000
+ 3   / 3:  0.000000  0.000000
+ ---- L:2 T:   2
+ 1   / 1:  0.000000  1.000000
+ 2   / 2:  1.000000  2.000000
+ 3   / 3:  0.000000  0.000000
+list av[j=@nbd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 2 by 3 by 2 points (X-Z-T)
+             Y        : 0.5 to 2.5 (number flagged bad)
+              1         2      
+               1         2
+ ---- L:1 T:   1
+ 1   / 1:  1.000000  0.000000
+ 2   / 2:  2.000000  1.000000
+ 3   / 3:  0.000000  0.000000
+ ---- L:2 T:   2
+ 1   / 1:  1.000000  0.000000
+ 2   / 2:  2.000000  1.000000
+ 3   / 3:  0.000000  0.000000
+list bv[j=@nbd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 2 by 3 by 2 points (X-Z-T)
+             Y        : 0.5 to 2.5 (number flagged bad)
+              1         2      
+               1         2
+ ---- L:1 T:   1
+ 1   / 1:  1.000000  0.000000
+ 2   / 2:  2.000000  1.000000
+ 3   / 3:  0.000000  0.000000
+ ---- L:2 T:   2
+ 1   / 1:  1.000000  0.000000
+ 2   / 2:  2.000000  1.000000
+ 3   / 3:  0.000000  0.000000
+list av[k=@ngd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 2 by 2 by 2 points (X-Y-T)
+             Z        : 0.5 to 3.5 (number of valid)
+              1         2      
+               1         2
+ ---- L:1 T:   1
+ 1   / 1:  2.000000  3.000000
+ 2   / 2:  1.000000  2.000000
+ ---- L:2 T:   2
+ 1   / 1:  2.000000  3.000000
+ 2   / 2:  1.000000  2.000000
+list bv[k=@ngd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 2 by 2 by 2 points (X-Y-T)
+             Z        : 0.5 to 3.5 (number of valid)
+              1         2      
+               1         2
+ ---- L:1 T:   1
+ 1   / 1:  2.000000  3.000000
+ 2   / 2:  1.000000  2.000000
+ ---- L:2 T:   2
+ 1   / 1:  2.000000  3.000000
+ 2   / 2:  1.000000  2.000000
+list av[L=@ngd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 2 by 2 by 3 points (X-Y-Z)
+             T        : 0.5 to 2.5 (number of valid)
+              1         2      
+               1         2
+ ---- K:1 Z:   1
+ 1   / 1:  2.000000  2.000000
+ 2   / 2:  0.000000  2.000000
+ ---- K:2 Z:   2
+ 1   / 1:  0.000000  2.000000
+ 2   / 2:  0.000000  0.000000
+ ---- K:3 Z:   3
+ 1   / 1:  2.000000  2.000000
+ 2   / 2:  2.000000  2.000000
+list bv[L=@ngd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 2 by 2 by 3 points (X-Y-Z)
+             T        : 0.5 to 2.5 (number of valid)
+              1         2      
+               1         2
+ ---- K:1 Z:   1
+ 1   / 1:  2.000000  2.000000
+ 2   / 2:  0.000000  2.000000
+ ---- K:2 Z:   2
+ 1   / 1:  0.000000  2.000000
+ 2   / 2:  0.000000  0.000000
+ ---- K:3 Z:   3
+ 1   / 1:  2.000000  2.000000
+ 2   / 2:  2.000000  2.000000
+ 
+list av[i=@nbd,j=@nbd,k=@nbd]
+             VARIABLE : RESHAPE (A,V)
+             SUBSET   : 2 points (T)
+             X        : 0.5 to 2.5 (XYZ # bad)
+             Y        : 0.5 to 2.5 (XYZ # bad)
+             Z        : 0.5 to 3.5 (XYZ # bad)
+ 1   / 1:  4.000000
+ 2   / 2:  4.000000
+list bv[i=@nbd,j=@nbd,k=@nbd]
+             VARIABLE : RESHAPE (B,V)
+             SUBSET   : 2 points (T)
+             X        : 0.5 to 2.5 (XYZ # bad)
+             Y        : 0.5 to 2.5 (XYZ # bad)
+             Z        : 0.5 to 3.5 (XYZ # bad)
+ 1   / 1:  4.000000
+ 2   / 2:  4.000000
+ 
+list bv[i=@ngd,j=@ngd,k=@ngd,L=@ngd]
+             VARIABLE : RESHAPE (B,V)
+             X        : 0.5 to 2.5 (XYZT # valid)
+             Y        : 0.5 to 2.5 (XYZT # valid)
+             Z        : 0.5 to 3.5 (XYZT # valid)
+             T        : 0.5 to 2.5 (XYZT # valid)
+          16.00000
+list av[i=@ngd,j=@ngd,k=@ngd,L=@ngd]
+             VARIABLE : RESHAPE (A,V)
+             X        : 0.5 to 2.5 (XYZT # valid)
+             Y        : 0.5 to 2.5 (XYZT # valid)
+             Z        : 0.5 to 3.5 (XYZT # valid)
+             T        : 0.5 to 2.5 (XYZT # valid)
+          16.00000
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.15  
- 	Linux(g77) 2.6.9-22. - 11/13/08
- 	13-Nov-08 15:00     
+ 	Linux(g77) 2.6.9-22. - 11/18/08
+ 	18-Nov-08 12:05     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -55667,8 +55988,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  10   / 10:  -5.00
  11   / 11:  -4.00
  12   / 12:  -3.00
- 13-rw-rw-r--  1 ansley tmap 29712 Nov 13 15:00 testa.v5d
--rw-rw-r--  1 ansley tmap 29712 Nov 13 15:00 test.v5d
+ 13-rw-rw-r--  1 ansley tmap 29712 Nov 18 12:05 testa.v5d
+-rw-rw-r--  1 ansley tmap 29712 Nov 18 12:05 test.v5d
    / 13:  -2.00
  14   / 14:  -1.00
  15   / 15:   0.00
@@ -55839,7 +56160,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.15   13-Nov-08" ;
+		:history = "FERRET V6.15   18-Nov-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55862,7 +56183,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.15   13-Nov-08" ;
+		:history = "FERRET V6.15   18-Nov-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55886,7 +56207,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.15   13-Nov-08" ;
+		:history = "FERRET V6.15   18-Nov-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55925,7 +56246,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.15   13-Nov-08" ;
+		:history = "FERRET V6.15   18-Nov-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55960,7 +56281,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.15   13-Nov-08" ;
+		:history = "FERRET V6.15   18-Nov-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57981,8 +58302,8 @@ end of ncdump output
  
  	NOAA/PMEL TMAP
  	FERRET v6.15  
- 	Linux(g77) 2.6.9-22. - 11/13/08
- 	13-Nov-08 15:00     
+ 	Linux(g77) 2.6.9-22. - 11/18/08
+ 	18-Nov-08 12:05     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -58153,8 +58474,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.15  
- 	Linux(g77) 2.6.9-22. - 11/13/08
- 	13-Nov-08 15:00     
+ 	Linux(g77) 2.6.9-22. - 11/18/08
+ 	18-Nov-08 12:05     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -58267,8 +58588,8 @@ can mode ignore
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.15  
- 	Linux(g77) 2.6.9-22. - 11/13/08
- 	13-Nov-08 15:00     
+ 	Linux(g77) 2.6.9-22. - 11/18/08
+ 	18-Nov-08 12:05     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -58351,4 +58672,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Thu Nov 13 15:00:51 PST 2008
+Ended at Tue Nov 18 12:05:54 PST 2008

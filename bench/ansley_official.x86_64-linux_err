@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 49616907 Nov 13 14:58 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 49654395 Nov 18 12:03 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for  bug1523 including a new benchmark test
+Note: added NGD and NBD transformations for string variables; null strings count as bad. New benchmark script bn_string_ngd_nbd.jnl
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Thu Nov 13 14:59:31 PST 2008
+Beginning at Tue Nov 18 12:04:27 PST 2008
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2492,6 +2492,33 @@ LIST a_regrid[D=1,GT=b[D=2]@MOD]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+Replacing definition of axis ZAX
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+Replacing definition of axis TAX
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+Replacing definition of axis ZAX
+Replacing definition of axis TAX
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2573,4 +2600,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Nov 13 15:00:51 PST 2008
+Ended at Tue Nov 18 12:05:54 PST 2008

@@ -1,0 +1,7 @@
+! proleptic_gregorian_calendar.jnl
+! Allow PROLEPTIC_GREGORIAN as a calendar attribute
+! for the default Ferret calendar.
+
+set data proleptic_gregorian.nc
+show data
+show axis tdays

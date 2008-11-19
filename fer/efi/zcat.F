@@ -4,7 +4,13 @@
 * Ansley Manke
 * Sep 15 2004
 * 4/2006 fix ordering of loops: axis of concatenation must be outermost loop
+* V6.2 *acm* 11/08 New function ef_set_alt_fcn_name to set get the name of a 
+*                  function to call if the arguments are of a different type 
+*                  than defined in the current function. E.g. this lets the 
+*                  user reference XCAT with string arguments and Ferret will 
+*                  run XCAT_STR
 *
+
 * This function returns the Z values of the two variables,
 * concatenated into one long list on an abstract Z axis. Other 
 * axes are unchanged.
@@ -63,6 +69,9 @@
       CALL ef_set_desc(id, descrip)
   100 FORMAT ('Concatenates the Z values of two variables into one ',
      .        'list on an abstract Z axis')
+
+* Tell Ferret to run the following instead, if the arguments are strings.
+      CALL ef_set_alt_fcn_name(id, 'ZCAT_STR')
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 

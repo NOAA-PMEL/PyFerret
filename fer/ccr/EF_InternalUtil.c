@@ -74,6 +74,12 @@
 * V6.07 *acm* 8/07 remove xunits_data from list of I_EFnames; it should never 
 *                  have been there.
 * V6.12 *acm* 8/07 add functions scat2grid_bin_xy and scatgrid_nobs_xy.F
+* V6.2 *acm* 11/08 New functions XCAT_STR, YCAT_STR, ...
+* V6.2 *acm* 11/08 New internally-called function efcn_get_alt_type_fcn to
+*                  get the name of a function to call if the arguments are of
+*                  a different type than defined in the current function. E.g. 
+*                  this lets the user reference XCAT with string arguments and  
+*                  Ferret will run XCAT_STR
 
 
 /* .................... Includes .................... */
@@ -158,6 +164,7 @@ int  FORTRAN(efcn_match_template)( int *, char * );
 void FORTRAN(efcn_get_name)( int *, char * );
 void FORTRAN(efcn_get_version)( int *, float * );
 void FORTRAN(efcn_get_descr)( int *, char * );
+void FORTRAN(efcn_get_alt_type_fcn)( int *, char * );
 int  FORTRAN(efcn_get_num_reqd_args)( int * );
 void FORTRAN(efcn_get_has_vari_args)( int *, int * );
 void FORTRAN(efcn_get_axis_will_be)( int *, int * );
@@ -605,17 +612,33 @@ void FORTRAN(xcat_init)(int *);
 void FORTRAN(xcat_result_limits)(int *);
 void FORTRAN(xcat_compute)(int *, float *, float *, float *);
 
+void FORTRAN(xcat_str_init)(int *);
+void FORTRAN(xcat_str_result_limits)(int *);
+void FORTRAN(xcat_str_compute)(int *, char *, char *, char *);
+
 void FORTRAN(ycat_init)(int *);
 void FORTRAN(ycat_result_limits)(int *);
 void FORTRAN(ycat_compute)(int *, float *, float *, float *);
+
+void FORTRAN(ycat_str_init)(int *);
+void FORTRAN(ycat_str_result_limits)(int *);
+void FORTRAN(ycat_str_compute)(int *, char *, char *, char *);
 
 void FORTRAN(zcat_init)(int *);
 void FORTRAN(zcat_result_limits)(int *);
 void FORTRAN(zcat_compute)(int *, float *, float *, float *);
 
+void FORTRAN(zcat_str_init)(int *);
+void FORTRAN(zcat_str_result_limits)(int *);
+void FORTRAN(zcat_str_compute)(int *, char *, char *, char *);
+
 void FORTRAN(tcat_init)(int *);
 void FORTRAN(tcat_result_limits)(int *);
 void FORTRAN(tcat_compute)(int *, float *, float *, float *);
+
+void FORTRAN(tcat_str_init)(int *);
+void FORTRAN(tcat_str_result_limits)(int *);
+void FORTRAN(tcat_str_compute)(int *, char *, char *, char *);
 
 void FORTRAN(xreverse_init)(int *);
 void FORTRAN(xreverse_result_limits)(int *);
@@ -756,7 +779,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 106
+#define N_INTEF 110
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -849,25 +872,29 @@ struct {
    strcpy(I_EFnames[84].funcname, "tax_year");
    strcpy(I_EFnames[85].funcname, "tax_yearfrac");
    strcpy(I_EFnames[86].funcname, "tcat");
-   strcpy(I_EFnames[87].funcname, "test_opendap");
-   strcpy(I_EFnames[88].funcname, "treverse");
-   strcpy(I_EFnames[89].funcname, "transpose_xt");
-   strcpy(I_EFnames[90].funcname, "transpose_xy");
-   strcpy(I_EFnames[91].funcname, "transpose_xz");
-   strcpy(I_EFnames[92].funcname, "transpose_yt");
-   strcpy(I_EFnames[93].funcname, "transpose_yz");
-   strcpy(I_EFnames[94].funcname, "transpose_zt");
-   strcpy(I_EFnames[95].funcname, "xcat");
-   strcpy(I_EFnames[96].funcname, "xreverse");
-   strcpy(I_EFnames[97].funcname, "ycat");
-   strcpy(I_EFnames[98].funcname, "yreverse");
-   strcpy(I_EFnames[99].funcname, "xauto_cor");
-   strcpy(I_EFnames[100].funcname, "zaxreplace_avg");
-   strcpy(I_EFnames[101].funcname, "zaxreplace_bin");
-   strcpy(I_EFnames[102].funcname, "zaxreplace_rev");
-   strcpy(I_EFnames[103].funcname, "zaxreplace_zlev");
-   strcpy(I_EFnames[104].funcname, "zcat");
-   strcpy(I_EFnames[105].funcname, "zreverse");
+   strcpy(I_EFnames[87].funcname, "tcat_str");
+   strcpy(I_EFnames[88].funcname, "test_opendap");
+   strcpy(I_EFnames[89].funcname, "treverse");
+   strcpy(I_EFnames[90].funcname, "transpose_xt");
+   strcpy(I_EFnames[91].funcname, "transpose_xy");
+   strcpy(I_EFnames[92].funcname, "transpose_xz");
+   strcpy(I_EFnames[93].funcname, "transpose_yt");
+   strcpy(I_EFnames[94].funcname, "transpose_yz");
+   strcpy(I_EFnames[95].funcname, "transpose_zt");
+   strcpy(I_EFnames[96].funcname, "xcat");
+   strcpy(I_EFnames[97].funcname, "xcat_str");
+   strcpy(I_EFnames[98].funcname, "xreverse");
+   strcpy(I_EFnames[99].funcname, "ycat");
+   strcpy(I_EFnames[100].funcname, "ycat_str");
+   strcpy(I_EFnames[101].funcname, "yreverse");
+   strcpy(I_EFnames[102].funcname, "xauto_cor");
+   strcpy(I_EFnames[103].funcname, "zaxreplace_avg");
+   strcpy(I_EFnames[104].funcname, "zaxreplace_bin");
+   strcpy(I_EFnames[105].funcname, "zaxreplace_rev");
+   strcpy(I_EFnames[106].funcname, "zaxreplace_zlev");
+   strcpy(I_EFnames[107].funcname, "zcat");
+   strcpy(I_EFnames[108].funcname, "zcat_str");
+   strcpy(I_EFnames[109].funcname, "zreverse");
 /*    
  *  ------------------------------------ 
  */
@@ -2045,6 +2072,22 @@ void FORTRAN(efcn_get_descr)( int *id_ptr, char *descr )
   return;
 }
 
+/*
+ * Find an external function based on its integer ID and
+ * return the name of an alternate function that operates 
+ * with string arguments.
+ */
+void FORTRAN(efcn_get_alt_type_fcn)( int *id_ptr, char *alt_str_name )
+{
+  ExternalFunction *ef_ptr=NULL;
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+
+  strcpy(alt_str_name, ef_ptr->internals_ptr->alt_fcn_name);
+
+  return;
+}
+
 
 /*
  * Find an external function based on its integer ID and
@@ -3072,20 +3115,40 @@ else if ( !strcmp(name,"xcat_init_") ) return (void *)FORTRAN(xcat_init);
 else if ( !strcmp(name,"xcat_result_limits_") ) return (void *)FORTRAN(xcat_result_limits);
 else if ( !strcmp(name,"xcat_compute_") ) return (void *)FORTRAN(xcat_compute);
 
+/* xcat_str.F */
+else if ( !strcmp(name,"xcat_str_init_") ) return (void *)FORTRAN(xcat_str_init);
+else if ( !strcmp(name,"xcat_str_result_limits_") ) return (void *)FORTRAN(xcat_str_result_limits);
+else if ( !strcmp(name,"xcat_str_compute_") ) return (void *)FORTRAN(xcat_str_compute);
+
 /* ycat.F */
 else if ( !strcmp(name,"ycat_init_") ) return (void *)FORTRAN(ycat_init);
 else if ( !strcmp(name,"ycat_result_limits_") ) return (void *)FORTRAN(ycat_result_limits);
 else if ( !strcmp(name,"ycat_compute_") ) return (void *)FORTRAN(ycat_compute);
+
+/* ycat_str.F */
+else if ( !strcmp(name,"ycat_str_init_") ) return (void *)FORTRAN(ycat_str_init);
+else if ( !strcmp(name,"ycat_str_result_limits_") ) return (void *)FORTRAN(ycat_str_result_limits);
+else if ( !strcmp(name,"ycat_str_compute_") ) return (void *)FORTRAN(ycat_str_compute);
 
 /* zcat.F */
 else if ( !strcmp(name,"zcat_init_") ) return (void *)FORTRAN(zcat_init);
 else if ( !strcmp(name,"zcat_result_limits_") ) return (void *)FORTRAN(zcat_result_limits);
 else if ( !strcmp(name,"zcat_compute_") ) return (void *)FORTRAN(zcat_compute);
 
+/* zcat_str.F */
+else if ( !strcmp(name,"zcat_str_init_") ) return (void *)FORTRAN(zcat_str_init);
+else if ( !strcmp(name,"zcat_str_result_limits_") ) return (void *)FORTRAN(zcat_str_result_limits);
+else if ( !strcmp(name,"zcat_str_compute_") ) return (void *)FORTRAN(zcat_str_compute);
+
 /* tcat.F */
 else if ( !strcmp(name,"tcat_init_") ) return (void *)FORTRAN(tcat_init);
 else if ( !strcmp(name,"tcat_result_limits_") ) return (void *)FORTRAN(tcat_result_limits);
 else if ( !strcmp(name,"tcat_compute_") ) return (void *)FORTRAN(tcat_compute);
+
+/* tcat_str.F */
+else if ( !strcmp(name,"tcat_str_init_") ) return (void *)FORTRAN(tcat_str_init);
+else if ( !strcmp(name,"tcat_str_result_limits_") ) return (void *)FORTRAN(tcat_str_result_limits);
+else if ( !strcmp(name,"tcat_str_compute_") ) return (void *)FORTRAN(tcat_str_compute);
 
 /* xreverse.F */
 else if ( !strcmp(name,"xreverse_init_") ) return (void *)FORTRAN(xreverse_init);

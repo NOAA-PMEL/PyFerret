@@ -21,6 +21,7 @@ ef_get_string_arg_element_len.F\
 ef_get_string_arg_elem_len_sub.F\
 ef_get_string_arg_element_sub.F\
 ef_get_string_arg_max_len.F\
+ef_set_alt_fcn_name.F\
 ef_set_arg_desc.F\
 ef_set_arg_name.F\
 ef_set_arg_unit.F\

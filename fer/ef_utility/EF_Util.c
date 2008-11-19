@@ -7,7 +7,11 @@
  * for V530 of Ferret - Oct, 2000 *sh* -- make ef_get_mr_list more robust
  *      so it can be called during custom axis creation
  *  V6.0 *acm*  5/06 string results for external functions
-
+*   V6.2 *acm* 11/08 New element of the external function structure, alt_fcn_name
+*                  to store the name of a function to call if the arguments are of
+*                  a different type than defined in the current function. E.g. 
+*                  this lets the user reference XCAT with string arguments and  
+*                  Ferret will run XCAT_STR
  * This file contains all the utility functions which
  * External Functions need in order to interact with
  * EF "objects".
@@ -502,6 +506,17 @@ void ef_set_desc_sub_(int *id_ptr, char *text)
   if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
   strcpy(ef_ptr->internals_ptr->description, text);
+
+  return;
+}  
+
+void ef_set_alt_fcn_name_sub_(int *id_ptr, char *text)
+{
+  ExternalFunction *ef_ptr=NULL;
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+
+  strcpy(ef_ptr->internals_ptr->alt_fcn_name, text);
 
   return;
 }  

@@ -8,6 +8,11 @@
  *
  * 990422 *jc* Changed "work_array_len" to "work_array_lo/hi"
 *  V6.0 *acm*  5/06 string results for external functions
+*  V6.2 *acm* 11/08 New element of the external function structure, alt_fcn_name
+*                  to store the name of a function to call if the arguments are of
+*                  a different type than defined in the current function. E.g. 
+*                  this lets the user reference XCAT with string arguments and  
+*                  Ferret will run XCAT_STR
 */
  
  
@@ -76,6 +81,7 @@ typedef struct {
   /* Information about the overall function */
   float version;
   char description[EF_MAX_DESCRIPTION_LENGTH];
+  char alt_fcn_name[EF_MAX_NAME_LENGTH];
   int  language;
   int  num_reqd_args, has_vari_args;
   int  num_work_arrays;

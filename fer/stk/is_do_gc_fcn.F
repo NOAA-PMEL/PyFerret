@@ -48,6 +48,11 @@
 * V540: *sh* 10/01 - use improved data typing general parameter parg_type_* defs
 * 1/03 *kob* g77 port requires risc buff for arbitrary string concats
 *  V6.0 *acm*  5/06 string results for external functions, set return type.
+* V6.2 *acm* 11/08 New function efcn_get_alt_type_fcn gets the name of a 
+*                  function to call if the arguments are of a different type 
+*                  than defined in the current function. e.g. this lets the 
+*                  user reference XCAT with string arguments and Ferret will 
+*                  run XCAT_STR
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -67,13 +72,14 @@
 	CHARACTER*(*)	alg_text
 
 * local variables
-	LOGICAL	ITS_UN_CACHED, not_reusable
+	LOGICAL	ITS_UN_CACHED, not_reusable, check_alt_fcn
 	INTEGER	GCF_FIND_FCN, GCF_NUM_ARGS, GCF_ARG_TYPE,
      .		MGRID_SIZE_DELTA, GCF_ARG_EVAL_ORDER, EFCN_GET_RTN_TYPE,
      .		ifcn, icom, iarg, num_com, mr, res_cx,
      .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, impl_grid,
      .		typ1, typ2, typ3, typ4, typ5, typ6, typ7, typ8, typ9, typr,
      .		frame_bottom, com_cx, res_mr, itype
+        CHARACTER*50 alt_name
 
 * convenience equivalences
 	INTEGER	com(10), typ(9)
@@ -87,8 +93,7 @@
 
 * local parameter declarations
 * ... pfloat_words indicates that each float value in an array is 1 word
-* ... ptpr_words   indicates that each pointer     in an array is 2 words
-
+* ... ptpr_words   indicates that each pointer     in an array is 2 word
 	INTEGER	    pfloat_words, pptr_words
 	PARAMETER  (pfloat_words = 1,
      .		    pptr_words   = 2 )
@@ -122,16 +127,45 @@
      .		( ferr_syntax, status, 'RPN', *5000 )
 
 * trap attempts to pass arguments of the wrong type (1/99)
+
+        check_alt_fcn = .FALSE.
 	DO 100 icom = 1, num_com
 	   iarg = GCF_ARG_EVAL_ORDER(ifcn, icom)
 	   itype = GCF_ARG_TYPE(ifcn, iarg)
 	   com_cx  = is_cx(frame_bottom+icom-1)
 	   IF (cx_type(com_cx) .EQ. ptype_string) typ(icom)=pptr_words
 	   IF ( (cx_type(com_cx) .EQ. ptype_string)
-     .	  .NEQV.(itype .EQ. parg_type_string)		) THEN
-	      IF (itype .NE. parg_type_float_or_string)	GOTO 5200
+     .	  .NEQV.(itype .EQ. parg_type_string) ) THEN
+	      IF (itype .NE. parg_type_float_or_string)  
+     .                check_alt_fcn = .TRUE.
 	   ENDIF
  100	CONTINUE
+
+* Does the function designate an alternate function for strings?
+* If so, check the argument types for it.
+
+        IF (check_alt_fcn) THEN
+	   CALL efcn_get_alt_type_fcn( ifcn, alt_name )
+
+	   ifcn = GCF_FIND_FCN( alt_name )
+      
+	   IF (ifcn .EQ. unspecified_int4) THEN
+              GOTO 5200
+	   ELSE
+      	      DO 101 icom = 1, num_com
+	         iarg = GCF_ARG_EVAL_ORDER(ifcn, icom)
+	         itype = GCF_ARG_TYPE(ifcn, iarg)
+	         com_cx  = is_cx(frame_bottom+icom-1)
+	         IF (cx_type(com_cx) .EQ. ptype_string) 
+     .	            typ(icom)=pptr_words
+	         IF ( (cx_type(com_cx) .EQ. ptype_string)
+     .	          .NEQV.(itype .EQ. parg_type_string) ) THEN
+	            IF (itype .NE. parg_type_float_or_string) 
+     .                GOTO 5200
+	         ENDIF
+ 101	      CONTINUE
+	   ENDIF
+        ENDIF
 
 !* the merged context is already nearly complete
 	res_cx = is_big_cx(lo_isp)
@@ -262,7 +296,9 @@
  5100	CALL DELETE_VARIABLE(res_mr)
 	GOTO 5000	
 * 1/03 *kob* g77 port requires risc buff for arbitrary string concats
- 5200	risc_buff = alg_text
+ 5200	CONTINUE
+* Could not match argument types
+        risc_buff = alg_text
 	CALL ERRMSG( ferr_invalid_command, status,
      .		'string/numeric data type mix-up: '//risc_buff, *5000 )
 	END

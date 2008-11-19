@@ -609,6 +609,9 @@ GO bn_proleptic_gregorian_calendar
 GO bn_reset
 GO bn_string_ngd_nbd
 
+GO bn_reset
+GO bn_cat_string
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

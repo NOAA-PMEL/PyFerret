@@ -103,6 +103,7 @@ tax_units.F\
 tax_year.F\
 tax_yearfrac.F\
 tcat.F\
+tcat_str.F\
 test_opendap.F\
 transpose_xt.F\
 transpose_xy.F\
@@ -113,14 +114,17 @@ transpose_zt.F\
 treverse.F\
 xauto_cor.F\
 xcat.F\
+xcat_str.F\
 xreverse.F\
 ycat.F\
+ycat_str.F\
 yreverse.F\
 zaxreplace_avg.F\
 zaxreplace_bin.F\
 zaxreplace_rev.F\
 zaxreplace_zlev.F\
 zcat.F\
+zcat_str.F\
 zreverse.F\
 zgrid_laplace.F
 SRCS_C = \

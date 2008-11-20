@@ -54,6 +54,8 @@ compile with these flags to locate the include files:
 and optionally (non-ANSI cc compilers) with    -DNO_CC_PROTOTYPES
 * *js* 9.97 added put_frame_batch 
 
+* *jli* 5/08 changed the parameters of put_frame_batch() for making 
+* transparent images
 */
 
 
@@ -97,8 +99,20 @@ put_frame_( ws_id, filename, errstr, format, status )
    return;
 }
 
+/*
 void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format,
-			       char *errmsg, int *status)
+                               char *errmsg, int *status)
+
+void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format, char *transparent_color,
+                               , int *red, int *green, int *blue, char *errmsg, int *status)
+{
+*/
+
+/*  acm create separate GIFFlush routines for transparency. Passing the argumetns transp, red, green, blue
+    in direcly into GIFFlush as arguments did not work on porter.
+*/
+void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format, int *transp, float *red, float *green,
+                              float *blue, char *errmsg, int *status)
 {
   char oldfilename[BUFSIZ];
   WS_STATE_ENTRY *ws = OPEN_WSID(*ws_id);
@@ -113,25 +127,60 @@ void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format,
     strcpy(errmsg, "Batch FRAME only works for GIF files");
     return;
   }
-  if (GIFFlush(&ws->mf, filename) != OK){
-    sprintf(errmsg, "Couldn't write out GIF file %s\n", filename);
-    return;
-  }
+/*
+if (GIFFlush(&ws->mf, filename) != OK){
+
+  if (GIFFlush(&ws->mf, filename, transparent_color) != OK){
+*/
+  if(*transp > 0)
+    { 
+	  if(((int)*red == 0) && ((int)*green == 0) && ((int)*blue == 0))
+       {
+		  if (GIFFlusht0(&ws->mf, filename) != OK)
+	      {
+            sprintf(errmsg, "Couldn't write out GIF file %s\n", filename);
+            return;
+          }
+	   }
+	  if(((int)*red == 1) && ((int)*green == 1) && ((int)*blue == 1))
+       {
+		  if (GIFFlusht1(&ws->mf, filename) != OK)
+	      {
+            sprintf(errmsg, "Couldn't write out GIF file %s\n", filename);
+            return;
+          }
+	   }
+    }
+	else
+		if (GIFFlush(&ws->mf, filename) != OK)
+		{
+         sprintf(errmsg, "Couldn't write out GIF file %s\n", filename);
+         return;
+		{
+	} 
+   }
+
 }
-      
+
 void FORTRAN(put_temp_frame_batch)(int *ws_id, char *filename, int *length)
 {
   char format[BUFSIZ], errmsg[BUFSIZ];
   int status;
+  float red;
+  float green;
+  float blue;
+  int trans;
   char *tname = tempnam("/tmp", "fer");
   WS_STATE_ENTRY *ws = OPEN_WSID(*ws_id);
   status = 0;
   strcpy(filename, tname);
   strcat(filename, ".gif");
-  FORTRAN(put_frame_batch)(ws_id, filename, format, errmsg, &status);
+  red = 0;
+  green = 0;
+  blue = 0;
+  trans = 1;
+  FORTRAN(put_frame_batch)(ws_id, filename, format, &trans, &red, &green, &blue, errmsg, &status);
   *length = strlen(filename);
   free(tname);
 }
-      
-
 

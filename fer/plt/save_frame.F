@@ -50,44 +50,40 @@
 * V500: 4/99 *sh* increased filename string length from 128 to 255
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
 *
+* V6.2  *jli* 5/08 pass background color and transparent to put_frame_batch()
 
 * calling argument declarations:
 	INTEGER		status
 	CHARACTER*(*)	filename, format
 
 * internal variable declarations:
-	INTEGER		TM_LENSTR1, i, elen, flen, wsid, type, error
+	INTEGER		TM_LENSTR1, i, elen, flen, wsid, clen
         REAL            red, green, blue
 	CHARACTER	errstr*128
 	logical         ITS_BATCH_GRAPHICS
 
-#ifdef unix
 	include 'errmsg.parm'
 	include 'movies.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
 	include 'xrisc_buff.cmn'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:MOVIES.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-#endif
 
         INTEGER slen
         PARAMETER  ( slen = 255 )
 
 * declarations for C-calling machinery
 #ifdef sun
-        BYTE      fnmhol(slen), errhol(slen), fmthol(5) ! c Hollerith strings
+        BYTE      fnmhol(slen), errhol(slen), fmthol(5),colorhol(slen) ! c Hollerith strings
 #else
-        INTEGER*1 fnmhol(slen), errhol(slen), fmthol(5) ! cHollerith strings
+        INTEGER*1 fnmhol(slen), errhol(slen), fmthol(5),colorhol(slen) ! cHollerith strings
 #endif
 
 * translate to null-terminated c-type strings
-	flen = TM_LENSTR1(filename)
-	CALL TM_FTOC_STRNG( filename(:flen), fnmhol, slen )
-	CALL TM_FTOC_STRNG( format, fmthol, 5 )
+        flen = TM_LENSTR1(filename)
+        CALL TM_FTOC_STRNG( filename(:flen), fnmhol, slen )
+        clen = TM_LENSTR1(transparent_color)
+        CALL TM_FTOC_STRNG( transparent_color(:clen), colorhol, slen )
+        CALL TM_FTOC_STRNG( format, fmthol, 5 )
 
 * determine the current output window (GKS wkstn ID, that is)
 	DO wsid = 1, max_windows
@@ -102,7 +98,11 @@
 * if running in batch mode, take care of metafiles rather than
 * dumping window
 	if (ITS_BATCH_GRAPHICS()) then
-	   call put_frame_batch(wsid, fnmhol, fmthol, errhol, status)
+!          CALL GET_BACKGROUND_COLOR (red, green, blue)
+!	   call put_frame_batch(wsid, fnmhol, fmthol,colorhol, errhol, status)
+           CALL GET_BACKGROUND_COLOR (red, green, blue)
+           call put_frame_batch(wsid, fnmhol, fmthol, transparent, 
+     .        red, green, blue, errhol, status)
 	else
 * capture the bitmap (C routine)
 	   CALL PUT_FRAME( wsid, fnmhol, errhol, fmthol, status )

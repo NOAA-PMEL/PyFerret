@@ -132,5 +132,22 @@ frame/file=bnplot.gif
 show symbol ppl$xpixel
 show symbol ppl$ypixel
 
+! V6.13
+! transparency with FRAME/TRANS
+!!
+! These gif images have the background color white or black
+! replaced by transparent color. This can be tested by putting
+! them into an HTML document with a colored background.
+! e.g. a file called test_transparent.html containing only this line:
+! <html> <body bgcolor="orange"> <img src="testfile.gif"/> </body> </html> 
+
+define view/axes/x=0:1/y=0:1 wms
+set view wms
+use coads_climatology
+shade/noax/nolab/nokey/lev=50 sst[L=1]
+frame/trans/file=testbackground.gif
+
+
 exit/command
+
 

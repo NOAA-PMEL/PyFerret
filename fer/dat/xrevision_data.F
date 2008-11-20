@@ -92,12 +92,13 @@
 * V6.13  8/28/08  Version 6.13
 * V6.13  8/28/08  Version 6.14 GFDL see bug 1586,1038
 * V6.15 11/07/08  Version 6.15 GFDL bugs 1608,1609
+* V6.16 11/20/08  Version 6.16 GFDL bugs 1421,1523,1547,1522,1577 plus gif transparency
 
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.15   /
+	DATA revision_level	/  6.16   /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

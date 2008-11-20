@@ -612,6 +612,9 @@ GO bn_string_ngd_nbd
 GO bn_reset
 GO bn_cat_string
 
+GO bn_reset
+GO bn_sort_strings
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

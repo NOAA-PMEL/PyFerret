@@ -1,0 +1,62 @@
+! bn_sort_strings.jnl
+! 11/08 acm
+
+! show func/detail now shows the alternative function for
+! other arg types, if it exists.
+
+SHOW FUNC/DETAIL sorti
+
+
+let ai = {"a rat in the house will eat the zucchini", \
+  "a rat in the house will eat the ice cream", \
+  "ze rats in the house will eat the ice cream",\
+  "A rat in the house will eat the ICE CREAM" }
+
+let bi = {"AB", "C", "", "aa", "abc", ,"0"}
+
+let indx_ai = SORTI_STR(ai)
+list indx_ai, samplei(ai,indx_ai)
+
+let indx_bi = SORTI_STR(bi)
+list indx_bi, samplei(bi,indx_bi)
+
+! Calling via SORTI
+let indx_ai = SORTI(ai)
+list indx_ai, samplei(ai,indx_ai)
+
+let indx_bi = SORTI(bi)
+list indx_bi, samplei(bi,indx_bi)
+
+
+! SORTJ
+let aj = ysequence(ai)
+let bj = ysequence(bi)
+
+let indx_aj = SORTJ(aj)
+list indx_aj, samplej(aj,indx_aj)
+
+let indx_bj = SORTJ(bj)
+list indx_bj, samplej(bj,indx_bj)
+
+
+! SORTK
+let ak = zsequence(ai)
+let bk = zsequence(bi)
+
+let indx_ak = SORTK(ak)
+list indx_ak, samplek(ak,indx_ak)
+
+let indx_bk = SORTK(bk)
+list indx_bk, samplek(bk,indx_bk)
+
+
+! SORTL
+let al = tsequence(ai)
+let bl = tsequence(bi)
+
+let indx_al = SORTL(al)
+list indx_al, samplel(al,indx_al)
+
+let indx_bl = SORTL(bl)
+list indx_bl, samplel(bl,indx_bl)
+

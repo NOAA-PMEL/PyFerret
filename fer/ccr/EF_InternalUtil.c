@@ -343,12 +343,17 @@ void FORTRAN(scat2gridlaplace_zt_compute)(int *, float *, float *, float *,
                            float *, float *, float *, float *, float *, 
                            float *, float *);
 
-
 void FORTRAN(sorti_init)(int *);
 void FORTRAN(sorti_result_limits)(int *);
 void FORTRAN(sorti_work_size)(int *);
 void FORTRAN(sorti_compute)(int *, float *, float *, 
       float *, float *);
+
+void FORTRAN(sorti_str_init)(int *);
+void FORTRAN(sorti_str_result_limits)(int *);
+void FORTRAN(sorti_str_work_size)(int *);
+void FORTRAN(sorti_str_compute)(int *, char *, float *, 
+      char *, float *);
                    
 void FORTRAN(sortj_init)(int *);
 void FORTRAN(sortj_result_limits)(int *);
@@ -356,17 +361,35 @@ void FORTRAN(sortj_work_size)(int *);
 void FORTRAN(sortj_compute)(int *, float *, float *, 
       float *, float *);
 
+void FORTRAN(sortj_str_init)(int *);
+void FORTRAN(sortj_str_result_limits)(int *);
+void FORTRAN(sortj_str_work_size)(int *);
+void FORTRAN(sortj_str_compute)(int *, char *, float *, 
+      char *, float *);
+
 void FORTRAN(sortk_init)(int *);
 void FORTRAN(sortk_result_limits)(int *);
 void FORTRAN(sortk_work_size)(int *);
 void FORTRAN(sortk_compute)(int *, float *, float *, 
       float *, float *);
 
+void FORTRAN(sortk_str_init)(int *);
+void FORTRAN(sortk_str_result_limits)(int *);
+void FORTRAN(sortk_str_work_size)(int *);
+void FORTRAN(sortk_str_compute)(int *, char *, float *, 
+      char *, float *);
+
 void FORTRAN(sortl_init)(int *);
 void FORTRAN(sortl_result_limits)(int *);
 void FORTRAN(sortl_work_size)(int *);
 void FORTRAN(sortl_compute)(int *, float *, float *, 
       float *, float *);
+
+void FORTRAN(sortl_str_init)(int *);
+void FORTRAN(sortl_str_result_limits)(int *);
+void FORTRAN(sortl_str_work_size)(int *);
+void FORTRAN(sortl_str_compute)(int *, char *, float *, 
+      char *, float *);
 
 void FORTRAN(tauto_cor_init)(int *);
 void FORTRAN(tauto_cor_result_limits)(int *);
@@ -732,6 +755,10 @@ void FORTRAN(scat2grid_bin_xy_init)(int *);
 void FORTRAN(scat2grid_bin_xy_work_size)(int *);
 void FORTRAN(scat2grid_bin_xy_compute)(int *, float *, float *);
 
+void FORTRAN(scat2grid_bin_xy_init)(int *);
+void FORTRAN(scat2grid_bin_xy_work_size)(int *);
+void FORTRAN(scat2grid_bin_xy_compute)(int *, float *, float *);
+
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -779,7 +806,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 110
+#define N_INTEF 114
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -856,45 +883,49 @@ struct {
    strcpy(I_EFnames[68].funcname, "scat2gridlaplace_zt");
    strcpy(I_EFnames[69].funcname, "scatgrid_nobs_xy");
    strcpy(I_EFnames[70].funcname, "sorti");
-   strcpy(I_EFnames[71].funcname, "sortj");
-   strcpy(I_EFnames[72].funcname, "sortk");
-   strcpy(I_EFnames[73].funcname, "sortl");
-   strcpy(I_EFnames[74].funcname, "tauto_cor");
-   strcpy(I_EFnames[75].funcname, "tax_datestring");
-   strcpy(I_EFnames[76].funcname, "tax_day");
-   strcpy(I_EFnames[77].funcname, "tax_dayfrac");
-   strcpy(I_EFnames[78].funcname, "tax_jday1900");
-   strcpy(I_EFnames[79].funcname, "tax_jday");
-   strcpy(I_EFnames[80].funcname, "tax_month");
-   strcpy(I_EFnames[81].funcname, "tax_times");
-   strcpy(I_EFnames[82].funcname, "tax_tstep");
-   strcpy(I_EFnames[83].funcname, "tax_units");
-   strcpy(I_EFnames[84].funcname, "tax_year");
-   strcpy(I_EFnames[85].funcname, "tax_yearfrac");
-   strcpy(I_EFnames[86].funcname, "tcat");
-   strcpy(I_EFnames[87].funcname, "tcat_str");
-   strcpy(I_EFnames[88].funcname, "test_opendap");
-   strcpy(I_EFnames[89].funcname, "treverse");
-   strcpy(I_EFnames[90].funcname, "transpose_xt");
-   strcpy(I_EFnames[91].funcname, "transpose_xy");
-   strcpy(I_EFnames[92].funcname, "transpose_xz");
-   strcpy(I_EFnames[93].funcname, "transpose_yt");
-   strcpy(I_EFnames[94].funcname, "transpose_yz");
-   strcpy(I_EFnames[95].funcname, "transpose_zt");
-   strcpy(I_EFnames[96].funcname, "xcat");
-   strcpy(I_EFnames[97].funcname, "xcat_str");
-   strcpy(I_EFnames[98].funcname, "xreverse");
-   strcpy(I_EFnames[99].funcname, "ycat");
-   strcpy(I_EFnames[100].funcname, "ycat_str");
-   strcpy(I_EFnames[101].funcname, "yreverse");
-   strcpy(I_EFnames[102].funcname, "xauto_cor");
-   strcpy(I_EFnames[103].funcname, "zaxreplace_avg");
-   strcpy(I_EFnames[104].funcname, "zaxreplace_bin");
-   strcpy(I_EFnames[105].funcname, "zaxreplace_rev");
-   strcpy(I_EFnames[106].funcname, "zaxreplace_zlev");
-   strcpy(I_EFnames[107].funcname, "zcat");
-   strcpy(I_EFnames[108].funcname, "zcat_str");
-   strcpy(I_EFnames[109].funcname, "zreverse");
+   strcpy(I_EFnames[71].funcname, "sorti_str");
+   strcpy(I_EFnames[72].funcname, "sortj");
+   strcpy(I_EFnames[73].funcname, "sortj_str");
+   strcpy(I_EFnames[74].funcname, "sortk");
+   strcpy(I_EFnames[75].funcname, "sortk_str");
+   strcpy(I_EFnames[76].funcname, "sortl");
+   strcpy(I_EFnames[77].funcname, "sortl_str");
+   strcpy(I_EFnames[78].funcname, "tauto_cor");
+   strcpy(I_EFnames[79].funcname, "tax_datestring");
+   strcpy(I_EFnames[80].funcname, "tax_day");
+   strcpy(I_EFnames[81].funcname, "tax_dayfrac");
+   strcpy(I_EFnames[82].funcname, "tax_jday1900");
+   strcpy(I_EFnames[83].funcname, "tax_jday");
+   strcpy(I_EFnames[84].funcname, "tax_month");
+   strcpy(I_EFnames[85].funcname, "tax_times");
+   strcpy(I_EFnames[86].funcname, "tax_tstep");
+   strcpy(I_EFnames[87].funcname, "tax_units");
+   strcpy(I_EFnames[88].funcname, "tax_year");
+   strcpy(I_EFnames[89].funcname, "tax_yearfrac");
+   strcpy(I_EFnames[90].funcname, "tcat");
+   strcpy(I_EFnames[91].funcname, "tcat_str");
+   strcpy(I_EFnames[92].funcname, "test_opendap");
+   strcpy(I_EFnames[93].funcname, "treverse");
+   strcpy(I_EFnames[94].funcname, "transpose_xt");
+   strcpy(I_EFnames[95].funcname, "transpose_xy");
+   strcpy(I_EFnames[96].funcname, "transpose_xz");
+   strcpy(I_EFnames[97].funcname, "transpose_yt");
+   strcpy(I_EFnames[98].funcname, "transpose_yz");
+   strcpy(I_EFnames[99].funcname, "transpose_zt");
+   strcpy(I_EFnames[100].funcname, "xcat");
+   strcpy(I_EFnames[101].funcname, "xcat_str");
+   strcpy(I_EFnames[102].funcname, "xreverse");
+   strcpy(I_EFnames[103].funcname, "ycat");
+   strcpy(I_EFnames[104].funcname, "ycat_str");
+   strcpy(I_EFnames[105].funcname, "yreverse");
+   strcpy(I_EFnames[106].funcname, "xauto_cor");
+   strcpy(I_EFnames[107].funcname, "zaxreplace_avg");
+   strcpy(I_EFnames[108].funcname, "zaxreplace_bin");
+   strcpy(I_EFnames[109].funcname, "zaxreplace_rev");
+   strcpy(I_EFnames[110].funcname, "zaxreplace_zlev");
+   strcpy(I_EFnames[111].funcname, "zcat");
+   strcpy(I_EFnames[112].funcname, "zcat_str");
+   strcpy(I_EFnames[113].funcname, "zreverse");
 /*    
  *  ------------------------------------ 
  */
@@ -2857,11 +2888,23 @@ else if ( !strcmp(name,"sorti_result_limits_") ) return (void *)sorti_result_lim
 else if ( !strcmp(name,"sorti_work_size_") ) return (void *)sorti_work_size_;
 else if ( !strcmp(name,"sorti_compute_") ) return (void *)sorti_compute_;
 
+/* sorti_str.F */
+else if ( !strcmp(name,"sorti_str_init_") ) return (void *)sorti_str_init_;
+else if ( !strcmp(name,"sorti_str_result_limits_") ) return (void *)sorti_str_result_limits_;
+else if ( !strcmp(name,"sorti_str_work_size_") ) return (void *)sorti_str_work_size_;
+else if ( !strcmp(name,"sorti_str_compute_") ) return (void *)sorti_str_compute_;
+
 /* sortj.F */
 else if ( !strcmp(name,"sortj_init_") ) return (void *)sortj_init_;
 else if ( !strcmp(name,"sortj_result_limits_") ) return (void *)sortj_result_limits_;
 else if ( !strcmp(name,"sortj_work_size_") ) return (void *)sortj_work_size_;
 else if ( !strcmp(name,"sortj_compute_") ) return (void *)sortj_compute_;
+
+/* sortj_str.F */
+else if ( !strcmp(name,"sortj_str_init_") ) return (void *)sortj_str_init_;
+else if ( !strcmp(name,"sortj_str_result_limits_") ) return (void *)sortj_str_result_limits_;
+else if ( !strcmp(name,"sortj_str_work_size_") ) return (void *)sortj_str_work_size_;
+else if ( !strcmp(name,"sortj_str_compute_") ) return (void *)sortj_str_compute_;
 
 /* sortk.F */
 else if ( !strcmp(name,"sortk_init_") ) return (void *)sortk_init_;
@@ -2869,11 +2912,23 @@ else if ( !strcmp(name,"sortk_result_limits_") ) return (void *)sortk_result_lim
 else if ( !strcmp(name,"sortk_work_size_") ) return (void *)sortk_work_size_;
 else if ( !strcmp(name,"sortk_compute_") ) return (void *)sortk_compute_;
 
+/* sortk_str.F */
+else if ( !strcmp(name,"sortk_str_init_") ) return (void *)sortk_str_init_;
+else if ( !strcmp(name,"sortk_str_result_limits_") ) return (void *)sortk_str_result_limits_;
+else if ( !strcmp(name,"sortk_str_work_size_") ) return (void *)sortk_str_work_size_;
+else if ( !strcmp(name,"sortk_str_compute_") ) return (void *)sortk_str_compute_;
+
 /* sortl.F */
 else if ( !strcmp(name,"sortl_init_") ) return (void *)sortl_init_;
 else if ( !strcmp(name,"sortl_result_limits_") ) return (void *)sortl_result_limits_;
 else if ( !strcmp(name,"sortl_work_size_") ) return (void *)sortl_work_size_;
 else if ( !strcmp(name,"sortl_compute_") ) return (void *)sortl_compute_;
+
+/* sortl_str.F */
+else if ( !strcmp(name,"sortl_str_init_") ) return (void *)sortl_str_init_;
+else if ( !strcmp(name,"sortl_str_result_limits_") ) return (void *)sortl_str_result_limits_;
+else if ( !strcmp(name,"sortl_str_work_size_") ) return (void *)sortl_str_work_size_;
+else if ( !strcmp(name,"sortl_str_compute_") ) return (void *)sortl_str_compute_;
 
 /* tauto_cor.F */
 else if ( !strcmp(name,"tauto_cor_init_") ) return (void *)FORTRAN(tauto_cor_init);

@@ -134,7 +134,7 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-	  INTEGER id
+      INTEGER id
 
       REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
       REAL arg_1(2,mem1lox:mem1hix, mem1loy:mem1hiy, 

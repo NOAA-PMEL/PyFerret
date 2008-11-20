@@ -1,5 +1,5 @@
 *
-* sortk.F
+* sortk_str.F
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -35,14 +35,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 * Ansley Manke
-* April 1988
-* ACM 1/3/2001  implement with merge rank translated from f90, originally from 
-*   http://www.fortran-2000.com/rank/index.html#1.1
-* V6.2 *acm* 11/08 New function ef_set_alt_fcn_name to set get the name of a 
-*                  function to call if the arguments are of a different type 
-*                  than defined in the current function. E.g. this lets the 
-*                  user reference XCAT with string arguments and Ferret will 
-*                  run XCAT_STR
+* Nov 2008
+* V6.2 *acm* SORTI for strings
 *
 * This function sorts data on the z axis in increasing order.
 * Returns index of sorted values. 
@@ -50,10 +44,10 @@
 *  NOTE:
 *  IT IS GENERALLY ADVISABLE TO INCLUDE EXPLICIT LIMITS WHEN WORKING WITH
 *  FUNCTIONS THAT REPLACE AXES. FOR EXAMPLE, THE CONSIDER THE FUNCTION
-*  SORTL(v). THE EXPRESSION
-*  	LIST/L=6:10 SORTL(v)
+*  sortk_str(v). THE EXPRESSION
+*  	LIST/L=6:10 sortl_str(v)
 *  IS NOT EQUIVALENT TO
-*  	LIST SORTL(v[L=6:10])
+*  	LIST sortk_str(v[L=6:10])
 *  THE FORMER WILL LIST THE 6TH THROUGH 10TH SORTED INDICES FROM THE ENTIRE
 *  L RANGE OF VARIABLE V. THE LATTER WILL LIST ALL OF THE INDICES THAT
 *  RESULT FROM SORTING v[L=6:10].
@@ -94,7 +88,7 @@
 *
 
 
-      SUBROUTINE sortk_init(id)
+      SUBROUTINE sortk_str_init(id)
 
       INCLUDE 'EF_Util.cmn'
 
@@ -106,12 +100,9 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Returns indices of data, sorted ',
-     . 'on the K axis in increasing order')
+   10 FORMAT ('Returns indices of string data, sorted on the K axis ',
+     .        'in increasing order, null strings at the end')
       CALL ef_set_desc(id, fcn_desc)
-
-* Tell Ferret to run the following instead, if the argument is a string.
-      CALL ef_set_alt_fcn_name(id, 'SORTK_STR')
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_has_vari_args(id, NO)
@@ -122,8 +113,9 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT')
-      CALL ef_set_arg_desc(id, arg, 'variable to sort in K')
+      CALL ef_set_arg_desc(id, arg, 'String variable to sort in K')
       CALL ef_set_axis_influence(id, arg, YES, YES, NO, YES)
+      CALL ef_set_arg_type (id, arg, STRING_ARG)
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -143,7 +135,7 @@
 * hi_ss               hi subscript for an axis
 *
 
-      SUBROUTINE sortk_result_limits(id)
+      SUBROUTINE sortk_str_result_limits(id)
 
       INCLUDE 'EF_Util.cmn'
 
@@ -185,7 +177,7 @@
 * In this subroutine we request an amount of storage to be supplied
 * by Ferret and passed as an additional argument.
 *
-      SUBROUTINE sortk_work_size(id)
+      SUBROUTINE sortk_str_work_size(id)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
@@ -210,7 +202,7 @@
 
 
 * sort_dat
-      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mzdat, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mzdat, 512, 1, 1)
 
 * sort_indx
       CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mzdat, 1, 1, 1)
@@ -227,13 +219,13 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE sortk_compute(id, arg_1, result, sort_dat, sort_indx)
+      SUBROUTINE sortk_str_compute(id, arg_1, result, sort_dat, sort_indx)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
+      REAL arg_1(2,mem1lox:mem1hix, mem1loy:mem1hiy, 
      .           mem1loz:mem1hiz, mem1lot:mem1hit)
       REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit)
@@ -252,14 +244,13 @@
 *                                                                     |
 *                                                                     V
       INTEGER id
-      INTEGER m, nsrt
-      INTEGER nbad
+      INTEGER m, nsrt, nbad, slen
       INTEGER i, j, k, l
       INTEGER i1, j1, k1, l1
 
 *  Dimension work arrays
 
-      REAL sort_dat(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
+      CHARACTER*512 sort_dat(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
       REAL sort_indx(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
@@ -284,25 +275,24 @@
                k1 = arg_lo_ss(Z_AXIS,ARG1)
                DO 100 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-                  IF (arg_1(i1,j1,k1,l1) .EQ. bad_flag(1)) THEN
-                     nbad = nbad + 1
-
-                  ELSE
-                     nsrt = nsrt + 1
-                     sort_dat(nsrt,1,1,1) = arg_1(i1,j1,k1,l1)
+                  nsrt = nsrt + 1
+                  CALL EF_GET_STRING_ARG_ELEMENT(id, ARG1, arg_1,
+     .                       i1,j1,k1,l1, slen,sort_dat(nsrt,1,1,1))
+                  IF (slen .EQ. 0) THEN
+		     nsrt = nsrt - 1
+		     nbad = nbad + 1
+		  ELSE
                      sort_indx(nsrt,1,1,1) = k1
-
-                  END IF
+		  ENDIF
 
                   k1 = k1 + arg_incr(Z_AXIS,ARG1)
  100           CONTINUE
       
-* Sort based on sort_dat.  sort_indx retured as rank.
+* Sort based on sort_dat.  sort_indx goes along for the ride,
+* elements moved when elements of sort_dat moved.
 
-c               IF (nsrt .GT. 1) CALL MRGRNK (sort_dat, sort_indx, iwork,
-c     .                                        nsrt )
-               IF (nsrt .GT. 1) CALL HEAP2 (sort_dat, sort_indx,
-     .                                      bad_flag(arg1),  nsrt)
+               IF (nsrt .GT. 1) CALL HEAP2_STR (sort_dat, 
+     .                                   sort_indx, nsrt)
 
 * Put sorted data in the array first, then bad flags
 

@@ -1,5 +1,5 @@
 *
-* sortk.F
+* sortl_str.F
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -35,25 +35,21 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 * Ansley Manke
-* April 1988
-* ACM 1/3/2001  implement with merge rank translated from f90, originally from 
-*   http://www.fortran-2000.com/rank/index.html#1.1
-* V6.2 *acm* 11/08 New function ef_set_alt_fcn_name to set get the name of a 
-*                  function to call if the arguments are of a different type 
-*                  than defined in the current function. E.g. this lets the 
-*                  user reference XCAT with string arguments and Ferret will 
-*                  run XCAT_STR
+* April 1998
+
+* V6.2 *acm* SORTL for strings
 *
-* This function sorts data on the z axis in increasing order.
-* Returns index of sorted values. 
+* This function sorts data on T axis in increasing order.  
+* Returns index of sorted values.  The indices of any missing
+* data are listed first.
 *
 *  NOTE:
 *  IT IS GENERALLY ADVISABLE TO INCLUDE EXPLICIT LIMITS WHEN WORKING WITH
 *  FUNCTIONS THAT REPLACE AXES. FOR EXAMPLE, THE CONSIDER THE FUNCTION
-*  SORTL(v). THE EXPRESSION
-*  	LIST/L=6:10 SORTL(v)
+*  sortl_str(v). THE EXPRESSION
+*  	LIST/L=6:10 sortl_str(v)
 *  IS NOT EQUIVALENT TO
-*  	LIST SORTL(v[L=6:10])
+*  	LIST sortl_str(v[L=6:10])
 *  THE FORMER WILL LIST THE 6TH THROUGH 10TH SORTED INDICES FROM THE ENTIRE
 *  L RANGE OF VARIABLE V. THE LATTER WILL LIST ALL OF THE INDICES THAT
 *  RESULT FROM SORTING v[L=6:10].
@@ -94,7 +90,7 @@
 *
 
 
-      SUBROUTINE sortk_init(id)
+      SUBROUTINE sortl_str_init(id)
 
       INCLUDE 'EF_Util.cmn'
 
@@ -106,24 +102,23 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Returns indices of data, sorted ',
-     . 'on the K axis in increasing order')
-      CALL ef_set_desc(id, fcn_desc)
-
-* Tell Ferret to run the following instead, if the argument is a string.
-      CALL ef_set_alt_fcn_name(id, 'SORTK_STR')
+   10 FORMAT ('Returns indices of string data, sorted on the L axis ',
+     .        'in increasing order, null strings at the end')
+      CALL ef_set_desc(id, fcn_desc)  
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_has_vari_args(id, NO)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS,
-     .     IMPLIED_BY_ARGS, ABSTRACT, IMPLIED_BY_ARGS)
+     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, ABSTRACT)
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+
       CALL ef_set_num_work_arrays(id, 2)
 
       arg = 1
-      CALL ef_set_arg_name(id, arg, 'DAT')
-      CALL ef_set_arg_desc(id, arg, 'variable to sort in K')
-      CALL ef_set_axis_influence(id, arg, YES, YES, NO, YES)
+      CALL ef_set_arg_name(id, arg, 'STR')
+      CALL ef_set_arg_desc(id, arg, 'String variable to sort in L')
+      CALL ef_set_axis_influence(id, arg, YES, YES, YES, NO)
+      CALL ef_set_arg_type (id, arg, STRING_ARG)
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -143,7 +138,7 @@
 * hi_ss               hi subscript for an axis
 *
 
-      SUBROUTINE sortk_result_limits(id)
+      SUBROUTINE sortl_str_result_limits(id)
 
       INCLUDE 'EF_Util.cmn'
 
@@ -154,24 +149,24 @@
 *                                                                     |
 *                                                                     V
 
+      COMMON / sortl_strlim / my_lo_l, my_hi_l
       INTEGER my_lo_l, my_hi_l
 
       INTEGER arg
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
      .     arg_incr(4,EF_MAX_ARGS)
 
-*
+
 *     Use utility functions to get context information about the arguments.
-*
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
       arg = 1
 
       my_lo_l = 1
-      my_hi_l = arg_hi_ss(Z_AXIS,arg) - arg_lo_ss(Z_AXIS,arg) + 1
+      my_hi_l = arg_hi_ss(T_AXIS,arg) - arg_lo_ss(T_AXIS,arg) + 1
 
-      CALL ef_set_axis_limits(id, Z_AXIS, my_lo_l, my_hi_l)
+      CALL ef_set_axis_limits(id, T_AXIS, my_lo_l, my_hi_l)
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -180,12 +175,11 @@
       RETURN 
       END
 
-
 *
 * In this subroutine we request an amount of storage to be supplied
 * by Ferret and passed as an additional argument.
 *
-      SUBROUTINE sortk_work_size(id)
+      SUBROUTINE sortl_str_work_size(id)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
@@ -200,20 +194,20 @@
 *
 * ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
 *
-      INTEGER mzdat
+      INTEGER mtdat
       INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
      .     arg_incr(4,1:EF_MAX_ARGS)
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      mzdat = 1 + arg_hi_ss(Z_AXIS,ARG1) - arg_lo_ss(Z_AXIS,ARG1)
+      mtdat = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
 
 
 * sort_dat
-      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mzdat, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mtdat, 512, 1, 1)
 
 * sort_indx
-      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mzdat, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mtdat, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -227,13 +221,17 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE sortk_compute(id, arg_1, result, sort_dat, sort_indx)
+      SUBROUTINE sortl_str_compute(id, arg_1, result, sort_dat, sort_indx)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
+      COMMON / sortl_strlim / my_lo_l, my_hi_l
+      INTEGER my_lo_l, my_hi_l
+
+
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
+      REAL arg_1(2,mem1lox:mem1hix, mem1loy:mem1hiy, 
      .           mem1loz:mem1hiz, mem1lot:mem1hit)
       REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit)
@@ -251,15 +249,15 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
+
       INTEGER id
-      INTEGER m, nsrt
-      INTEGER nbad
+      INTEGER m, nsrt, nbad, slen
       INTEGER i, j, k, l
       INTEGER i1, j1, k1, l1
 
 *  Dimension work arrays
 
-      REAL sort_dat(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
+      CHARACTER*512 sort_dat(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
       REAL sort_indx(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
@@ -267,64 +265,64 @@
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
-
+ 
 
       i1 = arg_lo_ss(X_AXIS,ARG1)
-      DO 600 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS) 
+      DO 600 i= res_lo_ss(X_AXIS), res_hi_ss(X_AXIS) 
 
          j1 = arg_lo_ss(Y_AXIS, ARG1)
-         DO 500 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+         DO 500 j= res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-            l1 = arg_lo_ss(T_AXIS, ARG1)
-            DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            k1 = arg_lo_ss(Z_AXIS, ARG1)
+            DO 400 k= res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
                nsrt = 0
                nbad = 0
 
-               k1 = arg_lo_ss(Z_AXIS,ARG1)
-               DO 100 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+               l1 = arg_lo_ss(T_AXIS,ARG1)
+               DO 100 m = my_lo_l, my_hi_l
 
-                  IF (arg_1(i1,j1,k1,l1) .EQ. bad_flag(1)) THEN
-                     nbad = nbad + 1
+                  nsrt = nsrt + 1
+                  CALL EF_GET_STRING_ARG_ELEMENT(id, ARG1, arg_1,
+     .                       i1,j1,k1,l1, slen,sort_dat(nsrt,1,1,1))
+                  IF (slen .EQ. 0) THEN
+		     nsrt = nsrt - 1
+		     nbad = nbad + 1
+		  ELSE
+                     sort_indx(nsrt,1,1,1) = l1
+		  ENDIF
 
-                  ELSE
-                     nsrt = nsrt + 1
-                     sort_dat(nsrt,1,1,1) = arg_1(i1,j1,k1,l1)
-                     sort_indx(nsrt,1,1,1) = k1
-
-                  END IF
-
-                  k1 = k1 + arg_incr(Z_AXIS,ARG1)
+                  l1 = l1 + arg_incr(T_AXIS,ARG1)
  100           CONTINUE
       
-* Sort based on sort_dat.  sort_indx retured as rank.
+* Sort based on sort_dat.  sort_indx goes along for the ride,
+* elements moved when elements of sort_dat moved.
 
-c               IF (nsrt .GT. 1) CALL MRGRNK (sort_dat, sort_indx, iwork,
-c     .                                        nsrt )
-               IF (nsrt .GT. 1) CALL HEAP2 (sort_dat, sort_indx,
-     .                                      bad_flag(arg1),  nsrt)
+               IF (nsrt .GT. 1) CALL HEAP2_STR (sort_dat, 
+     .                                   sort_indx, nsrt)
 
-* Put sorted data in the array first, then bad flags
-
-               k = res_lo_ss(Z_AXIS)
+* Put sorted data in the array first, then bad flags.
+*
+               l = res_lo_ss(T_AXIS)
                DO 200 m = 1, nsrt
                   result(i,j,k,l) = sort_indx(m,1,1,1)
-                  k = k + 1
+                  l = l + 1
  200           CONTINUE
 
                DO 300 m = 1, nbad
                   result(i,j,k,l) = bad_flag_result
-                  k = k + 1
+                  l = l + 1
  300           CONTINUE
 
-               l1 = l1 + arg_incr(T_AXIS, ARG1)
+               k1 = k1 + arg_incr(Z_AXIS, ARG1)
  400        CONTINUE
 
-         j1 = j1 + arg_incr(Y_AXIS, ARG1)
+            j1 = j1 + arg_incr(Y_AXIS, ARG1)
  500     CONTINUE
 
-         i1 = i1 + arg_incr(X_AXIS,ARG1)
+      i1 = i1 + arg_incr(X_AXIS,ARG1)
  600  CONTINUE
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |

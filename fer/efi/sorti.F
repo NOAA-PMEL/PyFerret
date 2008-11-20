@@ -36,6 +36,11 @@
 *
 * Ansley Manke
 * April 1998
+* V6.2 *acm* 11/08 New function ef_set_alt_fcn_name to set get the name of a 
+*                  function to call if the arguments are of a different type 
+*                  than defined in the current function. E.g. this lets the 
+*                  user reference XCAT with string arguments and Ferret will 
+*                  run XCAT_STR
 *
 * This function sorts data on x axis in increasing order.
 * Returns index of sorted values.  
@@ -102,6 +107,9 @@
    10 FORMAT ('Returns indices of data, sorted ',
      . 'on the I axis in increasing order')
       CALL ef_set_desc(id, fcn_desc)
+
+* Tell Ferret to run the following instead, if the argument is a string.
+      CALL ef_set_alt_fcn_name(id, 'SORTI_STR')
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_has_vari_args(id, NO)
@@ -256,7 +264,7 @@
 
       REAL sort_dat(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      INTEGER sort_indx(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
+      REAL sort_indx(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)

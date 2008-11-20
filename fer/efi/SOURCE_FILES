@@ -41,6 +41,7 @@ findhi.F\
 findlo.F\
 flag2ddups.F\
 gausswt.F\
+heap2_str.F\
 is_element_of.F\
 is_element_of_str.F\
 is_element_of_str_n.F\
@@ -86,9 +87,13 @@ scat2grid_t.F\
 scatgrid_nobs_xy.F\
 secs_to_ymdhms.F\
 sorti.F\
+sorti_str.F\
 sortj.F\
+sortj_str.F\
 sortk.F\
+sortk_str.F\
 sortl.F\
+sortl_str.F\
 tauto_cor.F\
 tax_datestring.F\
 tax_day.F\

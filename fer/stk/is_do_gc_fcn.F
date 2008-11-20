@@ -79,7 +79,7 @@
      .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, impl_grid,
      .		typ1, typ2, typ3, typ4, typ5, typ6, typ7, typ8, typ9, typr,
      .		frame_bottom, com_cx, res_mr, itype
-        CHARACTER*50 alt_name
+        CHARACTER*40 alt_name
 
 * convenience equivalences
 	INTEGER	com(10), typ(9)
@@ -145,8 +145,8 @@
 * If so, check the argument types for it.
 
         IF (check_alt_fcn) THEN
-	   CALL efcn_get_alt_type_fcn( ifcn, alt_name )
-
+	   ! null string is returned if alt_type_fcn doesnt exist
+	   CALL efcn_get_alt_type_fcn( ifcn, alt_name )  
 	   ifcn = GCF_FIND_FCN( alt_name )
       
 	   IF (ifcn .EQ. unspecified_int4) THEN

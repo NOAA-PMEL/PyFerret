@@ -48,20 +48,15 @@
 * 97.07.30 *jc* added code to enable external functions
 * V500: 1/99 *sh* added support for string arguments to functions
 * V510: 5/00 *sh* added argument "detail"
+* V620:11/08 acm* On a show func/detail, list the alternative 
+*                 function for other arg types, if it exists.
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'grid_chg_fcns.parm'
 	include	'xalgebra.cmn'
 	include	'xgrid_chg_fcns.cmn'
 	include	'xtext_info.cmn'
 	include	'xrisc.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE	'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-	INCLUDE	'FERRET_CMN:XRISC.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL	its_gc, brief, detail
@@ -69,12 +64,12 @@
 	
 * local variable declarations:
 	LOGICAL	its_reshape
-	INTEGER TM_LENSTR, TM_LENSTR1, GCF_ARG_TYPE,
+	INTEGER TM_LENSTR, TM_LENSTR1, GCF_ARG_TYPE, GCF_FIND_FCN,
      .		ll, ll2, llsave, itype, narg, i, iarg, iarg2, idim
 	CHARACTER units*40, gcf_name*40, ef_arg_name*40, ef_descr*80, 
-	1    ef_units*40, ax_remark*64
+     .		ef_units*40, ax_remark*64, alt_name*40
 	INTEGER EFCN_SCAN, EFCN_GET_NUM_REQD_ARGS, EFCN_GATHER_INFO,
-     .		axis_will_be(4)
+     .		axis_will_be(4), ifcn_alt
 
 * local parameter definitions
 	CHARACTER*4 indent
@@ -292,6 +287,23 @@
 * ... go back for the next argument
 	   iarg = iarg + 1      ! point to next arg
  500	CONTINUE
+
+* See if there is a function for alternative argument types
+	IF ( its_gc .AND. detail ) THEN
+
+	   ! null string is returned if alt_type_fcn doesnt exist
+	   CALL efcn_get_alt_type_fcn( ifcn, alt_name )
+
+	   ifcn_alt = GCF_FIND_FCN( alt_name )
+	   IF (ifcn_alt .EQ. unspecified_int4) THEN
+              RETURN
+	   ELSE
+	      CALL SPLIT_LIST( pttmode_explct, lun,
+     .          indent//
+     .          'Alternative function for other argument types: '
+     .          //alt_name, 0)
+           ENDIF
+	ENDIF
 
 	RETURN
 	END

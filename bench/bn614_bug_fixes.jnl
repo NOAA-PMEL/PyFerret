@@ -30,3 +30,6 @@ GO err611_context_after_error
 
 GO bn_reset
 GO err611_isize_gc_fcns
+
+GO bn_reset
+GO err611_return_precision

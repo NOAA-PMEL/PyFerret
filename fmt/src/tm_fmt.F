@@ -83,7 +83,7 @@
 
 * local parameters:
 	INTEGER		TM_CHECK_NAN, TM_CHECK_INF, TM_LENSTR1, 
-     .                  max_int_len, sig_min
+     .                  max_int_len, sig_min, added_pow10
 	REAL		eps, one_m_eps
 	PARAMETER     ( max_int_len = 8,
      .			sig_min     = 1,		! minimum sig. digits
@@ -99,6 +99,7 @@
 	aval     = ABS( val )
 	TM_FMT   = ' '
 	exp_fmt  = .FALSE.
+	added_pow10 = 0
 
 * maximum length of output string (at least 1 character long)
 	slen = MIN( LEN(TM_FMT), max_len )
@@ -199,6 +200,8 @@
 * special check: eg. 99.9 --> 100.0 , changing leftmost digit
 	IF ( full .EQ. 10**sig_full ) THEN
 	   pow10 = pow10 + 1
+	   added_pow10 = added_pow10 + 1  ! 
+
 	   GOTO 50
 	ENDIF
 
@@ -248,6 +251,7 @@
 * may/must be represented as integers
 	ELSEIF ( sig_left .GE. sig_needed .OR. nleft .GE. slen-1 ) THEN
 * ... check if nearest integer will alter formatting (e.g. 99.6-->100)
+
 	   aval = NINT(aval)
 	   l10      = LOG10(aval)
            IF (aval .EQ. 0.) l10 = 0.
@@ -257,7 +261,7 @@
 	      chk10 = INT( l10 * one_m_eps )  ! eps for machine round-off problems
 	   ENDIF
 	   IF ( chk10 .NE. chk10_save ) GOTO 10
-	   str_len = nleft
+	   str_len = nleft - added_pow10
 	   WRITE ( fmt, 3100 ) str_len
  3100	   FORMAT ( '(I',I2,')' )
 	   WRITE ( TM_FMT, fmt ) NINT(val)

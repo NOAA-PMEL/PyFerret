@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 49831213 Nov 20 11:57 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 49831319 Nov 20 12:08 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: functions for sorting string variables
+Note: fix bug 1611 precision and formatting of return= output
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Thu Nov 20 12:01:02 PST 2008
+Beginning at Thu Nov 20 13:58:53 PST 2008
  	NOAA/PMEL TMAP
  	FERRET v6.15  
  	Linux(g77) 2.6.9-22. - 11/20/08
- 	20-Nov-08 12:01     
+ 	20-Nov-08 13:58     
 
 yes? !bn500_all_shell
 yes? 
@@ -10238,7 +10238,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.15"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 SESSION_DATE = "20-Nov-08"
-SESSION_TIME = "12:01"
+SESSION_TIME = "13:58"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10257,7 +10257,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.15"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 SESSION_DATE = "20-Nov-08"
-SESSION_TIME = "12:01"
+SESSION_TIME = "13:58"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10266,7 +10266,7 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "20-Nov-08"
-SESSION_TIME = "12:01"
+SESSION_TIME = "13:58"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10277,12 +10277,12 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "20-Nov-08"
-SESSION_TIME = "12:01"
+SESSION_TIME = "13:58"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "20-Nov-08"
-SESSION_TIME = "12:01"
+SESSION_TIME = "13:58"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10316,7 +10316,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.15"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Nov 20 2008 12:01:08 "
+LAB3 = "Nov 20 2008 13:59:00 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10414,7 +10414,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.15"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 SESSION_DATE = "20-Nov-08"
-SESSION_TIME = "12:01"
+SESSION_TIME = "13:58"
  
  
 GO bn_reset
@@ -10619,17 +10619,17 @@ LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE-TIME)
 coordinates,1.499S ,1.166S 
  ---- L:5 T:   10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.3346,27.2382
 25,27.2481,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.2218,27.1246
 25,27.1248,27.011
  ---- L:6 T:   16-SEP-1982 22:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.7751,27.678
 25,27.6518,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.6218,27.5239
 25,27.4892,27.3501
 LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
@@ -10639,14 +10639,14 @@ LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
              BAD FLAG : -9.9999998E+33
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-DEPTH (m)-TIME-LONGITUDE)
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.3346,27.2382
 25,27.2481,27.1293
  ---- L:6 T:   16-SEP-1982 22:00
 15,27.7751,27.678
 25,27.6518,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.2218,27.1246
 25,27.1248,27.011
@@ -10661,17 +10661,17 @@ LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-TIME-LONGITUDE-DEPTH (m))
 coordinates,1.499S ,1.166S 
  ---- K:2 Z:   15
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2382
 16-SEP-1982 22,27.7751,27.678
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.2218,27.1246
 16-SEP-1982 22,27.6218,27.5239
  ---- K:3 Z:   25
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.2481,27.1293
 16-SEP-1982 22,27.6518,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.1248,27.011
 16-SEP-1982 22,27.4892,27.3501
 LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
@@ -10681,14 +10681,14 @@ LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
              BAD FLAG : -9.9999998E+33
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-TIME-DEPTH (m)-LONGITUDE)
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.3346,27.2382
 16-SEP-1982 22,27.7751,27.678
  ---- K:3 Z:   25
 10-SEP-1982 20,27.2481,27.1293
 16-SEP-1982 22,27.6518,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.2218,27.1246
 16-SEP-1982 22,27.6218,27.5239
@@ -10745,17 +10745,17 @@ LIST/ORDER=ZYXT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE-TIME)
 coordinates,15      ,25      
  ---- L:5 T:   10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.3346,27.2481
 1.166S,27.2382,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.2218,27.1248
 1.166S,27.1246,27.011
  ---- L:6 T:   16-SEP-1982 22:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.7751,27.6518
 1.166S,27.678,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.6218,27.4892
 1.166S,27.5239,27.3501
 LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
@@ -10765,14 +10765,14 @@ LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
              BAD FLAG : -9.9999998E+33
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-LATITUDE-TIME-LONGITUDE)
 coordinates,15      ,25      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.3346,27.2481
 1.166S,27.2382,27.1293
  ---- L:6 T:   16-SEP-1982 22:00
 1.499S,27.7751,27.6518
 1.166S,27.678,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.2218,27.1248
 1.166S,27.1246,27.011
@@ -10787,17 +10787,17 @@ LIST/ORDER=ZTXY $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-TIME-LONGITUDE-LATITUDE)
 coordinates,15      ,25      
  ---- J:41 Y:   1.499S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2481
 16-SEP-1982 22,27.7751,27.6518
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.2218,27.1248
 16-SEP-1982 22,27.6218,27.4892
  ---- J:42 Y:   1.166S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.2382,27.1293
 16-SEP-1982 22,27.678,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.1246,27.011
 16-SEP-1982 22,27.5239,27.3501
 LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
@@ -10807,14 +10807,14 @@ LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
              BAD FLAG : -9.9999998E+33
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-TIME-LATITUDE-LONGITUDE)
 coordinates,15      ,25      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.3346,27.2481
 16-SEP-1982 22,27.7751,27.6518
  ---- J:42 Y:   1.166S
 10-SEP-1982 20,27.2382,27.1293
 16-SEP-1982 22,27.678,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.2218,27.1248
 16-SEP-1982 22,27.6218,27.4892
@@ -10871,17 +10871,17 @@ LIST/ORDER=TYXZ $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-LATITUDE-LONGITUDE-DEPTH (m))
 coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
  ---- K:2 Z:   15
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.3346,27.7751
 1.166S,27.2382,27.678
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.2218,27.6218
 1.166S,27.1246,27.5239
  ---- K:3 Z:   25
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.2481,27.6518
 1.166S,27.1293,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.1248,27.4892
 1.166S,27.011,27.3501
 LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
@@ -10891,14 +10891,14 @@ LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
              BAD FLAG : -9.9999998E+33
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-LATITUDE-DEPTH (m)-LONGITUDE)
 coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 1.499S,27.3346,27.7751
 1.166S,27.2382,27.678
  ---- K:3 Z:   25
 1.499S,27.2481,27.6518
 1.166S,27.1293,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- K:2 Z:   15
 1.499S,27.2218,27.6218
 1.166S,27.1246,27.5239
@@ -10913,17 +10913,17 @@ LIST/ORDER=TZXY $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-DEPTH (m)-LONGITUDE-LATITUDE)
 coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
  ---- J:41 Y:   1.499S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.3346,27.7751
 25,27.2481,27.6518
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.2218,27.6218
 25,27.1248,27.4892
  ---- J:42 Y:   1.166S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.2382,27.678
 25,27.1293,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.1246,27.5239
 25,27.011,27.3501
 LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
@@ -10933,14 +10933,14 @@ LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
              BAD FLAG : -9.9999998E+33
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-DEPTH (m)-LATITUDE-LONGITUDE)
 coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 15,27.3346,27.7751
 25,27.2481,27.6518
  ---- J:42 Y:   1.166S
 15,27.2382,27.678
 25,27.1293,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- J:41 Y:   1.499S
 15,27.2218,27.6218
 25,27.1248,27.4892
@@ -11098,10 +11098,10 @@ LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.3346,27.2382
 25,27.2481,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.2218,27.1246
 25,27.1248,27.011
 LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
@@ -11112,11 +11112,11 @@ LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.3346,27.2382
 25,27.2481,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.2218,27.1246
 25,27.1248,27.011
@@ -11129,14 +11129,14 @@ LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
 coordinates,1.499S ,1.166S 
  ---- K:2 Z:   15
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.2218,27.1246
  ---- K:3 Z:   25
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.2481,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.1248,27.011
 LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YTZX /FORMAT=comma temp
@@ -11146,12 +11146,12 @@ LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.3346,27.2382
  ---- K:3 Z:   25
 10-SEP-1982 20,27.2481,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.2218,27.1246
  ---- K:3 Z:   25
@@ -11194,10 +11194,10 @@ LIST/ORDER=ZYXT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,15      ,25      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.3346,27.2481
 1.166S,27.2382,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.2218,27.1248
 1.166S,27.1246,27.011
 LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
@@ -11208,11 +11208,11 @@ LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,15      ,25      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.3346,27.2481
 1.166S,27.2382,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.2218,27.1248
 1.166S,27.1246,27.011
@@ -11225,14 +11225,14 @@ LIST/ORDER=ZTXY $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
 coordinates,15      ,25      
  ---- J:41 Y:   1.499S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2481
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.2218,27.1248
  ---- J:42 Y:   1.166S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.2382,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.1246,27.011
 LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZTYX /FORMAT=comma temp
@@ -11242,12 +11242,12 @@ LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,15      ,25      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.3346,27.2481
  ---- J:42 Y:   1.166S
 10-SEP-1982 20,27.2382,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.2218,27.1248
  ---- J:42 Y:   1.166S
@@ -11305,17 +11305,17 @@ LIST/ORDER=TYXZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
 coordinates,10-SEP-1982 20:00
  ---- K:2 Z:   15
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.3346
 1.166S,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.2218
 1.166S,27.1246
  ---- K:3 Z:   25
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.2481
 1.166S,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.1248
 1.166S,27.011
 LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
@@ -11326,14 +11326,14 @@ LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 1.499S,27.3346
 1.166S,27.2382
  ---- K:3 Z:   25
 1.499S,27.2481
 1.166S,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- K:2 Z:   15
 1.499S,27.2218
 1.166S,27.1246
@@ -11349,17 +11349,17 @@ LIST/ORDER=TZXY $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
 coordinates,10-SEP-1982 20:00
  ---- J:41 Y:   1.499S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.3346
 25,27.2481
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.2218
 25,27.1248
  ---- J:42 Y:   1.166S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.2382
 25,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.1246
 25,27.011
 LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
@@ -11370,14 +11370,14 @@ LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 15,27.3346
 25,27.2481
  ---- J:42 Y:   1.166S
 15,27.2382
 25,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- J:41 Y:   1.499S
 15,27.2218
 25,27.1248
@@ -11519,9 +11519,9 @@ LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.3346,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.2218,27.1246
 LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YZTX /FORMAT=comma temp
@@ -11532,10 +11532,10 @@ LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.3346,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.2218,27.1246
 LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
@@ -11547,9 +11547,9 @@ LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.2218,27.1246
 LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YTZX /FORMAT=comma temp
@@ -11560,10 +11560,10 @@ LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.3346,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.2218,27.1246
 LIST/ORDER=ZXYT $1" |*>/FORMAT=*" $2
@@ -11607,10 +11607,10 @@ LIST/ORDER=ZYXT $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
 coordinates,15      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.3346
 1.166S,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.2218
 1.166S,27.1246
 LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
@@ -11622,11 +11622,11 @@ LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
 coordinates,15      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.3346
 1.166S,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.2218
 1.166S,27.1246
@@ -11640,14 +11640,14 @@ LIST/ORDER=ZTXY $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
 coordinates,15      
  ---- J:41 Y:   1.499S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.2218
  ---- J:42 Y:   1.166S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.1246
 LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZTYX /FORMAT=comma temp
@@ -11658,12 +11658,12 @@ LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
 coordinates,15      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.3346
  ---- J:42 Y:   1.166S
 10-SEP-1982 20,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.2218
  ---- J:42 Y:   1.166S
@@ -11709,10 +11709,10 @@ LIST/ORDER=TYXZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
 coordinates,10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.3346
 1.166S,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.2218
 1.166S,27.1246
 LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
@@ -11724,11 +11724,11 @@ LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
 coordinates,10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 1.499S,27.3346
 1.166S,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- K:2 Z:   15
 1.499S,27.2218
 1.166S,27.1246
@@ -11742,14 +11742,14 @@ LIST/ORDER=TZXY $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
 coordinates,10-SEP-1982 20:00
  ---- J:41 Y:   1.499S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.3346
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.2218
  ---- J:42 Y:   1.166S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.1246
 LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TZYX /FORMAT=comma temp
@@ -11760,12 +11760,12 @@ LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
 coordinates,10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 15,27.3346
  ---- J:42 Y:   1.166S
 15,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- J:41 Y:   1.499S
 15,27.2218
  ---- J:42 Y:   1.166S
@@ -18140,13 +18140,13 @@ set view v44
 contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28000:29000:-400/trans sin(x/3)*sin(t/100)
  
 cancel viewports	! clean-up
-SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94-rw-rw-r--  1 ansley tmap 16414 Nov 20 12:01 bench.mgm
--rw-rw-r--  1 ansley tmap 290263 Nov 20 12:01 bench.mgm
-
+SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94
  
 !GO bn_reset
 !GO bn301_mem_mgmt
-MESSAGE/CONTINUE  ***** bn301_mem_mgmt has been removed from run_all.
+MESSAGE/CONTINUE  ***** bn301_mem_mgmt has been removed from -rw-rw-r--  1 ansley tmap 13644 Nov 20 13:59 bench.mgm
+-rw-rw-r--  1 ansley tmap 195863 Nov 20 13:59 bench.mgm
+run_all.
 ***** bn301_mem_mgmt has been removed from run_all.
 MESSAGE/CONTINUE  ***** Its too slow!!!
 ***** Its too slow
@@ -25290,12 +25290,12 @@ load ts[gt=t24@max]
 GO bn_reset
 cancel mode verify
 GO err491_grid_from_name.jnl
-! err491_gridabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Thu Nov 20 12:01:21 PST 2008
-_from_name.jnl
+! err491_grid_from_name.jnl
 ! *sh* 3/99
  
-! implicit grid, such as "Z[gz=zax]", are allowed in places they shouldn't be
+! implicit grid, such as "Z[gz=zax]", are allowed in places they shabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
+Thu Nov 20 13:59:12 PST 2008
+ouldn't be
  
 ! fixed with change to GRID_FROM_NAME (and PARSE_NAM_DSET_GRD)
  
@@ -34614,17 +34614,17 @@ set grid sst
 go mp_aspect
  
 let fsst = missing(sst,5)
-let yy =  if abs(y[gt=sst]) le 20 then 10 ecol1,col2,col3,col4,col5
+let yy =  if abs(y[gt=sst]) le 20 then 10 else  (100-abs(y[gt=sst]+1))/ 10.
+ 
+set reg/l=1
+vec/noax/xskip=16/yskip=8/len=15/title="Sinusoidacol1,col2,col3,col4,col5
 one,,1.1,24S,130E,,1e1,"word 1"
     two,,2.2,24N,130W,2S,,"word 2"
 three,,3.3,24,130,3N,3e-2," wd 3 "
 
 five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
 extra line
-lse  (100-abs(y[gt=sst]+1))/ 10.
- 
-set reg/l=1
-vec/noax/xskip=16/yskip=8/len=15/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
+l Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
 vec/over/xskip=16/yskip=8/len=15 fsst*0+yy*mp_mask,fsst*0, x_page,y_page
  
 ! Irregular axes, and manual axis scaling
@@ -34830,9 +34830,9 @@ show data
  A1       A1                               1:20480   ...       ...       ...
  A2       A2                               1:20480   ...       ...       ...
  A3       A3                               1:20480   ...       ...       ...
- A4       A4          col1,col2,col3,col4,col5
-                     1:20480   ...       ...       ...
- A5       A5                               1:20480   ...       ...       ...
+ A4       A4                               1:20480   ...       ...       ...
+ A5       A5                             col1,col2,col3,col4,col5
+  1:20480   ...       ...       ...
  
 list a1,a2,a3,a4,a5
              DATA SET: ./bn_delimited_read_1.dat
@@ -34939,15 +34939,15 @@ show data
      currently SET data sets:
     1> ./bn_delimited_read_2.dat  (default)
  name     title                             I         J         K         L
- V1       V1                               1:20480   ...       12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-...       ...
+ V1       V1                               1:20480   ...       ...       ...
  
 file/form=delimited/delimiter=" " bn_delimited_read_2.dat
 show data
-     currently SET data sets:
+     current12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+ly SET data sets:
     1> ./bn_delimited_read_2.dat  (default)
  name     title                             I         J         K         L
  V1       V1                               1:20480   ...       ...       ...
@@ -35120,12 +35120,12 @@ list v1,v2,v3,v4,v5,v6,v7,v8
 show data 2
      currently SET data sets:
     2> ./bn_delimited_read_date_time.dat  (default)
- na12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+ name     title                             I         J         K         L
+ V1       V1           12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
 12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
 12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
 12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-me     title                             I         J         K         L
- V1       V1                               1:4       ...       ...       ...
+                    1:4       ...       ...       ...
        (Julian days since 1-Jan-1900)
  V2       V2                               1:4       ...       ...       ...
        (Julian days since 1-Jan-1900)
@@ -45269,7 +45269,8 @@ let lstr1 = STRLEN("+")
  
 let str2a = STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
 list str2a
-             VARIABLE : STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+             VARIABLE : STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
+          162.             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
              GEOMETRY: XY 
@@ -45320,8 +45321,7 @@ DATA:
 224.60300
 224.60350
 224.60400
-,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
-          162.000
+000
  
 def sym aLIST = Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.7
  
@@ -45758,7 +45758,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASNov 20 2008 12:01:54
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASNov 20 2008 13:59:45
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 179.9E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47158,7 +47158,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "20-Nov-08:12:01"
+WIN_TITLE = "20-Nov-08:13:58"
  
 set win/title="set the title"
 sho sym win_title
@@ -54919,6 +54919,155 @@ SAY `XSEQUENCE(a),RETURN=size`
  !-> MESSAGE/CONTINUE 6
 6
  
+GO bn_reset
+cancel mode verify
+GO err611_return_precision
+! err611_return_precision.jnl
+! 17-Nov-08 ACM
+ 
+! See bug 1611, where say "a`95,p=1`" yielded "a 95" but
+! "a`94,p=1`" yielded "a94"
+ 
+say "a`95,p=1`"
+ !-> MESSAGE/CONTINUE "a95"
+a95
+say "a`94,p=1`"
+ !-> MESSAGE/CONTINUE "a94"
+a94
+say "a`95,p=1`"
+ !-> MESSAGE/CONTINUE "a95"
+a95
+say "a`949,p=1`"
+ !-> MESSAGE/CONTINUE "a949"
+a949
+say "a`950,p=1`"
+ !-> MESSAGE/CONTINUE "a950"
+a950
+ 
+! Note that an immediate expr with prec=0 returns an integer.
+say "a`95,p=0`"
+ !-> MESSAGE/CONTINUE "a95"
+a95
+say "a`94,p=0`"
+ !-> MESSAGE/CONTINUE "a94"
+a94
+say "a`95,p=0`"
+ !-> MESSAGE/CONTINUE "a95"
+a95
+say "a`949,p=0`"
+ !-> MESSAGE/CONTINUE "a949"
+a949
+say "a`950,p=0`"
+ !-> MESSAGE/CONTINUE "a950"
+a950
+ 
+! Tests for non-integers
+! We always return at least one sig digit
+say "a`0.1,p=0`"
+ !-> MESSAGE/CONTINUE "a0.1"
+a0.1
+ 
+say "a`-95,p=1`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+say "a`-95.99,p=1`"
+ !-> MESSAGE/CONTINUE "a-96"
+a-96
+say "a`-95.001,p=1`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+ 
+say "a`-94,p=1`"
+ !-> MESSAGE/CONTINUE "a-94"
+a-94
+say "a`-94.99,p=1`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+say "a`-94.001,p=1`"
+ !-> MESSAGE/CONTINUE "a-94"
+a-94
+ 
+say "a`-95,p=1`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+say "a`-95.99,p=1`"
+ !-> MESSAGE/CONTINUE "a-96"
+a-96
+say "a`-95.001,p=1`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+ 
+say "a`-949,p=1`"
+ !-> MESSAGE/CONTINUE "a-949"
+a-949
+say "a`-949.99,p=1`"
+ !-> MESSAGE/CONTINUE "a-950"
+a-950
+say "a`-949.001,p=1`"
+ !-> MESSAGE/CONTINUE "a-949"
+a-949
+ 
+say "a`-950,p=1`"
+ !-> MESSAGE/CONTINUE "a-950"
+a-950
+say "a`-950.99,p=1`"
+ !-> MESSAGE/CONTINUE "a-951"
+a-951
+say "a`-950.001,p=1`"
+ !-> MESSAGE/CONTINUE "a-950"
+a-950
+ 
+ 
+say "a`-95,p=0`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+say "a`-95.99,p=0`"
+ !-> MESSAGE/CONTINUE "a-96"
+a-96
+say "a`-95.001,p=0`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+ 
+say "a`-94,p=0`"
+ !-> MESSAGE/CONTINUE "a-94"
+a-94
+say "a`-94.99,p=0`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+say "a`-94.001,p=0`"
+ !-> MESSAGE/CONTINUE "a-94"
+a-94
+ 
+say "a`-95,p=0`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+say "a`-95.99,p=0`"
+ !-> MESSAGE/CONTINUE "a-96"
+a-96
+say "a`-95.001,p=0`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+ 
+say "a`-949,p=0`"
+ !-> MESSAGE/CONTINUE "a-949"
+a-949
+say "a`-949.99,p=0`"
+ !-> MESSAGE/CONTINUE "a-950"
+a-950
+say "a`-949.001,p=0`"
+ !-> MESSAGE/CONTINUE "a-949"
+a-949
+ 
+say "a`-950,p=0`"
+ !-> MESSAGE/CONTINUE "a-950"
+a-950
+say "a`-950.99,p=0`"
+ !-> MESSAGE/CONTINUE "a-951"
+a-951
+say "a`-950.001,p=0`"
+ !-> MESSAGE/CONTINUE "a-950"
+a-950
+ 
 ! ******** V6.14 Additions below ***********
 GO bn_reset
 cancel mode verify
@@ -55541,7 +55690,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.15  
  	Linux(g77) 2.6.9-22. - 11/20/08
- 	20-Nov-08 12:02     
+ 	20-Nov-08 14:00     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -56252,8 +56401,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  10   / 10:  -5.00
  11   / 11:  -4.00
  12   / 12:  -3.00
- 13-rw-rw-r--  1 ansley tmap 29712 Nov 20 12:02 testa.v5d
--rw-rw-r--  1 ansley tmap 29712 Nov 20 12:02 test.v5d
+ 13-rw-rw-r--  1 ansley tmap 29712 Nov 20 14:00 testa.v5d
+-rw-rw-r--  1 ansley tmap 29712 Nov 20 14:00 test.v5d
    / 13:  -2.00
  14   / 14:  -1.00
  15   / 15:   0.00
@@ -58567,7 +58716,7 @@ end of ncdump output
  	NOAA/PMEL TMAP
  	FERRET v6.15  
  	Linux(g77) 2.6.9-22. - 11/20/08
- 	20-Nov-08 12:02     
+ 	20-Nov-08 14:00     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -58739,7 +58888,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.15  
  	Linux(g77) 2.6.9-22. - 11/20/08
- 	20-Nov-08 12:02     
+ 	20-Nov-08 14:00     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -58853,7 +59002,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.15  
  	Linux(g77) 2.6.9-22. - 11/20/08
- 	20-Nov-08 12:02     
+ 	20-Nov-08 14:00     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -58936,4 +59085,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Thu Nov 20 12:02:24 PST 2008
+Ended at Thu Nov 20 14:00:14 PST 2008

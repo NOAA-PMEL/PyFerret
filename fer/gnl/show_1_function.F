@@ -300,7 +300,7 @@
 	   ELSE
 	      CALL SPLIT_LIST( pttmode_explct, lun,
      .          indent//
-     .          'Alternative function for other argument types: '
+     .          'Alternative function called for other argument types: '
      .          //alt_name, 0)
            ENDIF
 	ENDIF

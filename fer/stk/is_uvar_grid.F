@@ -90,14 +90,20 @@
 * v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
 * V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
 *                   varname.attname
-* V603 5/07 *acm* - Fix bug 1507: if start = end, then definition of name leaves name
-*                   blank. assign a longer string to name and then just send the first
-*                   character to GET_VAR_CONTEXT
-* V611 5/08 *acm* Fix bug 1578; dataset specifiers applied correctly var[d=1].attname
-* V615 11/08*acm* Fix bug 1421: if variable in expr is undefined call DEALLO_UNFORMED_GRID
-*                 to correctly back out of the dynamic grid that was partially defined.
-* V615 11/08*acm* - fixing bug 1523. If the variable contains a grid-changing function,
-*                 mark it as such for repl_exprns to get the correct size.
+* V603 5/07 *acm* - Fix bug 1507: if start = end, then definition of name 
+*                   leaves name blank. assign a longer string to name and 
+*                   then just send the first character to GET_VAR_CONTEXT
+* V611 5/08 *acm*   Fix bug 1578; dataset specifiers applied correctly 
+*                   var[d=1].attname
+* V615 11/08*acm*    Fix bug 1421: if variable in expr is undefined call 
+*                   DEALLO_UNFORMED_GRID to correctly back out of the 
+*                   dynamic grid that was partially defined.
+* V615 11/08*acm* - fixing bug 1523. If the variable contains a grid-changing 
+*                   function, mark it as such for repl_exprns to get the 
+*                   correct size.
+* V615 11/08*acm*   For linux, pass dummy status flag to DEALLO_UNFORMED_GRID. 
+*                   The status flag that is passed back must remain set to 
+*                   non-ferr_ok to exit properly from the command.
 
 * calling argument declarations:
 	INTEGER	status
@@ -114,7 +120,8 @@
      .		i, dset, uvar, item, itype, idim, gnum, nitem, uv_grd,
      .		var, len_name, pass_number, cx_save, this_dset,
      .		ifthen_data_type, varid, alen, attype, attlen,
-     .          attoutflag, attid, bracket, dot, dsloc, endbracket
+     .          attoutflag, attid, bracket, dot, dsloc, endbracket,
+     .          status_deallo
 
 	CHARACTER VAR_CODE*4, name*512, buff*2048, varname*512, 
      .            attname*128, aname*128, newname*512
@@ -247,7 +254,8 @@
      .				hi_cx,
      .				status )
 	IF ( status .NE. ferr_ok ) THEN
-	   CALL DEALLO_UNFORMED_GRID
+	   status_deallo = status
+	   CALL DEALLO_UNFORMED_GRID (status_deallo)
 	   GOTO 5000
 	ENDIF
 * handle variable regridded to a uvar which has unknown grid (8/99) 

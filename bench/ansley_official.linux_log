@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/build_v614/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     46750029 Oct 15 14:35 /home/porter/ansley/build_v614/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     47467135 Nov 24 13:41 /home/porter/ansley/build_v614/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/build_v614/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: shorten output in bn_median; change test of irregular fine axis; tests of MODE NODATA_LAB"
+Note: test bug fixes for Andrew plus transparency option for gif mode
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build_v614/linux/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v614/linux/FERRET/external_functions/ext_func_linux
-Beginning at Wed Oct 15 14:50:29 PDT 2008
+Beginning at Mon Nov 24 14:09:45 PST 2008
  	NOAA/PMEL TMAP
- 	FERRET v6.14 (beta)
- 	Linux(g77) 2.4.21-32 - 10/15/08
- 	15-Oct-08 14:50     
+ 	FERRET v6.16 (beta)
+ 	Linux(g77) 2.4.21-32 - 11/24/08
+ 	24-Nov-08 14:09     
 
 yes? !bn500_all_shell
 yes? 
@@ -10235,10 +10235,10 @@ show symbols/all
 PPL$XPIXEL = "317"
 PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.14"
+FERRET_VERSION = "6.16"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = "15-Oct-08"
-SESSION_TIME = "14:50"
+SESSION_DATE = "24-Nov-08"
+SESSION_TIME = "14:09"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10254,10 +10254,10 @@ show symbol/all
 PPL$XPIXEL = "317"
 PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.14"
+FERRET_VERSION = "6.16"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = "15-Oct-08"
-SESSION_TIME = "14:50"
+SESSION_DATE = "24-Nov-08"
+SESSION_TIME = "14:09"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10265,8 +10265,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "15-Oct-08"
-SESSION_TIME = "14:50"
+SESSION_DATE = "24-Nov-08"
+SESSION_TIME = "14:09"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10276,13 +10276,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "15-Oct-08"
-SESSION_TIME = "14:50"
+SESSION_DATE = "24-Nov-08"
+SESSION_TIME = "14:09"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "15-Oct-08"
-SESSION_TIME = "14:50"
+SESSION_DATE = "24-Nov-08"
+SESSION_TIME = "14:09"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10314,9 +10314,9 @@ Q23456789012345678901234567XXX = "6"
 ! show the upper left coordinate limits labels as symbols
 plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
-LAB1 = "FERRET (beta) Ver.6.14"
+LAB1 = "FERRET (beta) Ver.6.16"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Oct 15 2008 14:50:49 "
+LAB3 = "Nov 24 2008 14:10:04 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10411,10 +10411,10 @@ show symbols/all
 PPL$XPIXEL = "317"
 PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.14"
+FERRET_VERSION = "6.16"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = "15-Oct-08"
-SESSION_TIME = "14:50"
+SESSION_DATE = "24-Nov-08"
+SESSION_TIME = "14:09"
  
  
 GO bn_reset
@@ -10619,17 +10619,17 @@ LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE-TIME)
 coordinates,1.499S ,1.166S 
  ---- L:5 T:   10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.3346,27.2382
 25,27.2481,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.2218,27.1246
 25,27.1248,27.011
  ---- L:6 T:   16-SEP-1982 22:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.7751,27.678
 25,27.6518,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.6218,27.5239
 25,27.4892,27.3501
 LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
@@ -10639,14 +10639,14 @@ LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
              BAD FLAG : -9.9999998E+33
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-DEPTH (m)-TIME-LONGITUDE)
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.3346,27.2382
 25,27.2481,27.1293
  ---- L:6 T:   16-SEP-1982 22:00
 15,27.7751,27.678
 25,27.6518,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.2218,27.1246
 25,27.1248,27.011
@@ -10661,17 +10661,17 @@ LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-TIME-LONGITUDE-DEPTH (m))
 coordinates,1.499S ,1.166S 
  ---- K:2 Z:   15
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2382
 16-SEP-1982 22,27.7751,27.678
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.2218,27.1246
 16-SEP-1982 22,27.6218,27.5239
  ---- K:3 Z:   25
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.2481,27.1293
 16-SEP-1982 22,27.6518,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.1248,27.011
 16-SEP-1982 22,27.4892,27.3501
 LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
@@ -10681,14 +10681,14 @@ LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
              BAD FLAG : -9.9999998E+33
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-TIME-DEPTH (m)-LONGITUDE)
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.3346,27.2382
 16-SEP-1982 22,27.7751,27.678
  ---- K:3 Z:   25
 10-SEP-1982 20,27.2481,27.1293
 16-SEP-1982 22,27.6518,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.2218,27.1246
 16-SEP-1982 22,27.6218,27.5239
@@ -10745,17 +10745,17 @@ LIST/ORDER=ZYXT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE-TIME)
 coordinates,15      ,25      
  ---- L:5 T:   10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.3346,27.2481
 1.166S,27.2382,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.2218,27.1248
 1.166S,27.1246,27.011
  ---- L:6 T:   16-SEP-1982 22:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.7751,27.6518
 1.166S,27.678,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.6218,27.4892
 1.166S,27.5239,27.3501
 LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
@@ -10765,14 +10765,14 @@ LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
              BAD FLAG : -9.9999998E+33
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-LATITUDE-TIME-LONGITUDE)
 coordinates,15      ,25      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.3346,27.2481
 1.166S,27.2382,27.1293
  ---- L:6 T:   16-SEP-1982 22:00
 1.499S,27.7751,27.6518
 1.166S,27.678,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.2218,27.1248
 1.166S,27.1246,27.011
@@ -10787,17 +10787,17 @@ LIST/ORDER=ZTXY $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-TIME-LONGITUDE-LATITUDE)
 coordinates,15      ,25      
  ---- J:41 Y:   1.499S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2481
 16-SEP-1982 22,27.7751,27.6518
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.2218,27.1248
 16-SEP-1982 22,27.6218,27.4892
  ---- J:42 Y:   1.166S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.2382,27.1293
 16-SEP-1982 22,27.678,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.1246,27.011
 16-SEP-1982 22,27.5239,27.3501
 LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
@@ -10807,14 +10807,14 @@ LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
              BAD FLAG : -9.9999998E+33
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-TIME-LATITUDE-LONGITUDE)
 coordinates,15      ,25      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.3346,27.2481
 16-SEP-1982 22,27.7751,27.6518
  ---- J:42 Y:   1.166S
 10-SEP-1982 20,27.2382,27.1293
 16-SEP-1982 22,27.678,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.2218,27.1248
 16-SEP-1982 22,27.6218,27.4892
@@ -10871,17 +10871,17 @@ LIST/ORDER=TYXZ $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-LATITUDE-LONGITUDE-DEPTH (m))
 coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
  ---- K:2 Z:   15
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.3346,27.7751
 1.166S,27.2382,27.678
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.2218,27.6218
 1.166S,27.1246,27.5239
  ---- K:3 Z:   25
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.2481,27.6518
 1.166S,27.1293,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.1248,27.4892
 1.166S,27.011,27.3501
 LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
@@ -10891,14 +10891,14 @@ LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
              BAD FLAG : -9.9999998E+33
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-LATITUDE-DEPTH (m)-LONGITUDE)
 coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 1.499S,27.3346,27.7751
 1.166S,27.2382,27.678
  ---- K:3 Z:   25
 1.499S,27.2481,27.6518
 1.166S,27.1293,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- K:2 Z:   15
 1.499S,27.2218,27.6218
 1.166S,27.1246,27.5239
@@ -10913,17 +10913,17 @@ LIST/ORDER=TZXY $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-DEPTH (m)-LONGITUDE-LATITUDE)
 coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
  ---- J:41 Y:   1.499S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.3346,27.7751
 25,27.2481,27.6518
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.2218,27.6218
 25,27.1248,27.4892
  ---- J:42 Y:   1.166S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.2382,27.678
 25,27.1293,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.1246,27.5239
 25,27.011,27.3501
 LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
@@ -10933,14 +10933,14 @@ LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
              BAD FLAG : -9.9999998E+33
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-DEPTH (m)-LATITUDE-LONGITUDE)
 coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 15,27.3346,27.7751
 25,27.2481,27.6518
  ---- J:42 Y:   1.166S
 15,27.2382,27.678
 25,27.1293,27.51
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- J:41 Y:   1.499S
 15,27.2218,27.6218
 25,27.1248,27.4892
@@ -11098,10 +11098,10 @@ LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.3346,27.2382
 25,27.2481,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.2218,27.1246
 25,27.1248,27.011
 LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
@@ -11112,11 +11112,11 @@ LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.3346,27.2382
 25,27.2481,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.2218,27.1246
 25,27.1248,27.011
@@ -11129,14 +11129,14 @@ LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
 coordinates,1.499S ,1.166S 
  ---- K:2 Z:   15
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.2218,27.1246
  ---- K:3 Z:   25
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.2481,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.1248,27.011
 LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YTZX /FORMAT=comma temp
@@ -11146,12 +11146,12 @@ LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.3346,27.2382
  ---- K:3 Z:   25
 10-SEP-1982 20,27.2481,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.2218,27.1246
  ---- K:3 Z:   25
@@ -11194,10 +11194,10 @@ LIST/ORDER=ZYXT $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,15      ,25      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.3346,27.2481
 1.166S,27.2382,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.2218,27.1248
 1.166S,27.1246,27.011
 LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
@@ -11208,11 +11208,11 @@ LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,15      ,25      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.3346,27.2481
 1.166S,27.2382,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.2218,27.1248
 1.166S,27.1246,27.011
@@ -11225,14 +11225,14 @@ LIST/ORDER=ZTXY $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
 coordinates,15      ,25      
  ---- J:41 Y:   1.499S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2481
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.2218,27.1248
  ---- J:42 Y:   1.166S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.2382,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.1246,27.011
 LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZTYX /FORMAT=comma temp
@@ -11242,12 +11242,12 @@ LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,15      ,25      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.3346,27.2481
  ---- J:42 Y:   1.166S
 10-SEP-1982 20,27.2382,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.2218,27.1248
  ---- J:42 Y:   1.166S
@@ -11305,17 +11305,17 @@ LIST/ORDER=TYXZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
 coordinates,10-SEP-1982 20:00
  ---- K:2 Z:   15
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.3346
 1.166S,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.2218
 1.166S,27.1246
  ---- K:3 Z:   25
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.2481
 1.166S,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.1248
 1.166S,27.011
 LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
@@ -11326,14 +11326,14 @@ LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 1.499S,27.3346
 1.166S,27.2382
  ---- K:3 Z:   25
 1.499S,27.2481
 1.166S,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- K:2 Z:   15
 1.499S,27.2218
 1.166S,27.1246
@@ -11349,17 +11349,17 @@ LIST/ORDER=TZXY $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
 coordinates,10-SEP-1982 20:00
  ---- J:41 Y:   1.499S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.3346
 25,27.2481
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.2218
 25,27.1248
  ---- J:42 Y:   1.166S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.2382
 25,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.1246
 25,27.011
 LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
@@ -11370,14 +11370,14 @@ LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
 coordinates,10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 15,27.3346
 25,27.2481
  ---- J:42 Y:   1.166S
 15,27.2382
 25,27.1293
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- J:41 Y:   1.499S
 15,27.2218
 25,27.1248
@@ -11519,9 +11519,9 @@ LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.3346,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.2218,27.1246
 LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YZTX /FORMAT=comma temp
@@ -11532,10 +11532,10 @@ LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.3346,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.2218,27.1246
 LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
@@ -11547,9 +11547,9 @@ LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.2218,27.1246
 LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YTZX /FORMAT=comma temp
@@ -11560,10 +11560,10 @@ LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
 coordinates,1.499S ,1.166S 
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.3346,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.2218,27.1246
 LIST/ORDER=ZXYT $1" |*>/FORMAT=*" $2
@@ -11607,10 +11607,10 @@ LIST/ORDER=ZYXT $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
 coordinates,15      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.3346
 1.166S,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.2218
 1.166S,27.1246
 LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
@@ -11622,11 +11622,11 @@ LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
 coordinates,15      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.3346
 1.166S,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.2218
 1.166S,27.1246
@@ -11640,14 +11640,14 @@ LIST/ORDER=ZTXY $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
 coordinates,15      
  ---- J:41 Y:   1.499S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.2218
  ---- J:42 Y:   1.166S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 10-SEP-1982 20,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 10-SEP-1982 20,27.1246
 LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZTYX /FORMAT=comma temp
@@ -11658,12 +11658,12 @@ LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
 coordinates,15      
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.3346
  ---- J:42 Y:   1.166S
 10-SEP-1982 20,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.2218
  ---- J:42 Y:   1.166S
@@ -11709,10 +11709,10 @@ LIST/ORDER=TYXZ $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
 coordinates,10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 1.499S,27.3346
 1.166S,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 1.499S,27.2218
 1.166S,27.1246
 LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
@@ -11724,11 +11724,11 @@ LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
 coordinates,10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 1.499S,27.3346
 1.166S,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- K:2 Z:   15
 1.499S,27.2218
 1.166S,27.1246
@@ -11742,14 +11742,14 @@ LIST/ORDER=TZXY $1" |*>/FORMAT=*" $2
              DEPTH (m): 15
 coordinates,10-SEP-1982 20:00
  ---- J:41 Y:   1.499S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.3346
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.2218
  ---- J:42 Y:   1.166S
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
 15,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
 15,27.1246
 LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TZYX /FORMAT=comma temp
@@ -11760,12 +11760,12 @@ LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
 coordinates,10-SEP-1982 20:00
- ---- I: 95 X:   135.5W
+ ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 15,27.3346
  ---- J:42 Y:   1.166S
 15,27.2382
- ---- I: 96 X:   134.5W
+ ---- I:96 X:   134.5W
  ---- J:41 Y:   1.499S
 15,27.2218
  ---- J:42 Y:   1.166S
@@ -18140,13 +18140,13 @@ set view v44
 contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28000:29000:-400/trans sin(x/3)*sin(t/100)
  
 cancel viewports	! clean-up
-SET WINDOW/CLEAR/SIZE=0.2 ! adde-rw-rw-r--    1 ansley   tmap        29727 Oct 15 14:51 bench.mgm
--rw-rw-r--    1 ansley   tmap       440527 Oct 15 14:51 bench.mgm
-d 2/94
+SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94
  
 !GO bn_reset
 !GO bn301_mem_mgmt
-MESSAGE/CONTINUE  ***** bn301_mem_mgmt has been removed from run_all.
+MESSAGE/CONTINUE  ***** bn301_mem_mgmt has been removed-rw-rw-r--    1 ansley   tmap         8273 Nov 24 14:10 bench.mgm
+-rw-rw-r--    1 ansley   tmap       120365 Nov 24 14:10 bench.mgm
+ from run_all.
 ***** bn301_mem_mgmt has been removed from run_all.
 MESSAGE/CONTINUE  ***** Its too slow!!!
 ***** Its too slow
@@ -25171,11 +25171,11 @@ list out
  5    /  5:  441211.  441212.  441213.  441214.  441215.
  6    /  6:  441941.  441942.  441943.  441944.  441945.
  7    /  7:  442672.  442673.  442674.  442675.  442676.
- 8    /  8:  443402.  443403.  443404. abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Wed Oct 15 14:51:48 PDT 2008
- 443405.  443406.
+ 8    /  8:  443402.  443403.  443404.  443405.  443406.
  9    /  9:  444132.  444133.  444134.  444135.  444136.
- 10   / 10:  444863.  444864.  444865.  444866.  444867.
+ 10   / 10:  444863. abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
+Mon Nov 24 14:11:03 PST 2008
+ 444864.  444865.  444866.  444867.
  11   / 11:  445593.  445594.  445595.  445596.  445597.
  12   / 12:  446324.  446325.  446326.  446327.  446328.
  ---- L:2 T:   1952
@@ -31921,15 +31921,27 @@ sh func/ext sort*
 SORTI(DAT)
     Returns indices of data, sorted on the I axis in increasing order
     DAT: variable to sort in I
+SORTI_STR(STR)
+    Returns indices of string data, sorted on the I axis in increasing order, null s
+    STR: String variable to sort in I (STRING)
 SORTJ(DAT)
     Returns indices of data, sorted on the J axis  in increasing order
     DAT: variable to sort in J
+SORTJ_STR(STR)
+    Returns indices of string data, sorted on the J axis in increasing order, null s
+    STR: String variable to sort in J (STRING)
 SORTK(DAT)
     Returns indices of data, sorted on the K axis in increasing order
     DAT: variable to sort in K
+SORTK_STR(DAT)
+    Returns indices of string data, sorted on the K axis in increasing order, null s
+    DAT: String variable to sort in K (STRING)
 SORTL(DAT)
     Returns indices of data, sorted on the L axis  in increasing order
     DAT: variable to sort in L
+SORTL_STR(STR)
+    Returns indices of string data, sorted on the L axis in increasing order, null s
+    STR: String variable to sort in L (STRING)
 sh func/ext sample*
 SAMPLEI(TO_BE_SAMPLED,X_INDICES)
     sample a field at a list of X indices
@@ -33112,6 +33124,10 @@ CURV_TO_RECT_MAP(lon_in,lat_in,grid_out,radius)
     grid_out: Any variable on destination Longitude-Latitude grid, Lon and Lat (degrees)
     radius: Source points falling within radius are included in mapping to destination point (degrees)
 CURV_TO_RECT(V,mapping)
+    Apply mapping to regrid from curvilinear to rectangular grid
+    V: Variable to regrid, on curvilinear grid V(x,y,z,t)
+    mapping: mapping computed by curv_to_rect_MAP
+CURV_TO_RECT_FSU(V,mapping)
     Apply mapping to regrid from curvilinear to rectangular grid
     V: Variable to regrid, on curvilinear grid V(x,y,z,t)
     mapping: mapping computed by curv_to_rect_MAP
@@ -34590,7 +34606,14 @@ go mp_aspect
  
 let yy =  if abs(y[gt=sst]) le 20 then 10 else  (100-abs(y[gt=sst]+1))/ 10.
  
-vec/noax/xskip=6/yskip=6/len=20/title="View From Space"  sst*0,(sst*0+yy)*mp_mask, x_page,y_page
+vec/noax/xskip=6/yskip=6/len=20/title="View From Space"  sst*0,(sst*0+yy)*mp_mask, x_col1,col2,col3,col4,col5
+one,,1.1,24S,130E,,1e1,"word 1"
+    two,,2.2,24N,130W,2S,,"word 2"
+three,,3.3,24,130,3N,3e-2," wd 3 "
+
+five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
+extra line
+page,y_page
 vec/over/xskip=6/yskip=6/len=20 (sst*0+yy)*mp_mask,sst*0, x_page,y_page
 vec/over/xskip=6/yskip=6/color=blue/len=20  (sst*0+yy)*mp_mask,(sst*0+yy)*mp_mask, x_page,y_page
  
@@ -34613,13 +34636,6 @@ vec/over/xskip=16/yskip=8/len=15 fsst*0+yy*mp_mask,fsst*0, x_page,y_page
 ! Irregular axes, and manual axis scaling
 set win/asp=1
 set mode meta vec_curv2.plt
-col1,col2,col3,col4,col5
-one,,1.1,24S,130E,,1e1,"word 1"
-    two,,2.2,24N,130W,2S,,"word 2"
-three,,3.3,24,130,3N,3e-2," wd 3 "
-
-five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
-extra line
  
 def axis/from_data/x/name=xirr {0,1,2,4,6,7,8,10,14,16,20,23,24}
 def axis/from_data/y/name=yirr {0,2,4,5,6,7,8,9,12,13,14,15,18}
@@ -34814,7 +34830,12 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 ! insist that all columns be treated as string and name the columns
 file/format=delim/skip=1/type=text/var=a1,a2,a3,a4,a5 bn_delimited_read_1.dat
 show data
-     currently SET data sets:
+     currently SET col1,col2,col3,col4,col5
+12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+data sets:
     1> ./bn_delimited_read_1.dat  (default)
  name     title                             I         J         K         L
  A1       A1                               1:20480   ...       ...       ...
@@ -34831,12 +34852,7 @@ list a1,a2,a3,a4,a5
  Column  3: A3
  Column  4: A4
  Column  5: A5
-    col1,col2,col3,col4,col5
-12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-              A1   A2   A3    A4    A5
+                  A1   A2   A3    A4    A5
 1   / 1: "one"        " " "1.1" "24S" "130E"
 2   / 2: "two"        " " "2.2" "24N" "130W"
 3   / 3: "three"      " " "3.3" "24"  "130" 
@@ -35019,7 +35035,11 @@ list v1,v2,v3,v4,v5,v6,v7,v8
  Column  1: V1 is V1 (days)(Julian days since 1-Jan-1900)
  Column  2: V2 is V2 (days)(Julian days since 1-Jan-1900)
  Column  3: V3 is V3 (days)(Julian days since 1-Jan-1900)
- Column  4: V4 is V4 (days)(Julian days since 1-Jan-1900)
+ Column  4: V4 is V4 (day12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+s)(Julian days since 1-Jan-1900)
  Column  5: V5 is V5 (days)(Julian days since 1-Jan-1900)
  Column  6: V6 is V6 (days)(Julian days since 1-Jan-1900)
  Column  7: V7 is V7 (days)(Julian days since 1-Jan-1900)
@@ -35032,11 +35052,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8
 show data 2
      currently SET data sets:
     2> ./bn_delimited_read_date_time.dat  (default)
- name     title                             I    12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-     J         K         L
+ name     title                             I         J         K         L
  V1       V1                               1:4       ...       ...       ...
        (Julian days since 1-Jan-1900)
  V2       V2                               1:4       ...       ...       ...
@@ -42631,17 +42647,17 @@ cancel mem/all
 LIST/order=x/j=1/k=1/l=1 UNEVENVAR[i=2:4:2]
  dealloc  dynamic grid (G023)          (AX044)   (AX043)   ZAX1_20   TAX1_10
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G023)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
- dealloc  dynamic grid (G023)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
- allocate dynamic grid (G023)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
+ allocate dynamic grid (G023)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G023)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G023)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    3    6  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G023)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
+ allocate dynamic grid (G023)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G023)           @XACT
  rdstride UNE-NVAR C:  8 I:    2    4  J:    1    1  K:    1    1  L:    1    1
  nulrgd  UNE-NVAR M:148 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:151 I:    2    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G023)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G023)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X
              FILENAME : bn_strides.cdf
@@ -42659,7 +42675,7 @@ set region/i=3:6/j=2:4/k=1:2/l=1
  
 use/order=yx bn_strides
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
- dealloc  dynamic grid (G023)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G023)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  -DELETE UNE-NVAR M:148 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G023)          (AX043)   (AX045)   (AX046)   TAX1_10
@@ -42695,16 +42711,16 @@ canc data/all
 use/order=zyx bn_strides
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX054)   (AX044)   (AX046)   TAX1_10
- dealloc  dynamic grid (G028)          (AX054)   (AX044)   (AX046)   TAX1_10
- allocate dynamic grid (G028)          (AX054)   (AX044)   (AX046)   TAX1_10
+ allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_10
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_10
+ allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G028)          (AX054)   (AX044)   (AX046)   TAX1_10
+ allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_10
  strip regrid on X: BIGVAR --> (G028)           @XACT
  rdstride BIGVAR   C:  7 I:    3    9  J:    2    6  K:    1    3  L:    1    1
  nulrgd  BIGVAR   M:148 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:151 I:    3    9  J:    2    6  K:    1    3  L:    1    1
- dealloc  dynamic grid (G028)          (AX054)   (AX044)   (AX046)   TAX1_10
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on X, 2 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -42722,7 +42738,7 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  6   / 3:  1363.00  1563.00  1763.00  1963.00
 canc data/all
  -DELETE BIGVAR   M:148 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G028)          (AX054)   (AX044)   (AX046)   TAX1_10
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_10
  
 ! now with xytvar
 cancel region
@@ -42731,16 +42747,16 @@ use bn_strides
  
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX053)   (AX046)   NORMAL    (AX044)
- dealloc  dynamic grid (G028)          (AX053)   (AX046)   NORMAL    (AX044)
- allocate dynamic grid (G028)          (AX053)   (AX046)   NORMAL    (AX044)
+ allocate dynamic grid (G028)          (AX045)   (AX046)   NORMAL    (AX044)
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   NORMAL    (AX044)
+ allocate dynamic grid (G028)          (AX045)   (AX046)   NORMAL    (AX044)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- allocate dynamic grid (G028)          (AX053)   (AX046)   NORMAL    (AX044)
+ allocate dynamic grid (G028)          (AX045)   (AX046)   NORMAL    (AX044)
  strip regrid on X: XYTVAR --> (G028)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
  nulrgd  XYTVAR   M:151 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  -DELETE XYTVAR   M:148 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
- dealloc  dynamic grid (G028)          (AX053)   (AX046)   NORMAL    (AX044)
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   NORMAL    (AX044)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
              FILENAME : bn_strides.cdf
@@ -42758,7 +42774,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  
 use/order=tyx bn_strides
 show grid xytvar
- dealloc  dynamic grid (G028)          (AX053)   (AX046)   NORMAL    (AX044)
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   NORMAL    (AX044)
  -DELETE XYTVAR   M:151 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  getgrid EX#1     C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
     GRID EGRID
@@ -42771,16 +42787,16 @@ show grid xytvar
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  dealloc  dynamic grid EGRID           XLON      YLAT      NORMAL    TTIME
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX046)   (AX053)   NORMAL    (AX052)
- dealloc  dynamic grid (G028)          (AX046)   (AX053)   NORMAL    (AX052)
- allocate dynamic grid (G028)          (AX046)   (AX053)   NORMAL    (AX052)
+ allocate dynamic grid (G028)          (AX046)   (AX045)   NORMAL    (AX043)
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   NORMAL    (AX043)
+ allocate dynamic grid (G028)          (AX046)   (AX045)   NORMAL    (AX043)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- allocate dynamic grid (G028)          (AX046)   (AX053)   NORMAL    (AX052)
+ allocate dynamic grid (G028)          (AX046)   (AX045)   NORMAL    (AX043)
  strip regrid on X: XYTVAR --> (G028)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
  nulrgd  XYTVAR   M:148 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  -DELETE XYTVAR   M:151 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
- dealloc  dynamic grid (G028)          (AX046)   (AX053)   NORMAL    (AX052)
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   NORMAL    (AX043)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
              FILENAME : bn_strides.cdf
@@ -42797,7 +42813,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  2N   / 1:  5021.00  5023.00  5025.00  5027.00
 canc data/all
  -DELETE XYTVAR   M:148 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- dealloc  dynamic grid (G028)          (AX046)   (AX053)   NORMAL    (AX052)
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   NORMAL    (AX043)
  
 ! map into Z instead of T
 use/order=zxy bn_strides
@@ -42814,16 +42830,16 @@ show grid xytvar
 list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
  dealloc  dynamic grid GPC5            TTIME     XLON      YLAT      NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX050)   (AX052)   (AX053)   NORMAL
- dealloc  dynamic grid (G028)          (AX050)   (AX052)   (AX053)   NORMAL
- allocate dynamic grid (G028)          (AX050)   (AX052)   (AX053)   NORMAL
+ allocate dynamic grid (G028)          (AX045)   (AX046)   (AX044)   NORMAL
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   NORMAL
+ allocate dynamic grid (G028)          (AX045)   (AX046)   (AX044)   NORMAL
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K:    1    2  L:    1    2
- allocate dynamic grid (G028)          (AX050)   (AX052)   (AX053)   NORMAL
+ allocate dynamic grid (G028)          (AX045)   (AX046)   (AX044)   NORMAL
  strip regrid on X: XYTVAR --> (G028)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
  nulrgd  XYTVAR   M:151 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
  -DELETE XYTVAR   M:148 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
- dealloc  dynamic grid (G028)          (AX050)   (AX052)   (AX053)   NORMAL
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X, 2 deg on Y, 2 deg on Z
              FILENAME : bn_strides.cdf
@@ -42840,7 +42856,7 @@ list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
  146   / 3:  1056.00  3056.00  5056.00  7056.00
 canc data/all
  -DELETE XYTVAR   M:151 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
- dealloc  dynamic grid (G028)          (AX050)   (AX052)   (AX053)   NORMAL
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   NORMAL
  
  
 cancel region; set region/l=1
@@ -42849,16 +42865,16 @@ cancel region; set region/l=1
 use/order=yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX048)   (AX053)   (AX052)   TAX1_6
- dealloc  dynamic grid (G028)          (AX048)   (AX053)   (AX052)   TAX1_6
- allocate dynamic grid (G028)          (AX048)   (AX053)   (AX052)   TAX1_6
+ allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_6
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_6
+ allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_6
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G028)          (AX048)   (AX053)   (AX052)   TAX1_6
+ allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_6
  strip regrid on X: MIDVAR --> (G028)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G028)          (AX048)   (AX053)   (AX052)   TAX1_6
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_6
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -42874,16 +42890,16 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1515.00  1555.00
 canc data/all
  -DELETE MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G028)          (AX048)   (AX053)   (AX052)   TAX1_6
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_6
  
 use/order=-yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX047)   (AX052)   (AX053)   TAX1_6
- dealloc  dynamic grid (G028)          (AX047)   (AX052)   (AX053)   TAX1_6
- allocate dynamic grid (G028)          (AX047)   (AX052)   (AX053)   TAX1_6
+ allocate dynamic grid (G028)          (AX045)   (AX046)   (AX044)   TAX1_6
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   TAX1_6
+ allocate dynamic grid (G028)          (AX045)   (AX046)   (AX044)   TAX1_6
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G028)          (AX047)   (AX052)   (AX053)   TAX1_6
+ allocate dynamic grid (G028)          (AX045)   (AX046)   (AX044)   TAX1_6
  strip regrid on X: MIDVAR --> (G028)           @XACT
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    1    5  J:    5    8  K:    3    5  L:    1    1
@@ -42891,7 +42907,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  -DELETE MIDVAR   M:148 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G028)          (AX047)   (AX052)   (AX053)   TAX1_6
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   TAX1_6
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -42907,22 +42923,22 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1515.00  1555.00
 canc data/all
  -DELETE MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G028)          (AX047)   (AX052)   (AX053)   TAX1_6
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   TAX1_6
  
 ! reference output
 use/order=tyx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX043)   (AX053)   (AX052)   ZAX1_7
- dealloc  dynamic grid (G028)          (AX043)   (AX053)   (AX052)   ZAX1_7
- allocate dynamic grid (G028)          (AX043)   (AX053)   (AX052)   ZAX1_7
+ allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G028)          (AX043)   (AX053)   (AX052)   ZAX1_7
+ allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
  strip regrid on X: MIDVAR --> (G028)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:151 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:148 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G028)          (AX043)   (AX053)   (AX052)   ZAX1_7
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -42938,17 +42954,17 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1155.00  5155.00
 canc data/all
  -DELETE MIDVAR   M:151 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G028)          (AX043)   (AX053)   (AX052)   ZAX1_7
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
  
 ! note the reversal on axes 1,2 and 3 (X,Y,Z in memory -- NOT T)
 use/order=-t-y-x bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX055)   (AX052)   (AX053)   ZAX1_7
- dealloc  dynamic grid (G028)          (AX055)   (AX052)   (AX053)   ZAX1_7
- allocate dynamic grid (G028)          (AX055)   (AX052)   (AX053)   ZAX1_7
+ allocate dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ allocate dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G028)          (AX055)   (AX052)   (AX053)   ZAX1_7
+ allocate dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
  strip regrid on X: MIDVAR --> (G028)           @XACT
  strip reversing MIDVAR on X axis:     1     5
  rdstride MIDVAR   C:  8 I:    2    6  J:    4    7  K:    3    5  L:    7    7
@@ -42956,7 +42972,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:151 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:148 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G028)          (AX055)   (AX052)   (AX053)   ZAX1_7
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -42972,22 +42988,22 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  6745.00  2745.00
 canc data/all
  -DELETE MIDVAR   M:151 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G028)          (AX055)   (AX052)   (AX053)   ZAX1_7
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
  
 ! reference output
 use/order=txy bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX044)   (AX053)   (AX052)   ZAX1_7
- dealloc  dynamic grid (G028)          (AX044)   (AX053)   (AX052)   ZAX1_7
- allocate dynamic grid (G028)          (AX044)   (AX053)   (AX052)   ZAX1_7
+ allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G028)          (AX044)   (AX053)   (AX052)   ZAX1_7
+ allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
  strip regrid on X: MIDVAR --> (G028)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G028)          (AX044)   (AX053)   (AX052)   ZAX1_7
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -43003,16 +43019,16 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1155.00  5155.00
 canc data/all
  -DELETE MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G028)          (AX044)   (AX053)   (AX052)   ZAX1_7
+ dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
  
 use/order=-t-x-y bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX050)   (AX052)   (AX053)   ZAX1_7
- dealloc  dynamic grid (G028)          (AX050)   (AX052)   (AX053)   ZAX1_7
- allocate dynamic grid (G028)          (AX050)   (AX052)   (AX053)   ZAX1_7
+ allocate dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ allocate dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G028)          (AX050)   (AX052)   (AX053)   ZAX1_7
+ allocate dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
  strip regrid on X: MIDVAR --> (G028)           @XACT
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    2    6  J:    5    8  K:    3    5  L:    7    7
@@ -43020,7 +43036,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  -DELETE MIDVAR   M:148 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G028)          (AX050)   (AX052)   (AX053)   ZAX1_7
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -43036,7 +43052,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  6755.00  2755.00
 canc data/all
  -DELETE MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G028)          (AX050)   (AX052)   (AX053)   ZAX1_7
+ dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
  
 ! DEFINE AXIS can get the axis too long (bug 673)
 GO bn_reset
@@ -43640,9 +43656,9 @@ list/x=5/t=5 v, z[gz=v] , zboxlo[gz=v], zboxhi[gz=v]
              X: 5
              T: 2
  Column  1: V is X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]
- Column  2: Z is Z (axis ZAX1)
- Column  3: ZBOXLO is ZBOXLO (axis ZAX1)
- Column  4: ZBOXHI is ZBOXHI (axis ZAX1)
+ Column  2: Z is Z (axis ZAX)
+ Column  3: ZBOXLO is ZBOXLO (axis ZAX)
+ Column  4: ZBOXHI is ZBOXHI (axis ZAX)
                  V      Z     ZBOXLO   ZBOXHI
 0     / 1:    7.000    0.000   0.0000   10.000
 20    / 2:   27.000   20.000  10.0000   30.000
@@ -45254,20 +45270,7 @@ LET NTSULNS = IF 1 THEN 3 ELSE 2
 LET NCTSULNS = 85
  
 let str1a = STRLEN("($source_list)")
- !-> DEFINE VARIABLE str1a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
-let lstr1 = STRLEN("+")
- 
-let str2a = STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
-list str2a
-             VARIABLE : STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
-          162.000
- 
-def sym aLIST = Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.7
- 
-let lstr2 = STRLEN("($alist)")
- !-> DEFINE VARIABLE lstr2 = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.7")
- 
-let st             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+ !-> DEFINE VARIABLE str1a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
              GEOMETRY: XY 
@@ -45318,7 +45321,20 @@ DATA:
 224.60300
 224.60350
 224.60400
-r3a = STRLEN("($source_list)")
+76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
+let lstr1 = STRLEN("+")
+ 
+let str2a = STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
+list str2a
+             VARIABLE : STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
+          162.000
+ 
+def sym aLIST = Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.7
+ 
+let lstr2 = STRLEN("($alist)")
+ !-> DEFINE VARIABLE lstr2 = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.7")
+ 
+let str3a = STRLEN("($source_list)")
  !-> DEFINE VARIABLE str3a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
 list str3a
              VARIABLE : STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.7
@@ -45744,11 +45760,11 @@ ppl list labels
  @ASDEPTH (m)                                                                   
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET (beta) Ver.6.14
+ LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET (beta) Ver.6.16
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASOct 15 2008 14:53:18
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASNov 24 2008 14:12:41
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 179.9E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47010,7 +47026,7 @@ GO bn_long_revision_num.jnl
  
 ! ferret version
 sh sym FERRET_VERSION
-FERRET_VERSION = "6.14"
+FERRET_VERSION = "6.16"
  
 ! history attribute
 let a = 12
@@ -47028,7 +47044,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET (beta) version6.14:
+ Commands in Program FERRET (beta) version6.16:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE
  SET REGION/I/J/K/L/X/Y/Z/T/DX/DY/DZ/DT/DI/DJ/DK/DL
@@ -47148,7 +47164,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "15-Oct-08:14:50"
+WIN_TITLE = "24-Nov-08:14:09"
  
 set win/title="set the title"
 sho sym win_title
@@ -50867,10 +50883,10 @@ use a
 list  x[gx=var], xbox[gx=var], xboxlo[gx=var], xboxhi[gx=var]
              DATA SET: ./a.nc
              X: -6 to 9
- Column  1: X is X (axis LAYER_BETWEEN_TWO_PRESSURE_DIFFERENCE_FROM_GROUND1)
- Column  2: XBOX is XBOX (axis LAYER_BETWEEN_TWO_PRESSURE_DIFFERENCE_FROM_GROUND1)
- Column  3: XBOXLO is XBOXLO (axis LAYER_BETWEEN_TWO_PRESSURE_DIFFERENCE_FROM_GROUND1)
- Column  4: XBOXHI is XBOXHI (axis LAYER_BETWEEN_TWO_PRESSURE_DIFFERENCE_FROM_GROUND1)
+ Column  1: X is X (axis LAYER_BETWEEN_TWO_PRESSURE_DIFFERENCE_FROM_GROUND)
+ Column  2: XBOX is XBOX (axis LAYER_BETWEEN_TWO_PRESSURE_DIFFERENCE_FROM_GROUND)
+ Column  3: XBOXLO is XBOXLO (axis LAYER_BETWEEN_TWO_PRESSURE_DIFFERENCE_FROM_GROUND)
+ Column  4: XBOXHI is XBOXHI (axis LAYER_BETWEEN_TWO_PRESSURE_DIFFERENCE_FROM_GROUND)
              X   XBOX  XBOXLO XBOXHI
 0   / 1:  0.000  8.000 -6.000  2.000
 3   / 2:  3.000  2.500  2.000  4.500
@@ -51409,7 +51425,7 @@ sho dat/att
  VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
 --------------------------------------------------------------------------------
   
- .                      history             CHAR    19   T      FERRET V6.14 (beta)
+ .                      history             CHAR    19   T      FERRET V6.16 (beta)
                         Conventions         CHAR    6    F      CF-1.0
   
 (PSXT91_108)            units               CHAR    12   T      degrees_east
@@ -51450,7 +51466,7 @@ sho dat/att
  VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
 --------------------------------------------------------------------------------
   
- .                      history             CHAR    19   T      FERRET V6.14 (beta)
+ .                      history             CHAR    19   T      FERRET V6.16 (beta)
                         Conventions         CHAR    6    F      CF-1.0
   
 (PSXT91_108)            units               CHAR    12   T      degrees_east
@@ -51704,17 +51720,17 @@ use coads_climatology
 set axis/stride=2/offset=1 `sst, return=xaxis`
  !-> set axis/stride=2/offset=1 COADSX
 show axis `sst,return=xaxis`
- !-> show axis (AX043)
+ !-> show axis (AX052)
  name       axis              # pts   start                end
- (AX043)   LONGITUDE           90mr   21E                  17E(377)
+ (AX052)   LONGITUDE           90mr   21E                  17E(377)
    Axis span (to cell edges) = 360 (modulo length = axis span)
 !can't stride it again
 set axis/stride=2/offset=1 `sst, return=xaxis`
- !-> set axis/stride=2/offset=1 (AX043)
+ !-> set axis/stride=2/offset=1 (AX052)
 show axis `sst,return=xaxis`
- !-> show axis (AX043)
+ !-> show axis (AX052)
  name       axis              # pts   start                end
- (AX043)   LONGITUDE           90mr   21E                  17E(377)
+ (AX052)   LONGITUDE           90mr   21E                  17E(377)
    Axis span (to cell edges) = 360 (modulo length = axis span)
 cancel data/all
  
@@ -51763,7 +51779,7 @@ list sst[i=11:15,j=50,k=1,l=50]
  
 ! --- after cancel striding
 cancel axis/stride `sst,return=xaxis`
- !-> cancel axis/stride (AX045)
+ !-> cancel axis/stride (AX053)
 list sst[i=21:30,j=50,k=1,l=50]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
@@ -51814,8 +51830,8 @@ show grid/dynamic
 Dynamic grids:
     no implicit grids
 Dynamic axes:
-    AXIS (AX055)                         use count:   1
-    AXIS (AX043)                         use count:  13
+    AXIS (AX050)                         use count:   1
+    AXIS (AX052)                         use count:  13
     AXIS (AX020)                         use count:   1
 cancel data/all
  
@@ -51834,24 +51850,24 @@ use coads_climatology
 set axis/stride=6/offset=5 `sst,return=xaxis`
  !-> set axis/stride=6/offset=5 COADSX
 show axis `sst,return=xaxis`
- !-> show axis (AX053)
+ !-> show axis (AX046)
  name       axis              # pts   start                end
- (AX053)   LONGITUDE           30mr   29E                  17E(377)
+ (AX046)   LONGITUDE           30mr   29E                  17E(377)
    Axis span (to cell edges) = 360 (modulo length = axis span)
 cancel axis/stride `sst,return=xaxis`
- !-> cancel axis/stride (AX053)
+ !-> cancel axis/stride (AX046)
  
 !--- 8.2 stride value is not an integer factor of the axis length
 ! warning: it may lose modulo property
 set axis/stride=7/offset=5 `sst,return=xaxis`
  !-> set axis/stride=7/offset=5 COADSX
 show axis `sst,return=xaxis`
- !-> show axis (AX045)
+ !-> show axis (AX053)
  name       axis              # pts   start                end
- (AX045)   LONGITUDE           26 r   29E                  19E(379)
+ (AX053)   LONGITUDE           26 r   29E                  19E(379)
    Axis span (to cell edges) = 364
 cancel axis/stride `sst,return=xaxis`
- !-> cancel axis/stride (AX045)
+ !-> cancel axis/stride (AX053)
 cancel data/all
  
 ! --- 8.3 testing strided modulo axis
@@ -51860,7 +51876,7 @@ set axis/stride=2/offset=1 `sst,return=xaxis`
  !-> set axis/stride=2/offset=1 COADSX
 shade/x=-180:180/y=-30:70/L=2 sst
 cancel axis/stride `sst,return=xaxis`
- !-> cancel axis/stride (AX045)
+ !-> cancel axis/stride (AX053)
 cancel data/all
  
 !.............9. two datasets share the same grid
@@ -51955,9 +51971,9 @@ show data/all
 set axis/stride=5 `sst,return=yaxis`
  !-> set axis/stride=5 COADSX
 show axis `sst,return=yaxis`
- !-> show axis (AX055)
+ !-> show axis (AX050)
  name       axis              # pts   start                end
- (AX055)   LONGITUDE           36mr   21E                  11E(371)
+ (AX050)   LONGITUDE           36mr   21E                  11E(371)
    Axis span (to cell edges) = 360 (modulo length = axis span)
  
 can data/all
@@ -52058,19 +52074,19 @@ set axis/stride=2 `sst, return=taxis`
  !-> set axis/stride=2 TIME10
  
 show axis `sst,return=xaxis`
- !-> show axis (AX047)
- name       axis              # pts   start                end
- (AX047)   LONGITUDE           90mr   21E                  17E(377)
-   Axis span (to cell edges) = 360 (modulo length = axis span)
-show axis `sst,return=yaxis`
- !-> show axis (AX053)
- name       axis              # pts   start                end
- (AX053)   LATITUDE            45 r   89S                  87N
-   Axis span (to cell edges) = 180
-show axis `sst,return=taxis`
  !-> show axis (AX054)
  name       axis              # pts   start                end
- (AX054)   TIME                 2 r   16-JAN-0000 06:00    17-MAR-0000 02:58
+ (AX054)   LONGITUDE           90mr   21E                  17E(377)
+   Axis span (to cell edges) = 360 (modulo length = axis span)
+show axis `sst,return=yaxis`
+ !-> show axis (AX046)
+ name       axis              # pts   start                end
+ (AX046)   LATITUDE            45 r   89S                  87N
+   Axis span (to cell edges) = 180
+show axis `sst,return=taxis`
+ !-> show axis (AX051)
+ name       axis              # pts   start                end
+ (AX051)   TIME                 2 r   16-JAN-0000 06:00    17-MAR-0000 02:58
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 2921.94
  
@@ -52773,9 +52789,11 @@ set mem/size=0.05
 sh sym ferret_memory
 FERRET_MEMORY = "0.05"
  
-set mem/siz=100000  ! too large to allow
+set mem/siz=500000  ! too large to allow
+Unable to allocate 1783.793664 Mwords of memory.
+Restoring previous memory of 0.050000 Mwords.
 sho sym ferret_memory
-FERRET_MEMORY = "1216"
+FERRET_MEMORY = "0.05"
  
 set mem/siz=6.4  ! return to the default setting
 show memory
@@ -52948,9 +52966,13 @@ SCAT2GRIDLAPLACE_YT(YPTS,TPTS,F,YAXPTS,TAXPTS,CAY,NRNG)
 SCAT2GRIDLAPLACE_ZT(ZPTS,TPTS,F,ZAXPTS,TAXPTS,CAY,NRNG)
 SCATGRID_NOBS_XY(XPTS,YPTS,XAXPTS,YAXPTS)
 SORTI(DAT)
+SORTI_STR(STR)
 SORTJ(DAT)
+SORTJ_STR(STR)
 SORTK(DAT)
+SORTK_STR(DAT)
 SORTL(DAT)
+SORTL_STR(STR)
 TAUTO_COR(A)
 TAX_DATESTRING(A,B,C)
 TAX_DAY(A,B)
@@ -52964,6 +52986,7 @@ TAX_UNITS(A)
 TAX_YEAR(A,B)
 TAX_YEARFRAC(A,B)
 TCAT(A,B)
+TCAT_STR(A,B)
 TEST_OPENDAP(url)
 TREVERSE(A)
 TRANSPOSE_XT(VAR)
@@ -52973,8 +52996,10 @@ TRANSPOSE_YT(VAR)
 TRANSPOSE_YZ(VAR)
 TRANSPOSE_ZT(VAR)
 XCAT(A,B)
+XCAT_STR(A,B)
 XREVERSE(A)
 YCAT(A,B)
+YCAT_STR(A,B)
 YREVERSE(A)
 XAUTO_COR(A)
 ZAXREPLACE_AVG(V,ZVALS,ZAX)
@@ -52982,11 +53007,14 @@ ZAXREPLACE_BIN(V,ZVALS,ZAX)
 ZAXREPLACE_REV(ZVALS,V,ZAX)
 ZAXREPLACE_ZLEV(V,THICKNESS,ZAX)
 ZCAT(A,B)
+ZCAT_STR(A,B)
 ZREVERSE(A)
 ADD_9(A,B,C,D,E,F,G,H,I)
 AVET(A)
+BIN_INDEX_WT(INDEX,WT,INDXMAX)
 CLOSEST_IN_ZLIST(target,zlist)
 CMPRSI_BY(dat,mask)
+CURV_TO_RECT_FSU(V,mapping)
 DATES(var)
 FACTORIAL(A)
 LIST_GOOD(A)
@@ -52998,6 +53026,7 @@ SAMPLEK_MULTI(K_INDICES,DAT_TO_SAMPLE)
 SAMPLEL_MULTI(L_INDICES,DAT_TO_SAMPLE)
 SAMPLEXYT(DAT_TO_SAMPLE,XPTS,YPTS,TPTS)
 SCAT2GRID_BIN_XY(XPTS,YPTS,F,XAXPTS,YAXPTS)
+SCATGRID_NOBS_XYT(XPTS,YPTS,TPTS,XAXPTS,YAXPTS,TAXPTS)
 STORAGE(A)
 STRING_ARG(A,string)
 STUDENT_T_CUTOFF(P,nf)
@@ -53434,7 +53463,6 @@ GO err61_exit_script
 !        Linux(g77) 2.4.21-32 - 11/13/07
 !         7-Mar-08 18:32
  
-!can mode verify
 sp rm -f b1566.jnl
 sp echo if 1 then > b1566.jnl
 sp echo if 1 then >> b1566.jnl
@@ -53561,20 +53589,76 @@ if 1 then
 if 1 then
 exit/script
  
-set mode/last verify
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err61_new_attr_on_axis
+! err61_new_attr_on_axis.jnl
+! For any var or axis, allow adding an attribute
+! Fix for bug 1574
+ 
+use ocean_atlas_temp
+sh dat
      currently SET data sets:
     1> ./ocean_atlas_temp.cdf  (default)
  name     title                             I         J         K         L
  TEMP     Temperature                      1:360     1:180     1:1       1:2
  
+define att/output (`temp,return=xaxis`).long_name = "Here is a long name for the x axis of TEMP"
+ !-> define att/output (XAX_LEV9421_380).long_name = "Here is a long name for the x axis of TEMP"
+save/file=a.nc/clobber/j=50/l=2 temp
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+! It is saved even on a subset of the axis
+save/file=a.nc/clobber/i=1:12/j=50/l=2 temp
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+DEFINE AXIS/y=-60:60:2/units=deg yaxis
+LET v = y[gy=yaxis]
+ 
+DEFINE att/output (yaxis).standard_name = "latitude"
+ 
+save/file=a.nc/clobber v
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO bn_varcontext_attributes
+! Examples from bn_attributes, where instead of var.att[specifiers]
+! we use var[specifiers].att  where appropriate.
+ 
+!-----
+ 
+! SHOW ATTRIBUTE examples
+ 
+can data/all
+can var/all
+ 
+use ocean_atlas_temp
+use gt4d011
+use levitus_climatology
+ 
+sh att temp[d=1].units
      attributes for dataset: ./ocean_atlas_temp.cdf
  TEMP.units = Deg C 
+ 
+ 
+! note .[d=1].dimnames does not work
+use coads_climatology
+use gt4d011
+ 
+let vnames = ..dimnames[d=1]
+let lnames = ..dimnames[d=2]
+list vnames
              VARIABLE : ..DIMNAMES[D=ocean_atlas_temp]
              SUBSET   : 4 points (X)
  1   / 1:"XAX_LEV9421_380"
  2   / 2:"YAX_LEV94"      
  3   / 3:"ZAXLEVIT191_1"  
  4   / 4:"TIME3"          
+list lnames
              VARIABLE : ..DIMNAMES[D=gt4d011]
              SUBSET   : 20 points (X)
  1    /  1:"PSXT1"     
@@ -53597,44 +53681,177 @@ set mode/last verify
  18   / 18:"PSYT36_55" 
  19   / 19:"PSZW1_10"  
  20   / 20:"PSYU35_56" 
+ 
+go bn_reset
+cancel mode verify
+ 
+ 
+!-----
+! more on number of attributes
+ 
+use levitus_climatology
+use ocean_atlas_temp
+let nat = temp.nattrs
+list nat
              VARIABLE : TEMP.NATTRS
              FILENAME : ocean_atlas_temp.cdf
           5.000000
+ 
+list (`temp,return=xaxis`)[d=2].nattrs
+ !-> list (XAX_LEV9421_380)[d=2].nattrs
              VARIABLE : (XAX_LEV9421_380)[d=ocean_atlas_temp].NATTRS
              FILENAME : ocean_atlas_temp.cdf
           4.000000
+ 
+use gt4d011
+say `temp[d=1].nattrs`
+ !-> MESSAGE/CONTINUE 5
 5
+ 
+def sym xaxnam  "(`temp[d=1],return=xaxis`)"
+ !-> def sym xaxnam  "(XAXLEVITR1_160)"
+def sym yaxnam  "(`temp[d=1],return=yaxis`)"
+ !-> def sym yaxnam  "(YAXLEVITR1_90)"
+list `($xaxnam)[d=1].nattrs`
+ !-> list 4
              VARIABLE : constant
           4.000000
+say `($yaxnam)[d=1].nattrs`
+ !-> MESSAGE/CONTINUE 3
 3
+ 
+go bn_reset
+cancel mode verify
+ 
+!-----
+! more on access to attribute names and values as variables
+ 
+use coads_climatology
+use levitus_climatology
+use ocean_atlas_temp
+use gt4d011
+ 
+let a = temp.units
+list/d=3 a
              VARIABLE : TEMP.UNITS
              FILENAME : ocean_atlas_temp.cdf
         "Deg C"
+list temp[d=3].units
              VARIABLE : TEMP[d=ocean_atlas_temp].UNITS
              FILENAME : gt4d011.cdf
         "Deg C"
+list/d=3 temp.history
              VARIABLE : TEMP.HISTORY
              FILENAME : ocean_atlas_temp.cdf
         "From ocean_atlas_monthly"
+ 
+can data/all
+can var/all
+ 
+use coads_climatology
+! This syntax does not work:
+! list sst[d=1].dimnames[i=2]
+ 
+! But this does
+let a = sst[d=1].dimnames
+list a[i=2]
              VARIABLE : SST[d=coads_climatology].DIMNAMES
              FILENAME : coads_climatology.cdf
              X        : 2
         "COADSY"
+ 
+go bn_reset
+cancel mode verify
+ 
+! When the variable context is given in an attribute
+! spec, we want to ignore the information except for the
+! dataset, and just return the attribute of the variable.
+ 
+use coads_climatology
+define symbol ferret_plot_var sst[x=30:39,y=-90:90]
+list ($ferret_plot_var).long_name
+ !-> list sst[x=30:39,y=-90:90].long_name
              VARIABLE : SST.LONG_NAME
              FILENAME : coads_climatology.cdf
         "SEA SURFACE TEMPERATURE"
+ 
+use coads_climatology
+define symbol ferret_plot_var sst[d=1,x=30:35,y=-90:90]
+list ($ferret_plot_var).units
+ !-> list sst[d=1,x=30:35,y=-90:90].units
              VARIABLE : SST[d=coads_climatology].UNITS
              FILENAME : coads_climatology.cdf
         "Deg C"
+ 
+use coads_climatology
+use levitus_climatology
+define symbol ferret_plot_var sst[d=1,x=30:35,y=-90:90]
+list ($ferret_plot_var).history
+ !-> list sst[d=1,x=30:35,y=-90:90].history
              VARIABLE : SST[d=coads_climatology].HISTORY
              FILENAME : levitus_climatology.cdf
         "From coads_climatology"
+ 
+go bn_reset
+cancel mode verify
+ 
+use levitus_climatology
+use coads_climatology
+ 
+def sym xaxnam  "(`temp[d=1],return=xaxis`)"
+ !-> def sym xaxnam  "(XAXLEVITR1_160)"
+def sym yaxnam  "(`temp[d=1],return=yaxis`)"
+ !-> def sym yaxnam  "(YAXLEVITR1_90)"
+ 
+list ($xaxnam)[d=1].modulo
+ !-> list (XAXLEVITR1_160)[d=1].modulo
              VARIABLE : (XAXLEVITR1_160)[d=levitus_climatology].MODULO
              FILENAME : coads_climatology.cdf
         " "
+list ($yaxnam).point_spacing[d=1]
+ !-> list (YAXLEVITR1_90).point_spacing[d=1]
              VARIABLE : (YAXLEVITR1_90).POINT_SPACING[D=levitus_climatology]
              FILENAME : levitus_climatology.cdf
         "even"
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err61_show_dat_var_xml
+! err61_show_dat_var_xml.jnl
+! See bug 1580. Intermediate variablels associated with a
+! variable that uses a grid-changing function should be
+! skipped when writing variables by SHOW DATA/VAR/XML
+ 
+! Define some varibles as in some of the tests of
+! zaxreplace. Write to files.
+ 
+! Define some variables as in some of the benchmark
+! tests of zaxreplace. Write to files.
+ 
+LET ddat = ZSEQUENCE({1126,1136,1146,1156,1166})
+LET cycle = ZSEQUENCE({346, 347, 349, 350, 351})
+DEFINE AXIS/Z=10:50:10 zaxis_orig
+LET cycle_orig = cycle[GZ=zaxis_orig@ASN]
+LET ddat_orig = ddat[GZ=zaxis_orig@ASN]
+ 
+SAVE/CLOBBER/FILE=z1.nc ddat_orig
+SAVE/CLOBBER/FILE=z2.nc cycle_orig
+ 
+! Now use this data and define a user variable
+! associated with datset 2 using ZAXREPLACE
+ 
+CAN DAT/ALL; CAN VAR/ALL
+USE z1
+USE z2
+DEFINE AXIS/Z=345:353:1 zaxis_des
+LET dummy = Z[GZ=zaxis_des]
+LET/D=2 ddat_a = ZAXREPLACE(ddat_orig[d=1], cycle_orig[d=2], dummy)
+ 
+! Note how there are intermediate variables associated with the
+! regridding operation
+ 
+SHOW DATA
      currently SET data sets:
     1> ./z1.nc
  name     title                             I         J         K         L
@@ -53648,6 +53865,11 @@ set mode/last verify
  ------------------------------
  DDAT_A[D=z2] = ZAXREPLACE(DDAT_ORIG[D=1], CYCLE_ORIG[D=2], DUMMY)
  
+ 
+! Those intermediate variables should be skipped
+! for SHOW DATA/VAR/XML
+ 
+SHOW DATA/VAR/XML
 <datasets>
 <dataset name="./z1.nc" default="false">
 <title> </title>
@@ -53689,6 +53911,16 @@ set mode/last verify
 </var>
 </dataset>
 </datasets>
+ 
+GO bn_reset
+cancel mode verify
+GO err61_360_calendar
+! err61_360_calendar.jnl
+!
+ 
+! This first has always been ok
+define axis/t=28-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 time
+list t[gt=time]
              VARIABLE : T
                         axis TIME
              SUBSET   : 6 points (TIME)
@@ -53699,13 +53931,76 @@ set mode/last verify
  04-MAR-1909 00 / 4:  63.00000
  06-MAR-1909 00 / 5:  65.00000
  08-MAR-1909 00 / 6:  67.00000
+ 
+! Should be able to specify 30-feb-1909 for a 360-day calendar but it
+! resulted in an error
+define axis/t=30-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 time
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err611_exit_if.jnl
+! err611_exit_if.jnl
+!
+! Bug 1587
+! This only in v6.11 GFDL release bug
+! Fixed in xeq_exit.F
+ 
+yes? sp echo if 1 then > a.jnl
+yes? sp echo exit/script >> a.jnl
+yes? sp echo endif >> a.jnl
+yes? sp echo go a > b.jnl
+yes? sp echo say hello >> b.jnl
+yes? go b  !the following fails to say "hello"
+go a
+if 1 then
+exit/script
+say hello
 hello
+go a
+if 1 then
+exit/script
+if 1 then
+exit/script
+ 
+GO bn_reset
+cancel mode verify
+GO err611_save_irreg.jnl
+! err611_save_irreg.jnl
+!
+! bug1588
+ 
+def axis/t time = {0,1,3}
+let a = t[gt=time]
+save/clob/file=a.nc a
+can var a
+can dat/all
+use a.nc
+save/clob/file=b.nc a
+let b = a
+list b
              VARIABLE : A
              FILENAME : a.nc
              SUBSET   : 3 points (T)
  0   / 1:  0.000000
  1   / 2:  1.000000
  3   / 3:  3.000000
+save/clob/file=b.nc b
+ 
+ 
+! ******** V6.13 Additions below ***********
+GO bn_reset
+cancel mode verify
+GO bn_no_valid_on_plot
+! bn_no_valid_on_plot.jnl
+! Bug 1038 points out that the No Valid Data label that is
+! put onto 2D plot if there is no good data, is not put onto
+! 1D plots.  Add it to the variable title so it shows up in the key
+!
+! Plot a region where there is no data
+use coads_climatology
+plot/x=56e:100e/y=40 sst[L=1]
+ppl list labels
  @ACSEA SURFACE TEMPERATURE (Deg C) No Valid Data                               
  @ASLONGITUDE                                                                   
  @ASDeg C                                                                       
@@ -53719,6 +54014,12 @@ hello
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
  LAB 4  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
+ 
+! and now valid data overlaid with all-missing data
+ 
+plot/x=56e:100e/y=10 sst[L=1]
+plot/over/x=56e:100e/y=40 sst[L=1]
+ppl list labels
  @ACSEA SURFACE TEMPERATURE (Deg C)                                             
  @ASLONGITUDE                                                                   
  @ASDeg C                                                                       
@@ -53734,6 +54035,10 @@ hello
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 5 -3.700E-01 -5.500E-01 0.080    0  SYSTEM  @ASSST[Y=39N] No Valid Data
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ 
+! For plots with multi lines in one plot command, mark each if no data
+plot/x=56e:100e sst[L=1,y=10], sst[L=1,y=50], sst[L=1,y=20]
+ppl list labels
                                                                                 
  @ASLONGITUDE                                                                   
  @ASDeg C                                                                       
@@ -53751,6 +54056,29 @@ hello
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
  LAB 6  2.530E+00 -1.040E+00 0.120    0  SYSTEM  @ASSST[Y=19N]
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ 
+! For 2D plots create a new MODE NODATA_LAB which if on, puts
+! the NO VALID DATA across the middle of the plot when there is
+! no data, but allows us to turn this off.
+ 
+CANCEL MODE nodata_lab
+SHADE/Y=80:90 sst[L=1]
+FILL/Y=80:90 sst[L=1]
+CONTOUR/Y=80:90 sst[L=1]
+ 
+VECTOR/Y=80:90 sst[L=1], sst[L=1]
+ 
+SET MODE/last nodata_lab
+ 
+GO bn_reset
+cancel mode verify
+GO bn_median
+! Test median smoothing tranform
+ 
+use gtsa056_2.cdf
+let var = u[x=180,y=0,k=1,t=1-jan-1982:1-jan-1983]
+plot var,var[t=@med:3], var[t=@med:6]
+list/t=1-dec-1982:1-jan-1983 var,var[t=@med:3], var[t=@med:6]
              DATA SET: ./gtsa056_2.cdf
              TIME: NOV-1982 to JAN-1983
              LONGITUDE: 180E
@@ -53771,6 +54099,11 @@ hello
 25-DEC-1982 07 / 114:   9.06758   9.06758   3.48281
 28-DEC-1982 08 / 115:  10.80434   9.06758   4.21162
 31-DEC-1982 09 / 116:   4.21162   7.50798   6.63960
+ 
+use coads_climatology
+let var= sst[y=0,L=10]
+plot var,var[x=@med:3], var[x=@med:6]
+list/x=80w:50w var,var[x=@med:3], var[x=@med:6]
              DATA SET: ./coads_climatology.cdf
              LONGITUDE: 80W to 50W
              LATITUDE: 1S
@@ -53794,6 +54127,10 @@ hello
 55W   / 143:  27.64737  27.64737  27.64737
 53W   / 144:  27.43500  27.64737  27.64120
 51W   / 145:  27.70333  27.43500  27.64737
+ 
+let var= sst[x=180,L=10]
+plot var,var[y=@med:3], var[y=@med:6]
+list/y=-20:0 var,var[y=@med:3], var[y=@med:6]
              DATA SET: ./coads_climatology.cdf
              LATITUDE: 20S to 0
              LONGITUDE: 179E
@@ -53812,6 +54149,11 @@ hello
 5S    / 43:  28.96976  28.96976  28.96976
 3S    / 44:  28.39779  28.39779  28.44243
 1S    / 45:  28.36456  28.39779  28.39779
+ 
+define axis/z=0:1000:20/depth zax
+let var = cos(z[gz=zax]/30) + randu(1+k[gz=zax])
+plot/trans var, var[z=@med:3], var[z=@med:8]
+list/z=1:140 var, var[z=@med:3], var[z=@med:8]
              Z: 1 to 140
  Column  1: VAR is COS(Z[GZ=ZAX]/30) + RANDU(1+K[GZ=ZAX])
  Column  2: VAR[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU(1+K[GZ=ZAX]) (median smoothed by 3 pts on Z)
@@ -53825,6 +54167,37 @@ hello
 100   / 6: -0.785400 -0.157475  0.3281404
 120   / 7:  0.240523  0.240523  0.3281404
 140   / 8:  0.390383  0.390383  0.3903828
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO bn614_bug_fixes
+! bn614_bug_fixes.jnl
+! Fixes that go into v6.14 release
+ 
+GO bn_reset
+cancel mode verify
+GO err611_axislab
+! err611_axislab.jnl
+! Fix bug 1582: Horizontal axis label disappeared
+! if PPL AXLABP moves it to the upper axis
+ 
+plot/set/i=1:100 sin(i/6)
+ppl axlabp,1,-1
+ppl xlab TEMP(C)
+ppl ylab DEPTH
+ppl plot
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err61_360_calendar
+! err61_360_calendar.jnl
+!
+ 
+! This first has always been ok
+define axis/t=28-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 time
+list t[gt=time]
              VARIABLE : T
                         axis TIME
              SUBSET   : 6 points (TIME)
@@ -53835,19 +54208,88 @@ hello
  04-MAR-1909 00 / 4:  63.00000
  06-MAR-1909 00 / 5:  65.00000
  08-MAR-1909 00 / 6:  67.00000
+ 
+! Should be able to specify 30-feb-1909 for a 360-day calendar but it
+! resulted in an error
+define axis/t=30-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 time
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err611_exit_if.jnl
+! err611_exit_if.jnl
+!
+! Bug 1587
+! This only in v6.11 GFDL release bug
+! Fixed in xeq_exit.F
+ 
+yes? sp echo if 1 then > a.jnl
+yes? sp echo exit/script >> a.jnl
+yes? sp echo endif >> a.jnl
+yes? sp echo go a > b.jnl
+yes? sp echo say hello >> b.jnl
+yes? go b  !the following fails to say "hello"
+go a
+if 1 then
+exit/script
+say hello
 hello
+go a
+if 1 then
+exit/script
+if 1 then
+exit/script
+ 
+GO bn_reset
+cancel mode verify
+GO err611_save_irreg.jnl
+! err611_save_irreg.jnl
+!
+! bug1588
+ 
+def axis/t time = {0,1,3}
+let a = t[gt=time]
+save/clob/file=a.nc a
+can var a
+can dat/all
+use a.nc
+save/clob/file=b.nc a
+let b = a
+list b
              VARIABLE : A
              FILENAME : a.nc
              SUBSET   : 3 points (T)
  0   / 1:  0.000000
  1   / 2:  1.000000
  3   / 3:  3.000000
+save/clob/file=b.nc b
+ 
+GO bn_reset
+cancel mode verify
+GO err611_wrong_fineaxis_range
+! err611_wrong_fineaxis_range.jnl
+! Bug 1594
+ 
+! (bug was on 64-bit machine only)
+! 7200-point axis in longitude. The coordinates run from -179.725 to 179.725,
+! delta 0.05.  If we give a range in x of -180:180 this is returned as index
+! 1:1  not 1:7200.  If we give a range of x=0:360 the correct range is used.
+ 
+! File saved from
+!use/order=xytz "http://apdrc.soest.hawaii.edu/dods/public_data/satellite_product/GHRSST/ghrsst_global"
+! save/clobber/file=fine_x_axis.nc sst[i=1:7200,y=0,L=1]
+ 
+use fine_x_axis
+sh grid sst
     GRID GPY1
  name       axis              # pts   start                end
  LON       LONGITUDE         7200mr   179.98W(-179.98)     179.98E
  LAT1800_1800 LATITUDE          1 r   0.025S               0.025S
  ENS       Z (count)            1 r   1                    1
  TIME11    TIME                 1 r   01-APR-2006 00:00    01-APR-2006 00:00
+ 
+! This first was wrong, returned data at x=-180
+list/x=180 sst
              VARIABLE : sea surface temperature [degc]
              FILENAME : fine_x_axis.nc
              LONGITUDE: 180E
@@ -53855,6 +54297,8 @@ hello
              Z (count): 1
              TIME     : APR-2006
           27.53000
+ 
+list/i=7200 sst
              VARIABLE : sea surface temperature [degc]
              FILENAME : fine_x_axis.nc
              LONGITUDE: 180E
@@ -53862,6 +54306,7 @@ hello
              Z (count): 1
              TIME     : APR-2006
           27.53000
+list/x=-180 sst
              VARIABLE : sea surface temperature [degc]
              FILENAME : fine_x_axis.nc
              LONGITUDE: 180W(-180)
@@ -53869,6 +54314,7 @@ hello
              Z (count): 1
              TIME     : APR-2006
           27.50000
+list/i=1 sst
              VARIABLE : sea surface temperature [degc]
              FILENAME : fine_x_axis.nc
              LONGITUDE: 180W(-180)
@@ -53876,14 +54322,1375 @@ hello
              Z (count): 1
              TIME     : APR-2006
           27.50000
+ 
+! This gave a range in x of no points, so size was 1 should be 7200
+let the_plot_var = sst[x=-180:180]
+say `the_plot_var,return=size`
+ !-> MESSAGE/CONTINUE 7200
 7200
+ 
+let the_plot_var = sst[x=0:360]
+say `the_plot_var,return=size`
+ !-> MESSAGE/CONTINUE 7200
 7200
+ 
+GO bn_reset
+cancel mode verify
+GO err611_digit_filename
+! err611_digit_filename.jnl
+! Under linux, FILE command fails if filename
+! starts with digit(s)
+ 
+! bug 287 (never had a benchmark test)
+ 
+REPEAT/RANGE=1:12:2/NAME=m \
+  (LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=`m`a.dat i; \
+   FILE/VAR="a`m`" `m`a.dat; LIST a`m`)
+!-> REPEAT: M:1
+ !-> LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=1a.dat i
+ !-> SET DATA/EZ/VAR="a1" 1a.dat
+ !-> LIST a1
+             VARIABLE : A1
+             FILENAME : 1a.dat
+             SUBSET   : 3 points (X)
+ 1   / 1:  1.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+!-> REPEAT: M:3
+ !-> LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=3a.dat i
+ !-> SET DATA/EZ/VAR="a3" 3a.dat
+ !-> LIST a3
+             VARIABLE : A3
+             FILENAME : 3a.dat
+             SUBSET   : 3 points (X)
+ 1   / 1:  1.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+!-> REPEAT: M:5
+ !-> LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=5a.dat i
+ !-> SET DATA/EZ/VAR="a5" 5a.dat
+ !-> LIST a5
+             VARIABLE : A5
+             FILENAME : 5a.dat
+             SUBSET   : 3 points (X)
+ 1   / 1:  1.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+!-> REPEAT: M:7
+ !-> LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=7a.dat i
+ !-> SET DATA/EZ/VAR="a7" 7a.dat
+ !-> LIST a7
+             VARIABLE : A7
+             FILENAME : 7a.dat
+             SUBSET   : 3 points (X)
+ 1   / 1:  1.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+!-> REPEAT: M:9
+ !-> LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=9a.dat i
+ !-> SET DATA/EZ/VAR="a9" 9a.dat
+ !-> LIST a9
+             VARIABLE : A9
+             FILENAME : 9a.dat
+             SUBSET   : 3 points (X)
+ 1   / 1:  1.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+!-> REPEAT: M:11
+ !-> LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=11a.dat i
+ !-> SET DATA/EZ/VAR="a11" 11a.dat
+ !-> LIST a11
+             VARIABLE : A11
+             FILENAME : 11a.dat
+             SUBSET   : 3 points (X)
+ 1   / 1:  1.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+SHOW DATA
+     currently SET data sets:
+    1> ./1a.dat
+ name     title                             I         J         K         L
+ A1       A1                               1:3       ...       ...       ...
+ 
+    2> ./3a.dat
+ name     title                             I         J         K         L
+ A3       A3                               1:3       ...       ...       ...
+ 
+    3> ./5a.dat
+ name     title                             I         J         K         L
+ A5       A5                               1:3       ...       ...       ...
+ 
+    4> ./7a.dat
+ name     title                             I         J         K         L
+ A7       A7                               1:3       ...       ...       ...
+ 
+    5> ./9a.dat
+ name     title                             I         J         K         L
+ A9       A9                               1:3       ...       ...       ...
+ 
+    6> ./11a.dat  (default)
+ name     title                             I         J         K         L
+ A11      A11                              1:3       ...       ...       ...
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err611_parse_semicolon
+! err611_parse_semicolon.jnl
+! Bug 1608. The first time it was issued, the first command
+! below was split into two at the ;
+! Test this and some other combinations
+ 
+say "c ; d"
+c ; d
+say "c //d"
+c //d
+say "c (d"
+c (d
+say "c (d"; say "a ; b"
+"c (d"; say "a ; b"
+say "c (d; say a ; b"
+c (d; say a ; b
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO err611_ov_ax
+! err611_ov_ax.jnl
+!
+! bug 1609
+!
+! in the two lower panels, the plot/over/ax=0,0,0,0
+! messes up the ppl axlabp setting in the last command
+!
+ 
+can v
+set v ul; ppl axlabp -1 -1; plot/nolab {-1,1,6}
+plot/ov/vs/nolab/line=2 {1,2,2,1},{0,0,3,0}
+set v ur; ppl axlabp 0 0; plot/nolab {-1,1,6}
+ 
+set v ll; ppl axlabp -1 -1; plot/nolab {-1,1,6}
+plot/ov/vs/nolab/line=2/ax=0,0,0,0 {1,2,2,1},{0,0,3,0}
+set v lr; ppl axlabp 0 0; plot/nolab {-1,1,6}
+ 
+GO bn_reset
+cancel mode verify
+GO err611_context_after_error
+! err611_context_after_error.jnl
+! ACM 11/12/08
+!
+! Bug 1421 - goes back even to older versions of Ferret e.g. 5.41 on stout
+! Context errors after
+!
+!    list a_regrid[d=1,gt=b[d=2]@mod]
+!    ...
+!    cancel data/all
+!
+! if the list command is issued before the variable a_regrid is defined.
+ 
+ 
+SET MODE ignore_error
+USE bug1421_a
+USE bug1421_b
+ 
+SHOW DATA
+     currently SET data sets:
+    1> ./bug1421_a.nc
+ name     title                             I         J         K         L
+ A        zonal wind stress                1:1       1:1       ...       1:20
+ 
+    2> ./bug1421_b.nc  (default)
+ name     title                             I         J         K         L
+ B        T[GT=MON_IRREG_NLP]              ...       ...       ...       1:12
+ 
+SHOW AXIS/ALL
+ name       axis              # pts   start                end
+ PSXT      LONGITUDE          160mr   130.5E               70.5W
+ PSXU      LONGITUDE          160mr   131E                 70W
+ PSYT      Y (SECONDS)        100 i   -28.836              48.568
+ PSYU      LATITUDE           100 i   27.672S              50N
+ PSZT      Z (ZORRO)           27 i-  5                    3824
+ PSZW      DEPTH (m)           27 i-  10                   4149
+ ABSTRACT                 9999999 r   1                     9999999
+ EZ                         20480 r   1                    20480
+ XEVEN     X                   10 r   2                    20
+ XODD      X                   10 r   1                    19
+ YEVEN     Y                   10 r   2                    20
+ YODD      Y                   10 r   1                    19
+ ZEVEN     Z                   10 r   2                    20
+ ZODD      Z                   10 r   1                    19
+ TEVEN     TIME                10 r   03-JAN-1980 00:00    21-JAN-1980 00:00
+ TODD      TIME                10 r   02-JAN-1980 00:00    20-JAN-1980 00:00
+ XCOARSE   LONGITUDE           10mr   5.5E                 95.5E
+ YIR       Y                    3 i   12                   50
+ YCOARSE   LATITUDE            10 r   5.5N                 95.5N
+ XAX_SUBSPAN X                  6mr   41                   46
+ YFINE     LATITUDE             6 i   19.7N                19.702N
+ TAX48     TIME               367 r   01-JAN-1980 00:00    02-JAN-1982 00:00
+ XEZ1      X                    3 r   1                    3
+ XEZ2      X                    1 r   1                    1
+ YEZ       Y                    3 r   1                    3
+ ZEZ       Z                    2 r   1                    2
+ XEZ3      X                    8 r   1                    8
+ LON_FIELD_J_AXIS Y             2 r   50                   65
+ LAT_FIELD_I_AXIS X            17 r   50                   66
+ LAT_FIELD_J_AXIS Y             2 r   160                  200
+ XIRREG_SUBSPAN X               6mi   41                   46
+ LON_FIELD_I_AXIS X             7 r   160                  208
+ XIRREG    X                   10 i   1                    8281
+ TCENTURY  TIME             39448 r   01-JAN-1902 00:00    01-JAN-2010 00:00
+ TAX5DAY   TIME               159 r   15-JAN-1982 00:00    15-MAR-1984 00:00
+ XAX10     LONGITUDE           19mr   120E                 60W
+ TAX_SUBSPAN TIME               5mr   16-JAN 00:00         15-MAY 00:00
+ TIRREG_SUBSPAN TIME            5mi   16-JAN 12:00         15-MAY 05:57
+ T1980S    TIME               120 r   15-JAN-1981 00:00    15-DEC-1990 00:00
+ XTEST     X                   21 r   -10                  10
+ YTEST     Y                   21 r   -10                  10
+ X1        X                    6 r   1                    6
+ ZIRR      DEPTH (m)            4 i-  0                    70
+ X5        X                    5 r   1                    5
+ TAX1      TIME              1188 r   16-JAN-0001 00:00    16-DEC-0099 00:01
+ ZLOG      Z                   10 i   2.7183               22026
+ Z1        Z                    3 r   1                    3
+ Z2        Z                    2 r   1                    3
+ HOPE_MONTH TIME               11 r   16-JUL-1966 00:00    16-MAY-1967 08:51
+ DAYT      T                 4998 r   1                    4998
+ YQ        Y                   46 r   -90                  90
+ Y2        Y                    3 r   1                    5
+ X3        X                    3 r   1                    3
+ X4        X                    4 r   1                    4
+ XPROJ120  X                  120 r   -1                   1
+ YPROJ120  Y                  120 r   -1                   1
+ Y5        Y                    5 r   1                    5
+ Y10       Y                  201 r   0                    10
+ OBJ_YAX   Y                   46 r   1                    10
+ XAXJ      X                    1 r   1                    1
+ OBJ_XAX   X                   46 r   1                    10
+ 'COADSX.ILLEGAL' LONGITUD     21mr   21E                  61E
+ TIME1     T                    6 r   1                    6
+ TIME2     TIME                 3 i   16-JAN-1900 06:00    17-MAY-1900 23:56
+ DLOG      Z                   20 i-  2.7183               4.8517E+08
+ DDLOG     X                   10 i   0.00012341           1
+ Y3AX      Y                    3 r   1                    3
+ TAX2      TIME              1188 r   16-JAN-0001 00:00    16-DEC-0099 00:01
+ TT        TIME                 2 r   07-FEB-0599 00:00    07-FEB-0600 05:49
+ X_AX      X                    3 r   211                  216.2
+ TDAYS     TIME               733 r   01-JAN-1988 00:00    01-JAN-1990 00:00
+ XAXSHIFT  LONGITUDE          360mr   180E(-180)           179E
+ XFINE     LONGITUDE            5mi   155.1W(204.9)        155.1W(204.9)
+ XQ        X                   73 r   0                    360
+ LAYER_BETWEEN_TWO_PRESSUR      3 i CE0                    5
+ TIME      T                    3 i   0                    3
+ TJUL      TIME                12 i   16-JAN-1997 12:00    16-DEC-1997 12:00
+ AAX       X                   20 r   1                    20
+ 'COADSY.ILLEGAL' LATITUDE     16 r   35N                  65N
+ XFULL     LONGITUDE            4 r   180E(-180)           0E(360)
+ XAX       X                    4 i   1.5                  8.5
+ TNOLEAP   TIME              1826 r   01-JAN-2000 00:00    01-JAN-2005 00:00
+ TGREG     TIME              1828 r   01-JAN-2000 00:00    01-JAN-2005 00:00
+ TAX       T                   25 r   0                    100
+ ZAX2      Z                   13 i   10                   2849
+ X2AX      X                    2mr   1                    2
+ Z4AX      Z                    4 r   1                    4
+ T2AX      T                    2 r   1                    2
+ XIRR      LONGITUDE           13mi   0E                   24E
+ YFULL     LATITUDE             3 r   90S                  90N
+ XIR       X                    3 i   1                    6
+ MON_IRREG_NLP TIME            12mi   16-JAN 12:00         16-DEC 12:00
+ YAX       Y                  100 r   0.000001             0.000002
+ TIME9     TIME                 3 r   31-JAN-0001 10:29    02-APR-0001 07:27
+ ZAX       Z                   51 r-  0                    1000
+ YIRR      LATITUDE            13 i   0                    18N
+ Y4        Y                    4 r   0.1                  0.4
+ Z4        Z                    4 r   0.01                 0.04
+ T4        T                    4 r   0.001                0.004
+ XCHANNEL  X (KM)              11 r   -50                  50
+ YRISE     Y (KM)               7 r   -30                  30
+ ZLAYER    Z (LAYER)            6 r-  1                    11
+ TSUB      TIME                 3mr   30-SEP 20:00         01-JUN 04:00
+ XSUB      LONGITUDE           16mr   130E                 80W
+ TIMENOLEAP TIME              731 r   01-JAN-2000 00:00    01-JAN-2002 00:00
+ YAXIS     LATITUDE            61 r   60S                  60N
+ ZAXIS_ORIG Z                   5 r   10                   50
+ ZAXIS_DES Z                    9 r   345                  353
+ TCAL      TIME                24 r   15-JAN-1951 00:00    15-DEC-1952 00:00
+ XTROP     LONGITUDE          151mr   130E                 80W
+ YTROP     LATITUDE            41 r   20S                  20N
+ Y1        Y                    4 r   1                    4
+ X2        X                    4 r   1                    7
+ JMONTHS   TIME                13mr   01-JAN 00:00         31-DEC 06:00
+ MONTHT    TIME                24 r   16-JAN-1949 00:00    17-DEC-1950 01:30
+ X10       X                  201 r   0                    10
+ TIME6     TIME                20 r   01-JAN-1990 00:00    20-JAN-1990 00:00
+ TIME8     TIME                 1 r   01-JAN-2004 00:00    01-JAN-2004 00:00
+ MON_IRREG_NLP1 TIME           12mi   16-JAN 12:00         16-DEC 12:00
+ LON88_88  LONGITUDE            1mr   141.25W              141.25W
+ LAT45_45  LATITUDE             1 r   1.011S               1.011S
+ TIME11    TIME                20 i   01-FEB-0001 00:00    01-SEP-0002 00:00
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ (AX050)   LATITUDE            18 r   85S                  85N
+ (AX052)   LONGITUDE           90mr   21E                  17E(377)
+ LON1_15   LONGITUDE           15mi   148.95E              149.54E
+ LAT1_1    LATITUDE             1 r   45.143S              45.143S
+ TIME7     TIME                 1 r   31-DEC-2003 12:00    31-DEC-2003 12:00
+ L                              3 r   8                    10
+ DAYT1     TIME                10 r   01-JAN-1990 00:00    10-JAN-1990 00:00
+ XAX1_4    X                    4 r   1                    4
+ YAX1_3    Y                    3 r   1                    3
+ ZAX1_2    Z                    2 r   1                    2
+ TAX1_1    T                    1 r   1                    1
+ XAX1_9    X                    9 r   1                    9
+ YAX1_8    Y                    8 r   1                    8
+ ZAX1_7    Z                    7 r   1                    7
+ TAX1_6    T                    6 r   1                    6
+ XAX1_40   X                   40 r   1                    40
+ YAX1_30   Y                   30 r   1                    30
+ ZAX1_20   Z                   20 r   1                    20
+ TAX1_10   T                   10 r   1                    10
+ XUNEVEN   X                   10 i   0                    1
+ YUNEVEN   Y                    8 i   0                    1.8062
+ ZAX1_6    Z                    6 r   1                    6
+ TAX1_4    T                    4 r   1                    4
+ XLON      LONGITUDE           40mr   141E                 180E
+ YLAT      LATITUDE            30 r   1N                   30N
+ TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00
+ TIME3     TIME                 2mr   16-JAN 06:00         15-FEB 16:29
+ MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
+ MONTH_REG TIME                12mr   16-JAN 06:00         16-DEC 01:20
+ SEASONAL_REG TIME              4mr   15-FEB 15:43         15-NOV 14:05
+ LON_TRUE  LONGITUDE            5mr   1.875W(-1.875)       13.125E
+ LON_MODERR (meters)            5 r   0                    15
+ LON_FALSE LONGITUDE            5 r   1.875W(-1.875)       13.125E
+ LON_MOD_NOUNITS                5mr   0                    15
+ LON_USUAL LONGITUDE            5mr   0E                   15E
+ TIME_TRUE T (days)             4mi   30                   150
+ TIME_MODERR T (meters)         4 i   30                   150
+ TIME_FALSE T (days)            4 r   120                  150
+ TIME_MOD_NOUNITS T             4mr   120                  150
+ TIME_USUAL T (days)            4mr   120                  150
+ (AX020)   LATITUDE           401 r   20S                  20N
+ XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
+ YAXLEVITR1_90 LATITUDE        90 r   89.5S                0.5S
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
+ TIME4     TIME                 3mr   16-JAN-1980 06:00    17-MAR-1980 02:58
+ TIME5     TIME                 2mr   16-MAY 23:56         16-JUN 10:25
+ COADSX    LONGITUDE          180mr   21E                  19E(379)
+ COADSY    LATITUDE            90 r   89S                  89N
+ 
+DEF AXIS/T/UNITS="days"/T0="1-jan-0001"/cal=noleap tnew = tboxlo[GT=a[D=1]]
+LIST a_regrid[D=1,GT=b[D=2]@MOD]
+LET a_regrid = a[D=1,GT=tnew@ASN]
+LIST a_regrid[D=1,GT=b[D=2]@MOD]
+             VARIABLE : A[D=bug1421_a,GT=TNEW@ASN]
+                        regrid: on T@MOD
+             SUBSET   : 12 points (TIME)
+             CALENDAR : NOLEAP
+             LONGITUDE: 141.2W
+             LATITUDE : 1.011S
+                          141.2W   
+                            1
+ 16-JAN 12      /  1:  0.05848069
+ 15-FEB 00      /  2:  0.05188299
+ 16-MAR 12      /  3:  0.04782573
+ 16-APR 00      /  4:  0.03808422
+ 16-MAY 12      /  5:  0.05937929
+ 16-JUN 00      /  6:  0.06571895
+ 16-JUL 12      /  7:  0.06152720
+ 16-AUG 12      /  8:  0.07460730
+ 16-SEP 00      /  9:  0.05815475
+ 16-OCT 12      / 10:  0.06169292
+ 16-NOV 00      / 11:  0.05654943
+ 16-DEC 12      / 12:  0.05768678
+ 
+CANCEL DATA/ALL
+SHOW AXIS/ALL
+ name       axis              # pts   start                end
+ PSXT      LONGITUDE          160mr   130.5E               70.5W
+ PSXU      LONGITUDE          160mr   131E                 70W
+ PSYT      Y (SECONDS)        100 i   -28.836              48.568
+ PSYU      LATITUDE           100 i   27.672S              50N
+ PSZT      Z (ZORRO)           27 i-  5                    3824
+ PSZW      DEPTH (m)           27 i-  10                   4149
+ ABSTRACT                 9999999 r   1                     9999999
+ EZ                         20480 r   1                    20480
+ XEVEN     X                   10 r   2                    20
+ XODD      X                   10 r   1                    19
+ YEVEN     Y                   10 r   2                    20
+ YODD      Y                   10 r   1                    19
+ ZEVEN     Z                   10 r   2                    20
+ ZODD      Z                   10 r   1                    19
+ TEVEN     TIME                10 r   03-JAN-1980 00:00    21-JAN-1980 00:00
+ TODD      TIME                10 r   02-JAN-1980 00:00    20-JAN-1980 00:00
+ XCOARSE   LONGITUDE           10mr   5.5E                 95.5E
+ YIR       Y                    3 i   12                   50
+ YCOARSE   LATITUDE            10 r   5.5N                 95.5N
+ XAX_SUBSPAN X                  6mr   41                   46
+ YFINE     LATITUDE             6 i   19.7N                19.702N
+ TAX48     TIME               367 r   01-JAN-1980 00:00    02-JAN-1982 00:00
+ XEZ1      X                    3 r   1                    3
+ XEZ2      X                    1 r   1                    1
+ YEZ       Y                    3 r   1                    3
+ ZEZ       Z                    2 r   1                    2
+ XEZ3      X                    8 r   1                    8
+ LON_FIELD_J_AXIS Y             2 r   50                   65
+ LAT_FIELD_I_AXIS X            17 r   50                   66
+ LAT_FIELD_J_AXIS Y             2 r   160                  200
+ XIRREG_SUBSPAN X               6mi   41                   46
+ LON_FIELD_I_AXIS X             7 r   160                  208
+ XIRREG    X                   10 i   1                    8281
+ TCENTURY  TIME             39448 r   01-JAN-1902 00:00    01-JAN-2010 00:00
+ TAX5DAY   TIME               159 r   15-JAN-1982 00:00    15-MAR-1984 00:00
+ XAX10     LONGITUDE           19mr   120E                 60W
+ TAX_SUBSPAN TIME               5mr   16-JAN 00:00         15-MAY 00:00
+ TIRREG_SUBSPAN TIME            5mi   16-JAN 12:00         15-MAY 05:57
+ T1980S    TIME               120 r   15-JAN-1981 00:00    15-DEC-1990 00:00
+ XTEST     X                   21 r   -10                  10
+ YTEST     Y                   21 r   -10                  10
+ X1        X                    6 r   1                    6
+ ZIRR      DEPTH (m)            4 i-  0                    70
+ X5        X                    5 r   1                    5
+ TAX1      TIME              1188 r   16-JAN-0001 00:00    16-DEC-0099 00:01
+ ZLOG      Z                   10 i   2.7183               22026
+ Z1        Z                    3 r   1                    3
+ Z2        Z                    2 r   1                    3
+ HOPE_MONTH TIME               11 r   16-JUL-1966 00:00    16-MAY-1967 08:51
+ DAYT      T                 4998 r   1                    4998
+ YQ        Y                   46 r   -90                  90
+ Y2        Y                    3 r   1                    5
+ X3        X                    3 r   1                    3
+ X4        X                    4 r   1                    4
+ XPROJ120  X                  120 r   -1                   1
+ YPROJ120  Y                  120 r   -1                   1
+ Y5        Y                    5 r   1                    5
+ Y10       Y                  201 r   0                    10
+ OBJ_YAX   Y                   46 r   1                    10
+ XAXJ      X                    1 r   1                    1
+ OBJ_XAX   X                   46 r   1                    10
+ 'COADSX.ILLEGAL' LONGITUD     21mr   21E                  61E
+ TIME1     T                    6 r   1                    6
+ TIME2     TIME                 3 i   16-JAN-1900 06:00    17-MAY-1900 23:56
+ DLOG      Z                   20 i-  2.7183               4.8517E+08
+ DDLOG     X                   10 i   0.00012341           1
+ Y3AX      Y                    3 r   1                    3
+ TAX2      TIME              1188 r   16-JAN-0001 00:00    16-DEC-0099 00:01
+ TT        TIME                 2 r   07-FEB-0599 00:00    07-FEB-0600 05:49
+ X_AX      X                    3 r   211                  216.2
+ TDAYS     TIME               733 r   01-JAN-1988 00:00    01-JAN-1990 00:00
+ XAXSHIFT  LONGITUDE          360mr   180E(-180)           179E
+ XFINE     LONGITUDE            5mi   155.1W(204.9)        155.1W(204.9)
+ XQ        X                   73 r   0                    360
+ LAYER_BETWEEN_TWO_PRESSUR      3 i CE0                    5
+ TIME      T                    3 i   0                    3
+ TJUL      TIME                12 i   16-JAN-1997 12:00    16-DEC-1997 12:00
+ AAX       X                   20 r   1                    20
+ 'COADSY.ILLEGAL' LATITUDE     16 r   35N                  65N
+ XFULL     LONGITUDE            4 r   180E(-180)           0E(360)
+ XAX       X                    4 i   1.5                  8.5
+ TNOLEAP   TIME              1826 r   01-JAN-2000 00:00    01-JAN-2005 00:00
+ TGREG     TIME              1828 r   01-JAN-2000 00:00    01-JAN-2005 00:00
+ TAX       T                   25 r   0                    100
+ ZAX2      Z                   13 i   10                   2849
+ X2AX      X                    2mr   1                    2
+ Z4AX      Z                    4 r   1                    4
+ T2AX      T                    2 r   1                    2
+ XIRR      LONGITUDE           13mi   0E                   24E
+ YFULL     LATITUDE             3 r   90S                  90N
+ XIR       X                    3 i   1                    6
+ MON_IRREG_NLP TIME            12mi   16-JAN 12:00         16-DEC 12:00
+ YAX       Y                  100 r   0.000001             0.000002
+ TIME9     TIME                 3 r   31-JAN-0001 10:29    02-APR-0001 07:27
+ ZAX       Z                   51 r-  0                    1000
+ YIRR      LATITUDE            13 i   0                    18N
+ Y4        Y                    4 r   0.1                  0.4
+ Z4        Z                    4 r   0.01                 0.04
+ T4        T                    4 r   0.001                0.004
+ XCHANNEL  X (KM)              11 r   -50                  50
+ YRISE     Y (KM)               7 r   -30                  30
+ ZLAYER    Z (LAYER)            6 r-  1                    11
+ TSUB      TIME                 3mr   30-SEP 20:00         01-JUN 04:00
+ XSUB      LONGITUDE           16mr   130E                 80W
+ TIMENOLEAP TIME              731 r   01-JAN-2000 00:00    01-JAN-2002 00:00
+ YAXIS     LATITUDE            61 r   60S                  60N
+ ZAXIS_ORIG Z                   5 r   10                   50
+ ZAXIS_DES Z                    9 r   345                  353
+ TNEW      TIME                20 i   18-JAN-0001 00:00    16-AUG-0002 12:00
+ TCAL      TIME                24 r   15-JAN-1951 00:00    15-DEC-1952 00:00
+ XTROP     LONGITUDE          151mr   130E                 80W
+ YTROP     LATITUDE            41 r   20S                  20N
+ Y1        Y                    4 r   1                    4
+ X2        X                    4 r   1                    7
+ JMONTHS   TIME                13mr   01-JAN 00:00         31-DEC 06:00
+ MONTHT    TIME                24 r   16-JAN-1949 00:00    17-DEC-1950 01:30
+ X10       X                  201 r   0                    10
+ TIME6     TIME                20 r   01-JAN-1990 00:00    20-JAN-1990 00:00
+ TIME8     TIME                 1 r   01-JAN-2004 00:00    01-JAN-2004 00:00
+ TIME10    TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ (AX050)   LATITUDE            18 r   85S                  85N
+ (AX052)   LONGITUDE           90mr   21E                  17E(377)
+ LON1_15   LONGITUDE           15mi   148.95E              149.54E
+ LAT1_1    LATITUDE             1 r   45.143S              45.143S
+ TIME7     TIME                 1 r   31-DEC-2003 12:00    31-DEC-2003 12:00
+ L                              3 r   8                    10
+ DAYT1     TIME                10 r   01-JAN-1990 00:00    10-JAN-1990 00:00
+ XAX1_4    X                    4 r   1                    4
+ YAX1_3    Y                    3 r   1                    3
+ ZAX1_2    Z                    2 r   1                    2
+ TAX1_1    T                    1 r   1                    1
+ XAX1_9    X                    9 r   1                    9
+ YAX1_8    Y                    8 r   1                    8
+ ZAX1_7    Z                    7 r   1                    7
+ TAX1_6    T                    6 r   1                    6
+ XAX1_40   X                   40 r   1                    40
+ YAX1_30   Y                   30 r   1                    30
+ ZAX1_20   Z                   20 r   1                    20
+ TAX1_10   T                   10 r   1                    10
+ XUNEVEN   X                   10 i   0                    1
+ YUNEVEN   Y                    8 i   0                    1.8062
+ ZAX1_6    Z                    6 r   1                    6
+ TAX1_4    T                    4 r   1                    4
+ XLON      LONGITUDE           40mr   141E                 180E
+ YLAT      LATITUDE            30 r   1N                   30N
+ TTIME     TIME                20 r   01-JAN-1995 00:00    20-JAN-1995 00:00
+ TIME3     TIME                 2mr   16-JAN 06:00         15-FEB 16:29
+ MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
+ MONTH_REG TIME                12mr   16-JAN 06:00         16-DEC 01:20
+ SEASONAL_REG TIME              4mr   15-FEB 15:43         15-NOV 14:05
+ LON_TRUE  LONGITUDE            5mr   1.875W(-1.875)       13.125E
+ LON_MODERR (meters)            5 r   0                    15
+ LON_FALSE LONGITUDE            5 r   1.875W(-1.875)       13.125E
+ LON_MOD_NOUNITS                5mr   0                    15
+ LON_USUAL LONGITUDE            5mr   0E                   15E
+ TIME_TRUE T (days)             4mi   30                   150
+ TIME_MODERR T (meters)         4 i   30                   150
+ TIME_FALSE T (days)            4 r   120                  150
+ TIME_MOD_NOUNITS T             4mr   120                  150
+ TIME_USUAL T (days)            4mr   120                  150
+ (AX020)   LATITUDE           401 r   20S                  20N
+ XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
+ YAXLEVITR1_90 LATITUDE        90 r   89.5S                0.5S
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
+ TIME4     TIME                 3mr   16-JAN-1980 06:00    17-MAR-1980 02:58
+ TIME5     TIME                 2mr   16-MAY 23:56         16-JUN 10:25
+ COADSX    LONGITUDE          180mr   21E                  19E(379)
+ COADSY    LATITUDE            90 r   89S                  89N
+ 
+SET MODE/LAST ignore_error
+ 
+GO bn_reset
+cancel mode verify
+GO err611_isize_gc_fcns
+! err611_isize_gc_fcns.jnl
+! ACM 11/13/2008
+!
+! Testing the fix for bug 1523.  Previously after the SET REGION,
+! the RETURN= always returned a size of 10, the default region size.
+ 
+LET a = {1,2,3,4,5,6}
+ 
+! Should be 6
+SAY `a,RETURN=isize`
+ !-> MESSAGE/CONTINUE 6
+6
+SAY `XSEQUENCE(a),RETURN=isize`
+ !-> MESSAGE/CONTINUE 6
+6
+ 
+SET REGION/X=1:10
+! Should still be 6
+SAY `XSEQUENCE(a),RETURN=isize`
+ !-> MESSAGE/CONTINUE 6
+6
+ 
+! Should be 4
+SAY `XSEQUENCE(a[i=1:4]),RETURN=isize`
+ !-> MESSAGE/CONTINUE 4
+4
+ 
+SAY `XSEQUENCE(a[i=1:4]),RETURN=size`
+ !-> MESSAGE/CONTINUE 4
+4
+ 
+CANCEL REGION
+! Should be 5 then 6
+SAY `XSEQUENCE(a[i=1:5]),RETURN=size`
+ !-> MESSAGE/CONTINUE 5
+5
+SAY `XSEQUENCE(a),RETURN=size`
+ !-> MESSAGE/CONTINUE 6
+6
+ 
+GO bn_reset
+cancel mode verify
+GO err611_return_precision
+! err611_return_precision.jnl
+! 17-Nov-08 ACM
+ 
+! See bug 1611, where say "a`95,p=1`" yielded "a 95" but
+! "a`94,p=1`" yielded "a94"
+ 
+say "a`95,p=1`"
+ !-> MESSAGE/CONTINUE "a95"
+a95
+say "a`94,p=1`"
+ !-> MESSAGE/CONTINUE "a94"
+a94
+say "a`95,p=1`"
+ !-> MESSAGE/CONTINUE "a95"
+a95
+say "a`949,p=1`"
+ !-> MESSAGE/CONTINUE "a949"
+a949
+say "a`950,p=1`"
+ !-> MESSAGE/CONTINUE "a950"
+a950
+ 
+! Note that an immediate expr with prec=0 returns an integer.
+say "a`95,p=0`"
+ !-> MESSAGE/CONTINUE "a95"
+a95
+say "a`94,p=0`"
+ !-> MESSAGE/CONTINUE "a94"
+a94
+say "a`95,p=0`"
+ !-> MESSAGE/CONTINUE "a95"
+a95
+say "a`949,p=0`"
+ !-> MESSAGE/CONTINUE "a949"
+a949
+say "a`950,p=0`"
+ !-> MESSAGE/CONTINUE "a950"
+a950
+ 
+! Tests for non-integers
+! We always return at least one sig digit
+say "a`0.1,p=0`"
+ !-> MESSAGE/CONTINUE "a0.1"
+a0.1
+ 
+say "a`-95,p=1`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+say "a`-95.99,p=1`"
+ !-> MESSAGE/CONTINUE "a-96"
+a-96
+say "a`-95.001,p=1`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+ 
+say "a`-94,p=1`"
+ !-> MESSAGE/CONTINUE "a-94"
+a-94
+say "a`-94.99,p=1`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+say "a`-94.001,p=1`"
+ !-> MESSAGE/CONTINUE "a-94"
+a-94
+ 
+say "a`-95,p=1`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+say "a`-95.99,p=1`"
+ !-> MESSAGE/CONTINUE "a-96"
+a-96
+say "a`-95.001,p=1`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+ 
+say "a`-949,p=1`"
+ !-> MESSAGE/CONTINUE "a-949"
+a-949
+say "a`-949.99,p=1`"
+ !-> MESSAGE/CONTINUE "a-950"
+a-950
+say "a`-949.001,p=1`"
+ !-> MESSAGE/CONTINUE "a-949"
+a-949
+ 
+say "a`-950,p=1`"
+ !-> MESSAGE/CONTINUE "a-950"
+a-950
+say "a`-950.99,p=1`"
+ !-> MESSAGE/CONTINUE "a-951"
+a-951
+say "a`-950.001,p=1`"
+ !-> MESSAGE/CONTINUE "a-950"
+a-950
+ 
+ 
+say "a`-95,p=0`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+say "a`-95.99,p=0`"
+ !-> MESSAGE/CONTINUE "a-96"
+a-96
+say "a`-95.001,p=0`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+ 
+say "a`-94,p=0`"
+ !-> MESSAGE/CONTINUE "a-94"
+a-94
+say "a`-94.99,p=0`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+say "a`-94.001,p=0`"
+ !-> MESSAGE/CONTINUE "a-94"
+a-94
+ 
+say "a`-95,p=0`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+say "a`-95.99,p=0`"
+ !-> MESSAGE/CONTINUE "a-96"
+a-96
+say "a`-95.001,p=0`"
+ !-> MESSAGE/CONTINUE "a-95"
+a-95
+ 
+say "a`-949,p=0`"
+ !-> MESSAGE/CONTINUE "a-949"
+a-949
+say "a`-949.99,p=0`"
+ !-> MESSAGE/CONTINUE "a-950"
+a-950
+say "a`-949.001,p=0`"
+ !-> MESSAGE/CONTINUE "a-949"
+a-949
+ 
+say "a`-950,p=0`"
+ !-> MESSAGE/CONTINUE "a-950"
+a-950
+say "a`-950.99,p=0`"
+ !-> MESSAGE/CONTINUE "a-951"
+a-951
+say "a`-950.001,p=0`"
+ !-> MESSAGE/CONTINUE "a-950"
+a-950
+ 
+! ******** V6.14 Additions below ***********
+GO bn_reset
+cancel mode verify
+GO bn_mode_nodata_lab
+! bn_mode_nodata_lab
+! turns off the No Valid Data label on plots
+! (for line plots this is added to the plot label,
+!  if the mode is SET).
+ 
+SHOW MODE nodata_lab
       MODE            STATE        ARGUMENT
       NODATA_LAB       SET
+ 
+use coads_climatology
+let uwnd = sst
+let vwnd = -1*sst
+ 
+plot/y=50/x=70e:110e/L=1 sst
+shade/y=40:50/x=70e:110e/L=1 sst
+vec/y=40:50/x=70e:110e/L=1 uwnd,vwnd
+contour/y=40:50/x=70e:110e/L=1 vwnd
+contour/fill/y=40:50/x=70e:110e/L=1 vwnd
+ 
+can mode nodata_lab
+plot/y=50/x=70e:110e/L=1 sst
+shade/y=40:50/x=70e:110e/L=1 sst
+vec/y=40:50/x=70e:110e/L=1 uwnd,vwnd
+contour/y=40:50/x=70e:110e/L=1 vwnd
+contour/fill/y=40:50/x=70e:110e/L=1 vwnd
+ 
+set mode/last nodata_lab
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO bn_proleptic_gregorian_calendar
+! proleptic_gregorian_calendar.jnl
+! Allow PROLEPTIC_GREGORIAN as a calendar attribute
+! for the default Ferret calendar.
+ 
+set data proleptic_gregorian.nc
+show data
+     currently SET data sets:
+    1> ./proleptic_gregorian.nc  (default)
+ name     title                             I         J         K         L
+ MY_DATA  SIN(L[GT=TDAYS])                 ...       ...       ...       1:32
+ 
+show axis tdays
+ name       axis              # pts   start                end
+ TDAYS     TIME               733 r   01-JAN-1988 00:00    01-JAN-1990 00:00
+T0 = 15-JAN-1901
+CALENDAR = ALL_LEAP
+   Axis span (to cell edges) = 733
+ 
+GO bn_reset
+cancel mode verify
+GO bn_string_ngd_nbd
+! @NGD and @NBD for strings
+! Bad data is taken to be the null string
+! Compare with results for numeric data
+! *ACM 11/2008
+ 
+let a = {"a","b",,"cd"}
+list a[i=@ngd]
+             VARIABLE : {"a","b",,"cd"} (# of points)
+             X        : 0.5 to 4.5 (number of valid)
+          3.000000
+ 
+let a = {"a","b",,"c",,"d",,,"e","f","g","h"}
+let b = { 3,  3 ,, 3 ,, 3 ,,, 3,  3,  3,  3}
+list a[i=@nbd]
+             VARIABLE : {"a","b",,"c",,"d",,,"e","f","g","h"} (# of points)
+             X        : 0.5 to 12.5 (number flagged bad)
+          4.000000
+list b[i=@nbd]
+             VARIABLE : { 3,  3 ,, 3 ,, 3 ,,, 3,  3,  3,  3} (# of points)
+             X        : 0.5 to 12.5 (number flagged bad)
+          4.000000
+ 
+define axis/x=1:3:1 xax
+define axis/y=1:4:1 yax
+let v = x[gx=xax] + y[gy=yax]
+ 
+let av = reshape (a,v)
+let bv = reshape (b,v)
+list av[i=@ngd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 4 points (Y)
+             X        : 0.5 to 3.5 (number of valid)
+ 1   / 1:  2.000000
+ 2   / 2:  2.000000
+ 3   / 3:  1.000000
+ 4   / 4:  3.000000
+list bv[i=@ngd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 4 points (Y)
+             X        : 0.5 to 3.5 (number of valid)
+ 1   / 1:  2.000000
+ 2   / 2:  2.000000
+ 3   / 3:  1.000000
+ 4   / 4:  3.000000
+list av[j=@ngd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 3 points (X)
+             Y        : 0.5 to 4.5 (number of valid)
+ 1   / 1:  3.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+list bv[j=@ngd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 3 points (X)
+             Y        : 0.5 to 4.5 (number of valid)
+ 1   / 1:  3.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+list av[i=@ngd,j=@ngd]
+             VARIABLE : RESHAPE (A,V)
+             X        : 0.5 to 3.5 (XY # valid)
+             Y        : 0.5 to 4.5 (XY # valid)
+          8.000000
+list bv[i=@ngd,j=@ngd]
+             VARIABLE : RESHAPE (B,V)
+             X        : 0.5 to 3.5 (XY # valid)
+             Y        : 0.5 to 4.5 (XY # valid)
+          8.000000
+ 
+ 
+define axis/x=1:3:1 xax
+define axis/z=1:4:1 zax
+let v = x[gx=xax] + z[gz=zax]
+ 
+let av = reshape (a,v)
+list av[i=@nbd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 4 points (Z)
+             X        : 0.5 to 3.5 (number flagged bad)
+ 1   / 1:  1.000000
+ 2   / 2:  1.000000
+ 3   / 3:  2.000000
+ 4   / 4:  0.000000
+list bv[i=@nbd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 4 points (Z)
+             X        : 0.5 to 3.5 (number flagged bad)
+ 1   / 1:  1.000000
+ 2   / 2:  1.000000
+ 3   / 3:  2.000000
+ 4   / 4:  0.000000
+list av[k=@nbd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 3 points (X)
+             Z        : 0.5 to 4.5 (number flagged bad)
+ 1   / 1:  1.000000
+ 2   / 2:  2.000000
+ 3   / 3:  1.000000
+list bv[k=@nbd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 3 points (X)
+             Z        : 0.5 to 4.5 (number flagged bad)
+ 1   / 1:  1.000000
+ 2   / 2:  2.000000
+ 3   / 3:  1.000000
+list av[i=@nbd,k=@nbd]
+             VARIABLE : RESHAPE (A,V)
+             X        : 0.5 to 3.5 (XZ # bad)
+             Z        : 0.5 to 4.5 (XZ # bad)
+          4.000000
+list bv[i=@nbd,k=@nbd]
+             VARIABLE : RESHAPE (B,V)
+             X        : 0.5 to 3.5 (XZ # bad)
+             Z        : 0.5 to 4.5 (XZ # bad)
+          4.000000
+ 
+define axis/x=1:3:1 xax
+define axis/t=1:4:1 tax
+let v = x[gx=xax] + t[gt=tax]
+ 
+let av = reshape (a,v)
+list av[i=@ngd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 4 points (T)
+             X        : 0.5 to 3.5 (number of valid)
+ 1   / 1:  2.000000
+ 2   / 2:  2.000000
+ 3   / 3:  1.000000
+ 4   / 4:  3.000000
+list bv[i=@ngd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 4 points (T)
+             X        : 0.5 to 3.5 (number of valid)
+ 1   / 1:  2.000000
+ 2   / 2:  2.000000
+ 3   / 3:  1.000000
+ 4   / 4:  3.000000
+list av[L=@ngd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 3 points (X)
+             T        : 0.5 to 4.5 (number of valid)
+ 1   / 1:  3.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+list bv[L=@ngd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 3 points (X)
+             T        : 0.5 to 4.5 (number of valid)
+ 1   / 1:  3.000000
+ 2   / 2:  2.000000
+ 3   / 3:  3.000000
+list av[i=@ngd,L=@ngd]
+             VARIABLE : RESHAPE (A,V)
+             X        : 0.5 to 3.5 (XT # valid)
+             T        : 0.5 to 4.5 (XT # valid)
+          8.000000
+list bv[i=@ngd,L=@ngd]
+             VARIABLE : RESHAPE (B,V)
+             X        : 0.5 to 3.5 (XT # valid)
+             T        : 0.5 to 4.5 (XT # valid)
+          8.000000
+ 
+!4D variable
+let a = {"a","b",,"c",,"d",,,"e","f","g","h","ab","bb",,"cb",,"db",,,"eb","fb","gb","hb"}
+let b = {3,3,,3,,3,,,3,3,3,3,3,3,,3,,3,,,3,3,3,3}
+ 
+define axis/x=1:2:1 xax
+define axis/y=1:2:1 yax
+define axis/z=1:3:1 zax
+define axis/t=1:2:1 tax
+let v = x[gx=xax] + y[gy=yax] + z[gz=zax] + t[gt=tax]
+ 
+let av = reshape (a,v)
+list av[i=@nbd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 2 by 3 by 2 points (Y-Z-T)
+             X        : 0.5 to 2.5 (number flagged bad)
+              1         2      
+               1         2
+ ---- L:1 T:   1
+ 1   / 1:  0.000000  1.000000
+ 2   / 2:  1.000000  2.000000
+ 3   / 3:  0.000000  0.000000
+ ---- L:2 T:   2
+ 1   / 1:  0.000000  1.000000
+ 2   / 2:  1.000000  2.000000
+ 3   / 3:  0.000000  0.000000
+list bv[i=@nbd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 2 by 3 by 2 points (Y-Z-T)
+             X        : 0.5 to 2.5 (number flagged bad)
+              1         2      
+               1         2
+ ---- L:1 T:   1
+ 1   / 1:  0.000000  1.000000
+ 2   / 2:  1.000000  2.000000
+ 3   / 3:  0.000000  0.000000
+ ---- L:2 T:   2
+ 1   / 1:  0.000000  1.000000
+ 2   / 2:  1.000000  2.000000
+ 3   / 3:  0.000000  0.000000
+list av[j=@nbd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 2 by 3 by 2 points (X-Z-T)
+             Y        : 0.5 to 2.5 (number flagged bad)
+              1         2      
+               1         2
+ ---- L:1 T:   1
+ 1   / 1:  1.000000  0.000000
+ 2   / 2:  2.000000  1.000000
+ 3   / 3:  0.000000  0.000000
+ ---- L:2 T:   2
+ 1   / 1:  1.000000  0.000000
+ 2   / 2:  2.000000  1.000000
+ 3   / 3:  0.000000  0.000000
+list bv[j=@nbd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 2 by 3 by 2 points (X-Z-T)
+             Y        : 0.5 to 2.5 (number flagged bad)
+              1         2      
+               1         2
+ ---- L:1 T:   1
+ 1   / 1:  1.000000  0.000000
+ 2   / 2:  2.000000  1.000000
+ 3   / 3:  0.000000  0.000000
+ ---- L:2 T:   2
+ 1   / 1:  1.000000  0.000000
+ 2   / 2:  2.000000  1.000000
+ 3   / 3:  0.000000  0.000000
+list av[k=@ngd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 2 by 2 by 2 points (X-Y-T)
+             Z        : 0.5 to 3.5 (number of valid)
+              1         2      
+               1         2
+ ---- L:1 T:   1
+ 1   / 1:  2.000000  3.000000
+ 2   / 2:  1.000000  2.000000
+ ---- L:2 T:   2
+ 1   / 1:  2.000000  3.000000
+ 2   / 2:  1.000000  2.000000
+list bv[k=@ngd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 2 by 2 by 2 points (X-Y-T)
+             Z        : 0.5 to 3.5 (number of valid)
+              1         2      
+               1         2
+ ---- L:1 T:   1
+ 1   / 1:  2.000000  3.000000
+ 2   / 2:  1.000000  2.000000
+ ---- L:2 T:   2
+ 1   / 1:  2.000000  3.000000
+ 2   / 2:  1.000000  2.000000
+list av[L=@ngd]
+             VARIABLE : RESHAPE (A,V) (# of points)
+             SUBSET   : 2 by 2 by 3 points (X-Y-Z)
+             T        : 0.5 to 2.5 (number of valid)
+              1         2      
+               1         2
+ ---- K:1 Z:   1
+ 1   / 1:  2.000000  2.000000
+ 2   / 2:  0.000000  2.000000
+ ---- K:2 Z:   2
+ 1   / 1:  0.000000  2.000000
+ 2   / 2:  0.000000  0.000000
+ ---- K:3 Z:   3
+ 1   / 1:  2.000000  2.000000
+ 2   / 2:  2.000000  2.000000
+list bv[L=@ngd]
+             VARIABLE : RESHAPE (B,V) (# of points)
+             SUBSET   : 2 by 2 by 3 points (X-Y-Z)
+             T        : 0.5 to 2.5 (number of valid)
+              1         2      
+               1         2
+ ---- K:1 Z:   1
+ 1   / 1:  2.000000  2.000000
+ 2   / 2:  0.000000  2.000000
+ ---- K:2 Z:   2
+ 1   / 1:  0.000000  2.000000
+ 2   / 2:  0.000000  0.000000
+ ---- K:3 Z:   3
+ 1   / 1:  2.000000  2.000000
+ 2   / 2:  2.000000  2.000000
+ 
+list av[i=@nbd,j=@nbd,k=@nbd]
+             VARIABLE : RESHAPE (A,V)
+             SUBSET   : 2 points (T)
+             X        : 0.5 to 2.5 (XYZ # bad)
+             Y        : 0.5 to 2.5 (XYZ # bad)
+             Z        : 0.5 to 3.5 (XYZ # bad)
+ 1   / 1:  4.000000
+ 2   / 2:  4.000000
+list bv[i=@nbd,j=@nbd,k=@nbd]
+             VARIABLE : RESHAPE (B,V)
+             SUBSET   : 2 points (T)
+             X        : 0.5 to 2.5 (XYZ # bad)
+             Y        : 0.5 to 2.5 (XYZ # bad)
+             Z        : 0.5 to 3.5 (XYZ # bad)
+ 1   / 1:  4.000000
+ 2   / 2:  4.000000
+ 
+list bv[i=@ngd,j=@ngd,k=@ngd,L=@ngd]
+             VARIABLE : RESHAPE (B,V)
+             X        : 0.5 to 2.5 (XYZT # valid)
+             Y        : 0.5 to 2.5 (XYZT # valid)
+             Z        : 0.5 to 3.5 (XYZT # valid)
+             T        : 0.5 to 2.5 (XYZT # valid)
+          16.00000
+list av[i=@ngd,j=@ngd,k=@ngd,L=@ngd]
+             VARIABLE : RESHAPE (A,V)
+             X        : 0.5 to 2.5 (XYZT # valid)
+             Y        : 0.5 to 2.5 (XYZT # valid)
+             Z        : 0.5 to 3.5 (XYZT # valid)
+             T        : 0.5 to 2.5 (XYZT # valid)
+          16.00000
+ 
+GO bn_reset
+cancel mode verify
+GO bn_cat_string
+! bn_cat_string.jnl
+! Test concatenation functions for string variables
+! ACM nov 08  See bug 1577
+ 
+let a = xsequence({"Q", "R", "S"})
+let b = xsequence({"U", "V", "W"})
+list xcat(a,b)
+             VARIABLE : XCAT(A,B)
+             SUBSET   : 6 points (X)
+ 1   / 1:"Q"
+ 2   / 2:"R"
+ 3   / 3:"S"
+ 4   / 4:"U"
+ 5   / 5:"V"
+ 6   / 6:"W"
+ 
+! (when xcat is called, and its args are strings,
+!  Ferret actually runs xcat_string)
+let a = xsequence({"Q", "R", "S"})
+let b = xsequence({"U", "V", "W"})
+list xcat_str(a,b)
+             VARIABLE : XCAT_STR(A,B)
+             SUBSET   : 6 points (X)
+ 1   / 1:"Q"
+ 2   / 2:"R"
+ 3   / 3:"S"
+ 4   / 4:"U"
+ 5   / 5:"V"
+ 6   / 6:"W"
+ 
+let a = ysequence({"Q", "R", "S"})
+let b = ysequence({"U", "V", "W"})
+list ycat(a,b)
+             VARIABLE : YCAT(A,B)
+             SUBSET   : 6 points (Y)
+ 1   / 1:"Q"
+ 2   / 2:"R"
+ 3   / 3:"S"
+ 4   / 4:"U"
+ 5   / 5:"V"
+ 6   / 6:"W"
+ 
+let a = zsequence({"Q", "R", "S"})
+let b = zsequence({"U", "V", "W"})
+list zcat(a,b)
+             VARIABLE : ZCAT(A,B)
+             SUBSET   : 6 points (Z)
+ 1   / 1:"Q"
+ 2   / 2:"R"
+ 3   / 3:"S"
+ 4   / 4:"U"
+ 5   / 5:"V"
+ 6   / 6:"W"
+ 
+let a = tsequence({"Q", "R", "S"})
+let b = tsequence({"U", "V", "W"})
+list tcat(a,b)
+             VARIABLE : TCAT(A,B)
+             SUBSET   : 6 points (T)
+ 1   / 1:"Q"
+ 2   / 2:"R"
+ 3   / 3:"S"
+ 4   / 4:"U"
+ 5   / 5:"V"
+ 6   / 6:"W"
+ 
+GO bn_reset
+cancel mode verify
+GO bn_sort_strings
+! bn_sort_strings.jnl
+! 11/08 acm
+ 
+! show func/detail now shows the alternative function for
+! other arg types, if it exists.
+ 
+SHOW FUNC/DETAIL sorti
+SORTI(DAT)
+    Returns indices of data, sorted on the I axis in increasing order
+        Axes of result:
+          X: ABSTRACT (result will occupy indices 1...N)
+          Y: inherited from argument(s)
+          Z: inherited from argument(s)
+          T: inherited from argument(s)
+    DAT: variable to sort in I
+        Influence on output axes:
+          X: no influence (indicate argument limits with "[]")
+          Y: passed to result grid
+          Z: passed to result grid
+          T: passed to result grid
+    Alternative function called for other argument types: SORTI_STR                               
+ 
+ 
+let ai = {"a rat in the house will eat the zucchini", \
+  "a rat in the house will eat the ice cream", \
+  "ze rats in the house will eat the ice cream",\
+  "A rat in the house will eat the ICE CREAM" }
+ 
+let bi = {"AB", "C", "", "aa", "abc", ,"0"}
+ 
+let indx_ai = SORTI_STR(ai)
+list indx_ai, samplei(ai,indx_ai)
+             X: 0.5 to 4.5
+ Column  1: INDX_AI is SORTI_STR(AI)
+ Column  2: EX#2 is SAMPLEI(AI,INDX_AI)
+          INDX_AI            EX#2
+1   / 1:  4.000000 "A rat in the house..."
+2   / 2:  2.000000 "a rat in the house..."
+3   / 3:  1.000000 "a rat in the house..."
+4   / 4:  3.000000 "ze rats in the hou..."
+ 
+let indx_bi = SORTI_STR(bi)
+list indx_bi, samplei(bi,indx_bi)
+             X: 0.5 to 7.5
+ Column  1: INDX_BI is SORTI_STR(BI)
+ Column  2: EX#2 is SAMPLEI(BI,INDX_BI)
+          INDX_BI   EX#2
+1   / 1:  7.000000 "0"  
+2   / 2:  1.000000 "AB" 
+3   / 3:  2.000000 "C"  
+4   / 4:  4.000000 "aa" 
+5   / 5:  5.000000 "abc"
+6   / 6:      .... ""   
+7   / 7:      .... ""   
+ 
+! Calling via SORTI
+let indx_ai = SORTI(ai)
+list indx_ai, samplei(ai,indx_ai)
+             X: 0.5 to 4.5
+ Column  1: INDX_AI is SORTI(AI)
+ Column  2: EX#2 is SAMPLEI(AI,INDX_AI)
+          INDX_AI            EX#2
+1   / 1:  4.000000 "A rat in the house..."
+2   / 2:  2.000000 "a rat in the house..."
+3   / 3:  1.000000 "a rat in the house..."
+4   / 4:  3.000000 "ze rats in the hou..."
+ 
+let indx_bi = SORTI(bi)
+list indx_bi, samplei(bi,indx_bi)
+             X: 0.5 to 7.5
+ Column  1: INDX_BI is SORTI(BI)
+ Column  2: EX#2 is SAMPLEI(BI,INDX_BI)
+          INDX_BI   EX#2
+1   / 1:  7.000000 "0"  
+2   / 2:  1.000000 "AB" 
+3   / 3:  2.000000 "C"  
+4   / 4:  4.000000 "aa" 
+5   / 5:  5.000000 "abc"
+6   / 6:      .... ""   
+7   / 7:      .... ""   
+ 
+ 
+! SORTJ
+let aj = ysequence(ai)
+let bj = ysequence(bi)
+ 
+let indx_aj = SORTJ(aj)
+list indx_aj, samplej(aj,indx_aj)
+             Y: 0.5 to 4.5
+ Column  1: INDX_AJ is SORTJ(AJ)
+ Column  2: EX#2 is SAMPLEJ(AJ,INDX_AJ)
+          INDX_AJ            EX#2
+1   / 1:  4.000000 "A rat in the house..."
+2   / 2:  2.000000 "a rat in the house..."
+3   / 3:  1.000000 "a rat in the house..."
+4   / 4:  3.000000 "ze rats in the hou..."
+ 
+let indx_bj = SORTJ(bj)
+list indx_bj, samplej(bj,indx_bj)
+             Y: 0.5 to 7.5
+ Column  1: INDX_BJ is SORTJ(BJ)
+ Column  2: EX#2 is SAMPLEJ(BJ,INDX_BJ)
+          INDX_BJ   EX#2
+1   / 1:  7.000000 "0"  
+2   / 2:  1.000000 "AB" 
+3   / 3:  2.000000 "C"  
+4   / 4:  4.000000 "aa" 
+5   / 5:  5.000000 "abc"
+6   / 6:      .... ""   
+7   / 7:      .... ""   
+ 
+ 
+! SORTK
+let ak = zsequence(ai)
+let bk = zsequence(bi)
+ 
+let indx_ak = SORTK(ak)
+list indx_ak, samplek(ak,indx_ak)
+             Z: 0.5 to 4.5
+ Column  1: INDX_AK is SORTK(AK)
+ Column  2: EX#2 is SAMPLEK(AK,INDX_AK)
+          INDX_AK            EX#2
+1   / 1:  4.000000 "A rat in the house..."
+2   / 2:  2.000000 "a rat in the house..."
+3   / 3:  1.000000 "a rat in the house..."
+4   / 4:  3.000000 "ze rats in the hou..."
+ 
+let indx_bk = SORTK(bk)
+list indx_bk, samplek(bk,indx_bk)
+             Z: 0.5 to 7.5
+ Column  1: INDX_BK is SORTK(BK)
+ Column  2: EX#2 is SAMPLEK(BK,INDX_BK)
+          INDX_BK   EX#2
+1   / 1:  7.000000 "0"  
+2   / 2:  1.000000 "AB" 
+3   / 3:  2.000000 "C"  
+4   / 4:  4.000000 "aa" 
+5   / 5:  5.000000 "abc"
+6   / 6:      .... ""   
+7   / 7:      .... ""   
+ 
+ 
+! SORTL
+let al = tsequence(ai)
+let bl = tsequence(bi)
+ 
+let indx_al = SORTL(al)
+list indx_al, samplel(al,indx_al)
+             T: 0.5 to 4.5
+ Column  1: INDX_AL is SORTL(AL)
+ Column  2: EX#2 is SAMPLEL(AL,INDX_AL)
+          INDX_AL            EX#2
+1   / 1:  4.000000 "A rat in the house..."
+2   / 2:  2.000000 "a rat in the house..."
+3   / 3:  1.000000 "a rat in the house..."
+4   / 4:  3.000000 "ze rats in the hou..."
+ 
+let indx_bl = SORTL(bl)
+list indx_bl, samplel(bl,indx_bl)
+             T: 0.5 to 7.5
+ Column  1: INDX_BL is SORTL(BL)
+ Column  2: EX#2 is SAMPLEL(BL,INDX_BL)
+          INDX_BL   EX#2
+1   / 1:  7.000000 "0"  
+2   / 2:  1.000000 "AB" 
+3   / 3:  2.000000 "C"  
+4   / 4:  4.000000 "aa" 
+5   / 5:  5.000000 "abc"
+6   / 6:      .... ""   
+7   / 7:      .... ""   
+ 
+ 
+! version 2.3 requires exit/command *sh* 3/92
+exit/command
  	NOAA/PMEL TMAP
- 	FERRET v6.14 (beta)
- 	Linux(g77) 2.4.21-32 - 10/15/08
- 	15-Oct-08 14:54     
+ 	FERRET v6.16 (beta)
+ 	Linux(g77) 2.4.21-32 - 11/24/08
+ 	24-Nov-08 14:13     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -54594,8 +56401,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  10   / 10:  -5.00
  11   / 11:  -4.00
  12   / 12:  -3.00
- 13-rw-rw-r--    1 ansley   tmap        29712 Oct 15 14:54 testa.v5d
--rw-rw-r--    1 ansley   tmap        29712 Oct 15 14:54 test.v5d
+ 13-rw-rw-r--    1 ansley   tmap        29712 Nov 24 14:13 testa.v5d
+-rw-rw-r--    1 ansley   tmap        29712 Nov 24 14:13 test.v5d
    / 13:  -2.00
  14   / 14:  -1.00
  15   / 15:   0.00
@@ -54766,7 +56573,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta) 15-Oct-08" ;
+		:history = "FERRET V6.16 (beta) 24-Nov-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54789,7 +56596,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta) 15-Oct-08" ;
+		:history = "FERRET V6.16 (beta) 24-Nov-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54813,7 +56620,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta) 15-Oct-08" ;
+		:history = "FERRET V6.16 (beta) 24-Nov-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54852,7 +56659,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta) 15-Oct-08" ;
+		:history = "FERRET V6.16 (beta) 24-Nov-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54887,7 +56694,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta) 15-Oct-08" ;
+		:history = "FERRET V6.16 (beta) 24-Nov-08" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54927,7 +56734,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -54981,7 +56788,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55035,7 +56842,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55089,7 +56896,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55134,7 +56941,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55225,7 +57032,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55292,7 +57099,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55343,7 +57150,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55418,7 +57225,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55445,7 +57252,7 @@ variables:
 		X_:_FillValue = -1.e+34f ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -55469,7 +57276,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -55494,11 +57301,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -55529,7 +57336,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55601,7 +57408,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55642,7 +57449,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55681,7 +57488,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55784,7 +57591,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -55820,7 +57627,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -55842,7 +57649,7 @@ variables:
 		BB:my_title = "This is my new variable bb" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55868,7 +57675,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55888,7 +57695,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55909,7 +57716,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55948,7 +57755,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -55984,7 +57791,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -56018,7 +57825,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -56046,7 +57853,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56079,7 +57886,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56105,7 +57912,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56146,7 +57953,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -56244,7 +58051,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -56283,7 +58090,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56364,7 +58171,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56401,7 +58208,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56438,7 +58245,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56486,7 +58293,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56541,7 +58348,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -56581,7 +58388,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -56621,7 +58428,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -56653,7 +58460,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -56684,7 +58491,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -56713,7 +58520,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -56733,38 +58540,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:axis = "X" ;
-		XAX:modulo = 360. ;
-		XAX:point_spacing = "uneven" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	float A(XAX) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56795,7 +58571,38 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:axis = "X" ;
+		XAX:modulo = 360. ;
+		XAX:point_spacing = "uneven" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	float A(XAX) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56844,7 +58651,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -56882,7 +58689,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -56900,16 +58707,16 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.14 (beta)" ;
+		:history = "FERRET V6.16 (beta)" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
 end of ncdump output
  
  	NOAA/PMEL TMAP
- 	FERRET v6.14 (beta)
- 	Linux(g77) 2.4.21-32 - 10/15/08
- 	15-Oct-08 14:54     
+ 	FERRET v6.16 (beta)
+ 	Linux(g77) 2.4.21-32 - 11/24/08
+ 	24-Nov-08 14:13     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57077,11 +58884,26 @@ PPL$XPIXEL = "1152"
 show symbol ppl$ypixel
 PPL$YPIXEL = "662"
  
+! V6.13
+! transparency with FRAME/TRANS
+!!
+! These gif images have the background color white or black
+! replaced by transparent color. This can be tested by putting
+! them into an HTML document with a colored background.
+! e.g. a file called test_transparent.html containing only this line:
+! <html> <body bgcolor="orange"> <img src="testfile.gif"/> </body> </html>
+ 
+can view
+use coads_climatology
+shade/nokey/lev=50 sst[L=1]
+frame/trans/file=testbackground.gif
+ 
+ 
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v6.14 (beta)
- 	Linux(g77) 2.4.21-32 - 10/15/08
- 	15-Oct-08 14:54     
+ 	FERRET v6.16 (beta)
+ 	Linux(g77) 2.4.21-32 - 11/24/08
+ 	24-Nov-08 14:13     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57193,9 +59015,9 @@ frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v6.14 (beta)
- 	Linux(g77) 2.4.21-32 - 10/15/08
- 	15-Oct-08 14:54     
+ 	FERRET v6.16 (beta)
+ 	Linux(g77) 2.4.21-32 - 11/24/08
+ 	24-Nov-08 14:13     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57278,4 +59100,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Wed Oct 15 14:54:29 PDT 2008
+Ended at Mon Nov 24 14:13:53 PST 2008

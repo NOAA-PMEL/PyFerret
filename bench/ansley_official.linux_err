@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/build_v614/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     46750029 Oct 15 14:35 /home/porter/ansley/build_v614/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     47467135 Nov 24 13:41 /home/porter/ansley/build_v614/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/build_v614/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: shorten output in bn_median; change test of irregular fine axis; tests of MODE NODATA_LAB"
+Note: test bug fixes for Andrew plus transparency option for gif mode
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build_v614/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v614/linux/FERRET/external_functions/ext_func_linux
-Beginning at Wed Oct 15 14:50:29 PDT 2008
+Beginning at Mon Nov 24 14:09:45 PST 2008
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2287,7 +2287,7 @@ Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: invalid command: it is a child axis already
-set axis/stride=2/offset=1 (AX043)
+set axis/stride=2/offset=1 (AX052)
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
  **ERROR: invalid command: offset must be less than stride value
@@ -2470,6 +2470,59 @@ Replacing definition of axis TIME
  *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file 1a.dat
+ LISTing to file 3a.dat
+ LISTing to file 5a.dat
+ LISTing to file 7a.dat
+ LISTing to file 9a.dat
+ LISTing to file 11a.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: variable unknown or not in data set: A_REGRID[D=1,GT=B[D=2]@MOD]
+LIST a_regrid[D=1,GT=b[D=2]@MOD]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+Replacing definition of axis ZAX
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+Replacing definition of axis TAX
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+Replacing definition of axis ZAX
+Replacing definition of axis TAX
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -2553,4 +2606,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Oct 15 14:54:29 PDT 2008
+Ended at Mon Nov 24 14:13:53 PST 2008

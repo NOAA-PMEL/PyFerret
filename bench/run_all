@@ -304,5 +304,7 @@ endif
 echo "Checking PLT, GIF and PS files......."
 $check_met
 
+#Note about checking transparency
+echo "open test_trans.html in a browser to test transparency option in gif mode. The continents should be gray"
 # save size of log file as part of the history record
 ls -l $log_file >>&  $bench_hist

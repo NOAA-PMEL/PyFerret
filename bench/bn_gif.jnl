@@ -141,10 +141,9 @@ show symbol ppl$ypixel
 ! e.g. a file called test_transparent.html containing only this line:
 ! <html> <body bgcolor="orange"> <img src="testfile.gif"/> </body> </html> 
 
-define view/axes/x=0:1/y=0:1 wms
-set view wms
+can view
 use coads_climatology
-shade/noax/nolab/nokey/lev=50 sst[L=1]
+shade/nokey/lev=50 sst[L=1]
 frame/trans/file=testbackground.gif
 
 

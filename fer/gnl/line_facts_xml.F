@@ -158,6 +158,7 @@ c 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
               
               WRITE ( risc_buff, 2040 ) line_units(line)(1:slen)
               llen = slen
+	      blen = llen + 8
 
               IF ( line_direction(line) .EQ. 'TI' ) THEN
               
@@ -173,9 +174,11 @@ c 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
                  CALL TM_DATE_REFORMAT (buff, 1, cal_id, outbuff, 2,
      .                                  .TRUE., status) 
                  slen = TM_LENSTR1(outbuff)
-                 WRITE (risc_buff, 2045) 
-     .                line_units(line)(1:llen), outbuff(:slen)
+                 WRITE (risc_buff(blen:blen+slen+6+8), 2045) 
+     .                outbuff(:slen)
 
+              ELSE
+	         WRITE (risc_buff(blen:blen+8), 2046)
               ENDIF
 
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

@@ -48,6 +48,8 @@
 * V6.1  2/2008 *acm* Use attribute structure to get all attributes for the variable.
 * V612  8/2007 *acm* Revert to old xml style output for infile_datatype and 
 *                    ferret_datatype attributes
+* V616 12/2008 *acm* Close the tag correctly; line written using format 2075 needs
+*                    the attribute name given a second time.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -257,7 +259,7 @@ c           ENDIF
 
                  slen = TM_LENSTR1(attname)
 	         WRITE (risc_buff, 2075) attname(1:slen), 
-     .                  attbuff(1:blen)
+     .                  attbuff(1:blen), attname(1:slen)
                  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
               ENDIF

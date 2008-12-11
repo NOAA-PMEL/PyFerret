@@ -430,6 +430,7 @@ initpage ()		/* Initializes PostScript */
    fprintf(ps_output, "%% begin the plot\n" );
    fprintf(ps_output, "1 lw\n" );
    fprintf(ps_output, "/Courier findfont setfont\n\n" );
+   fprintf(ps_output, "  ct 0 [1.000000 1.000000 1.000000] put\n" );
 }
 
 out_line_type( index )		/* output the line type */
@@ -1074,7 +1075,6 @@ main (argc, argv)
    int     xpreview_set=0;       /* Use Xwindow preview? */
    char    answer[40];           /* Answer to Q's in X preview */  
    int ch;
-
 
 /* clear array of file names */
    for (i=0; i<MAXFILE; i++)

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 49834552 Dec  4 09:41 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 49841621 Jan  6 11:45 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix bugs in xml output show data/var/xml
+Note: fixing bug 1615: results of SET VAR/UNITS= etc were not written to output NetCDF if the var was from an EZ set
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Thu Dec 4 09:44:50 PST 2008
+Beginning at Tue Jan 6 11:51:04 PST 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2490,6 +2490,14 @@ LIST a_regrid[D=1,GT=b[D=2]@MOD]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file dat.dat
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file unf.dat
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2606,4 +2614,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Dec 4 09:46:13 PST 2008
+Ended at Tue Jan 6 11:52:23 PST 2009

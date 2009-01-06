@@ -169,7 +169,9 @@ C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
 
 c *acm* 4/08 Set jj as in plotz
 
-	      IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
+              IF (TM_FPEQ((ZNP + DZ*(NLEV2-1)), ZMP) .EQV. .FALSE.) THEN
+                 IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
+	      ENDIF
 
 	      IF (ZMP-ZNP .EQ. 0) THEN
                  JJ=NSIGC

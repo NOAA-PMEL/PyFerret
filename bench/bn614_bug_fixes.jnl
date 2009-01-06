@@ -33,3 +33,6 @@ GO err611_isize_gc_fcns
 
 GO bn_reset
 GO err611_return_precision
+
+GO bn_reset
+GO err611_set_var_ez

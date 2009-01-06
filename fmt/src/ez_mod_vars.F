@@ -1,4 +1,4 @@
-	SUBROUTINE EZ_Mod_Vars( dset, vpos,
+	SUBROUTINE EZ_Mod_Vars( dset, vpos, varid,
      .			name, title, units, grid, bad, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -50,6 +50,8 @@
 *      *acm* 10/01 increase length of ds_name
 *      *acm* 10/01  remove VMS include statements
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
+* V616  1/09 *acm* - Fix ticket 1615, If doing SET VAR/UNITS, /TITLE, /BAD on a
+*                    var from an EZ dataset, set the appropriate attributes.
 
 * Arguments:
 *	dset	- data set number
@@ -64,6 +66,13 @@
 	CHARACTER*(*)	name, title, units
 	INTEGER*4	dset, vpos, grid, status
 	REAL*4		bad
+
+	INTEGER		TM_LENSTR1, 
+     .                  outtype_flag, varid, attid, attype, attlen, 
+     .			attoutflag, vartype, nvdims, nvatts, vdims(8), 
+     .			varoutflag
+	REAL		dummy
+	CHARACTER	varattname*512, varname*128, attname*128, buf*2
 *
 * Include files
 	include 'tmap_dims.parm'  
@@ -77,6 +86,7 @@
 	external xdset_info_data
 	include 'xstep_files.cmn_text'
 	external xstep_files_data
+        include 'netcdf.inc'
 
 *
 * Local definitions
@@ -85,13 +95,40 @@
 	IF (ds_name(dset) .EQ. char_init1024) GOTO 9100
 *
 * Defining variable title?
-  200	IF (title .NE. char_init80) THEN
-	   ds_var_title(vpos) = title
-	   ds_var_titl_mod(vpos) = ' '
+	IF ( title .NE. char_init80 ) THEN
+           ds_var_title( vpos ) = title
+
+           attlen = TM_LENSTR1(title)
+           attname = 'long_name'
+           CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+           IF (attid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .          attname, attype, attlen, attoutflag, status )
+              CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .        title, dummy, status)
+           ENDIF
 	ENDIF
 *
 * Defining variable units?
-	IF (units .NE. char_init16) ds_var_units(vpos) = units
+
+	IF ( units .NE. char_init16 ) THEN
+           ds_var_units( vpos ) = units
+
+           attlen = TM_LENSTR1(units)
+           attname = 'units'
+           CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+           IF (attid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             attname, attype, attlen, attoutflag, status )
+              CALL CD_REPLACE_ATTR (dset, varid, attname, attype, 
+     .           attlen, units, dummy, status)
+           ELSE
+                 attype = NCCHAR
+                 attoutflag = 1
+                 CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
+     .              attlen, attoutflag, units, dummy, status )
+           ENDIF
+	ENDIF
 *
 * Defining variable name?
 *	IF (name .NE. char_init16) ds_var_code(vpos) = name
@@ -108,8 +145,34 @@
 	ENDIF
 *
 * Defining bad data flag?
-	IF (bad .NE. real4_init) ds_bad_flag(vpos) = bad
+
+	IF ( bad  .NE. real4_init  ) THEN
+	   CALL PURGE_FILE_VAR( vpos ) ! remove memory-resident variables
+	   CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
+	   ds_missing_flag(vpos) = ds_bad_flag(vpos)	      
+	   ds_bad_flag    (vpos) = bad
+
+	   attlen = 1
+	   attname = 'missing_value'
+	   CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+	   IF (attid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             attname, attype, attlen, attoutflag, status )
+              CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .           buf, bad, status)
+	   ENDIF
+	   attname = '_FillValue'
+	   CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+	   IF (attid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             attname, attype, attlen, attoutflag, status )
+              CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .           buf, bad, status)
+	   ENDIF
+
 	status = merr_ok
+	ENDIF
+
 	GOTO 9990
 *
 * Error messages

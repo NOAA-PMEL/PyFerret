@@ -70,6 +70,8 @@
 *                    value or string in the attribute linked-list structure.
 * V608 11/07 *acm* - If doing SET VAR/UNITS, /TITLE, /BAD on a a user variable,
 *                    and that attribute was not previously set, add it.
+* V616  1/09 *acm* - Fix ticket 1615, If doing SET VAR/UNITS, /TITLE, /BAD on a
+*                    var from an EZ dataset, set the appropriate attributes.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -363,7 +365,7 @@
 	   IF ( have_mods ) THEN
 	      CALL PURGE_FILE_VAR( var ) ! remove memory-resident variables
 	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
-	      CALL EZ_MOD_VARS( dset,var,
+	      CALL EZ_MOD_VARS( dset,var,varid,
      .			        newname,title,units,grid,bad,tmap_status )
 	      IF ( tmap_status .NE. merr_ok ) THEN
 	         status = ferr_TMAP_error
@@ -415,6 +417,11 @@
      .             attname, attype, attlen, attoutflag, status )
                  CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
      .           units, dummy, status)
+              ELSE
+                 attype = NCCHAR
+                 attoutflag = 1
+                 CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
+     .              attlen, attoutflag, units, dummy, status )
               ENDIF
            ENDIF
 
@@ -429,6 +436,11 @@
      .             attname, attype, attlen, attoutflag, status )
                  CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
      .           title, dummy, status)
+              ELSE
+                 attype = NCCHAR
+                 attoutflag = 1
+                 CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
+     .              attlen, attoutflag, title, dummy, status )
               ENDIF
            ENDIF
 

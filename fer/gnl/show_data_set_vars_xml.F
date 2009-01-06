@@ -50,6 +50,7 @@
 *                    ferret_datatype attributes
 * V616 12/2008 *acm* Close the tag correctly; line written using format 2075 needs
 *                    the attribute name given a second time.
+* V616  1/2009 *acm* Fixing LAS ticket 481, new style of xml output
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -88,26 +89,15 @@
 C New form for attribute output, dont implement it yet. (Check the
 C Write statement that uses number 2075 when we change to using these.)
 
-c 2020   FORMAT ('<var name="', A, '">' )
-c 2025   FORMAT ('<attribute name="definition="', A, '">' )
-c 2030   FORMAT( '<attribute name="units" value="', A, '" />' )
-c 2040   FORMAT( '<attribute name="long_name" value="', A, '" />' )
-c 2050   FORMAT( '<attribute name="history" value="', A, '" />' )
-c 2060   FORMAT( '<attribute name="_FillValue" value="', A, '" />' )
-c 2070   FORMAT( '<attribute name="missing_value" value="', A, '" />' ) 
-c 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
-c 2090   FORMAT ('</var>')
-
- 2020   FORMAT ('<var name="', A, '">' )
- 2025   FORMAT ('<definition="', A, '">' )
- 2030   FORMAT( '<units>', A, '</units>' )
- 2040   FORMAT( '<long_name>', A, '</long_name>' )
- 2050   FORMAT( '<history>', A, '</history>' )
- 2060   FORMAT( '<_FillValue>', A, '</_FillValue>' )
- 2070   FORMAT( '<missing_value>', A, '</missing_value>' ) 
- 2075   FORMAT( '<', A, '>', A, '</', A, '>' )
- 2080   FORMAT( '<grid>', A, '</grid>' )
- 2090   FORMAT ('</var>')
+2020   FORMAT ('<var name="', A, '">' )
+2025   FORMAT ('<attribute name="definition="', A, '">' )
+2030   FORMAT( '<attribute name="units" value="', A, '" />' )
+2040   FORMAT( '<attribute name="long_name" value="', A, '" />' )
+2050   FORMAT( '<attribute name="history" value="', A, '" />' )
+2060   FORMAT( '<attribute name="_FillValue" value="', A, '" />' )
+2070   FORMAT( '<attribute name="missing_value" value="', A, '" />' ) 
+2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
+2090   FORMAT ('</var>')
 
 * describe the variables in the set, including a report on the axes of this grid.
 
@@ -163,22 +153,15 @@ c 2090   FORMAT ('</var>')
            WRITE ( risc_buff, 2070 ) show_str(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-c           IF (ds_var_type(ivar) .EQ. ptype_string ) THEN
-c                risc_buff = 
-c     .         '<attribute name="ferret_datatype" value="STRING" />'
-c           ELSE
-c                risc_buff = 
-c     .         '<attribute name="ferret_datatype" value="FLOAT" />'
-c           ENDIF
-           
-           IF (ds_var_type(ivar) .EQ. ptype_string ) THEN
-              risc_buff = '<ferret_datatype>STRING</ferret_datatype>'
-           ELSE
-              risc_buff = '<ferret_datatype>FLOAT</ferret_datatype>' 
-           ENDIF
+          IF (ds_var_type(ivar) .EQ. ptype_string ) THEN
+               risc_buff = 
+     .         '<attribute name="ferret_datatype" value="STRING" />'
+          ELSE
+               risc_buff = 
+     .         '<attribute name="ferret_datatype" value="FLOAT" />'
+          ENDIF
 
-
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * other attributes
 
@@ -189,40 +172,25 @@ c           ENDIF
 
 * Data type of the variable in the file...
 
-c           IF (vtype .EQ. ncbyte ) THEN
-c              risc_buff = 
-c     .         '<attribute name="infile_datatype" value="BYTE" />'
-c           ELSE IF (vtype .EQ. ncchar ) THEN
-c              risc_buff = 
-c     .         '<attribute name="infile_datatype" value="CHAR" />'
-c           ELSE IF (vtype .EQ. ncshort ) THEN
-c              risc_buff = 
-c     .         '<attribute name="infile_datatype" value="SHORT" />'
-c           ELSE IF (vtype .EQ. nclong ) THEN
-c              risc_buff = 
-c     .         '<attribute name="infile_datatype" value="LONG" />'
-c           ELSE IF (vtype .EQ. ncfloat ) THEN
-c              risc_buff = 
-c     .         '<attribute name="infile_datatype" value="FLOAT" />'
-c           ELSE IF (vtype .EQ. ncdouble ) THEN
-c              risc_buff = 
-c     .         '<attribute name="infile_datatype" value="DOUBLE" />'
-c           ENDIF
-           
            IF (vtype .EQ. ncbyte ) THEN
-              risc_buff = '<infile_datatype>BYTE</infile_datatype>'
+              risc_buff = 
+     .         '<attribute name="infile_datatype" value="BYTE" />'
            ELSE IF (vtype .EQ. ncchar ) THEN
-              risc_buff = '<infile_datatype>CHAR</infile_datatype>'
+              risc_buff = 
+     .         '<attribute name="infile_datatype" value="CHAR" />'
            ELSE IF (vtype .EQ. ncshort ) THEN
-              risc_buff = '<infile_datatype>SHORT</infile_datatype>'
+              risc_buff = 
+     .         '<attribute name="infile_datatype" value="SHORT" />'
            ELSE IF (vtype .EQ. nclong ) THEN
-              risc_buff = '<infile_datatype>LONG</infile_datatype>'
+              risc_buff = 
+     .         '<attribute name="infile_datatype" value="LONG" />'
            ELSE IF (vtype .EQ. ncfloat ) THEN
-              risc_buff = '<infile_datatype>FLOAT</infile_datatype>'
+              risc_buff = 
+     .         '<attribute name="infile_datatype" value="FLOAT" />'
            ELSE IF (vtype .EQ. ncdouble ) THEN
-              risc_buff = '<infile_datatype>DOUBLE</infile_datatype>'
+              risc_buff = 
+     .         '<attribute name="infile_datatype" value="DOUBLE" />'
            ENDIF
-
 
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
@@ -259,7 +227,8 @@ c           ENDIF
 
                  slen = TM_LENSTR1(attname)
 	         WRITE (risc_buff, 2075) attname(1:slen), 
-     .                  attbuff(1:blen), attname(1:slen)
+     .                  attbuff(1:blen)
+
                  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
               ENDIF

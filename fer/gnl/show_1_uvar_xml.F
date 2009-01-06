@@ -42,6 +42,7 @@
 * V602 12/06 *acm* remove extra call to GRID_FROM_NAME_XML
 * V606  8/07 *acm* when there are quotes within the var definition, as in
 *                  a date specification change these to &quot; for valid xml.
+* V616  1/2009 *acm* Fixing LAS ticket 481, new style of xml output
 
         include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -73,21 +74,13 @@
 C New form for attribute output, dont implement it yet. (Check the
 C Write statement that uses number 2075 when we change to using these.)
 
-c 2020   FORMAT ('<var name="', A, '" def="', A, '">' )
-c 2030   FORMAT( '<attribute name="units" value="', A, '" />' )
-c 2040   FORMAT( '<attribute name="long_name" value="', A, '" />' )
-c 2070   FORMAT( '<attribute name="missing_value" value="', A, '" />' )
-c 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
-c 2090   FORMAT ('</var>')
-
  2020   FORMAT ('<var name="', A, '" def="', A, '">' )
- 2030   FORMAT( '<units>', A, '</units>' )
- 2040   FORMAT( '<long_name>', A, '</long_name>' )
- 2070   FORMAT( '<missing_value>', A, '</missing_value>' )
- 2075   FORMAT( '<', A, '>', A, '</', A, '>' )
+ 2030   FORMAT( '<attribute name="units" value="', A, '" />' )
+ 2040   FORMAT( '<attribute name="long_name" value="', A, '" />' )
+ 2070   FORMAT( '<attribute name="missing_value" value="', A, '" />' )
+ 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
  2080   FORMAT( '<grid>', A, '</grid>' )
  2090   FORMAT ('</var>')
-
 
 * initialize
 	IF (uvar_num_items(uvar) .EQ. uvar_deleted  ) RETURN

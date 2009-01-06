@@ -44,8 +44,9 @@
 * V602 *acm*11/06 - Fix bug 1468, wrong string was written instead of the
 *                   calendar name.
 * V6.1  2/2008 *acm* Use attribute structure to get all attributes for the axis.
-* V612  8/2007 *acm* Revert to old xml style output for infile_datatype and 
+* V612  8/2008 *acm* Revert to old xml style output for infile_datatype and 
 *                    ferret_datatype attributes
+* V616  1/2009 *acm* Fixing LAS ticket 481, new style of xml output
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -84,18 +85,11 @@
 C New form for attribute output, dont implement it yet. (Check the
 C Write statement that uses number 2075 when we change to using these.)
 
-c 2020	FORMAT ( '<attribute name="time_origin" value="', A, '" />' )
-c 2030	FORMAT ( '<attribute name="calendar" value="', A, '" />' )
-c 2040	FORMAT ( '<attribute name="modulo_length" value="', A, '" />' )
-c 2050	FORMAT ( '</axis>' )
-c 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
-
- 2020	FORMAT ( '<time_origin>', A, '</time_origin>' )
- 2030	FORMAT ( '<calendar>', A, '</calendar>' )
- 2040	FORMAT ( '<modulo_length>', A, '</modulo_length>' )
+ 2020	FORMAT ( '<attribute name="time_origin" value="', A, '" />' )
+ 2030	FORMAT ( '<attribute name="calendar" value="', A, '" />' )
+ 2040	FORMAT ( '<attribute name="modulo_length" value="', A, '" />' )
  2050	FORMAT ( '</axis>' )
- 2075   FORMAT( '<', A, '>', A, '</', A, '>' )
-
+ 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
 
 * determine orientation
 
@@ -186,41 +180,26 @@ c 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
 
 * Data type of the axis in the file...
 
-c        IF (vtype .EQ. ncbyte ) THEN
-c           risc_buff = 
-c     .         '<attribute name="infile_datatype" value="BYTE" />'
-c        ELSE IF (vtype .EQ. ncchar ) THEN
-c           risc_buff = 
-c     .         '<attribute name="infile_datatype" value="CHAR" />'
-c        ELSE IF (vtype .EQ. ncshort ) THEN
-c           risc_buff = 
-c     .         '<attribute name="infile_datatype" value="SHORT" />'
-c        ELSE IF (vtype .EQ. nclong ) THEN
-c           risc_buff = 
-c     .         '<attribute name="infile_datatype" value="LONG" />'
-c        ELSE IF (vtype .EQ. ncfloat ) THEN
-c           risc_buff = 
-c     .         '<attribute name="infile_datatype" value="FLOAT" />'
-c        ELSE IF (vtype .EQ. ncdouble ) THEN
-c           risc_buff = 
-c     .         '<attribute name="infile_datatype" value="DOUBLE" />'
-c        ENDIF
-        
         IF (vtype .EQ. ncbyte ) THEN
-           risc_buff = '<infile_datatype>BYTE</infile_datatype>'
+           risc_buff = 
+     .         '<attribute name="infile_datatype" value="BYTE" />'
         ELSE IF (vtype .EQ. ncchar ) THEN
-           risc_buff = '<infile_datatype>CHAR</infile_datatype>'
+           risc_buff = 
+     .         '<attribute name="infile_datatype" value="CHAR" />'
         ELSE IF (vtype .EQ. ncshort ) THEN
-           risc_buff = '<infile_datatype>SHORT</infile_datatype>'
+           risc_buff = 
+     .         '<attribute name="infile_datatype" value="SHORT" />'
         ELSE IF (vtype .EQ. nclong ) THEN
-           risc_buff = '<infile_datatype>LONG</infile_datatype>'
+           risc_buff = 
+     .         '<attribute name="infile_datatype" value="LONG" />'
         ELSE IF (vtype .EQ. ncfloat ) THEN
-           risc_buff = '<infile_datatype>FLOAT</infile_datatype>'
+           risc_buff = 
+     .         '<attribute name="infile_datatype" value="FLOAT" />'
         ELSE IF (vtype .EQ. ncdouble ) THEN
-           risc_buff = '<infile_datatype>DOUBLE</infile_datatype>'
+           risc_buff = 
+     .         '<attribute name="infile_datatype" value="DOUBLE" />'
         ENDIF
-
-
+        
         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * All attributes not already listed.
@@ -262,7 +241,7 @@ c        ENDIF
 
               slen = TM_LENSTR1(attname)
 	         WRITE (risc_buff, 2075) attname(1:slen), 
-     .                  attbuff(1:blen), attname(1:slen)
+     .                  attbuff(1:blen)
               CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
            ENDIF

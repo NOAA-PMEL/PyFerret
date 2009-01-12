@@ -44,6 +44,8 @@
 *                  containing information on user-defined axes
 * V602  3/07 *acm* Treat t0 as units; if new t0 is not defined, remove the attribute.
 * v604 *acm* 7/07 increase length of ds_name
+* v616 *acm* 1/09 Fix ticket 1614: Needed to set the attname to modulo for the block,
+*                 if new_modulo is false then remove attribute from axis
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -300,6 +302,7 @@ c     or write modulo length.
             ENDIF
          ELSE  ! if new_modulo is false then remove attribute from axis
             
+	    attname = "modulo"
             CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
 
             IF (status .EQ. ferr_ok) THEN

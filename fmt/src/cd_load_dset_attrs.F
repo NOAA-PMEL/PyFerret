@@ -48,7 +48,7 @@
 *	status	- return status
 
 * argument declarations:
-	INTEGER	      dset, status
+	INTEGER	      dset, cdfid, status
 
 * include files
         include 'netcdf.decl'
@@ -70,7 +70,7 @@
 
 * local variable declarations:
       INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME,
-     .        cdfid, ndims, nvars, ngatts, recdim, cdfstat, 
+     .        ndims, nvars, ngatts, recdim, cdfstat, 
      .        i, istep, varid, iatt, attlen, attoutflag, maxlen
       CHARACTER    TM_STRING*13, name*128
       REAL val

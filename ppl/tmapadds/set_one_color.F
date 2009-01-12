@@ -42,7 +42,6 @@
 *       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
 * V610  *acm* 3/08 Fixes for metafile batch mode
 
-#ifdef unix
 #   ifndef atc_gks
         include        'gkspar.inc'
 #   endif
@@ -51,11 +50,11 @@
 	include		'gkscm1_inc.decl'
         include         'GKSCM1.INC'
 	include		'gkscm2.cmn'
-#else
-	include		'tmap_pplv11inc:tmap_cmrd.inc'
-	include		'tmap_pplv11inc:tmap_gkscm1.inc'
-	include		'tmap_pplv11inc:tmap_gkscm2.inc'
-#endif
+	include         'parampl5_dat.decl'
+	include         'PARAMPL5.DAT'
+	include         'save_colors.cmn'
+        INCLUDE         'pen_inc.decl'  ! with num_line_colors
+        INCLUDE         'PEN.INC'
 
 	integer		ndx,red,green,blue,i,err
         integer         max_pline,max_pmark,max_text,max_fill_area
@@ -69,8 +68,13 @@
 	data		black/0/,white/1/
 #endif
 
-******************************************************************************
+	LOGICAL ITS_BATCH_GRAPHICS
+        LOGICAL batch
+	integer		type, error
+	REAL		rd, gr, bl
 
+
+******************************************************************************
 *	IF NO ARGS, RESET COLORS
 	if (m .eq. 0) then
            call query_xgks_wkstn (wstype,err,max_pline,max_pmark,
@@ -78,9 +82,9 @@
 	   if (err .ne. 0) goto 1000
 
 #ifndef xgks
-	   do 5 i = 0,6
+	   do 5 i = 0,num_line_colors
 #else
-           do 5 i = 1,6
+           do 5 i = 1,num_line_colors
 #endif
 	      call gqpcr (wstype,i,err,val(red),val(green),val(blue))
 	      if (err .ne. 0) goto 5
@@ -91,6 +95,8 @@ cc	      if (meta_actv) call gscr (wsid,i,val(red),val(green),val(blue))
 5	   continue
 	   goto 1000
 	end if
+
+
 
 *	ELSE SET COLOR P(1) to RGB: P(2), P(3), P(4)
 	if (m .ne. 4) goto 1000
@@ -125,13 +131,13 @@ cc	if (meta_actv) call gscr (wsid,ndx,val(red),val(green),val(blue))
 	else
 cc	   if (meta_actv) 
 cc     .        call gscr (wsid,ndx,val(red),val(green),val(blue))
+
 	   call gscr (wsid,ndx,val(red),val(green),val(blue))
 	endif
 #endif
 
 	if (meta_actv .and. .not. meta_clsplt) then
 #ifndef xgks
-           call gscr (meta_wsid,ndx,val(red),val(green),val(blue))
            call gscr (meta_wsid,ndx,val(red),val(green),val(blue))
 #else
 *	   FOR X, PLACE NO INDEX 0 IN METAFILE, AND INDEX 1 CANNOT BE WHITE
@@ -150,6 +156,15 @@ cc     .        call gscr (wsid,ndx,val(red),val(green),val(blue))
 #endif
 	endif
  1000   continue
+
+
+**** trying to fix batch bug ***
+        batch = ITS_BATCH_GRAPHICS()
+        if (batch) then
+           saved_line_colors = 1
+           CALL save_line_color (ndx,val(red),val(green),val(blue))
+        endif
+**** trying to fix batch bug ***
 
 #ifndef atc_gks
 cc       if (meta_actv) call guwk (wsid,gpostp)

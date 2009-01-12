@@ -61,6 +61,10 @@
 	include 'gkscm2.cmn'! with declarations    
 	include 'ppl_in_ferret.cmn'
 	include 'ws_types.cmn'
+	INCLUDE	'parampl5_dat.decl'
+	INCLUDE	'PARAMPL5.DAT'
+        INCLUDE 'pen_inc.decl'  ! with num_line_colors
+        INCLUDE 'PEN.INC'
 
         integer       park_stat
 
@@ -149,7 +153,7 @@ C	XGKS DOESN'T DEFINE GMOUTP
                    call gscr (meta_wsid,1,0.0,0.0,0.0)
                 endif
 
-                do ndx = 2,6
+                do ndx = 2,num_line_colors
                    call gqcr (wsid,ndx,type,error,red,green,blue)
                    if (error .eq. 0) then
                       call gscr (meta_wsid,ndx,red,green,blue)

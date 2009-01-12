@@ -62,6 +62,7 @@
         INCLUDE 'PLT.INC'
         INCLUDE 'pen_inc.decl'  ! with num_line_colors
         INCLUDE 'PEN.INC'
+	INCLUDE 'save_colors.cmn'
 
 	integer		zwsid,zwstype,i,j
 
@@ -81,7 +82,6 @@
         real a, b, c
 
 *******************************************************************************
-
 *	WHAT IS AVAILABLE ON THIS WORKSTATION?
 	call query_xgks_wkstn (zwstype,error,max_pline,max_pmark,
      .	            max_text,max_fill_area,max_pattern,max_color)
@@ -95,12 +95,13 @@
 
 *	COLOR WORKSTATIONS:
 #ifdef xgks
+
         call gscr (zwsid,2,1.0,0.0,0.0)   ! pre-defined colors
         call gscr (zwsid,3,0.0,1.0,0.0)
         call gscr (zwsid,4,0.0,0.0,1.0)
         call gscr (zwsid,5,0.0,1.0,1.0)
-        call gscr (zwsid,6,1.0,0.0,1.0)
-        
+        call gscr (zwsid,6,1.0,0.0,1.0) 
+     
 ! Set up initial values for further colors as grey
 ! range them between 0.6,0.6,0.6 and 0.9,0.9,0.9
 
@@ -114,6 +115,11 @@
   40       continue
            grey = grey + frac
         ENDIF
+
+	IF (saved_line_colors .GT. 0) THEN
+	   CALL restore_saved_line_colors (zwsid)
+	ENDIF
+
 #endif
 
 ! Set line bundles

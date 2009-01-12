@@ -141,6 +141,7 @@ C       data statement of my_trans added for linux port *jd* 12.96
 	logical		valid
 
         INTEGER		cells(*), pmax
+        INTEGER         j1, jn, jd
 	LOGICAL		ITS_BATCH_GRAPHICS, REGULARLY_SPACED,
      .                  batch, irregular, plot_cell
 
@@ -336,7 +337,17 @@ c*       side from xeq_shade.
 
         k = 0
         pmax = 0
-        DO 80 j = ny,1,-1
+        j1 = ny
+        jn = 1
+        jd = -1
+
+        IF (yinv .LT. 0) THEN
+           j1 = 1
+           jn = ny
+           jd = 1
+        ENDIF
+
+        DO 80 j = j1,jn,jd
 	   DO 70 i = 1,nx
 
            IF ( interrupted ) GOTO 3333			! 1/89 - *sh*
@@ -380,7 +391,12 @@ c If all the data is missing don't make the cellarray call
 
             half = (yc(2) - yc(1)) / 2.
             IF (cy1 .LT. yc(1) - half ) cy1 = yc(1)  - half
-            IF (cx2 .GT. yc(ny) + half) cy2 = yc(ny) + half
+            IF (cy2 .GT. yc(ny) + half) cy2 = yc(ny) + half
+            IF (yinv .LT. 0) THEN
+               half = -1*cy1  ! temp. storage to switch values
+               cy1 = -1*cy2
+               cy2 = half
+            ENDIF
 
             CALL gca (cx1, cy1, cx2, cy2, mx,my, 1,1, mx,my, cells)
          ENDIF

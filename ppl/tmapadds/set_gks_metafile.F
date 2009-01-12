@@ -68,6 +68,10 @@
 	include 'GKSCM1.INC'
 	include 'gkscm2.cmn'
 	include 'ws_types.cmn'
+	INCLUDE 'parampl5_dat.decl'
+	INCLUDE 'PARAMPL5.DAT'
+        INCLUDE 'pen_inc.decl'  ! with num_line_colors
+        INCLUDE 'PEN.INC'
 
 	integer		beg,end,defws,ndx,type,error
 	real		red,green,blue
@@ -188,7 +192,7 @@
                    call gscr (meta_wsid,1,0.0,0.0,0.0)
                 endif
 
-		do ndx = 2,6
+		do ndx = 2,num_line_colors
 		   call gqcr (wsid,ndx,type,error,red,green,blue)	
 		   if (batch .or. error .eq. 0) then
 		      call gscr (meta_wsid,ndx,red,green,blue)

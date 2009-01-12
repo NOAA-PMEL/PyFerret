@@ -43,6 +43,9 @@ process_x_events.F\
 ps_line_bundle.F\
 query_display_size.F\
 query_xgks_wkstn.F\
+restore_saved_line_colors.F\
+save_line_color.F\
+save_rgb_blkdat.F\
 say_interrupted.F\
 set_default_colors.F\
 set_default_nlevels.F\

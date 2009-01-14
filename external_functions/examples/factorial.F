@@ -144,6 +144,10 @@ c     .'/home/ja12/data/mchugh/externfunc/ef_utility/ferret_cmn/EF_mem_subsc.cmn
                                           
                      result(i,j,k,l) = bad_flag_result
 
+                  ELSE IF ( arg_1(i1,j1,k1,l1) .EQ. 0 ) THEN
+                                          
+                     result(i,j,k,l) = 1.
+
                   ELSE IF ( arg_1(i1,j1,k1,l1) .LT. 0 ) THEN
                                           
                      result(i,j,k,l) = bad_flag_result

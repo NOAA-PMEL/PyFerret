@@ -69,6 +69,11 @@
                         set var.ndims = 0 in ncf_init_other_dset */
 /* *acm*  3/08        Fix bug 1534; needed to initialize attribute output flag for
                       the bounds attribute on coordinate axes.*/
+/* *acm*  1/09        If adding a new global attribute, also increment ngatts.
+/* *acm*  1/09        Fix bug 1620; In ncf_add_var, which is used when defining user 
+                      variables, and also for reading in EZ datasets, I had the default 
+                      attribute type for missing_value attribute set to NC_DOUBLE. There's no 
+                      reason for this as these variables are always single precision.*/
 
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
@@ -1860,8 +1865,8 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
 		strcpy(att.name,"missing_value");
 		att.len = 1;
 		att.string = NULL;
-		att.type = NC_DOUBLE;
-		att.outtype = NC_DOUBLE;
+		att.type = NC_FLOAT;
+		att.outtype = NC_FLOAT;
 		att.vals = (double *) malloc(att.len * sizeof(double));
 		att.vals[0] = *bad;
 
@@ -2162,6 +2167,7 @@ int  FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[], int
 int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *attype, int *attlen, int *outflag, char attstring[])
 
 {
+  ncdset *nc_ptr=NULL;
   ncatt *att_ptr=NULL;
   ncvar *var_ptr=NULL;
   ncatt att;
@@ -2172,6 +2178,13 @@ int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *a
   LIST *varattlist;
 	att.vals = NULL;
 	att.string = NULL;
+
+   /*
+   * Get the dataset pointer.  
+   */
+  return_val = ATOM_NOT_FOUND;  
+  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL )return return_val;
+
    /*
     * Get the list of variables, find pointer to variable varid.
     */
@@ -2211,6 +2224,9 @@ int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *a
 
    /* Increment number of attributes.  
    */
+  if (*varid == 0)
+  { nc_ptr->ngatts = nc_ptr->ngatts + 1; 
+  }
 
   var_ptr->natts = var_ptr->natts + 1;
 

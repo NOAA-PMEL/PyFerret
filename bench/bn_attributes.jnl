@@ -952,3 +952,18 @@ use coads_climatology
 let sst2 = 2*sst
 set att/like=sst sst2
 list sst2.attnames
+
+
+! Add a global attribute
+use test0
+
+DEFINE ATT/OUTPUT ..FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset"
+SET ATT/OUTPUT=all .
+
+SET ATT/OUTPUT=all broiled
+SAVE/CLOBBER/FILE=a.nc broiled
+
+sp echo "bn_attributes.jnl --- 28 Define a new global attribute" >> all_ncdump.out
+sp echo "bn_attributes.jnl --- 29 SET ATT/OUTPUT=all for global attrs and a var" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+

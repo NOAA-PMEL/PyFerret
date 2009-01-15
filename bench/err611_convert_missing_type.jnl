@@ -1,0 +1,18 @@
+! err611_convert_missing_type.jnl
+! Fix for bug 1620 message about converting data type of 
+! missing value flag from double to float when the data
+! is from an EZ data set and being written to netCDF file.
+
+! Save some data and read it in as a delimited file
+
+LET xx = {-3,4,5}
+LET yy = {1,2,3}
+LIST/CLOBBER/NOHEAD/NOROWHEAD/FORM=(3f8.2)/FILE=lonlat.dat xx,yy
+DEFINE AXIS/X=1:3:1 xobs
+DEFINE GRID/X=xobs gobs
+COL/GRID=gobs/VAR="lon,lat"/TYPE="longitude,latitude"  lonlat.dat
+
+! On this SAVE, previously got a NOTE about converting the type of the 
+! missing-value attribute to match the type of the variable.
+
+SAVE/CLOBBER/FILE=lonlat.nc lat, lon

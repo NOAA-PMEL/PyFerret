@@ -189,6 +189,10 @@
      .              attid, status)
                 IF (status .EQ. ferr_ok) GOTO 1000
              ENDIF
+	     
+             CALL CD_GET_VAR_ATT_ID (dset, varid, attname, 
+     .              attid, status)
+             IF (status .EQ. ferr_ok) GOTO 1000
  
              attok = .FALSE.
              IF (status .EQ. atom_not_found) status = 

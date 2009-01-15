@@ -309,7 +309,7 @@
      .            mon_by_d(366), d_in_mon(12), len_cal, n2, n3, s2len,
      .            prev_cal_id, j, num_indices, varid, attype_spec,
      .            mr_perm(max_intrp), attoutflag, attlen, coordvar, 
-     .            dset_to_add, dir, type, attype, attid 
+     .            dset_to_add, dir, type, attype, attid
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
@@ -1756,7 +1756,12 @@ C /units=months  is 1/12 of the length of the year
 	CALL NAME_EQUAL_STRING_VATT ( buff1, pos, status )
 	IF ( status .NE. ferr_ok )  GOTO 5000
 	IF ( pos .EQ. 0 ) GOTO 5400
-	IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5100
+	IF ( INDEX(buff1,'..') .EQ. 1 ) THEN
+           ivar = 0  ! global attr.
+           varname = '.'
+	ELSE
+           IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5100
+        ENDIF
 
 * ... get dset number if present:  DEF ATT/D=dset ...
 	iqual = qual_given( slash_dset ) 

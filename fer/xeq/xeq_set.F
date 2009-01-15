@@ -1253,7 +1253,12 @@ c     .					* max_mem_blks*100
       ENDIF
 
       IF ( pos.EQ.0) GOTO 5100
-      IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5100
+      IF ( INDEX(buff1,'..') .EQ. 1 ) THEN
+         ivar = 0  ! global attr.
+	 varname = '.'
+      ELSE
+         IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5100
+      ENDIF
 
 * SET ATRIBUTE/TYPE=  varname.attname
 * types are: BYTE, CHAR or STRING, SHORT or INT2, INT or INT4, FLOAT, DOUBLE
@@ -1380,7 +1385,7 @@ c     .					* max_mem_blks*100
 * get the data for the new value
         
         IF (arg_start(1) .LT. pos) arg_start(1) = pos
-        IF ( (iflag .EQ. 1 .AND. arg_end(1) .LT. len_cmnd_copy) .OR. 
+        IF ( (iflag .EQ. 1 .AND. arg_end(1) .LT. len_cmnd) .OR. 
      .       (isetout .EQ. 0) ) THEN
            CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_native, 
      .              status )
@@ -1449,7 +1454,7 @@ c     .					* max_mem_blks*100
 
 * Change attribute value
 
-        IF ( (iflag .EQ. 1 .AND. arg_end(1) .LT. len_cmnd_copy) .OR.
+        IF ( (iflag .EQ. 1 .AND. arg_end(1) .LT. len_cmnd) .OR.
      .       (isetout .EQ. 0) ) THEN 
            mr = is_mr( 1 )
            CALL EDIT_ATTRIBUTE(  memory(1, mr_blk1(mr)), mr, 

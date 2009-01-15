@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 49850060 Jan 12 10:03 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 49868371 Jan 15 14:49 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixing last of batch bugs; set line color before opening the plot
+Note: Defining new global attributes ; also change to fix bug 1620
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Mon Jan 12 10:07:21 PST 2009
+Beginning at Thu Jan 15 15:20:48 PST 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2061,12 +2061,7 @@ set att (COADSX81_81).axis = "Z"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
@@ -2138,6 +2133,7 @@ Replacing definition of axis X2AX
  *** NOTE: Changing the value of attribute (TIME7).time_origin
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 Replacing definition of axis TIME
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2492,10 +2488,12 @@ LIST a_regrid[D=1,GT=b[D=2]@MOD]
  TEMPORARY data cleared from memory
  LISTing to file dat.dat
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file unf.dat
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file lonlat.dat
+ LISTing to file lonlat.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2614,4 +2612,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Jan 12 10:08:47 PST 2009
+Ended at Thu Jan 15 15:22:22 PST 2009

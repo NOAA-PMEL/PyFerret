@@ -80,7 +80,6 @@ C       *jc* 5.97 Added code for curvilinear coordinates
 C      *acm* v581 5/2005 Add CONTOUR/MOD capability for modulo
 C                 replications on curvilinear data
 C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bug 1485
-C V602 *acm* 4/07 ferr_ok needs to be declared (in errmsg.parm)
 
 	include 'MISS.INC'
         include 'xcurvilinear.cmn'
@@ -92,6 +91,8 @@ C V602 *acm* 4/07 ferr_ok needs to be declared (in errmsg.parm)
         real xadd, lmin, lmax, big
 	integer error,trans_no, ilo, ihi, jlo, jhi, status
 	real xinv,yinv,w(4),v(4),ndc(4),uc(4)
+
+	status = ferr_ok
 
 C       Calculate center point about which to rotate plot
 C       Plot will be rotated by 'ang' degrees.

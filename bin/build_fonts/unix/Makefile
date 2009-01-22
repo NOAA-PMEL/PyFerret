@@ -82,4 +82,5 @@ install:
 	cp fondat.dat $(PLOTFONTS)
 
 clean: 
-	rm -f binary
+	rm -f binary fnt*.*
+

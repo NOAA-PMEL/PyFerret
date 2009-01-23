@@ -10,7 +10,7 @@
 			  -I/usr/include \
 			  -I/usr/include/X11 \
 			  -I$(TMAP_LOCAL)/include \
-			  -I/home/porter/ansley/netcdf-3.6.3/prebuilt_i386/include \
+			  -I/home/porter/ansley/netcdf-3.6.3/i386-linux/include \
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \

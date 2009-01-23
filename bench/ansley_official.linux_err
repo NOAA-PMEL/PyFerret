@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     54146156 Nov 20 15:42 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     54886142 Jan 12 12:20 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  fixes for v6.16 release to GFDL; bug fixes plus string versions of CAT and SORT routines
+Note: v6.17 fixing last of batch bugs; set line color before opening the plot
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Thu Nov 20 15:42:53 PST 2008
+Beginning at Mon Jan 12 12:22:53 PST 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1410,7 +1410,7 @@ Replacing definition of axis XAX
 CONTOUR/L=1/LEV=0.01d sst
  **ERROR: value out of legal range: # of contour levels > 500  (3284)
 CONTOUR/FILL/L=1/LEV=0.01d sst
- **ERROR: value out of legal range: # of shade levels > 500  (3284)
+ **ERROR: value out of legal range: # of shade levels > 500  (3283)
 SHADE/L=1/LEV=0.01d sst
  **ERROR: value out of legal range: # of levels > 500  (4094)
 POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
@@ -2598,6 +2598,14 @@ LIST a_regrid[D=1,GT=b[D=2]@MOD]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file dat.dat
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ LISTing to file unf.dat
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2683,6 +2691,16 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+Re-defining viewport LM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+Re-defining viewport UM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -2714,4 +2732,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Nov 20 15:46:55 PST 2008
+Ended at Mon Jan 12 12:27:48 PST 2009

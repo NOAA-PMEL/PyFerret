@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     54146156 Nov 20 15:42 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     54886142 Jan 12 12:20 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  fixes for v6.16 release to GFDL; bug fixes plus string versions of CAT and SORT routines
+Note: v6.17 fixing last of batch bugs; set line color before opening the plot
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Thu Nov 20 15:42:53 PST 2008
+Beginning at Mon Jan 12 12:22:53 PST 2009
  	NOAA/PMEL TMAP
- 	FERRET v6.16  
- 	Linux(g77) 2.4.21-32 - 11/20/08
- 	20-Nov-08 15:42     
+ 	FERRET v6.17  
+ 	Linux(g77) 2.4.21-32 - 01/12/09
+ 	12-Jan-09 12:22     
 
 yes? !bn500_all_shell
 yes? 
@@ -10235,10 +10235,10 @@ show symbols/all
 PPL$XPIXEL = "317"
 PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.16"
+FERRET_VERSION = "6.17"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = "20-Nov-08"
-SESSION_TIME = "15:42"
+SESSION_DATE = "12-Jan-09"
+SESSION_TIME = "12:22"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10254,10 +10254,10 @@ show symbol/all
 PPL$XPIXEL = "317"
 PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.16"
+FERRET_VERSION = "6.17"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = "20-Nov-08"
-SESSION_TIME = "15:42"
+SESSION_DATE = "12-Jan-09"
+SESSION_TIME = "12:22"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10265,8 +10265,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "20-Nov-08"
-SESSION_TIME = "15:42"
+SESSION_DATE = "12-Jan-09"
+SESSION_TIME = "12:22"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10276,13 +10276,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "20-Nov-08"
-SESSION_TIME = "15:42"
+SESSION_DATE = "12-Jan-09"
+SESSION_TIME = "12:22"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "20-Nov-08"
-SESSION_TIME = "15:42"
+SESSION_DATE = "12-Jan-09"
+SESSION_TIME = "12:22"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10314,9 +10314,9 @@ Q23456789012345678901234567XXX = "6"
 ! show the upper left coordinate limits labels as symbols
 plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
-LAB1 = "FERRET Ver. 6.16"
+LAB1 = "FERRET Ver. 6.17"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Nov 20 2008 15:43:14 "
+LAB3 = "Jan 12 2009 12:23:22 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10411,10 +10411,10 @@ show symbols/all
 PPL$XPIXEL = "317"
 PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.16"
+FERRET_VERSION = "6.17"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = "20-Nov-08"
-SESSION_TIME = "15:42"
+SESSION_DATE = "12-Jan-09"
+SESSION_TIME = "12:22"
  
  
 GO bn_reset
@@ -18144,8 +18144,8 @@ SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94
  
 !GO bn_reset
 !GO bn301_mem_mgmt
-MESSAGE/CONTINUE  ***** bn301_mem_mgmt has been removed from -rw-rw-r--    1 ansley   tmap        18671 Nov 20 15:43 bench.mgm
--rw-rw-r--    1 ansley   tmap       276335 Nov 20 15:43 bench.mgm
+MESSAGE/CONTINUE  ***** bn301_mem_mgmt has been removed from -rw-rw-r--    1 ansley   tmap        16398 Jan 12 12:23 bench.mgm
+-rw-rw-r--    1 ansley   tmap       290060 Jan 12 12:23 bench.mgm
 run_all.
 ***** bn301_mem_mgmt has been removed from run_all.
 MESSAGE/CONTINUE  ***** Its too slow!!!
@@ -25174,7 +25174,7 @@ list out
  8    /  8:  443402.  443403.  443404.  443405.  443406.
  9    /  9:  444132.  444133.  444134.  444135.  444136.
  10   / 10:  444863.  44486abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Thu Nov 20 15:44:14 PST 2008
+Mon Jan 12 12:24:28 PST 2009
 4.  444865.  444866.  444867.
  11   / 11:  445593.  445594.  445595.  445596.  445597.
  12   / 12:  446324.  446325.  446326.  446327.  446328.
@@ -40790,15 +40790,15 @@ SHO DATA/VAR/XML
 <dataset name="./gtsa056_2.cdf" default="true">
 <title> </title>
 <var name="TEMP">
-<units>deg. C</units>
-<long_name>TEMPERATURE</long_name>
-<_FillValue>-9.9999998E+33</_FillValue>
-<missing_value>-9.9999998E+33</missing_value>
-<ferret_datatype>FLOAT</ferret_datatype>
-<infile_datatype>FLOAT</infile_datatype>
-<parent_grid>PS3DT1</
-<slab_min_index>1 40 1 0  </
-<slab_max_index>160 50 2 0  </
+<attribute name="units" value="deg. C" />
+<attribute name="long_name" value="TEMPERATURE" />
+<attribute name="_FillValue" value="-9.9999998E+33" />
+<attribute name="missing_value" value="-9.9999998E+33" />
+<attribute name="ferret_datatype" value="FLOAT" />
+<attribute name="infile_datatype" value="FLOAT" />
+<attribute name="parent_grid" value="PS3DT1" />
+<attribute name="slab_min_index" value="1 40 1 0  " />
+<attribute name="slab_max_index" value="160 50 2 0  " />
 <grid name="PS3DT1">
 <axes>
 <xaxis>PSXT1</xaxis>
@@ -40809,15 +40809,15 @@ SHO DATA/VAR/XML
 </grid>
 </var>
 <var name="U">
-<units>cm/sec</units>
-<long_name>ZONAL VELOCITY</long_name>
-<_FillValue>-9.9999998E+33</_FillValue>
-<missing_value>-9.9999998E+33</missing_value>
-<ferret_datatype>FLOAT</ferret_datatype>
-<infile_datatype>FLOAT</infile_datatype>
-<parent_grid>PS3DU1</
-<slab_min_index>50 40 1 0  </
-<slab_max_index>107 50 2 0  </
+<attribute name="units" value="cm/sec" />
+<attribute name="long_name" value="ZONAL VELOCITY" />
+<attribute name="_FillValue" value="-9.9999998E+33" />
+<attribute name="missing_value" value="-9.9999998E+33" />
+<attribute name="ferret_datatype" value="FLOAT" />
+<attribute name="infile_datatype" value="FLOAT" />
+<attribute name="parent_grid" value="PS3DU1" />
+<attribute name="slab_min_index" value="50 40 1 0  " />
+<attribute name="slab_max_index" value="107 50 2 0  " />
 <grid name="PS3DU1">
 <axes>
 <xaxis>PSXU</xaxis>
@@ -40828,15 +40828,15 @@ SHO DATA/VAR/XML
 </grid>
 </var>
 <var name="W">
-<units>cm/sec</units>
-<long_name>VERTICAL VELOCITY</long_name>
-<_FillValue>-9.9999998E+33</_FillValue>
-<missing_value>-9.9999998E+33</missing_value>
-<ferret_datatype>FLOAT</ferret_datatype>
-<infile_datatype>FLOAT</infile_datatype>
-<parent_grid>PS3DW1</
-<slab_min_index>101 45 1 0  </
-<slab_max_index>105 50 1 0  </
+<attribute name="units" value="cm/sec" />
+<attribute name="long_name" value="VERTICAL VELOCITY" />
+<attribute name="_FillValue" value="-9.9999998E+33" />
+<attribute name="missing_value" value="-9.9999998E+33" />
+<attribute name="ferret_datatype" value="FLOAT" />
+<attribute name="infile_datatype" value="FLOAT" />
+<attribute name="parent_grid" value="PS3DW1" />
+<attribute name="slab_min_index" value="101 45 1 0  " />
+<attribute name="slab_max_index" value="105 50 1 0  " />
 <grid name="PS3DW1">
 <axes>
 <xaxis>PSXT1</xaxis>
@@ -40847,15 +40847,15 @@ SHO DATA/VAR/XML
 </grid>
 </var>
 <var name="TAUX">
-<units>dynes/cm**2</units>
-<long_name>ZONAL WIND STRESS</long_name>
-<_FillValue>-9.9999998E+33</_FillValue>
-<missing_value>-9.9999998E+33</missing_value>
-<ferret_datatype>FLOAT</ferret_datatype>
-<infile_datatype>FLOAT</infile_datatype>
-<parent_grid>PS2DU1</
-<slab_min_index>50 44 1 0  </
-<slab_max_index>55 50 1 0  </
+<attribute name="units" value="dynes/cm**2" />
+<attribute name="long_name" value="ZONAL WIND STRESS" />
+<attribute name="_FillValue" value="-9.9999998E+33" />
+<attribute name="missing_value" value="-9.9999998E+33" />
+<attribute name="ferret_datatype" value="FLOAT" />
+<attribute name="infile_datatype" value="FLOAT" />
+<attribute name="parent_grid" value="PS2DU1" />
+<attribute name="slab_min_index" value="50 44 1 0  " />
+<attribute name="slab_max_index" value="55 50 1 0  " />
 <grid name="PS2DU1">
 <axes>
 <xaxis>PSXU</xaxis>
@@ -40881,65 +40881,65 @@ SHO AXIS/XML `temp,return=xaxis`
  !-> SHO AXIS/XML PSXT1
 <axes>
 <axis name="PSXT1">
-<direction>I</direction>
-<units>degrees_east
-<length>160</length>
-<start>130.5E</start>
-<end>70.5W</end>
-<point_spacing>even</point_spacing>
-<modulo>yes</modulo>
-<modulo_length>360</modulo_length>
-<infile_datatype>DOUBLE</infile_datatype>
-<orig_file_axname>PSXT</orig_file_axname>
+<attribute name="direction" value="I" />
+<attribute name="units" value="degrees_east" />
+<attribute name="length" value="160" />
+<attribute name="start" value="130.5E" />
+<attribute name="end" value="70.5W" />
+<attribute name="point_spacing" value="even" />
+<attribute name="modulo" value="yes" />
+<attribute name="modulo_length" value="360" />
+<attribute name="infile_datatype" value="DOUBLE" />
+<attribute name="orig_file_axname" value="PSXT" />
 </axis>
 </axes>
 SHO AXIS/XML `temp,return=yaxis`
  !-> SHO AXIS/XML PSYT
 <axes>
 <axis name="PSYT">
-<direction>J</direction>
-<units>LATITUDE
-<length>100</length>
-<start>28.836S</start>
-<end>48.567N</end>
-<point_spacing>uneven</point_spacing>
-<modulo>no</modulo>
-<infile_datatype>DOUBLE</infile_datatype>
-<edges>PSYTedges</edges>
-<orig_file_axname>PSYT</orig_file_axname>
+<attribute name="direction" value="J" />
+<attribute name="units" value="LATITUDE" />
+<attribute name="length" value="100" />
+<attribute name="start" value="28.836S" />
+<attribute name="end" value="48.567N" />
+<attribute name="point_spacing" value="uneven" />
+<attribute name="modulo" value="no" />
+<attribute name="infile_datatype" value="DOUBLE" />
+<attribute name="edges" value="PSYTedges" />
+<attribute name="orig_file_axname" value="PSYT" />
 </axis>
 </axes>
 SHO AXIS/XML `temp,return=zaxis`
  !-> SHO AXIS/XML PSZT
 <axes>
 <axis name="PSZT">
-<direction>K</direction>
-<units>METERS
-<length>27</length>
-<start>5</start>
-<end>3824</end>
-<positive>down</positive>
-<point_spacing>uneven</point_spacing>
-<modulo>no</modulo>
-<infile_datatype>DOUBLE</infile_datatype>
-<edges>PSZTedges</edges>
-<orig_file_axname>PSZT</orig_file_axname>
+<attribute name="direction" value="K" />
+<attribute name="units" value="METERS" />
+<attribute name="length" value="27" />
+<attribute name="start" value="5" />
+<attribute name="end" value="3824" />
+<attribute name="positive" value="down" />
+<attribute name="point_spacing" value="uneven" />
+<attribute name="modulo" value="no" />
+<attribute name="infile_datatype" value="DOUBLE" />
+<attribute name="edges" value="PSZTedges" />
+<attribute name="orig_file_axname" value="PSZT" />
 </axis>
 </axes>
 SHO AXIS/XML `temp,return=taxis`
  !-> SHO AXIS/XML TIME6
 <axes>
 <axis name="TIME6">
-<direction>L</direction>
- since hour</units>
-<length>168</length>
-<start>1982-01-15 14:00:00</start>
-<end>1983-06-07 13:00:00</end>
-<point_spacing>even</point_spacing>
-<modulo>yes</modulo>
-<time_origin>1976-01-14 14:00:00</time_origin>
-<infile_datatype>DOUBLE</infile_datatype>
-<orig_file_axname>TIME</orig_file_axname>
+<attribute name="direction" value="L" />
+<attribute name="units" value="hour since 1976-01-14 14:00:00 "/>
+<attribute name="length" value="168" />
+<attribute name="start" value="1982-01-15 14:00:00" />
+<attribute name="end" value="1983-06-07 13:00:00" />
+<attribute name="point_spacing" value="even" />
+<attribute name="modulo" value="yes" />
+<attribute name="time_origin" value="1976-01-14 14:00:00" />
+<attribute name="infile_datatype" value="DOUBLE" />
+<attribute name="orig_file_axname" value="TIME" />
 </axis>
 </axes>
  
@@ -40969,15 +40969,15 @@ SHO DATA/VAR/XML
 <dataset name="./gtsa056_2.cdf" default="false">
 <title> </title>
 <var name="TEMP">
-<units>deg. C</units>
-<long_name>TEMPERATURE</long_name>
-<_FillValue>-9.9999998E+33</_FillValue>
-<missing_value>-9.9999998E+33</missing_value>
-<ferret_datatype>FLOAT</ferret_datatype>
-<infile_datatype>FLOAT</infile_datatype>
-<parent_grid>PS3DT1</
-<slab_min_index>1 40 1 0  </
-<slab_max_index>160 50 2 0  </
+<attribute name="units" value="deg. C" />
+<attribute name="long_name" value="TEMPERATURE" />
+<attribute name="_FillValue" value="-9.9999998E+33" />
+<attribute name="missing_value" value="-9.9999998E+33" />
+<attribute name="ferret_datatype" value="FLOAT" />
+<attribute name="infile_datatype" value="FLOAT" />
+<attribute name="parent_grid" value="PS3DT1" />
+<attribute name="slab_min_index" value="1 40 1 0  " />
+<attribute name="slab_max_index" value="160 50 2 0  " />
 <grid name="PS3DT1">
 <axes>
 <xaxis>PSXT1</xaxis>
@@ -40988,15 +40988,15 @@ SHO DATA/VAR/XML
 </grid>
 </var>
 <var name="U">
-<units>cm/sec</units>
-<long_name>ZONAL VELOCITY</long_name>
-<_FillValue>-9.9999998E+33</_FillValue>
-<missing_value>-9.9999998E+33</missing_value>
-<ferret_datatype>FLOAT</ferret_datatype>
-<infile_datatype>FLOAT</infile_datatype>
-<parent_grid>PS3DU1</
-<slab_min_index>50 40 1 0  </
-<slab_max_index>107 50 2 0  </
+<attribute name="units" value="cm/sec" />
+<attribute name="long_name" value="ZONAL VELOCITY" />
+<attribute name="_FillValue" value="-9.9999998E+33" />
+<attribute name="missing_value" value="-9.9999998E+33" />
+<attribute name="ferret_datatype" value="FLOAT" />
+<attribute name="infile_datatype" value="FLOAT" />
+<attribute name="parent_grid" value="PS3DU1" />
+<attribute name="slab_min_index" value="50 40 1 0  " />
+<attribute name="slab_max_index" value="107 50 2 0  " />
 <grid name="PS3DU1">
 <axes>
 <xaxis>PSXU</xaxis>
@@ -41007,15 +41007,15 @@ SHO DATA/VAR/XML
 </grid>
 </var>
 <var name="W">
-<units>cm/sec</units>
-<long_name>VERTICAL VELOCITY</long_name>
-<_FillValue>-9.9999998E+33</_FillValue>
-<missing_value>-9.9999998E+33</missing_value>
-<ferret_datatype>FLOAT</ferret_datatype>
-<infile_datatype>FLOAT</infile_datatype>
-<parent_grid>PS3DW1</
-<slab_min_index>101 45 1 0  </
-<slab_max_index>105 50 1 0  </
+<attribute name="units" value="cm/sec" />
+<attribute name="long_name" value="VERTICAL VELOCITY" />
+<attribute name="_FillValue" value="-9.9999998E+33" />
+<attribute name="missing_value" value="-9.9999998E+33" />
+<attribute name="ferret_datatype" value="FLOAT" />
+<attribute name="infile_datatype" value="FLOAT" />
+<attribute name="parent_grid" value="PS3DW1" />
+<attribute name="slab_min_index" value="101 45 1 0  " />
+<attribute name="slab_max_index" value="105 50 1 0  " />
 <grid name="PS3DW1">
 <axes>
 <xaxis>PSXT1</xaxis>
@@ -41026,15 +41026,15 @@ SHO DATA/VAR/XML
 </grid>
 </var>
 <var name="TAUX">
-<units>dynes/cm**2</units>
-<long_name>ZONAL WIND STRESS</long_name>
-<_FillValue>-9.9999998E+33</_FillValue>
-<missing_value>-9.9999998E+33</missing_value>
-<ferret_datatype>FLOAT</ferret_datatype>
-<infile_datatype>FLOAT</infile_datatype>
-<parent_grid>PS2DU1</
-<slab_min_index>50 44 1 0  </
-<slab_max_index>55 50 1 0  </
+<attribute name="units" value="dynes/cm**2" />
+<attribute name="long_name" value="ZONAL WIND STRESS" />
+<attribute name="_FillValue" value="-9.9999998E+33" />
+<attribute name="missing_value" value="-9.9999998E+33" />
+<attribute name="ferret_datatype" value="FLOAT" />
+<attribute name="infile_datatype" value="FLOAT" />
+<attribute name="parent_grid" value="PS2DU1" />
+<attribute name="slab_min_index" value="50 44 1 0  " />
+<attribute name="slab_max_index" value="55 50 1 0  " />
 <grid name="PS2DU1">
 <axes>
 <xaxis>PSXU</xaxis>
@@ -41044,8 +41044,8 @@ SHO DATA/VAR/XML
 </grid>
 </var>
 <var name="TEMP_180">
-<_FillValue>-9.9999998E+33</_FillValue>
-<missing_value>-9.9999998E+33</missing_value>
+<attribute name="_FillValue" value="-9.9999998E+33" />
+<attribute name="missing_value" value="-9.9999998E+33" />
 <grid name="PS3DT1">
 <axes>
 <yaxis>PSYT</yaxis>
@@ -41058,12 +41058,12 @@ SHO DATA/VAR/XML
 <dataset name="./coads_climatology.cdf" default="true">
 <title> </title>
 <var name="SST">
-<units>Deg C</units>
-<long_name>SEA SURFACE TEMPERATURE</long_name>
-<_FillValue>-9.9999998E+33</_FillValue>
-<missing_value>-9.9999998E+33</missing_value>
-<ferret_datatype>FLOAT</ferret_datatype>
-<infile_datatype>FLOAT</infile_datatype>
+<attribute name="units" value="Deg C" />
+<attribute name="long_name" value="SEA SURFACE TEMPERATURE" />
+<attribute name="_FillValue" value="-9.9999998E+33" />
+<attribute name="missing_value" value="-9.9999998E+33" />
+<attribute name="ferret_datatype" value="FLOAT" />
+<attribute name="infile_datatype" value="FLOAT" />
 <grid name="GSQ1">
 <axes>
 <xaxis>COADSX</xaxis>
@@ -41103,7 +41103,7 @@ LET my_sst = sst*12
 SHO VAR/XML
 <global>
 <var name="TEMP_20[D=gtsa056_2]" def="TEMP[Z=0:20@SUM]">
-<missing_value>-1.00000E+34</missing_value>
+<attribute name="missing_value" value="-1.00000E+34" />
 <grid name="PS3DT1">
 <axes>
 <xaxis>PSXT1</xaxis>
@@ -41113,14 +41113,14 @@ SHO VAR/XML
 </grid>
 </var>
 <var name="PI" def="3.14">
-<missing_value>-1.00000E+34</missing_value>
+<attribute name="missing_value" value="-1.00000E+34" />
 <grid name="ABSTRACT">
 <axes>
 </axes>
 </grid>
 </var>
 <var name="T30" def="TEMP[Z=0:30@SUM]">
-<missing_value>-1.00000E+34</missing_value>
+<attribute name="missing_value" value="-1.00000E+34" />
 <grid name="PS3DT1">
 <axes>
 <xaxis>PSXT1</xaxis>
@@ -41138,7 +41138,7 @@ SET DATA coads_climatology
 SHO VAR/XML
 <global>
 <var name="TEMP_20[D=gtsa056_2]" def="TEMP[Z=0:20@SUM]">
-<missing_value>-1.00000E+34</missing_value>
+<attribute name="missing_value" value="-1.00000E+34" />
 <grid name="PS3DT1">
 <axes>
 <xaxis>PSXT1</xaxis>
@@ -41148,7 +41148,7 @@ SHO VAR/XML
 </grid>
 </var>
 <var name="MY_SST" def="SST*12">
-<missing_value>-1.00000E+34</missing_value>
+<attribute name="missing_value" value="-1.00000E+34" />
 <grid name="GSQ1">
 <axes>
 <xaxis>COADSX</xaxis>
@@ -41158,7 +41158,7 @@ SHO VAR/XML
 </grid>
 </var>
 <var name="PI" def="3.14">
-<missing_value>-1.00000E+34</missing_value>
+<attribute name="missing_value" value="-1.00000E+34" />
 <grid name="ABSTRACT">
 <axes>
 </axes>
@@ -41172,7 +41172,7 @@ CAN DATA gtsa056_2
 SHOW VAR/XML
 <global>
 <var name="MY_SST" def="SST*12">
-<missing_value>-1.00000E+34</missing_value>
+<attribute name="missing_value" value="-1.00000E+34" />
 <grid name="GSQ1">
 <axes>
 <xaxis>COADSX</xaxis>
@@ -41182,7 +41182,7 @@ SHOW VAR/XML
 </grid>
 </var>
 <var name="PI" def="3.14">
-<missing_value>-1.00000E+34</missing_value>
+<attribute name="missing_value" value="-1.00000E+34" />
 <grid name="ABSTRACT">
 <axes>
 </axes>
@@ -41200,7 +41200,7 @@ LET t3 = sst[x=180,y=1,t="15-jan-0000:00:00":"15-feb-0000:00:00"@AVE]
 SHOW VAR/XML
 <global>
 <var name="T3" def="SST[X=180,Y=1,T=&quot;15-jan-0000:00:00&quot;:&quot;15-feb-0000:00:00&quot;@AVE]">
-<missing_value>-1.00000E+34</missing_value>
+<attribute name="missing_value" value="-1.00000E+34" />
 <grid name="GSQ1">
 <axes>
 </axes>
@@ -45227,49 +45227,7 @@ LET MAX_WAVE_SCL = 10
 LET SIG_WAVE = HA_LC[L=1:420] - MAX_WAVE
 LET MAX_TTIME = SIG_WAVE[L=1:420@LOC:0]
 LET THRESHOLD_PRCNT = .30
-LET NOISE_MASK = IF HA_LC[L=1:420] LE MAX_ALL*THRESHOLD_PRCNT THEN 0 ELSE 1
-LET ON_MASK = IF NOISE_MASK[L=1:420@RSUM] GE 1 THEN 0.5
-LET OFF_EVENTS = IF NOISE_MASK - NOISE_MASK[L=1:420@SHF:-1] LT 0 THEN 1 ELSE 0
-LET OFF_MASK = IF OFF_EVENTS[L=1:420@RSUM] LT 1 THEN 0.5
-LET WAVE1 = (ON_MASK+OFF_MASK)*HA_LC[L=1:420]
-LET FIRST_WAVE = WAVE1[L=1:420@MAX]*MIN_MASK
-LET FIRST_WAVE_TPLV = 500
-LET FIRST_WAVE_1DLV = 400
-LET FIRST_WAVE_SCL = 10
-LET SIG_WAVE1 = WAVE1[L=1:420] - FIRST_WAVE
-LET FIRST_TTIME = SIG_WAVE1[L=1:420@LOC:0]
-LET DTOR = 0.017453
-LET FAULT_LENGTH = 50
-LET FAULT_WIDTH = 50
-LET BO1 = SRCO-FAULT_LENGTH*COS((270-STRK)*DTOR)/111.32/COS(SRCA*DTOR)
-LET BA1 = SRCA-FAULT_LENGTH*SIN((270-STRK)*DTOR)/111.32
-LET BO4 = SRCO+FAULT_LENGTH*COS((270-STRK)*DTOR)/111.32/COS(SRCA*DTOR)
-LET BA4 = SRCA+FAULT_LENGTH*SIN((270-STRK)*DTOR)/111.32
-LET BO2 = BO1+FAULT_WIDTH*COS(DIP*DTOR)*SIN((270-STRK)*DTOR)/111.32/COS(SRCA*DTOR)
-LET BA2 = BA1-FAULT_WIDTH*COS(DIP*DTOR)*COS((270-STRK)*DTOR)/111.32
-LET BO3 = BO4+FAULT_WIDTH*COS(DIP*DTOR)*SIN((270-STRK)*DTOR)/111.32/COS(SRCA*DTOR)
-LET BA3 = BA4-FAULT_WIDTH*COS(DIP*DTOR)*COS((270-STRK)*DTOR)/111.32
-LET SRC_LAT = {53.307,52.9,53.687,53.28,54.076,53.654,54.36,53.93,54.596,54.16,54.83,54.4,55.133,54.72,55.509,55.12,55.97,55.598,56.473,56.1,56.975,56.603,57.512,57.14}
-LET SRC_LON = {193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}
-LET NSRCS = 24
-LET MX_MX = 474.27
-LET MXTOP = IF MX_MX GT HA_LC_T1DLV THEN MX_MX ELSE HA_LC_TPLV
-LET MN_MN = -284.33
-LET MXBOT = IF MN_MN LT HA_LC_B1DLV THEN MN_MN ELSE HA_LC_BTLV
-LET SL_X = 0.
-LET SL_X2 = 7.207
-LET SL_Y = 5.518+.26
-LET TIT_X = 7.207/2
-LET TIT_Y = 5.518+.85
-LET TSUCHR = 0.09
-LET NTSULNS = IF 1 THEN 3 ELSE 2
-LET NCTSULNS = 85
- 
-let str1a = STRLEN("($source_list)")
- !-> DEFINE VARIABLE str1a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
-let lstr1 = STRLEN("+")
- 
-let str2a = STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,2             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+LET NOISE_MASK = IF HA_LC[L=1:420] LE MAX_ALL*THRESHOLD_PRCNT THEN 0             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
              GEOMETRY: XY 
@@ -45320,7 +45278,49 @@ DATA:
 224.60300
 224.60350
 224.60400
-02.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
+ ELSE 1
+LET ON_MASK = IF NOISE_MASK[L=1:420@RSUM] GE 1 THEN 0.5
+LET OFF_EVENTS = IF NOISE_MASK - NOISE_MASK[L=1:420@SHF:-1] LT 0 THEN 1 ELSE 0
+LET OFF_MASK = IF OFF_EVENTS[L=1:420@RSUM] LT 1 THEN 0.5
+LET WAVE1 = (ON_MASK+OFF_MASK)*HA_LC[L=1:420]
+LET FIRST_WAVE = WAVE1[L=1:420@MAX]*MIN_MASK
+LET FIRST_WAVE_TPLV = 500
+LET FIRST_WAVE_1DLV = 400
+LET FIRST_WAVE_SCL = 10
+LET SIG_WAVE1 = WAVE1[L=1:420] - FIRST_WAVE
+LET FIRST_TTIME = SIG_WAVE1[L=1:420@LOC:0]
+LET DTOR = 0.017453
+LET FAULT_LENGTH = 50
+LET FAULT_WIDTH = 50
+LET BO1 = SRCO-FAULT_LENGTH*COS((270-STRK)*DTOR)/111.32/COS(SRCA*DTOR)
+LET BA1 = SRCA-FAULT_LENGTH*SIN((270-STRK)*DTOR)/111.32
+LET BO4 = SRCO+FAULT_LENGTH*COS((270-STRK)*DTOR)/111.32/COS(SRCA*DTOR)
+LET BA4 = SRCA+FAULT_LENGTH*SIN((270-STRK)*DTOR)/111.32
+LET BO2 = BO1+FAULT_WIDTH*COS(DIP*DTOR)*SIN((270-STRK)*DTOR)/111.32/COS(SRCA*DTOR)
+LET BA2 = BA1-FAULT_WIDTH*COS(DIP*DTOR)*COS((270-STRK)*DTOR)/111.32
+LET BO3 = BO4+FAULT_WIDTH*COS(DIP*DTOR)*SIN((270-STRK)*DTOR)/111.32/COS(SRCA*DTOR)
+LET BA3 = BA4-FAULT_WIDTH*COS(DIP*DTOR)*COS((270-STRK)*DTOR)/111.32
+LET SRC_LAT = {53.307,52.9,53.687,53.28,54.076,53.654,54.36,53.93,54.596,54.16,54.83,54.4,55.133,54.72,55.509,55.12,55.97,55.598,56.473,56.1,56.975,56.603,57.512,57.14}
+LET SRC_LON = {193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}
+LET NSRCS = 24
+LET MX_MX = 474.27
+LET MXTOP = IF MX_MX GT HA_LC_T1DLV THEN MX_MX ELSE HA_LC_TPLV
+LET MN_MN = -284.33
+LET MXBOT = IF MN_MN LT HA_LC_B1DLV THEN MN_MN ELSE HA_LC_BTLV
+LET SL_X = 0.
+LET SL_X2 = 7.207
+LET SL_Y = 5.518+.26
+LET TIT_X = 7.207/2
+LET TIT_Y = 5.518+.85
+LET TSUCHR = 0.09
+LET NTSULNS = IF 1 THEN 3 ELSE 2
+LET NCTSULNS = 85
+ 
+let str1a = STRLEN("($source_list)")
+ !-> DEFINE VARIABLE str1a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
+let lstr1 = STRLEN("+")
+ 
+let str2a = STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
 list str2a
              VARIABLE : STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
           162.000
@@ -45756,11 +45756,11 @@ ppl list labels
  @ASDEPTH (m)                                                                   
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 6.16
+ LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 6.17
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASNov 20 2008 15:45:42
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASJan 12 2009 12:26:25
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 179.9E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47022,7 +47022,7 @@ GO bn_long_revision_num.jnl
  
 ! ferret version
 sh sym FERRET_VERSION
-FERRET_VERSION = "6.16"
+FERRET_VERSION = "6.17"
  
 ! history attribute
 let a = 12
@@ -47040,7 +47040,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET   version6.16:
+ Commands in Program FERRET   version6.17:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE
  SET REGION/I/J/K/L/X/Y/Z/T/DX/DY/DZ/DT/DI/DJ/DK/DL
@@ -47160,7 +47160,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "20-Nov-08:15:42"
+WIN_TITLE = "12-Jan-09:12:22"
  
 set win/title="set the title"
 sho sym win_title
@@ -47178,7 +47178,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="         :     "
+ !-> set win/title="12-Jan-09:12:22"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47187,16 +47187,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = SESSION_DATE
+ !-> DEFINE SYMBOL the_date = 12-Jan-09
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = SESSION_TIME
+ !-> DEFINE SYMBOL the_time = 12:22
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="SESSION_DATE:SESSION_TIME"
+ !-> SET WIN/TITLE="12-Jan-09:12:22"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "SESSION_DATE:SESSION_TIME"
+WIN_TITLE = "12-Jan-09:12:22"
  
 GO bn_reset
 cancel mode verify
@@ -51267,7 +51267,6 @@ show att/all ($timeax)
      attributes for dataset: ./coads_climatology.cdf
  (TIME9).units = MONTHS since 1-JAN-0001 
  (TIME9).time_origin = 1-JAN-0001 
- (TIME9).modulo =   
  (TIME9).orig_file_axname = TIME 
 show axis ($timeax)
  !-> show axis TIME9
@@ -51425,7 +51424,7 @@ sho dat/att
  VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
 --------------------------------------------------------------------------------
   
- .                      history             CHAR    12   T      FERRET V6.16
+ .                      history             CHAR    24   T      FERRET V6.17   12-Jan-09
                         Conventions         CHAR    6    F      CF-1.0
   
 (PSXT91_108)            units               CHAR    12   T      degrees_east
@@ -51466,7 +51465,7 @@ sho dat/att
  VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
 --------------------------------------------------------------------------------
   
- .                      history             CHAR    12   T      FERRET V6.16
+ .                      history             CHAR    24   T      FERRET V6.17   12-Jan-09
                         Conventions         CHAR    6    F      CF-1.0
   
 (PSXT91_108)            units               CHAR    12   T      degrees_east
@@ -52247,15 +52246,15 @@ use noleap.nc
 sh axis/xml timenoleap
 <axes>
 <axis name="TIMENOLEAP">
-<direction>L</direction>
- since DAYS</units>
-<length>731</length>
-<start>2000-01-01 00:00:00</start>
-<end>2002-01-01 00:00:00</end>
-<point_spacing>even</point_spacing>
-<modulo>no</modulo>
-<time_origin>1901-01-15 00:00:00</time_origin>
-<calendar>NOLEAP</calendar>
+<attribute name="direction" value="L" />
+<attribute name="units" value="DAYS since 1901-01-15 00:00:00 "/>
+<attribute name="length" value="731" />
+<attribute name="start" value="2000-01-01 00:00:00" />
+<attribute name="end" value="2002-01-01 00:00:00" />
+<attribute name="point_spacing" value="even" />
+<attribute name="modulo" value="no" />
+<attribute name="time_origin" value="1901-01-15 00:00:00" />
+<attribute name="calendar" value="NOLEAP" />
 </axis>
 </axes>
  
@@ -52616,26 +52615,26 @@ let a = {1,1}* ysequence({-.29,1.09})
 set view ul; shade/key a; sh sym lev*
 LEV_TEXT = "(-5,30,1)"
 LEV_MIN = "-0.3"
-LEV_MAX = "1.2"
-LEV_NUM = "15"
+LEV_MAX = "1.1"
+LEV_NUM = "14"
 LEV_DEL = "0.1"
 set view ur; shade/lev a; sh sym lev*
 LEV_TEXT = ""
 LEV_MIN = "-0.3"
-LEV_MAX = "1.2"
-LEV_NUM = "15"
+LEV_MAX = "1.1"
+LEV_NUM = "14"
 LEV_DEL = "0.1"
 set view ll; shade/line/key a; sh sym lev*
 LEV_TEXT = ""
 LEV_MIN = "-0.3"
-LEV_MAX = "1.2"
-LEV_NUM = "15"
+LEV_MAX = "1.1"
+LEV_NUM = "14"
 LEV_DEL = "0.1"
 set view lr; shade/lev a; sh sym lev*
 LEV_TEXT = ""
 LEV_MIN = "-0.3"
-LEV_MAX = "1.2"
-LEV_NUM = "15"
+LEV_MAX = "1.1"
+LEV_NUM = "14"
 LEV_DEL = "0.1"
  
 cancel view
@@ -53051,7 +53050,7 @@ show var
 show var/xml
 <global>
 <var name="SST_FINAL" def="SST_2_REGRID[D=2,GXY=TEMP_1_REGRID[D=1]]">
-<missing_value>-1.00000E+34</missing_value>
+<attribute name="missing_value" value="-1.00000E+34" />
 <grid name="(G107)">
 <axes>
 <xaxis>PSXT1</xaxis>
@@ -53060,7 +53059,7 @@ show var/xml
 </grid>
 </var>
 <var name="SST_2_REGRID" def="SST[D=2,T=&quot;15-Feb&quot;:&quot;15-Mar&quot;@AVE]">
-<missing_value>-1.00000E+34</missing_value>
+<attribute name="missing_value" value="-1.00000E+34" />
 <grid name="GSQ1">
 <axes>
 <xaxis>COADSX</xaxis>
@@ -53069,7 +53068,7 @@ show var/xml
 </grid>
 </var>
 <var name="TEMP_1_REGRID" def="TEMP[D=1,Z=5.00:75.00@AVE]">
-<missing_value>-1.00000E+34</missing_value>
+<attribute name="missing_value" value="-1.00000E+34" />
 <grid name="PS3DT2">
 <axes>
 <xaxis>PSXT1</xaxis>
@@ -53856,11 +53855,11 @@ SHOW DATA/VAR/XML
 <dataset name="./z1.nc" default="false">
 <title> </title>
 <var name="DDAT_ORIG">
-<long_name>DDAT[GZ=ZAXIS_ORIG@ASN]</long_name>
-<_FillValue>-9.9999998E+33</_FillValue>
-<missing_value>-9.9999998E+33</missing_value>
-<ferret_datatype>FLOAT</ferret_datatype>
-<infile_datatype>FLOAT</infile_datatype>
+<attribute name="long_name" value="DDAT[GZ=ZAXIS_ORIG@ASN]" />
+<attribute name="_FillValue" value="-9.9999998E+33" />
+<attribute name="missing_value" value="-9.9999998E+33" />
+<attribute name="ferret_datatype" value="FLOAT" />
+<attribute name="infile_datatype" value="FLOAT" />
 <grid name="GII1">
 <axes>
 <zaxis>ZAXIS_ORIG</zaxis>
@@ -53871,11 +53870,11 @@ SHOW DATA/VAR/XML
 <dataset name="./z2.nc" default="true">
 <title> </title>
 <var name="CYCLE_ORIG">
-<long_name>CYCLE[GZ=ZAXIS_ORIG@ASN]</long_name>
-<_FillValue>-9.9999998E+33</_FillValue>
-<missing_value>-9.9999998E+33</missing_value>
-<ferret_datatype>FLOAT</ferret_datatype>
-<infile_datatype>FLOAT</infile_datatype>
+<attribute name="long_name" value="CYCLE[GZ=ZAXIS_ORIG@ASN]" />
+<attribute name="_FillValue" value="-9.9999998E+33" />
+<attribute name="missing_value" value="-9.9999998E+33" />
+<attribute name="ferret_datatype" value="FLOAT" />
+<attribute name="infile_datatype" value="FLOAT" />
 <grid name="GIX1">
 <axes>
 <zaxis>ZAXIS_ORIG</zaxis>
@@ -53883,8 +53882,8 @@ SHOW DATA/VAR/XML
 </grid>
 </var>
 <var name="DDAT_A">
-<_FillValue>-9.9999998E+33</_FillValue>
-<missing_value>-9.9999998E+33</missing_value>
+<attribute name="_FillValue" value="-9.9999998E+33" />
+<attribute name="missing_value" value="-9.9999998E+33" />
 <grid name="(G107)">
 <axes>
 <zaxis>ZAXIS_DES</zaxis>
@@ -55050,6 +55049,52 @@ say "a`-950.001,p=0`"
  !-> MESSAGE/CONTINUE "a-950"
 a-950
  
+GO bn_reset
+cancel mode verify
+GO err611_set_var_ez
+! err611_set_var_ez.jnl
+! 6-Jan-2009
+! Ticket 1615
+!
+! SET VAR/UNITS=  etc for a variable in an EZ dataset
+! The settings were applied within the Ferret session (plots etc)
+! but not added to the attribute structure and not written to
+! output files.
+ 
+SP echo "err611_set_var_ez.jnl --- " >> all_ncdump.out
+ 
+! Create an ASCII dataset
+LET a = {1,3,5}
+LIST/NOHEAD/FORM=(F8.1)/FILE=dat.dat/CLOBBER a
+FILE/VAR=my_asc dat.dat
+ 
+! use SET VAR to add units, title, reset bad value
+SET VAR/UNITS="micrograms/L"/TITLE="chlorophyll"/BAD=3 my_asc
+SHOW DAT/ATT
+     currently SET data sets:
+    1> ./dat.dat  (default)
+ VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
+--------------------------------------------------------------------------------
+  
+ .                      history             CHAR    7    F      dat.dat
+  
+ MY_ASC                 long_name           CHAR    11   T      chlorophyll
+                        missing_value       DOUBLE  1    T      3
+                        units               CHAR    12   T      micrograms/L
+  
+SAVE/FILE=a.nc/CLOBBER my_asc
+SP ncdump -h a.nc >> all_ncdump.out
+ 
+! Create an Unformatted dataset
+LIST/FORM=UNF/file=unf.dat/CLOBBER a
+FILE/FORM=UNF/VAR=my_unf unf.dat
+ 
+! use SET VAR to add units, title, reset bad value
+SET VAR/UNITS="metres"/TITLE="Some Unformatted input"/BAD=5 my_unf
+SAVE/FILE=a.nc/CLOBBER my_unf
+SP ncdump -h a.nc >> all_ncdump.out
+ 
+ 
 ! ******** V6.14 Additions below ***********
 GO bn_reset
 cancel mode verify
@@ -55670,9 +55715,9 @@ list indx_bl, samplel(bl,indx_bl)
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v6.16  
- 	Linux(g77) 2.4.21-32 - 11/20/08
- 	20-Nov-08 15:46     
+ 	FERRET v6.17  
+ 	Linux(g77) 2.4.21-32 - 01/12/09
+ 	12-Jan-09 12:27     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -55698,7 +55743,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.16   20-Nov-08" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55721,7 +55766,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.16   20-Nov-08" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55745,7 +55790,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.16   20-Nov-08" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55784,7 +55829,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.16   20-Nov-08" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55819,7 +55864,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.16   20-Nov-08" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55859,7 +55904,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55913,7 +55958,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -55967,7 +56012,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56021,7 +56066,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56066,7 +56111,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56157,7 +56202,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56224,7 +56269,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56254,15 +56299,14 @@ dimensions:
 	TAX = UNLIMITED ; // (5 currently)
 variables:
 	double XAX(XAX) ;
-		XAX:axis = "X" ;
-		XAX:modulo = "false" ;
 		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
 		XAX:bounds = "XAX_bnds" ;
 	double XAX_bnds(XAX, bnds) ;
 	double ZAX(ZAX) ;
+		ZAX:point_spacing = "uneven" ;
 		ZAX:axis = "Z" ;
 		ZAX:positive = "down" ;
-		ZAX:point_spacing = "uneven" ;
 		ZAX:bounds = "ZAX_bnds" ;
 	double ZAX_bnds(ZAX, bnds) ;
 	double TAX(TAX) ;
@@ -56275,7 +56319,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56350,7 +56394,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56377,7 +56421,7 @@ variables:
 		X_:_FillValue = -1.e+34f ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -56401,7 +56445,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -56426,11 +56470,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -56440,15 +56484,14 @@ dimensions:
 	TAX = UNLIMITED ; // (5 currently)
 variables:
 	double XAX(XAX) ;
-		XAX:axis = "X" ;
-		XAX:modulo = 360. ;
 		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
 		XAX:bounds = "XAX_bnds" ;
 	double XAX_bnds(XAX, bnds) ;
 	double ZAX(ZAX) ;
+		ZAX:point_spacing = "uneven" ;
 		ZAX:axis = "Z" ;
 		ZAX:positive = "down" ;
-		ZAX:point_spacing = "uneven" ;
 		ZAX:bounds = "ZAX_bnds" ;
 	double ZAX_bnds(ZAX, bnds) ;
 	double TAX(TAX) ;
@@ -56461,7 +56504,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56533,7 +56576,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56574,7 +56617,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56613,7 +56656,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56716,7 +56759,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -56752,7 +56795,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -56774,7 +56817,7 @@ variables:
 		BB:my_title = "This is my new variable bb" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56800,7 +56843,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56820,7 +56863,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56841,7 +56884,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56880,7 +56923,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -56916,7 +56959,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -56950,7 +56993,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -56978,7 +57021,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57011,7 +57054,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57037,7 +57080,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57078,7 +57121,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -57176,7 +57219,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -57215,7 +57258,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57296,7 +57339,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57333,7 +57376,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57370,7 +57413,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57418,7 +57461,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57473,7 +57516,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -57513,7 +57556,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -57553,7 +57596,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -57585,7 +57628,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -57616,7 +57659,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -57645,7 +57688,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -57654,9 +57697,8 @@ dimensions:
 	bnds = 2 ;
 variables:
 	double XAX(XAX) ;
-		XAX:axis = "X" ;
-		XAX:modulo = 360. ;
 		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
 		XAX:bounds = "XAX_bnds" ;
 	double XAX_bnds(XAX, bnds) ;
 	float A(XAX) ;
@@ -57665,38 +57707,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:axis = "X" ;
-		XAX:modulo = 360. ;
-		XAX:point_spacing = "uneven" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	float A(XAX) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57716,9 +57727,8 @@ dimensions:
 	bnds = 2 ;
 variables:
 	double XAX(XAX) ;
-		XAX:axis = "X" ;
-		XAX:modulo = 360. ;
 		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
 		XAX:bounds = "XAX_bnds" ;
 	double XAX_bnds(XAX, bnds) ;
 	float A(XAX) ;
@@ -57727,7 +57737,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	float A(XAX) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57776,7 +57816,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -57814,7 +57854,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -57832,16 +57872,53 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.16" ;
+		:history = "FERRET V6.17   12-Jan-09" ;
+		:Conventions = "CF-1.0" ;
+}
+err611_set_var_ez.jnl --- 
+netcdf a {
+dimensions:
+	XAX1_3 = 3 ;
+variables:
+	double XAX1_3(XAX1_3) ;
+		XAX1_3:point_spacing = "even" ;
+		XAX1_3:axis = "X" ;
+	float MY_ASC(XAX1_3) ;
+		MY_ASC:missing_value = 3.f ;
+		MY_ASC:_FillValue = 3.f ;
+		MY_ASC:long_name = "chlorophyll" ;
+		MY_ASC:units = "micrograms/L" ;
+		MY_ASC:history = "From dat.dat" ;
+
+// global attributes:
+		:history = "FERRET V6.17   12-Jan-09" ;
+		:Conventions = "CF-1.0" ;
+}
+netcdf a {
+dimensions:
+	XAX1_3 = 3 ;
+variables:
+	double XAX1_3(XAX1_3) ;
+		XAX1_3:point_spacing = "even" ;
+		XAX1_3:axis = "X" ;
+	float MY_UNF(XAX1_3) ;
+		MY_UNF:missing_value = 5.f ;
+		MY_UNF:_FillValue = 5.f ;
+		MY_UNF:long_name = "Some Unformatted input" ;
+		MY_UNF:units = "metres" ;
+		MY_UNF:history = "From unf.dat" ;
+
+// global attributes:
+		:history = "FERRET V6.17   12-Jan-09" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
 end of ncdump output
  
  	NOAA/PMEL TMAP
- 	FERRET v6.16  
- 	Linux(g77) 2.4.21-32 - 11/20/08
- 	20-Nov-08 15:46     
+ 	FERRET v6.17  
+ 	Linux(g77) 2.4.21-32 - 01/12/09
+ 	12-Jan-09 12:27     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57850,10 +57927,185 @@ yes? ! *kob* 3/04/98 - newly created - copied from bn490_all_shell.jnl
 yes? 
 yes? 
 yes? GO bn_gif
+! bn450_gif.JNL - copied from bn450_plot.jnl
+! this journal file only tests the writing of gif file in batch mode using
+! frame/file=bnplot.gif....will create three gif files
+! *kob*
+ 
+! define a 6 viewport window (modified definitions 11/92)
+def view/text=.4/xlim=0,.333/ylim=0,.5    ll6
+def view/text=.2/xlim=0,.333/ylim=.5,1    ul6
+def view/text=.1/xlim=.333,.666/ylim=0,.5 lm6
+def view/text=.6/xlim=.333,.666/ylim=.5,1 um6
+def view/text=1.5/xlim=.666,1/ylim=0,.5   lr6
+def view/xlim=.666,1/ylim=.5,1            ur6     ! auto /TEXT
+show view
+ 
+ name             text    xlimits     ylimits    mode
+ 
+ UPPER            1.00   0.00,1.00   0.50,1.00   edges
+ LOWER            1.00   0.00,1.00   0.00,0.50   edges
+ RIGHT            1.00   0.50,1.00   0.00,1.00   edges
+ LEFT             1.00   0.00,0.50   0.00,1.00   edges
+ LL               0.50   0.00,0.50   0.00,0.50   edges
+ LR               0.50   0.50,1.00   0.00,0.50   edges
+ UL               0.50   0.00,0.50   0.50,1.00   edges
+ UR               0.50   0.50,1.00   0.50,1.00   edges
+ FULL             1.00   0.00,1.00   0.00,1.00   edges
+ LL6              0.40   0.00,0.33   0.00,0.50   edges
+ UL6              0.20   0.00,0.33   0.50,1.00   edges
+ LM6              0.10   0.33,0.67   0.00,0.50   edges
+ UM6              0.60   0.33,0.67   0.50,1.00   edges
+ LR6              1.50   0.67,1.00   0.00,0.50   edges
+ UR6              0.41   0.67,1.00   0.50,1.00   edges
+   current viewport is NONE
+ 
+! some variables for plotting
+let a = 0.8*sin(l/10)
+let b = 0.6*cos(l/10)
+let c = sin(100/(l+k))
+let d = l/50
+let e = k-(l/25)
+let f = -.5+(l/125)
+let g = (l-25)/(k*35)
+let h = 0.1
+let m = 0.2
+ 
+! illegal plot commands
+set mode ignore
+plot/i=1:10/j=1:20/nolabel i+j			! not a line
+plot/i=1:10/j=1:20/nolabel i,i+j		! not a line
+plot/i=1:10/j=1:20/nolabel i+j,i		! not a line
+plot/i=1:10/j=1:20/nolabel j,i			! differing axes
+plot/i=1:10/j=1:20/vs/line/nolabel j,i		! unequal lengths
+contour/i=1:10/j=1:20/nolabel i			! only 1 D
+contour/i=1:10/j=1:20/nolabel i/j,j/i		! multiple fields
+vector/i=1:10/j=1:20/nolabel i/j		! only 1 field
+vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j	! 3 fields
+set mode/last ignore
+ 
+! notice the default window size is 10.2,width x 8.8,height
+ppl list plot
+         WIDTH=   10.20  HEIGHT=    8.80  TKTYPE= 4010  BAUD=  110
+         WINDOW= ON   BOX= OFF  CROSS= 0  PLTYPE=  3
+         PLOT MODE=   A
+         PLOT FILE= .gif                                                                                                                            
+ 
+! enlarge it to accomodate an additional 50% width
+ppl size 15.3,8.8
+ 
+! turn on metafile (enabled 10/29/91)
+! commented out 9/97 - instead set in bn450_all.jnl
+! set mode metafile
+ 
+! draw a plot into a viewport - to be deleted (check hard copy)
+set view ll6
+contour/i=1:50/j=1:50/nolabel i/(j+20)
+ 
+! 4 frames testing PLOT output
+set view ul6
+plot/l=1:50/k=1/trans/nolabel a,b,c
+plot/l=1:50/k=1/trans/over/line=6/nolabel d
+plot/l=1:50/k=1/trans/over/symbol=88/nolabel e
+plot/l=1:50/k=1/trans/over/symbol=47/line/nolabel f
+def view/text=.1/xlim=.333,1/ylim=0,.5 lm6   ! redefine longer in x (11/92)
+set view lm6
+!ppl axlen 16
+set region/k=1
+plot/l=1:50/nolabel a,b,c,d,e,f,g[k=1],g[k=2],a+h,b+h,c+h,d+h,e+h,f+h,g[k=1]+h,g[k=2]+h,a+m,b+m,c+m
+def view/text=.6/xlim=.333,1/ylim=.5,1 um6    ! redefine it longer in x (11/92)
+set view um6
+!ppl axlen 17,5
+plot/l=1:50/nolabel sin(100/(l+5))
+plot/l=1:50/over/nolabel a,b,c,d,e,f,g[k=1],g[k=2],a+h,b+h,c+h,d+h,e+h,f+h,g[k=1]+h,g[k=2]+h,a+m,b+m,c+m
+set view ll6
+!ppl axlen 8,6
+plot/l=1:99000/nolabel sin(200000/(l+10000))
+ 
+! reset to normal axis lengths and prepare for a new piccie
+!ppl axlen 8
+frame/file=bnplot.gif
+set wind/clear
+ 
+! draw six frames
+set view ll6
+contour/i=1:50/j=1:50/levels=(0,2.5,.25)/nolabel i/(j+20)
+plot/over/nolab/vs/line/i=1:50/j=1:50/nolabel 6*i/j,5*j/i
+set view ul6
+vector/i=1:50/j=1:50/length=50/aspect/nolabel sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
+def view/text=.1/xlim=.333,.666/ylim=0,.5 lm6  ! redefine it (11/92)
+set view lm6
+shade/i=1:50/j=1:50/nolabel i/(j+20)
+set view lr6
+ppl lev () (0,2.5,.1)
+shade/i=1:50/j=1:50/line/level/nolabel i/(j+20)
+set view ur6
+let icomp = (sin(i/20)*10+j-20)
+let jcomp = (-1*cos(j/10)*10+i-20)
+contour/i=1:50/j=1:50/nolabel icomp^2+jcomp^2
+contour/i=1:50/j=1:50/over/level/nolabel icomp^2+(-1*cos(i/10)*80)^2
+! note: "i-i" and "j-j" are needed to create 2D structures
+vector/i=1:50/j=1:50/overlay/nolabel j-20+(i-i),i-20+(j-j)
+vector/i=1:50/j=1:50/overlay/length/nolabel i-20+(j-j),40-j+(i-i)
+def view/text=.6/xlim=.333,.666/ylim=.5,1 um6    ! redefine it (11/92)
+set view um6
+shade/i=1:50/j=1:50/nolabel i/(j+20)
+contour/i=1:50/j=1:50/over/nolabel (sin(i/20)+j-20)^2+(-1*cos(j/10)+i-20)^2
+vector/i=1:50/j=1:50/overlay/nolabel j-20+(i-i),i-20+(j-j)
+frame/file=bnplot.gif
+! additions for version 3.01 "/TITLE=" controls
+cancel viewports
+set view ul6
+plot/title="My Custom Title"/i=1:100/nolabel sin(i/6)
+plot/title="My Custom Key"/i=1:100/over/nolabel sin(i/5)
+set view um6
+plot/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9)
+plot/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
+set view ur6
+plot/vs/line/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9)
+plot/vs/line/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
+set view ll6
+plot/vs/line/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9),sin(i/12)
+plot/vs/line/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
+set view lm6
+contour/i=1:20/j=1:20/title="My Contour Title"/nolabel sin(i/3)*cos(j/4)
+contour/over/i=5:30/j=5:30/title="My Contour Overlay"/nolabel sin(i/2)*cos(j/3)
+set view lr6
+wire/view=0,0,2/i=1:20/j=1:20/title="My Egg Carton"/nolabel sin(i/3)*cos(j/4)
+ 
+! addition for 3.20 showing changed default behavior of plot/vs
+! return to window and redraw with symbols
+set view ll6
+plot/vs/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9),sin(i/12)
+plot/vs/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
+frame/file=bnplot.gif
+ 
+! Prior to v5.8 could not get the window size in pixels when in gif mode
+show symbol ppl$xpixel
+PPL$XPIXEL = "1152"
+show symbol ppl$ypixel
+PPL$YPIXEL = "662"
+ 
+! V6.13
+! transparency with FRAME/TRANS
+!!
+! These gif images have the background color white or black
+! replaced by transparent color. This can be tested by putting
+! them into an HTML document with a colored background.
+! e.g. a file called test_transparent.html containing only this line:
+! <html> <body bgcolor="orange"> <img src="testfile.gif"/> </body> </html>
+ 
+can view
+use coads_climatology
+shade/nokey/lev=50 sst[L=1]
+frame/trans/file=testbackground.gif
+ 
+ 
+exit/command
  	NOAA/PMEL TMAP
- 	FERRET v6.16  
- 	Linux(g77) 2.4.21-32 - 11/20/08
- 	20-Nov-08 15:46     
+ 	FERRET v6.17  
+ 	Linux(g77) 2.4.21-32 - 01/12/09
+ 	12-Jan-09 12:27     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -57965,9 +58217,9 @@ frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v6.16  
- 	Linux(g77) 2.4.21-32 - 11/20/08
- 	20-Nov-08 15:46     
+ 	FERRET v6.17  
+ 	Linux(g77) 2.4.21-32 - 01/12/09
+ 	12-Jan-09 12:27     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -58050,4 +58302,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Thu Nov 20 15:46:55 PST 2008
+Ended at Mon Jan 12 12:27:48 PST 2009

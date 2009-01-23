@@ -1,0 +1,5 @@
+! bn_last_go_file.jnl
+! test the automatically-defined symbol LAST_GO_FILE
+
+show sym last_go_file
+

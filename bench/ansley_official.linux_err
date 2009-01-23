@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     54886142 Jan 12 12:20 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     54956146 Jan 23 13:47 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: v6.17 fixing last of batch bugs; set line color before opening the plot
+Note: test fix for bug 1624: SAMPLEXYT. Also fix the contents of LAST_GO_FILE which was chopped off.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Mon Jan 12 12:22:53 PST 2009
+Beginning at Fri Jan 23 14:30:26 PST 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2061,12 +2061,7 @@ set att (COADSX81_81).axis = "Z"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
@@ -2138,6 +2133,7 @@ Replacing definition of axis X2AX
  *** NOTE: Changing the value of attribute (TIME7).time_origin
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 Replacing definition of axis TIME
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2369,114 +2365,6 @@ SET DAT/FORM=CDF test_strides.cdf
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-
-   ERROR in External Function add_9:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/add_9.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function avet:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/avet.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function closest_in_zlist:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/closest_in_zlist.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function cmprsi_by:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/cmprsi_by.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function dates:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/dates.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function factorial:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/factorial.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function list_good:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/list_good.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function pass_thru:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/pass_thru.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function percent_good_t:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/percent_good_t.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function pt_in_poly_1d:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/pt_in_poly_1d.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function pt_in_poly_curvi:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/pt_in_poly_curvi.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function pt_in_poly_xygrid:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/pt_in_poly_xygrid.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function rect_to_curv_test:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/rect_to_curv_test.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function scat2grid_bin_xy:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/scat2grid_bin_xy.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function scatgrid_bin_xyt:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/scatgrid_bin_xyt.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function scatgrid_nobs_xyt:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/scatgrid_nobs_xyt.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function storage:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/storage.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function string_arg:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/string_arg.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function student_t_cutoff:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/student_t_cutoff.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function subtract:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/subtract.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function tax_index_datestring:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/tax_index_datestring.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function tcat_string:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/tcat_string.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function writev5d:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/writev5d.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function xcat_string:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/xcat_string.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function ycat_string:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/ycat_string.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function zaxreplace_xyt:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/zaxreplace_xyt.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function zcat_string:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/zcat_string.so: cannot open shared object file: No such file or directory".
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2600,10 +2488,12 @@ LIST a_regrid[D=1,GT=b[D=2]@MOD]
  TEMPORARY data cleared from memory
  LISTing to file dat.dat
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
  LISTing to file unf.dat
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_DOUBLE to match output type of variable NC_FLOAT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file lonlat.dat
+ LISTing to file lonlat.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2641,26 +2531,23 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-
-   ERROR in External Function add_9:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/add_9.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function avet:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/avet.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function pass_thru:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/pass_thru.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function storage:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/storage.so: cannot open shared object file: No such file or directory".
-
-   ERROR in External Function add_9:
-   Dynamic linking call dlopen() returns --
-   "/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/add_9.so: cannot open shared object file: No such file or directory".
+Replacing definition of axis X1
+Replacing definition of axis Y1
+Replacing definition of grid G1
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: unknown region name: @w
+set region/@w
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: string/numeric data type mix-up: WRITEV5D
+load WRITEV5D(tr[i=95:100,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,55.0)
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -2732,4 +2619,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Jan 12 12:27:48 PST 2009
+Ended at Fri Jan 23 14:36:04 PST 2009

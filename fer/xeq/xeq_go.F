@@ -62,6 +62,7 @@
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out.
 * V610  2/08 *acm* Always define a symbol LAST_GO_FILE with the name of the jnl script.
+* V618  1/09 *acm* The last character of symbol LAST_GO_FILE was chopped off. Fix this.
 
 ! Note: A known "bug" of the 12/94 GO_FILE symbol is that the PLOT+ symbol
 !	GO_FILE gets defined only **after** PLOT+ has already placed a window
@@ -172,7 +173,7 @@
 	ist = 0
 	len_string = TM_LENSTR1( cbuff )
 
-	CALL SETSYM ('LAST_GO_FILE '//cbuff, 12+len_string, 
+	CALL SETSYM ('LAST_GO_FILE '//cbuff, 13+len_string, 
      .                 ier, ist)
 
 * successful completion

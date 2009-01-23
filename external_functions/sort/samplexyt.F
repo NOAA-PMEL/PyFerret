@@ -101,7 +101,7 @@
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
-      CALL ef_set_num_work_arrays(id, 3)
+      CALL ef_set_num_work_arrays(id, 5)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
@@ -229,6 +229,12 @@
 *  taxdat
       CALL ef_set_work_array_dims (id, 3, mtl, 1, 1, 1, mth, 1, 1, 1)
 
+*  taxdatlo
+      CALL ef_set_work_array_dims (id, 4, mtl, 1, 1, 1, mth, 1, 1, 1)
+
+*  taxdathi
+      CALL ef_set_work_array_dims (id, 5, mtl, 1, 1, 1, mth, 1, 1, 1)
+
 
 *                                                                      ^
 *                                                                      |
@@ -242,10 +248,8 @@
 * In this subroutine we compute the result
 *
 
-
-
       SUBROUTINE samplexyt_compute(id, arg_1, arg_2, arg_3, arg_4, 
-     .      result, xaxdat, yaxdat, taxdat)
+     .      result, xaxdat, yaxdat, taxdat, taxdatlo, taxdathi)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -263,7 +267,6 @@
      .     mem4lot:mem4hit)
       REAL result(memreslox:memreshix, memresloy:memreshiy,
      .      memresloz:memreshiz, memreslot:memreshit)
-
 
 * After initialization, the 'res_' arrays contain indexing information
 * for the result axes.  The 'arg_' arrays will contain the indexing
@@ -292,6 +295,10 @@
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
       REAL*8 taxdat(wrk3lox:wrk3lox+(wrk3hix-wrk3lox)/2,wrk3loy:wrk3hiy,
      .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
+      REAL*8 taxdatlo(wrk4lox:wrk4lox+(wrk4hix-wrk4lox)/2,wrk4loy:wrk4hiy,
+     .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
+      REAL*8 taxdathi(wrk5lox:wrk5lox+(wrk5hix-wrk5lox)/2,wrk5loy:wrk5hiy,
+     .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
 
       INTEGER i, j, k, l
       INTEGER i1,j1,k1,l1
@@ -366,6 +373,10 @@ C  variables for checking axis characteristics (modulo axes)
      .   arg_lo_ss(Y_AXIS, ARG1), arg_hi_ss(Y_AXIS, ARG1), yaxdat)
       CALL ef_get_coordinates(id, ARG1, T_AXIS,
      .   arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), taxdat)
+      CALL ef_get_box_lo_lim(id, ARG1, T_AXIS,
+     .   arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), taxdatlo)
+      CALL ef_get_box_hi_lim(id, ARG1, T_AXIS,
+     .   arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), taxdathi)
 
       i2 = arg_lo_ss(X_AXIS,ARG2)
       j2 = arg_lo_ss(Y_AXIS,ARG2)
@@ -414,7 +425,7 @@ C  variables for checking axis characteristics (modulo axes)
             err_msg = 'cannot handle MODULO T axis that is not regular'
             go to 999
          ELSE
-            dt = taxdat(tlo+1,1,1,1) - taxdat(tlo,1,1,1)
+            dt = taxdathi(tlo,1,1,1) - taxdatlo(tlo,1,1,1)
             delmodt = taxdat(thi,1,1,1) - taxdat(tlo,1,1,1) + dt
             taxdat(thi+1,1,1,1) = taxdat(tlo,1,1,1)
          ENDIF
@@ -457,35 +468,41 @@ C  variables for checking axis characteristics (modulo axes)
             Lbot = ef_unspecified_int4	! Check if tpt point in tax range.
             Lmatch = 0
             DO 600 i4 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(t_AXIS,ARG1)
-               IF (tpt .GE. taxdat(i4,1,1,1)) Lbot = i4
+               IF (tpt .GE. taxdatlo(i4,1,1,1)) Lbot = i4
                IF (tpt .EQ. taxdat(i4,1,1,1)) Lmatch = i4
-
  	       IF (modulo(4)) THEN
-	          DO WHILE (tpt .GE. taxdat(thi,1,1,1) ) 
+	          DO WHILE (tpt .GE. taxdathi(thi,1,1,1) ) 
                      tpt = tpt - delmodt
 	          ENDDO
-	          DO WHILE (tpt .LT. taxdat(tlo,1,1,1) )
+	          DO WHILE (tpt .LT. taxdatlo(tlo,1,1,1) )
 		     tpt = tpt + delmodt
 	          ENDDO
 	       ENDIF
 
   600       CONTINUE
-            IF (Lbot .EQ. ef_unspecified_int4) THEN
+
+* Check that tpt is not beyond the upper end of the time axis range.
+            IF (tpt .GT. taxdathi(arg_hi_ss(t_AXIS,ARG1),1,1,1)) 
+     .	       Lbot = ef_unspecified_int4
+
+	    IF (Lbot .EQ. ef_unspecified_int4) THEN
                DO 800 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
                   result(i,j,k,l) = bad_flag_result
   800          CONTINUE
                GOTO 400
+
             ELSE
 
                IF (lmatch .NE. 0) then
                   ltop = lbot
                ELSE
                   ltop = lbot + 1
+                  ltop = lbot  ! when using cell bounds taxdatlo, taxdathi
                ENDIF
                IF (lbot .EQ. ef_unspecified_int4) ltop = lbot
 
-               tbot = taxdat(lbot,1,1,1)
-               ttop = taxdat(ltop,1,1,1)
+               tbot = taxdatlo(lbot,1,1,1)
+               ttop = taxdathi(ltop,1,1,1)
 
                IF (ltop .GE. arg_hi_ss(T_AXIS,ARG1)) 
      .               ltop = arg_hi_ss(T_AXIS,ARG1)
@@ -504,7 +521,6 @@ C  variables for checking axis characteristics (modulo axes)
                tfrac_hi = 1. - tfrac_lo
  
             ENDIF
-            
             DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
                IF (xpt .GE. xaxdat(i1,1,1,1)) ibot = i1
                IF (xpt .EQ. xaxdat(i1,1,1,1)) imatch = i1

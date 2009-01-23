@@ -615,6 +615,9 @@ GO bn_cat_string
 GO bn_reset
 GO bn_sort_strings
 
+GO bn_reset
+GO bn_samplexyt
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

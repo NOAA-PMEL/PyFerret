@@ -867,7 +867,7 @@ struct {
    strcpy(I_EFnames[46].funcname, "samplet_date");
    strcpy(I_EFnames[47].funcname, "samplexy");
    strcpy(I_EFnames[48].funcname, "samplexyt");
-   strcpy(I_EFnames[47].funcname, "samplexy_closest");
+   strcpy(I_EFnames[49].funcname, "samplexy_closest");
    strcpy(I_EFnames[50].funcname, "samplexy_curv");
    strcpy(I_EFnames[51].funcname, "samplexy_curv_avg");
    strcpy(I_EFnames[52].funcname, "samplexy_curv_nrst");

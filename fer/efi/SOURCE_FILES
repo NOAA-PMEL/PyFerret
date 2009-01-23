@@ -67,6 +67,7 @@ samplexy_closest.F\
 samplexy_curv.F\
 samplexy_curv_avg.F\
 samplexy_curv_nrst.F\
+samplexy.F\
 samplexyt.F\
 samplexz.F\
 sampleyz.F\

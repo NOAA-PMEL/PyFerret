@@ -91,7 +91,6 @@
      .                      a_lo_t:a_hi_t)
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -107,17 +106,12 @@
 #else
         include 'xmachine_int1.cmn'
 #endif
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! Data set dimension
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! err code PARM defs
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'		! Axis setup params
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'		! Data set info common
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'		! Step file common
-	INCLUDE 'TMAP_FORMAT:XMACHINE_BYTE.CMN'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'
-#endif
+
+
+! The ones without trailing underscore are declared in netcdf.inc
+#ifdef usingDODSf2cUnderscore
+	CHARACTER*1024 NF_STRERROR_
+#endif  
 
 * local definitions
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -131,12 +125,14 @@
      .		     imap(4), trans(4), memsize(4), count(4),
      .		     grid_dims(4), fildim, memdim, filstride(4),
      .               maxlen, attlen, attoutflag, vtype, nvdims, nvatts, 
-     .               outflag
-        REAL vdims(10)
+     .               outflag, dlen, err_status, i
+        REAL vdims(10), val
 	CHARACTER*1	dimnam(4)
 	CHARACTER*13	TM_STRING
         CHARACTER*128   buff, vname
 	DATA  		dimnam/'I','J','K','L'/
+	CHARACTER*1024 ebuff, upstr  ! for nf_ error message
+	CHARACTER*10 TM_FMT, errcode
 
 	INTEGER  NF_GET_VARM_REAL_
 	EXTERNAL NF_GET_VARM_REAL_
@@ -395,13 +391,20 @@
      .     dimnam(idim), ' ', *5900)
 
  5500	IF ( status .EQ. -1 ) THEN
+ 
 	   CALL TM_ERRMSG( cdfstat+pcdferr, status, 'CD_READ',
      .	             cdfid, varid,
      .		    'unable to allocate memory for doub. prec. read',
      .		     no_errstring, *5900 )
 	ELSE
-	   CALL TM_ERRMSG( cdfstat+pcdferr, status, 'CD_READ',
-     .	             cdfid, varid, no_errstring, no_errstring, *5900 )
+	
+	   err_status = merr_nc_open
+           CALL CD_TRANSLATE_ERROR (cdfstat, ebuff)
+
+           CALL TM_ERRMSG
+     .     ( err_status, status, 'CD_READ', dset,
+     .        no_stepfile, ebuff, no_errstring, *5900 )
+
 	ENDIF
 
  5900	RETURN

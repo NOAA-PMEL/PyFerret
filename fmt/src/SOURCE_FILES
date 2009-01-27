@@ -68,6 +68,7 @@ cd_stamp_out.F\
 cd_store_dset.F\
 cd_store_dset_attrs.F\
 cd_transfer_attribute.F\
+cd_translate_error.F\
 cd_use_recdim.F\
 cd_write_attrib.F\
 cd_write_attval.F\

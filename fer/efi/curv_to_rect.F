@@ -1,4 +1,3 @@
-
 ! curv_to_rect.F
 ! From Matt Harrison hinterp.F
 ! to call only the spherical interpolation modules, and
@@ -54,9 +53,6 @@
 *             a map pre-computed using the entire dataset for this regridding.
 *             Pass the subscripts of the input curvilinear data to the 
 *             apply_mapping routine (if not a subset these are 1:max_ss).
-* ACM  1/2009 Correct bug with the indices passed into apply_mapping; Treating
-*             indices as if they start at 1 inside that routine lets us compute 
-*             and apply mapping functions based on subsets of the grid
 
 
 ! In this SUBROUTINE we provide information about
@@ -207,9 +203,8 @@
          k1 = arg_lo_ss(Z_AXIS,ARG1)
          DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-c     .        i1, ih, j1, jh,  ! line 2 of this call WAS...
             CALL apply_mapping ( arg_1(i1,j1,k1,l1), 
-     .        1,nlon_src, 1,nlat_src,
+     .        i1, ih, j1, jh,
      .        arg_2(i2,j2,k2,l2), arg_2(i2,j2,k2,l2+1),
      .        arg_2(i2,j2,k2,l2+2), result(i,j,k,l), nlon_src,
      .        nlat_src, nlon_dst, nlat_dst, num_nbrs, 

@@ -647,8 +647,9 @@ c *kob* 4/97
                  ELSE
                     CALL PPLCMD (from, line, 0, 
      .                'LINECOLORS '//show_str(1:3)//' 0', 1, 1)
-                    CALL WARN ('New number of line colors will take '//
-     .                'effect on next new window: SET WIN/NEW')
+                    CALL WARN ('New # of line colors will take '//
+     .                'effect on next new window: SET WIN/NEW then '//
+     .                'define pen colors')
                  ENDIF
 
 * ... mode nlevels sets the default number of contour intervals.

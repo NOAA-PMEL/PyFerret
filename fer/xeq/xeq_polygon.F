@@ -108,7 +108,6 @@
 
 * internal parameter declarations
 	INTEGER ncolors
-	PARAMETER (ncolors = 6)
         LOGICAL continuous_key
 
 * set up the graphics environment and get the data
@@ -158,6 +157,7 @@ CC       => Set values here instead.
         patt      = qual_given( slash_shad_pattern   )
         pattern   = patt .GT. 0
 
+        ncolors = mode_arg(pmode_linecolors,1)
 
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 	CALL DISP_PREP( status )
@@ -173,6 +173,7 @@ CC       => Set values here instead.
 	   use_line = .TRUE.
 	ENDIF
 * ... POLYGON/THICKNESS=n
+
  200	loc = qual_given( slash_polygon_thick )
 	IF ( loc .GT. 0  ) THEN
 	   use_line = .TRUE.

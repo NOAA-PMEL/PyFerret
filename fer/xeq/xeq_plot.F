@@ -134,16 +134,18 @@
      .                  loch, locv
 	REAL		val, sym_size, dashstyle(4), only_val
 	CHARACTER	LEFINT*4, buff*128
+	INTEGER ncolors
 
 * internal parameter declarations
-	INTEGER ncolors
-	PARAMETER (ncolors = 6, dot_sym=99)
+	PARAMETER (dot_sym=99)
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS
 	CALL DISP_DATA_SET_UP( memory,
      .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
+
+        ncolors = mode_arg(pmode_linecolors,1)
 
 * Initialize the lines buffer in PPL before setting up
 	overlay   = qual_given( slash_plot_over_plot ).GT.0
@@ -256,7 +258,8 @@ CC       => Set values here instead.
      .			   val, status )	! syntax check
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
-           IF (val .NE. 1  .AND. color .EQ. 19) GOTO 5460  ! Only have thin white line
+           IF ((ncolors .EQ. 6) .AND. 
+     .               (val .NE. 1  .AND. color .EQ. 19) ) GOTO 5460  ! Only have thin white line
 
 	   IF ( val .NE. unspecified_val4 ) THEN
 	      IF ( val.LE.0.0 .OR. val.GT.3 ) GOTO 5400
@@ -266,14 +269,15 @@ CC       => Set values here instead.
 	   ENDIF
 
 	   IF ( color .EQ. qual_on ) THEN
+	   
               IF ( symbol .EQ. dot_sym) THEN
                  CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
-	         color = MOD(color-1,ncolors)+1  ! eliminate thickness
+	         IF (color .GT. ncolors) color = MOD(color-1,ncolors)+1  ! eliminate thickness
               ELSE
                  color = color-10*(thick-1)
               ENDIF
            ELSE
-	      color = MOD(color-1,ncolors)+1  ! eliminate thickness
+	      IF (color .GT. ncolors) color = MOD(color-1,ncolors)+1  ! eliminate thickness
 	      color = ncolors*(thick-1) + color
               IF ( symbol .EQ. dot_sym) THEN
                  CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')

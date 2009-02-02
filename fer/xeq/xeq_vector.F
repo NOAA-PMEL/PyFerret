@@ -138,8 +138,6 @@
 	PARAMETER     ( norm_dims_only  = .FALSE.,
      .			vector		= .TRUE.)
 	INTEGER ncolors
-	PARAMETER (ncolors = 6)
-
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS
@@ -170,6 +168,7 @@
         IF (no_labels) no_key = .TRUE.
         is_shade  = .FALSE.
         use_cell  = .FALSE.
+        ncolors = mode_arg(pmode_linecolors,1)
 
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 * ... default orientation for YT and ZT VECTORs has time on horizontal

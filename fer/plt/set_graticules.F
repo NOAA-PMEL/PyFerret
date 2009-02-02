@@ -47,11 +47,17 @@
 * V570 *acm* 6/30/04 VGRAT with no argument needs to default to lines
 * v580 *acm* 11/04   PLOT/HGRAT gave both horiz and vertical graticules
 *                    need to initialize buff.
+* V6.2  *acm& 2/09 Fix choice of color settings with /PEN and /THICK when we have 
+*                  increased the num of colors with MODE linecolors
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'command.parm'
 	include 'plot_setup.parm'
+	include 'plot_state.parm'
+	include	'xplot_setup.cmn'
+	include 'xplot_state.cmn'
+
 	include 'xprog_state.cmn'
         include 'axis_inc.decl'
         include 'AXIS.INC'
@@ -64,16 +70,13 @@
 
 	INTEGER	TM_LENSTR1, STR_UPCASE, str_len, ii, i1, i2, i3, i4, 
      .      i5, i6, index1, index2, s1, s2, 
-     .      colorcode, tic1, ntic, itic, iflag
+     .      colorcode, tic1, ntic, itic, iflag, ncolors
 
         REAL thickness
 
 	CHARACTER buff*1058
         CHARACTER msg*60
 
-* internal parameter declarations
-	INTEGER ncolors
-	PARAMETER (ncolors = 6)
 
 ! Default, standard tics, no lines across plot.
 
@@ -249,8 +252,14 @@
            ENDIF
 
 * if colorcode = 19 then line is thin, white.
+
+           ncolors = mode_arg(pmode_linecolors,1)
+           IF (ncolors .EQ. 6) THEN
            IF (hcolor(itic) .LT. 19) 
      .        hcolor(itic) = ncolors*(thickness-1) + hcolor(itic) ! set color and thick
+           ELSE
+	      hcolor(itic) = ncolors*(thickness-1) + hcolor(itic) ! set color and thick
+	   ENDIF
 
            index1 = i5
            index2 = i6
@@ -405,8 +414,13 @@
            ENDIF
 
 * if colorcode = 19 then line is thin, white.
+
+           IF (ncolors .EQ. 6) THEN
            IF (vcolor(itic) .LT. 19) 
      .        vcolor(itic) = ncolors*(thickness-1) + vcolor(itic) ! set color and thick
+           ELSE
+	      vcolor(itic) = ncolors*(thickness-1) + vcolor(itic) ! set color and thick
+	   ENDIF
 
            index1 = i5
            index2 = i6

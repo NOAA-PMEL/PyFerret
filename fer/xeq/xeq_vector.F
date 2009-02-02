@@ -95,6 +95,8 @@
 *                  Put it on plots only when this mode is set.
 * V6.2  *acm* 11/08Fix bug 1609: If the plot is an overlay then do not process /AXES=
 *                  or /NOAXES. Axes are never drawn for overlays anyway.
+* V6.2  *acm& 2/09 Fix choice of color settings with /PEN and /THICK when we have 
+*                  increased the num of colors with MODE linecolors
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'

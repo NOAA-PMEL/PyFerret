@@ -64,6 +64,8 @@
 * V6.11 4/08 *acm* Fixes for bug 1571; call to PPL_AXES_RESTORE moved to DISP_INIT
 * V6.2  *acm* 11/08Fix bug 1609: If the plot is an overlay then do not process /AXES=
 *                  or /NOAXES. Axes are never drawn for overlays anyway.
+* V6.2  *acm& 2/09 Fix choice of color settings with /PEN and /THICK when we have 
+*                  increased the num of colors with MODE linecolors
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'

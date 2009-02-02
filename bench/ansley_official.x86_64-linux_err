@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 50422891 Jan 26 15:46 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86/
+-rwxr-xr-x  1 ansley tmap 50425462 Feb  2 09:36 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix error translation on data access in CD_READ
+Note: fix choice of color settings with /PEN and /THICK in MODE linecolors: PLOT, POLYGON, and VECTOR commands and colors only in CONTOUR
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86/
-Beginning at Mon Jan 26 15:47:20 PST 2009
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
+Beginning at Mon Feb 2 12:16:09 PST 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2138,6 +2138,9 @@ Replacing definition of axis TIME
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: New # of line colors will take effect on next new window: SET WIN/NEW then define pen colors
+ Using every   3th vector in the X direction
+ Using every   4th vector in the Y direction
  *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2619,4 +2622,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Jan 26 15:48:44 PST 2009
+Ended at Mon Feb 2 12:17:36 PST 2009

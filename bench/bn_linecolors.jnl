@@ -2,11 +2,14 @@
 ! 5/2006 ACM
 ! test setting more line colors
 
-can win/all
-set win/new
+set mode meta linecolors.plt
 
 set mode linec:12
 sho mode linecolors
+
+can win/all
+set win/new
+
 ppl color,7,100,50,0   ! orange
 ppl color,8,0,55,0     ! dark green
 ppl color,9,60,0,100   ! purple
@@ -17,6 +20,22 @@ plot/thick/line/i=1:100 \
  cos(i/20), cos(i/24), cos(i/28), cos(i/32), \
  cos(i/36), cos(i/40), cos(i/44), cos(i/48), \
  cos(i/52), cos(i/56), cos(i/60), cos(i/64)
+
+set mode/last meta
+
+! Test choosing individual colors and thickness combinations
+! All commands except for contour have /THICK
+
+plot/color=7/thick=3/i=1:100 cos(i/10)
+plot/over/color=8/thick=2/i=1:100 cos(i/12)
+plot/over/color=12/thick=1/i=1:100 cos(i/8)
+
+vector/color=11/thick=2/i=1:100/j=1:100 cos(i/10)+sin(j/14), cos(i/20)-sin(j/30)
+
+polygon/thick=3/color=12/palette=purple {1,2,1}, {2,1,0.5}
+
+contour/color=7/i=1:100/j=1:100 cos(i/10)+sin(j/14)
+contour/over/color=20/i=1:100/j=1:100 cos(i/15)+sin(j/20)
 
 can mode linecolors
 sho mode linecolors

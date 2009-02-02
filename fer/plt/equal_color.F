@@ -53,8 +53,8 @@
 	CHARACTER*(*)	string
 
 * internal parameter declarations
-	INTEGER ncolors
-	PARAMETER (ncolors = 7)
+	INTEGER ncolor_string
+	PARAMETER (ncolor_string = 7)
 
 * internal variable declarations
 	LOGICAL	MATCH4, TM_DIGIT
@@ -63,7 +63,7 @@
 	REAL	val
 *	CHARACTER	LEFINT*4, str*12, colors*12(6)
 	CHARACTER	LEFINT*4, str*12
-	CHARACTER*12    COLORS(ncolors)
+	CHARACTER*12    COLORS(ncolor_string)
 
 * internal data declarations
 	DATA colors/'BLACK','RED','GREEN',
@@ -113,7 +113,7 @@ cc	   IF ( val.LE. 0.0 .OR. val.GT.num_fancy_lines+1 ) GOTO 5200
 	 ELSE
 * ... compare with allowable colors
            len_test = TM_LENSTR(str)
-	   DO 200 icolor = 1, ncolors
+	   DO 200 icolor = 1, ncolor_string
               len_mchars = TM_LENSTR(colors(icolor)(:4))
 	      IF ( MATCH4(str, len_test,
      .             colors(icolor),len_mchars ) ) GOTO 210

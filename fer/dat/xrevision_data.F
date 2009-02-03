@@ -93,13 +93,14 @@
 * V6.13  8/28/08  Version 6.14 GFDL see bug 1586,1038
 * V6.15 11/07/08  Version 6.15 GFDL bugs 1608,1609
 * V6.16 11/20/08  Version 6.16 GFDL bugs 1421,1523,1547,1522,1577 plus gif transparency
-* V6.17  1/12/00  Version 6.17 GFDL bug  1476, bugs 1588, 1333, 1614 
-
+* V6.17  1/12/09  Version 6.17 GFDL bug  1476, bugs 1588, 1333, 1614 
+* V6.18  1/21/09  Version 6.18 fix bug with CURV_TO_RECT, allowing subsetting
+* V6.19  2/03/09  Version 6.19 fix for choosing colors and thicknesses when > 6 colors have been defined
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.17   /
+	DATA revision_level	/  6.19   /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

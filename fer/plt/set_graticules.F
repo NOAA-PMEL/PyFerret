@@ -54,10 +54,6 @@
 	include 'errmsg.parm'
 	include 'command.parm'
 	include 'plot_setup.parm'
-	include 'plot_state.parm'
-	include	'xplot_setup.cmn'
-	include 'xplot_state.cmn'
-
 	include 'xprog_state.cmn'
         include 'axis_inc.decl'
         include 'AXIS.INC'

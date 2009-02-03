@@ -1,7 +1,7 @@
 	SUBROUTINE INIT_UVAR ( name, text, title, units, dset, bad,
      .                         implct_defn, uvar,
      .			       at_type, at_id, at_start, at_end,
-     .			       natom, txstart, txend, status )
+     .			       natom, txstart, txend, varname, status )
 
 *
 *
@@ -87,23 +87,20 @@
 *		 instead of actual parent. Created gcf stack
 * V510: 5/00 *sh* - added "bad" (missing value flag) to arguments
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
+* V62   2/09 *acm* Pass the original upper/lowercase spelling of user-defined variable
+*                  names to init_uvar_sub; name to be saved in the attribute structure, for 
+*                  use when writing out user-defined variables when MODE UPCASE_OUTPUT 
+*                  is cancelled.
 
-#ifdef unix
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
 	include 'rpn.parm'
 	include 'xvariables.cmn'
 	include 'xrisc_buff.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'	
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
-	INCLUDE 'FERRET_CMN:RPN.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL		implct_defn
-	CHARACTER*(*)	name, text, title, units
+	CHARACTER*(*)	name, text, title, units, varname
 	INTEGER		uvar, natom, txstart, txend, status,
      .			at_type  (maxatoms), at_id  (maxatoms),
      .			at_start (maxatoms), at_end (maxatoms), dset
@@ -258,7 +255,7 @@
      .			     at_start(child_start), at_end(child_start),
      .			     child_end-child_start+1,
      .			     at_start(child_start), at_end(child_end),
-     .			     child, status )
+     .			     child, child_name, status )
 	IF ( status .NE. ferr_OK ) GOTO 5900
 
 * ... if the child we just created was a GC then pop the gc stack
@@ -288,7 +285,8 @@
         CALL INIT_UVAR_SUB ( name, text, title, units, dset, bad,
      .                         implct_defn, uvar, 0,
      .			       at_type, at_id, at_start, at_end,
-     .			       natom, txstart, txend, child, status )
+     .			       natom, txstart, txend, child, varname,
+     .			       status )
 
 	IF ( status .NE. ferr_OK ) GOTO 5900
 

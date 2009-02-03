@@ -195,6 +195,10 @@
 * V606  8/07 *acm* DEFINE AXIS/QUIET
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out.
+* V62   2/09 *acm* Pass the original upper/lowercase spelling of user-defined variable
+*                  names to init_uvar; name to be saved in the attribute structure, for 
+*                  use when writing out user-defined variables when MODE UPCASE_OUTPUT 
+*                  is cancelled.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -546,6 +550,7 @@
 * in the latter be careful that "TEXT" may contain "="
  400	IF ( num_args .LT. 1 ) GOTO 5300
 	CALL NAME_EQUAL_STRING( buff1, pos, status )
+	CALL NAME_EQUAL_STRING_LC( varname, pos, status )
 	IF ( status .NE. ferr_ok )  GOTO 5000
 	IF ( pos .EQ. 0 ) GOTO 5400
 	IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5410
@@ -663,7 +668,7 @@
 	CALL INIT_UVAR ( buff1, cmnd_buff(pos:len_cmnd), buff3, buff2, dset,
      .			 bad_flag, explct_defn, uvar,
      .			 at_type, at_id, at_start, at_end,
-     .			 natom, 1, len_cmnd-pos+1, status )
+     .			 natom, 1, len_cmnd-pos+1, varname, status )
 	IF ( status .NE. ferr_ok ) RETURN
 
 * is there at least one slot blank ?

@@ -1,7 +1,8 @@
 	SUBROUTINE INIT_UVAR_SUB ( name, text, title, units, dset, bad,
      .                             implct_defn, uvar, parent_uvar,
      .			           at_type, at_id, at_start, at_end,
-     .			           natom, txstart, txend, child, status )
+     .			           natom, txstart, txend, child, 
+     .			           varname, status )
 
 *
 *
@@ -65,6 +66,10 @@
 * V601 11/06 *acm* - add user variables always to dataset -1. Previously
 *                    variables defined with LET/D= were added to that dataset.
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V62   2/09 *acm* Pass the original upper/lowercase spelling of user-defined variable
+*                  names to cd_add_var; name to be saved in the attribute structure, for 
+*                  use when writing out user-defined variables when MODE UPCASE_OUTPUT 
+*                  is cancelled.
 
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
@@ -74,7 +79,7 @@
 
 * calling argument declarations:
 	LOGICAL		implct_defn, child
-	CHARACTER*(*)	name, text, title, units
+	CHARACTER*(*)	name, text, title, units, varname
 	INTEGER		dset, uvar, natom, txstart, txend, status,
      .			parent_uvar, 
      .			at_type  (maxatoms), at_id  (maxatoms),
@@ -86,7 +91,7 @@
 	INTEGER	        TM_LENSTR1, TM_LENSTR, i, 
      .                  natom_rpn, rpn_order(maxatoms), i2, quote_type,
      .                  dset_to_add, slen, iat, varid, type, coordvar
-	CHARACTER	err_string*255, c*1, varname*512, attname*128
+	CHARACTER	err_string*255, c*1, attname*128
 
 * internal parameter declarations
 	INTEGER		p_single_quote, p_double_quote
@@ -185,7 +190,7 @@ c* copy title, units, dset, and missing flag into buffers
           err_string = title  ! save the value and restore below
           IF (TM_LENSTR(title) .LT. 1) title = uvar_text(uvar)
 
-          CALL CD_ADD_VAR( dset_to_add, name, uvar, title, units, 
+          CALL CD_ADD_VAR( dset_to_add, varname, uvar, title, units, 
      .         type, coordvar, bad, status)
 
           title = err_string

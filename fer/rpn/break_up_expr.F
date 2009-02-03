@@ -57,6 +57,8 @@
 *                   the brackets in risc_buff
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
 * V611 5/08 *acm* Fix bug 1578; dataset specifiers applied correctly var[d=1].attname
+* V62   2/09 *acm* init_uvar has an extra argument, for keeping upper/lowrercase 
+*                  spelling of user-var names (no other changes in this routine).
 
 	include	'ferret.parm'
 	include 'errmsg.parm'	
@@ -197,7 +199,8 @@ c        tlen = MIN( size_rbuff, LEN(text) )
      .			   at_type(at1),  at_id(at1),
      .			   at_start(at1), at_end(at1),
      .			   atom_n(i)-at1+1,
-     .			   exp_start(i), exp_end(i), status )
+     .			   exp_start(i), exp_end(i), 
+     .			   EXPR_NAME(i), status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
  200	CONTINUE
 

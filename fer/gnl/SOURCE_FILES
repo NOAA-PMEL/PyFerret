@@ -49,7 +49,7 @@ list_multi.F\
 list_multi_sub.F\
 mouse_command.F\
 name_equal_string.F\
-name_equal_str_lc.F\
+name_equal_string_lc.F\
 name_equal_string_vatt.F\
 no_journal.F\
 objective.F\

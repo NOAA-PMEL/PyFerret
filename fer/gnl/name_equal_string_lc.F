@@ -1,4 +1,4 @@
-	SUBROUTINE NAME_EQUAL_STR_LC(nambuff, start_pos, status)
+	SUBROUTINE NAME_EQUAL_STRING_LC(nambuff, start_pos, status)
 
 
 *  This software was developed by the Thermal Modeling and Analysis

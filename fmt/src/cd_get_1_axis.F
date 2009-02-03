@@ -154,6 +154,8 @@
 * V612  8/08 *acm* If the file has a point-spacing=uneven attribute, mark the axis as irreg
 *                  and do not do all the testing for regular axis.
 * V62  10/08 *acm* Add PROLEPTIC_GREGORIAN to the calendars recognized; same as GREGORIAN
+* V62   2/09 *acm* Save the original upper/lowercase spelling of axis names in line_name_orig,
+*                  for use on output of user-defined variables when MODE UPCASE_OUTPUT is cancelled.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -1118,6 +1120,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 * we have saved N+1 edges for the axis cells. Increment the pointer.   
 
         line_name(iaxis) = vupcase
+        line_name_orig(iaxis) = vname
         IF ( .NOT.line_regular(iaxis) ) THEN
            line_subsc1(iaxis) = next_line_mem_pos
            next_line_mem_pos =  next_line_storage + 2*npts+1 

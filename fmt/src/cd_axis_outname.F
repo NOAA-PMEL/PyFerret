@@ -41,6 +41,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 11/06
+* V62   2/09 *acm* When writing user-defined variables and when MODE UPCASE_OUTPUT is
+*                  cancelled, get the original upper/lowercase spelling of the axis name.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -108,12 +110,15 @@
             nlen = TM_LENSTR1( buff )
          ELSE 
             CD_AXIS_OUTNAME = varname
+            IF (iaxis .GT. 1000) 
+     .         CD_AXIS_OUTNAME = line_name_orig(iaxis)
             nlen = TM_LENSTR1( varname )
          ENDIF
 
       ELSE
 
          CD_AXIS_OUTNAME = varname
+         IF (iaxis .GT. 1000) CD_AXIS_OUTNAME = line_name_orig(iaxis)
          nlen = TM_LENSTR1( varname )
 
       ENDIF

@@ -26,10 +26,12 @@
 * V600 *acm* 6/05  Attribute control. New flag line_fixname to let us restore the
 *                  original name on output if it was changed on input. (cd_axis_name.F)
 *      *jli* 9/06  add line_reversed, for striding on a reversed axis
+* V62   2/09 *acm* Save the original upper/lowercase spelling of axis names in line_name_orig,
+*                  for use on output of user-defined variables when MODE UPCASE_OUTPUT is cancelled.
 
 	CHARACTER*128	grid_filename
 	CHARACTER*20	line_t0
-	CHARACTER*64	line_units, line_name
+	CHARACTER*64	line_units, line_name, line_name_orig
 	CHARACTER*32	line_cal_name
 	CHARACTER*16	grid_name
 	CHARACTER*2	line_direction, axis_orients
@@ -54,6 +56,7 @@
      .			grid_filename	( maxgridfiles),
      .
      .			line_name	( 0:line_ceiling ),
+     .			line_name_orig	( 0:line_ceiling ),
      .			line_subsc1	( 0:line_ceiling ),
      .			line_dim	( 0:line_ceiling ),
      .			line_units	( 0:line_ceiling ),

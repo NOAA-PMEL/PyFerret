@@ -621,6 +621,9 @@ GO bn_samplexyt
 GO bn_reset
 GO bn_last_go_file.jnl
 
+GO bn_reset
+GO bn_cancel_upcase_uservar.jnl
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

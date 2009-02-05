@@ -890,6 +890,7 @@
            var = cx_variable(cx)
            varcode = SANITARY_VAR_CODE( cat, var )
            
+           itsa_uvar = cat .EQ. cat_user_var
            CALL CD_GET_VAR_ID (dset, varcode, varid, status)  ! is it in the linked-list for dset
            IF (status .NE. ferr_ok .AND. itsa_uvar ) THEN
               dset = -1    ! is it a user var based on a var in dset

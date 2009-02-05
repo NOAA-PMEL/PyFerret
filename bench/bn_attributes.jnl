@@ -967,3 +967,23 @@ sp echo "bn_attributes.jnl --- 28 Define a new global attribute" >> all_ncdump.o
 sp echo "bn_attributes.jnl --- 29 SET ATT/OUTPUT=all for global attrs and a var" >> all_ncdump.out
 sp ncdump a.nc >> all_ncdump.out
 
+
+!-----
+! Set type of data on output for a user var
+! the requseted type.
+
+sp echo "bn_attributes.jnl --- 29 SET VAR/OUTTYPE for user variable" >> all_ncdump.out
+
+use gt4d011
+let/units="Deg F" faren = temp*9/5 + 32
+set var/outtype=double faren
+save/file=a.nc/clobber faren
+
+sp ncdump -h a.nc 
+sp ncdump -h a.nc  >> all_ncdump.out
+
+let/units="Deg F"/bad=-999 faren = temp*9/5 + 32
+set var/outtype=int faren
+save/file=a.nc/clobber faren
+
+sp ncdump -h a.nc  >> all_ncdump.out

@@ -6,7 +6,7 @@
 # acm  12/06 as suggested by Remik Ziemlinski, use awk rather than cut to get file sizes.
 
 
-set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt multi_line_labels.plt \
+set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt linecolors.plt multi_line_labels.plt \
 pattern*.plt polygon*.plt vec_curv*.plt)
 set gif_files = ( bn*.gif )
 set ps_files = (bn*.ps)
@@ -23,7 +23,7 @@ foreach plt_file ($plt_files)
       set err_plt = 1
       echo "plt files differ $plt_file size $size metafile_masters_v61_64/ size $size2" 
    endif
-   if ($num_plt_files != 14 ) set err_plt = 1
+   if ($num_plt_files != 15 ) set err_plt = 1
 end
 
 set err_gif = 0
@@ -64,7 +64,7 @@ end
 
 set any_error = 0
 if ($err_plt) then
-	echo "CHECK PLT FILES - THERE HAS BEEN AN ERROR"
+	echo "CHECK PLT FILES - THERE HAS BEEN AN ERROR num_plt_files $num_plt_files"
         set any_error = 1
 else
 	echo "    PLT files look good....."

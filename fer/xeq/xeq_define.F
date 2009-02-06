@@ -199,6 +199,8 @@
 *                  names to init_uvar; name to be saved in the attribute structure, for 
 *                  use when writing out user-defined variables when MODE UPCASE_OUTPUT 
 *                  is cancelled.
+* V62 *acm*  2/09 - Save original upper/lowercase spelling of axis names 
+*                   in line_name_orig for CANCEL MODE UPCASE
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -693,11 +695,15 @@
 	IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff3, status )
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      varname, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	   pos = arg_start(1)	! cmnd arg is the expression to eval
 	ELSE	   
 	   IF ( num_args .LT. 1 ) GOTO 5300
 	   CALL NAME_EQUAL_STRING( buff3, pos, status )
+	   CALL NAME_EQUAL_STRING_LC( varname, pos, status )
+
 	   IF ( status .NE. ferr_ok )  GOTO 5000
 
 	   IF ( pos .GT. 0 ) THEN
@@ -1398,7 +1404,7 @@ C /units=months  is 1/12 of the length of the year
      .			replmsg//'axis '//line_name( old_line ), 0)
 
 * ... Check the attribute structure for this axis name and change 
-*     attribute values as needed.
+*     attribute values as needed.  
 
 	      CALL REDEFINE_AX_ATT (line_name(old_line), new_att_units, 
      .           new_att_t0, new_att_calendar, new_att_modulo,
@@ -1550,6 +1556,7 @@ C /units=months  is 1/12 of the length of the year
 
 * now catalog it in memory by saving its name
 	line_name( iline ) = buff3
+	line_name_orig( iline ) = varname
 	RETURN
 
 **************************************************************************

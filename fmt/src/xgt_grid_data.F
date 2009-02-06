@@ -62,6 +62,8 @@
 * V530*acm* 1/01 - add line_cal_name for alternative calendar types.
 * V550 *sh* 11/02 - add initialize line_modulo_len
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
+* V62 *acm*  2/09 - Save original upper/lowercase spelling of axis names 
+*                   in line_name_orig for CANCEL MODE UPCASE
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -89,6 +91,7 @@
 * DEFINE LINES FIRST
 	DATA
      .		line_name	(mpsxt)	/ 'PSXT'	/,
+     .		line_name_orig	(mpsxt)	/ 'PSXT'	/,
      .		line_subsc1	(mpsxt) / unspecified_int4 /,
      .		line_dim	(mpsxt)	/ 160		/,
      .		line_units	(mpsxt)	/ 'LONGITUDE'	/,
@@ -101,6 +104,7 @@
      .		line_delta	(mpsxt)	/ 1.0		/
 	DATA
      .		line_name	(mpsxu)	/ 'PSXU'	/,
+     .		line_name_orig	(mpsxu)	/ 'PSXU'	/,
      .		line_subsc1	(mpsxu) / unspecified_int4 /,
      .		line_dim	(mpsxu)	/ 160		/,
      .		line_units	(mpsxu)	/ 'LONGITUDE'	/,
@@ -113,6 +117,7 @@
      .		line_delta	(mpsxu)	/ 1.0		/
 	DATA
      .		line_name	(mpsyt)	/ 'PSYT'	/,
+     .		line_name_orig	(mpsyt)	/ 'PSYT'	/,
      .		line_subsc1	(mpsyt) / 2		/,
      .		line_dim	(mpsyt)	/ 100		/,
      .		line_units	(mpsyt)	/ 'LATITUDE'	/,
@@ -125,6 +130,7 @@
      .		line_delta	(mpsyt)	/ unspecified_val8 /
 	DATA
      .		line_name	(mpsyu)	/ 'PSYU'	/,
+     .		line_name_orig	(mpsyu)	/ 'PSYU'	/,
      .		line_subsc1	(mpsyu) / 203		/,
      .		line_dim	(mpsyu)	/ 100		/,
      .		line_units	(mpsyu)	/ 'LATITUDE'	/,
@@ -137,6 +143,7 @@
      .		line_delta	(mpsyu)	/ unspecified_val8 /
 	DATA
      .		line_name	(mpszt)	/ 'PSZT'	/,
+     .		line_name_orig	(mpszt)	/ 'PSZT'	/,
      .		line_subsc1	(mpszt) / 404		/,
      .		line_dim	(mpszt)	/ 27		/,
      .		line_units	(mpszt)	/ 'METERS'	/,
@@ -149,6 +156,7 @@
      .		line_delta	(mpszt)	/ unspecified_val8 /
 	DATA
      .		line_name	(mpszw)	/ 'PSZW'	/,
+     .		line_name_orig	(mpszw)	/ 'PSZW'	/,
      .		line_subsc1	(mpszw) / 459		/,
      .		line_dim	(mpszw)	/ 27		/,
      .		line_units	(mpszw)	/ 'METERS'	/,
@@ -163,6 +171,7 @@
 * 7/99 *kob* add in initialization for line_name and mpsnorm.  
 *            needed for v3.4 of netcdf use
 	DATA    line_name       (mpsnorm) /' '/
+	DATA    line_name_orig  (mpsnorm) /' '/
 
 * DEFINE GRIDS NEXT
 * 2 dimensional defining grid for wind stress magnitude
@@ -235,6 +244,8 @@
      .			/line_ceiling*pline_class_basic/
 
 	DATA	(line_name(i),i=nlne_def+1,line_ceiling)
+     .			/lines_left*char_init16/
+	DATA	(line_name_orig(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*char_init16/
 
 	DATA	(line_subsc1(i),i=nlne_def+1,line_ceiling)

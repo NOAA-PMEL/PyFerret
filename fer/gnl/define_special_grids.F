@@ -46,6 +46,8 @@
 * V300: 6/93 - lengthened axis EZ x10 so that accidental truncations were rarer
 * V500: 12/98 - added XABSTRACT, YABSTRACT, ZABSTRACT, and TABSTRACT
 * V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
+* V62 *acm*  2/09 - Save original upper/lowercase spelling of axis names 
+*                   in line_name_orig for CANCEL MODE UPCASE
 
 	include	'tmap_dims.parm'
 	include	'tmap_errors.parm'
@@ -67,6 +69,7 @@
 
 * save the line in memory - but don't catalog its name
 	line_name     ( iline ) = 'ABSTRACT'
+	line_name_orig( iline ) = 'ABSTRACT'
 	line_start    ( iline ) = 1.0D0
 	line_delta    ( iline ) = 1.0D0
 	line_dim      ( iline ) = 9999999
@@ -104,6 +107,7 @@
 
 * save the line in memory - but don't catalog its name
 	line_name     ( iline ) = 'EZ'
+	line_name_orig( iline ) = 'EZ'
 	line_start    ( iline ) = 1.0D0
 	line_delta    ( iline ) = 1.0D0
 	line_dim      ( iline ) = 20480

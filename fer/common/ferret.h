@@ -61,8 +61,9 @@ void gescinqxattr();
 
 /* memory configuration defaults */
 /* NOTE!! PMEM_BLK_SIZE must match pmem_blk_size in xvariables.cmn */
+* V62  2/09 *acm*  increase initial memory by 4. */
 #define PMEM_BLK_SIZE 2*(160*100*4/10)  /*  2* 9/01 *sh* */
-#define PMAX_MEM_BLKS 500
+#define PMAX_MEM_BLKS 2000
 
 /* from XPROG_STATE COMMON */
 #define TTOUT_LUN 6

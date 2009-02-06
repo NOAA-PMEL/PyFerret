@@ -51,6 +51,7 @@
 *                  along with seasonal averages; max_uvar_items reported once or 
 *                  twice as a limit that users have run into.
 * V61  3/08 *acm*  increase max_mrs again to 501.
+* V62  2/09 *acm*  increase initial memory by 4.
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -175,7 +176,7 @@
      .			dummy_mr  = max_mrs,
      .			max_mr_avail = max_mrs - 1,
      .			pmem_blk_size = 2*(160*100*4/10), !2* 9/01 see ferret.h
-     .			pmax_mem_blks   = 500,
+     .			pmax_mem_blks   = 2000,
      .			pmv_npiles     = 299,	! prime # of hash piles
      .			pmv_nocache_pile = -pmv_npiles - 1,
      .			pmv_work_var_pile = -pmv_npiles - 2,

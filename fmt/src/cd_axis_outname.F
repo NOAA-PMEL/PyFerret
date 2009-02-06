@@ -109,17 +109,22 @@
             CD_AXIS_OUTNAME = buff
             nlen = TM_LENSTR1( buff )
          ELSE 
-            CD_AXIS_OUTNAME = varname
-            IF (iaxis .GT. 1000) 
-     .         CD_AXIS_OUTNAME = line_name_orig(iaxis)
-            nlen = TM_LENSTR1( varname )
+            CD_AXIS_OUTNAME = line_name_orig(iaxis)
+            nlen = TM_LENSTR1( CD_AXIS_OUTNAME )
+	    IF (nlen .LE. 1  .OR.  varname(1:1) .EQ. '(' ) THEN
+               CD_AXIS_OUTNAME = varname
+	       nlen = TM_LENSTR1( CD_AXIS_OUTNAME )
+	    ENDIF
          ENDIF
 
       ELSE
 
-         CD_AXIS_OUTNAME = varname
-         IF (iaxis .GT. 1000) CD_AXIS_OUTNAME = line_name_orig(iaxis)
-         nlen = TM_LENSTR1( varname )
+         CD_AXIS_OUTNAME = line_name_orig(iaxis)
+         nlen = TM_LENSTR1( CD_AXIS_OUTNAME )
+	 IF (nlen .LE. 1  .OR.  varname(1:1) .EQ. '(' ) THEN
+            CD_AXIS_OUTNAME = varname
+	    nlen = TM_LENSTR1( CD_AXIS_OUTNAME )
+	 ENDIF
 
       ENDIF
 
@@ -131,6 +136,7 @@
 * if it's a dynamic axis and if we didnt recover the 
 * original name from the linked-list information,
 * remove the parentheses
+
       ELSEIF ( line_name(iaxis)(1:1) .EQ. '(' .AND.
      .         .NOT.got_it ) THEN
 	 IF ( nlen .LE. 2) nlen = 3			! should never happen

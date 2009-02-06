@@ -60,6 +60,8 @@
 * V530: *sh* 9/00 - added ferr_data_type
 * V580 *acm* 11/04 - New code ferr_nomessge for use when user-given error  
 *                    msg in coached string substitution
+* V6.2 *acm*  2/09 - Change the text of insufficent memory error to 
+*                    request exceeds memory setting
 
 	include 'errmsg.parm'	! parameter definitions
 	include 'xerrmsg_text.cmn'	! common declaration
@@ -79,7 +81,7 @@
 
 * codes and text for normal error messages
 	DATA err_text( ferr_insuff_memory - greport )
-     .		/ 'insufficient memory'/
+     .		/ 'request exceeds memory setting'/
 	DATA report_err_code( ferr_insuff_memory - greport )
      .		/ 'insuff_memory'/
 

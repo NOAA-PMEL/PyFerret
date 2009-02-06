@@ -72,6 +72,8 @@
 *                    and that attribute was not previously set, add it.
 * V616  1/09 *acm* - Fix ticket 1615, If doing SET VAR/UNITS, /TITLE, /BAD on a
 *                    var from an EZ dataset, set the appropriate attributes.
+* V619  2/09 *acm* - Fix SET VAR/OUTTYPE= when the variable is a user var that
+*                    yet has dset=n.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -324,6 +326,11 @@
 * Make sure we have varid for varname, then reset the variable type.
 
            CALL CD_GET_VAR_ID (dset, vname, varid, status)
+	   
+           IF  (cat .EQ. cat_user_var) THEN 
+	      dset = -1
+  	      CALL CD_GET_VAR_ID (dset, vname, varid, status)
+           ENDIF
 
 * When the user requests double precision output, write an attribute to the
 * file explaining that it contains data converted from float.

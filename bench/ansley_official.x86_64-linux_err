@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 50598808 Feb  3 14:53 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
+Running FERRET version /home/porter/ansley/build_v619/x86/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 40855068 Feb 10 15:12 /home/porter/ansley/build_v619/x86/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/build_v619/x86/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  fixes for writing lowercase variable names and axes for user variables using  CANCEL MODE UPCASE_OUTPUT
+Note: Fix bug 1636 plot_set_up for PLOT/VS.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
+PWD=/home/porter/ansley/build_v619/x86/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Tue Feb 3 15:02:50 PST 2009
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v619/x86/FERRET/external_functions/ext_func_x86
+Beginning at Tue Feb 10 15:23:04 PST 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -334,7 +334,7 @@ list tu
 list tu
  **ERROR: regridding: Axis orientation not matching request:GX=PSYU
 list tu
- **ERROR: insufficient memory: 24999975 words were requested.
+ **ERROR: request exceeds memory setting: 4000000 words were requested.
 list temp[gz=z999999,z=5:15]
  *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
  *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -608,13 +608,13 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: insufficient memory: A negative number of words were requested.
+ **ERROR: request exceeds memory setting: A negative number of words were requested.
 load num
  *** NOTE: The current grid is most likely too large
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: insufficient memory: 1000000000 words were requested.
+ **ERROR: request exceeds memory setting: 1000000000 words were requested.
 load num
  *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
  *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -2134,6 +2134,9 @@ Replacing definition of axis X2AX
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 Replacing definition of axis TIME
  LISTing to file a.nc
+ *** NOTE: Converting single precision variable to double on output
+ LISTing to file a.nc
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2541,6 +2544,10 @@ Replacing definition of grid G1
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2622,4 +2629,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Feb 3 15:04:16 PST 2009
+Ended at Tue Feb 10 15:24:54 PST 2009

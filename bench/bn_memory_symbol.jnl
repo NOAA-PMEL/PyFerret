@@ -14,5 +14,5 @@ sh sym ferret_memory
 set mem/siz=500000  ! too large to allow
 sho sym ferret_memory
 
-set mem/siz=6.4  ! return to the default setting
+set mem/siz=25.6  ! return to the default setting
 show memory

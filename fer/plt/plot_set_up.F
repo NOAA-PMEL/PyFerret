@@ -139,7 +139,9 @@
 *                  No Valid Data to the label.
 * V614  *acm* 10/08 - add new MODE NODATA_LAB to control the NO VALID DATA label.
 *                  Put it on plots only when this mode is set.
-
+* V62   *acm*  2/09 Fix bug 1636, on PLOT/VS when setting up dependent axis,
+*                  need to reinitialize delta=unspecified_val8 so that delta is
+*                  computed from the dependent data.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -559,6 +561,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                  buff1 = VAR_UNITS(cx_y)
                  iunits = TM_UNIT_ID(buff1)
                  IF (iunits .EQ. 4) THEN
+	            delta = unspecified_val8
 	            CALL AXIS_ENDS(dep_ax,dep_dim,grid1,dep_min,dep_max,
      .                      delta, dep_is_log, dep_axtyp, status)
 

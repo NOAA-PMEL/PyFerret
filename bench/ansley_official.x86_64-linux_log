@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/build_v619/x86/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 40855068 Feb 10 15:12 /home/porter/ansley/build_v619/x86/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 40962550 Feb 10 15:40 /home/porter/ansley/build_v619/x86/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/build_v619/x86/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Fix bug 1636 plot_set_up for PLOT/VS.
+Note:  SAVE/keep_axnames
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build_v619/x86/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v619/x86/FERRET/external_functions/ext_func_x86
-Beginning at Tue Feb 10 15:23:04 PST 2009
+Beginning at Wed Feb 11 11:00:03 PST 2009
  	NOAA/PMEL TMAP
  	FERRET v6.191 (beta)
  	Linux(g77) 2.6.9-22. - 02/10/09
- 	10-Feb-09 15:23     
+ 	11-Feb-09 11:00     
 
 yes? !bn500_all_shell
 yes? 
@@ -10237,8 +10237,8 @@ PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.191"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "10-Feb-09"
-SESSION_TIME = "15:23"
+SESSION_DATE = "11-Feb-09"
+SESSION_TIME = "11:00"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10256,8 +10256,8 @@ PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.191"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "10-Feb-09"
-SESSION_TIME = "15:23"
+SESSION_DATE = "11-Feb-09"
+SESSION_TIME = "11:00"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10265,8 +10265,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "10-Feb-09"
-SESSION_TIME = "15:23"
+SESSION_DATE = "11-Feb-09"
+SESSION_TIME = "11:00"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10276,13 +10276,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "10-Feb-09"
-SESSION_TIME = "15:23"
+SESSION_DATE = "11-Feb-09"
+SESSION_TIME = "11:00"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "10-Feb-09"
-SESSION_TIME = "15:23"
+SESSION_DATE = "11-Feb-09"
+SESSION_TIME = "11:00"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10316,7 +10316,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET (beta) Ver.6.191"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Feb 10 2009 15:23:11 "
+LAB3 = "Feb 11 2009 11:00:11 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10413,8 +10413,8 @@ PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.191"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "10-Feb-09"
-SESSION_TIME = "15:23"
+SESSION_DATE = "11-Feb-09"
+SESSION_TIME = "11:00"
  
  
 GO bn_reset
@@ -18144,8 +18144,8 @@ SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94
  
 !GO bn_reset
 !GO bn301_mem_mgmt
-MESSAGE/CONTINUE  ***** bn301_mem_mgm-rw-rw-r--  1 ansley tmap 16421 Feb 10 15:23 bench.mgm
--rw-rw-r--  1 ansley tmap 290366 Feb 10 15:23 bench.mgm
+MESSAGE/CONTINUE  ***** bn301_mem_mgm-rw-rw-r--  1 ansley tmap 16423 Feb 11 11:00 bench.mgm
+-rw-rw-r--  1 ansley tmap 315789 Feb 11 11:00 bench.mgm
 t has been removed from run_all.
 ***** bn301_mem_mgmt has been removed from run_all.
 MESSAGE/CONTINUE  ***** Its too slow!!!
@@ -25294,7 +25294,7 @@ GO err491_grid_from_name.jnl
 ! *sh* 3/99
  
 ! implicit grid, such as "Z[gz=zax]", are aabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Tue Feb 10 15:23:25 PST 2009
+Wed Feb 11 11:00:26 PST 2009
 llowed in places they shouldn't be
  
 ! fixed with change to GRID_FROM_NAME (and PARSE_NAM_DSET_GRD)
@@ -45764,7 +45764,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASFeb 10 2009 15:24:09
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASFeb 11 2009 11:01:05
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 179.9E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47104,7 +47104,7 @@ sho command
           /GRATICUL/MODULO
  LIST/I/J/K/L/X/Y/Z/T/D/HEADING/NOHEAD/SINGLE/FILE/APPEND/ORDER/FORMAT/TITLE
        /PRECISN/RIGID/ILIMITS/JLIMITS/KLIMITS/LLIMITS/XLIMITS/YLIMITS/ZLIMITS
-       /TLIMITS/CLOBBER/QUIET/WIDTH/EDGES/BOUNDS/NOROWLAB
+       /TLIMITS/CLOBBER/QUIET/WIDTH/EDGES/BOUNDS/NOROWLAB/KEEP_AXN
  PLOT/I/J/K/L/X/Y/Z/T/OVERLAY/SET_UP/FRAME/D/TRANPOSE/VS/SYMBOL/NOLABEL
        /LINE/COLOR/THICKNES/SIZE/XLIMITS/YLIMITS/TITLE/STEP/NOAXES/DASH
        /NOYADJUS/AXES/HGRATICU/VGRATICU/HLIMITS/VLIMITS/HLOG/VLOG/GRATICUL
@@ -47164,7 +47164,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "10-Feb-09:15:23"
+WIN_TITLE = "11-Feb-09:11:00"
  
 set win/title="set the title"
 sho sym win_title
@@ -47182,7 +47182,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="10-Feb-09:15:23"
+ !-> set win/title="11-Feb-09:11:00"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47191,16 +47191,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 10-Feb-09
+ !-> DEFINE SYMBOL the_date = 11-Feb-09
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 15:23
+ !-> DEFINE SYMBOL the_time = 11:00
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="10-Feb-09:15:23"
+ !-> SET WIN/TITLE="11-Feb-09:11:00"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "10-Feb-09:15:23"
+WIN_TITLE = "11-Feb-09:11:00"
  
 GO bn_reset
 cancel mode verify
@@ -49680,7 +49680,7 @@ show att/all (`sst,return=taxis`)
  !-> show att/all (TIME7)
      attributes for dataset: ./coads_climatology.cdf
  (TIME7).units = months since 15-jan-2002 
- (TIME7).time_ornetcdf a {
+ (TIME7netcdf a {
 dimensions:
 	PSXT91_108 = 18 ;
 	PSYT35_56 = 22 ;
@@ -49719,10 +49719,10 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
-igin = 15-jan-2002 
+).time_origin = 15-jan-2002 
  (TIME7).modulo =   
  (TIME7).orig_file_axname = TIME 
  
@@ -51521,7 +51521,7 @@ sho dat/att
  VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
 --------------------------------------------------------------------------------
   
- .                      history             CHAR    30   T      FERRET V6.191 (beta) 10-Feb-09
+ .                      history             CHAR    30   T      FERRET V6.191 (beta) 11-Feb-09
                         Conventions         CHAR    6    F      CF-1.0
   
 (PSXT91_108)            units               CHAR    12   T      degrees_east
@@ -51562,7 +51562,7 @@ sho dat/att
  VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
 --------------------------------------------------------------------------------
   
- .                      history             CHAR    30   T      FERRET V6.191 (beta) 10-Feb-09
+ .                      history             CHAR    30   T      FERRET V6.191 (beta) 11-Feb-09
                         Conventions         CHAR    6    F      CF-1.0
   
 (PSXT91_108)            units               CHAR    12   T      degrees_east
@@ -53055,6 +53055,12 @@ SCAT2GRIDGAUSS_YZ(YPTS,ZPTS,F,YAXPTS,ZAXPTS,YSCALE,ZSCALE,CUTOFF,0)
 SCAT2GRIDGAUSS_XT(XPTS,TPTS,F,XAXPTS,TAXPTS,XSCALE,TSCALE,CUTOFF,0)
 SCAT2GRIDGAUSS_YT(YPTS,TPTS,F,YAXPTS,TAXPTS,YSCALE,TSCALE,CUTOFF,0)
 SCAT2GRIDGAUSS_ZT(ZPTS,TPTS,F,ZAXPTS,TAXPTS,ZSCALE,TSCALE,CUTOFF,0)
+SCAT2GRIDGAUSS_XY_V0(XPTS,YPTS,F,XAXPTS,YAXPTS,XSCALE,YSCALE,CUTOFF,0)
+SCAT2GRIDGAUSS_XZ_V0(XPTS,ZPTS,F,XAXPTS,ZAXPTS,XSCALE,ZSCALE,CUTOFF,0)
+SCAT2GRIDGAUSS_YZ_V0(YPTS,ZPTS,F,YAXPTS,ZAXPTS,YSCALE,ZSCALE,CUTOFF,0)
+SCAT2GRIDGAUSS_XT_V0(XPTS,TPTS,F,XAXPTS,TAXPTS,XSCALE,TSCALE,CUTOFF,0)
+SCAT2GRIDGAUSS_YT_V0(YPTS,TPTS,F,YAXPTS,TAXPTS,YSCALE,TSCALE,CUTOFF,0)
+SCAT2GRIDGAUSS_ZT_V0(ZPTS,TPTS,F,ZAXPTS,TAXPTS,ZSCALE,TSCALE,CUTOFF,0)
 SCAT2GRIDLAPLACE_XY(XPTS,YPTS,F,XAXPTS,YAXPTS,CAY,NRNG)
 SCAT2GRIDLAPLACE_XZ(XPTS,ZPTS,F,XAXPTS,ZAXPTS,CAY,NRNG)
 SCAT2GRIDLAPLACE_YZ(YPTS,ZPTS,F,YAXPTS,ZAXPTS,CAY,NRNG)
@@ -55838,27 +55844,7 @@ list indx_al, samplel(al,indx_al)
 4   / 4:  3.000000 "ze rats in the hou..."
  
 let indx_bl = SORTL(bl)
-list indx_bl, samplel(bl,indx_bl)
-             T: 0.5 to 7.5
- Column  1: INDX_BL is SORTL(BL)
- Column  2: EX#2 is SAMPLEL(BL,INDX_BL)
-          INDX_BL   EX#2
-1   / 1:  7.000000 "0"  
-2   / 2:  1.000000 "AB" 
-3   / 3:  2.000000 "C"  
-4   / 4:  4.000000 "aa" 
-5   / 5:  5.000000 "abc"
-6   / 6:      .... ""   
-7   / 7:      .... ""   
- 
- 
-GO bn_reset
-cancel mode verify
-GO bn_samplexyt
-! bn_samplexyt.jnl
-! 1/2009
- 
-! Check the SAMPLEXYT function, shounetcdf a {
+list indx_bl, sanetcdf a {
 dimensions:
 	XAX1_10 = 10 ;
 	tday = UNLIMITED ; // (31 currently)
@@ -55906,10 +55892,30 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
-ld give missing results for T sample points
+mplel(bl,indx_bl)
+             T: 0.5 to 7.5
+ Column  1: INDX_BL is SORTL(BL)
+ Column  2: EX#2 is SAMPLEL(BL,INDX_BL)
+          INDX_BL   EX#2
+1   / 1:  7.000000 "0"  
+2   / 2:  1.000000 "AB" 
+3   / 3:  2.000000 "C"  
+4   / 4:  4.000000 "aa" 
+5   / 5:  5.000000 "abc"
+6   / 6:      .... ""   
+7   / 7:      .... ""   
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO bn_samplexyt
+! bn_samplexyt.jnl
+! 1/2009
+ 
+! Check the SAMPLEXYT function, should give missing results for T sample points
 ! that lie beyond the ends of the T axis of the grid being sampled
  
 define axis/x=0:360:180/units=longitude/edges/modulo x1
@@ -56018,12 +56024,889 @@ SP ncdump -h a.nc
  
 SET MODE/LAST upcase_output
  
+GO bn_reset
+cancel mode verify
+GO bn_cdf_keepax.jnl
+! bn320_cdf
+! benchmark to test netCDF input and output
+! This is the same as bn_cdf with /KEEP_AXNAMES added to SAVE commands.
+ 
+! test many simultaneous netCDF files
+GO bn_cdf_keepax.sub1
+! bn230_cdf.sub1
+! benchmark to test multiple netCDF simultaneous accesses
+! requires version 2.30 or later
+! 6/92
+ 
+! V5 *sh* 7/99 -- clean up files before writing
+ 
+cancel region
+canc var/all
+cancel data/all
+ 
+! delete old ones
+sp rm -f test0[a-p].cdf
+ 
+! write a bunch of em
+list/format=cdf/keep_axnames/append/l=1:500/file=test0a.cdf l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0b.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0c.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0d.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0e.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0f.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0g.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0h.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0i.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0j.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0k.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0l.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0m.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0n.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0o.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0p.cdf/rigid l
+ 
+! initialize all at once
+set data/format=cdf test0a, test0b, test0c, test0d, test0e, test0f, test0g, test0h, test0i, test0j, test0k, test0l, test0n, test0m, test0o, test0p
+show data 1
+     currently SET data sets:
+    1> ./test0a.cdf
+ name     title                             I         J         K         L
+ L_       L                                ...       ...       ...       1:500
+       (axis ABSTRACT)
+ 
+show data/br
+     currently SET data sets:
+    1> ./test0a.cdf
+    2> ./test0b.cdf
+    3> ./test0c.cdf
+    4> ./test0d.cdf
+    5> ./test0e.cdf
+    6> ./test0f.cdf
+    7> ./test0g.cdf
+    8> ./test0h.cdf
+    9> ./test0i.cdf
+   10> ./test0j.cdf
+   11> ./test0k.cdf
+   12> ./test0l.cdf
+   13> ./test0n.cdf
+   14> ./test0m.cdf
+   15> ./test0o.cdf
+   16> ./test0p.cdf  (default)
+ 
+! test access to one
+stat l_[d=1]
+ 
+             L
+             axis ABSTRACT
+             X:  N/A
+             Y:  N/A
+             Z:  N/A
+             T: 0.5 to 501
+             DATA SET: ./test0a.cdf
+ 
+ Total # of data points: 500 (1*1*1*500)
+ # flagged as bad  data: 0
+ Minimum value: 1
+ Maximum value: 500
+ Mean    value: 250.5 (unweighted average)
+ Standard deviation: 144.48
+ 
+! test access to all
+stat l_[d=1]-l_[d=2]+l_[d=3]-l_[d=4]+l_[d=5]-l_[d=6]+l_[d=7]-l_[d=8]+l_[d=9]-l_[d=10]+l_[d=11]-l_[d=12]+l_[d=13]-l_[d=14]+l_[d=15]-l_[d=16]
+ 
+             L_[D=test0a]-L_[D=test0b]+L_[D=test0c]-L_[D=test0d]+L_[D=test0e]-L_[D=test0f]+L_[D=test0g]-L_[D=test0h]+L_[D=test0i]-L_[D=test0j]+L_[D=test0k]-L_[D=test0l]+L_[D=test0n]-L_[D=test0m
+             X:  N/A
+             Y:  N/A
+             Z:  N/A
+             T: 0.5 to 501
+             DATA SET: N/A
+ 
+ Total # of data points: 500 (1*1*1*500)
+ # flagged as bad  data: 0
+ Minimum value: 0
+ Maximum value: 0
+ Mean    value: 0 (unweighted average)
+ Standard deviation: 0
+cancel data/all
+ 
+! test abstract variable io
+GO bn_cdf_keepax.sub2
+! bn230_cdf.sub2
+! benchmark to test abstract variable netCDF input and output
+! requires version 2.30 or later
+! 6/92
+ 
+! V5 *sh* 7/99 added /CLOBBER
+ 
+cancel region
+canc var/all
+cancel data/all
+ 
+! define a realistic time series grid
+define axis/t="1-jan-1902":"1-jan-2010":1/unit=day tcentury
+define grid/like=abstract/t=tcentury gcentury
+let tlong = t[g=gcentury]
+ 
+let i1 = i
+let j1 = j
+let k1 = k
+let l1 = l[g=gcentury]
+let l2 = l
+let ij = i+j
+let ik = i+k
+let il = i+l1
+let jk = j+k
+let jl = j+l1
+let kl = k+l1
+let ijk = i+j+k
+let ikl = i+k+l1
+let ijl = i+j+l1
+let jkl = j+k+l1
+let ijkl = i+j+k+l1
+let ijk2 = i+j+k
+let ikl2 = i+k+l1
+let ijl2 = i+j+l1
+let jkl2 = j+k+l1
+let iavejkl = ijkl[i=@ave]
+let ijavekl = ijkl[j=@ave]
+let ijkavel = ijkl[k=@ave]
+let ijklave = ijkl[l=@ave]
+ 
+! a bunch of basic geometries
+! 1d
+list/format=cdf/keep_axnames/i=1:10/clobber/file=test_abs.cdf i1   ! not /APPEND - must be new
+list/format=cdf/keep_axnames/j=1:20/append/file=test_abs.cdf j1
+list/format=cdf/keep_axnames/k=1:100/append/file=test_abs.cdf k1
+list/format=cdf/keep_axnames/l=1:10/append/file=test_abs.cdf l1           ! record axis
+list/format=cdf/keep_axnames/l=1:10/append/file=test_abs.cdf l2           ! rigid axis
+ 
+! 2D
+list/format=cdf/keep_axnames/i=1:10/j=1:20/append/file=test_abs.cdf ij
+list/format=cdf/keep_axnames/i=1:10/k=1:100/append/file=test_abs.cdf ik
+list/format=cdf/keep_axnames/i=1:10/l=5:10/append/file=test_abs.cdf il
+list/format=cdf/keep_axnames/k=1:100/j=1:20/append/file=test_abs.cdf jk
+ 
+!3D
+set region/i=1:10/j=1:20/k=1:100/l=4:8
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijk
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ikl
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijl
+list/format=cdf/keep_axnames/append/file=test_abs.cdf jkl
+ 
+!4D
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkl
+ 
+! extend along time axis and write sub-regions
+! (note: this may leave undefined regions in other variables)
+list/format=cdf/keep_axnames/append/file=test_abs.cdf/i=1:5 /j=1:5 /l=11:12 ijl
+list/format=cdf/keep_axnames/append/file=test_abs.cdf/i=6:10/j=1:5 /l=11:12 ijl
+list/format=cdf/keep_axnames/append/file=test_abs.cdf/i=1:5 /j=6:10/l=11:12 ijl
+list/format=cdf/keep_axnames/append/file=test_abs.cdf/i=6:10/j=6:10/l=11:12 ijl
+ 
+! rewrite a sub-region in the middle of the data
+list/format=cdf/keep_axnames/append/file=test_abs.cdf/i=6:8/j=6:8/l=8:10/k=3:5 ijkl
+ 
+! check documentation of transforms
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijk2[i=@ave]
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ikl2[i=@ave,k=@sbx:3]
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijl2[i=@ave,j=@ave]
+list/format=cdf/keep_axnames/append/file=test_abs.cdf jkl2[k=@ave,l=@ave]
+list/format=cdf/keep_axnames/append/file=test_abs.cdf iavejkl
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijavekl
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkavel
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijklave
+ 
+! look at what we've created - time axis should be regular
+set data/format=cdf test_abs
+show data/full
+     currently SET data sets:
+    1> ./test_abs.cdf  (default)
+ 
+ name     title                             I         J         K         L
+ I1       I                                1:10      ...       ...       ...
+               on grid GEU1 with -1.000000E+34 for missing data
+             X=0.5:10.5  
+ J1       J                                ...       1:20      ...       ...
+               on grid GEU2 with -1.000000E+34 for missing data
+             Y=0.5:20.5  
+ K1       K                                ...       ...       1:100     ...
+               on grid GEU3 with -1.000000E+34 for missing data
+             Z=0.5:100.5  
+ L1       L[G=GCENTURY]                    ...       ...       ...       1:12
+               on grid GEU4 with -1.000000E+34 for missing data
+             
+ L2       L                                ...       ...       ...       1:10
+               on grid GEU5 with -1.000000E+34 for missing data
+             
+ IJ       I+J                              1:10      1:20      ...       ...
+               on grid GEU6 with -1.000000E+34 for missing data
+             X=0.5:10.5  Y=0.5:20.5  
+ IK       I+K                              1:10      ...       1:100     ...
+               on grid GEU7 with -1.000000E+34 for missing data
+             X=0.5:10.5  Z=0.5:100.5  
+ IL       I+L1                             1:10      ...       ...       1:12
+               on grid GEU8 with -1.000000E+34 for missing data
+             X=0.5:10.5  
+ JK       J+K                              ...       1:20      1:100     ...
+               on grid GEU9 with -1.000000E+34 for missing data
+             Y=0.5:20.5  Z=0.5:100.5  
+ IJK      I+J+K                            1:10      1:20      1:100     ...
+               on grid GEU10 with -1.000000E+34 for missing data
+             X=0.5:10.5  Y=0.5:20.5  Z=0.5:100.5  
+ IKL      I+K+L1                           1:10      ...       1:100     1:12
+               on grid GEU11 with -1.000000E+34 for missing data
+             X=0.5:10.5  Z=0.5:100.5  
+ IJL      I+J+L1                           1:10      1:20      ...       1:12
+               on grid GEU12 with -1.000000E+34 for missing data
+             X=0.5:10.5  Y=0.5:20.5  
+ JKL      J+K+L1                           ...       1:20      1:100     1:12
+               on grid GEU13 with -1.000000E+34 for missing data
+             Y=0.5:20.5  Z=0.5:100.5  
+ IJKL     I+J+K+L1                         1:10      1:20      1:100     1:12
+               on grid GEU14 with -1.000000E+34 for missing data
+             X=0.5:10.5  Y=0.5:20.5  Z=0.5:100.5  
+ IJK2     I+J+K                            ...       1:20      1:100     ...
+       (X=0.5:10.5@AVE)
+               on grid GEU9 with -1.000000E+34 for missing data
+             Y=0.5:20.5  Z=0.5:100.5  
+ IKL2     I+K+L1                           ...       ...       1:100     1:12
+       (X=0.5:10.5@AVE, box smoothed by 3 pts on Z)
+               on grid GEU15 with -1.000000E+34 for missing data
+             Z=0.5:100.5  
+ IJL2     I+J+L1                           ...       ...       ...       1:12
+       (X=0.5:10.5@AV4, Y=0.5:20.5@AV4)
+               on grid GEU4 with -1.000000E+34 for missing data
+             
+ JKL2     J+K+L1                           ...       1:20      ...       ...
+       (Z=0.5:100.5@AV4, T=354:359@AV4)
+               on grid GEU2 with -1.000000E+34 for missing data
+             Y=0.5:20.5  
+ IAVEJKL  IJKL[I=@AVE]                     ...       1:20      1:100     1:12
+       (X=0.5:10.5)
+               on grid GEU13 with -1.000000E+34 for missing data
+             Y=0.5:20.5  Z=0.5:100.5  
+ IJAVEKL  IJKL[J=@AVE]                     1:10      ...       1:100     1:12
+       (Y=0.5:20.5)
+               on grid GEU11 with -1.000000E+34 for missing data
+             X=0.5:10.5  Z=0.5:100.5  
+ IJKAVEL  IJKL[K=@AVE]                     1:10      1:20      ...       1:12
+       (Z=0.5:100.5)
+               on grid GEU12 with -1.000000E+34 for missing data
+             X=0.5:10.5  Y=0.5:20.5  
+ IJKLAVE  IJKL[L=@AVE]                     1:10      1:20      1:100     ...
+       (T=354:359)
+               on grid GEU10 with -1.000000E+34 for missing data
+             X=0.5:10.5  Y=0.5:20.5  Z=0.5:100.5  
+ 
+  time range: 351 to 362
+ 
+cancel variable ijkl
+show grid ijkl
+    GRID GEU14
+ name       axis              # pts   start                end
+ XAX1      X                   10 r   1                    10
+ YAX1      Y                   20 r   1                    20
+ ZAX1      Z                  100 r   1                    100
+ TCENTURY1 T (DAY)             12 r   351                  362
+cancel data test_abs
+ 
+! make the time axis irregular by leaving out l=13
+list/format=cdf/keep_axnames/l=14:16/append/file=test_abs.cdf l1
+set data/format=cdf test_abs
+show data/full
+     currently SET data sets:
+    1> ./test_abs.cdf  (default)
+ 
+ name     title                             I         J         K         L
+ I1       I                                1:10      ...       ...       ...
+               on grid GEU1 with -1.000000E+34 for missing data
+             X=0.5:10.5  
+ J1       J                                ...       1:20      ...       ...
+               on grid GEU2 with -1.000000E+34 for missing data
+             Y=0.5:20.5  
+ K1       K                                ...       ...       1:100     ...
+               on grid GEU3 with -1.000000E+34 for missing data
+             Z=0.5:100.5  
+ L1       L[G=GCENTURY]                    ...       ...       ...       1:15
+               on grid GEU4 with -1.000000E+34 for missing data
+             
+ L2       L                                ...       ...       ...       1:10
+               on grid GEU5 with -1.000000E+34 for missing data
+             
+ IJ       I+J                              1:10      1:20      ...       ...
+               on grid GEU6 with -1.000000E+34 for missing data
+             X=0.5:10.5  Y=0.5:20.5  
+ IK       I+K                              1:10      ...       1:100     ...
+               on grid GEU7 with -1.000000E+34 for missing data
+             X=0.5:10.5  Z=0.5:100.5  
+ IL       I+L1                             1:10      ...       ...       1:15
+               on grid GEU8 with -1.000000E+34 for missing data
+             X=0.5:10.5  
+ JK       J+K                              ...       1:20      1:100     ...
+               on grid GEU9 with -1.000000E+34 for missing data
+             Y=0.5:20.5  Z=0.5:100.5  
+ IJK      I+J+K                            1:10      1:20      1:100     ...
+               on grid GEU10 with -1.000000E+34 for missing data
+             X=0.5:10.5  Y=0.5:20.5  Z=0.5:100.5  
+ IKL      I+K+L1                           1:10      ...       1:100     1:15
+               on grid GEU11 with -1.000000E+34 for missing data
+             X=0.5:10.5  Z=0.5:100.5  
+ IJL      I+J+L1                           1:10      1:20      ...       1:15
+               on grid GEU12 with -1.000000E+34 for missing data
+             X=0.5:10.5  Y=0.5:20.5  
+ JKL      J+K+L1                           ...       1:20      1:100     1:15
+               on grid GEU13 with -1.000000E+34 for missing data
+             Y=0.5:20.5  Z=0.5:100.5  
+ IJKL     I+J+K+L1                         1:10      1:20      1:100     1:15
+               on grid GEU14 with -1.000000E+34 for missing data
+             X=0.5:10.5  Y=0.5:20.5  Z=0.5:100.5  
+ IJK2     I+J+K                            ...       1:20      1:100     ...
+       (X=0.5:10.5@AVE)
+               on grid GEU9 with -1.000000E+34 for missing data
+             Y=0.5:20.5  Z=0.5:100.5  
+ IKL2     I+K+L1                           ...       ...       1:100     1:15
+       (X=0.5:10.5@AVE, box smoothed by 3 pts on Z)
+               on grid GEU15 with -1.000000E+34 for missing data
+             Z=0.5:100.5  
+ IJL2     I+J+L1                           ...       ...       ...       1:15
+       (X=0.5:10.5@AV4, Y=0.5:20.5@AV4)
+               on grid GEU4 with -1.000000E+34 for missing data
+             
+ JKL2     J+K+L1                           ...       1:20      ...       ...
+       (Z=0.5:100.5@AV4, T=354:359@AV4)
+               on grid GEU2 with -1.000000E+34 for missing data
+             Y=0.5:20.5  
+ IAVEJKL  IJKL[I=@AVE]                     ...       1:20      1:100     1:15
+       (X=0.5:10.5)
+               on grid GEU13 with -1.000000E+34 for missing data
+             Y=0.5:20.5  Z=0.5:100.5  
+ IJAVEKL  IJKL[J=@AVE]                     1:10      ...       1:100     1:15
+       (Y=0.5:20.5)
+               on grid GEU11 with -1.000000E+34 for missing data
+             X=0.5:10.5  Z=0.5:100.5  
+ IJKAVEL  IJKL[K=@AVE]                     1:10      1:20      ...       1:15
+       (Z=0.5:100.5)
+               on grid GEU12 with -1.000000E+34 for missing data
+             X=0.5:10.5  Y=0.5:20.5  
+ IJKLAVE  IJKL[L=@AVE]                     1:10      1:20      1:100     ...
+       (T=354:359)
+               on grid GEU10 with -1.000000E+34 for missing data
+             X=0.5:10.5  Y=0.5:20.5  Z=0.5:100.5  
+ 
+  time range: 351 to 366
+ 
+show grid ijkl
+    GRID GEU14
+ name       axis              # pts   start                end
+ XAX1      X                   10 r   1                    10
+ YAX1      Y                   20 r   1                    20
+ ZAX1      Z                  100 r   1                    100
+ TCENTURY1 T (DAY)             15 i   351                  366
+ 
+ 
+! list long time series using a rigid (non-record axis) time axis --> FAST
+list/clobber/format=cdf/keep_axnames/l=1:300000/rigid/file=test2.cdf l  ! without record dimension
+! list time series using the record dimension --> SLOW (1/50th as long axis)
+list/clobber/format=cdf/keep_axnames/l=1:5000 l                               ! auto-filename
+list/clobber/format=cdf/keep_axnames/t="1-jan-1902":"1-jan-2010"/rigid tlong  ! auto-filename
+ 
+! deliberate errors
+set mode ignore
+list/format=cdf/keep_axnames/l=1:10/file=test_abs.cdf l    ! file exists error
+list/format=cdf/keep_axnames/i=5:15/l=5:10/append/file=test_abs.cdf il  ! inconsistent i limits
+list/format=cdf/keep_axnames/i=1:10/j=20:25/append/file=test_abs.cdf ij ! inconsistent j limits
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijl2              ! i and j not avg'd
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkl[k=@ave]      ! k axis averaged
+list/format=cdf/keep_axnames/l=13/append/file=test_abs.cdf l1           ! inconsistent time pt
+set data/format=cdf test0a, test0b, test0c, test0d, test0e, test0f, test0g, test0h, test0i, test0j, test0k, test0l, test0n, test0m, test0o, test0p
+list/clobber/format=cdf/keep_axnames/i=1:10 i                                ! too many netcdf files
+canc data/all
+cancel mode ignore
+ 
+! show the grids created
+cancel variables/all
+set data/format=cdf test_abs
+show grid j1 jkl jkl2 iavejkl ijkl
+    GRID GEU2
+ name       axis              # pts   start                end
+ normal    X
+ YAX1      Y                   20 r   1                    20
+ normal    Z
+ normal    T
+    GRID GEU13
+ name       axis              # pts   start                end
+ normal    X
+ YAX1      Y                   20 r   1                    20
+ ZAX1      Z                  100 r   1                    100
+ TCENTURY1 T (DAY)             15 i   351                  366
+    GRID GEU2
+ name       axis              # pts   start                end
+ normal    X
+ YAX1      Y                   20 r   1                    20
+ normal    Z
+ normal    T
+    GRID GEU13
+ name       axis              # pts   start                end
+ normal    X
+ YAX1      Y                   20 r   1                    20
+ ZAX1      Z                  100 r   1                    100
+ TCENTURY1 T (DAY)             15 i   351                  366
+    GRID GEU14
+ name       axis              # pts   start                end
+ XAX1      X                   10 r   1                    10
+ YAX1      Y                   20 r   1                    20
+ ZAX1      Z                  100 r   1                    100
+ TCENTURY1 T (DAY)             15 i   351                  366
+cancel data test_abs
+ 
+! test TMAP data io
+GO bn_cdf_keepax.sub3 	! matches old outputs by using /HEADING=enhanced
+! bn320_cdf.sub3
+! benchmark to test netCDF input and output of TMAP data set variables
+! this routine added 1/26/95 to test the SAVE/HEADING=enhanced option
+ 
+! V5 *sh* 7/99 added /CLOBBER
+ 
+cancel data/all
+cancel variables/all
+cancel region
+ 
+use gtbc011
+ 
+let i1 = x[g=temp,i=1:10]
+let j1 = y[g=temp,j=5:10]
+let k1 = z[g=u,k=5:15]
+let l1 = l[g=u,l=1:3]
+let l2 = l
+let ij = taux[l=@ave]
+let ik = i1+k1
+let il = i1+l1
+let jk = j1+k1
+let jl = j1+l1
+let kl = k1+l1
+let ijk = temp[l=@ave]
+let ikl = temp[j=@ave]
+let ijl = temp[k=@ave]
+let jkl = temp[i=@ave]
+let ijkl = u
+let ijk2 = temp
+let iavejkl = ijkl[i=@ave]
+let ijavekl = ijkl[j=@ave]
+let ijkavel = ijkl[k=@ave]
+let ijklave = ijkl[l=@ave]
+ 
+set region/l=1:2  ! i,j, and k unspecified
+ 
+! a bunch of basic geometries
+! 1d
+list/format=cdf/keep_axnames/clobber/file=test_fil0.cdf/heading="enh" i1      ! not /APPEND - must be new
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" j1
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" k1
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" l1       ! record axis
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" l2       ! rigid axis
+ 
+! 2D
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" ij
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" ik
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" il
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" jk
+ 
+!3D
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" ijk
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" ikl
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" ijl
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" jkl
+ 
+!4D
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" ijkl
+ 
+! extend along time axis and write sub-regions
+! (note: this may leave undefined regions in other variables)
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh"/j=1:50/l=2:3 ijl
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh"/j=51:100/l=2:3 ijl
+ 
+! rewrite a sub-region in the middle of the data
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh"/j=30:40/k=5/l=1:3 ijkl
+ 
+! check documentation of transforms
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" iavejkl
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" ijavekl
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" ijkavel
+list/format=cdf/keep_axnames/append/file=test_fil0.cdf/heading="enh" ijklave
+ 
+! look at what we've created - time axis should be regular
+set data/format=cdf test_fil0
+show data/full
+     currently SET data sets:
+    1> ./gtbc011.cdf
+ 
+ name     title                             I         J         K         L
+ TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
+             deg. C on grid PS3DT1 with -1.000000E+34 for missing data
+             X=161W:158W  Y=30S:50N  Z=0:4149  
+ SALT     (SALINITY(ppt) - 35) /1000      70:71      1:100     1:27      1:3
+             frac. by wt. less .035 on grid PS3DT1 with 0.01 for missing data
+             X=161W:159W  Y=30S:50N  Z=0:4149  
+ U        ZONAL VELOCITY                  69:72      1:100     1:27      1:3
+             cm/sec on grid PS3DU1 with -1.000000E+34 for missing data
+             X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
+ V        MERIDIONAL VELOCITY             69:72      1:100     1:27      1:3
+             cm/sec on grid PS3DU1 with -1.000000E+34 for missing data
+             X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
+ W        VERTICAL VELOCITY               70:71      1:100     1:27      1:3
+             cm/sec on grid PS3DW1 with -1.000000E+34 for missing data
+             X=161W:159W  Y=30S:50N  Z=5:4149  
+ TAUX     ZONAL WIND STRESS               69:71      1:100     ...       1:3
+             dynes/cm**2 on grid PS2DU1 with -1.000000E+34 for missing data
+             X=161.5W:158.5W  Y=28.84S:51.43N  
+ TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3
+             dynes/cm**2 on grid PS2DU1 with -1.000000E+34 for missing data
+             X=161.5W:158.5W  Y=28.84S:51.43N  
+ PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3
+             cm**3/sec on grid PS2DU1 with -1.000000E+34 for missing data
+             X=161.5W:156.5W  Y=28.84S:51.43N  
+ 
+  time range: 27740 to 27742
+ 
+    2> ./test_fil0.cdf  (default)
+ 
+ name     title                             I         J         K         L
+ I1       X[G=TEMP,I=1:10]                 1:10      ...       ...       ...
+               on grid PS3DT1_NYZT with -1.000000E+34 for missing data
+             X=130E:140E  
+ J1       Y[G=TEMP,J=5:10]                 ...       5:10      ...       ...
+               on grid PS3DT1_NXZT with -1.000000E+34 for missing data
+             Y=21.11S:12.52S  
+ K1       Z[G=U,K=5:15]                    ...       ...       5:15      ...
+               on grid PS3DU1_NXYT with -1.000000E+34 for missing data
+             Z=40:190  
+ L1       L[G=U,L=1:3]                     ...       ...       ...       1:3
+               on grid GRH1 with -1.000000E+34 for missing data
+             
+ L2       L                                ...       ...       ...       1:2
+               on grid GRH2 with -1.000000E+34 for missing data
+             
+ IJ       TAUX[L=@AVE]                    69:71      1:100     ...       ...
+       (T=27740:27742)
+               on grid PS2DU1_NT with -1.000000E+34 for missing data
+             X=161.5W:158.5W  Y=28.84S:51.43N  
+ IK       I1+K1                            1:10      ...       5:15      ...
+               on grid G082_NYT with -1.000000E+34 for missing data
+             X=130E:140E  Z=40:190  
+ IL       I1+L1                            1:10      ...       ...       1:3
+               on grid G082_NYZ with -1.000000E+34 for missing data
+             X=130E:140E  
+ JK       J1+K1                            ...       5:10      5:15      ...
+               on grid G084_NXT with -1.000000E+34 for missing data
+             Y=21.11S:12.52S  Z=40:190  
+ IJK      TEMP[L=@AVE]                    70:72      1:100     1:27      ...
+       (T=27740:27742)
+               on grid PS3DT1_NT with -1.000000E+34 for missing data
+             X=161W:158W  Y=30S:50N  Z=0:4149  
+ IKL      TEMP[J=@AVE]                    70:72      ...       1:27      1:3
+       (Y=30S:50N)
+               on grid PS3DT1_NY with -1.000000E+34 for missing data
+             X=161W:158W  Z=0:4149  
+ IJL      TEMP[K=@AVE]                    70:72      1:100     ...       1:3
+       (Z=0:4149)
+               on grid PS3DT1_NZ with -1.000000E+34 for missing data
+             X=161W:158W  Y=30S:50N  
+ JKL      TEMP[I=@AVE]                     ...       1:100     1:27      1:3
+       (X=130E:70W)
+               on grid GRH3 with -1.000000E+34 for missing data
+             Y=30S:50N  Z=0:4149  
+ IJKL     U                               69:72      1:100     1:27      1:3
+               on grid PS3DU1 with -1.000000E+34 for missing data
+             X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
+ IAVEJKL  IJKL[I=@AVE]                     ...       1:100     1:27      1:3
+       (X=130.5E:69.5W)
+               on grid GRH4 with -1.000000E+34 for missing data
+             Y=28.84S:51.43N  Z=0:4149  
+ IJAVEKL  IJKL[J=@AVE]                    69:72      ...       1:27      1:3
+       (Y=28.84S:51.43N)
+               on grid PS3DU1_NY with -1.000000E+34 for missing data
+             X=161.5W:157.5W  Z=0:4149  
+ IJKAVEL  IJKL[K=@AVE]                    69:72      1:100     ...       1:3
+       (Z=0:4149)
+               on grid PS3DU1_NZ with -1.000000E+34 for missing data
+             X=161.5W:157.5W  Y=28.84S:51.43N  
+ IJKLAVE  IJKL[L=@AVE]                    69:72      1:100     1:27      ...
+       (T=27740:27742)
+               on grid PS3DU1_NT with -1.000000E+34 for missing data
+             X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
+ 
+  time range: 27740 to 27742
+ 
+cancel variable ijkl
+show grid ijkl
+    GRID PS3DU1
+ name       axis              # pts   start                end
+ PSXU      LONGITUDE          160mr   131E                 70W
+ PSYU      LATITUDE           100 i   27.672S              50N
+ PSZT1     DEPTH (m)           27 i-  5                    3824
+ TIME11    T (hour)             3 r   27740                27742
+cancel data test_fil0
+! 5/99 moved old bn230_cdf.sub3 to bn_cdf_keepax.sub4 to stay inline w/ old benchmarks *kob*
+GO bn_cdf_keepax.sub4
+! bn230_cdf
+! benchmark to test netCDF input and output of TMAP data set variables
+! requires version 2.30 or later
+! 6/92
+ 
+! V5 *sh* 7/99 -- added /CLOBBER
+ 
+cancel data/all
+cancel variables/all
+cancel region
+ 
+use gtbc011
+ 
+let i1 = x[g=temp,i=1:10]
+let j1 = y[g=temp,j=5:10]
+let k1 = z[g=u,k=5:15]
+let l1 = l[g=u,l=1:3]
+let l2 = l
+let ij = taux[l=@ave]
+let ik = i1+k1
+let il = i1+l1
+let jk = j1+k1
+let jl = j1+l1
+let kl = k1+l1
+let ijk = temp[l=@ave]
+let ikl = temp[j=@ave]
+let ijl = temp[k=@ave]
+let jkl = temp[i=@ave]
+let ijkl = u
+let ijk2 = temp
+let iavejkl = ijkl[i=@ave]
+let ijavekl = ijkl[j=@ave]
+let ijkavel = ijkl[k=@ave]
+let ijklave = ijkl[l=@ave]
+ 
+set region/l=1:2  ! i,j, and k unspecified
+ 
+! a bunch of basic geometries
+! 1d
+list/format=cdf/keep_axnames/clobber/file=test_fil.cdf i1      ! not /APPEND - must be new
+list/format=cdf/keep_axnames/append/file=test_fil.cdf j1
+list/format=cdf/keep_axnames/append/file=test_fil.cdf k1
+list/format=cdf/keep_axnames/append/file=test_fil.cdf l1           ! record axis
+list/format=cdf/keep_axnames/append/file=test_fil.cdf l2          ! rigid axis
+ 
+! 2D
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ij
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ik
+list/format=cdf/keep_axnames/append/file=test_fil.cdf il
+list/format=cdf/keep_axnames/append/file=test_fil.cdf jk
+ 
+!3D
+! The following is an error - axis already in the file
+!
+set mode ignore
+ 
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijk
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ikl
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijl
+list/format=cdf/keep_axnames/append/file=test_fil.cdf jkl
+ 
+!4D
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijkl
+ 
+! extend along time axis and write sub-regions
+! (note: this may leave undefined regions in other variables)
+list/format=cdf/keep_axnames/append/file=test_fil.cdf/j=1:50/l=2:3 ijl
+list/format=cdf/keep_axnames/append/file=test_fil.cdf/j=51:100/l=2:3 ijl
+ 
+! rewrite a sub-region in the middle of the data
+list/format=cdf/keep_axnames/append/file=test_fil.cdf/j=30:40/k=5/l=1:3 ijkl
+ 
+! check documentation of transforms
+list/format=cdf/keep_axnames/append/file=test_fil.cdf iavejkl
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijavekl
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijkavel
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijklave
+ 
+! look at what we've created - time axis should be regular
+set data/format=cdf test_fil
+show data/full
+     currently SET data sets:
+    1> ./gtbc011.cdf
+ 
+ name     title                             I         J         K         L
+ TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
+             deg. C on grid PS3DT1 with -1.000000E+34 for missing data
+             X=161W:158W  Y=30S:50N  Z=0:4149  
+ SALT     (SALINITY(ppt) - 35) /1000      70:71      1:100     1:27      1:3
+             frac. by wt. less .035 on grid PS3DT1 with 0.01 for missing data
+             X=161W:159W  Y=30S:50N  Z=0:4149  
+ U        ZONAL VELOCITY                  69:72      1:100     1:27      1:3
+             cm/sec on grid PS3DU1 with -1.000000E+34 for missing data
+             X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
+ V        MERIDIONAL VELOCITY             69:72      1:100     1:27      1:3
+             cm/sec on grid PS3DU1 with -1.000000E+34 for missing data
+             X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
+ W        VERTICAL VELOCITY               70:71      1:100     1:27      1:3
+             cm/sec on grid PS3DW1 with -1.000000E+34 for missing data
+             X=161W:159W  Y=30S:50N  Z=5:4149  
+ TAUX     ZONAL WIND STRESS               69:71      1:100     ...       1:3
+             dynes/cm**2 on grid PS2DU1 with -1.000000E+34 for missing data
+             X=161.5W:158.5W  Y=28.84S:51.43N  
+ TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3
+             dynes/cm**2 on grid PS2DU1 with -1.000000E+34 for missing data
+             X=161.5W:158.5W  Y=28.84S:51.43N  
+ PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3
+             cm**3/sec on grid PS2DU1 with -1.000000E+34 for missing data
+             X=161.5W:156.5W  Y=28.84S:51.43N  
+ 
+  time range: 27740 to 27742
+ 
+    2> ./test_fil.cdf  (default)
+ 
+ name     title                             I         J         K         L
+ I1       X[G=TEMP,I=1:10]                 1:10      ...       ...       ...
+               on grid GLZ1 with -1.000000E+34 for missing data
+             X=130E:140E  
+ J1       Y[G=TEMP,J=5:10]                 ...       1:6       ...       ...
+               on grid GLZ2 with -1.000000E+34 for missing data
+             Y=21.11S:12.52S  
+ K1       Z[G=U,K=5:15]                    ...       ...       1:11      ...
+               on grid GLZ3 with -1.000000E+34 for missing data
+             Z=40:190  
+ L1       L[G=U,L=1:3]                     ...       ...       ...       1:3
+               on grid GLZ4 with -1.000000E+34 for missing data
+             
+ L2       L                                ...       ...       ...       1:2
+               on grid GLZ5 with -1.000000E+34 for missing data
+             
+ IJ       TAUX[L=@AVE]                     1:3       1:100     ...       ...
+       (T=27740:27742)
+               on grid GLZ6 with -1.000000E+34 for missing data
+             X=161.5W:158.5W  Y=28.84S:51.43N  
+ IK       I1+K1                            1:10      ...       1:11      ...
+               on grid GLZ7 with -1.000000E+34 for missing data
+             X=130E:140E  Z=40:190  
+ IL       I1+L1                            1:10      ...       ...       1:3
+               on grid GLZ8 with -1.000000E+34 for missing data
+             X=130E:140E  
+ JK       J1+K1                            ...       1:6       1:11      ...
+               on grid GLZ9 with -1.000000E+34 for missing data
+             Y=21.11S:12.52S  Z=40:190  
+ 
+  time range: 27740 to 27742
+ 
+cancel variable ijkl
+show grid ijkl
+cancel data test_fil
+ 
+set mode/last ignore
+ 
+GO bn_cdf_reversed_keepax.sub
+! bn320_cdf_reversed.sub
+! benchmark to test netCDF input of reverse-coordinate axes
+! this routine added 3/2/95
+ 
+cancel data/all
+cancel variables/all
+cancel region
+ 
+set data reverse_axes
+ 
+show data/var
+     currently SET data sets:
+    1> ./reverse_axes.cdf  (default)
+ 
+ name     title                             I         J         K         L
+ FCN_NORM COS(X/10)*SIN(Y/2)               1:51      1:21      ...       ...
+               on grid GAF1 with -1.000000E+34 for missing data
+             X=129.5E:179.5W  Y=10.5S:10.5N  
+ FCN_REV  COS(X/10)*SIN(Y/2)               1:51      1:21      ...       ...
+               on grid GAF2 with -1.000000E+34 for missing data
+             X=129.5E:179.5W  Y=10.5S:10.5N  
+ FCN_REV_SUB
+          COS(X/10)*SIN(Y/2)               1:51     10:19      ...       ...
+               on grid GREV with -1.000000E+34 for missing data
+             X=129.5E:179.5W  Y=1.5S:8.5N  
+ 
+ 
+list/x=180 fcn_norm,fcn_rev
+ WARNING: Listed variables have ambiguous coordinates on axes: Y
+             DATA SET: ./reverse_axes.cdf
+             LONGITUDE: 180E
+ Column  1: FCN_NORM is COS(X/10)*SIN(Y/2)
+ Column  2: FCN_REV is COS(X/10)*SIN(Y/2)
+          FCN_NOR    FCN_REV
+J /  1:  0.6331937 -0.6331937
+J /  2:  0.6454794 -0.6454794
+J /  3:  0.4997293 -0.4997293
+J /  4:  0.2316280 -0.2316280
+J /  5: -0.0931839  0.0931839
+J /  6: -0.3951811  0.3951811
+J /  7: -0.6004243  0.6004243
+J /  8: -0.6586626  0.6586626
+J /  9: -0.5556374  0.5556374
+J / 10: -0.3165727  0.3165727
+J / 11:  0.0000000  0.0000000
+J / 12:  0.3165727 -0.3165727
+J / 13:  0.5556374 -0.5556374
+J / 14:  0.6586626 -0.6586626
+J / 15:  0.6004243 -0.6004243
+J / 16:  0.3951811 -0.3951811
+J / 17:  0.0931839 -0.0931839
+J / 18: -0.2316280  0.2316280
+J / 19: -0.4997293  0.4997293
+J / 20: -0.6454794  0.6454794
+J / 21: -0.6331937  0.6331937
+list/x=180 fcn_rev_sub
+             VARIABLE : COS(X/10)*SIN(Y/2)
+             FILENAME : reverse_axes.cdf
+             SUBSET   : 10 points (LATITUDE)
+             LONGITUDE: 180E
+                180E    
+                51
+ 8N   / 19:  0.4997293
+ 7N   / 18:  0.2316280
+ 6N   / 17: -0.0931839
+ 5N   / 16: -0.3951811
+ 4N   / 15: -0.6004243
+ 3N   / 14: -0.6586626
+ 2N   / 13: -0.5556374
+ 1N   / 12: -0.3165727
+ 0    / 11:  0.0000000
+ 1S   / 10:  0.3165727
+ 
+GO bn_reset
+cancel mode verify
+GO bn_keep_axnames.jnl
+! bn_keep_axnames.jnl
+! 2/2009 ACM
+ 
+! save/keep_axnames prevents changes to
+! axis name when a subset is written.
+ 
+sh command list
+ LIST/I/J/K/L/X/Y/Z/T/D/HEADING/NOHEAD/SINGLE/FILE/APPEND/ORDER/FORMAT/TITLE
+       /PRECISN/RIGID/ILIMITS/JLIMITS/KLIMITS/LLIMITS/XLIMITS/YLIMITS/ZLIMITS
+       /TLIMITS/CLOBBER/QUIET/WIDTH/EDGES/BOUNDS/NOROWLAB/KEEP_AXN
+define axis/x=1:100:1/units=deg x100
+define axis/t=1-jan-2000:31-jan-2000:1/units=days/t0=31-dec-1999 t31
+let a = x[gx=x100] + t[gt=t31]
+save/file=a.nc/clobber/i=30:40/L=15:28/KEEP_AXNAMES a
+ 
+sp echo "bn_keep_axnames.jnl --- test SAVE/KEEP_AXNAMES" >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+save/file=a.nc/clobber/i=30:40/L=15:28 a
+ 
+sp echo "bn_keep_axnames.jnl --- without /KEEP_AXNAMES" >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+ 
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.191 (beta)
  	Linux(g77) 2.6.9-22. - 02/10/09
- 	10-Feb-09 15:24     
+ 	11-Feb-09 11:01     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -56734,8 +57617,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  10   / 10:  -5.00
  11   / 11:  -4.00
  12   / 12:  -3.00
- 13-rw-rw-r--  1 ansley tmap 29712 Feb 10 15:24 testa.v5d
--rw-rw-r--  1 ansley tmap 29712 Feb 10 15:24 test.v5d
+ 13-rw-rw-r--  1 ansley tmap 29712 Feb 11 11:01 testa.v5d
+-rw-rw-r--  1 ansley tmap 29712 Feb 11 11:01 test.v5d
    / 13:  -2.00
  14   / 14:  -1.00
  15   / 15:   0.00
@@ -56906,7 +57789,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56929,7 +57812,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56953,7 +57836,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -56992,7 +57875,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57027,7 +57910,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57067,7 +57950,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57121,7 +58004,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57175,7 +58058,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57229,7 +58112,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57274,7 +58157,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57365,7 +58248,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57432,7 +58315,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57482,7 +58365,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57557,7 +58440,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57584,7 +58467,7 @@ variables:
 		X_:_FillValue = -1.e+34f ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -57608,7 +58491,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -57633,11 +58516,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -57667,7 +58550,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57739,7 +58622,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57780,7 +58663,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57819,7 +58702,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -57922,7 +58805,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -57958,7 +58841,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -57980,7 +58863,7 @@ variables:
 		BB:my_title = "This is my new variable bb" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58006,7 +58889,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58026,7 +58909,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58047,7 +58930,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58086,7 +58969,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -58122,7 +59005,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -58156,7 +59039,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -58184,7 +59067,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58217,7 +59100,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58243,7 +59126,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58284,7 +59167,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -58382,7 +59265,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -58421,7 +59304,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58502,7 +59385,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58539,7 +59422,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58576,7 +59459,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58624,7 +59507,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58679,7 +59562,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -58719,7 +59602,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -58759,7 +59642,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -58791,7 +59674,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -58822,7 +59705,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -58851,7 +59734,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -58880,7 +59763,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -58938,7 +59821,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -58979,7 +59862,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -58998,37 +59881,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	float A(XAX) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59058,7 +59911,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	float A(XAX) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59107,7 +59990,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -59145,7 +60028,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -59163,7 +60046,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 err611_set_var_ez.jnl --- 
@@ -59182,7 +60065,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -59200,7 +60083,55 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.191 (beta) 10-Feb-09" ;
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
+		:Conventions = "CF-1.0" ;
+}
+bn_keep_axnames.jnl --- test SAVE/KEEP_AXNAMES
+netcdf a {
+dimensions:
+	X100 = 11 ;
+	T31 = UNLIMITED ; // (14 currently)
+variables:
+	double X100(X100) ;
+		X100:units = "DEG" ;
+		X100:point_spacing = "even" ;
+		X100:axis = "X" ;
+		X100:modulo = 360. ;
+	double T31(T31) ;
+		T31:units = "DAYS since 1999-12-31 00:00:00" ;
+		T31:axis = "T" ;
+		T31:time_origin = "31-DEC-1999" ;
+	float A(T31, X100) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=X100] + T[GT=T31]" ;
+
+// global attributes:
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
+		:Conventions = "CF-1.0" ;
+}
+bn_keep_axnames.jnl --- without /KEEP_AXNAMES
+netcdf a {
+dimensions:
+	X10030_40 = 11 ;
+	T31 = UNLIMITED ; // (14 currently)
+variables:
+	double X10030_40(X10030_40) ;
+		X10030_40:units = "DEG" ;
+		X10030_40:point_spacing = "even" ;
+		X10030_40:axis = "X" ;
+		X10030_40:modulo = 360. ;
+	double T31(T31) ;
+		T31:units = "DAYS since 1999-12-31 00:00:00" ;
+		T31:axis = "T" ;
+		T31:time_origin = "31-DEC-1999" ;
+	float A(T31, X10030_40) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=X100] + T[GT=T31]" ;
+
+// global attributes:
+		:history = "FERRET V6.191 (beta) 11-Feb-09" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
@@ -59209,7 +60140,7 @@ end of ncdump output
  	NOAA/PMEL TMAP
  	FERRET v6.191 (beta)
  	Linux(g77) 2.6.9-22. - 02/10/09
- 	10-Feb-09 15:24     
+ 	11-Feb-09 11:01     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -59396,7 +60327,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.191 (beta)
  	Linux(g77) 2.6.9-22. - 02/10/09
- 	10-Feb-09 15:24     
+ 	11-Feb-09 11:01     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -59510,7 +60441,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.191 (beta)
  	Linux(g77) 2.6.9-22. - 02/10/09
- 	10-Feb-09 15:24     
+ 	11-Feb-09 11:01     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -59593,4 +60524,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Tue Feb 10 15:24:54 PST 2009
+Ended at Wed Feb 11 11:01:39 PST 2009

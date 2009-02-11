@@ -1,0 +1,20 @@
+! bn_keep_axnames.jnl
+! 2/2009 ACM
+
+! save/keep_axnames prevents changes to 
+! axis name when a subset is written.
+
+sh command list
+define axis/x=1:100:1/units=deg x100
+define axis/t=1-jan-2000:31-jan-2000:1/units=days/t0=31-dec-1999 t31
+let a = x[gx=x100] + t[gt=t31]
+save/file=a.nc/clobber/i=30:40/L=15:28/KEEP_AXNAMES a
+
+sp echo "bn_keep_axnames.jnl --- test SAVE/KEEP_AXNAMES" >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+
+save/file=a.nc/clobber/i=30:40/L=15:28 a
+
+sp echo "bn_keep_axnames.jnl --- without /KEEP_AXNAMES" >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+

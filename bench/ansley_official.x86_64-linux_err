@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/build_v619/x86/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 40855068 Feb 10 15:12 /home/porter/ansley/build_v619/x86/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 40962550 Feb 10 15:40 /home/porter/ansley/build_v619/x86/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/build_v619/x86/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Fix bug 1636 plot_set_up for PLOT/VS.
+Note:  SAVE/keep_axnames
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build_v619/x86/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build_v619/x86/FERRET/external_functions/ext_func_x86
-Beginning at Tue Feb 10 15:23:04 PST 2009
+Beginning at Wed Feb 11 11:00:03 PST 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2548,6 +2548,224 @@ Replacing definition of grid G1
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file test0a.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0b.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0c.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0d.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0e.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0f.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0g.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0h.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0i.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0j.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0k.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0l.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0m.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0n.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0o.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0p.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
+ *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
+ *** NOTE: Write the data initially with the /BOUNDS qualifier
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test2.cdf
+ LISTing to file FL.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file FTLON.cdf
+ **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
+list/format=cdf/keep_axnames/l=1:10/file=test_abs.cdf l
+ LISTing to file test_abs.cdf
+ **TMAP ERR: Requested data range is outside of data set limits
+             inconsistent I axis length for IL
+list/format=cdf/keep_axnames/i=5:15/l=5:10/append/file=test_abs.cdf il
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ **TMAP ERR: attempt to redefine line
+             # of dims in variable IJL2 is inconsist. w/ CDF file
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijl2
+ LISTing to file test_abs.cdf
+ **TMAP ERR: attempt to redefine line
+             # of dims in variable IJKL is inconsist. w/ CDF file
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkl[k=@ave]
+ LISTing to file test_abs.cdf
+ **TMAP ERR: error in line definition
+             disordered output coordinate value:         363  Axis: TCENTURY
+list/format=cdf/keep_axnames/l=13/append/file=test_abs.cdf l1
+ LISTing to file FI.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijk
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ikl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSYT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf jkl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXU doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijkl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf/j=1:50/l=2:3 ijl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf/j=51:100/l=2:3 ijl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXU doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf/j=30:40/k=5/l=1:3 ijkl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSZT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf iavejkl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXU doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijavekl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXU doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijkavel
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXU doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijklave
+ **ERROR: variable unknown or not in data set: IJKL
+show grid ijkl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2629,4 +2847,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Feb 10 15:24:54 PST 2009
+Ended at Wed Feb 11 11:01:39 PST 2009

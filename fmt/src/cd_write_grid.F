@@ -1,6 +1,7 @@
 	SUBROUTINE CD_WRITE_GRID ( cdfid, dset, grid, lo, hi, recdim, 
      .                           itsa_slab, gname, edges_flag, 
-     .                           do_bounds, mode_upcase_output, status )
+     .                           do_bounds, mode_upcase_output, 
+     .                           keepax_flag, status )
 
 *
 *
@@ -52,6 +53,8 @@
 * v570 *acm*  6/04 - changes to use bounds attribute
 * V602 *acm* 11/06 - Fix bug 1471; new routine CD_AXIS_OUTNAME gets correct 
 *                    output axis name.
+* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXNAMES so that child axis names
+*                    arent written. They can get too long for OPeNDAP library calls
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -132,7 +135,8 @@
                gmod = .TRUE.
                glen = glen + 3
             ENDIF
-         ELSEIF ( lname .EQ. 'ABSTRACT' ) THEN
+
+         ELSEIF ( lname .EQ. 'ABSTRACT' .AND. (keepax_flag.EQ.0)) THEN
             names = names(:nlen)//' '//
      .           CD_CHILDAX_NAME( ww_dim_name(idim)//'AX',
      .                            lo(idim), hi(idim), i )
@@ -162,7 +166,7 @@
      .           idim.EQ.recdim,
      .           lo(idim), hi(idim), pcdf_full_span, 
      .           edges_flag, do_bounds, mode_upcase_output,
-     .           status ) 
+     .           keepax_flag, status ) 
 
             IF ( status .NE. merr_ok ) GOTO 5900
          ENDIF

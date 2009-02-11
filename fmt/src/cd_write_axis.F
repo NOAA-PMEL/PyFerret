@@ -1,6 +1,7 @@
 	SUBROUTINE CD_WRITE_AXIS ( cdfid, dset, grid, idim, recdim,
      .                           loss, hiss, ax_type,  edges_flag, 
-     .                           do_bounds, mode_upcase_output, status )
+     .                           do_bounds, mode_upcase_output,  
+     .                           keepax_flag, status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -79,6 +80,8 @@
 * V61_ 5/08 *acm*  Fix bug1574: If the axis is a user-defined axis, get its
 *                  information from the attribute structure; previously only
 *                  did this for user variables.
+* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXNAMES so that child axis names
+*                    arent written. They can get too long for OPeNDAP library calls
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -111,7 +114,7 @@
 * argument declarations
       LOGICAL recdim, do_bounds, mode_upcase_output
       INTEGER cdfid, dset, grid, idim, loss, hiss, ax_type, 
-     .        edges_flag, status
+     .        edges_flag, keepax_flag, status
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -181,7 +184,8 @@
 * dimension and size for this axis
       axlen = hi - lo + 1
       IF ( abstract .OR. ax_type.NE.pcdf_full_span ) THEN
-         name = CD_CHILDAX_NAME( name, lo, hi, nlen )
+         IF (keepax_flag .EQ. 0) 
+     .       name = CD_CHILDAX_NAME( name, lo, hi, nlen )
 * *kob* 12/9/97 - use new paramater maxchildlen in length check
          nlen = MIN(nlen,maxchildlen)
       ENDIF
@@ -708,7 +712,13 @@
       RETURN
 
 * error messages
- 5100 CALL TM_ERRMSG
+ 5100 CONTINUE
+      IF (keepax_flag .EQ. 1) THEN
+         CALL WARN ("Writing a subset of data with original axis names")
+         CALL WARN 
+     . ("  Axis was already written with a different set of coordinates")
+      ENDIF
+      CALL TM_ERRMSG
      . ( merr_linepredef, status, 'CD_WRITE_AXIS', unspecified_int4,
      .   unspecified_int4,
      .  'axis '//name(:nlen)//' doesnt match CDF file',

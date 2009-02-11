@@ -135,6 +135,8 @@
 *                  longer than 256 characters.
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out.
+* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXNAMES so that child axis names
+*                    arent written. They can get too long for OPeNDAP library calls
 
         include 'tmap_errors.parm'
 	include	'ferret.parm'
@@ -162,7 +164,7 @@
      .			rlen, flen, reclen, i, cx1, qfile, idim,
      .			ndim, wkblk, perm(5), mr_perm(max_intrp),
      .                  npermuted, recsofar, do_stream_phase, nvars, 
-     .                  edges_flag, nn, slen
+     .                  edges_flag, keepax_flag, nn, slen
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
      .			fstatus*8, faccess*12, fformatted*12,
      .			cdf_recax*1,
@@ -206,10 +208,11 @@
 	   IF ( status .NE. ferr_ok ) RETURN
            edges_flag = 0
            do_bounds = .FALSE.
+	   keepax_flag = 0
 	   CALL CDF_LIST( memory, filename( 1:TM_LENSTR1(filename)), 
      .                    .FALSE., 'N', nvars, is_mr, is_cx,
      .			   ' ', .TRUE., pcdf_mode_cache, clobber, 
-     .                    edges_flag, do_bounds, status )
+     .                    edges_flag, do_bounds, keepax_flag, status )
 	   CALL DELETE_MRS_IN_PROGRESS		! remove temporary vars
 	   RETURN
 	ENDIF
@@ -263,6 +266,14 @@
      .       'written for irregular axes.')
         ELSE
            cdf_recax = 'T'   ! "T" is record axis
+        ENDIF
+
+* /KEEP_AXNAMES for netCDF ?
+        i = slash_list_keepax
+        i = qual_given( slash_list_keepax )
+	keepax_flag = 0
+        IF ( i .GT. 0 ) THEN
+           keepax_flag = 1
         ENDIF
 
 * /EDGES for netCDF ?
@@ -344,6 +355,13 @@ c     .		 .AND. .NOT.do_comma_del
      .		         cmnd_buff(qual_start(i):qual_end(i)) )
 	      CALL WARN('Valid option is /HEADING=ENHANCED')
 	   ENDIF
+* Enhanced heading is not consistent with KEEP_AXNAMES flag
+	   IF (keepax_flag .EQ. 1) THEN
+	      CALL WARN
+     .     ('/KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.')
+              keepax_flag = 0
+	   ENDIF
+	      
 	ELSE
 	   head_enh = .FALSE.
 	ENDIF
@@ -643,7 +661,7 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
      .                    list_at_eof, cdf_recax, num_uvars_in_cmnd,
      .			  mr_perm, is_cx, risc_buff, head_enh,
      .			  pcdf_mode_normal, clobber, edges_flag, do_bounds,
-     .                    status )
+     .                    keepax_flag, status )
 	ELSEIF( all_at_once ) THEN
 	   CALL LIST_MULTI( memory, mr_perm, is_cx, heading, perm,
      .			    wsize, memory(1, wkblk), clobber, status )

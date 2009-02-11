@@ -1,7 +1,7 @@
 	SUBROUTINE CD_MAKE_VAR ( cdfid, dset, varname, type, maxstrlen,
      .                           grid, lo, hi, recdim, enhead, new, 
      .                           edges_flag, do_bounds, mode_upcase_output,
-     .                           status )
+     .                           keepax_flag, status )
 
 *
 *
@@ -66,6 +66,8 @@
 * V601 *acm* 11/06 - Fix bug 1471; new routine CD_AXIS_OUTNAME gets correct 
 *                    output axis name.
 * V602 *acm*12/06 - Bug 1478: cd_isit_recdim needs mode_upcase_output.
+* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXNAMES so that child axis names
+*                    arent written. They can get too long for OPeNDAP library calls
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -98,7 +100,7 @@
 * argument declarations
       LOGICAL enhead, new, do_bounds, edges_flag, mode_upcase_output
       INTEGER cdfid, dset, type, maxstrlen, grid, lo(4), hi(4),
-     .        recdim, status
+     .        recdim, keepax_flag, status
       CHARACTER*(*) varname
 
 * local variable declarations:
@@ -204,7 +206,7 @@
 * create the parent grid needed for this variable
          CALL CD_WRITE_GRID( cdfid, dset, grid, lo, hi, recdim, itsa_slab,
      .                       gname,  edges_flag, do_bounds, 
-     .                       mode_upcase_output, status )
+     .                       mode_upcase_output, keepax_flag, status )
          IF ( status .NE. merr_ok ) RETURN
 
 * create child axes where this variable doesn't run full-span on an axis
@@ -212,7 +214,8 @@
             IF ( need_child(idim) ) THEN
                CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, .FALSE.,
      .                   lo(idim), hi(idim), pcdf_child_span, 
-     .                   .FALSE., .FALSE., mode_upcase_output, status)
+     .                   .FALSE., .FALSE., mode_upcase_output, 
+     .                   keepax_flag, status)
                IF ( status .NE. merr_ok ) GOTO 5900
             ENDIF
  250     CONTINUE
@@ -231,7 +234,8 @@
               CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, 
      .			       idim.EQ.recdim, lo(idim), hi(idim), 
      .			       ax_type, edges_flag, do_bounds, 
-     .                         mode_upcase_output, status )
+     .                         mode_upcase_output, keepax_flag, 
+     .                         status )
               IF ( status .NE. merr_ok ) GOTO 5900
 	    ENDIF
  260     CONTINUE
@@ -260,17 +264,21 @@
          dims = dims + 1
          IF ( TM_ABSTRACT_AXIS( iaxis ) ) THEN
 ! ... could probably use lname here, too *sh* 11/95
-            cdfname = CD_CHILDAX_NAME( ww_dim_nam(idim)//'AX',
+            cdfname = lname
+            IF (keepax_flag .EQ. 0) 
+     .       cdfname = CD_CHILDAX_NAME( lname,
      .                                 lo(idim), hi(idim), nlen )
          ELSEIF ( idim .NE. recdim
      .  .AND. ( lo(idim) .NE. 1
      .    .OR.  hi(idim) .NE. line_dim(iaxis) ) ) THEN
-            cdfname = CD_CHILDAX_NAME( lname,
+            cdfname = lname
+            IF (keepax_flag .EQ. 0) 
+     .       cdfname = CD_CHILDAX_NAME( lname,
      .                                 lo(idim), hi(idim), nlen )
          ELSE
             cdfname = lname
-            nlen = TM_LENSTR1( cdfname )
          ENDIF
+         nlen = TM_LENSTR1( cdfname )
          dimid(dims) = NCDID( cdfid, cdfname(:nlen), cdfstat )
          IF ( cdfstat .NE. NCNOERR ) GOTO 5200  ! it must already exist
  300  CONTINUE

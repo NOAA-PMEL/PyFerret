@@ -1,6 +1,7 @@
 	SUBROUTINE CDF_LIST ( memory, fname, append, crecdim, nvars,
      .			      mr_list, cx_list, title, enhead, mode,
-     .			      clobber, edges_flag, do_bounds, status )
+     .			      clobber, edges_flag, do_bounds, 
+     .			      keepax_flag, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -91,8 +92,11 @@
 * V604  7/07 *acm* Fix bug 1520, if a var has only a _FillValue attribute, and not a 
 *                  missing_value one, then neither was written to the output file.
 *                  Both should be written.
-* V612 8/08  *acm* Fix bug 1587: so that correct bounds are written for axes of a user-defined 
-*                  variable, send the dataset number of the underlying dataset to cd_write_var
+* V612 8/08  *acm* Fix bug 1587: so that correct bounds are written for axes of a 
+*                  user-defined variable, send the dataset number of the underlying 
+*                  dataset to cd_write_var
+* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXNAMES so that child axis names
+*                    arent written. They can get too long for OPeNDAP library calls
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -115,7 +119,7 @@
 * calling argument declarations:
         LOGICAL         append, enhead, clobber, do_bounds
 	INTEGER		nvars, mr_list(nvars), cx_list(nvars), mode,
-     .			edges_flag, status
+     .			edges_flag, keepax_flag, status
 	REAL		memory( mem_blk_size, max_mem_blks )
         CHARACTER*(*)   fname, title
         CHARACTER*1     crecdim
@@ -424,7 +428,8 @@
 
            CALL CD_MAKE_VAR( cdfid, dset_num, varcode, type, maxstrlen,
      .               grid, make_lo, make_hi, recdim, enhead, new, 
-     .               edges_flag, do_bounds, mode_upcase_output, status )
+     .               edges_flag, do_bounds, mode_upcase_output, 
+     .               keepax_flag, status )
 
            IF ( status .NE. merr_ok ) GOTO 5800
 

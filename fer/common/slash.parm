@@ -33,6 +33,7 @@
 *       *acm* 7/06 - add CANCEL ATTRIBUTE /OUTPUT /DATA
 * V609: *acm* 2/08 - add SHADE/TRIM
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
+* V6.2  *acm* 5/08 new qualifier LIST/KEEP_AXNAMES for CDF output
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -87,7 +88,8 @@
      .			slash_list_title,
      .			slash_list_width,
      .			slash_list_edges,
-     .			slash_list_bounds
+     .			slash_list_bounds,
+     .			slash_list_keepax
 
 	INTEGER		
      .			slash_set_data_ez,
@@ -299,7 +301,8 @@
      .			slash_list_extend = 19,
      .			slash_list_width = 1+29,
      .			slash_list_edges = 1+30,
-     .			slash_list_bounds = 1+31 )
+     .			slash_list_bounds = 1+31,
+     .			slash_list_keepax = 1+33 )
 
 	PARAMETER     (
      .			slash_set_data_ez	= 1,

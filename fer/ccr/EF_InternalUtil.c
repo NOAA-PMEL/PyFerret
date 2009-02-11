@@ -312,6 +312,42 @@ void FORTRAN(scat2gridgauss_zt_compute)(int *, float *, float *, float *,
                            float *, float *, float *, float *, float *, 
                            float *, float *, float *);
 
+void FORTRAN(scat2gridgauss_xy_v0_init)(int *);
+void FORTRAN(scat2gridgauss_xy_v0_work_size)(int *);
+void FORTRAN(scat2gridgauss_xy_v0_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *, 
+                           float *, float *, float *);
+
+void FORTRAN(scat2gridgauss_xz_v0_init)(int *);
+void FORTRAN(scat2gridgauss_xz_v0_work_size)(int *);
+void FORTRAN(scat2gridgauss_xz_v0_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *, 
+                           float *, float *, float *);
+
+void FORTRAN(scat2gridgauss_yz_v0_init)(int *);
+void FORTRAN(scat2gridgauss_yz_v0_work_size)(int *);
+void FORTRAN(scat2gridgauss_yz_v0_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *, 
+                           float *, float *, float *);
+
+void FORTRAN(scat2gridgauss_xt_v0_init)(int *);
+void FORTRAN(scat2gridgauss_xt_v0_work_size)(int *);
+void FORTRAN(scat2gridgauss_xt_v0_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *, 
+                           float *, float *, float *);
+
+void FORTRAN(scat2gridgauss_yt_v0_init)(int *);
+void FORTRAN(scat2gridgauss_yt_v0_work_size)(int *);
+void FORTRAN(scat2gridgauss_yt_v0_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *, 
+                           float *, float *, float *);
+
+void FORTRAN(scat2gridgauss_zt_v0_init)(int *);
+void FORTRAN(scat2gridgauss_zt_v0_work_size)(int *);
+void FORTRAN(scat2gridgauss_zt_v0_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *, 
+                           float *, float *, float *);
+
 void FORTRAN(scat2gridlaplace_xy_init)(int *);
 void FORTRAN(scat2gridlaplace_xy_work_size)(int *);
 void FORTRAN(scat2gridlaplace_xy_compute)(int *, float *, float *, float *, 
@@ -812,7 +848,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 115
+#define N_INTEF 121
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -882,57 +918,63 @@ struct {
    strcpy(I_EFnames[61].funcname, "scat2gridgauss_xt");
    strcpy(I_EFnames[62].funcname, "scat2gridgauss_yt");
    strcpy(I_EFnames[63].funcname, "scat2gridgauss_zt");
-   strcpy(I_EFnames[64].funcname, "scat2gridlaplace_xy");
-   strcpy(I_EFnames[65].funcname, "scat2gridlaplace_xz");
-   strcpy(I_EFnames[66].funcname, "scat2gridlaplace_yz");
-   strcpy(I_EFnames[67].funcname, "scat2gridlaplace_xt");
-   strcpy(I_EFnames[68].funcname, "scat2gridlaplace_yt");
-   strcpy(I_EFnames[69].funcname, "scat2gridlaplace_zt");
-   strcpy(I_EFnames[70].funcname, "scatgrid_nobs_xy");
-   strcpy(I_EFnames[71].funcname, "sorti");
-   strcpy(I_EFnames[72].funcname, "sorti_str");
-   strcpy(I_EFnames[73].funcname, "sortj");
-   strcpy(I_EFnames[74].funcname, "sortj_str");
-   strcpy(I_EFnames[75].funcname, "sortk");
-   strcpy(I_EFnames[76].funcname, "sortk_str");
-   strcpy(I_EFnames[77].funcname, "sortl");
-   strcpy(I_EFnames[78].funcname, "sortl_str");
-   strcpy(I_EFnames[79].funcname, "tauto_cor");
-   strcpy(I_EFnames[80].funcname, "tax_datestring");
-   strcpy(I_EFnames[81].funcname, "tax_day");
-   strcpy(I_EFnames[82].funcname, "tax_dayfrac");
-   strcpy(I_EFnames[83].funcname, "tax_jday1900");
-   strcpy(I_EFnames[84].funcname, "tax_jday");
-   strcpy(I_EFnames[85].funcname, "tax_month");
-   strcpy(I_EFnames[86].funcname, "tax_times");
-   strcpy(I_EFnames[87].funcname, "tax_tstep");
-   strcpy(I_EFnames[88].funcname, "tax_units");
-   strcpy(I_EFnames[89].funcname, "tax_year");
-   strcpy(I_EFnames[90].funcname, "tax_yearfrac");
-   strcpy(I_EFnames[91].funcname, "tcat");
-   strcpy(I_EFnames[92].funcname, "tcat_str");
-   strcpy(I_EFnames[93].funcname, "test_opendap");
-   strcpy(I_EFnames[94].funcname, "treverse");
-   strcpy(I_EFnames[95].funcname, "transpose_xt");
-   strcpy(I_EFnames[96].funcname, "transpose_xy");
-   strcpy(I_EFnames[97].funcname, "transpose_xz");
-   strcpy(I_EFnames[98].funcname, "transpose_yt");
-   strcpy(I_EFnames[99].funcname, "transpose_yz");
-   strcpy(I_EFnames[100].funcname, "transpose_zt");
-   strcpy(I_EFnames[101].funcname, "xcat");
-   strcpy(I_EFnames[102].funcname, "xcat_str");
-   strcpy(I_EFnames[103].funcname, "xreverse");
-   strcpy(I_EFnames[104].funcname, "ycat");
-   strcpy(I_EFnames[105].funcname, "ycat_str");
-   strcpy(I_EFnames[106].funcname, "yreverse");
-   strcpy(I_EFnames[107].funcname, "xauto_cor");
-   strcpy(I_EFnames[108].funcname, "zaxreplace_avg");
-   strcpy(I_EFnames[109].funcname, "zaxreplace_bin");
-   strcpy(I_EFnames[110].funcname, "zaxreplace_rev");
-   strcpy(I_EFnames[111].funcname, "zaxreplace_zlev");
-   strcpy(I_EFnames[112].funcname, "zcat");
-   strcpy(I_EFnames[113].funcname, "zcat_str");
-   strcpy(I_EFnames[114].funcname, "zreverse");
+   strcpy(I_EFnames[64].funcname, "scat2gridgauss_xy_v0");
+   strcpy(I_EFnames[65].funcname, "scat2gridgauss_xz_v0");
+   strcpy(I_EFnames[66].funcname, "scat2gridgauss_yz_v0");
+   strcpy(I_EFnames[67].funcname, "scat2gridgauss_xt_v0");
+   strcpy(I_EFnames[68].funcname, "scat2gridgauss_yt_v0");
+   strcpy(I_EFnames[69].funcname, "scat2gridgauss_zt_v0");
+   strcpy(I_EFnames[70].funcname, "scat2gridlaplace_xy");
+   strcpy(I_EFnames[71].funcname, "scat2gridlaplace_xz");
+   strcpy(I_EFnames[72].funcname, "scat2gridlaplace_yz");
+   strcpy(I_EFnames[73].funcname, "scat2gridlaplace_xt");
+   strcpy(I_EFnames[74].funcname, "scat2gridlaplace_yt");
+   strcpy(I_EFnames[75].funcname, "scat2gridlaplace_zt");
+   strcpy(I_EFnames[76].funcname, "scatgrid_nobs_xy");
+   strcpy(I_EFnames[77].funcname, "sorti");
+   strcpy(I_EFnames[78].funcname, "sorti_str");
+   strcpy(I_EFnames[79].funcname, "sortj");
+   strcpy(I_EFnames[80].funcname, "sortj_str");
+   strcpy(I_EFnames[81].funcname, "sortk");
+   strcpy(I_EFnames[82].funcname, "sortk_str");
+   strcpy(I_EFnames[83].funcname, "sortl");
+   strcpy(I_EFnames[84].funcname, "sortl_str");
+   strcpy(I_EFnames[85].funcname, "tauto_cor");
+   strcpy(I_EFnames[86].funcname, "tax_datestring");
+   strcpy(I_EFnames[87].funcname, "tax_day");
+   strcpy(I_EFnames[88].funcname, "tax_dayfrac");
+   strcpy(I_EFnames[89].funcname, "tax_jday1900");
+   strcpy(I_EFnames[90].funcname, "tax_jday");
+   strcpy(I_EFnames[91].funcname, "tax_month");
+   strcpy(I_EFnames[92].funcname, "tax_times");
+   strcpy(I_EFnames[93].funcname, "tax_tstep");
+   strcpy(I_EFnames[94].funcname, "tax_units");
+   strcpy(I_EFnames[95].funcname, "tax_year");
+   strcpy(I_EFnames[96].funcname, "tax_yearfrac");
+   strcpy(I_EFnames[97].funcname, "tcat");
+   strcpy(I_EFnames[98].funcname, "tcat_str");
+   strcpy(I_EFnames[99].funcname, "test_opendap");
+   strcpy(I_EFnames[100].funcname, "treverse");
+   strcpy(I_EFnames[101].funcname, "transpose_xt");
+   strcpy(I_EFnames[102].funcname, "transpose_xy");
+   strcpy(I_EFnames[103].funcname, "transpose_xz");
+   strcpy(I_EFnames[104].funcname, "transpose_yt");
+   strcpy(I_EFnames[105].funcname, "transpose_yz");
+   strcpy(I_EFnames[106].funcname, "transpose_zt");
+   strcpy(I_EFnames[107].funcname, "xcat");
+   strcpy(I_EFnames[108].funcname, "xcat_str");
+   strcpy(I_EFnames[109].funcname, "xreverse");
+   strcpy(I_EFnames[110].funcname, "ycat");
+   strcpy(I_EFnames[111].funcname, "ycat_str");
+   strcpy(I_EFnames[112].funcname, "yreverse");
+   strcpy(I_EFnames[113].funcname, "xauto_cor");
+   strcpy(I_EFnames[114].funcname, "zaxreplace_avg");
+   strcpy(I_EFnames[115].funcname, "zaxreplace_bin");
+   strcpy(I_EFnames[116].funcname, "zaxreplace_rev");
+   strcpy(I_EFnames[117].funcname, "zaxreplace_zlev");
+   strcpy(I_EFnames[118].funcname, "zcat");
+   strcpy(I_EFnames[119].funcname, "zcat_str");
+   strcpy(I_EFnames[120].funcname, "zreverse");
 /*    
  *  ------------------------------------ 
  */
@@ -2859,6 +2901,36 @@ else if ( !strcmp(name,"scat2gridgauss_yt_compute_") ) return (void *)FORTRAN(sc
 else if ( !strcmp(name,"scat2gridgauss_zt_init_") ) return (void *)FORTRAN(scat2gridgauss_zt_init);
 else if ( !strcmp(name,"scat2gridgauss_zt_work_size_") ) return (void *)FORTRAN(scat2gridgauss_zt_work_size);
 else if ( !strcmp(name,"scat2gridgauss_zt_compute_") ) return (void *)FORTRAN(scat2gridgauss_zt_compute);
+
+/* scat2gridgauss_xy_v0.F */
+else if ( !strcmp(name,"scat2gridgauss_xy_v0_init_") ) return (void *)FORTRAN(scat2gridgauss_xy_v0_init);
+else if ( !strcmp(name,"scat2gridgauss_xy_v0_work_size_") ) return (void *)FORTRAN(scat2gridgauss_xy_v0_work_size);
+else if ( !strcmp(name,"scat2gridgauss_xy_v0_compute_") ) return (void *)FORTRAN(scat2gridgauss_xy_v0_compute);
+
+/* scat2gridgauss_xz.F */
+else if ( !strcmp(name,"scat2gridgauss_xz_v0_init_") ) return (void *)FORTRAN(scat2gridgauss_xz_v0_init);
+else if ( !strcmp(name,"scat2gridgauss_xz_v0_work_size_") ) return (void *)FORTRAN(scat2gridgauss_xz_v0_work_size);
+else if ( !strcmp(name,"scat2gridgauss_xz_v0_compute_") ) return (void *)FORTRAN(scat2gridgauss_xz_v0_compute);
+
+/* scat2gridgauss_yz.F */
+else if ( !strcmp(name,"scat2gridgauss_yz_v0_init_") ) return (void *)FORTRAN(scat2gridgauss_yz_v0_init);
+else if ( !strcmp(name,"scat2gridgauss_yz_v0_work_size_") ) return (void *)FORTRAN(scat2gridgauss_yz_v0_work_size);
+else if ( !strcmp(name,"scat2gridgauss_yz_v0_compute_") ) return (void *)FORTRAN(scat2gridgauss_yz_v0_compute);
+
+/* scat2gridgauss_xt.F */
+else if ( !strcmp(name,"scat2gridgauss_xt_v0_init_") ) return (void *)FORTRAN(scat2gridgauss_xt_v0_init);
+else if ( !strcmp(name,"scat2gridgauss_xt_v0_work_size_") ) return (void *)FORTRAN(scat2gridgauss_xt_v0_work_size);
+else if ( !strcmp(name,"scat2gridgauss_xt_v0_compute_") ) return (void *)FORTRAN(scat2gridgauss_xt_v0_compute);
+
+/* scat2gridgauss_yt.F */
+else if ( !strcmp(name,"scat2gridgauss_yt_v0_init_") ) return (void *)FORTRAN(scat2gridgauss_yt_v0_init);
+else if ( !strcmp(name,"scat2gridgauss_yt_v0_work_size_") ) return (void *)FORTRAN(scat2gridgauss_yt_v0_work_size);
+else if ( !strcmp(name,"scat2gridgauss_yt_v0_compute_") ) return (void *)FORTRAN(scat2gridgauss_yt_v0_compute);
+
+/* scat2gridgauss_zt.F */
+else if ( !strcmp(name,"scat2gridgauss_zt_v0_init_") ) return (void *)FORTRAN(scat2gridgauss_zt_v0_init);
+else if ( !strcmp(name,"scat2gridgauss_zt_v0_work_size_") ) return (void *)FORTRAN(scat2gridgauss_zt_v0_work_size);
+else if ( !strcmp(name,"scat2gridgauss_zt_v0_compute_") ) return (void *)FORTRAN(scat2gridgauss_zt_v0_compute);
 
 /* scat2gridlaplace_xy.F */
 else if ( !strcmp(name,"scat2gridlaplace_xy_init_") ) return (void *)FORTRAN(scat2gridlaplace_xy_init);

@@ -58,7 +58,7 @@
       INTEGER cdfid, status
 
 * local variable declarations:
-      CHARACTER CD_CHILDAX_NAME*16, dimname*16
+      CHARACTER dimname*128
       INTEGER cdfstat, clen, nlen, dimid, nbnds
 #ifdef usingDODSf2cUnderscore
       INTEGER NF_INQ_DIMLEN_

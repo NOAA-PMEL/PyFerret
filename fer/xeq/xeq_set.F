@@ -1197,13 +1197,14 @@ c *kob* 4/97
 	ENDIF
 	IF ( val_buf .GT. 0.0 ) THEN
 * for neatness make mem_blk_size always be a multiple of 100
+* If val_buf is small, make it the minimum size for the block size
 * When val_buf is large, the calculation can overflow.
 * Check for this...
 
-c	   reconfig = INT(val_buf*1E6/(max_mem_blks*100))
-c     .					* max_mem_blks*100
-	   reconfig = INT(val_buf*1E4/(max_mem_blks))
-     .					* max_mem_blks*100
+	   reconfig = INT(val_buf*1E6/(max_mem_blks*100))
+	   IF (reconfig .EQ. 0) reconfig = 1
+	   reconfig = reconfig * max_mem_blks*100
+
            IF (reconfig .LT. 0) THEN
               reconfig = 0
               CALL WARN('internal overflow expressing '//

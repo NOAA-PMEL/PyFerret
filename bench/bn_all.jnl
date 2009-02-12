@@ -630,6 +630,11 @@ GO bn_cdf_keepax.jnl
 GO bn_reset
 GO bn_keep_axnames.jnl
 
+
+! ******** V6.14 Additions below ***********
+GO bn_reset
+go bn62_bug_fixes.jnl
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

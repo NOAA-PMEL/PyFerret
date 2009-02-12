@@ -1,6 +1,44 @@
-
+* 
+*  Subroutines for TAX_* functions
+* 
+*  This software was developed by the Thermal Modeling and Analysis
+*  Project(TMAP) of the National Oceanographic and Atmospheric
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  hereafter referred to as NOAA/PMEL/TMAP.
+*
+*  Access and use of this software shall impose the following
+*  obligations and understandings on the user. The user is granted the
+*  right, without anx fee or cost, to use, copy, modify, alter, enhance
+*  and distribute this software, and anx derivative works thereof, and
+*  its supporting documentation for anx purpose whatsoever, provided
+*  that this entire notice appears in all copies of the software,
+*  derivative works and supporting documentation.  Further, the user
+*  agrees to credit NOAA/PMEL/TMAP in anx publications that result from
+*  the use of this software or in anx product that includes this
+*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
+*  in anx advertising or publicity to endorse or promote anx products
+*  or commercial entity unless specific written permission is obtained
+*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
+*  is not obligated to provide the user with anx support, consulting,
+*  training or assistance of anx kind with regard to the use, operation
+*  and performance of this software nor to provide the user with anx
+*  updates, revisions, new versions or "bug fixes".
+*
+*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND Anx EXPRESS
+*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR Anx SPECIAL,
+*  INDIRECT OR CONSEQUENTIAL DAMAGES OR Anx DAMAGES WHATSOEVER
+*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*
 ****************************************************************
 *
+* V6.2 ACM 2/12/2009  Fix bug 1629 in JULIAN_DAY_OF_YEAR. Always
+*          set ndaymo(2) to either 28 or 29. It does not get reset
+*          by the DATA statement on re-entry to the routine.
+
       SUBROUTINE LOWER_CASE(TEXT)
       CHARACTER*(*) TEXT
 *
@@ -67,10 +105,15 @@
  100  CONTINUE
 
 *     Check if it is a leap year
+* (Fixing bug 1639, need ELSE ndaymo(2) = 28; the data statement 
+* above does NOT reset the value to 28 next time we enter this routine!!  
+
       IF ( ((mod(iyear,4) .EQ. 0) .AND. (mod(iyear,100) .NE. 0)) 
      .     .OR.
      .     (mod(iyear, 400) .EQ. 0)) THEN
           ndaymo(2) = 29
+      ELSE 
+          ndaymo(2) = 28
       END IF
 
 *     Compute day number within current year

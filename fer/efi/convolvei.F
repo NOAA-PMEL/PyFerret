@@ -34,6 +34,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 ** Ansley Manke
 * Feb 1999
+* V6.2 2/2009 Fix bug 1640; treatment of missing data was incorrect.
+*
 *
 * This external function convolves the component grid, com, with the weight 
 * function, wt  along the I axis (see Ferret routine CONVOLVE)

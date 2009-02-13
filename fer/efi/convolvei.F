@@ -206,30 +206,15 @@
 
                      IF (i1+ii .LT. arg_lo_ss(X_AXIS,ARG1)  .OR.
      .                   i1+ii .GT. arg_hi_ss(X_AXIS,ARG1) ) THEN
-
-                        result(i,j,k,l) = bad_flag_result
-                        GOTO 190
-
+                        comp = bad_flag(ARG1)
+                        GOTO 110
                      ELSE
                         comp = arg_1(i1+ii,j1,k1,l1)
-                        IF (i2 .LT. arg_lo_ss(X_AXIS,ARG2)  .OR.
-     .                      i2 .GT. arg_hi_ss(X_AXIS,ARG2)  .OR.
-     .                      j2 .LT. arg_lo_ss(Y_AXIS,ARG2)  .OR.
-     .                      j2 .GT. arg_hi_ss(X_AXIS,ARG2)  .OR.
-     .                      k2 .LT. arg_lo_ss(Z_AXIS,ARG2)  .OR.
-     .                      k2 .GT. arg_hi_ss(Z_AXIS,ARG2)  .OR.
-     .                      l2 .LT. arg_lo_ss(T_AXIS,ARG2)  .OR.
-     .                      l2 .GT. arg_hi_ss(T_AXIS,ARG2)) THEN
-                               weight = 0.
-                        ELSE
-                           weight = arg_2(i2,j2,k2,l2)
-                        ENDIF
+                        weight = arg_2(i2,j2,k2,l2)
           
-                        IF ( comp .EQ. bad_flag(ARG1)) THEN
-                           GOTO 190
-                        ELSE
-                           sum = sum + comp* weight
-                        ENDIF
+                        IF ( comp .EQ. bad_flag(ARG1)) 
+     .                     GOTO 110                  
+                        sum = sum + comp* weight
                      ENDIF
 
                      i2 = i2 + arg_incr(X_AXIS,ARG2)
@@ -239,6 +224,9 @@
 
  100                 CONTINUE
                      result(i,j,k,l) = sum
+		     
+ 110                 IF (comp .EQ. bad_flag(ARG1)) 
+     .		        result(i,j,k,l) = bad_flag_result
 
  190                 i1 = i1 + arg_incr(X_AXIS,ARG1)
  200              CONTINUE

@@ -1,0 +1,26 @@
+! bn_convolve.jnl
+! test convolutions, including with missing-data.
+! compare behavior with smoothing transform spz.
+
+let a = {0,1,1,0,1,0,0,0,,0,0,0}
+list a, a[i=@spz], convolvei(a,{.25,.5,.25})
+
+! The second argument does not have to be on the
+! same axis as the first.
+let b = ysequence({0,1,1,0,1,0,0,0,,0,0,0})
+let bpat = ysequence({.25,.5,.25})
+list b, b[j=@spz], convolvej(b,bpat), convolvej(b,{.1,.4,.4,.1})
+
+
+let c = zsequence({0,1,1,0,1,0,0,0,,0,0,0})
+list c, c[k=@spz], convolvek(c,{.25,.5,.25})
+
+let d = tsequence({0,1,1,0,1,0,0,0,,0,0,0})
+let dpat = tsequence({.25,.5,.25})
+list d, d[l=@spz], convolvel(d,{.25,.5,.25})
+
+! 2D - convolvei convolves in x ...
+let a = {0,1,1,0,1,0,0,0,,0,0,0} + y[y=1:2]
+list a, a[i=@spz], convolvei(a,{.25,.5,.25})
+
+

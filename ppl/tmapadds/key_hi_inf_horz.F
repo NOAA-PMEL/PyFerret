@@ -1,4 +1,5 @@
-      SUBROUTINE key_hi_inf_horz (px, py, ndx, h_inc)
+      SUBROUTINE key_hi_inf_horz (px, py, ndx, h_inc,
+     .          annotate_key, lab_digits, klab_len, height)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -42,11 +43,22 @@
       INCLUDE 	'PARAMPL5.DAT'
       INCLUDE   'cont_inc.decl'
       INCLUDE	'CONT.INC'           ! with cont_key
+      INCLUDE	'axis_inc.decl'
+      INCLUDE	'AXIS.INC'
+      INCLUDE	'PLTL.INC'
+      INCLUDE	'hd_inc.decl'
+      INCLUDE	'HD.INC'             ! with zmin, zmax
 
-      REAL px(*),py(*), h_inc
-      INTEGER ndx
 
-      REAL x1, x2, x3, x4, y1, y2, y3, y4, dely
+* Calling arguments
+      REAL px(*),py(*), h_inc, height
+      INTEGER ndx, annotate_key, lab_digits, klab_len
+
+* Internal declerations
+      INTEGER slen
+      REAL x1, x2, x3, x4, y1, y2, y3, y4
+      REAL dely, xx, yy, xxx, yyy
+      CHARACTER*20 TM_FMT_DIGITS, text
 
 * save px and py values
 
@@ -75,6 +87,26 @@
        px(4) = px(1)
        py(4) = py(1)
        IF (.NOT. cont_key) call gpl (4,px,py)
+
+* Annotate max
+
+      IF (annotate_key .GT. 0.) THEN
+         text = TM_FMT_DIGITS (zmax,lab_digits+2,klab_len,slen)
+	 xx = px(3)/1000.0 - xorg + 0.5* height
+         yy = py(3)/1000.0 - yorg - 0.5* height
+	 
+* FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
+         if (makep .eq. 'SHADE' .or. makep .eq. 'FILLPOL' .OR.
+     .         makep .EQ. 'POLYGON') then
+	    call point_convert (xx,yy,xxx,yyy)
+         else if (makep .eq. 'FILL') then
+	    xxx = xx
+	    yyy = yy
+         endif
+
+         call symbel (xxx, yyy,0.,height,slen,text(1:slen))
+      ENDIF
+
 
 * Restore px, py
 

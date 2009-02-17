@@ -228,6 +228,8 @@ cc 100	end do
 	   if (x(zpolybase+1+i) .gt. zzmax) zzmax = x(zpolybase+1+i)
 	   if (x(zpolybase+1+i) .lt. zzmin) zzmin = x(zpolybase+1+i)
  100	end do
+        IF (zzmin .NE. 1e33) zmin = zzmin  ! Needed for annotating open-ended levels
+        IF (zzmax .NE. -1e33) zmax = zzmax
 
 C ------------
 

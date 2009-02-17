@@ -126,7 +126,9 @@ c	do_key	     	= .true.   ! Still initialize this in setup_defaults.F
            ENDIF
         ENDIF
 
- 2000   CONTINUE
+        IF (m .GE. 11) THEN 
+	   IF (p(11) .EQ. 1) annotate_key = 1
+	ENDIF
 
         DO 3000 i = 1, 4
            iflg(i+6) = 0  ! Reset for subsequent plots

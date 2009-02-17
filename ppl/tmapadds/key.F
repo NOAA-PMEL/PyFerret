@@ -200,7 +200,6 @@
 	IF (vertical_key) GOTO 1000
 
 *	MAKE A HORIZONTAL KEY
-
 * Define default x and y lo and hi locations
 
         if (ppl_in_ferret) then
@@ -278,13 +277,27 @@
            ENDIF
         ENDIF
 
+*	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
+	if (klab_incr .eq. 0) then
+	   incr = (shd_levels/25) + 1
+           IF (width/vwidth .GT. 1.5) incr = 2*incr
+	else
+	   incr = klab_incr
+	end if
+
+	if (klab_size .eq. 0.0) then
+           karht = amin1 (0.10*1000.0,
+     .		1.0*x_inc*real(incr)/real(max_len))/1000.0
+	else
+	   karht = ABS(klab_size)
+	end if
+
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 	text = TM_FMT_DIGITS (zlev(lev1),lab_digits,klab_len+lab_add,str_len)  
         if (max_len .lt. str_len) max_len = str_len
         
         nhi = MAX(2,shd_levels+1)
-
 	do 10 ndx = 2, nhi
 	   px(1) = kx_lo + real (ndx - 2) * x_inc
 	   px(2) = kx_lo + real (ndx - 2) * x_inc
@@ -304,10 +317,13 @@
            ENDIF
 
            IF (neginf .AND. (ndx .EQ. 2) ) THEN
-              CALL key_lo_inf_horz (kpx, kpy, ndx, x_inc_inf)
+              CALL key_lo_inf_horz (kpx, kpy, ndx, x_inc_inf, 
+     .          annotate_key, lab_digits, klab_len, karht)
 
            ELSE IF (posinf .AND. (ndx .EQ. nhi) ) THEN
-              CALL key_hi_inf_horz (kpx, kpy, ndx, x_inc_inf)
+              CALL key_hi_inf_horz (kpx, kpy, ndx, x_inc_inf, 
+     .          annotate_key, lab_digits, klab_len, karht)
+
            ELSE
 
 *	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
@@ -331,26 +347,6 @@
 	      if (max_len .lt. str_len) max_len = str_len
            ENDIF
 10	continue
-
-*	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
-	if (klab_incr .eq. 0) then
-	   incr = (shd_levels/25) + 1
-           IF (width/vwidth .GT. 1.5) incr = 2*incr
-!	   incr = (shd_levels/25)* width/vwidth + 1   ! short plot, fewer labels
-	else
-	   incr = klab_incr
-	end if
-
-	if (klab_size .eq. 0.0) then
-cc	   karht = amin1 (0.08*1000.0,
-cc     .		1.0*x_inc*real(incr)/real(max_len))/1000.0
-cc	   karht = amin1 (0.12*1000.0,
-cc     .		1.0*x_inc*real(incr)/real(max_len))/1000.0
-	   karht = amin1 (0.10*1000.0,
-     .		1.0*x_inc*real(incr)/real(max_len))/1000.0
-	else
-	   karht = ABS(klab_size)
-	end if
 
 	do 20 ndx = 1,shd_levels+1,incr
 *	   WRITE OUT CORRESPONDING VALUE
@@ -482,6 +478,20 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
            ENDIF
         ENDIF
 
+*	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
+        if (klab_size .eq. 0.0) then
+	   karht = amin1 (0.10*1000.0,400.0*rem/real (max_len))/1000.0
+	else
+	   karht = ABS(klab_size)
+	end if
+
+	if (klab_incr .eq. 0) then
+	   incr = (shd_levels/25) + 1
+           IF (height/vheight .GT. 1.5) incr = 2*incr   ! short plot, fewer labels
+	else
+	   incr = klab_incr
+	end if
+
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 
@@ -508,11 +518,15 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   py(3) = ky_lo + real (ndx - 1) * y_inc
 	   py(4) = ky_lo + real (ndx - 1) * y_inc
 
+
            IF (neginf .AND. (ndx .EQ. 2) ) THEN
-              CALL key_lo_inf_vert (kpx, kpy, ndx, y_inc_inf)
+              CALL key_lo_inf_vert (kpx, kpy, ndx, y_inc_inf, 
+     .          annotate_key, lab_digits, klab_len, karht)
 
            ELSE IF (posinf .AND. (ndx .EQ. nhi) ) THEN
-              CALL key_hi_inf_vert (kpx, kpy, ndx, y_inc_inf)
+              CALL key_hi_inf_vert (kpx, kpy, ndx, y_inc_inf, 
+     .          annotate_key, lab_digits, klab_len, karht)
+
            ELSE
 
 *	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
@@ -536,22 +550,6 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	      if (max_len .lt. str_len) max_len = str_len
            ENDIF
 1010	continue
-
-*	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
-        if (klab_size .eq. 0.0) then
-cc	   karht = amin1 (0.08*1000.0,360.0*rem/real (max_len))/1000.0
-cc	   karht = amin1 (0.12*1000.0,460.0*rem/real (max_len))/1000.0
-	   karht = amin1 (0.10*1000.0,400.0*rem/real (max_len))/1000.0
-	else
-	   karht = ABS(klab_size)
-	end if
-
-	if (klab_incr .eq. 0) then
-	   incr = (shd_levels/25) + 1
-           IF (height/vheight .GT. 1.5) incr = 2*incr   ! short plot, fewer labels
-	else
-	   incr = klab_incr
-	end if
 
         ystart = 0.
         IF (lev1 .NE. 1) ystart = y_inc
@@ -606,7 +604,6 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	      xxx = xx
 	      yyy = yy
 	   endif
-
 	   call symbel (xxx,yyy,0.0,karht,str_len,txt_out(1:str_len))
 
 1020	continue

@@ -16,6 +16,7 @@
 *	DO_KEY determines whether the key is done or not
 *	VERTICAL_KEY determines whether the key is vertical or horizontal
 *	KUSER_LOC indicates whether user key locations are to be used
+*       ANNOTATE_KEY Flag: annotate min/max data field when open-ended levels used
 *	CUSTOM_COLORS determines whether a custom color map is to be defined
 
 *	SHD_MIN,SHD_MAX are the minimum and maximum data values shaded
@@ -58,6 +59,7 @@
 *	NUM_BUFFERED is the number of currently buffered polygons
 *	UPPERFLG is true when the upper triangle calls drawpoly
 *	UPPER_FIRST is true when the upper triangle is first cell in a buffer
+
 * 
 *	*jd* 10.23.98 Add pattern support variables
 *	*sh* 12/99 - reordered COMMON (variable "pattern_list" to end) to
@@ -77,7 +79,7 @@
 	integer		i_lo,i_hi,j_lo,j_hi,shd_levels,lo_color_ndx
 	integer		klab_dig,klab_len,klab_incr,ncl,hi_color_ndx
 	integer		mncl,rgb_mapping,percent,by_level,by_value
-	integer		mrgb_mapping
+	integer		mrgb_mapping, annotate_key
 
 	integer		patterns(pattern_num),npat
 	integer		default_patterns(pattern_num)
@@ -120,7 +122,7 @@
      .			   patterns,npat,mpatterns,mnpat,
      .			   default_patterns,
      .			   rgb_mapping, percent, by_level, by_value,
-     .			   mrgb_mapping, ilast,
+     .			   mrgb_mapping, annotate_key, ilast,
      .			   buffer_empty, num_buffered,
      .		     	   xbuff, ybuff, upperflg, upper_first,use_cell,
      .			   pattern_list

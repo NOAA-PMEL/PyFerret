@@ -56,6 +56,7 @@
 *               strings or real values according to attrib type
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * V600  6/06 *acm*   CD_GET_VAR_ATT_INFO uses varid and attid rather than attname.
+* V62   2/09 *acm* - allow for string-type missing and fill attributes to be read.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -199,15 +200,44 @@
 * _FillValue to flag bad data
 * For the NOAA COOP standard the missing_value flag must be stored in the
 * packed data type.  If so it must be unpacked.  (2/95)
-
-             got_bad = NC_GET_ATTRIB_FLOAT( dset, ivcd, 'missing_value',
+	     
+	     CALL CD_GET_VAR_ATT_ID (dset, ivcd, 'missing_value', 
+     .                  attid, istat)
+	     IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+     .                 ivcd, attid, aname, attype, attlen, attoutflag, 
+     .                 istat)
+     
+             IF (attype .NE. NCCHAR) THEN
+                got_bad = NC_GET_ATTRIB_FLOAT( dset, ivcd, 
+     .                'missing_value',
      .                do_warn, vname(:vlen), attlen,
      .                attoutflag, ds_bad_flag(ivtm))
+             ELSE
+  	        maxlen = 128
+                got_bad = NC_GET_ATTRIB( dset, ivcd, 'missing_value',
+     .                do_warn, vname(:vlen), maxlen, attlen,
+     .                attoutflag, buff,  ds_bad_flag(ivtm))
+             ENDIF
 
-             aname = '_FillValue'
-             got_missing = NC_GET_ATTRIB_FLOAT( dset, ivcd, '_FillValue',
-     .                do_warn, vname(:vlen), attlen, 
+
+	     
+	     CALL CD_GET_VAR_ATT_ID (dset, ivcd, '_FillValue', 
+     .                  attid, istat)
+	     IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+     .                 ivcd, attid, aname, attype, attlen, attoutflag, 
+     .                 istat)
+     
+             IF (attype .NE. NCCHAR) THEN
+                got_missing = NC_GET_ATTRIB_FLOAT( dset, ivcd, 
+     .                '_FillValue',
+     .                do_warn, vname(:vlen), attlen,
      .                attoutflag, ds_missing_flag(ivtm))
+             ELSE
+  	        maxlen = 128
+                got_missing = NC_GET_ATTRIB( dset, ivcd, '_FillValue',
+     .                do_warn, vname(:vlen), maxlen, attlen,
+     .                attoutflag, buff,  ds_bad_flag(ivtm))
+             ENDIF
 
 * ... need to unpack the missing_value flag?
 *     (note that the netCDF library insists on _FillValue's data type)

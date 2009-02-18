@@ -95,7 +95,7 @@
       IF (annotate_key .GT. 0) THEN
          maxlen = 20
          ldigits = lab_digits+1
-         text = TM_FMT_DIGITS (zmax,ldigits,maxlen,slen)
+         text = TM_FMT_DIGITS (zmin,ldigits,maxlen,slen)
 	 xx = px(1)/1000.0 - xorg - (slen + 0.5)* height
          yy = py(1)/1000.0 - yorg - 0.5*height
 	 

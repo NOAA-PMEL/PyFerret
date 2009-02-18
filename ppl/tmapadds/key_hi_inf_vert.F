@@ -1,5 +1,5 @@
       SUBROUTINE key_hi_inf_vert (px, py, ndx, v_inc,
-     .          annotate_key, lab_digits, klab_len, height)
+     .          annotate_key, lab_digits, height)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -52,10 +52,10 @@
 
 * Calling arguments
       REAL px(*),py(*), h_inc, height
-      INTEGER ndx, annotate_key, lab_digits, klab_len
+      INTEGER ndx, annotate_key, lab_digits
 
 * Internal declerations
-      INTEGER slen
+      INTEGER maxlen, slen, ldigits
       REAL x1, x2, x3, x4, y1, y2, y3, y4
       REAL delx, xx, yy, xxx, yyy
       CHARACTER*20 TM_FMT_DIGITS, text
@@ -87,8 +87,10 @@
        py(4) = py(1)
        IF (.NOT. cont_key) call gpl (4,px,py)
 
-      IF (annotate_key .GT. 0.) THEN
-         text = TM_FMT_DIGITS (zmax,lab_digits+2,klab_len,slen)
+      IF (annotate_key .GT. 0) THEN
+         maxlen = 20
+         ldigits = lab_digits+1
+         text = TM_FMT_DIGITS (zmax,ldigits,maxlen,slen)
 	 xx = px(3)/1000.0 - xorg - (slen/2)* height
          yy = py(3)/1000.0 - yorg + 1.1* height
 	 

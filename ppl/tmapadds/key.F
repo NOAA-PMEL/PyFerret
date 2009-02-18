@@ -318,11 +318,11 @@
 
            IF (neginf .AND. (ndx .EQ. 2) ) THEN
               CALL key_lo_inf_horz (kpx, kpy, ndx, x_inc_inf, 
-     .          annotate_key, lab_digits, klab_len, karht)
+     .          annotate_key, lab_digits, karht)
 
            ELSE IF (posinf .AND. (ndx .EQ. nhi) ) THEN
               CALL key_hi_inf_horz (kpx, kpy, ndx, x_inc_inf, 
-     .          annotate_key, lab_digits, klab_len, karht)
+     .          annotate_key, lab_digits, karht)
 
            ELSE
 
@@ -521,11 +521,11 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
            IF (neginf .AND. (ndx .EQ. 2) ) THEN
               CALL key_lo_inf_vert (kpx, kpy, ndx, y_inc_inf, 
-     .          annotate_key, lab_digits, klab_len, karht)
+     .          annotate_key, lab_digits, karht)
 
            ELSE IF (posinf .AND. (ndx .EQ. nhi) ) THEN
               CALL key_hi_inf_vert (kpx, kpy, ndx, y_inc_inf, 
-     .          annotate_key, lab_digits, klab_len, karht)
+     .          annotate_key, lab_digits, karht)
 
            ELSE
 

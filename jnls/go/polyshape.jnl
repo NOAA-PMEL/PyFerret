@@ -4,6 +4,9 @@
 !  7/01 *acm* update /xlimits and /ylimits to /hlimits and /vlimits
 !  7/01 *acm* add rectangle and tallbox
 !  8/01 *acm* add hletter and lletter for marking highs and lows
+!  2/09 *acm* add bslash and hslash, and variations on some previous shapes
+!             trianglec and deltac are centered vertically
+!             exc is smaller, as are rectanglec and tallboxc.
 
 ! Description: define xpolyshape, ypolyshape variables for polygon fills
 
@@ -16,12 +19,18 @@
 !    circle		star		plus
 !    ex			rectangle	tallbox
 !    hletter            lletter
+!    trianglec		deltac		exc
+!    rectanglec		tallboxc	fslash
+!    bslash
 
 ! example:
 !	yes? GO polyshape star 2   ! define double-sized star
 
 ! check shape name
-query/ignore $1"|triangle|delta|square|diamond|pentagon|hexagon|circle|star|plus|ex|rectangle|tallbox|hletter|lletter|"
+
+query/ignore $1"|triangle|delta|square|diamond|pentagon|hexagon|circle\
+|star|plus|ex|rectangle|tallbox|hletter|lletter|fslash|bslash|trianglec\
+|deltac|exc|rectanglec|tallboxc"
 
 IF $1"|triangle>1|*>0|" THEN
   LET/QUIET xpolyshape = COS(3.14159/180 * X[X=90:`2*120+90`:120])
@@ -108,6 +117,44 @@ IF $1"|hletter>1|*>0|" THEN
   LET/QUIET xpolyshape = {-0.6, -0.6, `-0.6+poly_d`, `-0.6+poly_d`, `0.6-poly_d`, `0.6-poly_d`,  0.6, 0.6, `0.6-poly_d`, `0.6-poly_d`, `-0.6+poly_d`, `-0.6+poly_d`}
   LET/QUIET ypolyshape = { 0.8, -0.8,          -0.8,   `0.-poly_h`,  `0.-poly_h`,         -0.8, -0.8, 0.8,          0.8,     `poly_h`,      `poly_h`,           0.8}
   cancel variable poly_d
+ENDIF
+
+IF $1"|fslash>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.8,  0.0, 0.8, 0.0, -0.8}
+  LET/QUIET ypolyshape = {-0.5, -0.5, 0.5, 0.5, -0.5}
+ENDIF
+
+IF $1"|bslash>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.8,  0.0,  0.8,  0.0, -0.8}
+  LET/QUIET ypolyshape = { 0.5,  0.5, -0.5, -0.5,  0.5}
+ENDIF
+
+IF $1"|trianglec>1|*>0|" THEN
+  LET/QUIET xpolyshape = { 0.0, -0.866, 0.866}
+  LET/QUIET ypolyshape = {0.75, -0.75, -0.75}
+ENDIF
+
+IF $1"|deltac>1|*>0|" THEN
+  LET/QUIET xpolyshape = {0.866, -0.866, 0.0}
+  LET/QUIET ypolyshape = {0.75,   0.75, -0.75}
+ENDIF
+
+IF $1"|exc>1|*>0|" THEN
+LET/QUIET poly_h = .6
+LET/QUIET poly_d = .12
+  LET/QUIET xpolyshape = {`poly_h-poly_d`,0,`-1*(poly_h-poly_d)`,`-1*(poly_h+poly_d)`,`-2*poly_d`,`-1*(poly_h+poly_d)`,`-1*(poly_h-poly_d)`,0,`poly_h-poly_d`,`poly_h+poly_d`,`2*poly_d`,`poly_h+poly_d`}
+  LET/QUIET ypolyshape = {`poly_h+poly_d`,`2*poly_d`,`poly_h+poly_d`, `poly_h-poly_d`,0,`-1*(poly_h-poly_d)`,`-1*(poly_h+poly_d)`,`-2*poly_d`,`-1*(poly_h+poly_d)`,`-1*(poly_h-poly_d)`,0,`poly_h-poly_d`}
+  cancel variable poly_d, poly_h
+ENDIF
+
+IF $1"|rectanglec>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.8,  0.8,  0.8, -0.8, -0.8}
+  LET/QUIET ypolyshape = {-0.3, -0.3,  0.3,  0.3, -0.3}
+ENDIF
+
+IF $1"|tallboxc>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.3, -0.3,  0.3,  0.3, -0.3}
+  LET/QUIET ypolyshape = {-0.8,  0.8,  0.8, -0.8, -0.8}
 ENDIF
 
 set mode/last verify

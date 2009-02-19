@@ -31,3 +31,5 @@ shade/hlim=20:1100 my_data[x=180]
 set view lower
 plot/vs/xlim=20:1100/ylim=0:1000 tpts, 0*MISSING(sampl_pts,0) + 500
 plot/vs/color=red/over tpts, sampl_pts
+
+can view

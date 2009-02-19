@@ -77,6 +77,9 @@ c	do_key	     	= .true.   ! Still initialize this in setup_defaults.F
 	klab_dig  = 3
 	klab_len  = 9
 	klab_incr = 0
+!c Make annotate_key setting persist: Once it has been
+!c set, reset it to 0 only if explicitly turned off, see m.EQ.11 below
+!c	annotate_key = 0  
 
 	if (m .ge. 1 .and. iflg(1) .ne. 0 .and. p(1).eq.0.0) 
      .	do_key = .false.
@@ -126,7 +129,8 @@ c	do_key	     	= .true.   ! Still initialize this in setup_defaults.F
            ENDIF
         ENDIF
 
-        IF (m .GE. 11) THEN 
+        IF (m .GE. 11) THEN
+           annotate_key = 0
 	   IF (p(11) .EQ. 1) annotate_key = 1
 	ENDIF
 

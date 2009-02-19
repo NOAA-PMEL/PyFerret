@@ -316,6 +316,14 @@
               py(4) = ky_hi
            ENDIF
 
+           IF ( (ndx.EQ.2) .AND. (annotate_key.EQ.1) .AND. 
+     .          (.NOT.neginf) ) CALL key_annotate 
+     .          (kpx, kpy, lab_digits, karht, 1, 2)
+
+           IF ( (ndx.EQ.nhi) .AND. (annotate_key.EQ.1) .AND.
+     .          (.NOT.posinf) ) CALL key_annotate 
+     .          (kpx, kpy, lab_digits, karht, 2, 2)
+
            IF (neginf .AND. (ndx .EQ. 2) ) THEN
               CALL key_lo_inf_horz (kpx, kpy, ndx, x_inc_inf, 
      .          annotate_key, lab_digits, karht)
@@ -518,11 +526,18 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   py(3) = ky_lo + real (ndx - 1) * y_inc
 	   py(4) = ky_lo + real (ndx - 1) * y_inc
 
+           IF ( (ndx.EQ.2) .AND. (annotate_key.EQ.1) .AND.
+     .          (.NOT. neginf) ) CALL key_annotate 
+     .          (kpx, kpy, lab_digits, karht, 1, 1)
+
+           IF ( (ndx.EQ.nhi) .AND. (annotate_key.EQ.1) .AND.
+     .          (.NOT. posinf) ) CALL key_annotate 
+     .          (kpx, kpy, lab_digits, karht, 2, 1)
 
            IF (neginf .AND. (ndx .EQ. 2) ) THEN
               CALL key_lo_inf_vert (kpx, kpy, ndx, y_inc_inf, 
      .          annotate_key, lab_digits, karht)
-
+     
            ELSE IF (posinf .AND. (ndx .EQ. nhi) ) THEN
               CALL key_hi_inf_vert (kpx, kpy, ndx, y_inc_inf, 
      .          annotate_key, lab_digits, karht)

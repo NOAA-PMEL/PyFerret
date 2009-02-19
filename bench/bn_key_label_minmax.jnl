@@ -1,30 +1,26 @@
 ! bn_key_label_minmax.jnl
 
+! Label data min and max on vertical and horizontal keys
 
 can mode logo
-! SHADE with min and max on vertical and horizontal keys
+
+! One setting turns on annotate_key, which persists until turned off.
+PPL SHAKEY 1,,,,,,,,,,1 
 
 use levitus_climatology
-shade/set/lev=(-inf)(4,28,1)(inf) temp[z=0]
-PPL SHAKEY 1,,,,,,,,,,1 
-ppl shade
+shade/lev=(-inf)(4,28,1)(inf) temp[z=0]
 
 shade/set/lev=(-inf)(4,28,1)(inf) temp[z=0]
 ppl shakey,1,0
-PPL SHAKEY 1,0,,,,,,,,,1 
 ppl shade
-
 
 ! FILL with min and max on vertical and horizontal keys
 
-fill/set/lev=(-inf)(4,28,1)(inf) temp[z=0]
-PPL SHAKEY 1,,,,,,,,,,1 
-ppl fill
+fill/lev=(-inf)(4,28,1)(inf) temp[z=0]
 
 fill/set/lev=(-inf)(4,28,1)(inf) temp[z=0]
-PPL SHAKEY 1,0,,,,,,,,,1 
+PPL SHAKEY 1,0
 ppl fill
-
 
 ! POLYGON with min and max on vertical key
 
@@ -36,8 +32,39 @@ let fsst =  sst[l=1,gx=xq,gy=yq]
 let lon = xsequence(x[gx=xq] + 0*y[gy=yq])
 let lat = xsequence(0*x[gx=xq] + y[gy=yq])
 shade/nokey/pal=white/nolab/axes=0,0,0,0 fsst  ! set up
-go polymark_annotate_key poly/key/title="polygons"/lev=(-inf)(4,26,1)(inf), lon, lat, xsequence(fsst), square, 0.4
+go polymark poly/key/title="polygons"/lev=(-inf)(4,26,1)(inf), lon, lat, xsequence(fsst), square, 0.4
 
+! Now with closed-ended colorbars
+use levitus_climatology
+shade/lev=(4,28,1) temp[z=0]
+
+shade/set/lev=(4,28,1) temp[z=0]
+ppl shakey,1,0
+ppl shade
+
+! FILL with min and max on vertical and horizontal keys
+
+fill/lev=(4,28,1) temp[z=0]
+
+fill/set/lev=(4,28,1) temp[z=0]
+PPL SHAKEY 1,0
+ppl fill
+
+! POLYGON with min and max on vertical key
+
+use coads_climatology
+def axis/x=0:360:5 xq
+def axis/y=-90:90:4 yq
+let fsst =  sst[l=1,gx=xq,gy=yq]
+
+let lon = xsequence(x[gx=xq] + 0*y[gy=yq])
+let lat = xsequence(0*x[gx=xq] + y[gy=yq])
+shade/nokey/pal=white/nolab/axes=0,0,0,0 fsst  ! set up
+go polymark poly/key/title="polygons"/lev=(4,26,1), lon, lat, xsequence(fsst), square, 0.4
+
+! restore setting: keys not annotated
+PPL SHAKEY 1,,,,,,,,,,0
 
 set mode/last logo
+shade/lev=35 sst[L=1]
 

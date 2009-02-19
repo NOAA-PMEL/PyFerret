@@ -23,6 +23,7 @@ get_user_coords.F\
 get_world_coords.F\
 hatch_fill_rep.F\
 key.F\
+key_annotate.F\
 key_lo_inf_horz.F\
 key_hi_inf_horz.F\
 key_lo_inf_vert.F\

@@ -16,7 +16,13 @@
 !!plot/x=180/y=0 airt 
 !!ppl list labels
 
-set data "http://apdrc.soest.hawaii.edu/thredds/dodsC/woa/1994/annual"
+!!set data "http://apdrc.soest.hawaii.edu/thredds/dodsC/woa/1994/annual"
+!!sh data
+!!plot/x=180/y=0 otemp 
+!!ppl list labels
+
+! Change to the OPeNDAP test server.
+use "http://test.opendap.org/opendap/data/nc/coads_climatology.nc"
 sh data
-plot/x=180/y=0 otemp 
+plot/x=180/y=0 sst 
 ppl list labels

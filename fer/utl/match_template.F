@@ -53,15 +53,25 @@
 	CHARACTER*(*)	name
 
 * internal variable declarations:
-	LOGICAL		star_skip
-	INTEGER		TM_LENSTR1, in, it, nlen, tlen
+	LOGICAL		star_skip, was_star_skip
+	INTEGER		TM_LENSTR1, in, it, nlen, tlen, instart
 	CHARACTER*1	ch
 
 * initialize
 	nlen	= TM_LENSTR1( name )
 	tlen	= TM_LENSTR1( template )
 	star_skip = .FALSE.
-	in = 1
+	was_star_skip = .FALSE.
+
+* This lets us search for the template later in the
+* name string; fixes bug 1632.
+
+	instart = 0
+  600   CONTINUE
+        instart = instart + 1
+	IF (instart .GT. nlen) GOTO 1000
+
+	in = instart
 
 * LOOP through the characters of the template
 * (advance the char ptr for name, "in", as needed)
@@ -71,6 +81,7 @@
 
 	  IF ( ch .EQ. '*' ) THEN
 	    star_skip = .TRUE.
+	    was_star_skip = .TRUE.	! search involves a star
 	    GOTO 500
 
 	  ELSEIF ( ch .EQ. '?' ) THEN
@@ -96,7 +107,11 @@
 	    GOTO 400
 
 	  ELSE
-	    GOTO 1000
+	    IF (was_star_skip) THEN
+	       GOTO 600
+	    ELSE
+	       GOTO 1000
+	    ENDIF
 
 	  ENDIF
 

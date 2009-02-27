@@ -1,0 +1,9 @@
+! err611_shade_fill_levs.jnl
+! 2/27/2009
+! Bug 1641: On 32-bit linux, these give different 
+! sets of levels. They should be the same.
+
+shade x[gx=0:1:.1]*y[gy=0:1:.1]; sh sym lev*
+fill  x[gx=0:1:.1]*y[gy=0:1:.1]; sh sym lev*
+
+

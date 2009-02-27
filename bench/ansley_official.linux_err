@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/build_v619/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     48638051 Feb 18 20:29 /home/porter/ansley/build_v619/linux/FERRET/fer/ferretdods_gui
-Using external functions from ../external_functions/ext_func_linux
+Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     56502169 Feb 27 13:11 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: : Test new argument to SHAKEY, annotate upper and lower limits on colorbars
+Note: test fix for bug 1641: single routine to set color levels for FILL, SHADE or POLY plots
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/build_v619/linux/FERRET/bench
+PWD=/home/porter/ansley/linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_linux
-Beginning at Wed Feb 18 20:38:58 PST 2009
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
+Beginning at Fri Feb 27 13:33:51 PST 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1406,9 +1406,9 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: value out of legal range: # of contour levels > 500  (3284)
+ **ERROR: value out of legal range: # of contour levels > 500  (3283)
 CONTOUR/L=1/LEV=0.01d sst
- **ERROR: value out of legal range: # of contour levels > 500  (3284)
+ **ERROR: value out of legal range: # of contour levels > 500  (3283)
 CONTOUR/FILL/L=1/LEV=0.01d sst
  **ERROR: value out of legal range: # of shade levels > 500  (3283)
 SHADE/L=1/LEV=0.01d sst
@@ -2857,4 +2857,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Feb 18 20:43:50 PST 2009
+Ended at Fri Feb 27 13:38:46 PST 2009

@@ -134,7 +134,7 @@ C
 
 *jd*
 	real            zzmin, zzmax
-	integer         nlm1
+	integer         status, nlm1
 	real		dz,znp,zmp
 	integer		i,j,uprdn, llen, ptsbase
 	logical         TM_FPEQ, line_it, fill_it
@@ -228,120 +228,16 @@ cc 100	end do
 	   if (x(zpolybase+1+i) .gt. zzmax) zzmax = x(zpolybase+1+i)
 	   if (x(zpolybase+1+i) .lt. zzmin) zzmin = x(zpolybase+1+i)
  100	end do
+
         IF (zzmin .NE. 1e33) zmin = zzmin  ! Needed for annotating open-ended levels
         IF (zzmax .NE. -1e33) zmax = zzmax
 
-C ------------
+C  Set the contour/color levels
 
-C       
-C       IAUTOC = 1 means: compute levels from input data and number
-C                         of levels
-
-	IF (IAUTOC.EQ.1) THEN
-
-	   IF (zZMIN.EQ.zZMAX) THEN
-
-C             NLEV2=0 is the code in pplmod_plotz
-	      NLEV2=1
-              zlev(1) = zzmin
-
-	   ELSE
-C       
-C       If set_delta is .true. the delta value has been set
-C       elsewhere and we should calculate the max and min values
-C       of the range based on this delta.
-C       (This portion stolen from RANGE)
-
-	      if (set_delta) then 
-
-		 dz = delta
-C       
-C       CALCULATE THE MINIMUM VALUE OF THE RANGE
-C       
-		 FM = zzmin / DZ
-		 M = IFIX(FM)
-		 IF (FM .LT. 0.0) M = M - 1
-		 znp = DZ * FLOAT(M)
-C       
-C       CALCULATE THE MAXIMUM VALUE OF THE RANGE.
-C       
-		 FM = zzmax / DZ
-		 M = IFIX(FM)
-		 IF(FM .GT. 0.0)M = M + 1
-		 zmp = DZ * FLOAT(M)
-
-C
-C       Set levels centered about zero if centered is .true.
-C
-	         if (centered) then
-		    if (abs(znp) .gt. abs(zmp)) then
-		       zmp = -znp
-		    else
-		       znp = -zmp
-		    endif
-	         endif
-
-C       Else we should allow RANGE to determine the max and min range
-C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
-
-	      else
-
-	         znp = zzmin
-	         zmp = zzmax
-	         if (centered) then
-		    if (abs(znp) .gt. abs(zmp)) then
-		       zmp = -znp
-		    else
-		       znp = -zmp
-		    endif
-	         endif
-		 CALL RANGE(znp,zmp,NLEV,ZNP,ZMP,DZ)
-
-	      endif
-
-	      NLEV2=(ZMP-ZNP)/DZ+1 
-
-C       Handle rounding errors *jd* 6.27.95/12.30.97
-C acm 4/04 use TM_FPEQ to fix precision problem as in shade.F
-
-	      IF (ZMP .GT. 0.0) THEN
-		 IF (ZNP + DZ*(NLEV2-1) .LT. ZMP.AND.
-     .           .NOT. TM_FPEQ(ZNP + DZ*(NLEV2-1), ZMP)) 
-	1	      NLEV2 = NLEV2 + 1
-	      ELSE
-		 IF (ABS(ZNP + DZ*(NLEV2-1) - ZMP) .LE. 
-	1	     ABS(EPSILON*ZMP)) 
-	1	      NLEV2 = NLEV2 + 1
-	      ENDIF 
-
-              IF (NLEV2 .GT. ICNLEV) GO TO 5000
-
-	      DO 110 I=1,NLEV2 
-		 ZLEV(I)=ZNP+DZ*FLOAT(I-1) 
- 110	      CONTINUE 
-
-	   ENDIF
-
-C       
-C       Else IAUTOC != 1 means: use supplied levels
-C       
-	ELSE 
-
-C       Mod 4.18.90 to allow just on level to be SHADEd
-C       CONTOUR requires more than one level to work but SHADE doesn't
-
-	   NLEV2=NLEV
-              IF (neginf) zlev(1) = MIN( zlev(1), zmin-1. )
-              IF (posinf) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
-	END IF 
-
-C ------------
-
-        IF (NLEV2 .GT. ICNLEV) GO TO 5000
-
-* Now that the levels are set, create the LEVELS symbols
-
-        CALL setlab_syms (ZLEV, NLEV2)
+        IF ((zzmin .NE. 1e33) .AND. (zzmax .NE. -1e33)) THEN
+           CALL SET_LEVELS_SHADE_FILL (status)
+           IF (status .NE. ferr_ok) GOTO 5000
+	ENDIF
 
 *	DETERMINE PATTERNS OR COLORS TO SET BUNDLED FILL AREA REPRESENTATIONS
 

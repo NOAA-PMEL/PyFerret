@@ -97,6 +97,9 @@
 *                  dataset to cd_write_var
 * V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXNAMES so that child axis names
 *                    arent written. They can get too long for OPeNDAP library calls
+* V62  *acm*  3/09 - Allow for CANCEL ATT/OUTPUT var.missing_flag and var._FillValue
+*                   the special code for these made it impossible to turn off writing
+*                   these attributes.
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -193,7 +196,7 @@
      .			wwlimits0, cal_id, tax, varid, vartype, nvdims, 
      .                  nvatts, vdims(8), iatt, slen, alen, istat, 
      .                  attype, attlen, attoutflag, all_outflag,
-     .                  outtype
+     .                  outtype, no_missing_flag, no_fill_flag
         LOGICAL         NC_GET_ATTRIB, NC_GET_ATTRIB_DP,
      .                  full_precision, DODS_cache, range_not_rqd,
      .                  got_it, got_title, got_units, got_history,
@@ -500,19 +503,32 @@
 
                  istat = ferr_ok
                  attoutflag = 0
+                 no_missing_flag = 0
+                 no_fill_flag = 0
                  attname = 'missing_value'
                  CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
      .                  istat)
                  IF (attid .GT. 0) THEN
                     CALL CD_GET_VAR_ATT_INFO (dset, varid, 
      .                attid, aname, attype, attlen, attoutflag, istat )
+                    IF (attoutflag .EQ. 0) no_missing_flag = 1
                  ELSE
-                     attname = '_FillValue'
+                   attname = '_FillValue'
                    CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
      .                  istat)
                    IF (attid .GT. 0) 
      .                CALL CD_GET_VAR_ATT_INFO (dset, varid, 
      .                attid, aname, attype, attlen, attoutflag, istat )
+                    IF (attoutflag .EQ. 0) no_fill_flag = 1
+                 ENDIF
+		 IF (no_missing_flag .EQ. 1) THEN
+		   attname = '_FillValue'
+                   CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .                  istat)
+                   IF (attid .GT. 0) 
+     .                CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .                attid, aname, attype, attlen, attoutflag, istat )
+                    IF (attoutflag .EQ. 0) no_fill_flag = 1
                  ENDIF
 
 * If the data is numeric, see if the missing flag needs to be rescaled, 
@@ -540,11 +556,13 @@
                     ENDIF
    
                     IF (attoutflag .EQ. 1) THEN
-                       CALL CD_WRITE_ATTVAL_DP(cdfid, varcode, 
-     .                   'missing_value', dvals, attlen, attype, status )
+                       IF (no_missing_flag.EQ.0) CALL CD_WRITE_ATTVAL_DP(
+     .                   cdfid, varcode, 'missing_value', dvals, attlen, 
+     .                   attype, status )
                        IF (status .NE. ferr_ok) GOTO 5400
-                       CALL CD_WRITE_ATTVAL_DP(cdfid, varcode, 
-     .                   '_FillValue', dvals, attlen, attype, status )
+                       IF (no_fill_flag.EQ.0) CALL CD_WRITE_ATTVAL_DP(
+     .                   cdfid, varcode, '_FillValue', dvals, attlen, 
+     .                   attype, status )
 
                     ENDIF
                  ENDIF ! istat 

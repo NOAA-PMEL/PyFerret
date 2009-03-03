@@ -137,6 +137,9 @@
 *                  commands via SPLIT_LIST to std error rather than std out.
 * V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXNAMES so that child axis names
 *                    arent written. They can get too long for OPeNDAP library calls
+* V62  *acm*  2/09 - Fix bug 1644: Dataset title was stored in risc_buff but if mode diag
+*                    is turned on, the string was overwritten. Go back to a local buffer
+*                    to store the title
 
         include 'tmap_errors.parm'
 	include	'ferret.parm'
@@ -166,7 +169,7 @@
      .                  npermuted, recsofar, do_stream_phase, nvars, 
      .                  edges_flag, keepax_flag, nn, slen
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
-     .			fstatus*8, faccess*12, fformatted*12,
+     .			buff*2048, fstatus*8, faccess*12, fformatted*12,
      .			cdf_recax*1,
      .			fposition*12
 
@@ -373,10 +376,10 @@ c     .		 .AND. .NOT.do_comma_del
 	IF ( i .GT. 0 ) THEN
 	   CALL EQUAL_STR_LC(
      .                  cmnd_buff(qual_start(i):qual_end(i)),
-     .                  risc_buff, status )
+     .                  buff, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	ELSE
-	   risc_buff = ' '
+	   buff = ' '
 	ENDIF
 
 * set up the output device
@@ -659,7 +662,7 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	ELSEIF ( do_cdf ) THEN
 	   CALL CDF_LIST( memory, raw_name( 1:TM_LENSTR1(raw_name)), 
      .                    list_at_eof, cdf_recax, num_uvars_in_cmnd,
-     .			  mr_perm, is_cx, risc_buff, head_enh,
+     .			  mr_perm, is_cx, buff, head_enh,
      .			  pcdf_mode_normal, clobber, edges_flag, do_bounds,
      .                    keepax_flag, status )
 	ELSEIF( all_at_once ) THEN

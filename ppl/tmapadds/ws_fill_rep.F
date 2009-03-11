@@ -122,7 +122,8 @@ C	data stmt added for linux *jd* 12.96
 	   usable_colors = max_color - wsmgr_reserve - lo_color_ndx(zwsid)
 
 	   if (usable_colors .lt. shd_levels) then
-	      write (6,'(/a)') ' PPL+ error: You''re attempting to use '//
+c	      write (6,'(/a)') ' PPL+ error: You''re attempting to use '//
+	      write (6,'(/a)') ' PPL warning: You''re attempting to use '//
      .           'more colors than are available.'
 	      write (6,'(a/)') '             Using SHASET RESET to re-use'//
      .		 ' protected colors may help.'

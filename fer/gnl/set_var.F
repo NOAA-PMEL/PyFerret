@@ -306,20 +306,24 @@
 
            IF (dset .EQ. unspecified_int4) THEN
 
-              CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
-              IF ( status .NE. ferr_ok ) GOTO 5000
+	      IF (cat .EQ. cat_user_var) THEN 
+	         dset = -1
+	      ELSE
+
+                 CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
+                 IF ( status .NE. ferr_ok ) GOTO 5000
  
-              CALL EVAL_CONTEXT ( cx_cmnd, varattname, status )
-              IF ( status .NE. ferr_ok ) GOTO 5000
+                 CALL EVAL_CONTEXT ( cx_cmnd, varattname, status )
+                 IF ( status .NE. ferr_ok ) GOTO 5000
 
-              cx = is_cx( 1 )
-              dset = cx_data_set(cx) 
-              IF (dset .EQ. pdset_irrelevant) THEN
-                 dset = cx_data_set(cx_last) 
-                 cx = cx_last
+                 cx = is_cx( 1 )
+                 dset = cx_data_set(cx) 
+                 IF (dset .EQ. pdset_irrelevant) THEN
+                    dset = cx_data_set(cx_last) 
+                    cx = cx_last
+                 ENDIF
+
               ENDIF
-
-              IF (dset .EQ. unspecified_int4) dset = -1 ! user variables
 
            ENDIF
 

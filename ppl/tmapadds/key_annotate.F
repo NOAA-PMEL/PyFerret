@@ -34,6 +34,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 * Label the color key with high and low values at each end
+* (only if they're valid values) 
+*
 *  kpx		corners of box of color in colorbar
 *  kpy
 *  lab_digits	digits used in key labels
@@ -73,7 +75,8 @@
       x4 = px(4)
 
 * Annotate min and max on vertical colorbar
-      IF (lohi .EQ. 1 .AND. vh .EQ. 1) THEN
+      IF (lohi .EQ. 1 .AND. vh .EQ. 1 .AND. 
+     .    zmin .NE. 1e33) THEN
          px(1) = px(1) +  (x3 - x1)/2.
 
          maxlen = 20
@@ -84,7 +87,8 @@
 	 
       ENDIF
 
-      IF (lohi .EQ. 2 .AND. vh .EQ. 1) THEN
+      IF (lohi .EQ. 2 .AND. vh .EQ. 1 .AND. 
+     .    zmax .NE. -1*1e33) THEN
          px(1) = px(1) +  (x3 - x1)/2.
 
          maxlen = 20

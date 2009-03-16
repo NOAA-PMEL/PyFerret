@@ -100,12 +100,12 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'VAR')
-      CALL ef_set_arg_desc(id, arg, 'data to mask')
+      CALL ef_set_arg_desc(id, arg, 'Variable')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'VALUES')
-      CALL ef_set_arg_desc(id, arg, 'list of values to match')
+      CALL ef_set_arg_desc(id, arg, 'list of indices')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
 *                                                                     ^

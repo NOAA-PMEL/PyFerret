@@ -201,6 +201,9 @@
 *                  is cancelled.
 * V62 *acm*  2/09 - Save original upper/lowercase spelling of axis names 
 *                   in line_name_orig for CANCEL MODE UPCASE
+* V62 *acm*  3/09  Fix bug 1645: Define an axis with a very large number of NPOINTS.
+*                  This works if the value of NPOINTS can be specified as an integer.
+
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -315,7 +318,7 @@
      .            mon_by_d(366), d_in_mon(12), len_cal, n2, n3, s2len,
      .            prev_cal_id, j, num_indices, varid, attype_spec,
      .            mr_perm(max_intrp), attoutflag, attlen, coordvar, 
-     .            dset_to_add, dir, type, attype, attid
+     .            dset_to_add, dir, type, attype, attid, ibuff
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
@@ -931,13 +934,14 @@ C /units=months  is 1/12 of the length of the year
 	IF ( status .NE. merr_ok ) GOTO 5000
 
 * was /NPOINTS given ?
+* Read as an INTEGER then it can be really large and retain accuracy.
 	iqual = qual_given( slash_npoints )
 	IF ( iqual .GT. 0 ) THEN
-	   CALL EQUAL_val( cmnd_buff(qual_start(iqual):qual_end(iqual)),
-     .			      rbuff, status )
+	   CALL EQUAL_val_int( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      ibuff, status )
 	   IF ( status .NE. ferr_ok ) RETURN
-	   IF ( rbuff .LE. 0.0 .OR. rbuff .GT. 1E6 ) GOTO 5582
-	   npoints = rbuff
+	   IF ( ibuff .LE. 0 ) GOTO 5582
+	   npoints = ibuff
 	ELSE
 	   npoints = unspecified_int4
 	ENDIF

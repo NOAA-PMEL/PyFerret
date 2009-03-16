@@ -62,9 +62,9 @@
 *        7/6/92 - added /DEPTH to DEFINE AXIS
 *       8/25/92 - added /MODULO to DEFINE AXIS
 *       11/4/92 - added /UNITS to DEFINE VARIABLE
-*               - changed DEFINE VIEW/SIZE/keep_axnamesIN/CLIP to /TEXT/XLIMITS/YLIMITS
+*               - changed DEFINE VIEW/SIZE/ORIGIN/CLIP to /TEXT/XLIMITS/YLIMITS
 *       12/2/92 - added /ZSCALE to the WIRE command
-*       12/4/92 - restored /SIZE, /keep_axnamesIN, and /CLIP to DEFINE VIEW
+*       12/4/92 - restored /SIZE, /ORIGIN, and /CLIP to DEFINE VIEW
 *       1/14/93 - changed SET MOVIE/APPEND to /COMPRESS
 *        2/1/93 - added alias ANIMATE
 * V300  3/11/93 - added alias SPECTRUM
@@ -175,7 +175,7 @@
 * V603: 5/07 *acm* - Fix bug found by Andy Jacobson, in line 1465 index should be 30 not 29.
 * V606  8/07 *acm* - DEFINE AXIS/QUIET
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
-* V6.2  *acm* 2/09 new qualifier LIST/KEEP_AXNAMES
+* V6.2  *acm* 2/09 new qualifier LIST/KEEP_AXISNAMES
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -230,7 +230,7 @@
 	   DATA subcommands      (nsub_at1 + 3)	/ 'VIEWPORT'	/
 	   DATA num_qualifs      (nsub_at1 + 3)	/ nqual1d	/
 	   DATA qualifier_pointer(nsub_at1 + 3)	/ nqual_at1d	/
-* SET VIEWPORT/SIZE/keep_axnamesIN/CLIP
+* SET VIEWPORT/SIZE/ORIGIN/CLIP
 		DATA qualifiers  (nqual_at1d+0)	/ '****'	/
 * SET EXPRSIONION
 	   DATA subcommands      (nsub_at1 + 4)	/ 'EXPRSION'	/
@@ -814,7 +814,7 @@
 		DATA qualifiers  (nqual_at5a+30)/ 'EDGES'/
 		DATA qualifiers  (nqual_at5a+31)/ 'BOUNDS'/
 		DATA qualifiers  (nqual_at5a+32)/ 'NOROWLAB'/
-		DATA qualifiers  (nqual_at5a+33)/ 'KEEP_AXNAMES'/
+		DATA qualifiers  (nqual_at5a+33)/ 'KEEP_AXISNAMES'/
 
 * PLOT - command # 6
 	DATA commands(6)			/ 'PLOT'	/
@@ -1010,7 +1010,7 @@
 	   DATA subcommands      (nsub_at10 + 5)/ 'VIEWPORT'	/
 	   DATA num_qualifs      (nsub_at10 + 5)/ nqual10f	/
 	   DATA qualifier_pointer(nsub_at10 + 5)/ nqual_at10f	/
-* DEFINE VIEW /SIZE/keep_axnamesIN/CLIP/ ****
+* DEFINE VIEW /SIZE/TEXT/XLIMITS/YLIMITS/AXES ****
 		DATA qualifiers  (nqual_at10f+ 0)/ 'TEXT' /
 		DATA qualifiers  (nqual_at10f+ 1)/ 'XLIMITS' /
 		DATA qualifiers  (nqual_at10f+ 2)/ 'YLIMITS' /

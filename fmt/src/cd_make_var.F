@@ -66,7 +66,7 @@
 * V601 *acm* 11/06 - Fix bug 1471; new routine CD_AXIS_OUTNAME gets correct 
 *                    output axis name.
 * V602 *acm*12/06 - Bug 1478: cd_isit_recdim needs mode_upcase_output.
-* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXNAMES so that child axis names
+* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXISNAMES so that child axis names
 *                    arent written. They can get too long for OPeNDAP library calls
 
 * argument definitions:

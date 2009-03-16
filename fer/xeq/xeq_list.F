@@ -135,7 +135,7 @@
 *                  longer than 256 characters.
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out.
-* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXNAMES so that child axis names
+* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXISNAMES so that child axis names
 *                    arent written. They can get too long for OPeNDAP library calls
 * V62  *acm*  2/09 - Fix bug 1644: Dataset title was stored in risc_buff but if mode diag
 *                    is turned on, the string was overwritten. Go back to a local buffer
@@ -271,7 +271,7 @@
            cdf_recax = 'T'   ! "T" is record axis
         ENDIF
 
-* /KEEP_AXNAMES for netCDF ?
+* /KEEP_AXISNAMES for netCDF ?
         i = slash_list_keepax
         i = qual_given( slash_list_keepax )
 	keepax_flag = 0
@@ -358,10 +358,10 @@ c     .		 .AND. .NOT.do_comma_del
      .		         cmnd_buff(qual_start(i):qual_end(i)) )
 	      CALL WARN('Valid option is /HEADING=ENHANCED')
 	   ENDIF
-* Enhanced heading is not consistent with KEEP_AXNAMES flag
+* Enhanced heading is not consistent with KEEP_AXISNAMES flag
 	   IF (keepax_flag .EQ. 1) THEN
 	      CALL WARN
-     .     ('/KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.')
+     .     ('/KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.')
               keepax_flag = 0
 	   ENDIF
 	      

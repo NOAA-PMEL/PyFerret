@@ -95,7 +95,7 @@
 * V612 8/08  *acm* Fix bug 1587: so that correct bounds are written for axes of a 
 *                  user-defined variable, send the dataset number of the underlying 
 *                  dataset to cd_write_var
-* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXNAMES so that child axis names
+* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXISNAMES so that child axis names
 *                    arent written. They can get too long for OPeNDAP library calls
 * V62  *acm*  3/09 - Allow for CANCEL ATT/OUTPUT var.missing_flag and var._FillValue
 *                   the special code for these made it impossible to turn off writing

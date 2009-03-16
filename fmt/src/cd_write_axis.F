@@ -80,7 +80,7 @@
 * V61_ 5/08 *acm*  Fix bug1574: If the axis is a user-defined axis, get its
 *                  information from the attribute structure; previously only
 *                  did this for user variables.
-* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXNAMES so that child axis names
+* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXISNAMES so that child axis names
 *                    arent written. They can get too long for OPeNDAP library calls
 
 * argument definitions:

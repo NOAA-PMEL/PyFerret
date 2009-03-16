@@ -1,0 +1,18 @@
+! err611_set_uvar_outtyp.jnl
+! fix for bug 1646: set outtype for user variables.
+
+sp echo "bn_attributes.jnl --- SET VAR/OUTTYPE for user variable" >> all_ncdump.out
+
+LET a = {1.1,2.2,3.3}
+SET VAR/OUTTYPE = double a
+SAVE/CLOBBER/FILE=a.nc a
+SP ncdump a.nc >> all_ncdump.out
+
+
+! When changing to INT, need to also change the
+! missing-value flag.
+LET a = { 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}
+SET VAR/BAD=999/OUTTYPE=int a
+SAVE/CLOBBER/FILE=a.nc a
+SP ncdump a.nc >> all_ncdump.out
+

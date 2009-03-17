@@ -45,3 +45,7 @@ GO err611_shade_fill_levs
 
 GO bn_reset
 GO err611_set_uvar_outtyp
+
+GO bn_reset
+GO err611_save_from_desc.jnl
+

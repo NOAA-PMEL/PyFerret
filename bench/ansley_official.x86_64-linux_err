@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 51792503 Mar 16 13:07 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 51792639 Mar 17 09:54 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86/
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix bugs 1645, 1646
+Note: fix bug saving from descriptor file with axis name TIME
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86/
-Beginning at Mon Mar 16 13:13:42 PDT 2009
+Beginning at Tue Mar 17 10:13:56 PDT 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2344,9 +2344,6 @@ set axis/stride=2 NORMAL
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
- **TMAP ERR: non-existent or not on line
-             test_strides.cdf
-SET DAT/FORM=CDF test_strides.cdf
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2509,6 +2506,9 @@ LIST a_regrid[D=1,GT=b[D=2]@MOD]
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2642,47 +2642,47 @@ list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkl[k=@ave]
              disordered output coordinate value:         363  Axis: TCENTURY
 list/format=cdf/keep_axnames/l=13/append/file=test_abs.cdf l1
  LISTing to file FI.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
- *** NOTE: /KEEP_AXNAMES ignored. Inconsistent w/ enhanced heading.
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
  LISTing to file test_fil.cdf
  LISTing to file test_fil.cdf
@@ -2864,4 +2864,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Mar 16 13:15:21 PDT 2009
+Ended at Tue Mar 17 10:15:35 PDT 2009

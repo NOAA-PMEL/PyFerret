@@ -628,7 +628,7 @@ GO bn_reset
 GO bn_cdf_keepax.jnl
 
 GO bn_reset
-GO bn_keep_axnames.jnl
+GO bn_keep_axisnames.jnl
 
 GO bn_reset
 GO bn_key_label_minmax.jnl

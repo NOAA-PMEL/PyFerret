@@ -42,6 +42,8 @@
 *  1/96 - repaired bug (incomplete test) in 10/95 check
 *  1/01 - *acm* add line_cal_name parallel with treatment of line_t0
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
+* V62  *acm* 3/09 - copy line_name_orig, used to keep original axis names 
+*                   for use with attribute structure, e.g. save/keep_axisname
 
 * Arguments
 	INTEGER*4	source, dest
@@ -56,6 +58,7 @@
 
 *
 	line_name(dest)      = line_name(source)
+	line_name_orig(dest) = line_name_orig(source)
 	line_dim(dest)       = line_dim(source) 
 	line_units(dest)     = line_units(source) 
 	line_unit_code(dest) = line_unit_code(source) 

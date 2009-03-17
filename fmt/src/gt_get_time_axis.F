@@ -77,6 +77,7 @@
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
 * V600 *acm* 6/05 new flag line_fixname stores whether axis name is changed on input.
+* V62  *acm* 3/09 Save original name when axis name changed on input
 
 * CALLING ARGUMENTS
 *	dset_num - the data set fow which a time axis is desired
@@ -192,6 +193,7 @@
         line_fixname(scr) = .FALSE.
         IF (line_name(scr) .EQ. 'TIME') line_fixname(scr) = .TRUE.
 	CALL TM_NEW_LINE_NAME('TIME',line_name(scr))
+	IF (line_fixname(scr)) line_name_orig(scr) = 'TIME'
 
 * ... calendar name?
 	line_cal_name(scr) = ds_cal_name(dset_num)

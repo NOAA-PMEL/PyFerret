@@ -107,8 +107,23 @@ define symbol day_2_fourth `$7,return=tstart,prec=3`
 set region/t=`($TLAB_tstart)+3*($TLAB_tstep)`:($TLAB_tend)
 define symbol day_3_fourth `$7,return=tstart,prec=3`
 
-set region/t=`($TLAB_tstart)+4*($TLAB_tstep)`:($TLAB_tend)
+! The last region may be degenerate depending on the 
+! underlying time axis. Force it not to be, within
+! single-precision time coordinates
+
+DEFINE SYMBOL tlo = `($TLAB_tstart)+4*($TLAB_tstep)`
+IF `($tlo) GE ($TLAB_tend)` THEN 
+   DEFINE SYMBOL tlo = `(1.- 1.e-5)* ($TLAB_tend) - 1`
+ENDIF 
+
+set region/t=($tlo):($TLAB_tend)
 define symbol day_4_fourth `$7,return=tstart,prec=3`
+
+CANCEL REGION/T
+DEFINE SYMBOL tfirst = `($TLAB_tstart)+4*($TLAB_tstep)`
+IF `($tfirst) GE ($TLAB_tend)` THEN 
+   DEFINE SYMBOL tfirst = `($TLAB_tend) - 1`
+ENDIF 
 
 CANCEL REGION/T
 SET REGION SAVE

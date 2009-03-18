@@ -1,0 +1,20 @@
+ ! err611_irregular_axis.jnl
+ 
+ ! See bug 1483, all about detecting irregular and regular axes. Finally
+ ! did the right thing and test double-precision coordinates in DP and
+ ! if single precision axes comes in, test that in SP.
+
+! The dataset was created as follows to have large time coordinates but
+! irregularly spaced.
+
+! define axis/t=1-jan-2008:"1-jan-2008:00:02:22":1/units=seconds/t0="1-jan-0001" tax
+! let cc = L[gt=tax]
+! save/file=cc.nc/clobber cc
+! Use ncdump to write a cdl file and edit that file to remove one time
+! coordinate and one value of cc. Run ncgen and write cc_irreg.nc
+
+! Previous versions of this detected the axis as regular.
+
+use cc_irreg.nc
+sh grid cc
+

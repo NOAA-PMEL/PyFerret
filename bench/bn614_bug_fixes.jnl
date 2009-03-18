@@ -47,5 +47,7 @@ GO bn_reset
 GO err611_set_uvar_outtyp
 
 GO bn_reset
-GO err611_save_from_desc.jnl
+GO err611_save_from_desc
 
+GO bn_reset
+GO err611_irregular_axis

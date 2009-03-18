@@ -40,13 +40,13 @@
 ! supplied.  In the surface temperature example above this might be the
 ! area of each grid cell as follows:
 
-!LET/QUIET r=6370		! radius of earth
-!LET/QUIET pi=atan(1.)*4.
-!LET/QUIET deg2rad=pi/180.
-!LET/QUIET deg2km=2*pi*r/360.
-!LET/QUIET area=xbox[g=TEMP]*ybox[g=TEMP]*cos(y[g=TEMP]*deg2rad)*deg2km*deg2km*1e-6
-!SET VARIABLE/TITLE="Area of grid cells"/Unit="km^22 x 10^-6" area
-!GO frequency_histogram2 TEMP[X=0:360,Y=0:45N,Z=0] 0 32 .5 area " " 1
+! LET/QUIET r=6370		! radius of earth
+! LET/QUIET pi=atan(1.)*4.
+! LET/QUIET deg2rad=pi/180.
+! LET/QUIET deg2km=2*pi*r/360.
+! LET/QUIET area=xbox[g=TEMP]*ybox[g=TEMP]*cos(y[g=TEMP]*deg2rad)*deg2km*deg2km*1e-6
+! SET VARIABLE/TITLE="Area of grid cells"/Unit="km^22 x 10^-6" area
+! GO frequency_histogram2 TEMP[X=0:360,Y=0:45N,Z=0] 0 32 .5 area " " 1
 
 query/ignore $1"<Usage: GO frequency_histogram expression lo hi del [weight]"
 query/ignore $2"<Usage: GO frequency_histogram expression lo hi del [weight]"
@@ -58,17 +58,19 @@ let style = $7"0"
 
 ! cleanup from previous
 set data/save
-cancel data/noerror frequency_h.dat
 
 ! compute an index that numbers the histogram boxes on the desired output plot
 ! also cope with missing values ("MISSING()") and data below the minimums
 ! ("MAX()").  Data above the max is simply not read in the final commands
 ! because it lies beyond the number of points in the grid gindex
+LET/QUIET v1 = COMPRESSI(XSEQUENCE(($1)) )
+LET/QUIET ngood = v1[x=@NGD]
+LET/QUIET vdata = v1[i=1:`ngood`]
 LET/QUIET vmin = $2
 LET/QUIET vmax = $3
 LET/QUIET vdelta = $4
 LET/QUIET vn = INT((vmax-vmin)/vdelta + 0.5) + 1
-LET/QUIET vindex = MISSING(INT(($1-vmin)/vdelta + 0.5) + 1, 0) ! 1 to vn
+LET/QUIET vindex = INT((vdata-vmin)/vdelta + 0.5) + 1   ! 1 to vn
 LET/QUIET index = MAX(0, vindex) 
 
 ! weight function for each grid cell
@@ -91,7 +93,7 @@ LET/QUIET wt_count = missing(fh_wc,0.)
 ! do a hollow or filed plot
 IF `style EQ 0` THEN
   message/cont You may want to replot with color qualifiers on PLOT and Ymin specified:
-  message/cont >>>  go bar_chart2 plot/line wt_count[d=frequency_h.dat] $6"y|X|Y|Z|T" clear [Ymin]
+  message/cont >>>  go bar_chart2 plot/line wt_count $6"y|X|Y|Z|T" clear [Ymin]
   go bar_chart2 plot/line wt_count $6"y|X|Y|Z|T"
 ELSE
   message/cont You may want to replot with /HLIM /PALETTE or other qualifiers on PLOT:

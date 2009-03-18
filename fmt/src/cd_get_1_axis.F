@@ -195,13 +195,14 @@
       INTEGER     str_eq
       PARAMETER ( str_eq = 0 )
       REAL epsilon_23
-c      PARAMETER (epsilon_23 =  2**(-23) )
+      REAL*8 depsilon_46, depsilon, dlast_coord, dfirs_coord,
+     .       dfirst_delta, ddelta
 
 * local variable declarations:
       LOGICAL NC_GET_ATTRIB, CD_GET_ATTVAL, TM_CHECK_BOX_LOC,
      .        TM_HAS_STRING, TM_FPEQ_EPS, TM_DFPEQ, CD_GET_ATTVALC, 
      .        CD_GET_ATTVAL_L, TM_CHECK_BNDS, TM_CHECK_BNDS_CENTERED, 
-     .        TM_FPEQ,
+     .        TM_FPEQ, TM_DFPEQ_TOL,
      .        got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time, 
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
@@ -218,8 +219,8 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
      .        d1s, d1e, d2s, d2e, len_cal, attoutflag, maxlen,
      .        all_outflag, dir, attlen
 
-      REAL    rbuff, delta, first_delta, val, epsilon
-      REAL*8  TM_LONW2LONE, TM_WW_AXLEN, tmp8, axwwlen
+      REAL    rbuff, delta, first_delta, val, epsilon, lm_len
+      REAL*8  TM_LONW2LONE, TM_WW_AXLEN, tmp8, axwwlen , rdelta
       CHARACTER*12 TM_LEFINT
       CHARACTER vname*128, ename*128, vupcase*128, words(8)*24,
      .        spacing_attr*14, bname*128
@@ -251,7 +252,18 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
       got_torg = .FALSE.
       days_neg4713 = 0.D0
       next_line_storage = next_line_mem_pos
+
+* (From Wikipedia on precision:)
+* Single precision, called "float" in the C language family, and "real" 
+* or "real*4" in Fortran. This is a binary format that occupies 32 bits (4 bytes) 
+* and its significand has a precision of 24 bits (about 7 decimal digits).
+* Double precision, called "double" in the C language family, and "double precision" 
+* or "real*8" in Fortran. This is a binary format that occupies 64 bits (8 bytes) 
+* and its significand has a precision of 53 bits (about 16 decimal digits).
+
       epsilon_23 =  2.**(-23) 
+      depsilon_46 =  2.**(-52)
+      depsilon_46 =  2.**(-46) 
 
 * get the vital statistics of the axis 
 
@@ -896,16 +908,32 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
         IF (its_irregular) GOTO 380  ! If the file says its irreg, treat is at such
 
-        last_coord = line_mem(ipte)
-        firs_coord = line_mem(ipt1)
-        first_delta = line_mem(ipt1+1) - line_mem(ipt1)
-        epsilon = epsilon_23 * 2.*(ABS(line_mem(ipte)) / first_delta )
-        epsilon = epsilon_23 * 2.*(ABS(line_mem(ipt1)) / first_delta )
+* See if double-precision coordinates are regularly-spaced
+        IF (vartype .EQ. ncdouble) THEN
+           dlast_coord = line_mem(ipte)
+           dfirs_coord = line_mem(ipt1)
+           dfirst_delta = line_mem(ipt1+1) - line_mem(ipt1)
+           depsilon = depsilon_46 * 2.*(ABS(line_mem(ipte)) / first_delta )
+           depsilon = depsilon_46 * 2.*(ABS(line_mem(ipt1)) / first_delta )
 
-        DO 360 i=ipt1+2,ipte
-           delta = line_mem(i) - line_mem(i-1)
-           IF (.NOT. TM_FPEQ_EPS(epsilon, first_delta, delta) ) GOTO 380
-  360   CONTINUE
+           DO 355 i=ipt1+2,ipte
+              ddelta = line_mem(i) - line_mem(i-1)
+              IF (.NOT. TM_DFPEQ_TOL(dfirst_delta, ddelta, depsilon) ) GOTO 380
+  355      CONTINUE
+
+* See if single-precision (or integer??) coordinates are regularly-spaced
+        ELSE
+           last_coord = line_mem(ipte)
+           firs_coord = line_mem(ipt1)
+           first_delta = line_mem(ipt1+1) - line_mem(ipt1)
+           epsilon = epsilon_23 * 2.*(ABS(line_mem(ipte)) / first_delta )
+           epsilon = epsilon_23 * 2.*(ABS(line_mem(ipt1)) / first_delta )
+
+           DO 360 i=ipt1+2,ipte
+              delta = line_mem(i) - line_mem(i-1)
+              IF (.NOT. TM_FPEQ_EPS(epsilon, first_delta, delta) ) GOTO 380
+  360      CONTINUE
+        ENDIF
 
 * yes, it's actually regular - save it as such
         line_regular(iaxis) = .TRUE.
@@ -1179,9 +1207,13 @@ c           secsperyear = cals_yeardays(cal_id)* 24*60*60
         IF (line_modulo(iaxis).AND.line_modulo_len(iaxis).NE.0.D0) THEN
            IF (line_modulo_len(iaxis) .LT. axwwlen) THEN
 c             line_modulo_len(iaxis) = 0.0D0
-             ok = TM_DFPEQ(axwwlen, line_modulo_len(iaxis)) 
-             IF (vartype .EQ. ncfloat) 
-     .          ok = TM_FPEQ(axwwlen, line_modulo_len(iaxis)) 
+             IF (vartype .EQ. ncdouble) THEN
+                ok = TM_DFPEQ(axwwlen, line_modulo_len(iaxis)) 
+             ELSE
+	        lm_len = line_modulo_len(iaxis)
+                delta = axwwlen ! single precision
+                ok = TM_FPEQ(delta, lm_len)
+             ENDIF
              IF (.NOT.  ok)
      .          CALL TM_NOTE(
      .          'Ignored modulo length exceeding axis length: '

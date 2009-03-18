@@ -45,12 +45,16 @@
 
 *
 * calling arguments:
-	REAL*8	a, b, epsilon
+	REAL*8	a, b, abmin, epsilon
+
+
+        abmin = MIN(abs(a), abs(b))
 
 * treat relative error case (non-zero) separate fron zero case
 
 	IF  (a.NE.0.0   .AND.  b.NE.0.0 )  THEN
-	   tm_dfpeq_tol =  ABS(a-b) .LE. ABS(b)*epsilon		! relative error
+	   tm_dfpeq_tol = (ABS(a-b) .LE. ABS(abmin)*epsilon)  ! relative error
+
 
 	ELSE
 	   tm_dfpeq_tol =	ABS(a) .LT. epsilon

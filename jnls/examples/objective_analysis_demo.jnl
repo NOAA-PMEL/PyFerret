@@ -124,7 +124,7 @@ GO draw_it sgrid "20x20 grid, fill contoured" "FILL" lower_left
 
 DEFINE AXIS/x=1:10:.2 xax2
 DEFINE AXIS/y=1:10:.2 yax2
-LET/QUIET sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax2], y[gy=yax2], 2.)
+LET/QUIET sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax2], y[gy=yax2], 2.,2.,2.,2)
 GO draw_it sgrid "Gauss gridding to 50x50 grid" "SHADE" upper_right
 GO draw_it sgrid "50x50 grid, fill contoured" "fill" lower_right
 MESSAGE

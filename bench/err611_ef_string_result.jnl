@@ -1,0 +1,21 @@
+! err611_ef_string_result.jnl
+! testing the fix for bug 1621
+! call to EFCN_GET_RTN_TYPE wasn't hooked up in gcf_rtn_type.F
+! 
+
+define axis/t=1-jan-1980:1-jan-1990:4/unit=days tax
+define grid/t=tax gg
+let date_list = t[t=29000:29900:100]
+list tax_datestring(date_list,t[g=gg],"day")
+let v = tax_datestring(date_list,t[g=gg],"day")
+list v
+
+! Combine tax_datestring call with *cat_str function
+
+let yr = tax_datestring(date_list,t[g=gg],"second")
+let both = tcat_str(v, yr)
+list both
+
+let xt = xcat_str(v, yr)
+list xt
+

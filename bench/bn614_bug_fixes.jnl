@@ -51,3 +51,6 @@ GO err611_save_from_desc
 
 GO bn_reset
 GO err611_irregular_axis
+
+GO bn_reset
+GO err611_ef_string_result

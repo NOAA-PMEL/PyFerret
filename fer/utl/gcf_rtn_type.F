@@ -35,6 +35,8 @@
 * return the data type of the result of this function call
 
 * V533: *sh* 6/01
+* V620: *acm* 3/09 hook up the call to EFCN_GET_RTN_TYPE to get back
+ *            the type of string functions (see bug 1621)
 
 	include 'ferret.parm'
 	include 'grid_chg_fcns.parm'   ! for place-holder behavior
@@ -55,11 +57,9 @@
 
 * internal variable declarations
 !	INTEGER	GCF_ARG_EVAL_ORDER
-	INTEGER	EFCN_GET_NUM_REQD_ARGS,
-     .          iarg, cx, i
+	INTEGER	EFCN_GET_NUM_REQD_ARGS, EFCN_GET_RTN_TYPE,
+     .          iarg, cx, i, itype
         INTEGER EF_cx_list(EF_MAX_ARGS), narg
-!	INTEGER efcn_get_rtn_type
-
 
 	IF ( gcfcn .LE. gfcn_num_internal ) THEN
 
@@ -87,10 +87,8 @@
               EF_cx_list(i) = cx_stack_ptr - i + 1
  300       CONTINUE
 
-	   GCF_RTN_TYPE = pfcn_rtn_float  ! TO BE REPLACED IN FUTURE !!
-!           GCF_RTN_TYPE = EFCN_GET_RTN_TYPE(gcfcn, EF_cx_list, status)
-!           IF (status .NE. ferr_ok) CALL ERRMSG
-!     .                          ( status, status, ' ', *5000) 
+	   itype = EFCN_GET_RTN_TYPE (gcfcn)
+	   GCF_RTN_TYPE = itype
 
 	ENDIF
 

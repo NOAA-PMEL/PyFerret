@@ -36,7 +36,7 @@
 
 * V533: *sh* 6/01
 * V620: *acm* 3/09 hook up the call to EFCN_GET_RTN_TYPE to get back
- *            the type of string functions (see bug 1621)
+*             the type of string functions (see bug 1621)
 
 	include 'ferret.parm'
 	include 'grid_chg_fcns.parm'   ! for place-holder behavior

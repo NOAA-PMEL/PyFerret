@@ -141,6 +141,8 @@
 *                  grid is in fact regular.
 * V608 *acm* 09/07 Define symbols AX_HORIZ and AX_VERT with the x,y,z,t direction 
 *                  of the axes as they will appear on the plot.
+* V62  *acm* 03/09 Fix bug 1649: get the value of cal_id for this time axis
+*                  BEFORE using it in evaluating arguments to /hlim or /vlim 
 
 
 C replace includes with those from plot_set_up, 
@@ -488,6 +490,20 @@ C   set up memory for the flag grid
 
 * set up the axis formats (use exact limits, if given by /HLIMITS or /VLIMITS)
 	IF ( .NOT.overlay ) THEN
+           time_axis = GEOG_LABEL( dim1, grid )  .AND. (dim1 .EQ. 4) 
+
+	   has_time_axis = time_axis	! save for PLOT/VS/OVERLAY (6/99)
+           IF (time_axis) THEN
+              tax = grid_line(t_dim, grid)
+              cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
+	      IF(overlay .AND. cal_id .NE. saved_calendar_id) GO TO 5660
+	      ppl_buff = ' '
+	      WRITE ( ppl_buff, 3004 ) line_cal_name(tax)
+              CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
+ 3004         FORMAT ('CALENDAR ', A7)
+	      saved_calendar_id = cal_id
+           ENDIF
+
 	   IF ( pxlim .GT. 0 ) THEN
 	      IF (.NOT.denig_xylim_msg_done) THEN
 	         CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
@@ -535,7 +551,6 @@ C   set up memory for the flag grid
 	      ppl_buff = ' '
 	      WRITE ( ppl_buff, 3004 ) line_cal_name(tax)
               CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
- 3004         FORMAT ('CALENDAR ', A7)
 	      saved_calendar_id = cal_id
            ENDIF
 
@@ -550,6 +565,23 @@ C   set up memory for the flag grid
 	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi, delta,
      .						curvilinear, cx_xpos,
      .						time_axis,xstyle,no_labels)
+
+	   time_axis = GEOG_LABEL( dim2, grid )
+	   time_axis = GEOG_LABEL( dim2, grid )  .AND. (dim2 .EQ. 4) 
+
+	   has_time_axis = has_time_axis .OR. time_axis ! 6/99
+
+C ACM added 8/2001 save cal id if vertical time axis
+           IF (time_axis) THEN
+              tax = grid_line(t_dim, grid)
+              cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
+	      IF(overlay .AND. cal_id .NE. saved_calendar_id) GO TO 5660
+	      ppl_buff = ' '
+	      WRITE ( ppl_buff, 3004 ) line_cal_name(tax)
+              CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
+	      saved_calendar_id = cal_id
+           ENDIF
+
 	   IF ( pylim .GT. 0 ) THEN
 	      IF (.NOT.denig_xylim_msg_done) THEN
 	         CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
@@ -583,22 +615,6 @@ C   set up memory for the flag grid
 	   ENDIF
 	   vaxlo = yaxlo	! save limits so overlays
 	   vaxhi = yaxhi	! will know them
-
-	   time_axis = GEOG_LABEL( dim2, grid )
-	   time_axis = GEOG_LABEL( dim2, grid )  .AND. (dim2 .EQ. 4) 
-
-	   has_time_axis = has_time_axis .OR. time_axis ! 6/99
-
-C ACM added 8/2001 save cal id if vertical time axis
-           IF (time_axis) THEN
-              tax = grid_line(t_dim, grid)
-              cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
-	      IF(overlay .AND. cal_id .NE. saved_calendar_id) GO TO 5660
-	      ppl_buff = ' '
-	      WRITE ( ppl_buff, 3004 ) line_cal_name(tax)
-              CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
-	      saved_calendar_id = cal_id
-           ENDIF
 
 	   CALL AXIS_ENDS  ( 'Y', dim2, grid, yaxlo, yaxhi, delta, is_logy,
      .			      y_axtyp, status )

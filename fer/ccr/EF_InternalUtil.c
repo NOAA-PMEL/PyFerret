@@ -771,7 +771,8 @@ void FORTRAN(tax_times_init)(int *);
 void FORTRAN(tax_times_compute)(int *, float *, float *);
 
 void FORTRAN(tax_tstep_init)(int *);
-void FORTRAN(tax_tstep_compute)(int *, float *, float *, float *);
+void FORTRAN(tax_tstep_work_size)(int *);
+void FORTRAN(tax_tstep_compute)(int *, float *, float *, float *, float *);
 
 void FORTRAN(tax_units_init)(int *);
 void FORTRAN(tax_units_compute)(int *, float *, float*);
@@ -800,6 +801,12 @@ void FORTRAN(scat2grid_bin_xy_compute)(int *, float *, float *);
 void FORTRAN(scat2grid_bin_xy_init)(int *);
 void FORTRAN(scat2grid_bin_xy_work_size)(int *);
 void FORTRAN(scat2grid_bin_xy_compute)(int *, float *, float *);
+
+void FORTRAN(scatgrid_nbin_xyt_init)(int *);
+void FORTRAN(scatgrid_nbin_xyt_work_size)(int *);
+void FORTRAN(scatgrid_nbin_xyt_compute)(int *, float *, float *, float *, 
+  float *, float *, float *, float *, float *, float *, float *, float *, 
+  float *, float *, float *);
 
 /*
  *  End of declarations for internally linked external functions
@@ -848,7 +855,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 121
+#define N_INTEF 122
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -975,6 +982,7 @@ struct {
    strcpy(I_EFnames[118].funcname, "zcat");
    strcpy(I_EFnames[119].funcname, "zcat_str");
    strcpy(I_EFnames[120].funcname, "zreverse");
+   strcpy(I_EFnames[121].funcname, "scatgrid_nbin_xyt");
 /*    
  *  ------------------------------------ 
  */
@@ -3362,6 +3370,7 @@ else if ( !strcmp(name,"tax_times_init_") ) return (void *)FORTRAN(tax_times_ini
 else if ( !strcmp(name,"tax_times_compute_") ) return (void *)FORTRAN(tax_times_compute);
 
 else if ( !strcmp(name,"tax_tstep_init_") ) return (void *)FORTRAN(tax_tstep_init);
+else if ( !strcmp(name,"tax_tstep_work_size_") ) return (void *)FORTRAN(tax_tstep_work_size);
 else if ( !strcmp(name,"tax_tstep_compute_") ) return (void *)FORTRAN(tax_tstep_compute);
 
 else if ( !strcmp(name,"tax_units_init_") ) return (void *)FORTRAN(tax_units_init);
@@ -3379,6 +3388,10 @@ else if ( !strcmp(name,"fill_xy_compute_") ) return (void *)FORTRAN(fill_xy_comp
 else if ( !strcmp(name,"test_opendap_init_") ) return (void *)FORTRAN(test_opendap_init);
 else if ( !strcmp(name,"test_opendap_result_limits_") ) return (void *)FORTRAN(test_opendap_result_limits);
 else if ( !strcmp(name,"test_opendap_compute_") ) return (void *)FORTRAN(test_opendap_compute);
+
+else if ( !strcmp(name,"scatgrid_nbin_xyt_init_") ) return (void *)FORTRAN(scatgrid_nbin_xyt_init);
+else if ( !strcmp(name,"scatgrid_nbin_xyt_work_size_") ) return (void *)FORTRAN(scatgrid_nbin_xyt_work_size);
+else if ( !strcmp(name,"scatgrid_nbin_xyt_compute_") ) return (void *)FORTRAN(scatgrid_nbin_xyt_compute);
 
  }
 /*  End of function pointer list for internally-linked External Functions

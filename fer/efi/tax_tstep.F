@@ -1,8 +1,9 @@
 *
-* tax_year.F
+* tax_tsetp.F
 *
 * Jing Y. Li 
 * May 31 2006
+* Finished March 24, 2009, ACM
 *
 * This function returns time step values
 *
@@ -64,6 +65,8 @@
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
+      CALL ef_set_num_work_arrays(id, 1)
+
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
@@ -86,11 +89,57 @@
 
       RETURN 
       END
+*
+* In this subroutine we request an amount of storage to be supplied
+* by Ferret and passed as an additional argument.
+*
+      SUBROUTINE tax_tstep_work_size(id)
+
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
+
+      INTEGER id
+
+* **********************************************************************
+*                                            USER CONFIGURABLE PORTION |
+*                                                                      |
+*                                                                      V
+
+*
+* Set the work arrays,  X/Y/Z/T dimensions
+*
+* ef_set_work_array_lens(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+*
+      INTEGER mth, mtl
+
+      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
+     .     arg_incr(4,1:EF_MAX_ARGS)
+
+      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+
+*  Allocate double the length of the axes for REAL*8 work array.
+
+      mtl = arg_lo_ss(T_AXIS,ARG1)
+
+      mth = mtl + 
+     .     2* (arg_hi_ss(T_AXIS,ARG1)  - arg_lo_ss(T_AXIS,ARG1) + 1)
+
+*  taxdat
+      CALL ef_set_work_array_dims (id, 1, mtl, 1, 1, 1, mth, 1, 1, 1)
+
+
+*                                                                      ^
+*                                                                      |
+*                                            USER CONFIGURABLE PORTION |
+* **********************************************************************
+
+      RETURN 
+      END
 
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE tax_tstep_compute(id, arg_1, arg_2, result)
+      SUBROUTINE tax_tstep_compute(id, arg_1, arg_2, result, taxdat)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
@@ -118,12 +167,14 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
+      INTEGER STR_SAME
       CHARACTER*20 datebuf
+
       INTEGER iyear, dayofmon, hour, minute, second
       CHARACTER*3 cmon
       CHARACTER*80 err_msg
       
-      CHARACTER*20 t0string
+      CHARACTER*20 instring,t0string
       INTEGER t0year, t0day, slen
       CHARACTER*3 t0mon
 
@@ -139,11 +190,19 @@
       INTEGER i1, j1, k1, l1
       INTEGER i2, j2, k2, l2
 
+*  Declare work array
+
+      REAL*8 taxdat(wrk1lox:wrk1lox+(wrk1hix-wrk1lox)/2,wrk1loy:wrk1hiy,
+     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
+
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-*     Get the time origin (t0) string
+      CALL ef_get_coordinates(id, ARG1, T_AXIS,
+     .   arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), taxdat)
+
+*     Get the new time origin (t0) string
       i2 = arg_lo_ss(X_AXIS, ARG2)
       j2 = arg_lo_ss(Y_AXIS, ARG2)
       k2 = arg_lo_ss(Z_AXIS, ARG2)
@@ -151,7 +210,17 @@
  
 *     Get the desired time origin
       CALL ef_get_string_arg_element(id, ARG2, arg_2,
-     .     i2, j2, k2, l2, slen, t0string)
+     .     i2, j2, k2, l2, slen, instring)
+
+* Allow them to input the date w/o a leading 0 so that either
+* 1-jan-2000 or 01-jan-0000 is ok
+
+      IF ( STR_SAME(instring(2:2), '-') .EQ. 0) THEN
+         WRITE (t0string, 120) instring
+ 120     FORMAT ('0', a19)
+      ELSE
+         t0string = instring
+      ENDIF
 
 *     Get time axis unit
       CALL ef_get_axis_info(id, ARG1, axname, axunits, bkw1, mod1, reg1)
@@ -168,12 +237,11 @@
               l1 = arg_lo_ss(T_AXIS,ARG1)
               DO 100 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-                ddate = arg_1(i1,j1,k1,l1)
+                ddate = taxdat(l1,1,1,1)
 
 *     Get the string-date for each time
                 CALL ef_get_axis_dates(id,ARG1,ddate,1,datebuf)
 
-                print *, datebuf
 *     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date.
 *                READ (datebuf,110,err=900) dayofmon, cmon, iyear
 *                READ (datebuf,120,err=900) hour, minute, second
@@ -368,8 +436,6 @@
       CALL day_since_t0(t0string, datebuf, daysincet0)
       hoursincet0 = 24*daysincet0
 
-      print *, daysincet0
-
 *     Get t0's hour
       READ (t0string, 110, err=800) t0hour
 
@@ -438,15 +504,11 @@
       CALL LOWER_CASE(t0mon)
       CALL LOWER_CASE(cmon)
 
-      print *, t0mon, cmon
-
 *     Convert a month from string to number
       DO 50 m=1,12
           IF (t0mon .EQ. months(m)) it0mon=m
           IF (cmon .EQ. months(m)) imon=m
  50   CONTINUE
-
-      print *, imon, it0mon
 
       yrstart = t0year
       yrend = iyear-1

@@ -668,29 +668,13 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
       ELSEIF ( units .EQ. 14
      .   .OR.  units .EQ. 15   ) THEN         ! layer or level
          line_direction(iaxis) = 'UD'
-
-* ... then check axis name for clues
-
-      ELSEIF ( INDEX(vupcase, 'TIME') .GT. 0
-     .   .OR.  INDEX(vupcase, 'DATE') .GT. 0
-     .   .OR.  vupcase .EQ. 'T'               ) THEN
-         line_direction(iaxis) = 'TI'  ! time
-      ELSEIF ( INDEX(vupcase, 'DEPTH') .GT. 0 ) THEN
-         line_direction(iaxis) = 'UD'
-      ELSEIF ( INDEX(vupcase, 'ELEV') .GT. 0
-     .   .OR.  INDEX(vupcase, 'HEIGHT') .GT. 0 ) THEN
-         line_direction(iaxis) = 'DU'
 * ... then check stray clues
-      ELSEIF ( TM_HAS_STRING(line_units(iaxis), 'LAT') ) THEN
+         ELSEIF ( TM_HAS_STRING(line_units(iaxis), 'LAT') ) THEN
          line_direction(iaxis) = 'SN'
       ELSEIF ( TM_HAS_STRING(line_units(iaxis), 'LON') ) THEN
          line_direction(iaxis) = 'WE'
       ENDIF
-
-      ENDIF      ! IF (line_direction(iaxis) .EQ. 'NA') THEN
-
-
-! Try variable name clues
+      ENDIF
 
       IF (units .EQ. 4) THEN    ! degrees
          IF (line_direction(iaxis) .EQ. 'NA' ) THEN
@@ -708,7 +692,44 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
             ENDIF
          ENDIF
       ENDIF
-      
+
+! Try variable name clues
+
+* ... then check axis name for clues in T, Z directions
+      IF (line_direction(iaxis) .EQ. 'NA') THEN
+         IF ( INDEX(vupcase, 'TIME') .GT. 0
+     .      .OR.  INDEX(vupcase, 'DATE') .GT. 0
+     .      .OR.  vupcase .EQ. 'T'               ) THEN
+            line_direction(iaxis) = 'TI'  ! time
+         ELSEIF ( INDEX(vupcase, 'DEPTH') .GT. 0 ) THEN
+            line_direction(iaxis) = 'UD'
+         ELSEIF ( INDEX(vupcase, 'ELEV') .GT. 0
+     .     .OR.  INDEX(vupcase, 'HEIGHT') .GT. 0 ) THEN
+            line_direction(iaxis) = 'DU'
+         ELSEIF ( INDEX(vupcase, 'LAYER') .GT. 0
+     .   .OR.  INDEX(vupcase, 'LEVEL') .GT. 0 ) THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF
+      ENDIF   
+
+
+! See if the long-name contains a string that indicates a z axis
+      maxlen = 132
+      got_it = NC_GET_ATTRIB( dset,ivar,'long_name',
+     .           do_warn, vname(:vlen), maxlen, attlen, attoutflag, 
+     .           buff, val)
+      IF ( got_it .AND. line_direction(iaxis) .EQ. 'NA' ) THEN
+         IF (STR_CASE_BLIND_COMPARE('elev',buff(:4)) .EQ. str_eq) 
+     .           line_direction(iaxis) = 'DU'
+         IF (STR_CASE_BLIND_COMPARE('height',buff(:6)) .EQ. str_eq) 
+     .           line_direction(iaxis) = 'DU'
+         IF (STR_CASE_BLIND_COMPARE('level',buff(:5)) .EQ. str_eq) 
+     .           line_direction(iaxis) = 'DU'
+         IF (STR_CASE_BLIND_COMPARE('layer',buff(:5)) .EQ. str_eq) 
+     .           line_direction(iaxis) = 'DU'
+         IF (STR_CASE_BLIND_COMPARE('depth',buff(:5)) .EQ. str_eq) 
+     .           line_direction(iaxis) = 'UD'
+      ENDIF
 
 * Note: there are some unfortunate ambiguities about how the TMAP library
 *     uses line_direction:  it refers both to orientation and to the formatting

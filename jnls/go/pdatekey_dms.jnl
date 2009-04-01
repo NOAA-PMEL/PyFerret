@@ -16,6 +16,6 @@ IF `STRLEN("($hou)") EQ 1` THEN DEFINE SYMBOL hou = 0($hou)
 IF `STRLEN("($min)") EQ 1` THEN DEFINE SYMBOL min = 0($min)
 IF `STRLEN("($sec)") EQ 1` THEN DEFINE SYMBOL sec = 0($sec)
 
-IF `PLMlabel GT 0` THEN DEFINE SYMBOL dms = <NL>:($hou)
+IF `PLMlabel GT 0` THEN DEFINE SYMBOL dms = <NL>($hou)
 IF `PLMlabel GT 1` THEN DEFINE SYMBOL dms = ($dms):($min)
 IF `PLMlabel GT 2` THEN DEFINE SYMBOL dms = ($dms):($sec)

@@ -8,7 +8,7 @@ RGB_Mapping By_level
       5   70.0    0.0  100.0  ! purple
       6  100.0   55.0    0.0  ! orange 100.0   50.0    0.0
       7    0.0  100.0  100.0  ! light blue
-      8   80.0   70.0    0.0  ! olive     ! 60.0    0.0    0.0dark red  
-      9   50.0  100.0    0.0    ! 48.0  100.0   48.0  ! light green ! 55     95     23    !
+      8   66.0   56.0   10.0  ! olive
+      9   50.0  100.0  10.0  ! light green 
      10  100.0    0.0  100.0  ! magenta
 

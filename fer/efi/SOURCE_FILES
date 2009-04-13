@@ -94,6 +94,7 @@ scat2gridlaplace_yt.F\
 scat2gridlaplace_zt.F\
 scat2grid_t.F\
 scatgrid_nobs_xy.F\
+scatgrid_nbin_xyt.F\
 secs_to_ymdhms.F\
 sorti.F\
 sorti_str.F\

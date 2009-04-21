@@ -41,7 +41,7 @@
 * 4/5/99  Ansley Manke 
 *         Result is abstract on the x axis, normal on the y axis,
 *         and keeps the z and t axes of the input 4-d data.
-*
+* 4/9/09  The function never tested for the bad-flag of the input variable.
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -273,7 +273,7 @@
       INTEGER i2,j2,k2,l2
       INTEGER i3,j3,k3,l3
       INTEGER jmatch
-      REAL xgrid, ygrid
+      REAL xgrid, ygrid, a
 
       CHARACTER*255 err_msg
 
@@ -344,8 +344,12 @@
 
                l1 = arg_lo_ss(T_AXIS,ARG1)
                DO 300 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-
-                  result(i,j,k,l) = arg_1(imatch,jmatch,k1,l1)
+	          a = arg_1(imatch,jmatch,k1,l1)
+                  IF (a .NE. bad_flag(ARG1)) THEN
+                     result(i,j,k,l) = arg_1(imatch,jmatch,k1,l1)
+		  ELSE
+                     result(i,j,k,l) = bad_flag_result
+		  ENDIF
 
                   l1 = l1 + arg_incr(T_AXIS,ARG1)
  300           CONTINUE

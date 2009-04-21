@@ -44,6 +44,8 @@
 * V600 6/05 *acm* Attribute control.
 * V600 4/08 SHOW DATA/ATT only for nc data so far; var info not in 
 *           the linked list structure.
+* V62  4/09 List the data type of variables as they are in the input
+*           dataset.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -78,7 +80,7 @@
         REAL            vals(10)
 	CHARACTER	TM_FMT*14, varname*512, attname*128, 
      .                  buff*14, attbuff*2048, oflag*1
-        CHARACTER*6     typ(0:6)
+        CHARACTER*6     typ(0:7)
         PARAMETER       (len_attbuff = 2048)
         
 * See netcdf.h for the data types
@@ -88,7 +90,8 @@
      .           'SHORT',        ! signed 2 byte integer
      .           'INT',          ! signed 4 byte integer
      .           'FLOAT',        ! single precision floating point number
-     .           'DOUBLE'/       ! double precision floating point number
+     .           'DOUBLE',       ! double precision floating point number
+     .           ' '/		 ! blank for the global attributes
 
 * describe the variables in the set, only for datasets originating 
 * as netcdf data.
@@ -98,13 +101,13 @@
 
 	risc_buff = ' '
 	WRITE ( risc_buff, 3200 )
- 3200	FORMAT(' VARIABLE',T25,'ATTRIBUTE NAME',T45,'TYPE',T53,'SIZE',
-     .         T58,'OUTFLAG',T66,'VALUE')
- 3201	FORMAT('----------------------------------------',
-     .         '----------------------------------------')
- 3300	FORMAT(' ',A,T25,A,T45,A,T53,A,T58,A,T65,A)
- 3400	FORMAT('(',A,')',T25,A,T45,A,T53,A,T58,A,T65,A)
- 3500	FORMAT(T25,A,T45,A,T53,A,T58,A,T65,A)
+ 3200	FORMAT(' Variable',T14,'VarType(in dset)',T34,'AttributeName',
+     .         T50,'AttType',T62,'Size',T67,'OutFlag',T75,'AttValue')
+ 3201	FORMAT('---------------------------------------------',
+     .         '---------------------------------------------')
+ 3300	FORMAT(' ',A,T24,A,T34,A,T50,A,T62,A,T67,A,T75,A)
+ 3400	FORMAT('(',A,')',T24,A,T34,A,T50,A,T62,A,T67,A,T75,A)
+ 3500	FORMAT(T34,A,T50,A,T62,A,T67,A,T75,A)
 
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
         WRITE (lun, 3201) 
@@ -116,6 +119,7 @@
    
 	      varname = '.'
 	      CALL CD_GET_VAR_ID (dset, varname, varid, status)
+              IF (varid .EQ. 0) vtype = 7  ! 
               
 	      vlen = TM_LENSTR1(varname)
 	      DO 100 iatt = 1, ngatts
@@ -149,7 +153,7 @@
 
                  slen = TM_LENSTR1(attname)
                  buff = TM_FMT (FLOAT(attlen),7,14,llen) 
-                 WRITE (risc_buff, 3300) varname(1:vlen), 
+                 WRITE (risc_buff, 3300) varname(1:vlen), typ(vtype),
      .              attname(1:slen), typ(attype), buff(1:llen), oflag,
      .              attbuff(1:blen)
 
@@ -167,16 +171,17 @@
            DO 300 varid = 1, nvars
               CALL CD_GET_VAR_INFO (dset, varid, varname, vtype, nvdims,
      .           vdims, nvatts, coordvar, all_outflag, status)
+              IF (varid .EQ. 0) vtype = 7  ! 
               vlen = TM_LENSTR1(varname)
 
               IF (nvatts .EQ. 0) THEN
                  IF (coordvar) THEN
-                    WRITE (risc_buff, 3400) varname(1:vlen)
+                    WRITE (risc_buff, 3400) varname(1:vlen), typ(vtype)
                  ELSE
-                    WRITE (risc_buff, 3300) varname(1:vlen)
+                    WRITE (risc_buff, 3300) varname(1:vlen), typ(vtype)
                  ENDIF
-
-                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+		 
+		 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
               ENDIF
 
               DO 200 iatt = 1, nvatts
@@ -214,12 +219,12 @@
                  IF (iatt .EQ. 1) THEN
                     IF (coordvar) THEN
                        WRITE (risc_buff, 3400) varname(1:vlen), 
-     .                    attname(1:slen), typ(attype), buff(1:llen),
-     .                    oflag, attbuff(1:blen)
+     .                    typ(vtype), attname(1:slen), typ(attype), 
+     .                    buff(1:llen), oflag, attbuff(1:blen)
                     ELSE
                        WRITE (risc_buff, 3300) varname(1:vlen), 
-     .                    attname(1:slen), typ(attype), buff(1:llen),
-     .                    oflag, attbuff(1:blen)
+     .                    typ(vtype), attname(1:slen), typ(attype), 
+     .                    buff(1:llen), oflag, attbuff(1:blen)
                     ENDIF
                  ELSE 
                     WRITE (risc_buff, 3500) 

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 51804692 Mar 31 12:19 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 50961386 Apr 21 10:38 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix bug 1651: z axis dir may be  determined by the attribute long_name
+Note: new formatting for show data/att  to show the type of the variables as well as attributes
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Tue Mar 31 12:20:50 PDT 2009
+Beginning at Tue Apr 21 10:40:21 PDT 2009
  	NOAA/PMEL TMAP
  	FERRET v6.196  
- 	Linux(g77) 2.6.9-22. - 03/31/09
- 	31-Mar-09 12:20     
+ 	Linux(g77) 2.6.9-22. - 04/21/09
+ 	21-Apr-09 10:40     
 
 yes? !bn500_all_shell
 yes? 
@@ -10237,8 +10237,8 @@ PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.196"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "31-Mar-09"
-SESSION_TIME = "12:20"
+SESSION_DATE = "21-Apr-09"
+SESSION_TIME = "10:40"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10256,8 +10256,8 @@ PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.196"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "31-Mar-09"
-SESSION_TIME = "12:20"
+SESSION_DATE = "21-Apr-09"
+SESSION_TIME = "10:40"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10265,8 +10265,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "31-Mar-09"
-SESSION_TIME = "12:20"
+SESSION_DATE = "21-Apr-09"
+SESSION_TIME = "10:40"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10276,13 +10276,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "31-Mar-09"
-SESSION_TIME = "12:20"
+SESSION_DATE = "21-Apr-09"
+SESSION_TIME = "10:40"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "31-Mar-09"
-SESSION_TIME = "12:20"
+SESSION_DATE = "21-Apr-09"
+SESSION_TIME = "10:40"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10316,7 +10316,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.196"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Mar 31 2009 12:20:58 "
+LAB3 = "Apr 21 2009 10:40:31 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10413,8 +10413,8 @@ PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.196"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "31-Mar-09"
-SESSION_TIME = "12:20"
+SESSION_DATE = "21-Apr-09"
+SESSION_TIME = "10:40"
  
  
 GO bn_reset
@@ -18144,8 +18144,8 @@ SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94
  
 !GO bn_reset
 !GO bn301_mem_mgmt
-MESSAGE/CONTINUE  ***** bn301_mem_mgmt has -rw-rw-r--  1 ansley tmap 16412 Mar 31 12:21 bench.mgm
--rw-rw-r--  1 ansley tmap 290231 Mar 31 12:21 bench.mgm
+MESSAGE/CONTINUE  ***** bn301_mem_mgmt has -rw-rw-r--  1 ansley tmap 16420 Apr 21 10:40 bench.mgm
+-rw-rw-r--  1 ansley tmap 290351 Apr 21 10:40 bench.mgm
 been removed from run_all.
 ***** bn301_mem_mgmt has been removed from run_all.
 MESSAGE/CONTINUE  ***** Its too slow!!!
@@ -25294,7 +25294,7 @@ GO err491_grid_from_name.jnl
 ! *sh* 3/99
  
 ! implicit grid, such as "Z[gz=zax]", are allowedabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Tue Mar 31 12:21:07 PDT 2009
+Tue Apr 21 10:40:44 PDT 2009
  in places they shouldn't be
  
 ! fixed with change to GRID_FROM_NAME (and PARSE_NAM_DSET_GRD)
@@ -41851,7 +41851,7 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  constan cnst     M:153 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:151 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:148 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  !-> list sst[x=280:300@ave,y=@ave]
  -DELETE cnst     M:153 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
@@ -41871,16 +41871,16 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- constan cnst     M:149 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:147 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:143 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:141 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  !-> list sst[x=280:330@ave,y=@ave]
- -DELETE cnst     M:149 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:143 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -999 -999  J:   46   70  K: -999 -999  L:    1    1
  strip --> SST[Y=0:50N@AV4,D=1]
- reading SST      M:149 I:  131  155  J:   46   70  K: -999 -999  L:    1    1
+ reading SST      M:143 I:  131  155  J:   46   70  K: -999 -999  L:    1    1
  doing --> SST[Y=0:50N@AV4,D=1]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
@@ -41892,16 +41892,16 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- constan cnst     M:143 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:129 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:130 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 74 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  !-> list sst[x=280:360@ave,y=@ave]
- -DELETE cnst     M:143 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:130 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -999 -999  J:   46   70  K: -999 -999  L:    1    1
  strip --> SST[Y=0:50N@AV4,D=1]
- reading SST      M:143 I:  131  170  J:   46   70  K: -999 -999  L:    1    1
+ reading SST      M:130 I:  131  170  J:   46   70  K: -999 -999  L:    1    1
  doing --> SST[Y=0:50N@AV4,D=1]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
@@ -42342,52 +42342,52 @@ let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G021)          (AX026)   (AX016)   NORMAL    (AX028)
- dealloc  dynamic grid (G021)          (AX026)   (AX016)   NORMAL    (AX028)
- allocate dynamic grid (G021)          (AX026)   (AX016)   NORMAL    (AX028)
- allocate dynamic grid (G021)          (AX026)   (AX016)   NORMAL    (AX028)
+ allocate dynamic grid (G021)          (AX026)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G021)          (AX026)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G021)          (AX026)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G021)          (AX026)   (AX022)   NORMAL    (AX028)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
- allocate dynamic grid (G021)          (AX026)   (AX016)   NORMAL    (AX028)
+ allocate dynamic grid (G021)          (AX026)   (AX022)   NORMAL    (AX028)
  strip regrid on X: TAUX --> (G021)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -999 -999  L:    1  161
  nulrgd  TAUX     M:151 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
- -DELETE TAUX     M:148 I:   50   54  J:   44   50  K: -999 -999  L:    1  161
- dealloc  dynamic grid (G021)          (AX026)   (AX016)   NORMAL    (AX028)
+ -DELETE TAUX     M:146 I:   50   54  J:   44   50  K: -999 -999  L:    1  161
+ dealloc  dynamic grid (G021)          (AX026)   (AX022)   NORMAL    (AX028)
 can mem/all
- -DELETE A        M:148 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
+ -DELETE A        M:146 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  -DELETE TAUX     M:151 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  
 def grid/like=taux agrid
- dealloc  dynamic grid (G021)          (AX026)   (AX016)   NORMAL    (AX028)
+ dealloc  dynamic grid (G021)          (AX026)   (AX022)   NORMAL    (AX028)
  getgrid EX#1     C:  6 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
 set mode diag
 let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
  dealloc  dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
- dealloc  dynamic grid (G021)          (AX026)   (AX016)   NORMAL    (AX028)
+ dealloc  dynamic grid (G021)          (AX026)   (AX022)   NORMAL    (AX028)
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G021)          (AX016)   (AX026)   NORMAL    (AX027)
- dealloc  dynamic grid (G021)          (AX016)   (AX026)   NORMAL    (AX027)
- allocate dynamic grid (G021)          (AX016)   (AX026)   NORMAL    (AX027)
- allocate dynamic grid (G021)          (AX016)   (AX026)   NORMAL    (AX027)
+ allocate dynamic grid (G021)          (AX022)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G021)          (AX022)   (AX026)   NORMAL    (AX027)
+ allocate dynamic grid (G021)          (AX022)   (AX026)   NORMAL    (AX027)
+ allocate dynamic grid (G021)          (AX022)   (AX026)   NORMAL    (AX027)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
- allocate dynamic grid (G021)          (AX016)   (AX026)   NORMAL    (AX027)
+ allocate dynamic grid (G021)          (AX022)   (AX026)   NORMAL    (AX027)
  strip regrid on X: TAUX --> (G021)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -999 -999  L:    1  161
- nulrgd  TAUX     M:148 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
+ nulrgd  TAUX     M:146 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  -DELETE TAUX     M:151 I:   50   54  J:   44   50  K: -999 -999  L:    1  161
- dealloc  dynamic grid (G021)          (AX016)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G021)          (AX022)   (AX026)   NORMAL    (AX027)
  
 can mem/all
- -DELETE TAUX     M:148 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
+ -DELETE TAUX     M:146 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  -DELETE A        M:151 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
 can data/all
- dealloc  dynamic grid (G021)          (AX016)   (AX026)   NORMAL    (AX027)
- dealloc  dynamic grid (G021)          (AX016)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G021)          (AX022)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G021)          (AX022)   (AX026)   NORMAL    (AX027)
  
 ! Some tests taken from  bn_strides_revs_perms.jnl but with
 ! DEFINE GRID/LIKE= testing permuting and reversing axes
@@ -42435,8 +42435,8 @@ LIST VAR[i=2:4:2]
  allocate dynamic grid (G028)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G028)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    2    3  K:    1    2  L:    1    1
- nulrgd  VAR      M:145 I:    1    2  J:    2    3  K:    1    2  L:    1    1
- -DELETE VAR      M:148 I:    2    4  J:    2    3  K:    1    2  L:    1    1
+ nulrgd  VAR      M:147 I:    1    2  J:    2    3  K:    1    2  L:    1    1
+ -DELETE VAR      M:146 I:    2    4  J:    2    3  K:    1    2  L:    1    1
  dealloc  dynamic grid (G028)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X
@@ -42453,7 +42453,7 @@ LIST VAR[i=2:4:2]
  3   / 3:  1232.00  1234.00
 LIST VAR[i=2:4:2,j=1:3:2]
  dealloc  dynamic grid (G028)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
- -DELETE VAR      M:145 I:    1    2  J:    2    3  K:    1    2  L:    1    1
+ -DELETE VAR      M:147 I:    1    2  J:    2    3  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G028)          (AX025)   (AX044)   ZAX1_2    TAX1_1
  dealloc  dynamic grid (G028)          (AX025)   (AX044)   ZAX1_2    TAX1_1
@@ -42462,8 +42462,8 @@ LIST VAR[i=2:4:2,j=1:3:2]
  allocate dynamic grid (G028)          (AX025)   (AX044)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G028)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- nulrgd  VAR      M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- -DELETE VAR      M:145 I:    2    4  J:    1    3  K:    1    2  L:    1    1
+ nulrgd  VAR      M:146 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE VAR      M:147 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  dealloc  dynamic grid (G028)          (AX025)   (AX044)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
@@ -42479,7 +42479,7 @@ LIST VAR[i=2:4:2,j=1:3:2]
  1   / 1:  1212.00  1214.00
  3   / 2:  1232.00  1234.00
 CANC MEM/ALL
- -DELETE VAR      M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE VAR      M:146 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:151 I:    3    4  J:    2    3  K:    1    2  L:    1    1
  
 ! modulo requests cannot use strides (as this example shows)
@@ -42496,7 +42496,7 @@ LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
  strip moduloing VAR on X axis:     1    10
  reading VAR      M:151 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  doing moduloing VAR on X axis:     1     4
- regrid  VAR      M:145 I:    1    4  J:    1    1  K:    1    1  L:    1    1
+ regrid  VAR      M:147 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  dealloc  dynamic grid (G028)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 3 delta on X
@@ -42512,8 +42512,8 @@ LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
  7    / 3:  1113.00
  10   / 4:  1112.00
 cancel axis/modulo XAX1_4
- -DELETE VAR      M:145 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- -DELETE VAR      M:148 I:    1   10  J:    1    1  K:    1    1  L:    1    1
+ -DELETE VAR      M:146 I:    1   10  J:    1    1  K:    1    1  L:    1    1
+ -DELETE VAR      M:147 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  -DELETE VAR      M:151 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  
 ! strides applied to more than one axis need special attention in IS_REGRID
@@ -42527,7 +42527,7 @@ LIST VAR[i=2:4:2,j=1:3:2]
  allocate dynamic grid (G028)          (AX044)   (AX043)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G028)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- nulrgd  VAR      M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ nulrgd  VAR      M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:151 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  dealloc  dynamic grid (G028)          (AX044)   (AX043)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
@@ -42545,7 +42545,7 @@ LIST VAR[i=2:4:2,j=1:3:2]
  3   / 2:  1232.00  1234.00
 LIST VAR[i=2:6:2,j=1:5:2]
  dealloc  dynamic grid (G028)          (AX044)   (AX043)   ZAX1_2    TAX1_1
- -DELETE VAR      M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE VAR      M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G028)          (AX044)   (AX025)   ZAX1_2    TAX1_1
  dealloc  dynamic grid (G028)          (AX044)   (AX025)   ZAX1_2    TAX1_1
@@ -42555,7 +42555,7 @@ LIST VAR[i=2:6:2,j=1:5:2]
  strip regrid on X: VAR --> (G028)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:151 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- -DELETE VAR      M:148 I:    2    4  J:    1    3  K:    1    2  L:    1    1
+ -DELETE VAR      M:147 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  dealloc  dynamic grid (G028)          (AX044)   (AX025)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
@@ -42588,7 +42588,7 @@ list/j=1/k=1/l=1 a[i=3:5]
  allocate dynamic grid (G028)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
  strip regrid on X: BIGVAR --> (G028)           @XACT
  rdstride BIGVAR   C: 10 I:    1   36  J:    1    1  K:    1    1  L:    1    1
- nulrgd  BIGVAR   M:148 I:    1    8  J:    1    1  K:    1    1  L:    1    1
+ nulrgd  BIGVAR   M:147 I:    1    8  J:    1    1  K:    1    1  L:    1    1
  -DELETE BIGVAR   M:151 I:    1   36  J:    1    1  K:    1    1  L:    1    1
  dealloc  dynamic grid (G028)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
              VARIABLE : BIGVAR[I=1:40:5]
@@ -42602,7 +42602,7 @@ list/j=1/k=1/l=1 a[i=3:5]
  11   / 3:  1121.00
  16   / 4:  1126.00
  21   / 5:  1131.00
- -DELETE A        M:145 I:    1    1  J:    3    5  K:    1    1  L:    1    1
+ -DELETE A        M:146 I:    1    1  J:    3    5  K:    1    1  L:    1    1
 list/k=1/l=1 a[i=3:5,j=1:8:2]
  dealloc  dynamic grid (G028)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -42617,10 +42617,10 @@ list/k=1/l=1 a[i=3:5,j=1:8:2]
  allocate dynamic grid (G028)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
  strip regrid on X: BIGVAR --> (G028)           @XACT
  rdstride BIGVAR   C: 11 I:    1   36  J:    1    7  K:    1    1  L:    1    1
- nulrgd  BIGVAR   M:129 I:    1    8  J:    1    7  K:    1    1  L:    1    1
- -DELETE BIGVAR   M:145 I:    1   36  J:    1    7  K:    1    1  L:    1    1
+ nulrgd  BIGVAR   M: 74 I:    1    8  J:    1    7  K:    1    1  L:    1    1
+ -DELETE BIGVAR   M:146 I:    1   36  J:    1    7  K:    1    1  L:    1    1
  dealloc  dynamic grid (G028)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
- regrid  A        M:135 I:    3    5  J:    1    4  K:    1    1  L:    1    1
+ regrid  A        M:136 I:    3    5  J:    1    4  K:    1    1  L:    1    1
  dealloc  dynamic grid (G023)          (AX044)   (AX043)   ZAX1_20   TAX1_10
              VARIABLE : BIGVAR[I=1:40:5]
                         regrid: 2 delta on Y
@@ -42638,10 +42638,10 @@ list/k=1/l=1 a[i=3:5,j=1:8:2]
 ! ****** unequally spaced points on parent axis
  
 cancel mem/all
- -DELETE BIGVAR   M:129 I:    1    8  J:    1    7  K:    1    1  L:    1    1
- -DELETE A        M:135 I:    3    5  J:    1    4  K:    1    1  L:    1    1
- -DELETE A        M:145 I:    1    8  J:    1    7  K:    1    1  L:    1    1
- -DELETE BIGVAR   M:148 I:    1    8  J:    1    1  K:    1    1  L:    1    1
+ -DELETE BIGVAR   M: 74 I:    1    8  J:    1    7  K:    1    1  L:    1    1
+ -DELETE A        M:136 I:    3    5  J:    1    4  K:    1    1  L:    1    1
+ -DELETE A        M:146 I:    1    8  J:    1    7  K:    1    1  L:    1    1
+ -DELETE BIGVAR   M:147 I:    1    8  J:    1    1  K:    1    1  L:    1    1
  -DELETE A        M:151 I:    1    8  J:    1    1  K:    1    1  L:    1    1
  
 ! basic strides
@@ -42656,7 +42656,7 @@ LIST/order=x/j=1/k=1/l=1 UNEVENVAR[i=2:4:2]
  allocate dynamic grid (G023)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G023)           @XACT
  rdstride UNE-NVAR C:  8 I:    2    4  J:    1    1  K:    1    1  L:    1    1
- nulrgd  UNE-NVAR M:148 I:    1    2  J:    1    1  K:    1    1  L:    1    1
+ nulrgd  UNE-NVAR M:147 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:151 I:    2    4  J:    1    1  K:    1    1  L:    1    1
  dealloc  dynamic grid (G023)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
@@ -42677,7 +42677,7 @@ set region/i=3:6/j=2:4/k=1:2/l=1
 use/order=yx bn_strides
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  dealloc  dynamic grid (G023)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
- -DELETE UNE-NVAR M:148 I:    1    2  J:    1    1  K:    1    1  L:    1    1
+ -DELETE UNE-NVAR M:147 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G023)          (AX043)   (AX045)   (AX046)   TAX1_10
  dealloc  dynamic grid (G023)          (AX043)   (AX045)   (AX046)   TAX1_10
@@ -42687,7 +42687,7 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  strip regrid on X: BIGVAR --> (G023)           @XACT
  rdstride BIGVAR   C:  7 I:    3    9  J:    2    6  K:    1    3  L:    1    1
  nulrgd  BIGVAR   M:151 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- -DELETE BIGVAR   M:148 I:    3    9  J:    2    6  K:    1    3  L:    1    1
+ -DELETE BIGVAR   M:147 I:    3    9  J:    2    6  K:    1    3  L:    1    1
  dealloc  dynamic grid (G023)          (AX043)   (AX045)   (AX046)   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on X, 2 delta on Y, 2 delta on Z
@@ -42719,7 +42719,7 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_10
  strip regrid on X: BIGVAR --> (G028)           @XACT
  rdstride BIGVAR   C:  7 I:    3    9  J:    2    6  K:    1    3  L:    1    1
- nulrgd  BIGVAR   M:148 I:    1    4  J:    1    3  K:    1    2  L:    1    1
+ nulrgd  BIGVAR   M:147 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:151 I:    3    9  J:    2    6  K:    1    3  L:    1    1
  dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_10
              VARIABLE : VAR
@@ -42738,7 +42738,7 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  4   / 2:  1343.00  1543.00  1743.00  1943.00
  6   / 3:  1363.00  1563.00  1763.00  1963.00
 canc data/all
- -DELETE BIGVAR   M:148 I:    1    4  J:    1    3  K:    1    2  L:    1    1
+ -DELETE BIGVAR   M:147 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_10
  
 ! now with xytvar
@@ -42756,7 +42756,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  strip regrid on X: XYTVAR --> (G028)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
  nulrgd  XYTVAR   M:151 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- -DELETE XYTVAR   M:148 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
+ -DELETE XYTVAR   M:147 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
  dealloc  dynamic grid (G028)          (AX045)   (AX046)   NORMAL    (AX044)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
@@ -42795,7 +42795,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  allocate dynamic grid (G028)          (AX046)   (AX045)   NORMAL    (AX043)
  strip regrid on X: XYTVAR --> (G028)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
- nulrgd  XYTVAR   M:148 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ nulrgd  XYTVAR   M:147 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  -DELETE XYTVAR   M:151 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
  dealloc  dynamic grid (G028)          (AX046)   (AX045)   NORMAL    (AX043)
              VARIABLE : L*1000 + J*10 + I
@@ -42813,7 +42813,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  4N   / 2:  5041.00  5043.00  5045.00  5047.00
  2N   / 1:  5021.00  5023.00  5025.00  5027.00
 canc data/all
- -DELETE XYTVAR   M:148 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
+ -DELETE XYTVAR   M:147 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  dealloc  dynamic grid (G028)          (AX046)   (AX045)   NORMAL    (AX043)
  
 ! map into Z instead of T
@@ -42839,7 +42839,7 @@ list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
  strip regrid on X: XYTVAR --> (G028)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
  nulrgd  XYTVAR   M:151 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
- -DELETE XYTVAR   M:148 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
+ -DELETE XYTVAR   M:147 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
  dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X, 2 deg on Y, 2 deg on Z
@@ -42873,7 +42873,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_6
  strip regrid on X: MIDVAR --> (G028)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- nulrgd  MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ nulrgd  MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_6
              VARIABLE : VAR
@@ -42890,7 +42890,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  2   / 1:  1512.00  1552.00
  5   / 2:  1515.00  1555.00
 canc data/all
- -DELETE MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   TAX1_6
  
 use/order=-yx bn_strides
@@ -42905,8 +42905,8 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    1    5  J:    5    8  K:    3    5  L:    1    1
  doing reversing MIDVAR on Y axis:     2     5
- -DELETE MIDVAR   M:148 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- nulrgd  MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
+ nulrgd  MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   TAX1_6
              VARIABLE : VAR
@@ -42923,7 +42923,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  2   / 1:  1518.00  1558.00
  5   / 2:  1515.00  1555.00
 canc data/all
- -DELETE MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   TAX1_6
  
 ! reference output
@@ -42938,7 +42938,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  strip regrid on X: MIDVAR --> (G028)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:151 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- -DELETE MIDVAR   M:148 I:    1    5  J:    2    5  K:    3    5  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
@@ -42972,7 +42972,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  doing reversing MIDVAR on X axis:     1     5
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:151 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- -DELETE MIDVAR   M:148 I:    1    5  J:    2    5  K:    3    5  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
@@ -43002,7 +43002,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  allocate dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
  strip regrid on X: MIDVAR --> (G028)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- nulrgd  MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ nulrgd  MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
              VARIABLE : VAR
@@ -43019,7 +43019,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  2   / 1:  1152.00  5152.00
  5   / 2:  1155.00  5155.00
 canc data/all
- -DELETE MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  dealloc  dynamic grid (G028)          (AX046)   (AX045)   (AX043)   ZAX1_7
  
 use/order=-t-x-y bn_strides
@@ -43034,8 +43034,8 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    2    6  J:    5    8  K:    3    5  L:    7    7
  doing reversing MIDVAR on Y axis:     2     5
- -DELETE MIDVAR   M:148 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- nulrgd  MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
+ nulrgd  MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
              VARIABLE : VAR
@@ -43052,7 +43052,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  2   / 1:  6758.00  2758.00
  5   / 2:  6755.00  2755.00
 canc data/all
- -DELETE MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  dealloc  dynamic grid (G028)          (AX045)   (AX046)   (AX044)   ZAX1_7
  
 ! DEFINE AXIS can get the axis too long (bug 673)
@@ -45773,7 +45773,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASMar 31 2009 12:21:52
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASApr 21 2009 10:41:30
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47171,7 +47171,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "31-Mar-09:12:20"
+WIN_TITLE = "21-Apr-09:10:40"
  
 set win/title="set the title"
 sho sym win_title
@@ -47189,7 +47189,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="31-Mar-09:12:20"
+ !-> set win/title="21-Apr-09:10:40"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47198,16 +47198,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 31-Mar-09
+ !-> DEFINE SYMBOL the_date = 21-Apr-09
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 12:20
+ !-> DEFINE SYMBOL the_time = 10:40
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="31-Mar-09:12:20"
+ !-> SET WIN/TITLE="21-Apr-09:10:40"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "31-Mar-09:12:20"
+WIN_TITLE = "21-Apr-09:10:40"
  
 GO bn_reset
 cancel mode verify
@@ -47692,34 +47692,34 @@ use ocean_atlas_temp
 sho data/att
      currently SET data sets:
     1> ./ocean_atlas_temp.cdf  (default)
- VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
---------------------------------------------------------------------------------
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
   
- .                      history             CHAR    28   T      FERRET V4.90 (GUI) 04-Feb-98
+ .                               history         CHAR        28   T       FERRET V4.90 (GUI) 04-Feb-98
   
-(XAX_LEV9421_380)       units               CHAR    12   T      degrees_east
-                        modulo              CHAR    1    T
-                        point_spacing       CHAR    4    T      even
-                        orig_file_axname    CHAR    15   F      XAX_LEV9421_380
+(XAX_LEV9421_380)      DOUBLE    units           CHAR        12   T       degrees_east
+                                 modulo          CHAR        1    T
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        15   F       XAX_LEV9421_380
   
-(YAX_LEV94)             units               CHAR    13   T      degrees_north
-                        point_spacing       CHAR    4    T      even
-                        orig_file_axname    CHAR    9    F      YAX_LEV94
+(YAX_LEV94)            DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        9    F       YAX_LEV94
   
-(ZAXLEVIT191_1)         units               CHAR    6    T      METERS
-                        positive            CHAR    4    T      down
-                        orig_file_axname    CHAR    13   F      ZAXLEVIT191_1
+(ZAXLEVIT191_1)        DOUBLE    units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 orig_file_axnameCHAR        13   F       ZAXLEVIT191_1
   
-(TIME3)                 units               CHAR    30   T      hour since 0000-01-01 00:00:00
-                        time_origin         CHAR    20   T      01-JAN-0000 00:00:00
-                        modulo              CHAR    1    T
-                        orig_file_axname    CHAR    4    F      TIME
+(TIME3)                DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
+                                 time_origin     CHAR        20   T       01-JAN-0000 00:00:00
+                                 modulo          CHAR        1    T
+                                 orig_file_axnameCHAR        4    F       TIME
   
- TEMP                   missing_value       FLOAT   1    T      -1.000000E+34
-                        _FillValue          FLOAT   1    T      -1.000000E+34
-                        long_name           CHAR    11   T      Temperature
-                        history             CHAR    24   T      From ocean_atlas_monthly
-                        units               CHAR    5    T      Deg C
+ TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.000000E+34
+                                 _FillValue      FLOAT       1    T       -1.000000E+34
+                                 long_name       CHAR        11   T       Temperature
+                                 history         CHAR        24   T       From ocean_atlas_monthly
+                                 units           CHAR        5    T       Deg C
   
  
 use gt4d011
@@ -47729,176 +47729,176 @@ use levitus_climatology
 sh data/att gt4d011
      currently SET data sets:
     2> ./gt4d011.cdf
- VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
---------------------------------------------------------------------------------
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
   
- .                      history             CHAR    28   T      FERRET V4.45 (GUI) 21-Apr-97
+ .                               history         CHAR        28   T       FERRET V4.45 (GUI) 21-Apr-97
   
- PS3DT2                 axes                CHAR    20   F      PSXT PSYT PSZT TIME1
+ PS3DT2                CHAR      axes            CHAR        20   F       PSXT PSYT PSZT TIME1
   
-(PSXT1)                 units               CHAR    12   T      degrees_east
-                        point_spacing       CHAR    4    T      even
-                        orig_file_axname    CHAR    4    F      PSXT
+(PSXT1)                DOUBLE    units           CHAR        12   T       degrees_east
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        4    F       PSXT
   
-(PSYT1)                 units               CHAR    13   T      degrees_north
-                        point_spacing       CHAR    6    T      uneven
-                        edges               CHAR    9    F      PSYTedges
-                        orig_file_axname    CHAR    4    F      PSYT
+(PSYT1)                DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        6    T       uneven
+                                 edges           CHAR        9    F       PSYTedges
+                                 orig_file_axnameCHAR        4    F       PSYT
   
-(PSYTedges)             edges               CHAR    1    F
-                        orig_file_axname    CHAR    9    F      PSYTedges
+(PSYTedges)            DOUBLE    edges           CHAR        1    F
+                                 orig_file_axnameCHAR        9    F       PSYTedges
   
-(PSZT1)                 units               CHAR    6    T      METERS
-                        positive            CHAR    4    T      down
-                        point_spacing       CHAR    6    T      uneven
-                        edges               CHAR    9    F      PSZTedges
-                        orig_file_axname    CHAR    4    F      PSZT
+(PSZT1)                DOUBLE    units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 point_spacing   CHAR        6    T       uneven
+                                 edges           CHAR        9    F       PSZTedges
+                                 orig_file_axnameCHAR        4    F       PSZT
   
-(PSZTedges)             edges               CHAR    1    F
-                        orig_file_axname    CHAR    9    F      PSZTedges
+(PSZTedges)            DOUBLE    edges           CHAR        1    F
+                                 orig_file_axnameCHAR        9    F       PSZTedges
   
-(TIME11)                units               CHAR    30   T      hour since 1980-01-14 14:00:00
-                        time_origin         CHAR    20   T      14-JAN-1980 14:00:00
-                        orig_file_axname    CHAR    5    F      TIME1
+(TIME11)               DOUBLE    units           CHAR        30   T       hour since 1980-01-14 14:00:00
+                                 time_origin     CHAR        20   T       14-JAN-1980 14:00:00
+                                 orig_file_axnameCHAR        5    F       TIME1
   
-(PSXT91_108)            child_axis          CHAR    1    F
-                        units               CHAR    12   T      degrees_east
-                        point_spacing       CHAR    4    T      even
-                        orig_file_axname    CHAR    10   F      PSXT91_108
+(PSXT91_108)           DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        12   T       degrees_east
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        10   F       PSXT91_108
   
-(PSYT35_56)             child_axis          CHAR    1    F
-                        units               CHAR    13   T      degrees_north
-                        orig_file_axname    CHAR    9    F      PSYT35_56
+(PSYT35_56)            DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        13   T       degrees_north
+                                 orig_file_axnameCHAR        9    F       PSYT35_56
   
-(PSZT1_10)              child_axis          CHAR    1    F
-                        units               CHAR    6    T      METERS
-                        positive            CHAR    4    T      down
-                        orig_file_axname    CHAR    8    F      PSZT1_10
+(PSZT1_10)             DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 orig_file_axnameCHAR        8    F       PSZT1_10
   
- TEMP                   parent_grid         CHAR    6    F      PS3DT2
-                        slab_min_index      INT     4    F      91 35 1 0
-                        slab_max_index      INT     4    F      108 56 10 0
-                        missing_value       FLOAT   1    T      -1.000000E+34
-                        _FillValue          FLOAT   1    T      -1.000000E+34
-                        long_name           CHAR    11   T      TEMPERATURE
-                        history             CHAR    12   T      From gt4d011
-                        units               CHAR    6    T      deg. C
+ TEMP                  FLOAT     parent_grid     CHAR        6    F       PS3DT2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 56 10 0
+                                 missing_value   FLOAT       1    T       -1.000000E+34
+                                 _FillValue      FLOAT       1    T       -1.000000E+34
+                                 long_name       CHAR        11   T       TEMPERATURE
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        6    T       deg. C
   
-(PSYT35_55)             child_axis          CHAR    1    F
-                        units               CHAR    13   T      degrees_north
-                        orig_file_axname    CHAR    9    F      PSYT35_55
+(PSYT35_55)            DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        13   T       degrees_north
+                                 orig_file_axnameCHAR        9    F       PSYT35_55
   
- SALT                   parent_grid         CHAR    6    F      PS3DT2
-                        slab_min_index      INT     4    F      91 35 1 0
-                        slab_max_index      INT     4    F      108 55 10 0
-                        missing_value       FLOAT   1    T      0.01
-                        _FillValue          FLOAT   1    T      0.01
-                        long_name           CHAR    26   T      (SALINITY(ppt) - 35) /1000
-                        history             CHAR    12   T      From gt4d011
-                        units               CHAR    22   T      frac. by wt. less .035
+ SALT                  FLOAT     parent_grid     CHAR        6    F       PS3DT2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 55 10 0
+                                 missing_value   FLOAT       1    T       0.01
+                                 _FillValue      FLOAT       1    T       0.01
+                                 long_name       CHAR        26   T       (SALINITY(ppt) - 35) /1000
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        22   T       frac. by wt. less .035
   
- PS3DU2                 axes                CHAR    20   F      PSXU PSYU PSZT TIME1
+ PS3DU2                CHAR      axes            CHAR        20   F       PSXU PSYU PSZT TIME1
   
-(PSXU)                  units               CHAR    12   T      degrees_east
-                        point_spacing       CHAR    4    T      even
-                        orig_file_axname    CHAR    4    F      PSXU
+(PSXU)                 DOUBLE    units           CHAR        12   T       degrees_east
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        4    F       PSXU
   
-(PSYU)                  units               CHAR    13   T      degrees_north
-                        point_spacing       CHAR    6    T      uneven
-                        edges               CHAR    9    F      PSYUedges
-                        orig_file_axname    CHAR    4    F      PSYU
+(PSYU)                 DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        6    T       uneven
+                                 edges           CHAR        9    F       PSYUedges
+                                 orig_file_axnameCHAR        4    F       PSYU
   
-(PSYUedges)             edges               CHAR    1    F
-                        orig_file_axname    CHAR    9    F      PSYUedges
+(PSYUedges)            DOUBLE    edges           CHAR        1    F
+                                 orig_file_axnameCHAR        9    F       PSYUedges
   
-(PSXU91_108)            child_axis          CHAR    1    F
-                        units               CHAR    12   T      degrees_east
-                        point_spacing       CHAR    4    T      even
-                        orig_file_axname    CHAR    10   F      PSXU91_108
+(PSXU91_108)           DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        12   T       degrees_east
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        10   F       PSXU91_108
   
-(PSYU35_55)             child_axis          CHAR    1    F
-                        units               CHAR    13   T      degrees_north
-                        orig_file_axname    CHAR    9    F      PSYU35_55
+(PSYU35_55)            DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        13   T       degrees_north
+                                 orig_file_axnameCHAR        9    F       PSYU35_55
   
- U                      parent_grid         CHAR    6    F      PS3DU2
-                        slab_min_index      INT     4    F      91 35 1 0
-                        slab_max_index      INT     4    F      108 55 10 0
-                        missing_value       FLOAT   1    T      -1.000000E+34
-                        _FillValue          FLOAT   1    T      -1.000000E+34
-                        long_name           CHAR    14   T      ZONAL VELOCITY
-                        history             CHAR    12   T      From gt4d011
-                        units               CHAR    6    T      cm/sec
+ U                     FLOAT     parent_grid     CHAR        6    F       PS3DU2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 55 10 0
+                                 missing_value   FLOAT       1    T       -1.000000E+34
+                                 _FillValue      FLOAT       1    T       -1.000000E+34
+                                 long_name       CHAR        14   T       ZONAL VELOCITY
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        6    T       cm/sec
   
- V                      parent_grid         CHAR    6    F      PS3DU2
-                        slab_min_index      INT     4    F      91 35 1 0
-                        slab_max_index      INT     4    F      108 55 10 0
-                        missing_value       FLOAT   1    T      -1.000000E+34
-                        _FillValue          FLOAT   1    T      -1.000000E+34
-                        long_name           CHAR    19   T      MERIDIONAL VELOCITY
-                        history             CHAR    12   T      From gt4d011
-                        units               CHAR    6    T      cm/sec
+ V                     FLOAT     parent_grid     CHAR        6    F       PS3DU2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 55 10 0
+                                 missing_value   FLOAT       1    T       -1.000000E+34
+                                 _FillValue      FLOAT       1    T       -1.000000E+34
+                                 long_name       CHAR        19   T       MERIDIONAL VELOCITY
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        6    T       cm/sec
   
- PS3DW2                 axes                CHAR    20   F      PSXT PSYT PSZW TIME1
+ PS3DW2                CHAR      axes            CHAR        20   F       PSXT PSYT PSZW TIME1
   
-(PSZW)                  units               CHAR    6    T      METERS
-                        positive            CHAR    4    T      down
-                        point_spacing       CHAR    6    T      uneven
-                        edges               CHAR    9    F      PSZWedges
-                        orig_file_axname    CHAR    4    F      PSZW
+(PSZW)                 DOUBLE    units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 point_spacing   CHAR        6    T       uneven
+                                 edges           CHAR        9    F       PSZWedges
+                                 orig_file_axnameCHAR        4    F       PSZW
   
-(PSZWedges)             edges               CHAR    1    F
-                        orig_file_axname    CHAR    9    F      PSZWedges
+(PSZWedges)            DOUBLE    edges           CHAR        1    F
+                                 orig_file_axnameCHAR        9    F       PSZWedges
   
-(PSYT36_55)             child_axis          CHAR    1    F
-                        units               CHAR    13   T      degrees_north
-                        orig_file_axname    CHAR    9    F      PSYT36_55
+(PSYT36_55)            DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        13   T       degrees_north
+                                 orig_file_axnameCHAR        9    F       PSYT36_55
   
-(PSZW1_10)              child_axis          CHAR    1    F
-                        units               CHAR    6    T      METERS
-                        positive            CHAR    4    T      down
-                        orig_file_axname    CHAR    8    F      PSZW1_10
+(PSZW1_10)             DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 orig_file_axnameCHAR        8    F       PSZW1_10
   
- W                      parent_grid         CHAR    6    F      PS3DW2
-                        slab_min_index      INT     4    F      91 36 1 0
-                        slab_max_index      INT     4    F      108 55 10 0
-                        missing_value       FLOAT   1    T      -1.000000E+34
-                        _FillValue          FLOAT   1    T      -1.000000E+34
-                        long_name           CHAR    17   T      VERTICAL VELOCITY
-                        history             CHAR    12   T      From gt4d011
-                        units               CHAR    6    T      cm/sec
+ W                     FLOAT     parent_grid     CHAR        6    F       PS3DW2
+                                 slab_min_index  INT         4    F       91 36 1 0
+                                 slab_max_index  INT         4    F       108 55 10 0
+                                 missing_value   FLOAT       1    T       -1.000000E+34
+                                 _FillValue      FLOAT       1    T       -1.000000E+34
+                                 long_name       CHAR        17   T       VERTICAL VELOCITY
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        6    T       cm/sec
   
- PS2DU2                 axes                CHAR    22   F      PSXU PSYU NORMAL TIME1
+ PS2DU2                CHAR      axes            CHAR        22   F       PSXU PSYU NORMAL TIME1
   
- TAUX                   parent_grid         CHAR    6    F      PS2DU2
-                        slab_min_index      INT     4    F      91 35 1 0
-                        slab_max_index      INT     4    F      108 55 1 0
-                        missing_value       FLOAT   1    T      -1.000000E+34
-                        _FillValue          FLOAT   1    T      -1.000000E+34
-                        long_name           CHAR    17   T      ZONAL WIND STRESS
-                        history             CHAR    12   T      From gt4d011
-                        units               CHAR    11   T      dynes/cm**2
+ TAUX                  FLOAT     parent_grid     CHAR        6    F       PS2DU2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 55 1 0
+                                 missing_value   FLOAT       1    T       -1.000000E+34
+                                 _FillValue      FLOAT       1    T       -1.000000E+34
+                                 long_name       CHAR        17   T       ZONAL WIND STRESS
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        11   T       dynes/cm**2
   
- TAUY                   parent_grid         CHAR    6    F      PS2DU2
-                        slab_min_index      INT     4    F      91 35 1 0
-                        slab_max_index      INT     4    F      108 55 1 0
-                        missing_value       FLOAT   1    T      -1.000000E+34
-                        _FillValue          FLOAT   1    T      -1.000000E+34
-                        long_name           CHAR    22   T      MERIDIONAL WIND STRESS
-                        history             CHAR    12   T      From gt4d011
-                        units               CHAR    11   T      dynes/cm**2
+ TAUY                  FLOAT     parent_grid     CHAR        6    F       PS2DU2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 55 1 0
+                                 missing_value   FLOAT       1    T       -1.000000E+34
+                                 _FillValue      FLOAT       1    T       -1.000000E+34
+                                 long_name       CHAR        22   T       MERIDIONAL WIND STRESS
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        11   T       dynes/cm**2
   
-(PSYU35_56)             child_axis          CHAR    1    F
-                        units               CHAR    13   T      degrees_north
-                        orig_file_axname    CHAR    9    F      PSYU35_56
+(PSYU35_56)            DOUBLE    child_axis      CHAR        1    F
+                                 units           CHAR        13   T       degrees_north
+                                 orig_file_axnameCHAR        9    F       PSYU35_56
   
- PSI                    parent_grid         CHAR    6    F      PS2DU2
-                        slab_min_index      INT     4    F      91 35 1 0
-                        slab_max_index      INT     4    F      108 56 1 0
-                        missing_value       FLOAT   1    T      -1.000000E+34
-                        _FillValue          FLOAT   1    T      -1.000000E+34
-                        long_name           CHAR    15   T      STREAM FUNCTION
-                        history             CHAR    12   T      From gt4d011
-                        units               CHAR    9    T      cm**3/sec
+ PSI                   FLOAT     parent_grid     CHAR        6    F       PS2DU2
+                                 slab_min_index  INT         4    F       91 35 1 0
+                                 slab_max_index  INT         4    F       108 56 1 0
+                                 missing_value   FLOAT       1    T       -1.000000E+34
+                                 _FillValue      FLOAT       1    T       -1.000000E+34
+                                 long_name       CHAR        15   T       STREAM FUNCTION
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        9    T       cm**3/sec
   
  
 !  error messages
@@ -48290,50 +48290,50 @@ use test0.nc
 sh data/att
      currently SET data sets:
     1> ./test0.nc  (default)
- VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
---------------------------------------------------------------------------------
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
   
- .                      glob                CHAR    16   F      Global attribute
+ .                               glob            CHAR        16   F       Global attribute
   
- broiled                act                 CHAR    16   F      text string
+ broiled               CHAR      act             CHAR        16   F       text string
 	123
-                        acb                 BYTE    1    F      10
-                        acs                 SHORT   1    F      -200
-                        acl                 INT     1    F      17000
-                        acf                 FLOAT   3    F      -2 1 0
-                        acd                 DOUBLE  2    F      -1 2.718282
+                                 acb             BYTE        1    F       10
+                                 acs             SHORT       1    F       -200
+                                 acl             INT         1    F       17000
+                                 acf             FLOAT       3    F       -2 1 0
+                                 acd             DOUBLE      2    F       -1 2.718282
   
- the_bullet
+ the_bullet            BYTE
   
- order
+ order                 SHORT
   
- rigue
+ rigue                 INT
   
- a_loan
+ a_loan                FLOAT
   
- entendre
+ entendre              DOUBLE
   
- cscalar
+ cscalar               CHAR
   
- dscalar
+ dscalar               DOUBLE
   
- cnodata
+ cnodata               CHAR
   
- bnodata
+ bnodata               BYTE
   
- snodata
+ snodata               SHORT
   
- inodata
+ inodata               INT
   
- fnodata
+ fnodata               FLOAT
   
- dnodata
+ dnodata               DOUBLE
   
-(i)                     orig_file_axname    CHAR    1    F      i
+(i)                    INT       orig_file_axnameCHAR        1    F       i
   
-(j)                     orig_file_axname    CHAR    1    F      j
+(j)                    FLOAT     orig_file_axnameCHAR        1    F       j
   
-(l)                     orig_file_axname    CHAR    1    F      l
+(l)                    BYTE      orig_file_axnameCHAR        1    F       l
   
  
 let a= broiled.acl
@@ -49050,20 +49050,20 @@ sh att/all a1
 sh dat/att
      currently SET data sets:
     1> ./EZ.DAT  (default)
- VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
---------------------------------------------------------------------------------
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
   
- .                      history             CHAR    6    F      EZ.DAT
+ .                               history         CHAR        6    F       EZ.DAT
   
- A1                     long_name           CHAR    2    T      A1
-                        missing_value       FLOAT   1    T      -1.000000E+34
-                        three               FLOAT   3    F      1 2 3
+ A1                    FLOAT     long_name       CHAR        2    T       A1
+                                 missing_value   FLOAT       1    T       -1.000000E+34
+                                 three           FLOAT       3    F       1 2 3
   
- A2                     long_name           CHAR    2    T      A2
-                        missing_value       FLOAT   1    T      -1.000000E+34
+ A2                    FLOAT     long_name       CHAR        2    T       A2
+                                 missing_value   FLOAT       1    T       -1.000000E+34
   
- A3                     long_name           CHAR    2    T      A3
-                        missing_value       FLOAT   1    T      -1.000000E+34
+ A3                    FLOAT     long_name       CHAR        2    T       A3
+                                 missing_value   FLOAT       1    T       -1.000000E+34
   
 save/file=a.nc/clobber a1,a2,a3
 sp echo "bn_attributes.jnl --- 14 attributes of data from ez data." >> all_ncdump.out
@@ -49541,30 +49541,30 @@ define att/out (`temp,return=xaxis`).new_att = "something"
 sh dat/att
      currently SET data sets:
     1> ./levitus_climatology.cdf  (default)
- VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
---------------------------------------------------------------------------------
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
   
- .                      history             CHAR    24   T      FERRET V5.22    5-Apr-01
+ .                               history         CHAR        24   T       FERRET V5.22    5-Apr-01
   
-(XAXLEVITR1_160)        units               CHAR    12   T      degrees_east
-                        modulo              CHAR    1    T
-                        point_spacing       CHAR    4    T      even
-                        orig_file_axname    CHAR    14   F      XAXLEVITR1_160
-                        new_att             CHAR    9    T      something
+(XAXLEVITR1_160)       DOUBLE    units           CHAR        12   T       degrees_east
+                                 modulo          CHAR        1    T
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        14   F       XAXLEVITR1_160
+                                 new_att         CHAR        9    T       something
   
-(YAXLEVITR1_90)         units               CHAR    13   T      degrees_north
-                        point_spacing       CHAR    4    T      even
-                        orig_file_axname    CHAR    13   F      YAXLEVITR1_90
+(YAXLEVITR1_90)        DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        13   F       YAXLEVITR1_90
   
-(ZAXLEVITR1_1)          units               CHAR    6    T      METERS
-                        positive            CHAR    4    T      down
-                        orig_file_axname    CHAR    12   F      ZAXLEVITR1_1
+(ZAXLEVITR1_1)         DOUBLE    units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 orig_file_axnameCHAR        12   F       ZAXLEVITR1_1
   
- TEMP                   missing_value       FLOAT   1    T      -1.E+10
-                        _FillValue          FLOAT   1    T      -1.E+10
-                        long_name           CHAR    11   T      TEMPERATURE
-                        history             CHAR    24   T      From levitus_climatology
-                        units               CHAR    5    T      DEG C
+ TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.E+10
+                                 _FillValue      FLOAT       1    T       -1.E+10
+                                 long_name       CHAR        11   T       TEMPERATURE
+                                 history         CHAR        24   T       From levitus_climatology
+                                 units           CHAR        5    T       DEG C
   
 save/file=a.nc/clobber/y=0:5 temp
 sp ncdump -h a.nc >> all_ncdump.out
@@ -49617,7 +49617,49 @@ show att/all (`sst,return=taxis`)
      attributes for dataset: ./coads_climatology.cdf
  (TIME7).units = hour since 0000-01-01 00:00:00 
  (TIME7).time_origin = 1-JAN-0000 00:00:00 
- (TIME7).modulo =   
+ (TIME7).modnetcdf a {
+dimensions:
+	PSXT91_108 = 18 ;
+	PSYT35_56 = 22 ;
+	bnds = 2 ;
+	PSZT1_10 = 10 ;
+	TIME1 = UNLIMITED ; // (25 currently)
+variables:
+	double PSXT91_108(PSXT91_108) ;
+		PSXT91_108:units = "degrees_east" ;
+		PSXT91_108:modulo = 360. ;
+		PSXT91_108:point_spacing = "even" ;
+		PSXT91_108:axis = "X" ;
+	double PSYT35_56(PSYT35_56) ;
+		PSYT35_56:units = "degrees_north" ;
+		PSYT35_56:point_spacing = "uneven" ;
+		PSYT35_56:axis = "Y" ;
+		PSYT35_56:bounds = "PSYT35_56_bnds" ;
+	double PSYT35_56_bnds(PSYT35_56, bnds) ;
+	double PSZT1_10(PSZT1_10) ;
+		PSZT1_10:units = "METERS" ;
+		PSZT1_10:positive = "down" ;
+		PSZT1_10:point_spacing = "uneven" ;
+		PSZT1_10:axis = "Z" ;
+		PSZT1_10:bounds = "PSZT1_10_bnds" ;
+	double PSZT1_10_bnds(PSZT1_10, bnds) ;
+	double TIME1(TIME1) ;
+		TIME1:units = "hour since 1980-01-14 14:00:00" ;
+		TIME1:time_origin = "14-JAN-1980 14:00:00" ;
+		TIME1:axis = "T" ;
+	double FAREN(TIME1, PSZT1_10, PSYT35_56, PSXT91_108) ;
+		FAREN:missing_value = -9.99999979021477e+33 ;
+		FAREN:_FillValue = -9.99999979021477e+33 ;
+		FAREN:long_name = "TEMP*9/5 + 32" ;
+		FAREN:units = "Deg F" ;
+		FAREN:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
+		FAREN:history = "From gt4d011" ;
+
+// global attributes:
+		:history = "FERRET V6.196   21-Apr-09" ;
+		:Conventions = "CF-1.0" ;
+}
+ulo =   
  (TIME7).orig_file_axname = TIME 
  
 ! change units to days since time origin
@@ -49682,49 +49724,7 @@ show att/all (`sst,return=taxis`)
  (TIME7).modulo =   
  (TIME7).orig_file_axname = TIME 
  
-set axisnetcdf a {
-dimensions:
-	PSXT91_108 = 18 ;
-	PSYT35_56 = 22 ;
-	bnds = 2 ;
-	PSZT1_10 = 10 ;
-	TIME1 = UNLIMITED ; // (25 currently)
-variables:
-	double PSXT91_108(PSXT91_108) ;
-		PSXT91_108:units = "degrees_east" ;
-		PSXT91_108:modulo = 360. ;
-		PSXT91_108:point_spacing = "even" ;
-		PSXT91_108:axis = "X" ;
-	double PSYT35_56(PSYT35_56) ;
-		PSYT35_56:units = "degrees_north" ;
-		PSYT35_56:point_spacing = "uneven" ;
-		PSYT35_56:axis = "Y" ;
-		PSYT35_56:bounds = "PSYT35_56_bnds" ;
-	double PSYT35_56_bnds(PSYT35_56, bnds) ;
-	double PSZT1_10(PSZT1_10) ;
-		PSZT1_10:units = "METERS" ;
-		PSZT1_10:positive = "down" ;
-		PSZT1_10:point_spacing = "uneven" ;
-		PSZT1_10:axis = "Z" ;
-		PSZT1_10:bounds = "PSZT1_10_bnds" ;
-	double PSZT1_10_bnds(PSZT1_10, bnds) ;
-	double TIME1(TIME1) ;
-		TIME1:units = "hour since 1980-01-14 14:00:00" ;
-		TIME1:time_origin = "14-JAN-1980 14:00:00" ;
-		TIME1:axis = "T" ;
-	double FAREN(TIME1, PSZT1_10, PSYT35_56, PSXT91_108) ;
-		FAREN:missing_value = -9.99999979021477e+33 ;
-		FAREN:_FillValue = -9.99999979021477e+33 ;
-		FAREN:long_name = "TEMP*9/5 + 32" ;
-		FAREN:units = "Deg F" ;
-		FAREN:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
-		FAREN:history = "From gt4d011" ;
-
-// global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
-		:Conventions = "CF-1.0" ;
-}
-/t0="15-jan-0000" time
+set axis/t0="15-jan-0000" time
 show att/all (`sst,return=taxis`)
  !-> show att/all (TIME7)
      attributes for dataset: ./coads_climatology.cdf
@@ -51491,30 +51491,30 @@ use coads_climatology
 sh dat/att
      currently SET data sets:
     1> ./coads_climatology.cdf  (default)
- VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
---------------------------------------------------------------------------------
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
   
- .                      history             CHAR    28   T      FERRET V4.91 (GUI)  1-Mar-99
+ .                               history         CHAR        28   T       FERRET V4.91 (GUI)  1-Mar-99
   
-(COADSX)                units               CHAR    12   T      degrees_east
-                        modulo              CHAR    1    T
-                        point_spacing       CHAR    4    T      even
-                        orig_file_axname    CHAR    6    F      COADSX
+(COADSX)               DOUBLE    units           CHAR        12   T       degrees_east
+                                 modulo          CHAR        1    T
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        6    F       COADSX
   
-(COADSY)                units               CHAR    13   T      degrees_north
-                        point_spacing       CHAR    4    T      even
-                        orig_file_axname    CHAR    6    F      COADSY
+(COADSY)               DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        4    T       even
+                                 orig_file_axnameCHAR        6    F       COADSY
   
-(TIME10)                units               CHAR    30   T      hour since 0000-01-01 00:00:00
-                        time_origin         CHAR    19   T      1-JAN-0000 00:00:00
-                        modulo              CHAR    1    T
-                        orig_file_axname    CHAR    4    F      TIME
+(TIME10)               DOUBLE    units           CHAR        30   T       hour since 0000-01-01 00:00:00
+                                 time_origin     CHAR        19   T       1-JAN-0000 00:00:00
+                                 modulo          CHAR        1    T
+                                 orig_file_axnameCHAR        4    F       TIME
   
- SST                    missing_value       FLOAT   1    T      -1.000000E+34
-                        _FillValue          FLOAT   1    T      -1.000000E+34
-                        long_name           CHAR    23   T      SEA SURFACE TEMPERATURE
-                        history             CHAR    22   T      From coads_climatology
-                        units               CHAR    5    T      Deg C
+ SST                   FLOAT     missing_value   FLOAT       1    T       -1.000000E+34
+                                 _FillValue      FLOAT       1    T       -1.000000E+34
+                                 long_name       CHAR        23   T       SEA SURFACE TEMPERATURE
+                                 history         CHAR        22   T       From coads_climatology
+                                 units           CHAR        5    T       Deg C
   
 save/clobber/bounds/file=a.nc/x=181/y=1 sst
  
@@ -51529,86 +51529,86 @@ use t2.nc; use t12.nc
 sho dat/att
      currently SET data sets:
     1> ./t2.nc
- VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
---------------------------------------------------------------------------------
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
   
- .                      history             CHAR    25   T      FERRET V6.196   31-Mar-09
-                        Conventions         CHAR    6    F      CF-1.0
+ .                               history         CHAR        25   T       FERRET V6.196   21-Apr-09
+                                 Conventions     CHAR        6    F       CF-1.0
   
-(PSXT91_108)            units               CHAR    12   T      degrees_east
-                        modulo              DOUBLE  1    T      360
-                        point_spacing       CHAR    4    T      even
-                        axis                CHAR    1    T      X
-                        orig_file_axname    CHAR    10   F      PSXT91_108
+(PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
+                                 modulo          DOUBLE      1    T       360
+                                 point_spacing   CHAR        4    T       even
+                                 axis            CHAR        1    T       X
+                                 orig_file_axnameCHAR        10   F       PSXT91_108
   
-(PSYT35_56)             units               CHAR    13   T      degrees_north
-                        point_spacing       CHAR    6    T      uneven
-                        axis                CHAR    1    T      Y
-                        bounds              CHAR    14   T      PSYT35_56_bnds
-                        orig_file_axname    CHAR    9    F      PSYT35_56
+(PSYT35_56)            DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        6    T       uneven
+                                 axis            CHAR        1    T       Y
+                                 bounds          CHAR        14   T       PSYT35_56_bnds
+                                 orig_file_axnameCHAR        9    F       PSYT35_56
   
- PSYT35_56_bnds
+ PSYT35_56_bnds        DOUBLE
   
-(PSZT1_10)              units               CHAR    6    T      METERS
-                        positive            CHAR    4    T      down
-                        point_spacing       CHAR    6    T      uneven
-                        axis                CHAR    1    T      Z
-                        bounds              CHAR    13   T      PSZT1_10_bnds
-                        orig_file_axname    CHAR    8    F      PSZT1_10
+(PSZT1_10)             DOUBLE    units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 point_spacing   CHAR        6    T       uneven
+                                 axis            CHAR        1    T       Z
+                                 bounds          CHAR        13   T       PSZT1_10_bnds
+                                 orig_file_axnameCHAR        8    F       PSZT1_10
   
- PSZT1_10_bnds
+ PSZT1_10_bnds         DOUBLE
   
-(TIME11)                units               CHAR    30   T      hour since 1980-01-14 14:00:00
-                        time_origin         CHAR    20   T      14-JAN-1980 14:00:00
-                        axis                CHAR    1    T      T
-                        orig_file_axname    CHAR    5    F      TIME1
+(TIME11)               DOUBLE    units           CHAR        30   T       hour since 1980-01-14 14:00:00
+                                 time_origin     CHAR        20   T       14-JAN-1980 14:00:00
+                                 axis            CHAR        1    T       T
+                                 orig_file_axnameCHAR        5    F       TIME1
   
- TEMP                   missing_value       FLOAT   1    T      -1.000000E+34
-                        _FillValue          FLOAT   1    T      -1.000000E+34
-                        long_name           CHAR    11   T      TEMPERATURE
-                        history             CHAR    12   T      From gt4d011
-                        units               CHAR    6    T      deg. C
+ TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.000000E+34
+                                 _FillValue      FLOAT       1    T       -1.000000E+34
+                                 long_name       CHAR        11   T       TEMPERATURE
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        6    T       deg. C
   
     2> ./t12.nc  (default)
- VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
---------------------------------------------------------------------------------
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
   
- .                      history             CHAR    25   T      FERRET V6.196   31-Mar-09
-                        Conventions         CHAR    6    F      CF-1.0
+ .                               history         CHAR        25   T       FERRET V6.196   21-Apr-09
+                                 Conventions     CHAR        6    F       CF-1.0
   
-(PSXT91_108)            units               CHAR    12   T      degrees_east
-                        modulo              DOUBLE  1    T      360
-                        point_spacing       CHAR    4    T      even
-                        axis                CHAR    1    T      X
-                        orig_file_axname    CHAR    10   F      PSXT91_108
+(PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
+                                 modulo          DOUBLE      1    T       360
+                                 point_spacing   CHAR        4    T       even
+                                 axis            CHAR        1    T       X
+                                 orig_file_axnameCHAR        10   F       PSXT91_108
   
-(PSYT35_56)             units               CHAR    13   T      degrees_north
-                        point_spacing       CHAR    6    T      uneven
-                        axis                CHAR    1    T      Y
-                        bounds              CHAR    14   T      PSYT35_56_bnds
-                        orig_file_axname    CHAR    9    F      PSYT35_56
+(PSYT35_56)            DOUBLE    units           CHAR        13   T       degrees_north
+                                 point_spacing   CHAR        6    T       uneven
+                                 axis            CHAR        1    T       Y
+                                 bounds          CHAR        14   T       PSYT35_56_bnds
+                                 orig_file_axnameCHAR        9    F       PSYT35_56
   
- PSYT35_56_bnds
+ PSYT35_56_bnds        DOUBLE
   
-(PSZT1_10)              units               CHAR    6    T      METERS
-                        positive            CHAR    4    T      down
-                        point_spacing       CHAR    6    T      uneven
-                        axis                CHAR    1    T      Z
-                        bounds              CHAR    13   T      PSZT1_10_bnds
-                        orig_file_axname    CHAR    8    F      PSZT1_10
+(PSZT1_10)             DOUBLE    units           CHAR        6    T       METERS
+                                 positive        CHAR        4    T       down
+                                 point_spacing   CHAR        6    T       uneven
+                                 axis            CHAR        1    T       Z
+                                 bounds          CHAR        13   T       PSZT1_10_bnds
+                                 orig_file_axnameCHAR        8    F       PSZT1_10
   
- PSZT1_10_bnds
+ PSZT1_10_bnds         DOUBLE
   
-(TIME12)                units               CHAR    30   T      hour since 1980-01-14 14:00:00
-                        time_origin         CHAR    20   T      14-JAN-1980 14:00:00
-                        axis                CHAR    1    T      T
-                        orig_file_axname    CHAR    5    F      TIME1
+(TIME12)               DOUBLE    units           CHAR        30   T       hour since 1980-01-14 14:00:00
+                                 time_origin     CHAR        20   T       14-JAN-1980 14:00:00
+                                 axis            CHAR        1    T       T
+                                 orig_file_axnameCHAR        5    F       TIME1
   
- TEMP                   missing_value       FLOAT   1    T      -1.000000E+34
-                        _FillValue          FLOAT   1    T      -1.000000E+34
-                        long_name           CHAR    11   T      TEMPERATURE
-                        history             CHAR    12   T      From gt4d011
-                        units               CHAR    6    T      deg. C
+ TEMP                  FLOAT     missing_value   FLOAT       1    T       -1.000000E+34
+                                 _FillValue      FLOAT       1    T       -1.000000E+34
+                                 long_name       CHAR        11   T       TEMPERATURE
+                                 history         CHAR        12   T       From gt4d011
+                                 units           CHAR        6    T       deg. C
   
  
 ! err600_tab_comma_missingdat.jnl
@@ -53124,6 +53124,7 @@ ZCAT(A,B)
 ZCAT_STR(A,B)
 ZREVERSE(A)
 SCATGRID_NBIN_XYT(XPTS,YPTS,TPTS,XAXPTS,YAXPTS,TAXPTS)
+SCATGRID_BIN_XYT(XPTS,YPTS,TPTS,VAR,XAXPTS,YAXPTS,TAXPTS)
 ADD_9(A,B,C,D,E,F,G,H,I)
 AVET(A)
 BIN_INDEX_WT(INDEX,WT,INDXMAX)
@@ -55211,14 +55212,14 @@ SET VAR/UNITS="micrograms/L"/TITLE="chlorophyll"/BAD=3 my_asc
 SHOW DAT/ATT
      currently SET data sets:
     1> ./dat.dat  (default)
- VARIABLE               ATTRIBUTE NAME      TYPE    SIZE OUTFLAG VALUE
---------------------------------------------------------------------------------
+ Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
+------------------------------------------------------------------------------------------
   
- .                      history             CHAR    7    F      dat.dat
+ .                               history         CHAR        7    F       dat.dat
   
- MY_ASC                 long_name           CHAR    11   T      chlorophyll
-                        missing_value       FLOAT   1    T      3
-                        units               CHAR    12   T      micrograms/L
+ MY_ASC                FLOAT     long_name       CHAR        11   T       chlorophyll
+                                 missing_value   FLOAT       1    T       3
+                                 units           CHAR        12   T       micrograms/L
   
 SAVE/FILE=a.nc/CLOBBER my_asc
 SP ncdump -h a.nc >> all_ncdump.out
@@ -56104,7 +56105,44 @@ list ypts, tpts, sampl_pts
 27   / 27:  13.97536  1060.000      ....
 28   / 28:  21.99063  1100.000      ....
  
-! AND HERE WE SHnetcdf a {
+! AND HERE WE SHOW IT GRAPHICALLY
+cancel mode calendar
+set view upper
+shade/hlim=20:1100 my_data[x=180]
+ 
+set view lower
+plot/vs/xlim=20:1100/ylim=0:1000 tpts, 0*MISSING(sampl_pts,0) + 500
+plot/vs/color=red/over tpts, sampl_pts
+ 
+can view
+ 
+GO bn_reset
+cancel mode verify
+GO bn_last_go_file.jnl
+! bn_last_go_file.jnl
+! test the automatically-defined symbol LAST_GO_FILE
+ 
+show sym last_go_file
+LAST_GO_FILE = "./bn_last_go_file.jnl"
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO bn_cancel_upcase_uservar.jnl
+! bn_cancel_upcase_uservar.jnl
+!
+! Ferret v6.2
+! MODE upcase_only cancelled, now writes lowercase
+! spelling for user-defined variables and for coordinate
+! variables even coming from two different datasets.
+ 
+CANCEL MODE upcase_only
+ 
+! User variable with lowercase letters in the name
+ 
+DEFINE AXIS/t=1-jan-1999:31-jan-1999:1/units=days/t0=31-dec-1998 tday
+LET MyUpperLowerCaseVar = x[x=1:10] + t[gt=tday]
+sanetcdf a {
 dimensions:
 	XAX1_10 = 10 ;
 	tday = UNLIMITED ; // (31 currently)
@@ -56152,47 +56190,10 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
-OW IT GRAPHICALLY
-cancel mode calendar
-set view upper
-shade/hlim=20:1100 my_data[x=180]
- 
-set view lower
-plot/vs/xlim=20:1100/ylim=0:1000 tpts, 0*MISSING(sampl_pts,0) + 500
-plot/vs/color=red/over tpts, sampl_pts
- 
-can view
- 
-GO bn_reset
-cancel mode verify
-GO bn_last_go_file.jnl
-! bn_last_go_file.jnl
-! test the automatically-defined symbol LAST_GO_FILE
- 
-show sym last_go_file
-LAST_GO_FILE = "./bn_last_go_file.jnl"
- 
- 
-GO bn_reset
-cancel mode verify
-GO bn_cancel_upcase_uservar.jnl
-! bn_cancel_upcase_uservar.jnl
-!
-! Ferret v6.2
-! MODE upcase_only cancelled, now writes lowercase
-! spelling for user-defined variables and for coordinate
-! variables even coming from two different datasets.
- 
-CANCEL MODE upcase_only
- 
-! User variable with lowercase letters in the name
- 
-DEFINE AXIS/t=1-jan-1999:31-jan-1999:1/units=days/t0=31-dec-1998 tday
-LET MyUpperLowerCaseVar = x[x=1:10] + t[gt=tday]
-save/file=a.nc/clobber MyUpperLowerCaseVar
+ve/file=a.nc/clobber MyUpperLowerCaseVar
  
 ! Open two datafiles. These have variable and axis
 ! names in lowercase.
@@ -57536,8 +57537,8 @@ SH GRID am
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.196  
- 	Linux(g77) 2.6.9-22. - 03/31/09
- 	31-Mar-09 12:22     
+ 	Linux(g77) 2.6.9-22. - 04/21/09
+ 	21-Apr-09 10:42     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -58248,8 +58249,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  10   / 10:  -5.00
  11   / 11:  -4.00
  12   / 12:  -3.00
- 13-rw-rw-r--  1 ansley tmap 29712 Mar 31 12:22 testa.v5d
--rw-rw-r--  1 ansley tmap 29712 Mar 31 12:22 test.v5d
+ 13-rw-rw-r--  1 ansley tmap 29712 Apr 21 10:42 testa.v5d
+-rw-rw-r--  1 ansley tmap 29712 Apr 21 10:42 test.v5d
    / 13:  -2.00
  14   / 14:  -1.00
  15   / 15:   0.00
@@ -58420,7 +58421,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58443,7 +58444,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58467,7 +58468,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58506,7 +58507,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58541,7 +58542,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58581,7 +58582,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58635,7 +58636,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58689,7 +58690,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58743,7 +58744,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58788,7 +58789,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58879,7 +58880,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58946,7 +58947,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -58996,7 +58997,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59071,7 +59072,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59098,7 +59099,7 @@ variables:
 		X_:_FillValue = -1.e+34f ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -59122,7 +59123,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -59147,11 +59148,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -59181,7 +59182,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59253,7 +59254,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59294,7 +59295,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59333,7 +59334,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59436,7 +59437,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -59472,7 +59473,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -59494,7 +59495,7 @@ variables:
 		BB:my_title = "This is my new variable bb" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59520,7 +59521,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59540,7 +59541,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59561,7 +59562,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59600,7 +59601,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -59636,7 +59637,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -59670,7 +59671,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -59698,7 +59699,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59731,7 +59732,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59757,7 +59758,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -59798,7 +59799,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -59896,7 +59897,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -59935,7 +59936,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60016,7 +60017,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60053,7 +60054,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60090,7 +60091,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60138,7 +60139,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60193,7 +60194,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -60233,7 +60234,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -60273,7 +60274,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -60305,7 +60306,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -60336,7 +60337,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -60365,7 +60366,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -60394,7 +60395,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -60452,7 +60453,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -60493,7 +60494,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -60512,37 +60513,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	float A(XAX) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60572,7 +60543,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	float A(XAX) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60621,7 +60622,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -60659,7 +60660,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -60677,7 +60678,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 err611_set_var_ez.jnl --- 
@@ -60696,7 +60697,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -60714,7 +60715,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -60732,7 +60733,7 @@ variables:
 		A:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60753,7 +60754,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60782,7 +60783,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -60806,7 +60807,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.196   31-Mar-09" ;
+		:history = "FERRET V6.196   21-Apr-09" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
@@ -60814,8 +60815,8 @@ end of ncdump output
  
  	NOAA/PMEL TMAP
  	FERRET v6.196  
- 	Linux(g77) 2.6.9-22. - 03/31/09
- 	31-Mar-09 12:22     
+ 	Linux(g77) 2.6.9-22. - 04/21/09
+ 	21-Apr-09 10:42     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -61001,8 +61002,8 @@ frame/trans/file=testbackground.gif
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.196  
- 	Linux(g77) 2.6.9-22. - 03/31/09
- 	31-Mar-09 12:22     
+ 	Linux(g77) 2.6.9-22. - 04/21/09
+ 	21-Apr-09 10:42     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -61115,8 +61116,8 @@ can mode ignore
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.196  
- 	Linux(g77) 2.6.9-22. - 03/31/09
- 	31-Mar-09 12:22     
+ 	Linux(g77) 2.6.9-22. - 04/21/09
+ 	21-Apr-09 10:42     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -61199,4 +61200,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Tue Mar 31 12:22:25 PDT 2009
+Ended at Tue Apr 21 10:42:09 PDT 2009

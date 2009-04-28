@@ -1,0 +1,41 @@
+# Provided by Support at BSC-CNS in Barcelona (Spain)
+# 10/2008
+# 
+# This file is for customizing the configuation process performed by
+# `./configuration'.  This file consists of sh(1) variable-definition lines.
+# The value given to those variable by this file will override their default
+# values.
+#
+# You can also customize the configuration process via the environment
+# variables seen by ./configure.  For example:
+#
+#     In csh(1):
+#	  % setenv CC acc
+#	  & setenv CFLAGS -g
+#	  % ./configure
+#
+#     In sh(1):
+#	  $ CC=acc CFLAGS=-g ./configure
+#
+# Variables in this file override the environmental ones.
+#
+#############################################################################
+#
+# Type of C compiler (default is `cc'):
+#
+# C compiler flags (default is `-O'):
+CFLAGS='-O2 -m32'
+#
+# C preprocessor flags (default is `-DNDEBUG'):
+# CPPFLAGS=-DDEBUG
+#
+# Installation prefix (default is `../..'):
+
+prefix=/gpfs/apps/FERRET/6.13_beta
+#### TMAP_LOCAL=/gpfs/apps/FERRET/SRC/6.13_beta/lib
+FC='g77 -fno-second-underscore -fno-backslash -fdollar-ok -fugly-init -fugly-logint -fintrin-case-any -ffixed-line-length-132 -lm ' 
+
+LD_X11='-L/usr/X11R6/lib -lX11'
+
+
+

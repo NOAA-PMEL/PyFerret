@@ -2823,64 +2823,64 @@ else if ( !strcmp(name,"fft_re_work_size_") ) return (void *)FORTRAN(fft_re_work
 else if ( !strcmp(name,"fft_re_compute_") ) return (void *)FORTRAN(fft_re_compute);
 
 /* sampleij.F */
-else if ( !strcmp(name,"sampleij_init_") ) return (void *)sampleij_init_;
-else if ( !strcmp(name,"sampleij_result_limits_") ) return (void *)sampleij_result_limits_;
-else if ( !strcmp(name,"sampleij_work_size_") ) return (void *)sampleij_work_size_;
-else if ( !strcmp(name,"sampleij_compute_") ) return (void *)sampleij_compute_;
+else if ( !strcmp(name,"sampleij_init_") ) return (void *)FORTRAN(sampleij_init);
+else if ( !strcmp(name,"sampleij_result_limits_") ) return (void *)FORTRAN(sampleij_result_limits);
+else if ( !strcmp(name,"sampleij_work_size_") ) return (void *)FORTRAN(sampleij_work_size);
+else if ( !strcmp(name,"sampleij_compute_") ) return (void *)FORTRAN(sampleij_compute);
 
 /* samplet_date.F */
-else if ( !strcmp(name,"samplet_date_init_") ) return (void *)samplet_date_init_;
-else if ( !strcmp(name,"samplet_date_result_limits_") ) return (void *)samplet_date_result_limits_;
-else if ( !strcmp(name,"samplet_date_work_size_") ) return (void *)samplet_date_work_size_;
-else if ( !strcmp(name,"samplet_date_compute_") ) return (void *)samplet_date_compute_;
+else if ( !strcmp(name,"samplet_date_init_") ) return (void *)FORTRAN(samplet_date_init);
+else if ( !strcmp(name,"samplet_date_result_limits_") ) return (void *)FORTRAN(samplet_date_result_limits);
+else if ( !strcmp(name,"samplet_date_work_size_") ) return (void *)FORTRAN(samplet_date_work_size);
+else if ( !strcmp(name,"samplet_date_compute_") ) return (void *)FORTRAN(samplet_date_compute);
 
 /* samplexy.F */
-else if ( !strcmp(name,"samplexy_init_") ) return (void *)samplexy_init_;
-else if ( !strcmp(name,"samplexy_result_limits_") ) return (void *)samplexy_result_limits_;
-else if ( !strcmp(name,"samplexy_work_size_") ) return (void *)samplexy_work_size_;
-else if ( !strcmp(name,"samplexy_compute_") ) return (void *)samplexy_compute_;
+else if ( !strcmp(name,"samplexy_init_") ) return (void *)FORTRAN(samplexy_init);
+else if ( !strcmp(name,"samplexy_result_limits_") ) return (void *)FORTRAN(samplexy_result_limits);
+else if ( !strcmp(name,"samplexy_work_size_") ) return (void *)FORTRAN(samplexy_work_size);
+else if ( !strcmp(name,"samplexy_compute_") ) return (void *)FORTRAN(samplexy_compute);
 
 /* samplexyt.F */
-else if ( !strcmp(name,"samplexyt_init_") ) return (void *)samplexyt_init_;
-else if ( !strcmp(name,"samplexyt_result_limits_") ) return (void *)samplexyt_result_limits_;
-else if ( !strcmp(name,"samplexyt_work_size_") ) return (void *)samplexyt_work_size_;
-else if ( !strcmp(name,"samplexyt_compute_") ) return (void *)samplexyt_compute_;
+else if ( !strcmp(name,"samplexyt_init_") ) return (void *)FORTRAN(samplexyt_init);
+else if ( !strcmp(name,"samplexyt_result_limits_") ) return (void *)FORTRAN(samplexyt_result_limits);
+else if ( !strcmp(name,"samplexyt_work_size_") ) return (void *)FORTRAN(samplexyt_work_size);
+else if ( !strcmp(name,"samplexyt_compute_") ) return (void *)FORTRAN(samplexyt_compute);
 
 /* samplexy_curv.F */
-else if ( !strcmp(name,"samplexy_curv_init_") ) return (void *)samplexy_curv_init_;
-else if ( !strcmp(name,"samplexy_curv_result_limits_") ) return (void *)samplexy_curv_result_limits_;
-else if ( !strcmp(name,"samplexy_curv_work_size_") ) return (void *)samplexy_curv_work_size_;
-else if ( !strcmp(name,"samplexy_curv_compute_") ) return (void *)samplexy_curv_compute_;
+else if ( !strcmp(name,"samplexy_curv_init_") ) return (void *)FORTRAN(samplexy_curv_init);
+else if ( !strcmp(name,"samplexy_curv_result_limits_") ) return (void *)FORTRAN(samplexy_curv_result_limits);
+else if ( !strcmp(name,"samplexy_curv_work_size_") ) return (void *)FORTRAN(samplexy_curv_work_size);
+else if ( !strcmp(name,"samplexy_curv_compute_") ) return (void *)FORTRAN(samplexy_curv_compute);
 
 /* samplexy_curv_avg.F */
-else if ( !strcmp(name,"samplexy_curv_avg_init_") ) return (void *)samplexy_curv_avg_init_;
-else if ( !strcmp(name,"samplexy_curv_avg_result_limits_") ) return (void *)samplexy_curv_avg_result_limits_;
-else if ( !strcmp(name,"samplexy_curv_avg_work_size_") ) return (void *)samplexy_curv_avg_work_size_;
-else if ( !strcmp(name,"samplexy_curv_avg_compute_") ) return (void *)samplexy_curv_avg_compute_;
+else if ( !strcmp(name,"samplexy_curv_avg_init_") ) return (void *)FORTRAN(samplexy_curv_avg_init);
+else if ( !strcmp(name,"samplexy_curv_avg_result_limits_") ) return (void *)FORTRAN(samplexy_curv_avg_result_limits);
+else if ( !strcmp(name,"samplexy_curv_avg_work_size_") ) return (void *)FORTRAN(samplexy_curv_avg_work_size);
+else if ( !strcmp(name,"samplexy_curv_avg_compute_") ) return (void *)FORTRAN(samplexy_curv_avg_compute);
 
 /* samplexy_curv_nrst.F */
-else if ( !strcmp(name,"samplexy_curv_nrst_init_") ) return (void *)samplexy_curv_nrst_init_;
-else if ( !strcmp(name,"samplexy_curv_nrst_result_limits_") ) return (void *)samplexy_curv_nrst_result_limits_;
-else if ( !strcmp(name,"samplexy_curv_nrst_work_size_") ) return (void *)samplexy_curv_nrst_work_size_;
-else if ( !strcmp(name,"samplexy_curv_nrst_compute_") ) return (void *)samplexy_curv_nrst_compute_;
+else if ( !strcmp(name,"samplexy_curv_nrst_init_") ) return (void *)FORTRAN(samplexy_curv_nrst_init);
+else if ( !strcmp(name,"samplexy_curv_nrst_result_limits_") ) return (void *)FORTRAN(samplexy_curv_nrst_result_limits);
+else if ( !strcmp(name,"samplexy_curv_nrst_work_size_") ) return (void *)FORTRAN(samplexy_curv_nrst_work_size);
+else if ( !strcmp(name,"samplexy_curv_nrst_compute_") ) return (void *)FORTRAN(samplexy_curv_nrst_compute);
 
 /* samplexy_closest.F */
-else if ( !strcmp(name,"samplexy_closest_init_") ) return (void *)samplexy_closest_init_;
-else if ( !strcmp(name,"samplexy_closest_result_limits_") ) return (void *)samplexy_closest_result_limits_;
-else if ( !strcmp(name,"samplexy_closest_work_size_") ) return (void *)samplexy_closest_work_size_;
-else if ( !strcmp(name,"samplexy_closest_compute_") ) return (void *)samplexy_closest_compute_;
+else if ( !strcmp(name,"samplexy_closest_init_") ) return (void *)FORTRAN(samplexy_closest_init);
+else if ( !strcmp(name,"samplexy_closest_result_limits_") ) return (void *)FORTRAN(samplexy_closest_result_limits);
+else if ( !strcmp(name,"samplexy_closest_work_size_") ) return (void *)FORTRAN(samplexy_closest_work_size);
+else if ( !strcmp(name,"samplexy_closest_compute_") ) return (void *)FORTRAN(samplexy_closest_compute);
 
 /* samplexz.F */
-else if ( !strcmp(name,"samplexz_init_") ) return (void *)samplexz_init_;
-else if ( !strcmp(name,"samplexz_result_limits_") ) return (void *)samplexz_result_limits_;
-else if ( !strcmp(name,"samplexz_work_size_") ) return (void *)samplexz_work_size_;
-else if ( !strcmp(name,"samplexz_compute_") ) return (void *)samplexz_compute_;
+else if ( !strcmp(name,"samplexz_init_") ) return (void *)FORTRAN(samplexz_init);
+else if ( !strcmp(name,"samplexz_result_limits_") ) return (void *)FORTRAN(samplexz_result_limits);
+else if ( !strcmp(name,"samplexz_work_size_") ) return (void *)FORTRAN(samplexz_work_size);
+else if ( !strcmp(name,"samplexz_compute_") ) return (void *)FORTRAN(samplexz_compute);
 
 /* sampleyz.F */
-else if ( !strcmp(name,"sampleyz_init_") ) return (void *)sampleyz_init_;
-else if ( !strcmp(name,"sampleyz_result_limits_") ) return (void *)sampleyz_result_limits_;
-else if ( !strcmp(name,"sampleyz_work_size_") ) return (void *)sampleyz_work_size_;
-else if ( !strcmp(name,"sampleyz_compute_") ) return (void *)sampleyz_compute_;
+else if ( !strcmp(name,"sampleyz_init_") ) return (void *)FORTRAN(sampleyz_init);
+else if ( !strcmp(name,"sampleyz_result_limits_") ) return (void *)FORTRAN(sampleyz_result_limits);
+else if ( !strcmp(name,"sampleyz_work_size_") ) return (void *)FORTRAN(sampleyz_work_size);
+else if ( !strcmp(name,"sampleyz_compute_") ) return (void *)FORTRAN(sampleyz_compute);
 
 /* scat2grid_bin_xy.F */
 else if ( !strcmp(name,"scat2grid_bin_xy_init_") ) return (void *)FORTRAN(scat2grid_bin_xy_init);
@@ -2983,52 +2983,52 @@ else if ( !strcmp(name,"scatgrid_nobs_xy_work_size_") ) return (void *)FORTRAN(s
 else if ( !strcmp(name,"scatgrid_nobs_xy_compute_") ) return (void *)FORTRAN(scatgrid_nobs_xy_compute);
 
 /* sorti.F */
-else if ( !strcmp(name,"sorti_init_") ) return (void *)sorti_init_;
-else if ( !strcmp(name,"sorti_result_limits_") ) return (void *)sorti_result_limits_;
-else if ( !strcmp(name,"sorti_work_size_") ) return (void *)sorti_work_size_;
-else if ( !strcmp(name,"sorti_compute_") ) return (void *)sorti_compute_;
+else if ( !strcmp(name,"sorti_init_") ) return (void *)FORTRAN(sorti_init);
+else if ( !strcmp(name,"sorti_result_limits_") ) return (void *)FORTRAN(sorti_result_limits);
+else if ( !strcmp(name,"sorti_work_size_") ) return (void *)FORTRAN(sorti_work_size);
+else if ( !strcmp(name,"sorti_compute_") ) return (void *)FORTRAN(sorti_compute);
 
 /* sorti_str.F */
-else if ( !strcmp(name,"sorti_str_init_") ) return (void *)sorti_str_init_;
-else if ( !strcmp(name,"sorti_str_result_limits_") ) return (void *)sorti_str_result_limits_;
-else if ( !strcmp(name,"sorti_str_work_size_") ) return (void *)sorti_str_work_size_;
-else if ( !strcmp(name,"sorti_str_compute_") ) return (void *)sorti_str_compute_;
+else if ( !strcmp(name,"sorti_str_init_") ) return (void *)FORTRAN(sorti_str_init);
+else if ( !strcmp(name,"sorti_str_result_limits_") ) return (void *)FORTRAN(sorti_str_result_limits);
+else if ( !strcmp(name,"sorti_str_work_size_") ) return (void *)FORTRAN(sorti_str_work_size);
+else if ( !strcmp(name,"sorti_str_compute_") ) return (void *)FORTRAN(sorti_str_compute);
 
 /* sortj.F */
-else if ( !strcmp(name,"sortj_init_") ) return (void *)sortj_init_;
-else if ( !strcmp(name,"sortj_result_limits_") ) return (void *)sortj_result_limits_;
-else if ( !strcmp(name,"sortj_work_size_") ) return (void *)sortj_work_size_;
-else if ( !strcmp(name,"sortj_compute_") ) return (void *)sortj_compute_;
+else if ( !strcmp(name,"sortj_init_") ) return (void *)FORTRAN(sortj_init);
+else if ( !strcmp(name,"sortj_result_limits_") ) return (void *)FORTRAN(sortj_result_limits);
+else if ( !strcmp(name,"sortj_work_size_") ) return (void *)FORTRAN(sortj_work_size);
+else if ( !strcmp(name,"sortj_compute_") ) return (void *)FORTRAN(sortj_compute);
 
 /* sortj_str.F */
-else if ( !strcmp(name,"sortj_str_init_") ) return (void *)sortj_str_init_;
-else if ( !strcmp(name,"sortj_str_result_limits_") ) return (void *)sortj_str_result_limits_;
-else if ( !strcmp(name,"sortj_str_work_size_") ) return (void *)sortj_str_work_size_;
-else if ( !strcmp(name,"sortj_str_compute_") ) return (void *)sortj_str_compute_;
+else if ( !strcmp(name,"sortj_str_init_") ) return (void *)FORTRAN(sortj_str_init);
+else if ( !strcmp(name,"sortj_str_result_limits_") ) return (void *)FORTRAN(sortj_str_result_limits);
+else if ( !strcmp(name,"sortj_str_work_size_") ) return (void *)FORTRAN(sortj_str_work_size);
+else if ( !strcmp(name,"sortj_str_compute_") ) return (void *)FORTRAN(sortj_str_compute);
 
 /* sortk.F */
-else if ( !strcmp(name,"sortk_init_") ) return (void *)sortk_init_;
-else if ( !strcmp(name,"sortk_result_limits_") ) return (void *)sortk_result_limits_;
-else if ( !strcmp(name,"sortk_work_size_") ) return (void *)sortk_work_size_;
-else if ( !strcmp(name,"sortk_compute_") ) return (void *)sortk_compute_;
+else if ( !strcmp(name,"sortk_init_") ) return (void *)FORTRAN(sortk_init);
+else if ( !strcmp(name,"sortk_result_limits_") ) return (void *)FORTRAN(sortk_result_limits);
+else if ( !strcmp(name,"sortk_work_size_") ) return (void *)FORTRAN(sortk_work_size);
+else if ( !strcmp(name,"sortk_compute_") ) return (void *)FORTRAN(sortk_compute);
 
 /* sortk_str.F */
-else if ( !strcmp(name,"sortk_str_init_") ) return (void *)sortk_str_init_;
-else if ( !strcmp(name,"sortk_str_result_limits_") ) return (void *)sortk_str_result_limits_;
-else if ( !strcmp(name,"sortk_str_work_size_") ) return (void *)sortk_str_work_size_;
-else if ( !strcmp(name,"sortk_str_compute_") ) return (void *)sortk_str_compute_;
+else if ( !strcmp(name,"sortk_str_init_") ) return (void *)FORTRAN(sortk_str_init);
+else if ( !strcmp(name,"sortk_str_result_limits_") ) return (void *)FORTRAN(sortk_str_result_limits);
+else if ( !strcmp(name,"sortk_str_work_size_") ) return (void *)FORTRAN(sortk_str_work_size);
+else if ( !strcmp(name,"sortk_str_compute_") ) return (void *)FORTRAN(sortk_str_compute);
 
 /* sortl.F */
-else if ( !strcmp(name,"sortl_init_") ) return (void *)sortl_init_;
-else if ( !strcmp(name,"sortl_result_limits_") ) return (void *)sortl_result_limits_;
-else if ( !strcmp(name,"sortl_work_size_") ) return (void *)sortl_work_size_;
-else if ( !strcmp(name,"sortl_compute_") ) return (void *)sortl_compute_;
+else if ( !strcmp(name,"sortl_init_") ) return (void *)FORTRAN(sortl_init);
+else if ( !strcmp(name,"sortl_result_limits_") ) return (void *)FORTRAN(sortl_result_limits);
+else if ( !strcmp(name,"sortl_work_size_") ) return (void *)FORTRAN(sortl_work_size);
+else if ( !strcmp(name,"sortl_compute_") ) return (void *)FORTRAN(sortl_compute);
 
 /* sortl_str.F */
-else if ( !strcmp(name,"sortl_str_init_") ) return (void *)sortl_str_init_;
-else if ( !strcmp(name,"sortl_str_result_limits_") ) return (void *)sortl_str_result_limits_;
-else if ( !strcmp(name,"sortl_str_work_size_") ) return (void *)sortl_str_work_size_;
-else if ( !strcmp(name,"sortl_str_compute_") ) return (void *)sortl_str_compute_;
+else if ( !strcmp(name,"sortl_str_init_") ) return (void *)FORTRAN(sortl_str_init);
+else if ( !strcmp(name,"sortl_str_result_limits_") ) return (void *)FORTRAN(sortl_str_result_limits);
+else if ( !strcmp(name,"sortl_str_work_size_") ) return (void *)FORTRAN(sortl_str_work_size);
+else if ( !strcmp(name,"sortl_str_compute_") ) return (void *)FORTRAN(sortl_str_compute);
 
 /* tauto_cor.F */
 else if ( !strcmp(name,"tauto_cor_init_") ) return (void *)FORTRAN(tauto_cor_init);

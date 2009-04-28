@@ -1,3 +1,9 @@
+# Contributed by support at BSC-CNS, Barcelona, Spain
+# for build using PPC processors and SLES 9  10/2008
+# They say this is the link option that I used, the 
+# default one didn't work in our system
+
+
 g++ -m32 -L/lib -L/usr/X11R6/lib -o ferretdods_gui \
 ccr/fermain_c.o ccr/gui_init.o \
 ccr/save_arg_pointers.o special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o special/ferret_dispatch.o special/xmake_date_data.o special/fakes3.o special/ferret_query_f.o  special/xrevision_type_data.o special/xplatform_type_data.o \

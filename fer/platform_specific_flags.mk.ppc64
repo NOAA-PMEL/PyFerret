@@ -1,6 +1,7 @@
 	#
 	# platform_specific_includes.mk.ppc64
-	#
+	# Contributed by support at BSC-CNS, Barcelona, Spain
+	# for build using PPC processors and SLES 9  10/2008
 	# This file is included in other Makefiles and defines
 	# platform specific macros
 

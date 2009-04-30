@@ -93,7 +93,7 @@
 	include 'xprog_state.cmn'
         include 'xalgebra.cmn'
 	include 'xvariables.cmn'
-	include 'xtoday.cmn
+	include 'xtoday.cmn'
 
 * local variable declarations:
 	LOGICAL	GKS_WINDOWS, fexist

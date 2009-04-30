@@ -50,6 +50,9 @@
 *      10/01 *kob*- add symbol FERRET_PLATFORM to display the platform
 *                   the executable was built on. 
 *       8/05 *acm*- Allow more digits in xrevision number
+* V62   4/059*acm*- Add new symbol DELTA_RUNTIME. When it is evaluated,
+*                   calls the intrinsic fcn Dtime and sets the value to that new
+*                   delta-time since the last call.  Initialized in initizlize.F
 
 * calling argument declarations:
 	INTEGER	  isym, slen
@@ -57,11 +60,12 @@
 
 * internal parameter declaration
 	INTEGER nspecial
-	PARAMETER (nspecial = 7)
+	PARAMETER (nspecial = 8)
 
 * internal variable declarations:
 	INTEGER STR_UPCASE, i, ierr, wsid, nxpix, nypix, 
      .          llen, TM_LENSTR
+        REAL DTIME, TArray(2), dtime_res
 	CHARACTER special(nspecial)*16, upname*16
 	CHARACTER LEFINT*16, TM_FMT*12
 
@@ -72,7 +76,8 @@
      .	     special(4)/ 'FERRET_VERSION' /,
      .	     special(5)/ 'FERRET_PLATFORM' /,
      .	     special(6)/ 'SESSION_DATE' /,
-     .	     special(7)/ 'SESSION_TIME' /
+     .	     special(7)/ 'SESSION_TIME' /,
+     .	     special(8)/ 'DELTA_RUNTIME' /
 
 #ifdef unix
 	include 'ferret.parm'
@@ -111,7 +116,7 @@
 	slen = 0
 	RETURN
 
- 200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700) i
+ 200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800) i
 
 * PPL$XPIXEL, PPL$YPIXEL
  1100	CONTINUE
@@ -160,6 +165,13 @@
 * SESSION_TIME
  1700	value = today_time
 	slen = 5
+	RETURN
+
+
+* DELTA_TIME
+ 1800	dtime_res = DTIME(TArray)
+	value = ' '
+	value = TM_FMT(dtime_res, 6, 8, slen)
 	RETURN
 
 	END

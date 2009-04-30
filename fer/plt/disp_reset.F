@@ -46,6 +46,9 @@
 *        11/9/92 - unprotect all colors
 * V540:  *sh* 9/01 - grab the PLOT+ origin from COMMON
 * V600 *acm* 5/2006 LINECOLORS User can change the number of line colors.
+* V62  *acm* 4/09 - Restore default settings for AXTYPE, AXLABP, AXLINT,
+*                   TXLABP, TXLSZE, TICS, CONPRE, CONPST, DFLTFNT, palette,
+*                   Default number of colors. (Should reset the line colors??)
 
 	include 'ferret.parm'
 	include 'plot_setup.parm'
@@ -56,7 +59,7 @@
 
 * local variable declarations
 	CHARACTER buff*24
-	LOGICAL		ITS_BATCH_GRAPHICS, batch
+	LOGICAL	  ITS_BATCH_GRAPHICS, batch
 
 * local parameters
         LOGICAL     physical
@@ -95,11 +98,29 @@
 	CALL PPLCMD ( from, line, 0, 'BOX OFF', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'CROSS 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'AXLSZE .1,.1', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'AXTYPE 1,1', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'AXLABP -1,-1', 1, 1)
+	CALL PPLCMD ( from, line, 0, 'TXLABP -1', 1, 1)
+	CALL PPLCMD ( from, line, 0, 'TXLSZE .1', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'TICS,.125,.25,.125,.25,-1,-1', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'AXLINT 2,2', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'CONPRE ', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'CONPST ', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'DFLTFNT,SR', 1, 1 )
+
 
 	CALL SET_PLOT_SIZE( 10.2, 8.8 ) ! initial size
         CALL SET_VIEWPORT( mvp_dflt )   ! remove viewports, restore axis sizes
 
+        CALL COLOR (1)
+
+* set up the default spectrum
         CALL PPL_SHASET( 'RESET' )
+        CALL PPL_SHASET( 'SPECTRUM=default' )
+
+* Set default (initial) number of color levels
+
+        CALL SET_DEFAULT_NLEVELS( mode_arg(pmode_nlevels, 1) )
 
 	RETURN
 	END

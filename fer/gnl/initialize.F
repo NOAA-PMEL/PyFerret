@@ -78,7 +78,6 @@
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 *                  Use pseudo-dataset of user-defined axes to keep track of attributes.
 
-#ifdef unix
         include 'tmap_errors.parm'  ! error codes
 	include 'tmap_dims.parm'
 	include 'xio.cmn_text'
@@ -94,34 +93,12 @@
 	include 'xprog_state.cmn'
         include 'xalgebra.cmn'
 	include 'xvariables.cmn'
-	include 'xtoday.cmn'
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'  ! error codes
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN_TEXT'
-	INCLUDE 'TMAP_FORMAT:XIO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:GFDL_VMS.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:GFDL.PARM'			! from Phil/Sieg
-	INCLUDE	'FERRET_CMN:XONEDIM.CMN'		! from Phil.Sieg
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-        INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XTODAY.CMN'
-	INCLUDE '($SSDEF)'				! LIB_ return status
-	INCLUDE '($JPIDEF)'				! for VMS mode code
-
-	INTEGER	SMG$CREATE_VIRTUAL_KEYBOARD, SMG$CREATE_KEY_TABLE,
-     .		LIB$SYS_TRNLOG
-	INTEGER	vax_code, vms_mode
-#endif
+	include 'xtoday.cmn
 
 * local variable declarations:
 	LOGICAL	GKS_WINDOWS, fexist
 	INTEGER	TM_LENSTR1, ito, ifrom, mem_blk, mr, iset, status
-	REAL	radian, cm2deg
+	REAL	DTIME, radian, cm2deg, TArray(2), dtime_res
 	CHARACTER TM_INQ_PATH*128
 
 *************** I/O ************************************************************
@@ -187,6 +164,14 @@
 	CALL GET_DATE_AND_TIME (today_date, today_time)
 #endif
 	today_time = today_time(:5)	! w/out seconds
+
+* DTIME returns a real number which is the running time for this 
+* process since the last call to DTIME. TIMEARRAY(1) reports the user time, 
+* and TIMEARRAY(2) supports the system time. Argument 2 is the sum of the two.
+* Call the routine to initialize the result. It can be updated by evaluating 
+* the symbol DELTA_RUNTIME. See special_symbol.F
+
+      dtime_res = DTime(TArray)
 
 * initialize pseudo-dataset in linked-list structure which will contain all 
 * user variables and their attributes.

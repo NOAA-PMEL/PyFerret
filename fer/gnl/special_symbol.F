@@ -50,9 +50,12 @@
 *      10/01 *kob*- add symbol FERRET_PLATFORM to display the platform
 *                   the executable was built on. 
 *       8/05 *acm*- Allow more digits in xrevision number
-* V62   4/059*acm*- Add new symbol DELTA_RUNTIME. When it is evaluated,
+* V62   4/059*acm*- Add new symbol DELTA_CPU. When it is evaluated,
 *                   calls the intrinsic fcn Dtime and sets the value to that new
 *                   delta-time since the last call.  Initialized in initizlize.F
+* V62   4/059*acm*- Add new symbol CLOCK_SECS. When it is evaluated, calls the
+*                   intrinsic SYSTEM_CLOCK and sets the value to the delta-time 
+*                   in seconds since Ferret was initialized.
 
 * calling argument declarations:
 	INTEGER	  isym, slen
@@ -60,12 +63,12 @@
 
 * internal parameter declaration
 	INTEGER nspecial
-	PARAMETER (nspecial = 8)
+	PARAMETER (nspecial = 9)
 
 * internal variable declarations:
 	INTEGER STR_UPCASE, i, ierr, wsid, nxpix, nypix, 
-     .          llen, TM_LENSTR
-        REAL DTIME, TArray(2), dtime_res
+     .          llen, TM_LENSTR, icount, irate, imax
+        REAL DTIME, TArray(2), dtime_res, clock_secs
 	CHARACTER special(nspecial)*16, upname*16
 	CHARACTER LEFINT*16, TM_FMT*12
 
@@ -77,7 +80,8 @@
      .	     special(5)/ 'FERRET_PLATFORM' /,
      .	     special(6)/ 'SESSION_DATE' /,
      .	     special(7)/ 'SESSION_TIME' /,
-     .	     special(8)/ 'DELTA_RUNTIME' /
+     .	     special(8)/ 'DELTA_CPU' /
+     .	     special(9)/ 'CLOCK_SECS' /
 
 #ifdef unix
 	include 'ferret.parm'
@@ -116,7 +120,7 @@
 	slen = 0
 	RETURN
 
- 200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800) i
+ 200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900) i
 
 * PPL$XPIXEL, PPL$YPIXEL
  1100	CONTINUE
@@ -168,10 +172,18 @@
 	RETURN
 
 
-* DELTA_TIME
+* DELTA_CPU
  1800	dtime_res = DTIME(TArray)
 	value = ' '
 	value = TM_FMT(dtime_res, 6, 8, slen)
+	RETURN
+
+* CLOCK_SECS
+ 1900	CALL SYSTEM_CLOCK(icount, irate, imax)
+        clock_secs = FLOAT(icount)/FLOAT(irate) - clock_start_secs
+	rsec = clock_secs
+	value = ' '
+	value = TM_FMT(clock_secs, 6, 8, slen)
 	RETURN
 
 	END

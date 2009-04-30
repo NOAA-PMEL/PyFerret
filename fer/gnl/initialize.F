@@ -98,6 +98,7 @@
 * local variable declarations:
 	LOGICAL	GKS_WINDOWS, fexist
 	INTEGER	TM_LENSTR1, ito, ifrom, mem_blk, mr, iset, status
+      integer icount, irate, imax
 	REAL	DTIME, radian, cm2deg, TArray(2), dtime_res
 	CHARACTER TM_INQ_PATH*128
 
@@ -169,9 +170,16 @@
 * process since the last call to DTIME. TIMEARRAY(1) reports the user time, 
 * and TIMEARRAY(2) supports the system time. Argument 2 is the sum of the two.
 * Call the routine to initialize the result. It can be updated by evaluating 
-* the symbol DELTA_RUNTIME. See special_symbol.F
+* the symbol DELTA_CPU. See special_symbol.F
 
       dtime_res = DTime(TArray)
+
+* ALso a special symbol CLOCK_SECS, the delta seconds in clock time since Ferret
+* session is initialized.  Save clock_start_secs to subtract from the value
+* when this symbol is updated.
+
+      CALL System_Clock(icount, irate, imax)
+      clock_start_secs = FLOAT(icount)/FLOAT(irate)
 
 * initialize pseudo-dataset in linked-list structure which will contain all 
 * user variables and their attributes.

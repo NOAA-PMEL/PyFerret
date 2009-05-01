@@ -1,6 +1,7 @@
 SRCS_F = \
 arrow.F\
 box.F\
+box_centers.F\
 clsppl.F\
 cross.F\
 datlst.F\

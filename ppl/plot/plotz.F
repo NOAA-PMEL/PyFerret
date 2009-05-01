@@ -120,6 +120,8 @@ C
         REAL      XFF, XOF, YFF, YOF, DMIN, DMAX, DZMAX
         LOGICAL   TM_FPEQ
 
+	logical		valid
+
 C*       *jd* Linux port 12.96 add EXTERNAL calls below
         external scale, range
 
@@ -127,6 +129,13 @@ C	VAX/VMS
 C
 	DIMENSION IZMRKD(3)
 	DATA IZMRKD/12,16,3/
+
+	write (19,*) 'plotz i,j,z(i,j)'
+	do j = 1, ny
+	do i = 1, nx
+	   write (19,*) i,j,z(i,j)
+	enddo
+	enddo
 
 C
 C  Set the contour/color levels
@@ -304,6 +313,19 @@ C       multiplying the index value by the DX or DY delta values.
 	   DO 510 J=1,NY
 	      YY(IZLEN+J)=DY*(J-1)+ytm
  510	   CONTINUE
+
+! TEST - fix XX if this is a subspan-modulo axis.
+           IF ( .NOT. curvilinear ) THEN
+              CALL box_centers ('X',xx(IZLEN+1),nx,xx(NX+IZLEN+1),valid)
+	      DO i = 1, nx
+	         xx(izlen+i) = xx(nx+izlen+i)
+	      ENDDO
+
+              CALL box_centers ('Y',yy(IZLEN+1),ny,yy(Ny+IZLEN+1),valid)
+	      DO j = 1, ny
+	         yy(izlen+j) = yy(ny+izlen+j)
+	      ENDDO
+	   ENDIF
 
 	ENDIF
 

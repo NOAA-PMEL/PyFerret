@@ -633,7 +633,7 @@ GO bn_keep_axisnames.jnl
 GO bn_reset
 GO bn_key_label_minmax.jnl
 
-! ******** V6.14 Additions below ***********
+! ******** V6.2 Additions below ***********
 GO bn_reset
 GO bn62_bug_fixes.jnl
 
@@ -645,6 +645,8 @@ GO bn_tax_tstep.jnl
 
 GO bn_reset
 GO bn_grads_z.jnl
+
+GO bn_clock_syms
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

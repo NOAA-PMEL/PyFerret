@@ -1,0 +1,20 @@
+sh sym DELTA_CPU, CLOCK_SECS
+! test special symbols DELTA_CPU, CLOCK_SECS
+
+use gt4d011
+shade/k=1 temp[L=@ave]
+sh sym DELTA_CPU, CLOCK_SECS
+
+repeat/k=1:10 shade temp[L=@ave]
+let ten_plots = ($DELTA_CPU)
+sh sym DELTA_CPU, CLOCK_SECS
+
+let  sumclock = 0
+let  sumcpu = 0
+sh sym CLOCK_SECS
+repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
+let sumcpu =`sumcpu + dt`)
+
+say `sumcpu`
+sh sym CLOCK_SECS
+

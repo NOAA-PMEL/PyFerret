@@ -91,7 +91,8 @@
 	CALL PPLCMD ( from, line, 0, 'LABS', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'ALINE', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'TAXIS OFF', 1, 1 )
-	CALL PPLCMD ( from, line, 0, 'TXNMTC -1', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'AXNMTC 0,0', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'TXNMTC 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'TITLE', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'LABSET,0.16,0.12,0.12,0.12', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'WINDOW ON', 1, 1 )
@@ -106,8 +107,6 @@
 	CALL PPLCMD ( from, line, 0, 'AXLINT 2,2', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'CONPRE ', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'CONPST ', 1, 1 )
-	CALL PPLCMD ( from, line, 0, 'DFLTFNT,SR', 1, 1 )
-
 
 	CALL SET_PLOT_SIZE( 10.2, 8.8 ) ! initial size
         CALL SET_VIEWPORT( mvp_dflt )   ! remove viewports, restore axis sizes

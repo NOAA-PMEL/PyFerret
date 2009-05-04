@@ -175,11 +175,11 @@
       dtime_res = DTime(TArray)
 
 * ALso a special symbol CLOCK_SECS, the delta seconds in clock time since Ferret
-* session is initialized.  Save clock_start_secs to subtract from the value
+* session is initialized.  Save clock_start_count to subtract from the value
 * when this symbol is updated.
 
       CALL System_Clock(icount, irate, imax)
-      clock_start_secs = FLOAT(icount)/FLOAT(irate)
+      clock_start_count = icount
 
 * initialize pseudo-dataset in linked-list structure which will contain all 
 * user variables and their attributes.

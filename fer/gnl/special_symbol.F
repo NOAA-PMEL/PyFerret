@@ -180,14 +180,14 @@
 
 * CLOCK_SECS
  1900	CALL SYSTEM_CLOCK(icount, irate, imax)
-        clock_secs = FLOAT(icount)/FLOAT(irate) - clock_start_secs
+        clock_secs = FLOAT(icount-clock_start_count)/FLOAT(irate)
 	IF (clock_secs .LT. 0) THEN
            CALL WARN('Evaluating CLOCK_SECS, call to '//
      .     'SYSTEM_CLOCK. Count has exceeded its max and reset.')
-           CALL WARN( 'Value of CLOCK_SECS is invalid. '//
+           CALL WARN( 'This value of CLOCK_SECS is invalid. '//
      .     'Resetting to new initial value.')
            clock_secs = 0.
-	   clock_start_secs = FLOAT(icount)/FLOAT(irate)
+	   clock_start_count = FLOAT(icount)/FLOAT(irate)
 	ENDIF
 	value = ' '
 	value = TM_FMT(clock_secs, 6, 8, slen)

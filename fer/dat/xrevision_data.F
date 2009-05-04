@@ -96,11 +96,13 @@
 * V6.17  1/12/09  Version 6.17 GFDL bug  1476, bugs 1588, 1333, 1614 
 * V6.18  1/21/09  Version 6.18 fix bug with CURV_TO_RECT, allowing subsetting
 * V6.19  2/03/09  Version 6.19 fix for choosing colors and thicknesses when > 6 colors have been defined
+* V6.2   5/0/09  V6.2 release
+
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.197   /
+	DATA revision_level	/  6.2   /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

@@ -22,7 +22,14 @@
 !!ppl list labels
 
 ! Change to the OPeNDAP test server.
-use "http://test.opendap.org/opendap/data/nc/coads_climatology.nc"
+!!use "http://test.opendap.org/opendap/data/nc/coads_climatology.nc"
+!!sh data
+!!plot/x=180/y=0 sst 
+!!ppl list labels
+
+
+set data "http://iridl.ldeo.columbia.edu/SOURCES/.LEVITUS/.MONTHLY/.temp/dods"
 sh data
-plot/x=180/y=0 sst 
+plot/x=180/y=0/k=1 temp
 ppl list labels
+

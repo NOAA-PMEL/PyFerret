@@ -43,3 +43,6 @@ ppl shade
 shade/set/L=2 sst/ 10000
 ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
 ppl shade 
+
+
+ppl dfltfnt sr

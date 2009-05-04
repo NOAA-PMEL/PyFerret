@@ -97,3 +97,6 @@ PLOT/i=1:100 cos(i/5)
 set mode graticule:(dash,color=blue)
 PLOT/i=1:100 cos(i/5)
 can mode graticule
+
+pplus/reset   ! restore tics etc
+

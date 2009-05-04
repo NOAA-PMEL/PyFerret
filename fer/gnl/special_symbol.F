@@ -50,12 +50,15 @@
 *      10/01 *kob*- add symbol FERRET_PLATFORM to display the platform
 *                   the executable was built on. 
 *       8/05 *acm*- Allow more digits in xrevision number
-* V62   4/059*acm*- Add new symbol DELTA_CPU. When it is evaluated,
+* V62   4/09 *acm*- Add new symbol DELTA_CPU. When it is evaluated,
 *                   calls the intrinsic fcn Dtime and sets the value to that new
 *                   delta-time since the last call.  Initialized in initizlize.F
-* V62   4/059*acm*- Add new symbol CLOCK_SECS. When it is evaluated, calls the
+* V62   4/09 *acm*- Add new symbol CLOCK_SECS. When it is evaluated, calls the
 *                   intrinsic SYSTEM_CLOCK and sets the value to the delta-time 
 *                   in seconds since Ferret was initialized.
+* V62   4/09 *acm*- Add new symbols CURRENT_DATE, CURRENT_TIME. These get formatted
+*                   date and time, unlike SESSION_DATE, SESSION_TIME which remain
+*                   fixed at the start time of the Ferret session.
 
 * calling argument declarations:
 	INTEGER	  isym, slen
@@ -63,7 +66,7 @@
 
 * internal parameter declaration
 	INTEGER nspecial
-	PARAMETER (nspecial = 9)
+	PARAMETER (nspecial = 11)
 
 * internal variable declarations:
 	INTEGER STR_UPCASE, i, ierr, wsid, nxpix, nypix, 
@@ -71,6 +74,9 @@
         REAL DTIME, TArray(2), dtime_res, clock_secs
 	CHARACTER special(nspecial)*16, upname*16
 	CHARACTER LEFINT*16, TM_FMT*12
+        CHARACTER*10 current_date, current_time, zone
+	INTEGER itimes(8)
+
 
 * names of special symbols (must be upper case)
 	DATA special(1)/ 'PPL$XPIXEL' /,
@@ -82,6 +88,8 @@
      .	     special(7)/ 'SESSION_TIME' /,
      .	     special(8)/ 'DELTA_CPU' /
      .	     special(9)/ 'CLOCK_SECS' /
+     .	     special(10)/ 'CURRENT_DATE' /
+     .	     special(11)/ 'CURRENT_TIME' /
 
 #ifdef unix
 	include 'ferret.parm'
@@ -120,7 +128,8 @@
 	slen = 0
 	RETURN
 
- 200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900) i
+ 200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 
+     .        1900, 2000, 2100) i
 
 * PPL$XPIXEL, PPL$YPIXEL
  1100	CONTINUE
@@ -191,7 +200,39 @@
 	ENDIF
 	value = ' '
 	value = TM_FMT(clock_secs, 6, 8, slen)
- 5000   RETURN
+	RETURN
 
+* CURRENT_DATE
+ 2000	CONTINUE
+
+#ifdef AIX_XLF
+	CALL AIX_DATE( current_date )
+#elif F90_DATE_TIME
+	CALL FDATE(current_date)
+#else
+	CALL GET_DATE_AND_TIME (current_date, current_time)
+#endif
+        value = current_date
+	slen = 9
+	RETURN
+
+* CURRENT_TIME
+ 2100	CONTINUE
+
+#ifdef AIX_XLF
+	CALL AIX_TIME( current_time )
+#elif F90_DATE_TIME
+	CALL FTIME(current_time)
+#else
+	CALL GET_DATE_AND_TIME (current_date, current_time)  ! doesnt get seconds
+
+	CALL Date_and_Time(current_date, current_time, Zone, itimes)
+        WRITE (current_time,1000) itimes(5), itimes(6), itimes(7)
+ 1000   FORMAT (2(I2.2,":"), I2.2)
+
+#endif
+	value = current_time
+	slen = 8
+	RETURN
 
 	END

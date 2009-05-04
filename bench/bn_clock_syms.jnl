@@ -1,5 +1,8 @@
 SH SYM delta_cpu, clock_secs, current_date, current_time
 ! test special symbols DELTA_CPU, CLOCK_SECS
+!
+! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
+! RUN OF THIS TO ANOTHER...
 
 use gt4d011
 shade/k=1 temp[L=@ave]

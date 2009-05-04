@@ -1,4 +1,4 @@
-sh sym DELTA_CPU, CLOCK_SECS
+SH SYM delta_cpu, clock_secs, current_date, current_time
 ! test special symbols DELTA_CPU, CLOCK_SECS
 
 use gt4d011
@@ -18,3 +18,4 @@ let sumcpu =`sumcpu + dt`)
 say `sumcpu`
 sh sym CLOCK_SECS
 
+SH SYM session_date, current_date, session_time, current_time

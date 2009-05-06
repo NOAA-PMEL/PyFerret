@@ -130,13 +130,6 @@ C
 	DIMENSION IZMRKD(3)
 	DATA IZMRKD/12,16,3/
 
-	write (19,*) 'plotz i,j,z(i,j)'
-	do j = 1, ny
-	do i = 1, nx
-	   write (19,*) i,j,z(i,j)
-	enddo
-	enddo
-
 C
 C  Set the contour/color levels
 

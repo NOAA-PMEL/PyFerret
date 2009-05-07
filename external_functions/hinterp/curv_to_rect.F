@@ -210,9 +210,9 @@
          k1 = arg_lo_ss(Z_AXIS,ARG1)
          DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-c     .        i1, ih, j1, jh,  ! line 2 of this call WAS...
+c     .        i1, ih, j1, jh,  ! line 2 of this call WAS...1,nlon_src, 1,nlat_src,
             CALL apply_mapping ( arg_1(i1,j1,k1,l1), 
-     .        1,nlon_src, 1,nlat_src,
+     .        i1, ih, j1, jh,
      .        arg_2(i2,j2,k2,l2), arg_2(i2,j2,k2,l2+1),
      .        arg_2(i2,j2,k2,l2+2), result(i,j,k,l), nlon_src,
      .        nlat_src, nlon_dst, nlat_dst, num_nbrs, 

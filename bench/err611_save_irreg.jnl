@@ -1,6 +1,6 @@
 ! err611_save_irreg.jnl
 !
-! bug1588  
+! bug1587  
 
 def axis/t time = {0,1,3}
 let a = t[gt=time]

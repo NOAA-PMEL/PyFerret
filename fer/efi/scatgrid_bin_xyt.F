@@ -306,6 +306,21 @@ C  variables for checking axis characteristics (modulo axes)
      .                       moduloy, regular)
       CALL ef_get_axis_info (id, 7, ax_name, ax_units, backward, 
      .                       modulot, regular)
+     
+* Check that the axes are regular.
+
+      IF (.NOT. regularx(1)) then
+         WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
+         GO TO 999
+      ENDIF
+      IF (.NOT. regulary(2)) then
+         WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
+         GO TO 999
+      ENDIF
+      IF (.NOT. regularz(4)) then
+         WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
+         GO TO 999
+      ENDIF
 
 *  Find number of points in scattered input points.  1-D arrays defining the 
 *  scattered data points may lie on the X, Y, Z, or T axis of the input arguments.

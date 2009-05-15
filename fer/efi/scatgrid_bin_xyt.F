@@ -391,15 +391,12 @@ C  Get coordinates of output axes.
 
       call ef_get_coordinates(id, ARG5, X_AXIS, 
      .   arg_lo_ss(X_AXIS, ARG5), arg_hi_ss(X_AXIS, ARG5), xax)
-      print *, ' xax ', (xax(i,1,1,1), i=1,5)
 
       call ef_get_coordinates(id, ARG6, Y_AXIS, 
      .   arg_lo_ss(Y_AXIS, ARG6), arg_hi_ss(Y_AXIS, ARG6), yax)
-      print *, ' yax ', (yax(i,1,1,1), i=1,5)
 
       call ef_get_coordinates(id, ARG7, T_AXIS, 
      .   arg_lo_ss(T_AXIS, ARG7), arg_hi_ss(T_AXIS, ARG7), tax)
-      print *, ' tax ', (tax(i,1,1,1), i=1,5)
 
 *  Set start, end, and delta for output axes. 
 

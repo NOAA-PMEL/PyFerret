@@ -94,8 +94,8 @@ c            cutoff parameter, for backwards compatibility.
 
       CHARACTER*126 buff
       WRITE (buff, 10)
-   10 FORMAT ('Use Gaussian weighting to grid scattered data to a ',
-     .        'ZT grid.')
+   10 FORMAT ('Use Gaussian weighting, grid scattered data to',
+     .        'YZ grid v0 weights')
       CALL ef_set_desc(id, buff)
 
       CALL ef_set_num_args(id, 9)

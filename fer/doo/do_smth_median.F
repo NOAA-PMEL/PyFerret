@@ -50,7 +50,6 @@
 	REAL	arg, work(*), com(*), res(*)
 
 * internal variable declarations
-	LOGICAL	even
 	INTEGER	i, wlen, status
 	REAL	weight
 
@@ -69,7 +68,9 @@
 * create weights array to be convolved with data
 * (with half weights in center for even argument given)
 	weight = 1. / FLOAT(wlen)
-	even = MOD(wlen,2) .EQ. 0
+
+	IF ( MOD(wlen,2).EQ.0 )  CALL ERRMSG(ferr_out_of_range, status,
+     .			'Median smoother length must be odd', *5000 )
 
 * now convolve this along the desired axis of the grid
 	CALL MEDIAN(	idim, wlen,
@@ -81,6 +82,7 @@
 	RETURN
 
 * error
-! 5000	DO_SMTH_MEDIAN = status
-!	RETURN
+ 5000	DO_SMTH_MEDIAN = status
+	RETURN
 	END	
+

@@ -60,7 +60,7 @@
      .          list(*)
 
 * internal variable declarations:
-	LOGICAL TM_ITS_SUBSPAN_MODULO, has_mod_void, even
+	LOGICAL TM_ITS_SUBSPAN_MODULO, has_mod_void
 	INTEGER	TM_MODULO_LINE_DIM, CGRID_AXIS, 
      .		i, j, k, l, ii, lo_sub(4), hi_sub(4), lo_lim, hi_lim,
      .		hlen, lo_modlim, hi_modlim, nmod, nmod_prev, 
@@ -82,7 +82,6 @@
 	hi_lim = cx_hi_ss(com_cx,idim) 
 	nmod_prev = -99999
 
-	even = MOD(wlen,2) .EQ. 0
 	hlen = wlen/2
 	median_loc = hlen
 
@@ -150,13 +149,9 @@
 	      ENDIF
               CALL HEAP2_V(list, bad_com, ndx)
 
-              even = MOD(ndx,2) .EQ. 0
-              median_loc = ndx/2
-              IF (.NOT. even) median_loc = median_loc + 1
-
+              median_loc = ndx/2 + 1
 	      res(i,j,k,l) = list(median_loc)
-	      IF (even) res(i,j,k,l) = 
-     .           (list(median_loc)+list(median_loc+1))/2.
+
  110	   CONTINUE
 
 * CONVOLVE ALONG Y AXIS
@@ -208,13 +203,9 @@
 	      ENDIF
               CALL HEAP2_V(list, bad_com, ndx)
 
-              even = MOD(ndx,2) .EQ. 0
-              median_loc = ndx/2
-              IF (.NOT. even) median_loc = median_loc + 1
-
+              median_loc = ndx/2 + 1
 	      res(i,j,k,l) = list(median_loc)
-	      IF (even)  res(i,j,k,l) = 
-     .           (list(median_loc)+list(median_loc+1))/2.
+
  210	   CONTINUE
 
 * CONVOLVE ALONG Z AXIS
@@ -266,13 +257,9 @@
 	      ENDIF
               CALL HEAP2_V(list, bad_com, ndx)
 
-              even = MOD(ndx,2) .EQ. 0
-              median_loc = ndx/2
-              IF (.NOT. even) median_loc = median_loc + 1
-
+              median_loc = ndx/2 + 1
 	      res(i,j,k,l) = list(median_loc)
-	      IF (even) res(i,j,k,l) = 
-     .           (list(median_loc)+list(median_loc+1))/2.
+
  310	   CONTINUE
 
 * CONVOLVE ALONG T AXIS
@@ -323,13 +310,9 @@
 	      ENDIF
               CALL HEAP2_V(list, bad_com, ndx)
 
-              even = MOD(ndx,2) .EQ. 0
-              median_loc = ndx/2
-              IF (.NOT. even) median_loc = median_loc + 1
-
+              median_loc = ndx/2 + 1
 	      res(i,j,k,l) = list(median_loc)
-	      IF (even) res(i,j,k,l) = 
-     .           (list(median_loc)+list(median_loc+1))/2.
+
  410	   CONTINUE
 	ENDIF
 

@@ -212,7 +212,7 @@ C       Check switches
 	if (fill_it) call gselnt (my_trans)
 
 	call gqclip (error,cflag,ndc)
-	call gqclip (error,cflag,ndc)166
+	call gqclip (error,cflag,ndc)
 	if (error .ne. 0) goto 1000
 	if (cflag .NE. iwind) call gsclip (iwind)
 

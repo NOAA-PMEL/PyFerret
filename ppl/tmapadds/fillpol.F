@@ -74,6 +74,8 @@ C
 * v581 *acm* 3/05 open levels (-INF) (INF)
 * V600 *acm* 8/06 Fix bugs 843, 844: poly/line and reversed axes. Apply xinv and
 *                 yinv to coordinates when drawing the lines.
+* V62  *acm* 5/09 Fixing bug 1661: if the plot is TRANSPOSED, then apply 
+*                 xinv, yinv to the opposite axis.
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -114,6 +116,8 @@ C
 	include		'CONT.INC'
         include         'errmsg.parm'
 	include 'PPLDAT.INC'		! with ibase
+	include 'vector_inc.decl' ! with TRANSPZ
+        include 'VECTOR.INC'
 
 
 * 3/99 *kob*
@@ -130,7 +134,7 @@ C
         integer         my_trans
         data            my_trans/20/
 	real	 	w(4),v(4),ndc(4),uc(4)
-	real		xinv,yinv
+	real		xinv,yinv, tmp
 
 *jd*
 	real            zzmin, zzmax
@@ -190,6 +194,15 @@ C       Check switches
 	if (error .ne. 0) goto 1100
 
 	call get_user_coords (w,v,ndc,uc,xinv,yinv)
+	
+* Fixing bug 1661: if the plot is TRANSPOSED, then apply this
+* fix to the opposite axis.
+
+	IF (trnspz) THEN
+	   tmp = xinv
+	   xinv = yinv
+	   yinv = tmp
+	ENDIF
 
 *	NOW SET THE CLIPPING RECTANGLE AROUND THEM AND PATTERN SIZE
 * v4.91 *kob* had to add <cr> after first line below
@@ -199,6 +212,7 @@ C       Check switches
 	if (fill_it) call gselnt (my_trans)
 
 	call gqclip (error,cflag,ndc)
+	call gqclip (error,cflag,ndc)166
 	if (error .ne. 0) goto 1000
 	if (cflag .NE. iwind) call gsclip (iwind)
 

@@ -125,7 +125,7 @@ C	data stmt added for linux *jd* 12.96
 c	      write (6,'(/a)') ' PPL+ error: You''re attempting to use '//
 	      write (6,'(/a)') ' PPL warning: You''re attempting to use '//
      .           'more colors than are available.'
-	      write (6,'(a/)') '             Using SHASET RESET to re-use'//
+	      write (6,'(a/)') '             Using PPL SHASET RESET to re-use'//
      .		 ' protected colors may help.'
 	      lo_color_ndx(zwsid) = max (line_color_reserve + 1,
      .				  max_color - wsmgr_reserve - shd_levels)

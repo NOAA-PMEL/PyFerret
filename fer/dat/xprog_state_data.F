@@ -99,6 +99,8 @@
 * V600  *acm* 6/06 - add new MODE UPCASE_OUTPUT
 * V610  *acm* 3/08 - add new MODE NLEVELS
 * V614  *acm* 10/08 - add new MODE NODATA_LAB
+* V6.2  *acm*  5/09 - new default number levels is 30 pmode_nlevels
+*                If this is changed, also change it in ppl/plot/ppldata.F
 
 	include 'ferret.parm'
 	include 'movies.parm'
@@ -281,7 +283,7 @@ c     .	( mode_name(i),i=pmode_nodata_lab+1,max_modes )/pmode_unused/
      .		(mode_arg  ( pmode_upcase_output,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_nlevels,i), i=1,mode_stack_size)
-     .				/ mode_stack_size*10 /,
+     .				/ mode_stack_size*30 /,
      .		(mode_arg  ( pmode_nodata_lab,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /
 

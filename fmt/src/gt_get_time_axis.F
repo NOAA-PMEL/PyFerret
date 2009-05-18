@@ -250,6 +250,7 @@
 
 * Time axis complete
 	GT_GET_TIME_AXIS = nline
+	line_cal_name(scr) = 'GREGORIAN'  ! Restore to the default
 
 * If necessary - find next free line memory storage position
 	IF (.NOT. line_regular(nline))

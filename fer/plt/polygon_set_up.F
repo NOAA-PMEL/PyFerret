@@ -116,7 +116,7 @@
 * V600 *acm*  11/05 Fix for bug 1130, 1349: axis labels need lat/lon labels,
 *                   fixes to the precision
 * V62  *acm* 5/09   Fixing bug 1661: if the plot is TRANSPOSED, then multiply 
-*                   vertices of the opposite axis by -1
+*                   vertices of the opposite axis by -1 
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'

@@ -119,6 +119,8 @@
 	CALL PPLCMD ( from, line, 0, 'TICS .125', 1, 1 )    ! chg 12/93
 	CALL PPLCMD ( from, line, 0, 'WINDOW ON', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'AXTYPE 1,1', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'XVALOFF 0', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'YVALOFF 0', 1, 1 )
 
         IF (iaxset .EQ. 1) THEN   ! If /AXES was used on prev. plot call, reset defaults
            CALL PPL_AXES_RESTORE

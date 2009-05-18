@@ -1002,8 +1002,8 @@ struct {
    strcpy(I_EFnames[120].funcname, "zreverse");
    strcpy(I_EFnames[121].funcname, "scatgrid_nbin_xyt");
    strcpy(I_EFnames[122].funcname, "scatgrid_bin_xyt");
-   strcpy(I_EFnames[121].funcname, "scat2grid_nbin_xyt");
-   strcpy(I_EFnames[122].funcname, "scat2grid_bin_xyt");
+   strcpy(I_EFnames[123].funcname, "scat2grid_nbin_xyt");
+   strcpy(I_EFnames[124].funcname, "scat2grid_bin_xyt");
 /*    
  *  ------------------------------------ 
  */

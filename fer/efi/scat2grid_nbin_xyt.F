@@ -452,25 +452,3 @@ C  Get box edges of output axes.
 ************************************************************************
 
       END
-
-
-
-
-      SUBROUTINE pickoutxyzt (alon, alat, atimes, n, xx, yy, tt)
-
-*  CALLed from the scatter*  gridding functins.
-*  Pick out nth item from alon and alat, which are really 4-dimensioned arrays
-*  with normal axes on three of the four axes.
-
-      REAL alon(*), alat(*), atimes(*)
-      REAL xx, yy, tt
-      INTEGER n
-
-      xx = alon(n)
-      yy = alat(n)
-      tt = atimes(n)
-
-      RETURN
-      END
-
-

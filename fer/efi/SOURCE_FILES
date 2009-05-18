@@ -96,6 +96,8 @@ scat2grid_t.F\
 scatgrid_bin_xyt.F\
 scatgrid_nobs_xy.F\
 scatgrid_nbin_xyt.F\
+scat2grid_bin_xyt.F\
+scat2grid_nbin_xyt.F\
 secs_to_ymdhms.F\
 sorti.F\
 sorti_str.F\

@@ -94,6 +94,8 @@
 *                  the file extension was left off.
 * V581: *acm*/3/05 - increase length of strings for dataset title to 1024
 * V604: *acm*/7/07 - increase length of dataset names to 1024
+* V62 : *acm* 5/09 - Check for alternative allowed calendar names as in cd_get_1_axis
+*                    (e.g. standard, which is equivalent to Gregorian.)
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -407,6 +409,16 @@
      .		 dset_num, no_stepfile,
      .		 'D_NTUPLE in descriptor file must = 1',
      .		 no_errstring, *9900)
+
+* Check for alternative allowed calendar names
+         status = STR_UPCASE( risc_buff, d_caltype )
+         IF (risc_buff(1:3) .EQ. '360') risc_buff = '360_DAY' 
+         IF (risc_buff .EQ. 'STANDARD') risc_buff = 'GREGORIAN' 
+         IF (risc_buff .EQ. 'PROLEPTIC_GREGORIAN') risc_buff = 'GREGORIAN' 
+         IF (risc_buff(1:6) .EQ. 'COMMON') risc_buff = 'NOLEAP' 
+         IF (risc_buff(1:3) .EQ. '365') risc_buff = 'NOLEAP' 
+         IF (risc_buff(1:3) .EQ. '366') risc_buff = 'ALL_LEAP' 
+	 d_caltype = risc_buff
 
 	ds_expnum(dset_num)         = d_expnum
 	ds_modnum(dset_num)         = d_modnum

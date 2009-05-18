@@ -30,6 +30,7 @@
 *       *acm* 9/05 - add SET ATTRIBUTE
 *       *acm* 7/06 -     CANCEL ATTRIBUTE /OUTPUT /DATA
 * V606  *acm* 7/06 -     DEFINE AXIS/QUIET
+* v62   *acm* 5/09 - new alias KEYMARK
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -393,7 +394,7 @@
      .			total_num_commands	= 30,
      .			total_num_subcommands	= nsub_at31 - 1,
      .			total_num_qualifiers	= nqual_at31a - 1,
-     .	                num_predefined_alias    = 18,
+     .	                num_predefined_alias    = 19,
      .			max_queries		= 50 )
 
 * declarations

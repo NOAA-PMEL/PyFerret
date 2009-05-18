@@ -176,6 +176,7 @@
 * V606  8/07 *acm* - DEFINE AXIS/QUIET
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
 * V6.2  *acm* 2/09 new qualifier LIST/KEEP_AXISNAMES
+* V6.2  *acm* 5/09 new alias KEYMARK
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -1537,13 +1538,16 @@
      .		alias_name(18)	/ 'COLUMNS' /,
      .		alias_len(18)	/ 23 /,
      .		alias(18)	/ 'SET DATA/FORM=delimited' /
-	
+     .		alias_name(19)	/ 'KEYMARK' /,
+     .		alias_len(19)	/ 23 /,
+     .		alias(19)	/ 'PPL SHAKEY 1,,,,,,,,,,' /
+
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 132*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150)/ 132*4 /,
+     .                   / 131*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150)/ 131*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 132*unspecified_name4 /
+     .                   / 131*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,

@@ -232,6 +232,7 @@
 	user_title = ptitl .GT. 0
 	cal_id_1 = 0
 	cal_id_2 = 0
+	cal_name = ' '
 	dep_axtyp = 1
 	indep_axtyp = 1
         cx_x = cx_list(1)

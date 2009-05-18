@@ -115,6 +115,8 @@
 *                   turn on lon/lat formatting.
 * V600 *acm*  11/05 Fix for bug 1130, 1349: axis labels need lat/lon labels,
 *                   fixes to the precision
+* V62  *acm* 5/09   Fixing bug 1661: if the plot is TRANSPOSED, then multiply 
+*                   vertices of the opposite axis by -1
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -139,6 +141,9 @@
         include 'SWITCH.INC'
         include 'pltl_inc.decl'
         include 'PLTL.INC'
+	include 'vector_inc.decl' ! with TRANSPZ
+        include 'VECTOR.INC'
+
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, no_labels, no_range, use_line,
@@ -314,6 +319,8 @@ c	ind_dim = plot_axis(1)
 * set flag indicating a 1D plot is on the screen
 	IF (.NOT.overlay) onedee_on = .TRUE.
 
+        IF (.NOT. overlay) has_time_axis = .FALSE.  ! ??
+
 * prepare for possible transpose of X and Y axes
 	IF ( transpz ) THEN
 	   y_ax  = 'X'
@@ -480,19 +487,37 @@ c	ind_dim = plot_axis(1)
 * vertices by -1.  Else they don't show up on the plot.
 * xlo, xhi, ylo, yhi are from AXIS.INC
 
-           IF ( xlo .GT. xhi )  THEN
-              DO 201 i = 1, npts
-                 IF ( x_dat(i) .NE. mr_bad_data(mr_x) )
-     .             x_dat(i) = -1.* x_dat(i)
-  201         CONTINUE
-           ENDIF
+           IF (transpz) THEN
+              IF ( xlo .GT. xhi )  THEN
+                 DO 201 i = 1, npts
+                    IF ( y_dat(i) .NE. mr_bad_data(mr_y) )
+     .                y_dat(i) = -1.* y_dat(i)
+  201            CONTINUE
+              ENDIF
+   
+              IF ( ylo .GT. yhi )  THEN
+                 DO 202 i = 1, npts
+                    IF ( x_dat(i) .NE. mr_bad_data(mr_x) )
+     .                x_dat(i) = -1.* x_dat(i)
+  202            CONTINUE
+              ENDIF
 
-           IF ( ylo .GT. yhi )  THEN
-              DO 202 i = 1, npts
-                 IF ( y_dat(i) .NE. mr_bad_data(mr_y) )
-     .             y_dat(i) = -1.* y_dat(i)
-  202         CONTINUE
-           ENDIF
+   	   ELSE
+
+      	      IF ( xlo .GT. xhi )  THEN
+                 DO 203 i = 1, npts
+                    IF ( x_dat(i) .NE. mr_bad_data(mr_x) )
+     .                x_dat(i) = -1.* x_dat(i)
+  203            CONTINUE
+              ENDIF
+   
+              IF ( ylo .GT. yhi )  THEN
+                 DO 204 i = 1, npts
+                    IF ( y_dat(i) .NE. mr_bad_data(mr_y) )
+     .                y_dat(i) = -1.* y_dat(i)
+  204            CONTINUE
+              ENDIF
+	   ENDIF  
 
 * When using log axis transform to log(x).  Scale the points of the
 * polygon within the log axis range xlo, xhi to keep something like

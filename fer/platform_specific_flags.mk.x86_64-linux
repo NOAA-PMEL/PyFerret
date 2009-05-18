@@ -14,7 +14,7 @@
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \
-			  -I. -I$(TMAP_LOCAL)/include/readline -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_20Jun07_from_svn/include/libnc-dap 
+			  -I. -I$(TMAP_LOCAL)/include/readline -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.2/include/libnc-dap 
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			   -I../include -I../../fmt/cmn \
@@ -60,7 +60,7 @@
 			  -DNO_INTRINSIC_IN_PARAMETER -DINTERNAL_READ_FORMAT_BUG -DNO_PREPEND_STRING
 
 	CFLAGS          =    -m64 $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION   -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
-	FFLAGS          =    -m64 $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore -fdollar-ok  -fintrin-case-any -ffixed-line-length-132  -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_20Jun07_from_svn/include/libnc-dap  $(FINCLUDES)
+	FFLAGS          =    -m64 $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore -fdollar-ok  -fintrin-case-any -ffixed-line-length-132  -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.2/include/libnc-dap  $(FINCLUDES)
 	PPLUS_FFLAGS    =    -m64 $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore  -fdollar-ok  -fintrin-case-any -ffixed-line-length-132  $(FINCLUDES)
 
         #PROF_FLAGS      = -pg

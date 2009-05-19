@@ -126,6 +126,9 @@
 *     4/28/06 *acm* When a script specified with -script has a pathname, we need
 *                   quotes around it.  The syntax for putting together the command string
 *                   GO "/pathname/scriptname.jnl"; EXIT/PROGRAM was missing the closing quote
+*     5/19/06 *acm* Fix bug 1662: If SET MEM command is in the .ferret startup file got lots
+*                   of messages.fix as for the SET MEM in a script run via the  -script startup.
+*                   with a setting of script_resetmem.
 */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
@@ -495,6 +498,7 @@ static void command_line_run(float **memory){
       FORTRAN(init_memory)( &mem_blk_size, &max_mem_blks );
 	  if (its_script)
 		{script_resetmem = 1;}
+	  script_resetmem = 1;  /* Likewise if the SET MEM is in the init script */
     }
 
     /* ***** EXIT ***** */

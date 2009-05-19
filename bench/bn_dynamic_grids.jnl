@@ -85,8 +85,16 @@ list tu				! err during get_context_grid - axis mismatch
 show grid/dynamic
 
 define axis/z=5:15/npoints=999999/unit=meters/depth z999999
+
+!    SET MEM smaller to make sure to get the intended error, 
+!    else we list huge amount of adata
+
+let save_mem = ($ferret_memory)
+set mem/siz = 10
+
 list temp[gz=z999999,z=5:15]	! err during regrid
 show grid/dynamic
+set mem/siz=`save_mem`
 
 shade 1/0 * temp[gx=u]		! err during plot
 show grid/dynamic

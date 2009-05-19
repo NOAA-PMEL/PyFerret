@@ -1,0 +1,17 @@
+CAN MODE VERIFY
+
+! This file will be copied to .ferret as part
+! pf the benchmark testing
+
+SET MEMORY/SIZE=31
+SET MODE journal startup_tests.jnl
+SET MODE meta startup_tests.plt
+
+SET MODE NLEVELS 100
+SET MODE LINEC:7
+ppl color,7,100,50,0   ! orange
+
+CANCEL MODE latit_label
+
+SET MODE GRATICULE
+

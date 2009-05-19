@@ -1,0 +1,19 @@
+! bn_startupfile.jnl
+! When a .ferret startup file is present, test memory and other settings.
+
+SHOW MEMORY
+SH SYM/ALL
+SHOW MODE
+
+! SET - SHOW - CANCEL DATA
+USE gtbc011
+
+SHOW DATA
+
+SHADE/I=71/L=1/TITLE="graticule on, latit labels off, 100 nlevels" temp
+
+SET MODE meta startup_tests2.plt
+PLOT/THICK/LINE/i=1:100/TITLE="Seven colors" \
+ cos(i/20), cos(i/24), cos(i/28), cos(i/32), cos(i/36), cos(i/40), cos(i/44)
+
+EXIT/COMMAND

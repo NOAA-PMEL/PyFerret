@@ -247,6 +247,21 @@ mv $ncdump_file $ncdump_log
 #setenv DISPLAY $hold_display
 #echo "Display now set to "$DISPLAY >>&$log_file
 
+echo "about to run test of .ferret script"
+if (-e $HOME/.ferret) then 
+  rm -f ./keep.ferret
+  cp $HOME/.ferret ./keep.ferret
+  rm -f $HOME/.ferret
+endif
+
+cp -f ferret_startup $HOME/.ferret
+($fver  <bn_startupfile_shell.jnl >> $log_file) >>& $err_file
+rm -f $HOME/.ferret
+
+if (-e keep.ferret) then 
+  mv keep.ferret $HOME/.ferret
+endif
+
 set hold_display = $DISPLAY
 unsetenv DISPLAY
 echo "Display no longer set, about to run batch gif test"

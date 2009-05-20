@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     56646078 May 18 12:45 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
+Running FERRET version /home/porter/ansley/build/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     48738833 May 19 20:48 /home/porter/ansley/build/linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes before release of v6.2
+Note: v6.2 release
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/linux/FERRET/bench
+PWD=/home/porter/ansley/build/linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Mon May 18 12:46:12 PDT 2009
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build/linux/FERRET/external_functions/ext_func
+Beginning at Wed May 20 09:02:22 PDT 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -334,10 +334,12 @@ list tu
 list tu
  **ERROR: regridding: Axis orientation not matching request:GX=PSYU
 list tu
- **ERROR: request exceeds memory setting: 4000000 words were requested.
+ Cached data cleared from memory
+ **ERROR: request exceeds memory setting: 24999975 words were requested.
 list temp[gz=z999999,z=5:15]
  *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
  *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+ Cached data cleared from memory
  *** NOTE: Ambiguous coordinates on X axis: X[X=0.1:10:1.5] +  X[X=1.1:11:1.5]
  *** NOTE: Ambiguous coordinates on X axis: X[X=0.1:10:1.5] +  X[X=1.1:11:1.5]
  *** NOTE: Ambiguous coordinates on X axis: TEMP[I=101:120:4]+X[I=101:120:4]
@@ -1421,6 +1423,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `input.txt': No such file or directory
 ls: input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2819,6 +2822,7 @@ set region/@w
 load WRITEV5D(tr[i=95:100,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,55.0)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ Cached data cleared from memory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -2890,4 +2894,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon May 18 12:52:24 PDT 2009
+Ended at Wed May 20 09:07:48 PDT 2009

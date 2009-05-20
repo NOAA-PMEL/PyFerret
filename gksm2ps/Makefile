@@ -104,6 +104,7 @@ gksm2ps:	gksm2ps.o xpreview.o \
 	- $(CC) $(CFLAGS) $(LDFLAGS) -o gksm2ps gksm2ps.o xpreview.o \
 	 resize_xgks_window.o set_background.o gksm.o batch_graphics.o \
 	../ppl/tmapadds/ws_line_bundle.o \
+	../ppl/tmapadds/restore_saved_line_colors.o \
 	../ppl/tmapadds/query_xgks_wkstn.o \
 	$(GKLIB) $(LIB)
 	chmod +x gksm2ps

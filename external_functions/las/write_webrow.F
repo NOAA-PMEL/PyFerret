@@ -203,13 +203,13 @@ C  Get file name
             CALL EF_GET_STRING_ARG_ELEMENT(id, ARG1, arg_1,
      .                          i1,j1,k1,l1, slen, buff)
             icruise = icruise + 1 
-	    IF (icruise .LT. 10) THEN
-	       WRITE (iunit, 1010) icruise
-	    ELSE IF (icruise .GE. 10) THEN
-	       WRITE (iunit, 1012) icruise
-	    ELSE IF (icruise .GE. 100) THEN
-	       WRITE (iunit, 1014) icruise
-	    ENDIF
+	    IF (icruise .LT. 10) 
+     .	       WRITE (iunit, 1010) icruise
+	    IF (icruise .GE. 10 .AND. icruise .LT. 100) 
+     .	       WRITE (iunit, 1012) icruise
+	    IF (icruise .GE. 100) 
+     .	        WRITE (iunit, 1014) icruise
+
             WRITE (iunit, 1020) buff(1:slen)
 	 ENDIF
  100  CONTINUE

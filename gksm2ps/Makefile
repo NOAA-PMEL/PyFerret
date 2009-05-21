@@ -98,6 +98,14 @@ x86_64-linux:
 		LDFLAGS= \
 		GKLIB="../xgks/src/lib/libxgks.a" \
 		LIB="-L/usr/X11R6/lib64 -lX11 -lm"
+ia64-sles10:
+        ${MAKE} gksm2ps \
+                CC=gcc \
+                CCFLAGS="-I/net2/rsz/ia64/gcc/gcc-3.4.6/includ -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm
+ $(G)" \
+                LDFLAGS= \
+                GKLIB="../xgks/src/lib/libxgks.a" \
+                LIB="-L/usr/X11R6/lib -lX11 -lm" 
 
 gksm2ps:	gksm2ps.o xpreview.o \
 	resize_xgks_window.o set_background.o gksm.o batch_graphics.o

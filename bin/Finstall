@@ -1,4 +1,4 @@
-#! /bin/csh -f
+#! /bin/csh  -x
 # Finstall
 # Does two things:
 # 1) modifies 'ferret_paths template' to specify locations of ferret software &
@@ -12,9 +12,9 @@
 echo " This script can do two things for you to help install FERRET:"
 echo " "
 echo " (1) Install the FERRET executables into FER_DIR/bin from the"
-echo " compressed tar file you got (usually) via ftp.  You'll want to run this"
+echo " compressed .gz file you got (usually) via ftp.  You'll want to run this"
 echo " option if you're installing FERRET for the first time, and also if"
-echo " you're updating the FERRET you have with new executables."
+echo " you're updating the FERRET you have with new 5/26/2009executables."
 echo " "
 echo " (2) Modify the shell script 'ferret_paths_template'"
 echo " to set environment variables FER_DIR and FER_DSETS to the directories"
@@ -51,7 +51,7 @@ if ($?FER_DIR) then
 	echo " "
 	echo " The environment variable FER_DIR is currently defined as"
 	echo " $FER_DIR.  This is the directory where the 'fer_environment'"
-	echo " tar file was installed." 
+	echo " .gz file was installed." 
 	echo -n " Is that correct and acceptable (y/n) [y] "
 	set ans = $<
 	if ($ans != 'N' && $ans != 'n' ) goto checkfer_dsets
@@ -59,7 +59,7 @@ endif
 
 echo " "
 echo " Enter the complete path of the directory where the 'fer_environment'"
-echo " tar file was installed (FER_DIR). The location recommended"
+echo " .gz file was installed (FER_DIR). The location recommended"
 echo " in the FERRET installation guide was '/usr/local/ferret'. "
 
 getfer_dir:
@@ -90,7 +90,7 @@ if ($?FER_DSETS) then
 	set fer_dsets = $FER_DSETS 
 	echo " The environment variable FER_DSETS is currently defined as"
 	echo " $FER_DSETS.   This is the directory where the 'fer_dsets'"
-	echo " tar file was installed."
+	echo " .gz file was installed."
 	echo -n " Is that correct and acceptable (y/n) [y] "
 	set ans = $<
 	if ($ans != 'N' && $ans != 'n' ) goto echo_getferpaths_dir
@@ -98,7 +98,7 @@ endif
 
 getfer_dsets:
 echo " Enter the complete path of the directory where the 'fer_dsets'"
-echo " tar file was installed (FER_DSETS)."
+echo " .gz file was installed (FER_DSETS)."
 echo -n " FER_DSETS --> "
 set fer_dsets = $<
 set fer_dsets = $fer_dsets
@@ -181,14 +181,14 @@ if ($?FER_DIR) then
 	set fer_dir = $FER_DIR
 	echo " The environment variable FER_DIR is currently defined as"
 	echo " $FER_DIR.  This is the directory where the 'fer_environment'"
-	echo " tar file was installed." 
+	echo " .gz file was installed." 
 	echo -n " Is that correct and acceptable (y/n) [y] "
 	set ans = $<
-	if ($ans != 'N' && $ans != 'n' ) goto get_tarloc
+	if ($ans != 'N' && $ans != 'n' ) goto get_.gzloc
 endif
 
 echo " Enter the complete path of the directory where the 'fer_environment'"
-echo " tar file was installed (FER_DIR). The location recommended"
+echo " .gz file was installed (FER_DIR). The location recommended"
 echo " in the FERRET installation guide was '/usr/local/ferret'. "
 
 getfer_dir2:
@@ -212,14 +212,14 @@ if (`find $fer_dir/bin -name Fgo -print` == "") then
         goto getfer_dir2
 endif
 
-### Get directory where ferret executable tar file is supposed to be
-get_tarloc:
+### Get directory where ferret executable .gz file is supposed to be
+get_.gzloc:
 echo " "
 echo " Enter the complete path of the directory where you put the"
-echo " 'fer_executables' tar file."
+echo " 'fer_executables' .gz file."
 
 getferexec_dir:
-echo -n " 'fer_executables.tar.Z' location --> "
+echo -n " 'fer_executables.tar.gz' location --> "
 set ferexec_dir = $<
 set ferexec_dir = $ferexec_dir
 
@@ -234,8 +234,8 @@ if (! -d $ferexec_dir) then
         goto getferexec_dir
 endif
 
-if (! -e $ferexec_dir/fer_executables.tar.Z) then
-        echo " 'fer_executables.tar.Z' is not in $ferexec_dir..."
+if (! -e $ferexec_dir/fer_executables.tar.gz) then
+        echo " 'fer_executables.tar.gz' is not in $ferexec_dir..."
         goto getferexec_dir
 endif
 
@@ -258,8 +258,8 @@ if ($status != 0) goto exec_err
 echo " Created README_`/bin/date +'%d%h%y'|tr '[A-Z]' '[a-z]'` log file..."
 echo 
 
-### Untar the exec tar file
-zcat $ferexec_dir/fer_executables.tar.Z | tar xvf -
+### Un.gz the exec .gz file
+tar xzf $ferexec_dir/fer_executables.tar.gz 
 if ($status != 0) goto exec_err
 echo " Extracted FERRET executables..."
 

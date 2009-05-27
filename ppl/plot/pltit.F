@@ -93,7 +93,8 @@
 	REAL	DIFF, x, xf, yf, xl, yl, xh, yh, xti, xtl, thi
 	REAL*8	XLPLOT,YLPLOT,XHPLOT,YHPLOT
 	REAL	xtm,ytm,xtx,ytx,minx,maxx,miny,maxy
-	INTEGER nxs, nmx, nmy, ivloc, ip1, ip2, ip3, ip4, a_line
+	INTEGER nxs, nmx, nmy, ivloc, ip1, ip2, ip3, ip4, a_line,
+     .          LABELX_save, LABELY_save, LABELT_save, MAINLAB
 
 * TMAP include files with explicit type declarations:
 	include 'parampl5_dat.decl'
@@ -164,6 +165,8 @@
 	include 'cont_inc.decl'  !added to get ivcomp v1.1
 	include 'CONT.INC'  !added to get ivcomp v1.1
 	include 'xinterrupt.cmn'	! 1/89 *sh* - interrupts
+	include 'labels_inc.decl'
+	include 'LABELS.INC'
 
 * special COMMON to let this routine know if FERRET is in control
 
@@ -186,6 +189,8 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
         its_meta = ITS_META_GRAPHICS()
         batch = ITS_BATCH_GRAPHICS()
         meta_batch = batch .AND. its_meta
+
+	mainlab = 1  ! Flag: Draw the main label in calls to DAXIS
 
 	IF(((MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'.or.
      *     makep.eq.'FILL'.or.makep.eq.'PIXEL'.or.
@@ -260,7 +265,7 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	CALL COLOR(IPEN(0))
 	IF(.NOT.SOVER)THEN
 	    CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL)
-	    CALL DAXIS(XF,YF,NMX,NMY)
+	    CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
 
 		XLPLOT=DBLE(XL) 
 		XHPLOT=DBLE(XH)
@@ -319,17 +324,15 @@ C
 		IVLOC=1
 	    ENDIF
 	    CALL PLOTZ(X(IVLOC),XF,YF,XLPLOT,YLPLOT,XHPLOT,YHPLOT)
-*!	    IF(MAKEP.EQ.'AREA') CALL DAXIS(XF,YF,NMX,NMY) NAME CHANGE *jd*
 
 C  Call WINDOW to restore values of XMIN, XMAX, YMIN, YMAX. Plot axis again
 C  so any tics inside the box show up.  
 
 	    IF(MAKEP.EQ.'FILL') THEN
                IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
-               CALL DAXIS(XF,YF,NMX,NMY)
+               CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
 	       CALL DAXIS_BOX
             ENDIF
-
 
 	ELSE IF(MAKEP.EQ.'PLOT') THEN
 	   CALL PLOTXY(X,NXS,XF,YF)
@@ -421,7 +424,7 @@ C ACM Add FLOWLINE call based on VECFLD
             ENDIF
             call shade(x(ivloc), x(IP4) )
 	    IF ( interrupted ) GOTO 3333		! 1/89 - *sh*
-	    CALL DAXIS(XF,YF,NMX,NMY)
+	    CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
 	    CALL DAXIS_BOX
 ***************************************************
 * TMAP addition for PLOTPOL call
@@ -460,8 +463,28 @@ C ACM Add FLOWLINE call based on VECFLD
  200	       continue
 	    end if
 
-            CALL DAXIS(XF,YF,NMX,NMY)
-	    CALL DAXIS_BOX
+* Redraw the axes after the plot is drawn as polygons may
+* obscure axes and/or tics.
+            IF (.NOT. SOVER) THEN
+               CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
+	       CALL DAXIS_BOX
+	    ELSE
+* If it was an overlay, we still want to draw the axes but dont
+* redo labels (See bug 1663)
+               LABELX_save = LABELX
+               LABELY_save = LABELY
+               LABELT_save = LABELT
+               LABELX = 0
+               LABELY = 0
+               LABELT = 0
+	       mainlab = 0
+               CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
+	       CALL DAXIS_BOX
+               LABELX = LABELX_save
+               LABELY = LABELY_save
+               LABELT = LABELT_save
+	       mainlab = 1
+	    ENDIF
 ***************************************************
 	ENDIF
 

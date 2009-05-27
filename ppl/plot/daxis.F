@@ -1,4 +1,4 @@
-      SUBROUTINE DAXIS(XF,YF,NMX,NMY)
+      SUBROUTINE DAXIS(XF,YF,NMX,NMY,MAINLAB)
 
 *
 *
@@ -91,7 +91,7 @@ C**
 	include 'AXISL.INC'
 
 	CHARACTER IFX*20,IFY*20
-        integer ii
+        integer ii, MAINLAB
 
 * TMAP interrupt flag
 	include 'xinterrupt.cmn'
@@ -229,6 +229,7 @@ C
 C
 C	DRAW AXIS LABELS
 C
-1000	CALL LABDRW(XF,YF,IFX,IFY)
+1000	CONTINUE
+        IF (mainlab .EQ. 1) CALL LABDRW(XF,YF,IFX,IFY)
 	RETURN
 	END

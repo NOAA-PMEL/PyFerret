@@ -339,7 +339,6 @@ c       this bombed aix compiler, though it seems to work on others
             nlev = nlev2
 	    call arfill(z,xx(izlen+1),yy(izlen+1),nx,ny)
             nlev = nlev1
-C       CALL DAXIS(XF,YF,NMX,NMY)
 
 	 else
 *******     SQRFILL NOT A TMAP PPL+ COMMAND *jd* 2.19.99

@@ -86,6 +86,8 @@
 * V602  1/07 *acm* true batch mode for metafiles; flag meta_batch
 *                  distinguises this case from other batch modes.
 * V6.11 4/08 *acm* Fixes for bug 1571
+* *acm* 5/09 *acm* Fixes for bug 1663. When redrawing axes after a POLY/OVERLAY
+*                  do not do any axis labels
 
 *****************************************************
 

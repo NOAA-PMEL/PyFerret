@@ -52,6 +52,8 @@ C *acm* 11/05  new argument to xaxis1 and yaxis1 for deg/min/sec labels
 C        1/06  xvaloff,yvaloff add this amount to each x or y axis label. 
 C              (axis data was read as double precision and converted to single 
 C              after applying an offset.)
+C *acm* 5/09   Extra argument lets us skip the plot label (when redrawing
+C              axes after a POLY/OVERLAY)
 C**
 C**    @(#)daxis.F	1.1    3/10/88
 C**

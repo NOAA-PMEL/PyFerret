@@ -40,8 +40,9 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * V600 2/06 *acm* Attribute control.
-* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-
+* V602 2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V62+ 5/09 *acm* Fix bug 1664, initialize outtype = 0 so we dont get an
+*                 incorrect type for user variables.
 
 * include files
 #include "gt_lib.parm"
@@ -57,6 +58,10 @@
 #include "netcdf.inc"
 
       INTEGER NCF_GET_VAR_OUTTYPE, dset_num, status
+
+* Initialize
+
+      outtype = 0
 
       dset_num = dset
       IF (dset_num .LT. -2) dset_num = -2

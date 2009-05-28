@@ -47,33 +47,35 @@
  */
 
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build */
-/* *acm  10/06 v601 - Fix by Remik for bug 1455, altix. For string attributes, 
-                      allocate one more than the att.len, presumably for the null 
-					  terminator for the string. Also double check the string length
-					  that is returned from the call to nc_inq_att, and make sure
-					  we allocate the correct amount of memory for the string.*/
-
+/* *acm  10/06 v601 - Fix by Remik for bug 1455, altix. For string attributes,  */
+/*                    allocate one more than the att.len, presumably for the null  */
+/*  				  terminator for the string. Also double check the string length */
+/*  				  that is returned from the call to nc_inq_att, and make sure */
+/*  				  we allocate the correct amount of memory for the string.*/
+/*  
 /* *acm  11/06 v601 - ncf_delete_var_att didnt reset the attribute id's.  Fix this. */
-
+/*   */
 /* *acm  11/06 v601 - new routine ncf_add_var_num_att_dp */
 /* *acm  11/06 v601 - new routine ncf_repl_var_att_dp */
-/* *acm  11/06 v601 - in ncf_init_other_dset, set the name of the global attribute 
-                      to history, and define its attribute type and outflag.*/
+/* *acm  11/06 v601 - in ncf_init_other_dset, set the name of the global attribute  */
+/*                    to history, and define its attribute type and outflag.*/
 /* *acm  11/06 v601 - new routine ncf_rename_var, for fix of bug 1471 */
 /* *acm  11/06 v601 - in ncf_delete_var_att, renumber the attid for the remaining attributes. */
 /* *acm* 12/06 v602 - new attribute assigned to coordinate vars on input, orig_file_axname */
 /* *acm*  2/07 V602   Fix bug 1492, changing attributes of coordinate variables; use pseudo-dataset */ 
 /*                       of user-defined axes to keep track of attributes. */
 /* *acm* 10 07        Patches for memory-leak fixes from Remiz Ziemlinski */
-/* *acm* 10/07        Further fixes by Remik, initializing att.vals, att.string to NULL,
-                        set var.ndims = 0 in ncf_init_other_dset */
-/* *acm*  3/08        Fix bug 1534; needed to initialize attribute output flag for
-                      the bounds attribute on coordinate axes.*/
-/* *acm*  1/09        If adding a new global attribute, also increment ngatts.
-/* *acm*  1/09        Fix bug 1620; In ncf_add_var, which is used when defining user 
-                      variables, and also for reading in EZ datasets, I had the default 
-                      attribute type for missing_value attribute set to NC_DOUBLE. There's no 
-                      reason for this as these variables are always single precision.*/
+/* *acm* 10/07        Further fixes by Remik, initializing att.vals, att.string to NULL, */
+/*                      set var.ndims = 0 in ncf_init_other_dset */
+/* *acm*  3/08        Fix bug 1534; needed to initialize attribute output flag for */
+/*                    the bounds attribute on coordinate axes.*/
+/* *acm*  1/09        If adding a new global attribute, also increment ngatts. */
+/* *acm*  1/09        Fix bug 1620; In ncf_add_var, which is used when defining user  */
+/*                    variables, and also for reading in EZ datasets, I had the default */ 
+/*                    attribute type for missing_value attribute set to NC_DOUBLE. There's no  */
+/*                    reason for this as these variables are always single precision.*/
+/* *acm* 5/09 *acm*	  Fix bug 1664. For user variables, varid matches the uvar from Ferret. */
+/*                    therefore it may be larger than nc_ptr->nvars */
 
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
@@ -288,8 +290,6 @@ int  FORTRAN(ncf_inq_ds_dims)( int *dset, int *idim, char dname[], int *namelen,
 
   if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL )return return_val;
 
-  if (*varid > nc_ptr->nvars+1) return return_val;
-
    /*
    * Get the list of variables.  
    */
@@ -453,8 +453,6 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
 
   return_val = ATOM_NOT_FOUND;  
   if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL )return return_val;
-
-  if (*ivar > nc_ptr->nvars) return return_val;
 
    /*
    * Get the list of variables.  

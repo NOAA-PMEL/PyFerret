@@ -1,0 +1,44 @@
+! err62_string_write_nc.jnl
+! Bug 1664: string variable written as a float.
+! 
+
+!!!! Make a smaller file from the original file:
+
+!!!! use "/home/nstout/hankin/SOCAT_triples.nc"
+!!!! save/file=err62_string_write.nc/clobber cruise_id[i=1:104000:1000], cruise_no[i=1:104000:1000]
+
+! use "/home/nstout/hankin/SOCAT_triples.nc"
+! set mem/siz=200
+!DEFINE SYMBOL clen 3000
+
+use err62_string_write.nc
+DEFINE SYMBOL clen 30
+
+let I1d = i[g=cruise_no]
+
+let cm0 = IF CRUISE_NO NE CRUISE_NO[I=@SHF:-1] THEN 1    ! marks each real cruise
+let cm1 = if i eq 1 then 1 else cm0                      ! start of first cruise, too
+let cm2 = if MOD(cm1[i=@cib], ($clen) ) eq 0 then 1          ! break into chunks
+let mask = MISSING(cm1, cm2)
+
+DEFINE SYMBOL nk = `mask[i=@ngd]`
+
+! **** IF EITHER OF THESE LINES IS COMMENTED OUT 
+!      THE STRING VAR cruise_id_xz IS SAVED OK
+let/title="cruise no"  cruise_no_xz = EXPNDI_BY_Z(cruise_no,mask,`($nk)+1`,($clen) )
+SAVE/CLOBBER/FILE="a.nc"/i=1:10 cruise_no
+
+let kstarts = mask * i
+let kst = COMPRESSI(kstarts)
+let/title="cruise ID" cruise_id_xz = SAMPLEI(cruise_id, kst[i=1:($nk)])
+list/i=1:10 cruise_id_xz
+
+! *** THE VARIABLE cruise_id_xz GETS SAVED AS FLOAT INSTEAD OF STRING
+save/clobber/file=a.nc/i=1:10 cruise_id_xz
+
+! verify the misbehavior
+canc var/all
+use a.nc
+
+! Should be the same strings as above.
+list cruise_id_xz

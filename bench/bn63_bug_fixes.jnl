@@ -1,0 +1,5 @@
+! bn63_bug_fixes.jnl
+! Fixes that go into v6.3 release
+
+GO bn_reset
+GO err62_string_write_nc

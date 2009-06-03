@@ -12,10 +12,9 @@
 
 #
 # If you are installing FERRET for the first time at your site we ask
-# that you please notify us with an Internat mail message to
-# ferret@noaapmel.gov [192.68.161.0] (or call Steve Hankin at (206)526-6080)
-# - no strings attached.  Please specify if you would like to be on a mailing
-# list for FERRET updates.
+# that you please notify us as outlined in the Ferret Installation Guide.
+# Note the suggested ways to contact us and to get support, listed on the
+# Support page under the Ferret Web page http://ferret.pmel.noaa.gov/Ferret/
 #
 # Modify this to suit your system and place the result as file `ferret_paths'
 # in another directory set up to hold login initialization scripts.

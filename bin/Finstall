@@ -1,4 +1,4 @@
-#! /bin/csh  -x
+#! /bin/csh
 # Finstall
 # Does two things:
 # 1) modifies 'ferret_paths template' to specify locations of ferret software &

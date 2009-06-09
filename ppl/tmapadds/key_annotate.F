@@ -83,7 +83,7 @@
          ldigits = lab_digits+1
          text = TM_FMT_DIGITS (zmin,ldigits,maxlen,slen)
 	 xx = px(1)/1000.0 - xorg - (slen/2)* height
-         yy = py(1)/1000.0 - yorg - 3.1* height
+         yy = py(1)/1000.0 - yorg - 2.1* height
 	 
       ENDIF
 
@@ -95,7 +95,7 @@
          ldigits = lab_digits+1
          text = TM_FMT_DIGITS (zmax,ldigits,maxlen,slen)
 	 xx = px(1)/1000.0 - xorg - (slen/2)* height
-         yy = py(3)/1000.0 - yorg + 2.1* height
+         yy = py(3)/1000.0 - yorg + 1.1* height
 	 
       ENDIF
 
@@ -106,7 +106,7 @@
          maxlen = 20
          ldigits = lab_digits+1
          text = TM_FMT_DIGITS (zmin,ldigits,maxlen,slen)
-	 xx = px(1)/1000.0 - xorg - (slen+1)* height
+	 xx = px(1)/1000.0 - xorg - (slen)* height
          yy = py(1)/1000.0 - yorg - 0.5* height
 	 
       ENDIF

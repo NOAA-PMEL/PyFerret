@@ -17,7 +17,6 @@
 ! $5 - shape of the symbol, as defined by polyshape.jnl 
 ! $6 - scale the values by this factor (optional, default 1)
 ! $7 - variable on the time axis to use for labelling the key
-! $8 - hr, min, or sec to add :hh or hh:mm or hh:mm:ss
 
 !      shape names include:
 !           triangle           delta           square
@@ -36,10 +35,10 @@
 !       yes? set view xview
 !
 !       yes? def axis/t=1-jan-1990:1-mar-1990:1/units=days timeax
-!       yes? LET lpts = L[gt=timeax]
-!       yes? LET xpts = 180 + 50*COS(2*3.14*lpts/60)
-!       yes? LET ypts = 15 + 20*sin(2*3.14*lpts/60)
-!       yes? LET taxvar = t[gt=timeax]
+!       yes? let lpts = L[gt=timeax]
+!       yes? let xpts = 180 + 50*COS(2*3.14*lpts/60)
+!       yes? let ypts = 15 + 20*sin(2*3.14*lpts/60)
+!       yes? let taxvar = t[gt=timeax]
 !
 !       yes? GO basemap x=120:250 Y=25s:65n 20
 !       yes? GO polymark_datekey polygon/over/key  xpts,ypts,lpts,ex,0.5,taxvar
@@ -53,8 +52,6 @@ QUERY/IGNORE $3"<usage: yes? GO polymark_datekey polygon_command xpts ypts [valu
 LET/QUIET PLMxpoly = ($2)
 LET/QUIET PLMypoly = ($3)
 LET/QUIET PLMpolydata = $4"0"
-
-LET/QUIET PLMlabel = $8"0|hr>1|min>2|sec>3|*>0"
 
 ! determine the orientation of the data (and check that it is 1D or a point)
 DEFINE SYMBOL PLMax `PLMxpoly,return=shape`
@@ -86,97 +83,50 @@ ppl fillpol/over
 ! set up the date/time labels for the color key
 ! (see insitu_setup.jnl)
 
-LET TLAB_tstart = `$7[L=@min]`
-DEFINE SYMBOL TLAB_tstart = `TLAB_tstart`
+let TLAB_tstart = `$7[L=@min]`
+define symbol TLAB_tstart = `TLAB_tstart`
 
-LET TLAB_tend = `$7[L=@max]`
-DEFINE SYMBOL TLAB_tend = `TLAB_tend`
+let TLAB_tend = `$7[L=@max]`
+define symbol TLAB_tend = `TLAB_tend`
 
-LET TLAB_tstep = int((`TLAB_tend`-`TLAB_tstart`)/4)
-DEFINE SYMBOL TLAB_tstep = `TLAB_tstep`
+let TLAB_tstep = int((`TLAB_tend`-`TLAB_tstart`)/4)
+define symbol TLAB_tstep = `TLAB_tstep`
 
-LET dates_same = 0
+! Save any region settings that are in effect
+DEFINE REGION/DEFAULT SAVE
 
-LET ttime = `($TLAB_tstart)+0*($TLAB_tstep)`
-DEFINE SYMBOL day_0_fourth = `TAX_DATESTRING(ttime, tpts, "day")`
+set region/t=`($TLAB_tstart)+0*($TLAB_tstep)`:($TLAB_tend)
+define symbol day_0_fourth `$7,return=tstart,prec=3`
 
-LET ttime = `($TLAB_tstart)+1*($TLAB_tstep)`
-DEFINE SYMBOL day_1_fourth = `TAX_DATESTRING(ttime, tpts, "day")`
-IF `STRCMP("($day_1_fourth)", "($day_0_fourth)") EQ 0` THEN LET dates_same = 1
+set region/t=`($TLAB_tstart)+1*($TLAB_tstep)`:($TLAB_tend)
+define symbol day_1_fourth `$7,return=tstart,prec=3`
 
-LET ttime = `($TLAB_tstart)+2*($TLAB_tstep)`
-LET ttime_last = `ttime`
-DEFINE SYMBOL day_2_fourth = `TAX_DATESTRING(ttime, tpts, "day")`
-IF `STRCMP("($day_2_fourth)", "($day_1_fourth)") EQ 0` THEN LET dates_same = 1
+set region/t=`($TLAB_tstart)+2*($TLAB_tstep)`:($TLAB_tend)
+define symbol day_2_fourth `$7,return=tstart,prec=3`
 
-LET ttime = `($TLAB_tstart)+3*($TLAB_tstep)`
-LET ttime_last = `ttime`
-DEFINE SYMBOL day_3_fourth = `TAX_DATESTRING(ttime, tpts, "day")`
-IF `STRCMP("($day_3_fourth)", "($day_2_fourth)") EQ 0` THEN LET dates_same = 1
+set region/t=`($TLAB_tstart)+3*($TLAB_tstep)`:($TLAB_tend)
+define symbol day_3_fourth `$7,return=tstart,prec=3`
 
-! The last section may be degenerate depending on the 
+! The last region may be degenerate depending on the 
 ! underlying time axis. Force it not to be, within
 ! single-precision time coordinates
 
-LET ttime = `($TLAB_tstart)+4*($TLAB_tstep)`
-IF `ttime LE ttime_last` THEN 
-   LET ttime =  = `(1. - 1.e-5)* ($TLAB_tend) - 1`
+DEFINE SYMBOL tlo = `($TLAB_tstart)+4*($TLAB_tstep)`
+IF `($tlo) GE ($TLAB_tend)` THEN 
+   DEFINE SYMBOL tlo = `(1.- 1.e-5)* ($TLAB_tend) - 1`
 ENDIF 
-DEFINE SYMBOL day_4_fourth = `TAX_DATESTRING(ttime, tpts, "day")`
-IF `STRCMP("($day_4_fourth)", "($day_3_fourth)") EQ 0` THEN LET dates_same = 1
 
-! --------
-! If some of the date symbols were repeated, add hours:minutes on a
-! second line under the lables.
+set region/t=($tlo):($TLAB_tend)
+define symbol day_4_fourth `$7,return=tstart,prec=3`
 
-IF `dates_same GT 0` THEN
-   IF `PLMlabel LT 2` THEN LET PLMlabel = 2
+CANCEL REGION/T
+DEFINE SYMBOL tfirst = `($TLAB_tstart)+4*($TLAB_tstep)`
+IF `($tfirst) GE ($TLAB_tend)` THEN 
+   DEFINE SYMBOL tfirst = `($TLAB_tend) - 1`
+ENDIF 
 
-   LET ttime = `($TLAB_tstart)+0*($TLAB_tstep)`
-   let dayfrac = `TAX_DAYFRAC(ttime, tpts)`
-   IF `PLMlabel GT 0` THEN
-      GO pdatekey_dms
-      DEFINE SYMBOL day_0_fourth = ($day_0_fourth)($dms)
-   ENDIF
-   
-   LET ttime = `($TLAB_tstart)+1*($TLAB_tstep)`
-   let dayfrac = `TAX_DAYFRAC(ttime, tpts)`
-   IF `PLMlabel GT 0` THEN
-      GO pdatekey_dms
-      DEFINE SYMBOL day_1_fourth = ($day_1_fourth)($dms)
-   ENDIF
-   
-   LET ttime = `($TLAB_tstart)+2*($TLAB_tstep)`
-   let dayfrac = `TAX_DAYFRAC(ttime, tpts)`
-   IF `PLMlabel GT 0` THEN
-      GO pdatekey_dms
-      DEFINE SYMBOL day_2_fourth = ($day_2_fourth)($dms)
-   ENDIF
-   
-   LET ttime = `($TLAB_tstart)+3*($TLAB_tstep)`
-   let dayfrac = `TAX_DAYFRAC(ttime, tpts)`
-   IF `PLMlabel GT 0` THEN
-      GO pdatekey_dms
-      DEFINE SYMBOL day_3_fourth = ($day_3_fourth)($dms)
-   ENDIF
-   
-   ! The last section may be degenerate depending on the 
-   ! underlying time axis. Force it not to be, within
-   ! single-precision time coordinates
-   
-   LET ttime = `($TLAB_tstart)+4*($TLAB_tstep)`
-   IF `ttime LE ttime_last` THEN 
-      LET ttime =  = `(1. - 1.e-5)* ($TLAB_tend) - 1`
-   ENDIF 
-   LET dayfrac = `TAX_DAYFRAC(ttime, tpts)`
-   IF `PLMlabel GT 0` THEN
-      GO pdatekey_dms
-      DEFINE SYMBOL day_4_fourth = ($day_4_fourth)($dms)
-   ENDIF
-
-ENDIF
-
-! --------
+CANCEL REGION/T
+SET REGION SAVE
 
 ! Based on what key.F does to define the upper x corner of the colorbar key.
 LET vwid = (($ppl$xlen) + ($ppl$xorg)) * 1.15
@@ -185,19 +135,18 @@ LET xmaxx = 0.25*($ppl$xlen)
 LET key_hi = MIN (`($ppl$xorg) + ($ppl$xlen) + xmaxx`,`vwid-0.051*rem`)
 
 LET key_lo = (($ppl$xorg) + ($ppl$xlen) + 0.25*MIN (rem,xmaxx))
-LET key_lo = (($ppl$xlen) + 0.25*MIN (rem,xmaxx))
-LET key_inc = `0.1 * (key_hi - key_lo)`
+LET key_inc = 0.1 * (key_hi - key_lo)
 
 LET key_hi = `key_lo + 4.0*key_inc`
-LET key_hi = `key_lo + 2.0*key_inc`
 
-label/nouser `key_hi`,`(($ppl$ylen)*0)/4-.05`,-1,0,.12,($day_0_fourth)
-label/nouser `key_hi`,`(($ppl$ylen)*1)/4-.05`,-1,0,.12,($day_1_fourth)
-label/nouser `key_hi`,`(($ppl$ylen)*2)/4-.05`,-1,0,.12,($day_2_fourth)
-label/nouser `key_hi`,`(($ppl$ylen)*3)/4-.05`,-1,0,.12,($day_3_fourth)
-label/nouser `key_hi`,`(($ppl$ylen)*4)/4-.05`,-1,0,.12,($day_4_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*0)/4-.05`,1,0,.1,($day_0_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*1)/4-.05`,1,0,.1,($day_1_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*2)/4-.05`,1,0,.1,($day_2_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*3)/4-.05`,1,0,.1,($day_3_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*4)/4-.05`,1,0,.1,($day_4_fourth)
 
 cancel symbol PLM*
 cancel variable PLM*
 set mode/last verify
+
 

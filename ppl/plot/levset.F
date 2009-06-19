@@ -68,8 +68,10 @@ C**
 	      NL=2
 	   ELSE
 	      IF(VAL(3).NE.0.)THEN
-		 NL = INT((VAL(2)-VAL(1))/VAL(3))+1
-		 IF (( VAL(1)+(NL-1)*VAL(3)) .LT. VAL(2)) NL = NL + 1 
+		 NL = INT((VAL(2)-VAL(1))/VAL(3)) ! compute # of intervals
+		 IF ( (VAL(1) + NL*VAL(3)) .LT. VAL(2) ) THEN NL = NL + 1
+
+		 NL = NL + 1 ! Because NL is the number of endpoints of intervals
 	      ELSE
 		 NL=2
 	      ENDIF

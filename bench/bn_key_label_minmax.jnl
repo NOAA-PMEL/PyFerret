@@ -42,6 +42,13 @@ shade/set/lev=(4,28,1) temp[z=0]
 ppl shakey,1,0
 ppl shade
 
+
+! restore setting: keys not annotated
+PPL SHAKEY 1,,,,,,,,,,0
+
+! The setting can alternatively be made with the alias KEYMARK
+KEYMARK 1
+
 ! FILL with min and max on vertical and horizontal keys
 
 fill/lev=(4,28,1) temp[z=0]
@@ -63,7 +70,7 @@ shade/nokey/pal=white/nolab/axes=0,0,0,0 fsst  ! set up
 go polymark poly/key/title="polygons"/lev=(4,26,1), lon, lat, xsequence(fsst), square, 0.4
 
 ! restore setting: keys not annotated
-PPL SHAKEY 1,,,,,,,,,,0
+KEYMARK 0
 
 set mode/last logo
 shade/lev=35 sst[L=1]

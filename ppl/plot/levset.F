@@ -46,6 +46,7 @@ C**
 C**
 
 * V510 *sh* 3/00 - bug fix - "DEL" ignored because of misspelling of lwgh
+* V62+ *acm 6/09 - bug fix #1672 too few levels computed depending on the values
 
 #ifdef unix
 	INCLUDE 'CMRDL.INC'
@@ -60,18 +61,19 @@ C**
 	IF(INDEX(LABEL(:IST),'DARK').NE.0)LWGH=2
 	IF(INDEX(LABEL(:IST),'LINE').NE.0)LWGH=1
 	IF(IF(2).EQ.0)THEN
-		NL=1
+	   NL=1
 	ELSE
-		IF(IF(3).EQ.0)THEN
-			VAL(3)=VAL(2)-VAL(1)
-			NL=2
-		ELSE
-			IF(VAL(3).NE.0.)THEN
-			NL=INT((VAL(2)-VAL(1))/VAL(3)+0.00001)+1
-			ELSE
-			NL=2
-			ENDIF
-		ENDIF
+	   IF(IF(3).EQ.0)THEN
+	      VAL(3)=VAL(2)-VAL(1)
+	      NL=2
+	   ELSE
+	      IF(VAL(3).NE.0.)THEN
+		 NL = INT((VAL(2)-VAL(1))/VAL(3))+1
+		 IF (( VAL(1)+(NL-1)*VAL(3)) .LT. VAL(2)) NL = NL + 1 
+	      ELSE
+		 NL=2
+	      ENDIF
+	   ENDIF
 	ENDIF
 	RETURN
 	END

@@ -8,8 +8,12 @@
 !        To get a basic test of the function, make some data on a regularly-spaced xy grid.
 
 can region
+ set mode ignore_error
 
 use gt4d011.cdf
 def axis/y=1:100:1/units=degrees yax
 let tr = temp[gy=yax@asn]
 go vis5d_write " " tr
+
+set mode/last ignore_error
+

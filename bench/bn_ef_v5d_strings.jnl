@@ -3,6 +3,8 @@
 ! testing string argument to external function.
 ! 5/4/05 acm
 
+set mode ignore_error
+
 sp rm -f testa.v5d
 let a = "testa.v5d"
 

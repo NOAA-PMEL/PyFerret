@@ -36,7 +36,7 @@ list/i=1:10 cruise_id_xz
 ! *** THE VARIABLE cruise_id_xz GETS SAVED AS FLOAT INSTEAD OF STRING
 save/clobber/file=a.nc/i=1:10 cruise_id_xz
 
-! verify the misbehavior
+! Check the file
 canc var/all
 use a.nc
 

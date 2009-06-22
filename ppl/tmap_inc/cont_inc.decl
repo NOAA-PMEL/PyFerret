@@ -15,6 +15,7 @@ c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
 	INTEGER	IAUTOC
 	INTEGER	NLEV2
 	INTEGER	NSIGC
+	INTEGER CONTOUR_FEWER
 	
 *	Following added 8.3.95 *jd*
 	LOGICAL*4 CENTERED,SET_DELTA,NEGINF,POSINF,CONT_KEY

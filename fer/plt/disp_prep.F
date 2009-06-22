@@ -118,11 +118,13 @@
      .		.AND. len_loc .NE. 0
 
 * contour levels ?
+
+        contour_fewer = 1
 	IF ( lev_given    ) THEN
+           contour_fewer = 0
 	   CALL EQUAL_STRING( 
      .          cmnd_buff(qual_start(lev_loc):qual_end(lev_loc)),
      .			      str_buff, status )
-
 
 * Set symbol LEV_TEXT with the users input to the LABEL command.
 
@@ -131,7 +133,6 @@
         ier = 0
         ist = 0
         CALL SETSYM (labsym_buff, ilen, ier, ist)
-
 
 	   IF ( str_buff .NE. ' ' ) THEN
 * ... pass the levels string given by the user to PLOT+
@@ -175,11 +176,14 @@
 	            ENDIF
 	         ELSE
 		    iautoc = 1
-	            nlev = 10	! "C" is equivalent to "10C"
+! "C" is equivalent to "nC" where n is the current mode nlevels setting
+	            nlev = mode_arg(pmode_nlevels, 1)       
+		    contour_fewer = 1  ! if its a contour line plot
 	         ENDIF
 	      ELSE
 	         CALL PPLCMD( from, line, 0,
      .			      'LEV,()'//str_buff(:str_len), 1, 1 )
+                 contour_fewer = 1   ! if its a contour line plot
 	      ENDIF
 	   ELSEIF ( iautoc .EQ. 1 ) THEN
 * ... if levels were previously set automatically by PLOT+ and user has now

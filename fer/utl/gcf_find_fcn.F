@@ -58,15 +58,11 @@
 #endif
 
  
-#ifdef unix
 	include 'ferret.parm'
 	include 'xgrid_chg_fcns.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-#endif
 
 * check the internal grid changing functions first
+
 	GCF_FIND_FCN = STR_MATCH ( name,
      .                               gfcn_name, gfcn_num_internal )
 

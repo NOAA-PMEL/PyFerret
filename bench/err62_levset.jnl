@@ -1,0 +1,7 @@
+! err62_levset.jnl 
+! fix for bug 1672, top color level chopped off in some circumstances
+! The color bar should extend to 385.4
+
+let var = 0*y + x
+shade/x=350:390/y=1:10/lev=(376.6,379.0,0.8)(379.0,385.4,0.2) var
+

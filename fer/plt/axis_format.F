@@ -70,7 +70,9 @@
 * V533 *sh* 7/01 - avoid using risc_buff -- conflict with PUT_LABEL
 * V580 *acm* 12/04 Fix bug 1129; formatting axis for small lon/lat ranges
 * V602 *acm*  3/07 Fix bug 1498: do not computes n_res but leave it hard-wired
-*                to 15; else the axis labels may not match data values !
+*                to 15; else the axis labels may not match data values
+* V62+ *acm* 6/09 Allow use_nice for more lon/lat axes; allows for long 
+*                 strings in the degree-minute-seconds labeling
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -120,9 +122,8 @@
 	CALL GET_PREC_DIGITS( hi_val, lo_val, res_del, places, ndec )
 
 * format to use
-* Let smaller ranges be labeled with longitude (range 161.123 to 161.130)
-*	use_nice = places .LE. 6
 	use_nice = places .LE. 7
+
 	IF ( use_nice ) THEN
 	   IF ( ndec .EQ. 0 ) THEN
 	      fmt = 'I7'
@@ -145,6 +146,8 @@
 	   special = idim.NE.t_dim .AND. GEOG_VAR( idim, cx_curv )
 	ENDIF
 	IF ( special ) THEN
+	   IF (idim .EQ. x_dim .OR. idim.EQ. y_dim) 
+     .        use_nice = places .LE. 8
 	   IF ( idim .EQ. t_dim ) THEN
 * labels formatted in calendar dates
 * .. convert units of time axis from seconds to minutes
@@ -177,12 +180,12 @@
 	      CALL TAXIS_STYLE(	x_or_y, TSTEP_TO_SECS( grid, lo_val ),
      .				TSTEP_TO_SECS( grid, hi_val ), tstyle )
 
-	   ELSEIF ( idim .EQ. x_dim .AND. use_nice ) THEN
+	   ELSEIF ( idim .EQ. x_dim ) THEN
 * longitude format for axis tic labling
 	      ppl_buff = 
      .		x_or_y//'FOR,('//fmt(:TM_LENSTR1(fmt))//',''''LONE'''')' 
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-	   ELSEIF ( idim .EQ. y_dim .AND. use_nice ) THEN
+	   ELSEIF ( idim .EQ. y_dim ) THEN
 * latitude format for axis tic labling
 	      ppl_buff = 
      .		x_or_y//'FOR,('//fmt(:TM_LENSTR1(fmt))//',''''LAT'''')' 

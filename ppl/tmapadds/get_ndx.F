@@ -53,6 +53,8 @@
 *  V5.71 *acm*  6/15/04 Use TM_FPEQ when checking whether a single-level zlev is
 *               the same as datum.
 *  v581 *acm* 3/05 open levels (-INF) (INF)
+*  V62+ *acm* 6/09 fix bug 1672: data level exactly matching top of upper level 
+*                  wasnt plotted on SHADE and POLY plots
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'

@@ -443,12 +443,6 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 	         IF ( ppl_interrupted ) GOTO 1000
 	         iautoc = 0 ! reuse levels from last plot
 	         nlev = nlev2
-
-	         IF (contour_fewer.EQ.1) THEN
-		    iautoc = 1
-		    nlev = 10
-		 ENDIF
-
 		 CALL PPLCMD ( ' ', ' ', 0,
      .			'CONTOUR/OVER/' //ppl_wait//' ' , 1, 1 )
 	      ELSE
@@ -463,11 +457,6 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 	         IF ( ppl_interrupted ) GOTO 1000
 	         iautoc = 0 ! reuse levels from last plot
 	         nlev = nlev2
-
-	         IF (contour_fewer.EQ.1) THEN
-		    iautoc = 1
-		    nlev = 10
-		 ENDIF
 		 CALL PPLCMD ( ' ', ' ', 0,
      .			'CONTOUR/OVER/' //ppl_wait//' ' , 1, 1 )
 	      ELSE

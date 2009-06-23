@@ -183,7 +183,6 @@
 	      ELSE
 	         CALL PPLCMD( from, line, 0,
      .			      'LEV,()'//str_buff(:str_len), 1, 1 )
-                 contour_fewer = 1   ! if its a contour line plot
 	      ENDIF
 	   ELSEIF ( iautoc .EQ. 1 ) THEN
 * ... if levels were previously set automatically by PLOT+ and user has now

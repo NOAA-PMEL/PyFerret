@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ../fer/ferret_v6203
--rwxr-xr-x  1 ansley tmap 41023151 Jun 19 10:05 ../fer/ferret_v6203
-Using external functions from ../external_functions/ext_func_x86
+Running FERRET version /home/porter/ansley/build/x86/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 41023214 Jun 23 11:08 /home/porter/ansley/build/x86/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/build/x86/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  test fix for bug 1672
+Note: fixes for bugs 1671,1672,1673
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build/x86/FERRET/bench
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_x86
-Beginning at Fri Jun 19 10:07:27 PDT 2009
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build/x86/FERRET/external_functions/ext_func_x86
+Beginning at Tue Jun 23 11:15:26 PDT 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2153,11 +2153,7 @@ Replacing definition of axis TIME
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-             OPeNDAP Error: Error while reading the URL: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods.dds?.
-The OPeNDAP server returned the following message:
-Not Found: The data source or server could not be found.
-        Often this means that the OPeNDAP server is missing or needs attention;
-        Please contact the server administrator. (OPeNDAP/netCDF Error code 1001)
+               (OPeNDAP/netCDF Error code 1001)
              Data set: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods
 SET DAT/FORM=CDF "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
  **Internet Data error
@@ -2817,6 +2813,8 @@ Replacing definition of axis CAXIS
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2899,4 +2897,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Jun 19 10:09:04 PDT 2009
+Ended at Tue Jun 23 11:17:01 PDT 2009

@@ -112,10 +112,14 @@ c	      else if (levn - lev1 .LE. 1) then
 	            call locator (zlev(lev1),lev1,levn,datum,ndx)
 
 	            if (ndx .eq. levn) THEN
-                       IF (posinf) then
-	                  get_ndx = nlev2
-	               else
-                          get_ndx = -999
+		       IF (datum .eq. zlev(levn)) then 
+		          get_ndx = levn
+		       else
+                          IF (posinf) then
+	                     get_ndx = nlev2
+	                  else
+                             get_ndx = -999
+			  endif
                        endif
 	            else
 	               get_ndx = ndx + 1

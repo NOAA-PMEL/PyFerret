@@ -23,7 +23,7 @@ rm -f *.diff_ps*
 rm -f *.diff_gif*
 rm -f *bat.ps
 
-set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt linecolors.plt multi_line_labels.plt pattern*.plt polygon*.plt vec_curv*.plt)
+set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt linecolors.plt multi_line_labels.plt pattern*.plt polygon*.plt vec_curv*.plt timetics*.plt)
 set gif_files = ( bn*.gif )
 set ps_files = (bn*.ps)
 set mb_files = (bat.plt_*)
@@ -49,7 +49,7 @@ foreach plt_file ($plt_files)
 
        set err_plt = 1
     endif
-    if ($num_plt_files != 17 ) set err_plt = 1
+    if ($num_plt_files != 19 ) set err_plt = 1
 end
    
 set err_gif = 0

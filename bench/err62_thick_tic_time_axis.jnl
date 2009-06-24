@@ -13,7 +13,7 @@ set mode meta timetics.plt
 let tt = l[gt=tax]
 set view upper; plot/thick/line cos(tt/20)
 set view lower; plot/thick/line/t=1-jan-1991:1-jan-1997 cos(tt/20)
-
+can view
 
 ! Check that we get the thick dark black line for the tics on 
 ! plots with more line colors

@@ -1,0 +1,45 @@
+! err62_thick_tic_time_axis.jnl
+! Fixing bug 1668
+!
+! On multi-year or multi-decade time-axis plots, the
+! dark line every year or 5- or 10-years, sometimes 
+! disappeared due to pixel aliasing. Fixed by setting
+! the thick-line for these tics.
+
+
+define axis/t=1-jan-1990:1-jan-2010:1/units=months tax
+
+set mode meta timetics.plt
+let tt = l[gt=tax]
+set view upper; plot/thick/line cos(tt/20)
+set view lower; plot/thick/line/t=1-jan-1991:1-jan-1997 cos(tt/20)
+
+
+! Check that we get the thick dark black line for the tics on 
+! plots with more line colors
+set mode linec:12
+sho mode linecolors
+
+can win/all
+set win/new
+
+set mode meta timetics2.plt
+
+ppl color,7,100,50,0   ! orange
+ppl color,8,0,55,0     ! dark green
+ppl color,9,60,0,100   ! purple
+ppl color,10,100,60,70 ! pink
+ppl color,11,80,70,60  ! tan
+ppl color,12,100,75,0  ! yellow
+
+
+let tt = l[gt=tax]
+plot/thick/line \
+ cos(tt/20), cos(tt/24), cos(tt/28), cos(tt/32), \
+ cos(tt/36), cos(tt/40), cos(tt/44), cos(tt/48), \
+ cos(tt/52), cos(tt/56), cos(tt/60), cos(tt/64)
+
+can mode linecolors
+can win/all
+set win/new
+

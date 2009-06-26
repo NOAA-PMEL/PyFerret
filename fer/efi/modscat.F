@@ -51,6 +51,7 @@
       ax1 = ax(1)
       axf = ax(nax)
       range = axf - ax1
+      IF (range .EQ. 0.) RETURN  ! else the WHILE loops are infinite !
 
       DO 100 i = 1, nscat
          scatpt = scatm(i)

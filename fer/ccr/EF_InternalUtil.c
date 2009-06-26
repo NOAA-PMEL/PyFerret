@@ -814,12 +814,6 @@ void FORTRAN(scat2grid_bin_xyt_compute)(int *, float *, float *, float *,
   float *, float *, float *, float *, float *, float *, float *, float *, 
   float *, float *);
 
-void FORTRAN(scatgrid_nobs_xyt_init)(int *);
-void FORTRAN(scatgrid_nobs_xyt_work_size)(int *);
-void FORTRAN(scatgrid_nobs_xyt_compute)(int *, float *, float *, float *, 
-  float *, float *, float *, float *, float *, float *, float *, float *);
-
-
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -867,7 +861,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 124
+#define N_INTEF 123
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -996,7 +990,6 @@ struct {
    strcpy(I_EFnames[120].funcname, "zreverse");
    strcpy(I_EFnames[121].funcname, "scat2grid_nbin_xyt");
    strcpy(I_EFnames[122].funcname, "scat2grid_bin_xyt");
-   strcpy(I_EFnames[123].funcname, "scatgrid_nobs_xyt");
 /*    
  *  ------------------------------------ 
  */
@@ -3410,10 +3403,6 @@ else if ( !strcmp(name,"scat2grid_nbin_xyt_compute_") ) return (void *)FORTRAN(s
 else if ( !strcmp(name,"scat2grid_bin_xyt_init_") ) return (void *)FORTRAN(scat2grid_bin_xyt_init);
 else if ( !strcmp(name,"scat2grid_bin_xyt_work_size_") ) return (void *)FORTRAN(scat2grid_bin_xyt_work_size);
 else if ( !strcmp(name,"scat2grid_bin_xyt_compute_") ) return (void *)FORTRAN(scat2grid_bin_xyt_compute);
-
-else if ( !strcmp(name,"scatgrid_nobs_xyt_init_") ) return (void *)FORTRAN(scatgrid_nobs_xyt_init);
-else if ( !strcmp(name,"scatgrid_nobs_xyt_work_size_") ) return (void *)FORTRAN(scatgrid_nobs_xyt_work_size);
-else if ( !strcmp(name,"scatgrid_nobs_xyt_compute_") ) return (void *)FORTRAN(scatgrid_nobs_xyt_compute);
 
  }
 /*  End of function pointer list for internally-linked External Functions

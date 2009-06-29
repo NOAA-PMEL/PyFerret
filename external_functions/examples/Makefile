@@ -13,10 +13,8 @@
 #
 # include platform specific macro definitions
 #
-
 include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
  
-
 #
 # Macros
 #
@@ -28,14 +26,9 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 .F.so:
-	$(F77) $(FFLAGS) $<
-	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
-
-.c.o:
-	cc ${CFLAGS} $<
-
-.f.o:
-	$(F77) $(FFLAGS) $<
+	$(F77) $(FFLAGS) -c  $<
+	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o -o $*.so
+ 
 
 #
 # Targets
@@ -49,7 +42,8 @@ new:	ferret_cmn pass_thru_string.so pick_a_string.so strings_as_args.so stringle
 extra:	ferret_cmn custom.so extend.so  status.so  strings.so times_table.so
 
 debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
+	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug" "CFLAGS = $(CFLAGS) -g -Ddebug"  all
+
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

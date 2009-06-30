@@ -138,7 +138,7 @@
       arg = 5
       CALL ef_set_arg_name(id, arg, 'ICRUISE')
       CALL ef_set_arg_desc(id, arg, 
-     .     'Cruise ID at scattered input lcations')
+     .     'Cruise ID at scattered input locations')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 6

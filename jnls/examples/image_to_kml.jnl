@@ -16,49 +16,62 @@ say START FERRET WITH ferret -gif SO THAT THE IMAGE CAN BE MADE WITH TRANSPARENC
 !
 ! > ferret -gif
 !
-! yes? go GO image_to_kml my_plot_command variable gif_name output_kml_filename [name]
-!    arg 1 my_plot_command	2D plot command including palette, levels etc
-!    arg 2 variable		variable to plot, must be 2D in longitude/latitude
-!    arg 3 gif_name             gif file to be saved
-!    arg 4 output_kml_filename  kml filename to write 
-!    arg 5 [name]		optional, display name 
+!                        arg 1   arg 2   arg 3        arg 4    arg 5       arg 6
+!Usage:  GO image_to_kml gifFile kmlFile plot_command variable [xcoordVar] [YcoordVar]
+! 
+!    gifFile		gif file to be saved
+!    kmlFile		kml file to write
+!    plot_command	2D plot command including palette, levels etc
+!    variable		variable to plot, must be 2D in longitude/latitude
+!    xcoordVar		For curvilinear grids, the longitude coordinate variable
+!    xcoordVar		For curvilinear grids, the latitude coordinate variable
 !
-!Example:
+!Examples:
 ! > ferret -gif
 !
 ! yes? USE etopo20
-! yes? GO image_to_kml SHADE/X=-180:180/Y=-60:60/pal=dark_land_sea/lev=30c rose rose.gif etopo20.kml ETOPO20
- 
+! yes? GO image_to_kml rose.gif rose.kml SHADE/Y=-60:60/pal=dark_land_sea/lev=c rose
+!
+!
+! yes? use my_curvilinear_data.nc
+! yes? GO image_to_kml curv.gif curv.kml SHADE/MOD/HLIM=-180:180 VAR GEOLON GEOLAT
 
-query/ignore $1%Argument 1 is the plot comand%
-query/ignore $2%Argument 2 is the variable in XY"%
-query/ignore $3%Argument 3 is a gif file name%
-query/ignore $4%Argument 4 is a kml file name%
 
-DEFINE SYMBOL pcommand = $1
-DEFINE SYMBOL var = $2
 
-DEFINE SYMBOl gifname = $3
-IF `STRINDEX("($gifname)","gif") EQ 0` THEN 
-   SAY Argument 3 is a gif file name
+query/ignore $3%Argument 1 is a gif file name%
+query/ignore $4%Argument 2 is a kml file name%
+query/ignore $1%Argument 3 is the plot comand%
+query/ignore $2%Argument 4 is the variable in XY"%
+
+DEFINE SYMBOL pcommand = $3
+DEFINE SYMBOL var = $4
+
+IF $5"0|*>1" THEN 
+   DEFINE SYMBOL var ($var),$5"0"
+ENDIF
+IF $6"0|*>1" THEN 
+   DEFINE SYMBOL var ($var),$6"0"
+ENDIF
+
+DEFINE SYMBOl gifFile = $1
+IF `STRINDEX("($gifFile)","gif") EQ 0` THEN 
+   SAY Argument 1 is a gif file name
    EXIT/SCRIPT
 ENDIF
 
-DEFINE SYMBOL kmlname = $4
+DEFINE SYMBOL kmlname = $2
 IF `STRINDEX("($kmlname)","kml") EQ 0` THEN 
-   SAY Argument 4 is a kml file name
+   SAY Argument 2 is a kml file name
    EXIT/SCRIPT
 ENDIF
 
-DEFINE SYMBOL dispname = $5"FerretPlot"
+DEFINE SYMBOL dispname = FerretPlot
 
-! ($pcommand) ($var)
-! SET WINDOW/ASPECT = `(($ppl$ymax)-($ppl$ymin))/(($ppl$xmax)-($ppl$xmin))`
 DEFINE VIEW/AXES/XLIM=0:1/YLIM=0:1 WMSview
 SET VIEW WMSview
 
 ($pcommand) ($var)
-FRAME/TRANS/FORMAT=GIF/FILE=($gifname)
+FRAME/TRANS/FORMAT=gif/FILE=($gifFile)
 
 ! Header lines
 !<kml>
@@ -129,7 +142,7 @@ LIST/QUIET/nohead/norowhead/append/file=($kmlname)/format=(a) kml_line
 
 let kml_line = "         <Icon>"
 LIST/QUIET/nohead/norowhead/append/file=($kmlname)/format=(a) kml_line
-let kml_line = "            <href>($gifname)</href>"
+let kml_line = "            <href>($gifFile)</href>"
 LIST/QUIET/nohead/norowhead/append/file=($kmlname)/format=(a) kml_line
 let kml_line = "         </Icon>"
 LIST/QUIET/nohead/norowhead/append/file=($kmlname)/format=(a) kml_line

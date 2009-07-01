@@ -739,7 +739,9 @@ c.................sum the value and count in each (x,y,t) gridbox
 	ig = NINT(xxg)
 	jg = NINT(yyg)
 	Lg = NINT(ttg)
-	IF (lg .LT. 1) LG = 1
+	IF (ig.LT.1 .OR. ig.GT.nx) RETURN
+	IF (ig.LT.1 .OR. ig.GT.nx) RETURN
+	IF (lg.LT.1 .OR. lg.GT.nt) RETURN
 
 	IF (obs_only .EQ. 0) THEN
            IF (ig.GE.1 .AND. ig.LE.nx .AND. jg.GE.1 .AND. jg.LE.ny .AND.

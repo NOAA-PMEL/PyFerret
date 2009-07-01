@@ -1,6 +1,7 @@
-\cancel mode verify
-
 ! image_to_kml.jnl
+\cancel mode verify
+!
+! ACM 7/1/2009
 !
 ! Write a kml file containing a Ferret image for use in Google Earth.
 ! The tags that are written to the file are take from the documentation
@@ -190,3 +191,5 @@ let kml_line = "    </Folder>"
 LIST/QUIET/nohead/norowhead/append/file=($kmlname)/format=(a) kml_line
 let kml_line = "</kml>"
 LIST/QUIET/nohead/norowhead/append/file=($kmlname)/format=(a) kml_line
+
+! --- end of image_to_kml.jnl --- 

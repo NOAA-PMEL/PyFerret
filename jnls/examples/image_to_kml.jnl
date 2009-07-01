@@ -38,12 +38,10 @@ say START FERRET WITH ferret -gif SO THAT THE IMAGE CAN BE MADE WITH TRANSPARENC
 ! yes? use my_curvilinear_data.nc
 ! yes? GO image_to_kml curv.gif curv.kml FILL/MOD/HLIM=-180:180 var[t=1-jan-2005] geolon geolat
 
-
-
-query/ignore $3%Argument 1 is a gif file name%
-query/ignore $4%Argument 2 is a kml file name%
-query/ignore $1%Argument 3 is the plot comand%
-query/ignore $2%Argument 4 is the variable in XY"%
+query/ignore $1%Argument 1 is a gif file name%
+query/ignore $2%Argument 2 is a kml file name%
+query/ignore $3%Argument 3 is the plot comand%
+query/ignore $4%Argument 4 is the variable in XY"%
 
 DEFINE SYMBOL pcommand = $3
 DEFINE SYMBOL var = $4

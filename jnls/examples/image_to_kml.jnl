@@ -26,15 +26,17 @@ say START FERRET WITH ferret -gif SO THAT THE IMAGE CAN BE MADE WITH TRANSPARENC
 !    xcoordVar		For curvilinear grids, the longitude coordinate variable
 !    xcoordVar		For curvilinear grids, the latitude coordinate variable
 !
+!
 !Examples:
 ! > ferret -gif
 !
 ! yes? USE etopo20
 ! yes? GO image_to_kml rose.gif rose.kml SHADE/Y=-60:60/pal=dark_land_sea/lev=c rose
 !
+!    ! or for a variable with curvilinear coordinates geolon,geolat:
 !
 ! yes? use my_curvilinear_data.nc
-! yes? GO image_to_kml curv.gif curv.kml SHADE/MOD/HLIM=-180:180 VAR GEOLON GEOLAT
+! yes? GO image_to_kml curv.gif curv.kml FILL/MOD/HLIM=-180:180 var[t=1-jan-2005] geolon geolat
 
 
 

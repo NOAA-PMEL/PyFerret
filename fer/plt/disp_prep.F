@@ -134,7 +134,11 @@
         ist = 0
         CALL SETSYM (labsym_buff, ilen, ier, ist)
 
-	   IF ( str_buff .NE. ' ' ) THEN
+	IF ( str_buff .NE. ' ' ) THEN
+	
+	   neginf = .FALSE.
+	   posinf = .FALSE.
+
 * ... pass the levels string given by the user to PLOT+
 	      str_len = TM_LENSTR1( str_buff )
 	      IF ( str_buff(1:1) .NE. '('
@@ -172,7 +176,7 @@
 	               IF (val.LE.0 .OR. val.GT.250) GOTO 5150 
 * ... set the /LEVELS=n recommendation specifier
 		       iautoc = 1
-	               nlev = val   ! dont fully know why this works ...
+	               nlev = val   ! levels set in PPLUS plotting routine
 	            ENDIF
 	         ELSE
 		    iautoc = 1

@@ -4,6 +4,7 @@ cancel mode verify
 !		-- outputs were getting too long and difficult to read
 !		-- individual benchmarks must now specify MODE DIAG if needed
 !  5/00 *acm* added CANCEL MODE IGNORE_ERRORS
+!  7/09 *acm* added CANCEL VIEWPORTS
 
 ! reset FERRET to prepare for another benchmark test
 CANCEL REGION/ALL
@@ -12,6 +13,6 @@ CANCEL VARIABLES/ALL
 CANCEL MEMORY/ALL
 SET GRID ABSTRACT
 CANCEL MODE DIAGNOSTIC
-CANCEL MODE IGNORE_ERRORS
+CANCEL VIEWPORTS
 
 set mode/last verify

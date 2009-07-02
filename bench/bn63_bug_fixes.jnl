@@ -9,3 +9,6 @@ GO err62_levset
 
 GO bn_reset
 GO err62_thick_tic_time_axis
+
+GO bn_reset
+GO err62_reset_after_inf.jnl

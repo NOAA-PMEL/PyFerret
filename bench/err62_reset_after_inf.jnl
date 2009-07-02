@@ -1,0 +1,13 @@
+! err62_reset_after_inf.jnl
+! Bug 1292
+! The levels did not reset to default closed levels
+
+Set mode meta closed_lev.plt
+
+use levitus_climatology
+set view left
+shade/lev=(-inf)(2,24,2)(inf) temp[k=1]
+
+! The bug was that this did not reset to default closed levels
+set view right
+shade/lev=20 temp[k=1]

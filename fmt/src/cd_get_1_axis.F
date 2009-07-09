@@ -156,6 +156,7 @@
 * V62  10/08 *acm* Add PROLEPTIC_GREGORIAN to the calendars recognized; same as GREGORIAN
 * V62   2/09 *acm* Save the original upper/lowercase spelling of axis names in line_name_orig,
 *                  for use on output of user-defined variables when MODE UPCASE_OUTPUT is cancelled.
+* V63   7/09 *acm* Fix bug 1676 Reversed axis with EDGES 
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -217,7 +218,7 @@
      .        cal_id, year, month, day, hour, minute, second, slen, nc,
      .        blen, bndid, startpts(2), numpts(2), next_line_storage,
      .        d1s, d1e, d2s, d2e, len_cal, attoutflag, maxlen,
-     .        all_outflag, dir, attlen
+     .        all_outflag, dir, attlen, iedge, irev
 
       REAL    rbuff, delta, first_delta, val, epsilon, lm_len
       REAL*8  TM_LONW2LONE, TM_WW_AXLEN, tmp8, axwwlen , rdelta
@@ -1060,9 +1061,17 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         IF ( status .NE. merr_ok ) GOTO 1000    ! 3/99 soft error
 
 * if the coordinates were reversed then the box bounds must be, too
-         IF ( first_delta .LT. 0.0  .AND.  npts .GT. 1) THEN
-            DO 450 i=ipt1+npts,(ipt1+npts)+npts
- 450        line_mem(i) = -1. * line_mem(i)
+         IF ( reversed(iaxis) .AND.  npts .GT. 1) THEN
+	    iedge = (ipt1+npts)+npts/2-1
+	    iedge = ipt1 + 2*npts 
+	    irev = iedge
+            DO 450 i=ipt1+npts,(ipt1+npts)+npts/2-1
+               tmp8 = line_mem(i)
+	       line_mem(i) = line_mem(irev)
+	       line_mem(irev) = tmp8
+	       irev = irev - 1
+ 450        CONTINUE
+
          ENDIF
 
 * check to see that each data point is contained inside its box

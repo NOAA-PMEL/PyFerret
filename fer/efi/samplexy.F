@@ -445,35 +445,36 @@ C  variables for checking axis characteristics (modulo axes)
 cbf      may be some derivation from the exact value can be allowed:
 cbf      if (xpt - xaxdat(i1,1,1,1)).le.eps)   imatch = i1
 
+  100       CONTINUE
+
 *  Locate the X point within the range of modulo X axis 
 *  If we have the whole span, then use the point at the other
 *  end to handle points within a half-grid cell of the edge.
 
-               xflag = 0
- 	       IF (modulo(1) .AND. full_span ) THEN
-	          IF (xpt .GE. xaxdat(xhi,1,1,1) .AND.
+             xflag = 0
+             IF (modulo(1) .AND. full_span ) THEN
+               IF (xpt .GE. xaxdat(xhi,1,1,1) .AND.
      .                xpt .LE. xaxdat(xhi,1,1,1)+dx) THEN
-                      ibot = xhi
-		      xflag = 1
-		  ELSE IF (xpt .GE. xaxdat(xhi,1,1,1) ) THEN
-		     DO WHILE (xpt .GE. xaxdat(xhi,1,1,1) ) 
-                        xpt = xpt - delmodx
-	             ENDDO
-		  ENDIF
+                  ibot = xhi
+                  xflag = 1
+               ELSE IF (xpt .GE. xaxdat(xhi,1,1,1) ) THEN
+                  DO WHILE (xpt .GE. xaxdat(xhi,1,1,1) ) 
+                     xpt = xpt - delmodx
+                  ENDDO
+               ENDIF
 
-	          IF (xpt .LT. xaxdat(xlo,1,1,1) .AND.
+               IF (xpt .LT. xaxdat(xlo,1,1,1) .AND.
      .                xpt .GE. xaxdat(xlo,1,1,1)-dx) THEN
-                      itop = xlo
-		      xflag = -1
-		  ELSE IF (xpt .LT. xaxdat(xlo,1,1,1) ) THEN
-	             DO WHILE (xpt .LT. xaxdat(xlo,1,1,1) )
-	  	        xpt = xpt + delmodx
-	             ENDDO
-		  ENDIF
+                  itop = xlo
+                  xflag = -1
+               ELSE IF (xpt .LT. xaxdat(xlo,1,1,1) ) THEN
+                  DO WHILE (xpt .LT. xaxdat(xlo,1,1,1) )
+                     xpt = xpt + delmodx
+                  ENDDO
+               ENDIF
 
-	       ENDIF
+            ENDIF
 
-  100       CONTINUE
             i1 = arg_hi_ss(X_AXIS,ARG1)
             IF (xpt .GT. xaxdat(i1,1,1,1) .AND. .NOT.modulo(1)) THEN
                ibot = ef_unspecified_int4		! ARG_2 XPT outside of range 

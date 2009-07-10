@@ -155,7 +155,7 @@ c  i	xlo,xhi, ylo,yhi, tlo,thi edges of grid cells
 c  o 	obs(nx,ny,nt) number of obs in each (x,y,t) gridbox
 c--------------------------------------------------------------------------
 
-	SUBROUTINE nbinxyt (xx, yy, tt, nx, ny, nt, xlo,xhi, ylo,yhi,
+	SUBROUTINE nobsxyt (xx, yy, tt, nx, ny, nt, xlo,xhi, ylo,yhi,
      .                      tlo,thi, obs)
 
 * Argument declarations

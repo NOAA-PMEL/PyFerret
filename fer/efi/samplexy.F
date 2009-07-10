@@ -318,9 +318,9 @@
       INTEGER i2,j2,k2,l2
       INTEGER i3,j3,k3,l3
 
-      LOGICAL ok
+      LOGICAL ok, full_span
       INTEGER STR_UPCASE, ic, imatch, jmatch
-      INTEGER ibot, itop, jbot, jtop
+      INTEGER ibot, itop, jbot, jtop, xflag
       REAL fxbot, fxtop, fbb, ftb, fbt, ftt
       REAL xbot, xtop, ybot, ytop
       REAL frac
@@ -402,19 +402,8 @@ C  variables for checking axis characteristics (modulo axes)
          ELSE
             dx = xaxdat(xlo+1,1,1,1) - xaxdat(xlo,1,1,1)
             delmodx = xaxdat(xhi,1,1,1) - xaxdat(xlo,1,1,1) + dx
-            IF (ok) delmodx = 360.
-         ENDIF
-      ENDIF
-      IF ( modulo(2) ) THEN
-         ic = STR_UPCASE (test_str, ax_units(2))
-         ok = (test_str(1:3) .EQ. 'DEG' .OR. regular(2))
-         IF (.NOT. ok) THEN
-            err_msg = 'cannot handle MODULO axis that is not regular'
-            go to 999
-         ELSE
-            dy = yaxdat(ylo+1,1,1,1) - yaxdat(ylo,1,1,1)
-            delmody = yaxdat(yhi,1,1,1) - yaxdat(ylo,1,1,1)
-            IF (ok) delmodx = 360.
+	    full_span = (delmodx .GT. 360.-dx)
+	    xax_plus = xaxdat(xhi,1,1,1) + dx
          ENDIF
       ENDIF
 
@@ -457,19 +446,36 @@ cbf      may be some derivation from the exact value can be allowed:
 cbf      if (xpt - xaxdat(i1,1,1,1)).le.eps)   imatch = i1
 
 *  Locate the X point within the range of modulo X axis 
+*  If we have the whole span, then use the point at the other
+*  end to handle points within a half-grid cell of the edge.
 
- 	       IF (modulo(1)) THEN
-	          DO WHILE (xpt .GE. xaxdat(xhi,1,1,1) ) 
-                     xpt = xpt - delmodx
-	          ENDDO
-	          DO WHILE (xpt .LT. xaxdat(xlo,1,1,1) )
-		     xpt = xpt + delmodx
-	          ENDDO
+               xflag = 0
+ 	       IF (modulo(1) .AND. full_span ) THEN
+	          IF (xpt .GE. xaxdat(xhi,1,1,1) .AND.
+     .                xpt .LE. xaxdat(xhi,1,1,1)+dx) THEN
+                      ibot = xhi
+		      xflag = 1
+		  ELSE IF (xpt .GE. xaxdat(xhi,1,1,1) ) THEN
+		     DO WHILE (xpt .GE. xaxdat(xhi,1,1,1) ) 
+                        xpt = xpt - delmodx
+	             ENDDO
+		  ENDIF
+
+	          IF (xpt .LT. xaxdat(xlo,1,1,1) .AND.
+     .                xpt .GE. xaxdat(xlo,1,1,1)-dx) THEN
+                      itop = xlo
+		      xflag = -1
+		  ELSE IF (xpt .LT. xaxdat(xlo,1,1,1) ) THEN
+	             DO WHILE (xpt .LT. xaxdat(xlo,1,1,1) )
+	  	        xpt = xpt + delmodx
+	             ENDDO
+		  ENDIF
+
 	       ENDIF
 
   100       CONTINUE
             i1 = arg_hi_ss(X_AXIS,ARG1)
-            IF (xpt .GT. xaxdat(i1,1,1,1)) THEN
+            IF (xpt .GT. xaxdat(i1,1,1,1) .AND. .NOT.modulo(1)) THEN
                ibot = ef_unspecified_int4		! ARG_2 XPT outside of range 
 		           				! (non modulo)
             ENDIF
@@ -480,6 +486,19 @@ cbf       for matching the next neighbour is not of interest
             ELSE
                itop = ibot + 1
             ENDIF
+
+* If the data is at the very top or bottom of the modulo x axis, get the
+* point from the other end.
+
+	    IF (xflag .EQ. 1) THEN
+	       ibot = xhi
+	       itop = xlo
+	    ENDIF
+	    IF (xflag .EQ. -1) THEN
+	       itop = xlo
+	       ibot = xhi
+	    ENDIF
+
             IF (ibot .EQ. ef_unspecified_int4) itop = ibot
 
 cbf        analogously in y direction
@@ -539,6 +558,10 @@ cbf         IF (ypt - yaxdat(j1,1,1,1) ) .LE. eps) jmatch = j1
 
                         xbot = xaxdat(ibot,1,1,1)
                         xtop = xaxdat(itop,1,1,1)
+			IF (xflag .EQ. 1 .AND. xtop.LT.xbot) 
+     .  			xtop = xbot + dx
+			IF (xflag .EQ.-1 .AND. xtop.LT.xbot) 
+     .  			xbot = xtop - dx
 
                         fbb = arg_1(ibot,jbot,k1,l1)
                         ftb = arg_1(itop,jbot,k1,l1)

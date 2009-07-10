@@ -11,7 +11,10 @@ GO bn_reset
 GO err62_thick_tic_time_axis
 
 GO bn_reset
-GO err62_reset_after_inf.jnl
+GO err62_reset_after_inf
 
 GO bn_reset
-GO err62_reversed_up.jnl
+GO err62_reversed_up
+
+GO bn_reset
+GO err62_samplexy

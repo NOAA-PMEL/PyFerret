@@ -44,12 +44,12 @@
 *  Hallo Steve,
 *  
 *  the external function samplexy was first only for the case that all points
-*  match the original axes. Now there is a version of samplexy, that interpolate
+*  imatch the original axes. Now there is a version of samplexy, that interpolate
 *  the values between the points, what is more general. But in some cases it
-*  fails, when the point matches the axis but one of the neighbour point has bad values.
+*  fails, when the point imatches the axis but one of the neighbour point has bad values.
 *  
 *  Here are some modification of the code. To avoid to much if-then-else-endif
-*  constructs i modify the variable itop and jtop in the case of matching.
+*  constructs i modify the variable itop and jtop in the case of imatching.
 *  In this case no interpolation is done but the condition if all numbers are 
 *  not bad values is fullfilled.
 *  
@@ -138,7 +138,7 @@
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
-      CALL ef_set_num_work_arrays(id, 2)
+      CALL ef_set_num_work_arrays(id, 6)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
@@ -254,6 +254,18 @@
 *  yaxdat
       CALL ef_set_work_array_dims (id, 2, myl, 1, 1, 1, myh, 1, 1, 1)
 
+*  xboxlo
+      CALL ef_set_work_array_dims (id, 3, mxl, 1, 1, 1, mxh, 1, 1, 1)
+
+*  xboxhi
+      CALL ef_set_work_array_dims (id, 4, mxl, 1, 1, 1, mxh, 1, 1, 1)
+
+*  yboxlo
+      CALL ef_set_work_array_dims (id, 5, myl, 1, 1, 1, myh, 1, 1, 1)
+
+*  yboxhi
+      CALL ef_set_work_array_dims (id, 6, myl, 1, 1, 1, myh, 1, 1, 1)
+
 
 *                                                                      ^
 *                                                                      |
@@ -270,7 +282,7 @@
 
 
       SUBROUTINE samplexy_compute(id, arg_1, arg_2, arg_3, result,
-     .       xaxdat, yaxdat)
+     .       xaxdat, yaxdat, xboxlo, xboxhi, yboxlo, yboxhi)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
@@ -312,6 +324,14 @@
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
       REAL*8 yaxdat(wrk2lox:wrk2lox+(wrk2hix-wrk2lox)/2,wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
+      REAL*8 xboxlo(wrk3lox:wrk3lox+(wrk3hix-wrk3lox)/2,wrk3loy:wrk3hiy,
+     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
+      REAL*8 xboxhi(wrk4lox:wrk4lox+(wrk4hix-wrk4lox)/2,wrk4loy:wrk4hiy,
+     .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
+      REAL*8 yboxlo(wrk5lox:wrk5lox+(wrk5hix-wrk5lox)/2,wrk5loy:wrk5hiy,
+     .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
+      REAL*8 yboxhi(wrk6lox:wrk6lox+(wrk6hix-wrk6lox)/2,wrk6loy:wrk6hiy,
+     .               wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
 
       INTEGER i, j, k, l
       INTEGER i1,j1,k1,l1
@@ -331,7 +351,7 @@ C  variables for checking axis characteristics (modulo axes)
       CHARACTER ax_name(4)*16, ax_units(4)*16
       LOGICAL backward(4), modulo(4), regular(4)
       INTEGER xlo, xhi, ylo, yhi
-      REAL dx, dy, delmodx, delmody, xpt, ypt
+      REAL dx, delmodx, xpt, ypt
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -373,6 +393,11 @@ C  variables for checking axis characteristics (modulo axes)
       CALL ef_get_coordinates(id, ARG1, Y_AXIS,
      .   arg_lo_ss(Y_AXIS, ARG1), arg_hi_ss(Y_AXIS, ARG1), yaxdat)
 
+      CALL ef_get_box_limits(id, ARG1, X_AXIS, arg_lo_ss(X_AXIS, ARG1), 
+     .   arg_hi_ss(X_AXIS, ARG1), xboxlo, xboxhi)
+      CALL ef_get_box_limits(id, ARG1, Y_AXIS, arg_lo_ss(Y_AXIS, ARG1), 
+     .   arg_hi_ss(Y_AXIS, ARG1), yboxlo, yboxhi)
+
       i2 = arg_lo_ss(X_AXIS,ARG2)
       j2 = arg_lo_ss(Y_AXIS,ARG2)
       k2 = arg_lo_ss(Z_AXIS,ARG2)
@@ -383,7 +408,7 @@ C  variables for checking axis characteristics (modulo axes)
       k3 = arg_lo_ss(Z_AXIS,ARG3)
       l3 = arg_lo_ss(T_AXIS,ARG3)
 
-*  Check to see if input x,y  axis is modulo
+*  Check to see if input x axis is modulo
 
       CALL ef_get_axis_info (id, ARG1, ax_name, ax_units, backward, 
      .                       modulo, regular)
@@ -393,18 +418,13 @@ C  variables for checking axis characteristics (modulo axes)
       ylo = arg_lo_ss(Y_AXIS,ARG1)
       yhi = arg_hi_ss(Y_AXIS,ARG1)
 
+      full_span = .FALSE.
       IF ( modulo(1) ) THEN
          ic = STR_UPCASE (test_str, ax_units(1))
-         ok = (test_str(1:3) .EQ. 'DEG' .OR. regular(1))
-         IF (.NOT. ok) THEN
-            err_msg = 'cannot handle MODULO axis that is not regular'
-            go to 999
-         ELSE
-            dx = xaxdat(xlo+1,1,1,1) - xaxdat(xlo,1,1,1)
-            delmodx = xaxdat(xhi,1,1,1) - xaxdat(xlo,1,1,1) + dx
-	    full_span = (delmodx .GT. 360.-dx)
-	    xax_plus = xaxdat(xhi,1,1,1) + dx
-         ENDIF
+         delmodx = xboxhi(xhi,1,1,1) - xboxlo(xlo,1,1,1)
+	 dx = 1.  ! fudge factor??
+         full_span = (delmodx .GT. 360.-dx)
+	 delmodx = 360.
       ENDIF
 
 *  For each (xpt,ypt) pair, search the data array 
@@ -438,50 +458,74 @@ C  variables for checking axis characteristics (modulo axes)
 
          ELSE
 
-            DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
-               IF (xpt .GE. xaxdat(i1,1,1,1)) ibot = i1
-               IF (xpt .EQ. xaxdat(i1,1,1,1)) imatch = i1
+* For mod x axis, if scattered point is entirely outside the axis range
+* use modulo length to put it inside.
+
+	    IF ( modulo(1) ) THEN
+	       IF (xpt .LT. xboxlo(xlo,1,1,1)) THEN
+                  DO WHILE (xpt .LT. xaxdat(xlo,1,1,1) )
+                     xpt = xpt + delmodx
+                  ENDDO
+	       ENDIF
+
+	       IF (xpt .GT. xboxhi(xhi,1,1,1)) THEN
+                  DO WHILE (xpt .GE. xaxdat(xhi,1,1,1) ) 
+                     xpt = xpt - delmodx
+                  ENDDO
+	       ENDIF
+	    ENDIF
+
+! If the point is in the bottom portion of the first cell or top portion
+! of the last cell then treat it as a imatch (revised for modulo axes below)
+
+	    imatch = 0
+	    IF (xpt .LE. xaxdat(xlo,1,1,1) .AND. 
+     .	        xpt .GE. xboxlo(xlo,1,1,1)) THEN
+		ibot = xlo
+		imatch = 1
+	    ENDIF
+	    
+	    IF (xpt .GE. xaxdat(xhi,1,1,1) .AND. 
+     .	        xpt .LE. xboxhi(xhi,1,1,1)) THEN
+		ibot = xhi
+		imatch = 1
+	    ENDIF
+
+            IF (imatch .EQ. 0) THEN
+
+               DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+                  IF (xpt .GE. xaxdat(i1,1,1,1)) ibot = i1
+                  IF (xpt .EQ. xaxdat(i1,1,1,1)) imatch = i1
 
 cbf      may be some derivation from the exact value can be allowed:
 cbf      if (xpt - xaxdat(i1,1,1,1)).le.eps)   imatch = i1
 
-  100       CONTINUE
+  100          CONTINUE
+
+	    ENDIF
 
 *  Locate the X point within the range of modulo X axis 
 *  If we have the whole span, then use the point at the other
 *  end to handle points within a half-grid cell of the edge.
 
-             xflag = 0
-             IF (modulo(1) .AND. full_span ) THEN
-               IF (xpt .GE. xaxdat(xhi,1,1,1) .AND.
-     .                xpt .LE. xaxdat(xhi,1,1,1)+dx) THEN
-                  ibot = xhi
-                  xflag = 1
-               ELSE IF (xpt .GE. xaxdat(xhi,1,1,1) ) THEN
-                  DO WHILE (xpt .GE. xaxdat(xhi,1,1,1) ) 
-                     xpt = xpt - delmodx
-                  ENDDO
-               ENDIF
-
-               IF (xpt .LT. xaxdat(xlo,1,1,1) .AND.
-     .                xpt .GE. xaxdat(xlo,1,1,1)-dx) THEN
+	    xflag = 0
+	    IF (modulo(1) .AND. full_span ) THEN
+	       IF (xpt .LT. xaxdat(xlo,1,1,1) .AND. 
+     .	            xpt .GE. xboxlo(xlo,1,1,1)) THEN
                   itop = xlo
                   xflag = -1
-               ELSE IF (xpt .LT. xaxdat(xlo,1,1,1) ) THEN
-                  DO WHILE (xpt .LT. xaxdat(xlo,1,1,1) )
-                     xpt = xpt + delmodx
-                  ENDDO
-               ENDIF
+		  imatch = 0
+	       ENDIF
 
-            ENDIF
+	       IF (xpt .GT. xaxdat(xhi,1,1,1) .AND. 
+     .             xpt .LE. xboxhi(xhi,1,1,1)) THEN
+                  ibot = xhi
+                  xflag = 1
+		  imatch = 0
+	       ENDIF
+	    ENDIF
 
-            i1 = arg_hi_ss(X_AXIS,ARG1)
-            IF (xpt .GT. xaxdat(i1,1,1,1) .AND. .NOT.modulo(1)) THEN
-               ibot = ef_unspecified_int4		! ARG_2 XPT outside of range 
-		           				! (non modulo)
-            ENDIF
-
-cbf       for matching the next neighbour is not of interest
+cbf       for imatching the next neighbour is not of interest
             IF (imatch .NE. 0) then
                itop = ibot
             ELSE
@@ -500,6 +544,11 @@ cbf       for matching the next neighbour is not of interest
 	       ibot = xhi
 	    ENDIF
 
+            IF (.NOT. full_span) THEN
+               IF (xpt .GT. xboxhi(xhi,1,1,1) ) ibot = ef_unspecified_int4
+               IF (xpt .LT. xboxlo(xlo,1,1,1) ) ibot = ef_unspecified_int4
+            ENDIF
+
             IF (ibot .EQ. ef_unspecified_int4) itop = ibot
 
 cbf        analogously in y direction
@@ -507,27 +556,31 @@ cbf        analogously in y direction
             jmatch = 0
 
    	    ypt = arg_3(i3,j3,k3,l3)
-            DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
-               IF (ypt .GE. yaxdat(j1,1,1,1) ) jbot = j1
-            IF (ypt .EQ. yaxdat(j1,1,1,1) ) jmatch = j1
-cbf         IF (ypt - yaxdat(j1,1,1,1) ) .LE. eps) jmatch = j1
 
-*  Locate the Y point within the range of modulo Y axis 
+! If the point is in the bottom portion of the first cell or top portion
+! of the last cell then treat it as a jmatch 
 
-	       IF (modulo(2)) THEN
-	          DO WHILE (ypt .GE. yaxdat(yhi,1,1,1) ) 
-                     ypt = ypt - delmody
-	          ENDDO
-	          DO WHILE (ypt .LT. yaxdat(ylo,1,1,1) )
-		     ypt = ypt + delmody
-	          ENDDO
-	       ENDIF
+	    jmatch = 0
+	    IF (ypt .LE. yaxdat(ylo,1,1,1) .AND. 
+     .	        ypt .GE. yboxlo(ylo,1,1,1)) THEN
+		jbot = ylo
+		jmatch = 1
+	    ENDIF
+	    
+	    IF (ypt .GE. yaxdat(yhi,1,1,1) .AND. 
+     .	        ypt .LE. yboxhi(yhi,1,1,1)) THEN
+		jbot = yhi
+		jmatch = 1
+	    ENDIF
 
-  200       CONTINUE
-            j1 = arg_hi_ss(Y_AXIS,ARG1)
-            IF (arg_3(i3,j3,k3,l3) .GE. yaxdat(j1,1,1,1) ) THEN
-                jbot = ef_unspecified_int4		! ARG_3 YPT outside of range 
-						        ! (non modulo)
+            IF (jmatch .EQ. 0) THEN
+
+               DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+                  IF (ypt .GE. yaxdat(j1,1,1,1) ) jbot = j1
+                  IF (ypt .EQ. yaxdat(j1,1,1,1) ) jmatch = j1
+cbf               IF (ypt - yaxdat(j1,1,1,1) ) .LE. eps) jmatch = j1
+
+  200          CONTINUE
 
             ENDIF
 
@@ -536,9 +589,11 @@ cbf         IF (ypt - yaxdat(j1,1,1,1) ) .LE. eps) jmatch = j1
             ELSE
                jtop = jbot + 1
             ENDIF
+
+            IF (ypt .GT. yboxhi(yhi,1,1,1) ) jbot = ef_unspecified_int4
+            IF (ypt .LT. yboxlo(ylo,1,1,1) ) jbot = ef_unspecified_int4
+
             IF (jbot .EQ. ef_unspecified_int4) jtop = jbot
-            IF (jtop .GE. arg_hi_ss(Y_AXIS,ARG1)) 
-     .                           jtop = arg_hi_ss(Y_AXIS,ARG1)        !10/2001 acm
 
             k1 = arg_lo_ss(Z_AXIS,ARG1)
             DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
@@ -559,11 +614,12 @@ cbf         IF (ypt - yaxdat(j1,1,1,1) ) .LE. eps) jmatch = j1
 
                         xbot = xaxdat(ibot,1,1,1)
                         xtop = xaxdat(itop,1,1,1)
-			IF (xflag .EQ. 1 .AND. xtop.LT.xbot) 
-     .  			xtop = xbot + dx
-			IF (xflag .EQ.-1 .AND. xtop.LT.xbot) 
-     .  			xbot = xtop - dx
-
+			IF (xflag .EQ. 1 .AND. xtop.LT.xbot) THEN
+			   xtop = xtop - 360.
+		        ENDIF
+			IF (xflag .EQ.-1 .AND. xtop.LT.xbot) THEN
+			   xbot = xbot - 360.
+		        ENDIF
                         fbb = arg_1(ibot,jbot,k1,l1)
                         ftb = arg_1(itop,jbot,k1,l1)
                         fbt = arg_1(ibot,jtop,k1,l1)
@@ -574,7 +630,7 @@ cbf         IF (ypt - yaxdat(j1,1,1,1) ) .LE. eps) jmatch = j1
      .                      fbt .NE. bad_flag(ARG1)  .AND.
      .                      ftt .NE. bad_flag(ARG1) ) THEN
 
-cbf                 for matching x-axis no interpolation is need
+cbf                 for imatching x-axis no interpolation is need
                              if (imatch.ne.0) then
                                 fxbot = fbb
                                 fxtop = fbt

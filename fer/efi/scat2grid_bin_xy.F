@@ -85,7 +85,8 @@
 
       CHARACTER*126 buff
       WRITE (buff, 10)
-   10 FORMAT ('Put scattered data into XY grid by binning')
+   10 FORMAT ('Computes unweighted avg of scattered ',
+     .        'data that fall in each cell of XY grid.')
       CALL ef_set_desc(id, buff)
 
       CALL ef_set_num_args(id, 5)

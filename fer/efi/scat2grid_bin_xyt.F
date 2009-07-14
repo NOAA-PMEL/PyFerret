@@ -92,8 +92,8 @@
 
       CHARACTER*126 buff
       WRITE (buff, 10)
-   10 FORMAT ('Computed binned averages of scattered ',
-     .        'data onto a regularly-spaced XYT grid.')
+   10 FORMAT ('Computes unweighted avg of scattered ',
+     .        'data that fall in each cell of XYT grid.')
       CALL ef_set_desc(id, buff)
 
       CALL ef_set_num_args(id, 7)

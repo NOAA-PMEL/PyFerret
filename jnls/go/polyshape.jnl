@@ -187,13 +187,13 @@ IF $1"|tright>1|*>0|" THEN
 ENDIF
 
 IF $1"|vright>1|*>0|" THEN
-  LET/QUIET xpolyshape = {-0.8, 0.8, 0.0,  0.8, -0.8}
-  LET/QUIET ypolyshape = { 0.0, 0.8, 0.0, -0.8,  0.0}
+  LET/QUIET xpolyshape = {-0.8, 0.8, 0.8, 0.2,  0.8,  0.8, -0.8}
+  LET/QUIET ypolyshape = { 0.0, 0.8, 0.6, 0.0, -0.6, -0.8,  0.0}
 ENDIF
 
 IF $1"|vleft>1|*>0|" THEN
-  LET/QUIET xpolyshape = { 0.8, -0.8, -0.0, -0.8, 0.8}
-  LET/QUIET ypolyshape = { 0.0,  0.8,  0.0, -0.8,  0.0}
+  LET/QUIET xpolyshape = { 0.8, -0.8, -0.8, -0.2, -0.8, -0.8, 0.8}
+  LET/QUIET ypolyshape = { 0.0,  0.8,  0.6,  0.0, -0.6, -0.8,  0.0}
 ENDIF
 
 IF $1"|rtriangle>1|*>0|" THEN

@@ -809,6 +809,9 @@ void FORTRAN(scat2grid_nobs_xyt_compute)(int *, float *, float *, float *,
 void FORTRAN(scat2grid_nobs_xy_init)(int *);
 void FORTRAN(scat2grid_nobs_xy_work_size)(int *);
 void FORTRAN(scat2grid_nobs_xy_compute)(int *, float *, float *);
+
+void FORTRAN(unique_str2int_init)(int *);
+void FORTRAN(unique_str2int_compute)(char *, int *);
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -856,7 +859,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 123
+#define N_INTEF 124
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -985,6 +988,7 @@ struct {
    strcpy(I_EFnames[120].funcname, "zcat");
    strcpy(I_EFnames[121].funcname, "zcat_str");
    strcpy(I_EFnames[122].funcname, "zreverse");
+   strcpy(I_EFnames[123].funcname, "unique_str2int");
 /*    
  *  ------------------------------------ 
  */
@@ -3398,6 +3402,9 @@ else if ( !strcmp(name,"fill_xy_compute_") ) return (void *)FORTRAN(fill_xy_comp
 else if ( !strcmp(name,"test_opendap_init_") ) return (void *)FORTRAN(test_opendap_init);
 else if ( !strcmp(name,"test_opendap_result_limits_") ) return (void *)FORTRAN(test_opendap_result_limits);
 else if ( !strcmp(name,"test_opendap_compute_") ) return (void *)FORTRAN(test_opendap_compute);
+
+else if ( !strcmp(name,"unique_str2int_init_") ) return (void *)FORTRAN(unique_str2int_init);
+else if ( !strcmp(name,"unique_str2int_compute_") ) return (void *)FORTRAN(unique_str2int_compute);
 
  }
 /*  End of function pointer list for internally-linked External Functions

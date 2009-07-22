@@ -128,6 +128,7 @@ transpose_yt.F\
 transpose_yz.F\
 transpose_zt.F\
 treverse.F\
+unique_str2int.F\
 xauto_cor.F\
 xcat.F\
 xcat_str.F\
@@ -145,4 +146,5 @@ zreverse.F\
 zgrid_laplace.F
 SRCS_C = \
 date_decode.c\
-time_decode.c
+time_decode.c\
+us2i_compare_string_list.c

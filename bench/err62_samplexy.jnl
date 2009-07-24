@@ -12,7 +12,7 @@ use xz
 let xpts = {357.6,358.8,359.9,360.,0.1,1.2,2.4}
 let ypts = 0*xpts
 
-let/title=samplerose sr = SAMPLEXY(sst[L=1], xpts, ypts)
+let sr = SAMPLEXY(sst[L=1], xpts, ypts)
 
 ! previously the middle 3 points of this were missing.
 list sr

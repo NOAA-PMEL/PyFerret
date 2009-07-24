@@ -45,15 +45,17 @@
 !       yes? GO polymark_datekey polygon/over/key  xpts,ypts,lpts,ex,0.5,taxvar
 
 ! argument check
-QUERY/IGNORE $1"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] [timevar]"
-QUERY/IGNORE $2"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] [timevar]"
-QUERY/IGNORE $3"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] [timevar]"
+QUERY/IGNORE $1"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar"
+QUERY/IGNORE $2"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar"
+QUERY/IGNORE $3"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar"
+QUERY/IGNORE $7"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar"
 
 ! save the input expressions into simple variable definitions
 LET/QUIET PLMxpoly = ($2)
 LET/QUIET PLMypoly = ($3)
 LET/QUIET PLMpolydata = $4"0"
 
+LET tpts = $7
 LET/QUIET PLMlabel = $8"0|hr>1|min>2|sec>3|*>0"
 
 ! determine the orientation of the data (and check that it is 1D or a point)

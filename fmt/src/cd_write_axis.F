@@ -122,7 +122,7 @@
       LOGICAL TM_ABSTRACT_AXIS, TM_DATE_OK, MATCH_NAME, NC_GET_ATTRIB,
      .       abstract, do_warn, got_modulo, got_calendar, got_units, 
      .       got_positive, got_spacing, got_axis, got_cartesian, got_it,
-     .       coordvar
+     .       coordvar, do_off, do_scale
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1, CD_AXLEN, STR_SAME, 
      .        dimid, iaxis, axid, cdfstat, lo, hi,
@@ -598,8 +598,38 @@
           ENDIF
        ENDIF
 
-* does it need axis bounds definitions ?
+* If the axis came in scaled, and the users asked for scaling on output
+* then return a note.
 
+       IF (varid .GT. 0) THEN
+          do_scale = .FALSE.
+	  do_off = .FALSE.
+          attname = 'scale_factor' 
+          CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid,
+     .               status)
+          IF (attid .GT. 0) THEN
+	     CALL CD_GET_VAR_ATT_INFO (dset_num, varid,
+     .          attid, attname, attype, attlen, attoutflag, istat )
+             IF (attoutflag .EQ. 1) do_scale = .TRUE.
+          ENDIF
+
+          attname = 'add_offset' 
+          CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid,
+     .               status)
+          IF (attid .GT. 0) THEN
+             CALL CD_GET_VAR_ATT_INFO (dset_num, varid,
+     .          attid, attname, attype, attlen, attoutflag, istat )
+             IF (attoutflag .EQ. 1) do_off = .TRUE.
+          ENDIF
+ 
+          IF (do_scale .OR. do_off)  
+     .    CALL TM_NOTE(name(1:nlen)//
+     .      ': Writing scaled coordinates not implemented. Suggest '//
+     .      'using nco operators on output file to pack coord values', 
+     .      lunit_errors)
+       ENDIF
+            
+* does it need axis bounds definitions ?
 
 * Has the user explicitly asked not to write bounds for the variable?
 * If so mark this with the value attoutflag = 2

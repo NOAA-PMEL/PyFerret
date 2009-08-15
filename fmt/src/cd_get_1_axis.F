@@ -203,11 +203,12 @@
       LOGICAL NC_GET_ATTRIB, CD_GET_ATTVAL, TM_CHECK_BOX_LOC,
      .        TM_HAS_STRING, TM_FPEQ_EPS, TM_DFPEQ, CD_GET_ATTVALC, 
      .        CD_GET_ATTVAL_L, TM_CHECK_BNDS, TM_CHECK_BNDS_CENTERED, 
-     .        TM_FPEQ, TM_DFPEQ_TOL,
+     .        TM_FPEQ, TM_DFPEQ_TOL, NC_GET_ATTRIB_DP,
      .        got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time, 
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
-     .        got_edges, got_bnds, coordvar, its_irregular
+     .        got_edges, got_bnds, coordvar, its_irregular, 
+     .        do_scale, do_offset, scale_is_dp
 
       INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,      
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, 
@@ -218,10 +219,12 @@
      .        cal_id, year, month, day, hour, minute, second, slen, nc,
      .        blen, bndid, startpts(2), numpts(2), next_line_storage,
      .        d1s, d1e, d2s, d2e, len_cal, attoutflag, maxlen,
-     .        all_outflag, dir, attlen, iedge, irev
+     .        all_outflag, dir, attlen, iedge, irev, attype, iatt
 
-      REAL    rbuff, delta, first_delta, val, epsilon, lm_len
-      REAL*8  TM_LONW2LONE, TM_WW_AXLEN, tmp8, axwwlen , rdelta
+      REAL    rbuff, delta, first_delta, val, epsilon, lm_len, 
+     .        scale, offset
+      REAL*8  TM_LONW2LONE, TM_WW_AXLEN, tmp8, axwwlen , rdelta, 
+     .        dscale, doffset
       CHARACTER*12 TM_LEFINT
       CHARACTER vname*128, ename*128, vupcase*128, words(8)*24,
      .        spacing_attr*14, bname*128
@@ -290,6 +293,56 @@
       CALL TM_ALLO_TMP_LINE(iaxis, status)
       IF (status .NE. merr_ok) GOTO 5900
 
+* Are there scale_factor and/or add_offset attributes?  If so need to unpack
+* the coordinate values
+
+      scale = 1.
+      dscale = 1.D0
+      offset = 0.
+      doffset = 0.D0
+
+      do_scale = NC_GET_ATTRIB(dset, ivar, 'scale_factor',
+     .                       do_warn, vname(:vlen), maxlen, attlen, 
+     .                       attoutflag, buff, scale)
+     
+      scale_is_dp = .FALSE.
+
+      IF ( do_scale ) THEN
+         CALL CD_GET_VAR_ATT_ID (dset, ivar, 'scale_factor', iatt, 
+     .              status)
+         IF (iatt .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, ivar, 
+     .              iatt, buff, attype, attlen, attoutflag, istat )
+
+         IF (attype .EQ. nf_double) THEN
+             got_it = NC_GET_ATTRIB_DP(dset, ivar, 'scale_factor',
+     .                       do_warn, vname(:vlen), attlen, 
+     .                       attoutflag, dscale)
+             scale_is_dp = .TRUE.
+	 ENDIF
+      ENDIF
+
+      do_offset = NC_GET_ATTRIB(dset, ivar, 'add_offset',
+     .                       do_warn, vname(:vlen), maxlen, attlen, 
+     .                       attoutflag, buff, offset)
+
+      IF ( do_offset ) THEN
+         CALL CD_GET_VAR_ATT_ID (dset, ivar, 'add_offset', iatt, 
+     .              status)
+         IF (iatt .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, ivar, 
+     .              iatt, buff, attype, attlen, attoutflag, istat )
+
+         IF (attype .EQ. nf_double) THEN
+            got_it = NC_GET_ATTRIB_DP(dset, ivar, 'add_offset',
+     .                       do_warn, vname(:vlen), attlen, 
+     .                       attoutflag, doffset)
+            IF (do_scale .AND. (.NOT. scale_is_dp))  GOTO 5400
+     	 ELSE
+	    IF (do_scale .AND. scale_is_dp)  GOTO 5400
+     	 ENDIF
+
+      ENDIF
+      do_scale = do_scale .OR. do_offset
+ 
 * optional point spacing parameter: even, uneven, disordered
       IF ( its_epic ) THEN
          spacing_attr = 'type'          ! type = "EVEN" or ="E"
@@ -837,6 +890,16 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
      .                       line_delta(iaxis), status )
          ENDIF
          IF ( status .NE. merr_ok ) GOTO 1000   ! 3/99 soft error
+	 IF (do_scale) THEN
+	    IF (scale_is_dp) THEN
+	       line_start(iaxis) = line_start(iaxis)*dscale + doffset
+	       line_delta(iaxis) = line_delta(iaxis)*dscale + doffset
+	    ELSE
+	       line_start(iaxis) = line_start(iaxis)*scale + offset
+	       line_delta(iaxis) = line_delta(iaxis)*scale + offset
+	    ENDIF
+	 ENDIF
+
          IF ( west_lon ) THEN
             line_start(iaxis) = TM_LONW2LONE( line_start(iaxis) ) 
             line_delta(iaxis) = TM_LONW2LONE( line_delta(iaxis) ) 
@@ -848,18 +911,18 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
             IF ( reversed(iaxis) ) THEN
                tmp8 = line_delta(iaxis)
                line_delta(iaxis) =
-     .           (line_start(iaxis)-line_delta(iaxis))/(npts-1)
+     .           (line_start(iaxis)-line_delta(iaxis))/DBLE(npts-1)
                line_start(iaxis) = tmp8
             ELSE
                line_delta(iaxis) =
-     .           (line_delta(iaxis)-line_start(iaxis))/(npts-1)
+     .           (line_delta(iaxis)-line_start(iaxis))/DBLE(npts-1)
             ENDIF
          ELSE
             reversed(iaxis) = .FALSE.
             line_delta(iaxis) = 1
          ENDIF
          line_subsc1(iaxis) = unspecified_int4
-         last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
+         last_coord = line_start(iaxis) + DBLE(npts-1)*line_delta(iaxis)
          firs_coord = line_start(iaxis)
 
 
@@ -893,6 +956,17 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
             ENDIF
          ENDIF
          IF ( status .NE. merr_ok ) GOTO 1000   ! 3/99 soft error
+	 
+	 IF (do_scale) THEN
+	    IF (scale_is_dp) THEN
+	       DO 334 i=ipt1,ipte
+ 334            line_mem(iaxis) = line_mem(iaxis)*dscale + doffset
+	    ELSE
+	       DO 336 i=ipt1,ipte
+ 336            line_mem(iaxis) = line_mem(iaxis)*scale + offset
+	    ENDIF
+	 ENDIF
+
          IF ( west_lon ) THEN
             DO 340 i=ipt1,ipte
  340        line_mem(i) = TM_LONW2LONE( line_mem(i) ) 
@@ -961,9 +1035,9 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         line_regular(iaxis) = .TRUE.
         line_start  (iaxis) = line_mem(ipt1)
         line_delta  (iaxis) = 
-     .              (line_mem(ipte)-line_mem(ipt1))/(npts-1)
+     .              (line_mem(ipte)-line_mem(ipt1))/DBLE(npts-1)
         line_subsc1 (iaxis) = unspecified_int4
-        last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
+        last_coord = line_start(iaxis) + DBLE(npts-1)*line_delta(iaxis)
         firs_coord = line_start(iaxis)
 
         GOTO 390
@@ -1160,12 +1234,13 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
               line_start  (iaxis) = line_mem(ipt1)
               IF (npts .GT. 1) THEN
                  line_delta  (iaxis) = 
-     .               (line_mem(ipte)-line_mem(ipt1))/(npts-1)
+     .               (line_mem(ipte)-line_mem(ipt1))/DBLE(npts-1)
               ELSE
                  line_delta(iaxis) = 1
               ENDIF
               line_subsc1 (iaxis) = unspecified_int4
-              last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
+              last_coord = line_start(iaxis) + 
+     .               DBLE(npts-1)*line_delta(iaxis)
               firs_coord = line_start(iaxis)
            ENDIF
         ELSE
@@ -1302,6 +1377,12 @@ c             line_modulo_len(iaxis) = 0.0D0
      .                  no_descfile, no_stepfile,
      .                  'MAX='//TM_STRING(DBLE(maxlinestore)),
      .                  no_errstring, *1000)          ! 3/99 soft error
+
+
+ 5400   CALL TM_ERRMSG
+     .     ( cdfstat+pcdferr, status, 'CD_GET_1_AXIS', cdfid, ivar,
+     .       'Scale and offset attributes not of the same type', 
+     .       no_errstring, *5900 )
 
 * error exit
  5900   RETURN

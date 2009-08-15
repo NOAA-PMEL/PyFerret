@@ -1,0 +1,77 @@
+! bn_packed_coordinates
+! NCO operator ncpdq packs all the data including
+! coords, in a file. Need to implement unpacking coordinates
+! Also ncpdq handles missing-data differently than the CF conventions.
+
+SP rm -f packed.nc
+SP ncpdq fine_x_axis.nc packed.nc
+USE packed.nc
+
+! Check that the coordinates packed by ncpdq are unpacked ok.
+LIST/i=1:15 sst
+
+
+! We can write the data out - saving the scaling to re-pack.
+SET ATT/OUTPUT sst.scale_factor
+SET ATT/OUTPUT sst.add_offset
+
+SAVE/CLOBBER/FILE=mypack.nc/I=1:15 sst
+
+USE mypack
+SH ATT/ALL sst
+CANCEL DATA mypack
+
+
+! Ferret does not allow writing packed axis because
+! of loss of precision - cant verify coordinates.
+! If we try, then Ferret returns a warning and does not pack.
+
+
+LET allatts = (`sst,return=xaxis`).attnames
+IF `IS_ELEMENT_OF_STR(allatts, "scale_factor")` THEN SET ATT/OUTPUT (`sst,RETURN=xaxis`).scale_factor
+IF `IS_ELEMENT_OF_STR(allatts, "add_offset")` THEN SET ATT/OUTPUT (`sst,RETURN=xaxis`).add_offset
+
+SAVE/CLOBBER/FILE=mypack.nc/I=1:15 sst
+
+
+USE mypack
+SH ATT/ALL sst
+CANCEL DATA mypack
+
+
+! Notice that the missing-values were not packed by ncpdq
+! in a way that corresponds to the CF conventions.
+! (ncpdq scales the missing data but does not list the
+!  scaled VALUE of the missing-data flag. It assumes we
+!  will apply the scaling and THEN look for values of 
+!  missing-flag. This is the opposite order of ops compared 
+!  to what CF specifies.)
+
+USE packed.nc
+PLOT sst
+
+! Will pack the data value using Ferret 
+! But not the coord values.
+
+! Get the scale and offset as determined by ncpdq
+LET scale_to_use = `sst.scale_factor`
+LET off_to_use = `sst.add_offset`
+
+CAN DATA/ALL
+USE fine_x_axis.nc
+SET VAR/NAME=sst_in sst
+
+LET/units="`sst_in,RETURN=units`" sst = MISSING(sst_in,2000)
+SET VAR/BAD=2000 sst
+SET VAR/OUTTYPE=short sst
+
+DEFINE ATTRIBUTE sst.scale_factor = `scale_to_use`
+DEFINE ATTRIBUTE sst.add_offset = `off_to_use`
+SET ATT/OUTPUT  sst.scale_factor
+SET ATT/OUTPUT  sst.add_offset
+SAVE/CLOBBER/FILE=short_sst.nc sst
+
+
+CAN VAR/ALL
+USE short_sst
+PLOT sst_in[d=1], sst[d=2]

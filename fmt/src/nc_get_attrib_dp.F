@@ -1,5 +1,6 @@
 	LOGICAL FUNCTION NC_GET_ATTRIB_DP ( dset, varid, attrib,
-     .                do_warn, vname, attlen, attoutflag, dvals )
+     .                                   do_warn, vname, attlen, 
+     .                                   attoutflag, dvals )
 
 *
 *
@@ -36,7 +37,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* get double precision attribute values from a netCDF data structure
+* get double-precision attribute values from a netCDF data structure if
+* the attribute exists
 * 
 * Based on CD_GET_ATTRIB
 * V600 -  5/05 *acm*  Attribute handling upgrade. Rework to read information 
@@ -47,7 +49,8 @@
 *                     so it replaces CD_GET_ATTVAL.
 *         6/06 *acm*  replace istat with status
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-*
+* V602 *acm* make sure lena=length of attr name is defined before writing warning
+
 * argument definitions:
 *	dset	 - dataset number
 *       varid    - variable id 
@@ -55,14 +58,14 @@
 *	do_warn	 - logical flag to issue warning if invalid attribute
 *                - warnings are never issued if attribute doesn't exit
 *       vname    - name of variable owning attribute (used in error msgs)
-*       attlen   - length of output (number of values)
+*       attlen   - length of output (string length or number of values)
 *       attoutflag- 1 if attribute to be written to output files, 0 if not
-*       dvals     - array in which to return result if double precision
+*       dvals    - array in which to return result if numerical type
 
 * argument declarations
       LOGICAL       do_warn
       INTEGER	    dset, varid, attlen, attoutflag
-      CHARACTER*(*) attrib, vname
+      CHARACTER*(*) attrib, vname, string
       real*8        dvals(*)
 
 #include "gt_lib.parm"
@@ -77,12 +80,15 @@
      .        lena, lenb, attype, status, i, dset_num, attid
       CHARACTER*128 aname
 
+      INTEGER tt  ! nice short name
+      EQUIVALENCE (tt,lunit_errors)
+
       INTEGER slen, flen
-      PARAMETER (flen=nf_max_attrs)        ! size of attribute NC_GET_ATTRIB_DP
+      PARAMETER (flen=nf_max_attrs)        ! size of attribute string
 #ifdef sun
-      BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith NC_GET_ATTRIB_DP buffer
+      BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith string buffer
 #else
-      INTEGER*1 fhol(flen), ghol(flen)     ! c-type Hollerith NC_GET_ATTRIB_DP buffer
+      INTEGER*1 fhol(flen), ghol(flen)     ! c-type Hollerith string buffer
 #endif 
 
        NC_GET_ATTRIB_DP = .FALSE.
@@ -110,8 +116,7 @@
 
       dset_num = dset
       IF (dset_num .LT. -2) dset_num = -2
-      status = NCF_GET_VAR_ATTR(dset_num, varid, ghol, fhol, 
-     .  attlen, dvals)
+      status = NCF_GET_VAR_ATTR(dset_num, varid, ghol, fhol, attlen, dvals)
 
       IF ( status .NE. merr_ok ) THEN
          NC_GET_ATTRIB_DP = .FALSE.
@@ -120,11 +125,7 @@
          RETURN  
       ENDIF
 
-      IF ( attype .EQ. NCCHAR ) THEN
-         NC_GET_ATTRIB_DP = .FALSE.
-      ELSE
-         NC_GET_ATTRIB_DP = .TRUE.
-      ENDIF
+      NC_GET_ATTRIB_DP = .TRUE.
 
       RETURN
 

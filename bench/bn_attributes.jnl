@@ -722,6 +722,10 @@ set var/outtype=input elev
 
 save/clobber/file=a.nc/j=1 elev
 sp echo "bn_attributes.jnl --- 19 scale and offset attr." >> all_ncdump.out
+
+! Both of these should be scaled the same by Ferret
+use a.nc 
+list/j=1 elev[d=1], elev[d=2]
 sp ncdump a.nc  >> all_ncdump.out
 
 go bn_reset

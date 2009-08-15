@@ -20,19 +20,19 @@ SAVE/CLOBBER/FILE=mypack.nc/I=1:15 sst
 USE mypack
 SH ATT/ALL sst
 CANCEL DATA mypack
-
+SET DATA packed
 
 ! Ferret does not allow writing packed axis because
 ! of loss of precision - cant verify coordinates.
 ! If we try, then Ferret returns a warning and does not pack.
 
-
+SET MODE IGNORE
 LET allatts = (`sst,return=xaxis`).attnames
 IF `IS_ELEMENT_OF_STR(allatts, "scale_factor")` THEN SET ATT/OUTPUT (`sst,RETURN=xaxis`).scale_factor
 IF `IS_ELEMENT_OF_STR(allatts, "add_offset")` THEN SET ATT/OUTPUT (`sst,RETURN=xaxis`).add_offset
 
 SAVE/CLOBBER/FILE=mypack.nc/I=1:15 sst
-
+SET MODE/LAST IGNORE
 
 USE mypack
 SH ATT/ALL sst

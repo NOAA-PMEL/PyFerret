@@ -45,13 +45,14 @@
 
 * calling argument declarations:
       INTEGER n
-      REAL factor, offset, bad, array(n)
+      REAL factor, offset, bad, array(*)
 
 * internal variable declarations:
       INTEGER i
 
       DO 100 i = 1, n
- 100  IF (array(i) .NE. bad) array(i) = array(i)*factor + offset
+         IF (array(i) .NE. bad) array(i) = array(i)*factor + offset
+ 100  CONTINUE
 
       RETURN
       END

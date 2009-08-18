@@ -219,7 +219,7 @@
      .        cal_id, year, month, day, hour, minute, second, slen, nc,
      .        blen, bndid, startpts(2), numpts(2), next_line_storage,
      .        d1s, d1e, d2s, d2e, len_cal, attoutflag, maxlen,
-     .        all_outflag, dir, attlen, iedge, irev, attype, iatt
+     .        all_outflag, dir, attlen, iedge, irev, attype, iatt, ibx1
 
       REAL    rbuff, delta, first_delta, val, epsilon, lm_len, 
      .        scale, offset
@@ -1226,6 +1226,8 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
 * For axes specified with BOUNDS, check whether coordinates are also 
 * centered in the boxes, and whether the size of the boxes are equal.
+* If there is one point, use upper and lower bound as given in the file 
+* to determine line_delta.
 
         IF (TM_CHECK_BNDS_CENTERED(iaxis)) THEN
 * It's actually regular - save it as such
@@ -1236,7 +1238,8 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
                  line_delta  (iaxis) = 
      .               (line_mem(ipte)-line_mem(ipt1))/DBLE(npts-1)
               ELSE
-                 line_delta(iaxis) = 1
+	         ibx1 = ipt1 + npts
+                 line_delta(iaxis) = line_mem(ibx1+1)-line_mem(ibx1)
               ENDIF
               line_subsc1 (iaxis) = unspecified_int4
               last_coord = line_start(iaxis) + 

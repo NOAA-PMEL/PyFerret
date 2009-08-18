@@ -653,7 +653,6 @@ GO bn_clock_syms
 GO bn_reset
 GO bn63_bug_fixes.jnl
 
-GO bn_packed_coordinates.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

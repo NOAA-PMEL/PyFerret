@@ -18,3 +18,6 @@ GO err62_reversed_up
 
 GO bn_reset
 GO err62_samplexy
+
+GO bn_reset
+GO err62_one_point_bounds

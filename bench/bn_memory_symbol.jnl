@@ -4,7 +4,7 @@
      
 sh sym ferret_memory
 
-set mem/siz=90:
+set mem/siz=90
 sh sym ferret_memory
 show memory
 

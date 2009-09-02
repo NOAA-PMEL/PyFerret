@@ -23,7 +23,6 @@ show attribute temp.missing_value
 !  specifying data set
 
 use gt4d011
-!use "http://ferret.pmel.noaa.gov/cgi-bin/dods/nph-dods/data/PMEL/ocean_atlas_annual.nc"
 use levitus_climatology
 
 sh att/all temp[d=2]
@@ -44,7 +43,6 @@ use ocean_atlas_temp
 sho data/att 
 
 use gt4d011
-!use "http://ferret.pmel.noaa.gov/cgi-bin/dods/nph-dods/data/PMEL/ocean_atlas_annual.nc"
 use levitus_climatology
 
 sh data/att gt4d011

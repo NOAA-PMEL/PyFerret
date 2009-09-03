@@ -45,7 +45,6 @@
 * revision 0.0 - 8/25/88
 * V230:  7/23/92 - TRUE only if grid has a valid latitude axis (major rewrite)
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -53,13 +52,6 @@
         external xunits_data
 	include 'ferret.parm'
 	include 'xtext_info.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		idim, grid

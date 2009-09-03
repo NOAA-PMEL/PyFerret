@@ -54,25 +54,17 @@
 *	 2/96 - fix bug introduced in 11/95: CGRID_AXIS has wrong args
 
 * internal variable declarations:
-!	LOGICAL	GEOG_COS_FACTOR, need_cos
+!	LOGICAL	GEOG_, need_cos
 	INTEGER  CGRID_AXIS, i, j, k, l, grid, pt, lo, hi, axis, npt
 	REAL	BOX_SIZE, bad_com, bad_res
-!       REAL    cos_factor
+!       REAL    
 	REAL*8	TM_WORLD, dsum, bsum, mean, diff
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	idim, com_lo, com_hi, com_mr, com_cx, res_mr, res_cx
@@ -134,11 +126,11 @@
 
 * ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-!	   need_cos = GEOG_COS_FACTOR( idim, grid )
+!	   need_cos = GEOG_( idim, grid )
 	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 310 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-!	      IF ( need_cos ) cos_factor = COS( deg2rad *       
+!	      IF ( need_cos )  = COS( deg2rad *       
 !     .             SNGL( TM_WORLD( j, grid, y_dim, box_middle )) ) 
 * ... Pass #1: determine mean
               npt = 0

@@ -78,7 +78,8 @@
 * internal variable declarations:
 	LOGICAL	GEOG_COS_FACTOR, need_cos
 	INTEGER i, j, k, l, ii, grid, lo_sub(4), hi_sub(4), axis
-	REAL	bad_com, bad_res, lo_com, hi_com, unit, cosine
+	REAL	bad_com, bad_res, lo_com, hi_com, unit, cos_factor,
+     .          ybxlo, ybxhi, bx
 	REAL*8	TM_WORLD, lo_ww, hi_ww
 
 * internal (convenience) equivalences
@@ -120,8 +121,17 @@
 	   need_cos = GEOG_COS_FACTOR( idim, grid )
      .                .AND. lo_s2.NE.unspecified_int4
 	   DO 110 j = lo_s2, hi_s2
-	   IF ( need_cos ) cosine = COS( deg2rad *       
+	   IF ( need_cos ) THEN
+	      cos_factor = COS( deg2rad *       
      .             SNGL( TM_WORLD( j, grid, y_dim, box_middle )) ) 
+              ybxlo = deg2rad* 
+     .          SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
+              ybxhi = deg2rad* 
+     .          SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+              bx = ABS(ybxhi - ybxlo)
+	      cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/ bx
+	   ENDIF
+
 	   DO 110 l = lo_s4, hi_s4
 	   DO 110 k = lo_s3, hi_s3
 	      lo_com = com(lo_s1-shf,j,k,l)
@@ -131,7 +141,7 @@
 	            res(i,j,k,l) = bad_res
 	         ELSE
 	            res(i,j,k,l) = (hi_com-lo_com) / box(i)
-	            IF ( need_cos ) res(i,j,k,l) = res(i,j,k,l)/cosine
+	            IF ( need_cos ) res(i,j,k,l) = res(i,j,k,l)/cos_factor
 	         ENDIF
 	         lo_com = hi_com
  100	      CONTINUE

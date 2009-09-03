@@ -73,7 +73,7 @@
      .		com_lo(4), com_hi(4), box_offset(4), offset, ind_lo, ind_hi,
      .		cos_offset
 	REAL	BOX_SIZE, unit, bad_com, bad_res, box, mean, diff,
-     .		xbox, ybox, zbox, tbox, yc, yh_2, bb
+     .		xbox, ybox, zbox, tbox, yc, yh, yh_2, bb, ybxlo, ybxhi
 	REAL*8	TM_WORLD, dsum, bsum
 
 	include	'ferret.parm'
@@ -202,16 +202,34 @@
      .		.AND. yes_xax
      .	 	.AND. cx_lo_s2(com_cx) .NE. unspecified_int4
 	IF ( need_cos ) THEN
-              offset = box_offset(y_dim)
 	      DO 120 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-                 boxes(j+cos_offset)  = COS( deg2rad * 
-     .              SNGL( TM_WORLD(j,grid,y_dim,box_middle)) )
+	         yc = deg2rad * 
+     .              SNGL( TM_WORLD(j,grid,y_dim,box_middle))
+                 boxes(j+cos_offset)  = COS(yc)
                  IF (yes_yax) THEN
                     unit = 1.
 	            IF ( at_din ) unit = 
      .                un_convert( line_unit_code(grid_line(y_dim,grid)) )
-                    yh_2 = 0.5*deg2rad * boxes(j+offset)/unit
-                    boxes(j+offset)  = 2.*ABS( SIN(yh_2) ) * unit/deg2rad
+c!                    yh = boxes( j+box_offset(y_dim) )
+c!                    yh_2 = 0.5*deg2rad * yh/unit
+c!
+c!                    boxes(j+cos_offset)  = 
+c!     .                COS(yc) * ABS(SIN(yh/2))/(yh/2)
+
+C The above are all OK if the coordinate point is in the middle of the box.
+C If the coordinate is not in the middle of the cell then it should be
+C ABS(SIN(ybxhi)-SIN(ybxlo))  
+C See this thread:
+C http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2009/msg00506.html
+C And also ticket 1348.
+
+	            ybxlo = deg2rad* 
+     .                SNGL(TM_WORLD(j, grid, y_dim, box_lo_lim) )
+	            ybxhi = deg2rad* 
+     .                SNGL(TM_WORLD(j, grid, y_dim, box_hi_lim) )
+
+	            boxes(j+cos_offset)  = ABS( SIN(ybxhi) - SIN(ybxlo) )/
+     .                ( ybxhi - ybxlo )
 
                  ENDIF
  120         CONTINUE

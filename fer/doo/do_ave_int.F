@@ -54,10 +54,10 @@
 * internal variable declarations:
 	LOGICAL	GEOG_COS_FACTOR, need_cos, integrate, point
 	INTEGER i, j, k, l, grid, pt, lo, hi, axis
-	REAL	BOX_SIZE, unit, bad_com, bad_res, cos_factor
+	REAL	BOX_SIZE, unit, bad_com, bad_res, cos_factor,
+     .          ybxlo, ybxhi, bx
 	REAL*8	TM_WORLD, dsum, bsum
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
@@ -68,16 +68,6 @@
 	external xunits_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	action, idim, com_lo, com_hi, com_mr, com_cx, res_mr, res_cx
@@ -127,8 +117,16 @@
 	   need_cos = GEOG_COS_FACTOR( idim, grid )
      .                .AND. cx_lo_s2(com_cx).NE.unspecified_int4
 	   DO 210 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   IF ( need_cos ) cos_factor = COS( deg2rad *       
+	   IF ( need_cos ) THEN
+	      cos_factor = COS( deg2rad *       
      .             SNGL( TM_WORLD( j, grid, y_dim, box_middle )) ) 
+              ybxlo = deg2rad* 
+     .          SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
+              ybxhi = deg2rad* 
+     .          SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+              bx = ABS(ybxhi - ybxlo)
+	      cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/ bx
+	   ENDIF
 	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
               IF ( point ) THEN  ! 8/92

@@ -100,7 +100,7 @@
 
 	REAL		AXIS_DISTANCE, BOX_SIZE, xdist, ydist, area, sum, 
      .			darea, bad_src, bad_dst, cos_fact, bx, yc, yh_2,
-     .                  pi, r_earth, area_earth
+     .                  pi, r_earth, area_earth, ybxlo, ybxhi
 	
         REAL*8		TWORLD, xsrc_lo, xsrc_hi, ysrc_lo, ysrc_hi,
      .				xdst_lo, xdst_hi, ydst_lo, ydst_hi
@@ -189,6 +189,7 @@ c        jsrc_hi = mr_hi_ss(msrc,dim2)
 
            pi = 3.141592653
            r_earth = 6371000
+           r_earth = radius/100  ! value in ferret.parm (which is in cm)
            area_earth = 4.* pi * r_earth**2
 
 * add all partial or complete boxes of data from the source grid
@@ -206,12 +207,23 @@ c        jsrc_hi = mr_hi_ss(msrc,dim2)
 	      yh_2 = 0.5*deg2rad * bx
               yc = deg2rad * yc
               cos_fact = COS(yc) * 2.*ABS( SIN(yh_2) )
+
+C The above are all OK if the coordinate point is in the middle of the box.
+C If the coordinate is not in the middle of the cell then it should be
+C ABS(SIN(ybxhi)-SIN(ybxlo))  
+C See this thread:
+C http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2009/msg00506.html
+C And also ticket 1348.
+
+              ybxlo = deg2rad* TWORLD(jsrc,src_grid,dim2,box_lo_lim)
+              ybxhi = deg2rad* TWORLD(jsrc,src_grid,dim2,box_hi_lim)
+              cos_fact = ABS( SIN(ybxhi) - SIN(ybxlo) )
+
 	   ENDIF
 
-	   ysrc_lo = MAX( TWORLD(jsrc,src_grid,dim2,box_lo_lim), ydst_lo )
-	   ysrc_hi = MIN( TWORLD(jsrc,src_grid,dim2,box_hi_lim), ydst_hi )
+	   ysrc_lo = MAX( TWORLD(jsrc,src_grid,dim2,box_lo_lim), ydst_lo)
+	   ysrc_hi = MIN( TWORLD(jsrc,src_grid,dim2,box_hi_lim), ydst_hi)
 	   ydist   = AXIS_DISTANCE( ysrc_lo, ysrc_hi, dim2, src_grid )
-
 
 	   DO 50 isrc = isrc_lo, isrc_hi
 

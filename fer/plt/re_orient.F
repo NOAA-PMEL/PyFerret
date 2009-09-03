@@ -92,7 +92,8 @@
         LOGICAL need_cos, GEOG_COS_FACTOR, TM_FPEQ
 	INTEGER	grid, i, j, j0
 	REAL	AXIS_DISTANCE, s0, s, a, b, tan, tansq, ssq, dx, dy,
-     .          bad_x, bad_y, cos_factor, bx, box_size, yh_2, yc
+     .          bad_x, bad_y, cos_factor, bx, box_size, yh_2, yc, 
+     .          ybxlo, ybxhi
 	REAL*8	TM_WORLD
 
 * initialize
@@ -123,14 +124,28 @@
 	   IF ( need_cos ) THEN
 
 c Previous calculation
-              cos_factor = COS( deg2rad *
-     .                     SNGL( TM_WORLD(j+j0,grid,y_dim,box_middle)) )
+
+              yc = deg2rad * SNGL(TM_WORLD(j+j0,grid,y_dim,box_middle))
+              cos_factor = COS( yc )
   
 c Correction
               bx = BOX_SIZE(j+j0, grid, y_dim )
 	      yh_2 = 0.5*deg2rad * bx
-              yc = deg2rad * SNGL(TM_WORLD(j+j0,grid,y_dim,box_middle))
-              cos_factor = cos_factor * ABS( SIN(yh_2) )/yh_2
+              cos_factor =  COS( yc ) * ABS( SIN(yh_2) )/yh_2
+
+C The above are all OK if the coordinate point is in the middle of the box.
+C If the coordinate is not in the middle of the cell then it should be
+C ABS(SIN(yhi)-SIN(ylo))  
+C See this thread:
+C http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2009/msg00506.html
+C And also ticket 1348.
+
+              ybxlo = deg2rad* 
+     .          SNGL( TM_WORLD(j+j0,grid,y_dim,box_lo_lim) )
+              ybxhi = deg2rad* 
+     .          SNGL( TM_WORLD(j+j0,grid,y_dim,box_hi_lim) )
+
+              cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/(deg2rad * bx)
 
               IF ( cos_factor .LT. 1.E-6 ) cos_factor = 1.E-6 !arbitrary fix /0
            ELSE

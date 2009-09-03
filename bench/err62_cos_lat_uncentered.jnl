@@ -1,0 +1,34 @@
+!err62_cos_lat_uncentered.jnl
+! See this thread, here is the esample, with his test.nc renamed to uncentered.nc
+! http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2009/msg00510.html
+! Also see the last comments from Andrew on bug 1348.
+
+use uncentered.nc
+define grid/like=test grd
+
+! list edges
+list yboxlo[g=grd],yboxhi[g=grd]
+
+! calculate weights w1 and w2
+let rad = 3.14159265/180
+let w1 = (yboxhi[i=1,g=grd]-yboxlo[i=1,g=grd])*cos(y[i=1,g=grd]*rad)
+let w2 = sin(yboxhi[i=1,g=grd]*rad) - sin(yboxlo[i=1,g=grd]*rad)
+
+! list normalized weights
+list w1/w1[j=@sum],w2/w2[j=@sum]
+
+! list weights calculated by Ferret at j=1,2,3,4,5,18
+let all = if test gt 0 then 1
+let total_area = all[x=@din,y=@din]
+let cell1 = if test eq 1 then 1
+let cell2 = if test eq 2 then 1
+let cell3 = if test eq 3 then 1
+let cell4 = if test eq 4 then 1
+let cell5 = if test eq 5 then 1
+let cell18 = if test eq 18 then 1
+list cell1[x=@din,y=@din]/total_area
+list cell2[x=@din,y=@din]/total_area
+list cell3[x=@din,y=@din]/total_area
+list cell4[x=@din,y=@din]/total_area
+list cell5[x=@din,y=@din]/total_area
+list cell18[x=@din,y=@din]/total_area

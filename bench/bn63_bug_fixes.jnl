@@ -21,3 +21,6 @@ GO err62_samplexy
 
 GO bn_reset
 GO err62_one_point_bounds
+
+GO bn_reset
+GO err62_cos_lat_uncentered

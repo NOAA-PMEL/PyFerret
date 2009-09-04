@@ -200,9 +200,6 @@
 * _FillValue to flag bad data
 * For the NOAA COOP standard the missing_value flag must be stored in the
 * packed data type.  If so it must be unpacked.  (2/95)
-
-* However for the CF standard, the missing_value and _FillValue flags are 
-* NOT to be packed. Leave them as is. (8.2009) See also TM_SCALE.
 	     
 	     CALL CD_GET_VAR_ATT_ID (dset, ivcd, 'missing_value', 
      .                  attid, istat)
@@ -242,8 +239,32 @@
      .                attoutflag, buff,  ds_bad_flag(ivtm))
              ENDIF
 
-* ... need to unpack the missing_value flag?  DO NOT unpack missing and fill value
+* ... need to unpack the missing_value flag?
+*     (note that the netCDF library insists on _FillValue's data type)
+             IF ( vartyp.LE.NCLONG .AND. cd_scaled(ivtm) ) THEN
+                IF ( got_bad ) THEN
+                   CALL CD_GET_VAR_ATT_ID (dset, ivcd, 'missing_value', 
+     .                  attid, istat)
+                   IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+     .                 ivcd, attid, aname, attype, attlen, attoutflag, 
+     .                 istat)
+	           IF ( attype .EQ. vartyp ) ds_bad_flag(ivtm) =
+     .			ds_bad_flag(ivtm)*cd_scale_factor(ivtm)
+     .			+ cd_add_offset(ivtm)
+	        ENDIF
 
+* ... *kob* Also need to see about unpacking _FillValue
+                IF ( got_missing ) THEN
+                   CALL CD_GET_VAR_ATT_ID (dset, ivcd, '_FillValue', 
+     .                  attid, istat)
+                   IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+     .                  ivcd, attid, aname, attype, attlen, attoutflag, 
+     .                  istat )
+	           IF ( attype .EQ. vartyp ) ds_missing_flag(ivtm) =
+     .	   		ds_missing_flag(ivtm)*cd_scale_factor(ivtm)
+     .			+ cd_add_offset(ivtm)
+	        ENDIF
+             ENDIF
              IF ( got_bad .AND. .NOT.got_missing )
      .           ds_missing_flag(ivtm) =  ds_bad_flag(ivtm)
              IF ( got_missing .AND. .NOT.got_bad )

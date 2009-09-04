@@ -218,7 +218,7 @@ c!     .                COS(yc) * ABS(SIN(yh/2))/(yh/2)
 
 C The above are all OK if the coordinate point is in the middle of the box.
 C If the coordinate is not in the middle of the cell then it should be
-C ABS(SIN(ybxhi)-SIN(ybxlo))  
+C ABS(SIN(ybxhi)-SIN(ybxlo)) which is correct wherever the coord point lies.
 C See this thread:
 C http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2009/msg00506.html
 C And also ticket 1348.

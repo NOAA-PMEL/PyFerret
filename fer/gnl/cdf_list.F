@@ -486,7 +486,7 @@
 
                     ELSE
                        got_it = NC_GET_ATTRIB (dset, varid, aname,
-     .                    do_warn, varcode, buff_size, attlen, 
+     .                    do_warn, varcode, attlen, buff_size, 
      .                    attoutflag, buff, vals)
                       addoff = vals(1)
                     ENDIF
@@ -536,22 +536,22 @@
 
                  IF (istat .EQ. ferr_ok .AND. outtype .NE. NCCHAR) THEN
 
-*!!! DO NOT SCALE THE MISSING FLAG ON OUTPUT!! 
-*!!!* If un-scaling on output, we will also un-scale the missing flag.
-*!!!                    IF (scalefac .NE. 1.D0  .OR. addoff .NE. 0.D0) THEN
-*!!!                       dvals(1) = dvals(1)/scalefac - addoff
-*!!!                       vals(1) = dvals(1)
-*!!!		    ENDIF
+* If un-scaling on output, will also un-scale the missing flag.
+                    IF (scalefac .NE. 1.D0  .OR. addoff .NE. 0.D0) THEN
+                       dvals(1) = dvals(1)/scalefac - addoff
+                       vals(1) = dvals(1)
 
-* Convert missing flag to requested output type for the variable
-                    IF (attype .NE. outtype .AND. istat .EQ. ferr_ok)  THEN
-                       alen = TM_LENSTR1(typnam(attype))
-                       slen = TM_LENSTR1(typnam(outtype))
-                       IF (dset .GT. 0) CALL WARN (
+* Otherwise convert missing flag to requested output type for the variable
+                    ELSE
+                       IF (attype .NE. outtype .AND. istat .EQ. ferr_ok)  THEN
+                          alen = TM_LENSTR1(typnam(attype))
+                          slen = TM_LENSTR1(typnam(outtype))
+                          IF (dset .GT. 0) CALL WARN (
      .                      'Converting data type of missing_value '//
      .                       typnam(attype)(1:alen)//
      .                      ' to match output type of variable '//
-     .                    typnam(outtype)(1:slen) )
+     .                      typnam(outtype)(1:slen) )
+                       ENDIF
                        attype = outtype
                     ENDIF
    
@@ -592,11 +592,6 @@
      .                               'SCALE_FACTOR', 13 ) .OR. 
      .                   MATCH_NAME (attname,  slen,
      .                               'ADD_OFFSET', 10 ) ) THEN
-     
-                       slen = 0   ! done already
-
-                       CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt,
-     .                    aname, attype, attlen, attoutflag, istat )
                        got_it = NC_GET_ATTRIB_DP (dset, varid, attname,
      .                    do_warn, varcode, attlen, attoutflag, dvals)
                        IF (attoutflag  .EQ. 1) 
@@ -954,7 +949,6 @@
      .                        write_lo, write_hi, memory(1,mr_blk1(mr)), 
      .                        edges_flag, do_bounds, scalefac, addoff, 
      .                        bad, mode_upcase_output, status )
-
            IF ( status .NE. merr_ok ) GOTO 5800
  500	CONTINUE
 

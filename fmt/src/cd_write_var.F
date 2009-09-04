@@ -379,32 +379,18 @@ c      EQUIVALENCE (r100_8, r100_4)
      .     .NOT. TM_DFPEQ(addoff, 0.D0) ) THEN
 
          IF (.NOT. TM_DFPEQ(scalefac, 0.D0) ) r_scale = 1.D0/scalefac
-         r_offset = -1.D0* addoff* r_scale
+         r_offset = -1.D0* addoff
 
          npts = 1
          DO 250  idim = 1, 4
             IF ( count(idim) .GT. 0 ) npts = npts* count(idim)
  250     CONTINUE
-         CALL TM_SCALE( r_scale, r_offset, bad, dat, npts )
+         CALL TM_SCALE( r_scale, r_offset, dat, bad, npts )
 
          scaled = .TRUE.
       ENDIF
 
-* Allow for short vars slightly above 32767 -- different rounding/truncation
-* behavior of c vs fortran?
-
-      IF (vartyp .EQ. ncshort) THEN
-
-         DO 260 i = 1, npts
-           IF (dat(i) .NE. bad) THEN
-	      IF (dat(i) .GT. 32767. .AND. dat(i) .LT. 32768.) 
-     .            dat(i) = 32767.
-           ENDIF
- 260    CONTINUE
-      ENDIF
-
 * write the slab
-
       CALL CD_WRITE_VAR_SUB( cdfid, varid, vartyp, dims, start, count, 
      .	vdims(1), dat, cdfstat )
 
@@ -413,7 +399,7 @@ c      EQUIVALENCE (r100_8, r100_4)
       IF ( scaled ) THEN
          r_scale = scalefac
          r_offset = addoff
-         CALL TM_SCALE( r_scale, r_offset, bad, dat, npts )
+         CALL TM_SCALE( r_scale, r_offset, dat, bad, npts )
       ENDIF
 
       IF ( cdfstat .EQ. -60) GOTO 5260

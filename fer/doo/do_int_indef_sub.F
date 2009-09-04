@@ -49,6 +49,8 @@
 *	  2/7/90 - eliminated diagnostic output - duplicated in calling routine
 * V230: 5/6/92  - COS correction checks that J location is defined
 *       8/10/92 - results were wrong for integration within a single box
+* 9/09 - Apply fix to the cos factor (previous versions of the fix had not
+*        been made), bug1348
 
 	include	'ferret.parm'
 	include	'errmsg.parm'

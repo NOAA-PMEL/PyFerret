@@ -61,7 +61,7 @@
 
 
 	CALL SPLIT_LIST(pttmode_help, err_lun,
-     .   ' Detailed help is available online at www.ferret.noaa.gov'
+     .   ' Detailed help is available online at http://ferret.pmel.noaa.gov'
      .								, 0)
 
 	CALL SPLIT_LIST(pttmode_help, err_lun,

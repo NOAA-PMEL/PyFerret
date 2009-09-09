@@ -37,6 +37,7 @@
 
 	CC              = cc
 	FC		= g77
+	F77		= g77
 
 	RANLIB          = /usr/bin/ranlib
 	# have to remove -02 flag due to bug in v2.96 of compiler. see

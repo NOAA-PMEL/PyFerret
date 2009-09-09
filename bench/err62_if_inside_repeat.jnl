@@ -6,67 +6,134 @@ cancel mode verify
 
 say "test1"
 if 0 then
-  repeat/RANGE=1:2 (if 0 then; say "hello1"; endif)
+  repeat/RANGE=1:2 (if 0 then; say "  hello1"; endif)
 endif
 
 say "test2"
 if 0 then
   repeat/RANGE=1:2 (\
     if 0 then;\
-      say "hello2"; endif)
+      say "  hello2"; endif)
 endif
 
 say "test3"
 if 0 then
   repeat/RANGE=1:2 (\
     if 0 then;\
-      say "hello3";\
+      say "  hello3";\
     endif)
 endif
 
-! Now try the same tests with IF 1 inside the REPEATs
+say Now try the same tests with IF 1 inside the REPEATs
 
 say "test4"
 if 0 then
-  repeat/RANGE=1:2 (if 1 then; say "hello1"; endif)
+  repeat/RANGE=1:2 (if 1 then; say "  hello4"; endif)
 endif
 
 say "test5"
 if 0 then
   repeat/RANGE=1:2 (\
     if 1 then;\
-      say "hello2"; endif)
+      say "  hello5"; endif)
 endif
 
 say "test6"
 if 0 then
   repeat/RANGE=1:2 (\
     if 1 then;\
-      say "hello3";\
+      say "  hello6";\
     endif)
 endif
 
-! Now try the same tests with IF 1 to execute everything.
+say Now try the same tests with IF 1 to execute everything.
 
 say "test7"
 if 1 then
-  repeat/RANGE=1:2 (if 1 then; say "hello1"; endif)
+  repeat/RANGE=1:2 (if 1 then; say "  hello7"; endif)
 endif
 
 say "test8"
 if 1 then
   repeat/RANGE=1:2 (\
     if 1 then;\
-      say "hello2"; endif)
+      say "  hello8"; endif)
 endif
 
 say "test9"
 if 1 then
   repeat/RANGE=1:2 (\
     if 1 then;\
-      say "hello3";\
+      say "  hello9";\
     endif)
 endif
+
+say Now try the same tests with IF 1 and ELSE.
+
+say "test10"
+if 1 then
+  repeat/RANGE=1:2 (if 1 then; say "  hello10"; endif)
+else
+  repeat/RANGE=1:2 (if 1 then; say "  else10"; endif)
+endif
+
+say "test11"
+if 1 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello11"; endif)
+else
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  else11"; endif)
+endif
+
+say "test12"
+if 1 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello12";\
+    endif)
+else
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello12";\
+    endif)
+endif
+
+say Now try the same tests with IF 0 and ELSE.
+
+say "test13"
+if 0 then
+  repeat/RANGE=1:2 (if 1 then; say "  hello13"; endif)
+else
+  repeat/RANGE=1:2 (if 1 then; say "  else13"; endif)
+endif
+
+say "test14"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello14"; endif)
+else
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  else14"; endif)
+endif
+
+say "test15"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello15";\
+    endif)
+else
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  else15";\
+    endif)
+endif
+
 
 say "done"
 set mode/last verify

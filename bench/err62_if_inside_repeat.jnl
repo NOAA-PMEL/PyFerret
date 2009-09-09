@@ -135,5 +135,39 @@ else
 endif
 
 
+say Now try the same tests with IF 0 and ELIF.
+
+say "test16"
+if 0 then
+  repeat/RANGE=1:2 (if 1 then; say "  hello16"; endif)
+elif 1 then
+  repeat/RANGE=1:2 (if 1 then; say "  elif16"; endif)
+endif
+
+say "test17"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello17"; endif)
+elif 1 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  elif17"; endif)
+endif
+
+say "test18"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello18";\
+    endif)
+elif 1 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  elif18";\
+    endif)
+endif
+
+
 say "done"
 set mode/last verify

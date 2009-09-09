@@ -4,7 +4,8 @@
      .				   num_quals, qualifier_list,
      .				   qual_start, qual_end,
      .				   num_args, arg_start, arg_end,
-     .				   err_lun, reverify, arg1_quoted, status )
+     .				   err_lun, reverify, arg1_quoted, 
+     .                             concatenate_only, status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -110,6 +111,8 @@
 *                  the fix is to return at statement 500 if word_num = 0
 * v612 *acm* 7/08  Fix bug 1583: precision of grave-accent expressions upped from 5 to 7.
 * v62  *acm*11/08  Fix bug 1608: semicolon inside double quotes.
+* V6.3 *acm* 9/09 Fix bug 1681; parsing an IF block inside a REPEAT, when 
+*                 all of that is also inside an IF.
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -133,7 +136,7 @@
 *       For surrounding quotes the word start/end will exclude the quotes.
 
 * declare calling arguments of SUBROUTINE
-	LOGICAL		reverify, arg1_quoted
+	LOGICAL		concatenate_only, reverify, arg1_quoted
 	REAL		memory(*)
 	CHARACTER*(*)	cmnd_buff
 	INTEGER		max_words,max_quals,cmnd_len,cmnd_num,subcmnd_num,
@@ -345,6 +348,16 @@
               ENDIF
  60        CONTINUE
         ENDIF
+
+        IF (concatenate_only) THEN
+           IF ( nparen.EQ.0
+     .       .AND. .NOT.escape
+     .       .AND. .NOT.surround_quote ) THEN
+              cmnd_num = cmnd_semicolon
+              GOTO 1000   ! successful exit
+           ENDIF 
+           RETURN
+	ENDIF
 
 !* check for buffer overflow (too-long command line)
 ! 90     IF ( cmnd_len .EQ. buff_len ) GOTO  5005

@@ -1,0 +1,72 @@
+! err62_if_inside_repeat.jnl
+! Bug 1681. Parsing error when, inside the REPEAT, we have
+! endif) on a line of its own.
+
+cancel mode verify
+
+say "test1"
+if 0 then
+  repeat/RANGE=1:2 (if 0 then; say "hello1"; endif)
+endif
+
+say "test2"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 0 then;\
+      say "hello2"; endif)
+endif
+
+say "test3"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 0 then;\
+      say "hello3";\
+    endif)
+endif
+
+! Now try the same tests with IF 1 inside the REPEATs
+
+say "test4"
+if 0 then
+  repeat/RANGE=1:2 (if 1 then; say "hello1"; endif)
+endif
+
+say "test5"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "hello2"; endif)
+endif
+
+say "test6"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "hello3";\
+    endif)
+endif
+
+! Now try the same tests with IF 1 to execute everything.
+
+say "test7"
+if 1 then
+  repeat/RANGE=1:2 (if 1 then; say "hello1"; endif)
+endif
+
+say "test8"
+if 1 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "hello2"; endif)
+endif
+
+say "test9"
+if 1 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "hello3";\
+    endif)
+endif
+
+say "done"
+set mode/last verify

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/build/x86/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 41069919 Sep  9 10:48 /home/porter/ansley/build/x86/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 41043039 Sep  9 12:30 /home/porter/ansley/build/x86/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/build/x86/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: v6.206 with fix for bug 1681, parsing in IF blocks inside REPEAT
+Note: Fix for bug 1669 title on 3-arg plot
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build/x86/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build/x86/FERRET/external_functions/ext_func_x86
-Beginning at Wed Sep 9 11:19:00 PDT 2009
+Beginning at Wed Sep 9 13:30:28 PDT 2009
  	NOAA/PMEL TMAP
  	FERRET v6.206  
  	Linux(g77) 2.6.9-22. - 09/09/09
- 	 9-Sep-09 11:19     
+ 	 9-Sep-09 13:30     
 
 yes? !bn500_all_shell
 yes? 
@@ -10247,11 +10247,11 @@ FERRET_VERSION = "6.206"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 FERRET_MEMORY = "25.6"
 SESSION_DATE = " 9-Sep-09"
-SESSION_TIME = "11:19"
-DELTA_CPU = "6.30804"
-CLOCK_SECS = "7.02"
+SESSION_TIME = "13:30"
+DELTA_CPU = "6.33204"
+CLOCK_SECS = "6.96"
 CURRENT_DATE = " 9-Sep-09"
-CURRENT_TIME = "11:19:07"
+CURRENT_TIME = "13:30:35"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10271,11 +10271,11 @@ FERRET_VERSION = "6.206"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 FERRET_MEMORY = "25.6"
 SESSION_DATE = " 9-Sep-09"
-SESSION_TIME = "11:19"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "7.02"
+SESSION_TIME = "13:30"
+DELTA_CPU = "0.002"
+CLOCK_SECS = "6.97"
 CURRENT_DATE = " 9-Sep-09"
-CURRENT_TIME = "11:19:07"
+CURRENT_TIME = "13:30:35"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10284,7 +10284,7 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = " 9-Sep-09"
-SESSION_TIME = "11:19"
+SESSION_TIME = "13:30"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10295,12 +10295,12 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = " 9-Sep-09"
-SESSION_TIME = "11:19"
+SESSION_TIME = "13:30"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = " 9-Sep-09"
-SESSION_TIME = "11:19"
+SESSION_TIME = "13:30"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10334,7 +10334,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.206"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Sep  9 2009 11:19:07 "
+LAB3 = "Sep  9 2009 13:30:35 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10433,11 +10433,11 @@ FERRET_VERSION = "6.206"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 FERRET_MEMORY = "25.6"
 SESSION_DATE = " 9-Sep-09"
-SESSION_TIME = "11:19"
-DELTA_CPU = "0.018997"
-CLOCK_SECS = "7.04"
+SESSION_TIME = "13:30"
+DELTA_CPU = "0.017997"
+CLOCK_SECS = "6.99"
 CURRENT_DATE = " 9-Sep-09"
-CURRENT_TIME = "11:19:07"
+CURRENT_TIME = "13:30:35"
  
  
 GO bn_reset
@@ -18158,8 +18158,8 @@ contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/
 set view v33
 contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28110:29115:-200 sin(x/3)*sin(t/100)   ! delta ignored
 set view v34
-contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25-rw-rw-r--  1 ansley tmap 16416 Sep  9 11:19 bench.mgm
--rw-rw-r--  1 ansley tmap 290208 Sep  9 11:19 bench.mgm
+contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25-rw-rw-r--  1 ansley tmap 20052 Sep  9 13:30 bench.mgm
+-rw-rw-r--  1 ansley tmap 329083 Sep  9 13:30 bench.mgm
 )/xlimits=140e:110w:-9/ylimits=1-jan-1978:1-jan-1984/trans sin(x/3)*sin(t/100)
  
 * non-calendar axis contours involving T
@@ -25294,7 +25294,7 @@ GO err491_dp_time_write.jnl
  
  
 define axis/t="18-jul-1abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Wed Sep  9 11:19:21 PDT 2009
+Wed Sep  9 13:30:49 PDT 2009
 997:14:09":"20-jul-1997:00:09":5/units=min t5
 LET my_var = t[gt=t5]
  
@@ -45819,7 +45819,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASSep  9 2009 11:20:01
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASSep  9 2009 13:31:29
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 179.5E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47220,7 +47220,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "9-Sep-09:11:19"
+WIN_TITLE = "9-Sep-09:13:30"
  
 set win/title="set the title"
 sho sym win_title
@@ -47238,7 +47238,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 9-Sep-09:11:19"
+ !-> set win/title=" 9-Sep-09:13:30"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47249,14 +47249,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date =  9-Sep-09
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 11:19
+ !-> DEFINE SYMBOL the_time = 13:30
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="9-Sep-09:11:19"
+ !-> SET WIN/TITLE="9-Sep-09:13:30"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "9-Sep-09:11:19"
+WIN_TITLE = "9-Sep-09:13:30"
  
 GO bn_reset
 cancel mode verify
@@ -57705,10 +57705,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "59.333"
-CLOCK_SECS = "89.45"
+DELTA_CPU = "61.8686"
+CLOCK_SECS = "92.75"
 CURRENT_DATE = " 9-Sep-09"
-CURRENT_TIME = "11:20:30"
+CURRENT_TIME = "13:32:01"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57717,8 +57717,8 @@ CURRENT_TIME = "11:20:30"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.047995"
-CLOCK_SECS = "89.55"
+DELTA_CPU = "0.048994"
+CLOCK_SECS = "92.85"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57732,60 +57732,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.385939
+ !-> DEFINE VARIABLE ten_plots = 0.388941
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "9.99E-04"
-CLOCK_SECS = "90.45"
+CLOCK_SECS = "93.76"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "90.45"
+CLOCK_SECS = "93.76"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.039993
- !-> DEFINE VARIABLE sumcpu =0.039993
+ !-> DEFINE VARIABLE dt = 0.039995
+ !-> DEFINE VARIABLE sumcpu =0.039995
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.040993
+ !-> DEFINE VARIABLE dt = 0.040991
  !-> DEFINE VARIABLE sumcpu =0.080986
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.041992
- !-> DEFINE VARIABLE sumcpu =0.122978
+ !-> DEFINE VARIABLE dt = 0.039997
+ !-> DEFINE VARIABLE sumcpu =0.120983
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.038996
- !-> DEFINE VARIABLE sumcpu =0.161974
+ !-> DEFINE VARIABLE dt = 0.039993
+ !-> DEFINE VARIABLE sumcpu =0.160976
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.040995
- !-> DEFINE VARIABLE sumcpu =0.202969
+ !-> DEFINE VARIABLE dt = 0.067991
+ !-> DEFINE VARIABLE sumcpu =0.228967
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.040995
- !-> DEFINE VARIABLE sumcpu =0.243964
+ !-> DEFINE VARIABLE dt = 0.05999
+ !-> DEFINE VARIABLE sumcpu =0.288957
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.079987
- !-> DEFINE VARIABLE sumcpu =0.323951
+ !-> DEFINE VARIABLE dt = 0.039991
+ !-> DEFINE VARIABLE sumcpu =0.328948
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.041994
- !-> DEFINE VARIABLE sumcpu =0.365945
+ !-> DEFINE VARIABLE dt = 0.064991
+ !-> DEFINE VARIABLE sumcpu =0.393939
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.041994
- !-> DEFINE VARIABLE sumcpu =0.407939
+ !-> DEFINE VARIABLE dt = 0.040995
+ !-> DEFINE VARIABLE sumcpu =0.434934
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.446933
+ !-> DEFINE VARIABLE dt = 0.039993
+ !-> DEFINE VARIABLE sumcpu =0.474927
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.446933
-0.446933
+ !-> MESSAGE/CONTINUE 0.474927
+0.474927
 sh sym CLOCK_SECS
-CLOCK_SECS = "91.94"
+CLOCK_SECS = "95.19"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = " 9-Sep-09"
-SESSION_TIME = "11:19"
+SESSION_TIME = "13:30"
 CURRENT_DATE = " 9-Sep-09"
-CURRENT_TIME = "11:20:32"
+CURRENT_TIME = "13:32:03"
  
 ! ******** V6.3 Additions below ***********
  
@@ -58223,19 +58223,80 @@ cancel mode verify
 test1
 test2
 test3
+Now try the same tests with IF 1 inside the REPEATs
 test4
 test5
 test6
+Now try the same tests with IF 1 to execute everything.
 test7
-hello1
-hello1
+  hello7
+  hello7
 test8
-hello2
-hello2
+  hello8
+  hello8
 test9
-hello3
-hello3
+  hello9
+  hello9
+Now try the same tests with IF 1 and ELSE.
+test10
+  hello10
+  hello10
+test11
+  hello11
+  hello11
+test12
+  hello12
+  hello12
+Now try the same tests with IF 0 and ELSE.
+test13
+  else13
+  else13
+test14
+  else14
+  else14
+test15
+  else15
+  else15
 done
+ 
+GO bn_reset
+cancel mode verify
+GO err62_title_curvi_plot
+! err62_title_curvi_plot.jnl
+! bug 1669; when the variable and its coordinate variables
+! come from different datasets, we get the variable def, not
+! its title as the main title.
+! The titles should all be SEA SURFACE TEMPERATURE (Deg C)
+ 
+use coads_climatology
+let xval = x[gx=sst[d=1]]+0*y[gy=sst[d=1]]
+let yval = y[gy=sst[d=1]]+0*x[gx=sst[d=1]]
+save/clob/file=a.nc sst[l=1:2], xval, yval
+ 
+can var/all
+use a.nc
+set v ul; shade sst[d=1,l=1], xval[d=2], yval[d=2]; sh sym labtit
+LABTIT = "SEA SURFACE TEMPERATURE (Deg C)"
+set v ur; shade sst[d=2,l=1], xval[d=2], yval[d=2]; sh sym labtit
+LABTIT = "SEA SURFACE TEMPERATURE (Deg C)"
+ 
+set v ll; fill sst[d=1,l=1], xval[d=2], yval[d=2]; sh sym labtit
+LABTIT = "SEA SURFACE TEMPERATURE (Deg C)"
+set v lr; fill sst[d=2,l=1], xval[d=2], yval[d=2]; sh sym labtit
+LABTIT = "SEA SURFACE TEMPERATURE (Deg C)"
+ 
+can view
+set v ul; vector/xskip=10/yskip=10 sst[d=1,l=1],sst[d=1,l=2], xval[d=2], yval[d=2]; sh sym labtit
+LABTIT = "SEA SURFACE TEMPERATURE (Deg C) , SEA SURFACE TEMPERATURE (Deg C)"
+set v ur; vector/xskip=10/yskip=10 sst[d=2,l=1],sst[d=2,l=2], xval[d=2], yval[d=2]; sh sym labtit
+LABTIT = "SEA SURFACE TEMPERATURE (Deg C) , SEA SURFACE TEMPERATURE (Deg C)"
+ 
+set v ll; contour sst[d=1,l=1], xval[d=2], yval[d=2]; sh sym labtit
+LABTIT = "SEA SURFACE TEMPERATURE (Deg C)"
+set v lr; contour sst[d=2,l=1], xval[d=2], yval[d=2]; sh sym labtit
+LABTIT = "SEA SURFACE TEMPERATURE (Deg C)"
+ 
+can view
  
  
 ! version 2.3 requires exit/command *sh* 3/92
@@ -58243,7 +58304,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.206  
  	Linux(g77) 2.6.9-22. - 09/09/09
- 	 9-Sep-09 11:20     
+ 	 9-Sep-09 13:32     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -58954,8 +59015,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  10   / 10:  -5.00
  11   / 11:  -4.00
  12   / 12:  -3.00
- 13-rw-rw-r--  1 ansley tmap 29712 Sep  9 11:20 testa.v5d
--rw-rw-r--  1 ansley tmap 29712 Sep  9 11:20 test.v5d
+ 13-rw-rw-r--  1 ansley tmap 29712 Sep  9 13:32 testa.v5d
+-rw-rw-r--  1 ansley tmap 29712 Sep  9 13:32 test.v5d
    / 13:  -2.00
  14   / 14:  -1.00
  15   / 15:   0.00
@@ -61527,7 +61588,7 @@ end of ncdump output
  	NOAA/PMEL TMAP
  	FERRET v6.206  
  	Linux(g77) 2.6.9-22. - 09/09/09
- 	 9-Sep-09 11:20     
+ 	 9-Sep-09 13:32     
 
 CAN MODE VERIFY
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
@@ -61545,11 +61606,11 @@ FERRET_VERSION = "6.206"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 FERRET_MEMORY = "31"
 SESSION_DATE = " 9-Sep-09"
-SESSION_TIME = "11:20"
-DELTA_CPU = "0.032995"
-CLOCK_SECS = "0.08"
+SESSION_TIME = "13:32"
+DELTA_CPU = "0.030996"
+CLOCK_SECS = "0.07"
 CURRENT_DATE = " 9-Sep-09"
-CURRENT_TIME = "11:20:34"
+CURRENT_TIME = "13:32:09"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
 PPL$PLTNME = "startup_tests.plt"
@@ -61569,7 +61630,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "9-Sep-09:11:20"
+WIN_TITLE = "9-Sep-09:13:32"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -61622,7 +61683,7 @@ GO_FILE = "./bn_startupfile.jnl"
  	NOAA/PMEL TMAP
  	FERRET v6.206  
  	Linux(g77) 2.6.9-22. - 09/09/09
- 	 9-Sep-09 11:20     
+ 	 9-Sep-09 13:32     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -61809,7 +61870,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.206  
  	Linux(g77) 2.6.9-22. - 09/09/09
- 	 9-Sep-09 11:20     
+ 	 9-Sep-09 13:32     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -61923,7 +61984,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.206  
  	Linux(g77) 2.6.9-22. - 09/09/09
- 	 9-Sep-09 11:20     
+ 	 9-Sep-09 13:32     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -62006,4 +62067,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Wed Sep 9 11:20:36 PDT 2009
+Ended at Wed Sep 9 13:32:11 PDT 2009

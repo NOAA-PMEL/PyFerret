@@ -338,6 +338,7 @@ C   set up memory for the flag grid
 * If its a multi-argument curvilinear request check that the xpos, ypos
 * fields are conformable with the field of values
 	IF ( curvilinear ) THEN
+	   IF (.NOT. overlay) use_keys = .FALSE.
 	   edges_ok = cmnd_num.EQ.cmnd_shade
 	   mr_xpos = mr_list(arg_xpos)
 	   mr_ypos = mr_list(arg_xpos + 1)

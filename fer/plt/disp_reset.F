@@ -111,7 +111,7 @@
 	CALL SET_PLOT_SIZE( 10.2, 8.8 ) ! initial size
         CALL SET_VIEWPORT( mvp_dflt )   ! remove viewports, restore axis sizes
 
-        CALL COLOR (1)
+c        CALL COLOR (1)  ! ppl is not always in the right state to call this...
 
 * set up the default spectrum
         CALL PPL_SHASET( 'RESET' )

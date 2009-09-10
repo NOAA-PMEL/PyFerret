@@ -21,8 +21,7 @@ GO bn_reset
 GO err491_let_d.jnl
 
 ! 3/01 *kob* uncomment the below - seems to run on all systems
-GO bn_reset
-GO err491_long_gif_name.jnl
+! GO err491_long_gif_name.jnl ! moved to bn_gif.jnl
 
 GO bn_reset
 GO err491_sh_var_templates.jnl

@@ -146,6 +146,10 @@ use coads_climatology
 shade/nokey/lev=50 sst[L=1]
 frame/trans/file=testbackground.gif
 
+! moved here from bn500_bug_fixes.jnl. The frame/  command it contains
+! has trouble when running the benchmarks from remote desktop
+go bn_reset
+go err491_long_gif_name
 
 exit/command
 

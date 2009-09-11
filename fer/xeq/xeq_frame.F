@@ -67,7 +67,7 @@
 * internal variable declarations:
 	LOGICAL		ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
      .                  is_format, is_file, its_gif, batch
-	INTEGER		TM_LENSTR1, STR_SAME, status, loc, flen
+	INTEGER		TM_LENSTR1, STR_SAME, status, loc, flen, qp
 	CHARACTER	format*3, filename*255
 
 * initialize

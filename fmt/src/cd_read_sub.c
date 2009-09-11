@@ -186,7 +186,7 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
   /* FLOAT data */
   } else
     *cdfstat = nc_get_varm_float (*cdfid, vid, start,
-															count, stride, imap, (float*) dat);
+     count, stride, imap, (float*) dat);
   return;
 }
 

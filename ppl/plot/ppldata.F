@@ -99,6 +99,7 @@ C     for compatibility with Ferret use of symbols.
 	INCLUDE 'TICS.INC'
 	INCLUDE 'TICS2.INC'
 	INCLUDE 'XYLABP.INC'
+	INCLUDE 'vector_inc.decl'
 	INCLUDE 'VECTOR.INC'
 	INCLUDE 'VIEW.INC'
 	INCLUDE 'ZGRID.INC'

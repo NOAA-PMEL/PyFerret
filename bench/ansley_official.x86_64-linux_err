@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/build/x86/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 41043566 Sep 10 12:14 /home/porter/ansley/build/x86/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 41043918 Sep 16 11:54 /home/porter/ansley/build/x86/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/build/x86/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: new symbols XAXIS_REVERSED and YAXIS_REVERSED tell if the z axis is plotted upside down (ticket 1682), changes for ticket 1684, move err491_long_gif_name.jnl to bn_gif.jnl so itll run from remote desktip.
+Note: fix for bug 1686 including a new benchmark test: saving data when there is missing coordinate variable info
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build/x86/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build/x86/FERRET/external_functions/ext_func_x86
-Beginning at Thu Sep 10 13:41:44 PDT 2009
+Beginning at Wed Sep 16 12:07:30 PDT 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2836,6 +2836,9 @@ Replacing definition of axis TAX
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -2922,4 +2925,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Sep 10 13:43:21 PDT 2009
+Ended at Wed Sep 16 12:09:06 PDT 2009

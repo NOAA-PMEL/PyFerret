@@ -45,6 +45,7 @@
 * V510 *sh* 3/00 - convert to dynamic grids and axes for netCDF files
 * V550 *sh* 11/02 - initialize line_modulo_len (just for good house keeping)
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
+* V63  *acm* 9/09 - Fix bug 1686: set line_name_orig
 
 * argument definitions:
 *       name      - name for axis
@@ -80,6 +81,7 @@
 
 * build axis
       istat = STR_UPCASE( line_name(iaxis), name )
+      line_name_orig(iaxis) = name
       line_dim( iaxis)      = npts
       line_start(iaxis)     = start
       line_delta(iaxis)     = delta

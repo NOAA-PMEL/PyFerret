@@ -43,6 +43,7 @@
 * revision 0.0 - 11/06
 * V62   2/09 *acm* When writing user-defined variables and when MODE UPCASE_OUTPUT is
 *                  cancelled, get the original upper/lowercase spelling of the axis name.
+* V63   9/09 *acm* Fixing bug 1686: if line_name_orig is not set, use line_name
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -66,8 +67,8 @@
 
 * local variable declarations:
       LOGICAL TM_ABSTRACT_AXIS, NC_GET_ATTRIB, coordvar, got_it
-      INTEGER TM_LENSTR1, iaxis, varid, nvatts, status, attlen, 
-     .  maxlen, attoutflag, alen
+      INTEGER TM_LENSTR1, STR_SAME, iaxis, varid, nvatts, status, 
+     .  attlen, maxlen, attoutflag, alen
       REAL val
 
       CHARACTER*1 ww_dim_name(4)
@@ -110,6 +111,8 @@
             nlen = TM_LENSTR1( buff )
          ELSE 
             CD_AXIS_OUTNAME = line_name_orig(iaxis)
+	    IF (STR_SAME(line_name_orig(iaxis), char_init) .EQ. 0) 
+     .        CD_AXIS_OUTNAME = line_name(iaxis)
             nlen = TM_LENSTR1( CD_AXIS_OUTNAME )
 	    IF (nlen .LE. 1  .OR.  varname(1:1) .EQ. '(' ) THEN
                CD_AXIS_OUTNAME = varname
@@ -120,6 +123,8 @@
       ELSE
 
          CD_AXIS_OUTNAME = line_name_orig(iaxis)
+         IF (STR_SAME(line_name_orig(iaxis), char_init) .EQ. 0) 
+     .        CD_AXIS_OUTNAME = line_name(iaxis)
          nlen = TM_LENSTR1( CD_AXIS_OUTNAME )
 	 IF (nlen .LE. 1  .OR.  varname(1:1) .EQ. '(' ) THEN
             CD_AXIS_OUTNAME = varname

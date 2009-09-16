@@ -1,0 +1,12 @@
+! err62_save_missingcoordvar.jnl
+! see bug 1686
+! The dataset doesn't have a coordinate variable, in this case TIME
+! Ferret gives it an abstract axis, but then cant SAVE the variable.
+
+! This dataset behaves this way
+! use "http://test.opendap.org/opendap/data/nc/data.nc"
+
+! create a local dataset
+use timemissing.nc
+save/clobber/file=a.nc sst
+

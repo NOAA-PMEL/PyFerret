@@ -30,3 +30,8 @@ GO err62_if_inside_repeat
 
 GO bn_reset
 GO err62_title_curvi_plot
+
+GO bn_reset
+go err62_save_missingcoordvar
+
+

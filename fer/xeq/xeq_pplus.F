@@ -127,6 +127,18 @@
            IF (jnl_out) WRITE (jrnl_lun,'(A)') ppl_buff(:slen)
 	   IF (ver_out) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
      .					ppl_buff, slen )
+     
+
+	   vbuff = ' '
+	   WRITE ( vbuff, '(I3)' ) wmouse
+           WRITE ( ppl_buff, 3100 ) 'W', vbuff
+           CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+	   WRITE ( ppl_buff, 3200 ) 'W', vbuff
+	   slen = TM_LENSTR1(ppl_buff)
+           IF (jnl_out) WRITE (jrnl_lun,'(A)') ppl_buff(:slen)
+	   IF (ver_out) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+     .					ppl_buff, slen )
+
 * ... house-keeping
 	   has_new_mouse = .FALSE.		! RESET !!
 	   IF (jnl_out) THEN

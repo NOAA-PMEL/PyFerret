@@ -86,7 +86,9 @@
 * internal variable declarations:
 	LOGICAL	BKWD_AXIS, TM_ITS_SUBSPAN_MODULO, is_subspan,
      .          void_at_start, void_at_end
-	INTEGER	CGRID_AXIS, lo_cx, hi_cx, grid, i, iaxis
+	INTEGER	CGRID_AXIS, TM_LENSTR1, lo_cx, hi_cx, grid, i, iaxis,
+     .          ilen, ier, ist
+        CHARACTER*20 buff
 
 * initialize
 	grid   = mr_grid( mr )
@@ -163,14 +165,23 @@
 	n_regrid = INT( (hi_world - lo_world) / d_regrid ) + 1
 
 * plot vertical z axes upside down ?
+
+	buff = horiz_or_vert//'AXIS_REVERSED 0'
 	IF ( horiz_or_vert .EQ. 'Y' .AND. idim .EQ. z_dim ) THEN
 	   IF ( BKWD_AXIS(idim, grid) ) THEN
 	      lo_world = axis(hi_cx)
 	      hi_world = axis(lo_cx)
 	      d_regrid = -d_regrid
 	      regrid   = .TRUE.
+	      buff = horiz_or_vert//'AXIS_REVERSED 1'
 	   ENDIF
 	ENDIF
+
+* Write out *_REVERSED symbol: 1 if reversed, 0 otherwise
+	ilen = TM_LENSTR1(buff)
+	ier = 0
+	ist = 0
+	CALL SETSYM (buff, ilen, ier, ist)
 
 	RETURN
       END

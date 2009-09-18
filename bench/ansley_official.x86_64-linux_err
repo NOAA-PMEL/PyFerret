@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build/x86/FERRET/external_functions/ext_func_x86
-Beginning at Wed Sep 16 12:07:30 PDT 2009
+Beginning at Wed Sep 16 12:47:21 PDT 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -521,6 +521,7 @@ plot/xlimits=1:2: i
 plot/xlimits=5:5 i
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `bench.mgm': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test_perm10.dat
@@ -2839,8 +2840,6 @@ Replacing definition of axis TAX
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2925,4 +2924,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Sep 16 12:09:06 PDT 2009
+Ended at Wed Sep 16 12:48:55 PDT 2009

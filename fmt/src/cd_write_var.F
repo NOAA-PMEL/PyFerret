@@ -61,6 +61,8 @@
 *                  as well when finding bndid (if mode upcase_output is set).
 * V602 *acm* 11/06 - Fix bug 1471; new routine CD_AXIS_OUTNAME gets correct 
 *                    output axis name.
+* V63  *acm   9/09 Fix bug 1692: issue an error message if we try to append irreg timesteps
+*                  to a previously-regular axis that didn't have a bounds attribute.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -342,6 +344,7 @@ c      EQUIVALENCE (r100_8, r100_4)
             name = name(:nlen)//'_bnds'
             elen = nlen + 5
             bndid = NCVID(cdfid, name(:elen), cdfstat)
+	    IF (cdfstat .NE. NCNOERR ) GOTO 5400
 
             DO 330 i100 = lorec, hirec, 100
                hilim = MIN(i100+99, hirec)
@@ -446,6 +449,14 @@ c      EQUIVALENCE (r100_8, r100_4)
  5300 CALL TM_ERRMSG
      . ( cdfstat+pcdferr, status, 'CD_WRITE_VAR', unspecified_int4,
      . no_varid, 'failure writing to CDF output file',
+     . no_errstring, *5900 )
+
+ 5400  CALL TM_ERRMSG
+     . ( cdfstat+pcdferr, status, 'CD_WRITE_VAR', 
+     .   no_descfile, no_stepfile, name(:elen)//' not found. '//
+     . 'Attempt to append irregular coordinates to NetCDF '//
+     . 'axis which has no bounds attribute. Write data originally with '//
+     . 'the /BOUNDS qualifier.',
      . no_errstring, *5900 )
 
 * error exit

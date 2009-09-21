@@ -353,7 +353,7 @@ C  Get coordinates of output axes.
 
          DO 300 n = 1, nscat
 
-            CALL pickoutxyz (arg_1, arg_2, n, xx, yy)
+            CALL pickout2 (arg_1, arg_2, n, xx, yy)
 
 *  If an output axis is modulo, apply modulo adjustment to that coordinate
 *  of the scattered point.

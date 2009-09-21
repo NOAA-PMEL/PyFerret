@@ -443,7 +443,11 @@ C  Get coordinates of output axes.
 
          DO 300 n = 1, nscat
 
-            CALL pickoutxyztv (arg_1, arg_2, arg_3, arg_4, n, xx, yy, tt, vv)
+            CALL pickout4 (arg_1, arg_2, arg_3, arg_4, n, xx, yy, tt, vv)
+
+            IF (yy.gt.-1 .AND. yy.LT.5) THEN
+	       nypts = 0
+	    ENDIF
 
 *  If an output axis is modulo, apply modulo adjustment to that coordinate
 *  of the scattered point.

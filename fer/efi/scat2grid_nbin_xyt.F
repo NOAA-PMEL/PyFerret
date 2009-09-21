@@ -79,7 +79,7 @@
 
       SUBROUTINE  scat2grid_nbin_xyt_init(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
 
@@ -153,8 +153,8 @@
 *
       SUBROUTINE scat2grid_nbin_xyt_work_size(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -218,8 +218,8 @@
 *  arg_5  yaxis of new grid
 *  arg_6  taxis of new grid
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -393,7 +393,7 @@ C  Get box edges of output axes.
 
          DO 300 n = 1, nscat
 
-            CALL pickoutxyzt (arg_1, arg_2, arg_3, n, xx, yy, tt)
+            CALL pickout3 (arg_1, arg_2, arg_3, n, xx, yy, tt)
             IF (xx .EQ. bad_flag(ARG1) .OR. yy .EQ. bad_flag(ARG2) .OR. 
      .          xx .EQ. bad_flag(ARG3) ) GOTO 300
 

@@ -31,6 +31,10 @@
      .			offset_logic_struc = num_operators + num_functions )
 
 	COMMON / XALGEBRA /
+     .				alg_pvar_head,
+     .				alg_pvar_padding,
+     .				countervar_name_head,
+     .				countervar_name_padding,
      .				alg_trans_dflt_arg,
      .				alg_num_fcn_args,
      .				alg_fcn_arg_ptr,
@@ -38,10 +42,6 @@
      .				alg_4d_trans,
      .				alg_1d_to_4d,
      .				num_4d_trans,
-     .				alg_pvar_head,
-     .				alg_pvar_padding,
-     .				countervar_name_head,
-     .				countervar_name_padding,
      .				csp_cvar,
      .				alg_trans_its_int,
      .				alg_trans_has_arg,

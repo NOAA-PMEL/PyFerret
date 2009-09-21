@@ -57,9 +57,7 @@ mrgrnk.F\
 nco_attr.F\
 nco.F\
 nobad.F\
-pickout.F\
 pickindex.F\
-pickoutxyz.F\
 rect_to_curv.F\
 sampleij.F\
 samplet_date.F\
@@ -96,6 +94,7 @@ scat2grid_t.F\
 scat2grid_nobs_xy.F\
 scat2grid_nobs_xyt.F\
 scat2grid_bin_xyt.F\
+scat2grid_subs.F\
 secs_to_ymdhms.F\
 sorti.F\
 sorti_str.F\

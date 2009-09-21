@@ -472,7 +472,7 @@ C  Get coordinates of output axes.
 
          DO 300 n = 1, nscat
 
-            CALL pickoutxyz (arg_1, arg_2, n, zz, tt)
+            CALL pickout2 (arg_1, arg_2, n, zz, tt)
 
             IF (arg_lo_ss(Z_AXIS,ARG3) .NE. ef_unspecified_int4)THEN
                val = arg_3(i3,j3,n,l3)

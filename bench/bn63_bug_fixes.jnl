@@ -34,4 +34,8 @@ GO err62_title_curvi_plot
 GO bn_reset
 go err62_save_missingcoordvar
 
+GO bn_reset
+GO err62_contourbug
 
+GO bn_reset
+GO err62_append_irreg_to_reg

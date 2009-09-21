@@ -49,6 +49,8 @@
 *                   longitudes.
 * V612: 7/08 *acm*  Fix bug 1589; if the units of the coordinates are not degrees
 *                   then dont try to see if we are near the branch cut.
+* V63   9/09 *acm* Fix bug 1688: curvlinear plots when the curv. coords are NOT
+*                  longitude and latitude.
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -80,6 +82,8 @@
 
         branch_test = 190.
         lon_degrees = 360.
+	
+        xfield_is_modulo = .FALSE.
 
 * See if the xfield extends over 360 degrees. Do the outer values 
 * differ by about 360 ( relative to the size of the grid)?
@@ -103,6 +107,7 @@
    
            min_outliers = max(1,INT(ny/20))
            xfield_is_modulo = count_outliers .LT. min_outliers
+	   IF (.NOT.units_degrees)  xfield_is_modulo = .FALSE.
 
            first = .FALSE.
         ENDIF

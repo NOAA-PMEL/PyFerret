@@ -49,6 +49,8 @@
 *                   interpolants.
 * V612: 7/08 *acm*  Fix bug 1589; if the units of the coordinates are not degrees
 *                   then dont try to see if we are near the branch cut.
+* V63   9/09 *acm* Fix bug 1688: curvlinear plots when the curv. coords are NOT
+*                  longitude and latitude.
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -242,17 +244,19 @@ C coordinates on the same branch as x11
 
 * Check longitudes for a branch point
 
-        x11 = xi(1)
-        DO 108 i = 2, npt
-           aa = ABS(x11-xi(i))
-           IF (ABS(x11-xi(i)) .GT. branch_test .AND. units_degrees) THEN
-              IF (x11 .GT. xi(i)) THEN
-                 xi(i) = xi(i) + lon_degrees
-              ELSE
-                 xi(i) = xi(i) - lon_degrees
+        IF (units_degrees) THEN
+           x11 = xi(1)
+           DO 108 i = 2, npt
+              aa = ABS(x11-xi(i))
+              IF (ABS(x11-xi(i)) .GT. branch_test) THEN
+                 IF (x11 .GT. xi(i)) THEN
+                    xi(i) = xi(i) + lon_degrees
+                 ELSE
+                    xi(i) = xi(i) - lon_degrees
+                 ENDIF
               ENDIF
-           ENDIF
- 108    ENDDO
+ 108       ENDDO
+        ENDIF ! units_degrees
 
 * possibly invert the sign of the coordinates (used for descending Z axis)
 	IF ( xinv .EQ. -1. ) THEN

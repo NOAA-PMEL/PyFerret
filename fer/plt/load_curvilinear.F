@@ -47,6 +47,8 @@
 * V541:  2/02 *sh - allow for subspan modulo axes
 * V612: 7/08 *acm*  Fix bug 1589; see if the units of the coordinates are degrees
 *                   and set a flag.
+* V63   9/09 *acm* Fix bug 1688: curvlinear plots when the curv. coords are NOT
+*                  longitude and latitude.
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -203,8 +205,7 @@
         units_degrees = .FALSE.
         xcoord_units = VAR_UNITS (cx_xpos)
         IF  (TM_HAS_STRING(xcoord_units,'lon') .OR.
-     .       TM_HAS_STRING(xcoord_units,'deg') .OR.
-     .       STR_SAME(xcoord_units(1:3),'   ') .EQ. 0   ) 
+     .       TM_HAS_STRING(xcoord_units,'deg') ) 
      .       units_degrees = .TRUE.
 
 * save the memory pointers to the arrays, themselves

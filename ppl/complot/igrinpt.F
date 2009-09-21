@@ -1,4 +1,4 @@
-      FUNCTION IGRNPT(show_menu, X,Y)
+      FUNCTION IGRNPT(window_id, show_menu, X,Y)
 C** 
 C**    @(#)igrinpt.F	1.2    3/27/88
 
@@ -86,8 +86,11 @@ C
 * 	*jd* linux port 12.96 change hp -> NEED_IAND for CPP choices
 
 C
+C V6.3 *acm* 9/09 Allow mouse clicks in windows other than window 1.
+C            Note we get wrong rewults if the plot is in a viewport.
 C
         LOGICAL show_menu
+	INTEGER window_id
 #ifndef core
 C
 C	GKS DATA FOR CHOICE AND LOCATOR INPUT
@@ -122,6 +125,7 @@ C
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif
+        integer iwkid
 C
 #ifndef core
 	DATA CHCE/70,76,82,67,32/
@@ -230,8 +234,9 @@ C
 C	    GKS DEVICE
 C
 	    CALL PPLGFLUSH
-	    CALL GQCHS(1,1,10,ERRIND,MODE,ESW,ISTAT,ICHOICE,PET,EAREA,
-     *	    LDR,RECORD)
+	    iwkid = window_id  
+	    CALL GQCHS(iwkid,1,10,ERRIND,MODE,ESW,ISTAT,ICHOICE,
+     *	    PET,EAREA,LDR,RECORD)
 	    STRING(5) = 'Left'
 	    STRING(4) = 'Center'
 	    STRING(3) = 'Right'
@@ -261,30 +266,30 @@ C
 
 	    CALL GPREC(0,NULLI,0,NULLR,5,SIZES,STRING,IRECSZ,
      *	    ISTAT,LDR,RECORD)
-	    CALL GINCH(1,1,1,5,PET,EAREA(1),EAREA(2),EAREA(3),
+	    CALL GINCH(iwkid,1,1,5,PET,EAREA(1),EAREA(2),EAREA(3),
      *	    EAREA(4),LDR,RECORD)
 
         IF (show_menu) THEN     ! **************
-	    CALL GRQCH(1,1,ISTAT,ICHOICE)       ! put up menu and get answer
+	    CALL GRQCH(iwkid,1,ISTAT,ICHOICE)       ! put up menu and get answer
         ELSE
             ichoice = 5         ! always left justified
         ENDIF                   ! **************
 	    IGRNPT=CHCE(ICHOICE)
 	    CALL GSVPIP(1,0,0)
-	    CALL GQLCS(1,1,1,7,ERRIND,MODE,ESW,XFORM,LOCX,LOCY,
+	    CALL GQLCS(iwkid,1,1,7,ERRIND,MODE,ESW,XFORM,LOCX,LOCY,
      *	    PET,EAREA,LDR,RECORD)
 	    PET = 3
-	    CALL GQWKC(1,ERRIND,CONID,WSTYPE)
+	    CALL GQWKC(iwkid,ERRIND,CONID,WSTYPE)
 	    CALL GQDSP(WSTYPE,ERRIND,DCUNIT,DCX,DCY,IRSX,IRSY)
 	    EAREA(2)=DCX
 	    EAREA(4)=DCY
 
 #ifndef xgks
-	    CALL GINLC(1,1,XFORM,LOCX,LOCY,PET,EAREA(1),EAREA(2),
+	    CALL GINLC(iwkid,1,XFORM,LOCX,LOCY,PET,EAREA(1),EAREA(2),
      *	    EAREA(3),EAREA(4),LDR,RECORD)
 #endif
-	    CALL GSLCM(1,1,0,1)
-	    CALL GRQLC(1,1,ISTAT,XFORM,LOCX,LOCY)  ! get mouse click (X,Y)
+	    CALL GSLCM(iwkid,1,0,1)
+	    CALL GRQLC(iwkid,1,ISTAT,XFORM,LOCX,LOCY)  ! get mouse click (X,Y)
 	    CALL GQNT(XFORM,ERRIND,WIND,VIEW)
 	    AOLD= LOCX
 	    BOLD= LOCY
@@ -481,6 +486,7 @@ C
         has_new_mouse = .TRUE.
         xmouse = x
         ymouse = y
+	wmouse = iwkid
 
 C
 C     RESET THE GRAPHICS FLAG.

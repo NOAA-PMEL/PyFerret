@@ -153,6 +153,10 @@
 * V610  *acm* 3/08 Fixes for metafile batch mode
 * V613  *acm* 9/08 Correct for bug 1598: in SET ATTRIBUTE, initialize dataset number so a 
 *                  SET ATT command always computes the dataset number.
+* V63   *acm* 9/09 Fix bug 1689: definition of the offset in SET AXIS/STRIDE=/OFFSET
+*                  changes so that /OFF=0 implies 1st index=1; /OFF=1 implies 
+*                  1st index=2. Also check for and give err msg for illegal 
+*                  values STRIDE < 1 and OFFSET < 0.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1018,12 +1022,6 @@ c *kob* 4/97
         loc = qual_given(slash_set_axis_stride)
         IF (loc .GT. 0 ) THEN
 
-!            CALL EQUAL_STRING(
-!     .                cmnd_buff(qual_start(loc):qual_end(loc)),
-!     .                buff1, status )
-!            print *, cmnd_buff(qual_start(loc):qual_end(loc))
-!            IF ( status .NE. ferr_ok ) GOTO 6610
-
 *       Get the stride value
            IF ( loc .GT. 0 ) THEN
               CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
@@ -1033,9 +1031,9 @@ c *kob* 4/97
               val_buf = 0
            ENDIF
 
-           IF ( val_buf .GT. 0.0 ) THEN
-              delta = val_buf
-           ENDIF
+* ...   STRIDE value must be positive
+           delta = val_buf
+           IF (delta .LT. 0) GOTO 6670  
 
 * ...   Elimate all cached memory                                     (II.1)
            CALL PURGE_ALL_MEMORY
@@ -1060,14 +1058,21 @@ c *kob* 4/97
               IF ( status .NE. ferr_ok ) RETURN
               offset = INT(val_buf)
            ELSE
-              offset = 1
+              offset = 0
            ENDIF
 
 * ...   If STRIDE value is 1 -- ignore the command.                    (II.2.c)
            IF( delta .EQ. 1) RETURN 
 
+
 * ...   offset must be less than the stride value
            IF(offset .GE. delta) GOTO 6640 
+           IF(offset .LT. 0) GOTO 6660 
+
+* ... Add 1 to the offset given by the user: SET AXIS/STRIDE= /OFFSET=0
+* ... now means start with index=1; etc. Different from orig. implementaion
+* ... which had /OFF=1 implies start with index=1.
+           offset = offset + 1
 
 * jli: is there a function to get the line orientation idim ?
 
@@ -1081,17 +1086,6 @@ c *kob* 4/97
            GOTO 6300
  6399      CONTINUE
 
-!           IF(line_direction(axis) .EQ. 'WE') THEN
-!              idim = 1
-!           ELSE IF(line_direction(axis) .EQ. 'SN') THEN
-!              idim = 2
-!           ELSE IF(line_direction(axis) .EQ. 'DU') THEN
-!              idim = 3
-!           ELSE IF(line_direction(axis) .EQ. 'TI') THEN
-!              idim = 4
-!           ENDIF
-
-           
 * ...   Check that this native axis is used only for variables from 
 *       netCDF datasets                                                (II.3)  
 
@@ -1109,7 +1103,6 @@ c *kob* 4/97
               ENDIF
            GOTO 6000
  6099      CONTINUE
-
 
 * ...   Define the new strided axis                                    (II.4)
 
@@ -1640,6 +1633,12 @@ c *kob* 4/97
      .               *5000 )
  6650   CALL ERRMSG( ferr_invalid_command, status,
      .           'fail to create a strided axis',
+     .               *5000 )
+ 6660   CALL ERRMSG( ferr_invalid_command, status,
+     .           'offset must be greater than or equal to zero',
+     .               *5000 )
+ 6670   CALL ERRMSG( ferr_invalid_command, status,
+     .           'stride must be greater than zero',
      .               *5000 )
  
  5900 CALL ERRMSG( ferr_invalid_command, status,

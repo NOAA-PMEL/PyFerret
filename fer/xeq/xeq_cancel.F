@@ -128,6 +128,8 @@
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out.
 * V610  *acm* 3/08 Fixes for metafile batch mode
+* V63   *acm* 9/09 Fix bug 1691: deallocate use of dynamic axis when it is found in a grid.
+*                  If more than one grid uses the dyn axis, deallocate use of axis for each.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -669,15 +671,17 @@
 * ...   Reinsert the native axis (the parent of this axis)
                        grid_line(idim,igrd) = line_parent(axis)
 
+* ...   Deallocate this axis
+                       line_keep_flag(axis) = .FALSE. 
+                       CALL TM_DEALLO_DYN_LINE(axis)
+
                     ENDIF
  6002            CONTINUE
+
 
               GOTO 6001
  6199         CONTINUE 
 
-* ...   Deallocate this axis
-           line_keep_flag(axis) = .FALSE. 
-           CALL TM_DEALLO_DYN_LINE(axis)
 
  1223      CONTINUE 
 

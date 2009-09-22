@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 51069939 Sep 21 12:02 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
-Using external functions from ../external_functions/ext_func_x86/
+-rwxr-xr-x  1 ansley tmap 51071758 Sep 22 10:55 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes for bugs 1688; 1692
+Note: fix for bug 1689: OFFSET for SET AXIS/STRIDE= /OFFSET= is shifted by 1
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_x86/
-Beginning at Mon Sep 21 12:20:37 PDT 2009
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
+Beginning at Tue Sep 22 11:04:33 PDT 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2850,6 +2850,12 @@ Replacing definition of axis T_AXIS
 LIST/FORMAT=CDF/FILE=t_bug.nc/APPEND var
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ **ERROR: invalid command: offset must be greater than or equal to zero
+SET AXIS/STRIDE=12/OFFSET=-1 truemonth
+ **ERROR: invalid command: stride must be greater than zero
+SET AXIS/STRIDE=-1/OFFSET=1 truemonth
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -2936,4 +2942,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Sep 21 12:22:23 PDT 2009
+Ended at Tue Sep 22 11:06:13 PDT 2009

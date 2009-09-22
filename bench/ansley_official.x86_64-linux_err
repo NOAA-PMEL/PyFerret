@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/build/x86/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 41043918 Sep 16 11:54 /home/porter/ansley/build/x86/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/build/x86/FERRET/external_functions/ext_func_x86
+Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 51069939 Sep 21 12:02 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from ../external_functions/ext_func_x86/
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for bug 1686 including a new benchmark test: saving data when there is missing coordinate variable info
+Note: fixes for bugs 1688; 1692
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/build/x86/FERRET/bench
+PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build/x86/FERRET/external_functions/ext_func_x86
-Beginning at Wed Sep 16 12:47:21 PDT 2009
+FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_x86/
+Beginning at Mon Sep 21 12:20:37 PDT 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1406,11 +1406,11 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: value out of legal range: # of contour levels > 500  (3283)
+ **ERROR: value out of legal range: # of contour levels > 500  (3282)
 CONTOUR/L=1/LEV=0.01d sst
- **ERROR: value out of legal range: # of contour levels > 500  (3283)
+ **ERROR: value out of legal range: # of contour levels > 500  (3282)
 CONTOUR/FILL/L=1/LEV=0.01d sst
- **ERROR: value out of legal range: # of shade levels > 500  (3283)
+ **ERROR: value out of legal range: # of shade levels > 500  (3282)
 SHADE/L=1/LEV=0.01d sst
  **ERROR: value out of legal range: # of levels > 500  (4094)
 POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
@@ -2840,6 +2840,18 @@ Replacing definition of axis TAX
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file t_bug.nc
+Replacing definition of axis T_AXIS
+ LISTing to file t_bug.nc
+ ** netCDF error: Variable not found
+ T_AXIS_bnds not found. Attempt to append irregular coordinates to NetCDF axis which has no bounds attribute. Write data originally with the /BOUNDS qualifier.
+LIST/FORMAT=CDF/FILE=t_bug.nc/APPEND var
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2924,4 +2936,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Sep 16 12:48:55 PDT 2009
+Ended at Mon Sep 21 12:22:23 PDT 2009

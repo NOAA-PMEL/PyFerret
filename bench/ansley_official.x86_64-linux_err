@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 51071758 Sep 22 10:55 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 51075870 Sep 22 13:38 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for bug 1689: OFFSET for SET AXIS/STRIDE= /OFFSET= is shifted by 1
+Note: bug 1696  new immediate mode return ISDEPTH is-the-z axis a depth axis?"
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Tue Sep 22 11:04:33 PDT 2009
+Beginning at Tue Sep 22 13:46:36 PDT 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -112,13 +112,13 @@ MESSAGE/CONTINUE `sst*/3,return=lunits`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod
+            calendar,dtype,xmod,tmod,isdepth
           sst,return=Xsize
 MESSAGE/CONTINUE `sst,return=Xsize`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod
+            calendar,dtype,xmod,tmod,isdepth
           sst,return=trash
 MESSAGE/CONTINUE `sst,return=trash`
  PERMANENT data cleared from memory
@@ -1431,7 +1431,7 @@ Replacing definition of axis YAX
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
-            calendar,dtype,xmod,tmod
+            calendar,dtype,xmod,tmod,isdepth
           axy, return=xx
 MESSAGE/CONTINUE `axy, return=xx`
  PERMANENT data cleared from memory
@@ -2858,6 +2858,8 @@ SET AXIS/STRIDE=-1/OFFSET=1 truemonth
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2942,4 +2944,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Sep 22 11:06:13 PDT 2009
+Ended at Tue Sep 22 13:48:14 PDT 2009

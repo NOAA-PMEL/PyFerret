@@ -659,6 +659,9 @@ GO bn_axis_reversed_syms
 GO bn_reset
 GO bn_isdepth
 
+GO bn_reset
+GO bn_compound_string_conditional.jnl
+
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not
 ! tested in the benchmarks.

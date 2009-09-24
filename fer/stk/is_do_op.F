@@ -70,6 +70,9 @@
 *		functions (see IS_DO_GC_FC)
 * V530:  8/00 *sh* added support for string arrays
 * V533:  7/01 *sh* improved support for string arrays -- logical operations
+* V630:  9/09 *acm* Fix bug 1380: If the operation is a EQ,NE,LT,LE,GT,GE on 
+*                 string arguments, the result is numeric. Set cx_type(res_cx) 
+*                 accordingly, then compound conditinals will work.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -256,6 +259,7 @@
      .			 memory(1, mr_blk1(mr1) ),   mr1,
      .			 memory(1, mr_blk1(mr2) ),   mr2,
      .			 memory(1, mr_blk1(res_mr)), res_mr )
+            cx_type(res_cx) = ptype_float
 	  ENDIF
 	ELSE
 	  CALL OPERATE ( op_num, num_com, is_cx(frame_bottom),

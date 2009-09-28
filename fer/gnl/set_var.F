@@ -344,19 +344,21 @@
            attname = 'Ferret_Precision_Note'
            CALL CD_GET_VAR_ATT_ID (dset, varid, 
      .        attname, attid, status)
-           IF (typflag(1:3).EQ.'DOU' .AND. status.NE.ferr_ok) 
-     .       CALL CD_PUT_NEW_ATTR (dset, varid, 
+           IF (typflag(1:3).EQ.'DOU' .AND. status.NE.ferr_ok) THEN
+             CALL CD_PUT_NEW_ATTR (dset, varid, 
      .        attname, 2, 61, 1, 
      .        'This variable written by Ferret was converted from '//
      .        'FLOAT to DOUBLE', 1., status )
+             IF (status .NE. ferr_ok) GOTO 5000
+	  ENDIF
 
 * If they changed their minds and reset from double to something else
 * then dont write that attribute.
 
-	   IF (typflag(1:3).NE.'DOU' .AND. status.EQ.ferr_ok)
-     .       CALL CD_DELETE_ATTRIBUTE(dset, varid, attname, status)
-
-           IF (status .NE. ferr_ok) GOTO 5000
+	   IF (typflag(1:3).NE.'DOU' .AND. status.EQ.ferr_ok) THEN
+             CALL CD_DELETE_ATTRIBUTE(dset, varid, attname, status)
+             IF (status .NE. ferr_ok) GOTO 5000
+	   ENDIF
 
 * Get input type, store in variable outtype_flag
            IF (outtype_flag .EQ. 99) THEN

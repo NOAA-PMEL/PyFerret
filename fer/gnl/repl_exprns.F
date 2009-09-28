@@ -368,7 +368,7 @@
      .       'use RETURN= shape,size,grid,title,bad,t0,units,dset, '//pCR//
      .	     '  dsetnum,dsetpath,dsettitle,*size,*start,*end,'//pCR//
      .       '  *units,*axis,nc_scale,nc_offset,user_scale,user_offset,'//pCR//
-     .       '  calendar,dtype,xmod,tmod'
+     .       '  calendar,dtype,xmod,tmod,isdepth'
 
 * ... RETURN=SHAPE
 
@@ -609,6 +609,17 @@
                     repl = TM_FMT( result, use_digits, max_len, str_len)
                  ENDIF
 	      ENDIF
+
+* ... RETURN=ISDEPTH
+	   ELSEIF ( repl(1:3) .EQ. "ISD" ) THEN
+	      repl = '0'	! default, pos=up, or not-depth.
+	      axis = CGRID_AXIS ( Z_dim, cx )
+	      IF ( axis.NE.mnormal) THEN
+	         IF (line_direction(axis) .EQ. "UD") repl = '1'
+	      ELSE 
+	         repl = 'NORMAL'
+	      ENDIF
+	   
 
 * ... RETURN=*SIZE, *START, *END, *UNITS, *AXIS
 	   ELSE	

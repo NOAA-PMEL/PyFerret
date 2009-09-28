@@ -42,3 +42,8 @@ GO err62_append_irreg_to_reg
 
 GO bn_reset
 GO err62_axis_stride_off
+
+
+GO bn_reset
+GO err62_compound_string_conditional
+

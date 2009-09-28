@@ -1,7 +1,5 @@
- ! NOAA/PMEL TMAP
- ! FERRET v6.204  
- ! Linux(g77) 2.6.9-22. - 07/10/09
- ! 24-Sep-09 12:17     
+! err62_compound_string_conditional
+! Bug 1380
 
 LIST 1 EQ 2 or 3 EQ 3  ! all numeric
 

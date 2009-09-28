@@ -1,0 +1,17 @@
+! bn_var_hist_levels.jnl
+! Syntax for variance-based or histogram-based levels
+!
+
+use levitus_climatology
+
+! Variance levels
+shade/lev=50v/title="/LEV=50v" temp[K=1]
+
+shade/lev=50v,5min/title="/LEV=50v,5min" temp[K=1]
+shade/lev=50v,5mean/title="/LEV=50v,5mean" temp[K=1]
+shade/lev=50v,25max/title="/LEV=50v,25max" temp[K=1]
+shade/lev=50v,1d/title="/LEV=50v,1d" temp[K=1]
+
+
+! Histogram-based
+shade/lev=50h/title="/LEV=50h" temp[K=1]

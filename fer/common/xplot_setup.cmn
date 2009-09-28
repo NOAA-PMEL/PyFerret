@@ -15,6 +15,7 @@
 * *acm* v552 3/03 Longer strings: changes for multi-line labels.
 * *acm* V600 9/05 window title: either set with SET WIN/TITLE or use 
 *                 session date/time.
+* *acm* V63  9/09 Introduction of syntax for variance-based and histogram levels
 
 	LOGICAL	key_doc(0:10),
      .		onedee_on,
@@ -23,7 +24,9 @@
      .		ul_dolab(4),
      .		ovkey_ll_full,
      .          animate,
-     .		first_frame
+     .		first_frame,
+     .		need_std,
+     .		need_histo
 	INTEGER	nvect_on,
      .		ncont_on,
      .		nlabs_on,
@@ -70,6 +73,8 @@
 	COMMON / XPLOT_SETUP /
      .		animate,
      .		first_frame,
+     .		need_std,
+     .		need_histo,
      .          active_win_id,
      .		key_doc,
      .		onedee_on,

@@ -1,4 +1,4 @@
-	SUBROUTINE LEVSET(IST,VAL,INTIF,LWGH,NL)
+	SUBROUTINE compute_histo_bins (z, wrk, badz, nsize, status)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,47 +34,56 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)levset.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
 
-* V510 *sh* 3/00 - bug fix - "DEL" ignored because of misspelling of lwgh
-* V62+ *acm 6/09 - bug fix #1672 too few levels computed depending on the values
-* V62+ *acm 6/09 - rename variable IF to INTIF
+* For histogram-based levels, compute the histogram bins. Sort the data and 
+* compute the color levels so that each color band contains approximately 
+* equal numbers of data points. This form of color management best brings out 
+* the fine structure in the data. 
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 
-	INCLUDE 'CMRDL.INC'
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+	include 'hd_inc.decl'
+	include 'HD.INC'
+	include 'cont_inc.decl'
+	include 'CONT.INC'
 
-	DIMENSION VAL(4),INTIF(4)
-	LWGH=0
-	IF(INDEX(LABEL(:IST),'DEL').NE.0)LWGH=5
-	IF(INDEX(LABEL(:IST),'PEN').NE.0)LWGH=4
-	IF(INDEX(LABEL(:IST),'DASH').NE.0)LWGH=3
-	IF(INDEX(LABEL(:IST),'DARK').NE.0)LWGH=2
-	IF(INDEX(LABEL(:IST),'LINE').NE.0)LWGH=1
-	IF(INTIF(2).EQ.0)THEN
-	   NL=1
-	ELSE
-	   IF(INTIF(3).EQ.0)THEN
-	      VAL(3)=VAL(2)-VAL(1)
-	      NL=2
-	   ELSE
+* nlev	number of levels to use, from cont.inc
+* zmin	in hd.inc, min and max of the data
+* zmax
 
-	      IF(VAL(3).NE.0.)THEN
-		 NL = INT((VAL(2)-VAL(1))/VAL(3))+1
-		 IF (( VAL(1)+(NL-1)*VAL(3)) .LT. VAL(2)) NL = NL + 1 
-	      ELSE
-		 NL=2
-	      ENDIF
+* calling argument declarations:
+	INTEGER nsize, status
+	REAL z(*), wrk(*), badz
 
-	   ENDIF
-	ENDIF
-	RETURN
-	END
+* internal variable declarations:
+
+      INTEGER i, ngood
+
+      ngood = 0
+      DO i = 1, nsize
+         wrk(i) = z(i)
+         IF (wrk(i) .NE. badz) ngood = ngood + 1
+      ENDDO
+
+      CALL HEAP2_V (wrk, badz, nsize)
+
+      nlev2 = nlev
+      IF (ngood .LT. nlev) nlev2 = ngood
+
+      n_per_bin = ngood/ (nlev2-1)
+
+      ibin = 1
+      DO i = 1, ngood, n_per_bin
+         zlev(ibin) = wrk(i)
+         ibin = ibin + 1
+      ENDDO
+      zlev(1) = wrk(1)
+      zlev(nlev2) = wrk(ngood)
+
+!      ... could smooth these some.
+
+      IAUTOC = 0  ! levels are already set so dont do it in set_levels.
+
+      RETURN
+      END

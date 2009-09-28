@@ -66,7 +66,7 @@ C**
 * V608 *acm*10/07 The above fix refered to TM_FPEQ( ABS(ZLEV(I)) ,0.) ) 
 *                 It should be ZLEV(I). Fixes bug 1546.
 * V610 *acm* 3/08 - add new MODE NLEVELS; default number of levels is now 40
-
+* V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 
 	parameter	(epsilon = 1e-6)
 
@@ -132,7 +132,7 @@ C
 		IF(ABS(Z-ZLEV(J)).LE.DZ)THEN
 		    CALL DELLEV(J)
 		    GOTO 500
- 	ENDIF
+		ENDIF
 510		CONTINUE
 500		CONTINUE
 	    ELSE
@@ -217,7 +217,7 @@ C
 330		I=I+1
 		IF(I.LT.NLEV)GOTO 320
 	    ENDIF
-	ELSE IF(LWGH.EQ.5)THEN
+	ELSE IF(LWGH.EQ.5)THEN  ! DELETE a level
 	    DZ=(ZLEV(NLEV)-ZLEV(1))*0.00001
 	    DO 600 I=1,NL
 	    Z=VAL(1)+VAL(3)*(I-1)

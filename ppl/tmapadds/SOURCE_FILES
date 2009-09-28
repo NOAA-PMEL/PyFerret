@@ -8,6 +8,8 @@ buffer_fillpoly.F\
 bc2whoi.F\
 calendar_blkdat.F\
 cmdini.F\
+compute_histo_bins.F\
+compute_mnstd.F\
 daxis_box.F\
 drawpoly.F\
 fillpol.F\
@@ -56,6 +58,7 @@ set_gks_metafile.F\
 set_levels_shade_fill.F\
 set_num_linecolors.F\
 set_one_color.F\
+set_open_levels.F\
 set_pat_size.F\
 set_regular_plot.F\
 set_window_size.F\

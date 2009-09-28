@@ -2,7 +2,8 @@
 * COMMON for PLOT+ with all variables declared
 * created for TMAP usage by Steve Hankin 7/88
 c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
-*  V610  *acm* 3/08 - add new MODE NLEVELS
+*  V610 *acm* 3/08 - add new MODE NLEVELS
+* V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 
 	REAL	ZLEV,CANGLE
 	INTEGER	LDIG,IVCOMP
@@ -21,5 +22,10 @@ c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
 	LOGICAL*4 CENTERED,SET_DELTA,NEGINF,POSINF,CONT_KEY
 	REAL	DELTA
 
-* requires: INCLUDE 'PPLV11INC:CONT.INC'                                    
+* For open-ended color/contour levels
+	LOGICAL OPENLEV,SET_STD,SET_MEAN,SET_MIN,SET_MAX,NEED_DATA_SCAN,
+     .          USE_HIST
+	REAL	LEV_STD,LEV_MEAN,LEV_MIN,LEV_MAX,LEV_HIST
+
+* requires: INCLUDE 'CONT.INC'                                    
 

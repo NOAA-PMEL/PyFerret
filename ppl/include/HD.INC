@@ -11,8 +11,9 @@ C**
 C***********************************************************************
 C**
 C**
-c
-	COMMON/HD/ XPTS,ZMIN,ZMAX,ZMEAN,XMIN,XMAX,NX,YMIN,YMAX,
+* V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
+
+	COMMON/HD/ XPTS,ZMIN,ZMAX,ZMEAN,ZSTD,XMIN,XMAX,NX,YMIN,YMAX,
      *	NY,JTYPE,JLAB(16),NCH,IXLB(16),NCHX,IYLB(16),NCHY
 	DIMENSION IPTS(NMIPTS)
 	INTEGER*2 JLAB,IXLB,IYLB
@@ -25,6 +26,7 @@ c	xpts	actual number of points in data file (y and x) (real)
 c	zmin	minimum value for x and y  (real)
 c	zmax	maximum value for x and y  (real)
 c	zmean	mean for x and y  (real)
+c       zstd	std for xy array
 c	xmin	minimum x value  (real) (user units)
 c	xmax	maximum x value  (real) (user units)
 c	nx	number of x grid points (integer)

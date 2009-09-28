@@ -143,6 +143,7 @@
 *                  of the axes as they will appear on the plot.
 * V62  *acm* 03/09 Fix bug 1649: get the value of cal_id for this time axis
 *                  BEFORE using it in evaluating arguments to /hlim or /vlim 
+* V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 
 
 C replace includes with those from plot_set_up, 
@@ -210,7 +211,8 @@ C plus those starting w/ xbox_bounds:
      .			arg_xpos, cx_xpos, cx_ypos, mr_xpos, mr_ypos,
      .			phlim, pvlim, slen2, cal_id, tax,
      .			x_axtyp, y_axtyp, iscl, siz, nsiz, 
-     .			TM_GET_CALENDAR_ID, mode_num, axis1, axis2
+     .			TM_GET_CALENDAR_ID, mode_num, axis1, axis2,
+     .                  hblk1, mvh_temp
 	REAL		s, w1_lo, w1_hi, w2_lo, w2_hi, valy1,
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -286,7 +288,6 @@ C   set up memory for the flag grid
 * set flag indicating a 2D plot is on the screen
 	twodee_on = .TRUE.
 
-
 * save axis pointers so PLOT+ can get box boundaries
 	bb_grid = grid
 	IF ( transpz ) THEN
@@ -357,7 +358,6 @@ C   set up memory for the flag grid
 	      GOTO 5400
 	   ENDIF
 	ENDIF
-
 
 * create temporary buffers to contain the plot data
 	CALL CREATE_TEMP_MEM_VAR( ctx, mvx_temp, status )
@@ -666,6 +666,28 @@ C ACM added 8/2001 save cal id if vertical time axis
      .		      n1_regrid, n2_regrid, w1_lo, w2_lo,
      .		      d1_regrid, d2_regrid, plot_mem_used)
 
+* If needed for the levels setting, compute data mean and std, store
+* in common.  If the user set a std to use, store that.
+
+       nsiz = size1* size2
+       CALL compute_mnstd (memory(1, xblk1), bad_x, need_std, 
+     .    nsiz, status)
+       IF (status .NE. ferr_ok) GOTO 5710 
+
+* If histogram-based levels are requested, compute the 
+* histogram bins.
+
+       IF (need_histo) THEN
+* create temporary buffer to contain workspace
+	  CALL CREATE_TEMP_MEM_VAR( ctx, mvh_temp, status )
+	  IF ( status .NE. ferr_ok ) RETURN
+	  hblk1 = mr_blk1( mvh_temp )
+          plot_mem_used = plot_mem_used + nsiz
+
+	  CALL compute_histo_bins (memory(1,xblk1), memory(1,hblk1), 
+     .       bad_x, nsiz, status) 
+       ENDIF
+
 * For cases where regrid was set in AXIS_INTERVALS not because of a 
 * subspan modulo axis, but because the axis precsion is too small for 
 * single precision representation, now we reset the plot type to regular 
@@ -809,5 +831,9 @@ C ACM added 8/2001 save cal id if vertical time axis
 	CALL ERRMSG( ferr_out_of_range, status,
      . 'Limits for log axis negative or too small: '//
      .  buff1(:slen)// ' : '// buff2(:slen2), *5000 )
+
+ 5710   CALL ERRMSG( ferr_out_of_range, status,
+     .     'data too large to compute Std Dev'//pCR//
+     .      cmnd_buff(:len_cmnd), *5100 )
 
 	END

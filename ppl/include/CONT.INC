@@ -13,12 +13,14 @@ C**
 C**
 * v581  *acm* 3/05 open levels (-INF) (INF)
 * V610  *acm* 3/08 - add new MODE NLEVELS
+* V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 
 
-	COMMON/CONT/ ZLEV(ICNLEV),LDIG(ICNLEV),LWGT(ICNLEV),LCLR(ICNLEV),
-     *	NLEV,NLEV_DFLT,HGT,NARC,IAUTOC,NLEV2,NSIGC,CANGLE,IVCOMP,
-     *  CONTOUR_FEWER,CENTERED,SET_DELTA,DELTA,NEGINF,POSINF,CONT_KEY
-
+	COMMON/CONT/ZLEV(ICNLEV),LDIG(ICNLEV),LWGT(ICNLEV),LCLR(ICNLEV),
+     *	NLEV,NLEV_DFLT,HGT,LEV_STD,LEV_MEAN,LEV_MIN,LEV_MAX,LEV_HIST,
+     *  NARC,IAUTOC,NLEV2,NSIGC,CANGLE,IVCOMP,
+     *  CONTOUR_FEWER,CENTERED,SET_DELTA,DELTA,NEGINF,POSINF,CONT_KEY,
+     *  OPENLEV,SET_STD,SET_MEAN,SET_MIN,SET_MAX,NEED_DATA_SCAN,USE_HIST
 
 c
 c	zlev()	array of levels to be contoured (user units)
@@ -48,6 +50,16 @@ c	delta		The specified DZ value
 *       posinf          The high level is open: hithest level specified to inf
 *       cont_key        Draw continuous color key - no a outline on the key boxes 
 *                        (previously this was in shade_vars.cmn)
+*	need_data_scan	true if we need to get min/max or mean/std from the data
+*       openlev		use open-ended levels
+*	set_std		flags: user-set mean and std for open-ended levels
+*	set_mean           or user indicated to compute from the data.
+*	lev_std		the values
+*	lev_mean
+*	set_min		flags: user-set min and/or max. if min and OPEN then 
+*	set_max            open only on top
+*	lev_min		the values of min and/or max.
+*	lev_max
 
 c*******************************************************************
 

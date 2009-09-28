@@ -117,6 +117,7 @@
 *                   fixes to the precision
 * V62  *acm* 5/09   Fixing bug 1661: if the plot is TRANSPOSED, then multiply 
 *                   vertices of the opposite axis by -1 
+* V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -727,6 +728,26 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	CALL PPLLDX_envelope(5,x_dat,x_dat,ncolor, t1_date, ' ', 
      .                       dt_min,plot_mem_used)
 
+
+* If needed for the levels setting, compute data mean and std, store
+* in common.  If the user set a std to use, store that.
+
+       CALL compute_mnstd (x_dat, mr_bad_data(mr_color), need_std, 
+     .    ncolor, status)
+
+* If histogram-based levels are requested, compute the 
+* histogram bins.
+
+       IF (need_histo) THEN
+* create temporary buffer to contain workspace
+	  CALL CREATE_TEMP_MEM_VAR( ctx, mvh_temp, status )
+	  IF ( status .NE. ferr_ok ) RETURN
+	  hblk1 = mr_blk1( mvh_temp )
+          plot_mem_used = plot_mem_used + ncolor
+
+	  CALL compute_histo_bins (x_dat, memory(1,hblk1), 
+     .       mr_bad_data(mr_color), ncolor, status) 
+       ENDIF
 
 * ... check for adequate PLOT+ memory to store the npts for each poly. 
 * ... Save in ppl mem rather than array lleng to remove restriction on

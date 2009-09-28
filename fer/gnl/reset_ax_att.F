@@ -97,7 +97,9 @@ c    see if name exists as an axis name.
      .          nvdims, vdims, nvatts, coordvar, all_outflag, status) 
             IF (.NOT. coordvar) goto 100
 
-         ENDIF
+         ELSE
+	    GOTO 100
+	 ENDIF
 
 c ... If units attribute already exists, change it; otherwise add new
 

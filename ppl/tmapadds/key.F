@@ -92,6 +92,7 @@
 *                 argument klab_len by the same amount in subsequent calls to TM_FMT_DIGITS  
 *                 when we are writing the numeric labels on the key. 
 * V610 *acm* 3/08 For larger default number of levels, make fewer labels when the key is short.
+* V630  *acm* 9/09 Fix color key labels that run off the edge of the plot 
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -123,7 +124,7 @@
 	real		xmaxx,ymaxx,vwidth,vheight,karht
 	real		xx,yy,xxx,yyy
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
-     .                  val, del, x_inc_inf, y_inc_inf, frac
+     .                  val, del, x_inc_inf, y_inc_inf, frac, fixx
         real*8          val_n, val_last
 	character*12	text,tm_fmt, TM_FMT_DIGITS, txt_out, blanks
         character*20    buff
@@ -180,6 +181,7 @@
            READ (buff,*) val_last
            increase_digits = .FALSE.
 
+           max_len = 0
 	   DO 30 ndx = lev1+1, shd_levels
 	     buff = 
      .          TM_FMT_DIGITS (zlev(ndx),lab_digits,klab_len+5,str_len)
@@ -187,6 +189,7 @@
               READ (buff,*) val_n
              IF ( TM_DFPEQ(val_last, val_n) ) increase_digits = .TRUE.
              val_last = val_n
+             IF (max_len .lt. str_len) max_len = str_len
    30      CONTINUE
 
            IF (increase_digits) THEN
@@ -499,6 +502,15 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	else
 	   incr = klab_incr
 	end if
+	
+! The default locations often make the labels run off to the right. 
+! Check for this and move the key over
+
+	IF ((kx_hi_def/1000 + max_len*karht ) .GT. width) THEN
+	   fixx = (kx_hi_def/1000 + max_len*karht  - width) *1000
+           kx_lo_def = kx_lo_def - fixx
+           kx_hi_def = kx_hi_def - fixx
+        ENDIF
 
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0

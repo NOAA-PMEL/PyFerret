@@ -74,6 +74,9 @@
 *                    var from an EZ dataset, set the appropriate attributes.
 * V619  2/09 *acm* - Fix SET VAR/OUTTYPE= when the variable is a user var that
 *                    yet has dset=n.
+* V630  9/09 *acm* - Fix bug 1646: write the attribute Ferret_Precision_Note, when
+*                    converting to Double from another data type, but only if the
+*                    attribute isnt already there.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -338,12 +341,20 @@
 
 * When the user requests double precision output, write an attribute to the
 * file explaining that it contains data converted from float.
-
-           IF (typflag(1:3) .EQ. 'DOU')
+           attname = 'Ferret_Precision_Note'
+           CALL CD_GET_VAR_ATT_ID (dset, varid, 
+     .        attname, attid, status)
+           IF (typflag(1:3).EQ.'DOU' .AND. status.NE.ferr_ok) 
      .       CALL CD_PUT_NEW_ATTR (dset, varid, 
-     .        'Ferret_Precision_Note', 2, 61, 1, 
+     .        attname, 2, 61, 1, 
      .        'This variable written by Ferret was converted from '//
      .        'FLOAT to DOUBLE', 1., status )
+
+* If they changed their minds and reset from double to something else
+* then dont write that attribute.
+
+	   IF (typflag(1:3).NE.'DOU' .AND. status.EQ.ferr_ok)
+     .       CALL CD_DELETE_ATTRIBUTE(dset, varid, attname, status)
 
            IF (status .NE. ferr_ok) GOTO 5000
 

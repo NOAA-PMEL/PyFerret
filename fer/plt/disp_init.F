@@ -144,6 +144,12 @@
         buff30 = 'YAXIS_MAX'
 	CALL GETSYM( buff30, buffer, nc, ier )
 	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buff30 = 'X_REVERSED '
+	CALL GETSYM( buff30, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buff30 = 'Y_REVERSED '
+	CALL GETSYM( buff30, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
 
 * free the color table on a full window
         IF ( vp_num .EQ. mvp_dflt ) CALL PPL_SHASET( 'RESET' )

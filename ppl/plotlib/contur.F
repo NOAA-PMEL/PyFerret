@@ -63,6 +63,7 @@
 * *jc*  - 3/26/99 added transformation to curvilinear coordinates
 *  v581 5/2005 *acm* Add CONTOUR/MOD capability for modulo replications for 
 *                    curvilinear data
+* V630  *acm* 9/09 change a message only
 
 ****************************************************************************
 C**
@@ -696,7 +697,7 @@ c	yendl = y(k) + width*dyy/space
 	      dyy=ya+yb*(spacex-abs(xa))/abs(xb)
 	    endif
 	  else
-	    print*,' error e1 in pplmod_contur.F, whoa baby, stop me'
+	    print*,' error e1 in pplmod_contur.F'
 	    stop
 	  endif
 	else

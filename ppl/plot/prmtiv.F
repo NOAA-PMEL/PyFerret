@@ -146,6 +146,9 @@ C
 	INCLUDE 'LABELS.INC'
 	INCLUDE 'SWITCH.INC'
 	INCLUDE 'SYSTEM.INC'
+	INCLUDE 'gkscm1_inc.decl'  ! with wsid for igrnpt
+	INCLUDE 'GKSCM1.INC'
+
 
 C
 C
@@ -554,12 +557,12 @@ C
 	    need_arrow = .FALSE.
 	    IF ( mouse_input ) THEN
 	      need_justify = m.GE.3 .AND. iflg(3).EQ.0
-	      ichoice = IGRNPT(need_justify, xp, yp)	! mouse input
+	      ichoice = IGRNPT(wsid, need_justify, xp, yp)	! mouse input
 	      need_arrow =   ichoice.EQ.70 .OR. ichoice.EQ.102
      .			.OR. ichoice.EQ.76 .OR. ichoice.EQ.108
 	      IF (need_arrow) THEN
 * ... user wants a line pointing to the text
-	         idummy = IGRNPT(.FALSE., p(1), p(2))
+	         idummy = IGRNPT(wsid, .FALSE., p(1), p(2))
 	         p(3) = -1	! left justify
 	         IF( ichoice.EQ.70 .OR. ichoice.EQ.102 )THEN	 ! arow head?
 	           iat = 2
@@ -664,7 +667,7 @@ C
 C***	%WHERE
 C
 	ELSE IF(ICOM.EQ.'%WHERE')THEN
-	    idummy = IGRNPT(.FALSE., p(1), p(2))	! mouse input
+	    idummy = IGRNPT(wsid, .FALSE., p(1), p(2))	! mouse input
 
 	ENDIF
 

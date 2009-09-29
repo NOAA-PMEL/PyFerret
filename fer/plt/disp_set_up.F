@@ -666,7 +666,7 @@ C ACM added 8/2001 save cal id if vertical time axis
      .		      n1_regrid, n2_regrid, w1_lo, w2_lo,
      .		      d1_regrid, d2_regrid, plot_mem_used)
 
-* If needed for the levels setting, compute data mean and std, store
+* Compute data mean and if needed for the levels setting the std, store
 * in common.  If the user set a std to use, store that.
 
        nsiz = size1* size2

@@ -83,7 +83,6 @@
         branch_test = 190.
         lon_degrees = 360.
 	
-c        xfield_is_modulo = .FALSE.
         IF (.NOT.units_degrees) xfield_is_modulo = .FALSE.
 
 * See if the xfield extends over 360 degrees. Do the outer values 

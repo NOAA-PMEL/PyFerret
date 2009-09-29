@@ -68,6 +68,10 @@
 
       CALL HEAP2_V (wrk, badz, nsize)
 
+* nlev refers to the edges of the color bins; make the
+* user's input refer to the number of bins.
+
+      nlev = nlev + 1  
       nlev2 = nlev
       IF (ngood .LT. nlev) nlev2 = ngood
 

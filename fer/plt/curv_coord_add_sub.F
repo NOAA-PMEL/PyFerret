@@ -83,7 +83,8 @@
         branch_test = 190.
         lon_degrees = 360.
 	
-        xfield_is_modulo = .FALSE.
+c        xfield_is_modulo = .FALSE.
+        IF (.NOT.units_degrees) xfield_is_modulo = .FALSE.
 
 * See if the xfield extends over 360 degrees. Do the outer values 
 * differ by about 360 ( relative to the size of the grid)?
@@ -107,7 +108,7 @@
    
            min_outliers = max(1,INT(ny/20))
            xfield_is_modulo = count_outliers .LT. min_outliers
-	   IF (.NOT.units_degrees)  xfield_is_modulo = .FALSE.
+	   IF (.NOT.units_degrees) xfield_is_modulo = .FALSE.
 
            first = .FALSE.
         ENDIF

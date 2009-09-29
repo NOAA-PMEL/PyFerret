@@ -411,6 +411,10 @@ c           nlev = 1
               CALL PPL_PATSET( 'PATTERN' )
            ENDIF
 
+* Mark the levels as set; if we used histogram levels it is 0
+
+          IF (need_histo) iautoc = 1
+
 * restore axes? (5/29/97) revised 3/02
 c	IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 

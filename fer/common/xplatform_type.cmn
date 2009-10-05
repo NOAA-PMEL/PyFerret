@@ -1,8 +1,8 @@
 * XPLATFORM_TYPE.CMN
 * *kob* 10/01 - variable to hold platform type executable was built on -
 *               for output in banner message
+* *acm* 10/09 - make the string longer
+ 
+        COMMON/ XPLATFORM_TYPE / platform_type
 
-	COMMON/ XPLATFORM_TYPE / platform_type
-
-	CHARACTER*20 platform_type
-
+        CHARACTER*40 platform_type

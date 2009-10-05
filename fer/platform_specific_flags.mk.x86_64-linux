@@ -31,8 +31,7 @@
 	CDF_INCLUDES	= -I/ /usr/local/src/netcdf-3.6.2/include 
 	
 	# New platform type var - *kob* 10/01
-	PLATFORM = Linux(g77) 2.6.9-22.ELsmp
-
+	PLATFORM = Linux(g77) 2.6.9-89.ELsmp
 
 
 	CC              = cc

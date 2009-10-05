@@ -29,7 +29,7 @@
 			  -I../../xgks/port 
 	
 	# New platform type var - *kob* 10/01
-	PLATFORM = Linux(g77) 2.4.21-32.0.1.ELsmp
+	PLATFORM = Linux(g77) 2.4.21-57.ELsmp
 
 
 

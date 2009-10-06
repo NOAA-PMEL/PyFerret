@@ -77,6 +77,7 @@
 * V630  9/09 *acm* - Fix bug 1646: write the attribute Ferret_Precision_Note, when
 *                    converting to Double from another data type, but only if the
 *                    attribute isnt already there.
+* V64  10/09 *acm* longer string length for grid_name
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -105,7 +106,7 @@
      .			attoutflag, vartype, nvdims, nvatts, vdims(8), 
      .			varoutflag, cx, idum
 	REAL		bad, scalefac, offset, val, dummy
-	CHARACTER	grid_name*16, title*128, units*128, newname*128,
+	CHARACTER	grid_name*64, title*128, units*128, newname*128,
      .                  is_nan*3, flag*10, typflag*10, varattname*512,
      .                  varname*128, attname*128, buf*2, newname_lc*128
 

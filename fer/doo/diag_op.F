@@ -54,6 +54,7 @@
 * V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
 * v552 *acm* 4/03  up VAR_TRANS to 150 characters (variables are up to 128, plus
 *                  space for the transformation specifier)
+* V64  10/09 *acm* longer string length for grid_name: limit length written to diag output
 
 * calling argument declarations:
 	INTEGER	act_class, idim, cx
@@ -95,7 +96,7 @@
 * REGRIDDING
 	ELSEIF( act_class .EQ. isact_class_regrid ) THEN
 	   WRITE ( risc_buff, 3020 ) doing, ww_dim_name(idim),
-     .		       var(1:slen), grid_name(cx_grid(cx)),
+     .		       var(1:slen), grid_name(cx_grid(cx))(:16),
      .                 alg_regrid_code(cx_regrid_trans(idim,cx))
  3020	   FORMAT (1X,A5,' regrid on ',A1,': ',A,' --> ',A,' @',A)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
@@ -145,7 +146,8 @@
 	         out_buff((ii-1)*10+1:ii*10) = '(invalid) '
 	      ENDIF
  500	   CONTINUE
-	   WRITE ( risc_buff, 3060 ) doing, grid_name(cx), out_buff(:40)
+	   WRITE ( risc_buff, 3060 ) doing, grid_name(cx)(:16), 
+     .	           out_buff(:40)
  3060	   FORMAT (1X,A,' dynamic grid ',2A)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 

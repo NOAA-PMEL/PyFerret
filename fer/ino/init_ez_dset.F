@@ -70,6 +70,7 @@
 * v604 *acm* 7/07  increase length of ds_name
 * v614 *acm* 11/08 robust fix for bug 287: filenames beginning with digits. 
 *                  Check if the filename contains characters other than digits.
+* V64  10/09 *acm* longer string length for grid_name
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -95,7 +96,7 @@
      .			tmap_status, loc, skip, grid, columns,
      .			order(5), idim, s1, slen, ndigits
 	CHARACTER	TM_INQ_PATH*1024, var_list*500,
-     .			path_name*256, ezform*80, title*128, grid_name*16,
+     .			path_name*256, ezform*80, title*128, grid_name*64,
      .			type*500, ctype*16, delim*24
 	REAL		rval
 

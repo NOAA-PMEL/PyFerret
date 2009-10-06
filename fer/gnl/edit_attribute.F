@@ -41,6 +41,7 @@
 * 9/2005
 * 3/2006 Allow commands equivalent to SET AXIS/modulo/depth/units etc.
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* V64  10/09 *acm* longer string length for grid_name
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -82,7 +83,7 @@
       CHARACTER GET_STRING_ELEMENT*2048, TM_FMT*2048, attbuff*2048, 
      .          errbuff*256, varname*512, attname*128, aname*128
 
-      CHARACTER	grid_name*16, title*128, units*64, newname*128
+      CHARACTER	grid_name*64, title*128, units*64, newname*128
 
 ! Check that the expresssion is 1-D and if it is a string, just 1 value.
 

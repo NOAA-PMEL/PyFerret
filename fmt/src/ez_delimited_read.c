@@ -534,7 +534,7 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
 	    int max_fields)
 {
 
-  char *p, *pnext, str1[2], latlon1[2];
+  char *p, *pnext, *pstart, str1[2], latlon1[2];
   float dummy;
   int idummy1, idummy2, idummy3, i, nfields_in;
 
@@ -609,12 +609,19 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
       /* need above check for strings such as 120E - which some 
 	 compilers pass through as valid floating point number 
          kob v5.41 - 4/02 */
+      /* But, fixing bug 1700, check whether the rest of the field
+	  is numeric before calling this Longitude. (The string ZAIRE
+	  was being marked as Longitude) 
+         acm v6.31 - 10/09 */
        /* longitude */
       {
 	if (field_type[(*nfields)] == FTYP_MISSING
 	    || field_type[(*nfields)] == FTYP_NUMERIC)
 	  field_type[(*nfields)] = FTYP_LON;
 	else if (field_type[(*nfields)] != FTYP_LON)
+	  field_type[(*nfields)] = FTYP_CHARACTER;
+	strncpy(pstart,p,idummy1 );
+	if (sscanf(pstart,"%f",&dummy) != 1)
 	  field_type[(*nfields)] = FTYP_CHARACTER;
       }
     else if (sscanf(p,"%f%1s",&dummy,str1) == 2)

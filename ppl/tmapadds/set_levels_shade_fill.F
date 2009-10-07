@@ -36,6 +36,7 @@
 *
 *
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
+* V631  *acm*10/09 Fix bug 1704: LEVELS=xD was incorrect.
 	
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -87,14 +88,14 @@ C       (This portion stolen from RANGE)
 C       
 C       CALCULATE THE MINIMUM VALUE OF THE RANGE
 C       
-		 FM = (zmean+zmin) / DZ
+		 FM = (zmin) / DZ
 		 M = IFIX(FM)
 		 IF (FM .LT. 0.0) M = M - 1
 		 znp = DZ * FLOAT(M)
 C       
 C       CALCULATE THE MAXIMUM VALUE OF THE RANGE.
 C       
-		 FM = (zmean+zmax) / DZ
+		 FM = (zmax) / DZ
 		 M = IFIX(FM)
 		 IF(FM .GT. 0.0)M = M + 1
 		 zmp = DZ * FLOAT(M)

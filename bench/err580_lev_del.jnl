@@ -3,11 +3,9 @@
 
 shade/lev=.4d/x=1:10/y=1:10 cos(i/10)*9*sin(j/5)
 sh sym lev_del
+show sym lev*
 
-! Why does the following fail when run as part of the benchmarks?  ZMIN and ZMAX 
-! computed in stmnmx have the values of  xmin and xmax instead of zmin and zmax, 
-! but it works fine alone, not here at the end of the benchmarks...
-!
-! use coads_climatology
-! shade/l=1/lev=.4d sst; sho sym lev_del
+use coads_climatology
+shade/l=1/lev=1.2d sst; sho sym lev_del
 
+show sym lev*

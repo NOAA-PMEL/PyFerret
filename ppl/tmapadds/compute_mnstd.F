@@ -60,41 +60,43 @@ C**
 
 c  Already have zmin, zmax
 
-c Compute zmean.
-
-        IF (centered) THEN
-	   zmean = 0.
-        ELSE
-	   sum = 0.0
-	   ngood = 0
-	   DO 100 i = 1, nsize
-	      datum = Z(i)
-	      IF ( datum .NE. badz ) THEN
-	         sum = sum + datum
-                 ngood = ngood + 1
-	      ENDIF
- 100	   CONTINUE
-           zmean = sum/FLOAT(ngood)
-	ENDIF
-
-        IF (.not. need_std) THEN
+        IF (.not. need_std .AND. centered) THEN
 	   zstd = lev_std
+	   zmean = 0.
 	   GOTO 5000
 	ENDIF
 
-*  compute variance 
-        sumsq_dev = 0.0
-	ngood = 0
-	DO 200 i = 1, nsize
-	   datum = Z(i)
-	   IF ( datum .NE. badz ) THEN
-	      dev = datum - zmean
-	      IF ( sumsq_dev .GE. 3.E35 ) GOTO 5010
-	      sumsq_dev = sumsq_dev + dev*dev
+c Compute data mean.
+
+        sum = 0.0
+        ngood = 0
+        DO 100 i = 1, nsize
+           datum = Z(i)
+           IF ( datum .NE. badz ) THEN
+	      sum = sum + datum
               ngood = ngood + 1
 	   ENDIF
- 200	CONTINUE
-	zstd   = SQRT( sumsq_dev / FLOAT(ngood-1) )
+ 100    CONTINUE
+        zmean = sum/FLOAT(ngood)
+
+        IF (need_std) THEN
+*  compute variance 
+	   sumsq_dev = 0.0
+	   ngood = 0
+	   DO 200 i = 1, nsize
+	      datum = Z(i)
+	      IF ( datum .NE. badz ) THEN
+	         dev = datum - zmean
+	         IF ( sumsq_dev .GE. 3.E35 ) GOTO 5010
+	         sumsq_dev = sumsq_dev + dev*dev
+                 ngood = ngood + 1
+	      ENDIF
+ 200	   CONTINUE
+	   zstd   = SQRT( sumsq_dev / FLOAT(ngood-1) )
+        ENDIF
+
+* If user is resetting the mean, do that here
+	IF (centered) zmean = 0.
 
  5000	RETURN
 	

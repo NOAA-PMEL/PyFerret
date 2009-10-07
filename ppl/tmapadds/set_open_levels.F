@@ -50,7 +50,8 @@
       include 'errmsg.parm'
 
       REAL    dz, fm, znp, zmp, dzf, znpf, zmpf, 
-     .        znpclo,zmpclo, dzc, dzclo, dzchi, density_factor
+     .        znpclo,zmpclo, dzc, dzclo, dzchi, 
+     .        twostd, density_factor
       INTEGER m, jj, nlevf, nlevc, nlev3, half_ncoarse
 
       EXTERNAL RANGE
@@ -65,47 +66,12 @@
       nlevc = MAX(0.1*nlev, 1)
 
       IF (centered) THEN
-         
-         absmin = ABS( zmin )
-         absmax = ABS( zmax )
+
 	 twostd = 2.* zstd
+	 znp = -1*twostd
+	 zmp = twostd
+	 CALL RANGE(znp,zmp,nlevf,znpf,zmpf,dzf)  ! fine levels
 
-	 IF (zmin .GT. 0 .AND. zmax .GT. 0) THEN
-            znp = -1*twostd
-            zmp = twostd
-	    IF (twostd .LT. zmin) THEN 
-               zmp = zmax - zstd
-               znp = -1*hi
-	    ENDIF
-
-            znp = lev_mean + znp
-            zmp = lev_mean + zstd
-	    CALL RANGE(znp,zmp,nlevf,znpf,zmpf,dzf)  ! fine levels
-
-         ELSEIF (absmin .GT. twostd .OR. absmax .GT. twostd) THEN 
-	    znp = -1*twostd
-	    zmp = twostd
-	    znp = lev_mean + znp
-	    zmp = lev_mean + zmp
-	    CALL RANGE(znp,zmp,nlevf,znpf,zmpf,dzf)  ! fine levels
-         ELSE
-	    znp = -1*zstd
-	    zmp = zstd
-	    znp = lev_mean + znp
-	    zmp = lev_mean + zmp
-	    CALL RANGE(znp,zmp,nlevf,znpf,zmpf,dzf)  ! fine levels
-         ENDIF
-
-         IF (zmin .LT. 0 .AND. zmax .LT. 0) THEN
-            IF (-1*twostd .GT. zmin) THEN 
-               znp = zmin + 0.5*zstd
-               zmp = -1*znp
-	       znp = lev_mean + znp
-	       zmp = lev_mean + zmp
-               CALL RANGE(znp,zmp,nlevf,znpf,zmpf,dzf)  ! fine levels
-            ENDIF
-         ENDIF
-	 
 ! Create centered fine levels surrounded by centered coarse levels.
 
          density_factor = 4.
@@ -117,18 +83,24 @@
 	 znpchi = lev_mean + zmpf
 	 zmpchi = lev_mean + zmpf + dzc* half_ncoarse
 
-         IF (zmin .LT. zmpclo  .OR.  zmax .GT. zmpchi) THEN
-	      ! set levels as defined by the above
+         IF (zmax .LT. znpclo  .OR.  zmin .GT. zmpchi) THEN
 
-         ELSE
-	    znp = lev_mean + zmin
-	    zmp = lev_mean + zmax
-	    CALL RANGE (znp, zmp, 2*nlevc, znpclo, zmpclo, dzc)
-	    lohi = MAX(ABS(znpclo), ABS(zmpclo))
-	    znpclo = lev_mean - lohi
-	    zmpchi = lev_mean + lohi
+	    zmp = 0.6* MAX( ABS(zmin), ABS(zmax) )
+	    znp = -1* zmp
+	    CALL RANGE(znp,zmp,nlevf,znpf,zmpf,dzf)  ! fine levels
 
-	 ENDIF
+! Create centered fine levels surrounded by centered coarse levels.
+
+            density_factor = 4.
+            dzc = dzf* density_factor
+	    half_ncoarse = nlevc/2
+
+	    znpclo = lev_mean + znpf - dzc* half_ncoarse
+	    zmpclo = lev_mean + znpf
+	    znpchi = lev_mean + zmpf
+	    zmpchi = lev_mean + zmpf + dzc* half_ncoarse
+
+         ENDIF
 
       ELSE  ! not centered
 
@@ -187,10 +159,15 @@ c Set jj as in plotz based on fine levels.
             lwgt(ilev) = 3
          ENDIF
          ldig(ilev) = jj
-	 IF (zlev(ilev) .GT. zmax) GOTO 2000
+	 IF (centered) THEN
+	    ilev = ilev + 1
+         ELSE
+	    IF (zlev(ilev) .GT. zmax) GOTO 2000
 
          IF (zlev(ilev)+ dzc* FLOAT(i) .GE. zmin) 
      .	    ilev = ilev + 1
+         ENDIF
+
  101  CONTINUE 
  102  CONTINUE 
 
@@ -233,10 +210,16 @@ c Set jj as in plotz based on fine levels.
             lwgt(ilev) = 3
          ENDIF
          ldig(ilev) = jj
-	 IF (zlev(ilev) .GT. zmax) GOTO 2000
+
+	 IF (centered) THEN
+	    ilev = ilev + 1
+         ELSE
+	    IF (zlev(ilev) .GT. zmax) GOTO 2000
 
          IF (zlev(ilev)+ dzf* FLOAT(i) .GE. zmin) 
      .	    ilev = ilev + 1
+         ENDIF
+
  103  CONTINUE 
  104  CONTINUE 
 
@@ -266,10 +249,16 @@ c Set jj as in plotz based on fine levels.
             lwgt(ilev) = 3
          ENDIF
          ldig(ilev) = jj
-	 IF (zlev(ilev) .GT. zmax) GOTO 2000
 
-         IF (zlev(ilev)+ dzc* FLOAT(i) .GE. zmin) 
-     .	    ilev = ilev + 1
+	 IF (centered) THEN
+	    ilev = ilev + 1
+	 ELSE
+	    IF (zlev(ilev) .GT. zmax) GOTO 2000
+
+            IF (zlev(ilev)+ dzc* FLOAT(i) .GE. zmin) 
+     .	       ilev = ilev + 1
+         ENDIF
+
  105  CONTINUE 
 
  2000 CONTINUE

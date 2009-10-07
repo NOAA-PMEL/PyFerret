@@ -88,8 +88,6 @@
 * *kob* 4/06 - back off my_readline call - needed for 64-bit port
 * v603 *acm* 5/07 Housekeeping: initialize arg_start and arg_end
 *                 before call to parse_command
-* V6.3 *acm* 9/09 Fix bug 1681; parsing an IF block inside a REPEAT, when 
-*                 all of that is also inside an IF.
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -101,8 +99,7 @@
 	CHARACTER*(*)	called_string
 
 * internal variable declarations:
-	LOGICAL re_verify, do_verify, prefix_verify, arg1_quoted,
-     .          concatenate_only
+	LOGICAL re_verify, do_verify, prefix_verify, arg1_quoted
 	INTEGER	TM_LENSTR, TM_LENSTR1,
      .		iqual, ilist, cmnd_len, double_eof,
      .          has_more, i
@@ -237,27 +234,8 @@ c        IF(has_more.NE.1) goto 210
 	prefix_verify = .TRUE.
 
 *********** POSSIBLY SKIP COMMAND UNDER IF CONTROL (4/96) ********************
- 1000	IF (if_conditional .AND. 
-     .      ((if_doing(ifstk) .EQ. pif_skip_to_clause).OR.
-     .       (if_doing(ifstk) .EQ. pif_skip_to_endif)) ) THEN
+ 1000	IF (if_conditional) CALL PROCESS_IF(cmnd_buff, cmnd_len, *20)
 
-           concatenate_only = .TRUE.
-	   CALL PARSE_COMMAND ( memory, cmnd_buff,
-     .			     max_arg_list, max_qual_list,
-     .			     len_cmnd, cmnd_num, subcmnd_num, 
-     .			     num_qualifiers, qualifier_list,
-     .			     qual_start, qual_end,
-     .			     num_args, arg_start, arg_end,
-     .			     err_lun, re_verify, arg1_quoted, 
-     .			     concatenate_only, status	)
-           IF (cmnd_num .EQ. 0) GOTO 20
-           IF (cmnd_num .EQ. cmnd_semicolon .AND. 
-     .         (.NOT.has_continuation_cmnd) ) THEN
-              concatenate_only = .FALSE.
-              CALL PROCESS_IF(cmnd_buff, cmnd_len, *20)
-	   ENDIF
-	ENDIF
- 
 *********** ECHO THE COMMAND ****************************
 	IF (do_verify) THEN
 	   IF (prefix_verify) THEN
@@ -284,15 +262,13 @@ c        IF(has_more.NE.1) goto 210
            arg_end(i) = 0
  400    CONTINUE
 
-        concatenate_only = .FALSE.
 	CALL PARSE_COMMAND ( memory, cmnd_buff,
      .			     max_arg_list, max_qual_list,
      .			     len_cmnd, cmnd_num, subcmnd_num, 
      .			     num_qualifiers, qualifier_list,
      .			     qual_start, qual_end,
      .			     num_args, arg_start, arg_end,
-     .			     err_lun, re_verify, arg1_quoted, 
-     .			     concatenate_only, status	)
+     .			     err_lun, re_verify, arg1_quoted, status	)
 	IF ( status   .NE. ferr_ok ) RETURN 1	! messages already displayed
 	IF ( cmnd_num .EQ. 0 ) GOTO 20
 	IF ( re_verify ) THEN

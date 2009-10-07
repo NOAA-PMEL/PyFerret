@@ -54,6 +54,8 @@
 * 12/05 *acm*  Fix bug 1368. if skipping commands, also skip one-line if-then-condition
 * V6.01 10/06 *acm*  Fix bug 1446 in the loop DO 200 when testing for a tab character, the
 *              index should be i not ic1. The perils of cut-and-pasting text from elsewhere!
+* V6.31 10/09 *acm*  Fixing bug 1706, by properly fixing # 1681. ENDIF inside a REPEAT 
+*              loop with semicolon-separated commands. 
 
 * calling argument declarations:
 	INTEGER		slen
@@ -65,6 +67,7 @@
      .		status	! not returned
         INTEGER STR_UPCASE, i, end_then, cmnd_len
 	LOGICAL its_endif, its_else, its_elif, its_if, one_liner
+	LOGICAL bumped
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -93,7 +96,9 @@
 	ic1 = 1
 
 * check for IF or ENDIF
- 100	its_endif =
+ 100	CONTINUE
+	i = STR_UPCASE (risc_buff, cmnd_buff)
+        its_endif =
      .	      STR_CASE_BLIND_COMPARE(cmnd_string(ic1:ic1+3),'ENDI')
      .		 .EQ. vms_str_success
 	its_if   =
@@ -101,6 +106,8 @@
      .		 .EQ. vms_str_success)
      .  .OR. (STR_CASE_BLIND_COMPARE(cmnd_string(ic1:ic1+2),'IF'//tab)
      .		 .EQ. vms_str_success)
+        
+        IF (bumped) its_endif = INDEX( risc_buff, 'ENDI') .GT. 0
 
 * Fix bug 918: do NOT always execute IF and ENDIF statements!
 cc	IF (its_if .OR. its_endif) RETURN
@@ -124,11 +131,24 @@ cc	IF (its_if .OR. its_endif) RETURN
                cmnd_len = INDEX(risc_buff(:slen), '!') - 1  ! check for comment at end
                IF (cmnd_len .EQ. -1) cmnd_len = slen
 
+               IF (INDEX(risc_buff(:slen), 'THEN') .GT. 0) THEN
 * See if there is a command after the THEN
-               DO 200 i = end_then,cmnd_len
-                   IF (cmnd_string(i:i).NE. ' '
-     .           .AND. cmnd_string(i:i).NE. tab) one_liner = .TRUE.
-  200          CONTINUE
+                  DO 200 i = end_then,cmnd_len
+#ifdef NO_DOUBLE_ESCAPE_SLASH
+                      IF (cmnd_string(i:i).NE. ' '
+     .              .AND. cmnd_string(i:i).NE. ')'
+     .              .AND. cmnd_string(i:i).NE. '\'
+     .              .AND. cmnd_string(i:i).NE. ';'
+     .              .AND. cmnd_string(i:i).NE. tab) one_liner = .TRUE.
+#else
+                      IF (cmnd_string(i:i).NE. ' '
+     .              .AND. cmnd_string(i:i).NE. ')'
+     .              .AND. cmnd_string(i:i).NE. '\\'
+     .              .AND. cmnd_string(i:i).NE. ';'
+     .              .AND. cmnd_string(i:i).NE. tab) one_liner = .TRUE.
+#endif
+  200             CONTINUE
+               ENDIF
 
             ENDIF  
 
@@ -139,12 +159,13 @@ cc	IF (its_if .OR. its_endif) RETURN
 cc	         if_doing(ifstk) = if_doing(ifstk-1)
 	         if_doing(ifstk) = pif_skip_to_endif
 	         if_cs(ifstk) = if_cs(ifstk-1)
+		 bumped = .TRUE.
                  RETURN 1
 	      ENDIF
 	   ENDIF
 	ENDIF
-        
-	IF (its_endif) RETURN  ! process the endif, always
+
+	IF (its_endif) RETURN  ! process the endif
 
 * now check each of the possible IF execution states
 	IF ( if_doing(ifstk) .EQ. pif_skip_to_endif ) THEN

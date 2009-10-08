@@ -12,8 +12,6 @@
 *                  computing world coordinates. Save this in a repeat
 *                  with the other context info.  Also need cs_cal_id 
 *                  for repeat command.
-* V6.31 10/09 *acm*  Fixing bug 1706, by properly fixing # 1681. ENDIF inside a REPEAT 
-*              loop with semicolon-separated commands. New flag: bumped.
 
 	INTEGER		cs_max
 	PARAMETER     (	cs_max = 200 )
@@ -22,8 +20,7 @@
      .		cs_by_ss( cs_max ),
      .		cs_save_by_ss( cs_max ),
      .          cs_is_calendar(cs_max),
-     .		has_continuation_cmnd,
-     .          bumped
+     .		has_continuation_cmnd
 	INTEGER	csp,			! control stack pointer
      .		cs_lun     ( cs_max ),
      .		cs_cmnd_num( cs_max ),
@@ -68,7 +65,6 @@
      .          cs_is_calendar,
      .          cs_repeatname,
      .		has_continuation_cmnd,
-     .		bumped,
      .		len_cmnd_copy,
      .          my_cbuff
 

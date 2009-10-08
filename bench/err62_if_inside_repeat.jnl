@@ -2,6 +2,13 @@
 ! Bug 1681. Parsing error when, inside the REPEAT, we have
 ! endif) on a line of its own.
 
+! the fix for this bug causes a worse bug for GFDL (see #1706). 
+! Thought I had a better fix but it turns out not. For now
+! reverting all the code surrounding these fixes. Do not
+! execute these tests.
+
+exit/script
+
 cancel mode verify
 
 say "test1"

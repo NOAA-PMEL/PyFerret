@@ -41,9 +41,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V420:  4/96
-* V6.31 10/09 *acm*  Fixing bug 1706, by properly fixing # 1681. ENDIF inside a REPEAT 
-*              loop with semicolon-separated commands. 
 
+#ifdef unix
 	include	'ferret.parm'
 	include	'command.parm'
 	include 'errmsg.parm'
@@ -51,6 +50,15 @@
 	include 'xcontext.cmn'
 	include 'xcontrol.cmn'
 	include 'xprog_state.cmn'
+#else
+	INCLUDE	'FERRET_CMN:FERRET.PARM'
+	INCLUDE	'FERRET_CMN:COMMAND.PARM'
+	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
+	INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'
+	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
+	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
+#endif
 
 * local variable declarations
 	INTEGER	status
@@ -64,7 +72,6 @@
 * pop the IF stack
 	IF (ifstk .LT. 1 ) GOTO 5400
 	ifstk = ifstk - 1
-	IF ( ifstk .EQ. 0 ) bumped = .FALSE.  ! see process_if
 	IF ( ifstk .EQ. 0 ) if_conditional = .FALSE.
 
 	RETURN

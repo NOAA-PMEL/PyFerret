@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/build/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     48870929 Oct  8 14:40 /home/porter/ansley/build/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     48871547 Oct  9 12:41 /home/porter/ansley/build/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/build/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: v6.302  centered variance-based levels,revert all changes to do with 1681 and 1706, to previous behavior. dont execute err62_if_inside_repeat.
+Note: fix bug 1707, 32-bit only
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build/linux/FERRET/external_functions/ext_func_linux
-Beginning at Thu Oct 8 14:41:27 PDT 2009
+Beginning at Fri Oct 9 12:41:40 PDT 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2964,4 +2964,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Oct 8 14:48:05 PDT 2009
+Ended at Fri Oct 9 12:48:24 PDT 2009

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/build/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     48793767 Sep 28 14:57 /home/porter/ansley/build/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     48870929 Oct  8 14:40 /home/porter/ansley/build/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/build/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: V6.3 release
+Note: v6.302  centered variance-based levels,revert all changes to do with 1681 and 1706, to previous behavior. dont execute err62_if_inside_repeat.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build/linux/FERRET/external_functions/ext_func_linux
-Beginning at Mon Sep 28 15:00:20 PDT 2009
+Beginning at Thu Oct 8 14:41:27 PDT 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1406,11 +1406,11 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: value out of legal range: # of contour levels > 500  (3282)
+ **ERROR: value out of legal range: # of contour levels > 500  (3283)
 CONTOUR/L=1/LEV=0.01d sst
- **ERROR: value out of legal range: # of contour levels > 500  (3282)
+ **ERROR: value out of legal range: # of contour levels > 500  (3283)
 CONTOUR/FILL/L=1/LEV=0.01d sst
- **ERROR: value out of legal range: # of shade levels > 500  (3282)
+ **ERROR: value out of legal range: # of shade levels > 500  (3283)
 SHADE/L=1/LEV=0.01d sst
  **ERROR: value out of legal range: # of levels > 500  (4094)
 POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
@@ -2868,6 +2868,18 @@ SET AXIS/STRIDE=-1/OFFSET=1 truemonth
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis YAX
+Replacing definition of grid GG123456789012345678902
+ **ERROR: unknown defining grid: G=NO_EXIST12345678901234567890
+load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2952,4 +2964,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Sep 28 15:06:09 PDT 2009
+Ended at Thu Oct 8 14:48:05 PDT 2009

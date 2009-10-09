@@ -49,10 +49,15 @@ C**
 * V62+ *acm 6/09 - bug fix #1672 too few levels computed depending on the values
 * V62+ *acm 6/09 - rename variable IF to INTIF
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
+* V631 *acm* 10/09 For the fix to bug 1672(present only in 32-bit linux), the
+*                  comparison must be done with TM_FPEQ. This was the cause of bug 1707.
 
 	INCLUDE 'CMRDL.INC'
 
 	DIMENSION VAL(4),INTIF(4)
+	LOGICAL TM_FPEQ
+	REAL top
+
 	LWGH=0
 	IF(INDEX(LABEL(:IST),'DEL').NE.0)LWGH=5
 	IF(INDEX(LABEL(:IST),'PEN').NE.0)LWGH=4
@@ -69,7 +74,9 @@ C**
 
 	      IF(VAL(3).NE.0.)THEN
 		 NL = INT((VAL(2)-VAL(1))/VAL(3))+1
-		 IF (( VAL(1)+(NL-1)*VAL(3)) .LT. VAL(2)) NL = NL + 1 
+		 top = VAL(1)+(NL-1)*VAL(3)
+		 IF ( (top .LT. VAL(2)) .AND. 
+     .                (.NOT.TM_FPEQ(val(2),top)) ) NL = NL + 1 
 	      ELSE
 		 NL=2
 	      ENDIF

@@ -63,7 +63,7 @@
 ! (approx) number of fine and coarse levels.
 
       nlevf = 0.8* nlev
-      nlevc = MAX(0.1*nlev, 1)
+      nlevc = MAX(0.1*FLOAT(nlev), 1.)
 
       IF (centered) THEN
 

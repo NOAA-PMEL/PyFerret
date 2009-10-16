@@ -54,6 +54,8 @@ C              (axis data was read as double precision and converted to single
 C              after applying an offset.)
 C *acm* 5/09   Extra argument lets us skip the plot label (when redrawing
 C              axes after a POLY/OVERLAY)
+C *acm* 10/09  Fix bug 1708: YAXIS2 call for log plots caused the tics for the 
+*              right hand side log axes to be wrong when we have a depth axis.
 C**
 C**    @(#)daxis.F	1.1    3/10/88
 C**
@@ -163,9 +165,9 @@ C
      1     YCSIZE,XLO,YDMS,HGRAT, HCOLOR, .FALSE., YVALOFF)
            hline = .FALSE.
 	ELSE
-	   CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,ITYPEY-1,YF,YCSIZE,
+	   CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,1,YF,YCSIZE,
      .                    XLO,HGRAT, HCOLOR, HLINE)
-	   CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,ITYPEY-1,YF,YCSIZE,
+	   CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,1,YF,YCSIZE,
      .                    XLO,HGRAT, HCOLOR, .FALSE.)
            hline = .FALSE.
 	ENDIF

@@ -26,6 +26,12 @@ def axis/z/depth dlog=exp(k[k=1:10])
 let fcnd = k[gz=dlog]
 plot/trans/hlog fcnd
 
+! add test for /VLOG on depth axis
+! (prev to v6.3+ the right-hand axis had incorrect tic marks)
+def axis/z/depth dlog=exp(k[k=1:10])
+let fcnd = k[gz=dlog]
+plot/vlog fcnd
+
 ! intentional error
 ! This wont work - no log of negative values on axis
 

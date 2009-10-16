@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ../fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 51129596 Oct  8 14:06 ../fer/ferretdods_gui
-Using external functions from ../external_functions/ext_func_x86
+Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 51129714 Oct 16 09:52 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: revert all changes to do with 1681 and 1706, to previous behavior. dont execute err62_if_inside_repeat.
+Note:  fix bug 1708 depth axis and a plot with /VLOG
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -14,14 +14,14 @@ CVSROOT=/home/porter/tmap/FERRET_ROOT
 FER_WEB_BROWSER=netscape -ncols 60
 FER_DSETS=.
 FER_DAT=.
-FER_GO=. /home/porter/tmap/ferret/x86_64-linux/go /home/porter/tmap/ferret/x86_64-linux/examples /home/porter/tmap/ferret/x86_64-linux/contrib /home/porter/tmap/ferret/tmap_go /home/porter/ansley/baker/conf/server/custom/scripts/ /home/porter/kobrien/OSMC_v2/porter/tomcat/webapps/osmcV4dbase/WEB-INF/classes/resources/ferret/scripts/
+FER_GO=. /home/porter/tmap/ferret/x86_64-linux/go /home/porter/tmap/ferret/x86_64-linux/examples /home/porter/tmap/ferret/x86_64-linux/contrib /home/porter/tmap/ferret/tmap_go
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_x86
-Beginning at Thu Oct 8 14:10:13 PDT 2009
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
+Beginning at Fri Oct 16 10:45:55 PDT 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2151,11 +2151,7 @@ Replacing definition of axis TIME
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-             OPeNDAP Error: Error while reading the URL: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods.dds?.
-The OPeNDAP server returned the following message:
-Not Found: The data source or server could not be found.
-        Often this means that the OPeNDAP server is missing or needs attention;
-        Please contact the server administrator. (OPeNDAP/netCDF Error code 1001)
+               (OPeNDAP/netCDF Error code 1001)
              Data set: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods
 SET DAT/FORM=CDF "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
  **Internet Data error
@@ -2964,4 +2960,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Oct 8 14:11:58 PDT 2009
+Ended at Fri Oct 16 10:47:41 PDT 2009

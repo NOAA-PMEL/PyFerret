@@ -43,8 +43,6 @@
 *
 * revision 0.0 - 4/29/87
 * V531 5/01 *sh* - added has_continuation_cmnd
-* V6.31 10/09 *acm*  Fixing bug 1706, by properly fixing # 1681. ENDIF inside a REPEAT 
-*              loop with semicolon-separated commands.  New flag: bumped.
 
 	include 'xcontrol.cmn'
 
@@ -53,7 +51,5 @@
 
 * for continuation lines on commands
 	DATA	has_continuation_cmnd / .FALSE. /
-	DATA	bumped / .FALSE. /
-
 
 	END

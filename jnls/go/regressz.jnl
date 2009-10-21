@@ -22,12 +22,13 @@ let qq = qmasked*qmasked
 
 let pave = pmasked[z=@ave]
 let qave = qmasked[z=@ave]
-let pqave = pq[z=@ave]
-let ppave = pp[z=@ave]
-let qqave = qq[z=@ave]
-let pvar  = ppave - pave*pave
-let qvar  = qqave - qave*qave
-let pqvar = pqave - pave*qave
+
+let pdev=pmasked-pave
+let qdev=qmasked-qave
+let pdevqdev=pdev*qdev
+let pqvar=pdevqdev[z=@ave]
+let pvar=pmasked[z=@var]
+let qvar=qmasked[z=@var] 
 
 let slope = pqvar / pvar
 let intercep = qave - slope*pave

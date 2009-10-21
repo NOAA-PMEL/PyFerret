@@ -1,6 +1,7 @@
 \CANCEL MODE VERIFY 
 ! Description:  define FERRET variables for regression along the T axis
 ! updated 10/93 for Ferret V3.01
+! 10/09 More-robust computations of variance using the Ferret @VAR transform
 
 say ... Linear Regression Along the T Axis
 say ... Instructions:
@@ -22,12 +23,13 @@ let qq = qmasked*qmasked
 
 let pave = pmasked[t=@ave]
 let qave = qmasked[t=@ave]
-let pqave = pq[t=@ave]
-let ppave = pp[t=@ave]
-let qqave = qq[t=@ave]
-let pvar  = ppave - pave*pave
-let qvar  = qqave - qave*qave
-let pqvar = pqave - pave*qave
+
+let pdev=pmasked-pave
+let qdev=qmasked-qave
+let pdevqdev=pdev*qdev
+let pqvar=pdevqdev[t=@ave]
+let pvar=pmasked[t=@var]
+let qvar=qmasked[t=@var] 
 
 let slope = pqvar / pvar
 let intercep = qave - slope*pave

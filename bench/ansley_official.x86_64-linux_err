@@ -1,13 +1,12 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 51129714 Oct 16 09:52 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
+Running FERRET version /home/porter/ansley/build/x86/gfortran_changes_with_g77/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 50647919 Oct 21 10:58 /home/porter/ansley/build/x86/gfortran_changes_with_g77/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/build/x86/gfortran_changes_with_g77/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  fix bug 1708 depth axis and a plot with /VLOG
+Note: code changes needed for gfortran build, but this executable built with g77
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +19,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Fri Oct 16 10:45:55 PDT 2009
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build/x86/gfortran_changes_with_g77/external_functions/ext_func_x86
+Beginning at Wed Oct 21 11:17:07 PDT 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -521,7 +520,6 @@ plot/xlimits=1:2: i
 plot/xlimits=5:5 i
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-rm: cannot remove `bench.mgm': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test_perm10.dat
@@ -2960,4 +2958,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Oct 16 10:47:41 PDT 2009
+Ended at Wed Oct 21 11:18:59 PDT 2009

@@ -1,5 +1,5 @@
 	SUBROUTINE ALG_BREAK_UP( text,at_start,at_end,natom,
-     .                           err_string,status )
+     .                               err_string,status )
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -67,7 +67,7 @@
 * internal variable declarations:
 	LOGICAL		TM_DIGIT_TEST, was_operand, atom_open,
      .			requires_closure(num_state),
-     .                  have_exp_digits
+     .                      have_exp_digits
 	INTEGER		ALG_CLASS, TM_LENSTR1,
      .			tlen, p, state, last_state, class,
      .			i, next_state(num_class,num_state),
@@ -112,29 +112,29 @@
 *	... CHARACTER CLASS: next_state(class, last_state) ...
 *             C1 C2 C3 C4 C5 C6 C7 C8 C9 C10C11C12C13C14C15
 	DATA (next_state(i,1),i=1,num_class)
-	1    / 2, 3, 4,-1,-1, 5, 5, 1, 4,  3,10,11,-1,12,-2/
+     .        / 2, 3, 4,-1,-1, 5, 5, 1, 4,  3,10,11,-1,12,-2/
 	DATA (next_state(i,2),i=1,num_class)
-	1    / 7, 3, 7, 7, 7, 7, 7, 7, 7,  3, 7, 7, 7, 7,-2/
+     .        / 7, 3, 7, 7, 7, 7, 7, 7, 7,  3, 7, 7, 7, 7,-2/
 	DATA (next_state(i,3),i=1,num_class)
-	1    / 7, 3,3,-1,-1, 7, 7, 7, 8,  3, 7,-1,-1, 7,-2/
+     .        / 7, 3,3,-1,-1, 7, 7, 7, 8,  3, 7,-1,-1, 7,-2/
 	DATA (next_state(i,4),i=1,num_class)
-	1    / 7, 4, 4, 6,-1, 7, 7, 7, 4, 4, 7,-1,-1, 7,-2/
+     .        / 7, 4, 4, 6,-1, 7, 7, 7, 4, 4, 7,-1,-1, 7,-2/
 	DATA (next_state(i,5),i=1,num_class)
-	1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
+     .        /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
 	DATA (next_state(i,6),i=1,num_class)
-	1    / 6, 6, 6, 9, 5, 6, 6, 6, 6,  6, 6, 6, 6, 6, 6/
+     .        / 6, 6, 6, 9, 5, 6, 6, 6, 6,  6, 6, 6, 6, 6, 6/
 	DATA (next_state(i,7),i=1,num_class)
-	1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
+     .        /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
 	DATA (next_state(i,8),i=1,num_class)
-	1    / 8, 13, 7, 7, 7, 7, 7, 7, 7,  7, 7, 7, 7, 7,-2/
+     .        / 8, 13, 7, 7, 7, 7, 7, 7, 7,  7, 7, 7, 7, 7,-2/
 	DATA (next_state(i,9),i=1,num_class)
-	1    / 9, 9, 9, 9, 9, 9, 9, 9, 9,  9, 9, 9, 9, 9, 9/
+     .        / 9, 9, 9, 9, 9, 9, 9, 9, 9,  9, 9, 9, 9, 9, 9/
 	DATA (next_state(i,10),i=1,num_class)
-	1    / 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10/
+     .        / 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10/
 	DATA (next_state(i,11),i=1,num_class)
-	1    /11,11,11,11,11,11,11,11,11, 11,11,11, 5,11,11/
+     .        /11,11,11,11,11,11,11,11,11, 11,11,11, 5,11,11/
 	DATA (next_state(i,12),i=1,num_class)
-	1    / 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12/
+     .        / 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12/
 
 
 * which states are not valid on exit (e.g. unclosed braces)

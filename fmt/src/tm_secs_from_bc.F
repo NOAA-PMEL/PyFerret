@@ -49,6 +49,7 @@
 *       *acm* 8/02  Fix bug in Julian calendar computations where leap day was
 *                   added twice for case where we are at the first year of a
 *                   century.
+* V63  *acm* 10/09 Changes for gfortran build
 
 * Include files
         include 'calendar.decl'
@@ -63,12 +64,12 @@
 * Local Definitions
 	INTEGER		secstat
 	REAL*8		secs_in_minute, secs_in_hour, secs_in_day,
-	1    secs_in_year, secs_in_century, total_secs,
-	2    leap_yr_days
+     .      secs_in_year, secs_in_century, total_secs,
+     .      leap_yr_days
 
 	PARAMETER	(secs_in_minute	 = 60.0,
-	1    secs_in_hour	 = secs_in_minute*60.0,
-	2    secs_in_day	 = secs_in_hour*24.0)
+     .      secs_in_hour	 = secs_in_minute*60.0,
+     .      secs_in_day	 = secs_in_hour*24.0)
 
 
 *****************************************************************************
@@ -85,7 +86,7 @@
 
 	   secs_in_year	 = secs_in_day*cals_num_days(cal_id)
 	   secs_in_century = 
-	1	secs_in_day*(76*cals_num_days(cal_id) + 24*leap_yr_days)
+     .      secs_in_day*(76*cals_num_days(cal_id) + 24*leap_yr_days)
 
 *          ADD LOTS OF SECONDS FOR EACH CENTURY SINCE 0 DAY
 	   total_secs = secs_in_century * INT(year/100)
@@ -98,7 +99,7 @@
 
 *          ADD A DAY FOR EACH LEAP YEAR SINCE CENTENNIAL(EXCEPT FOR CENTENNIAL)
 	   total_secs = 
-	1	total_secs + secs_in_day*INT((MOD(year,100)-1)/4)
+     .      total_secs + secs_in_day*INT((MOD(year,100)-1)/4)
 
 *          ADD SECONDS FOR NUMBER OF MONTHS
 	   total_secs = total_secs +
@@ -135,7 +136,7 @@
 
 	   secs_in_year	 = secs_in_day*cals_num_days(cal_id)
 	   secs_in_century = 
-	1	secs_in_day*(75*cals_num_days(cal_id) + 25*leap_yr_days)
+     .      secs_in_day*(75*cals_num_days(cal_id) + 25*leap_yr_days)
 
 *          ADD LOTS OF SECONDS FOR EACH CENTURY SINCE 0 DAY
 	   total_secs = secs_in_century * INT(year/100+0.9975)
@@ -148,9 +149,9 @@
 *          !! IF THIS IS CENTENNIAL YEAR, THIS YEARS LEAP SECONDS ADDED BELOW
 
 	   total_secs = 
-	1	total_secs + secs_in_day*(INT((MOD(year,100)-1)/4))
+     .      total_secs + secs_in_day*(INT((MOD(year,100)-1)/4))
 	   IF (MOD(year,100) .NE. 0) total_secs = 
-	1	total_secs + secs_in_day
+     .      total_secs + secs_in_day
 
 *          ADD SECONDS FOR NUMBER OF MONTHS
 	   total_secs = total_secs +

@@ -42,6 +42,7 @@ C**
 C**    from numcde.f
 C 1/2006 acm Add an offset to the value before formatting it 
 C V600: *acm* 5/06 Allow seconds in DMS axis labelling; had removed this.
+* V63  *acm* 10/09 Changes for gfortran build
 C**
 C**
 C***********************************************************************
@@ -55,7 +56,7 @@ C**
 c
 	CHARACTER*(*) FRMTZ
 	CHARACTER*20 FRMT,STR,TEMP,STR_DMS
-        INTEGER TM_LENSTR1, dms, imin, isec, dot
+        INTEGER TM_LENSTR1, dms, imin, isec, dot, deg
         REAL frac, minutes, seconds, off
         REAL*8 val, x
 C

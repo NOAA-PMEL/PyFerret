@@ -49,6 +49,7 @@
 * V420: 11/95 - indicate un-cached variables
 * V500 *kob* 3/99- up VAR_CODE and vname decl's to 64 chars
 * V552 *acm* 4/03- up VAR_CODE and vname decl's from 64 to 128 chars
+* V63  *acm* 10/09 Changes for gfortran build
 
 	include	'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -179,7 +180,7 @@
 	CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 
  3010	FORMAT(T2,A,'[',2A,T36,A4,'  mr:',A,'  blk1:',A,
-     .						'  nblk:',A,1X,A4,1x,A8)
+     .'  nblk:',A,1X,A4,1x,A8)
  3020	FORMAT(T2,3(A6,'/',A12),A6,'/',A12)
  3030	FORMAT(T2,4(4X,A3,A12))
 	END

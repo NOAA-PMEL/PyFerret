@@ -50,6 +50,7 @@
 * revision 1.12 - 02/20/89 - Allows dates of form "dd-mmm" - defaults to 0000
 * 3/22/95 - check for non-positive DAY value as an error
 * V530: *acm* 12/00 alternative calendar types; cal_id
+* V63  *acm* 10/09 Changes for gfortran build
 
 * ARGUMENT DEFINITIONS
 *  date  - date to process
@@ -127,29 +128,29 @@
 * STATUS       15  16  17  18  19  20  21  22  23  24
 
 * month found
-  120	fill_in(4:6) = date(pos-2:pos)
+120	fill_in(4:6) = date(pos-2:pos)
 	GOTO 100
 * 1 digit day found
-  130	fill_in(2:2) = date(pos-1:pos-1)
+130	fill_in(2:2) = date(pos-1:pos-1)
 	GOTO 100
 * 2 digit day found
-  140	fill_in(1:2) = date(pos-2:pos-1)
+140	fill_in(1:2) = date(pos-2:pos-1)
 	GOTO 100
 * year found
-  150	fill_in(8:11) = date(pos-3:pos)
+150	fill_in(8:11) = date(pos-3:pos)
 	GOTO 100
 * hour found
-  160	fill_in(13:14) = date(pos-1:pos)
+160	fill_in(13:14) = date(pos-1:pos)
 	GOTO 100
 * minute found
-  170	fill_in(16:17) = date(pos-1:pos)
+170	fill_in(16:17) = date(pos-1:pos)
 	GOTO 100
 * second found
-  180	fill_in(19:20) = date(pos-1:pos)
+180	fill_in(19:20) = date(pos-1:pos)
 	GOTO 100
 
 * End of string; break into parts
-  190	READ (fill_in(1:2),'(I2)') day
+190	READ (fill_in(1:2),'(I2)') day
 	READ (fill_in(8:11),'(I4)') year
 	READ (fill_in(13:14),'(I2)') hour
 	READ (fill_in(16:17),'(I2)') minute
@@ -163,9 +164,9 @@ C  Get calendar attributes
      .                    month_by_day)
 	DO 200 month = 1,12
 	  istat = STR_CASE_BLIND_COMPARE( fill_in(4:6), 
-	1	month_names(month) )
+     .       month_names(month) )
 	  IF (istat .EQ. str_match) GOTO 210
-  200	CONTINUE
+200	CONTINUE
 	GOTO 9000
 
  210	continue
@@ -193,11 +194,11 @@ C       ***************************************
 	      leapadj = 0
 	   ENDIF
 	   IF (day .GT. days_in_month(month)+leapadj
-	1	.OR. day .le. 0   ) GOTO 9000
+     .         .OR. day .le. 0   ) GOTO 9000
 
 *          HOURS IN DAY, MINUTES IN HOUR, SECONDS IN MINUTE
 	   IF (hour .GT. 23 .OR. minute .GT. 59 .OR. second .GT. 59)
-	1	GOTO 9000
+     .         GOTO 9000
 
 
 
@@ -218,11 +219,11 @@ C       ***************************************
 	      leapadj = 0
 	   ENDIF
 	   IF (day .GT. days_in_month(month)+leapadj
-	1	.OR. day .le. 0   ) GOTO 9000
+     .         .OR. day .le. 0   ) GOTO 9000
 
 *          HOURS IN DAY, MINUTES IN HOUR, SECONDS IN MINUTE
 	   IF (hour .GT. 23 .OR. minute .GT. 59 .OR. second .GT. 59)
-	1	GOTO 9000
+     .         GOTO 9000
 
 
 ******************************************************************************
@@ -235,11 +236,11 @@ C       ***************************************
 
 *          DAYS IN MONTH
 	   IF (day .GT. days_in_month(month) 
-	1	.OR. day .le. 0) GOTO 9000
+     .         .OR. day .le. 0) GOTO 9000
 
 *          HOURS IN DAY, MINUTES IN HOUR, SECONDS IN MINUTE
 	   IF (hour .GT. 23 .OR. minute .GT. 59 .OR. second .GT. 59)
-	1	GOTO 9000
+     .         GOTO 9000
 	ELSE
            status = merr_syntax
 	   CALL ERRMSG (status, status, 

@@ -41,6 +41,7 @@
 * V200: 12/21/89
 * V540: *sh* 9/01 - added xwhitelo, ywhitelo, ...
 * V561: *acm*5/08 - added transparent (for gif-mode frame)
+* V63  *acm* 10/09 Changes for gfortran build
 
 	include 'ferret.parm'
 	include 'xplot_setup.cmn'
@@ -67,7 +68,6 @@
      .		xwhitelo	/ 1.2 /,	! PLOT+ xorigin
      .		ywhitelo	/ 1.4 /,	! PLOT+ yorigin
      .		xwhitehi	/ 1.0 /,
-     .		ywhitehi	/ 1.4 /,
-     .		transparent	/ 0 /
+     .		ywhitehi	/ 1.4 /
 
 	END

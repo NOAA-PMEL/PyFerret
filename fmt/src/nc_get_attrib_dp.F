@@ -50,6 +50,7 @@
 *         6/06 *acm*  replace istat with status
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * V602 *acm* make sure lena=length of attr name is defined before writing warning
+* V63  *acm* 10/09 Changes for gfortran build
 
 * argument definitions:
 *	dset	 - dataset number
@@ -65,7 +66,7 @@
 * argument declarations
       LOGICAL       do_warn
       INTEGER	    dset, varid, attlen, attoutflag
-      CHARACTER*(*) attrib, vname, string
+      CHARACTER*(*) attrib, vname
       real*8        dvals(*)
 
 #include "gt_lib.parm"

@@ -31,7 +31,7 @@ equal_val.F\
 equal_val_int.F\
 errmsg.F\
 finalize.F\
-get_command.F\
+get_fer_command.F\
 get_context_mods.F\
 get_input_varname.F\
 get_mode_arg.F\

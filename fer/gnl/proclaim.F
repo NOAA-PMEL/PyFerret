@@ -50,6 +50,7 @@
 *      10/01 *kob* - insert missing comma in format statement
 *                    discovered by linux compiler
 *       8/05 *acm* - Allow more digits in xrevision number
+* V63  *acm* 10/09 Changes for gfortran build
 
 	include 'xrevision.cmn'
 	include 'xrevision_type.cmn'
@@ -84,10 +85,10 @@
      .                                       make_date,
      .				left_margin, today_date, today_time
 
- 3000	FORMAT ( 1X,A,'NOAA/PMEL TMAP'/
-     .		 1X,A,A,1X,'v',A,1x,A/
-     .		 1X,A,A,1X,'-',1X,A/
-     .		 1X,2A,1X,A/ )
+ 3000	FORMAT ( 1X,A,'NOAA/PMEL TMAP',/
+     .           1X,A,A,1X,'v',A,1x,A,/
+     .           1X,A,A,1X,'-',1X,A,/
+     .           1X,2A,1X,A/ )
 
 	RETURN
 	END

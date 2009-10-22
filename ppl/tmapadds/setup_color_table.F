@@ -39,19 +39,13 @@
 *	Completely rewritten J Davison 7.27.89
 *	Mod JD 4.18.90 allowing only one shade level
 *       Mod JD 10.98 setup by percent, by_value, or by_level
+* V63  *acm* 10/09 Changes for gfortran build
 
-#ifdef unix
         include         'parampl5_dat.decl'
         include         'PARAMPL5.DAT'
         include         'shade_vars.cmn'
         include         'cont_inc.decl'
         include         'CONT.INC'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_PARAMPL5.DAT'
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_CONT.INC'
-
-#endif
 
 	integer		zwsid,ndx_lo,range,ndx,t_cl,cl_0
 	integer		ndx_hi,ndx_lop1,ndx_him1
@@ -137,13 +131,13 @@
 
 *                FIND THE R,G,B VALUES TO SET THIS LEVEL
  120		 r_inc	= (sr(cl_0+1) - sr(cl_0))
-	1	      /(slvl(cl_0+1) - slvl(cl_0))
+     .  	      /(slvl(cl_0+1) - slvl(cl_0))
 
 		 g_inc	= (sg(cl_0+1) - sg(cl_0))
-	1	      /(slvl(cl_0+1) - slvl(cl_0))
+     .  	      /(slvl(cl_0+1) - slvl(cl_0))
 
 		 b_inc	= (sb(cl_0+1) - sb(cl_0))
-	1	      /(slvl(cl_0+1) - slvl(cl_0))
+     .  	      /(slvl(cl_0+1) - slvl(cl_0))
 		 
 		 r_val	= sr(cl_0) + r_inc*(lvl - slvl(cl_0))
 		 g_val	= sg(cl_0) + g_inc*(lvl - slvl(cl_0))

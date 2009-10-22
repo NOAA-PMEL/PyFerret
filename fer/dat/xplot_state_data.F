@@ -49,6 +49,7 @@
 * V301:  22/2/94 - changed wn_scale(1) from 1.0 to 0.7
 * V500: 6/99 *sh* - added saved time axis information
 * V540: 9/01 *sh* - added vp_by_axis
+* V63  *acm* 10/09 Changes for gfortran build
 
 	include	'ferret.parm'
 	include	'xplot_state.cmn'
@@ -166,5 +167,7 @@
 	DATA	(vp_name(i),i=10,max_viewport) /mvp_maxm9*unspecified_name4/
 
 	DATA has_time_axis/.FALSE./
+
+	DATA transparent	/ 0 /
 
 	END

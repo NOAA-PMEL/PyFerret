@@ -46,16 +46,11 @@
 
 * V450: 2/97
 *       97.07.16 *jc* adding code to query external functions
+* V63  *acm* 10/09 Changes for gfortran build
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xgrid_chg_fcns.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx, idim, axis_will_be(4)
@@ -71,12 +66,12 @@
 
 	   call efcn_get_axis_will_be(gcfcn, axis_will_be)
 	   ITSA_MODULO_GCF = axis_will_be(idim)
-	1	.EQ. pgc_axis_supplied_herein 
+     .	           .EQ. pgc_axis_supplied_herein 
 
 	ELSE
 
 	   ITSA_MODULO_GCF = gfcn_axis_will_be(idim,gcfcn)
-	1	.EQ. pgc_axis_supplied_herein 
+     .	           .EQ. pgc_axis_supplied_herein 
 
 	ENDIF
 

@@ -65,6 +65,7 @@
 *                 moved this for efficiency but it wound up finding the wrong
 *                 variable def for user variables defined with LET/D.
 * v600 6/06 *acm* initialize category to 0 (needed for solaris)
+* V63  *acm* 10/09 Changes for gfortran build
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -185,7 +186,7 @@
 *	      IF ( uvar_dset( ivar ) .NE. dset ) GOTO 40
 *              len_mchars = TM_LENSTR(uvar_name_code(ivar))
 *	      IF ( MATCH_QUOTED_NAME(test_name,len_test, uvar_name_code(ivar), len_mchars))
-*	1	   THEN
+*     .        	   THEN
 *	         category = cat_user_var
 *	         variable = ivar
 *	         RETURN
@@ -212,7 +213,7 @@
 *	         IF ( uvar_dset( ivar ) .NE. uvdset ) GOTO 60
 *                 len_mchars = TM_LENSTR(uvar_name_code(ivar))
 *	         IF ( MATCH_QUOTED_NAME( test_name,len_test, uvar_name_code(ivar),len_mchars))
-*	1	      THEN
+*     .        	      THEN
 *	            category = cat_user_var
 *	            variable = ivar
 *	            RETURN
@@ -236,7 +237,7 @@
 *	   IF ( uvar_dset( ivar ) .NE. unspecified_int4 ) GOTO 100
 *           len_mchars = TM_LENSTR(uvar_name_code(ivar))
 *	   IF ( MATCH_QUOTED_NAME( test_name,len_test,uvar_name_code(ivar),len_mchars) )
-*	1	THEN
+*     .        	THEN
 *	      category = cat_user_var
 *	      variable = ivar
 *	      RETURN
@@ -293,7 +294,7 @@
 *	   IF ( uvar_dset( ivar ) .NE. pdset_irrelevant ) GOTO 250
 *           len_mchars = TM_LENSTR(uvar_name_code(ivar))
 *	   IF ( MATCH_QUOTED_NAME( test_name,len_test,uvar_name_code(ivar),len_mchars))
-*	1	THEN
+*     .        	THEN
 *	      category = cat_user_var
 *	      variable = ivar
 *	      RETURN
@@ -315,8 +316,9 @@
 	   IF (dp_phil_sieg(dset).OR.dp_cox(dset)) THEN
 	      DO 300 ivar = 1, num_calc_vars
                  len_mchars = TM_LENSTR(cvar_name_code(ivar))
-	         IF (MATCH_QUOTED_NAME(test_name,len_test,cvar_name_code(ivar)//'    ',len_mchars))
-	1	      THEN
+	         IF (MATCH_QUOTED_NAME(test_name,len_test,
+     .               cvar_name_code(ivar)//'    ',len_mchars))
+     .        	   THEN
 	            category = cat_calc_var
 	            variable = ivar
                     test_name = buff

@@ -51,6 +51,7 @@
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars and change buff24 to buff64
 * V530 9/00 *sh* - output context or mr pointer rather than data set
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars and change buff64 to buff128
+* V63  *acm* 10/09 Changes for gfortran build
 
 * calling argument declarations:
 	INTEGER		isub, pointer_type
@@ -105,6 +106,6 @@
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 	ENDIF
  3000	FORMAT (1X,A,1X,A8,1X,A1,':',I3,
-     .				' I:',2I5,'  J:',2I5,'  K:',2I5,'  L:',2I5)
+     . ' I:',2I5,'  J:',2I5,'  K:',2I5,'  L:',2I5)
 	RETURN
 	END	

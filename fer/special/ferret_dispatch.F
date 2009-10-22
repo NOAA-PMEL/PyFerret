@@ -113,8 +113,8 @@
 * V530: 10/00 *sh* - added external declaration for new xez_info_data
 * V553:  9/03 *acm*- Loop 2 ran to 200; change to cmnd_buff_len 
 *                    (came up when implementing the -script command-line option)
+* V63  *acm* 10/09 Changes for gfortran build
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xalt_messages.cmn_text'
 	include 'ferret.parm'
@@ -125,18 +125,6 @@
 	include 'xvariables.cmn'
 	include 'xgui.cmn'
 	include 'xplot_state.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XALT_MESSAGES.CMN_TEXT'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:GUI.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XGUI.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-#endif
 
 * EXTERNAL references to force the LINKER to look for BLOCK DATA SUBROUTINES
 	EXTERNAL
@@ -200,7 +188,7 @@ c	DO 2 i = 1, 200
 	   IF ( command(i) .EQ. 0 ) GOTO 5
  2	cmnd_buff(i:i) = CHAR( command(i) )
 
- 5	CALL GET_COMMAND( memory, cmnd_buff, status, *300 )
+ 5	CALL GET_FER_COMMAND( memory, cmnd_buff, status, *300 )
 
 	GOTO (	 10, 20, 30, 40, 50, 60, 70, 80, 90,100,
      .		110,120,130,140,150,160,170,180,190,200,

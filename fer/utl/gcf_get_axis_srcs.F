@@ -42,6 +42,7 @@
 *	7/97 - slight reorg for external functions
 *   8/97 - type mismatch on axis_implied_from caught by 
 *              linux/aix compilers *kob*
+* V63  *acm* 10/09 Changes for gfortran build
 
 * calling argument declarations
 	INTEGER	ifcn, iarg, axis_source(4)
@@ -52,19 +53,11 @@
 	INTEGER efcn_get_num_reqd_args
 	LOGICAL axis_implied_from(4)
 
-#ifdef unix
 	include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
 	include 'ferret.parm'
 	include 'xgrid_chg_fcns.cmn'
 	include 'xfr_grid.cmn'	! w/ mgrid_abstract
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'	! W/ MGRID_ABSTRACT
-#endif
 
 * initialize
         IF (ifcn .LT. 0 .OR. iarg .LT. 1) THEN
@@ -76,7 +69,7 @@
 * check the internal grid changing functions first
 * is this a valid argument number?
 	   IF (iarg .GT. gfcn_num_reqd_args(ifcn) )
-	2	STOP 'gcf_get_axis_srcs'
+     .	       STOP 'gcf_get_axis_srcs'
 
 * store info in local arrays to blur distinction between internal and external
 * ... determine pointer to argument information
@@ -90,7 +83,7 @@
 	ELSE
 
 	   IF (iarg .GT. efcn_get_num_reqd_args(ifcn) )
-	2	STOP 'gcf_get_axis_srcs'
+     .	       STOP 'gcf_get_axis_srcs'
 
 	   call efcn_get_axis_will_be(ifcn, axis_will_be)
 	   call efcn_get_axis_implied_from(ifcn, iarg, axis_implied_from)

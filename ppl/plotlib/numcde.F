@@ -46,6 +46,7 @@
 *            (so they are now consistent with latitude axes)
 * V600: *acm* 11/05 add xdms,ydms for deg/min labels
 * V600: *acm* 5/06 Allow seconds in DMS axis labelling; had removed this.
+* V63  *acm* 10/09 Changes for gfortran build
 
 C**
 C**    @(#)numcde.f	1.1    3/10/88
@@ -70,7 +71,7 @@ c  NNS, Jun 85.
 c
 	CHARACTER*(*) FRMTZ
 	CHARACTER*20 FRMT,STR,TEMP,STR_DMS
-        INTEGER TM_LENSTR1, dms, imin, isec, dot
+        INTEGER TM_LENSTR1, dms, imin, isec, dot, deg
         REAL val, frac, minutes, seconds
 C
 	FRMT=FRMTZ

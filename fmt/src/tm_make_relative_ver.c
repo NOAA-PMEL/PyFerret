@@ -38,6 +38,8 @@
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
+/* V63  *acm* 10/09 Changes for gfortran build */
+
 #include <wchar.h>
 /* #include <stdlib.h> */
 #include <stdio.h>
@@ -77,7 +79,7 @@ int *real_ver;
 
 {
   int i,j,int_ver, high_ver, ver_len;
-  char *temp_ver, *malloc();
+  char *temp_ver;
 
 /* allocate temporary memory */
   temp_ver = malloc(20);

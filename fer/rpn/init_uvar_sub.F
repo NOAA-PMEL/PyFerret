@@ -70,6 +70,7 @@
 *                  names to cd_add_var; name to be saved in the attribute structure, for 
 *                  use when writing out user-defined variables when MODE UPCASE_OUTPUT 
 *                  is cancelled.
+* V63  *acm* 10/09 Changes for gfortran build
 
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
@@ -160,7 +161,9 @@
 #else
 # ifdef FORTRAN_90
 	      uvar_text(uvar)(i2:i2) = CHAR( IAND(HEXDF, ICHAR(c)) )
-# else
+# elif defined gfortran
+	      uvar_text(uvar)(i2:i2) = CHAR( AND('DF'X, ICHAR(c)) )
+#else
 * VMS needs IAND
 * bug fix - forgot (uvar) in var reference
 	      uvar_text(uvar)(i2:12) = CHAR( IAND('DF'X, ICHAR(c)) )

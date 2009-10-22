@@ -70,6 +70,7 @@
 *                 netCDF / OPeNDAP error code.
 * V604 *acm* 6/07 Allow longer strings for OPeNDAP file-open errors. Call these
 *                 **Internet Data error 
+* V63  *acm* 10/09 Changes for gfortran build
 
 * arguments:
 *	status_in	- error code from calling program
@@ -125,9 +126,9 @@
 * print calling routine line to identify where error occured
 * (diagnostic, only - *sh* 3/15/91)
 * add ifdef check for f90 - no D on col 1 *kob*
-#if defined unix  && ! defined FORTRAN_90   
-D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs: 
-#endif
+c#if defined unix  && ! defined FORTRAN_90   
+cD        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs: 
+c#endif
         IF ( TMAP_diag_on ) THEN
 	   rtn_len = TM_LENSTR1(routine)
 	   write (lunit_errors, *) ' ***** ERROR IN ',routine(:rtn_len),

@@ -115,6 +115,7 @@ C                 The code testing the Format for axis labels balks at
 C                 writing a 0 using an F format. See changes at lines 
 C                 WRITE(err_msg,label,ERR=1999) 0.  Need to check for an I
 C                 format and write 0, else write 0.0.
+* V63  *acm* 10/09 Changes for gfortran build
 c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -280,8 +281,8 @@ CCCCCCC data	        tmapdebug/.false./
      *  'TXLINT','TXNMTC','TXLABP','AUTOLAB','EVAR','DEBUG','RESET',
      *  'TITLE','VPOINT','CLSPLT','VECTOR','VECSET','VECKEY','USR',
      *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
-     *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDAR',
-     *  'FLOWLINE', 'S_KEY', 'S_CELL', 'POLYGON', 'XVALOFF', 'YVALOFF',
+     *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDA',
+     *  'FLOWLIN', 'S_KEY', 'S_CELL', 'POLYGON', 'XVALOFF', 'YVALOFF',
      *  'LINECOL'/
 
 !  *  'SQFILL','AREA'/ NAME CHANGE *jd*
@@ -1523,11 +1524,11 @@ C	PLOTUV
 		IF(IZTYP.NE.0)CALL GETZG(LMULT)
 		CALL PLTIT(pplmem,pplmem_nsize)
 6003	    CONTINUE
-#ifdef unix
+cc#ifdef unix
  6004         CLOSE(LMULT)
-#else
-6004	    CLOSE(LMULT,DISP='DELETE')
-#endif
+cc#else
+cc6004	    CLOSE(LMULT,DISP='DELETE')
+cc#endif
 c
 c	show mult file is closed by clearing the file name
 c
@@ -1607,11 +1608,13 @@ C	SHADE
             IF(IZTYP.NE.0)CALL GETZG(LMULT)                                   
             CALL PLTIT(pplmem,pplmem_nsize)                                               
 9151        CONTINUE    
-#ifdef FORTRAN_90                                           
-9152        CLOSE(LMULT,STATUS='DELETE')                             
-#else
-9152        CLOSE(LMULT,DISP='DELETE')                             
-#endif
+9152        CLOSE(LMULT)
+ 
+cc#ifdef FORTRAN_90                                           
+cc9152        CLOSE(LMULT,STATUS='DELETE')                             c
+cc#else
+cc9152        CLOSE(LMULT,DISP='DELETE')                             
+cc#endif
 c                                                                  
 c       show mult file is closed by clearing the file name         
 c                                                                  

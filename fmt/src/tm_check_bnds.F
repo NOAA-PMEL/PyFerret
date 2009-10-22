@@ -42,6 +42,7 @@
 * V600 *acm* 3/06  Fix bug 1400: Add more convenient syntax for user-specified bounds:
 *                  Bounds can be either 2*N or N+1 values.
 * V601 *acm* 9/19  Fix bug 1434; check bounds for regularly-spaced axes 
+* V63  *acm* 10/09 Changes for gfortran build
 
         INCLUDE 'xio.cmn_text'
 	INCLUDE 'tmap_dims.parm'
@@ -54,8 +55,9 @@
         CHARACTER*(*) vname
 
 * Internal definitions
-        LOGICAL TM_FPEQ
-	INTEGER TM_LENSTR1, npts, ipt1, ibx1, i, ngap, vlen, status
+        LOGICAL TM_FPEQ, TM_DFPEQ
+	INTEGER TM_LENSTR1, npts, ipt1, ibx1, i, ngap, vlen, status,
+     .          nothing
         REAL*8 pt, del, bhi, blo
         REAL blast
         CHARACTER TM_STRING*13, vbuff*128
@@ -78,7 +80,12 @@
                  blo = line_mem(ibx1+2*i)
                  bhi = line_mem(ibx1+2*i+1)
 	        IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
-                   TM_CHECK_BNDS = .FALSE.
+		
+                   IF (TM_DFPEQ(pt,blo) .OR. TM_DFPEQ(pt,bhi) ) THEN
+                      nothing = 0
+                   ELSE
+                      TM_CHECK_BNDS = .FALSE.
+		   ENDIF
                    RETURN
                 ENDIF
 	        pt = line_start(nline) + FLOAT(i+1)* del
@@ -92,7 +99,13 @@
                 blo = line_mem(ibx1+2*i)
                 bhi = line_mem(ibx1+2*i+1)
 	        IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
-                   TM_CHECK_BNDS = .FALSE.
+		
+                   IF (TM_DFPEQ(pt,blo) .OR. TM_DFPEQ(pt,bhi) ) THEN
+                      nothing = 0
+                   ELSE
+                      TM_CHECK_BNDS = .FALSE.
+		   ENDIF
+
                    RETURN
 	        ENDIF
                 IF (i .GE. 1) THEN
@@ -139,7 +152,11 @@
                 blo = line_mem(ibx1+i)
                 bhi = line_mem(ibx1+i+1)
 	        IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
-                   TM_CHECK_BNDS = .FALSE.
+                   IF (TM_DFPEQ(pt,blo) .OR. TM_DFPEQ(pt,bhi) ) THEN
+                      nothing = 0
+                   ELSE
+                      TM_CHECK_BNDS = .FALSE.
+		   ENDIF
                    RETURN
 	        ENDIF
                 pt = line_start(nline) + FLOAT(i+1)* del
@@ -153,7 +170,11 @@
                 blo = line_mem(ibx1+i)
                 bhi = line_mem(ibx1+i+1)
 	        IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
-                   TM_CHECK_BNDS = .FALSE.
+                   IF (TM_DFPEQ(pt,blo) .OR. TM_DFPEQ(pt,bhi) ) THEN
+                      nothing = 0
+                   ELSE
+                      TM_CHECK_BNDS = .FALSE.
+		   ENDIF
                    RETURN
 	        ENDIF
                 IF (i .GE. 1) THEN

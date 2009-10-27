@@ -7,8 +7,6 @@
 ! reverting all the code surrounding these fixes. Do not
 ! execute these tests.
 
-exit/script
-
 cancel mode verify
 
 say "test1"

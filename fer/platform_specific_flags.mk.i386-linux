@@ -9,12 +9,12 @@
 			  -I. -Ireadline \
 			  -I/usr/include \
 			  -I/usr/include/X11 \
-			  -I$(TMAP_LOCAL)/include \
+			  -I../readline-4.1 -I../list-2.1  \
 			  -I/home/porter/ansley/netcdf-3.6.3/i386-linux/include \
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \
-			  -I. -I$(TMAP_LOCAL)/include/readline -I/home/porter/ansley/OPeNDAP/linux/include/libnc-dap
+			  -I. -I../readline-4.1 -I/home/porter/ansley/OPeNDAP/linux/include/libnc-dap
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			   -I../include -I../../fmt/cmn \
@@ -70,7 +70,7 @@
 	LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib -export-dynamic 
 	#LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib  -static 
 	 
-	SYSLIB		= -L/usr/X11R6/lib /usr/lib/libm.a -ldl /usr/X11R6/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib/libXm.a /usr/X11R6/lib/libXt.a /usr/X11R6/lib/libXext.a /usr/X11R6/lib/libX11.a /usr/X11R6/lib/libXp.a /usr/X11R6/lib/libXmu.a /usr/X11R6/lib/libSM.a /usr/X11R6/lib/libICE.a -lc /usr/lib/gcc-lib/i386-redhat-linux/3.2.3/libg2c.a
+	SYSLIB		= -L/usr/X11R6/lib /usr/lib/libm.a -ldl /usr/X11R6/lib/libXpm.a ../list-2.1/liblist.a -lc /usr/X11R6/lib/libXm.a /usr/X11R6/lib/libXt.a /usr/X11R6/lib/libXext.a /usr/X11R6/lib/libX11.a /usr/X11R6/lib/libXp.a /usr/X11R6/lib/libXmu.a /usr/X11R6/lib/libSM.a /usr/X11R6/lib/libICE.a -lc /usr/lib/gcc-lib/i386-redhat-linux/3.2.3/libg2c.a
 
 	TMLIB		= ../lib/tmap_lib.a
 

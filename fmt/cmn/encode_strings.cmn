@@ -1,0 +1,13 @@
+* encode_strings.cmn - Reserved characters to encode,
+* and their encodings. 
+
+	INTEGER nencode
+	PARAMETER (nencode=24)
+	CHARACTER*1 reschar(nencode)    ! Reserved chars to encode
+	CHARACTER*3 subencode(nencode)  ! The corresponding encoding
+	INTEGER nsubencode(nencode)     ! The length of the substituted string
+
+	COMMON /encode_cmn/
+     .		reschar,
+     .		subencode,
+     .		nsubencode

@@ -168,6 +168,7 @@
      .		grave_start, grave_end, in, out, nest,
      .		paren_level,len_test,len_mchars, m
 	CHARACTER c1*1
+	CHARACTER url_buff*2048
 
 * local parameter declarations:
 	INTEGER		grave_digits
@@ -746,6 +747,25 @@ cc  Allow it to be zero-length
 	ENDIF
  890	CONTINUE
 
+
+* For SET DATA commands if there is an F-TDS expression, then encode that now.
+
+	IF  (cmnd_num .EQ. cmnd_set .AND. 
+     .       subcmnd_num .EQ. subcmnd_set_data+1 ) THEN
+	
+	   url_buff = cmnd_buff( arg_start(1):arg_end(num_args) )
+	   len_test = TM_LENSTR(url_buff)
+           i = INDEX( url_buff(1:len_test), '_expr_{}' ) 
+	   IF (i .GT. 0) THEN
+	      num_args = 1
+              CALL CD_ENCODE_URL (url_buff)
+	      len_test = TM_LENSTR(url_buff)
+	      i = INDEX(cmnd_buff, "http://")
+	      cmnd_buff(i:i+len_test) = url_buff
+	      arg_end(1) = i+len_test - 1
+	   ENDIF
+	ENDIF
+
 * +++++++++ grave-accented immediate-mode expressions +++++++++++  3/95
 * evaluate and substitute the first grave accent-surrounded expression, if any
 * beginning at character grave_start
@@ -760,6 +780,7 @@ cc  Allow it to be zero-length
 	IF ( INDEX(cmnd_buff(:cmnd_len),'`') .GT. 0 ) THEN
 	   IF  ( cmnd_num .EQ. cmnd_repeat ) THEN
 	      grave_end = qual_end(num_quals)
+
 	   ELSEIF  ( cmnd_num .EQ. cmnd_if
      .	     .OR.    cmnd_num .EQ. cmnd_elif ) THEN
 	      IF ( num_args .GE. 1 ) THEN

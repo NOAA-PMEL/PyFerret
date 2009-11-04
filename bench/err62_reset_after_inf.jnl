@@ -11,3 +11,5 @@ shade/lev=(-inf)(2,24,2)(inf) temp[k=1]
 ! The bug was that this did not reset to default closed levels
 set view right
 shade/lev=20 temp[k=1]
+cancel mode meta
+

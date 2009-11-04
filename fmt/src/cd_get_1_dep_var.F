@@ -169,12 +169,22 @@
           ENDIF
 
 * see what generic attributes can be read: long_name, units, missing_value
+* If no long_name, then see if this is an F-TDS url with a ferret_definition
+* attribute and use that for the title.
 
           IF (nvatts .GT. 0) THEN
              maxlen = 128
              got_it = NC_GET_ATTRIB_STRING( dset, ivcd, 'long_name',
      .                     .NOT.do_warn, vname(:vlen), maxlen, attlen, 
      .                     attoutflag, ds_var_title(ivtm))
+
+             IF (.NOT. got_it) THEN  !an F-TDS URL may have ferret_definition
+	        
+                got_it = NC_GET_ATTRIB_STRING( dset, ivcd, 
+     .                     'ferret_definition',
+     .                     .NOT.do_warn, vname(:vlen), maxlen, attlen, 
+     .                     attoutflag, ds_var_title(ivtm))
+             ENDIF
 
              maxlen = 128
              got_it = NC_GET_ATTRIB_STRING( dset, ivcd, 'long_name_mod',

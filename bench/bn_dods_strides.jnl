@@ -23,7 +23,7 @@ cancel mode diagnostic
 set region/i=3:6/j=2:4/k=1:2/l=1
 !use bn_strides
 ! use "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/bn_strides.cdf"
-set data "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+set data "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 
 
 !! If the above is also down, here is a good one.
@@ -33,61 +33,61 @@ set data "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_m
 list temp
 canc data/all
 
-use/order=yx "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=yx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 list temp
 canc data/all
 
-use/order=zyx "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=zyx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 list temp
 canc data/all
 
-use/order=zxy "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=zxy "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 list temp
 canc data/all
 
 ! now with an XYT variable
 cancel region
 set region/i=1:4/j=40:43/l=1:2
-use "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 show grid xytvar
 list xytvar
 canc data/all
 
-use/order=yx "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=yx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 show grid xytvar
 list xytvar
 canc data/all
 
-use/order=tyx "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=tyx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 show grid xytvar
 list xytvar
 canc data/all
 
-use/order=txy "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=txy "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 show grid xytvar
 list xytvar
 canc data/all
 
 ! map into Z instead of T
-use/order=zxy "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=zxy "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 show grid xytvar
 list/k=1:2 xytvar
 canc data/all
 
 ! ambiguous mapping
-use/order=tx "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=tx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 show grid xytvar
 list xytvar
 canc data/all
 
 ! final "z" goes beyond the 3D -- no effect
-use/order=txyz "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=txyz "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 show grid xytvar
 show grid var
 canc data/all
 
 ! * * * * * STRIDES * * * * *
-use "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 set mode diag
 cancel memory/all
 
@@ -170,19 +170,19 @@ LIST/j=1/i=1/l=1/precision=9 TEMP[k=1:10:2@ave]
 
 set region/i=3:6/j=2:4/k=1:2/l=1
 
-use/order=yx "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=yx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 list temp[i=3:9:2]
 list temp[j=42:46:2]
 list temp[i=3:9:2, j=42:46:2, k=1:3:2]
 canc data/all
 
-use/order=zyx "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=zyx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 list temp[i=3:9:2]
 list temp[j=42:46:2]
 list temp[i=3:9:2, j=42:46:2, k=1:3:2]
 canc data/all
 
-use/order=zxy "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=zxy "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 list temp[i=3:9:2]
 list temp[j=42:46:2]
 list temp[i=3:9:2, j=42:46:2, k=1:3:2]
@@ -207,33 +207,33 @@ canc data/all
 cancel region; set region/l=1
 
 ! reference output
-use/order=yx "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=yx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
 
-use/order=-yx "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=-yx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
 
-use/order=y-x "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=y-x "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
 
 ! reference output
-use/order=tyx "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=tyx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
 
 ! note the reversal on axes 1,2 and 3 (X,Y,Z in memory -- NOT T)
-use/order=-t-y-x "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=-t-y-x "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
 
 ! reference output
-use/order=txy "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=txy "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
 
-use/order=-t-x-y "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+use/order=-t-x-y "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all

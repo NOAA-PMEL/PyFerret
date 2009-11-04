@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ../fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 51145101 Oct 26 12:00 ../fer/ferretdods_gui
-Using external functions from ../external_functions/ext_func_x86/
+Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 50864640 Nov  3 12:19 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: what happens with the process_if fix to bug 1681?
+Note:  encoding urls if there is an _expr_{} present in the URL string.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_x86/
-Beginning at Mon Oct 26 12:25:21 PDT 2009
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
+Beginning at Tue Nov 3 16:05:56 PST 2009
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2876,6 +2876,35 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: netCDF bounds variable definition error
+ *** NOTE: Bounds definition "time_bnds" points to no existing axis
+ *** NOTE: Ignoring BOUNDS attribute
+ *** NOTE: netCDF bounds variable definition error
+ *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+ *** NOTE: Ignoring BOUNDS attribute
+ *** NOTE: netCDF bounds variable definition error
+ *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+ *** NOTE: Ignoring BOUNDS attribute
+ *** NOTE: netCDF bounds variable definition error
+ *** NOTE: Bounds definition "time_bnds" points to no existing axis
+ *** NOTE: Ignoring BOUNDS attribute
+ *** NOTE: netCDF bounds variable definition error
+ *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+ *** NOTE: Ignoring BOUNDS attribute
+ *** NOTE: netCDF bounds variable definition error
+ *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+ *** NOTE: Ignoring BOUNDS attribute
+ *** NOTE: netCDF bounds variable definition error
+ *** NOTE: Bounds definition "time_bnds" points to no existing axis
+ *** NOTE: Ignoring BOUNDS attribute
+ *** NOTE: netCDF bounds variable definition error
+ *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+ *** NOTE: Ignoring BOUNDS attribute
+ *** NOTE: netCDF bounds variable definition error
+ *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+ *** NOTE: Ignoring BOUNDS attribute
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2960,4 +2989,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Oct 26 12:27:07 PDT 2009
+Ended at Tue Nov 3 16:07:40 PST 2009

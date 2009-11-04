@@ -154,6 +154,7 @@ CC	Linux port:
         DATA has_new_mouse/ .FALSE. /   ! at program initialization
 #endif
 
+
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 C
@@ -369,7 +370,7 @@ C
 # endif
 #else
 C
-C     CALCULATE THE COORDINATES OF THE POINT.  10 BIT TEK401X
+C     CALCULATE THE COORDINATES OF THE POINT.  10 AIT TEK401X
 C
         AOLD = FLOAT(IOR(ISHFT(IAND(IN(2),octal37),5),IAND(IN(3),octal37)
      *   )) / PLTOTA + AMIN
@@ -481,6 +482,14 @@ C
       SAVEF = .TRUE.
       X = XNEW / XSCALE
       Y = YNEW / YSCALE
+* ACM * How to detect if the plot is in a viewport and 
+*       therefore if the mouse click was outside the 
+*       viewport, the results of the mouse-click are
+*       garbage ??  This is not quite it...
+c      IF (AOLD.LT.1 .OR. BOLD.LT.1) THEN
+c         X = -1.0E+34
+c	 Y = -1.0E+34
+c      ENDIF
 
 * 6/99 send the results back to Ferret through COMMON
         has_new_mouse = .TRUE.

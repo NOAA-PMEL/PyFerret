@@ -13,6 +13,7 @@ cd_conventions_out.F\
 cd_defer_coord_write.F\
 cd_delete_attribute.F\
 cd_dods_control.F\
+cd_encode_url.F\
 cd_get_1_axis.F\
 cd_get_1_dep_var.F\
 cd_get_attrib.F\
@@ -79,6 +80,7 @@ cd_write_defer_coord.F\
 cd_write_grid.F\
 cd_write_strdim.F\
 cd_write_var.F\
+encode_strings_data.F\
 ez_delimited_read.F\
 ez_init_dset.F\
 ez_init_permute.F\

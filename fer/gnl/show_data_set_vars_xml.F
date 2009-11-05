@@ -51,6 +51,8 @@
 * V616 12/2008 *acm* Close the tag correctly; line written using format 2075 needs
 *                    the attribute name given a second time.
 * V616  1/2009 *acm* Fixing LAS ticket 481, new style of xml output
+* V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
+*                  with &lt; etc.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -84,7 +86,8 @@
         LOGICAL   NC_GET_ATTRIB, got_it, coordvar, newatt
 
         CHARACTER TM_FMT*16, show_str*16
-        CHARACTER uvarname*150, attname*128, attbuff*2048, buff*14
+        CHARACTER uvarname*150, attname*128, attbuff*2048, buff*14,
+     .            outstring*2048, aname*128
 
 C New form for attribute output, dont implement it yet. (Check the
 C Write statement that uses number 2075 when we change to using these.)
@@ -115,30 +118,31 @@ C Write statement that uses number 2075 when we change to using these.)
 
 *           slen = TM_LENSTR1(ds_var_code(ivar))
            CALL string_array_get_strlen1(ds_var_code_head, ivar, slen)
-           WRITE ( risc_buff, 2020 ) ds_var_code(ivar)(1:slen)
+           CALL ESCAPE_FOR_XML (ds_var_code(ivar), outstring, slen)
+           WRITE ( risc_buff, 2020 ) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
            slen = TM_LENSTR(ds_var_units(ivar))
            IF (ds_var_units(ivar)(1:2) .NE. char_init 
      .           .AND. slen.GT.0) THEN
-              slen = TM_LENSTR1(ds_var_units(ivar))
-              WRITE ( risc_buff, 2030 ) ds_var_units(ivar)(1:slen)  
+              CALL ESCAPE_FOR_XML (ds_var_units(ivar), outstring, slen)
+              WRITE ( risc_buff, 2030 ) outstring(1:slen)  
               CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
 
            slen = TM_LENSTR(ds_var_title(ivar))
            IF (ds_var_title(ivar)(1:2) .NE. char_init 
      .           .AND. slen.GT.0) THEN
-              slen = TM_LENSTR1(ds_var_title(ivar))
-              WRITE ( risc_buff, 2040 ) ds_var_title(ivar)(1:slen)
+              CALL ESCAPE_FOR_XML (ds_var_title(ivar), outstring, slen)
+              WRITE ( risc_buff, 2040 ) outstring(1:slen)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
 
            slen = TM_LENSTR(ds_var_titl_mod(ivar))
            IF (ds_var_titl_mod(ivar)(1:2) .NE. char_init 
      .           .AND. slen.GT.0) THEN
-              slen = TM_LENSTR1(ds_var_titl_mod(ivar))
-              WRITE ( risc_buff, 2050 ) ds_var_titl_mod(ivar)(1:slen)
+              CALL ESCAPE_FOR_XML (ds_var_titl_mod(ivar), outstring, slen)
+              WRITE ( risc_buff, 2050 ) outstring(1:slen)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
 
@@ -146,11 +150,13 @@ C Write statement that uses number 2075 when we change to using these.)
 ! bad_flag comes from missing_value
 
            show_str = TM_FMT(ds_missing_flag(ivar), 16,16,slen)
-           WRITE ( risc_buff, 2060 ) show_str(1:slen)
+           CALL ESCAPE_FOR_XML (show_str, outstring, slen)
+           WRITE ( risc_buff, 2060 ) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
            show_str = TM_FMT(ds_bad_flag(ivar), 16,16,slen)
-           WRITE ( risc_buff, 2070 ) show_str(1:slen)
+           CALL ESCAPE_FOR_XML (show_str, outstring, slen)
+           WRITE ( risc_buff, 2070 ) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
           IF (ds_var_type(ivar) .EQ. ptype_string ) THEN
@@ -225,9 +231,10 @@ C Write statement that uses number 2075 when we change to using these.)
                     blen = TM_LENSTR1(attbuff)
                  ENDIF
 
-                 slen = TM_LENSTR1(attname)
-	         WRITE (risc_buff, 2075) attname(1:slen), 
-     .                  attbuff(1:blen)
+                 CALL ESCAPE_FOR_XML (attname, aname, slen)
+                 CALL ESCAPE_FOR_XML (attbuff, outstring, blen)
+	         WRITE (risc_buff, 2075) aname(1:slen), 
+     .                  outstring(1:blen)
 
                  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
@@ -254,26 +261,28 @@ C Write statement that uses number 2075 when we change to using these.)
 
              uvarname = uvar_name_code(ivar)
              IF (uvar_parent(ivar) .NE. 0) GOTO 600
-            
-             slen = TM_LENSTR1(uvarname)
-             WRITE ( risc_buff, 2020 ) uvarname(1:slen)
+
+             CALL ESCAPE_FOR_XML (uvarname, outstring, slen)
+             WRITE ( risc_buff, 2020 ) outstring(1:slen)
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-             slen = TM_LENSTR1(uvar_text(ivar))      
-             WRITE ( risc_buff, 2025 ) uvar_text(ivar)(1:slen)
+             slen = TM_LENSTR1(uvar_text(ivar))
+             CALL ESCAPE_FOR_XML (uvar_text(ivar), outstring, slen)
+             WRITE ( risc_buff, 2025 ) outstring(1:slen)
 
              slen = TM_LENSTR(uvar_units(ivar))
              IF (uvar_units(ivar)(1:2) .NE. char_init 
      .             .AND. slen.GT.0) THEN
                 slen = TM_LENSTR1(uvar_units(ivar))
-                WRITE ( risc_buff, 2030 ) uvar_units(ivar)(1:slen)  
+                CALL ESCAPE_FOR_XML (uvar_units(ivar), outstring, slen)
+                WRITE ( risc_buff, 2030 ) outstring(1:slen)  
                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
              ENDIF
 
              slen = TM_LENSTR(uvar_title(ivar))
              IF (uvar_title(ivar)(1:2) .NE. char_init 
      .             .AND. slen.GT.0) THEN
-                slen = TM_LENSTR1(uvar_title(ivar))
-                WRITE ( risc_buff, 2040 ) uvar_title(ivar)(1:slen)
+                CALL ESCAPE_FOR_XML (uvar_title(ivar), outstring, slen)
+                WRITE ( risc_buff, 2040 ) outstring(1:slen)
                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
              ENDIF
 
@@ -281,11 +290,13 @@ C Write statement that uses number 2075 when we change to using these.)
 ! bad_flag comes from missing_value
 
              show_str = TM_FMT(uvar_bad_data(ivar), 16,16,slen)
-             WRITE ( risc_buff, 2060 ) show_str(1:slen)
+             CALL ESCAPE_FOR_XML (show_str, outstring, slen)
+             WRITE ( risc_buff, 2060 ) outstring(1:slen)
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
              show_str = TM_FMT(uvar_bad_data(ivar), 16,16,slen)
-             WRITE ( risc_buff, 2070 ) show_str(1:slen)
+             CALL ESCAPE_FOR_XML (show_str, outstring, slen)
+             WRITE ( risc_buff, 2070 ) outstring(1:slen)
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
              IF (uvar_data_type(ivar,dset) .EQ. ptype_string ) THEN

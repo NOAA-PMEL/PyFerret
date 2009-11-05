@@ -49,6 +49,8 @@
 * V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
 * V602 *acm* 1/07 - add <direction> output -- I J K L for the axis.
 * V616  1/2009 *acm* Fixing LAS ticket 481, new style of xml output
+* V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
+*                  with &lt; etc.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -72,8 +74,8 @@
      .            len_attbuff, attoutflag, all_outflag, attid, 
      .            attlen, attype, iatt, ncchar, iset, dset
 	CHARACTER TM_FMT*16, show_str*16, lo_str*20, hi_str*20, 
-     .            title*32, outbuff*20, 
-     .            attname*128, attbuff*2048, buff*14
+     .            title*32, outbuff*20, aname*128,
+     .            attname*128, attbuff*2048, buff*14, outstring*2048
         CHARACTER*1 idir(4)
 	REAL*8	TM_WORLD, lo_val8, hi_val8
 	REAL      vals(10)
@@ -121,8 +123,8 @@ C Write statement that uses number 2075 when we change to using these.)
   
 * header
 
-           slen = TM_LENSTR1 ( line_name(line) )
-	   WRITE ( risc_buff, 2020 ) line_name(line)(1:slen)
+           CALL ESCAPE_FOR_XML (line_name(line), outstring, slen)
+	   WRITE ( risc_buff, 2020 ) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * axis units, including ... since start date if time axis
@@ -138,7 +140,8 @@ C Write statement that uses number 2075 when we change to using these.)
            IF (line_units(line)(1:2) .NE. char_init 
      .           .AND. slen.GT.0) THEN
               
-              WRITE ( risc_buff, 2040 ) line_units(line)(1:slen)
+              CALL ESCAPE_FOR_XML (line_units(line), outstring, slen)
+              WRITE ( risc_buff, 2040 ) outstring(1:slen)
               llen = slen
 	      blen = llen + 8
               blen = TM_LENSTR1(risc_buff)
@@ -156,10 +159,10 @@ C Write statement that uses number 2075 when we change to using these.)
                  
                  CALL TM_DATE_REFORMAT (buff, 1, cal_id, outbuff, 2,
      .                                  .TRUE., status) 
-                 slen = TM_LENSTR1(outbuff)
+                 CALL ESCAPE_FOR_XML (outbuff, outstring, slen)
 		 blen = blen - 3
                  WRITE (risc_buff(blen:blen+slen+6+8), 2045) 
-     .                outbuff(:slen)
+     .                outstring(:slen)
 
               ENDIF
 
@@ -169,7 +172,8 @@ C Write statement that uses number 2075 when we change to using these.)
 * line dimension
 
            show_str = TM_FMT(FLOAT(line_dim(line)), 16,16,slen)
-           WRITE ( risc_buff, 2050 ) show_str(1:slen)
+	   CALL ESCAPE_FOR_XML (show_str, outstring, slen)
+           WRITE ( risc_buff, 2050 ) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * start and end
@@ -196,9 +200,9 @@ C Write statement that uses number 2075 when we change to using these.)
 
            IF (calendar) THEN
               CALL TM_DATE_REFORMAT (lo_str, 1, cal_id, outbuff, 2,
-     .                               .TRUE., status) 
-              slen = TM_LENSTR1(outbuff)
-              WRITE ( risc_buff, 2110 ) outbuff(1:slen)
+     .                               .TRUE., status)
+	      CALL ESCAPE_FOR_XML (outbuff, outstring, slen)
+              WRITE ( risc_buff, 2110 ) outstring(1:slen)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
               CALL TM_DATE_REFORMAT (hi_str, 1, cal_id, outbuff, 2,
@@ -208,12 +212,12 @@ C Write statement that uses number 2075 when we change to using these.)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ELSE
               
-              slen = TM_LENSTR1(lo_str)
-              WRITE ( risc_buff, 2110 ) lo_str(1:slen)
+              CALL ESCAPE_FOR_XML (lo_str, outstring, slen)
+              WRITE ( risc_buff, 2110 ) outstring(1:slen)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-              slen = TM_LENSTR1(hi_str)
-              WRITE ( risc_buff, 2120 ) hi_str(1:slen)
+              CALL ESCAPE_FOR_XML (hi_str, outstring, slen)
+              WRITE ( risc_buff, 2120 ) outstring(1:slen)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
 
@@ -280,9 +284,10 @@ C Write statement that uses number 2075 when we change to using these.)
                     blen = TM_LENSTR1(attbuff)
                  ENDIF
 
-                 slen = TM_LENSTR1(attname)
-	         WRITE (risc_buff, 2075) attname(1:slen), 
-     .                  attbuff(1:blen), attname(1:slen)
+                 CALL ESCAPE_FOR_XML (attname, aname, slen)
+                 CALL ESCAPE_FOR_XML (attbuff, outstring, blen)
+	         WRITE (risc_buff, 2075) aname(1:slen), 
+     .                  outstring(1:blen), aname(1:slen)
                  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
               ENDIF

@@ -71,6 +71,7 @@ c	include 'xrisc.cmn'
 * local variable declarations:
 	INTEGER TM_LENSTR1, TM_LENSTR, idim, slen, line
         CHARACTER*1 axdir(4)
+	CHARACTER*2048 outstring
         DATA axdir/ 'x', 'y', 'z', 't'/
 
 
@@ -82,8 +83,8 @@ c	include 'xrisc.cmn'
 
 * list the 4 axes of the grid
 
-        slen = TM_LENSTR1(grid_name(grid))
-	WRITE ( risc_buff, 2020 ) grid_name(grid)(1:slen)
+        CALL ESCAPE_FOR_XML (grid_name(grid), outstring, slen)
+	WRITE ( risc_buff, 2020 ) outstring(1:slen)
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	WRITE ( risc_buff, 2030 ) 
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -95,9 +96,9 @@ c	include 'xrisc.cmn'
 
            IF (line .GT. 0  .AND.  slen .GT. 0 .AND.
      .         cx_expr .EQ. unspecified_int4) THEN
-              slen = TM_LENSTR1(line_name(line))
+              CALL ESCAPE_FOR_XML (line_name(line), outstring, slen)
               WRITE (risc_buff, 2040 ) axdir(idim),
-     .           line_name(line)(1:slen), axdir(idim)
+     .           outstring(1:slen), axdir(idim)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
 

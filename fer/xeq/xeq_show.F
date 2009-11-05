@@ -159,6 +159,9 @@
 * V606  8/07 *acm* Send informational and error messages that are returned from 
 *                  commands via SPLIT_LIST to std error rather than std out, but not
 *                  the outputs of SHOW commands. These go to std out.
+* V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
+*                  with &lt; etc.
+
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -266,7 +269,7 @@
      .		default*10, show_str*2048, arg*24, name*32, arg30*30
 	CHARACTER	filename*2048, raw_name*2048, varatt*641,
      .			fformatted*12, varname*512, attname*128,
-     .			efname*40, upname*40, aname*128
+     .			efname*40, upname*40, aname*128, outstring*2048
 
 * 10/01 *kob* had to change decl of axesOrCorner for picky f95
         CHARACTER*6 axesOrCorner(2)
@@ -725,20 +728,24 @@
            IF (sxml) THEN
 
 * Write data set name
-              IF (len0 .EQ. 1)
-     .        WRITE (risc_buff,3711) ds_des_name(iset)(:len)
-              IF (len0 .EQ. 9)
-     .        WRITE (risc_buff,3712) ds_des_name(iset)(:len)
+              IF (len0 .EQ. 1) THEN
+                 CALL ESCAPE_FOR_XML (ds_des_name(iset), outstring, len)
+                 WRITE (risc_buff,3711) outstring(:len)
+	      ENDIF
+              IF (len0 .EQ. 9) THEN
+                 CALL ESCAPE_FOR_XML (ds_des_name(iset), outstring, len)
+                 WRITE (risc_buff,3712) outstring(:len)
+              ENDIF
 	      CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 * Write data set title
-	      len = TM_LENSTR1(ds_title(iset))
-	      WRITE ( risc_buff, 2020 ) ds_title(iset)(1:len)
+              CALL ESCAPE_FOR_XML (ds_title(iset), outstring, len)
+	      WRITE ( risc_buff, 2020 ) outstring(1:len)
 	      CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 
 	      len = TM_LENSTR(ds_mod_title(iset))
 	      IF (len .GT. 0) THEN
-	         len = TM_LENSTR1(ds_mod_title(iset))
-	         WRITE ( risc_buff, 2030 ) ds_mod_title(iset)(1:len)
+                 CALL ESCAPE_FOR_XML (ds_mod_title(iset), outstring, len)
+	         WRITE ( risc_buff, 2030 ) outstring(1:len)
 	         CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
               ENDIF
 

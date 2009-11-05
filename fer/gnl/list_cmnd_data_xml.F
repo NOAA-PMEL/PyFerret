@@ -43,48 +43,6 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 *
-* revision 0.0 - 4/16/86
-* V200:  6/22/89 - major changes to accomodate 4D memory resident variables
-*		 - handle data sets that are indicated "irrelevant"
-*	  9/1/89 - accept permutation specification
-*	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
-*	12/19/89 - eliminated the possibility of multiple data set variables
-*	  7/9/90 - extracted code fragments to subroutines MINMAX, VAR_DATA_FMT
-*		   and ROW_COORD_FMT to be shared with LIST_MULTI
-*		   changed POS_LAB call
-* V301: 11/1/93 - change to WRITE(ERR=...) processing for DEC compilers 
-* V313: 31/10/94 - size of row_ss_fmt increased due to ROW_COORD_FMT chg
-* V320: 10/5/94 - added code for /HEADING=enhanced
-*	11/9/94 - replaced all WRITE statements with SPLIT_LIST 
-*	12/28/94- added LIST/FORMAT=STREAM (add'l argument "recsofar")
-*		  and added units and T0 to /HEADING=enhanced (/xtm_grid.cmn)
-*	3/2/95  - fixed bug in SIZE output for /HEADING=enhanced
-* V420  9/28/95 - added tab and comma-delimited output format
-*		- line_buff increased hugely (from 132) to accomodate
-*Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
-*			  because it needed a preprocessor.
-* V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
-* V530:  8/00 *sh* - added support for string variables
-* V530:  3/01 *acm*- Put the calendar name in the heading if TIME not
-*		     otherwise listed, and if non-gregorian calendar.
-* V540: 11/01 *sh* - added LIST/WIDTH=
-*	           - expanded and reorganized the LIST heading
-* V552   2/03 *acm*- Increase line_buff to 10000
-* v553   9/03 *kob*- Increase GET_STRING_ELEMENT to 512 
-* V554   3/04 *acm*-For REPEAT/RANGE vars, add check for dset = unspecified_int4
-
-* V554   9/03 *acm* - add output in /DODS binary format, see the flag do_dods 
-*                     change this comment, so that the checkin under branch FDSv1
-*                     will occur.
-* v560   4/04 *acm* Very wide output needs a fix in the format specifier that is written.
-* V580   9/04 *acm* call ndig_coords to compute the precision needed to list the
-*                   coordinates in tab and comma delimited formats.  Note that if
-*                   precision more than 0.001 is needed for longitude and latitude
-*                   axes, then a change needs to be made in translate_to_world.
-* V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
-*            and restore original t0 on output
-* V600: *acm* 8/05 - Add new qualifier LIST/NOROWHEAD to remove labels that
-*                    start each row labelling the coordinate values. (bug 1273)
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"

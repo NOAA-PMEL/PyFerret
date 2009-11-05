@@ -43,6 +43,8 @@
 * V606  8/07 *acm* when there are quotes within the var definition, as in
 *                  a date specification change these to &quot; for valid xml.
 * V616  1/2009 *acm* Fixing LAS ticket 481, new style of xml output
+* V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
+*                  with &lt; etc.
 
         include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -67,7 +69,7 @@
      .            attlen, attype, iatt, dset, ncchar
 	CHARACTER FULL_UVAR_NAME*150, TM_FMT*12,
      .            buff*150, buff2*170, c*1, 
-     .            attname*128, attbuff*2048
+     .            attname*128, attbuff*2048, outstring*2048
 	REAL      vals(10)
         LOGICAL TM_HAS_STRING, save_mode_ignore, save_silent_err, new
 
@@ -79,7 +81,6 @@ C Write statement that uses number 2075 when we change to using these.)
  2040   FORMAT( '<attribute name="long_name" value="', A, '" />' )
  2070   FORMAT( '<attribute name="missing_value" value="', A, '" />' )
  2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
- 2080   FORMAT( '<grid>', A, '</grid>' )
  2090   FORMAT ('</var>')
 
 * initialize
@@ -143,7 +144,8 @@ C Write statement that uses number 2075 when we change to using these.)
            llen = TM_LENSTR1(buff)
         ENDIF
 
-        WRITE ( risc_buff, 2020 ) vname(1:slen), buff(1:llen)
+        CALL ESCAPE_FOR_XML (vname, outstring, slen)
+        WRITE ( risc_buff, 2020 ) outstring(1:slen), buff(1:llen)
 	
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	risc_buff = ' '
@@ -151,21 +153,22 @@ C Write statement that uses number 2075 when we change to using these.)
 
 * ... title and units 
 	IF ( uvar_units(uvar) .NE. ' ' ) THEN
-           slen = TM_LENSTR1(uvar_units(uvar))
-	   WRITE(risc_buff, 2030) uvar_units(uvar)(1:slen)
+           CALL ESCAPE_FOR_XML (uvar_units(uvar), outstring, slen)
+	   WRITE(risc_buff, 2030) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
         ENDIF
 
 	IF ( uvar_title(uvar) .NE. ' ' ) THEN
-           slen = TM_LENSTR1(uvar_title(uvar))
-	   WRITE(risc_buff, 2040) uvar_title(uvar)(1:slen)
+           CALL ESCAPE_FOR_XML (uvar_title(uvar), outstring, slen)
+	   WRITE(risc_buff, 2040) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
         ENDIF
 
 * ... bad data flag 
 
         buff = TM_FMT(uvar_bad_data(uvar), 16,16,slen)
-        WRITE ( risc_buff, 2070 ) buff(1:slen)
+        CALL ESCAPE_FOR_XML (buff, outstring, slen)
+        WRITE ( risc_buff, 2070 ) outstring(1:slen)
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 
@@ -205,9 +208,10 @@ C Write statement that uses number 2075 when we change to using these.)
                  blen = TM_LENSTR1(attbuff)
               ENDIF
 
-              slen = TM_LENSTR1(attname)
-              WRITE (risc_buff, 2075) attname(1:slen), attbuff(1:blen),
-     .               attname(1:slen)
+              CALL ESCAPE_FOR_XML (attname, buff2, slen)
+              CALL ESCAPE_FOR_XML (attbuff, outstring, blen)
+              WRITE (risc_buff, 2075) buff2(1:slen), outstring(1:blen),
+     .               buff2(1:slen)
               CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
            ENDIF

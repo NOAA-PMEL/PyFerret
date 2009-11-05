@@ -47,6 +47,8 @@
 * V612  8/2008 *acm* Revert to old xml style output for infile_datatype and 
 *                    ferret_datatype attributes
 * V616  1/2009 *acm* Fixing LAS ticket 481, new style of xml output
+* V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
+*                  with &lt; etc.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -79,7 +81,8 @@
      .                  varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
      .                  len_attbuff, attoutflag, all_outflag, attid, 
      .                  attlen, attype, iatt
-        CHARACTER       vname*128, attname*128, attbuff*2048
+        CHARACTER       vname*128, attname*128, attbuff*2048, 
+     .                  outstring*2048
 	REAL            vals(10)
 
 C New form for attribute output, dont implement it yet. (Check the
@@ -141,16 +144,16 @@ C Write statement that uses number 2075 when we change to using these.)
 
            CALL TM_DATE_REFORMAT (buff, 1, cal_id, outbuff, 2, 
      .        .TRUE., status) 
-           slen = TM_LENSTR1(outbuff)
-           WRITE ( risc_buff, 2020 ) outbuff(1:slen)
+           CALL ESCAPE_FOR_XML(outbuff, outstring, slen)
+           WRITE ( risc_buff, 2020 ) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * report the calendar of a time axis if "interesting"
 
 	   IF (cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
               buff = line_cal_name(line)
-	      slen = TM_LENSTR1(buff)
-              WRITE ( risc_buff, 2030 ) buff(1:slen)
+              CALL ESCAPE_FOR_XML(buff, outstring, slen)
+              WRITE ( risc_buff, 2030 ) outstring(1:slen)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	   ENDIF
 	ENDIF
@@ -158,7 +161,8 @@ C Write statement that uses number 2075 when we change to using these.)
 * if line is subspan modulo, report its modulo cycle length
 	IF ( line_modulo(line) .AND. TM_ITS_SUBSPAN_MODULO(line) ) THEN
 	   buff = TM_FMT( SNGL(line_modulo_len(line)),7,32,slen)
-	   WRITE (risc_buff, 2040) buff(1:slen)
+           CALL ESCAPE_FOR_XML(buff, outstring, slen)
+	   WRITE (risc_buff, 2040) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	ENDIF
 
@@ -239,9 +243,12 @@ C Write statement that uses number 2075 when we change to using these.)
                  blen = TM_LENSTR1(attbuff)
               ENDIF
 
-              slen = TM_LENSTR1(attname)
-	         WRITE (risc_buff, 2075) attname(1:slen), 
-     .                  attbuff(1:blen)
+! Store the converted attname string in the variable buff, not now needed.
+
+              CALL ESCAPE_FOR_XML(attname, buff, slen)
+              CALL ESCAPE_FOR_XML (attbuff, outstring, len)
+	      WRITE (risc_buff, 2075) buff(1:slen), 
+     .                  outstring(1:blen)
               CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
            ENDIF

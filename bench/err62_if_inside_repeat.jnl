@@ -173,6 +173,45 @@ elif 1 then
     endif)
 endif
 
+! Here are the bugs that were caused by the original fix 
+! to bug 1681, and which are in Ferret v6.3;
+! but which werent detected by the benchmarks
+
+SAY "Next should a line that says --->here"
+say "And then    a line that says --->yes"
+
+! 1706 The second block is never reached; the output should be
+! "here".
+
+def sym a say hi\; say hi
+
+IF 0 THEN
+   say not
+ENDIF
+
+IF 1 THEN
+   say --->here
+ENDIF
+
+! And this, similar to what caused troubles in the LAS scripts,
+! the continuation marks were misinterpreted so the ENDIF was never
+! reached and we never hit the say "done".
+
+
+IF 0 then
+   IF `3 GT 4` THEN \
+     SAY yes
+ENDIF
+
+IF 1 THEN
+   IF `3 GT 4` THEN \
+     SAY yes
+ENDIF
+
+IF 1 THEN
+   IF `6 GT 4` THEN \
+     SAY --->yes
+ENDIF
 
 say "done"
 set mode/last verify

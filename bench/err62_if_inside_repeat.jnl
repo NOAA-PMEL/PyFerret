@@ -178,7 +178,7 @@ endif
 ! but which werent detected by the benchmarks
 
 SAY "Next should a line that says --->here"
-say "And then    a line that says --->yes"
+say "And then    a line that says 201."
 
 ! 1706 The second block is never reached; the output should be
 ! "here".
@@ -200,17 +200,20 @@ ENDIF
 
 IF 0 then
    IF `3 GT 4` THEN \
-     SAY yes
+     LET a = \
+       1 + 2
 ENDIF
 
 IF 1 THEN
    IF `3 GT 4` THEN \
-     SAY yes
+     LET b = \ 
+       12*8
 ENDIF
 
 IF 1 THEN
    IF `6 GT 4` THEN \
-     SAY --->yes
+     LIST/NOHEADER/NOROWHEADER \
+       3*67
 ENDIF
 
 say "done"

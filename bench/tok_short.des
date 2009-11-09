@@ -29,7 +29,7 @@
    S_DELTA       = 2
    S_NUM_OF_FILES	= 1
    S_REGVARFLAG  = ' '
- $ END
+ $END
 
  **************************************************
  $STEPFILE_RECORD

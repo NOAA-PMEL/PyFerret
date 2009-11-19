@@ -534,7 +534,7 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
 	    int max_fields)
 {
 
-  char *p, *pnext, *pstart, str1[2], latlon1[2];
+  char *p, *pnext, pstart[256], str1[2], latlon1[2];
   float dummy;
   int idummy1, idummy2, idummy3, i, nfields_in;
 

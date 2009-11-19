@@ -1,0 +1,14 @@
+! err63_log_vaxis.jnl
+! fix for bug 1708
+! This example from Patrick Brockmann.
+
+! ok
+set view left
+def axis/z=10:10000:10 vert_axis_up
+plot/vlog z[gz=vert_axis_up]
+
+
+! not ok : left vertical log axis is down. right vertical axis is up
+set view right
+def axis/z=10:10000:10/depth vert_axis_dn
+plot/vlog z[gz=vert_axis_dn]

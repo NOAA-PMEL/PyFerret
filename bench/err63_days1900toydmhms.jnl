@@ -1,0 +1,11 @@
+! err63_days1900toydmhms.jnl
+!
+! Bug reported by Jaison Kurian
+! 32-bit linux, this returned the wrong month
+! and day for start of March.
+
+define axis/t=21241:21245:1 tax
+let julshift = DAYS1900(1950,1,1)
+let julday   = t[gt=tax] + julshift
+let tpts     = DAYS1900TOYMDHMS(julday)
+list/k=2:3 tpts

@@ -1,0 +1,11 @@
+! bn631_bug_fixes.jnl
+! Fixes that go into v6.31release
+
+! (changes were made to err62_if_inside_repeat.jnl
+!  which is run previously.)
+
+GO bn_reset
+GO err63_days1900toydmhms
+
+GO bn_reset
+GO err63_log_vaxis

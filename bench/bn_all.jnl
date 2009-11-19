@@ -663,16 +663,22 @@ GO bn_reset
 GO bn_var_hist_levels.jnl
 
 
-! ******** V6.4 Additions below ***********
+! ******** V6.31 Additions below ***********
+
+GO bn_reset
+GO bn631_bug_fixes
 
 GO bn_reset
 GO bn_long_grid_names
 
 GO bn_reset
-GO bn_encode_url
+GO bn_xml_repl
+
+! ******** V6.4 Additions below ***********
 
 GO bn_reset
-GO bn_xml_repl
+GO bn_encode_url
+
 
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not

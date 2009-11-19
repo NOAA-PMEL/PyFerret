@@ -54,7 +54,7 @@
       INTEGER slen 
 
 * Local declarations
-      INTEGER TM_LENSTR1, i, nchar, lenrepl(3) 
+      INTEGER TM_LENSTR1, i, nchar, lenrepl(3), blen
       CHARACTER*1 rchar(3)
       CHARACTER*5 repl(3)
       

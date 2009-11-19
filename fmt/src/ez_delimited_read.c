@@ -620,7 +620,8 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  field_type[(*nfields)] = FTYP_LON;
 	else if (field_type[(*nfields)] != FTYP_LON)
 	  field_type[(*nfields)] = FTYP_CHARACTER;
-	strncpy(pstart,p,idummy1 );
+	  idummy1 = (strlen(p))-1;
+	  strncpy(pstart,p,idummy1 );
 	if (sscanf(pstart,"%f",&dummy) != 1)
 	  field_type[(*nfields)] = FTYP_CHARACTER;
       }

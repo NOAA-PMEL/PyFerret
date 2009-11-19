@@ -200,13 +200,13 @@ ENDIF
 
 IF 0 then
    IF `3 GT 4` THEN \
-     LET a = \
+     LIST/NOHEADER/NOROWHEADER \
        1 + 2
 ENDIF
 
 IF 1 THEN
    IF `3 GT 4` THEN \
-     LET b = \ 
+     LIST/NOHEADER/NOROWHEADER \
        12*8
 ENDIF
 

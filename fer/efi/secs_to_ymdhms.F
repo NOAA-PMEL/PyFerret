@@ -38,6 +38,8 @@
 * fields
 
 * V530 *sh* 1/02 - based upon tm_secs_to_date.F
+* V6.31 *acm* 11/09 Simplify the logic which decides what month/day it is
+*             as is already done in tm_secs_to_date.
 
 * Argument declarations
 	INTEGER	yr, mon, day, hr, min
@@ -48,7 +50,7 @@
 * Local Definition
 	INTEGER		month_by_day(365), leapadj, cent_cnt,
      .			year_cnt, cent4_cnt, year4_cnt, tot_days,
-     .			tmp_days, days_before_month(12)
+     .			tmp_days, days_before_month(12), ge59
 	REAL*8		secs_in_minute, secs_in_hour, secs_in_day,
      .			secs_in_year, secs_in_4years, secs_in_cent,
      .			secs_in_4cents, total_secs
@@ -125,9 +127,14 @@
 	total_secs = total_secs - tot_days*secs_in_day
 
 * Decide what month/day it is
-	tmp_days = tot_days - leapadj*INT(tot_days/366. + 307./366.)
+
+	ge59 = 0
+	IF (tot_days .GE. 59) ge59 = 1
+	tmp_days = tot_days - leapadj* ge59
+
 	IF (tmp_days .LT. 0) STOP 'negative subscript in TM_SECS_TO_DATE'
 	mon = month_by_day(tmp_days+1)
+
 	leapadj = INT(mon/12. +.75)*leapadj
 	day = tot_days - (days_before_month(mon)+leapadj) + 1
 

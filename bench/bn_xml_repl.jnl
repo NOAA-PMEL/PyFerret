@@ -1,7 +1,5 @@
- ! NOAA/PMEL TMAP
- ! FERRET v6.31  
- ! Linux(g77) 2.6.9-89.ELsmp - 11/05/09
- !  5-Nov-09 14:05     
+! bn_xml_repl.jnl
+! replace > and < and & with their html equivalents.
 
 use coads_climatology
 set var/title="a title with & and > and < characters" sst
@@ -9,4 +7,3 @@ set var/units="<<" sst
 set att sst.history = "Adding some ampersands.& & to the history"
 sh dat/xml/var
 shade/l=1 sst
-q

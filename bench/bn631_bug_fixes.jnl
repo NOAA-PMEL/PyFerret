@@ -9,3 +9,6 @@ GO err63_days1900toydmhms
 
 GO bn_reset
 GO err63_log_vaxis
+
+GO bn_reset
+GO err63_delim_E.jnl

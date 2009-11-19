@@ -98,12 +98,13 @@
 * V6.19  2/03/09  Version 6.19 fix for choosing colors and thicknesses when > 6 colors have been defined
 * V6.2   5/0/09   V6.2 release
 * V6.3   9/18/09  V6.3 release
+* V6.3   11/20/09  V6.4 release
 
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.31   /
+	DATA revision_level	/  6.4   /
 
 ! Note we can put a debug title in the Ferret startup header lines
 ! by putting a title into the Makefile: $(MAKE) "DEBUG_TITLE=beta" update

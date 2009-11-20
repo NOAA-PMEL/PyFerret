@@ -36,6 +36,9 @@ c:    Extracted from arfill.F
 c:    Output polygon (rectangle or triangle) for contour display.
 c:
 *     v5.81 *acm* 4/05 Changes for FILL/MOD. Draw replications for curvilinear datasets
+*     v6.4  *acm*11/09 For curvi plots, dont buffer polygons of a single color. This 
+*                      resulted in drawing rectangles across what should be curvi portions
+*                      of the grid (bug 1505).
 
       real x(*), y(*), z(*)
       integer i,j,npoly,nlev,nsides 
@@ -74,7 +77,8 @@ c
          if ((zmin.ge.zlev(i)) .and. (zmax.le.zlev(i+1))) then
 
             if ((i .ne. ilast .and. .not. buffer_empty) 
-     .           .or. num_buffered .ge. buffer_max) then
+     .           .or. num_buffered .ge. buffer_max
+     .           .or. curvilinear) then
 
                call flush_buffered_fillpoly (xadd, lmin, lmax)
             end if

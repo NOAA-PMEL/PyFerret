@@ -663,10 +663,10 @@ GO bn_reset
 GO bn_var_hist_levels.jnl
 
 
-! ******** V6.31 Additions below ***********
+! ******** V6.4 Additions below ***********
 
 GO bn_reset
-GO bn631_bug_fixes
+GO bn64_bug_fixes
 
 GO bn_reset
 GO bn_long_grid_names
@@ -674,7 +674,7 @@ GO bn_long_grid_names
 GO bn_reset
 GO bn_xml_repl
 
-! ******** V6.4 Additions below ***********
+! ******** V6.5 Additions below ***********
 
 GO bn_reset
 GO bn_encode_url

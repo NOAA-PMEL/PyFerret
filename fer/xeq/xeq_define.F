@@ -203,6 +203,8 @@
 *                   in line_name_orig for CANCEL MODE UPCASE
 * V62 *acm*  3/09  Fix bug 1645: Define an axis with a very large number of NPOINTS.
 *                  This works if the value of NPOINTS can be specified as an integer.
+* V64 *acm* 11/09  Fix to bug 1511 slightly wrong: dont use line_t0 from
+*                  a previous definition of a time axis.
 
 
 	include	'tmap_errors.parm'
@@ -1295,17 +1297,9 @@ C /units=months  is 1/12 of the length of the year
         IF (orient .EQ. t_dim) THEN
            IF (new_att_units .NE. ' ') THEN
               i1 = TM_LENSTR1(new_att_units)
-              new_att_units = new_att_units(1:i1)//' since ' 
-     .            // new_att_t0
-              IF (new_att_t0 .EQ. ' ') 
+              IF (new_att_t0 .NE. ' ') 
      .            new_att_units = new_att_units(1:i1)//' since ' 
-     .            // line_t0(iline)
-           ELSE
-              IF (new_att_t0 .NE. ' ') THEN
-                 i1 = TM_LENSTR1(line_units(iline))
-                 new_att_units = line_units(iline)(1:i1)//' since ' 
      .            // new_att_t0
-              ENDIF
            ENDIF
         ENDIF
 

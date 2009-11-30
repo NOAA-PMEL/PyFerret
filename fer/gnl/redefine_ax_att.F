@@ -46,6 +46,8 @@
 * v604 *acm* 7/07 increase length of ds_name
 * v616 *acm* 1/09 Fix ticket 1614: Needed to set the attname to modulo for the block,
 *                 if new_modulo is false then remove attribute from axis
+* V64  *acm*11/09 The ENDIF for name-is-an-axis-of-dset was in the wrong place:
+*                 check for changes in all the attribs.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -96,14 +98,13 @@ c    see if name exists as an axis name.
 
          CALL CD_GET_VAR_ID (dset, name, varid, status)
 
-         IF (status .EQ. ferr_ok) THEN  
+         IF (status .EQ. ferr_ok) THEN  ! name is an axis name in the dataset
+
 ! name is a variable; is it a coordinate variable of the dataset?
 
             CALL CD_GET_VAR_INFO (dset, varid, name, vartype, 
      .          nvdims, vdims, nvatts, coordvar, all_outflag, status) 
             IF (.NOT. coordvar) goto 100
-
-         ENDIF
 
 c ... If units attribute already exists, change it; otherwise add new
 c     If new units not defined, remove units attribute.
@@ -309,6 +310,8 @@ c     or write modulo length.
                CALL CD_DELETE_ATTRIBUTE (dset, varid, attname, status)
             ENDIF
          ENDIF
+
+        ENDIF  ! name is an axis name in the dataset
 
   100 CONTINUE   
       

@@ -123,6 +123,10 @@
               
 	      vlen = TM_LENSTR1(varname)
 	      DO 100 iatt = 1, ngatts
+                 CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, attname, 
+     .              status )
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
+     .              attype, attlen, attoutflag, status )
                  CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
      .              attype, attlen, attoutflag, status )
 

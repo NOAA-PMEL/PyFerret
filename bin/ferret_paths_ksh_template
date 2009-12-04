@@ -73,6 +73,7 @@
 
    export TMAP="$FER_DIR/fmt"
    export PLOTFONTS="$FER_DIR/ppl/fonts"
+   export FER_FONTS="$FER_DIR/ppl/fonts"
    export SPECTRA="$FER_DIR/ppl"         # for old ferret versions
    export FER_PALETTE=". $FER_DIR/ppl"       # palette search list
 

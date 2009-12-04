@@ -72,6 +72,7 @@
 
    setenv TMAP      	  "$FER_DIR/fmt"
    setenv PLOTFONTS 	  "$FER_DIR/ppl/fonts"
+   setenv FER_FONTS 	  "$FER_DIR/ppl/fonts"
    setenv SPECTRA   	  "$FER_DIR/ppl"         # for old ferret versions
    setenv FER_PALETTE 	  ". $FER_DIR/ppl"       # palette search list
 

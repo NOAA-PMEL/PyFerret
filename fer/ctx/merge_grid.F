@@ -106,6 +106,8 @@
 * V520  *sh* 6/00 - complete the support for uvlim_hidden. Was treated just
 *		    like uvlim_irrelevant in determining uvar_given
 * V533  *sh* 7/01 - determine data type of result
+* V64+ *acm 12/09 - Fix bug 1710: In the grid axis selection table, ax_choice(4,1)
+*                   changed from Not Possible to Not Applicable
 
 	include 'tmap_dims.parm'
 	include 'grid_chg_fcns.parm'
@@ -174,7 +176,7 @@
 *           ------------------------------------------
 *3.NOT.given| NA   |  NA  | NA  | NA  |  NA   | WRN2 |
 *           ------------------------------------------
-*4  normal  | ***  |  *** | EXP | EXP |  NA*  | IMP  |   (NA* was *** pre 1/97)
+*4  normal  | NA** |  *** | EXP | EXP |  NA*  | IMP  | (NA* was *** pre 1/97, NA** was *** pre 12/09)
 *           ------------------------------------------
 *5  irrelev | EXP  |  EXP | EXP | EXP |  IMP  | IMP  |   (new row, 1/97)
 *           ------------------------------------------
@@ -227,9 +229,10 @@
 	DATA	(ax_choice(i,1),i=1,6) / EXP,NP ,EXP,EXP, IMP,IMP  /,
      .		(ax_choice(i,2),i=1,6) / NP ,NA ,NA ,WRN1,IMP,IMP  /,
      .		(ax_choice(i,3),i=1,6) / NA ,NA ,NA ,NA , NA ,WRN2 /,  
-     .		(ax_choice(i,4),i=1,6) / NP ,NP ,EXP,EXP, NA ,IMP  /,
+     .		(ax_choice(i,4),i=1,6) / NA ,NP ,EXP,EXP, NA ,IMP  /,
      .		(ax_choice(i,5),i=1,6) / EXP,EXP,EXP,EXP, IMP,IMP  /
-! pre 1/97 .	(ax_choice(i,4),i=1,6) / NP , NP, EXP, EXP,  NP , IMP  /
+! pre 1/97 .	(ax_choice(i,4),i=1,6) / NP , NP, EXP, EXP, NP , IMP  /
+! pre 12/09.	(ax_choice(i,4),i=1,6) / NP , NP ,EXP, EXP, NA ,IMP  /,
 
 	DATA	(joint_match(i,0),i=0,3) /  gnl,   lo, lohi, gnl  /,
      .		(joint_match(i,1),i=0,3) /   lo,   lo, lohi, lo   /,

@@ -1,0 +1,5 @@
+! bn65_bug_fixes.jnl
+! Fixes that go into v6.5 release
+
+GO bn_reset
+GO err64_very_small_latlon

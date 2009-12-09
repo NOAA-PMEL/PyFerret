@@ -44,8 +44,6 @@ foreach plt_file ($plt_files)
        display -geometry 640x480+200+200 $plt_file.ps &
        display -geometry 640x480+200+200 $plt_file.meta.ps  
        echo ' '
-       echo -n 'continue? (y or n)'
-       set ans =($<)
 
        set err_plt = 1
     endif
@@ -64,8 +62,6 @@ foreach gif_file ($gif_files)
        display -geometry 640x480+200+200  $gif_file &
        display -geometry 640x480+200+200  metafile_masters_v61/$gif_file
        echo ' '
-       echo -n 'continue? (y or n)'
-       set ans =($<)
 
        set err_gif = 1
     endif
@@ -83,8 +79,6 @@ foreach ps_file ($ps_files)
        display -geometry 640x480+200+200 $ps_file &
        display -geometry 640x480+200+200 metafile_masters_v61/$ps_file
        echo ' '
-       echo -n 'continue? (y or n)'
-       set ans =($<)
 
        set err_ps = 1
     endif
@@ -107,8 +101,6 @@ foreach mb_file ($mb_files)
        display -geometry 640x480+200+200 diff_$mb_file.ps &
        display -geometry 640x480+200+200diff_$mb_file.ps
        echo ' '
-       echo -n 'continue? (y or n)'
-       set ans =($<)
    endif
 end
 

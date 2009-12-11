@@ -40,7 +40,6 @@
 * revision 0.1 - 9/12/88 - reduced number of defined colors to 10
 * V200: 12/21/89
 * V540: *sh* 9/01 - added xwhitelo, ywhitelo, ...
-* V561: *acm*5/08 - added transparent (for gif-mode frame)
 * V63  *acm* 10/09 Changes for gfortran build
 
 	include 'ferret.parm'

@@ -50,6 +50,7 @@
 * V500: 6/99 *sh* - added saved time axis information
 * V540: 9/01 *sh* - added vp_by_axis
 * V63  *acm* 10/09 Changes for gfortran build
+* V54+: *acm*5/08 - added transparent (from xplot_setup)
 
 	include	'ferret.parm'
 	include	'xplot_state.cmn'

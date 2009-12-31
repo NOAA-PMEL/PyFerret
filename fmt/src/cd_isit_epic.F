@@ -48,9 +48,6 @@
 * revision 0.0 - 2/93
 * V600 *ACM* attribute control. 
 *             Replace NCVID with CD_GET_VAR_ID
-*             Change call to CD_GET_ATTRIB
-*             CD_GET_ATTVAL replaced by CD_GET_ATTRIB, which now returns  
-*               strings or real values according to attrib type
 
 * argument definitions:
 *	dset	- dataset pointer for already opened CDF file

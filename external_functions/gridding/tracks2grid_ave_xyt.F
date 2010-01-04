@@ -518,8 +518,8 @@ C  Get coordinates of output axes.
 
          CALL pickoutxytcv (obs_only, arg_1, arg_2, arg_3, arg_4, arg_5,
      .           n, vv, xx, yy, tt, ncc)
-         IF (xx .EQ. bad_flag(ARG1) .OR. yy .EQ. bad_flag(ARG2) .OR. 
-     .          tt .EQ. bad_flag(ARG3) .OR. cc .EQ. bad_flag(ARG4) ) GOTO 300
+         IF (vv .EQ. bad_flag(ARG1) .OR. xx .EQ. bad_flag(ARG2) .OR. 
+     .          yy .EQ. bad_flag(ARG3) .OR. tt .EQ. bad_flag(ARG4) ) GOTO 300
 
          IF (ncc .NE. icruise) THEN
 	    
@@ -683,9 +683,9 @@ c         ENDIF
       SUBROUTINE pickoutxytcv (obs_only, vars, alon, alat, atimes,
      .   cruises, n, vv, xx, yy, tt, ncc)
 
-*  Called from the scatter*  gridding functins.
-*  Pick out nth item from alon and alat, which are really 4-dimensioned arrays
-*  with normal axes on three of the four axes.
+*  Called from the scatter* family of gridding functions.
+*  Pick out nth item from a set of arrays, which are really 
+*  4-dimensioned arrays with normal axes on three of the four axes.
 
       REAL alon(*), alat(*), atimes(*), cruises(*), vars(*)
       REAL xx, yy, tt, vv

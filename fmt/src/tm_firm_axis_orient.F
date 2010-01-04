@@ -74,11 +74,6 @@
 * initialize
 	units = line_unit_code(axis)
 
-!* get the vital statistics of the axis
-!      CALL NCVINQ(cdfid, ivar, vname, vartype, nvdims, vdims,
-!     .            nvatts,cdfstat)
-!      IF (cdfstat.NE.NCNOERR) GOTO 5100
-
 * try to determine the orientation of the axis
 
 	IF ( units .LT. 0 ) THEN

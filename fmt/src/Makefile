@@ -38,7 +38,6 @@ OBJS= $(SRCS_F:.F=.o) $(SRCS_C:.c=.o)
 
 LIBLOC=../../lib
 $(LIBLOC)/tmap_lib.a:	$(OBJS)
-		- mv $(LIBLOC)/tmap_lib.a $(LIBLOC)/tmap_lib.a.pre_`date +%m%d%y`
 		ar r $(LIBLOC)/tmap_lib.a $(OBJS)
 		$(RANLIB) $(LIBLOC)/tmap_lib.a
 

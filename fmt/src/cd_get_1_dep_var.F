@@ -57,6 +57,8 @@
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * V600  6/06 *acm*   CD_GET_VAR_ATT_INFO uses varid and attid rather than attname.
 * V62   2/09 *acm* - allow for string-type missing and fill attributes to be read.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -217,7 +219,7 @@
      .                 ivcd, attid, aname, attype, attlen, attoutflag, 
      .                 istat)
      
-             IF (attype .NE. NCCHAR) THEN
+             IF (attype .NE. NF_CHAR) THEN
                 got_bad = NC_GET_ATTRIB_FLOAT( dset, ivcd, 
      .                'missing_value',
      .                do_warn, vname(:vlen), attlen,
@@ -237,7 +239,7 @@
      .                 ivcd, attid, aname, attype, attlen, attoutflag, 
      .                 istat)
      
-             IF (attype .NE. NCCHAR) THEN
+             IF (attype .NE. NF_CHAR) THEN
                 got_missing = NC_GET_ATTRIB_FLOAT( dset, ivcd, 
      .                '_FillValue',
      .                do_warn, vname(:vlen), attlen,
@@ -251,7 +253,7 @@
 
 * ... need to unpack the missing_value flag?
 *     (note that the netCDF library insists on _FillValue's data type)
-             IF ( vartyp.LE.NCLONG .AND. cd_scaled(ivtm) ) THEN
+             IF ( vartyp.LE.NF_INT .AND. cd_scaled(ivtm) ) THEN
                 IF ( got_bad ) THEN
                    CALL CD_GET_VAR_ATT_ID (dset, ivcd, 'missing_value', 
      .                  attid, istat)

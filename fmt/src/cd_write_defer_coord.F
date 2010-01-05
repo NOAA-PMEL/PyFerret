@@ -46,6 +46,8 @@
 *	    -  1/01 bug fix -- upper box bound of last coord wrong
 * V570 *acm*   5/04 For irregular axes, write bounds coordinate variable, 
 *                   dimensioned 2xN
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 
 * argument declarations:
@@ -92,16 +94,18 @@
                DO 100 i = i1000, hilim
  100           buff(i-i1000+1) = TM_WORLD(i, dfr_grid(iax), 
      .			              dfr_idim(iax), box_loc)
-               CALL NCVPT(cdfid, dfr_cdaxis(iax), i1000-dfr_lo(iax)+1,
-     .		       hilim-i1000+1, buff, cdfstat)
+               cdfstat = NF_PUT_VARA_DOUBLE (cdfid, dfr_cdaxis(iax), 
+     .		       i1000-dfr_lo(iax)+1, hilim-i1000+1, buff)
+               IF (cdfstat .NE. NF_NOERR) GOTO 5010
  110         CONTINUE
 
 * ... for edge defn tag on the upper bound of the top grid box
 	     IF (dfr_axis_type(iax) .EQ. pcd_defer_edges) THEN
                 buff(1) = TM_WORLD(dfr_hi(iax), dfr_grid(iax), 
      .			       dfr_idim(iax), box_hi_lim)
-               CALL NCVPT1(cdfid, dfr_cdaxis(iax),
-     .			dfr_hi(iax)-dfr_lo(iax)+2, buff, cdfstat)
+               cdfstat = NF_PUT_VAR1_DOUBLE (cdfid, dfr_cdaxis(iax),
+     .			dfr_hi(iax)-dfr_lo(iax)+2, buff)
+               IF (cdfstat .NE. NF_NOERR) GOTO 5010
 	     ENDIF
 
 * Write bounds as N by 2, 1000 sets buffered at a time.
@@ -123,8 +127,9 @@
                 start(2) = i1000-dfr_lo(iax)+1
                 count(2) =  hilim-i1000+1
 
-                CALL NCVPT(cdfid, dfr_cdaxis(iax), start,
-     .		          count, buff, cdfstat)
+                cdfstat = NF_PUT_VARA_DOUBLE (cdfid, dfr_cdaxis(iax), start,
+     .		          count, buff)
+               IF (cdfstat .NE. NF_NOERR) GOTO 5010
  210           CONTINUE
            ENDIF
 
@@ -133,4 +138,6 @@
 	dfr_num = 0   ! just house-keeping to be on the safe side
 
 	RETURN
+ 5010   status = cdfstat
+        RETURN
 	END

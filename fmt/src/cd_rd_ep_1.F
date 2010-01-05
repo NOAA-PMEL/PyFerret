@@ -46,6 +46,8 @@
 *		Note that fractional seconds are lost!
 * V530 1/01 *acm* add calendar_id in TM_BREAK_DATE, TM_SECS_FROM_BC
 *		  calendar is assumed Gregorian for epic data
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -63,15 +65,9 @@
       REAL*8  dval
       CHARACTER*(*) t0
 
-#ifdef unix
       include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
-#else
-      INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-      INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
 
 * internal variable declarations:
       INTEGER jday, msec, cdfstat, mon, day, yr, hour, min,
@@ -88,12 +84,14 @@
       IF (status .NE. merr_ok) GO TO 5000
 
 * read the 2 integer values
-      CALL NCVGT1( cdfid, t1id, index, jday, cdfstat )
-      IF ( cdfstat .NE. NCNOERR ) CALL TM_ERRMSG
+      cdfstat = NF_GET_VAR1_DOUBLE(cdfid, t1id, index, jday)
+
+      IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_RD_EP_TIME', cdfid, t1id,
      .       'EPIC time', no_errstring, *5000 )
-      CALL NCVGT1( cdfid, t2id, index, msec, cdfstat )
-      IF ( cdfstat .NE. NCNOERR ) CALL TM_ERRMSG
+      cdfstat = NF_GET_VAR1_DOUBLE(cdfid, t2id, index, msec)
+
+      IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_RD_EP_TIME', cdfid, t2id,
      .       'EPIC time2', no_errstring, *5000 )
 

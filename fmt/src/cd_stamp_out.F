@@ -43,6 +43,8 @@
 * revision 0.0 - 3/92
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *       append  - logical control to create or append
@@ -65,8 +67,7 @@
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
       INTEGER TM_LENSTR1, STR_SAME, hlen, slen
-      LOGICAL CD_GET_ATTRIB, got_it,
-     .        do_warn, append_flag
+      LOGICAL CD_GET_ATTRIB, got_it, do_warn, append_flag
       PARAMETER (do_warn = .TRUE. )
       CHARACTER*2048 history
 
@@ -75,8 +76,7 @@
 
 * update (or create) history record
       got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'history',
-     .                     .NOT.do_warn, ' ', history, 2048 )
-      hlen = TM_LENSTR1( history )
+     .                     .NOT.do_warn, ' ', history, hlen, 2048 )
 
 * is the last history stamp the same as this ?
       IF ( hlen .GE. slen ) THEN

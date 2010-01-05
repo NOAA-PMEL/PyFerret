@@ -68,6 +68,8 @@
 * V602 *acm*12/06 - Bug 1478: cd_isit_recdim needs mode_upcase_output.
 * V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXISNAMES so that child axis names
 *                    arent written. They can get too long for OPeNDAP library calls
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -125,14 +127,15 @@
 * has the variable already been created ?
       vname = varname    ! Ultrix f77 is fussy about CHAR*(*) vars
       vlen = TM_LENSTR1( vname )
-      varid = NCVID( cdfid, vname(:vlen), cdfstat )
-      itsa_strvar = type .EQ. NCCHAR
+      cdfstat = NF_INQ_VARID(cdfid, vname(:vlen), varid)
+
+      itsa_strvar = type .EQ. NF_CHAR
 
 * already exists: limited consistency check - size of each axis, only
-      new = cdfstat .NE. NCNOERR
+      new = cdfstat .NE. NF_NOERR
       IF ( .NOT.new ) THEN
-         CALL NCVINQ(cdfid, varid, vname, vartyp, nvdims, vdims,
-     .                 nvatts,cdfstat)
+         cdfstat = NF_INQ_VAR (cdfid, varid, vname, vartyp, 
+     .                 nvdims, vdims, nvatts)
          IF ( CD_USE_RECDIM( cdfid, varid, status ) ) THEN
             recdim = t_dim
          ELSE
@@ -279,8 +282,8 @@
             cdfname = lname
          ENDIF
          nlen = TM_LENSTR1( cdfname )
-         dimid(dims) = NCDID( cdfid, cdfname(:nlen), cdfstat )
-         IF ( cdfstat .NE. NCNOERR ) GOTO 5200  ! it must already exist
+         cdfstat = NF_INQ_DIMID ( cdfid, cdfname(:nlen), dimid(dims) )
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5200  ! it must already exist
  300  CONTINUE
 
 * put CDF into define mode so attributes can be written
@@ -288,8 +291,8 @@
       IF ( status .NE. merr_ok ) RETURN
 
 * create the new variable
-      varid = NCVDEF(cdfid, vname(:vlen), type, dims, dimid, cdfstat)
-      IF ( cdfstat .NE. NCNOERR ) GOTO 5400
+      cdfstat = NF_DEF_VAR(cdfid, vname(:vlen), type, dims, dimid, varid)
+      IF ( cdfstat .NE. NF_NOERR ) GOTO 5400
 
 * if the "unlimited" record dimension is in use place no limits on that axis
       DO 400 idim = 1, 4
@@ -309,12 +312,13 @@
 * assign attributes if this is a hyperslab of the parent grid
       IF ( itsa_slab .AND. enhead) THEN
          glen = TM_LENSTR1( gname )
-         CALL NCAPTC( cdfid, varid, 'parent_grid', NCCHAR, glen,
-     .                gname(:glen), cdfstat )
-         CALL NCAPT( cdfid, varid, 'slab_min_index', NCLONG, 4,
-     .                lo2, cdfstat )
-         CALL NCAPT( cdfid, varid, 'slab_max_index', NCLONG, 4,
-     .                hi2, cdfstat )
+
+         cdfstat = NF_PUT_ATT_TEXT( cdfid, varid, 'parent_grid', glen,
+     .                gname(:glen) )
+         cdfstat = NF_PUT_ATT_INT( cdfid, varid, 'slab_min_index', 
+     .                NF_INT, 4, lo2 )
+         cdfstat = NF_PUT_ATT_INT( cdfid, varid, 'slab_max_index', 
+     .                NF_INT, 4, hi2 )
       ENDIF
 
 * successful completion

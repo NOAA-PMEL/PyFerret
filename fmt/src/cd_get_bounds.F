@@ -50,9 +50,11 @@
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
 * V500 4/99 *kob*: increase size of vname and buff from 24 to 64
-* V533 *sh* 6/01 - add support for string variables (NCCHAR)
+* V533 *sh* 6/01 - add support for string variables (NF_CHAR)
 * V500 4/99 *kob*: increase size of vname and buff from 24 to 64
 * V552 *acm* 5/03   increase vname and buff to 128 chars 
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 
 * argument definitions:
@@ -96,10 +98,10 @@
 * changed it to .false.  2jun94
 	CD_GET_BOUNDS = .FALSE.     !in case of error exit
 * get the vital statistics for the CDF file
-        CALL NCINQ( cdfid, ndims, nvars, ngatts, recdim, cdfstat )
+        cdfstat = NF_INQ( cdfid, ndims, nvars, ngatts, recdim)
 
 * if it is a character variable, then the first dimension of it is the strlen
-        IF (vartyp .EQ. NCCHAR) THEN
+        IF (vartyp .EQ. NF_CHAR) THEN
 	   DO idim = 1, 5
 	      vdims(idim) = vdims(idim+1)
 	   ENDDO
@@ -107,8 +109,8 @@
 	ENDIF
 
 * get the vital statistics for this variable
-        CALL NCVINQ(cdfid, ivar, vname, vartyp, nvdim, vdims,
-     .              nvatts,cdfstat)
+        cdfstat = NF_INQ_VAR (cdfid, ivar, vname, vartyp, nvdim,
+     .              vdims, nvatts)
         vlen = TM_LENSTR1(vname)
 
 
@@ -123,6 +125,7 @@
 * get the upper bounds
         got_hi = CD_GET_ATTVAL( cdfid, ivar, 'slab_max_index',
      .           do_warn,vname(:vlen),r4_hi, 4, vbackhi )
+
         IF ( got_hi ) THEN
           DO 200 idim = 1, 4
  200      hi(idim) = r4_hi(idim) !fp->int
@@ -143,7 +146,7 @@
            ENDIF
  300    CONTINUE
         IF ( tmrecdim .NE. 0 ) THEN
-           CALL NCDINQ( cdfid, recdim, buff, npts, cdfstat )
+	   cdfstat = NF_INQ_DIM( cdfid, recdim, buff, npts )
            lo(tmrecdim) = 1
            hi(tmrecdim) = npts
         ENDIF

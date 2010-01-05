@@ -82,6 +82,8 @@
 *                  did this for user variables.
 * V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXISNAMES so that child axis names
 *                    arent written. They can get too long for OPeNDAP library calls
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -189,29 +191,19 @@
 * *kob* 12/9/97 - use new paramater maxchildlen in length check
          nlen = MIN(nlen,maxchildlen)
       ENDIF
-      dimid = NCDID( cdfid, name(:nlen), cdfstat )
+      cdfstat = NF_INQ_DIMID( cdfid, name(:nlen), dimid)
 
 * already defined ? (limited consistency checking)
-      IF ( cdfstat .EQ. NCNOERR ) THEN
+      IF ( cdfstat .EQ. NF_NOERR ) THEN
 * ... is there a coordinate variable by the same name ?
-         axid = NCVID( cdfid, name(:nlen), cdfstat )
+         cdfstat = NF_INQ_VARID( cdfid, name(:nlen), axid )
 
-         IF ( cdfstat .NE. NCNOERR ) GOTO 5300
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
          IF ( .NOT.recdim ) THEN
 * ... check the length
             slen = CD_AXLEN( cdfid, dimid, status )
             IF ( status .NE. merr_ok ) GOTO 5900
             IF ( axlen .NE. slen ) GOTO 5100
-!* ... check the first value on the axis for consistency
-! (check fails with "Attribute not found" in CD_RD_R8_1 - not debugged *sh*)
-! (also note: this may require a mode change 10/92)
-!            CALL NCVINQ(cdfid, axid, name, vartype, nvdims, vdims,
-!     .                 nvatts,cdfstat)
-!            CALL CD_RD_R8_1( cdfid, axid,   1, vartype, name(:nlen),
-!     .                        val8_cdf, status )
-!            IF ( status .NE. merr_ok ) GOTO 5900
-!            val8_tmap = TM_WORLD( lo, grid, idim, box_middle )
-!            IF ( SNGL(val8_cdf) .NE. SNGL(val8_tmap) ) GOTO 5100
          ENDIF
          GOTO 1000
       ENDIF
@@ -222,29 +214,29 @@
 
 * define the dimension
       IF ( recdim ) THEN
-         dimid = NCDDEF( cdfid, name(:nlen), NCUNLIM, cdfstat )
+         cdfstat = NF_DEF_DIM( cdfid, name(:nlen), NF_UNLIMITED, dimid )
 !      ELSEIF ( condensed ) THEN
-!         dimid = NCDDEF( cdfid, name(:nlen), 2, cdfstat )
+!         cdfstat = NF_DEF_DIM( cdfid, name(:nlen), 2, dimid )
       ELSE
-         dimid = NCDDEF( cdfid, name(:nlen), axlen, cdfstat )
+         cdfstat = NF_DEF_DIM( cdfid, name(:nlen), axlen, dimid )
+
       ENDIF
-      IF ( cdfstat .NE. NCNOERR ) GOTO 5200
+      IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
 
 * create the coordinate variable (12/92 -> double precision)
-      axid = NCVDEF(cdfid, name(:nlen), NCDOUBLE, 1, dimid, cdfstat)
-      IF ( cdfstat .NE. NCNOERR ) GOTO 5200
+      cdfstat = NF_DEF_VAR(cdfid, name(:nlen), NF_DOUBLE, 1, dimid, axid)
+      IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
 
 * check: can we get the coord var id back??
-         newid = NCVID( cdfid, name(:nlen), cdfstat )
+         cdfstat = NF_INQ_VARID( cdfid, name(:nlen), newid )
 
 * assign its attributes
       IF (ax_type .EQ. pcdf_child_span) THEN
-         CALL NCAPTC( cdfid, axid, 'child_axis', NCCHAR, 1, ' ',
-     .        cdfstat )
+         cdfstat = NF_PUT_ATT_TEXT (cdfid, axid, 'child_axis', 1, ' ')
       ENDIF
 !      IF ( condensed ) THEN
-!         CALL NCAPT( cdfid, axid, 'true_size', NCLONG, 1, npts,
-!     .        cdfstat )
+!         cdfstat = NF_PUT_ATT_DOUBLE (cdfid, axid, 'true_size',
+!     .         1, npts)
 !      ENDIF
 
       got_modulo = .FALSE.
@@ -301,10 +293,10 @@
 
             IF ( MATCH_NAME (attname,  TM_LENSTR1(attname), 
      .           'MODULO', 6) ) THEN
-               IF (attype .NE. NCCHAR .AND. vals(1) .EQ. 0.) THEN
+               IF (attype .NE. NF_CHAR .AND. vals(1) .EQ. 0.) THEN
 ! Write line_modulo_len 
                   vals(1) = line_modulo_len(iaxis)
-                  IF (attoutflag .EQ. 1) attype = NCFLOAT
+                  IF (attoutflag .EQ. 1) attype = NF_FLOAT
                ENDIF
             ENDIF
 
@@ -313,7 +305,7 @@
      .           'POINT_SPACING', 13) ) THEN
                got_spacing = .TRUE.
             ELSE
-               IF (attype .EQ. NCCHAR .AND. attoutflag .EQ. 1) THEN
+               IF (attype .EQ. NF_CHAR .AND. attoutflag .EQ. 1) THEN
                   llen = TM_LENSTR1(buff)
                   CALL CD_WRITE_ATTRIB (cdfid, name(:nlen), attname,
      .                               buff(:llen), .FALSE., status )
@@ -398,8 +390,8 @@
         ENDIF
 
         IF (attoutflag .EQ. 1) 
-     .     CALL NCAPTC( cdfid, axid, attname, NCCHAR, slen,
-     .        	      units(:slen), cdfstat )
+     .     cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       slen, units(:slen) )
 
       ENDIF
       IF ( idim .EQ. t_dim .AND. (.NOT.got_calendar) ) THEN                  ! 4/93 update
@@ -426,8 +418,8 @@
             ENDIF
 
             IF (attoutflag .EQ. 1) 
-     .         CALL NCAPTC( cdfid, axid, attname, NCCHAR, slen,
-     .           datebuff(:slen), cdfstat )
+     .         cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       slen, datebuff(:slen) )
 	ENDIF
 
 !  Write the calendar name
@@ -445,8 +437,8 @@
           ENDIF
 
           IF (attoutflag .EQ. 1) 
-     .      CALL NCAPTC( cdfid, axid, attname, NCCHAR, slen,
-     .        	      line_cal_name(iaxis)(:slen), cdfstat )
+     .      cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       slen, line_cal_name(iaxis)(:slen))
         ENDIF
       ENDIF
 
@@ -462,7 +454,8 @@
               attoutflag = 1
            ENDIF
            IF (attoutflag .EQ. 1) 
-     .       CALL NCAPTC( cdfid, axid, attname, NCCHAR, 1, ' ', cdfstat )
+     .       cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       1, ' ' )
 	 ELSE
            attname = 'modulo' 
            IF (varid .GT. 0) THEN
@@ -473,8 +466,8 @@
               attoutflag = 1
            ENDIF
            IF (attoutflag .EQ. 1) 
-     .       CALL NCAPT( cdfid, axid, attname, NCDOUBLE, 1,
-     .		       line_modulo_len(iaxis), cdfstat )
+     .      cdfstat = NF_PUT_ATT_DOUBLE( cdfid, axid, attname,
+     .        	       NF_DOUBLE, 1, line_modulo_len(iaxis) )
 	 ENDIF
 
 ! Check if user want to write modulo=false to the file
@@ -490,7 +483,7 @@
      .               do_warn, name_in, maxlen, attlen, attoutflag, 
      .               buff, vals)
 
-            IF (attype .EQ. NCCHAR .AND. attoutflag .EQ. 1) THEN
+            IF (attype .EQ. NF_CHAR .AND. attoutflag .EQ. 1) THEN
                llen = TM_LENSTR1(buff)
                CALL CD_WRITE_ATTRIB(cdfid, name(:nlen), attname,
      .                               'false', .FALSE., status )
@@ -513,8 +506,8 @@
               attoutflag = 1
            ENDIF
            IF (attoutflag .EQ. 1) 
-     .       CALL NCAPTC( cdfid, axid, attname, NCCHAR, 4,
-     .                'down', cdfstat )
+     .      cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       4, 'down' )
       ENDIF
 
 * record axis (time, usually) doesn't get coordinate spacing or any
@@ -534,8 +527,8 @@
               attoutflag = 1
            ENDIF
            IF (attoutflag .EQ. 1) 
-     .       CALL NCAPTC( cdfid, axid, attname, NCCHAR, 4,
-     .             'even', cdfstat )
+     .      cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       4, 'even' )
         ELSE
 * sub-span axis may not have irregular spacing just cuz parent does
 * 12/00 NO. ... regular appearing coordinates are not necessarily regular --
@@ -553,8 +546,8 @@
                  attoutflag = 1
               ENDIF
               IF (attoutflag .EQ. 1) 
-     .          CALL NCAPTC( cdfid, axid, attname, NCCHAR, 6,
-     .             'uneven', cdfstat )
+     .      cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       6, 'uneven' )
            ENDIF
         ENDIF
         ENDIF  ! got_spacing
@@ -579,22 +572,21 @@
               attoutflag = 1
            ENDIF
             
-          slen = TM_LENSTR1( 'X' )
           IF (idim .eq. x_dim) THEN
-             IF (attoutflag .EQ. 1) CALL NCAPTC( cdfid, axid, 
-     .        	      attname, NCCHAR, slen, 'X', cdfstat )
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
+     .        	     ( cdfid, axid, attname, 1, 'X' )
           ENDIF
           IF (idim .eq. y_dim) THEN
-             IF (attoutflag .EQ. 1) CALL NCAPTC( cdfid, axid, 
-     .        	      attname, NCCHAR, slen, 'Y', cdfstat )
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
+     .        	     ( cdfid, axid, attname, 1, 'Y' )
           ENDIF
           IF (idim .eq. z_dim) THEN
-             IF (attoutflag .EQ. 1) CALL NCAPTC( cdfid, axid, 
-     .        	      attname, NCCHAR, slen, 'Z', cdfstat )
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
+     .        	     ( cdfid, axid, attname, 1, 'Z' )
           ENDIF
           IF (idim .eq. t_dim) THEN
-             IF (attoutflag .EQ. 1) CALL NCAPTC( cdfid, axid, 
-     .        	      attname, NCCHAR, slen, 'T', cdfstat )
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
+     .        	     ( cdfid, axid, attname, 1, 'T' )
           ENDIF
        ENDIF
 
@@ -657,15 +649,16 @@
 
          dim2d(2) = dimid    ! Dimension already defined above for coordinates
 
-         IF ( cdfstat .NE. NCNOERR ) GOTO 5200
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
 
 * ... second dimension of bounds coordinate variable is 2
          dim2d(1) = CD_WRITE_BNDSDIM(cdfid, status)
 
 * ... create the bounds variable, if it has not been created.
-         IF (bndid .EQ. -1) 
-     .    bndid = NCVDEF(cdfid, name(:elen), NCDOUBLE, 2, dim2d, cdfstat)
-         IF ( cdfstat .NE. NCNOERR ) GOTO 5220
+         IF (bndid .EQ. -1) cdfstat = NF_DEF_VAR(cdfid, 
+     .    name(:elen), NF_DOUBLE, 2, dim2d, bndid)
+
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5220
 
 * ... point to it from axis coordinates definition
 
@@ -683,8 +676,8 @@
          ENDIF
 
          IF (attoutflag .EQ. 1) THEN
-            CALL NCAPTC( cdfid, axid, attname, NCCHAR, elen,
-     .                name(:elen), cdfstat )
+            cdfstat = NF_PUT_ATT_TEXT  (cdfid, axid, attname,
+     .                elen, name(:elen))
 
 * set up for deferred writing of bounds coordinate values (12/00)
 * Record axis and bounds are written when variable written.
@@ -708,8 +701,9 @@
 
          name = name(:nlen)//'edges'
          elen = nlen + 5
-         dimid = NCDDEF( cdfid, name(:elen), axlen+1, cdfstat )
-         edgid = NCVDEF(cdfid, name(:elen), NCDOUBLE, 1, dimid, cdfstat)
+         cdfstat = NF_DEF_DIM( cdfid, name(:elen), axlen+1, dimid )
+         cdfstat = NF_DEF_VAR(cdfid, name(:elen), NF_DOUBLE, 1, 
+     .           dimid, edgid)
          attname = 'edges' 
          IF (varid .GT. 0) THEN
             CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
@@ -724,10 +718,10 @@
             attoutflag = 1
          ENDIF
          IF (attoutflag .EQ. 1) THEN
-            CALL NCAPTC( cdfid, edgid, attname, NCCHAR, 1, ' ', cdfstat )
+            cdfstat = NF_PUT_ATT_TEXT( cdfid, edgid, attname, 1, ' ' )
 * ... point to it from axis coordinates definition
-            CALL NCAPTC( cdfid, axid, attname, NCCHAR, elen,
-     .                name(:elen), cdfstat )
+            cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname, elen,
+     .                name(:elen) )
 
 * set up for deferref writing of edge coordinate values (12/00)
 	    CALL CD_DEFER_COORD_WRITE(edgid, grid, idim, lo, hi,

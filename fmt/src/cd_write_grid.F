@@ -55,6 +55,8 @@
 *                    output axis name.
 * V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXISNAMES so that child axis names
 *                    arent written. They can get too long for OPeNDAP library calls
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -102,9 +104,10 @@
       IF ( status .NE. merr_ok ) RETURN
 
 * create "grid_definition" dimension name if not already in the file
-      defdim = NCDID( cdfid, 'grid_definition', cdfstat )
-      IF ( cdfstat .NE. NCNOERR ) defdim =
-     .     NCDDEF( cdfid, 'grid_definition', 1, cdfstat )
+       	cdfstat = NF_INQ_DIMID( cdfid, 'grid_definition', defdim)
+
+      IF ( cdfstat .NE. NF_NOERR ) cdfstat = NF_DEF_DIM 
+     .     ( cdfid, 'grid_definition', 1, defdim )
 
 * create an output grid name that reflects axes which have been averaged, etc.
 * and a string with a list of the axis names (starting w/ 2 blanks)
@@ -147,16 +150,16 @@
  50   CONTINUE
 
 * does this grid already exist ? (no consistency check if so)
-      defid = NCVID( cdfid, gname(:glen), cdfstat )
-      IF ( cdfstat .EQ. NCNOERR ) GOTO 1000
+      cdfstat = NF_INQ_VARID  ( cdfid, gname(:glen), defid )
+      IF ( cdfstat .EQ. NF_NOERR ) GOTO 1000
 
 * create a dummy variable for this grid definition
-      defid = NCVDEF( cdfid, gname(:glen), NCCHAR, 1,
-     .                defdim, cdfstat )
+      cdfstat = NF_DEF_VAR ( cdfid, gname(:glen), NF_CHAR, 1,
+     .                defdim, defid )
 
 * write the axis list as an attribute of the grid
-      CALL NCAPTC( cdfid, defid, 'axes', NCCHAR, nlen-2,
-     .             names(3:), cdfstat )
+      cdfstat = NF_PUT_ATT_TEXT ( cdfid, defid, 'axes', nlen-2,
+     .             names(3:))
 
 * create the parent axes
  100  DO 200 idim = 1, 4

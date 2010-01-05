@@ -1,4 +1,4 @@
-	SUBROUTINE CD_DODS_CONTROL ( dset, cdfid, remote_dods_id, status )
+	SUBROUTINE CD_DODS_CONTROL ( dset, cdfid, remote_dods_id, cdfstat )
 
 *
 *
@@ -46,17 +46,19 @@
 * Linux Port - 6/97 - reorder if def logic when setting cd_data_type to 
 *		      BYTE or INTEGER*1
 *		    - use a cpp include for tmap_dset.parm
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
+
 * argument definitions:
 *    dset - data set number
 *    cdfid -  NetCDF open id for cache file
 *    remote_dods_id - NetCDF open id for remote DODS file
-*    status - return status
+*    cdfstat - return cdfstat
 
 * argument declarations:
-	INTEGER	dset, cdfid, remote_dods_id, status
+	INTEGER	dset, cdfid, remote_dods_id, cdfstat
 
 * include files
-#ifdef unix
 	include 'netcdf.decl'
 #include "netcdf.inc"
 #include "gt_lib.parm"
@@ -68,38 +70,23 @@
         include 'xdset_info.cd_equiv'
 	include 'xtm_grid.cmn_text'
 	include 'xstep_files.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'XSTEP_FILES.CMN_TEXT'
-#endif
 
 * special equivalence (not in tmap_format/xdset_info.cd_equiv because "BYTE"
 * isn't supported on DECstation)
 * reorder loop logic because linux cpp didn't like it *kob* 10/96
 
-#ifdef unix
 #  ifdef NEED_BYTE
       BYTE cd_data_type(maxvars)
 #   else
       INTEGER*1 cd_data_type(maxvars)
 #   endif
-#else
-      BYTE cd_data_type(maxvars)
-#endif
+
 	EQUIVALENCE ( ds_precision, cd_data_type )
 
 * local variable declarations:
 	LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL,
      .	got_it, do_warn
-	INTEGER tmvar, grid, idim, line, istep
+	INTEGER tmvar, grid, idim, line, istep, attlen
 	REAL	val
 
 * local data initialization
@@ -111,13 +98,13 @@
 
 * get the correct NetCDF data type from attributes in the cache file
 	   got_it = CD_GET_ATTVAL( cdfid, cd_varid(tmvar),
-     .			'netcdf_data_type', do_warn, ' ', val, 1, status )
+     .			'netcdf_data_type', do_warn, ' ', val, 1, cdfstat )
 	   IF ( .NOT. got_it ) GOTO 5100
 	   cd_data_type(tmvar) = val
 
 * get the correct NetCDF variable id from attributes in the cache file
 	   got_it = CD_GET_ATTVAL( cdfid, cd_varid(tmvar),
-     .			'netcdf_var_id', do_warn, ' ', val, 1, status )
+     .			'netcdf_var_id', do_warn, ' ', val, 1, cdfstat )
 	   IF ( .NOT. got_it ) GOTO 5100
 	   cd_varid(tmvar) = val
 
@@ -132,12 +119,12 @@
  100	CONTINUE
 
 * get the full URL back again (cache name was substituted in ds_des_name)
-	got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'DODS_URL',
-     .                     do_warn, ' ', ds_des_name(dset), 128 )
+	got_it = CD_GET_ATTRIB( cdfid, NF_GLOBAL, 'DODS_URL',
+     .                     do_warn, ' ', ds_des_name(dset), attlen, 128 )
 	IF ( .NOT. got_it ) GOTO 5100
 
 * close the cache file and substitute the remote file in its place
-	CALL NCCLOS( cdfid, status )
+	cdfstat = NF_CLOSE ( cdfid )
 
 * insert the remote file info in place of the cache info
 	istep = cd_stepfile(dset)
@@ -146,15 +133,15 @@
 	sf_name(istep) = ds_des_name(dset)
 
 * successful completion
-      status = merr_ok
+      cdfstat = merr_ok
       RETURN
 
 * error exit
- 5100	CALL TM_ERRMSG( merr_dsetnf, status, 'CD_DODS_CONTROL',
+ 5100	CALL TM_ERRMSG( merr_dsetnf, cdfstat, 'CD_DODS_CONTROL',
      .                   dset, no_stepfile,
      .                   'DODS cache file lacks necessary attributes',
      .                   no_errstring, *5900)
  5900	CALL CD_ABORT_GRIDS
-	CALL NCCLOS( remote_dods_id, status )
+	cdfstat = NF_CLOSE ( remote_dods_id )
  5990	RETURN
 	END

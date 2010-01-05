@@ -52,6 +52,10 @@
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * V616  1/09 *acm* - Fix ticket 1615, If doing SET VAR/UNITS, /TITLE, /BAD on a
 *                    var from an EZ dataset, set the appropriate attributes.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * Arguments:
 *	dset	- data set number
@@ -123,7 +127,7 @@
               CALL CD_REPLACE_ATTR (dset, varid, attname, attype, 
      .           attlen, units, dummy, status)
            ELSE
-                 attype = NCCHAR
+                 attype = NF_CHAR
                  attoutflag = 1
                  CALL CD_PUT_NEW_ATTR (dset, varid, attname, attype, 
      .              attlen, attoutflag, units, dummy, status )

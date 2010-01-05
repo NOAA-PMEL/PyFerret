@@ -44,6 +44,8 @@
 * revision 0.0 - 2/92
 * 4/94 *sh*,*kob* inserted return value for error exit case - avoid
 *		  compiler error msg
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *	cdfid	- netCDF id number for already opened CDF file
@@ -53,15 +55,9 @@
 * argument declarations
       INTEGER	    cdfid, dimid, status
 
-#ifdef unix
       include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
-#else
-      INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-      INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
 
 * internal variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...moved it to parameter line
@@ -75,12 +71,12 @@
       CD_AXLEN = 0
 
 * get the basic information about this dimension
-      CALL NCDINQ( cdfid, dimid, axname, npts, cdfstat )
-      IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+      cdfstat = NF_INQ_DIM( cdfid, dimid, axname, npts )
+      IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
 * get the basics about the axis by the same name
       nlen = TM_LENSTR1( axname )
-      axid = NCVID( cdfid, axname(:nlen), cdfstat )
+      cdfstat = NF_INQ_VARID( cdfid, axname(:nlen), axid )
 
 * check "true_size" in case this is a condensed axis representation
       got_it = CD_GET_ATTVAL( cdfid, axid, 'true_size',

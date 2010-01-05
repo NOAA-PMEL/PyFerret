@@ -42,6 +42,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 10/92
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *       cdfid   - returned pointer to open CDF file
@@ -52,17 +54,11 @@
 	INTEGER	 cdfid, mode, status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
         include 'cdf_tmap.parm'
         include 'tmap_errors.parm'
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:CDF_TMAP.PARM'
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
+
 
 * local variable declarations:
       INTEGER cdf_mode, cdfstat
@@ -75,12 +71,12 @@
          RETURN      ! no change requested
       ELSEIF ( mode .EQ. pcd_mode_define ) THEN
 * ... enter define mode
-         CALL NCREDF( cdfid, cdfstat )
-         IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+         cdfstat = NF_REDEF( cdfid )
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
       ELSEIF ( mode .EQ. pcd_mode_data ) THEN
 * ... enter data mode
-         CALL NCENDF( cdfid, cdfstat )
-         IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+         cdfstat = NF_ENDDEF( cdfid )
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
       ENDIF
 
 * save the specified mode (the only action taken when mode < 0)

@@ -71,6 +71,8 @@
 * V608 *acm* 10/07 Fixes for memory leak; when initializing dataset this
 *                  routine was putting vars from other datasets into the
 *                  linked-list structure.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
@@ -426,11 +428,11 @@
 
               varid = varid + 1
 	      IF (ds_var_type(ivar) .EQ. ptype_float) THEN
-	         vartype = NCFLOAT
+	         vartype = NF_FLOAT
 	      ELSEIF  (ds_var_type(ivar) .EQ. ptype_string) THEN
-	         vartype = NCCHAR
+	         vartype = NF_CHAR
 	      ELSE
-                 vartype = NCFLOAT
+                 vartype = NF_FLOAT
               ENDIF
         
               CALL CD_ADD_VAR( dset, ds_var_code(ivar), varid, 

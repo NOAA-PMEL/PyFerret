@@ -48,6 +48,8 @@
 *               This routine accesses the newly-created file using 
 *               netcdf calls as always. The values sent in come from
 *               the linked-list structure but output is all the same.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -58,7 +60,6 @@
 *     status  - return status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -70,19 +71,7 @@
         include 'xio.cmn_text'
         external xio_data
         include 'xrisc_buff.cmn'
-#else
-xx        include 'netcdf.decl'  ! untested
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:CDF_TMAP.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
-        INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
-        EXTERNAL XIO_DATA
-        INCLUDE 'TMAP_FORMAT:XRISC_BUFF.CMN'
-#endif
+
 
 * argument declarations
       LOGICAL append
@@ -103,20 +92,21 @@ xx        include 'netcdf.decl'  ! untested
       slen = LEN( string )
       attype = 0 
       attlen = 0 
-      cdfstat = NCNOERR
+      cdfstat = NF_NOERR
       
 * locate the variable id
       IF ( vname .EQ. pcdf_global ) THEN
-         varid = NCGLOBAL
+         varid = NF_GLOBAL
       ELSE
-         varid = NCVID( cdfid, vname(:vlen), cdfstat )
-         IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+         cdfstat = NF_INQ_VARID(cdfid, vname(:vlen), varid)
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
       ENDIF
 
 * does the attribute already exist ?
-      CALL NCAINQ( cdfid, varid, att(:alen), attype, attlen, cdfstat )
-      IF ( cdfstat .EQ. NCNOERR ) THEN
-         IF ( attype.NE.NCBYTE .AND. attype.NE.NCCHAR ) GOTO 5200
+      cdfstat = NF_INQ_ATT(cdfid, varid, att(:alen), attype, attlen)
+
+      IF ( cdfstat .EQ. NF_NOERR ) THEN
+         IF ( attype.NE.NF_BYTE .AND. attype.NE.NF_CHAR ) GOTO 5200
          IF ( attlen+slen .GT. 2048 .AND. append ) THEN
             buff = att
             CALL TM_NOTE( 'CDF attribute '//buff(:alen)//
@@ -140,33 +130,32 @@ xx        include 'netcdf.decl'  ! untested
       CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
       IF ( status .NE. merr_ok ) RETURN
 
-      IF ( cdfstat.EQ.NCNOERR .AND. append ) THEN
+      IF ( cdfstat.EQ.NF_NOERR .AND. append ) THEN
 * append to the attribute
-         CALL NCAGTC( cdfid, varid, att(:alen), buff, 2048, cdfstat )
-         IF ( cdfstat .NE. NCNOERR ) THEN
+	 cdfstat =  NF_GET_ATT_TEXT (cdfid, varid, att(:alen), buff)
+
+         IF ( cdfstat .NE. NF_NOERR ) THEN
             buff = att
-            CALL TM_NOTE( 'CDF attribute in existing file '
-     .        //buff(:alen)//' is too long. Cannot append to it', tt)
+            CALL TM_NOTE( 'Error getting CDF attribute in existing file '
+     .        , tt)
             GOTO 1000
          ENDIF
             
          risc_buff = string
          len_app = 2048 - attlen - 1
          IF (len_app .GT. 0) THEN
-            CALL NCAPTC( cdfid, varid, att(:alen), 
-     .             NCCHAR, attlen+slen,
-     .             buff(:attlen)//risc_buff(1:len_app), cdfstat )
+         cdfstat = NF_PUT_ATT_TEXT (cdfid, varid, att(:alen),
+     .             attlen+slen, buff(:attlen)//risc_buff(1:len_app))
          ELSE
-            CALL NCAPTC( cdfid, varid, att(:alen), 
-     .             NCCHAR, attlen+slen,
-     .             buff(:attlen), cdfstat )
+            cdfstat = NF_PUT_ATT_TEXT (cdfid, varid, att(:alen),
+     .             attlen+slen, buff(:attlen))
          ENDIF
       ELSE
 * write the attribute
-         CALL NCAPTC( cdfid, varid, att(:alen), NCCHAR, slen,
-     .             string, cdfstat )
+         cdfstat = NF_PUT_ATT_TEXT (cdfid, varid, att(:alen),
+     .             slen, string)
       ENDIF
-      IF ( cdfstat .NE. NCNOERR ) GOTO 5300
+      IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 
 * successful completion
  1000 status = merr_ok

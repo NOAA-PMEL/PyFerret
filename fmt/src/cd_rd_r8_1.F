@@ -58,55 +58,21 @@
       REAL*8  dval
       CHARACTER*(*) errstr
 
-#ifdef unix
       include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
-#  ifdef sun
-      BYTE i1buff
-#  else
-      INTEGER*1 i1buff
-#  endif
-#else
-      BYTE i1buff
-      INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-      INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
 
 * internal variable declarations:
       INTEGER cdfstat
 
-* equivalent buffer arrays for various data types
-      INTEGER*2 i2buff
-      INTEGER*4 i4buff
-      REAL      r4buff
-      REAL*8    r8buff
-      COMMON /xrd_r8_1/ r8buff     ! debugger seems to need this
-      EQUIVALENCE (r8buff,i1buff),
-     .            (r8buff,i2buff),
-     .            (r8buff,i4buff),
-     .            (r8buff,r4buff)
-
 * read the value
-      CALL NCVGT1( cdfid, varid, index, r8buff, cdfstat )
+* NF_ routines convert to desired output data type.
 
-      IF ( cdfstat .NE. NCNOERR ) CALL TM_ERRMSG
+      cdfstat = NF_GET_VAR1_DOUBLE(cdfid, varid, index, dval)
+
+      IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_RD_R8_1', cdfid, varid,
      .       errstr, no_errstring, *5000 )
-
-* convert data types
-      IF (dtype.EQ.NCBYTE .OR. dtype.EQ.NCCHAR) THEN
-         dval = i1buff
-      ELSEIF (dtype.EQ.NCSHORT) THEN
-         dval = i2buff
-      ELSEIF (dtype.EQ.NCLONG ) THEN
-         dval = i4buff
-      ELSEIF (dtype.EQ.NCFLOAT ) THEN
-         dval = r4buff
-      ELSE
-         dval = r8buff
-      ENDIF
 
       status = merr_ok
 

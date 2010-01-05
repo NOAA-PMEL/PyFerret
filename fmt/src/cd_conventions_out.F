@@ -41,6 +41,8 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * 7/2007 from CD_STAMP_OUT
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *       append  - logical control to create or append
@@ -71,8 +73,7 @@
 
 * update (or create) conventions record
       got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'Conventions',
-     .                     .NOT.do_warn, ' ', buff, 132 )
-      clen = TM_LENSTR1( buff )
+     .                     .NOT.do_warn, ' ', buff, clen, 132 )
 
 * is the last conventions stamp the same as this ?
       IF ( clen .GE. slen ) THEN

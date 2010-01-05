@@ -74,6 +74,8 @@
 *                   higher.
 * V604 *acm* 6/07 Allow longer strings for OPeNDAP file-open errors.
 * v604 *acm* 7/07 increase length of ds_des_name
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -190,15 +192,9 @@
 * This time penalty is unavoidable (though HTTP caching may eliminate it)
 * Using the cache file will remove the need to read remote coordinates
 	   CALL TM_NOTE( 'Using cache '//cdf_file, tooplu)
-cc	   remote_dods_id = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
-
-#ifdef usingDODSf2cUnderscore 
-           cdfstat = NF_OPEN_(ds_des_name(dset), NF_NOWRITE, cdfid) 
-#else
            cdfstat = NF_OPEN(ds_des_name(dset), NF_NOWRITE, cdfid) 
-#endif 
 
-	   IF ( cdfstat .NE. NCNOERR ) THEN
+	   IF ( cdfstat .NE. NF_NOERR ) THEN
               GOTO 5150
            ENDIF
            
@@ -206,8 +202,9 @@ cc	   remote_dods_id = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
 	ENDIF
 ****** END DODS *********
 
-* open the netCDF file and get its vital statisticsn
- 50      CALL NCPOPT(0)  ! no error processing by netCDF
+* open the netCDF file and get its vital statistics. 
+* NCPOPT  Call not used in Netcdf3, 4 
+ 50     CONTINUE
 * check for mutli-file netcdf datasets then loop through the list
 * of stepfiles to find the first one that is on line    *kob* 7/95
 * * kob*  bug fix in loop logic 9/18/96
@@ -219,18 +216,12 @@ cc	   remote_dods_id = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
 		     cdf_file = TM_INQ_PATH(sf_name(i),tmap_tsteps,
      .                                      ' ',.FALSE., status)
 		     IF (status .EQ. merr_ok)  THEN
-cc	   	         cdfid = NCOPN(cdf_file, NCNOWRIT, cdfstat)
-
-#ifdef usingDODSf2cUnderscore 
-			 cdfstat = NF_OPEN_(cdf_file, NF_NOWRITE, cdfid)
-#else
 			 cdfstat = NF_OPEN(cdf_file, NF_NOWRITE, cdfid) 
-#endif 
                          IF ( cdf_file(1:7) .EQ. 'http://')
      .                        err_status = merr_remote_open
 
 			 mc_init_stepfile(dset) = i
-			 IF ( cdfstat .EQ. NCNOERR) GOTO 110
+			 IF ( cdfstat .EQ. NF_NOERR) GOTO 110
 		     ENDIF
  100	        CONTINUE
 
@@ -239,16 +230,11 @@ cc	   	         cdfid = NCOPN(cdf_file, NCNOWRIT, cdfstat)
 		GOTO 5300
                 
 	ELSE
-cc	   	cdfid = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
                 
-#ifdef usingDODSf2cUnderscore 
-	   	cdfstat = NF_OPEN_(ds_des_name(dset), NF_NOWRITE, cdfid) 
-#else
-	   	cdfstat = NF_OPEN(ds_des_name(dset), NF_NOWRITE, cdfid) 
-#endif 
+           cdfstat = NF_OPEN(ds_des_name(dset), NF_NOWRITE, cdfid) 
 
 	ENDIF
-	        IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+	        IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
  110   CONTINUE
 
        status = merr_ok

@@ -48,9 +48,11 @@
 *		   	      to the NCVINQ routine.
 * V500 4/99 *kob*: increase size of vname and axnam from 24 to 64
 *	- for wacky DODS variables
-* V533 *sh* 6/01 - add support for string variables (NCCHAR)
+* V533 *sh* 6/01 - add support for string variables (NF_CHAR)
 * V500 4/99 *kob*: increase size of vname and axnam from 24 to 64
 * V552 *acm* 5/03   increase vname to 128 chars 
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 
 * argument definitions:
@@ -96,11 +98,11 @@
          ENDIF
 
 * get the vital statistics for this variable
-        CALL NCVINQ(cdfid, ivar, vname, vartyp, nvdim, vdims,
-     .              nvatts,cdfstat)
+        cdfstat = NF_INQ_VAR (cdfid, ivar, vname, vartyp, nvdim,
+     .              vdims, nvatts)
 
 * if it is a character variable, then the first dimension of it is the strlen
-        IF (vartyp .EQ. NCCHAR) THEN
+        IF (vartyp .EQ. NF_CHAR) THEN
 	   DO idim = 1, 5
 	      vdims(idim) = vdims(idim+1)
 	   ENDDO
@@ -120,7 +122,7 @@
 * lack the slab_min/max_limits machinery)
 
 * ... get the size and name of the dimension
-              CALL NCDINQ( cdfid, vdims(ndims), axnam, npts, cdfstat )
+              cdfstat = NF_INQ_DIM ( cdfid, vdims(ndims), axnam, npts )
               alen = TM_LENSTR1( axnam )
 
 * ... time axis as a record axis will be synchronized in another routine
@@ -131,19 +133,20 @@
 	      ENDIF
 
 * ... find the coordinate variable by this name
-              axid = NCVID( cdfid, axnam(:alen), cdfstat )
-              no_file_coords = cdfstat .NE. NCNOERR
+              cdfstat = NF_INQ_VARID ( cdfid, axnam(:alen), axid )
+              no_file_coords = cdfstat .NE. NF_NOERR
 
 * ... determine the first coordinate value
               IF ( no_file_coords ) THEN
 	         file_val = 1.0D0	! like abstract axis
 	      ELSE
 * ... get the vital statistics of the coordinate variable
-                 CALL NCVINQ(cdfid, axid, axnam, cvartyp, ncvdims,
+                 cdfstat = NF_INQ_VAR(cdfid, axid, axnam, 
+     .			cvartyp, ncvdims,
 #ifdef FORTRAN_90
-     .			TRANSFER(cvdim,cvdim,1), nvatts, cdfstat)
+     .			TRANSFER(cvdim,cvdim,1), nvatts)
 #else
-     .                  cvdim, nvatts, cdfstat)
+     .                  cvdim, nvatts)
 #endif
 * ... read the first coordinate
                  CALL CD_RD_R8_1( cdfid, axid, 1, cvartyp,

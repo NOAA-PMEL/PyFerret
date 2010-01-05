@@ -47,7 +47,9 @@
 *                         tmp_buff for arbitrary  string concats 
 * V600 *ACM* attribute control. 
 * V602 *acm* make sure lena=length of attr name is defined before writing warning
-*
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
+
 *             Replace NCAINQ with CD_GET_VAR_ATT_INFO
 *             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib from 
 *               linked list structure
@@ -92,7 +94,7 @@
 
       IF ( status .EQ. merr_ok ) THEN
 
-	IF (attype .EQ. NCCHAR) THEN
+	IF (attype .EQ. NF_CHAR) THEN
 
 * get a text attribute
 

@@ -58,6 +58,8 @@
 *                address pointer.  then, when the values are actually used, r8buff
 *                is the buffer from which they are read.  this allows dp attribute
 *                values to be used correctly.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -106,39 +108,56 @@
 
 * inquire about the attribute by name
       lena = TM_LENSTR1( attrib )
-      CALL NCAINQ(cdfid, varid, attrib(:lena), attype, vback, cdfstat )
+      cdfstat = NF_INQ_ATT (cdfid, varid, attrib(:lena), attype, vback )
 
-      IF ( cdfstat .EQ. NCNOERR ) THEN
+      IF ( cdfstat .EQ. NF_NOERR ) THEN
          IF ( vback .GT. vlen ) THEN
             buff = 'too many values in attribute "'//attrib(:lena)//
      .             '" in netCDF file variable: '//vname
             lena = TM_LENSTR1( buff )
             IF ( do_warn ) CALL TM_NOTE( buff(:lena), 6 )
             CD_GET_ATTVAL = .FALSE.
-         ELSEIF (attype.EQ.NCFLOAT) THEN
-            CALL NCAGT(cdfid,varid,attrib,val,cdfstat)
+         ELSEIF (attype.EQ.NF_FLOAT) THEN
+	    cdfstat = NF_GET_ATT_REAL (cdfid, varid, attrib, r4buff)
+            CD_GET_ATTVAL = .TRUE.
+         ELSEIF (attype.EQ.NF_DOUBLE) THEN
+	    cdfstat = NF_GET_ATT_DOUBLE (cdfid, varid, attrib, r4buff)
+            CD_GET_ATTVAL = .TRUE.
+         ELSEIF (attype.EQ.NF_INT1) THEN
+	    cdfstat = NF_GET_ATT_INT1 (cdfid, varid, attrib, r4buff)
+            CD_GET_ATTVAL = .TRUE.
+         ELSEIF (attype.EQ.NF_INT2) THEN  ! SHORT same as INT2
+	    cdfstat = NF_GET_ATT_INT2 (cdfid, varid, attrib, r4buff)
+            CD_GET_ATTVAL = .TRUE.
+         ELSEIF (attype.EQ.NF_INT) THEN  ! INT prev. also called LONG
+	    cdfstat = NF_GET_ATT_INT (cdfid, varid, attrib, r4buff)
             CD_GET_ATTVAL = .TRUE.
          ELSE
-! *kob* 4/98 - see comment above
-!            CALL NCAGT(cdfid,varid,attrib,r8buff,cdfstat)
-            CALL NCAGT(cdfid,varid,attrib,r4buff,cdfstat)   !kob 4/98
-            CD_GET_ATTVAL = .TRUE.
+            CD_GET_ATTVAL = .FALSE.
+            vback = 0
+	 ENDIF
+	 
 * convert data types
-            IF (attype.EQ.NCBYTE .OR. attype.EQ.NCCHAR ) THEN
+         IF (CD_GET_ATTVAL) THEN
+            IF (attype.EQ.NF_BYTE .OR. attype.EQ.NF_CHAR ) THEN
                DO 100 i = 1, vback
  100           val(i) = i1buff(i)
-            ELSEIF (attype.EQ.NCSHORT) THEN
+            ELSEIF (attype.EQ.NF_INT2) THEN
                DO 200 i = 1, vback
  200           val(i) = i2buff(i)
-            ELSEIF (attype.EQ.NCLONG ) THEN
+            ELSEIF (attype.EQ.NF_INT ) THEN
                DO 300 i = 1, vback
  300           val(i) = i4buff(i)
-            ELSE
+            ELSEIF (attype.EQ.NF_FLOAT ) THEN
                DO 400 i = 1, vback
- 400           val(i) = r8buff(i)  
-! 400           val(i) = r4buff(i)   ! kob 4/98
+ 400           val(i) = r4buff(i)  
+            ELSE
+               DO 500 i = 1, vback
+ 500           val(i) = r8buff(i)  
+! 500           val(i) = r4buff(i)   ! kob 4/98
             ENDIF
-         ENDIF
+	 ENDIF
+
       ELSE
          CD_GET_ATTVAL = .FALSE.
          vback = 0

@@ -61,6 +61,8 @@
 *             CD_GET_ATTVAL replaced by NC_GET_ATTRIB, which now returns  
 *               strings or real values according to attrib type
 * V602 *acm* make sure lena=length of attr name is defined before writing warning
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *	dset	 - dataset id number for already opened CDF file
@@ -97,7 +99,7 @@
       lena = TM_LENSTR1( aname )
 
       IF ( status .EQ. merr_ok ) THEN
-	IF (attype .EQ. NCCHAR) THEN
+	IF (attype .EQ. NF_CHAR) THEN
 * get a text attribute as a value
 
 	   CD_GET_ATTVALC = NC_GET_ATTRIB(dset,varid,aname(:lena),

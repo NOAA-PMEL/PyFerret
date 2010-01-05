@@ -50,6 +50,8 @@
 *         8/06 *acm*  test for too_long should be .GT. IF (attlen .GT. maxlen) THEN
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * V602 *acm* make sure lena=length of attr name is defined before writing warning
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *	dset	 - dataset number
@@ -127,7 +129,7 @@
          RETURN  
       ENDIF
 
-      IF ( attype.EQ.NCCHAR ) THEN
+      IF ( attype.EQ.NF_CHAR ) THEN
 
          lena = attlen
          IF (attlen .GT. maxlen) THEN

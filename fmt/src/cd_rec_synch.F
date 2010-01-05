@@ -65,6 +65,8 @@
 *                  the low box-bound of the new axis to be appended.
 *      *acm* 6/04  for compiler on rh7, need to pass dimensions of array into cd_rd_r8_bnds 
 *                  as scalar integers not array elements.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -117,23 +119,23 @@
      .            append = .TRUE., do_warn=.TRUE. )
 
 * get the vital statistics for the CDF file
-        CALL NCINQ( cdfid, ndims, nvars, ngatts, recdim, cdfstat )
+	cdfstat = NF_INQ (cdfid, ndims, nvars, ngatts, recdim)
 
 * get the name of the record axis
-        CALL NCDINQ( cdfid, recdim, axnam, npts, cdfstat )
+        cdfstat = NF_INQ_DIM ( cdfid, recdim, axnam, npts )
         alen = TM_LENSTR1( axnam )
 
 * is there a coordinate variable by this name ?  If not, error (for now)
-        axid = NCVID( cdfid, axnam(:alen), cdfstat )
-        IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+        cdfstat = NF_INQ_VARID ( cdfid, axnam(:alen), axid )
+        IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
 * get the vital statistics of the coordinate variable
-        CALL NCVINQ(cdfid, axid, buff, vartyp, nvdim, vdims,
-     .                nvatts, cdfstat)
+        cdfstat = NF_INQ_VAR (cdfid, axid, buff, vartyp, nvdim, vdims,
+     .                nvatts)
 
 ! ... 10/92: ncendf called in CD_WRITE_VAR
 !* leave define mode so we can read and write the coordinates
-!        CALL NCENDF(cdfid, cdfstat)
+!        cdfstat = NCENDF(cdfid)
 
 * locate the new coordinate values at end of coordinate axis ?
 * see if the first of the new coordinates exceeds the last already in the file
@@ -206,7 +208,7 @@
 * is there a bounds attribute for this axis? 
 
        got_bnds = CD_GET_ATTRIB( cdfid, axid, 'bounds',
-     .                       do_warn, axnam(:alen), bname, 30 )
+     .                       do_warn, axnam(:alen), bname, blen, 30 )
 
        IF (got_bnds) THEN
 
@@ -216,8 +218,7 @@
 
 * Get upper bound of last box on existing axis
 
-          blen = TM_LENSTR1(bname)
-          bndid = NCVID( cdfid, bname(:blen), cdfstat )
+          cdfstat = NF_INQ_VARID ( cdfid, bname(:blen), bndid )
 
           startpts(1) = 2  ! get uppper bound, 1 point
           numpts(1) = 1
@@ -229,7 +230,7 @@
           d1s = startpts(1)
           d1e = numpts(1)
           d2s = startpts(2)
-          d2s = numpts(2)
+          d2e = numpts(2)
           CALL CD_RD_R8_BNDS( cdfid, bndid, startpts, numpts, vartyp, 
      .                    bname(:blen), old_box_hi, d1s, d1e, d2s, d2e,  
      .                    status )
@@ -312,6 +313,6 @@
      . 'output coordinate is inside upper bound of existing axis cell:'
      .       //TM_STRING(new_coord)//' Axis: '//axnam(:alen),
      .       no_errstring , *5900 )
- 5900  CALL NCREDF( cdfid, cdfstat ) ! back into define mode
+ 5900  cdfstat = NF_REDEF( cdfid ) ! back into define mode
        RETURN
        END

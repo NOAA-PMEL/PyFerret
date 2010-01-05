@@ -45,6 +45,8 @@
 * revision 0.0 - 2/95  -- specifically for accessing CDC files
 * V530 *acm* 1/01 add calendar ID in TM_BREAK_DATE, TM_SECS_FROM_BC
 *	    	  calendar is assumed Gregorian
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -61,15 +63,9 @@
       REAL*8  dval
       CHARACTER*(*) t0
 
-#ifdef unix
       include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
-#else
-      INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-      INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
 
 * internal variable declarations:
       INTEGER cdfstat, mon, day, yr, hour, min, sec,
@@ -85,9 +81,10 @@
      .		  p0010 = 3653.   * 24 * 60 * 60 )
 
 * read the yymmdd value
-      CALL NCVGT1( cdfid, t1id, index, yymmdd, cdfstat )
-      IF ( cdfstat .NE. NCNOERR ) CALL TM_ERRMSG
-     .     ( cdfstat+pcdferr, status, 'CD_RD_EP_TIME', cdfid, t1id,
+      cdfstat = NF_GET_VAR1_DOUBLE(cdfid, t1id, index, yymmdd)
+
+      IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
+     .     ( cdfstat+pcdferr, status, 'CD_RD_YMD_1', cdfid, t1id,
      .       'yymmdd time', no_errstring, *5000 )
 
 * convert the 2 EPIC integers to a date

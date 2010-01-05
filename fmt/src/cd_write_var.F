@@ -52,7 +52,7 @@
 *	      - had to use F90 Intrinsic function TRANSFER to properly
 *		pass single values to NCVPT as arrays of 1 element
 * 6/97	*kob* - fix introduced bug in call to NCVPT
-* V533 *sh* 6/01 - add support for string variables (NCCHAR)
+* V533 *sh* 6/01 - add support for string variables (NF_CHAR)
 * V552 *acm* 5/03   increase vbuff to 128 chars 
 * V570 *acm*  5/04 write bounds 2xN coordinates when record axis is irregular.
 * V600 *acm*  6/05 Attribute control. Get info from linked-list structure.
@@ -63,6 +63,8 @@
 *                    output axis name.
 * V63  *acm   9/09 Fix bug 1692: issue an error message if we try to append irreg timesteps
 *                  to a previously-regular axis that didn't have a bounds attribute.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -133,12 +135,12 @@ c      EQUIVALENCE (r100_8, r100_4)
       vlen = TM_LENSTR1( vname )
 
 * get the variable id
-      varid = NCVID( cdfid, vname(:vlen), cdfstat )
-      IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+      cdfstat = NF_INQ_VARID(cdfid, vname(:vlen), varid)
+      IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
 * get the vital statistics for this variable
-      CALL NCVINQ(cdfid, varid, vbuff, vartyp, nvdim, vdims,
-     .              nvatts,cdfstat)
+      cdfstat = NF_INQ_VAR (cdfid, varid, vbuff, vartyp, nvdim,
+     .             vdims, nvatts)
 
 * enter data mode so data can be read and written
 * (CD_GET_GENERIC_BOUNDS needs to read coordinate values)
@@ -238,33 +240,31 @@ c      EQUIVALENCE (r100_8, r100_4)
                r100_8(1) = (old_box_hi + new_box_lo)/2.D0
 
 #ifdef FORTRAN_90
-            CALL NCVPT(cdfid, recaxvar, 
+            cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
      .                 TRANSFER(start(cdrecax),start,1),
      .                 TRANSFER(1,count,1), 
-     .		       TRANSFER(r100_8,r100_4), 
-     . 		        cdfstat)
+     .		       TRANSFER(r100_8,r100_4))
 #else
-            CALL NCVPT(cdfid, recaxvar, start(cdrecax),
-     .                 1, r100_8, cdfstat)
+            cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar,
+     .                 start(cdrecax), 1, r100_8)
 #endif
-            IF ( cdfstat .NE. NCNOERR ) GOTO 5300
+            IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 
 
 * Now write the bounds for this point
 
-               r100_8(1) = old_box_hi
-               r100_8(2) = new_box_lo
+            r100_8(1) = old_box_hi
+            r100_8(2) = new_box_lo
 
-               bndstart(1) = 1
-               bndcount(1) = 2
-               bndstart(2) = start(cdrecax)
-               bndcount(2) = 1
+            bndstart(1) = 1
+            bndcount(1) = 2
+            bndstart(2) = start(cdrecax)
+            bndcount(2) = 1
 
+            cdfstat = NF_PUT_VARA_DOUBLE(cdfid, bndid, bndstart,
+     .		           bndcount, r100_8)
 
-               CALL NCVPT(cdfid, bndid, bndstart,
-     .		           bndcount, r100_8, cdfstat)
-
-            IF ( cdfstat .NE. NCNOERR ) GOTO 5300
+            IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 
 * Write a time-step slab containing missing data
             npts = 1
@@ -309,21 +309,22 @@ c      EQUIVALENCE (r100_8, r100_4)
             hilim = MIN(i100+99, hirec)
             DO 300 i = i100, hilim
                r100_8(i-i100+1) = TM_WORLD(i,grid,tmrecax,box_middle)
-               IF ( rectyp .EQ. NCFLOAT ) r100_4(i-i100+1)
+               IF ( rectyp .EQ. NF_FLOAT ) r100_4(i-i100+1)
      .                                  = r100_8(i-i100+1)
  300        CONTINUE
 
 #ifdef FORTRAN_90
-            CALL NCVPT(cdfid, recaxvar, 
+
+            cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
      .                 TRANSFER(i100-lorec+start(cdrecax),start,1),
      .                 TRANSFER(hilim-i100+1,count,1), 
-     .		       TRANSFER(r100_8,r100_4), 
-     . 		        cdfstat)
+     .		       TRANSFER(r100_8,r100_4) )
 #else
-            CALL NCVPT(cdfid, recaxvar, i100-lorec+start(cdrecax),
-     .                 hilim-i100+1, r100_8, cdfstat)
+            cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
+     .                 i100-lorec+start(cdrecax),
+     .                 hilim-i100+1, r100_8)
 #endif
-            IF ( cdfstat .NE. NCNOERR ) GOTO 5300
+            IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
  310     CONTINUE
 
 * Now write the bounds, if record axis is irregular, or if /BOUNDS was requested.
@@ -343,8 +344,8 @@ c      EQUIVALENCE (r100_8, r100_4)
 
             name = name(:nlen)//'_bnds'
             elen = nlen + 5
-            bndid = NCVID(cdfid, name(:elen), cdfstat)
-	    IF (cdfstat .NE. NCNOERR ) GOTO 5400
+            cdfstat = NF_INQ_VARID(cdfid, name(:elen),  bndid)
+	    IF (cdfstat .NE. NF_NOERR ) GOTO 5400
 
             DO 330 i100 = lorec, hirec, 100
                hilim = MIN(i100+99, hirec)
@@ -353,7 +354,7 @@ c      EQUIVALENCE (r100_8, r100_4)
                   j = 2*(i-i100+1)-1
                   r100_8(2*(i-i100+1)-1) = TM_WORLD(i,grid,tmrecax,box_lo_lim)
                   r100_8(2*(i-i100+1)) = TM_WORLD(i,grid,tmrecax,box_hi_lim)
-                  IF ( rectyp .EQ. NCFLOAT ) r100_4(i-i100+1)
+                  IF ( rectyp .EQ. NF_FLOAT ) r100_4(i-i100+1)
      .                                  = r100_8(i-i100+1)
  320           CONTINUE
 
@@ -367,9 +368,10 @@ c      EQUIVALENCE (r100_8, r100_4)
                   reset_bnd_lo = 0.D0
                ENDIF
 
-               CALL NCVPT(cdfid, bndid, bndstart,
-     .		           bndcount, r100_8, cdfstat)
-               IF ( cdfstat .NE. NCNOERR ) GOTO 5300
+               cdfstat = NF_PUT_VARA_DOUBLE(cdfid, bndid, bndstart,
+     .		           bndcount, r100_8)
+     .                
+               IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
  330        CONTINUE
          ENDIF
 
@@ -406,9 +408,7 @@ c      EQUIVALENCE (r100_8, r100_4)
       ENDIF
 
       IF ( cdfstat .EQ. -60) GOTO 5260
-      IF ( cdfstat .NE. NCNOERR ) GOTO 5300
-!      CALL NCVPT( cdfid, varid, start,count, dat, cdfstat )
-!      IF ( cdfstat .NE. NCNOERR ) GOTO 5300
+      IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 
 * successful completion
  1000 status = merr_ok

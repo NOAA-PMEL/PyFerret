@@ -41,6 +41,8 @@
 * (from cd_write_strdim.F)
 
 * V570 *acm* 5/04 
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 
 * argument definitions:
@@ -70,8 +72,8 @@
       nlen = 4
 
 * is the dimension already defined ?
-      dimid = NCDID( cdfid, dimname(:nlen), cdfstat )
-      IF ( cdfstat .EQ. NCNOERR ) THEN
+      cdfstat = NF_INQ_DIMID (cdfid, dimname(:nlen), dimid )
+      IF ( cdfstat .EQ. NF_NOERR ) THEN
 * ... yes. make sure defn is consistent
 
 * v5.40 *kob* - add ifdef to check whether or not to append an underscore
@@ -92,8 +94,8 @@
 * ... no. define it
         CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
         IF ( status .NE. merr_ok ) RETURN
-        dimid = NCDDEF( cdfid, dimname(:nlen), nbnds, cdfstat )
-        IF ( cdfstat .NE. NCNOERR ) GOTO 5200
+        cdfstat = NF_DEF_DIM( cdfid, dimname(:nlen), nbnds, dimid )
+        IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
       ENDIF
 
 * successful completion

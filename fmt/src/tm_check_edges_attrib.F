@@ -37,42 +37,47 @@
 * Check the edges attribute, issue any warnings
 * V600 *acm* 10/05 should not have npts as an argument; npts from cd_get_1_axis
 *                  was being reset  as npts bounds or edges, which is npts+1
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'xtm_grid.cmn_text'
         INCLUDE 'xio.cmn_text'
         INCLUDE 'tmap_errors.parm'
+#include "netcdf.inc"
 
 * argument declarations
       INTEGER cdfid, iaxis, vlen, edgid, status
       CHARACTER*(*) ename, vname
 
 * Local variable declarations
-      INTEGER TM_LENSTR1, NCVID
-      INTEGER elen, cdfstat, ncnoerr, soft_err, vartype, nvdims,
+      INTEGER TM_LENSTR1
+      INTEGER elen, cdfstat, soft_err, vartype, nvdims,
      .          vdims(8), nvatts, npts
       CHARACTER*132 buff, vbuff
 
 * does the variable pointed to really exist ?
 
         elen = TM_LENSTR1(ename)
-        edgid = NCVID( cdfid, ename(:elen), cdfstat )
-        IF (cdfstat.NE.NCNOERR) THEN
+	cdfstat = NF_INQ_VARID(cdfid, ename(:elen), edgid)
+
+        IF (cdfstat.NE.NF_NOERR) THEN
            soft_err = 11
            GOTO 5000
         ENDIF
 
 * get the vital statistics of the edges variable
-        CALL NCVINQ(cdfid, edgid, ename(:elen), vartype, nvdims,
-     .               vdims, nvatts,cdfstat)
+        cdfstat = NF_INQ_VAR (cdfid, edgid, ename(:elen), vartype,
+     .               nvdims, vdims, nvatts)
         IF ( nvdims .NE. 1 ) THEN
            soft_err = 12
            GOTO 5000
         ENDIF
 
 * get axis length:
-        CALL NCDINQ( cdfid, vdims, buff, npts, cdfstat )
-        IF (cdfstat.NE.NCNOERR) GOTO 5100   ! should never happen
+	cdfstat = NF_INQ_DIM (cdfid, vdims, buff, npts)
+
+        IF (cdfstat.NE.NF_NOERR) GOTO 5100   ! should never happen
 
 * check for error conditions
         IF ( npts .NE. line_dim(iaxis)+1 ) THEN

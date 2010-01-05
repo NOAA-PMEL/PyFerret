@@ -48,6 +48,8 @@
 *                   longer line_name
 * V600 *acm* 6/05 - Attribute control. Get information from linked-list structure.
 * V602 *acm*12/06 - Bug 1478: Correct the treatment of uppercasing names.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *       dset    - dset (if netcdf file, for getting name and attribute 
@@ -84,13 +86,13 @@
          ENDIF
 
 * is there a dimension by this name?
-        dimid = NCDID( cdfid, name(:nlen), cdfstat )
+        cdfstat = NF_INQ_DIMID ( cdfid, name(:nlen), dimid )
 
-        this_ax_exists = cdfstat .EQ. NCNOERR
+        this_ax_exists = cdfstat .EQ. NF_NOERR
 
 * get vital statistics of file
-        CALL NCINQ( cdfid, ndims, nvars, ngatts, recdim, cdfstat )
-!        IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+        cdfstat = NF_INQ ( cdfid, ndims, nvars, ngatts, recdim )
+!        IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
         recax_exists = recdim .NE. -1
 
 * so what's the answer?

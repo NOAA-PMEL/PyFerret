@@ -46,6 +46,8 @@
 * revision 0.0 - 2/92
 * V6.1 3/08 ACM If the data type is double and we return without converting 
 *           the data, we still need to set status to merr_ok.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -62,38 +64,21 @@
       REAL*8  dvals(n)
       CHARACTER*(*) errstr
 
-#ifdef unix
       include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
-#else
-      INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-      INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
 
 * internal variable declarations:
       INTEGER cdfstat
 
 * read the value
-      CALL NCVGT( cdfid, varid, start, n, dvals, cdfstat )
-      IF ( cdfstat .NE. NCNOERR ) CALL TM_ERRMSG
+* NF_ routines convert to desired output data type.
+
+      cdfstat = NF_GET_VARA_DOUBLE(cdfid, varid, start, n, dvals)
+
+      IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_RD_R8_ARR', cdfid, varid,      
      .       errstr, no_errstring, *5000 )
-
-* convert data types
-      IF (dtype.EQ.NCDOUBLE) THEN
-         status = merr_ok
-         RETURN
-      ELSEIF (dtype.EQ.NCBYTE .OR. dtype.EQ.NCCHAR) THEN
-         CALL TM_I1_to_R8( dvals, dvals, n)
-      ELSEIF (dtype.EQ.NCSHORT) THEN
-         CALL TM_I2_TO_R8( dvals, dvals, n)
-      ELSEIF (dtype.EQ.NCLONG ) THEN
-         CALL TM_I4_TO_R8( dvals, dvals, n)
-      ELSE
-         CALL TM_R4_TO_R8( dvals, dvals, n)
-      ENDIF
 
       status = merr_ok
 

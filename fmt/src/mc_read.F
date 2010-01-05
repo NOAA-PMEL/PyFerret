@@ -72,6 +72,8 @@
 * v581 *acm* 7/2005  Fix bug in getting start and end indices.
 * V600 *acm* 8/2005  fix bug 1332, calls to  CD_GET_ATTVAL and  CD_GET_ATTVAL
 *                    need cd_varid(ivar) not cd_varid as the second argument.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -156,13 +158,15 @@
            IF ( status .NE. merr_ok ) GOTO 5000
            sf_name(mc_init_stepfile(dset)) = tstep_file     ! save exact path
 *got the full path, let's open the file now
-	   cdfid = NCOPN(sf_name(mc_init_stepfile(dset)), NCNOWRIT, cdfstat)	
-	   IF (cdfstat .NE. NCNOERR) GOTO 5100
+	   cdfstat = NF_OPEN(sf_name(mc_init_stepfile(dset)), 
+     .                 NF_NOWRITE, cdfid)
+
+	   IF (cdfstat .NE. NF_NOERR) GOTO 5100
 	   sf_lunit(mc_init_stepfile(dset)) = cdfid
 
-           
-	   CALL NCVINQ(cdfid, cd_varid(ivar), vname, vartype, nvdims, vdims,
-     .		nvatts,cdfstat)
+	   cdfstat = NF_INQ_VAR(cdfid, cd_varid(ivar), vname, vartype, 
+     .          nvdims, vdims, nvatts)
+
            vlen = TM_LENSTR1(vname)
 
            got_scale = CD_GET_ATTVAL( cdfid, cd_varid(ivar), 'scale_factor',
@@ -190,9 +194,6 @@
 *12/00- *kob* bug - use mc_init_stepfile not sfcnt - latter not set yet
 	   sf_lunit(mc_init_stepfile(dset)) = file_not_open
 
-	
-
-
 	ELSE
 * find correct file
            prev_steps = 0
@@ -201,17 +202,6 @@
 
 c	      IF ((sf_1step(sfcnt).GT. start_read_tstep) .OR. ! contains timestep
 c     .		   (sf_lastep(sfcnt) .LT. start_read_tstep)) GOTO 30
-
-!c!c          ! contains timestep, to within epsilon
-!c!c	      IF (TM_DFPEQ_TOL(sf_1step(sfcnt), 
-!c!c     .                         start_read_tstep, epsilon) .OR.
-!c!c     .		  TM_DFPEQ_TOL(sf_lastep(sfcnt), 
-!c!c     .                         start_read_tstep, epsilon)) GOTO 40
-
-!c!c          ! stepfile does not contain timestep
-!c!c	      IF ((sf_1step(sfcnt).GT. start_read_tstep) .OR. 
-!c!c     .		   (sf_lastep(sfcnt) .LT. start_read_tstep)) GOTO 30
-!c!c	      GOTO 40
 
 ! compare indices -- contains timestep
 	      IF ((sf_ndxs(sfcnt).LE. start_read_lstep) .AND. ! contains timestep
@@ -247,28 +237,29 @@ c!c! uncomment this...
 	      sf_name(sfcnt) = tstep_file ! save exact path
 	   ENDIF
 
-	   cdfid = NCOPN(sf_name(sfcnt), NCNOWRIT, cdfstat)	
-	   IF (cdfstat .NE. NCNOERR) GOTO 5100
+	   cdfstat = NF_OPEN(sf_name(sfcnt), NF_NOWRITE, cdfid) 
+
+	   IF (cdfstat .NE. NF_NOERR) GOTO 5100
 	   sf_lunit(sfcnt) = cdfid
 
 
 
 * Verify that this is the correct variable, and if not, set it correctly
 * in common..
-* 2/2007 Check for success of this NCVINQ call - if the previous cd_varid
+* 2/2007 Check for success of this NF_INQ_VAR call - if the previous cd_varid
 *        saved from earlier file does not exist in this stepfile, then 
 *        we want to go check the other vars in the file 
 
-	   CALL NCVINQ(cdfid, cd_varid(ivar), vname, vartype, nvdims, vdims,
-     .		nvatts,cdfstat)
-	   IF ( (cdfstat .NE. NCNOERR) .OR. 
+	   cdfstat = NF_INQ_VAR (cdfid, cd_varid(ivar), vname, vartype, 
+     .		nvdims, vdims, nvatts)
+	   IF ( (cdfstat .NE. NF_NOERR) .OR. 
      .          (STR_CASE_BLIND_COMPARE ( ds_var_code(ivar), vname) 
      .		  .NE. str_match) ) THEN
-	      CALL NCINQ(cdfid, ndims, nvars, natts, recdim, cdfstat)
+	      cdfstat = NF_INQ(cdfid, ndims, nvars, natts, recdim)
 	      do 50 varpos=1,nvars
-* 5/99 - fix bug which was sending cd_varid(varps) to NCVINQ instead of varpos
-		 CALL NCVINQ(cdfid, varpos, vname, vartype, 
-     .		      nvdims, vdims, nvatts,cdfstat)
+* 5/99 - fix bug which was sending cd_varid(varps) to NF_INQ_VAR instead of varpos
+		 cdfstat = NF_INQ_VAR (cdfid, varpos, vname, vartype, 
+     .		      nvdims, vdims, nvatts)
 *5/99 - bug fix: need to test to see if sting is EQUAL rather than not equal *kob*
 		 IF (STR_CASE_BLIND_COMPARE ( ds_var_code(ivar), 
      .		      vname) .EQ. str_match)	THEN
@@ -278,18 +269,12 @@ c!c! uncomment this...
  50	      CONTINUE
 	   ENDIF	
  
-
-!c!c 60	   offset = TM_SUBSC (sf_1step(sfcnt), grid, t_dim,l_sf1) - 1
-!c!c	   nsteps_in_file = TM_SUBSC (sf_lastep(sfcnt), grid, t_dim,l_sf1) -
-!c!c     .		TM_SUBSC (sf_1step(sfcnt), grid, t_dim,l_sf1) + 1 
-
  60	   offset = sf_ndxs(sfcnt) - prev_steps - 1
 	   nsteps_in_file = sf_ndxe(sfcnt) - sf_ndxs(sfcnt) + 1 
 
 *calculate offset used to read data into array, if neccessary
 	   a_lo_t_offset = start_read_lstep - offset
 	   a_hi_t_offset = end_read_lstep - offset
-
 
 * 12/00 *kob* do no sanity checking unless mode diagnostic is turned
 *             on.  This necessary for dods hdf-->nc translated files
@@ -298,19 +283,21 @@ c!c! uncomment this...
 *       now verify the timestep value in the netcdf file
 	   ELSE
 	      IF (.NOT. sf_valid(sfcnt)) THEN
-		 CALL NCDINQ( cdfid, vdims(nvdims), dim_name, 
-     .                           npts, cdfstat )
-		 var_id = NCVID(cdfid, dim_name, cdfstat)
+		 cdfstat = NF_INQ_DIM( cdfid, vdims(nvdims), dim_name, 
+     .                           npts )
+		 cdfstat = NF_INQ_VARID (cdfid, dim_name, var_id)
 * *kob* had to add an ncvinq to find out variable type of dimension because
-*		 NCFLOAT dimensions were causing core dumps. 
-		 CALL NCVINQ(cdfid, var_id, dim_name, vartype, nvdims, 
-     .      	      vdims,nvatts,cdfstat)
+*		 NF_FLOAT dimensions were causing core dumps. 
+		 cdfstat = NF_INQ_VAR (cdfid, var_id, dim_name, vartype, nvdims, 
+     .      	      vdims,nvatts)
+
 		 CALL CD_RD_R8_1(cdfid,var_id,a_lo_t_offset,vartype,'Error',
      .      	      r8buff,status)
 		 IF ( status .NE. merr_ok) GOTO 5000
 		 
-		 IF ( vartype .EQ. NCDOUBLE) THEN
-		    CALL NCVGT1(cdfid, var_id,a_lo_t_offset,r8buff,cdfstat)
+		 IF ( vartype .EQ. NF_DOUBLE) THEN
+		    cdfstat = NF_GET_VAR1_DOUBLE(cdfid, var_id,
+     .      	      a_lo_t_offset,r8buff)
 		 ELSE
 		 ENDIF
 *       if an error is found, announce to user but continue on	

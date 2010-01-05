@@ -62,6 +62,8 @@
 *                  the attribute orig_file_axname. If it already exists, call the
 *                  routine to replace the attribute rather than trying to add a new
 *                  attribute.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -217,11 +219,11 @@
                IF (attid .GT. 0) THEN 
                   CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, attname,
      .               attype, attlen, attoutflag, status)
-                  CALL CD_REPLACE_ATTR (dset, varid, attname, NCCHAR, 
+                  CALL CD_REPLACE_ATTR (dset, varid, attname, NF_CHAR, 
      .               len, vname, dummy, status)
                ELSE
                   CALL CD_PUT_NEW_ATTR (dset, varid, 'orig_file_axname',
-     .               NCCHAR, len, -1, vname, dummy, status)
+     .               NF_CHAR, len, -1, vname, dummy, status)
                ENDIF
             ENDIF
 
@@ -240,11 +242,11 @@
                IF (attid .GT. 0) THEN 
                   CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, attname,
      .               attype, attlen, attoutflag, status)
-                  CALL CD_REPLACE_ATTR (dset, varid, attname, NCCHAR, 
+                  CALL CD_REPLACE_ATTR (dset, varid, attname, NF_CHAR, 
      .               len, vname, dummy, status)
                ELSE
                   CALL CD_PUT_NEW_ATTR (dset, varid, 'orig_file_axname',
-     .                NCCHAR, len, -1, vname, dummy, status)
+     .                NF_CHAR, len, -1, vname, dummy, status)
                ENDIF
             ENDIF
 

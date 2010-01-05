@@ -61,6 +61,8 @@
 * V600 *ACM* attribute control. 
 *             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib 
 *             from linked list structure
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -142,7 +144,7 @@
            vlen = TM_LENSTR1(vname)
 
 * if a string variable, the first dimension is the string axis (ignore it)
-	   IF (vartyp .EQ. NCCHAR) THEN
+	   IF (vartyp .EQ. NF_CHAR) THEN
 	      nvdims = nvdims - 1
 	      DO idim = 1, nvdims
 	         vdims(idim) = vdims(idim+1)

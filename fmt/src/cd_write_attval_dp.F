@@ -50,6 +50,8 @@
 *               netcdf calls as always. The values sent in come from
 *               the linked-list structure but output is all the same.
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -61,7 +63,6 @@
 *     status  - return status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -70,15 +71,6 @@
         include 'cdf_tmap.parm'
 #include "gt_lib.parm"
 	include 'cd_lib.parm'
-#else
-xx        include 'netcdf.decl'  ! untested
-#include "netcdf.inc"
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-        INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
-#endif
 
 * argument declarations
       INTEGER cdfid, nval, type, i4(10), i, status
@@ -88,7 +80,7 @@ xx        include 'netcdf.decl'  ! untested
       REAL*8 val(*)
 
 * local variable declarations:
-      INTEGER TM_LENSTR1, NC_PUT_ATT_FLOAT,
+      INTEGER TM_LENSTR1,
      .        vlen, alen, cdfstat, varid, attype, attlen, flen    
       CHARACTER*128 abuff     ! needed because of fussy compilers and // concatenation
 
@@ -111,23 +103,22 @@ xx        include 'netcdf.decl'  ! untested
       
 * locate the variable id
       IF ( vname .EQ. pcdf_global ) THEN
-         varid = NCGLOBAL
+         varid = NF_GLOBAL
       ELSE
-         varid = NCVID( cdfid, vname(:vlen), cdfstat )
-         IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+         cdfstat = NF_INQ_VARID(cdfid, vname(:vlen), varid)
+
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
       ENDIF
 
 * does the attribute already exist ?
-      CALL NCAINQ( cdfid, varid, att(:alen), attype, attlen, cdfstat )
-      IF ( cdfstat.EQ.NCNOERR .AND. attype.NE.type ) GOTO 5200
+      cdfstat = NF_INQ_ATT( cdfid, varid, att(:alen), attype, attlen )
+      IF ( cdfstat.EQ.NF_NOERR .AND. attype.NE.type ) GOTO 5200
 
 * put CDF into define mode so attributes can be written
       CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
       IF ( status .NE. merr_ok ) RETURN
 
 * Convert to the requested type and write the attribute
-* nc_put_att_float converts types if the pointer points to a different
-* type than that specified by type
 
       CALL TM_FTOC_STRNG( att(1:alen), fhol, flen )
 
@@ -136,27 +127,6 @@ xx        include 'netcdf.decl'  ! untested
      .  val, status)
 
       IF ( status .EQ. -60) GOTO 5300
-
-c*      IF (type .EQ. NCLONG) THEN
-c*         DO i = 1,nval
-c*           i4(i) = NINT(val(i))
-c*         ENDDO
-c*         CALL NCAPT( cdfid, varid, att(:alen), type, nval,
-c*     .            i4, cdfstat )
-c*      ELSE IF (type .EQ. NCSHORT) THEN
-c*         DO i = 1,nval
-c*           i2(i) = NINT(val(i))
-c*         ENDDO
-c*         CALL NCAPT( cdfid, varid, att(:alen), type, nval,
-c*     .            i2, cdfstat )
-c*c      ELSE IF (type .EQ. NCBYTE) THEN
-c*c         i1 = INT(val)
-c*c         CALL NCAPT( cdfid, varid, att(:alen), type, nval,
-c*c     .            i1, cdfstat )
-c*      ELSE
-c*         CALL NCAPT( cdfid, varid, att(:alen), type, nval,
-c*     .           val, cdfstat )
-c*      ENDIF
 
 * successful completion
  1000 status = merr_ok

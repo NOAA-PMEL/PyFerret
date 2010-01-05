@@ -69,6 +69,8 @@
 * V600 11/05 *acm*  Fix bug 491 properly -- send missing value to tm_scale
 *                   so that missing data is NOT scaled by scale and offset attrs.
 * V600  6/06 *acm*  needed call to CD_GET_VAR_INFO to define vname for NC_GET_ATTRIB
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -242,22 +244,9 @@
 * compute the map vector (for strides, reversals, and permutations)
 	DO 210 idim = 1, 4
  210	imap(idim) = 0
-#ifdef netcdf_version_2
-* for netCDF V2 the imap array is set up in bytes
-	IF ( cd_data_type(ivar) .EQ. NCDOUBLE ) THEN
-	   imap(trans(1)) = 8
-	ELSEIF ( cd_data_type(ivar) .EQ. NCFLOAT
-     .      .OR. cd_data_type(ivar) .EQ. NCLONG )  THEN
-	   imap(trans(1)) = 4
-	ELSEIF ( cd_data_type(ivar) .EQ. NCSHORT ) THEN
-	   imap(trans(1)) = 2
-	ELSE			! NCBYTE, NCCHAR
-	   imap(trans(1)) = 1
-	ENDIF
-#else
 * for netCDF V3 the imap array is set up in number of array elements, not bytes
 	imap(trans(1)) = 1
-#endif
+
 	DO 220 idim = 2,ndim
 	   imap(trans(idim)) = imap(trans(idim-1))
      .			     * (1 + (memsize(grid_dims(idim-1))-1))
@@ -307,7 +296,7 @@
      .                 use_lo(3),
      .                 use_lo(4)), 
      .             already_scaled, cdfstat, status)
-           IF ( cdfstat .NE. NCNOERR ) GOTO 5500           
+           IF ( cdfstat .NE. NF_NOERR ) GOTO 5500           
 
            IF (status .NE. merr_ok) THEN   ! try to read as single precision floats
            
@@ -317,7 +306,7 @@
      .                 use_lo(2),
      .                 use_lo(3),
      .                 use_lo(4)), cdfstat)
-	      IF ( cdfstat .NE. NCNOERR ) GOTO 5500
+	      IF ( cdfstat .NE. NF_NOERR ) GOTO 5500
            ENDIF
 
         ELSE
@@ -328,7 +317,7 @@
      .                 use_lo(2),
      .                 use_lo(3),
      .                 use_lo(4)), cdfstat)
-	   IF ( cdfstat .NE. NCNOERR ) GOTO 5500
+	   IF ( cdfstat .NE. NF_NOERR ) GOTO 5500
         ENDIF
 
 * if data has mean or range removed rescale it.

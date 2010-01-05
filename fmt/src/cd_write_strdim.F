@@ -40,6 +40,8 @@
 
 * V533 *sh* 6/01 
 *     *kob* 6/01 - remove redundant declaration NF_INQ_DIMLEN
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -67,30 +69,19 @@
       dimname = CD_CHILDAX_NAME('STRING', 1, maxstrlen, nlen )
 
 * is the dimension already defined ?
-      dimid = NCDID( cdfid, dimname(:nlen), cdfstat )
-      IF ( cdfstat .EQ. NCNOERR ) THEN
+      cdfstat = NF_INQ_DIMID ( cdfid, dimname(:nlen), dimid )
+      IF ( cdfstat .EQ. NF_NOERR ) THEN
 * ... yes. make sure defn is consistent
 
-* v5.40 *kob* - add ifdef to check whether or not to append an underscore
-*               to the v3 routine name.  This necessary because DODS netcdf
-*               fortran jackets can be configured assuming f2c, which appends
-*               an additional underscore to routine names already containing
-*               and underscore.  The real solution is to configure dods 
-*               correctly, but the below may be necessary when linked with
-*               unidata-built dods libraries
-
-#ifdef usingDODSf2cUnderscore
-	cdfstat = NF_INQ_DIMLEN_(cdfid, dimid, clen)
-#else
 	cdfstat = NF_INQ_DIMLEN(cdfid, dimid, clen)
-#endif
 	IF (clen .NE. maxstrlen) GOTO 5100
       ELSE
 * ... no. define it
         CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
         IF ( status .NE. merr_ok ) RETURN
-        dimid = NCDDEF( cdfid, dimname(:nlen), maxstrlen, cdfstat )
-        IF ( cdfstat .NE. NCNOERR ) GOTO 5200
+	cdfstat = NF_DEF_DIM (cdfid, dimname(:nlen), maxstrlen, dimid)
+
+        IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
       ENDIF
 
 * successful completion

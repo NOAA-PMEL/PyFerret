@@ -61,6 +61,8 @@
 * V600 *acm* 6/05 - Attribute control. Get information from linked-list structure.
 * V601 *acm* 6/06 - Fix bug 1459: when closing a stepfile that may be open,
 *                   reset the sf_lunit flag for cd_stepfile(dset), not for dset.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument declarations:
 	LOGICAL tregular
@@ -149,7 +151,7 @@
 !              here for mc datasets at all.
 
       IF (STR_SAME(ds_type(dset), '  MC') .EQ. 0) THEN
-        CALL NCCLOS( cdfid, istat )
+        istat = NF_CLOSE( cdfid )
 c	sf_lunit(dset) = file_not_open
 c        sf_lunit( cd_stepfile(dset) ) = file_not_open
       ENDIF
@@ -159,6 +161,6 @@ c        sf_lunit( cd_stepfile(dset) ) = file_not_open
 
 * error exit
  5900 CALL CD_ABORT_GRIDS
- 5980 IF (remote_dods_id .NE. 0) CALL NCCLOS( remote_dods_id, status )
+ 5980 IF (remote_dods_id .NE. 0) cdfstat = NF_CLOSE( remote_dods_id )
  5990 RETURN
       END

@@ -55,6 +55,8 @@
 *             NCVINQ replaced by CD_GET_VAR_INFO
 *             NCDINQ replaced by CD_GET_DS_DIMS
 *             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -162,7 +164,7 @@
           ENDIF
 
 * set ds_grid_end if not explicitly given in file
-          IF ( ds_grid_start(1,tmvar) .EQ. unspecified_int4 ) THEN
+          IF ( ds_grid_end(1,tmvar) .EQ. unspecified_int4 ) THEN
              DO 400 idim = 1, 4
                 iaxis = grid_line(idim,igrid)
                 IF ( iaxis .EQ. mpsnorm ) THEN
@@ -180,7 +182,7 @@
           vlen = TM_LENSTR1(vname)
 
 * ... if a string variable, the first dimension is the string axis (ignore it)
-	  IF (vartyp .EQ. NCCHAR) THEN
+	  IF (vartyp .EQ. NF_CHAR) THEN
 	     nvdim = nvdim - 1
 	     DO idim = 1, nvdim
 	        vdims(idim) = vdims(idim+1)

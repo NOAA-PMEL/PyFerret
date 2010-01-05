@@ -41,6 +41,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 6/92
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *       cdfid   - returned pointer to open CDF file
@@ -50,22 +52,16 @@
 	INTEGER	      cdfid, status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
 
 * local variable declarations:
       INTEGER cdfstat
 
 * close the netCDF file
-        CALL NCCLOS( cdfid, cdfstat )
-        IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+        cdfstat = NF_CLOSE( cdfid )
+        IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
 * successful completion
         status = merr_ok

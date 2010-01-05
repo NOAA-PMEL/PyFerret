@@ -48,6 +48,8 @@
 * 		instead of 0
 * V500 4/99 *kob*: increase size of vname from32 to 64
 * V552 *acm* 5/03   increase vname to 128 chars 
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 
 * argument definitions:
@@ -73,8 +75,9 @@
 	CD_USE_RECDIM = .FALSE. 		!in case of error exit
 
 * get vital statistics of file
-        CALL NCINQ( cdfid, ndims, nvars, ngatts, recdim, cdfstat )
-        IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+        cdfstat = NF_INQ (cdfid, ndims, nvars, ngatts, recdim)
+
+        IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
 * is there a record dimension
         IF ( recdim .EQ. -1 ) THEN
@@ -83,15 +86,15 @@
         ENDIF
 
 * get the statistics for the given variable
-        CALL NCVINQ(cdfid, varid, vname, vartyp, nvdims, vdims,
-     .              nvatts,cdfstat)
 
+        cdfstat = NF_INQ_VAR(cdfid, varid, vname, vartyp, nvdims, 
+     .              vdims, nvatts)
 
-        IF (cdfstat.NE.NCNOERR) GOTO 5100
+        IF (cdfstat.NE.NF_NOERR) GOTO 5100
 
 * does it use the record axis?
 
-* acm 3/14/02 if its a scalar, NCVINQ returns nvdims=0, so set CD_USE_RECDIM =F
+* acm 3/14/02 if its a scalar, NF_INQ_VAR returns nvdims=0, so set CD_USE_RECDIM =F
 
         IF (nvdims .EQ. 0) THEN
            CD_USE_RECDIM = .FALSE.

@@ -42,6 +42,8 @@
 
 * V601 11/06 *acm* Attribute control, adding double precision attribute value
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * Argument declarations
 
@@ -78,7 +80,7 @@
       dset_num = dset
       IF (dset_num .LT. -2) dset_num = -2
 
-      IF (attype .NE. NCCHAR) THEN
+      IF (attype .NE. NF_CHAR) THEN
 
          status = NCF_ADD_VAR_NUM_ATT_DP(dset_num, varid, fhol, attype, 
      .           attlen, attoutflag, vals)

@@ -45,6 +45,8 @@
 * revision 0.0 - 3/92
 *               10/92 - leave mode as opened (report via CD_SET_MODE)
 * V450 11/96 - added argument "clobber" *sh*
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 * argument definitions:
 *       cdfname - desired output file name
@@ -59,26 +61,19 @@
         CHARACTER*(*) cdfname
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
         include 'cdf_tmap.parm'
         include 'tmap_errors.parm'
 #include "gt_lib.parm"
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:CDF_TMAP.PARM'
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-        INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-#endif
 
 * local variable declarations:
       LOGICAL file_exists, do_append
       INTEGER cdfstat, cstat, clobber_mode
 
 * initialize netCDF
-      CALL NCPOPT(0)  ! no error processing by netCDF
+!! not needed for netcdf3 and netcdf4
+!!      CALL NCPOPT(0)  ! no error processing by netCDF
 
 * does it exist already ?
       INQUIRE ( FILE = cdfname, EXIST = file_exists )
@@ -86,8 +81,8 @@
 
 * open or create the file
       IF ( do_append ) THEN
-	 cdfid = NCOPN( cdfname, NCWRITE, cdfstat )
-         IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+	 cdfstat = NF_OPEN( cdfname, NF_WRITE, cdfid )
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
          CALL CD_SET_MODE( cdfid, pcd_reset_data, status )
          IF ( status .NE. merr_ok ) RETURN
       ELSE
@@ -97,8 +92,11 @@
 	   clobber_mode =   NCNOCLOB
 	 ENDIF
 * ... let netCDF detect the error if the file already exists
-         cdfid = NCCRE( cdfname, clobber_mode, cdfstat )
-         IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+c         cdfid = NCCRE( cdfname, clobber_mode, cdfstat )
+c         cdfstat = NF_CREATE(cdfname, OR(clobber_mode,NF_NETCDF4), cdfid)
+         cdfstat = NF_CREATE(cdfname, clobber_mode, cdfid)
+
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
          CALL CD_SET_MODE( cdfid, pcd_reset_define, status )
          IF ( status .NE. merr_ok ) RETURN
       ENDIF

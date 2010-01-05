@@ -39,6 +39,8 @@
 * V540 *acm* per SH email of 10/19/01  For datasets with datatype "short"
 *            Ferret translates the "short" to "float" but the new code 
 *            made it think that the variable is, indeed, of type short.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
 
 	include 'tmap_dtypes.parm'
         include 'netcdf.decl'
@@ -47,17 +49,17 @@
 * input arguments
 	INTEGER	ncvtype
 
-	IF (ncvtype .EQ. NCFLOAT) THEN
+	IF (ncvtype .EQ. NF_FLOAT) THEN
 	  TM_FERRET_VARTYPE =  ptype_float
-	ELSEIF (ncvtype .EQ. NCCHAR) THEN
+	ELSEIF (ncvtype .EQ. NF_CHAR) THEN
 	  TM_FERRET_VARTYPE =  ptype_string
-	ELSEIF (ncvtype .EQ. NCDOUBLE) THEN
+	ELSEIF (ncvtype .EQ. NF_DOUBLE) THEN
 	  TM_FERRET_VARTYPE =  ptype_double
-	ELSEIF (ncvtype .EQ. NCLONG) THEN
+	ELSEIF (ncvtype .EQ. NF_INT) THEN
 	  TM_FERRET_VARTYPE =  ptype_int4
-	ELSEIF (ncvtype .EQ. NCSHORT) THEN
+	ELSEIF (ncvtype .EQ. NF_SHORT) THEN
 	  TM_FERRET_VARTYPE =  ptype_int2
-	ELSEIF (ncvtype .EQ. NCBYTE) THEN
+	ELSEIF (ncvtype .EQ. NF_BYTE) THEN
 	  TM_FERRET_VARTYPE =  ptype_int1
 	ELSE
 	  CALL WARN('Internal err: unknown data type')
@@ -67,7 +69,7 @@
 * full data type support not implemented as-of 10/01. 
 * cd_read will convert all numeric data to float
 
-       IF ( ncvtype .NE. NCCHAR) TM_FERRET_VARTYPE =  ptype_float
+       IF ( ncvtype .NE. NF_CHAR) TM_FERRET_VARTYPE =  ptype_float
 
 	RETURN
 	END

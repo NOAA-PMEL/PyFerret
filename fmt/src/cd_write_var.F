@@ -65,6 +65,7 @@
 *                  to a previously-regular axis that didn't have a bounds attribute.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V641 *acm* 1/10  Fix bug 1715 and output of packed data.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -92,6 +93,13 @@
 	external xgt_grid_data
 
 
+! The ones without trailing underscore are declared in netcdf.inc
+#ifdef usingDODSf2cUnderscore
+	INTEGER NF_INQ_VARID_
+	INTEGER NF_INQ_VAR_
+	INTEGER NF_PUT_VARA_DOUBLE_
+#endif  
+
 * argument declarations
       LOGICAL do_bounds, mode_upcase_output
       INTEGER cdfid, dset, grid, lo(4), hi(4), edges_flag, status
@@ -115,7 +123,7 @@
       CHARACTER*1  dimnam(4)
       DATA  	   dimnam/'I','J','K','L'/
       CHARACTER*128 vbuff     ! needed because of fussy f772.1 DEC compiler
-      REAL   r_scale, r_offset
+      REAL   r_scale, r_offset, scaled_bad
       REAL*8 r100_8(200)
       REAL*8 TM_WORLD
       
@@ -135,12 +143,21 @@ c      EQUIVALENCE (r100_8, r100_4)
       vlen = TM_LENSTR1( vname )
 
 * get the variable id
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_INQ_VARID_(cdfid, vname(:vlen), varid)
+#else
       cdfstat = NF_INQ_VARID(cdfid, vname(:vlen), varid)
+#endif
       IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
 * get the vital statistics for this variable
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_INQ_VAR_(cdfid, varid, vbuff, vartyp, nvdim,
+     .             vdims, nvatts)
+#else
       cdfstat = NF_INQ_VAR (cdfid, varid, vbuff, vartyp, nvdim,
      .             vdims, nvatts)
+#endif
 
 * enter data mode so data can be read and written
 * (CD_GET_GENERIC_BOUNDS needs to read coordinate values)
@@ -240,13 +257,25 @@ c      EQUIVALENCE (r100_8, r100_4)
                r100_8(1) = (old_box_hi + new_box_lo)/2.D0
 
 #ifdef FORTRAN_90
-            cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
+#ifdef usingDODSf2cUnderscore
+            cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, recaxvar, 
      .                 TRANSFER(start(cdrecax),start,1),
      .                 TRANSFER(1,count,1), 
      .		       TRANSFER(r100_8,r100_4))
 #else
-            cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar,
+            cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
+     .                 TRANSFER(start(cdrecax),start,1),
+     .                 TRANSFER(1,count,1), 
+     .		       TRANSFER(r100_8,r100_4))
+#endif
+#else
+#ifdef usingDODSf2cUnderscore
+            cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, recaxvar,
      .                 start(cdrecax), 1, r100_8)
+#else
+	    cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar,
+     .                 start(cdrecax), 1, r100_8)
+#endif
 #endif
             IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 
@@ -261,9 +290,13 @@ c      EQUIVALENCE (r100_8, r100_4)
             bndstart(2) = start(cdrecax)
             bndcount(2) = 1
 
+#ifdef usingDODSf2cUnderscore
+            cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, bndid, bndstart,
+     .		           bndcount, r100_8)
+#else
             cdfstat = NF_PUT_VARA_DOUBLE(cdfid, bndid, bndstart,
      .		           bndcount, r100_8)
-
+#endif
             IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 
 * Write a time-step slab containing missing data
@@ -314,15 +347,27 @@ c      EQUIVALENCE (r100_8, r100_4)
  300        CONTINUE
 
 #ifdef FORTRAN_90
-
-            cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
+#ifdef usingDODSf2cUnderscore
+            cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, recaxvar, 
      .                 TRANSFER(i100-lorec+start(cdrecax),start,1),
      .                 TRANSFER(hilim-i100+1,count,1), 
      .		       TRANSFER(r100_8,r100_4) )
 #else
-            cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
+	    cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
+     .                 TRANSFER(i100-lorec+start(cdrecax),start,1),
+     .                 TRANSFER(hilim-i100+1,count,1), 
+     .		       TRANSFER(r100_8,r100_4) )
+#endif
+#else
+#ifdef usingDODSf2cUnderscore
+            cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, recaxvar, 
      .                 i100-lorec+start(cdrecax),
      .                 hilim-i100+1, r100_8)
+#else
+	    cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
+     .                 i100-lorec+start(cdrecax),
+     .                 hilim-i100+1, r100_8)
+#endif
 #endif
             IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
  310     CONTINUE
@@ -344,7 +389,11 @@ c      EQUIVALENCE (r100_8, r100_4)
 
             name = name(:nlen)//'_bnds'
             elen = nlen + 5
-            cdfstat = NF_INQ_VARID(cdfid, name(:elen),  bndid)
+#ifdef usingDODSf2cUnderscore
+            cdfstat = NF_INQ_VARID_(cdfid, name(:elen),  bndid)
+#else
+	    cdfstat = NF_INQ_VARID(cdfid, name(:elen),  bndid)
+#endif
 	    IF (cdfstat .NE. NF_NOERR ) GOTO 5400
 
             DO 330 i100 = lorec, hirec, 100
@@ -368,9 +417,13 @@ c      EQUIVALENCE (r100_8, r100_4)
                   reset_bnd_lo = 0.D0
                ENDIF
 
-               cdfstat = NF_PUT_VARA_DOUBLE(cdfid, bndid, bndstart,
+#ifdef usingDODSf2cUnderscore
+               cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, bndid, bndstart,
      .		           bndcount, r100_8)
-     .                
+#else
+	       cdfstat = NF_PUT_VARA_DOUBLE(cdfid, bndid, bndstart,
+     .		           bndcount, r100_8)
+#endif
                IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
  330        CONTINUE
          ENDIF
@@ -380,17 +433,25 @@ c      EQUIVALENCE (r100_8, r100_4)
 * if data was scaled on input, rescale it. This also rescales data containing
 * the missing value flag, as on input.
 
+* Scale the bad data too... on input to netCDF we scale all the data,
+* compute the missing flag for internal use as indat*inscale + inoff
+* and insert that internal missing flag.
+*
+* To write scaled data, scale all of it by ferretdat(1./inscale) - (inoff/inscale)
+* the scaling to be used is sent into this routine.
+
+
       IF ( .NOT. TM_DFPEQ(scalefac, 1.D0) .OR. 
      .     .NOT. TM_DFPEQ(addoff, 0.D0) ) THEN
 
          IF (.NOT. TM_DFPEQ(scalefac, 0.D0) ) r_scale = 1.D0/scalefac
-         r_offset = -1.D0* addoff
+         r_offset = -1.D0* addoff* r_scale
 
          npts = 1
          DO 250  idim = 1, 4
             IF ( count(idim) .GT. 0 ) npts = npts* count(idim)
  250     CONTINUE
-         CALL TM_SCALE( r_scale, r_offset, dat, bad, npts )
+         CALL TM_SCALE_ALL ( r_scale, r_offset, dat, npts )
 
          scaled = .TRUE.
       ENDIF
@@ -404,7 +465,8 @@ c      EQUIVALENCE (r100_8, r100_4)
       IF ( scaled ) THEN
          r_scale = scalefac
          r_offset = addoff
-         CALL TM_SCALE( r_scale, r_offset, dat, bad, npts )
+         scaled_bad = bad* r_scale + r_offset
+         CALL TM_SCALE( r_scale, r_offset, scaled_bad, dat, npts )
       ENDIF
 
       IF ( cdfstat .EQ. -60) GOTO 5260

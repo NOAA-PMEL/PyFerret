@@ -100,6 +100,9 @@
 * V62  *acm*  3/09 - Allow for CANCEL ATT/OUTPUT var.missing_flag and var._FillValue
 *                   the special code for these made it impossible to turn off writing
 *                   these attributes.
+* V641 *acm*  1/10 -Fix bug 1715: packing data on output (bug is in ordering of args
+*                   in call to NC_GET_ATTRIB for add_offset, also fix up the output 
+*                   missing and FillValue flags which werent correct.)
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -151,7 +154,8 @@
      .                  varcode*128, varname*128, buff*2048, revnum*12, 
      .                  c1*1, aname*128
 
-	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww
+	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww,
+     .                  miss_in, fill_in
 
 * For error messages
       CHARACTER*9 typnam(6)
@@ -486,7 +490,7 @@
 
                     ELSE
                        got_it = NC_GET_ATTRIB (dset, varid, aname,
-     .                    do_warn, varcode, attlen, buff_size, 
+     .                    do_warn, varcode, buff_size, attlen, 
      .                    attoutflag, buff, vals)
                       addoff = vals(1)
                     ENDIF
@@ -512,6 +516,9 @@
                     CALL CD_GET_VAR_ATT_INFO (dset, varid, 
      .                attid, aname, attype, attlen, attoutflag, istat )
                     IF (attoutflag .EQ. 0) no_missing_flag = 1
+		    IF (attoutflag .NE. 0) got_it = NC_GET_ATTRIB_DP 
+     .                (dset, varid, attname, do_warn, varcode, attlen, 
+     .                attoutflag, miss_in)
                  ELSE
                    attname = '_FillValue'
                    CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
@@ -538,7 +545,7 @@
 
 * If un-scaling on output, will also un-scale the missing flag.
                     IF (scalefac .NE. 1.D0  .OR. addoff .NE. 0.D0) THEN
-                       dvals(1) = dvals(1)/scalefac - addoff
+                       dvals(1) = miss_in
                        vals(1) = dvals(1)
 
 * Otherwise convert missing flag to requested output type for the variable
@@ -560,6 +567,22 @@
      .                   cdfid, varcode, 'missing_value', dvals, attlen, 
      .                   attype, status )
                        IF (status .NE. ferr_ok) GOTO 5400
+
+
+		       IF (scalefac .NE. 1.D0  .OR. addoff .NE. 0.D0) THEN
+		       attname = '_FillValue'
+		       CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .                     istat)
+                       IF (attid .GT. 0) 
+     .                    CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .                   attid, aname, attype, attlen, attoutflag, istat )
+                          IF (attoutflag .EQ. 0) no_fill_flag = 1
+		       IF (attoutflag .NE. 0) got_it = NC_GET_ATTRIB_DP 
+     .                     (dset, varid, attname, do_warn, varcode, attlen, 
+     .                     attoutflag, fill_in)
+                          dvals(1) = fill_in
+                          vals(1) = dvals(1)
+		       ENDIF
                        IF (no_fill_flag.EQ.0) CALL CD_WRITE_ATTVAL_DP(
      .                   cdfid, varcode, '_FillValue', dvals, attlen, 
      .                   attype, status )

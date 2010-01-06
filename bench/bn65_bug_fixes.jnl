@@ -3,3 +3,6 @@
 
 GO bn_reset
 GO err64_very_small_latlon
+
+GO bn_reset
+GO err64_packed_data

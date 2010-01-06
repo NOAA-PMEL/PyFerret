@@ -1,0 +1,21 @@
+! err64_packed_data.jnl
+! Test writing packed data. Prior to v6.4 this example shows the
+! crash described in bug 1715.
+
+sp rm -f packed.nc
+sp ncpdq fine_x_axis.nc packed.nc
+use packed.nc
+sh att/all sst
+
+! check that the coordinates packed by ncpdq are unpacked ok.
+list/i=1:15 sst
+
+! we can write the data out - saving the scaling to re-pack.
+set att/output sst.scale_factor
+set att/output sst.add_offset
+save/clobber/file=mypack.nc/i=1:15 sst
+can data/all; use mypack.nc
+sh att/all sst
+
+list/i=1:15 sst
+

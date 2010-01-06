@@ -252,6 +252,19 @@
              ENDIF
 
 * ... need to unpack the missing_value flag?
+*
+* The CF standard says: 
+* The missing values of a variable with scale_factor and/or add_offset 
+* attributes (see section Section 8.1, “Packed Data”) are interpreted 
+* relative to the variable's external values, i.e., the values stored 
+* in the netCDF file. Applications that process variables that have 
+* attributes to indicate both a transformation (via a scale and/or 
+* offset) and missing values should first check that a data value is 
+* valid, and then apply the transformation. Note that values that are 
+* identified as missing should not be transformed. 
+* This means that the missing_value and _FillValue are in packed-type,
+* and to test unpacked data against the bad value, they need to be unpacked.
+*
 *     (note that the netCDF library insists on _FillValue's data type)
              IF ( vartyp.LE.NF_INT .AND. cd_scaled(ivtm) ) THEN
                 IF ( got_bad ) THEN

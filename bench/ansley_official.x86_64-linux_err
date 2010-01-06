@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/build/x86/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 40647393 Nov 19 14:14 /home/porter/ansley/build/x86/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/build/x86/FERRET/external_functions/ext_func_x86
+Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 52155681 Jan  4 15:44 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Release of Ferret v6.4, with the fix to bug 1505
+Note: netcdf-3 style calls and parameters  rather than the netcdf-2 ones
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build/x86/FERRET/external_functions/ext_func_x86
-Beginning at Fri Nov 20 12:11:21 PST 2009
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
+Beginning at Mon Jan 4 15:45:49 PST 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2213,6 +2213,7 @@ Replacing definition of axis TAX
  LISTing to file a.nc
  *** NOTE: Not deleted: TAX
  *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: cannot parse "units since date", date= "EVENT"; leaving units string
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2888,6 +2889,10 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  *** NOTE: Changing the value of attribute sst.history
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  *** NOTE: netCDF bounds variable definition error
  *** NOTE: Bounds definition "time_bnds" points to no existing axis
  *** NOTE: Ignoring BOUNDS attribute
@@ -3001,4 +3006,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Nov 20 12:13:13 PST 2009
+Ended at Mon Jan 4 15:47:49 PST 2010

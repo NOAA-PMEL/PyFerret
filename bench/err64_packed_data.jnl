@@ -2,9 +2,9 @@
 ! Test writing packed data. Prior to v6.4 this example shows the
 ! crash described in bug 1715.
 
-sp rm -f packed.nc
-sp ncpdq fine_x_axis.nc packed.nc
-use packed.nc
+! ncpdq from NCO operators 
+! sp ncpdq fine_x_axis.nc err64_packed_data.nc
+use err64_packed_data.nc
 sh att/all sst
 
 ! check that the coordinates packed by ncpdq are unpacked ok.

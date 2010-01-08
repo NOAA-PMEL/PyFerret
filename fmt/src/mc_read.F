@@ -74,6 +74,8 @@
 *                    need cd_varid(ivar) not cd_varid as the second argument.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -115,6 +117,9 @@
 #endif
 	include 'xsys_names.cmn_text'
 
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
 
 * local definitions
 	INTEGER*4 tmp_lo(4), tmp_hi(4), start_read_lstep,end_read_lstep,
@@ -158,14 +163,24 @@
            IF ( status .NE. merr_ok ) GOTO 5000
            sf_name(mc_init_stepfile(dset)) = tstep_file     ! save exact path
 *got the full path, let's open the file now
+#ifdef usingDODSf2cUnderscore
+	   cdfstat = NF_OPEN_(sf_name(mc_init_stepfile(dset)), 
+     .                 NF_NOWRITE, cdfid)
+#else
 	   cdfstat = NF_OPEN(sf_name(mc_init_stepfile(dset)), 
      .                 NF_NOWRITE, cdfid)
+#endif
 
 	   IF (cdfstat .NE. NF_NOERR) GOTO 5100
 	   sf_lunit(mc_init_stepfile(dset)) = cdfid
 
+#ifdef usingDODSf2cUnderscore
+	   cdfstat = NF_INQ_VAR_(cdfid, cd_varid(ivar), vname, vartype, 
+     .          nvdims, vdims, nvatts)
+#else
 	   cdfstat = NF_INQ_VAR(cdfid, cd_varid(ivar), vname, vartype, 
      .          nvdims, vdims, nvatts)
+#endif
 
            vlen = TM_LENSTR1(vname)
 
@@ -237,12 +252,14 @@ c!c! uncomment this...
 	      sf_name(sfcnt) = tstep_file ! save exact path
 	   ENDIF
 
+#ifdef usingDODSf2cUnderscore
+	   cdfstat = NF_OPEN_(sf_name(sfcnt), NF_NOWRITE, cdfid) 
+#else
 	   cdfstat = NF_OPEN(sf_name(sfcnt), NF_NOWRITE, cdfid) 
+#endif
 
 	   IF (cdfstat .NE. NF_NOERR) GOTO 5100
 	   sf_lunit(sfcnt) = cdfid
-
-
 
 * Verify that this is the correct variable, and if not, set it correctly
 * in common..
@@ -250,16 +267,30 @@ c!c! uncomment this...
 *        saved from earlier file does not exist in this stepfile, then 
 *        we want to go check the other vars in the file 
 
+#ifdef usingDODSf2cUnderscore
+	   cdfstat = NF_INQ_VAR_(cdfid, cd_varid(ivar), vname, vartype, 
+     .		nvdims, vdims, nvatts)
+#else
 	   cdfstat = NF_INQ_VAR (cdfid, cd_varid(ivar), vname, vartype, 
      .		nvdims, vdims, nvatts)
+#endif
 	   IF ( (cdfstat .NE. NF_NOERR) .OR. 
      .          (STR_CASE_BLIND_COMPARE ( ds_var_code(ivar), vname) 
      .		  .NE. str_match) ) THEN
+#ifdef usingDODSf2cUnderscore
+	      cdfstat = NF_INQ_(cdfid, ndims, nvars, natts, recdim)
+#else
 	      cdfstat = NF_INQ(cdfid, ndims, nvars, natts, recdim)
+#endif
 	      do 50 varpos=1,nvars
 * 5/99 - fix bug which was sending cd_varid(varps) to NF_INQ_VAR instead of varpos
+#ifdef usingDODSf2cUnderscore
+		 cdfstat = NF_INQ_VAR_(cdfid, varpos, vname, vartype, 
+     .		      nvdims, vdims, nvatts)
+#else
 		 cdfstat = NF_INQ_VAR (cdfid, varpos, vname, vartype, 
      .		      nvdims, vdims, nvatts)
+#endif
 *5/99 - bug fix: need to test to see if sting is EQUAL rather than not equal *kob*
 		 IF (STR_CASE_BLIND_COMPARE ( ds_var_code(ivar), 
      .		      vname) .EQ. str_match)	THEN
@@ -283,6 +314,15 @@ c!c! uncomment this...
 *       now verify the timestep value in the netcdf file
 	   ELSE
 	      IF (.NOT. sf_valid(sfcnt)) THEN
+#ifdef usingDODSf2cUnderscore
+		 cdfstat = NF_INQ_DIM_( cdfid, vdims(nvdims), dim_name, 
+     .                           npts )
+		 cdfstat = NF_INQ_VARID_(cdfid, dim_name, var_id)
+* *kob* had to add an ncvinq to find out variable type of dimension because
+*		 NF_FLOAT dimensions were causing core dumps. 
+		 cdfstat = NF_INQ_VAR_(cdfid, var_id, dim_name, vartype, nvdims, 
+     .      	      vdims,nvatts)
+#else
 		 cdfstat = NF_INQ_DIM( cdfid, vdims(nvdims), dim_name, 
      .                           npts )
 		 cdfstat = NF_INQ_VARID (cdfid, dim_name, var_id)
@@ -290,14 +330,19 @@ c!c! uncomment this...
 *		 NF_FLOAT dimensions were causing core dumps. 
 		 cdfstat = NF_INQ_VAR (cdfid, var_id, dim_name, vartype, nvdims, 
      .      	      vdims,nvatts)
-
+#endif
 		 CALL CD_RD_R8_1(cdfid,var_id,a_lo_t_offset,vartype,'Error',
      .      	      r8buff,status)
 		 IF ( status .NE. merr_ok) GOTO 5000
 		 
 		 IF ( vartype .EQ. NF_DOUBLE) THEN
+#ifdef usingDODSf2cUnderscore
+		    cdfstat = NF_GET_VAR1_DOUBLE_(cdfid, var_id,
+     .      	      a_lo_t_offset,r8buff)
+#else
 		    cdfstat = NF_GET_VAR1_DOUBLE(cdfid, var_id,
      .      	      a_lo_t_offset,r8buff)
+#endif
 		 ELSE
 		 ENDIF
 *       if an error is found, announce to user but continue on	

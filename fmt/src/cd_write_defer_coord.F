@@ -48,6 +48,8 @@
 *                   dimensioned 2xN
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 
 * argument declarations:
@@ -59,6 +61,10 @@
         include 'tmap_errors.parm'
 	include 'xio.cmn_text'
         include 'xdefer_coords.cmn'
+
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
 
 * local variable declarations:
 	INTEGER	 iax, i, i1000, hilim, cdfstat, box_loc,
@@ -94,8 +100,13 @@
                DO 100 i = i1000, hilim
  100           buff(i-i1000+1) = TM_WORLD(i, dfr_grid(iax), 
      .			              dfr_idim(iax), box_loc)
+#ifdef usingDODSf2cUnderscore
+               cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, dfr_cdaxis(iax), 
+     .		       i1000-dfr_lo(iax)+1, hilim-i1000+1, buff)
+#else
                cdfstat = NF_PUT_VARA_DOUBLE (cdfid, dfr_cdaxis(iax), 
      .		       i1000-dfr_lo(iax)+1, hilim-i1000+1, buff)
+#endif
                IF (cdfstat .NE. NF_NOERR) GOTO 5010
  110         CONTINUE
 
@@ -103,8 +114,13 @@
 	     IF (dfr_axis_type(iax) .EQ. pcd_defer_edges) THEN
                 buff(1) = TM_WORLD(dfr_hi(iax), dfr_grid(iax), 
      .			       dfr_idim(iax), box_hi_lim)
+#ifdef usingDODSf2cUnderscore
+               cdfstat = NF_PUT_VAR1_DOUBLE_(cdfid, dfr_cdaxis(iax),
+     .			dfr_hi(iax)-dfr_lo(iax)+2, buff)
+#else
                cdfstat = NF_PUT_VAR1_DOUBLE (cdfid, dfr_cdaxis(iax),
      .			dfr_hi(iax)-dfr_lo(iax)+2, buff)
+#endif
                IF (cdfstat .NE. NF_NOERR) GOTO 5010
 	     ENDIF
 
@@ -127,8 +143,13 @@
                 start(2) = i1000-dfr_lo(iax)+1
                 count(2) =  hilim-i1000+1
 
+#ifdef usingDODSf2cUnderscore
+                cdfstat = NF_PUT_VARA_DOUBLE_(cdfid, dfr_cdaxis(iax), start,
+     .		          count, buff)
+#else
                 cdfstat = NF_PUT_VARA_DOUBLE (cdfid, dfr_cdaxis(iax), start,
      .		          count, buff)
+#endif
                IF (cdfstat .NE. NF_NOERR) GOTO 5010
  210           CONTINUE
            ENDIF

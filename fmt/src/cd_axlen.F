@@ -46,6 +46,8 @@
 *		  compiler error msg
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *	cdfid	- netCDF id number for already opened CDF file
@@ -59,6 +61,10 @@
 #include "netcdf.inc"
       include 'tmap_errors.parm'
 
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
 * internal variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...moved it to parameter line
       LOGICAL CD_GET_ATTVAL, got_it, do_warn
@@ -71,12 +77,21 @@
       CD_AXLEN = 0
 
 * get the basic information about this dimension
+
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_INQ_DIM_( cdfid, dimid, axname, npts )
+#else
       cdfstat = NF_INQ_DIM( cdfid, dimid, axname, npts )
+#endif
       IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
 * get the basics about the axis by the same name
       nlen = TM_LENSTR1( axname )
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_INQ_VARID_( cdfid, axname(:nlen), axid )
+#else
       cdfstat = NF_INQ_VARID( cdfid, axname(:nlen), axid )
+#endif
 
 * check "true_size" in case this is a condensed axis representation
       got_it = CD_GET_ATTVAL( cdfid, axid, 'true_size',

@@ -52,6 +52,8 @@
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -71,6 +73,10 @@
         include 'cdf_tmap.parm'
 #include "gt_lib.parm"
 	include 'cd_lib.parm'
+
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
 
 * argument declarations
       INTEGER cdfid, nval, type, i4(10), i, status
@@ -105,13 +111,20 @@
       IF ( vname .EQ. pcdf_global ) THEN
          varid = NF_GLOBAL
       ELSE
+#ifdef usingDODSf2cUnderscore
+         cdfstat = NF_INQ_VARID_(cdfid, vname(:vlen), varid)
+#else
          cdfstat = NF_INQ_VARID(cdfid, vname(:vlen), varid)
-
+#endif
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
       ENDIF
 
 * does the attribute already exist ?
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_INQ_ATT_( cdfid, varid, att(:alen), attype, attlen )
+#else
       cdfstat = NF_INQ_ATT( cdfid, varid, att(:alen), attype, attlen )
+#endif
       IF ( cdfstat.EQ.NF_NOERR .AND. attype.NE.type ) GOTO 5200
 
 * put CDF into define mode so attributes can be written

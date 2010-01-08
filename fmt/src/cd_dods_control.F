@@ -48,6 +48,8 @@
 *		    - use a cpp include for tmap_dset.parm
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *    dset - data set number
@@ -70,6 +72,10 @@
         include 'xdset_info.cd_equiv'
 	include 'xtm_grid.cmn_text'
 	include 'xstep_files.cmn_text'
+
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
 
 * special equivalence (not in tmap_format/xdset_info.cd_equiv because "BYTE"
 * isn't supported on DECstation)
@@ -124,7 +130,12 @@
 	IF ( .NOT. got_it ) GOTO 5100
 
 * close the cache file and substitute the remote file in its place
+
+#ifdef usingDODSf2cUnderscore
+	cdfstat = NF_CLOSE_( cdfid )
+#else
 	cdfstat = NF_CLOSE ( cdfid )
+#endif
 
 * insert the remote file info in place of the cache info
 	istep = cd_stepfile(dset)
@@ -142,6 +153,11 @@
      .                   'DODS cache file lacks necessary attributes',
      .                   no_errstring, *5900)
  5900	CALL CD_ABORT_GRIDS
+
+#ifdef usingDODSf2cUnderscore
+	cdfstat = NF_CLOSE_( remote_dods_id )
+#else
 	cdfstat = NF_CLOSE ( remote_dods_id )
+#endif
  5990	RETURN
 	END

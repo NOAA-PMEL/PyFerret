@@ -63,6 +63,8 @@
 *                   reset the sf_lunit flag for cd_stepfile(dset), not for dset.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument declarations:
 	LOGICAL tregular
@@ -80,6 +82,9 @@
 	external xdset_info_data
         include 'xdset_info.cd_equiv'
 
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
 
 * local variable declarations:
       INTEGER STR_SAME, cdfid, remote_dods_id,istat
@@ -151,8 +156,12 @@
 !              here for mc datasets at all.
 
       IF (STR_SAME(ds_type(dset), '  MC') .EQ. 0) THEN
+#ifdef usingDODSf2cUnderscore
+        istat = NF_CLOSE_( cdfid )
+#else
         istat = NF_CLOSE( cdfid )
-c	sf_lunit(dset) = file_not_open
+#endif
+c        sf_lunit(dset) = file_not_open
 c        sf_lunit( cd_stepfile(dset) ) = file_not_open
       ENDIF
 * successful completion
@@ -161,6 +170,11 @@ c        sf_lunit( cd_stepfile(dset) ) = file_not_open
 
 * error exit
  5900 CALL CD_ABORT_GRIDS
- 5980 IF (remote_dods_id .NE. 0) cdfstat = NF_CLOSE( remote_dods_id )
+ 5980 CONTINUE
+#ifdef usingDODSf2cUnderscore
+      IF (remote_dods_id .NE. 0) cdfstat = NF_CLOSE_( remote_dods_id )
+#else
+      IF (remote_dods_id .NE. 0) cdfstat = NF_CLOSE( remote_dods_id )
+#endif
  5990 RETURN
       END

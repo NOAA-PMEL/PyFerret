@@ -76,6 +76,8 @@
 * v604 *acm* 7/07 increase length of ds_des_name
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -105,10 +107,12 @@
 
 ! The ones without trailing underscore are declared in netcdf.inc
 #ifdef usingDODSf2cUnderscore
-	INTEGER NF_OPEN_
 	CHARACTER*1024 NF_STRERROR_
-
 #endif  
+
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
 
 ! Completely comment out these; they are elsewhere and Solaris doesnt like
 ! them there with # marks
@@ -192,8 +196,11 @@
 * This time penalty is unavoidable (though HTTP caching may eliminate it)
 * Using the cache file will remove the need to read remote coordinates
 	   CALL TM_NOTE( 'Using cache '//cdf_file, tooplu)
+#ifdef usingDODSf2cUnderscore
+           cdfstat = NF_OPEN_(ds_des_name(dset), NF_NOWRITE, cdfid) 
+#else
            cdfstat = NF_OPEN(ds_des_name(dset), NF_NOWRITE, cdfid) 
-
+#endif
 	   IF ( cdfstat .NE. NF_NOERR ) THEN
               GOTO 5150
            ENDIF
@@ -216,7 +223,11 @@
 		     cdf_file = TM_INQ_PATH(sf_name(i),tmap_tsteps,
      .                                      ' ',.FALSE., status)
 		     IF (status .EQ. merr_ok)  THEN
+#ifdef usingDODSf2cUnderscore
+			 cdfstat = NF_OPEN_(cdf_file, NF_NOWRITE, cdfid) 
+#else
 			 cdfstat = NF_OPEN(cdf_file, NF_NOWRITE, cdfid) 
+#endif
                          IF ( cdf_file(1:7) .EQ. 'http://')
      .                        err_status = merr_remote_open
 
@@ -230,8 +241,12 @@
 		GOTO 5300
                 
 	ELSE
-                
+               
+#ifdef usingDODSf2cUnderscore 
+           cdfstat = NF_OPEN_(ds_des_name(dset), NF_NOWRITE, cdfid) 
+#else
            cdfstat = NF_OPEN(ds_des_name(dset), NF_NOWRITE, cdfid) 
+#endif
 
 	ENDIF
 	        IF ( cdfstat .NE. NF_NOERR ) GOTO 5100

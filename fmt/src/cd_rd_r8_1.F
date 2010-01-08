@@ -62,13 +62,21 @@
 #include "netcdf.inc"
       include 'tmap_errors.parm'
 
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
 * internal variable declarations:
       INTEGER cdfstat
 
 * read the value
 * NF_ routines convert to desired output data type.
 
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_GET_VAR1_DOUBLE_(cdfid, varid, index, dval)
+#else
       cdfstat = NF_GET_VAR1_DOUBLE(cdfid, varid, index, dval)
+#endif
 
       IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_RD_R8_1', cdfid, varid,

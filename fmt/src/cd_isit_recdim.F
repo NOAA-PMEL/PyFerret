@@ -50,6 +50,8 @@
 * V602 *acm*12/06 - Bug 1478: Correct the treatment of uppercasing names.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *       dset    - dset (if netcdf file, for getting name and attribute 
@@ -67,6 +69,10 @@
 #include "netcdf.inc"
         include 'tmap_errors.parm'
         include 'cd_lib.parm'
+
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
 
 * local variable declarations:
       LOGICAL this_ax_exists, recax_exists, coordvar, mode_upcase_output
@@ -86,12 +92,20 @@
          ENDIF
 
 * is there a dimension by this name?
+#ifdef usingDODSf2cUnderscore
+        cdfstat = NF_INQ_DIMID_( cdfid, name(:nlen), dimid )
+#else
         cdfstat = NF_INQ_DIMID ( cdfid, name(:nlen), dimid )
+#endif
 
         this_ax_exists = cdfstat .EQ. NF_NOERR
 
 * get vital statistics of file
+#ifdef usingDODSf2cUnderscore
+        cdfstat = NF_INQ_( cdfid, ndims, nvars, ngatts, recdim )
+#else
         cdfstat = NF_INQ ( cdfid, ndims, nvars, ngatts, recdim )
+#endif
 !        IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
         recax_exists = recdim .NE. -1
 

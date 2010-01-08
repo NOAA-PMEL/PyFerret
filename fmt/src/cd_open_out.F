@@ -47,6 +47,8 @@
 * V450 11/96 - added argument "clobber" *sh*
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *       cdfname - desired output file name
@@ -67,6 +69,10 @@
         include 'tmap_errors.parm'
 #include "gt_lib.parm"
 
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
 * local variable declarations:
       LOGICAL file_exists, do_append
       INTEGER cdfstat, cstat, clobber_mode
@@ -81,7 +87,11 @@
 
 * open or create the file
       IF ( do_append ) THEN
+#ifdef usingDODSf2cUnderscore
+	 cdfstat = NF_OPEN_( cdfname, NF_WRITE, cdfid )
+#else
 	 cdfstat = NF_OPEN( cdfname, NF_WRITE, cdfid )
+#endif
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
          CALL CD_SET_MODE( cdfid, pcd_reset_data, status )
          IF ( status .NE. merr_ok ) RETURN
@@ -93,8 +103,13 @@
 	 ENDIF
 * ... let netCDF detect the error if the file already exists
 c         cdfid = NCCRE( cdfname, clobber_mode, cdfstat )
+#ifdef usingDODSf2cUnderscore
+c         cdfstat = NF_CREATE_(cdfname, OR(clobber_mode,NF_NETCDF4), cdfid)
+         cdfstat = NF_CREATE_(cdfname, clobber_mode, cdfid)
+#else
 c         cdfstat = NF_CREATE(cdfname, OR(clobber_mode,NF_NETCDF4), cdfid)
          cdfstat = NF_CREATE(cdfname, clobber_mode, cdfid)
+#endif
 
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
          CALL CD_SET_MODE( cdfid, pcd_reset_define, status )

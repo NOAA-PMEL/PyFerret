@@ -47,6 +47,8 @@
 *	    	  calendar is assumed Gregorian
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -67,6 +69,10 @@
 #include "netcdf.inc"
       include 'tmap_errors.parm'
 
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
 * internal variable declarations:
       INTEGER cdfstat, mon, day, yr, hour, min, sec,
      .        t0year, t0mon, t0day, t0hour, t0min, t0sec
@@ -81,7 +87,11 @@
      .		  p0010 = 3653.   * 24 * 60 * 60 )
 
 * read the yymmdd value
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_GET_VAR1_DOUBLE_(cdfid, t1id, index, yymmdd)
+#else
       cdfstat = NF_GET_VAR1_DOUBLE(cdfid, t1id, index, yymmdd)
+#endif
 
       IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_RD_YMD_1', cdfid, t1id,

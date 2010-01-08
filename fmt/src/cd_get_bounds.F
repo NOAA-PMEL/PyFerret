@@ -55,6 +55,8 @@
 * V552 *acm* 5/03   increase vname and buff to 128 chars 
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 
 * argument definitions:
@@ -75,6 +77,11 @@
 	include 'cd_lib.parm'
         include 'xio.cmn_text'
         external xio_data
+
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -98,7 +105,11 @@
 * changed it to .false.  2jun94
 	CD_GET_BOUNDS = .FALSE.     !in case of error exit
 * get the vital statistics for the CDF file
+#ifdef usingDODSf2cUnderscore
+        cdfstat = NF_INQ_( cdfid, ndims, nvars, ngatts, recdim)
+#else
         cdfstat = NF_INQ( cdfid, ndims, nvars, ngatts, recdim)
+#endif
 
 * if it is a character variable, then the first dimension of it is the strlen
         IF (vartyp .EQ. NF_CHAR) THEN
@@ -109,8 +120,13 @@
 	ENDIF
 
 * get the vital statistics for this variable
+#ifdef usingDODSf2cUnderscore
+        cdfstat = NF_INQ_VAR_(cdfid, ivar, vname, vartyp, nvdim,
+     .              vdims, nvatts)
+#else
         cdfstat = NF_INQ_VAR (cdfid, ivar, vname, vartyp, nvdim,
      .              vdims, nvatts)
+#endif
         vlen = TM_LENSTR1(vname)
 
 
@@ -146,8 +162,12 @@
            ENDIF
  300    CONTINUE
         IF ( tmrecdim .NE. 0 ) THEN
+#ifdef usingDODSf2cUnderscore
+	   cdfstat = NF_INQ_DIM_( cdfid, recdim, buff, npts )
+#else
 	   cdfstat = NF_INQ_DIM( cdfid, recdim, buff, npts )
-           lo(tmrecdim) = 1
+#endif
+	   lo(tmrecdim) = 1
            hi(tmrecdim) = npts
         ENDIF
 

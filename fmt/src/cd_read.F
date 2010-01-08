@@ -71,6 +71,8 @@
 * V600  6/06 *acm*  needed call to CD_GET_VAR_INFO to define vname for NC_GET_ATTRIB
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -109,12 +111,6 @@
         include 'xmachine_int1.cmn'
 #endif
 
-
-! The ones without trailing underscore are declared in netcdf.inc
-#ifdef usingDODSf2cUnderscore
-	CHARACTER*1024 NF_STRERROR_
-#endif  
-
 * local definitions
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
@@ -135,9 +131,6 @@
 	DATA  		dimnam/'I','J','K','L'/
 	CHARACTER*1024 ebuff, upstr  ! for nf_ error message
 	CHARACTER*10 TM_FMT, errcode
-
-	INTEGER  NF_GET_VARM_REAL_
-	EXTERNAL NF_GET_VARM_REAL_
 
 * special equivalence (cannot include in tmap_format/xdset_info.cd_equiv 
 * because "BYTE" isn't supported on DECstation)

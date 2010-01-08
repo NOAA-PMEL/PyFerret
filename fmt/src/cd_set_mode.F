@@ -44,6 +44,8 @@
 * revision 0.0 - 10/92
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *       cdfid   - returned pointer to open CDF file
@@ -59,6 +61,9 @@
         include 'cdf_tmap.parm'
         include 'tmap_errors.parm'
 
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
 
 * local variable declarations:
       INTEGER cdf_mode, cdfstat
@@ -71,11 +76,21 @@
          RETURN      ! no change requested
       ELSEIF ( mode .EQ. pcd_mode_define ) THEN
 * ... enter define mode
+#ifdef usingDODSf2cUnderscore
+         cdfstat = NF_REDEF_( cdfid )
+#else
          cdfstat = NF_REDEF( cdfid )
+#endif
+
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
       ELSEIF ( mode .EQ. pcd_mode_data ) THEN
 * ... enter data mode
+#ifdef usingDODSf2cUnderscore
+         cdfstat = NF_ENDDEF_( cdfid )
+#else
          cdfstat = NF_ENDDEF( cdfid )
+#endif
+
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
       ENDIF
 

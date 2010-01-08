@@ -50,6 +50,8 @@
 * V552 *acm* 5/03   increase vname to 128 chars 
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 
 * argument definitions:
@@ -65,6 +67,10 @@
 #include "netcdf.inc"
         include 'tmap_errors.parm'
 
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
 * local variable declarations:
       INTEGER ndims, nvars, ngatts, recdim, cdfstat, vartyp, nvdims,
      .        vdims(6), nvatts
@@ -75,8 +81,11 @@
 	CD_USE_RECDIM = .FALSE. 		!in case of error exit
 
 * get vital statistics of file
+#ifdef usingDODSf2cUnderscore
+        cdfstat = NF_INQ_(cdfid, ndims, nvars, ngatts, recdim)
+#else
         cdfstat = NF_INQ (cdfid, ndims, nvars, ngatts, recdim)
-
+#endif
         IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
 * is there a record dimension
@@ -87,8 +96,13 @@
 
 * get the statistics for the given variable
 
+#ifdef usingDODSf2cUnderscore
+        cdfstat = NF_INQ_VAR_(cdfid, varid, vname, vartyp, nvdims, 
+     .              vdims, nvatts)
+#else
         cdfstat = NF_INQ_VAR(cdfid, varid, vname, vartyp, nvdims, 
      .              vdims, nvatts)
+#endif
 
         IF (cdfstat.NE.NF_NOERR) GOTO 5100
 

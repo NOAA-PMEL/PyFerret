@@ -39,12 +39,18 @@
 *                  was being reset  as npts bounds or edges, which is npts+1
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'xtm_grid.cmn_text'
         INCLUDE 'xio.cmn_text'
         INCLUDE 'tmap_errors.parm'
 #include "netcdf.inc"
+
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
 
 * argument declarations
       INTEGER cdfid, iaxis, vlen, edgid, status
@@ -59,7 +65,11 @@
 * does the variable pointed to really exist ?
 
         elen = TM_LENSTR1(ename)
+#ifdef usingDODSf2cUnderscore
+	cdfstat = NF_INQ_VARID_(cdfid, ename(:elen), edgid)
+#else
 	cdfstat = NF_INQ_VARID(cdfid, ename(:elen), edgid)
+#endif
 
         IF (cdfstat.NE.NF_NOERR) THEN
            soft_err = 11
@@ -67,15 +77,24 @@
         ENDIF
 
 * get the vital statistics of the edges variable
+#ifdef usingDODSf2cUnderscore
+        cdfstat = NF_INQ_VAR_(cdfid, edgid, ename(:elen), vartype,
+     .               nvdims, vdims, nvatts)
+#else
         cdfstat = NF_INQ_VAR (cdfid, edgid, ename(:elen), vartype,
      .               nvdims, vdims, nvatts)
+#endif
         IF ( nvdims .NE. 1 ) THEN
            soft_err = 12
            GOTO 5000
         ENDIF
 
 * get axis length:
+#ifdef usingDODSf2cUnderscore
+	cdfstat = NF_INQ_DIM_(cdfid, vdims, buff, npts)
+#else
 	cdfstat = NF_INQ_DIM (cdfid, vdims, buff, npts)
+#endif
 
         IF (cdfstat.NE.NF_NOERR) GOTO 5100   ! should never happen
 

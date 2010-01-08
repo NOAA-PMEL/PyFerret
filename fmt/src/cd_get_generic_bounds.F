@@ -53,6 +53,8 @@
 * V552 *acm* 5/03   increase vname to 128 chars 
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 
 * argument definitions:
@@ -80,6 +82,10 @@
         include 'xtm_grid.cmn_text'
         external xgt_grid_data
 
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
 * local variable declarations:
       LOGICAL CD_USE_RECDIM, TM_FPEQ, no_file_coords
       INTEGER TM_LENSTR1, TM_SUBSC, 
@@ -98,8 +104,13 @@
          ENDIF
 
 * get the vital statistics for this variable
+#ifdef usingDODSf2cUnderscore
+        cdfstat = NF_INQ_VAR_(cdfid, ivar, vname, vartyp, nvdim,
+     .              vdims, nvatts)
+#else
         cdfstat = NF_INQ_VAR (cdfid, ivar, vname, vartyp, nvdim,
      .              vdims, nvatts)
+#endif
 
 * if it is a character variable, then the first dimension of it is the strlen
         IF (vartyp .EQ. NF_CHAR) THEN
@@ -122,8 +133,12 @@
 * lack the slab_min/max_limits machinery)
 
 * ... get the size and name of the dimension
-              cdfstat = NF_INQ_DIM ( cdfid, vdims(ndims), axnam, npts )
-              alen = TM_LENSTR1( axnam )
+#ifdef usingDODSf2cUnderscore
+              cdfstat = NF_INQ_DIM_( cdfid, vdims(ndims), axnam, npts )
+#else
+	      cdfstat = NF_INQ_DIM ( cdfid, vdims(ndims), axnam, npts )
+#endif
+	      alen = TM_LENSTR1( axnam )
 
 * ... time axis as a record axis will be synchronized in another routine
 	      IF ( idim .EQ. tmrecdim ) THEN
@@ -133,16 +148,25 @@
 	      ENDIF
 
 * ... find the coordinate variable by this name
+#ifdef usingDODSf2cUnderscore
+              cdfstat = NF_INQ_VARID_( cdfid, axnam(:alen), axid )
+#else
               cdfstat = NF_INQ_VARID ( cdfid, axnam(:alen), axid )
-              no_file_coords = cdfstat .NE. NF_NOERR
+#endif
+	      no_file_coords = cdfstat .NE. NF_NOERR
 
 * ... determine the first coordinate value
               IF ( no_file_coords ) THEN
 	         file_val = 1.0D0	! like abstract axis
 	      ELSE
 * ... get the vital statistics of the coordinate variable
-                 cdfstat = NF_INQ_VAR(cdfid, axid, axnam, 
+#ifdef usingDODSf2cUnderscore
+                 cdfstat = NF_INQ_VAR_(cdfid, axid, axnam, 
      .			cvartyp, ncvdims,
+#else
+		 cdfstat = NF_INQ_VAR(cdfid, axid, axnam, 
+     .			cvartyp, ncvdims,
+#endif
 #ifdef FORTRAN_90
      .			TRANSFER(cvdim,cvdim,1), nvatts)
 #else

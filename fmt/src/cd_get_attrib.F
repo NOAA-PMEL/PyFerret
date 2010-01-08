@@ -56,6 +56,8 @@
 *            reading the attribute values.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -77,6 +79,10 @@
 #include "netcdf.inc"
       include 'xio.cmn_text'
 
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
 * internal variable declarations:
       LOGICAL too_long
       INTEGER TM_LENSTR1, lena, lenb, attype, cdfstat, i
@@ -92,8 +98,11 @@
 * inquire about the attribute by name
 ! 11/95 note:  NCAINQ appears not to return a meaningful attlen -- always 256
       lena = TM_LENSTR1( attrib )
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_INQ_ATT_(cdfid, varid, attrib(:lena), attype, attlen )
+#else
       cdfstat = NF_INQ_ATT (cdfid, varid, attrib(:lena), attype, attlen )
-
+#endif
       IF ( cdfstat .NE. NF_NOERR ) THEN
          attlen = 0
          CD_GET_ATTRIB = .FALSE.
@@ -105,8 +114,12 @@
          CD_GET_ATTRIB = .FALSE.
          GOTO 5000
       ELSE
+#ifdef usingDODSf2cUnderscore
+         cdfstat = NF_GET_ATT_TEXT_(cdfid, varid, attrib, buff)
+#else
          cdfstat = NF_GET_ATT_TEXT (cdfid, varid, attrib, buff)
-         IF (cdfstat .NE. NF_NOERR ) THEN
+#endif
+	 IF (cdfstat .NE. NF_NOERR ) THEN
             CD_GET_ATTRIB = .FALSE.
             GOTO 5000
          ELSE

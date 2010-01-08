@@ -48,6 +48,8 @@
 *		  calendar is assumed Gregorian for epic data
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -69,6 +71,10 @@
 #include "netcdf.inc"
       include 'tmap_errors.parm'
 
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
 * internal variable declarations:
       INTEGER jday, msec, cdfstat, mon, day, yr, hour, min,
      .        t0year, t0mon, t0day, t0hour, t0min, t0sec
@@ -84,12 +90,20 @@
       IF (status .NE. merr_ok) GO TO 5000
 
 * read the 2 integer values
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_GET_VAR1_DOUBLE_(cdfid, t1id, index, jday)
+#else
       cdfstat = NF_GET_VAR1_DOUBLE(cdfid, t1id, index, jday)
+#endif
 
       IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_RD_EP_TIME', cdfid, t1id,
      .       'EPIC time', no_errstring, *5000 )
-      cdfstat = NF_GET_VAR1_DOUBLE(cdfid, t2id, index, msec)
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_GET_VAR1_DOUBLE_(cdfid, t2id, index, msec)
+#else
+      cdfstat = NF_GET_VAR1_DOUBLE(cdfid, t1id, index, jday)
+#endif
 
       IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_RD_EP_TIME', cdfid, t2id,

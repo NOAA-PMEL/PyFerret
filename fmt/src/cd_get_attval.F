@@ -60,6 +60,8 @@
 *                values to be used correctly.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -77,19 +79,18 @@
       CHARACTER*(*) attrib, vname
       REAL val(vlen)
 
-#ifdef unix
       include 'netcdf.decl'
 #include "netcdf.inc"
+
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
 #  ifdef sun
       BYTE i1buff(132)
 #  else
       INTEGER*1 i1buff(132)
 #  endif
-#else
-      BYTE i1buff(132)
-      INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-#endif
 
 * internal variable declarations:
       INTEGER TM_LENSTR1, lena, attype, cdfstat, i
@@ -108,8 +109,11 @@
 
 * inquire about the attribute by name
       lena = TM_LENSTR1( attrib )
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_INQ_ATT_(cdfid, varid, attrib(:lena), attype, vback )
+#else
       cdfstat = NF_INQ_ATT (cdfid, varid, attrib(:lena), attype, vback )
-
+#endif
       IF ( cdfstat .EQ. NF_NOERR ) THEN
          IF ( vback .GT. vlen ) THEN
             buff = 'too many values in attribute "'//attrib(:lena)//
@@ -118,19 +122,39 @@
             IF ( do_warn ) CALL TM_NOTE( buff(:lena), 6 )
             CD_GET_ATTVAL = .FALSE.
          ELSEIF (attype.EQ.NF_FLOAT) THEN
+#ifdef usingDODSf2cUnderscore
+	    cdfstat = NF_GET_ATT_REAL_(cdfid, varid, attrib, r4buff)
+#else
 	    cdfstat = NF_GET_ATT_REAL (cdfid, varid, attrib, r4buff)
-            CD_GET_ATTVAL = .TRUE.
+#endif
+	    CD_GET_ATTVAL = .TRUE.
          ELSEIF (attype.EQ.NF_DOUBLE) THEN
+#ifdef usingDODSf2cUnderscore
+	    cdfstat = NF_GET_ATT_DOUBLE_(cdfid, varid, attrib, r4buff)
+#else
 	    cdfstat = NF_GET_ATT_DOUBLE (cdfid, varid, attrib, r4buff)
+#endif
             CD_GET_ATTVAL = .TRUE.
          ELSEIF (attype.EQ.NF_INT1) THEN
+#ifdef usingDODSf2cUnderscore
+	    cdfstat = NF_GET_ATT_INT1_(cdfid, varid, attrib, r4buff)
+#else
 	    cdfstat = NF_GET_ATT_INT1 (cdfid, varid, attrib, r4buff)
+#endif
             CD_GET_ATTVAL = .TRUE.
          ELSEIF (attype.EQ.NF_INT2) THEN  ! SHORT same as INT2
+#ifdef usingDODSf2cUnderscore
+	    cdfstat = NF_GET_ATT_INT2_(cdfid, varid, attrib, r4buff)
+#else
 	    cdfstat = NF_GET_ATT_INT2 (cdfid, varid, attrib, r4buff)
+#endif
             CD_GET_ATTVAL = .TRUE.
          ELSEIF (attype.EQ.NF_INT) THEN  ! INT prev. also called LONG
+#ifdef usingDODSf2cUnderscore
+	    cdfstat = NF_GET_ATT_INT_(cdfid, varid, attrib, r4buff)
+#else
 	    cdfstat = NF_GET_ATT_INT (cdfid, varid, attrib, r4buff)
+#endif
             CD_GET_ATTVAL = .TRUE.
          ELSE
             CD_GET_ATTVAL = .FALSE.

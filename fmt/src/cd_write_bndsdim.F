@@ -43,6 +43,8 @@
 * V570 *acm* 5/04 
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 
 * argument definitions:
@@ -56,15 +58,16 @@
 	include 'cdf_tmap.parm'
 #include "gt_lib.parm"
 
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
 * argument declarations
       INTEGER cdfid, status
 
 * local variable declarations:
       CHARACTER dimname*128
       INTEGER cdfstat, clen, nlen, dimid, nbnds
-#ifdef usingDODSf2cUnderscore
-      INTEGER NF_INQ_DIMLEN_
-#endif
 
 * initialize
       dimname = 'bnds'
@@ -72,7 +75,12 @@
       nlen = 4
 
 * is the dimension already defined ?
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_INQ_DIMID_(cdfid, dimname(:nlen), dimid )
+#else
       cdfstat = NF_INQ_DIMID (cdfid, dimname(:nlen), dimid )
+#endif
+
       IF ( cdfstat .EQ. NF_NOERR ) THEN
 * ... yes. make sure defn is consistent
 
@@ -94,7 +102,12 @@
 * ... no. define it
         CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
         IF ( status .NE. merr_ok ) RETURN
+#ifdef usingDODSf2cUnderscore
+        cdfstat = NF_DEF_DIM_( cdfid, dimname(:nlen), nbnds, dimid )
+#else
         cdfstat = NF_DEF_DIM( cdfid, dimname(:nlen), nbnds, dimid )
+#endif
+
         IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
       ENDIF
 

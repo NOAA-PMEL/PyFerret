@@ -70,6 +70,8 @@
 *                    arent written. They can get too long for OPeNDAP library calls
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -99,6 +101,10 @@
 	external xgt_grid_data
 	include 'xio.cmn_text'
 
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
 * argument declarations
       LOGICAL enhead, new, do_bounds, edges_flag, mode_upcase_output
       INTEGER cdfid, dset, type, maxstrlen, grid, lo(4), hi(4),
@@ -127,15 +133,24 @@
 * has the variable already been created ?
       vname = varname    ! Ultrix f77 is fussy about CHAR*(*) vars
       vlen = TM_LENSTR1( vname )
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_INQ_VARID_(cdfid, vname(:vlen), varid)
+#else
       cdfstat = NF_INQ_VARID(cdfid, vname(:vlen), varid)
+#endif
 
       itsa_strvar = type .EQ. NF_CHAR
 
 * already exists: limited consistency check - size of each axis, only
       new = cdfstat .NE. NF_NOERR
       IF ( .NOT.new ) THEN
+#ifdef usingDODSf2cUnderscore
+         cdfstat = NF_INQ_VAR_(cdfid, varid, vname, vartyp, 
+     .                 nvdims, vdims, nvatts)
+#else
          cdfstat = NF_INQ_VAR (cdfid, varid, vname, vartyp, 
      .                 nvdims, vdims, nvatts)
+#endif
          IF ( CD_USE_RECDIM( cdfid, varid, status ) ) THEN
             recdim = t_dim
          ELSE
@@ -282,7 +297,11 @@
             cdfname = lname
          ENDIF
          nlen = TM_LENSTR1( cdfname )
+#ifdef usingDODSf2cUnderscore
+         cdfstat = NF_INQ_DIMID_( cdfid, cdfname(:nlen), dimid(dims) )
+#else
          cdfstat = NF_INQ_DIMID ( cdfid, cdfname(:nlen), dimid(dims) )
+#endif
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5200  ! it must already exist
  300  CONTINUE
 
@@ -291,7 +310,11 @@
       IF ( status .NE. merr_ok ) RETURN
 
 * create the new variable
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_DEF_VAR_(cdfid, vname(:vlen), type, dims, dimid, varid)
+#else
       cdfstat = NF_DEF_VAR(cdfid, vname(:vlen), type, dims, dimid, varid)
+#endif
       IF ( cdfstat .NE. NF_NOERR ) GOTO 5400
 
 * if the "unlimited" record dimension is in use place no limits on that axis
@@ -313,12 +336,21 @@
       IF ( itsa_slab .AND. enhead) THEN
          glen = TM_LENSTR1( gname )
 
+#ifdef usingDODSf2cUnderscore
+         cdfstat = NF_PUT_ATT_TEXT_( cdfid, varid, 'parent_grid', glen,
+     .                gname(:glen) )
+         cdfstat = NF_PUT_ATT_INT_( cdfid, varid, 'slab_min_index', 
+     .                NF_INT, 4, lo2 )
+         cdfstat = NF_PUT_ATT_INT_( cdfid, varid, 'slab_max_index', 
+     .                NF_INT, 4, hi2 )
+#else
          cdfstat = NF_PUT_ATT_TEXT( cdfid, varid, 'parent_grid', glen,
      .                gname(:glen) )
          cdfstat = NF_PUT_ATT_INT( cdfid, varid, 'slab_min_index', 
      .                NF_INT, 4, lo2 )
          cdfstat = NF_PUT_ATT_INT( cdfid, varid, 'slab_max_index', 
      .                NF_INT, 4, hi2 )
+#endif
       ENDIF
 
 * successful completion

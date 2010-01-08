@@ -48,6 +48,8 @@
 *           the data, we still need to set status to merr_ok.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -67,6 +69,11 @@
       include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
+      
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
 
 * internal variable declarations:
       INTEGER cdfstat
@@ -74,7 +81,11 @@
 * read the value
 * NF_ routines convert to desired output data type.
 
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_GET_VARA_DOUBLE_(cdfid, varid, start, n, dvals)
+#else
       cdfstat = NF_GET_VARA_DOUBLE(cdfid, varid, start, n, dvals)
+#endif
 
       IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_RD_R8_ARR', cdfid, varid,      

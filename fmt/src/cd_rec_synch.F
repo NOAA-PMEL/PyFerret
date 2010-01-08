@@ -67,6 +67,8 @@
 *                  as scalar integers not array elements.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -85,6 +87,10 @@
         include 'tmap_errors.parm'
         include 'xio.cmn_text'
         external xio_data
+
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
 
 * argument declarations
       LOGICAL do_bounds
@@ -119,23 +125,38 @@
      .            append = .TRUE., do_warn=.TRUE. )
 
 * get the vital statistics for the CDF file
+#ifdef usingDODSf2cUnderscore
+	cdfstat = NF_INQ_(cdfid, ndims, nvars, ngatts, recdim)
+#else
 	cdfstat = NF_INQ (cdfid, ndims, nvars, ngatts, recdim)
+#endif
 
 * get the name of the record axis
+#ifdef usingDODSf2cUnderscore
+        cdfstat = NF_INQ_DIM_( cdfid, recdim, axnam, npts )
+#else
         cdfstat = NF_INQ_DIM ( cdfid, recdim, axnam, npts )
+#endif
+
         alen = TM_LENSTR1( axnam )
 
 * is there a coordinate variable by this name ?  If not, error (for now)
+#ifdef usingDODSf2cUnderscore
+        cdfstat = NF_INQ_VARID_( cdfid, axnam(:alen), axid )
+#else
         cdfstat = NF_INQ_VARID ( cdfid, axnam(:alen), axid )
+#endif
+
         IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
 
 * get the vital statistics of the coordinate variable
+#ifdef usingDODSf2cUnderscore
+        cdfstat = NF_INQ_VAR_(cdfid, axid, buff, vartyp, nvdim, vdims,
+     .                nvatts)
+#else
         cdfstat = NF_INQ_VAR (cdfid, axid, buff, vartyp, nvdim, vdims,
      .                nvatts)
-
-! ... 10/92: ncendf called in CD_WRITE_VAR
-!* leave define mode so we can read and write the coordinates
-!        cdfstat = NCENDF(cdfid)
+#endif
 
 * locate the new coordinate values at end of coordinate axis ?
 * see if the first of the new coordinates exceeds the last already in the file
@@ -218,7 +239,11 @@
 
 * Get upper bound of last box on existing axis
 
+#ifdef usingDODSf2cUnderscore
+          cdfstat = NF_INQ_VARID_( cdfid, bname(:blen), bndid )
+#else
           cdfstat = NF_INQ_VARID ( cdfid, bname(:blen), bndid )
+#endif
 
           startpts(1) = 2  ! get uppper bound, 1 point
           numpts(1) = 1
@@ -313,6 +338,12 @@
      . 'output coordinate is inside upper bound of existing axis cell:'
      .       //TM_STRING(new_coord)//' Axis: '//axnam(:alen),
      .       no_errstring , *5900 )
- 5900  cdfstat = NF_REDEF( cdfid ) ! back into define mode
+ 5900  CONTINUE
+#ifdef usingDODSf2cUnderscore	
+       cdfstat = NF_REDEF_( cdfid ) ! back into define mode
+#else
+       cdfstat = NF_REDEF( cdfid ) ! back into define mode
+#endif
+
        RETURN
        END

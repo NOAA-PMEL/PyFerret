@@ -65,6 +65,8 @@
 *                  to a previously-regular axis that didn't have a bounds attribute.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
 * V641 *acm* 1/10  Fix bug 1715 and output of packed data.
 
 * argument definitions:
@@ -92,13 +94,9 @@
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 
-
+! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
-#ifdef usingDODSf2cUnderscore
-	INTEGER NF_INQ_VARID_
-	INTEGER NF_INQ_VAR_
-	INTEGER NF_PUT_VARA_DOUBLE_
-#endif  
+#include "netcdf_declareUnderscore.inc"
 
 * argument declarations
       LOGICAL do_bounds, mode_upcase_output

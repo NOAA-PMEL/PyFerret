@@ -83,7 +83,6 @@
      .                            a_lo_t:a_hi_t)
 *
 * include files
-#ifdef unix
 	include 'tmap_dims.parm'		! data set dimension
 	include 'tmap_errors.parm'		! err code parm defs
 #include "gt_lib.parm"
@@ -91,13 +90,6 @@
 	external xgt_grid_data
 	include 'xdset_info.cmn_text'	! data set info common
 	external xdset_info_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! Data set dimension
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! err code PARM defs
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'		! Axis setup parameters
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'		! Grid info
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'		! Data set info common
-#endif
 
 * local definitions
         INTEGER         STR_UPCASE, TM_LENSTR1, n, num_indices
@@ -171,22 +163,11 @@
 	  thisline = grid_line(lcnt,vargrid)
 	  IF (thisline .EQ. mpsunkn .OR. thisline .EQ. mpsnorm) GOTO 120
 	  IF (line_modulo(thisline)) THEN
-*jli
-*            print *, 'use_lo = ',use_lo(lcnt)
-*            print *, 'use_hi = ',use_hi(lcnt)
-*            print *, 'end', ds_grid_end(lcnt,varpos) 
-*jli
 
 	    IF (use_lo(lcnt) .GE. 1 .AND.
 !     .	        use_hi(lcnt) .LE. line_dim(thisline)) GOTO 120
      .         use_hi(lcnt) .LE. ds_grid_end(lcnt,varpos)) GOTO 120
 
-*<--jli         
-!            IF( line_parent(thisline) .NE. 0) THEN
-!             IF (use_lo(lcnt) .GE. 1 .AND.
-!     .        use_hi(lcnt) .LE. line_dim(line_parent(thisline))) GOTO 120
-!            ENDIF
-*-->jli
 	    IF (modline .NE. 0) GOTO 9100
 	    modline = lcnt
 	  ENDIF

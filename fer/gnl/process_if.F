@@ -145,14 +145,30 @@ cc	         if_doing(ifstk) = if_doing(ifstk-1)
 	ENDIF
         
 * Skipped if inside a repeat?  will have a ; or a ) after it.
+* One more fix: if the ; or ) follows a ! then ignore.
+
 	IF (if_conditional .AND. its_endif ) THEN     ! nested IF?
 	   IF (if_doing(ifstk).NE.pif_doing_clause) THEN	! skipped IF?
 
-           IF (INDEX(risc_buff, ')') .GT. INDEX(risc_buff,'ENDIF') )
-     .      its_endif = .FALSE.
-           IF (INDEX(risc_buff, ';') .GT. INDEX(risc_buff,'ENDIF') )
-     .      its_endif = .FALSE.
+           IF (INDEX(risc_buff, ')') .GT. INDEX(risc_buff,'ENDIF'))THEN
+	      IF (INDEX(risc_buff, '!') .GT. 0) THEN
+                IF (INDEX(risc_buff, ')') .LT. INDEX(risc_buff,'!'))
+     .            its_endif = .FALSE.
+              ELSE
+                 its_endif = .FALSE.
+              ENDIF
+	   ENDIF
+
+           IF (INDEX(risc_buff, ';') .GT. INDEX(risc_buff,'ENDIF'))THEN
+	      IF (INDEX(risc_buff, '!') .GT. 0) THEN
+                IF (INDEX(risc_buff, ';') .LT. INDEX(risc_buff,'!'))
+     .            its_endif = .FALSE.
+              ELSE
+                 its_endif = .FALSE.
+              ENDIF
+	   ENDIF
         ENDIF
+
         ENDIF
 
 	IF (its_endif) RETURN  ! process the endif, always

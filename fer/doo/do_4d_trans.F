@@ -139,7 +139,7 @@
 	at_ngd = action .EQ. trans_4d_good_pt
 	short_comp = at_ngd .OR. at_nbd		! for speed, only
 
-* determine the axes to be transforomed
+* determine the axes to be transformed
 	DO 10 idim = 1, 4
 	  yes_ax(idim) = cx_trans(idim,res_cx) .EQ. action
 	  no_ax (idim) = .NOT.yes_ax(idim)
@@ -176,6 +176,7 @@
 * ... partial box at lower end
 	      boxes(ind_lo+offset) = TM_WORLD(ind_lo, grid, idim, box_hi_lim)
      .				 - cx_lo_ww(idim,res_cx)
+
 * ... complete boxes mid-axis
 	      DO 40 i = ind_lo+1, ind_hi-1
  40	      boxes(i+offset)  = BOX_SIZE( i, grid, idim )
@@ -187,7 +188,8 @@
 	    IF ( at_din ) THEN
 	      unit = un_convert( line_unit_code(grid_line(idim,grid)) )
 	      DO 50 i = ind_lo, ind_hi
- 50	      boxes(i+offset) = boxes(i+offset) * unit
+ 	      boxes(i+offset) = boxes(i+offset) * unit
+ 50           continue
 	    ENDIF
 	  ENDIF
  100	CONTINUE
@@ -197,39 +199,30 @@
 * 3/06 - apply Andrew*s suggested correction for XY integ., bug1348
 * 6/06   fix the correction; boxes(i+offset) is in meters, so convert back to 
 *        degrees, then radians. Compute the factor, and then convert to meters.
+C See this thread:
+C http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2009/msg00506.html
+C And also ticket 1348. The surface area of sphere depends only on h
+C http://mathworld.wolfram.com/Zone.html
 
 	need_cos = GEOG_COS_FACTOR( y_dim,grid )
      .		.AND. yes_xax
      .	 	.AND. cx_lo_s2(com_cx) .NE. unspecified_int4
 	IF ( need_cos ) THEN
 	      DO 120 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	         yc = deg2rad * 
-     .              SNGL( TM_WORLD(j,grid,y_dim,box_middle))
-                 boxes(j+cos_offset)  = COS(yc)
                  IF (yes_yax) THEN
-                    unit = 1.
-	            IF ( at_din ) unit = 
-     .                un_convert( line_unit_code(grid_line(y_dim,grid)) )
-c!                    yh = boxes( j+box_offset(y_dim) )
-c!                    yh_2 = 0.5*deg2rad * yh/unit
-c!
-c!                    boxes(j+cos_offset)  = 
-c!     .                COS(yc) * ABS(SIN(yh/2))/(yh/2)
-
-C The above are all OK if the coordinate point is in the middle of the box.
-C If the coordinate is not in the middle of the cell then it should be
-C ABS(SIN(ybxhi)-SIN(ybxlo)) which is correct wherever the coord point lies.
-C See this thread:
-C http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2009/msg00506.html
-C And also ticket 1348.
-
 	            ybxlo = deg2rad* 
      .                SNGL(TM_WORLD(j, grid, y_dim, box_lo_lim) )
+
+                    IF (j .EQ. cx_lo_s2(com_cx))
+     .                ybxlo = deg2rad* cx_lo_ww(y_dim,res_cx)
+
 	            ybxhi = deg2rad* 
      .                SNGL(TM_WORLD(j, grid, y_dim, box_hi_lim) )
+                    IF (j .EQ. cx_hi_s2(com_cx))
+     .                ybxhi = deg2rad* cx_hi_ww(y_dim,res_cx)
 
-	            boxes(j+cos_offset)  = ABS( SIN(ybxhi) - SIN(ybxlo) )/
-     .                ( ybxhi - ybxlo )
+	            boxes(j+cos_offset)  = ABS( SIN(ybxhi) - SIN(ybxlo) )
+		    boxes(j+box_offset(y_dim)) = 1  ! surface area of sphere depends only on h not on ybox
 
                  ENDIF
  120         CONTINUE

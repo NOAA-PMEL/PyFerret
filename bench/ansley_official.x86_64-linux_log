@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 52155681 Jan  4 15:44 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
+Running FERRET version ../fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 52157668 Jan 15 18:26 ../fer/ferretdods_gui
+Using external functions from ../external_functions/ext_func_x86
 Running the tests of external functions y
 Benchmark run by ansley
-Note: netcdf-3 style calls and parameters  rather than the netcdf-2 ones
+Note: fix for bug 1348 - area on a sphere, and a further  if-repeat bug, if there were comments (seen in LAS Desktop app)
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -20,12 +20,12 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86
-Beginning at Mon Jan 4 15:45:49 PST 2010
+FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_x86
+Beginning at Fri Jan 15 18:29:18 PST 2010
  	NOAA/PMEL TMAP
- 	FERRET v6.401  
- 	Linux(g77) 2.6.9-89.ELsmp - 01/04/10
- 	 4-Jan-10 15:45     
+ 	FERRET v6.41  
+ 	Linux(g77) 2.6.9-89.ELsmp - 01/15/10
+ 	15-Jan-10 18:29     
 
 yes? !bn500_all_shell
 yes? 
@@ -10243,15 +10243,15 @@ show symbols/all
 PPL$XPIXEL = "317"
 PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.401"
+FERRET_VERSION = "6.41"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-89.ELsmp"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 4-Jan-10"
-SESSION_TIME = "15:45"
-DELTA_CPU = "7.8638"
-CLOCK_SECS = "8.43"
-CURRENT_DATE = " 4-Jan-10"
-CURRENT_TIME = "15:45:57"
+SESSION_DATE = "15-Jan-10"
+SESSION_TIME = "18:29"
+DELTA_CPU = "6.35703"
+CLOCK_SECS = "6.96"
+CURRENT_DATE = "15-Jan-10"
+CURRENT_TIME = "18:29:25"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10267,15 +10267,15 @@ show symbol/all
 PPL$XPIXEL = "317"
 PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.401"
+FERRET_VERSION = "6.41"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-89.ELsmp"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 4-Jan-10"
-SESSION_TIME = "15:45"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "8.43"
-CURRENT_DATE = " 4-Jan-10"
-CURRENT_TIME = "15:45:57"
+SESSION_DATE = "15-Jan-10"
+SESSION_TIME = "18:29"
+DELTA_CPU = "0.001999"
+CLOCK_SECS = "6.96"
+CURRENT_DATE = "15-Jan-10"
+CURRENT_TIME = "18:29:25"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10283,8 +10283,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 4-Jan-10"
-SESSION_TIME = "15:45"
+SESSION_DATE = "15-Jan-10"
+SESSION_TIME = "18:29"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10294,13 +10294,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 4-Jan-10"
-SESSION_TIME = "15:45"
+SESSION_DATE = "15-Jan-10"
+SESSION_TIME = "18:29"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 4-Jan-10"
-SESSION_TIME = "15:45"
+SESSION_DATE = "15-Jan-10"
+SESSION_TIME = "18:29"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10332,9 +10332,9 @@ Q23456789012345678901234567XXX = "6"
 ! show the upper left coordinate limits labels as symbols
 plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
-LAB1 = "FERRET Ver. 6.401"
+LAB1 = "FERRET Ver. 6.41"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Jan  4 2010 15:45:57 "
+LAB3 = "Jan 15 2010 18:29:25 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10429,15 +10429,15 @@ show symbols/all
 PPL$XPIXEL = "317"
 PPL$YPIXEL = "317"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.401"
+FERRET_VERSION = "6.41"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-89.ELsmp"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 4-Jan-10"
-SESSION_TIME = "15:45"
+SESSION_DATE = "15-Jan-10"
+SESSION_TIME = "18:29"
 DELTA_CPU = "0.018997"
-CLOCK_SECS = "8.45"
-CURRENT_DATE = " 4-Jan-10"
-CURRENT_TIME = "15:45:57"
+CLOCK_SECS = "6.98"
+CURRENT_DATE = "15-Jan-10"
+CURRENT_TIME = "18:29:25"
  
  
 GO bn_reset
@@ -18158,8 +18158,8 @@ contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/
 set view v33
 contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28110:29115:-200 sin(x/3)*sin(t/100)   ! delta ignored
 set view v34
-contour/x=160E:160W/t=1-jan-1980:1-jan-1982-rw-rw-r--  1 ansley tmap 16405 Jan  4 15:46 bench.mgm
--rw-rw-r--  1 ansley tmap 321905 Jan  4 15:46 bench.mgm
+contour/x=160E:160W/t=1-jan-1980:1-jan-1982-rw-rw-r--  1 ansley tmap 31705 Jan 15 18:29 bench.mgm
+-rw-rw-r--  1 ansley tmap 413229 Jan 15 18:29 bench.mgm
 /lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=1-jan-1978:1-jan-1984/trans sin(x/3)*sin(t/100)
  
 * non-calendar axis contours involving T
@@ -25293,7 +25293,7 @@ GO err491_dp_time_write.jnl
 ! netCDF file, Ferret fails to do a valid double precision comparison
  
  
-define axMon Jan  4 15:46:15 PST 2010
+define axFri Jan 15 18:29:41 PST 2010
 is/t="18-jul-1997:14:09":"20-jul-1997:00:09":5/units=min t5
 LET my_var = t[gt=t5]
  
@@ -45804,11 +45804,11 @@ ppl list labels
  @ASdeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 6.401
+ LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 6.41
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASJan  4 2010 15:47:01
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASJan 15 2010 18:30:20
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 179.5E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47080,7 +47080,7 @@ GO bn_long_revision_num.jnl
  
 ! ferret version
 sh sym FERRET_VERSION
-FERRET_VERSION = "6.401"
+FERRET_VERSION = "6.41"
  
 ! history attribute
 let a = 12
@@ -47098,7 +47098,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET   version6.401:
+ Commands in Program FERRET   version6.41:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE
  SET REGION/I/J/K/L/X/Y/Z/T/DX/DY/DZ/DT/DI/DJ/DK/DL
@@ -47218,7 +47218,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "4-Jan-10:15:45"
+WIN_TITLE = "15-Jan-10:18:29"
  
 set win/title="set the title"
 sho sym win_title
@@ -47236,7 +47236,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 4-Jan-10:15:45"
+ !-> set win/title="15-Jan-10:18:29"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47245,16 +47245,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  4-Jan-10
+ !-> DEFINE SYMBOL the_date = 15-Jan-10
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 15:45
+ !-> DEFINE SYMBOL the_time = 18:29
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="4-Jan-10:15:45"
+ !-> SET WIN/TITLE="15-Jan-10:18:29"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "4-Jan-10:15:45"
+WIN_TITLE = "15-Jan-10:18:29"
  
 GO bn_reset
 cancel mode verify
@@ -49224,42 +49224,42 @@ list/j=1 elev[d=1], elev[d=2]
              T (day): 1.8
  Column  1: ELEV[D=err491_attval] is Surface elevation (meter)
  Column  2: ELEV[D=a] is Surface elevation (meter)
-                 ELEV     ELEV
-135.509W  /  1:   ....       ....
-135.496W  /  2:   ....       ....
-135.482W  /  3:   ....       ....
-135.469W  /  4:   ....       ....
-135.455W  /  5:   ....       ....
-135.442W  /  6:   ....       ....
-135.428W  /  7:   ....       ....
-135.415W  /  8:   ....       ....
-135.401W  /  9:   ....       ....
-135.388W  / 10:   ....       ....
-135.375W  / 11:   ....       ....
-135.361W  / 12:  2.940  5.493E-04
-135.348W  / 13:  2.940  5.493E-04
-135.334W  / 14:  2.940  5.493E-04
-135.321W  / 15:  2.940  5.493E-04
-135.307W  / 16:  2.940  5.493E-04
-135.294W  / 17:  2.940  5.493E-04
-135.28W   / 18:  2.940  5.493E-04
-135.267W  / 19:  2.940  5.493E-04
-135.254W  / 20:  2.940  5.493E-04
-135.24W   / 21:  2.940  5.493E-04
-135.227W  / 22:  2.940  5.493E-04
-135.213W  / 23:  2.940  5.493E-04
-135.2W    / 24:  2.940  5.493E-04
-135.186W  / 25:  2.940  5.493E-04
-135.173W  / 26:   ....       ....
-135.159W  / 27:   ....       ....
-135.146W  / 28:   ....       ....
-135.132W  / 29:   ....       ....
-135.119W  / 30:   ....       ....
-135.106W  / 31:   ....       ....
-135.092W  / 32:   ....       ....
-135.079W  / 33:   ....       ....
-135.065W  / 34:   ....       ....
-135.052W  / 35:   ....       ....
+                 ELEV   ELEV
+135.509W  /  1:   ....   ....
+135.496W  /  2:   ....   ....
+135.482W  /  3:   ....   ....
+135.469W  /  4:   ....   ....
+135.455W  /  5:   ....   ....
+135.442W  /  6:   ....   ....
+135.428W  /  7:   ....   ....
+135.415W  /  8:   ....   ....
+135.401W  /  9:   ....   ....
+135.388W  / 10:   ....   ....
+135.375W  / 11:   ....   ....
+135.361W  / 12:  2.940  2.940
+135.348W  / 13:  2.940  2.940
+135.334W  / 14:  2.940  2.940
+135.321W  / 15:  2.940  2.940
+135.307W  / 16:  2.940  2.940
+135.294W  / 17:  2.940  2.940
+135.28W   / 18:  2.940  2.940
+135.267W  / 19:  2.940  2.940
+135.254W  / 20:  2.940  2.940
+135.24W   / 21:  2.940  2.940
+135.227W  / 22:  2.940  2.940
+135.213W  / 23:  2.940  2.940
+135.2W    / 24:  2.940  2.940
+135.186W  / 25:  2.940  2.940
+135.173W  / 26:   ....   ....
+135.159W  / 27:   ....   ....
+135.146W  / 28:   ....   ....
+135.132W  / 29:   ....   ....
+135.119W  / 30:   ....   ....
+135.106W  / 31:   ....   ....
+135.092W  / 32:   ....   ....
+135.079W  / 33:   ....   ....
+135.065W  / 34:   ....   ....
+135.052W  / 35:   ....   ....
 sp ncdump a.nc  >> all_ncdump.out
  
 go bn_reset
@@ -49764,7 +49764,11 @@ show att/all (`sst,return=taxis`)
  (TIME7).modulo =   
  (TIME7).orig_file_axname = TIME 
 def axis/t=1:12:1/unit=months/t0="1-jan-0001" time
-show att/all (`snetcdf a {
+show att/all (`sst,return=taxis`)
+ !-> show att/all (TIME7)
+     attributes for dataset: ./coads_climatology.cdf
+ (TIME7).units = months since 15-jan-2002 
+ (netcdf a {
 dimensions:
 	PSXT91_108 = 18 ;
 	PSYT35_56 = 22 ;
@@ -49803,14 +49807,10 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
-st,return=taxis`)
- !-> show att/all (TIME7)
-     attributes for dataset: ./coads_climatology.cdf
- (TIME7).units = months since 15-jan-2002 
- (TIME7).time_origin = 15-jan-2002 
+TIME7).time_origin = 15-jan-2002 
  (TIME7).modulo =   
  (TIME7).orig_file_axname = TIME 
  
@@ -49908,7 +49908,7 @@ list/L=1/prec=7 sst[x=100:120@din,y=10:30@din]
              LONGITUDE: 100E to 120E (XY integ.)
              LATITUDE : 10N to 30N (XY integ.)
              TIME     : JAN
-          6.009285E+13
+          9432247.
  
 list/L=1/y=0/x=83w:49w sst,sst[x=@cda], sst[x=@cdb], sst[x=@cia], sst[x=@cib]
              DATA SET: ./coads_climatology.cdf
@@ -51627,7 +51627,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.401    4-Jan-10
+ .                               history         CHAR        24   T       FERRET V6.41   15-Jan-10
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51668,7 +51668,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.401    4-Jan-10
+ .                               history         CHAR        24   T       FERRET V6.41   15-Jan-10
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -53238,15 +53238,23 @@ SAMPLEI_MULTI(I_INDICES,DAT_TO_SAMPLE)
 SAMPLEJ_MULTI(J_INDICES,DAT_TO_SAMPLE)
 SAMPLEK_MULTI(K_INDICES,DAT_TO_SAMPLE)
 SAMPLEL_MULTI(L_INDICES,DAT_TO_SAMPLE)
+SCAT2GRID_BIN_XY(XPTS,YPTS,F,XAXPTS,YAXPTS)
+SCAT2GRIDGAUSS_XY_FIX(XPTS,YPTS,F,XAXPTS,YAXPTS,XSCALE,YSCALE,CUTOFF,0)
+SCAT2GRID_NOBS_XY_EXT(XPTS,YPTS,XAXPTS,YAXPTS)
+SCAT2GRID_NOBS_XYT_EXT(XPTS,YPTS,TPTS,XAXPTS,YAXPTS,TAXPTS)
+SCATGRID_BIN_XYT(XPTS,YPTS,TPTS,VAR,XAXPTS,YAXPTS,TAXPTS)
+SCATGRID_NBIN_XY(XPTS,YPTS,XAXPTS,--,YAXPTS,--)
+SCATGRID_NBIN_XYT(XPTS,YPTS,TPTS,XAXPTS,YAXPTS,TAXPTS)
+SCATGRID_NOBS_XYT(XPTS,YPTS,TPTS,XAXPTS,YAXPTS,TAXPTS)
 SORTI_STR(DAT)
 STORAGE(A)
 STRING_ARG(A,string)
 STUDENT_T_CUTOFF(P,nf)
 SUBTRACT(A,B)
 TAX_INDEX_DATESTRING(A,B,C)
+TRACKS2GRID_AVE_XYT(VAR,XPTS,YPTS,TPTS,ICRUISE,XAXPTS,YAXPTS,TAXPTS)
 WRITEV5D(V1,V2,V3,V4,V5,V6,V7,V8,FILENAME)
 WRITE_WEBROW(id,Cruise_Mask,filename)
-ZAXREPLACE_XYT(V,THICKNESS,ZAX)
  
  
 GO bn_reset
@@ -56178,58 +56186,7 @@ list indx_al, samplel(al,indx_al)
 1   / 1:  4.000000 "A rat in the house..."
 2   / 2:  2.000000 "a rat in the house..."
 3   / 3:  1.000000 "a rat in the house..."
-4   / 4:  3.000000 "ze netcdf a {
-dimensions:
-	XAX1_10 = 10 ;
-	tday = UNLIMITED ; // (31 currently)
-	lon1_5 = 5 ;
-	lat1_5 = 5 ;
-	bnds = 2 ;
-	zt = 10 ;
-	time1478 = 3 ;
-variables:
-	double XAX1_10(XAX1_10) ;
-		XAX1_10:point_spacing = "even" ;
-		XAX1_10:axis = "X" ;
-	double tday(tday) ;
-		tday:units = "DAYS since 1998-12-31 00:00:00" ;
-		tday:axis = "T" ;
-		tday:time_origin = "31-DEC-1998" ;
-	float MyUpperLowerCaseVar(tday, XAX1_10) ;
-		MyUpperLowerCaseVar:missing_value = -1.e+34f ;
-		MyUpperLowerCaseVar:_FillValue = -1.e+34f ;
-		MyUpperLowerCaseVar:long_name = "X[X=1:10] + T[GT=TDAY]" ;
-	double lon1_5(lon1_5) ;
-		lon1_5:point_spacing = "even" ;
-		lon1_5:axis = "X" ;
-	double lat1_5(lat1_5) ;
-		lat1_5:point_spacing = "uneven" ;
-		lat1_5:axis = "Y" ;
-		lat1_5:bounds = "lat1_5_bnds" ;
-	double lat1_5_bnds(lat1_5, bnds) ;
-	double zt(zt) ;
-		zt:units = "meters" ;
-		zt:positive = "down" ;
-		zt:point_spacing = "uneven" ;
-		zt:axis = "Z" ;
-		zt:bounds = "zt_bnds" ;
-	double zt_bnds(zt, bnds) ;
-	double time1478(time1478) ;
-		time1478:calendar = "NOLEAP" ;
-		time1478:point_spacing = "even" ;
-		time1478:axis = "T" ;
-	float newvar(time1478, zt, lat1_5, lon1_5) ;
-		newvar:missing_value = -1.e+34f ;
-		newvar:_FillValue = -1.e+34f ;
-		newvar:long_name = "outgoing longwave radiation" ;
-		newvar:units = "watts/m2" ;
-		newvar:history = "From a" ;
-
-// global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
-		:Conventions = "CF-1.0" ;
-}
-rats in the hou..."
+4   / 4:  3.000000 "ze rats in the hou..."
  
 let indx_bl = SORTL(bl)
 list indx_bl, samplel(bl,indx_bl)
@@ -56352,7 +56309,58 @@ save/file=a.nc/clobber MyUpperLowerCaseVar
 ! names in lowercase.
  
 USE a1478.nc
-USE a_cartesian_bug1179.nc
+USE a_cartesian_bug1179netcdf a {
+dimensions:
+	XAX1_10 = 10 ;
+	tday = UNLIMITED ; // (31 currently)
+	lon1_5 = 5 ;
+	lat1_5 = 5 ;
+	bnds = 2 ;
+	zt = 10 ;
+	time1478 = 3 ;
+variables:
+	double XAX1_10(XAX1_10) ;
+		XAX1_10:point_spacing = "even" ;
+		XAX1_10:axis = "X" ;
+	double tday(tday) ;
+		tday:units = "DAYS since 1998-12-31 00:00:00" ;
+		tday:axis = "T" ;
+		tday:time_origin = "31-DEC-1998" ;
+	float MyUpperLowerCaseVar(tday, XAX1_10) ;
+		MyUpperLowerCaseVar:missing_value = -1.e+34f ;
+		MyUpperLowerCaseVar:_FillValue = -1.e+34f ;
+		MyUpperLowerCaseVar:long_name = "X[X=1:10] + T[GT=TDAY]" ;
+	double lon1_5(lon1_5) ;
+		lon1_5:point_spacing = "even" ;
+		lon1_5:axis = "X" ;
+	double lat1_5(lat1_5) ;
+		lat1_5:point_spacing = "uneven" ;
+		lat1_5:axis = "Y" ;
+		lat1_5:bounds = "lat1_5_bnds" ;
+	double lat1_5_bnds(lat1_5, bnds) ;
+	double zt(zt) ;
+		zt:units = "meters" ;
+		zt:positive = "down" ;
+		zt:point_spacing = "uneven" ;
+		zt:axis = "Z" ;
+		zt:bounds = "zt_bnds" ;
+	double zt_bnds(zt, bnds) ;
+	double time1478(time1478) ;
+		time1478:calendar = "NOLEAP" ;
+		time1478:point_spacing = "even" ;
+		time1478:axis = "T" ;
+	float newvar(time1478, zt, lat1_5, lon1_5) ;
+		newvar:missing_value = -1.e+34f ;
+		newvar:_FillValue = -1.e+34f ;
+		newvar:long_name = "outgoing longwave radiation" ;
+		newvar:units = "watts/m2" ;
+		newvar:history = "From a" ;
+
+// global attributes:
+		:history = "FERRET V6.41   15-Jan-10" ;
+		:Conventions = "CF-1.0" ;
+}
+.nc
  
 ! Define an output variable with some axes from each dataset.
 LET/D=2 zvar = z[gz=temp[d=2]]
@@ -57714,10 +57722,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "71.8691"
-CLOCK_SECS = "105.76"
-CURRENT_DATE = " 4-Jan-10"
-CURRENT_TIME = "15:47:35"
+DELTA_CPU = "60.7558"
+CLOCK_SECS = "92.36"
+CURRENT_DATE = "15-Jan-10"
+CURRENT_TIME = "18:30:51"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57726,8 +57734,8 @@ CURRENT_TIME = "15:47:35"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.065987"
-CLOCK_SECS = "105.86"
+DELTA_CPU = "0.049995"
+CLOCK_SECS = "92.45"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57741,60 +57749,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.514921
+ !-> DEFINE VARIABLE ten_plots = 0.400936
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "106.77"
+CLOCK_SECS = "93.26"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "106.77"
+CLOCK_SECS = "93.26"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.051989
- !-> DEFINE VARIABLE sumcpu =0.051989
+ !-> DEFINE VARIABLE dt = 0.041992
+ !-> DEFINE VARIABLE sumcpu =0.041992
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.053993
- !-> DEFINE VARIABLE sumcpu =0.105982
+ !-> DEFINE VARIABLE dt = 0.042997
+ !-> DEFINE VARIABLE sumcpu =0.084989
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.051994
- !-> DEFINE VARIABLE sumcpu =0.157976
+ !-> DEFINE VARIABLE dt = 0.04599
+ !-> DEFINE VARIABLE sumcpu =0.130979
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.05999
- !-> DEFINE VARIABLE sumcpu =0.217966
+ !-> DEFINE VARIABLE dt = 0.047993
+ !-> DEFINE VARIABLE sumcpu =0.178972
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.060991
- !-> DEFINE VARIABLE sumcpu =0.278957
+ !-> DEFINE VARIABLE dt = 0.041994
+ !-> DEFINE VARIABLE sumcpu =0.220966
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.057989
- !-> DEFINE VARIABLE sumcpu =0.336946
+ !-> DEFINE VARIABLE dt = 0.042994
+ !-> DEFINE VARIABLE sumcpu =0.26396
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.059994
- !-> DEFINE VARIABLE sumcpu =0.39694
+ !-> DEFINE VARIABLE dt = 0.04599
+ !-> DEFINE VARIABLE sumcpu =0.30995
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.05699
- !-> DEFINE VARIABLE sumcpu =0.45393
+ !-> DEFINE VARIABLE dt = 0.045998
+ !-> DEFINE VARIABLE sumcpu =0.355948
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.056992
- !-> DEFINE VARIABLE sumcpu =0.510922
+ !-> DEFINE VARIABLE dt = 0.04299
+ !-> DEFINE VARIABLE sumcpu =0.398938
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.060991
- !-> DEFINE VARIABLE sumcpu =0.571913
+ !-> DEFINE VARIABLE dt = 0.042995
+ !-> DEFINE VARIABLE sumcpu =0.441933
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.571913
-0.571913
+ !-> MESSAGE/CONTINUE 0.441933
+0.441933
 sh sym CLOCK_SECS
-CLOCK_SECS = "108.12"
+CLOCK_SECS = "94.5"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 4-Jan-10"
-SESSION_TIME = "15:45"
-CURRENT_DATE = " 4-Jan-10"
-CURRENT_TIME = "15:47:37"
+SESSION_DATE = "15-Jan-10"
+SESSION_TIME = "18:29"
+CURRENT_DATE = "15-Jan-10"
+CURRENT_TIME = "18:30:53"
  
 ! ******** V6.3 Additions below ***********
  
@@ -58203,7 +58211,7 @@ list cell3[x=@din,y=@din]/total_area
              FILENAME : uncentered.nc
              LONGITUDE: 100E to 100E(460)
              LATITUDE : 90S to 90N
-          0.02777780
+          0.02777779
 list cell4[x=@din,y=@din]/total_area
              VARIABLE : CELL4[X=@DIN,Y=@DIN]/TOTAL_AREA
              FILENAME : uncentered.nc
@@ -58215,7 +58223,7 @@ list cell5[x=@din,y=@din]/total_area
              FILENAME : uncentered.nc
              LONGITUDE: 100E to 100E(460)
              LATITUDE : 90S to 90N
-          0.02777777
+          0.02777776
 list cell18[x=@din,y=@din]/total_area
              VARIABLE : CELL18[X=@DIN,Y=@DIN]/TOTAL_AREA
              FILENAME : uncentered.nc
@@ -59550,7 +59558,7 @@ shade/l=1 sst
  
 GO bn_reset
 cancel mode verify
-GO bn65_bug_fixes.jnl
+GO bn65_bug_fixes
 ! bn65_bug_fixes.jnl
 ! Fixes that go into v6.5 release
  
@@ -59567,6 +59575,77 @@ shade bathy
  
 ! This one uses so many digits it will not be formatted
 shade/i=1:10/j=1:10 bathy
+ 
+GO bn_reset
+cancel mode verify
+GO err64_packed_data
+! err64_packed_data.jnl
+! Test writing packed data. Prior to v6.4 this example shows the
+! crash described in bug 1715.
+ 
+! ncpdq from NCO operators
+! sp ncpdq fine_x_axis.nc err64_packed_data.nc
+use err64_packed_data.nc
+sh att/all sst
+ 
+! check that the coordinates packed by ncpdq are unpacked ok.
+list/i=1:15 sst
+             VARIABLE : sea surface temperature [degc]
+             FILENAME : err64_packed_data.nc
+             SUBSET   : 15 points (LONGITUDE)
+             LATITUDE : 0.025S
+             Z (count): 1
+             TIME     : APR-2006
+                     0.03S  
+                      1
+ 179.972W  /  1:  27.49991
+ 179.922W  /  2:  27.47995
+ 179.872W  /  3:  27.46997
+ 179.822W  /  4:  27.46997
+ 179.772W  /  5:  27.44988
+ 179.722W  /  6:  27.42992
+ 179.672W  /  7:  27.42992
+ 179.622W  /  8:  27.42992
+ 179.572W  /  9:  27.44988
+ 179.522W  / 10:  27.45999
+ 179.472W  / 11:  27.46997
+ 179.422W  / 12:  27.45999
+ 179.372W  / 13:  27.46997
+ 179.322W  / 14:  27.47995
+ 179.272W  / 15:  27.48993
+ 
+! we can write the data out - saving the scaling to re-pack.
+set att/output sst.scale_factor
+set att/output sst.add_offset
+save/clobber/file=mypack.nc/i=1:15 sst
+can data/all; use mypack.nc
+sh att/all sst
+ 
+list/i=1:15 sst
+             VARIABLE : sea surface temperature [degc]
+             FILENAME : mypack.nc
+             SUBSET   : 15 points (LONGITUDE)
+             LATITUDE : 0.025S
+             Z (count): 1
+             TIME     : APR-2006
+                     0.03S  
+                      1
+ 179.972W  /  1:  27.49991
+ 179.922W  /  2:  27.47995
+ 179.872W  /  3:  27.46997
+ 179.822W  /  4:  27.46997
+ 179.772W  /  5:  27.44988
+ 179.722W  /  6:  27.42992
+ 179.672W  /  7:  27.42992
+ 179.622W  /  8:  27.42992
+ 179.572W  /  9:  27.44988
+ 179.522W  / 10:  27.45999
+ 179.472W  / 11:  27.46997
+ 179.422W  / 12:  27.45999
+ 179.372W  / 13:  27.46997
+ 179.322W  / 14:  27.47995
+ 179.272W  / 15:  27.48993
+ 
  
 GO bn_reset
 cancel mode verify
@@ -59631,8 +59710,6 @@ shade/L=6 bot
  
  
  
- 
- 
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not
 ! tested in the benchmarks.
@@ -59640,9 +59717,9 @@ shade/L=6 bot
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v6.401  
- 	Linux(g77) 2.6.9-89.ELsmp - 01/04/10
- 	 4-Jan-10 15:47     
+ 	FERRET v6.41  
+ 	Linux(g77) 2.6.9-89.ELsmp - 01/15/10
+ 	15-Jan-10 18:31     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -60353,8 +60430,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  10   / 10:  -5.00
  11   / 11:  -4.00
  12   / 12:  -3.00
- 13-rw-rw-r--  1 ansley tmap 29712 Jan  4 15:47 testa.v5d
--rw-rw-r--  1 ansley tmap 29712 Jan  4 15:47 test.v5d
+ 13-rw-rw-r--  1 ansley tmap 29712 Jan 15 18:31 testa.v5d
+-rw-rw-r--  1 ansley tmap 29712 Jan 15 18:31 test.v5d
    / 13:  -2.00
  14   / 14:  -1.00
  15   / 15:   0.00
@@ -60531,7 +60608,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60554,7 +60631,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60578,7 +60655,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60617,7 +60694,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60652,7 +60729,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60692,7 +60769,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60746,7 +60823,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60800,7 +60877,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60854,7 +60931,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60899,7 +60976,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60990,7 +61067,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61057,7 +61134,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61107,7 +61184,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61182,7 +61259,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61209,7 +61286,7 @@ variables:
 		X_:_FillValue = -1.e+34f ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -61233,7 +61310,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -61258,11 +61335,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -61292,7 +61369,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61364,7 +61441,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61405,7 +61482,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61444,7 +61521,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61547,7 +61624,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -61583,7 +61660,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -61605,7 +61682,7 @@ variables:
 		BB:my_title = "This is my new variable bb" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61631,7 +61708,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61651,7 +61728,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61672,7 +61749,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61711,7 +61788,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -61747,7 +61824,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -61781,7 +61858,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -61809,7 +61886,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61842,7 +61919,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61868,7 +61945,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61909,7 +61986,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -62007,7 +62084,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -62037,8 +62114,8 @@ variables:
 		TI:units = "day" ;
 		TI:axis = "T" ;
 	short ELEV(TI, YC1_1, XC) ;
-		ELEV:missing_value = -32766s ;
-		ELEV:_FillValue = -32766s ;
+		ELEV:missing_value = -32767s ;
+		ELEV:_FillValue = -32768s ;
 		ELEV:long_name = "Surface elevation" ;
 		ELEV:units = "meter" ;
 		ELEV:scale_factor = 0.000274674966931343 ;
@@ -62046,7 +62123,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62070,8 +62147,10 @@ data:
  TI = 1.78368055555556 ;
 
  ELEV =
-  -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-    2, 2, 2, 2, -9, -9, -9, -9, -9, -9, -9, -9, -9, -9 ;
+  -32767, -32767, -32767, -32767, -32767, -32767, -32767, -32767, -32767, 
+    -32767, -32767, 10702, 10702, 10702, 10702, 10702, 10702, 10702, 10702, 
+    10702, 10702, 10702, 10702, 10702, 10702, -32767, -32767, -32767, -32767, 
+    -32767, -32767, -32767, -32767, -32767, -32767 ;
 }
 bn_attributes.jnl --- 20 set data type on output int4
 	int TEMP(TIME1, PSZT1_1, PSYT48_48, PSXT91_108) ;
@@ -62127,7 +62206,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62164,7 +62243,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62201,7 +62280,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62249,7 +62328,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62304,7 +62383,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62344,7 +62423,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62384,7 +62463,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62416,7 +62495,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62447,7 +62526,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -62476,7 +62555,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -62505,7 +62584,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -62563,7 +62642,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62604,7 +62683,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62623,37 +62702,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	float A(XAX) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62683,7 +62732,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	float A(XAX) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62732,7 +62811,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62770,7 +62849,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62788,7 +62867,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 err611_set_var_ez.jnl --- 
@@ -62807,7 +62886,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62825,7 +62904,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -62843,7 +62922,7 @@ variables:
 		A:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62864,7 +62943,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62893,7 +62972,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -62917,16 +62996,16 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.401    4-Jan-10" ;
+		:history = "FERRET V6.41   15-Jan-10" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
 end of ncdump output
  
  	NOAA/PMEL TMAP
- 	FERRET v6.401  
- 	Linux(g77) 2.6.9-89.ELsmp - 01/04/10
- 	 4-Jan-10 15:47     
+ 	FERRET v6.41  
+ 	Linux(g77) 2.6.9-89.ELsmp - 01/15/10
+ 	15-Jan-10 18:31     
 
 CAN MODE VERIFY
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
@@ -62940,15 +63019,15 @@ yes? GO bn_startupfile
 PPL$XPIXEL = "513"
 PPL$YPIXEL = "385"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.401"
+FERRET_VERSION = "6.41"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-89.ELsmp"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 4-Jan-10"
-SESSION_TIME = "15:47"
-DELTA_CPU = "0.029996"
+SESSION_DATE = "15-Jan-10"
+SESSION_TIME = "18:31"
+DELTA_CPU = "0.028996"
 CLOCK_SECS = "0.08"
-CURRENT_DATE = " 4-Jan-10"
-CURRENT_TIME = "15:47:47"
+CURRENT_DATE = "15-Jan-10"
+CURRENT_TIME = "18:31:02"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
 PPL$PLTNME = "startup_tests.plt"
@@ -62968,7 +63047,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "4-Jan-10:15:47"
+WIN_TITLE = "15-Jan-10:18:31"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -63019,9 +63098,9 @@ GO_FILE = "./bn_startupfile.jnl"
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3
  
  	NOAA/PMEL TMAP
- 	FERRET v6.401  
- 	Linux(g77) 2.6.9-89.ELsmp - 01/04/10
- 	 4-Jan-10 15:47     
+ 	FERRET v6.41  
+ 	Linux(g77) 2.6.9-89.ELsmp - 01/15/10
+ 	15-Jan-10 18:31     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -63230,9 +63309,9 @@ spawn ls abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstu
  
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v6.401  
- 	Linux(g77) 2.6.9-89.ELsmp - 01/04/10
- 	 4-Jan-10 15:47     
+ 	FERRET v6.41  
+ 	Linux(g77) 2.6.9-89.ELsmp - 01/15/10
+ 	15-Jan-10 18:31     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -63344,9 +63423,9 @@ frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v6.401  
- 	Linux(g77) 2.6.9-89.ELsmp - 01/04/10
- 	 4-Jan-10 15:47     
+ 	FERRET v6.41  
+ 	Linux(g77) 2.6.9-89.ELsmp - 01/15/10
+ 	15-Jan-10 18:31     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -63429,4 +63508,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Mon Jan 4 15:47:49 PST 2010
+Ended at Fri Jan 15 18:31:04 PST 2010

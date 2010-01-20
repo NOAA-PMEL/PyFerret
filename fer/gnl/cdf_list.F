@@ -103,6 +103,8 @@
 * V641 *acm*  1/10 -Fix bug 1715: packing data on output (bug is in ordering of args
 *                   in call to NC_GET_ATTRIB for add_offset, also fix up the output 
 *                   missing and FillValue flags which werent correct.)
+* V65  *acm*  1/10  Data from some datasets get a mismatch between _FillValue and 
+*                   data on output. Fix this.
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -317,7 +319,8 @@
                  vartype = 5
                  IF (itsa_string) vartype = 2
               ENDIF
-              CALL CD_GET_VAR_OUTTYPE (dset, varid, outtype, status) 
+              outtype = vartype
+	      CALL CD_GET_VAR_OUTTYPE (dset, varid, outtype, status)
               IF (outtype .EQ. 0) outtype = vartype
            ENDIF
 
@@ -507,12 +510,13 @@
 
                  istat = ferr_ok
                  attoutflag = 0
-                 no_missing_flag = 0
-                 no_fill_flag = 0
+                 no_missing_flag = 1
+                 no_fill_flag = 0  ! Write _fillValue unless specifically told not to
                  attname = 'missing_value'
                  CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
      .                  istat)
                  IF (attid .GT. 0) THEN
+                    no_missing_flag = 0
                     CALL CD_GET_VAR_ATT_INFO (dset, varid, 
      .                attid, aname, attype, attlen, attoutflag, istat )
                     IF (attoutflag .EQ. 0) no_missing_flag = 1
@@ -523,10 +527,12 @@
                    attname = '_FillValue'
                    CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
      .                  istat)
-                   IF (attid .GT. 0) 
-     .                CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+                   IF (attid .GT. 0) THEN
+                      no_fill_flag = 0
+                      CALL CD_GET_VAR_ATT_INFO (dset, varid, 
      .                attid, aname, attype, attlen, attoutflag, istat )
-                    IF (attoutflag .EQ. 0) no_fill_flag = 1
+                      IF (attoutflag .EQ. 0) no_fill_flag = 1
+                   ENDIF
                  ENDIF
 		 IF (no_missing_flag .EQ. 1) THEN
 		   attname = '_FillValue'
@@ -582,6 +588,7 @@
      .                     attoutflag, fill_in)
                           dvals(1) = fill_in
                           vals(1) = dvals(1)
+                          attype = outtype
 		       ENDIF
                        IF (no_fill_flag.EQ.0) CALL CD_WRITE_ATTVAL_DP(
      .                   cdfid, varcode, '_FillValue', dvals, attlen, 

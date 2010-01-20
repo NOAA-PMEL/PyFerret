@@ -245,6 +245,7 @@
 	   ENDIF
 	   IF ( chk10 .NE. chk10_save ) GOTO 10
 	   str_len = nleft
+	   IF (str_len .LE. 0) str_len = 1  ! as in tm_fmt.F just to be sure.
 	   WRITE ( fmt, 3100 ) str_len
  3100	   FORMAT ( '(I',I2,')' )
 	   WRITE ( TM_FMT_DIGITS, fmt ) NINT(val)

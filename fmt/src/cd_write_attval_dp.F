@@ -79,14 +79,12 @@
 #include "netcdf_declareUnderscore.inc"
 
 * argument declarations
-      INTEGER cdfid, nval, type, i4(10), i, status
-      INTEGER*2 i2(10)
-      BYTE i1
+      INTEGER cdfid, nval, type, status
       CHARACTER*(*) vname, att
       REAL*8 val(*)
 
 * local variable declarations:
-      INTEGER TM_LENSTR1,
+      INTEGER TM_LENSTR1, i, 
      .        vlen, alen, cdfstat, varid, attype, attlen, flen    
       CHARACTER*128 abuff     ! needed because of fussy compilers and // concatenation
 

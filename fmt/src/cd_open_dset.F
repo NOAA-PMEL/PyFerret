@@ -78,6 +78,7 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V65  *acm* 1/10  Call CD_TRANSLATE_ERROR rather than individual calls to NF_STRERROR
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -105,21 +106,9 @@
 ! kob 7/95
 	include 'xsys_names.cmn_text'	            
 
-! The ones without trailing underscore are declared in netcdf.inc
-#ifdef usingDODSf2cUnderscore
-	CHARACTER*1024 NF_STRERROR_
-#endif  
-
 ! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
 #include "netcdf_declareUnderscore.inc"
-
-! Completely comment out these; they are elsewhere and Solaris doesnt like
-! them there with # marks
-
-! #else      ! these declarations are in netcdf.inc
-! #	INTEGER NF_OPEN
-! #	CHARACTER*1024 NF_STRERROR
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -258,11 +247,7 @@
 
 * error messages
  5100   CONTINUE
-#ifdef usingDODSf2cUnderscore 
-        buff =  NF_STRERROR_(cdfstat)
-#else
-        buff =  NF_STRERROR(cdfstat)
-#endif  
+        CALL CD_TRANSLATE_ERROR (cdfstat, buff)
 
         i = STR_UPCASE(upstr,buff)
         IF (STR_SAME(upstr(1:13), 'UNKNOWN ERROR') .EQ. 0) THEN
@@ -288,12 +273,8 @@
      .		*5900 )
 *kob* 9/18
  5300   CONTINUE
+        CALL CD_TRANSLATE_ERROR (cdfstat, buff)
 
-#ifdef usingDODSf2cUnderscore 
-        buff =  NF_STRERROR_(cdfstat)
-#else
-        buff =  NF_STRERROR(cdfstat)
-#endif
         dlen = TM_LENSTR1(buff)
         val = cdfstat
         errcode = TM_FMT(val, 0, 10, len)

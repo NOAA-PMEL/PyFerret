@@ -185,6 +185,7 @@
      .		   - TM_WORLD(ind_hi, grid, idim, box_lo_lim)
             ENDIF
 * ... perform integrations on standard units if possible
+            unit = 1.
 	    IF ( at_din ) THEN
 	      unit = un_convert( line_unit_code(grid_line(idim,grid)) )
 	      DO 50 i = ind_lo, ind_hi
@@ -202,7 +203,7 @@
 C See this thread:
 C http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2009/msg00506.html
 C And also ticket 1348. The surface area of sphere depends only on h
-C http://mathworld.wolfram.com/Zone.html
+C http://mathworld.wolfram.com/Zone.html. Fix for @DIN too.
 
 	need_cos = GEOG_COS_FACTOR( y_dim,grid )
      .		.AND. yes_xax
@@ -222,8 +223,13 @@ C http://mathworld.wolfram.com/Zone.html
      .                ybxhi = deg2rad* cx_hi_ww(y_dim,res_cx)
 
 	            boxes(j+cos_offset)  = ABS( SIN(ybxhi) - SIN(ybxlo) )
-		    boxes(j+box_offset(y_dim)) = 1  ! surface area of sphere depends only on h not on ybox
 
+		    ! surface area of sphere depends only on h not on ybox
+		    boxes(j+box_offset(y_dim)) = 1.  
+
+		    ! for integral need area is radius*radius* delx * h
+		    ! delx already has units that include radius of earth.
+                    IF ( at_din ) boxes(j+box_offset(y_dim)) =  m_radius  
                  ENDIF
  120         CONTINUE
 	ELSE

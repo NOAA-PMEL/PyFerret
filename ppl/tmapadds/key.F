@@ -174,19 +174,22 @@
 
         DO WHILE (increase_digits .AND. ABS(lab_digits) .LE. klab_len )
            buff = ' '
-
+           val = zlev(lev1)
+           IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
  	   buff = 
-     .        TM_FMT_DIGITS (zlev(lev1),lab_digits,klab_len+5,str_len)
+     .        TM_FMT_DIGITS (val,lab_digits,klab_len+5,str_len)
 
            READ (buff,*) val_last
            increase_digits = .FALSE.
 
            max_len = 0
 	   DO 30 ndx = lev1+1, shd_levels
+             val = zlev(ndx)
+             IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
 	     buff = 
-     .          TM_FMT_DIGITS (zlev(ndx),lab_digits,klab_len+5,str_len)
+     .          TM_FMT_DIGITS (val,lab_digits,klab_len+5,str_len)
 
-              READ (buff,*) val_n
+             READ (buff,*) val_n
              IF ( TM_DFPEQ(val_last, val_n) ) increase_digits = .TRUE.
              val_last = val_n
              IF (max_len .lt. str_len) max_len = str_len
@@ -297,7 +300,9 @@
 
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
-	text = TM_FMT_DIGITS (zlev(lev1),lab_digits,klab_len+lab_add,str_len)  
+	val = zlev(lev1)
+	IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
+	text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)  
         if (max_len .lt. str_len) max_len = str_len
         
         nhi = MAX(2,shd_levels+1)
@@ -515,7 +520,9 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 
-	text = TM_FMT_DIGITS (zlev(lev1),lab_digits,klab_len+lab_add,str_len)
+        val = zlev(lev1)
+        IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
+	text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 
 	if (max_len .lt. str_len) max_len = str_len	
 

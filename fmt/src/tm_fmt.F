@@ -61,6 +61,7 @@
 *              take care of val=0 case individually.
 * *acm*  V6.1 3/08  further corrections to last fix when writing a value with 
 *              negative exponent
+* *acm*  V6.5 1/10 Fix bug 1717: If the format is going to be (I0) make it (I1)
 
 * calling arguments:
 * val		- REAL*4 value to be converted
@@ -262,6 +263,7 @@
 	   ENDIF
 	   IF ( chk10 .NE. chk10_save ) GOTO 10
 	   str_len = nleft - added_pow10
+	   IF (str_len .LE. 0) str_len = 1
 	   WRITE ( fmt, 3100 ) str_len
  3100	   FORMAT ( '(I',I2,')' )
 	   WRITE ( TM_FMT, fmt ) NINT(val)

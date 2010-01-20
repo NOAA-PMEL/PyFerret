@@ -217,30 +217,20 @@ c#endif
 
 * output a netCDF error (note: CDF uses error code -1)
 * *kob* 7/99 - Update for netCDF v3.4
+* acm 1/10 - CD_TRANSLATE_ERROR calls error translation routine.
+
 	ELSEIF ( (status_in .GE. pcdferr-100) .AND.
      .		 (status_in .LE. pcdferr + pcdferrmax) ) THEN
 * xxxxx can we get filename from netCDF call ???           
 * xxxxx cdfid and varid are available as dset_num, sf_num
            cdferr = status_in - pcdferr
-           IF ( cdferr.EQ.-33 ) THEN
-              WRITE (errbuf,1008) 'NCSYSERR'
-           ELSEIF ( cdferr.EQ.0 ) THEN
-              WRITE (errbuf,1008) 'No error'
-           ELSEIF ( cdferr.GE. -66 .AND. cdferr.LE. -33) THEN
-              WRITE (errbuf,1008) cdferrmsg(cdferr)
-           ELSEIF ( cdferr .EQ. pcdferrmax ) THEN
-              WRITE (errbuf, * ) 'error in netCDF file'
-           ELSE
-              WRITE (errbuf,1010) cdferr
-           ENDIF
+           CALL CD_TRANSLATE_ERROR (cdferr, errbuf)
 	   CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
 
            msg_len = TM_LENSTR1(errbuf)
            symbuf(len_symbuf:) = errbuf(:msg_len)
            len_symbuf = len_symbuf + msg_len + 1
 
- 1008      FORMAT(' ** netCDF error: ', A)
- 1010      FORMAT(' ** unknown netCDF error code:', I4)
            IF (expected .NE. no_errstring) THEN
 	     errbuf = ' '
 	     WRITE (errbuf,*) expected

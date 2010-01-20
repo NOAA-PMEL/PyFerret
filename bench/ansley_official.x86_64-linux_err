@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version ../fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 52157668 Jan 15 18:26 ../fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 52193247 Jan 20 14:50 ../fer/ferretdods_gui
 Using external functions from ../external_functions/ext_func_x86
 Running the tests of external functions y
-Benchmark run by ansley
-Note: fix for bug 1348 - area on a sphere, and a further  if-repeat bug, if there were comments (seen in LAS Desktop app)
+Benchmark run by ansely
+Note: For bug 1348, also fix @DIN. Tiny labels on colorkey; missing/fill on packed data
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_x86
-Beginning at Fri Jan 15 18:29:18 PST 2010
+Beginning at Wed Jan 20 14:54:15 PST 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2099,7 +2099,7 @@ Replacing definition of grid MYGRID
  LISTing to file a.nc
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
- ** netCDF error:                                     
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute missing_value not representable in output type NC_INT
 LIST/FORMAT=CDF/file=a.nc/clobber/x=132w/k=1 temp
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
@@ -2846,7 +2846,7 @@ Replacing definition of axis TAX
  LISTing to file t_bug.nc
 Replacing definition of axis T_AXIS
  LISTing to file t_bug.nc
- ** netCDF error: Variable not found
+NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
  T_AXIS_bnds not found. Attempt to append irregular coordinates to NetCDF axis which has no bounds attribute. Write data originally with the /BOUNDS qualifier.
 LIST/FORMAT=CDF/FILE=t_bug.nc/APPEND var
  PERMANENT data cleared from memory
@@ -2900,33 +2900,8 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "time_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "lat_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "lon_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "time_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "lat_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "lon_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "time_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "lat_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "lon_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3013,4 +2988,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Jan 15 18:31:04 PST 2010
+Ended at Wed Jan 20 14:56:01 PST 2010

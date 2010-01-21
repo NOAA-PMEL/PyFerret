@@ -275,7 +275,6 @@ ts_init_dset.F\
 ts_open_varf.F\
 ts_read.F\
 xalt_messages_data.F\
-xcdferror_data.F\
 xdiag_ctrl_data.F\
 xdset_info_data.F\
 xerror_text_data.F\

@@ -96,8 +96,8 @@
 	external xstep_files_data
 	include 'xdiag_ctrl.cmn_text'
 	external xdiag_ctrl_data
-	include 'xcdferror.cmn_text'
-	external xcdferror_data
+!!	include 'xcdferror.cmn_text'
+!!	external xcdferror_data
 !	include 'xalt_messages.cmn_text'	! w/ alt_messages
 	external xalt_messages_data
 

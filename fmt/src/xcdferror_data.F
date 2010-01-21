@@ -46,6 +46,11 @@
 *			 which was longer than the variable was declared.
 * IBM port 14apr94 *kob*: External statments in netcdf.inc caused IBM compiler
 *		        : xlf to blow up.  Same statments in also cause OSF f77
+
+* NOTE cdferrmsg is no longet needed with string translation available in 
+*      netcdf3 and netcdf4. NF_STRERROR is called to translate error codes 
+*      to error strings
+
 #include "netcdf.inc"
 *			: the hacked file netcdf.inc.no_externals
 

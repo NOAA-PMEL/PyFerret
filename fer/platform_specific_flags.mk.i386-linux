@@ -14,7 +14,8 @@
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \
-			  -I. -I../readline-4.1 -I/home/porter/ansley/OPeNDAP/linux/include/libnc-dap
+			  -I. -I../readline-4.1 \
+			  -I/home/porter/ansley/OPeNDAP/linux/DODS_v3.8.2/include/libnc-dap/
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			   -I../include -I../../fmt/cmn \

@@ -43,7 +43,8 @@
 * V601 11/06 *acm* Attribute control, adding double precision attribute value
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * V604  6/07 *acm* Declare VALS as double precision! 
-
+* V65  *acm* 1/10  Make sure parameters values are consistent with 
+*                              whats in netcdf.inc from netcdf4.
 * Argument declarations
 
       CHARACTER*(*) attname, string
@@ -63,7 +64,7 @@
      .        all_outflag, dset_num
       CHARACTER*128 vname
 
-      PARAMETER (flen=nf_max_attrs)      ! size of attribute string
+      PARAMETER (flen=size_rbuff)      ! size of attribute string
 
 #ifdef sun
       BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith string buffer

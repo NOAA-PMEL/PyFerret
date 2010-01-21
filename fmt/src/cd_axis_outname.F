@@ -72,7 +72,7 @@
       REAL val
 
       CHARACTER*1 ww_dim_name(4)
-      CHARACTER varname*130, buff*130, attname*128
+      CHARACTER varname*130, buff*128, attname*128
       DATA ww_dim_name/'X', 'Y', 'Z', 'T'/
 
 * initialize
@@ -101,7 +101,7 @@
          attname = 'orig_file_axname' 
          alen = 18
 
-         maxlen = nf_max_name ! from netcdf.inc
+         maxlen = 128
          got_it = NC_GET_ATTRIB(dset, varid, attname(1:alen),
      .                       .FALSE., varname(1:nlen), maxlen, attlen, 
      .                       attoutflag, buff, val)

@@ -51,7 +51,8 @@
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
 
-
+* V65  *acm* 1/10  Make sure parameters values are consistent with 
+*                              whats in netcdf.inc from netcdf4.
 * argument declarations:
 	INTEGER cdfid, status
 

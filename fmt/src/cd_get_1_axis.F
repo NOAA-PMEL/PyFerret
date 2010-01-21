@@ -157,7 +157,8 @@
 * V62   2/09 *acm* Save the original upper/lowercase spelling of axis names in line_name_orig,
 *                  for use on output of user-defined variables when MODE UPCASE_OUTPUT is cancelled.
 * V63   7/09 *acm* Fix bug 1676 Reversed axis with EDGES 
-
+* V65  *acm* 1/10  Make sure parameters values are consistent with 
+*                              whats in netcdf.inc from netcdf4.
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
 *       dset     - dataset number for already opened CDF file
@@ -229,7 +230,6 @@
       CHARACTER vname*128, ename*128, vupcase*128, words(8)*24,
      .        spacing_attr*14, bname*128
       CHARACTER*13 TM_STRING
-      CHARACTER*132 buff
       CHARACTER*1 axis_dir
       CHARACTER*50 allcals
       CHARACTER*3 dbuf
@@ -238,6 +238,9 @@
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
 
+      INTEGER bufflen
+      PARAMETER (bufflen = 256)
+      CHARACTER*256 buff
       REAL*8   TM_SECS_FROM_BC, first, secs2firststep, secs1590,
      .         t0_secs, last_coord, firs_coord, secsperyear, secs2start,
      .         days_neg4713, days_1901_may68, secs_to_1901, secs_to_1968 
@@ -300,7 +303,7 @@
       dscale = 1.D0
       offset = 0.
       doffset = 0.D0
-
+      maxlen = bufflen
       do_scale = NC_GET_ATTRIB(dset, ivar, 'scale_factor',
      .                       do_warn, vname(:vlen), maxlen, attlen, 
      .                       attoutflag, buff, scale)
@@ -321,6 +324,7 @@
 	 ENDIF
       ENDIF
 
+      maxlen = bufflen
       do_offset = NC_GET_ATTRIB(dset, ivar, 'add_offset',
      .                       do_warn, vname(:vlen), maxlen, attlen, 
      .                       attoutflag, buff, offset)
@@ -351,7 +355,8 @@
          spacing_attr = 'point_spacing' ! point_spacing = "even"
          spacing_atlen = 13
       ENDIF
-      maxlen = nf_max_name ! from netcdf.inc
+
+      maxlen = bufflen
       got_it = NC_GET_ATTRIB(dset, ivar, spacing_attr(1:spacing_atlen),
      .                       do_warn, vname(:vlen), maxlen, attlen, 
      .                       attoutflag, buff, val)
@@ -367,7 +372,7 @@
 
 * Bounds or edges attribute?
 
-      maxlen = nf_max_name ! from netcdf.inc
+      maxlen = 128
       got_bnds = NC_GET_ATTRIB( dset, ivar, 'bounds',
      .                       do_warn, vname(:vlen), maxlen, 
      .                       attlen, attoutflag, bname, val)
@@ -378,7 +383,7 @@
 
 * optional "true_size" parameter for 2 point representations of even axes
       IF ( line_regular(iaxis) ) THEN
-         maxlen = 2
+
          got_it = NC_GET_ATTRIB( dset, ivar, 'true_size', 
      .                          do_warn, vname(:vlen), maxlen, 
      .                          attlen, attoutflag, buff, val)
@@ -397,7 +402,7 @@
 * *ACM get the calendar name.
 
       line_cal_name(iaxis) = 'GREGORIAN'   ! default
-      maxlen = 48
+      maxlen = bufflen
       got_it = NC_GET_ATTRIB( dset, ivar, 'calendar', do_warn,
      .                        vname(:vlen), maxlen, attlen, attoutflag, 
      .                        buff, val)
@@ -440,7 +445,7 @@
 
 * optional units for axis (may contain "tunits since T0_date" 2/95)
       line_units(iaxis) = ' '   ! default
-      maxlen = 48
+      maxlen = bufflen
       got_it = NC_GET_ATTRIB( dset, ivar, 'units', do_warn,
      .                        vname(:vlen), maxlen, attlen, attoutflag, 
      .                        buff, val)
@@ -604,7 +609,7 @@ c         ENDIF
 
 * a user can impose non-standard time units by setting the time_unit attribute
 * (not fully tested, I suspect - *sh* 4/93)
-      maxlen = 2
+      maxlen = bufflen
       got_it = NC_GET_ATTRIB( dset,ivar,'time_unit',
      .           do_warn, vname(:vlen), maxlen, attlen, attoutflag, 
      .           buff, line_tunit(iaxis))
@@ -766,9 +771,8 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
          ENDIF
       ENDIF   
 
-
 ! See if the long-name contains a string that indicates a z axis
-      maxlen = 132
+      maxlen = bufflen
       got_it = NC_GET_ATTRIB( dset,ivar,'long_name',
      .           do_warn, vname(:vlen), maxlen, attlen, attoutflag, 
      .           buff, val)
@@ -800,7 +804,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 *     used for axes there as well.
 
 * the attribute "positive=down", etc. may help
-      maxlen = 6
+      maxlen = bufflen
       got_it = NC_GET_ATTRIB( dset, ivar, 'positive', do_warn, 
      .                        vname(:vlen), maxlen, attlen, attoutflag, 
      .                        buff, val)
@@ -1163,7 +1167,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
 * the attribute "bounds=name" may point to a list of box boundaries
 
-500     maxlen = nf_max_name ! from netcdf.inc
+500     maxlen = 128
         IF ( .NOT.got_bnds ) GOTO 600
 
 * Check the bounds variable, issue any warnings.

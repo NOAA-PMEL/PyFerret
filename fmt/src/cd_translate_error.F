@@ -32,16 +32,17 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+* Call NF_STRERROR to get the error translation from netCDF library.
+* The length of the string is set in netcdf.inc at 512.
 *
 * include files
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 
+! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
-#ifdef usingDODSf2cUnderscore
-	CHARACTER*1024 NF_STRERROR_
-#endif  
+#include "netcdf_declareUnderscore.inc"
 
 c Argument definitions
 
@@ -52,7 +53,7 @@ c Local declararations
         INTEGER	TM_LENSTR1, STR_SAME, STR_UPCASE, 
      .		dlen, i
 	REAL	val
-	CHARACTER*1024 upstr
+	CHARACTER*512 upstr
 	CHARACTER*10 TM_FMT, errcode
 
 

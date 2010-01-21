@@ -51,7 +51,8 @@
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * V602 *acm* make sure lena=length of attr name is defined before writing warning
 * V63  *acm* 10/09 Changes for gfortran build
-
+* V65  *acm* 1/10  Make sure parameters values are consistent with 
+*                              whats in netcdf.inc from netcdf4.
 * argument definitions:
 *	dset	 - dataset number
 *       varid    - variable id 
@@ -74,6 +75,7 @@
 #include "netcdf.inc"
       include 'xio.cmn_text'
       include 'tmap_errors.parm'
+      include 'xrisc_buff.cmn'
 
 * internal variable declarations:
       LOGICAL too_long
@@ -85,7 +87,7 @@
       EQUIVALENCE (tt,lunit_errors)
 
       INTEGER slen, flen
-      PARAMETER (flen=nf_max_attrs)        ! size of attribute string
+      PARAMETER (flen=size_rbuff)        ! size of attribute string
 #ifdef sun
       BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith string buffer
 #else

@@ -44,7 +44,8 @@
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
-
+* V65  *acm* 1/10  Make sure parameters values are consistent with 
+*                              whats in netcdf.inc from netcdf4.
 * Argument declarations
 
       CHARACTER*(*) attname, string
@@ -64,7 +65,7 @@
      .        all_outflag, dset_num
       CHARACTER*128 vname
 
-      PARAMETER (flen=nf_max_attrs)      ! size of attribute string
+      PARAMETER (flen=size_rbuff)      ! size of attribute string
 
 #ifdef sun
       BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith string buffer

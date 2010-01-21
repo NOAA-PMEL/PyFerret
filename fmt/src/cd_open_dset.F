@@ -257,11 +257,12 @@
 
         dlen = TM_LENSTR1(buff)
 
-        val = cdfstat
-        errcode = TM_FMT(val, 0, 10, len)
-        buff(dlen+2:)  = '(OPeNDAP/netCDF Error code '//
-     .   errcode(1:TM_LENSTR1(errcode))//') '
-        dlen = TM_LENSTR1(buff)
+C This is already in the output of CD_TRANSLATE_ERROR
+c        val = cdfstat
+c        errcode = TM_FMT(val, 0, 10, len)
+c        buff(dlen+2:)  = '(OPeNDAP/netCDF Error code '//
+c     .   errcode(1:TM_LENSTR1(errcode))//') '
+c        dlen = TM_LENSTR1(buff)
 
         CALL TM_ERRMSG
      .     ( err_status, status, 'CD_OPEN_DSET', dset,

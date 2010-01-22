@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     56116638 Dec  9 11:48 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     55891315 Jan 21 15:32 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for plot axes when lon/lat range really small
+Note: v6.41
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Wed Dec 9 12:02:51 PST 2009
+Beginning at Thu Jan 21 15:56:16 PST 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1421,6 +1421,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+rm: cannot remove `input.txt': No such file or directory
 ls: input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2099,7 +2100,7 @@ Replacing definition of grid MYGRID
  LISTing to file a.nc
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
- ** netCDF error:                                     
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute missing_value not representable in output type NC_INT
 LIST/FORMAT=CDF/file=a.nc/clobber/x=132w/k=1 temp
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
@@ -2850,7 +2851,7 @@ Replacing definition of axis TAX
  LISTing to file t_bug.nc
 Replacing definition of axis T_AXIS
  LISTing to file t_bug.nc
- ** netCDF error: Variable not found
+NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
  T_AXIS_bnds not found. Attempt to append irregular coordinates to NetCDF axis which has no bounds attribute. Write data originally with the /BOUNDS qualifier.
 LIST/FORMAT=CDF/FILE=t_bug.nc/APPEND var
  PERMANENT data cleared from memory
@@ -2897,33 +2898,13 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "time_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "lat_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "lon_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "time_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "lat_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "lon_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "time_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "lat_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
- *** NOTE: netCDF bounds variable definition error
- *** NOTE: Bounds definition "lon_bnds" points to no existing axis
- *** NOTE: Ignoring BOUNDS attribute
+ *** NOTE: Units on axis "ENS" are not recognized: count
+ *** NOTE: They will not be convertible:
+ LISTing to file mypack.nc
+ *** NOTE: Units on axis "ENS" are not recognized: count
+ *** NOTE: They will not be convertible:
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3010,4 +2991,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Dec 9 12:07:59 PST 2009
+Ended at Thu Jan 21 16:03:03 PST 2010

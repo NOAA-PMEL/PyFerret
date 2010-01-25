@@ -82,7 +82,7 @@ EF_CMNS = common/EF_Util.cmn common/EF_Util.parm common/EF_mem_subsc.cmn
 # Targets
 #
 
-all:	fmt_libraries fer_libraries ppl_libraries special_code ferret
+all:	fmt_libraries fer_libraries ppl_libraries special_code update ferret
 
 
 debug:	.FRC

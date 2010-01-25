@@ -73,6 +73,9 @@ void wHDF(file, image,r,g,b)
   fprintf(stderr, "wHDF not supported on this platform\n");
 #elif SOLARIS9_10
   fprintf(stderr, "wHDF not supported on this platform\n");
+#elif gfortran  /* for now, at least...*/
+  fprintf(stderr, "wHDF not supported on this platform\n");
+  exit(1);
 #else
 
   char *data,*pdata;
@@ -109,7 +112,7 @@ void wHDF(file, image,r,g,b)
 /* write out the palette */
 
 /* write errors out to stderr *kob* 5/96 */
-  istat = DFR8setpalette(palette); 
+/*  istat = DFR8setpalette(palette);  */
   if (istat != 0) {
     printf ("\nError writing palette....\n");
     free(pdata);
@@ -124,6 +127,3 @@ void wHDF(file, image,r,g,b)
       }
 #endif /* #ifdef __CYGWIN__ */
 }
-
-
-

@@ -10,3 +10,5 @@ GO err64_packed_data
 GO bn_reset
 GO bn_repl_9999999
 
+GO bn_reset
+GO err64_shakey_missingdata

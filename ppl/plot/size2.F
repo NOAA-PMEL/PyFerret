@@ -151,25 +151,13 @@ C
 
 
 #ifdef atc_gks
-#   ifdef unix
 	include        'gkspar.inc'
-#   else
-	INCLUDE        'atc_gksdir:gkspar.inc'
-#   endif
 #else
-#   ifdef unix
   	include        'gkspar.inc'
-#   else
-  	INCLUDE        'sys$library:gksdefs.bnd'
-#   endif
 #endif
 
 * special COMMON to let this routine know if FERRET is in control
-#ifdef unix
 	include 'ppl_in_ferret.cmn'
-#else
-	INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-#endif
 
 * If fortran 90, initialize in block data yabb *jd* Linux port 12.96
 #ifdef FORTRAN_90
@@ -179,13 +167,14 @@ C
 #endif
 	REAL width, height
 
-	LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
+	LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS, TM_FPEQ
         LOGICAL clip, its_meta, batch, meta_batch
 	INTEGER ITS_GKSM 
 	INTEGER ier, id, itype, imeter, irx, iry
 	REAL	dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx, t,
      .		bigness, scale,
-     .		tmxclip, tmyclip, tmxorg, tmyorg, tmsize, tmscale, tmxll, tmyll
+     .		tmxclip, tmyclip, tmxorg, tmyorg, tmsize, tmscale, 
+     .          tmxll, tmyll
 
 	LOGICAL SHRNKX,SHRNKY,FIRST
         SAVE fctx,fcty !Needed for Ultrix
@@ -202,7 +191,8 @@ C     TO INTERNAL INCREMENTS.
 C
       ANEW = FACTOR * ABS(WIDTH)
       BNEW = FACTOR * ABS(HEIGHT)
-	IF(ANEW.EQ.ASIZE.AND.BNEW.EQ.BSIZE) then
+
+	IF ( TM_FPEQ(ANEW,ASIZE) .AND. TM_FPEQ(BNEW,BSIZE) ) THEN
 #ifdef xgks
 	   if (meta_actv .OR. meta_batch) then
 	      IF (ITS_GKSM(meta_wsid) .EQ. 1) THEN	! *sh* 4/97

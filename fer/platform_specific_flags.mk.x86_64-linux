@@ -5,16 +5,20 @@
 	# platform specific macros
 
 #
+	NETCDF4_DIR	= /home/nstout/ansley/local/x86
 
-	INCLUDES        = -I/usr/lib/gcc/x86_64-redhat-linux/3.4.4/include \
+
+	INCLUDES        = -I /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/include \
+			  -I/../fmt/cmn/ \
+			  $(DODS_INCLUDES) \
 			  -I. -Ireadline \
 			  -I/usr/include \
 			  -I/usr/include/X11 \
-			  -I../readline-4.1 -I../list-2.1 \
+			  -I../readline -I../list-2.1 \
 			  -I../common \
 			  -I../../fmt/cmn \
-			  -I../../ppl/include \
-			  -I. -I../readline-4.1 -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.3/include/libnc-dap 
+			  -I../../ppl/include\
+			  $(DODS_INCLUDES)
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			   -I../include -I../../fmt/cmn \
@@ -28,15 +32,17 @@
 			  -Ipplinc/xgks \
 			  -I../../xgks/port 
 
-	CDF_INCLUDES	= -I/ /usr/local/src/netcdf-3.6.2/include 
+	CDF_INCLUDES	= -I/ $(NETCDF4_DIR)/include
+	DODS_INCLUDES	= -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.3/include/libnc-dap 
 	
 	# New platform type var - *kob* 10/01
-	PLATFORM = Linux(g77) 2.6.9-89.ELsmp
+	PLATFORM = Linux(g77) 2.6.9-22.ELsmp
 
+	CC              = gcc
+	CXX		= c++
+	FC		= gfortran
+	F77		= gfortran
 
-	CC              = cc
-	FC		= g77
-	F77		= g77
 
 	RANLIB          = /usr/bin/ranlib
 	# have to remove -02 flag due to bug in v2.96 of compiler. see
@@ -46,8 +52,9 @@
 
 	# -DusingDODSf2cUnderscore needed if using netcdf library...
 
-	CPP_FLAGS       = $(INCLUDES)  -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.3/include/libnc-dap \
-			  -P -Dunix   \
+	CPP_FLAGS       = $(INCLUDES) \
+			  -O2 \
+			  -P -Dunix -Dgfortran   \
 			  -DNO_OPEN_SHARED \
 			  -DNO_OPEN_RECORDTYPE -DNO_SNGL  \
 			  -DX_REFRESH -Dreclen_in_bytes  \
@@ -57,35 +64,51 @@
 			  -DXT_CODE  -DLINUX -DNO_PASSED_CONCAT \
 			  -Dcrptd_cat_argument \
 			  -DG77_SIGNAL -DG77 \
-			  -DNO_INTRINSIC_IN_PARAMETER -DINTERNAL_READ_FORMAT_BUG -DNO_PREPEND_STRING
+			  -DNEED_IAND -DINTERNAL_READ_FORMAT_BUG -DNO_PREPEND_STRING
 
 	CFLAGS          =    -m64 $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION   -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
-	FFLAGS          =    -m64 $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore -fdollar-ok  -fintrin-case-any -ffixed-line-length-132  -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.3/include/libnc-dap  $(FINCLUDES)
-	PPLUS_FFLAGS    =    -m64 $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore  -fdollar-ok  -fintrin-case-any -ffixed-line-length-132  $(FINCLUDES)
+	FFLAGS          =    -m64 $(CPP_FLAGS) -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore -fdollar-ok   -ffixed-line-length-132   $(FINCLUDES)
+	PPLUS_FFLAGS    =    -m64 $(CPP_FLAGS) -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore  -fdollar-ok   -ffixed-line-length-132  $(FINCLUDES)
 
         #PROF_FLAGS      = -pg
 
 	# Below this line are macro definitions used only for the final linking of the executable
 	#
 
-	LD		= cc 
+	LD		= gcc 
 	LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib64 -export-dynamic 
-	#LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib  -static 
 	 
-	SYSLIB		= -L/usr/X11R6/lib64  -lm -ldl /usr/X11R6/lib64/libXpm.a  ../list-2.1/liblist.a -lc /usr/X11R6/lib64/libXm.a /usr/X11R6/lib64/libXt.a /usr/X11R6/lib64/libXext.a /usr/X11R6/lib64/libX11.a /usr/X11R6/lib64/libXp.a /usr/X11R6/lib64/libXmu.a /usr/X11R6/lib64/libSM.a /usr/X11R6/lib64/libICE.a -lc /usr/lib/gcc/x86_64-redhat-linux/3.4.4/libg2c.a
+	SYSLIB		= -L/usr/X11R6/lib64 \
+			  /usr/lib64/libm.a \
+			  /usr/X11R6/lib64/libXpm.a  \
+			  ../list-2.1/liblist.a \
+			  /usr/X11R6/lib64/libXm.a \
+			  /usr/X11R6/lib64/libXt.a \
+			  /usr/X11R6/lib64/libXext.a \
+			  /usr/X11R6/lib64/libX11.a \
+			  /usr/X11R6/lib64/libXp.a \
+			  /usr/X11R6/lib64/libXmu.a \
+			  /usr/X11R6/lib64/libSM.a \
+			  /usr/X11R6/lib64/libICE.a \
+			  /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/libgcc.a \
+			  /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/libgfortranbegin.a \
+			  /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/libgfortran.a \
+			  /usr/lib64/libm.a \
 
 	TMLIB		= ../lib/tmap_lib.a
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
-	#GKSLIB		= /home/l2/tmap/local/linux/src/xgks_debug/src/lib/libxgks.a
-	READLINELIB	= ../readline-4.1/libreadline.a 
+	READLINELIB	= ../readline/libreadline.a 
 
-	HDFLIB		= -L/usr/local/src/HDF4.2r1/NewHDF/lib  -ldf -ljpeg -lz
+# netcdf4.1
+	CDFLIB          = $(NETCDF4_DIR)/lib/libnetcdf.a \
+			  $(NETCDF4_DIR)/lib/libhdf5_hl.a \
+			  $(NETCDF4_DIR)/lib/libhdf5.a \
+			  -L/usr/lib64 -lz -lc -lm -lcurl
 
-	CDFLIB          = /usr/local/src/netcdf-3.6.2/lib/libnetcdf.a
+# netcdf3.6.3
+#	CDFLIB          = /home/nstout/ansley/netcdf-3.6.3/porter/lib/libnetcdf.a -lcurl
 
-	#DODS_LIBS   	= -L/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.8.2/lib -lnc-dap -L/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.8.2/lib -ldap -ldapclient /usr/lib64/libcurl.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libgssapi_krb5.a -lkrb5 -lcom_err /usr/lib64/libk5crypto.a /usr/lib64/libresolv.a -ldl /usr/lib64/libz.a /usr/lib64/libgssapi_krb5.a -lkrb5 /usr/lib64/libk5crypto.a -lcom_err /usr/lib64/libresolv.a /usr/lib64/libidn.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libgssapi_krb5.a -lkrb5 -lcom_err /usr/lib64/libk5crypto.a /usr/lib64/libresolv.a -ldl /usr/lib64/libz.a /usr/lib64/libz.a /usr/lib64/libxml2.a /usr/lib64/libz.a -lpthread /usr/lib64/libm.a -lpthread
-	#DODS_LIBS   	= /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.8.2/lib/libnc-dap.a /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.8.2/lib/libdap.a /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_3.8.2/lib/libdapclient.a /usr/lib64/libcurl.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libgssapi_krb5.a -lkrb5 -lcom_err /usr/lib64/libk5crypto.a /usr/lib64/libresolv.a -ldl /usr/lib64/libz.a /usr/lib64/libgssapi_krb5.a -lkrb5 /usr/lib64/libk5crypto.a -lcom_err /usr/lib64/libresolv.a /usr/lib64/libidn.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libgssapi_krb5.a -lkrb5 -lcom_err /usr/lib64/libk5crypto.a /usr/lib64/libresolv.a -ldl /usr/lib64/libz.a /usr/lib64/libz.a /usr/lib64/libxml2.a /usr/lib64/libz.a -lpthread /usr/lib64/libm.a -lpthread
 
 	DODS_LIBS   	= /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.3/lib/libnc-dap.a \
 			  /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.3/lib/libdap.a\
@@ -102,10 +125,8 @@
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 
-
 	TERMCAPLIB 	=/usr/lib64/libncurses.a
 
- 	 
  # .IGNORE:	 
  	 
  .F.o:	 

@@ -5,7 +5,7 @@
 	# platform specific macros
 
 
-	INCLUDES        = -I/usr/lib/gcc/x86_64-redhat-linux/3.4.4/include \
+	INCLUDES        = -I /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/include \
 			  -I. -Ireadline \
 			  -I/usr/include \
 			  -I/usr/include/X11 \
@@ -13,7 +13,8 @@
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \
-			  -I. -I$(TMAP_LOCAL)/include/readline -I/usr/local/src/netcdf-3.5.1/include 
+			  -I. -I$(TMAP_LOCAL)/include/readline \
+			  -I/home/nsout/ansley/local/include
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			   -I../include -I../../fmt/cmn \
@@ -33,14 +34,16 @@
 
 
 	CC              = cc
-	FC		= g77
+	CXX		= c++
+	FC		= gfortran
+	F77		= gfortran
 
 	RANLIB          = /usr/bin/ranlib
 	# have to remove -02 flag due to bug in v2.96 of compiler. see
 	#   for http://gcc.gnu.org/ml/gcc-bugs/2000-04/msg00716.html for info
 
 	CPP		= /lib/cpp
-	CPP_FLAGS       = $(INCLUDES) -P -Dunix   \
+	CPP_FLAGS       = $(INCLUDES) -P  -Dunix -Dgfortran   \
 			  -DNO_OPEN_SHARED \
 			  -DNO_OPEN_RECORDTYPE -DNO_SNGL  \
 			  -DX_REFRESH -Dreclen_in_bytes  \
@@ -50,11 +53,11 @@
 			  -DXT_CODE  -DLINUX -DNO_PASSED_CONCAT \
 			  -Dcrptd_cat_argument \
 			  -DG77_SIGNAL -DG77 -DusingDODSf2cUnderscore \
-			  -DNO_INTRINSIC_IN_PARAMETER -DINTERNAL_READ_FORMAT_BUG
+			  -DNEED_IAND -DINTERNAL_READ_FORMAT_BUG
 
 	CFLAGS          =    -m64 $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION   -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4
-	FFLAGS          =    -m64 $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore -fdollar-ok  -fintrin-case-any -ffixed-line-length-132  $(FINCLUDES)
-	PPLUS_FFLAGS    =    -m64 $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore  -fdollar-ok  -fintrin-case-any -ffixed-line-length-132  $(FINCLUDES)
+	FFLAGS          =    -m64 $(CPP_FLAGS) -fno-automatic -c -fno-second-underscore -fdollar-ok   -ffixed-line-length-132  $(FINCLUDES)
+	PPLUS_FFLAGS    =    -m64 $(CPP_FLAGS) -fno-automatic -c -fno-second-underscore  -fdollar-ok   -ffixed-line-length-132  $(FINCLUDES)
 
 
         #PROF_FLAGS      = -pg
@@ -66,25 +69,13 @@
 	LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib64 -export-dynamic 
 	#LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib  -static 
 	 
-
-
-	SYSLIB		= -L/usr/X11R6/lib64  -lm -ldl /usr/X11R6/lib64/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib64/libXm.a -lXt -lXext -lX11 -lXp /usr/X11R6/lib64/libXmu.a -lSM       -lICE        -lc /usr/lib/gcc/x86_64-redhat-linux/3.4.4/libg2c.a
-
 	TMLIB		= ../lib/tmap_lib.a
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
 	#GKSLIB		= /home/l2/tmap/local/linux/src/xgks_debug/src/lib/libxgks.a
 	READLINELIB	= ../readline-4.1/libreadline.a 
 
-	HDFLIB		= -L/usr/local/src/HDF4.2r1/NewHDF/lib  -ldf -ljpeg -lz
-
-	CDFLIB		= /home/ja4/kobrien/src/linux/netcdf-3.5.0/lib/libnetcdf.a
-
-#	DODS_LIBS   	= -L/home/porter/kobrien/OPeNDAP/linux/DODS/lib   -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lz -lpthread -lm -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a -lrx /usr/lib/libz.a
-	DODS_LIBS   	= -L/home/porter/kobrien/OPeNDAP/x86_64-linux/lib -lnc-dap -ldap -lnc-dap -ldap -L/home/porter/kobrien/OPeNDAP/x86_64-linux/lib -L/usr/lib64 -L/usr/kerberos/lib -L/usr/kerberos/lib64 /home/porter/kobrien/OPeNDAP/x86_64-linux//lib/libdap.so -lcurl /usr/lib64/libidn.so -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto -lresolv -ldl /usr/lib64/libxml2.so -lz -lm -lpthread -Wl,--rpath -Wl,/home/porter/kobrien/OPeNDAP/x86_64-linux/lib -Wl,--rpath -Wl,/home/porter/kobrien/OPeNDAP/x86_64-linux/lib
-
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
-
 
 	TERMCAPLIB 	=/usr/lib64/libncurses.a
 

@@ -247,8 +247,11 @@ cc 100	end do
         IF (zzmax .NE. -1e33) zmax = zzmax
 
 C  Set the contour/color levels
+C  ... here we need to call SET_LEVELS_SHADE_FILL if IAUTOC EQ 0 -- levs have been
+C      set already.
 
-        IF ((zzmin .NE. 1e33) .AND. (zzmax .NE. -1e33)) THEN
+        IF (IAUTOC .EQ. 0 .OR. 
+     .      ((zzmin .NE. 1e33) .AND. (zzmax .NE. -1e33)) ) THEN
            CALL SET_LEVELS_SHADE_FILL (status)
            IF (status .NE. ferr_ok) GOTO 5000
 	ENDIF

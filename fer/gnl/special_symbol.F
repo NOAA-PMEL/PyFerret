@@ -67,17 +67,16 @@
 
 * internal parameter declaration
 	INTEGER nspecial
-	PARAMETER (nspecial = 12)
+	PARAMETER (nspecial = 13)
 
 * internal variable declarations:
-	INTEGER STR_UPCASE, i, i1, ierr, wsid, nxpix, nypix, 
-     .          llen, TM_LENSTR, icount, irate, imax
+	INTEGER STR_UPCASE, TM_LENSTR, i, i1, ierr, wsid, 
+     .          nxpix, nypix, llen, icount, irate, imax
         REAL DTIME, TArray(2), dtime_res, clock_secs
 	CHARACTER special(nspecial)*16, upname*16
-	CHARACTER LEFINT*16, TM_FMT*12
+	CHARACTER LEFINT*16, TM_FMT*12, NF_INQ_LIBVERS*80
         CHARACTER*10 current_date, current_time, zone
 	INTEGER itimes(8)
-
 
 * names of special symbols (must be upper case)
 	DATA special(1)/ 'PPL$XPIXEL' /,
@@ -85,13 +84,14 @@
      .	     special(3)/ 'BYTEORDER' /,
      .	     special(4)/ 'FERRET_VERSION' /,
      .	     special(5)/ 'FERRET_PLATFORM' /,
-     .	     special(6)/ 'FERRET_MEMORY' /,
-     .	     special(7)/ 'SESSION_DATE' /,
-     .	     special(8)/ 'SESSION_TIME' /,
-     .	     special(9)/ 'DELTA_CPU' /
-     .	     special(10)/ 'CLOCK_SECS' /
-     .	     special(11)/ 'CURRENT_DATE' /
-     .	     special(12)/ 'CURRENT_TIME' /
+     .	     special(6)/ 'NETCDF_VERSION' /
+     .	     special(7)/ 'FERRET_MEMORY' /,
+     .	     special(8)/ 'SESSION_DATE' /,
+     .	     special(9)/ 'SESSION_TIME' /,
+     .	     special(10)/ 'DELTA_CPU' /
+     .	     special(11)/ 'CLOCK_SECS' /
+     .	     special(12)/ 'CURRENT_DATE' /
+     .	     special(13)/ 'CURRENT_TIME' /
 
 #ifdef unix
 	include 'ferret.parm'
@@ -132,7 +132,7 @@
 	RETURN
 
  200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 
-     .        1900, 2000, 2100, 2200) i
+     .        1900, 2000, 2100, 2200, 2300) i
 
 * PPL$XPIXEL, PPL$YPIXEL
  1100	CONTINUE
@@ -173,30 +173,40 @@
 	slen = TM_LENSTR(platform_type)
 	RETURN
 
+* NETCDF_VERSION
+ 1600	CONTINUE
+#ifdef usingDODSf2cUnderscore
+        value = NF_INQ_LIBVERS_()
+#else
+	value = NF_INQ_LIBVERS()
+#endif
+	slen = TM_LENSTR(value)
+	RETURN
+
 * FERRET_MEMORY
- 1600	value = TM_FMT(max_mem_blks*mem_blk_size/1.E6,3,12,llen)
+ 1700	value = TM_FMT(max_mem_blks*mem_blk_size/1.E6,3,12,llen)
 	slen = llen
 	RETURN
 
 * SESSION_DATE
- 1700	value = today_date
+ 1800	value = today_date
 	slen = 9
 	RETURN
 
 * SESSION_TIME
- 1800	value = today_time
+ 1900	value = today_time
 	slen = 5
 	RETURN
 
 
 * DELTA_CPU
- 1900	dtime_res = DTIME(TArray)
+ 2000	dtime_res = DTIME(TArray)
 	value = ' '
 	value = TM_FMT(dtime_res, 6, 8, slen)
 	RETURN
 
 * CLOCK_SECS
- 2000	CALL SYSTEM_CLOCK(icount, irate, imax)
+ 2100	CALL SYSTEM_CLOCK(icount, irate, imax)
         clock_secs = FLOAT(icount-clock_start_count)/FLOAT(irate)
 	IF (clock_secs .LT. 0) THEN
            CALL WARN('Evaluating CLOCK_SECS, call to '//
@@ -211,7 +221,7 @@
 	RETURN
 
 * CURRENT_DATE
- 2100	CONTINUE
+ 2200	CONTINUE
 
 #ifdef AIX_XLF
 	CALL AIX_DATE( current_date )
@@ -225,7 +235,7 @@
 	RETURN
 
 * CURRENT_TIME
- 2200	CONTINUE
+ 2300	CONTINUE
 
 #ifdef AIX_XLF
 	CALL AIX_TIME( current_time )

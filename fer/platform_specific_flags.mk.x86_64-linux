@@ -10,7 +10,7 @@
 
 	INCLUDES        = -I /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/include \
 			  -I/../fmt/cmn/ \
-			  $(DODS_INCLUDES) \
+			  -I/$(NETCDF4_DIR)/include \
 			  -I. -Ireadline \
 			  -I/usr/include \
 			  -I/usr/include/X11 \
@@ -32,7 +32,7 @@
 			  -Ipplinc/xgks \
 			  -I../../xgks/port 
 
-	CDF_INCLUDES	= -I/ $(NETCDF4_DIR)/include
+	CDF_INCLUDES	= -I/$(NETCDF4_DIR)/include
 	DODS_INCLUDES	= -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.3/include/libnc-dap 
 	
 	# New platform type var - *kob* 10/01

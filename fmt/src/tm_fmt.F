@@ -263,10 +263,16 @@
 	   ENDIF
 	   IF ( chk10 .NE. chk10_save ) GOTO 10
 	   str_len = nleft - added_pow10
-	   IF (str_len .LE. 0) str_len = 1
+	   iloop = 0
+ 9000	   IF (str_len .LE. 0) str_len = 1
 	   WRITE ( fmt, 3100 ) str_len
  3100	   FORMAT ( '(I',I2,')' )
 	   WRITE ( TM_FMT, fmt ) NINT(val)
+	   IF (INDEX(TM_FMT,'*') .EQ. 1) THEN
+	      str_len = str_len + 1
+	      iloop = iloop + 1
+	      IF (iloop .LT. 5) GOTO 9000
+	   ENDIF
 
 * FIXED POINT STRING
 	ELSE

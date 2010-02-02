@@ -12,3 +12,7 @@ GO bn_repl_9999999
 
 GO bn_reset
 GO err64_shakey_missingdata
+
+GO bn_reset
+GO err64_return_precision
+

@@ -177,8 +177,6 @@
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
 * V6.2  *acm* 2/09 new qualifier LIST/KEEP_AXISNAMES
 * V6.2  *acm* 5/09 new alias KEYMARK
-* V6.5  *acm* 1/10 new qualifiers for LIST netCDF4: NCFORMAT,
-*                  XCHUNK,YCHUNK,ZCHUNK,TCHUNK,DEFLATE,SHUFFLE,ENDIAN
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -244,22 +242,11 @@
 	   DATA num_qualifs      (nsub_at1 + 5)	/ nqual1f	/
 	   DATA qualifier_pointer(nsub_at1 + 5)	/ nqual_at1f	/
 * SET LIST/PRECISION=#digits, /FILE=filename, /FORMAT=list_format, /APPEND, /XML
-* (for netcdf4 /NCFORMAT= /ENDIAN=, /DEFLATE=, /SHUFFLE= - possibly later /XCHUNK...
 		DATA qualifiers  (nqual_at1f+0)	/ 'PRECISON'	/
 		DATA qualifiers  (nqual_at1f+1)	/ 'FILE'	/
 		DATA qualifiers  (nqual_at1f+2)	/ 'FORMAT'	/
 		DATA qualifiers  (nqual_at1f+3)	/ 'APPEND'	/
 		DATA qualifiers  (nqual_at1f+4)	/ 'HEADING'	/
-		DATA qualifiers  (nqual_at1f+5)	/ 'NCFORMAT'	/
-		DATA qualifiers  (nqual_at1f+6)	/ 'ENDIAN'	/
-		DATA qualifiers  (nqual_at1f+7)	/ 'DEFLATE'	/
-		DATA qualifiers  (nqual_at1f+8)	/ 'SHUFFLE'	/
-		DATA qualifiers  (nqual_at1f+9)	/ '****'	/
-		DATA qualifiers  (nqual_at1f+10)/ '****'	/
-		DATA qualifiers  (nqual_at1f+11)/ '****'	/
-		DATA qualifiers  (nqual_at1f+12)/ '****'	/
-		DATA qualifiers  (nqual_at1f+13)/ '****'	/
-		DATA qualifiers  (nqual_at1f+14)/ '****'	/
 * SET DATA_SET
 	   DATA subcommands      (nsub_at1 + 6)	/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at1 + 6)	/ nqual1g	/
@@ -331,7 +318,7 @@
 		DATA qualifiers  (nqual_at1l+5)	/ 'STRIDE'	/
 		DATA qualifiers  (nqual_at1l+6)	/ 'OFFSET'	/
 		DATA qualifiers  (nqual_at1l+7)	/ '****'	/
-* SET MEMORY							
+* SET MEMO							
 	   DATA subcommands      (nsub_at1 +12)	/ 'MEMORY'	/
 	   DATA num_qualifs      (nsub_at1 +12)	/ nqual1m	/
 	   DATA qualifier_pointer(nsub_at1 +12)	/ nqual_at1m	/
@@ -351,14 +338,13 @@
 		DATA qualifiers  (nqual_at1n+5)	/ '****'	/
 		DATA qualifiers  (nqual_at1n+6)	/ '****'	/
 		DATA qualifiers  (nqual_at1n+7)	/ '****'	/
-* SET NCCACHE							  ! cache chunk for reading
-	   DATA subcommands      (nsub_at1 +14)	/ 'NCCACHE'	/
+* SET ****							  ! unused (o)
+	   DATA subcommands      (nsub_at1 +14)	/ '****'	/
 	   DATA num_qualifs      (nsub_at1 +14)	/ nqual1o	/
 	   DATA qualifier_pointer(nsub_at1 +14)	/ nqual_at1o	/
-* SET NCCACHE /SIZE/NELEMS/PREEMPT
-		DATA qualifiers  (nqual_at1o+0)	/ 'SIZE'	/
-		DATA qualifiers  (nqual_at1o+1)	/ 'NELEMS'	/
-		DATA qualifiers  (nqual_at1o+2)	/ 'PREEMPT'	/
+* SET **** / ****
+		DATA qualifiers  (nqual_at1o+0)	/ '****'	/
+		DATA qualifiers  (nqual_at1o+1)	/ '****'	/
 * SET ****							  ! unused (p)
 	   DATA subcommands      (nsub_at1 +15)	/ '****'	/
 	   DATA num_qualifs      (nsub_at1 +15)	/ nqual1p	/
@@ -560,12 +546,12 @@
 		DATA qualifiers  (nqual_at2r+0)	/ 'ALL'		/
 		DATA qualifiers  (nqual_at2r+1)	/ 'DATASET'	/
 		DATA qualifiers  (nqual_at2r+2)	/ 'OUTPUT'	/
-* SHOW NCCACHE
-	   DATA subcommands      (nsub_at2 +18)	/ 'NCCACHE'	/
+* SHOW ****							  ! unused(s)
+	   DATA subcommands      (nsub_at2 +18)	/ '****'	/
 	   DATA num_qualifs      (nsub_at2 +18)	/ nqual2s	/
 	   DATA qualifier_pointer(nsub_at2 +18)	/ nqual_at2s	/
-* SHOW NCCACHE/ ****
-		DATA qualifiers  (nqual_at2s+0)	/ '****'	/
+* SHOW **** / ****
+		DATA qualifiers  (nqual_at2s+0)	/ 'ALL'		/
 * SHOW ****							  ! unused(t)
 	   DATA subcommands      (nsub_at2 +19)	/ '****'	/
 	   DATA num_qualifs      (nsub_at2 +19)	/ nqual2t	/
@@ -712,8 +698,8 @@
 	   DATA num_qualifs      (nsub_at3 +16)	/ nqual3q	/
 	   DATA qualifier_pointer(nsub_at3 +16)	/ nqual_at3q	/
 		DATA qualifiers  (nqual_at3q+0)	/ 'ALL'	/
-* CANCEL NCCACHE
-	   DATA subcommands      (nsub_at3 +17)	/ 'NCCACHE'	/
+* CANCEL ****							  ! unused(r)
+	   DATA subcommands      (nsub_at3 +17)	/ '****'	/
 	   DATA num_qualifs      (nsub_at3 +17)	/ nqual3r	/
 	   DATA qualifier_pointer(nsub_at3 +17)	/ nqual_at3r	/
 		DATA qualifiers  (nqual_at3r+0)	/ '****'	/
@@ -830,17 +816,6 @@
 		DATA qualifiers  (nqual_at5a+31)/ 'BOUNDS'/
 		DATA qualifiers  (nqual_at5a+32)/ 'NOROWLAB'/
 		DATA qualifiers  (nqual_at5a+33)/ 'KEEP_AXISNAMES'/
-		DATA qualifiers  (nqual_at5a+34)/ 'NCFORMAT'/
-		DATA qualifiers  (nqual_at5a+35)/ 'XCHUNK'/
-		DATA qualifiers  (nqual_at5a+36)/ 'YCHUNK'/
-		DATA qualifiers  (nqual_at5a+37)/ 'ZCHUNK'/
-		DATA qualifiers  (nqual_at5a+38)/ 'TCHUNK'/
-		DATA qualifiers  (nqual_at5a+39)/ 'DEFLATE'/
-		DATA qualifiers  (nqual_at5a+40)/ 'SHUFFLE'/
-		DATA qualifiers  (nqual_at5a+41)/ 'ENDIAN'/
-		DATA qualifiers  (nqual_at5a+42)/ '****'/
-		DATA qualifiers  (nqual_at5a+43)/ '****'/
-		DATA qualifiers  (nqual_at5a+44)/ '****'/
 
 * PLOT - command # 6
 	DATA commands(6)			/ 'PLOT'	/
@@ -1604,6 +1579,7 @@
 	DATA num_queries /0/   ! unused
 
 	END
+
 
 
 

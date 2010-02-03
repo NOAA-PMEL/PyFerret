@@ -1,5 +1,4 @@
 SRCS_F = \
-netcdf4_list_settings_data.F\
 xalgebra_data.F\
 xcalc_vars_data.F\
 xcommand_data.F\

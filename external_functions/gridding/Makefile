@@ -44,7 +44,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # all:    ferret_cmn ave_scat2grid_t.so scat2grid_t.so
 # all:    ferret_cmn nobs.o index_to_grid.so scatgrid_nobs_xy.so scatgrid_nobs_xz.so scatgrid_nobs_xt.so scatgrid_nobs_yz.so scatgrid_nobs_yt.so scatgrid_nobs_zt.so scat2grid_bin_xy.so
 
-all:	ferret_cmn pickoutxyz.o tracks2grid_ave_xyt.so scat2grid_nobs_xyt_ext.so scat2grid_nobs_xy_ext.so scatgrid_bin_xyt.so scat2gridgauss_xy_fix.so scat2grid_bin_xy.so scatgrid_nobs_xyt.so scatgrid_nbin_xy.so scatgrid_nbin_xyt.so 
+all:	ferret_cmn tracks2grid_ave_xyt.so scatgrid_bin_xyt.so scatgrid_nobs_xyt.so  scatgrid_nbin_xyt.so 
 more:    ferret_cmn scatgrid_bin_xyt.so scat2gridgauss_xy_fix.so scat2grid_bin_xy.so scatgrid_nobs_xyt.so scatgrid_nbin_xy.so scatgrid_nbin_xyt.so 
 
 debug:

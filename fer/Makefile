@@ -82,12 +82,17 @@ EF_CMNS = common/EF_Util.cmn common/EF_Util.parm common/EF_mem_subsc.cmn
 # Targets
 #
 
-all:	fmt_libraries fer_libraries ppl_libraries special_code update ferret
+all:	fmt_libraries fer_libraries ppl_libraries special_code ferret
 
+
+ncdf4:	.FRC
+	(cd ccr; $(CC) -c $(CFLAGS) gui_init.c)
+	$(MAKE) update
+	$(MAKE) "GUI_FAKES=special/gui_fakes.o" all
 
 debug:	.FRC
 	(cd ccr; $(CC) -c -g $(CFLAGS) gui_init.c)
-	$(MAKE) "DEBUG_TITLE=alpha" update
+	$(MAKE) "DEBUG_TITLE=beta" update
 	$(MAKE) "DEBUG=-g" "FFLAGS = $(FFLAGS) -Ddebug"  \
 		"CFLAGS = -g $(CFLAGS)" \
 		"GUI_FAKES=special/gui_fakes.o" all
@@ -160,7 +165,7 @@ DODS_gui: .FRC
 		"MOVIELIB="  \
                 "LD = g++" "CDFLIB = $(DODS_LIBS)" \
 		"FFLAGS = $(FFLAGS)" "GUI_FAKES=" \
-		 all
+		"DEBUG_TITLE=alpha" all
 
 DODS_only: .FRC
 	(cd ccr; $(CC) -c $(CFLAGS) gui_init.c)
@@ -182,7 +187,7 @@ DODS_gui_static: .FRC
                 "LD = g++" "LDFLAGS=-v --verbose -L/lib -L/usr/X11R6/lib64  -static" \
                 "CDFLIB = $(DODS_LIBS)" \
 		"FFLAGS = $(FFLAGS)" "GUI_FAKES=" \
-		"DEBUG_TITLE=" all
+		all
 
 fortran: .FRC
 	$(MAKE) "FERMAIN=special/fermain_fortran.o" "EXECNAME=ferret_fortran" all

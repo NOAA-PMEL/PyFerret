@@ -74,7 +74,7 @@
      .          nxpix, nypix, llen, icount, irate, imax
         REAL DTIME, TArray(2), dtime_res, clock_secs
 	CHARACTER special(nspecial)*16, upname*16
-	CHARACTER LEFINT*16, TM_FMT*12, NF_INQ_LIBVERS*80
+	CHARACTER LEFINT*16, TM_FMT*12, NF_INQ_LIBVERS*80, NF_INQ_LIBVERS_*80
         CHARACTER*10 current_date, current_time, zone
 	INTEGER itimes(8)
 

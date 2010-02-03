@@ -3,7 +3,7 @@
 ! - FERRET ver 3.10 10/93
 
 ! ===> NOTE:  This may fail with an X error if the movie window is iconified
-
+exit/script
 sp rm bench.mgm
 SHOW MOVIE
 SET MOVIE/FILE=bench.mgm

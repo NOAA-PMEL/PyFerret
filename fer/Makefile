@@ -160,7 +160,7 @@ DODS_gui: .FRC
 		"MOVIELIB="  \
                 "LD = g++" "CDFLIB = $(DODS_LIBS)" \
 		"FFLAGS = $(FFLAGS)" "GUI_FAKES=" \
-		"DEBUG_TITLE=alpha" all
+		 all
 
 DODS_only: .FRC
 	(cd ccr; $(CC) -c $(CFLAGS) gui_init.c)

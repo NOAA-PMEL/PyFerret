@@ -679,6 +679,10 @@ GO bn_xml_repl
 GO bn_reset
 GO bn65_bug_fixes
 
+GO bn_reset
+GO bn_txtype_dms
+
+
 ! GO bn_reset
 ! GO bn_encode_url
 

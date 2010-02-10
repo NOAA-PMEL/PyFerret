@@ -1,4 +1,4 @@
-! bn_txtype_dms.jnl
+! bn_txtype_dmy.jnl
 ! 2/2010 ACM
 !
 ! Testing Time Axis plot style "DMY" labels the year

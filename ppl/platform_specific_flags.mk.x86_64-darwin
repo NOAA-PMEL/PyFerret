@@ -63,16 +63,15 @@ LD_DYN_FLAGS	= -v -fpic -arch x86_64 -dynamiclib -L/usr/X11R6/lib -L$(TMAP_LOCAL
 SYSLIB		= -L/usr/X11R6/lib -L/usr/local/lib/ -L$(TMAP_LOCAL)/lib -ldl -lXpm -lXft -lXrender -lfontconfig -llist -lc /usr/local/lib/libXm.a -lXt -lXext -lX11 -lXp -lSM -lICE -lc /opt/intel/Compiler/11.1/058/lib/lib{ifcore,ifport,irc,imf,svml}.a
 
 TMLIB		= ../lib/tmap_lib.a
-#GKSLIB		= /home/ja4/kobrien/linux/g77/FERRET/lib/libxgks.a
+
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
-#GKSLIB		= /home/l2/tmap/local/linux/src/xgks_debug/src/lib/libxgks.a
+
 READLINELIB	= /usr/local/lib/libreadline.a -ltermcap
 
 #HDFLIB		= -L/usr/local/lib  -ldf -ljpeg -lz
 HDFLIB		= -L/usr/local/lib  -ldf /usr/local/lib/libjpeg.a -lz
 
 CDFLIB		= -L/usr/local/lib -lnetcdf -lhdf5_hl -lhdf5 -lz -lm /usr/local/lib/libsz.a -lnc-dap -ldap -ldapclient -lcurl -lxml2 -lpthread -licucore -lstdc++
-#CDFLIB		= -L/usr/local/lib -lnetcdf -lhdf5_hl -lhdf5 -lz -lm /usr/local/lib/libsz.a -lcurl -lxml2 -lpthread -licucore -lstdc++
 
 DODS_LIBS   	= -L$(TMAP_LOCAL)/src/DODS/lib -L$(TMAP_LOCAL)/src/DODS/packages/lib $(TMAP_LOCAL)/src/DODS/lib/libnc-dods.a  $(TMAP_LOCAL)/src/DODS/lib/libnc-dods.a -lwww -lstdc++ -lrx -lz -lexpect5.21 -ltcl7.6
 

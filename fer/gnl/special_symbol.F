@@ -60,6 +60,7 @@
 *                   date and time, unlike SESSION_DATE, SESSION_TIME which remain
 *                   fixed at the start time of the Ferret session.
 * V62   5/09 *acm*- make FERRET_MEMORY a special symbol.
+* V65   1/10 *acm*- New special symbol N_OPEN_DSETS, counts the number of open datasets
 
 * calling argument declarations:
 	INTEGER	  isym, slen
@@ -67,12 +68,12 @@
 
 * internal parameter declaration
 	INTEGER nspecial
-	PARAMETER (nspecial = 13)
+	PARAMETER (nspecial = 14)
 
 * internal variable declarations:
 	INTEGER STR_UPCASE, TM_LENSTR, i, i1, ierr, wsid, 
      .          nxpix, nypix, llen, icount, irate, imax
-        REAL DTIME, TArray(2), dtime_res, clock_secs
+        REAL DTIME, TArray(2), dtime_res, clock_secs, count
 	CHARACTER special(nspecial)*16, upname*16
 	CHARACTER LEFINT*16, TM_FMT*12, NF_INQ_LIBVERS*80, NF_INQ_LIBVERS_*80
         CHARACTER*10 current_date, current_time, zone
@@ -92,6 +93,7 @@
      .	     special(11)/ 'CLOCK_SECS' /
      .	     special(12)/ 'CURRENT_DATE' /
      .	     special(13)/ 'CURRENT_TIME' /
+     .	     special(14)/ 'N_OPEN_DSETS' /
 
 #ifdef unix
 	include 'ferret.parm'
@@ -100,6 +102,10 @@
 	include 'xtoday.cmn'
 	include 'xplatform_type.cmn'
 	include 'xvariables.cmn'
+	include 'tmap_dims.parm'
+#	include "tmap_dset.parm"
+	include 'xdset_info.cmn_text'
+
 * #ifdef for endianness info.
 #ifdef sun
 	include 'xmachine_byte.cmn'
@@ -132,7 +138,7 @@
 	RETURN
 
  200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 
-     .        1900, 2000, 2100, 2200, 2300) i
+     .        1900, 2000, 2100, 2200, 2300, 2400) i
 
 * PPL$XPIXEL, PPL$YPIXEL
  1100	CONTINUE
@@ -251,6 +257,20 @@
 #endif
 	value = current_time
 	slen = 8
+	RETURN
+
+
+* N_OPEN_DSETS
+ 2400	CONTINUE
+ 
+	count = 0.
+	DO 790 iset = 1, maxdsets
+	   IF ( ds_name(iset) .NE. char_init1024) count = count + 1.
+ 790	CONTINUE
+
+ 800	CONTINUE
+
+	value =  TM_FMT(count, 10, 10, slen)
 	RETURN
 
 	END

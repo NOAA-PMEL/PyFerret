@@ -49,16 +49,14 @@
 *	      - added "x_or_y" argument for Y axis calendar axes
 *	      - added TXTYPE MULTIYR
 * V510: 5/00 *sh* - extend formatting to 1000's of years axes
+* V650  1/10 *acm*- Define a symbol TXTYPE_SETTING which can be used in
+*               scripts when deciding whether to set the axis style as DMY
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'plot_setup.parm'
         include 'axis_inc.decl'	! with axis lengths
-        include 'AXIS.INC'       	! with axis lengths	
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-#endif
+        include 'AXIS.INC'      ! with axis lengths	
+
 
 * calling argument declarations:
 	CHARACTER	x_or_y*1, tstyle*3
@@ -72,8 +70,8 @@
 
 * internal variable declarations:
 	LOGICAL		climatology, its_x
-	INTEGER		itax, hi_int
-	CHARACTER	ppl_cmnd*128, tstyle_long*10
+	INTEGER		TM_LENSTR1, itax, hi_int, slen, i1, i2
+	CHARACTER	ppl_cmnd*128, tstyle_long*10, buff30*30, buff*10
 	REAL		hrs, hrsper8, axlen
 
 * time axis style table
@@ -179,6 +177,19 @@
  510	tstyle_long = tax_style( itax )
 	tstyle = tstyle_long	! 3 character, only
 	CALL PPLCMD ( from, line, 0, 'TXTYPE '//tstyle_long, 1, 1 )
+
+* ---
+* Define a symbol TXTYPE_SETTING
+* if this symbol already exists then delete it
+        buff30 = 'TXTYPE_SETTING'	! must be exactly 30 chars
+	CALL GETSYM( 'TXTYPE_SETTING', buff, i2, i1 )
+	IF ( i1 .EQ. 0 ) CALL DELSYM(buff30,i1)
+
+* define the symbol
+	slen = TM_LENSTR1(tstyle_long)
+	CALL PUTSYM( buff30, tstyle_long, slen, i2)
+* ---
+
 * ... suppress year display on climatological axes
 	hi_int = tax_hiint(itax)
 	IF ( climatology ) THEN

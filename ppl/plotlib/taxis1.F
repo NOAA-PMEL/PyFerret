@@ -52,6 +52,8 @@ C                with "*(*)" for the linux port
 C *acm* 24/01/00 Y2k Bug -- Put century at start when comparing 
 C                 ITIME to ITIME2 at loop 10
 C *acm* 03/04  new arguments and code for plotting graticule lines across plot. 
+C V65  *acm*  1/10 New time-axis style for DAY and MONTH, DMY: adds the
+C                  year to DAY,MONTH or to MONTH.
 
 C**
 C**    @(#)taxis1.f	1.1    3/10/88
@@ -107,7 +109,8 @@ C     SOLE PURPOSE FOR THIS MODIFICATION WAS TO IMPROVE 'S
 C     EFFICIENCY.
 C
 	CHARACTER ITIME3*14
-	CHARACTER SYM*21,ITIME1*(*),ITIME*14,ITIME2*(*),MON*3,DAY*2
+	CHARACTER SYM*21,ITIME1*(*),ITIME*14,ITIME2*(*),MON*3,DAY*2,
+     .		  YEAR*4, BUFF*8
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
 
@@ -125,6 +128,7 @@ C
         INTEGER ltic, color1, color2
 
 	include 'xinterrupt.cmn'
+        include 'century.cmn'  ! with MONYRLAB flag
 
 C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
 	IF(ITIME1(7:10).NE.'0000')STOP ',1'
@@ -307,7 +311,7 @@ C         THE LABELS
          IF(IDAY.NE.IDDB*(IDAY/IDDB)) GO TO 50
              CALL TIME2(ITIME,SYM)
 	READ(SYM,30) MON,DAY
-30	FORMAT(6X,A3,1X,A2)
+30	FORMAT(6X,A3,1X,A2,1X,A4)
 	IF(DAY(1:1).EQ.' ')THEN
 		NC=1
 		DAY=DAY(2:2)
@@ -323,16 +327,23 @@ C         THE LABELS
         TSYM=T+(TIC-SYMWID(CSIZE,6,SYM)/TFACT)*.5
         CALL SYMBEL(TSYM,YTEMP1,0.,CSIZE,6,SYM)
 	ENDIF
-   50     CONTINUE
+   50   CONTINUE
           IF(IMDB.EQ.0.OR.IABS(LABEL).NE.1) GO TO 70
               IF(IMON.EQ.IMON3) GO TO 70
               IF(IMON.NE.IMDB*(IMON/IMDB)) GO TO 60
 C             ELSE:
 	IF(T-TMON.GT.4320./DT)THEN
-                  CALL TIME2(ITIME,SYM)
-                  READ(SYM,30)MON,DAY
-        TSYM=TMON+(T+TIC-TMON-SYMWID(1.5*CSIZE,3,MON)/TFACT)*.5
-        CALL SYMBEL(TSYM,YTEMP2,0.,1.5*CSIZE,3,MON)
+           CALL TIME2(ITIME,SYM)
+           READ(SYM,30)MON,DAY,YEAR
+           IF (monyrlab) THEN
+	      WRITE (buff, 100) mon, year
+ 100	      FORMAT (A3, ' ', A4)
+              TSYM=TMON+(T+TIC-TMON-SYMWID(1.5*CSIZE,8,BUFF)/TFACT)*.5
+	      CALL SYMBEL(TSYM,YTEMP2,0.,1.5*CSIZE,8,buff)
+	   ELSE
+              TSYM=TMON+(T+TIC-TMON-SYMWID(1.5*CSIZE,3,MON)/TFACT)*.5
+	      CALL SYMBEL(TSYM,YTEMP2,0.,1.5*CSIZE,3,MON)
+	   ENDIF
 	ENDIF
    60         TMON=T+TIC
    70     CONTINUE
@@ -346,10 +357,16 @@ c          IF(ITIME.LT.ITIME2) GO TO 10
 	     
 	IF(IABS(LABEL).EQ.1.AND.IMON.EQ.IMDB*(IMON/IMDB)
      .	.AND.IDAY3.GE.4)THEN
-      CALL TIME2(ITIME,SYM)
-	READ(SYM,30)MON,DAY
-      TSYM=TMON+(T-TMON-SYMWID(1.5*CSIZE,3,MON)/TFACT)*.5
-      CALL SYMBEL(TSYM,YTEMP2,0.,1.5*CSIZE,3,MON)
+           CALL TIME2(ITIME,SYM)
+	   READ(SYM,30)MON,DAY, year
+           IF (monyrlab) THEN
+	      WRITE (buff, 100) mon, year
+              TSYM=TMON+(T+TIC-TMON-SYMWID(1.5*CSIZE,8,BUFF)/TFACT)*.5
+	      CALL SYMBEL(TSYM,YTEMP2,0.,1.5*CSIZE,8,buff)
+	   ELSE
+              TSYM=TMON+(T+TIC-TMON-SYMWID(1.5*CSIZE,3,MON)/TFACT)*.5
+	      CALL SYMBEL(TSYM,YTEMP2,0.,1.5*CSIZE,3,MON)
+	   ENDIF
      	ENDIF
       RETURN
       END

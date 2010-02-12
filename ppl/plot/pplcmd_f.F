@@ -115,7 +115,9 @@ C                 The code testing the Format for axis labels balks at
 C                 writing a 0 using an F format. See changes at lines 
 C                 WRITE(err_msg,label,ERR=1999) 0.  Need to check for an I
 C                 format and write 0, else write 0.0.
-* V63  *acm* 10/09 Changes for gfortran build
+C V63  *acm* 10/09 Changes for gfortran build
+C V65  *acm*  1/10 New time-axis style for DAY and MONTH, DMY: adds the
+C                  year to DAY,MONTH or to MONTH.
 c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -290,11 +292,6 @@ CCCCCCC data	        tmapdebug/.false./
 	CHARACTER*15  TMPCHR
 	character*2048 set_name
 
-* JD 11.29.95 Mod for century axis
-
-	LOGICAL*4 cenflag
-	COMMON/CENTURY/cenflag
-
 *	*jd* linux external stmt below inserted	
 	external scale
 
@@ -307,6 +304,7 @@ CCCCCCC data	        tmapdebug/.false./
      .          WS_TYPES_INIT
 
         include 'tmap_errors.parm'
+        include 'century.cmn'
 
 *****************************************************************************
 
@@ -1260,6 +1258,8 @@ C
 	          CENFLAG = .FALSE.		   
 	        ENDIF
 	    ENDIF
+	    MONYRLAB = .FALSE.  ! Option for MON and DAY types. 
+	    IF (INDEX(LABEL,'DMY').NE.0) MONYRLAB = .TRUE.
 	    LABELT=ITXTPE*ITXLBP
 	    GOTO 10
 C	TXLSZE

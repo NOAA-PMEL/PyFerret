@@ -114,8 +114,8 @@ C
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
 
-	LOGICAL*4 cenflag, not_zero_size
-	COMMON/CENTURY/ cenflag
+	LOGICAL*4 not_zero_size
+        include 'century.cmn'
 
 * Parameters for drawing tics across plot
 

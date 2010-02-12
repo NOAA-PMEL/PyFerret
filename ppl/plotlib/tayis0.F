@@ -54,6 +54,8 @@ C                with "*(*)" for the linux port
 C *acm* 24/01/00 Y2k Bug --Put century at start when comparing 
 C                 ITIME to ITIME2 at loop 10
 C *acm* 03/04  new arguments and code for plotting graticule lines across plot. 
+C V65  *acm*  1/10 New time-axis style for DAY and MONTH, DMY: adds the
+C                  year to DAY,MONTH or to MONTH.
 
 C**
 C**    @(#)tayis0.f	1.1    3/10/88
@@ -100,7 +102,7 @@ C
 C
 C     THIS ROUTINE WAS FIRST WRITTEN BY DAVID MANDEL IN JULY 1980.
 C
-	CHARACTER ITIME3*14,DATE*6
+	CHARACTER ITIME3*14,DATE*6,BUFF*14,YEAR*4
 	CHARACTER ITIME*14,ITIME1*(*),ITIME2*(*),SYM*21
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
@@ -120,6 +122,7 @@ C
 * TMAP interrupt flag
 
 	include 'xinterrupt.cmn'
+        include 'century.cmn'  ! with MONYRLAB flag
 
 C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
 	IF(ITIME1(9:10).NE.'00')STOP ',1'
@@ -318,10 +321,19 @@ C         THE LABELS
 C             ELSE:
 	IF(T-TDAY.GT.180./DT)THEN
 	    CALL TIME2(ITIME,SYM)
-	    READ(SYM,55) DATE
-55	    FORMAT(6X,A6)
-	    TSYM=TDAY+(T+TIC-TDAY-SYMWID(1.5*CSIZE,6,DATE)/TFACT)*.5
-	    CALL SYMBEL(XTEMP2,TSYM,90.,1.5*CSIZE,6,DATE)
+
+	   READ(SYM,55) DATE, YEAR
+55	   FORMAT(6X,A6,1X,A4)
+65         FORMAT(A6,1X,A4)
+           IF (MONYRLAB) THEN
+	      WRITE (BUFF, 65) DATE, YEAR
+              TSYM=TDAY+(T+TIC-TDAY-SYMWID(CSIZE,14,BUFF)/TFACT)*.5
+	      CALL SYMBEL(XTEMP2,TSYM,90.,CSIZE,14,BUFF)
+	   ELSE
+	      TSYM=TDAY+(T+TIC-TDAY-SYMWID(1.5*CSIZE,6,DATE)/TFACT)*.5
+	      CALL SYMBEL(XTEMP2,TSYM,90.,1.5*CSIZE,6,DATE)
+	   ENDIF
+
 	ENDIF
 60	TDAY=T+TIC
 70	CONTINUE
@@ -334,13 +346,20 @@ c	IF(ITIME.LE.ITIME2) GO TO 10
 	IF(IABS(LABEL).EQ.1.AND.IDAY.EQ.IDDB*(IDAY/IDDB)
      .	.AND.IHR3.GE.4)THEN
 	    CALL TIME2(ITIME,SYM)
-	    READ(SYM,55) DATE
+	    READ(SYM,55) DATE, YEAR
 * TMAP mod 8/11/89 *sh*                                 
 ! original:  ("mon" --> "date")                           
 !	    TSYM=TDAY+(T-TDAY-SYMWID(1.5*CSIZE,6,MON)/TFACT)*.5
 !	    CALL SYMBEL(XTEMP2,TSYM,90.,1.5*CSIZE,6,MON)
-	    TSYM=TDAY+(T-TDAY-SYMWID(1.5*CSIZE,6,date)/TFACT)*.5
-	    CALL SYMBEL(XTEMP2,TSYM,90.,1.5*CSIZE,6,date)
+
+           IF (MONYRLAB) THEN
+	      WRITE (BUFF, 65) DATE, YEAR
+              TSYM=TDAY+(T-TDAY-SYMWID(CSIZE,14,BUFF)/TFACT)*.5
+	      CALL SYMBEL(XTEMP2,TSYM,90.,CSIZE,14,BUFF)
+	   ELSE
+	      TSYM=TDAY+(T-TDAY-SYMWID(1.5*CSIZE,6,DATE)/TFACT)*.5
+	      CALL SYMBEL(XTEMP2,TSYM,90.,1.5*CSIZE,6,DATE)
+	   ENDIF
 	ENDIF
 	RETURN
 	END

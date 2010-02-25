@@ -85,6 +85,7 @@
 *            and restore original t0 on output
 * V600: *acm* 8/05 - Add new qualifier LIST/NOROWHEAD to remove labels that
 *                    start each row labelling the coordinate values. (bug 1273)
+* V650: *acm* 2/10 - Clean up line with coordinates on listings with tabs/commas
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -138,7 +139,7 @@
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*16,
      .			GET_STRING_ELEMENT*512,
-     .			line_buff*10000,
+     .			line_buff*10000, 
      .			good_data_form*10, row_ss_fmt*14, tab_or_comma*1,
      .			bad_data_form*10, col_head_format*32, cal_name*32
 	REAL		BOX_SIZE, big, small, biggest, bad_data, value
@@ -268,6 +269,7 @@
 	   IF (.NOT.do_auto_fmt) THEN
 	     line_buff = ' '
 	     WRITE ( line_buff, '(1PG14.7)' ) cx_bad_data(cx)
+	     line_buff = TM_FMT(cx_bad_data(cx),prec_digits,16,vlen)
 	     CALL SPLIT_LIST( pttmode_explct, list_lun,
      .			'             BAD FLAG : '//
      .		        line_buff, 38 )
@@ -517,8 +519,19 @@
 	   ELSEIF( do_tab_del ) THEN
 	      tab_or_comma = CHAR(9)
 	   ENDIF
-	   line_buff(1:line_length) = 'coordinates'//tab_or_comma
-	   alen = 12
+	   IF ( do_comma_del) 
+     .       line_buff(1:line_length) = '   '
+	   IF ( do_tab_del) 
+     .       line_buff(1:line_length) = '  '//tab_or_comma
+	   alen = 3
+
+           IF (perm(2) .EQ. 4) THEN ! time axis on the left      
+	      IF ( do_comma_del) 
+     .          line_buff(1:line_length) = '          '
+	      IF ( do_tab_del) 
+     .          line_buff(1:line_length) = '         '//tab_or_comma
+	      alen = 10
+           ENDIF
 
 * Get number of decimal places for formatting the row coordinates
 

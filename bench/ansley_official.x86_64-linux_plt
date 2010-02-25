@@ -23561,11 +23561,11 @@ HLABS   9  0.090
 SET LAB9 DODS URL: http://iridl.ldeo.columbia.edu/SOURCES/.LEVITUS/.MO-
 NTHLY/.temp/
 SET LABnum_DODS   9
-YLAB @ASCelsius
+YLAB @ASdeg C
 LABSET,,, 0.120
-SET LABY Celsius
-TITLE  0.200 @ACTEMP (Celsius)
-SET LABTIT TEMP (Celsius)
+SET LABY deg C
+TITLE  0.200 @ACTEMP (deg C)
+SET LABTIT TEMP (deg C)
 PLOT/LATCH/NOWAIT
 list labels
 CLSPLT

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 50363876 Feb 19 16:25 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 50366004 Feb 25 15:13 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes for CLOCK symbols: robust with g77 and gfortran. fix to sho dat/var/xml 
+Note: clock symbols work w/ g77&gfortran;  fixascii listings w/ tab,comma(bug1698); new examples errors specifying axis bounds
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -14,18 +14,18 @@ CVSROOT=/home/porter/tmap/FERRET_ROOT
 FER_WEB_BROWSER=netscape -ncols 60
 FER_DSETS=.
 FER_DAT=.
-FER_GO=. /home/porter/tmap/ferret/x86_64-linux/go /home/porter/tmap/ferret/x86_64-linux/examples /home/porter/tmap/ferret/x86_64-linux/contrib /home/porter/tmap/ferret/tmap_go
+FER_GO=. /home/porter/tmap/ferret/x86_64-linux/go /home/porter/tmap/ferret/x86_64-linux/examples /home/porter/tmap/ferret/x86_64-linux/contrib /home/porter/tmap/ferret/tmap_go /home/porter/ansley/baker_las.v7.1/conf/server/custom/scripts/
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
-Beginning at Fri Feb 19 16:28:27 PST 2010
+Beginning at Thu Feb 25 15:27:02 PST 2010
  	NOAA/PMEL TMAP
  	FERRET v6.421  
- 	Linux(g77) 2.6.9-89.ELsmp - 02/19/10
- 	19-Feb-10 16:28     
+ 	Linux(g77) 2.6.9-89.ELsmp - 02/25/10
+ 	25-Feb-10 15:27     
 
 yes? !bn500_all_shell
 yes? 
@@ -2400,7 +2400,7 @@ SET MODE/LAST IGNORE_ERRORS
 ! test formatted output where the output field is too small
 LIST/I=1:3/FORMAT=(F6.2) 1/(i-2)		! single column test
              VARIABLE : 1/(I-2)
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 3 points (X)
              X        : 0.5 to 3.5
  -1.00
@@ -10247,12 +10247,12 @@ FERRET_VERSION = "6.421"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-89.ELsmp"
 NETCDF_VERSION = ""3.7.4" of Nov  3 2009 11:32:47 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "19-Feb-10"
-SESSION_TIME = "16:28"
-DELTA_CPU = "6.38203"
-CLOCK_SECS = "6.97"
-CURRENT_DATE = "19-Feb-10"
-CURRENT_TIME = "16:28:34"
+SESSION_DATE = "25-Feb-10"
+SESSION_TIME = "15:27"
+DELTA_CPU = "6.43402"
+CLOCK_SECS = "7.1"
+CURRENT_DATE = "25-Feb-10"
+CURRENT_TIME = "15:27:09"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10273,12 +10273,12 @@ FERRET_VERSION = "6.421"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-89.ELsmp"
 NETCDF_VERSION = ""3.7.4" of Nov  3 2009 11:32:47 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "19-Feb-10"
-SESSION_TIME = "16:28"
-DELTA_CPU = "0.002"
-CLOCK_SECS = "6.97"
-CURRENT_DATE = "19-Feb-10"
-CURRENT_TIME = "16:28:34"
+SESSION_DATE = "25-Feb-10"
+SESSION_TIME = "15:27"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "7.1"
+CURRENT_DATE = "25-Feb-10"
+CURRENT_TIME = "15:27:09"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10287,8 +10287,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "19-Feb-10"
-SESSION_TIME = "16:28"
+SESSION_DATE = "25-Feb-10"
+SESSION_TIME = "15:27"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10298,13 +10298,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "19-Feb-10"
-SESSION_TIME = "16:28"
+SESSION_DATE = "25-Feb-10"
+SESSION_TIME = "15:27"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "19-Feb-10"
-SESSION_TIME = "16:28"
+SESSION_DATE = "25-Feb-10"
+SESSION_TIME = "15:27"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10338,7 +10338,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.421"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Feb 19 2010 16:28:34 "
+LAB3 = "Feb 25 2010 15:27:09 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10437,12 +10437,12 @@ FERRET_VERSION = "6.421"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-89.ELsmp"
 NETCDF_VERSION = ""3.7.4" of Nov  3 2009 11:32:47 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "19-Feb-10"
-SESSION_TIME = "16:28"
-DELTA_CPU = "0.018997"
-CLOCK_SECS = "6.99"
-CURRENT_DATE = "19-Feb-10"
-CURRENT_TIME = "16:28:34"
+SESSION_DATE = "25-Feb-10"
+SESSION_TIME = "15:27"
+DELTA_CPU = "0.019997"
+CLOCK_SECS = "7.12"
+CURRENT_DATE = "25-Feb-10"
+CURRENT_TIME = "15:27:09"
 N_OPEN_DSETS = "0"
  
  
@@ -10476,9 +10476,9 @@ LIST/ORDER=XYZT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XYZT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-LATITUDE-DEPTH (m)-TIME)
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
  ---- L:5 T:   10-SEP-1982 20:00
  ---- K:2 Z:   15
 1.499S,27.3346,27.2218
@@ -10497,9 +10497,9 @@ LIST/ORDER=XYTZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XYTZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-LATITUDE-TIME-DEPTH (m))
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
  ---- K:2 Z:   15
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.3346,27.2218
@@ -10518,9 +10518,9 @@ LIST/ORDER=XZYT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XZYT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-DEPTH (m)-LATITUDE-TIME)
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
  ---- L:5 T:   10-SEP-1982 20:00
  ---- J:41 Y:   1.499S
 15,27.3346,27.2218
@@ -10539,9 +10539,9 @@ LIST/ORDER=XZTY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XZTY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-DEPTH (m)-TIME-LATITUDE)
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
  ---- J:41 Y:   1.499S
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.3346,27.2218
@@ -10560,9 +10560,9 @@ LIST/ORDER=XTYZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XTYZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-TIME-LATITUDE-DEPTH (m))
-coordinates,135.5W   ,134.5W   
+          135.5W   ,134.5W   
  ---- K:2 Z:   15
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.3346,27.2218
@@ -10581,9 +10581,9 @@ LIST/ORDER=XTZY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XTZY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-TIME-DEPTH (m)-LATITUDE)
-coordinates,135.5W   ,134.5W   
+          135.5W   ,134.5W   
  ---- J:41 Y:   1.499S
  ---- K:2 Z:   15
 10-SEP-1982 20,27.3346,27.2218
@@ -10602,9 +10602,9 @@ LIST/ORDER=YXZT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YXZT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-LONGITUDE-DEPTH (m)-TIME)
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
  ---- L:5 T:   10-SEP-1982 20:00
  ---- K:2 Z:   15
 135.5W,27.3346,27.2382
@@ -10623,9 +10623,9 @@ LIST/ORDER=YXTZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YXTZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-LONGITUDE-TIME-DEPTH (m))
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
  ---- K:2 Z:   15
  ---- L:5 T:   10-SEP-1982 20:00
 135.5W,27.3346,27.2382
@@ -10644,9 +10644,9 @@ LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YZXT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE-TIME)
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
  ---- L:5 T:   10-SEP-1982 20:00
  ---- I:95 X:   135.5W
 15,27.3346,27.2382
@@ -10665,9 +10665,9 @@ LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YZTX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-DEPTH (m)-TIME-LONGITUDE)
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
  ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.3346,27.2382
@@ -10686,9 +10686,9 @@ LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YTXZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-TIME-LONGITUDE-DEPTH (m))
-coordinates,1.499S ,1.166S 
+          1.499S ,1.166S 
  ---- K:2 Z:   15
  ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2382
@@ -10707,9 +10707,9 @@ LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YTZX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LATITUDE-TIME-DEPTH (m)-LONGITUDE)
-coordinates,1.499S ,1.166S 
+          1.499S ,1.166S 
  ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.3346,27.2382
@@ -10728,9 +10728,9 @@ LIST/ORDER=ZXYT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZXYT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-LONGITUDE-LATITUDE-TIME)
-coordinates,15      ,25      
+   15      ,25      
  ---- L:5 T:   10-SEP-1982 20:00
  ---- J:41 Y:   1.499S
 135.5W,27.3346,27.2481
@@ -10749,9 +10749,9 @@ LIST/ORDER=ZXTY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZXTY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-LONGITUDE-TIME-LATITUDE)
-coordinates,15      ,25      
+   15      ,25      
  ---- J:41 Y:   1.499S
  ---- L:5 T:   10-SEP-1982 20:00
 135.5W,27.3346,27.2481
@@ -10770,9 +10770,9 @@ LIST/ORDER=ZYXT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZYXT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE-TIME)
-coordinates,15      ,25      
+   15      ,25      
  ---- L:5 T:   10-SEP-1982 20:00
  ---- I:95 X:   135.5W
 1.499S,27.3346,27.2481
@@ -10791,9 +10791,9 @@ LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZYTX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-LATITUDE-TIME-LONGITUDE)
-coordinates,15      ,25      
+   15      ,25      
  ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.3346,27.2481
@@ -10812,9 +10812,9 @@ LIST/ORDER=ZTXY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZTXY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-TIME-LONGITUDE-LATITUDE)
-coordinates,15      ,25      
+          15      ,25      
  ---- J:41 Y:   1.499S
  ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2481
@@ -10833,9 +10833,9 @@ LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZTYX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (DEPTH (m)-TIME-LATITUDE-LONGITUDE)
-coordinates,15      ,25      
+          15      ,25      
  ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.3346,27.2481
@@ -10854,9 +10854,9 @@ LIST/ORDER=TXYZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TXYZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-LONGITUDE-LATITUDE-DEPTH (m))
-coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
+   10-SEP-1982 20:00,16-SEP-1982 22:00
  ---- K:2 Z:   15
  ---- J:41 Y:   1.499S
 135.5W,27.3346,27.7751
@@ -10875,9 +10875,9 @@ LIST/ORDER=TXZY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TXZY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-LONGITUDE-DEPTH (m)-LATITUDE)
-coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
+   10-SEP-1982 20:00,16-SEP-1982 22:00
  ---- J:41 Y:   1.499S
  ---- K:2 Z:   15
 135.5W,27.3346,27.7751
@@ -10896,9 +10896,9 @@ LIST/ORDER=TYXZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TYXZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-LATITUDE-LONGITUDE-DEPTH (m))
-coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
+   10-SEP-1982 20:00,16-SEP-1982 22:00
  ---- K:2 Z:   15
  ---- I:95 X:   135.5W
 1.499S,27.3346,27.7751
@@ -10917,9 +10917,9 @@ LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TYZX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-LATITUDE-DEPTH (m)-LONGITUDE)
-coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
+   10-SEP-1982 20:00,16-SEP-1982 22:00
  ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 1.499S,27.3346,27.7751
@@ -10938,9 +10938,9 @@ LIST/ORDER=TZXY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TZXY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-DEPTH (m)-LONGITUDE-LATITUDE)
-coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
+   10-SEP-1982 20:00,16-SEP-1982 22:00
  ---- J:41 Y:   1.499S
  ---- I:95 X:   135.5W
 15,27.3346,27.7751
@@ -10959,9 +10959,9 @@ LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TZYX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (TIME-DEPTH (m)-LATITUDE-LONGITUDE)
-coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
+   10-SEP-1982 20:00,16-SEP-1982 22:00
  ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 15,27.3346,27.7751
@@ -10997,10 +10997,10 @@ LIST/ORDER=XYZT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XYZT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-LATITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
  ---- K:2 Z:   15
 1.499S,27.3346,27.2218
 1.166S,27.2382,27.1246
@@ -11011,10 +11011,10 @@ LIST/ORDER=XYTZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XYTZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-LATITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
  ---- K:2 Z:   15
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.3346,27.2218
@@ -11027,10 +11027,10 @@ LIST/ORDER=XZYT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XZYT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-DEPTH (m)-LATITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
  ---- J:41 Y:   1.499S
 15,27.3346,27.2218
 25,27.2481,27.1248
@@ -11041,10 +11041,10 @@ LIST/ORDER=XZTY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XZTY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-DEPTH (m)-LATITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
  ---- J:41 Y:   1.499S
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.3346,27.2218
@@ -11057,10 +11057,10 @@ LIST/ORDER=XTYZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XTYZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-LATITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+          135.5W   ,134.5W   
  ---- K:2 Z:   15
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.3346,27.2218
@@ -11075,10 +11075,10 @@ LIST/ORDER=XTZY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XTZY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-DEPTH (m)-LATITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+          135.5W   ,134.5W   
  ---- J:41 Y:   1.499S
  ---- K:2 Z:   15
 10-SEP-1982 20,27.3346,27.2218
@@ -11093,10 +11093,10 @@ LIST/ORDER=YXZT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YXZT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LATITUDE-LONGITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
  ---- K:2 Z:   15
 135.5W,27.3346,27.2382
 134.5W,27.2218,27.1246
@@ -11107,10 +11107,10 @@ LIST/ORDER=YXTZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YXTZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LATITUDE-LONGITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
  ---- K:2 Z:   15
  ---- L:5 T:   10-SEP-1982 20:00
 135.5W,27.3346,27.2382
@@ -11123,10 +11123,10 @@ LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YZXT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
  ---- I:95 X:   135.5W
 15,27.3346,27.2382
 25,27.2481,27.1293
@@ -11137,10 +11137,10 @@ LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YZTX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
  ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.3346,27.2382
@@ -11153,10 +11153,10 @@ LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YTXZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LATITUDE-LONGITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
-coordinates,1.499S ,1.166S 
+          1.499S ,1.166S 
  ---- K:2 Z:   15
  ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2382
@@ -11171,10 +11171,10 @@ LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YTZX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,1.499S ,1.166S 
+          1.499S ,1.166S 
  ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.3346,27.2382
@@ -11189,10 +11189,10 @@ LIST/ORDER=ZXYT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZXYT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,15      ,25      
+   15      ,25      
  ---- J:41 Y:   1.499S
 135.5W,27.3346,27.2481
 134.5W,27.2218,27.1248
@@ -11203,10 +11203,10 @@ LIST/ORDER=ZXTY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZXTY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,15      ,25      
+   15      ,25      
  ---- J:41 Y:   1.499S
  ---- L:5 T:   10-SEP-1982 20:00
 135.5W,27.3346,27.2481
@@ -11219,10 +11219,10 @@ LIST/ORDER=ZYXT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZYXT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,15      ,25      
+   15      ,25      
  ---- I:95 X:   135.5W
 1.499S,27.3346,27.2481
 1.166S,27.2382,27.1293
@@ -11233,10 +11233,10 @@ LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZYTX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,15      ,25      
+   15      ,25      
  ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.3346,27.2481
@@ -11249,10 +11249,10 @@ LIST/ORDER=ZTXY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZTXY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,15      ,25      
+          15      ,25      
  ---- J:41 Y:   1.499S
  ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2481
@@ -11267,10 +11267,10 @@ LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZTYX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,15      ,25      
+          15      ,25      
  ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.3346,27.2481
@@ -11285,10 +11285,10 @@ LIST/ORDER=TXYZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TXYZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-LATITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
-coordinates,10-SEP-1982 20:00
+   10-SEP-1982 20:00
  ---- K:2 Z:   15
  ---- J:41 Y:   1.499S
 135.5W,27.3346
@@ -11307,10 +11307,10 @@ LIST/ORDER=TXZY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TXZY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LONGITUDE-DEPTH (m)-LATITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,10-SEP-1982 20:00
+   10-SEP-1982 20:00
  ---- J:41 Y:   1.499S
  ---- K:2 Z:   15
 135.5W,27.3346
@@ -11329,10 +11329,10 @@ LIST/ORDER=TYXZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TYXZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LATITUDE-LONGITUDE-DEPTH (m))
              TIME     : 10-SEP-1982 20:00
-coordinates,10-SEP-1982 20:00
+   10-SEP-1982 20:00
  ---- K:2 Z:   15
  ---- I:95 X:   135.5W
 1.499S,27.3346
@@ -11351,10 +11351,10 @@ LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TYZX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (LATITUDE-DEPTH (m)-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,10-SEP-1982 20:00
+   10-SEP-1982 20:00
  ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 1.499S,27.3346
@@ -11373,10 +11373,10 @@ LIST/ORDER=TZXY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TZXY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,10-SEP-1982 20:00
+   10-SEP-1982 20:00
  ---- J:41 Y:   1.499S
  ---- I:95 X:   135.5W
 15,27.3346
@@ -11395,10 +11395,10 @@ LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TZYX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 points (DEPTH (m)-LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
-coordinates,10-SEP-1982 20:00
+   10-SEP-1982 20:00
  ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 15,27.3346
@@ -11443,33 +11443,33 @@ LIST/ORDER=XYZT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XYZT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
 1.499S,27.3346,27.2218
 1.166S,27.2382,27.1246
 LIST/ORDER=XYTZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XYTZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
 1.499S,27.3346,27.2218
 1.166S,27.2382,27.1246
 LIST/ORDER=XZYT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XZYT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
  ---- J:41 Y:   1.499S
 15,27.3346,27.2218
  ---- J:42 Y:   1.166S
@@ -11478,11 +11478,11 @@ LIST/ORDER=XZTY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XZTY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
  ---- J:41 Y:   1.499S
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.3346,27.2218
@@ -11493,11 +11493,11 @@ LIST/ORDER=XTYZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XTYZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
-coordinates,135.5W   ,134.5W   
+          135.5W   ,134.5W   
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.3346,27.2218
  ---- J:42 Y:   1.166S
@@ -11506,11 +11506,11 @@ LIST/ORDER=XTZY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=XTZY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
-coordinates,135.5W   ,134.5W   
+          135.5W   ,134.5W   
  ---- J:41 Y:   1.499S
  ---- K:2 Z:   15
 10-SEP-1982 20,27.3346,27.2218
@@ -11521,33 +11521,33 @@ LIST/ORDER=YXZT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YXZT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-LONGITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
 135.5W,27.3346,27.2382
 134.5W,27.2218,27.1246
 LIST/ORDER=YXTZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YXTZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
 135.5W,27.3346,27.2382
 134.5W,27.2218,27.1246
 LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YZXT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-LONGITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
  ---- I:95 X:   135.5W
 15,27.3346,27.2382
  ---- I:96 X:   134.5W
@@ -11556,11 +11556,11 @@ LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YZTX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-LONGITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
  ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 15,27.3346,27.2382
@@ -11571,11 +11571,11 @@ LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YTXZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
-coordinates,1.499S ,1.166S 
+          1.499S ,1.166S 
  ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346,27.2382
  ---- I:96 X:   134.5W
@@ -11584,11 +11584,11 @@ LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=YTZX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
-coordinates,1.499S ,1.166S 
+          1.499S ,1.166S 
  ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 10-SEP-1982 20,27.3346,27.2382
@@ -11599,11 +11599,11 @@ LIST/ORDER=ZXYT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZXYT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,15      
+   15      
  ---- J:41 Y:   1.499S
 135.5W,27.3346
 134.5W,27.2218
@@ -11614,11 +11614,11 @@ LIST/ORDER=ZXTY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZXTY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,15      
+   15      
  ---- J:41 Y:   1.499S
  ---- L:5 T:   10-SEP-1982 20:00
 135.5W,27.3346
@@ -11631,11 +11631,11 @@ LIST/ORDER=ZYXT $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZYXT /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-LONGITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,15      
+   15      
  ---- I:95 X:   135.5W
 1.499S,27.3346
 1.166S,27.2382
@@ -11646,11 +11646,11 @@ LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZYTX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-LONGITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,15      
+   15      
  ---- I:95 X:   135.5W
  ---- L:5 T:   10-SEP-1982 20:00
 1.499S,27.3346
@@ -11663,11 +11663,11 @@ LIST/ORDER=ZTXY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZTXY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,15      
+          15      
  ---- J:41 Y:   1.499S
  ---- I:95 X:   135.5W
 10-SEP-1982 20,27.3346
@@ -11682,11 +11682,11 @@ LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=ZTYX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-LONGITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,15      
+          15      
  ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 10-SEP-1982 20,27.3346
@@ -11701,11 +11701,11 @@ LIST/ORDER=TXYZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TXYZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
-coordinates,10-SEP-1982 20:00
+   10-SEP-1982 20:00
  ---- J:41 Y:   1.499S
 135.5W,27.3346
 134.5W,27.2218
@@ -11716,11 +11716,11 @@ LIST/ORDER=TXZY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TXZY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
-coordinates,10-SEP-1982 20:00
+   10-SEP-1982 20:00
  ---- J:41 Y:   1.499S
  ---- K:2 Z:   15
 135.5W,27.3346
@@ -11733,11 +11733,11 @@ LIST/ORDER=TYXZ $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TYXZ /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
-coordinates,10-SEP-1982 20:00
+   10-SEP-1982 20:00
  ---- I:95 X:   135.5W
 1.499S,27.3346
 1.166S,27.2382
@@ -11748,11 +11748,11 @@ LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TYZX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
-coordinates,10-SEP-1982 20:00
+   10-SEP-1982 20:00
  ---- I:95 X:   135.5W
  ---- K:2 Z:   15
 1.499S,27.3346
@@ -11765,11 +11765,11 @@ LIST/ORDER=TZXY $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TZXY /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
-coordinates,10-SEP-1982 20:00
+   10-SEP-1982 20:00
  ---- J:41 Y:   1.499S
  ---- I:95 X:   135.5W
 15,27.3346
@@ -11784,11 +11784,11 @@ LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
  !-> LIST/ORDER=TZYX /FORMAT=comma temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-LONGITUDE)
              TIME     : 10-SEP-1982 20:00
              DEPTH (m): 15
-coordinates,10-SEP-1982 20:00
+   10-SEP-1982 20:00
  ---- I:95 X:   135.5W
  ---- J:41 Y:   1.499S
 15,27.3346
@@ -11805,21 +11805,21 @@ set region/i=95:96/j=41/k=2:3/l=5
 LIST/FORMAT=comma/precision=5/order=xz temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-DEPTH (m))
              LATITUDE : 1.499S
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
 15,27.335,27.222
 25,27.248,27.125
 LIST/FORMAT=comma/precision=5/order=zx temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (DEPTH (m)-LONGITUDE)
              LATITUDE : 1.499S
              TIME     : 10-SEP-1982 20:00
-coordinates,15      ,25      
+   15      ,25      
 135.5W,27.335,27.248
 134.5W,27.222,27.125
 !XT
@@ -11827,21 +11827,21 @@ set region/i=95:96/j=41/k=2/l=5:6
 LIST/FORMAT=comma/precision=5/order=xt temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-TIME)
              LATITUDE : 1.499S
              DEPTH (m): 15
-coordinates,135.5W   ,134.5W   
+          135.5W   ,134.5W   
 10-SEP-1982 20,27.335,27.222
 16-SEP-1982 22,27.775,27.622
 LIST/FORMAT=comma/precision=5/order=tx temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (TIME-LONGITUDE)
              LATITUDE : 1.499S
              DEPTH (m): 15
-coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
+   10-SEP-1982 20:00,16-SEP-1982 22:00
 135.5W,27.335,27.775
 134.5W,27.222,27.622
 !YZ
@@ -11849,21 +11849,21 @@ set region/i=95/j=41:42/k=2:3/l=5
 LIST/FORMAT=comma/precision=5/order=yz temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-DEPTH (m))
              LONGITUDE: 135.5W
              TIME     : 10-SEP-1982 20:00
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
 15,27.335,27.238
 25,27.248,27.129
 LIST/FORMAT=comma/precision=5/order=zy temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (DEPTH (m)-LATITUDE)
              LONGITUDE: 135.5W
              TIME     : 10-SEP-1982 20:00
-coordinates,15      ,25      
+   15      ,25      
 1.499S,27.335,27.248
 1.166S,27.238,27.129
 !YT
@@ -11871,21 +11871,21 @@ set region/i=95/j=41:42/k=2/l=5:6
 LIST/FORMAT=comma/precision=5/order=yt temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LATITUDE-TIME)
              LONGITUDE: 135.5W
              DEPTH (m): 15
-coordinates,1.499S ,1.166S 
+          1.499S ,1.166S 
 10-SEP-1982 20,27.335,27.238
 16-SEP-1982 22,27.775,27.678
 LIST/FORMAT=comma/precision=5/order=ty temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (TIME-LATITUDE)
              LONGITUDE: 135.5W
              DEPTH (m): 15
-coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
+   10-SEP-1982 20:00,16-SEP-1982 22:00
 1.499S,27.335,27.775
 1.166S,27.238,27.678
 !ZT
@@ -11893,21 +11893,21 @@ set region/i=95/j=41/k=2:3/l=5:6
 LIST/FORMAT=comma/precision=5/order=zt temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (DEPTH (m)-TIME)
              LONGITUDE: 135.5W
              LATITUDE : 1.499S
-coordinates,15      ,25      
+          15      ,25      
 10-SEP-1982 20,27.335,27.248
 16-SEP-1982 22,27.775,27.652
 LIST/FORMAT=comma/precision=5/order=tz temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (TIME-DEPTH (m))
              LONGITUDE: 135.5W
              LATITUDE : 1.499S
-coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
+   10-SEP-1982 20:00,16-SEP-1982 22:00
 15,27.335,27.775
 25,27.248,27.652
 !X
@@ -11915,22 +11915,22 @@ set region/i=95:96/j=41/k=2/l=5
 LIST/FORMAT=comma/precision=5/order=x temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 points (LONGITUDE)
              LATITUDE : 1.499S
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
 row 1,27.335,27.222
 LIST/FORMAT=comma/precision=5/order=y temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 points (LONGITUDE)
              LATITUDE : 1.499S
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,1.499S 
+   1.499S 
 135.5W,27.335
 134.5W,27.222
 !Y
@@ -11938,22 +11938,22 @@ set region/i=95/j=41:42/k=2/l=5
 LIST/FORMAT=comma/precision=5/order=y temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 points (LATITUDE)
              LONGITUDE: 135.5W
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,1.499S ,1.166S 
+   1.499S ,1.166S 
 row 1,27.335,27.238
 LIST/FORMAT=comma/precision=5/order=x temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 points (LATITUDE)
              LONGITUDE: 135.5W
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   
+   135.5W   
 1.499S,27.335
 1.166S,27.238
 !Z
@@ -11961,22 +11961,22 @@ set region/i=95/j=41/k=2:3/l=5
 LIST/FORMAT=comma/precision=5/order=z temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 points (DEPTH (m))
              LONGITUDE: 135.5W
              LATITUDE : 1.499S
              TIME     : 10-SEP-1982 20:00
-coordinates,15      ,25      
+   15      ,25      
 row 1,27.335,27.248
 LIST/FORMAT=comma/precision=5/order=x temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 points (DEPTH (m))
              LONGITUDE: 135.5W
              LATITUDE : 1.499S
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   
+   135.5W   
  ---- K:2 Z:   15
 1.499S,27.335
  ---- K:3 Z:   25
@@ -11986,22 +11986,22 @@ set region/i=95/j=41/k=2/l=5:6
 LIST/FORMAT=comma/precision=5/order=t temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 points (TIME)
              LONGITUDE: 135.5W
              LATITUDE : 1.499S
              DEPTH (m): 15
-coordinates,10-SEP-1982 20:00,16-SEP-1982 22:00
+   10-SEP-1982 20:00,16-SEP-1982 22:00
 row 1,27.335,27.775
 LIST/FORMAT=comma/precision=5/order=x temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 points (TIME)
              LONGITUDE: 135.5W
              LATITUDE : 1.499S
              DEPTH (m): 15
-coordinates,135.5W   
+   135.5W   
  ---- L:5 T:   10-SEP-1982 20:00
  ---- K:2 Z:   15
 1.499S,27.335
@@ -12014,9 +12014,9 @@ set region/i=95:96/j=41:42/k=2:3/l=5:6
 LIST/FORMAT=tab temp
              VARIABLE : TEMPERATURE (deg. C)
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 by 2 by 2 points (LONGITUDE-LATITUDE-DEPTH (m)-TIME)
-coordinates	135.5W   	134.5W   
+  	135.5W   	134.5W   
  ---- L:5 T:   10-SEP-1982 20:00
  ---- K:2 Z:   15
 1.499S	27.3346	27.2218
@@ -12037,21 +12037,21 @@ set region/i=95:96/j=41:42/k=2/l=5
 LIST/FORMAT=comma/precision=1 randu(i)*temp*1e7
              VARIABLE : RANDU(I)*TEMP*1E7
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
 1.499S,2.E+08,2.E+08
 1.166S,2.E+08,2.E+08
 LIST/FORMAT=comma/precision=9 randu(i)*temp*1e7
              VARIABLE : RANDU(I)*TEMP*1E7
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.000000E+34 
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
 1.499S,1.6675085E+08,2.0208842E+08
 1.166S,1.6616283E+08,2.0136658E+08
  
@@ -12060,21 +12060,21 @@ set region/i=95:96/j=41:42/k=2/l=5
 LIST/FORMAT=comma/precision=1 randu(i)*temp*1e-7
              VARIABLE : RANDU(I)*TEMP*1E-7
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
 1.499S,0.000002,0.000002
 1.166S,0.000002,0.000002
 LIST/FORMAT=comma/precision=9 randu(i)*temp*1e-7
              VARIABLE : RANDU(I)*TEMP*1E-7
              FILENAME : gt4d011.cdf
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.000000E+34 
              SUBSET   : 2 by 2 points (LONGITUDE-LATITUDE)
              DEPTH (m): 15
              TIME     : 10-SEP-1982 20:00
-coordinates,135.5W   ,134.5W   
+   135.5W   ,134.5W   
 1.499S,0.0000016675085,0.0000020208843
 1.166S,0.0000016616284,0.0000020136658
  
@@ -12086,8 +12086,8 @@ LIST/FORMAT=comma/precision=5 u,v
              LATITUDE: 1.499S to 0.833S
              DEPTH (m): 15
              TIME: 10-SEP-1982 20:00
- Column  1: U is ZONAL VELOCITY (cm/sec)
- Column  2: V is MERIDIONAL VELOCITY (cm/sec)
+ Column  1: U is ZONAL VELOCITY (cm/sec)   BAD FLAG : -1.E+34
+ Column  2: V is MERIDIONAL VELOCITY (cm/sec)   BAD FLAG : -1.E+34
            U,V
  ---- J:41 Y:   1.333S
 135W   / 95:41.597,-1.5366  
@@ -12100,9 +12100,9 @@ LIST/FORMAT=comma/precision=5 u,v
 set region/i=1:5/j=1:3
 LIST/FORMAT=comma/precision=5 10*j+i
              VARIABLE : 10*J+I
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 5 by 3 points (X-Y)
-coordinates,1     ,2     ,3     ,4     ,5     
+   1     ,2     ,3     ,4     ,5     
 1,11,12,13,14,15
 2,21,22,23,24,25
 3,31,32,33,34,35
@@ -25283,8 +25283,7 @@ GO err491_gmax.jnl
 ! err491_gmax.jnl
 ! 9 Dec. 1998 *sh*
  
-! .. crash when attempting a tiFri Feb 19 16:28:43 PST 2010
-me regridding with g=@MAX
+! .. crash when attempting a time regridding with g=@MAX
  
 let ts = RANDU(T[T=1-jan-1990:15-jan-1990:1])
 plot ts
@@ -25311,7 +25310,8 @@ show grid
  Default grid for DEFINE VARIABLE is (G022)
  Last successful data access was on grid (G022)
     GRID (G022)
- name       axis              # pts   start                end
+ name  Thu Feb 25 15:27:18 PST 2010
+     axis              # pts   start                end
  normal    X
  normal    Y
  Z10       Z                   10 r   1                    10
@@ -34611,14 +34611,7 @@ let fsst = missing(sst,5)
 let yy =  if abs(y[gt=sst]) le 20 then 10 else  (100-abs(y[gt=sst]+1))/ 10.
  
 set reg/l=1
-vec/noax/xskip=16/yskip=8/len=1col1,col2,col3,col4,col5
-one,,1.1,24S,130E,,1e1,"word 1"
-    two,,2.2,24N,130W,2S,,"word 2"
-three,,3.3,24,130,3N,3e-2," wd 3 "
-
-five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
-extra line
-5/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
+vec/noax/xskip=16/yskip=8/len=15/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
 vec/over/xskip=16/yskip=8/len=15 fsst*0+yy*mp_mask,fsst*0, x_page,y_page
  
 ! Irregular axes, and manual axis scaling
@@ -34643,7 +34636,14 @@ vec/title="Regular grid" a,b,mxpage,mypage
 ! Now stretch the grid
  
 set view lr
-let mx = exp(x[x=2:4.4:0.2])
+let mx = exp(xcol1,col2,col3,col4,col5
+one,,1.1,24S,130E,,1e1,"word 1"
+    two,,2.2,24N,130W,2S,,"word 2"
+three,,3.3,24,130,3N,3e-2," wd 3 "
+
+five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
+extra line
+[x=2:4.4:0.2])
 let my = exp(y[y=1:3.4:0.2])
  
 let mxpage = mx + 0*my
@@ -34825,8 +34825,7 @@ show data
  A2       A2                               1:20480   ...       ...       ...
  A3       A3                               1:20480   ...       ...       ...
  A4       A4                               1:20480   ...       ...       ...
- A5       A5           col1,col2,col3,col4,col5
-                    1:20480   ...       ...       ...
+ A5       A5                               1:20480   ...       ...       ...
  
 list a1,a2,a3,a4,a5
              DATA SET: ./bn_delimited_read_1.dat
@@ -34846,7 +34845,8 @@ list a1,a2,a3,a4,a5
  
 ! insist that all columns be treated as numeric
 file/format=delim/skip=1/type=numeric bn_delimited_read_1.dat
-list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
+list v1,v2,v3,v4,v5,v6,v7col1,col2,col3,col4,col5
+,v8,v9,v10
              DATA SET: ./bn_delimited_read_1.dat
              X: 0.5 to 6.5
  Column  1: V1
@@ -34936,11 +34936,7 @@ show data
  V1       V1                               1:20480   ...       ...       ...
  
 file/form=delimited/delimiter=" " bn_delimited_read_2.dat
-show12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
- data
+show data
      currently SET data sets:
     1> ./bn_delimited_read_2.dat  (default)
  name     title                             I         J         K         L
@@ -34956,7 +34952,11 @@ list v1,v2
              X: 0.5 to 3.5
  Column  1: V1 is V1 (days)(Julian days since 1-Jan-1900)
  Column  2: V2 is V2 (hours)(Time of day)
-              V1     V2
+              12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+V1     V2
 1   / 1:  37965.0  12.5833
 2   / 2:     ....     ....
 3   / 3:  39051.0  13.7514
@@ -35115,11 +35115,7 @@ show data 2
      currently SET data sets:
     2> ./bn_delimited_read_date_time.dat  (default)
  name     title                             I         J         K         L
- V1  12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-     V1                               1:4       ...       ...       ...
+ V1       V1                               1:4       ...       ...       ...
        (Julian days since 1-Jan-1900)
  V2       V2                               1:4       ...       ...       ...
        (Julian days since 1-Jan-1900)
@@ -35131,7 +35127,11 @@ show data 2
        (Julian days since 1-Jan-1900)
  V6       V6                               1:4       ...       ...       ...
        (Julian days since 1-Jan-1900)
- V7       V7                               1:4       ...       ...       ...
+ V7       V7              12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+                 1:4       ...       ...       ...
        (Time of day)
  V8       V8                               1:4       ...       ...       ...
        (Time of day)
@@ -43415,7 +43415,7 @@ GO bn_bounds.jnl
 ! and DEFINE AXIS/BOUNDS
 ! 5/2005 made changes so the bounds coordinates {1,2} are written to the
 !        file. If axis is Z, write attribute potitive="up". (bug 1196)
- 
+! 2/10   new examples of bounds which overlap each other.
  
 ! Output data on irregular record axis. No need for:
 ! save/clobber/RIGID/HEADING=ENHANCED/LLIMITS=1:3/file=a.nc v
@@ -43573,6 +43573,12 @@ def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,
 ! Too few or too many bounds values
 def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
 def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5,10.5}
+ 
+ 
+! This set of bounds has overlapping bounds. Use midpoints instead.
+def axis/t/bounds tax=\
+ {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} ,\
+ {0,24, 0,24, 24,48, 24,48, 48,72, 48,72, 72,96, 72,96, 96,120}
  
 cancel axis tax
 can mode ignore
@@ -43751,6 +43757,20 @@ sh axis/t tax
        4>  10                    1          9.5
        5>  11                    1          10.5
  
+! bounds_overlapping has bounds overlap.  Use axis midpoints instead.
+ 
+use bounds_overlapping
+sh axis/t tax
+ name       axis              # pts   start                end
+ TAX       T                    5 i   1                    11
+   Axis span (to cell edges) = 11
+ 
+       L     T                   TBOX      TBOXLO
+       1>  1                     1          0.5
+       2>  2                     4          1.5
+       3>  9                     4          5.5
+       4>  10                    1          9.5
+       5>  11                    1          10.5
  
 GO bn_reset
 cancel mode verify
@@ -44991,9 +45011,9 @@ def axis/y=0.11:0.25:0.018/units=deg yax
 let aa = (x[gx=xax] + y[gy=yax])/100
 list/form=tab aa
              VARIABLE : (X[GX=XAX] + Y[GY=YAX])/100
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 6 by 9 points (LONGITUDE-LATITUDE)
-coordinates	100E     	100.1E   	100.1E   	100.2E   	100.2E   	100.2E   
+  	100E     	100.1E   	100.1E   	100.2E   	100.2E   	100.2E   
 0.11N	1.0011	1.0016	1.0021	1.0026	1.0031	1.0036
 0.128N	1.00128	1.00178	1.00228	1.00278	1.00328	1.00378
 0.146N	1.00146	1.00196	1.00246	1.00296	1.00346	1.00396
@@ -45006,9 +45026,9 @@ coordinates	100E     	100.1E   	100.1E   	100.2E   	100.2E   	100.2E
 def axis/x=100:100.11:0.033/units=deg xax
 list/form=comma aa
              VARIABLE : (X[GX=XAX] + Y[GY=YAX])/100
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.E+34       
              SUBSET   : 4 by 9 points (LONGITUDE-LATITUDE)
-coordinates,100E     ,100E     ,100.1E   ,100.1E   
+   100E     ,100E     ,100.1E   ,100.1E   
 0.11N,1.0011,1.00143,1.00176,1.00209
 0.128N,1.00128,1.00161,1.00194,1.00227
 0.146N,1.00146,1.00179,1.00212,1.00245
@@ -45319,10 +45339,8 @@ let myvar = x[gx=xfine] + y[gy=yfine]
 set list/prec=8
 list/form=tab myvar
              VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
-             BAD FLAG : -9.9999998E+33
-             SUBSET   : 5 by 6 points (LONGITUDE-LATITUDE)
-coordinates	155.1W   	155.1W   	155.1W   	155.1W   	155.1W   
-19.7N	224.59943	224.59995	224.60045	             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+             BAD FLAG : -1.000000E+34 
+             SUBSET   : 5             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
              GEOMETRY: XY 
@@ -45373,7 +45391,9 @@ DATA:
 224.60300
 224.60350
 224.60400
-224.60095	224.60146
+ by 6 points (LONGITUDE-LATITUDE)
+  	155.1W   	155.1W   	155.1W   	155.1W   	155.1W   
+19.7N	224.59943	224.59995	224.60045	224.60095	224.60146
 19.7N	224.59995	224.60046	224.60097	224.60147	224.60197
 19.7N	224.60045	224.60097	224.60147	224.60197	224.60248
 19.7N	224.60097	224.60149	224.60199	224.6025	224.603
@@ -45383,9 +45403,9 @@ DATA:
 set list/prec=8
 list/form=comma myvar
              VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
-             BAD FLAG : -9.9999998E+33
+             BAD FLAG : -1.000000E+34 
              SUBSET   : 5 by 6 points (LONGITUDE-LATITUDE)
-coordinates,155.1W   ,155.1W   ,155.1W   ,155.1W   ,155.1W   
+   155.1W   ,155.1W   ,155.1W   ,155.1W   ,155.1W   
 19.7N,224.59943,224.59995,224.60045,224.60095,224.60146
 19.7N,224.59995,224.60046,224.60097,224.60147,224.60197
 19.7N,224.60045,224.60097,224.60147,224.60197,224.60248
@@ -45744,16 +45764,16 @@ sh data
  
 plot/x=180/y=0/k=1 temp
 ppl list labels
- @ACTEMP (Celsius)                                                              
+ @ACTEMP (deg C)                                                                
  @AST (months)                                                                  
- @ASCelsius                                                                     
+ @ASdeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
  LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 6.421
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASFeb 19 2010 16:29:24
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASFeb 25 2010 15:27:58
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 179.5E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -46864,12 +46884,12 @@ let the_data_var = {4,5,4}
  
 list/format=comma country, id, aa, bb, newcountry, the_data_var
              X: 0.5 to 3.5
- Column  1: COUNTRY is {"JP", "JP", "US"}
- Column  2: ID is {1,2,3}
- Column  3: AA is 4000* ID
- Column  4: BB is 1000000* ID + 500
- Column  5: NEWCOUNTRY is {"w", "c", "e"}
- Column  6: THE_DATA_VAR is {4,5,4}
+ Column  1: COUNTRY is {"JP", "JP", "US"}    BAD FLAG : -1.E+34
+ Column  2: ID is {1,2,3}    BAD FLAG : -1.E+34
+ Column  3: AA is 4000* ID    BAD FLAG : -1.E+34
+ Column  4: BB is 1000000* ID + 500    BAD FLAG : -1.E+34
+ Column  5: NEWCOUNTRY is {"w", "c", "e"}    BAD FLAG : -1.E+34
+ Column  6: THE_DATA_VAR is {4,5,4}    BAD FLAG : -1.E+34
      COUNTRY,ID,AA,BB,NEWCOUNTRY,THE_DATA_VAR
 1   / 1:"JP",1,4000,1000500,"w",4  
 2   / 2:"JP",2,8000,2000500,"c",5  
@@ -46877,12 +46897,12 @@ list/format=comma country, id, aa, bb, newcountry, the_data_var
  
 list/format=tab/norow country, id, aa, bb, newcountry, the_data_var
              X: 0.5 to 3.5
- Column  1: COUNTRY is {"JP", "JP", "US"}
- Column  2: ID is {1,2,3}
- Column  3: AA is 4000* ID
- Column  4: BB is 1000000* ID + 500
- Column  5: NEWCOUNTRY is {"w", "c", "e"}
- Column  6: THE_DATA_VAR is {4,5,4}
+ Column  1: COUNTRY is {"JP", "JP", "US"}    BAD FLAG : -1.E+34
+ Column  2: ID is {1,2,3}    BAD FLAG : -1.E+34
+ Column  3: AA is 4000* ID    BAD FLAG : -1.E+34
+ Column  4: BB is 1000000* ID + 500    BAD FLAG : -1.E+34
+ Column  5: NEWCOUNTRY is {"w", "c", "e"}    BAD FLAG : -1.E+34
+ Column  6: THE_DATA_VAR is {4,5,4}    BAD FLAG : -1.E+34
 COUNTRY	ID	AA	BB	NEWCOUNTRY	THE_DATA_VAR
 "JP"	1	4000	1000500	"w"	4  
 "JP"	2	8000	2000500	"c"	5  
@@ -47163,7 +47183,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "19-Feb-10:16:28"
+WIN_TITLE = "25-Feb-10:15:27"
  
 set win/title="set the title"
 sho sym win_title
@@ -47181,7 +47201,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="19-Feb-10:16:28"
+ !-> set win/title="25-Feb-10:15:27"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47190,16 +47210,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 19-Feb-10
+ !-> DEFINE SYMBOL the_date = 25-Feb-10
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 16:28
+ !-> DEFINE SYMBOL the_time = 15:27
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="19-Feb-10:16:28"
+ !-> SET WIN/TITLE="25-Feb-10:15:27"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "19-Feb-10:16:28"
+WIN_TITLE = "25-Feb-10:15:27"
  
 GO bn_reset
 cancel mode verify
@@ -49653,49 +49673,7 @@ show att/all (`sst,return=taxis`)
  (TIME7).units = hour since 0000-01-01 00:00:00 
  (TIME7).time_origin = 1-JAN-0000 00:00:00 
  (TIME7).modulo =   
- (netcdf a {
-dimensions:
-	PSXT91_108 = 18 ;
-	PSYT35_56 = 22 ;
-	bnds = 2 ;
-	PSZT1_10 = 10 ;
-	TIME1 = UNLIMITED ; // (25 currently)
-variables:
-	double PSXT91_108(PSXT91_108) ;
-		PSXT91_108:units = "degrees_east" ;
-		PSXT91_108:modulo = 360. ;
-		PSXT91_108:point_spacing = "even" ;
-		PSXT91_108:axis = "X" ;
-	double PSYT35_56(PSYT35_56) ;
-		PSYT35_56:units = "degrees_north" ;
-		PSYT35_56:point_spacing = "uneven" ;
-		PSYT35_56:axis = "Y" ;
-		PSYT35_56:bounds = "PSYT35_56_bnds" ;
-	double PSYT35_56_bnds(PSYT35_56, bnds) ;
-	double PSZT1_10(PSZT1_10) ;
-		PSZT1_10:units = "METERS" ;
-		PSZT1_10:positive = "down" ;
-		PSZT1_10:point_spacing = "uneven" ;
-		PSZT1_10:axis = "Z" ;
-		PSZT1_10:bounds = "PSZT1_10_bnds" ;
-	double PSZT1_10_bnds(PSZT1_10, bnds) ;
-	double TIME1(TIME1) ;
-		TIME1:units = "hour since 1980-01-14 14:00:00" ;
-		TIME1:time_origin = "14-JAN-1980 14:00:00" ;
-		TIME1:axis = "T" ;
-	double FAREN(TIME1, PSZT1_10, PSYT35_56, PSXT91_108) ;
-		FAREN:missing_value = -9.99999979021477e+33 ;
-		FAREN:_FillValue = -9.99999979021477e+33 ;
-		FAREN:long_name = "TEMP*9/5 + 32" ;
-		FAREN:units = "Deg F" ;
-		FAREN:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
-		FAREN:history = "From gt4d011" ;
-
-// global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
-		:Conventions = "CF-1.0" ;
-}
-TIME7).orig_file_axname = TIME 
+ (TIME7).orig_file_axname = TIME 
  
 ! change units to days since time origin
 set att (`sst,return=taxis`).units="days"
@@ -49808,7 +49786,49 @@ sp ncdump a.nc >> all_ncdump.out
  
 !-----
 ! Set type of data on output for a user var
-! the requseted type.
+! the requsetnetcdf a {
+dimensions:
+	PSXT91_108 = 18 ;
+	PSYT35_56 = 22 ;
+	bnds = 2 ;
+	PSZT1_10 = 10 ;
+	TIME1 = UNLIMITED ; // (25 currently)
+variables:
+	double PSXT91_108(PSXT91_108) ;
+		PSXT91_108:units = "degrees_east" ;
+		PSXT91_108:modulo = 360. ;
+		PSXT91_108:point_spacing = "even" ;
+		PSXT91_108:axis = "X" ;
+	double PSYT35_56(PSYT35_56) ;
+		PSYT35_56:units = "degrees_north" ;
+		PSYT35_56:point_spacing = "uneven" ;
+		PSYT35_56:axis = "Y" ;
+		PSYT35_56:bounds = "PSYT35_56_bnds" ;
+	double PSYT35_56_bnds(PSYT35_56, bnds) ;
+	double PSZT1_10(PSZT1_10) ;
+		PSZT1_10:units = "METERS" ;
+		PSZT1_10:positive = "down" ;
+		PSZT1_10:point_spacing = "uneven" ;
+		PSZT1_10:axis = "Z" ;
+		PSZT1_10:bounds = "PSZT1_10_bnds" ;
+	double PSZT1_10_bnds(PSZT1_10, bnds) ;
+	double TIME1(TIME1) ;
+		TIME1:units = "hour since 1980-01-14 14:00:00" ;
+		TIME1:time_origin = "14-JAN-1980 14:00:00" ;
+		TIME1:axis = "T" ;
+	double FAREN(TIME1, PSZT1_10, PSYT35_56, PSXT91_108) ;
+		FAREN:missing_value = -9.99999979021477e+33 ;
+		FAREN:_FillValue = -9.99999979021477e+33 ;
+		FAREN:long_name = "TEMP*9/5 + 32" ;
+		FAREN:units = "Deg F" ;
+		FAREN:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
+		FAREN:history = "From gt4d011" ;
+
+// global attributes:
+		:history = "FERRET V6.421   25-Feb-10" ;
+		:Conventions = "CF-1.0" ;
+}
+ed type.
  
 sp echo "bn_attributes.jnl --- 29 SET VAR/OUTTYPE for user variable" >> all_ncdump.out
  
@@ -51568,7 +51588,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.421   19-Feb-10
+ .                               history         CHAR        25   T       FERRET V6.421   25-Feb-10
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51609,7 +51629,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        25   T       FERRET V6.421   19-Feb-10
+ .                               history         CHAR        25   T       FERRET V6.421   25-Feb-10
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51662,29 +51682,29 @@ let b = {4,4,4,4,4,4,4,4}
 set var/bad=2 a
 list/form=comma a,b
              X: 0.5 to 8.5
- Column  1: A is {1,1,2,1,1,2,1,1}
- Column  2: B is {4,4,4,4,4,4,4,4}
+ Column  1: A is {1,1,2,1,1,2,1,1}    BAD FLAG : 2
+ Column  2: B is {4,4,4,4,4,4,4,4}    BAD FLAG : -1.E+34
        A,B
 1   / 1:1,4  
 2   / 2:1,4  
-3   / 3:,4  
+3   / 3:2,4  
 4   / 4:1,4  
 5   / 5:1,4  
-6   / 6:,4  
+6   / 6:2,4  
 7   / 7:1,4  
 8   / 8:1,4  
 list/form=comma a,b,a
              X: 0.5 to 8.5
- Column  1: A is {1,1,2,1,1,2,1,1}
- Column  2: B is {4,4,4,4,4,4,4,4}
- Column  3: A is {1,1,2,1,1,2,1,1}
+ Column  1: A is {1,1,2,1,1,2,1,1}    BAD FLAG : 2
+ Column  2: B is {4,4,4,4,4,4,4,4}    BAD FLAG : -1.E+34
+ Column  3: A is {1,1,2,1,1,2,1,1}    BAD FLAG : 2
        A,B,A
 1   / 1:1,4,1  
 2   / 2:1,4,1  
-3   / 3:,4, 
+3   / 3:2,4,2  
 4   / 4:1,4,1  
 5   / 5:1,4,1  
-6   / 6:,4, 
+6   / 6:2,4,2  
 7   / 7:1,4,1  
 8   / 8:1,4,1  
  
@@ -51694,29 +51714,29 @@ let b = {4,4,4,4,4,4,4,4}
 set var/bad=2 a
 list/form=tab a,b
              X: 0.5 to 8.5
- Column  1: A is {1,1,2,1,1,2,1,1}
- Column  2: B is {4,4,4,4,4,4,4,4}
+ Column  1: A is {1,1,2,1,1,2,1,1}    BAD FLAG : 2
+ Column  2: B is {4,4,4,4,4,4,4,4}    BAD FLAG : -1.E+34
        A	B
 1   / 1:1	4  
 2   / 2:1	4  
-3   / 3:	4  
+3   / 3:2	4  
 4   / 4:1	4  
 5   / 5:1	4  
-6   / 6:	4  
+6   / 6:2	4  
 7   / 7:1	4  
 8   / 8:1	4  
 list/form=tab a,b,a
              X: 0.5 to 8.5
- Column  1: A is {1,1,2,1,1,2,1,1}
- Column  2: B is {4,4,4,4,4,4,4,4}
- Column  3: A is {1,1,2,1,1,2,1,1}
+ Column  1: A is {1,1,2,1,1,2,1,1}    BAD FLAG : 2
+ Column  2: B is {4,4,4,4,4,4,4,4}    BAD FLAG : -1.E+34
+ Column  3: A is {1,1,2,1,1,2,1,1}    BAD FLAG : 2
        A	B	A
 1   / 1:1	4	1  
 2   / 2:1	4	1  
-3   / 3:	4	 
+3   / 3:2	4	2  
 4   / 4:1	4	1  
 5   / 5:1	4	1  
-6   / 6:	4	 
+6   / 6:2	4	2  
 7   / 7:1	4	1  
 8   / 8:1	4	1  
  
@@ -56170,21 +56190,7 @@ list ypts, tpts, sampl_pts
  Column  2: TPTS is XSEQUENCE(T[GT=TSAMPLES])
  Column  3: SAMPL_PTS is SAMPLEXYT(MY_DATA,XPTS,YPTS,TPTS)
                YPTS     TPTS   SAMPL_PTS
-1    /  1:  20.53799    20.000      ....
-2    /  2: -29.07481    60.000      ....
-3    /  3:  26.64251   100.000      ....
-4    /  4: -28.97490   140.000      ....
-5    /  5: -17.10210   180.000      ....
-6    /  6:  -8.79040   220.000      ....
-7    /  7: -26.48790   260.000      ....
-8    /  8:  -9.00391   300.000      ....
-9    /  9: -19.19385   340.000      ....
-10   / 10: -19.84003   380.000  360.6600
-11   / 11: -44.10992   420.000  376.3901
-12   / 12:  34.07387   460.000  494.5739
-13   / 13:  34.62830   500.000  535.1283
-14   / 14:  -6.59559   540.000  533.9044
-15   / 15: -39netcdf a {
+1    /  1:netcdf a {
 dimensions:
 	XAX1_10 = 10 ;
 	tday = UNLIMITED ; // (31 currently)
@@ -56232,10 +56238,24 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
-.01164   580.000  541.4883
+  20.53799    20.000      ....
+2    /  2: -29.07481    60.000      ....
+3    /  3:  26.64251   100.000      ....
+4    /  4: -28.97490   140.000      ....
+5    /  5: -17.10210   180.000      ....
+6    /  6:  -8.79040   220.000      ....
+7    /  7: -26.48790   260.000      ....
+8    /  8:  -9.00391   300.000      ....
+9    /  9: -19.19385   340.000      ....
+10   / 10: -19.84003   380.000  360.6600
+11   / 11: -44.10992   420.000  376.3901
+12   / 12:  34.07387   460.000  494.5739
+13   / 13:  34.62830   500.000  535.1283
+14   / 14:  -6.59559   540.000  533.9044
+15   / 15: -39.01164   580.000  541.4883
 16   / 16: -25.63370   620.000  594.8663
 17   / 17: -22.96677   660.000  637.5332
 18   / 18: -30.90969   700.000  669.5903
@@ -57657,10 +57677,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "61.0997"
-CLOCK_SECS = "87.22"
-CURRENT_DATE = "19-Feb-10"
-CURRENT_TIME = "16:29:54"
+DELTA_CPU = "61.0527"
+CLOCK_SECS = "87.53"
+CURRENT_DATE = "25-Feb-10"
+CURRENT_TIME = "15:28:29"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57669,8 +57689,8 @@ CURRENT_TIME = "16:29:54"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.051987"
-CLOCK_SECS = "87.31"
+DELTA_CPU = "0.049995"
+CLOCK_SECS = "87.62"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57684,60 +57704,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.408943
+ !-> DEFINE VARIABLE ten_plots = 0.402939
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "88.12"
+CLOCK_SECS = "88.43"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "88.12"
+CLOCK_SECS = "88.43"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.039993
- !-> DEFINE VARIABLE sumcpu =0.039993
-!-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.040993
- !-> DEFINE VARIABLE sumcpu =0.080986
-!-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.043991
- !-> DEFINE VARIABLE sumcpu =0.124977
-!-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.045998
- !-> DEFINE VARIABLE sumcpu =0.170975
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.043991
- !-> DEFINE VARIABLE sumcpu =0.214966
-!-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.042992
- !-> DEFINE VARIABLE sumcpu =0.257958
-!-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.040993
- !-> DEFINE VARIABLE sumcpu =0.298951
-!-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.043999
- !-> DEFINE VARIABLE sumcpu =0.34295
-!-> REPEAT: K=9
+ !-> DEFINE VARIABLE sumcpu =0.042992
+!-> REPEAT: K=2
+ !-> DEFINE VARIABLE dt = 0.046989
+ !-> DEFINE VARIABLE sumcpu =0.089981
+!-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.044991
- !-> DEFINE VARIABLE sumcpu =0.387941
+ !-> DEFINE VARIABLE sumcpu =0.134972
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.042999
+ !-> DEFINE VARIABLE sumcpu =0.177971
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.042999
+ !-> DEFINE VARIABLE sumcpu =0.22097
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.042984
+ !-> DEFINE VARIABLE sumcpu =0.263954
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.041992
+ !-> DEFINE VARIABLE sumcpu =0.305946
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.044998
+ !-> DEFINE VARIABLE sumcpu =0.350944
+!-> REPEAT: K=9
+ !-> DEFINE VARIABLE dt = 0.043991
+ !-> DEFINE VARIABLE sumcpu =0.394935
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.040993
- !-> DEFINE VARIABLE sumcpu =0.428934
+ !-> DEFINE VARIABLE dt = 0.042992
+ !-> DEFINE VARIABLE sumcpu =0.437927
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.428934
-0.428934
+ !-> MESSAGE/CONTINUE 0.437927
+0.437927
 sh sym CLOCK_SECS
-CLOCK_SECS = "89.35"
+CLOCK_SECS = "89.65"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "19-Feb-10"
-SESSION_TIME = "16:28"
-CURRENT_DATE = "19-Feb-10"
-CURRENT_TIME = "16:29:56"
+SESSION_DATE = "25-Feb-10"
+SESSION_TIME = "15:27"
+CURRENT_DATE = "25-Feb-10"
+CURRENT_TIME = "15:28:31"
  
 ! ******** V6.3 Additions below ***********
  
@@ -59834,8 +59854,8 @@ N_OPEN_DSETS = "0"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.421  
- 	Linux(g77) 2.6.9-89.ELsmp - 02/19/10
- 	19-Feb-10 16:30     
+ 	Linux(g77) 2.6.9-89.ELsmp - 02/25/10
+ 	25-Feb-10 15:28     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -60546,8 +60566,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  10   / 10:  -5.00
  11   / 11:  -4.00
  12   / 12:  -3.00
- 13-rw-rw-r--  1 ansley tmap 29712 Feb 19 16:30 testa.v5d
--rw-rw-r--  1 ansley tmap 29712 Feb 19 16:30 test.v5d
+ 13-rw-rw-r--  1 ansley tmap 29712 Feb 25 15:28 testa.v5d
+-rw-rw-r--  1 ansley tmap 29712 Feb 25 15:28 test.v5d
    / 13:  -2.00
  14   / 14:  -1.00
  15   / 15:   0.00
@@ -60724,7 +60744,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60747,7 +60767,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60771,7 +60791,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60810,7 +60830,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60845,7 +60865,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60885,7 +60905,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60939,7 +60959,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -60993,7 +61013,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61047,7 +61067,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61092,7 +61112,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61183,7 +61203,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61250,7 +61270,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61300,7 +61320,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61375,7 +61395,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61402,7 +61422,7 @@ variables:
 		X_:_FillValue = -1.e+34f ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -61426,7 +61446,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -61451,11 +61471,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -61485,7 +61505,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61557,7 +61577,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61598,7 +61618,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61637,7 +61657,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61740,7 +61760,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -61776,7 +61796,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -61798,7 +61818,7 @@ variables:
 		BB:my_title = "This is my new variable bb" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61824,7 +61844,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61844,7 +61864,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61865,7 +61885,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -61904,7 +61924,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -61940,7 +61960,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -61974,7 +61994,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -62002,7 +62022,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62035,7 +62055,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62061,7 +62081,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62102,7 +62122,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -62200,7 +62220,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -62239,7 +62259,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62322,7 +62342,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62359,7 +62379,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62396,7 +62416,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62444,7 +62464,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62499,7 +62519,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62539,7 +62559,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62579,7 +62599,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62611,7 +62631,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62642,7 +62662,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -62671,7 +62691,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -62700,7 +62720,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -62758,7 +62778,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62799,7 +62819,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62818,37 +62838,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	float A(XAX) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62878,7 +62868,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	float A(XAX) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -62927,7 +62947,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62965,7 +62985,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -62983,7 +63003,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 err611_set_var_ez.jnl --- 
@@ -63002,7 +63022,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -63020,7 +63040,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -63038,7 +63058,7 @@ variables:
 		A:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -63059,7 +63079,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -63088,7 +63108,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -63112,7 +63132,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.421   19-Feb-10" ;
+		:history = "FERRET V6.421   25-Feb-10" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
@@ -63120,8 +63140,8 @@ end of ncdump output
  
  	NOAA/PMEL TMAP
  	FERRET v6.421  
- 	Linux(g77) 2.6.9-89.ELsmp - 02/19/10
- 	19-Feb-10 16:30     
+ 	Linux(g77) 2.6.9-89.ELsmp - 02/25/10
+ 	25-Feb-10 15:28     
 
 CAN MODE VERIFY
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
@@ -63139,12 +63159,12 @@ FERRET_VERSION = "6.421"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-89.ELsmp"
 NETCDF_VERSION = ""3.7.4" of Nov  3 2009 11:32:47 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "19-Feb-10"
-SESSION_TIME = "16:30"
-DELTA_CPU = "0.039992"
-CLOCK_SECS = "0.07"
-CURRENT_DATE = "19-Feb-10"
-CURRENT_TIME = "16:30:06"
+SESSION_DATE = "25-Feb-10"
+SESSION_TIME = "15:28"
+DELTA_CPU = "0.033994"
+CLOCK_SECS = "0.08"
+CURRENT_DATE = "25-Feb-10"
+CURRENT_TIME = "15:28:41"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -63165,7 +63185,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "19-Feb-10:16:30"
+WIN_TITLE = "25-Feb-10:15:28"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -63217,8 +63237,8 @@ GO_FILE = "./bn_startupfile.jnl"
  
  	NOAA/PMEL TMAP
  	FERRET v6.421  
- 	Linux(g77) 2.6.9-89.ELsmp - 02/19/10
- 	19-Feb-10 16:30     
+ 	Linux(g77) 2.6.9-89.ELsmp - 02/25/10
+ 	25-Feb-10 15:28     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -63428,8 +63448,8 @@ spawn ls abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstu
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.421  
- 	Linux(g77) 2.6.9-89.ELsmp - 02/19/10
- 	19-Feb-10 16:30     
+ 	Linux(g77) 2.6.9-89.ELsmp - 02/25/10
+ 	25-Feb-10 15:28     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -63542,8 +63562,8 @@ can mode ignore
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.421  
- 	Linux(g77) 2.6.9-89.ELsmp - 02/19/10
- 	19-Feb-10 16:30     
+ 	Linux(g77) 2.6.9-89.ELsmp - 02/25/10
+ 	25-Feb-10 15:28     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -63626,4 +63646,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Fri Feb 19 16:30:08 PST 2010
+Ended at Thu Feb 25 15:28:43 PST 2010

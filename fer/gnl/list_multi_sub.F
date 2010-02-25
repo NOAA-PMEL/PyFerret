@@ -79,6 +79,10 @@
 *                    tab and comma formatting, and there was also an inconsistency
 *                    in how the two flags were used: prec_digits(for LIST/PREC=) and
 *                    list_digits(setting from SET LIST/PREC=)
+* V610: *acm* 2/10 - Fix bug 1698. For tab and comma-delimited files,
+*                    list out the missing data values. The point of these
+*                    is that they'll be read into some other software e.g.
+*                    spreadsheets, so the user wants the missing flags in there.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -121,7 +125,7 @@
      .                  do_comma_del, norow
 	INTEGER		TM_LENSTR1, CGRID_AXIS, GET_MAX_STRING_LEN,
      .			GET_OFFSET_C_STRING_LEN, 
-     .			w0, w, data_len, nleft, nright, alen,
+     .			w0, w, data_len, nleft, nright, alen, blen,
      .			lo(4), hi(4), del(4), pt(4), valid_ax(4),
      .			idim, vlen, cleft, col_ax, col_dec,
      .			cx, slen1, slen2, slen3, i, 
@@ -131,7 +135,7 @@
 	CHARACTER	KEY_STRING*128, AX_TITLE*32, VAR_UNITS*64, LEFINT*8,
      .			CX_DIM_STR*16, VAR_CODE*128, TM_FMT*16,
      .			buff1*16, buff2*16, buff3*16, line_buff*1024,
-     .			row_ss_fmt*14, bad_ax*5,
+     .			row_ss_fmt*14, bad_ax*5, bad_buff*32,
      .			col_head_format*32, sep*1
 	REAL		big, small, biggest, value
 	REAL*8		TM_WORLD
@@ -340,15 +344,25 @@
      .			PAREN_SURROUND(VAR_TITLE_MOD(cx),slen2)
 	   vlen = vlen+slen2
 	   risc_buff = ' '
+
+	   bad_buff = ' '
+	   blen = 1
+           IF (do_comma_del .OR. do_tab_del) THEN
+             bad_buff = '   BAD FLAG : '// 
+     .                  TM_FMT(bad(ivar),prec_digits,16,blen)
+             blen = blen + 14
+           ENDIF
+
 	   IF ( line_buff(:vlen) .EQ. vname_buff(:vlen) ) THEN
-	      WRITE ( risc_buff, 3028 ) ivar, line_buff(:alen)
+	      WRITE ( risc_buff, 3028 ) ivar, line_buff(:alen), 
+     .           bad_buff(:blen)
 	      CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
- 3028         FORMAT (' Column',I3,': ',A)
+ 3028         FORMAT (' Column',I3,': ',A, A) 
 	   ELSE	      
 	      WRITE ( risc_buff, 3030 ) ivar,
-     .                         line_buff(:alen), vname_buff(:vlen)
+     .           line_buff(:alen), vname_buff(:vlen),bad_buff(:blen)
 	      CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
- 3030	      FORMAT (' Column',I3,': ',A,' is ',A)
+ 3030	      FORMAT (' Column',I3,': ',A,' is ',A, A)
 	   ENDIF
  60	CONTINUE
 
@@ -643,10 +657,15 @@
 	           out(ivar) = memory( iwd+1, pt_blk(ivar)+iblk ) 
 	        ENDIF
 	        IF ( out(ivar) .EQ. bad(ivar) ) THEN
-	           WRITE(line_buff(w0+1:w),bad_fmt(ivar)) '....'
                    IF (do_comma_del .OR. do_tab_del) THEN
-                      line_buff(w0+1:w0+1) = tab_or_COMMA
-                      IF (ivar .LT. num_uvars_in_cmnd) ww = ww+1
+                       line_buff = line_buff(:ww-1)//
+     .	                   TM_FMT(out(ivar),prec_digits,16,vlen)
+                       IF (ivar .LT. num_uvars_in_cmnd) 
+     .                   line_buff(ww+vlen:ww+vlen) = tab_or_COMMA
+     	               ww = ww+vlen+1
+                       w = ww
+                   ELSE
+	              WRITE(line_buff(w0+1:w),bad_fmt(ivar)) '....'
                    ENDIF
 	        ELSE
                    IF (do_comma_del .OR. do_tab_del) THEN
@@ -669,6 +688,7 @@
 * write the fully formatted line
            IF (do_comma_del .OR. do_tab_del) w0 = ww
 	   CALL SPLIT_LIST(pttmode_explct, list_lun, line_buff, w0)
+           line_buff = ' '
  600	   CONTINUE
 
 * successful completion

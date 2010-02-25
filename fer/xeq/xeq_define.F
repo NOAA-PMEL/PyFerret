@@ -205,7 +205,7 @@
 *                  This works if the value of NPOINTS can be specified as an integer.
 * V64 *acm* 11/09  Fix to bug 1511 slightly wrong: dont use line_t0 from
 *                  a previous definition of a time axis.
-
+* V65 *acm*  2/10  Minor change to error message
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -2059,7 +2059,8 @@ C /units=months  is 1/12 of the length of the year
      .     buff1(:slen) //')', *5000 )
 
 5750	CALL ERRMSG( ferr_grid_definition, status,
-     .     'BOUNDS specified do not enclose coordinate points', *5000 )
+     .   'BOUNDS specified do not correctly enclose coordinate points', 
+     .   *5000 )
 
 5900	CALL ERRMSG( ferr_invalid_command, status,
      .		'DEFINE what name.attribute?', *5000 )

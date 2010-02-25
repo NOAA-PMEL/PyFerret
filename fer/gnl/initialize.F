@@ -77,6 +77,8 @@
 *		     rather than f77 default routines.
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 *                  Use pseudo-dataset of user-defined axes to keep track of attributes.
+* V65   2/10 *acm*- Changes for CLOCK symbols that work with gfortran as well as g77.
+*                   see special_symbol.F
 
         include 'tmap_errors.parm'  ! error codes
 	include 'tmap_dims.parm'
@@ -173,6 +175,7 @@
 * the symbol DELTA_CPU. See special_symbol.F
 
       dtime_res = DTime(TArray)
+      cpu_last = 0.0  ! in common xtoday.cmn
 
 * ALso a special symbol CLOCK_SECS, the delta seconds in clock time since Ferret
 * session is initialized.  Save clock_start_count to subtract from the value

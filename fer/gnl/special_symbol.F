@@ -61,6 +61,8 @@
 *                   fixed at the start time of the Ferret session.
 * V62   5/09 *acm*- make FERRET_MEMORY a special symbol.
 * V65   1/10 *acm*- New special symbol N_OPEN_DSETS, counts the number of open datasets
+* V65   2/10 *acm*- Call CPU_TIME rather than DTIME for clock symbols. Works
+*                   with gfortran as well as g77.
 
 * calling argument declarations:
 	INTEGER	  isym, slen
@@ -73,7 +75,7 @@
 * internal variable declarations:
 	INTEGER STR_UPCASE, TM_LENSTR, i, i1, ierr, wsid, 
      .          nxpix, nypix, llen, icount, irate, imax
-        REAL DTIME, TArray(2), dtime_res, clock_secs, count
+        REAL DTIME, TArray(2), dtime_res, clock_secs, count, cputime_now
 	CHARACTER special(nspecial)*16, upname*16
 	CHARACTER LEFINT*16, TM_FMT*12, NF_INQ_LIBVERS*80, NF_INQ_LIBVERS_*80
         CHARACTER*10 current_date, current_time, zone
@@ -206,7 +208,11 @@
 
 
 * DELTA_CPU
- 2000	dtime_res = DTIME(TArray)
+ 2000	CONTINUE
+        CALL DTIME(TArray)
+	CALL CPU_TIME(cputime_now)
+        dtime_res = cputime_now - cpu_last
+	cpu_last = cputime_now
 	value = ' '
 	value = TM_FMT(dtime_res, 6, 8, slen)
 	RETURN

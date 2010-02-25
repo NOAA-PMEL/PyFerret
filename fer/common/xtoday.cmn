@@ -1,8 +1,12 @@
 * XTODAY.CMN
 * 2/97 *kob* bumped up today_time from char*8 to char*10 for usage with
 *	f90 date_and_time routine
-	COMMON/ XTODAY / clock_start_count, today_date, today_time
+* 2/10 *acm* Changes for CLOCK symbols that work with gfortran as well as g77.
+*            see special_symbol.F
+
+	COMMON/ XTODAY /cpu_last, clock_start_count, today_date, today_time
 
 	CHARACTER*9 today_date
 	CHARACTER*10 today_time
 	INTEGER clock_start_count
+	REAL cpu_last

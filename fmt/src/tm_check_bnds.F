@@ -43,6 +43,7 @@
 *                  Bounds can be either 2*N or N+1 values.
 * V601 *acm* 9/19  Fix bug 1434; check bounds for regularly-spaced axes 
 * V63  *acm* 10/09 Changes for gfortran build
+* V65  *acm*  2/10 Test for overlapping bounds
 
         INCLUDE 'xio.cmn_text'
 	INCLUDE 'tmap_dims.parm'
@@ -55,7 +56,7 @@
         CHARACTER*(*) vname
 
 * Internal definitions
-        LOGICAL TM_FPEQ, TM_DFPEQ
+        LOGICAL TM_FPEQ, TM_DFPEQ, equal_ends, overlapping
 	INTEGER TM_LENSTR1, npts, ipt1, ibx1, i, ngap, vlen, status,
      .          nothing
         REAL*8 pt, del, bhi, blo
@@ -69,6 +70,7 @@
 
         blast = REAL(line_mem(ibx1+1))  ! First box_hi
         ngap = 0
+        overlapping = .FALSE.
 
         IF (nb .EQ. 2*npts) THEN
 
@@ -92,7 +94,8 @@
 
   100           CONTINUE
 
-            ELSE ! line_regular
+            ELSE ! (not line_regular)
+
 
 	      DO 200 i = 0, npts-1
                 pt = line_mem(ipt1+i)
@@ -109,10 +112,15 @@
                    RETURN
 	        ENDIF
                 IF (i .GE. 1) THEN
-                   IF (.NOT. TM_FPEQ(blast, REAL(blo)) ) THEN
+		   equal_ends = TM_FPEQ(blast, REAL(blo))
+		   IF (.NOT.equal_ends .AND. blo.LT.blast) THEN 
+		      overlapping = .TRUE.
+		      GOTO 330
+		   ENDIF
+                   IF (.NOT. equal_ends ) THEN
                       ngap = ngap + 1
                       line_mem(ibx1+2*i) = blast
-                   ENDIF
+		   ENDIF
                    blast = REAL(bhi)
                 ENDIF
 
@@ -142,6 +150,15 @@
              TM_CHECK_BNDS = .TRUE.
 
            ENDIF
+  330      IF (overlapping) THEN
+              vbuff = vname   
+              vlen = TM_LENSTR1(vbuff)
+              CALL WARN( 'Axis definition error on axis: '
+     .        //vbuff(:vlen)//'. Bounds describe cells '//
+     .        'that overlap one another ')
+              TM_CHECK_BNDS = .FALSE.
+	   ENDIF
+
 
        ELSE  ! bounds are already specified as N+1 values
 

@@ -201,6 +201,8 @@ C Write statement that uses number 2075 when we change to using these.)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * All attributes not already listed.
+* Skip 'parent_grid', 'slab_min_index', 'slab_max_index' as these
+* wind up causing an incomplete spec of the grid in the F-TDS dataset
 
            DO 200 iatt = 1, nvatts
               CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
@@ -211,7 +213,10 @@ C Write statement that uses number 2075 when we change to using these.)
      .              (STR_SAME(attname, 'long_name') .NE. 0)     .AND. 
      .              (STR_SAME(attname, 'history') .NE. 0)       .AND. 
      .              (STR_SAME(attname, 'missing_value') .NE. 0) .AND. 
-     .              (STR_SAME(attname, '_FillValue') .NE. 0)
+     .              (STR_SAME(attname, '_FillValue') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'parent_grid') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'slab_min_index') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'slab_max_index') .NE. 0)
 
               IF (newatt) THEN
                  blen = 2048  ! len of attbuff

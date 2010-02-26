@@ -14,13 +14,16 @@ C**
 * v581  *acm* 3/05 open levels (-INF) (INF)
 * V610  *acm* 3/08 - add new MODE NLEVELS
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
+* V65 *acm   2/10 If Open-ended levels were used, symbol LEV_OPNLEVS saves 
+* the /LEV command needed to duplicate the levels
 
 
 	COMMON/CONT/ZLEV(ICNLEV),LDIG(ICNLEV),LWGT(ICNLEV),LCLR(ICNLEV),
      *	NLEV,NLEV_DFLT,HGT,LEV_STD,LEV_MEAN,LEV_MIN,LEV_MAX,LEV_HIST,
      *  NARC,IAUTOC,NLEV2,NSIGC,CANGLE,IVCOMP,
      *  CONTOUR_FEWER,CENTERED,SET_DELTA,DELTA,NEGINF,POSINF,CONT_KEY,
-     *  OPENLEV,SET_STD,SET_MEAN,SET_MIN,SET_MAX,NEED_DATA_SCAN,USE_HIST
+     *  OPENLEV,SET_STD,SET_MEAN,SET_MIN,SET_MAX,NEED_DATA_SCAN,USE_HIST,
+     *  LEV_STR
 
 c
 c	zlev()	array of levels to be contoured (user units)

@@ -22,9 +22,9 @@
 *  is not obligated to provide the user with any support, consulting,
 *  training or assistance of any kind with regard to the use, operation
 *  and performance of this software nor to provide the user with any
-*  updates, revisions, new versions or "bug fixes".
+*  updates, revisions, new versions or 'bug fixes'.
 *
-*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
+*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP 'AS IS' AND ANY EXPRESS
 *  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 *  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
@@ -34,6 +34,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
+* V65 *acm   2/10 If Open-ended levels were used, symbol LEV_OPNLEVS saves 
+* the /LEV command needed to duplicate the levels
 
       include 'parampl5_dat.decl'
       include 'PARAMPL5.DAT'
@@ -52,7 +54,10 @@
       REAL    dz, fm, znp, zmp, dzf, znpf, zmpf, 
      .        znpclo,zmpclo, dzc, dzclo, dzchi, 
      .        twostd, density_factor
-      INTEGER m, jj, nlevf, nlevc, nlev3, half_ncoarse
+      INTEGER TM_LENSTR1, m, jj, nlevf, nlevc, nlev3, half_ncoarse, 
+     .        slen, llen, dlen, hlen 
+
+      CHARACTER*10 TM_FMT, lo_str, del_str, hi_str
 
       EXTERNAL RANGE
 
@@ -124,6 +129,8 @@
 
       ENDIF  ! centered or not centered
 
+      slen = 0
+
 c Set jj as in plotz based on fine levels.
       
       IF (zmpf-znpf .EQ. 0) then
@@ -137,6 +144,8 @@ c Set jj as in plotz based on fine levels.
       IF (zmin .LT. znpclo) THEN
          neginf = .TRUE.
          ilev = 2
+	 lev_str = '(-inf)'
+	 slen = 6
       ELSE 
          ilev = 1
       ENDIF
@@ -197,6 +206,18 @@ c Set jj as in plotz based on fine levels.
 	 i1 = 2
       ENDIF
 
+      lo_str = TM_FMT(znpclo,-2, 10, llen)
+      del_str = TM_FMT(dzc,-2, 10, dlen)
+      IF (ilev .GT. 1) THEN
+         hi_str = TM_FMT(zlev(ilev-1),-2, 10, hlen)
+      ELSE
+         hi_str = TM_FMT(zlev(ilev),-2, 10, hlen)
+      ENDIF
+      lev_str = lev_str(:slen)//'('//lo_str(:llen)//
+     .          ','//hi_str(:llen)//','//del_str(:llen)//')'
+      slen = TM_LENSTR1(lev_str)
+      if1 = ilev
+
       DO 103 i=i1,nlev3 
 
          lwgt(ilev) = 2
@@ -228,6 +249,14 @@ c Set jj as in plotz based on fine levels.
 
       IF (zlev(ilev-1) .GT. znpchi) ilev = ilev - 1
       IF (zlev(ilev-1) .GT. znpchi) ilev = ilev - 1
+
+      lo_str = TM_FMT(zlev(if1),-2, 10, llen)
+      del_str = TM_FMT(dzf,-2, 10, dlen)
+      hi_str = TM_FMT(zlev(ilev),-2, 10, hlen)
+      lev_str = lev_str(:slen)//'('//lo_str(:llen)//
+     .          ','//del_str(:llen)//','//hi_str(:llen)//')'
+      slen = TM_LENSTR1(lev_str)
+      if1 = ilev
 
       i1 = 1
       IF (ilev .GT. 1) THEN
@@ -262,10 +291,21 @@ c Set jj as in plotz based on fine levels.
  105  CONTINUE 
 
  2000 CONTINUE
+
+      lo_str = TM_FMT(zlev(if1),-2, 10, llen)
+      del_str = TM_FMT(dzc,-2, 10, dlen)
+      hi_str = TM_FMT(zlev(ilev-1),-2, 10, hlen)
+      lev_str = lev_str(:slen)//'('//lo_str(:llen)//
+     .          ','//hi_str(:llen)//','//del_str(:llen)//')'
+      slen = TM_LENSTR1(lev_str)
+      if1 = ilev
+
       nlev2 = ilev
       IF (zmax .GT. zmpchi) THEN
          posinf = .TRUE.
          zlev(nlev2) = MAX (zlev(nlev2-1), zmax + 1. )
+	 lev_str = lev_str(:slen)//'(inf)'
+         slen = TM_LENSTR1(lev_str)
       ELSE   
          zlev(nlev2) = zmpchi
       ENDIF

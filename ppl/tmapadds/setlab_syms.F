@@ -38,6 +38,8 @@
 * V581 *acm* 3/05 fix bug 1205: If delta was set by user (with SHADE/LEV=.4d), then 
 *                 use the given delta rather than trying to compute it for LEV_DEL
 * V62 *acm*  5/08 Fix bug 1581. NLEV used is acutally one less
+* V65 *acm   2/10 If Open-ended levels were used, symbol LEV_OPNLEVS saves 
+* the /LEV command needed to duplicate the levels
 
 *    LEV_MIN  - lowest level used on last CONTOUR, SHADE, or FILL call.
 *    LEV_MAX -  highest level used last
@@ -62,7 +64,7 @@
       REAL zmax, zmin, dz, diff, diff_dz
 
       CHARACTER ppl_buff*2048, TM_FMT*10, buff*10
-      INTEGER TM_LENSTR1, i, ier, ilen, slen 
+      INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen 
       LOGICAL TM_FPEQ, reglevs
 
 * Lowest and highest Z level
@@ -96,7 +98,6 @@
       ist = 0
       CALL SETSYM (ppl_buff, ilen, ier, ist)
       
-
 * If set_delta is .true. the delta value has been set
 * elsewhere. use the delta given.
 
@@ -134,6 +135,19 @@
       ier = 0
       ist = 0
       CALL SETSYM (ppl_buff, ilen, ier, ist)
+ 
+* If Open-ended levels were used, symbol LEV_OPNLEVS saves the /LEV 
+* command needed to duplicate the levels
+
+      IF (STR_SAME(lev_str, 'none') .NE. 0 ) THEN
+         ilen = TM_LENSTR1(lev_str)
+         ppl_buff = "LEV_OPNLEVS "//lev_str
+         ilen = TM_LENSTR1(ppl_buff)
+         ier = 0
+         ist = 0
+         CALL SETSYM (ppl_buff, ilen, ier, ist)
+      ENDIF
+
 
       RETURN
       END

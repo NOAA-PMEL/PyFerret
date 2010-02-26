@@ -45,6 +45,8 @@
 * 3/99 *kob* 	move var init off of decl list  - cleaning up after jerry.
 * V552 5/03 *acm* Move shade key setup to routine SHADE_KEY
 * V553 6/03 *acm* Keep the initialization of do_key here.
+* V65 *acm   2/10 If Open-ended levels were used, symbol LEV_OPNLEVS saves 
+* the /LEV command needed to duplicate the levels
 
         include         'shade_vars.cmn'
         include         'parampl5_dat.decl'
@@ -176,6 +178,11 @@
 *       need to be initialized with each call.
 
 	do_key	     	= .true.
+
+*	when open-ended levels; create the /LEV command needed to 
+*	duplicate them.
+
+	lev_str = 'none'
 
 *	INITIALIZE SQFFLG TO TRUE
 	sqfflg = .true.

@@ -1154,8 +1154,9 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
 * check to see that each data point is contained inside its box
         IF (.NOT.TM_CHECK_BOX_LOC(iaxis)) THEN
-           CALL TM_NOTE('Edges "'//ename(:elen)//
-     .         '" do not enclose point on axis '//vname(:vlen), tt)
+           CALL TM_NOTE('ERror in Edges "'//ename(:elen)//
+     .         '"or edges do not enclose point on axis '//
+     .         vname(:vlen), tt)
            CALL TM_NOTE('Substituting coordinate midpoints', tt)
            CALL TM_IRREGAX_MID( next_line_mem_pos,
      .                          line_dim   (iaxis) )
@@ -1220,8 +1221,9 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
         IF (.NOT. TM_CHECK_BNDS(iaxis, 2*npts, vname) ) THEN  
 
-           CALL TM_NOTE('bounds "'//bname(:blen)//
-     .         '" do not enclose point on axis '//vname(:vlen), tt)
+           CALL TM_NOTE('Error in bounds "'//bname(:blen)//
+     .         '" or bounds do not enclose point on axis '//
+     .         vname(:vlen), tt)
            CALL TM_NOTE('Substituting coordinate midpoints', tt)
            CALL TM_IRREGAX_MID( next_line_mem_pos,
      .                          line_dim   (iaxis) )

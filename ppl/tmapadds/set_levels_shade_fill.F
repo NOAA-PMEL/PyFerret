@@ -63,6 +63,7 @@
         EXTERNAL range
 
 	status = ferr_ok
+	lev_str = 'none'
 C       
 C       IAUTOC = 1 means: compute levels from input data and number
 C                         of levels
@@ -208,6 +209,10 @@ C	FIND MIN AND MAX as in lev.F from the Z levels.
 c	      NLEV2=0
 	      NLEV2=1
 	   ELSE
+	   
+	   IF (openlev) THEN
+	      CALL set_open_levels
+	   ELSE
 	      NLEV2=NLEV
               IF (neginf) zlev(1) = MIN( zlev(1), zmin-1. )
               IF (posinf) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
@@ -251,6 +256,7 @@ C      has set levels, this is already done (and the values are different).
 	      ENDIF
 	   ENDIF
 
+        ENDIF  ! openlev
 	END IF
 
 * Now that the levels are set, create the LEVELS symbols

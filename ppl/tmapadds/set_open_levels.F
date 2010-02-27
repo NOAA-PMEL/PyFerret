@@ -55,7 +55,7 @@
      .        znpclo,zmpclo, dzc, dzclo, dzchi, 
      .        twostd, density_factor
       INTEGER TM_LENSTR1, m, jj, nlevf, nlevc, nlev3, half_ncoarse, 
-     .        slen, llen, dlen, hlen 
+     .        slen, llen, dlen, hlen, if1, if2
 
       CHARACTER*10 TM_FMT, lo_str, del_str, hi_str
 
@@ -129,6 +129,7 @@
 
       ENDIF  ! centered or not centered
 
+      lev_str = ' '
       slen = 0
 
 c Set jj as in plotz based on fine levels.
@@ -250,11 +251,13 @@ c Set jj as in plotz based on fine levels.
       IF (zlev(ilev-1) .GT. znpchi) ilev = ilev - 1
       IF (zlev(ilev-1) .GT. znpchi) ilev = ilev - 1
 
+      if2 = ilev
+      IF (centered) if2 = ilev-1
       lo_str = TM_FMT(zlev(if1),-2, 10, llen)
       del_str = TM_FMT(dzf,-2, 10, dlen)
-      hi_str = TM_FMT(zlev(ilev),-2, 10, hlen)
+      hi_str = TM_FMT(zlev(if2),-2, 10, hlen)
       lev_str = lev_str(:slen)//'('//lo_str(:llen)//
-     .          ','//del_str(:llen)//','//hi_str(:llen)//')'
+     .          ','//hi_str(:llen)//','//del_str(:llen)//')'
       slen = TM_LENSTR1(lev_str)
       if1 = ilev
 

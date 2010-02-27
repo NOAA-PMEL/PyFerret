@@ -22,9 +22,9 @@
 *  is not obligated to provide the user with any support, consulting,
 *  training or assistance of any kind with regard to the use, operation
 *  and performance of this software nor to provide the user with any
-*  updates, revisions, new versions or "bug fixes".
+*  updates, revisions, new versions or 'bug fixes'.
 *
-*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
+*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP 'AS IS' AND ANY EXPRESS
 *  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 *  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
@@ -43,7 +43,7 @@
 
 *    LEV_MIN  - lowest level used on last CONTOUR, SHADE, or FILL call.
 *    LEV_MAX -  highest level used last
-*    LEV_DEL - either the value or "irregular"
+*    LEV_DEL - either the value or 'irregular'
 *    LEV_NUM - Number of levels used
 *    LEV_ALL - ?? list of all the levels used
 
@@ -63,7 +63,7 @@
 
       REAL zmax, zmin, dz, diff, diff_dz
 
-      CHARACTER ppl_buff*2048, TM_FMT*10, buff*10
+      CHARACTER ppl_buff*2048, TM_FMT*10, buff*10, symbuff*30
       INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen 
       LOGICAL TM_FPEQ, reglevs
 
@@ -72,7 +72,7 @@
       zmin = zlevels(1)
       buff = TM_FMT(zmin, -2, 10, slen)
 
-      ppl_buff = "LEV_MIN "//buff
+      ppl_buff = 'LEV_MIN '//buff
       ilen = TM_LENSTR1(ppl_buff)
       ier = 0
       ist = 0
@@ -81,7 +81,7 @@
       zmax = zlevels(nlevels)
       buff = TM_FMT(zmax, -2, 10, slen)
 
-      ppl_buff = "LEV_MAX "//buff
+      ppl_buff = 'LEV_MAX '//buff
       ilen = TM_LENSTR1(ppl_buff)
       ier = 0
       ist = 0
@@ -92,7 +92,7 @@
       zmax = MAX(nlevels-1,1)
       buff = TM_FMT(zmax, -2, 10, slen)
 
-      ppl_buff = "LEV_NUM "//buff
+      ppl_buff = 'LEV_NUM '//buff
       ilen = TM_LENSTR1(ppl_buff)
       ier = 0
       ist = 0
@@ -130,7 +130,7 @@
 
       ENDIF
 
-      ppl_buff = "LEV_DEL "//buff
+      ppl_buff = 'LEV_DEL '//buff
       ilen = TM_LENSTR1(ppl_buff)
       ier = 0
       ist = 0
@@ -139,9 +139,13 @@
 * If Open-ended levels were used, symbol LEV_OPNLEVS saves the /LEV 
 * command needed to duplicate the levels
 
+      symbuff = 'LEV_OPNLEVS'
+      CALL GETSYM( symbuff, ppl_buff, ist, ier )
+      IF ( ier .EQ. 0 ) CALL DELSYM(symbuff,ier)
+
       IF (STR_SAME(lev_str, 'none') .NE. 0 ) THEN
          ilen = TM_LENSTR1(lev_str)
-         ppl_buff = "LEV_OPNLEVS "//lev_str
+         ppl_buff = 'LEV_OPNLEVS '//lev_str
          ilen = TM_LENSTR1(ppl_buff)
          ier = 0
          ist = 0

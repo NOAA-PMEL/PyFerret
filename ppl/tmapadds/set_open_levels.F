@@ -53,11 +53,11 @@
 
       REAL    dz, fm, znp, zmp, dzf, znpf, zmpf, 
      .        znpclo,zmpclo, dzc, dzclo, dzchi, 
-     .        twostd, density_factor, zhi
+     .        twostd, density_factor
       INTEGER TM_LENSTR1, m, jj, nlevf, nlevc, nlev3, half_ncoarse, 
      .        slen, llen, dlen, hlen, if1, if2
 
-      CHARACTER*15 TM_FMT, lo_str, del_str, hi_str
+      CHARACTER*10 TM_FMT, lo_str, del_str, hi_str
 
       EXTERNAL RANGE
 
@@ -207,24 +207,13 @@ c Set jj as in plotz based on fine levels.
 	 i1 = 2
       ENDIF
 
+      lo_str = TM_FMT(znpclo, 3, 10, llen)
+      del_str = TM_FMT(dzc, 3, 10, dlen)
       IF (ilev .GT. 1) THEN
-         hi_str = TM_FMT(zlev(ilev-1),3, 10, hlen)
-	 zhi = zlev(ilev-1)
+         hi_str = TM_FMT(zlev(ilev-1), 3, 10, hlen)
       ELSE
-         hi_str = TM_FMT(zlev(ilev),3, 10, hlen)
-	 zhi = zlev(ilev)
+         hi_str = TM_FMT(zlev(ilev), 3, 10, hlen)
       ENDIF
-
- 1000 FORMAT (g10.3)
-      write (lo_str, 1000) znpclo
-      llen = TM_LENSTR1( lo_str)
-
-      write (del_str, 1000) dzc
-      dlen = TM_LENSTR1( del_str)
-
-      write (hi_str, 1000) zhi
-      hlen = TM_LENSTR1( hi_str)
-
       lev_str = lev_str(:slen)//'('//lo_str(:llen)//
      .          ','//hi_str(:hlen)//','//del_str(:dlen)//')'
       slen = TM_LENSTR1(lev_str)
@@ -264,21 +253,9 @@ c Set jj as in plotz based on fine levels.
 
       if2 = ilev
       IF (centered) if2 = ilev-1
-      IF (zlev(if2) .EQ. 0) if2 = if2 -1
       lo_str = TM_FMT(zlev(if1), 3, 10, llen)
       del_str = TM_FMT(dzf, 3, 10, dlen)
       hi_str = TM_FMT(zlev(if2), 3, 10, hlen)
-
-
-      write (lo_str, 1000) zlev(if1)
-      llen = TM_LENSTR1( lo_str)
-
-      write (del_str, 1000) dzf
-      dlen = TM_LENSTR1( del_str)
-
-      write (hi_str, 1000) zlev(if2)
-      hlen = TM_LENSTR1( hi_str)
-
       lev_str = lev_str(:slen)//'('//lo_str(:llen)//
      .          ','//hi_str(:hlen)//','//del_str(:dlen)//')'
       slen = TM_LENSTR1(lev_str)
@@ -321,16 +298,6 @@ c Set jj as in plotz based on fine levels.
       lo_str = TM_FMT(zlev(if1), 3, 10, llen)
       del_str = TM_FMT(dzc, 3, 10, dlen)
       hi_str = TM_FMT(zlev(ilev-1), 3, 10, hlen)
-
-      write (lo_str, 1000) zlev(if1)
-      llen = TM_LENSTR1( lo_str)
-
-      write (del_str, 1000) dzc
-      dlen = TM_LENSTR1( del_str)
-
-      write (hi_str, 1000) zlev(ilev-1)
-      hlen = TM_LENSTR1( hi_str)
-
       lev_str = lev_str(:slen)//'('//lo_str(:llen)//
      .          ','//hi_str(:hlen)//','//del_str(:dlen)//')'
       slen = TM_LENSTR1(lev_str)
@@ -345,8 +312,6 @@ c Set jj as in plotz based on fine levels.
       ELSE   
          zlev(nlev2) = zmpchi
       ENDIF
-
-      CALL TM_PACK_STRING( lev_str, lev_str, 1, 120, slen )
 
       lwgt(nlev2) = lwgt(nlev2-1)
       ldig(nlev2) = ldig(nlev2-1)

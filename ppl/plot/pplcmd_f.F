@@ -118,6 +118,10 @@ C                 format and write 0, else write 0.0.
 C V63  *acm* 10/09 Changes for gfortran build
 C V65  *acm*  1/10 New time-axis style for DAY and MONTH, DMY: adds the
 C                  year to DAY,MONTH or to MONTH.
+* V65   *acm* 2/10 Fix bug 1724: in metafile batch mode only, if some command
+*                  has opened the metafile but nothing plotted yet, and if
+*                  a SET MODE META:newname.plt is issued, just rename the metafile
+*                  that was opened. New RENAMPL command.
 c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -260,7 +264,7 @@ CCCCCCC data	        tmapdebug/.false./
 	LOGICAL IFLG1,IFLG2,LABON,VALOFF
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
 	DIMENSION X4(4)
-	CHARACTER COMM(118)*7
+	CHARACTER COMM(119)*7
 	EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
 	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
      *		(HLAB1,Y2(1))
@@ -285,7 +289,7 @@ CCCCCCC data	        tmapdebug/.false./
      *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
      *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDA',
      *  'FLOWLIN', 'S_KEY', 'S_CELL', 'POLYGON', 'XVALOFF', 'YVALOFF',
-     *  'LINECOL'/
+     *  'LINECOL','RENAMPL'/
 
 !  *  'SQFILL','AREA'/ NAME CHANGE *jd*
  
@@ -395,7 +399,7 @@ C
 
 C       Changed ICOM to CHAR*7 comparison for CALENDAR command. *jd* 10.99
 	ICOM7(1:7)=ICOM(1:7)
-	DO 20 I=1,118
+	DO 20 I=1,119
 	    IF(ICOM7.EQ.COMM(I))GOTO 21
 20	CONTINUE
 	IF(ICOM(1:1).EQ.'%')THEN
@@ -427,7 +431,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174,9175,9390,9165,9166,9183,4401,4501,9192),I
+     *  9174,9175,9390,9165,9166,9183,4401,4501,9192,9960),I
         else
 	GOTO (100,200,300,500,99,700,900,1000,1100,1200,1300,
      *	1400,1500,99,1800,1900,2000,2100,2200,2300,2500,2600,
@@ -439,7 +443,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174,9175,9390,9165,9166,9183,4401,4501,9192),I
+     *  9174,9175,9390,9165,9166,9183,4401,4501,9192,9960),I
         end if
         goto 10
 
@@ -1347,6 +1351,20 @@ C	CLSPLT
 	    end if        
 
 	    GOTO 10
+
+C	RENAMPL
+9960	    CONTINUE
+*	Close and rename the metafile; reopen.
+            strr = LABEL
+	    IF (its_open .AND. first_meta) THEN
+	       CLOSE (meta_lun, STATUS='KEEP')
+	       CALL RENAME(strr, meta_file)
+	       OPEN (UNIT=meta_lun,file=meta_file)
+	    END IF        
+
+	    GOTO 10
+
+
 C     RWDSEQ & RWD
 600	    CALL OPENF(FILE,IERR)
 	    IF(IERR.NE.0)GOTO 10

@@ -157,6 +157,10 @@
 *                  changes so that /OFF=0 implies 1st index=1; /OFF=1 implies 
 *                  1st index=2. Also check for and give err msg for illegal 
 *                  values STRIDE < 1 and OFFSET < 0.
+* V65   *acm* 2/10 Fix bug 1724: in metafile batch mode only, if some command
+*                  has opened the metafile but nothing plotted yet, and if
+*                  a SET MODE META:newname.plt is issued, just rename the metafile
+*                  that was opened.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -185,7 +189,8 @@
 	include	'xfr_grid.cmn'
 	include	'xcontrol.cmn'
 	include	'pltcom_dat.decl'	! with gksopn
-	include	'PLTCOM.DAT'	! with gksopn
+	include	'PLTCOM.DAT'		! with gksopn
+	include 'gkscm2.cmn'		! with first_meta
 	include	'switch_inc.decl'	! with deflts
 	include	'SWITCH.INC'	! with deflts
         include 'LUNITS.INC'          ! with lttout
@@ -589,6 +594,8 @@ c *kob* 4/97
                     CALL WARN ('in GIF mode: ignoring SET MODE METAFILE')
                     mode_metafile = .FALSE.
                  ELSE IF ( batch ) THEN
+                    CALL GET_METAFILE_NAME(buff1)
+
                     CALL ECHOF_OFF
 	  	    IF ( buff2 .NE. ' ' ) THEN
                        CALL PPLCMD
@@ -598,7 +605,13 @@ c *kob* 4/97
                        IF (STR_SAME(ustring,'dummy.plt') .EQ. 0) CALL PPLCMD
      .			( from, line, 0, 'PLTNME metafile.plt', 1, 1 )
                     ENDIF
+
+                    IF ( gksopn .AND. first_meta) THEN
+                       CALL PPLCMD ( from, line, 0, 'RENAMPL '//buff1, 1, 1 )
+                    ENDIF
+
                     mode_metafile = .FALSE.
+
                  ELSE
  	            IF ( .NOT.pplus_started ) CALL START_PPLUS     ! 1/94
 	  	    IF ( buff2 .NE. ' ' ) CALL PPLCMD

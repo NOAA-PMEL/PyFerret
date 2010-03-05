@@ -41,6 +41,7 @@
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP
 * V600 6/05 *acm* Attribute control.
+* V65  *acm* 2/10- all warnings and notes to std error not std out
 
 
 * argument definitions:
@@ -164,8 +165,8 @@
               IF ( ds_alert_on_open(dset) ) THEN
 	         CALL TM_NOTE('regarding '//
      .	   	   ds_des_name(dset)(:TM_LENSTR1(ds_des_name(dset)))
-     .		   //' ...', tooplu)
-	         CALL TM_NOTE(ds_message(dset), tooplu)
+     .		   //' ...', lunit_errors)
+	         CALL TM_NOTE(ds_message(dset), lunit_errors)
               ENDIF
  100       CONTINUE
 

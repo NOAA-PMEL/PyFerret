@@ -96,6 +96,7 @@
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
 * V533 *sh* 6/01 - set data type
+* V65  *acm* 2/10- all warnings and notes to std error not std out
 
 * arguments:
 *	dset_num	- number assigned to this data set (output)
@@ -133,11 +134,12 @@
         CHARACTER*11    temp_t0time
 	CHARACTER*13	TM_STRING
 	CHARACTER*18	reading_nml
+	CHARACTER*128   string
 	INTEGER*4	var_cnt, var_pos, ivar, npos, bypoint, byline,
      .			byplane, l_ivar, stp_pos, min_file, max_file,
      .			file_num, cnt_stp, nrecperstep, epos, first_file,
      .			file_cnt, stp_cnt, min_pos, max_pos,istat, lcnt,
-     .			lline, file_reclen
+     .			lline, file_reclen, lenb
         INTEGER*4       upstat
 	INTEGER		TM_GET_GRIDNUM, TM_LENSTR, STR_UPCASE
 	REAL		last_delta, file_trange, steps_in_file
@@ -172,8 +174,8 @@
 	IF (d_alert_on_open) THEN
 	   CALL TM_NOTE('regarding '//
      .	      ds_name(dset_num)(:TM_LENSTR(ds_name(dset_num)))
-     .	      //' ...', tooplu)
-	   CALL TM_NOTE(d_message, tooplu)
+     .	      //' ...', lunit_errors)
+	   CALL TM_NOTE(d_message, lunit_errors)
 	ENDIF
 
 * variable descriptor records - one per each variable in file
@@ -371,9 +373,11 @@
 	IF ( s_delta .GT. 0 ) THEN
 	   steps_in_file = file_trange / s_delta 
 	   IF ( ABS(steps_in_file/NINT(steps_in_file) - 1.0) .GT. 1.E-6 )
-     .		WRITE (tooplu,1100)
+     .		WRITE (string,1100)
  1100		FORMAT(' WARNING - NON-INTEGER NUMBER OF STEPS PER STEPFILE'/
      .	         ' INDICATED IN DESCRIPTOR - TRYING TO CONTINUE ANYWAY')
+	        lenb = TM_LENSTR( string )
+	        CALL TM_NOTE( string(:lenb), lunit_errors )
 	ENDIF
 
 * compute how many records in each time step (with no tuples/missing vars)

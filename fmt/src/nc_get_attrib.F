@@ -55,7 +55,8 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Make sure parameters values are consistent with 
 *                              whats in netcdf.inc from netcdf4.
-*
+* V65  *acm* 2/10- all warnings and notes to std error not std out
+
 * argument definitions:
 *	dset	 - dataset number
 *       varid    - variable id 
@@ -168,8 +169,12 @@
      .             '" in netCDF variable: '//vname
       lenb = TM_LENSTR1( string )
       IF ( do_warn ) CALL TM_NOTE( string(:lenb), tt )
-      IF ( do_warn.AND.too_long ) WRITE (tt,'(1X,A,I4)')
-     .                       'Maximum characters: ',maxlen
+      IF ( do_warn .AND. too_long ) THEN
+         WRITE (string, 1000) maxlen
+1000     FORMAT ('Maximum characters: ',I4)
+         lenb = TM_LENSTR1( string )
+         CALL TM_NOTE( string(:lenb), tt )
+      ENDIF
       RETURN
 
       END

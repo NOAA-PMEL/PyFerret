@@ -79,6 +79,7 @@
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
 * V65  *acm* 1/10  Call CD_TRANSLATE_ERROR rather than individual calls to NF_STRERROR
+* V65  *acm* 2/10- all warnings and notes to std error not std out
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -184,7 +185,7 @@
 * ... open the remote URL in order to initialize the DODS client libraries
 * This time penalty is unavoidable (though HTTP caching may eliminate it)
 * Using the cache file will remove the need to read remote coordinates
-	   CALL TM_NOTE( 'Using cache '//cdf_file, tooplu)
+	   CALL TM_NOTE( 'Using cache '//cdf_file, lunit_errors)
 #ifdef usingDODSf2cUnderscore
            cdfstat = NF_OPEN_(ds_des_name(dset), NF_NOWRITE, cdfid) 
 #else

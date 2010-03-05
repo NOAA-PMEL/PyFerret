@@ -62,6 +62,7 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V65  *acm* 2/10- all warnings and notes to std error not std out
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -81,6 +82,7 @@
 
       include 'netcdf.decl'
 #include "netcdf.inc"
+      include 'xio.cmn_text'
 
 ! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
@@ -119,7 +121,7 @@
             buff = 'too many values in attribute "'//attrib(:lena)//
      .             '" in netCDF file variable: '//vname
             lena = TM_LENSTR1( buff )
-            IF ( do_warn ) CALL TM_NOTE( buff(:lena), 6 )
+            IF ( do_warn ) CALL TM_NOTE( buff(:lena), lunit_errors )
             CD_GET_ATTVAL = .FALSE.
          ELSEIF (attype.EQ.NF_FLOAT) THEN
 #ifdef usingDODSf2cUnderscore

@@ -30,7 +30,7 @@
 *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 *  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
-*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+*  RESULTING FROM LOSS OF USE, DoATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
@@ -41,19 +41,16 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.00 - 10/08/85
+* error and warnings to std error.
 
 * COMMON/XIO.....logical unit numbers for I/O
-#ifdef unix
 	include 'xio.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
-#endif
 
 	DATA	tohdlu		/20/,
      .		fmhdlu		/21/,
      .		fmhd2lu		/22/,
      .		tooplu		/ 6/,
      .		fmoplu		/ 5/,
-     .		lunit_errors	/ 6/
+     .		lunit_errors	/ 0/
 
 	END

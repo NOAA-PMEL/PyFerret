@@ -53,6 +53,8 @@
 * V616  1/2009 *acm* Fixing LAS ticket 481, new style of xml output
 * V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
 *                  with &lt; etc.
+* V650  2/10 *acm* LAS ticket 761: consistency of the missing-value flags. Use a Fortran
+*                  format rather than TM_FMT to write the value to the xml output.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -150,11 +152,15 @@ C Write statement that uses number 2075 when we change to using these.)
 ! bad_flag comes from missing_value
 
            show_str = TM_FMT(ds_missing_flag(ivar), 16,16,slen)
+	   WRITE (show_str, 1111) ds_missing_flag(ivar)
+1111	   FORMAT (1PG16.7)
+           slen = TM_LENSTR(show_str)
            CALL ESCAPE_FOR_XML (show_str, outstring, slen)
            WRITE ( risc_buff, 2060 ) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
            show_str = TM_FMT(ds_bad_flag(ivar), 16,16,slen)
+	   WRITE (show_str, 1111) ds_missing_flag(ivar)
            CALL ESCAPE_FOR_XML (show_str, outstring, slen)
            WRITE ( risc_buff, 2070 ) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

@@ -7,6 +7,9 @@ use levitus_climatology
 ! Variance levels
 shade/lev=50v/title="/LEV=50v" temp[K=1]
 
+! New symbol LEV_OPNLEVS captures the levels set with /V or VC
+sh sym lev*
+
 shade/lev=50v,5min/title="/LEV=50v,5min" temp[K=1]
 shade/lev=50v,5mean/title="/LEV=50v,5mean" temp[K=1]
 shade/lev=50v,25max/title="/LEV=50v,25max" temp[K=1]

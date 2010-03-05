@@ -213,6 +213,8 @@ c Set jj as in plotz based on fine levels.
          hi_str = TM_FMT(zlev(ilev-1), 3, 10, hlen)
       ELSE
          hi_str = TM_FMT(zlev(ilev), 3, 10, hlen)
+	 IF (zlev(ilev) .EQ. 0) hi_str = 
+     .         TM_FMT(zlev(ilev-1), 3, 10, hlen)
       ENDIF
       lev_str = lev_str(:slen)//'('//lo_str(:llen)//
      .          ','//hi_str(:hlen)//','//del_str(:dlen)//')'
@@ -256,6 +258,7 @@ c Set jj as in plotz based on fine levels.
       lo_str = TM_FMT(zlev(if1), 3, 10, llen)
       del_str = TM_FMT(dzf, 3, 10, dlen)
       hi_str = TM_FMT(zlev(if2), 3, 10, hlen)
+      IF (zlev(if2) .EQ. 0.) hi_str = TM_FMT(zlev(if2-1), 3, 10, hlen)
       lev_str = lev_str(:slen)//'('//lo_str(:llen)//
      .          ','//hi_str(:hlen)//','//del_str(:dlen)//')'
       slen = TM_LENSTR1(lev_str)
@@ -298,6 +301,8 @@ c Set jj as in plotz based on fine levels.
       lo_str = TM_FMT(zlev(if1), 3, 10, llen)
       del_str = TM_FMT(dzc, 3, 10, dlen)
       hi_str = TM_FMT(zlev(ilev-1), 3, 10, hlen)
+      IF (zlev(ilev-1) .EQ. 0) 
+     .          hi_str = TM_FMT(zlev(ilev-2), 3, 10, hlen)
       lev_str = lev_str(:slen)//'('//lo_str(:llen)//
      .          ','//hi_str(:hlen)//','//del_str(:dlen)//')'
       slen = TM_LENSTR1(lev_str)

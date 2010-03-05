@@ -364,6 +364,7 @@
            ENDIF
 10	continue
 
+        IF (incr .GT. 0) THEN
 	do 20 ndx = 1,shd_levels+1,incr
 *	   WRITE OUT CORRESPONDING VALUE
 
@@ -407,6 +408,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   call symbel (xxx,yyy,0.0,karht,str_len,text(1:str_len))
 
 20	continue
+        ENDIF
 
 *  Set these to actual locations that were used for PPL LIST SHAKEY
         ky_hi = py(1)
@@ -428,15 +430,15 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   rem = vwidth - (xlen + xorg)
 	   xmaxx = 0.25*xlen
 
-           kx_lo_def = 1000.0 * (xorg + xlen + 0.25*min (rem,xmaxx))
-           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.1*rem)
+           kx_lo_def = 1000.0 * (xorg + xlen + 0.2*min (rem,xmaxx))
+           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.08*rem)
            ky_lo_def = 1000.0 *  yorg
            ky_hi_def = 1000.0 * (yorg + ylen)
         else
 	   rem = width - (xlen + xorg)
 	   xmaxx = 0.25*xlen
-           kx_lo_def = 1000.0 * (xorg + xlen + 0.25*min (rem,xmaxx))
-           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,width-0.1*rem)
+           kx_lo_def = 1000.0 * (xorg + xlen + 0.2*min (rem,xmaxx))
+           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,width-0.08*rem)
            ky_lo_def = 1000.0 *  yorg
            ky_hi_def = 1000.0 * (yorg + ylen)
         end if
@@ -496,7 +498,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
 *	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
         if (klab_size .eq. 0.0) then
-	   karht = amin1 (0.10*1000.0,400.0*rem/real (max_len))/1000.0
+	   karht = amin1 (0.10*1000.0,500.0*rem/real(max_len))/1000.0
 	else
 	   karht = ABS(klab_size)
 	end if
@@ -587,7 +589,8 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
         ystart = 0.
         IF (lev1 .NE. 1) ystart = y_inc
-        
+
+        IF (incr .GT. 0) THEN
         do 1020 ndx = lev1,shd_levels+1,incr
 *	   WRITE OUT CORRESPONDING VALUE
 
@@ -605,6 +608,10 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   end if
 
 	   xx = (kx_lo + 5.0*x_inc)/1000.0 - xorg 
+	   xx = (kx_lo + 4.5*x_inc)/1000.0 - xorg 
+	   xx = (px(2) + 500*karht)/1000.0 - xorg 
+	   IF (val .LT. 0. )xx = (px(2) + 100*karht)/1000.0 - xorg 
+
            IF (kuser_loc(1) .OR. kuser_loc(2)) 
      .              xx = (kx_hi+2.*x_inc)/1000 - xorg
 
@@ -641,6 +648,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   call symbel (xxx,yyy,0.0,karht,str_len,txt_out(1:str_len))
 
 1020	continue
+        ENDIF
 
 *  Set these to actual locations that were used for PPL LIST SHAKEY
         kx_lo = px(1)

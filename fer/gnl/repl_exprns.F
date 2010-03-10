@@ -137,7 +137,7 @@
      .		  qual_end, brkt, idim, use_width, dset, varid, 
      .            vartype, nvdims, vdims(8), nvatts, ist, ind,
      .            attype, attlen, inxt, attoutflag,outflag, fertype, 
-     .            attid, ieq
+     .            attid, ieq, dqot
 	REAL	  result, val
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
 	CHARACTER TM_FMT*16, LEFINT*16, VAR_TITLE*(max_len),
@@ -236,6 +236,17 @@
  91        CONTINUE
  94        dset = FIND_DSET_NUMBER(cmnd(inxt:i-1))
        ENDIF
+
+* ... see if the equals sign is just part of some string within the grave accents
+*     This fixes bug 1496 (and its duplicate 1690)
+	dqote = 0
+	DO 198 i = istart, iend
+	   IF (cmnd(i:i).EQ.'"') THEN
+	      dqote = dqote + 1
+	   ELSEIF (cmnd(i:i).EQ.'=' .AND. dqote.GT.0) THEN
+	      IF (INDEX(cmnd(i:iend), '"') .GT. 0) GOTO 149 ! = inside a string
+	   ENDIF
+198	CONTINUE
 
 * ... hunt for the next equal sign 
 	DO 93 i = ieq, iend

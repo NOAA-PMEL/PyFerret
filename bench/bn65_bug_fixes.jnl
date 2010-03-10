@@ -16,3 +16,5 @@ GO err64_shakey_missingdata
 GO bn_reset
 GO err64_return_precision
 
+GO bn_reset
+GO err64_parse_equals

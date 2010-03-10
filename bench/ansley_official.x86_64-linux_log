@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 50378854 Mar 10 12:42 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 50379360 Mar 10 14:17 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: all warnings, notes, errors to std error (fmt/src had some that did not)
+Note: fix bug 1469: parsing grave-accent expressions when they contain a string including an equals sign
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
-Beginning at Wed Mar 10 12:42:50 PST 2010
+Beginning at Wed Mar 10 14:28:00 PST 2010
  	NOAA/PMEL TMAP
  	FERRET v6.425  
  	Linux(g77) 2.6.9-89.ELsmp - 03/10/10
- 	10-Mar-10 12:42     
+ 	10-Mar-10 14:28     
 
 yes? !bn500_all_shell
 yes? 
@@ -10248,11 +10248,11 @@ FERRET_PLATFORM = "Linux(g77) 2.6.9-89.ELsmp"
 NETCDF_VERSION = ""3.7.4" of Nov  3 2009 11:32:47 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "10-Mar-10"
-SESSION_TIME = "12:42"
-DELTA_CPU = "6.38303"
-CLOCK_SECS = "7.06"
+SESSION_TIME = "14:28"
+DELTA_CPU = "6.37303"
+CLOCK_SECS = "6.97"
 CURRENT_DATE = "10-Mar-10"
-CURRENT_TIME = "12:42:57"
+CURRENT_TIME = "14:28:06"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10274,11 +10274,11 @@ FERRET_PLATFORM = "Linux(g77) 2.6.9-89.ELsmp"
 NETCDF_VERSION = ""3.7.4" of Nov  3 2009 11:32:47 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "10-Mar-10"
-SESSION_TIME = "12:42"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "7.06"
+SESSION_TIME = "14:28"
+DELTA_CPU = "0.001999"
+CLOCK_SECS = "6.97"
 CURRENT_DATE = "10-Mar-10"
-CURRENT_TIME = "12:42:57"
+CURRENT_TIME = "14:28:06"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10288,7 +10288,7 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "10-Mar-10"
-SESSION_TIME = "12:42"
+SESSION_TIME = "14:28"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10299,12 +10299,12 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "10-Mar-10"
-SESSION_TIME = "12:42"
+SESSION_TIME = "14:28"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "10-Mar-10"
-SESSION_TIME = "12:42"
+SESSION_TIME = "14:28"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10338,7 +10338,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.425"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Mar 10 2010 12:42:57 "
+LAB3 = "Mar 10 2010 14:28:07 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10438,11 +10438,11 @@ FERRET_PLATFORM = "Linux(g77) 2.6.9-89.ELsmp"
 NETCDF_VERSION = ""3.7.4" of Nov  3 2009 11:32:47 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "10-Mar-10"
-SESSION_TIME = "12:42"
-DELTA_CPU = "0.019997"
-CLOCK_SECS = "7.08"
+SESSION_TIME = "14:28"
+DELTA_CPU = "0.018998"
+CLOCK_SECS = "6.99"
 CURRENT_DATE = "10-Mar-10"
-CURRENT_TIME = "12:42:57"
+CURRENT_TIME = "14:28:07"
 N_OPEN_DSETS = "0"
  
  
@@ -25310,8 +25310,8 @@ show grid
  Default grid for DEFINE VARIABLE is (G022)
  Last successful data access was on grid (G022)
     GRID (G022)
- nameWed Mar 10 12:43:06 PST 2010
-       axis              # pts   start                end
+ nWed Mar 10 14:28:16 PST 2010
+ame       axis              # pts   start                end
  normal    X
  normal    Y
  Z10       Z                   10 r   1                    10
@@ -34636,14 +34636,14 @@ vec/title="Regular grid" a,b,mxpage,mypage
 ! Now stretch the grid
  
 set view lr
-let mx = expcol1,col2,col3,col4,col5
+let mx = col1,col2,col3,col4,col5
 one,,1.1,24S,130E,,1e1,"word 1"
     two,,2.2,24N,130W,2S,,"word 2"
 three,,3.3,24,130,3N,3e-2," wd 3 "
 
 five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
 extra line
-(x[x=2:4.4:0.2])
+exp(x[x=2:4.4:0.2])
 let my = exp(y[y=1:3.4:0.2])
  
 let mxpage = mx + 0*my
@@ -34845,8 +34845,8 @@ list a1,a2,a3,a4,a5
  
 ! insist that all columns be treated as numeric
 file/format=delim/skip=1/type=numeric bn_delimited_read_1.dat
-list v1,v2,v3,v4,v5,v6,col1,col2,col3,col4,col5
-v7,v8,v9,v10
+list v1,v2,v3,v4,v5,col1,col2,col3,col4,col5
+v6,v7,v8,v9,v10
              DATA SET: ./bn_delimited_read_1.dat
              X: 0.5 to 6.5
  Column  1: V1
@@ -34952,11 +34952,11 @@ list v1,v2
              X: 0.5 to 3.5
  Column  1: V1 is V1 (days)(Julian days since 1-Jan-1900)
  Column  2: V2 is V2 (hours)(Time of day)
-            12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+         12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
 12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
 12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
 12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-  V1     V2
+     V1     V2
 1   / 1:  37965.0  12.5833
 2   / 2:     ....     ....
 3   / 3:  39051.0  13.7514
@@ -35127,11 +35127,11 @@ show data 2
        (Julian days since 1-Jan-1900)
  V6       V6                               1:4       ...       ...       ...
        (Julian days since 1-Jan-1900)
- V7       V7            12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+ V7       V7         12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
 12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
 12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
 12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-                   1:4       ...       ...       ...
+                      1:4       ...       ...       ...
        (Time of day)
  V8       V8                               1:4       ...       ...       ...
        (Time of day)
@@ -45252,7 +45252,7 @@ list str2a
              VARIABLE : STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
           162.000
  
-def sym aLIST = Mw 9.2, 14.76*a12+14.76*             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+def sym aLIST = Mw 9.2, 14.76*a12+14.             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
              GEOMETRY: XY 
@@ -45303,7 +45303,7 @@ DATA:
 224.60300
 224.60350
 224.60400
-b12+14.76*a13+14.7
+76*b12+14.76*a13+14.7
  
 let lstr2 = STRLEN("($alist)")
  !-> DEFINE VARIABLE lstr2 = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.7")
@@ -45749,7 +45749,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASMar 10 2010 12:43:45
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASMar 10 2010 14:28:57
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.990E+00 0.078    0  SYSTEM  @ASLONGITUDE : 179.5E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47161,7 +47161,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "10-Mar-10:12:42"
+WIN_TITLE = "10-Mar-10:14:28"
  
 set win/title="set the title"
 sho sym win_title
@@ -47179,7 +47179,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="10-Mar-10:12:42"
+ !-> set win/title="10-Mar-10:14:28"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47190,14 +47190,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 10-Mar-10
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 12:42
+ !-> DEFINE SYMBOL the_time = 14:28
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="10-Mar-10:12:42"
+ !-> SET WIN/TITLE="10-Mar-10:14:28"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "10-Mar-10:12:42"
+WIN_TITLE = "10-Mar-10:14:28"
  
 GO bn_reset
 cancel mode verify
@@ -49678,7 +49678,7 @@ show att/all (`sst,return=taxis`)
 set att (`sst,return=taxis`).time_origin = "1-mar-1955"
  !-> set att (TIME7).time_origin = "1-mar-1955"
 show att/all (`sst,return=taxis`)
- !-> netcdf a {
+ !netcdf a {
 dimensions:
 	PSXT91_108 = 18 ;
 	PSYT35_56 = 22 ;
@@ -49720,7 +49720,7 @@ variables:
 		:history = "FERRET V6.425   10-Mar-10" ;
 		:Conventions = "CF-1.0" ;
 }
-show att/all (TIME7)
+-> show att/all (TIME7)
      attributes for dataset: ./coads_climatology.cdf
  (TIME7).units = months since 1-mar-1955 
  (TIME7).time_origin = 1-mar-1955 
@@ -56224,7 +56224,7 @@ CANCEL MODE upcase_only
  
 ! User variable with lowercase letters in the name
  
-DEFINEnetcdf a {
+DEFnetcdf a {
 dimensions:
 	XAX1_10 = 10 ;
 	tday = UNLIMITED ; // (31 currently)
@@ -56275,7 +56275,7 @@ variables:
 		:history = "FERRET V6.425   10-Mar-10" ;
 		:Conventions = "CF-1.0" ;
 }
- AXIS/t=1-jan-1999:31-jan-1999:1/units=days/t0=31-dec-1998 tday
+INE AXIS/t=1-jan-1999:31-jan-1999:1/units=days/t0=31-dec-1998 tday
 LET MyUpperLowerCaseVar = x[x=1:10] + t[gt=tday]
 save/file=a.nc/clobber MyUpperLowerCaseVar
  
@@ -57645,10 +57645,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "60.2728"
-CLOCK_SECS = "85.01"
+DELTA_CPU = "62.0786"
+CLOCK_SECS = "87.1"
 CURRENT_DATE = "10-Mar-10"
-CURRENT_TIME = "12:44:15"
+CURRENT_TIME = "14:29:27"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57657,8 +57657,8 @@ CURRENT_TIME = "12:44:15"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.048988"
-CLOCK_SECS = "85.1"
+DELTA_CPU = "0.050995"
+CLOCK_SECS = "87.19"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57672,60 +57672,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.396942
+ !-> DEFINE VARIABLE ten_plots = 0.401939
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "9.99E-04"
-CLOCK_SECS = "85.92"
+DELTA_CPU = "0"
+CLOCK_SECS = "88"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "85.92"
+CLOCK_SECS = "88"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.043999
- !-> DEFINE VARIABLE sumcpu =0.043999
+ !-> DEFINE VARIABLE dt = 0.041992
+ !-> DEFINE VARIABLE sumcpu =0.041992
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.042984
- !-> DEFINE VARIABLE sumcpu =0.086983
+ !-> DEFINE VARIABLE dt = 0.041992
+ !-> DEFINE VARIABLE sumcpu =0.083984
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.043999
- !-> DEFINE VARIABLE sumcpu =0.130982
+ !-> DEFINE VARIABLE dt = 0.04599
+ !-> DEFINE VARIABLE sumcpu =0.129974
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.043991
- !-> DEFINE VARIABLE sumcpu =0.174973
+ !-> DEFINE VARIABLE dt = 0.042999
+ !-> DEFINE VARIABLE sumcpu =0.172973
 !-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.042992
- !-> DEFINE VARIABLE sumcpu =0.217965
+ !-> DEFINE VARIABLE sumcpu =0.215965
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.046997
- !-> DEFINE VARIABLE sumcpu =0.264962
+ !-> DEFINE VARIABLE dt = 0.045998
+ !-> DEFINE VARIABLE sumcpu =0.261963
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.042992
- !-> DEFINE VARIABLE sumcpu =0.307954
-!-> REPEAT: K=8
  !-> DEFINE VARIABLE dt = 0.043991
- !-> DEFINE VARIABLE sumcpu =0.351945
-!-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.042
- !-> DEFINE VARIABLE sumcpu =0.393945
-!-> REPEAT: K=10
+ !-> DEFINE VARIABLE sumcpu =0.305954
+!-> REPEAT: K=8
  !-> DEFINE VARIABLE dt = 0.04599
- !-> DEFINE VARIABLE sumcpu =0.439935
+ !-> DEFINE VARIABLE sumcpu =0.351944
+!-> REPEAT: K=9
+ !-> DEFINE VARIABLE dt = 0.044998
+ !-> DEFINE VARIABLE sumcpu =0.396942
+!-> REPEAT: K=10
+ !-> DEFINE VARIABLE dt = 0.042992
+ !-> DEFINE VARIABLE sumcpu =0.439934
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.439935
-0.439935
+ !-> MESSAGE/CONTINUE 0.439934
+0.439934
 sh sym CLOCK_SECS
-CLOCK_SECS = "87.18"
+CLOCK_SECS = "89.23"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "10-Mar-10"
-SESSION_TIME = "12:42"
+SESSION_TIME = "14:28"
 CURRENT_DATE = "10-Mar-10"
-CURRENT_TIME = "12:44:17"
+CURRENT_TIME = "14:29:29"
  
 ! ******** V6.3 Additions below ***********
  
@@ -59649,6 +59649,25 @@ say `999.999,p=-2`
 1000
  
  
+GO bn_reset
+cancel mode verify
+GO err64_parse_equals
+! err64_parse_equals
+! Bug1469 (and duplicate 1690)
+! Parsing equals sign when it is in a string within
+! grave accents.
+ 
+say `"+" EQ " "`
+ !-> MESSAGE/CONTINUE 0
+0
+ 
+say `"=" EQ "="`
+ !-> MESSAGE/CONTINUE 1
+1
+ 
+DEFINE SYMBOL my_sym  = `UPCASE("/lev=(0,30,2)")`
+ !-> DEFINE SYMBOL my_sym  = /LEV=(0,30,2)
+ 
  
 GO bn_reset
 cancel mode verify
@@ -59832,7 +59851,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.425  
  	Linux(g77) 2.6.9-89.ELsmp - 03/10/10
- 	10-Mar-10 12:44     
+ 	10-Mar-10 14:29     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -60543,8 +60562,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  10   / 10:  -5.00
  11   / 11:  -4.00
  12   / 12:  -3.00
- 13-rw-rw-r--  1 ansley tmap 29712 Mar 10 12:44 testa.v5d
--rw-rw-r--  1 ansley tmap 29712 Mar 10 12:44 test.v5d
+ 13-rw-rw-r--  1 ansley tmap 29712 Mar 10 14:29 testa.v5d
+-rw-rw-r--  1 ansley tmap 29712 Mar 10 14:29 test.v5d
    / 13:  -2.00
  14   / 14:  -1.00
  15   / 15:   0.00
@@ -63118,7 +63137,7 @@ end of ncdump output
  	NOAA/PMEL TMAP
  	FERRET v6.425  
  	Linux(g77) 2.6.9-89.ELsmp - 03/10/10
- 	10-Mar-10 12:44     
+ 	10-Mar-10 14:29     
 
 CAN MODE VERIFY
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
@@ -63137,11 +63156,11 @@ FERRET_PLATFORM = "Linux(g77) 2.6.9-89.ELsmp"
 NETCDF_VERSION = ""3.7.4" of Nov  3 2009 11:32:47 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "10-Mar-10"
-SESSION_TIME = "12:44"
-DELTA_CPU = "0.033993"
-CLOCK_SECS = "0.08"
+SESSION_TIME = "14:29"
+DELTA_CPU = "0.034994"
+CLOCK_SECS = "0.14"
 CURRENT_DATE = "10-Mar-10"
-CURRENT_TIME = "12:44:27"
+CURRENT_TIME = "14:29:39"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -63162,7 +63181,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "10-Mar-10:12:44"
+WIN_TITLE = "10-Mar-10:14:29"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -63215,7 +63234,7 @@ GO_FILE = "./bn_startupfile.jnl"
  	NOAA/PMEL TMAP
  	FERRET v6.425  
  	Linux(g77) 2.6.9-89.ELsmp - 03/10/10
- 	10-Mar-10 12:44     
+ 	10-Mar-10 14:29     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -63426,7 +63445,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.425  
  	Linux(g77) 2.6.9-89.ELsmp - 03/10/10
- 	10-Mar-10 12:44     
+ 	10-Mar-10 14:29     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -63540,7 +63559,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6.425  
  	Linux(g77) 2.6.9-89.ELsmp - 03/10/10
- 	10-Mar-10 12:44     
+ 	10-Mar-10 14:29     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -63623,4 +63642,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Wed Mar 10 12:44:28 PST 2010
+Ended at Wed Mar 10 14:29:41 PST 2010

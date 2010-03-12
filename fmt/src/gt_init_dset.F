@@ -372,12 +372,13 @@
 	file_trange = (s_end+s_delta-s_start)/s_num_of_files
 	IF ( s_delta .GT. 0 ) THEN
 	   steps_in_file = file_trange / s_delta 
-	   IF ( ABS(steps_in_file/NINT(steps_in_file) - 1.0) .GT. 1.E-6 )
-     .		WRITE (string,1100)
- 1100		FORMAT(' WARNING - NON-INTEGER NUMBER OF STEPS PER STEPFILE'/
+	   IF (ABS(steps_in_file/NINT(steps_in_file)-1.0) .GT. 1.E-6) THEN
+              WRITE (string,1100)
+ 1100	      FORMAT(' WARNING - NON-INTEGER NUMBER OF STEPS PER STEPFILE'/
      .	         ' INDICATED IN DESCRIPTOR - TRYING TO CONTINUE ANYWAY')
-	        lenb = TM_LENSTR( string )
-	        CALL TM_NOTE( string(:lenb), lunit_errors )
+              lenb = TM_LENSTR( string )
+              CALL TM_NOTE( string(:lenb), lunit_errors )
+	   ENDIF
 	ENDIF
 
 * compute how many records in each time step (with no tuples/missing vars)

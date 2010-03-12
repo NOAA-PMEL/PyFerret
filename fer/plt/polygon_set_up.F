@@ -118,6 +118,8 @@
 * V62  *acm* 5/09   Fixing bug 1661: if the plot is TRANSPOSED, then multiply 
 *                   vertices of the opposite axis by -1 
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
+* V650 *acm*  3/10  Check calendar id only if polygon data is not a list on an
+*                   abstract time axis.  Fix for bug 1722.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -168,6 +170,7 @@
      .			buff4*16, LEFT_REAL*16, fmt*4
 	INTEGER         TM_UNIT_ID
 	INTEGER		TM_LENSTR1, CX_DIM_LEN,	TM_GET_CALENDAR_ID, 
+     .			STR_SAME,
      .			mr_x, cx_x, mr_y, cx_y, cx_color, mr_color,
      .			slen, slen2, x_lab, y_lab, nline_in_mem, i,
      .			npoly, ncolor, ipoly, xrow, yrow, start, end,
@@ -652,10 +655,13 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 *  Check for calendar mismatch for time- overlay plots
 *  (but only for 2-D polygon form; 1-D polygon data are
 *  just lists on abstract axis.)
+*  If the axis is 7 (abstract) then dont do the check either.
                  tax = grid_line(t_dim,cx_grid(cx_x ))
-                 cal_name = line_cal_name(tax)
-                 cal_id = TM_GET_CALENDAR_ID ( cal_name )
-                 IF (cal_id .NE. saved_calendar_id) GO TO 5360
+		 IF (STR_SAME(line_name(tax),'ABSTRACT') .NE. 0) THEN 
+                    cal_name = line_cal_name(tax)
+                    cal_id = TM_GET_CALENDAR_ID ( cal_name )
+                    IF (cal_id .NE. saved_calendar_id) GO TO 5360
+                 ENDIF
               ENDIF
 	   ELSE
               dt_min  = 1.0

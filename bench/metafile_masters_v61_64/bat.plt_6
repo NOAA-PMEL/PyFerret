@@ -1,4 +1,4 @@
-GKSM@porter.pmel.noaa.goXPPLP Profile F 1.0 09/06/23 1 0 3 6 611 1 1                      
+GKSM@porter.pmel.noaa.goXPPLP Profile F 1.0 10/03/12 1 0 3 6 611 1 1                      
   4    12     3     0
  51    29    19     1    1.00000     0
  56    39     2    1.00000    0.00000    0.00000

@@ -88,7 +88,8 @@
 * V6.11 4/08 *acm* Fixes for bug 1571
 * *acm* 5/09 *acm* Fixes for bug 1663. When redrawing axes after a POLY/OVERLAY
 *                  do not do any axis labels
-
+* V6.5  3/10 *acm* When re-plotting axes, do not redraw the main label.
+*
 *****************************************************
 
 * local variable declarations for PLTIT (for TMAP)
@@ -328,10 +329,11 @@ C
 	    CALL PLOTZ(X(IVLOC),XF,YF,XLPLOT,YLPLOT,XHPLOT,YHPLOT)
 
 C  Call WINDOW to restore values of XMIN, XMAX, YMIN, YMAX. Plot axis again
-C  so any tics inside the box show up.  
+C  so any tics inside the box show up.
 
 	    IF(MAKEP.EQ.'FILL') THEN
                IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
+	       mainlab = 0
                CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
 	       CALL DAXIS_BOX
             ENDIF
@@ -426,6 +428,7 @@ C ACM Add FLOWLINE call based on VECFLD
             ENDIF
             call shade(x(ivloc), x(IP4) )
 	    IF ( interrupted ) GOTO 3333		! 1/89 - *sh*
+	    mainlab = 0
 	    CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
 	    CALL DAXIS_BOX
 ***************************************************
@@ -468,7 +471,8 @@ C ACM Add FLOWLINE call based on VECFLD
 * Redraw the axes after the plot is drawn as polygons may
 * obscure axes and/or tics.
             IF (.NOT. SOVER) THEN
-               CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
+	       mainlab = 0
+               CALL DAXIS(XF,YF,NMX,NMY,mainlab) ! was MAINLAB
 	       CALL DAXIS_BOX
 	    ELSE
 * If it was an overlay, we still want to draw the axes but dont

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 50379360 Mar 10 14:17 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 50379392 Mar 12 10:56 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix bug 1469: parsing grave-accent expressions when they contain a string including an equals sign
+Note: test fix for bug 1722: polymark script overlaying on non-Gregorian calendar axis
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -14,14 +14,14 @@ CVSROOT=/home/porter/tmap/FERRET_ROOT
 FER_WEB_BROWSER=netscape -ncols 60
 FER_DSETS=.
 FER_DAT=.
-FER_GO=. /home/porter/tmap/ferret/x86_64-linux/go /home/porter/tmap/ferret/x86_64-linux/examples /home/porter/tmap/ferret/x86_64-linux/contrib /home/porter/tmap/ferret/tmap_go /home/porter/ansley/baker_las.v7.1/conf/server/custom/scripts/
+FER_GO=. /home/porter/tmap/ferret/x86_64-linux/go /home/porter/tmap/ferret/x86_64-linux/examples /home/porter/tmap/ferret/x86_64-linux/contrib /home/porter/tmap/ferret/tmap_go
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
-Beginning at Wed Mar 10 14:28:00 PST 2010
+Beginning at Fri Mar 12 11:04:26 PST 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2947,6 +2947,12 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file list_of_numbers.dat
@@ -3036,4 +3042,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Mar 10 14:29:41 PST 2010
+Ended at Fri Mar 12 11:06:06 PST 2010

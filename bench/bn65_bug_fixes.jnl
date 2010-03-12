@@ -18,3 +18,9 @@ GO err64_return_precision
 
 GO bn_reset
 GO err64_parse_equals
+
+GO bn_reset
+GO err64_regrid_noleap
+
+GO bn_reset
+GO err64_polymark_over_calendar

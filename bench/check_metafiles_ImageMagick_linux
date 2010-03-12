@@ -22,6 +22,9 @@ rm -f *.diff.ps*
 rm -f *.diff_ps*
 rm -f *.diff_gif*
 rm -f *bat.ps
+rm -f diff*.ps
+rm -f master*.ps
+rm -f bat*.plt*.ps
 
 set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt linecolors.plt multi_line_labels.plt pattern*.plt polygon*.plt vec_curv*.plt)
 set gif_files = ( bn*.gif )
@@ -94,8 +97,8 @@ foreach mb_file ($mb_files)
        Fprint -R -o $mb_file.ps $mb_file
        Fprint -R -o master_$mb_file.ps metafile_masters_v61/$mb_file
        compare $mb_file.ps master_$mb_file.ps diff_$mb_file.ps
-       display -geometry 640x480+200+200 diff_$mb_file.ps &
-       display -geometry 640x480+200+200diff_$mb_file.ps &
+       display -geometry 640x480+200+200 $mb_file.ps &
+       display -geometry 640x480+200+200 master_$mb_file.ps &
        display -geometry 640x480+200+200 diff_$mb_file.ps
    endif
 end

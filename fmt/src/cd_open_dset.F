@@ -79,7 +79,10 @@
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
 * V65  *acm* 1/10  Call CD_TRANSLATE_ERROR rather than individual calls to NF_STRERROR
+* V65  *acm* 1/10  Dont add the note **OPeNDAP/netCDF Error code** - that is now
+*                  done only in CD_TRANSLATE_ERROR 
 * V65  *acm* 2/10- all warnings and notes to std error not std out
+
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -258,13 +261,6 @@
 
         dlen = TM_LENSTR1(buff)
 
-C This is already in the output of CD_TRANSLATE_ERROR
-c        val = cdfstat
-c        errcode = TM_FMT(val, 0, 10, len)
-c        buff(dlen+2:)  = '(OPeNDAP/netCDF Error code '//
-c     .   errcode(1:TM_LENSTR1(errcode))//') '
-c        dlen = TM_LENSTR1(buff)
-
         CALL TM_ERRMSG
      .     ( err_status, status, 'CD_OPEN_DSET', dset,
      .        no_stepfile, buff, no_errstring, *5900 )
@@ -277,11 +273,6 @@ c        dlen = TM_LENSTR1(buff)
  5300   CONTINUE
         CALL CD_TRANSLATE_ERROR (cdfstat, buff)
 
-        dlen = TM_LENSTR1(buff)
-        val = cdfstat
-        errcode = TM_FMT(val, 0, 10, len)
-        buff(dlen+2:)  = '(OPeNDAP/netCDF Error code '//
-     .      errcode(1:TM_LENSTR1(errcode))//')'
         dlen = TM_LENSTR1(buff)
 
         CALL TM_ERRMSG (merr_notmounted,status, 'CD_OPEN_DSET',dset,

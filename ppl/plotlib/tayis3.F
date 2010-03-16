@@ -56,6 +56,9 @@
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 C *acm* 03/04  new arguments and code for plotting graticule lines across plot. 
+C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots, 
+C              do not make small tics by default.
+
 
 C**
 C**    @(#)tayis3.f	1.1    3/10/88
@@ -190,6 +193,7 @@ C     SET PARAMETERS.
 	ENDIF
 
 	NOT_ZERO_SIZE = .NOT.(INML.EQ.-5.AND.TSMY.EQ.0)
+	IF (MULTICENFLAG) NOT_ZERO_SIZE = .FALSE.
 
 	IF(IMDB.NE.0)THEN
 	    FIMDB=0.0

@@ -122,6 +122,9 @@ C                  year to DAY,MONTH or to MONTH.
 *                  has opened the metafile but nothing plotted yet, and if
 *                  a SET MODE META:newname.plt is issued, just rename the metafile
 *                  that was opened. New RENAMPL command.
+C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots, 
+C              do not make small tics by default.
+
 c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -883,6 +886,8 @@ C     TICS
 5801	CONTINUE
 5802	IF(M.GE.5.AND.IFLG(5).EQ.1)ITX=P(5)
 	IF(M.GE.6.AND.IFLG(6).EQ.1)ITY=P(6)
+* The following lets the user plot small tics with PPL TICS
+	MULTICENFLAG = .FALSE.
 	GOTO 10
 C	TMIN
 5900	IF(N.NE.0)THEN
@@ -1258,10 +1263,14 @@ C
 		ENDIF
 
 *               Century axis mod
-	        IF(INDEX(LABEL,'MULTIY').NE.0) THEN
-		  CENFLAG = .TRUE.
-	        ELSE
-	          CENFLAG = .FALSE.		   
+	        CENFLAG = .FALSE.
+	        IF(INDEX(LABEL,'MULTIY').NE.0) CENFLAG = .TRUE.
+
+*               multi-decade axis mod
+	        MULTICENFLAG = .FALSE. 
+	        IF(INDEX(LABEL,'MULTID').NE.0) THEN
+		   CENFLAG = .TRUE. 
+		   MULTICENFLAG = .TRUE. 
 	        ENDIF
 	    ENDIF
 	    MONYRLAB = .FALSE.  ! Option for MON and DAY types. 

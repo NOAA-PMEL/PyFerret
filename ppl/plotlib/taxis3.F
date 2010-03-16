@@ -58,7 +58,11 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 * *sh* 9/99 - bug fix to "century axis" -- major tic interval (IYDB) may be
 *               equal to zero
-C *acm* 03/04  new arguments and code for plotting graticule lines across plot. 
+C *acm* 03/04  new arguments and code for plotting graticule lines across plot.
+C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots, 
+C              do not make small tics by default.
+
+
 C**
 C**    @(#)taxis3.f	1.1    3/10/88
 C**
@@ -191,6 +195,7 @@ C     SET PARAMETERS.
 	ENDIF
 
 	NOT_ZERO_SIZE = .NOT.(INML.EQ.-7.AND.TSMX.EQ.0)
+	IF (MULTICENFLAG) NOT_ZERO_SIZE = .FALSE.
 
 	IF(IMDB.NE.0)THEN
 	FIMDB=0.0
@@ -198,7 +203,7 @@ C     SET PARAMETERS.
 	FIMDB=-1.4
 	ENDIF
       IF(LABEL.LT.0) THEN
-      YTEMP1=Y-(1.4*CSIZE+YTEMP)/YFACT
+      YTEMP1=Y-(1.4*CSIZE+YTEMP)/YFACTO
       YTEMP2=Y-((4.0+FIMDB)*CSIZE+YTEMP)/YFACT
       ELSE
       YTEMP1=Y+(0.4*CSIZE+YTEMP)/YFACT

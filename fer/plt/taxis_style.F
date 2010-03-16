@@ -53,7 +53,6 @@
 *               scripts when deciding whether to set the axis style as DMY
 ** V650  1/10 *acm*-  Bug 670 fixed: added TXTYPE MULTIYR, multi-decade
 
-
 	include 'ferret.parm'
 	include 'plot_setup.parm'
         include 'axis_inc.decl'	! with axis lengths
@@ -120,31 +119,31 @@
      .		tax_loint(9)	/    0	/,
      .		tax_hiint(9)	/    5	/
 	DATA	tax_hours(10)	/864000./,	! 50 to 100 year long axis
-     .		tax_style(10)	/  'YR MULTIDEC'	/,
+     .		tax_style(10)	/  'YR MULTIDC'	/,
      .		tax_loint(10)	/    0	/,
      .		tax_hiint(10)	/   10	/
 	DATA	tax_hours(11)	/1728000.	/, ! 100 to 200 yr long axis
-     .		tax_style(11)	/  'YR MULTIDEC'	/,
+     .		tax_style(11)	/  'YR MULTIDC'	/,
      .		tax_loint(11)	/    0	/,
      .		tax_hiint(11)	/   20	/
 	DATA	tax_hours(12)	/4320000.	/, ! 200 to 500 yr long axis
-     .		tax_style(12)	/  'YR MULTIDEC'	/,
+     .		tax_style(12)	/  'YR MULTIDC'	/,
      .		tax_loint(12)	/    0	/,
      .		tax_hiint(12)	/   50	/
 	DATA	tax_hours(13)	/8640000.	/, ! 500 to 1000 yr long axis
-     .		tax_style(13)	/  'YR MULTIDEC'	/,
+     .		tax_style(13)	/  'YR MULTIDC'	/,
      .		tax_loint(13)	/    0	/,
      .		tax_hiint(13)	/   100	/
 	DATA	tax_hours(14)	/17280000.	/, ! 1000 to 2000 yr long axis
-     .		tax_style(14)	/  'YR MULTIDEC'	/,
+     .		tax_style(14)	/  'YR MULTIDC'	/,
      .		tax_loint(14)	/    0	/,
      .		tax_hiint(14)	/   200	/
 	DATA	tax_hours(15)	/43200000.	/, ! 2000 to 5000 yr long axis
-     .		tax_style(15)	/  'YR MULTIDEC'	/,
+     .		tax_style(15)	/  'YR MULTIDC'	/,
      .		tax_loint(15)	/    0	/,
      .		tax_hiint(15)	/   500	/
 	DATA	tax_hours(16)	/    0.	/,    ! greater than 5000 yr long axis
-     .		tax_style(16)	/  'YR MULTIDEC'	/,
+     .		tax_style(16)	/  'YR MULTIDC'	/,
      .		tax_loint(16)	/    0	/,
      .		tax_hiint(16)	/   1000	/
 

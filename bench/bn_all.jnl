@@ -685,6 +685,9 @@ GO bn_txtype_dmy
 GO bn_reset
 GO bn_n_open_dsets_sym
 
+GO bn_reset
+GO bn_multi_decade
+
 ! GO bn_reset
 ! GO bn_encode_url
 

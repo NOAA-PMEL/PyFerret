@@ -52,7 +52,8 @@ list strcat ("All work and no play", " makes Ferret a dull boy")
 
 ! FLOAT
 ! return float value - result should be 7.85
-list (strfloat("3.14")*10)/4
+! list (strfloat("3.14")*10)/4  ! crashes on linux rh5 gfortran...
+list .25*strfloat("3.14")
 
 
 ! the below are deliberate errors for incorrect argument detection 

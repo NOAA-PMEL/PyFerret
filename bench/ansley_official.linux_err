@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     55891315 Jan 26 08:52 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     55908723 Feb 26 17:27 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
-Benchmark run by ansley
-Note:  further fix for bug 1641  polygon plot with all missing data ignored /LEV setting
+Benchmark run by anslehy
+Note: clock symbols work w/ g77&gfortran;  fix ascii listings w/ tab,comma(bug1698); new examples of errors specifying axis bounds
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Tue Jan 26 09:25:46 PST 2010
+Beginning at Mon Mar 1 09:14:58 PST 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -521,7 +521,6 @@ plot/xlimits=1:2: i
 plot/xlimits=5:5 i
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-rm: cannot remove `bench.mgm': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test_perm10.dat
@@ -1641,16 +1640,19 @@ Replacing definition of axis TAX
  *** NOTE: Bounds given describe non-contiguous axis cells
  *** NOTE: Using the LOWER bound specified for each axis cell
 Replacing definition of axis TAX
- **ERROR: improper grid or axis definition: BOUNDS specified do not enclose coordinate points
+ **ERROR: improper grid or axis definition: BOUNDS specified do not correctly enclose coordinate points
 def axis/t/bounds tax={1.2,2,3.2,5,7,8.8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
- **ERROR: improper grid or axis definition: BOUNDS specified do not enclose coordinate points
+ **ERROR: improper grid or axis definition: BOUNDS specified do not correctly enclose coordinate points
 def axis/t/bounds tax={0.1,2,3.2,5,7,8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
- **ERROR: improper grid or axis definition: BOUNDS specified do not enclose coordinate points
+ **ERROR: improper grid or axis definition: BOUNDS specified do not correctly enclose coordinate points
 def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
- **ERROR: improper grid or axis definition: BOUNDS specified do not enclose coordinate points
+ **ERROR: improper grid or axis definition: BOUNDS specified do not correctly enclose coordinate points
 def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
  **ERROR: improper grid or axis definition: dimension of bounds (15) must be 2*N or N+1, N=number of axis coordinates (7)
 def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5,10.5}
+ *** NOTE: Axis definition error on axis: TAX. Bounds describe cells that overlap one another
+ **ERROR: improper grid or axis definition: BOUNDS specified do not correctly enclose coordinate points
+def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,24, 24,48, 24,48, 48,72, 48,72, 72,96, 72,96, 96,120}
  *** NOTE: Not deleted: TAX
  *** NOTE: Axis is in use by grid GFORMAT
  LISTing to file a.nc
@@ -1676,7 +1678,10 @@ Replacing definition of axis TAX
  *** NOTE: Axis definition error on axis: TGAP
  *** NOTE: Bounds given describe non-contiguous axis cells
  *** NOTE: Using the LOWER bound specified for each axis cell
- *** NOTE: bounds "TAX_bnds" do not enclose point on axis TAX
+ *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
+ *** NOTE: Substituting coordinate midpoints
+ *** NOTE: Axis definition error on axis: TAX. Bounds describe cells that overlap one another
+ *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
  *** NOTE: Substituting coordinate midpoints
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2331,7 +2336,7 @@ set axis/stride=2 NORMAL
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
  *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
  *** NOTE: A dummy axis of subscripts will be used
- *** NOTE: bounds "TAX_bnds" do not enclose point on axis TAX
+ *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
  *** NOTE: Substituting coordinate midpoints
  *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
  *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
@@ -2908,6 +2913,13 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file list_of_numbers.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -2992,4 +3004,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Jan 26 09:33:22 PST 2010
+Ended at Mon Mar 1 09:22:48 PST 2010

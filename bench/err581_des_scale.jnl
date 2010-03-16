@@ -18,7 +18,7 @@ say `sst, return=nc_off`
 
 can data/all; can mem
 
-set data tnok_short
-list/i=1:5 sst
-say `sst, return=nc_scale`
-say `sst, return=nc_offset`
+!set data tnok_short
+!list/i=1:5 sst
+!say `sst, return=nc_scale`
+!say `sst, return=nc_offset`

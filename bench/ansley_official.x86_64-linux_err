@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 50379392 Mar 12 10:56 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 50379430 Mar 16 14:00 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: test fix for bug 1722: polymark script overlaying on non-Gregorian calendar axis
+Note: multi-decade time axis plots do not plot small tics by default
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -12,16 +12,16 @@ FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
 FER_WEB_BROWSER=netscape -ncols 60
-FER_DSETS=.
 FER_DAT=.
 FER_GO=. /home/porter/tmap/ferret/x86_64-linux/go /home/porter/tmap/ferret/x86_64-linux/examples /home/porter/tmap/ferret/x86_64-linux/contrib /home/porter/tmap/ferret/tmap_go
-FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
-Beginning at Fri Mar 12 11:04:26 PST 2010
+FER_DATA=.
+FER_DSETS=.
+Beginning at Tue Mar 16 14:20:39 PDT 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2180,7 +2180,7 @@ Replacing definition of axis TIME
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-               (OPeNDAP/netCDF Error code 1001)
+             OPeNDAP Error: Error while reading the URL: http://iridl.ldeo.columbia.edu/SOURC (OPeNDAP/netCDF Error code 1001)
              Data set: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods
 SET DAT/FORM=CDF "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
  **Internet Data error
@@ -2958,6 +2958,17 @@ Replacing definition of axis TAX
  LISTing to file list_of_numbers.dat
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Re-defining viewport V1
+Re-defining viewport V1
+Re-defining viewport V2
+Re-defining viewport V3
+Re-defining viewport V4
+Re-defining viewport V5
+Re-defining viewport V6
+Re-defining viewport V7
+Re-defining viewport V8
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -3042,4 +3053,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Mar 12 11:06:06 PST 2010
+Ended at Tue Mar 16 14:22:50 PDT 2010

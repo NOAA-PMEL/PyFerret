@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version ../fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 50377433 Mar 17 15:04 ../fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 40357878 Mar 18 14:54 ../fer/ferretdods_gui
 Using external functions from ../external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: revert to NOTES going to std err
+Note: build v6.5 with OPeNDAP libraries and g77
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func
-Beginning at Wed Mar 17 15:05:32 PDT 2010
+Beginning at Thu Mar 18 14:57:20 PDT 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1650,10 +1650,9 @@ def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,
 def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
  **ERROR: improper grid or axis definition: dimension of bounds (15) must be 2*N or N+1, N=number of axis coordinates (7)
 def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5,10.5}
- *** NOTE: Axis definition error on axis: TAX
- *** NOTE: Bounds given describe non-contiguous axis cells
- *** NOTE: Using the LOWER bound specified for each axis cell
-Replacing definition of axis TAX
+ *** NOTE: Axis definition error on axis: TAX. Bounds describe cells that overlap one another
+ **ERROR: improper grid or axis definition: BOUNDS specified do not correctly enclose coordinate points
+def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,24, 24,48, 24,48, 48,72, 48,72, 72,96, 72,96, 96,120}
  *** NOTE: Not deleted: TAX
  *** NOTE: Axis is in use by grid GFORMAT
  LISTing to file a.nc
@@ -1679,11 +1678,11 @@ Replacing definition of axis TAX
  *** NOTE: Axis definition error on axis: TGAP
  *** NOTE: Bounds given describe non-contiguous axis cells
  *** NOTE: Using the LOWER bound specified for each axis cell
- *** NOTE: bounds "TAX_bnds" do not enclose point on axis TAX
+ *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
  *** NOTE: Substituting coordinate midpoints
- *** NOTE: Axis definition error on axis: TAX
- *** NOTE: Bounds given describe non-contiguous axis cells
- *** NOTE: Using the LOWER bound specified for each axis cell
+ *** NOTE: Axis definition error on axis: TAX. Bounds describe cells that overlap one another
+ *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
+ *** NOTE: Substituting coordinate midpoints
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of grid TGRID
@@ -2333,7 +2332,7 @@ set axis/stride=2 NORMAL
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
  *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
  *** NOTE: A dummy axis of subscripts will be used
- *** NOTE: bounds "TAX_bnds" do not enclose point on axis TAX
+ *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
  *** NOTE: Substituting coordinate midpoints
  *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
  *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
@@ -2936,6 +2935,8 @@ Re-defining viewport V7
 Re-defining viewport V8
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -3020,4 +3021,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Mar 17 15:07:20 PDT 2010
+Ended at Thu Mar 18 14:59:10 PDT 2010

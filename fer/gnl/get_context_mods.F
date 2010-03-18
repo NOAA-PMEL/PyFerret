@@ -218,6 +218,9 @@
      .			 other_qual(1) / 'D' /,	! /DATA_SET=
      .			 other_qual(2) / 'G' /	! /GRID=
 
+* local parameter declarations (as in xeq_define)
+	INTEGER	    slash_calendar
+	PARAMETER ( slash_calendar = 1 + 13)
 
 * initialize
 	dset = cx_data_set( dflt_cx)
@@ -283,42 +286,32 @@
 	   ENDIF
  50	CONTINUE
 
-c - - 
+* Get calendar type from the command line
 
-
-* Look for /CALENDAR= (this may be an axis def)
-        cal_id = 0
-	DO 52 item = 1, list_len
-	   istart = it_start(item)
-	   iend   = it_end  (item)
-	   risc_buff  = text_buff(istart:iend)		! for RISC/FORTRAN
-	   len_rbuff  = MIN(size_rbuff, iend-istart+1)	! for RISC/FORTRAN
-	   vax_code = STR_UPCASE(letters,text_buff(istart:istart+2))
-	   IF (letters .EQ. 'CAL') THEN
-
-	      equal_pos = ATOM_POS( text_buff(istart:iend), '=' )
-	      IF ( equal_pos .EQ. atom_not_found
-     .	      .OR. equal_pos .EQ. atom_illegal_pos ) GOTO 5112
-	      equal_pos = equal_pos + istart - 1
-	      name = text_buff(equal_pos+1:iend)
-              vax_code = STR_UPCASE(name,text_buff(equal_pos+1:iend))
-              cal_name = name
+        cal_name = 'GREGORIAN'		! default
+        name = " "
+        dflt_cal_id = TM_GET_CALENDAR_ID (cal_name)
+	iqual = qual_given( slash_calendar )
+	IF ( iqual .GT. 0 ) THEN
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      cal_name, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+           name = cal_name
+	ELSEIF ( orient .EQ. t_dim  .AND.  
+     .         ( qual_given(slash_T0) .GT. 0  .OR. 
+     .           cx_calendar(mods_cx)) ) THEN
+	   name = 'GREGORIAN'
+	ENDIF
 
 * 9/01 CF conventions have adopted the name 360_day for a 360-day year.
 
-              IF (name .EQ. '360') cal_name = '360_DAY' 
-              IF (name .EQ. 'D360') cal_name = '360_DAY' 
-              IF (name .EQ. 'STANDARD') cal_name = 'GREGORIAN' 
-              IF (name(1:6) .EQ. 'COMMON') cal_name = 'NOLEAP' 
-              IF (name(1:6) .EQ. '365_DA') cal_name = 'NOLEAP' 
-              IF (name(1:6) .EQ. '366_DA') cal_name = 'ALL_LEAP' 
-              cal_id = TM_GET_CALENDAR_ID (cal_name)
-	   ENDIF
-
- 52	CONTINUE
-
-c - -
-
+	IF (name .EQ. '360') cal_name = '360_DAY' 
+	IF (name .EQ. 'D360') cal_name = '360_DAY' 
+	IF (name .EQ. 'STANDARD') cal_name = 'GREGORIAN' 
+	IF (name(1:6) .EQ. 'COMMON') cal_name = 'NOLEAP' 
+	IF (name(1:6) .EQ. '365_DA') cal_name = 'NOLEAP' 
+	IF (name(1:6) .EQ. '366_DA') cal_name = 'ALL_LEAP' 
+	cal_id = TM_GET_CALENDAR_ID (cal_name)
 
 * loop through list of other ( non /@ ) items provided
 	DO 500 item = 1, list_len

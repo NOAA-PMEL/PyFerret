@@ -31,6 +31,8 @@
 *       *acm* 7/06 -     CANCEL ATTRIBUTE /OUTPUT /DATA
 * V606  *acm* 7/06 -     DEFINE AXIS/QUIET
 * v62   *acm* 5/09 - new alias KEYMARK
+* V6.5  *acm* 3/10 new qualifiers on (some) SHOW commands and on MESSAGE: 
+*                  /OUTFILE= /APPEND /CLOBBER
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -145,10 +147,10 @@
      .			nqual2g =10, nqual_at2h = nqual_at2g + nqual2g,	!'DATA'
      .			nqual2h = 1, nqual_at2i = nqual_at2h + nqual2h,	!'MODE'
      .			nqual2i = 1, nqual_at2j = nqual_at2i + nqual2i,	!'MOVI'
-     .			nqual2j = 5, nqual_at2k = nqual_at2j + nqual2j,	!'VARI'
+     .			nqual2j = 8, nqual_at2k = nqual_at2j + nqual2j,	!'VARI'
      .			nqual2k = 1, nqual_at2l = nqual_at2k + nqual2k,	!'COMM'
      .			nqual2l = 5, nqual_at2m = nqual_at2l + nqual2l,	!'MEMO'
-     .			nqual2m =11, nqual_at2n = nqual_at2m + nqual2m,	!'GRID'
+     .			nqual2m =15, nqual_at2n = nqual_at2m + nqual2m,	!'GRID'
      .			nqual2n = 3, nqual_at2o = nqual_at2n + nqual2n,	!'VIEW'
      .			nqual2o = 1, nqual_at2p = nqual_at2o + nqual2o,	!'TRAN'
      .			nqual2p = 1, nqual_at2q = nqual_at2p + nqual2p,	!'ALIA'
@@ -273,7 +275,7 @@
 	INTEGER		nsub12      , nsub_at13  ,
      .			nqual12a    , nqual_at13a
 	PARAMETER    (	nsub12   = 1, nsub_at13   = nsub_at12   + nsub12,
-     .			nqual12a = 4, nqual_at13a = nqual_at12a + nqual12a  )
+     .			nqual12a = 7, nqual_at13a = nqual_at12a + nqual12a  )
 
 * VECTOR		 - commmand # 13
 	INTEGER		nsub13       , nsub_at14 ,

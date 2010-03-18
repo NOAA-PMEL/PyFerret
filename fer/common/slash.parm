@@ -34,6 +34,8 @@
 * V609: *acm* 2/08 - add SHADE/TRIM
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
 * V6.2  *acm* 5/08 new qualifier LIST/KEEP_AXNAMES for CDF output
+* V6.5  *acm* 3/10 new qualifiers on (some) SHOW commands and on MESSAGE: 
+*                  /OUTFILE= /APPEND /CLOBBER
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -71,16 +73,30 @@
      .			slash_set_movie_laser,
      .			slash_set_movie_start,
      .
+     .			slash_show_axis_file,
+     .			slash_show_axis_append,
+     .			slash_show_axis_clobber,
+     .
      .			slash_show_var_diag,
      .			slash_show_var_user,
      .			slash_show_var_xml,
      .
      .			slash_show_grid_x0,
      .			slash_show_grid_i0,
+     .			slash_show_grid_file,
+     .			slash_show_grid_clobber,
+     .			slash_show_grid_append,
      .
      .			slash_show_data_brief,
+     .			slash_show_data_file,
+     .			slash_show_data_append,
+     .			slash_show_data_clobber,
      .
      .			slash_show_func_detail,
+     .
+     .			slash_show_var_file,
+     .			slash_show_var_append,
+     .			slash_show_var_clobber,
      .
      .			slash_list_head,
      .			slash_list_nohead,
@@ -287,13 +303,25 @@
      .			slash_show_var_diag = 3,
      .			slash_show_var_user = 4,
      .			slash_show_var_xml = 5,
+     .			slash_show_var_file = 6,
+     .			slash_show_var_append = 7,
+     .			slash_show_var_clobber = 8,
      .
      .			slash_show_grid_x0 = 5,
      .			slash_show_grid_i0 = 1,
+     .			slash_show_grid_file = 12,
+     .			slash_show_grid_clobber = 13,
+     .			slash_show_grid_append = 14,
      .
      .			slash_show_data_brief = 2,
+     .			slash_show_data_file = 8,
+     .			slash_show_data_append = 9,
+     .			slash_show_data_clobber = 10,
      .
      .			slash_show_func_detail = 1+4,
+     .			slash_show_axis_file = 11,
+     .			slash_show_axis_append = 12,
+     .			slash_show_axis_clobber = 13,
      .
      .			slash_list_head   = 10,
      .			slash_list_nohead = 11,

@@ -160,6 +160,7 @@
      .		last_cmnd_buff*2048,
      .		prompt*8,
      .		list_format*2048, list_file*2048,
+     .          show_file*2048,
      .		mode_name( max_modes )*12,
      .		frame_file*200,
      .		ppl_wait*6,
@@ -170,13 +171,13 @@
      .          mode_grat_buff*512
 
 	INTEGER	ttin_lun, ttout_lun, cmnd_file_lun, list_lun,
-     .		cmnd_lun, jrnl_lun, err_lun, frame_lun,
+     .		cmnd_lun, jrnl_lun, err_lun, frame_lun, show_lun,
      .		vms_kbd_id, vms_kbd_tbl
 
 * logical unit numbers
 	COMMON/ XLUN /
      .		ttin_lun, ttout_lun, cmnd_file_lun, list_lun,
-     .		cmnd_lun, jrnl_lun, err_lun, frame_lun,
+     .		cmnd_lun, jrnl_lun, err_lun, frame_lun, show_lun,
      .		vms_kbd_id, vms_kbd_tbl
 
 * program state information
@@ -208,7 +209,7 @@
      .		genl_storage, its_script, grat_on,
      .          shade_trim, silent_err,
      .		ppl_wait, mode_name,
-     .          scriptfile_name
+     .          scriptfile_name, show_file
 
 * individual mode variable names
 	LOGICAL		mode_diagnostic, mode_verify, mode_interpolate,

@@ -688,6 +688,9 @@ GO bn_n_open_dsets_sym
 GO bn_reset
 GO bn_multi_decade
 
+GO bn_reset
+GO bn_show_xml_file
+
 ! GO bn_reset
 ! GO bn_encode_url
 

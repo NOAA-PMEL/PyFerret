@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 50379430 Mar 16 14:00 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
+Running FERRET version ../fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 50377433 Mar 17 15:04 ../fer/ferretdods_gui
+Using external functions from ../external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: multi-decade time axis plots do not plot small tics by default
+Note: revert to NOTES going to std err
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -12,16 +12,16 @@ FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
 FER_WEB_BROWSER=netscape -ncols 60
+FER_DSETS=.
 FER_DAT=.
 FER_GO=. /home/porter/tmap/ferret/x86_64-linux/go /home/porter/tmap/ferret/x86_64-linux/examples /home/porter/tmap/ferret/x86_64-linux/contrib /home/porter/tmap/ferret/tmap_go
+FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
-FER_DATA=.
-FER_DSETS=.
-Beginning at Tue Mar 16 14:20:39 PDT 2010
+FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func
+Beginning at Wed Mar 17 15:05:32 PDT 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -966,12 +966,10 @@ Replacing definition of grid G1
  **TMAP ERR: syntax error in string
              Unrecognized field type: D
              Data set: ./bn_delimited_read_date_time.dat
- *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME
 SET DATA/FORM=delimited/type="d, da2,date2"  bn_delimited_read_date_time.dat
  **TMAP ERR: syntax error in string
              Unrecognized field type: DATE2
              Data set: ./bn_delimited_read_date_time.dat
- *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME
 SET DATA/FORM=delimited/type="da,da, date2"  bn_delimited_read_date_time.dat
  **ERROR: command syntax: ,,:
 SET DATA/EZ/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
@@ -1049,8 +1047,6 @@ Replacing definition of grid MYGRID
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1066,8 +1062,6 @@ Replacing definition of axis TAX2
  LISTing to file string4d.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  *** NOTE: Not deleted: MONTH_IRREG
  *** NOTE: Axis is in use by grid (G004)
  *** NOTE: Not deleted: XEVEN
@@ -1379,10 +1373,6 @@ Re-defining viewport LL
 Re-defining viewport LR
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: Undecipherable value of netCDF attribute modulo on variable lon_moderr
- *** NOTE: modulo = "j"
- *** NOTE: Undecipherable value of netCDF attribute modulo on variable time_moderr
- *** NOTE: modulo = "j"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1452,14 +1442,10 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis Z1
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file clim.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1642,14 +1628,10 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
 Replacing definition of axis TAX
@@ -1668,9 +1650,10 @@ def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,
 def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
  **ERROR: improper grid or axis definition: dimension of bounds (15) must be 2*N or N+1, N=number of axis coordinates (7)
 def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5,10.5}
- *** NOTE: Axis definition error on axis: TAX. Bounds describe cells that overlap one another
- **ERROR: improper grid or axis definition: BOUNDS specified do not correctly enclose coordinate points
-def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,24, 24,48, 24,48, 48,72, 48,72, 72,96, 72,96, 96,120}
+ *** NOTE: Axis definition error on axis: TAX
+ *** NOTE: Bounds given describe non-contiguous axis cells
+ *** NOTE: Using the LOWER bound specified for each axis cell
+Replacing definition of axis TAX
  *** NOTE: Not deleted: TAX
  *** NOTE: Axis is in use by grid GFORMAT
  LISTing to file a.nc
@@ -1684,8 +1667,6 @@ Replacing definition of axis XAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
  LISTing to file irrxzt.nc
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file a.nc
  LISTing to file a.nc
@@ -1693,18 +1674,16 @@ Replacing definition of axis TAX
  *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
  *** NOTE: This will result in incorrect box sizes on record axis: MONTH_REG
  *** NOTE: Write the data initially with the /BOUNDS qualifier
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
  *** NOTE: Axis definition error on axis: TGAP
  *** NOTE: Bounds given describe non-contiguous axis cells
  *** NOTE: Using the LOWER bound specified for each axis cell
- *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
+ *** NOTE: bounds "TAX_bnds" do not enclose point on axis TAX
  *** NOTE: Substituting coordinate midpoints
- *** NOTE: Axis definition error on axis: TAX. Bounds describe cells that overlap one another
- *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
- *** NOTE: Substituting coordinate midpoints
+ *** NOTE: Axis definition error on axis: TAX
+ *** NOTE: Bounds given describe non-contiguous axis cells
+ *** NOTE: Using the LOWER bound specified for each axis cell
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of grid TGRID
@@ -1749,8 +1728,6 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
@@ -2180,7 +2157,7 @@ Replacing definition of axis TIME
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-             OPeNDAP Error: Error while reading the URL: http://iridl.ldeo.columbia.edu/SOURC (OPeNDAP/netCDF Error code 1001)
+               (OPeNDAP/netCDF Error code 1001)
              Data set: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods
 SET DAT/FORM=CDF "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
  **Internet Data error
@@ -2351,14 +2328,12 @@ set axis/stride=2 NORMAL
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
  *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
  *** NOTE: A dummy axis of subscripts will be used
- *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
+ *** NOTE: bounds "TAX_bnds" do not enclose point on axis TAX
  *** NOTE: Substituting coordinate midpoints
  *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
  *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
@@ -2366,14 +2341,8 @@ set axis/stride=2 NORMAL
  *** NOTE: Axis definition error on axis: TGAP
  *** NOTE: Bounds given describe non-contiguous axis cells
  *** NOTE: Using the LOWER bound specified for each axis cell
- *** NOTE: Undecipherable value of netCDF attribute modulo on variable lon_moderr
- *** NOTE: modulo = "j"
- *** NOTE: Undecipherable value of netCDF attribute modulo on variable time_moderr
- *** NOTE: modulo = "j"
  *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
  *** NOTE: They will not be convertible:
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
@@ -2403,8 +2372,6 @@ SET DAT/FORM=CDF test_strides.cdf
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: regarding ./climatological_axes.cdf ...
- *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3053,4 +3020,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Mar 16 14:22:50 PDT 2010
+Ended at Wed Mar 17 15:07:20 PDT 2010

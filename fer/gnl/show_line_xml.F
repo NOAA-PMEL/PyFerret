@@ -49,6 +49,7 @@
 * V616  1/2009 *acm* Fixing LAS ticket 481, new style of xml output
 * V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
 *                  with &lt; etc.
+* V650  Write to show_lun which may be set to a file unit number rather than std out
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -127,7 +128,7 @@ C Write statement that uses number 2075 when we change to using these.)
 	grid_line(idim, mgrid_buff) = line
 
 * report basic facts using code from SHOW_GRID
-	CALL LINE_FACTS_XML( ttout_lun, idim, mgrid_buff, orient, status )
+	CALL LINE_FACTS_XML( lun, idim, mgrid_buff, orient, status )
         IF (status .NE. ferr_ok) GOTO 1000
 
 * report /T0= for formatted time axis

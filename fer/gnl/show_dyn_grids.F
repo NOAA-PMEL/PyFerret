@@ -45,8 +45,8 @@
 * V510 *sh* 4/00 - grids may also be allocated by data set variables
 *                  Use /DYNAMIC/ALL to see them.
 * V532 5/01 *sh* - bug fix: ignore deleted static grids when chking axis usage
+* V650  Write to show_lun which may be set to a file unit number rather than std out
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
@@ -57,15 +57,6 @@
 	include 'xvariables.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
         include 'xfr_grid.cmn'   ! w/ mgrid_abstract
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'          ! 12/94 SPLIT_LIST BUFFER
-#endif
 
 * calling argument declarations:
 	INTEGER mods_cx
@@ -85,10 +76,10 @@
         shown = .FALSE.
 	grid = grid_flink(max_grids)
  	IF ( grid .EQ. max_grids ) THEN
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
      .						'No dynamic grids',16)
 	ELSE
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
      .						'Dynamic grids:',14)
 	ENDIF
 * ... --- "while" loop
@@ -124,23 +115,23 @@
      .					sanity_msg
 * *kob* 4/99 shorten dynamic grid name on output statment
  3000	   FORMAT ( 4X,A,1X,A16,16X, 'use count:',I4,5x,A)
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	   CALL SHOW_GRID(grid, mods_cx)
            shown = .TRUE.
 	   grid = grid_flink(grid)
 	ENDIF
 	IF (grid .NE.max_grids) GOTO 100
-        IF (.NOT.shown)  CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+        IF (.NOT.shown)  CALL SPLIT_LIST(pttmode_explct, show_lun,
      .					'    no implicit grids',21)
 
 * now the dynamic axes
         shown = .FALSE.
 	line = line_flink(max_lines)
  	IF ( line .EQ. max_lines ) THEN
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
      .						'No dynamic axes',15)
 	ELSE
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
      .						'Dynamic axes:',13)
 	ENDIF
 * ... --- "while" loop
@@ -184,12 +175,12 @@
 * *kob* 4/99 - reference format statement at 3000 - for stylistic reasons
 	   WRITE (risc_buff,3000) 'AXIS',line_name(line), line_use_cnt(line),
      .					sanity_msg
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
            shown = .TRUE.
 	   line = line_flink(line)
 	ENDIF
 	IF (line .NE.max_lines) GOTO 200
-        IF (.NOT.shown)  CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+        IF (.NOT.shown)  CALL SPLIT_LIST(pttmode_explct, show_lun,
      .					'    no implicit axes',20)
 
 	RETURN

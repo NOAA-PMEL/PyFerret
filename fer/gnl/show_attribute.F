@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 *
 * V600 6/05 *acm* Attribute control.
+* V650  Write to show_lun which may be set to a file unit number rather than std out
 
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -90,7 +91,7 @@
               slen = slen + 5
            ENDIF
         
-           CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+           CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		           buff, slen)
 
 * If numeric, write the value(s)
@@ -115,7 +116,7 @@
               slen = slen + 5
            ENDIF
 
-           CALL SPLIT_LIST(pttmode_explct, ttout_lun, buff, slen)
+           CALL SPLIT_LIST(pttmode_explct, show_lun, buff, slen)
 
 	ENDIF      
 

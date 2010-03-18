@@ -50,6 +50,7 @@
 * V550: *acm*10/02- Changed cx_name to char*24, so use TM_LENSTR1 with it.
 *       *ACM*11/02- Did NOT need the above change with TM_LENSTR1.
 * v554: *acm* 11/03 call SPLIT_LIST with open string length; region names now up to 24 long.
+* V650  Write to show_lun which may be set to a file unit number rather than std out
 
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -70,10 +71,10 @@
 
 * write region name
 	IF ( cx .EQ. cx_last ) THEN
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
      .				'default region:',0)
 	ELSE
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'region '//cx_name(cx),0)
 	ENDIF
 
@@ -84,14 +85,14 @@
      .	        .AND. cx_lo_ss (cx,idim) .EQ. unspecified_int4
      .	   .OR..NOT.cx_by_ss(idim,cx)
      .		.AND.  cx_lo_ww (idim,cx) .EQ. unspecified_val8) THEN
-	      CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	      CALL SPLIT_LIST(pttmode_explct, show_lun,
      .				'        '//ww_dim_name(idim)//
      .				'/'//ss_dim_name(idim)//' is unspecified',
      .				26 )
 	   ELSE
 
 * write it out
-	      CALL SPLIT_LIST(pttmode_explct, ttout_lun,'        '
+	      CALL SPLIT_LIST(pttmode_explct, show_lun,'        '
      .		//CX_DIM_STR(idim,cx,':',full_precision,slen),0)
 
 	   ENDIF

@@ -48,8 +48,8 @@
 * revision 0.3 - 4/29/88 - added "name" for name matching
 * V200:  7/25/89 - show component vars
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
+* V650  Write to show_lun which may be set to a file unit number rather than std out
 
-#ifdef unix
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
@@ -57,15 +57,6 @@
 	include	'xcalc_vars.cmn'
 	include	'xtext_info.cmn'
 	include 'xinterrupt.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XCALC_VARS.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		order( max_calc_vars )
@@ -102,9 +93,9 @@
  200	CONTINUE
 
 * ... and write it out
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'Diagnostic variables:',21)
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'name         title',18)
            len_test = TM_LENSTR(name)
 	   DO 300 i2 = 1, num_calc_vars
@@ -114,7 +105,7 @@
               len_mchars = TM_LENSTR(cvar_name_code(i)(:4))
 	      IF ( all .OR. MATCH4(name,len_test, 
      .            cvar_name_code(i),len_mchars) ) THEN
-	         CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	         CALL SPLIT_LIST(pttmode_explct, show_lun,
      .			cvar_name_code(i)//'      '//cvar_primary_name(i), 0)
 	         IF ( .NOT.full ) GOTO 300
 * ... show the components
@@ -131,7 +122,7 @@
 	            ENDIF
 	            WRITE( comp_buff( iend-4:iend ), '(1X,A)' ) var_code
  250	         CONTINUE
-	         CALL SPLIT_LIST(pttmode_explct, ttout_lun, comp_buff, iend)
+	         CALL SPLIT_LIST(pttmode_explct, show_lun, comp_buff, iend)
 	      ENDIF
  300	   CONTINUE
 

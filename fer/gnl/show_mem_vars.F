@@ -58,19 +58,13 @@
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * 12/96 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
-#ifdef unix
+* V650  Write to show_lun which may be set to a file unit number rather than std out
+
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
 	include 'xvariables.cmn'
 	include 'xinterrupt.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-#endif
 
 * calling argument declarations:
 
@@ -98,14 +92,14 @@
 
 * write introductory line
 	IF ( show_all ) THEN
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	   CALL SPLIT_LIST(pttmode_explct, show_lun,
      .				'all data in memory:',19 )
 	ELSE
-	   IF ( show_named ) CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	   IF ( show_named ) CALL SPLIT_LIST(pttmode_explct, show_lun,
      .				datmsg//' /NAME=:',24 )
-	   IF ( show_perm  ) CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	   IF ( show_perm  ) CALL SPLIT_LIST(pttmode_explct, show_lun,
      .				datmsg//' /PERMANENT:',28 )
-	   IF ( show_temp  ) CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	   IF ( show_temp  ) CALL SPLIT_LIST(pttmode_explct, show_lun,
      .				datmsg//'out /PERMANENT:',31 )
 	ENDIF
 

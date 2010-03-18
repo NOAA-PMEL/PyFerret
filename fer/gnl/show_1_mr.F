@@ -50,6 +50,7 @@
 * V500 *kob* 3/99- up VAR_CODE and vname decl's to 64 chars
 * V552 *acm* 4/03- up VAR_CODE and vname decl's from 64 to 128 chars
 * V63  *acm* 10/09 Changes for gfortran build
+* V650  Write to show_lun which may be set to a file unit number rather than std out
 
 	include	'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -153,15 +154,15 @@
      .					protection,
      .					cache_stat
 
-	CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	risc_buff = ' '
 	WRITE ( risc_buff, 3020 )
      .	  ( ss_lo(idim), ww_lo(idim), idim=1,4 )
-	CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	risc_buff = ' '
 	WRITE ( risc_buff, 3020 )
      .	  ( ss_hi(idim), ww_hi(idim), idim=1,4 )
-	CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	risc_buff = ' '
 
 #ifdef unix
@@ -177,7 +178,7 @@
      .		( ALG_TRANS_CODE( mr_trans(idim,mr) ),
      .		  ARG_STRING( mr_trans_arg(idim,mr) ), idim = 1,4 )
 #endif
-	CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 
  3010	FORMAT(T2,A,'[',2A,T36,A4,'  mr:',A,'  blk1:',A,
      .'  nblk:',A,1X,A4,1x,A8)

@@ -44,18 +44,12 @@
 *	  1/96 - bug fix: crash on last (single transform) line
 *			"num_transforms" ==> "max_regrid_trans"
 *	  4/96 - branching bug detected by Sun f77 compiler
+* V650  Write to show_lun which may be set to a file unit number rather than std out
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'xprog_state.cmn'
 	include	'xalgebra.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
-#else
-	INCLUDE	'FERRET.PARM'
-	INCLUDE	'XPROG_STATE.CMN'
-	INCLUDE	'XALGEBRA.CMN'
-	INCLUDE 'XRISC.CMN'          ! 12/94 SPLIT_LIST BUFFER
-#endif
 
 * calling argument declarations:
 *...
@@ -80,10 +74,10 @@
  112	CONTINUE
 * heading lines
  115	WRITE (risc_buff, 3050) ('code','description',i=1,2)
-	CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	risc_buff = ' '
         WRITE (risc_buff, 3050) ('----','-----------',i=1,2)
-	CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	risc_buff = ' '
  3050   FORMAT (T4,A,T16,A,T45,A,T57,A)
 * list the transforms 2 per line - use 2 separate pointers
@@ -112,7 +106,7 @@
               WRITE (risc_buff, 3055)
      .                 alg_regrid_code(i1), alg_regrid_title(i1)
 	   ENDIF
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	   risc_buff = ' '
  150   CONTINUE
  3054   FORMAT (T4,'@',A6,T16,A12,T45,'@',A6,T57,A12)

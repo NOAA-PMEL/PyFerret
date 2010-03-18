@@ -50,6 +50,7 @@
 * V581 *acm*  6/05 Fix call to TM_GET_CALENDAR_ID (did this ever work with the
 *                  argument grid rather than calendar name?!)
 * V601 *acm*  3/08 Allow more figs when writing values with negative exponents.
+* V650  Write to show_lun which may be set to a file unit number rather than std out
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -103,8 +104,8 @@
      .				  ww_dim_name(idim),
      .				  ww_dim_name(idim),
      .				  ww_dim_name(idim), extra
-	CALL SPLIT_LIST(pttmode_explct, ttout_lun, ' ', 1)
-	CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	CALL SPLIT_LIST(pttmode_explct, show_lun, ' ', 1)
+	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 * ... determine range of data to display
 	IF ( cx_lo_ss( cx, idim ) .EQ. unspecified_int4
      . .AND. cx_lo_ww( idim, cx ) .EQ. unspecified_val8 )
@@ -203,7 +204,7 @@
      .			i, pt_str,
      .			buff, lo_str,
      .			extra(:exlen)
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
  120	CONTINUE
 
  3030	FORMAT ( T8,A1,T14,A1,T34,A1,'BOX  ',T44,A1,'BOXLO',T62,A28 )

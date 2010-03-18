@@ -177,6 +177,8 @@
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
 * V6.2  *acm* 2/09 new qualifier LIST/KEEP_AXISNAMES
 * V6.2  *acm* 5/09 new alias KEYMARK
+* V6.5  *acm* 3/10 new qualifiers on (some) SHOW commands and on MESSAGE: 
+*                  /OUTFILE= /APPEND /CLOBBER
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -241,7 +243,7 @@
 	   DATA subcommands      (nsub_at1 + 5)	/ 'LIST'	/
 	   DATA num_qualifs      (nsub_at1 + 5)	/ nqual1f	/
 	   DATA qualifier_pointer(nsub_at1 + 5)	/ nqual_at1f	/
-* SET LIST/PRECISION=#digits, /FILE=filename, /FORMAT=list_format, /APPEND, /XML
+* SET LIST/PRECISION=#digits, /FILE=filename, /FORMAT=list_format, /APPEND
 		DATA qualifiers  (nqual_at1f+0)	/ 'PRECISON'	/
 		DATA qualifiers  (nqual_at1f+1)	/ 'FILE'	/
 		DATA qualifiers  (nqual_at1f+2)	/ 'FORMAT'	/
@@ -412,7 +414,7 @@
 	   DATA subcommands      (nsub_at2 + 3)	/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at2 + 3)	/ nqual2d	/
 	   DATA qualifier_pointer(nsub_at2 + 3)	/ nqual_at2d	/
-* SHOW AXIS /ALL
+* SHOW AXIS /ALL/I/J/K/L/X/Y/Z/T/XML/OUTFILE/APPEND/CLOBBER
 		DATA qualifiers  (nqual_at2d+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2d+1)	/ 'I'	/
 		DATA qualifiers  (nqual_at2d+2)	/ 'J'	/
@@ -423,11 +425,11 @@
 		DATA qualifiers  (nqual_at2d+7)	/ 'Z'	/
 		DATA qualifiers  (nqual_at2d+8)	/ 'T'	/
 		DATA qualifiers  (nqual_at2d+9)	/ 'XML'/
-		DATA qualifiers  (nqual_at2d+10)/ 'DODS'/
-		DATA qualifiers  (nqual_at2d+11)/ 'FILE'/
-		DATA qualifiers  (nqual_at2d+12)/ 'APPEND'/
-		DATA qualifiers  (nqual_at2d+13)/ 'CLOBBER'/
-		DATA qualifiers  (nqual_at2d+14)/ 'EDGES'/
+		DATA qualifiers  (nqual_at2d+10)/ 'OUTFILE'/
+		DATA qualifiers  (nqual_at2d+11)/ 'APPEND'/
+		DATA qualifiers  (nqual_at2d+12)/ 'CLOBBER'/
+		DATA qualifiers  (nqual_at2d+13)/ '****'/
+		DATA qualifiers  (nqual_at2d+14)/ '****'/
 		DATA qualifiers  (nqual_at2d+15)/ '****'/
 
 * SHOW EXPRSIONION
@@ -446,17 +448,17 @@
 	   DATA subcommands      (nsub_at2 + 6)	/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at2 + 6)	/ nqual2g	/
 	   DATA qualifier_pointer(nsub_at2 + 6)	/ nqual_at2g	/
-* SHOW DATA_SET /ALL/BRIEF/FULL/VAR/FILE/XML/ATTR
+* SHOW DATA_SET /ALL/BRIEF/FULL/VAR/FILE/XML/ATTR/OUTFILE/APPEND/CLOBBER
 		DATA qualifiers  (nqual_at2g+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2g+1)	/ 'BRIEF'	/
 		DATA qualifiers  (nqual_at2g+2)	/ 'FULL'	/
 		DATA qualifiers  (nqual_at2g+3)	/ 'VARIABLE'	/
-		DATA qualifiers  (nqual_at2g+4)	/ 'FILE'	/
+		DATA qualifiers  (nqual_at2g+4)	/ 'FILES'	/
 		DATA qualifiers  (nqual_at2g+5)	/ 'XML'		/
 		DATA qualifiers  (nqual_at2g+6)	/ 'ATTR'	/
-		DATA qualifiers  (nqual_at2g+7)	/ '****'	/
-		DATA qualifiers  (nqual_at2g+8)	/ '****'	/
-		DATA qualifiers  (nqual_at2g+9)	/ '****'	/
+		DATA qualifiers  (nqual_at2g+7)	/ 'OUTFILE'	/
+		DATA qualifiers  (nqual_at2g+8)	/ 'APPEND'	/
+		DATA qualifiers  (nqual_at2g+9)	/ 'CLOBBER'	/
 * SHOW MODE
 	   DATA subcommands      (nsub_at2 + 7)	/ 'MODE'	/
 	   DATA num_qualifs      (nsub_at2 + 7)	/ nqual2h	/
@@ -473,12 +475,15 @@
 	   DATA subcommands      (nsub_at2 + 9)	/ 'VARIABLE'	/
 	   DATA num_qualifs      (nsub_at2 + 9)	/ nqual2j	/
 	   DATA qualifier_pointer(nsub_at2 + 9)	/ nqual_at2j	/
-* SHOW VARIABLES /ALL /DATASET /DIAGNOSTIC /USER /XML
+* SHOW VARIABLES /ALL /DATASET /DIAGNOSTIC /USER /OUTFILE/APPEND/CLOBBER
 		DATA qualifiers  (nqual_at2j+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2j+1)	/ 'DATASET'	/
 		DATA qualifiers  (nqual_at2j+2)	/ 'DIAG'	/
 		DATA qualifiers  (nqual_at2j+3)	/ 'USER'	/
-		DATA qualifiers  (nqual_at2j+4)	/ 'XML'	/
+		DATA qualifiers  (nqual_at2j+4)	/ 'XML'		/
+		DATA qualifiers  (nqual_at2j+5)	/ 'OUTFILE'	/
+		DATA qualifiers  (nqual_at2j+6)	/ 'APPEND'	/
+		DATA qualifiers  (nqual_at2j+7)	/ 'CLOBBER'	/
 * SHOW COMMANDS
 	   DATA subcommands      (nsub_at2 +10)	/ 'COMMANDS'	/
 	   DATA num_qualifs      (nsub_at2 +10)	/ nqual2k	/
@@ -499,7 +504,7 @@
 	   DATA subcommands      (nsub_at2 +12)	/ 'GRID'	/
 	   DATA num_qualifs      (nsub_at2 +12)	/ nqual2m	/
 	   DATA qualifier_pointer(nsub_at2 +12)	/ nqual_at2m	/
-* SHOW GRID /ALL/I/J/K/L/X/Y/Z/T/D/ ****
+* SHOW GRID /ALL/I/J/K/L/X/Y/Z/T/D/XML/OUTFILE/APPEND/CLOBBER 
 		DATA qualifiers  (nqual_at2m+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2m+1)	/ 'I   '	/
 		DATA qualifiers  (nqual_at2m+2)	/ 'J   '	/
@@ -511,6 +516,10 @@
 		DATA qualifiers  (nqual_at2m+8)	/ 'T   '	/
 		DATA qualifiers  (nqual_at2m+9)	/ 'DYNAMIC'	/
 		DATA qualifiers  (nqual_at2m+10)/ 'XML'	/
+		DATA qualifiers  (nqual_at2m+11)/ 'OUTFILE'	/
+		DATA qualifiers  (nqual_at2m+12)/ 'APPEND'	/
+		DATA qualifiers  (nqual_at2m+13)/ 'CLOBBER'	/
+		DATA qualifiers  (nqual_at2m+14)/ '****'	/
 * SHOW VIEW
 	   DATA subcommands      (nsub_at2 +13)	/ 'VIEWPORT'	/
 	   DATA num_qualifs      (nsub_at2 +13)	/ nqual2n	/
@@ -1074,10 +1083,13 @@
 	   DATA qualifier_pointer(nsub_at12 + 0)/ nqual_at12a	/
 * MESSAGE/CONTINUE
 		DATA qualifiers  (nqual_at12a+0)/ 'CONTINUE'	/
-* MESSAGE/QUIET
+* MESSAGE/QUIET/JOURNAL/ERROR/OUTFILE/APPEND/CLOBBER
 		DATA qualifiers  (nqual_at12a+1)/ 'QUIET'	/
 		DATA qualifiers  (nqual_at12a+2)/ 'JOURNAL'	/
 		DATA qualifiers  (nqual_at12a+3)/ 'ERROR'	/
+		DATA qualifiers  (nqual_at12a+4)/ 'OUTFILE'	/
+		DATA qualifiers  (nqual_at12a+5)/ 'APPEND'	/
+		DATA qualifiers  (nqual_at12a+6)/ 'CLOBBER'	/
 
 * VECTOR - command # 13
 	DATA commands(13)			/ 'VECTOR'	/

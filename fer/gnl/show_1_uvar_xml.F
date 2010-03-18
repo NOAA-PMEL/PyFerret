@@ -45,6 +45,7 @@
 * V616  1/2009 *acm* Fixing LAS ticket 481, new style of xml output
 * V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
 *                  with &lt; etc.
+* V650  Write to lun which may be set to a file unit number rather than std out
 
         include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -110,7 +111,7 @@ C Write statement that uses number 2075 when we change to using these.)
 
         IF (first) THEN
            risc_buff = '<global>'
-           CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            first = .FALSE.
         ENDIF
 

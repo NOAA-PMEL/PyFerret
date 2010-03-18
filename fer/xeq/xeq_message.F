@@ -61,8 +61,8 @@
 *       10.28.98 *js* Don't pause for messages if in server mode
 * V510 5/00 *sh* - added MESSAGE/JOURNAL
 * V520 6/00 *sh* - added MESSAGE/ERROR
+* V650 3/10 *acm - added MESSAGE//OUTFILE= /APPEND /CLOBBER
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'
@@ -70,24 +70,22 @@
         include 'xrisc.cmn'
         include 'xgui.cmn'
 	include 'xplot_state.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-        INCLUDE 'FERRET_CMN:XRISC.CMN'
-        INCLUDE 'FERRET_CMN:XGUI.CMN'
-#endif
 
 * local parameter declarations
 	INTEGER		slash_continue, slash_quiet, slash_journal,
-     .			slash_error	
+     .			slash_error, slash_file, slash_append, 
+     .			slash_clobber
 	PARAMETER     (	slash_continue	  = 1,
      .			slash_quiet	  = 2,
      .			slash_journal	  = 3,
-     .			slash_error	  = 4 )
+     .			slash_error	  = 4,
+     .			slash_file	  = 5,
+     .			slash_append	  = 6,
+     .			slash_clobber	  = 7)
 	
 * local variable declarations
-	INTEGER status, wsid, slen, rlen
+	LOGICAl append, clobber
+	INTEGER status, wsid, slen, rlen, sho_file
 	PARAMETER (slen=1024)
 	CHARACTER tmpfile*1024
 #ifdef sun
@@ -108,6 +106,18 @@
 	      WRITE (err_lun, '(A)')
      .				cmnd_buff(arg_start(1):arg_end(1))
 	      RETURN
+
+* ... message to a named file
+	   ELSEIF ( qual_given( slash_file ) .GT. 0 ) THEN
+	      sho_file = qual_given( slash_file )
+	      clobber = qual_given( slash_clobber ) .GT. 0
+	      append = qual_given( slash_append ) .GT. 0
+
+	      IF (sho_file .GT. 0) CALL OPEN_SHOW_FILE (show_lun, 
+     .                       sho_file, clobber, append, status)
+	      IF (status .NE. ferr_ok ) GOTO 2000
+	      CALL TM_SPLIT_MESSAGE( show_lun,
+     .				cmnd_buff(arg_start(1):arg_end(1)) )
 
 * ... message logged in journal file
 	   ELSEIF ( qual_given( slash_journal ) .GT. 0 ) THEN

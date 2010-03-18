@@ -47,6 +47,7 @@
 * V553 *acm* 6/03 - Allow for line_direction code of 'XX' or 'YY'
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
+* V650  Write to show_lun which may be set to a file unit number rather than std out
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -102,7 +103,7 @@
 	grid_line(idim, mgrid_buff) = line
 
 * report basic facts using code from SHOW_GRID
-	CALL LINE_FACTS( ttout_lun, idim, mgrid_buff, orient )
+	CALL LINE_FACTS( show_lun, idim, mgrid_buff, orient )
 	IF ( brief ) RETURN
 
 * report /T0= for formatted time axis
@@ -113,14 +114,14 @@
  	       buff20 = line_t0(line)
             ENDIF
 	   CALL SPLIT_LIST
-     .		(pttmode_explct, ttout_lun, 'T0 = '//buff20, 0)
+     .		(pttmode_explct, show_lun, 'T0 = '//buff20, 0)
 
 * report the calendar of a time axis if "interesting"
 	   buff = line_cal_name (line)
 	   cal_id = TM_GET_CALENDAR_ID (buff)
 	   IF (cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
 	      slen = TM_LENSTR1(buff)
-	      CALL SPLIT_LIST (pttmode_explct, ttout_lun, 
+	      CALL SPLIT_LIST (pttmode_explct, show_lun, 
      .		               'CALENDAR = '//buff(:slen), 0)
 	   ENDIF
 	ENDIF
@@ -143,7 +144,7 @@
 	     slen = slen + 28
 	   ENDIF
 	ENDIF
-	CALL SPLIT_LIST (pttmode_explct, ttout_lun, buff, slen)
+	CALL SPLIT_LIST (pttmode_explct, show_lun, buff, slen)
 
 	RETURN
 	END

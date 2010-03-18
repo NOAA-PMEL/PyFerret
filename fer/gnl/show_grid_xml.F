@@ -42,14 +42,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * 6-Aug-2003
 * V580 *acm* 11/4/04 add <axes> tags
-
-c	include	'ferret.parm'
-c	include	'slash.parm'
-c	include 'errmsg.parm'
-c	include 'xprog_state.cmn'
-c	include 'xrisc.cmn'
-
-
+* v6.5 *acm* 3/10 Cleanup - remove commented-out includes
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -92,7 +85,6 @@ c	include 'xrisc.cmn'
 	DO 110 idim = 1, 4
            line = grid_line(idim, grid)
            slen = TM_LENSTR(line_name(line))
-
 
            IF (line .GT. 0  .AND.  slen .GT. 0 .AND.
      .         cx_expr .EQ. unspecified_int4) THEN

@@ -73,7 +73,6 @@
 *                  linked-list structure.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
-* V65  *acm* 2/10- all warnings and notes to std error not std out
 
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
@@ -203,10 +202,10 @@
 	  IF (num_names .GT. name_limit) THEN
 	    buff = ' '
 	    WRITE (buff,1000) num_names
-	    CALL TM_NOTE( buff, lunit_errors ) 
+	    CALL TM_NOTE( buff, tooplu ) 
 	    buff = ' '
 	    WRITE (buff,1002) name_limit
-	    CALL TM_NOTE( buff, lunit_errors ) 
+	    CALL TM_NOTE( buff, tooplu ) 
  1000	    FORMAT( 'attempt to initalize',I3,' variables')
  1002	    FORMAT( 'maximum allowed is',I3,' variables')
 	    num_names = name_limit
@@ -472,7 +471,7 @@
 	   line_buff(jcnt+1:) = ','//ftyp_name(i)
 	   jcnt = jcnt + 1 + TM_LENSTR1(ftyp_name(i))
  9320	CONTINUE
-	CALL TM_NOTE('Valid types are: '//line_buff(:jcnt), lunit_errors)
+	CALL TM_NOTE('Valid types are: '//line_buff(:jcnt), tooplu)
 	GOTO 9950
 
  9330	WRITE (line_buff,3100) num_names, num_types

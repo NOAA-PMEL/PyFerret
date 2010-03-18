@@ -63,7 +63,6 @@
 * V602 *acm* make sure lena=length of attr name is defined before writing warning
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
-* V65  *acm* 2/10- all warnings and notes to std error not std out
 
 * argument definitions:
 *	dset	 - dataset id number for already opened CDF file
@@ -131,8 +130,8 @@
 c      IF (do_warn) THEN
 c       lena = TM_LENSTR1( aname )
 c	CALL TM_NOTE('Undecipherable value of netCDF attribute '//
-c     .		      attrib(:lena)//' on variable '//vname, lunit_errors)
-c	CALL TM_NOTE('"buff(:TM_LENSTR1(buff))"', lunit_errors)
+c     .		      attrib(:lena)//' on variable '//vname, tooplu)
+c	CALL TM_NOTE('"buff(:TM_LENSTR1(buff))"', tooplu)
 c      ENDIF
       CD_GET_ATTVALC = .FALSE.
       RETURN

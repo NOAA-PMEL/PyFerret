@@ -78,7 +78,6 @@
 *            and restore original t0 on output
 * V600 *acm* 6/05 new flag line_fixname stores whether axis name is changed on input.
 * V62  *acm* 3/09 Save original name when axis name changed on input
-* V65  *acm* 2/10- all warnings and notes to std error not std out
 
 * CALLING ARGUMENTS
 *	dset_num - the data set fow which a time axis is desired
@@ -103,14 +102,14 @@
 
 *
 * LOCAL DEFINITIONS
-	CHARACTER*80	string
+	CHARACTER*80	def_error
 	CHARACTER*13	TM_STRING
         CHARACTER*20    buff
 	INTEGER*4	scr, nsteps, istp, cpos, cpos1, bpos, bpos0,
      .			i1, i2, i3, i4, i5, i6, iunit, nline,
      .			nsteps_in_file,i			!*kob*
 	INTEGER*4	TM_FIND_LIKE_LINE
-        INTEGER         TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id
+        INTEGER         TM_GET_CALENDAR_ID, cal_id
 	LOGICAL		TM_FPEQ, TM_CHECK_BOX_LOC
 	REAL*8		delta, prev_lastep, itt		!*kob* 8/96
 	REAL *8		dp_epsilon			!*kob* 5/97
@@ -231,12 +230,9 @@
      .	     line_t0(scr)    .EQ. ' '     .OR.
      .	     status          .NE. merr_ok      ) THEN
 	  line_direction(scr) = 'NA'
-	  WRITE (string, 1000) ds_name(dset_num)
+	  WRITE (tooplu, 1000) ds_name(dset_num)
  1000	  FORMAT 
-     .   ('missing or improper date/time format for T0 in ',A) 
-         lenb = TM_LENSTR1( string )
-         CALL TM_NOTE( string(:lenb), lunit_errors )
-
+     .  (' Warning: missing or improper date/time format for T0 in ',A)
 	ELSE
 	  line_direction(scr) = 'TI'
 	ENDIF

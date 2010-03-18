@@ -52,7 +52,6 @@
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
 * V5.3  *acm*  adding calendar types: cal_id
-* V65  *acm* 2/10- all warnings and notes to std error not std out
 
 * CALLING ARGUMENTS
 *	dset_num - the data set fow which a time axis is desired
@@ -87,10 +86,9 @@
 *
 * LOCAL DEFINITIONS
 	CHARACTER*13	TM_STRING
-	CHARACTER*1024  string
 	INTEGER*4	scr, unused, nsteps, ilne, itime, ltime, iunit,
-     .			i1, i2, i3, i4, i5, i6, old, nline, lenb
-	INTEGER*4	TM_FIND_LIKE_LINE, TM_LENSTR1
+     .			i1, i2, i3, i4, i5, i6, old, nline
+	INTEGER*4	TM_FIND_LIKE_LINE
         INTEGER TM_GET_CALENDAR_ID, cal_id
 
 
@@ -132,11 +130,8 @@
      .	     line_t0(scr)    .EQ. ' '     .OR.
      .	     status          .NE. merr_ok      ) THEN
 	  line_direction(scr) = 'NA'
-	  WRITE (string, 1000) ds_name(dset_num)
+	  WRITE (tooplu, 1000) ds_name(dset_num)
  1000	  FORMAT (' Warning: improper date/time format information in ',A)
-	  lenb = TM_LENSTR1( string )
-	  CALL TM_NOTE( string(:lenb), lunit_errors )
-
 	ELSE
 	  line_direction(scr) = 'TI'
 	ENDIF

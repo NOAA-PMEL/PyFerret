@@ -1154,7 +1154,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
 * check to see that each data point is contained inside its box
         IF (.NOT.TM_CHECK_BOX_LOC(iaxis)) THEN
-           CALL TM_NOTE('ERror in Edges "'//ename(:elen)//
+           CALL TM_NOTE('Error in Edges "'//ename(:elen)//
      .         '"or edges do not enclose point on axis '//
      .         vname(:vlen), tt)
            CALL TM_NOTE('Substituting coordinate midpoints', tt)

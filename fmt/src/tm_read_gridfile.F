@@ -85,7 +85,6 @@
 *		to check among these for previously defined objects
 * V541: *sh* 2/02 - minor change to set line_modulo_len
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
-* V65  *acm* 2/10- all warnings and notes to std error not std out
 
 * arguments
 	CHARACTER*(*)	gfile_name
@@ -353,7 +352,7 @@
 	        input_buf = ' '
                 WRITE (input_buf, *) 'cannot convert axis units: ',
      .				  line_units(temp)
-	        CALL TM_NOTE( input_buf, lunit_errors)
+	        CALL TM_NOTE( input_buf, tooplu)
              ENDIF
           ENDIF
 	  DO 240 i = 1, max_axis_orients
@@ -362,7 +361,7 @@
 	  input_buf = ' '
 	  WRITE (input_buf, *) 'UNKNOWN LINE ORIENTATION : ',
      .	                    line_direction(temp),' on ',buff(p_lname)
-	  CALL TM_NOTE( input_buf, lunit_errors)
+	  CALL TM_NOTE( input_buf, tooplu)
 
 * If line is irregular - store it now and check it later
   250	  IF (reg_coords) THEN
@@ -510,8 +509,8 @@
 	  input_buf = ' '
 	  WRITE (input_buf,*) 'Unrecognized line in gridfile',
      .	                   grid_filename(newgrid)
-	  CALL TM_NOTE( input_buf, lunit_errors)
-	  CALL TM_NOTE( cmprss_buf(1:79), lunit_errors)
+	  CALL TM_NOTE( input_buf, tooplu)
+	  CALL TM_NOTE( cmprss_buf(1:79), tooplu)
 	ENDIF
 	GOTO 170
 

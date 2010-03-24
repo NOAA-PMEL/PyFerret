@@ -802,6 +802,8 @@
  1000   sxml  = qual_given(slash_show_var_xml) .GT. 0 
         IF (sxml) firstxml = .TRUE.
 
+* 	SHOW VARIABLES/FILE=[/APPEND][/CLOBBER]
+
         sho_file = qual_given( slash_show_var_file )
 	clobber = qual_given( slash_show_var_clobber ) .GT. 0
 	append = qual_given( slash_show_var_append ) .GT. 0

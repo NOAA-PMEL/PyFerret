@@ -801,6 +801,17 @@
 
  1000   sxml  = qual_given(slash_show_var_xml) .GT. 0 
         IF (sxml) firstxml = .TRUE.
+
+        sho_file = qual_given( slash_show_var_file )
+	clobber = qual_given( slash_show_var_clobber ) .GT. 0
+	append = qual_given( slash_show_var_append ) .GT. 0
+
+	IF (sho_file .GT. 0) THEN
+	   CALL OPEN_SHOW_FILE (show_lun, sho_file,  
+     .                          clobber, append, status)
+	   IF (status .NE. ferr_ok ) GOTO 5000
+	ENDIF
+
 * ... SHOW VARIABLES/DIAGNOSTIC
         IF ( slash_all .OR. qual_given(slash_show_var_diag) .GT. 0 ) THEN
 	   IF ( num_args .GT. 0 ) THEN

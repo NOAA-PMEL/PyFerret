@@ -238,7 +238,7 @@
        ENDIF
 
 * ... see if the equals sign is just part of some string within the grave accents
-*     This fixes bug 1496 (and its duplicate 1690)
+*     This fixes bug 1469 (and its duplicate 1690)
 	dqote = 0
 	DO 198 i = istart, iend
 	   IF (cmnd(i:i).EQ.'"') THEN

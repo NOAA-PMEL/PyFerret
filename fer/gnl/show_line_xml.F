@@ -233,23 +233,23 @@ C Write statement that uses number 2075 when we change to using these.)
      .                                attoutflag, attbuff, vals)
 
               IF (attype .NE. NCCHAR) THEN
-                 blen = 1
+                 slen = 1
                  attbuff = ' '
                  DO 150 i = 1, attlen
                     buff = TM_FMT(vals(i), 7, 14, llen)
-                    attbuff(blen:blen+llen+1) = buff//' '
-                    blen = blen + llen + 1
- 150                   CONTINUE
+                    attbuff(slen:slen+llen+1) = buff//' '
+                    slen = slen + llen 
+ 150             CONTINUE
               ELSE 
-                 blen = TM_LENSTR1(attbuff)
+                 slen = TM_LENSTR1(attbuff)
               ENDIF
 
 ! Store the converted attname string in the variable buff, not now needed.
 
               CALL ESCAPE_FOR_XML(attname, buff, slen)
-              CALL ESCAPE_FOR_XML (attbuff, outstring, len)
+              CALL ESCAPE_FOR_XML (attbuff, outstring, llen)
 	      WRITE (risc_buff, 2075) buff(1:slen), 
-     .                  outstring(1:blen)
+     .                  outstring(1:llen)
               CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
            ENDIF

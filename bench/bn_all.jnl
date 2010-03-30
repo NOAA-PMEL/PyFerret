@@ -694,6 +694,15 @@ GO bn_show_xml_file
 ! GO bn_reset
 ! GO bn_encode_url
 
+
+! ******** V6.6 Additions below ***********
+
+GO bn_reset
+GO bn66_bug_fixes
+
+GO bn_reset
+GO bn_netcdf4.jnl
+
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not
 ! tested in the benchmarks.

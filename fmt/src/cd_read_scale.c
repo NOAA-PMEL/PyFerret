@@ -43,6 +43,7 @@
               does not need to be 1-D
 */ 
 
+#include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
 #include <stdio.h>
 #include <stdlib.h>

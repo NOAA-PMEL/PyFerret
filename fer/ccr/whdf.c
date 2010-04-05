@@ -119,7 +119,7 @@ void wHDF(file, image,r,g,b)
     exit(1);
   }
 /* write out the image */
-   istat = DFR8addimage(file,pdata,hwidth,hheight,rle);
+/*   istat = DFR8addimage(file,pdata,hwidth,hheight,rle); */
    free(pdata);
       if (istat != 0) {
 	printf("*****Error writing HDF file*****\n");

@@ -1,7 +1,10 @@
 	SUBROUTINE CD_MAKE_VAR ( cdfid, dset, varname, type, maxstrlen,
      .                           grid, lo, hi, recdim, enhead, new, 
      .                           edges_flag, do_bounds, mode_upcase_output,
-     .                           keepax_flag, status )
+     .                           keepax_flag, netcdf4_type, xchunk_size, 
+     .                           ychunk_size, zchunk_size, tchunk_size, 
+     .                           deflate_lev, shuffle_flag, endian_code,
+     .                           status )
 
 *
 *
@@ -72,6 +75,9 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V66  *acm* 3/10  Settings for NetCDF-4 files. 
+* V66  *acm* 3/10  Check: If chunk size given is larger than grid size in that
+*                  direction, then its an error.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -84,6 +90,14 @@
 *     recdim  - which axis (1-4 or 0) is to be the CDF record axis
 *     enhead  - make enhanced heading?  (with parent grid machinery)
 *     new     - have we just created a new variable ?
+*     netcdf4_type	- netcdf format: 4=netcdf4, 3=netcdf3(=classic), 6=64-bit
+*     xchunk_size     - chunk size in X direction
+*     ychunk_size     - chunk size in Y direction
+*     zchunk_size     - chunk size in Z direction
+*     tchunk_size     - chunk size in T direction
+*     deflate_lev     - deflate_lev level (0 for no deflate_lev)
+*     shuffle_flag    - shuffle - 0 or 1
+*     endian_code     - native=0, little=1, big=0 match nf_endian_* params
 *     status  - return status
 
 * include files
@@ -108,7 +122,9 @@
 * argument declarations
       LOGICAL enhead, new, do_bounds, edges_flag, mode_upcase_output
       INTEGER cdfid, dset, type, maxstrlen, grid, lo(4), hi(4),
-     .        recdim, keepax_flag, status
+     .        recdim, keepax_flag, netcdf4_type, xchunk_size, 
+     .        ychunk_size, zchunk_size, tchunk_size, 
+     .        deflate_lev, shuffle_flag, endian_code, status
       CHARACTER*(*) varname
 
 * local variable declarations:
@@ -117,12 +133,17 @@
       INTEGER TM_LENSTR1, CD_ISIT_RECDIM, CD_WRITE_STRDIM,
      .        dimid(5), iaxis, cdfstat, dims, idim, varid, vartyp,
      .        nvdims, vdims(6), nvatts, nlen, glen, vlen, ax_type,
-     .        lo2(4), hi2(4), what_recdim, strdim
+     .        lo2(4), hi2(4), what_recdim, strdim, dimsize
 * *kob*  - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME, lname,
 *          cdfname, vname and gname to 64 from 24
 * acm* vname to 128
       CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_OUTNAME*128, lname*128,
-     .		cdfname*128, vname*128, gname*64, buff*128
+     .		cdfname*128, vname*128, gname*64, buff*128, DIMDIR*1,
+     .          TM_FMT*12, c_str*12, d_str*12
+
+      INTEGER dlen, clen
+      INTEGER chunks(4)  
+
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
       CHARACTER*1     dimnam(4)
@@ -141,8 +162,10 @@
 
       itsa_strvar = type .EQ. NF_CHAR
 
-* already exists: limited consistency check - size of each axis, only
       new = cdfstat .NE. NF_NOERR
+
+
+* already exists: limited consistency check - size of each axis, only
       IF ( .NOT.new ) THEN
 #ifdef usingDODSf2cUnderscore
          cdfstat = NF_INQ_VAR_(cdfid, varid, vname, vartyp, 
@@ -261,13 +284,17 @@
          IF ( status .NE. merr_ok ) GOTO 5900
       ENDIF
 
+      do idim = 1, 5
+	 dimid(idim) = 0
+      enddo
+
 * determine the netCDF dimension id's to use for the variable
       IF (itsa_strvar) THEN
 	dimid(1) = strdim   ! 1st dim of string array is character axis
 	dims = 1
       ELSE
         dims = 0
-      ENDIF
+      ENDIF 
 
 * get axis name. If mode upcase_output is set, then upcase the name.
 
@@ -303,7 +330,50 @@
          cdfstat = NF_INQ_DIMID ( cdfid, cdfname(:nlen), dimid(dims) )
 #endif
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5200  ! it must already exist
+
+         chunk_set = 0
+         IF (netcdf4_type .EQ. 4) THEN
+            IF (line_direction(iaxis) .EQ. 'WE' .OR.  
+     .              line_direction(iaxis) .EQ. 'XX') THEN
+               chunks(dims) = xchunk_size
+	       DIMDIR = 'X'
+	       dimsize = hi(idim) - lo(idim) + 1
+	       IF (chunks(dims) .GT. dimsize ) GOTO 5700
+	       IF (xchunk_size .GT. 0) chunk_set = 1
+            ELSEIF (line_direction(iaxis) .EQ. 'SN' .OR.  
+     .              line_direction(iaxis) .EQ. 'YY') THEN
+               chunks(dims) = ychunk_size
+	       DIMDIR = 'Y'
+	       dimsize = hi(idim) - lo(idim) + 1
+	       IF (chunks(dims) .GT. dimsize ) GOTO 5700
+	       IF (ychunk_size .GT. 0) chunk_set = 1
+            ELSEIF (line_direction(iaxis) .EQ. 'DU' .OR.  
+     .              line_direction(iaxis) .EQ. 'UD') THEN
+               chunks(dims) = zchunk_size
+	       DIMDIR = 'Z'
+	       dimsize = hi(idim) - lo(idim) + 1
+	       IF (chunks(dims) .GT. dimsize ) GOTO 5700
+	       IF (zchunk_size .GT. 0) chunk_set = 1
+            ELSEIF (line_direction(iaxis) .EQ. 'TI' .OR.  
+     .              line_direction(iaxis) .EQ. 'TT') THEN
+               chunks(dims) = tchunk_size
+	       DIMDIR = 'T'
+	       dimsize = hi(idim) - lo(idim) + 1
+	       IF (chunks(dims) .GT. dimsize ) GOTO 5700
+	       IF (tchunk_size .GT. 0) chunk_set = 1
+	    ENDIF
+
+         ENDIF ! netcdf4
+
  300  CONTINUE
+
+* If any chunk was set, then all must be set for the dimensions that are present.
+
+      IF (chunk_set .GT. 0) THEN
+         DO 350 idim = 1, 4
+            IF (dimid(idim) .GT. 0 .AND. chunks(idim) .EQ. 0) GOTO 5600
+ 350     CONTINUE
+      ENDIF
 
 * put CDF into define mode so attributes can be written
       CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
@@ -316,6 +386,13 @@
       cdfstat = NF_DEF_VAR(cdfid, vname(:vlen), type, dims, dimid, varid)
 #endif
       IF ( cdfstat .NE. NF_NOERR ) GOTO 5400
+
+C     Turn on deflate_lev and chunking
+
+      IF (netcdf4_type .EQ. 4) THEN
+         IF (deflate_lev .GT. 0) CALL CD_SET_COMPRESS (cdfid, varid, vname,
+     .         dimid, deflate_lev, chunks, shuffle_flag, endian_code, status)
+      ENDIF ! netcdf4
 
 * if the "unlimited" record dimension is in use place no limits on that axis
       DO 400 idim = 1, 4
@@ -391,6 +468,31 @@
      .       unspecified_int4, 'Failed creating variable '
      .       //vname(:vlen), no_errstring, *5900 )
 
+* error exit
+ 5500  vlen = TM_LENSTR1( vname )
+       WRITE (buff, 1010) ww_dim_nam(idim), vname(:vlen), dlen
+ 1010  FORMAT ('chunk size too large for ', A,' axis of grid for ',
+     .   A,' must be less than axis length written', I8)
+       CALL TM_ERRMSG
+     . ( merr_chunk_spec, status, 'CD_MAKE_VAR', unspecified_int4,
+     .   unspecified_int4, buff, no_errstring, *5900 )
+
+ 5600  CALL TM_ERRMSG
+     .     ( merr_syntax, status, 'CD_MAKE_VAR', unspecified_int4, 
+     .     unspecified_int4, 
+     .     'If ChunkSize is set for any dimension'//
+     .     ' of var, must set for all its dimensions', ' ', *5900 )
+
+ 5700  val = chunks(idim)
+       c_str = TM_FMT(val, 5, 12, clen)
+       val = dimsize
+       d_str = TM_FMT(val, 5, 12, dlen)
+       WRITE (buff, 1020) DIMDIR, c_str(1:clen), d_str(1:dlen)
+ 1020  FORMAT (A1,'ChunkSize ', A, 
+     .         ' is larger than dimension length ', A)
+       CALL TM_ERRMSG
+     . ( merr_chunk_spec, status, 'CD_MAKE_VAR', unspecified_int4,
+     .   unspecified_int4, buff, no_errstring, *5900 )
 * error exit
  5900   RETURN
 	END

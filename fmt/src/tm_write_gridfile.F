@@ -46,10 +46,11 @@
 * V50 - 2/99 *kob* modifications for y2k preparedness.  call 
 *                  GET_DATE_AND_TIME which uses FDATE to get
 *                  date and time rather than DATE and TIME
+* V65  *acm* 2/10- all warnings and notes to std error not std out
+
 * arguments:
 	INTEGER*4	gnum, lunit
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
@@ -57,19 +58,15 @@
 	external xio_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XIO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
+
 * 2/99 kob - need only one var to store date and time w
 	CHARACTER*8	ctime
 	CHARACTER*9	cdate
         EXTERNAL        TRIM    ! added 6/92
 	CHARACTER*20	TRIM
 	CHARACTER*132	stars, line1, line2, time1, grid1, crds1, buff
+	CHARACTER*80	string
+	INTEGER*4	STR_UPCASE, TM_LENSTR1, lenb 
 	INTEGER*4	icnt, lnum, istat, npts, iloc, ibox, jcnt, pos
 
 	stars =	'********************************************'//
@@ -94,7 +91,8 @@
 *
 * Check to see if grid asked for has data
 	IF (grid_name(gnum) .EQ. char_init16) THEN
-	  WRITE (tooplu,'(A,I5)') 'No grid defined at position',gnum
+	  lenb = TM_LENSTR1( string )
+	  CALL TM_NOTE( string(:lenb), lunit_errors )
 	  GOTO 9990
 	ENDIF
 *

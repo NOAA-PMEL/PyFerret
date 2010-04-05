@@ -59,6 +59,7 @@
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
+* V65  *acm* 2/10- all warnings and notes to std error not std out
 
 *  Argument definitions
 	INTEGER*4	ds_num
@@ -73,8 +74,9 @@
 
 *  Local definitions
 	CHARACTER*6	temp_code
+	CHARACTER*80	string
+	INTEGER*4	STR_UPCASE, TM_LENSTR1, lenb 
 	INTEGER*4	i, istat
-	INTEGER*4	STR_UPCASE
 	LOGICAL		TM_HAS_STRING
 
 	temp_code(1:6) = ' '
@@ -118,7 +120,11 @@
 	TM_Exp_code = temp_code
 	GOTO 9999
 
- 9000	WRITE	( tooplu, * ) 'Unknown data set ',ds_num
+ 9000	CONTINUE
+ 
+	WRITE (string, *) 'Unknown data set ',ds_num
+	lenb = TM_LENSTR1( string )
+	CALL TM_NOTE( string(:lenb), lunit_errors )
 	TM_Exp_code = ' '
 	GOTO 9999
 

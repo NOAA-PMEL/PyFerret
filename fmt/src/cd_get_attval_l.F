@@ -49,6 +49,7 @@
 * V602 *acm* make sure lena=length of attr name is defined before writing warning
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 2/10- all warnings and notes to std error not std out
 
 *             Replace NCAINQ with CD_GET_VAR_ATT_INFO
 *             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib from 
@@ -148,9 +149,10 @@
 	risc_buff = attrib(:lena)
 	tmp_buff = vname
 	CALL TM_NOTE('Undecipherable value of netCDF attribute '//
-     .		      risc_buff(:TM_LENSTR1(risc_buff))//' on variable '//
-     .                tmp_buff, tooplu)
-        CALL TM_NOTE('modulo = "'//buff(:TM_LENSTR1(buff))//'"', tooplu)
+     .        risc_buff(:TM_LENSTR1(risc_buff))//' on variable '//
+     .        tmp_buff, lunit_errors)
+        CALL TM_NOTE('modulo = "'//buff(:TM_LENSTR1(buff))//
+     .        '"', lunit_errors)
 
       ENDIF
 

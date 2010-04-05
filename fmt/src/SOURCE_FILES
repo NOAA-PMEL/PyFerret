@@ -21,6 +21,7 @@ cd_get_attval.F\
 cd_get_attvalc.F\
 cd_get_attval_l.F\
 cd_get_bounds.F\
+cd_get_chunk_cache.F\
 cd_get_dim_id.F\
 cd_get_ds_dims.F\
 cd_get_ds_info.F\
@@ -63,6 +64,8 @@ cd_replace_attr_dp.F\
 cd_scan_vars.F\
 cd_set_att_axdir.F\
 cd_set_att_flag.F\
+cd_set_chunk_cache.F\
+cd_set_compress.F\
 cd_set_mode.F\
 cd_set_var_type.F\
 cd_stamp_out.F\

@@ -44,6 +44,7 @@
 #include <wchar.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 void get_sys_cmnd_(fer_ptr, nlines, cmd, stat)
      char*** fer_ptr; /* output: char** pointer to strings */

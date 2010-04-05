@@ -70,6 +70,8 @@ PPLOBJS =  ../ppl/tmapadds/*.o
 
 EFUOBJS = ef_utility/*.o
 
+EFIOBJS = efi/*.o
+
 EXECNAME = ferret_c
 
 WHATGKS = xgks
@@ -84,6 +86,19 @@ EF_CMNS = common/EF_Util.cmn common/EF_Util.parm common/EF_mem_subsc.cmn
 
 all:	fmt_libraries fer_libraries ppl_libraries special_code ferret
 
+ncdf4:	.FRC
+	(cd ccr; $(CC) -c $(CFLAGS) gui_init.c)
+	$(MAKE) update
+	$(MAKE) "GUI_FAKES=special/gui_fakes.o" all
+	
+# Dont seem to have all the static libraries we need for this.
+ncdf4_static:	.FRC
+	(cd ccr; $(CC) -c $(CFLAGS) gui_init.c)
+	$(MAKE) update
+	$(MAKE) "CFLAGS = $(CFLAGS) " "DEBUG="\
+                "LD = g++" "LDFLAGS=-v --verbose -L/lib -L/usr/X11R6/lib64  -static" \
+		"FFLAGS = $(FFLAGS)"  \
+		all
 
 ncdf4:	.FRC
 	(cd ccr; $(CC) -c $(CFLAGS) gui_init.c)
@@ -92,7 +107,6 @@ ncdf4:	.FRC
 
 debug:	.FRC
 	(cd ccr; $(CC) -c -g $(CFLAGS) gui_init.c)
-	$(MAKE) "DEBUG_TITLE=beta" update
 	$(MAKE) "DEBUG=-g" "FFLAGS = $(FFLAGS) -Ddebug"  \
 		"CFLAGS = -g $(CFLAGS)" \
 		"GUI_FAKES=special/gui_fakes.o" all
@@ -204,6 +218,7 @@ ferret:
 		$(GKSOBJ) \
 		$(PPLOBJS) \
 		$(EFUOBJS) \
+		$(EFIOBJS) \
 		$(BDEAD) \
 		$(FERLIBS) \
 		$(PPLLIBS) \

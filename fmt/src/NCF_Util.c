@@ -77,6 +77,7 @@
 /* *acm* 5/09 *acm*	  Fix bug 1664. For user variables, varid matches the uvar from Ferret. */
 /*                    therefore it may be larger than nc_ptr->nvars */
 
+#include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
 #include <stdlib.h>		/* for convenience */

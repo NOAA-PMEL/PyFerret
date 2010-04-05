@@ -99,6 +99,8 @@
      .        vartyp, nvdim, vdims(6), nvatts, vlen,
      .        recdim, istat, lasdim, attype, attlen, attoutflag, 
      .        maxlen, all_outflag, attid
+c      INTEGER cdfformat, contiguous, chunks(4), shuffle,
+c     .        deflate, deflate_level
       REAL    val
 * 4/99 *kob* increase size of vname
       CHARACTER    vname*128, aname*128, buff*128
@@ -169,6 +171,19 @@
      .             //vname(:vlen), tt )
              GOTO 200
           ENDIF
+
+C Can get chunking, deflate, etc. for vars in file.
+c#ifdef usingDODSf2cUnderscore 
+c           cdfstat = NF_INQ_FORMAT_(cdfid, cdfformat)
+c#else
+c           cdfstat = NF_INQ_FORMAT (cdfid, cdfformat) 
+c#endif
+c        IF (cdfformat .EQ. NF_FORMAT_NETCDF4) THEN
+c           cdfstat = NF_INQ_VAR_DEFLATE(cdfid, ivcd, shuffle,
+c     .                 deflate, deflate_level)
+c           cdfstat = NF_INQ_VAR_CHUNKING(cdfid, ivcd, contiguous, 
+c     .                 chunks)
+c        ENDIF
 
 * see what generic attributes can be read: long_name, units, missing_value
 * If no long_name, then see if this is an F-TDS url with a ferret_definition

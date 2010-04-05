@@ -59,6 +59,7 @@
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
 * V533 *sh* 6/01 - set data type
+* V65  *acm* 2/10- all warnings and notes to std error not std out
 
 * arguments:
 *	dset_num	- number assigned to this data set (output)
@@ -94,9 +95,10 @@
 * Internal declarations
 	CHARACTER*13	TM_STRING
 	CHARACTER*18	reading_nml
+	CHARACTER*1024  string
 	INTEGER*4	var_cnt, var_pos, ivar, npos, varf_pos, cnt_varf,
      .			varf_cnt, istat, lvar, lcnt, lline, file_reclen
-	INTEGER		TM_GET_GRIDNUM, TM_LENSTR, STR_UPCASE
+	INTEGER		TM_GET_GRIDNUM, TM_LENSTR, STR_UPCASE, lenb
 
 * record 3 - required message 
 
@@ -124,9 +126,14 @@
 	ds_alert_on_open(dset_num) = d_alert_on_open
 	ds_alert_on_output(dset_num) = d_alert_on_output
 	ds_message(dset_num) = d_message
-	IF (d_alert_on_open) WRITE (tooplu,1000)
+
+	IF (d_alert_on_open) THEN
+	   WRITE (string,1000)
      .	      ds_name(dset_num)(:TM_LENSTR(ds_name(dset_num))),d_message
- 1000	FORMAT(/' *** MESSAGE REGARDING ',A,' :'/1X,A/)
+ 1000	   FORMAT(/' *** MESSAGE REGARDING ',A,' :'/1X,A/)
+	   lenb = TM_LENSTR( string )
+	   CALL TM_NOTE( string(:lenb), lunit_errors )
+	ENDIF
 
 
 * Note: there will be a VARIABLE_RECORD read for each variable 

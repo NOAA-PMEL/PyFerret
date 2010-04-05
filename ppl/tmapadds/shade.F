@@ -124,8 +124,7 @@ c        IF (use_cell) JTYPE = 1
 
 C       If it's a 2-d irregular grid, the irregular grid values
 C       are also stored in the Z array.  Pass them to shade_sub.
-
-
+	
 	IF (JTYPE.EQ.2 .OR. JTYPE.EQ.-2) THEN
 
 	   CALL SHADE_SUB(Z,Z(1,NY+1),Z(1,NY+2),XX(IZSE-NX-1),

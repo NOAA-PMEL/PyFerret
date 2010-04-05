@@ -72,43 +72,71 @@ C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 	INCLUDE 'SYMKEY.INC'
 	CHARACTER STR*(*),LABEL*(*),DTE*24
 
+	CHARACTER adate*8, atime*10, zone*5
+	CHARACTER*3 month_names(12)
+	INTEGER ival(8)
+        DATA month_names/
+     .  'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
+     .    'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'/
+
 	LOGICAL SYS
 	CALL SYMCNV(STR,SYS)
+
 	IER=0
 	LABEL=' '
 C
 C	Check for special symbols
 C
 	IF(STR.EQ.'TIME')THEN
+
+#ifdef gfortran
+	   CALL  DATE_AND_TIME(adate, atime, zone, ival)
+	   WRITE (label, 101) ival(5), ival(6), ival(7)
+  101	   FORMAT (I2.2, ':', I2.2 ':', I2.2)
+           NC = 8
+#else
+
 #ifdef unix
 #ifdef F90_DATE_TIME
-	    CALL FTIME(dte)
-	    label=dte(1:8)
-	    NC=8
-	
+            CALL FTIME(dte)
+            label=dte(1:8)
+            NC=8
 #else
-	    CALL fdate(dte)
-	    label=dte(12:19)
-	    NC=9
+            CALL fdate(dte)
+            label=dte(12:19)
+            NC=9
 #endif
 #else
-	    call time(label)
-	    NC=8
+            call time(label)
+            NC=8
 #endif
+#endif
+
 	ELSE IF(STR.EQ.'DATE')THEN
+
+#ifdef gfortran
+	   CALL  DATE_AND_TIME(adate, atime, zone, ival)
+* reformat the output
+	   WRITE (label, 102) ival(3), month_names(ival(2)), ival(1)
+  102	   FORMAT (I2.2, '-', A3, '-', I4.4)
+           NC = 11
+#else
+
 #ifdef unix
-	    CALL FDATE(dte)
+            CALL FDATE(dte)
 #ifdef F90_DATE_TIME
-	    label=dte(4:6)//' '//dte(1:2)//' '//dte(8:9)
-	    NC=9
+            label=dte(4:6)//' '//dte(1:2)//' '//dte(8:9)
+            NC=9
 #else
-	    label=dte(5:11)//dte(21:24)
-	    NC=11
+            label=dte(5:11)//dte(21:24)
+            NC=11
 #endif
 #else
-	    call date(label)
-	    nc=9
+            call date(label)
+            nc=9
 #endif
+#endif
+
 	ELSE
 C
 C	Otherwise get symbol value from file

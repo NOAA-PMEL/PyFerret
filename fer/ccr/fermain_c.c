@@ -138,6 +138,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "ferret.h"
 #include "ferret_shared_buffer.h"
 
@@ -216,7 +217,10 @@ main (int oargc, char *oargv[])
   /* decode the command line options: "-memsize", and "-unmapped" */
   rmem_size = mem_size/1.E6;
   while (i<argc) {
-    if (strcmp(argv[i],"-memsize")==0){
+    if (strcmp(argv[i],"-version")==0){
+      FORTRAN(version_only)();
+	  exit(0);
+    } else if (strcmp(argv[i],"-memsize")==0){
       if (++i==argc) help_text();
       if ( sscanf(argv[i++],"%f",&rmem_size) != 1 ) help_text();
       if ( rmem_size <= 0.0 ) help_text();

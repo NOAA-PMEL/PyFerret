@@ -50,9 +50,10 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
-
 * V65  *acm* 1/10  Make sure parameters values are consistent with 
 *                              whats in netcdf.inc from netcdf4.
+* V65  *acm* 2/10- all warnings and notes to std error not std out
+
 * argument declarations:
 	INTEGER cdfid, status
 
@@ -88,7 +89,7 @@
 	    box_loc = box_lo_lim
 	  ELSEIF (dfr_axis_type(iax) .NE. pcd_defer_bounds) THEN
 	    CALL TM_NOTE( '***IntrnlERR - CD_DEFER_COORD_WRITE',
-     .				tooplu)
+     .				lunit_errors)
 	  ENDIF
 
 

@@ -48,6 +48,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 copy_buffered_window(ws_id, anim_id)

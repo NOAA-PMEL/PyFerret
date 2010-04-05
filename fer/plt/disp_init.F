@@ -178,6 +178,9 @@
 	CALL PLOTIFY_GRP_CX( cx_list, ncx )
 	
         IF (.NOT.mode_labels ) no_labels = .FALSE.  ! Apply MODE LABELS setting
+	
+	labelmain = 1  ! Flag: Draw the main label in calls to DAXIS
+	IF ( no_labels ) labelmain = 0
 	IF ( no_labels ) RETURN
 
 * set up positions for labels and keys  (including ul_dolab)
@@ -215,7 +218,3 @@
 
 	RETURN
 	END
-
-
-
-

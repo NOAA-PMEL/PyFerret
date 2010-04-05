@@ -68,6 +68,7 @@
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build
                       Other changes to correctly deal with the scalar case dim=0 */ 
 
+#include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <stdlib.h>
 #include <wchar.h>
 #include <stdio.h>

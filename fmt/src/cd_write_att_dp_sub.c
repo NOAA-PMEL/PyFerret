@@ -44,6 +44,7 @@
 */ 
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <stdlib.h>
 #include <wchar.h>
 #include <stdio.h>

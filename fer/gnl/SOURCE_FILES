@@ -53,6 +53,10 @@ mouse_command.F\
 name_equal_string.F\
 name_equal_string_lc.F\
 name_equal_string_vatt.F\
+netcdf4_cancel_settings.F\
+netcdf4_list_settings.F\
+netcdf4_set_list_settings.F\
+netcdf4_show_list_settings.F\
 no_journal.F\
 objective.F\
 objective_sub.F\
@@ -104,6 +108,7 @@ translate_lat_long.F\
 translate_limit.F\
 turnoff_verify.F\
 user_sub.F\
+version_only.F\
 warn.F\
 write_dods_fmt.F \
 write_multi.F 

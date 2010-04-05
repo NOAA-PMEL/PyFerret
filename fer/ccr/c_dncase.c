@@ -46,6 +46,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 void c_dncase_(in_ptr, out_ptr)
      char** in_ptr;

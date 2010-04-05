@@ -151,6 +151,14 @@ frame/trans/file=testbackground.gif
 go bn_reset
 go err491_long_gif_name
 
+
+! The fix for bug 1396
+set v ul; plot/dash x[gx=0:20:.5]
+set v ur; plot/dash x[gx=0:20:.1]
+set v ll; plot/dash x[gx=0:20:.05]
+set v lr; plot/dash x[gx=0:20:.01]
+frame/file=gif_dashbug.gif
+
 exit/command
 
 

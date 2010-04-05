@@ -56,6 +56,14 @@ fill/i=1:15/j=1:15/lev=20 i*j
 pplus/reset
 
 
+! Bug 1396 fixed
+
+set v ul; plot/dash x[gx=0:20:.5]
+set v ur; plot/dash x[gx=0:20:.1]
+set v ll; plot/dash x[gx=0:20:.05]
+set v lr; plot/dash x[gx=0:20:.01]
+cancel viewports
+
 ! intentional errors and ignored commands
 ! set and cancel mode metafile are ignored
 

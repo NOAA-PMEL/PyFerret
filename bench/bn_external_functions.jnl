@@ -4,7 +4,7 @@ go bench_examples
 !Ansley's benchmarks
 ! *kob* move bench tests that test internal external functions to their
 !       own file
-
+exit/script  ! dont have the writev5d function on this machine...
 GO bn_reset
 
 GO bn_reset

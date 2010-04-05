@@ -175,7 +175,8 @@
      .                  TM_LENSTR, len_test, len_mchars, varid,
      .                  dset, cat, var, mods_cx, iflag, loc, 
      .                  nvdims, vdims(8), nvatts, vtype, all_outflag, 
-     .                  slen, iatt, igrd, iline, new_att_modulo_len
+     .                  slen, iatt, igrd, iline, new_att_modulo_len,
+     .			cache_size, cache_nelems, cache_preemption
 	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE, MATCH_TEMPLATE,
      .			ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
      .			report_error,
@@ -203,7 +204,7 @@
 
 * select subcommand
 	GOTO ( 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
-     .        1100,1200,1300,1400,1500,1600,1700 ) subcmnd_num
+     .        1100,1200,1300,1400,1500,1600,1700, 1800 ) subcmnd_num
 
 * CANCEL '    '
 * arrival at this point usually means an illegal subcommand was given
@@ -300,6 +301,8 @@
 	ELSEIF ( slash_all ) THEN
 	   list_heading = .TRUE.		! /ALL restores default state
 	ENDIF
+
+	IF (slash_all) CALL NETCDF4_CANCEL_SETTINGS
 	RETURN
 
 * CANCEL DATA_SET data_set_number1,number2,...
@@ -1034,6 +1037,19 @@ c	ENDIF
  1720	   CONTINUE
            GOTO 1710
 	ENDIF
+	RETURN
+
+
+* CANCEL NCCACHE. Set all arguments of -1 to restore the default settings.
+
+ 1800	cache_size = -1
+	cache_nelems = -1
+	cache_preemption = -1
+	CALL CD_SET_CHUNK_CACHE (cache_size, cache_nelems, 
+     .     cache_preemption, status)
+	CALL SPLIT_LIST(pttmode_ops, err_lun,
+     .   ' Restoring default chunk cache settings', 0)
+
 	RETURN
 
 

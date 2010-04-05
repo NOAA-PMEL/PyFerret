@@ -34,12 +34,17 @@
 * V609: *acm* 2/08 - add SHADE/TRIM
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
 * V6.2  *acm* 5/08 new qualifier LIST/KEEP_AXNAMES for CDF output
+* V6.6  *acm* 1/10 new qualifiers for LIST netCDF4: NCFORMAT,
+*                  XCHUNK,YCHUNK,ZCHUNK,TCHUNK,DEFLATE,SHUFFLE,ENDIAN
 * V6.5  *acm* 3/10 new qualifiers on (some) SHOW commands and on MESSAGE: 
 *                  /OUTFILE= /APPEND /CLOBBER
+* V6.6  *acm* 3/10 new qualifiers for SET LIST netCDF4: NCFORMAT,
+*                  DEFLATE,SHUFFLE,ENDIAN,XCHUNK,YCHUNK,ZCHUNK,TCHUNK
 
 * command qualifier states
 	INTEGER		qual_on,
      .			qual_off
+
 
 * command qualifiers
 	INTEGER		
@@ -48,6 +53,14 @@
      .			slash_set_list_form,
      .			slash_set_list_append,
      .			slash_set_list_heading,
+     .			slash_set_list_ncformat,
+     .			slash_set_list_endian,
+     .			slash_set_list_deflate,
+     .			slash_set_list_shuffle,
+     .			slash_set_list_xchunk,
+     .			slash_set_list_ychunk,
+     .			slash_set_list_zchunk,
+     .			slash_set_list_tchunk,
      .
      .			slash_canc_list_all,
      .			slash_canc_list_prec,
@@ -66,8 +79,9 @@
      .			slash_canc_var_data,
      .
      .			slash_canc_attr_output,
-     .			slash_canc_attr_data,
-     .
+     .			slash_canc_attr_data
+
+	INTEGER	
      .			slash_set_movie_out,
      .			slash_set_movie_compress,
      .			slash_set_movie_laser,
@@ -105,7 +119,15 @@
      .			slash_list_width,
      .			slash_list_edges,
      .			slash_list_bounds,
-     .			slash_list_keepax
+     .			slash_list_keepax,
+     .			slash_list_ncformat,
+     .			slash_list_xchunk,
+     .			slash_list_ychunk,
+     .			slash_list_zchunk,
+     .			slash_list_tchunk,
+     .			slash_list_deflate,
+     .			slash_list_shuffle,
+     .			slash_list_endian
 
 	INTEGER		
      .			slash_set_data_ez,
@@ -144,6 +166,9 @@
      .                  slash_set_axis_offset,
      .
      .			slash_set_memory_words,
+     .			slash_set_nccache_size,
+     .			slash_set_nccache_nelem,
+     .			slash_set_nccache_preemp,
      .                  slash_set_attr_type,
      .                  slash_set_attr_dset,
      .                  slash_set_attr_output,
@@ -275,6 +300,14 @@
      .			slash_set_list_form   = 3,
      .			slash_set_list_append = 4,
      .			slash_set_list_heading= 5,
+     .			slash_set_list_ncformat=6,
+     .			slash_set_list_endian = 7,
+     .			slash_set_list_deflate= 8,
+     .			slash_set_list_shuffle= 9,
+     .			slash_set_list_xchunk= 10,
+     .			slash_set_list_ychunk= 11,
+     .			slash_set_list_zchunk= 12,
+     .			slash_set_list_tchunk= 13,
      .
      .			slash_canc_list_all    = 1,
      .			slash_canc_list_prec   = 2,
@@ -330,7 +363,15 @@
      .			slash_list_width = 1+29,
      .			slash_list_edges = 1+30,
      .			slash_list_bounds = 1+31,
-     .			slash_list_keepax = 1+33 )
+     .			slash_list_keepax = 1+33,
+     .			slash_list_ncformat = 1+34,
+     .			slash_list_xchunk = 1+35,
+     .			slash_list_ychunk = 1+36,
+     .			slash_list_zchunk = 1+37,
+     .			slash_list_tchunk = 1+38,
+     .			slash_list_deflate = 1+39,
+     .			slash_list_shuffle = 1+40,
+     .			slash_list_endian = 1+41 )
 
 	PARAMETER     (
      .			slash_set_data_ez	= 1,
@@ -369,6 +410,9 @@
      .                  slash_set_axis_offset   = 7,
      .
      .			slash_set_memory_words	= 1,
+     .			slash_set_nccache_size	= 1,
+     .			slash_set_nccache_nelem	= 2,
+     .			slash_set_nccache_preemp= 3,
      .
      .                  slash_set_attr_type     = 1,
      .                  slash_set_attr_dset     = 2,

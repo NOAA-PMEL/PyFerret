@@ -51,11 +51,12 @@ typedef struct _FileInfo {
   int doSwap;			/* Swap bytes */
 } FileInfo;
 
+/*
 extern FileInfo *createBinaryReader(char *, int[MAXDIMS], int[MAXDIMS], int, int);
 extern void deleteBinaryReader(FileInfo *);
 extern int addVar(FileInfo *, float *, int, int);
 extern int readBinary(FileInfo *);
-
+*/
 				/* TODO -- redefine FORTRAN for different arch. */
 #ifndef FORTRAN
 #define FORTRAN(a) a##_

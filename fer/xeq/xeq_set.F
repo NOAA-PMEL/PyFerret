@@ -161,6 +161,8 @@
 *                  has opened the metafile but nothing plotted yet, and if
 *                  a SET MODE META:newname.plt is issued, just rename the metafile
 *                  that was opened.
+* V66   *acm* 3/10 Read qualifiers for netcdf4 SET LIST/NCFORMAT etc in call to
+*                  netcdf4_set_list_settings
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -217,10 +219,10 @@
      .                  attype_spec, pos, mr, varid, uvar, cat, iflag, 
      .                  isetout, ivar, dot, strided_axis, igrd, offset,
      .                  attid, attype, attoutflag, attlen, i1, dset,
-     .                  istat
+     .                  istat, cache_size, cache_nelems, cache_preemption
         REAL*8          TM_WW_AXLEN, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi
-	REAL		val_buf
+	REAL		val_buf, cache_size_mb
 	CHARACTER	TM_FMT*12, title*1024, subtitle*64, arg*24,
      .			buff1*512, buff2*512, data_form*3, show_str*12,
      .                  varname*512, attname*128, new_att_calendar*10, 
@@ -246,7 +248,7 @@
 
 * select subcommand
 	GOTO ( 100,200,300,400,500,600,700,800,900,1000,
-     .        1100,1200,1300,1400 ) subcmnd_num
+     .        1100,1200,1300,1400,1500 ) subcmnd_num
 
 * SET '    ' 
 * arrival at this point usually means an illegal subcommand was given
@@ -354,6 +356,12 @@ c *kob* 4/97
 	IF ( lp .GT. 0 ) THEN
 	   CALL EQUAL_FORMAT( cmnd_buff(qual_start(lp):qual_end(lp)), status )
 	ENDIF
+
+* Get and save any settings for netcdf-4 output
+
+        CALL NETCDF4_SET_LIST_SETTINGS (status)
+        IF ( status .NE. ferr_ok ) GOTO 5000
+
 	RETURN
 
 * SET DATA_SET data_set1, data_set2, ...
@@ -681,7 +689,10 @@ c *kob* 4/97
  820	RETURN
 
 * SET MOVIE[/FILE=filename] [title]
- 900	past_laser_movie = frame_file .EQ. plaser_flag
+* Movies are discontinued with Ferret v6.6: NetCDF-4 / HDF5
+
+ 900	GOTO 5086
+        past_laser_movie = frame_file .EQ. plaser_flag
 	do_laser_movie = qual_given( slash_set_movie_laser ) .GT. 0
 	IF ( frame_on ) THEN
 	   IF ( past_laser_movie ) THEN
@@ -1343,7 +1354,7 @@ c *kob* 4/97
      .              coordvar, status )
               IF ( status .NE. ferr_ok ) THEN
                  dset = cx_data_set(cx_cmnd)
-                 GOTO 5920
+                 GOTO 5910
               ENDIF
            ENDIF
 
@@ -1417,7 +1428,7 @@ c *kob* 4/97
            IF (buff2(1:3) .EQ. 'ALL') iflag = 2
            IF (buff2(1:3) .EQ. 'DEF') iflag = 3 
            IF (INDEX(varname,'.') .NE. 0) THEN 
-              IF (iflag.EQ.0 .OR.iflag.EQ.2) GOTO 5940
+              IF (iflag.EQ.0 .OR.iflag.EQ.2) GOTO 5930
            ENDIF
         ELSE
            iflag = 1  
@@ -1429,11 +1440,11 @@ c *kob* 4/97
 
         CALL BREAK_VARNAME( buff1, dset_num, varname, attname, 
      .                         varid,  status )
-        IF (status .NE. ferr_ok) goto 5920
+        IF (status .NE. ferr_ok) goto 5910
 
         IF (varid .EQ. 0) CALL CD_GET_VAR_ID (dset_num, varname, varid,
      .       status )
-        IF (status .NE. ferr_ok) goto 5920
+        IF (status .NE. ferr_ok) goto 5910
 
 * Changing the attribute output flag
 
@@ -1481,7 +1492,7 @@ c *kob* 4/97
      .            ( line_direction(axis) .EQ. 'TI' .OR.
      .             line_direction(axis) .EQ. 'TT' ) ) THEN
                  CALL CD_GET_VAR_ATT_ID (dset_num, varid, 'UNITS', attid, status)
-                 IF (status .NE. ferr_ok) GOTO 5960
+                 IF (status .NE. ferr_ok) GOTO 5950
    
                   got_it = NC_GET_ATTRIB ( dset_num, varid, 'time_origin',
      .                                      .TRUE., varname, 128,
@@ -1546,6 +1557,43 @@ c *kob* 4/97
      .           CALL UPDATE_ATTRIBUTES (dset_num, uvar)
 
         ENDIF
+	RETURN
+
+* SET NCCACHE/SIZE=bytes/cache_nelems/cache_preemption
+ 1500	IF ( num_args .GT. 0 ) GOTO 5200
+        cache_size = -1
+        cache_nelems = -1
+        cache_preemption = -1
+
+        lp = qual_given( slash_set_nccache_size )
+	IF ( lp .GT. 0 ) THEN
+           CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .			   cache_size_mb, status )
+           IF ( status .NE. ferr_ok ) RETURN 
+	   IF (cache_size_mb .LT. 0) GOTO 6700
+	   cache_size = INT(cache_size_mb* 1.e6)  ! Mbytes to bytes
+
+	ENDIF
+
+        lp = qual_given( slash_set_nccache_nelem )
+	IF ( lp .GT. 0 ) THEN
+           CALL EQUAL_VAL_INT( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .			   cache_nelems, status )
+           IF ( status .NE. ferr_ok ) RETURN 
+	   IF (cache_nelems .LT. 0) GOTO 6710
+	ENDIF
+
+        lp = qual_given( slash_set_nccache_preemp )
+	IF ( lp .GT. 0 ) THEN
+           CALL EQUAL_VAL_INT( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .			   cache_preemption, status )
+           IF ( status .NE. ferr_ok ) RETURN 
+	   IF (cache_preemption.LT.0 .OR. 
+     .         cache_preemption.GT.1) GOTO 6720
+	ENDIF
+
+        CALL CD_SET_CHUNK_CACHE (cache_size, cache_nelems, 
+     .     cache_preemption, status)
 
 	RETURN
 
@@ -1569,6 +1617,8 @@ c *kob* 4/97
  5084	CALL ERRMSG( ferr_invalid_command, status,
      .			'Unknown compression type: ON or OFF only', *5000 )
  5085	CALL ERRMSG( status, status, buff1, *5000 )
+ 5086	CALL ERRMSG( ferr_invalid_command, status, 
+     .     'Movies are discontinued as of Ferret v6.6', *5000 )
  5090	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000 )
  5100	CALL ERRMSG( ferr_invalid_command, status, 
      .			'SET what?', *5000 )
@@ -1576,6 +1626,12 @@ c *kob* 4/97
      .			cmnd_buff( item_start(item):item_end(item) ), *5000 )
  5120	CALL ERRMSG( ferr_unknown_grid, status, 
      .			'nothing saved from past commands', *5000 )
+ 5200	CALL ERRMSG( ferr_syntax, status,
+     .		     'To set CACHE CHUNK size use SET CCACHE/SIZE=megabytes'
+     .		     //pCR//cmnd_buff(:len_cmnd), *5000 )
+ 5210	CALL ERRMSG( ferr_syntax, status,
+     .		     'To set CACHE CHUNK size use SET CCACHE/SIZE=megabytes'
+     .		     //pCR//cmnd_buff(:len_cmnd), *5000 )
  5320	CALL ERRMSG( ferr_invalid_command, status,
      .			'delta value not permitted on SET REGION'//
      .			pCR//'check '//ww_dim_name(idim)//' axis', *5000 )
@@ -1656,26 +1712,34 @@ c *kob* 4/97
  
  5900 CALL ERRMSG( ferr_invalid_command, status,
      .		'SET what name.attribute?', *5000 )
- 5920 slen = TM_LENSTR(buff1)
+ 5910 slen = TM_LENSTR(buff1)
       CALL ERRMSG( ferr_invalid_command, status,
      .   'variable, axis, or attribute does not exist'//
      .    buff1(:slen), *5000 )
- 5930 slen = TM_LENSTR(buff1)
+ 5920 slen = TM_LENSTR(buff1)
       CALL ERRMSG( ferr_invalid_command, status,
      .   'attribute name missing. SET ATT varname.attname'//
      .    buff1(:slen), *5000 )
- 5940 slen = TM_LENSTR(buff1)
+ 5930 slen = TM_LENSTR(buff1)
       CALL ERRMSG( ferr_invalid_command, status,
      .   'SET ATT/OUT=[all or none] varname should NOT '//
      .   'include attribute. '//
      .    buff1(:slen), *5000 )
- 5950 slen = TM_LENSTR(buff1)
+ 5940 slen = TM_LENSTR(buff1)
       CALL ERRMSG( ferr_invalid_command, status,
      .   'error editing attribute'//
      .    buff1(:slen), *5000 )
- 5960 slen = TM_LENSTR(buff1)
+ 5950 slen = TM_LENSTR(buff1)
       CALL ERRMSG( ferr_invalid_command, status,
      .   'cannot set T0 unless Units are also set'//
      .    buff1(:slen), *5000 )
-
+ 6700   CALL ERRMSG( ferr_invalid_command, status,
+     .           'cache chunk size must be greater than zero',
+     .               *5000 )
+ 6710   CALL ERRMSG( ferr_invalid_command, status,
+     .           'cache nelems must be greater than zero',
+     .               *5000 )
+ 6720   CALL ERRMSG( ferr_invalid_command, status,
+     .           'cache preemption must be 0 or 1',
+     .               *5000 )
 	END

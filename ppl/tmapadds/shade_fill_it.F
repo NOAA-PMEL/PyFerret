@@ -55,6 +55,8 @@
       REAL    minrowx, maxrowx, big
       INTEGER GET_NDX, i, j, i1, fill_ndx, npt, pt1, next_ndx,
      .        jtop
+      REAL    ddat
+      INTEGER nothing
       LOGICAL BAD_XY_COORD, first, xfield_is_modulo
       CHARACTER*128 buff
 
@@ -102,6 +104,9 @@ c      IF (curvilinear ) THEN
         first = .TRUE.  ! for curvilinear curv_coord_add_sub
 	DO 50 j = jlo, jtop
 
+           if (j .gt. 196) then
+	      nothing = 0
+	   endif
 ! initialize these so that the check in BAD_XY_COORD doesn't get caught
 ! in a loop
            py(1) = ys(j)
@@ -130,6 +135,7 @@ c      IF (curvilinear ) THEN
 *	(It was just too much trouble for the potential benefit *sh*)
 	      IF (BAD_XY_COORD(i,j,xs,py,fill_ndx)) GOTO 40
 	   ENDIF
+	   ddat = data(i,j)
 	   fill_ndx = GET_NDX (data(i,j),fill_ndx)
 	   IF (fill_ndx .EQ. -999) GOTO 40
 	   pt1 = i

@@ -2,7 +2,7 @@
 ! Taken out of bn_strings, because it calls so file writev5d.
 ! testing string argument to external function.
 ! 5/4/05 acm
-
+exit/script ! I dont have writev5d on this machine.
 set mode ignore_error
 
 sp rm -f testa.v5d

@@ -39,7 +39,7 @@
      .			max_item_list, max_modes, mode_stack_size,
      .			max_ifstk
 	PARAMETER     ( cmnd_buff_len = 2048,
-     .			max_qual_list = 40 ,	! increased from 35 10/01
+     .			max_qual_list = 50 ,	! increased from 40 1/10
      .			max_arg_list  = 128 ,	! was 20 pre-4/96
      .			max_item_list = 250 ,
      .			max_modes     = 30 ,

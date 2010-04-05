@@ -51,6 +51,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 void c_substr_(in_ptr, offset, length, out_ptr)
      char** in_ptr;

@@ -67,6 +67,8 @@
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build
                       Other changes to correctly deal with the scalar case dim=0 */ 
+
+#include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
 /*#include <stdio.h>*/
 #include <stdlib.h>
@@ -179,14 +181,19 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
       imap[ndimsp] = 1;
 
       *cdfstat = nc_get_varm_text (*cdfid, vid, start,
-				    count, stride, imap, pbuff);
+                                    count, stride, imap, pbuff);
+
       tm_unblockify_ferret_strings(dat, pbuff, bufsiz, (int)maxstrlen);
       free(pbuff);
 
   /* FLOAT data */
   } else
     *cdfstat = nc_get_varm_float (*cdfid, vid, start,
-     count, stride, imap, (float*) dat);
+     count, stride, imap, (float*) dat); 
+
+/* replace the above with this for testing */
+/*    *cdfstat = nc_get_vara_float (*cdfid, vid, start,
+     count, (float*) dat); */
   return;
 }
 

@@ -154,5 +154,7 @@
      .	msg_regular(merr_nc_open-pregular)
      .		/'error opening netCDF file                         '/,
      .	msg_regular(merr_remote_open-pregular)
-     .		/'error opening remote data file                    '/
+     .		/'error opening remote data file                    '/,
+     .	msg_regular(merr_chunk_spec-pregular)
+     .		/'error specifying chunk sizes                      '/
 	END

@@ -61,7 +61,7 @@ c	key2   -- second key file lun
 c	eplun1 -- first EPIC lun
 c	eplun2 -- second EPIC lun
 c
-#ifdef unix
+
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
         include 'epiclun_inc.decl'
@@ -93,26 +93,7 @@ c
         include 'cmdcom_inc.decl'
         include 'CMDCOM.INC'
 	include 'gkscm2.cmn'
-#else
-        INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
-        INCLUDE 'tmap_pplv11inc:tmap_EPICLUN.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_AXIS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_DATA.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_CMRDL.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_PLT.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_LINES.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_CONLAB.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_LABCOM.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_FILNAM.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_LUNITS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_PEN.INC'
-        INCLUDE 'TMAP_PPLV11INC:SYMKEY_INC.DECL'
-        INCLUDE 'PPLV11INC:SYMKEY.INC'
-        INCLUDE 'TMAP_PPLV11INC:SYSTEM_INC.DECL'
-        INCLUDE 'PPLV11INC:SYSTEM.INC'
-        INCLUDE 'TMAP_PPLV11INC:CMDCOM_INC.DECL'
-        INCLUDE 'PPLV11INC:CMDCOM.INC'
-#endif
+
 C
 C	USE OF IP FLAGS
 C
@@ -198,6 +179,7 @@ C
 C
         STAT=LIB$GET_SYMBOL('GRAPHTERM',TYPE,LEN)
 #endif
+
 	IF(TYPE(1:LEN).EQ.'TEK41XX'.OR.TYPE(1:LEN).EQ.'TEK4105')THEN
 		MOD=4107
 		CALL TKTYPE(MOD)
@@ -295,7 +277,8 @@ C
 	CALL PUTSYM(SYM,TEMP,5,IER)
 	WRITE(SYM,997)'Z'
 	CALL PUTSYM(SYM,TEMP,5,IER)
-10	RETURN
+10	CONTINUE
+	RETURN
 	END
 #ifndef unix
         SUBROUTINE PPLEXT(STATUS)

@@ -140,6 +140,8 @@
 * V62  *acm*  2/09 - Fix bug 1644: Dataset title was stored in risc_buff but if mode diag
 *                    is turned on, the string was overwritten. Go back to a local buffer
 *                    to store the title
+* V6.5  *acm* 1/10 new qualifiers for LIST netCDF4: NCFORMAT,
+*                  XCHUNK,YCHUNK,ZCHUNK,TCHUNK,COMPRESSION,SHUFFLE,ENDIAN
 
         include 'tmap_errors.parm'
 	include	'ferret.parm'
@@ -167,7 +169,9 @@
      .			rlen, flen, reclen, i, cx1, qfile, idim,
      .			ndim, wkblk, perm(5), mr_perm(max_intrp),
      .                  npermuted, recsofar, do_stream_phase, nvars, 
-     .                  edges_flag, keepax_flag, nn, slen
+     .                  edges_flag, keepax_flag, nn, slen,
+     .                  netcdf_format, xchunk, ychunk, zchunk, tchunk,
+     .                  compression, endian_flag, shuffle
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
      .			buff*2048, fstatus*8, faccess*12, fformatted*12,
      .			cdf_recax*1,
@@ -381,6 +385,11 @@ c     .		 .AND. .NOT.do_comma_del
 	ELSE
 	   buff = ' '
 	ENDIF
+
+* Get any settings for netcdf-4 output
+
+        CALL NETCDF4_LIST_SETTINGS (status)
+        IF ( status .NE. ferr_ok ) GOTO 5000
 
 * set up the output device
 	IF ( list_to_tty ) THEN

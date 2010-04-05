@@ -44,6 +44,8 @@
 #include <X11/Intrinsic.h>
 #include <X11/StringDefs.h>
 #include <X11/Xlib.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "ferret.h"
 /*---------------------------------------------------- 
  * UxXt.h needs to be included only when compiling a 

@@ -208,7 +208,9 @@ C in the ef_set_custom_axis call, that would be equivalent.)
 C
 C  Set label for the frequency axis CYC/units.
 
-      outunits = 'CYC/' // ax_units(T_AXIS)
+      outunits = 
+     .'LONG units string with this before the reg units of CYC/' // 
+     .ax_units(T_AXIS)
 
       CALL ef_set_freq_axis (id, T_AXIS, nd, boxsize(1), outunits, NO)
 

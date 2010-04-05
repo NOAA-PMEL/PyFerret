@@ -31,6 +31,7 @@
 *       *acm* 7/06 -     CANCEL ATTRIBUTE /OUTPUT /DATA
 * V606  *acm* 7/06 -     DEFINE AXIS/QUIET
 * v62   *acm* 5/09 - new alias KEYMARK
+* v6.6  *acm* 1/10 - more qualifiers on LIST for netcdf4 control
 * V6.5  *acm* 3/10 new qualifiers on (some) SHOW commands and on MESSAGE: 
 *                  /OUTFILE= /APPEND /CLOBBER
 
@@ -89,13 +90,13 @@
      .			nqual1r    , nqual_at1s,
      .			nqual1s    , nqual_at1t,
      .			nqual1t    , nqual_at2a
-	PARAMETER    (	nsub1   =21, nsub_at2   = nsub_at1   + nsub1,
+	PARAMETER    (	nsub1   =20, nsub_at2   = nsub_at1   + nsub1,
      .			nqual1a = 0, nqual_at1b = nqual_at1a + nqual1a,	!'    '
      .			nqual1b = 6, nqual_at1c = nqual_at1b + nqual1b,	!'WIND'
      .			nqual1c =18, nqual_at1d = nqual_at1c + nqual1c,	!'REGI'
      .			nqual1d = 1, nqual_at1e = nqual_at1d + nqual1d,	!'VIEW'
      .			nqual1e = 0, nqual_at1f = nqual_at1e + nqual1e,	!'EXPR'
-     .			nqual1f = 5, nqual_at1g = nqual_at1f + nqual1f,	!'LIST'
+     .			nqual1f =15, nqual_at1g = nqual_at1f + nqual1f,	!'LIST'
      .			nqual1g =15, nqual_at1h = nqual_at1g + nqual1g,	!'DATA'
      .			nqual1h = 1, nqual_at1i = nqual_at1h + nqual1h,	!'MODE'
      .			nqual1i = 5, nqual_at1j = nqual_at1i + nqual1i,	!'MOVI'
@@ -104,7 +105,7 @@
      .			nqual1l = 8, nqual_at1m = nqual_at1l + nqual1l,	!'AXIS'
      .			nqual1m = 2, nqual_at1n = nqual_at1m + nqual1m,	!'MEMO'
      .			nqual1n = 8, nqual_at1o = nqual_at1n + nqual1n,	!'ATTR'
-     .			nqual1o = 2, nqual_at1p = nqual_at1o + nqual1o,	!'****'
+     .			nqual1o = 3, nqual_at1p = nqual_at1o + nqual1o,	!'NCCACHE'
      .			nqual1p = 2, nqual_at1q = nqual_at1p + nqual1p,	!'****'
      .			nqual1q = 2, nqual_at1r = nqual_at1q + nqual1q,	!'****'
      .			nqual1r = 2, nqual_at1s = nqual_at1r + nqual1r,	!'****'
@@ -156,7 +157,7 @@
      .			nqual2p = 1, nqual_at2q = nqual_at2p + nqual2p,	!'ALIA'
      .			nqual2q = 1, nqual_at2r = nqual_at2q + nqual2q,	!'SYMB'
      .			nqual2r = 3, nqual_at2s = nqual_at2r + nqual2r,	!'ATTR'
-     .			nqual2s = 1, nqual_at2t = nqual_at2s + nqual2s,	!'****'
+     .			nqual2s = 1, nqual_at2t = nqual_at2s + nqual2s,	!'NCCACHE'
      .			nqual2t = 1, nqual_at2u = nqual_at2t + nqual2t,	!'****'
      .			nqual2u = 7, nqual_at2v = nqual_at2u + nqual2u,	!'FUNC'
      .			nqual2v = 3, nqual_at3a = nqual_at2v + nqual2v	!'QUER'
@@ -184,7 +185,7 @@
      .			nqual3r    , nqual_at3s,
      .			nqual3s    , nqual_at3t,
      .			nqual3t    , nqual_at4a
-	PARAMETER    (	nsub3   =21, nsub_at4   = nsub_at3   + nsub3,
+	PARAMETER    (	nsub3   =20, nsub_at4   = nsub_at3   + nsub3,
      .			nqual3a = 0, nqual_at3b = nqual_at3a + nqual3a,	!'    '
      .			nqual3b = 1, nqual_at3c = nqual_at3b + nqual3b,	!'WIND'
      .			nqual3c = 9, nqual_at3d = nqual_at3c + nqual3c,	!'REGI'
@@ -200,9 +201,9 @@
      .			nqual3m = 1, nqual_at3n = nqual_at3m + nqual3m,	!'GRID'
      .			nqual3n = 2, nqual_at3o = nqual_at3n + nqual3n,	!'ATTR'
      .			nqual3o = 1, nqual_at3p = nqual_at3o + nqual3o,	!'****'
-     .			nqual3p = 1, nqual_at3q = nqual_at3p + nqual3p,	!'****'
-     .			nqual3q = 1, nqual_at3r = nqual_at3q + nqual3q,	!'****'
-     .			nqual3r = 1, nqual_at3s = nqual_at3r + nqual3r,	!'****'
+     .			nqual3p = 1, nqual_at3q = nqual_at3p + nqual3p,	!'ALIAS'
+     .			nqual3q = 1, nqual_at3r = nqual_at3q + nqual3q,	!'SYMBOL'
+     .			nqual3r = 1, nqual_at3s = nqual_at3r + nqual3r,	!'NCCACHE'
      .			nqual3s = 3, nqual_at3t = nqual_at3s + nqual3s,	!'****'
      .			nqual3t = 3, nqual_at4a = nqual_at3t + nqual3t	!'****'
      .		      )
@@ -217,7 +218,7 @@
 	INTEGER		nsub5      , nsub_at6  ,
      .			nqual5a    , nqual_at6a
 	PARAMETER    (	nsub5   = 1, nsub_at6   = nsub_at5   + nsub5,
-     .			nqual5a =34, nqual_at6a = nqual_at5a + nqual5a  )
+     .			nqual5a =45, nqual_at6a = nqual_at5a + nqual5a  )
 
 * PLOT	 	- commmand # 6
 	INTEGER		nsub6      , nsub_at7  ,

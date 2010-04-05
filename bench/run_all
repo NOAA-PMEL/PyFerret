@@ -1,4 +1,4 @@
-#! /bin/csh -f  
+#! /bin/csh -f
 # run the full benchmark suite
 # *sh* 1/93 - writes errors to separate file
 # *sh* 10/93 - added alpha support

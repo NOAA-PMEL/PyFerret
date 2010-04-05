@@ -11,6 +11,8 @@
 
 ! Data in SST should be rescaled in both des files to values 0.1699, 0.1799, ...
 
+EXIT/SCRIPT   ! error in namelist record...
+
 set data tok_short
 list/i=1:5 sst
 say `sst, return=nc_scale`

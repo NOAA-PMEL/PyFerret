@@ -96,6 +96,7 @@
 * V604: *acm*/7/07 - increase length of dataset names to 1024
 * V62 : *acm* 5/09 - Check for alternative allowed calendar names as in cd_get_1_axis
 *                    (e.g. standard, which is equivalent to Gregorian.)
+* V65  *acm* 2/10- all warnings and notes to std error not std out
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -370,8 +371,8 @@
   150	CONTINUE
 * ... des_name used as a buffer ...
 	CALL TM_NOTE( 'BEWARE: Unrecognized descriptor format '//
-     .		   d_format, tooplu ) 
-!	WRITE (tooplu,1000) d_format, format_rev(1,tcnt)
+     .		   d_format, lunit_errors ) 
+!	WRITE (lunit_errors,1000) d_format, format_rev(1,tcnt)
 ! 1000	FORMAT(' Unrecognized descriptor format ',A4,'.'/
 !     .	       ' Should be at least ',A4,'.'/
 !     .	       ' Routines may not work correctly')

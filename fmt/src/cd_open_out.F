@@ -1,4 +1,5 @@
-	SUBROUTINE CD_OPEN_OUT(cdfname, append, cdfid, clobber, status)
+	SUBROUTINE CD_OPEN_OUT(cdfname, append, cdfid, clobber, 
+     .                          netcdf4_type, status)
 
 *
 *
@@ -59,8 +60,9 @@
 
 * argument declarations:
         LOGICAL  append, clobber
-        INTEGER	 cdfid, status
+        INTEGER	 cdfid, netcdf4_type, status
         CHARACTER*(*) cdfname
+	
 
 * include files
         include 'netcdf.decl'
@@ -75,12 +77,9 @@
 
 * local variable declarations:
       LOGICAL file_exists, do_append
-      INTEGER cdfstat, cstat, clobber_mode
+      INTEGER cstat, clobber_mode, cdfstat, cdftype
 
 * initialize netCDF
-!! not needed for netcdf3 and netcdf4
-!!      CALL NCPOPT(0)  ! no error processing by netCDF
-
 * does it exist already ?
       INQUIRE ( FILE = cdfname, EXIST = file_exists )
       do_append = append .AND. file_exists
@@ -93,22 +92,26 @@
 	 cdfstat = NF_OPEN( cdfname, NF_WRITE, cdfid )
 #endif
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
+
          CALL CD_SET_MODE( cdfid, pcd_reset_data, status )
          IF ( status .NE. merr_ok ) RETURN
       ELSE
 	 IF (clobber) THEN
-	   clobber_mode =   NCCLOB
+	   clobber_mode =   NF_CLOBBER
 	 ELSE
-	   clobber_mode =   NCNOCLOB
+	   clobber_mode =   NF_NOCLOBBER
 	 ENDIF
+
 * ... let netCDF detect the error if the file already exists
-c         cdfid = NCCRE( cdfname, clobber_mode, cdfstat )
+
+         IF (netcdf4_type .EQ. 3) cdftype = NF_CLASSIC_MODEL
+         IF (netcdf4_type .EQ. 4) cdftype = NF_NETCDF4
+         IF (netcdf4_type .EQ. 6) cdftype = NF_64BIT_OFFSET
+
 #ifdef usingDODSf2cUnderscore
-c         cdfstat = NF_CREATE_(cdfname, OR(clobber_mode,NF_NETCDF4), cdfid)
-         cdfstat = NF_CREATE_(cdfname, clobber_mode, cdfid)
+         cdfstat = NF_CREATE_(cdfname, OR(clobber_mode,cdftype), cdfid)
 #else
-c         cdfstat = NF_CREATE(cdfname, OR(clobber_mode,NF_NETCDF4), cdfid)
-         cdfstat = NF_CREATE(cdfname, clobber_mode, cdfid)
+         cdfstat = NF_CREATE(cdfname, OR(clobber_mode,cdftype), cdfid)
 #endif
 
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100

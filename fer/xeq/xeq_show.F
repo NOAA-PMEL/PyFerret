@@ -260,8 +260,10 @@
      .          vtype, nvdims, vdims(8), nvatts, iatt, dset_last,
      .          llen, loc, cat, var, attoutflag, all_outflag, dot, 
      .          vseq, attid, save_deleted_list_result(max_uvar),
+     .          cache_size, cache_nelems, cache_preemption,
      .          sho_file
-	REAL	xtemp, ytemp, attvals(10)
+	REAL	xtemp, ytemp, attvals(10), cache_mb, cache_n, cache_p
+
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
      .		default*10, show_str*2048, arg*24, name*32, arg30*30
 	CHARACTER	varatt*641, varname*512, attname*128,
@@ -368,6 +370,7 @@
 	   RETURN
 	ENDIF
  	sxml  = qual_given( slash_axis_xml  ) .GT. 0 
+
         IF (sxml) firstxml = .TRUE.
 
 * 	SHOW AXIS/FILE=[/APPEND][/CLOBBER]
@@ -381,6 +384,7 @@
      .                          clobber, append, status)
 	   IF (status .NE. ferr_ok ) GOTO 5000
 	ENDIF
+
 
 * decode the limit qualifiers
 	CALL STACK_PTR_UP ( cx_stack_ptr, max_context, status )
@@ -598,6 +602,7 @@
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	risc_buff = ' '
  3620	FORMAT (8X,'SET LIST/FILE=',A,' ( when LIST/FILE is used )' )
+        CALL NETCDF4_SHOW_LIST_SETTINGS 
 	IF ( limited_show ) RETURN
 
 * SHOW DATA_SET
@@ -769,7 +774,11 @@
 	IF ( limited_show ) RETURN
 
 * SHOW MOVIE
- 900    IF ( frame_file .EQ. ' ' ) THEN
+* Movies are discontinued with Ferret v6.6: NetCDF-4 / HDF5
+ 900    CONTINUE
+        CALL WARN ( 'Movies are discontinued as of Ferret v6.6' )
+	RETURN
+        IF ( frame_file .EQ. ' ' ) THEN
            WRITE ( risc_buff, 3905 ) 'There is no SET MOVIE file name'
         ELSE
            WRITE ( risc_buff, 3905 ) 'SET MOVIE/FILE = '//
@@ -806,7 +815,6 @@
 
         sho_file = qual_given( slash_show_var_file )
 	clobber = qual_given( slash_show_var_clobber ) .GT. 0
-	append = qual_given( slash_show_var_append ) .GT. 0
 
 	IF (sho_file .GT. 0) THEN
 	   CALL OPEN_SHOW_FILE (show_lun, sho_file,  
@@ -1703,8 +1711,30 @@
 * successful completion
  	RETURN
 
-* SHOW ****
- 1900   CONTINUE
+* SHOW NCCACHE
+ 1900   CALL CD_GET_CHUNK_CACHE (cache_size, cache_nelems, 
+     .    cache_preemption, status)
+        cache_mb = cache_size/1.e6
+	name = TM_FMT(cache_mb, 6, 12, dlen)
+        show_str = 'Current NCDF Chunk Cache size '//name(1:dlen)
+	len = TM_LENSTR1(show_str)
+
+        cache_n = cache_nelems
+	name = TM_FMT(cache_n, 6, 12, dlen)
+
+	show_str = show_str(1:len)//' MB, n_elems = '//name(1:dlen)
+	len = TM_LENSTR1(show_str)
+
+        cache_p = cache_preemption
+	name = TM_FMT(cache_p, 6, 12, dlen)
+
+	show_str = show_str(1:len)//', preemption = '//name(1:dlen)
+	len = TM_LENSTR1(show_str)
+
+	CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .			show_str(1:len), 0)
+	IF ( limited_show ) RETURN
+
 * SHOW ****
  2000   CONTINUE
 
@@ -1809,6 +1839,7 @@ c     .                               sbrief, sdetail, i2)
      .			(pttmode_explct, show_lun, queries(i), 0)
  2210	CONTINUE
 	IF ( limited_show ) RETURN
+
 
 * error exit
  5000	RETURN

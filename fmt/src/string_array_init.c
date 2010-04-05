@@ -39,6 +39,7 @@
     4/06 *kob*  change type of 1st argument to double, for 64-bit build
  */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
+#include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <stdio.h>
 #include <stdlib.h>
 #include "string_array.h"

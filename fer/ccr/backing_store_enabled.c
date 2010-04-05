@@ -42,13 +42,12 @@
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <wchar.h>
-#include <wchar.h>
 #include "gks_implem.h"
 #include "wslist.h"
-
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 backing_store_enabled(ws_id, bs)

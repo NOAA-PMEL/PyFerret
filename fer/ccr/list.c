@@ -61,6 +61,7 @@ static char brag[] = "$$Version: list-2.1 Copyright (C) 1992 Bradley C. Spatz";
 #include <wchar.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "list.h"
 
 /*char *malloc();*/

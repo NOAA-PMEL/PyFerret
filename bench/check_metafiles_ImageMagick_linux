@@ -64,7 +64,6 @@ foreach gif_file ($gif_files)
        display  $gif_file &
        display  metafile_masters_v66/$gif_file &
        display $gif_file.diff_gif.gif
-
        set err_gif = 1
     endif
 end
@@ -101,6 +100,7 @@ foreach mb_file ($mb_files)
        display $mb_file.ps &
        display master_$mb_file.ps &
        display diff_$mb_file.ps
+
    endif
 end
 

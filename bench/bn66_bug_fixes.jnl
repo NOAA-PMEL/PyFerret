@@ -2,4 +2,4 @@
 ! Fixes that go into v6.6 release
 
 GO bn_reset
-! Bug fixes are all in v6.5
+GO err66_dots_in_dashes

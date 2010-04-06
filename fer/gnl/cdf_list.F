@@ -123,7 +123,6 @@
 	include 'xrevision.cmn'
 	include 'xtoday.cmn'
 	include 'xinterrupt.cmn'
-        include 'netcdf4_settings.cmn'
 
 * calling argument declarations:
         LOGICAL         append, enhead, clobber, do_bounds
@@ -216,8 +215,6 @@
      .			range_not_rqd = .FALSE. )
 	CHARACTER	cal_name*32 , attname*128, buff1*128, buff2*128
 
-
-
 * initialize
 	 ivar = 1  ! just house-keeping -- make sure all is init'ed
 	 flushed = .FALSE. ! on error, whether OK variables were written
@@ -225,12 +222,10 @@
 	 DODS_cache = mode .EQ. pcdf_mode_cache
          do_warn = .TRUE.
 
-
          CALL CD_DEFER_COORD_WRITE(0,0,0,0,0,pcd_defer_init)
 
 * open/create the file
-         CALL CD_OPEN_OUT( fname, append, cdfid, clobber, 
-     .                     netcdf4_type, status )
+         CALL CD_OPEN_OUT( fname, append, cdfid, clobber, status )
          IF ( status .NE. merr_ok ) GOTO 5400
 
 * update history attribute in the file
@@ -415,10 +410,6 @@
            ENDIF
 
 * convert the data type into netCDF parameter value
-           IF (DODS_cache .AND. cx_type(cx).EQ.unspecified_int4) THEN
-	      cx_type(cx) = NCDOUBLE
-	   ENDIF
-
 	   IF (cx_type(cx) .EQ. ptype_float) THEN
 	      type = NCFLOAT
 	   ELSEIF  (cx_type(cx) .EQ. ptype_string) THEN
@@ -448,9 +439,7 @@
            CALL CD_MAKE_VAR( cdfid, dset_num, varcode, type, maxstrlen,
      .               grid, make_lo, make_hi, recdim, enhead, new, 
      .               edges_flag, do_bounds, mode_upcase_output, 
-     .               keepax_flag, netcdf4_type, xchunk_size, 
-     .               ychunk_size, zchunk_size, tchunk_size, 
-     .               deflate_lev, shuffle_flag, endian_code, status )
+     .               keepax_flag, status )
 
            IF ( status .NE. merr_ok ) GOTO 5800
 
@@ -619,6 +608,7 @@
                  IF (mode_upcase_output) CALL STR_UPCASE( varcode, 
      .                 varname)
 
+
                  DO 200 iatt = 1, nvatts
                     CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, 
      .                                        attname, status)
@@ -628,17 +618,6 @@
      .                   MATCH_NAME (attname,  slen,
      .                               '_FILLVALUE', 10 ) ) THEN
                        slen = 0   ! done already
-
-                    ELSE IF ( MATCH_NAME (attname,  slen,
-     .                               'SCALE_FACTOR', 13 ) .OR. 
-     .                   MATCH_NAME (attname,  slen,
-     .                               'ADD_OFFSET', 10 ) ) THEN
-                       got_it = NC_GET_ATTRIB_DP (dset, varid, attname,
-     .                    do_warn, varcode, attlen, attoutflag, dvals)
-                       IF (attoutflag  .EQ. 1) 
-     .                    CALL CD_WRITE_ATTVAL_DP (cdfid, varcode,
-     .                          attname, dvals, attlen, attype, status )
-                          IF (status .NE. ferr_ok) GOTO 5400
                     ELSE
 
                        attype = 0
@@ -995,7 +974,7 @@
 
 * close the file
         CALL NCCLOS(cdfid, cdfstat)
-        IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
+        IF ( cdfstat .NE. NCNOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CDF_LIST', unspecified_int4,
      .     no_varid, 'could not close CDF output file: ',
      .     fname, *5990 )

@@ -105,6 +105,9 @@
 *                   missing and FillValue flags which werent correct.)
 * V65  *acm*  1/10  Data from some datasets get a mismatch between _FillValue and 
 *                   data on output. Fix this.
+* V66  *acm*  3/10  Changes for Netcdf-4
+* V66  *acm*  4/10  fixes at the start of loop 200 for writing add_offset and 
+*                   scale_factor correctly.
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -123,6 +126,7 @@
 	include 'xrevision.cmn'
 	include 'xtoday.cmn'
 	include 'xinterrupt.cmn'
+        include 'netcdf4_settings.cmn'
 
 * calling argument declarations:
         LOGICAL         append, enhead, clobber, do_bounds
@@ -215,6 +219,8 @@
      .			range_not_rqd = .FALSE. )
 	CHARACTER	cal_name*32 , attname*128, buff1*128, buff2*128
 
+
+
 * initialize
 	 ivar = 1  ! just house-keeping -- make sure all is init'ed
 	 flushed = .FALSE. ! on error, whether OK variables were written
@@ -222,10 +228,12 @@
 	 DODS_cache = mode .EQ. pcdf_mode_cache
          do_warn = .TRUE.
 
+
          CALL CD_DEFER_COORD_WRITE(0,0,0,0,0,pcd_defer_init)
 
 * open/create the file
-         CALL CD_OPEN_OUT( fname, append, cdfid, clobber, status )
+         CALL CD_OPEN_OUT( fname, append, cdfid, clobber, 
+     .                     netcdf4_type, status )
          IF ( status .NE. merr_ok ) GOTO 5400
 
 * update history attribute in the file
@@ -439,7 +447,9 @@
            CALL CD_MAKE_VAR( cdfid, dset_num, varcode, type, maxstrlen,
      .               grid, make_lo, make_hi, recdim, enhead, new, 
      .               edges_flag, do_bounds, mode_upcase_output, 
-     .               keepax_flag, status )
+     .               keepax_flag, netcdf4_type, xchunk_size, 
+     .               ychunk_size, zchunk_size, tchunk_size, 
+     .               deflate_lev, shuffle_flag, endian_code, status )
 
            IF ( status .NE. merr_ok ) GOTO 5800
 
@@ -608,7 +618,6 @@
                  IF (mode_upcase_output) CALL STR_UPCASE( varcode, 
      .                 varname)
 
-
                  DO 200 iatt = 1, nvatts
                     CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, 
      .                                        attname, status)
@@ -618,6 +627,7 @@
      .                   MATCH_NAME (attname,  slen,
      .                               '_FILLVALUE', 10 ) ) THEN
                        slen = 0   ! done already
+
                     ELSE
 
                        attype = 0
@@ -974,7 +984,7 @@
 
 * close the file
         CALL NCCLOS(cdfid, cdfstat)
-        IF ( cdfstat .NE. NCNOERR ) CALL TM_ERRMSG
+        IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CDF_LIST', unspecified_int4,
      .     no_varid, 'could not close CDF output file: ',
      .     fname, *5990 )

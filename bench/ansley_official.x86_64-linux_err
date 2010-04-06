@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version ../fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 40357878 Mar 18 14:54 ../fer/ferretdods_gui
-Using external functions from ../external_functions/ext_func
+-rwxr-xr-x  1 ansley tmap 40091874 Apr  6 12:03 ../fer/ferretdods_gui
+Using external functions from ../external_functions/ext_func/
 Running the tests of external functions y
 Benchmark run by ansley
-Note: build v6.5 with OPeNDAP libraries and g77
+Note: fix in cdf_list for writing add_offset attribute
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
+PWD=/home/porter/ansley/build/x86/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -18,10 +18,9 @@ FER_GO=. /home/porter/tmap/ferret/x86_64-linux/go /home/porter/tmap/ferret/x86_6
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
-FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func
-Beginning at Thu Mar 18 14:57:20 PDT 2010
+FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func/
+Beginning at Tue Apr 6 12:04:35 PDT 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2935,6 +2934,7 @@ Re-defining viewport V7
 Re-defining viewport V8
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file dummy.dat
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3021,4 +3021,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Mar 18 14:59:10 PDT 2010
+Ended at Tue Apr 6 12:06:26 PDT 2010

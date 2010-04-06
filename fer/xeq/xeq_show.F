@@ -263,7 +263,6 @@
      .          cache_size, cache_nelems, cache_preemption,
      .          sho_file
 	REAL	xtemp, ytemp, attvals(10), cache_mb, cache_n, cache_p
-
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
      .		default*10, show_str*2048, arg*24, name*32, arg30*30
 	CHARACTER	varatt*641, varname*512, attname*128,
@@ -370,7 +369,6 @@
 	   RETURN
 	ENDIF
  	sxml  = qual_given( slash_axis_xml  ) .GT. 0 
-
         IF (sxml) firstxml = .TRUE.
 
 * 	SHOW AXIS/FILE=[/APPEND][/CLOBBER]
@@ -384,7 +382,6 @@
      .                          clobber, append, status)
 	   IF (status .NE. ferr_ok ) GOTO 5000
 	ENDIF
-
 
 * decode the limit qualifiers
 	CALL STACK_PTR_UP ( cx_stack_ptr, max_context, status )
@@ -815,9 +812,10 @@
 
         sho_file = qual_given( slash_show_var_file )
 	clobber = qual_given( slash_show_var_clobber ) .GT. 0
+	append = qual_given( slash_show_var_append ) .GT. 0
 
 	IF (sho_file .GT. 0) THEN
-	   CALL OPEN_SHOW_FILE (show_lun, sho_file,  
+	   CALL OPEN_SHOW_FILE (show_lun, sho_file, 
      .                          clobber, append, status)
 	   IF (status .NE. ferr_ok ) GOTO 5000
 	ENDIF

@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     55908723 Feb 26 17:27 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
+Running FERRET version ../fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 34616594 Apr  6 12:07 ../fer/ferret_c
+Using external functions from ../external_functions/ext_func/
 Running the tests of external functions y
-Benchmark run by anslehy
-Note: clock symbols work w/ g77&gfortran;  fix ascii listings w/ tab,comma(bug1698); new examples of errors specifying axis bounds
+Benchmark run by ansley
+Note: fix in cdf_list for writing add_offset attribute
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/linux/FERRET/bench
+PWD=/home/porter/ansley/build/new-stout/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -18,10 +18,9 @@ FER_GO=. /home/porter/tmap/ferret/linux/go /home/porter/tmap/ferret/linux/exampl
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
-FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Mon Mar 1 09:14:58 PST 2010
+FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func/
+Beginning at Tue Apr 6 12:13:18 PDT 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -214,6 +213,7 @@ contour/i=1:10/j=1:20/nolabel i
  **ERROR: invalid command: can only CONTOUR  single fields
           Use /OVERLAY for multiple variables
 contour/i=1:10/j=1:20/nolabel i/j,j/i
+gsetviewport()   52 Viewport is not within the Normalized Device Coordinate unit square
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
@@ -268,7 +268,6 @@ shade/nolabel sst, x_page[j=1:12], y_page
  **ERROR: value out of legal range: Y coordinates
           missing value where val is needed
 shade/nolabel sst, x_page, asin(y_page)
-gsetviewport()   52 Viewport is not within the Normalized Device Coordinate unit square
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
  PERMANENT data cleared from memory
@@ -825,6 +824,9 @@ Replacing definition of axis TWEEKS
 Replacing definition of axis TWEEKS
  LISTing to file calsst.cdf
  *** NOTE: /UNIT=MONTHS  ... using 1/12 of 360.00 days
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
 Replacing definition of grid TGRID
 Replacing definition of axis TDAYS
 Replacing definition of grid TGRID
@@ -858,9 +860,6 @@ plot/hlog fcn
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of grid TGRID
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  **ERROR: error in external function
 LIST vw_fft
 Replacing definition of grid TGRID
@@ -966,10 +965,12 @@ Replacing definition of grid G1
  **TMAP ERR: syntax error in string
              Unrecognized field type: D
              Data set: ./bn_delimited_read_date_time.dat
+ *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME
 SET DATA/FORM=delimited/type="d, da2,date2"  bn_delimited_read_date_time.dat
  **TMAP ERR: syntax error in string
              Unrecognized field type: DATE2
              Data set: ./bn_delimited_read_date_time.dat
+ *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME
 SET DATA/FORM=delimited/type="da,da, date2"  bn_delimited_read_date_time.dat
  **ERROR: command syntax: ,,:
 SET DATA/EZ/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
@@ -1047,6 +1048,8 @@ Replacing definition of grid MYGRID
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1062,6 +1065,8 @@ Replacing definition of axis TAX2
  LISTing to file string4d.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  *** NOTE: Not deleted: MONTH_IRREG
  *** NOTE: Axis is in use by grid (G004)
  *** NOTE: Not deleted: XEVEN
@@ -1242,6 +1247,7 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid LAT_FIELD_GRID
  *** NOTE: Not deleted: LON_FIELD_I_AXIS
  *** NOTE: Axis is in use by grid LON_FIELD_GRID
+ls: input.txt: No such file or directory
  *** NOTE: Not deleted: XIRREG
  *** NOTE: Axis is in use by grid GIRREG
  *** NOTE: Not deleted: TCENTURY
@@ -1373,6 +1379,10 @@ Re-defining viewport LL
 Re-defining viewport LR
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Undecipherable value of netCDF attribute modulo on variable lon_moderr
+ *** NOTE: modulo = "j"
+ *** NOTE: Undecipherable value of netCDF attribute modulo on variable time_moderr
+ *** NOTE: modulo = "j"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1405,11 +1415,11 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: value out of legal range: # of contour levels > 500  (3283)
+ **ERROR: value out of legal range: # of contour levels > 500  (3282)
 CONTOUR/L=1/LEV=0.01d sst
- **ERROR: value out of legal range: # of contour levels > 500  (3283)
+ **ERROR: value out of legal range: # of contour levels > 500  (3282)
 CONTOUR/FILL/L=1/LEV=0.01d sst
- **ERROR: value out of legal range: # of shade levels > 500  (3283)
+ **ERROR: value out of legal range: # of shade levels > 500  (3282)
 SHADE/L=1/LEV=0.01d sst
  **ERROR: value out of legal range: # of levels > 500  (4094)
 POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
@@ -1420,7 +1430,6 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-ls: input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
@@ -1442,10 +1451,14 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis Z1
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file clim.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1628,10 +1641,14 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
 Replacing definition of axis TAX
@@ -1666,6 +1683,8 @@ Replacing definition of axis XAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
  LISTing to file irrxzt.nc
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file a.nc
  LISTing to file a.nc
@@ -1673,6 +1692,8 @@ Replacing definition of axis TAX
  *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
  *** NOTE: This will result in incorrect box sizes on record axis: MONTH_REG
  *** NOTE: Write the data initially with the /BOUNDS qualifier
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  LISTing to file a.nc
  LISTing to file a.nc
  *** NOTE: Axis definition error on axis: TGAP
@@ -1727,13 +1748,12 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
  TEMPORARY data cleared from memory
-Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
  TEMPORARY data cleared from memory
-Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1813,6 +1833,9 @@ message/continue ($test2"|hello|bye|")
  **ERROR: my error message
 message/continue ($test2"|hello|bye|<my error message")
  **ERROR: invalid command: Valid value needed for symbol t2
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
 message/continue ($t2"|solong>really hello|bye|")
  *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
  PERMANENT data cleared from memory
@@ -1883,10 +1906,8 @@ Replacing definition of axis TIME
  LISTing to file longtitle.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file longtitle.nc
@@ -1951,9 +1972,6 @@ set data nofile.nc
 repeat/name=a (say `a`)
  **ERROR: command syntax: L is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/L=
 repeat/range=1:3/name=L (use coads_climatology; list/nohead [sst=I=1,j=1])
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  **ERROR: error in external function
 LOAD vw_fft
  PERMANENT data cleared from memory
@@ -2024,6 +2042,8 @@ sho att/all .
  *** NOTE: Changing the value of attribute (PSZT1).positive
  *** NOTE: Changing the type of attribute (coadsx).modulo
  *** NOTE: Changing the value of attribute (coadsx).modulo
+syntax error
+context: <htm^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserverefize 64000000 defmp-iridlc3) store<p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuu</b><b>absuv</b><b>tauy</b><b>taux</b>]</ol></td></tr></table></form><FORM METHOD="POST" ACTION="/fullcommand.html"><TEXTAREA NAME="command" ROWS=7 COLS=50 wrap=soft> SOURCES .FSU .FULL .tauyyyyy dods.dds</TEXTAREA> <INPUT TYPE="submit" VALUE="OK"><INPUT TYPE="reset" VALUE="reset"></FORM></body></html>1000
  *** NOTE: Changing the value of attribute (TIME4).time_origin
  **ERROR: command syntax: enclose coordinate variable name in parentheses
 list coadsx.units
@@ -2156,15 +2176,11 @@ Replacing definition of axis TIME
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-             OPeNDAP Error: Error while reading the URL: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods.dds?.
-The OPeNDAP server returned the following message:
-Not Found: The data source or server could not be found.
-        Often this means that the OPeNDAP server is missing or needs attention;
-        Please contact the server administrator. (OPeNDAP/netCDF Error code 1001)
+             NetCDF: DAP server error (OPeNDAP/netCDF Error code -70)
              Data set: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods
 SET DAT/FORM=CDF "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
  **Internet Data error
-             OPeNDAP Error: Couldn't resolve host 'noserver' (OPeNDAP/netCDF Error code 1001)
+             NetCDF: I/O failure (OPeNDAP/netCDF Error code -68)
              Data set: http://noserver/a/nofile.cdf
 SET DAT/FORM=CDF  "http://noserver/a/nofile.cdf"
  LISTing to file asc.dat
@@ -2331,6 +2347,8 @@ set axis/stride=2 NORMAL
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
@@ -2344,8 +2362,14 @@ set axis/stride=2 NORMAL
  *** NOTE: Axis definition error on axis: TGAP
  *** NOTE: Bounds given describe non-contiguous axis cells
  *** NOTE: Using the LOWER bound specified for each axis cell
+ *** NOTE: Undecipherable value of netCDF attribute modulo on variable lon_moderr
+ *** NOTE: modulo = "j"
+ *** NOTE: Undecipherable value of netCDF attribute modulo on variable time_moderr
+ *** NOTE: modulo = "j"
  *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
  *** NOTE: They will not be convertible:
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
@@ -2375,6 +2399,8 @@ SET DAT/FORM=CDF test_strides.cdf
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2917,7 +2943,67 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  LISTing to file list_of_numbers.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Re-defining viewport V1
+Re-defining viewport V1
+Re-defining viewport V2
+Re-defining viewport V3
+Re-defining viewport V4
+Re-defining viewport V5
+Re-defining viewport V6
+Re-defining viewport V7
+Re-defining viewport V8
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file dummy.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Restoring default chunk cache settings
+ Restoring default chunk cache settings
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file nc4_deflate4.nc
+ *** NOTE: NetCDF Classic style cannot set compression, ignoring /DEFLATE
+ *** NOTE: NetCDF Classic style cannot set chunking, ignoring /*CHUNK
+ LISTing to file nc4_nodeflate3.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file nc4_deflate4bigchunk.nc
+ LISTing to file nc4_nodeflate3.nc
+ LISTing to file nc4_deflate4_xyt.nc
+ LISTing to file nc4_deflate4_defaultchunk.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file nc4_inttemp_classic.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
+ LISTing to file nc4_inttemp_set_list_deflate_chunk.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
+ LISTing to file nc4_inttemp_shuffle_set_list_deflate_chunk.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
+ LISTing to file nc4_inttemp_set_classic.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
+ LISTing to file nc4_deflate4_t1.nc
+ **TMAP ERR: syntax error in string
+             If ChunkSize is set for any dimension of var, must set for all its dimensions
+LIST/FORMAT=CDF/file=nc4_deflate4_t1.nc/clobber/ncformat=4/deflate/shuffle/tchunk=1  sst
+ LISTing to file nc4_deflate4bigchunk.nc
+ **TMAP ERR: error specifying chunk sizes
+             TChunkSize 0 is larger than dimension length 3
+LIST/FORMAT=CDF/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=18/tchunk=15 sst
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3004,4 +3090,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Mar 1 09:22:48 PST 2010
+Ended at Tue Apr 6 12:14:58 PDT 2010

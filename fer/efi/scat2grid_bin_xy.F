@@ -85,8 +85,7 @@
 
       CHARACTER*126 buff
       WRITE (buff, 10)
-   10 FORMAT ('Computes unweighted avg of scattered ',
-     .        'data that fall in each cell of XY grid.')
+   10 FORMAT ('Put scattered data into XY grid by binning')
       CALL ef_set_desc(id, buff)
 
       CALL ef_set_num_args(id, 5)
@@ -239,7 +238,6 @@
       INTEGER nx, ny
       INTEGER i1n, i2n
 
-      REAL x1, y1, xf, yf, tol
       REAL xx, yy, zz
 
       CHARACTER*250 errtxt
@@ -249,9 +247,6 @@ C  variables for checking axis characteristics (modulo axes)
       CHARACTER ax_name(5)*16, ax_units(5)*16
       LOGICAL backward(5), modulox(5), moduloy(5), regular(5)
 
-      REAL dx, dy, xxbeg, xxend, yybeg, yyend
-
-
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
@@ -259,10 +254,8 @@ C  variables for checking axis characteristics (modulo axes)
 
 *  Check to see if output axes are modulo
 
-      CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
+      CALL ef_get_axis_info (id, ARG4, ax_name, ax_units, backward, 
      .                       modulox, regular)
-      CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
-     .                       moduloy, regular)
 
 *  Find number of points in scattered input points.  1-D arrays defining the 
 *  scattered data points may lie on the X, Y, Z, or T axis of the input arguments.
@@ -320,21 +313,6 @@ C  Get coordinates of output axes.
       call ef_get_coordinates(id, ARG5, Y_AXIS, 
      .   arg_lo_ss(Y_AXIS, ARG5), arg_hi_ss(Y_AXIS, ARG5), yax)
 
-*  Set start, end, and delta for output axes. 
-
-      x1 = xax(1,1,1,1)
-      y1 = yax(1,1,1,1)
-
-      xf = xax(nx,1,1,1)
-      yf = yax(ny,1,1,1)
-
-*  Gridbox sizes in data units
-      dx = xf - x1
-      IF (nx .GT. 1) dx = (xf-x1)/ REAL(nx-1)
-      dy = yf - y1
-      IF (ny .GT. 1) dy = (yf-y1)/ REAL(ny-1) 
-      tol = 0.1* MAX(dx, dy)
-
 *  Compute result
 
 *  Initialize result.
@@ -355,7 +333,7 @@ C  Get coordinates of output axes.
          nput = 0
          DO 300 n = 1, nscat
 
-            CALL pickout3 (arg_1, arg_2, arg_3, n, xx, yy, zz)
+            CALL pickout_3pts (arg_1, arg_2, arg_3, n, xx, yy, zz)
 
 *  If output X axis is modulo, apply modulo adjustment to that coordinate
 *  of the scattered point.
@@ -365,13 +343,17 @@ C  Get coordinates of output axes.
 *  Put fcn into result variable.
 
             IF (zz .NE. bad_flag(ARG3)) THEN
-               i1 = 1
-               DO 510 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-                   j1 = 1
-                  DO 500 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+               i1 = 2
+               DO 510 i = res_lo_ss(X_AXIS)+1, res_hi_ss(X_AXIS)
+                   j1 = 2
+                  DO 500 j = res_lo_ss(Y_AXIS)+1, res_hi_ss(Y_AXIS)
 
-                     IF (ABS(xx-xax(i1,1,1,1)) .LT. tol .AND. 
-     .                   ABS(yy-yax(j1,1,1,1)) .LT. tol)  THEN
+                     IF( (xx.GE.xax(i1-1,1,1,1) .AND. 
+     .                    xx.LT.xax(i1  ,1,1,1)) 
+     .                 .AND. 
+     .                   (yy.GE.yax(j1-1,1,1,1) .AND. 
+     .                    yy.LT.yax(j1  ,1,1,1)) )  THEN
+
                         result(i,j,k,l) = zz
                         nput = nput + 1
                      ENDIF
@@ -383,7 +365,6 @@ C  Get coordinates of output axes.
             ENDIF
 
  300     CONTINUE
-      print *, nput,', nput'
 
       RETURN
 
@@ -411,3 +392,22 @@ C  Get coordinates of output axes.
 ************************************************************************
 
       END
+
+
+      SUBROUTINE pickout_3pts (alon, alat, fcn, n, xx, yy, zz)
+
+*  Pick out nth item from alon, alat, fcn, which are really 
+*  4-dimensioned arrays with normal axes on three of the four axes.
+
+      REAL alon(*), alat(*), fcn(*)
+      REAL xx, yy, zz
+      INTEGER n
+
+      xx = alon(n)
+      yy = alat(n)
+      zz = fcn(n)
+
+      RETURN
+      END
+
+

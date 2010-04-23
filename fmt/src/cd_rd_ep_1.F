@@ -50,6 +50,8 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V66+ *acm* 4/10  Made incorrect call to NF_GET_VAR1_DOUBLE, should have becn
+*                  NF_GET_VAR1_INT.
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -91,18 +93,19 @@
 
 * read the 2 integer values
 #ifdef usingDODSf2cUnderscore
-      cdfstat = NF_GET_VAR1_DOUBLE_(cdfid, t1id, index, jday)
+      cdfstat = NF_GET_VAR1_INT_(cdfid, t1id, index, jday)
+
 #else
-      cdfstat = NF_GET_VAR1_DOUBLE(cdfid, t1id, index, jday)
+      cdfstat = NF_GET_VAR1_INT (cdfid, t1id, index, jday)
 #endif
 
       IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_RD_EP_TIME', cdfid, t1id,
      .       'EPIC time', no_errstring, *5000 )
 #ifdef usingDODSf2cUnderscore
-      cdfstat = NF_GET_VAR1_DOUBLE_(cdfid, t2id, index, msec)
+      cdfstat = NF_GET_VAR1_INT_(cdfid, t2id, index, msec)
 #else
-      cdfstat = NF_GET_VAR1_DOUBLE(cdfid, t1id, index, jday)
+      cdfstat = NF_GET_VAR1_INT(cdfid, t1id, index, jday)
 #endif
 
       IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG

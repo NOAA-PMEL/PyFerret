@@ -141,7 +141,13 @@
 
       symbuff = 'LEV_OPNLEVS'
       CALL GETSYM( symbuff, ppl_buff, ist, ier )
-      IF ( ier .EQ. 0 ) CALL DELSYM(symbuff,ier)
+      IF ( ier .EQ. 0 ) THEN
+         IF (STR_SAME(lev_str, 'none') .EQ. 0 ) THEN 
+	    lev_str = ppl_buff
+	 ELSE
+            CALL DELSYM(symbuff,ier)
+	 ENDIF
+      ENDIF
 
       IF (STR_SAME(lev_str, 'none') .NE. 0 ) THEN
          ilen = TM_LENSTR1(lev_str)

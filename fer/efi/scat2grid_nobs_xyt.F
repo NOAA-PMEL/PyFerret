@@ -91,7 +91,7 @@
       CHARACTER*126 buff
       WRITE (buff, 10)
    10 FORMAT ('Count observations when binning scattered ',
-     .        'data into XYT grid.')
+     .        'data into XYT grid using Gaussian function')
       CALL ef_set_desc(id, buff)
 
       CALL ef_set_num_args(id, 6)
@@ -211,8 +211,8 @@
      .     arg_4, arg_5, arg_6, result, xaxlo, xaxhi, yaxlo, yaxhi,
      .     taxlo, taxhi, obs)
 
-*  arg_1  xpts  \
-*  arg_2  ypts   | Scattered x,y pairs to be gridded.
+*  arg_1  xpts  *  arg_2  ypts   | Scattered x,y pairs to be gridded.
+
 *  arg_2  tpts  / 
 *  arg_4  xaxis of new grid   
 *  arg_5  yaxis of new grid

@@ -51,11 +51,12 @@
       include 'CONT.INC'
       include 'errmsg.parm'
 
+      LOGICAL         TM_FPEQ
       REAL    dz, fm, znp, zmp, dzf, znpf, zmpf, 
      .        znpclo,zmpclo, dzc, dzclo, dzchi, 
      .        twostd, density_factor
       INTEGER TM_LENSTR1, m, jj, nlevf, nlevc, nlev3, half_ncoarse, 
-     .        slen, llen, dlen, hlen, if1, if2
+     .        slen, llen, dlen, hlen, if1, if2, i, k
 
       CHARACTER*10 TM_FMT, lo_str, del_str, hi_str
 
@@ -358,6 +359,22 @@ c Set jj as in plotz based on fine levels.
          ENDIF
       ENDIF
 
- 5000 CONTINUE
+* Remove duplicate levels
+      zlast = zlev(1)
+      levcount = nlev2
+      do 530 i = 2, nlev2 
+         IF ( TM_FPEQ(zlev(i), zlast) ) THEN
+	       do 520 k = i,levcount
+               zlev(k-1) = zlev(k)
+               ldig(k-1) = ldig(k)
+               lclr(k-1) = lclr(k)
+               lwgt(k-1) = lwgt(k)
+ 520        CONTINUE
+            levcount = levcount-1
+	 ENDIF
+	 zlast = zlev(i)
+ 530  CONTINUE
+      nlev2 = levcount
+
       RETURN
       END

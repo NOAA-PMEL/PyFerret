@@ -1,5 +1,5 @@
 *
-*  scat2grid_nobs_xy.F
+*  scat2grid_nbin_xy.F
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -35,15 +35,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 * Ansley Manke
-* February 9, 2005 from scat2gridgauss_xy
+* February 1, 2008 
 
-* Returns # observations in each grid cell when a variable is interpolated 
-* onto an equally-spaced X-Y grid.  Input is scattered locations xpts, ypts
-* and the desired result grid. Output is # observations in each grid cell 
-* when data is gridded in x and y.  Calls routine "nobs" based on Billy
-* Kessler's gaussmap-subs.f.
-*
-*
 * In this subroutine we provide information about
 * the function.  The user configurable information 
 * consists of the following:
@@ -79,7 +72,7 @@
 *
 
 
-      SUBROUTINE  scat2grid_nobs_xy_init(id)
+      SUBROUTINE  scat2grid_nbin_xy_init(id)
 
       INCLUDE 'EF_Util.cmn'
 
@@ -92,42 +85,51 @@
 
       CHARACTER*126 buff
       WRITE (buff, 10)
-   10 FORMAT ('Count observations when gridding scattered ',
-     .        'data to XY grid using Gaussian function')
+   10 FORMAT ('Count observations when putting scattered data into  ',
+     .        'XY grid by binning')
       CALL ef_set_desc(id, buff)
 
-      CALL ef_set_num_args(id, 4)
+      CALL ef_set_num_args(id, 5)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
      .      NORMAL, NORMAL)
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
-      CALL ef_set_num_work_arrays(id, 3)
+      CALL ef_set_num_work_arrays(id, 4)
 
-* Output grid is determined by arguments 3 and 4, the result's x and y axes. 
+* Output grid is determined by arguments 4 and 5, the result's x and y axes. 
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'XPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .     'X coordinates of scattered input pairs')
+     .     'X coordinates of scattered input triples')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'YPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .     'Y coordinates of scattered input pairs')
+     .     'Y coordinates of scattered input triples')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
-      CALL ef_set_arg_name(id, arg, 'XAXPTS')
-      CALL ef_set_arg_desc(id, arg, 
-     .                   'X axis coordinates of a regular output grid')
-      CALL ef_set_axis_influence(id, arg, YES, NO, NO, NO)
+      CALL ef_set_arg_name(id, arg, 'F')
+      WRITE (buff, 20) 
+   20 FORMAT ('F(X,Y) 3rd component of scattered input triples. ')
+      CALL ef_set_arg_desc(id, arg, buff)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 4
+      CALL ef_set_arg_name(id, arg, 'XAXPTS')
+      CALL ef_set_arg_desc(id, arg, 
+     .                   'X axis coordinates of output grid')
+      CALL ef_set_axis_influence(id, arg, YES, NO, NO, NO)
+
+      arg = 5
       CALL ef_set_arg_name(id, arg, 'YAXPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .                   'Y axis coordinates of a regular output grid')
+     .                   'Y axis coordinates of output grid')
       CALL ef_set_axis_influence(id, arg, NO, YES, NO, NO)
+
+
 
 *                                                                      ^
 *                                                                      |
@@ -136,11 +138,12 @@
 
       RETURN 
       END
+      
 *
 * In this subroutine we request an amount of storage to be supplied
 * by Ferret and passed as an additional argument.
 *
-      SUBROUTINE scat2grid_nobs_xy_work_size(id)
+      SUBROUTINE scat2grid_nbin_xy_work_size(id)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
@@ -161,37 +164,37 @@
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      nxout = 1 + arg_hi_ss(X_AXIS,ARG3) - arg_lo_ss(X_AXIS,ARG3)
-      nyout = 1 + arg_hi_ss(Y_AXIS,ARG4) - arg_lo_ss(Y_AXIS,ARG4)
+      nxout = 1 + arg_hi_ss(X_AXIS,ARG4) - arg_lo_ss(X_AXIS,ARG4)
+      nyout = 1 + arg_hi_ss(Y_AXIS,ARG5) - arg_lo_ss(Y_AXIS,ARG5)
 
       nx2 = nxout* 2
       ny2 = nyout* 2
 
-* xax  output x axis
+
+* xaxlo  output x axis
       CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nx2, 1, 1, 1)
+* xaxhi  output x axis
+      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, nx2, 1, 1, 1)
 
-* yax  output y axis
-      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, ny2, 1, 1, 1)
-
-* obs  work array - counts of observations 
-      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, 
-     .                             nxout, nyout, 1, 1)
+* yaxlo  output y axis
+      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, ny2, 1, 1, 1)
+* yaxhi  output y axis
+      CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, ny2, 1, 1, 1)
 
       RETURN
       END
 
-
-*
 * In this subroutine we compute the result
 *
 
-      SUBROUTINE  scat2grid_nobs_xy_compute(id, arg_1, arg_2, arg_3, 
-     .     arg_4, result, xax, yax, obs)
+      SUBROUTINE  scat2grid_nbin_xy_compute(id, arg_1, arg_2, arg_3, 
+     .     arg_4, arg_5, result, xaxlo, xaxhi, yaxlo, yaxhi)
 
-*  arg_1  xpts  \Scattered x,y pairs to be gridded.
-*  arg_2  ypts  / 
-*  arg_3  xaxis of new grid   
-*  arg_4  yaxis of new grid
+*  arg_1  xpts  \
+*  arg_2  ypts  / Scattered x,y triples to be gridded.
+*  arg_3  fpts /
+*  arg_4  xaxis of new grid   
+*  arg_5  yaxis of new grid
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
@@ -206,6 +209,8 @@
      .     mem3lot:mem3hit)
       REAL arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz, 
      .     mem4lot:mem4hit)
+      REAL arg_5(mem5lox:mem5hix, mem5loy:mem5hiy, mem5loz:mem5hiz, 
+     .     mem5lot:mem5hit)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .     memresloz:memreshiz, memreslot:memreshit)
@@ -223,35 +228,34 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      INTEGER i, j, k, l, m, n
-      INTEGER i1, i2, j1, k1, l1
-      INTEGER i3, i3n, j4, j4n
-
-      INTEGER nxpts, nypts, nscat
-      INTEGER nx, ny    
-      INTEGER i1n, i2n
-
-      REAL x1, y1, xf, yf
-      REAL xx, yy
 
 *  Dimension the work arrays
 
-      REAL*8 xax(wrk1lox:wrk1hix/2, wrk1loy:wrk1hiy,
+      REAL*8 xaxlo(wrk1lox:wrk1hix/2, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL*8 yax(wrk2lox:wrk2hix/2, wrk2loy:wrk2hiy,
+      REAL*8 xaxhi(wrk2lox:wrk2hix/2, wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
-      REAL obs(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
+      REAL*8 yaxlo(wrk3lox:wrk3hix/2, wrk3loy:wrk3hiy,
      .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
+      REAL*8 yaxhi(wrk4lox:wrk4hix/2, wrk4loy:wrk4hiy, 
+     .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
+
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, i2, j1, k1, l1
+      INTEGER i4, i4n, j5, j5n
+
+      INTEGER nxpts, nypts, nscat, nput
+      INTEGER nx, ny
+      INTEGER i1n, i2n
+
+      REAL xx, yy, ff
 
       CHARACTER*250 errtxt
 
-C  variables for checking axis characteristics (modulo axes)
+*  variables for checking axis characteristics (modulo axes)
 
-      CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), modulox(4), moduloy(4), regular(4)
-
-      REAL dx, dy, xxbeg, xxend, yybeg, yyend
-
+      CHARACTER ax_name(5)*16, ax_units(5)*16
+      LOGICAL backward(5), modulox(5), moduloy(5), regular(5)
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -260,10 +264,8 @@ C  variables for checking axis characteristics (modulo axes)
 
 *  Check to see if output axes are modulo
 
-      CALL ef_get_axis_info (id, 3, ax_name, ax_units, backward, 
-     .                       modulox, regular)
       CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
-     .                       moduloy, regular)
+     .                       modulox, regular)
 
 *  Find number of points in scattered input points.  1-D arrays defining the 
 *  scattered data points may lie on the X, Y, Z, or T axis of the input arguments.
@@ -293,127 +295,87 @@ C  variables for checking axis characteristics (modulo axes)
 
 *  Compute number of points in output axes.
 
-      i3 = arg_lo_ss(X_AXIS,ARG3)
-      i3n = arg_hi_ss(X_AXIS,ARG3)
+      i4 = arg_lo_ss(X_AXIS,ARG4)
+      i4n = arg_hi_ss(X_AXIS,ARG4)
 
-      j4 = arg_lo_ss(Y_AXIS,ARG4)
-      j4n = arg_hi_ss(Y_AXIS,ARG4)
+      j5 = arg_lo_ss(Y_AXIS,ARG5)
+      j5n = arg_hi_ss(Y_AXIS,ARG5)
 
-      nx = 1 + (i3n - i3)
-      ny = 1 + (j4n - j4)
+      nx = 1 + (i4n - i4)
+      ny = 1 + (j5n - j5)
 
 *  Check that xax is a X axis and yax a Y axis
 
-      IF (i3 .EQ. ef_unspecified_int4) THEN
-         WRITE (errtxt, *) 'Third argument must be a X axis'
+      IF (i4 .EQ. ef_unspecified_int4) THEN
+         WRITE (errtxt, *) 'Fourth argument must be a X axis'
          GO TO 999
       ENDIF
-      IF (j4 .EQ. ef_unspecified_int4) THEN
-         WRITE (errtxt, *) 'Fourth argument must be a Y axis'
+      IF (j5 .EQ. ef_unspecified_int4) THEN
+         WRITE (errtxt, *) 'Fifth argument must be a Y axis'
          GO TO 999
       ENDIF
 
 C  Get coordinates of output axes.
 
-      call ef_get_coordinates(id, ARG3, X_AXIS, 
-     .   arg_lo_ss(X_AXIS, ARG3), arg_hi_ss(X_AXIS, ARG3), xax)
+      CALL ef_get_box_limits(id, ARG4, X_AXIS,
+     .   arg_lo_ss(X_AXIS, ARG4), arg_hi_ss(X_AXIS, ARG4), xaxlo, xaxhi)
 
-      call ef_get_coordinates(id, ARG4, Y_AXIS, 
-     .   arg_lo_ss(Y_AXIS, ARG4), arg_hi_ss(Y_AXIS, ARG4), yax)
-
-*  Set start, end, and delta for output axes. 
-
-      x1 = xax(1,1,1,1)
-      y1 = yax(1,1,1,1)
-
-      xf = xax(nx,1,1,1)
-      yf = yax(ny,1,1,1)
-
-*  Gridbox sizes in data units
-      dx = xf - x1
-      IF (nx .GT. 1) dx = (xf-x1)/ REAL(nx-1)
-      dy = yf - y1
-      IF (ny .GT. 1) dy = (yf-y1)/ REAL(ny-1) 
-
+      CALL ef_get_box_limits(id, ARG5, Y_AXIS,
+     .   arg_lo_ss(Y_AXIS, ARG5), arg_hi_ss(Y_AXIS, ARG5), yaxlo, yaxhi)
 
 *  Compute result
 
-*  Initialize counts.
+      k = res_lo_ss(Z_AXIS)
+      l = res_lo_ss(T_AXIS)
 
-         DO j = 1, ny
-            DO i = 1, nx
-               obs(i,j,1,1) = 0.
-            ENDDO
+*  Initialize result.
+
+      DO j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+         DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+            result(i,j,k,l) = 0.0
          ENDDO
+      ENDDO
 
-*  Loop over x and y, compute the number of observations for the gaussian-weighted 
-*  mapping onto the grid.  Lat and longitude may be on the X,Y,Z or T axis of ARG1 
+*  Loop over x and y, placing the function values in the appropriate slots
+*  in the grid. xpts and ypts may be on the X,Y,Z or T axis of ARG1 
 *  and ARG2, sending them to a subroutine collapses the extra dimensions so the
 *  value can be found.
 
-         DO 300 n = 1, nscat
+      nput = 0
+      DO 300 n = 1, nscat
 
-            CALL pickout2 (arg_1, arg_2, n, xx, yy)
+         CALL pickout3 (arg_1, arg_2, arg_3, n, xx, yy, ff)
 
-*  If an output axis is modulo, apply modulo adjustment to that coordinate
+*  If output X axis is modulo, apply modulo adjustment to that coordinate
 *  of the scattered point.
 
-            IF (modulox(1)) CALL modscat (xax, nx, 1, xx)
-            IF (moduloy(2)) CALL modscat (yax, ny, 1, yy)
+         IF (modulox(1)) CALL modscat (xaxlo, nx, 1, xx)
 
-	    CALL nobs (xx, yy, nx, ny, x1, y1, dx, dy,
-     .		       xf, yf, obs)
+*  Put fcn into result variable.
 
-C ACM modulo 11/9/00  Put points within dx or dy of the end just beyond the
-C                     other end, and use in the gridding computation.
+         IF (ff .NE. bad_flag(ARG3)) THEN
+            i1 = 1
+            DO 510 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+               j1 = 1
+               DO 500 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-            IF (modulox(1)) THEN
-               IF ((xx-x1 .GE. 0.) .AND. (xx-x1 .LT. dx) ) THEN
-                  xxend = xf + (xx-x1)
-                  CALL nobs (xxend, yy, nx, ny, x1, y1, dx, dy,
-     .                       xf, yf, obs)
-               ENDIF
-                     
-               IF ((xf-xx .GE. 0.)  .AND. (xf-xx .LT. dx) ) THEN
-                  xxbeg = x1 - (xf-xx)
-                  CALL nobs (xxbeg, yy, nx, ny, x1, y1, dx, dy,
-     .                       xf, yf, obs)
-               ENDIF
-            ENDIF
+                  IF( (xx.GE.xaxlo(i1,1,1,1) .AND.
+     .                  xx.LT.xaxhi(i1,1,1,1))
+     .               .AND.
+     .                 (yy.GE.yaxlo(j1,1,1,1) .AND.
+     .                  yy.LT.yaxhi(j1,1,1,1)) )  THEN
 
-            IF (moduloy(2)) THEN
-               IF ((yy-y1 .GE. 0.0) .AND.  (yy-y1  .LT. dy) ) THEN
-                  yyend = yf + (yy-y1)
-                  CALL nobs (xx, yyend, nx, ny, x1, y1, dx, dy,
-     .                       xf, yf, obs)
-               ENDIF
-                     
-               IF ((yf-yy .LT. 0.)  .AND.  (yf-yy .LT. dy) ) THEN
-                  yybeg = y1 - (yf-yy)
-                  CALL nobs (xx, yybeg, nx, ny, x1, y1, dx, dy,
-     .		             xf, yf, obs)
-               ENDIF
-            ENDIF
+                     result(i,j,k,l) = result(i,j,k,l) + 1. 
+                  ENDIF
 
+                  j1 = j1 + 1
 
- 300     CONTINUE
+ 500           CONTINUE
+               i1 = i1 + 1
+ 510        CONTINUE
+         ENDIF
 
-*  Put gridded fcn into result variable.
-
-         k = res_lo_ss(Z_AXIS)
-         l = res_lo_ss(T_AXIS)
-
-         i1 = 1
-         DO 410 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-            j1 = 1
-            DO 400 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-
-               result(i,j,k,l) = obs(i1,j1,1,1)
-               j1 = j1 + 1
-
- 400        CONTINUE
-            i1 = i1 + 1
- 410     CONTINUE
+300   CONTINUE
 
       RETURN
 
@@ -424,22 +386,11 @@ C                     other end, and use in the gridding computation.
       ELSE IF (nxpts .EQ. 0) THEN
          WRITE (errtxt, 30)
       ENDIF
+ 20   FORMAT ('Input scattered x, y have different # of points', 2I8)
+ 30   FORMAT ('No data in scattered x, y points')
       GOTO 999 
 
  999  CALL EF_BAIL_OUT(id, errtxt)
+
       RETURN
-
-
-   20 FORMAT ('Input scattered x, y have different # of points', 2I8)
-
-   30 FORMAT ('No data in scattered x, y points')
-
-
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-************************************************************************
-
       END
-
-

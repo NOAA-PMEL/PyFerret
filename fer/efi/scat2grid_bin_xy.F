@@ -93,7 +93,7 @@
      .      NORMAL, NORMAL)
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
-      CALL ef_set_num_work_arrays(id, 2)
+      CALL ef_set_num_work_arrays(id, 5)
 
 * Output grid is determined by arguments 4 and 5, the result's x and y axes. 
 
@@ -119,14 +119,16 @@
       arg = 4
       CALL ef_set_arg_name(id, arg, 'XAXPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .                   'X axis coordinates of a regular output grid')
+     .                   'X axis coordinates of output grid')
       CALL ef_set_axis_influence(id, arg, YES, NO, NO, NO)
 
       arg = 5
       CALL ef_set_arg_name(id, arg, 'YAXPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .                   'Y axis coordinates of a regular output grid')
+     .                   'Y axis coordinates of output grid')
       CALL ef_set_axis_influence(id, arg, NO, YES, NO, NO)
+
+
 
 *                                                                      ^
 *                                                                      |
@@ -167,22 +169,28 @@
       nx2 = nxout* 2
       ny2 = nyout* 2
 
-* xax  output x axis
-      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nx2, 1, 1, 1)
 
-* yax  output y axis
-      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, ny2, 1, 1, 1)
+* xaxlo  output x axis
+      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nx2, 1, 1, 1)
+* xaxhi  output x axis
+      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, nx2, 1, 1, 1)
+
+* yaxlo  output y axis
+      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, ny2, 1, 1, 1)
+* yaxhi  output y axis
+      CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, ny2, 1, 1, 1)
+
+* counts
+      CALL ef_set_work_array_dims (id, 5, 1, 1, 1, 1, nxout, nyout, 1, 1) 
 
       RETURN
       END
-
-
 
 * In this subroutine we compute the result
 *
 
       SUBROUTINE  scat2grid_bin_xy_compute(id, arg_1, arg_2, arg_3, 
-     .     arg_4, arg_5, result, xax, yax)
+     .     arg_4, arg_5, result, xaxlo, xaxhi, yaxlo, yaxhi, counts)
 
 *  arg_1  xpts  \
 *  arg_2  ypts  / Scattered x,y triples to be gridded.
@@ -225,10 +233,16 @@
 
 *  Dimension the work arrays
 
-      REAL*8 xax(wrk1lox:wrk1hix/2, wrk1loy:wrk1hiy,
+      REAL*8 xaxlo(wrk1lox:wrk1hix/2, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL*8 yax(wrk2lox:wrk2hix/2, wrk2loy:wrk2hiy,
+      REAL*8 xaxhi(wrk2lox:wrk2hix/2, wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
+      REAL*8 yaxlo(wrk3lox:wrk3hix/2, wrk3loy:wrk3hiy,
+     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
+      REAL*8 yaxhi(wrk4lox:wrk4hix/2, wrk4loy:wrk4hiy, 
+     .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
+      REAL counts(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
+     .              wrk5loz:wrk5hiz, wrk5lot:wrk5hit) 
 
       INTEGER i, j, k, l, m, n
       INTEGER i1, i2, j1, k1, l1
@@ -238,11 +252,11 @@
       INTEGER nx, ny
       INTEGER i1n, i2n
 
-      REAL xx, yy, zz
+      REAL xx, yy, ff
 
       CHARACTER*250 errtxt
 
-C  variables for checking axis characteristics (modulo axes)
+*  variables for checking axis characteristics (modulo axes)
 
       CHARACTER ax_name(5)*16, ax_units(5)*16
       LOGICAL backward(5), modulox(5), moduloy(5), regular(5)
@@ -254,7 +268,7 @@ C  variables for checking axis characteristics (modulo axes)
 
 *  Check to see if output axes are modulo
 
-      CALL ef_get_axis_info (id, ARG4, ax_name, ax_units, backward, 
+      CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
      .                       modulox, regular)
 
 *  Find number of points in scattered input points.  1-D arrays defining the 
@@ -307,64 +321,92 @@ C  variables for checking axis characteristics (modulo axes)
 
 C  Get coordinates of output axes.
 
-      call ef_get_coordinates(id, ARG4, X_AXIS, 
-     .   arg_lo_ss(X_AXIS, ARG4), arg_hi_ss(X_AXIS, ARG4), xax)
+      CALL ef_get_box_limits(id, ARG4, X_AXIS,
+     .   arg_lo_ss(X_AXIS, ARG4), arg_hi_ss(X_AXIS, ARG4), xaxlo, xaxhi)
 
-      call ef_get_coordinates(id, ARG5, Y_AXIS, 
-     .   arg_lo_ss(Y_AXIS, ARG5), arg_hi_ss(Y_AXIS, ARG5), yax)
+      CALL ef_get_box_limits(id, ARG5, Y_AXIS,
+     .   arg_lo_ss(Y_AXIS, ARG5), arg_hi_ss(Y_AXIS, ARG5), yaxlo, yaxhi)
 
 *  Compute result
 
+      k = res_lo_ss(Z_AXIS)
+      l = res_lo_ss(T_AXIS)
+
 *  Initialize result.
 
-         k = res_lo_ss(Z_AXIS)
-         l = res_lo_ss(T_AXIS)
-         DO j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-            DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-               result(i,j,k,l) = bad_flag_result
-            ENDDO
+      DO j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+         DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+            result(i,j,k,l) = 0.0
          ENDDO
+      ENDDO
+
+*  Initialize counts.
+
+      DO j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+         DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+            counts(i,j,1,1) = 0.0
+         ENDDO
+      ENDDO
 
 *  Loop over x and y, placing the function values in the appropriate slots
 *  in the grid. xpts and ypts may be on the X,Y,Z or T axis of ARG1 
 *  and ARG2, sending them to a subroutine collapses the extra dimensions so the
 *  value can be found.
 
-         nput = 0
-         DO 300 n = 1, nscat
+      nput = 0
+      DO 300 n = 1, nscat
 
-            CALL pickout_3pts (arg_1, arg_2, arg_3, n, xx, yy, zz)
+         CALL pickout3 (arg_1, arg_2, arg_3, n, xx, yy, ff)
 
 *  If output X axis is modulo, apply modulo adjustment to that coordinate
 *  of the scattered point.
 
-            IF (modulox(1)) CALL modscat (xax, nx, 1, xx)
+         IF (modulox(1)) CALL modscat (xaxlo, nx, 1, xx)
 
 *  Put fcn into result variable.
 
-            IF (zz .NE. bad_flag(ARG3)) THEN
-               i1 = 2
-               DO 510 i = res_lo_ss(X_AXIS)+1, res_hi_ss(X_AXIS)
-                   j1 = 2
-                  DO 500 j = res_lo_ss(Y_AXIS)+1, res_hi_ss(Y_AXIS)
+         IF (ff .NE. bad_flag(ARG3)) THEN
+            i1 = 1
+            DO 510 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+               j1 = 1
+               DO 500 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-                     IF( (xx.GE.xax(i1-1,1,1,1) .AND. 
-     .                    xx.LT.xax(i1  ,1,1,1)) 
-     .                 .AND. 
-     .                   (yy.GE.yax(j1-1,1,1,1) .AND. 
-     .                    yy.LT.yax(j1  ,1,1,1)) )  THEN
+                  IF( (xx.GE.xaxlo(i1,1,1,1) .AND.
+     .                  xx.LT.xaxhi(i1,1,1,1))
+     .               .AND.
+     .                 (yy.GE.yaxlo(j1,1,1,1) .AND.
+     .                  yy.LT.yaxhi(j1,1,1,1)) )  THEN
 
-                        result(i,j,k,l) = zz
-                        nput = nput + 1
-                     ENDIF
-                     j1 = j1 + 1
+                     result(i,j,k,l) = result(i,j,k,l) + ff
+                     counts(i,j,1,1) = counts(i,j,1,1) + 1. 
+                  ENDIF
 
- 500              CONTINUE
-                  i1 = i1 + 1
- 510           CONTINUE
-            ENDIF
+                  j1 = j1 + 1
 
- 300     CONTINUE
+ 500           CONTINUE
+               i1 = i1 + 1
+ 510        CONTINUE
+         ENDIF
+
+300   CONTINUE
+
+* Compute result, average in each bin.
+
+      i1 = 1
+      DO 610 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+         j1 = 1
+         DO 600 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+
+               IF( counts(i,j,1,1) .GT. 0. ) THEN
+                  result(i,j,k,l) = result(i,j,k,l)/counts(i,j,1,1)
+               ELSE
+                  result(i,j,k,l) = bad_flag_result
+               ENDIF
+
+            j1 = j1 + 1
+600      CONTINUE
+         i1 = i1 + 1
+610   CONTINUE
 
       RETURN
 
@@ -375,39 +417,11 @@ C  Get coordinates of output axes.
       ELSE IF (nxpts .EQ. 0) THEN
          WRITE (errtxt, 30)
       ENDIF
+ 20   FORMAT ('Input scattered x, y have different # of points', 2I8)
+ 30   FORMAT ('No data in scattered x, y points')
       GOTO 999 
 
  999  CALL EF_BAIL_OUT(id, errtxt)
-      RETURN
-
-
-   20 FORMAT ('Input scattered x, y have different # of points', 2I8)
-
-   30 FORMAT ('No data in scattered x, y points')
-
-
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-************************************************************************
-
-      END
-
-
-      SUBROUTINE pickout_3pts (alon, alat, fcn, n, xx, yy, zz)
-
-*  Pick out nth item from alon, alat, fcn, which are really 
-*  4-dimensioned arrays with normal axes on three of the four axes.
-
-      REAL alon(*), alat(*), fcn(*)
-      REAL xx, yy, zz
-      INTEGER n
-
-      xx = alon(n)
-      yy = alat(n)
-      zz = fcn(n)
 
       RETURN
       END
-
-

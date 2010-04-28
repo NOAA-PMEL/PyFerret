@@ -149,7 +149,7 @@ c.................save the number of obs in each (x,y) gridbox
 
 
 c************************************************************************
-c...binxyt.....Based on gausswt, return binned/averaged obs in (x,y) gridbox
+c...NOBS.....Based on gausswt, return only the # of obs in (x,y) gridbox
 c............method is to call this sub for each data value
 c............all calcs done in gridbox units
 c............xx/x1/xf all in same units
@@ -161,97 +161,36 @@ c  i	x1,y1,L1=west/south/earliest edge of grid (center of 1st box in data units)
 c  o 	obs(nx,ny,nt) number of obs in each (x,y,t) gridbox
 c--------------------------------------------------------------------------
 
-	SUBROUTINE binxyt (xx, yy, tt, vv, nx, ny, nt, x1, y1, t1, 
-     .                 dx, dy, dt, xf, yf, tf, obs, counts)
+	SUBROUTINE nobsxyt (xx, yy, tt, nx, ny, nt, x1, y1, t1, 
+     .                 dx, dy, dt, xf, yf, tf, obs)
+
 
 * Argument declarations
 
         INTEGER nx, ny, nt
-	REAL xx, yy, tt, vv, x1, y1, t1, dx, dy, dt, xf, 
-     .       yf, tf, obs(nx,ny,nt), counts(nx,ny,nt)
+	REAL xx, yy, tt, x1, y1, t1, dx, dy, dt, xf, 
+     .       yf, tf, obs(nx,ny,nt)
 
 * Local variable declarations
 
         REAL xxg, yyg, ttg
-        INTEGER ig, jg, Lg 
+        INTEGER ig, jg, Lg ! !!!!!!!!!!!!!!!!!!!!!!!! adding t dimension throughtout
 
-	xxg = xx
-	yyg = yy
-	ttg = tt
-	IF (dx .GT. 0.) xxg = (xx-x1)/ dx + 1.   ! grid values of data location
-	IF (dy .GT. 0.) yyg = (yy-y1)/ dy + 1.
-	IF (dt .GT. 0.) ttg = (tt-t1)/ dt + 1.
+	xxg = (xx-x1)/ dx + 1.		  ! grid values of data location
+	yyg = (yy-y1)/ dy + 1.
+	ttg = (tt-t1)/ dt + 1.
 
 c.................save the number of obs in each (x,y,t) gridbox
 	ig = NINT(xxg)
 	jg = NINT(yyg)
 	Lg = NINT(ttg)
 	IF (ig.GE.1 .AND. ig.LE.nx .AND. jg.GE.1 .AND. jg.LE.ny .AND.
-     .      Lg.GE.1 .AND. Lg.LE.nt   ) THEN
-           counts(ig,jg,Lg) = counts(ig,jg,Lg)+1.
-           obs(ig,jg,Lg) = obs(ig,jg,Lg) + vv
-        ENDIF
+     .      Lg.GE.1 .AND. Lg.LE.nt   )
+     .		obs(ig,jg,Lg) = obs(ig,jg,Lg)+1.
 
 	RETURN
 	END
 
-
-
-
-
-
-
-c************************************************************************
-c...NOBS.....return only the # of obs in (x,y) gridbox
-c............method is to CALL this sub for each data value
-c............all calcs done in gridbox units
-c............xx/x1/xf all in same units
-c............yy/y1/yf all in same units
-c............tt/t1/tf all in same units
-
-c  i	xx,yy,tt=x/y/t location of data pt (data units)
-c  i	nx,ny,nt=size of grids
-c  i	xlo,xhi, ylo,yhi, tlo,thi edges of grid cells
-c  o 	obs(nx,ny,nt) number of obs in each (x,y,t) gridbox
-c--------------------------------------------------------------------------
-
-	SUBROUTINE nobsxyt (xx, yy, tt, nx, ny, nt, xlo,xhi, ylo,yhi,
-     .                      tlo,thi, obs)
-
-* Argument declarations
-
-        INTEGER nx, ny, nt
-	REAL xx, yy, tt
-        REAL obs(nx,ny,nt)
-        REAL*8 xlo(*), xhi(*), ylo(*), yhi(*), tlo(*), thi(*)
-
-* Local variable declarations
-
-        REAL xxg, yyg, ttg
-        INTEGER ig, jg, Lg 
-
-        DO L = 1, nt
-           IF (tt.GE.tlo(L) .AND. tt.LT.thi(L)) THEN
-              DO j = 1, ny
-                 IF (yy.GE.ylo(j) .AND. yy.LT.yhi(j)) THEN
-                    DO i = 1, nx
-                       IF (xx.GE.ylo(j) .AND. yy.LT.yhi(j))THEN
-		          obs(i,j,l) = obs(i,j,L)+1.
-		          GOTO 100
-		       ENDIF
-		    ENDDO
-                 ENDIF
-              ENDDO
-	   ENDIF
-	ENDDO
-	RETURN
-
-  100   CONTINUE
-
-	RETURN
-
-	RETURN
-	END
 
       SUBROUTINE pickout (atim, n, val)
 

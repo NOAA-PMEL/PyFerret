@@ -67,12 +67,14 @@ samplexy_closest.F\
 samplexy_curv.F\
 samplexy_curv_avg.F\
 samplexy_curv_nrst.F\
-samplexy.F\
 samplexyt.F\
 samplexz.F\
 sampleyz.F\
 scat2ddups.F\
 scat2grid_bin_xy.F\
+scat2grid_bin_xyt.F\
+scat2grid_nbin_xy.F\
+scat2grid_nbin_xyt.F\
 scat2gridgauss_xt.F\
 scat2gridgauss_xy.F\
 scat2gridgauss_xz.F\
@@ -94,7 +96,6 @@ scat2gridlaplace_zt.F\
 scat2grid_t.F\
 scat2grid_nobs_xy.F\
 scat2grid_nobs_xyt.F\
-scat2grid_bin_xyt.F\
 scat2grid_subs.F\
 secs_to_ymdhms.F\
 sorti.F\

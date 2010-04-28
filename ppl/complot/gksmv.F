@@ -45,16 +45,13 @@ C
 C	This routine creates a binary file that can be used to
 c	construct device dependent plotting code
 c
-c
-#ifdef unix
+c v6.61 ACM 4/2010 Fix bug 1396 - dots between dashes on some displays.
+c                  Do not make a call to GPL on "move with the pen up".      
+
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
 	include 'gkscm1_inc.decl'
 	include 'GKSCM1.INC'
-#else
-	INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
-	INCLUDE 'tmap_pplv11inc:tmap_GKSCM1.INC'
-#endif
 	IF(.NOT.GKSOPN)THEN
 #ifdef core
             call crinit
@@ -123,8 +120,11 @@ C
 	    X(2)=X(1)
 	    Y(2)=Y(1)
 	    IPT=2
+c	ENDIF
+c	CALL GPL(IPT,X,Y)
+	ELSE
+	  CALL GPL(IPT,X,Y)
 	ENDIF
-	CALL GPL(IPT,X,Y)
 	RETURN
 	END
 #endif

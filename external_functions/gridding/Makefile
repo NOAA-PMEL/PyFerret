@@ -27,7 +27,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 
 
 .F.so:
-	$(F77) $(FFLAGS) -c  $<
+	$(F77) $(FFLAGS) -g -c  $<
 	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o -o $*.so
  
 .c.o:
@@ -44,8 +44,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # all:    ferret_cmn ave_scat2grid_t.so scat2grid_t.so
 # all:    ferret_cmn nobs.o index_to_grid.so scatgrid_nobs_xy.so scatgrid_nobs_xz.so scatgrid_nobs_xt.so scatgrid_nobs_yz.so scatgrid_nobs_yt.so scatgrid_nobs_zt.so scat2grid_bin_xy.so
 
-all:	ferret_cmn tracks2grid_ave_xyt.so scatgrid_bin_xyt.so scatgrid_nobs_xyt.so  scatgrid_nbin_xyt.so 
-more:    ferret_cmn scatgrid_bin_xyt.so scat2gridgauss_xy_fix.so scat2grid_bin_xy.so scatgrid_nobs_xyt.so scatgrid_nbin_xy.so scatgrid_nbin_xyt.so 
+all:	ferret_cmn tracks2grid_ave_xyt.so scat2grid_nobs_xt.so scat2grid_nobs_xz.so scat2grid_nobs_yt.so scat2grid_nobs_yz.so scat2grid_nobs_zt.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug" "CFLAGS = $(CFLAGS) -g -Ddebug"  all

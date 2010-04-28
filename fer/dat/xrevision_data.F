@@ -98,7 +98,8 @@
 * V6.19  2/03/09  Version 6.19 fix for choosing colors and thicknesses when > 6 colors have been defined
 * V6.2   5/0/09   V6.2 release
 * V6.3   9/18/09  V6.3 release
-* V6.3   11/20/09  V6.4 release
+* V6.4   11/20/09  V6.4 release
+* V6.61   4/27/10  
 
 	include	'xrevision.cmn'
 

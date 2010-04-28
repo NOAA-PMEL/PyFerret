@@ -64,6 +64,8 @@
 *		have a geog Y axis that isn't actually used
 * 3/06 - apply Andrew*s suggested correction for XY integ., bug1348
 * 6/06 - Fix to Andrew*s correction for XY integ., bug1348
+* 4/10 - Fix #1735; For averages other than in Y direction the above fix 
+*        failed to set ybox sizes and cos correction. Still need to set these.
 
 * internal variable declarations:
 	LOGICAL GEOG_COS_FACTOR, point, yes_ax(4), no_ax(4),
@@ -210,7 +212,9 @@ C http://mathworld.wolfram.com/Zone.html. Fix for @DIN too.
      .	 	.AND. cx_lo_s2(com_cx) .NE. unspecified_int4
 	IF ( need_cos ) THEN
 	      DO 120 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-                 IF (yes_yax) THEN
+
+C Compute the y boxes if there is a y axis; the computation may be 
+C avgs in other directions but we need the ybox size at a given y
 	            ybxlo = deg2rad* 
      .                SNGL(TM_WORLD(j, grid, y_dim, box_lo_lim) )
 
@@ -222,7 +226,7 @@ C http://mathworld.wolfram.com/Zone.html. Fix for @DIN too.
                     IF (j .EQ. cx_hi_s2(com_cx))
      .                ybxhi = deg2rad* cx_hi_ww(y_dim,res_cx)
 
-	            boxes(j+cos_offset)  = ABS( SIN(ybxhi) - SIN(ybxlo) )
+	            boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )
 
 		    ! surface area of sphere depends only on h not on ybox
 		    boxes(j+box_offset(y_dim)) = 1.  
@@ -230,12 +234,10 @@ C http://mathworld.wolfram.com/Zone.html. Fix for @DIN too.
 		    ! for integral need area is radius*radius* delx * h
 		    ! delx already has units that include radius of earth.
                     IF ( at_din ) boxes(j+box_offset(y_dim)) =  m_radius  
-                 ENDIF
  120         CONTINUE
 	ELSE
 	      DO 121 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
  121	      boxes(j+cos_offset)  = 1.0
-
 	ENDIF
 
 * do the transformation: average, integration, variance, ngood, nbad, ...

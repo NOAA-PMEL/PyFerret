@@ -82,6 +82,8 @@
 *                         statements.  use character constant instead
 * V554 1/04  *acm* - additions for /RANGE repeat loop control; alg_cvar, countervar_name
 * V603 5/07  *acm* - added MODNBD modulo regridding statistic
+* V66+ 4/10  *acm* - change pressure to reference pressure for RHO_UN as 
+*                    suggested by James Orr and Billy Kessler
 
 	include	'ferret.parm'
 	include	'xalgebra.cmn'
@@ -291,7 +293,7 @@
      .	     alg_arg_descr    ( 26 ) / 'temperature'/,
      .	     alg_arg_name     ( 27 ) / 'p'	    /,
      .	     alg_arg_units    ( 27 ) / 'decibars'   /,
-     .	     alg_arg_descr    ( 27 ) / 'pressure'   /,
+     .	     alg_arg_descr    ( 27 ) / 'reference pressure'   /,
      .       alg_fcn		( 21 ) / 'THETA_FO' /,
      .	     alg_num_fcn_args	( 21 ) / 4 	    /
      .	     alg_fcn_descr	( 21 ) /

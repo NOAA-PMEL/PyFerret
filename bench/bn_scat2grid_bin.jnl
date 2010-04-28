@@ -1,0 +1,75 @@
+! Tests of scat2grid_bin and scat2grid_nbin functions.
+
+! define some variables (as in bench_gridding)
+
+define axis/t=1-jan-2010:30-mar-2010:1/units=days tin
+define axis/t=1-jan-2010:30-mar-2010:10/units=days tout
+let tt = t[gt=tout,L=1:10]
+sh grid tt
+
+
+define axis/x=0:10:0.05 x10
+define axis/y=0:10:0.05 y10
+define grid/x=x10/y=y10 g10x10
+set grid g10x10
+let WAVE = SIN(KX*XPTS + KY*YPTS - PHASE) / 3
+let PHASE = 0
+let KAPPA = 0.4
+let KX = 0.4
+let KY = 0.7
+let FCN1 = SIN(R)/(R+1)
+let R = ((XPTS-X0)^2+ 5*(YPTS-Y0)^2)^0.5
+let X0 = 3
+let Y0 = 8
+LET sample_function = fcn1 + wave
+set view ul
+let xpts = x; let ypts = y
+SHADE/title="A field with 200 sample points marked" sample_function
+let xpts = 10*randu(i); let ypts = 10*randu(i+2)
+set region/i=1:200
+plot/vs/over/symbols xpts,ypts
+define axis/x=1:10:.5 xax5
+define axis/y=1:10:.5 yax5
+define axis/x=1:10:.2 xax2
+define axis/y=1:10:.2 yax2
+set view ll
+let sgrid = scat2grid_bin_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5])
+SHADE/TITLE="Bin Gridding (5,5) to 20x20 grid" sgrid
+list/x=2:3 sgrid
+
+set view lr
+let sgrid = scat2grid_bin_xy(xpts, ypts, sample_function, x[gx=xax2], y[gy=yax2])
+SHADE/TITLE="Bin Gridding (1,1) to 100x100" sgrid
+list/x=2:3 sgrid
+
+! Now the NBIN functios
+
+let sgrid = scat2grid_nbin_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5])
+SHADE/TITLE="NBIN Gridding (5,5) to 20x20 grid" sgrid
+list/x=2:3 sgrid
+
+set view lr
+let sgrid = scat2grid_nbin_xy(xpts, ypts, sample_function, x[gx=xax2], y[gy=yax2])
+SHADE/TITLE="NBIN Gridding (1,1) to 100x100" sgrid
+list/x=2:3 sgrid
+
+
+! Now the XYT functions
+
+let tpts = 39798 + 87*RANDU(I)
+show grid tt
+
+let sgrid = scat2grid_bin_xyt (xpts, ypts, tpts, sample_function, x[gx=xax5], y[gy=yax5], tt)
+SAVE/FILE=a.nc/clobber sgrid
+
+
+let ngrid = scat2grid_nbin_xyt (xpts, ypts, tpts, sample_function, x[gx=xax5], y[gy=yax5], tt)
+SAVE/FILE=a.nc/append ngrid
+
+can var/all
+use a.nc
+stat sgrid
+stat ngrid
+list/x=2:3/L=3 sgrid
+list/x=2:3/L=3 ngrid
+

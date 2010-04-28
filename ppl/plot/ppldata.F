@@ -71,6 +71,7 @@ C     for compatibility with Ferret use of symbols.
 	INCLUDE 'COMEPL.INC'
 	INCLUDE 'COMEPV.INC'
 	INCLUDE 'CONLAB.INC'
+	INCLUDE 'cont_inc.decl'
 	INCLUDE 'CONT.INC'
 	INCLUDE 'DASHZZ.INC'
 	INCLUDE 'DATA.INC'

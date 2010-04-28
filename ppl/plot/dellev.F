@@ -44,13 +44,11 @@ C**
 C***********************************************************************
 C**
 C**
-#ifdef unix
+
 	INCLUDE 'PARAMPL5.DAT'
+	INCLUDE 'cont_inc.decl'
 	INCLUDE 'CONT.INC'
-#else
-	INCLUDE 'pplinc:PARAMPL5.DAT'
-	INCLUDE 'pplinc:CONT.INC'
-#endif
+
 	DO 520 K=J+1,NLEV
 	ZLEV(K-1)=ZLEV(K)
 	LDIG(K-1)=LDIG(K)

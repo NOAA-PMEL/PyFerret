@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ../fer/ferret_c
--rwxr-xr-x 1 ansley tmap 34616594 Apr  6 12:07 ../fer/ferret_c
-Using external functions from ../external_functions/ext_func/
+Running FERRET version /home/porter/ansley/build/new-stout/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 34632054 Apr 28 10:31 /home/porter/ansley/build/new-stout/FERRET/fer/ferret_c
+Using external functions from /home/porter/ansley/build/new-stout/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix in cdf_list for writing add_offset attribute
+Note: v6.1.  fix bug 1735; clean up scat2grid_bin functions
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/build/new-stout/FERRET/bench
@@ -19,8 +19,8 @@ FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func/
-Beginning at Tue Apr 6 12:13:18 PDT 2010
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/build/new-stout/FERRET/external_functions/ext_func
+Beginning at Wed Apr 28 10:32:30 PDT 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2043,7 +2043,7 @@ sho att/all .
  *** NOTE: Changing the type of attribute (coadsx).modulo
  *** NOTE: Changing the value of attribute (coadsx).modulo
 syntax error
-context: <htm^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserverefize 64000000 defmp-iridlc3) store<p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuu</b><b>absuv</b><b>tauy</b><b>taux</b>]</ol></td></tr></table></form><FORM METHOD="POST" ACTION="/fullcommand.html"><TEXTAREA NAME="command" ROWS=7 COLS=50 wrap=soft> SOURCES .FSU .FULL .tauyyyyy dods.dds</TEXTAREA> <INPUT TYPE="submit" VALUE="OK"><INPUT TYPE="reset" VALUE="reset"></FORM></body></html>1000
+context: <htm^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserverefize 64000000 defmp-iridlc3) store<p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuv</b><b>taux</b><b>absuu</b><b>tauy</b>]</ol></td></tr></table></form><FORM METHOD="POST" ACTION="/fullcommand.html"><TEXTAREA NAME="command" ROWS=7 COLS=50 wrap=soft> SOURCES .FSU .FULL .tauyyyyy dods.dds</TEXTAREA> <INPUT TYPE="submit" VALUE="OK"><INPUT TYPE="reset" VALUE="reset"></FORM></body></html>1000
  *** NOTE: Changing the value of attribute (TIME4).time_origin
  **ERROR: command syntax: enclose coordinate variable name in parentheses
 list coadsx.units
@@ -2205,7 +2205,6 @@ Replacing definition of axis XIR
  LISTing to file xyir.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2311,7 +2310,7 @@ Replacing definition of axis TIME
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: invalid command: it is a child axis already
-set axis/stride=2/offset=1 (AX052)
+set axis/stride=2/offset=1 (AX050)
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
  **ERROR: invalid command: offset must be less than stride value
@@ -3006,14 +3005,16 @@ LIST/FORMAT=CDF/file=nc4_deflate4_t1.nc/clobber/ncformat=4/deflate/shuffle/tchun
 LIST/FORMAT=CDF/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=18/tchunk=15 sst
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: invalid command: string/numeric data type mix-up: WRITEV5D
-load WRITEV5D(tr[i=95:100,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,55.0)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  Cached data cleared from memory
@@ -3090,4 +3091,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Apr 6 12:14:58 PDT 2010
+Ended at Wed Apr 28 10:34:13 PDT 2010

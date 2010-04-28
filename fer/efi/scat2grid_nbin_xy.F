@@ -101,19 +101,19 @@
       arg = 1
       CALL ef_set_arg_name(id, arg, 'XPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .     'X coordinates of scattered input triples')
+     .     'X coordinates of scattered XY locations')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'YPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .     'Y coordinates of scattered input triples')
+     .     'Y coordinates of scattered XY locations')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
       WRITE (buff, 20) 
-   20 FORMAT ('F(X,Y) 3rd component of scattered input triples. ')
+   20 FORMAT ('F(X,Y) Data at scattered input XY locations')
       CALL ef_set_arg_desc(id, arg, buff)
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 

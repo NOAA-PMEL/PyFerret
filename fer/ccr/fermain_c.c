@@ -165,6 +165,7 @@ void help_text()
 -nojnl:  on startup don't open a journal file (can be turned on later with SET MODE JOURNAL\n\
 -noverify:  on startup turn off verify mode (can be turned on later with SET MODE VERIFY\n\
 -script scriptname [arguments]: execute the specified script and exit: SPECIFY THIS LAST\n");
+-version lists the version number of Ferret and stops. \n");
   exit(0);
 }
 

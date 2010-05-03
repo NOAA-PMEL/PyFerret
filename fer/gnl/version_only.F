@@ -58,9 +58,12 @@
 	
 	plen = TM_LENSTR1(platform_type)
 
-	PRINT 3000, show_str(1:slen), platform_type(1:plen), make_date
+c	PRINT 3000, show_str(1:slen), platform_type(1:plen), make_date
+c
+c 3000	FORMAT ( 'FERRET v', A, ' ', A, ' -',1X,A )
 
- 3000	FORMAT ( 'FERRET v', A, ' ', A, ' -',1X,A )
+	PRINT 3000, show_str(1:slen)
+ 3000	FORMAT (A )
 
 	RETURN
 	END

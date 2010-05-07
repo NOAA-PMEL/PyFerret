@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version ../fer/ferret_c
--rwxr-xr-x  1 ansley tmap 45957018 Apr 27 17:16 ../fer/ferret_c
-Using external functions from ../external_functions/ext_func
+-rwxr-xr-x  1 ansley tmap 49226503 May  6 17:05 ../fer/ferret_c
+Using external functions from /home/porter/tmap/ferret/x86_64-linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix bug 1735; clean up scat2grid_bin functions
+Note: fix bug 1738 SHOW AXIS/XML
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/build/x86_gfortran/FERRET/bench
+PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -19,8 +19,8 @@ FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func
-Beginning at Tue Apr 27 17:20:24 PDT 2010
+FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/x86_64-linux/ext_func/libs
+Beginning at Thu May 6 17:06:25 PDT 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2043,7 +2043,7 @@ sho att/all .
  *** NOTE: Changing the type of attribute (coadsx).modulo
  *** NOTE: Changing the value of attribute (coadsx).modulo
 syntax error
-context: <htm^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserverefize 64000000 defmp-iridlc3) store<p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>tauy</b><b>taux</b><b>absuu</b><b>absuv</b>]</ol></td></tr></table></form><FORM METHOD="POST" ACTION="/fullcommand.html"><TEXTAREA NAME="command" ROWS=7 COLS=50 wrap=soft> SOURCES .FSU .FULL .tauyyyyy dods.dds</TEXTAREA> <INPUT TYPE="submit" VALUE="OK"><INPUT TYPE="reset" VALUE="reset"></FORM></body></html>1000
+context: <htm^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>taux</b><b>absuu</b><b>tauy</b><b>absuv</b>]</ol></td></tr></table></form><FORM METHOD="POST" ACTION="/fullcommand.html"><TEXTAREA NAME="command" ROWS=7 COLS=50 wrap=soft> SOURCES .FSU .FULL .tauyyyyy dods.dds</TEXTAREA> <INPUT TYPE="submit" VALUE="OK"><INPUT TYPE="reset" VALUE="reset"></FORM></body></html>1000
  *** NOTE: Changing the value of attribute (TIME4).time_origin
  **ERROR: command syntax: enclose coordinate variable name in parentheses
 list coadsx.units
@@ -2971,8 +2971,6 @@ Re-defining viewport V8
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  Restoring default chunk cache settings
  Restoring default chunk cache settings
  PERMANENT data cleared from memory
@@ -3005,6 +3003,10 @@ LIST/FORMAT=CDF/file=nc4_deflate4_t1.nc/clobber/ncformat=4/deflate/shuffle/tchun
  **TMAP ERR: error specifying chunk sizes
              TChunkSize 0 is larger than dimension length 3
 LIST/FORMAT=CDF/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=18/tchunk=15 sst
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3089,4 +3091,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Apr 27 17:22:14 PDT 2010
+Ended at Thu May 6 17:08:19 PDT 2010

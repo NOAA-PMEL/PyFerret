@@ -196,7 +196,9 @@
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
-        INTEGER         TM_UNIT_ID, cx_x , cx_y, iunits	 
+        INTEGER         TM_UNIT_ID, cx_x , cx_y, iunits
+	CHARACTER*1     axdir(4), ax1
+
 	REAL		val1, dt_min, lo, hi, dep_len, 
      .			ind_len, xkeypos, ykeypos, xkeysize, ykeysize, 
      .			lab_ht, first, last
@@ -209,6 +211,7 @@
      .			norm_labs = .FALSE.,
      .			pnot_curv = .FALSE.,
      .			range_rqd = .TRUE. )
+	DATA axdir / 'X', 'Y', 'Z', 'T' /
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
@@ -532,6 +535,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .				ndim,
      .				npts2,
      .				status	)
+           iaxis = CGRID_AXIS(dep_dim,cx)
+ 
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 * ... replicate points to create a "step" plot if requested  (1/01)
 	   nload = npts2 * step_inc
@@ -806,6 +811,14 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   ENDIF
 
 	ENDIF
+
+        ax1 = axdir(indep_dim)
+	IF (flip) THEN
+           CALL PPLCMD ( from, line, 0, 'SET AX_VERT '//ax1, 1, 1 )
+	ELSE
+	   CALL PPLCMD ( from, line, 0, 'SET AX_HORIZ '//ax1, 1, 1 )
+        ENDIF
+
 
 	IF ( no_labels ) RETURN
 

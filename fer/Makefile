@@ -107,6 +107,7 @@ ncdf4:	.FRC
 
 debug:	.FRC
 	(cd ccr; $(CC) -c -g $(CFLAGS) gui_init.c)
+	$(MAKE) update
 	$(MAKE) "DEBUG=-g" "FFLAGS = $(FFLAGS) -Ddebug"  \
 		"CFLAGS = -g $(CFLAGS)" \
 		"GUI_FAKES=special/gui_fakes.o" all

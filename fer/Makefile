@@ -86,11 +86,6 @@ EF_CMNS = common/EF_Util.cmn common/EF_Util.parm common/EF_mem_subsc.cmn
 
 all:	fmt_libraries fer_libraries ppl_libraries special_code ferret
 
-ncdf4:	.FRC
-	(cd ccr; $(CC) -c $(CFLAGS) gui_init.c)
-	$(MAKE) update
-	$(MAKE) "GUI_FAKES=special/gui_fakes.o" all
-	
 # Dont seem to have all the static libraries we need for this.
 ncdf4_static:	.FRC
 	(cd ccr; $(CC) -c $(CFLAGS) gui_init.c)

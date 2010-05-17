@@ -142,6 +142,8 @@
 * V62   *acm*  2/09 Fix bug 1636, on PLOT/VS when setting up dependent axis,
 *                  need to reinitialize delta=unspecified_val8 so that delta is
 *                  computed from the dependent data.
+* V662 *acm*  5/10 Set AX_VERT or AX_HORIZ symbol with the direction of the independent axis: X, Y, Z, T" plot_set_up.F
+
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'

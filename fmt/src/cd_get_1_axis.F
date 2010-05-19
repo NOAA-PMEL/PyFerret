@@ -159,6 +159,8 @@
 * V63   7/09 *acm* Fix bug 1676 Reversed axis with EDGES 
 * V65  *acm* 1/10  Make sure parameters values are consistent with 
 *                              whats in netcdf.inc from netcdf4.
+*      *kms* 5/10  Fix scaling/offset bug: using iaxis instead of i inside loops 334 and 336
+*
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
 *       dset     - dataset number for already opened CDF file
@@ -964,10 +966,10 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 	 IF (do_scale) THEN
 	    IF (scale_is_dp) THEN
 	       DO 334 i=ipt1,ipte
- 334            line_mem(iaxis) = line_mem(iaxis)*dscale + doffset
+ 334            line_mem(i) = line_mem(i)*dscale + doffset
 	    ELSE
 	       DO 336 i=ipt1,ipte
- 336            line_mem(iaxis) = line_mem(iaxis)*scale + offset
+ 336            line_mem(i) = line_mem(i)*scale + offset
 	    ENDIF
 	 ENDIF
 

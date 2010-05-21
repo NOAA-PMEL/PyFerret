@@ -706,6 +706,8 @@ GO bn_netcdf4
 GO bn_reset
 GO bn_scat2grid_bin.jnl
 
+GO bn_reset
+GO bn_set_axis_regular
 
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not

@@ -5,9 +5,12 @@
 	# platform specific macros
 
 
+	NETCDF4_DIR = /home/acm/altix/local
+
 	INCLUDES = -I/net2/rsz/ia64/gcc/gcc-3.4.6/include/ \
 			  -I/usr/include \
 			  -I. -Ireadline \
+			  -I/$(NETCDF4_DIR)/incude \
 			  -I/usr/include/X11 \
 				-I/net2/rsz/ia64/lesstif-0.95.0/include \
 			  -I/usr/X11R6/include \
@@ -78,7 +81,11 @@
 	GKSLIB		= ../xgks/src/lib/libxgks.a
 	READLINELIB	= ../readline-4.1/libreadline.a 
 
-	HDFLIB		= -L/home/sch/src/ia64/lib/  -ldf -ljpeg -lz
+
+	CDFLIB		= $(NETCDF4_DIR)/lib/libnetcdf.a \
+			  $(NETCDF4_DIR)/lib/libhdf5_hl.a \
+			  $(NETCDF4_DIR)/lib/libhdf5.a \
+			  -lz -lc -lm -lcurl
 
 #	CDFLIB		= /usr/local/netcdf-3.6.1/gcc-3.3.3/lib/libnetcdf.a 
 

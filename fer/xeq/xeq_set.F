@@ -163,6 +163,7 @@
 *                  that was opened.
 * V66   *acm* 3/10 Read qualifiers for netcdf4 SET LIST/NCFORMAT etc in call to
 *                  netcdf4_set_list_settings
+*       *kms* 5/10 add SET AXIS/REGULAR to force interpreting the axis as regular
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -219,9 +220,10 @@
      .                  attype_spec, pos, mr, varid, uvar, cat, iflag, 
      .                  isetout, ivar, dot, strided_axis, igrd, offset,
      .                  attid, attype, attoutflag, attlen, i1, dset,
-     .                  istat, cache_size, cache_nelems, cache_preemption
+     .                  istat, cache_size, cache_nelems, cache_preemption,
+     .                  numpts
         REAL*8          TM_WW_AXLEN, axwwlen, new_att_modulo_len
-        REAL*8          delta, dlo, dhi
+        REAL*8          delta, dlo, dhi, firstval, lastval
 	REAL		val_buf, cache_size_mb
 	CHARACTER	TM_FMT*12, title*1024, subtitle*64, arg*24,
      .			buff1*512, buff2*512, data_form*3, show_str*12,
@@ -804,7 +806,7 @@ c *kob* 4/97
 	mgrid_abstract = grid
 	RETURN
 
-* SET AXIS  /MODULO /DEPTH /CALENDAR /T0 /UNITS
+* SET AXIS  /MODULO /DEPTH /CALENDAR /REGULAR /T0 /UNITS
  1200	axis = TM_GET_LINENUM( cmnd_buff(item_start(1):item_end(1)) )
         IF ( axis .EQ. unspecified_int4 ) GOTO 6210
 * /MODULO
@@ -869,7 +871,7 @@ c *kob* 4/97
                     ok_cal = .TRUE.
                     line_cal_name(axis) = allowed_calendars(i)
                  ENDIF
-1220         CONTINUE
+ 1220         CONTINUE
 
               IF (.NOT. ok_cal) GOTO 6320
               new_att_calendar = line_cal_name(axis)
@@ -877,6 +879,30 @@ c *kob* 4/97
            ENDIF
 
         ENDIF
+
+*  /REGULAR
+        IF ( qual_given(slash_set_axis_regular) .GT. 0 ) THEN
+           IF ( .NOT. line_regular(axis) ) THEN
+*             ** Get first and last axis values (assumed to be valid)
+*                and number of points **
+              numpts = line_dim(axis)
+              i = line_subsc1(axis)
+              firstval = line_mem(i)
+              i = i + numpts - 1
+              lastval = line_mem(i)
+*             ** Free up memory used by the array of axis values **
+              CALL PACK_LINE_STORAGE(axis)
+*             ** Assign values for a regular axis **
+              line_start(axis) = firstval
+              line_delta(axis) = (lastval - firstval) / (numpts - 1.0)
+              line_regular(axis) = .TRUE.
+              CALL WARN('Axis reset to be regular (evenly-spaced): '
+     .                  //line_name(axis))
+           ELSE
+              CALL WARN('Axis is already regular: '//line_name(axis))
+           ENDIF
+        ENDIF
+
 *  /T0 
         new_att_t0 = ' '
 	loc = qual_given(slash_set_axis_t0) 

@@ -40,6 +40,7 @@
 *                  /OUTFILE= /APPEND /CLOBBER
 * V6.6  *acm* 3/10 new qualifiers for SET LIST netCDF4: NCFORMAT,
 *                  DEFLATE,SHUFFLE,ENDIAN,XCHUNK,YCHUNK,ZCHUNK,TCHUNK
+*       *kms* 5/10 add SET AXIS/REGULAR to force interpreting the axis as regular
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -164,6 +165,7 @@
      .			slash_set_axis_units,
      .                  slash_set_axis_stride,
      .                  slash_set_axis_offset,
+     .                  slash_set_axis_regular,
      .
      .			slash_set_memory_words,
      .			slash_set_nccache_size,
@@ -408,6 +410,7 @@
      .			slash_set_axis_units    = 5,
      .                  slash_set_axis_stride   = 6,
      .                  slash_set_axis_offset   = 7,
+     .			slash_set_axis_regular  = 8,
      .
      .			slash_set_memory_words	= 1,
      .			slash_set_nccache_size	= 1,

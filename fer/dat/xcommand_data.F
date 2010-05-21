@@ -183,6 +183,7 @@
 *                  /OUTFILE= /APPEND /CLOBBER
 * V6.6  *acm* 2/10 new qualifiers for SET LIST netCDF4: NCFORMAT,
 *                  XCHUNK,YCHUNK,ZCHUNK,TCHUNK,DEFLATE,SHUFFLE,ENDIAN
+*       *kms* 5/10 add SET AXIS/REGULAR to force interpreting the axis as regular
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -326,7 +327,7 @@
 	   DATA subcommands      (nsub_at1 +11)	/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at1 +11)	/ nqual1l	/
 	   DATA qualifier_pointer(nsub_at1 +11)	/ nqual_at1l	/
-* SET AXIS / MODULO /DEPTH /CALENDAR /UNITS /T0 /STRIDE /OFFSET
+* SET AXIS / MODULO /DEPTH /CALENDAR /UNITS /T0 /STRIDE /OFFSET /REGULAR
 		DATA qualifiers  (nqual_at1l+0)	/ 'MODULO'	/
 		DATA qualifiers  (nqual_at1l+1)	/ 'DEPTH'	/
 		DATA qualifiers  (nqual_at1l+2)	/ 'CALENDAR'	/
@@ -334,7 +335,7 @@
 		DATA qualifiers  (nqual_at1l+4)	/ 'UNITS'	/
 		DATA qualifiers  (nqual_at1l+5)	/ 'STRIDE'	/
 		DATA qualifiers  (nqual_at1l+6)	/ 'OFFSET'	/
-		DATA qualifiers  (nqual_at1l+7)	/ '****'	/
+		DATA qualifiers  (nqual_at1l+7)	/ 'REGULAR'	/
 * SET MEMORY							
 	   DATA subcommands      (nsub_at1 +12)	/ 'MEMORY'	/
 	   DATA num_qualifs      (nsub_at1 +12)	/ nqual1m	/

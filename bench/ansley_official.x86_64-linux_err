@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ksmith/FERRET/fer/ferret_c
--rwxr-xr-x  1 ksmith tmap 49167398 May 21 15:10 /home/porter/ksmith/FERRET/fer/ferret_c
+-rwxr-xr-x  1 ksmith tmap 49235970 May 27 12:21 /home/porter/ksmith/FERRET/fer/ferret_c
 Using external functions from /home/porter/tmap/ferret/x86_64-linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by Karl
-Note: Added test for SET AXIS /REGULAR
+Note: Added tests for SET REDIRECT and CANCEL REDIRECT
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ksmith/FERRET/bench
@@ -20,7 +20,7 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/x86_64-linux/ext_func/libs
-Beginning at Fri May 21 15:54:18 PDT 2010
+Beginning at Thu May 27 16:06:24 PDT 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1247,7 +1247,6 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid LAT_FIELD_GRID
  *** NOTE: Not deleted: LON_FIELD_I_AXIS
  *** NOTE: Axis is in use by grid LON_FIELD_GRID
-rm: cannot remove `input.txt': No such file or directory
 ls: input.txt: No such file or directory
  *** NOTE: Not deleted: XIRREG
  *** NOTE: Axis is in use by grid GIRREG
@@ -3018,6 +3017,61 @@ Replacing definition of grid MYGRID
  *** NOTE: Axis reset to be regular (evenly-spaced): MYX1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ *** NOTE: No active redirects to cancel
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ *** NOTE: Axis is already regular: MYAXIS
+ **ERROR: variable unknown or not in data set: GARBAGE
+show grid garbage
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ *** NOTE: stderr is not redirected
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -3100,4 +3154,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri May 21 15:55:52 PDT 2010
+Ended at Thu May 27 16:08:03 PDT 2010

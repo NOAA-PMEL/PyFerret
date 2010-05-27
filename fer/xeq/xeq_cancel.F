@@ -130,6 +130,7 @@
 * V610  *acm* 3/08 Fixes for metafile batch mode
 * V63   *acm* 9/09 Fix bug 1691: deallocate use of dynamic axis when it is found in a grid.
 *                  If more than one grid uses the dyn axis, deallocate use of axis for each.
+* V66   *kms* 5/10 add CANCEL REDIRECT for stdout/stderr redirection
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -179,10 +180,10 @@
      .			cache_size, cache_nelems, cache_preemption
 	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE, MATCH_TEMPLATE,
      .			ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
-     .			report_error,
-     .			slash_all, del_perm, del_temp, perm_var, all_dims,
-     .                  coordvar, do_err, canout, new_att_modulo, its_gif,
-     .                  batch
+     .			report_error, slash_all, del_perm, del_temp,
+     .                  perm_var, all_dims, coordvar, do_err, 
+     .                  canout, new_att_modulo, its_gif, batch, 
+     .                  redir_cancel_stdout, redir_cancel_stderr
 
 	CHARACTER	arg*4, buff*512, arg30*30, varname*512,
      .                  attname*128, show_str*12, buff2*3, DUMMY*512
@@ -987,10 +988,77 @@ c	ENDIF
 
 	RETURN
         
-* unused subcommand
-
- 1500   CONTINUE
-	RETURN
+* CANCEL REDIRECT
+ 1500   redir_cancel_stdout = .FALSE.
+        redir_cancel_stderr = .FALSE.
+        IF ( num_args .GT. 0 ) THEN
+*          Get all the redirect sources to cancel
+           DO 1510 i = 1,num_args
+              IF ( MATCH4( cmnd_buff(arg_start(i):arg_end(i) ), 
+     .              arg_end(i) - arg_start(i) + 1, 'STDOUT', 6) ) THEN
+                 redir_cancel_stdout = .TRUE.
+              ELSE IF ( MATCH4( cmnd_buff(arg_start(i):arg_end(i) ), 
+     .              arg_end(i) - arg_start(i) + 1, 'STDERR', 6) ) THEN
+                 redir_cancel_stderr = .TRUE.
+              ELSE
+*                Unknown redirect source
+                 CALL WARN('Ignored cancel redirect of unknown source: '
+     .                   // cmnd_buff(arg_start(i):arg_end(i)) )
+              ENDIF
+ 1510      CONTINUE
+           IF ( redir_cancel_stdout .AND. 
+     .          (redirect_stdout_flags .EQ. redirect_none) ) THEN
+              CALL WARN('stdout is not redirected')
+              redir_cancel_stdout = .FALSE.
+           ENDIF
+           IF ( redir_cancel_stderr .AND. 
+     .          (redirect_stderr_flags .EQ. redirect_none) ) THEN
+              CALL WARN('stderr is not redirected')
+              redir_cancel_stderr = .FALSE.
+           ENDIF
+        ELSE
+*          Default: cancel all active redirects
+           IF ( redirect_stdout_flags .NE. redirect_none ) THEN
+              redir_cancel_stdout = .TRUE.
+           ENDIF
+           IF ( redirect_stderr_flags .NE. redirect_none ) THEN
+              redir_cancel_stderr = .TRUE.
+           ENDIF
+           IF ( (.NOT. redir_cancel_stdout) .AND. 
+     .          (.NOT. redir_cancel_stderr) ) THEN
+              CALL WARN('No active redirects to cancel')
+           ENDIF
+        ENDIF
+*
+        IF ( redir_cancel_stdout ) THEN
+           IF ( (redirect_stdout_flags .EQ. redirect_file) .OR.
+     .          (redirect_stdout_flags .EQ. redirect_file_tee) ) THEN
+*             Check if stdout and stderr are sent to the same LUN
+              IF ( (redirect_stderr_lun .NE. redirect_stdout_lun) .OR.
+     .             ((redirect_stderr_flags .NE. redirect_file) .AND.
+     .           (redirect_stderr_flags .NE. redirect_file_tee)) ) THEN
+                 CLOSE(UNIT=redirect_stdout_lun)
+              ENDIF
+              redirect_stdout_lun = -1
+           ENDIF
+           redirect_stdout_flags = redirect_none
+        ENDIF
+*
+        IF ( redir_cancel_stderr ) THEN
+           IF ( (redirect_stderr_flags .EQ. redirect_file) .OR.
+     .          (redirect_stderr_flags .EQ. redirect_file_tee) ) THEN
+*             Check if stdout and stderr are sent to the same LUN
+              IF ( (redirect_stdout_lun .NE. redirect_stderr_lun) .OR.
+     .             ((redirect_stdout_flags .NE. redirect_file) .AND.
+     .           (redirect_stdout_flags .NE. redirect_file_tee)) ) THEN
+                 CLOSE(UNIT=redirect_stderr_lun)
+              ENDIF
+              redirect_stderr_lun = -1
+           ENDIF
+           redirect_stderr_flags = redirect_none
+        ENDIF
+*
+        RETURN
 
 * CANCEL ALIAS
  1600	IF ( slash_all ) THEN

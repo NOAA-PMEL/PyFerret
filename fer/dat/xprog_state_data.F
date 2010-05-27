@@ -140,6 +140,10 @@
      .		cmnd_lun	/ 21	/
 #endif
 
+* for SET REDIRECT
+        DATA    redirect_stdout_flags  / redirect_none /,
+     .          redirect_stderr_flags  / redirect_none /
+
 * for SET MODE
 	DATA	(mode_state( pmode_diagnostic  ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.FALSE.   /,

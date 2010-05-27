@@ -47,6 +47,7 @@
 *	 12/29/94 - added "mode" argument
 * V400:	  6/20/95 - bug fix: LIST/FILE output sent to "default_list_lun"
 *			should go to disk file, not to screen
+* V6.6  *kms* 5/10 - monitor redirect_*_flags for stdout/stderr redirection.
 
 #ifdef unix
 	include 'ferret.parm'
@@ -86,6 +87,38 @@
 	IF ( mode_gui .AND. out_lun.NE.default_list_lun ) THEN
 	   CALL TM_FTOC_STRNG( next_line(:llen), fhol, slen )
 	   CALL FERRET_LIST_IN_WINDOW( fhol, ftxout_append )
+        ELSE IF ( (out_lun .EQ. ttout_lun) .AND.
+     .            (redirect_stdout_flags .NE. redirect_none) ) THEN
+           IF ( (redirect_stdout_flags .EQ. redirect_journal_tee) .OR.
+     .          (redirect_stdout_flags .EQ. redirect_journal) ) THEN
+              IF (mode_journal .AND. jrnl_lun.NE.unspecified_int4) THEN
+                 WRITE ( jrnl_lun, '(A,A)' ) '!', next_line(:llen)
+              ENDIF
+           ENDIF
+           IF ( (redirect_stdout_flags .EQ. redirect_file_tee) .OR.
+     .          (redirect_stdout_flags .EQ. redirect_file) ) THEN
+              WRITE ( redirect_stdout_lun, '(A)' ) next_line(:llen)
+           ENDIF
+           IF ( (redirect_stdout_flags .EQ. redirect_journal_tee) .OR.
+     .          (redirect_stdout_flags .EQ. redirect_file_tee) ) THEN
+              WRITE ( out_lun, '(A)' ) next_line(:llen)
+           ENDIF
+        ELSE IF ( (out_lun .EQ. err_lun) .AND.
+     .            (redirect_stderr_flags .NE. redirect_none) ) THEN
+           IF ( (redirect_stderr_flags .EQ. redirect_journal_tee) .OR.
+     .          (redirect_stderr_flags .EQ. redirect_journal) ) THEN
+              IF (mode_journal .AND. jrnl_lun.NE.unspecified_int4) THEN
+                 WRITE ( jrnl_lun, '(A,A)' ) '!', next_line(:llen)
+              ENDIF
+           ENDIF
+           IF ( (redirect_stderr_flags .EQ. redirect_file_tee) .OR.
+     .          (redirect_stderr_flags .EQ. redirect_file) ) THEN
+              WRITE ( redirect_stderr_lun, '(A)' ) next_line(:llen)
+           ENDIF
+           IF ( (redirect_stderr_flags .EQ. redirect_journal_tee) .OR.
+     .          (redirect_stderr_flags .EQ. redirect_file_tee) ) THEN
+              WRITE ( out_lun, '(A)' ) next_line(:llen)
+           ENDIF
 	ELSE
 	   WRITE ( out_lun, '(A)' ) next_line(:llen)
 	ENDIF

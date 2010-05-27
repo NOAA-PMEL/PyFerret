@@ -1,0 +1,156 @@
+! bn_set_cancel_redirect.jnl
+! Karl Smith, 5/2010
+! test for SET REDIRECT and CANCEL REDIRECT
+
+! --- 1. redirect/tee both stdout and stderr to a file
+set redirect /tee /file="redirect.txt" /clobber stdout stderr
+
+! --- 2. produce some output to both stdout and stderr
+define axis /x=0:6:0.5 myaxis
+set axis myaxis
+define grid /x=myaxis mygrid
+set grid mygrid
+let wave=sin(x)
+list wave
+go /help
+
+! --- 3. cancel the stderr redirect and produce output
+cancel redirect stderr
+show axis myaxis
+go /help
+
+! --- 4. cancel all redirection and produce some output
+cancel redirect
+show grid mygrid
+go /help
+
+! --- 5. show the contents of the redirect file
+! ---    should be all contents of 2., stdout of 3. and nothing but the cancel from 4.
+let contents = { spawn:"cat redirect.txt" }
+list contents
+cancel var contents
+
+! --- 6. redirect/tee both stdout and stderr, appending to the redirect file
+set redirect /tee /file="redirect.txt" /append stdout stderr
+
+! --- 7. produce output to both stdout and stderr
+list wave
+go /help
+
+! --- 8. cancel the stdout redirect and produce output
+cancel redirect stdout
+show axis myaxis
+go /help
+
+! --- 9. cancel all redirection and produce some output
+cancel redirect stderr
+show grid mygrid
+go /help
+
+! --- 10. results of CANCEL REDIRECT when nothing is redirected
+cancel redirect
+
+! --- 11. show the updated contents of the redirect file
+! ---     should be all contents of 2., stdout of 3. and nothing but the cancel from 4.
+! ---     plus all contents of 7. and stderr of 8. 
+let contents = { spawn:"cat redirect.txt" }
+list contents
+cancel var contents
+
+! --- 12. redirect only stdout to a file and produce some output to show stdout redirected, stderr normal
+! ---     warning: can get confusing - look ahead for file contents
+! ---     immediately following redirect line should be stderr of 12 and contents of 13, 
+! ---     which shows file contents of stdout of 12 and cancel redirect of 13
+set redirect /file="redirect.txt" /clobber stdout
+list wave
+go /help
+
+! --- 13. cancel the redirection and show the redirect file contents
+! ---     should be the "missing" stdout of 12.
+cancel redirect stdout
+let contents = { spawn:"cat redirect.txt" }
+list contents
+cancel var contents
+
+! --- 14. redirect only stderr, appending to a file and produce some output to show stdout normal, stderr redirected
+set redirect /file="redirect.txt" /append stderr
+show axis myaxis
+go /help
+
+! --- 15. cancel the redirection and show the redirect file contents
+! ---     should be the stdout of 12, cancel redirect of 13, and stderr of 14
+cancel redirect stderr
+let contents = { spawn:"cat redirect.txt" }
+list contents
+cancel var contents
+
+! --- 16. redirect/tee stdout to one file and stderr to another file
+set redirect /tee /file="redirect_stdout.txt" /clobber stdout
+set redirect /tee /file="redirect_stderr.txt" /clobber stderr
+
+! --- 17. produce some output 
+show grid mygrid
+go /help
+
+! --- 18. see what happens to messages (say, warn, error)
+say "   This is a say message"
+set axis /regular myaxis
+set mode ignore_error
+show grid garbage
+cancel mode ignore_error
+
+! --- 19. cancel redirections and show the contents of the files
+cancel redirect
+let contents = { spawn:"cat redirect_stdout.txt" }
+! ---     should be the stdout of 17, whatever stdout of 18, and cancel redirect from 19
+list contents
+cancel var contents
+let contents = { spawn:"cat redirect_stderr.txt" }
+! ---     should be the stderr of 17.
+list contents
+cancel var contents
+
+! --- 20. turn on journal mode to a special filename
+set mode journal:redirect_journal.txt
+
+! --- 21. turn on redirection to the journal with default source (stdout)
+set redirect /tee /journal
+
+! --- 22. produce some output to stdout and stderr
+list wave
+go /help
+
+! --- 23. cancel journal redirect and produce some output
+! ---     should warn that stderr not redirected
+cancel redirect stdout stderr
+show axis myaxis
+go /help
+
+! --- 24. redirect/tee both stdout and stderr to the journal
+set redirect /tee /journal stderr stdout
+
+! --- 25. produce some output to stdout and stderr
+show grid mygrid
+go /help
+
+! --- 26. turn off journal mode
+set mode journal:ferret.jnl
+cancel mode journal
+
+! --- 27. produce some output to show journal redirect with no journal is not a problem
+list wave
+go /help
+
+! --- 28. cancel journal redirect and show contents of the journal file
+! ---     all redirected output should be commented, and should be the stdout of 22., 
+! ---     cancel redirect of 23., all contents of 25, and set mode journal of 26
+cancel redirect
+let contents = { spawn:"cat redirect_journal.txt" }
+list contents
+cancel var contents
+
+! --- clean-up: get rid of mygrid
+set grid abstract
+cancel grid mygrid
+
+!!! NOTE: journal mode is now turned off !!!

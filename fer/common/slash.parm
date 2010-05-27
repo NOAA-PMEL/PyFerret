@@ -41,6 +41,8 @@
 * V6.6  *acm* 3/10 new qualifiers for SET LIST netCDF4: NCFORMAT,
 *                  DEFLATE,SHUFFLE,ENDIAN,XCHUNK,YCHUNK,ZCHUNK,TCHUNK
 *       *kms* 5/10 add SET AXIS/REGULAR to force interpreting the axis as regular
+*       *kms* 5/10 add SET REDIRECT /TEE /JOURNAL /FILE /APPEND /CLOBBER 
+*                  for stdout/stderr redirection
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -174,7 +176,13 @@
      .                  slash_set_attr_type,
      .                  slash_set_attr_dset,
      .                  slash_set_attr_output,
-     .                  slash_set_attr_like 
+     .                  slash_set_attr_like,
+     .
+     .                  slash_set_redirect_tee,
+     .                  slash_set_redirect_journal,
+     .                  slash_set_redirect_file,
+     .                  slash_set_redirect_append,
+     .                  slash_set_redirect_clobber
 
 	INTEGER		slash_cont_over_plot,
      .			slash_cont_set_up,
@@ -420,7 +428,13 @@
      .                  slash_set_attr_type     = 1,
      .                  slash_set_attr_dset     = 2,
      .                  slash_set_attr_output   = 3,
-     .                  slash_set_attr_like     = 4)
+     .                  slash_set_attr_like     = 4,
+     .
+     .                  slash_set_redirect_tee     = 1,
+     .                  slash_set_redirect_journal = 2,
+     .                  slash_set_redirect_file    = 3,
+     .                  slash_set_redirect_append  = 4,
+     .                  slash_set_redirect_clobber = 5)
 
 	PARAMETER     ( slash_cont_over_plot	= 9,
      .			slash_cont_set_up	= 10,

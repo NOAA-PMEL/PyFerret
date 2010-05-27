@@ -34,6 +34,7 @@
 * v6.6  *acm* 1/10 - more qualifiers on LIST for netcdf4 control
 * V6.5  *acm* 3/10 new qualifiers on (some) SHOW commands and on MESSAGE: 
 *                  /OUTFILE= /APPEND /CLOBBER
+* V6.6  *kms* 5/10 add SET REDIRECT and CANCEL REDIRECT for stdout/stderr redirection
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -106,7 +107,7 @@
      .			nqual1m = 2, nqual_at1n = nqual_at1m + nqual1m,	!'MEMO'
      .			nqual1n = 8, nqual_at1o = nqual_at1n + nqual1n,	!'ATTR'
      .			nqual1o = 3, nqual_at1p = nqual_at1o + nqual1o,	!'NCCACHE'
-     .			nqual1p = 2, nqual_at1q = nqual_at1p + nqual1p,	!'****'
+     .			nqual1p = 8, nqual_at1q = nqual_at1p + nqual1p,	!'REDIRECT'
      .			nqual1q = 2, nqual_at1r = nqual_at1q + nqual1q,	!'****'
      .			nqual1r = 2, nqual_at1s = nqual_at1r + nqual1r,	!'****'
      .			nqual1s = 4, nqual_at1t = nqual_at1s + nqual1s,	!'****'
@@ -200,7 +201,7 @@
      .			nqual3l = 4, nqual_at3m = nqual_at3l + nqual3l,	!'AXIS'
      .			nqual3m = 1, nqual_at3n = nqual_at3m + nqual3m,	!'GRID'
      .			nqual3n = 2, nqual_at3o = nqual_at3n + nqual3n,	!'ATTR'
-     .			nqual3o = 1, nqual_at3p = nqual_at3o + nqual3o,	!'****'
+     .			nqual3o = 1, nqual_at3p = nqual_at3o + nqual3o,	!'REDIRECT'
      .			nqual3p = 1, nqual_at3q = nqual_at3p + nqual3p,	!'ALIAS'
      .			nqual3q = 1, nqual_at3r = nqual_at3q + nqual3q,	!'SYMBOL'
      .			nqual3r = 1, nqual_at3s = nqual_at3r + nqual3r,	!'NCCACHE'

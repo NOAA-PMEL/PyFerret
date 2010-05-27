@@ -184,6 +184,8 @@
 * V6.6  *acm* 2/10 new qualifiers for SET LIST netCDF4: NCFORMAT,
 *                  XCHUNK,YCHUNK,ZCHUNK,TCHUNK,DEFLATE,SHUFFLE,ENDIAN
 *       *kms* 5/10 add SET AXIS/REGULAR to force interpreting the axis as regular
+*       *kms* 5/10 add SET REDIRECT /TEE /JOURNAL /FILE /APPEND /CLOBBER 
+*                  and CANCEL REDIRECT for stdout/stderr redirection
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -364,13 +366,19 @@
 		DATA qualifiers  (nqual_at1o+0)	/ 'SIZE'	/
 		DATA qualifiers  (nqual_at1o+1)	/ 'NELEMS'	/
 		DATA qualifiers  (nqual_at1o+2)	/ 'PREEMPT'	/
-* SET ****							  ! unused (p)
-	   DATA subcommands      (nsub_at1 +15)	/ '****'	/
+* SET REDIRECT							  ! redirecting stdout and/or stderr
+	   DATA subcommands      (nsub_at1 +15)	/ 'REDIRECT'	/
 	   DATA num_qualifs      (nsub_at1 +15)	/ nqual1p	/
 	   DATA qualifier_pointer(nsub_at1 +15)	/ nqual_at1p	/
-* SET **** / ****
-		DATA qualifiers  (nqual_at1p+0)	/ '****'	/
-		DATA qualifiers  (nqual_at1p+1)	/ '****'	/
+* SET REDIRECT /TEE /JOURNAL /FILE /APPEND /CLOBBER
+		DATA qualifiers  (nqual_at1p+0)	/ 'TEE'		/
+		DATA qualifiers  (nqual_at1p+1)	/ 'JOURNAL'	/
+		DATA qualifiers  (nqual_at1p+2)	/ 'FILE'	/
+		DATA qualifiers  (nqual_at1p+3)	/ 'APPEND'	/
+		DATA qualifiers  (nqual_at1p+4)	/ 'CLOBBER'	/
+		DATA qualifiers  (nqual_at1p+5)	/ '****'	/
+		DATA qualifiers  (nqual_at1p+6)	/ '****'	/
+		DATA qualifiers  (nqual_at1p+7)	/ '****'	/
 * SET ****							  ! unused (q)
 	   DATA subcommands      (nsub_at1 +16)	/ '****'	/
 	   DATA num_qualifs      (nsub_at1 +16)	/ nqual1q	/
@@ -709,8 +717,8 @@
 	   DATA qualifier_pointer(nsub_at3 +13)	/ nqual_at3n	/
 		DATA qualifiers  (nqual_at3n+0)	/ 'OUTPUT'	/
 		DATA qualifiers  (nqual_at3n+1)	/ 'DATA'	/
-* CANCEL ****							  ! unused(o)
-	   DATA subcommands      (nsub_at3 +14)	/ '****'	/
+* CANCEL REDIRECT
+	   DATA subcommands      (nsub_at3 +14)	/ 'REDIRECT'	/
 	   DATA num_qualifs      (nsub_at3 +14)	/ nqual3o	/
 	   DATA qualifier_pointer(nsub_at3 +14)	/ nqual_at3o	/
 		DATA qualifiers  (nqual_at3o+0)	/ '****'	/

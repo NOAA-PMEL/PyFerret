@@ -34,6 +34,7 @@
 * V602 *acm*  1/07 - increase length of string list_format to resolve bug 1482
 * V610  *acm* 3/08 - add new MODE NLEVELS
 * V614  *acm* 10/08 - add new MODE NODATA_LAB
+* V6.6  *kms* 5/10 - add redirect_* variables and parameters for stdout/stderr redirection.
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -119,6 +120,16 @@
      .			pif_doing_clause   = 2,
      .			pif_skip_to_clause = 3 )
 
+*       Values for the redirect_*_flags.  Designed to be bit flags
+*       file = 0001, journal = 0010, commented = 0100, tee = 1000
+        INTEGER         redirect_none, redirect_file, redirect_journal,
+     .                  redirect_file_tee, redirect_journal_tee
+        PARAMETER     ( redirect_none        = 0,
+     .                  redirect_file        = 1,
+     .                  redirect_journal     = 6,
+     .                  redirect_file_tee    = 9,
+     .                  redirect_journal_tee = 14 )
+
 	INTEGER
      .		prompt_len,
      .		input_source,
@@ -172,13 +183,17 @@
 
 	INTEGER	ttin_lun, ttout_lun, cmnd_file_lun, list_lun,
      .		cmnd_lun, jrnl_lun, err_lun, frame_lun, show_lun,
-     .		vms_kbd_id, vms_kbd_tbl
+     .		vms_kbd_id, vms_kbd_tbl,
+     .          redirect_stdout_lun, redirect_stderr_lun,
+     .          redirect_stdout_flags, redirect_stderr_flags
 
 * logical unit numbers
 	COMMON/ XLUN /
      .		ttin_lun, ttout_lun, cmnd_file_lun, list_lun,
      .		cmnd_lun, jrnl_lun, err_lun, frame_lun, show_lun,
-     .		vms_kbd_id, vms_kbd_tbl
+     .		vms_kbd_id, vms_kbd_tbl,
+     .          redirect_stdout_lun, redirect_stderr_lun,
+     .          redirect_stdout_flags, redirect_stderr_flags
 
 * program state information
 	COMMON/ XPROG_STATE /

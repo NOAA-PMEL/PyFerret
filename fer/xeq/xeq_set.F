@@ -164,6 +164,9 @@
 * V66   *acm* 3/10 Read qualifiers for netcdf4 SET LIST/NCFORMAT etc in call to
 *                  netcdf4_set_list_settings
 *       *kms* 5/10 add SET AXIS/REGULAR to force interpreting the axis as regular
+*       *kms* 5/10 add SET REDIRECT /TEE /JOURNAL /FILE /APPEND /CLOBBER
+*                  for stdout/stderr redirection
+* V66   *kms* 5/10 LIB_GET_LUN is a subroutine, not a function
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -209,19 +212,19 @@
 
 * local variable declarations:
 	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, GRID_FROM_NAME,
-     .                  TM_GET_LINENUM, LIB_GET_LUN, TM_LENSTR, TM_LENSTR1, 
-     .                  TM_UNIT_ID, TM_GET_CALENDAR_ID, FIND_DSET_NUMBER, 
-     .			STR_UPCASE, STR_SAME, 
-     .                  equal_pos, colon_pos, dset_num, ich,
-     .			status, tmap_status, mode, idim, iarg, item, lp, iv,
+     .                  TM_GET_LINENUM, TM_LENSTR, TM_LENSTR1, 
+     .                  TM_UNIT_ID, TM_GET_CALENDAR_ID, 
+     .			FIND_DSET_NUMBER, STR_UPCASE, STR_SAME, 
+     .                  equal_pos, colon_pos, dset_num, ich, status,
+     .			tmap_status, mode, idim, iarg, item, lp, iv, 
      .			cx, i, grid, axis, loc, perm(4), buff_len, 
      .                  cal_id, day, month, year, hour, minute, second,
-     .                  units, since_t0, len_test, len_mchars, slen, len,
-     .                  attype_spec, pos, mr, varid, uvar, cat, iflag, 
-     .                  isetout, ivar, dot, strided_axis, igrd, offset,
-     .                  attid, attype, attoutflag, attlen, i1, dset,
-     .                  istat, cache_size, cache_nelems, cache_preemption,
-     .                  numpts
+     .                  units, since_t0, len_test, len_mchars, slen, 
+     .                  len, attype_spec, pos, mr, varid, uvar, cat, 
+     .                  iflag, isetout, ivar, dot, strided_axis, igrd, 
+     .                  offset, attid, attype, attoutflag, attlen, i1, 
+     .                  dset, istat, cache_size, cache_nelems, 
+     .                  cache_preemption, numpts, redir_file_lun
         REAL*8          TM_WW_AXLEN, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi, firstval, lastval
 	REAL		val_buf, cache_size_mb
@@ -229,14 +232,18 @@
      .			buff1*512, buff2*512, data_form*3, show_str*12,
      .                  varname*512, attname*128, new_att_calendar*10, 
      .                  new_att_t0*128, new_att_units*128, buff3*512,
-     .                  t0string*128, ustring*128
+     .                  t0string*128, ustring*128, faccess*16, 
+     .                  fposition*16, fstatus*16
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
      .                  TM_HAS_STRING, TM_LEGAL_NAME, MATCH_NAME,
-     .                  ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS, NC_GET_ATTRIB,
-     .                  set_last, any_delta, dset_cdf,
+     .                  ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS, 
+     .                  NC_GET_ATTRIB, set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
      .                  do_ez, tregular, its_changed, ok_cal,
-     .                  coordvar, new_att_modulo, batch, its_gif, got_it
+     .                  coordvar, new_att_modulo, batch, its_gif, 
+     .                  got_it, redir_stdout, redir_stderr, redir_tee,
+     .                  redir_journal, redir_append, redir_clobber, 
+     .                  fexist
 
 * local parameter declarations:
 	INTEGER		slash_set_last
@@ -250,7 +257,7 @@
 
 * select subcommand
 	GOTO ( 100,200,300,400,500,600,700,800,900,1000,
-     .        1100,1200,1300,1400,1500 ) subcmnd_num
+     .        1100,1200,1300,1400,1500,1600 ) subcmnd_num
 
 * SET '    ' 
 * arrival at this point usually means an illegal subcommand was given
@@ -645,7 +652,7 @@ c *kob* 4/97
 	         IF ( .NOT.pplus_started ) CALL START_PPLUS
                  IF ( lttout .NE. 6 )
      .              CLOSE( UNIT=lttout, ERR = 5830 )
-                 status = LIB_GET_LUN( lttout )
+                 CALL LIB_GET_LUN( lttout )
                  OPEN ( FILE=ppllist_file,
      .                  UNIT=lttout,
      .                  STATUS='UNKNOWN',
@@ -1623,6 +1630,180 @@ c *kob* 4/97
 
 	RETURN
 
+* SET REDIRECT /TEE /JOURNAL /FILE= /APPEND /CLOBBER [stdout] [stderr]
+ 1600   redir_stdout = .FALSE.
+        redir_stderr = .FALSE.
+*
+*       Determine all the sources to redirect
+        IF ( num_args .GT. 0 ) THEN
+           DO 1610 i = 1,num_args
+              IF ( MATCH4( cmnd_buff(arg_start(i):arg_end(i) ), 
+     .              arg_end(i) - arg_start(i) + 1, 'STDOUT', 6) ) THEN
+*                Redirect stdout with these settings
+                 redir_stdout = .TRUE.
+              ELSE IF ( MATCH4( cmnd_buff(arg_start(i):arg_end(i) ), 
+     .              arg_end(i) - arg_start(i) + 1, 'STDERR', 6) ) THEN
+*                Redirect stderr with these settings
+                 redir_stderr = .TRUE.
+              ELSE
+*                Unknown source to redirect
+                 CALL ERRMSG( ferr_invalid_command, status, 
+     .                   'unknown redirect source: ' //
+     .                   cmnd_buff( arg_start(i):arg_end(i) ), *5000 )
+              ENDIF
+ 1610      CONTINUE
+        ELSE
+*          Default: redirect stdout, but not stderr, with these settings
+           redir_stdout = .TRUE.
+        ENDIF
+*
+*       Make sure any the specified redirect sources are not already redirected
+        IF ( redir_stdout .AND. 
+     .       (redirect_stdout_flags .NE. redirect_none) ) THEN
+           CALL ERRMSG( ferr_invalid_command, status, 
+     .                  'stdout is already redirected', *5000)
+        ENDIF
+        IF ( redir_stderr .AND. 
+     .       (redirect_stderr_flags .NE. redirect_none) ) THEN
+           CALL ERRMSG( ferr_invalid_command, status, 
+     .                  'stderr is already redirected', *5000)
+        ENDIF
+*
+*       Process the qualifiers
+        redir_tee = .FALSE.
+        redir_journal = .FALSE.
+        redir_append = .FALSE.
+        redir_clobber = .FALSE.
+*
+*       /TEE
+        lp = qual_given( slash_set_redirect_tee )
+        IF ( lp .GT. 0 ) redir_tee = .TRUE.
+*
+*       /JOURNAL
+        lp = qual_given( slash_set_redirect_journal )
+        IF ( lp .GT. 0 ) redir_journal = .TRUE.
+*
+*       /APPEND
+        lp = qual_given( slash_set_redirect_append )
+        IF ( lp .GT. 0 ) redir_append = .TRUE.
+*
+*       /CLOBBER
+        lp = qual_given( slash_set_redirect_clobber )
+        IF ( lp .GT. 0 ) redir_clobber = .TRUE.
+        IF ( redir_journal .AND. redir_clobber ) THEN
+           CALL ERRMSG( ferr_invalid_command, status, 
+     .             '/CLOBBER cannot be used with /JOURNAL', *5000 )
+        ENDIF
+*
+*       /FILE=
+        lp = qual_given( slash_set_redirect_file )
+        IF ( lp .GT. 0 ) THEN
+           IF ( redir_journal ) THEN
+              CALL ERRMSG( ferr_invalid_command, status,
+     .           'Only one of /JOURNAL or /FILE= can be given', *5000 )
+           ENDIF
+*
+*          /FILE= was given; get the filename
+           CALL EQUAL_STR_LC( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                        title, status )
+           IF ( status .NE. ferr_ok ) RETURN
+           IF ( title .EQ. ' ' ) THEN
+              CALL ERRMSG( ferr_invalid_command, status,
+     .                     'SET REDIRECT /FILE= what name?', *5000 )
+           ENDIF
+           IF ( .NOT. TM_LEGAL_UNIX_NAME(title) ) THEN
+              CALL ERRMSG( ferr_invalid_command, status, 
+     .            'Illegal file name: ' // title, *5000 )
+           ENDIF
+*
+*          Open or create the file
+           INQUIRE( FILE = title, EXIST = fexist )
+           IF ( fexist ) THEN    
+              IF ( redir_append ) THEN
+#ifdef NO_ACCESS_APPEND
+                 faccess = 'SEQUENTIAL'
+#else
+                 faccess = 'APPEND'
+                 fposition = 'APPEND'
+#endif
+                 fstatus = 'OLD'
+              ELSE IF ( redir_clobber ) THEN
+                 faccess = 'SEQUENTIAL'
+                 fstatus = 'REPLACE'
+#ifdef F90_OPEN_FILE_CLOBBER
+                 fposition = 'ASIS'
+#endif
+              ELSE
+                 CALL ERRMSG( ferr_invalid_command, status,
+     .                   'neither /CLOBBER nor /APPEND specified ' //
+     .                   'and file exists: ' // title, *5000 )
+              ENDIF
+           ELSE
+*             new file
+              faccess = 'SEQUENTIAL'
+              fstatus = 'NEW'
+              fposition = 'ASIS'
+           ENDIF
+           CALL LIB_GET_LUN( redir_file_lun )
+           OPEN( UNIT = redir_file_lun,
+     .           FILE = title,
+     .           FORM = 'FORMATTED',
+#ifdef F90_OPEN_FILE_APPEND
+     .           POSITION = fposition,
+#else
+     .           ACCESS = faccess,
+#endif
+     .           STATUS = fstatus,
+     .           ERR    = 6800 )
+*
+*          Assign the file redirection variables
+           IF ( redir_stdout ) THEN
+              IF ( redir_tee ) THEN
+                 redirect_stdout_flags = redirect_file_tee
+              ELSE
+                 redirect_stdout_flags = redirect_file
+              ENDIF
+              redirect_stdout_lun = redir_file_lun
+           ENDIF
+           IF ( redir_stderr ) THEN
+              IF ( redir_tee ) THEN
+                 redirect_stderr_flags = redirect_file_tee
+              ELSE
+                 redirect_stderr_flags = redirect_file
+              ENDIF
+              redirect_stderr_lun = redir_file_lun
+           ENDIF
+*
+        ELSE IF ( redir_journal ) THEN
+*
+*          /JOURNAL was given - redirect to the journal
+           IF ( redir_stdout ) THEN
+              IF ( redir_tee ) THEN
+                 redirect_stdout_flags = redirect_journal_tee
+              ELSE
+                 redirect_stdout_flags = redirect_journal
+              ENDIF
+*             Use the current jrnl_lun (in case it changes) when writing
+              redirect_stdout_lun = -1
+           ENDIF
+           IF ( redir_stderr ) THEN
+              IF ( redir_tee ) THEN
+                 redirect_stderr_flags = redirect_journal_tee
+              ELSE
+                 redirect_stderr_flags = redirect_journal
+              ENDIF
+*             Use the current jrnl_lun (in case it changes) when writing
+              redirect_stderr_lun = -1
+           ENDIF
+*
+        ELSE
+*
+*          Neither /JOURNAL nor /FILE was given
+           CALL ERRMSG( ferr_invalid_command, status, 
+     .             'Either /JOURNAL or /FILE= must be given', *5000 )
+        ENDIF
+        RETURN
+
 * error exits
  5000	RETURN
  5010	CALL ERRMSG( ferr_syntax, status,
@@ -1768,4 +1949,5 @@ c *kob* 4/97
  6720   CALL ERRMSG( ferr_invalid_command, status,
      .           'cache preemption must be 0 or 1',
      .               *5000 )
+ 6800   CALL ERRMSG( ferr_erreq, status, title, *5000 )
 	END

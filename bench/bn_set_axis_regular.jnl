@@ -38,6 +38,7 @@ show grid
 
 ! --- clean up
 go bn_reset
+cancel grid mygrid
 
 ! --- read a NetCDF file with the irregular axes and data
 use bn_set_axis_regular
@@ -49,3 +50,4 @@ show grid
 set axis /regular `..dimnames[i=1]`
 list mydata
 show grid
+

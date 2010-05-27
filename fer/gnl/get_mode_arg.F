@@ -75,7 +75,7 @@
 	CHARACTER*(*)	text
 
 * local variable declarations:
-	INTEGER	STR_CASE_BLIND_COMPARE, TM_LENSTR1, LIB_GET_LUN,
+	INTEGER	STR_CASE_BLIND_COMPARE, TM_LENSTR1,
      .		vax_code, tlen, cpos, iarg
 
 * initialize

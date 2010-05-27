@@ -43,6 +43,7 @@
 * V300:  5/93 - extracted from initialize.F
 * V312:  5/94 - insert "PROCLAIM" output from here instead of from INITIALIZE
 * V320: 12/29/94 - use WARN to avoid direct tty output (for GUI)
+* V66   *kms* 5/10 LIB_GET_LUN is a subroutine, not a function
 
 #ifdef unix
 	include 'tmap_errors.parm'  ! error codes
@@ -62,10 +63,10 @@
 	INTEGER status
 
 * local variable declarations:
-	INTEGER TM_LENSTR1, LIB_GET_LUN, jnl_len
+	INTEGER TM_LENSTR1, jnl_len
 
 * get logical unit to open the journal file
-	status = LIB_GET_LUN( jrnl_lun )
+	CALL LIB_GET_LUN( jrnl_lun )
 
 *  rename last journal file by this name to old version
 #ifdef unix

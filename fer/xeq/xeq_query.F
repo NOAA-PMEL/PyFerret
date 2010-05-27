@@ -44,6 +44,7 @@
 * V301:	11/05/93 - changed QUERY/PIPE to QUERY/IGNORE (a NO-OP)
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+* V66   *kms* 5/10 LIB_GET_LUN is a subroutine, not a function
  
 #ifdef unix
         include 'tmap_dims.parm'
@@ -81,7 +82,7 @@
 
 * local variable declarations:
 	LOGICAL	do_all, fileout, its_ppl
-	INTEGER	LIB_GET_LUN, TM_LENSTR1, STR_UPCASE, vax_code,
+	INTEGER	TM_LENSTR1, STR_UPCASE, vax_code,
      .		chout, flen, qfile, status, i, query, n
 	CHARACTER fname*132, qry4*4
 
@@ -121,7 +122,7 @@
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   flen = TM_LENSTR1(fname)
 	   IF ( fname.NE.' ' ) THEN
-	      status = LIB_GET_LUN( chout )	   
+	      CALL LIB_GET_LUN( chout ) 
 	      OPEN ( UNIT = chout,
      .		     FILE = fname,
      .		     STATUS = 'UNKNOWN',

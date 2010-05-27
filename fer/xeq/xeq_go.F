@@ -63,6 +63,7 @@
 *                  commands via SPLIT_LIST to std error rather than std out.
 * V610  2/08 *acm* Always define a symbol LAST_GO_FILE with the name of the jnl script.
 * V618  1/09 *acm* The last character of symbol LAST_GO_FILE was chopped off. Fix this.
+* V66   *kms* 5/10 LIB_GET_LUN is a subroutine, not a function
 
 ! Note: A known "bug" of the 12/94 GO_FILE symbol is that the PLOT+ symbol
 !	GO_FILE gets defined only **after** PLOT+ has already placed a window
@@ -82,7 +83,7 @@
 
 * internal variable declarations:
 	LOGICAL	go_help
-	INTEGER	LIB_GET_LUN, TM_LENSTR1,
+	INTEGER	TM_LENSTR1,
      .		temp_lun, status, TMAP_status,
      .          file_opened, ier, ist, len_string
         CHARACTER TM_INQ_PATH*256, cbuff*256
@@ -120,7 +121,7 @@
 
 * kob 1/2006 - need this after backing out of yonghua's changes 
 *get a logical unit number and open the command file
-	status = LIB_GET_LUN( temp_lun )
+	CALL LIB_GET_LUN( temp_lun )
 
 * display HELP lines using the "more" command on the system
 	IF (go_help) THEN

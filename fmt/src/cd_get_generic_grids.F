@@ -236,6 +236,11 @@
 * ... flag reverse-ordered coordinate axis of variable (2/95)
 	      IF ( reversed(iaxis) ) ds_ordering(idim,tmvar)
      .			      = -1 * ds_ordering(idim,tmvar)
+c this causes trouble elsewhere...
+c	      IF (idim2 .EQ. 1) line_direction(iaxis) = 'XX'
+c	      IF (idim2 .EQ. 2) line_direction(iaxis) = 'YY'
+c	      IF (idim2 .EQ. 3) line_direction(iaxis) = 'ZZ'
+c	      IF (idim2 .EQ. 4) line_direction(iaxis) = 'TT'
  250       CONTINUE
 
 * is the temporary grid we just created unique ?

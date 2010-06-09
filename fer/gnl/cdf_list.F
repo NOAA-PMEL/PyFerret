@@ -184,20 +184,8 @@
 
 	EQUIVALENCE ( ds_precision, cd_data_type )
 
-* internal equivalence so to match data types for F90
-#ifdef unix
-#   ifdef sun
-      BYTE ibuff1
-#   else
-      INTEGER*1 ibuff1
-#   endif
-#else
-      BYTE ibuff1
-#endif
-	REAL*4		rbuff4, vals(100), bad
+	REAL*4		vals(100), bad, setval
         REAL*8          dvals(100), scalefac, addoff
-	INTEGER*4	ibuff4
-	EQUIVALENCE (rbuff4, ibuff4), (rbuff4, ibuff1)
 
 * local parameter declarations
 
@@ -418,7 +406,10 @@
            ENDIF
 
 * convert the data type into netCDF parameter value
-	   IF (cx_type(cx) .EQ. ptype_float) THEN
+	   IF ((cx_type(cx) .EQ. unspecified_int4 .OR. 
+     .	           cx_type(cx) .EQ.0) .AND.DODS_cache) THEN
+	      type = NCDOUBLE
+	   ELSEIF (cx_type(cx) .EQ. ptype_float) THEN
 	      type = NCFLOAT
 	   ELSEIF  (cx_type(cx) .EQ. ptype_string) THEN
 	      type = NCCHAR
@@ -871,13 +862,14 @@
 
 * NetCDF variable IDs - additional information needed for DODS caching (11/96)
 	      IF ( DODS_cache ) THEN
-	         ibuff4 = cd_varid(var)		! for F90 data type checks
+		 setval = FLOAT(cd_varid(var))
 	         CALL CD_WRITE_ATTVAL(cdfid, varcode,
-     .                     'netcdf_var_id',rbuff4, 1, NCLONG, status )
+     .                     'netcdf_var_id',setval, 1, NCLONG, status )
                  IF ( status .NE. merr_ok ) GOTO 5800
-	         ibuff1 = cd_data_type(var)	! for F90 data type checks
+	         setval = FLOAT(cd_data_type(var))
 	         CALL CD_WRITE_ATTVAL(cdfid, varcode,
-     .                  'netcdf_data_type', rbuff4, 1, NCBYTE, status )
+     .                  'netcdf_data_type', setval, 1, NCBYTE, status )
+
                  IF ( status .NE. merr_ok ) GOTO 5800
 	      ENDIF
 

@@ -132,6 +132,7 @@
       CHARACTER*1024 TM_INQ_PATH, cdf_file, raw_file
       CHARACTER*10 TM_FMT, errcode
       CHARACTER*1024 buff, upstr  ! for nf_ error message
+      CHARACTER*30 buff30
 
 #ifdef FORTRAN_90
 	INTEGER HEX40
@@ -189,12 +190,26 @@
 * This time penalty is unavoidable (though HTTP caching may eliminate it)
 * Using the cache file will remove the need to read remote coordinates
 	   CALL TM_NOTE( 'Using cache '//cdf_file, lunit_errors)
+	   
+* ---
+* Define a symbol CACHE_FILE
+* if this symbol already exists then delete it
+        buff30 = 'CACHE_FILE'	
+	CALL GETSYM( 'CACHE_FILE', buff, i2, i1 )
+	IF ( i1 .EQ. 0 ) CALL DELSYM(buff30,i1)
+
+* define the symbol
+	dlen = TM_LENSTR1(cdf_file)
+	CALL PUTSYM( buff30, cdf_file, dlen, i2)
+* ---
+
+
 #ifdef usingDODSf2cUnderscore
-           remote_dods_id = NF_OPEN_(ds_des_name(dset), NF_NOWRITE, cdfid) 
+           cdfstat = NF_OPEN_(ds_des_name(dset), NF_NOWRITE, remote_dods_id) 
 #else
-           remote_dods_id = NF_OPEN(ds_des_name(dset), NF_NOWRITE, cdfid) 
+           cdfstat = NF_OPEN(ds_des_name(dset), NF_NOWRITE, remote_dods_id) 
 #endif
-	   IF ( remote_dods_id .NE. NF_NOERR ) THEN
+	   IF ( cdfstat .NE. NF_NOERR ) THEN
               GOTO 5150
            ENDIF
            

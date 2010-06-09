@@ -176,12 +176,15 @@
 ! The INQUIRE statement inside TM_PATH_LIST fails on names longer 
 ! than 256 chars causing a BUS error, so dont look in the DODS 
 ! cache for the file.
+c
+c is the above still true?
+c
       flen = TM_LENSTR1(fname)
-      IF (flen .GT. 256 .AND.
-     .  STR_SAME(path, 'FER_DODS_CACHE_DIR').EQ.0 ) THEN 
-         status = merr_notmounted
-
-      ELSE
+c      IF (flen .GT. 256 .AND.
+c     .  STR_SAME(path, 'FER_DODS_CACHE_DIR').EQ.0 ) THEN 
+c         status = merr_notmounted
+c
+c      ELSE
          IF (postslash .LE. flen) THEN
             TM_INQ_PATH = TM_PATH_LIST( path_list(:plen), 
      .                               fname(postslash:),def_ext, 
@@ -191,7 +194,7 @@
      .                               ' ',def_ext, 
      .                               do_errmsg, status )
          ENDIF
-      ENDIF
+c      ENDIF
 
       RETURN
 
@@ -207,3 +210,4 @@
      .                  no_errstring, *9900)
  9900 RETURN
       END
+

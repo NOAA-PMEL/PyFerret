@@ -1,0 +1,18 @@
+! bn_axis_dir_symbols.jnl
+! 5/2010
+!
+! For LAS:
+! SYMBOL AX_HORIZ and AX_VERT identify the direction of
+! the plot axes (x, y, z, or t).  Add this for 1D plots
+! as well as 2D ones.
+
+plot/i=1:10 i; show sym ax*; can sym ax*
+plot/j=1:10 j; show sym ax*; can sym ax*
+
+use gt4d011
+plot/i=100/j=40/L=1 temp; show sym ax*; can sym ax*
+
+use coads_climatology
+plot/x=180/y=0 sst; show sym ax*; can sym ax*
+plot/x=180/y=0/trans sst; show sym ax*; can sym ax*
+shade/x=180 sst; show sym ax*; can sym ax*

@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ksmith/FERRET/fer/ferret_c
--rwxr-xr-x  1 ksmith tmap 49235970 May 27 12:21 /home/porter/ksmith/FERRET/fer/ferret_c
-Using external functions from /home/porter/tmap/ferret/x86_64-linux/ext_func/libs
+Running FERRET version /home/nstout/ansley/build/x86_v622/FERRET/fer/ferret_c
+-rwxr-xr-x  1 ansley tmap 35841767 Jun 10 09:21 /home/nstout/ansley/build/x86_v622/FERRET/fer/ferret_c
+Using external functions from /home/nstout/ansley/build/x86_v622/FERRET/external_functions/ext_func
 Running the tests of external functions y
-Benchmark run by Karl
-Note: Added tests for SET REDIRECT and CANCEL REDIRECT
+Benchmark run by ansley
+Note: for release of v6.62
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ksmith/FERRET/bench
+PWD=/home/nstout/ansley/build/x86_v622/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -19,8 +19,8 @@ FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/x86_64-linux/ext_func/libs
-Beginning at Thu May 27 16:06:24 PDT 2010
+FER_EXTERNAL_FUNCTIONS=/home/nstout/ansley/build/x86_v622/FERRET/external_functions/ext_func
+Beginning at Thu Jun 10 11:21:05 PDT 2010
 yes? !bn500_all_shell
 yes? 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
@@ -32,8 +32,8 @@ yes?
 yes? GO bn_all
  	NOAA/PMEL TMAP
  	FERRET v6.62  
- 	Linux(gfortran) 2.6.9-89.0.20.ELsmp - 05/27/10
- 	27-May-10 16:06     
+ 	Linux(gfortran) 2.6.9-89.0.20.ELsmp - 06/10/10
+ 	10-Jun-10 11:21     
 
 SET MODE VERIFY
 ! BN500_ALL.JNL
@@ -10252,12 +10252,12 @@ FERRET_VERSION = "6.62"
 FERRET_PLATFORM = "Linux(gfortran) 2.6.9-89.0.20.ELsmp"
 NETCDF_VERSION = "4.1.1 of Apr  9 2010 11:00:18 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "27-May-10"
-SESSION_TIME = "16:06"
-DELTA_CPU = "5.19921"
-CLOCK_SECS = "5.406"
-CURRENT_DATE = "27-May-10"
-CURRENT_TIME = "16:06:29"
+SESSION_DATE = "10-Jun-10"
+SESSION_TIME = "11:21"
+DELTA_CPU = "5.05423"
+CLOCK_SECS = "6.151"
+CURRENT_DATE = "10-Jun-10"
+CURRENT_TIME = "11:21:11"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10278,12 +10278,12 @@ FERRET_VERSION = "6.62"
 FERRET_PLATFORM = "Linux(gfortran) 2.6.9-89.0.20.ELsmp"
 NETCDF_VERSION = "4.1.1 of Apr  9 2010 11:00:18 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "27-May-10"
-SESSION_TIME = "16:06"
-DELTA_CPU = "0"
-CLOCK_SECS = "5.407"
-CURRENT_DATE = "27-May-10"
-CURRENT_TIME = "16:06:29"
+SESSION_DATE = "10-Jun-10"
+SESSION_TIME = "11:21"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "6.152"
+CURRENT_DATE = "10-Jun-10"
+CURRENT_TIME = "11:21:11"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10292,8 +10292,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "27-May-10"
-SESSION_TIME = "16:06"
+SESSION_DATE = "10-Jun-10"
+SESSION_TIME = "11:21"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10303,13 +10303,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "27-May-10"
-SESSION_TIME = "16:06"
+SESSION_DATE = "10-Jun-10"
+SESSION_TIME = "11:21"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "27-May-10"
-SESSION_TIME = "16:06"
+SESSION_DATE = "10-Jun-10"
+SESSION_TIME = "11:21"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10343,7 +10343,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.62"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "27-MAY-2010 16:06:29"
+LAB3 = "10-JUN-2010 11:21:11"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10442,12 +10442,12 @@ FERRET_VERSION = "6.62"
 FERRET_PLATFORM = "Linux(gfortran) 2.6.9-89.0.20.ELsmp"
 NETCDF_VERSION = "4.1.1 of Apr  9 2010 11:00:18 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "27-May-10"
-SESSION_TIME = "16:06"
+SESSION_DATE = "10-Jun-10"
+SESSION_TIME = "11:21"
 DELTA_CPU = "0.008998"
-CLOCK_SECS = "5.415"
-CURRENT_DATE = "27-May-10"
-CURRENT_TIME = "16:06:29"
+CLOCK_SECS = "6.161"
+CURRENT_DATE = "10-Jun-10"
+CURRENT_TIME = "11:21:11"
 N_OPEN_DSETS = "0"
  
  
@@ -25348,7 +25348,7 @@ stat/i=1:3/j=1:3 a
  Standard deviation: 1.2247
  
 ! 3/01 *kob* uncomment the below - seems to run on all systems
-Thu May 27 16:06:36 PDT 2010
+Thu Jun 10 11:21:19 PDT 2010
 ! GO err491_long_gif_name.jnl ! moved to bn_gif.jnl
  
 GO bn_reset
@@ -45748,16 +45748,16 @@ sh data
  
 plot/x=180/y=0/k=1 temp
 ppl list labels
- @ACTEMP (Celsius)                                                              
+ @ACTEMP (deg C)                                                                
                                                                                 
- @ASCelsius                                                                     
+ @ASdeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
  LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 6.62
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS27-MAY-2010 16:07:10
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS10-JUN-2010 11:21:57
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.990E+00 0.078    0  SYSTEM  @ASLONGITUDE : 179.5E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47174,7 +47174,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "27-May-10:16:06"
+WIN_TITLE = "10-Jun-10:11:21"
  
 set win/title="set the title"
 sho sym win_title
@@ -47192,7 +47192,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="27-May-10:16:06"
+ !-> set win/title="10-Jun-10:11:21"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47201,16 +47201,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 27-May-10
+ !-> DEFINE SYMBOL the_date = 10-Jun-10
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 16:06
+ !-> DEFINE SYMBOL the_time = 11:21
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="27-May-10:16:06"
+ !-> SET WIN/TITLE="10-Jun-10:11:21"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "27-May-10:16:06"
+WIN_TITLE = "10-Jun-10:11:21"
  
 GO bn_reset
 cancel mode verify
@@ -49647,7 +49647,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
                                  _FillValue      FLOAT       1    T       -1.E+10
@@ -51536,7 +51536,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.62   27-May-10
+ .                               history         CHAR        24   T       FERRET V6.62   10-Jun-10
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51577,7 +51577,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.62   27-May-10
+ .                               history         CHAR        24   T       FERRET V6.62   10-Jun-10
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51890,7 +51890,7 @@ list sst[i=11:15,j=50,k=1,l=50]
  
 ! --- after cancel striding
 cancel axis/stride `sst,return=xaxis`
- !-> cancel axis/stride (AX046)
+ !-> cancel axis/stride (AX043)
 list sst[i=21:30,j=50,k=1,l=50]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
@@ -51961,24 +51961,24 @@ use coads_climatology
 set axis/stride=6/offset=5 `sst,return=xaxis`
  !-> set axis/stride=6/offset=5 COADSX
 show axis `sst,return=xaxis`
- !-> show axis (AX045)
+ !-> show axis (AX046)
  name       axis              # pts   start                end
- (AX045)   LONGITUDE           30mr   31E                  19E(379)
+ (AX046)   LONGITUDE           30mr   31E                  19E(379)
    Axis span (to cell edges) = 360 (modulo length = axis span)
 cancel axis/stride `sst,return=xaxis`
- !-> cancel axis/stride (AX045)
+ !-> cancel axis/stride (AX046)
  
 !--- 8.2 stride value is not an integer factor of the axis length
 ! warning: it may lose modulo property
 set axis/stride=7/offset=5 `sst,return=xaxis`
  !-> set axis/stride=7/offset=5 COADSX
 show axis `sst,return=xaxis`
- !-> show axis (AX046)
+ !-> show axis (AX043)
  name       axis              # pts   start                end
- (AX046)   LONGITUDE           25 r   31E                  7E(367)
+ (AX043)   LONGITUDE           25 r   31E                  7E(367)
    Axis span (to cell edges) = 350
 cancel axis/stride `sst,return=xaxis`
- !-> cancel axis/stride (AX046)
+ !-> cancel axis/stride (AX043)
 cancel data/all
  
 ! --- 8.3 testing strided modulo axis
@@ -51987,7 +51987,7 @@ set axis/stride=2/offset=1 `sst,return=xaxis`
  !-> set axis/stride=2/offset=1 COADSX
 shade/x=-180:180/y=-30:70/L=2 sst
 cancel axis/stride `sst,return=xaxis`
- !-> cancel axis/stride (AX046)
+ !-> cancel axis/stride (AX043)
 cancel data/all
  
 !.............9. two datasets share the same grid
@@ -52190,9 +52190,9 @@ show axis `sst,return=xaxis`
  (AX054)   LONGITUDE           90mr   21E                  17E(377)
    Axis span (to cell edges) = 360 (modulo length = axis span)
 show axis `sst,return=yaxis`
- !-> show axis (AX045)
+ !-> show axis (AX046)
  name       axis              # pts   start                end
- (AX045)   LATITUDE            45 r   89S                  87N
+ (AX046)   LATITUDE            45 r   89S                  87N
    Axis span (to cell edges) = 180
 show axis `sst,return=taxis`
  !-> show axis (AX048)
@@ -53129,94 +53129,17 @@ CMPRSI_BY(dat,mask)
 CURV_TO_RECT_FSU(V,mapping)
 DATES(var)
 FACTORIAL(A)
-FFTA_2(A,b)
-FFTA_3(A,b,nfreq)
-FFTABST(A,b)
 FFT_AMP(A)
 FFTA_SAMPLE(A)
 FFT_PHAS(A)
-INDEX_TO_GRID(I,J,VAL,D)
 LIST_GOOD(A)
 MINMAX(A)
 PASS_THRU(A)
 PERCENT_GOOD_T(A)
-PICKT(VAR,MASK)
-PICKX(VAR,MASK)
-PICKY(VAR,MASK)
-PICKZ(VAR,MASK)
-PT_IN_POLY(A,XVERT,YVERT)
-RR_ADV_SX(U,SALT)
-RR_ADV_SY(V,SALT)
-RR_ADV_SZ(U,W,SALT)
-RR_ADV_TX(U,TEMP)
-RR_ADV_TY(V,TEMP)
-RR_ADV_TZ(U,W,TEMP)
-RR_ADV_UMETRIC(U,V)
-RR_ADV_UX(U,TEMP)
-RR_ADV_UY(U,V,TEMP)
-RR_ADV_UZ(U,W,TEMP)
-RR_ADV_VMETRIC(V)
-RR_ADV_VX(U,V,TEMP)
-RR_ADV_VY(V,TEMP)
-RR_ADV_VZ(V,W,TEMP)
-RR_AV(U,V,TEMP,SALT)
- START INIT
- INIT DONE
-RR_CROSS_SPECTRUM_ABS(S1,S2,Nf,P)
- START INIT
- INIT DONE
-RR_CROSS_SPECTRUM(S1,S2,Nf,P)
-RR_DIFF_SX(U,SALT)
-RR_DIFF_SY(U,SALT)
-RR_DIFF_SZ(U,V,TEMP,SALT,SFLX)
-RR_DIFF_TX(U,TEMP)
-RR_DIFF_TY(U,TEMP)
-RR_DIFF_TZ(U,V,TEMP,SALT,HFLX)
-RR_DIFF_UMETRIC(U,V)
-RR_DIFF_UX(U,TEMP)
-RR_DIFF_UY(U,TEMP)
-RR_DIFF_UZ(U,V,TEMP,SALT,TAUX)
-RR_DIFF_VMETRIC(U,V)
-RR_DIFF_VX(V,TEMP)
-RR_DIFF_VY(V,TEMP)
-RR_DIFF_VZ(U,V,TEMP,SALT,TAUY)
-RR_DSDT(SALT)
-RR_DTDT(TEMP)
-RR_DUDT(U)
-RR_DVDT(V)
-RR_FLUX_SX(U,SALT)
-RR_FLUX_SY(V,SALT)
-RR_FLUX_SZ(U,W,SALT)
-RR_FLUX_TX(U,TEMP)
-RR_FLUX_TY(V,TEMP)
-RR_FLUX_TZ(U,W,TEMP)
-RR_FLUX_UX(U,TEMP)
-RR_FLUX_UY(U,V,TEMP)
-RR_FLUX_UZ(U,W,TEMP)
-RR_FLUX_VX(U,V,TEMP)
-RR_FLUX_VY(V,TEMP)
-RR_FLUX_VZ(V,W,TEMP)
-RR_FV(V)
-RR_GEOPOTENTIAL_HEIGHT(TEMP,SALT)
-RR_GRAD_PBC_U(U,TEMP,SALT)
-RR_GRAD_PBC_V(U,TEMP,SALT)
-RR_GRAD_PS_U(U,SURF_PRESS)
-RR_GRAD_PS_V(U,SURF_PRESS)
-RR_TAUX(U,V,AIRT,SST)
-RR_TAUY(U,V,AIRT,SST)
-RR_UUX_QIAO(u4,u1,u3)
-RR_VUY_QIAO(v4,u2,u5)
-RR_W_QIAO(u4,u1,u3,v2,v5)
-RR_WUZ_QIAO(w,u4)
 SAMPLEI_MULTI(I_INDICES,DAT_TO_SAMPLE)
 SAMPLEJ_MULTI(J_INDICES,DAT_TO_SAMPLE)
 SAMPLEK_MULTI(K_INDICES,DAT_TO_SAMPLE)
 SAMPLEL_MULTI(L_INDICES,DAT_TO_SAMPLE)
-SCAT2GRID_NOBS_XT(XPTS,TPTS,XAXPTS,TAXPTS)
-SCAT2GRID_NOBS_XZ(XPTS,ZPTS,XAXPTS,ZAXPTS)
-SCAT2GRID_NOBS_YT(YPTS,TPTS,YAXPTS,TAXPTS)
-SCAT2GRID_NOBS_YZ(YPTS,ZPTS,YAXPTS,ZAXPTS)
-SCAT2GRID_NOBS_ZT(ZPTS,TPTS,ZAXPTS,TAXPTS)
 SORTI_STR(DAT)
 STORAGE(A)
 STRING_ARG(A,string)
@@ -56014,6 +55937,57 @@ SORTI(DAT)
     Returns indices of data, sorted on the I axis in increasing order
         Axes of result:
           X: ABSTRACT (result will occupy indices 1...N)
+netcdf a {
+dimensions:
+	XAX1_10 = 10 ;
+	tday = UNLIMITED ; // (31 currently)
+	lon1_5 = 5 ;
+	lat1_5 = 5 ;
+	bnds = 2 ;
+	zt = 10 ;
+	time1478 = 3 ;
+variables:
+	double XAX1_10(XAX1_10) ;
+		XAX1_10:point_spacing = "even" ;
+		XAX1_10:axis = "X" ;
+	double tday(tday) ;
+		tday:units = "DAYS since 1998-12-31 00:00:00" ;
+		tday:axis = "T" ;
+		tday:time_origin = "31-DEC-1998" ;
+	float MyUpperLowerCaseVar(tday, XAX1_10) ;
+		MyUpperLowerCaseVar:missing_value = -1.e+34f ;
+		MyUpperLowerCaseVar:_FillValue = -1.e+34f ;
+		MyUpperLowerCaseVar:long_name = "X[X=1:10] + T[GT=TDAY]" ;
+	double lon1_5(lon1_5) ;
+		lon1_5:point_spacing = "even" ;
+		lon1_5:axis = "X" ;
+	double lat1_5(lat1_5) ;
+		lat1_5:point_spacing = "uneven" ;
+		lat1_5:axis = "Y" ;
+		lat1_5:bounds = "lat1_5_bnds" ;
+	double lat1_5_bnds(lat1_5, bnds) ;
+	double zt(zt) ;
+		zt:units = "meters" ;
+		zt:positive = "down" ;
+		zt:point_spacing = "uneven" ;
+		zt:axis = "Z" ;
+		zt:bounds = "zt_bnds" ;
+	double zt_bnds(zt, bnds) ;
+	double time1478(time1478) ;
+		time1478:calendar = "NOLEAP" ;
+		time1478:point_spacing = "even" ;
+		time1478:axis = "T" ;
+	float newvar(time1478, zt, lat1_5, lon1_5) ;
+		newvar:missing_value = -1.e+34f ;
+		newvar:_FillValue = -1.e+34f ;
+		newvar:long_name = "outgoing longwave radiation" ;
+		newvar:units = "watts/m2" ;
+		newvar:history = "From a" ;
+
+// global attributes:
+		:history = "FERRET V6.62   10-Jun-10" ;
+		:Conventions = "CF-1.0" ;
+}
           Y: inherited from argument(s)
           Z: inherited from argument(s)
           T: inherited from argument(s)
@@ -56225,57 +56199,6 @@ list ypts, tpts, sampl_pts
 16   / 16: -25.63370   620.000  594.8663
 17   / 17: -22.96677   660.000  637.5332
 18   / 18: -30.90969   700.000  669.5903
-netcdf a {
-dimensions:
-	XAX1_10 = 10 ;
-	tday = UNLIMITED ; // (31 currently)
-	lon1_5 = 5 ;
-	lat1_5 = 5 ;
-	bnds = 2 ;
-	zt = 10 ;
-	time1478 = 3 ;
-variables:
-	double XAX1_10(XAX1_10) ;
-		XAX1_10:point_spacing = "even" ;
-		XAX1_10:axis = "X" ;
-	double tday(tday) ;
-		tday:units = "DAYS since 1998-12-31 00:00:00" ;
-		tday:axis = "T" ;
-		tday:time_origin = "31-DEC-1998" ;
-	float MyUpperLowerCaseVar(tday, XAX1_10) ;
-		MyUpperLowerCaseVar:missing_value = -1.e+34f ;
-		MyUpperLowerCaseVar:_FillValue = -1.e+34f ;
-		MyUpperLowerCaseVar:long_name = "X[X=1:10] + T[GT=TDAY]" ;
-	double lon1_5(lon1_5) ;
-		lon1_5:point_spacing = "even" ;
-		lon1_5:axis = "X" ;
-	double lat1_5(lat1_5) ;
-		lat1_5:point_spacing = "uneven" ;
-		lat1_5:axis = "Y" ;
-		lat1_5:bounds = "lat1_5_bnds" ;
-	double lat1_5_bnds(lat1_5, bnds) ;
-	double zt(zt) ;
-		zt:units = "meters" ;
-		zt:positive = "down" ;
-		zt:point_spacing = "uneven" ;
-		zt:axis = "Z" ;
-		zt:bounds = "zt_bnds" ;
-	double zt_bnds(zt, bnds) ;
-	double time1478(time1478) ;
-		time1478:calendar = "NOLEAP" ;
-		time1478:point_spacing = "even" ;
-		time1478:axis = "T" ;
-	float newvar(time1478, zt, lat1_5, lon1_5) ;
-		newvar:missing_value = -1.e+34f ;
-		newvar:_FillValue = -1.e+34f ;
-		newvar:long_name = "outgoing longwave radiation" ;
-		newvar:units = "watts/m2" ;
-		newvar:history = "From a" ;
-
-// global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
-		:Conventions = "CF-1.0" ;
-}
 19   / 19: -22.52078   740.000      ....
 20   / 20: -20.65415   780.000      ....
 21   / 21: -41.65880   820.000      ....
@@ -57695,10 +57618,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "52.699"
-CLOCK_SECS = "71.85"
-CURRENT_DATE = "27-May-10"
-CURRENT_TIME = "16:07:36"
+DELTA_CPU = "52.2941"
+CLOCK_SECS = "81.956"
+CURRENT_DATE = "10-Jun-10"
+CURRENT_TIME = "11:22:27"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57707,8 +57630,8 @@ CURRENT_TIME = "16:07:36"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.043991"
-CLOCK_SECS = "71.901"
+DELTA_CPU = "0.040993"
+CLOCK_SECS = "82.04"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57722,60 +57645,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.373943
+ !-> DEFINE VARIABLE ten_plots = 0.358948
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0"
-CLOCK_SECS = "72.378"
+DELTA_CPU = "9.96E-04"
+CLOCK_SECS = "82.834"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "72.379"
+CLOCK_SECS = "82.835"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.035992
- !-> DEFINE VARIABLE sumcpu =0.035992
+ !-> DEFINE VARIABLE dt = 0.037991
+ !-> DEFINE VARIABLE sumcpu =0.037991
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.043995
- !-> DEFINE VARIABLE sumcpu =0.079987
-!-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.115982
-!-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.040993
- !-> DEFINE VARIABLE sumcpu =0.156975
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.19397
-!-> REPEAT: K=6
+ !-> DEFINE VARIABLE sumcpu =0.073986
+!-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.232964
+ !-> DEFINE VARIABLE sumcpu =0.11298
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.037994
+ !-> DEFINE VARIABLE sumcpu =0.150974
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.038994
+ !-> DEFINE VARIABLE sumcpu =0.189968
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.037994
+ !-> DEFINE VARIABLE sumcpu =0.227962
 !-> REPEAT: K=7
  !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.271958
+ !-> DEFINE VARIABLE sumcpu =0.266956
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.037994
- !-> DEFINE VARIABLE sumcpu =0.309952
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.303951
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.041992
- !-> DEFINE VARIABLE sumcpu =0.351944
+ !-> DEFINE VARIABLE dt = 0.040997
+ !-> DEFINE VARIABLE sumcpu =0.344948
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.387939
+ !-> DEFINE VARIABLE dt = 0.036991
+ !-> DEFINE VARIABLE sumcpu =0.381939
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.387939
-0.387939
+ !-> MESSAGE/CONTINUE 0.381939
+0.381939
 sh sym CLOCK_SECS
-CLOCK_SECS = "72.997"
+CLOCK_SECS = "84.045"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "27-May-10"
-SESSION_TIME = "16:06"
-CURRENT_DATE = "27-May-10"
-CURRENT_TIME = "16:07:37"
+SESSION_DATE = "10-Jun-10"
+SESSION_TIME = "11:21"
+CURRENT_DATE = "10-Jun-10"
+CURRENT_TIME = "11:22:29"
  
 ! ******** V6.3 Additions below ***********
  
@@ -59976,6 +59899,52 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
  
 ! New default: no small tics for multi-decade plots
 set view v3; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
+set view v4; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
+set view v5; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
+set view v6; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
+set view v7; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar
+ 
+! can plot the tics even on a multi-decade axis by specifying PPL TICS.
+set view v8; plot/nolab/ax=0,1,0,0/vlim=0:1/set tvar
+  ppl tics,0.1,0.25
+  ppl plot
+ 
+cancel view
+ 
+! Test vertical time axes.
+ 
+define view/x=0.000:0.125/y=0:1 v1
+define view/x=0.125:0.250/y=0:1 v2
+define view/x=0.250:0.375/y=0:1 v3
+define view/x=0.375:0.500/y=0:1 v4
+define view/x=0.500:0.625/y=0:1 v5
+define view/x=0.625:0.750/y=0:1 v6
+define view/x=0.750:0.875/y=0:1 v7
+define view/x=0.875:1.000/y=0:1 v8
+ 
+! Plot a variety of time axis lengths.
+set view v1; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1870]
+set view v2; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
+ 
+! New default: no small tics for multi-decade plots
+set view v3; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
+set view v4; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
+set view v5; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
+set view v6; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
+set view v7; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar
+ 
+! can plot the tics even on a multi-decade axis by specifying PPL TICS.
+set view v8; plot/trans/nolab/ax=0,0,1,0/hlim=0:1/set tvar
+  ppl tics,0.1,0.25
+  ppl plot
+ 
+cancel view
+ 
+GO bn_reset
+cancel mode verify
+GO bn_show_xml_file
+! bn_show_xml_file.jnl
+! Testing SHOW DATA/OUTFILE
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <data>
 <datasets>
@@ -61831,52 +61800,6 @@ set view v3; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
 </axis>
 </axes>
 </data>
-set view v4; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
-set view v5; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
-set view v6; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
-set view v7; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar
- 
-! can plot the tics even on a multi-decade axis by specifying PPL TICS.
-set view v8; plot/nolab/ax=0,1,0,0/vlim=0:1/set tvar
-  ppl tics,0.1,0.25
-  ppl plot
- 
-cancel view
- 
-! Test vertical time axes.
- 
-define view/x=0.000:0.125/y=0:1 v1
-define view/x=0.125:0.250/y=0:1 v2
-define view/x=0.250:0.375/y=0:1 v3
-define view/x=0.375:0.500/y=0:1 v4
-define view/x=0.500:0.625/y=0:1 v5
-define view/x=0.625:0.750/y=0:1 v6
-define view/x=0.750:0.875/y=0:1 v7
-define view/x=0.875:1.000/y=0:1 v8
- 
-! Plot a variety of time axis lengths.
-set view v1; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1870]
-set view v2; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
- 
-! New default: no small tics for multi-decade plots
-set view v3; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
-set view v4; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
-set view v5; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
-set view v6; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
-set view v7; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar
- 
-! can plot the tics even on a multi-decade axis by specifying PPL TICS.
-set view v8; plot/trans/nolab/ax=0,0,1,0/hlim=0:1/set tvar
-  ppl tics,0.1,0.25
-  ppl plot
- 
-cancel view
- 
-GO bn_reset
-cancel mode verify
-GO bn_show_xml_file
-! bn_show_xml_file.jnl
-! Testing SHOW DATA/OUTFILE
 !         SHOW AXIS/OUTFILE
 !         SHOW VAR/OUTFILE
 !         SAY/OUTFILE
@@ -62439,760 +62362,37 @@ list/x=2:3/L=3 ngrid
  10    / 19:  0.000  0.000  0.000
  
  
-GO bn_reset
-cancel mode verify
-GO bn_set_axis_regular
-! bn_set_axis_regular.jnl
-! Karl Smith, 5/2010
-! tests for SET AXIS /REGULAR
- 
-! --- create irregular but monotonic data with integer endpoints
-set region /i=1:10 /j=1:10
-let deltax = if (i gt 1 and i lt 10) then 0.5 * sin((x - 1.0) * 3.14159265 / 2.33333333) else 0.0
-let xdata = x + deltax
-let deltay = if (j gt 1 and j lt 10) then 0.5 * sin((y - 1.0) * 3.14159265 / 2.33333333) else 0.0
-let ydata = y - deltay
- 
-! --- define axes and grid from this data
-define axis /x /from_data /name=myx xdata
-define axis /y /from_data /name=myy ydata
-define grid /x=myx /y=myy mygrid
-set grid mygrid
- 
-! --- define a variable using this grid; show everything is irregular
-let myvar = 2 * x + y
-list /format=(F8.5) x
-             VARIABLE : X
-                        axis MYX
-             BAD FLAG : -1.E+34       
-             SUBSET   : 10 points (X)
-             X        : 0.2563 to 10.74
- 1.00000
- 2.48746
- 3.21694
- 3.60908
- 4.60908
- 6.21694
- 7.48746
- 8.00000
- 8.51254
-10.00000
-list /format=(F8.5) y
-             VARIABLE : Y
-                        axis MYY
-             BAD FLAG : -1.E+34       
-             SUBSET   : 10 points (Y)
-             Y        : 0.7437 to 10.26
- 1.00000
- 1.51254
- 2.78306
- 4.39092
- 5.39092
- 5.78306
- 6.51254
- 8.00000
- 9.48746
-10.00000
-list myvar
-             VARIABLE : 2 * X + Y
-             SUBSET   : 10 by 10 points (X-Y)
-               1      2.49   3.22   3.61   4.61   6.22   7.49   8      8.51   10    
-                1      2      3      4      5      6      7      8      9     10
- 1     /  1:   3.00   5.97   7.43   8.22  10.22  13.43  15.97  17.00  18.03  21.00
- 1.51  /  2:   3.51   6.49   7.95   8.73  10.73  13.95  16.49  17.51  18.54  21.51
- 2.78  /  3:   4.78   7.76   9.22  10.00  12.00  15.22  17.76  18.78  19.81  22.78
- 4.39  /  4:   6.39   9.37  10.82  11.61  13.61  16.82  19.37  20.39  21.42  24.39
- 5.39  /  5:   7.39  10.37  11.82  12.61  14.61  17.82  20.37  21.39  22.42  25.39
- 5.78  /  6:   7.78  10.76  12.22  13.00  15.00  18.22  20.76  21.78  22.81  25.78
- 6.51  /  7:   8.51  11.49  12.95  13.73  15.73  18.95  21.49  22.51  23.54  26.51
- 8     /  8:  10.00  12.97  14.43  15.22  17.22  20.43  22.97  24.00  25.03  28.00
- 9.49  /  9:  11.49  14.46  15.92  16.71  18.71  21.92  24.46  25.49  26.51  29.49
- 10    / 10:  12.00  14.97  16.43  17.22  19.22  22.43  24.97  26.00  27.03  30.00
-show grid
- Default grid for DEFINE VARIABLE is MYGRID
- Last successful data access was on grid MYGRID
-    GRID MYGRID
- name       axis              # pts   start                end
- MYX       X                   10 i   1                    10
- MYY       Y                   10 i   1                    10
- normal    Z
- normal    T
- 
-! --- force the x axis to be regular
-set axis /regular myx
-list /format=(F8.5) x
-             VARIABLE : X
-                        axis MYX
-             BAD FLAG : -1.E+34       
-             SUBSET   : 10 points (X)
-             X        : 0.5 to 10.5
- 1.00000
- 2.00000
- 3.00000
- 4.00000
- 5.00000
- 6.00000
- 7.00000
- 8.00000
- 9.00000
-10.00000
-list /format=(F8.5) y
-             VARIABLE : Y
-                        axis MYY
-             BAD FLAG : -1.E+34       
-             SUBSET   : 10 points (Y)
-             Y        : 0.7437 to 10.26
- 1.00000
- 1.51254
- 2.78306
- 4.39092
- 5.39092
- 5.78306
- 6.51254
- 8.00000
- 9.48746
-10.00000
-list myvar
-             VARIABLE : 2 * X + Y
-             SUBSET   : 10 by 10 points (X-Y)
-                1      2      3      4      5      6      7      8      9     10    
-                1      2      3      4      5      6      7      8      9     10
- 1     /  1:   3.00   5.97   7.43   8.22  10.22  13.43  15.97  17.00  18.03  21.00
- 1.51  /  2:   3.51   6.49   7.95   8.73  10.73  13.95  16.49  17.51  18.54  21.51
- 2.78  /  3:   4.78   7.76   9.22  10.00  12.00  15.22  17.76  18.78  19.81  22.78
- 4.39  /  4:   6.39   9.37  10.82  11.61  13.61  16.82  19.37  20.39  21.42  24.39
- 5.39  /  5:   7.39  10.37  11.82  12.61  14.61  17.82  20.37  21.39  22.42  25.39
- 5.78  /  6:   7.78  10.76  12.22  13.00  15.00  18.22  20.76  21.78  22.81  25.78
- 6.51  /  7:   8.51  11.49  12.95  13.73  15.73  18.95  21.49  22.51  23.54  26.51
- 8     /  8:  10.00  12.97  14.43  15.22  17.22  20.43  22.97  24.00  25.03  28.00
- 9.49  /  9:  11.49  14.46  15.92  16.71  18.71  21.92  24.46  25.49  26.51  29.49
- 10    / 10:  12.00  14.97  16.43  17.22  19.22  22.43  24.97  26.00  27.03  30.00
-show grid
- Default grid for DEFINE VARIABLE is MYGRID
- Last successful data access was on grid MYGRID
-    GRID MYGRID
- name       axis              # pts   start                end
- MYX       X                   10 r   1                    10
- MYY       Y                   10 i   1                    10
- normal    Z
- normal    T
- 
-! --- setting a regular axis as regular does nothing
-set axis /regular myx
-list /format=(F8.5) x
-             VARIABLE : X
-                        axis MYX
-             BAD FLAG : -1.E+34       
-             SUBSET   : 10 points (X)
-             X        : 0.5 to 10.5
- 1.00000
- 2.00000
- 3.00000
- 4.00000
- 5.00000
- 6.00000
- 7.00000
- 8.00000
- 9.00000
-10.00000
-list /format=(F8.5) y
-             VARIABLE : Y
-                        axis MYY
-             BAD FLAG : -1.E+34       
-             SUBSET   : 10 points (Y)
-             Y        : 0.7437 to 10.26
- 1.00000
- 1.51254
- 2.78306
- 4.39092
- 5.39092
- 5.78306
- 6.51254
- 8.00000
- 9.48746
-10.00000
-list myvar
-             VARIABLE : 2 * X + Y
-             SUBSET   : 10 by 10 points (X-Y)
-                1      2      3      4      5      6      7      8      9     10    
-                1      2      3      4      5      6      7      8      9     10
- 1     /  1:   3.00   5.97   7.43   8.22  10.22  13.43  15.97  17.00  18.03  21.00
- 1.51  /  2:   3.51   6.49   7.95   8.73  10.73  13.95  16.49  17.51  18.54  21.51
- 2.78  /  3:   4.78   7.76   9.22  10.00  12.00  15.22  17.76  18.78  19.81  22.78
- 4.39  /  4:   6.39   9.37  10.82  11.61  13.61  16.82  19.37  20.39  21.42  24.39
- 5.39  /  5:   7.39  10.37  11.82  12.61  14.61  17.82  20.37  21.39  22.42  25.39
- 5.78  /  6:   7.78  10.76  12.22  13.00  15.00  18.22  20.76  21.78  22.81  25.78
- 6.51  /  7:   8.51  11.49  12.95  13.73  15.73  18.95  21.49  22.51  23.54  26.51
- 8     /  8:  10.00  12.97  14.43  15.22  17.22  20.43  22.97  24.00  25.03  28.00
- 9.49  /  9:  11.49  14.46  15.92  16.71  18.71  21.92  24.46  25.49  26.51  29.49
- 10    / 10:  12.00  14.97  16.43  17.22  19.22  22.43  24.97  26.00  27.03  30.00
-show grid
- Default grid for DEFINE VARIABLE is MYGRID
- Last successful data access was on grid MYGRID
-    GRID MYGRID
- name       axis              # pts   start                end
- MYX       X                   10 r   1                    10
- MYY       Y                   10 i   1                    10
- normal    Z
- normal    T
- 
-! --- clean up
-go bn_reset
-cancel mode verify
-cancel grid mygrid
- 
-! --- read a NetCDF file with the irregular axes and data
-use bn_set_axis_regular
-show data
-     currently SET data sets:
-    1> ./bn_set_axis_regular.nc  (default)
- name     title                             I         J         K         L
- MYDATA   2 * X + Y                        1:10      1:10      ...       ...
- 
-list mydata
-             VARIABLE : 2 * X + Y
-             FILENAME : bn_set_axis_regular.nc
-             SUBSET   : 10 by 10 points (X-Y)
-               1      2.49   3.22   3.61   4.61   6.22   7.49   8      8.51   10    
-                1      2      3      4      5      6      7      8      9     10
- 1     /  1:   3.00   5.97   7.43   8.22  10.22  13.43  15.97  17.00  18.03  21.00
- 1.51  /  2:   3.51   6.49   7.95   8.73  10.73  13.95  16.49  17.51  18.54  21.51
- 2.78  /  3:   4.78   7.76   9.22  10.00  12.00  15.22  17.76  18.78  19.81  22.78
- 4.39  /  4:   6.39   9.37  10.82  11.61  13.61  16.82  19.37  20.39  21.42  24.39
- 5.39  /  5:   7.39  10.37  11.82  12.61  14.61  17.82  20.37  21.39  22.42  25.39
- 5.78  /  6:   7.78  10.76  12.22  13.00  15.00  18.22  20.76  21.78  22.81  25.78
- 6.51  /  7:   8.51  11.49  12.95  13.73  15.73  18.95  21.49  22.51  23.54  26.51
- 8     /  8:  10.00  12.97  14.43  15.22  17.22  20.43  22.97  24.00  25.03  28.00
- 9.49  /  9:  11.49  14.46  15.92  16.71  18.71  21.92  24.46  25.49  26.51  29.49
- 10    / 10:  12.00  14.97  16.43  17.22  19.22  22.43  24.97  26.00  27.03  30.00
-show grid
- Default grid for DEFINE VARIABLE is ABSTRACT
- Last successful data access was on grid GOZ1
-    GRID GOZ1
- name       axis              # pts   start                end
- MYX1      X                   10 i   1                    10
- MYY       Y                   10 i   1                    10
- normal    Z
- normal    T
- 
-! --- force the x axis to be regular
-set axis /regular `..dimnames[i=1]`
- !-> set axis /regular MYX1
-list mydata
-             VARIABLE : 2 * X + Y
-             FILENAME : bn_set_axis_regular.nc
-             SUBSET   : 10 by 10 points (X-Y)
-                1      2      3      4      5      6      7      8      9     10    
-                1      2      3      4      5      6      7      8      9     10
- 1     /  1:   3.00   5.97   7.43   8.22  10.22  13.43  15.97  17.00  18.03  21.00
- 1.51  /  2:   3.51   6.49   7.95   8.73  10.73  13.95  16.49  17.51  18.54  21.51
- 2.78  /  3:   4.78   7.76   9.22  10.00  12.00  15.22  17.76  18.78  19.81  22.78
- 4.39  /  4:   6.39   9.37  10.82  11.61  13.61  16.82  19.37  20.39  21.42  24.39
- 5.39  /  5:   7.39  10.37  11.82  12.61  14.61  17.82  20.37  21.39  22.42  25.39
- 5.78  /  6:   7.78  10.76  12.22  13.00  15.00  18.22  20.76  21.78  22.81  25.78
- 6.51  /  7:   8.51  11.49  12.95  13.73  15.73  18.95  21.49  22.51  23.54  26.51
- 8     /  8:  10.00  12.97  14.43  15.22  17.22  20.43  22.97  24.00  25.03  28.00
- 9.49  /  9:  11.49  14.46  15.92  16.71  18.71  21.92  24.46  25.49  26.51  29.49
- 10    / 10:  12.00  14.97  16.43  17.22  19.22  22.43  24.97  26.00  27.03  30.00
-show grid
- Default grid for DEFINE VARIABLE is ABSTRACT
- Last successful data access was on grid GOZ1
-    GRID GOZ1
- name       axis              # pts   start                end
- MYX1      X                   10 r   1                    10
- MYY       Y                   10 i   1                    10
- normal    Z
- normal    T
- 
+! ******** V6.6.2 Additions below ***********
  
 GO bn_reset
 cancel mode verify
-GO bn_set_cancel_redirect
-! bn_set_cancel_redirect.jnl
-! Karl Smith, 5/2010
-! test for SET REDIRECT and CANCEL REDIRECT
+GO bn_axis_dir_symbols
+! bn_axis_dir_symbols.jnl
+! 5/2010
+!
+! For LAS:
+! SYMBOL AX_HORIZ and AX_VERT identify the direction of
+! the plot axes (x, y, z, or t).  Add this for 1D plots
+! as well as 2D ones.
  
-! --- 1. redirect/tee both stdout and stderr to a file
-set redirect /tee /file="redirect.txt" /clobber stdout stderr
+plot/i=1:10 i; show sym ax*; can sym ax*
+AX_HORIZ = "X"
+AX_VERT = "Y"
+plot/j=1:10 j; show sym ax*; can sym ax*
+AX_HORIZ = "Y"
  
-! --- 2. produce some output to both stdout and stderr
-define axis /x=0:6:0.5 myaxis
-set axis myaxis
-define grid /x=myaxis mygrid
-set grid mygrid
-let wave=sin(x)
-list wave
-             VARIABLE : SIN(X)
-             SUBSET   : 13 points (X)
- 0    /  1:  0.0000
- 0.5  /  2:  0.4794
- 1    /  3:  0.8415
- 1.5  /  4:  0.9975
- 2    /  5:  0.9093
- 2.5  /  6:  0.5985
- 3    /  7:  0.1411
- 3.5  /  8: -0.3508
- 4    /  9: -0.7568
- 4.5  / 10: -0.9775
- 5    / 11: -0.9589
- 5.5  / 12: -0.7055
- 6    / 13: -0.2794
-go /help
+use gt4d011
+plot/i=100/j=40/L=1 temp; show sym ax*; can sym ax*
+AX_VERT = "Z"
  
-! --- 3. cancel the stderr redirect and produce output
-cancel redirect stderr
-show axis myaxis
- name       axis              # pts   start                end
- MYAXIS    X                   13 r   0                    6
-   Axis span (to cell edges) = 6.5
-go /help
- 
-! --- 4. cancel all redirection and produce some output
-cancel redirect
-show grid mygrid
-    GRID MYGRID
- name       axis              # pts   start                end
- MYAXIS    X                   13 r   0                    6
- normal    Y
- normal    Z
- normal    T
-go /help
- 
-! --- 5. show the contents of the redirect file
-! ---    should be all contents of 2., stdout of 3. and nothing but the cancel from 4.
-let contents = { spawn:"cat redirect.txt" }
-list contents
-             VARIABLE : { SPAWN:"cat redirect.txt" }
-             SUBSET   : 39 points (X)
- 1    /  1:" "                                                                         
- 2    /  2:"! --- 2. produce some output to both stdout and stderr"                    
- 3    /  3:"define axis /x=0:6:0.5 myaxis"                                             
- 4    /  4:"set axis myaxis"                                                           
- 5    /  5:"define grid /x=myaxis mygrid"                                              
- 6    /  6:"set grid mygrid"                                                           
- 7    /  7:"let wave=sin(x)"                                                           
- 8    /  8:"list wave"                                                                 
- 9    /  9:"             VARIABLE : SIN(X)"                                            
- 10   / 10:"             SUBSET   : 13 points (X)"                                     
- 11   / 11:" 0    /  1:  0.0000"                                                       
- 12   / 12:" 0.5  /  2:  0.4794"                                                       
- 13   / 13:" 1    /  3:  0.8415"                                                       
- 14   / 14:" 1.5  /  4:  0.9975"                                                       
- 15   / 15:" 2    /  5:  0.9093"                                                       
- 16   / 16:" 2.5  /  6:  0.5985"                                                       
- 17   / 17:" 3    /  7:  0.1411"                                                       
- 18   / 18:" 3.5  /  8: -0.3508"                                                       
- 19   / 19:" 4    /  9: -0.7568"                                                       
- 20   / 20:" 4.5  / 10: -0.9775"                                                       
- 21   / 21:" 5    / 11: -0.9589"                                                       
- 22   / 22:" 5.5  / 12: -0.7055"                                                       
- 23   / 23:" 6    / 13: -0.2794"                                                       
- 24   / 24:"go /help"                                                                  
- 25   / 25:" Use the GO command to name a file of FERRET commands to be executed."     
- 26   / 26:"     e.g.   yes? GO filename"                                              
- 27   / 27:" "                                                                         
- 28   / 28:" Use "GO/HELP filename" to read documentation in  the file to be executed."
- 29   / 29:" "                                                                         
- 30   / 30:"! --- 3. cancel the stderr redirect and produce output"                    
- 31   / 31:"cancel redirect stderr"                                                    
- 32   / 32:"show axis myaxis"                                                          
- 33   / 33:" name       axis              # pts   start                end"            
- 34   / 34:" MYAXIS    X                   13 r   0                    6"              
- 35   / 35:"   Axis span (to cell edges) = 6.5"                                        
- 36   / 36:"go /help"                                                                  
- 37   / 37:" "                                                                         
- 38   / 38:"! --- 4. cancel all redirection and produce some output"                   
- 39   / 39:"cancel redirect"                                                           
-cancel var contents
- 
-! --- 6. redirect/tee both stdout and stderr, appending to the redirect file
-set redirect /tee /file="redirect.txt" /append stdout stderr
- 
-! --- 7. produce output to both stdout and stderr
-list wave
-             VARIABLE : SIN(X)
-             SUBSET   : 13 points (X)
- 0    /  1:  0.0000
- 0.5  /  2:  0.4794
- 1    /  3:  0.8415
- 1.5  /  4:  0.9975
- 2    /  5:  0.9093
- 2.5  /  6:  0.5985
- 3    /  7:  0.1411
- 3.5  /  8: -0.3508
- 4    /  9: -0.7568
- 4.5  / 10: -0.9775
- 5    / 11: -0.9589
- 5.5  / 12: -0.7055
- 6    / 13: -0.2794
-go /help
- 
-! --- 8. cancel the stdout redirect and produce output
-cancel redirect stdout
-show axis myaxis
- name       axis              # pts   start                end
- MYAXIS    X                   13 r   0                    6
-   Axis span (to cell edges) = 6.5
-go /help
- 
-! --- 9. cancel all redirection and produce some output
-cancel redirect stderr
-show grid mygrid
-    GRID MYGRID
- name       axis              # pts   start                end
- MYAXIS    X                   13 r   0                    6
- normal    Y
- normal    Z
- normal    T
-go /help
- 
-! --- 10. results of CANCEL REDIRECT when nothing is redirected
-cancel redirect
- 
-! --- 11. show the updated contents of the redirect file
-! ---     should be all contents of 2., stdout of 3. and nothing but the cancel from 4.
-! ---     plus all contents of 7. and stderr of 8.
-let contents = { spawn:"cat redirect.txt" }
-list contents
-             VARIABLE : { SPAWN:"cat redirect.txt" }
-             SUBSET   : 69 points (X)
- 1    /  1:" "                                                                         
- 2    /  2:"! --- 2. produce some output to both stdout and stderr"                    
- 3    /  3:"define axis /x=0:6:0.5 myaxis"                                             
- 4    /  4:"set axis myaxis"                                                           
- 5    /  5:"define grid /x=myaxis mygrid"                                              
- 6    /  6:"set grid mygrid"                                                           
- 7    /  7:"let wave=sin(x)"                                                           
- 8    /  8:"list wave"                                                                 
- 9    /  9:"             VARIABLE : SIN(X)"                                            
- 10   / 10:"             SUBSET   : 13 points (X)"                                     
- 11   / 11:" 0    /  1:  0.0000"                                                       
- 12   / 12:" 0.5  /  2:  0.4794"                                                       
- 13   / 13:" 1    /  3:  0.8415"                                                       
- 14   / 14:" 1.5  /  4:  0.9975"                                                       
- 15   / 15:" 2    /  5:  0.9093"                                                       
- 16   / 16:" 2.5  /  6:  0.5985"                                                       
- 17   / 17:" 3    /  7:  0.1411"                                                       
- 18   / 18:" 3.5  /  8: -0.3508"                                                       
- 19   / 19:" 4    /  9: -0.7568"                                                       
- 20   / 20:" 4.5  / 10: -0.9775"                                                       
- 21   / 21:" 5    / 11: -0.9589"                                                       
- 22   / 22:" 5.5  / 12: -0.7055"                                                       
- 23   / 23:" 6    / 13: -0.2794"                                                       
- 24   / 24:"go /help"                                                                  
- 25   / 25:" Use the GO command to name a file of FERRET commands to be executed."     
- 26   / 26:"     e.g.   yes? GO filename"                                              
- 27   / 27:" "                                                                         
- 28   / 28:" Use "GO/HELP filename" to read documentation in  the file to be executed."
- 29   / 29:" "                                                                         
- 30   / 30:"! --- 3. cancel the stderr redirect and produce output"                    
- 31   / 31:"cancel redirect stderr"                                                    
- 32   / 32:"show axis myaxis"                                                          
- 33   / 33:" name       axis              # pts   start                end"            
- 34   / 34:" MYAXIS    X                   13 r   0                    6"              
- 35   / 35:"   Axis span (to cell edges) = 6.5"                                        
- 36   / 36:"go /help"                                                                  
- 37   / 37:" "                                                                         
- 38   / 38:"! --- 4. cancel all redirection and produce some output"                   
- 39   / 39:"cancel redirect"                                                           
- 40   / 40:" "                                                                         
- 41   / 41:"! --- 7. produce output to both stdout and stderr"                         
- 42   / 42:"list wave"                                                                 
- 43   / 43:"             VARIABLE : SIN(X)"                                            
- 44   / 44:"             SUBSET   : 13 points (X)"                                     
- 45   / 45:" 0    /  1:  0.0000"                                                       
- 46   / 46:" 0.5  /  2:  0.4794"                                                       
- 47   / 47:" 1    /  3:  0.8415"                                                       
- 48   / 48:" 1.5  /  4:  0.9975"                                                       
- 49   / 49:" 2    /  5:  0.9093"                                                       
- 50   / 50:" 2.5  /  6:  0.5985"                                                       
- 51   / 51:" 3    /  7:  0.1411"                                                       
- 52   / 52:" 3.5  /  8: -0.3508"                                                       
- 53   / 53:" 4    /  9: -0.7568"                                                       
- 54   / 54:" 4.5  / 10: -0.9775"                                                       
- 55   / 55:" 5    / 11: -0.9589"                                                       
- 56   / 56:" 5.5  / 12: -0.7055"                                                       
- 57   / 57:" 6    / 13: -0.2794"                                                       
- 58   / 58:"go /help"                                                                  
- 59   / 59:" Use the GO command to name a file of FERRET commands to be executed."     
- 60   / 60:"     e.g.   yes? GO filename"                                              
- 61   / 61:" "                                                                         
- 62   / 62:" Use "GO/HELP filename" to read documentation in  the file to be executed."
- 63   / 63:" "                                                                         
- 64   / 64:"! --- 8. cancel the stdout redirect and produce output"                    
- 65   / 65:"cancel redirect stdout"                                                    
- 66   / 66:" Use the GO command to name a file of FERRET commands to be executed."     
- 67   / 67:"     e.g.   yes? GO filename"                                              
- 68   / 68:" "                                                                         
- 69   / 69:" Use "GO/HELP filename" to read documentation in  the file to be executed."
-cancel var contents
- 
-! --- 12. redirect only stdout to a file and produce some output to show stdout redirected, stderr normal
-! ---     warning: can get confusing - look ahead for file contents
-! ---     immediately following redirect line should be stderr of 12 and contents of 13,
-! ---     which shows file contents of stdout of 12 and cancel redirect of 13
-set redirect /file="redirect.txt" /clobber stdout
-let contents = { spawn:"cat redirect.txt" }
-list contents
-             VARIABLE : { SPAWN:"cat redirect.txt" }
-             SUBSET   : 21 points (X)
- 1    /  1:"list wave"                                                           
- 2    /  2:"             VARIABLE : SIN(X)"                                      
- 3    /  3:"             SUBSET   : 13 points (X)"                               
- 4    /  4:" 0    /  1:  0.0000"                                                 
- 5    /  5:" 0.5  /  2:  0.4794"                                                 
- 6    /  6:" 1    /  3:  0.8415"                                                 
- 7    /  7:" 1.5  /  4:  0.9975"                                                 
- 8    /  8:" 2    /  5:  0.9093"                                                 
- 9    /  9:" 2.5  /  6:  0.5985"                                                 
- 10   / 10:" 3    /  7:  0.1411"                                                 
- 11   / 11:" 3.5  /  8: -0.3508"                                                 
- 12   / 12:" 4    /  9: -0.7568"                                                 
- 13   / 13:" 4.5  / 10: -0.9775"                                                 
- 14   / 14:" 5    / 11: -0.9589"                                                 
- 15   / 15:" 5.5  / 12: -0.7055"                                                 
- 16   / 16:" 6    / 13: -0.2794"                                                 
- 17   / 17:"go /help"                                                            
- 18   / 18:" "                                                                   
- 19   / 19:"! --- 13. cancel the redirection and show the redirect file contents"
- 20   / 20:"! ---     should be the "missing" stdout of 12."                     
- 21   / 21:"cancel redirect stdout"                                              
-cancel var contents
- 
-! --- 14. redirect only stderr, appending to a file and produce some output to show stdout normal, stderr redirected
-set redirect /file="redirect.txt" /append stderr
-show axis myaxis
- name       axis              # pts   start                end
- MYAXIS    X                   13 r   0                    6
-   Axis span (to cell edges) = 6.5
-go /help
- 
-! --- 15. cancel the redirection and show the redirect file contents
-! ---     should be the stdout of 12, cancel redirect of 13, and stderr of 14
-cancel redirect stderr
-let contents = { spawn:"cat redirect.txt" }
-list contents
-             VARIABLE : { SPAWN:"cat redirect.txt" }
-             SUBSET   : 25 points (X)
- 1    /  1:"list wave"                                                                 
- 2    /  2:"             VARIABLE : SIN(X)"                                            
- 3    /  3:"             SUBSET   : 13 points (X)"                                     
- 4    /  4:" 0    /  1:  0.0000"                                                       
- 5    /  5:" 0.5  /  2:  0.4794"                                                       
- 6    /  6:" 1    /  3:  0.8415"                                                       
- 7    /  7:" 1.5  /  4:  0.9975"                                                       
- 8    /  8:" 2    /  5:  0.9093"                                                       
- 9    /  9:" 2.5  /  6:  0.5985"                                                       
- 10   / 10:" 3    /  7:  0.1411"                                                       
- 11   / 11:" 3.5  /  8: -0.3508"                                                       
- 12   / 12:" 4    /  9: -0.7568"                                                       
- 13   / 13:" 4.5  / 10: -0.9775"                                                       
- 14   / 14:" 5    / 11: -0.9589"                                                       
- 15   / 15:" 5.5  / 12: -0.7055"                                                       
- 16   / 16:" 6    / 13: -0.2794"                                                       
- 17   / 17:"go /help"                                                                  
- 18   / 18:" "                                                                         
- 19   / 19:"! --- 13. cancel the redirection and show the redirect file contents"      
- 20   / 20:"! ---     should be the "missing" stdout of 12."                           
- 21   / 21:"cancel redirect stdout"                                                    
- 22   / 22:" Use the GO command to name a file of FERRET commands to be executed."     
- 23   / 23:"     e.g.   yes? GO filename"                                              
- 24   / 24:" "                                                                         
- 25   / 25:" Use "GO/HELP filename" to read documentation in  the file to be executed."
-cancel var contents
- 
-! --- 16. redirect/tee stdout to one file and stderr to another file
-set redirect /tee /file="redirect_stdout.txt" /clobber stdout
-set redirect /tee /file="redirect_stderr.txt" /clobber stderr
- 
-! --- 17. produce some output
-show grid mygrid
-    GRID MYGRID
- name       axis              # pts   start                end
- MYAXIS    X                   13 r   0                    6
- normal    Y
- normal    Z
- normal    T
-go /help
- 
-! --- 18. see what happens to messages (say, warn, error)
-say "   This is a say message"
-   This is a say message
-set axis /regular myaxis
-set mode ignore_error
-show grid garbage
-cancel mode ignore_error
- 
-! --- 19. cancel redirections and show the contents of the files
-cancel redirect
-let contents = { spawn:"cat redirect_stdout.txt" }
-! ---     should be the stdout of 17, whatever stdout of 18, and cancel redirect from 19
-list contents
-             VARIABLE : { SPAWN:"cat redirect_stdout.txt" }
-             SUBSET   : 21 points (X)
- 1    /  1:"set redirect /tee /file="redirect_stderr.txt" /clobber stderr"   
- 2    /  2:" "                                                               
- 3    /  3:"! --- 17. produce some output"                                   
- 4    /  4:"show grid mygrid"                                                
- 5    /  5:"    GRID MYGRID"                                                 
- 6    /  6:" name       axis              # pts   start                end"  
- 7    /  7:" MYAXIS    X                   13 r   0                    6"    
- 8    /  8:" normal    Y"                                                    
- 9    /  9:" normal    Z"                                                    
- 10   / 10:" normal    T"                                                    
- 11   / 11:"go /help"                                                        
- 12   / 12:" "                                                               
- 13   / 13:"! --- 18. see what happens to messages (say, warn, error)"       
- 14   / 14:"say "   This is a say message""                                  
- 15   / 15:"set axis /regular myaxis"                                        
- 16   / 16:"set mode ignore_error"                                           
- 17   / 17:"show grid garbage"                                               
- 18   / 18:"cancel mode ignore_error"                                        
- 19   / 19:" "                                                               
- 20   / 20:"! --- 19. cancel redirections and show the contents of the files"
- 21   / 21:"cancel redirect"                                                 
-cancel var contents
-let contents = { spawn:"cat redirect_stderr.txt" }
-! ---     should be the stderr of 17.
-list contents
-             VARIABLE : { SPAWN:"cat redirect_stderr.txt" }
-             SUBSET   : 4 points (X)
- 1   / 1:" Use the GO command to name a file of FERRET commands to be executed."     
- 2   / 2:"     e.g.   yes? GO filename"                                              
- 3   / 3:" "                                                                         
- 4   / 4:" Use "GO/HELP filename" to read documentation in  the file to be executed."
-cancel var contents
- 
-! --- 20. turn on journal mode to a special filename
-set mode journal:redirect_journal.txt
- 
-! --- 21. turn on redirection to the journal with default source (stdout)
-set redirect /tee /journal
- 
-! --- 22. produce some output to stdout and stderr
-list wave
-             VARIABLE : SIN(X)
-             SUBSET   : 13 points (X)
- 0    /  1:  0.0000
- 0.5  /  2:  0.4794
- 1    /  3:  0.8415
- 1.5  /  4:  0.9975
- 2    /  5:  0.9093
- 2.5  /  6:  0.5985
- 3    /  7:  0.1411
- 3.5  /  8: -0.3508
- 4    /  9: -0.7568
- 4.5  / 10: -0.9775
- 5    / 11: -0.9589
- 5.5  / 12: -0.7055
- 6    / 13: -0.2794
-go /help
- 
-! --- 23. cancel journal redirect and produce some output
-! ---     should warn that stderr not redirected
-cancel redirect stdout stderr
-show axis myaxis
- name       axis              # pts   start                end
- MYAXIS    X                   13 r   0                    6
-   Axis span (to cell edges) = 6.5
-go /help
- 
-! --- 24. redirect/tee both stdout and stderr to the journal
-set redirect /tee /journal stderr stdout
- 
-! --- 25. produce some output to stdout and stderr
-show grid mygrid
-    GRID MYGRID
- name       axis              # pts   start                end
- MYAXIS    X                   13 r   0                    6
- normal    Y
- normal    Z
- normal    T
-go /help
- 
-! --- 26. turn off journal mode
-set mode journal:ferret.jnl
-cancel mode journal
- 
-! --- 27. produce some output to show journal redirect with no journal is not a problem
-list wave
-             VARIABLE : SIN(X)
-             SUBSET   : 13 points (X)
- 0    /  1:  0.0000
- 0.5  /  2:  0.4794
- 1    /  3:  0.8415
- 1.5  /  4:  0.9975
- 2    /  5:  0.9093
- 2.5  /  6:  0.5985
- 3    /  7:  0.1411
- 3.5  /  8: -0.3508
- 4    /  9: -0.7568
- 4.5  / 10: -0.9775
- 5    / 11: -0.9589
- 5.5  / 12: -0.7055
- 6    / 13: -0.2794
-go /help
- 
-! --- 28. cancel journal redirect and show contents of the journal file
-! ---     all redirected output should be commented, and should be the stdout of 22.,
-! ---     cancel redirect of 23., all contents of 25, and set mode journal of 26
-cancel redirect
-let contents = { spawn:"cat redirect_journal.txt" }
-list contents
-             VARIABLE : { SPAWN:"cat redirect_journal.txt" }
-             SUBSET   : 45 points (X)
- 1    /  1:" ! NOAA/PMEL TMAP"                                                          
- 2    /  2:" ! FERRET v6.62  "                                                          
- 3    /  3:" ! Linux(gfortran) 2.6.9-89.0.20.ELsmp - 05/27/10"                          
- 4    /  4:" ! 27-May-10 16:06     "                                                    
- 5    /  5:""                                                                           
- 6    /  6:"! "                                                                         
- 7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
- 8    /  8:"!list wave"                                                                 
- 9    /  9:"!             VARIABLE : SIN(X)"                                            
- 10   / 10:"!             SUBSET   : 13 points (X)"                                     
- 11   / 11:"! 0    /  1:  0.0000"                                                       
- 12   / 12:"! 0.5  /  2:  0.4794"                                                       
- 13   / 13:"! 1    /  3:  0.8415"                                                       
- 14   / 14:"! 1.5  /  4:  0.9975"                                                       
- 15   / 15:"! 2    /  5:  0.9093"                                                       
- 16   / 16:"! 2.5  /  6:  0.5985"                                                       
- 17   / 17:"! 3    /  7:  0.1411"                                                       
- 18   / 18:"! 3.5  /  8: -0.3508"                                                       
- 19   / 19:"! 4    /  9: -0.7568"                                                       
- 20   / 20:"! 4.5  / 10: -0.9775"                                                       
- 21   / 21:"! 5    / 11: -0.9589"                                                       
- 22   / 22:"! 5.5  / 12: -0.7055"                                                       
- 23   / 23:"! 6    / 13: -0.2794"                                                       
- 24   / 24:"!go /help"                                                                  
- 25   / 25:"! "                                                                         
- 26   / 26:"!! --- 23. cancel journal redirect and produce some output"                 
- 27   / 27:"!! ---     should warn that stderr not redirected"                          
- 28   / 28:"!cancel redirect stdout stderr"                                             
- 29   / 29:"! "                                                                         
- 30   / 30:"!! --- 25. produce some output to stdout and stderr"                        
- 31   / 31:"!show grid mygrid"                                                          
- 32   / 32:"!    GRID MYGRID"                                                           
- 33   / 33:"! name       axis              # pts   start                end"            
- 34   / 34:"! MYAXIS    X                   13 r   0                    6"              
- 35   / 35:"! normal    Y"                                                              
- 36   / 36:"! normal    Z"                                                              
- 37   / 37:"! normal    T"                                                              
- 38   / 38:"!go /help"                                                                  
- 39   / 39:"! Use the GO command to name a file of FERRET commands to be executed."     
- 40   / 40:"!     e.g.   yes? GO filename"                                              
- 41   / 41:"! "                                                                         
- 42   / 42:"! Use "GO/HELP filename" to read documentation in  the file to be executed."
- 43   / 43:"! "                                                                         
- 44   / 44:"!! --- 26. turn off journal mode"                                           
- 45   / 45:"!set mode journal:ferret.jnl"                                               
-cancel var contents
- 
-! --- clean-up: get rid of mygrid
-set grid abstract
-cancel grid mygrid
- 
-!!! NOTE: journal mode is now turned off !!!
+use coads_climatology
+plot/x=180/y=0 sst; show sym ax*; can sym ax*
+AX_HORIZ = "T"
+plot/x=180/y=0/trans sst; show sym ax*; can sym ax*
+AX_VERT = "T"
+shade/x=180 sst; show sym ax*; can sym ax*
+AX_HORIZ = "T"
+AX_VERT = "Y"
  
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not
@@ -63207,8 +62407,8 @@ yes?
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.62  
- 	Linux(gfortran) 2.6.9-89.0.20.ELsmp - 05/27/10
- 	27-May-10 16:08     
+ 	Linux(gfortran) 2.6.9-89.0.20.ELsmp - 06/10/10
+ 	10-Jun-10 11:22     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -64060,7 +63260,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64083,7 +63283,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64107,7 +63307,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64146,7 +63346,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64181,7 +63381,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64221,7 +63421,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64275,7 +63475,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64329,7 +63529,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64383,7 +63583,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64428,7 +63628,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64519,7 +63719,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64586,7 +63786,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64636,7 +63836,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64711,7 +63911,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64738,7 +63938,7 @@ variables:
 		X_:_FillValue = -1.e+34f ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -64762,7 +63962,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -64787,11 +63987,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -64821,7 +64021,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64893,7 +64093,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64934,7 +64134,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64973,7 +64173,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65076,7 +64276,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -65112,7 +64312,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -65134,7 +64334,7 @@ variables:
 		BB:my_title = "This is my new variable bb" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65160,7 +64360,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65180,7 +64380,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65201,7 +64401,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65240,7 +64440,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -65276,7 +64476,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -65310,7 +64510,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -65338,7 +64538,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65371,7 +64571,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65397,7 +64597,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65438,7 +64638,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -65536,7 +64736,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -65575,7 +64775,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65658,7 +64858,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65695,7 +64895,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65732,7 +64932,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65780,7 +64980,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65835,7 +65035,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -65875,7 +65075,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -65915,7 +65115,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -65947,7 +65147,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -65978,7 +65178,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -66007,7 +65207,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -66036,7 +65236,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -66094,7 +65294,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -66135,7 +65335,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -66154,37 +65354,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	float A(XAX) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -66214,7 +65384,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	float A(XAX) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -66263,7 +65463,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -66301,7 +65501,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -66319,7 +65519,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 err611_set_var_ez.jnl --- 
@@ -66338,7 +65538,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -66356,7 +65556,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -66374,7 +65574,7 @@ variables:
 		A:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -66395,7 +65595,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -66424,7 +65624,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -66448,7 +65648,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.62   27-May-10" ;
+		:history = "FERRET V6.62   10-Jun-10" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
@@ -66463,8 +65663,8 @@ yes?
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.62  
- 	Linux(gfortran) 2.6.9-89.0.20.ELsmp - 05/27/10
- 	27-May-10 16:08     
+ 	Linux(gfortran) 2.6.9-89.0.20.ELsmp - 06/10/10
+ 	10-Jun-10 11:22     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
@@ -66475,12 +65675,12 @@ FERRET_VERSION = "6.62"
 FERRET_PLATFORM = "Linux(gfortran) 2.6.9-89.0.20.ELsmp"
 NETCDF_VERSION = "4.1.1 of Apr  9 2010 11:00:18 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "27-May-10"
-SESSION_TIME = "16:08"
-DELTA_CPU = "0.025995"
-CLOCK_SECS = "0.052"
-CURRENT_DATE = "27-May-10"
-CURRENT_TIME = "16:08:01"
+SESSION_DATE = "10-Jun-10"
+SESSION_TIME = "11:22"
+DELTA_CPU = "0.035993"
+CLOCK_SECS = "0.099"
+CURRENT_DATE = "10-Jun-10"
+CURRENT_TIME = "11:22:53"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -66501,7 +65701,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "27-May-10:16:08"
+WIN_TITLE = "10-Jun-10:11:22"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -66561,8 +65761,8 @@ yes? GO bn_gif
 abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
  	NOAA/PMEL TMAP
  	FERRET v6.62  
- 	Linux(gfortran) 2.6.9-89.0.20.ELsmp - 05/27/10
- 	27-May-10 16:08     
+ 	Linux(gfortran) 2.6.9-89.0.20.ELsmp - 06/10/10
+ 	10-Jun-10 11:22     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -66779,8 +65979,8 @@ yes?
 yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.62  
- 	Linux(gfortran) 2.6.9-89.0.20.ELsmp - 05/27/10
- 	27-May-10 16:08     
+ 	Linux(gfortran) 2.6.9-89.0.20.ELsmp - 06/10/10
+ 	10-Jun-10 11:22     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -66893,8 +66093,8 @@ yes?
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.62  
- 	Linux(gfortran) 2.6.9-89.0.20.ELsmp - 05/27/10
- 	27-May-10 16:08     
+ 	Linux(gfortran) 2.6.9-89.0.20.ELsmp - 06/10/10
+ 	10-Jun-10 11:22     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -66978,4 +66178,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Thu May 27 16:08:03 PDT 2010
+Ended at Thu Jun 10 11:22:55 PDT 2010

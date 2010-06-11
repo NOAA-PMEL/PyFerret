@@ -51,8 +51,6 @@
 * V616  1/2009 *acm* Fixing LAS ticket 481, new style of xml output
 * V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
 *                  with &lt; etc.
-* V662  5/10 *acm* If orient=0 then this is a synthetic axis with no direction.
-*                  In this case write direction = " "; previously it was "I".
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -134,8 +132,6 @@ C Write statement that uses number 2075 when we change to using these.)
 * direction I,J,K, or L
 
            WRITE (risc_buff, 2030) idir(idim)
-	   
-	   IF ( orient .EQ. 0 ) WRITE (risc_buff, 2030) ' '
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * report /T0= for formatted time axis

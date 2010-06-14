@@ -1,5 +1,5 @@
 #
-# Makefile (for the FERRET/fer/dat code)
+# Makefile (for the FERRET/fer/ccr code)
 #
 # August 11 1997
 # Jonathan Callahan (with some help from Joe Sirott)
@@ -35,6 +35,9 @@ all:	$(LIB)
 $(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)
 	$(RANLIB) $@
+
+ferret_cmn:
+	ln -s ../common ferret_cmn
 
 #
 # Special case for Perl interpreter

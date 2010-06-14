@@ -43,6 +43,13 @@ solaris8:
 		LDFLAGS="-z muldefs" \
 		GKLIB="../xgks/src/lib/libxgks.a" \
 		LIB="-lnsl -L/usr/openwin/lib -lX11 -lm"
+solaris10:	
+	${MAKE} gksm2ps \
+		CC=cc \
+		CFLAGS="-I../xgks/port -I../xgks/src/lib -I/usr/openwin/share/include -I../xgks/src/lib/gksm $(G)" \
+		LDFLAGS="-z muldefs" \
+		GKLIB="../xgks/src/lib/libxgks.a" \
+		LIB="-lnsl -L/usr/openwin/lib -lX11 -lm"
 iris4d:
 	${MAKE} gksm2ps \
 		CC=cc \
@@ -98,19 +105,9 @@ x86_64-linux:
 		LDFLAGS= \
 		GKLIB="../xgks/src/lib/libxgks.a" \
 		LIB="-L/usr/X11R6/lib64 -lX11 -lm"
-ia64-sles10:
-        ${MAKE} gksm2ps \
-                CC=gcc \
-                CCFLAGS="-I/net2/rsz/ia64/gcc/gcc-3.4.6/includ -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm
- $(G)" \
-                LDFLAGS= \
-                GKLIB="../xgks/src/lib/libxgks.a" \
-                LIB="-L/usr/X11R6/lib -lX11 -lm" 
-
-gksm2ps:	gksm2ps.o xpreview.o \
-	resize_xgks_window.o set_background.o gksm.o batch_graphics.o
-	- $(CC) $(CFLAGS) $(LDFLAGS) -o gksm2ps gksm2ps.o xpreview.o \
-	 resize_xgks_window.o set_background.o gksm.o batch_graphics.o \
+gksm2ps:
+	$(CC) $(CFLAGS) $(LDFLAGS) -o gksm2ps gksm2ps.c xpreview.c \
+	 resize_xgks_window.c set_background.c gksm.c batch_graphics.c \
 	../ppl/tmapadds/ws_line_bundle.o \
 	../ppl/tmapadds/restore_saved_line_colors.o \
 	../ppl/tmapadds/query_xgks_wkstn.o \
@@ -119,4 +116,4 @@ gksm2ps:	gksm2ps.o xpreview.o \
 
 
 clean:
-	rm *.o gksm2ps
+	rm -f *.o gksm2ps

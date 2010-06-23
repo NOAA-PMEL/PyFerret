@@ -106,7 +106,6 @@
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.62   /
 	DATA revision_level	/  6.63   /
 
 ! Note we can put a debug title in the Ferret startup header lines

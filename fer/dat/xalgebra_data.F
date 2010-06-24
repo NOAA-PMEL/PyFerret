@@ -596,7 +596,19 @@
      .		alg_trans_num  ( 38 )	/ trans_smth_median	/,
      .		alg_trans_its_int ( 38)	/ .TRUE.		/,
      .		alg_trans_has_arg ( 38)	/ .TRUE.		/,
-     .		alg_trans_dflt_arg( 38)	/ 3		/
+     .		alg_trans_dflt_arg( 38)	/ 3		/,
+     .		alg_trans_text ( 39 )	/ 'SMX' 		/,
+     .		alg_trans_title( 39 )	/ 'maximum smoothed'     /,
+     .		alg_trans_num  ( 39 )	/ trans_smth_max	/,
+     .		alg_trans_its_int ( 39)	/ .TRUE.		/,
+     .		alg_trans_has_arg ( 39)	/ .TRUE.		/,
+     .		alg_trans_dflt_arg( 39)	/ 3		/,
+     .		alg_trans_text ( 40 )	/ 'SMN' 		/,
+     .		alg_trans_title( 40 )	/ 'minimumn smoothed'     /,
+     .		alg_trans_num  ( 40 )	/ trans_smth_min	/,
+     .		alg_trans_its_int ( 40)	/ .TRUE.		/,
+     .		alg_trans_has_arg ( 40)	/ .TRUE.		/,
+     .		alg_trans_dflt_arg( 40)	/ 3		/
 c     .     alg_trans_text ( 38 )   / 'RDC'         /,   ! hidden
 c     .     alg_trans_title( 38 )   / 'reduced'     /,
 c     .     alg_trans_num  ( 38 )   / trans_reduced /,
@@ -604,8 +616,8 @@ c     .     alg_trans_its_int ( 38) / .FALSE.       /,
 c     .     alg_trans_has_arg ( 38) / .FALSE.       /,
 c     .     alg_trans_dflt_arg( 38) / bad_val4      /
 
-        DATA    (alg_trans_num(i),i = 39, num_transforms)
-     .            /22*unspecified_int4 /
+        DATA    (alg_trans_num(i),i = 41, num_transforms)
+     .            /20*unspecified_int4 /
 
 	DATA
      .		alg_regrid_title( prgrd_exact )		/ ' '	/,

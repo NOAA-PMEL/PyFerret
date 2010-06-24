@@ -77,9 +77,17 @@
      .	     offset_hi   	( trans_smth_box )	/ +1  /,
      .	     offset_supplied	( trans_smth_box )	/ .TRUE. /,
      .
+     .	     offset_lo   	( trans_smth_max )	/ -1  /,
+     .	     offset_hi   	( trans_smth_max )	/ +1  /,
+     .	     offset_supplied	( trans_smth_max )	/ .TRUE. /,
+     .
      .	     offset_lo   	( trans_smth_median )	/ -1  /,
      .	     offset_hi   	( trans_smth_median )	/ +1  /,
      .	     offset_supplied	( trans_smth_median )	/ .TRUE. /,
+     .
+     .	     offset_lo   	( trans_smth_min )	/ -1  /,
+     .	     offset_hi   	( trans_smth_min )	/ +1  /,
+     .	     offset_supplied	( trans_smth_min )	/ .TRUE. /,
      .
      .	     offset_lo   	( trans_deriv_cntr )	/ -1  /,
      .	     offset_hi   	( trans_deriv_cntr )	/ +1  /,
@@ -169,7 +177,9 @@
 	   IF ( trans .EQ. trans_smth_box
      .	  . OR. trans .EQ. trans_smth_binml
      .	  . OR. trans .EQ. trans_smth_hanng
+     .	  . OR. trans .EQ. trans_smth_max
      .	  . OR. trans .EQ. trans_smth_median
+     .	  . OR. trans .EQ. trans_smth_min
      .	  . OR. trans .EQ. trans_smth_parzn
      .	  . OR. trans .EQ. trans_smth_welch
      .	  . OR. trans .EQ. trans_fill_ave ) THEN

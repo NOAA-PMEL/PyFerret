@@ -105,9 +105,6 @@
 *                   missing and FillValue flags which werent correct.)
 * V65  *acm*  1/10  Data from some datasets get a mismatch between _FillValue and 
 *                   data on output. Fix this.
-* V66  *acm*  3/10  Changes for Netcdf-4
-* V66  *acm*  4/10  fixes at the start of loop 200 for writing add_offset and 
-*                   scale_factor correctly.
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -184,8 +181,20 @@
 
 	EQUIVALENCE ( ds_precision, cd_data_type )
 
-	REAL*4		vals(100), bad, setval
+* internal equivalence so to match data types for F90
+#ifdef unix
+#   ifdef sun
+      BYTE ibuff1
+#   else
+      INTEGER*1 ibuff1
+#   endif
+#else
+      BYTE ibuff1
+#endif
+	REAL*4		rbuff4, vals(100), bad
         REAL*8          dvals(100), scalefac, addoff
+	INTEGER*4	ibuff4
+	EQUIVALENCE (rbuff4, ibuff4), (rbuff4, ibuff1)
 
 * local parameter declarations
 
@@ -406,10 +415,11 @@
            ENDIF
 
 * convert the data type into netCDF parameter value
-	   IF ((cx_type(cx) .EQ. unspecified_int4 .OR. 
-     .	           cx_type(cx) .EQ.0) .AND.DODS_cache) THEN
-	      type = NCDOUBLE
-	   ELSEIF (cx_type(cx) .EQ. ptype_float) THEN
+           IF (DODS_cache .AND. cx_type(cx).EQ.unspecified_int4) THEN
+	      cx_type(cx) = NCDOUBLE
+	   ENDIF
+
+	   IF (cx_type(cx) .EQ. ptype_float) THEN
 	      type = NCFLOAT
 	   ELSEIF  (cx_type(cx) .EQ. ptype_string) THEN
 	      type = NCCHAR
@@ -619,6 +629,16 @@
      .                               '_FILLVALUE', 10 ) ) THEN
                        slen = 0   ! done already
 
+                    ELSE IF ( MATCH_NAME (attname,  slen,
+     .                               'SCALE_FACTOR', 13 ) .OR. 
+     .                   MATCH_NAME (attname,  slen,
+     .                               'ADD_OFFSET', 10 ) ) THEN
+                       got_it = NC_GET_ATTRIB_DP (dset, varid, attname,
+     .                    do_warn, varcode, attlen, attoutflag, dvals)
+                       IF (attoutflag  .EQ. 1) 
+     .                    CALL CD_WRITE_ATTVAL_DP (cdfid, varcode,
+     .                          attname, dvals, attlen, attype, status )
+                          IF (status .NE. ferr_ok) GOTO 5400
                     ELSE
 
                        attype = 0
@@ -862,14 +882,13 @@
 
 * NetCDF variable IDs - additional information needed for DODS caching (11/96)
 	      IF ( DODS_cache ) THEN
-		 setval = FLOAT(cd_varid(var))
+	         ibuff4 = cd_varid(var)		! for F90 data type checks
 	         CALL CD_WRITE_ATTVAL(cdfid, varcode,
-     .                     'netcdf_var_id',setval, 1, NCLONG, status )
+     .                     'netcdf_var_id',rbuff4, 1, NCLONG, status )
                  IF ( status .NE. merr_ok ) GOTO 5800
-	         setval = FLOAT(cd_data_type(var))
+	         ibuff1 = cd_data_type(var)	! for F90 data type checks
 	         CALL CD_WRITE_ATTVAL(cdfid, varcode,
-     .                  'netcdf_data_type', setval, 1, NCBYTE, status )
-
+     .                  'netcdf_data_type', rbuff4, 1, NCBYTE, status )
                  IF ( status .NE. merr_ok ) GOTO 5800
 	      ENDIF
 

@@ -370,7 +370,6 @@ c Set jj as in plotz based on fine levels.
                lclr(k-1) = lclr(k)
                lwgt(k-1) = lwgt(k)
  520        CONTINUE
-            zlev(levcount) = 0
             levcount = levcount-1
 	 ENDIF
 	 zlast = zlev(i)

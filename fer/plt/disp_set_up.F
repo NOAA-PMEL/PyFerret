@@ -833,7 +833,7 @@ C ACM added 8/2001 save cal id if vertical time axis
      .  buff1(:slen)// ' : '// buff2(:slen2), *5000 )
 
  5710   CALL ERRMSG( ferr_out_of_range, status,
-     .    'overflow computing Std Dev. Is the missing-data flag set correctly?'
-     .    //pCR//cmnd_buff(:len_cmnd), *5100 )
+     .     'data too large to compute Std Dev'//pCR//
+     .      cmnd_buff(:len_cmnd), *5100 )
 
 	END

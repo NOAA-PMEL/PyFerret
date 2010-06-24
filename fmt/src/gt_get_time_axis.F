@@ -79,6 +79,8 @@
 * V600 *acm* 6/05 new flag line_fixname stores whether axis name is changed on input.
 * V62  *acm* 3/09 Save original name when axis name changed on input
 * V65  *acm* 2/10- all warnings and notes to std error not std out
+* V663 *acm* 6/10 Fix bug where error message on bad time axis in des file 
+*                 overflows its text buffer
 
 * CALLING ARGUMENTS
 *	dset_num - the data set fow which a time axis is desired
@@ -231,7 +233,8 @@
      .	     line_t0(scr)    .EQ. ' '     .OR.
      .	     status          .NE. merr_ok      ) THEN
 	  line_direction(scr) = 'NA'
-	  WRITE (string, 1000) ds_name(dset_num)
+	  lenb = TM_LENSTR1 (ds_name(dset_num))
+	  WRITE (string, 1000) ds_name(dset_num)(:lenb)
  1000	  FORMAT 
      .   ('missing or improper date/time format for T0 in ',A) 
          lenb = TM_LENSTR1( string )

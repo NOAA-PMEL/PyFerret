@@ -37,6 +37,7 @@
 *
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 * V631  *acm*10/09 Fix bug 1704: LEVELS=xD was incorrect.
+* V663  *acm* 5/10 Fix bug 1744: hang if /LEVELS=v and all missing data.
 	
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -71,6 +72,12 @@ C                         of levels
 	IF (IAUTOC.EQ.1) THEN
 
 	   IF (ZMIN.EQ.ZMAX) THEN
+
+C             NLEV2=0 is the code in pplmod_plotz
+	      NLEV2=1
+              zlev(1) = zmin
+
+	   ELSE IF (ZMIN .GT. CMZGE .AND. ZMAX .LE. CMZLE) THEN  ! all missing
 
 C             NLEV2=0 is the code in pplmod_plotz
 	      NLEV2=1

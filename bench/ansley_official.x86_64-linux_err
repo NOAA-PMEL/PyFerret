@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferret_c
--rwxr-xr-x  1 ansley tmap 51159289 Jun 24 14:49 /home/porter/ansley/x86_64-linux/FERRET/fer/ferret_c
+-rwxr-xr-x  1 ansley tmap 49301819 Jun 30 10:15 /home/porter/ansley/x86_64-linux/FERRET/fer/ferret_c
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: never checked in the new test err65_dots_in_dashes, in bn663_bug_fixes.jnl
+Note: test fix for bug 1744; SHADE/LEV=V for data thats all missing
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -20,7 +20,7 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
-Beginning at Thu Jun 24 15:15:09 PDT 2010
+Beginning at Wed Jun 30 10:24:16 PDT 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3015,6 +3015,8 @@ LIST/FORMAT=CDF/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of grid MYGRID
  *** NOTE: Axis reset to be regular (evenly-spaced): MYX
  *** NOTE: Axis is already regular: MYX
@@ -3162,4 +3164,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jun 24 15:16:56 PDT 2010
+Ended at Wed Jun 30 10:26:11 PDT 2010

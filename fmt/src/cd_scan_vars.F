@@ -229,12 +229,6 @@ c      REAL*8  dg_bad
 
               IF (got_bad) THEN
                  global_bad = dg_bad
-              ELSE
-                 IF ( its_epic ) THEN
-                    global_bad = 1.E35     ! default for EPIC
-                 ELSE
-                    global_bad = -1.E34    ! default for FERRET
-                 ENDIF
               ENDIF
   20       CONTINUE
 

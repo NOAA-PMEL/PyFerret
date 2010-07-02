@@ -59,6 +59,8 @@
 * V62   2/09 *acm* - allow for string-type missing and fill attributes to be read.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V663 *acm* 7/10  If neither missing_flag nor _FillValue attribute, use NaN.
+*                  but set an output attribute containing the Ferret default.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -309,7 +311,22 @@ c        ENDIF
      .           ds_missing_flag(ivtm) =  ds_bad_flag(ivtm)
              IF ( got_missing .AND. .NOT.got_bad )
      .           ds_bad_flag(ivtm) =  ds_missing_flag(ivtm)
-
+	        
+* if neither missing flag nor _FillValue was defined, use NaN.
+             IF ( .NOT.got_missing .AND. .NOT.got_bad) THEN
+                CALL SET_NAN (ds_missing_flag(ivtm))
+		CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm) )
+		IF (do_warn) CALL WARN(
+     .'No missing_value or _FillValue attribute. Using NaN for variable '
+     . //vname)
+c	        attoutflag = 1
+c		buff = ' '
+c		aname = '_FillValue'
+c		val = ds_bad_flag(ivtm)
+c		attlen = 1
+c	        CALL CD_PUT_NEW_ATTR (dset, ivcd, aname, NF_FLOAT,
+c    .                attlen, attoutflag, buff, val, status)
+             ENDIF
 
 *  *kob* call SWITCH_NAN to make sure if NaN exisits, its in ds_missing_flag
 	     CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm))

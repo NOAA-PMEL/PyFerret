@@ -100,11 +100,12 @@ ncdf4:	.FRC
 	$(MAKE) update
 	$(MAKE) "GUI_FAKES=special/gui_fakes.o" all
 
+# Need -O0 (no optimization) at end of CFLAGS/FFLAGS to override previous optimization flags
 debug:	.FRC
 	(cd ccr; $(CC) -c -g $(CFLAGS) gui_init.c)
 	$(MAKE) update
-	$(MAKE) "DEBUG=-g" "FFLAGS = $(FFLAGS) -Ddebug"  \
-		"CFLAGS = -g $(CFLAGS)" \
+	$(MAKE) "DEBUG=-g" "FFLAGS = $(FFLAGS) -Ddebug -O0 -g"  \
+		"CFLAGS = $(CFLAGS) -O0 -g" \
 		"GUI_FAKES=special/gui_fakes.o" all
 
 gui_nodebug: .FRC

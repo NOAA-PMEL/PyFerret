@@ -317,7 +317,7 @@ endif
 
 #let's check the plt and gif and ps files to make sure they look okay
 echo "Checking PLT, GIF and PS files......."
-$check_met
+./$check_met
 
 #Note about checking transparency
 echo "open test_trans.html in a browser to test transparency option in gif mode. The continents should be gray"

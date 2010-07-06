@@ -44,6 +44,8 @@
 * V601 *acm* 9/19  Fix bug 1434; check bounds for regularly-spaced axes 
 * V63  *acm* 10/09 Changes for gfortran build
 * V65  *acm*  2/10 Test for overlapping bounds
+* V66  *kms*  7/10 Initialize return value to .TRUE. (uninitialized bug for
+*                  N+1 bounds) and no need to check for gaps for N+1 bounds
 
         INCLUDE 'xio.cmn_text'
 	INCLUDE 'tmap_dims.parm'
@@ -69,6 +71,7 @@
         IF (ibx1 + nb .GT. maxlinestore) GOTO 5100
 
         blast = REAL(line_mem(ibx1+1))  ! First box_hi
+        TM_CHECK_BNDS = .TRUE.
         ngap = 0
         overlapping = .FALSE.
 
@@ -194,13 +197,6 @@
 		   ENDIF
                    RETURN
 	        ENDIF
-                IF (i .GE. 1) THEN
-                   IF (.NOT. TM_FPEQ(blast, REAL(blo)) ) THEN
-                      ngap = ngap + 1
-                      line_mem(ibx1+i) = blast
-                   ENDIF
-                   blast = REAL(bhi)
-                ENDIF
 
   500        CONTINUE
           ENDIF ! line_regular

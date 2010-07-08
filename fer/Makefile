@@ -25,6 +25,8 @@
 # v5.54  8/04 *acm* - Add target "profiling", to compile with -pg option.
 # v6.1 beta 3/06 *acm* - For Beta release to GFDL, add (beta) as DEBUG_TITLE
 # v6.1 release 3/06 *acm* - Remove (beta) as DEBUG_TITLE for official release
+#  v6.6 07/10 *kms* - added threddsBrowser to DIRS (for clean)
+#                     created threddsBrowser target and added it to all
 # 
 # include platform specific macro definitions
 #
@@ -43,7 +45,7 @@ CFLAGS += -I../gui
 GUI_FAKES = special/gui_fakes.o
 
 DIRS	= ccr ctx dat doo efi efn ef_utility fmt gnl gui ino mem  \
-	ocn plt rpn special stk utl xeq
+	ocn plt rpn special stk utl xeq threddsBrowser
 
 LIBS	= ccr ctx dat doo efi efn ef_utility fmt gnl gui ino mem \
 	ocn plt rpn stk utl xeq
@@ -84,7 +86,7 @@ EF_CMNS = common/EF_Util.cmn common/EF_Util.parm common/EF_mem_subsc.cmn
 # Targets
 #
 
-all:	fmt_libraries fer_libraries ppl_libraries special_code ferret
+all:	fmt_libraries fer_libraries ppl_libraries special_code ferret threddsBrowser
 
 # Dont seem to have all the static libraries we need for this.
 ncdf4_static:	.FRC
@@ -268,6 +270,8 @@ ppl_libraries: .FRC
 special_code: .FRC
 	(cd special ; $(MAKE) "FFLAGS=$(DEBUG) $(FFLAGS)" all);
 
+threddsBrowser: .FRC
+	(cd threddsBrowser ; $(MAKE) all)
 
 clean: fmt_clean ppl_clean fer_clean 
 	(cd ../lib ; rm -f *.a *.so);

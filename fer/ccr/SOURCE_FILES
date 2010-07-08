@@ -38,6 +38,7 @@ put_frame.c\
 replaceable_bad_flags.c \
 replace_bad_data_sub.c \
 resize_animation_window.c\
+run_thredds_browser.c\
 save_arg_pointers.c\
 save_c_string.c\
 set_nan.c\

@@ -32,6 +32,7 @@ equal_val_int.F\
 errmsg.F\
 escape_for_xml.F\
 finalize.F\
+get_dataset_name.F\
 get_fer_command.F\
 get_context_mods.F\
 get_input_varname.F\

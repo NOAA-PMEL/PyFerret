@@ -385,6 +385,12 @@ c *kob* 4/97
 	   RETURN
 	ENDIF
 
+* check for /BROWSE - dataset name comes from the browser
+        IF ( qual_given(slash_set_data_browse) .GT. 0 ) THEN
+           CALL GET_DATASET_NAME_FROM_BROWSER(status)
+           IF ( status .NE. ferr_ok ) RETURN
+        ENDIF
+
 * initialize an EZ data set
 * ... EZ may be implicit in /FORMAT="unformatted" or "(f77 format)"
         loc = qual_given(slash_set_data_form )

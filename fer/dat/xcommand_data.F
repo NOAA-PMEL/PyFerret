@@ -186,6 +186,7 @@
 *       *kms* 5/10 add SET AXIS/REGULAR to force interpreting the axis as regular
 *       *kms* 5/10 add SET REDIRECT /TEE /JOURNAL /FILE /APPEND /CLOBBER 
 *                  and CANCEL REDIRECT for stdout/stderr redirection
+*       *kms* 7/10 add SET DATA /BROWSE to browse for the dataset
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -271,7 +272,7 @@
 	   DATA subcommands      (nsub_at1 + 6)	/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at1 + 6)	/ nqual1g	/
 	   DATA qualifier_pointer(nsub_at1 + 6)	/ nqual_at1g	/
-* SET DATA/FORM/GRID/TITL/SIZE/TYPE
+* SET DATA/FORM/GRID/TITL/SIZE/TYPE/BROWSE
 		DATA qualifiers  (nqual_at1g+0)	/ 'EZ'  	/
 		DATA qualifiers  (nqual_at1g+1)	/ 'VARIABLE'	/
 		DATA qualifiers  (nqual_at1g+2)	/ 'TITLE'	/
@@ -285,8 +286,8 @@
 		DATA qualifiers  (nqual_at1g+10) / 'TYPE'       / 
 		DATA qualifiers  (nqual_at1g+11) / 'SWAP'       / 
 		DATA qualifiers  (nqual_at1g+12) / 'REGULART'   /
-		DATA qualifiers  (nqual_at1g+13) / 'DELIMITER' /
-		DATA qualifiers  (nqual_at1g+14) / '****' /  ! available
+		DATA qualifiers  (nqual_at1g+13) / 'DELIMITER'  /
+		DATA qualifiers  (nqual_at1g+14) / 'BROWSE'     /
 * SET MODE
 	   DATA subcommands      (nsub_at1 + 7)	/ 'MODE'	/
 	   DATA num_qualifs      (nsub_at1 + 7)	/ nqual1h	/

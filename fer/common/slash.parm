@@ -43,6 +43,7 @@
 *       *kms* 5/10 add SET AXIS/REGULAR to force interpreting the axis as regular
 *       *kms* 5/10 add SET REDIRECT /TEE /JOURNAL /FILE /APPEND /CLOBBER 
 *                  for stdout/stderr redirection
+*       *kms* 7/10 add SET DATA /BROWSE to browse for the dataset
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -147,6 +148,7 @@
      .			slash_set_data_swap,
      .			slash_set_data_tregular,
      .			slash_set_data_delimiters,
+     .                  slash_set_data_browse,
      .
      .			slash_set_var_title,
      .			slash_set_var_unit,
@@ -398,6 +400,7 @@
      .			slash_set_data_swap     = 12,
      .			slash_set_data_tregular = 13,
      .			slash_set_data_delimiters = 14,
+     .                  slash_set_data_browse   = 15,
      .
      .			slash_set_var_title	= 1,
      .			slash_set_var_unit	= 2,

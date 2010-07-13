@@ -84,7 +84,6 @@ cd_write_grid.F\
 cd_write_strdim.F\
 cd_write_var.F\
 encode_strings_data.F\
-ez_delimited_read.F\
 ez_init_dset.F\
 ez_init_permute.F\
 ez_mod_dset.F\
@@ -134,8 +133,6 @@ tm_check_bnds.F\
 tm_check_bnds_attrib.F\
 tm_check_bnds_centered.F\
 tm_check_edges_attrib.F\
-tm_check_inf.F\
-tm_check_nan.F\
 tm_choose_read.F\
 tm_clean_filename.F\
 tm_close_set.F\
@@ -288,6 +285,7 @@ xmachine_data.F\
 xstep_files_data.F\
 xsys_names_data.F\
 xunits_data.F 
+
 SRCS_C = \
 alloca.c\
 cd_rd_r8_as_r4.c\
@@ -302,6 +300,7 @@ deleted_list_get_del.c\
 deleted_list_get_undel.c\
 deleted_list_init.c\
 deleted_list_modify.c\
+ez_delimited_read.c\
 my_close.c\
 my_open.c\
 my_readline.c\

@@ -24,11 +24,12 @@ all : threddsBrowser.jar
 
 .PHONY : clean
 clean : 
-	rm -fr threddsBrowser.jar bin/*
+	rm -fr threddsBrowser.jar bin
 
 threddsBrowser.jar : $(JAVA_SOURCE_FILES) Makefile
 ifdef JAVA_HOME
-	rm -fr threddsBrowser.jar bin/*
+	rm -fr threddsBrowser.jar bin
+	mkdir bin
 	$(JAVA_HOME)/bin/javac -sourcepath src -classpath bin:$(TOOLSUI_JAR) -d bin $(JAVA_SOURCE_FILES)
 	$(JAVA_HOME)/bin/jar cf threddsBrowser.jar -C bin gov/noaa/pmel/ferret/threddsBrowser
 else

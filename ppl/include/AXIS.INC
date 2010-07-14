@@ -15,8 +15,10 @@ c v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
 c v554 *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 c V600 *acm* 2/06 add PPL XFOR('DMS') or 'DM' sets axis format deg/min/sec or deg/min
 c                 add xvaloff, yvaloff (see comments below)
+C      *kms* 7/10 changed name of common block from AXIS to AXISCMN 
+C                 to remove clash with AXIS function
 c
-	COMMON/AXIS/ XLO,XHI,XTIC,XLEN,XCSIZE, 
+	COMMON/AXISCMN/ XLO,XHI,XTIC,XLEN,XCSIZE, 
      *	IAUTOX,ITYPEX,NMTCX,LINTX,LABELX,NSIGX,NTICX,XORG,XVALOFF,
      *		     YLO,YHI,YTIC,YLEN,YCSIZE, 
      *	IAUTOY,ITYPEY,NMTCY,LINTY,LABELY,NSIGY,NTICY,YORG,YVALOFF,

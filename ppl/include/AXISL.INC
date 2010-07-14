@@ -14,8 +14,10 @@ C**
 c
 *	Modified time word for whoi format to be 14 digits
 *	J Davison 11.19.95
+C      *kms* 7/10 changed name of common block from AXISL to AXISLCMN 
+C                 to remove clash with AXISL function
 
-	COMMON/AXISL/IFRX,IFRY,IT1,IT2,ITSTRT,ITMIN,ITMAX
+	COMMON/AXISLCMN/IFRX,IFRY,IT1,IT2,ITSTRT,ITMIN,ITMAX
 
 *11.95	CHARACTER IFRX*20,IFRY*20,IT1*10,IT2*10,ITSTRT*10
 *11.95	CHARACTER ITMIN*10,ITMAX*10

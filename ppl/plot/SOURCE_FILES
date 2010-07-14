@@ -23,7 +23,6 @@ levset.F\
 levsrt.F\
 linear.F\
 linfit.F\
-list.F\
 stmnmx.F\
 rsmnmx.F\
 mplot.F\
@@ -38,6 +37,7 @@ pplcmd_f.F\
 ppldata.F\
 pplldc.F\
 pplldx.F\
+ppllist.F\
 pplus.F\
 prmtiv.F\
 rdseq.F\

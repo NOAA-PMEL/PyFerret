@@ -38,7 +38,6 @@ obliq3.F\
 opndev.F\
 origin.F\
 page.F\
-plot.F\
 plot3.F\
 plotype.F\
 pltend.F\
@@ -52,9 +51,7 @@ range.F\
 range_dm.F\
 rangel.F\
 rotate.F\
-scale.F\
 scale3.F\
-size.F\
 symbel.F\
 symbol.F\
 tabmv.F\

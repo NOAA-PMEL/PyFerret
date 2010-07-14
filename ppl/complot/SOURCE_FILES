@@ -22,7 +22,6 @@ gkinit.F\
 gksmv.F\
 gksmv_makedot.F\
 grid.F\
-hdcopy.F\
 hpabmv.F\
 igrinpt.F\
 line.F\

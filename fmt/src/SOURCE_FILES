@@ -166,7 +166,6 @@ tm_exp_code.F\
 tm_f7721bug_inquire.F\
 tm_ferret_vartype.F\
 tm_fill.F\
-tm_find_grid_slot.F\
 tm_find_like_dyn_grid.F\
 tm_find_like_dyn_line.F\
 tm_find_like_grid.F\

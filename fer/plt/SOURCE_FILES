@@ -42,7 +42,6 @@ key_string.F\
 line_style.F\
 load_curvilinear.F\
 merged_whoi_date.F\
-movie_frame_ris8.F\
 plot_set_up.F\
 polygon_set_up.F\
 pos_lab.F\
@@ -68,9 +67,7 @@ set_viewport.F\
 set_vp_symbols.F\
 set_window.F\
 setup_keys.F\
-snapit_ris8.F\
 start_pplus.F\
-store_palette.F\
 taxis_style.F\
 trim_axis_ends.F\
 swap_active_window.F\

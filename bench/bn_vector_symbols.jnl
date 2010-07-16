@@ -1,0 +1,24 @@
+! bn_vector_symbols.jnl
+! ACM 7/16/21010 Ferret V6.6.3 
+!
+! On any vector plot command, define symbols
+! PPL_VECLEN containing the vector length scale
+! PPL_VEC_XSKIP, PPL_VEC_YSKIP containing the skip
+!
+! They are defined whether they are automatically set or
+! set via qualifiers.
+
+VECTOR/I=1:10/J=1:20 i/j,j/i
+SHOW SYMBOL ppl_vec*
+
+VECTOR/I=1:10/J=1:20/LEN=8 i/j,j/i
+SHOW SYMBOL ppl_vec*
+
+VECTOR/I=1:300/J=1:200/LEN=8.2 i/j,j/i
+SHOW SYMBOL ppl_vec*
+
+VECTOR/I=1:300/J=1:200/XSKIP=10/YSKIP=8 i/j,j/i
+SHOW SYMBOL ppl_vec*
+
+VECTOR/I=1:300/J=1:200/LEN=12.2/XSKIP=10/YSKIP=8 i/j,j/i
+SHOW SYMBOL ppl_vec*

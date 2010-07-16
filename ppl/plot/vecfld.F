@@ -69,6 +69,7 @@ C**
 *       *acm* 12/02    Restore call to mark(99) polymarker call when vector is
 *                      small.  Call doit_makedot after the loop, to plot points in the buffer.
 * v5.81 *acm* lengthen string containing format to 40 characters.
+* V6.63 *acm* 7/10 Save a symbol PPL_VECLEN containing the Vector Length value
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -103,9 +104,9 @@ C
 	real xx2,yy2,zz,vfact,xtm,ytm,xtx,ytx,xx1,yy1,vx,vy,vclen
 	real thfact,xn,yn,xl,yl,dy,dx, alen
 
-	integer ic,i,j,lnblk,iln, overedge
+	integer ic,i,j,lnblk,iln, overedge, ier, ist
 
-	CHARACTER VECLAB*40
+	CHARACTER VECLAB*40, ppl_buff*80
 C
 C	VECTOR,X,Y,VFACT,LABEL
 C
@@ -343,6 +344,17 @@ C
         CALL doit_makedot(IPT,XDOT,YDOT)
         IPT = 0
 
+	
+C   Save the length-scale value in a symbol PPL_VECLEN
+
+	WRITE (VECLAB,VFRMT) VLEN/VFACT
+        ppl_buff = 'PPL_VECLEN '//VECLAB
+	ILN=LNBLK(ppl_buff,20)
+	ier = 0
+	ist = 0
+	CALL SETSYM (ppl_buff, iln, ier, ist)
+
+
 C
 C	DRAW SCALE  MAKE SCALE .5 INCH LONG AT XT,YT
 C
@@ -393,6 +405,14 @@ C
 	YL = YY2 - HLABS*0.5/YF
 	CALL SYMBEL(XL,YL,0.,HLABS,ILN,VECLAB)
 3333	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
+
+C   Save the value in a symbol PPL_VECLEN
+	WRITE (VECLAB,VFRMT) VLEN/VFACT
+        ppl_buff = 'PPL_VECLEN '//VECLAB
+	ILN=LNBLK(ppl_buff,20)
+	ier = 0
+	ist = 0
+	CALL SETSYM (ppl_buff, iln, ier, ist)
 
 	RETURN
 	END

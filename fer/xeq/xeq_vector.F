@@ -97,6 +97,12 @@
 *                  or /NOAXES. Axes are never drawn for overlays anyway.
 * V6.2  *acm& 2/09 Fix choice of color settings with /PEN and /THICK when we have 
 *                  increased the num of colors with MODE linecolors
+* V6.63 *acm* 7/10 Save symbols PPL_VEC_XSKIP, PPL_VEC_YSKIP containing the 
+*                  Vector XSKIP and YSKIP values.
+* V6.63 *acm* 7/10 Save symbols PPL_VEC_XSKIP, PPL_VEC_YSKIP containing the 
+*                  Vector XSKIP and YSKIP values. (PPL_VECLEN is saved in vecfld)
+* V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
+
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -120,7 +126,8 @@
 * internal variable declarations:
 	LOGICAL		overlay, transpz, no_labels, no_x_rng,
      .			set_up, noaxes, axes, no_data, flows, 
-     .			is_logh, is_logv, no_key, is_shade, use_cell
+     .			is_logh, is_logv, no_key, yes_key,
+     .			is_shade, use_cell
 	INTEGER		TM_LENSTR1, status, cx, 
      .			loc, ipen, thick,
      .			dim1, dim2, asp,
@@ -129,7 +136,7 @@
      .			x_skip, y_skip,
      .                  density, slen, i, nparm, num_it, 
      .			s1, s2, it_start(4), it_end(4), iax(4),
-     .                  loch, locv
+     .                  loch, locv, ier, ist
         INTEGER   STR_UPCASE, i1
 	REAL		only_x, aspect, vbuf, xloc, yloc
 	CHARACTER	buff*25
@@ -166,8 +173,18 @@
 	flows     = qual_given( slash_vect_flowline  ).GT.0
 	is_logh   = qual_given( slash_is_logh        ).GT.0  ! Not valid quals
 	is_logv   = qual_given( slash_is_logv        ).GT.0  ! for vector
-	no_key    = qual_given( slash_vect_nokey     ).GT.0  ! for vector
+
+	no_key = .FALSE.
         IF (no_labels) no_key = .TRUE.
+
+	IF (qual_given( slash_vect_nokey ).GT.0)  no_key    = .TRUE.
+
+	! for vector, key even if /NOLAB
+	IF (qual_given( slash_vect_key) .GT.0) THEN
+	   no_key    = .FALSE.
+	   yes_key   = .TRUE.  ! to override settings where no key would be drawn.
+	ENDIF
+
         is_shade  = .FALSE.
         use_cell  = .FALSE.
         ncolors = mode_arg(pmode_linecolors,1)
@@ -308,7 +325,17 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 	nvect_on = nvect_on + 1
 
 * special set-up required only for the VECTOR command
-	IF ( .NOT.overlay .AND. .NOT.no_data .AND. .NOT.no_key) THEN
+        IF (no_data) no_key  = .TRUE.  ! regardless of /KEY or /NOKEY setting
+
+         IF ( .NOT.overlay .AND. .NOT.no_data .AND. .NOT.no_key) THEN
+* ... vector length key below plot title (overlay written as key)
+            xloc = (xlen/2.) - 0.5
+            yloc = -1.*yorg + 0.2
+            WRITE ( ppl_buff, '(2F6.1)' ) xloc, yloc
+            CALL PPLCMD (' ',' ',0,'VECKEY/NOUSER '//ppl_buff, 1, 1 )
+         ENDIF   
+
+	IF ( overlay .AND. yes_key ) THEN  ! force key in the middle under the title.
 * ... vector length key below plot title (overlay written as key)
            xloc = (xlen/2.) - 0.5
            yloc = -1.*yorg + 0.2
@@ -433,6 +460,20 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 	      CALL PPLCMD (' ',' ',0,
      .		'VECTOR/LATCH/'//ppl_wait//' '//ppl_buff, 1, 1 )
 	   ENDIF
+
+C   Save the skip values in a symbol PPL_VEC_XSKIP, PPL_VEC_YSKIP
+
+	   WRITE ( ppl_buff, 3010 ) x_skip
+ 3010	   FORMAT ('PPL_VEC_XSKIP', i4)
+	   ier = 0
+	   ist = 0
+	   CALL SETSYM (ppl_buff, 17, ier, ist)
+
+	   WRITE ( ppl_buff, 3020 ) y_skip
+ 3020	   FORMAT ('PPL_VEC_YSKIP', i4)
+	   ier = 0
+	   ist = 0
+	   CALL SETSYM (ppl_buff, 17, ier, ist)
 
         ELSE  
 

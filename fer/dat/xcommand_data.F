@@ -187,6 +187,7 @@
 *       *kms* 5/10 add SET REDIRECT /TEE /JOURNAL /FILE /APPEND /CLOBBER 
 *                  and CANCEL REDIRECT for stdout/stderr redirection
 *       *kms* 7/10 add SET DATA /BROWSE to browse for the dataset
+* V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -1170,12 +1171,12 @@
 		DATA qualifiers  (nqual_at13a+29)/ 'PEN'/	! pen (denigr!)
 		DATA qualifiers  (nqual_at13a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at13a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at13a+32)/ '****'/	! HLOG (place holder, not implemented for contuor) 
-		DATA qualifiers  (nqual_at13a+33)/ '****'/	! VLOG (place holder)
+		DATA qualifiers  (nqual_at13a+32)/ '****'/	! 
+		DATA qualifiers  (nqual_at13a+33)/ '****'/	! 
 		DATA qualifiers  (nqual_at13a+34)/ 'HGRATICULE'/	! horiz tic lines
 		DATA qualifiers  (nqual_at13a+35)/ 'VGRATICULE'/	! vert tic lines
 		DATA qualifiers  (nqual_at13a+36)/ 'GRATICULE'/
-		DATA qualifiers  (nqual_at13a+37)/ '****'/
+		DATA qualifiers  (nqual_at13a+37)/ 'KEY'/   !KEY 
 
 * PPLUS	 - command # 14
 	DATA commands(14)			/ 'PPLUS'	/

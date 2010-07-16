@@ -44,6 +44,7 @@
 *       *kms* 5/10 add SET REDIRECT /TEE /JOURNAL /FILE /APPEND /CLOBBER 
 *                  for stdout/stderr redirection
 *       *kms* 7/10 add SET DATA /BROWSE to browse for the dataset
+* V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -223,6 +224,7 @@
      .			slash_vect_hgrat,
      .			slash_vect_vgrat,
      .			slash_vect_grat,
+     .			slash_vect_key,
      .
      .			slash_strm_over_plot,
      .			slash_strm_set_up,
@@ -476,6 +478,7 @@
      .			slash_vect_hgrat	= 1+34,
      .			slash_vect_vgrat	= 1+35,
      .			slash_vect_grat 	= 1+36,
+     .			slash_vect_key	 	= 1+37,
      .
      .			slash_strm_over_plot	= 9,
      .			slash_strm_set_up	= 10,

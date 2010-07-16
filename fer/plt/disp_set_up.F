@@ -143,8 +143,9 @@
 *                  of the axes as they will appear on the plot.
 * V62  *acm* 03/09 Fix bug 1649: get the value of cal_id for this time axis
 *                  BEFORE using it in evaluating arguments to /hlim or /vlim 
-* V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
-
+* V630 *acm*  9/09 Introduction of syntax for variance-based and histogram levels
+* V663 *acm* 07/10 If openlevels computation fails (very-large value data fields)
+*                  then issue a warning and do linear levels instead.
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -672,7 +673,13 @@ C ACM added 8/2001 save cal id if vertical time axis
        nsiz = size1* size2
        CALL compute_mnstd (memory(1, xblk1), bad_x, need_std, 
      .    nsiz, status)
-       IF (status .NE. ferr_ok) GOTO 5710 
+       IF (status .NE. ferr_ok) THEN
+* ... set up for automatic levels
+	   CALL PPLCMD ( from, line, 0, 'LEV,()', 1, 1 )
+          CALL USE_LINEAR_LEVELS
+	  CALL WARN(
+     . 'Data too large to compute Std Dev. Using linear levels instead.')
+       ENDIF
 
 * If histogram-based levels are requested, compute the 
 * histogram bins.

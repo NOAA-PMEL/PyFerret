@@ -36,6 +36,7 @@
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 * V65 *acm   2/10 If Open-ended levels were used, symbol LEV_OPNLEVS saves 
 * the /LEV command needed to duplicate the levels
+* v663 *acm* 7/10 Fix bug where min value was not inside the lowest level.
 
       include 'parampl5_dat.decl'
       include 'PARAMPL5.DAT'
@@ -248,6 +249,20 @@ c Set jj as in plotz based on fine levels.
  103  CONTINUE 
  104  CONTINUE 
 
+* If min is still less than the lowest lev, add an open level
+* at the start of the list.
+
+      IF (zlev(1) .GT. zmin) THEN
+         neginf = .TRUE.
+	 DO i = ilev, 2, -1
+	    zlev(i) = zlev(i-1)
+	    lwgt(i) = lwgt(i-1)
+	    ldig(i) = ldig(i-1)
+	 ENDDO
+	 
+         zlev(1) = zmin-1.
+	 ilev = ilev + 1
+      ENDIF
       nlev3=(zmpchi-znpchi)/ dzc + 1
       nlev2 = nlev2 + nlev3
 

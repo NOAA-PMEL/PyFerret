@@ -35,6 +35,7 @@
 * V6.5  *acm* 3/10 new qualifiers on (some) SHOW commands and on MESSAGE: 
 *                  /OUTFILE= /APPEND /CLOBBER
 * V6.6  *kms* 5/10 add SET REDIRECT and CANCEL REDIRECT for stdout/stderr redirection
+*       *kms* 7/10 add OPEN alias for SET DATA /BROWSE
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -398,7 +399,7 @@
      .			total_num_commands	= 30,
      .			total_num_subcommands	= nsub_at31 - 1,
      .			total_num_qualifiers	= nqual_at31a - 1,
-     .	                num_predefined_alias    = 19,
+     .	                num_predefined_alias    = 20,
      .			max_queries		= 50 )
 
 * declarations

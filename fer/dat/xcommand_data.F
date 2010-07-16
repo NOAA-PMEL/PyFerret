@@ -188,6 +188,7 @@
 *                  and CANCEL REDIRECT for stdout/stderr redirection
 *       *kms* 7/10 add SET DATA /BROWSE to browse for the dataset
 * V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
+*       *kms* 7/10 add SET DATA /BROWSE to browse for the dataset
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -1591,13 +1592,16 @@
      .		alias_name(19)	/ 'KEYMARK' /,
      .		alias_len(19)	/ 23 /,
      .		alias(19)	/ 'PPL SHAKEY 1,,,,,,,,,,' /
+     .		alias_name(20)	/ 'OPEN' /,
+     .		alias_len(20)	/ 16 /,
+     .		alias(20)	/ 'SET DATA /BROWSE' /
 
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 131*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150)/ 131*4 /,
+     .                   / 130*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150) / 130*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 131*unspecified_name4 /
+     .                   / 130*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,

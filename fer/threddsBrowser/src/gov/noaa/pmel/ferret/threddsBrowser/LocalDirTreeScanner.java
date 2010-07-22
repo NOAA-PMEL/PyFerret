@@ -115,9 +115,17 @@ public class LocalDirTreeScanner {
 	 */
 	private void addContentDatasets(InvDatasetImpl parentDataset, File parentDir, FileFilter datasetFilter, InvService service) throws IOException {
 		// Get the list of files and directories in this directory
-		File[] contentsArray = parentDir.listFiles(datasetFilter);
-		if ( contentsArray == null )
-			throw new IOException("Unable to list the contents of " + parentDir.getPath());
+		File[] contentsArray = null;
+		try {
+			contentsArray = parentDir.listFiles(datasetFilter);
+		} catch (SecurityException e) {
+			;  // if don't have permission to read the directory, leave contentsArray null
+		}
+
+		// If there was a problem getting the contents of this directory, or it is empty, just go continue on to the next item
+		if ( (contentsArray == null) || (contentsArray.length == 0) ) {
+			return;
+		}
 
 		// Sort the array of files and directories
 		if ( contentsArray.length > 1 ) {

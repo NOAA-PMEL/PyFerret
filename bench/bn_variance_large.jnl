@@ -1,0 +1,12 @@
+! bn_variance_large.jnl
+! Previous to v6.6.4, these returned messages **too big**
+
+USE coads_climatology
+LET huge = sst*1.e18
+STAT/L=1 huge
+SHADE/L=1/LEV=v huge
+
+LET huge = sst*1.e25
+STAT/L=1 huge
+SHADE/L=1/LEV=v huge
+

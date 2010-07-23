@@ -728,6 +728,9 @@ GO bn_min_max_smoothers
 GO bn_reset
 GO bn_vector_symbols
 
+GO bn_reset
+GO bn_variance_large
+
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not
 ! tested in the benchmarks.

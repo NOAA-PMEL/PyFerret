@@ -104,9 +104,11 @@ C
 	real xx2,yy2,zz,vfact,xtm,ytm,xtx,ytx,xx1,yy1,vx,vy,vclen
 	real thfact,xn,yn,xl,yl,dy,dx, alen
 
-	integer ic,i,j,lnblk,iln, overedge, ier, ist
+	integer ic,i,j,lnblk,iln, overedge
+	integer TM_LENSTR1, slen, i1, i2
 
-	CHARACTER VECLAB*40, ppl_buff*80
+	CHARACTER VECLAB*2048, buff*80, symbuff*30
+
 C
 C	VECTOR,X,Y,VFACT,LABEL
 C
@@ -121,6 +123,7 @@ C     Curvilinear coordinates declarations
 
 *******************************************************************************
 
+         veclab = ' '
 	    IF(VUSER)THEN
 	    	XFUSER=1.
 		YFUSER=1.
@@ -343,18 +346,6 @@ C
 	CONTINUE
         CALL doit_makedot(IPT,XDOT,YDOT)
         IPT = 0
-
-	
-C   Save the length-scale value in a symbol PPL_VECLEN
-
-	WRITE (VECLAB,VFRMT) VLEN/VFACT
-        ppl_buff = 'PPL_VECLEN '//VECLAB
-	ILN=LNBLK(ppl_buff,20)
-	ier = 0
-	ist = 0
-	CALL SETSYM (ppl_buff, iln, ier, ist)
-
-
 C
 C	DRAW SCALE  MAKE SCALE .5 INCH LONG AT XT,YT
 C
@@ -407,12 +398,11 @@ C
 3333	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
 
 C   Save the value in a symbol PPL_VECLEN
-	WRITE (VECLAB,VFRMT) VLEN/VFACT
-        ppl_buff = 'PPL_VECLEN '//VECLAB
-	ILN=LNBLK(ppl_buff,20)
-	ier = 0
-	ist = 0
-	CALL SETSYM (ppl_buff, iln, ier, ist)
+	symbuff = 'PPL_VECLEN'
+	CALL GETSYM( symbuff, buff, i2, i1 )
+	IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+	slen = TM_LENSTR1(veclab)
+	CALL PUTSYM( symbuff, veclab, slen, i2)
 
 	RETURN
 	END

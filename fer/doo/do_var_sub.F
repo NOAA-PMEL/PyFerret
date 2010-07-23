@@ -52,6 +52,7 @@
 * V230:   3/2/92
 * V420: 11/95 - converted diff and mean to DP so variance is calc in DP
 *	 2/96 - fix bug introduced in 11/95: CGRID_AXIS has wrong args
+* V664:  8/10 - implement robust method for computing variances
 
 * internal variable declarations:
 !	LOGICAL	GEOG_, need_cos
@@ -59,6 +60,7 @@
 	REAL	BOX_SIZE, bad_com, bad_res
 !       REAL    
 	REAL*8	TM_WORLD, dsum, bsum, mean, diff
+	REAL*8  x, xmean, xdelta
 
 	include	'ferret.parm'
 	include	'interp_stack.parm'
@@ -115,13 +117,28 @@
                  mean = dsum / bsum
               ENDIF
 * ... Pass #2: determine variance
-              dsum = 0.0D0    ! sum of squares
+
+* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+
+* On-line algorithm with mean subtracted first. Noted as the most robust.
+* Since we always compute the mean first anyway, use it.
+
+	      npt = 0
+              xmean = 0.D0
+              dsum = 0.D0
               DO 205 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-                 IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 205
-                 diff = com(i,j,k,l) - mean
-                 dsum = dsum + box(i)*diff*diff
+	         x = com(i,j,k,l)
+                 IF ( x .NE. bad_com ) THEN
+                    npt = npt + 1
+		    x = x - mean
+                    xdelta = x - xmean
+                    xmean = xmean + xdelta/ FLOAT(npt)
+                    dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
+                  ENDIF
+
  205          CONTINUE
-              res(pt,j,k,l) = dsum / bsum
+
+              res(pt,j,k,l) = dsum / FLOAT(npt)
  210	   CONTINUE
 
 * ALONG Y AXIS
@@ -148,15 +165,33 @@
 	      ELSE
                  mean = dsum / bsum
               ENDIF
+
+
 * ... Pass #2: determine variance
-              dsum = 0.0D0    ! sum of squares
-	      DO 305 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-                 IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 305
-                 diff = com(i,j,k,l) - mean
-                 dsum = dsum + box(j)*diff*diff
+
+* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+
+* On-line algorithm with mean subtracted first. Noted as the most robust.
+* Since we always compute the mean first anyway, use it.
+
+	      npt = 0
+              xmean = 0.D0
+              dsum = 0.D0
+
+              DO 305 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	         x = com(i,j,k,l)
+                 IF ( x .NE. bad_com ) THEN
+	            npt = npt + 1
+		    x = x - mean
+                    xdelta = x - xmean
+                    xmean = xmean + xdelta/ FLOAT(npt)
+                    dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
+                  ENDIF
+
  305          CONTINUE
-              res(i,pt,k,l) = dsum / bsum
+              res(i,pt,k,l) = dsum / FLOAT(npt)
  310	   CONTINUE
+
 
 * ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
@@ -180,13 +215,29 @@
                  mean = dsum / bsum
               ENDIF
 * ... Pass #2: determine variance
-              dsum = 0.0D0    ! sum of squares
+
+
+* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+
+* On-line algorithm with mean subtracted first. Noted as the most robust.
+* Since we always compute the mean first anyway, use it.
+
+	      npt = 0
+              xmean = 0.D0
+              dsum = 0.D0
+
 	      DO 405 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-                 IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 405
-                 diff = com(i,j,k,l) - mean
-                 dsum = dsum + box(k)*diff*diff
+	         x = com(i,j,k,l)
+                 IF ( x .NE. bad_com ) THEN
+	            npt = npt + 1
+		    x = x - mean
+                    xdelta = x - xmean
+                    xmean = xmean + xdelta/ FLOAT(npt)
+                    dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
+                  ENDIF
+
  405          CONTINUE
-              res(i,j,pt,l) = dsum / bsum
+              res(i,j,pt,l) = dsum / FLOAT(npt)
  410	   CONTINUE
 
 * ALONG T AXIS
@@ -211,13 +262,28 @@
                  mean = dsum / bsum
               ENDIF
 * ... Pass #2: determine variance
-              dsum = 0.0D0    ! sum of squares
+
+* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+
+* On-line algorithm with mean subtracted first. Noted as the most robust.
+* Since we always compute the mean first anyway, use it.
+
+	      npt = 0
+              xmean = 0.D0
+              dsum = 0.D0
+
 	      DO 505 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-                 IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 505
-                 diff = com(i,j,k,l) - mean
-                 dsum = dsum + box(l)*diff*diff
+	         x = com(i,j,k,l)
+                 IF ( x .NE. bad_com ) THEN
+		    npt = npt + 1
+		    x = x - mean
+                    xdelta = x - xmean
+                    xmean = xmean + xdelta/ FLOAT(npt)
+                    dsum = dsum + xdelta*(x - xmean)  ! This expression uses the new value of mean
+                  ENDIF
+
  505          CONTINUE
-              res(i,j,k,pt) = dsum / bsum
+              res(i,j,k,pt) = dsum / FLOAT(npt)
  510	   CONTINUE
 	ENDIF
 

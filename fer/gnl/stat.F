@@ -65,6 +65,7 @@
 *                   STAT_MIN, STAT_MAX, STAT_MEAN, STAT_STD
 * V608:10/07 *acm*- If all missing then set these symbols to 'bad'. Also set
 *                   symbols STAT_NGOOD, STAT_NBAD
+* V664:  8/10 - implement robust method for computing variances
 
 	include 'ferret.parm'
 	include 'xvariables.cmn'
@@ -83,9 +84,10 @@
 * internal variable declarations:
 	INTEGER	TM_LENSTR1, CGRID_SIZE, GET_MAX_STRING_LEN,
      .		i, j, k, l, nbad, ngood, ntot, idim,
-     .		len_line, len_set_name, grid, slen, i1, i2
+     .		len_line, len_set_name, grid, slen, i1, i2, n
 	REAL	datum, bad, std_dev, large, small, mean, sumsq_dev, dev
-	REAL*8	sum
+	REAL*8	sum, sum2, xmean, zmean, x, xdelta, variance_c
+
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, vname_buff
 	CHARACTER	TM_FMT*12, LEFINT*8, AX_TITLE*32, CX_SIZE_STR*24,
      .			line_buff*130, title*32, bl13*13, symbuff*30
@@ -165,29 +167,44 @@
 	      ngood = ngood + 1
 	      small = MIN( small, datum )
 	      large = MAX( large, datum )
-              IF ( ABS(sum) .LT. 3.D35 ) sum   = sum + datum
+              sum   = sum + datum
 	   ENDIF
  200	CONTINUE
         IF ( ngood .GT. 0 ) mean = sum / ngood
         IF ( ABS(sum) .GE. 3.D35 ) sumsq_dev = 3.E35  ! flag for next pass
 
-	IF ( full ) THEN
+	IF ( full .AND. (ngood .GT. 1)) THEN
 * pass 2: compute variance 
-           IF ( ngood .GT. 1 ) THEN
-	      DO 300 l = cx_lo_s4(cx), cx_hi_s4(cx)
-	      DO 300 k = cx_lo_s3(cx), cx_hi_s3(cx)
-	      DO 300 j = cx_lo_s2(cx), cx_hi_s2(cx)
-	      DO 300 i = cx_lo_s1(cx), cx_hi_s1(cx)
 
-	         datum = dat(i,j,k,l)
-	         IF ( datum .NE. bad ) THEN
-                    dev = datum - mean
-	            IF ( sumsq_dev .LT. 3.E35 )
-     .                   sumsq_dev = sumsq_dev + dev*dev
-	         ENDIF
- 300	      CONTINUE
-	      std_dev   = SQRT( sumsq_dev / (ngood-1) )     ! was **0.5  10/93
-           ENDIF
+* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+
+* On-line algorithm with mean subtracted first. Noted as the most robust.
+* Since we always compute the mean first anyway, use it.
+
+	   n = 0
+	   xmean = 0.D0
+	   sum2 = 0.D0
+           zmean = mean
+
+	   DO 300 l = cx_lo_s4(cx), cx_hi_s4(cx)
+	   DO 300 k = cx_lo_s3(cx), cx_hi_s3(cx)
+	   DO 300 j = cx_lo_s2(cx), cx_hi_s2(cx)
+	   DO 300 i = cx_lo_s1(cx), cx_hi_s1(cx)
+
+	      x = dat(i,j,k,l)
+	      IF ( x .NE. bad ) THEN
+                 n = n + 1
+		 x = x - zmean
+                 xdelta = x - xmean
+                 xmean = xmean + xdelta/FLOAT(n)
+                 sum2 = sum2 + xdelta*(x - xmean)  ! This expression uses the new value of mean
+ 	      ENDIF
+
+ 300	   CONTINUE
+
+           variance_c = sum2/FLOAT(n - 1)
+	   std_dev = SQRT(variance_c)
+ 
 	ENDIF
 
 * compute and display results

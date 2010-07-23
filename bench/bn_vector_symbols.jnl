@@ -22,3 +22,8 @@ SHOW SYMBOL ppl_vec*
 
 VECTOR/I=1:300/J=1:200/LEN=12.2/XSKIP=10/YSKIP=8 i/j,j/i
 SHOW SYMBOL ppl_vec*
+
+! Also, vector/KEY turns on the key even if /NOLAB was set.
+VECTOR/NOLAB/KEY/I=1:300/J=1:200/LEN=12.2/XSKIP=10/YSKIP=6 i/j,j/i
+
+VECTOR/OVER/KEY/NOLAB/I=1:300/J=1:200/LEN=12.2/XSKIP=10/YSKIP=4 i/j,j/i

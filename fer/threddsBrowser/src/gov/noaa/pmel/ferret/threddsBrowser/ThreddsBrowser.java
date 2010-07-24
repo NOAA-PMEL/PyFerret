@@ -396,24 +396,46 @@ public class ThreddsBrowser extends JPanel {
 		extensionsString = BrowserDefaults.createExtensionsString(extsColl);
 
 		// Create the catalog for this directory
-		InvCatalogImpl catalog;
+		LocalDirTreeScanMonitor scanMonitor;
 		try {
-			LocalDirTreeScanner scanner = new LocalDirTreeScanner(localDir);
-			catalog = scanner.generateCatalog(new ExtensionFileFilter(extsColl));
+			scanMonitor = new LocalDirTreeScanMonitor(this, localDir, new ExtensionFileFilter(extsColl));
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(this, "Unable to catalog " + localDir + "\n" + e.getMessage(), 
 										  "Unable to Catalog", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
+		scanMonitor.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				String propName = evt.getPropertyName();
+				if ( "Done".equals(propName) ) {
+					// Success - get the local directory tree root and the generated catalog
+					File rootDir = (File) evt.getOldValue();
+					InvCatalogImpl catalog = (InvCatalogImpl) evt.getNewValue();
 
-		// Update the location displayed in the browser and clear the viewers
-		clearViewers();
-		updateLocationLabels(localDir.getPath());
+					// Update the location displayed in the browser and clear the viewers
+					clearViewers();
+					updateLocationLabels(rootDir.getPath());
 
-		// Display the catalog in the tree viewer
-		treeViewer.setCatalog(catalog);
+					// Display the catalog in the tree viewer
+					treeViewer.setCatalog(catalog);
+				}
+				else if ( "Canceled".equals(propName) ) {
+					// Scan was canceled by the user
+					JOptionPane.showMessageDialog(ThreddsBrowser.this, "Scan canceled", 
+												  "Scan Canceled", JOptionPane.ERROR_MESSAGE);
+				}
+				else if ( "Died".equals(propName) ) {
+					// Scan threw an exception
+					Throwable cause = (Throwable) evt.getNewValue();
+					JOptionPane.showMessageDialog(ThreddsBrowser.this, "Scan died: " + cause.getMessage(), 
+												  "Scan Died", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		scanMonitor.runScan();
 	}
-
+	
 	/**
 	 * Clears the shown location label, treeViewer and htmlViewer
 	 */

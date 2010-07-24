@@ -34,6 +34,7 @@
 package gov.noaa.pmel.ferret.threddsBrowserTests;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import gov.noaa.pmel.ferret.threddsBrowser.BrowserDefaults;
 
@@ -94,10 +95,10 @@ public class TestBrowserDefaults {
 
 	/**
 	 * Test method for {@link BrowserDefaults#saveLocationsList(PreferencesExt, List<String>)}
-	 * and {@link BrowserDefaults#getLocationStrings()}.
+	 * and {@link BrowserDefaults#getLocationStrings()} without using an environment variable
 	 */
 	@Test
-	public void testSaveGetLocationStrings() {
+	public void testSaveGetLocationStringsNoEnv() {
 		String[] locations = {"first", "second", "third", "fourth", "fifth"};
 		PreferencesExt prefs = new PreferencesExt(null, "");
 		BrowserDefaults.saveLocationsList(prefs, Arrays.asList(locations));
@@ -109,24 +110,33 @@ public class TestBrowserDefaults {
 			assertEquals("location[" + k + "]", locations[k], loc);
 			k++;
 		}
+	}
 
-		// Use "path" as the environment variable to test (no System.setenv to create one)
-		String envName = "path";
+	/**
+	 * Test method for {@link BrowserDefaults#saveLocationsList(PreferencesExt, List<String>)}
+	 * and {@link BrowserDefaults#getLocationStrings()} using the environment variable FER_DATA_THREDDS
+	 */
+	@Test
+	public void testSaveGetLocationStringsWithEnv() {
+		PreferencesExt prefs = new PreferencesExt(null, "");
+
+		// Use "FER_DATA_THREDDS as the environment variable to test (no System.setenv to create one)
+		String envName = "FER_DATA_THREDDS";
 		String envVal = System.getenv(envName);
 
 		// Following are not errors; just can't perform this test as expected
-		assertNotNull("\"path\" environment variable is not defined", envVal);
-		assertFalse("\"path\" environment variable is blank", envVal.trim().isEmpty());
-		assertFalse("\"path\" environment variable contains double quotes", envVal.contains("\""));
-		assertFalse("\"path\" environment variable contains single quotes", envVal.contains("'"));
+		assumeNotNull(envVal);
+		assumeTrue( ! envVal.trim().isEmpty() );
+		assumeTrue( ! envVal.contains("\"") );
+		assumeTrue( ! envVal.contains("'") );
 
 		// Get the unique space-separated strings in the given order
 		LinkedHashSet<String> nameSet = new LinkedHashSet<String>(Arrays.asList(envVal.split("\\s+")));
 		ArrayList<String> nameList = new ArrayList<String>(nameSet);
 
 		// Get the locations from just using envName
-		defs = new BrowserDefaults(null, envName);
-		locsColl = defs.getLocationStrings();
+		BrowserDefaults defs = new BrowserDefaults(null, envName);
+		Collection<String> locsColl = defs.getLocationStrings();
 		assertEquals("number of locations from " + envName, nameList.size(), locsColl.size());
 		int numLocs = 0;
 		for (String location : locsColl) {
@@ -156,7 +166,7 @@ public class TestBrowserDefaults {
 				assertEquals("location[" + numLocs + "] from prefs and " + envName, nameList.get(numLocs-2), location);
 			numLocs++;
 		}
-}
+	}
 
 	/**
 	 * Test method for {@link BrowserDefaults#saveDividerLocation(PreferencesExt, int)}

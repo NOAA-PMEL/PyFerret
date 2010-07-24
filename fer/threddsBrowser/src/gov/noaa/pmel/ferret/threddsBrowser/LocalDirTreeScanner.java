@@ -41,6 +41,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.SwingWorker;
+
 import thredds.catalog.InvCatalogImpl;
 import thredds.catalog.InvDataset;
 import thredds.catalog.InvDatasetImpl;
@@ -48,35 +50,97 @@ import thredds.catalog.InvService;
 import thredds.catalog.ServiceType;
 
 /**
- * Scanner for a local directory to generate a complete catalog of the tree.
+ * Scanner for a local directory to generate a complete catalog of the tree implemented as a SwingWorker.
+ * Calling the execute on this SwingWorker will generate a complete catalog of the directory tree rooted 
+ * at the local directory given in the constructor that pass the file filter given in the constructor.
+ * This catalog can then be retrieved by the get method.  Progress is based on the percentage of the number 
+ * of entries in the root directory, possibly plus its immediate subdirectories, that have been examined.
+ * Progress is reported (as with all SwingWorkers) by firing PropertyChange events with the property name 
+ * "progress" and a new value in [0,100].  The currently directory being examined is reported by firing 
+ * PropertyChange events with the property name "Directory" and the File object representing the directory 
+ * as the new value.
+ * 
  * @author Karl M. Smith - karl.smith (at) noaa.gov
  */
-public class LocalDirTreeScanner {
-
+public class LocalDirTreeScanner extends SwingWorker<InvCatalogImpl, File> {
 	/** root of the local directory tree to scan */
 	private File localDir;
+	/** filter for the files/directories added to the catalog; can be null */
+	private FileFilter datasetFilter;
+	/** the total number of files/directories in localDir and its subdirectory passing the file filter */
+	private int numToExamine;
+	/** the subdirectory depth to count entries for progress */
+	private int countDepth;
+	/** the examined number of files/directories in localDir and its subdirectory passing the file filter */
+	private int numExamined;
 
+	
 	/**
-	 * Create a scanner ready to scan the local directory tree rooted at localDir
+	 * Create a scanner/catalog builder ready to scan the local directory tree rooted at localDir
 	 * @param localDir local root directory of the tree to scan
-	 * @throws IOException if localDir does not exist or is not a directory
+	 * @param datasetFilter filter for the files/directories added to the catalog; 
+	 * can be null, in which case all files/directories are added
+	 * @throws IOException if localDir is not a valid directory or cannot be examined
 	 */
-	public LocalDirTreeScanner(File localDir) throws IOException {
+	public LocalDirTreeScanner(File localDir, FileFilter datasetFilter) throws IOException {
 		if ( ! localDir.isDirectory() )
-			throw new IOException(localDir.getPath() + " is not a valid local directory");
+			throw new IOException("Not a valid local directory: " + localDir.getPath());
 		this.localDir = localDir;
+		this.datasetFilter = datasetFilter;
+		computeNumToExamine();
+		numExamined = 0;
 	}
 
 	/**
-	 * Generate a complete catalog of the local directory tree rooted at this 
-	 * @param datasetFilter filter for the files/directories added to the catalog; 
-	 * can be null, in which case all files/directories are added
-	 * @return a complete catalog of the directory tree rooted at the local directory 
-	 * used in the construction of this class 
-	 * @throws IOException if any of the file system operations throws one or 
-	 * if the local directory used in the construction of this class is unable to be read
+	 * Using the local directory tree root and file filter used in the construction of this object,
+	 * assigns numToExamine and countDepth appropriately.  The value of numToExamine will be the 
+	 * one (for the root directory) plus the number of files and directories in this root directory, 
+	 * possibly plus the number of file and directories in the immediate subdirectories of this root 
+	 * directory.  The value of countDepth will be one (if only subdirectories of the root directory
+	 * is counted) or two (if subdirectories of these directories are also counted).
+	 * @throws IOException if localDir cannot be examined
 	 */
-	public InvCatalogImpl generateCatalog(FileFilter datasetFilter) throws IOException {
+	private void computeNumToExamine() throws IOException {
+		numToExamine = 1; 
+
+		// Get the number of entries in localDir
+		File[] dirArray = localDir.listFiles(datasetFilter);
+		if ( dirArray == null )
+			throw new IOException("Unable to examine " + localDir.getPath());
+		numToExamine += dirArray.length;
+
+		// Decide whether to stop at this level or go into its subdirectories
+		if ( numToExamine >= 20 ) {
+			countDepth = 1;
+			return;
+		}
+
+		// Add the number of entries in each of the subdirectories of localDir
+		for (File subDir : dirArray) {
+			try {
+				File[] subDirArray = subDir.listFiles(datasetFilter);
+				if ( subDirArray != null ) {
+					numToExamine += subDirArray.length;
+				}
+			} catch (Exception e) {
+				; // don't care
+			}
+		}
+		countDepth = 2;
+	}
+
+	/**
+	 * Generate a complete catalog of the directory tree rooted at the local
+	 * directory given in the constructor of this class.
+	 */
+	@Override
+	protected InvCatalogImpl doInBackground() throws Exception {
+		// Initial the progress
+		numExamined = 0;
+		setProgress(0);
+		// Send notice that the root of the local directory tree is being examined
+		publish(localDir);
+	
 	    // Create the service for the catalog and datasets
 	    InvService service = new InvService("file:", ServiceType.FILE.toString(), "file:", null, null);
 
@@ -91,13 +155,20 @@ public class LocalDirTreeScanner {
 		topDataset.setCatalog(catalog);
 
 		// Recurse into the tree, adding InvDatasetImpl objects to the datasets field
-		addContentDatasets(topDataset, localDir, datasetFilter, service);
+		addContentDatasets(topDataset, localDir, datasetFilter, service, 0);
+		if ( isCancelled() )
+			return null;
+		// Send notice that we are back to the root of the local directory tree
+		publish(localDir);
 
 		// Add this dataset to the catalog
 		catalog.addDataset(topDataset);
 
 		if ( ! catalog.finish() )
 			throw new IOException("Unable to finish construction of the catalog from " + localDir.getPath());
+
+		setProgress(100);
+
 		return catalog;
 	}
 
@@ -110,10 +181,12 @@ public class LocalDirTreeScanner {
 	 * @param datasetFilter filter on the files/directories to be added to the catalog.  
 	 * If null, all files/directories are added.
 	 * @param serviceName service name to be added to the InvDatasetImpl objects created
+	 * @param level the recursion level
 	 * @throws IOException if any of the file system operations throws one or if parentDir 
 	 * is unable to be read
 	 */
-	private void addContentDatasets(InvDatasetImpl parentDataset, File parentDir, FileFilter datasetFilter, InvService service) throws IOException {
+	private void addContentDatasets(InvDatasetImpl parentDataset, File parentDir, FileFilter datasetFilter, 
+									InvService service, int level) throws IOException {
 		// Get the list of files and directories in this directory
 		File[] contentsArray = null;
 		try {
@@ -136,11 +209,19 @@ public class LocalDirTreeScanner {
 		// Add to the parent's datasets array a dataset for each file/dir returned
 		List<InvDataset> datasets = parentDataset.getDatasets();
 		for (File child : contentsArray) {
+			if ( isCancelled() )
+				return;
 			if ( child.isDirectory() ) {
+				// Send notice of the new directory being examine
+				publish(child);
 				// Create the dataset with a null urlPath argument so no access created
 				InvDatasetImpl childDataset = new LocalDirInvDatasetImpl(parentDataset, child.getName(), service.getName());
 				childDataset.setID(child.getPath());
-				addContentDatasets(childDataset, child, datasetFilter, service);
+				// Add the contents of this directory 
+				addContentDatasets(childDataset, child, datasetFilter, service, level + 1);
+				// Send notice that we are back to the parent directory
+				publish(parentDir);
+				// Add this dataset to the parent's dataset
 				datasets.add(childDataset);
 			}
 			else {
@@ -157,9 +238,24 @@ public class LocalDirTreeScanner {
 				childDataset.setID(child.getPath());
 				childDataset.setDataSize(child.length());
 				childDataset.setLastModifiedDate(new Date(child.lastModified()));
+				// Add this dataset to the parent's dataset
 				datasets.add(childDataset);
+			}
+			if ( level < countDepth ) {
+				// Update the progress
+				numExamined += 1;
+				setProgress((100 * numExamined) / numToExamine);
 			}
 		}
 	}
 
+	/**
+	 * Receives a lists of the directory Files that have been examined.
+	 * A method generates a PropertyChange event with the name "Directory"
+	 * and a new value of the last File in the list.
+	 */
+	@Override
+	protected void process(List<File> fileList) {
+		firePropertyChange("Directory", null, fileList.get(fileList.size() - 1));
+	}
 }

@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import gov.noaa.pmel.ferret.threddsBrowser.LocalDirTreeScanner;
 
@@ -61,7 +62,7 @@ public class TestLocalDirTreeScanner {
 	public void testLocalDirTreeScanner() throws IOException {
 		// Try constructor with null
 		try {
-			new LocalDirTreeScanner(null);
+			new LocalDirTreeScanner(null, null);
 			fail("constructor with null did not throw an exception");
 		} catch (NullPointerException e) {
 			;
@@ -70,7 +71,7 @@ public class TestLocalDirTreeScanner {
 		// Try constructor with a file
 		File tmpdir = File.createTempFile("test_", "_tmpdir");
 		try {
-			new LocalDirTreeScanner(tmpdir);
+			new LocalDirTreeScanner(tmpdir, null);
 			fail("constructor with a file did not throw an exception");
 		} catch (IOException e) {
 			;
@@ -79,7 +80,7 @@ public class TestLocalDirTreeScanner {
 		// Try constructor with directory name that does not exist
 		tmpdir.delete();
 		try {
-			new LocalDirTreeScanner(tmpdir);
+			new LocalDirTreeScanner(tmpdir, null);
 			fail("constructor with a directory that does not exist did not throw an exception");
 		} catch (IOException e) {
 			;
@@ -87,9 +88,23 @@ public class TestLocalDirTreeScanner {
 
 		// Try constructor with a valid directory
 		tmpdir.mkdir();
-		LocalDirTreeScanner scanner = new LocalDirTreeScanner(tmpdir);
+		LocalDirTreeScanner scanner = new LocalDirTreeScanner(tmpdir, null);
 		assertNotNull("constructor with a valid directory returned null", scanner);
 
+		// Try constructor with an unreadable directory
+		try {
+			// try to make the directory unreadable
+			if ( ! tmpdir.setReadable(false, false) )
+				throw new SecurityException("Can't set readable to false");
+			new LocalDirTreeScanner(tmpdir, null);
+			fail("constructor with an unreadable directory does not throw an exception");
+		} catch (SecurityException e) {
+			; // can't do this test
+		} catch (IOException e) {
+			// success - set back to readable
+			tmpdir.setReadable(true, false);
+		}
+			
 		tmpdir.delete();
 	}
 
@@ -97,7 +112,7 @@ public class TestLocalDirTreeScanner {
 	 * Test method for {@link LocalDirTreeScanner#generateCatalog(FileFilter)}.
 	 */
 	@Test
-	public void testGenerateCatalog() throws IOException {
+	public void testGenerateCatalog() throws IOException, ExecutionException, InterruptedException {
 		// Create a directory tree
 		File tmpdir = File.createTempFile("test_", "_tmpdir");
 		tmpdir.delete();
@@ -118,12 +133,13 @@ public class TestLocalDirTreeScanner {
 		File asubfile = new File(subdir, "a_subfile");
 		asubfile.createNewFile();
 
-		// Create a scanner for this directory tree
-		LocalDirTreeScanner scanner = new LocalDirTreeScanner(tmpdir);
+		// Create a scanner for this directory tree with no filter
+		LocalDirTreeScanner scanner = new LocalDirTreeScanner(tmpdir, null);
 		assertNotNull("constructor with a valid directory returned null", scanner);
 
 		// Try scanning with no filter
-		InvCatalogImpl catalog = scanner.generateCatalog(null);
+		scanner.execute();
+		InvCatalogImpl catalog = scanner.get();
 		assertNotNull("generated catalog with null filter was null", catalog);
 
 		// Top-level dataset is the directory itself
@@ -167,7 +183,7 @@ public class TestLocalDirTreeScanner {
 		assertEquals("Number of datasets under the second third-level datset", 0, datasets.get(1).getDatasets().size());
 
 		// Try scanning with a filter
-		catalog = scanner.generateCatalog(new FileFilter() {
+		scanner = new LocalDirTreeScanner(tmpdir, new FileFilter() {
 			@Override
 			public boolean accept(File pathname) {
 				// Accept all directories
@@ -180,6 +196,9 @@ public class TestLocalDirTreeScanner {
 				return false;
 			}
 		});
+		assertNotNull("constructor with a valid directory returned null", scanner);
+		scanner.execute();
+		catalog = scanner.get();
 
 		// Top-level dataset is the directory itself
 		datasets = catalog.getDatasets();

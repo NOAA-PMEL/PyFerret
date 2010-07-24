@@ -654,7 +654,7 @@ c     .     alg_trans_dflt_arg( 38) / bad_val4      /
      .		alg_regrid_code ( prgrd_modsum )	/ 'MODSUM'	/
      .		alg_regrid_title( prgrd_modmin )	/ 'modulo min'	/,
      .		alg_regrid_code ( prgrd_modmin )	/ 'MODMIN'	/
-     .		alg_regrid_title( prgrd_modmax )	/ 'modulo min'	/,
+     .		alg_regrid_title( prgrd_modmax )	/ 'modulo max'	/,
      .		alg_regrid_code ( prgrd_modmax )	/ 'MODMAX'	/
      .		alg_regrid_title( prgrd_nearest )	/ 'nearst coord'/,
      .		alg_regrid_code ( prgrd_nearest )	/ 'NRST'	/

@@ -74,8 +74,7 @@ import ucar.util.prefs.PreferencesExt;
  * @author Karl M. Smith - karl.smith (at) noaa.gov
  */
 public class ThreddsBrowser extends JPanel {
-
-	private static final long serialVersionUID = 1969846472125911914L;
+	private static final long serialVersionUID = -699540756367330879L;
 
 	/** Default locations environment variable - used for reset */
 	private String defLocsEnvName;
@@ -396,7 +395,7 @@ public class ThreddsBrowser extends JPanel {
 		extensionsString = BrowserDefaults.createExtensionsString(extsColl);
 
 		// Create the catalog for this directory
-		LocalDirTreeScanMonitor scanMonitor;
+		final LocalDirTreeScanMonitor scanMonitor;
 		try {
 			scanMonitor = new LocalDirTreeScanMonitor(this, localDir, new ExtensionFileFilter(extsColl));
 		} catch (IOException e) {
@@ -418,7 +417,7 @@ public class ThreddsBrowser extends JPanel {
 					updateLocationLabels(rootDir.getPath());
 
 					// Display the catalog in the tree viewer
-					treeViewer.setCatalog(catalog);
+					displayLocalCatalog(scanMonitor, catalog);
 				}
 				else if ( "Canceled".equals(propName) ) {
 					// Scan was canceled by the user
@@ -435,7 +434,48 @@ public class ThreddsBrowser extends JPanel {
 		});
 		scanMonitor.runScan();
 	}
-	
+
+	/**
+	 * Display the local directory tree catalog in treeViewer.  This is done in a separate thread in
+	 * case a very large directory tree is being displayed, which may take quite some time and make 
+	 * the program appear to be frozen.
+	 * @param scanMonitor the monitor used to create the catalog to be displayed
+	 * (used for obtaining the number of entries in the catalog to determine whether to show a dialog)
+	 * @param catalog the catalog to be displayed
+	 */
+	private void displayLocalCatalog(LocalDirTreeScanMonitor scanMonitor, final InvCatalogImpl catalog) {
+		int numEntries = scanMonitor.getNumCatalogEntries();
+
+		// If not many entries, just update the treeViewer in this thread and be done with it
+		if ( numEntries < 4096 ) {
+			treeViewer.setCatalog(catalog);
+			return;
+		}
+
+		// Put up the modal "working" dialog running in a separate thread
+		final Thread dialogThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				JOptionPane.showMessageDialog(ThreddsBrowser.this, "Please wait\n" +
+						                                           "Displaying the local directory tree\n" +
+						                                           "This dialog will go away when done\n" +
+						                                           "(Sorry, can't be canceled)", 
+											  "Displaying Local Directory Tree", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
+		dialogThread.start();
+
+		// Update the treeViewer in a separate thread
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				treeViewer.setCatalog(catalog);
+				// Display done - kill the dialog
+				dialogThread.interrupt();
+			}
+		}).start();
+	}
+
 	/**
 	 * Clears the shown location label, treeViewer and htmlViewer
 	 */

@@ -90,26 +90,13 @@ public class TestLocalDirTreeScanner {
 		tmpdir.mkdir();
 		LocalDirTreeScanner scanner = new LocalDirTreeScanner(tmpdir, null);
 		assertNotNull("constructor with a valid directory returned null", scanner);
-
-		// Try constructor with an unreadable directory
-		try {
-			// try to make the directory unreadable
-			if ( ! tmpdir.setReadable(false, false) )
-				throw new SecurityException("Can't set readable to false");
-			new LocalDirTreeScanner(tmpdir, null);
-			fail("constructor with an unreadable directory does not throw an exception");
-		} catch (SecurityException e) {
-			; // can't do this test
-		} catch (IOException e) {
-			// success - set back to readable
-			tmpdir.setReadable(true, false);
-		}
 			
 		tmpdir.delete();
 	}
 
 	/**
-	 * Test method for {@link LocalDirTreeScanner#generateCatalog(FileFilter)}.
+	 * Test method for {@link LocalDirTreeScanner#generateCatalog(FileFilter)}
+	 * and {@link LocalDirTreeScanner#getNumCatalogEntries()}.
 	 */
 	@Test
 	public void testGenerateCatalog() throws IOException, ExecutionException, InterruptedException {
@@ -141,6 +128,9 @@ public class TestLocalDirTreeScanner {
 		scanner.execute();
 		InvCatalogImpl catalog = scanner.get();
 		assertNotNull("generated catalog with null filter was null", catalog);
+
+		// Check the reported number of catalog entries 
+		assertEquals("number of catalog entries", 5, scanner.getNumCatalogEntries());
 
 		// Top-level dataset is the directory itself
 		List<InvDataset> datasets = catalog.getDatasets();
@@ -199,6 +189,9 @@ public class TestLocalDirTreeScanner {
 		assertNotNull("constructor with a valid directory returned null", scanner);
 		scanner.execute();
 		catalog = scanner.get();
+
+		// Check the reported number of catalog entries 
+		assertEquals("number of catalog entries", 4, scanner.getNumCatalogEntries());
 
 		// Top-level dataset is the directory itself
 		datasets = catalog.getDatasets();

@@ -67,12 +67,14 @@ public class LocalDirTreeScanner extends SwingWorker<InvCatalogImpl, File> {
 	private File localDir;
 	/** filter for the files/directories added to the catalog; can be null */
 	private FileFilter datasetFilter;
-	/** the total number of files/directories in localDir and its subdirectory passing the file filter */
+	/** the progress total number of files/directories in localDir and its subdirectory passing the file filter */
 	private int numToExamine;
 	/** the subdirectory depth to count entries for progress */
 	private int countDepth;
-	/** the examined number of files/directories in localDir and its subdirectory passing the file filter */
+	/** the progress examined number of files/directories in localDir and its subdirectory passing the file filter */
 	private int numExamined;
+	/** the actual number of files/directories under localDir in the catalog */
+	private int actualCount;
 
 	
 	/**
@@ -80,53 +82,17 @@ public class LocalDirTreeScanner extends SwingWorker<InvCatalogImpl, File> {
 	 * @param localDir local root directory of the tree to scan
 	 * @param datasetFilter filter for the files/directories added to the catalog; 
 	 * can be null, in which case all files/directories are added
-	 * @throws IOException if localDir is not a valid directory or cannot be examined
+	 * @throws IOException if localDir is not a valid directory
 	 */
 	public LocalDirTreeScanner(File localDir, FileFilter datasetFilter) throws IOException {
 		if ( ! localDir.isDirectory() )
 			throw new IOException("Not a valid local directory: " + localDir.getPath());
 		this.localDir = localDir;
 		this.datasetFilter = datasetFilter;
-		computeNumToExamine();
+		numToExamine = 0;
+		countDepth = 0;
 		numExamined = 0;
-	}
-
-	/**
-	 * Using the local directory tree root and file filter used in the construction of this object,
-	 * assigns numToExamine and countDepth appropriately.  The value of numToExamine will be the 
-	 * one (for the root directory) plus the number of files and directories in this root directory, 
-	 * possibly plus the number of file and directories in the immediate subdirectories of this root 
-	 * directory.  The value of countDepth will be one (if only subdirectories of the root directory
-	 * is counted) or two (if subdirectories of these directories are also counted).
-	 * @throws IOException if localDir cannot be examined
-	 */
-	private void computeNumToExamine() throws IOException {
-		numToExamine = 1; 
-
-		// Get the number of entries in localDir
-		File[] dirArray = localDir.listFiles(datasetFilter);
-		if ( dirArray == null )
-			throw new IOException("Unable to examine " + localDir.getPath());
-		numToExamine += dirArray.length;
-
-		// Decide whether to stop at this level or go into its subdirectories
-		if ( numToExamine >= 20 ) {
-			countDepth = 1;
-			return;
-		}
-
-		// Add the number of entries in each of the subdirectories of localDir
-		for (File subDir : dirArray) {
-			try {
-				File[] subDirArray = subDir.listFiles(datasetFilter);
-				if ( subDirArray != null ) {
-					numToExamine += subDirArray.length;
-				}
-			} catch (Exception e) {
-				; // don't care
-			}
-		}
-		countDepth = 2;
+		actualCount = 0;
 	}
 
 	/**
@@ -135,12 +101,16 @@ public class LocalDirTreeScanner extends SwingWorker<InvCatalogImpl, File> {
 	 */
 	@Override
 	protected InvCatalogImpl doInBackground() throws Exception {
-		// Initial the progress
-		numExamined = 0;
+		// Send notice that we are examining the local tree root directory
 		setProgress(0);
-		// Send notice that the root of the local directory tree is being examined
 		publish(localDir);
-	
+
+		// Initial the progress variables
+		computeNumToExamine();
+		numExamined = 0;
+		if ( isCancelled() )
+			return null;
+
 	    // Create the service for the catalog and datasets
 	    InvService service = new InvService("file:", ServiceType.FILE.toString(), "file:", null, null);
 
@@ -164,12 +134,57 @@ public class LocalDirTreeScanner extends SwingWorker<InvCatalogImpl, File> {
 		// Add this dataset to the catalog
 		catalog.addDataset(topDataset);
 
+		// Finish construction of the catalog
 		if ( ! catalog.finish() )
 			throw new IOException("Unable to finish construction of the catalog from " + localDir.getPath());
 
+		// Set the progress value to complete
 		setProgress(100);
 
 		return catalog;
+	}
+
+	/**
+	 * Using the local directory tree root and file filter used in the construction of this object,
+	 * assigns numToExamine and countDepth appropriately.  The value of numToExamine will be the 
+	 * one (for the root directory) plus the number of files and directories in this root directory, 
+	 * possibly plus the number of file and directories in the immediate subdirectories of this root 
+	 * directory.  The value of countDepth will be one (if only subdirectories of the root directory
+	 * is counted) or two (if subdirectories of these directories are also counted).
+	 * @throws IOException if localDir cannot be examined
+	 */
+	private void computeNumToExamine() throws IOException {
+		numToExamine = 1;
+
+		// Get the number of entries in localDir
+		File[] dirArray = localDir.listFiles(datasetFilter);
+		if ( dirArray == null )
+			throw new IOException("Unable to examine " + localDir.getPath());
+		numToExamine += dirArray.length;
+
+		// Decide whether to stop at this level or go into its subdirectories
+		if ( numToExamine >= 20 ) {
+			countDepth = 1;
+			return;
+		}
+
+		for (File subDir : dirArray) {
+			if ( subDir.isDirectory() ) {
+				if ( isCancelled() )
+					return;
+
+				// Add the number of entries in this subdirectory of localDir
+				try {
+					File[] subDirArray = subDir.listFiles(datasetFilter);
+					if ( subDirArray != null ) {
+						numToExamine += subDirArray.length;
+					}
+				} catch (Exception e) {
+					; // don't care
+				}
+			}
+		}
+		countDepth = 2;
 	}
 
 	/**
@@ -199,6 +214,7 @@ public class LocalDirTreeScanner extends SwingWorker<InvCatalogImpl, File> {
 		if ( (contentsArray == null) || (contentsArray.length == 0) ) {
 			return;
 		}
+		actualCount += contentsArray.length;
 
 		// Sort the array of files and directories
 		if ( contentsArray.length > 1 ) {
@@ -212,15 +228,24 @@ public class LocalDirTreeScanner extends SwingWorker<InvCatalogImpl, File> {
 			if ( isCancelled() )
 				return;
 			if ( child.isDirectory() ) {
-				// Send notice of the new directory being examine
-				publish(child);
-				// Create the dataset with a null urlPath argument so no access created
-				InvDatasetImpl childDataset = new LocalDirInvDatasetImpl(parentDataset, child.getName(), service.getName());
-				childDataset.setID(child.getPath());
-				// Add the contents of this directory 
-				addContentDatasets(childDataset, child, datasetFilter, service, level + 1);
-				// Send notice that we are back to the parent directory
-				publish(parentDir);
+				InvDatasetImpl childDataset;
+				// Limited the level of recursion (mainly for infinite loops from symbolic links)
+				if ( level < 16 ) {
+					// Send notice of the new directory being examine
+					publish(child);
+					// Create the dataset with a null urlPath argument so no access created
+					childDataset = new LocalDirInvDatasetImpl(parentDataset, child.getName(), service.getName());
+					childDataset.setID(child.getPath());
+					// Add the contents of this directory 
+					addContentDatasets(childDataset, child, datasetFilter, service, level + 1);
+					// Send notice that we are back to the parent directory
+					publish(parentDir);
+				}
+				else {
+					// Create the dataset with a null urlPath argument so no access created
+					childDataset = new LocalDirInvDatasetImpl(parentDataset, child.getName() + " (not examined)", service.getName());
+					childDataset.setID(child.getPath());					
+				}
 				// Add this dataset to the parent's dataset
 				datasets.add(childDataset);
 			}
@@ -247,6 +272,14 @@ public class LocalDirTreeScanner extends SwingWorker<InvCatalogImpl, File> {
 				setProgress((100 * numExamined) / numToExamine);
 			}
 		}
+	}
+
+	/**
+	 * @return the total number of entries in the returned catalog.  If canceled,
+	 * the total number of entries examined prior to cancellation.
+	 */
+	public int getNumCatalogEntries() {
+		return actualCount;
 	}
 
 	/**

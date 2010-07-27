@@ -53,7 +53,7 @@ import thredds.catalog.InvCatalogImpl;
  * @author Karl M. Smith - karl.smith (at) noaa.gov
  */
 public class LocalDirTreeScanMonitor extends PropertyChangeSupport implements PropertyChangeListener {
-	private static final long serialVersionUID = 8862420373971031642L;
+	private static final long serialVersionUID = 6099749370566968112L;
 
 	/** Maximum length of a truncated path String */
 	private final static int MAX_TRUNCATED_PATH_LENGTH = 60;
@@ -97,11 +97,11 @@ public class LocalDirTreeScanMonitor extends PropertyChangeSupport implements Pr
 		scanMonitor = new ProgressMonitor(parent, "Examining the local directory:                    ", 
 										  truncatedPathname(rootDir, rootDir, MAX_TRUNCATED_PATH_LENGTH), 0, 100);
 		/*
-		 *  If taking more than 1 s, always popup the progress dialog.  Changed from defaults because the progress
+		 *  If taking more than 0.5 s, always popup the progress dialog.  Changed from defaults because the progress
 		 *  estimate could easily be quite poor if there are lots of files in the last couple of directories.
 		 */
-		scanMonitor.setMillisToDecideToPopup(1000);
-		scanMonitor.setMillisToPopup(1000);
+		scanMonitor.setMillisToDecideToPopup(500);
+		scanMonitor.setMillisToPopup(500);
 	}
 
 	/**
@@ -109,6 +109,14 @@ public class LocalDirTreeScanMonitor extends PropertyChangeSupport implements Pr
 	 */
 	public void runScan() {
 		scanner.execute();
+	}
+
+	/**
+	 * @return the total number of entries in the returned catalog.  If canceled,
+	 * the total number of entries examined prior to cancellation.
+	 */
+	public int getNumCatalogEntries() {
+		return scanner.getNumCatalogEntries();
 	}
 
 	/**

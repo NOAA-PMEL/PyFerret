@@ -43,12 +43,11 @@ import java.util.HashSet;
  * @author Karl M. Smith - karl.smith (at) noaa.gov
  */
 public class ExtensionFileFilter extends HashSet<String> implements FileFilter {
-
 	private static final long serialVersionUID = -5282011356208993578L;
 
 	/**
-	 * Create a file filter with an empty set of extensions; thus
-	 * all files are accepted.
+	 * Create a file filter with an empty set of extensions;
+	 * thus all files are accepted.
 	 */
 	public ExtensionFileFilter() {
 	}
@@ -56,7 +55,8 @@ public class ExtensionFileFilter extends HashSet<String> implements FileFilter {
 	/**
 	 * Create a file filter from the given Collection of extensions.
 	 * If this set of extensions is empty, all files are accepted.
-	 * @param extensionsSet the set of acceptable extensions. Cannot be null.
+	 * @param extensionsSet the set of acceptable extensions. 
+	 * Cannot be null.
 	 * The extensions should <b> not </b> contain the '.'
 	 */
 	public ExtensionFileFilter(Collection<String> extensionsSet) {
@@ -64,12 +64,16 @@ public class ExtensionFileFilter extends HashSet<String> implements FileFilter {
 	}
 
 	/**
-	 * @return if fileToCheck is a directories or if it is a file with an extension 
-	 * given in the set of extension (if not empty) used to construct this object.
-	 * (If that set of extensions is empty, all files are accepted.)
+	 * @return true if fileToCheck is a file with an extension given in 
+	 * the set of extension (if not empty) used to construct this object.
+	 * If that set of extensions is empty, all files are accepted.  
+	 * Hidden files/directories always return false.
+	 * Visible directories always return true.
 	 */
 	@Override
 	public boolean accept(File fileToCheck) {
+		if ( fileToCheck.isHidden() )
+			return false;
 		if ( size() == 0 )
 			return true;
 		if ( fileToCheck.isDirectory() )

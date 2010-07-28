@@ -1,0 +1,13 @@
+! bn_labnum_calendar.jn.
+! Define new symbol, when a Calendar label is on
+! the plot, pointing to its ppl label number.
+
+! Use a non-standard calendar
+! label LABNUM_CALEN is defined.
+
+use gt4d011
+set axis/calendar=noleap `temp,return=taxis`
+plot/x=132w/y=2n/k=1 temp
+sh sym LABNUM_CALEND
+sh sym lab($labnum_calend)
+

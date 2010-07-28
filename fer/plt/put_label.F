@@ -69,6 +69,8 @@
 *		    doesn't try to interpret symbols
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead 
+* 7/10 *acm* - ticket 1747: LABNUM_CALEN for automatically generated CALENDAR
+*              label, points to the PPL LAB# number.
 
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'
@@ -90,7 +92,7 @@
 * internal variable declarations:
 	INTEGER		flen, lsym, ii
 	CHARACTER	TM_FMT*4, font*3, buf4*4,
-     .			labname(ppl_dset:ppl_dodsurl)*6
+     .			labname(ppl_dset:ppl_calendar)*6
 	REAL 		xp, yp
 
 * local parameter declarations:
@@ -109,7 +111,8 @@
      .	     labname(ppl_year)/'YEAR'/,
      .	     labname(ppl_datitl)/'DATITL'/,
      .	     labname(ppl_offset)/'OFFSET'/,
-     .	     labname(ppl_dodsurl)/'DODS'/
+     .	     labname(ppl_dodsurl)/'DODS'/,
+     .	     labname(ppl_calendar)/'CALEND'/
 
 * if label has single tic marks double them so PLOT+ doesnt interpret symbols
 	IF ( INDEX(string,"'date'") .GT. 0 ) THEN
@@ -211,7 +214,7 @@
 	      WRITE ( ppl_buff, 3500 )
      .			"num_"//ww_dim_name(ii), buf4(:flen)
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-	   ELSEIF ( ii.GE.ppl_dset  .AND. ii.LE.ppl_dodsurl ) THEN
+	   ELSEIF ( ii.GE.ppl_dset  .AND. ii.LE.ppl_calendar ) THEN
 	      WRITE ( ppl_buff, 3500 )
      .			"num_"//labname(ii), buf4(:flen)
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )

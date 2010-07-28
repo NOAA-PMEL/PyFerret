@@ -151,6 +151,43 @@
 	CALL GETSYM( buff30, buffer, nc, ier )
 	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
 
+* If LABNUM symbols exist from a previous plot, delete them.
+
+        buff30 = 'LABNUM_X '
+	CALL GETSYM( buff30, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buff30 = 'LABNUM_Y '
+	CALL GETSYM( buff30, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buff30 = 'LABNUM_Z '
+	CALL GETSYM( buff30, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buff30 = 'LABNUM_T '
+	CALL GETSYM( buff30, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+           
+        buff30 = 'LABNUM_DSET '
+	CALL GETSYM( buff30, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buff30 = 'LABNUM_ASPECT '
+	CALL GETSYM( buff30, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buff30 = 'LABNUM_YEAR '
+	CALL GETSYM( buff30, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buff30 = 'LABNUM_DATITL '
+	CALL GETSYM( buff30, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buff30 = 'LABNUM_OFFSET '
+	CALL GETSYM( buff30, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buff30 = 'LABNUM_DODS '
+	CALL GETSYM( buff30, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+        buff30 = 'LABNUM_CALEND '
+	CALL GETSYM( buff30, buffer, nc, ier )
+	IF ( ier .EQ. 0 ) CALL DELSYM(buff30,nc)
+
 * free the color table on a full window
         IF ( vp_num .EQ. mvp_dflt ) CALL PPL_SHASET( 'RESET' )
 

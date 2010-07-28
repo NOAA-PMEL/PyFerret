@@ -39,6 +39,7 @@
 C**
 C**
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
+* V664:  8/10 - implement robust method for computing variances (bug 1745)
 
 	
 	include 'parampl5_dat.decl'
@@ -55,8 +56,9 @@ C**
 	REAL z(*), badz
 
 * internal variable declarations:
-	REAL datum, sum, dev, sumsq_dev
-	INTEGER ngood
+	REAL datum, sum, dev, sumsq_dev, variance
+	REAL*8 x, xmean, sum2, sumc, variance_c, xdelta
+	INTEGER n
 
 c  Already have zmin, zmax
 
@@ -69,30 +71,39 @@ c  Already have zmin, zmax
 c Compute data mean.
 
         sum = 0.0
-        ngood = 0
+        n = 0
         DO 100 i = 1, nsize
-           datum = Z(i)
-           IF ( datum .NE. badz ) THEN
-	      sum = sum + datum
-              ngood = ngood + 1
+           IF ( Z(i) .NE. badz ) THEN
+	      sum = sum + Z(i)
+              n = n + 1
 	   ENDIF
  100    CONTINUE
-        zmean = sum/FLOAT(ngood)
+        zmean = sum/FLOAT(n)
 
         IF (need_std) THEN
-*  compute variance 
-	   sumsq_dev = 0.0
-	   ngood = 0
-	   DO 200 i = 1, nsize
-	      datum = Z(i)
-	      IF ( datum .NE. badz ) THEN
-	         dev = datum - zmean
-	         IF ( sumsq_dev .GE. 3.E35 ) GOTO 5010
-	         sumsq_dev = sumsq_dev + dev*dev
-                 ngood = ngood + 1
-	      ENDIF
- 200	   CONTINUE
-	   zstd   = SQRT( sumsq_dev / FLOAT(ngood-1) )
+
+* Compute variance. See http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+
+* On-line algorithm with mean subtracted first. Noted as the most robust.
+* Since we always compute the mean first anyway, use it.
+
+	   n = 0
+	   xmean = 0.D0
+	   sum2 = 0.D0
+ 
+	   DO i = 1, nsize
+	      x = Z(i)
+	      IF ( x .NE. badz ) THEN
+                 n = n + 1
+		 x = x - zmean
+                 xdelta = x - xmean
+                 xmean = xmean + xdelta/FLOAT(n)
+                 sum2 = sum2 + xdelta*(x - xmean)  ! This expression uses the new value of mean
+ 	      ENDIF
+	   ENDDO
+           variance_c = sum2/FLOAT(n - 1)
+	   zstd = SQRT(variance_c)
+
         ENDIF
 
 * If user is resetting the mean, do that here

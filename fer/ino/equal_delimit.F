@@ -113,7 +113,7 @@
      .	     .AND. buff(1:1).LE.'9'
      .	     .AND. pos.GT.2 ) THEN
 	    buff1 = buff(:pos-1)
-	    READ(buff1,'(I)',ERR=5100) ic
+	    READ(buff1,'(I4)',ERR=5100) ic
 	    IF (ic.GT.127) GOTO 5100
 	    outstring(n:n) = CHAR(ic)  ! any decimal value
 	  ELSEIF (pos.GT.2) THEN

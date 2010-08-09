@@ -1,0 +1,193 @@
+! create_KMZ.jnl
+\cancel mode verify
+!
+!
+! Make a KMZ archive containing Ferret gif images for use in Google Earth.
+! The tags that are written to the file are take from the documentation
+! at http://code.google.com/apis/kml/documentation/kmlreference.html
+! and comments in this script are take from that document.
+!
+!                       arg 1    2     3         4      5  6
+!Usage1:  GO create_KMZ variable K low_value high_value L value
+!                       arg 1    2   3   4     5         6
+!Usage2:  GO create_KMZ variable K value L low_value high_value
+!                       arg 1    2   3   4     5         6
+!Usage3:  GO create_KMZ variable K null L low_value high_value
+!                       arg 1    2     3         4      5    6
+!Usage4:  GO create_KMZ variable K low_value high_value L null
+
+!Examples:
+! yes? go make_kmz o_temp K 2 4 L 1    OR
+! yes? go make_kmz o_temp K 2 L 1 3    OR
+! yes? go make_kmz o_temp K null L 1 3 OR
+! yes? go make_kmz o_temp K 2 4 L null
+
+query/ignore $1%Argument 1 is the variable name%
+query/ignore $2%Argument 2 is K or k%
+query/ignore $3%Argument 3 is usage1 is the low value of k usage2 is the value of k usage3 is NULL/Null/null for data sets that don't have k dimension%
+query/ignore $4%Argument 4 is usage1 is the high value of k usage2 and usage3 is L or l%
+query/ignore $5%Argument 5 is usage1 is L or l usage2 and usage3 is the low value of L%
+query/ignore $5%Argument 6 is usage1 is the value of L usage2 and usage3 is the high value of L%
+
+DEFINE SYMBOL var = $1
+!calculate the interval of x axis
+LET ii=i[gx=($var)]
+LET imax=ii[i=@max]
+DEFINE SYMBOL iinterval = `360/(imax)`
+
+DEFINE SYMBOL kml_write LIST/QUIET/nohead/norowhead/file="doc.kml"/format=(a)
+
+! Header lines
+($kml_write)/clobber {"<?xml version='1.0' encoding='UTF-8'?>"}
+($kml_write)/append  {"<kml xmlns='http://www.opengis.net/kml/2.2' "}
+($kml_write)/append  {" xmlns:gx='http://www.google.com/kml/ext/2.2'> "}
+!<Document>
+($kml_write)/append {"    <Document>"}
+($kml_write)/append {"    	<name>($var)</name>"}
+($kml_write)/append {"    	<open>1</open>"}
+
+! Part of Colorbar code is used here.
+! KML_nlevels        approximate number of color levels to use
+DEFINE SYMBOL KML_nlevels = 30
+! Compute the color levels and save in symbol KML_fill_levels
+LET blank_var = ($var)
+LET the_var = ($var)
+LET vmin = the_var[x=@min,y=@min,z=@min,t=@min]
+LET vmax = the_var[x=@max,y=@max,z=@max,t=@max]
+IF ($center_levels%0|*>1%) THEN
+    LET highest = MAX(ABS(vmin), ABS(vmax))
+    LET vmin = -1*highest
+    LET vmax = highest
+ENDIF
+PPL %RANGE `vmin,p=9` `vmax,p=9` ($KML_nlevels)
+DEFINE SYMBOL lo_lim ($PPL$RANGE_LOW)
+DEFINE SYMBOL hi_lim ($PPL$RANGE_HIGH)
+DEFINE SYMBOL delta ($PPL$RANGE_INC)
+DEFINE SYMBOL KML_fill_levels (($PPL$RANGE_LOW),($PPL$RANGE_HIGH),($PPL$RANGE_INC))
+! Draw the colorbar using the levels and the palette that will be used for all of the main plots
+SET WINDOW/SIZE=0.1/ASPECT=3
+DEFINE SYMBOL colorbar_quals = NOAXES/NOLABELS/LEVELS=($KML_fill_levels)
+! The command to draw colorbar is slightly different between different usages.
+
+! Colorbar is tagged here
+($kml_write)/append {"      <ScreenOverlay>"}
+($kml_write)/append {"         <name>Colorbar_($var)</name>"}
+($kml_write)/append {"         <Icon>"}
+($kml_write)/append {"            <href>Colorbar_($var).gif</href>"}
+($kml_write)/append {"         </Icon>"}
+($kml_write)/append {"         <overlayXY x='0' y='0' xunits='fraction' yunits='fraction'/>"}
+($kml_write)/append {"         <screenXY x='5' y='5' xunits='pixels' yunits='pixels'/>"}
+($kml_write)/append {"         <rotationXY x='50' y='10' xunits='pixels' yunits='pixels'/>"}
+($kml_write)/append {"         <size x='-1' y='-1' xunits='pixels' yunits='pixels'/>"}
+($kml_write)/append {"      </ScreenOverlay>"}
+
+DEFINE SYMBOL ksymbol = $2
+
+DEFINE SYMBOL indicator1 = $3
+LET teststr1 = "null"
+IF `ABS(strcmp("($indicator1)",teststr1)) EQ 32 OR ABS(strcmp("($indicator1)",teststr1)) EQ 0` THEN
+  SAY K IS NULL, Usage3
+  DEFINE SYMBOL lsymbol = $4
+  DEFINE SYMBOL llowvalue = $5
+  DEFINE SYMBOL lhighvalue = $6
+  IF `($llowvalue) GT ($lhighvalue)` THEN
+    SAY Please indicate L value from low to hign
+    EXIT/SCRIPT
+  ENDIF
+  !Colorbar is drawn here based on the symbols defined above.
+  SHADE/L=1/($colorbar_quals) blank_var
+  PPL AXLEN 0.01 0.01
+  LET bar_wid = ($PPL$WIDTH)* 0.1
+  PPL SHAKEY 1,1,0.2,,,,`(($PPL$WIDTH)/2)-bar_wid`,`(($PPL$WIDTH)/2)+bar_wid`,1,`($PPL$HEIGHT)-1`
+  PPL SHADE
+  !save the result as a gif image
+  FRAME/TRANSPARENT/FORMAT=gif/FILE="Colorbar_($var).gif"
+  !The main part of doc.kml is written by the following repeat command. Please refer to create_KMZ_3.jnl
+  REPEAT/L=($llowvalue):($lhighvalue) (GO create_KMZ_groundoverlay_3)
+  REPEAT/L=($llowvalue):($lhighvalue) (GO create_KMZ_tour_3)
+ENDIF
+
+DEFINE SYMBOL indicator2 = $4
+LET teststr2 = "l"
+IF `ABS(strcmp("($indicator2)",teststr2)) EQ 32 OR ABS(strcmp("($indicator2)",teststr2)) EQ 0` THEN
+  SAY K IS One Value, Usage2
+  DEFINE SYMBOL kvalue = $3
+  DEFINE SYMBOL lsymbol = $4
+  DEFINE SYMBOL llowvalue = $5
+  DEFINE SYMBOL lhighvalue = $6
+  IF `($llowvalue) GT ($lhighvalue)` THEN
+    SAY Please indicate L value from low to hign
+    EXIT/SCRIPT
+  ENDIF
+  !Colorbar is drawn here based on the symbols defined above.
+  SHADE/L=1/K=1/($colorbar_quals) blank_var
+  PPL AXLEN 0.01 0.01
+  LET bar_wid = ($PPL$WIDTH)* 0.1
+  PPL SHAKEY 1,1,0.2,,,,`(($PPL$WIDTH)/2)-bar_wid`,`(($PPL$WIDTH)/2)+bar_wid`,1,`($PPL$HEIGHT)-1`
+  PPL SHADE
+  !save the result as a gif image
+  FRAME/TRANSPARENT/FORMAT=gif/FILE="Colorbar_($var).gif"
+  !The main part of doc.kml is written by the following repeat command. Please refer to create_KMZ_2.jnl
+  REPEAT/L=($llowvalue):($lhighvalue) (GO create_KMZ_groundoverlay_2)
+  REPEAT/L=($llowvalue):($lhighvalue) (GO create_KMZ_tour_2)
+ELSE
+  SAY K Has a range, Usage1
+  DEFINE SYMBOL klowvalue = $3
+  DEFINE SYMBOL khighvalue = $4
+  DEFINE SYMBOL lsymbol = $5
+  DEFINE SYMBOL lvalue = $6
+  IF `($klowvalue) GT ($khighvalue)` THEN
+    SAY Please indicate K value from low to hign
+    EXIT/SCRIPT
+  ENDIF
+  !Colorbar is drawn here based on the symbols defined above.
+  SHADE/L=1/K=1/($colorbar_quals) blank_var
+  PPL AXLEN 0.01 0.01
+  LET bar_wid = ($PPL$WIDTH)* 0.1
+  PPL SHAKEY 1,1,0.2,,,,`(($PPL$WIDTH)/2)-bar_wid`,`(($PPL$WIDTH)/2)+bar_wid`,1,`($PPL$HEIGHT)-1`
+  PPL SHADE
+  !save the result as a gif image
+  FRAME/TRANSPARENT/FORMAT=gif/FILE="Colorbar_($var).gif"
+  !The main part of doc.kml is written by the following repeat command. Please refer to create_KMZ_1.jnl
+  REPEAT/K=($klowvalue):($khighvalue) (GO create_KMZ_groundoverlay_1)
+  REPEAT/K=($klowvalue):($khighvalue) (GO create_KMZ_tour_1)
+ENDIF
+
+DEFINE SYMBOL indicator3 = $6
+IF `ABS(strcmp("($indicator3)",teststr1)) EQ 32 OR ABS(strcmp("($indicator3)",teststr1)) EQ 0` THEN
+  SAY L IS NULL, Usage4
+  DEFINE SYMBOL klowvalue = $3
+  DEFINE SYMBOL khighvalue = $4
+  DEFINE SYMBOL lsymbol = $5
+  IF `($klowvalue) GT ($khighvalue)` THEN
+    SAY Please indicate K value from low to hign
+    EXIT/SCRIPT
+  ENDIF
+  !Colorbar is drawn here based on the symbols defined above.
+  SHADE/K=1/($colorbar_quals) blank_var
+  PPL AXLEN 0.01 0.01
+  LET bar_wid = ($PPL$WIDTH)* 0.1
+  PPL SHAKEY 1,1,0.2,,,,`(($PPL$WIDTH)/2)-bar_wid`,`(($PPL$WIDTH)/2)+bar_wid`,1,`($PPL$HEIGHT)-1`
+  PPL SHADE
+  !save the result as a gif image
+  FRAME/TRANSPARENT/FORMAT=gif/FILE="Colorbar_($var).gif"
+  !The main part of doc.kml is written by the following repeat command. Please refer to create_KMZ_4.jnl
+  REPEAT/K=($klowvalue):($khighvalue) (GO create_KMZ_groundoverlay_4)
+  REPEAT/K=($klowvalue):($khighvalue) (GO create_KMZ_tour_4)
+ENDIFs
+
+! Close the remaining tags
+($kml_write)/append {"    </Document>"}
+($kml_write)/append {"</kml>"}
+
+cancel symbol kml_write
+
+!zip doc.kml and gif images to make a KMZ archive
+spawn zip temp.zip doc.kml *($var).gif
+spawn mv temp.zip ($var).kmz
+!delete doc.kml and gif images and only left KMZ archive as the script output
+!spawn rm doc.kml
+spawn rm *($var).gif
+
+set mode/last verify
+! --- end of create_KMZ.jnl ---

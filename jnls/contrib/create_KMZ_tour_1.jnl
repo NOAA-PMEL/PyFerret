@@ -1,0 +1,52 @@
+! create_KMZ_1.jnl
+\cancel mode verify
+
+!The values of k, l and other symbols defined in create_KMZ.jnl are accessable in this script
+DEFINE SYMBOL kvalue = `k`
+
+!<gx:Tour>
+IF `($kvalue) EQ ($klowvalue)` THEN
+	($kml_write)/append {"      <gx:Tour>"}
+	($kml_write)/append {"      <name>Play me</name>"}
+	($kml_write)/append {"      <gx:Playlist>"}
+ENDIF
+
+($kml_write)/append {"      <gx:AnimatedUpdate>"}
+($kml_write)/append {"         <gx:duration>1</gx:duration>"}
+($kml_write)/append {"         <Update>"}
+($kml_write)/append {"         <targetHref></targetHref>"}
+($kml_write)/append {"         <Change>"}
+($kml_write)/append {"            <GroundOverlay targetId='($var) Level=($kvalue) Time=($lvalue)'>"}
+($kml_write)/append {"              <visibility>1</visibility>"}
+($kml_write)/append {"            </GroundOverlay>"}
+($kml_write)/append {"         </Change>"}
+($kml_write)/append {"         </Update>"}
+($kml_write)/append {"      </gx:AnimatedUpdate>"}
+
+($kml_write)/append {"      <gx:Wait>"}
+($kml_write)/append {"         <gx:duration>1</gx:duration>"}
+($kml_write)/append {"      </gx:Wait>"}
+
+($kml_write)/append {"      <gx:AnimatedUpdate>"}
+($kml_write)/append {"         <gx:duration>0.25</gx:duration>"}
+($kml_write)/append {"         <Update>"}
+($kml_write)/append {"         <targetHref></targetHref>"}
+($kml_write)/append {"         <Change>"}
+($kml_write)/append {"            <GroundOverlay targetId='($var) Level=($kvalue) Time=($lvalue)'>"}
+($kml_write)/append {"              <visibility>0</visibility>"}
+($kml_write)/append {"            </GroundOverlay>"}
+($kml_write)/append {"         </Change>"}
+($kml_write)/append {"         </Update>"}
+($kml_write)/append {"      </gx:AnimatedUpdate>"}
+
+($kml_write)/append {"      <gx:Wait>"}
+($kml_write)/append {"         <gx:duration>0.25</gx:duration>"}
+($kml_write)/append {"      </gx:Wait>"}
+
+
+IF `($kvalue) EQ ($khighvalue)` THEN
+	($kml_write)/append {"      </gx:Playlist>"}
+	($kml_write)/append {"      </gx:Tour>"}
+ENDIF
+
+set mode/last verify

@@ -1,0 +1,83 @@
+! create_KMZ_groundoverlay_1.jnl
+\cancel mode verify
+
+!The values of k, l and other symbols defined in create_KMZ.jnl are accessable in this script
+DEFINE SYMBOL kvalue = `k`
+
+DEFINE VIEW/AXES/XLIM=0:1/YLIM=0:1 WMSview
+SET VIEW WMSview
+
+SHADE/L=($lvalue)/NOAXES/LEVELS=($KML_fill_levels) ($var)
+!the name of the gif image generated above is set to be K($kvalue)_L($lvalue)_($var).gif
+FRAME/TRANSPARENT/FILE=K($kvalue)_L($lvalue)_($var).gif
+
+!<Folder>
+
+IF `($kvalue) EQ ($klowvalue)` THEN
+	($kml_write)/append {"      <Folder>"}
+	($kml_write)/append {"      <name>($var) Time=($lvalue)</name>"}
+	($kml_write)/append {"      <open>1</open>"}
+ENDIF
+	
+!<GroundOverlay>
+!    This element draws an image overlay draped onto the terrain. The
+!    <href> child of <Icon> specifies the image to be used as the overlay.
+!    This file can be either on a local file system or on a web server.
+
+($kml_write)/append {"      <GroundOverlay id='($var) Level=($kvalue) Time=($lvalue)'>"}
+
+!<name>
+!    User-defined text displayed in the 3D viewer as the label for
+!    the object (for example, for a Placemark, Folder, or NetworkLink).
+
+($kml_write)/append {"         <name>($var) Level=($kvalue) Time=($lvalue)</name>"}
+
+!<visibility>
+IF `($kvalue) EQ ($klowvalue)` THEN
+	($kml_write)/append {"         <visibility>1</visibility>"}
+ELSE
+	($kml_write)/append {"         <visibility>0</visibility>"}
+ENDIF
+	
+!<Icon>
+!    Defines an image associated with an Icon style or overlay.
+!    (For this script this is a simple gif image file.)
+
+($kml_write)/append {"         <Icon>"}
+($kml_write)/append {"            <href>K($kvalue)_L($lvalue)_($var).gif</href>"}
+($kml_write)/append {"         </Icon>"}
+
+
+!<LatLonBox>
+!    Specifies where the top, bottom, right, and left sides of a bounding box for the ground overlay are aligned.
+
+($kml_write)/append {"         <LatLonBox>"}
+
+	($kml_write)/append {"             <north>($ppl$ymax)</north>"}
+
+
+	($kml_write)/append {"             <south>($ppl$ymin)</south>"}
+
+!Delete the gap on the earth surface
+!If the scale of image is near 360, then consider the image to be show on the whole earth
+!Change the values of the lat and longitude boundary to fix the gap on the earth surface
+IF `(360 - (($PPL$XMAX) - ($PPL$XMIN))) GT ($iinterval)` THEN
+	($kml_write)/append {"             <east>($ppl$xmin)</east>"}
+	($kml_write)/append {"             <west>($ppl$xmax)</west>"}
+ELSE
+	($kml_write)/append {"             <east>`($ppl$xmin)-(($iinterval)/2)`</east>"}
+	($kml_write)/append {"             <west>`($ppl$xmax)+(($iinterval)/2)`</west>"}	
+ENDIF
+
+($kml_write)/append {"             <rotation>0</rotation>"}
+($kml_write)/append {"         </LatLonBox>"}
+
+($kml_write)/append {"      </GroundOverlay>"}
+
+IF `($kvalue) EQ ($khighvalue)` THEN
+	($kml_write)/append {"    </Folder>"}
+ENDIF
+
+PPL SHASET RESET
+
+set mode/last verify

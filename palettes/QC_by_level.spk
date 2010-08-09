@@ -7,8 +7,9 @@ RGB_Mapping By_Level
    4   100.0    0.0    0.0  ! bright red
    5    70.0    0.0  100.0  ! purple
    6    80.0   73.0   59.0  ! tan
-   7     0    100    100    ! cyan
-   8     0      0      0    ! black 
+   7     0.0  100.0  100.0  ! cyan
+   8   100.0   50.0    0.0  ! orange
+   9     0      0      0    ! black 
 
 !A = 65
 !B = 66
@@ -17,10 +18,4 @@ RGB_Mapping By_Level
 !F = 70
 !N = 78 
 !X = 88
-
-
- !  8    55      0      0    ! dark red
- !  9   100     50      0    ! orange
- ! 10     0    100    100    ! cyan
-
-
+!U = 85

@@ -100,11 +100,31 @@
 	GKSLIB		= ../xgks/src/lib/libxgks.a
 	READLINELIB	= ../readline/libreadline.a 
 
-# netcdf4.1
+# netcdf4.1 static librarys only (except for libdl)
+
 	CDFLIB          = $(NETCDF4_DIR)/lib/libnetcdf.a \
 			  $(NETCDF4_DIR)/lib/libhdf5_hl.a \
 			  $(NETCDF4_DIR)/lib/libhdf5.a \
-			  -L/usr/lib64 -lz -lc -lm -lcurl
+			  -L/usr/lib64  \
+			  /usr/lib64/libcurl.a  \
+			  /usr/lib64/libssl.a  \
+			  /usr/lib64/libcrypto.a  \
+			  /usr/lib64/libgssapi_krb5.a  \
+			  /usr/lib64/libkrb5.a  \
+			  /usr/lib64/libcom_err.a  \
+			  /usr/lib64/libk5crypto.a  \
+			  /usr/lib64/libresolv.a  \
+			  -L/usr/lib64 -ldl  \
+			  /usr/lib64/libz.a  \
+			  /usr/lib64/libidn.a  \
+			  /usr/lib64/libz.a
+
+
+# netcdf4.1 standard build
+#	CDFLIB          = $(NETCDF4_DIR)/lib/libnetcdf.a \
+#			  $(NETCDF4_DIR)/lib/libhdf5_hl.a \
+#			  $(NETCDF4_DIR)/lib/libhdf5.a \
+#			  -L/usr/lib64 -lz -lc -lm -lcurl
 
 # netcdf3.6.3
 #	CDFLIB          = /home/nstout/ansley/netcdf-3.6.3/porter/lib/libnetcdf.a -lcurl

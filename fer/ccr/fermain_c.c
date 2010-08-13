@@ -139,6 +139,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <signal.h>
 #include "ferret.h"
 #include "ferret_shared_buffer.h"
 
@@ -169,6 +170,14 @@ void help_text()
   exit(0);
 }
 
+static void fer_signal_handler(int signal_num)
+{
+  fprintf(stderr, "Ferret crash; signal = %d\n", signal_num);
+  fflush(stderr);
+  puts("Sorry, Ferret encountered an unrecoverable error and is exiting.");
+  fflush(stdout);
+  exit(-1);
+}
 
 /*
  * Eliminated _NO_PROTO ifdef (are there still non-ANSI C compilers around?)
@@ -214,6 +223,13 @@ main (int oargc, char *oargv[])
   for_rtl_init_(&argc, argv);
 #endif
 
+  /* Catch SIGILL, SIGFPE, and SIGSEGV for a graceful exit */
+  if ( (signal(SIGILL, fer_signal_handler) == SIG_ERR) ||
+       (signal(SIGFPE, fer_signal_handler) == SIG_ERR) ||
+       (signal(SIGSEGV, fer_signal_handler) == SIG_ERR) ) {
+     perror("Unable to redirect SIGILL, SIGFPE, or SIGSEGV");
+     exit(1);
+  }
 
   /* decode the command line options: "-memsize", and "-unmapped" */
   rmem_size = mem_size/1.E6;

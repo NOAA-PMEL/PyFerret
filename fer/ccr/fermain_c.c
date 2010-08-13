@@ -129,11 +129,13 @@
 *     5/19/06 *acm* Fix bug 1662: If SET MEM command is in the .ferret startup file got lots
 *                   of messages.fix as for the SET MEM in a script run via the  -script startup.
 *                   with a setting of script_resetmem.
+*
+* *kob* 10/03 v553 - gcc v3.x needs wchar.h included
+* *acm*  9/06 v600 - add stdlib.h wherever there is stdio.h for altix build
+* *acm*  2/07 v602 - add check for overflow on large memory requests (as in xeq_set.F, bug 1438)
+* *kms*  8/10 v664 - catch SIGILL, SIGFPE, and SIGSEGV and exit gracefully with a stderr message for LAS
 */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
-/* *acm   2/07 v602 - add check for overflow on large memory requests (as in xeq_set.F, bug 1438)*/
 #include <wchar.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -170,12 +172,15 @@ void help_text()
   exit(0);
 }
 
+/*
+ * Signal handler for SIGILL, SIGFPE, and SIGSEGV 
+ * (ie, just program-crashing signals, not user-generated signals)
+ * for generating a stderr message for LAS and exiting gracefully.
+ */
 static void fer_signal_handler(int signal_num)
 {
-  fprintf(stderr, "Ferret crash; signal = %d\n", signal_num);
+  fprintf(stderr, "**ERROR Ferret crash; signal = %d\n", signal_num);
   fflush(stderr);
-  puts("Sorry, Ferret encountered an unrecoverable error and is exiting.");
-  fflush(stdout);
   exit(-1);
 }
 
@@ -223,11 +228,11 @@ main (int oargc, char *oargv[])
   for_rtl_init_(&argc, argv);
 #endif
 
-  /* Catch SIGILL, SIGFPE, and SIGSEGV for a graceful exit */
+  /* Catch SIGILL, SIGFPE, and SIGSEGV */
   if ( (signal(SIGILL, fer_signal_handler) == SIG_ERR) ||
        (signal(SIGFPE, fer_signal_handler) == SIG_ERR) ||
        (signal(SIGSEGV, fer_signal_handler) == SIG_ERR) ) {
-     perror("Unable to redirect SIGILL, SIGFPE, or SIGSEGV");
+     perror("**ERROR Unable to catch SIGILL, SIGFPE, or SIGSEGV");
      exit(1);
   }
 

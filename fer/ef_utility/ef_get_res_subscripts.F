@@ -74,3 +74,30 @@ c* Ferret and must be retrieved to be accessible to the external function.
 
       RETURN 
       END
+
+
+
+*
+* Return the array memory limits in the common blocks for those
+* times when they cannot be retrieved directly.
+*
+      SUBROUTINE EF_GET_RES_MEM_SUBSCRIPTS(id, res_memlo, res_memhi)
+
+      INCLUDE 'EF_Util.parm'
+      INCLUDE 'EF_mem_subsc.cmn'
+
+* argument declarations
+      INTEGER id, res_memlo(4), res_memhi(4)
+
+      res_memlo(1) = memreslox
+      res_memlo(2) = memresloy
+      res_memlo(3) = memresloz
+      res_memlo(4) = memreslot
+
+      res_memhi(1) = memreshix
+      res_memhi(2) = memreshiy
+      res_memhi(3) = memreshiz
+      res_memhi(4) = memreshit
+
+      RETURN
+      END

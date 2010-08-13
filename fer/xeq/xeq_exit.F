@@ -75,6 +75,7 @@
 	include 'slash.parm'
 	include 'xcontrol.cmn'
 	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
 
 	INTEGER status
 	INTEGER i, pop, ifloop
@@ -140,6 +141,7 @@
 * Exit program completely 
 * *kob* new call to GO_FILE_INPUT to make sure were not in command file
 	   CALL CLSPPL		! close PLOT5
+           pplus_started = .FALSE.
 	   CALL TM_EXIT		! close TMAP data sets
 	   RETURN 1
 !	   IF ( frame_on ) CALL MOVIE_CLOSE( frame_lun, status )! end movie

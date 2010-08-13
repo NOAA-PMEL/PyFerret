@@ -158,6 +158,9 @@
 	EXTERNAL XGRID_CHG_FCNS_DATA,
      .		 XEZ_INFO_DATA
 
+        LOGICAL one_cmnd_mode
+        COMMON  /ONE_CMND_MODE_CMN/ one_cmnd_mode
+
 * temporarily we simply declare the "memory" array right here
 * calling argument declarations
 	INTEGER nflags, nchars, rtn_flags(nflags), nerrlines
@@ -295,6 +298,9 @@ c	DO 2 i = 1, 200
  320	alt_nlines = 0
 	CALL CLEANUP_LAST_CMND( cmnd_stack_level )
 	IF ( .NOT.mode_gui ) THEN
+           IF ( one_cmnd_mode .AND. (cmnd_stack_level .EQ. 0) ) THEN
+              RETURN
+           ENDIF
 	   GOTO 5
 	ELSEIF ( cmnd_stack_level .GT. 0 ) THEN
 	   rtn_flags(frtn_control) = fctrl_in_ferret  ! command not yet finished
@@ -322,3 +328,25 @@ c	DO 2 i = 1, 200
 	RETURN
 
 	END
+
+*
+* Routine to set the one_cmnd_mode in FERRET_DISPATCH 
+* The following only applies if gui_mode is .FALSE.
+* If new_mode_int is zero, FERRET_DISPATCH will return only 
+*     on memory resizes and exit (original behavior)
+* If new_mode_int is non-zero, FERRET_DISPATCH will return 
+*     after each submitted command is complete
+*
+        SUBROUTINE SET_ONE_CMND_MODE(new_mode_int)
+        INTEGER new_mode_int
+        LOGICAL one_cmnd_mode
+        COMMON  /ONE_CMND_MODE_CMN/ one_cmnd_mode
+        one_cmnd_mode = (new_mode_int .NE. 0)
+        END
+
+        BLOCK DATA ONE_CMND_MODE_DATA
+        LOGICAL one_cmnd_mode
+        COMMON  /ONE_CMND_MODE_CMN/ one_cmnd_mode
+        DATA one_cmnd_mode /.FALSE./
+        END
+

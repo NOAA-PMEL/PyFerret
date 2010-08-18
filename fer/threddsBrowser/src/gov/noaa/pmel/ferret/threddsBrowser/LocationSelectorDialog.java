@@ -256,11 +256,21 @@ public class LocationSelectorDialog extends JDialog implements ActionListener, F
 
 			// Customize the file chooser for directories
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			chooser.setDialogTitle("Root for a Local Dataset Tree");
-			chooser.setApproveButtonToolTipText("Select a directory to be the root for a local dataset tree");
+			chooser.setDialogTitle("Directory to be Root of a Local Dataset Tree");
+			chooser.setApproveButtonToolTipText("Use the selected directory as the root of a local dataset tree");
+
+			// Ugly hack to rename the label "File Name:" to "Selected Dir:" and 
+			// to get rid of the file filter panel with the label "Files of Type:".
+			// This will fail in locales that do not use exactly these strings
+			// or if these components are not nested in JPanels.
+			// More stuff might be removed if the file filter label and combo box 
+			// are not in their own JPanel.
+			for ( Component comp : chooser.getComponents() ) {
+				checkComponentForFileLabel(comp);
+			}
 
 			// Get the selected directory
-			if ( chooser.showDialog(this, "Select") == JFileChooser.APPROVE_OPTION ) {
+			if ( chooser.showDialog(this, "Use Selected Dir") == JFileChooser.APPROVE_OPTION ) {
 				localBrowseDir = chooser.getSelectedFile();
 				selectedLocation = localBrowseDir.getPath();
 			}
@@ -275,6 +285,42 @@ public class LocationSelectorDialog extends JDialog implements ActionListener, F
 
 		// Return the selected location, which will be null if a dialog was canceled
 		return selectedLocation;
+	}
+
+	/**
+	 * If comp is a JLabel with text "File Name:", change the text to "Selected Dir:";
+	 * if comp is a JLabel with text "Files of Type:", remove the JPanel that contains
+	 * this component from it's JPanel; otherwise, if comp is a JPanel, call this 
+	 * function on each of its components.
+	 */
+	private int checkComponentForFileLabel(Component comp) {
+		if ( JLabel.class.isInstance(comp) ) {
+			JLabel label = (JLabel) comp;
+			if ( "File Name:".equals(label.getText()) ) {
+				// Rename this label and continue on
+				label.setText("Selected Dir:");
+			}
+			else if ( "Files of Type:".equals(label.getText()) ) {
+				// This is the file filter label
+				return 1;
+			}
+		}
+		else if ( JPanel.class.isInstance(comp) ) {
+			JPanel panel = (JPanel) comp;
+			for ( Component panelComp : panel.getComponents() ) {
+				int level = checkComponentForFileLabel(panelComp);
+				if ( level == 2 ) {
+					// Remove this panel component (which contains the file filter label) from this panel
+					panel.remove(panelComp);
+					return 0;
+				}
+				if ( level == 1 ) {
+					// This is the panel containing the file filter label
+					return 2;
+				}
+			}
+		}
+		return 0;
 	}
 
 	/**

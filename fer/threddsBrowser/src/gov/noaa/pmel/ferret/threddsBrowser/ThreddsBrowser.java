@@ -55,6 +55,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -70,7 +72,7 @@ import ucar.util.prefs.PreferencesExt;
  * @author Karl M. Smith - karl.smith (at) noaa.gov
  */
 public class ThreddsBrowser extends JPanel {
-	private static final long serialVersionUID = 434858657457954456L;
+	private static final long serialVersionUID = -6448720995067592662L;
 
 	/** Default locations environment variable - used for reset */
 	private String defLocsEnvName;
@@ -218,19 +220,22 @@ public class ThreddsBrowser extends JPanel {
 		updateLocationLabel(null);
 		resetDefaults(initialDefaults);
 
-		// Listen for single- and double clicks in the CatalogTreeView
+		// Listen for double clicks in the CatalogTreeView
 		treeViewer.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent e) {
 				String propName = e.getPropertyName();
-				if ( "Selection".equals(propName) ) {
-					// Single-click (or first click of a double-click) on a dataset or file name
-					selectDataset();
-				}
-				else if ( "Dataset".equals(propName) || "File".equals(propName) ) {
+				if ( "Dataset".equals(propName) || "File".equals(propName) ) {
 					// Second click of a double-click on a dataset or file name
 					useButton.doClick();
 				}
+			}
+		});
+		// Listen for selection changes (mouse clicks or arrow key presses)
+		treeViewer.getJTree().addTreeSelectionListener(new TreeSelectionListener() {
+			@Override
+			public void valueChanged(TreeSelectionEvent e) {
+				selectDataset();
 			}
 		});
 

@@ -41,21 +41,17 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -74,16 +70,13 @@ import ucar.util.prefs.PreferencesExt;
  * @author Karl M. Smith - karl.smith (at) noaa.gov
  */
 public class ThreddsBrowser extends JPanel {
-	private static final long serialVersionUID = -699540756367330879L;
+	private static final long serialVersionUID = 434858657457954456L;
 
 	/** Default locations environment variable - used for reset */
 	private String defLocsEnvName;
 
 	/**	Original BrowserDefaults - used for reset */
 	private BrowserDefaults initialDefaults;
-
-	/** JComboBox of the current and previous locations */
-	private JComboBox locationsCombo;
 
 	/** JLabel showing the currently displayed location */
 	private JLabel locationLabel;
@@ -103,24 +96,21 @@ public class ThreddsBrowser extends JPanel {
 	/** The "Cancel" button */
 	private JButton cancelButton;
 
+	/** Use for location selection preferences and dialog */
+	private LocationSelector locationSelector;
+
 	/** Current selected dataset URL */
 	private String datasetName;
 
 	/** JLabel displaying the currently selected dataset */
 	private JLabel datasetLabel;
 
-	/** Default directory for the local directory file chooser */ 
-	private File localBrowseDir;
-
-	/** A comma/semicolon/space separated list of acceptable filename extensions for local datasets */
-	private String extensionsString;
-
 	/**
 	 * Create a THREDDS catalog browser for simple selection of a dataset.
 	 * @param prefs the default preference settings for this ThreddsBrowers; 
 	 * @param defaultLocationsEnvName the name of the locations environment variable 
 	 * whose value is a space-separated list of possibly-quoted locations.  May be 
-	 * null.  These locations, if not also given in prefs, will appear in 
+	 * null.  These locations, if not already given in prefs, will appear in 
 	 * order at the bottom of the drop-down list.  
 	 */
 	public ThreddsBrowser(PreferencesExt prefs, String defaultLocationsEnvName) {
@@ -133,64 +123,34 @@ public class ThreddsBrowser extends JPanel {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 
-		// JLabel in front of the drop-down list of locations
-		JLabel newLocationLabel = new JLabel("New location:");
+		// Intro label for the location
+		JLabel locationIntroLabel = new JLabel("Contents of location:");
 		gbc.gridx = 0;     gbc.gridy = 0;
-		gbc.gridwidth = 1; gbc.gridheight = 1;
+		gbc.gridwidth = 2; gbc.gridheight = 1;
 	    gbc.weightx = 0.0; gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(6,2,6,2);
-		add(newLocationLabel, gbc);
-
-		// Editable drop-down list of locations
-		locationsCombo = new JComboBox();
-		locationsCombo.setEditable(true);
-		gbc.gridx = 1;     gbc.gridy = 0;
-		gbc.gridwidth = 1; gbc.gridheight = 1;
-	    gbc.weightx = 1.0; gbc.weighty = 0.0;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(2,2,2,2);
-		add(locationsCombo, gbc);
-
-		// Open button to open the current selected location
-		JButton showButton = new JButton("Show");
-		showButton.setFocusPainted(false);
-		showButton.setToolTipText("Display the new location below");
+		gbc.insets = new Insets(15,10,10,2);
+		add(locationIntroLabel, gbc);
+		
+		// JLabel showing the currently displayed location
+		locationLabel = new JLabel(" ", SwingConstants.LEFT);
 		gbc.gridx = 2;     gbc.gridy = 0;
 		gbc.gridwidth = 1; gbc.gridheight = 1;
-	    gbc.weightx = 0.0; gbc.weighty = 0.0;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(2,2,2,2);
-		add(showButton, gbc);
-
-		// Browse button for selecting a local directory
-		JButton localBrowseButton = new JButton("Local");
-		localBrowseButton.setFocusPainted(false);
-		localBrowseButton.setToolTipText("Find a local directory to display");
-		gbc.gridx = 3;     gbc.gridy = 0;
-		gbc.gridwidth = 1; gbc.gridheight = 1;
-	    gbc.weightx = 0.0; gbc.weighty = 0.0;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(2,2,2,2);
-		add(localBrowseButton, gbc);
-
-		// Separator
-		JSeparator separator = new JSeparator();
-		gbc.gridx = 0;     gbc.gridy = 1;
-		gbc.gridwidth = 4; gbc.gridheight = 1;
 	    gbc.weightx = 1.0; gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(2,2,2,2);
-		add(separator, gbc);
-
-		// JLabel showing the currently displayed location
-		locationLabel = new JLabel("Shown location: ");
-		gbc.gridx = 0;     gbc.gridy = 2;
-		gbc.gridwidth = 4; gbc.gridheight = 1;
-	    gbc.weightx = 1.0; gbc.weighty = 0.0;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(2,2,2,2);
+		gbc.insets = new Insets(15,2,10,5);
 		add(locationLabel, gbc);
+
+		// Change location button to open LocationSelectorDialog
+		JButton changeLocationButton = new JButton("Change Location...");
+		changeLocationButton.setFocusPainted(false);
+		changeLocationButton.setToolTipText("Select a different location to display below");
+		gbc.gridx = 3;     gbc.gridy = 0;
+		gbc.gridwidth = 2; gbc.gridheight = 1;
+	    gbc.weightx = 0.0; gbc.weighty = 0.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.insets = new Insets(10,5,5,10);
+		add(changeLocationButton, gbc);
 
 		// CatalogTreeView for viewing the catalog or directory tree
 		treeViewer = new CatalogTreeView();
@@ -200,75 +160,63 @@ public class ThreddsBrowser extends JPanel {
 
 	    // JSplitPane containing the above treeViewer on the left and htmlViewerScrollPane on the right
 	    splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, false, treeViewer, htmlViewer);
-		gbc.gridx = 0;     gbc.gridy = 3;
-		gbc.gridwidth = 4; gbc.gridheight = 1;
+		gbc.gridx = 0;     gbc.gridy = 1;
+		gbc.gridwidth = 5; gbc.gridheight = 1;
 	    gbc.weightx = 1.0; gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(2,2,2,2);
+		gbc.insets = new Insets(5,10,5,10);
 		add(splitPanel, gbc);
 
 		// USE button to output the current dataset and close 
-		useButton = new JButton("USE");
+		useButton = new JButton("Use dataset:");
 		useButton.setFocusPainted(false);
 		useButton.setToolTipText("Use the selected dataset and exit this browser");
-		gbc.gridx = 0;     gbc.gridy = 4;
+		gbc.gridx = 0;     gbc.gridy = 2;
 		gbc.gridwidth = 1; gbc.gridheight = 1;
 	    gbc.weightx = 0.0; gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(2,2,2,2);
+		gbc.insets = new Insets(5,10,10,2);
 		add(useButton, gbc);
 
 		// JLabel with the current selected dataset name
 		datasetName = " ";
-		datasetLabel = new JLabel(datasetName);
+		datasetLabel = new JLabel(datasetName, SwingConstants.LEFT);
 		datasetLabel.setToolTipText("The currently selected dataset");
-		gbc.gridx = 1;     gbc.gridy = 4;
-		gbc.gridwidth = 1; gbc.gridheight = 1;
+		gbc.gridx = 1;     gbc.gridy = 2;
+		gbc.gridwidth = 2; gbc.gridheight = 1;
 	    gbc.weightx = 1.0; gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(6,2,6,2);
+		gbc.insets = new Insets(10,2,15,5);
 		add(datasetLabel, gbc);
 
 		// Reset button to reset the default settings
 		JButton resetButton = new JButton("Reset");
 		resetButton.setFocusPainted(false);
 		resetButton.setToolTipText("Reset this browser with default settings");
-		gbc.gridx = 2;     gbc.gridy = 4;
+		gbc.gridx = 3;     gbc.gridy = 2;
 		gbc.gridwidth = 1; gbc.gridheight = 1;
 	    gbc.weightx = 0.0; gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(2,2,2,2);
+		gbc.insets = new Insets(5,5,10,5);
 		add(resetButton, gbc);
 		
 		// Cancel button to close without output of a dataset name
 		cancelButton = new JButton("Cancel");
 		cancelButton.setFocusPainted(false);
 		cancelButton.setToolTipText("Exit this browser without designating a dataset to use");
-		gbc.gridx = 3;     gbc.gridy = 4;
+		gbc.gridx = 4;     gbc.gridy = 2;
 		gbc.gridwidth = 1; gbc.gridheight = 1;
 	    gbc.weightx = 0.0; gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(2,2,2,2);
+		gbc.insets = new Insets(5,5,10,10);
 		add(cancelButton, gbc);
 
+		// Create the location selector for this browser
+		locationSelector = new LocationSelector(this);
+
 		// Set the defaults
+		updateLocationLabel(null);
 		resetDefaults(initialDefaults);
-
-		// Listen for Open button presses
-		showButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showSelectedLocation();
-			}
-		});
-
-		// Listen for Browse button presses
-		localBrowseButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				browseLocalDirectories();
-			}
-		});
 
 		// Listen for single- and double clicks in the CatalogTreeView
 		treeViewer.addPropertyChangeListener(new PropertyChangeListener() {
@@ -301,6 +249,14 @@ public class ThreddsBrowser extends JPanel {
 			}
 		});
 
+		// Listen for Change Location... button presses
+		changeLocationButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				locationSelector.selectLocation(null);
+			}
+		});
+
 		// Listen for Reset button presses
 		resetButton.addActionListener(new ActionListener() {
 			@Override
@@ -323,52 +279,21 @@ public class ThreddsBrowser extends JPanel {
 	}
 
 	/**
-	 * Set the displayed location to the one selected in the locationsCombo.
+	 * Forwards the arguments to this browser's {@link LocationSelector#selectLocation} method
+	 * @param args the arguments; may be null or empty 
 	 */
-	private void showSelectedLocation() {
-		String location = (String) locationsCombo.getSelectedItem();
-		showLocation(location);
-	}
-
-	/**
-	 * Display the location to the given URI string, URL string, 
-	 * or local directory pathname.
-	 * @param location the location to open; if null or blank, does nothing.
-	 */
-	public void showLocation(String location) {
-		if ( location == null ) 
-			return;
-		String trimmedLocation = location.trim();
-		if ( trimmedLocation.isEmpty() )
-			return;
-
-		URI uri;
-		try {
-			// Create a URI from the given location string
-			uri = new URI(trimmedLocation);
-		} catch (URISyntaxException e) {
-			// If problems, assume this is a local file pathname
-			File locFile = new File(trimmedLocation);
-			uri = locFile.toURI();
-		}
-
-		String scheme = uri.getScheme();
-		if ( (scheme == null) || "file".equals(scheme) ) {
-			showLocalLocation(new File(uri.getPath()));
-		}
-		else {
-			showThreddsServerLocation(trimmedLocation);
-		}
+	public void selectLocation(String[] args) {
+		locationSelector.selectLocation(args);
 	}
 
 	/**
 	 * Display the THREDDS server catalog at the given URI.
 	 * @param locationURI the URI of the THREDDS server catalog
 	 */
-	private void showThreddsServerLocation(String locationString) {
+	public void showThreddsServerLocation(String locationString) {
 		// Update the location displayed in the browser and clear the viewers
 		clearViewers();
-		updateLocationLabels(locationString);
+		updateLocationLabel(locationString);
 
 		// Display the location in the tree viewer
 		treeViewer.setCatalog(locationString);
@@ -379,25 +304,14 @@ public class ThreddsBrowser extends JPanel {
 	 * Before creating the catalog, a dialog is opened requesting 
 	 * the user for filename extensions of datasets to display.
 	 * @param localDir the local directory to display
+	 * @param datasetFilter show only files that pass this filter; 
+	 * if null, all files are accepted
 	 */
-	private void showLocalLocation(File localDir) {
-		// Prompt the user for the file filters
-		String extsString = JOptionPane.showInputDialog(this, "Show datasets with the filename extension\n" +
-														"(give none to show all files):", extensionsString);
-		// If the user cancelled out of the filters dialog, just return
-		if ( extsString == null )
-			return;
-
-		// Create the Collection of individual extension Strings
-		Collection<String> extsColl = BrowserDefaults.parseExtensionsString(extsString);
-
-		// Create a new standard String of extensions
-		extensionsString = BrowserDefaults.createExtensionsString(extsColl);
-
+	public void showLocalLocation(File localDir, FileFilter datasetFilter) {
 		// Create the catalog for this directory
 		final LocalDirTreeScanMonitor scanMonitor;
 		try {
-			scanMonitor = new LocalDirTreeScanMonitor(this, localDir, new ExtensionFileFilter(extsColl));
+			scanMonitor = new LocalDirTreeScanMonitor(this, localDir, datasetFilter);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(this, "Unable to catalog " + localDir + "\n" + e.getMessage(), 
 										  "Unable to Catalog", JOptionPane.ERROR_MESSAGE);
@@ -414,7 +328,7 @@ public class ThreddsBrowser extends JPanel {
 
 					// Update the location displayed in the browser and clear the viewers
 					clearViewers();
-					updateLocationLabels(rootDir.getPath());
+					updateLocationLabel(rootDir.getPath());
 
 					// Display the catalog in the tree viewer
 					displayLocalCatalog(scanMonitor, catalog);
@@ -437,8 +351,8 @@ public class ThreddsBrowser extends JPanel {
 
 	/**
 	 * Display the local directory tree catalog in treeViewer.  This is done in a separate thread in
-	 * case a very large directory tree is being displayed, which may take quite some time and make 
-	 * the program appear to be frozen.
+	 * case a very large directory tree is being displayed, which may take quite some time and would 
+	 * make the program appear to be frozen otherwise.
 	 * @param scanMonitor the monitor used to create the catalog to be displayed
 	 * (used for obtaining the number of entries in the catalog to determine whether to show a dialog)
 	 * @param catalog the catalog to be displayed
@@ -477,50 +391,23 @@ public class ThreddsBrowser extends JPanel {
 	}
 
 	/**
+	 * Updates the label of currently shown location.
+	 * @param location the new location; can be null or blank for no location given
+	 */
+	private void updateLocationLabel(String location) {
+		if ( (location == null) || location.trim().isEmpty() )
+			locationLabel.setText("(no location given)");
+		else
+			locationLabel.setText(location);
+	}
+
+	/**
 	 * Clears the shown location label, treeViewer and htmlViewer
 	 */
 	private void clearViewers() {
 		treeViewer.getJTree().setModel(new DefaultTreeModel(new DefaultMutableTreeNode(null, false)));
 		htmlViewer.clearPage();
-		locationLabel.setText("Shown location: ");
-	}
-
-	/**
-	 * Updates the drop-down list of locations as well as the label of currently
-	 * shown location.  Clears the tree viewer and the HTML info viewer.
-	 * @param location the new location (trimmed; not null)
-	 */
-	private void updateLocationLabels(String location) {
-		// Remove the location from the list, so there are no duplicates
-		locationsCombo.removeItem(location);
-
-		// Add the (possibly new) location to the list
-		locationsCombo.insertItemAt(location, 0);
-
-		// Make sure the location is displayed
-		locationsCombo.setSelectedIndex(0);
-
-		// Update the currently show location label
-		locationLabel.setText("Shown location: " + location);
-	}
-
-	/**
-	 * Select a directory from the local file system.
-	 */
-	private void browseLocalDirectories() {
-		// Create a file chooser opened to the default local directory
-		JFileChooser chooser = new JFileChooser(localBrowseDir);
-
-		// Customize the file chooser to suit our needs
-		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		chooser.setDialogTitle("Select Directory of Datasets to Show");
-		chooser.setApproveButtonToolTipText("Show the datasets in the selected directory");
-
-		// Get the selected directory
-		if ( chooser.showDialog(this, "Show") == JFileChooser.APPROVE_OPTION ) {
-			localBrowseDir = chooser.getSelectedFile();
-			showLocalLocation(localBrowseDir);
-		}
+		updateLocationLabel(null);
 	}
 
 	/**
@@ -604,21 +491,12 @@ public class ThreddsBrowser extends JPanel {
 	 * Reset the default values in the browser to those given in the BrowserDefaults.
 	 * @param defs the BrowserDefaults to use; cannot be null
 	 */
-	private void resetDefaults(BrowserDefaults defs) {
-		// Set the initial items in the drop-down list of locations
-		locationsCombo.removeAllItems();
-		for (String loc: defs.getLocationStrings()) {
-			locationsCombo.addItem(loc);
-		}
+	public void resetDefaults(BrowserDefaults defs) {
+		// Reset the values in the location selector dialog
+		locationSelector.resetDefaults(defs);
 
 		// Set the split pane divider location
 	    splitPanel.setDividerLocation(defs.getDividerLocation());
-		
-		// Get the directory for the local directory file chooser 
-		localBrowseDir = defs.getLocalBrowseDir();
-
-		// Get the string of acceptable filename extensions for displayed datasets
-		extensionsString = defs.getExtensionsString();
 
 		// Clear the contents of the viewers
 		clearViewers();
@@ -635,22 +513,11 @@ public class ThreddsBrowser extends JPanel {
 	 * Save all the current settings of this ThreddsBrowser to prefs.
 	 */
 	public void savePreferences(PreferencesExt prefs) {
-		// Save the list of locations
-		int numItems = locationsCombo.getItemCount();
-		ArrayList<String> locationsList = new ArrayList<String>(numItems);
-		for (int k = 0; k < numItems; k++) {
-			locationsList.add( (String) locationsCombo.getItemAt(k) );
-		}
-		BrowserDefaults.saveLocationsList(prefs, locationsList);
+		// Save the location selector dialog settings
+		locationSelector.savePreferences(prefs);
 
 		// Save the divider location
 		BrowserDefaults.saveDividerLocation(prefs, splitPanel.getDividerLocation());
-
-		// Save the default directory for the local directory file chooser
-		BrowserDefaults.saveLocalBrowseDir(prefs, localBrowseDir);
-
-		// Save the standard String of extensions
-		BrowserDefaults.saveExtensionsString(prefs, extensionsString);
 
 		// Save the size of the browser panel
 		BrowserDefaults.saveBrowserSize(prefs, getSize());

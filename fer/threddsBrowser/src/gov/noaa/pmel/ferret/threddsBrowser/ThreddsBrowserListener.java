@@ -165,8 +165,8 @@ public class ThreddsBrowserListener extends WindowAdapter implements ActionListe
 
 	/**
 	 * Creates and displays the ThreddsBrowser as well as initializes the 
-	 * HTTP client.  The value of args[0], if given, is used as the initial 
-	 * catalog URL in the browser.
+	 * HTTP client.  Any arguments given are passed on to the created
+	 * ThreddsBrowser selectLocation method.
 	 */
 	public static void createAndShowBrowser(final String[] args) {
 		// Create the window - leave the default close operation (HIDE_ON_CLOSE) 
@@ -187,8 +187,7 @@ public class ThreddsBrowserListener extends WindowAdapter implements ActionListe
 	    }
 	    PreferencesExt prefs = store.getPreferences();
 
-	    // Create the ThreddsBrower in the given JFrame
-	    // This adds the windowClosing event listener to mainFrame
+	    // Create the ThreddsBrower and add it to mainFrame
 	    ThreddsBrowser tBrowser = new ThreddsBrowser(prefs, "FER_DATA_THREDDS");
 	    GridBagConstraints gbc = new GridBagConstraints();
 	    gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -227,10 +226,9 @@ public class ThreddsBrowserListener extends WindowAdapter implements ActionListe
 	    NetcdfDataset.setHttpClient(client);
 	    WmsViewer.setHttpClient(client);
 
-		// Open the initial location if one was given in the arguments
-		if ( args.length > 0 ) {
-			tBrowser.showLocation(args[0]);
-		}
+	    // Pass the arguments on to the ThreddsBrowser's selectLocation method.
+	    // This brings up a LocationSelectorDialog if no arguments are given.
+	    tBrowser.selectLocation(args);
 	}
 
 }

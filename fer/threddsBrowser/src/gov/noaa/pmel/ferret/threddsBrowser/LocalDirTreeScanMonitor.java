@@ -82,7 +82,7 @@ public class LocalDirTreeScanMonitor extends PropertyChangeSupport implements Pr
 	 * </ul>
 	 * @param parent the parent of the ProgressMonitor
 	 * @param localDir the root of the local directory tree to scan
-	 * @param datasetFilter the file filter for the scan
+	 * @param datasetFilter the file filter for the scan; if null, all files are accepted
 	 * @throws IOException if localDir is not a valid directory
 	 */
 	LocalDirTreeScanMonitor(JComponent parent, File localDir, FileFilter datasetFilter) throws IOException {

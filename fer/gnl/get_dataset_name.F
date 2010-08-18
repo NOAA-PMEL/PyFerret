@@ -39,9 +39,11 @@
 
         include 'errmsg.parm'
         include 'ferret.parm'
+        include 'slash.parm'
         include 'xprog_state.cmn'
 
-        INTEGER RUN_THREDDS_BROWSER, TM_LENSTR, len_name, buff_len
+        INTEGER RUN_THREDDS_BROWSER, TM_LENSTR,
+     .          len_name, buff_len, loc
         CHARACTER*512 dataset_name
         CHARACTER*2048 err_warn_msg
 
@@ -78,7 +80,13 @@
         item_start(num_items) = buff_len + 3
         item_end(num_items) = item_start(num_items) + len_name - 1
 
-* include the quotes in the filename printed to stdout and the journal
+* Blank out the /BROWSE option to make a nicer message printed to stdout and the journal
+        loc = qual_given(slash_set_data_browse)
+        IF ( loc .GT. 0 ) THEN
+            cmnd_buff(qual_start(loc)-1:qual_end(loc)) = ' '
+        ENDIF
+
+* Include the quotes in the filename printed to stdout and the journal
         CALL SPLIT_LIST(pttmode_ops, jrnl_lun, 
      .                  '!-> ' // cmnd_buff, 0)
         CALL SPLIT_LIST(pttmode_ops, ttout_lun, 

@@ -91,8 +91,9 @@
 * v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
 * V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
 *                   varname.attname
+* v664 9/10 *acm* Check variables for NaN and replace (unless the bad-value IS Na
 
-        include 'netcdf.decl'
+	include 'netcdf.decl'
 #include "netcdf.inc"
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -904,14 +905,20 @@
 	ENDIF
 
 * if user set the missing value flag make sure it is used
-	IF ( cx_bad_data(lo_cx) .NE. mr_bad_data(is_mr(lo_isp)) .AND.
-     .       mr_category(hi_mr) .NE. cat_attrib_val) THEN  
-	   new_mr = is_mr(lo_isp)
-	   size = MGRID_SIZE( new_mr )
-	   CALL REPLACE_BAD_DATA_SUB ( mr_bad_data(new_mr),
+	IF ( mr_category(hi_mr) .NE. cat_attrib_val) THEN 
+	   IF ( cx_bad_data(lo_cx) .NE. mr_bad_data(is_mr(lo_isp))) THEN  
+	      new_mr = is_mr(lo_isp)
+	      size = MGRID_SIZE( new_mr )
+	      CALL REPLACE_BAD_DATA_SUB ( mr_bad_data(new_mr),
      .			               memory(1,mr_blk1(new_mr)), size,
-     .                                 cx_bad_data(lo_cx)  )
-	   mr_bad_data(new_mr) = cx_bad_data(lo_cx)
+     .                                  cx_bad_data(lo_cx)  )
+	      mr_bad_data(new_mr) = cx_bad_data(lo_cx)
+	   ELSE
+	      new_mr = is_mr(lo_isp)
+	      size = MGRID_SIZE( new_mr )
+	      CALL CHECK_NAN_DATA_SUB ( memory(1,mr_blk1(new_mr)), size,
+     .                                 mr_bad_data(new_mr) )
+	   ENDIF
 	ENDIF
 
 * pop off context for the last component received and "big" (merged) context

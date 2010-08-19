@@ -48,6 +48,9 @@ C**
 	include 'HD.INC'
 	include 'cont_inc.decl'
 	include 'CONT.INC'
+	include 'miss_inc.decl'
+	include 'MISS.INC'
+
 
 
 * calling argument declarations:
@@ -73,11 +76,13 @@ c Compute data mean.
         sum = 0.0
         n = 0
         DO 100 i = 1, nsize
-           IF ( Z(i) .NE. badz ) THEN
-	      sum = sum + Z(i)
+	   x = z(i)
+           IF ( x .NE. badz .AND. (x.LT.CMZGE .AND. x.GE.CMZLE) ) THEN
+  	      sum = sum + Z(i)
               n = n + 1
 	   ENDIF
  100    CONTINUE
+        IF (n .EQ. 0) GOTO 5000
         zmean = sum/FLOAT(n)
 
         IF (need_std) THEN
@@ -93,7 +98,7 @@ c Compute data mean.
  
 	   DO i = 1, nsize
 	      x = Z(i)
-	      IF ( x .NE. badz ) THEN
+              IF ( x .NE. badz .AND. (x.LT.CMZGE .AND. x.GE.CMZLE) ) THEN
                  n = n + 1
 		 x = x - zmean
                  xdelta = x - xmean

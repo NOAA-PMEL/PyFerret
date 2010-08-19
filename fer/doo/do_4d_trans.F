@@ -66,16 +66,18 @@
 * 6/06 - Fix to Andrew*s correction for XY integ., bug1348
 * 4/10 - Fix #1735; For averages other than in Y direction the above fix 
 *        failed to set ybox sizes and cos correction. Still need to set these.
+* 8/10 - One further fix to #1735
 
 * internal variable declarations:
 	LOGICAL GEOG_COS_FACTOR, point, yes_ax(4), no_ax(4),
      .		at_ave, at_var, at_din, at_nbd, at_ngd, short_comp,
-     .		need_cos
+     .		need_cos, one_y
 	INTEGER idim, i, j, ir, jr, kr, lr, ic, jc, kc, lc, grid, nbd, ngd,
      .		com_lo(4), com_hi(4), box_offset(4), offset, ind_lo, ind_hi,
      .		cos_offset
 	REAL	BOX_SIZE, unit, bad_com, bad_res, box, mean, diff,
-     .		xbox, ybox, zbox, tbox, yc, yh, yh_2, bb, ybxlo, ybxhi
+     .		xbox, ybox, zbox, tbox, yc, yh, yh_2, bb, ybxlo, ybxhi,
+     .          box1
 	REAL*8	TM_WORLD, dsum, bsum
 
 	include	'ferret.parm'
@@ -211,19 +213,22 @@ C http://mathworld.wolfram.com/Zone.html. Fix for @DIN too.
      .		.AND. yes_xax
      .	 	.AND. cx_lo_s2(com_cx) .NE. unspecified_int4
 	IF ( need_cos ) THEN
+	      one_y = (cx_lo_s2(com_cx) .EQ. cx_hi_s2(com_cx))
 	      DO 120 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 
 C Compute the y boxes if there is a y axis; the computation may be 
 C avgs in other directions but we need the ybox size at a given y
+C The top and bottom boxes extend only to the coordinate locations,
+C (Unless there is just one grid cell in the y direction.)
+
 	            ybxlo = deg2rad* 
      .                SNGL(TM_WORLD(j, grid, y_dim, box_lo_lim) )
-
-                    IF (j .EQ. cx_lo_s2(com_cx))
+                   IF (j .EQ. cx_lo_s2(com_cx) .AND. .NOT.one_y)
      .                ybxlo = deg2rad* cx_lo_ww(y_dim,res_cx)
 
 	            ybxhi = deg2rad* 
      .                SNGL(TM_WORLD(j, grid, y_dim, box_hi_lim) )
-                    IF (j .EQ. cx_hi_s2(com_cx))
+                    IF (j .EQ. cx_hi_s2(com_cx) .AND. .NOT.one_y)
      .                ybxhi = deg2rad* cx_hi_ww(y_dim,res_cx)
 
 	            boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )
@@ -309,6 +314,7 @@ C avgs in other directions but we need the ybox size at a given y
 * now loop over the component data accumulating results along relevant axes
 * ... two separate loops for efficiency, only -- keep @ngd and @nbd fast
 
+
 	  IF (short_comp) THEN
 
 	    DO 210 lc = l_lo, l_hi
@@ -337,6 +343,7 @@ C avgs in other directions but we need the ybox size at a given y
 
 	      IF ( com(ic,jc,kc,lc) .NE. bad_com ) THEN
 	        box = xbox * ybox * zbox * tbox
+	        box1 = box
 	        IF (need_cos) box = box * boxes(jc+cos_offset)
 	        bsum = bsum + box
 	        dsum = dsum + box*com(ic,jc,kc,lc)

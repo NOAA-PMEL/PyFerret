@@ -133,7 +133,9 @@
 * *kob* 10/03 v553 - gcc v3.x needs wchar.h included
 * *acm*  9/06 v600 - add stdlib.h wherever there is stdio.h for altix build
 * *acm*  2/07 v602 - add check for overflow on large memory requests (as in xeq_set.F, bug 1438)
-* *kms*  8/10 v664 - catch SIGILL, SIGFPE, and SIGSEGV and exit gracefully with a stderr message for LAS
+* *kms*  8/10 v664 - Catch SIGILL, SIGFPE, and SIGSEGV and exit gracefully with a stderr message for LAS
+*                    Just re-enter the ferret_dispatch loop if it returns with sBuffer->flags[FRTN_ACTION]
+*                    set to FACTN_NO_ACTION (for EXIT/TOPYTHON when not under pfyrret)
 */
 
 #include <wchar.h>
@@ -535,7 +537,7 @@ static void command_line_run(float **memory){
     }
 
     /* ***** TEMPORARY RETURN IN CASE MAIN NEEDS TO DISPLAY FERRET MSG ***** */
-    else {
+    else if ( sBuffer->flags[FRTN_ACTION] != FACTN_NO_ACTION ) {
 
       /*
 	check the sBuffer->flags[FRTN_STATUS] to see if you need

@@ -81,7 +81,9 @@
 *                  this lets the user reference XCAT with string arguments and  
 *                  Ferret will run XCAT_STR
 * V6.6 *acm* 4/10 add functions scat2grid_nbin_xy and scat2grid_nbin_xyt.F
-
+* V664 *kms*  9/10 Added python-backed external functions via $FER_DIR/lib/libpyefcn.so
+*                  Made language check more robust
+*/
 
 
 /* .................... Includes .................... */
@@ -134,6 +136,22 @@ static jmp_buf jumpbuffer;
 static sigjmp_buf sigjumpbuffer;
 static volatile sig_atomic_t canjump;
 
+/* handle returned from dlopen of $FER_DIR/lib/libpyefcn.so */
+static void *pyefcn_handle = NULL;
+/*
+ * pointer to the function in libpyefcn.so:
+ *     void pyefcn_init(int id, char modname[], char errmsg[])
+ */
+static void (*pyefcn_init_func)(int, char [], char []) = NULL;
+/*
+ * pointer to the function in libpyefcn.so:
+ *     void pyefcn_compute(int id, char modname[], float *arrays[], int numarrays,
+ *                         int memlo[][4], int memhi[][4],
+ *                         int steplo[][4], int stephi[][4], int incr[][4],
+ *                         float badvals[], char errmsg[])
+ */
+static void (*pyefcn_compute_func)(int, char [], float *[], int, int [][4], int [][4], int [][4], int [][4], int [][4], float [], char []) = NULL;
+
 static int I_have_scanned_already = FALSE;
 static int I_have_warned_already = TRUE; /* Warning turned off Jan '98 */
 
@@ -151,6 +169,8 @@ static int I_have_warned_already = TRUE; /* Warning turned off Jan '98 */
 
 int  FORTRAN(efcn_scan)( int * );
 int  FORTRAN(efcn_already_have_internals)( int * );
+
+void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenpymod, char errstring[], int *lenerrstring);
 
 int  FORTRAN(efcn_gather_info)( int * );
 void FORTRAN(efcn_get_custom_axes)( int *, int *, int * );
@@ -1164,6 +1184,166 @@ int FORTRAN(efcn_already_have_internals)( int *id_ptr )
 }
 
 
+
+/*
+ * Create a new python-backed external function.  The initialization of
+ * this function is done at this time to ensure that the python module is
+ * valid and contains suitable functions.  Initialization is accomplished
+ * using generic wrapper functions.  These functions are in an external
+ * shared-object library $FER_DIR/lib/libpyefcn.so to avoid requiring
+ * a shared-object python library for ferret-users who do not use python-
+ * backed external functions.
+ * Input arguments:
+ *    fname - name for the function
+ *    lenfname - actual length of the name in fname
+ *    pymod - name of the python module suitable for a python import statement
+ *            (eg, "package.subpackage.module")
+ *    lenpymod - actual length of the name in pymod
+ * Output arguments:
+ *    errstring - error message if something went wrong
+ *    lenerrstring - actual length of the string returned in errstring
+ * The value of lenerrstring will be zero if and only if there were no errors
+ *
+ * Note: this function assume Hollerith strings are passed as character arrays
+ *       (and max lengths appended as ints to the end of the argument list -
+ *        they are not listed here since unused; also permits saying the strings 
+ *        are simple arrays in Fortran)
+ */
+void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenpymod, char errstring[], int *lenerrstring)
+{
+    ExternalFunction ef; 
+    ExternalFunction *ef_ptr; 
+    char libname[1024];
+
+    /* Load $FER_DIR/lib/libpyefcn.so if not already in memory */
+    if ( pyefcn_handle == NULL ) {
+        char *fer_dir;
+
+        fer_dir = getenv("FER_DIR");
+        if ( fer_dir == NULL ) {
+            strcpy(errstring, "FER_DIR not defined");
+            *lenerrstring = strlen(errstring);
+            return;
+        }
+        strcpy(libname, fer_dir);
+        strcat(libname, "/lib/libpyefcn.so");
+        pyefcn_handle = dlopen(libname, RTLD_LAZY);
+        if ( pyefcn_handle == NULL ) {
+            sprintf(errstring, "Python-backed external functions not supported \n"
+                            "(unable to load $FER_DIR/lib/libpyefcn.so: %s)", dlerror());
+            *lenerrstring = strlen(errstring);
+            return;
+        }
+    }
+
+    /* Find the pyefcn_init function in $FER_DIR/lib/libpyefcn.so */
+    if ( pyefcn_init_func == NULL ) {
+        pyefcn_init_func = (void (*)(int, char [], char []))dlsym(pyefcn_handle, "pyefcn_init");
+        if ( pyefcn_init_func == NULL ) {
+            sprintf(errstring, "Python-backed external functions not supported \n"
+                            "(unable to find pyefcn_init in $FER_DIR/lib/libpyefcn.so: %s)", dlerror());
+            *lenerrstring = strlen(errstring);
+            return;
+        }
+    }
+
+    /* Check string lengths since these values might possibly be exceeded */
+    if ( *lenpymod >= EF_MAX_DESCRIPTION_LENGTH ) {
+        sprintf(errstring, "Module name too long (must be less than %d characters)", EF_MAX_DESCRIPTION_LENGTH);
+        *lenerrstring = strlen(errstring);
+        return;
+    }
+    if ( *lenfname >= EF_MAX_NAME_LENGTH ) {
+        sprintf(errstring, "Function name too long (must be less than %d characters)", EF_MAX_NAME_LENGTH);
+        *lenerrstring = strlen(errstring);
+        return;
+    }
+
+    /* 
+     * Assign the local ExternalFunction structure, assigning the module name to the path element
+     * Get the ID for this new function by adding one to the ID of the last element in the list.
+     * (The IDs do not match the size of the list.)
+     */
+    ef.handle = NULL;
+    ef_ptr = (ExternalFunction *) list_rear(GLOBAL_ExternalFunctionList);
+    ef.id = ef_ptr->id + 1;
+    strncpy(ef.name, fname, *lenfname);
+    ef.name[*lenfname] = '\0';
+    strncpy(ef.path, pymod, *lenpymod);
+    ef.path[*lenpymod] = '\0';
+    ef.already_have_internals = FALSE;
+    ef.internals_ptr = NULL;
+
+    /* Add a copy of this ExternalFunction to the end of the global list of external functions */
+    list_mvrear(GLOBAL_ExternalFunctionList);
+    ef_ptr = (ExternalFunction *)list_insert_after(GLOBAL_ExternalFunctionList, &ef, sizeof(ExternalFunction));
+
+    /* Allocate and initialize the internals data for this ExternalFunction in the list */
+    if ( EF_New(ef_ptr) != 0 ) {
+        strcpy(errstring, "Unable to allocate memory for the internals data in create_pyefcn");
+        *lenerrstring = strlen(errstring);
+        return;
+    }
+    ef_ptr->internals_ptr->language = EF_PYTHON;
+    ef_ptr->already_have_internals = TRUE;
+
+    /*
+     * Prepare for bailout possibilities by setting a signal handler for
+     * SIGFPE, SIGSEGV, SIGINT and SIGBUS and then by cacheing the stack 
+     * environment with sigsetjmp (for the signal handler) and setjmp 
+     * (for the "bail out" utility function).
+     */   
+    if ( EF_Util_setsig("create_pyefcn")) {
+        list_remove_rear(GLOBAL_ExternalFunctionList);
+        free(ef_ptr->internals_ptr);
+        free(ef_ptr);
+        strcpy(errstring, "Unable to set signal handlers in create_pyefcn");
+        *lenerrstring = strlen(errstring);
+        return;
+    }
+    if (sigsetjmp(sigjumpbuffer, 1) != 0) {
+        list_remove_rear(GLOBAL_ExternalFunctionList);
+        free(ef_ptr->internals_ptr);
+        free(ef_ptr);
+        strcpy(errstring, "Signal caught in create_pyefcn");
+        *lenerrstring = strlen(errstring);
+        return;
+    }
+    if (setjmp(jumpbuffer) != 0) {
+        list_remove_rear(GLOBAL_ExternalFunctionList);
+        free(ef_ptr->internals_ptr);
+        free(ef_ptr);
+        strcpy(errstring, "ef_bail_out called in create_pyefcn");
+        *lenerrstring = strlen(errstring);
+        return;
+    }
+    canjump = 1;
+
+    (*pyefcn_init_func)(ef_ptr->id, ef_ptr->path, errstring);
+
+    /*
+     * Restore the old signal handlers.
+     */
+    if ( EF_Util_ressig("create_pyefcn")) {
+        list_remove_rear(GLOBAL_ExternalFunctionList);
+        free(ef_ptr->internals_ptr);
+        free(ef_ptr);
+        strcpy(errstring, "Unable to restore normal signal handlers in create_pyefcn");
+        *lenerrstring = strlen(errstring);
+        return;
+    }
+
+    *lenerrstring = strlen(errstring);
+    if ( *lenerrstring > 0 ) {
+        list_remove_rear(GLOBAL_ExternalFunctionList);
+        free(ef_ptr->internals_ptr);
+        free(ef_ptr);
+    }
+    return;
+}
+
+
+
 /*
  * Find an external function based on its integer ID and
  * gather information describing the function. 
@@ -1186,11 +1366,11 @@ int FORTRAN(efcn_gather_info)( int *id_ptr )
   void *handle;
   void (*f_init_ptr)(int *);
 
-/* internal_dlsym() is declared to accept a char pointer (aka string)
- * and return a pointer to void (aka function pointer who's return type
- * is void).
- */
-void *internal_dlsym(char *);
+  /* internal_dlsym() is declared to accept a char pointer (aka string)
+   * and return a pointer to void (aka function pointer who's return type
+   * is void).
+   */
+  void *internal_dlsym(char *);
 
 
   /*
@@ -1207,17 +1387,17 @@ void *internal_dlsym(char *);
    * Get a handle for the shared object.
    */
   if (!internally_linked) {
-  strcat(ef_object, ef_ptr->path);
-  strcat(ef_object, ef_ptr->name);
-  strcat(ef_object, ".so");
+    strcat(ef_object, ef_ptr->path);
+    strcat(ef_object, ef_ptr->name);
+    strcat(ef_object, ".so");
 
-     if ( (ef_ptr->handle = dlopen(ef_object, RTLD_LAZY)) == NULL ) {
-       fprintf(stderr, "\n\
-   ERROR in External Function %s:\n\
-   Dynamic linking call dlopen() returns --\n\
-   \"%s\".\n", ef_ptr->name, dlerror());
-       return -1;
-     }
+    if ( (ef_ptr->handle = dlopen(ef_object, RTLD_LAZY)) == NULL ) {
+      fprintf(stderr, "\n"
+                      "   ERROR in External Function %s:\n"
+                      "   Dynamic linking call dlopen() returns --\n"
+                      "   \"%s\".\n", ef_ptr->name, dlerror());
+      return -1;
+    }
   }  /* not internally_linked  */
 
   
@@ -1237,13 +1417,7 @@ void *internal_dlsym(char *);
    */
   i_ptr = ef_ptr->internals_ptr;
 
-  if ( i_ptr->language == EF_C ) {
-
-    fprintf(stderr, "\nERROR: C is not a supported language for External Functions.\n\n");
-    return_val = -1;
-    return return_val;
-
-  } else if ( i_ptr->language == EF_F ) {
+  if ( i_ptr->language == EF_F ) {
 
 
     /*
@@ -1254,21 +1428,21 @@ void *internal_dlsym(char *);
      */   
 
     if ( EF_Util_setsig("efcn_gather_info")) {
-       return;
+       return -1;
     }
 
     /*
      * Set the signal return location and process jumps
      */
     if (sigsetjmp(sigjumpbuffer, 1) != 0) {
-      return;
+      return -1;
     }
 
     /*
      * Set the bail out return location and process jumps
      */
     if (setjmp(jumpbuffer) != 0) {
-      return;
+      return -1;
     }
     
     canjump = 1;
@@ -1300,9 +1474,14 @@ void *internal_dlsym(char *);
      * Restore the old signal handlers.
      */
     if ( EF_Util_ressig("efcn_gather_info")) {
-       return;
+       return -1;
     }
 
+  }
+  else {
+    /* Note: Python-backed external functions get initialized when added, so no support here for them */
+    fprintf(stderr, "\nERROR: unsupported language (%d) for efcn_gather_info.\n\n", i_ptr->language);
+    return -1;
   }
   
   return 0;
@@ -1339,7 +1518,7 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
   if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
   if ( (!strcmp(ef_ptr->path,"internally_linked")) ) {internally_linked = TRUE; }
 
-    if ( ef_ptr->internals_ptr->language == EF_F ) {
+  if ( ef_ptr->internals_ptr->language == EF_F ) {
 
     /*
      * Prepare for bailout possibilities by setting a signal handler for
@@ -1391,9 +1570,8 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
     }
 
   } else {
-
-    fprintf(stderr, "\nExternal Functions in C are not supported yet.\n\n");
-
+    *status = FERR_EF_ERROR;
+    fprintf(stderr, "\nERROR: unsupported language (%d) for efcn_get_custom_axes.\n\n", ef_ptr->internals_ptr->language);
   }
 
   return;
@@ -1486,9 +1664,8 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, float *memory, int *mr_list_p
     }
 
   } else {
-
-    fprintf(stderr, "\nExternal Functions in C are not supported yet.\n\n");
-
+    *status = FERR_EF_ERROR;
+    fprintf(stderr, "\nERROR: unsupported language (%d) for efcn_get_result_limits.\n\n", ef_ptr->internals_ptr->language);
   }
 
   return;
@@ -1572,8 +1749,7 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
    * Find the external function.
    */
   if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) {
-    fprintf(stderr, "\n\
-ERROR in efcn_compute() finding external function: id = [%d]\n", *id_ptr);
+    fprintf(stderr, "\nERROR in efcn_compute() finding external function: id = [%d]\n", *id_ptr);
     *status = FERR_EF_ERROR;
     return;
   }
@@ -1582,7 +1758,6 @@ ERROR in efcn_compute() finding external function: id = [%d]\n", *id_ptr);
   i_ptr = ef_ptr->internals_ptr;
 
   if ( i_ptr->language == EF_F ) {
-
     /*
      * Begin assigning the arg_ptrs.
      */
@@ -1981,13 +2156,13 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
 
     }
 
-      /*
-       * Restore the old signal handlers.
-       */
+    /*
+     * Restore the old signal handlers.
+     */
     if ( EF_Util_ressig("efcn_compute")) {
+       *status = FERR_EF_ERROR;
        return;
     }
-
 
     /*
      * Now it's time to release the work space.
@@ -1998,15 +2173,98 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
       free(arg_ptr[i]);
     }
 
-  } else if ( ef_ptr->internals_ptr->language == EF_C ) {
-
-    fprintf(stderr, "\n\
-ERROR: External Functions may not yet be written in C.\n\n");
-    *status = FERR_EF_ERROR;
-    return;
-
+    /* Success for EF_F */
   }
-  
+  else if ( i_ptr->language == EF_PYTHON ) {
+      int   memlo[EF_MAX_COMPUTE_ARGS][4], memhi[EF_MAX_COMPUTE_ARGS][4],
+            steplo[EF_MAX_COMPUTE_ARGS][4], stephi[EF_MAX_COMPUTE_ARGS][4], incr[EF_MAX_COMPUTE_ARGS][4];
+      float badflags[EF_MAX_COMPUTE_ARGS];
+      char  errstring[2048];
+
+      if ( pyefcn_compute_func == NULL ) {
+          /* pyefcn_handle should never be NULL if we got here, but just in case... */
+          if ( pyefcn_handle == NULL ) {
+              fputs("Python-backed external functions not supported \n"
+                    "(handle for $FER_DIR/lib/libpyefcn.so not assigned in efcn_compute)", stderr);
+              *status = FERR_EF_ERROR;
+              return;
+          }
+          pyefcn_compute_func = (void (*)(int, char [], float *[], int, int [][4], int [][4], int [][4], int [][4], int [][4], float[], char []))
+                                dlsym(pyefcn_handle, "pyefcn_compute");
+          if ( pyefcn_compute_func == NULL ) {
+              fprintf(stderr, "Python-backed external functions not supported \n"
+                              "(unable to find pyefcn_compute in $FER_DIR/lib/libpyefcn.so: %s)", dlerror());
+              *status = FERR_EF_ERROR;
+              return;
+          }
+      }
+
+      /* First the results grid array, then the argument grid arrays */
+      arg_ptr[0] = memory + mr_arg_offset_ptr[EF_MAX_ARGS];
+      for (i = 0; i < i_ptr->num_reqd_args; i++) {
+          arg_ptr[i+1] = memory + mr_arg_offset_ptr[i];
+      }
+
+      /* Assign the memory limits, step values, and bad-data-flag values - first result, then arguments */
+      ef_get_res_mem_subscripts_(id_ptr, memlo[0], memhi[0]);
+      ef_get_arg_mem_subscripts_(id_ptr, &(memlo[1]), &(memhi[1]));
+      ef_get_res_subscripts_(id_ptr, steplo[0], stephi[0], incr[0]);
+      ef_get_arg_subscripts_(id_ptr, &(steplo[1]), &(stephi[1]), &(incr[1]));
+      ef_get_bad_flags_(id_ptr, &(badflags[1]), &(badflags[0]));
+
+      /* Reset zero increments to +1 or -1 for pyefcn_compute */
+      for (i = 0; i <= i_ptr->num_reqd_args; i++) {
+          for (j = 0; j < 4; j++) {
+              if ( incr[i][j] == 0 ) {
+                  if ( steplo[i][j] <= stephi[i][j] )
+                      incr[i][j] = 1;
+                  else
+                      incr[i][j] = -1;
+              }
+          }
+      }
+
+      /*
+       * Prepare for bailout possibilities by setting a signal handler for
+       * SIGFPE, SIGSEGV, SIGINT and SIGBUS and then by cacheing the stack 
+       * environment with sigsetjmp (for the signal handler) and setjmp 
+       * (for the "bail out" utility function).
+       */   
+      if ( EF_Util_setsig("efcn_compute")) {
+          *status = FERR_EF_ERROR;
+          return;
+      }
+      if (sigsetjmp(sigjumpbuffer, 1) != 0) {
+          *status = FERR_EF_ERROR;
+          return;
+      }
+      if (setjmp(jumpbuffer) != 0) {
+          *status = FERR_EF_ERROR;
+          return;
+      }
+      canjump = 1;
+
+      /* Call pyefcn_compute which in turn calls the ferret_compute method in the python module */
+      (*pyefcn_compute_func)(*id_ptr, ef_ptr->path, arg_ptr, (i_ptr->num_reqd_args)+1, memlo, memhi, steplo, stephi, incr, badflags, errstring);
+      if ( strlen(errstring) > 0 ) {
+          /* (In effect) call ef_bail_out_ to process the error in a standard way */
+          ef_err_bail_out_(id_ptr, errstring);
+          /* Should never return - instead jumps to setjmp() returning 1 */
+      }
+
+      /* Restore the original signal handlers */
+      if ( EF_Util_ressig("efcn_compute")) {
+          *status = FERR_EF_ERROR;
+          return;
+      }
+
+      /* Success for EF_PYTHON */
+  }
+  else {
+    fprintf(stderr, "\nERROR: unsupported language (%d) for efcn_compute.\n\n", i_ptr->language);
+    *status = FERR_EF_ERROR;
+  }
+
   return;
 }
 
@@ -2021,12 +2279,11 @@ static void EF_signal_handler(int signo) {
   if (canjump == 0) return; /* unexpected signal, ignore */
 
   /*
-      /*
-       * Restore the old signal handlers.
-       */
-    if ( EF_Util_ressig("efcn_compute")) {
-       return;
-    }
+   * Restore the old signal handlers.
+   */
+  if ( EF_Util_ressig("efcn_compute")) {
+    return;
+  }
 
   if (signo == SIGFPE) {
     fprintf(stderr, "\n\nERROR in external function: Floating Point Error\n");

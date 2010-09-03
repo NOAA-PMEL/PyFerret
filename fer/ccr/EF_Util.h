@@ -13,7 +13,7 @@
 *                  a different type than defined in the current function. E.g. 
 *                  this lets the user reference XCAT with string arguments and  
 *                  Ferret will run XCAT_STR
-
+* V664  9/10 *kms* Add EF_PYTHON
 */
  
  
@@ -46,7 +46,7 @@
 #define EF_MAX_WORK_ARRAYS 9
 #define EF_MAX_COMPUTE_ARGS 19 /* = EF_MAX_ARGS + EF_MAX_WORK_ARRAYS + 1 */
 
-enum { EF_C=1, EF_F } EF_LANGUAGE_type;
+enum { EF_C=1, EF_F, EF_PYTHON } EF_LANGUAGE_type;
 
 enum { X_AXIS=0, Y_AXIS, Z_AXIS, T_AXIS } EF_AXIS_type;
 

@@ -114,6 +114,8 @@
 * V553:  9/03 *acm*- Loop 2 ran to 200; change to cmnd_buff_len 
 *                    (came up when implementing the -script command-line option)
 * V63  *acm* 10/09 Changes for gfortran build
+* V664 *kms* 8/10 Add second alternate return from XEQ_EXIT to exit the dispatch
+*                 loop but just re-enter the loop if not under pfyrret
 
 	include 'tmap_dims.parm'
 	include 'xalt_messages.cmn_text'
@@ -218,7 +220,7 @@ c	DO 2 i = 1, 200
 	GOTO 300
  100	CALL XEQ_DEFINE( memory )
 	GOTO 300
- 110	CALL XEQ_EXIT( *500 )
+ 110	CALL XEQ_EXIT( *500, *450 )
 	GOTO 300			! command file xit or error
  120	CALL XEQ_MESSAGE
 	GOTO 300
@@ -320,6 +322,13 @@ c	DO 2 i = 1, 200
 	rtn_flags(frtn_action)  = factn_mem_reconfigure
 	rtn_flags(frtn_idata1)  = reconfig
 	RETURN
+
+* exit the dispatch loop - if from pfyrret, to return control to python
+*                          if from ferret_c, just re-enter the dispatch loop
+ 450    rtn_flags(frtn_control) = fctrl_in_ferret
+        rtn_flags(frtn_status) = gui_status
+        rtn_flags(frtn_action) = factn_no_action
+        RETURN
 
 * exit the program
  500	rtn_flags(frtn_control) = fctrl_back_to_gui

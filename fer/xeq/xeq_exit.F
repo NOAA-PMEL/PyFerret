@@ -1,4 +1,4 @@
-	SUBROUTINE XEQ_EXIT( * )
+	SUBROUTINE XEQ_EXIT( * , * )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -68,6 +68,8 @@
 *                     exit/script is called, then exit just out of the script,
 *                     not all the way back up out of the loop.
 * V6.11 *acm*  4/08 - Fis bug 1566; EXIT/SCRIPT and IF blocks.
+* V664  *kms*  8/10 - Add EXIT/TOPYTHON and second alternate return to exit the 
+*                     ferret_dispatch loop but just re-enter the loop if not under pfyrret
 	
         include 'tmap_dims.parm'
 	include 'command.parm'
@@ -131,8 +133,13 @@
  300	      CONTINUE
               GOTO 400
 	   ENDIF
-	ELSE IF (qual_given(slash_exit_prompt) .GT. 0) THEN
-* Exit to Ferret prompt
+        ELSE IF ( (qual_given(slash_exit_prompt) .GT. 0) .OR.
+     .            (qual_given(slash_exit_topython) .GT. 0) ) THEN
+* Exit to Ferret prompt or out of the ferret_dispatch loop
+	   pop = csp
+	   GOTO 400
+	ELSE IF (qual_given(slash_exit_topython) .GT. 0) THEN
+* Exit to the dispatch loop
 	   pop = csp
 	   GOTO 400
 	ELSE IF (qual_given(slash_exit_program) .GT. 0    .OR.
@@ -157,6 +164,11 @@
 	      CALL POP_CS
  500	   CONTINUE
 	ENDIF
+
+* Use the second alternate return to exit out of the ferret_dispatch loop
+* but just re-enter the loop if not under pfyrret
+        IF ( qual_given(slash_exit_topython) .GT. 0 ) RETURN 2
+
 * error exit
  5000	RETURN
 

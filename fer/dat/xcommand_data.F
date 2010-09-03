@@ -189,6 +189,9 @@
 *       *kms* 7/10 add SET DATA /BROWSE to browse for the dataset
 * V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
 *       *kms* 7/10 add SET DATA /BROWSE to browse for the dataset
+* V664  8.10 *kms* Add EXIT/TOPYTHON to exit the ferret_dispatch loop 
+*                  but just re-enter the loop if not under pfyrret
+*                  Add DEFINE PYFUNC /NAME=<alias> python.module.name
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -1091,6 +1094,20 @@
 		DATA qualifiers  (nqual_at10i+ 1)/ 'TYPE' /
 		DATA qualifiers  (nqual_at10i+ 2)/ 'OUTPUT' /
 		DATA qualifiers  (nqual_at10i+ 3)/ '****' /
+* DEFINE PYFUNC
+	   DATA subcommands      (nsub_at10 + 9)/ 'PYFUNC'	/
+	   DATA num_qualifs      (nsub_at10 + 9)/ nqual10j	/
+	   DATA qualifier_pointer(nsub_at10 + 9)/ nqual_at10j	/
+* DEFINE PYFUNC /NAME ****
+		DATA qualifiers  (nqual_at10j+ 0)/ 'NAME' /
+		DATA qualifiers  (nqual_at10j+ 1)/ '****' /
+* DEFINE ****							  ! unused(k)
+	   DATA subcommands      (nsub_at10 + 10)/ '****'	/
+	   DATA num_qualifs      (nsub_at10 + 10)/ nqual10k	/
+	   DATA qualifier_pointer(nsub_at10 + 10)/ nqual_at10k	/
+* DEFINE **** / ****
+		DATA qualifiers  (nqual_at10k+ 0)/ '****' /
+		DATA qualifiers  (nqual_at10k+ 1)/ '****' /
 
 * EXIT	 - command # 11
 	DATA commands(11)			/ 'EXIT'	/
@@ -1108,7 +1125,7 @@
 		DATA qualifiers  (nqual_at11a+3)/ 'PROMPT'	/
 		DATA qualifiers  (nqual_at11a+4)/ 'PROGRAM'	/
 		DATA qualifiers  (nqual_at11a+5)/ 'CYCLE'	/
-		DATA qualifiers  (nqual_at11a+6)/ '****'	/
+		DATA qualifiers  (nqual_at11a+6)/ 'TOPYTHON'	/
 		DATA qualifiers  (nqual_at11a+7)/ '****'	/
 
 * MESSAGE	 - command # 12

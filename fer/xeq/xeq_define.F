@@ -206,6 +206,7 @@
 * V64 *acm* 11/09  Fix to bug 1511 slightly wrong: dont use line_t0 from
 *                  a previous definition of a time axis.
 * V65 *acm*  2/10  Minor change to error message
+* V664  8/10 *kms* Add DEFINE PYFUNC /NAME=<alias> python.module.name
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -224,6 +225,7 @@
 	include 'xvariables.cmn'
 	include 'xtext_info.cmn'
 	include 'xcommand.cmn'
+        include 'xgrid_chg_fcns.cmn'
 	include 'calendar.decl'
 	include 'calendar.cmn'	
         include 'netcdf.inc'
@@ -258,7 +260,8 @@
      .              slash_type,
      .              slash_dset,
      .              slash_output,
-     .              slash_def_ax_quiet
+     .              slash_def_ax_quiet,
+     .              slash_pyfunc_name
 
 	LOGICAL	    explct_defn
 	PARAMETER ( slash_dflt   = 9,
@@ -291,6 +294,7 @@
      .              slash_dset       = 1+0,
      .              slash_output     = 1+2.,
      .              slash_def_ax_quiet = 1+15,
+     .              slash_pyfunc_name = 1,
      .		    explct_defn  = .FALSE. )
 
 * calling argument declarations:
@@ -356,7 +360,7 @@
 	OUTSIDE_0_1( x ) = x.LT.0.0 .OR. x.GT.1.0
 
 * select subcommand
-	GOTO ( 100,200,300,400,500,600,700,800,900 ) subcmnd_num
+	GOTO ( 100,200,300,400,500,600,700,800,900,1000 ) subcmnd_num
 
 * DEFINE  '    ' - (no action)
 * arrival at this point usually means an illegal subcommand was given
@@ -1966,6 +1970,42 @@ C /units=months  is 1/12 of the length of the year
 
 	RETURN
 
+**************************************************************************
+* DEFINE PYFUNC /NAME=<alias> python.module.name
+
+ 1000   IF ( num_args .LT. 1 ) GOTO 6000
+        IF ( num_args .GT. 1 ) GOTO 6010
+
+        iqual = qual_given(slash_pyfunc_name)
+        IF ( iqual .GT. 0 ) THEN
+*           get the function name from /name=<alias>
+            CALL EQUAL_STRING(cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .                        buff1, status)
+            IF ( status .NE. ferr_ok ) GOTO 5000
+            IF ( .NOT. TM_LEGAL_NAME(buff1) ) GOTO 6020
+        ELSE
+*           create the function name from the last component of python.module.name
+            i1 = 0
+ 1010       i2 = INDEX(cmnd_buff(arg_start(1)+i1:arg_end(1)), '.')
+            IF ( i2 .GT. 0 ) THEN
+               i1 = i1 + i2
+               GOTO 1010
+            ENDIF
+            vax_code = STR_UPCASE(buff1, 
+     .                       cmnd_buff(arg_start(1)+i1:arg_end(1)))
+        ENDIF
+
+*       Make sure the scan for standard external functions has been performed
+        CALL EFCN_SCAN(gfcn_num_internal)
+
+        i1 = TM_LENSTR1(buff1)
+        buff = cmnd_buff(arg_start(1):arg_end(1))
+        i2 = arg_end(1) - arg_start(1) + 1
+        CALL CREATE_PYEFCN(buff1, i1, buff, i2, err_string, slen)
+        IF ( SLEN .GT. 0 ) GOTO 6030
+
+        RETURN
+
 * error exit
  5000	RETURN
  5100 	CALL ERRMSG( ferr_syntax,status,'illegal name: '//buff3,*5000 )
@@ -2094,5 +2134,16 @@ C /units=months  is 1/12 of the length of the year
       CALL ERRMSG( ferr_invalid_command, status,
      .   'cannot set T0 unless Units are also set'//
      .    buff1(:slen), *5000 )
+
+ 6000 CALL ERRMSG(ferr_invalid_command, status,
+     .  'No Python module named in DEFINE PYFUNC command', *5000)
+
+ 6010 CALL ERRMSG(ferr_invalid_command, status,
+     .  'More than one Python module named in DEFINE PYFUNC command',
+     .   *5000)
+
+ 6020 CALL ERRMSG(ferr_syntax, status, 'illegal name: '//buff1, *5000)
+
+ 6030 CALL ERRMSG(ferr_invalid_command,status,err_string(1:slen),*5000)
 
 	END

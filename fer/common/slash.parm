@@ -45,6 +45,7 @@
 *                  for stdout/stderr redirection
 *       *kms* 7/10 add SET DATA /BROWSE to browse for the dataset
 * V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
+* V664  8/10 *kms* Add EXIT /TOPYTHON
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -301,6 +302,7 @@
      .			slash_exit_prompt,	
      .			slash_exit_program,	
      .			slash_exit_cycle,	
+     .			slash_exit_topython,	
      .
      .			slash_is_logh,
      .			slash_is_logv	
@@ -554,7 +556,8 @@
      .                  slash_exit_script 	= 2 + 1,
      .                  slash_exit_prompt 	= 3 + 1,
      .                  slash_exit_program 	= 4 + 1,
-     .                  slash_exit_cycle 	= 5 + 1)
+     .                  slash_exit_cycle 	= 5 + 1,
+     .                  slash_exit_topython	= 6 + 1)
 
 	INTEGER		slash_xlimits, slash_ylimits, slash_title,
      .			slash_pen, slash_hlimits, slash_vlimits,

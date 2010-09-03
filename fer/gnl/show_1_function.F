@@ -50,6 +50,8 @@
 * V510: 5/00 *sh* added argument "detail"
 * V620:11/08 acm* On a show func/detail, list the alternative 
 *                 function for other arg types, if it exists.
+* V664  9/10 *kms* Increase slen and size of ef_descr to 128 to match
+*                  the size of gfcn_descr and gfcn_arg_descr
 
 	include	'ferret.parm'
 	include	'grid_chg_fcns.parm'
@@ -66,7 +68,7 @@
 	LOGICAL	its_reshape
 	INTEGER TM_LENSTR, TM_LENSTR1, GCF_ARG_TYPE, GCF_FIND_FCN,
      .		ll, ll2, llsave, itype, narg, i, iarg, iarg2, idim
-	CHARACTER units*40, gcf_name*40, ef_arg_name*40, ef_descr*80, 
+	CHARACTER units*40, gcf_name*40, ef_arg_name*40, ef_descr*128, 
      .		ef_units*40, ax_remark*64, alt_name*40
 	INTEGER EFCN_SCAN, EFCN_GET_NUM_REQD_ARGS, EFCN_GATHER_INFO,
      .		axis_will_be(4), ifcn_alt
@@ -75,7 +77,7 @@
 	CHARACTER*4 indent
 	PARAMETER ( indent = '    ' )
         INTEGER      slen
-        PARAMETER  ( slen = 80 )
+        PARAMETER  ( slen = 128 )
 
 #ifdef sun
         BYTE      fhol(slen)    ! c-type Hollerith string buffer

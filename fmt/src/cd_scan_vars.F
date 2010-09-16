@@ -116,7 +116,7 @@
 	INTEGER	      dset, cdfid, status
 
 * local parameter definitions:
-	LOGICAL	    do_warn
+	LOGICAL	    do_warn, nomissing
 	INTEGER     str_eq
 	PARAMETER ( str_eq = 0,
      .		    do_warn = .TRUE. )
@@ -289,6 +289,9 @@ c      REAL*8  dg_bad
 * it, instead, as a dependent varoable
 	las_pos  = 1    ! reduces redundant search for space
 	got_a_variable = .FALSE.
+	
+        nomissing = .FALSE.
+
 	DO 1000 ivcd = 1,nvars
 
 * initialize
@@ -364,7 +367,7 @@ c      REAL*8  dg_bad
 
 * PROCESS A DEPENDENT VARIANLE
  500	   CALL CD_GET_1_DEP_VAR ( dset, cdfid, ivcd, las_pos, global_bad, 
-     .				   ivtm, status )
+     .				   ivtm, nomissing, status )
 
            IF (status .NE. merr_ok) GOTO 5900
 	   IF ( ivtm .NE. 0 ) THEN
@@ -383,7 +386,7 @@ c      REAL*8  dg_bad
 	      CALL CD_GET_VAR_ID ( dset, 'time2', epic_t2, status )
 	      IF ( epic_t2 .GT. 0 ) THEN
 	        CALL CD_GET_1_DEP_VAR (dset,cdfid, epic_t2,
-     .			las_pos, global_bad, ivtm, status )
+     .			las_pos, global_bad, ivtm, nomissing, status )
 	        IF (status .NE. merr_ok) GOTO 5900
 	        IF ( ivtm .NE. 0 ) THEN
 	          las_pos = ivtm	! optimizes next hunt for slot
@@ -402,6 +405,8 @@ c      REAL*8  dg_bad
 * pass through the variable names making sure that case-sensitive
 * duplicates (e.g. 'var' and 'VAR') retain case and that names which
 * would be illegal variable names to Ferret are retained in original form
+
+
 	IF (got_a_variable) THEN
 	  DO 310 ivtm = first_pos,las_pos
 	    IF (ds_var_setnum(ivtm) .NE. dset) GOTO 310
@@ -424,6 +429,14 @@ c      REAL*8  dg_bad
      .                                    LEN(ds_var_code(ivtm)))
  310    CONTINUE
 	ENDIF
+
+
+* if neither missing flag nor _FillValue was defined, use NaN.
+	IF (nomissing ) THEN
+	   IF (do_warn) CALL WARN(
+     .         'If no missing_value or _FillValue attribute on '//
+     .        'variables, will use NaN')
+        ENDIF
 
 * successful completion
 	status = merr_ok

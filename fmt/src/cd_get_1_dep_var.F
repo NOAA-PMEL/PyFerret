@@ -1,5 +1,5 @@
 	SUBROUTINE CD_GET_1_DEP_VAR ( dset, cdfid, ivcd, las_pos, global_bad, 
-     .				      ivtm, status )
+     .				      ivtm, nomissing, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -94,7 +94,7 @@
       LOGICAL NC_GET_ATTRIB_FLOAT, NC_GET_ATTRIB_STRING, 
      .        NC_GET_ATTRIB, CD_GET_BOUNDS,
      .        got_it, got_bad, got_missing, tf2,
-     .        do_warn, coordvar
+     .        do_warn, coordvar, nomissing
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1, TM_FERRET_VARTYPE, 
      .        cdfstat, idim,
@@ -316,9 +316,7 @@ c        ENDIF
              IF ( .NOT.got_missing .AND. .NOT.got_bad) THEN
                 CALL SET_NAN (ds_missing_flag(ivtm))
 		CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm) )
-		IF (do_warn) CALL WARN(
-     .'No missing_value or _FillValue attribute. Using NaN for variable '
-     . //vname)
+                nomissing = .TRUE.
 c	        attoutflag = 1
 c		buff = ' '
 c		aname = '_FillValue'

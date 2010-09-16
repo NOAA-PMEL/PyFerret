@@ -66,9 +66,9 @@
 			  -DG77_SIGNAL -DG77 \
 			  -DNEED_IAND -DINTERNAL_READ_FORMAT_BUG -DNO_PREPEND_STRING
 
-	CFLAGS          =    -m64 $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION   -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
-	FFLAGS          =    -m64 $(CPP_FLAGS) -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore -fdollar-ok   -ffixed-line-length-132   $(FINCLUDES)
-	PPLUS_FFLAGS    =    -m64 $(CPP_FLAGS) -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore  -fdollar-ok   -ffixed-line-length-132  $(FINCLUDES)
+	CFLAGS          =    $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION   -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
+	FFLAGS          =    $(CPP_FLAGS) -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore -fdollar-ok   -ffixed-line-length-132   $(FINCLUDES)
+	PPLUS_FFLAGS    =    $(CPP_FLAGS) -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore  -fdollar-ok   -ffixed-line-length-132  $(FINCLUDES)
 
         #PROF_FLAGS      = -pg
 

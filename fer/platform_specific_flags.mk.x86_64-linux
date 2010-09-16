@@ -17,8 +17,7 @@
 			  -I../readline -I../list-2.1 \
 			  -I../common \
 			  -I../../fmt/cmn \
-			  -I../../ppl/include\
-			  $(DODS_INCLUDES)
+			  -I../../ppl/include
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			   -I../include -I../../fmt/cmn \
@@ -66,9 +65,10 @@
 			  -DG77_SIGNAL -DG77 \
 			  -DNEED_IAND -DINTERNAL_READ_FORMAT_BUG -DNO_PREPEND_STRING
 
-	CFLAGS          =    -m64 $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION   -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
-	FFLAGS          =    -m64 $(CPP_FLAGS) -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore -fdollar-ok   -ffixed-line-length-132   $(FINCLUDES)
-	PPLUS_FFLAGS    =    -m64 $(CPP_FLAGS) -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore  -fdollar-ok   -ffixed-line-length-132  $(FINCLUDES)
+# also consider -ffloat-store. Removing -m64  
+	CFLAGS          =    $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION   -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
+	FFLAGS          =    $(CPP_FLAGS) -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore -fdollar-ok   -ffixed-line-length-132   $(FINCLUDES)
+	PPLUS_FFLAGS    =    $(CPP_FLAGS) -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore  -fdollar-ok   -ffixed-line-length-132  $(FINCLUDES)
 
         #PROF_FLAGS      = -pg
 

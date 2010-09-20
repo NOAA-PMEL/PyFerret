@@ -455,7 +455,7 @@
 
 * . . . determine FORTRAN format for listing of this variable
 	   IF ( mr_type(mr_list(ivar)) .EQ. ptype_string ) THEN
-              width(ivar) = MIN(nleft+3, 24)  ! arbitrary 24 char max   
+              width(ivar) = MIN(nleft+3, 1020)  ! arbitrary 1020 char max   
 	   ELSEIF ( all_bad ) THEN
 	      width(ivar) = min_width
 	      WRITE ( bad_fmt(ivar), 3002 ) min_width

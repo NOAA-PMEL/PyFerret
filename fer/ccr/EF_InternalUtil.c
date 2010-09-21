@@ -82,7 +82,8 @@
 *                  Ferret will run XCAT_STR
 * V6.6 *acm* 4/10 add functions scat2grid_nbin_xy and scat2grid_nbin_xyt.F
 * V664 *kms*  9/10 Added python-backed external functions via $FER_DIR/lib/libpyefcn.so
-*                  Made language check more robust
+*                  Made external function language check more robust
+*                  Check that GLOBAL_ExternalFunctionsList is not NULL in ef_ptr_from_id_ptr
 */
 
 
@@ -138,11 +139,25 @@ static volatile sig_atomic_t canjump;
 
 /* handle returned from dlopen of $FER_DIR/lib/libpyefcn.so */
 static void *pyefcn_handle = NULL;
+
 /*
  * pointer to the function in libpyefcn.so:
  *     void pyefcn_init(int id, char modname[], char errmsg[])
  */
 static void (*pyefcn_init_func)(int, char [], char []) = NULL;
+
+/*
+ * pointer to the function in libpyefcn.so:
+ *     void pyefcn_custom_axes(int id, char modname[], char errmsg[])
+ */
+static void (*pyefcn_custom_axes_func)(int, char [], char []) = NULL;
+
+/*
+ * pointer to the function in libpyefcn.so:
+ *     void pyefcn_result_limits(int id, char modname[], char errmsg[])
+ */
+static void (*pyefcn_result_limits_func)(int, char [], char []) = NULL;
+
 /*
  * pointer to the function in libpyefcn.so:
  *     void pyefcn_compute(int id, char modname[], float *arrays[], int numarrays,
@@ -1321,17 +1336,8 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
 
     (*pyefcn_init_func)(ef_ptr->id, ef_ptr->path, errstring);
 
-    /*
-     * Restore the old signal handlers.
-     */
-    if ( EF_Util_ressig("create_pyefcn")) {
-        list_remove_rear(GLOBAL_ExternalFunctionList);
-        free(ef_ptr->internals_ptr);
-        free(ef_ptr);
-        strcpy(errstring, "Unable to restore normal signal handlers in create_pyefcn");
-        *lenerrstring = strlen(errstring);
-        return;
-    }
+    /* Restore the old signal handlers. */
+    EF_Util_ressig("create_pyefcn");
 
     *lenerrstring = strlen(errstring);
     if ( *lenerrstring > 0 ) {
@@ -1569,7 +1575,62 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
        return;
     }
 
-  } else {
+    /* end of EF_F */
+  }
+  else if ( ef_ptr->internals_ptr->language == EF_PYTHON ) {
+      char errstring[2048];
+
+      if ( pyefcn_custom_axes_func == NULL ) {
+          /* pyefcn_handle should never be NULL if we got here, but just in case... */
+          if ( pyefcn_handle == NULL ) {
+              fputs("Python-backed external functions not supported \n"
+                    "(handle for $FER_DIR/lib/libpyefcn.so not assigned in efcn_get_custom_axes)", stderr);
+              *status = FERR_EF_ERROR;
+              return;
+          }
+          pyefcn_custom_axes_func = (void (*)(int, char[], char[])) dlsym(pyefcn_handle, "pyefcn_custom_axes");
+          if ( pyefcn_custom_axes_func == NULL ) {
+              fprintf(stderr, "Python-backed external functions not supported \n"
+                              "(unable to find pyefcn_custom_axes in $FER_DIR/lib/libpyefcn.so: %s)", dlerror());
+              *status = FERR_EF_ERROR;
+              return;
+          }
+      }
+
+      /*
+       * Prepare for bailout possibilities by setting a signal handler for
+       * SIGFPE, SIGSEGV, SIGINT and SIGBUS and then by cacheing the stack 
+       * environment with sigsetjmp (for the signal handler) and setjmp 
+       * (for the "bail out" utility function).
+       */   
+      if ( EF_Util_setsig("efcn_get_custom_axes")) {
+          *status = FERR_EF_ERROR;
+           return;
+      }
+      if (sigsetjmp(sigjumpbuffer, 1) != 0) {
+          *status = FERR_EF_ERROR;
+          return;
+      }
+      if (setjmp(jumpbuffer) != 0) {
+          *status = FERR_EF_ERROR;
+          return;
+      }
+      canjump = 1;
+
+      /* Call pyefcn_custom_axes which in turn calls the ferret_custom_axes method in the python module */
+      (*pyefcn_custom_axes_func)(*id_ptr, ef_ptr->path, errstring);
+      if ( strlen(errstring) > 0 ) {
+          /* (In effect) call ef_bail_out_ to process the error in a standard way */
+          ef_err_bail_out_(id_ptr, errstring);
+          /* Should never return - instead jumps to setjmp() returning 1 */
+      }
+
+      /* Restore the old signal handlers. */
+      EF_Util_ressig("efcn_get_custom_axes");
+
+      /* end of EF_PYTHON */
+  }
+  else {
     *status = FERR_EF_ERROR;
     fprintf(stderr, "\nERROR: unsupported language (%d) for efcn_get_custom_axes.\n\n", ef_ptr->internals_ptr->language);
   }
@@ -1663,7 +1724,62 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, float *memory, int *mr_list_p
        return;
     }
 
-  } else {
+    /* end of EF_F */
+  }
+  else if ( ef_ptr->internals_ptr->language == EF_PYTHON ) {
+      char errstring[2048];
+
+      if ( pyefcn_result_limits_func == NULL ) {
+          /* pyefcn_handle should never be NULL if we got here, but just in case... */
+          if ( pyefcn_handle == NULL ) {
+              fputs("Python-backed external functions not supported \n"
+                    "(handle for $FER_DIR/lib/libpyefcn.so not assigned in efcn_get_result_limits)", stderr);
+              *status = FERR_EF_ERROR;
+              return;
+          }
+          pyefcn_result_limits_func = (void (*)(int, char[], char[])) dlsym(pyefcn_handle, "pyefcn_result_limits");
+          if ( pyefcn_result_limits_func == NULL ) {
+              fprintf(stderr, "Python-backed external functions not supported \n"
+                              "(unable to find pyefcn_result_limits in $FER_DIR/lib/libpyefcn.so: %s)", dlerror());
+              *status = FERR_EF_ERROR;
+              return;
+          }
+      }
+
+      /*
+       * Prepare for bailout possibilities by setting a signal handler for
+       * SIGFPE, SIGSEGV, SIGINT and SIGBUS and then by cacheing the stack 
+       * environment with sigsetjmp (for the signal handler) and setjmp 
+       * (for the "bail out" utility function).
+       */   
+      if ( EF_Util_setsig("efcn_get_result_limits")) {
+          *status = FERR_EF_ERROR;
+           return;
+      }
+      if (sigsetjmp(sigjumpbuffer, 1) != 0) {
+          *status = FERR_EF_ERROR;
+          return;
+      }
+      if (setjmp(jumpbuffer) != 0) {
+          *status = FERR_EF_ERROR;
+          return;
+      }
+      canjump = 1;
+
+      /* Call pyefcn_result_limits which in turn calls the ferret_result_limits method in the python module */
+      (*pyefcn_result_limits_func)(*id_ptr, ef_ptr->path, errstring);
+      if ( strlen(errstring) > 0 ) {
+          /* (In effect) call ef_bail_out_ to process the error in a standard way */
+          ef_err_bail_out_(id_ptr, errstring);
+          /* Should never return - instead jumps to setjmp() returning 1 */
+      }
+
+      /* Restore the old signal handlers. */
+      EF_Util_ressig("efcn_get_result_limits");
+
+      /* end of EF_PYTHON */
+  }
+  else {
     *status = FERR_EF_ERROR;
     fprintf(stderr, "\nERROR: unsupported language (%d) for efcn_get_result_limits.\n\n", ef_ptr->internals_ptr->language);
   }
@@ -2253,10 +2369,7 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
       }
 
       /* Restore the original signal handlers */
-      if ( EF_Util_ressig("efcn_compute")) {
-          *status = FERR_EF_ERROR;
-          return;
-      }
+      EF_Util_ressig("efcn_compute");
 
       /* Success for EF_PYTHON */
   }
@@ -2869,6 +2982,10 @@ ExternalFunction *ef_ptr_from_id_ptr(int *id_ptr)
 {
   static ExternalFunction *ef_ptr=NULL;
   int status=LIST_OK;
+
+  /* Check if the list has been created to avoid a seg fault if called indiscriminately */
+  if ( GLOBAL_ExternalFunctionList == NULL )
+    return NULL;
 
   status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
 

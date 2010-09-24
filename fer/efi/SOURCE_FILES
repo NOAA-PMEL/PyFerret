@@ -51,6 +51,7 @@ labwid.F\
 lanczos.F\
 lsl_lowpass.F\
 maxminmax.F\
+minmax.F\
 minminmax.F\
 minutes24.F\
 modscat.F\

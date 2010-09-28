@@ -43,7 +43,7 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 3/18/88
-* V200:   6/8/89 - added mode desparate
+* V200:   6/8/89 - added mode desperate
 *	 12/6/89 - and mode GKS
 *	12/20/89 - and mode Xwindows
 *	  1/5/89 - and mode metafile
@@ -112,7 +112,7 @@
  100	   CONTINUE
 	   GOTO 5010	! unknown argument
 
-	ELSEIF ( mode .EQ. pmode_desparate ) THEN
+	ELSEIF ( mode .EQ. pmode_desperate ) THEN
 	   READ ( text, '(BN,I10)', ERR=5010 ) iarg
 	   IF ( iarg.LT.1 ) GOTO 5010
 	   arg = iarg

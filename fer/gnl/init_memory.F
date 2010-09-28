@@ -100,7 +100,7 @@
 * the reason so small is that Ferret memory management is not aware of
 * large hierarchies of definitions -- so a command like "LIST var"
 * may involve far more data than the transformations of "var" alone
-	mode_arg(pmode_desparate,1) = 0.1 *  block_size *  number_of_blocks
+	mode_arg(pmode_desperate,1) = 0.1 *  block_size *  number_of_blocks
 
 	RETURN
 	END

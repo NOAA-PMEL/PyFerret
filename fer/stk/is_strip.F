@@ -369,7 +369,7 @@
 	   ENDIF
 
 * do we have a size problem ?
-	   IF ( cxsize .LE. mode_arg( pmode_desparate,1 ) ) GOTO 800
+	   IF ( cxsize .LE. mode_arg( pmode_desperate,1 ) ) GOTO 800
 * yes, too big ! can we split the calculation along some axis ?
 *  ( try to split along a slow access axis of the data )
 	   DO 500 i = 4, 1, -1
@@ -387,7 +387,7 @@
 	      split_ax_len = CX_DIM_LEN(split_ax,lo_cx)
 	      IF ( split_ax_len .EQ. 1 ) GOTO 500
 * ... in desparation, only, consider splitting along the fastest access axis
-	      IF ( i.EQ.1 .AND. .NOT.mode_desparate )  GOTO 500
+	      IF ( i.EQ.1 .AND. .NOT.mode_desperate )  GOTO 500
 	      GOTO 510
  500	   CONTINUE	   
 * no way to split up the calculation
@@ -402,10 +402,10 @@
 	   is_big_cx( lo_isp ) = big_cx
 * cancel result pointer to indicate no result yet
 	   is_mr( lo_isp ) = unspecified_int4
-* determine the largest fragment satisfying the "desparate mode" argument
+* determine the largest fragment satisfying the "desperate mode" argument
 * for compressing transforms consider here ALL of the axes that may expand 
 	   IF ( aclass.EQ.isact_class_trans ) cxsize = POTENT_SIZE(lo_cx)
-	   ax_frac = FLOAT(mode_arg(pmode_desparate,1)) / cxsize
+	   ax_frac = FLOAT(mode_arg(pmode_desperate,1)) / cxsize
 	   frag = MAX( 1, INT(split_ax_len*ax_frac) )
 	   is_sum( lo_isp ) = frag
 * set up context to get the first fragment

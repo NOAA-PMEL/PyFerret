@@ -56,7 +56,7 @@
      .			pmode_ignore_err, pmode_stupid, pmode_time_lab,
      .			pmode_journal, pmode_long_lab, pmode_lat_lab,
      .			pmode_depth_lab, pmode_segment, pmode_font_ascii,
-     .			pmode_wait, pmode_reject, pmode_desparate, pmode_rpn,
+     .			pmode_wait, pmode_reject, pmode_desperate, pmode_rpn,
      .			pmode_gks, pmode_xwindows, pmode_metafile,
      .			pmode_ppllist, pmode_gui, pmode_logo, pmode_labels,
      .                  pmode_grat, pmode_linecolors, pmode_upcase_output,
@@ -76,7 +76,7 @@
      .			pmode_segment		= 12,
      .			pmode_wait		= 13,
      .			pmode_reject		= 14,
-     .			pmode_desparate		= 15)
+     .			pmode_desperate		= 15)
 	PARAMETER     ( 
      .			pmode_rpn		= 16,
      .			pmode_gks		= 17,
@@ -231,7 +231,7 @@
      .			mode_ignore_err, mode_stupid, mode_time_lab,
      .			mode_journal, mode_long_lab,mode_lat_lab,
      .			mode_depth_lab, mode_segment, mode_font_ascii,
-     .			mode_wait, mode_reject, mode_desparate, mode_rpn,
+     .			mode_wait, mode_reject, mode_desperate, mode_rpn,
      .			mode_gks, mode_xwindows, mode_metafile,
      .			mode_ppllist, mode_gui, mode_logo, mode_labels,
      .                  mode_grat, mode_linecolors, mode_upcase_output, 
@@ -251,7 +251,7 @@
      .		( mode_state( pmode_segment     ,1), mode_segment     ),
      .		( mode_state( pmode_wait        ,1), mode_wait        ),
      .		( mode_state( pmode_reject      ,1), mode_reject      ),
-     .		( mode_state( pmode_desparate   ,1), mode_desparate   ),
+     .		( mode_state( pmode_desperate   ,1), mode_desperate   ),
      .		( mode_state( pmode_rpn         ,1), mode_rpn         ),
      .		( mode_state( pmode_gks         ,1), mode_gks         ),
      .		( mode_state( pmode_xwindows    ,1), mode_xwindows    ),

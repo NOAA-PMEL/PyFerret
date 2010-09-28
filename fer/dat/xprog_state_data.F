@@ -78,7 +78,7 @@
 * V300:  5/12/93 - added mode ppllist and journal_file
 *	 6/16/93 - added mode GUI
 *	25/10/93 - default state for mode refresh set to TRUE
-* V301: 26/ 1/94 - larger MODE DESPARATE argument to reflect larger memory
+* V301: 26/ 1/94 - larger MODE DESPERATE argument to reflect larger memory
 *	 2/24/94 - incorporated a stack of past SET MODE states
 *	 3/14/94 - set default state of mode refresh (xwindows) to .FALSE.
 * V310:  11/4/94 - eliminated MODE REJECT (never implemented)
@@ -173,7 +173,7 @@
      .					/ mode_stack_size*.FALSE.   /,
      .		(mode_state( pmode_reject      ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.FALSE.   /,
-     .		(mode_state( pmode_desparate   ,i), i=1,mode_stack_size)
+     .		(mode_state( pmode_desperate   ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.FALSE.   /,
      .		(mode_state( pmode_rpn         ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.FALSE.   /,
@@ -215,7 +215,7 @@
      .		mode_name ( pmode_segment     )	/ 'SEGMENT'      /,
      .		mode_name ( pmode_wait        )	/ 'WAIT'         /,
      .		mode_name ( pmode_reject      )	/ pmode_unused   /,
-     .		mode_name ( pmode_desparate   )	/ 'DESPERATE'    /,
+     .		mode_name ( pmode_desperate   )	/ 'DESPERATE'    /,
      .		mode_name ( pmode_rpn         )	/ pmode_unused /,
      .		mode_name ( pmode_gks         )	/ 'GKS'          /,
      .		mode_name ( pmode_xwindows    )	/ 'REFRESH'      /,
@@ -262,7 +262,7 @@ c     .	( mode_name(i),i=pmode_nodata_lab+1,max_modes )/pmode_unused/
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_reject      ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
-     .		(mode_arg  ( pmode_desparate   ,i), i=1,mode_stack_size)
+     .		(mode_arg  ( pmode_desperate   ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*320000 /,
      .		(mode_arg  ( pmode_rpn         ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,

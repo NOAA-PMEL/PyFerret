@@ -4,7 +4,7 @@
 	# This file is included in other Makefiles and defines
 	# platform specific macros
 
-	NETCDF4_DIR	= /home/nstout/ansley/local/nstout
+	NETCDF4_DIR	= /home/porter/tmap/ferret/linux/
 	CDF_INCLUDES	= -I$(NETCDF4_DIR)/include/
 
 	INCLUDES        = -I/usr/lib/gcc/i386-redhat-linux/4.1.2/include/ \

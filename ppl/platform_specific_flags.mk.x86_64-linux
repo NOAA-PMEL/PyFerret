@@ -5,7 +5,7 @@
 	# platform specific macros
 
 #
-	NETCDF4_DIR	= /home/nstout/ansley/local/x86
+	NETCDF4_DIR	= /home/porter/tmap/ferret/x86_64-linux
 
 
 	INCLUDES        = -I /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/include \

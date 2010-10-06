@@ -604,7 +604,7 @@
      .		alg_trans_has_arg ( 39)	/ .TRUE.		/,
      .		alg_trans_dflt_arg( 39)	/ 3		/,
      .		alg_trans_text ( 40 )	/ 'SMN' 		/,
-     .		alg_trans_title( 40 )	/ 'minimumn smoothed'     /,
+     .		alg_trans_title( 40 )	/ 'minimum smoothed'     /,
      .		alg_trans_num  ( 40 )	/ trans_smth_min	/,
      .		alg_trans_its_int ( 40)	/ .TRUE.		/,
      .		alg_trans_has_arg ( 40)	/ .TRUE.		/,

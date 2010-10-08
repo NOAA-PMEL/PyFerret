@@ -96,6 +96,7 @@ C  Calling argument declarations
       REAL xf, yf, px(nxs),py(nys), u(nx,ny), v(nx,ny), startflag(*)
 
 C  From from GrADS module gxstrm.c
+C See http://grads.sourcearchive.com/documentation/2.0.a7.1-3/main.html 
 C void gxstrm (float *u, float *v, float *c, int is, int js,
 C   float uund, float vund, float cund, int flag, float *shdlvs,
 C   int *shdcls, int shdcnt, int den)

@@ -36,6 +36,7 @@
 *
 * Ansley Manke
 * April 2010
+* Ferret V665 10/2010 Change loop structure to make this more efficient.
 
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -96,7 +97,7 @@
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 6)
 
-* Output grid is determined by arguments 5, 6, and 7, the result's x and y axes.
+* Output grid is determined by arguments 5, 6, and 7, the result's x, y, and t axes.
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'XPTS')
@@ -293,7 +294,7 @@
 
 *  Check to see if output axes are modulo
 
-      CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
+      CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
      .                       modulox, regular)
 
 *  Find number of points in scattered input points.  1-D arrays defining the 
@@ -391,7 +392,6 @@ C  Get coordinates of output axes.
 *  and ARG2, sending them to a subroutine collapses the extra dimensions so the
 *  value can be found.
 
-         nput = 0
          DO 300 n = 1, nscat
 
             CALL pickout4 (arg_1, arg_2, arg_3, arg_4, 
@@ -400,39 +400,39 @@ C  Get coordinates of output axes.
 *  If output X axis is modulo, apply modulo adjustment to that coordinate
 *  of the scattered point.
 
-            IF (modulox(1)) CALL modscat (xaxlo, nx, 1, xx)
+            IF  (modulox(1) .AND. xx.NE.bad_flag(ARG1))
+     .         CALL modscat (xaxlo, nx, 1, xx)
 
 *  Put fcn into result variable.
-*  Put fcn into result variable.
 
-         IF (ff .NE. bad_flag(ARG3)) THEN
+         IF (ff .NE. bad_flag(ARG4)) THEN
             i1 = 1
             DO 520 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+               IF( xx.GE.xaxlo(i1,1,1,1) .AND.
+     .             xx.LT.xaxhi(i1,1,1,1)) THEN
+
                j1 = 1
                DO 510 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+                  IF (yy.GE.yaxlo(j1,1,1,1) .AND.
+     .                yy.LT.yaxhi(j1,1,1,1))  THEN
 
 	          l1 = 1
 	          DO 500 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-                     IF( (xx.GE.xaxlo(i1,1,1,1) .AND.
-     .                    xx.LT.xaxhi(i1,1,1,1))
-     .                 .AND.
-     .                   (yy.GE.yaxlo(j1,1,1,1) .AND.
-     .                    yy.LT.yaxhi(j1,1,1,1)) 
-     .                 .AND.
-     .                   (tt.GE.taxlo(l1,1,1,1) .AND.
-     .                    tt.LT.taxhi(l1,1,1,1)) ) THEN
-
+	             IF (tt.GE.taxlo(l1,1,1,1) .AND.
+     .                   tt.LT.taxhi(l1,1,1,1)) THEN
                         result(i,j,k,L) = result(i,j,k,L) + 1.0 
-                     ENDIF
-
-                    l1 = l1 + 1
+	             ENDIF
+                     l1 = l1 + 1
  500              CONTINUE
+
+		  ENDIF ! if yy
 
                   j1 = j1 + 1
  510           CONTINUE
+               ENDIF  ! if xx
+
                i1 = i1 + 1
  520        CONTINUE
-
          ENDIF  ! ff not bad
 
 300   CONTINUE

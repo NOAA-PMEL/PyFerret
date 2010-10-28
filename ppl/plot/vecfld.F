@@ -70,6 +70,7 @@ C**
 *                      small.  Call doit_makedot after the loop, to plot points in the buffer.
 * v5.81 *acm* lengthen string containing format to 40 characters.
 * V6.63 *acm* 7/10 Save a symbol PPL_VECLEN containing the Vector Length value
+* V6.65 *acm* 10/10 Draw curvilinear vectors as straight lines.
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -116,7 +117,8 @@ C
 C     Curvilinear coordinates declarations
         integer status, ii
         real x_curv(12), y_curv(12), curv_len, xxc, yyc
-        real tail_i, tail_j, head_i, head_j, head_len
+        real tail_i, tail_j, head_i, head_j, head_len,
+     .       tail_i_orig, tail_j_orig
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -220,6 +222,8 @@ C Set up to plot the vector in pieces to make a curve.
 
            tail_i = xx1
            tail_j = yy1
+           tail_i_orig = xx1
+           tail_j_orig = yy1
            x_curv(1)=xx1
            y_curv(1)=yy1
            CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
@@ -234,10 +238,16 @@ C Set up to plot the vector in pieces to make a curve.
            curv_len = 0.0
            overedge = 0
 
+C Dont draw as a curve. Move to the tail now and when we have reached the end
+C then draw the line to the arrow head.
+
+           CALL PLOT(XX1,YY1,0,0) 
            DO 60, ii=1, 500
 
               head_i = tail_i + U(I,J)*vfact/10
               head_j = tail_j + V(I,J)*vfact/10
+              head_i = tail_i + U(I,J)*vfact
+              head_j = tail_j + V(I,J)*vfact
 
               IF (head_i .GT. xtx .AND. (.NOT. dim1_modulo)) THEN
                  head_i = xtx
@@ -264,8 +274,8 @@ C Set up to plot the vector in pieces to make a curve.
               IF (x_curv(1) .ne. cmzeq) xxc = x_curv(1)
               IF (y_curv(1) .ne. cmzeq) yyc = y_curv(1)
 
-              CALL PLOT(XX1,YY1,0,0)    
-              CALL PLOT(xxc,yyc,1,0)
+c              CALL PLOT(XX1,YY1,0,0)    
+c              CALL PLOT(xxc,yyc,1,0) 
 
 C  curv_len is sum of vector pieces; actual vector length.  When 
 C  it is vclen we are done plotting the vector.
@@ -276,7 +286,12 @@ C   equivalent to xxc = xx1 + (len/xf), or len = (xxc-xx1)* xf
               curv_len = curv_len + 
      .           SQRT( ( (xxc-xx1)*xf )**2  +  ( (yyc-yy1)*yf )**2 )
 
-              IF (overedge .EQ. 1) GO TO 80 
+C  If the line goes over the edge, draw to the edge but don't
+C  draw an arrow head.
+              IF (overedge .EQ. 1) THEN
+	         CALL PLOT(xxc,yyc,1,0)
+		 GO TO 80 
+              ENDIF
 
               IF (curv_len .GE. vclen* vfact) GO TO 70
 
@@ -288,12 +303,15 @@ C   equivalent to xxc = xx1 + (len/xf), or len = (xxc-xx1)* xf
  60        CONTINUE
 
  70        CONTINUE
+           CALL PLOT(xxc,yyc,1,0)
 
 C     DRAW ARROW HEADS
 
 	   IF (xxc .NE. cmzeq  .AND. yyc .NE. cmzeq) THEN
               head_len = 2.*curv_len/(xf+yf)
-              CALL vec_arrows(tail_i, tail_j, head_i, head_j, head_len)
+              head_len = 2.*vclen*vfact/(xf+yf)
+              CALL vec_arrows(tail_i_orig, tail_j_orig, 
+     .           head_i, head_j, head_len)
 	   ENDIF	! draw arrow if xxc and yyc were ok
    80	   CONTINUE	! vector went over edge
 

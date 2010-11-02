@@ -5,7 +5,7 @@
 ! spelling for user-defined variables and for coordinate
 ! variables even coming from two different datasets.
 
-CANCEL MODE upcase_only
+CANCEL MODE upcase
 
 ! User variable with lowercase letters in the name
 

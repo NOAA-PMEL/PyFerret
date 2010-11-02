@@ -165,6 +165,7 @@
 * V65   3/10 *acm* SHOW/OUTFILE=  writes the output to a file rather than std out.
 *                  Implemented so far only for SHOW AXIS, SHOW DATA, SHOW VAR, SHOW GRID,
 *                  to be implemented for all SHOW subcommands in the future
+* V665 11/10 *acm* Fixing LAS ticket 969. Call to show_grid_xml is changed.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -688,7 +689,8 @@
 * ... by default only name and variables are shown
            IF ( sxml) THEN
               IF (svars) THEN
-                 CALL SHOW_DATA_SET_VARS_XML (show_lun, iset)
+                 CALL SHOW_DATA_SET_VARS_XML (show_lun, iset, status)
+                 IF (status .NE. ferr_ok ) GOTO 5000
               ELSE
                  CALL SHOW_DATA_SET_XML (show_lun, iset)
               ENDIF
@@ -1224,10 +1226,12 @@
 	         grid = GRID_FROM_NAME
      .                    ( cmnd_buff(item_start(ivar):item_end(ivar)),
      .			  cx_last, status )
+
 	         IF ( status .NE. ferr_ok ) GOTO 1350
                  IF ( grid .EQ. unspecified_int4 ) GOTO 5300
 	         IF (sxml) THEN 
-                    CALL SHOW_GRID_XML(show_lun, grid, unspecified_int4 )
+                    CALL SHOW_GRID_XML(show_lun, grid, 
+     .			  cx_data_set( cx_last ), unspecified_int4 )
                  ELSE
 	            WRITE ( risc_buff, 4210 ) grid_name( grid )
 	            CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)

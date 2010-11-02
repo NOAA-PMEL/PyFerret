@@ -46,6 +46,7 @@
 * V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
 *                  with &lt; etc.
 * V650  Write to lun which may be set to a file unit number rather than std out
+* V665 11/10 *acm* Fixing LAS ticket 969. Call to show_grid_xml is changed.
 
         include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -175,7 +176,7 @@ C Write statement that uses number 2075 when we change to using these.)
 
 * All attributes not already listed.
  
-	dset = 0
+	dset = 0  ! user-defined variables
 	CALL CD_GET_VAR_INFO (dset, varid, vname, vtype, nvdims, 
      .            vdims, nvatts, coordvar, all_outflag, status)
 	IF (status .NE. ferr_ok) GOTO 1000
@@ -222,8 +223,10 @@ C Write statement that uses number 2075 when we change to using these.)
 
 * ... grid
 
+c This is the dataset from which the variable gets its grid
+	dset = uvar_dset(uvar)
         IF (grid .NE. unspecified_int4) 
-     .          CALL SHOW_GRID_XML (lun, grid, cx_expr)
+     .          CALL SHOW_GRID_XML (lun, grid, dset, cx_expr)
 
         WRITE ( risc_buff, 2090 )
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

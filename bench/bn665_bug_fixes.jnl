@@ -1,0 +1,10 @@
+! bn65_bug_fixes.jnl
+! test various fixes that went into version 6.6.5
+! 11/2010 ACM
+!
+
+GO bn_reset
+GO err664_xml_keep_case
+
+GO bn_reset
+GO err664_xml_one_point_axis

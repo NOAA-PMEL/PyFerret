@@ -734,6 +734,11 @@ GO bn_variance_large
 GO bn_reset
 GO bn_labnum_calendar
 
+
+! *********** v6.65 Additions ***********
+GO bn_reset
+GO bn665_bug_fixes
+
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not
 ! tested in the benchmarks.

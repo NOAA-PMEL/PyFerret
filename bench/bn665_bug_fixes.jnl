@@ -8,3 +8,6 @@ GO err664_xml_keep_case
 
 GO bn_reset
 GO err664_xml_one_point_axis
+
+GO bn_reset
+GO err65_read_epic_cdf

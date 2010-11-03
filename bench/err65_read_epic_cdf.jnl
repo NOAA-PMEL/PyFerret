@@ -1,0 +1,6 @@
+! Ned Cokelet reports that the time coordinate is read incorrectly 
+! from this file.  Should translate to  04-MAY-2007 05:02
+! Bug was in v6.4 - 6.6 Ferret
+
+use epic_formatted_file.nc
+list t[gt=t_28]

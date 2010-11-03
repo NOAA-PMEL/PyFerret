@@ -52,6 +52,7 @@
 *                  linked with OPeNDAP library.
 * V66+ *acm* 4/10  Made incorrect call to NF_GET_VAR1_DOUBLE, should have becn
 *                  NF_GET_VAR1_INT.
+* V665 *acm* 11/10 Fix arguments to second call to NF_GET_VAR1_INT. 
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -105,7 +106,7 @@
 #ifdef usingDODSf2cUnderscore
       cdfstat = NF_GET_VAR1_INT_(cdfid, t2id, index, msec)
 #else
-      cdfstat = NF_GET_VAR1_INT(cdfid, t1id, index, jday)
+      cdfstat = NF_GET_VAR1_INT(cdfid, t2id, index, msec)
 #endif
 
       IF ( cdfstat .NE. NF_NOERR ) CALL TM_ERRMSG

@@ -51,9 +51,6 @@
 * V616  1/2009 *acm* Fixing LAS ticket 481, new style of xml output
 * V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
 *                  with &lt; etc.
-* V665 11/10 *acm* Fix bug 1177: preserve case of varnames and axis names in xml output
-*                  Also if missing or _FillValue attributes were not in original file,
-*                  do NOT write NaN as the value of these attributes.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -75,12 +72,11 @@
      .          STR_SAME, line, slen, llen, ndec, cal_id, status,
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
-     .            attlen, attype, iatt, ncchar, iset, dset, nlen
+     .            attlen, attype, iatt, ncchar, iset, dset
 	CHARACTER TM_FMT*16, show_str*16, lo_str*20, hi_str*20, 
      .            title*32, outbuff*20, aname*128,
      .            attname*128, attbuff*2048, buff*14, outstring*2048
         CHARACTER*1 idir(4)
-	CHARACTER*130  CD_AXIS_NAME, out_name
 	REAL*8	TM_WORLD, lo_val8, hi_val8
 	REAL      vals(10)
 
@@ -124,22 +120,10 @@ C Write statement that uses number 2075 when we change to using these.)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            status = 0
 	ELSE
-	
-           DO 100 iset = 1, maxdsets
-	     IF ( ds_name(iset) .EQ. char_init1024) GOTO 50
-             CALL CD_GET_VAR_ID (iset, line_name(line), varid, status)
-	     dset = iset
-             IF (status .EQ. ferr_ok) GOTO 60
-  100      CONTINUE
-   50      dset = iset-1
-   60      CONTINUE
-           IF (iset .EQ. 0) THEN
-	      out_name = ds_name(iset)
-	   ELSE
-              out_name = CD_AXIS_NAME ( dset, grid, idim, nlen )
-           ENDIF
+  
 * header
-           CALL ESCAPE_FOR_XML (out_name, outstring, slen)
+
+           CALL ESCAPE_FOR_XML (line_name(line), outstring, slen)
 	   WRITE ( risc_buff, 2020 ) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
@@ -260,6 +244,13 @@ C Write statement that uses number 2075 when we change to using these.)
            CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * All attributes not already listed.
+ 
+           DO 100 iset = 1, maxdsets
+	     IF ( ds_name(iset) .EQ. char_init1024) GOTO 1000
+             CALL CD_GET_VAR_ID (iset, line_name(line), varid, status)
+             IF (status .EQ. ferr_ok) GOTO 50
+  100      CONTINUE
+   50      dset = iset
 
            DO 200 iatt = 1, nvatts
               CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 

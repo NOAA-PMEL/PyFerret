@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_DATA_SET_VARS_XML( lun, dset, status)
+	SUBROUTINE SHOW_DATA_SET_VARS_XML( lun, dset)
 
 *
 *
@@ -55,8 +55,6 @@
 *                  with &lt; etc.
 * V650  2/10 *acm* LAS ticket 761: consistency of the missing-value flags. Use a Fortran
 *                  format rather than TM_FMT to write the value to the xml output.
-* V665 11/10 *acm* Fix bug 1177: preserve case of varnames and axis names in xml output
-* V665 11/10 *acm* Fixing LAS ticket 969. Call to show_grid_xml is changed.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -73,11 +71,11 @@
 	include	'xprog_state.cmn'
 	include	'xrisc.cmn'
 	include	'xcontext.cmn'
-        include 'netcdf.inc'
 	include 'errmsg.parm'
+        include 'netcdf.inc'
 
 * calling argument declarations:
-	INTEGER	lun, dset, status
+	INTEGER	lun, dset
 	
 * local variable declarations:
 	INTEGER   TM_LENSTR, TM_LENSTR1, GRID_FROM_NAME_XML,
@@ -85,16 +83,14 @@
      .            ivar, slen, llen, grid, cx_expr, dset_save,
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
-     .            attlen, attype, iatt, ndims, nvars, ngatts, 
-     .            iset, recdim
+     .            attlen, attype, iatt, status
 	REAL      vals(10)
 
-        LOGICAL   NC_GET_ATTRIB, 
-     .            got_it, coordvar, newatt	
+        LOGICAL   NC_GET_ATTRIB, got_it, coordvar, newatt
 
         CHARACTER TM_FMT*16, show_str*16
         CHARACTER uvarname*150, attname*128, attbuff*2048, buff*14,
-     .            outstring*2048, aname*128, vbuff*256
+     .            outstring*2048, aname*128
 
 C New form for attribute output, dont implement it yet. (Check the
 C Write statement that uses number 2075 when we change to using these.)
@@ -124,17 +120,8 @@ C Write statement that uses number 2075 when we change to using these.)
 * ... output variable code, units, grid, and type
 
 *           slen = TM_LENSTR1(ds_var_code(ivar))
-
-           vbuff = ds_var_code(ivar)
-* ... Get the original upper/lowercase spelling of the variable.
-
-           status = NCF_INQ_DS (dset, ndims, nvars, ngatts, recdim )
-           CALL CD_GET_VAR_ID (dset, vbuff, varid, status)
-           CALL CD_GET_VAR_INFO (dset, varid, vbuff, vtype, nvdims,
-     .           vdims, nvatts, coordvar, all_outflag, status)
-
            CALL string_array_get_strlen1(ds_var_code_head, ivar, slen)
-           CALL ESCAPE_FOR_XML (vbuff, outstring, slen)
+           CALL ESCAPE_FOR_XML (ds_var_code(ivar), outstring, slen)
            WRITE ( risc_buff, 2020 ) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
@@ -165,7 +152,9 @@ C Write statement that uses number 2075 when we change to using these.)
 ! missing_flag comes from attribute FillValue; 
 ! bad_flag comes from missing_value
 
-1111      FORMAT (1PG16.7)
+           show_str = TM_FMT(ds_missing_flag(ivar), 16,16,slen)
+	   WRITE (show_str, 1111) ds_missing_flag(ivar)
+1111	   FORMAT (1PG16.7)
           uvarname = ds_var_code(ivar)
           CALL CD_GET_VAR_ID (dset, uvarname, varid, status)
 	   
@@ -279,7 +268,7 @@ C Write statement that uses number 2075 when we change to using these.)
  200       CONTINUE
 
            grid = ds_grid_number(ivar)
-           CALL SHOW_GRID_XML (lun, grid, dset, unspecified_int4)
+           CALL SHOW_GRID_XML (lun, grid, unspecified_int4)
 
 	   WRITE ( risc_buff, 2090 )
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -344,11 +333,12 @@ C Write statement that uses number 2075 when we change to using these.)
              ENDIF
 
              grid = GRID_FROM_NAME_XML( uvarname, cx_last, cx_expr, status )
-	      IF ( status .NE. ferr_ok ) GOTO 5100
+             IF ( status .NE. ferr_ok ) GOTO 5100
 
              grid = uvar_grid(ivar,dset)
              IF (grid .NE. unspecified_int4) 
-     .          CALL SHOW_GRID_XML (lun, grid, dset, cx_expr)
+     .          CALL SHOW_GRID_XML (lun, grid, cx_expr)
+
 
              WRITE ( risc_buff, 2090 )
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -363,5 +353,4 @@ C Write statement that uses number 2075 when we change to using these.)
  5000 RETURN
  5100   CALL errmsg( ferr_unknown_grid, status, 
      .          'Cannot get grid for variable', *5000 )
-
       END

@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_GRID_XML( lun, grid, dset, cx_expr )
+	SUBROUTINE SHOW_GRID_XML( lun, grid, cx_expr )
 
 *
 *
@@ -43,11 +43,6 @@
 * 6-Aug-2003
 * V580 *acm* 11/4/04 add <axes> tags
 * v6.5 *acm* 3/10 Cleanup - remove commented-out includes
-* V6.65*acm* 11/10 If an untransformed axis is of length 1, write out
-*                 its information (LAS ticket 969)
-* V665 11/10 *acm* Fix bug 1177: preserve case of varnames and axis names in xml output
-*                  Also fixing LAS ticket 969. If index_hi=index_lo, check whether its a
-*                  one-point axis or an axis that has been transformed away.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -64,13 +59,12 @@
 
 
 * calling argument declarations
-	INTEGER lun, grid, dset, cx_expr
+	INTEGER lun, grid, cx_expr
 
 * local variable declarations:
-	INTEGER TM_LENSTR1, TM_LENSTR, idim, slen, line, nlen
+	INTEGER TM_LENSTR1, TM_LENSTR, idim, slen, line
         CHARACTER*1 axdir(4)
 	CHARACTER*2048 outstring
-	CHARACTER*130  CD_AXIS_NAME, out_name
         DATA axdir/ 'x', 'y', 'z', 't'/
 
 
@@ -94,8 +88,7 @@
 
            IF (line .GT. 0  .AND.  slen .GT. 0 .AND.
      .         cx_expr .EQ. unspecified_int4) THEN
-	      out_name = CD_AXIS_NAME ( dset, grid, idim, nlen )
-              CALL ESCAPE_FOR_XML (out_name, outstring, slen)
+              CALL ESCAPE_FOR_XML (line_name(line), outstring, slen)
               WRITE (risc_buff, 2040 ) axdir(idim),
      .           outstring(1:slen), axdir(idim)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -106,10 +99,9 @@
 
               IF ( cx_hi_ss(cx_expr,idim).NE.unspecified_int4 .AND. 
      .	           cx_lo_ss(cx_expr,idim).NE.unspecified_int4 ) THEN
-                 out_name = CD_AXIS_NAME ( dset, grid, idim, nlen )
-                 slen = TM_LENSTR1(out_name)
+                 slen = TM_LENSTR1(line_name(line))
                  WRITE (risc_buff, 2040 ) axdir(idim),
-     .              out_name(1:slen), axdir(idim)
+     .              line_name(line)(1:slen), axdir(idim)
 	         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
               ENDIF
            ENDIF

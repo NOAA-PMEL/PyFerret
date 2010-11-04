@@ -1,44 +1,195 @@
+Introduction
+------------
 
----------
-We do not have a single configure and make procedure for building Ferret. There is a README file in the directory FERRET/fer, which is quite old but still probably useful, and here's a more informal list of the steps you'll need to go through.
+Thank you for your interest in Ferret and in compiling Ferret.  This
+document is designed to assist in getting Ferret compiled and linked
+on your system.  NOTE: These procedures have only be confirmed to work
+on the following systems:
 
-If you're successful, we'd appreciate having the binaries back to release to others as one of our "Cooperatively Supported" systems.  Also, we're talking about an upcoming project to make building Ferret easier - setting up a configure and make procedure. If you have a chance to keep notes on anything special you need to do as you build Ferret, we would appreciate having the benefit of your experiences
+	Digital Unix v4.0
+	Sun Solaris v2.4
+	RedHat Linux v5.0
 
-Outline of the steps needed to build Ferret:
+These are the only systems we have access to, and therefore the only
+systems we have compiled and linked Ferret (recently) on.  Part of the
+reason for distributing source code is to draw upon the expertise of
+the Ferret users in order to help port Ferret to other operating
+systems.  If you link Ferret on an operating system other than the
+above, please let us know.  If you have one of the above operating
+systems, Ferret can be picked up in binary from anonymous ftp at:
 
-  * You need to link with a library to access netCDF datasets. The library netcdf4.1 is recommended.  Unidata has released netCDF4.1.1; their recent release candidates are working well with Ferret. For building the libraries, and Ferret, we have used gfortran. The netcdf downloads can be found here: http://www.unidata.ucar.edu/software/netcdf/.
-The netcdf developers are currently (4/2010) recommending the use of NetCDF 4.1.1 Release Candidate.
-Build netcdf4.1.1 with hdf5, version 1.8.4; and with --enable-fortran in the configuration.  Then configure netcdf4.1 with --with-hdf5,  --enable-netcdf-4  --enable-dap for   for netcdf-4 features and OPeNDAP dataset access.
+	http://ferret.wrc.noaa.gov/Ferret/
 
-    The current official release of Ferret is linked with netcdf4.1.1 and has syntax for writing netcdf4 datasets (hdf5 chunking and compression.)  See the release notes for Ferret v6.6. at http://porter.pmel.noaa.gov/Ferret/home/documentation/v6-6-release-notes
+What is needed
+--------------
 
-  (In the platform_specific_flags files, you will see references to DODS libraries.  This is from the previous builds which used OPeNDAP libraries from opendap.org.  These references will be removed in future but are left in for the time being; as the transition from the opendap.org libraries to the unitdata netcdf-4 libraries is quite recent.)
+Besides Fortran and C compilers, the follwing libraries are necessary
+to compile and link Ferret:
 
-To build Ferret:
+	Motif Libraries (in order to compile/link GUI)
+        HDF libraries (version 3.2)
+        Netcdf libraries (version 2.4.2)
+        Xgks libraries (source included)
+        linked list library v2.1 (source included)
+	Readline library (source included)
 
-  * Under the FERRET directory:
+As mentioned below, the Ferret Makefiles reference an area called
+TMAP_LOCAL.  This area is assumed to be the place where include files
+and libraries not inherent to the operating system, yet necessary to
+compile and link Ferret, reside.
 
-      * In the xgks/ directory, run configure and make.  It may ask you to create a CUSTOMIZE file with locations of libraries. See CUSTOMIZE.x86_64-linux for an example.
 
-      * In list-2.1 directory,  make.
+SOURCE DIRECTORY OVERVIEW
+-------------------------
 
-      * In readline, configure and make.
+			|-- fer
+			|
+			|-- fmt
+			|
+			|-- gksm2ps
+			|
+	|-FERRET_ROOT-|	|-- lib
+			|
+			|-- ppl
+			|
+			|-- xgks
+			|
+			|-- list-2.1
+			|
+			|-- readline-4.1
+			|
+			|-- bench
+			|
+			|-- external_functions
 
-      * In fer/  look at the platform_specific flags files that are there. The most recent example of these files is platform_specific_flags.mk.x86_64-linux. You will need to create such a file for your system, with the desired compilers, compiler flags, locations of include files, and definitions for linking with the libraries. The compiler flags also need to be in a platform_specific_flags file in the FERRET/ppl directory.  To find the compiler flags needed for the OPeNDAP libraries (listed in the Makefile under DODS_LIBS) look at where you built the library libnc_dap, and find where dncdump was created.  The Makefile in that directory will give you a starting place for the libraries needed.
 
-      * build the Ferret executable. In FERRET/fer, run make with one of these targets.
-            o make DODS_gui  for linking with the OPeNDAP libraries and building the gui interface
-            o make DODS_only for linking with OPeNDAP libraries but not building the gui interface
-            o make links with the netcdf library
-            o make gui_nodebug links with the netcdf library and builds the gui interface
+where:
 
-  * The gui interface is very old code and unless you yourself want to try using it, there is no reason to try building it.
+	fer  	  is the main Ferret compilation directory.  This is 
+		  where the Makefiles and platform-specific files reside
+	
+	fmt 	  is the area of source for basic Ferret functions, including
+		  I/O, readline, etc.
 
-  * If you wish to build the external functions, go into the external_functions/ directory.  You will need a platform_specific flags file here too, in the FERRET/external_functions/ef_utility directory.  In the external_functions/ directory, run make.  Then copy the shared object files from the subdirectories to a single directory somewhere (equavalent to the directory pointed to by the environment variable FER_EXTERNAL_FUNCTIONS).  For testing I usually just make a directory FERRET/external_functions/ext_func_linux, or whatever convenient name, and put the .so files there.
+	gksm2ps   is the metafile translator source
 
-  * In gksm2ps/  modify the Makefile to include your operating system, and run make.
+	lib	  is where the Ferret-created libraries will be stored after 
+		  compilation
 
-  * Get the environment tar file for one of our linux versions. You will need the fonts files, go scripts, and palette files. See the bin/Finstall script and the Ferret installation instructions for details about setting up the environment to run Ferret.
+	ppl 	  is the PlotPlus source code
+	
+	xgks 	  is the Xgks graphics package source code
+	
+	list-2.1  is the linked list utilites source package
+	
+	readline-4.1 is the readline source package
+	
+	bench     contains the benchmark suite for testing the Ferret
+		  executable once it has been linked
+	
+	external_functions  contains the code which describes and gives
+			    examples of Ferret external function 
+			    framework 
 
-  * Once you have an executable, go into the FERRET/bench directory.  There is a simple README file which will get you started with running the Ferret benchmark scripts.  You will run a shell script called "run_all" which starts the benchmark job.
+To compile
+----------
+
+1a) compile Linked list library
+	> cd $FERRET_ROOT/list-2.1
+	> make
+	
+   move created library to $TMAP_LOCAL/lib and the file list.h to 
+   $TMAP_LOCAL/include.
+
+1b) compile Readline source library
+	> cd $FERRET_ROOT/readline-4.1
+	> ./configure
+	> make
+
+2) compile xgks (If Xgks is already installed, you may skip this step)
+	a) create a CUSTOMIZE.YOUR_HOSTYYPE file, ie CUSTOMIZE.solaris
+		- this contains the location in which the xgks items
+		  will be installed
+	b) run configure
+		> ./configure
+	c) compile sources
+		> make
+
+	d) install 
+		> make install
+	
+
+3)Compile and link Ferret
+	> cd $FERRET_ROOT/fer
+	a) first a file called 
+		platform_specific_flags_flags.mk.YOUR_HOSTTYPE 
+	   needs to be created.  this file contains fortran and c flags,as well
+	   as pointers to system libraries, etc.  Look at one of the existing 
+	   files for an example of what should be included.   In addition to 
+           platform specific files for the OS's we use, I've also
+           included platform specific files for SGI Irix v5 and IBM AIX OS's.
+           These are meant only as a guide, and are undoubtably out of date.
+
+	> make update
+		This will create two files, which contain the current
+		version of the ferret build and the build date, in the 
+		special directory and compile the files in that directory
+
+	> make gui_nodebug
+		this will compile sources in the fmt, ppl and fer directories
+		and will also link Ferret with the Graphical User Interface.
+
+	  ***OR**
+	
+	> make
+		this will compile sources in the fmt, ppl and fer directories
+		but will not compile or link the GUI.
+
+4) Create External_functions .so files  (optional)
+	> cd $FERRET_ROOT/external_functions
+	> make
+	
+	This will compile the suite of external_function utility routines.  To
+	access these files w/in ferret, make sure to set the environment 
+	variable FER_EXTERNAL_FUNCTIONS to $FERRET_ROOT/external_functions
+		
+5) Run Benchmark suite
+	> cd $FERRET_ROOT/bench
+	> run_all
+
+	The run_all script will ask a few questions (such as where the 
+	executable to test resides) and then launch into the benchmark
+	routines.  When the test suite completes, you can compare the 
+	results found in newly create all* files w/ the official* log 
+	files.  One of the benchmark tests is concerned with the
+	External Functions mentioned above.  If the External Functions
+	aren't compiled, there will be a large chunk of output found in
+	the official* log files that won't be in the newly created ones.
+
+
+NOTES
+-----
+
+Included in the main directory ($FERRET_ROOT) is a file called
+
+	IFDEF_DESCRIPTION
+
+which details the usage of the different ifdef/preprocessor directives
+used in the Ferret code.  This is meant to assist in choosing the
+correct options for your system.
+
+This package, including the documentation, represents the initial
+attempt at source distribution for Ferret.  A crucial aspect of making
+this source distribution more complete and usable will be feedback
+from those who have attempted compiling and linking Ferret.
+
+Also, If you plan any modifications to the functionality of Ferret, please 
+consider contacting us first.  We may be able to save you some time and
+frustration with our in-depth knowledge of the code.
+
+Questions, problems or suggestions can be directed to:
+
+	kobrien@pmel.noaa.gov
+
+Good luck, and happy Ferreting!
 

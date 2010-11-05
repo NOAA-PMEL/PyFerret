@@ -56,7 +56,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <strings.h>
-#include "readline.h"
+#include <readline/readline.h>
 
 /* Easier way of handling FORTRAN calls with underscore/no underscore */
 #ifdef NO_ENTRY_NAME_UNDERSCORES

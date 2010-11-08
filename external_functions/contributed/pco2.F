@@ -206,6 +206,9 @@ c_ $Author$ ;  $Locker$
 c_
 c_ ---------------------------------------------------------------------
 c_ $Log$
+c_ Revision 1.1  2004/06/01 17:38:06  ansley
+c_ add pco2 function from Andreas Schmittner
+c_
 c_ Revision 1.8  1999/07/16 11:40:33  orr
 c_ Modifications by Keith Lindsay to fix inconsistency with common block
 c_ "species" (not the same in "ta_iter_1.f").
@@ -564,6 +567,9 @@ c_ $Author$ ;  $Locker$
 c_
 c_ ---------------------------------------------------------------------
 c_ $Log$
+c_ Revision 1.1  2004/06/01 17:38:06  ansley
+c_ add pco2 function from Andreas Schmittner
+c_
 c_ Revision 1.2  1999/09/01 17:55:41  orr
 c_ Fixed sign error in dfn/dx following remarks of C. Voelker (10/Aug/1999)
 c_
@@ -654,6 +660,9 @@ c_ $Author$ ;  $Locker$
 c_
 c_ ---------------------------------------------------------------------
 c_ $Log$
+c_ Revision 1.1  2004/06/01 17:38:06  ansley
+c_ add pco2 function from Andreas Schmittner
+c_
 c_ Revision 1.1  1999/04/03 22:00:42  orr
 c_ Initial revision
 c_

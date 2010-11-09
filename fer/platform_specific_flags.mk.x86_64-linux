@@ -10,10 +10,8 @@
 	INCLUDES        = -I /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/include \
 			  -I/../fmt/cmn/ \
 			  -I/$(NETCDF4_DIR)/include \
-			  -I. -Ireadline \
 			  -I/usr/include \
 			  -I/usr/include/X11 \
-			  -I../readline -I../list-2.1 \
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include
@@ -80,7 +78,6 @@
 	SYSLIB		= -L/usr/X11R6/lib64 \
 			  /usr/lib64/libm.a \
 			  /usr/X11R6/lib64/libXpm.a  \
-			  ../list-2.1/liblist.a \
 			  /usr/X11R6/lib64/libXm.a \
 			  /usr/X11R6/lib64/libXt.a \
 			  /usr/X11R6/lib64/libXext.a \
@@ -89,6 +86,7 @@
 			  /usr/X11R6/lib64/libXmu.a \
 			  /usr/X11R6/lib64/libSM.a \
 			  /usr/X11R6/lib64/libICE.a \
+			  /usr/lib64/libreadline.a \
 			  /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/libgcc.a \
 			  /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/libgfortranbegin.a \
 			  /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/libgfortran.a \
@@ -97,7 +95,6 @@
 	TMLIB		= ../lib/tmap_lib.a
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
-	READLINELIB	= ../readline/libreadline.a 
 
 # netcdf4.1 static librarys only (except for libdl)
 

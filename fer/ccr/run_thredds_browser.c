@@ -31,13 +31,12 @@
  *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
  *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-
+#include <wchar.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
-#include <wchar.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>

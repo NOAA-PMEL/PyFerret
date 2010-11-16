@@ -238,19 +238,18 @@
               DO 100 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
                 ddate = taxdat(l1,1,1,1)
+                IF (ddate .NE. bad_flag(ARG1)) THEN
 
 *     Get the string-date for each time
-                CALL ef_get_axis_dates(id,ARG1,ddate,1,datebuf)
-
-*     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date.
-*                READ (datebuf,110,err=900) dayofmon, cmon, iyear
-*                READ (datebuf,120,err=900) hour, minute, second
-
-                tunit = axunits(4)
-
-                CALL time_since_t0(t0string,datebuf,tunit,timesincet0)
+                   CALL ef_get_axis_dates(id,ARG1,ddate,1,datebuf)
+                   tunit = axunits(4)
+                   CALL time_since_t0(t0string,datebuf,tunit,timesincet0)
  
-                result(i,j,k,l) = timesincet0
+                   result(i,j,k,l) = timesincet0
+
+                ELSE
+                   result(i,j,k,l) = bad_flag_result
+                ENDIF
 
                 l1 = l1 + arg_incr(T_AXIS,ARG1)
  100          CONTINUE

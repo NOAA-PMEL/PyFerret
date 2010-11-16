@@ -147,18 +147,22 @@
               DO 100 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
                 ddate = arg_1(i1,j1,k1,l1)
+                IF (ddate .NE. bad_flag(ARG1)) THEN
 
 *     Get the string-date for each time
-                CALL ef_get_axis_dates(id,ARG2,ddate,1,datebuf)
-*                print *, datebuf
+                   CALL ef_get_axis_dates(id,ARG2,ddate,1,datebuf)
 
 *     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date and time.
-                READ (datebuf, 110, err=900) day_of_mon, cmon, iyear
+                   READ (datebuf, 110, err=900) day_of_mon, cmon, iyear
 
-                CALL JULIAN_DAY_OF_YEAR(cmon, day_of_mon, iyear,
+                   CALL JULIAN_DAY_OF_YEAR(cmon, day_of_mon, iyear,
      .                day_of_year, days_this_year)
 
-                result(i,j,k,l) = day_of_year/REAL(days_this_year) 
+                   result(i,j,k,l) = day_of_year/REAL(days_this_year) 
+
+                ELSE
+                   result(i,j,k,l) = bad_flag_result
+                ENDIF 
 
                 l1 = l1 + arg_incr(T_AXIS,ARG1)
  100          CONTINUE

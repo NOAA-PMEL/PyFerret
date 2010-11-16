@@ -42,6 +42,9 @@ c*
 c* This returns the date buffer associated with the 
 c* time axis of an argument.
 c*
+*  V665 *acm*/11/09 Fix ticket 1766, as in #762, if the axis is modulo
+*                   the year 0000 or 0001 returns as blank.  If not modulo
+*		    then we want to return the year correctly.
 
       SUBROUTINE EF_GET_AXIS_DATES(id, iarg, tax, numtimes, datebuf )
 
@@ -106,7 +109,8 @@ c* to be accessible to the external function.
 	REAL*8		tstep
 *
 * Local definitions
-	CHARACTER*20	SECS_TO_DATE, buff
+	LOGICAL		modulo
+	CHARACTER*20	SECS_TO_DATE, SECS_TO_DATE_OUT, buff
 	INTEGER		axis, status, prec,
      .                  TM_GET_CALENDAR_ID, cal_id
 	REAL*8		start_secs, offset_secs, this_secs
@@ -121,6 +125,7 @@ c* to be accessible to the external function.
 
 * get the axis number
 	axis = grid_line( t_dim, grid )
+	modulo = line_modulo(axis)
 	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
 	   WRITE ( date, * ) SNGL(tstep)
 	   RETURN
@@ -147,7 +152,8 @@ c* to be accessible to the external function.
 !	this_secs = ( DNINT(this_secs/prec_fact(prec)) + 0.5 ) * prec_fact(prec)
 
 * Convert to date
-	buff = SECS_TO_DATE(this_secs, cal_id)
+
+	buff = SECS_TO_DATE_OUT(this_secs, cal_id, modulo, prec)
 
 * Select the requested precision
 	IF ( prec .GT. 6 ) THEN		! full precision

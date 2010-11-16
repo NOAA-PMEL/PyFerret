@@ -155,46 +155,54 @@
                DO 100 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
                  ddate =  arg_1(i1,j1,k1,l1)
+		 IF (ddate .NE. bad_flag(ARG1)) THEN
 
 C     Get the string value of dates and put them in the result.
-                 CALL EF_GET_AXIS_DATES 
+                    CALL EF_GET_AXIS_DATES 
      .                (id, ARG2, ddate, 1, datestring)
 
-                 If(precistring .EQ. 'sec') THEN
+                    If(precistring .EQ. 'sec') THEN
                      slen = 20
                      CALL EF_PUT_STRING (datestring, slen,
      .                    result(1,i,j,k,l))
                  
-                 ELSE If(precistring .EQ. 'min') THEN
+                    ELSE If(precistring .EQ. 'min') THEN
                      slen = 17
                      CALL EF_PUT_STRING (datestring(1:17), slen,
      .                    result(1,i,j,k,l))
 
-                 ELSE If(precistring .EQ. 'hou') THEN
+                    ELSE If(precistring .EQ. 'hou') THEN
                      slen = 14
                      CALL EF_PUT_STRING (datestring(1:14), slen,
      .                    result(1,i,j,k,l))
 
-                 ELSE If(precistring .EQ. 'day') THEN
+                    ELSE If(precistring .EQ. 'day') THEN
                      slen = 11
                      CALL EF_PUT_STRING (datestring(1:11), slen, 
      .                    result(1,i,j,k,l))
 
-                 ELSE IF(precistring .EQ. 'mon') THEN
+                    ELSE IF(precistring .EQ. 'mon') THEN
                      slen = 8
                      CALL EF_PUT_STRING (datestring(4:11), slen,
      .                    result(1,i,j,k,l))
 
-                 ELSE IF(precistring .EQ. 'yea') THEN
+                    ELSE IF(precistring .EQ. 'yea') THEN
                      slen = 4
                      CALL EF_PUT_STRING (datestring(8:11), slen,
      .                    result(1,i,j,k,l))
 
-                 ELSE
+                    ELSE
                      slen = 20
                      CALL EF_PUT_STRING (datestring, slen,
      .                    result(1,i,j,k,l))
 
+                    ENDIF
+                 
+		 ELSE
+                    datestring = '...'
+                    slen = 3
+                    CALL EF_PUT_STRING (datestring, slen,
+     .                    result(1,i,j,k,l))
                  ENDIF
                  
                   l1 = l1 + arg_incr(T_AXIS,ARG1)

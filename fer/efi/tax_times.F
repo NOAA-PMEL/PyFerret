@@ -144,10 +144,10 @@
             k = res_lo_ss(Z_AXIS)
             DO 200 k1=arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
  
-                  total = total + 1
 
                   IF ( arg_1(i1,j1,k1,l1) .NE. bad_flag(1) ) THEN
  
+                     total = total + 1
                      good = good + 1
  
                   END IF
@@ -160,8 +160,13 @@
  
          i = i + res_incr(X_AXIS)
  400  CONTINUE
-      
-         result(i,j,k,l) = (good * 100.0) / total
+         IF (total .GT. 0.) THEN
+            result(i,j,k,l) = (good * 100.0) / total
+
+         ELSE
+            result(i,j,k,l) = bad_flag_result
+         ENDIF
+
 
          l = l + res_incr(T_AXIS)
  100  CONTINUE

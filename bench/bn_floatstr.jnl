@@ -1,0 +1,28 @@
+! bn_floatstr.jnl
+! testing new function to convert floating-point 
+! variables to strings.
+
+LET string = FLOATSTR({3.14159,2.71828},"(f3.1)")
+LIST string
+
+! Missing data returned as the null string
+LET string = FLOATSTR({3.14159,2.71828,},"(g8.2)")
+LIST string
+
+! Test some large and small values
+LET var = {3.14159,2.71828,}
+LIST FLOATSTR(36*var,"(e9.4)")
+LIST FLOATSTR(1.e14*var,"(e9.4)")
+LIST FLOATSTR(1.e-14*var,"(e9.4)")
+LIST FLOATSTR(1.e-14*var,"(f4.1)")
+LIST FLOATSTR(1.e-14*var,"(1pg9.2)")
+
+! Result shape is inherited from the input variable
+USE gt4d011.cdf 
+LIST/I=100/J=36:38/T=1-dec-1982:1-jan-1983 FLOATSTR(tauy, "(f8.4)")
+
+USE coads_climatology
+LET var =  FLOATSTR(sst,"(1pg8.3)")
+
+LIST/X=165W:135W/Y=-50/L=1 var
+LIST/X=165W:135W/Y=-50/L=1 STRLEN(var)

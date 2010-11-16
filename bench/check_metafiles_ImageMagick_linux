@@ -51,7 +51,7 @@ foreach plt_file ($plt_files)
 
        set err_plt = 1
     endif
-    if ($num_plt_files != 20 ) set err_plt = 1
+    if ($num_plt_files != 21 ) set err_plt = 1
 end
    
 set err_gif = 0

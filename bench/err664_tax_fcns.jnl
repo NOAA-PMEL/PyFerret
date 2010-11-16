@@ -1,0 +1,23 @@
+! err664_tax_fcns.jnl
+! Fixes for tickets 1766 and 1765
+
+! 1765 Functions did not test for missing data.
+ 
+
+! tax_ functions 
+use gt4d011
+let tval = t[gt=temp]
+
+list tax_dayfrac({`tval[l=1]`,`tval[l=13]`,},tval)
+list tax_day({`tval[l=1]`,`tval[l=13]`,},tval)
+list tax_month({`tval[l=1]`,`tval[l=13]`,},tval)
+list tax_year({`tval[l=1]`,`tval[l=13]`,},tval)
+
+! 1766 tax_year retured 0 for year 0001
+
+def ax/edge/t=1-jan-0000:1-jan-0005:1/unit=year tax
+let a = t[gt=tax]
+list tax_year(a,a)
+
+! Likewise no year for year 0000 and 0001 in tax_datestring
+ list tax_datestring(a, a, "day")

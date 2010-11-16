@@ -11,7 +11,7 @@
 	INCLUDES = \
 	-I/usr/lib/gcc/i386-redhat-linux/4.1.2/include \
 	-I. \
-	-I../../readline-4.1 \
+	-I../../readline \
 	-I/usr/include \
 	-I/usr/include/X11 \
 	-I../../fmt/cmn \
@@ -148,7 +148,7 @@
 	TMLIB = ../lib/tmap_lib.a
 
 	GKSLIB = ../xgks/src/lib/libxgks.a
-	READLINELIB = ../readline-4.1/libreadline.a 
+	READLINELIB = ../readline/libreadline.a 
 
 # For netcdf-4
 
@@ -185,3 +185,4 @@
 #
 # End of platform_specific_includes.mk.i386-linux
 #
+

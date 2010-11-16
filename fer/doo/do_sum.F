@@ -75,7 +75,8 @@
 * internal variable declarations:
         LOGICAL all_bad
 	INTEGER i, j, k, l, pt
-	REAL	bad_com, bad_res, sum
+	REAL	bad_com, bad_res 
+	REAL*8  sum
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
@@ -92,7 +93,7 @@
 	   DO 110 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 110 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
               all_bad = .TRUE.
-              sum = 0.0
+              sum = 0.0D0
 	      DO 100 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	         IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 100
                  sum = sum + com(i,j,k,l)
@@ -111,7 +112,7 @@
 	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 210 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               all_bad = .TRUE.
-              sum = 0.0
+              sum = 0.0D0
 	      DO 200 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	         IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 200
                  sum = sum + com(i,j,k,l)
@@ -130,7 +131,7 @@
 	   DO 310 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               all_bad = .TRUE.
-              sum = 0.0
+              sum = 0.0D0
 	      DO 300 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	         IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 300
                  sum = sum + com(i,j,k,l)
@@ -149,7 +150,7 @@
 	   DO 410 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   DO 410 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               all_bad = .TRUE.
-              sum = 0.0
+              sum = 0.0D0
 	      DO 400 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	         IF ( com(i,j,k,l) .EQ. bad_com ) GOTO 400
                  sum = sum + com(i,j,k,l)

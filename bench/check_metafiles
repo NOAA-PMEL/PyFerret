@@ -4,6 +4,7 @@
 # kob  10/97
 # acm   4/05 add more .plt files for checking, new directory metafile_masters_v580
 # acm  12/06 as suggested by Remik Ziemlinski, use awk rather than cut to get file sizes.
+# acm  11/10 Rename metafile_masters_vxx to metafile_masters_32bit and metafile_masters_64bit
 
 
 set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt linecolors.plt multi_line_labels.plt \
@@ -16,12 +17,12 @@ set num_plt_files = `ls -l *.plt | wc -l `
 set err_plt = 0
 foreach plt_file ($plt_files)
 #    set size = `ls -l $plt_file | cut -b 21-27`
-#    set size2 = `ls -l metafile_masters_v66_x86/$plt_file | cut -b 21-27`
+#    set size2 = `ls -l metafile_masters_64bit/$plt_file | cut -b 21-27`
    set size = `ls -l $plt_file | awk '{print $5}'`
-   set size2 = `ls -l metafile_masters_v66_x86/$plt_file | awk '{print $5}'`
+   set size2 = `ls -l metafile_masters_64bit/$plt_file | awk '{print $5}'`
    if ($size != $size2) then
       set err_plt = 1
-      echo "plt files differ $plt_file size $size metafile_masters_v66_x86/ size $size2" 
+      echo "plt files differ $plt_file size $size metafile_masters_64bit/ size $size2" 
    endif
    if ($num_plt_files != 21 ) set err_plt = 1
 end
@@ -29,36 +30,36 @@ end
 set err_gif = 0
 foreach gif_file ($gif_files)
 #    set size = `ls -l $gif_file | cut -b 21-26`
-#    set size2 = `ls -l metafile_masters_v66_x86/$gif_file | cut -b 21-26`
+#    set size2 = `ls -l metafile_masters_64bit/$gif_file | cut -b 21-26`
    set size = `ls -l $gif_file | awk '{print $5}'`
-   set size2 = `ls -l metafile_masters_v66_x86/$gif_file | awk '{print $5}'`
+   set size2 = `ls -l metafile_masters_64bit/$gif_file | awk '{print $5}'`
    if ($size != $size2) then
       set err_gif = 1
-      echo "gif files differ $gif_file size $size metafile_masters_v66_x86/ size $size2" 
+      echo "gif files differ $gif_file size $size metafile_masters_64bit/ size $size2" 
    endif
 end
  
 set err_ps = 0
 foreach ps_file ($ps_files)
    set size = `ls -l $ps_file | cut -b 21-27`
-   set size2 = `ls -l metafile_masters_v66_x86/$ps_file | cut -b 21-27`
+   set size2 = `ls -l metafile_masters_64bit/$ps_file | cut -b 21-27`
    set size = `ls -l $ps_file | awk '{print $5}'`
-   set size2 = `ls -l metafile_masters_v66_x86/$ps_file | awk '{print $5}'`
+   set size2 = `ls -l metafile_masters_64bit/$ps_file | awk '{print $5}'`
    if ($size != $size2) then
       set err_ps = 1
-      echo "ps files differ $ps_file size $size metafile_masters_v66_x86/ size $size2" 
+      echo "ps files differ $ps_file size $size metafile_masters_64bit/ size $size2" 
    endif
 end
 
 set err_mb = 0
 foreach mb_file ($mb_files)
    set size = `ls -l $mb_file | cut -b 21-27`
-   set size2 = `ls -l metafile_masters_v66_x86/$mb_file | cut -b 21-27`
+   set size2 = `ls -l metafile_masters_64bit/$mb_file | cut -b 21-27`
    set size = `ls -l $mb_file | awk '{print $5}'`
-   set size2 = `ls -l metafile_masters_v66_x86/$mb_file | awk '{print $5}'`
+   set size2 = `ls -l metafile_masters_64bit/$mb_file | awk '{print $5}'`
    if ($size != $size2) then
       set err_mb = 1
-      echo "metafile batch files differ $mb_file size $size metafile_masters_v66_x86/ size $size2" 
+      echo "metafile batch files differ $mb_file size $size metafile_masters_64bit/ size $size2" 
    endif
 end
 

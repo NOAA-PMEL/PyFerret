@@ -4,6 +4,7 @@
 # kob  10/97
 # acm   4/05 add more .plt files for checking, new directory metafile_masters_v580
 # acm  12/06 Use ImageMagick to actually compare the contents of ps and gif files when they differ
+# acm  11/10 Rename metafile_masters_vxx to metafile_masters_32bit and metafile_masters_64bit
 
 # ALSO NOTE THE compare utility (on stout)
 # Here is a way to compare two images by subtracting them using ImageMagick's
@@ -35,12 +36,12 @@ set num_plt_files = `ls -l *.plt | wc -l `
 set err_plt = 0
 foreach plt_file ($plt_files)
     set size = `ls -l $plt_file | awk '{print $5}'`
-    set size2 = `ls -l metafile_masters_v66_x86/$plt_file | awk '{print $5}'`
+    set size2 = `ls -l metafile_masters_64bit/$plt_file | awk '{print $5}'`
     if ("$size" != "$size2") then
-       echo "plt files differ $plt_file size $size metafile_masters_v66_x86/ size $size2" 
+       echo "plt files differ $plt_file size $size metafile_masters_64bit/ size $size2" 
 
        Fprint -R -p portrait -o $plt_file.ps $plt_file
-       Fprint -R -p portrait -o $plt_file.meta.ps metafile_masters_v66_x86/$plt_file
+       Fprint -R -p portrait -o $plt_file.meta.ps metafile_masters_64bit/$plt_file
        compare $plt_file.ps $plt_file.meta.ps $plt_file.diff.ps
        display $plt_file.ps &
        display $plt_file.meta.ps &  
@@ -54,11 +55,11 @@ end
 set err_gif = 0
 foreach gif_file ($gif_files)
     set size = `ls -l $gif_file | awk '{print $5}'`
-    set size2 = `ls -l metafile_masters_v66_x86/$gif_file | awk '{print $5}'`
+    set size2 = `ls -l metafile_masters_64bit/$gif_file | awk '{print $5}'`
     if ("$size" != "$size2") then
-       echo "gif files differ $gif_file size $size metafile_masters_v66_x86/ size $size2" 
+       echo "gif files differ $gif_file size $size metafile_masters_64bit/ size $size2" 
        rm -f $gif_file.diff_gif.gif
-       compare $gif_file metafile_masters_v66_x86/$gif_file $gif_file.diff_gif.gif
+       compare $gif_file metafile_masters_64bit/$gif_file $gif_file.diff_gif.gif
        display  $gif_file &
        display  metafile_masters_v61/$gif_file &
        display $gif_file.diff_gif.gif
@@ -70,11 +71,11 @@ end
 set err_ps = 0
 foreach ps_file ($ps_files)
     set size = `ls -l $ps_file | awk '{print $5}'`
-    set size2 = `ls -l metafile_masters_v66_x86/$ps_file | awk '{print $5}'`
+    set size2 = `ls -l metafile_masters_64bit/$ps_file | awk '{print $5}'`
     if ("$size" != "$size2") then
-       echo "plt files differ $ps_file size $size metafile_masters_v66_x86/ size $size2" 
+       echo "plt files differ $ps_file size $size metafile_masters_64bit/ size $size2" 
        rm -f $ps_file.diff_ps.ps
-       compare $ps_file metafile_masters_v66_x86/$ps_file $ps_file.diff_ps.ps
+       compare $ps_file metafile_masters_64bit/$ps_file $ps_file.diff_ps.ps
        display $ps_file &
        display metafile_masters_v61/$ps_file &
        display $ps_file.diff_ps.ps
@@ -86,15 +87,15 @@ end
 set err_mb = 0
 foreach mb_file ($mb_files)
    set size = `ls -l $mb_file | cut -b 21-27`
-   set size2 = `ls -l metafile_masters_v66_x86/$mb_file | cut -b 21-27`
+   set size2 = `ls -l metafile_masters_64bit/$mb_file | cut -b 21-27`
    set size = `ls -l $mb_file | awk '{print $5}'`
-   set size2 = `ls -l metafile_masters_v66_x86/$mb_file | awk '{print $5}'`
+   set size2 = `ls -l metafile_masters_64bit/$mb_file | awk '{print $5}'`
    if ($size != $size2) then
       set err_mb = 1
-      echo "metafile batch files differ $mb_file size $size metafile_masters_v66_x86/ size $size2" 
+      echo "metafile batch files differ $mb_file size $size metafile_masters_64bit/ size $size2" 
        rm -f $mb_file.ps master_$mb_file.ps diff_$mb_file.ps 
        Fprint -R -p portrait -o $mb_file.ps $mb_file
-       Fprint -R -p portrait -o master_$mb_file.ps metafile_masters_v66_x86/$mb_file
+       Fprint -R -p portrait -o master_$mb_file.ps metafile_masters_64bit/$mb_file
        compare $mb_file.ps master_$mb_file.ps diff_$mb_file.ps
        display $mb_file.ps &
        display master_$mb_file.ps &

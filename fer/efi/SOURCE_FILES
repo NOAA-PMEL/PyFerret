@@ -40,6 +40,7 @@ fft_re.F\
 fill_xy.F\
 findhi.F\
 findlo.F\
+floatstr.F\
 flag2ddups.F\
 gausswt.F\
 gausswt_v0.F\

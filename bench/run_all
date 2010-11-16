@@ -211,6 +211,7 @@ echo "Beginning at $now"
 #($fver <bn301_all_shell.jnl >>$log_file) >>&$err_file
 #($fver <bn311_all_shell.jnl >>$log_file) >>&$err_file
 #($fver <{$bver}_all_shell.jnl >>$log_file) >>&$err_file
+($fver <bn_all_0_shell.jnl >>$log_file) >>&$err_file
 ($fver <bn_all_shell.jnl >>$log_file) >>&$err_file
 
 

@@ -9,6 +9,9 @@
 ! lower case axis zt, variable temp 
 ! mixed case axes grid_x_T, grid_y_T
 
+!******* Note this is NOT implemented in the V6.65 release ******!
+!******* Needs further changes to integrate it with LAS    ******!
+
 use a_cartesian_bug1179.nc
 sh dat/var/xml
 sh var/xml

@@ -868,6 +868,9 @@ void FORTRAN(minmax_init)(int *);
 void FORTRAN(minmax_result_limits)(int *);
 void FORTRAN(minmax_compute)(int *, float *, float *);
 
+void FORTRAN(floatstr_init)(int *);
+void FORTRAN(floatstr_compute)(int *, float *, float *, float *);
+
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -915,7 +918,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 128
+#define N_INTEF 129
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1049,6 +1052,7 @@ struct {
    strcpy(I_EFnames[125].funcname, "unique_str2int");
    strcpy(I_EFnames[126].funcname, "bin_index_wt");
    strcpy(I_EFnames[127].funcname, "minmax");
+   strcpy(I_EFnames[128].funcname, "floatstr");
 /*    
  *  ------------------------------------ 
  */
@@ -3823,6 +3827,9 @@ else if ( !strcmp(name,"bin_index_wt_compute_") ) return (void *)FORTRAN(bin_ind
 else if ( !strcmp(name,"minmax_init_") ) return (void *)FORTRAN(minmax_init);
 else if ( !strcmp(name,"minmax_result_limits_") ) return (void *)FORTRAN(minmax_result_limits);
 else if ( !strcmp(name,"minmax_compute_") ) return (void *)FORTRAN(minmax_compute);
+
+else if ( !strcmp(name,"floatstr_init_") ) return (void *)FORTRAN(floatstr_init);
+else if ( !strcmp(name,"floatstr_compute_") ) return (void *)FORTRAN(floatstr_compute);
 
  }
 /*  End of function pointer list for internally-linked External Functions

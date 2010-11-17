@@ -10,10 +10,9 @@
 	INCLUDES        = -I /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/include \
 			  -I/../fmt/cmn/ \
 			  -I/$(NETCDF4_DIR)/include \
-			  -I. -Ireadline \
+			  -I. \
 			  -I/usr/include \
 			  -I/usr/include/X11 \
-			  -I../readline \
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include
@@ -96,7 +95,7 @@
 	TMLIB		= ../lib/tmap_lib.a
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
-	READLINELIB	= ../readline/libreadline.a 
+	READLINELIB	= /usr/lib64/libreadline.a 
 
 # netcdf4.1 static librarys only (except for libdl)
 

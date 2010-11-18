@@ -329,7 +329,8 @@
 
 
       REAL dx, dy, xxbeg, xxend, yybeg, yyend
-      REAL spansq, cellspan, cellmean, wt_cruise_mean, wsumsq_ijl, wsumsq
+      REAL spansq, cellspan, cellmean, wt_cruise_mean, unwtd_mean,
+     .     wsumsq_ijl, wsumsq, diffsum
 
       REAL*8 xax1,xaxf, yax1,yaxf, tax1,taxf
       INTEGER indx(4,2)
@@ -614,6 +615,8 @@ C  Get coordinates of output axes.
             DO L = indx(4,1), indx(4,2)
             DO j = indx(2,1), indx(2,2)
             DO i = indx(1,1), indx(1,2)
+
+
 	       IF (obs_cruise(i,j,2,L) .GT. 0.) THEN
                   spansq = (cruisespan(i,j,2,l)-cruisespan(i,j,1,l))**2 +
      .                     (cruisespan(i,j,4,l)-cruisespan(i,j,3,l))**2
@@ -621,6 +624,7 @@ C  Get coordinates of output axes.
 
                   wt_cruise_mean = cellspan*
      .                obs_cruise(i,j,1,L)/obs_cruise(i,j,2,L)
+                  unwtd_mean = obs_cruise(i,j,1,L)/obs_cruise(i,j,2,L)
 
                   cell_avg(i,j,1,L) = cell_avg(i,j,1,L) + wt_cruise_mean
                   cell_avg(i,j,2,L) = cell_avg(i,j,2,L) + 1.  
@@ -634,10 +638,12 @@ C  Get coordinates of output axes.
 		     CALL ef_bail_out (id,
      .      'too many cruises in cell. increase K size of work array 8')
 		  ENDIF
-		  cruisemean(i,j,nc_cell,l) = wt_cruise_mean
+
+		  cruisemean(i,j,nc_cell,l) = unwtd_mean
 		  span(i,j,nc_cell,l) = cellspan
 
 	       ENDIF
+
 
             ENDDO
             ENDDO
@@ -671,15 +677,15 @@ C  Get coordinates of output axes.
      .           x1, y1, t1, dx, dy, dt, xf, yf, tf, indx, obs_cruise,
      .           cruisespan)
 
- 300     CONTINUE
+ 300  CONTINUE
 
 * Get data from the last cruise
 
-	icend = n-1
+      icend = n-1
 
-	DO L = indx(4,1), indx(4,2)
-	DO j = indx(2,1), indx(2,2)
-	DO i = indx(1,1), indx(1,2)
+      DO L = indx(4,1), indx(4,2)
+      DO j = indx(2,1), indx(2,2)
+      DO i = indx(1,1), indx(1,2)
 
 	       IF (obs_cruise(i,j,2,L) .GT. 0.) THEN
                   spansq = (cruisespan(i,j,2,l)-cruisespan(i,j,1,l))**2 +
@@ -688,6 +694,7 @@ C  Get coordinates of output axes.
 
                   wt_cruise_mean = cellspan*
      .                obs_cruise(i,j,1,L)/obs_cruise(i,j,2,L)
+                  unwtd_mean = obs_cruise(i,j,1,L)/obs_cruise(i,j,2,L)
 
                   cell_avg(i,j,1,L) = cell_avg(i,j,1,L) + wt_cruise_mean
                   cell_avg(i,j,2,L) = cell_avg(i,j,2,L) + 1.  
@@ -701,19 +708,20 @@ C  Get coordinates of output axes.
 		     CALL ef_bail_out (id,
      .      'too many cruises in cell. increase K size of work array 8')
 		  ENDIF
-		  cruisemean(i,j,nc_cell,l) = wt_cruise_mean
+
+		  cruisemean(i,j,nc_cell,l) = unwtd_mean
 		  span(i,j,nc_cell,l) = cellspan
 
 	       ENDIF
 
-	ENDDO
-	ENDDO
-	ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
       
 *  Put gridded fcn into result variable.
 * wi_sums(i,j,1,L) sum of weights wi in cell
-* V1 sum of normalized weights
-* V2 sum of normalized weights squared
+* V1 sum of weights
+* V2 sum of weights squared
 * for s^2  wsumsq sum of wi*(xi - weighted_mean)**2
 
       k = res_lo_ss(Z_AXIS)
@@ -722,34 +730,34 @@ C  Get coordinates of output axes.
 
             DO 400 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-               IF (cell_avg(i,j,2,L) .EQ. 0) THEN
+               nc_cell = cell_avg(i,j,2,L)
+
+               IF (nc_cell .EQ. 0) THEN
                    result(i,j,k,l) = bad_flag_result
-               ELSE IF (cell_avg(i,j,2,L) .EQ. 1) THEN
+               ELSE IF (nc_cell .EQ. 1) THEN
                    result(i,j,k,l) = 0.
 
 * Compute sum of (cruise-cell-averages - weighted cell mean) squared\
 
-               ELSE IF (cell_avg(i,j,2,L) .GT. 1) THEN
+               ELSE IF (nc_cell .GT. 1) THEN
 
                   cellmean = cell_avg(i,j,1,L)/wi_sums(i,j,1,l)
 
                   wsumsq_ijl = 0.
                   wsumsq = 0.
 		  v1 = 0.
-                  DO 500, nk = 1, cell_avg(i,j,2,L)
+                  DO 500, nk = 1, nc_cell
                       cellspan = span(i,j,nk,L)
-		      wt_cruise_mean = cruisemean(i,j,nk,L)
-		      unwtd_mean = 0.
-		      IF (cellspan .NE. 0.) unwtd_mean = wt_cruise_mean/cellspan
-		      spansq = cellspan*cellspan
+		      unwtd_mean = cruisemean(i,j,nk,L)
 
+		      spansq = cellspan*cellspan
 		      wsumsq = wsumsq + spansq
 
-* sum the squares of difference of unweighted indiv. means minus weighted mean,
+* Sum the squares of difference of unweighted cruise means 
+* minus weighted cell mean
 
-		      difsum = unwtd_mean - cellmean
-                      wsumsq_ijl = wsumsq_ijl + 
-     .                  cellspan*(difsum)**2
+		      diffsum = unwtd_mean - cellmean
+                      wsumsq_ijl = wsumsq_ijl + cellspan*(diffsum)**2
 
  500              CONTINUE
                   V1 = wi_sums(i,j,1,l)

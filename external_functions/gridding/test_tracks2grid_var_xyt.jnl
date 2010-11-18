@@ -52,13 +52,13 @@ go fland 20
 
 
 pause
-shade/lev/x=-10:10/y=40:60 if fco2_weighted_var[t=@ave] GT 0 then fco2_weighted_var[t=@ave]
+shade/lev/x=-10:10/y=40:60 fco2_weighted_var[t=@ave]
 SET DATA 1
 GO polymark poly/over/nokey/pal=greyscale lon, lat, cruise_no, square
 
 
 pause
 let fc =  FCO2_WEIGHTED_VAR^0.5
-shade if fc[t=@ave] GT 0 then fc[t=@ave]
+shade fc[t=@ave]
 go fland 20
 

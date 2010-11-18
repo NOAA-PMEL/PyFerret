@@ -12,13 +12,6 @@ TOOLSUI_JAR = toolsUI/toolsUI-4.1.jar
 
 JAVA_SOURCE_FILES = $(wildcard src/gov/noaa/pmel/ferret/threddsBrowser/*.java)
 
-ifndef JAVA_HOME
-GUESS_JDK16_HOMES = $(shell ls -1 -r -d /usr/local/jdk1.6*)
-ifneq ($(words $(GUESS_JDK16_HOMES)), 0)
-JAVA_HOME = $(firstword $(GUESS_JDK16_HOMES))
-endif
-endif
-
 .PHONY : all
 all : threddsBrowser.jar
 
@@ -33,8 +26,11 @@ ifdef JAVA_HOME
 	$(JAVA_HOME)/bin/javac -sourcepath src -classpath bin:$(TOOLSUI_JAR) -d bin $(JAVA_SOURCE_FILES)
 	$(JAVA_HOME)/bin/jar cf threddsBrowser.jar -C bin gov/noaa/pmel/ferret/threddsBrowser
 else
-	@echo "JAVA_HOME must be defined as the location of a Java 6 Development Kit"
-	@echo "for example, /usr/local/jdk1.6.0_11 or /home/smith/jdk1.6.0_20"
-	@exit 1
+	@echo "***"
+	@echo "*** WARNING"
+	@echo "*** JAVA_HOME must be defined as the location of a Java 1.6 Development Kit"
+	@echo "*** for example, /usr/java/jdk1.6.0_22 or /usr/java/latest"
+	@echo "*** optional threddsBrowser.jar not built (SET DATA /BROWSE won't work)"
+	@echo "***"
 endif
 

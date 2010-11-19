@@ -84,6 +84,7 @@
 * V664 *kms*  9/10 Added python-backed external functions via $FER_DIR/lib/libpyefcn.so
 *                  Made external function language check more robust
 *                  Check that GLOBAL_ExternalFunctionsList is not NULL in ef_ptr_from_id_ptr
+*      *kms* 11/10 Check for libpyefcn.so in $FER_LIBS instead of $FER_DIR/lib
 */
 
 
@@ -137,7 +138,7 @@ static jmp_buf jumpbuffer;
 static sigjmp_buf sigjumpbuffer;
 static volatile sig_atomic_t canjump;
 
-/* handle returned from dlopen of $FER_DIR/lib/libpyefcn.so */
+/* handle returned from dlopen of $FER_LIBS/libpyefcn.so */
 static void *pyefcn_handle = NULL;
 
 /*
@@ -1214,7 +1215,7 @@ int FORTRAN(efcn_already_have_internals)( int *id_ptr )
  * this function is done at this time to ensure that the python module is
  * valid and contains suitable functions.  Initialization is accomplished
  * using generic wrapper functions.  These functions are in an external
- * shared-object library $FER_DIR/lib/libpyefcn.so to avoid requiring
+ * shared-object library $FER_LIBS/libpyefcn.so to avoid requiring
  * a shared-object python library for ferret-users who do not use python-
  * backed external functions.
  * Input arguments:
@@ -1239,33 +1240,33 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
     ExternalFunction *ef_ptr; 
     char libname[1024];
 
-    /* Load $FER_DIR/lib/libpyefcn.so if not already in memory */
+    /* Load $FER_LIBS/libpyefcn.so if not already in memory */
     if ( pyefcn_handle == NULL ) {
         char *fer_dir;
 
-        fer_dir = getenv("FER_DIR");
+        fer_dir = getenv("FER_LIBS");
         if ( fer_dir == NULL ) {
-            strcpy(errstring, "FER_DIR not defined");
+            strcpy(errstring, "FER_LIBS not defined");
             *lenerrstring = strlen(errstring);
             return;
         }
         strcpy(libname, fer_dir);
-        strcat(libname, "/lib/libpyefcn.so");
+        strcat(libname, "/libpyefcn.so");
         pyefcn_handle = dlopen(libname, RTLD_LAZY);
         if ( pyefcn_handle == NULL ) {
             sprintf(errstring, "Python-backed external functions not supported \n"
-                            "(unable to load $FER_DIR/lib/libpyefcn.so: %s)", dlerror());
+                            "(unable to load $FER_LIBS/libpyefcn.so: %s)", dlerror());
             *lenerrstring = strlen(errstring);
             return;
         }
     }
 
-    /* Find the pyefcn_init function in $FER_DIR/lib/libpyefcn.so */
+    /* Find the pyefcn_init function in $FER_LIBS/libpyefcn.so */
     if ( pyefcn_init_func == NULL ) {
         pyefcn_init_func = (void (*)(int, char [], char []))dlsym(pyefcn_handle, "pyefcn_init");
         if ( pyefcn_init_func == NULL ) {
             sprintf(errstring, "Python-backed external functions not supported \n"
-                            "(unable to find pyefcn_init in $FER_DIR/lib/libpyefcn.so: %s)", dlerror());
+                            "(unable to find pyefcn_init in $FER_LIBS/libpyefcn.so: %s)", dlerror());
             *lenerrstring = strlen(errstring);
             return;
         }
@@ -1593,14 +1594,14 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
           /* pyefcn_handle should never be NULL if we got here, but just in case... */
           if ( pyefcn_handle == NULL ) {
               fputs("Python-backed external functions not supported \n"
-                    "(handle for $FER_DIR/lib/libpyefcn.so not assigned in efcn_get_custom_axes)", stderr);
+                    "(handle for $FER_LIBS/libpyefcn.so not assigned in efcn_get_custom_axes)", stderr);
               *status = FERR_EF_ERROR;
               return;
           }
           pyefcn_custom_axes_func = (void (*)(int, char[], char[])) dlsym(pyefcn_handle, "pyefcn_custom_axes");
           if ( pyefcn_custom_axes_func == NULL ) {
               fprintf(stderr, "Python-backed external functions not supported \n"
-                              "(unable to find pyefcn_custom_axes in $FER_DIR/lib/libpyefcn.so: %s)", dlerror());
+                              "(unable to find pyefcn_custom_axes in $FER_LIBS/libpyefcn.so: %s)", dlerror());
               *status = FERR_EF_ERROR;
               return;
           }
@@ -1742,14 +1743,14 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, float *memory, int *mr_list_p
           /* pyefcn_handle should never be NULL if we got here, but just in case... */
           if ( pyefcn_handle == NULL ) {
               fputs("Python-backed external functions not supported \n"
-                    "(handle for $FER_DIR/lib/libpyefcn.so not assigned in efcn_get_result_limits)", stderr);
+                    "(handle for $FER_LIBS/libpyefcn.so not assigned in efcn_get_result_limits)", stderr);
               *status = FERR_EF_ERROR;
               return;
           }
           pyefcn_result_limits_func = (void (*)(int, char[], char[])) dlsym(pyefcn_handle, "pyefcn_result_limits");
           if ( pyefcn_result_limits_func == NULL ) {
               fprintf(stderr, "Python-backed external functions not supported \n"
-                              "(unable to find pyefcn_result_limits in $FER_DIR/lib/libpyefcn.so: %s)", dlerror());
+                              "(unable to find pyefcn_result_limits in $FER_LIBS/libpyefcn.so: %s)", dlerror());
               *status = FERR_EF_ERROR;
               return;
           }
@@ -2310,7 +2311,7 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
           /* pyefcn_handle should never be NULL if we got here, but just in case... */
           if ( pyefcn_handle == NULL ) {
               fputs("Python-backed external functions not supported \n"
-                    "(handle for $FER_DIR/lib/libpyefcn.so not assigned in efcn_compute)", stderr);
+                    "(handle for $FER_LIBS/libpyefcn.so not assigned in efcn_compute)", stderr);
               *status = FERR_EF_ERROR;
               return;
           }
@@ -2318,7 +2319,7 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
                                 dlsym(pyefcn_handle, "pyefcn_compute");
           if ( pyefcn_compute_func == NULL ) {
               fprintf(stderr, "Python-backed external functions not supported \n"
-                              "(unable to find pyefcn_compute in $FER_DIR/lib/libpyefcn.so: %s)", dlerror());
+                              "(unable to find pyefcn_compute in $FER_LIBS/libpyefcn.so: %s)", dlerror());
               *status = FERR_EF_ERROR;
               return;
           }

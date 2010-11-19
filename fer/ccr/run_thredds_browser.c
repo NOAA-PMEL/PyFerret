@@ -31,6 +31,7 @@
  *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
  *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+
 #include <wchar.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -78,9 +79,9 @@ int run_thredds_browser_(char dataset_name[], char err_warn_msg[], int max_len_d
  * returned.  If an error occurs, datasetName is empty, -1 is returned and an error 
  * message is written to errWarn.
  *
- * Requires the environment variable FER_DIR and the jar files
- * ${FER_DIR}/lib/threddsBrowser.jar (from the ThreddsBrowser Java project) and
- * ${FER_DIR}/lib/toolsUI.jar (from http://www.unidata.ucar.edu/software/netcdf-java/)
+ * Requires the environment variable FER_LIBS and the jar files
+ * ${FER_LIBS}/threddsBrowser.jar (from the ThreddsBrowser Java project) and
+ * ${FER_LIBS}/toolsUI.jar (from http://www.unidata.ucar.edu/software/netcdf-java/)
  */
 int runThreddsBrowser(char datasetName[], char errWarn[]) {
     char *envVal;
@@ -127,12 +128,12 @@ int runThreddsBrowser(char datasetName[], char errWarn[]) {
     }
 
     /* Create the class path for the jar files needed */
-    envVal = getenv("FER_DIR");
+    envVal = getenv("FER_LIBS");
     if ( envVal == NULL ) {
-        strcat(errWarn, "ERROR: environment variable FER_DIR is not defined\n");
+        strcat(errWarn, "ERROR: environment variable FER_LIBS is not defined\n");
         return -1;
     }
-    snprintf(classPath, 2*FILENAME_MAX, "%s/lib/threddsBrowser.jar:%s/lib/toolsUI.jar", envVal, envVal);
+    snprintf(classPath, 2*FILENAME_MAX, "%s/threddsBrowser.jar:%s/toolsUI.jar", envVal, envVal);
 
     /* Run the ThreddsBrowser application */
     argvStack[0] = javaExeName;

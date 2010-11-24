@@ -84,10 +84,6 @@ repeat/j=10:90:10 label `ME_xx` `ME_yy`  -1 `ME_angletext` .09 "`ME_angle`"
 repeat/j=95:95:1  label `ME_xx` `ME_yy`  -1 `ME_angletext` .09 "`ME_angle`"
 
 !**************************************************************
-! Return to default
-ppl axset  1,1,1,1
-
-!**************************************************************
 cancel variable ME_*
 cancel symbol ME_*
 

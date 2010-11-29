@@ -1,0 +1,27 @@
+! bn_show_xml_file.jnl
+! Testing SHOW DATA/OUTFILE
+!         SHOW AXIS/OUTFILE
+!         SHOW VAR/OUTFILE
+!         SAY/OUTFILE
+!
+! Similar to LAS iosp script header.jnl
+! capability to be expanded to all SHOW commands in the future.
+
+use gt4d011
+
+DEFINE SYMBOL output_xml_file = the_xml_file.xml
+
+say/quiet/outfile=($output_xml_file)/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+say/quiet/outfile=($output_xml_file)/append <data>
+
+show var/xml/append/outfile=($output_xml_file)
+show data/var/xml/append/outfile=($output_xml_file)
+show axis/all/xml/append/outfile=($output_xml_file)
+say/quiet/outfile=($output_xml_file)/append </data>
+
+! on 32-bit machine the cat command below doesnt show file contents if
+! the file is still open. Close it by listing to another file.
+list/clobber/file=dummy.dat 1  
+
+sp cat the_xml_file.xml
+

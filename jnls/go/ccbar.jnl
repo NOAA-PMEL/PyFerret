@@ -1,0 +1,128 @@
+\CANCEL MODE verify
+! ccbar.jnl - 5/02  ms and acm
+
+! Description: Continuous colorbar script: uses a shade plot in a viewport to make a colorbar
+! 
+
+!          arg 1  arg 2  arg 3  arg 4  arg 5  arg 6  arg 7  arg 8
+! GO ccbar  x1     x2     y1     y2     v1     v2     dv     orient
+!
+!         x1 = x lo limit of rectangle for the colorbar
+!         x2 = x hi limit of rectangle for the colorbar
+!         y1 = y lo limit of rectangle for the colorbar
+!         y2 = y hi limit of rectangle for the colorbar
+
+!         v1 = lo value on colorbar 
+!         v2 = hi value on colorbar
+!         dv = delta value for clorbar axis
+!
+!         arg 7 = orientation, v for vertical or h for horizontal, default v
+!         arg 8 = palette to use, optional
+
+! Where the first four arguments define a rectangle, as a fraction 
+! of the entire plot page.  This is equivalent to how DEFINE VIEWPORT 
+! works.  Its qualifiers /XLIMITS=x1,x2 and /YLIMITS=y1,y2 allow the 
+! user to specify a portion of the graphics window as the viewport.
+
+!  Example:
+!   yes? SET VIEW full
+!   yes? SHADE/i=1:50/y=1:50/NOKEY i+j
+!   yes? GO ccbar .91 .94 .2 .8 0 100 2 
+!
+!  Or, a horizontal colorbar with a viewport plot:
+!   yes? SET VIEW ur
+!   yes? FILL/I=1:50/J=1:50/LEV=(0,110,2)/NOKEY/PAL=no_green i+j
+!   yes? GO ccbar 0.65,0.9, 0.92,0.94, 0,110,2, h, no_green
+
+
+! Check inputs. First 7 are required
+
+QUERY/IGNORE $1%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $2%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $3%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $4%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $5%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $6%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $7%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $8%v%
+LET ccb_orient = $8"1|v>1|h>2|*>1"
+
+DEFINE SYM ccb_pal = $9"none"
+LET ccb_given = ($ccb_pal%|none>0|*>1%)
+IF `ccb_given EQ 1` THEN 
+   DEFINE SYM ccb_pal = /PAL=$9
+ELSE
+   CANCEL SYM ccb_pal 
+ENDIF
+
+! Define the viewport to contain the colorbar
+
+LET ccb_x1 = $1
+LET ccb_x2 = $2
+LET ccb_y1 = $3
+LET ccb_y2 = $4
+
+DEFINE VIEW/AXES/text=0.6/XLIMITS=`ccb_x1`,`ccb_x2`/YLIMITS=`ccb_y1`,`ccb_y2` ccb_cbar$1$2$3$4
+SET VIEW ccb_cbar$1$2$3$4
+
+!  Set up to plot a variable with desired range
+LET ccb_v1 = $5
+LET ccb_v2 = $6
+LET ccb_dv = $7
+
+DEFINE AXIS/X=1:2:1 ccb_xcb 
+DEFINE AXIS/Y=`ccb_v1`:`ccb_v2`:`ccb_dv` ccb_ycb
+LET ccb_var = 0*x[gx=ccb_xcb] + y[gy=ccb_ycb]
+
+! ----------------------------------------------------------------------
+!  Set the label format.  This could be further customized.
+
+! I3 if range in [-99,999]
+
+LET ccb_fmt = 0
+IF `ccb_v1 GE -99` THEN
+  IF `ccb_v2 LT 1000` THEN LET ccb_fmt = 1
+  IF `ccb_v2 LT 1000` THEN DEFINE SYM ccb_yform = (I3)
+ENDIF
+
+!  I2 format if range in [-9,99]
+
+IF `ccb_v1 GE -9` THEN
+  IF `ccb_v2 LT 100` THEN LET ccb_fmt = 1
+  IF `ccb_v2 LT 100` THEN DEFINE SYM ccb_yform = (I2)
+ENDIF
+
+!  I1 if in range 0 [0,9]   This may not be adequate!
+IF `ccb_v1 GE 0` THEN 
+  IF `ccb_v2 LT 10` THEN LET ccb_fmt = 1
+  IF `ccb_v2 LT 10` THEN DEFINE SYM ccb_yform = (I1)
+ENDIF
+
+! Otherwise use default axis labelling...
+
+IF `ccb_v2 - ccb_v1 LT 2` THEN 
+  LET ccb_fmt = 0
+ENDIF
+
+! ----------------------------------------------------------------------
+
+!  Plot the variable within the colorbar.
+
+PPL yfor
+IF `ccb_orient EQ 1` THEN
+   SHADE/LEV=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/NOKEY/NOLAB/AXES=0,0,0,1($ccb_pal)/SET ccb_var
+   IF `ccb_fmt eq 1` THEN PPL YFOR ($ccb_yform)
+   PPL SHADE
+ELSE
+set mode ver
+   SHADE/TRANS/LEV=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/NOKEY/NOLAB/AXES=1,0,0,0($ccb_pal)/SET ccb_var
+   IF `ccb_fmt eq 1` THEN PPL XFOR ($ccb_yform)
+   PPL SHADE
+ENDIF
+
+! Clean up
+!CANCEL VAR ccb_*
+!CANCEL AXIS ccb_xcb
+!CANCEL AXIS ccb_ycb
+
+SET MODE/LAST verify

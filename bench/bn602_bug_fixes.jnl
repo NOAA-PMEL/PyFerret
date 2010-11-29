@@ -1,0 +1,32 @@
+! bn602_bug_fixes.jnl
+! test various fixes that went into version 6.02
+! 09-Nov-2006 ACM
+
+! err601_sho_ax_xml_calendar.jnl
+! bug 1468: SHOW AXIS/ALL/XML listed the wrong info for the calendar
+GO bn_reset
+GO err601_sho_ax_xml_calendar.jnl
+
+! err601_index_111.jnl
+! bug 1463 region that points to index -111 on modulo axis confused
+! with unspecified_int4.
+GO bn_reset
+GO err601_index_111.jnl
+
+! err601_irregular_axis.jnl
+! Check for irregular axis actually being irregular failed; bug 1483
+GO bn_reset
+GO err601_irregular_axis.jnl
+
+
+! err601_check_missing_3arg.jnl
+! see bug 1485, check on missing coordinates for 3-argument graphics
+GO bn_reset
+GO err601_check_missing_3arg.jnl
+
+! err601_missing_string_element.jnl
+! Bug 1488; Seg fault when try to list a string variable
+!  when the last element is missing.
+GO bn_reset
+GO err601_missing_string_element.jnl
+

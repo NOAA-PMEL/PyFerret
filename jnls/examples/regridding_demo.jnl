@@ -1,0 +1,177 @@
+CANCEL MODE VERIFY
+! Description: tutorial to introduce FERRET regridding concepts
+
+MESSAGE/CONTINUE   ... setting up demo environment ...
+! regridding.jnl *sh* 11/91 - regridding demo
+! eliminate the program state left by previous activities
+CANCEL REGION
+CANCEL VARIABLES/ALL
+CANCEL DATA/ALL
+SET WINDOW/SIZE=0.7/ASPECT=.75:axis   ! default
+SET GRID ABSTRACT
+SET MODE CALENDAR:DAYS
+SET MODE VERIFY     ! display the command lines below at the user's console
+
+! This demonstration/tutorial will introduce FERRET regridding concepts.
+
+! As the demonstration runs please continue to read the text on the screen.
+! You will see exactly the commands that are controlling the FERRET program.
+! Lines that begin with "!" are comment lines - no action is taken by FERRET.
+
+! The explanatory text provided is quite brief.
+! Further explanation is provided in the FERRET Users' Guide.
+
+! This demonstration presumes that you are seated at a windowing screen.
+! ==== Parts of this demo will not work properly on dumb terminal displays ====
+
+MESSAGE
+
+! We begin by selecting the ETOPO data set: earth surface relief
+! We will display some data over North America.
+! Notice that the resolution of this particular data set is quite low.
+
+SET DATA etopo120
+SHADE/X=160W:40W/Y=20N:70N rose
+
+message
+
+! Now we will define new axes and a new grid with finer resolution.
+! We will then view the same data regridded to this new grid.
+! FERRET regridding is controlled by "g=...".
+! By default regridding is done via multi-linear interpolation.
+! Note that interpolation may produce some undesirable effects
+!      e.g. eliminating much of Florida.  
+
+DEFINE AXIS/X=160W:40W:.5/UNIT=LONGITUDE xfine
+DEFINE AXIS/Y=20N:70N:.5/UNIT=LATITUDE   yfine
+DEFINE GRID/X=xfine/Y=yfine gfine
+SHADE/X=160W:40W/Y=20N:70N rose[g=gfine]
+
+message The @AVE transformation improves this behavior in this instance
+
+SHADE/X=160W:40W/Y=20N:70N rose[g=gfine@AVE]
+
+message
+
+! Gridded data fields often exist on grids with unequally spaced points.
+! The subsampled Levitus climatology provided with FERRET is an example
+! of such a data set.
+
+! We will plot the upper 100 meters of temperature at several arbitrary
+! lat./long. positions and indicate the points with a large marker ("2").
+! The unequal spacing of the point along the depth axis is apparent.
+
+! Note:  "SHOW GRID/Z=0:100 temp"   could be used to list the exact depths.
+
+SET DATA levitus_climatology
+PLOT/X=140W/Z=0:100/LINE/SYMBOL=2 temp[Y=20N], temp[Y=10N], temp[Y=0]
+
+message
+
+! Suppose we require this data every 5 meters in the vertical.
+! We can define a grid to acheive this.
+
+DEFINE AXIS/Z=0:5000:5/UNIT=meters z5
+DEFINE GRID/LIKE=temp/Z=z5  gz5
+
+! The "LIKE=temp" ensures that the original X and Y axes will be preserved.
+
+! Now we'll plot the original "curves" and overlay the regridded values.
+
+LET tempz5 = temp[g=gz5]
+PLOT/X=140W/Z=0:100 temp[Y=20N], temp[Y=10N], temp[Y=0]
+PLOT/OVERLAY/SYMBOLS/X=140W/Z=0:100 tempz5[Y=20N], tempz5[Y=10N], tempz5[Y=0]
+
+! Note that the LIST command could be used to obtain these results in a file.
+
+message
+
+! A common need for regridding is to compare variables from different
+! data  sets.
+! As a test case we will examine sea surface temperature fields from 2
+! different sources: Esbensen-Kushnir and COADS
+! First we will shade Esbensen-Kushnir sst and overlay the COADS sst in
+! the North Pacific.
+
+SET DATA esku_heat_budget, coads_climatology
+SET REGION/Y=0:70N/X=130E:60W
+SHADE/T="15-JAN"           sst[d=esku_heat_budget]
+GO land
+CONTOUR/OVERLAY/T="15-JAN" sst[d=coads_climatology]
+
+message
+
+! Clearly, the two fields are similar.
+! We would like to subtract them to examine the differences.
+! Unfortunately the two fields are on different grids.
+! The SHOW GRID command will next be used to compare the latitudes of sst
+! grid points between 1 and 5 degrees north from each data set:
+
+!	SHOW GRID/Y=1N:5N sst[d=esku_heat_budget] sst[d=coads_climatology]
+
+message
+
+SHOW GRID/Y=1N:5N sst[d=esku_heat_budget] sst[d=coads_climatology]
+message
+
+! Now we will use the grid from the COADS data set to regrid the 
+! Esbensen-Kushnir sst to the (finer) COADS grid. And shade the difference 
+! field using a zero-centered color palette.
+
+LET DIFF = sst[d=esku_heat_budget,g=sst[d=coads_climatology]] - sst[d=coads_climatology]
+SHADE/T="15-JAN"/LEVELS=(-3,3,0.5) diff
+GO rgb_centered
+GO land
+
+message
+
+! What happens when the dimensionality of variables differs ?
+! As a test case lets examine the US Navy Fleet Numerical winds.
+! We will use the earth surface relief to create land masses.
+
+! Note:  "Using every 2th vector in the X direction" is an
+! informational message from FERRET.
+
+set data monthly_navy_winds
+shade/lev="(0)(8000)"/nokey rose[d=etopo120]
+vector/l=1/over uwnd,vwnd
+
+message
+
+! How can we eliminate the wind values over the land ?
+! The earth relief data should allow us to do this.
+! However the winds are defined at different latitude/longitude
+! points from the earth relief.
+! Also ==> "uwnd" (and "vwnd") has discrete time locations whereas 
+!          "rose" is time-independent.
+
+message
+
+SHOW GRID   rose[d=etopo120] 
+
+SHOW GRID   uwnd[d=monthly_navy_winds]
+message
+
+! If we request "rose[g=fnoc251]" FERRET will flag an error because the
+! "rose" cannot be unambiguously located on a time axis.
+! To obtain "rose" on the latitude/longitude points of "uwnd" we define
+! a new grid which is like "uwnd" but keeps the (normal) time axis
+! of the variable "rose".
+ 
+DEFINE GRID/LIKE=uwnd[d=monthly_navy_winds]/T=rose[d=etopo120] gmask
+
+message
+
+! Then we will use this grid to create a land mask.
+! And use the mask to vector plot the winds only over the oceans.
+
+LET ocean = if rose[d=etopo120,g=gmask] le 0 then 1
+SHADE/LEVELS="(0)(8000)"/nokey rose[d=1,g=gmask]
+VECTOR/L=1/OVER uwnd*ocean, vwnd*ocean
+
+message
+
+! done - restore normal FERRET states
+SET MODE VERIFY
+GO rgb_rainbow
+SET MODE CALENDAR:MINUTES

@@ -1,0 +1,102 @@
+set mode verify
+! 
+!binary_read_demo.jnl (4/99) *js*
+!
+
+!Description: Demonstration of v5.0 binary read capabilities
+
+!Usage: yes? GO binary_read_demo
+
+
+
+!
+!Create temporary file consisting of REAL*4 values 0:47
+!and create sample grid for this file
+!
+message
+
+def sym file sDemoPermutedBinaryTest.dat
+sp rm -f ($file)
+list/i=1:48/form=stream/file=($file) i-1
+canc data/all
+
+def axis/x=1:1:1 xax
+def axis/y=1:2:1 yax
+def axis/z=1:3:1 zax
+def axis/t=1:4:1 tax
+def grid/x=xax/y=yax/z=zax/t=tax mygrid
+
+!
+!Now load the file in "normal order." The first variable (num) should
+!contain the values 0:23, and the second variable will contain the
+!values 24:47
+!
+
+message
+file/format=stream/var=num,num1/grid=mygrid ($file)
+list num
+list num1
+
+!
+!Now the file will be loaded and permuted. In the following example,
+!the order is tzyx instead of the default of xyzt
+!
+message
+file/format=stream/var=num,num1/grid=mygrid/order=tzyx ($file)
+list num
+list num1
+
+!
+!Variables can also be part of the permutation. The 'v' option
+!can be used in the order qualifier. In the following example,
+!the order is vxyzt
+!
+message
+file/format=stream/var=num,num1/grid=mygrid/order=vxyzt ($file)
+list num
+list num1
+
+sp rm -f ($file)
+
+
+!
+!The following commands are used to determine if your system
+!is a big-endian or little-endian system. This is used to determine
+!which binary files to use for upcoming examples
+message
+def sym isbig ($BYTEORDER%|BIG>TRUE|*>FALSE%)
+if ($isbig) then def sym file int.dat else def sym file intSwapped.dat
+
+!
+!Now, read in a list of INTEGER*4 numbers. Note the addition of the
+!/type=i4 qualifier
+!
+message
+file/format=stream/var=num,num1/grid=mygrid/type=i4 ($file)
+list num
+list num1
+
+!
+!Same as before, but with INTEGER*2 (using /type=i2)
+!
+message
+if ($isbig) then def sym file short.dat else def sym file shortSwapped.dat
+file/format=stream/var=num,num1/grid=mygrid/type=i2 ($file)
+list num
+list num1
+
+!
+!Finally, we'll use a file of 24 INTEGER*2 followed by 24 REAL*8 numbers
+!and read it in using /type=i2,r8
+!
+message
+if ($isbig) then def sym file mixed.dat else def sym file mixedSwapped.dat
+file/format=stream/var=num,num1/grid=mygrid/type=i2,r8 ($file)
+list num
+list num1
+
+
+canc sym file
+set mode/last verify
+
+

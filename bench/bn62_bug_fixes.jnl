@@ -1,0 +1,8 @@
+! bn62_bug_fixes.jnl
+! Fixes that go into v6.2 release
+
+GO bn_reset
+GO err618_julday.jnl
+
+GO bn_reset
+GO err611_polygons.jnl

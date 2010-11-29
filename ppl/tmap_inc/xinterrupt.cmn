@@ -1,0 +1,5 @@
+* COMMON to communicate asynchronous interrupts to PPLUS routines
+* *sh* 1/23/89
+	COMMON /XINTERRUPT/ interrupted
+
+	LOGICAL interrupted

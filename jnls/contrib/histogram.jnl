@@ -1,0 +1,51 @@
+\CANCEL MODE VERIFY    ! histogram.jnl
+! partially updated 4/94 for Ferret V3.10
+! (could use g=@asn to create variable based on hvar axis with unique-ified
+! points but running out of axis memory is a limitation)
+
+! Description: generate and plot a frequency histogram from a FERRET variable
+
+! Usage:  GO histogram expression
+
+! check that all necessary input arguments were supplied
+QUERY/IGNORE $1"<Usage:GO histogram expression"
+
+! save the users region and data set to be restored later
+define region/default husr
+set data/save
+
+! produce a sorted, numbered listing of the user's data in a file
+! "**"'s are removed from the data with unix sed
+spawn rm -f ferret_histo.dat ferret_histo.sort
+list/file=ferret_histo.dat/form=(1x,f18.9)/nohead $1
+spawn fgrep -v '**' ferret_histo.dat | sort -n  | awk '{print NR,$0}' > ferret_histo.sort
+spawn rm -f ferret_histo.dat
+
+! setup to read the data back - allocate space for 40K by default
+cancel region
+define axis/x=1:40000:1 histsize
+define grid/x=histsize histgrid
+file/grid=histgrid/var=hcount,hval ferret_histo.sort
+
+! define variables needed for the histogram
+! hcdf - a normalized "counter" that increments for each data point
+! hpdf - the raw probability density function for the users data
+! The PDF approximates the derivative of the CDF as
+! d/dx(CDF) = d/di(CDF) / d/di(HVAL) where HVAL are the sorted data values.
+! An arbitrary delta i of 10 points is used.  Large data sets could use a 
+! larger delta i.
+! e.g. LET hpdf = 50/((hval[i=@shf:+25]-hval[i=@shf:-25])*hcount[x=@max])
+LET hcdf = hcount/hcount[x=@max] ! normalized for cumulative prob. dens. fct
+LET hpdf = 10/((hval[i=@shf:+5]-hval[i=@shf:-5])*hcount[x=@max])
+
+! various results can be plotted from this
+! plot/vs hval,hcdf              ! cumulative probability density function
+! plot/vs hval,hpdf              ! approximate probability density function
+! plot/vs hval,hpdf[i=@sbx:11]   ! histogram: smoothed PDF
+
+! here is a fully labelled plot using an overlay technique to get the labels
+! For large data sets smoothing can be increased using a larger @SBX argument 
+define alias histplot PLOT/VS/NOLAB HVAL,HPDF[I=@SBX:11]
+go histogram.plot $1
+
+SET MODE/LAST VERIFY

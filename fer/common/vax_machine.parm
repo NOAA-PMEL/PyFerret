@@ -1,0 +1,11 @@
+* VAX_MACHINE.PARM
+
+* parameters relevant to VAX numerical representations
+
+	INTEGER	int4_max
+	REAL	real4_epsilon
+	REAL*8  r8_int4_max
+
+	PARAMETER     (	int4_max	= 2147483647,	! = 2**31 - 1
+     .		        r8_int4_max	= 2147483647.D0,
+     .			real4_epsilon	= 2.**(-24)	)

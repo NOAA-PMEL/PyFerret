@@ -1,0 +1,11 @@
+! err540_samplexy_missing.jnl
+! 3/03 *acm
+
+! previously missing data in the sample points caused Ferret to hang
+
+use coads_climatology
+let asst = samplexy(sst, {171,173,-1.e34}, {-1,1,13})
+list asst
+
+let asst = samplexy(sst, {171,173,169}, {-1,,13})
+list asst

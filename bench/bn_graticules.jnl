@@ -1,0 +1,102 @@
+! /GRAT, /HGRAT and /VGRAT to set graticule lines
+! ACM March 12, 2004
+! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
+!            and cancel mode logo, so that .plt files are comparable.
+
+ppl axnmtc,2,2
+
+ ! GRAT on plot commands
+PLOT/grat/i=1:100 sin(i/5)
+let a = sin(i/5) * cos(j/8)
+CONTOUR/color=ligh/grat=(color=red)/i=1:100/j=1:80 a
+use coads_climatology
+SHADE/grat=(color=white) sst[L=1]
+FILL/grat=dash sst[l=1]
+VECTOR/color=red/grat=(blue,dash) sst[l=1], sst[l=2]
+let b = {1,2,1} 
+let c = {2,1,0.5}
+POLYGON/thick/color=red/pal=blue/grat b,c
+
+! More complex GRAT arguments
+plot/grat="large(dash),small(dash,color=blue)"/i=1:100 sin(i/5)
+contour/color=ligh/grat="large(color=purple,thick=3,line),small(dash,color=blue)"/i=1:100/j=1:80 a
+shade/grat="small(color=lightblue),large(thick,color=lightblue)" sst[l=1]
+fill/i=1:50/j=1:30/grat="large(line),small(dash,color=lightblue)" i+j
+poly/thi/col=red/pal=blue/grat="lar(col=pur,thi=3,lin),sma(dash,col=whi)" b,c
+vector/i=1:50/j=1:30/grat="small(color=black),large(thick,color=blue)"  sst[l=1], sst[l=2]
+
+! /HGRAT and /VGRAT
+plot/vg=large(line,color=red),small(dash,color=blue)/i=1:100 sin(i/5)
+plot/hg=small(color=red,dash),large(color=blue,line,thick)/i=1:100 sin(i/5)
+plot/hg=small(color=red,dash,thick=1),large(color=blue,line,thick=3)/vg=large(line,color=red),small(dash,color=blue)/i=1:100 sin(i/5)
+
+! Log axes: VLOG and HLOG with large and small tics
+
+set mode meta graticules.plt
+can mode logo 
+
+set view left
+def axis/z zlog=exp(k[k=1:10])
+let fcn = k[gz=zlog]
+plot/vlog/vlimits=1:100000/grat="large(color=black),small(color=lightblue)" fcn
+
+set view right
+def axis/z/depth dlog=exp(k[k=1:20])
+let fcn = k[gz=dlog]
+plot/vlog/vlimits=1:100000/hg="large(color=red),small(color=lightblue)" fcn
+
+can mode meta
+set mode logo
+
+can view
+
+! HLOG and VLOG
+
+def axis/x ddlog = exp(-1*(10-i[i=1:10]))
+let fcn = (i[gx=ddlog])^2
+plot/thick/hlog/vlog/grat="large(color=red),small=(color=lightblue)" fcn
+
+! Time axes
+let a = sin(t[gt=tax]/5)
+let b = sin(t[gt=tax]/100)
+
+def axis/t=1-jan-1990:1-jan-1998:1/units=months tax
+
+plot/t=1-jan-1990:31-dec-1992/trans/hg="large(dash,color=blue),small(line,color=lightblue)"/vg="(line,color=blue)" a
+
+def axis/t=1-jan-1990:1-mar-1990:1/units=days tax
+plot/hg="(line,color=blue)"/vg="large(line,color=blue),small(line,color=lightblue)" a
+plot/trans/vg="(line,color=blue)"/hg="large(line,color=blue),small(line,color=lightblue)" a
+
+def axis/t=1-jan-1950:1-jan-1990:1/units=years tax
+plot/hg="(line,color=blue)"/vg="large(line,color=blue),small(line,color=lightblue)" a
+plot/trans/vg="(line,color=blue)"/hg="large(line,color=blue),small(line,color=lightblue)" a
+
+def axis/t=1-jan-1800:1-jan-1990:1/units=years tax
+plot/thick/trans/grat="(line,color=blue)" a
+
+def axis/t="1-jan-1990:01":"2-jan-1990:12:00":1/units=minutes tax
+plot/thick/grat="large(line,color=blue),small(line,color=lightblue)" b
+plot/trans/thick/vg="(line,color=blue)"/hg="large(line,color=blue),small(line,color=lightblue)" b
+
+! Tests for MODE GRATICULE  added in Ferret v5.7
+show mode graticule
+set mode graticule
+show mode graticule
+
+PLOT/i=1:100 sin(i/5)
+can mode graticule
+
+PLOT/i=1:100 cos(i/5)
+
+set mode graticule:color=red
+PLOT/i=1:100 cos(i/5)
+set mode graticule:(thick,color=red)
+PLOT/i=1:100 cos(i/5)
+
+set mode graticule:(dash,color=blue)
+PLOT/i=1:100 cos(i/5)
+can mode graticule
+
+pplus/reset   ! restore tics etc
+

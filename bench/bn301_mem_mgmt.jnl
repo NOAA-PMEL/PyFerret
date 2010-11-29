@@ -1,0 +1,58 @@
+! bn301_mem_mgmt.jnl
+! test a complex calculation that exercises the memory manager
+
+set list/precision=8
+set data gtaa014_demo
+set region/k=1:27/i=1:160/j=4:97
+
+define grid/x=temp/y=temp/t=temp gtemp2D
+
+let t1 = temp - temp[z=@ave]
+let t2 = u[g=temp]-u[g=temp,z=@ave]
+let t3 = v[g=temp]-v[g=temp,z=@ave]
+let t4 = salt - salt[z=@ave]
+let t5 = taux[g=gtemp2d] - taux[g=gtemp2d]
+let t6 = tauy[g=gtemp2d] - tauy[g=gtemp2d]
+let tbig = temp + t1 + t2 + t3 + t4 + t5 + t6
+
+! trial 1 - standard DESPARATE mode
+cancel memory/all
+set mode desparate:80000
+sp date
+list temp[x=@ave,y=@ave,z=@ave], tbig[x=@ave,y=@ave,z=@ave]
+sp date
+
+! trial 2 - stingy use of memory
+cancel memory/all
+set mode desparate:5000
+sp date
+list temp[x=@ave,y=@ave,z=@ave], tbig[x=@ave,y=@ave,z=@ave]
+sp date
+
+! trial 3 - overly generous use of memory - fragment, crash, and burn
+! ( large memory version sails through this 1/94)
+cancel memory/all
+set mode desparate:200000
+set mode ignore
+sp date
+list temp[x=@ave,y=@ave,z=@ave], tbig[x=@ave,y=@ave,z=@ave]
+sp date
+
+
+! trial 4 - memory overload for BIG memory FERRET, too (1/27/94)
+set region/x=130e:80w/y=20s:40n
+define axis/x=130e:80w:.1/unit=long xfine
+define axis/y=30s:50n:.1/unit=lat yfine
+define grid/like=temp/x=xfine/y=yfine gf3d
+define grid/like=taux/x=xfine/y=yfine gf2d
+let tbigger = temp[g=gf3d] + t1[g=gf3d] + t2[g=gf3d] + t3[g=gf3d] + t4[g=gf3d] + t5[g=gf2d] + t6[g=gf2d]
+cancel memory/all
+set mode desparate:200000
+sp date
+list temp[x=@ave,y=@ave,z=@ave], tbigger[x=@ave,y=@ave,z=@ave]
+show memory/free
+sp date
+cancel mode ignore
+
+! clean up
+set list/precision=6

@@ -1,0 +1,21 @@
+RGB_Mapping By_Level
+ 
+! Level    Red  Green   Blue
+   1     0.0    0.0  100.0  ! blue
+   2     0.0   60.0   30.0  ! green
+   3   100.0   90.0    0.0  ! yellow
+   4   100.0    0.0    0.0  ! bright red
+   5    70.0    0.0  100.0  ! purple
+   6    80.0   73.0   59.0  ! tan
+   7     0.0  100.0  100.0  ! cyan
+   8   100.0   50.0    0.0  ! orange
+   9     0      0      0    ! black 
+
+!A = 65
+!B = 66
+!C = 67
+!D = 68
+!F = 70
+!N = 78 
+!X = 88
+!U = 85

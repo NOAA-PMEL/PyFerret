@@ -1,0 +1,22 @@
+! Bench_avet.jnl
+!  ACM  8/99
+!  benchmark script for testing external function avet.
+! Note: bench_avet_visual.jnl contains plots of similar computations
+
+set mode ignore_errors
+
+can region
+use coads_climatology
+set region/x=151E:179E/y=0
+
+let a = avet(sst)
+list a
+list a - sst[l=@ave]
+
+can region
+let a = x[i=1:9,k=1:5] + t[l=1:5]
+let b = x[i=1:9,k=1:5]
+let c = avet(a)
+list b, c
+
+set mode/last ignore_errors

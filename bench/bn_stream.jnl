@@ -1,0 +1,22 @@
+! bn420_stream.jnl
+
+! jan 96
+! note that although this benchmark was added only in 1/96 the STREAM
+! reading capabilities have been available much longer
+
+! read the file stream_data_link.unf as a single 10 by 5 variable
+define axis/x=1:10:1 x10
+define axis/y=1:5:1 y5
+define grid/x=x10/y=y5 g10x5
+file/var=myvar/grid=g10x5/format=stream stream_data_link.unf
+list myvar
+cancel data stream_data_link.unf
+
+! read the same file as two 10 by 2 variables skipping the first line
+define axis/x=1:10:1 x10
+define axis/y=1:2:1 y2
+define grid/x=x10/y=y2 g10x2
+file/skip=10/columns=20/grid=g10x2/var=myv1,myv2/format=stream stream_data_link.unf
+list myv1,myv2
+cancel data stream_data_link.unf
+

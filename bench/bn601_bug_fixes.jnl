@@ -1,0 +1,98 @@
+! bn601_bug_fixes.jnl
+! test various fixes that went into version 6.01
+! 20-Sep-2006 ACM
+!
+! Long name for bounds attribute was not read by Ferret
+! Bug 1443
+GO bn_reset
+GO err600_long_bounds_name
+
+! Previously TM_CHECK_BNDS had not been used to check bounds on regular axes.
+! bug1434
+GO bn_reset
+GO err600_check_bounds_regular.jnl
+
+! Long values for symbols: previously symbol strings were cut off at 255 characters.
+! Bug 1439
+GO bn_reset
+GO err600_long_symbol_string.jnl
+
+! Global missing-value flag for dataset was not initialized and so was 
+! set to 0 when there was no global attribute in the file 
+! bug 1445
+GO bn_reset
+GO err600_missing_flag.jnl
+
+! err600_returnsize.jnl
+! bug 1447, where say `var[d=fname.cdf],return=size` failed
+! ( a parsing error, confusing the dot in the filename with dot in `var.att,return=size` )
+GO bn_reset
+GO err600_returnsize.jnl
+
+! err600_if_comments_tab.jnl
+! bug 1446  When there is a tab before a comment, the parsing gets 
+! thrown off and we got an error about an invalid ENDIF
+GO bn_reset
+GO err600_if_comments_tab.jnl
+
+! err600_set_var_title.jnl
+! Bug 1454 Settings made by SET VAR/TITLE=/UNITS= were not saved in output file
+GO bn_reset
+GO err600_set_var_title.jnl
+
+! err600_var_label.jnl
+! bug1442 If there is no long_name attribute, the plot should
+! be labelled with the var name but it only has units label
+GO bn_reset
+GO err600_var_label.jnl
+
+! err600_upcase.jnl
+! Bug 1461 upcasing of axis name on creating bounds variable for output
+GO bn_reset
+GO err600_upcase.jnl
+
+! err600_let_d.jnl
+! Making a LET/D= assignment caused the return of dimension names from the attribute 
+! structure fail, and the list of variable names was incorrect.
+GO bn_reset
+GO err600_let_d.jnl
+
+! err600_nc_des_order.jnl
+! Bug 1459 order of multiple descriptor file opening causes netCDF error
+GO bn_reset
+GO err600_nc_des_order.jnl
+
+! Bug 1470; redefine or reset attributes of an axis
+! should change the axis definition and its attributes
+! in the attribute structure.
+GO bn_reset
+GO err600_reset_redefine_axis.jnl
+
+! err600_ferret_axis_names.jnl
+! If Ferret needed to rename an axis on file initialization for uniqueness,
+! we now keep that new name in the attr structure, and an attribute 
+! orig_file_axname keeps the input name. 
+GO bn_reset
+GO err600_ferret_axis_names.jnl
+
+! err600_tab_comma_missingdat.jnl
+! when data contains missing values list/format=comma or list/format=tab
+! should output a comma or tab as placeholder for the missing value
+GO bn_reset
+GO err600_tab_comma_missingdat.jnl
+
+! err600_vec_aspect.jnl
+! VECTOR/ASPECT plots are wrong (incorrect fix for bug 1348)
+GO bn_reset
+GO err600_vec_aspect.jnl
+
+! err600_save_two.jnl 
+! Bug 1478: save two variables with the same time axis to a file, error
+! when checking whether 2nd variable has same grid.
+GO bn_reset
+GO err600_save_two.jnl 
+
+! err600_nc_des_order.jnl
+! Bug 1459 order of multiple descriptor file opening causes netCDF error
+GO bn_reset
+GO err600_nc_des_order.jnl

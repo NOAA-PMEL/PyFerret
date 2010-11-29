@@ -1,0 +1,12 @@
+
+use gt4d011
+set region/z=0:90/y=-3.5:3.5
+stat temp[x=@ave,t=@ave]
+
+stat temp[x=@ave,z=@ave]
+
+list temp[x=@ave,z=@ave,t=@ave]
+
+stat temp[z=@ave,t=@ave,y=-2:2]
+
+cancel region

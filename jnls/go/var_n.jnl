@@ -1,0 +1,25 @@
+CANCEL MODE VERIFY
+
+! var_n.jnl
+! Description: Correct "GO variance" definitions by n/n-1 factor
+
+! 6/24/2004  add new definitions for masked variables, so that
+! CORREL will be corrected (see the FAQ on computing correleations).
+
+! compute n/n-1 factor to get the variances exact
+let l1 = l
+let nm1 = l1[l=@max] - l1[l=@min]
+let ndnm1 = (nm1+1)/nm1
+
+! redefine terms with n/n-1 factor 
+let/title="VARIANCE OF P" 	   P_VAR = P_DSQ[l=@ave] * ndnm1
+let/title="VARIANCE OF Q" 	   Q_VAR = Q_DSQ[l=@ave] * ndnm1
+let/title="COVARIANCE OF P AND Q"  COVAR = PQ_DSQ[l=@ave] * ndnm1
+
+
+let/quiet/title="VARIANCE OF P WHEN Q PRESENT" P_VAR_MASK = P_DSQ_MASK[l=@ave] * ndnm1
+let/quiet/title="VARIANCE OF Q WHEN P PRESENT" Q_VAR_MASK = Q_DSQ_MASK[l=@ave] * ndnm1
+
+
+SET GRID P
+SET MODE/LAST VERIFY

@@ -1,0 +1,146 @@
+\cancel mode verify
+! poly_vectors:  Sets up the drawing of a sequence of color-filled vectors
+! scattered on plot with Cartesian coordinates
+
+! Programmed by E. D. Cokelet, NOAA/PMEL, 11 Feb 2003
+! Last modified 6 Mar 2003
+
+! Usage: (for examples, run poly_vec_demo.jnl)
+
+! go poly_vectors x_vect y_vect u_comp v_comp vector_scale "arrow"
+! polygon/over/nolabel/key/pal=rainbow/line plt_x_arrow, plt_y_arrow, my_values[j=1:`num_vectors`]
+
+! with inputs:
+!       x_vect = sequence of x coordinates of vector tails
+!       y_vect = sequence of y coordinates of vector tails
+!       u_comp = sequence of x-ward  components of vectors
+!       v_comp = sequence of y-ward components of vectors
+!       vector_scale = vector length in user units (e.g. cm/s) corresponding to
+!                      a half-inch-long vector
+!       "arrow" or "stick" = with or without arrow heads
+
+! and with outputs:
+!       num_vectors = number of vector arrow polygons to plot
+!       plt_x_arrow = (7 x num_vectors) x-y array whose x-values are the
+!                    x-components of the vector arrow polygons on the plot.
+!                    The y-values are counters, one for each vector.   
+!       plt_y_arrow = (7 x num_vectors) x-y array whose x-values are the
+!                    y-components of the vector arrow polygons on the plot.
+
+! and where: 
+!       my_values = An input y array of num_vectors values corresponding to the
+!                   color-fill levels of the vectors.
+
+! Note 1:  A plot in Cartesian coordinates must have been drawn using Ferret
+!          before calling vectors.
+! Note 2:  Any polygon command can be used to plot the vectors.
+
+
+define region/default save
+cancel region
+
+set data/save
+
+
+! Place vector positions and components on a y axis
+
+let vect_tail_x1 = ysequence( $1 )      ! Sequence on abstract axis
+let vect_tail_y1 = ysequence( $2 )      ! Sequence on abstract axis
+let vect_x_comp1 = ysequence( $3 )      ! Sequence on abstract axis
+let vect_y_comp1 = ysequence( $4 )      ! Sequence on abstract axis
+
+let mag_per_inch = `$5 * 2`
+
+let arrowhead_draw = $6"|arrow>0|stick>1|<You must specify arrow or stick."
+
+let num_vectors = vect_x_comp1[j=@ngd] + vect_x_comp1[j=@nbd]
+
+define axis/y=1:`num_vectors`:1 y_vect_cnt
+define grid/y=y_vect_cnt vect_cnt_grd
+
+let vect_tail_x = vect_tail_x1[g=vect_cnt_grd@asn]
+let vect_tail_y = vect_tail_y1[g=vect_cnt_grd@asn]
+let vect_x_comp = vect_x_comp1[g=vect_cnt_grd@asn]
+let vect_y_comp = vect_y_comp1[g=vect_cnt_grd@asn]
+
+
+! Compute the plot scaling. 
+
+let plt_x_inch_span = `($PPL$XLEN)` + 0*x[g=poly_vert_grd]
+let plt_y_inch_span = `($PPL$YLEN)` + 0*x[g=poly_vert_grd]
+
+let plt_x_user_span = `($xaxis_max)` - `($xaxis_min)` + 0*x[g=poly_vert_grd]
+let plt_y_user_span = `($yaxis_max)` - `($yaxis_min)` + 0*x[g=poly_vert_grd]
+
+let plt_x_per_inch = plt_x_user_span/plt_x_inch_span
+let plt_y_per_inch = plt_y_user_span/plt_y_inch_span
+
+
+! Compute the vector direction on the plot
+
+let pi = 4*atan(1)
+let vect_dir = atan2( vect_y_comp/plt_y_per_inch, vect_x_comp/plt_x_per_inch)
+
+
+! Compute the arrow lengths in inches as they lay along the x-axis with 
+! tails at the origin.
+! For each y, polygon vertices are functions of x. 
+
+define axis/x=1:7:1 x_poly_vert
+define grid/x=x_poly_vert poly_vert_grd
+
+let vect_mag = (vect_x_comp^2 + vect_y_comp^2)^0.5
+let vect_inch = vect_mag / mag_per_inch
+
+! arrow head length (inches)
+let arrow_hd_ln = if (arrowhead_draw eq 0) then 0.15 else 0   
+ 
+! arrow head half-width (inches)
+let arrow_hd_half_wd = if (arrowhead_draw eq 0) then 0.05 else 0  
+
+let arrow_shft_half_thk = 0.01  ! arrow shaft half-thickness (inches)
+
+let vect_inch_add = {0, `arrow_hd_ln`, `arrow_hd_ln`, 0, \
+`arrow_hd_ln`,`arrow_hd_ln`, 0} + 0*x[g=poly_vert_grd]
+
+let vect_inch_mul = {0,   1,   1, 1,   1,   1, 0} + 0*x[g=poly_vert_grd]
+
+let x_arrow_inch0 = (vect_inch - vect_inch_add)*vect_inch_mul
+
+!Truncate arrow heads of short vectors
+let x_arrow_inch1 = if (x_arrow_inch0 lt 0) then 0 else x_arrow_inch0   
+
+let y_arrow_inch1 = {-`arrow_shft_half_thk`, -`arrow_shft_half_thk`, \
+-`arrow_hd_half_wd`, 0.00, `arrow_hd_half_wd`, `arrow_shft_half_thk`, \
+`arrow_shft_half_thk`} + 0*x[g=poly_vert_grd]
+
+
+! Rotate the arrows to their proper direction on the plot
+
+let x_arrow_inch2 = (x_arrow_inch1*cos(vect_dir) - y_arrow_inch1*sin(vect_dir))
+let y_arrow_inch2 = (y_arrow_inch1*cos(vect_dir) + x_arrow_inch1*sin(vect_dir))
+
+
+! Compute the arrow lengths in plot units
+
+let x_arrow_plot = x_arrow_inch2*plt_x_per_inch
+let y_arrow_plot = y_arrow_inch2*plt_y_per_inch
+
+
+! Displace the arrow tails in plot units
+
+let plt_x_arrow = ( vect_tail_x + x_arrow_plot )
+let plt_y_arrow = ( vect_tail_y + y_arrow_plot )
+
+
+! Clean up
+
+set data/restore
+
+say
+say *** POLY_VECTORS: Issue commands such as follow to plot the vectors ***
+say *** POLYGON/OVER/NOLABEL/KEY/NOAXES/LINE PLT_X_ARROW, PLT_Y_ARROW, MY_VALUES[J=1:`NUM_VECTORS`] ***
+say *** SET REGION SAVE ***
+say
+
+set mode/last verify

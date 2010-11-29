@@ -1,0 +1,49 @@
+! bn63_bug_fixes.jnl
+! Fixes that go into v6.3 release
+
+GO bn_reset
+GO err62_string_write_nc
+
+GO bn_reset
+GO err62_levset
+
+GO bn_reset
+GO err62_thick_tic_time_axis
+
+GO bn_reset
+GO err62_reset_after_inf
+
+GO bn_reset
+GO err62_reversed_up
+
+GO bn_reset
+GO err62_samplexy
+
+GO bn_reset
+GO err62_one_point_bounds
+
+GO bn_reset
+GO err62_cos_lat_uncentered
+
+GO bn_reset
+GO err62_if_inside_repeat
+
+GO bn_reset
+GO err62_title_curvi_plot
+
+GO bn_reset
+go err62_save_missingcoordvar
+
+GO bn_reset
+GO err62_contourbug
+
+GO bn_reset
+GO err62_append_irreg_to_reg
+
+GO bn_reset
+GO err62_axis_stride_off
+
+
+GO bn_reset
+GO err62_compound_string_conditional
+

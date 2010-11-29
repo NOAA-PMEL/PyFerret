@@ -1,0 +1,71 @@
+\CANCEL MODE verify
+! Create a Date string from numbers representing year, month, day, ...
+! the result is returned in the symbol date_symbol. Hour, minute, and
+! second are optional inputs.
+! acm 10/20/06 fix bugs: treatment of hour=0, and formatting of seconds 
+!
+!		         arg1  arg2   arg3  arg4    arg5      arg6
+! usage:   GO datestring year  month  day  [hour]  [minute]  [second]
+
+! Example:
+!          yes? go datestring 2004 1 1 12
+!              DATE_SYMBOL = "1-JAN-2004 12:00:00"
+!          yes? def sym start_date ($date_symbol)
+!          
+!          yes? go datestring 2004 11 1
+!              DATE_SYMBOL = "1-NOV-2004"
+!          yes? def sym end_date ($date_symbol)
+!          
+!          yes? define axis/t="($start_date)":"($end_date)":1/t0="($start_date)" tax
+
+! Check inputs. First 3 are required
+
+QUERY/IGNORE $1%<Usage: GO datestring year month  day  [hour]  [minute]  [second]%
+QUERY/IGNORE $2%<Usage: GO datestring year month  day  [hour]  [minute]  [second]%
+QUERY/IGNORE $3%<Usage: GO datestring year month  day  [hour]  [minute]  [second]%
+
+LET DS_year = $1
+LET DS_nmon = $2
+LET DS_day = $3
+
+LET DS_hour = $4"-99"
+LET DS_min = $5"0"
+LET DS_sec = $6"0"
+
+LET DS_months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"}
+
+
+LET DS_str1 = strcat("`DS_day`", "-")
+LET DS_str2 = strcat(DS_str1, DS_months[i=`DS_nmon`])
+LET DS_str3 = strcat(DS_str2,"-")
+LET DS_str4 = strcat(DS_str3,"`DS_year`")
+LET date_string = DS_str4
+
+!IF `DS_hour GT 0` THEN
+IF `DS_hour GE 0` THEN
+   LET DS_str5 = strcat(DS_str4," ")
+   IF `DS_hour LT 10` THEN LET DS_str5 = strcat(DS_str4," 0")
+   LET DS_str6 = strcat(DS_str5, "`DS_hour`")
+   LET date_string = DS_str6
+
+   IF `DS_min GE 0` THEN
+      LET DS_str7 = strcat(DS_str6,":")
+      IF `DS_min LT 10` THEN LET DS_str7 = strcat(DS_str6,":0")
+      LET DS_str8 = strcat(DS_str7, "`DS_min`")
+      LET date_string = DS_str8
+
+
+      IF `DS_sec GE 0` THEN
+         LET DS_str9 = strcat(DS_str8,":")
+         IF `DS_sec LT 10` THEN LET DS_str9 = strcat(DS_str8,":0")
+         LET DS_str10 = strcat(DS_str9, "`DS_sec`")
+         LET date_string = DS_str10
+
+      ENDIF
+   ENDIF
+ENDIF
+
+define symbol date_symbol = `date_string`
+show symbol date_symbol
+
+can var DS_*

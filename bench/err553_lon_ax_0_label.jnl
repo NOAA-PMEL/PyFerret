@@ -1,0 +1,8 @@
+! Label longitude axes with the degree sign only 
+! at x=0 (previously had an E).  
+
+! ACM 1/6/04
+
+use coads_climatology
+shade/x=-20:20/y=-40:40/L=1 sst
+

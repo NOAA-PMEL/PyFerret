@@ -1,0 +1,81 @@
+\CANCEL MODE VERIFY
+
+! *sh* 3-28-95
+! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
+
+!Description: Demonstration of immediate mode expressions
+! This script uses immediate mode expressions to compute the placement
+! of tic marks and text labels for the creation of a compass rose
+! The size and location of the rose are arguments to the script
+
+! usage
+!	GO compass_rose [size_factor] [xcenter_inches] [ycenter_inches]
+
+! arguments:
+! size_factor - relative to a nominal size of "1" (default=1)
+! xcenter_inches - horizontal center of rose in PLOT+ inches (default=4)
+! ycenter_inches - vertical   center of rose in PLOT+ inches (default=3)
+
+! set up PLOT+ as if a plot had just been made
+SET WIND/CLEAR
+PLOT/HLIMITS=-2:2:1/VLIMITS=-2:2:1/nolabels/set_up 1
+PPL AXSET 0,0,0,0
+PPL xlab; ppl ylab
+PPL PLOT
+
+! define variables
+let/quiet size = $1"1"
+let/quiet xc = $2"4"
+let/quiet yc = $3"3"
+
+let/quiet r = 2 * size
+let/quiet pi = 3.141592
+let/quiet theta = (2*pi/32) * (i-1)
+
+let/quiet tiny = 0.1 * size
+let/quiet short = 0.2 * size
+let/quiet mid = 0.3 * size
+let/quiet long = 0.4 * size
+
+let/quiet rt = r + tiny
+let/quiet rs = r + short
+let/quiet rm = r + mid
+let/quiet rl = r + long
+
+let/quiet text = 0.2 * size
+let/quiet text_gap = 0.1 * size
+let/quiet rtx = rl + text_gap
+
+let/quiet ctheta = COS(theta)
+let/quiet stheta = SIN(theta)
+
+
+! draw the long tics
+repeat/i=1:32:8 PPL ALINE/NOUSER 1,`xc+r*ctheta`,`yc+r*stheta`,`xc+rl*ctheta`,`yc+rl*stheta`
+
+! mid tics
+repeat/i=5:32:8 PPL ALINE/NOUSER 1,`xc+r*ctheta`,`yc+r*stheta`,`xc+rm*ctheta`,`yc+rm*stheta`
+
+! draw the short tics
+repeat/i=3:32:4 PPL ALINE/NOUSER 1,`xc+r*ctheta`,`yc+r*stheta`,`xc+rs*ctheta`,`yc+rs*stheta`
+
+! draw the tiny tics
+repeat/i=2:32:2 PPL ALINE/NOUSER 1,`xc+r*ctheta`,`yc+r*stheta`,`xc+rt*ctheta`,`yc+rt*stheta`
+
+
+! put on the text labels
+let/quiet s45 = SIN(PI/4)*rtx
+LABEL/NOUSER `xc`,`yc+rtx`,0,0,`text` @CRN
+LABEL/NOUSER `xc-rtx`,`yc`,0,90,`text` @CRW
+LABEL/NOUSER `xc`,`yc-rtx`,0,180,`text` @CRS
+LABEL/NOUSER `xc+rtx`,`yc`,0,270,`text` @CRE
+
+LABEL/NOUSER `xc-s45`,`yc+s45`,0,45,`text` @CRNW
+LABEL/NOUSER `xc-s45`,`yc-s45`,0,135,`text` @CRSW
+LABEL/NOUSER `xc+s45`,`yc-s45`,0,225,`text` @CRSE
+LABEL/NOUSER `xc+s45`,`yc+s45`,0,315,`text` @CRNE
+
+! clean up
+PPL AXSET 1,1,1,1
+
+set mode/last verify

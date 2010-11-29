@@ -1,0 +1,18 @@
+! Test MODNBD regridding statistic.
+
+use "../bench/gtsa056_2.cdf"
+use climatological_axes
+cancel data climatological_axes
+
+set region/x=140/y=1/k=1
+
+! What is the total number of possible data going into each month avg?
+let nomiss = missing(temp,30)
+list nomiss[gt=month_reg@MODNGD]
+
+! Define a new var with some missing data. See what MODNGD and MODNBD 
+! are, and check that the sum is the same as the number of pts in each 
+! month in the no-missing-data variable
+
+let var = if temp gt 29.5 then temp
+list var[gt=month_reg@MODNGD], var[gt=month_reg@MODNBD], var[gt=month_reg@MODNGD]+var[gt=month_reg@MODNBD], nomiss[gt=month_reg@MODNGD]

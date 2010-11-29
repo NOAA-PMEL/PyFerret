@@ -1,0 +1,123 @@
+#!/bin/csh -x
+# script to check metafiles (.plt*, .gif* and .ps) created after a run of the 
+# benchmark routine against master metafiles. 
+# kob  10/97
+# acm   4/05 add more .plt files for checking, new directory metafile_masters_v580
+# acm  12/06 Use ImageMagick to actually compare the contents of ps and gif files when they differ
+# acm  11/10 Rename metafile_masters_vxx to metafile_masters_32bit and metafile_masters_64bit
+
+# ALSO NOTE THE compare utility (on stout)
+# Here is a way to compare two images by subtracting them using ImageMagick's
+# "composite" utility.
+# 
+#   composite -compose subtract input1.png input2.png output.png
+# 
+# Pixels which are the same in both input images will be black in the output
+# image.
+
+# Clean up anything left from a previous check_metafiles_ImageMagick
+
+rm -f *.plt.ps
+rm -f *.meta.ps
+rm -f *.diff.ps*
+rm -f *.diff_ps*
+rm -f *.diff_gif*
+rm -f *bat.ps
+rm -f diff*.ps
+rm -f master*.ps
+rm -f bat*.plt*.ps
+
+set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt linecolors.plt multi_line_labels.plt pattern*.plt polygon*.plt vec_curv*.plt)
+set gif_files = ( bn*.gif )
+set ps_files = (bn*.ps)
+set mb_files = (bat.plt_*)
+set num_plt_files = `ls -l *.plt | wc -l `
+
+
+set err_plt = 0
+foreach plt_file ($plt_files)
+    set size = `ls -l $plt_file | awk '{print $5}'`
+    set size2 = `ls -l metafile_masters_32bit/$plt_file | awk '{print $5}'`
+    if ("$size" != "$size2") then
+       echo "plt files differ $plt_file size $size metafile_masters_32bit/ size $size2" 
+       Fprint -R -p portrait -o $plt_file.ps $plt_file
+       Fprint -R -p portrait -o $plt_file.meta.ps metafile_masters_32bit/$plt_file
+       ls -laF $plt_file.diff.ps
+       rm -f $plt_file.diff.ps
+       compare $plt_file.ps $plt_file.meta.ps $plt_file.diff.ps
+       display $plt_file.ps &
+       display $plt_file.meta.ps & 
+       display $plt_file.diff.ps 
+
+       set err_plt = 1
+    endif
+    if ($num_plt_files != 21 ) set err_plt = 1
+end
+   
+set err_gif = 0
+foreach gif_file ($gif_files)
+    set size = `ls -l $gif_file | awk '{print $5}'`
+    set size2 = `ls -l metafile_masters_32bit/$gif_file | awk '{print $5}'`
+    if ("$size" != "$size2") then
+       echo "gif files differ $gif_file size $size metafile_masters_32bit/ size $size2" 
+       rm -f $gif_file.diff_gif.gif
+       compare $gif_file metafile_masters_32bit/$gif_file $gif_file.diff_gif.gif
+       display  $gif_file &
+       display  metafile_masters_32bit/$gif_file &
+       display $gif_file.diff_gif.gif
+       set err_gif = 1
+    endif
+end
+
+set err_ps = 0
+foreach ps_file ($ps_files)
+    set size = `ls -l $ps_file | awk '{print $5}'`
+    set size2 = `ls -l metafile_masters_32bit/$ps_file | awk '{print $5}'`
+    if ("$size" != "$size2") then
+       echo "plt files differ $ps_file size $size metafile_masters_32bit/ size $size2" 
+       rm -f $ps_file.diff_ps.ps
+       compare $ps_file metafile_masters_32bit/$ps_file $ps_file.diff_ps.ps
+       display $ps_file &
+       display metafile_masters_32bit/$ps_file &
+       display $ps_file.diff_ps.ps
+
+       set err_ps = 1
+    endif
+end
+
+set err_mb = 0
+foreach mb_file ($mb_files)
+   set size = `ls -l $mb_file | cut -b 21-27`
+   set size2 = `ls -l metafile_masters_32bit/$mb_file | cut -b 21-27`
+   set size = `ls -l $mb_file | awk '{print $5}'`
+   set size2 = `ls -l metafile_masters_32bit/$mb_file | awk '{print $5}'`
+   if ($size != $size2) then
+      set err_mb = 1
+      echo "metafile batch files differ $mb_file size $size metafile_masters_32bit/ size $size2" 
+       rm -f $mb_file.ps master_$mb_file.ps diff_$mb_file.ps 
+       Fprint -R -p portrait -o $mb_file.ps $mb_file
+       Fprint -R -p portrait -o master_$mb_file.ps metafile_masters_32bit/$mb_file
+       compare $mb_file.ps master_$mb_file.ps diff_$mb_file.ps
+       display $mb_file.ps &
+       display master_$mb_file.ps &
+       display diff_$mb_file.ps
+
+   endif
+end
+
+if ($err_plt) then
+	echo "CHECK PLT FILES - THERE HAS BEEN AN ERROR"
+else
+	echo "    PLT files look good....."
+endif 
+if ($err_gif) then
+	echo "CHECK GIF FILES - THERE HAS BEEN AN ERROR"
+else
+	echo "    GIF files look good....."
+endif
+if ($err_ps) then
+	echo "CHECK PS FILES - THERE HAS BEEN AN ERROR"
+else
+	echo "    PS files look good......"
+endif
+

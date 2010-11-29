@@ -1,0 +1,38 @@
+*	GKSCM2.INC
+
+*	Common block used to provide information for GKS metafiles
+*	J Davison JISAO/PMEL/TMAP
+*  Ferret v5.80  New variables pixx and pixy to save the size of the 
+*                window in pixels.  Needed for PPL$XPIXEL, PPL$YPIXEL 
+*                when in gif or batch mode.
+
+	integer		meta_wstype,meta_wsid,meta_lun,ws_lun,tmp_wsid
+	integer		tmp_lun
+	integer		item_gclrwk,item_ws_xform,item_pplpver
+	integer		item_ndx_range,item_spectrum,item_protect
+	integer		item_fill_ndx
+	integer		lbtype,lbcolor
+        integer         pixx,pixy
+	real		lbwidth,spline_tension
+
+	logical		meta_open,meta_actv,gks_open,meta_clsplt,vpt_was_set
+	logical		first_meta,draftsman
+
+	character*128	meta_file
+	character*24	ws_file,tmp_file
+
+	common/gkscm2/	meta_open,meta_actv,meta_wstype,meta_wsid,meta_lun,
+     .			meta_file,gks_open,ws_lun,ws_file,item_gclrwk,
+     .			item_ws_xform,tmp_wsid,tmp_lun,tmp_file,
+     .			lbtype,lbwidth,lbcolor,pixx,pixy,
+     .                  meta_clsplt,vpt_was_set,
+     .			first_meta,item_ndx_range,item_spectrum,
+     .			item_protect,item_fill_ndx,item_pplpver,
+     .			draftsman,spline_tension
+
+
+
+
+
+
+

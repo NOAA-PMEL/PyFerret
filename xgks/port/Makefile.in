@@ -1,0 +1,112 @@
+# This is the makefile for the Unidata portability package.
+#
+# $Id$
+
+PACKAGE		= udport
+LIBRARY		= udport
+MAJOR_NO	= @MAJOR_NO@
+MINOR_NO	= @MINOR_NO@
+
+CPPFLAGS	= -I. @CPPFLAGS@
+CFLAGS		= @CFLAGS@
+
+PORT_CFORTRAN	= @PORT_CFORTRAN@
+NEED_FORTC	= @NEED_FORTC@
+
+PORT_HEADERS	= @PORT_HEADERS@
+made_headers	= float.h limits.h signal.h stdarg.h stddef.h stdlib.h \
+		  string.h time.h
+LIBOBJS		= uddummy.o @LIBOBJS@
+
+prefix		= ../../..
+
+SUBDIRS		= @PORT_SUBDIRS@
+SUBDIR_TARGETS	= fortc/all fortc/install fortc/clean fortc/distclean
+MANIFEST        = COPYRIGHT CUSTOMIZE HISTORY Makefile.in VERSION aclocal.m4 \
+		  configure configure.in depend master.mk.in uddummy.c \
+		  @PORT_MANIFEST@
+
+# Note that the `all' target might not make `fortc/all'.  That will depend 
+# on whether or not that utility is required.
+
+all::		FORCE $(PORT_HEADERS)
+	@if [ "$(NEED_FORTC)" = yes ]; then \
+	    $(MAKE) $(MFLAGS) fortc/all; \
+	else \
+	    :; \
+	fi
+	@$(MAKE) $(MFLAGS) library
+
+# We install the portability library modules directly into an installed
+# portability library even though the package using this portability library
+# (the client package) probably doesn't reference the installed one.  This is
+# done because the client package might be another library and linking
+# against it might require some modules of this library.  We don't install
+# the portability library just created because different packages can require
+# different modules.
+#
+install::	$(LIBOBJS)
+	$(MAKE) $(MFLAGS) $(LIBDIR) LIBDIR=$(LIBDIR)
+	$(AR) rcuv $(LIBDIR)/libudport.a $(LIBOBJS)
+	$(RANLIB) $(LIBDIR)/libudport.a
+
+clean::		FORCE
+	@if [ "$(NEED_FORTC)" = yes ]; then \
+	    $(MAKE) $(MFLAGS) fortc/clean; \
+	else \
+	    :; \
+	fi
+	rm -f $(made_headers) $(PORT_HEADERS) config
+
+distclean::
+	@if [ "$(NEED_FORTC)" = yes ]; then \
+	    $(MAKE) $(MFLAGS) fortc/distclean; \
+	else \
+	    :; \
+	fi
+	rm -f $(made_headers) $(PORT_HEADERS) config udposix.h master.mk
+
+Makefile:	Makefile.in master.mk.in
+
+float.h:	config
+	./config -f > $@
+limits.h:	config
+	./config -l > $@
+signal.h:	signal.h.in
+	cp $? $@
+stdarg.h:	stdarg.h.in
+	cp $? $@
+stddef.h:	stddef.h.in
+	cp $? $@
+stdlib.h:	stdlib.h.in
+	cp $? $@
+string.h:	string.h.in
+	cp $? $@
+time.h:		time.h.in
+	cp $? $@
+cfortran.h:	cfortran_h
+	if test "$(PORT_CFORTRAN)" = stdc; then \
+	    sed 's/\/\*\*\//##/g' cfortran_h > $@; \
+	else \
+	    cp cfortran_h $@; \
+	fi
+
+# C compiler information program:
+#
+# NB: config(1) must be compiled unoptimized.  We first assume that `signed
+# char' is valid; if that doesn't work, then we assume it's invalid.  If
+# that doesn't work, the user will have to determine the appropriate
+# compilation flags (see config.c).
+#
+# If the following program won't compile, then contact
+# support@unidata.ucar.edu.
+#
+config:		config.c
+	$(CC) config.c -o config 2> /dev/null || \
+	    $(CC) -DNO_SC config.c -o config
+
+include master.mk
+
+### Everything after the following line might be overwritten ###
+### DO NOT DELETE THIS LINE.  make depend DEPENDS ON IT ###
+include depend

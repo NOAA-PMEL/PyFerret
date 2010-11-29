@@ -1,0 +1,40 @@
+ ! tests of external functions NCO and NCO_ATTR  
+
+sh func nco*
+
+
+let a = {1,2,3,4,5}
+let b = {1,2,3,4,5}
+save/clobber/file=x.nc a, b
+can var/all
+use x
+
+! nco_attr for issuing nco_attr command
+
+let status = nco_attr("x.nc", "`a,return=xaxis`", "cartesian_axis", "c", "o", "X")
+load status
+let status = nco_attr("x.nc", "B", "units", "c", "o", "lon")
+load status
+let status = nco_attr("x.nc", "global", "history", "c","a"," Add text to history attribute")
+load status
+sp echo "bn_nco_functions.jnl --- original file" >> all_ncdump.out
+sp ncdump -h x.nc >> all_ncdump.out
+let status = nco_attr("x.nc", "global", "history", "c","a","\nAdd a new line  to the history")
+load status
+sp echo "bn_nco_functions.jnl --- add line to history" >> all_ncdump.out
+sp ncdump -h x.nc >> all_ncdump.out
+
+use coads_climatology
+save/clobber/file=s1.nc/L=1/x=181:185/y=9 sst
+save/clobber/file=s2.nc/L=2/x=181:185/y=9 sst
+save/clobber/file=s3.nc/L=3/x=181:185/y=9 sst
+can data coads_climatology
+
+! function nco makes any nco call
+
+let status = nco("ncrcat", "s1.nc s2.nc s3.nc s123.nc")
+load status
+sp echo "bn_nco_functions.jnl --- ncrcat call" >> all_ncdump.out
+sp ncdump -h s123.nc >> all_ncdump.out
+use s123.nc
+list/i=1 sst

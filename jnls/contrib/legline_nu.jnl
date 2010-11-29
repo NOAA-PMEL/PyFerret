@@ -1,0 +1,19 @@
+\can mode verify
+! make a legend line and its label (nouser units) (Vanvyve e-mails 25 July 2003)
+! calls user-unit legline script, after converting to user units
+
+! arg1=x-value of line starting point (fraction of plot width)
+! arg2=length of line (fraction of plot width)
+! arg3=y-value of line (fraction of plot height)
+! arg4=line type (number 1-19)
+! arg5=text character height
+! arg6=label text (in quotes if a space is included)
+! only gets label position right for positive-up axes
+
+let xrange `($xaxis_max) - ($xaxis_min)`
+let yrange `($yaxis_max) - (($yaxis_min))`
+let leg1 `($xaxis_min) + xrange*$1`
+let leg2 `xrange*$2`
+let leg3 `($yaxis_min) + yrange*$3`
+
+go legline `leg1` `leg2` `leg3` $4 $5 "$6"

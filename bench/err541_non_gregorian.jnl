@@ -1,0 +1,12 @@
+!From Andrew Wittenberg, non-Gregorian time axis bug 01 Oct 2002 
+! pre-542, second axis has just one point.
+
+def ax/cal=Gregorian/t=.5:11.5:1/unit=month/t0=1-jan-1980 tax1
+show ax tax2
+
+def ax/cal=Julian/t=.5:11.5:1/unit=month/t0=1-jan-1980 tax2
+show ax tax2
+
+! For comparison, use the dates that start and end tax2 
+def ax/cal=Julian/t="16-jan-1980:05:15":"16-dec-1980:00:45":1/unit=month/t0=1-jan-1980 tax3
+show ax tax3

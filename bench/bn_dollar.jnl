@@ -1,0 +1,112 @@
+! test this with GO journal hello
+
+! V510: 3/00 *sh* added tests of backslash escapes and surrounding quotations
+! V532: 5/01 *sh* added tests of 2-digit arguments; made mode ignore stricter
+
+set mode ignore
+message/continue $1
+
+message/continue here is: $1"some text" and some more stuff
+
+message/cont here is a big $1 and $3&some text&      ! default provided
+
+message/cont $3			! error - no default
+
+message/cont $3"<my error message"	! error - with message
+
+message/cont $*
+
+message/continue here is: $*"some text" and some more stuff
+
+message/continue $no_digit_text   ! no substitution
+
+!!!!!!!!!!!!!!!!!!
+
+message/cont $1"|hello|goodbye<my error message"
+
+message/cont $1"greetings|hello|goodbye"
+
+message/cont $1">greetings|hello|goodbye"
+
+message/cont $1">greetings|hello|goodbye<my error message"
+
+message/cont $1">greetings|hello>replacement text|goodbye<my error message"
+
+! doesn't match on "hello"
+
+message/cont $1"|xxxxx|goodbye<my error message"
+
+message/cont $1"greetings|xxxxx|goodbye"
+
+message/cont $1">greetings|xxxxx|goodbye"
+
+message/cont $1">greetings|xxxxx|goodbye<my error message"
+
+message/cont $1">greetings|xxxxx>replacement text|goodbye<my error message"
+
+! no argument supplied
+
+message/cont $3"|hello|goodbye<my error message"
+
+message/cont $3"greetings|hello|goodbye"
+
+message/cont $3">greetings|hello|goodbye"
+
+message/cont $3">greetings|hello|goodbye<my error message"
+
+message/cont $3">greetings|hello>replacement text|goodbye<my error message"
+
+! pathological examples
+!*********
+! works ok with 500 character input buffer
+message/cont here is a very long text $1 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx the end 1234567890 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy 1234567890
+message/cont here is a very long text $1 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx the end 1234567890 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy 1234567890
+message/cont $3""
+message/cont $3"<"
+message/cont $3"||"
+message/cont $3">"
+message/cont $3"|>|"
+message/cont $3">|"
+message/cont $3"|<"
+message/cont $3"|>"
+
+set mode/last ignore
+
+! bn420 10/95 - added tests that arguments don't get incorrectly broken up
+! ==> EACH OF THESE SHOULD PASS AS A SINGLE ARGUMENT!!!
+go bn_dollar.sub VAR[x=1,y=1]	! should be interpreted as a single arg
+go bn_dollar.sub VAR[x=1,g=var2[d=d1],y=1]	!  a single arg
+go bn_dollar.sub ((x+y)/(x-5))	! ignore slash, get single arg
+go bn_dollar.sub ((x+y),(x-5))	! ignore comma, get single arg
+
+! V510 3/00
+set mode ignore
+  message/continue "$1"                ! final quote used to get mis-applied
+set mode/last ignore
+go bn_dollar.sub \"hello\"                 ! quotations as part of argument
+go bn_dollar.sub "\"hello with blanks\""   ! quotations as part of argument
+go bn_dollar.sub \"((x+y),(x-5))\"         ! quotations as part of argument
+
+! V5.3 additions 5/01 -- 2-digit arguments in parentheses
+go bn_dollar.sub VAR[x=1,y=1] "arg 2" " " "arg 4" "arg 5"
+
+go bn_dollar.sub VAR[x=1,y=1] "arg 2" " " "arg 4" "arg 5" \
+"arg 6" "arg 7" "arg 8" "arg 9" "arg 10" \
+"arg 11" "arg 12" " "      "arg 14" "arg 15"
+
+go bn_dollar.sub VAR[x=1,y=1] "arg 2" " " "arg 4" "arg 5" \
+"arg 6" "arg 7" "arg 8" "arg 9" "arg 10" \
+"arg 11" "arg 12" " "      "arg 14" "arg 15" \
+"arg 16" "arg 17" "arg 18" "arg 19" "arg 20" \
+"arg 21" "arg 22" "arg 23" "arg 24" "arg 25" \
+"arg 26" "arg 27" "arg 28" "arg 29" "arg 30" \
+"arg 31" "arg 32" "arg 33" "arg 34" "arg 35" \
+"arg 36" "arg 37" "arg 38" "arg 39" "arg 40" \
+"arg 41" "arg 42" " "      "arg 44" "arg 45"
+
+! deliberate errors
+set mode ignore
+  say $100        ! argument number too large
+  say ($100)        ! argument number too large
+  say ($10)0      ! argument 10 not defined
+set mode/last ignore

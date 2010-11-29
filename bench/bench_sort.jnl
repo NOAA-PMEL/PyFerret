@@ -1,0 +1,22 @@
+
+
+! Benchmark for sort and sample external Functions
+! ACM 5/99
+! ACM 8/99 sorti,sortj,sortl have "visual" versions
+
+sh func/ext sort*
+sh func/ext sample*
+
+go bench_sorti.jnl
+
+go bench_sortj.jnl
+
+go bench_sortk.jnl
+
+go bench_sortl.jnl
+
+go bench_samplexy.jnl
+
+go bench_samplet_date.jnl
+
+

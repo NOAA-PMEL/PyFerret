@@ -1,0 +1,17 @@
+SRCS_F = \
+cdf_prep_cache.F\
+dset_type.F\
+equal_delimit.F\
+find_dset_number.F\
+get_dset_parms.F\
+init_ez_dset.F\
+laser_status.F\
+make_cvar_grids.F\
+read_ez.F\
+read_binary.F\
+read_delimited.F\
+read_perl.F\
+read_tm.F\
+repl_tm_find_grid_slot.F\
+replace_bad_data.F\
+var_ss_lims.F 

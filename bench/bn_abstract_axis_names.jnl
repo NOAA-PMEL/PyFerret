@@ -1,0 +1,110 @@
+! bn_abstract_axis_names.jnl
+! acm 6/12/03
+! 
+! Write and read datafiles with no clues about axis orientation from 
+! the units or axis name.  Getting the axis direction depends on the AXIS 
+! attribute in .nc files, and on use of the new line_direction(iaxis) = 'XX' 
+! or 'YY' in cd_get_1_axis, xeq_define, tm_axis_direction, show_line.F
+
+! Define axes with confusing axis names (z in an X axis, X in a Z axis, etc)
+
+def axis/x=1:10:1 horiz
+def axis/y=10:80:10 the
+def axis/z=-4:1:1 xxx
+def axis/t=1:13:2 long
+
+show axis horiz
+show axis the
+show axis xxx
+show axis long
+
+! Write files with different combinations of axes.
+
+let r =  x[gx=horiz]  + z[gz=xxx]
+save/clobber/file=confuse_xz.nc r
+
+let s =  y[gy=the] + z[gz=xxx]
+save/clobber/file=confuse_yz.nc s
+
+let u =  y[gy=the] + t[gt=long]
+save/clobber/file=confuse_yt.nc u
+
+let v =  z[gz=xxx] + t[gt=long]+ y[gy=the]
+save/clobber/file=confuse_yzt.nc v
+
+
+! Now read the files and see that the vars have the right shape
+cancel data/all
+cancel var/all
+cancel axis horiz
+cancel axis the
+cancel axis xxx
+cancel axis long
+
+use confuse_xz.nc 
+sh grid r
+can data 1
+
+use confuse_yz.nc 
+sh grid s
+can data 1
+
+use confuse_yt.nc 
+sh grid u 
+can data 1
+
+use confuse_yzt.nc 
+sh grid v
+can data 1
+
+
+! Define axes with meaningless axis names.
+
+def axis/x=1:10:1 aaa
+def axis/y=10:80:10 bbb
+def axis/z=-4:1:1 ccc
+def axis/t=1:13:2 ddd
+
+show axis aaa
+show axis bbb
+show axis ccc
+show axis ddd
+
+! Write files with different combinations of axes.
+
+let r =  x[gx=aaa]  + z[gz=ccc]
+save/clobber/file=confuse_xz.nc r
+
+let s =  y[gy=bbb] + z[gz=ccc]
+save/clobber/file=confuse_yz.nc s
+
+let u =  y[gy=bbb] + t[gt=ddd]
+save/clobber/file=confuse_yt.nc u
+
+let v =  z[gz=ccc] + t[gt=ddd]+ y[gy=bbb]
+save/clobber/file=confuse_yzt.nc v
+
+
+! Now read the files and see that the vars have the right shape
+cancel data/all
+cancel var/all
+cancel axis aaa
+cancel axis bbb
+cancel axis ccc
+cancel axis ddd
+
+use confuse_xz.nc 
+sh grid r
+can data 1
+
+use confuse_yz.nc 
+sh grid s
+can data 1
+
+use confuse_yt.nc 
+sh grid u 
+can data 1
+
+use confuse_yzt.nc 
+sh grid v
+can data 1

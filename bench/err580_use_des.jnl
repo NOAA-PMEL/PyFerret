@@ -1,0 +1,5 @@
+! err580_use_des.jnl
+! Allow "use filename.des"   (previously gave an "is this a CDF file?" error)
+
+use vary_scale.des
+sh data

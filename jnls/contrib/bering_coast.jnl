@@ -1,0 +1,21 @@
+\cancel mode verify	! ... now overlaying coastal outline ...
+
+! Description: line-style overlay of bering sea & asian coastlines
+! contributed by Mick Spillane, NOAA/PMEL 1992
+
+set data/save
+define axis/x=1:13467:1 axtb
+define grid/x=axtb gtb
+
+file/col=2/form=(f8.5,f10.5)/var="ytb,xtb"/grid=gtb bering_coast.dat
+
+set variable/bad=999.0 xtb
+set variable/bad=99.0  ytb
+plot/set/vs/over/nolab/x=1:13467 xtb,ytb
+ppl pen 1 1
+ppl plot/over
+
+cancel data bering_coast.dat
+set data/restore
+set mode/last verify
+

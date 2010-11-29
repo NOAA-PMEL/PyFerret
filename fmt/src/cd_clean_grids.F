@@ -1,0 +1,277 @@
+	SUBROUTINE CD_CLEAN_GRIDS ( dset, cdfid, temp_axnams, status )
+
+
+*  This software was developed by the Thermal Modeling and Analysis
+*  Project(TMAP) of the National Oceanographic and Atmospheric
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  hereafter referred to as NOAA/PMEL/TMAP.
+*
+*  Access and use of this software shall impose the following
+*  obligations and understandings on the user. The user is granted the
+*  right, without any fee or cost, to use, copy, modify, alter, enhance
+*  and distribute this software, and any derivative works thereof, and
+*  its supporting documentation for any purpose whatsoever, provided
+*  that this entire notice appears in all copies of the software,
+*  derivative works and supporting documentation.  Further, the user
+*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
+*  the use of this software or in any product that includes this
+*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
+*  in any advertising or publicity to endorse or promote any products
+*  or commercial entity unless specific written permission is obtained
+*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
+*  is not obligated to provide the user with any support, consulting,
+*  training or assistance of any kind with regard to the use, operation
+*  and performance of this software nor to provide the user with any
+*  updates, revisions, new versions or "bug fixes".
+*
+*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
+*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
+*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*
+*
+* check for errors and eliminate duplication from newly defined grids and axes
+* When the routine exits there will be no duplicate axis names although there
+* will be holes in line_memory from deleted axes.
+* When the routine exits there will still be duplicate grid names among the
+* newly defined grids.  These may be eliminated after variables are associated.
+* Finally, determine the "record" axis of this data set,
+
+* Programmer Steve Hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+
+* revision 0.0 - 2/92
+* v500 - 3/99 *kob* - up length of variable vname to correspond w/ increased
+*                     size of line_name
+*      - 4/99 *kob* - need to increase size of temp_axnams as well
+*      - 7/99 *sh* - bug fix: need conosotent use of char_init16 on line_name
+* V510 *sh* 3/00 - convert to use of dynamic grids and axes
+*		 - use TM_GET_LINEMATCH to ensure that renamed axes also match
+* V552 *acm* 5/03   increase vname and buff to 128 chars 
+* V600 *ACM* attribute control. 
+*             Replace NCDINQ with CD_GET_DS_DIMS
+* V601 *acm* 11/06 If there is a new axis name, save the original axis name of 
+*                  the axis as an attribute of the coordinate variable in the 
+*                  linked-list attribute structure, and change the axis name itself
+*                  in the attribute structure.
+* V602 *acm* 12/06 When replacing or resetting an axis, test for the existence of
+*                  the attribute orig_file_axname. If it already exists, call the
+*                  routine to replace the attribute rather than trying to add a new
+*                  attribute.
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
+
+* argument definitions:
+*       dset    - pointer to TMAP data set
+*	cdfid	- netCDF id number for already opened CDF file
+*       temp_axnams - temporary storage of axis names to construct grids
+*       temp_grid_ptr - points from temporary name storage to actual grid
+*	status	- return status
+
+* include files
+	include 'tmap_errors.parm'
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
+        include 'xbuild_grids.cmn'
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
+        include 'xdset_info.cmn_text'
+        include 'netcdf.decl'
+#include "netcdf.inc"
+
+
+* argument declarations
+	INTEGER	 dset, cdfid, status
+*4/99 *kob*
+        CHARACTER*64 temp_axnams(4,max_temp_grid)
+
+* local parameter definitions:
+      INTEGER     max_grd_per_cdf
+      PARAMETER ( max_grd_per_cdf = 40 )
+
+* local variable declarations:
+      LOGICAL TM_SAME_GRID_DEF, 
+     .        dup_name, dup_guts
+      INTEGER TM_GET_LINEMATCH,  TM_GET_LINENUM, TM_GET_GRIDNUM, 
+     .        TM_LENSTR1, STR_SAME,
+     .        igrid, iaxis, count, idim, i_dup, ivar,
+     .        npts, istat,  reused(max_lines:line_ceiling),
+     .        varid, attid, attype, attlen, attoutflag, len 
+* upped vname to 64 - also removed the *24 from the CHARACTER
+* upped vname to 128 
+      CHARACTER vname*128, buff*128, attname*128
+      REAL dummy
+
+***** AXES ******
+* check for duplicate name / guts of axes
+* if completely identical (name and guts) then eliminate the new one
+* if new definition with already used name then flag this
+	iaxis = 0	! to get start of linked list
+ 100	CALL TM_NEXT_TMP_LINE( iaxis, *110)
+	  reused(iaxis) = TM_GET_LINEMATCH( iaxis, dup_name, dup_guts )
+	  IF ( dup_name .AND. .NOT.dup_guts ) THEN
+	     line_fixname(iaxis) = .TRUE.	  ! new definition reuses old name
+	  ELSE
+	     line_fixname(iaxis) = .FALSE.
+	  ENDIF
+	GOTO 100  ! like  100   CONTINUE
+
+* check that all the grids point to real axes
+ 110	igrid = 0		! to get start of linked list
+ 250	CALL TM_NEXT_TMP_GRID( igrid, *260)
+	   count = tmp_nam_ptr(igrid)
+           DO 240 idim = 1, 4 
+              vname = temp_axnams(idim, count)
+!              IF ( vname .EQ. 'RECORD' ) THEN
+!* ... the CDF term "RECORD" is the last dim'ed axis (like "UNKNOWN" for GT)
+!                 grid_line(idim, igrid) = mpsunkn
+              IF ( vname .EQ. 'NORMAL' ) THEN
+                 grid_line(idim, igrid) = mpsnorm
+              ELSE
+* ... first choose from the axis names just defined
+	         iaxis = 0	! to get start of linked list
+ 200	         CALL TM_NEXT_TMP_LINE( iaxis, *202)
+                    IF ( vname .EQ. line_name(iaxis) ) THEN
+	               IF (reused(iaxis) .EQ. unspecified_int4 ) THEN
+                          grid_line(idim, igrid) = iaxis
+	               ELSE
+                          grid_line(idim, igrid) = reused(iaxis)
+	               ENDIF
+                       GOTO 240
+                    ENDIF
+	         GOTO 200
+* ... not found? then this name was a duplicate definition. Reuse older defn
+ 202		 grid_line(idim, igrid) = reused(iaxis)
+	         IF (reused(iaxis) .EQ. unspecified_int4)
+     .						STOP 'cd_clean_crptn'
+              ENDIF
+ 240       CONTINUE
+	GOTO 250
+                 
+* check for duplicate grid name / guts
+ 260	igrid = 0		! to get start of linked list
+ 300	CALL TM_NEXT_TMP_GRID( igrid, *301)
+
+* ... eliminate this grid name to look for duplicates
+           vname = grid_name(igrid)   ! temporary storage
+           grid_name(igrid) = char_init
+           i_dup = TM_GET_GRIDNUM( vname )
+           dup_name = i_dup .NE. unspecified_int4
+
+           IF ( dup_name ) THEN
+              dup_guts = TM_SAME_GRID_DEF( i_dup, igrid )
+           ELSE
+              dup_guts = .FALSE. ! ... well not necessarily but who cares ?
+           ENDIF
+
+* Save the grid if it's unique
+          IF ( .NOT.dup_name ) THEN
+             grid_name(igrid) = vname
+
+* Throw away this duplicate but make sure variables point to the original
+          ELSEIF ( dup_guts ) THEN
+             grid_name(igrid) = char_init   ! throw it away
+             DO 290 ivar = 1, maxvars
+ 290         IF ( ds_grid_number(ivar) .EQ. igrid )
+     .               ds_grid_number(ivar) = i_dup
+
+* Duplicate name - differing guts / make the grid name unique
+          ELSE
+             grid_name(igrid) = vname
+             CALL TM_NEW_GRID_NAME( grid_name(igrid), vname )
+             grid_name(igrid) = vname
+          ENDIF
+
+	GOTO 300	! like 300    CONTINUE
+
+* destroy any axis names that are duplicates both in name and defn
+* make unique any axis names that are duplicates but with new guts
+
+* If there is a new name, save the original axis name of the axis as an
+* attribute of the coordinate variable in the linked-list attribute structure,
+* and change the axis name itself.
+
+ 301	iaxis = 0		! to get start of linked list
+ 400	CALL TM_NEXT_TMP_LINE( iaxis, *402)
+          vname = line_name(iaxis)
+          len = TM_LENSTR1(vname)
+          CALL CD_GET_VAR_ID (dset, vname, varid, status)
+
+	  IF ( reused(iaxis) .NE. unspecified_int4 ) THEN
+	    line_name(iaxis) = char_init16   ! destroy new duplicate defn
+	    line_fixname(iaxis) = .FALSE.  
+            
+            buff = line_name(reused(iaxis))
+
+            IF (status .EQ. merr_ok .AND. 
+     .          STR_SAME(vname, buff) .NE. 0) THEN
+               CALL CD_RENAME_VAR (dset, varid, buff, status)
+               
+* Replace or add the orig_file_axname attribute
+               attname = 'orig_file_axname'
+               CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .              status)
+               IF (attid .GT. 0) THEN 
+                  CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, attname,
+     .               attype, attlen, attoutflag, status)
+                  CALL CD_REPLACE_ATTR (dset, varid, attname, NF_CHAR, 
+     .               len, vname, dummy, status)
+               ELSE
+                  CALL CD_PUT_NEW_ATTR (dset, varid, 'orig_file_axname',
+     .               NF_CHAR, len, -1, vname, dummy, status)
+               ENDIF
+            ENDIF
+
+          ELSEIF ( line_fixname(iaxis) ) THEN
+            CALL TM_NEW_LINE_NAME( line_name(iaxis), buff )
+            line_name(iaxis) = buff
+
+            IF (status .EQ. merr_ok .AND. 
+     .          STR_SAME(vname, buff) .NE. 0) THEN
+               CALL CD_RENAME_VAR (dset, varid, buff, status)
+
+* Replace or add the orig_file_axname attribute
+               attname = 'orig_file_axname'
+               CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .              status)
+               IF (attid .GT. 0) THEN 
+                  CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, attname,
+     .               attype, attlen, attoutflag, status)
+                  CALL CD_REPLACE_ATTR (dset, varid, attname, NF_CHAR, 
+     .               len, vname, dummy, status)
+               ELSE
+                  CALL CD_PUT_NEW_ATTR (dset, varid, 'orig_file_axname',
+     .                NF_CHAR, len, -1, vname, dummy, status)
+               ENDIF
+            ENDIF
+
+          ENDIF
+	GOTO 400	! like  400    CONTINUE
+
+* determine the "record" axis
+ 402	IF ( ds_time_axis(dset) .LT. 1 ) THEN
+             ds_time_axis(dset) = unspecified_int4
+        ELSE
+           CALL CD_GET_DS_DIMS( dset, ds_time_axis(dset), vname, 
+     .                          npts, istat )
+           ds_time_axis(dset) = TM_GET_LINENUM( vname )
+        ENDIF
+
+* successful completion
+ 	status = merr_ok
+        RETURN
+
+* error messages
+ 5100	buff = 'axis: '//vname//' grid: '//grid_name(igrid)
+ 	CALL TM_ERRMSG (merr_lineundef, status, 'CD_CLEAN_GRIDS',
+     .			no_descfile, no_stepfile,
+     .			buff, no_errstring, *5900)
+
+* error exit
+ 5900   RETURN
+	END

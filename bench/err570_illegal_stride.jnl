@@ -1,0 +1,8 @@
+! err570_illegal_stride.jnl
+! (bug 596) list/i=0:300:0 var crashed Ferret
+
+SET MODE ignore_error
+use coads_climatology
+list/l=1/j=40/i=0:300:0 sst
+
+SET MODE/LAST ignore_error

@@ -1,0 +1,10 @@
+! err64_very_small_latlon.jnl
+! Based on a report and data file from Jean Newman.
+
+use err64_small_latlon
+
+! crashed because of formats for lon/lat axis labels.
+shade bathy  
+
+! This one uses so many digits it will not be formatted
+shade/i=1:10/j=1:10 bathy

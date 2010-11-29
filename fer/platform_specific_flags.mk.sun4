@@ -1,0 +1,101 @@
+#
+# platform_specific_includes.mk.solaris
+#
+# This file is included in other Makefiles and defines
+# platform specific macros
+
+
+INCLUDES        = -I/opt/local/netcdf-3.4/include \
+		  -I$(TMAP_LOCAL)/src/xgks/include \
+		  -I../../ppl/include/xgks \
+		  -I/usr/ucbinclude \
+                  -I/usr/openwin/include \
+		  -I$(TMAP_LOCAL)/src/xgks/gif \
+		  -I$(TMAP_LOCAL)/src/xgks/ps \
+		  -I$(TMAP_LOCAL)/src/xgks/port \
+                  -I$(TMAP_LOCAL)/src/xgks/src/lib \
+                  -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm \
+                  -I$(TMAP_LOCAL)/include \
+		  -I/opt/SUNWmotif/include \
+		  -I/opt/local/include \
+                  -I../common \
+		  -I../../fmt/cmn \
+		  -I../../ppl/include \
+		  -I. -I$(TMAP_LOCAL)/include/readline
+
+FINCLUDES	= -I../../ppl/tmap_inc \
+		   -I../include -I../../fmt/cmn \
+		   -I../common \
+		   -I../../ppl/include -I../../fer/common
+
+
+GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include  -I/usr/openwin/share/include
+
+# New platform type var - *kob* 10/01
+PLATFORM = Solaris 5.6 
+ 
+
+CC              = cc
+RANLIB          = /bin/touch
+CFLAGS          = -Dsolaris -DUSG -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
+FFLAGS          = -e -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES) -Dunix -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DusingDODSf2cUnderscore 
+PPLUS_FFLAGS    = -e -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Dunix $(FINCLUDES) -DusingDODSf2cUnderscore 
+
+
+#-DusingDODSf2cUnderscore 
+#
+# Below this line are macro definitions used only for the final linking of the executable
+#
+
+LD		= cc
+LDFLAGS		= -L/usr/openwin/lib -z muldefs -v
+#LD_DYN_FLAGS = -G -z text -z muldefs
+LD_DYN_FLAGS = -B static  -z text -z muldefs
+
+V77lib = /opt/SUNWspro/SC5.0/lib/libV77.a
+M77lib = /opt/SUNWspro/SC5.0/lib/libM77.a
+F77lib = /opt/SUNWspro/SC5.0/lib/libF77.a
+elflib = /usr/lib/libelf.a
+Xmlib = /opt/SUNWmotif/lib/libXm.a
+Sunmathlib = /opt/SUNWspro/SC5.0/lib/libsunmath.a
+nsllib = /usr/lib/libnsl.a
+socketlib = /usr/lib/libsocket.a
+ 
+#SYSLIB		= -lX11 -lXpm /usr/lib/libdl.so -llist -Bstatic  -L/opt/SUNWspro/lib \
+#		  $(V77lib) $(elflib) $(M77lib) $(F77lib) $(Xmlib) -lXt -Bdynamic $(Sunmathlib) -lm \
+#		  /usr/ccs/lib/libgen.a -lc \
+#		  -Bstatic  -Bdynamic /usr/lib/libICE.so \
+#		  /usr/lib/libSM.so 
+
+SYSLIB		= -lX11 -lXpm /usr/lib/libdl.so -llist -Bstatic  -L/opt/SUNWspro/lib \
+		  $(V77lib) $(elflib) $(M77lib) $(F77lib) $(Xmlib) -lXt -Bdynamic $(Sunmathlib) -lm \
+		  /usr/ccs/lib/libgen.a -lc \
+		  -lICE -lSM
+
+
+DODS_SYSLIB	= $(nsllib) $(socketlib) \
+		  /opt/local/hdf/lib/libz_HDF4.1r1.a
+
+TMLIB		= ../lib/tmap_lib.a
+
+READLINELIB	= -L$(TMAP_LOCAL)/lib -lreadline
+
+#GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
+GKSLIB		= ../xgks/src/lib/libxgks.a
+
+HDFLIB		= /opt/local/lib/libdf.a
+
+#CDFLIB		= /opt/local/lib/libnetcdf.a
+#CDFLIB		= $(TMAP_LOCAL)/src/netcdf-2.3.2/lib/libnetcdf.a
+#CDFLIB          = /opt/local/netcdf-2.4.2/lib/libnetcdf.a
+#CDFLIB          = /opt/local/netcdf-3.4/lib/libnetcdf.a
+CDFLIB          = /home/ja4/kobrien/src/solaris/netcdf-3.5.0/lib/libnetcdf.a
+
+#DODS_LIBS	= -L/home/stout/kobrien/solaris/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a -lrx -lz 
+DODS_LIBS	= -L/home/stout/kobrien/DODS-release-3.4.5/solaris/DODS/lib/  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a -lrx -lz 
+
+TERMCAPLIB 	= -ltermcap
+
+#
+# End of platform_specific_includes.mk.solaris
+#

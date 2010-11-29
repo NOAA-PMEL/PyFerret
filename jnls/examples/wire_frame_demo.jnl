@@ -1,0 +1,29 @@
+! wire_frame.jnl - *sh* 11/91
+! update 12/92 using the WIRE command
+! update 11/93 for V3.01 which defaults region of abstract vars to grid limits
+
+! Description: demonstrates how to create a 3D wire frame plot
+
+! demonstrates a simple wire frame 3D drawing from PLOT+ inside FERRET
+! uses a 2D Gaussian function for the example
+
+! ...in case of left-overs from previous commands
+CANCEL REGION
+
+! Define a simple 2D Gaussian function in the XY plane.
+LET GAUSS = 2*EXP(-1*((x/2)^2 + y^2))
+
+! Define an 80 by 80 point region from (-4,-4) to (4,4) in the XY plane.
+DEFINE AXIS/X=-4:4:.1 xax80
+DEFINE AXIS/Y=-4:4:.1 yax80
+DEFINE GRID/X=xax80/Y=yax80 g_gauss
+SET GRID g_gauss     ! the pseudo-variables "x" and "y" on this grid
+
+! View the field from the point (x,y,z)=(-4,-10,4).
+WIRE/view=-4,-10,4 gauss
+
+! We will now clean up FERRET for whatever you, the user, will be doing next.
+! To experiment with this mathematical functions further use the commands
+!      SET GRID g_gauss 
+SET GRID abstract
+CANCEL REGION

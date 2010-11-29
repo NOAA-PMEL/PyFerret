@@ -1,0 +1,207 @@
+                            INTRODUCTION
+                            ------------
+
+This directory contains all source code and documentation associated
+with the XGKS library.  XGKS is an X11 window system based version of
+the ANSI Graphical Kernel System.  XGKS is a full GKS system (level
+2C).  This library was developed at the University of Illinois, Urbana
+campus, department of Computer Science and was funded by IBM TCS.  The
+project was headed by Prof.  Bill Kubitz and Prof. Roy Campbell.
+Development of XGKS was done by Greg Rogers, Sung Hsien Ching, and Yu
+Pan.  Testing and improvements to XGKS were performed by IBM Technical
+Computing Systems in Cambridge, Mass.  The IBM developers were Todd
+Gill, Bruce Greer, David Owens, and Michael Wojcik, and Project Leader
+Amy Pitts.
+
+Neither the University of Illinois nor IBM support XGKS anymore.
+Fortunately, however, Steve Emmerson of Boulder, Colorado has accepted
+the maintenance of XGKS as a hobby.  There is also a mutual-aid-society
+mailing-list for XGKS user's.  To join the mailing-list, send email to
+
+    xgks-request@unidata.ucar.edu	(IP address: 128.117.140.3)
+
+An archive of the XGKS mailing-list is available from the gopher(1) server
+on host unidata.ucar.edu.  First select the category on Unidata support
+databases, then select the category on the XGKS email archive.
+
+
+
+
+                   SOURCE DIRECTORY OVERVIEW
+                   -------------------------
+
+The structure of the XGKS source directory-tree is
+
+
+	       |-progs--
+	       |
+	       |        |-binding--
+	       |-doc----|
+	       |        |-userdoc--
+	|-xgks-|
+	       |-fontdb-
+	       |
+	       |        |-fortran--
+	       |        |
+	       |-src----|          |-cgm--
+			|          |
+			|-lib------|-gksm-
+				   |
+                                   |-x----
+
+where:
+
+    xgks	Is the root directory (the one containing this file)
+
+    progs	Contains utility programs
+
+    doc		Contains documentation (e.g. "xgks.3")
+
+    doc/binding	Contains the source for a document describing the
+		1988 C language binding for XGKS
+
+    doc/userdoc	Contains the source for a document describing the
+		GKS implementation-specific details of XGKS
+
+    fontdb	Contains the XGKS fonts
+
+    src		Contains the implementation of the XGKS runtime-library
+
+    src/fortran	Contains the source for the Fortran interface to XGKS
+
+    src/lib	Contains the source for the XGKS library.
+
+    src/lib/cgm	Contains the source for the Compute Graphics Metafile
+		"backend" to XGKS.
+
+    src/lib/gksm
+		Contains the source for the GKS Metafile (GKSM) "backend"
+		to XGKS.
+
+    src/lib/x	Contains the source for the X Window System "backend" to 
+		XGKS.
+
+
+
+
+                           INSTALLATION
+                           ------------
+
+Installation instructions can be found in the file INSTALL.
+
+XGKS has been installed on many platforms, including:
+    
+	Apollo DN3000	under DomainOS 10.2,   BSD4.3, with C compiler
+			68K Rev 6.7(316)
+	Apollo DN4000	under DomainOS 10.3.2, BSD4.3, with C compiler
+			68K Rev 6.8(168)
+	Apollo 425T	under DomainOS 10.3.5
+	VaxStation II	under Ultrix 3.5, 4.0, & 4.1
+	DECstation 3100	under ULTRIX 4.1 & 4.2
+	HP 9000/720	under HPUX 8.0
+	Sun3		under SunOS 4.0.3, 4.1, & 4.1.1 (using both 
+			    /usr/bin/cc and /usr/5bin/cc)
+	Sun4		under SunOS 4.1 & 4.1.1
+	IBM RS6000	under AIX 3.1
+	Cray Y-MP	under UNICOS 5.1.11
+
+The structure of the installation is nominally:
+
+                            |-defcolors
+                            |-font
+                            |-mi
+                  |-bin-----|-pline
+                  |         |-pmark
+                  |         |-hanoi
+                  |         |-star
+                  |         |-gksdemo
+                  |
+         |-prefix-|-include-|-xgks.h
+                  |
+                  |         |-libxgks.a
+                  |-lib-----|-libfxgks.a
+                  |         |-xgksfonts-
+                  |
+                  |-man-----|-man3-|-xgks.3
+
+where:
+
+    prefix      is whatever you made it when you invoked `configure' (see
+		file INSTALL).
+
+    defcolors   displays the default X colormap (set DISPLAY first);
+
+    font        displays the fonts used by XGKS (set DISPLAY first);
+
+    mi          is a simple GKS Metafile (GKSM) interpreter 
+                (usage: mi <display> <file>);
+
+    pline       displays the polyline types used by XGKS (set DISPLAY
+                first);
+
+    pmark       displays the marker types used by XGKS (set DISPLAY
+                first);
+
+    hanoi       is a Towers-of-Hanoi demonstration (set DISPLAY first);
+
+    star        is a imple fortran program to draw a star (set DISPLAY first);
+
+    gksdemo     is a Fortran program that demonstrats most of XGKS 
+		capabilities (set DISPLAY first);
+
+    xgks.h      is the header-file that every XGKS application must
+                #include;
+
+    libxgks.a   is the XGKS runtime library.
+
+    xgksfonts   is a directory which contains the XGKS fonts;
+
+    xgks.3      contains the XGKS man(1)ual pages.
+
+Fonts used by XGKS are dynamically loaded when first referenced.  Thus,
+the fonts must be installed on the machine where the XGKS application
+executes.
+
+The font path is compiled into the library.  However, it is possible to
+move the fonts without having to recompile XGKS by setting the
+environment variable "XGKSFontDir" to the new path before executing an
+XGKS application.  This variable setting will tell XGKS at runtime
+where to find its fonts.
+
+
+
+
+                            DOCUMENTATION
+                            -------------
+
+In addition to the man(1)ual pages that will be installed during the
+installation procedure, there are two other documents you should be aware
+of.  The first describes the C-language binding used by XGKS.  To obtain
+hardcopy, go to directory "doc/binding", edit the makefile (if necessary),
+and type "make hardcopy".
+
+The second document details the implementation-specific aspects of GKS
+particular to XGKS.  To obtain hardcopy, go to directory "doc/userdoc",
+edit the makefile (if necessary), and type "make hardcopy".
+
+A good general book on GKS is "Computer Graphics Programming: GKS - The
+Graphics Standard" by G. Enderle, K. Kansy, and G. Pfaff.  It's published
+by Springer-Verlag and its ISBN numbers are 3-540-16317-4 and
+0-387-16317-4.
+
+
+
+
+                               A PLEA
+                               ------
+
+Please send any contributions to the evolution of XGKS to
+
+	xgks-request@unidata.ucar.edu
+
+They'll be incorporated so that the next poor grunt won't have such a tough
+time.
+
+
+Regards,
+Steve Emmerson          xgks-request@unidata.ucar.edu

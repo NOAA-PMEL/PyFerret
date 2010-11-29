@@ -1,0 +1,79 @@
+#
+# platform_specific_includes.mk.i486-linux
+#
+# This file is included in other Makefiles and defines
+# platform specific macros
+
+GUI_FAKES=special/gui_fakes.o
+
+XGKSHOME	=  ../../xgks
+INCLUDES        =  -I$(XGKSHOME)/gif \
+		   -I$(XGKSHOME)/ps \
+		   -I$(XGKSHOME)/port \
+		   -I$(XGKSHOME)/src/lib \
+		   -I$(XGKSHOME)/src/lib/gksm \
+		   -I../common \
+		   -I../../fmt/cmn \
+		   -I../../ppl/include \
+		   -I. -Ireadline \
+		   -I/usr/local/include \
+		   -I/usr/X11R6.4/include
+
+FINCLUDES	= -I..\\\\..\\\\ppl\\\\tmap_inc \
+		   -I..\\\\include -I..\\\\..\\\\fmt\\\\cmn \
+		   -I..\\\\common \
+		   -I..\\\\..\\\\ppl\\\\include \
+	           -I..\\\\..\\\\fer\\\\common
+
+CC              = gcc
+RANLIB          = ranlib
+CFLAGS          = -g -DX_REFRESH -DXT_CODE -Dunix \
+		  $(INCLUDES)
+FPROFLAGS	= -Dunix -Dxgks -D__CYGWIN__ -DNO_OPEN_READONLY \
+                  -DNO_OPEN_CARRIAGECONTROL -DUSE_NETCDF_V3 \
+		  -DFlarge_mem -static
+FFLAGS		= -nopdbfile \
+		   -iface:cref -iface:nomixed_str_len_arg\
+		   /fpp /align:dcommons /f77rtl\
+		   /align:dcommons /align:records \
+		   -assume:nosource_include \
+		   -assume:underscore -names:lowercase \
+		   $(FINCLUDES)
+PPLUS_FFLAGS		= -nopdbfile \
+		   -iface:cref -iface:nomixed_str_len_arg\
+		   /fpp /align:dcommons /f77rtl\
+		   /align:dcommons /align:records \
+		   -assume:nosource_include \
+		   -assume:underscore -names:lowercase \
+		   $(FINCLUDES) $(FPROFLAGS)
+
+.c.o:
+	($(CC) $(CFLAGS) -c $(DEBUG) $(<F))
+
+#.F.o:
+#	((gcc -P -E $(FPROFLAGS) $(INCLUDES) $< > $*_tmp.f; $(F77) $(FFLAGS) -c $*_tmp.f)  && mv $*_tmp.obj $*.o)
+
+.F.o:
+	$(F77) $(FPROFLAGS) $(FFLAGS) -c $< && mv $*.obj $*.o
+
+.f.o: 
+	$(F77) -c $(FFLAGS) $< && mv $*.obj $*.o
+
+# Below this line are macro definitions used only for the final linking of the executable
+#
+
+SYSLIB		= -llist -lreadline -L/usr/X11R6.4/lib -lX11 -lm -lforrt -lg2c
+#SYSLIB		= -llist -lreadline -L/usr/X11R6.4/lib -lXt -lXext -lX11 -lm -ldfor -lg2c
+
+TMLIB		= ../lib/tmap_lib.a
+
+GKSLIB		= -L/usr/local/lib -lxgks
+
+#HDFLIB		= -L/usr/local/lib  -ldf -ljpeg -lz
+
+CDFLIB		= -L/usr/local/lib -lnetcdf
+
+
+#
+# End of platform_specific_includes.mk.i486-linux
+#

@@ -1,0 +1,78 @@
+!bn_xml_output.jnl
+! new-V553 output in XML-style format
+! Illustrate the SHOW commands with /XML xml-style output
+! V5.80 11/04 new tests for SHOW VAR/XML; global variables.
+
+! 22-Feb-2005 use SHO AXIS/XML `temp,return=taxis` instead
+! of naming the axes; other axes of the same name (e.g. TIME) 
+! may have been defined in other benchmark scrips.
+
+USE gtsa056_2.cdf
+
+SHO DATA/XML
+
+SHO DATA/VAR/XML
+
+SHO GRID/XML ps3du1
+
+SHO AXIS/XML `temp,return=xaxis`
+SHO AXIS/XML `temp,return=yaxis`
+SHO AXIS/XML `temp,return=zaxis`
+SHO AXIS/XML `temp,return=taxis`
+
+! Define a dataset variable
+! SHOW/XML commands list it w/ its dataset (even if dataset is not default)
+LET/D=gtsa056_2 temp_180 = temp[X=160E:160W@AVE]
+
+USE coads_climatology
+
+SHOW DATA/XML
+SHO DATA/VAR/XML
+
+
+! tests of SHOW VAR/XML for global variables.
+CAN DATA/ALL
+CAN VAR/ALL
+
+USE coads_climatology
+USE gtsa056_2
+
+! Define a dataset variable
+LET/D=gtsa056_2 temp_20 temp[Z=0:20@SUM]
+
+! Define a global variable
+LET t30 = temp[Z=0:30@SUM]
+
+! Another variable, setting title, units, bad flag.
+LET/UNITS="Deg C"/BAD=100/TITLE="Indefinite integral of SALT" salty = salt[Z=@IIN]
+
+! Define a constant
+LET pi = 3.14
+
+! Another variable, irrelevant in the current context
+LET my_sst = sst*12
+
+! This lists all the variables except my_sst
+
+SHO VAR/XML
+
+! Now change datasets, so my_sst has a context, but t30 
+! does not temp_20 is listed because it is defined on a dataset
+
+SET DATA coads_climatology
+SHO VAR/XML
+
+! Change default dataset. Now we should just see pi and my_sst 
+
+CAN DATA gtsa056_2
+SHOW VAR/XML
+
+! 8/7/2007
+! new form for output of a var whose definition contains quotes
+CANCEL DATA/ALL
+CANCEL VAR/ALL
+
+USE coads_climatology 
+LET t3 = sst[x=180,y=1,t="15-jan-0000:00:00":"15-feb-0000:00:00"@AVE]
+SHOW VAR/XML
+

@@ -1,0 +1,21 @@
+! show_pattern.jnl
+! 	shows up to the first 10 patterns in a .pat file 
+! 	in a color or colors of the user's choice
+!
+!	INPUTS
+!		1: (required)		.pat pattern file name
+!
+!		2: (optional)		color palette name
+!					(default=black)
+
+define symbol patternfile  $1"default"
+define symbol palettecolor $2"black"
+shade/nokey/nolab/set/i=1:100/j=1:100/lev=(1,101,10)/pattern=($patternfile)/palette=($palettecolor) i+j-j+0.5
+ppl tics 0,0,0,0
+ppl axlabp 0,0
+ppl labs/nouser,1,0,-0.4,-1,"@AC($patternfile)"
+ppl hlabs, 1, 0.25
+go margins 0.5 0.5 0.5 0.5
+ppl shade
+ppl shaset reset
+

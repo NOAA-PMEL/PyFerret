@@ -1,0 +1,8 @@
+! this "shell" is used because the Unix redirection fails to echo commands
+! from the top level command file
+! ... havn't explored the reason ... they echo fine to the screen
+! *kob* 3/04/98 - newly created - copied from bn490_all_shell.jnl
+
+
+GO bn_ps
+

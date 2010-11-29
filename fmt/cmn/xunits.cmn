@@ -1,0 +1,4 @@
+* COMMON with units and units_codes and translations
+	INCLUDE		'TMAP_FORMAT:XUNITS.CMN_TEXT'
+
+	EXTERNAL	XUNITS_DATA

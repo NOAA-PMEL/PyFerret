@@ -1,0 +1,129 @@
+* XPLOT_SETUP.CMN - COMMON for physical plot description
+
+* vaiables coding:
+*	begins with "ul"--> refers to labels in the "upper left" corner
+*	begins with "key"-->refers to keys for lines and overlays
+*	ends with "_on" --> refers to what is currently on the screen and/or
+* 			    in the PLOT+ data bases
+*	contains "ov"	--> refers to overlays
+*	ends with "0"	--> refers to a suggested or pre-modification value
+*	  "space"	--> an abstract box within which a key must fit
+*         "size"	--> the portion of the abstract box that's occupied
+* *kob* 12/00 - add animate logical and active_win_id for animations
+* *sh* 9/01 - added white space defaults -- distance above/below axis ends
+*		to window or viewport edge (below == PLOT+ origin)
+* *acm* v552 3/03 Longer strings: changes for multi-line labels.
+* *acm* V600 9/05 window title: either set with SET WIN/TITLE or use 
+*                 session date/time.
+* *acm* V63  9/09 Introduction of syntax for variance-based and histogram levels
+
+	LOGICAL	key_doc(0:10),
+     .		onedee_on,
+     .		twodee_on,
+     .		saved_ppl_yax,
+     .		ul_dolab(4),
+     .		ovkey_ll_full,
+     .          animate,
+     .		first_frame,
+     .		need_std,
+     .		need_histo
+	INTEGER	nvect_on,
+     .		ncont_on,
+     .		nlabs_on,
+     .		nline_on,
+     .		nkeys_on,
+     .		novkeys_on,
+     .		novkeys_ll,
+     .		key_ncolmn,
+     .		ul_nlabs,
+     .		plot_axis(4), nplot_axis,
+     .		active_win_id
+
+	REAL	key_yspace0,
+     .		key_yspace,
+     .		key_xspace0,
+     .		key_xspace,
+     .		key_labht0,
+     .		key_labht,
+     .		key_xsize,
+     .		key_ysize,
+     .		key_xorigin,
+     .		key_yorigin,
+     .		key_xwhite_space,
+     .		key_ywhite_space,
+     .		key_line_frac,
+     .		ovkey_xspace,
+     .		ovkey_yspace,
+     .		ovkey_labht,
+     .		ovkey_xorigin,
+     .		ovkey_yorigin,
+     .		ppl_saved_yorg,
+     .		ppl_saved_yaxlen,
+     .		ul_labht0,
+     .		ul_yspace0,
+     .		ul_xorigin,
+     .		ul_yorigin,
+     .		xwhitelo,
+     .		ywhitelo,
+     .		xwhitehi,
+     .		ywhitehi
+
+	CHARACTER	ppl_buff*2048, window_title*64
+
+	COMMON / XPLOT_SETUP /
+     .		animate,
+     .		first_frame,
+     .		need_std,
+     .		need_histo,
+     .          active_win_id,
+     .		key_doc,
+     .		onedee_on,
+     .		twodee_on,
+     .		saved_ppl_yax,
+     .		nvect_on,
+     .		ncont_on,
+     .		nlabs_on,
+     .		nline_on,
+     .		nkeys_on,
+     .		novkeys_on,
+     .		novkeys_ll,
+     .		key_ncolmn,
+     .		plot_axis, nplot_axis,
+     .		key_yspace0,
+     .		key_yspace,
+     .		key_xspace0,
+     .		key_xspace,
+     .		key_labht0,
+     .		key_labht,
+     .		key_xsize,
+     .		key_ysize,
+     .		key_xorigin,
+     .		key_yorigin,
+     .		key_xwhite_space,
+     .		key_ywhite_space,
+     .		key_line_frac,
+     .		ovkey_xspace,
+     .		ovkey_yspace,
+     .		ovkey_labht,
+     .		ovkey_xorigin,
+     .		ovkey_yorigin,
+     .		ovkey_ll_full,
+     .		ppl_saved_yorg,
+     .		ppl_saved_yaxlen,
+     .		ul_nlabs,
+     .		ul_labht0,
+     .		ul_yspace0,
+     .		ul_xorigin,
+     .		ul_yorigin,
+     .		ul_dolab,
+     .		xwhitelo,
+     .		ywhitelo,
+     .		xwhitehi,
+     .		ywhitehi,
+     .		ppl_buff,
+     .		window_title
+
+* equivalences
+	LOGICAL		use_keys
+	EQUIVALENCE   ( key_doc(0), use_keys )
+

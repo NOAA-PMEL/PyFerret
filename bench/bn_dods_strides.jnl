@@ -1,0 +1,239 @@
+! bn_dods_strides.jnl
+! *sh* 3/00
+
+! drawn identically from bn_strides_revs_perms.jnl on 3/16/00
+
+! exercise special netCDF performance and robustness enhancements to allow
+! reading with strides and permuting and reversing axes
+
+! * * * * * PERMUTATIONS * * * * *
+! How to evaluate the correct ordering:
+! The data in bn_strides.cdf is ordered with the 1's digit
+! moving fastert, then the 10's, then 100's, etc.
+
+! If (say) /ORDER=ZXY is given we should see the 100's digit
+! moving fastest (left to right on each line), the 1's next
+! (vertically within each block of output), and the 10's next
+! advancing from block to block
+
+canc data/all
+cancel mode diagnostic
+
+! first with an XYZT variable
+set region/i=3:6/j=2:4/k=1:2/l=1
+!use bn_strides
+! use "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/bn_strides.cdf"
+set data "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+
+
+!! If the above is also down, here is a good one.
+!!set data "http://iridl.ldeo.columbia.edu/SOURCES/.NOAA/.NCEP/.EMC/.CMB/.Pacific/.monthly/dods"
+
+
+list temp
+canc data/all
+
+use/order=yx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+list temp
+canc data/all
+
+use/order=zyx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+list temp
+canc data/all
+
+use/order=zxy "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+list temp
+canc data/all
+
+! now with an XYT variable
+cancel region
+set region/i=1:4/j=40:43/l=1:2
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+show grid xytvar
+list xytvar
+canc data/all
+
+use/order=yx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+show grid xytvar
+list xytvar
+canc data/all
+
+use/order=tyx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+show grid xytvar
+list xytvar
+canc data/all
+
+use/order=txy "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+show grid xytvar
+list xytvar
+canc data/all
+
+! map into Z instead of T
+use/order=zxy "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+show grid xytvar
+list/k=1:2 xytvar
+canc data/all
+
+! ambiguous mapping
+use/order=tx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+show grid xytvar
+list xytvar
+canc data/all
+
+! final "z" goes beyond the 3D -- no effect
+use/order=txyz "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+show grid xytvar
+show grid var
+canc data/all
+
+! * * * * * STRIDES * * * * *
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+set mode diag
+cancel memory/all
+
+SHOW DATA
+
+! basic strides
+LIST VAR[i=2:4:2]
+
+! cache hit after changes to COMPLETE_MISSING_LIMS and FLESH_OUT_AXIS
+LIST VAR[i=2:4:2]
+
+! cache hit through non-file variable
+let a = VAR[i=2:4:2]
+list a
+list a		! from cache ...
+
+! cache hit from full region cache -- bypass use of strides
+cancel memory/all
+load var
+LIST VAR[i=2:4:2]
+LIST VAR[i=2:4:2,j=40:43:2]
+CANC MEM/ALL
+
+! modulo requests cannot use strides (as this example shows)
+set axis/modulo XAX1_4
+LIST VAR[I=1:10:3,j=40,k=1,l=1]    ! 1, 4, 7(3), 10(2)
+cancel axis/modulo XAX1_4
+
+! strides applied to more than one axis need special attention in IS_REGRID
+LIST VAR[i=2:4:2,j=40:46:2]
+LIST VAR[i=2:6:2,j=41:45:2]
+
+! deliberate error
+set mode ignore; LIST/i=2:4:2 VAR; cancel mode ignore
+
+! averaging causes bypass of strides
+LIST VAR[i=2:4:2@ave]
+
+! test sub-region selection on strides axis
+let a = temp[i=1:40:5]
+list/j=41/k=1/l=1 a[i=3:5]
+list/k=1/l=1 a[i=3:5,j=41:48:2]
+
+! ****** unequally spaced points on parent axis
+! reference data
+LIST/i=1/j=41/l=1 TEMP
+cancel mem/all
+
+! basic strides
+LIST/j=41/i=1/l=1 TEMP[k=2:4:2]
+
+! cache hit after changes to COMPLETE_MISSING_LIMS and FLESH_OUT_AXIS
+LIST/i=1/j=41/l=1 TEMP[k=2:4:2]
+
+! cache hit through non-file variable
+let a = TEMP[k=2:4:2]
+list/i=1/j=41/l=1 a
+list/i=1/j=41/l=1 a		! from cache ...
+
+! cache hit from full region cache -- bypass use of strides
+cancel memory/all
+load/i=1/l=1 TEMP
+LIST/j=41/i=1/l=1 TEMP[k=2:4:2]
+LIST/j=41/i=1/l=1 TEMP[k=2:4:2,j=1:5:2]
+CANC MEM/ALL
+
+! strides applied to more than one axis need special attention in IS_REGRID
+LIST/i=1/l=1 TEMP[k=2:4:2,j=40:43:2]
+LIST/i=1/l=1 TEMP[i=2:6:2,j=1:5:2]
+
+! averaging causes bypass of strides
+LIST/j=1/i=1/l=1/precision=9 TEMP[k=2:8:2@ave]
+LIST/j=1/i=1/l=1/precision=9 TEMP[k=2:8:2]		! for comparison
+
+! test special logic in tm_world_recur for endpoints of strides on irreg axis
+LIST/j=1/i=1/l=1/precision=9 TEMP[k=1:10:2@ave]
+
+
+! * * * * * MIXED STRIDES and PERMUTATIONS * * * * *
+
+set region/i=3:6/j=2:4/k=1:2/l=1
+
+use/order=yx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+list temp[i=3:9:2]
+list temp[j=42:46:2]
+list temp[i=3:9:2, j=42:46:2, k=1:3:2]
+canc data/all
+
+use/order=zyx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+list temp[i=3:9:2]
+list temp[j=42:46:2]
+list temp[i=3:9:2, j=42:46:2, k=1:3:2]
+canc data/all
+
+use/order=zxy "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+list temp[i=3:9:2]
+list temp[j=42:46:2]
+list temp[i=3:9:2, j=42:46:2, k=1:3:2]
+canc data/all
+
+
+
+! * * * * * MIXED STRIDES, PERMUTATIONS and REVERSALS * * * * *
+! to evaluate the output remember
+!  1) the axis lengths on disk are 9,8,7,6 for X,Y,Z,T, respectively
+!  2) the negatives apply to the axis in memory (after permutation)
+! Thus, with /ORDER=y-x we expect the 2nd disk axis (the 10's place) to
+! be reversed and the values 1:5:4 to be replaced by 9-(1:5:4) => 8:4:4
+
+! Note that the logic of the /ORDER syntax when BOTH permutations and
+! reversals are aplied would be more natural if the reversal were applied
+! BEFORE the permutation. This should occur in routine TM_AXIS_ORDER.
+! However, the logic changes needed were messay compared to the rare
+! usage of complex combinations of reversals and permutations, so it was
+! left as-is.
+
+cancel region; set region/l=1
+
+! reference output
+use/order=yx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
+canc data/all
+
+use/order=-yx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
+canc data/all
+
+use/order=y-x "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
+canc data/all
+
+! reference output
+use/order=tyx "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
+canc data/all
+
+! note the reversal on axes 1,2 and 3 (X,Y,Z in memory -- NOT T)
+use/order=-t-y-x "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
+canc data/all
+
+! reference output
+use/order=txy "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
+canc data/all
+
+use/order=-t-x-y "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/ocean_atlas_monthly.nc"
+list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
+canc data/all

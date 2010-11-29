@@ -1,0 +1,40 @@
+\cancel mode verify
+! set_pixel_size.jnl
+! 6/98 *sh*
+!
+! Description: set the size of the output window in pixels
+!
+! usage:                     arg1  arg2     arg3       arg4
+!         GO set_pixel_size xsize ysize [default_x] [default_y]
+!
+! example:
+!	yes? GO set_pixel_size 600 400
+! or
+!       yes? GO set_pixel_size 600 400 781 674
+!
+! xsize - desired window width  in pixels
+! ysize - desired window height in pixels
+! default_x - the width  of the default window in pixels 
+! default_y - the height of the default window in pixels 
+!
+! Since Ferret graphics are "device independent" its window sizes are
+! internally measured as fractions of the screen size. Thus, the
+! "default" size (size of the first plot where no SET WINDOW commands
+! have been issued) depends on the resolution of the screen being used
+!
+! Since Ferret sets sizes in floating point units integer roundoff
+! may cause this script to miss the desired size by +/- 1 pixel on either
+! or both axes. After running this script, execute
+!     yes? GO ptest
+!     yes? say ($ppl$xpixel), ($ppl$ypixel)
+! to see the actual size and adjust the arguments accordingly
+!
+! check validity of arguments (first two args are mandatory)
+query/ignore $1"<Usage: GO set_pixel_size xsize ysize [default_x] [default_y]"
+query/ignore $2"<Usage: GO set_pixel_size xsize ysize [default_x] [default_y]"
+!
+! set the aspect ratio
+SET WINDOW/ASPECT=`$2/$1`
+!
+! set window size. Note that the default window has a size of .7
+SET WINDOW/SIZE= `(($1 * $2) / ($3"781" * $4"674")) * .7`

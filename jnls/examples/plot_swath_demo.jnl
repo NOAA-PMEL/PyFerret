@@ -1,0 +1,40 @@
+! plot_swath_demo.jnl
+! *sh* 6/99
+! *acm* 7/01 update /pen=7 to /thickness=2
+! *acm*12/01 example2: def of base fails starting w/ v5.22.
+
+
+! Description: demonstrate "line plots" done with swaths of color
+
+set mode calendar:month
+set mode verify
+
+! example 1 -- show variability as a gray background swath
+use coads_climatology
+let mean = sst[x=130e:80w,y=0,l=1:12@ave]
+let std_dev = sst[x=130e:80w,y=0,l=1:12@var] ^ 0.5
+plot/title="Tropical SST variability" mean
+go plot_swath poly/over/pal=gray/nolab mean-std_dev, mean+std_dev
+plot/over/nolab/thickness=2 mean
+\pause
+
+! example 2 -- 3 colored time series
+! let base = T[T=1-jan-1990:1-feb-1990:24] - T[T=1-jan-1990]
+define axis/T/T=1-jan-1990:1-feb-1990:1/UNITS=DAYS/T0=1-jan-1990 tax
+let base = t[gt=tax]
+let y1 = base^0.5
+let y2 = base
+let y3 = base^1.1
+let y4 = base^1.2
+
+plot/title="Business trends" y1,y2,y3,y4
+go plot_swath poly/over/nolabels/palette=red   y1,y2
+go plot_swath poly/over/nolabels/palette=green y2,y3
+go plot_swath poly/over/nolabels/palette=blue  y3,y4
+\pause
+
+! example 3 - difference between two points on a grid
+use coads_climatology
+let sst1 = sst[l=1,x=20e:20e]
+plot sst1[y=0], sst1[y=10n]
+go plot_swath poly/over/nolabels/palette=black sst1[y=0]  sst1[y=10n]

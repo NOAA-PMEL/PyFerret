@@ -1,0 +1,17 @@
+! err560_century.jnl.jnl  *acm* 4/28/04
+! Century portion of years were not properly tested in numdm1.F
+
+! Crashes Ferret with STOP: ,2
+
+def axis/t="07-FEB-1899:12:00":"07-FEB-1900:12:00":365.2425/units=days/t0="1-jan-1800" tax
+let v = tsequence({55,65})
+plot/step=connected  v[gt=tax@asn]
+plot/over v[gt=tax@asn]
+
+plot v[gt=tax@asn]
+
+
+! Also need to test this, years 599 - 600
+
+def axis/t=07-feb-0599:07-feb-0600:1/units=years tt
+plot t[gt=tt]

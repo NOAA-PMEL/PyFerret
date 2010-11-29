@@ -1,0 +1,10 @@
+! err491_single_char_replace.jnl
+
+! 4/99 *sh*
+
+! erroneous error trap for single character symbol replacement
+!  **ERROR: command syntax: empty argument replacement string: ($undefined|"h")
+SAY ($undefined|"h")
+
+! but OK in this case
+SAY ($undefined|"hh")

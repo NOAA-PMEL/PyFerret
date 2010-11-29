@@ -1,0 +1,31 @@
+!two_dee_plot_of_1d.jnl   7/95  *sh*
+
+! Description: Illustrates FILLing under a 1D plot (e.g. ocean bottom)
+
+! we will use the etopo data set to draw the ocean bottom over XZ temperatures
+set data etopo60
+set data levitus_climatology
+
+set wind/asp=.75/siz=.6
+set region/x=180:360/y=20n/z=0:5000
+
+! the temperature and the bottom as a line
+set view upper
+shade/title="Ocean Bottom using 1D PLOT" temp
+let bottom = (-1)*rose[d=etopo60]
+plot/over/nolab bottom
+
+! the temperature and the bottom as a filled region
+! we define a 2-D field where on which a contour of (0) is the bottom
+set view lower
+shade/title="Ocean Bottom using 2D FILL" temp
+let bottom_2d = bottom - z[g=temp]
+fill/over/lev=(-10000)(0)/palette=black/nolab bottom_2d
+message Lets make a nice looking plot of this
+
+! as long as we've gone this far lets make a "nice" plot
+! ("@fln" fills by linear interpolation)
+! ("@fln:100" reaches over North Africa to find an interpolating point)
+set wind/asp=.5/size=.6
+fill/title="Aint it purdy?" temp[x=@fln:100]
+fill/over/lev=(-10000)(0)/palette=black/nolab bottom_2d

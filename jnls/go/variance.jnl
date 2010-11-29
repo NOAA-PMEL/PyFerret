@@ -1,0 +1,47 @@
+\CANCEL MODE VERIFY
+! updated 10/93 for Ferret V3.01
+! updated 6/99 to handle bad data - SIM
+
+! Description:  define FERRET variables for covariance and correlation
+
+! example:
+!   yes? SET DATA coads_climatology
+!   yes? LET p = sst[x=180,y=0]; LET q = airt[x=180,y=0]
+!   yes? GO variance
+!   yes? list p, q
+
+SAY ... Variance and Covariance: Instructions:
+SAY Use the LET/QUIET command to define the variable(s) P (and Q) as
+SAY your variable(s) of interest (e.g. yes? LET/QUIET P = u[x=180,y=0])
+SAY The variance of P will be variable P_VAR  (Q --> Q_VAR)
+SAY The covariance will be COVAR The correlation will be CORREL.
+SAY Type GO VAR_N to obtain n/n+1 statistical correction factor
+SAY ...
+
+! deviations, squared deviations, cross deviations
+let/quiet P_AVE = P[L=@ave]
+let/quiet Q_AVE = Q[L=@ave]
+let/quiet P_DEV = P - P_AVE
+let/quiet Q_DEV = Q - Q_AVE
+let/quiet MASK_PQ = p*q-p*q + 1 	! always 1 or "missing"
+let/quiet P_MASK = P*MASK_PQ
+let/quiet Q_MASK = Q*MASK_PQ
+let/quiet P_DSQ = P_DEV * P_DEV
+let/quiet Q_DSQ = Q_DEV * Q_DEV
+let/quiet P_AVE_MASK = P_MASK[l=@ave]
+let/quiet Q_AVE_MASK = Q_MASK[l=@ave]
+let/quiet P_DEV_MASK = P_MASK - P_AVE_MASK
+let/quiet Q_DEV_MASK = Q_MASK - Q_AVE_MASK
+let/quiet P_DSQ_MASK = P_DEV_MASK*P_DEV_MASK
+let/quiet Q_DSQ_MASK = Q_DEV_MASK*Q_DEV_MASK
+let/quiet PQ_DSQ= P_DEV_MASK * Q_DEV_MASK     ! also = P_DEV*Q_DEV
+
+! variances, covariances
+let/quiet/title="VARIANCE OF P"          P_VAR = P_DSQ[l=@ave]
+let/quiet/title="VARIANCE OF Q"          Q_VAR = Q_DSQ[l=@ave]
+let/quiet/title="VARIANCE OF P WHEN Q PRESENT" P_VAR_MASK = P_DSQ_MASK[l=@ave]
+let/quiet/title="VARIANCE OF Q WHEN P PRESENT" Q_VAR_MASK = Q_DSQ_MASK[l=@ave]
+let/quiet/title="COVARIANCE OF P AND Q"  COVAR = PQ_DSQ[l=@ave]
+let/quiet/title="CORRELATION OF P AND Q" CORREL= COVAR / (P_VAR_MASK*Q_VAR_MASK)^.5
+
+SET MODE/LAST VERIFY

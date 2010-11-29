@@ -1,0 +1,53 @@
+! replace_arbitrary_values.jnl   - last modified 8/24/92
+
+! Description: demo of a technique for "hand-editing" a variable
+
+! *acm* 7/01 update /line= to /color=
+
+
+! This FERRET script demonstrates a technique for customizing data on an
+! arbitrary basis - i.e. replacing arbitrary regions of a variable with
+! arbitrarily selected values
+
+! This example customizes the land/ocean mask contained in the 2x2 degree
+! ETOPO data set supplied with FERRET
+
+! NetCDF files and the SAVE command are at the heart of the technique
+
+set data etopo120
+region/x=100w:10w/y=20n:60n              ! North Atlantic
+let ocean = if rose le 0 then 0 else 1   ! 0 = ocean, 1 = land
+set wind/siz=.5 1
+shade/lev=(-0.5,2.5,1)/nokey ocean
+go land
+
+! Notice that Florida and Cuba appear to be ocean.
+! We will fix this.
+
+pause
+! First, save the full mask as-is
+spawn rm ocean_mask.cdf   ! so the script can be run over and over
+SAVE/file=ocean_mask.cdf ocean
+
+! Lets mark Florida and Cuba (very roughly) to get the right locations
+plot/vs/over/symb=2/color=green x[x=81w],y[y=27n]
+plot/vs/over/symb=2/color=green x[x=81w],y[y=23n]
+plot/vs/over/symb=2/color=green x[x=77w],y[y=21n]
+
+pause
+! Now we'll save a 1 for land over these locations
+! We need to use the SAME variable name, ocean,  so that SAVE will overwrite
+! regions of the previous variable definition
+let ocean = rose - rose + 1
+save/append/file=ocean_mask.cdf  ocean[x=81w,y=27n]
+save/append/file=ocean_mask.cdf  ocean[x=81w,y=23n]
+save/append/file=ocean_mask.cdf  ocean[x=77w,y=21n]
+
+! Now lets look at it to confirm that it worked
+! Note: If a file variable and a user-defined variable have the same name
+! FERRET will use the user definition, so we must eliminate that
+USE ocean_mask 
+cancel variable ocean 
+set wind/siz=.5 2
+shade/lev=(-0.5,2.5,1)/nokey ocean
+go land

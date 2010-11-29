@@ -1,0 +1,70 @@
+! argo_zt.jnl
+!
+! Description: 
+! For an ARGO float data file from http://www.usgodae.org/cgi-bin/argo_select.pl .
+! open the data, change the order of the axes, and define a time axis and levels
+! axis; regrid pressure and temp or other fields of interest to this ZT grid.
+! Call ZAXREPLACE to put the temperature or other field onto a pressure axis in Z
+!
+!                       arg 1         arg 2        arg 3        
+! usage:   GO argo_zt  filename   variable[temp]  [pressure-axis]
+! 
+! If argument 3 is not given then the pressureaxis is defined in this script
+!
+! Examples:
+!          yes? go argo_zt 2900622_prof.nc temp
+! 
+!          yes? define axis/z/units=decibars/depth z7 = {5,100,200,300,400,800,1200}
+!          yes? go argo_zt 900622_prof.nc psal z7
+!
+
+
+CANCEL DATA/ALL
+CAN MODE logo
+CANCEL MODE depth_label ! changes label on vertical axis from DEPTH to just Z
+SET WINDOW/SIZ=0.6
+
+USE/ORDER=ZT $1
+
+DEFINE SYMBOL data_var = ($2"temp")
+
+! Define a time axis based on JULD
+SHOW ATT/ALL juld
+
+DEF AXIS/T/T0="1-JAN-1950:00:00"/UNITS=days tday=juld
+
+LET zz=Z[GZ=($data_var)]
+DEF AXIS/Z/UNITS=levels/DEPTH zlev=zz
+
+! Put the variable and pressure on this corrected time-layer grid
+LET/UNITS="`pres,R=units`"/TITLE="`pres,R=title`"/BAD=`pres,R=bad` \
+    pressure=pres[gz=zlev@asn,gt=tday@asn]
+
+LET/UNITS="`($data_var),R=units`"/TITLE="`($data_var),R=title`"/BAD=`($data_var),R=bad` \
+    ($data_var)_zt=($data_var)[gz=zlev@asn,gt=tday@asn]
+
+SET VIEW ul
+SHADE pressure
+SET VIEW ll
+SHADE ($data_var)_zt
+
+! Define an output Z axis with units of pressure
+
+IF ($3"0|*>1") THEN
+   DEFINE SYMBOL press_ax = ($3)
+ELSE
+   DEFINE SYMBOL press_ax = zpres
+   DEFINE AXIS/Z/UNITS=decibars/DEPTH zpres= {5.,10.,15.,20.,25.,30.,34.,40.\
+,45.,50.,55.,60.,65.,70.,75.,80.,85.,90.,95.,100.,105.,110.,120.,130.,\
+140.,160.,180.,200.,225.,250.,275.,300.,325.,350.,375.,400.,450.,500.,\
+550.,600.,675.,750.,825.,900.,1000.,1100.,1200.}
+ENDIF
+
+! Call zaxreplace to put the variable on this new pressure axis
+
+LET/UNITS="`($data_var)_zt,R=units`"/TITLE="`($data_var)_zt,R=title`" \
+    var_on_pres = ZAXREPLACE(($data_var)_zt,pressure,Z[GZ=($press_ax)])
+
+SET VIEW ur
+SHADE var_on_pres
+

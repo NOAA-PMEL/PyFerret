@@ -1,0 +1,7 @@
+! err560_leap_years.jnl
+! Fixes for bug 882, inconsistency in computing whether
+! year is a leap year.
+
+def axis/t="07-FEB-1899:12:00":"07-FEB-1900:12:00":365.2425/units=days/t0="1-jan-1800" tax
+let v = tsequence({55,65})
+plot v[gt=tax@asn]

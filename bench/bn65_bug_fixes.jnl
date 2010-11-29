@@ -1,0 +1,26 @@
+! bn65_bug_fixes.jnl
+! Fixes that go into v6.5 release
+
+GO bn_reset
+GO err64_very_small_latlon
+
+GO bn_reset
+GO err64_packed_data
+
+GO bn_reset
+GO bn_repl_9999999
+
+GO bn_reset
+GO err64_shakey_missingdata
+
+GO bn_reset
+GO err64_return_precision
+
+GO bn_reset
+GO err64_parse_equals
+
+GO bn_reset
+GO err64_regrid_noleap
+
+GO bn_reset
+GO err64_polymark_over_calendar

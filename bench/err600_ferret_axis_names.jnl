@@ -1,0 +1,21 @@
+! err600_ferret_axis_names.jnl
+! If Ferret needed to rename an axis on file initialization for uniqueness,
+! we now keep that new name in the attr structure, and add an attribute 
+! orig_file_axname with the input name. That orig name is used only on output.
+
+def axis/t=1:5:1 time
+use coads_climatology
+
+! Note TIME1 with attribute orig_file_axname
+sh dat/att 
+save/clobber/bounds/file=a.nc/x=181/y=1 sst
+
+can data/all
+use gt4d011
+save/clobber/file=t2.nc temp[L=2:6]
+save/clobber/file=t12.nc temp[L=12:16]
+can data/all
+
+use t2.nc; use t12.nc
+
+sho dat/att

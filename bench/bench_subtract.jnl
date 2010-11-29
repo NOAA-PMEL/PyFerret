@@ -1,0 +1,42 @@
+! Bench_subtract.jnl
+!  ACM  8/99
+!  benchmark script for testing external function subtract.
+! Note: bench_subtract_visual.jnl contains plots of similar computations
+! V550 *sh* 11/02 - documentation note only reflecting subspan modulo
+
+set mode ignore_errors
+
+can region
+use ocean_atlas_temp
+use coads_climatology
+let oatemp = temp[d=ocean_atlas_temp,g=sst[d=coads_climatology]]
+set region/l=1
+let a = subtract(oatemp,sst)
+list/x=150:160/y=0  a
+let b = oatemp- sst
+list/x=150:160/y=0  a - b
+
+can region
+let a = oatemp[l=1]
+let b = sst[l=1]
+list/x=150:160/y=0  subtract(a,b)
+
+let a = oatemp[x=180]
+let b = sst[x=180]
+list/y=0 subtract(a,b)
+
+can region
+let a = x[i=1:30]
+let b = y[j=1:30]
+list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg in V550
+
+can region
+let a = sst[l=1]
+let b = 26
+list/x=150:160/y=0 subtract(a,b)
+list/x=150:160/y=0 subtract(a,26)
+
+let b = sst[x=180,y=0,l=@ave]
+list/x=150:160/y=0  subtract(a,b)         
+
+set mode/last ignore_errors

@@ -1,0 +1,82 @@
+\cancel mode verify	
+
+! Label a Vector plot produced using a call to poly_vectors or mp_poly_vectors
+
+! ARGUMENTS:
+
+! 1 vector label, e.g. UWND,VWND
+! 2 vector scale, units per half inch
+! 3 key color, default black
+! 4 LINE to outline the key
+! 5 xpos - inches from left of page, or C to center  	(default lower left)
+! 6 ypos - inches from bottom of page, or C to center	(default lower left)
+! 7 size - label text size in inches 		(default 0.12)
+
+! EXAMPLES (see poly_vec_demo.jnl for full examples)
+
+! GO poly_arrow_key " ", "5"   ! single black arrow labelled 5 in lower left
+! GO poly_arrow_key "Wind", "4 m/s", red, line, c, 0.2
+
+! check arguments
+QUERY/IGNORE $2"<usage: yes? GO mp_vec_key [label] [units per half inch]"
+
+def sym keytitle = $1%.%
+let keytitle_exists $1"0|*>1"
+def sym keyscale = "$2"
+
+let keypalette = "$3%black%"
+let lineit = $4"0|line>1|LINE>1"
+
+! standard half-inch polygon arrow
+
+let x_std_arrow = (0.5 - vect_inch_add)*vect_inch_mul
+let y_std_arrow = y_arrow_inch1
+
+! Scale length of the arrow polygon, to half inch in plot units
+
+let xsc = (($xaxis_max) - ($xaxis_min))/ ($ppl$xlen)
+let ysc = (($yaxis_max) - ($yaxis_min))/ ($ppl$ylen)
+
+def sym xcent = "$5%0%"
+if `($xcent) eq "c"` then
+  let xloc = (($xaxis_max) + ($xaxis_min))/2
+else
+  let xloc = $5%-1%
+  if `xloc LT 0` then  ! Default positions
+    let xloc = ($xaxis_min) + .4*xsc
+    let xloc = ($xaxis_min) 
+  else
+    let xloc = $5 * xsc + ($xaxis_min) - ($ppl$xorg) * xsc
+  endif
+endif
+
+def sym ycent = "$6%0%"
+if `($ycent) eq "c"` then
+  let yloc = (($yaxis_max) + ($yaxis_min))/2
+else
+  let yloc = $6%-1%
+  if `yloc LT 0` then
+    let yloc = ($yaxis_min) - ysc
+  else
+    let yloc = $6 * ysc + ($yaxis_min)  - ($ppl$yorg) * ysc
+  endif
+endif
+
+let labsize = $7%0.12%
+let yoff = (labsize/4)* ysc
+
+ppl window off
+IF `LINEIT EQ 1` THEN
+   poly/over/noax/LINE/pal=`keypalette`/nolab `xsc`*x_std_arrow + `xloc`,\
+    `ysc`*y_std_arrow + `yloc`, 1
+ELSE
+   poly/over/noax/pal=`keypalette`/nolab `xsc`*x_std_arrow + `xloc`,\
+    `ysc`*y_std_arrow + `yloc`, 1
+ENDIF
+
+if `keytitle_exists EQ 1` THEN label `xloc-.1*xsc`, `yloc-yoff`, 1, 0, `labsize`, ($keytitle)
+
+label `xloc+0.6*xsc`, `yloc-yoff`, -1, 0, `labsize`, ($keyscale)
+
+ppl window on
+set mode/last verify

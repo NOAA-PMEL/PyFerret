@@ -1,0 +1,14 @@
+! err607_set_new_history_att.jnl
+! Previously if we set a history attribute on a user-defined variable that 
+! was based on a dataset variable, the default history attribute, From dataset
+! was always written. Now if we define our own, that is what is written.
+
+use coads_climatology.cdf
+let var = sst
+def att/output var.history = "from Sea Surface Temperature, coads_climatology.cdf"
+save/file=a.nc/clobber/x=180:200/y=1 var
+
+can data/all
+use a.nc
+show data
+show att/all var

@@ -1,0 +1,17 @@
+! err600_set_var_title.jnl
+! Bug 1454
+! The settings made by SET VAR/TITLE=/UNITS= were not saved in output file
+! ACM 10/11/06 
+
+! check the variable name and title in the list command output
+use gtbc011
+list/y=1/k=1/l=1 temp
+
+set var/title="Temp"/units="DegC" temp
+list/y=1/k=1/l=1 temp  ! new title and units
+
+save/file=a.nc/clobber temp
+can data/all
+use a.nc
+! This listing should have the NEW var title and units 
+ list/y=1/k=1/l=1 temp

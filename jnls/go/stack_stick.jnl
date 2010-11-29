@@ -1,0 +1,143 @@
+\cancel mode verify
+
+! stack_stick.jnl
+! stack plot of stick vector plots at each depth
+! acm 7/2005
+
+! See the example in call_stack_stick.jnl
+
+! go stack_stick uvar vvar yaxmin yaxmax
+! Arguments 3 and 4 are required, so we can draw a single key for 
+! the length of a standard vector at the bottom.
+
+! $1 U component  -- Depends only on Z and one other dimension
+! $2 V component  -- Depends only on Z and one other dimension
+! $3 lower limit on Y axes for all plots
+! $4 upper limit on Y axes for all plots
+
+QUERY/IGNORE $1%<Usage: GO stack_stick  U V yaxmin yaxmax
+QUERY/IGNORE $2%<Usage: GO stack_stick  U V yaxmin yaxmax
+QUERY/IGNORE $3%<Usage: GO stack_stick  U V yaxmin yaxmax
+QUERY/IGNORE $4%<Usage: GO stack_stick  U V yaxmin yaxmax
+
+cancel view
+
+! Set up parameters for defining the viewports and making the plots.
+
+let zz = z[gz=$1]
+
+let ks = `zz,return=kstart`
+let ke = `zz,return=kend`
+let nz = `zz,return=ksize`
+
+let y2 = 0.9
+let del = 0.8/`nz`
+let y1 = `y2 - del` + 0.02
+
+! This viewport will be used to draw the time axis at the bottom 
+! and to label the z axes.
+
+def view/axes/xlim=0.1:0.9/ylim=0.095:0.9 tv
+
+! This viewport will contain the key with the standard arrow length.
+
+def view/axes/xlim=0.:1./ylim=0.01:0.095 keyview
+
+! Define viewports for all the stacked plots.
+!
+! The rt_* viewports, one for each depth being plotted are used to plot the right-
+! hand axes giving the data range for each Z lavel.
+
+! The lf_* viewports are the same size and shape. They will be used to plot the
+! left-hand axis with the corresponding depth
+
+repeat/range=`ks`:`ke`/name=m (def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` rt_`m`; \
+                          def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` lf_`m`; \
+                          let y1 = `y1 - del`; let y2 = `y2 - del`)
+
+! Draw the time axis by plotting a variable having no data in the vertical range.
+! Label the vertical stacks of axes in the middle.
+
+set view tv
+let/bad=9999 all_zero = if missing($1,0) then 0 else 0*$1
+plot/noy/ax=0,1,0,0/nolab/k=`ke`/vlim=100:200 all_zero 
+
+label/nouser `($ppl$xlen)/2`,-0.8, 0, 0, 0.14 "`$1,return=title`   `$2,return=title`"
+label/nouser -0.6, `($ppl$ylen)/2`, 0, 90, 0.12 "Depth (`$1,return=zunits`)"
+
+! This label on the right, is replaced by making a key at the bottom.
+!label/nouser `($ppl$xlen)+0.7`, `($ppl$ylen)/2`, 0, 90, 0.12 "`$1,return=units`"
+
+
+! Draw a plot for each series, labelling on the left with the depth.
+
+
+! The PLOT and PLOTUV commands are from stick_vectors.jnl
+! set up the PLOT+ as if for a 2-line plot
+!  plot/SET_UP/noy/axes=0,0,1,0/nolab/k=1 $1, $2
+! ... but display it with the PLOTUV command
+!   PPL PLOTUV 0 1
+
+
+! Put most of the labels on , except for the title, depth, and yaxis label.
+
+set view lf_`ks`
+ppl tics,0,0,0,0
+ppl axlsze,0,0
+plot/SET_UP/noy/axes=0,0,1,0/nolab/color=white/k=`ks` $1*0
+   PPL PLOT
+let zlab = zz[k=`ks`]
+LABEL/NOUSER `-1*0.1*($ppl$xorg)`, `($ppl$ylen)/2`, 1, 0, 0.12, "`zlab`"; \
+ppl tics,.125,.25,.125,.25
+ppl axlint,2,2
+ppl axlsze,0.1,0.1
+ppl axatic 5,5
+
+set view rt_`ks`
+cancel mode logo
+! Unlabel ($labnum_z) removes the depth label...
+plot/noy/k=`ks`/axes=0,0,0,1/vlimits=$3:$4/title=" "/set $1, $2
+   go unlabel ($labnum_z)
+   ppl yaxis $3 $4 `($4-$3)/4`
+   ppl tics,0,0,0,0; ppl axlsze,0,0
+   ppl ylab " "
+PPL PLOTUV 0 1
+
+repeat/range=`ks+1`:`ke`/name=m (  set view lf_`m`; \
+   ppl tics,0,0,0,0; ppl axlsze,0,0; \
+     plot/SET_UP/noy/axes=0,0,1,0/nolab/color=white/k=`ks` $1*0; \
+     PPL PLOT; \
+   let zlab = zz[k=`m`]; \
+   LABEL/NOUSER `-1*0.1*($ppl$xorg)`, `($ppl$ylen)/2`, 1, 0, 0.12, "`zlab`"; \
+   ppl tics,.125,.25,.125,.25; \ 
+   ppl axlint,2,2; \
+   ppl axlsze,0.1,0.1; \
+   ppl axatic 5,5;\
+   ; \
+   set view rt_`m`; \
+   plot/noy/k=`m`/axes=0,0,0,1/vlimits=$3:$4/nolab/set $1, $2; \
+     ppl yaxis $3 $4 `($4-$3)/4` ;  ppl tics,0,0,0,0; ppl axlsze,0,0; PPL PLOTUV 0 1) 
+
+
+! Make a key: a stick of the length of half the vertical axis; labelled with
+! the length of the corresponding vector.
+
+let sticklen = `(($yaxis_max) - ($yaxis_min))/2`  ! for label
+let ylen = `($ppl$ylen)/2/($VP_WIDTH)/($VP_SCALE)`
+let xstart = ($ppl$xorg)/($VP_WIDTH)/($VP_SCALE)
+
+! make the key at the lower left, below any title or time axis label 
+set view keyview
+
+plot/i=1:10/hlim=0:1/vlim=0:1/noax/nolab 10*i
+let ypos = 0.25
+plot/over/vs/LINE/color=black/noax/nolab {`xstart`, `xstart+ylen`}, {`ypos`, `ypos`}
+
+! Center the label on the line we just drew
+
+let xpos = xstart + ylen/2
+let keysize = 0.14
+def sym unlab  "`$1,return=units`"
+LABEL `xpos`, `ypos-1.4*keysize`, 0, 0, `keysize`,  "`sticklen` ($unlab)"
+
+set mode/last verify

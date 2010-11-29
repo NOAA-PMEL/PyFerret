@@ -1,0 +1,16 @@
+* XGKS_DEVICES.CMN - list of DEC GKS device names
+
+	INTEGER		num_gks_devices,
+     .			num_meta_devices,
+     .			unknown_gks_device
+	PARAMETER     (	num_gks_devices  = 10,
+     .			num_meta_devices = 10,
+     .			unknown_gks_device = -9999 )
+
+	CHARACTER	gks_dev_name  (num_gks_devices )*8,
+     .			meta_dev_name (num_meta_devices)*8
+	INTEGER		gks_dev_wstype(num_gks_devices)
+
+	COMMON /XGKS_DEVICES/ gks_dev_name,
+     .			      gks_dev_wstype,
+     .			      meta_dev_name

@@ -1,0 +1,12 @@
+* CPU.PARM
+*
+* defines codes for cpu types
+* used to control floating point and integer conversions
+
+	INTEGER	cptype_vax, cptype_dec, cptype_sun
+
+* "dec" = DECstation/MIPS
+
+	PARAMETER	(cptype_vax = 0,
+     .			 cptype_dec = 1,
+     .			 cptype_sun = 2 )

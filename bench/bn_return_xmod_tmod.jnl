@@ -1,0 +1,32 @@
+! New `var,return=xmod` `var,return=tmod`
+! Return modulo lengths, or blank if not modulo
+
+use ocean_atlas_temp
+sh grid temp
+sh axis XAX_LEV9421_380
+sh axis time
+say `temp,return=xmod`
+say `temp,return=tmod`
+
+! X is modulo but not T
+use levitus_climatology.cdf
+say `temp,return=xmod`
+say `temp,return=tmod`
+
+! Define some subspan modulo axes and check the results
+! Modulo because start year in 0000
+def ax/t=1-aug-0000:1-aug-0001/np=3/edge/units=days tsub
+let a = t[gt=tsub]
+say `a,return=tmod`
+
+! Modulo because defined on longitude coordinates
+define axis/x=130e:80w:10 xsub 
+let a = x[gx=xsub]
+say `a,return=xmod`
+
+! This file has an x axis with modulo = " " so its modulo, but it
+! does not have units of degrees. Thus axis length = modulo length
+use string4d
+sh grid axy
+show axis x2ax
+say `axy,return=xmod`

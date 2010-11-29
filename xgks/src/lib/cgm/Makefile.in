@@ -1,0 +1,23 @@
+# Makefile for the Computer Graphics Metafile (CGM) backend to XGKS
+#
+# $Id$
+
+LIBNAME		= xgks
+REMOTE_LIBRARY	= ../lib$(LIBNAME).a
+CPP_X11		= @CPP_X11@
+#INCLUDES	= -I.. -I../../../port $(CPP_X11)
+INCLUDES	= -I.. -I../../../port  #  for Linux compatibility 
+CPPFLAGS	= $(INCLUDES) @CPPFLAGS@
+CFLAGS		= @CFLAGS@
+CC		= @CC@
+LIBOBJS		= cgmi.o cgmo.o
+
+MANIFEST	= Makefile.in depend cgm.h cgm_implem.h cgmi.c cgmo.c
+
+all::		$(REMOTE_LIBRARY)
+
+include ../../../port/master.mk
+
+### Everything after the following line might be overwritten ###
+### DO NOT DELETE THIS LINE.  make depend DEPENDS ON IT ###
+include depend

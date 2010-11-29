@@ -1,0 +1,32 @@
+\cancel mode verify
+
+! Description: demonstrates log plots using PLOT+ in FERRET
+
+! *acm* 7/01 update /xlimits to /hlimits
+! *acm*12/01 update to use /VLOG  and /HLOG qualifiers.
+
+cancel viewports
+set window/size=.75/aspect=1.2
+set mode verify
+
+! example 1: Y axis as log axis
+set view upper
+plot/x=1:100 exp(-1*x/5)
+
+set view lower
+ppl axtype 1,2
+plot/vlog/x=1:100 exp(-1*x/5)
+
+message
+set window/clear
+
+! example 2: X axis as log axis
+! note that the axis limits are specified in data units
+set view upper
+plot/x=1:100 sin(x/6)
+
+set view lower
+ppl axtype 2
+plot/x=1:100/hlog/hlimits=1:100 sin(x/6)
+
+

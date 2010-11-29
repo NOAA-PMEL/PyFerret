@@ -1,0 +1,13 @@
+! err580_arg_case.jnl
+! 5/2005
+! bugs 1249, 1250
+! 
+! key=CONTINUOUS and step=CONNECTED 
+! were not recognized if the value was in uppercase
+
+shade/key=cont/i=1:10/j=1:4 i-j
+shade/key=CONT/i=1:10/j=1:4 i-j
+
+plot/step=conn/i=1:10 sin(i)
+plot/step=CONN/i=1:10 sin(i)
+

@@ -1,0 +1,24 @@
+
+This is an Eclipse Java project directory, thus the reason for
+the .classpath and .project files, and .settings directory.
+The Makefile was created to mimic the standard Eclipse build,
+thus the reason for the separate src and bin directory trees.
+
+To successfully create threddsBrowser.jar using Makefile, 
+the environment variable JAVA_HOME needs to be defined as 
+the location of a Java 6 Development Kit.  If not defined, 
+the Makefile will attempt to define it if a directory 
+matching /usr/local/jdk1.6* is found.
+
+Also, the toolsUI jar file given by TOOLSUI_JAR in 
+Makefile needs to be present.  The latest release version 
+of the toolsUI jar file can be downloaded from 
+    http://www.unidata.ucar.edu/software/netcdf-java/
+
+The resulting threddsBrowser.jar as well as the toolsUI 
+jar file need to be put into the $FER_DIR/lib directory.
+The toolsUI jar file is accessed using the name toolsUI.jar,
+so, if not already given by this name, add a symbolic link 
+named toolsUI.jar pointing to the actual toolsUI jar file:
+    ln -s <actual_name> toolsUI.jar
+

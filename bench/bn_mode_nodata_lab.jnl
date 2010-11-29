@@ -1,0 +1,26 @@
+! bn_mode_nodata_lab
+! turns off the No Valid Data label on plots
+! (for line plots this is added to the plot label,
+!  if the mode is SET).
+
+SHOW MODE nodata_lab
+
+use coads_climatology
+let uwnd = sst
+let vwnd = -1*sst
+
+plot/y=50/x=70e:110e/L=1 sst
+shade/y=40:50/x=70e:110e/L=1 sst
+vec/y=40:50/x=70e:110e/L=1 uwnd,vwnd
+contour/y=40:50/x=70e:110e/L=1 vwnd
+contour/fill/y=40:50/x=70e:110e/L=1 vwnd
+
+can mode nodata_lab
+plot/y=50/x=70e:110e/L=1 sst
+shade/y=40:50/x=70e:110e/L=1 sst
+vec/y=40:50/x=70e:110e/L=1 uwnd,vwnd
+contour/y=40:50/x=70e:110e/L=1 vwnd
+contour/fill/y=40:50/x=70e:110e/L=1 vwnd
+
+set mode/last nodata_lab
+

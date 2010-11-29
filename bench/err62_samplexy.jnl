@@ -1,0 +1,19 @@
+! err62_samplexy
+! bug 1677
+
+use coads_climatology
+
+! put the data on 1:360 for convenience in seeing whats going on
+save/clobber/file=xz.nc sst[x=1:360,L=1]
+can dat/all; can mem
+
+use xz
+
+let xpts = {357.6,358.8,359.9,360.,0.1,1.2,2.4}
+let ypts = 0*xpts
+
+let sr = SAMPLEXY(sst[L=1], xpts, ypts)
+
+! previously the middle 3 points of this were missing.
+list sr
+

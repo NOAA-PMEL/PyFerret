@@ -1,0 +1,107 @@
+! bn_reset_attributes.jnl
+! acm 6/14/2004
+! tests of SET AXIS/CALENDAR  /T0  /UNITS  also CANCEL AXIS/DEPTH
+! also RETURN=calendar
+
+use gt4d011.cdf
+set region/x=130w/y=1/k=1
+
+sh axis `temp,return=taxis`
+list/l=20:25 t[gt=temp]
+
+! New RETURN=calendar
+def sym calname = `temp,return=calendar`
+
+! SET AXIS/CALENDAR=  julian, 360-day, 365_day=julian, 366_day=all_leap, standard=gregorian
+set axis/calendar=julian `temp,return=taxis`
+list/l=20:25 temp
+say `temp,return=calendar`
+
+set axis/calendar=360_day `temp,return=taxis`
+list/l=20:25 temp
+say `temp,return=calendar`
+
+set axis/calendar=365_day `temp,return=taxis`
+say `temp,return=calendar`
+
+set axis/calendar=nol `temp,return=taxis`
+list/l=20:25 temp
+say `temp,return=calendar`
+
+set axis/calendar=366 `temp,return=taxis`
+say `temp,return=calendar`
+
+set axis/calendar=all_leap `temp,return=taxis`
+say `temp,return=calendar`
+list/l=20:25 temp
+
+! Now resetting T0
+CAN DATA/ALL
+use gt4d011.cdf
+set region/x=130w/y=1/k=1
+
+set axis/calendar="standard" `temp,return=taxis`
+list/l=20:25 temp
+
+! One day earlier
+set axis/t0="13-jan-1980:14:00" `temp,return=taxis`
+say `temp,return=calendar`
+list/l=20:25 t[gt=temp]
+
+
+! Now resetting UNITS
+CAN DATA/ALL
+CAN REGION
+use gt4d011.cdf
+
+set axis/units=feet `temp,return=zaxis`
+show axis `temp,return=zaxis`
+
+! unrecognized units
+set axis/units="something" `temp,return=xaxis`
+show axis `temp,return=xaxis`
+
+! restore lon
+set axis/units=lon `temp,return=xaxis`
+show axis `temp,return=xaxis`
+
+set axis/units=something `temp,return=xaxis`
+show axis `temp,return=xaxis`
+
+! restore lon using word DEG
+set axis/units=deg `temp,return=xaxis`
+show axis `temp,return=xaxis`
+
+set axis/units=zorro  `temp,r=zaxis`
+list/x=130w/y=1/k=1/L=1:5 temp
+
+! not a geographic axis
+set axis/units=meters `temp,return=yaxis`
+list/x=222/k=1/l=1/y=-0.5:0.5 temp
+
+set axis/units=deg `temp,return=yaxis`
+show axis `temp,return=yaxis`
+list/x=222/k=1/l=1/y=-0.5:0.5 temp
+
+! inappropriate units for axis direction
+set axis/units=meters `temp,return=taxis`
+list/x=130w/y=1/k=1/l=1:5 temp
+
+set axis/units=seconds  `temp,r=yaxis`
+show grid temp
+
+! assign time units to an abstract axis
+def axis/t=1:5:1 tax
+
+set axis/units=days/t0=1-jan-1990 tax
+sh axis tax
+list t[gt=tax]
+
+! assign longitude units to an abstract axis
+! by default this becomes modulo
+def axis/x=0:120:20 xax
+
+set axis/units=lon xax
+sh axis xax
+list x[gx=xax]
+

@@ -1,0 +1,106 @@
+\ cancel mode verify
+!
+! Description : Demo file for color_vector GO file. Colored contours based on 
+!                  specified palette file and contour levels.
+!  
+! Jaison Kurian (jaison@atmos.ucla.edu)
+! Jan/05/2008
+!
+!-------------------------------------------------------------------------------
+
+!--open datasets and set reg and variables
+
+   set data monthly_navy_winds
+
+   let uu = uwnd[d=1]
+   let vv = vwnd[d=1]
+   set reg/x=160:360/y=-30:70/t=15-JUL-1989
+
+!--define color_vector fields (symbol names vec_* is prefixed)    
+
+   ! NOTE : Please don't use the following qualifiers with vec_cmd :
+   !             /LENGTH /XSKIP /YSKIP /COLOR
+   !        Instead give them with other options below :
+
+   define symbol vec_cmd      = VECTOR/hlimits=160:360:20/ vlimits=-30:70:10/nolab
+   define symbol vec_u        = uu                    ! u var name, no [],(),*,/,+,-, ^ stuff
+   define symbol vec_v        = vv                    ! v var name, no [],(),*,/,+,-, ^ stuff
+   define symbol vec_len      = 10                    ! value for /LENGTH qualifier
+   define symbol vec_xskip    = 2                     ! value for /XSKIP qualifier
+   define symbol vec_yskip    = 2                     ! value for /YSKIP qualifier
+   define symbol vec_arrowkey = YES                   ! YES or NO, for scale/key vector
+   define symbol vec_veckey   = 325,78,,(f4.1, " m/s")! arguments to "PPL VECKEY" command
+   define symbol vec_lo       = 0                     ! low   value for color levels
+   define symbol vec_hi       = 9                     ! high  value for color levels
+   define symbol vec_delta    = 0.5                   ! delta value for color levels
+   define symbol vec_pal      = rainbow                ! palette file name
+   define symbol vec_colorkey = YES                   ! YES or NO, for color bar/key
+   define symbol vec_shakey   = 1,1,0.12,2            ! arguments to "PPL SHAKEY" command    
+   define symbol vec_otherppl = none                  !other ppl commands (should start with "ppl"),
+                                                      !   for example
+                                                      !   ppl xfor (f5.1, ''lonE'')
+
+!--if you have any viewport/ppl settings, invoke them here (also the metafile part)
+
+   ! sp rm -f metafile* ; set mode meta
+   PPL AXNMTC 3,3
+   PPL AXLINT 2,2
+
+!--call color_vector GO file (note that NO ARGUMENTS are passed)
+
+   say ; say "  With basic commands" 
+         say "  -------------------"
+   say
+
+
+   go color_vector
+
+!--do plot enhancements/overlays/labelling here
+
+   go land
+   label 250,76,0,0,0.20 Color Vector Demo
+
+!--let us see how to use "vec_otherppl" option
+   pause
+
+   say ; say "  Let us see how to use     vec_otherppl   option" 
+         say "  -----------------------------------------------"
+         say
+         say "      The value for vec_otherppl should start with ppl and different"
+	 say "      entries should be seperated by a   \;    for example .... " ; say
+	 say "      define symbol vec_otherppl = ppl xfor (f5.1,''lonE'') \\; ppl yfor (f4.1,''lat'') "
+   say
+   define symbol vec_otherppl = ppl xfor (f5.1,''lonE'') \; ppl yfor (f4.1,''lat'')
+
+   pause
+
+   go color_vector
+   go land
+   label 250,76,0,0,0.175 Color Vector Demo (other ppl commands)
+
+!--color vector in overlay plots   
+   pause 
+
+   say ; say "  Let us see how to use     color_vector    in overlay plots" 
+         say "  ----------------------------------------------------------"
+         say
+         say "      The value for vec_cmd should have a /over qualifier. For example" ; say
+	 say "         define symbol vec_cmd = VECTOR/over/nolab"
+   say
+
+   pause
+
+   define symbol vec_otherppl = none
+   define symbol vec_cmd      = VECTOR/over/nolab
+   let spd = (uu^2 + vv^2)^0.5
+   cont/color=1/lev=(2,16,2)/hlimits=160:360:20/ vlimits=-30:70:10/nolab spd
+
+   go color_vector
+   go land
+   label 250,76,0,0,0.20 Color Vector Demo (Overlay)
+
+!--commands for making plot output
+   
+   !sp rm -f color_vector_demo.ps
+   !cancel mode meta ; ppl clsplt
+   !sp Fprint -l cps -R color_vector_demo.ps ./metafile.plt

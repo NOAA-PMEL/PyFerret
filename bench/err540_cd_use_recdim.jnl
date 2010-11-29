@@ -1,0 +1,31 @@
+! err540_cd_use_recdim
+! 3/02 *sh*
+
+! crash appending scalar variable into file
+
+define axis/x=1:50:1 xprofile
+define axis/y=0:360/npoints=10/edges ylon
+define axis/z=-90:90/npoints=10/edges zlat
+define axis/t=1-jan-1900:31-dec-1995/T0=1-jan-1900/npoints=10/edges tdate
+
+let maxprof = 5
+let temp = X[gx=xprofile] + Y[gy=ylon] + Z[gz=zlat] + T[gt=tdate]
+
+save/clobber/file=profiles.nc  temp   ! 4D variable
+save/append/file=profiles.nc maxprof  ! append a scalar variable
+
+use profiles.nc
+sh data
+sp rm -f profiles.nc
+
+! ================================= quit
+!save/append/file=profiles.nc maxprof
+!
+! LISTing to file profiles.nc
+!Subscript out of range on file cd_use_recdim.F, line 97,
+!procedure cd_use_recdim.
+!Subscript number 1 has value 0 in array vdims.
+!Abort
+
+
+

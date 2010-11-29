@@ -1,0 +1,31 @@
+! bn542_bug_fixes.jnl
+! test various fixes that went into version 5.42
+! 10/02 *acm*
+!
+
+! Interior tics disappear on FILL plots
+GO bn_reset
+GO err541_fill_tics
+
+! non-Gregorian axes not properly defined when time steps
+! are used rather than date specifications
+GO bn_reset
+GO err541_non_gregorian
+
+
+! Could not write or read a NetCDF file with a 4-D string variable.
+GO bn_reset
+GO err541_string4d
+
+
+! Cancel axis/all did not check whether axes were in use
+GO bn_reset
+GO err541_cancel_axes
+
+
+! Make sure delimited reads are processing dates correctly
+! *kob*
+! 5/4/05 *acm* Move to bn_ef_err541_date_delim; pulling all jnls that call shared-obj efs out
+GO bn_reset
+! GO err541_date_delim
+

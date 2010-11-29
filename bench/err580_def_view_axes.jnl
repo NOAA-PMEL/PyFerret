@@ -1,0 +1,31 @@
+! err580_def_view_axes.jnl
+! BUG 1214
+! crashed with seg fault on the second SET VIEW v1
+
+! Does not crash if we define viewports without the /AXES
+! Does not crash if we CAN MODE META and SET MODE META
+! between the two SET VIEW v1
+! Does not crash if we skip the SET WINDOW/CLEAR
+
+! Does not crash with Ferret v5.50 
+
+define view/x=0.2:0.4/y=.2:.4/text=0.75/axes v1
+
+set window/clear
+set mode metafile viewaxes.plt
+
+set view v1
+go ptest
+
+set window/clear
+
+! can mode meta
+set mode meta
+
+set view v1
+shade/i=1:12/j=1:12 i+j
+
+can view
+can mode metafile
+sp rm -f viewaxes.plt*
+

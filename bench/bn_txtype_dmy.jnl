@@ -1,0 +1,98 @@
+! bn_txtype_dmy.jnl
+! 2/2010 ACM
+!
+! Testing Time Axis plot style "DMY" labels the year
+! as well as month or day,month on MON and DAY axes.
+! Symbol TXTYPE_SETTING contains YR, MON, DAY after the
+! axis type has been set for the axis; lets us plot/set
+! and then choose the time axis label style
+! Useful when going across years or plotting with /NOLAB
+
+set win/asp=1
+use gtsa056_2.cdf
+
+! Plot the whole series; txtype is YR
+plot/x=140w/y=-1/k=1/set temp
+sh sym TXTYPE_SETTING
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ppl plot
+
+! This will be MON
+shade/x=140w/k=1/t=1-feb-1982:15-apr-1982/set temp
+sh sym TXTYPE_SETTING
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ppl shade
+
+! Also MON so setting not changed.
+contour/x=140w/k=1/t=1-feb-1982:15-feb-1982/set temp
+sh sym TXTYPE_SETTING
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ppl contour
+
+
+! Is DAY so setting not changed.
+
+plot/set/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
+sh sym TXTYPE_SETTING
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ppl plot
+
+! Set PPL TXTYPE with DAY,DMY
+plot/set/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
+sh sym TXTYPE_SETTING
+if ($TXTYPE_SETTING"0|DAY>1|*>0") THEN PPL TXTYPE,DAY,DMY
+ppl plot
+
+! If the type is going to be EITHER DAY or MON then set 
+! the style to DMY. Leave the 1st argument blank to keep the
+! default
+plot/set/x=140w/y=-1/k=1/t=27-feb-1982:28-mar-1982 temp
+sh sym TXTYPE_SETTING
+if ($TXTYPE_SETTING"0|DAY>1|MON>1|*>0") THEN PPL TXTYPE,,DMY
+ppl plot
+
+
+! Same commands with the TIME axis on the vertical
+! Plot the whole series; txtype is YR
+plot/x=140w/y=-1/k=1/set temp
+sh sym TXTYPE_SETTING
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ppl plot
+
+! This will be MON
+shade/y=-1/k=1/t=1-feb-1982:15-apr-1982/set temp
+sh sym TXTYPE_SETTING
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ppl shade
+
+! Also MON so setting not changed.
+contour/y=-1/k=1/t=1-feb-1982:15-feb-1982/set temp
+sh sym TXTYPE_SETTING
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ppl contour
+
+
+! Is DAY so setting not changed.
+
+plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
+sh sym TXTYPE_SETTING
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ppl plot
+
+! Set PPL TXTYPE with DAY,DMY
+plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
+sh sym TXTYPE_SETTING
+if ($TXTYPE_SETTING"0|DAY>1|*>0") THEN PPL TXTYPE,DAY,DMY
+ppl plot
+
+! If the type is going to be EITHER DAY or MON then set 
+! the style to DMY. Leave the 1st argument blank to keep the
+! default
+plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:28-mar-1982 temp
+sh sym TXTYPE_SETTING
+if ($TXTYPE_SETTING"0|DAY>1|MON>1|*>0") THEN PPL TXTYPE,,DMY
+ppl plot
+
+! make sure this setting doesnt persist
+plot/y=-1/k=1/t=5-mar-1982:28-mar-1982/x=144w temp
+plot/y=-1/k=1/t=5-mar-1982:28-apr-1982/x=144w temp

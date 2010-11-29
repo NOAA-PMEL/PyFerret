@@ -1,0 +1,19 @@
+! err64_regrid_noleap.jnl
+!
+! Bug 1723
+! Seen only under 32-bit, exec. built with netcdf4.1 library
+
+def ax/t/unit=days/t0=1-jan-0001/cal=noleap/edge tax = \
+    {419263, 419293, 419324, 419354, 419385, 419416, \
+    419444, 419475, 419505, 419536, 419566, 419597}
+def ax/t/unit=days/t0=1-jan-0001/cal=noleap/edge/modulo=365 tax_c = \
+    {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365}
+
+let a = t[gt=tax]
+let a_c = t[gt=tax_c]
+let b = a_c[gt=a]
+list b[t=15-feb-1150]  ! missing??
+
+list b  ! includes Feb 15 1150, not missing...
+
+list b[t=15-feb-1150]  ! Now ok??

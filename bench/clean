@@ -1,0 +1,13 @@
+#! /bin/csh -f
+# *sh* 12/99
+
+# clean the specified benchmark log file for easier diff-ing
+#    o replace specifi dynamic axis and grid numbers with generic
+#    o remove many diagnostic outputs
+
+# usage:
+    # clean log_file_name
+
+# produces output file name "clean_{log_file_name}"
+
+sed -e s/\(G...\)/\(G999\)/g -e s/\(AX...\)/\(AX999\)/g < $argv[1] | egrep -v '^ alloc|^ deallo|^ \-DELE|^ getgrid|^ eval|^PPL plot' >! clean_$argv[1]

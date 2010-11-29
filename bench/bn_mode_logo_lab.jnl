@@ -1,0 +1,55 @@
+
+! bn_mode_logo_lab.jnl
+! cancel both logo and labels
+
+
+def view /xlim=0.:0.33/ylim=0.5:1 ul
+def view /xlim=0.33:0.66/ylim=0.5:1 um
+def view /xlim=0.66:1./ylim=0.5:1 ur
+
+def view /xlim=0.:0.33/ylim=0.:0.5 ll
+def view /xlim=0.33:0.66/ylim=0.:0.5 lm
+def view /xlim=0.66:1./ylim=0.:0.5 lr
+
+
+! can mode labels would not plot the logo anyway
+set view ul
+can mode labels
+can mode logo
+show modes
+contour/i=1:10/j=1:10 i/j 
+
+! restore the labels, logo still gone
+set view um
+set mode labels
+wire/view=0,0,2/i=1:20/j=1:20/title="My Egg Carton"/nolabel sin(i/3)*cos(j/4)
+
+
+! put only labels, not logo
+set view ur
+set mode labels
+can mode logo
+go ptest
+
+! Labels restored, not logo.
+! logo is not restored on an /overlay plot
+set view ll
+set mode labels
+shade/i=1:10/j=1:10 i*j
+set mode logo
+plot/vs/over/line/color=white {1,4}, {1,9}
+
+! but the logo is restored on the next plot command.
+set view lm
+fill/i=1:10/j=1:10 i/j
+
+! Verify for polygon command too
+set view lr
+can mode logo
+can mode labels
+polygon/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
+
+! restore state of modes
+cancel view
+set mode logo
+set mode labels

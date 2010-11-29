@@ -1,0 +1,9 @@
+ ! NOAA/PMEL TMAP
+ ! Program FERRET (PMEL v4.91b2-kessle
+ ! Version 4.91 - 04/29/98
+ ! 30-Apr-98 14:42     
+
+set data coads_clim_irreg
+stat sst
+can data/all
+

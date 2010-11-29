@@ -1,0 +1,61 @@
+\cancel mode verify
+
+!**************************************************************
+! Description: Plot graticules (lines) at specified radius (relative to standard deviation)
+!
+! Usage: go taylor_rgraticule rmin [PLOT qualifiers=/line=1] [rmax] [rdelta]
+!
+! arg 1: minimum radius of graticules
+! arg 2: plot command qualifiers
+! arg 3: maximum radius of graticules 
+! arg 4: delta radius of graticules
+!
+! Example:
+!           yes? go taylor_frame.jnl 2 0.25 " " "Standard Deviation (units)"
+!           yes? go taylor_rgraticule.jnl 0.5  
+!           yes? go taylor_rgraticule.jnl 1.0 /line=2 
+!           yes? go taylor_rgraticule.jnl 1.5 
+!           
+!           yes? go taylor_frame.jnl 3 0.2 " " "Standard Deviation (units)"
+!           yes? go taylor_rgraticule.jnl 0.4 /DASH=(0.2,0.1,0.2,0.1)/COLOR=RED/THICK=2) 2.8 0.4
+!           yes? go taylor_rgraticule.jnl 0.2 /DASH=(0.2,0.1,0.2,0.1)/COLOR=BLACK/THICK=1 2.6 0.4
+!
+! Notes:
+!
+! Calls: 
+!
+! Author: Patrick Brockmann
+! Contact: Patrick.Brockmann@ipsl.jussieu.fr
+! $Date$
+! $Name$
+! $Revision$
+! History:
+! Modification:
+!
+!**************************************************************
+
+let ME_rmin=$1
+def sym ME_qualifiers=$2%/line=1%
+let ME_rmax=$3%$1%
+let ME_rdelta=$4%$1%
+
+! Draw 1 circle for axis extreme (maximum radius) 
+! -----------------------------------------------
+let ME_pi = atan(1.)*4.
+let ME_deg2rad = 2*ME_pi/180
+let ME_angle = (i-1)
+let ME_xx = cos(ME_pi*ME_angle/(100*2))
+let ME_yy = sin(ME_pi*ME_angle/(100*2))
+
+let ME_nb = 1+(ME_rmax-ME_rmin)/ME_rdelta
+let ME_rcurr = ME_rmin+(k-1)*ME_rdelta
+
+repeat/k=1:`ME_nb`:1 ( plot/over/nolab/i=1:101/vs($ME_qualifiers) ME_rcurr*ME_xx, ME_rcurr*ME_yy )
+
+!**************************************************************
+cancel variable ME_*
+cancel symbol ME_*
+
+!**************************************************************
+set mode verify
+

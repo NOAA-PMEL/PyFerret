@@ -1,0 +1,9 @@
+
+	COMMON/XIO/tohdlu,fmhdlu,fmhd2lu,tooplu,fmoplu,lunit_errors
+	INTEGER  tohdlu,fmhdlu,fmhd2lu,tooplu,fmoplu,lunit_errors
+* naming scheme:"to"=output unit
+*		"fm"=input unit("from")
+*		"hd"=heading file
+*		"op"=operator
+*		"lu"=logical unit
+

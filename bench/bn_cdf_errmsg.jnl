@@ -1,0 +1,35 @@
+! bn_cdf_errmsg.jnl
+! ACM 7/13/2006
+! test reporting of cdf error messages from OPeNDAP library v3.6.2
+
+set mode ignore
+
+! bad file names; file missing or misspelled 
+use this_is_not_a_file.nc
+
+
+!! Change to another server, our server down...
+!!use  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf"
+!! Not working either as of 7/5/2007
+!! use "http://ferret.pmel.noaa.gov:8080/thredds/dodsC/data/nofile.cdf"
+
+! This is a valid address
+!use "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauy/dods"
+
+! change the variable name to something nonexistent
+use "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
+
+
+! bad server
+use  "http://noserver/a/nofile.cdf"
+
+! Not a netCDF file: Create an ascii file with extension .nc
+
+list/nohead/file=asc.dat {1,2,3}
+
+sp rm -f asc.nc
+sp mv asc.dat asc.nc
+use asc.nc
+
+set mode/last ignore
+

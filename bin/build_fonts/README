@@ -1,0 +1,27 @@
+README file for the directory build_fonts
+
+Ansley Manke 1/21/2009.
+
+These are the files needed to build the Ferret fonts. 
+They were copied from 
+/home/porter2/davison/ppld/f1_2/source/fonts
+
+In that directory were subdirectories /vms  and /unix.
+These directories are saved under /original, and the 
+/unix directory is modified for simplicity and completeness,
+renaming the input files to in_fnt01a.chr, ... and changing 
+the Makefile so it directly makes the binary font files with
+the names that Ferret expects to find.
+
+Also added clean and install targets.
+
+If the environmnent variable PLOTFONTS is defined, then the 
+install target installs the files where Ferret will find them.
+
+   make		  Builds and run the program to write the binary font files
+
+   make install	  Copies the files to the directory indicated by PLOTFONTS
+
+   make clean     Removes the executable and the binary font files.
+
+

@@ -1,0 +1,16 @@
+! Bug 1542
+! Symbols YAXIS_MIN, YAXIS_MAX were 0 when values small
+! Should use scientific notation 
+
+use coads_climatology
+let plotvar = sst[L=1]
+plot/y=35 plotvar/10000; sh sym yax*
+plot/y=35 plotvar/10000000; sh sym yax*
+plot/y=35 plotvar*10000000; sh sym yax*
+
+def axis/x=0.000004:0.000005/npoints=100 xax
+def axis/y=0.000001:0.000002/npoints=100 yax
+let a = x[gx=xax] + y[gy=yax]
+shade a; sh sym xax*; ; sh sym yax*
+
+

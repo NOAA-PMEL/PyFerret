@@ -1,0 +1,5 @@
+I modified gksm.c to write out metafile "last item" records.  The original is
+gksm.c.orig.
+
+J Davison
+12.6.93

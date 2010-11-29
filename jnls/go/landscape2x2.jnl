@@ -1,0 +1,34 @@
+\cancel mode verify      ! ... now defining 4 viewports: 2 across, 2 down
+! Description: Set up for four viewports on an 11 x 8.5 page
+message/continue .....
+message/continue The viewports are sized to fit well on an 8 1/2 x 11 page
+message/continue Viewport names are: ll4,lr4,ul4, and ur4
+message/continue ll4 -- lower left
+message/continue lr4 -- lower right
+message/continue ul4 -- upper left
+message/continue ur4 -- upper right
+message/continue Use "SET VIEWPORT ll"  to select the lower left, etc.
+message/continue Use CANCEL VIEWPORT and PPL/RESET to restore default graphics
+message/continue .....
+
+! Create 4 viewports on a landscape plot - 2 across, 2 down.
+! The sizing is to fill a landscape 8 1/2 x 11 page.
+
+ppl/reset
+set window/aspect=0.8    ! ratio of 8 1/2 to 11
+set mode/last verify
+
+\! define viewports
+
+define view/xlimits=0,.5/ylimits=0,.5 ll4
+define view/xlimits=.5,1/ylimits=0,.5 lr4
+define view/xlimits=0,.5/ylimits=.5,1 ul4
+define view/xlimits=.5,1/ylimits=.5,1 ur4
+
+\message/continue .....
+\message/continue In order to decrease amount of "dead space" in the plot,
+\message/continue simply modify the ylimits as defined above so that the
+\message/continue viewports slightly overlap each other.
+\message/continue .....
+
+\set window/size=.9	! immediate redraw / appropriate size

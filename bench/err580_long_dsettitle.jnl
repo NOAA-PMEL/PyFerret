@@ -1,0 +1,13 @@
+! err580_long_dsettitle
+! fix for bug 1181
+! previously dataset title was limited to 80 characters.
+
+! File has a dataset title 1000 characters long.
+use longtitle1000.nc 
+say `a,return=dsettitle`
+
+! Set a dataset title over 80 characters.
+save/title="a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short.  "/clobber/file=longtitle.nc a
+
+sp echo "err580_long_dsettitle.jnl --- " >> all_ncdump.out
+sp ncdump longtitle.nc >> all_ncdump.out

@@ -1,0 +1,37 @@
+! pattern_demo.jnl
+! Quick demo of Ferret pattern feature *jd* 12.18.98
+
+set data coads_climatology
+set reg/l=7/y=50s:60n/x=100e:60w
+set mode cal months
+
+! The /pattern qualifier sets patterns to be used, like /palette sets colors.
+! Files in $FER_PALETTE with extension .pat are read in to set patterns.
+! Use "Fpattern '*'" to find available pattern files.
+
+! Note that colors are set in the usual way...
+
+set win 1
+shade/pal=black/lev=(10,30,5,-3)/line/key/pattern=4patterns sst
+
+go fland 20; go land thick
+
+\message
+
+! Colors and patterns can be overlaid; patterns are transparent
+
+set win 2
+
+set data coads_climatology
+set reg/l=1:12/y=50s:60n/x=100e:60w
+set mode cal months
+
+fill/lev=(0,33,3) sst[l=@ave]
+
+fill/lev=(1000,1010,10)/over/nolab/pal=black/pat=angled_grid slp[l=@ave,y=20s:20n]
+label/user,185,-18,-1,0,.15,@trSLP gt 1000 and lt 1010 mb
+
+fill/lev=(1020,1050,30)/over/nolab/pal=black/pat=large_grid slp[l=@ave,y=20n:60n]
+label/user,225,22,1,0,.15,@trSLP gt 1020 and lt 1050 mb
+
+go fland 20; go land thick

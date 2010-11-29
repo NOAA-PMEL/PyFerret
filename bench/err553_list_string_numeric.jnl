@@ -1,0 +1,17 @@
+! err553_list_string_numeric.jnl
+! 2/2004 ACM
+! LISTing string and numeric variables together.   
+
+def axis/t=1:3:1 tax
+let a = reshape ({1,2,3}, t[gt=tax])
+let b = reshape ({"a", "b", "c"}, t[gt=tax])
+list a, b
+
+! Now in 2D
+let c = {"cat", "rat", "spat", "that", "pat"}
+list/i=2:4/l=1:3 b, c
+
+let v = y[y=1:5]
+list v
+list/i=3:4/l=1:2 b, c, v
+

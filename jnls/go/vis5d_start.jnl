@@ -1,0 +1,20 @@
+\CANCEL MODE VERIFY
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! vis5d_start.jnl --  Starts vis5d for a file in .v5d format
+!                   
+! Ansley Manke
+! 7/98
+ 
+! Description:  Set filename and start vis5d .
+ 
+!                          arg 1     
+!  usage:  GO vis5d_start file-name 
+ 
+! example:
+!   yes? GO vis5d_start vis5d_out.v5d%
+
+!  Must have the filename.
+ 
+!query/ignore $1"<Argument 1 is the Vis5D file name."
+define symbol filename $1"vis5d_out.v5d"
+sp vis5d -box 2 1 1 -date ($filename)

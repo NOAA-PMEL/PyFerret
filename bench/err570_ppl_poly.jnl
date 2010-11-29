@@ -1,0 +1,17 @@
+! err570_ppl_poly.jnl
+
+! bug 959
+! When we use polygon/set; ppl shakey; ppl polygon 
+! to control the vector key, the numerical labels on 
+! the key disappear.  (allow PPL POLYGON as well as
+! PPL FILLPOL after a POLY/SET)
+
+let xsqr = YSEQUENCE({0,.1,.1,0})
+let ysqr = YSEQUENCE({0,0,.1,.1})
+
+let ypts = x/10
+let xpts = cos(x/10)
+
+polygon/trans/i=1:100/nolable/set xpts+xsqr, ypts+ysqr, x*x/10
+ppl shakey 1, 1, .1
+ppl polygon

@@ -1,0 +1,72 @@
+! bn554_bug_fixes.jnl
+! test various fixes that went into version 5.54
+! 11/03 *acm*
+!
+
+! Test use of longer strings in region names
+GO bn_reset
+GO err553_regionname_lengths.jnl
+
+
+! Reqests for data at times outside range of data
+GO bn_reset
+GO err553_timeregion.jnl
+
+! Contour plot on fine grid has precision problems
+GO bn_reset
+GO err553_contour_fine_grid.jnl
+
+! PLOT/SYM/SIZE= did not change the size
+GO bn_reset
+GO err553_symsize.jnl
+
+! test labels on shade keys; consistent number of digits set by 5th shakey arg 
+GO bn_reset
+GO err553_shakey_labels.jnl
+
+! couldnt set the number of small tics with arg to %xaxis, %yaxis commands
+GO bn_reset
+GO err553_xaxis_nsmtc.jnl
+
+! The defined year length was different if we used DEFINE AXIS/UNIT=year
+! vs DEFINE AXIS/UNIT=yr
+GO bn_reset
+GO err553_year_yr.jnl
+
+! When we do a DEFINE GRID/LIKE=var and then try to read the var with
+! strides, Ferret did a regridding instead.  Test the fix for this
+GO bn_reset
+GO err553_stride_def_grid.jnl
+
+! DEFINE AXIS can get the axis too long (bug 673)
+GO bn_reset
+GO err553_axis_too_long.jnl
+
+! Under linux, some shade and fill plots with /LEVELS=c had a 
+! non-centered shade key
+GO bn_reset
+GO err553_lev_c.jnl
+
+! At lon = 0, we used to have an E; remove this.
+GO bn_reset
+GO err553_lon_ax_0_label.jnl
+
+! Errors listing string and numeric data together
+GO bn_reset
+GO err553_list_string_numeric.jnl
+
+! Bug in setting axis to depth when reading from nc file
+GO bn_reset
+GO err553_set_axis_depth.jnl
+
+! Set symbols showing levels settings when poly command is called
+GO bn_reset
+GO err553_symbol_lev.jnl
+
+! Fixes for modulo striding bugs
+GO bn_reset
+GO err553_stride_modulo.jnl
+
+! Fixes bug creating format for listing a very long line
+GO bn_reset
+GO err553_list_width.jnl

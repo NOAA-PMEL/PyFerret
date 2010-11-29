@@ -1,0 +1,272 @@
+* 
+*  expndi_by_z.F
+* 
+*  Steve Hankin
+*  2/22/2001
+* 
+*  Expand argument 1 by createing a 2D XZ structure from it with the 
+* separation between Z columns given by the location of non-missing values in
+* argument 2. Thus the Z columns created are "ragged"
+* Typical use is that arg 1 is a collection of vertical casts appended end-
+* to-end and that arg 2 flags the start of each cast
+
+*  Args 3 and 4 are constants -- the size of the X and Z axes, respectively
+ 
+*  In this subroutine we provide information about
+*  the function.  The user configurable information 
+*  consists of the following:
+* 
+*  descr              Text description of the function
+* 
+*  num_args           Required number of arguments
+* 
+*  axis_inheritance   Type of axis for the result
+*                        ( CUSTOM, IMPLIED_BY_Z_ARGS, NORMAL, ABSTRACT )
+*                        CUSTOM          - user defined axis
+*                        IMPLIED_BY_Z_ARGS - same axis as the incoming argument
+*                        NORMAL          - the result is normal to this axis
+*                        ABSTRACT        - an axis which only has index values
+* 
+*  piecemeal_ok       For memory optimization:
+*                        axes where calculation may be performed piecemeal
+*                        ( YES, NO )
+* 
+*
+* For each argument we provide the following information:
+*
+* name               Text name for an argument
+*
+* unit               Text units for an argument
+*
+* desc               Text description of an argument
+*
+* axis_influence     Are this argument's axes the same as the result grid?
+*                       ( YES, NO )
+*
+* axis_extend       How much does Ferret need to extend arg limits relative to result 
+*
+
+
+      SUBROUTINE expndi_by_z_init(id)
+
+      INCLUDE 'EF_Util.cmn'
+
+      INTEGER id, arg
+
+* **********************************************************************
+*                                            USER CONFIGURABLE PORTION |
+*                                                                      |
+*                                                                      V
+
+      CALL ef_set_desc(id,
+     .  'Expand arg1 on I into an XZ grid. (Typ. to split Z-profiles)' )
+
+      CALL ef_set_num_args(id, 4)
+      CALL ef_set_has_vari_args(id, NO)
+      CALL ef_set_axis_inheritance(id, ABSTRACT, 
+     .     IMPLIED_BY_ARGS, ABSTRACT, IMPLIED_BY_ARGS)
+      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+
+      arg = 1
+      CALL ef_set_arg_name(id, arg, 'dat')
+      CALL ef_set_arg_desc(id, arg, 'variable to expand on I axis')
+      CALL ef_set_axis_influence(id, arg, NO, YES, NO, YES)
+
+      arg = 2
+      CALL ef_set_arg_name(id, arg, 'mask')
+      CALL ef_set_arg_desc(id, arg,
+     .          'each valid point starts a new Z column')
+      CALL ef_set_axis_influence(id, arg, NO, YES, NO, YES)
+
+      arg = 3
+      CALL ef_set_arg_name(id, arg, 'n_profiles')
+      CALL ef_set_arg_desc(id, arg,
+     .          'I size of result (constant)')
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+
+      arg = 4
+      CALL ef_set_arg_name(id, arg, 'max_profile_len')
+      CALL ef_set_arg_desc(id, arg,
+     .          'K size of result (constant)')
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+*                                                                      ^
+*                                                                      |
+*                                            USER CONFIGURABLE PORTION |
+* **********************************************************************
+
+      RETURN 
+      END
+
+
+
+
+
+
+*
+* In this subroutine we provide information about the lo and hi
+* limits associated with each abstract or custom axis.   The user 
+* configurable information consists of the following:
+*
+* lo_ss               lo subscript for an axis
+*
+* hi_ss               hi subscript for an axis
+*
+
+      SUBROUTINE expndi_by_z_result_limits(id)
+
+      INCLUDE 'EF_Util.cmn'
+
+      INTEGER id
+
+* **********************************************************************
+*                                           USER CONFIGURABLE PORTION |
+*                                                                     |
+*                                                                     V
+
+      REAL size
+
+*
+*     Use utility functions to get context information about the arguments.
+*
+
+* output X axis size
+      CALL ef_get_one_val(id, ARG3, size)
+      CALL ef_set_axis_limits(id, X_AXIS, 1, INT(ABS(size)))
+
+* output Z axis size
+      CALL ef_get_one_val(id, ARG4, size)
+      CALL ef_set_axis_limits(id, Z_AXIS, 1, INT(ABS(size)))
+*                                                                     ^
+*                                                                     |
+*                                           USER CONFIGURABLE PORTION |
+* **********************************************************************
+
+      RETURN 
+      END
+
+
+
+* 
+*  In this subroutine we compute the result
+* 
+      SUBROUTINE expndi_by_z_compute(id, arg_1, arg_2, arg_3, arg_4,
+     .                               result)
+
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
+
+      INTEGER id
+
+      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy,
+     .	   mem1loz:mem1hiz, mem1lot:mem1hit)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy,
+     .     mem2loz:mem2hiz, mem2lot:mem2hit)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy,
+     .     mem3loz:mem3hiz, mem3lot:mem3hit)
+      REAL arg_4(mem4lox:mem4hix, mem4loy:mem4hiy,
+     .     mem4loz:mem4hiz, mem4lot:mem4hit)
+      REAL result(memreslox:memreshix, memresloy:memreshiy,
+     .     memresloz:memreshiz, memreslot:memreshit)
+
+* After initialization, the 'res_' arrays contain indexing information 
+* for the result axes.  The 'arg_' arrays will contain the indexing 
+* information for each variable's axes. 
+
+      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
+      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
+     .     arg_incr(4,EF_MAX_ARGS)
+
+
+* **********************************************************************
+*                                            USER CONFIGURABLE PORTION |
+*                                                                      |
+*                                                                      V
+
+      INTEGER i,j,k,l
+      INTEGER j1, k1, l1
+      INTEGER j2, k2, l2
+      INTEGER imax,kmax, iout, kout
+
+      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
+
+* make sure inputs are conformable
+      IF ( (arg_lo_ss(X_AXIS,ARG1) .NE. arg_lo_ss(X_AXIS,ARG2))
+     . .OR.(arg_hi_ss(X_AXIS,ARG1) .NE. arg_hi_ss(X_AXIS,ARG2)) ) CALL
+     .           EF_BAIL_OUT(id, 'X limits of args 1 and 2 mismatched')
+      IF ( (arg_lo_ss(Z_AXIS,ARG1) .NE. arg_hi_ss(Z_AXIS,ARG1))
+     . .OR.(arg_lo_ss(Z_AXIS,ARG2) .NE. arg_hi_ss(Z_AXIS,ARG2)) ) CALL
+     .           EF_BAIL_OUT(id, 'Z size of args 1 and 2 must be 1')
+
+* limits on output arrays
+        imax = res_hi_ss(X_AXIS)
+        kmax = res_hi_ss(Z_AXIS)
+
+* pre-fill the entire output result with missing value flags
+*  (since each I-sequence in mask may have different number of valid pts)
+      DO 40 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+         DO 30 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+            DO 20 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+               DO 10 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+ 10            result(i,j,k,l) = bad_flag_result
+ 20         CONTINUE
+ 30      CONTINUE
+ 40   CONTINUE
+
+* fill in the points as specified by the mask
+      k1 = arg_lo_ss(Z_AXIS,ARG1)
+      k2 = arg_lo_ss(Z_AXIS,ARG2)
+
+      l1 = arg_lo_ss(T_AXIS,ARG1)
+      l2 = arg_lo_ss(T_AXIS,ARG2)
+      DO 400 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+
+         j1 = arg_lo_ss(Y_AXIS,ARG1)
+         j2 = arg_lo_ss(Y_AXIS,ARG2)
+         DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+
+            iout = res_lo_ss(X_AXIS)
+            kout = res_lo_ss(Z_AXIS)
+            IF ( arg_2(arg_lo_ss(X_AXIS,ARG2),j2,k2,l2)
+     .     .NE. bad_flag(2) ) THEN
+              iout = iout - 1  ! will immediately increment
+            ELSE
+              kout = kout - 1  ! will immediately increment
+            ENDIF
+            DO 200 i=arg_lo_ss(X_AXIS,ARG1),arg_hi_ss(X_AXIS,ARG1)
+
+               IF ( arg_2(i,j2,k2,l2) .EQ. bad_flag(2) ) THEN
+*    ... add another element to this Z column
+                  IF (kout .GE. kmax) CALL EF_BAIL_OUT(id,
+     .               'Arg 4 size too small')
+                  kout = kout + 1
+               ELSE
+*    ... start a new Z column
+                  IF (iout .GE. imax) CALL EF_BAIL_OUT(id,
+     .               'Arg 3 size too small')
+                  iout = iout + 1
+                  kout = res_lo_ss(Z_AXIS)
+               ENDIF
+               result(iout,j,kout,l) = arg_1(i,j1,k1,l1)
+
+ 200        CONTINUE
+
+            j1 = j1 + arg_incr(Y_AXIS,ARG1)
+            j2 = j2 + arg_incr(Y_AXIS,ARG2)
+ 300     CONTINUE
+
+         l1 = l1 + arg_incr(T_AXIS,ARG1)
+         l2 = l2 + arg_incr(T_AXIS,ARG2)
+ 400  CONTINUE
+      
+         
+*                                                                      ^
+*                                                                      |
+*                                            USER CONFIGURABLE PORTION |
+* **********************************************************************
+
+      RETURN 
+      END
+

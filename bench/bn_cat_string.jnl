@@ -1,0 +1,25 @@
+! bn_cat_string.jnl
+! Test concatenation functions for string variables
+! ACM nov 08  See bug 1577
+
+let a = xsequence({"Q", "R", "S"})
+let b = xsequence({"U", "V", "W"})
+list xcat(a,b)
+
+! (when xcat is called, and its args are strings, 
+!  Ferret actually runs xcat_string)
+let a = xsequence({"Q", "R", "S"})
+let b = xsequence({"U", "V", "W"})
+list xcat_str(a,b)
+
+let a = ysequence({"Q", "R", "S"})
+let b = ysequence({"U", "V", "W"})
+list ycat(a,b)
+
+let a = zsequence({"Q", "R", "S"})
+let b = zsequence({"U", "V", "W"})
+list zcat(a,b)
+
+let a = tsequence({"Q", "R", "S"})
+let b = tsequence({"U", "V", "W"})
+list tcat(a,b)

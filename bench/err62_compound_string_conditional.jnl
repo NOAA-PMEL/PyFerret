@@ -1,0 +1,13 @@
+! err62_compound_string_conditional
+! Bug 1380
+
+LIST 1 EQ 2 or 3 EQ 3  ! all numeric
+
+LIST "a" EQ "b"
+LIST "b" EQ "b"
+LIST "a" EQ "b" OR  "b" EQ "b"  ! should be 1
+LIST "a" EQ "b" AND "b" EQ "b"  ! should be 0
+
+LIST  "a" LE "b" AND 3 EQ 3  ! should be 1
+
+LIST 1 EQ 2 OR "A" EQ "B"    ! should be 0

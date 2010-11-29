@@ -1,0 +1,8 @@
+! err580_def_t_norange.jnl
+! bug 1203. Without the T range, these statements cause a crash.
+!           There SHOULD be error messages, error in start,end,delta.
+
+SET MODE ignore
+DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/t myt
+
+DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/T/CALENDAR=noleap myt

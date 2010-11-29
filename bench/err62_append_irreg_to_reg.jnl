@@ -1,0 +1,28 @@
+! err62_append_irreg_to_reg.jnl
+! bug 1692
+
+! See Patrick's report: 
+! http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2009/msg00620.html
+! where he points to another example.
+!
+! Turns out he was appending irreg time coords to a regular time axis
+! and Ferret needs a better error message
+
+SET MODE IGNORE
+
+! By default a regular axis gets no bounds on a SAVE
+DEFINE AXIS/T t_axis = {1,2,3,4,5}
+LET var = T[GT=t_axis]
+SAVE/CLOBBER/FILE=t_bug.nc var
+
+! Now try to append this irregularly-spaced data to the above
+DEFINE AXIS/T t_axis = {6,8,9,10,12,13}
+SAVE/FILE=t_bug.nc/APPEND var
+
+! previously the message just said 
+! ** netCDF error: Variable not found
+
+! Msg should explain that it was the bounds variable, needed 
+! for the append, but not found in the existing file.
+
+SET MODE/LAST IGNORE

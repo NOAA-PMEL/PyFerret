@@ -1,0 +1,10 @@
+! Test the test_opendap function: returns 0 if successful, or error code if not.
+
+! Even opendap has its server problems
+!!list test_opendap ("http://test.opendap.org/opendap/data/nc/test.nc")
+!!list test_opendap ("http://test.opendap.NOT.org/opendap/data/nc/test.nc")
+
+
+list test_opendap ("http://iridl.ldeo.columbia.edu/SOURCES/.LEVITUS/.MONTHLY/.temp/dods")
+list test_opendap ("http://iridl.ldeo.NOT.columbia.edu/SOURCES/.LEVITUS/.MONTHLY/.temp/dods")
+

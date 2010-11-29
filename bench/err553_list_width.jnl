@@ -1,0 +1,17 @@
+! err553_list_width.jnl
+! *acm* 4/1/2004
+! Fix for bug 837; creating a format for very wide ascii listing  
+! (this caused an outright crash)
+
+! Note had /wid=9999, but this crashes Ferret under irix,
+! listing to std output and also to an ascii file.
+! Fortran limit for sequential files?  1024 works, 2047 did not.
+! The bug, seen under solaris and linux for pre-v5.6, appears
+! with /WIDTH=9999 but not with /WIDTH=1024.
+
+set mode ignore
+def axis/x=1:5000:1 xax
+def axis/y=1:2:1 yax
+list/wid=1024/y=1:2 sin(x[gx=xax]) + y[gy=yax]
+
+can mode ignore

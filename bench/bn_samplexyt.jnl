@@ -1,0 +1,37 @@
+! bn_samplexyt.jnl
+! 1/2009
+
+! Check the SAMPLEXYT function, should give missing results for T sample points 
+! that lie beyond the ends of the T axis of the grid being sampled
+
+define axis/x=0:360:180/units=longitude/edges/modulo x1
+define axis/y=-90:90:45/units=latitude/edges y1
+define axis/t0=1-jan-1990/t=1-jan-1991:31-dec-1991:1/units=days/edges t1
+define grid/x=x1/y=y1/t=t1 g1
+
+let my_data = 0*x[g=g1]+y[g=g1]+t[g=g1]
+
+DEFINE AXIS/T0=1-JAN-1990/T=1-JAN-1990:31-DEC-1992:40/UNITS=DAYS/EDGES TSAMPLES
+LET TPTS = XSEQUENCE(T[GT=TSAMPLES])
+LET YPTS = XSEQUENCE((RANDU(TPTS)-0.5)*90)
+LET XPTS = 180 + 0*YPTS
+LET sampl_pts =  SAMPLEXYT(my_data,xpts,ypts,tpts)
+ 
+!  NOTE THAT THE SAMPLEXYT SHOULD FLAG POINTS BEFORE THE START OF THE TIME INTERVAL
+!  AND ALOS THOSE THAT LIE ABOVE THE END OF THE TIME INTERVAL
+
+! CHECK THE RESULTS WITH A LISTING
+list ypts, tpts, sampl_pts
+
+! AND HERE WE SHOW IT GRAPHICALLY
+cancel mode calendar
+set view upper
+shade/hlim=20:1100 my_data[x=180]
+
+set view lower
+plot/vs/xlim=20:1100/ylim=0:1000 tpts, 0*MISSING(sampl_pts,0) + 500
+plot/vs/color=red/over tpts, sampl_pts
+
+
+set mode calendar
+can view

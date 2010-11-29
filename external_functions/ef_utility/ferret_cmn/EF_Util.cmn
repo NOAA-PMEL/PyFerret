@@ -1,0 +1,43 @@
+c* EF_Util.cmn
+c*
+c* Jonathan Callahan
+c* July 10th 1997
+c*
+c* This is the header file to be included by routines which
+c* are part of the Ferret External Function library.
+c*
+c*       EXTERNAL ef_version 1.1: *jc* 9.98 Added       EXTERNAL ef_max_work_arrays
+c* 
+c*            1.3: *jc* 4.99 Changed "work_array_len" to "work_array_lo/hi" in EF_Util.h
+c* 
+c*                 *ac* 7.99 Added unspecified_int4
+c*		   *sh* 8.99 Changed unspeficied_int4 to EF_unspecified_int4
+c*				because of conflict with same-name parameter
+c*				in ferret.parm
+c*                 *ac* 9.99 Separate EF_Util.parm which is all that's needed 
+c*                           in the utility fcns in fer/ef_utility and the 
+c*                           EXTERNAL statements, to be included in EF code.
+
+      INCLUDE 'EF_Util.parm'
+
+      EXTERNAL ef_bail_out
+      EXTERNAL ef_get_arg_info
+      EXTERNAL ef_get_arg_ss_extremes
+      EXTERNAL ef_get_arg_string
+      EXTERNAL ef_get_arg_subscripts
+      EXTERNAL ef_get_axis_dates
+      EXTERNAL ef_get_axis_info
+      EXTERNAL ef_get_box_hi_lim
+      EXTERNAL ef_get_box_limits
+      EXTERNAL ef_get_box_lo_lim
+      EXTERNAL ef_get_box_size
+      EXTERNAL ef_get_coordinates
+      EXTERNAL ef_get_one_val_sub
+      EXTERNAL ef_get_one_val_sub_sub
+      EXTERNAL ef_get_res_subscripts
+      EXTERNAL ef_set_arg_desc
+      EXTERNAL ef_set_arg_name
+      EXTERNAL ef_set_arg_unit
+      EXTERNAL ef_set_custom_axis
+      EXTERNAL ef_set_desc
+      EXTERNAL ef_set_result_type

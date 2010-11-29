@@ -1,0 +1,30 @@
+! Bug 1566 Andrew Wittenberb
+!
+! I discovered this when testing for an error condition, for which I wanted to
+! exit the current script with EXIT/SCRIPT.  It seems that EXIT doesn't always pop
+! the IF..ENDIF stack, resulting in a nesting error upon repeated invocations of
+! the script.
+! 
+! Note also how the REPEAT at first works, then fails, then works, then fails, in
+! an alternating pattern.
+
+!        NOAA/PMEL TMAP
+!        FERRET v6.08  
+!        Linux(g77) 2.4.21-32 - 11/13/07
+!         7-Mar-08 18:32     
+
+sp rm -f b1566.jnl
+sp echo if 1 then > b1566.jnl
+sp echo if 1 then >> b1566.jnl
+sp echo exit/script >> b1566.jnl
+sp echo endif >> b1566.jnl
+sp echo endif >> b1566.jnl
+rep/l=1:7 go b1566.jnl
+rep/l=1:7 go b1566.jnl
+
+!!  IFs nested too deep
+
+rep/l=1:7 go b1566.jnl
+rep/l=1:7 go b1566.jnl
+
+

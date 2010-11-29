@@ -1,0 +1,77 @@
+#include "udposix.h"
+#include <limits.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include "fortxgks.h"
+
+#ifndef lint
+    static char	rcsid[]	= "$Id$";
+    static char afsid[]	= "$__Header$";
+#endif
+
+/* 
+ * Use of the pathconf() function would be more rigorous, but this should
+ * suffice.
+ */
+#ifndef PATH_MAX
+#   define PATH_MAX	_POSIX_PATH_MAX
+#endif
+
+extern void	FC_NAME(inqlun)();
+
+static char	fname[PATH_MAX+1];
+
+
+/*
+ * Callback routine for setting the name of the file associated with a 
+ * Fortran logical unit number.
+ */
+    void
+/*FORTRAN*/
+set_fname(
+    char      *name)
+{
+    size_t	nchr;
+    size_t      max	= MIN(name_len, sizeof(fname)-1);
+
+    for (nchr = 0; nchr < max && name[nchr] != ' '; ++nchr)
+	/* empty */ ;
+
+    (void) strncpy(fname, name, nchr);
+    fname[nchr]	= 0;
+}
+
+/*
+ * Callback routine for setting the name of the file associated with a 
+ * Fortran logical unit number.
+ */
+    void
+/*FORTRAN*/
+set_fname_(
+    char      *name)
+{
+    size_t	nchr;
+    size_t      max	= MIN(name_len, sizeof(fname)-1);
+
+    for (nchr = 0; nchr < max && name[nchr] != ' '; ++nchr)
+	/* empty */ ;
+
+    (void) strncpy(fname, name, nchr);
+    fname[nchr]	= 0;
+}
+
+
+/*
+ * Get the name associated with a Fortran logical unit number.
+ *
+ */
+    char*
+getlunname(lun)
+    int		lun;
+{
+    fname[0]	= 0;
+    FC_NAME(inqlun)(&lun);
+
+    return fname;
+}

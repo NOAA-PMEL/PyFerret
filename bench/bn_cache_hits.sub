@@ -1,0 +1,62 @@
+! bn_cache_hits.sub
+! *sh* 3/99
+! usage:	GO bn_cache_hits.sub variable
+
+stat $1
+CONFUSE
+stat $1
+
+define axis/x=130e:80w:1 xtrop
+stat $1[gx=xtrop]
+CONFUSE
+stat $1[gx=xtrop]
+
+let $1x = $1[gx=xtrop]
+stat $1x
+CONFUSE
+stat $1x
+
+define grid/x=xtrop gx
+stat $1[g=gx]
+CONFUSE
+stat $1[g=gx]
+
+define axis/y=20s:20n:1 ytrop
+stat $1[gx=xtrop,gy=ytrop]
+CONFUSE
+stat $1[gx=xtrop,gy=ytrop]
+
+define grid/like=$1/x=xtrop/y=ytrop gxyt
+stat $1[g=gxyt]
+CONFUSE
+stat $1[g=gxyt]
+
+let $1xyt = $1[g=gxyt]
+stat $1xyt
+CONFUSE
+stat $1xyt
+
+let $1xyt = $1[g=gxyt]
+stat $1xyt
+CONFUSE
+stat $1xyt
+
+stat $1[x=@ave]
+CONFUSE	
+stat $1[x=@ave]
+
+let $1xave = $1[x=@ave]
+stat $1xave
+CONFUSE
+stat $1xave
+
+stat $1[x=@sbx]
+CONFUSE
+stat $1[x=@sbx]
+
+let $1sbx = $1[x=@sbx]
+stat $1sbx
+CONFUSE
+stat $1sbx
+
+

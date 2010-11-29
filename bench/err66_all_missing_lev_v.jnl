@@ -1,0 +1,7 @@
+! err66_all_missing_lev_v.jnl
+! Ferret hangs with /LEV=V and all missing data
+
+USE coads_climatology
+SHADE/L=1/X=60:70/Y=40:50/LEV=v sst
+
+FILL/L=2/X=60:70/Y=40:50/LEV=v sst

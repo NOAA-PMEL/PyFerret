@@ -1,0 +1,6 @@
+! test exit/script
+
+exit/script
+
+say "exit/script: should have exited from the script"
+say "these lines should not be printed"

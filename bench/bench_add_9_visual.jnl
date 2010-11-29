@@ -1,0 +1,32 @@
+set mode ignore_errors
+
+can region
+use coads_climatology
+let a1 = sst[d=1,l=1]
+let a2 = sst[d=1,l=2]
+let a3 = sst[d=1,l=3]
+
+let a = add_9(a1,a2,a3,a1,a2,a3,a1,a2,a3)
+shade a
+shade a - 3 * sst[d=1,l=1:3@sum]
+
+let a3 = sst[d=1,x=180]
+shade a                   ! DELIBERATE ERROR
+
+let a3 = sst[d=1,x=180,l=3]
+shade a
+
+let a3 = sst[d=1,x=180,y=0,l=1]
+shade a
+
+let a3 = 1000
+shade a
+
+use gtbc011
+let a3 = temp[k=1]
+shade a                   ! DELIBERATE ERROR
+
+let a = add_9(a1,a2,1000,a1,a2,1000,a1,a2,1000)
+shade a
+
+set mode/last ignore_errors

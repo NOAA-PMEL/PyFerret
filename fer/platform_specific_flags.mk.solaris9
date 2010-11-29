@@ -1,0 +1,92 @@
+#
+# platform_specific_includes.mk.solaris
+#
+# This file is included in other Makefiles and defines
+# platform specific macros
+
+
+INCLUDES        = -I../../xgks/include \
+		  -I../../ppl/include/xgks \
+                  -I/usr/openwin/include \
+		  -I../../xgks/gif \
+		  -I../../xgks/ps \
+		  -I../../xgks/port \
+                  -I../../xgks/src/lib \
+                  -I../../xgks/src/lib/gksm \
+		  -I/usr/local/include \
+                  -I../common \
+		  -I../../fmt/cmn \
+		  -I../../ppl/include \
+		  -I. -I../../readline-4.1
+
+FINCLUDES	= -I../../ppl/tmap_inc \
+		   -I../include -I../../fmt/cmn \
+		   -I../common \
+		   -I../../ppl/include -I../../fer/common
+
+
+GUI_INCLUDES	= -I/usr/dt/include  -I/usr/openwin/share/include
+
+# New platform type var - acm 08/07
+PLATFORM = Solaris 5.9 
+ 
+FC              = f77
+CC              = cc
+RANLIB          = /usr/ccs/bin/ranlib
+CPP_FLAGS       = -DNO_PASSED_CONCAT \
+ -DNO_PREPEND_STRING
+CFLAGS          = $(CPP_FLAGS) -Dsolaris -DUSG -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
+FFLAGS          = $(CPP_FLAGS) -e -Nl160  -ffixed-line-length-132 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNO_SNGL -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES) -Dunix -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DusingDODSf2cUnderscore  
+PPLUS_FFLAGS    = -e -Nl160  -ffixed-line-length-132 -Dxgks -DusingDODSf2cUnderscore -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Dunix $(FINCLUDES)
+
+#
+# Below this line are macro definitions used only for the final linking of the executable
+#
+
+LD		= f77 
+LDFLAGS		= -L/usr/openwin/lib -z muldefs -v
+LD_DYN_FLAGS = -G -z text -z muldefs
+
+V77lib = /opt/SUNWspro/lib/libV77.so
+M77lib = /opt/SUNWspro/lib/libM77.so
+F77lib = /opt/SUNWspro/lib/libF77.so
+elflib = /usr/lib/libelf.a
+Xmlib = /usr/lib/libXm.so
+Xpmlib = /usr/lib/libXpm.so
+Sunmathlib = /opt/SUNWspro/lib/libsunmath.so
+#nsllib = /usr/lib/libnsl.a
+nsllib = -lnsl
+socketlib = /usr/lib/libsocket.a
+
+
+SYSLIB		= -lX11  -ldl $(Xpmlib)  ../list-2.1/liblist.a -Bstatic  -L/opt/SUNWspro/lib \
+		  $(V77lib) $(elflib) $(M77lib) $(F77lib) $(Xmlib) -lXt -Bdynamic $(Sunmathlib) -lm \
+		  /usr/ccs/lib/libgen.a -lc -L/opt/SUNWspro/lib/ -lfsu -lmtsk \
+		  -Bstatic  -Bdynamic /usr/lib/libICE.so \
+		  /usr/lib/libSM.so 
+
+DODS_SYSLIB	= $(nsllib) $(socketlib)
+
+TMLIB		= ../lib/tmap_lib.a
+
+READLINELIB	= ../readline-4.1/libreadline.a
+
+GKSLIB		= ../xgks/src/lib/libxgks.a
+
+#HDFLIB		= /opt/local/lib/libdf.a
+
+
+# library specs from  ./ejn/build/libnc-dap-3.7.0/ncdap-config --flibs
+# plus a bunch of repeats of libraries which seem to be needed...
+DODS_LIBS       =  /local/opendap/lib/libnc-dap.a /local/opendap/lib/libdap.a /local/opendap/lib/libnc-dap.a /local/opendap/lib/libdap.a /local/opendap/lib/libnc-dap.a /local/opendap/lib/libnc-dap.a /local/opendap/lib/libdapserver.a /local/opendap/lib/libdapclient.a /local/opendap/lib/libnc-dap.a /local/opendap/lib/libdap.a /local/opendap/lib/libdapclient.a  -L/opt/csw/lib/sparcv8 -lcurl -L/opt/csw/lib -L/opt/csw/lib -lidn -lssl -lcrypto -ldl -lsocket -lnsl -lz -L/usr/lib -R/usr/lib -lxml2 -lz -lpthread -lm -lsocket -lnsl -lpthread  -lstdc++
+
+# The above works. Now use all available static libraries.
+
+DODS_LIBS       =  /local/opendap/lib/libnc-dap.a /local/opendap/lib/libdap.a /local/opendap/lib/libnc-dap.a /local/opendap/lib/libdap.a /local/opendap/lib/libnc-dap.a /local/opendap/lib/libdapserver.a /local/opendap/lib/libdapclient.a /local/opendap/lib/libnc-dap.a /local/opendap/lib/libdap.a /local/opendap/lib/libdapclient.a  /opt/csw/lib/libcurl.a  -L/opt/csw/lib  -L/opt/csw/lib -lidn /opt/csw/lib/libssl.a /opt/csw/lib/libcrypto.a -L/usr/lib -ldl  /usr/lib/libsocket.a /usr/lib/libnsl.a -L/usr/lib -lz -R/usr/lib -lxml2 -lz -lpthread  /usr/lib/libm.a /usr/lib/libsocket.a /usr/lib/libnsl.a -lpthread  -lstdc++
+
+TERMCAPLIB      =-ltermcap
+
+#
+# End of platform_specific_includes.mk.solaris8
+#
+

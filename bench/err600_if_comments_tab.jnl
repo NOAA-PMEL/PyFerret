@@ -1,0 +1,19 @@
+! err600_if_comments_tab.jnl
+! ACM 10-4-2006
+! bug 1446  When there is a tab before a comment, the parsing gets 
+! thrown off and we got an error about an invalid ENDIF
+
+IF 0 THEN
+   LET a = 12
+   IF `a` THEN  ! a comment
+   	   say "variable a is defined"
+   ENDIF
+ENDIF
+
+! Here there is a tab before the ! which throws off the parsing...
+IF 0 THEN
+   LET a = 12
+   IF `a` THEN	! a comment
+   	   say "variable a is defined"
+   ENDIF
+ENDIF

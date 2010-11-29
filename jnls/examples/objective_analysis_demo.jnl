@@ -1,0 +1,133 @@
+\cancel mode verify
+!Description: Demonstration of interpolating scattered data to grids  4/99
+
+! External Functions introduced in Ferret V5.0
+! Two interpolation techniques are available for gridding
+
+! Note that both techniques are applicable ONLY for output
+! grids which are REGULAR, that is to say, have EQUALLY-SPACED
+! coordinates.
+
+set grid/save
+
+! Set viewports
+DEFINE VIEW/ylim=.6,1/text=.5 vupper
+DEFINE VIEW/xlim=0.,.5/ylim=.3,.55/text=.2 vul
+DEFINE VIEW/xlim=.5,1./ylim=.3,.55/text=.2 vur
+DEFINE VIEW/xlim=0.,.5/ylim=0.05,.3/text=.2 vll
+DEFINE VIEW/xlim=.5,1./ylim=0.05,.3/text=.2 vlr
+
+! Define a 2-dimensional function and sample it
+DEFINE AXIS/x=0:10:0.05 x10
+DEFINE AXIS/y=0:10:0.05 y10
+DEFINE GRID/x=x10/y=y10 g10x10
+SET GRID g10x10
+
+LET/QUIET WAVE = SIN(KX*XPTS + KY*YPTS - PHASE) / 3
+LET/QUIET PHASE = 0
+LET/QUIET KAPPA = 0.4
+LET/QUIET KX = 0.4
+LET/QUIET KY = 0.7
+
+LET/QUIET FCN1 = SIN(R)/(R+1)
+LET/QUIET R = ((XPTS-X0)^2+ 5*(YPTS-Y0)^2)^0.5
+LET/QUIET X0 = 3
+LET/QUIET Y0 = 8
+
+LET/QUIET sample_function = fcn1 + wave
+
+say ...
+say For simplicity this demo will work with abstract mathematical functions
+say rather than with "real" data.  We will create an abstract function in
+say the XY plane and use it as a model of "reality".  Our goal is to
+say sample this "reality" at scattered (X,Y) points and then attempt to
+say recreate the original field through interpolation and objectibe analysis
+say techniques. 
+say ...
+say From here on the lines you see will be exactly the lines executed in this
+say demonstration script.  To focus attention on the issues of regridding
+say and avoid the clutter of graphics layout commands you will notice that
+say graphics are performed by a script called "draw_it".
+say ...
+MESSAGE
+set mode verify
+
+! **********************************************************
+! To display "reality" we will first let our sample points (xpts,ypts) be
+! simply the X and y points of a grid.  Then we will change (xpts,ypts) to
+! be 200 sampling locations and mark them with symbols on the plot.
+! We will draw this output in the "upper" viewport.  The script draw_it
+! simplifies plotting the functions in a viewport and with a title.
+
+! Shaded plot of the points on the (X,Y) grid
+LET/QUIET xpts = x; LET/QUIET ypts = y
+GO draw_it "fcn1+wave" "A field with 200 sample points marked" "SHADE" upper
+
+! points randomly sampled in (X,Y)
+LET/QUIET xpts = 10*randu(i); LET/QUIET ypts = 10*randu(i+2)
+set region/i=1:200
+plot/vs/over/symbols xpts,ypts
+MESSAGE
+
+! **********************************************************
+! Now we will interpolate those 200 (X,Y,value) triples back onto a regular
+! grid in the (X,Y) plane.  The output grid will be from 1 to 10 by .5 along
+! both the X and y axes.  Defaults will be used for all other interpolation
+! controls; CAY = 5.0, NRNG = 5
+! Under the "SHADEd" (raster-style) plot we will display the very same result
+! as a filled contour plot.
+
+DEFINE AXIS/x=1:10:.5 xax5
+DEFINE AXIS/y=1:10:.5 yax5
+LET/QUIET sgrid = scat2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 5., 5)
+GO draw_it sgrid "Laplace gridding to 20x20 grid" "SHADE" upper_left
+GO draw_it sgrid "20x20 grid, fill contoured" "FILL" lower_left
+MESSAGE
+
+! **********************************************************
+! Now we perform the identical analysis but we will instead interpolate onto
+! a higher resolution grid.  The gaps in the output are because there are
+! points on this output grid that are unacceptably far from any sample points
+! using the default interpolation parameters.
+
+DEFINE AXIS/x=1:10:.2 xax2
+DEFINE AXIS/y=1:10:.2 yax2
+LET/QUIET sgrid = scat2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax2], y[gy=yax2], 5., 5)
+GO draw_it sgrid "Laplace gridding to 50x50 grid" "SHADE" upper_right
+GO draw_it sgrid "50x50 grid, fill contoured" "fill" lower_right
+MESSAGE
+
+! Now do the same plots with the Gaussian gridding function 
+! scat2gridgauss_xy which uses a different technique to interpolate the 
+! scattered points to the grid.  This results in a somewhat smoother plot.  
+! The interpolation parameters are  XSCALE, YSCALE, XCUTOFF, YCUTOFF;
+! where the algorithm uses scattered points which are within 
+!         cutoff* the scale width from the gridbox center.  We use 
+! XSCALE = YSCALE = XCUTOFF = YCUTOFF = 2.
+
+
+set window/new
+LET/QUIET xpts = x; LET/QUIET ypts = y
+GO draw_it "fcn1+wave" "A field with 200 sample points marked" "SHADE" upper
+
+LET/QUIET xpts = 10*randu(i); LET/QUIET ypts = 10*randu(i+2)
+set region/i=1:200
+plot/vs/over/symbols xpts,ypts
+
+
+DEFINE AXIS/x=1:10:.5 xax5
+DEFINE AXIS/y=1:10:.5 yax5
+LET/QUIET sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 2.,2.,2.,2)
+GO draw_it sgrid "Gauss gridding to 20x20 grid" "SHADE" upper_left
+GO draw_it sgrid "20x20 grid, fill contoured" "FILL" lower_left
+
+
+DEFINE AXIS/x=1:10:.2 xax2
+DEFINE AXIS/y=1:10:.2 yax2
+LET/QUIET sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax2], y[gy=yax2], 2.,2.,2.,2)
+GO draw_it sgrid "Gauss gridding to 50x50 grid" "SHADE" upper_right
+GO draw_it sgrid "50x50 grid, fill contoured" "fill" lower_right
+MESSAGE
+set grid/restore
+exit
+

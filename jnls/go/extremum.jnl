@@ -1,0 +1,46 @@
+\cancel mode verify
+! extremum.jnl - annotate an extremum for a region on a plot 
+! 3/96
+
+! Description: Annotate an extremum for a region on a plot 
+
+! arg no.:                1         2        3         4         5      6
+! usage:  GO extremum min_or_max variable "X=lo:hi" "Y=lo:hi" [size] [delta]
+ 
+! where
+!          min_or_max is "MIN" or "MAX" as desired
+!          variable   is the expression that has been contoured
+!          X=lo:hi    is the X range over which to locate the extremum
+!          Y=lo:hi    is the Y range over which to locate the extremum
+!          size       is the label size for the extremum value [default=0.15]
+!          delta      is the distance above the extrema to locate the label
+
+! example: mark the sea level pressure maximum in the N. Pacific
+!          SET DATA coads_climatology
+!          ! GO graticule             ! optional - helps to locate extrema
+!          SHADE/L=1/LEVELS=40 slp
+!          GO extremum MAX "slp[l=1]" x=170w:110w y=20N:40N 0.15 2
+
+! Note: this quick and dirty version is suitable only for 2D plots in the
+! XY plane. Extension to other planes is straightforward. 
+
+! the user must specify "min" or "max"
+QUERY/IGNORE this $1%|MIN|MAX|<Usage: GO extremum "min"_or_"max" variable "X=lo:hi" "Y=lo:hi" [text_size]%
+
+! define a variable with the expression currently on the plot
+LET/quiet field = $2%<Usage: GO extremum min_or_max variable "X=lo:hi" "Y=lo:hi" [text_size]%
+
+let extremum = field[$3@$1,$4@$1]      ! becomes field[X=lo:hi@MAX,Y=lo:hi@MAX]
+LET/quiet field0 = field - extremum
+LET/quiet xlocs = field0[$3@loc:0]     ! becomes X=lo:hi@loc:0
+LET/quiet ylocs = field0[$4@loc:0]
+
+! put a plot mark over the maximum
+PLOT/VS/OVER/NOLABEL/SYM=2 `xlocs[$4@ave]`,`ylocs[$3@ave]`
+
+! label the maximum (place label above the mark)
+LABEL `xlocs[$4@ave]`,`ylocs[$3@ave]+$6"0"`,0,0,$5".15" "@CR`extremum`"
+
+! clean up
+SET MODE/LAST VERIFY
+

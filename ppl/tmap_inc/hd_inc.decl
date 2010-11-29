@@ -1,0 +1,21 @@
+* HD_INC.DECL - converted to Unix 2.26.91             
+* COMMON for PLOT+ with all variables declared
+* created for TMAP usage by Steve Hankin 7/88
+* V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
+
+	REAL	XPTS
+	REAL	ZMIN
+	REAL	ZMAX
+	REAL	ZMEAN
+	REAL	ZSTD
+	REAL	XMIN
+	REAL	XMAX
+	INTEGER	NX
+	REAL	YMIN
+	REAL	YMAX
+	INTEGER	NY
+	INTEGER	JTYPE
+	INTEGER	NCH
+	INTEGER	NCHX
+	INTEGER	NCHY
+* requires: INCLUDE 'HD.INC'                                      

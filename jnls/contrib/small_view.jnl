@@ -1,0 +1,145 @@
+\ cancel mode verify
+!
+! Called by multi_view_demo.jnl
+!
+! Description : GO file to make desired number of viewports with desired 
+!                 size/position for portrait/landscape mode.
+!
+! Notes   1   : Please note that the version of Ferret should be 5.6 or 
+!                 later one which supports /AXES qualifier to 
+!                 "define view" command and /RANGE qualifier to "REPEAT"
+!                 command.
+! 
+!         2   : Works well in portrait/landscape mode. Since /AXES qualifier is
+!                 used with "DEFINE VIEW" command, Ferret may show some peculiar
+!                 behaviour sometimes (http://ferret.pmel.noaa.gov/Ferret/
+!                 Mail_Archives/fu_2006/msg00080.html). 
+!
+!         3   : If the defined viewport is very small, /SIGDIG qualifier
+!                 to the CONTOUR command may not be effective. In this case
+!                 please use the fourth argument to /LEVELS qualifier to get
+!                 proper numeric labels for contours.
+!
+!                    /LEVELS=(lo, hi, delta, ndigits)  & the usage is 
+!
+!                    ndigits = -1 for integer format
+!                            = -3 to omit numerical labels 
+!                            = 1/2/ for valid precision/significant digits
+!
+!         4   : To define two set of viewports of similar features 
+!                 (position & size), call multi_view two times with 
+!                 different values for 9th argument (but exactly same 
+!                 values for arguments 1-8).  
+!
+!         5   : Internal variables to this GO file does have a prefix "mv_".
+!
+!
+! Default   1 : Just "go multi_view" (ie without any arguments) will 
+! Behaviour       define 15 viewports in 5 rows and 3 columns with 
+!                 names v11, v12,...v53
+!
+!           2 : There is no mandatory arguments for this go file ; all
+!                 arguments are optional.
+!
+!                                $1       $2      $3      $4       $5 
+! USAGE       :  go multi_view [rows],[columns],[xsize],[xstart],[xgap],
+!                                      [ysize],[ystart],[ygap],[prefix]
+!                                         $6      $7       $8      $9 
+! Example  1: 6 viewports of similar size  
+!                 use coads_climatology
+!                 set reg/l=1/x=30:120/y=-30:30
+!                 set window/aspect=1.3
+!                 go multi_view 5, 3, 0.25, 0.1, 0.03, 0.15, 0.10, 0.02 
+!                 set view v11 ; ppl axlabp  1,-1 ; fill/nolab/line sst
+!                 set view v12 ; ppl axlabp  1, 0 ; fill/nolab/line sst
+!                 set view v13 ; ppl axlabp  1, 1 ; fill/nolab/line sst
+!                 set view v21 ; ppl axlabp -1,-1 ; fill/nolab/line sst
+!                 set view v22 ; ppl axlabp -1, 0 ; fill/nolab/line sst
+!                 set view v23 ; ppl axlabp -1, 1 ; fill/nolab/line sst
+!
+! Example 2: 2 viewports of similar size (tune xstart & ystart to position it)
+!                 use coads_climatology
+!                 set reg/l=1/x=30:120/y=-30:30
+!                 set window/aspect=1.3
+!                 go multi_view 2, 1, 0.25, 0.25, 0.03, 0.15, 0.60, 0.02 
+!                 set view v11 ; ppl axlabp  1,-1 ; fill/nolab/line sst
+!                 set view v21 ; ppl axlabp -1,-1 ; fill/nolab/line sst
+! 
+!------------------------------------------------------------------------------
+!
+!                                               !-------|-------|-------|
+! Written By    : Jaison Kurian                 !  v11  |  v12  |  v13  |
+! Contact       : jaison@caos.iisc.ernet.in     !-------|-------|-------|
+!                 jaisonkurian@gmail.com        !  v21  |  v22  |  v23  |
+! Version       : multi_view                    !-------|-------|-------|
+! Date          : 27-FEB-2006                   !  v31  |  v32  |  v33  |
+! Comments      : None                          !-------|-------|-------|
+! Modifications : None                          !  v41  |  v42  |  v43  |
+!                                               !-------|-------|-------|
+!                                               !  v51  |  v52  |  v53  |
+!                                               !-------|-------|-------|
+!                                               
+!
+!-------------------------------------------------------------------------------
+
+! define internal variables
+
+    define symbol mv_r  = $1"5"      ! number of rows
+    define symbol mv_c  = $2"3"      ! number of columns
+    define symbol mv_xs = $3"0.25"   ! X size
+    define symbol mv_xb = $4"0.10"   ! X beginning
+    define symbol mv_xg = $5"0.03"   ! X gap 
+    define symbol mv_ys = $6"0.15"   ! Y size 
+    define symbol mv_yb = $7"0.10"   ! Y beginning
+    define symbol mv_yg = $8"0.02"   ! Y gap
+    define symbol prefx = $9"v"      ! Prefix for the viewport name
+
+! Issue a warning message if request values doesnot fit in
+
+    let mv_xh = `($mv_xb)+($mv_c)*($mv_xs)+(($mv_c)-1)*($mv_xg)`  ! X high
+    let mv_yh = `($mv_yb)+($mv_r)*($mv_ys)+(($mv_r)-1)*($mv_yg)`  ! Y high
+
+    IF `($mv_r) LT 1` THEN  ! minimum number of rows is 1
+          SAY ; SAY " ERROR (small_view) : Number of rows should be > 0" ; SAY
+          EXIT
+    ENDIF 
+    IF `($mv_c) LT 1` THEN  ! minimum number of rows is 1
+          SAY ; SAY " ERROR (small_view) : Number of columns should be > 0" ; SAY
+          EXIT
+    ENDIF 
+
+    IF `($mv_xb) GT 0.9 OR ($mv_xb) LT 0` THEN   ! upper/lower bound for xstart 
+          SAY ; SAY " ERROR (small_view) : X_Start should be between 0.0 and 0.9" ; SAY
+          EXIT
+    ENDIF
+    IF `($mv_yb) GT 0.9 OR ($mv_yb) LT 0` THEN   ! upper/lower bound for ystart 
+          SAY ; SAY " ERROR (small_view) : Y_Start should be between 0.0 and 0.9" ; SAY
+          EXIT
+    ENDIF
+    IF `mv_xh GT 1.0` THEN 
+          SAY 
+          SAY " ERROR (small_view) : Exceeded Max Xsize --> "
+          SAY "       Reduce Number of Columns or Xsize/Xstart/Xgap...."
+          SAY ; EXIT
+    ENDIF
+    IF `mv_yh GT 1.0` THEN 
+          SAY 
+          SAY " ERROR (small_view) : Exceeded Max Ysize --> "
+          SAY "       Reduce Number of  Rows or Ysize/Ystart/Ygap...."
+          SAY ; EXIT
+    ENDIF
+
+! IF arguments are valid, define the viewports
+
+    REPEAT/RANGE=1:`($mv_r)`:1/NAME=mv_ro ( ;\
+       let mv_ylo = ($mv_yb) + (($mv_r)-`mv_ro`)*($mv_yg) + (($mv_r)-`mv_ro`)*($mv_ys)     ;\
+       let mv_yhi = ($mv_yb) + (($mv_r)-`mv_ro`)*($mv_yg) + (($mv_r)-(`mv_ro`-1))*($mv_ys) ;\
+       REPEAT/RANGE=1:`($mv_c)`:1/NAME=mv_co (  ;\
+          let mv_xlo = ($mv_xb) + (`mv_co`-1)*($mv_xg) + (`mv_co`-1)*($mv_xs) ;\
+          let mv_xhi = ($mv_xb) + (`mv_co`-1)*($mv_xg) + `mv_co`*($mv_xs)     ;\
+          define view/axes/xlim=`mv_xlo`:`mv_xhi`/ylim=`mv_ylo`:`mv_yhi` ($prefx)`mv_ro``mv_co` ;\
+       ) ;\
+    )
+
+
+    set mode/last verify

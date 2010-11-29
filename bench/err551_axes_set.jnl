@@ -1,0 +1,15 @@
+! Default behavior (all axes on) was not reset after a PLOT/SET/AXES=
+
+!   Choose just some axes to plot with /AXES qualifier
+SET VIEW upper
+PLOT/SET/AXES=0,1,1,0/i=1:12 1./i
+PPL TITLE "PLOT/SET/AXES  only two axes"
+PPL PLOT
+
+! This plot should have the default behavior; all axes plotted.
+! But, pre-v552, keeps settings from previous PLOT/SET/AXES= 
+
+SET VIEW lower  
+plot/i=1:100/title="PLOT (no quals); all axes plotted" i*cos(i/12)
+
+CAN view

@@ -1,0 +1,10 @@
+! err581_illegal_trans.jnl 
+! Ungraceful STOP if we do @VAR on an axis where there is no data
+
+set mode ignore_error
+use coads_climatology
+shade sst[x=@var,k=@var]
+
+shade sst[t=@AVE,Z=@ave]
+can mode ignore_error
+

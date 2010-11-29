@@ -1,0 +1,195 @@
+\cancel mode verify
+
+!**************************************************************
+! Description: plot over vectors 
+!http://ferret.wrc.noaa.gov/Ferret/Mail_Archives/fu_2000/msg00513.html
+! Usage: go plot_vectors u v lon lat [skip] [fill]
+!                  
+!
+! Notes:  default skip = 1 (all vectors)
+!         u = zonal wind component
+!         v = meridional wind component
+!         lon = starting longitude of the vector 
+!         lat = starting latitude of the vector 
+!         Those arguments can be either 2D or 1D
+!        
+!         u, v, lon, lat can be either vectors or arrays
+!
+!         A vector key could be added but the scale is the 
+!         same as the previous plot.
+!
+! Example: use monthly_navy_winds.cdf
+!          go basemap " " " " " " " "  hollow
+!          go plot_vectors UWND[l=1] VWND[l=1] x[g=UWND]*y[g=UWND]*0+x[g=UWND]
+! x[g=UWND]*y[g=UWND]*0+y[g=UWND]
+!
+!          go basemap " " " " " " " "  hollow
+!          go plot_vectors UWND[l=1] VWND[l=1] x[g=UWND]*y[g=UWND]*0+x[g=UWND]
+! x[g=UWND]*y[g=UWND]*0+y[g=UWND] 10
+!
+!          go basemap " " " " " " " "  hollow
+!          go plot_vectors UWND[l=1] VWND[l=1] x[g=UWND]*y[g=UWND]*0+x[g=UWND]
+! x[g=UWND]*y[g=UWND]*0+y[g=UWND] 10 fill
+!
+!          go basemap " " " " " " " "  hollow
+!          let XPOS = {50,130,240,300,140,90,200,210,110,70}
+!          let YPOS = {10,-50,40,20,-10,0,40,70,-35,50}
+!          let U = {10,3,-12,8,15,6,-8,9,17,-8}
+!          let V = {-3,5,7,2,-3,10,-15,11,9,-12}
+!          go plot_vectors U V XPOS YPOS " " fill 
+!
+! Calls:
+!
+! Author: Patrick Brockmann
+! Contact: brock@lsce.saclay.cea.fr
+!
+! Creation: October 2000
+! Version: 1.0
+! History:
+! Modification:
+!
+! Ansley Manke October 2005 modify the definition of PV_nbvectors
+!                           and restore Patricks original arrow size of 0.3
+!**************************************************************
+
+say " "
+say "This script is superseded by the script vect_cylin.jnl or vect_cylin_over.jnl"
+say "which is available in the FAST scripts package at "
+say "http://dods.ipsl.jussieu.fr/fast/fiches/f00/f00.html"
+say " "
+say "Or see the scripts poly_vectors.jnl and mp_poly_vectors.jnl for vectors"
+say "drawn as filled polygons"
+say " "
+pause
+
+query/ignore $1%<Use: go plot_vectors u v lon lat [skip] [fill]%
+query/ignore $2%<Use: go plot_vectors u v lon lat [skip] [fill]% 
+query/ignore $3%<Use: go plot_vectors u v lon lat [skip] [fill]% 
+query/ignore $4%<Use: go plot_vectors u v lon lat [skip] [fill]% 
+
+if `$5%1% lt 1` then
+        message/continue "Error\! Must have option skip > 0"
+        exit
+endif
+
+!**************************************************************
+def sym PV_PI = 3.14159265
+def sym PV_DEG2RAD = `($PV_PI)/180`
+
+!**************************************************************
+
+
+let PV_u=xsequence (($1))
+let PV_v=xsequence (($2))
+let PV_lon=xsequence (($3))
+let PV_lat=xsequence (($4))
+
+! def sym PV_nbvectors=`PV_u,return=iend - PV_u,return=istart`
+let PV_nbv = `PV_u,return=iend` - `PV_u,return=istart` + 1
+def sym PV_nbvectors=`PV_nbv`
+
+!say `($PV_nbvectors)`
+
+!-----------------------
+! Select 1 vector on $5 (default = all)
+let PV_select0=mod(i[i=1:($PV_nbvectors)]-1,`$5%1%`) + 1 
+let PV_select1=if PV_select0 eq 1 then 1
+
+let PV_u1 = PV_u * PV_select1
+let PV_v1 = PV_v * PV_select1
+let PV_lon1 = PV_lon * PV_select1
+let PV_lat1 = PV_lat * PV_select1
+
+!-----------------------
+! take into account ratio (= ratioworld * ratioviewp)
+! to respect in everye case the head angle choosen 
+!-----------------------
+def sym PV_ratioworld = `(($YAXIS_MAX) - ($YAXIS_MIN))/(($XAXIS_MAX) - ($XAXIS_MIN))`
+def sym PV_ratioviewp = `($PPL$XLEN)/($PPL$YLEN)`
+def sym PV_ratio = `($PV_ratioworld)*($PV_ratioviewp)`
+! say ($PV_ratioworld) ($PV_ratioviewp) ($PV_ratio) 
+
+!-----------------------
+! vector points
+!           e 
+!         / | \
+!        a -|- b
+!           | 
+!           | 
+!           | 
+!           s 
+!-----------------------
+def sym PV_head_size = 0.3                        ! in percentage
+!def sym PV_head_size = 0.1                        !*ACM* 
+def sym PV_head_angle = `30*($PV_DEG2RAD)`            ! in degrees
+let PV_size = 0.1* ($PV_head_size) * (PV_u1^2 + (PV_v1/($PV_ratio))^2)^.5
+let PV_alpha = atan2(PV_v1/($PV_ratio),PV_u1)
+
+!-- point a
+let PV_headlon_a0 = cos(PV_alpha - ($PV_head_angle)) * PV_size * 1/cos(($PV_head_angle))
+let PV_headlat_a0 = sin(PV_alpha - ($PV_head_angle)) * PV_size * 1/cos(($PV_head_angle))
+
+let PV_headlon_a1 = PV_lon1 + PV_u1 - PV_headlon_a0  
+let PV_headlat_a1 = PV_lat1 + PV_v1 - PV_headlat_a0 * ($PV_ratio) 
+
+!-- point b
+let PV_headlon_b0 = sin(PV_alpha + ($PV_head_angle) - ($PV_PI)/2) * PV_size * 1/cos(($PV_head_angle))
+let PV_headlat_b0 = cos(PV_alpha + ($PV_head_angle) - ($PV_PI)/2) * PV_size * 1/cos(($PV_head_angle))
+
+let PV_headlon_b1 = PV_lon1 + PV_u1 + PV_headlon_b0 
+let PV_headlat_b1 = PV_lat1 + PV_v1 - PV_headlat_b0 * ($PV_ratio)
+
+!-- make the polygon vectors 
+let PV_dum = PV_u*0 + j[j=1:6]
+
+!-----------------------
+! normal vectors or filled head vectors
+if $6%false|fill>true|*>false% then
+
+  ! head filled in black
+  !-- gather points (pt_s--pt_e--pt_a--pt_b--pt_e--pt_s) 
+  let PV_headlon0 = if PV_dum eq 1 then PV_lon1 else PV_dum
+  let PV_headlon1 = if PV_dum eq 2 then PV_lon1+PV_u1 else PV_headlon0
+  let PV_headlon2 = if PV_dum eq 3 then PV_headlon_a1 else PV_headlon1
+  let PV_headlon3 = if PV_dum eq 4 then PV_headlon_b1 else PV_headlon2
+  let PV_headlon4 = if PV_dum eq 5 then PV_lon1+PV_u1 else PV_headlon3
+  let PV_headlon5 = if PV_dum eq 6 then PV_lon1 else PV_headlon4
+
+  let PV_headlat0 = if PV_dum eq 1 then PV_lat1 else PV_dum
+  let PV_headlat1 = if PV_dum eq 2 then PV_lat1+PV_v1 else PV_headlat0
+  let PV_headlat2 = if PV_dum eq 3 then PV_headlat_a1 else PV_headlat1
+  let PV_headlat3 = if PV_dum eq 4 then PV_headlat_b1 else PV_headlat2
+  let PV_headlat4 = if PV_dum eq 5 then PV_lat1+PV_v1 else PV_headlat3
+  let PV_headlat5 = if PV_dum eq 6 then PV_lat1 else PV_headlat4
+
+  polygon/nolab/over/pal=black/line/fill PV_headlon5, PV_headlat5, i[i=1:($PV_nbvectors)] 
+
+else
+
+  ! normal vectors
+  !-- gather points (pt_s--pt_e--pt_a--pt_e--pt_b--pt_e) 
+  let PV_headlon0 = if PV_dum eq 1 then PV_lon1 else PV_dum
+  let PV_headlon1 = if PV_dum eq 2 then PV_lon1+PV_u1 else PV_headlon0
+  let PV_headlon2 = if PV_dum eq 3 then PV_headlon_a1 else PV_headlon1
+  let PV_headlon3 = if PV_dum eq 4 then PV_lon1+PV_u1 else PV_headlon2
+  let PV_headlon4 = if PV_dum eq 5 then PV_headlon_b1 else PV_headlon3
+  let PV_headlon5 = if PV_dum eq 6 then PV_lon1+PV_u1 else PV_headlon4
+
+  let PV_headlat0 = if PV_dum eq 1 then PV_lat1 else PV_dum
+  let PV_headlat1 = if PV_dum eq 2 then PV_lat1+PV_v1 else PV_headlat0
+  let PV_headlat2 = if PV_dum eq 3 then PV_headlat_a1 else PV_headlat1
+  let PV_headlat3 = if PV_dum eq 4 then PV_lat1+PV_v1 else PV_headlat2
+  let PV_headlat4 = if PV_dum eq 5 then PV_headlat_b1 else PV_headlat3
+  let PV_headlat5 = if PV_dum eq 6 then PV_lat1+PV_v1 else PV_headlat4
+
+  polygon/nolab/over/line PV_headlon5, PV_headlat5, i[i=1:($PV_nbvectors)] 
+
+endif
+!-----------------------
+
+!**************************************************************
+! cancel sym PV_*
+! cancel var PV_* 
+
+!**************************************************************
+set mode/last verify

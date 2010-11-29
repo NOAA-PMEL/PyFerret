@@ -1,0 +1,4 @@
+	COMMON /XERROR_TEXT/		! text of error messages
+     .		msg_special(num_special),
+     .		msg_regular(num_regular)
+	CHARACTER*50 msg_special, msg_regular

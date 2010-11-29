@@ -1,0 +1,43 @@
+! depth_to_density_axis.jnl - S.Hankin 8/25/92 
+!   Updated to use ZAXREPLACE rather than @WEQ  - Ansley Manke 1/10/2000
+
+! This FERRET script demonstrates a technique for using a user-defined variable
+! as an axis of a FERRET variable for purposes of plotting, listing or
+! calculations
+
+! Notes:
+!  1) This demo replaces an older depth_to_density demo, which used the @WEQ
+!     transformation and was quite a bit more involved.
+!  2) If the translation from the independent axis to the user-defined
+!    (dependent) variable is constant with respect to the other axes then the
+!    desired result can be achieved much more simply using regridding by
+!    association (g=@ASN).
+!    e.g. To display depth in cm instead of meters:
+!         DEFINE AXIS/Z=lo:hi:delta/unit=cm zcm   ! match z in meters pt for pt
+!         DEFINE GRID/LIKE=my_var/Z=zcm  gcm
+!         CONTOUR my_var[g=gcm@ASN]
+
+! In this example we will produce a contour plot of temperature along the
+! equator in the Tropical Pacific Ocean using axes of longitude and density.
+! The dependent variable, dens (density), will replace the independent axis,
+! depth.
+message/quiet  ! pause to read
+
+! use the Levitus climatology along the equator in the Pacific Ocean
+set data levitus_climatology
+set region/y=0/x=130e:80w/z=0:1000
+
+! define a new variable for density (dens) and contour it just for a look
+let/title=density dens = rho_un(salt,temp,z)
+contour dens
+message/quiet  ! pause to look at the plot
+
+! Define the density axis
+define axis/z=1022:1032:1/unit="density"/depth zdens
+
+! Define a variable temp_dens, which will be temperature as a function of density
+let temp_dens = ZAXREPLACE(temp, dens, z[gz=zdens])
+
+! contour the new variable
+contour/z=1022:1032 temp_dens
+message/quiet  ! pause to look at the plot

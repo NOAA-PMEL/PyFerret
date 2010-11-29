@@ -1,0 +1,18 @@
+! err570_digit_filename.jnl
+! Bug 1102: under linux, var[d=filename] fails if filename
+! starts with a digit.
+
+let a = x[i=1:10]
+save/clobber/file=10a.nc a
+can var/all
+use 10a
+list a[x=1:4,d=10a]
+list a[x=1:4,d=1]
+
+
+use coads_climatology
+list a[x=1:4,d=1]
+list a[i=1:4,d=1]
+
+list a[i=1:4,d=10a]
+list a[i=1:4,d=10a.nc]

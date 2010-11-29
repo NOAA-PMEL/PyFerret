@@ -1,0 +1,38 @@
+! err570_coaching.jnl
+! ACM 11/12/04  Bug 1077
+
+! test this with GO err570_coaching hello
+
+! We are changing NOTE to ERROR in coached_str_sub
+! when the script gives the user-defined error text.
+! We still may have an ERROR and then NOTE to explain
+! the list of valid arguments.
+
+set mode ignore_errors
+
+! incorrect argument with query/ignore
+query/ignore $1%q|a|b|c|d|<First argument is a letter of the alphabet%
+query/ignore $2%|a|b|c|d|%
+
+! These example message commands taken from bn_dollar
+
+! doesn't match on "hello"; the first line below now
+! uses ERROR instead of NOTE when writing my error message
+
+message/cont $1"|xxxxx|goodbye<my error message"
+message/cont $1"greetings|xxxxx|goodbye"
+
+! no argument supplied;  the first line below now
+! uses ERROR instead of NOTE when writing my error message
+
+message/cont $3"|hello|goodbye<my error message"
+message/cont $3">greetings|hello|goodbye"
+   
+! Here are some lines from bn_symbols; the first and third now use ERROR instead of NOTE
+
+message/continue ($test2"<my error message")
+message/continue ($test2"|hello|bye|")
+message/continue ($test2"|hello|bye|<my error message")    ! silent error
+message/continue ($t2"|solong>really hello|bye|")
+
+set mode/last ignore_errors

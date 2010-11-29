@@ -1,0 +1,27 @@
+! bn_min_max_smoothers.jnl
+! New transforms @SMN and @SMX, smoothers based on the
+! min and max of the data in the window. 
+sh trans
+use gt4d011
+plot/x=123.5w/y=2.5/k=1 temp, temp[L=@med], temp[L=@smx], temp[L=@smn]
+
+plot/x=123.5w/y=2.5/k=1 temp, temp[L=@med:3], temp[L=@smx:3], temp[L=@smn:3]
+plot/x=123.5w/y=2.5/k=1 temp, temp[L=@med:5], temp[L=@smx:5], temp[L=@smn:5]
+plot/x=123.5w/y=2.5/k=1 temp, temp[L=@med:5], temp[L=@smx:6], temp[L=@smn:6]
+
+plot/y=2.5/k=1/l=1/x=139.5W:122.5W temp, temp[i=@med], temp[i=@smx], temp[i=@smn]
+plot/k=1/l=1/x=123.5w temp, temp[j=@med], temp[j=@smx], temp[j=@smn]
+plot/l=1/x=123.5w/y=2.5/z=0:100 temp, temp[k=@med], temp[k=@smx], temp[k=@smn]
+
+! Numeric results
+list/x=123.5w/y=2.5/k=1 temp, temp[L=@med], temp[L=@smx], temp[L=@smn]
+
+list/x=123.5w/y=2.5/k=1 temp, temp[L=@med:3], temp[L=@smx:3], temp[L=@smn:3]
+list/x=123.5w/y=2.5/k=1 temp, temp[L=@med:5], temp[L=@smx:5], temp[L=@smn:5]
+list/x=123.5w/y=2.5/k=1 temp, temp[L=@med:5], temp[L=@smx:6], temp[L=@smn:6]
+
+list/y=2.5/k=1/l=1/x=139.5W:122.5W temp, temp[i=@med], temp[i=@smx], temp[i=@smn]
+list/k=1/l=1/x=123.5w temp, temp[j=35:56@med], temp[j=35:56@smx], temp[j=35:56@smn]
+
+list/l=1/x=123.5w/y=2.5/z=0:100 temp, temp[k=@med], temp[k=@smx], temp[k=@smn]
+

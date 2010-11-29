@@ -1,0 +1,260 @@
+! bn500_regrid_transforms
+! benchmark to test regridding transformations and syntax
+! requires version 2.30 or later
+! 8/92
+
+! 9/95 - modified reflecting the new interpretation of var[GX=u]
+!	 previously this meant to fully regrid to U
+! 	 Now it means to regrid only the X axis to U (other axes as in "var")
+!	 ==> this is an implicit grid creation
+! 2/99 *sh* - The behavior of regridding in cases where the region is
+!	unspecified has been changed in V.5 of Ferret. The behavior is now to
+!	attempt to obtain the full destination axis span. This means that 
+!	an unspecified region regrid request applied to a sliced TMAP data
+!	set will error: Requested data range is outside of data set limits
+!	A "SET MODE IGNORE" has been added in this benchmark script fo rthese
+!	cases. (The proper fix to this is in tm_read ... to trim the region
+!	when a sliced data set is being read.
+! 1/00 *sh* @MIN and @MAX bugs corrected. @AVE, @SUM, @VAR to handle partial
+!       grid boxes
+
+!set data gtsa056
+!use gtsa056
+use gtsa056_1
+use gtsa056_2
+set mode diag
+
+define axis/t=15-jan-1982:15-mar-1984:120/unit=hour tax5day
+define axis/x=120e:60w:10/unit=degrees xax10
+define grid/like=u/t=tax5day g5day
+define grid/like=u/x=xax10/z=w/t=tax5day g5_10
+
+set reg/x=130w:125w/y=0:1.5/z=0:15/t=21-JAN-1982:24-jan-1982
+!set reg/i=101:105/j=41:42/k=1:2/l=3:4
+
+use gtsa056_1    	!kob 4/99
+
+! deliberate errors
+set mode ignore
+load temp[g=@lin]    ! no target grid specified
+load temp[gx=@ave]   ! no target grid specified
+load temp[g=u,g=w]   ! more than 1 target grid
+load temp[g=x]       ! g=user-or-pseudo-var not allowed
+set mode/last ignore
+
+! valid syntax tests
+load temp
+load temp[g=u]
+load temp[g=u@lin]
+load temp[g=u@ave,gy=@asn]
+load temp[g=u@lin,gy=@asn]
+load temp[g=u,gx=@ave,gy=@asn]
+load temp[gx=u]  		! changed V4.20 --> implicit regrid
+stat temp[g=u] - temp[g=u@ave,gx=u@lin,gy=u@lin,gz=u@lin,gt=u@lin]  ! == 0
+stat temp[g=u,gx=@ave] - temp[gx=@ave,g=u]    ! == 0
+
+! basic regrid tests
+LIST temp[g=u@ave]
+LIST temp[g=u,gx=u@ave]	! V4.20 mod
+LIST temp[g=u,gy=u@ave]	! V4.20 mod
+LIST temp[g=u,gz=u@ave]	! V4.20 mod
+LIST temp[g=u,gt=u@ave]	! V4.20 mod, etc --> many more similar syntax chgs
+
+LIST temp[g=u]
+LIST temp[g=u@asn]
+LIST temp[g=u,gx=u@asn]
+LIST temp[g=u,gy=u@asn]
+LIST temp[g=u,gz=u@asn]
+LIST temp[g=u,gt=u@asn]
+
+! Z and T axes different
+LIST temp[g=g5day@ave]
+LIST temp[g=g5day,gx=g5day@ave]
+LIST temp[g=g5day,gy=g5day@ave]
+LIST temp[g=g5day,gz=g5day@ave]
+LIST temp[g=g5day,gt=g5day@ave]
+
+LIST temp[g=g5day]
+LIST temp[g=g5day@asn]
+LIST temp[g=g5day,gx=g5day@asn]
+LIST temp[g=g5day,gy=g5day@asn]
+LIST temp[g=g5day,gz=g5day@asn]
+LIST temp[g=g5day,gt=g5day@asn]
+
+! all 4 axes different
+LIST temp[g=g5_10@ave]
+LIST temp[g=g5_10,gx=g5_10@ave]
+LIST temp[g=g5_10,gy=g5_10@ave]
+LIST temp[g=g5_10,gz=g5_10@ave]
+LIST temp[g=g5_10,gt=g5_10@ave]
+
+LIST temp[g=g5_10@asn]
+LIST temp[g=g5_10,gx=g5_10@asn]
+LIST temp[g=g5_10,gy=g5_10@asn]
+LIST temp[g=g5_10,gz=g5_10@asn]
+LIST temp[g=g5_10,gt=g5_10@asn]
+
+! unspecified regions
+SET MODE IGNORE	! V.5 change
+canc reg
+set reg/l=1:3  ! x,y,z unspecified
+load temp
+load temp[g=u]
+load temp[g=u@lin]
+
+load temp[g=u@ave]
+load temp[g=u,gx=u@ave]
+load temp[g=u,gy=u@ave]
+
+load temp[g=u@asn]
+load temp[g=u,gx=u@asn]
+load temp[g=u,gy=u@asn]
+
+canc reg
+use gtsa056_2		!kob 4/99
+set reg/i=101:105/j=41:42  ! z,t unspecified
+load temp[g=u]
+
+load temp[g=u@ave]
+load temp[g=u,gz=u@ave]
+load temp[g=u,gt=u@ave]
+
+load temp[g=u@asn]
+load temp[g=u,gz=u@asn]
+load temp[g=u,gt=u@asn]
+SET MODE/LAST IGNORE	! V.5 change
+
+! plot verifications
+set mode interp    ! regridding is also an interpolation
+cancel viewports
+set window/size=.5/aspect=.4 1
+
+! X axis
+use gtsa056_1 		!kob 4/99
+set region/x=130E:90W/y=0/z=5/t=21-JAN-1982
+plot temp
+plot/over temp[g=u]
+plot/over temp[g=g5day]
+plot/over temp[g=g5_10]
+plot/over temp[g=u@ave]
+plot/over temp[g=g5day@ave]
+plot/over temp[g=g5_10@ave]
+plot/over temp[g=u@asn]
+plot/over temp[g=g5day@asn]
+plot/over temp[g=u,gx=u@ave]
+plot/over temp[g=g5day,gx=g5day@ave]
+plot/over temp[g=g5_10,gx=g5_10@ave]
+plot/over temp[g=g5_10@asn]   ! invalid interpretation of data
+
+! Y axis
+set region/x=180/y=20s:20n/z=5/t=21-JAN-1982
+plot temp
+plot/over temp[g=u]
+plot/over temp[g=g5day]
+plot/over temp[g=g5_10]
+plot/over temp[g=u@ave]
+plot/over temp[g=g5day@ave]
+plot/over temp[g=g5_10@ave]
+plot/over temp[g=u@asn]
+plot/over temp[g=g5day@asn]
+plot/over temp[g=u,gy=u@ave]
+plot/over temp[g=g5day,gy=g5day@ave]
+plot/over temp[g=g5_10,gy=g5_10@ave]
+plot/over temp[g=g5_10@asn]  ! invalid interpretation of data
+
+! T axis
+use gtsa056_2	!kob  4/99
+set region/x=180W/y=0/z=5/t=21-JAN-1982:13-JUN-1983
+load temp[i=50:51,j=45:56,k=1:2,l=1:172]  ! preload to save time
+plot temp
+plot/over temp[g=u]
+plot/over temp[g=g5day]
+plot/over temp[g=g5_10]
+plot/over temp[g=u@ave]
+plot/over temp[g=g5day@ave]
+plot/over temp[g=g5_10@ave]
+plot/over temp[g=u@asn]
+plot/over temp[g=g5_10@asn]
+plot/over temp[g=u,gt=u@ave]
+plot/over temp[g=g5day,gt=g5day@ave]
+plot/over temp[g=g5_10,gt=g5_10@ave]
+plot/over temp[g=g5day,gt=g5day@asn]  ! invalid interpretation of data
+
+set mode/last interp
+cancel region
+
+! 1/00 additions to check details of @AVE bevavior
+define axis/x=1.1:7.1:1 xoffset
+define axis/x=5/npoints=1 x1pt
+define axis/x=5:6:1 x2pt
+
+! test 1D regrid
+let a1 = x[gx=x1pt]	! single point
+let a2 = x[gx=x2pt]
+
+list a1[gx=xoffset@ave]
+list a1[gx=xoffset@sum] ! should sum to 5
+list a1[gx=xoffset@var] ! should be all missing
+
+list a2[gx=xoffset@ave]
+list a2[gx=xoffset@sum] ! should sum to 5+6=11
+list a2[gx=xoffset@var]
+
+! test 2D regrid
+define axis/y=1.1:7.1:1 yoffset
+define axis/y=5/npoints=1 y1pt
+define axis/y=5:6:1 y2pt
+
+let a1 = x[gx=x1pt]+y[gy=y1pt]
+let a2 = x[gx=x2pt]+y[gy=y2pt]
+
+list a1[gx=xoffset@ave, gy=yoffset@ave]
+list a1[gx=xoffset@sum, gy=yoffset@sum] ! should sum to 10
+list a1[gx=xoffset@var, gy=yoffset@var] ! should be all missing
+
+list a2[gx=xoffset@ave, gy=yoffset@ave]
+list a2[gx=xoffset@sum, gy=yoffset@sum] ! should sum to 10+11+11+12=44
+ ! NOTE: as of V5.1 NO xy_var trans exists.  Need it to be complete ...!
+list a2[gx=xoffset@var, gy=yoffset@var]
+
+! 1/00 additions to check details of @MIN,@MAX bevavior
+define axis/x=1.1:7.1:1 xoffset
+define axis/x=5/npoints=1 x1pt
+define axis/x=5:6:1 x2pt
+define axis/x=5:6.5:.5 x4pt
+
+let a1 = x[gx=x1pt]
+let a2 = x[gx=x2pt]
+let a4 = x[gx=x4pt]
+
+list a1[gx=xoffset@max]
+list a2[gx=xoffset@max]
+list a4[gx=xoffset@max]
+list a4[gx=xoffset@min]
+list a4[gx=xoffset@sum] ! 5+5.5+6+6.5=23
+
+! round-off issues when source points lie on destination cell boundaries
+define axis/x=1:5:1 x5
+define axis/x=0.5:5.5:1 x5_edges
+let a5 = x[gx=x5_edges]
+list a5[gx=x5@max]   ! note: top dest axis point, only, looks at point above
+let a5 = x[gx=x5_edges, i=3]
+list a5[gx=x5@max]
+list a5[gx=x5@max,i=3]
+list a5[gx=x5@max,i=4]
+
+! time axes with different encodings
+define axis/t=1-jan-1990:5-jan-1990:1/units=days tday
+define axis/t=1-jan-1990:5-jan-1990:24/units=hours thour
+let atime = T[gt=tday]
+list atime
+show grid
+list atime[gt=thour@max]
+show grid
+
+set mode/last diag
+
+
+
+
+

@@ -1,0 +1,152 @@
+! levitus_demo.jnl *jd* 11/91 2/95
+
+! *acm* 7/01 change uppercase GO LAND to GO land
+
+! Description: explores the Climatological Atlas of the World Ocean
+
+! This demonstration explores the Climatological Atlas of the World Ocean, 
+! actually a subset of it, compiled by Sydney Levitus.  The present data set
+! contains the annual average value of ocean temperature and salinity at 20
+! levels to 5000 meters, over the world ocean.
+
+! Advanced use of FERRET commands in the demo will give you helpful examples
+! of their use.  See the User's Guide for more on individual commands.
+
+SET MODE VERIFY
+
+SET DATA levitus_climatology
+SHOW DATA levitus_climatology
+
+! The data set is 1x1 degree in lat-lon resolution.
+! Let's check out the vertical grid --
+
+MESSAGE
+
+SHOW GRID/Z TEMP
+
+MESSAGE
+
+! Let's first display the sea surface temperature and salinity over the globe
+
+CANCEL REGION
+SET WIND/SIZE=.6/ASPECT=.86
+PPL CROSS 1	! This PPL command causes a line to be drawn at the equator 
+PALETTE rainbow
+SHADE/K=1 TEMP
+ 
+MESSAGE
+
+! Or, looking at the structure of the temperature field more closely --
+
+SHADE/K=1/LEV=(-2,32,1) TEMP
+
+! You can note --
+!	The `cold tongue' in the eastern equatorial Pacific, the western 
+!	Pacific equatorial warm pool, the effects of the gulf stream in the 
+!	NE Atlantic at about 60 North and that in the subtropics surface
+!	temperatures are greater in the west than in the east.
+
+MESSAGE
+
+SHADE/K=1 SALT
+
+MESSAGE
+
+! The levels chosen for salinity are not the best -- let's change them
+
+SHADE/K=1/LEV=(0,49,3)(33,37,.4) SALT
+
+! In surface salinity you can note --
+!	Higher salinity in the centers of the subtropical gyres.
+!	The difference in salinity between the Mediterranean and the Baltic.
+!	Low salinity in river outflows: the Amazon, Congo and Ganges.
+
+MESSAGE
+
+! Now overlay the two fields and outline the land masses
+
+SHADE/K=1/LEV=(-2,32,2) TEMP
+CONTOUR/OVER/K=1/LEV=(0,49,3)(33,37,.4) SALT
+GO land
+
+! The relationship between surface temperature and salinity is not simple.
+
+MESSAGE
+
+! Now let's look deeper -- but also retain this view, and the same levels 
+! for comparison
+
+SET WINDOW/CLEAR
+SET WINDOW/SIZE=.4 2	! Open a second window smaller than the present one
+SHADE/K=1/LEV=(-2,32,2) TEMP
+CONTOUR/OVER/K=1/LEV=(0,49,3)(33,37,.4) SALT
+GO land
+
+SET WINDOW 1
+SHADE/Z=200/LEV=(-2,32,2) TEMP
+CONTOUR/OVER/Z=200/LEV=(0,49,3)(33,37,.4) SALT
+GO land
+
+! Note at 200 meters temperature and salinity are more closely related.  
+
+MESSAGE
+
+! And now a meridional slice -- first in the Atlantic
+
+FILL/X=30W/LEV=(-2,32,2) TEMP
+CONTOUR/OVER/X=30W/LEV=(0,49,3)(33,37,.4) SALT
+
+! The warm subtropical gyres are evident here; there is correlation between
+! temperature and salinity, and note the Antarctic Intermediate Water's 
+! strong signal in salinity near 60 South at the surface, extending 
+! equatorward around 1000 meters.
+
+MESSAGE
+
+! And then in the Pacific
+
+FILL/X=180W/LEV=(-2,32,2) TEMP
+CONTOUR/OVER/X=180W/LEV=(0,49,3)(33,37,.4) SALT
+
+MESSAGE
+
+! T-S diagrams may be constructed with a single "sounding"
+
+PLOT/VS/LINE/X=20W/Y=35N SALT,TEMP
+
+! Illustrating the general monotonic decrease of temperature with depth.  This
+! is in general true of salinity too but note here around 10 degrees Celsius 
+! salinity increases -- due to inflow at depth into the Atlantic of
+! higher salinity Mediterranean water.
+
+MESSAGE
+
+! Or using multiple soundings over a selected area
+
+REPEAT/X=22W:20W REPEAT/Y=30N:32N PLOT/VS/LINE/OVER SALT,TEMP
+
+MESSAGE
+
+! Alternatively
+
+PLOT/VS/X=22W:20W/Y=30N:32N/SYMBOL=26 SALT,TEMP
+
+MESSAGE
+
+! And water masses at different levels can be compared
+
+SET VIEW UL
+PLOT/VS/X=25W:20W/Y=30N:35N/Z=0/SYMBOL=18 SALT,TEMP
+SET VIEW UR
+PLOT/VS/X=25W:20W/Y=30N:35N/Z=50/SYMBOL=18 SALT,TEMP
+SET VIEW LL
+PLOT/VS/X=25W:20W/Y=30N:35N/Z=100/SYMBOL=18 SALT,TEMP
+SET VIEW LR
+PLOT/VS/X=25W:20W/Y=30N:35N/Z=200/SYMBOL=18 SALT,TEMP
+
+MESSAGE
+
+CANCEL VIEWPORT
+CANCEL WINDOW 2
+PPL CROSS 0
+

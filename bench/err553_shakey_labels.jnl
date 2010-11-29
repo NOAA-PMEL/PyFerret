@@ -1,0 +1,11 @@
+! The 5th argument to shakey is supposed to define
+! number of digits in the label.
+! acm 12/03
+
+shade/set/i=1:10/j=1:10 (i+j)/10
+ppl shakey 1, , , , -2
+ppl shade
+shade/set/i=1:10/j=1:10 (i+j)/10
+ppl shakey 1, , , , -1
+ppl shade
+

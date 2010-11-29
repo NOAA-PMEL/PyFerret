@@ -1,0 +1,83 @@
+! bn_batch_metafile.jnl
+! Run at the end of the benchmark scripts, starting ferret with the flags 
+!   -batch bat.plt
+! Produces nine metafiles.
+
+cancel mode logo
+
+! test viewports and set window/clear; cancel viewport
+set view upper
+plot/i=1:150 sin(i/12)
+set view lower
+plot/color=red/i=1:150 cos(i/10)
+
+set window/clear
+
+set view left
+shade/i=1:15/j=1:15/lev=30 i*j
+set view right
+shade/i=1:15/j=1:15 cos(i)* sin(j)
+
+cancel viewports
+
+set view ur
+plot/i=1:12 1./i
+set view ll
+shade/i=1:150/j=1:150 cos(i/10) - sin(j/12)
+
+! polygon command and palette
+
+cancel viewports
+polygon/thick/color=red/palette=blue/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
+
+! more viewports, with pplus/reset
+
+set view upper; shade/i=1:10/j=1:10 i*j
+cancel viewports
+pplus/reset
+
+! cancel viewports when viewport wasnt set
+! and set window/clear after cancel viewports
+
+plot/vs/line/i=1:314 i*cos(i/20),i*sin(i/20)
+plot/vs/line/over/i=1:314 i*cos(i/30),i*sin(i/20)
+
+cancel viewports
+set window/clear
+
+! aspect ratio can be set
+
+set window/asp=3
+shade/i=1:15/j=1:15/lev=20 i*j
+
+set win/asp=1
+fill/i=1:15/j=1:15/lev=20 i*j
+
+pplus/reset
+
+
+! Bug 1396 fixed
+
+set v ul; plot/dash x[gx=0:20:.5]
+set v ur; plot/dash x[gx=0:20:.1]
+set v ll; plot/dash x[gx=0:20:.05]
+set v lr; plot/dash x[gx=0:20:.01]
+cancel viewports
+
+! intentional errors and ignored commands
+! set and cancel mode metafile are ignored
+
+set mode metafile new.plt
+
+cancel mode metafile
+
+plot/i=1:12/title="after cancel mode metafile in batch mode" 1./i
+
+! set window commands are ignored, except for set window/aspect
+set window/new
+
+set window/location=0.1,0.1/title="another title"
+
+set mode/last logo
+exit/command
+

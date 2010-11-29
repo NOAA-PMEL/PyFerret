@@ -1,0 +1,21 @@
+* V530 *sh* 11/00 - data types (more general than needed at time of writing)
+
+* these must identically match the declarations in ferret.parm
+
+* data types
+        INTEGER         ptype_native,
+     .                  ptype_float,
+     .                  ptype_int4,
+     .                  ptype_int2,
+     .                  ptype_int1,
+     .                  ptype_char,
+     .                  ptype_string,
+     .                  ptype_double
+        PARAMETER     ( ptype_native = 0,
+     .                  ptype_float = 1,
+     .                  ptype_int4 = 2,
+     .                  ptype_int2 = 3,
+     .                  ptype_int1 = 4,
+     .                  ptype_char = 5,
+     .                  ptype_string = 6,
+     .                  ptype_double = 7 )

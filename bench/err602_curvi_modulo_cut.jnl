@@ -1,0 +1,18 @@
+! err602_curvi_modulo_cut.jnl
+! 5/07  bug 1302
+!
+! For the curvilinear modulo forms of SHADE and FILL, there appears to 
+! be some inconsistency in plotting across the modulo cut.  SHADE omits 
+! the half-cells that ought to touch the modulo cut.  FILL looks like 
+! it's tryingto interpolate across the cut, but something's wrong.
+
+! Note this needs an update to tripolar_subset.nc to add some
+! coordinate center locations.
+
+use tripolar_subset.nc
+set view upper
+shade/hlim=75:85/vlim=-10:0/mod/pal=rnb2 0*u+mod(i+j,2),geolon_c,geolat_c
+set view lower
+fill/hlim=75:85/vlim=-10:0/mod u,geolon_c,geolat_c
+
+cancel view

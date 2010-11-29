@@ -1,0 +1,9 @@
+! bn550_bug_fixes.jnl
+! test various fixes that went into version 5.5
+! 10/02 *acm*
+!
+
+! Polygon/overlay calendar axis bug
+GO bn_reset
+GO err542_poly_over_calendar
+

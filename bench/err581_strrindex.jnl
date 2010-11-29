@@ -1,0 +1,7 @@
+! err581_strrindex.jnl
+! 5/2/2006
+! Bug in strrindex when 1st argument is a list of strings
+! This resulted in a crash
+
+let var = {"strings", "a.b", "cs.ds", "mmm", "amss.ffst"}
+list strrindex(var,"s")

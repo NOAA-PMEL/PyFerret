@@ -1,0 +1,32 @@
+! bn_cache_hits_gcfcn.sub
+! 7/01 *sh*
+
+! test cache hits on grid-changing functions
+
+! caching that happens because gcf_impose_axes sets uvlim_hidden
+set mode diag
+
+let a = i[i=1:10]
+say `a,return=isize`     ! no evaluation of a required -- just context
+list/nohead a            ! evaluate it now
+
+let a = XSEQUENCE(j[j=1:5])
+say `a,return=isize`     ! evaluate it now
+list/nohead a            ! cache hit
+
+let a = SAMPLEI(I[i=1:100], {8,5,3})
+say `a,return=isize`     ! evaluate it now
+list/nohead a            ! cache hit
+
+spawn rm -f foo.bar*
+spawn touch foo.bar1 foo.bar2 foo.bar3
+let a = SPAWN("ls foo.bar*")
+say `a,return=isize`     ! evaluate it now
+list/nohead a            ! cache hit
+
+! RESHAPE, alone, is set to require matched limits in order to make a cache hit
+let a = RESHAPE(I[I=1:3]+10*j[j=1:3], I[i=1:9])
+say `a,return=isize`
+list/nohead a            ! no cache hit
+
+set mode/last diag

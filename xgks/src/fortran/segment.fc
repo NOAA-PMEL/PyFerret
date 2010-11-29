@@ -1,0 +1,223 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Segment Manipulation Functions:
+ *
+ *	gcrsg_ (sgna)
+ *	gclsg_ ()
+ *	grensg_ (old,new)
+ *	gdsg_ (sgna)
+ *	gdsgwk_ (wkid, sgna)
+ *	gasgwk_ (wkid,sgna)
+ *	gcsgwk_ (wkid, sgna)
+ *	ginsg_ (sgna, m)
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifndef lint
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+
+/*
+ *  gcrsg - Create Segment
+ *
+ * Parameters :
+ * int *sgna;		segment name
+ *
+ * Returns: ANSI standard errors for this function
+ * See also: ANSI standard p111.
+ */
+/*FORTRAN*/
+gcrsg(
+    int            *sgna)
+{
+    debug(("Create Segment %d \n", *sgna));
+
+    (void) gcreateseg((Gint) *sgna);
+}
+
+
+/*
+ *  gclsg - Close Segment
+ *
+ * Parameters :
+ *
+ * Returns: ANSI standard errors for this function
+ * See also: ANSI standard p111.
+ */
+/*FORTRAN*/
+gclsg()
+{
+    debug(("Close Segment \n"));
+
+    (void) gcloseseg();
+}
+
+
+/*
+ *  grensg - Rename Segment
+ *
+ * Parameters :
+ * int *old; 		old segment name
+ * int *new;		new segment name
+ *
+ * Returns: ANSI standard errors for this function
+ *
+ * See also: ANSI standard p.111
+ */
+/*FORTRAN*/
+grensg(
+    int            *old,
+    int            *new)
+{
+    debug(("Rename Segment %d %d \n", *old, *new));
+
+    (void) grenameseg((Gint) *old, (Gint) *new);
+}
+
+
+/*
+ *  gdsg - Delete Segment
+ *
+ * Parameters :
+ * int *sgna;		segment name
+ *
+ * Returns: ANSI standard errors for this function
+ *
+ * See also: ANSI standard p.112
+ */
+/*FORTRAN*/
+gdsg(
+    int            *sgna)
+{
+    debug(("Delete Segment %d \n", *sgna));
+
+    (void) gdelseg((Gint) *sgna);
+}
+
+
+/*
+ *  gdsgwk - Delete Segment from Workstation
+ *
+ * Parameters :
+ * int *wkid;		workstation identifier
+ * int *sgna;		segment name
+ *
+ * Returns: ANSI standard errors for this function
+ *
+ * See also: ANSI standard p.112
+ */
+/*FORTRAN*/
+gdsgwk(
+    int            *wkid,
+    int            *sgna)
+{
+    debug(("Delete Segment from Workstation %d %d \n", *wkid, *sgna));
+
+    (void) gdelsegws((Gint) *wkid, (Gint) *sgna);
+}
+
+
+/*
+ *  gasgwk - Associate Segment with Workstation
+ *
+ * Parameters :
+ * int *wkid; 		workstation identifier
+ * int *sgna; 		segment name
+ *
+ * Returns: ANSI standard errors for this function
+ *
+ * See also: ANSI standard p.113
+ */
+/*FORTRAN*/
+gasgwk(
+    int            *wkid,
+    int            *sgna)
+{
+    debug(("Associate Segment with Workstation %d %d \n", *wkid, *sgna));
+
+    (void) gassocsegws((Gint) *wkid, (Gint) *sgna);
+}
+
+
+/*
+ *  gcsgwk - Copy Segment to Workstation
+ *
+ * Parameters :
+ * int *wkid; 		workstation identifier
+ * int *sgna; 		segment name
+ *
+ * Returns: ANSI standard errors for this function
+ *
+ * See also: ANSI standard p.113
+ */
+/*FORTRAN*/
+gcsgwk(
+    int            *wkid,
+    int            *sgna)
+{
+    debug(("Copy Segment to Workstation %d %d \n", *wkid, *sgna));
+
+    (void) gcopysegws((Gint) *wkid, (Gint) *sgna);
+}
+
+
+/*
+ *  ginsg - Insert Segment
+ *
+ * Parameters :
+ * int   *sgna; 	segment name
+ * float *m;	 	transformation matrix
+ *
+ * Returns: ANSI standard errors for this function
+ *
+ * See also: ANSI standard p.114
+ */
+/*FORTRAN*/
+ginsg(
+    int            *sgna,
+    float          *m)
+{
+    Gfloat          input_segtran[2][3];
+
+    debug(("Insert Segment %d  \n", *sgna));
+
+    MOVE_ARRAY_1X6_TO_2X3(m, input_segtran)
+	(void) ginsertseg((Gint) *sgna, input_segtran);
+}

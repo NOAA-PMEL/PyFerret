@@ -1,0 +1,15 @@
+! bn450_neg_t_trans.sub
+
+! support routine for bn450_negative_t.jnl
+
+! call as
+!   GO bn450_neg_t_sub  varname  transform
+
+! tvar axis runs from -10 to 10 by 1's
+
+LIST $1[t=-5:5@$2]	! neg/pos t endpoints
+LIST $1[t=-5:-8@$2]	! neg/neq t endpoints
+LIST $1[l=2:7@$2]	! neg/pos l endpoints
+LIST $1[l=2:4@$2]	! neg/neg l endpoints
+LIST $1[l=@$2]	! unspecified limits (neg/pos)
+

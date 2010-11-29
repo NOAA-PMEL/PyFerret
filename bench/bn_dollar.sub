@@ -1,0 +1,15 @@
+\cancel mode verify
+! bn_dollar.sub
+! updated 5/01 to allow up to 99 arguments
+
+! basic arguments 1-9 (no parentheses)
+say $1"1-n/a"  $2"2-n/a"  $3"3-n/a"  $4"4-n/a"
+
+! parenthesized arguments (only executed if argument 5 exists)
+IF $5"0|*>1" THEN
+  say ($1)999  ($2"2-parens")  ($3"3-parens")
+  say  $11"11-n/a"   $12"12-n/a"  $13"13-n/a"
+  say ($41"41-n/a|*>star 41")  ($42"42-n/a|arg 42>subst 42")  ($43"43-n/a")
+ENDIF
+
+set mode/last verify

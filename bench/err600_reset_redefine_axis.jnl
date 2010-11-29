@@ -1,0 +1,43 @@
+! err600_reset_redefine_axis.jnl
+! Bug 1470; redefine or reset attributes of an axis
+!   should change the axis definition and its attributes
+!   in the attribute structure.
+
+use coads_climatology
+def sym timeax = `sst,return=taxis` 
+
+show att/all ($timeax)
+show axis ($timeax)
+define axis/t0=1-jan-0001/t=1:3:1/unit=months ($timeax)
+show att/all ($timeax)
+show axis ($timeax)
+
+! Changing axis with the SET AXIS command
+
+can data/all
+use gt4d011
+def sym timeax = `temp,return=taxis` 
+show att/all ($timeax)
+show axis ($timeax)
+
+set ax/modulo/calendar=noleap/t0=1-jan-1900/units=days ($timeax)
+show att/all ($timeax)
+show axis ($timeax)
+
+
+! Changing axis with the CANCEL AXIS/ command
+
+can data/all
+use gt4d011
+def sym timeax = `temp,return=taxis` 
+def sym zax = `temp,return=zaxis` 
+show att/all ($timeax)
+show axis ($zax)
+
+cancel axis/modulo ($timeax)
+show att/all ($timeax)
+show axis ($timeax)
+cancel axis/depth ($zax)
+show att/all ($zax)
+show axis ($zax)
+

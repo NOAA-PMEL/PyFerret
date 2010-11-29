@@ -1,0 +1,16 @@
+dnl $Id$
+dnl
+dnl Process this file with GNU autoconf(1) to produce a configure script.
+dnl
+AC_INIT(fortc.src)
+
+include(../local.m4)dnl
+
+UC_PREFIX(../../../..)
+
+UC_PROG_CC
+UC_OS
+
+AC_OUTPUT(Makefile)
+
+UC_POSTPROCESS_MAKEFILES(Makefile)

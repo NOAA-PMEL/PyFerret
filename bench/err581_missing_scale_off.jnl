@@ -1,0 +1,12 @@
+! err581_missing_scale_off.jnl
+! ACM 11/8/05
+! Bug 491 was not correctly fixed... missing flag was scaled with scale, offset
+! attribute values.
+
+! data contains missing value flag of -999 and scale of 0.1 
+! Previously this resulted in data values of -99 where should be missing.
+
+use missing_scale_off.nc
+say `tt,return=bad`
+list tt
+

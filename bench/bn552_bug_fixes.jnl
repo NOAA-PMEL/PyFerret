@@ -1,0 +1,55 @@
+! bn552_bug_fixes.jnl
+! test various fixes that went into version 5.52
+! 3/03 *acm*
+!
+! 4/03 *kob*  Add fixes for string bugs
+
+! Default behavior (all axes on) was not reset after a plot/set/AXES=
+GO bn_reset
+GO err551_axes_set.jnl
+
+! Test whether too many levels specified. Previous to v552, no
+! test on SHADE and POLYGON plots, and these crashed Ferret.
+GO bn_reset
+GO err551_num_levels.jnl
+
+! Check for invalid value of calendar attribute on reading NetCDF files.
+GO bn_reset
+GO err551_invalid_calendar.jnl
+
+! String bug fixes *kob*
+GO bn_reset
+GO err551_strings.jnl
+
+! 2-D @AVE bug fix
+GO bn_reset
+GO err551_2dave.jnl
+
+! RETURN error message, and new var,RETURN=dsettitle  argument
+GO bn_reset
+GO err551_return_message.jnl
+
+!  file/form=stream didnt see file in another directory
+GO bn_reset
+GO err551_streamread_directory.jnl
+
+! GXY=var  regridding syntax, when the variable hasnt been loaded
+GO bn_reset
+GO err551_regrid_undef_grid.jnl
+
+! Symbol substituted on each repetition of REPEAT
+GO bn_reset
+GO err551_repeat_sym.jnl
+
+! data from nc file with time axis modulo=value, when regridded to 
+! another time axis, some times have missing data 
+GO bn_reset
+GO err551_modulo_nc_regrid.jnl
+
+! FFT frequency axis not computed accurately enough.
+GO bn_reset
+GO err551_fft_freqaxis.jnl
+
+! No error message on request for time on bad time axis
+GO bn_reset
+GO err551_no_taxis_errmsg.jnl

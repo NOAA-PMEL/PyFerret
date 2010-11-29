@@ -1,0 +1,17 @@
+! bn_ppl_errors.jnl
+! ACM 8/2007
+ 
+! Routine cmderr used to send its messages to std output rather than std error.
+! Collect here some pplus error messages.
+
+SET MODE ignore  ! needed only for Ferret errors not PPLUS errors
+
+use coads_climatology
+shade/l=1/set sst  
+ppl yremar nr  ! cmderr
+
+shade/L=1/levels=(a,b,c) sst  ! cmderr
+
+shade/L=1/levels=300 sst  ! This is caught on the Ferret side.
+
+CANCEL MODE ignore

@@ -1,0 +1,8 @@
+ ! err580_cartesian_depth.jnl
+! cartesian_axis attribute
+! combined with positive="down" 
+! caused the axis not to be recognized as a depth axis
+! should be i- on the axis ZT
+
+use a_cartesian_bug1179.nc
+sh grid temp

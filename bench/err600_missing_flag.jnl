@@ -1,0 +1,9 @@
+! noglobalhistory.nc has no global history attribute, and
+! also the variable B has no missing or fill value flag
+! Bug 1445: the missing-value flag got set to 0: (data values are 0,1,2,3)
+
+use noglobalhistory.nc
+list b
+
+! should be 0,1,2,3; bug had first value missing.
+

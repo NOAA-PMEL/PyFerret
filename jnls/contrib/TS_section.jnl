@@ -1,0 +1,85 @@
+! Draws T-S plot for a data_file_name
+
+! Programed by E. D. Cokelet, 3 Aug 2004
+! Last modified 10 Mar 2005
+
+! Plot a TS diagram with potential density contours.  You may choose your 
+! reference pressure for your potential density.  The script was written 
+! for Arctic work, so it plots water mass boundaries appropriate for the 
+! Arctic along with the freezing point line.  You may alter or remove this 
+! part of the code.
+
+
+
+define symbol data_file_name = $1
+define symbol temp_rng = -2.0:6.0
+define symbol sal_rng = 32.9:35.2
+define symbol ref_pres = 0
+
+
+! Plot T-S diagram with density contours
+
+define axis/x=($sal_rng)/npoints=20/units="psu" s_ax
+define axis/y=($temp_rng)/npoints=20/units="deg C" theta_ax
+
+define grid/x=s_ax/y=theta_ax st_grd
+
+let sal_plt  = x[g=st_grd]
+let theta_plt = y[g=st_grd]
+
+set variable/title=Salinity/units=psu sal_plt
+set variable/title="Potential Temperature"/units="deg C" theta_plt
+
+let temp_IPTS_68 = 1.00024*theta_plt	! Convert to IPTS-68 scale to use eqn. of state
+
+let sigma = rho_un( sal_plt, temp_IPTS_68, ($ref_pres)) - 1000
+set variable/title="sigma_($ref_pres)"/units="kg/m**3" sigma
+
+set window/size=2
+
+contour/title="TS referred to ($ref_pres) dbar, ($data_file_name)" sigma,sal_plt,theta_plt
+
+
+! Add freezing point line
+
+let t_f = (-0.0575*sal_plt) + 1.710523e-3*sal_plt^1.5 - 2.154996e-4*sal_plt^2
+let t_f_IPTS_68 = 1.00024*t_f
+
+plot/over/line/vs/nolabel/color=black/thickness=2 sal_plt,t_f_IPTS_68
+
+label/user 33.64 -1.75 0 0 0.15 @P7F.P.
+
+
+! Add lines for water mass types
+
+plot/over/line/vs/nolabel/color=black/thick=2 {34.88,34.88,35.2},{6.0,2.0,2.0}		! AW
+plot/over/line/vs/nolabel/color=black/thick=2 {34.88,34.88,35.2},{-2.0,2.0,2.0}		! LAIW
+plot/over/line/vs/nolabel/color=black/thick=2 {34.88,35.0,35.0},{-1.2,-1.2,-2.0}	! DW
+plot/over/line/vs/nolabel/color=black/thick=2 {34.7,34.7,34.88},{-2.0,1.0,1.0}		! UAIW
+plot/over/line/vs/nolabel/color=black/thick=2 {34.4,34.4,34.7},{-2.0,0.0,0.0}		! PIW
+plot/over/line/vs/nolabel/color=black/thick=2 {32.9,34.4,34.4},{0.0,0.0,-2.0}		! PW
+
+label/user 35.20 4.0 1 0 0.15 @P7AW
+label/user 35.05 0.0 0 0 0.15 @P7LAIW
+label/user 34.94 -1.5 0 0 0.15 @P7DW
+label/user 34.79 -0.5 0 0 0.15 @P7UAIW
+label/user 34.56 -1.0 0 0 0.15 @P7PIW
+label/user 33.0 -0.5 0 0 0.15 @P7PW
+label/user 34.0 3.0 0 0 0.15 @P7ASW
+
+
+! Plot T-S profiles from CTD data on T-S plot
+
+use ($data_file_name)
+
+let ii = i[gx=temp]
+let imax = ii[i=@max]
+
+let pres = z[gz=temp]
+
+let/title="Potential Temperature"/units="deg C" theta = theta_fo( sal, 1.00024*temp, pres, ($ref_pres))/1.00024	! Compute potential temperature
+
+repeat/i=1:`imax` (plot/over/vs/line sal,theta)
+
+sp \rm TS_($data_file_name).gif
+frame/format=gif/file=TS_($data_file_name).gif

@@ -1,0 +1,17 @@
+# $Id$
+#
+# Makefile for the "doc/userdoc" subdirectory of the XGKS package.
+
+TBL		= @TBL@
+TROFF		= @TROFF@
+NAME		= userdoc
+MANIFEST	= Makefile.in userdoc.me
+
+all::
+
+hardcopy:	userdoc.hc
+
+userdoc.hc:	userdoc.me
+	$(TBL) $? | $(TROFF) -me
+
+include ../../port/master.mk

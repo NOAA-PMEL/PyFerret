@@ -1,0 +1,77 @@
+! ccbar_demo.jnl (acm 5/02)
+
+! Description: demonstrate continuous colorbar on plots that use 
+! color fill and shade.
+
+! EXAMPLE 1:
+! Define a variable ranging from 0 to 6 and plot it in fine
+! detail with the default colorbar.  Note it doesn't look good 
+! at all, particularly on a small plot!
+
+DEFINE axis/x=0:200:1 xax 
+DEFINE axis/y=0:100:1 yax
+LET var=6*(X[GX=xax]+Y[GY=yax])/300
+FILL/LEV=(0,6,0.06)/TITLE="Default Colorbar" var  
+
+
+!We will replot the variable defined above, but hold off on the colorbar
+! First SET VIEW, so that the key can be added as a viewport 
+
+PAUSE
+SET VIEW full           ! this holds the actual plot
+FILL/LEV=(0,6,0.06)/TITLE="Continuous Colorbar"/NOKEY var
+
+! Plot the continuous colorbar, taking up the fraction of the window
+! from  x=0.93 to 0.96, y=0.2 to 0.8, and showing levels from 0 to 6,
+! with increments of 0.06.  Orient it vertically.
+
+GO ccbar  0.93,0.96,  0.2,0.8,  0,6,0.06, v 
+
+! EXAMPLE2:
+! Next a plot with a different palette, and a horizontal colorbar
+PAUSE
+CAN VIEW
+PPL SHASET RESET
+
+USE etopo60
+
+SET VIEW full
+SHADE/LEV=(-6000,6000,100)/AXES=1,1,1,1/NOKEY/PALETTE=land_sea rose
+
+! Locate the colorbar in x=0.12 to 0.6; y=0.9 to 0.94, and the range 
+! of data and palette matches what was used to plot the data.
+
+GO ccbar  0.12,0.6  0.9,0.94, -6000,6000,100, h, land_sea
+
+! EXAMPLE 3:
+! Next demonstrate the continuous colorbars on plots with viewports.
+PAUSE
+CAN VIEW
+PPL SHASET RESET
+
+! Let's go back to the variable created for the first plot,
+! and put that plot in two pre-defined viewports, UL and LR.
+
+DEFINE axis/x=0:200:1 xax 
+DEFINE axis/y=0:100:1 yax
+LET var=6*(X[GX=xax]+Y[GY=yax])/300
+  
+SET VIEW ul
+FILL/LEV=(0,6,0.06)/TITLE="Continuous Colorbar"/NOKEY/AXES=1,1,1,1/pal var
+
+SHOW VIEW ul
+ 
+! The viewport UL takes the fraction of the page from 
+! x=0 to 0.5, y=.5 to 1. Locate and size the key inside this.
+
+GO ccbar  0.44,0.46, 0.62,0.88,  0, 6, 0.06, v 
+
+! Similarly for a second viewport
+
+SET VIEW lr
+FILL/LEV=(0,6,0.06)/TITLE="Continuous Colorbar Demo"/NOKEY/AXES=1,1,1,1/pal var
+SHOW VIEW lr
+
+GO ccbar  0.94,0.96,  0.12,0.38  0,6,0.06,  v 
+
+

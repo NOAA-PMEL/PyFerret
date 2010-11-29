@@ -1,0 +1,412 @@
+\CANCEL MODE VERIFY
+! Description: A brief tutorial introduction to FERRET
+
+SAY   ... setting up demo environment ...
+! tutorial.jnl - *sh* 11/91
+! updated with V3.01 features 11/93 *sh*
+! don't shrink the 4-panel anomaly window - too slow under XGKS 5/94 *sh*
+! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
+
+! eliminate the program state left by previous activities
+CANCEL REGION
+CANCEL VARIABLES/ALL
+CANCEL DATA/ALL
+CANCEL VIEWPORTS
+SET WINDOW/SIZE=0.7/ASPECT=.75:axis   ! default
+SET GRID ABSTRACT
+SET MODE CALENDAR:DAYS
+GO black
+SET MODE VERIFY      ! show command file lines at the screen
+
+!
+! *************** Mini-tutorial on program FERRET  ******************
+
+! This demonstration/tutorial will introduce the basic capabilities
+! of the FERRET program through examples.
+
+! As the demonstration runs please continue to read the text on the screen.
+! You will see exactly the commands that are controlling the FERRET program.
+! Lines that begin with "!" are comment lines - for your information only.
+
+! ******************************************************************** 
+MESSAGE
+
+! Suppose we want to plot values of 1/i for the first 10 integers
+! i = 1, 2, 3, ..., 10
+! We can do that with the following command:
+
+PLOT/i=1:10  1/i
+
+! ******************************************************************** 
+MESSAGE 
+
+! We can change the aspect ratio of the plot to a more pleasing size and
+! shape and re-draw the plot
+
+SET WINDOW/SIZE=0.5/ASPECT=0.5
+PLOT/i=1:10  1/i
+
+! ******************************************************************** 
+MESSAGE
+
+! We can do the plot with marker symbols instead of a smooth curve:
+! and request a white background
+
+GO white
+PLOT/i=1:10/SYMBOLS  1/i
+
+! ******************************************************************** 
+MESSAGE
+
+! We can define a new variable, "inverse", and give it a title of our
+! choosing.  In this plot we use both custom plot marks and a line and
+! we specify the vertical plotting axis range.
+
+GO black
+LET/TITLE="My inverse of I" iinverse = 1/i
+PLOT/i=1:10/SYMBOLS=2/LINE/VLIMITS=-1:2:0.25  iinverse
+
+! ******************************************************************** 
+MESSAGE
+
+! We can combine several functions on the same plot
+
+PLOT/i=1:10   1/i, 1/(i+3), 1/i + 1/(10-i)
+
+! ******************************************************************** 
+MESSAGE
+
+! Now in a single window we will plot all of the preceding graphs again.
+! The parts of the window are called "viewports".
+! They are named UL, for "upper left", LL, LR, and UR, similarly.
+
+SET WINDOW/SIZE=.9    ! (bigger 'cause there will be 4 plots)
+SET VIEWPORT UL
+PLOT/i=1:10  1/i
+SET VIEWPORT LL
+PLOT/i=1:10/SYMBOLS  1/i
+SET VIEWPORT LR
+PLOT/i=1:10/SYMBOLS=2/LINE/VLIMITS=-1:2:0.25  iinverse
+SET VIEWPORT UR
+PLOT/i=1:10   1/i, 1/(i+3), 1/i + 1/(10-i)
+
+! ******************************************************************** 
+MESSAGE
+
+! Other forms of graphics are also available.
+! Here we are just playing with simple 2-dimensional mathematical functions
+
+! Contouring ...
+CANCEL VIEWPORT
+SET WINDOW/ASPECT=0.8
+LET circle = ((i-20)^2 + (j-20)^2) ^ 0.5
+CONTOUR/i=1:40/j=1:40 circle * exp((10-(i+j))/50)
+
+! ******************************************************************** 
+MESSAGE
+
+! Vector arrows ... (later you will see how to overlay vector arrows)
+VECTOR/i=1:20/j=1:20 i+cos(j/5)+5,i-j
+
+! ******************************************************************** 
+MESSAGE
+
+! A "raster" of color-shaded grid rectangles and a color key ...
+
+SHADE/i=1:40/j=1:40 cos(i/5)*sin(j/10)
+
+! ******************************************************************** 
+MESSAGE
+
+! The same figure drawn as a color-filled contour plot ...
+
+FILL/i=1:40/j=1:40 cos(i/5)*sin(j/10)
+
+! ******************************************************************** 
+MESSAGE
+
+! And a wire frame drawing (using more advanced grid definition commands)
+
+DEFINE AXIS/X=-4:4:.2 xax40
+DEFINE AXIS/Y=-4:4:.2 yax40
+DEFINE GRID/X=xax40/Y=yax40 g_gauss
+SET GRID g_gauss
+LET GAUSS = 2*EXP(-1*((x/2)^2 + y^2))
+WIRE/VIEWPOINT=-4,-10,4 gauss
+SET GRID ABSTRACT		! restore default grid for demos that follow
+
+! ******************************************************************** 
+MESSAGE
+
+! Now we will look at some actual data.
+
+! To begin we inform FERRET of the "data set" of interest using the
+! SET DATA command.  The ETOPO60 data set contains the relief of the
+! surface of the earth at 120 minute resolution
+
+SET DATA etopo120
+
+! ******************************************************************** 
+MESSAGE 
+
+! We can query FERRET for the contents of the data set with the SHOW DATA
+! command.  The output of SHOW DATA immediately follows the command, below.
+
+SHOW DATA
+
+! ******************************************************************** 
+MESSAGE
+
+! What we see is a single variable, "ROSE", and its 4-dimensional limits.
+! The letters I,J,K and L refer to its limits along the X,Y,Z, and T axes,
+! respectively.  ROSE is a 2-dimensional variable;  it exists in the XY
+! (latitude-longitude) plane.
+
+! Lets look at a shaded plot of the earth's relief.
+! Since we don't specify any limits the full extent of the data
+! will be used.
+
+SHADE  ROSE
+
+! ******************************************************************** 
+MESSAGE
+
+! Or we can zoom in on North America (long. 160W:40W, lat. 20N:70N)
+! using a 500 meter vertical resolution and a filled-contour plot.
+
+FILL/X=160W:40W/Y=20N:70N/level=(-7000,4000,500) ROSE
+
+! ... and overlay the continental boundaries  
+
+GO land 0  
+
+! The "0" above specifies pen color zero (black) for the continents.
+! The GO command, as you have been seeing, can run "scripts" to perform a
+! wide variety of tasks.  Go scripts are files of ordinary FERRET commands.
+
+! ******************************************************************** 
+MESSAGE
+
+! Now lets turn our attention to another data set: 
+! the Comprehensive Ocean-Atmosphere Data SET ("COADS")
+
+SET  DATA coads_climatology
+SHOW DATA coads_climatology
+
+! As you can see there are a number of variables and there are 12 points
+! on the time (L) axis.
+
+! ******************************************************************** 
+MESSAGE
+
+! Within FERRET "variables" are always defined on "grids";  "grids" are always
+! composed of 1 to 4 "axes"; and "axes" are composed of numerous points.
+ 
+! We can query FERRET to learn more about the grid and axes upon which
+! the variable SST is defined using the SHOW GRID command.
+! (The output of "SHOW GRID SST" follows the command.)
+
+SHOW GRID SST
+
+! ******************************************************************** 
+MESSAGE
+
+! We can further enquire about the coordinates of axis points by specifying
+! which axis and what range of values we are interested in.
+! For example,  (the output of "SHOW GRID/L=1:4 SST" follows the command)
+
+SHOW GRID/L=1:4 SST
+
+! ******************************************************************** 
+MESSAGE
+
+! OK.  Now lets use the SHADE command to make a color shaded plot of the
+! sea surface temperature at the first time step.
+
+SHADE/L=1 SST
+
+! And overlay "filled" continents instead of an outline
+GO fland
+
+! Notice the black regions where there are gaps in the COADS data set
+
+! ******************************************************************** 
+MESSAGE
+
+! Just as simply we can look at the air-sea temperature difference.
+
+SHADE/L=1 AIRT-SST
+GO fland        ! overlay "filled" continents
+
+! ******************************************************************** 
+MESSAGE
+
+! And we can overlay a vector arrow plot of the surface winds, too.
+
+VECTOR/OVERLAY/L=1 UWND, VWND
+
+! The combination of high wind speeds and large air-sea temperature
+! difference suggests some regions of the worlds oceans where the 
+! sensible heat exchange is very large - for example off the Atlantic
+! coast of North America.
+
+! ******************************************************************** 
+MESSAGE
+
+! A thought exercise to the viewer:
+
+! If sensible heat exchange can be computed by the equation
+!      QSENS = COEF * WSPD * (AIRT-SST)
+! where WSPD is the COADS wind speed and COEF is an arbitrary coefficient
+
+! 1> How would you produce a shaded plot of QSENS at L=1 ?
+
+! 2> How would you produce a time series plot for all 12 months at a point
+!    of your choosing in the North Atlantic ?
+ 
+! ******************************************************************** 
+MESSAGE
+
+! OK. Lets look at the annual variation of the sea surface temperature
+! by displaying the four seasons on a single plot.
+
+SET VIEW Ul
+SHADE/L=3 sst
+SET VIEW UR
+SHADE/L=6 sst
+SET VIEW LL
+SHADE/L=9 sst
+SET VIEW LR
+SHADE/L=12 sst
+
+! It is difficult to pick out the differences in the fields, isn't it ?
+
+! ******************************************************************** 
+MESSAGE
+
+! FERRET has many ways to help you explore this kind of problem.
+! Lets begin by looking at the average over all 12 time steps.
+! We do this with the "AVE" transformation applied to the time axis.
+
+! "SHADE/LINE" tells FERRET to overlay contour lines instead of
+! putting a color key on the plot.
+
+CANCEL VIEWPORTS
+SHADE/LINE SST[L=1:12@AVE]
+
+! ******************************************************************** 
+MESSAGE
+
+! Now lets look at how the first time step differs from this average.
+! We will use a color palette that emphasizes which regions are
+! positive and which are negative.
+
+! Notice that the plot is for January.  The northern hemisphere is in
+! winter - hence colder than the annual average.  The opposite is true
+! in the southern hemisphere.
+
+SHADE/PALETTE=saz2 SST[L=1] - SST[L=1:12@AVE]
+GO fland
+
+! ******************************************************************** 
+MESSAGE
+
+! Now lets look at the four seasons ae we did before - but this
+! time plotting the anomaly from the annual average field.
+
+LET SST_AVE  = SST[L=1:12@AVE]
+LET/TITLE="SST Anomaly"    SST_ANOM = SST - SST_AVE
+
+SET VIEW Ul
+SHADE/L=3/LEVELS=(-14)(-5,5,1)(14) sst_anom
+SET VIEW UR
+SHADE/L=6/LEVELS=(-14)(-5,5,1)(14) sst_anom
+SET VIEW LL
+SHADE/L=9/LEVELS=(-14)(-5,5,1)(14) sst_anom
+SET VIEW LR
+SHADE/L=12/LEVELS=(-14)(-5,5,1)(14) sst_anom
+
+! The contour levels were chosen to emphasize the variations.
+
+
+! ******************************************************************** 
+MESSAGE
+
+! Digression:
+! An effective way to visualize the annual variations of SST would be as
+! an animation.  It is a simple matter for FERRET to create an animation.
+! After this tutorial try these commands to make a movie of 12 sst months.
+
+! 	yes? SET DATA coads_climatology
+! 	yes? SET MOVIE/FILE=my_animation.mgm
+!	yes? REPEAT/l=1:12 SHADE/FRAME sst_anom    ! save frames in your file
+!	yes? ANIMATE
+
+! ******************************************************************** 
+MESSAGE
+
+! Lets focus our attention at a particular longitude, say, X=180, the
+! International Dateline.  We can get an accurate picture of the SST
+! changes there by producing a 2-dimensional view along the Y and T axes.
+! We will use the SET REGION command to confine ourselves to X=180.
+
+! We leave the existing window on the screen as a reference and send the
+! new output to a separate window.
+! (If the new window overlaps the old you can use your mouse to separate them)
+
+SET REGION/X=180
+SET WINDOW/SIZE=0.6/NEW
+FILL/Y=70S:70N/L=1:48/LEVELS=(-7,7,1) SST_ANOM
+
+! The time axis of this data set is referred to as a "modulo" axis
+! - that is, the first month follows the last.  So the L=1:48 qualifier
+! repeats the data over 4 cycles in time - emphasizing its cyclic nature.
+
+! ******************************************************************** 
+MESSAGE
+
+! Our plot shows the expected out of phase behavior between north and south.
+
+! Lets summarize the results by averaging separately within the northern
+! and southern temperate zones (23.5 to 65 degrees latitude).
+! We can then plot the two time series that result.
+
+! We will put the results into the first window so they can easily be
+! compared to the last shaded drawing.
+
+SET WINDOW/CLEAR 1
+SET WINDOW/ASPECT=0.4/SIZE=0.5 1
+CANCEL VIEWPORTS
+LET NORTH = SST_ANOM[Y=23.5N:65N@AVE]
+LET SOUTH = SST_ANOM[Y=65S:23.5S@AVE]
+PLOT/L=1:48 NORTH, SOUTH
+
+! ******************************************************************** 
+MESSAGE
+
+! We can list the first 5 months to the screen with the LIST command below.
+
+LIST/L=1:5 NORTH, SOUTH
+
+! Sending the listed results to a file (with a variety of formats) 
+! requires only the addition of "/FILE=filename".
+
+! ******************************************************************** 
+MESSAGE
+
+! This tutorial is now completed.
+
+! You have been shown numerous capabilities of FERRET:
+! line, contour, vector and shaded plots;
+! multiple viewports, and windows; color controls;
+! abstract mathematical functions, data from data sets, and new
+! variables defined from old ones;
+! transformations and plots along various axes.
+
+! You have only scratched the surface.
+
+CANCEL MODE VERIFY
+! clean up
+SET MODE CALENDAR:MINUTES
+SET MODE/LAST VERIFY
+ 

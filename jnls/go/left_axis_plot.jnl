@@ -1,0 +1,64 @@
+\cancel mode verify
+! left_yaxis_plot.jnl
+! Description: Plot a single variable preparing for a 2nd axis on the right
+
+! replaced 'GO magnify 1' with pertinent lines of magnify.jnl (problem
+! with state of mode verify) 11/93
+
+! Create a plot appropriately formatted for overlay of another variable using a
+! separate axis on the right side
+! This is the initialization routine for right_yaxis_plot.
+
+! usage:
+!	yes? GO left_yaxis_plot FERRET_expression_to_plot [title]
+! optional:	title (size may preceed it)
+
+! Note that this routine will alter the X axis length.
+!	Use SET VIEWPORT, CANCEL VIEWPORT or PPL/RESET to restore
+!	axis lengths following this plot
+
+!  example: temp and salt on same plot
+!	yes? SET REGION/L=0:500
+!	yes? GO left_axis_plot temp
+!	yes? GO right_axis_plot salt
+
+! reset axis sizes and positions (also cancels viewports)
+! GO magnify 1
+ppl origin 1.2, 1.4
+ppl set tmpx 'vp_width' - 2.2
+ppl set tmpy 'vp_height' - 2.8
+ppl axlen 'tmpx','tmpy'
+
+! initialize  (FERRET initializes PLOT+ through "plot/set")
+plot/set $1
+ppl title $3" "
+ppl set axov_midpoint 'ppl$ylen' / 2.0
+ppl set axov_ylabpos 'axov_midpoint' - 0.5
+ppl set axov_xlabpos -0.8
+ppl set axov_aline_start 'axov_midpoint' - 2.2
+ppl set axov_aline_end 'axov_midpoint' - 0.7
+ppl set axov_aline_xpos  -0.85
+
+! shorten the X axis a smidge to fit the right axis later
+ppl set axov_xlen 'ppl$xlen' - 0.5
+ppl axlen 'axov_xlen'
+
+! use this labelling scheme to get good black and white hard copy
+ppl ylab
+ppl labs/nouser 2,'axov_xlabpos','axov_ylabpos',-1 @AS'labtit'
+ppl hlabs 2,0.12
+ppl rlabs 2,90
+
+! set up the line specimen
+ppl aline/nouser 1,'axov_aline_xpos','axov_aline_start','axov_aline_xpos','axov_aline_end',on
+
+! turn off the right hand axis
+ppl axset 1,1,1,0
+
+! draw the plot
+ppl plot
+
+! clean up
+ppl rlabs 2,0
+!ppl axset 1,1,1,1 		  ! reset in right_axis_plot
+set mode/last verify

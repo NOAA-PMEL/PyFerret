@@ -1,0 +1,1745 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Inquiry Functions for Workstation State List :
+ *	gqwkc_     gqefai_
+ *	gqwks_     gqfar_
+ *	gqwkdu_    gqepai_
+ *	gqepli_    gqpar_
+ *	gqplr_     gqeci_
+ *	gqepmi_    gqcr_
+ *	gqpmr_     gqwkt_
+ *	gqetxi_    gqsgwk_
+ *	gqtxr_     gqlcs_
+ *	gqtxx_     gqsks_
+ *	gqtxxs_    gqchs_
+ *	gqpks_     gqsts_
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * Todd Gill
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ *
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include <string.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifdef lint
+    static void	lint_malloc(n) size_t n; { n++; }
+    static void	lint_realloc(p,n) voidp p; size_t n; { (char*)p+n; }
+#   define	malloc(n)	(lint_malloc(n), 0)
+#   define	realloc(p,n)	(lint_realloc(p,n), 0)
+#else
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+#define GKS_FREE(p)	{ if ((p) != NULL) free((voidp) p); }
+
+extern char   **wtypes;
+extern int      NUMWTYPES;
+
+extern char    *forttext;
+extern int     *fortint;
+extern Gpoint  *fortpoints;
+extern int      currforttext;
+extern int      currfortint;
+extern int      currfortpoints;
+
+
+/*
+ * gqwkc - Inquire Workstation Connection and Type
+ *
+ * int *wkid - pointer to workstation id
+ * int *errind - error indicator
+ * int *conid - pointer to connection id
+ * int *wtype - pointer to workstation type
+ *
+ * Returns: Error 309, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+gqwkc(
+    int            *wkid,
+    int            *errind,
+    int            *conid,
+    int            *wtype)
+{
+    Gwsct           ct;
+    Gint            i;
+
+    debug(("Inquire Workstation Connection and Type  \n"));
+    if (*errind = ginqwsconntype(*wkid, &ct))
+	return;
+
+    /*
+     * Only conid of NULL permitted. May change depending on gopenws and conid.
+     */
+    *conid = 1;					/* verif suite wants 1 */
+
+    for (i = 0; i < NUMWTYPES; i++) {
+	debug(("wtype = %s cttype = %s \n", wtypes[i], ct.type));
+	if ((wtypes[i] != NULL && strcmp(wtypes[i], ct.type) == 0) ||
+		(strchr(ct.type, ':') != 0 && wtypes[i] == NULL)) {
+	    *wtype = i + 1;
+	    return;
+	}
+    }
+    *errind = 309;
+    (void) gerrorhand(309, errginqwsconntype, (errfp));
+}
+
+
+/*
+ * gqwks - inquire  workstation state
+ *
+ * int  *wkid;        workstation identifier
+ * int  *errind;      error indicator
+ * int  *state;       workstation state
+ *
+ */
+/*FORTRAN*/
+gqwks(
+    int            *wkid,
+    int            *errind,
+    int            *state)
+{
+    *errind = ginqwsst((Gint) *wkid, (Gwsstate *) state);
+}
+
+
+/*
+ * gqwkdu - inquire workstation deferral and update states
+ * int *wkid;		workstation identifier
+ * int *errind;    	error indicator
+ * int *defmod;    	deferral mode
+ * int *regmod; 	implicit regeneration mode
+ * int *dempty;		display surface empty
+ * int *nframe;		new frame action necessary at update
+ */
+/*FORTRAN*/
+gqwkdu(
+    int            *wkid,
+    int            *errind,
+    int            *defmod,
+    int            *regmod,
+    int            *dempty,
+    int            *nframe)
+{
+    Gwsdus          du;
+
+    debug(("inquire workstation deferral and update states \n"));
+    if (*errind = ginqwsdeferupdatest((Gint) *wkid, &du))
+	return;
+
+    *defmod = (int) du.defmode;
+    *dempty = (int) !(du.dspsurf);
+    *regmod = (int) du.irgmode;
+    *nframe = (int) du.nframe;
+}
+
+
+/*
+ * gqepli - inquire  list of polyline indices
+ * int *wkid;         workstation identifier
+ * int *n;            set member requested
+ * int *errind;       error indicator
+ * int *ol;           number of polyline bundle
+ * int *pli;          Nth element of list
+ */
+/*FORTRAN*/
+gqepli(
+    int            *wkid,
+    int            *n,
+    int            *errind,
+    int            *ol,
+    int            *pli)
+{
+    Gintlist        indices;
+
+    debug(("inquire  list of polyline indices \n"));
+    if (*errind = ginqlineindices((Gint) *wkid, &indices))
+	return;
+    debug(("Number available: %d \n", indices.number));
+
+    /* set return values not dependent on range check */
+    *ol = (int) indices.number;
+
+    VALIDMEMBER(errind, *n, 0, indices.number, errginqlineindices);
+    if (*n)
+	*pli = (int) indices.integers[(*n) - 1];
+    GKS_FREE(indices.integers);
+}
+
+
+/*
+ * gqplr - inquire polyline representation
+ * int *wkid;          workstation identifier
+ * int *pli;           polyline index
+ * int *type;          type of returned values
+ * int *errind;        error indicator
+ * int *ltype;         linetype
+ * float *lwidth;      linewidth scale factor
+ * int *coli;          polyline colour index
+ *
+ * Returns: Error 2004, in addition to ANSI standard errors for this function.
+ */
+/*FORTRAN*/
+gqplr(
+    int            *wkid,
+    int            *pli,
+    int            *type,
+    int            *errind,
+    int            *ltype,
+    float          *lwidth,
+    int            *coli)
+{
+    Glnbundl        rep;
+
+    debug(("inquire polyline representation \n"));
+    TYPEOFRETURNEDVALUES(errind, *type, errginqlinerep);
+    if (*errind = ginqlinerep((Gint) *wkid, (Gint) *pli, (Gqtype) * type, &rep))
+	return;
+
+    *ltype = (int) rep.type;
+    *lwidth = (float) rep.width;
+    *coli = (int) rep.colour;
+}
+
+
+/*
+ * gqepmi - inquire  list of polymarker indices
+ * int *wkid;         workstation identifier
+ * int *n;            set member requested
+ * int *errind;       error indicator
+ * int *ol;           number of polymarker
+ * int *pmi;          Nth element of list
+ */
+/*FORTRAN*/
+gqepmi(
+    int            *wkid,
+    int            *n,
+    int            *errind,
+    int            *ol,
+    int            *pmi)
+{
+    Gintlist        indices;
+
+    debug(("inquire  list of polymarker indices \n"));
+    if (*errind = ginqmarkerindices((Gint) *wkid, &indices))
+	return;
+
+    /* set return values not dependent on range check */
+    *ol = (int) indices.number;
+
+    VALIDMEMBER(errind, *n, 0, indices.number, errginqmarkerindices);
+    if (*n)
+	*pmi = (int) indices.integers[(*n) - 1];
+    GKS_FREE(indices.integers);
+}
+
+
+/*
+ * gqpmr - inquire polymarker representation
+ * int *wkid;          workstation identifier
+ * int *pmi;           polymarker index
+ * int *type;          type of returned values
+ * int *errind;        error indicator
+ * int *mtype;         markertype
+ * float *mszsf;       marker size scale factor
+ * int *coli;          polyline colour index
+ *
+ * Returns: Error 2000, in addition to ANSI standard errors for this function.
+ */
+/*FORTRAN*/
+gqpmr(
+    int            *wkid,
+    int            *pmi,
+    int            *type,
+    int            *errind,
+    int            *mtype,
+    float          *mszsf,
+    int            *coli)
+{
+    Gmkbundl        rep;
+
+    debug(("inquire polymarker representation \n"));
+    TYPEOFRETURNEDVALUES(errind, *type, errginqmarkerrep);
+    if (*errind = ginqmarkerrep((Gint) *wkid, (Gint) *pmi, (Gqtype) * type,
+				&rep))
+	return;
+
+    *mtype = (int) rep.type;
+    *mszsf = (float) rep.size;
+    *coli = (int) rep.colour;
+}
+
+
+/*
+ * gqetxi - Inquire list of Text Indices
+ * int *wkid;         workstation identifier
+ * int *n;            set member requested
+ * int *errind;       error indicator
+ * int *ol;           number of text bundles
+ * int *txi;          Nth element of list
+ */
+/*FORTRAN*/
+gqetxi(
+    int            *wkid,
+    int            *n,
+    int            *errind,
+    int            *ol,
+    int            *txi)
+{
+    Gintlist        indices;
+
+    debug(("Inquire list of Text Indices \n"));
+    if (*errind = ginqtextindices((Gint) *wkid, &indices))
+	return;
+
+    /* set return values not dependent on range check */
+    *ol = (int) indices.number;
+
+    VALIDMEMBER(errind, *n, 0, indices.number, errginqtextindices);
+    if (*n)
+	*txi = (int) indices.integers[(*n) - 1];
+    GKS_FREE(indices.integers);
+}
+
+
+/*
+ * gqtxr - Inquire Text Representation
+ *
+ * int *wkid;          workstation identifier
+ * int *txi;           text index
+ * int *type;          type of returned values
+ * int *errind;        error indicator
+ * int *font;          text font
+ * int *prec;          text precision
+ * float *chxp;        character expansion factor
+ * float *chsp;        character spacing
+ * int *coli;          polyline colour index
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+gqtxr(
+    int            *wkid,
+    int            *txi,
+    int            *type,
+    int            *errind,
+    int            *font,
+    int            *prec,
+    float          *chxp,
+    float          *chsp,
+    int            *coli)
+{
+    Gtxbundl        rep;
+
+    debug(("Inquire Text Representation \n"));
+    TYPEOFRETURNEDVALUES(errind, *type, errginqtextrep);
+    if (*errind = ginqtextrep((Gint) *wkid, (Gint) *txi, (Gqtype) * type, &rep))
+	return;
+
+    *font = (int) rep.fp.font;
+    *prec = (int) rep.fp.prec;
+    *chxp = (float) rep.ch_exp;
+    *chsp = (float) rep.space;
+    *coli = (int) rep.colour;
+}
+
+
+/*
+ * gqtxx - Inquire Text Extent
+ *
+ * int   *wkid    - pointer to workstation id
+ * float *px      - pointer to text x position
+ * float *py      - pointer to text y position
+ * char  *str     - pointer to text string
+ * int   *errind  - pointer to error indicator
+ * float *cpx     - pointer to text concat point - x
+ * float *cpy     - pointer to text concat point - y
+ * float *txexpx  - pointer to array containing return values
+ * float *txexpy  - pointer to array containing return values
+ * long  *len_str - pointer to length of character string
+ * long  *txexpx  - pointer to length of x array
+ * long  *txexpy  - pointer to length of y array
+ *
+ * Returns: Error 300, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.158
+ */
+/*FORTRAN*/
+gqtxx(
+    int            *wkid,
+    float          *px,
+    float          *py,
+    char           *str,
+    int            *errind,
+    float          *cpx,
+    float          *cpy,
+    float          *txexpx,
+    float          *txexpy)
+{
+    Gpoint          position;
+    Gextent         extent;
+
+    debug(("Inquire Text Extent \n "));
+
+    if (str_len + 1 > currforttext) {
+	forttext = (Gchar *) REALLOC((voidp) forttext, (size_t) (str_len + 1));
+	if (!forttext) {
+	    *errind = 300;
+	    (void) gerrorhand(300, errginqtextextent, (errfp));
+	    currforttext = 0;
+	    return;
+	}
+	currforttext = str_len + 1;
+    }
+    (void) strncpy(forttext, str, (size_t) str_len);
+    forttext[str_len] = '\0';
+
+    debug(("<%s> length %d \n", forttext, str_len));
+
+    position.x = (Gfloat) *px;
+    position.y = (Gfloat) *py;
+
+    if (*errind = ginqtextextent((Gint) *wkid, position, (Gchar *) forttext,
+				 &extent))
+	return;
+
+    *cpx = (float) extent.concat.x;
+    *cpy = (float) extent.concat.y;
+
+    debug(("	cpx: %7.2f cpy: %7.2f \n", *cpx, *cpy));
+
+    debug(("	llx: %7.2f lly: %7.2f \n", *txexpx, *txexpy));
+
+    txexpx[0] = (float) extent.ll.x;
+    txexpy[0] = (float) extent.ll.y;
+
+    debug(("	lrx: %7.2f lry: %7.2f \n", *txexpx, *txexpy));
+
+    txexpx[1] = (float) extent.lr.x;
+    txexpy[1] = (float) extent.lr.y;
+
+    debug(("	urx: %7.2f ury: %7.2f \n", *txexpx, *txexpy));
+
+    txexpx[2] = (float) extent.ur.x;
+    txexpy[2] = (float) extent.ur.y;
+
+    debug(("	ulx: %7.2f uly: %7.2f \n", *txexpx, *txexpy));
+
+    txexpx[3] = (float) extent.ul.x;
+    txexpy[3] = (float) extent.ul.y;
+}
+
+
+/*
+ * gqtxxs - Inquire Text Extent (subset version)
+ *
+ * int   *wkid     - pointer to workstation id
+ * float *px       - pointer to text position x
+ * float *py       - pointer to text position y
+ * int   *lstr     - pointer to length of string
+ * char  *str      - pointer to string
+ * int   *errind   - pointer to error indicator
+ * float *cpx      - pointer to concat point x
+ * float *cpy      - pointer to concat point y
+ * float txexpx[4] - pointer to return values - x
+ * float txexpy[4] - pointer to return values - y
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.158
+ */
+/*FORTRAN*/
+gqtxxs(
+    int            *wkid,
+    float          *px,
+    float          *py,
+    int            *lstr,
+    char           *str,
+    int            *errind,
+    float          *cpx,
+    float          *cpy,
+    float          *txexpx,
+    float          *txexpy)
+{
+    Gpoint          position;
+    Gextent         extent;
+
+    debug(("Inquire Text Extent \n"));
+
+    position.x = (Gfloat) *px;
+    position.y = (Gfloat) *py;
+
+    if (*lstr + 1 > currforttext) {
+	forttext = (Gchar *) REALLOC((voidp) forttext, (size_t) (*lstr + 1));
+	if (!forttext) {
+	    *errind = 300;
+	    (void) gerrorhand(300, errginqtextextent, (errfp));
+	    currforttext = 0;
+	    return;
+	}
+	currforttext = *lstr + 1;
+    }
+    (void) strncpy(forttext, str, (size_t) * lstr);
+    forttext[*lstr] = '\0';
+
+    debug(("	<%s> lstr %d \n", forttext, *lstr));
+
+    *errind = ginqtextextent((Gint) *wkid, position, (Gchar *) forttext,
+			     &extent);
+    *cpx = (float) extent.concat.x;
+    *cpy = (float) extent.concat.y;
+
+    txexpx[0] = (float) extent.ll.x;
+    txexpx[1] = (float) extent.lr.x;
+    txexpx[2] = (float) extent.ur.x;
+    txexpx[3] = (float) extent.ul.x;
+
+    txexpy[0] = (float) extent.ll.y;
+    txexpy[1] = (float) extent.lr.y;
+    txexpy[2] = (float) extent.ur.y;
+    txexpy[3] = (float) extent.ul.y;
+}
+
+
+/*
+ * gqefai - Inquire List of fill Area Indices
+ *
+ * int *wkid;         workstation identifier
+ * int *n;            set member requested
+ * int *errind;       error indicator
+ * int *ol;           number of text bundles
+ * int *fai;          Nth element of list
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+gqefai(
+    int            *wkid,
+    int            *n,
+    int            *errind,
+    int            *ol,
+    int            *fai)
+{
+    Gintlist        indices;
+
+    debug(("Inquire List of fill Area Indices \n "));
+    if (*errind = ginqfillindices((Gint) *wkid, &indices))
+	return;
+
+    /* set return values not dependent on range check */
+    *ol = indices.number;
+
+    VALIDMEMBER(errind, *n, 0, indices.number, errginqfillindices);
+    if (*n)
+	*fai = indices.integers[(*n) - 1];
+    GKS_FREE(indices.integers);
+}
+
+
+/*
+ * gqfar - Inquire Fill Area Representation
+ *
+ * int *wkid;          workstation identifier
+ * int *fai;           fill area index
+ * int *type;          type of returned values
+ * int *errind;        error indicator
+ * int *ints;          fill area interior style
+ * int *styli;         fill area style index
+ * int *coli;          polyline colour index
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+gqfar(
+    int            *wkid,
+    int            *fai,
+    int            *type,
+    int            *errind,
+    int            *ints,
+    int            *styli,
+    int            *coli)
+{
+    Gflbundl        rep;
+
+    debug((" Inquire Fill Area Representation  \n"));
+    TYPEOFRETURNEDVALUES(errind, *type, errginqfillrep);
+    if (*errind = ginqfillrep((Gint) *wkid, (Gint) *fai,
+			      (Gqtype) * type, &rep))
+	return;
+
+    *ints = (int) rep.inter;
+    *styli = (int) rep.style;
+    *coli = (int) rep.colour;
+}
+
+
+/*
+ * gqepai - Inquire List of Pattern Indices
+ * int *wkid;         workstation identifier
+ * int *n;            set member requested
+ * int *errind;       error indicator
+ * int *ol;           number of pattern table
+ * int *pai;          Nth element of list
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+gqepai(
+    int            *wkid,
+    int            *n,
+    int            *errind,
+    int            *ol,
+    int            *pai)
+{
+    Gintlist        indices;
+
+    debug(("Inquire List of Pattern Indices \n"));
+    if (*errind = ginqpatindices(*wkid, &indices))
+	return;
+
+    /* set return values not dependent on range check */
+    *ol = (int) indices.number;
+
+    VALIDMEMBER(errind, *n, 0, indices.number, errginqpatindices);
+    if (*n)
+	*pai = (int) indices.integers[(*n) - 1];
+    GKS_FREE(indices.integers);
+}
+
+
+/*
+ * Inquire Pattern Representation
+ *
+ * int *wkid;          workstation identifier
+ * int *pai;           pattern   index
+ * int *type;          type of returned values
+ * int *dimx,*dimy;    maximum pattern dim
+ * int *errind;        error indicator
+ * int *dx,*dy;        pattern dimensions
+ * int *colia[dimx,dimy]; pattern array
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+gqpar(
+    int            *wkid,
+    int            *pai,
+    int            *type,
+    int            *dimx,
+    int            *dimy,
+    int            *errind,
+    int            *dx,
+    int            *dy,
+    int            *colia)
+{
+    Gptbundl        rep;
+
+    debug(("Inquire Pattern Representation \n "));
+    TYPEOFRETURNEDVALUES(errind, *type, errginqpatrep);
+    if (*errind = ginqpatrep((Gint) *wkid, (Gint) *pai, (Gqtype) * type, &rep))
+	return;
+
+    *dx = (int) rep.size.x;
+    *dy = (int) rep.size.y;
+    debug(("Inquired Pattern Size:  %d - %d\n", *dx, *dy));
+
+    if (*dx > *dimx || *dy > *dimy) {
+	*errind = 2001;
+	(void) gerrorhand(2001, errginqpatrep, (errfp));
+	return;
+    }
+
+    /*
+     * This array does NOT need to be transposed.
+     * Take the dx-by-dy subset starting at (1,1).
+     */
+    {
+	int             col, row;
+
+	for (row = 0; row < *dy; row++)
+	    for (col = 0; col < *dx; col++)
+		*(colia + (row * *dimx + col)) =
+		    *(rep.array + (row * *dx + col));
+    }
+}
+
+
+/*
+ * Inquire List element Of Color Indices
+ *
+ * int *wkid;         workstation identifier
+ * int *n;            set member requested
+ * int *errind;       error indicator
+ * int *ol;           number of colour table entries
+ * int *coli;         Nth element of list
+ *
+ * Returns: ANSI standard errors for this function.
+ */
+/*FORTRAN*/
+gqeci(
+    int            *wkid,
+    int            *n,
+    int            *errind,
+    int            *ol,
+    int            *coli)
+{
+    Gintlist        indices;
+
+    debug(("Inquire List element Of Color Indices \n "));
+    if (*errind = ginqcolourindices((Gint) *wkid, &indices))
+	return;
+
+    /* set return values not dependent on range check */
+    *ol = (int) indices.number;
+
+    VALIDMEMBER(errind, *n, 0, indices.number, errginqcolourindices);
+    if (*n)
+	*coli = (int) indices.integers[(*n) - 1];
+    GKS_FREE(indices.integers);
+}
+
+
+/*
+ * gqcr  -  Inquire Color Representation
+ *
+ * int *wkid;          workstation identifier
+ * int *coli;          colour index
+ * int *type;          type of returned values
+ * int *errind;        error indicator
+ * float *cr;          colour (red)
+ * float *cg;          colour (green)
+ * float *cb;          colour (blue)
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+gqcr(
+    int            *wkid,
+    int            *coli,
+    int            *type,
+    int            *errind,
+    float          *cr,
+    float          *cg,
+    float          *cb)
+{
+    Gcobundl        rep;
+
+    debug(("Inquire Color Rep \n "));
+    TYPEOFRETURNEDVALUES(errind, *type, errginqcolourrep);
+    if (*errind = ginqcolourrep((Gint) *wkid, (Gint) *coli, (Gqtype) * type,
+				&rep))
+	return;
+
+    *cr = (float) rep.red;
+    *cg = (float) rep.green;
+    *cb = (float) rep.blue;
+}
+
+
+/*
+ * gqwkt - Inquire Workstation Transformation
+ *
+ * int *wkid;          workstation identifier
+ * int *errind;        error indicator
+ * int *tus;           workstation transformation update state
+ * float rwindo[4];    requested workstation window
+ * float cwindo[4];    current workstation window
+ * float rviewp[4];    requested workstation viewport
+ * float cviewp[4];    current workstation viewport
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+gqwkt(
+    int            *wkid,
+    int            *errind,
+    int            *tus,
+    float          *rwindo,
+    float          *cwindo,
+    float          *rviewp,
+    float          *cviewp)
+{
+    Gwsti           wstran;
+
+    debug(("Inquire Workstation Transformation\n"));
+    if (*errind = ginqwstran((Gint) *wkid, &wstran))
+	return;
+
+    *tus = (int) wstran.wstus;
+
+    rwindo[0] = (float) wstran.request.w.xmin;
+    rwindo[1] = (float) wstran.request.w.xmax;
+    rwindo[2] = (float) wstran.request.w.ymin;
+    rwindo[3] = (float) wstran.request.w.ymax;
+
+    cwindo[0] = (float) wstran.current.w.xmin;
+    cwindo[1] = (float) wstran.current.w.xmax;
+    cwindo[2] = (float) wstran.current.w.ymin;
+    cwindo[3] = (float) wstran.current.w.ymax;
+
+    rviewp[0] = (float) wstran.request.v.xmin;
+    rviewp[1] = (float) wstran.request.v.xmax;
+    rviewp[2] = (float) wstran.request.v.ymin;
+    rviewp[3] = (float) wstran.request.v.ymax;
+
+    cviewp[0] = (float) wstran.current.v.xmin;
+    cviewp[1] = (float) wstran.current.v.xmax;
+    cviewp[2] = (float) wstran.current.v.ymin;
+    cviewp[3] = (float) wstran.current.v.ymax;
+}
+
+
+/*
+ * gqsgwk - Inquire Set Member of Segment Names on Workstation
+ *
+ * int *wkid;         workstation identifier
+ * int *n;            set member requested
+ * int *errind;       error indicator
+ * int *ol;           number of segment names
+ * int *sgna;         Nth element of list
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.166
+ */
+/*FORTRAN*/
+gqsgwk(
+    int            *wkid,
+    int            *n,
+    int            *errind,
+    int            *ol,
+    int            *sgna)
+{
+    Gintlist        segs;
+
+    debug(("Inquire Set Member of Segment Names on Workstation \n"));
+
+    if (*errind = ginqsegnamesws((Gint) *wkid, &segs))
+	return;
+
+    /* set return values not dependent on range check */
+    *ol = (int) segs.number;
+
+    VALIDMEMBER(errind, *n, 0, segs.number, errginqsegnamesws);
+    if (*n)
+	*sgna = (int) segs.integers[(*n) - 1];
+    GKS_FREE(segs.integers);
+}
+
+
+/*
+ * gqlcs - Inquire Locator Device State
+ *
+ * Input Parameters:
+ *
+ * int   	wkid - Workstation Identifier
+ * int  	lcdnr - Locator Device Number
+ * int		type - type of returned values
+ *
+ * Output Parameters:
+ *
+ * int 		*errind - Error Indicator
+ * int 		*mode - Operating Mode
+ * int 		*esw - Echo Switch
+ * int 		*tnr - Initial Normalization Transformation
+ * float 	*ipx,ipy - Initial Locator Position (WC)
+ * int 		*pet - prompt/echo type
+ * float         *earea[4] - Echo Area (DC)
+ * int  	*ldr - Number of array elements used in data record.
+ * char		*datrec[80] - Data Record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.166
+ */
+/*FORTRAN*/
+gqlcs(
+    int            *wkid,
+    int            *lcdnr,
+    int            *type,
+    int            *mldr,
+    int            *errind,
+    int            *mode,
+    int            *esw,
+    int            *tnr,
+    float          *ipx,
+    float          *ipy,
+    int            *pet,
+    float          *earea,
+    int            *ldr,
+    char           *datrec)
+{
+    Glocst          state;
+    Gint            il;
+    Gint            rl;
+    Gint            sl;
+    Gint           *ia;
+    Gfloat         *ra;
+    Gchar         **str;
+    Gint           *lstr;
+
+    debug(("Inquire Locator Device State \n "));
+
+    if (*errind = ginqlocst((Gint) *wkid, (Gint) *lcdnr, (Gqtype) * type,
+			    &state))
+	return;
+
+    *mode = (int) state.mode;
+    *esw = (int) !state.esw;
+    *tnr = (int) state.loc.transform;
+    *ipx = (float) state.loc.position.x;
+    *ipy = (float) state.loc.position.y;
+    *pet = (int) state.pet;
+    earea[0] = (float) state.e_area.xmin;
+    earea[1] = (float) state.e_area.xmax;
+    earea[2] = (float) state.e_area.ymin;
+    earea[3] = (float) state.e_area.ymax;
+    switch (*pet) {
+    case 1:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 2:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 3:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 4:
+	il = 7;
+	rl = 1;
+	sl = 0;
+	*ldr = il + rl + sl;
+	ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+	ra = (Gfloat *) malloc((size_t) (rl * sizeof(Gfloat *)));
+	str = NULL;
+	lstr = NULL;
+	ia[0] = (int) state.record.pet4.acf;
+	ia[1] = (int) state.record.pet4.ln.type;
+	ia[2] = (int) state.record.pet4.ln.width;
+	ia[3] = (int) state.record.pet4.ln.color;
+	ia[4] = state.record.pet4.ln.line;
+	ia[5] = state.record.pet4.ln.bundl.type;
+	ia[6] = state.record.pet4.ln.bundl.color;
+	ra[0] = state.record.pet4.ln.bundl.width;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	GKS_FREE(ia);
+	GKS_FREE(ra);
+
+	break;
+    case 5:
+	if (state.record.pet5.pfcf == GPF_POLYLINE) {
+	    il = 8;
+	    rl = 1;
+	    sl = 0;
+	    lstr = NULL;
+	    str = NULL;
+	    *ldr = il + rl + sl;
+	    ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+	    ra = (Gfloat *) malloc((size_t) (rl * sizeof(Gfloat *)));
+	    ia[0] = (int) state.record.pet5.acf;
+	    ia[1] = (int) state.record.pet5.pfcf;
+	    ia[2] = (int) state.record.pet5.attr.ln.type;
+	    ia[3] = (int) state.record.pet5.attr.ln.width;
+	    ia[4] = (int) state.record.pet5.attr.ln.color;
+	    ia[5] = state.record.pet5.attr.ln.line;
+	    ia[6] = state.record.pet5.attr.ln.bundl.type;
+	    ia[7] = state.record.pet5.attr.ln.bundl.color;
+	    ra[1] = state.record.pet5.attr.ln.bundl.width;
+	    gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	    GKS_FREE(ia);
+	    GKS_FREE(ra);
+	} else {
+	    il = 9;
+	    rl = 0;
+	    sl = 0;
+	    *ldr = il + rl + sl;
+	    ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+	    ra = NULL;
+	    str = NULL;
+	    lstr = NULL;
+	    ia[0] = (int) state.record.pet5.acf;
+	    ia[1] = (int) state.record.pet5.pfcf;
+	    ia[2] = (int) state.record.pet5.attr.fl.inter;
+	    ia[3] = (int) state.record.pet5.attr.fl.style;
+	    ia[4] = (int) state.record.pet5.attr.fl.color;
+	    ia[5] = state.record.pet5.attr.fl.fill;
+	    ia[6] = (int) state.record.pet5.attr.fl.bundl.inter;
+	    ia[7] = state.record.pet5.attr.fl.bundl.style;
+	    ia[8] = state.record.pet5.attr.fl.bundl.color;
+	    gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	    GKS_FREE(ia);
+	}
+
+	break;
+    case 6:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+    }
+}
+
+
+/*
+ * gqsks - Inquire Stroke Device State
+ *
+ * Input Parameters:
+ *
+ * int   	*wkid - Workstation Identifier
+ * int  	*skdnr - Stroke Device Number
+ * int		*type - type of returned values
+ * int		 *n  - maximum number of points
+ * int		 *mldr - dimension of datarecord array
+ *
+ * Output Parameters:
+ *
+ * int		 *errind - error indicator
+ * int		 *mode - operating mode
+ * int		 *esw - echo switch
+ * int		 *itnr - initial normalization transformation number
+ * int		 *np - number of points
+ * float         *pxa,*pya - initial points in stroke (WC)
+ * int 		 *pet - prompt/echo type
+ * float  	 *earea - echo area
+ * int 		 *buflen - buflen
+ * int 		 *ldr number of array elements used in data record
+ * char		 *datrec - data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.167
+ */
+/*FORTRAN*/
+gqsks(
+    int            *wkid,
+    int            *skdnr,
+    int            *type,
+    int            *n,
+    int            *mldr,
+    int            *errind,
+    int            *mode,
+    int            *esw,
+    int            *itnr,
+    int            *np,
+    float          *pxa,
+    float          *pya,
+    int            *pet,
+    float          *earea,
+    int            *buflen,
+    int            *ldr,
+    char           *datrec)
+{
+    Gstrokest       state;
+    Gint            il;
+    Gint            rl;
+    Gint            sl;
+    Gint           *ia;
+    Gfloat         *ra;
+    Gchar         **str;
+    Gint           *lstr;
+    int             i;
+
+    debug(("Inquire Stroke Device State \n "));
+
+    if (*errind = ginqstrokest((Gint) *wkid, (Gint) *skdnr, (Gqtype) * type,
+			       &state))
+	return;
+
+    *mode = (int) state.mode;
+    *esw = (int) !state.esw;
+    *itnr = (int) state.stroke.transform;
+    *np = (int) state.stroke.n_points;
+    for (i = 0; i < *np; i++) {
+	pxa[i] = (float) state.stroke.points[i].x;
+	pya[i] = (float) state.stroke.points[i].y;
+    }
+    *pet = (int) state.pet;
+    earea[0] = (float) state.e_area.xmin;
+    earea[1] = (float) state.e_area.xmax;
+    earea[2] = (float) state.e_area.ymin;
+    earea[3] = (float) state.e_area.ymax;
+    *buflen = state.record.pet1.bufsiz;
+
+    switch (*pet) {
+    case 1:
+	il = 2;
+	rl = 3;
+	sl = 0;
+	*ldr = il + rl + sl;
+	ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+	ra = (Gfloat *) malloc((size_t) (rl * sizeof(Gfloat *)));
+	str = NULL;
+	lstr = NULL;
+	ia[0] = state.record.pet1.bufsiz;
+	ia[1] = state.record.pet1.editpos;
+	ra[0] = state.record.pet1.interval.x;
+	ra[1] = state.record.pet1.interval.y;
+	ra[2] = state.record.pet1.time;
+
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	GKS_FREE(ia);
+	GKS_FREE(ra);
+	break;
+    case 2:
+	il = 2;
+	rl = 3;
+	sl = 0;
+	*ldr = il + rl + sl;
+	ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+	ra = (Gfloat *) malloc((size_t) (rl * sizeof(Gfloat *)));
+	str = NULL;
+	lstr = NULL;
+	ia[0] = state.record.pet2.bufsiz;
+	ia[1] = state.record.pet2.editpos;
+	ra[0] = state.record.pet2.interval.x;
+	ra[1] = state.record.pet2.interval.y;
+	ra[2] = state.record.pet2.time;
+
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	GKS_FREE(ia);
+	GKS_FREE(ra);
+	break;
+    case 3:
+	il = 9;
+	rl = 4;
+	sl = 0;
+	*ldr = il + rl + sl;
+	ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+	ra = (Gfloat *) malloc((size_t) (rl * sizeof(Gfloat *)));
+	str = NULL;
+	lstr = NULL;
+	ia[0] = state.record.pet3.bufsiz;
+	ia[1] = state.record.pet3.editpos;
+	ia[2] = (int) state.record.pet3.acf;
+	ia[3] = (int) state.record.pet3.mk.type;
+	ia[4] = (int) state.record.pet3.mk.size;
+	ia[5] = (int) state.record.pet3.mk.color;
+	ia[6] = state.record.pet3.mk.mark;
+	ia[7] = state.record.pet3.mk.bundl.type;
+	ia[8] = state.record.pet3.mk.bundl.color;
+
+	ra[0] = state.record.pet3.interval.x;
+	ra[1] = state.record.pet3.interval.y;
+	ra[2] = state.record.pet3.time;
+	ra[3] = state.record.pet3.mk.bundl.size;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	GKS_FREE(ia);
+	GKS_FREE(ra);
+	break;
+
+    case 4:
+	il = 9;
+	rl = 4;
+	sl = 0;
+	*ldr = il + rl + sl;
+	ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+	ra = (Gfloat *) malloc((size_t) (rl * sizeof(Gfloat *)));
+	str = NULL;
+	lstr = NULL;
+	ia[0] = state.record.pet4.bufsiz;
+	ia[1] = state.record.pet4.editpos;
+	ia[2] = (int) state.record.pet4.acf;
+	ia[3] = (int) state.record.pet4.ln.type;
+	ia[4] = (int) state.record.pet4.ln.width;
+	ia[5] = (int) state.record.pet4.ln.color;
+	ia[6] = state.record.pet4.ln.line;
+	ia[7] = state.record.pet4.ln.bundl.type;
+	ia[8] = state.record.pet4.ln.bundl.color;
+
+	ra[0] = state.record.pet4.interval.x;
+	ra[1] = state.record.pet4.interval.y;
+	ra[2] = state.record.pet4.time;
+	ra[3] = state.record.pet4.ln.bundl.width;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	GKS_FREE(ia);
+	GKS_FREE(ra);
+    }
+}
+
+
+/*
+ * gqchs - Inquire Choice Device State
+ *
+ * int		 *wkid - workstation identifier
+ * int		 *chdnr - choice device number
+ * int		 *mldr - dimension of data record array
+ *
+ * Output Parameters:
+ *
+ * int		 *errind - error indicator
+ * int		 *mode - operating mode
+ * int		 *esw - echo switch
+ * int		 *istat - initial status
+ * int		 *ichnr - initial choice number
+ * int		 *pet prompt/echo type
+ * float	 *earea echo area (DC)
+ * int		 *ldr number of array elements used in data record
+ * char		 *datrec data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.168
+ */
+/*FORTRAN*/
+gqchs(
+    int            *wkid,
+    int            *chdnr,
+    int            *mldr,
+    int            *errind,
+    int            *mode,
+    int            *esw,
+    int            *istat,
+    int            *ichnr,
+    int            *pet,
+    float          *earea,
+    int            *ldr,
+    char           *datrec)
+{
+    Gchoicest       state;
+    Gint            il;
+    Gint            rl;
+    Gint            sl;
+    Gint           *ia;
+    Gfloat         *ra;
+    Gchar         **str;
+    Gint           *lstr;
+    int             i;
+
+    debug(("Inquire Choice Device State \n "));
+
+    if (*errind = ginqchoicest((Gint) *wkid, (Gint) *chdnr, &state))
+	return;
+
+    *mode = (int) state.mode;
+    *esw = (int) !state.esw;
+    *istat = ((int) state.choice.status + 1) % 3;
+    *ichnr = (int) state.choice.choice;
+    *pet = (int) state.pet;
+    earea[0] = (float) state.e_area.xmin;
+    earea[1] = (float) state.e_area.xmax;
+    earea[2] = (float) state.e_area.ymin;
+    earea[3] = (float) state.e_area.ymax;
+
+    switch (*pet) {
+    case 1:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+
+    case 2:
+	il = state.record.pet2.number;
+	rl = 0;
+	sl = 0;
+	*ldr = il + rl + sl;
+	ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+	ra = NULL;
+	str = NULL;
+	lstr = NULL;
+	for (i = 0; i < il; i++)
+	    ia[i] = (int) state.record.pet2.enable[i];
+
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	GKS_FREE(ia);
+	break;
+
+    case 3:
+	il = 0;
+	rl = 0;
+	sl = state.record.pet3.number;
+	*ldr = il + rl + sl;
+	ra = NULL;
+	ia = NULL;
+	lstr = (Gint *)  malloc((size_t) (sl * sizeof(Gint)));
+	for (i = 0; i < sl; i++)
+	    lstr[i] = strlen(state.record.pet3.strings[i]);
+	str = state.record.pet3.strings;
+
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	GKS_FREE(ia);
+	GKS_FREE(lstr);
+	break;
+    case 4:
+	il = 1;
+	rl = 0;
+	sl = state.record.pet4.number;
+	*ldr = il + rl + sl;
+	ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+	ra = NULL;
+	ia[0] = state.record.pet4.number;
+	lstr = (Gint *)  malloc((size_t) (sl * sizeof(Gint)));
+	for (i = 0; i < sl; i++)
+	    lstr[i] = strlen(state.record.pet4.strings[i]);
+	str = state.record.pet4.strings;
+
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	GKS_FREE(ia);
+	GKS_FREE(lstr);
+	break;
+    case 5:
+	il = state.record.pet5.number + 2;
+	rl = 0;
+	sl = 0;
+	*ldr = il + rl + sl;
+	ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+	ra = NULL;
+	str = NULL;
+	lstr = NULL;
+	ia[0] = state.record.pet5.seg;
+	ia[1] = state.record.pet5.number;
+	for (i = 2; i < il; i++)
+	    ia[i] = state.record.pet5.pickids[i];
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	GKS_FREE(ia);
+    }
+}
+
+
+/*
+ * gqpks - Inquire Pick Device State
+ *
+ * int		 *wkid - workstation identifier
+ * int		 *pkdnr - pick device number
+ * int		 *type - type of returned values
+ * int		 *mldr - dimension of data record array
+ *
+ * Output Parameters:
+ *
+ * int		 *errind - error indicator
+ * int		 *mode - operating mode
+ * int		 *esw - echo switch
+ * int		 *istat - initial status
+ * int		 *isgna - initial segment
+ * int		 *ipkid  - initial pick identifier
+ * int		 *pet - prompt/echo type
+ * float	 *earea echo area (DC)
+ * int  	 *ldr - number of array elements used in data record
+ * char 	 *datrec - data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.169
+ */
+/*FORTRAN*/
+gqpks(
+    int            *wkid,
+    int            *pkdnr,
+    int            *type,
+    int            *mldr,
+    int            *errind,
+    int            *mode,
+    int            *esw,
+    int            *istat,
+    int            *isgna,
+    int            *ipkid,
+    int            *pet,
+    float          *earea,
+    int            *ldr,
+    char           *datrec)
+{
+    Gpickst         state;
+    int             il;
+    int             rl;
+    int             sl;
+    int            *ia;
+    float          *ra;
+    Gchar         **str;
+    int            *lstr;
+
+    debug(("Inquire Pick Device State \n "));
+
+    if (*errind = ginqpickst((Gint) *wkid, (Gint) *pkdnr, (Gqtype) * type, 
+			     &state))
+	return;
+
+    *mode = (int) state.mode;
+
+    /* reverse sense of esw */
+    *esw = (int) !state.esw;
+    *istat = ((int) state.pick.status + 1) % 3;
+    *isgna = (int) state.pick.seg;
+    *ipkid = (int) state.pick.pickid;
+    *pet = (int) state.pet;
+    earea[0] = (float) state.e_area.xmin;
+    earea[1] = (float) state.e_area.xmax;
+    earea[2] = (float) state.e_area.ymin;
+    earea[3] = (float) state.e_area.ymax;
+    switch (*pet) {
+    case 1:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 2:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 3:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+    }
+}
+
+
+/*
+ * gqsts - Inquire String Device State
+ *
+ * int		 *wkid - workstation identifier
+ * int		 *stdnr - string device number
+ * int		 *mldr - dimension of data record array
+ *
+ * Output Parameters:
+ *
+ * int		 *errind - error indicator
+ * int		 *mode - operating mode
+ * int		 *esw - echo switch
+ * int		 *lostr - number of characters returned
+ * char		 *istr - initial string
+ * int		 *pet - prompt echo type
+ * float         *earea - echo area (DC)
+ * int		 *buflen - input buffer size
+ * int		 *inipos - initial cursor position
+ * int		 *ldr - number of array elements used in data record
+ * char		 *datrec data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.170
+ */
+/*FORTRAN*/
+gqsts(
+    int            *wkid,
+    int            *stdnr,
+    int            *mldr,
+    int            *errind,
+    int            *mode,
+    int            *esw,
+    int            *lostr,
+    char           *istr,
+    int            *pet,
+    float          *earea,
+    int            *buflen,
+    int            *inipos,
+    int            *ldr,
+    char           *datrec)
+{
+    Gstringst       state;
+    Gint            il;
+    Gint            rl;
+    Gint            sl;
+    Gint           *ia;
+    Gfloat         *ra;
+    Gchar         **str;
+    Gint           *lstr;
+
+    debug(("Inquire String Device State \n "));
+
+    if (*errind = ginqstringst((Gint) *wkid, (Gint) *stdnr, &state))
+	return;
+
+    *mode = (int) state.mode;
+    *esw = (int) !state.esw;
+    *lostr = (int) strlen(state.string);
+    (void) strcpy(istr, state.string);
+    *pet = (int) state.pet;
+    earea[0] = (float) state.e_area.xmin;
+    earea[1] = (float) state.e_area.xmax;
+    earea[2] = (float) state.e_area.ymin;
+    earea[3] = (float) state.e_area.ymax;
+    *buflen = (int) state.record.pet1.bufsiz;
+    *inipos = (int) state.record.pet1.position;
+    il = 2;
+    rl = 0;
+    sl = 0;
+    lstr = NULL;
+    ra = NULL;
+    str = NULL;
+    *ldr = il + rl + sl;
+    ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+    ia[0] = state.record.pet1.bufsiz;
+    ia[1] = state.record.pet1.position;
+    gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+    GKS_FREE(ia);
+}
+
+
+/*
+ * gqvls - Inquire Valuator Device State
+ *
+ * int	*wkid		- pointer to workstation id
+ * int	*vldnr		- pointer to valuator device number
+ * int	*mldr		- pointer to dimension of data record array
+ * int	*errind		- pointer to error indicator
+ * int	*mode		- pointer to operating mode (GREQU, GSAMPL, GEVENT)
+ * int	*esw		- pointer to echo switch (GNECHO, GECHO)
+ * float *ival		- pointer to initial value
+ * int	*pet		- pointer to prompt/echo type
+ * float *earea[4]	- pointer to echo area in device coordinates
+ *			  XMIN, XMAX, YMIN, YMAX
+ * float *loval, *hival	- pointers to minimal and maximal values
+ * int	*ldr		- pointer to number of array elements used in data 
+ *			  record
+ * char	*datrec[mldr]	- pointer to data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.168
+ */
+/*FORTRAN*/
+gqvls(
+    int            *wkid,
+    int            *vldnr,
+    int            *mldr,
+    int            *errind,
+    int            *mode,
+    int            *esw,
+    float          *ival,
+    int            *pet,
+    float          *earea,
+    float          *loval,
+    float          *hival,
+    int            *ldr,
+    char           *datrec)
+{
+    Gvalst          state;
+    Gint            il;
+    Gint            rl;
+    Gint            sl;
+    Gint           *ia;
+    Gfloat         *ra;
+    Gchar         **str;
+    Gint           *lstr;
+
+    debug(("Inquire Valuator Device State \n  "));
+    if (*errind = ginqvalst((Gint) *wkid, (Gint) *vldnr, &state))
+	return;
+
+    *mode = (int) state.mode;
+    *esw = (int) !state.esw;
+    *ival = (float) state.val;
+    *pet = (int) state.pet;
+    earea[0] = (float) state.e_area.xmin;
+    earea[1] = (float) state.e_area.xmax;
+    earea[2] = (float) state.e_area.ymin;
+    earea[3] = (float) state.e_area.ymax;
+    *loval = (float) state.record.pet1.low;
+    *hival = (float) state.record.pet1.high;
+    switch (*pet) {
+    case 1:
+	il = 0;
+	rl = 2;
+	sl = 0;
+	ia = NULL;
+	ra = (Gfloat *) malloc((size_t) (rl * sizeof(Gfloat *)));
+	str = NULL;
+	lstr = NULL;
+	*ldr = il + rl + sl;
+	ra[0] = state.record.pet1.low;
+	ra[1] = state.record.pet1.high;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	GKS_FREE(ra);
+	break;
+    case 2:
+	il = 0;
+	rl = 2;
+	sl = 0;
+	ia = NULL;
+	ra = (Gfloat *) malloc((size_t) (rl * sizeof(Gfloat *)));
+	str = NULL;
+	lstr = NULL;
+	*ldr = il + rl + sl;
+	ra[0] = state.record.pet2.low;
+	ra[1] = state.record.pet2.high;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	GKS_FREE(ra);
+	break;
+    case 3:
+	il = 0;
+	rl = 2;
+	sl = 0;
+	ia = NULL;
+	ra = (Gfloat *) malloc((size_t) (rl * sizeof(Gfloat *)));
+	str = NULL;
+	lstr = NULL;
+	*ldr = il + rl + sl;
+	ra[0] = state.record.pet3.low;
+	ra[1] = state.record.pet3.high;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	GKS_FREE(ra);
+	break;
+    }
+}
+
+
+/*
+ * gqstss - Inquire String Device State - Subset Version
+ *
+ * int	*wkid		- pointer to workstation id
+ * int	*stdnr		- pointer to string device number
+ * int	*mldr		- pointer to dimension of data record array
+ * int	*errind		- pointer to error indicator
+ * int	*mode		- pointer to operating mode (GREQU, GSAMPL, GEVENT)
+ * int	*esw		- pointer to echo switch (GNECHO, GECHO)
+ * int 	*lostr		- pointer to number of characters returned
+ * char	*istr		- pointer to initial string
+ * int	*pet		- pointer to prompt/echo type
+ * float *earea[4]	- pointer to echo area in device coordinates
+ *			  XMIN, XMAX, YMIN, YMAX
+ * int	*buflen		- pointer to input buffer size
+ * int	*inipos		- pointer to initial cursor position
+ * int	*ldr		- pointer to number of array elements used in data 
+ *			  record
+ * char	*datrec[mldr]	- pointer to data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.170
+ */
+/*FORTRAN*/
+gqstss(
+    int            *wkid,
+    int            *stdnr,
+    int            *mldr,
+    int            *errind,
+    int            *mode,
+    int            *esw,
+    int            *lostr,
+    char           *istr,
+    int            *pet,
+    float          *earea,
+    int            *buflen,
+    int            *inipos,
+    int            *ldr,
+    char           *datrec)
+{
+    Gstringst       state;
+    int             il;
+    int             rl;
+    int             sl;
+    int            *ia;
+    float          *ra;
+    Gchar         **str;
+    int            *lstr;
+
+    debug(("Inquire String Device State (SUBSET VERSION) \n "));
+
+    if (*errind = ginqstringst((Gint) *wkid, (Gint) *stdnr, &state))
+	return;
+
+    *mode = (int) state.mode;
+    *esw = (int) !state.esw;
+    *lostr = (int) strlen(state.string);
+    (void) strcpy(istr, state.string);
+    *pet = (int) state.pet;
+    earea[0] = (float) state.e_area.xmin;
+    earea[1] = (float) state.e_area.xmax;
+    earea[2] = (float) state.e_area.ymin;
+    earea[3] = (float) state.e_area.ymax;
+    *buflen = (int) state.record.pet1.bufsiz;
+    *inipos = (int) state.record.pet1.position;
+    il = 0;
+    rl = 0;
+    sl = 0;
+    ra = NULL;
+    ia = NULL;
+    str = NULL;
+    lstr = NULL;
+    gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+}

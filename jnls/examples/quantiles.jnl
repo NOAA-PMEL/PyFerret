@@ -1,0 +1,65 @@
+! To form quartiles, or percentiles, use the ZSEQUENCE function.
+! Based on a contribution from Andrew Wittenberg Fri, 17 Sep 2004 
+
+! Here's an example showing how to compute quartiles (and more generally, 
+! quantiles/percentiles) from some 2-dimensional data:
+
+use coads_climatology
+let svar = sst[l=1]
+
+set mode interp
+
+! unwrap January  SSTs into a 1-dimensional array
+let a = zsequence(svar)
+
+! define a quantile axis
+let ngood = `a[k=@ngd]`
+def ax/z=0:1/np=`ngood` z_q
+
+! sort the data (missing values will be last)
+let a_z = samplek(a,sortk(a))
+ 
+! place the sorted valid data onto the quantile axis
+let/title="quantiles of `sst,r=title`"/unit="`sst,r=unit`" a_q = a_z[gz=z_q@asn]
+
+! plot the quantile function (inverse cumulative distribution function)
+plot/trans a_q
+
+! list the min, 1st quartile, median, 3rd quartile, and max 
+list a_q[z=0],a_q[z=.25],a_q[z=.5],a_q[z=.75],a_q[z=1]
+
+
+! Plot shaded percentiles. pct_levs contains the variable values separating 
+! each range of 10 percentile points
+
+let pct_levs = a_q[z=0:1:0.1]
+list pct_levs
+
+! Form variables each containing a range of 10 percentile points, e.g.
+!
+!     let mask2 = if svar le hi then 1 else 0 ! mask=1 where svar LE 30th percentile
+!     let v2   = if svar gt lo then 15* mask2 else 0  
+!
+! then v2 contains the value 15 where svar is between the tenth and 20th
+! percentile, and v2 is 0 everwhere else.
+
+! inialize the series of variables
+let v1 = if svar le `pct_levs[k=1]` then 0 else 0
+
+! Define variables each representing a 10 percent range
+
+repeat/range=2:11:1/name=m (let vhi = pct_levs[k=`m`]; let vlo = pct_levs[k=`m-1`]; \
+let mask`m` = if svar le `vhi` then 1  else 0; \
+ let v`m` = if svar GT `vlo` then `10*(m-1)-5` * mask`m` else 0)
+
+! Add to form a single varible which is 5 for 0-10%, 15 for 10-20% and so on.
+
+let pct = v1 + v2 + v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11
+
+! Define a mask to restore the missing data from the original variable, 
+! mask=1 where the variable has valid data
+
+let missing_mask = if svar then 1
+
+shade/lev=(0,100,10)/palette=blue_orange/title="percentiles" pct * missing_mask
+go fland

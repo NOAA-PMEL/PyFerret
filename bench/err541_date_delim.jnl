@@ -1,0 +1,39 @@
+! err541_date_delim.jnl
+! Fix errors occurring with delimted reads - four digit years were
+!   being accuratly calculated.
+! 
+! *kob* 11/02
+
+set data/var="date1"/type="date,date"/form=delim dates_bug.dat
+! first date is 12-27-1999 which is unacceptable so should be missing values
+list days1900toymdhms(date1)
+
+
+! now test accuracy of dates
+DEFINE AXIS/T0=1-jan-1900/T=1-jan-1900:1-jan-2005:1/units=days ttt
+
+let date_check = date1[i=2] - T[gt=ttt,t="28-jul-1999"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+let date_check = date1[i=3] - T[gt=ttt,t="29-jul-2001"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+let date_check = date1[i=4] - T[gt=ttt,t="30-jul-2001"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+let date_check = date1[i=5] - T[gt=ttt,t="31-jul-2003"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+
+
+
+! now test eurodate format
+can data/all
+set data/var="date1"/type="eurodate,eurodate"/form=delim euro_dates_bug.dat
+! first date is 27-07-1999 which is unacceptable so should be missing values
+list days1900toymdhms(date1)
+
+!test accuracy of eurodates
+let date_check = date1[i=2] - T[gt=ttt,t="28-jul-2001"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+let date_check = date1[i=3] - T[gt=ttt,t="30-jul-2001"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+let date_check = date1[i=4] - T[gt=ttt,t="31-jul-2003"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+

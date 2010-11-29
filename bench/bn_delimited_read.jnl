@@ -1,0 +1,129 @@
+! bn_delimited_read.jnl
+! 10/01 *sh*
+
+! test delimiited (spreadsheet) reads in Ferret
+
+! look at the file
+spawn cat bn_delimited_read_1.dat
+
+! try the file as-is:  record 1 contains 5 column headings (text)
+! so V1 through V5 analyze to be text
+file/format=delim bn_delimited_read_1.dat
+show data/var
+list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
+
+! manually name the variables while still automatically analyzing data types
+file/format=delim/var=a1,a2,a3,a4,a5,a6,a7 bn_delimited_read_1.dat
+list a1,a2,a3,a4,a5,a6,a7
+
+! skip the first record to do a better "analysis" of the file fields
+! note that v3 is correctly analyzed as numeric
+file/format=delim/skip=1 bn_delimited_read_1.dat
+list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
+
+! insist that all columns be treated as string
+file/format=delim/skip=1/type=text bn_delimited_read_1.dat
+list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
+
+! insist that all columns be treated as string and name the columns
+file/format=delim/skip=1/type=text/var=a1,a2,a3,a4,a5 bn_delimited_read_1.dat
+show data
+list a1,a2,a3,a4,a5
+
+! insist that all columns be treated as numeric
+file/format=delim/skip=1/type=numeric bn_delimited_read_1.dat
+list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
+
+! insist that all columns be treated as latitude
+file/format=delim/skip=1/type=latitude bn_delimited_read_1.dat
+list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
+
+! read only the first line of the file
+spawn head -1 bn_delimited_read_1.dat
+define axis/x=1:1:1 x1
+define grid/x=x1 g1
+columns/grid=g1 bn_delimited_read_1.dat
+ ! note 10 columns because auto-analysis of file doesnt stop at 1st record
+list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10  
+columns/grid=g1/var=c1,c2,c3,c4,c5 bn_delimited_read_1.dat
+list c1,c2,c3,c4,c5
+
+! ==========
+cancel data/all
+! file using blank as a delimiter
+! Note record 1 has blanks at end of record
+! Note record of many blanks sandwiched in as record 2
+file/form=delimited bn_delimited_read_2.dat
+show data
+file/form=delimited/delimiter=" " bn_delimited_read_2.dat
+show data
+list v1,v2
+
+! ==========
+! look at the date/time file
+spawn cat bn_delimited_read_date_time.dat
+
+! try the file as-is
+! Note that record 3 has syntax errors in the first 4 fields
+columns bn_delimited_read_date_time.dat
+list v1,v2,v3,v4,v5,v6,v7,v8
+show data 2
+
+! sanity check date encodings
+define axis/t/units=days/T0=1-jan-1900  tax = v5
+show axis tax
+define axis/t/units=days/T0=1-jan-1900  tax = v6
+show axis tax
+
+columns/type=date bn_delimited_read_date_time.dat
+list v1,v2,v3,v4,v5,v6,v7,v8
+show data 2
+
+columns/type=time bn_delimited_read_date_time.dat
+list v1,v2,v3,v4,v5,v6,v7,v8
+show data 2
+
+columns/type="da,dat,ti,tim,date, date, time, time"  bn_delimited_read_date_time.dat
+list v1,v2,v3,v4,v5,v6,v7,v8
+show data 2
+
+columns/type="da,-,ti,-,date,-,time,-"  bn_delimited_read_date_time.dat
+list v1,v3,v5,v7
+show data 2
+
+! delimiters can be used to break up individual fields
+file/form=delim/delim="/" bn_delimited_read_date_time.dat
+list V1,V2,V3,V4
+! ---
+sp cat bn_delimited_read_date_time.dat
+! ---
+file/form=delim/delim="/,\," bn_delimited_read_date_time.dat
+list V1,V2,V3,V4,v5,v6,v7,v8
+ file/form=delim/delim="/,\,,-" bn_delimited_read_date_time.dat
+list V1,V2,V3,V4,v5,v6,v7,v8,v9,v10
+ file/form=delim/delim="/,\,,-,:" bn_delimited_read_date_time.dat
+list V1,V2,V3,V4,v5,v6,v7,v8,v9,v10
+
+! read (beginning of) CO2 data file provided by Chris Sabine (like ODV files)
+cancel data/all
+columns/skip=1 bn_delimited_read_CO2.dat
+show data/full
+list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24,v25,v26
+list/i=8:14 v11,v19,v21,v23,v25
+(set variable/bad=9 v11; set variable/bad=9 v19;set variable/bad=9 v21;set variable/bad=9 v23;set variable/bad=9 v25)
+list/i=8:14 v11,v19,v21,v23,v25
+! ... read column headings, only -- 1 record
+define axis/z=1:1:1 z1
+define grid/z=z1 g1
+columns/grid=g1 bn_delimited_read_CO2.dat
+list/nohead v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24,v25,v26
+
+! deliberate syntax errors
+set mode ignore
+columns/type="d, da2,date2"  bn_delimited_read_date_time.dat
+columns/type="da,da2,date2"  bn_delimited_read_date_time.dat
+columns/type="da,da, date2"  bn_delimited_read_date_time.dat
+columns/var="aa.b"  bn_delimited_read_date_time.dat
+file/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
+cancel mode ignore
+

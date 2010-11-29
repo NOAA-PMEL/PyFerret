@@ -1,0 +1,87 @@
+! bn581_bug_fixes.jnl
+! test various fixes that went into version 5.81
+! 2/05 *acm*
+!
+
+! Bug 1160 short axis with irreg bounds seen as regular.
+GO bn_reset
+GO err580_irreg_bounds.jnl
+
+! Bug 1179 Cartesian_axis and positive="down" resulted in depth axis not being recognized
+GO bn_reset
+GO err580_cartesian_depth.jnl
+
+! Bug 1181 Titles were truncated at 80 characters
+GO bn_reset
+GO err580_long_title.jnl
+
+! Bug 1180 Allow "use filename.des" 
+GO bn_reset
+GO err580_use_des.jnl
+
+
+! Bug 1180 Allow "use filename.des" 
+GO bn_reset
+GO err580_use_des.jnl
+
+! fix for bug 1181: dataset title was limited to 80 characters.
+GO bn_reset
+GO err580_long_dsettitle.jnl
+
+! fix for bug 1200:crash due to the long veckey format spec.
+GO bn_reset
+GO err580_long_veckey.jnl
+
+! fix for bug 1201: mistranslation of time region.
+GO bn_reset
+GO err580_cal360_region.jnl
+
+! fix for bug 1203: crash if time range left off.
+GO bn_reset
+GO err580_def_tax_norange.jnl
+
+! fix for bug 1207: closest distance and closest index transformations.
+GO bn_reset
+GO err580_cdb.jnl
+
+! fix for bug 1214: crash on repeating a SET VIEW when viewport defined with /AXES
+GO bn_reset
+GO err580_def_view_axes.jnl
+
+! fix for bug 1205: symbol LEV_DEL wrong when single level specified
+GO bn_reset
+GO err580_lev_del.jnl
+
+! Fix for bug 1174: strfloat_c("nonsense") gave result of 0 rather than missing.
+GO bn_reset
+GO err580_strfloat_errors.jnl
+
+! Fixes for bugs 1249, 1250: uppercase not recognized for qualifier argument
+GO bn_reset
+GO err580_arg_case.jnl
+
+
+! Fixes for bugs 1019: kludge for CDC time axes made time origin incorrect on outputs
+GO bn_reset
+GO err580_cdc_timeaxis.jnl
+
+
+! Fix for bug 1272: show axis/t= with NOLEAP calendar
+GO bn_reset
+GO err580_show_axis_t.jnl
+
+! Fix for bug 1279 which was only in the first iteration of v5.81 release
+GO bn_reset
+GO err581_nlev.jnl
+
+! Fix for bug 1349: formatted axis labels on PLOT/VS and POLYGON plot
+! acm 8/29/2005
+GO bn_reset
+GO err581_vs_poly_axis.jnl  
+
+! Fix for bug 1270: regridding leakage between cells: monthly-> seasonal regridding
+! needs file short_bug1270.nc
+! ( this fix not checked in for v5.81 release.)
+! GO bn_reset
+! GO err580_regrid_prec.jnl  
+

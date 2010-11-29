@@ -1,0 +1,32 @@
+* common xdefer_coords.cmn
+
+* common to assist with deferred writing of axis coordinate
+* (performance issue for netCDF writes)
+
+* V530 *sh* 12/00
+
+
+*** NOTE: parameter max_deferred_axes should be approx 2X  the value of
+*	the Ferret parameter max_exp
+
+	INTEGER     max_deferred_axes
+	PARAMETER ( max_deferred_axes = 400 )
+
+	INTEGER
+     .		dfr_num,
+     .		dfr_cdaxis,
+     .		dfr_grid,
+     .		dfr_idim,
+     .		dfr_lo,
+     .		dfr_hi,
+     .		dfr_axis_type
+
+	COMMON /XDEFER_COORDS/
+     .		dfr_num,
+     .		dfr_cdaxis(max_deferred_axes),
+     .		dfr_grid(max_deferred_axes),
+     .		dfr_idim(max_deferred_axes),
+     .		dfr_lo(max_deferred_axes),
+     .		dfr_hi(max_deferred_axes),
+     .		dfr_axis_type(max_deferred_axes)
+

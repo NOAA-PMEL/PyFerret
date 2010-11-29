@@ -1,0 +1,180 @@
+\cancel mode verify
+
+! set initial demo state
+cancel data/all
+cancel region
+
+! dods_demo.jnl  *kob* 5/99
+! customized for IPRC presentation 9/99 *sh*
+!
+! Description: Demo: how to use Ferret and DODS to access remote Datasets
+!
+
+set mode verify
+
+
+
+
+!      *********************************************************
+!        DEMO: Using Ferret and DODS to access remote data sets
+!      *********************************************************
+
+! First we will examine the COADS climatology dataset from the Pacific
+! Marine Environmental Laboratory (PMEL) in Seattle, Washington. 
+
+
+! Note:  Once the dataset has been initialized from the remote site,
+!        using the dataset is exactly the same as if it were local
+
+
+PAUSE
+!      *********************************************************
+
+
+
+set data "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/coads_climatology.nc"
+show data
+
+
+
+! SHOW DATA verifies that this is indeed a remote dataset
+! 
+! Now let's look at a color contour of Sea Surface Temperature
+
+
+
+
+PAUSE
+!      *********************************************************
+
+fill/t="16-jul" sst
+go land
+
+! Next, let's look at a subregion of the SST. 
+ 
+!   Note: Higher data access speed may be noticed due to data caching by Ferret
+
+
+
+PAUSE
+!      *********************************************************
+
+
+go basemap x=130e:170w y=30N:70N 20
+fill/overlay/t="16-jul"/x=140e:180e/y=40N:65N sst
+
+
+! Remote data has full random access. Here we will plot the evolution of SST
+! averaged over the Equatorial waveguide (an XT section)
+
+PAUSE
+!      *********************************************************
+
+
+fill/x=140e:180e/l=1:24 sst[y=5s:5n@ave]
+
+! Now, let's use a different SST dataset from the Climate Diagnostics Center
+! (CDC) in Boulder, Colorado
+
+PAUSE
+!      *********************************************************
+
+use "http://www.cdc.noaa.gov/cgi-bin/nph-nc/Datasets/reynolds_sst/sst.wkmean.1981-1989.nc"
+show data 2
+
+! This data set contains weekly mean global SST grids prepared by
+! Reynolds et. al.  (see http://www.cdc.noaa.gov/Datasets/reynolds_sst/)
+
+! Let's look at the SST for June 15, 1989
+
+PAUSE
+!      *********************************************************
+
+
+fill/t="15-JUN-1989" sst[d=2]
+
+! Let's apply the 1-2-1 time filter as recommended by Reynolds
+! and mask the land using the mask supplied in the data set
+
+! We'll focus on the North Atlantic.
+
+! Note: this will require reading 4 global grids -- expect a delay
+
+PAUSE
+!      *********************************************************
+
+let sst_corrected = IF mask EQ 1 THEN sst[l=@sbx:3]
+fill/x=80w:20e/y=0:80N/t="15-JUN-1989" sst_corrected[d=2]
+go fland
+
+! Now, let's see where the June 15, 1998 Reynolds field (served from Boulder)
+! exceeds the June climatological data (served from Seattle)
+
+! This requires regridding the 2x2 degree COADS data to the 1x1 degree
+! Reynolds grid
+
+PAUSE
+!      *********************************************************
+
+let coads_on_reynolds = sst[d=1,g=sst[d=2]]
+let warmer = IF sst_corrected[d=2] GT coads_on_reynolds THEN 1
+shade/x=80w:20e/y=0:80N/pal=black/levels/pattern=weave/t="15-jun-1989"/over warmer
+
+
+! Next let's look at a satellite product from NASA's Jet Propulsion Laboratory
+! (JPL), in Pasadena, California. This data set is in HDF format. It contains
+! SSMI-derived wind.
+
+!   Note that DODS gives Ferret format-independence -- the ability to read
+!        an HDF file
+
+PAUSE
+!      *********************************************************
+use "http://dods.jpl.nasa.gov/dods-bin/nph-hdf/pub/ocean_wind/ssmi/atlas_ssmi/hdf/data/level3.5_5day/1995/atlas.ssmi.ver02.level3.5_5day.s950103.hdf"
+show data 3
+
+
+! Let's look at the 10m Wind field
+
+PAUSE
+!      *********************************************************
+
+
+vector/xskip=5/yskip=1/l=1 u10m, v10m
+
+! Notice that the plot is not correctly referenced to geophysical or
+! time coordinates. (The time label, in fact, is misleading.)
+! By consulting the documentation at JPL 
+! (see http://podaac.jpl.nasa.gov:2031/DAAC_DOCS/catalog.html)
+! we are able to define the correct grid and "fix" the data set
+
+PAUSE
+!      *********************************************************
+
+define axis/x=-180:177.5:2.5/units=degrees xjpl
+define axis/y=-90:90:2/units=degrees yjpl
+define axis/t="1-jan-1995":"31-dec-1995":5/units=days tjpl
+define grid/x=xjpl/y=yjpl/t=tjpl gjpl 
+vector/title="SSMI 10m 5 Day Winds"/xskip=5/yskip=1/l=1 u10m[g=gjpl@asn], v10m[g=gjpl@asn]
+go land red
+
+
+! Next lets examine some NOAA AVHRR data served by the University
+! of Rhode Island, Graduate School of Oceanography (GSO). This
+! data is in the form of 1024x1024 pixel images (1 megabyte per image)
+
+! We will use this to illustrate the ability of Ferret and DODS to
+! subsample -- making the data transfer much faster.
+
+PAUSE
+!      *********************************************************
+
+use "http://maewest.gso.uri.edu/cgi-bin/nph-dsp/fth_sst_decloud/1995/f95018175608.fth_d.Z"
+cancel axis/modulo LON
+go basemap x=-95:-60 y=15n:40n 20
+
+! Performance greatly enhanced through use of strides
+shade/overlay/levels=50 dsp_band_1[i=1:1024:4, j=1:1024:4]
+
+! and overlay a line showing Florida over the image
+go land

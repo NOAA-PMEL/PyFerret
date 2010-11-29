@@ -1,0 +1,26 @@
+! err500_logcontour.jnl
+
+! 2/99
+! the log axes, as set in the PPL AXTYPE command are not applied to
+!  contour
+! plots
+
+! *sh* -- I suspect that the PLOT+ code never attempts to apply the log
+! transform to the 2D plots.
+
+! usage:
+!       yes? GO err500_logcontour SHADE  [or FILL or CONTOUR]
+
+define symbol ptype $1"contour"
+set window/clear
+
+set view upper
+ppl axtype 1,1
+($ptype)/i=1:100/j=1:100 LOG(I/8)+J/100
+set view lower
+ppl axtype 2,1
+($ptype)/i=1:100/j=1:100/xlimits=0:2 LOG(I/8)+J/100
+message
+
+ppl axtype 2,2
+($ptype)/i=1:100/j=1:100/xlimits=0:2/ylimits=0:2 LOG(I/8)+J/100

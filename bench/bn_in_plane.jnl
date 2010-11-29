@@ -1,0 +1,20 @@
+! bn200_in_plane.JNL
+! benchmark various geometries with in-plane transformation applied (@SBX)
+! this benchmark is layered on the compress benchmark to obtain the geometries
+! similar tests are performed on:
+!	abstract variable
+!	file variable
+
+! ******** abstract variable ************
+! (this case can be checked against the bn200_in_plane.sub in the same region)
+! (results should be identical since v is linear along all axes)
+LET v = i + 10*j + 100*k + 1000*l
+SET REGION/I=2:4/J=2:4/K=2:4/L=2:4
+GO bn_in_plane.sub
+
+! ******** file variable ************
+CANCEL VARIABLE V
+USE gt4d011
+SET REGION/I=101:103/J=46:48/K=2:4/L=2:4
+SET EXPRESSION v
+GO bn_in_plane.sub

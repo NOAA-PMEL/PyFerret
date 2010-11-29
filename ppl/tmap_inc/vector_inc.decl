@@ -1,0 +1,25 @@
+* VECTOR_INC.DECL - converted to Unix 2.26.91         
+* COMMON for PLOT+ with all variables declared
+* created for TMAP usage by Steve Hankin 7/88
+* *acm* 4/01    add DENSITY for flowlines
+* *acm* 5/31/01 add NEED_COS and TRANSPZ  for flowlines
+* *acm* 6/ 4/01 add FXLOC, FYLOC  for flowlines key
+	REAL	VLEN
+	REAL	VUSRLN
+	REAL	VXLOC
+	REAL	VYLOC
+	REAL	VPOS
+	REAL	VMINLN
+	REAL	ARMAX
+	REAL	ARMIN
+	REAL	HFACT
+        INTEGER DENSITY
+	INTEGER VSKPX
+	INTEGER VSKPY
+        LOGICAL NEED_COS
+	LOGICAL TRNSPZ
+	LOGICAL VAUTO
+	LOGICAL VKEY
+	LOGICAL VUSER
+	CHARACTER VFRMT*30
+* requires: INCLUDE 'PPLV11INC:VECTOR.INC'                                  

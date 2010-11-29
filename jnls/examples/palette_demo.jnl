@@ -1,0 +1,108 @@
+! palette_demo.jnl
+! *jd* 5.99, *sh* 6/99 reorg
+
+! Description: demonstration of V5.0 palette capabilities
+
+! set up for demo
+\set data levitus_climatology
+\set reg/@t
+\SET WINDOW/ASPECT=1.2:axis
+\DEFINE VIEWPORT/y=0:.33 low
+\DEFINE VIEWPORT/y=.33:.67 mid
+\DEFINE VIEWPORT/y=.67:1 up
+
+! * * * *  PALETTES  * * * *
+! As of Ferret version 5 there are 3 types of palettes:
+! PERCENT, BY_LEVELS, and BY_VALUES. All palettes consist
+! of a list of RGB color values and associated with each
+! RGB value another value that determines how to map the color
+! onto the "Z axis" of the plot. Previous to V5 all palettes
+! behaved like PERCENT palettes.
+
+! Note: from the Unix prompt you can use 
+!	Fpalette '*'
+! to see the available palettes.
+
+! A PERCENT palette is an ordered sequence of RGB values
+! representing a piecewise continuous path through color space.
+! For a given plot with N contour levels the set of discrete colors
+! used are determined by interpolating to N-1 equally spaced points
+! along this path.
+
+! From the Unix prompt try, for example, 
+! 	Fpalette -more rbn2
+! to see an example of a PERCENT palette file.
+
+! Here are examples using a PERCENT palette:
+PALETTE rainbow
+ppl list shaset
+
+set view upper; go magnify 1.2
+FILL/levels=10 temp[z=0]; go land thick
+
+set view lower; go magnify 1.2
+FILL/lev=20 temp[z=0]; go land thick
+\pause; set window/clear
+
+! -----------------
+! A BY_LEVELS palette specifies a list of invariant RGB color.
+! The colors given in the list are exactly the colors that will be
+! used on the plot -- no interpolation of colors is used. This is
+! particularly useful for hard copy, where printers may be "fussy"
+! about which colors look best. If the number of colors required
+! for the plot exceeds the number given in the palette the
+! colors are repeated starting from the first color as necessary.
+! Note that this is the same logic used for pattern files.
+
+! From the Unix prompt try, for example, 
+! 	Fpalette -more rainbow_by_levels
+! to see an example of a BY_LEVELS palette file.
+
+! Here are examples using a BY_LEVELS palette:
+PALETTE rainbow_by_levels
+ppl list shaset
+
+set view upper; go magnify 1.2
+FILL/levels=(15,30,2.5) temp[z=0]; go land thick
+
+set view lower; go magnify 1.2
+FILL/lev=(15,30,.5) temp[z=0]; go land thick
+\pause; set window/clear
+
+
+! --------------------
+! A BY_VALUE palette specifies a path through color
+! space, much as does a PERCENT palette. However, the logic
+! used to interpolate colors along the path is based on
+! the data values of the the contour levels. With such a palette 
+! the color representing, say, 25 degree temperature
+! will be the same whether the temperature range on the
+! plot is large or small and whether 25 degrees lies at the lower
+! end of the range or the upper.
+
+! From the Unix prompt try, for example, 
+! 	Fpalette -more ocean_temp
+! to see an example of a BY_VALUE palette file.
+
+! In this example, using a BY_VALUE palette, we see
+! sequence of ocean temperature plots at increasing depth.
+! Note how the colors adjust themselves to the temperature values.
+
+PALETTE ocean_temp
+ppl list shaset
+
+set view up; go magnify 1.5
+FILL/Z=0 temp; go land thick
+
+set view mid; go magnify 1.5
+FILL/Z=50 temp; go land thick
+
+set view low; go magnify 1.5
+FILL/Z=200 temp; go land thick
+\pause
+
+! clean up
+PALETTE default
+SET WINDOW/ASP=.75:ax
+CANCEL VIEWPORTS
+

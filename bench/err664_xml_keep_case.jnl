@@ -1,0 +1,25 @@
+! err664_xml_keep_case.jnl
+!
+! See bug 1177, xml output should keep the original case of 
+! variables and axis names.  Previously xml output upcased
+! variable and coordinate axis names.
+!
+! This dataset has variables and axes in various cases: 
+! upper case axis TIME 
+! lower case axis zt, variable temp 
+! mixed case axes grid_x_T, grid_y_T
+
+!******* Note this is NOT implemented in the V6.65 release ******!
+!******* Needs further changes to integrate it with LAS    ******!
+
+use a_cartesian_bug1179.nc
+sh dat/var/xml
+sh var/xml
+
+! List the xml for just the axes in this file. sho axis/all/xml
+! lists all axes here at the end of the benchmarks.
+
+LET axis_names = ..dimnames
+LET nd = ..ndims
+REPEAT/RANGE=1:`nd`/NAME=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m)]`)
+

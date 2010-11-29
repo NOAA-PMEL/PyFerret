@@ -1,0 +1,30 @@
+! bar_chart.jnl
+! *sh* 6/99
+! *acm* 7/01 update /xlimits to /hlimits
+
+! Description: demonstrate usage of bar charts
+
+set mode verify
+
+! most basic example -- no overlay, no axes
+let a = RANDN(I[i=1:8]) + 1
+go bar_chart3 poly/line/fill/nolabel/noaxis a a
+label/nouser 0.5,-.1,1,90,.16 @CRItem 1
+label/nouser 1.5,-.1,1,90,.16 @CRItem 2
+label/nouser 2.5,-.1,1,90,.16 @CRItem 3
+\pause
+
+! overlay two variables on auto-formatted axes
+let a = 1+RANDU(I[i=1:10])
+ppl axset 0,1,1,0  ! remove top and right axes
+plot/hlimits=0.5:10.5/sym/ylim=0:2/title="My Bars" 0*a+0.5
+go bar_chart3 poly/line/palette=red/overlay/title="My reds" a
+let b = RANDU(I[i=1:10]+1)
+go bar_chart3 poly/line/palette=blue/overlayy/title="My blues" b
+ppl axset 1,1,1,1  ! restore normal axes
+\pause
+
+! time series colored by magnitude
+let a = RANDN(T[T=2-jan-1990:1-jun-1990:24])
+plot/ylim=-3:3/title="hist-style plot" 0*a
+go bar_chart3 poly/over/palette=no_green_centered/levels=(-3,3,.5)/nolab a a

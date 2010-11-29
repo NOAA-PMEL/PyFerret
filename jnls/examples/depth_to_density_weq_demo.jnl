@@ -1,0 +1,77 @@
+! depth_to_density_axis.jnl - S.Hankin 8/25/92 
+
+! Description: show contour with a user-defined variable as an axis
+
+! This FERRET script demonstrates a technique for using a user-defined variable
+! as an axis of a FERRET variable for purposes of plotting, listing or
+! calculations
+
+! Notes:
+! 1) The technique will not work on 4D variables - ony 1D, 2D, and 3D
+! 2) If the translation from the independent axis to the user-defined
+!    (dependent) variable is constant with respect to the other axes then the
+!    desired result can be achieved much more simply using regridding by
+!    association (g=@ASN).
+!    e.g. To display depth in cm instead of meters:
+!         DEFINE AXIS/Z=lo:hi:delta/unit=cm zcm   ! match z in meters pt for pt
+!         DEFINE GRID/LIKE=my_var/Z=zcm  gcm
+!         CONTOUR my_var[g=gcm@ASN]
+
+! The strategy used in this script may be more difficult to understand in
+! words than by example.  Both follow.
+
+! This script uses the following strategy:
+! 1) define a grid (gdens) which replaces one of the unused dimensions of your
+!    variable with the desired axis (axdens) of (dependent) values
+! 2) by subtracting the new axis coordinates from the dependent variable
+!    define a new variable (r0) which at each point of the new axis is 
+!    exactly zero where the dependent value equals the coordinate value. 
+!    (Effectively this replicates the original dependent field at each
+!    point of the new axis and then subtracts the coordinate value at each
+!    point.  The resulting N+1 dimensional field will always have a value of
+!    zero where the coordinate equals the original unreplicated value)
+! 3) Create an expression (r0[z=@weq:0]) which when multiplied by the variable
+!    you wish to plot (temp) and summed along its original independent axis
+!    will produce the value of temp at the point where the dependent
+!    axis coordinate equals the dependent variable field.
+! 4) Multiply and sum to produce the desired result.
+! 5) (Manually invert the depth axis direction if appropriate)
+ 
+! In this example we will produce a contour plot of temperature along the
+! equator in the Tropical Pacific Ocean using axes of longitude and density.
+! The dependent variable, dens (density), will replace the independent axis,
+! depth.
+message/quiet  ! pause to read
+
+! use the Levitus climatology along the equator in the Pacific Ocean
+set data levitus_climatology
+set region/y=0/x=130e:80w/z=0:1000
+
+! define a new variable for density (dens) and contour it just for a look
+let/title=density dens = rho_un(salt,temp,z)
+contour dens
+message/quiet  ! pause to look at the plot
+
+! in a new grid replace the unused T axis of "temp" with the density axis
+define axis/t=1022:1032:1/unit="density" axdens
+define grid/like=temp/t=axdens gdens
+
+! define a new variable, r0, with a value of zero wherever dens equals its
+! coordinate on the density axis  (r0 is a 4-dimensional variable with 
+! density in the T axis slot)
+let r0 = dens[l=1] - t[g=gdens]
+
+! define a new variable, ktemp, which, when summed along the Z axis, will give
+! the (single) value of temp at the location where dens equals its own
+! coordinate on the density axis 
+let ktemp = r0[z=@weq:0] * temp[l=1]
+
+! contour the new variable summed (integrated) along the Z axis
+! ( Since the Z axis reduces to a point in this operation the result is 3D - 
+!   longitude, latitude and density with latitude fixed at Y=0) 
+contour/t=1022:1032 ktemp[z=@sum]
+message/quiet  ! pause to look at the plot
+
+! reverse the vertical (density) axis so it looks conventional
+ppl yaxis 1032,1022,-1
+ppl contour

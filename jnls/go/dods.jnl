@@ -1,0 +1,48 @@
+\cancel mode verify
+! dods.jnl  - 4/99 *sh* & *kob*
+
+!DESCRIPTION:  "USE" a DODS data set from a supplier
+
+! usage:         arg 1     arg 2
+!	GO dods supplier  data_set 
+
+! examples:
+!  blah blah
+
+
+! check if supplier argument was given
+IF  $1"True|*>False|" THEN
+  SAY -------------------------------------
+  SAY "DODS data suppliers currently known to your Ferret installation:"
+  SPAWN Fgo dods_
+  SAY
+  SAY "NOTE: The list of suppliers is constantly growing."
+  SAY "      Consult http://www.unidata.ucar.edu/packages/dods/home/data.shtml"
+  SAY "      for the latest information"
+!  KEVIN ==> THIS SHOULD NOW BRING UP A WEB PAGE OF SUPPLIERS
+! The env variable FER_WEB_BROWSER will be part of ferret_paths
+  QUIT
+ENDIF
+
+
+! check if data set argument was given
+IF  $2"True|*>False|" THEN
+  SAY ----------------------------------
+  SAY "Usage:   yes? GO dods supplier data_set"
+  SAY
+  SAY "To query for a list of suppliers:          yes? GO dods suppliers"
+  SAY 
+  SAY "To query for the data sets at a supplier:  yes? GO dods_*supplier*"
+  SAY "    e.g. GO dods_pmel"
+  SAY
+  SAY "NOTE: The list of suppliers is constantly growing."
+  SAY "      Consult http://www.unidata.ucar.edu/packages/dods/home/data.shtml"
+  SAY "      for the latest information"
+  QUIT
+ENDIF
+
+GO dods_$1 $2
+
+! clean up
+SET MODE/LAST verify
+

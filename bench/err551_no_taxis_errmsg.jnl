@@ -1,0 +1,9 @@
+! The time axis is bad, having repeated values, so an abstract axis is 
+! used by Ferret and the list/t=time should result in an error.
+
+SET MODE IGNORE_ERROR
+
+use bad_taxis.nc
+list/t=1-jan-1990 dummy
+
+SET MODE/LAST IGNORE_ERROR

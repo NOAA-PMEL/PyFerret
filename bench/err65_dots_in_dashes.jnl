@@ -1,0 +1,16 @@
+! err65_dots_in_dashes.jnl
+! Test fix to bug 1396: dots where there should
+! be gaps in dashed lines.
+! Same test has been added for -gif mode and 
+! metafile batch mode
+
+can view
+set mode metafile dashbug.plt
+set v ul; plot/dash x[gx=0:20:.5]
+set v ur; plot/dash x[gx=0:20:.1]
+set v ll; plot/dash x[gx=0:20:.05]
+set v lr; plot/dash x[gx=0:20:.01]
+frame/file=dashbug.gif
+
+cancel mode meta
+

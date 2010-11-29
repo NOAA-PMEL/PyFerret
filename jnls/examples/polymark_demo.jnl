@@ -1,0 +1,23 @@
+! polymark_demo.jnl
+! *jd* 5.99
+
+! Description: demonstrate usage of polymark jnl file
+
+set mode verify
+
+! Open demo ship track file with Lat, Lon, and SST
+use polydata
+
+! polymark needs an underlying plot to define scaling
+go basemap x=130:250 Y=20:65 20
+go polymark poly/over/key/title="SST along track" lon lat sst star 
+\message
+
+! A little smaller & outline
+go basemap x=130:250 Y=20:65 20
+go polymark poly/over/key/line/fill/lev=(1,9,1)/title="Smaller & outline" lon lat sst square .6
+\message
+
+! Use a square in a pattern & outline
+go basemap x=130:250 Y=20:65 20
+go polymark poly/over/key/pattern=4patterns/palette=black/line/fill/lev=(1,9,2)/title="Using patterns" lon[i=3:37:2] lat[i=3:37:2] sst[i=3:37:2] square 1.75

@@ -1,0 +1,7 @@
+! Simple tests of external functions 
+! these are not otherwise tested in the benchmarkd
+! ACM 23-Aug-2006
+! 05/07 *acm* move tests of date1900, tax_* functions and 
+!             fill_xy to bn_internal_external_functions.jnl
+
+exit

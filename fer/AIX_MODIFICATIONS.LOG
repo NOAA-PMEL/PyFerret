@@ -1,0 +1,347 @@
+List of Modifications as made by Daniel Robitaille    
+				(daniel@sequoia.atmos.berkeley.edu)
+
+on his attempt to compile Ferret under AIX 4.3
+
+This list is intended only as a guide to assist others in compiling and linking
+Ferret under IBM AIX 4.x OS's.  The list is neither edited nor verified, 
+and there may be items which are specific to an individuals system setup.
+
+
+
+
+======================================================================  
+
+setenv TMAP_LOCAL /mnt/sequoia/ark6/daniel/ferret/AIX4.2
+symbolic link cc to gcc
+  (our cc setup is broken, and it was easier than trying to refine "cc"
+   to "gcc" in the various Makefiles)
+  
+=======================================================================
+ ./fer/Makefile
+
+  when creating xrevision_type_data.F, ( in "update" section),  just do
+  a normal ">" instead of ">!"
+
+======================================================================
+ in ./lib
+   ln -s ../list-2.1/liblist.a .
+   ln -s /usr/local/lib/libXpm.a .
+
+======================================================================
+mv platform_specific_flags.mk.aix platform_specific_flags.mk.rs6000
+ and modified it for FFLAGS and some PATHs
+
+HOSTTYPE was "rs6000" by default on our server instead of "aix"
+
+   added -DXT_CODE to CFLAGS and FFLAGS
+        (to compile ./fer/gui/UxMethod.c)
+
+   added -ldl to SYSLIB  (for dynamic loading functions dlopen, etc)
+
+======================================================================
+modified:
+  ./fer/ccr/EF_ExternalUtil.c
+  ./fer/ccr/EF_InternalUtil.c
+
+  removed hard-coded link to /home/r3/tmap/local/sun/include/list.h
+     should be  ../../list-2.1/list.h
+
+================================================================
+
+Modified ./fer/ctx/Makefile
+         ./fer/dat/Makefile
+         ./fer/doo/Makefile
+         ./fer/efn/Makefile
+         ./fer/fmt/Makefile
+         ./fer/ino/Makefile
+         ./fer/mem/Makefile
+         ./fer/ocn/Makefile
+         ./fer/plt/Makefile
+         ./fer/rpn/Makefile
+         ./fer/stk/Makefile
+         ./fer/utl/Makefile
+         ./fer/xeq/Makefile
+         ./fer/special/Makefile
+
+  (that's all the fortran 90 makefiles)
+
+ Added:
+
+.SUFFIXES:
+.SUFFIXES: .o .f .F .c .f90 .F90
+
+.F.o :
+        xlf90 $(FFLAGS)           $*.F       
+
+===============================================================
+
+Renamed  "INHERIRED_LIMITS" to "INLIMITS"
+ in ./fer/ctx/inherited_limits.F
+    ./fer/ctx/flesh_out_axis.F
+    ./fer/ctx/merge_grid.F
+    ./fer/ctx/mergify_grid_axis.F
+
+ It seems AIX compiler doesn't like Function logical with more than
+  8 characters  in their label.
+
+
+===============================================================
+
+The cpp has serious problems with  single-quotes and ?? or ???
+Just need to replace single-quotes with double-quotes.
+
+Modified  
+  ./fer/doo/regrid_comments.F
+      replaced
+           REGRID_COMMENTS = 'regridded ???'
+      by
+           REGRID_COMMENTS = "regridded ???"
+              
+
+  ./fer/fmt/alg_trans_titl.F
+      replaced 
+           ALG_TRANS_TITL = '???'
+      by
+           ALG_TRANS_TITL = "???"
+    
+
+  ./fer/fmt/lohi_string.F
+      replaced
+           strbuf = '???'
+      by
+           strbuf = "???"
+
+ ./fer/gnl/pop_cs.F
+      replaced
+           STOP 'cs_stk_??'
+      by
+           STOP "cs_stk_??"
+
+ ./fer/ino/read_ez.F
+     replaced
+            6000   CALL ERRMSG( ferr_internal, status, 'READ_EZ ??',
+*4900 )
+     by
+            6000   CALL ERRMSG( ferr_internal, status, "READ_EZ ??",
+*4900 )
+
+ ./fer/mem/delete_variable.F
+      replaced
+            CALL WARN( 'CORRUPTION! mr_protected ????' )
+      by
+            CALL WARN( "CORRUPTION! mr_protected ????" )
+
+ ./fer/rpn/alg_trans_code.F
+      replaced
+              ALG_TRANS_CODE = '???'
+      by
+              ALG_TRANS_CODE = "???"
+
+ ./fer/stk/eval_expr.F
+      replaced
+              IF ( cx_stack_ptr .NE. cx_cmnd+1 ) WRITE (6,*)
+'get_cmnd_???'
+      by
+              IF ( cx_stack_ptr .NE. cx_cmnd+1 ) WRITE (6,*)
+"get_cmnd_???"
+
+
+ ./fer/stk/get_prot_cmnd_data.F
+      replaced
+              IF ( cx_stack_ptr .NE. cx_cmnd+nu ) WRITE (6,*)
+'get_cmnd_???'
+      by
+              IF ( cx_stack_ptr .NE. cx_cmnd+nu ) WRITE (6,*)
+"get_cmnd_???"
+
+ ./fer/stk/is_do_gc_fcn.F
+      replaced
+              IF ( is_cx(isp) .NE. cx_stack_ptr ) WRITE (6,*)
+'OP_STK??'   ! temp
+      by
+              IF ( is_cx(isp) .NE. cx_stack_ptr ) WRITE (6,*)
+"OP_STK??"   ! temp
+
+ ./fer/stk/is_do_op.F
+      replaced
+              IF ( is_cx(isp) .NE. cx_stack_ptr ) WRITE (6,*)
+'OP_STK??'   ! temp
+      by
+              IF ( is_cx(isp) .NE. cx_stack_ptr ) WRITE (6,*)
+"OP_STK??"   ! temp
+
+ ./fer/xeq/xeq_define.F
+     replaced
+        5400   CALL ERRMSG( ferr_syntax, status,
+     .                  cmnd_buff(:len_cmnd)//' ???', *5000 )
+     by
+        5400   CALL ERRMSG( ferr_syntax, status,
+     .                  cmnd_buff(:len_cmnd)//" ???", *5000 )
+
+ ./fer/xeq/xeq_endif.F
+     replaced
+       5400   CALL ERRMSG( ferr_internal, status, 'ENDIF ifstk??',
+*5000)
+     by
+       5400   CALL ERRMSG( ferr_internal, status, "ENDIF ifstk??",
+*5000)
+
+
+===================================================
+ ./fer/gnl/dollar_command.F
+   removed this AIX_XLF special case:
+
+#ifdef AIX_XLF
+           risc_buff = cmnd(iptr+1:)
+           cmnd(dollar:) = arg(1:lenarg) // risc_buff
+           lencmnd = (dollar-1) + lenarg + (lencmnd-iptr)   ! new length
+#else
+           cmnd(dollar:) = arg(1:lenarg) // cmnd(iptr+1:)
+           lencmnd = (dollar-1) + lenarg + (lencmnd-iptr)   ! new length
+#endif
+
+=====================================================
+ ./fer/gnl/show_1_function.F
+
+  continuation character "1" was in the wrong column for this statement:
+
+    CHARACTER units*40, gcf_name*40, ef_arg_name*40, ef_descr*80,
+    1    ef_units*40
+
+
+ ./fer/mem/find_var_name.F
+  various continous character "1" were in the wrong column
+   (5 of them)
+
+
+======================================================
+ ./fer/rpn/alg_break_up.F
+    continuation character "1" was in the wrong column for the data
+statements
+
+======================================================
+ ./fer/utl/gcf_get_axis_srcs.F
+    continuation character "2" was in the wrong colunm in two locations
+
+====================================================== 
+ ./fer/utl/itsa_modulo_gcf.F
+    continuation character "1" was in the wrong colunm in two locations
+
+======================================================
+ ./fer/utl/match_quoted_name.F
+    continuation character "1" was in the wrong colunm in one location
+
+======================================================
+ ./fer/xeq/ceq_show.F
+    continuation character "1" was in the wrong colunm in one location
+
+======================================================
+
+copied ./fer/platform_specific_flags.mk.rs6000 to ./ppl
+ and made PPLUS_FFLAGS similar to FFLAGS
+
+Added to PPLUS_FFLAGS:
+   -DNO_OPEN_CARRIAGECONTROL
+   -DNO_OPEN_READONLY
+   -Dxgks
+Removed -u from PPLUS_FFLAGS  (allow undefined typing) 
+
+=======================================================
+
+ modified   
+    ./ppl/tmapadds/Makefile
+    ./ppl/complot/Makefile
+    ./ppl/ourlib/Makefile
+    ./ppl/plot/Makefile
+    ./ppl/plotlib/Makefile
+    ./ppl/pplepic/Makefile
+    ./ppl/pplp_only/Makefile
+    ./ppl/pplusr/Makefile
+    ./ppl/symlib/Makefile
+ 
+ (they are all fortran 90 makefiles that need to be modified)
+
+ replaced 
+    $(FC) $(PPLUS_FFLAGS) -c $<
+ by
+    .SUFFIXES:
+    .SUFFIXES: .o .f .F .c .f90 .F90
+
+    .F.o :
+         $(FC) $(PPLUS_FFLAGS) -c $*.F
+
+========================================================
+
+ ./ppl/tmapadds/shade.F
+
+ continuation symbol "1" in the wrong column in 3 locations
+
+========================================================
+
+
+  ./fmt/Makefile
+Modified Makefile for fortran compiler lines:
+
+F77=f77
+
+.SUFFIXES:
+.SUFFIXES: .o .f .F .c .f90 .F90
+
+.c.o:
+        (cc $(CFLAGS) -c $(DEBUG) $(<F))
+
+.F.o:
+        $(F77) -c $(DEBUG) $(FFLAGS) $*.F
+
+==========================================================
+
+ ./fmt/src/readline.c
+
+added:        
+  #include <string.h>
+  #include <sys/dir.h>
+  #define direct dirent
+  #define d_namlen d_reclen
+
+==========================================================
+
+ ./fer/ccr/fermain_c.c
+
+   replaced
+     char *meta_name = ".gif"; /* Unused dummy name */
+     set_batch_graphics_(meta_name);
+      ++i;
+
+ by
+     char *meta_name = ".gif"; /* Unused dummy name */
+   #ifdef NO_ENTRY_NAME_UNDERSCORES
+     set_batch_graphics(meta_name);
+   #else
+     set_batch_graphics_(meta_name);
+   #endif
+     ++i;
+
+===========================================================
+
+ ./fer/Makefile
+  
+  added special/aix_routines.o to FEROBJS_DFLT
+
+===========================================================
+
+ ./fer/ccr/EF_Internal.c
+ ./fer/ccr/EF_External.c
+
+   Need to add a NO_ENTRY_NAME_UNDERSCORES case for various
+  cases
+===========================================================
+
+ ./fer/gui/ferret_structures.h
+ 
+  include   list.h should point to
+    ../../list-2.1/list.h
+
+===========================================================
+
+

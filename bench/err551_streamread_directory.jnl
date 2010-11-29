@@ -1,0 +1,15 @@
+! Bug: file/form=stream doesnt see file in another directory
+
+sp rm -f subdir/a.dat
+
+def ax/x=1:1/np=1 xax
+def grid/x=xax g
+list/clobber/form=stream/file="a.dat" 1
+file/form=stream/grid=g/var=a "a.dat"
+list a              
+
+can dat/all
+sp mkdir -p subdir
+sp mv a.dat subdir
+file/form=stream/grid=g/var=a "subdir/a.dat"
+list a                     

@@ -1,0 +1,17 @@
+ ! err600_upcase.jnl
+ ! 10/23/2006
+ ! acm
+ ! bug 1461: bounds variable is created for netcdf output with upcased axis name,
+ !           but cd_write_var looked for it with original lowercase axis name.
+
+SET MODE ignore_error
+
+USE err600_upcase.nc
+SAVE/CLOBBER/FILE=b.nc v
+
+! this was the workaround for v6.0. After the fix this works the same as the above
+CANCEL MODE upcase
+SAVE/CLOBBER/FILE=b.nc v
+
+SET MODE/LAST upcase_output
+SET MODE/LAST ignore_error

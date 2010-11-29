@@ -1,0 +1,20 @@
+! err618_julday.jnl
+! Bug 1639
+! ACM 2/12/09
+
+! reported by Martin Shcmidt, 12-Feb-2009
+!
+define axis/t=1-dec-1998:31-mar-2002:12/unit=hours/t0=1-jan-1955/cal=gregorian tax
+define grid/t=tax tgrid
+let tdummy=0*t[gt=tgrid]
+
+let rjulianday = TAX_JDAY(t[gt=tdummy],tdummy)
+! This is correct
+list/t=27-feb-1999:02-mar-1999 rjulianday
+
+! Now look to somewhere else
+list/t=31-dec-1999:02-jan-2000 rjulianday
+
+! Now list the first region again. March 1 was
+! being listed as day 61 not day 60
+list/t=27-feb-1999:02-mar-1999 rjulianday

@@ -1,0 +1,26 @@
+*	WS_TYPES.INC
+
+*	Include file to define supported gks workstation types
+*	J Davison
+
+	integer		ws_xwindow,
+     .			ws_uis,
+     .			ws_meta_in,
+     .			ws_meta_out,
+     .			ws_ps_mono,
+     .			ws_ps_color,
+     .			ws_tek4014,
+     .			ws_tek4107
+
+	common/wstypes/	ws_xwindow,
+     .                  ws_uis,
+     .                  ws_meta_in,
+     .                  ws_meta_out,
+     .                  ws_ps_mono,
+     .                  ws_ps_color,
+     .                  ws_tek4014,
+     .                  ws_tek4107
+
+  
+
+

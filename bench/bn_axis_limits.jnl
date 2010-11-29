@@ -1,0 +1,46 @@
+!bn301_axis_limits.jnl
+! exercise the new-V301 /XLIMITS and /YLIMITS qualifiers
+
+define axis/x=20e:10w:10/unit=degree xax
+define axis/y=60s:60n/unit=degree/npoints=41 yax
+define axis/z=0:1000:40/unit=meter/depth zax
+define axis/t=1-jan-1960:15-dec-1999:5/unit=days tax
+define grid/x=xax/y=yax/z=zax/t=tax gformat
+
+set wind/asp=1:ax/size=1 1
+
+define view/x=0.00,0.25/y=0.00,0.25 v11
+define view/x=0.25,0.50/y=0.00,0.25 v12
+define view/x=0.50,0.75/y=0.00,0.25 v13
+define view/x=0.75,1.00/y=0.00,0.25 v14
+define view/x=0.00,0.25/y=0.25,0.50 v21
+define view/x=0.25,0.50/y=0.25,0.50 v22
+define view/x=0.50,0.75/y=0.25,0.50 v23
+define view/x=0.75,1.00/y=0.25,0.50 v24
+define view/x=0.00,0.25/y=0.50,0.75 v31
+define view/x=0.25,0.50/y=0.50,0.75 v32
+define view/x=0.50,0.75/y=0.50,0.75 v33
+define view/x=0.75,1.00/y=0.50,0.75 v34
+define view/x=0.00,0.25/y=0.75,1.00 v41
+define view/x=0.25,0.50/y=0.75,1.00 v42
+define view/x=0.50,0.75/y=0.75,1.00 v43
+define view/x=0.75,1.00/y=0.75,1.00 v44
+
+* error checks
+set grid abstract
+set region/i=1:5
+set mode ignore_errors
+plot/xlimits i
+plot/xlimits= i
+plot/xlimits=text i
+plot/xlimits=1 i
+plot/xlimits=1: i
+plot/xlimits=1:: i
+plot/xlimits=1:2: i
+plot/xlimits=5:5 i
+set mode/last ignore_errors
+
+GO bn_axis_limits.sub1   ! lines
+GO bn_axis_limits.sub2   ! 2D graphics
+
+cancel viewports	! clean-up

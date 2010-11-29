@@ -1,0 +1,346 @@
+! create_KMZ.jnl
+\cancel mode verify
+!
+!
+! Make a KMZ archive containing Ferret gif images for use in Google Earth.
+! The tags that are written to the file are take from the documentation
+! at http://code.google.com/apis/kml/documentation/kmlreference.html
+! and comments in this script are take from that document.
+!
+! For more information, please contact jian.zhou3@mail.mcgill.ca
+!
+say START FERRET WITH ferret -gif SO THAT THE IMAGE CAN BE MADE WITH TRANSPARENCY
+
+!         arguments           1         2                      3                  4        5
+!Usage1:  GO create_KMZ plot_command variable K=low_value:high_value:increment l=value [Duration]
+!         arguments           1         2         3                   4                    5
+!Usage2:  GO create_KMZ plot_command variable K=value L=low_value:high_value:increment [Duration]
+!         arguments           1         2         3                   4                    5
+!Usage3:  GO create_KMZ plot_command variable K=null L=low_value:high_value:increment [Duration]
+!         arguments           1         2                      3                  4        5
+!Usage4:  GO create_KMZ plot_command variable K=low_value:high_value:increment l=null [Duration]
+!         arguments           1         2        3      4        5
+!Usage5:  GO create_KMZ plot_command variable K=null L=null [Duration]
+
+
+!Examples:
+! in plot_command, "pal" and "lev" section is optional
+! make sure you type "lev section" at the end of your plot_command (if you choose to add "lev" section), like the following examples
+! $5 is optional (the duration of images in the movie, unit: seconds. If not indicated, the default is 0.2) 
+! yes? go create_kmz shade/pal=light_centered/lev=(-2,31,1) temp K=1:10:1 L=1 0.5    OR
+! yes? go create_kmz shade/pal=light_centered/lev=(-2,31,1) temp[d=2]-o_temp[d=1] K=1 L=1:12:1    OR
+! yes? go create_kmz fill/pal=light_centered/lev=(-2,31,1) temp K=NULL L=1:12:2 OR
+! yes? go create_kmz shade/pal=light_centered temp K=1:10:2 L=NULL
+! yes? go create_kmz shade temp K=NULL L=NULL
+
+
+query/ignore $1%Argument 1 is the plot command where you can indicate pal and lev (MUST type lev in the end of the plot command)%
+query/ignore $2%Argument 2 is the variable name, math calculation can be indicated%
+query/ignore $3%Argument 3 is k value range or null%
+query/ignore $4%Argument 4 is l value range or null%
+
+IF $5"0|*>1" THEN
+   DEFINE SYMBOL duration = $5"0"
+ELSE
+   DEFINE SYMBOL duration = 0.2
+ENDIF
+
+DEFINE SYMBOL pcommand = $1
+LET plotcom = "($pcommand)"
+LET has_levs = STRINDEX(plotcom, "lev")
+IF `has_levs EQ 0` THEN
+    LET has_levs = STRINDEX(plotcom, "LEV")
+ENDIF
+
+DEFINE SYMBOL commandvar = ($pcommand)
+LET has_noaxes = STRINDEX("($commandvar)","NOAXES")
+IF `has_noaxes EQ 0` THEN
+    LET has_noaxes = STRINDEX("($commandvar)","noaxes")
+ENDIF
+IF `has_noaxes EQ 0` THEN
+    LET has_noaxes = STRINDEX("($commandvar)","Noaxes")
+ENDIF
+IF `has_noaxes GT 0` THEN
+   SAY YOU DO NOT NEED TO INDICATE NOAXES SINCE IT IS DEFAULT
+   EXIT/SCRIPT
+ENDIF
+LET has_pal = STRINDEX("($commandvar)","PAL")
+IF `has_pal EQ 0` THEN
+    LET has_pal = STRINDEX("($commandvar)","pal")
+ENDIF
+IF `has_pal EQ 0` THEN
+    LET has_pal = STRINDEX("($commandvar)","Pal")
+ENDIF
+LET has_lev = STRINDEX("($commandvar)","LEV")
+IF `has_lev EQ 0` THEN
+    LET has_lev = STRINDEX("($commandvar)","lev")
+ENDIF
+IF `has_lev EQ 0` THEN
+    LET has_lev = STRINDEX("($commandvar)","Lev")
+ENDIF
+IF `has_pal GT has_lev` THEN
+   SAY PLEASE TYPE PAL SECTION IN FRONT OF LEV SECTION AND MAKE SURE LEV SECTION IS IN THE END OF THE PLOT_COMMAND
+   EXIT/SCRIPT
+ENDIF
+
+DEFINE SYMBOL var = $2
+
+DEFINE SYMBOL kml_write LIST/QUIET/nohead/norowhead/file="doc.kml"/format=(a)
+
+DEFINE SYMBOL kml_write1 LIST/QUIET/nohead/norowhead/file="file.txt"/format=(a)
+
+! Header lines
+($kml_write)/clobber {"<?xml version='1.0' encoding='UTF-8'?>"}
+($kml_write)/append  {"<kml xmlns='http://www.opengis.net/kml/2.2' "}
+($kml_write)/append  {" xmlns:gx='http://www.google.com/kml/ext/2.2'> "}
+!<Document>
+($kml_write)/append {"    <Document>"}
+($kml_write)/append {"    	<name>($var)</name>"}
+($kml_write)/append {"    	<open>1</open>"}
+
+! Part of Colorbar code is used here.
+! KML_nlevels        approximate number of color levels to use
+DEFINE SYMBOL KML_nlevels = 30
+! Compute the color levels and save in symbol KML_fill_levels
+LET blank_var = ($var)
+LET the_var = ($var)
+IF `has_levs EQ 0` THEN
+LET vmin = the_var[x=@min,y=@min,z=@min,t=@min]
+LET vmax = the_var[x=@max,y=@max,z=@max,t=@max]
+IF ($center_levels%0|*>1%) THEN
+    LET highest = MAX(ABS(vmin), ABS(vmax))
+    LET vmin = -1*highest
+    LET vmax = highest
+ENDIF
+DEFINE SYMBOL KML_fill_levels (($PPL$RANGE_LOW),($PPL$RANGE_HIGH),($PPL$RANGE_INC))
+ELSE
+DEFINE SYMBOL KML_fill_levels = SUBSTRING("($pcommand)", has_levs, 100)
+SAY IF THE COLORBAR WAS NOT ADJUSTED TO YOUR COMMAND BECAUSE OF AN UNSOLVED BUG, PLEASE RUN YOUR COMMAND AGAIN AND THE COLORBAR WILL PROBABLY BE RIGHT
+ENDIF
+
+! Draw the colorbar using the levels and the palette that will be used for all of the main plots
+SET WINDOW/SIZE=0.1/ASPECT=3
+DEFINE SYMBOL colorbar_quals = NOAXES/NOLABELS/LEVELS=($KML_fill_levels)
+! The command to draw colorbar is slightly different between different usages.
+
+! Colorbar is tagged here
+($kml_write)/append {"      <ScreenOverlay>"}
+($kml_write)/append {"         <name>Colorbar_($var)</name>"}
+($kml_write)/append {"         <Icon>"}
+($kml_write)/append {"            <href>Colorbar.gif</href>"}
+($kml_write)/append {"         </Icon>"}
+($kml_write)/append {"         <overlayXY x='0' y='0' xunits='fraction' yunits='fraction'/>"}
+($kml_write)/append {"         <screenXY x='0' y='0' xunits='fraction' yunits='fraction'/>"}
+($kml_write)/append {"         <rotationXY x='0' y='0' xunits='pixels' yunits='pixels'/>"}
+($kml_write)/append {"         <size x='0.15' y='0.6' xunits='fraction' yunits='fraction'/>"}
+($kml_write)/append {"      </ScreenOverlay>"}
+
+DEFINE SYMBOL kvalues = $3
+DEFINE SYMBOL lvalues = $4
+
+DEFINE SYMBOL kvaluerange = ($kvalues)
+DEFINE SYMBOL lvaluerange = ($lvalues)
+
+LET k_has_null = STRINDEX ("($kvaluerange)","N")
+IF `k_has_null EQ 0` THEN
+    LET K_has_null = STRINDEX ("($kvaluerange)","n")
+ENDIF
+LET k_has_colon = STRINDEX ("($kvaluerange)",":")
+LET l_has_null = STRINDEX ("($lvaluerange)","N")
+IF `l_has_null EQ 0` THEN
+    LET l_has_null = STRINDEX ("($lvaluerange)","n")
+ENDIF
+LET l_has_colon = STRINDEX ("($lvaluerange)",":")
+
+IF `k_has_null EQ 0 AND k_has_colon GT 0 AND l_has_null EQ 0 AND l_has_colon EQ 0` THEN
+    SAY K has a range and L has a value, Usage 1
+    !Usage 1 code here
+    LET usage = 1
+
+    !Colorbar is drawn here based on the symbols defined above.
+    SHADE/L=1/K=1/($colorbar_quals) blank_var
+    PPL AXLEN 0.01 0.01
+    LET bar_wid = ($PPL$WIDTH)* 0.1
+    PPL SHAKEY 1,1,0.4,0,3,6,`(($PPL$WIDTH)/2)-((bar_wid)*3)`,`(($PPL$WIDTH)/2-(bar_wid))`,1,`($PPL$HEIGHT)-1`
+    PPL SHADE
+    !save the result as a gif image
+    FRAME/TRANSPARENT/FORMAT=gif/FILE="Colorbar.gif"
+    ($kml_write1)/append {"Colorbar.gif"}
+    !SET WINDOW/SIZE=0.5/ASPECT=0.5
+
+    !The main part of doc.kml is written by the following repeat command. Please refer to create_KMZ_groundoverlay.jnl
+    ($kml_write)/append {"      <Folder>"}
+    ($kml_write)/append {"      <name>($var) ($lvaluerange)</name>"}
+    ($kml_write)/append {"      <open>1</open>"} 
+    REPEAT/($kvaluerange) (GO create_KMZ_groundoverlay)
+    say teststringprintedgroundoverlay
+    ($kml_write)/append {"    </Folder>"}
+
+    ($kml_write)/append {"      <gx:Tour>"}
+    ($kml_write)/append {"      <name>Play me</name>"}
+    ($kml_write)/append {"      <gx:Playlist>"}
+    REPEAT/($kvaluerange) (GO create_KMZ_tour)
+    say teststringprintedtour
+    ($kml_write)/append {"      </gx:Playlist>"}
+    ($kml_write)/append {"      </gx:Tour>"}
+ENDIF
+
+IF `k_has_null EQ 0 AND k_has_colon EQ 0 AND l_has_null EQ 0 AND l_has_colon GT 0` THEN
+    SAY K has a value and L has a range, Usage 2
+    LET usage = 2  
+ 
+    !Colorbar is drawn here based on the symbols defined above.
+    SHADE/L=1/K=1/($colorbar_quals) blank_var
+    PPL AXLEN 0.01 0.01
+    LET bar_wid = ($PPL$WIDTH)* 0.1
+    PPL SHAKEY 1,1,0.4,0,3,6,`(($PPL$WIDTH)/2)-((bar_wid)*3)`,`(($PPL$WIDTH)/2-(bar_wid))`,1,`($PPL$HEIGHT)-1`
+    PPL SHADE
+    !save the result as a gif image
+    FRAME/TRANSPARENT/FORMAT=gif/FILE="Colorbar.gif"
+    ($kml_write1)/append {"Colorbar.gif"}
+    !SET WINDOW/SIZE=0.5/ASPECT=0.5
+
+    !The main part of doc.kml is written by the following repeat command. Please refer to create_KMZ_groundoverlay.jnl
+    ($kml_write)/append {"      <Folder>"}
+    ($kml_write)/append {"      <name>($var) ($kvaluerange)</name>"}
+    ($kml_write)/append {"      <open>1</open>"} 
+    REPEAT/($lvaluerange) (GO create_KMZ_groundoverlay)
+    ($kml_write)/append {"    </Folder>"}
+
+    ($kml_write)/append {"      <gx:Tour>"}
+    ($kml_write)/append {"      <name>Play me</name>"}
+    ($kml_write)/append {"      <gx:Playlist>"}
+    REPEAT/($lvaluerange) (GO create_KMZ_tour)
+    ($kml_write)/append {"      </gx:Playlist>"}
+    ($kml_write)/append {"      </gx:Tour>"}
+ENDIF
+
+IF `k_has_null GT 0 AND k_has_colon EQ 0 AND l_has_null EQ 0 AND l_has_colon GT 0` THEN
+    SAY K is null and l has a range, Usage 3
+    LET usage = 3
+
+    !Colorbar is drawn here based on the symbols defined above.
+    SHADE/L=1/($colorbar_quals) blank_var
+    PPL AXLEN 0.01 0.01
+    LET bar_wid = ($PPL$WIDTH)* 0.1
+    PPL SHAKEY 1,1,0.4,0,3,6,`(($PPL$WIDTH)/2)-((bar_wid)*3)`,`(($PPL$WIDTH)/2-(bar_wid))`,1,`($PPL$HEIGHT)-1`
+    PPL SHADE
+    !save the result as a gif image
+    FRAME/TRANSPARENT/FORMAT=gif/FILE="Colorbar.gif"
+    ($kml_write1)/append {"Colorbar.gif"}
+    !SET WINDOW/SIZE=0.5/ASPECT=0.5
+
+    !The main part of doc.kml is written by the following repeat command. Please refer to create_KMZ_groundoverlay.jnl
+    ($kml_write)/append {"      <Folder>"}
+    ($kml_write)/append {"      <name>($var)</name>"}
+    ($kml_write)/append {"      <open>1</open>"} 
+    REPEAT/($lvaluerange) (GO create_KMZ_groundoverlay)
+    ($kml_write)/append {"    </Folder>"}
+
+    ($kml_write)/append {"      <gx:Tour>"}
+    ($kml_write)/append {"      <name>Play me</name>"}
+    ($kml_write)/append {"      <gx:Playlist>"}
+    REPEAT/($lvaluerange) (GO create_KMZ_tour)
+    ($kml_write)/append {"      </gx:Playlist>"}
+    ($kml_write)/append {"      </gx:Tour>"}
+ENDIF
+
+IF `k_has_null EQ 0 AND k_has_colon GT 0 AND l_has_null GT 0 AND l_has_colon EQ 0` THEN
+    SAY K has a range and L is NULL, Usage 4
+    LET usage = 4
+
+    !Colorbar is drawn here based on the symbols defined above.
+    SHADE/K=1/($colorbar_quals) blank_var
+    PPL AXLEN 0.01 0.01
+    LET bar_wid = ($PPL$WIDTH)* 0.1
+    PPL SHAKEY 1,1,0.4,0,3,6,`(($PPL$WIDTH)/2)-((bar_wid)*3)`,`(($PPL$WIDTH)/2-(bar_wid))`,1,`($PPL$HEIGHT)-1`
+    PPL SHADE
+    !save the result as a gif image
+    FRAME/TRANSPARENT/FORMAT=gif/FILE="Colorbar.gif"
+    ($kml_write1)/append {"Colorbar.gif"}
+    !SET WINDOW/SIZE=0.5/ASPECT=0.5
+
+    !The main part of doc.kml is written by the following repeat command. Please refer to create_KMZ_groundoverlay.jnl
+    ($kml_write)/append {"      <Folder>"}
+    ($kml_write)/append {"      <name>($var)</name>"}
+    ($kml_write)/append {"      <open>1</open>"} 
+    REPEAT/($kvaluerange) (GO create_KMZ_groundoverlay)
+    ($kml_write)/append {"    </Folder>"}
+
+    ($kml_write)/append {"      <gx:Tour>"}
+    ($kml_write)/append {"      <name>Play me</name>"}
+    ($kml_write)/append {"      <gx:Playlist>"}
+    REPEAT/($kvaluerange) (GO create_KMZ_tour)
+    ($kml_write)/append {"      </gx:Playlist>"}
+    ($kml_write)/append {"      </gx:Tour>"}
+ENDIF
+
+IF `k_has_null GT 0 AND k_has_colon EQ 0 AND l_has_null GT 0 AND l_has_colon EQ 0` THEN
+    SAY K and L are NULL, Usage 5
+    LET usage = 5
+
+    !Colorbar is drawn here based on the symbols defined above.
+    SHADE/($colorbar_quals) blank_var
+    PPL AXLEN 0.01 0.01
+    LET bar_wid = ($PPL$WIDTH)* 0.1
+    PPL SHAKEY 1,1,0.4,0,3,6,`(($PPL$WIDTH)/2)-((bar_wid)*3)`,`(($PPL$WIDTH)/2-(bar_wid))`,1,`($PPL$HEIGHT)-1`
+    PPL SHADE
+    !save the result as a gif image
+    FRAME/TRANSPARENT/FORMAT=gif/FILE="Colorbar.gif"
+    ($kml_write1)/append {"Colorbar.gif"}
+    !SET WINDOW/SIZE=0.5/ASPECT=0.5
+
+    ($kml_write)/append {"      <Folder>"}
+    ($kml_write)/append {"      <name>($var)</name>"}
+    ($kml_write)/append {"      <open>1</open>"} 
+    IF `has_levs EQ 0` THEN
+       ($pcommand)/NOAXES/LEVELS=($KML_fill_levels) ($var)
+    ELSE
+       ($pcommand)/NOAXES ($var)
+    ENDIF
+    FRAME/TRANSPARENT/FILE=($kvaluerange)_($lvaluerange).gif
+    ($kml_write1)/append {"($kvaluerange)_($lvaluerange).gif"}
+    ($kml_write)/append {"      <GroundOverlay id='($var) ($kvaluerange) ($lvaluerange)'>"}
+    ($kml_write)/append {"         <name>($var) ($kvaluerange) ($lvaluerange)</name>"}
+    ($kml_write)/append {"         <visibility>1</visibility>"}
+    ($kml_write)/append {"         <Icon>"}
+    ($kml_write)/append {"            <href>K=($kvaluerange)_($lvaluerange).gif</href>"}
+    ($kml_write)/append {"         </Icon>"}
+    ($kml_write)/append {"         <LatLonBox>"}
+    ($kml_write)/append {"             <north>($ppl$ymax)</north>"}
+    ($kml_write)/append {"             <south>($ppl$ymin)</south>"}
+    IF `(360 - (($PPL$XMAX) - ($PPL$XMIN))) LT 6` THEN
+	DEFINE SYMBOL iinterval = `(360 - (($PPL$XMAX) - ($PPL$XMIN)))`
+	($kml_write)/append {"             <east>`($ppl$xmin)-(($iinterval)/2)`</east>"}
+	($kml_write)/append {"             <west>`($ppl$xmax)+(($iinterval)/2)`</west>"}	
+    ELSE
+	($kml_write)/append {"             <east>($ppl$xmin)</east>"}
+	($kml_write)/append {"             <west>($ppl$xmax)</west>"}
+    ENDIF
+    ($kml_write)/append {"             <rotation>0</rotation>"}
+    ($kml_write)/append {"         </LatLonBox>"}
+
+    ($kml_write)/append {"      </GroundOverlay>"}
+    ($kml_write)/append {"    </Folder>"}
+ENDIF
+ 
+! Close the remaining tags
+($kml_write)/append {"    </Document>"}
+($kml_write)/append {"</kml>"}
+($kml_write1)/append {"doc.kml"}
+
+cancel symbol kml_write
+cancel symbol kml_write1
+
+
+!zip doc.kml and gif images to make a KMZ archive
+!spawn zip temp.zip doc.kml *.gif
+spawn xargs zip temp.zip < file.txt
+spawn mv temp.zip output.kmz
+!delete doc.kml and gif images and only left KMZ archive as the script output
+!!spawn xargs rm < file.txt
+!!spawn rm file.txt
+
+set mode/last verify
+! --- end of create_KMZ.jnl ---
+! --- Visit http://rose.geog.mcgill.ca/~jian to Animate the KMZ ---

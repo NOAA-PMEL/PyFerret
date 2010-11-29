@@ -1,0 +1,423 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Utility functions :
+ *	gevtm - evaluate transformation matrix
+ *	gactm - accumulate transformation 
+ *        
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include <string.h>
+#include "xgks.h"
+#include "fortxgks.h"
+#include "pdrutils.h"
+
+#ifndef lint
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+#define DATARECWIDTH 80 
+
+
+/*
+ * gprec - Pack Data Record  --  Called by Fortran routines
+ *
+ *   int     *il        -  number of integer entries
+ *   int     *ia        -  array containing integers entries
+ *   int     *rl        -  number of real entries
+ *   float   *ra        -  array containing real entries
+ *   int     *sl        -  number of character string entries
+ *   int     *lstr      -  lengths of each character string entry
+ *   char    *str       -  character string entries
+ *   int     *mldr      -  dimension of data record array
+ *   int     *errind    -  error indicator
+ *   int     *ldr       -  number of array elements used in datarec
+ *   char    *datarec   -  data record
+ */
+/*FORTRAN*/
+gprec(
+    int            *il,
+    int            *ia,
+    int            *rl,
+    float          *ra,
+    int            *sl,
+    int            *lstr,
+    char           *str,
+    int            *mldr,
+    int            *errind,
+    int            *ldr,
+    char           *datarec)
+{
+    int		    i;
+    char          **strptrptr;
+
+    debug(("Pack Data Record \n"));
+
+    strptrptr = (Gchar **) malloc((size_t) (*sl * sizeof(Gchar *)));
+    for (i = 0; i < *sl; i++)
+	strptrptr[i] = str + i * str_len;
+
+    gprecc(*il, ia, *rl, ra, *sl, lstr, strptrptr, *mldr, errind, ldr, datarec);
+
+    (void) free((voidp) strptrptr);
+}
+
+
+/*
+ * Pack a data record -- CALLED BY C-ROUTINES ONLY.
+ */
+gprecc(il, ia, rl, ra, sl, lstr, str, mldr, errind, ldr, datarec)
+    int            il;
+    int            *ia;
+    int            rl;
+    float          *ra;
+    int            sl;
+    int            *lstr;
+    char          **str;
+    int             mldr;
+    int            *errind;
+    int            *ldr;
+    char           *datarec;
+{
+    int             i, j;
+    Gdatarec       *pdr;
+    int            *intptr;
+    float          *realptr;
+    char           *fortstrptr, *strptr;
+    char          **strptrptr;
+    int             space;
+
+    {
+	int             intspace, realspace, stringspace, headerspace,
+	                ii;
+
+	/* calculate space needed (in bytes) */
+	/* header  */
+	headerspace = sizeof(int)		/* Magic Number		 */
+	    +sizeof(int)			/* # of ints		 */
+	    +sizeof(int *)			/* -> to ints		 */
+	    +sizeof(int)			/* # of reals		 */
+	    +sizeof(float *)			/* -> to reals		 */
+	    +sizeof(int)			/* # of strings		 */
+	    +sizeof(char **)			/* -> to ->s to strings	 */
+	    +sl * sizeof(char *);		/* ->s to strings        */
+	debug(("    header needs %d bytes \n", headerspace));
+
+	/* integers */
+	intspace = il * sizeof(int);
+	debug(("    %d integers need %d bytes \n", il, intspace));
+
+	/* reals */
+	realspace = rl * sizeof(float);
+	debug(("    %d reals need %d bytes \n", rl, realspace));
+
+	/* strings */
+	stringspace = 0;
+	for (ii = 0; ii < sl; ii++)
+	    stringspace += (lstr[ii] + 1);
+	debug(("    %d strings need %d bytes \n", sl, stringspace));
+
+	space = headerspace + intspace + realspace + stringspace;
+	debug(("    total space needed id %d bytes \n", space));
+    }
+
+    if (space > (mldr) * DATARECWIDTH) {
+	*errind = 2001;
+	(void) gerrorhand(2001, errgprec, (errfp));
+	return;
+    }
+
+    /*
+     * Let pdr point to the passed-in data area.
+     */
+    pdr = (Gdatarec *) datarec;
+    debug(("    pdr is at 0x%x \n", pdr));
+
+    /* set "magic number" so we can tell data is not garbage" */
+    pdr->magicnum = MAGICNUMBER;
+    pdr->nint = il;
+    pdr->nfloat = rl;
+    pdr->nstring = sl;
+
+    /* setup pointer to beginning of integers */
+    intptr = (int *) &(pdr->data);
+    debug(("    data starts at 0x%x \n", intptr));
+
+    /* fill in pointer to integers    */
+    pdr->intptr = (il > 0) ? intptr : NULL;
+
+    /* fill in the integer array */
+    debug(("    ints: "));
+    for (i = 0; i < il; i++) {
+	*(intptr++) = ia[i];
+	debug(("%d ", ia[i]));
+    }
+    debug(("\n"));
+
+    /* setup pointer to beginning of reals */
+    realptr = (float *) intptr;
+
+    /* fill in pointer to reals  */
+    pdr->floatptr = (rl > 0) ? realptr : NULL;
+
+    /* fill in the reals */
+    debug(("    reals: "));
+    for (i = 0; i < rl; i++) {
+	*(realptr++) = ra[i];
+	debug(("%7.2f ", ra[i]));
+    }
+    debug(("\n"));
+
+    /* setup pointer to beginning of string pointers */
+    strptrptr = (char **) realptr;
+    pdr->strptr = (sl) ? strptrptr : NULL;
+
+    /* point past the string pointers */
+    strptr = (char *) strptrptr + sl * sizeof(char *);
+
+    /* for each string */
+    debug(("    strings: \n"));
+    for (i = 0; i < sl; i++) {
+#ifdef DEBUG
+	char           *debugptr = strptr;
+#endif						/* DEBUG */
+	fortstrptr = str[i];
+
+	/* fill in pointer to string */
+	*(strptrptr++) = strptr;
+
+	/* copy the string ... */
+	for (j = 0; j < lstr[i]; j++)
+	    *(strptr++) = *(fortstrptr++);
+
+	/* ... and NULL terminate it */
+	*(strptr++) = '\0';
+
+	debug(("        %d <%s> \n", lstr[i], debugptr));
+    }
+
+#ifdef DEBUG
+    /* dumppdr (datarec); */
+#endif
+
+    *errind = 0;
+
+    /*
+     * Note: although a little confusing, the +1 and -1 are correct.
+     */
+    *ldr = ((strptr - datarec - 1) / DATARECWIDTH) + 1;
+    debug(("    returning ldr %d \n", *ldr));
+}
+
+
+/*
+ * gurec - unpack data record  --  Called by Fortran routines
+ *
+ * Input Parameters:
+ *
+ * int *ldr		number of array elements used in datarec
+ * char *datarec	data record
+ * int *ill		dimension of integer array
+ * int *irl		dimension of real array
+ * int *isl 		dimension of char array
+ *
+ * Output Parameters:
+ *
+ * int   *errind	error indicator
+ * int   *il		number of integer entries
+ * int   *ia		array containing integer entries
+ * int   *rl		number of real entries
+ * int   *ra 		array containing real entries
+ * int   *sl		number of character string entries
+ * int   *lstr		length of each character string entry
+ * char  *str		char string entries
+ */
+/*FORTRAN*/
+gurec(
+    int            *ldr,
+    char           *datarec,
+    int            *ill,
+    int            *irl,
+    int            *isl,
+    int            *errind,
+    int            *il,
+    int            *ia,
+    int            *rl,
+    int            *ra,
+    int            *sl,
+    int            *lstr,
+    char           *str)
+{
+    int             i;
+
+    debug(("Unpack Data Record ill = %d irl = %d isl = %d \n", *ill, *irl, 
+	   *isl));
+
+    /* check "magic number" so we can tell data is not garbage" */
+    if (pdrmagicnum(datarec) != MAGICNUMBER) {
+	*errind = 2003;
+	(void) gerrorhand(2003, errgurec, (errfp));
+	return;
+    }
+    if (*ill < (pdrintnum(datarec)) || *irl < (pdrrealnum(datarec)) ||
+		*isl < (pdrstringnum(datarec))) {
+	*errind = 2001;
+	(void) gerrorhand(2001, errgurec, (errfp));
+	return;
+    }
+    *il = pdrintnum(datarec);
+    *rl = pdrrealnum(datarec);
+    *sl = pdrstringnum(datarec);
+
+    for (i = 0; i < *il; i++)
+	/* NB: access via origin-1 index */
+	ia[i] = (int) pdrintindex(datarec, i+1);
+
+    for (i = 0; i < *rl; i++)
+	/* NB: access via origin-1 index */
+	ra[i] = (float) pdrrealindex(datarec, i+1);
+
+    for (i = 0; i < *sl; i++, str += str_len) {
+	/* NB: access via origin-1 index.  */
+	char   *cp	= pdrstringindex(datarec, i+1);
+	size_t	len	= strlen(cp);
+	size_t	nchr	= MIN(len+1, str_len);
+
+	(void) strncpy(str, cp, nchr);
+	lstr[i] = nchr;
+    }
+}
+
+
+/*
+ * gevtm - evaluate transformation matrix
+ *
+ * float *x0   - reference point X
+ * float *y0   - reference point Y
+ * float *dx   - shift x
+ *
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.193
+ */
+/*FORTRAN*/
+gevtm(
+    float          *x0,
+    float          *y0,
+    float          *dx,
+    float          *dy,
+    float          *phi,
+    float          *fx,
+    float          *fy,
+    int            *sw,
+    float          *mout)
+{
+    Gpoint          ppoint, pshift, pscale;
+    Gfloat          result[2][3];
+
+    debug(("Evaluate Transformation Matrix \n"));
+
+    COORDINATESWITCH(*sw, errgevaltran);
+
+    ppoint.x = *x0;
+    ppoint.y = *y0;
+    pshift.x = *dx;
+    pshift.y = *dy;
+    pscale.x = *fx;
+    pscale.y = *fy;
+
+    if (gevaltran(&ppoint, &pshift, (Gfloat) *phi, &pscale, (Gcsw) *sw, 
+		  result))
+	return;
+
+    MOVE_ARRAY_2X3_TO_1X6(result, mout);
+}
+
+
+/*
+ * gactm - accumulate transformation
+ *
+ * float *minp - input segment transformation
+ * float *x0   - reference point X
+ * float *y0   - reference point Y
+ * float *dx   - shift x
+ * float *dy   - shift y
+ * float *phi  - rotation angle in radians
+ * float *fx   - scaling factor X
+ * float *fy   - scaling factor Y
+ * int   *sw   - coordinate switch GWC | GNDC
+ * float *mout - resulting transformation matrix
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.193
+ */
+/*FORTRAN*/
+gactm(
+    float          *minp,
+    float          *x0,
+    float          *y0,
+    float          *dx,
+    float          *dy,
+    float          *phi,
+    float          *fx,
+    float          *fy,
+    int            *sw,
+    float          *mout)
+{
+    Gpoint          ppoint, pshift, pscale;
+    Gfloat          temp_array[2][3];
+    Gfloat          result[2][3];
+
+    debug(("Accumulate Transformation Matrix \n"));
+
+    COORDINATESWITCH(*sw, errgaccumtran);
+
+    ppoint.x = *x0;
+    ppoint.y = *y0;
+    pshift.x = *dx;
+    pshift.y = *dy;
+    pscale.x = *fx;
+    pscale.y = *fy;
+
+    MOVE_ARRAY_1X6_TO_2X3(minp, temp_array);
+
+    if (gaccumtran(temp_array, &ppoint, &pshift, (Gfloat) *phi, 
+		   &pscale, (Gcsw) *sw, result))
+	return;
+
+    MOVE_ARRAY_2X3_TO_1X6(result, mout);
+}

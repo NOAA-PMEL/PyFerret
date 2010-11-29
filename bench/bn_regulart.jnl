@@ -1,0 +1,15 @@
+! bn_regulart.jnl
+! 5/12/2005 ACM
+ 
+! Test of the USE/REGULART qualifier
+! The axis is irregular in the first instance, and regular in the second
+
+use coads_vwnd
+show axis tcoads
+list/l=1:6 t[gt=tcoads], tbox[gt=tcoads]
+can data/all
+
+use/regulart coads_vwnd
+show axis tcoads
+list/l=1:6 t[gt=tcoads], tbox[gt=tcoads]
+

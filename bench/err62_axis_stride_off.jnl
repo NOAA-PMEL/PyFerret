@@ -1,0 +1,24 @@
+! err62_axis_stride_off.jnl
+! fixing bug 1689: offset shifted by 1 so /OFFSET=0 >> start index = 1
+
+USE truemonth.nc
+
+SET AXIS/STRIDE=12/OFFSET=0 truemonth  ! every January
+LIST var
+
+CAN AXIS/STRIDE `var,return=taxis`
+SET AXIS/STRIDE=12/OFFSET=11 truemonth ! every December
+LIST var
+
+SET MODE IGNORE_ERRROR
+! Previously didnt check for negative offset value
+CAN AXIS/STRIDE `var,return=taxis`
+SET AXIS/STRIDE=12/OFFSET=-1 truemonth 
+
+! Previously didnt give err msg; just ignored non-positive stride value
+SET AXIS/STRIDE=-1/OFFSET=1 truemonth 
+
+SET MODE/LAST IGNORE
+
+
+

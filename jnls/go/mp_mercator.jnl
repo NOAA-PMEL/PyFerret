@@ -1,0 +1,87 @@
+\ cancel mode verify	
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! mp_mercator.jnl --  Sets up variables for a Mercator
+!  projection using 'curvilinear coordinates' code in Ferret v4.50
+!                   
+! Steve Hankin
+! 12/98 - based on mp_lambert_cly.jnl
+
+! Description:  Sets up variables for a Mercator projection
+!
+! Usage:                 arg1        
+!  go mp_mercator [central meridian]
+!
+! arg 1 - longitude used for the center of the projection
+! arg 2 - latitude used for the center of the projection
+
+! Example 1 - basic gridded field:
+!  use coads_climatology 
+!  set region/y=80s:80n
+!  go mp_mercator
+!  set grid sst
+!  shade sst[l=1], x_page, y_page
+
+! Example 2: points plotted over a basemap
+
+! ... turn off automatic axis labeling
+! ppl axlabp,0,0
+! ppl axset 0, 0, 0, 0
+!
+! ... create basemap
+! go mp_mercator
+! set region/x=100e:80w/y=40n:80n
+! go mp_fland 20 gray basemap
+! go mp_graticule
+!
+! ... create and overlay random point
+! let xpt = 160 + RANDU(i)*20
+! let ypt = 50 + RANDU(i+1)*30
+! go mp_line plot/vs/over/i=1:50/symbol=2 xpt,ypt
+! 
+! ... restore axes in preparation for next plot
+! ppl axlabp,-1,-1
+! ppl axset 1,1,1,1
+
+! Note 1: If you intend to plot an overlay which is a subregion
+!         of the original plot you will need to specify the two
+!         optional arguments as in:
+!
+!  use coads_climatology 
+!  go mp_mercator
+!  set grid sst
+!  shade sst[l=1], x_page, y_page
+!  go mp_mercator `mp_central_meridian` `mp_standard_parallel`
+!  set region/x=40e:110e/y=60s:20s
+!  shade/over slp[l=1], x_page, y_page
+!
+! Note 2: The x-range for the subregion to be overlayed must
+!         be: ( `mp_cent_mer` - 180 < x < `mp_cent_me`r + 180 )
+
+! This journal file comes from equations in the following book:
+!
+!    An Album of Map Projections
+!    U.S. Geological Survey
+!    Professional Paper 1453
+!
+! Equation numbers refer to the equation number in this book.
+
+let/quiet mp_x = x
+let/quiet mp_central_meridian = $1%(mp_x[i=@max] + mp_x[i=@min])/2%
+let/quiet mp_y = y
+let/quiet mp_standard_parallel = (mp_y[j=@max] + mp_y[j=@min])/2   ! ???
+
+let/quiet Pi = 3.14159265
+let/quiet deg2rad = Pi / 180.0
+
+let/quiet mp_R = 1
+let/quiet mp_lambda0 = mp_central_meridian * deg2rad
+let/quiet mp_lambda = mp_x * deg2rad
+let/quiet mp_phi = mp_y * deg2rad
+
+let/quiet x_page = mp_R * (mp_lambda-mp_lambda0)              ! eqn (1)
+let/quiet y_page = mp_R *  LN(TAN(mp_phi/2 + pi/4))           ! Mercator eqn
+
+let/quiet mp_mask = 1
+
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+set mode/last verify

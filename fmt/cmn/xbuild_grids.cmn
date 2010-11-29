@@ -1,0 +1,26 @@
+* common xbuild_grids.cmn
+
+* common to assist with processing new grid definitions
+* this could be folded into xgrid.cmn
+
+* V510 -- grid building is now donw with dynamic grids and axes
+
+	INTEGER     max_temp_grid
+	PARAMETER ( max_temp_grid = 100 )
+
+
+
+!	INTEGER firstax, lastax, firstgrid, lastgrid, orig_line_mem
+	INTEGER orig_line_mem,
+     .		num_tmp_grids,
+     .		tmp_nam_ptr(max_grids:grid_ceiling)
+
+	COMMON /XBUILD_GRIDS/
+!     .		firstax,
+!     .		lastax,
+!     .		firstgrid,
+!     .		lastgrid,
+     .		orig_line_mem,
+     .		num_tmp_grids,
+     .		tmp_nam_ptr
+

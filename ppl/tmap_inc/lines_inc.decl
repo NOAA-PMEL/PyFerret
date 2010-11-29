@@ -1,0 +1,18 @@
+* LINES_INC.DECL - converted to Unix 2.26.91          
+* COMMON for PLOT+ with all variables declared
+* created for TMAP usage by Steve Hankin 7/88
+	INTEGER	IMARK
+	REAL	HMARK
+	INTEGER	ITYPE
+	REAL	XOFF
+	REAL	YOFF
+	REAL	XFCT
+	REAL	YFCT
+	REAL	DN1
+	REAL	UP1
+	REAL	DN2
+	REAL	UP2
+	INTEGER	LLENG
+	INTEGER	LNUM
+	INTEGER	IWIND
+* requires: INCLUDE 'PPLV11INC:LINES.INC'                                   

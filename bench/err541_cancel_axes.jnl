@@ -1,0 +1,20 @@
+! Check that an axis in use cannot be cancelled.
+
+use climatological_axes
+cancel data climatological_axes
+let tt = t[gt=month_irreg] + 50*x[i=1:10]
+load tt
+
+show axis/all
+cancel axis month_irreg
+
+show axis/all
+
+! Pre V5.42, this causes a crash: axes were cancelled, but not fully.
+cancel axis/all
+show axis/all
+
+cancel var tt
+cancel axis/all
+
+show axis/all

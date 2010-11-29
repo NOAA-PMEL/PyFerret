@@ -1,0 +1,38 @@
+! bn554_bug_fixes.jnl
+! test various fixes that went into version 5.70
+! 11/03 *acm*
+!
+
+! Test use of automatic levels in SHADE
+GO bn_reset
+GO err560_shade_levels.jnl
+
+! Test use of reading irregular-time mc datasets
+GO bn_reset
+GO err560_mc_irreg_t.jnl
+
+! Crashed on SHADE of variable with NOLEAP axis, and subregion.     
+GO bn_reset
+GO err560_shade_noleap.jnl
+
+! err560_regriding_gaps.jnl
+! If the index has a negative range including the value 
+! -111, was treated as missing rather than a valid index.
+GO bn_reset
+GO err560_regridding_gaps.jnl
+
+! err560_leap_years.jnl
+! inconsistency in computing whether year is a leap year; 
+! bug in drawing the time axis.
+GO bn_reset
+GO err560_leap_years.jnl
+
+! err560_dyn_grids.jnl
+!  plot missing in upper plot; error counting dynamic grids
+! GO bn_reset
+! GO err560_dyn_grids.jnl
+ 
+! err560_century.jnl
+! Century portion of years were not properly tested in numdm1.F
+GO bn_reset
+GO err560_century

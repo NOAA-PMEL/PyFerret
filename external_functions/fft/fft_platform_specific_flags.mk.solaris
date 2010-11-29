@@ -1,0 +1,6 @@
+#
+# platform_specific_includes.mk.solaris
+#
+# This file is included in the External Function Makefiles and defines
+# platform specific macros  (blank)
+

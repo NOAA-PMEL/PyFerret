@@ -1,0 +1,159 @@
+* EF_mem_subsc.CMN - COMMON/ EF_MEM_SUBSC /
+*
+* Jonathan Callahan
+* September, 1998
+*
+* Subscript limits required to use adjustable array declarations in external
+* functions.  The "mem" subscripts will dimension arrays for Ferret
+* "memory resident" values (variables) while the "wrk" arrays are
+* dimension "working storage" arrays which are requested by the external
+* function.
+*
+* The subroutine efcn_compute will copy the contents of xmem_subsc.cmn
+* to the "mem" values before calling the external function's '_compute'
+* routine.  The "wrk" values will also be filled in at this time.
+*
+
+
+*************************************************************************
+******                  PARAMETER DEFINITIONS                      ******
+
+	INTEGER		ef_max_mem_args
+	PARAMETER     ( ef_max_mem_args = 12 )
+
+	COMMON / EF_MEM_SUBSC /
+     .		mem1lox, mem2lox, mem3lox, mem4lox,  mem5lox,  mem6lox,
+     .		mem7lox, mem8lox, mem9lox, mem10lox, mem11lox, mem12lox,
+     .		mem1loy, mem2loy, mem3loy, mem4loy,  mem5loy,  mem6loy,
+     .		mem7loy, mem8loy, mem9loy, mem10loy, mem11loy, mem12loy,
+     .		mem1loz, mem2loz, mem3loz, mem4loz,  mem5loz,  mem6loz,
+     .		mem7loz, mem8loz, mem9loz, mem10loz, mem11loz, mem12loz,
+     .		mem1lot, mem2lot, mem3lot, mem4lot,  mem5lot,  mem6lot,
+     .		mem7lot, mem8lot, mem9lot, mem10lot, mem11lot, mem12lot,
+     .
+     .      memreslox, memresloy, memresloz, memreslot,
+     .
+     .		mem1hix, mem2hix, mem3hix, mem4hix,  mem5hix,  mem6hix,
+     .		mem7hix, mem8hix, mem9hix, mem10hix, mem11hix, mem12hix,
+     .		mem1hiy, mem2hiy, mem3hiy, mem4hiy,  mem5hiy,  mem6hiy,
+     .		mem7hiy, mem8hiy, mem9hiy, mem10hiy, mem11hiy, mem12hiy,
+     .		mem1hiz, mem2hiz, mem3hiz, mem4hiz,  mem5hiz,  mem6hiz,
+     .		mem7hiz, mem8hiz, mem9hiz, mem10hiz, mem11hiz, mem12hiz,
+     .		mem1hit, mem2hit, mem3hit, mem4hit,  mem5hit,  mem6hit,
+     .		mem7hit, mem8hit, mem9hit, mem10hit, mem11hit, mem12hit,
+     .
+     .      memreshix, memreshiy, memreshiz, memreshit,
+     .
+     .		wrk1lox, wrk2lox, wrk3lox, wrk4lox,  wrk5lox,  wrk6lox,
+     .		wrk7lox, wrk8lox, wrk9lox, wrk10lox, wrk11lox, wrk12lox,
+     .		wrk1loy, wrk2loy, wrk3loy, wrk4loy,  wrk5loy,  wrk6loy,
+     .		wrk7loy, wrk8loy, wrk9loy, wrk10loy, wrk11loy, wrk12loy,
+     .		wrk1loz, wrk2loz, wrk3loz, wrk4loz,  wrk5loz,  wrk6loz,
+     .		wrk7loz, wrk8loz, wrk9loz, wrk10loz, wrk11loz, wrk12loz,
+     .		wrk1lot, wrk2lot, wrk3lot, wrk4lot,  wrk5lot,  wrk6lot,
+     .		wrk7lot, wrk8lot, wrk9lot, wrk10lot, wrk11lot, wrk12lot,
+     .
+     .		wrk1hix, wrk2hix, wrk3hix, wrk4hix,  wrk5hix,  wrk6hix,
+     .		wrk7hix, wrk8hix, wrk9hix, wrk10hix, wrk11hix, wrk12hix,
+     .		wrk1hiy, wrk2hiy, wrk3hiy, wrk4hiy,  wrk5hiy,  wrk6hiy,
+     .		wrk7hiy, wrk8hiy, wrk9hiy, wrk10hiy, wrk11hiy, wrk12hiy,
+     .		wrk1hiz, wrk2hiz, wrk3hiz, wrk4hiz,  wrk5hiz,  wrk6hiz,
+     .		wrk7hiz, wrk8hiz, wrk9hiz, wrk10hiz, wrk11hiz, wrk12hiz,
+     .		wrk1hit, wrk2hit, wrk3hit, wrk4hit,  wrk5hit,  wrk6hit,
+     .		wrk7hit, wrk8hit, wrk9hit, wrk10hit, wrk11hit, wrk12hit
+
+	INTEGER
+     .		mem1lox, mem2lox, mem3lox, mem4lox,  mem5lox,  mem6lox,
+     .		mem7lox, mem8lox, mem9lox, mem10lox, mem11lox, mem12lox,
+     .		mem1loy, mem2loy, mem3loy, mem4loy,  mem5loy,  mem6loy,
+     .		mem7loy, mem8loy, mem9loy, mem10loy, mem11loy, mem12loy,
+     .		mem1loz, mem2loz, mem3loz, mem4loz,  mem5loz,  mem6loz,
+     .		mem7loz, mem8loz, mem9loz, mem10loz, mem11loz, mem12loz,
+     .		mem1lot, mem2lot, mem3lot, mem4lot,  mem5lot,  mem6lot,
+     .		mem7lot, mem8lot, mem9lot, mem10lot, mem11lot, mem12lot,
+     .
+     .      memreslox, memresloy, memresloz, memreslot,
+     .
+     .		mem1hix, mem2hix, mem3hix, mem4hix,  mem5hix,  mem6hix,
+     .		mem7hix, mem8hix, mem9hix, mem10hix, mem11hix, mem12hix,
+     .		mem1hiy, mem2hiy, mem3hiy, mem4hiy,  mem5hiy,  mem6hiy,
+     .		mem7hiy, mem8hiy, mem9hiy, mem10hiy, mem11hiy, mem12hiy,
+     .		mem1hiz, mem2hiz, mem3hiz, mem4hiz,  mem5hiz,  mem6hiz,
+     .		mem7hiz, mem8hiz, mem9hiz, mem10hiz, mem11hiz, mem12hiz,
+     .		mem1hit, mem2hit, mem3hit, mem4hit,  mem5hit,  mem6hit,
+     .		mem7hit, mem8hit, mem9hit, mem10hit, mem11hit, mem12hit,
+     .
+     .      memreshix, memreshiy, memreshiz, memreshit,
+     .
+     .		wrk1lox, wrk2lox, wrk3lox, wrk4lox,  wrk5lox,  wrk6lox,
+     .		wrk7lox, wrk8lox, wrk9lox, wrk10lox, wrk11lox, wrk12lox,
+     .		wrk1loy, wrk2loy, wrk3loy, wrk4loy,  wrk5loy,  wrk6loy,
+     .		wrk7loy, wrk8loy, wrk9loy, wrk10loy, wrk11loy, wrk12loy,
+     .		wrk1loz, wrk2loz, wrk3loz, wrk4loz,  wrk5loz,  wrk6loz,
+     .		wrk7loz, wrk8loz, wrk9loz, wrk10loz, wrk11loz, wrk12loz,
+     .		wrk1lot, wrk2lot, wrk3lot, wrk4lot,  wrk5lot,  wrk6lot,
+     .		wrk7lot, wrk8lot, wrk9lot, wrk10lot, wrk11lot, wrk12lot,
+     .
+     .		wrk1hix, wrk2hix, wrk3hix, wrk4hix,  wrk5hix,  wrk6hix,
+     .		wrk7hix, wrk8hix, wrk9hix, wrk10hix, wrk11hix, wrk12hix,
+     .		wrk1hiy, wrk2hiy, wrk3hiy, wrk4hiy,  wrk5hiy,  wrk6hiy,
+     .		wrk7hiy, wrk8hiy, wrk9hiy, wrk10hiy, wrk11hiy, wrk12hiy,
+     .		wrk1hiz, wrk2hiz, wrk3hiz, wrk4hiz,  wrk5hiz,  wrk6hiz,
+     .		wrk7hiz, wrk8hiz, wrk9hiz, wrk10hiz, wrk11hiz, wrk12hiz,
+     .		wrk1hit, wrk2hit, wrk3hit, wrk4hit,  wrk5hit,  wrk6hit,
+     .		wrk7hit, wrk8hit, wrk9hit, wrk10hit, wrk11hit, wrk12hit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

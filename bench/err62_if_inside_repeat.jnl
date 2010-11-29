@@ -1,0 +1,220 @@
+! err62_if_inside_repeat.jnl
+! Bug 1681. Parsing error when, inside the REPEAT, we have
+! endif) on a line of its own.
+
+! the fix for this bug causes a worse bug for GFDL (see #1706). 
+! Thought I had a better fix but it turns out not. For now
+! reverting all the code surrounding these fixes. Do not
+! execute these tests.
+
+cancel mode verify
+
+say "test1"
+if 0 then
+  repeat/RANGE=1:2 (if 0 then; say "  hello1"; endif)
+endif
+
+say "test2"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 0 then;\
+      say "  hello2"; endif)
+endif
+
+say "test3"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 0 then;\
+      say "  hello3";\
+    endif)
+endif
+
+say Now try the same tests with IF 1 inside the REPEATs
+
+say "test4"
+if 0 then
+  repeat/RANGE=1:2 (if 1 then; say "  hello4"; endif)
+endif
+
+say "test5"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello5"; endif)
+endif
+
+say "test6"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello6";\
+    endif)
+endif
+
+say Now try the same tests with IF 1 to execute everything.
+
+say "test7"
+if 1 then
+  repeat/RANGE=1:2 (if 1 then; say "  hello7"; endif)
+endif
+
+say "test8"
+if 1 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello8"; endif)
+endif
+
+say "test9"
+if 1 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello9";\
+    endif)
+endif
+
+say Now try the same tests with IF 1 and ELSE.
+
+say "test10"
+if 1 then
+  repeat/RANGE=1:2 (if 1 then; say "  hello10"; endif)
+else
+  repeat/RANGE=1:2 (if 1 then; say "  else10"; endif)
+endif
+
+say "test11"
+if 1 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello11"; endif)
+else
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  else11"; endif)
+endif
+
+say "test12"
+if 1 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello12";\
+    endif)
+else
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello12";\
+    endif)
+endif
+
+say Now try the same tests with IF 0 and ELSE.
+
+say "test13"
+if 0 then
+  repeat/RANGE=1:2 (if 1 then; say "  hello13"; endif)
+else
+  repeat/RANGE=1:2 (if 1 then; say "  else13"; endif)
+endif
+
+say "test14"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello14"; endif)
+else
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  else14"; endif)
+endif
+
+say "test15"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello15";\
+    endif)
+else
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  else15";\
+    endif)
+endif
+
+
+say Now try the same tests with IF 0 and ELIF.
+
+say "test16"
+if 0 then
+  repeat/RANGE=1:2 (if 1 then; say "  hello16"; endif)
+elif 1 then
+  repeat/RANGE=1:2 (if 1 then; say "  elif16"; endif)
+endif
+
+say "test17"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello17"; endif)
+elif 1 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  elif17"; endif)
+endif
+
+say "test18"
+if 0 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  hello18";\
+    endif)
+elif 1 then
+  repeat/RANGE=1:2 (\
+    if 1 then;\
+      say "  elif18";\
+    endif)
+endif
+
+! Here are the bugs that were caused by the original fix 
+! to bug 1681, and which are in Ferret v6.3;
+! but which werent detected by the benchmarks
+
+SAY "Next should a line that says --->here"
+say "And then    a line that says 201."
+
+! 1706 The second block is never reached; the output should be
+! "here".
+
+def sym a say hi\; say hi
+
+IF 0 THEN
+   say not
+ENDIF
+
+IF 1 THEN
+   say --->here
+ENDIF
+
+! And this, similar to what caused troubles in the LAS scripts,
+! the continuation marks were misinterpreted so the ENDIF was never
+! reached and we never hit the say "done".
+
+
+IF 0 then
+   IF `3 GT 4` THEN \
+     LIST/NOHEADER/NOROWHEADER \
+       1 + 2
+ENDIF
+
+IF 1 THEN
+   IF `3 GT 4` THEN \
+     LIST/NOHEADER/NOROWHEADER \
+       12*8
+ENDIF
+
+IF 1 THEN
+   IF `6 GT 4` THEN \
+     LIST/NOHEADER/NOROWHEADER \
+       3*67
+ENDIF
+
+say "done"
+set mode/last verify

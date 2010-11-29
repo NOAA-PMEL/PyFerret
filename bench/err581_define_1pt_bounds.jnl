@@ -1,0 +1,16 @@
+! err581_define_1pt_bounds.jnl
+! see bug 1401:
+
+! Define a multipoint axis and it works fine.  Then define a 1-point axis and 
+! the result is wrong.  Then we repeat the first multipoint axis definition 
+! again, and even that result is now very wrong!! Same results in both v5.81 
+! for Linux and v5.70 for Irix.
+
+yes? def ax/x/bounds xax = {0,3,5},{-2,2,2,4,4,6}
+yes? list xboxlo[gx=xax],xboxhi[gx=xax],x[gx=xax]
+
+yes? def ax/x/bounds xax = {0},{-2,2}
+yes? list xboxlo[gx=xax],xboxhi[gx=xax],x[gx=xax]
+
+yes? def ax/x/bounds xax = {0,3,5},{-2,2,2,4,4,6}
+yes? list xboxlo[gx=xax],xboxhi[gx=xax],x[gx=xax]

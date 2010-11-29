@@ -1,0 +1,40 @@
+! bn320_cdf
+! benchmark to test netCDF input and output
+! This is the same as bn_cdf with /KEEP_AXNAMES added to SAVE commands.
+
+! test many simultaneous netCDF files
+GO bn_cdf_keepax.sub1
+
+! test abstract variable io
+GO bn_cdf_keepax.sub2
+
+! list long time series using a rigid (non-record axis) time axis --> FAST
+list/clobber/format=cdf/keep_axnames/l=1:300000/rigid/file=test2.cdf l  ! without record dimension
+! list time series using the record dimension --> SLOW (1/50th as long axis)
+list/clobber/format=cdf/keep_axnames/l=1:5000 l                               ! auto-filename
+list/clobber/format=cdf/keep_axnames/t="1-jan-1902":"1-jan-2010"/rigid tlong  ! auto-filename
+
+! deliberate errors
+set mode ignore
+list/format=cdf/keep_axnames/l=1:10/file=test_abs.cdf l    ! file exists error
+list/format=cdf/keep_axnames/i=5:15/l=5:10/append/file=test_abs.cdf il  ! inconsistent i limits
+list/format=cdf/keep_axnames/i=1:10/j=20:25/append/file=test_abs.cdf ij ! inconsistent j limits
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijl2              ! i and j not avg'd
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkl[k=@ave]      ! k axis averaged
+list/format=cdf/keep_axnames/l=13/append/file=test_abs.cdf l1           ! inconsistent time pt
+set data/format=cdf test0a, test0b, test0c, test0d, test0e, test0f, test0g, test0h, test0i, test0j, test0k, test0l, test0n, test0m, test0o, test0p
+list/clobber/format=cdf/keep_axnames/i=1:10 i                                ! too many netcdf files
+canc data/all
+cancel mode ignore
+
+! show the grids created
+cancel variables/all
+set data/format=cdf test_abs
+show grid j1 jkl jkl2 iavejkl ijkl
+cancel data test_abs
+
+! test TMAP data io
+GO bn_cdf_keepax.sub3 	! matches old outputs by using /HEADING=enhanced
+! 5/99 moved old bn230_cdf.sub3 to bn_cdf_keepax.sub4 to stay inline w/ old benchmarks *kob*
+GO bn_cdf_keepax.sub4  
+GO bn_cdf_reversed_keepax.sub

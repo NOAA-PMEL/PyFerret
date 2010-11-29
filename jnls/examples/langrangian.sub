@@ -1,0 +1,16 @@
+\ cancel mode verify
+! langrangian.sub
+! 10/17/95
+
+! integrate forward in time by dtsec and plot tracers
+
+user/command=sample/opt2=c/opt1="hole,standard_bad"/file=uwind.next uwnd[d=monthly_navy_winds],xpts,ypts,1/0,1/0
+user/command=sample/opt2=c/opt1="hole,standard_bad"/file=vwind.next vwnd[d=monthly_navy_winds],xpts,ypts,1/0,1/0
+
+sp mv uwind.next uwind.prev
+sp mv vwind.next vwind.prev
+
+! read and plot the new locations
+plot/vs/over/sym=21/nolab/d=uwind.prev/set xloc,yloc; ppl pen 1,2; ppl plot/over
+
+set mode/last verify

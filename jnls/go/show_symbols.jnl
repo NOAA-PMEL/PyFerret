@@ -1,0 +1,29 @@
+cancel mode verify
+! show_symbols.jnl
+
+! Description: display the PLOT+ marks used by the FERRET PLOT command
+
+message/cont ...
+message/cont Now displaying a plot with the default symbol types ...
+message/cont Alternatively, the syntax /SYMBOL=57 will select PLOT+ symbol
+message/cont number 57 of a possible 88 choices.
+message/cont To see all possible symbols use     GO show_88_syms
+message/cont ...
+
+let line_zero = i-i
+plot/set/nolab/i=1:2/symbol line_zero+1
+ppl xaxis .9 1.9 1
+ppl yaxis 0 18 1
+ppl axlint 1 1
+ppl xfor (i3)
+ppl yfor (i3)
+ppl xlab
+ppl axset 0,0,1,0
+ppl title "FERRET symbols automatically selected by PLOT/SYMBOL"
+ppl markh 1,.2
+ppl plot
+repeat/j=2:17:1 plot/over/nolab/i=1:10/symbol line_zero+j
+
+ppl markh 1,.08
+ppl axset 1,1,1,1
+set mode/last verify

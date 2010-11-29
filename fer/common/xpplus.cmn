@@ -1,0 +1,6 @@
+* COMMON for intercommunication of PPLUS parameters
+
+	INTEGER	icode
+
+	COMMON / XPPLUS / icode
+

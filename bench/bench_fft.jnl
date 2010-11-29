@@ -1,0 +1,59 @@
+! Benchmark Ferret script for FFT.  Uses analytic function of time.
+
+! 5/99  ACM
+!   FFTA function computes the FFT amplitude spectrum.  
+!   FFTP function computes the FFT phase
+!
+!  The script bench_fft_visual.jnl plots the results 
+
+SET MODE IGNORE_ERRORS
+SAY The message *** NOTE: unknown axis units: FREQ  is informational.  fcn still works.
+
+
+DEFINE AXIS/t=1-Jan-1990:31-Dec-1990:24 dayt
+DEFINE GRID/T=dayt  tgrid
+SH GRID tgrid
+SET GRID tgrid
+
+LET fcn1 = sin(kt*tpts - phase) /2.
+LET fcn2 = cos(pt*tpts)
+LET phase = 6.
+LET kt = 0.5
+LET pt = 0.3
+
+!  Use an analytic function.
+
+LET sample_function = fcn1 - fcn2
+LET tpts = t
+LET days_fft = ffta(sample_function[l=1:365])
+
+LIST/L=30:35 days_fft
+LIST/L=50:55 days_fft
+
+!  Compute the phase spectrum 
+
+LET days_fftp = fftp(sample_function[l=1:365])
+
+LIST/l=1:20 days_fftp
+
+
+!PAUSE
+
+
+USE coads_vwnd.cdf
+SET REGION/I=90/J=65
+
+SAY This should bail out with error msg about Time axis must be regular
+
+LET vw_fft = ffta(vwnd[l=37:60])
+LIST vw_fft
+
+DEFINE AXIS/T=16-Jan-1949:16-Dec-1950:730.5@ave montht
+DEFINE GRID/T=montht  tgrid
+LET vw_tim = vwnd[gt=tgrid]
+LET vw_fft = ffta(vw_tim[l=2:23])
+
+SAY This one is ok
+LIST vw_fft
+
+CANCEL MODE IGNORE_ERRORS

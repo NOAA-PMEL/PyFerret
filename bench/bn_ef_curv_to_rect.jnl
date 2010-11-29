@@ -1,0 +1,23 @@
+! bn_ef_curv_to_rect.jnl
+! Test of curvilinear to rectilinear regridding
+! Uses shared-object external functions
+! ACM 5/4/05
+
+show func curv*
+
+use tripolar_subset.nc
+shade ht, geolon_vert_t, geolat_vert_t
+
+! Define output grid
+
+def axis/x=-300:100:10 xout
+def axis/y=60:90:3 yout
+let a = x[gx=xout] + y[gy=yout]
+
+! Define mapping
+let my_map = curv_to_rect_map (geolon_vert_t, geolat_vert_t, a, 10)
+
+! apply mapping
+let mapped = curv_to_rect (ht, my_map)
+shade mapped
+stat mapped

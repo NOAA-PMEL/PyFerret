@@ -1,0 +1,86 @@
+* XPLOT_STATE.CMN
+* COMMON describing the state of GKS
+* 7/97 *sh* - increased max_viewport from 50 to 200
+* 6/99 *sh* - include info about the time axis currently on the screen
+* 1/00 *kob* - add win_id9 for animate window id -always nine
+* 1/00 *acm* - include saved_calendar_id with the time axis info
+* 1/00 *acm* - add saved_calendar_id with the time axis info
+* 6/01 *acm* - add h_logaxis, v_logaxis
+* 9/01 V540 *sh* - add vp_by_axis
+* 5/06 v600 *acm*  Flag no_plot_yet: changes so user can change the number of 
+*                  line colors.
+* V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
+
+	INTEGER		max_windows,
+     .			max_viewport,
+     .			mvp_dflt,
+     .			win_id9
+	REAl		wn_dflt_scale
+	PARAMETER     ( max_windows = 9,
+     .			max_viewport= 200,
+     .			mvp_dflt = 0,
+     .                  win_id9 =9,
+     .			wn_dflt_scale = 0.83666 )	! SQRT(0.7)
+
+	LOGICAL		wn_open,
+     .			wn_active,
+     .			vp_opaque,
+     .			vp_by_axis,
+     .			pplus_started,
+     .			ppl_interrupted,
+     .			has_time_axis,
+     .			h_logaxis, 
+     .			v_logaxis,
+     .                  no_plot_yet
+
+	INTEGER		vp_num,
+     .			vp_seg0,
+     .			vp_segn,
+     .			curr_seg_name,
+     .			saved_calendar_id,
+     .			transparent
+
+	REAL		wn_scale,
+     .			vp_size ,
+     .			vp_xorg ,
+     .			vp_yorg ,
+     .			vp_xclip,
+     .			vp_yclip,
+     .			xlowlef,
+     .			ylowlef,
+     .			saved_dt_min
+
+	CHARACTER	vp_name*16, saved_t1_date*14, transparent_color*10
+
+	COMMON / XPLOT_STATE /
+     .			pplus_started,
+     .			ppl_interrupted,
+     .			curr_seg_name,
+     .			saved_calendar_id,
+     .			transparent,
+     .
+     .			wn_open	 ( max_windows ),
+     .			wn_active( max_windows ),
+     .			wn_scale ( max_windows ),
+     .			xlowlef  ( max_windows ),
+     .			ylowlef  ( max_windows ),
+     .
+     .			vp_num,
+     .			vp_name ( mvp_dflt:max_viewport ),
+     .			vp_size ( mvp_dflt:max_viewport ),
+     .			vp_xorg ( mvp_dflt:max_viewport ),
+     .			vp_yorg ( mvp_dflt:max_viewport ),
+     .			vp_xclip( mvp_dflt:max_viewport ),
+     .			vp_yclip( mvp_dflt:max_viewport ),
+     .			vp_seg0 ( mvp_dflt:max_viewport ),
+     .			vp_segn ( mvp_dflt:max_viewport ),
+     .			vp_opaque(mvp_dflt:max_viewport ),
+     .			vp_by_axis(mvp_dflt:max_viewport ),
+     .
+     .			has_time_axis,
+     .			h_logaxis, 
+     .			v_logaxis,
+     .                  no_plot_yet,
+     .			saved_dt_min,
+     .			saved_t1_date,
+     .			transparent_color

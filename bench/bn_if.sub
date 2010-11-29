@@ -1,0 +1,25 @@
+! bn430_if.sub
+! 5/6/96
+
+! test closed and unclosed IF in a nested GO command
+
+! single line IF test
+if no then say -->WRONG else say ---->CORRECT endif
+say ---->nested: all is well after single line IF
+
+! IF combined with command groups
+if yes then (say ---->CORRECT; say ---->CORRECT, again) ENDIF
+say ---->nested: all is well after command group and loop tests
+
+! multi-line IF tests
+IF yes THEN
+  say ---->CORRECT
+  say ---->CORRECT again
+ELSE
+  SAY ---->WRONG
+ENDIF
+say ---->nested: all is well after multi-line IF
+
+SAY ">>> --> DELIBERATE WARNING: UNCLOSED IF in NESTED GO FILE<<<"
+IF yes THEN
+  say ---->... now inside of nested IF clause

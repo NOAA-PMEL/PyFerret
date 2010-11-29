@@ -1,0 +1,43 @@
+!overlay_on_time_axis_demo.jnl
+! *sh* 6/99
+! *acm* 7/01 update /pen=  and /line=  to /color=/thickness=
+
+! Description: demonstrate PLOT/VS and POLYGON over time axes
+
+set mode verify
+cancel region
+use coads_climatology
+
+! coordinates of a unit square
+LET xsqr = {-1,1,1,-1}
+LET ysqr = {-1,-1,1,1}
+
+! coordinates of unit circle
+LET xcircle = COS(6.3*i[i=1:42]/40)
+LET ycircle = SIN(6.3*i[i=1:42]/40)
+
+! Notice that the units of the time axis
+show axis/l=1:3 sst
+
+! *** mark-up over a time series plot ***
+plot/x=180/y=0 sst
+let tt = T[gt=sst]
+
+! put a box around the value exactly at 7-aug
+let t0   = tt[t="7-aug-0000"@itp]
+let val0 = sst[x=180,y=0,t="7-aug-0000"@itp]
+polygon/over/color=red/thickness=2/title="Special region" t0+500*xsqr, 0.05*ysqr+val0
+plot/vs/over/nolab/sym=2/color=red/thickness=2 t0,val0		! mark point with an "X"
+
+! put a circle around the data point nearest to 15-may
+let t1   = tt[t="15-may-0000"]
+let val1 = sst[x=180,y=0,t="15-may-0000"]
+plot/vs/over/color=blue/thickness=2/line/nolab t1+500*xcircle,0.05*ycircle+val1
+plot/vs/over/nolab/sym=2/color=blue/thickness=2 t1,val1	! mark point with an "X"
+\pause
+
+! *** mark-up over a Hofmuller diagram ***
+shade/x=180 sst
+let y0 = 30
+polygon/over/color=black/thickness=2/pal=gray/pat=lite_up_left_to_right t0+500*xsqr, y0+15*ysqr
+plot/vs/over/color=black/thickness=2/line/nolab t0+900*xcircle,y0+25*ycircle

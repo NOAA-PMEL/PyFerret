@@ -1,0 +1,20 @@
+* XRISC - *sh* 2/1/91
+* RISC/FORTRAN compiler can't handle CHARACTER*(*) variables used in
+* character string concatenations ("//")
+* this common declares a buffer with a fixed length string in which to copy
+* the CHAR*(*) string
+
+* V5.0 - 8/99 *sh* this buffer is now used throughtout Ferret. When used during
+* symbol substitution and grave accent evals on command it limits the
+* command line length. So increase the buffer size.
+* V530 10/00 - increased to 2048 (should be at least as large as len_cmnd_buf)
+
+	INTEGER     size_rbuff
+	PARAMETER ( size_rbuff = 2048 )  ! was 256 pre 8/99
+
+	COMMON/ XRISC / len_rbuff, risc_buff
+	CHARACTER  risc_buff*(size_rbuff)
+	INTEGER    len_rbuff
+
+
+

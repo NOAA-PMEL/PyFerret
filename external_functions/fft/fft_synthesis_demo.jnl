@@ -1,0 +1,36 @@
+!-----------------------fft_synthesis_demo.jnl----------------------------
+! Usage: go fft_synthesis_demo
+! Description: Compute FFT of time series, invert FFT to resynthesize.
+! atw 11/01
+
+ppl cross 1 1
+let pi = 3.14159
+let deg_to_rad = pi/180       !degrees per radian
+let nt = 360                  !number of time points
+
+DEFINE AXIS/t=0:`nt-1`:1/unit=day tax
+DEFINE GRID/T=tax tgrid
+SET GRID tgrid
+
+message Define the signal: fundamental plus phase-shifted octave.
+let s = cos(2*pi*t/nt - 45*deg_to_rad) + cos(2*2*pi*t/nt - 90*deg_to_rad)
+
+message Get FFT statistics for fundamental and octave.
+let fa = ffta(s)         ! FFT amplitude
+let fp = 0-fftp(s)       ! FFT phase lag
+let fr = fft_re(s)       ! FFT real part
+let fi = fft_im(s)       ! FFT imaginary part
+list/l=1:2 fa, fp, fr, fi
+
+message Plot actual & synthetic signals (slight separation for viewing).
+let s_synth1 = fft_inverse(fr,fi)
+let s_synth1_lo = fft_inverse(IF l LE 1 THEN fr ELSE 0, IF l LE 1 THEN fi ELSE 0)
+let s_synth1_hi = fft_inverse(IF l GT 1 THEN fr ELSE 0, IF l GT 1 THEN fi ELSE 0)
+let s_synth2 = fft_inverse(fa*cos(fp*deg_to_rad),fa*sin(fp*deg_to_rad))
+plot/hl=0:`nt-1`:`nt/8`/vl=-2:2 s
+plot/ov .02+s_synth1[g=s@asn]
+plot/ov .04+s_synth2[g=s@asn]
+
+message Overlay lo/hi-pass signals.
+plot/ov s_synth1_lo
+plot/ov s_synth1_hi

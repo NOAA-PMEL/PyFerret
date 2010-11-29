@@ -1,0 +1,14 @@
+! bn320_cdf_reversed.sub
+! benchmark to test netCDF input of reverse-coordinate axes
+! this routine added 3/2/95
+
+cancel data/all
+cancel variables/all
+cancel region
+
+set data reverse_axes
+
+show data/var
+
+list/x=180 fcn_norm,fcn_rev
+list/x=180 fcn_rev_sub

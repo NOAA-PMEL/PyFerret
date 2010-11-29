@@ -1,0 +1,50 @@
+! splash.jnl *sh* 11/91
+! Description: some pretty color pictures
+
+! initialize
+CANCEL VIEWPORTS
+SET WINDOW/ASPECT=1:AXIS
+GO rgb_rainbow
+
+! Navahoe blanket
+SET GRID ABSTRACT
+SHADE/I=1:188/J=1:188/NOKEY sin(i/20)*sin(j/20)
+GO rgb_try_em
+
+! set up for shading in the [-1,1],[-1,1] square
+DEFINE AXIS/X=-1:1:.025 x80
+DEFINE AXIS/Y=-1:1:.025 y80
+DEFINE GRID/X=x80/Y=y80 g8080
+SET GRID g8080
+SET REGION/X=-1:1/Y=-1:1
+
+! color shade some hyperbolas
+LET zmod = x^2 - y^2 
+LET hi_lo4 = mod(i+j,4)
+PPL axset 0,0,0,0
+SHADE/NOKEY/NOLAB/LEVELS=(-3,3.5,.3) zmod * hi_lo4
+REPEAT/l=1:2 GO rgb_try_em
+
+! color shade the upper half of a sphere
+LET hi_lo = if mod(i+j,2) eq 0 then 0 else 1
+LET rsq = x^2 + y^2
+LET sphere = (1-rsq)^0.5
+LET wild = hi_lo * sphere
+PPL axset 0,0,0,0
+SHADE/NOKEY/NOLAB wild
+
+! overlay bands of color
+CONTOUR/OVERLAY/LEVELS=(0.99,1.01,.01,-3)/NOLAB    rsq
+CONTOUR/OVERLAY/LEVELS=(.4,.415,.005,-3)/NOLAB sphere
+CONTOUR/OVERLAY/LEVELS=(.6,.615,.004,-3)/NOLAB sphere
+CONTOUR/OVERLAY/LEVELS=(.7,.71,.003,-3)/NOLAB  sphere
+CONTOUR/OVERLAY/LEVELS=(.8,.808,.002,-3)/NOLAB sphere
+CONTOUR/OVERLAY/LEVELS=(.9,.905,.001,-3)/NOLAB sphere
+REPEAT/l=1:3 GO rgb_try_em
+GO rgb_fireworks
+
+! We will now clean up FERRET for whatever you, the user, will be doing next.
+GO rgb_rainbow
+PPL/RESET
+PPL axset 1,1,1,1
+SET GRID abstract

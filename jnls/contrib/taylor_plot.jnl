@@ -1,0 +1,43 @@
+\cancel mode verify
+
+!**************************************************************
+! Description:
+!
+! Usage: go taylor_plot Standard_Deviation Correlation [PLOT qualifiers]
+!
+! Example:
+!
+! Notes:
+!
+! Calls:
+!
+! Author: Patrick Brockmann
+! Contact: Patrick.Brockmann@ipsl.jussieu.fr
+! $Date$
+! $Name$
+! $Revision$
+! History:
+! Modification:
+!
+!**************************************************************
+
+let ME_std = $1
+let ME_cor = $2 
+let ME_x = ME_std*cos(acos(ME_cor))
+let ME_y = ME_std*sin(acos(ME_cor))
+
+if $3"false|*>true" then
+	define symbol ME_QUALIFIERS = /vs/over/nolab$3
+else
+	define symbol ME_QUALIFIERS = /vs/symb=20/over/nolab
+endif
+
+!**************************************************************
+plot($ME_QUALIFIERS) `ME_x`,`ME_y`
+
+!**************************************************************
+cancel variable ME_*
+cancel symbol ME_*
+
+!**************************************************************
+set mode verify

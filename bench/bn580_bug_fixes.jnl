@@ -1,0 +1,112 @@
+! bn580_bug_fixes.jnl
+! test various fixes that went into version 5.80
+! 7/04 *acm*
+!
+
+! POLYGON (or SHADE) plots with a single level had no fill color
+GO bn_reset
+GO err570_singlecolor.jnl
+
+! colorbar labels too close to the bar, when user sets bar location
+GO bn_reset
+GO err570_shakeylab.jnl
+
+! Null input gives wierd error message
+GO bn_reset
+GO err570_null_symbol.jnl
+
+! Replace text expression with its value: string variable was too short
+GO bn_reset
+GO err570_parse_labelcommand.jnl
+
+! result of COMPRESSK_BY function does not vary in X
+GO bn_reset
+GO err570_compressk_by.jnl
+
+! Command parsing on PPL side had string lengths too short
+GO bn_reset
+GO err570_long_label.jnl
+
+! Allow PPL POLYGON after a POLY/SET (previously was PPL FILLPOL)
+GO bn_reset
+GO err570_ppl_poly.jnl
+
+! Fix formatting of coordinates on LIST/FORMAT=tab or /FORMAT=comma 
+GO bn_reset
+GO err570_list_tab_coords.jnl
+
+! Fix bug in HASH_CX for large numbers of varibles
+GO bn_reset
+GO err570_many_variables.jnl
+
+
+! Fix bug in @CNNN within multi-line labels
+GO bn_reset
+GO err570_cnnn_multiline.jnl
+
+! For a very fine grid, coordinates not listed with enough precision.
+GO bn_reset
+GO err570_fine_grid_list.jnl
+
+! Range includes just one coordinate point on the axis
+! Plot using /HLIM
+GO bn_reset
+GO err570_hlimit_onepoint
+
+! Regridding between Gregorian and Julian time axes with @NRST
+! caused a segfault.
+GO bn_reset
+GO err570_index111.jnl
+
+
+! Data has missing value flag of NaN. Under linux, SHOW DATA/FULL 
+! crashed on trying to format value for the output buffer.   
+GO bn_reset
+GO err570_sh_dat_nan.jnl
+
+! Time reqest out of range on NOLEAP axes.
+GO bn_reset 
+GO err570_time_range.jnl
+
+! Fix for bug 1066; error doing 2-D polygon overlaying
+! a non-standard calendar axis
+GO bn_reset
+GO err570_poly_over_julian.jnl
+
+! Fix for bug 1077; return ERROR rather than NOTE when 
+! exiting from a script where query/ignore or other coached 
+! string substitution returns the user-given error message
+GO bn_reset
+GO err570_coaching hello
+
+! Fix for bug 485: say ($0) in a script should return the 
+! name of the script
+GO bn_reset
+GO err570_dollar_zero.jnl
+
+! Fix for bug 596; list/i=0:300:0 var crashed Ferret
+GO bn_reset
+GO err570_illegal_stride.jnl
+
+! Fix for bug 1085; /THICK without color specifier caused all lines to revert to black
+GO bn_reset
+GO err570_thick_colors.jnl 
+
+! Fix for bug 1102: under linux, var[d=filename] fails if filename
+! starts with a digit.
+GO bn_reset
+GO err570_digit_filename.jnl
+
+! Fix for bug 1098: DODS URL label was cut off
+GO bn_reset
+GO err570_dods_url_label.jnl
+
+
+! Fix for bug 906: auto-formatting of labels on color keys loses precision
+GO bn_reset
+GO err570_keylabels.jnl
+
+! Fix for bug 1130: error and crash on some systems polygon command
+! where polygon arguments have latitude or longitude units
+GO bn_reset
+GO err570_poly_lonlat_axis.jnl

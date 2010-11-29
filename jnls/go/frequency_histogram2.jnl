@@ -1,0 +1,103 @@
+\cancel mode verify
+! frequency_histogram2.jnl - *acm* 10/02  
+! 
+! Description: produce a 1D frequency histogram, using Ferret functions to
+!              compile bin data. Calls sort and sample functions, and 
+!              external function bin_index_wt are called rather than Unix 
+!              sort and awk. This works when frequency_histogram.jnl fails 
+!              due to large input data.
+
+! Usage:  
+!    yes? GO frequency_histogram expression lo hi del [weight] [axis] [style]
+!
+! Note 1: Because the sort and sample are applied to XSEQUENCE(expression)
+!         the expression must have any region limits specified explicitly
+!         Do not use after applying a SET REGION.
+
+! Note 2: this procedure (actually the bar_chart2 routine) uses the Y axis
+!	  internally so it may not work properly if the Y axis has a region
+! 	  set (it may even crash).  In this case either include the Y limits
+!	  in the expression (i.e. "temp[y=0]" instead of "temp" with Y=0 in the
+!         region) or specify a free axis in the optional [AXIS] parameter
+
+! arguments:
+!    expression  - expression (values) from which histogram is to be computed
+!    lo, hi, del - the range of values for which a histogram is desired
+!    [weight]    - optional expression with weight for each value
+!    [axis]      - a free axis that the procedure can use (if Y isn't free)
+!    [style]     - 0 for hollow bars, 1 for filled.
+
+! Defaults:  weight - "1" ("weight" can be a variable name)
+!            axis - "Y"
+!            style - "0" hollow
+
+! Sample usage:
+!	yes? SET DATA levitus_climatology
+!	yes? GO  frequency_histogram2 TEMP[X=0:360,Y=0:45N,Z=0] 0 32 0.5
+
+
+! The optional "weight" parameter multiplies each grid cell by the variable
+! supplied.  In the surface temperature example above this might be the
+! area of each grid cell as follows:
+
+! LET/QUIET r=6370		! radius of earth
+! LET/QUIET pi=atan(1.)*4.
+! LET/QUIET deg2rad=pi/180.
+! LET/QUIET deg2km=2*pi*r/360.
+! LET/QUIET area=xbox[g=TEMP]*ybox[g=TEMP]*cos(y[g=TEMP]*deg2rad)*deg2km*deg2km*1e-6
+! SET VARIABLE/TITLE="Area of grid cells"/Unit="km^22 x 10^-6" area
+! GO frequency_histogram2 TEMP[X=0:360,Y=0:45N,Z=0] 0 32 .5 area " " 1
+
+query/ignore $1"<Usage: GO frequency_histogram expression lo hi del [weight]"
+query/ignore $2"<Usage: GO frequency_histogram expression lo hi del [weight]"
+query/ignore $3"<Usage: GO frequency_histogram expression lo hi del [weight]"
+query/ignore $4"<Usage: GO frequency_histogram expression lo hi del [weight]"
+
+let style = $7"0"
+
+
+! cleanup from previous
+set data/save
+
+! compute an index that numbers the histogram boxes on the desired output plot
+! also cope with missing values ("MISSING()") and data below the minimums
+! ("MAX()").  Data above the max is simply not read in the final commands
+! because it lies beyond the number of points in the grid gindex
+LET/QUIET v1 = COMPRESSI(XSEQUENCE(($1)) )
+LET/QUIET ngood = v1[x=@NGD]
+LET/QUIET vdata = v1[i=1:`ngood`]
+LET/QUIET vmin = $2
+LET/QUIET vmax = $3
+LET/QUIET vdelta = $4
+LET/QUIET vn = INT((vmax-vmin)/vdelta + 0.5) + 1
+LET/QUIET vindex = INT((vdata-vmin)/vdelta + 0.5) + 1   ! 1 to vn
+LET/QUIET index = MAX(0, vindex) 
+
+! weight function for each grid cell
+LET/QUIET wt_index = $5"1+0*index"
+
+LET/QUIET fh_sort = sorti(XSEQUENCE(index))
+LET/QUIET fh_indsort = samplei(XSEQUENCE(index),fh_sort)
+LET/QUIET fh_wtsort = samplei(XSEQUENCE(wt_index),fh_sort)
+
+LET/QUIET fh_fbins = bin_index_wt(fh_indsort, fh_wtsort, vn+1)
+
+define axis/$6"y|X|Y|Z|T"=$2:$3:$4 yax
+define grid/$6"y|X|Y|Z|T"=yax gindex
+define var fh_a =$6"y|X|Y|Z|T"[g$6"y|X|Y|Z|T"=yax] 
+
+LET/QUIET fh_wc = reshape(fh_fbins,fh_a)
+LET/QUIET wt_count = missing(fh_wc,0.)
+
+
+! do a hollow or filed plot
+IF `style EQ 0` THEN
+  message/cont You may want to replot with color qualifiers on PLOT and Ymin specified:
+  message/cont >>>  go bar_chart2 plot/line wt_count $6"y|X|Y|Z|T" clear [Ymin]
+  go bar_chart2 plot/line wt_count $6"y|X|Y|Z|T"
+ELSE
+  message/cont You may want to replot with /HLIM /PALETTE or other qualifiers on PLOT:
+  message/cont >>>  go bar_chart3 poly/line/nolabel/fill wt_count [color] [base]
+  go bar_chart3 poly/line/nolabel/fill wt_count
+
+set mode/last verify

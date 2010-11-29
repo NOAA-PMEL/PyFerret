@@ -1,0 +1,20 @@
+! bn_modstats.jnl
+! acm 8/25/04
+! There was never a benchmark test of modulo statistics.
+! (and a bug had crept into @MODVAR when there was missing data)
+
+use  gtsa056_2.cdf
+set region/x=140/y=1/k=1
+let var = if temp gt 29.5 then temp
+
+use climatological_axes
+can data climatological_axes
+
+list var[gt=month_reg@mod]
+
+! bug had values of Inf surrounding missing data
+list var[gt=month_reg@modvar]
+list var[gt=month_reg@modmin]
+list var[gt=month_reg@modmax]
+list var[gt=month_reg@modsum]
+list var[gt=month_reg@modngd]

@@ -1,0 +1,14 @@
+! bn64_bug_fixes.jnl
+! Fixes that go into v6.4 release
+
+! (changes were made to err62_if_inside_repeat.jnl
+!  which is run previously.)
+
+GO bn_reset
+GO err63_days1900toydmhms
+
+GO bn_reset
+GO err63_log_vaxis
+
+GO bn_reset
+GO err63_delim_E.jnl

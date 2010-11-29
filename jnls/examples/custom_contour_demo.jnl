@@ -1,0 +1,72 @@
+set mode verify    ! display the commands at the user's console
+! custom_contour.jnl *sh* 11/91 - added some axis customizations 11/93
+!                    *sh* 5/94 - restore default SET GRID on exit
+
+! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
+
+
+! Description: show customizable features of PLOT+ contouring within FERRET
+
+! in case there are left-over regions from previous commands
+cancel region
+
+! define an arbitrary function to use as a contouring example
+define axis/x=-20:20:1 x2020
+define axis/y=-20:20:1 y2020
+define grid/x=x2020/y=y2020 g2020
+set grid g2020
+let circle = (x^2 + y^2) ^ 0.5
+let/title="SAMPLE FUNCTION" my_var = circle * exp((10-(i+j))/50)
+
+! produce a default contour plot
+contour my_var
+message
+
+! change the contour levels - unequally spaced
+contour/levels=(1,7,.5)(7,30,3)(11.3) my_var
+message
+
+! omit contour labels ("-3")
+contour/levels=(1,30,2,-3) my_var
+message
+
+! mix: no labels ("-3"), 3 decimal points, and no decimal points ("-1")
+contour/levels=(1,5,0.3,-3)(6,15,2,3)(16,30,1,-1) my_var
+message
+
+! mix: normal lines, dashed lines and heavy lines
+cont/level="(1,30,2,-1) LINE(1,7,2,1) DARK(9,15,2,1) DASH(17,29,2,1)" my_var
+message
+
+! mix: three line colors
+contour/level="(1,30,1,-1) PEN(5,10,1,2) PEN(11,20,1,3) PEN(21,30,1,4)" my_var 
+message
+
+! make contour labels bigger
+! note: this feature remains in effect until explicitly removed
+ppl conset 0.15
+contour/levels="(1,30,3) PEN(1,30,3,1)" my_var
+message
+
+! do contour labels in color in Triplex Roman font
+! note: this feature remains in effect until explicitly removed
+ppl conpre @P2@TR
+contour/levels=(1,30,3) my_var
+message
+
+! add units of "cm" in Complex Itallic font to the contour labels
+! note: this feature remains in effect until explicitly removed
+ppl conpst @CIcm
+contour/levels=(1,30,3) my_var
+message
+
+! give explicit axis bounds and tic interval
+contour/levels=(1,30,3)/hlimits=-20:20:10/vlimits=-20:20:10 my_var
+
+! restore normal operation
+ppl conpre
+ppl conpst
+ppl conset 0.08
+contour/lev=(1,30,1,-1)/set_up my_var
+set grid abstract
+set mode/last verify

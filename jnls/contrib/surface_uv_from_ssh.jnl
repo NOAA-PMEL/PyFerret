@@ -1,0 +1,50 @@
+!---------------surface_uv_from_ssh.jnl------------------
+\ cancel mode verify
+! Contributed by Jaison Kurian jaison@caos.iisc.ernet.in 8/8/2005
+!
+! To compute surface geostrophic currents from satellite altimetry.
+!
+! (this data is obtained from ftp://ftp.cls.fr/pub/oceano/enact/msla/j1/
+!    & units is cm )
+!
+! For details of the eqns, please see
+!  http://oceanworld.tamu.edu/resources/ocng_textbook/chapter10/chapter10_03.htm
+!  http://oceanworld.tamu.edu/resources/ocng_textbook/chapter10/chapter10_02.htm
+!
+!--------------------------------------------------------------------------
+
+    set data hh_msla_oer_j1_h_20093.nc
+
+    let sla   = GRID_0001! name of the sea level anomaly variable in the file
+
+    let g     = 9.8      ! acceleration due to gravity (m/s2)
+    let pi=4*atan(1)     ! constant
+    let omega = 7.292E-5 ! Angular speed of rotation of Earth (rad/s)
+    let cm2m  = 1/100    ! convertion factor ==> from cm to m
+
+    let f     = 2 * omega * sin(y[gy=sla]*pi/180.0) ! coriolis parameter
+                                                    ! 2*omega*sin(phi)
+    !
+    !        -g    d(eta)                g    d(eta)
+    !   Us = --- * ------   ;      Vs = --- * ------
+    !         f    dY                    f    dX
+    ! At equator f --> 0 & hence 1/f --> infinity....so mask the region
+    !    near equator using an IF condition
+    !   @DDC ==> centred derivative
+
+    let Us    = IF ABS(y[gy=sla]) GT 3.0 THEN (-1*(g/f)*sla[Y=@DDC]*cm2m)
+    let Vs    = IF ABS(y[gy=sla]) GT 3.0 THEN (   (g/f)*sla[X=@DDC]*cm2m)
+
+    set var/title="Surface Geostrophic U from Jason's SSH"/units=m Us
+    set var/title="Surface Geostrophic V from Jason's SSH"/units=m Vs
+
+    set reg/x=30:120/y=-30:30
+
+    vec/xskip=4/yskip=4/len=0.5 Us, Vs
+    go land
+
+    ! save data to a NetCDF file for future use
+    ! sp rm -f surface_uv_from_ssh.nc
+    ! save/file=surface_uv_from_ssh.nc/append   Us, Vs
+
+!------------end of surface_uv_from_ssh.jnl------------------

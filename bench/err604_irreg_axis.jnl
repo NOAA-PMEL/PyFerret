@@ -1,0 +1,6 @@
+! Bug 1524: irregular axis detected as REGULAR!
+
+use climatological_axes
+sh ax MONTH_IRREG
+list t[gt=month_irreg], tbox[gt=month_irreg]
+

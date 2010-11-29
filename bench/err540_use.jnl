@@ -1,0 +1,43 @@
+! err540_use.jnl
+!
+! very subtle bug fix in the "USE" command.  What would happen is if dataset A and
+! dataset B were "used", then dset A was cancelled, if the next dataset (dataset C) 
+! "used" had a similarly named variable as dataset B, then Ferret would mistakingly 
+! set the similarly named variable in dataset C to lower case, making it inaccessible.  
+! This was because the logic in cd_scan_vars.F didn't take into account that variables from
+! different datasets may be overlapped in the ds_var_code array.  
+
+! Create three simple files containing variables with lowercase names.
+let a = 1
+let b = 2
+save/q/clob/file=f.nc a
+save/q/clob/file=f2.nc a,b
+save/q/clob/file=g.nc b
+can var a b
+
+sp ncrename -h -v A,a f.nc
+sp ncrename -h -v A,a -v B,b f2.nc
+sp ncrename -h -v B,b g.nc
+use f.nc
+use f2.nc
+use g.nc
+sh data
+can data/all
+
+! Use two of the files and cancel the first one.
+use f.nc
+sh data
+use g.nc
+sh data
+can dat 1
+
+! Now open the f2 file which as both a and b variables
+use f2.nc
+
+! All variables from BOTH datasets should be capitals.
+show dat
+
+! This should work
+list b[d=1]
+
+

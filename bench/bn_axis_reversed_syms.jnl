@@ -1,0 +1,49 @@
+! bn_axis_reversed_syms.jnl   
+! XAXIS_REVERSED and YAXIS_REVERSED are
+! set to 0 or if the reversed-axis is 
+! plotted upside-down, set to 1
+
+use gt4d011.cdf
+shade/i=91/L=1 temp
+sh sym *axis_reversed
+contour/i=91/j=35 temp
+sh sym *axis_reversed
+vector/k=1/l=4 u,v
+sh sym *axis_reversed
+vector/j=41/l=4 u,v
+sh sym *axis_reversed
+fill/j=41/l=4 temp
+sh sym *axis_reversed
+shade/j=41/k=4 temp
+sh sym *axis_reversed
+
+! with /TRANS. None of these will have YAXIS_REVERSED=1
+shade/trans/i=91/L=1 temp
+sh sym *axis_reversed
+contour/trans/i=91/j=35 temp
+sh sym *axis_reversed
+vector/trans/k=1/l=4 u,v
+sh sym *axis_reversed
+vector/trans/j=41/l=4 u,v
+sh sym *axis_reversed
+fill/trans/j=41/l=4 temp
+sh sym *axis_reversed
+shade/trans/j=41/k=4 temp
+sh sym *axis_reversed
+
+! in viewports
+set view ul; shade/i=91/L=1 temp
+sh sym *axis_reversed
+set view ur; contour/i=91/j=35 temp
+sh sym *axis_reversed
+set view ll; vector/k=1/l=4 u,v
+sh sym *axis_reversed
+set view lr; fill/j=41/l=4 temp
+sh sym *axis_reversed
+
+! also set with  SHADE/SET
+cancel viewports
+
+shade/set/i=91/L=1 temp
+sh sym *axis_reversed
+

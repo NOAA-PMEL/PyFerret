@@ -1,0 +1,76 @@
+! @NGD and @NBD for strings
+! Bad data is taken to be the null string
+! Compare with results for numeric data
+! *ACM 11/2008
+
+let a = {"a","b",,"cd"}
+list a[i=@ngd]
+
+let a = {"a","b",,"c",,"d",,,"e","f","g","h"}
+let b = { 3,  3 ,, 3 ,, 3 ,,, 3,  3,  3,  3}
+list a[i=@nbd]
+list b[i=@nbd]
+
+define axis/x=1:3:1 xax
+define axis/y=1:4:1 yax
+let v = x[gx=xax] + y[gy=yax]
+
+let av = reshape (a,v)
+let bv = reshape (b,v)
+list av[i=@ngd]
+list bv[i=@ngd]
+list av[j=@ngd]
+list bv[j=@ngd]
+list av[i=@ngd,j=@ngd]
+list bv[i=@ngd,j=@ngd]
+
+
+define axis/x=1:3:1 xax
+define axis/z=1:4:1 zax
+let v = x[gx=xax] + z[gz=zax]
+
+let av = reshape (a,v)
+list av[i=@nbd]
+list bv[i=@nbd]
+list av[k=@nbd]
+list bv[k=@nbd]
+list av[i=@nbd,k=@nbd]
+list bv[i=@nbd,k=@nbd]
+
+define axis/x=1:3:1 xax
+define axis/t=1:4:1 tax
+let v = x[gx=xax] + t[gt=tax]
+
+let av = reshape (a,v)
+list av[i=@ngd]
+list bv[i=@ngd]
+list av[L=@ngd]
+list bv[L=@ngd]
+list av[i=@ngd,L=@ngd]
+list bv[i=@ngd,L=@ngd]
+
+!4D variable
+let a = {"a","b",,"c",,"d",,,"e","f","g","h","ab","bb",,"cb",,"db",,,"eb","fb","gb","hb"}
+let b = {3,3,,3,,3,,,3,3,3,3,3,3,,3,,3,,,3,3,3,3}
+
+define axis/x=1:2:1 xax
+define axis/y=1:2:1 yax
+define axis/z=1:3:1 zax
+define axis/t=1:2:1 tax
+let v = x[gx=xax] + y[gy=yax] + z[gz=zax] + t[gt=tax]
+
+let av = reshape (a,v)
+list av[i=@nbd]
+list bv[i=@nbd]
+list av[j=@nbd]
+list bv[j=@nbd]
+list av[k=@ngd]
+list bv[k=@ngd]
+list av[L=@ngd]
+list bv[L=@ngd]
+
+list av[i=@nbd,j=@nbd,k=@nbd]
+list bv[i=@nbd,j=@nbd,k=@nbd]
+
+list bv[i=@ngd,j=@ngd,k=@ngd,L=@ngd]
+list av[i=@ngd,j=@ngd,k=@ngd,L=@ngd]

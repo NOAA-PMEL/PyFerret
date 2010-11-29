@@ -1,0 +1,22 @@
+! err63_delim_E.jnl
+! bug 1700
+! On delimited reads, looking for strings ending with E for longitudes. 
+! But need to check if its just a string ending in E such as ZAIRE
+
+sp rm -f names
+sp echo ZAIRE > names
+sp echo E >> names
+columns names
+list v1
+
+can dat/all
+sp rm -f names
+sp echo zaire > names
+columns names
+list v1
+
+can dat/all
+sp rm -f names
+sp echo ZAIRA > names
+columns names
+list v1

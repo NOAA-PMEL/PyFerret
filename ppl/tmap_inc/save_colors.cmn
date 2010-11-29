@@ -1,0 +1,14 @@
+*	SAVE_COLORS.INC
+
+*	Common block used to provide information for saving set line colors
+*       in batch mode.
+*	Ansley Manke PMEL/TMAP
+*	requires PARAMPL5.DAT with NLINES
+*  Ferret v6.16  1/2009
+
+	integer		saved_line_colors ! flag
+	integer		ndx_save_colors(NLINES)
+	real		val_red(NLINES), val_blue(NLINES), val_green(NLINES)
+
+	common/save_colr/ saved_line_colors,
+     .			ndx_save_colors,val_red, val_blue, val_green

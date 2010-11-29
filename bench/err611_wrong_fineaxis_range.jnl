@@ -1,0 +1,28 @@
+! err611_wrong_fineaxis_range.jnl
+! Bug 1594
+
+! (bug was on 64-bit machine only)
+! 7200-point axis in longitude. The coordinates run from -179.725 to 179.725, 
+! delta 0.05.  If we give a range in x of -180:180 this is returned as index 
+! 1:1  not 1:7200.  If we give a range of x=0:360 the correct range is used.
+
+! File saved from 
+!use/order=xytz "http://apdrc.soest.hawaii.edu/dods/public_data/satellite_product/GHRSST/ghrsst_global"
+! save/clobber/file=fine_x_axis.nc sst[i=1:7200,y=0,L=1]
+
+use fine_x_axis
+sh grid sst
+
+! This first was wrong, returned data at x=-180
+list/x=180 sst
+
+list/i=7200 sst
+list/x=-180 sst
+list/i=1 sst
+
+! This gave a range in x of no points, so size was 1 should be 7200
+let the_plot_var = sst[x=-180:180]
+say `the_plot_var,return=size`
+
+let the_plot_var = sst[x=0:360]
+say `the_plot_var,return=size`

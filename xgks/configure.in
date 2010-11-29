@@ -1,0 +1,49 @@
+dnl $Id$
+dnl
+dnl Process this file with GNU autoconf(1) to produce a configure script.
+dnl
+UC_INIT(fontdb)
+
+UC_PREFIX(..)
+
+UC_PROG_AR
+AC_PROG_RANLIB
+UC_PROG_CC
+UC_PROG_FC
+UC_PROG_CPP
+UC_PROG_NEQN
+UC_PROG_TBL
+UC_PROG_TROFF
+UC_PROG_INSTALL
+UC_PROG_FORTC
+
+UC_UDPOSIX
+UC_UDPOSIX_STDDEF
+UC_UDPOSIX_LIMITS
+UC_UDPOSIX_SIGNAL
+UC_UDPOSIX_STDLIB
+UC_UDPOSIX_STRING
+
+UC_X11
+UC_FTPDIR(pub)
+UC_VERSION
+
+UC_CHECK_MISSING
+
+UC_FINISH( \
+    Makefile \
+    port/Makefile \
+    port/master.mk \
+    port/fortc/Makefile \
+    src/Makefile \
+    src/lib/Makefile \
+    src/lib/cgm/Makefile \
+    src/lib/gksm/Makefile \
+    src/lib/x/Makefile \
+    src/fortran/Makefile \
+    fontdb/Makefile \
+    doc/binding/Makefile \
+    doc/userdoc/Makefile \
+    doc/Makefile \
+    progs/Makefile \
+)

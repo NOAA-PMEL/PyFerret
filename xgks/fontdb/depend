@@ -1,0 +1,8 @@
+a.o: a.c
+fontdbvers.o: fontdbvers.c
+hf2gks.o: hf2gks.c
+hf2gsk.o: hf2gsk.c
+mkfont.o: mkfont.c
+mkfont.o: ../src/lib/font.h
+rshowfont.o: rshowfont.c
+rshowfont.o: ../src/lib/font.h

@@ -1,0 +1,25 @@
+SRCS_F = \
+atend.F\
+atflsh.F\
+atstrt.F\
+charin.F\
+cmderr.F\
+cmljst.F\
+copy.F\
+dbmsubs.F\
+delsym.F\
+echo.F\
+getcmd.F\
+getlin.F\
+getsym.F\
+gtqual.F\
+lstsym.F\
+parse.F\
+parsev.F\
+parsex.F\
+putsym.F\
+putval.F\
+setsym.F\
+stprmp.F\
+symcnv.F\
+symsub.F 

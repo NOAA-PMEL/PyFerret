@@ -1,0 +1,64 @@
+! test internal external functions.  These moved from bn_external_functions
+!  6/01 because on systems w/out external functions support, the internal
+!  functions were not being tested - most notably win32   *kob*
+
+!  8/02/01 *acm* add bench_eof; now internally-linked.
+! 10/22/01 *acm* add bench_compress_by (compressi_by, compressj_by, ...)
+! 06/02 *kob* add bench_internal_string_functions (strlen, strcat, strindex, etc)
+! 05/05 *acm* move bench_compress here; internally linked.
+! 05/07 *acm* move tax_* functions and fill_xy here; internally linked.
+
+GO bn_reset
+go bench_fft
+
+GO bn_reset
+go bench_gridding 
+
+GO bn_reset
+go bench_sort
+
+GO bn_reset
+go bench_eof
+
+GO bn_reset
+go bench_compress_by
+
+GO bn_reset
+go bench_compress
+
+GO bn_reset
+GO bench_internal_string_functions
+
+! 4/2006 these functions now are also internally linked
+
+GO bn_reset
+GO bn_ef_bench_extrema.jnl
+
+GO bn_reset
+GO bn_ef_err541_date_delim.jnl
+
+GO bn_reset
+GO bn_ef_zaxr_fcns.jnl
+
+GO bn_reset
+GO bn_ef_curv_to_rect.jnl
+
+
+! tax_ functions 
+use gt4d011
+
+list/L=15:20 tax_datestring(t[gt=temp],temp,"hour")
+list/L=15:20 tax_datestring(t[gt=temp],temp,"day")
+list/L=15:20 tax_dayfrac(t[gt=temp],temp), tax_dayfrac(t[gt=temp],temp)*24.
+list/L=15:20 tax_day(t[gt=temp],temp), tax_jday(t[gt=temp],temp) 
+list/L=15:20 tax_month(t[gt=temp],temp), tax_yearfrac(t[gt=temp],temp)
+list/L=15:20 tax_year(t[gt=temp],temp)
+list tax_units(temp)
+
+! fill_xy
+can data/all
+use coads_climatology
+let mask = 0*x[gx=sst] + y[gy=sst]  + 1
+shade fill_xy(sst[l=1], mask[l=1], 1)
+shade fill_xy(sst[l=1], mask[l=1], 4)
+

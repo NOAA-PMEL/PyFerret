@@ -1,0 +1,676 @@
+.hy
+.ft
+.SH DESCRIPTION
+.PP
+XGKS is an implementation of the ANSI Graphical Kernel System for use
+with the X Window System.  XGKS was developed at the
+University of Illinois, Urbana, Illinois, and supported by IBM ACIS.
+After being made freely available in the X11R4 distribution, XGKS was
+adopted by the Unidata Program Center (UPC) of the University
+Corporation for Atmospheric Research (UCAR) in Boulder, Colorado.
+.SH STANDARDS
+.PP
+XGKS is an  implementation  of  the  ANSI  Graphical  Kernel
+System  as  defined  by  the  functional description and the
+draft 1988 C language binding.  Thus, the  ultimate  reference
+for any programmer is the C binding manual which details the
+data types and functions available.   XGKS  is  a  level  2C
+implementation  of  the  GKS  specification.    It  supports
+REQUEST, SAMPLE, and EVENT input modes for all  six  logical
+input  devices, workstation independent segment storage, and
+metafiles.
+.SH CAPABILITIES
+.PP
+The XGKS library supports all  functions  specified  by  the
+ANSI standard with the exception of :
+.sp
+.nf
+.in +0.5i
+ESCAPE (in its most general form)
+GENERALIZED DRAWING PRIMITIVE (in its most general form)
+INQUIRE GENERALIZED DRAWING PRIMITIVE
+INQUIRE LIST OF AVAILABLE GENERALIZED DRAWING PRIMITIVES
+SET PATTERN REFERENCE POINT
+SET PATTERN SIZE
+.fi
+.in -0.5i
+.sp
+The escape and gdp functions are implemented  as  a  set  of
+functions which follow the naming convention outlined in the
+C  binding.    That   is,   escape   functions   are   named
+\fBgesc\fP\fIfunction\fP  and  gdp functions are named 
+\fBggdp\fP\fIfunction\fP,
+where \fIfunction\fP is a  descriptive  name  for  the  function
+performed.
+.SH "ESCAPE FUNCTIONS"
+.PP
+.B gescinqxattr()
+returns the attributes of the opened X window for workstation \fIwsid\fP.
+.PP
+.B gescsetbackingstore()
+enables (disables) backingstore for workstation \fIwsid\fP if \fIi\fP
+is non-zero (zero).  Backingstore is enabled by default if it is available
+on the workstation and the \fBbackingstore\fP X resource (see 
+\fBX-RESOURCES\fP) doesn't indicate otherwise.
+.PP
+.B gescsetprogname()
+sets the program name by which the application will be known to X to 
+\fIname\fP.  This name will be used to access X resouces by prepending it
+to resource names (along with a separating period `.').  The X window
+will also be named \fIname\fP.  By default, the name \fBXGKS\fP is used.
+.PP
+.B gescsetcolormask ()
+changes the color-plane mask on workstation \fIwsid\fP to \fImask\fP via
+the X function \fBXSetPlaneMask()\fP.
+.PP
+.B gescsetdcsize()
+changes the device coordinate space on workstation \fIwsid\fP to \fIsize\fP.
+.PP
+.B gescstoreprimi()
+enables (disables) the storing of non-segment output primitives on workstation
+\fIwsid\fP if \fIstore\fP is non-zero (zero).  Storing is enabled by default
+and is necessary for an X refresh (after an expose or resize event) to include
+primitives which are not stored in any segment.
+.PP
+.B gescredrawnotify()
+registers the user-defined redraw function \fIfuncp\fP with workstation 
+\fIwsid\fP.  When a redraw action is initiated, the final action will be to
+call \fIfuncp\fP with the first argument set to the workstation number
+and the second argument set to GRD_GKS (if the redraw was initiated by GKS)
+or to GRD_X (if the redraw was initiated by X).  Both symbolic constants 
+are defined in the header-file \fBxgks.h\fP.
+.SH "OUTPUT PRIMITIVES"
+.PP
+Polylines of any width and  color  can  be  displayed  while
+seven line styles are supported they are:
+.sp
+.nf
+	GLN_DASH		long dash
+	GLN_DDOTDASH	double dot dash
+	GLN_SDASH		short dash
+	GLN_SOLID		solid
+	GLN_DASH		medium dash
+	GLN_DOT		dotted
+	GLN_DOTDASH	dot dash
+.fi
+.PP
+Polymarkers of any size and color  can  be  displayed,  five
+marker styles are provided:
+.sp
+.nf
+	GMK_POINT		filled circle
+	GMK_PLUS		+
+	GMK_STAR		*
+	GMK_O		unfilled circle
+	GMK_X		X
+.fi
+.PP
+All text within XGKS is implemented  through  stroke  fonts,
+thus  text  primitives  are  fully transformable.  Nine font
+styles are supported:
+.sp
+.nf
+	1	SanSerif Roman
+	2	Serif Roman
+	3	SansSerif Bold Roman
+	4	Serif Bold Roman
+	5	Sanserif Italic Roman
+	6	Serif Italic Roman
+	7	SanSerif Script
+	8	Serif Script
+	9	Gothic
+.fi
+.PP
+Fill Area output primitives  can  be  displayed  as  hollow,
+solid,  hatched  and  patterned.   Twenty (numbered one to
+twenty)  hatch and pattern styles are predefined.
+The application program can redefine these patterns; however, the programmer
+should be aware that the \fBgsetpatrep()\fP function expects patterns 
+to be stored
+in column major order from bottom to top.
+This means that cell[0][0] is the bottom-left corner, cell[dx-1][dy-1] is the
+top-right corner, and cell[0][1] is directly above cell[0][0].
+.PP
+GKS  Cell  Arrays  are  supported  in  their  most   general,
+transformable form.
+.SH "LOGIAL INPUT DEVICES"
+.PP
+XGKS supports the full GKS input model.  Thus,  all  logical
+input  devices  operate in request, sample, and event modes.
+Any number of logical input devices can be created for  each
+of the six input classes.  All logical devices are triggered
+through the use of  the  mouse  and  its  buttons  with  the
+exception of the choice device where one prompting technique
+uses the  keyboard's  function  buttons.   A  logical  input
+device is only active when the mouse is within the echo area
+of the device and one  or  more  of  the  mouse  buttons  is
+pressed.   When  the  mouse button is released, the physical
+device triggers all logical  input  devices  in  request  or
+event mode whose echo area surrounds the cursor.  Devices in
+sample mode are triggered whenever the  mouse  moves  within
+the  echo  area  while  the  mouse  is  pressed.   Any input
+operation can be aborted by pressing the Break  key  on  the
+keyboard.
+.PP
+Five prompting types are defined for the locator:
+.sp
+.nf
+	1	tracking cross
+	2	crosshair spanning X window
+	3	tracking cross
+	4	rubberband line
+	5	rubberband rectangle
+.fi
+.PP
+The only restriction placed on these prompts is that  prompt
+and  echo  type  5 does not allow the rectangle to be a fill
+area  style  other  than  hollow.   The  fixed  end  of  the
+rubberband  line  and  rubber  rectangle  is  at the initial
+locator position while  the  floating  end  is  the  current
+value.
+.PP
+The stroke input device differs from the locator by allowing
+more  than  one  coordinate  point to be entered.  There are
+three stroke prompts supported:
+.sp
+.nf
+	1	tracking cross
+	3	polymarker at each point
+	4	polyline joining points
+.fi
+.PP
+The closeness  of  selected  points  can  be  controlled  by
+specifying  a  minimum  X  and minimum Y displacement in the
+stroke data record during stroke  initialization.   Although
+specified  as  a  distance  in  World  Coordinate space, the
+restriction is enforced in Normalized Device space.
+.PP
+The valuator input device allows the user to select  a  real
+numbered value within the application specified range.  Only
+one  visual  representation  is  currently  supported:   the
+valuator appears as a bar with a sliding knob whose relative
+position determines the current value.  A horizontal bar  is
+displayed  if  the  echo  area  is  wider  than  it is tall,
+otherwise a vertical bar is used.  This prompt technique  is
+selected by valuator prompt and echo types one and two.
+.PP
+Two types of choice devices are provided.    Choice  prompts
+one  and  two  use  the  keyboard  function keys as a choice
+device, thus function key  F1  returns  choice  number  one.
+Prompt  and  echo  type  one enables all function keys while
+prompt type two enables only those  keys  specified  in  the
+data  record  when the device is initialized.  Choice prompt
+type three presents the user with  a  menu  from  which  the
+current  choice  is  selected.  These  menus  appear and act
+similar to most X11 window  manager  menus.   That  is,  the
+current  selection  is  highlighted and selection is made by
+releasing the mouse button when the desired choice  is  lit.
+A  word  of warning, these menus are displayed in the choice
+echo  area  and  DO  NOT  attempt  to  restore  any   output
+primitives that they cover.
+.PP
+Currently only two pick prompt types are supported: one  and
+three.   Both  prompt types highlight the currently selected
+segment by flashing a  bounding  box  around  the  segment's
+extent.  Also, picking is only
+implemented at the segment extent level.   Thus, if two segments
+overlap and the user points at the area of intersection, then the
+segment of highest priority will be picked even if the cursor is
+directly over a primitive contained in the other segment.
+.PP
+The string device has only one prompt and echo type:  number
+1.   This  prompt  type  gives the user one line on which to
+type.  This line is positioned in the upper-left  corner  of
+the  string echo area and is displayed as a hollow fill area
+within which  an  insertion  point  cursor  and  typed  text
+appear.   As  the  user  types,  the  only  special keys are
+Backspace, Delete,  and  Enter  which  perform  the  obvious
+functions.   The  length of the line is limited by the width
+of the echo area and  the  size  of  the  string  buffer  as
+specified   by   the   application   program  during  string
+initialization.
+.SH LIMITS
+.PP
+Four workstation types are defined by XGKS:  MI,  MO,  WISS,
+and  X11.   When  calling  the open workstation function the
+application must specify three  parameters:  1)  a workstation
+identifier,  which is an  integer  used  to identify this workstation
+throughout the application;
+2)
+the  workstation  type,  which  is  either one of the
+strings "MI",  "MO", or "WISS" (in which case a workstation of the
+appropriate type will be opened) or a null character pointer
+(in which case an X11 window will be created);
+and 3)
+a workstation  connection,  
+which is either a file name for the metafile workstations (MI and MO)
+or an  X11  DISPLAY  specification string (see the X man page),
+or a null character pointer for the X11 workstation (if null, then
+the environment variable DISPLAY is consulted).
+This last parameter is ignored
+for the workstation independent segment  store  (WISS) workstation.
+Ten   workstations    can    be    open
+simultaneously;  however,  only  one WISS workstation can be
+open.
+.PP
+There are thirty-one normalization transformations, numbered
+0  to  30.   Transformation  number  zero  is  the  identity
+transformation and cannot be changed.
+.PP
+Every X11 window workstation has a fixed  device  coordinate
+space that is 0 to 1279 on the X axis and 0 to 1023 on the Y
+axis.  This is not to say that the X window is that big, the
+GKS  workstation  will  be  scaled to fit the X window; this
+scaling preserves the aspect ratio.
+.PP
+There are twenty bundle  table  entries  for  each  type  of
+bundle table.
+.PP
+The size of the color table is determined by the X11  window
+server   and   the  hardware  being  used.   The  IBM  apa16
+monochrome display  provides  two  colors  and  the  Megapel
+display supports 255 out of 4096 possible colors.
+Each XGKS workstation
+shares the default color map of the display.
+The GKS SET COLOR REPRESENTATION function uses the X11 
+\fBXAllocColor()\fP function
+to obtain the pixel value of the colorcell having the color 
+closest to the requested one.  
+The association between GKS colour indices and X11 colorcells is
+maintained in a lookup table.
+This mechanism decouples GKS colour indices from X11 pixel values
+and makes the XGKS client "friendly" in relation to other X11 clients 
+in the handling of the X11 colormap.
+.PP
+GKS color index zero always refers to the
+X window background color while GKS color index one refers to the
+X window foreground color.
+.SH METAFILES
+.PP
+Two Metafile formats are supported: GKSM and CGM.  The GKSM format 
+is a formatted audit-trail of the GKS session: there is an almost
+isomorphic mapping between GKS calls and GKSM records.  Because GKSM
+is a formatted encoding, however, this format can impose a considerable 
+storage requirement.  Also, the GKSM format is not widely used.
+.PP
+The CGM format used by XGKS is a subset of the binary encoding specified 
+in the ANSI X3.122-1986 standard.  Because it is a binary encoding, this
+format is more space efficient than the GKSM format.
+It is not quite as powerful, however, as it does not record an audit-trail
+of the GKSM session; rather, it describes a set of independent, static
+pictures.  The CGM format is a widely used graphics standard.
+.PP
+The standard allows several
+alternative encodings for primitives such as floating-point and integer
+values.  XGKS uses the default encodings only.  These are
+.sp
+.RS +4
+.nf
+.ta \w'VDC INTEGER PRECISION'u+4m
+REAL PRECISION	Fixed point; whole part 16 bits; 
+	fractional part 16 bits.
+INTEGER PRECISION	16 bits
+COLOUR PRECISION	1 octet (per colour component)
+COLOUR INDEX PRECISION	1 octet
+INDEX PRECISION	16 bits
+VDC TYPE	INTEGER
+VDC INTEGER PRECISION	16 bits
+VDC EXTENT	(0,0) to (32767,32767)
+COLOUR VALUE EXTENT	minimum is (0,0,0) and maximum
+	is (255,255,255).
+.fi
+.sp
+.RE
+This CGM form is compatible with the NCAR Graphics package.
+.PP
+The type of Metafile is selected by the Metafile's filename.  Filenames
+containing the string ".cgm" (or ".CGM") are assumed to be in CGM format; all
+other files are assumed to be in GKSM format.
+.SH "X-RESOURCES"
+.PP
+The following X-resources and their parameters are searched for by
+the XGKS library:
+.TP 4
+.IB "program" ".backingstore: on\||\|off"
+Whether or not the server should use the X backing-store feature for windows
+created by this application.
+Whether the backingstore feature is enabled by default depends on the 
+capability of the X server: if the server can use backingstore, then it's 
+enabled by default; otherwise it's disabled by default.
+.TP 4
+.B "Xgks.Backingstore: on\||\|off"
+Whether or not the server should use the X backing-store feature for 
+the entire class of XGKS applications.
+.TP 4
+.IB "program" ".background:" " color"
+Color for the background of the XGKS window for program \fIprogram\fP.
+The string \fIcolor\fP
+must be understood by the X-server (.e.g "MidnightBlue").
+.TP
+.BI Xgks.Background: " color"
+Background color for the entire class of XGKS applications.
+.TP
+.IB "program" ".foreground:" " color"
+Color for the foreground of the XGKS window for program \fIprogram\fP.
+The string \fIcolor\P
+must be understood by the X-server (.e.g "white").
+.TP
+.BI Xgks.Foreground: " color"
+Foreground color for the entire class of XGKS applications.
+.TP
+.I "program\fB.geometry:  \fIXSIZE\fPx\fIYSIZE\fP[+-]\fIxoff\fP[+-]\fIyoff\fP"
+Geometry in pixels for the XGKS window of program \fIprogram\fP.
+.TP
+.B "Xgks.Geometry:  \fIXSIZE\fPx\fIYSIZE\fP[+-]\fIxoff\fP[+-]\fIyoff\fP"
+Geometry in pixels for the entire class of XGKS applications.
+.TP
+.IB "program" ".iconic: on|off"
+Initially, map the XGKS window as an icon rather than as a normal 
+window.
+.TP
+.B "Xgks.Iconic: on|off"
+Initially, map the entire class of XGKS windows as icons rather than 
+as normal windows.
+.TP
+.IB "program" ".reverse: on|off"
+Reverse foreground and background colors in the XGKS window of program 
+\fIprogram\fP.
+.TP
+.B "Xgks.Reverse: on|off"
+Reverse foreground and background colors for the entire class of Unidata XGKS 
+applications.
+.TP
+.IB "program" ".softclipping: on|off"
+Enable or disable the soft-clipping of polylines.  By default, XGKS defers
+the clipping of output primitives to the X Window System.  
+This works reliably only if the normalized device co-ordinates (NDC) of the
+output primitives are relatively close to the NDC [0,1] unit-square.  
+Due to wrap-around in the NDC-to-X co-ordinate transformation, very
+large NDC values might cause extraneous lines to appear in the display
+window.
+Though this behavior is server-dependent,
+it typically occurs when displaying a small portion of a large
+graphic.
+Soft-clipping causes XGKS to clip polyline output against the 
+current NDC clip-window before calling X; thus eliminating extraneous 
+lines but incurring some additional computational overhead.
+Because this behavior is server-dependent, we suggest you use
+the default (i.e. no soft-clipping) until the problem manifests
+itself.
+.TP
+.B "Xgks.Softclipping: on|off"
+Enable or disable soft-clipping for the entire class of Unidata XGKS 
+applications.
+.SH "USING X-RESOURCES"
+.PP
+The following pseudo-code details the sequence of steps taken to initialize 
+the program-specific, internal, X-resource database.  Definitions encountered 
+during later steps override earlier ones.
+.sp
+.nf
+.RS 4
+Clear internal X-resource database;
+if (file \fB/usr/lib/X11/app-defaults/\fP\fIprogram\fP exists) {
+	Merge its definitions into the database;
+}
+.sp
+if (X-server has an X-resource database) {
+	Merge its definitions into the database;
+} else if (file \fB~/.Xdefaults\fP exists) {
+	Merge its definitions into the database;
+}
+.sp
+if (environmental variable \fBXENVIRONMENT\fP exists) {
+	Merge the definitions in file \fB$XENVIRONMENT\fP into the database;
+} else if (file \fB~/.Xdefaults-\fP\fIhostname\fP exists) {
+	Merge its definitions into the database;
+}
+.RE
+.fi
+.sp
+Notes:
+.IP 1) 4
+The X-server may have its X-resource database updated via the \fBxrdb(1)\fP
+utility.
+.IP 2)
+\fIProgram\fP is the name of the program as given in \fBargv[0]\fP
+(e.g. "xsfcwx").
+.IP 3)
+\fIHostname\fP is the name of the host returned by \fBhostname(3)\fP
+(e.g. "groucho").
+.SH "PROGRAMMING"
+.PP
+Here is a simple XGKS program that displays "Hello World" in
+the   center  of  the  default  workstation  window.   After
+displaying the greeting, the program  uses  a  choice  input
+device to wait for the user to press the break key.  This is
+done because the X window that represents  this  workstation
+is  removed  from  the  screen as soon as the workstation is
+closed.  The for loop in the main program  is  a  convenient
+way  for  the  application  to allow the user to specify the
+workstation  connection  id  on  the  command  line  via   a
+hostname:serverNumber  pair.   If  the  connection id is not
+specified  XGKS  will  use  the  value  of  the  environment
+variable DISPLAY in the users environment.
+.sp
+.nf
+#include <stdio.h>
+#include <xgks.h>
+
+/*
+ * This function is called when the program is finished
+ * and we just want to wait until the user is done looking
+ * at the output.  Here we set up a choice device to use
+ * the function keys. However, we ignore all choices and
+ * wait for the user to press the Break key.
+ */
+    static void
+WaitForBreak(wsid)
+    Gint wsid;
+{
+    Gchoice init;
+    Gchoicerec record;
+    Glimit earea = { 0.0, 1279.0, 0.0, 1023.0 };
+    
+    gmessage(wsid, "Done, press Break to quit ...");
+    
+    init.status = GC_NOCHOICE;
+    init.choice = 0;
+    record.pet1.data = NULL;
+    ginitchoice(wsid, 1, &init, 1, &earea, &record);
+    gsetchoicemode(wsid, 1, GREQUEST, GECHO);
+    while (init.status != GC_NONE)
+        greqchoice(wsid, 1, &init);
+}
+
+/*
+ * set up various text parameters and print "Hello World"
+ */
+PrintHello()
+{
+    Gpoint tpt;
+    Gpoint up;
+    Gtxfp txfp;
+    Gtxalign align;
+    
+    txfp.font = 4;           /* use Serif Bold Roman font */
+    txfp.prec = GSTROKE;
+    gsettextfontprec(&txfp);
+    
+    gsetcharexpan(0.5);
+    gsetcharspace(0.2);
+    gsettextcolorind(1);   /* should be white */
+    
+    gsetcharheight(0.05);
+    
+    up.x = 0.0; up.y = 1.0;  /* characters are straight up */
+    gsetcharup(&up);
+    
+    align.hor = GTH_CENTER;
+    align.ver = GTV_HALF;
+    gsettextalign(&align);
+    
+    gsettextpath(GTP_RIGHT); /* print from left to right */
+    
+    tpt.x = 0.5; tpt.y = 0.5;/* center of the window */
+    gtext(&tpt,"Hello World!");
+}
+
+main(argc,argv)
+    int argc;
+    char *argv[];
+{
+    int i, wsid=1;
+    char *conn = (char*)NULL;
+    
+    for (i=1; i<argc; i++) {
+        if (index(argv[i], ':'))
+            conn = argv[i];
+        /* Application dependent options here */
+    }
+    
+    gopengks(stdout,0);
+    
+    if (gopenws(wsid, conn, conn) != 0)
+        exit(0);
+    gactivatews(wsid);
+    
+    PrintHello();
+    WaitForBreak(wsid);
+    
+    gdeactivatews(wsid);
+    gclosews(wsid);
+    
+    gclosegks();
+    exit(0);
+}
+.PP
+To compile the program, we use the following command line (NB: \fB${prefix}\fB
+is the root of the installation-tree):
+.sp
+.nf
+.RS +4
+cc hello.c -o hello -I${prefix}/include -L${prefix}/lib -lxgks -lX11 -lm
+.RE
+.fi
+.sp
+Or, if on an Apollo workstation:
+.sp
+.nf
+.RS +4
+cc hello.c -o hello -I${prefix}/include -L${prefix}/lib -lxgks -L/usr/lib/X11 -lX11 -lm
+.RE
+.fi
+.PP
+To execute, just type:
+.sp
+.RS +4
+hello
+.RE
+.sp
+.fi
+(NB: you must be running an X server when you run  any  XGKS
+application.)
+.PP
+Similarly, to compile a Fortran\-based XGKS program (e.g. \fBhello.f\fP), 
+we use:
+.sp
+.nf
+.RS +4
+f77 -O -o hello hello.f -L${prefix}/lib -lxgks -lX11 -lm
+.RE
+.fi
+.sp
+or, if using an Apollo workstation:
+.sp
+.nf
+.RS +4
+f77 -O -o hello hello.f -L${prefix}/lib -lxgks -L/usr/lib/X11 -lX11 -lm
+.RE
+.fi
+.sp
+or, if using an HP 9000/720 workstation:
+.sp
+.nf
+.RS +4
+f77 -O -o hello hello.f -Wl,-L,${prefix}/lib -lxgks -Wl,-L,/usr/lib/X11R4 -lX11 -lm
+.RE
+.fi
+.PP
+When the program opens the GKS workstation  the  X11  window
+system  will  prompt  the  user  to  open a new window.  The
+program will display "Hello World!" and then  wait  for  the
+user  to  press  the  Break  key.  While the GKS workstation
+window is on the screen the user can  resize,  move,  cover,
+and   uncover   the  window  and  XGKS  will  take  care  of
+redisplaying the greeting.
+.SH FILES
+.PP
+In the following, \fB${prefix}\fP is the root of the installation
+directory-tree as defined by the Makefile macro of the same name.
+.PP
+.ta \w'${prefix}/include/xgks.h'u+4m
+${prefix}/lib/libxgks.a	The XGKS library.
+.br
+${prefix}/lib/xgksfonts	Font data-base directory.
+.br
+${prefix}/bin	Directory containing sample programs.
+.br
+${prefix}/include/xgks.h	C header-file.
+.SH "ENVIRONMENT"
+.PP
+.BR \s-1XGKSFontDir\s0 ,
+if set, contains the pathname of the directory which contains the XGKS
+fonts.  If not set, then the compiled-in pathname 
+is used (see \fBFILES\fP).
+.SH "SEE ALSO"
+.PP
+.BR X (1),
+.BR xrdb (1),
+.BR xterm (1).
+.sp
+Computer Graphics - Graphical Kernel System (GKS) Functional Description.
+ANSI, X3.124-1985.
+.sp
+C Language Binding of GKS. ANSI X3H34/83-12R5, March 1986.
+.sp
+Computer Graphics, Donald Hearn and Pauline Baker, Prentice-Hall, 1986.
+.sp
+The X Window System, Robert W. Scheifler and Jim Gettys, ACM
+Transactions on Graphics, volume 5, number 2, April 1986, pp. 79-109.
+.SH BUGS
+.PP
+The only workstations currently supported are X, GKSM, and CGM.
+.PP
+Support for input Metafiles is primitive, at best.
+.PP
+The decoupling between GKS colour-indices and X pixel values is
+primitive at best.  Also, an XGKS window always uses the default colormap.
+.SH "BUG REPORTING"
+.PP
+Bugs reports should be sent to xgks-bugs@unidata.ucar.edu
+[128.117.140.3].  Please include a potential fix, if possible.
+.SH MAILING-LIST
+.PP
+A mutual-aid society, electronic mailing-list exists.  Requests to join
+should be sent to xgks-request@unidata.ucar.edu [128.117.140.3].
+.SH AUTHORS
+.br
+Greg Rogers (grogers@a.cs.uiuc.edu)
+.br
+Sung Hsien Ching (ksung@a.cs.uiuc.edu)
+.br
+Yu Pan
+.br
+Steve Emmerson (steve@unidata.ucar.edu)
+.PP
+This project was supported by IBM ACIS and was directed
+by Professors Bill Kubitz and Roy Campbell
+of the Graphics Workstation Research Group, Department of Computer 
+Science, at the University of Illinois in Urbana, Illinois.
+Special thanks go to David Berkowitz and Terry Rowan, our IBM contacts,
+who helped us get early versions of the X server for our workstations.
+.PP
+Maintenance of XGKS by the Unidata Program Center is supported by the
+National Science Foundation.  Special thanks to all those in the user
+community who contribute to its evolution.

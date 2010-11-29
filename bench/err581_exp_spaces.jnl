@@ -1,0 +1,22 @@
+! err581_exp_spaces.jnl
+! bug 1395
+! Expressions with an exponent immediately followed by an operator 
+! are parsed incorrectly, including the operator in the exponent:
+!
+! 1.0e-5+0*7  was parsed as (1.0e-5 + 0)* 7
+! 1.0e-5 + 0*7  was parsed correctly
+
+set mode ignore
+
+list 1.0e-5+ 0*7
+list 1.0e-5 + 0*7
+list 1.0e-5+0*7
+list 1000.6+ 0*7
+
+let xx= x[x=1:5]
+
+list 1.0e-5 + 0*xx
+list 1.0e-5 + 0*xx
+list 1.0e-5+0*xx
+
+can mode ignore

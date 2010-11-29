@@ -1,0 +1,55 @@
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 - 3/7/86	extracted from SUBROUTINE HDIFFUS
+
+* original version in GFDL model:
+!       COMMON /ONEDIM/							!  920
+!      * PHI (JMT),PXN (IMT),ZUN   (IMT)  ,DZ  (KM),TINIT(KM,NT),TMIX(NT),!  921
+!      1 PHIT(JMT),PXS (IMT),ZUS   (IMT)  ,ZDZ (KM),			!  922
+!      1 CS  (JMT),PYN (IMT),ZVN   (IMT)  ,DZ2R(KM),			!  923
+!      1 CSR (JMT),PYS (IMT),ZVS   (IMT)  ,C2DZ(KM),KAR(KM),		!  924
+!      1 CST (JMT),SFUB(IMT),ZUNENG(IMT,8),EEH (KM),EEM(KM),		!  925
+!      1 CSTR(JMT),SFU (IMT),ZUSENG(IMT,8),FFH (KM),FFM(KM),		!  926
+!      1 SINE(JMT),SFVB(IMT),ZVNENG(IMT,8),DZZ (KMP1),DZZ2R(KMP1),	!  927
+!      1 TNG (JMT),SFV (IMT),ZVSENG(IMT,8),ZDZZ(KMP1),			!  928
+!      * XJV(JMT),XJT(JMT),XIV(IMT),XIT(IMT),				!  929
+!      1 DYT(JMT),DYTR(JMT),DYT2R(JMT),DYU(JMT),DYUR(JMT),DYU2R(JMT),	!  930
+!      1 DYU4R(JMT),DYT4R(JMT),						!  931
+!      1 DXT(IMT),DXTR(IMT),DXT2R(IMT),DXU(IMT),DXUR(IMT),DXU2R(IMT),	!  932
+!      1 DXU4R(IMT),DXT4R(IMT),						!  933
+!      1 AATJ(IMT),AAUJ(IMT),BBTJ(IMT),BBUJ(IMT),			!  934
+!      1 ISZ(JMT,LSEG),IEZ(JMT,LSEG),COFIS(NISLE,2),			!  935
+!      1 ISIS(NISLE),IEIS(NISLE),JSIS(NISLE),JEIS(NISLE)		!  936
+
+* reduced version in use in TMAP programs
+	REAL
+     .	phi ,phit,zdz ,dz2r,c2dz,cs,
+     .	eem,ffm,eeh,ffh,csr,cst,cstr,sine,tng,
+     .	dzz,zdzz,xjv,xjt,xiv,
+     .	xit,dytr,dyur,dyu2r, dyu4r,dxtr,dxur,dxu2r,dxt4r,
+     .	aatj,bbtj,dyu,dxu,dyt,DXT,
+     .	AM,AH,FKPM,FKPH,BAH,BAM,dtts,dtuv,c2dtuv,c2dtts,cmonthly,
+     .	tfac1,tfac2,omega,grav,
+     .	dxv,dyv,dz,
+     .	xt,yt,xv,yv,z,zb,
+     .	boxtw,boxts
+
+	INTEGER	nts30, month
+
+	common /onedim/
+     .	phi (jmt),phit(jmt),zdz (km),dz2r(km),c2dz(km),cs(jmt),
+     .	eem(km), ffm(km),eeh(km),ffh(km),
+     .	csr(jmt),cst(jmt),cstr(jmt),sine(jmt),tng(jmt),
+     .	dzz(kmp1),zdzz(kmp1),xjv(jmt),xjt(jmt),xiv(imt),
+     .	xit(imt),dytr(jmt),dyur(jmt),dyu2r(jmt),dyu4r(jmt),
+     .	dxtr(imt),dxur(imt),dxu2r(imt),dxt4r(imt),
+     .	aatj(imt),bbtj(imt),dyu(jmt),dxu(imt),dyt(jmt),DXT(imt),
+     .
+     .	AM,AH,FKPM,FKPH,BAH,BAM,dtts,dtuv,c2dtuv,c2dtts,cmonthly,
+     .	nts30,month,tfac1,tfac2,omega,grav,
+     .
+     .	dxv(im),dyv(jm),dz(km),
+     .	xt(im),yt(jm),xv(im),yv(jm),z(km),zb(km),
+     .	boxtw,boxts

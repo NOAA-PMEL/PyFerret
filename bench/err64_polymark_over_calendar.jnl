@@ -1,0 +1,13 @@
+! err64_polymark_over_calendar.jnl
+! bug1722.  Polymark script failed with calendar mismatch
+!           it should not if the overlay time axis is abstract.
+!
+def ax/t=1-jan-0002:1-jan-0010:1/cal=noleap/unit=year/edges tax
+let tval = t[gt=tax]
+plot tval
+let pos = {`tval[l=4]`,`tval[l=5]`}
+poly/ov/nolab/line=15 pos,pos      ! this works
+
+! Here we got an error about mismatched calendars on time axes:
+go polymark "poly/ov/nolab/pal=red/line=1" pos pos " " circle .5
+

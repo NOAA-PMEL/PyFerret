@@ -1,0 +1,146 @@
+! coads_demo.jnl *jd* 11/91
+
+! Description: introduces and briefly explores the COADS climatological data 
+
+! COADS is the comprehensive ocean-atmosphere data set compiled at NCAR from
+! ship reports over the global ocean.  The monthly climatology introduced here 
+! represents a simple average of all data available for each month of the year
+! from 1946-1989.
+
+! Advanced use of FERRET commands in the demo will give you helpful examples
+! of their use.  See the User's Guide for more on individual commands.
+
+! 7/01 *acm* change uppercase GO LAND to GO land
+
+MESSAGE
+
+
+CAN REGION
+SET MODE VERIFY 
+SET DATA coads_climatology
+SHOW DATA coads_climatology
+
+! Note that 7 variables are available.  The grid is 2x2 degree, and global.
+
+MESSAGE
+
+SET REGION/Y=60S:80N
+SET WIND/SIZE=.6/ASPECT=.86
+PPL CROSS 1	! This PPL command causes the equator to be drawn in plots
+
+MESSAGE
+
+! Sea level pressure for the average July
+
+go rgb_rainbow
+SHADE/L=7 SLP
+GO land		
+
+MESSAGE
+
+! Overlay the July surface wind.
+
+VECTOR/OVER/L=7/LEN=10 UWND,VWND
+
+MESSAGE
+
+! The horizontal equations of motion on the rotating earth show that
+! acceleration of a parcel of air is dependent on the pressure gradient,
+! the coriolis force, and any friction retarding its motion.  Neglecting 
+! friction, a geostrophic wind may be defined, where the pressure gradient
+! force is balanced by the coriolis force.  Let's define variables ug and vg
+! to be that geostrophic wind, being careful to use common units of measure.
+
+LET RHO = 1.275                    ! Use a constant for air density for now
+LET OMEGA = 2*3.14159/86400        ! The angular velocity of the earth
+LET DPDX = SLP[X=@DDC]*100         ! Zonal pressure gradient (in SI units)
+LET DPDY = SLP[Y=@DDC]*100         ! Meridional pressure gradient
+LET C = 3.14159/180                ! Conversion factor -- radians/degree
+LET F = 2*OMEGA*SIN(Y[G=SLP]*C)    ! The coriolis parameter
+
+LET/TITLE="VG" VG = IF ABS(Y) GT 5 THEN DPDX/(F*RHO)
+LET/TITLE="UG" UG = IF ABS(Y) GT 5 THEN (-1)*DPDY/(F*RHO)
+
+! The geostrophic wind is ill-defined near the equator as f is 0 there.
+! This definition specifies ug and vg poleward of latitudes +/- 5 degrees.
+
+MESSAGE
+
+! The geostrophic wind
+
+VECTOR/LEN=10/L=7 UG,VG
+GO land
+
+MESSAGE
+
+! A bit noisy so let's smooth it 5 grid points in x
+
+LET UGS = UG[X=@SBX:5]
+LET VGS = VG[X=@SBX:5]
+VECTOR/LEN=10/L=7 UGS,VGS
+GO land
+
+MESSAGE
+
+! Here is the geostrophic wind field superimposed on sea level pressure.
+
+SHADE/L=7 SLP
+GO land
+VECTOR/LEN=10/OVER/L=7 UGS,VGS
+
+! If we now overlay the observed winds we see that they are often
+! subgeostrophic, that is, the coriolis force is not strong enough to 
+! balance the pressure gradient force (from high to low pressure),
+! possibly indicating presence of friction near the earth's surface.
+
+VECTOR/LEN=10/OVER/L=7 UWND,VWND
+
+MESSAGE
+
+! Here is the same plot for March
+
+SHADE/L=3 SLP
+GO land
+VECTOR/LEN=10/OVER/L=3 UGS,VGS
+VECTOR/LEN=10/OVER/L=3 UWND,VWND
+
+MESSAGE
+
+! And we can look more closely at a hemisphere
+
+SET REGION/Y=5:70
+SET WIND/ASP=.5
+
+SHADE/L=7 SLP
+VECTOR/LEN=10/OVER/L=7 UGS,VGS
+VECTOR/LEN=10/OVER/L=7 UWND,VWND
+PPL CROSS 0
+
+! The "land" go tool ("go land") is useful for continental outlines and has
+! been used several times in this demo.  There is another tool to fill 
+! the land masses with a dark grey color, "go fland".  A land mask is layed
+! over the plot, as in:
+
+MESSAGE
+
+GO fland
+
+! The "go land" tool can still be used, too.
+
+MESSAGE
+
+GO land
+
+MESSAGE
+
+! More exploration of global climate is possible using the COADS climatology. 
+! This demonstration uses a fixed value for the density of air.  Since 
+! pressure, temperature, and specific humidity are available, density could
+! be cast in a more complex functional form.  Models of the friction suggested
+! above can be tested.  And other explorations that come to mind.
+
+MESSAGE
+
+GO rgb_rainbow
+SET WINDOW/ASPECT=.86
+

@@ -1,0 +1,6 @@
+* XREVISION_TYPE.CMN
+
+	COMMON/ XREVISION_TYPE / revision_type
+
+	CHARACTER*20 revision_type
+

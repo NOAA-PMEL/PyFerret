@@ -1,0 +1,48 @@
+
+! err570_shakeylab.jnl
+! 7/6/2004
+
+!  When user defines the location of the color key, the key
+!  labels are too close to the edge of the key.
+
+! Test with both SHADE and FILL, as some of the scaling is
+! different internally.
+
+
+use coads_climatology
+ppl dfltfnt cr
+
+define viewport/axes/text=1/xlim=0.1:0.85/ylim=`1/3`:`2/3` vp_1
+set viewport vp_1
+
+fill/set/L=2 sst
+ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
+ppl fill 
+
+fill/set/L=2 sst* 10000
+ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
+ppl fill 
+
+fill/set/L=2 sst/ 10000
+ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
+ppl fill 
+
+!
+
+define viewport/axes/text=1/xlim=0.1:0.85/ylim=`1/3`:`2/3` vp_1
+set viewport vp_1
+
+shade/set/L=2 sst
+ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
+ppl shade 
+
+shade/set/L=2 sst* 10000
+ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
+ppl shade 
+
+shade/set/L=2 sst/ 10000
+ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
+ppl shade 
+
+
+ppl dfltfnt sr

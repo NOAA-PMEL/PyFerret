@@ -1,0 +1,79 @@
+! bn200_geometry.JNL
+! benchmark various geometries for accessing FERRET data
+! similar tests are performed on:
+!	abstract variable
+!	(user variable) transformed file variable
+!	memory-resident file variable
+!	disk-resident file variable
+!	diagnostic variable
+
+! ******** abstract variable ************
+LET v_abst = i + 10*j + 100*k + 1000*l
+DEFINE REGION/I=1 IPT
+DEFINE REGION/J=1 JPT
+DEFINE REGION/K=1 KPT
+DEFINE REGION/L=1 LPT
+DEFINE REGION/I=1:5/J=1:5/K=1:5/L=1:5 R4D
+SET REG R4D
+SET EXPRESSION v_abst
+GO bn_geometry.sub
+
+! ******** transformed file variable ************
+USE gt4d011
+LET temp_sq = temp^2
+DEFINE REGION/I=101 IPT
+DEFINE REGION/J=46 JPT
+DEFINE REGION/K=1 KPT
+DEFINE REGION/L=1 LPT
+DEFINE REGION/I=101:105/J=46:50/K=1:5/L=1:5 R4D
+SET REG R4D
+SET EXPRESSION temp_sq
+GO bn_geometry.sub
+
+! ******** memory-resident file variable ************
+USE gt4d011
+CANCEL MEMORY/ALL
+SET MODE DIAGNOSTIC
+DEFINE REGION/I=101 IPT
+DEFINE REGION/J=46 JPT
+DEFINE REGION/K=1 KPT
+DEFINE REGION/L=1 LPT
+DEFINE REGION/I=101:105/J=46:50/K=1:5/L=1:5 R4D
+SET REG R4D
+SET EXPRESSION temp
+LOAD		! load full 4-D region
+GO bn_geometry.sub
+SET MODE/LAST DIAGNOSTIC
+
+! ******** disk-resident file variable ************
+USE gt4d011
+CANCEL MEMORY/ALL
+SET MODE DIAGNOSTIC
+DEFINE REGION/I=101 IPT
+DEFINE REGION/J=46 JPT
+DEFINE REGION/K=1 KPT
+DEFINE REGION/L=1 LPT
+DEFINE REGION/I=101:105/J=46:50/K=1:5/L=1:5 R4D
+SET REG R4D
+SET EXPRESSION temp
+GO bn_geometry.sub
+SET MODE/LAST DIAGNOSTIC
+
+! ******** diagnostic variable ************
+! *3/99* *kob* comment out look at qady variable - no longer important
+!USE gt160w011
+!DEFINE REGION/I=70 IPT
+!DEFINE REGION/J=50 JPT
+!DEFINE REGION/K=1 KPT
+!DEFINE REGION/L=1 LPT
+!DEFINE REGION/I=70:72/J=46:50/K=1:5/L=1:3 R4D
+!SET REG R4D
+!SET EXPRESSION qady
+!GO bn_geometry.sub
+
+! generate error through non-comformable limits
+SET MODE IGNORE_ERRORS
+LIST X[I=1:5] - X[I=6:9]
+SET MODE/LAST IGNORE_ERRORS
+
+

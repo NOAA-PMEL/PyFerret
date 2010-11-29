@@ -1,0 +1,44 @@
+\cancel mode verify
+! 2/94 - fnoc_2d.jnl
+
+! Description: produce a 2D polar stereographic plot
+
+! usage:  GO fnoc_2d plot_command variable [limit] [fill] [file]
+
+! plot_command:		one of "SHADE" [default], "CONTOUR", or "FILL"
+!			including qualifiers (see note below)
+! variable:		variable or expression to be plotted.
+!			Must include explicit qualifiers with region
+!			encompassing the area to be plotted 
+! (optional) limit:	fraction of full region that will be displayed
+!			Default = 1 (full region).  e.g. 0.5 will display
+!			only the -.5 to .5 region from the full plot
+! (optional) fill:	Either FILL or HOLE(default) to indicate how points
+!			bordering on missing values should be treated
+! (optional) file:	name of file to receive the sampled points
+!			Default = fnoc_points.dat
+!			Note: the format of this file will be unformatted
+!			with #_points columns per record.
+
+! Note on plot command qualifiers:
+!  Use /TITLE= to annotate your plot
+!  /OVERLAY works fine
+!  /SET_UP requires manual setting and resetting of PPL tics and axlabp
+!  /X/Y/Z/T/I/J/K/L qualifiers will refer to the OUTPUT (page layout) grid
+!	not to the input (lat/long) grid		
+
+! check that parameters are OK to the best we can
+query/ignore $1%<Use: GO fnoc_2d plot_command variable [limit] ["FILL"] [file]%
+query/ignore $2%<Use: GO fnoc_2d plot_command variable [limit] ["FILL"] [file]%
+
+! extract the data ready to plot
+GO convert_to_fnoc_2d $2 $4"HOLE" $5"fnoc_points.dat"
+
+! produce the plot
+GO box_plot $1/x=-$3"1":$3"1"/y=-$3"1":$3"1" polar[d=$5"fnoc_points.dat"]
+
+! coach the user on how to make quick replots
+MESSAGE/Cont "The following plotting command can be modified and reused:"
+MESSAGE/Cont >>>GO box_plot $1/x=-$3"1":$3"1"/y=-$3"1":$3"1" polar[d=$5"fnoc_points.dat"]
+
+set mode/last verify

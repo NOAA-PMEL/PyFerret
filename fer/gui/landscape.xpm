@@ -1,0 +1,26 @@
+/* XPM */
+static char * landscape_xpm[] = {
+"26 19 3 1",
+" 	c gray80",
+".	s gray	c black",
+"X	c gray59",
+/* */
+"                          ",
+"                          ",
+"     ............         ",
+"     .XXXXXXXXXXX..       ",
+"     .XXXXXXXXXXX.X.      ",
+"     .XXXXXXXXXXX.XX.     ",
+"     .XXXXXXXXXXX.XXX.    ",
+"     .XXXXXXXXXXX.....    ",
+"     .XXXXXXXXXXXXXXX.    ",
+"     .XXXXXXXXXXXXXXX.    ",
+"     .XXXXXXXXXXXXXXX.    ",
+"     .XXXXXXXXXXXXXXX.    ",
+"     .XXXXXXXXXXXXXXX.    ",
+"     .XXXXXXXXXXXXXXX.    ",
+"     .................    ",
+"                          ",
+"                          ",
+"                          ",
+"                          "};

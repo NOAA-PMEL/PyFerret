@@ -1,0 +1,18 @@
+! err540_parse_repeat.jnl
+! 3/03 *acm
+
+!yes? rep/k=1:2 (rep/j=1:1 (say hello))
+!-> REPEAT: K=1
+!-> REPEAT: J=1              <-----------lots of these
+!-> REPEAT: J=1
+!...
+! **ERROR: stack overflow
+!rep/j=1:1 (rep/j=1:1 (say hello))
+!Command file, command group, or REPEAT execution aborted
+
+
+!Cause is parsing parentheses in REPEAT section of parse_command.F
+
+rep/k=1:2 (rep/j=1:1 (say hello))
+rep/k=1:2 (rep/j=1:1 say hello; say why not)
+rep/k=1:2 (rep/j=1:1 (say hello; (say why not)))

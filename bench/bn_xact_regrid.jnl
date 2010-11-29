@@ -1,0 +1,55 @@
+! BN450_xact_regrid.jnl
+
+! 10/97 - test "exact match" regridding
+! wherein destination points are filled only if they exactly match
+! the coordinate of the cooesponding point on the source grid
+
+! X axis tests
+CANCEL REGION
+GO bn_xact_regrid.sub X
+SET REGION/X=2:4
+GO bn_xact_regrid.sub X
+SET REGION/X=1:5
+GO bn_xact_regrid.sub X
+SET REGION/X=1.5:4.5
+GO bn_xact_regrid.sub X
+SET REGION/X=0:6
+GO bn_xact_regrid.sub X
+
+! Y axis tests
+CANCEL REGION
+GO bn_xact_regrid.sub Y
+SET REGION/Y=2:4
+GO bn_xact_regrid.sub Y
+SET REGION/Y=1:5
+GO bn_xact_regrid.sub Y
+SET REGION/Y=1.5:4.5
+GO bn_xact_regrid.sub Y
+SET REGION/Y=0:6
+GO bn_xact_regrid.sub Y
+
+! Z axis tests
+CANCEL REGION
+GO bn_xact_regrid.sub Z
+SET REGION/Z=2:4
+GO bn_xact_regrid.sub Z
+SET REGION/Z=1:5
+GO bn_xact_regrid.sub Z
+SET REGION/Z=1.5:4.5
+GO bn_xact_regrid.sub Z
+SET REGION/Z=0:6
+GO bn_xact_regrid.sub Z
+
+! T axis tests
+CANCEL REGION
+GO bn_xact_regrid.sub T
+SET REGION/T=2:4
+GO bn_xact_regrid.sub T
+SET REGION/T=1:5
+GO bn_xact_regrid.sub T
+SET REGION/T=1.5:4.5
+GO bn_xact_regrid.sub T
+SET REGION/T=0:6
+GO bn_xact_regrid.sub T
+
+

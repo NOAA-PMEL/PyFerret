@@ -1,0 +1,14 @@
+
+* static storage in COMMON  (see ppl_axes_off.F)
+
+* v5.40 ACM take this out of ppl_axes_off.F etc.
+
+* plot settings changed by PLOT/AXES  PLOT/NOLAB  /PLOT/NOAXES  
+* which we want to restore to settings possibly made by PPL AXLAB commands
+* etc and which for backwards compatibility should persist
+
+	LOGICAL change_axlab, time_axis
+	INTEGER save_iaxon(4), save_labx, save_laby
+
+	COMMON /PPL_AX_SAVE/ 
+     .     save_iaxon, save_labx, save_laby, change_axlab, time_axis

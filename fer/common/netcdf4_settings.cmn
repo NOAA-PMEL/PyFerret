@@ -1,0 +1,44 @@
+* netcdf4_settings.cmn
+* Parameters and flags controlling netcdf4 file output.
+*
+*	netcdf4_type	- netcdf format: 4=netcdf4, 3=netcdf3(=classic), 6=64-bit
+*	xchunk_size     - chunk size in X direction
+*	ychunk_size     - chunk size in Y direction
+*	zchunk_size     - chunk size in Z direction
+*	tchunk_size     - chunk size in T direction
+*	deflate_lev	- deflate level (0 for no deflate)
+*	shuffle_flag    - shuffle - 0 or 1
+*	endian_code     - native=0, little=1, big=0 match nf_endian_* params
+*	default_cache_size - This is read and stored the first time cache size is queried.
+*			  to be used to restore the default.
+*	cache_size_mb   - cache_chunk size in mbytes
+*
+* The following are for saving the values the users enters via 
+* SET LIST/NCFORMAT/ENDIAN/DEFLATE/SHUFFLE
+*	netcdf4_type_set - netcdf format: 4=netcdf4, 3=netcdf3(=classic), 6=64-bit
+*	xchunk_size_set  - chunk size in X direction
+*	ychunk_size_set  - chunk size in Y direction
+*	zchunk_size_set  - chunk size in Z direction
+*	tchunk_size_set  - chunk size in T direction
+*	deflate_lev_set  - deflate level (0 for no deflate)
+*	shuffle_flag_set - shuffle - 0 or 1
+*	endian_code_set  - native=0, little=1, big=0 match nf_endian_* params
+
+	COMMON/NETCDF4/
+     .		netcdf4_type, xchunk_size, ychunk_size, 
+     .		zchunk_size, tchunk_size, deflate_lev, 
+     .		shuffle_flag, endian_code, 
+     .		netcdf4_type_set, xchunk_size_set, ychunk_size_set, 
+     .		zchunk_size_set, tchunk_size_set, deflate_lev_set, 
+     .		shuffle_flag_set, endian_code_set, 
+     .		default_cache_size, cache_size_mb
+
+	INTEGER 
+     .		netcdf4_type, xchunk_size, ychunk_size, 
+     .		zchunk_size, tchunk_size, deflate_lev, 
+     .		shuffle_flag, endian_code, 
+     .		netcdf4_type_set, xchunk_size_set, ychunk_size_set, 
+     .		zchunk_size_set, tchunk_size_set, deflate_lev_set, 
+     .		shuffle_flag_set, endian_code_set, 
+     .		default_cache_size
+	REAL cache_size_mb   

@@ -1,0 +1,53 @@
+! bn_set_axis_regular.jnl
+! Karl Smith, 5/2010
+! tests for SET AXIS /REGULAR
+
+! --- create irregular but monotonic data with integer endpoints
+set region /i=1:10 /j=1:10
+let deltax = if (i gt 1 and i lt 10) then 0.5 * sin((x - 1.0) * 3.14159265 / 2.33333333) else 0.0
+let xdata = x + deltax
+let deltay = if (j gt 1 and j lt 10) then 0.5 * sin((y - 1.0) * 3.14159265 / 2.33333333) else 0.0
+let ydata = y - deltay
+
+! --- define axes and grid from this data
+define axis /x /from_data /name=myx xdata
+define axis /y /from_data /name=myy ydata
+define grid /x=myx /y=myy mygrid
+set grid mygrid
+
+! --- define a variable using this grid; show everything is irregular
+let myvar = 2 * x + y
+list /format=(F8.5) x
+list /format=(F8.5) y
+list myvar
+show grid
+
+! --- force the x axis to be regular
+set axis /regular myx
+list /format=(F8.5) x
+list /format=(F8.5) y
+list myvar
+show grid
+
+! --- setting a regular axis as regular does nothing
+set axis /regular myx
+list /format=(F8.5) x
+list /format=(F8.5) y
+list myvar
+show grid
+
+! --- clean up
+go bn_reset
+cancel grid mygrid
+
+! --- read a NetCDF file with the irregular axes and data
+use bn_set_axis_regular
+show data
+list mydata
+show grid
+
+! --- force the x axis to be regular
+set axis /regular `..dimnames[i=1]`
+list mydata
+show grid
+

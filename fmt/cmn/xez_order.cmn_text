@@ -1,0 +1,2 @@
+	INTEGER	eznn, ezii, ezorder
+	COMMON /XEZ_ORDER/ eznn(4), ezii(4), ezorder(4)

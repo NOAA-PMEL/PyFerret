@@ -1,0 +1,51 @@
+\cancel mode verify
+
+!**************************************************************
+! Description:
+!
+! Usage: go taylor_polymark Standard_Deviation Correlation [polymark qualifiers] [values] [shape] [scale]
+!
+! Example:
+!
+! Notes: 
+!
+! Calls: go polymark
+!
+! Author: Patrick Brockmann
+! Contact: Patrick.Brockmann@ipsl.jussieu.fr
+! $Date$
+! $Name$
+! $Revision$
+! History:
+! Modification:
+!
+!**************************************************************
+
+let ME_std = $1
+let ME_cor = $2 
+let ME_x = ME_std*cos(acos(ME_cor))
+let ME_y = ME_std*sin(acos(ME_cor))
+
+def sym ME_value=$4%0%
+def sym ME_shape=$5%circle%
+def sym ME_scale=$6%1%
+
+if $3"false|*>true" then
+	define symbol ME_QUALIFIERS = /over/noaxis/nolab$3
+else
+	define symbol ME_QUALIFIERS = /over/noaxis/nolab
+endif
+
+!**************************************************************
+! say go polymark poly($ME_QUALIFIERS) `ME_x`,`ME_y`,($ME_value),($ME_shape),($ME_scale)
+
+go polymark poly($ME_QUALIFIERS) `ME_x`,`ME_y`,($ME_value),($ME_shape),($ME_scale) 
+
+!**************************************************************
+cancel variable XPOLYSHAPE,YPOLYSHAPE ! set by polymark script
+
+cancel variable ME_*
+cancel symbol ME_*
+
+!**************************************************************
+set mode verify

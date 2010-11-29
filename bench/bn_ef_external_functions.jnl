@@ -1,0 +1,14 @@
+! Tests of external functions that are distributed as shared object files.
+
+! Jon's benchmarks
+go bench_examples
+
+! Ansley's benchmarks
+! move bench tests that test internal external functions to their
+! own .jnl file  bn_internal_external_functions
+! 
+! 4/2006 all efs distributed with Ferret except writev5d and the 
+!        examples tested in bench_examples.jnl are now internally linked.
+
+GO bn_reset
+go bench_v5d 

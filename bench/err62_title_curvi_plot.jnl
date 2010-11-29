@@ -1,0 +1,27 @@
+! err62_title_curvi_plot.jnl
+! bug 1669; when the variable and its coordinate variables
+! come from different datasets, we get the variable def, not
+! its title as the main title.
+! The titles should all be SEA SURFACE TEMPERATURE (Deg C)
+
+use coads_climatology
+let xval = x[gx=sst[d=1]]+0*y[gy=sst[d=1]]
+let yval = y[gy=sst[d=1]]+0*x[gx=sst[d=1]]
+save/clob/file=a.nc sst[l=1:2], xval, yval
+
+can var/all
+use a.nc
+set v ul; shade sst[d=1,l=1], xval[d=2], yval[d=2]; sh sym labtit
+set v ur; shade sst[d=2,l=1], xval[d=2], yval[d=2]; sh sym labtit
+
+set v ll; fill sst[d=1,l=1], xval[d=2], yval[d=2]; sh sym labtit
+set v lr; fill sst[d=2,l=1], xval[d=2], yval[d=2]; sh sym labtit
+
+can view
+set v ul; vector/xskip=10/yskip=10 sst[d=1,l=1],sst[d=1,l=2], xval[d=2], yval[d=2]; sh sym labtit
+set v ur; vector/xskip=10/yskip=10 sst[d=2,l=1],sst[d=2,l=2], xval[d=2], yval[d=2]; sh sym labtit
+
+set v ll; contour sst[d=1,l=1], xval[d=2], yval[d=2]; sh sym labtit
+set v lr; contour sst[d=2,l=1], xval[d=2], yval[d=2]; sh sym labtit
+
+can view

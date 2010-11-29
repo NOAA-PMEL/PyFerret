@@ -1,0 +1,21 @@
+! err608_bug1556.jnl
+! Error processing parentheses on abstract axis names.
+!
+! The file was created with these commands, which MUST BE 
+! in a separate Ferret session to see the bug.
+! 
+!  use coads_climatology
+!  set axis/stride=20 `sst,return=xaxis`
+!  set axis/stride=10 `sst,return=yaxis`
+!  save/file=err608_bug1556.nc/clobber sst[L=1:2]
+
+USE err608_bug1556.nc
+SAVE/FILE=a.nc/CLOBBER sst[i=1:5:1,j=1:5:1,l=1:1:1]
+
+! The error was,
+!      LISTing to file out.nc
+!      **TMAP ERR: error in line definition
+!             file coords dont match variable coords on axis AX0
+!
+! The bug was fixed in cd_axis_outname.F
+

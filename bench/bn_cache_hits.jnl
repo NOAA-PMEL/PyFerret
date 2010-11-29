@@ -1,0 +1,47 @@
+! bn_cache_hits.jnl
+
+! 3/99 *sh*
+! Test the success of Ferret in recalling past results
+
+! 7/01 -- added bn_cache_hits_gcfcn.sub
+
+define alias CONFUSE load/i=1:5 i
+
+set mode diag
+use coads_climatology
+set region/l=1
+
+GO bn_cache_hits.sub sst
+
+LET sst5 = sst+5
+GO bn_cache_hits.sub sst5
+
+GO bn_cache_hits_gcfcn.sub
+
+! v5.4 *kob* 10/01 - need to add exit/script - new exit command qualifiers
+EXIT/SCRIPT
+
+! --------------------------
+! NOTE: the altered logic for handling unspecified regions will EFFECT THE
+! RESULTS of operations like "sst5[x=@sbx]" if X is a modulo axis. In the
+! pre-3/99 behavior this would compute the result based on the base X axis
+! span of sst5. In the post-3/99 version it will request "sst5[x=1:max@sbx]"
+! which will trigger the stack to request sst5[X=0:max+1]F to do the computation.
+! The result will be fewer missing values AND ALTERED STATISTICS, as a result.
+
+! see log files
+!     sferret_post_cache_hits.log and sferret_pre_cache_hits.log
+! Try
+!     diff sferret*.log | egrep -v 'DELETE|eval|strip|regrid|found|doing|constan'
+
+1289c1430
+<  # flagged as bad  data: 7173
+---
+>  # flagged as bad  data: 7234
+1292,1293c1433,1434
+<  Mean    value: 21.633       (unweighted average)
+<  Standard deviation: 10.112
+---
+>  Mean    value: 21.698       (unweighted average)
+>  Standard deviation: 10.097
+1305,1306c1446,1452

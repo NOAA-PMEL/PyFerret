@@ -1,0 +1,22 @@
+\cancel mode verify  
+
+! Description: 4 plots to illustrate "split at zero" color bar densities
+! see also try_palette.jnl
+
+query/ignore $1"<usage:  GO try_palette palette_name"
+
+set wind/clear
+
+set view ul
+shade/i=1:120/j=1:120/lev=(-120,120,60)/palette=$1/title="4 levels" j-i
+
+set view ur
+shade/i=1:120/j=1:120/lev=(-120,120,40)/palette=$1/title="6 levels" j-i
+
+set view ll
+shade/i=1:120/j=1:120/lev=(-120,120,30)/palette=$1/title="8 levels" j-i
+
+set view lr
+shade/i=1:120/j=1:120/lev=(-120,120,15)/palette=$1/title="16 levels" j-i
+
+set mode/last verify

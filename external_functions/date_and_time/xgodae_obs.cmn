@@ -1,0 +1,6 @@
+        COMMON /xgodae_obs/ gobs_open, gobs_filename, nobs, nvars
+	LOGICAL gobs_open
+	INTEGER nobs, nvars
+	CHARACTER*160 gobs_filename
+
+

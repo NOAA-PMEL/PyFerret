@@ -1,0 +1,9 @@
+! bn_repl_9999999.jnl
+! Bug 1717
+! Bug on 64-bit ferret, replacing variable var= .9999999   
+! which should just evaluate to 1. TM_FMT wound up with a
+! fortran FORMAT(I0) to write the value to the new command line.
+
+let var=0.9999999
+def view/xlim=0,`var`/ylim=0,1 view9999999
+can view view9999999

@@ -1,0 +1,61 @@
+\cancel mode verify
+! polar_fland.jnl - overlay a land mask on a polar stereographic plot
+! (default 60 minute resolution)
+! 2/94
+ 
+
+! NOTE: The map projection capabilities beginning with Ferret v5.0
+! provide far more flexibility for making plots with curvilinear coordinates.
+! Run the script  mp_demo  for an introduction
+
+
+! Description: Overlay solid-filled continents on a polar plot
+
+! usage:  GO polar_fland [resolution] [palette] ["basemap"]
+!	GO polar_fland 	! use defaults: 60 minute resolution, color gray
+!	GO polar_fland 60	! same as "GO polar_fland"
+!	GO polar_fland 40	! 40 minute resolution
+!	GO polar_fland 20	! 20 minute resolution
+!	GO polar_fland 5	!  5 minute resolution - use with caution
+!	GO polar_fland 120	!  2 degree resolution
+!	GO polar_fland  20 red	! 20 minute resolution with palette red.spk
+!	GO polar_fland " " red	! default (60) minute resolution in red
+!       GO polar_fland " " red basemap
+
+! Note 1: The variable POLAR_ROTATION must be defined before running this
+!	  routine.  (especially an issue for the "basemap" option, above)
+! Note 2: To use resolution "nnn" the file etoponnn must exist.
+! Note 3: If "basemap" is given then the current default region will determine
+!         the region to be plotted
+! Note 4: You must pre-define the variable "SIGNGR" to be 1 (north polar plot)
+!	  or -1 (south polar plot) prior to running this script.
+
+
+! check the overlay/basemap option
+query/ignore $3%overlay|overlay>overlay|basemap> <3rd argument of GO polar_fland must be "overlay" or "basemap"%
+
+! test argument validity
+ppl pen 1 $1"201|120>101|60>201|40>301|20>401|5>801|<GO polar_fland [resolution] [palette] res=20,40, or 60"
+
+set data/save
+
+! extract the data ready to plot
+set data etopo$1"60"
+set data/restore
+GO convert_to_polar_2d rose[d=etopo$1"60"] $1"201|120>101|60>201|40>301|20>401|5>801|"  HOLE   polar_fland.dat
+
+! do the overlay
+ppl title; ppl xlab; ppl ylab
+ppl tics 0,0,0,0;ppl axlabp 0,0
+shade/nolab/nokey/lev=(0,10000,10000)/palette=$2"gray"/x=-1:1/y=-1:1$3"/overlay|overlay>/overlay|basemap>/nokey" polar[d=polar_fland.dat]
+
+! clean up
+cancel data polar_fland.dat
+cancel data etopo$1"60"
+ppl tics 0.125,.25,.125,.25; ppl axlabp -1,-1
+set data/restore
+set mode/last verify
+
+message/continue "NOTE: The map projection capabilities beginning with Ferret v5.0"
+message/continue "provide far more flexibility for plots with curvilinear coordinates."
+message/continue "Run the script  mp_demo  for an introduction"

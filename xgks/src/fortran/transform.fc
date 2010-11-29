@@ -1,0 +1,258 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Transformation functions :
+ *	gswn_
+ *	gsvp_
+ *	gsvpip_
+ *	gselnt_
+ *	gsclip_
+ *	gswkwn_
+ *	gswkvp_
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifndef lint
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+
+/*
+ * gswn - Set Window
+ *
+ * int *tnr - pointer to transformation number
+ * float *xmin,
+ *       *xmax,
+ *       *ymin,
+ *       *ymax - pointers to window limits in world coordinates
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.107
+ */
+/*FORTRAN*/
+gswn(
+    int            *tnr,
+    float          *xmin,
+    float          *xmax,
+    float          *ymin,
+    float          *ymax)
+{
+    Glimit          window;
+
+    debug(("Set Window %d (%7.2f, %7.2f) (%7.2f, %7.2f) \n", *tnr, *xmin,
+	   *ymin, *xmax, *ymax));
+
+    window.xmin = (Gfloat) *xmin;
+    window.xmax = (Gfloat) *xmax;
+    window.ymin = (Gfloat) *ymin;
+    window.ymax = (Gfloat) *ymax;
+
+    (void) gsetwindow((Gint) *tnr, &window);
+}
+
+
+/*
+ * gsvp - Set Viewport
+ *
+ * int *tnr - pointer to transformation number
+ * float *xmin,
+ *       *xmax,
+ *       *ymin,
+ *       *ymax - pointers to viewport limits in normalized device coordinates
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.107
+ */
+/*FORTRAN*/
+gsvp(
+    int            *tnr,
+    float          *xmin,
+    float          *xmax,
+    float          *ymin,
+    float          *ymax)
+{
+    Glimit          viewport;
+
+    debug(("Set Viewport %d (%7.2f, %7.2f) (%7.2f, %7.2f) \n", *tnr, *xmin, 
+	   *ymin, *xmax, *ymax));
+
+    viewport.xmin = (Gfloat) *xmin;
+    viewport.xmax = (Gfloat) *xmax;
+    viewport.ymin = (Gfloat) *ymin;
+    viewport.ymax = (Gfloat) *ymax;
+
+    (void) gsetviewport((Gint) *tnr, &viewport);
+}
+
+
+/*
+ * gsvpip - Set Viewport Input Priority
+ *
+ * int *tnr - pointer to transformation number
+ * int *rtnr - pointer to reference transformation number
+ * int *relpri - pointer to relative priority
+ *
+ * Returns: 2000, and ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.107
+ */
+/*FORTRAN*/
+gsvpip(
+    int            *tnr,
+    int            *rtnr,
+    int            *relpri)
+{
+    debug(("Set Viewport Input Priority  %d %d %d \n", *tnr, *rtnr, *relpri));
+
+    RELATIVEINPUTPRIORITY(*relpri, errgsetviewportinputpri);
+
+    (void) gsetviewportinputpri((Gint) *tnr, (Gint) *rtnr, (Gvpri) * relpri);
+}
+
+
+/*
+ * gselnt - Select Normalization Transformation
+ *
+ * int *tnr - pointer to transformation number
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.108
+ */
+/*FORTRAN*/
+gselnt(
+    int            *tnr)
+{
+    debug(("Select Normalization Transformation %d \n", *tnr));
+
+    (void) gselntran((Gint) *tnr);
+}
+
+
+/*
+ * gsclip - Set Clipping Indicator
+ *
+ * int *clsw - pointer to clipping indicator
+ *
+ * Returns: 2000, and ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.108
+ */
+/*FORTRAN*/
+gsclip(
+    int            *clsw)
+{
+    debug(("Set Clipping Indicator %d \n", *clsw));
+    CLIPPINGINDICATOR (*clsw, errgsetclip);
+
+    (void) gsetclip((Fort_Gclip)*clsw == FORT_GNCLIP 
+		    ? GNOCLIP
+		    : GCLIP);
+}
+
+
+/*
+ * gswkwn - Set Workstation Window
+ *
+ * int *tnr - pointer to workstation identifier
+ * float *xmin,
+ *       *xmax,
+ *       *ymin,
+ *       *ymax - pointers to window limits in normalized device coordinates
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.109
+ */
+/*FORTRAN*/
+gswkwn(
+    int            *wkid,
+    float          *xmin,
+    float          *xmax,
+    float          *ymin,
+    float          *ymax)
+{
+    Glimit          window;
+
+    debug(("Set Workstation Window %d (%7.2f, %7.2f) (%7.2f, %7.2f) \n", 
+	   *wkid, *xmin, *ymin, *xmax, *ymax));
+
+    window.xmin = (Gfloat) *xmin;
+    window.xmax = (Gfloat) *xmax;
+    window.ymin = (Gfloat) *ymin;
+    window.ymax = (Gfloat) *ymax;
+
+    (void) gsetwswindow((Gint) *wkid, &window);
+}
+
+
+/*
+ * gswkvp - Set Workstation Viewport
+ *
+ * int *wkid - pointer to workstation identifier
+ * float *xmin,
+ *       *xmax,
+ *       *ymin,
+ *       *ymax - pointers to viewport limits in device coordinates
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.109
+ */
+/*FORTRAN*/
+gswkvp(
+    int            *wkid,
+    float          *xmin,
+    float          *xmax,
+    float          *ymin,
+    float          *ymax)
+{
+    Glimit          viewport;
+
+    debug(("Set Workstation Viewport %d (%7.2f, %7.2f) (%7.2f, %7.2f) \n", 
+	   *wkid, *xmin, *ymin, *xmax, *ymax));
+
+    viewport.xmin = (Gfloat) *xmin;
+    viewport.xmax = (Gfloat) *xmax;
+    viewport.ymin = (Gfloat) *ymin;
+    viewport.ymax = (Gfloat) *ymax;
+
+    (void) gsetwsviewport((Gint) *wkid, &viewport);
+}

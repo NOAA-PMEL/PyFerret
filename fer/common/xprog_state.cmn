@@ -1,0 +1,277 @@
+* XPROG_STATE.CMN
+* COMMON declarations regarding state variables, command input,
+*	logical unit numbers, and logic flags
+*	added mode arguments
+* Unix/RISC port 1/91 - reordered variables for word alignment
+*		      - changed INTEGER to LOGICAL for mode_*****
+*		      - increased string length for "xwind_node"
+* V230: replaced list_dsf/tmap/unformatted with integer list_fmt_type
+*	1/93 commandeered meta_device for frame_compress
+* V300: 5/93 added modes ppllist and journal_file
+* V301: 1/94 renamed variable "meta_file" to "unused_char_var" to avoid name
+*		conflict with PLOT+ GKSCM2 COMMON
+*	1/94 increased command buffer size from 200 to 500
+*	2/94 incorporated a stack of past mode states
+* V320:12/94 added plist_stream
+* V420: 9/95 added plist_comma_del and plist_tab_del
+*	4/96 added controls for IF: if_*, pif_*, max_arg_list 20-->128
+* V450:11/96 added plist_cdf_cache
+* V510: 5/00 *sh* - added denig_xylim_msg_done. increased max_qual_list
+* V530:10/00 *sh* - increased input command buffer size to 2048
+*		  - increased max_item_list 25 -> 250
+*       4/01 *sh* - added in_get_grid_mode (for future use)
+*      10/01 *acm*- increased max_qual_list; CONTOUR needed more with /AXES=
+* V540:11/00 *sh* - added array last_cmnd_buff (formerly in get_prot_cmnd_data)
+* V550:12/02 *acm*- new MODE LOGO and MODE LABELS
+* V553: 8/03 *acm*- new scriptfile_name and state its_script
+* V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
+*       *acm* 6/04 - change ordering in the common block so compilers are happy
+* V580: *acm*10/04 - add silent_err, to be set true for SHOW VAR/XML when
+*                    checking for user variables not relevant to the context
+* V600: *acm* 5/06 - add new MODE LINECOLORS:[arg]
+* V600  *acm* 6/06 - add new MODE UPCASE_OUTPUT
+*       *jli* 8/06 - add plist_xml
+* V602 *acm*  1/07 - increase length of string list_format to resolve bug 1482
+* V610  *acm* 3/08 - add new MODE NLEVELS
+* V614  *acm* 10/08 - add new MODE NODATA_LAB
+* V6.6  *kms* 5/10 - add redirect_* variables and parameters for stdout/stderr redirection.
+
+	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
+     .			max_item_list, max_modes, mode_stack_size,
+     .			max_ifstk
+	PARAMETER     ( cmnd_buff_len = 2048,
+     .			max_qual_list = 50 ,	! increased from 40 1/10
+     .			max_arg_list  = 128 ,	! was 20 pre-4/96
+     .			max_item_list = 250 ,
+     .			max_modes     = 30 ,
+     .			mode_stack_size = 7,
+     .			max_ifstk     = 10 )
+
+	INTEGER		input_from_tty, input_from_file, input_from_cs
+	PARAMETER     ( input_from_tty		= 1,
+     .			input_from_file		= 2,
+     .			input_from_cs		= 3 )
+
+	INTEGER		pmode_diagnostic, pmode_verify,	pmode_interpolate,
+     .			pmode_ignore_err, pmode_stupid, pmode_time_lab,
+     .			pmode_journal, pmode_long_lab, pmode_lat_lab,
+     .			pmode_depth_lab, pmode_segment, pmode_font_ascii,
+     .			pmode_wait, pmode_reject, pmode_desperate, pmode_rpn,
+     .			pmode_gks, pmode_xwindows, pmode_metafile,
+     .			pmode_ppllist, pmode_gui, pmode_logo, pmode_labels,
+     .                  pmode_grat, pmode_linecolors, pmode_upcase_output,
+     .                  pmode_nlevels, pmode_nodata_lab
+
+	PARAMETER     ( pmode_diagnostic	= 1,
+     .			pmode_verify		= 2,
+     .			pmode_interpolate	= 3,
+     .			pmode_ignore_err	= 4,
+     .			pmode_stupid		= 5,
+     .			pmode_journal		= 6,
+     .			pmode_long_lab		= 7,
+     .			pmode_lat_lab		= 8,
+     .			pmode_depth_lab		= 9,
+     .			pmode_time_lab		= 10,
+     .			pmode_font_ascii	= 11,
+     .			pmode_segment		= 12,
+     .			pmode_wait		= 13,
+     .			pmode_reject		= 14,
+     .			pmode_desperate		= 15)
+	PARAMETER     ( 
+     .			pmode_rpn		= 16,
+     .			pmode_gks		= 17,
+     .			pmode_xwindows		= 18,
+     .			pmode_metafile		= 19,
+     .			pmode_ppllist		= 20,
+     .			pmode_gui		= 21,
+     .			pmode_logo		= 22,
+     .			pmode_labels		= 23,
+     .			pmode_grat		= 24,
+     .                  pmode_linecolors        = 25,
+     .                  pmode_upcase_output     = 26,
+     .                  pmode_nlevels           = 27,
+     .                  pmode_nodata_lab       = 28)
+
+	CHARACTER	pmode_unused*10
+	PARAMETER     ( pmode_unused = '%% unused %%' )
+
+	INTEGER plist_default, plist_formatted, plist_unformatted,
+     .	        plist_epic, plist_gt, plist_ts, plist_cdf, plist_stream,
+     .		plist_comma_del, plist_tab_del, plist_cdf_cache, 
+     .		plist_dods, plist_xml
+	PARAMETER     (	plist_default	= 0,
+     .	 		plist_formatted	= 1,
+     .			plist_unformatted = 2,
+     .			plist_epic	= 3,
+     .			plist_gt	= 4,
+     .			plist_ts	= 5,
+     .			plist_cdf	= 6,
+     .			plist_stream	= 7,
+     .			plist_comma_del	= 8,
+     .			plist_tab_del	= 9,
+     .			plist_cdf_cache	= 10,
+     .			plist_dods	= 11,
+     .                  plist_xml       = 12 )
+
+	INTEGER		pif_skip_to_endif,
+     .			pif_doing_clause,
+     .			pif_skip_to_clause
+	PARAMETER     ( pif_skip_to_endif  = 1,
+     .			pif_doing_clause   = 2,
+     .			pif_skip_to_clause = 3 )
+
+*       Values for the redirect_*_flags.  Designed to be bit flags
+*       file = 0001, journal = 0010, commented = 0100, tee = 1000
+        INTEGER         redirect_none, redirect_file, redirect_journal,
+     .                  redirect_file_tee, redirect_journal_tee
+        PARAMETER     ( redirect_none        = 0,
+     .                  redirect_file        = 1,
+     .                  redirect_journal     = 6,
+     .                  redirect_file_tee    = 9,
+     .                  redirect_journal_tee = 14 )
+
+	INTEGER
+     .		prompt_len,
+     .		input_source,
+     .		cmnd_num, len_cmnd, len_last_cmnd, subcmnd_num,
+     .		num_qualifiers, qualifier_list, qual_start, qual_end,
+     .		qual_given,
+     .		num_args,  arg_start,  arg_end,
+     .		num_items, item_start, item_end,
+     .		list_digits,
+     .		mode_arg( max_modes, mode_stack_size ),
+     .		saved_dset,
+     .		saved_abstract_grid,
+     .		xwind_node_len,
+     .		genl_storage(25),
+     .		ifstk, if_cs(max_ifstk), if_doing(max_ifstk),
+     .          num_linecolors
+
+
+	LOGICAL
+     .		list_format_given, list_unformatted, list_dsf, list_redirected,
+     .		list_heading, list_append, list_tmap,
+     .		mouse_input,
+     .		mode_state( max_modes, mode_stack_size ),
+     .		frame_on,
+     .		interactive,
+     .		if_conditional,
+     .		denig_xylim_msg_done,
+     .		denig_pen_msg_done,
+     .		in_get_grid_mode,
+     .          its_script,
+     .          grat_on,
+     .          shade_trim,
+     .          silent_err
+
+
+! Note: available_char_var is unused
+	CHARACTER
+     .		cmnd_buff*2048,
+     .		last_cmnd_buff*2048,
+     .		prompt*8,
+     .		list_format*2048, list_file*2048,
+     .          show_file*2048,
+     .		mode_name( max_modes )*12,
+     .		frame_file*200,
+     .		ppl_wait*6,
+     .		frame_compress*8, available_char_var*80,
+     .		journal_file*80, ppllist_file*80,
+     .		xwind_node*40,
+     .          scriptfile_name*2048,
+     .          mode_grat_buff*512
+
+	INTEGER	ttin_lun, ttout_lun, cmnd_file_lun, list_lun,
+     .		cmnd_lun, jrnl_lun, err_lun, frame_lun, show_lun,
+     .		vms_kbd_id, vms_kbd_tbl,
+     .          redirect_stdout_lun, redirect_stderr_lun,
+     .          redirect_stdout_flags, redirect_stderr_flags
+
+* logical unit numbers
+	COMMON/ XLUN /
+     .		ttin_lun, ttout_lun, cmnd_file_lun, list_lun,
+     .		cmnd_lun, jrnl_lun, err_lun, frame_lun, show_lun,
+     .		vms_kbd_id, vms_kbd_tbl,
+     .          redirect_stdout_lun, redirect_stderr_lun,
+     .          redirect_stdout_flags, redirect_stderr_flags
+
+* program state information
+	COMMON/ XPROG_STATE /
+     .		interactive, prompt, prompt_len, 
+     .		input_source, mouse_input,
+     .		if_conditional, ifstk, if_cs, if_doing,
+     .          num_linecolors,
+     .		cmnd_buff, last_cmnd_buff,
+     .          mode_grat_buff,
+     .		len_cmnd, len_last_cmnd, cmnd_num, subcmnd_num,
+     .		num_qualifiers, qualifier_list(max_qual_list),
+     .		qual_start(max_qual_list), qual_end(max_qual_list),
+     .		qual_given(max_qual_list),
+     .		num_args,   arg_start(max_arg_list),  arg_end(max_arg_list),
+     .		num_items, item_start(max_item_list), item_end(max_item_list),
+     .		list_format_given, list_unformatted, list_dsf, list_redirected,
+     .		list_tmap,
+     .		list_format, list_digits, list_file, list_heading, list_append,
+     .		frame_on, frame_file,
+     .		mode_state, mode_arg,
+     .		saved_dset,
+     .		saved_abstract_grid,
+     .		denig_xylim_msg_done, denig_pen_msg_done,
+     .		in_get_grid_mode,
+     .		frame_compress, available_char_var,
+     .		journal_file, ppllist_file,
+     .		xwind_node, xwind_node_len,
+     .		genl_storage, its_script, grat_on,
+     .          shade_trim, silent_err,
+     .		ppl_wait, mode_name,
+     .          scriptfile_name, show_file
+
+* individual mode variable names
+	LOGICAL		mode_diagnostic, mode_verify, mode_interpolate,
+     .			mode_ignore_err, mode_stupid, mode_time_lab,
+     .			mode_journal, mode_long_lab,mode_lat_lab,
+     .			mode_depth_lab, mode_segment, mode_font_ascii,
+     .			mode_wait, mode_reject, mode_desperate, mode_rpn,
+     .			mode_gks, mode_xwindows, mode_metafile,
+     .			mode_ppllist, mode_gui, mode_logo, mode_labels,
+     .                  mode_grat, mode_linecolors, mode_upcase_output, 
+     .                  mode_nlevels, mode_nodata_lab
+	EQUIVALENCE
+     .		( mode_state( pmode_diagnostic  ,1), mode_diagnostic  ),
+     .		( mode_state( pmode_verify      ,1), mode_verify      ),
+     .		( mode_state( pmode_interpolate ,1), mode_interpolate ),
+     .		( mode_state( pmode_ignore_err  ,1), mode_ignore_err  ),
+     .		( mode_state( pmode_stupid      ,1), mode_stupid      ),
+     .		( mode_state( pmode_journal	,1), mode_journal     ),
+     .		( mode_state( pmode_long_lab    ,1), mode_long_lab    ),
+     .		( mode_state( pmode_lat_lab     ,1), mode_lat_lab     ),
+     .		( mode_state( pmode_depth_lab   ,1), mode_depth_lab   ),
+     .		( mode_state( pmode_time_lab    ,1), mode_time_lab    ),
+     .		( mode_state( pmode_font_ascii  ,1), mode_font_ascii  ),
+     .		( mode_state( pmode_segment     ,1), mode_segment     ),
+     .		( mode_state( pmode_wait        ,1), mode_wait        ),
+     .		( mode_state( pmode_reject      ,1), mode_reject      ),
+     .		( mode_state( pmode_desperate   ,1), mode_desperate   ),
+     .		( mode_state( pmode_rpn         ,1), mode_rpn         ),
+     .		( mode_state( pmode_gks         ,1), mode_gks         ),
+     .		( mode_state( pmode_xwindows    ,1), mode_xwindows    ),
+     .		( mode_state( pmode_metafile    ,1), mode_metafile    ),
+     .		( mode_state( pmode_ppllist     ,1), mode_ppllist     ),
+     .		( mode_state( pmode_gui         ,1), mode_gui         ),
+     .		( mode_state( pmode_logo        ,1), mode_logo        ),
+     .		( mode_state( pmode_labels      ,1), mode_labels      ),
+     .		( mode_state( pmode_grat        ,1), mode_grat        ),
+     .		( mode_state( pmode_linecolors  ,1), mode_linecolors  ),
+     .		( mode_state( pmode_upcase_output,1),mode_upcase_output),
+     .		( mode_state( pmode_nlevels     ,1), mode_nlevels),
+     .		( mode_state( pmode_nodata_lab ,1), mode_nodata_lab)
+
+* axis label modes
+	LOGICAL		ax_fmt(4)
+	INTEGER		ax_dec_pt(4)
+	EQUIVALENCE	( mode_state( pmode_long_lab, 1 ), ax_fmt    ),
+     .			( mode_arg  ( pmode_long_lab, 1 ), ax_dec_pt )
+
+* list format types consolidated (6/92)
+	INTEGER	 	list_fmt_type
+	EQUIVALENCE	( list_fmt_type, list_dsf )

@@ -1,0 +1,10 @@
+* PLT_INC.DECL - converted to Unix 2.26.91            
+* COMMON for PLOT+ with all variables declared
+* created for TMAP usage by Steve Hankin 7/88
+	INTEGER	ICODE
+	REAL	WIDTH
+	REAL	HEIGHT
+	INTEGER	MOD
+	INTEGER	IR
+	INTEGER	LUN
+* requires: INCLUDE 'PPLV11INC:PLT.INC'                                     

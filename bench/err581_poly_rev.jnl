@@ -1,0 +1,43 @@
+! err581_poly_rev.jnl
+! POLYGON/LINE mis-locates the line when there is a depth or
+! other reversed axis. Bugs 842, 843, 844
+! ACM 8/10/2006
+
+! From Patrick, polygon/line on a depth axis 
+
+use gt4d011
+
+shade temp[i=@ave,l=1]
+
+let v1={-3,2,0.5,2}
+let v2={20,80,50,30}
+let v3={10,-3,16,3} 
+
+! Overlay sample data over a variable with a depth axis
+! /line=1 did not work
+
+go polymark poly/lev=(-5,30,1)/pal=white/fill/line=1/nolab/over v1 v2 v3 circle 2
+
+! XZ plot
+shade temp[j=@ave,l=1]
+let v1={221,225,232,235}
+let v2={20,80,50,30}
+let v3={10,-3,16,3} 
+
+go polymark poly/lev=(-5,30,1)/pal=white/fill/line=1/nolab/over v1 v2 v3 circle 2
+
+! ZT plot
+shade temp[i=@ave,j=@ave]
+let v1={22800,23500,24800,26000}
+let v2={20,80,50,30}
+let v3={10,-3,16,3} 
+
+go polymark poly/lev=(-5,30,1)/pal=white/fill/line=1/nolab/over v1 v2 v3 circle 2
+
+! And, from Andrew with other reversed axes. 
+
+yes? ppl cross 1
+yes? plot/vl=4:-4/hl=4:-4/vs/line/title="there should be just one triangle" {1,2,3,1},{0,2,1,0}
+yes? poly/ov/col=2/pal=yellow {1,2,3,1},{0,2,1,0}
+
+ppl cross 0

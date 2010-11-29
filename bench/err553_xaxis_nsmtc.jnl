@@ -1,0 +1,10 @@
+! Bug: 5th argument failed to set the number of small
+! tics for the axis.  
+
+! ACM 12/12/03
+
+ppl %xaxis/nouser 1,100,10,1,4
+ppl %xaxis/nouser 1,100,10,2,6
+ppl %yaxis/nouser 1,100,10,1,4
+ppl %yaxis/nouser 1,100,10,2,6
+

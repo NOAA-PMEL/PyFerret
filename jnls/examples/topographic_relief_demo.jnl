@@ -1,0 +1,91 @@
+! relief_demo.jnl *jd* 11/91
+
+! *acm* 7/01 change uppercase GO LAND to GO land
+
+! Description: reviews coarse subsets of the ETOPO (Equator to Poles) data set
+
+! This demonstration reviews coarse subsets of the ETOPO (Equator to Poles)
+! data set available from NOAA's National Geophysical Data Center in Boulder.  
+
+! Advanced use of FERRET commands in the demo will give you helpful examples
+! of their use.  See the User's Guide for more on individual commands.
+
+CANCEL REGION
+SET DATA etopo120
+SET WIND/SIZE=.6/ASPECT=.86
+PPL CROSS 1  ! Delineates the equator when plots are made
+SHOW DATA etopo120
+
+MESSAGE
+
+! Let's first look at the relief of the earth's surface at 2 degree resolution
+
+LET/TITLE="Surface relief x1000 (meters)" R1000 ROSE/1000
+CONTOUR/LEV=(-8,8,2,-1) R1000
+
+MESSAGE
+
+! Visualizing that in another way...
+
+GO rgb_centered		! Changing the color palette
+SHADE/LEV/OVER R1000
+GO land
+
+MESSAGE
+
+! There is another data set at 1 degree resolution
+
+SET DATA etopo60
+SHADE/X=50E:180/Y=-40:40/LEV=(-8,8,1) R1000
+GO land
+
+MESSAGE
+
+! Sharpening this up with outines --
+
+CONTOUR/X=50E:180/Y=-40:40/SET/NOLAB/OVER R1000
+PPL LEV ()(1,8,1,-3)
+PPL CONTOUR/OVER
+PPL LEV ()(-8,-1,1,-3) LINE (-8,-1,1,-3)
+PPL PEN 1 4
+PPL CONTOUR/OVER
+
+MESSAGE
+
+! Different PALETTES can be used to change color and emphasis in a shade plot. 
+! For example: 
+
+SET VIEW UPPER
+SHADE/X=110W:100E/Y=-20:20/LEV=(-8,8,1) R1000
+
+SET VIEW LOWER
+SHADE/X=110W:100E/Y=-20:20/PALETTE=greyscale/LEV=(-8,0,1) R1000
+
+! Here the /PALETTE qualifier is used to temporarily change the palette to
+! greyscale.
+
+MESSAGE
+
+! The current palette remains in effect if the option is not specified
+
+CAN VIEW
+SHADE/X=110W:50E/Y=-50:30/LEV=(-8,8,1) R1000
+
+MESSAGE
+
+! And the CONTOUR/FILL command (with an alias of FILL) can be used to generate
+! smooth color filled contours -- but it is generally slower to execute than 
+! shade.
+
+FILL/X=110W:50E/Y=-50:30/LEV=(-8,8,1) R1000
+CONTOUR/OVER/X=110W:50E/Y=-50:30/LEV=(0) R1000
+
+MESSAGE
+
+CAN VIEW
+GO rgb_rainbow
+PPL PEN 1 1
+PPL CROSS 0
+
+
+

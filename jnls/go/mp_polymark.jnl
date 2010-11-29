@@ -1,0 +1,125 @@
+\ cancel mode verify	
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! mp_polymark.jnl --  Map projection version of polymark.jnl.  For
+!                    working with map projection scripts in Ferret v4.50
+!		    		
+! Jonathan Callahan
+! 4/99
+
+! Description:  Plot polygons using a predefined map projection. 
+!
+! This script presumes that following are predefined a projection script
+! run previous to this script:
+!
+!	x_page	field describing transformation from lat/lon to X page coordinates
+!	x_page	field describing transformation from lat/lon to Y page coordinates
+!	mp_mask  mask for orthographic map projections
+!
+! Usage:                  $1        $2    $3     $4      $5      $6
+! Yes?  GO polymark polygon_command xpts ypts [values] [shape] [scale]
+! $1 - the plot command with qualifiers (eg POLYGON/OVER/KEY)
+! $2 - X coordinates of track 
+! $3 - Y coordinates of track 
+! $4 - variable whose values will be plotted along the track (eg SST)
+! $5 - shape of the symbol, as defined by polyshape.jnl 
+! $6 - scale the symbol size by this factor (optional, default 1)
+
+!      shape names include:
+!           triangle           delta           square
+!           diamond            pentagon        hexagon
+!           circle             star            plus
+!           ex
+!
+! Example:
+!     set win/size=.4
+!     use coads_climatology
+!     set region/x=130:250/y=20:64/l=1
+!     go mp_hammer
+!     set grid sst
+!     shade/noaxis sst, x_page, y_page
+!     
+!     use polydata
+!     go mp_polymark poly/over/noaxis/key lon lat sst star 0.5
+
+! argument check
+QUERY/IGNORE $1"<usage: yes? GO mp_polymark polygon_command xpts ypts [values] [shape] [scale]"
+QUERY/IGNORE $2"<usage: yes? GO mp_polymark polygon_command xpts ypts [values] [shape] [scale]"
+QUERY/IGNORE $3"<usage: yes? GO mp_polymark polygon_command xpts ypts [values] [shape] [scale]"
+
+!message/cont "If this script does not complete you will need to rerun the map projection script."
+!
+! Save the region and grid
+!
+define region/default save
+set grid/save
+
+!  acm (as in mp_land etc)
+!  tie down mp_central_meridian and parallel or else they get redefined
+!  when we cancel the region and use the one implied by lon and lat that 
+!  come into this script.
+
+set data/save
+set grid/save
+
+let/quiet mp_x = x
+let/quiet mp_xmin = `mp_x[i=@min]`
+let/quiet mp_xmax = `mp_x[i=@max]`
+let/quiet mp_y = y
+let/quiet mp_ymin = `mp_y[j=@min]`
+let/quiet mp_ymax = `mp_y[j=@max]`
+let/quiet mp_std_parallel_north = mp_ymax
+let/quiet mp_std_parallel_south = mp_ymin
+
+!
+! This test will keep the central meridians defined by "from space" views
+!
+let/quiet mp_test = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
+if `mp_test eq 0` then
+   let/quiet mp_central_meridian = `(mp_x[i=@max] + mp_x[i=@min])/2`
+endif
+let/quiet mp_test = `mp_standard_parallel` - `(mp_y[j=@max] + mp_y[j=@min])/2`
+if `mp_test eq 0` then
+   let/quiet mp_standard_parallel = `(mp_y[j=@max] + mp_y[j=@min])/2`
+endif
+cancel variable mp_test
+
+
+! Cancel the region because the I index info is used to restrict
+! the points to be plotted as a line.
+!
+can region/x/y
+
+!
+! Alter the map projection equations to use xpos and ypos
+!
+let/quiet mp_x = $2
+let/quiet mp_y = $3
+go polymark $1 x_page*mp_mask y_page*mp_mask $4"0" $5"triangle" $6"1"
+!
+! Restore the region, grid and map projection equations
+!
+set region save
+set grid/restore
+
+
+let/quiet mp_x = x
+let/quiet mp_y = y
+let/quiet mp_test = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
+if `mp_test eq 0` then
+   let/quiet mp_central_meridian = (mp_x[i=@max] + mp_x[i=@min])/2
+endif
+let/quiet mp_test = `mp_standard_parallel` - `(mp_y[j=@max] + mp_y[j=@min])/2`
+if `mp_test eq 0` then
+   let/quiet mp_standard_parallel = (mp_y[j=@max] + mp_y[j=@min])/2
+endif
+cancel variable mp_test
+let/quiet mp_std_parallel_north = mp_y[j=@max]
+let/quiet mp_std_parallel_south = mp_y[j=@min]
+let/quiet mp_lambda = mp_x * deg2rad
+let/quiet mp_phi = mp_y * deg2rad
+
+set mode/last verify
+
+
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+set mode/last verify

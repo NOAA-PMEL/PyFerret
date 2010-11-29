@@ -1,0 +1,14 @@
+! err581_cal_dates_output.jnl
+! bug 1363:
+! SHOW GRID and other output have wrong dates, non-std calendar axesv  
+
+! create a time axis with 360-day calendar
+def axis/t=1-jan-2000:1-jan-2005:1/units=months/cal=d360/t0=1-jan-1960 t360
+let t3 = t[gt=t360]
+save/clobber/file=t3file.nc t3
+can var/all
+can axis t360
+
+! Bug showed date range of 30-JUL-2000 to  26-AUG-2005 
+set data t3file
+sho grid t3

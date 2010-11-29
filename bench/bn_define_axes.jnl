@@ -1,0 +1,126 @@
+! bn_define_axes.jnl
+! *sh* 5/99
+! *sh* 12/99 - with streamlined syntax
+
+! exercise the DEFINE AXIS command
+
+
+! ====================== REGULAR ==================
+! lo:hi:delta
+define axis/x=1:5:1 xax
+show axis/x xax
+define axis/x=1:5:1/edges xax
+show axis/x xax
+
+! lo:hi /NPOINTS>1
+define axis/x=1:5/npoints=5 xax
+show axis/x xax
+define axis/x=1:5/npoints=4/edges xax
+show axis/x xax
+
+! lo:hi /NPOINTS=1
+set mode ignore; define axis/x=1:5/npoints=1 xax; cancel mode ignore
+define axis/x=5/npoints=1 xax
+show axis/x xax
+set mode ignore; define axis/x=5/npoints=1/edges xax; cancel mode ignore
+define axis/x=1:5/npoints=1/edges xax
+show axis/x xax
+
+!======= calendar
+! lo:hi:delta
+define axis/t=15-jan-1980:25-jan-1980:1/unit=days tax
+show axis/t tax
+define axis/t=15-jan-1980:25-jan-1980:1/unit=days/edges tax
+show axis/t tax
+
+! lo:hi /NPOINTS>1
+define axis/t=15-jan-1980:25-jan-1980/npoints=11/unit=days tax
+show axis/t tax
+define axis/t=15-jan-1980:25-jan-1980/npoints=10/unit=days/edges tax
+show axis/t tax
+
+
+! lo:hi /NPOINTS=1
+set mode ignore; define axis/t=15-jan-1980:25-jan-1980/npoints=1/unit=days tax; cancel mode ignore
+define axis/t=15-jan-1980/npoints=1/unit=days tax
+show axis/t tax
+set mode ignore; define axis/t=15-jan-1980/npoints=1/unit=days/edges tax; cancel mode ignore
+define axis/t=15-jan-1980:25-jan-1980/npoints=1/unit=days/edges tax
+show axis/t tax
+
+! =============== IRREGULAR ===================
+define axis/x/from_data/name=xax {1,2,5}
+show axis/x xax
+define axis/x/from_data/name=xax/edges {1,2,5}
+show axis/x xax
+
+!======= calendar
+define axis/t/from_data/name=tax/unit=days/t0=1-jan-1990 {1,2,5}
+show axis/t tax
+define axis/t/from_data/name=tax/unit=days/t0=1-jan-1990/edges {1,2,5}
+show axis/t tax
+
+! real monthly calendar
+let month = MOD(l-1,12)+1
+let add_year = INT((l-1)/12)
+let tstep = DAYS1900(1980+add_year,month,1)
+define axis/from_data/T/units=days/name=tax/t0=1-jan-1900/edges tstep[l=1:`20*12+1`]
+show axis/l=1:20 tax
+show axis/l=1:240:12 tax
+
+! modulo axis for arbitrary time interval
+define axis/t=1-jan-0001:1-jan-0002:1/unit=days/t0=1-jan-0000 tencoding
+let tstep = t[gt=tencoding]
+let start_date = tstep[t=15-mar-0001]
+let end_date = tstep[t=27-may-0001]
+define axis/from_data/T/units=days/name=tax/t0=1-jan-0000/edges/modulo {`start_date,p=7`,`end_date,p=7`,`start_date+365.2425,p=7`}
+show axis/l=1:6 tax
+show axis/l=1:6000:1200 tax
+
+! ================ REPEATED VALUES ====================
+! points
+define axis/from/x/name=xax {5,6,6,7}
+show axis/x xax
+define axis/from/x/name=xax {5,6,6,6,7}
+show axis/x xax
+define axis/from/x/name=xax {5,6,6,6}
+show axis/x xax
+define axis/from/x/name=xax {6,6,7}
+show axis/x xax
+! edges
+define axis/from/x/name=xax/edges {5,6,6,7}
+show axis/x xax
+define axis/from/x/name=xax/edges {5,6,6,6,7}
+show axis/x xax
+define axis/from/x/name=xax/edges {5,6,6}
+show axis/x xax
+define axis/from/x/name=xax/edges {6,6,7}
+show axis/x xax
+
+! unresolvable repeated points
+set mode ignore
+define axis/from/x/name=xax {6,6}
+define axis/from/x/name=xax/edges {6,6}
+define axis/from/x/name=xax/edges {6,6,6}
+define axis/from/x/name=xax {6,6,6.000001,7}
+define axis/from/x/name=xax/edges {6,6,6.000001,7}
+
+! ================= STREAMLINED SYNTAX ================
+! name=expression syntax
+define axis/x XAX2 = {1,2,5}
+show axis/x xax2
+define axis/unit=days/t0=1-jan-1990 TAX2 = {1,2,5}	! inferred /T
+show axis/t tax2
+define axis/depth ZAX2 = {1,2,5}			! inferred /Z
+show axis/z zax2
+
+! units inferred from formatting
+define axis/X=130e:180:5 xax2
+show axis xax2
+define axis/Y=0:80n:5 yax2
+show axis yax2
+define axis/X=130e:80w:5/units=blahs xax2
+show axis xax2
+
+! cleanup
+set mode/last ignore

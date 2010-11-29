@@ -1,0 +1,17 @@
+! err560_mc_irreg_t.jnl
+! 4/2004  ACM
+ 
+! Under Solaris, crashes Ferret;
+! Under linux get a NC error. 
+! Its  a precision bug in mc_read.F, determining what
+! stepfile to read from, when the point requested is
+! just at or between the range of the stepfiles.
+
+set data coads_clim_irreg
+list/x=180/y=0/t=1-apr-1900 sst
+
+can mem/all
+can data/all
+set data coads_clim_irreg
+list/x=180/y=0/t=2000 sst
+

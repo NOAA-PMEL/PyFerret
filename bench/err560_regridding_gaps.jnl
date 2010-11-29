@@ -1,0 +1,34 @@
+! err560_regrid
+! 
+! If the index has a negative range including the value 
+! -111, was treated as missing rather than a valid index.
+
+def axis/modulo/x=1:360:1/units=lon xax
+def axis/modulo/x=-180:179:1/units=lon xaxshift
+
+let a = x[gx=xax]
+let b = x[gx=xaxshift]
+save/clobber/file=xlong.nc a
+save/clobber/file=xlongshift.nc b
+
+can data/all
+can var/all
+use xlongshift
+use xlong
+
+list/x=115w:108w a[gx=b[d=1]]
+
+list/x=115w:108w a[gx=b[d=1]@ave]
+
+list/x=115w:108w a[gx=b[d=1]@ave]
+
+list/x=115w:108w a[gx=b[d=1]@sum]
+
+list/x=115w:108w a[gx=b[d=1]@ngd]
+
+list/x=115w:108w a[gx=b[d=1]@nrst]
+
+list/x=115w:108w a[gx=b[d=1]@xact]
+
+sp rm xlong.nc
+sp rm xlongshift.nc

@@ -1,0 +1,39 @@
+\CANCEL MODE VERIFY 
+! Description:  define FERRET variables for regression along the T axis
+! updated 10/93 for Ferret V3.01
+! 10/09 More-robust computations of variance using the Ferret @VAR transform
+
+say ... Linear Regression Along the T Axis
+say ... Instructions:
+say Use the LET command to define new variables
+say Define the variable P as your independent (X) variable
+say Define the variable Q as your   dependent (Y) variable
+say Results will be variables "SLOPE", "INTERCEP" and "RSQUARE"
+say QHAT will be the regression estimate
+say Note: If "T" is your independent variable then
+say ...   "SET GRID Q" after defining Q.
+say ... 
+
+let pq = p*q
+let pqmask = pq-pq  ! 0 or "missing" so all variables share the same missing
+let pmasked = p + pqmask
+let qmasked = q + pqmask
+let pp = pmasked*pmasked
+let qq = qmasked*qmasked
+
+let pave = pmasked[t=@ave]
+let qave = qmasked[t=@ave]
+
+let pdev=pmasked-pave
+let qdev=qmasked-qave
+let pdevqdev=pdev*qdev
+let pqvar=pdevqdev[t=@ave]
+let pvar=pmasked[t=@var]
+let qvar=qmasked[t=@var] 
+
+let slope = pqvar / pvar
+let intercep = qave - slope*pave
+let qhat = slope*p + intercep
+let rsquare = (pqvar*pqvar) / (pvar*qvar)
+
+SET MODE/LAST VERIFY

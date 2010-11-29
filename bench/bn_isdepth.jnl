@@ -1,0 +1,21 @@
+! Tests of `var,RETURN=ISDEPTH`
+
+define axis/units=meters/z=0:100:2 zup
+let zz = z[gz=zup]
+say `zz,return=isdep`
+
+define axis/units=meters/z=0:200:2/depth zdn
+let zz = z[gz=zdn]
+say `zz,return=isdep`
+
+use gtbc011
+say `temp,return=isdepth`
+
+use coads_climatology
+say `sst,return=isdepth`
+
+can data 2
+
+cancel axis/depth `temp,return=zaxis`
+say `temp,return=isdepth`
+

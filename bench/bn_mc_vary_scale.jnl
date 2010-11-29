@@ -1,0 +1,33 @@
+! bn_mc_vary_scale.jnl
+!   Allow stepfiles to have different internal scale and offset.
+!   read and apply when opening each stepfile. Previously, the 
+!   scale and offset from the first stepfile were applied. 
+!   `var,return=nc_offset` and `var,return=nc_scale1` contain the 
+!   latest scaling applied
+
+
+set data vary_scale.des
+! With two different scalings applied for the two stepfiles, there
+! is a change in slope and offset in the middle of this data
+
+list tt
+list/quiet/nohead `tt,return=nc_scale`, `tt,return=nc_offset`
+
+
+can data/all
+can mem
+set data vary_scale.des
+
+! The scale and offset from the first stepfile
+list/L=2:4 tt
+list/quiet/nohead `tt,return=nc_scale`, `tt,return=nc_offset`
+
+
+can data/all
+can mem
+set data vary_scale.des
+
+! The scale and offset from the second stepfile
+list/L=12:14 tt
+list/quiet/nohead `tt,return=nc_scale`, `tt,return=nc_offset`
+

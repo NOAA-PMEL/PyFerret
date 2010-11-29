@@ -1,0 +1,126 @@
+! fnoc_demo.jnl *jd* 11/91
+! 7/01 *acm* change uppercase GO LAND to GO land
+
+! Description: explores the Navy's FNOC surface marine wind field.
+
+! This demonstration explores the Navy's Fleet Numerical Oceanography Center
+! (FNOC) surface marine wind field.  The winds are on a 2.5 degree lat-lon
+! grid and are monthly averages.
+
+! Advanced use of FERRET commands in the demo will give you helpful examples
+! of their use.  See the User's Guide for more on individual commands.
+
+CAN REGION
+SET WIND/SIZE=.6/ASPECT=.86
+PPL CROSS 1 	! To cause the equator to be drawn in plots
+SET MODE VERIFY
+SET DATA monthly_navy_winds
+SHOW DATA monthly_navy_winds
+ 
+MESSAGE
+
+! Let's look at a particular month's vector winds.  Note that as the x & y
+! regions are not specified, the complete x & y axes are chosen for display --
+
+CAN REGION
+VECTOR/LEN=20/T="15-DEC-1990" UWND,VWND
+GO land
+
+MESSAGE
+
+! PPLUS, FERRET's graphics subsystem, can be invoked directly to display
+! the vector field more densely.
+
+VECTOR/LEN=20/T="15-DEC-1990"/SET UWND,VWND
+PPL VECTOR 3 2
+GO land
+
+! A time series of the winds at a point may be reviewed as well.
+
+PLOT/X=100W/Y=0 UWND,VWND
+
+MESSAGE
+
+! This can be smoothed along the time axis, taking out most of the annual cycle
+
+PLOT/X=100W/Y=0 UWND[T=@SBX:12],VWND[T=@SBX:12]
+
+MESSAGE
+
+! We can see a time-longitude plot of the zonal wind along the equator.
+
+GO rgb_centered
+SHADE/X=130E:80W/Y=0/LEV=(-10,10,2)/LINE/KEY UWND[T=@SBX:2]
+
+MESSAGE
+
+! Or compare winds at different locations in space.
+
+PLOT UWND[X=50W,Y=40N],UWND[X=180,Y=40N]
+
+MESSAGE
+
+! Let's smooth that.
+
+PLOT UWND[X=50W,Y=40N,T=@SBX:12],UWND[X=180,Y=40N,T=@SBX:12]
+
+MESSAGE
+
+! Using viewports we can see these two plots in separate areas.  Several
+! viewports are predefined and limit plotting to particular regions of the
+! available area.  Plot aspect ratio (x-size to y-size ratio) is changed
+! automatically to fit the space specified by the viewports.  Here are
+! the predefined viewports:
+
+SHOW VIEWPORT/ALL
+
+MESSAGE
+
+! Let's use viewport UPPER, using all the available X area (0.0 to 1.0) and
+! the upper half of the available Y area (0.5 to 1.0).  
+
+SET VIEWPORT UPPER
+PLOT UWND[X=50W,Y=40N,T=@SBX:12]
+
+! And then the lower portion of the available area for the second plot:
+
+SET VIEWPORT LOWER
+PLOT UWND[X=180,Y=40N,T=@SBX:12]
+
+MESSAGE
+
+! Viewports using any rectangular portion of the available area can be defined.
+! Let's define MY_UPPER using 3/4 of the upper area.  First cancel the use of 
+! viewports and clear the screen, then set up a viewport and use it:
+
+CAN VIEWPORT
+DEFINE VIEWPORT/XLIMITS=0,1/YLIMITS=0.25,1 MY_UPPER
+SET VIEWPORT MY_UPPER
+SHOW VIEWPORT MY_UPPER
+
+PLOT UWND[X=50W,Y=40N,T=@SBX:12]
+
+MESSAGE
+
+! Note in the definition of MY_UPPER the text attribute has been automatically
+! scaled to keep the plot and text sizes in the same proportion.  The text
+! can be made comparatively larger or smaller in the following way:
+
+CAN VIEWPORT
+DEFINE VIEWPORT/XLIMITS=0,1/YLIMITS=0.25,1/TEXT=2 MY_UPPER
+SET VIEWPORT MY_UPPER
+SHOW VIEWPORT MY_UPPER
+
+PLOT UWND[X=50W,Y=40N,T=@SBX:12]
+
+MESSAGE
+
+! Remember when you're ready to go back to using all the available plot area
+! to cancel the use of viewports.
+
+CAN VIEWPORT
+PLOT UWND[X=50W,Y=40N,T=@SBX:12]
+
+MESSAGE
+
+PPL CROSS 0

@@ -1,0 +1,129 @@
+*	TMAP_SHADE_VARS.INC
+*
+*	Variables used in the SHADE suite of routines
+*	J Davison JISAO/PMEL/NOAA
+*	7.9.88
+*	*jd* 10.23.98 Add pattern support variables
+*	*sh* 12/99 - reordered COMMON (variable "pattern_list" to end) to
+*		ensure contiguous 8-byte organization
+
+*	I_LO,I_HI,J_LO,J_HI are the lo and hi indices of the grid data
+*	X_LO,X_HI,Y_LO,Y_HI are the corresponding lon & lat coordinates
+*	BAD_VAL	is the value used for bad data or missing data
+
+*	FILL_MISSING determines whether missing values will be area filled
+* 	EVEN_HISTO determines whether even histogram or linear transform used
+*	DO_KEY determines whether the key is done or not
+*	VERTICAL_KEY determines whether the key is vertical or horizontal
+*	KUSER_LOC indicates whether user key locations are to be used
+*       ANNOTATE_KEY Flag: annotate min/max data field when open-ended levels used
+*	CUSTOM_COLORS determines whether a custom color map is to be defined
+
+*	SHD_MIN,SHD_MAX are the minimum and maximum data values shaded
+*	SHD_LEVELS is the number of levels to use in shading
+
+*	KX_LO,KX_HI,KY_LO,KY_HI are the world coordinates of the key diagonals
+*	KLAB_SIZE is the size of key labels in units of single key width/height
+*	KLAB_DIG is the number of sig digits (>0) or decimal places (<0) in key
+*	KLAB_LEN is the maximum length (in characters) of any one key label
+*	KLAB_INCR is the number of color bars between adjacent labels
+
+*	SLVL is a spectrum level in percent from 0 to 100 
+*	SR,SG,SB  are the rgb values specified in the spectrum table
+*	SPEC_SIZE is the number of spectrum levels allowed to be specified
+*	NCL is the number of color levels specified in the spectrum table
+*	LO_COLOR_NDX is the minimum color index used in shading
+*	HI_COLOR_NDX is the maximum color index used in shading
+*	AREA_BUNDLES determines whether bundles will be used in shading
+*	PROTECT_USED_COLORS if true causes SHADE/FILL to preserve colors used
+*	MNCL,MSLVL,MSR,MSG,MSB are shaset levels stored for later use in mem.
+*	RGB_MAPPING sets (0,1,2)->(interpolated,atomic,data-based) color scale
+*	PERCENT, BY_LEVEL, BY_VALUE are the integers just named
+*	MRGB_MAPPING is rgb_mapping stored for later use in mem.
+
+*	** PATTERN SUPPORT VARIABLES **
+*
+*	PATTERN_NUM is the number of pattern levels allowed to be specified
+* 	PATTERNS is the array of specified pattern indices (positive values)
+*	NPAT is the number of pattern levels specified in the pattern table
+*	DEFAULT_PATTERNS are the indices of a default pattern list
+*	PATTERN_LIST is the list of named patterns
+*	MNPAT,MPATTERNS are patterns stored for later use in memory.
+
+
+*	** FILL OPTIMIZATION SUPPORT **
+
+*	ILAST is the index of the level (ie color) of the last buffered polygon
+*	BUFFER_MAX is the maximum number of polygons that can be buffered
+*	BUFFER_EMPTY is .true. if no polygons are currently buffered
+*	NUM_BUFFERED is the number of currently buffered polygons
+*	UPPERFLG is true when the upper triangle calls drawpoly
+*	UPPER_FIRST is true when the upper triangle is first cell in a buffer
+
+* 
+*	*jd* 10.23.98 Add pattern support variables
+*	*sh* 12/99 - reordered COMMON (variable "pattern_list" to end) to
+*		ensure contiguous 8-byte organization
+* v541 *acm*  5/02 add option to control outline on the shade key boxes (cont_key)
+* V550 *acm*  9/02 Let SPEC_SIZE be 250, so folks can set at least as many 
+*                  colors as they can use 
+* 2/03 *kob* g77 port - move position of cont_key var in common block.  g77
+*                       complained that padding was necessary otherwise
+* 4/03 V552 *acm* Shade key improvements; kuser_loc is 4-dimensional 
+* v581 *acm*  3/05 move cont_key to CONT.INC - continuous key for any color plot
+
+
+	integer		spec_size,max_windows,pattern_num
+	parameter	(spec_size=250,max_windows=12,pattern_num=50)
+
+	integer		i_lo,i_hi,j_lo,j_hi,shd_levels,lo_color_ndx
+	integer		klab_dig,klab_len,klab_incr,ncl,hi_color_ndx
+	integer		mncl,rgb_mapping,percent,by_level,by_value
+	integer		mrgb_mapping, annotate_key
+
+	integer		patterns(pattern_num),npat
+	integer		default_patterns(pattern_num)
+	integer		mpatterns(pattern_num),mnpat
+
+	character*25	pattern_list(21)
+
+	real		x_lo,x_hi,y_lo,y_hi
+	real		bad_val,shd_min,shd_max
+	real		kx_lo,kx_hi,ky_lo,ky_hi,klab_size
+	real		sr(spec_size),sg(spec_size),sb(spec_size)
+	real		slvl(spec_size)
+	real		msr(spec_size),msg(spec_size),msb(spec_size)
+	real		mslvl(spec_size)
+
+	logical		fill_missing,even_histo,do_key,area_bundles
+	logical		vertical_key,kuser_loc(4),custom_colors
+	logical		protect_used_colors
+
+	logical		buffer_empty, upperflg, upper_first
+	integer		ilast, buffer_max, num_buffered
+	parameter	(buffer_max=50)
+
+	real		xbuff(4,buffer_max), ybuff(4,buffer_max)
+        logical         use_cell
+
+	common/shade_vars/ i_lo,i_hi,j_lo,j_hi,
+     .			   x_lo,x_hi,y_lo,y_hi,
+     .			   bad_val, 
+     .			   fill_missing,even_histo,do_key,vertical_key,
+     .			   kuser_loc,custom_colors,
+     .			   shd_min,shd_max,shd_levels,
+     .			   kx_lo,kx_hi,ky_lo,ky_hi,
+     .			   klab_size,klab_dig,klab_len,klab_incr,
+     .			   ncl,slvl,sr,sg,sb,
+     .			   lo_color_ndx(max_windows),
+     .			   hi_color_ndx(max_windows),
+     .			   area_bundles,protect_used_colors,
+     .			   mncl,mslvl,msr,msg,msb,
+     .			   patterns,npat,mpatterns,mnpat,
+     .			   default_patterns,
+     .			   rgb_mapping, percent, by_level, by_value,
+     .			   mrgb_mapping, annotate_key, ilast,
+     .			   buffer_empty, num_buffered,
+     .		     	   xbuff, ybuff, upperflg, upper_first,use_cell,
+     .			   pattern_list
+

@@ -1,0 +1,34 @@
+! err491_RESHAPE_ctx
+
+! modified 3/2000 to reflect new significance of context limits
+! on arg 2
+
+! 3/99 *sh* (bug reported by Jennifer Adams)
+! Ferret fails to recognize that source and dest T axes are different
+! so it erroneously passes T context to src argument
+
+! fixed 3/99 with change to GCF_IMPOSE_ARG_LIM_DFLT
+!  (and consequent bug fixes to PARSE_NAM_DSET_GRD and GRID_FROM_NAME)
+
+! source data in X,TCAL
+define axis/x=1:5:1 x5
+define axis/y=1:1:1 y1
+define axis/t=15-jan-1951:15-dec-1952/npoints=24 tcal
+define grid/x=x5/y=y1/t=tcal gsrc
+LET src = x[g=gsrc] + t[g=gsrc]
+
+list src
+
+! reshaping grid - TCAL ==> 12 month by years
+def axis/t=1951:1952:1 tyear
+def axis/z=1:12:1 zmonth
+!let out_grid = x[g=gsrc,i=1] + y[g=gsrc,j=1] + z[gz=zmonth,k=1] + t[gt=tyear,l=1]  ! pre 3/00
+let out_grid = x[g=gsrc] + y[g=gsrc] + z[gz=zmonth] + t[gt=tyear]
+
+! reshape the source data -- OK
+let out = reshape(src,out_grid)
+list out
+
+! NOW THE ERROR: L LIMITS PASSED INCORRECTLY(ERRONEOUSLY) TO SRC
+list/l=1 out
+

@@ -1,0 +1,10 @@
+! err581_sho_func_pattern_match.jnl
+! bug 1186
+! 8/2006
+! Pattern matching for SHOW FUNCTION did not match *str  or *str*
+! on external functions.
+
+! Should list SIN and ASIN
+sh func *sin
+! SHOULD list ELEMENT_INDEX, ELEMENT_INDEX_STRING, IS_ELEMENT_OF, IS_ELEMENT_OF_STR
+sh func *element*

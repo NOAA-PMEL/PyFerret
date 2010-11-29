@@ -1,0 +1,31 @@
+! example to call label_hi_lo.jnl to label extrema 
+! 1/2002 change in the "neighborhood" arguments fromm
+!        number of gridpoints, to range in data units.
+
+use coads_climatology
+set region/l=7/x=100:360/y=-20:60
+
+fill/line/pal=no_red slp; go fland
+go label_hi_lo.jnl slp label 10 8 green purple
+
+pause
+contour slp
+go fland
+go label_hi_lo.jnl slp mark 6 6 red blue
+
+pause
+! note: cannot set region in square brackets on the call to 
+!       label_hi_lo, but as long as the time region is set,the
+!       script gets ppl$xmin, ppl$xmax, etc and is ok
+
+can region
+set region/l=7
+fill/line/pal=no_red slp[l=7,x=100:360,y=-20:60]; go fland
+go label_hi_lo.jnl slp label 10 8 green purple
+
+message but this fails:
+
+can region
+
+fill/line/pal=no_red/l=7/x=100:360/y=-20:60 slp; go fland
+go label_hi_lo.jnl slp[l=7] label 10 8 green purple

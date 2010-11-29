@@ -1,0 +1,53 @@
+ &FORMAT_RECORD
+   D_TYPE        = '  MC',
+   D_FORMAT      = '  1A',
+   D_SOURCE_CLASS       = 'MODEL OUTPUT',
+   D_SOURCE      = 'COAD',
+   D_SUBSOURCE   = 'GLOBAL',
+ /
+ &BACKGROUND_RECORD
+   D_EXPNUM      = '    ',
+   D_MODNUM      = '    ',
+   D_TITLE       = 'COAD',
+   D_FORCING_SET = '    ',
+   D_T0TIME      = '01-JAN-1900',
+   D_TIME_UNIT   = 3600.0,
+   D_TIME_MODULO = .false.,
+   D_NTEGRATE_TSTEP     = 1.0,
+   D_TIME_RUN    = '29-aug-1996',
+   D_WHO_RANIT   = 'kob',
+   D_TIME_MADE   = '29-aug-1996',
+   D_WHO_MADEIT  = ' ',
+   D_AUX_MODNUM  =  6*' ',
+   D_GRID_FILENAME      =  6*' ',
+ /
+ &MESSAGE_RECORD
+   D_MESSAGE     = ' ',
+   D_ALERT_ON_OPEN      = F,
+   D_ALERT_ON_OUTPUT    = F,
+ /
+ &EXTRA_RECORD
+ /
+ &STEPFILE_RECORD
+   S_FILENAME    = 'coads_clim.001',
+   S_AUX_SET_NUM = 0,
+   S_START       = 366.0,
+   S_END  = 1096.485,
+   S_DELTA       = 730.485,
+   S_NUM_OF_FILES       = 1,
+   S_REGVARFLAG  = ' ',
+ /
+ &STEPFILE_RECORD
+   S_FILENAME    = 'coads_clim.003',
+   S_AUX_SET_NUM = 0,
+   S_START       = 3287.94,
+   S_END  = 3287.94,
+   S_DELTA       = 1,
+   S_NUM_OF_FILES       = 1,
+   S_REGVARFLAG  = ' ',
+ /
+
+ &STEPFILE_RECORD
+   S_FILENAME    = '**END OF STEPFILES**'
+ /
+

@@ -1,0 +1,153 @@
+! Examples for external function ZAXREPLACE_AVG
+! ACM 8/99
+
+
+define axis/depth/z=0:33:1 zax
+define grid/z=zax gg
+let my_profile = sin(z[g=gg])
+
+list  zaxreplace_avg(my_profile, z[g=gg], Z[z=0.2:33:5])
+
+list my_profile[z=0.2:33:5@ave]
+
+plot my_profile
+plot/over/line/symbol=2  my_profile[z=0.2:33:5@ave]
+plot/over/line/symbol=27   zaxreplace_avg(my_profile, z[g=gg], Z[z=0.2:33:5])
+
+message
+
+! ----------------------------
+
+
+use levitus_climatology
+sh data
+show/i=120/j=120/k=1:20 grid temp
+
+
+define axis/z=0:500:100/depth dep100
+define grid/like=GLEVITR1/z=dep100 gl100
+show/k=1:40 grid gl100
+
+
+let a =  zaxreplace_avg(temp, z[gz=ZAXLEVITR], z[gz=dep100])
+
+let b = temp[g=gl100]
+
+set view ul
+shade/y=0/ylimits=0:500:100./levels=(0., 30., 2.)  temp
+
+set view ur
+shade/y=0/ylimits=0:500:100./levels=(0., 30., 2.)  b
+
+set view ll
+shade/y=0/ylimits=0:500:100./levels=(0., 30., 2.) a
+
+let c = b - a
+
+set view lr
+shade/levels=(-15., 15., 2)/y=0/ylimits=0:500:100.  c
+! shade/levels=(-2., 2., 0.2)/y=0/ylimits=0:500:100.  c
+
+message
+
+set region/x=150e/y=0
+
+can view 
+plot/symbol=2/title=" " b
+plot/line/symbol=28/over/title="original temp" temp
+plot/symbol=2/over/title="regridded temp" b
+plot/symbol=18/over/title="zaxr" a
+
+message
+
+! ----------------------------
+
+can region
+use levitus_climatology
+
+define axis/z=0:5000:1000/depth dep1000
+define grid/like=GLEVITR1/z=dep1000 gl1000
+show/k=1:40 grid gl1000
+
+
+let a =  zaxreplace_avg(temp, z[gz=ZAXLEVITR], z[gz=dep1000])
+
+let b = temp[g=gl1000]
+
+set view ul
+shade/y=0/ylimits=0:5000:1000./levels=(0., 30., 2.)  temp
+
+set view ur
+shade/y=0/ylimits=0:5000:1000./levels=(0., 30., 2.)  b
+
+set view ll
+shade/y=0/ylimits=0:5000:1000./levels=(0., 30., 2.) a
+
+let c = b - a
+
+set view lr
+shade/y=0/ylimits=0:5000:1000./levels=(-15., 15., 2)  c
+! 
+message
+
+set region/x=150e/y=0
+
+can view 
+plot/symbol=2/title=" " b
+plot/line/symbol=28/over/title="original temp" temp
+plot/symbol=2/over/title="regridded temp" b
+plot/symbol=18/over/title="zaxreplace_avg" a
+
+message
+
+
+! ----------------------------
+can region 
+use levitus_climatology
+! sho data
+set region/x=180
+
+let density = RHO_UN(salt, temp, z[g=temp])
+! sh/k=1:51 grid temp
+! sh/k=1:51 grid density
+
+! list/format=(f10.3)/k=1:51/i=180/j=90 density
+! stat density[z=0:1000]
+
+! define axis/z=1022:1032:0.2/units="density units"/depth zdens
+define axis/z=1022:1032:1.0/units="density units"/depth zdens
+let temp_on_dens = zaxreplace(temp[z=0:1000], density[z=0:1000], z[gz=zdens])
+
+! show/k=1:51 grid temp_on_dens
+! list/k=1:51/i=180/j=90 temp_on_dens
+
+PALETTE inverse_greyscale
+!set mode meta
+
+set view ul
+shade/k=1:51/i=180/title="Temp(density)  zaxreplace" temp_on_dens
+
+let temp_on_dens =  zaxreplace_avg(temp[z=0:1000], density[z=0:1000], z[gz=zdens])
+! list/k=1:51/i=180/j=90 temp_on_dens
+
+
+set view ur
+shade/k=1:51/i=180/title="Temp(density)  zaxr fcn" temp_on_dens
+
+set view ll
+shade/k=1:51/i=180/title="Temp as fcn of depth"  temp
+
+
+! ----------------------------
+
+use levitus_climatology
+set region/x=180
+
+let density = RHO_UN(salt, temp, z[g=temp])
+define axis/z=1022:1032:1.0/units="density units"/depth zdens
+
+let temp_dens_fcn =  zaxreplace_avg(temp[z=0:1000], density[z=0:1000], z[gz=zdens])
+
+
+set region/y=22.5N
+list temp_dens_fcn 

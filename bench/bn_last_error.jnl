@@ -1,0 +1,45 @@
+! bn_last_error.jnl
+! acm Nov 2005
+!
+! - test the symbol FER_LAST_ERROR (Commands from various bn scripts) 
+
+
+
+SET MODE IGNORE_ERRORS
+
+LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333	! err
+SHOW SYM FER_LAST_ERROR
+
+
+LET A = IF I LT 5 THEN I ELSE -9
+SHOW SYM FER_LAST_ERROR
+
+
+load a1,a2,a3
+SHOW SYM FER_LAST_ERROR
+
+set data nofile.nc
+SHOW SYM FER_LAST_ERROR
+
+
+! Repeat/range errors
+repeat/name=a (say `a`)
+SHOW SYM FER_LAST_ERROR
+
+
+! Cannot use pseudo-variables.
+repeat/range=1:3/name=L (use coads_climatology; list/nohead [sst=I=1,j=1])
+SHOW SYM FER_LAST_ERROR
+
+
+! external function errors via ef_bail_out
+
+! This  bails out w/Time axis error
+USE  "coads_vwnd.cdf"
+SET REGION/I=90/J=65
+LET vw_fft = ffta(vwnd[l=37:60])
+LOAD vw_fft
+SHOW SYM FER_LAST_ERROR
+
+
+SET MODE/LAST IGNORE_ERROR

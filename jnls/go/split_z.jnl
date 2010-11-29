@@ -1,0 +1,92 @@
+\cancel mode verify
+! split_z.jnl
+! 10/95 - based on a script submitted by Joachim Dengg
+! Description: make a CONTOUR,SHADE, or FILL plot with a split vertical axis
+! producing a "magnified" view of the near-surface waters
+
+! 7/01 *acm* update /xlimits and /ylimits  to /hlimits and /vlimits
+
+! usage:	       $1       $2    $3  $4  $5   $6     $7
+!   yes? GO split_z command  qualifs var top mid bottom split
+! $1 - the plot command (SHADE,FILL or CONT)  (default, "FILL")
+! $2 - qualifiers to the plot command - /LEVELS and /PALETTE (default, none)
+! $3 - the variable to be plotted (use quotation marks if it contains commas)
+! $4 - the depth at the      top    of the plot (default=0)
+! $5 - the depth at the split point of the plot (default=1000)
+! $6 - the depth at the    bottom   of the plot (default=5000)
+! $7 - the fractio of the page given to the upper viewport (default=0.33)
+
+! example:
+!   yes? SET DATA levitus_climatology
+!   yes? SET WINDOW/ASPECT=1
+!   yes? go split_z FILL "/lev=(0,4,.5)(0,30,2)" "temp[X=160W,Y=45S:45N]" 0 500 4000 0.4
+! Note 1: a taller, thinner window looks nicer ...
+!         yes? SET WINDOW/ASPECT=1
+! Note 2: this procedure will not work in a viewport since it uses viewports
+
+! set default values and check for argument errors
+define symbol cmnd $1"FILL"
+define symbol quals $2"set_up"
+define symbol var  $3"<Usage: GO split_z cmnd quals var top mid bottom split"
+define symbol topZ $4"0"
+define symbol splitZ $5"1000"
+define symbol botZ $6"5000"
+define symbol vp_split `1-$7".33"`
+
+! clear the screen
+cancel viewports
+
+! define viewports for top and bottom panels
+! "/text=..." scales the viewports consistently
+define viewport/text=.6/y=($vp_split),1 sp_u   ! upper
+define viewport/text=.6/y=0,($vp_split) sp_l   ! lower
+
+! the upper frame with the Y axis coming right to its bottom
+set view sp_u
+define symbol upper_axlen `($ppl$yorg)+($PPL$YLEN)`
+define symbol orig_yorg ($ppl$yorg)
+ppl origin ,0
+ppl axlen ,($upper_axlen)
+(($cmnd)/($quals)/z=($topZ):($botZ)/vlimits=($topZ):($splitZ)/set_up ($var))
+ppl title   	! no title under plot
+ppl axset 1,0	! no lower axis
+ppl xlab	! no X axis label
+ppl shakey 0	! no key drawn for upper half
+ppl ($cmnd)
+ppl origin ,($orig_yorg)	! restore Y origin
+
+! the lower frame with the Y axis coming almost to its top
+set view sp_l
+define symbol axis_gap 0.15
+define symbol lower_axlen `($VP_HEIGHT)-($ppl$yorg)-($axis_gap)`
+ppl axlen ,($lower_axlen)
+(($cmnd)/($quals)/z=($topZ):($botZ)/vlimits=($splitZ):($botZ)/set_up ($var))
+ppl axset 0,1	! no upper axis
+ppl ylab	! no Y axis label on this part
+ppl labs
+
+! set up the color key
+define symbol lower_right_x `($ppl$xorg)+($ppl$xlen)`
+define symbol lower_right_y `($ppl$yorg)`
+! see "Plot Plus for Ferret Manual" for shakey description
+ppl shakey 1,1,.12,,,,`($lower_right_x)+0.3`,`($lower_right_x)+0.9`,`($lower_right_y)`,`($lower_right_y)+($lower_axlen)+($axis_gap)+($upper_axlen)`
+
+! plot the lower half and the key
+ppl ($cmnd)
+
+! clean up
+ppl axset 1,1
+cancel symbol cmnd
+cancel symbol quals
+cancel symbol var
+cancel symbol topZ
+cancel symbol splitZ
+cancel symbol botZ
+cancel symbol vp_split
+cancel symbol upper_axlen
+cancel symbol orig_yorg
+cancel symbol lower_right_x
+cancel symbol lower_right_y
+cancel symbol axis_gap
+cancel symbol lower_axlen
+set mode/last verify

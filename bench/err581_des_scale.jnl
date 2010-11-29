@@ -1,0 +1,26 @@
+! err581_des_scale.jnl  bug 1332. When using a descriptor file and 
+! a varriable has scale_factor and/or add_offset attributes, the 
+! variable is not scaled unless it is first variable in stepfile.
+! acm 8/29/2005
+
+! tok_short.des behaves correctly; the stepfile in it, sstok_short.nc lists
+! variable sst first.
+
+! tnok_short.des, containing sstnok_short.nc results in sst NOT being scaled
+! because it is the second variable in the file.
+
+! Data in SST should be rescaled in both des files to values 0.1699, 0.1799, ...
+
+EXIT/SCRIPT   ! error in namelist record...
+
+set data tok_short
+list/i=1:5 sst
+say `sst, return=nc_scale`
+say `sst, return=nc_off`
+
+can data/all; can mem
+
+!set data tnok_short
+!list/i=1:5 sst
+!say `sst, return=nc_scale`
+!say `sst, return=nc_offset`

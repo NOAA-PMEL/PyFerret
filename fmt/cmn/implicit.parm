@@ -1,0 +1,12 @@
+* implicit.PARM
+*
+* 10/95 *sh* - parameters for dynamic lines
+
+* codes for dynamic lines (axes)
+	INTEGER pline_class_basic, pline_class_stride,  pline_class_midpt,
+     .	        pline_class_foreign, pline_class_fft
+	PARAMETER     (	pline_class_basic   = 0,
+     .			pline_class_stride  = 1,
+     .			pline_class_midpt   = 2,
+     .			pline_class_foreign = 3,
+     .			pline_class_fft     = 4 )

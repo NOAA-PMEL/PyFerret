@@ -1,0 +1,356 @@
+\ cancel mode verify
+!
+! Description : Demo file to show the capabalities and usage of multi_view
+!                   GO file.
+!
+! Requires    : multi_view.jnl, coads_climatology, levitus_climatology in pwd
+!                 or Ferret search path.
+!
+! Usage       :   yes? go multi_view_demo
+!
+! Written By  :  Jaison Kurian
+! Written On  :  16/June/2007
+! Comments    :  None
+! Modifications : None
+!
+!-------------------------------------------------------------------------
+
+
+\  set mode verify
+
+   ! SOME INITIAL SET UP
+
+        use coads_climatology
+        set reg/x=30:120/y=-30:30/k=1
+        palette=rainbow2_cmyk 
+        set window/clear 
+
+\  pause
+   ! LET US DEFINE 4 VIEWPORTS : 2 ROW & 2 COLUMN
+   !     WITH MINIMAL ARGUMENTS.....
+
+        go multi_view 2, 2, 0.34, 0.12, 0.05, 0.34, 0.12, 0.05
+
+\  pause
+   ! LET US MAKE A PLOT IN UPPER LEFT VIEW : V11 --> DEFAULT NAME  
+
+        set view v11 ; ppl axlabp 1,-1
+            fill/lev="(20,28,0.5),(28,30,0.25)"/nolab/nokey sst[l=3]
+            go land
+
+\  pause 
+   ! NOW, IN UPPER RIGHT VIEW : V12 --> DEFAULT NAME
+
+        set view v12 ; ppl axlabp 1,1
+            fill/lev="(20,28,0.5),(28,30,0.25)"/nolab/nokey sst[l=4]
+            go land
+
+\  pause 
+   ! NOW, IN LOWER TWO : V21 & V22
+
+        set view v21 ; ppl axlabp -1,-1
+            fill/lev="(20,28,0.5),(28,30,0.25)"/nolab/nokey sst[l=5]
+            go land
+
+        set view v22 ; ppl axlabp -1,1
+            fill/lev="(20,28,0.5),(28,30,0.25)"/nolab/nokey sst[l=6]
+            go land
+
+\ pause 
+   ! THERE IS LOT OF WHITE SPACE BETWEEN THE VIEWPORTS. LET US REMOVE
+   !   IT BY ADJUSTING "xgap" and "ygap"
+  
+   !    go multi_view 2, 2, 0.34, 0.12, 0.05, 0.34, 0.12, 0.05      Prev. one
+   !                                    ####              ####   
+        go multi_view 2, 2, 0.34, 0.12, 0.025,0.34, 0.12, 0.03, vv
+
+   ! THE LAST ARGUMENT "vv" is used here just to avoid 
+   !    "Re-defining viewport" Message on terminal.
+\ pause 
+\ ppl shaset reset ; set window/clear
+        set view vv11 ; ppl axlabp 1,-1
+            fill/lev="(20,28,0.5),(28,30,0.25)"/nolab/nokey sst[l=3]
+            go land
+        set view vv12 ; ppl axlabp 1,1
+            fill/lev="(20,28,0.5),(28,30,0.25)"/nolab/nokey sst[l=4]
+            go land
+        set view vv21 ; ppl axlabp -1,-1
+            fill/lev="(20,28,0.5),(28,30,0.25)"/nolab/nokey sst[l=5]
+            go land
+        set view vv22 ; ppl axlabp -1,1
+            fill/lev="(20,28,0.5),(28,30,0.25)"/nolab/nokey sst[l=6]
+            go land
+
+\  pause
+!---------------------------------------------------------------------------- 
+\  set reg/x=150:280/y=-20:20/k=1 
+
+   ! NOW LET US SEE HOW TO INSERT FIGURE NUMBER AT CORNERS OF VIEWPORT
+   
+        go multi_view 2, 2, 0.34, 0.12, 0.025,0.34, 0.12, 0.03, vb
+
+\ ppl shaset reset ; set window/clear
+
+        set view vb11 ; ppl axlabp 1,-1
+            fill/lev="(20,28,0.5),(28,30,0.25)"/nolab/nokey sst[l=3]
+            go land
+
+   ! LET US PLACE THE LABEL ON BOTTOM-LEFT CORNER. REMEBMER THAT THE
+   !     X & Y AXES OF THE SMALL CORNER BOX VARIES FROM 1-10 FOR 
+   !     EASY "x","y" VALUES FOR THE     LABEL   COMMAND
+
+   !  vb11_bl  -->  "vb11" is parent view and "_bl" indicates BOTTOM-LEFT
+
+   !  ($polfl)  -->  POLYGONE/FILL/LINE   predefined polygon command
+   !  xpol      -->  predefined  polygon x-variable
+   !  ypol      -->  predefined  polygon y-variable
+
+   !  ALWAYS USE VERY BIG FONT SIZE SINCE THE VIEWPORT SIZE IS VERY SMALL
+
+\ pause 
+        set view vb11_bl 
+        ($polfl)/pal=white/color=1  xpol, ypol
+        label 5,4.5,0,0,0.55 @C007A
+
+\ pause
+   ! LET US TUNE THE FIGURE NUMBER AREA 
+   
+   !  go multi_view 2, 2, 0.34, 0.12, 0.025,0.34, 0.12, 0.03, vb   Prev. one
+   !                                                                  ##    ##
+      go multi_view 2, 2, 0.34, 0.12, 0.025,0.34, 0.12, 0.03, vc, 0.04, 0.05 
+
+\ pause
+\ set window/clear
+        set view vc11 ; ppl axlabp 1,-1
+            fill/lev="(20,28,0.5),(28,30,0.25)"/nolab/nokey sst[l=3]
+            go land
+
+            set view vc11_bl 
+            ($polfl)/pal=white/color=1  xpol, ypol
+            label 5,4.2,0,0,0.50 @C007A
+
+\ pause
+   ! NUMBERING WITH ONLY BOX LINING  
+
+            set view vc11_tl 
+            ($poll)/color=1  xpol, ypol
+            label 5,4.2,0,0,0.50 @C010B
+
+\ pause 
+
+!---------------------------------------------------------------------------- 
+\   use levitus_climatology ; cancel reg/all
+\   let zero_at_mld = temp[d=2] - (temp[d=2,k=1]-1)
+\   let mld         = zero_at_mld[Z=@LOC:0]
+\   palette=orange_purple ; PPL AXLSZE 0.12,0.12 ;  PPL AXNMTC 1,1
+
+   ! LET US PLOT MLD OVER A DEPTH-LAT/LON SECTION OF TEMPERATURE.
+   !    HERE WE WILL DEFINE TWO IDENTICAL VIEWPORTS, WITH DIFFERENT
+   !    NAMES.
+   !                                              ##
+   go multi_view 1,2,0.30,0.12,0.03,0.35,0.4,0.01,VL,0.045,0.045
+   go multi_view 1,2,0.30,0.12,0.03,0.35,0.4,0.01,VR,0.045,0.045
+
+   ! PLEASE NOTE THAT WE WILL USE REVERSED /VLIMITS for MLD
+
+\ pause ; set window/clear
+
+   set view VL11 ; ppl axlabp -1,-1
+     fill/vlim=0:150:20/hlim=54.5:75.5:5/nolab/lev=(15,29,1)/nokey temp[y=6N]
+   set view VR11  
+     plot/vlim=150:0:20/hlim=54.5:75.5:5/nolab/noaxes/color=10     mld[y=6N]
+
+   ! LET US MAKE ONE MORE PLOT
+
+\ pause 
+
+   set view VL12 ; ppl axlabp -1,0
+     fill/vlim=0:150:20/hlim=79.5:100.5:5/nolab/lev=(15,29,1)      temp[y=6S]
+   set view VR12  
+     plot/vlim=150:0:20/hlim=79.5:100.5:5/nolab/noaxes/color=10    mld[y=6S]
+
+!---------------------------------------------------------------------------- 
+
+  ! Suppose you want to adjust axis labels without wasting precious journal 
+  !   space.....here is a small trick
+
+  ! See the Y-axis time labels in the following plot -->  
+
+\ set reg/y=-2:2/x=42.5:100
+  
+  go multi_view 1,1,0.45,0.12,0.01,0.35,0.50,0.01,vbb
+
+\ pause ; set window/clear
+
+  set view vbb11 ; ppl axlabp -1,-1 ; ppl txlabp -1
+     fill/line/pal=yellow_orange_brown\
+                   /nolab/lev=(1009,1015,0.5) slp[d=1,j=@AVE]
+
+\ pause 
+
+  ! We can tune it slightly....right ??
+
+  ! Here is the trick : Define two identical view ports with different
+  !     names.
+
+  go multi_view 1,1,0.45,0.12,0.01,0.35,0.10,0.01,vvb
+  go multi_view 1,1,0.45,0.12,0.01,0.35,0.10,0.01,vvc
+  
+  ! use the first view to make the plot without Y-axis labels
+
+\ pause 
+
+  set view vvb11 ; ppl axlabp -1,0 ; ppl txlabp 0
+     fill/line/pal=yellow_orange_brown\
+                   /nolab/lev=(1009,1015,0.5) slp[d=1,j=@AVE]
+
+\ pause
+
+  ! prepare the label fields
+
+  let mnames = TSEQUENCE({"J","F","M","A","M","J","J","A","S","O","N","D"})
+
+  ! use the second "dummy view to make an EMPTY plot
+  ! choose /vlimits=0:12 for easy y-coordinate values for labelling
+
+\ pause 
+  ! Looks good ??
+
+  set view vvc11
+      plot/vs/nolab/noaxes/vlimits=0:12/hlimits=1:10    100,100  
+      REPEAT/RANGE=1:12:1/NAME=yyl (;\
+         define symbol mm = `yyl`  ;\
+         label 0.8,`($mm)-0.5`,0,90,0.12 @C001`mnames[l=($mm)]` ;\
+      )
+
+!---------------------------------------------------------------------------- 
+
+! TWO different viewports side by side
+! 
+! Say you want to plot the zonal section of temperature and place a 
+!   time series of wind zonal wind speed, in such a way that there
+!   is direct correspondence between longitudes.
+!   
+!   BIGGER  view at bottom for temperature section
+!   SMALLER view at top    for zonal wind time series
+
+\ pause  ; set reg/Y=10/Z=0:300/l=6
+
+! good to start with the BIGGER BOTTOM  plot   --> VBOT
+!                                                ##    ##    ##   
+      go multi_view  1, 1, 0.55, 0.15, 0.01, 0.40, 0.20, 0.01, VBOT
+
+\ pause ; set window/clear ; ppl axlint 2,2 ; ppl axnmtc 0,0
+
+
+      set view VBOT11 ; ppl axlabp -1,-1 ; ppl axlsze 0.11,0.11
+         fill/hlim=54:74:2/lev=(10,29,1)/nolab temp[d=2]
+
+
+! How to define a matching viewport for time series?
+!
+!    for VB above, we had    :   ysize  = 0.40
+!                                ystart = 0.20
+!                                ygap   = 0.01
+!  
+!    --> the ystart for next view should be sum of above 3 plus the
+!           required gap between viewports (let it be 0.03), then
+!              0.40 + 0.20 + 0.01 = 0.61   ;  0.61+0.03 = 0.64
+! 
+!    --> the x variables (xsize, xstart, xgap) will REMAIN THE SAME
+!
+!  Let us define the top view, with a ysize of 0.15 and ystart of 0.64
+
+   !                                           ysize, ystart
+   !  go multi_view  1, 1, 0.55, 0.15, 0.01, 0.40, 0.20, 0.01, VBOT
+   !                                             ##    ##
+      go multi_view  1, 1, 0.55, 0.15, 0.01, 0.15, 0.64, 0.01, VTOP
+
+\ pause
+
+      set view VTOP11 ; ppl axlabp 1,-1 ; ppl axlsze 0.13,0.13
+         plot/hlim=54:74:2/vlim=6:10/color=2/nolab uwnd[d=1]
+
+!---------------------------------------------------------------------------- 
+\ pause ; set reg/l=1:12 ; set window/clear ; cancel viewport v*
+
+     ! Drawing LINE LEGENDS on time a time seris plot is not that easy. Lest us
+     !    see how we can do it comfortably with multi_view.  
+
+     ! Define the main viewport and make 3 time series plots
+ 
+     go multi_view 1,1,0.7,0.15,0.01,0.32,0.40,0.01,vts,0.03,0.04
+
+     set view vts11 
+        plot/vlim=26:31:0.5/nolab/color=1      sst[d=1,x=60,y=10]
+        plot/vlim=26:31:0.5/nolab/ov/color=2   sst[d=1,x=90,y=10]
+        plot/vlim=26:31:0.5/nolab/ov/color=4   sst[d=1,x=150,y=10]
+
+\   pause 
+  
+     ! Let us put the line legends within the plot area, to the top. 
+     !  --> define a similar viewport, with adjusted y-parameters
+
+     ! go multi_view 1,1,0.7,0.15,0.01,0.32,0.40,0.01,vts,0.03,0.04
+     !                                 ###  ###      ###
+       go multi_view 1,1,0.7,0.15,0.01,0.12,0.65,0.01,vlg,0.03,0.04
+
+     ! remember that the variables xpol and ypol varies 1-10 --> hence
+     ! you can easily pick the positions of lines and labels here.
+
+\    pause
+
+     set view vlg11
+        ($poll)/axes=0,0,0,0 xpol*0+100, ypol*+100
+        plot/vs/over/line/nolab/color=1 {2,3},{3,3}
+        label 3.2,2.8,-1,0,0.15 60^0E
+        plot/vs/over/line/nolab/color=2 {4,5},{3,3}
+        label 5.2,2.8,-1,0,0.15 90^0E
+        plot/vs/over/line/nolab/color=4 {6,7},{3,3}
+        label 7.2,2.8,-1,0,0.15 150^0E
+
+\ pause
+!---------------------------------------------------------------------------- 
+
+  !  HERE IS THE FINAL SHOW OFF.....
+
+  !  Question : Can you define 60  (read it carefully..ok   "60") viewports
+  !             on a Ferret window ?? 
+  !      
+  !             Suppose you had the patience to sit and write 60 lines of 
+  !             "define view" with arguments calculated to the 3rd or 4th
+  !             presion.....using your computer ...... and to make plots
+  !             in that viewports......fine.
+  ! 
+  !             If somebody ask you to change the spacing between viewports
+  !             "little bit" or increase the view size "slightly".....what 
+  !             will be your response ?? .......excuse me..
+  !
+  !     with multi_view it will take only < 1 minute ....
+  !
+  !  HERE YOU GO...........
+
+   go small_view 10,6,0.12,0.11,0.008,0.08,0.1,0.006, VS
+
+\  pause
+\  cancel mode verify
+
+   set reg/x=30:120/y=-30:30
+   palette=rainbow2_cmyk
+   set window/aspect=1.3 ; set window/clear
+
+   ppl axlint 3,3 ; ppl axnmtc 0,0 ; ppl axlabp 0,0 ; ppl tics ,,,,1,1
+
+   let count = 0
+   REPEAT/RANGE=1:10:1/NAME=nrow (;\
+       REPEAT/RANGE=1:6:1/NAME=ncol (;\
+          let count = `count` + 1 ;\
+          let m_id  = IF `count/12 GT 1` THEN `count-12*int((count-1)/12)` ELSE `count` ;\
+          set view VS`nrow``ncol`    ;\
+          fill/lev=(20,30,1)/nolab/nokey sst[l=`m_id`,d=1] ;\
+          go land ;\
+          ppl shaset reset ;\
+       ) ;\
+   )
+
+  say ;  say "  ADIOS......." ; say

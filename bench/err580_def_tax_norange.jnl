@@ -1,0 +1,7 @@
+! err580_def_t_norange.jnl
+! bug 1203. without the T range, these statements cause a STOP.
+
+SET MODE ignore
+DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/t myt
+
+DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/T/CALENDAR=noleap myt

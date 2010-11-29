@@ -1,0 +1,19 @@
+! Demo of new POLYGON command
+! *jd * 3.99
+
+let xsqr = YSEQUENCE({0,.1,.1,0})
+let ysqr = YSEQUENCE({0,0,.1,.1})
+
+let ypts = x/10
+let xpts = cos(x/10)
+
+set win/asp=.4
+
+set mode meta polygon_plot.plt
+polygon/trans/i=1:100/nolable xpts+xsqr, ypts+ysqr, x*x/10
+
+polygon/trans/line=6/fill/over/lev/i=1:100/pattern=ball_bearings/nolabel xpts+xsqr, ypts+ysqr+.5, x*x/10
+
+polygon/trans/line=4/over/i=1:100/nolabel xpts+xsqr-.25, ypts+ysqr, x*x/10
+
+can mode meta

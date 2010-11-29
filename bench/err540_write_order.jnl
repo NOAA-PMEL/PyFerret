@@ -1,0 +1,41 @@
+! err540_write_order.jnl
+! *sh* 3/02
+
+! the permutation of gridsvariables during writing is inferred *incorrectly*
+! from the context of the first variable only in xeq_list.F
+
+! I think (??) that we need to replace this
+!   * ... if no axis order was specified determine the permutation
+!           IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
+!           DO 200 ilist = 1, num_uvars_in_cmnd
+!              CALL CREATE_PERMUTATION(  memory,
+
+! with this
+!   * ... if no axis order was specified determine the permutation
+!           DO 200 ilist = 1, num_uvars_in_cmnd
+!              IF (.NOT.permute) CALL GET_CX_DIMS(is_cx(ilist),ndim, perm )
+!              CALL CREATE_PERMUTATION(  memory,
+
+
+define axis/x=1:2:1 x12
+define axis/y=3:4:1 y34
+define axis/z=5:6:1 z56
+
+let yz =              10*y[gy=y34] + 100*z[gz=z56]
+let xyz = x[gx=x12] + 10*y[gy=y34] + 100*z[gz=z56]
+
+! before
+list xyz
+
+save/clobber/file=test_good_order.cdf xyz, yz
+save/clobber/file=test_bad_order.cdf yz, xyz
+cancel var/all
+
+! after
+use test_good_order
+list xyz
+use test_bad_order
+list xyz
+
+sp rm -f test_good_order.cdf
+sp rm -f test_bad_order.cdf

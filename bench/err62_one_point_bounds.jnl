@@ -1,0 +1,15 @@
+! err62_one_point_bounds.jnl
+! Bug 1680
+! If a single-point axis has bounds specified,
+! then on a SAVE/BOUNDS, Ferret did not save the 
+! correct bounds (but instead saved coord+/- 0.5)
+
+DEFINE AXIS/BOUNDS/Z/UNITS=meters myzaxis = {5}, {4.89,5.11}
+LET zz = Z[GZ=myzaxis]
+SAVE/BOUNDS/CLOBBER/FILE=a.nc zz
+LIST Z[GZ=zz], ZBOXLO[GZ=zz], ZBOXHI[GZ=zz]
+
+CAN DAT/ALL; CAN VAR/ALL
+USE a.nc
+! This should match the output of the LIST above
+LIST Z[GZ=zz], ZBOXLO[GZ=zz], ZBOXHI[GZ=zz]

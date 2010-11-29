@@ -1,0 +1,16 @@
+! err600_long_bounds_name.jnl
+! Long name for bounds attribute was not read by Ferret
+! Bug 1443
+! 20-Sep-2006 ACM
+
+
+def axis/x/bounds layer_between_two_pressure_difference_from_ground = {0,3,5},{-6,2,2,4.5,4.5,9}
+let var = x[gx=layer_between_two_pressure_difference_from_ground] + 1
+
+save/clobber/file=a.nc var
+can var/all
+
+! previously the following generated an error
+use a
+list  x[gx=var], xbox[gx=var], xboxlo[gx=var], xboxhi[gx=var]
+

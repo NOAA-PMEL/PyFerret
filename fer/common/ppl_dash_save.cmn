@@ -1,0 +1,17 @@
+
+* static storage in COMMON  (see ppl_axes_off.F)
+
+* v5.40 ACM variables to save DASH state
+* V6.11 4/08 *acm* Fixes for bug 1571, state of axis on and off
+
+* plot settings changed by PLOT/DASH which we want to restore to settings 
+* possibly made by PPL LINE commands which for backwards compatibility 
+* should persist
+
+	LOGICAL dash_changed(NLINES)
+	INTEGER linenum_save
+        REAL dashsave(NLINES,4)
+ 
+	COMMON /PPL_DASH_SAVE/ 
+     .     dashsave, dash_changed, linenum_save
+

@@ -1,0 +1,10 @@
+ ! NOAA/PMEL TMAP
+ ! FERRET v5.53  
+ ! Solaris 5.6 - 12/16/03
+ ! 16-Dec-03 10:58     
+
+use xz_nozattrib.nc
+set axis/depth zax
+say "axis should be reversed"
+show axis zax
+q

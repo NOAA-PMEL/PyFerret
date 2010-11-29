@@ -1,0 +1,13 @@
+* PARAMPL5_DAT.DECL - converted to Unix 2.26.91       
+* COMMON for PLOT+ with all variables declared
+* created for TMAP usage by Steve Hankin 7/88
+
+* V510: *sh* 3/00 -- added NPOLYGON
+
+	INTEGER IDSFRM
+	INTEGER	ICNLEV
+	INTEGER	NMIPTS
+	INTEGER	NLINES
+	INTEGER	NPOLYGON
+	INTEGER	NLABS
+* requires: INCLUDE 'PPLV11INC:PARAMPL5.DAT'       

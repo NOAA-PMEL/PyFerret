@@ -1,0 +1,38 @@
+! PLOT/VS/DASH  previously was not allowed.
+
+define axis/x=20e:10w:10/unit=degree xax
+define axis/y=60s:60n/unit=degree/npoints=41 yax
+define axis/z=0:1000:40/unit=meter/depth zax
+define axis/t=1-jan-1960:15-dec-1999:5/unit=days tax
+define grid/x=xax/y=yax/z=zax/t=tax gformat
+
+*  XZ shade with VS/DASH/OVER
+set grid gformat
+shade/y=-60:60/z=0:1000 sin(y/3)*ABS(z)^1.5
+
+let ypts = {-60,-50,-40,-30,-20,-10,  0,  8, 15, 30, 35, 40, 60}
+let zpts = {700,667,669,801,732,755,765,789,808,788,822,699,700}
+
+plot/vs/over/thick/line/dash ypts,zpts
+plot/vs/over/thick=3/line/dash=0.05,0.05,0.15,0.15 ypts,zpts+100
+
+*  XY shade with VS/DASH/OVER
+set grid abstract
+shade/pal=grayscale/x=1:100/y=101:200 sin(x/6)*cos(y/9)
+
+let xpts = {  0,  8, 12, 15, 23, 28, 30, 35, 40, 44, 54, 60, 75}
+let ypts = {142,147,149,141,142,155,145,149,148,148,152,146,143}
+
+plot/vs/over/thick/color=red/dash xpts,ypts
+plot/vs/over/thick=3/color=red/dash=0.05,0.05,0.15,0.15 xpts+10,ypts+30
+
+!  Here, test that settings made with PPL LINE command persist,
+! whereas PLOT/DASH settings do not.
+
+let ypts=y[gy=1:80:1]
+ppl line, 2, 0, 4, 0, 0, 0.04, 0.04, 0.15,0.15
+ppl line, 3, 0, 4, 0, 0, 0.2, 0.2, 0.2,0.2
+plot/thick/dash/vlimits=0:1000 50*sin(ypts/3)+100, 30*cos(ypts/3)+200
+plot/over/color=red/thick/dash=0.04,0.04,0.04,0.04 50*sin(ypts/3)+400, 30*cos(ypts/3)+500
+plot/over/thick/dash/color=blue 50*sin(ypts/3)+700, 30*cos(ypts/3)+800, 20*cos(ypts/5)+900, 20*sin(ypts)+950
+

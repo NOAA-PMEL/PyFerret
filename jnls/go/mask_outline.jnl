@@ -1,0 +1,116 @@
+\cancel mode verify
+! mask_outline.jnl
+! *sh* 2/01
+! *sh* 3/01 - enhanced to support irregularly spaced axes
+!(*acm 6/01 - checked into directory jnls/go rather than jnls)
+! *acm 6/01 - correct bug: name of region now mo_reg throughout
+! 10/25/2004  This version works with irregular grids; it uses
+!             Ferret Pseudo-Variables XBOXLO, XBOXHI, YBOXLO, YBOXHI
+
+! Description: define a contour field with squared off lines for a 1-0 mask
+
+! Explanation:
+! A straightforward contour of a mask grid of 0's and 1's does not produce
+! a nice representation of the mask  because the contour lines do not
+! "square up" at the boundaries between grid cells. In this script we regrid
+! the mask to a new grid which when contoured produces squared off boundaries.
+
+!usage: GO mask_outline mask [color]
+
+!  arg 1 (mask)	- 2D mask of 0's and 1's on a grid.
+!  arg 2 (color)  Optional color to draw the lines
+
+! example
+!   yes? use etopo60
+!   yes? set region/x=90w:20e/y=15s:55n
+!   yes? shade rose
+!
+!   yes? let ocean_mask = IF rose LT 0 THEN 1 ELSE 0 
+!   yes? GO mask_outline ocean_mask
+!   yes? ovmo  ! think "overlay mask outline"
+
+! if the final line segments at the north and east of the plot are missing
+!   yes? cancel region
+!   yes? ovmo
+
+! use "yes? SHOW ALIAS ovmo" to see or modify the contour command
+
+! ================================================
+! The technique used is to define a modified mask grid as follows:
+! ('+' to incicate the corners of the boundaries between grid cells)
+! Say the original grid of 0's and 1's looks like this:
+!
+!       0     1     1
+!
+!    +     +     +     +
+!
+!       0     0     1
+!
+! We define a new mask which contains clusters of 4 points a small distance,
+! EPSILON, from one another immediately surrounding the cell corners.
+! (the original values are in parentheses):
+!
+!      (0)   (1)   (1)
+!     0   0 1   1 1   1
+!    +     +     +     +
+!     0   0 0   0 1   1
+!      (0)   (0)   (1)
+!
+! When the value 0.5 is contoured on this mask, the contour lines will pass
+! within EPSILON of the true corners.
+! ================================================
+
+! ***
+! Note that using the XBOXLO, YBOXLO pseudo-variables of Ferret V5.3 and higher
+! this script can be substantially simplified
+! ***
+
+! Save the current region -- to be restored at the end
+DEFINE REGION/DEFAULT mo_reg
+CANCEL REGION
+
+! define the modified X axis and cluster the mask values at the cell boundaries
+let mo_x    = X[g=$1]
+
+define symbol mo_np = `$1,return=isize`
+define symbol mo_st = `$1,return=istart`
+define symbol mo_en = `$1,return=iend`
+let mo_i1 = `$1,return=istart`
+let mo_i2 = `$1,return=iend`
+let mo_xhi = XBOXHI[i=`mo_i1`:`mo_i2`,g=$1]
+let mo_xlo = XBOXLO[i=`mo_i1`:`mo_i2`,g=$1] 
+
+define symbol mo_xeps `(mo_x[i=($mo_en)]-mo_x[i=($mo_st)])/(($mo_np)-1)/1e4,p=7`
+let mo_xpoints = XSEQUENCE(IF K[g=abstract,k=1:2] EQ 1 THEN TSEQUENCE(mo_xlo+($mo_xeps)) ELSE TSEQUENCE(mo_xhi-($mo_xeps)))
+define axis/X/units="`$1,return=xunits`" mo_xaxis = mo_xpoints
+
+! define the modified Y axis and cluster the mask values at the cell boundaries
+let mo_y    = Y[g=$1]
+
+define symbol mo_np = `$1,return=jsize`
+define symbol mo_st = `$1,return=jstart`
+define symbol mo_en = `$1,return=jend`
+
+let mo_j1 = `$1,return=jstart`
+let mo_j2 = `$1,return=jend`
+let mo_yhi = YBOXHI[j=`mo_j1`:`mo_j2`,g=$1]
+let mo_ylo = YBOXLO[j=`mo_j1`:`mo_j2`,g=$1] 
+
+define symbol mo_yeps  `(mo_y[j=($mo_en)]-mo_y[j=($mo_st)])/(($mo_np)-1)/1e4,p=7`
+
+let mo_ypoints = XSEQUENCE(IF K[g=abstract,k=1:2] EQ 1 THEN TSEQUENCE(mo_ylo+($mo_yeps)) ELSE TSEQUENCE(mo_yhi-($mo_yeps)))
+define axis/Y/units="`$1,return=yunits`" mo_yaxis = mo_ypoints
+
+! regrid the mask
+let $1_mo = INT($1[gx=mo_xaxis@ave,gy=mo_yaxis@ave]+.01) ! round to be safe
+
+! define an alias the user can type for easy plotting
+define alias ovmo cont/over/lev=(0.5,0.5,1,-3)/nolab/color=$2"black" $1_mo
+show alias ovmo
+say *** Use the command alias "ovmo" to overlay the mask outline ***
+
+! clean up
+cancel variables mo_*
+cancel symbol mo_*
+set region mo_reg
+set mode/last verify

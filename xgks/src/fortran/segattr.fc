@@ -1,0 +1,196 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Segment Attributes:
+ *
+ *	gssgt_ (sgna, m)
+ *	gsvis_ (sgna, vis)
+ *	gshlit_ (sgna,hil)
+ *	gssgp_ (sgna,prior)
+ *	gsdtec_ (sgna, det)
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifndef lint
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+
+/*
+ *  gssgt - Set Segment Transformation
+ *
+ * Parameters :
+ * int *sgna; 		segment name
+ * float *m;		transformation matrix
+ *
+ * See also: ANSI standard p.115
+ */
+/*FORTRAN*/
+gssgt(
+    int            *sgna,
+    float          *m)
+{
+    Gsegattr        segattr;
+
+    debug(("Set Segment Transformation %d  \n", *sgna));
+
+    /* Need all this segment's attributes for gsetsegattr */
+    segattr.seg = (Gint) *sgna;
+    (void) ginqsegattr(&segattr);
+
+    MOVE_ARRAY_1X6_TO_2X3(m, segattr.segtran)
+    (void) gsetsegattr((Gint) *sgna, &segattr);
+}
+
+
+/*
+ * gsvis - Set Visibility
+ *
+ * Parameters :
+ * int *sgna;		segment name
+ * int *vis; 		visibliity
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ * See also: ANSI standard p.116
+ */
+/*FORTRAN*/
+gsvis(
+    int            *sgna,
+    int            *vis)
+{
+    Gsegattr        segattr;
+
+    debug(("Set Visibility %d %d \n", *sgna, *vis));
+
+    /* check for enumerated type out of range */
+    VISIBILITY(*vis, errginqsegattr);
+
+    /* Need all this segment's attributes for gsetsegattr */
+    segattr.seg = (Gint) *sgna;
+    (void) ginqsegattr(&segattr);
+
+    segattr.vis = (Fort_Gsegvis)*vis == FORT_GINVIS 
+		    ? GINVISIBLE
+		    : GVISIBLE;
+
+    (void) gsetsegattr((Gint) *sgna, &segattr);
+}
+
+
+/*
+ * gshlit - Set Highlighting
+ *
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ * See also: ANSI standard
+ */
+/*FORTRAN*/
+gshlit(
+    int            *sgna,		/* segment name   */
+    int            *hil)		/* highlighting      */
+{
+    Gsegattr        segattr;
+
+    debug(("Set Highlighting %d %d \n", *sgna, *hil));
+
+    /* check enumerated type */
+    HIGHLIGHTING(*hil, errgsethighlight);
+
+    /* Need all this segment's attributes for gsetsegattr */
+    segattr.seg = (Gint) *sgna;
+    (void) ginqsegattr(&segattr);
+
+    segattr.hilight = (Gseghi) * hil;
+    (void) gsetsegattr((Gint) *sgna, &segattr);
+}
+
+
+/*
+ * gssgp - Set Segment Priority
+ *
+ * Parameters :
+ *
+ * See also: ANSI standard
+ */
+/*FORTRAN*/
+gssgp(
+    int            *sgna,		/* segment name   */
+    float          *prior)		/* priority       */
+{
+    Gsegattr        segattr;
+
+    debug(("Set priority %d %f \n", *sgna, *prior));
+
+    /* Need all this segment's attributes for gsetsegattr */
+    segattr.seg = (Gint) *sgna;
+    (void) ginqsegattr(&segattr);
+
+    segattr.pri = (Gfloat) *prior;
+    (void) gsetsegattr((Gint) *sgna, &segattr);
+}
+
+
+/*
+ * gsdtec - Set Dectability
+ *
+ * Parameters :
+ * int *sgna; 		segment name
+ * int *det;      	detectability
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ * See also: ANSI standard p.79
+ */
+/*FORTRAN*/
+gsdtec(
+    int            *sgna,
+    int            *det)
+{
+    Gsegattr        segattr;
+
+    debug(("Set Detectability %d %d \n", *sgna, *det));
+
+    /* check enumerated type */
+    DETECTABILITY(*det, errginqsegattr);
+
+    /* Need all this segment's attributes for gsetsegattr */
+    segattr.seg = (Gint) *sgna;
+    (void) ginqsegattr(&segattr);
+
+    segattr.det = (Gsegdet) * det;
+    (void) gsetsegattr((Gint) *sgna, &segattr);
+}

@@ -1,0 +1,18 @@
+! bn_plot_nokey.jnl (bug 1089)
+! 22-nov-2004  
+
+! Test new PLOT/NOKEY qualifier
+! Plot several lines together, then plot/over
+
+PLOT/NOKEY/I=1:100 cos(i/20), sin(i/30), cos(i/30)*sin(i/20)
+PLOT/OVER/NOKEY/I=1:100 cos(i/10), sin(i/50), cos(i/40)*sin(i/10)
+
+! plot/vs
+PLOT/VS/LINE/NOKEY/I=1:314 i*cos(i/20), i*sin(i/20)
+PLOT/OVER/VS/LINE/NOKEY/I=1:314 i*cos(i/30), i*sin(i/30)
+
+! time series
+USE gtsa056_2
+PLOT/X=180/Y=0/K=1 temp
+PLOT/OVER/NOKEY/X=180/Y=-1/K=1 temp
+PLOT/OVER/NOKEY/X=180/Y=1/K=1 temp

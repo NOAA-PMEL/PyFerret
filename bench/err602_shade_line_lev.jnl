@@ -1,0 +1,16 @@
+! err602_shade_line_lev.jnl
+! Bug 904.
+! SHADE/LEV does not keep same levels after a SHADE/LINE
+! Was due to fact that SHADE/LINE makes PPL SHADE  call
+! followed by PPL CONTOUR/OVER call, but without indicating
+! that the same contour levels should be used.
+
+! Note that SHOW SYM LEV* indicates that the SHADE/LINE/KEY changes the levels.
+
+let a = {1,1}* ysequence({-.29,1.09})
+set view ul; shade/key a; sh sym lev*
+set view ur; shade/lev a; sh sym lev*
+set view ll; shade/line/key a; sh sym lev*
+set view lr; shade/lev a; sh sym lev*
+
+cancel view

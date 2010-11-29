@@ -1,0 +1,32 @@
+! bn_grads_z.jnl
+! acm 3/31/09
+! Fixing bug 1651.
+! The file has no axis attributes other than units and long_name, 
+! does not contain any other clues that Ferret uses to get a Z 
+! axis direction but for variable AR, has attribute  
+! DAXIS:long_name = "depth" ; This bug came from a question about the file 
+! http://www.usgodae.org/dods/GDS_NC/gdem/sspgdemv3s"
+! See the bug report for more.
+
+USE grads_bug_file.nc
+
+! Previously A1 thru A4 showed as if on an x axis
+! A1 has z axis with long_name elev 
+! A2 has z axis with long name height
+! A3 has z axis with long name level 
+! A4 has z axis with long name layer
+SHOW DATA
+
+! The z axis of AM has no useful clues about its direction. 
+! Ferret uses it as Z only because of the order in which it comes in
+SH GRID am
+
+! This axis has long_name = "depth" so it is (now) reversed.
+! Previously it was not.
+SH GRID ar
+
+! Can redefine the axis for variable AM to make it a z depth axis
+
+DEFINE SYMBOL zname = `am,RETURN=zaxis`
+DEFINE AXIS/Z/UNITS="`am,RETURN=zunits`"/DEPTH ($zname) = Z[GZ=am]
+SH GRID am

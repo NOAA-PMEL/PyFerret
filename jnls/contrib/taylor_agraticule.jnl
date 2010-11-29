@@ -1,0 +1,51 @@
+\cancel mode verify
+
+!**************************************************************
+! Description: Plot graticules (lines) at specified angles (relative to correlation)
+!
+! Usage: go taylor_agraticule rmax [PLOT qualifiers=/line=1] [amin=10] [amax=90] [adelta=10]
+!
+! arg 1: maximum radius of graticules 
+! arg 2: plot command qualifiers
+! arg 2: minimum angle of graticules
+! arg 3: maximum angle of graticules 
+! arg 4: delta angle of graticules
+!
+! Example:
+!           yes? go taylor_frame.jnl 3 0.2 " " "Standard Deviation (units)"
+!           yes? go taylor_agraticule.jnl 3 " " 10 90 10 
+!           yes? go taylor_agraticule.jnl 3 " " 91 99 1
+!
+! Notes:
+!
+! Calls: 
+!
+! Author: Patrick Brockmann
+! Contact: Patrick.Brockmann@ipsl.jussieu.fr
+! $Date$
+! $Name$
+! $Revision$
+! History:
+! Modification:
+!
+!**************************************************************
+
+let ME_rmax=$1
+def sym ME_qualifiers=$2%/line=1%
+let ME_amin=$3%10%
+let ME_amax=$4%90%
+let ME_adelta=$5%10%
+
+! ----------------------------------------------
+let ME_angle  =  j/100
+let ME_xx = ME_rmax*cos(acos(ME_angle))
+let ME_yy = ME_rmax*sin(acos(ME_angle))
+repeat/j=`ME_amin`:`ME_amax`:`ME_adelta` plot/nolab/over/vs($ME_qualifiers) {0,`ME_xx`},{0,`ME_yy`}
+
+!**************************************************************
+cancel variable ME_*
+cancel symbol ME_*
+
+!**************************************************************
+set mode verify
+

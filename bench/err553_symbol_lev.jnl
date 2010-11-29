@@ -1,0 +1,36 @@
+! err553_symbol_lev.jnl
+! 2/2004 ACM
+! In 5.51 and in 5.53 version, symbols LEV* are not created 
+! for polygon plots
+
+LET XTRIANGLE = YSEQUENCE({-1,0,1})
+LET YTRIANGLE = YSEQUENCE({-1,1,-1})
+LET XPTS = 180+30*RANDU(I[i=1:10])
+LET YPTS = 30*RANDU(1+I[i=1:10])
+POLYGON XTRIANGLE+XPTS, YTRIANGLE+YPTS, I[I=1:10]
+
+!*************************************
+! List symbols LEV_MIN, LEV_MAX, LEV_DEL
+
+show symb lev*
+
+can sym lev*
+! Now with /LEV=(min,max,del)
+
+let xsqr = YSEQUENCE({0,.1,.1,0})
+let ysqr = YSEQUENCE({0,0,.1,.1})
+let ypts = x/10
+let xpts = cos(x/10)
+polygon/trans/i=1:100/nolable/lev=(0,1100,40) xpts+xsqr, ypts+ysqr, x*x/10
+sh sym lev*
+
+can sym lev*
+! Now with /LEV=nl
+
+LET xpts = 180 + 50*COS(2*3.14*I[I=1:50]/60)
+LET ypts = 15  + 20*SIN(2*3.14*I[I=1:50]/60)
+LET sst = 25 - ypts + RANDN(ypts)
+plot/vs xpts,ypts
+GO polymark POLYGON/KEY/lev=20 xpts,ypts,sst,star
+sh sym lev*
+can sym lev*

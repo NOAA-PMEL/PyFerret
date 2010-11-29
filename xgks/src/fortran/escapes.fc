@@ -1,0 +1,247 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Escape functions :
+ *	gesscm_ ()
+ *	gessdc_ ()
+ *	gessrp_ ()
+ * 	gessrn_ ()
+ *	gescid_ ()
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ */
+
+/*LINTLIBRARY*/
+
+#include <udposix.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <X11/Xlib.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifdef lint
+    static void	lint_malloc(n) size_t n; { n++; }
+    static void	lint_realloc(p,n) char *p; size_t n; { p+=n; }
+#   define	malloc(n)	(lint_malloc(n), 0)
+#   define	realloc(p,n)	(lint_realloc(p,n), 0)
+#else
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+/*
+ * The following are undefined because, on an AIX system, Fortran-callable
+ * C functions don't have an underscore suffix.  Also, the header-file xgks.h
+ * defines macros for `gxconfig' and `gxname' for backward compatibility.
+ * The result is that this module would, otherwise, have two definitions for
+ * each of the following.
+ */
+#undef	gxconfig
+#undef	gxname
+
+extern char    *xgks_connection;
+extern FILE    *errfp;
+
+/*
+ * gesscm - Escape Set Colour Mask
+ *
+ * int	*wsid		- pointer to workstation identifier
+ * int	*mask		- pointer to colour planes mask
+ *
+ * See also: ANSI standard p.80
+ */
+/*FORTRAN*/
+gesscm(int *wsid, int *mask)
+{
+    (void) gescsetcolourmask((Gint) *wsid, (unsigned long) *mask);
+}					/* end  gesscm_  */
+
+
+/*
+ * gessdc - Escape Set DC Size
+ *
+ * int	*wsid		- pointer to workstation identifier
+ * int	*xsize		- pointer to maximum x coordinate of DC size
+ * int	*ysize		- pointer to maximum y coordinate of DC size
+ *
+ * See also: ANSI standard p.80
+ */
+/*FORTRAN*/
+gessdc(int *wsid, float *xsize, float *ysize)
+{
+    Gpoint          dcsize;
+
+    dcsize.x = *xsize;
+    dcsize.y = *ysize;
+    (void) gescsetdcsize(*wsid, dcsize);
+
+}					/* end  gessdc_  */
+
+
+/*
+ * gessrp - Escape Set Storage of Non-segment Primitives
+ *
+ * int	*wsid		- pointer to workstation identifier
+ * int	*store		- pointer to storage flag (GNO, GYES)
+ *
+ * Returns: Error 2000
+ *
+ * See also: ANSI standard p.80
+ */
+/*FORTRAN*/
+gessrp(int *wsid, int *store)
+{
+    STOREAGEFLAG(*store, errgescstoreprimi);
+    (void) gescstoreprimi(*wsid, (Gstore) *store);
+}
+
+
+/*
+ * gessrn - Escape Set Redraw Notify
+ *
+ * int	*wsid		- pointer to workstation identifier
+ * int	*func		- pointer to user's redraw function
+ *
+ * See also: ANSI standard p.80
+ *
+ */
+/*FORTRAN*/
+gessrn(int *wsid, int (*func)())
+{
+    (void) gescredrawnotify(*wsid, func);
+}					/* end gessrn_  */
+
+
+/*
+ * gescid_ - Escape Set Connection Identifier
+ *
+ * char *conid		- server connection identifier
+ */
+/*FORTRAN*/
+gescid(
+    char     *conid
+)
+{
+    int             i;
+
+    debug(("gessci - Escape Set Connection Identifier \n"));
+
+    if (xgks_connection == NULL) {
+	debug(("allocating space for connection \n"));
+	xgks_connection = (char *) malloc((size_t)(conid_len + 1));
+    }
+    /* copy connection to global xgks_connection */
+    /* conid must be space terminated !          */
+    for (i = 0; i < conid_len && conid[i] != ' '; i++)
+	xgks_connection[i] = conid[i];
+
+    xgks_connection[i] = '\0';
+    debug(("connection id = %s \n", xgks_connection));
+}					/* end gessci_ */
+
+
+/*
+ * FORTRAN-callable function for setting or unsetting the backing-store
+ * feature of the X-server.
+ */
+    void
+/*FORTRAN*/
+gessbs(
+    int *ws,
+    int *i)
+{
+    gescsetbackingstore(*ws, *i);
+}
+
+
+/*
+ * Old-style support for the above.
+ */
+    void
+/*FORTRAN*/
+gxconfig(
+    int *ws)
+{
+    (void) gescsetbackingstore(*ws, 1);
+}
+
+
+/*
+ * FORTRAN-callable function for setting the name of the application.  This
+ * name will be subsequently used to obtain application-specific X resources.
+ */
+    void
+/*FORTRAN*/
+gesspn(
+    char           *name)
+{
+    cgesspn(name, (size_t)name_len);
+}
+
+
+/*
+ * Old-style support for the above.
+ *
+ * NB: Because of the Fortran character-variable argument, this routine
+ * shouldn't call gesspn() above.
+ */
+    void
+/*FORTRAN*/
+gxname(
+    char           *name)
+{
+    cgesspn(name, (size_t)name_len);
+}
+
+
+/*
+ * WHAT:   Return a character string which uniquely identifies this version of
+ *	   the XGKS FORTRAN library.
+ *
+ * HOW:    Call the Shape-created routine "fxgksvers".
+ *
+ * INPUT:  Character-string buffer and output string length.
+ *
+ * OUTPUT: Filled character-string buffer and length.
+ */
+    void
+/*FORTRAN*/
+gesfv(
+    char           *buf,
+    int            *len)
+{
+    char           *fxgksvers();
+    char           *cp	= fxgksvers();
+
+    *len	= strlen(cp);
+    *len	= MIN(buf_len, *len+1);
+
+    (void) strncpy(buf, cp, *len);
+}

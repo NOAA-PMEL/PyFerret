@@ -1,0 +1,16 @@
+! err62_reversed_up.jnl
+!
+! bug 1676:
+! reversed axis, positive up, with edges could
+! not check points-inside-edges and so would 
+! just use midpts between coordinates as edges
+
+use lev_rev_up.nc
+
+use lev_rev_up.nc
+list z[gz=temp], zboxlo[gz=temp], zboxhi[gz=temp]
+
+! shade/j=1 temp[z=-55:0]
+! let xpts = xsequence(x[gx=temp] + 0*z[gz=temp])
+! let zpts = xsequence(0*x[gx=temp] + z[gz=temp])
+! plot/over/vs/color=lightblue/sym=27 xpts,zpts

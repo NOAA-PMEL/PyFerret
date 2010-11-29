@@ -1,0 +1,57 @@
+! samplexy_demo.jnl
+! 5/27/03 *acm*
+
+! Set up some viewports.
+
+DEF VIEW/AXES/X=0.1:0.9/Y=0.65:0.95 bigup
+DEF VIEW/AXES/X=0.1:0.9/Y=0.15:0.45 bigdn
+
+
+! Description: Use the SAMPLEXY function to create an arbitrary 2D 
+! vertical section from a 3D field. The result has the same depth
+! axis as the variable being sampled.  The horizontal axis is abstract; 
+! it is a count of the number of points along the track.  
+
+
+! Here is a section of the Levitus climatological temperature running
+! along a track defined by points (xlon, xlat), which could also be
+! read from a file.
+
+SET DATA levitus_climatology
+
+LET xlon = {234.6, 228.4, 220.9, 213.0, 204.7, 196.0, 187.5, 178.9, 170.9, 163.5, 157.1, 151.2, 144.8}
+LET ylat = { 48.6,  50.5,  52.2,  53.4,  54.0,  54.2,  54.0,  53.5,  52.8,  50.9,  48.5,  45.5,   42.3}
+
+SET VIEW bigup
+GO basemap X=130:250 Y=20:65 20
+PLOT/VS/over/LINE/SYM=27/title="ship track" xlon,ylat      ! Demonstration ship track
+
+
+SET VIEW bigdn
+
+FILL/set/title="TEMP along ship track" SAMPLEXY(temp, xlon, ylat)
+PPL XLAB "point count"
+PPL FILL
+
+message Now show the example from the Users Guide
+
+USE levitus_climatology
+LET xlon = 234.5 + I[I=1:50]       ! define the slant line
+LET dely = 24./49
+LET ylat = 24.5 - dely*i[i=1:50] + dely
+
+set view bigup
+PLOT/VS/LINE/SYM=27 xlon, ylat      ! line off Central America
+GO land 
+
+! Now sample the field "salt" along this track and make a filled contour plot.  
+! To speed the calculation, or if we otherwise want to restrict the region used 
+! on the variable salt, put that information in explicit limits on the first argument.
+
+set view bigdn
+LET slantsalt = SAMPLEXY(salt[X=200:300,Y=0:30],xlon,ylat)
+FILL/SET/LEVELS=(33.2,35.2,0.1)/VLIMITS=0:4000 slantsalt
+PPL XLAB "point count"
+PPL FILL
+
+

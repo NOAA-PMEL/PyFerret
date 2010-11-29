@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# $Id$
+# $__Header$
+
+function_list=$1
+cbinding_src=$2
+
+cat << EOF
+.de FH
+.(b
+.fi
+.na
+.ti -1.0i
+\\\\\$1
+.ti -1.0i
+\\\\\$2
+.)b
+..
+.he ''XGKS C Language Binding''
+.fo ''- % -''
+.ps 10
+.ls 1
+.in +1.0i
+EOF
+rm -f AP
+cat << EOF > AP
+{printf("grep ',%s()' $function_list | /bin/echo -n \`awk -F, '{printf(\".FH \\\\\"%%s\\\\\" \\\\\"\",\$1)}'\`; echo \`grep ' %s ' $cbinding_src\`\\\\\"\n",\$1,\$1)}
+EOF
+sort +1 -2 $cbinding_src | awk '{print $2}' | awk -f AP | sh

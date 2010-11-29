@@ -1,0 +1,21 @@
+! Bench_add_9.jnl
+!  ACM  8/99
+!  benchmark script for testing external function add_9.
+! Note: bench_add_9_visual contains plots of similar computations
+
+set mode ignore_errors
+
+
+can region
+use coads_climatology
+set region/x=151E:179E/y=0
+
+let a1 = sst[d=1,l=1]
+let a2 = sst[d=1,l=2]
+let a3 = sst[d=1,l=3]
+
+let a = add_9(a1,a2,a3,a1,a2,a3,a1,a2,a3)
+
+list a
+list  a - 3 * sst[d=1,l=1:3@sum]
+set mode/last ignore_errors

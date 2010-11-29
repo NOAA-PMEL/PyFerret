@@ -1,0 +1,24 @@
+! err570_index111.jnl
+! 3-nov-04 ACM
+! Fixes for bug 1049.
+! 
+! See ~ansley/ans_ferret/users/wittenberg/bug1049.jnl
+! This was due to a bug in the fix for bug 562. In
+! that fix we allowed subscripts of -111 when there
+! was a range of subscripts including that value.
+! The fix didnt correctly distinguish between that
+! case and -111 used as the missing-integer flag.
+
+
+DEF AXIS/T/UNITs=days/T0="01-JAN-1979 00:00:00"/CAL=gregorian \
+  tgreg = {6590.5,6620.0,6649.5,6680.0,6710.5,6741.0,6771.5,\
+  6802.5,6833.0,6863.5,6894.0,6924.5,6955.5,6985.0,7014.5,\
+  7045.0,7075.5,7106.00}
+DEF AXIS/T/UNITS=hours/t0="01-JAN-1900 00:00:00"/CAL=julian \
+  tjul = { 850692,851400,852108,852840,853572,854304,855036,\
+  855780,856512,857244,857976,858708}
+
+LET s1 = T[GT=tgreg]
+LET s2 = T[GT=tjul]
+
+LIST/T=1-jan-1997:1-jan-1998 s2[GT=s1@NRST]

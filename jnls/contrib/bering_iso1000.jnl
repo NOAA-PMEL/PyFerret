@@ -1,0 +1,21 @@
+! Description: overlay of bering sea & asian 1000m isobath
+! contributed by Mick Spillane, NOAA/PMEL 1992
+
+cancel mode verify	! ... now overlaying 1000m isobath ...
+
+set data/save
+define axis/x=1:2570:1 axtb
+define grid/x=axtb gtb
+
+file/col=2/form=(2f9.5)/var="xtb,ytb"/grid=gtb bering_iso1000.dat
+
+set variable/bad=999.0 xtb
+set variable/bad=99.0  ytb
+plot/set/vs/over/nolab/x=1:2570 xtb,ytb
+ppl pen 1 2
+ppl plot/over
+
+cancel data bering_iso1000.dat
+set data/restore
+set mode/last verify
+

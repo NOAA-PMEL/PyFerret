@@ -1,0 +1,77 @@
+* TMAP_DIMS.PARM
+*
+* revision 0.00	- 05/07/87 - by Mark Verschell for PMEL/TMAP
+* revision 0.10 - 02/14/88 - changed maxstepfiles,maxvars,maxvarfiles,maxaux,
+*			     max_axis_orients; removed avgvars, avgaux
+* 7/92 *sh*: 
+* increased parameter limits flagging the changes with "xarmchg date" ("x"="p")
+* so that automatic procedures can select which group of parameters to choose
+
+* 9/95 *sh* : added dynamic grid creation
+*		To preserve compatibility with older code a new area for
+*		dynamic grids was created **above** max_grids
+* 10/95 *sh* : added dynamic line creation in a similar style
+* 11/95 *sh* : increased max_grids from 200 to 500
+* 7/97 *sh*  : increased maxvars, max_lines, and maxlinestore
+* V500 7/99 *kob* : double maxlinestore - this was done before for Ned C. but 
+*              somehow didn't get into the official cvs area
+*      7/99 *sh*: increased maxlinestore, max_grids, and max_lines
+* V510 7/99 *kob* : bump maxlinestore again -- to 800K!! (6.4 Mbytes!)
+*		==> retored the previous size: this added 6Mbytes to the exe!!
+*	*sh* 3/00 - create line_ceiling and grid_ceiling to allow netCDF files
+*		    to be using dynamic objects
+*	*sh* 5/00 - bump num_dyn_grids from 100 to 500
+* v5.50 *acm*9/02 - up maxdsets from 30 to 100 
+*       *acm*12/02  up maxstepfiles from 500 to 1000
+* v552  *acm* 3/03  increase maxstepfiles to 5000)
+
+* for TMAP formatted files:
+	INTEGER	nrec_codes,ngrid_prenamed,nvari_prenamed,maxdsets,
+     .		maxstepfiles,maxvars,maxaux,max_grids,max_lines,
+     .		maxlinestore, maxgridfiles, max_axis_orients,
+     .		num_aux, num_parm, num_gridfiles, maxvarfiles,
+     .		num_dyn_grids, max_dyn_grids, num_dyn_lines,
+     .		max_dyn_lines, line_ceiling, grid_ceiling,
+     .		tmp_line_hook, tmp_grid_hook
+
+* parameters used for dimensioning arrays
+	PARAMETER (nrec_codes = 11)	! # of different record codes
+	PARAMETER (ngrid_prenamed=11)	! # of pre-defined grids
+	PARAMETER (nvari_prenamed=7)	! # of pre-named variables
+	PARAMETER (maxdsets = 100)	! maximum # of data sets simultaneously
+	PARAMETER (maxstepfiles = 5000)	! # of files with time step data (up from 500 12/02)
+	PARAMETER (maxvars = 2000)	! max # of ALL vars *parmchg: now
+	PARAMETER (maxvarfiles = 500)	! # of files with time step data
+	PARAMETER (maxaux = 50)		! max # of ALL auxiliary sets
+!	PARAMETER (max_grids = 60)	! max # of grids *parmchg: pre 7/92
+!	PARAMETER (max_grids = 200)	! max # of grids *parmchg: pre 11/95
+!	PARAMETER (max_grids = 500)	! max # of **static** grids: pre 7/99
+!	PARAMETER (max_grids = 1000)	! max # of **static** grids: pre 3/00
+	PARAMETER (max_grids = 500)	! max # of **static** grids
+!	PARAMETER (num_dyn_grids = 100)! max # of "implicit" grids: pre 5/00
+	PARAMETER (num_dyn_grids = 500)! max # of "implicit" grids
+	PARAMETER (max_dyn_grids = max_grids + num_dyn_grids)
+	PARAMETER (tmp_grid_hook = max_dyn_grids + 1)
+	PARAMETER (grid_ceiling  = tmp_grid_hook )
+!	PARAMETER (max_lines = 100)	! max # of lines *parmchg: pre 7/92
+!	PARAMETER (max_lines = 200)	! max # of lines *parmchg: pre 7/97
+!	PARAMETER (max_lines = 500)	! max # of lines: pre 7/99
+!	PARAMETER (max_lines = 2500)	! max # of lines: pre 3/00
+	PARAMETER (max_lines = 1000)	! max # of *static* lines
+!	PARAMETER (num_dyn_lines = 100)! max # of *dynamic* lines: pre 3/00
+	PARAMETER (num_dyn_lines = 1500)! max # of *dynamic* lines
+	PARAMETER (max_dyn_lines = max_lines + num_dyn_lines)
+	PARAMETER (tmp_line_hook = max_dyn_lines + 1)
+	PARAMETER (line_ceiling  = tmp_line_hook )
+!	PARAMETER (maxlinestore = 10000)! max # of coords *parmchg: pre 7/92
+!	PARAMETER (maxlinestore = 20000)! max # of coords *parmchg: pre 10/95
+!	PARAMETER (maxlinestore = 50000)! max # of coords *parmchg: pre 7/97
+!	PARAMETER (maxlinestore = 100000)! max # of coords : pre 7/99
+!	PARAMETER (maxlinestore = 250000)! max # of coords 
+!	PARAMETER (maxlinestore = 500000)! max # of coords : temporary!!!
+	PARAMETER (maxlinestore = 750000)! max # of coords 
+	PARAMETER (maxgridfiles = 10)	! maximum number of grids
+	PARAMETER (max_axis_orients = 9)! maximum number of axis orients
+	PARAMETER (num_aux = 6)		! number of aux_modnum's in descriptor
+	PARAMETER (num_parm = 15)	! number of add_parm's in descriptor
+	PARAMETER (num_gridfiles = 6)	! number of grid_filenames in descript.

@@ -1,0 +1,8 @@
+! err61_context_scalar_strings.jnl
+! Bug 1558, first present in Ferret v6.02
+! After SET GRID EZ error was about var not being a scalar.
+
+say `"a" EQ "a"`
+set grid ez
+say `"a" EQ "a"`
+

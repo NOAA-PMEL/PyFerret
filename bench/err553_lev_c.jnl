@@ -1,0 +1,8 @@
+ ! under linux only, this has a non-centered shade key
+
+shade/lev=c {-1.1,1.1}*ysequence({1,1})
+ppl list shakey
+
+fill/lev=c {-1.1,1.1}*ysequence({1,1})
+ppl list shakey
+

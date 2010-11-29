@@ -1,0 +1,78 @@
+\CANCEL MODE VERIFY    
+
+! histogram_pdf.jnl
+! based on the old histogram.jnl
+! Upgraded 10/2009 for Ferret v6.3+
+!
+! Description: generate and plot a frequency histogram from a FERRET variable
+! Note that internal settings are made for:
+! 1) computing the PDF (see the definition of hpdf below), and 
+! 2) for smoothing the histogram that is plotted, which is the smoothed PDF.
+
+! Usage:  GO histogram_pdf expression 
+! Example: 
+!   USE levitus_climatology
+!   GO histogram_pdf temp[k=1:2]
+
+! check that all necessary input arguments were supplied
+QUERY/IGNORE $1"<Usage:GO histogram_pdf expression"
+
+! produce a sorted, numbered set from the data in the expression
+! hsort is a sorted list of all the valid data
+! hcount is a list of indices of the valid data
+
+LET hsort =  SAMPLEI(XSEQUENCE(($1)), SORTI(XSEQUENCE(($1)) ))
+LET ns = `hsort[i=@ngd]`
+LET hval = hsort[i=1:`ns`]
+
+LET hcount = i[gx=hval,i=1:`ns`]
+
+! define variables needed for the histogram
+! hcdf - a normalized "counter" that increments for each data point
+! hpdf - the raw probability density function for the users data
+! The PDF approximates the derivative of the CDF as
+! d/dx(CDF) = d/di(CDF) / d/di(HVAL) where HVAL are the sorted data values.
+! An arbitrary delta i of 10 points is used.  Large data sets could use a 
+! larger delta i.
+! e.g. LET hpdf = 50/((hval[i=@shf:+25]-hval[i=@shf:-25])*hcount[x=@max])
+
+LET hcdf = hcount/hcount[x=@max] ! normalized for cumulative prob. dens. fct
+LET hpdf = 10/((hval[i=@shf:+5]-hval[i=@shf:-5])*hcount[x=@max])
+
+! various results can be plotted from this
+! plot/vs hval,hcdf              ! cumulative probability density function
+! plot/vs hval,hpdf              ! approximate probability density function
+! plot/vs hval,hpdf[i=@sbx:11]   ! histogram: smoothed PDF
+
+! For large data sets smoothing can be increased using a larger @SBX argument 
+
+LET/TITLE="Probability Density Function" vval = hpdf[i=@sbx:11]
+SET VAR/TITLE="`($1),return=title` (`$1,return=units`)" hval
+
+! Do an "underlay" plot of the original variable (but with a /VLIM setting
+! so that no data points are plotted). This puts the region information in 
+! the upper left, and the dataset info in the upper right.
+
+DEFINE VIEWPORT hvp1    ! just like "full"
+DEFINE VIEWPORT hvp2    ! just like "full"
+
+SET VIEW hvp1
+LET varmax = `hsort[i=@max]`
+
+PLOT/VS/NOAX/VLIM=`varmax+1`:`varmax+2` ($1),($1)
+
+SET VIEW hvp2
+
+PLOT/VS/NOLAB hval,vval
+
+! Label the axes.
+LABEL/NOUSER `($ppl$xlen)/2`,-0.8, 0, 0, 0.12, @AC`($1),return=title` (`$1,return=units`)
+LABEL/NOUSER -0.8,`($ppl$ylen)/2`,0,90,0.12, @ACProbability Density Function
+
+SAY Other various results can be plotted from this:
+
+SAY PLOT/VS hval,hcdf              ! cumulative probability density function
+SAY PLOT/VS hval,hpdf              ! approximate probability density function
+SAY PLOT/VS hval,hpdf[i=@SBX:11]   ! histogram: smoothed PDF
+
+SET MODE/LAST VERIFY

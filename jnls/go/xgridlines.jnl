@@ -1,0 +1,64 @@
+\cancel mode verify  
+
+!**************************************************************
+! Description: plot over the vertical grid of a plot 
+!
+! Example: go xgridlines 20 1
+!          will plot every 20 on the physical xaxis a vertical bar
+!          made of line of 1% of the physical yaxis
+!
+! Notes: default vdelta is 1%   
+!
+! Calls:
+!
+! Author: Patrick Brockmann
+! Contact: brock@lsce.saclay.cea.fr
+!
+! Creation: Sept 2000
+! Version: 1.0
+! History:
+! Modification:
+!
+!**************************************************************
+
+query/ignore $1%<Usage: go xgridlines hdelta [vdelta]%
+
+! x1 = first vertical line (superior value)
+if `($XAXIS_MIN) lt 0` then
+        def sym gridlines_x1 = int(($XAXIS_MIN)/$1)*$1
+else
+        def sym gridlines_x1 = (int(($XAXIS_MIN)/$1)+1) *$1
+endif
+! x2 = last vertical line  (inferior value)
+if `($XAXIS_MAX) lt 0` then
+        def sym gridlines_x2 = (int(($XAXIS_MAX)/$1)-1) *$1
+else
+        def sym gridlines_x2 = (int(($XAXIS_MAX)/$1)) *$1
+endif
+def sym gridlines_xrange = (($gridlines_x2) - ($gridlines_x1))
+
+def sym gridlines_x = ($gridlines_x1) + (i-1)*$1
+def sym gridlines_nbx = int(($gridlines_xrange)/$1) + 1
+
+def sym gridlines_yrange = `($YAXIS_MAX)-($YAXIS_MIN)`
+def sym gridlines_y1 = ($YAXIS_MIN) + ($gridlines_yrange)*(j-1)/100
+def sym gridlines_y2 = ($YAXIS_MIN) + ($gridlines_yrange)*(j-1+$2%1%)/100
+
+if `($gridlines_nbx) ge 1` then
+        repeat/i=1:`($gridlines_nbx)`:1 ( repeat/j=1:100:`2*$2%1%` ppl aline 1,`($gridlines_x)`,`($gridlines_y1)`,`($gridlines_x)`,`($gridlines_y2)` )
+endif
+
+!**************************************************************
+cancel sym gridlines_x1
+cancel sym gridlines_x2
+cancel sym gridlines_xrange
+cancel sym gridlines_x
+cancel sym gridlines_nbx
+cancel sym gridlines_yrange
+cancel sym gridlines_y1
+cancel sym gridlines_y2
+
+!**************************************************************
+set mode/last verify
+
+

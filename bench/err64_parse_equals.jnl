@@ -1,0 +1,11 @@
+! err64_parse_equals
+! Bug1469 (and duplicate 1690)
+! Parsing equals sign when it is in a string within 
+! grave accents. 
+
+say `"+" EQ " "`
+
+say `"=" EQ "="`
+
+DEFINE SYMBOL my_sym  = `UPCASE("/lev=(0,30,2)")`
+

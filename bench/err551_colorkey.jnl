@@ -1,0 +1,17 @@
+
+! colorkey label bugs
+
+
+let zero = 0*x[i=1:10]+0*y[j=1:10]
+set view ul; shade zero            !This one is labeled correctly.
+set view ur; shade 1+zero          !So is this.
+set view ll; shade/lev=c zero      !But here colorkey is 1:1 instead of 0:0.
+
+! Here the zero level is labelled as -.3e-08 rather than 0. (linux)
+can view
+use coads_climatology
+shade/l=1/lev=30/set (sst-10)/10
+ppl axlen 6
+ppl shakey 1,1,.12
+ppl shade
+

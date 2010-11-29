@@ -1,0 +1,10 @@
+ ! NOAA/PMEL TMAP
+ ! FERRET v6.08  
+ ! Linux(g77) 2.4.21-32 - 11/26/07
+ ! 26-Nov-07 13:08     
+
+go fland 20 gray basemap " " x=148.687:262.053 y=-29.833:45.347
+go land
+use geo_borders
+plot/vs/nolab/line/i=11595:11597/overlay/color=red CONTINENT_LON, CONTINENT_LAT
+q

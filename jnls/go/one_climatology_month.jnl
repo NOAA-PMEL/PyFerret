@@ -1,0 +1,42 @@
+\cancel mode verify
+! 2/94 - one_climatology_month.jnl
+
+! Description: (work routine for make_monthly_climatology)
+
+! usage:  GO one_climatology_month variable clim_var_name month_num high_month file
+
+! variable:		monthly input variable name
+!
+! clim_var_name:	name for climatological result variable
+!
+! month_num:		what month (1 through 12) to process
+!
+! high_month:		highest monthe number in the input data to use
+!
+! file:			name of output data set
+!
+
+! check that parameters are OK to the best we can
+query/ignore $1%<Use: GO one_climatology_month variable clim_var_name month_num high_month [file]%
+query/ignore $2%<Use: GO one_climatology_month variable clim_var_name month_num high_month [file]%
+query/ignore $3%<Use: GO one_climatology_month variable clim_var_name month_num high_month [file]%
+query/ignore $4%<Use: GO one_climatology_month variable clim_var_name month_num high_month [file]%
+query/ignore $5%<Use: GO one_climatology_month variable clim_var_name month_num high_month [file]%
+
+! ------------  start of procedure -------------
+
+set data/save
+
+! place all of this particular month into a single (temporary) file
+repeat/l=$3:$4:12 save/append/file=every_12th_month.cdf $1
+use every_12th_month.cdf
+
+! save/append/file=output_file/l=month_number   clim_var_name
+save/append/file=$5/l=$3 $2
+
+! eliminate traces of the temporary file
+cancel data every_12th_month.cdf
+spawn rm -f every_12th_month.cdf
+
+set data/restore
+set mode/last verify

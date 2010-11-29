@@ -1,0 +1,35 @@
+
+
+
+! Benchmark for sort and sample external Functions
+! ACM 5/99
+
+can region
+use coads_climatology
+set region/x=141/y=39:49/z=0/l=2
+
+list sst
+
+let tsorted_indices = sortj( sst[j=65:70])
+let tsorted_sst = samplej(sst, tsorted_indices)
+
+list tsorted_indices, tsorted_sst
+
+! 
+
+can region
+!set data coads_climatology
+set region/l=5
+
+
+let ysorted_indices = sortj(sst)
+shade ysorted_indices
+
+set region/l=5/x=0
+let ysorted_sst = samplej(sst, ysorted_indices)
+plot ysorted_sst
+
+set region/l=5/x=181
+let len = ysorted_sst[j=@ngd]
+list len
+

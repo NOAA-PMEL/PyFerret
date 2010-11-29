@@ -1,0 +1,76 @@
+* XCONTROL.CMN - COMMON storage for control stack
+* the letters "CS" refer to "control stack"
+* *sh* 7/92 - added cs_save_*
+* *sh* 2/94 - increased cs_text size to match cmnd_buff
+* *kob* 12/97 - added  logical cs_is_calendar
+* *sh* 10/0 - increased saved command buffer size - match cmnd_buff_len
+* *kob* 1/01 - added cs_start and cs_loop for animations
+* V531 5/01 *sh* - added has_continuation_cmnd
+* V533 7/01 *sh* - increased cs_max from 10 to 200 (allowing recursive scripts)
+* V554 1/04 *acm* - add cs_repeatname for named /RANGE loop control
+* v580 11/04 *acm* use cx_cal_id to store the calendar used when
+*                  computing world coordinates. Save this in a repeat
+*                  with the other context info.  Also need cs_cal_id 
+*                  for repeat command.
+* V6.31 10/09 *acm*  Fixing bug 1706, by properly fixing # 1681. ENDIF inside a REPEAT 
+*              loop with semicolon-separated commands. New flag: bumped.
+
+	INTEGER		cs_max
+	PARAMETER     (	cs_max = 200 )
+
+	LOGICAL	cs_in_control,
+     .		cs_by_ss( cs_max ),
+     .		cs_save_by_ss( cs_max ),
+     .          cs_is_calendar(cs_max),
+     .		has_continuation_cmnd,
+     .          bumped
+	INTEGER	csp,			! control stack pointer
+     .		cs_lun     ( cs_max ),
+     .		cs_cmnd_num( cs_max ),
+     .		cs_axis    ( cs_max ),
+     .		cs_loop	   ( cs_max ),
+     .          cs_save_cal( cs_max ),
+     .          cs_cal_id  (cs_max),
+     .		len_cmnd_copy
+
+	REAL*8	cs_limit   ( cs_max ),
+     .		cs_delta   ( cs_max ),
+     .		cs_phase   ( cs_max ),
+     .		cs_save_lo ( cs_max ),
+     .		cs_save_hi ( cs_max ),
+     .		cs_start   ( cs_max )
+	CHARACTER*2048
+     .		cs_text    ( cs_max ),
+     .		cs_repeatname ( cs_max ),
+     .		cmnd_copy
+
+        CHARACTER*256 my_cbuff
+
+	COMMON / XCONTROL /
+     .		cs_limit   ,
+     .		cs_delta   ,
+     .		cs_phase   ,
+     .		cs_save_lo ,
+     .		cs_save_hi ,
+     .		cs_start   ,
+     .		csp	   ,
+     .		cs_cmnd_num,
+     .		cs_axis    ,
+     .		cs_loop    ,
+     .          cs_save_cal,
+     .          cs_cal_id,
+     .		cs_in_control,
+     .		cs_by_ss   ,
+     .		cs_save_by_ss,
+     .		cs_lun     ,
+     .		cs_text ,
+     .		cmnd_copy ,
+     .          cs_is_calendar,
+     .          cs_repeatname,
+     .		has_continuation_cmnd,
+     .		bumped,
+     .		len_cmnd_copy,
+     .          my_cbuff
+
+
+

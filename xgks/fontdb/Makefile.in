@@ -1,0 +1,140 @@
+# Makefile for the XGKS fonts.
+#
+# $Id$
+
+DEFINES		= 
+INCLUDES	= -I../src/lib -I../port
+CPPFLAGS	= $(INCLUDES) $(DEFINES) @CPPFLAGS@
+CFLAGS		= @CFLAGS@
+prefix		= ../../..
+LIBDIR		= $(prefix)/lib
+FONTDBDIR	= $(LIBDIR)/xgksfonts
+
+FONT_SRCS	= B.src G.src I.src R.src SC.src b.src i.src r.src sc.src
+
+FONTS		= r.gksfont R.gksfont b.gksfont B.gksfont i.gksfont \
+		  I.gksfont sc.gksfont SC.gksfont G.gksfont
+
+HERSHEY_FONTS	=  cc.gksfont cg.gksfont ci.gksfont cr.gksfont cs.gksfont \
+		  dr.gksfont ge.gksfont gg.gksfont gi.gksfont m.gksfont \
+		  sg.gksfont sr.gksfont ss.gksfont ti.gksfont tr.gksfont
+
+LINKS		= 1 2 3 4 5 6 7 8 9
+
+MANIFEST	= Makefile.in depend $(FONT_SRCS) $(SRCS) mkfont.c
+
+INSTALL_DATA	= @INSTALL_DATA@
+
+PROGRAM		= mkfont
+OBJS		= $(PROGRAM).o
+LIBS		= -L../port -ludport
+
+GARBAGE		= *.gksfont $(PROGRAM) $(LINKS)
+
+all::		$(PROGRAM) $(FONTS) $(LINKS)
+
+install::	$(FONTDBDIR) \
+		$(FONTDBDIR)/1 \
+		$(FONTDBDIR)/2 \
+		$(FONTDBDIR)/3 \
+		$(FONTDBDIR)/4 \
+		$(FONTDBDIR)/5 \
+		$(FONTDBDIR)/6 \
+		$(FONTDBDIR)/7 \
+		$(FONTDBDIR)/8 \
+		$(FONTDBDIR)/9
+
+1:		r.gksfont
+	rm -f $@
+	ln $? $@
+2:		R.gksfont
+	rm -f $@
+	ln $? $@
+3:		b.gksfont
+	rm -f $@
+	ln $? $@
+4:		B.gksfont
+	rm -f $@
+	ln $? $@
+5:		i.gksfont
+	rm -f $@
+	ln $? $@
+6:		I.gksfont
+	rm -f $@
+	ln $? $@
+7:		sc.gksfont
+	rm -f $@
+	ln $? $@
+8:		SC.gksfont
+	rm -f $@
+	ln $? $@
+9:		G.gksfont
+	rm -f $@
+	ln $? $@
+
+$(FONTDBDIR):	$(LIBDIR)
+	mkdir -p $@
+
+$(FONTDBDIR)/1:	$(FONTDBDIR)/r.gksfont
+	rm -f $@
+	ln $? $@
+$(FONTDBDIR)/2:	$(FONTDBDIR)/R.gksfont
+	rm -f $@
+	ln $? $@
+$(FONTDBDIR)/3:	$(FONTDBDIR)/b.gksfont
+	rm -f $@
+	ln $? $@
+$(FONTDBDIR)/4:	$(FONTDBDIR)/B.gksfont
+	rm -f $@
+	ln $? $@
+$(FONTDBDIR)/5:	$(FONTDBDIR)/i.gksfont
+	rm -f $@
+	ln $? $@
+$(FONTDBDIR)/6:	$(FONTDBDIR)/I.gksfont
+	rm -f $@
+	ln $? $@
+$(FONTDBDIR)/7:	$(FONTDBDIR)/sc.gksfont
+	rm -f $@
+	ln $? $@
+$(FONTDBDIR)/8:	$(FONTDBDIR)/SC.gksfont
+	rm -f $@
+	ln $? $@
+$(FONTDBDIR)/9:	$(FONTDBDIR)/G.gksfont
+	rm -f $@
+	ln $? $@
+
+$(FONTDBDIR)/r.gksfont:		r.gksfont
+	$(INSTALL_DATA) $? $@
+$(FONTDBDIR)/R.gksfont:		R.gksfont
+	$(INSTALL_DATA) $? $@
+$(FONTDBDIR)/b.gksfont:		b.gksfont
+	$(INSTALL_DATA) $? $@
+$(FONTDBDIR)/B.gksfont:		B.gksfont
+	$(INSTALL_DATA) $? $@
+$(FONTDBDIR)/i.gksfont:		i.gksfont
+	$(INSTALL_DATA) $? $@
+$(FONTDBDIR)/I.gksfont:		I.gksfont
+	$(INSTALL_DATA) $? $@
+$(FONTDBDIR)/sc.gksfont:	sc.gksfont
+	$(INSTALL_DATA) $? $@
+$(FONTDBDIR)/SC.gksfont:	SC.gksfont
+	$(INSTALL_DATA) $? $@
+$(FONTDBDIR)/G.gksfont:		G.gksfont
+	$(INSTALL_DATA) $? $@
+
+$(FONTS) $(HERSHEY_FONTS):	$(PROGRAM)
+
+hf2gks:		hf2gks.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $?
+
+include ../port/master.mk
+
+.SUFFIXES:	.gksfont .src .fnt
+.src.gksfont:
+	./$(PROGRAM) $< $@
+.fnt.gksfont:
+	./$(PROGRAM) $< $@
+
+### Everything after the following line might be overwritten ###
+### DO NOT DELETE THIS LINE.  make depend DEPENDS ON IT ###
+include depend

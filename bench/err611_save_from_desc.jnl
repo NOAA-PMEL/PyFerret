@@ -1,0 +1,7 @@
+! err611_save_from_desc.jnl
+!
+! In Ferret v6.19+ this failed with 
+!  ** netCDF error: Failed creating coord variable %%
+
+use coads_clim.des
+save/clobber/file=a.nc/i=100 sst

@@ -1,0 +1,142 @@
+! bn420_grave
+! benchmark to test evaluation of grave accent-enclosed expressions
+! requires FERRET version 4.00 or later
+
+! added one new command since bn400_grave to test for unwanted leading blanks
+!  (a problem noticed on HP)
+! and make sure that grave accents protect "/" and other chars from the parser
+
+! 2/96 - added tests of PRECISION=n abd BAD=string
+
+message/continue "2+2=`2+2`"
+
+message/continue "2 squared + 2 squared =`2^2` + `2+2`"
+
+message/continue "50/0 =`50/0`"	! invalid result
+
+repeat/i=1:3 message/continue "I=`I`"
+
+LET start = 5; repeat/i=`start`:`start+2` message/continue "I=`I`"
+!cancel region/X ! removed - temporary experiment 3/00 *sh*
+
+message/continue "2+2=``2+2``"	! double grave accents get condensed
+
+message/continue A default substitution: $9"default string|2+2=`2+2`"
+
+message/continue A grave   substitution: $9"2+2=`2+2`|replacement string"
+
+canc var/all;LET XX = 5+4; mess/cont "xx is `xx`"
+
+! 2/96
+message/continue "1/300=`1/300,p=5`"
+message/continue "1/300=`1/300,p=-5`"	! decimal places
+message/continue "1/300=`1/300 , precision=10`"
+message/continue "1/0=`1/0,  b=-999`"
+message/continue "1/0=`1/0  ,BAD=missing`"
+message/continue "1/3=`1/3, precision=10,  BAD=-999`"
+message/continue "1/3=`1/3,	BAD=-999 ,precision=10`"
+
+! deliberate error
+set mode ignore_errors
+message/continue "2+2=`2+2"    		! unclosed grave accent
+message/continue "2+2=`garbage`"	! invalid expression
+message/continue "3 numbers: `I[i=3:5]`"! not a scalar
+
+! 2/96 deliberate errors
+message/continue "1/3=`1/3,BAD=-999,precision=11`"
+message/continue "1/3=`1/3BAD=-999`"
+message/continue "1/3=`1/3,qBAD=-999`"
+canc mode ignore_errors
+
+! bn420_grave:
+! CHECK THIS TO MAKE SURE THERE ARE NO LEADING BLANKS  (ESP. HP!!!)
+let x1 = 0.012954
+let x2 = 7.5E-09
+let x3 = .1
+say >>`x1`<< ---  >>`x2`<< --- >>`x3`<<
+
+! must recognize "/" inside immediate mode exprn
+list/I=`6/2` i
+
+! test escapes using back slashes (bn420 - 11/95)
+say `2+2`	! normal evaluation
+say \`2+2\`	! these grave accents should pass through
+say \`2+2\`
+say \`2+`1+1`\` ! should translate 1+1=>2
+set mode ignore
+say \`2+2`	! syntax error
+say `2+2\`	! syntax error
+say `2+2\`+1`	! syntax error
+say \`2+2`+1\`	! syntax error
+canc mode ignore
+
+! test nested brackets mixed with grave accents
+let long = x
+say temp[x=`long[i=1]`:`long[i=160]`:5]
+
+! V5.10 - test new features
+use coads_climatology
+set mode diagnostic
+let sst2 = sst[l=5:8]
+say `sst, return=size`    ! should only do a GETGRID
+say `sst2,return=lend`    ! should inherit L=5:8
+set mode/last diagnostic
+
+say `sst,return=shape`
+say `sst,return=T0`
+say `sst,return=TITLE`
+say `sst,return=units`
+say `sst,return=GRID`
+
+say `sst,ret=isize`
+say `sst,ret=jsize`
+say `sst,ret=ksize`
+say `sst,ret=lsize`
+
+say `sst,r=istart`
+say `sst,r=jstart`
+say `sst,r=kstart`
+say `sst,r=lstart`
+
+say `sst,R=iend`
+say `sst,R=jend`
+say `sst,R=kend`
+say `sst,R=LEND`
+
+say `sst,return=xstart`
+say `sst,return=ystart`
+say `sst,return=zstart`
+say `sst,return=tstart`
+
+say `sst,return=xend`
+say `sst,return=yend`
+say `sst,return=zend`
+say `sst,return=tend`
+
+say `sst,return=xunit`
+say `sst,return=junits`
+say `sst,return=kunit`
+say `sst,return=tunits`
+
+say `sst^2,return=size` 
+say `sst[L=1]+sst,return=lsize`
+say `sst[L=1:3@ave],return=lsize`
+say `sst[L=1:3@ave]+sst,return=lsize`
+
+! test case of grid-changing variables returning an imposed (ABSTRACT) axes
+let a = XSEQUENCE(J[j=1:5])
+set mode diagnostic
+say `a,return=isize`          ! full evaluation occurs
+say `a[i=2:3],return=isize`   ! full evaluation is bypassed
+say `a[i=100:200],return=isize`    ! WRONG! because full evaluation is bypassed
+set mode/last diagnostic
+
+! deliberate errors
+set mode ignore_errors
+say `1*/3`     ! deliberate syntax error
+say `sst*/3,return=lunits`
+say `sst,rr=size`            ! could be an error ...
+say `sst,return=Xsize`
+say `sst,return=trash`
+set mode/last ignore_errors
+

@@ -1,0 +1,10 @@
+*	Common block for ALINE command
+*	J Davison 10.16.89
+
+	logical		aline_on(NLINES),aline_user(NLINES)
+	real		aline_minx(NLINES),aline_miny(NLINES)
+	real		aline_maxx(NLINES),aline_maxy(NLINES)
+
+	common/ALINE_CMN/ aline_on,aline_user,aline_minx,aline_miny,
+     .			aline_maxx,aline_maxy
+

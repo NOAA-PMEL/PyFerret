@@ -1,0 +1,65 @@
+! error_bars_demo.jnl
+! *sh* 6/99
+
+! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
+!	     and /pen=  to /color=/thickness=
+
+! Description: demonstrate usage of error bars
+
+cancel viewports
+set mode verify
+
+! on an X axis
+define axis/x=1:15:1 x5
+let/quiet xp2 = X[gx=x5]
+let/quiet yp2 = SIN(xp2/4)
+let/quiet errup = 0.6 * RANDU(xp2)
+let/quiet errdn = 0.6 * RANDU(xp2+1)
+
+plot/title="X axis plot" yp2 
+GO error_bars polygon/color=blue/title="uncertainty" yp2 errup
+\pause
+
+! on a time axis
+define axis/t0=1-jan-1990/t=2-jan-1990:6-jan-1990:2/unit=hours tt
+let/quiet xp3 = t[gt=tt]
+let/quiet yp3 =  SIN(xp3/20)
+let/quiet errors = 0.6 * RANDU(xp3)
+
+plot/hlimits="1-jan-1990:12:00":10-JAN-1990/title="time series" yp3
+GO error_bars polygon/color=red/thickness=2/nolab yp3[l=1:50:5] errors[l=1:50:5]
+\pause
+
+! on a log vertical axis
+ppl axtype 1,2
+let exp_yp3 = EXP(yp3)
+plot/hlimits="1-jan-1990:12:00":10-JAN-1990/title="log axis" exp_yp3
+GO error_bars polygon/color=red/thickness=2/nolab exp_yp3[l=1:50:5] errors[l=1:50:5]
+\pause
+ppl axtype 1,1		! restore normal axes
+
+! on (vertical) Z axis
+define axis/z=1:15:1/depth/units=meters z5
+let/quiet xp4 = Z[gz=z5]
+let/quiet yp4 = SIN(xp4/5)
+let/quiet errors = 0.5/(xp4+5)
+
+plot/title="vertical profile" yp4 
+GO error_bars polygon/color=red/thickness=2/title="variability" yp4 errors
+\pause
+
+! NOTE: plot_swath is also a good way to show error limits!
+use coads_climatology
+let mean = sst[x=130e:80w,y=0,l=1:12@ave]
+let std_dev = sst[x=130e:80w,y=0,l=1:12@var] ^ 0.5
+set mode calendar:months
+
+set view upper
+plot/vlimits=21:30/title="Tropical SST variability" mean
+go plot_swath poly/over/pal=gray/nolab mean-std_dev, mean+std_dev
+plot/over/nolab/color=black/thickness=2 mean
+set view lower
+plot/vlimits=21:30/title="Tropical SST variability" mean
+GO error_bars polygon/color=red/nolab mean std_dev
+
+

@@ -1,0 +1,7 @@
+! err605_show_func.jnl
+! Reported by Andrew W. 
+! SHOW FUNCTIONS caused a crash on his system; I see it only as a message
+! in SHOW FUNC/BRIEF
+
+SHOW FUNCTION/BRIEF
+

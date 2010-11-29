@@ -1,0 +1,76 @@
+\cancel mode verify
+! 2/94 - polar_vector.jnl
+! 3/96 - bug fix: vectors in South projection were mis-oriented
+ 
+
+! NOTE: The map projection capabilities beginning with Ferret v5.0
+! provide far more flexibility for making plots with curvilinear coordinates.
+! Run the script  mp_demo  for an introduction"
+
+
+! Description: produce a 2D polar stereographic vector plot
+
+! usage:  GO polar_vector uvar vvar [vector_command] [rotation] [#_points] [limit] [fill] [pole]
+
+! uvar:			U vector component (variable or expression)
+!			Must include explicit qualifiers with region
+!			encompassing the area to be plotted 
+! vvar:			V vector component (variable or expression)
+!			Must include explicit qualifiers with region
+!			encompassing the area to be plotted 
+! vector_command:	The full "VECTOR" command including qualifiers
+!			(see note below)
+! (optional) rotation:	rotation of projected plot.  Zero [default] means
+!			prime meridian centered in lower half of plot
+!			Use rotation = 105 for FNOC and NMC plots
+! (optional) #_points:	number of points on X and Y axes of the final
+!			plot (essentially, the resolution of the plot)
+!			Use #_points=63 for FNOC grid, #_points=65 for NMC
+! (optional)  limit:	fraction of full region that will be displayed
+!			Default = 1 (full region).  e.g. 0.5 will display
+!			only the -.5 to .5 region from the full plot
+! (optional) fill:	Either FILL or HOLE(default) to indicate how points
+!			bordering on missing values should be treated
+! (optional) pole:      pole, +1 is north pole (default), -1 is south pole.
+
+! Note on vector command qualifiers:
+!  /OVERLAY works fine
+!  /SET_UP requires manual setting and resetting of PPL tics and axlabp
+!  /X/Y/Z/T/I/J/K/L qualifiers will refer to the OUTPUT (page layout) grid
+!	not to the input (lat/long) grid		
+
+
+
+! check that parameters are OK to the best we can
+query/ignore $1%<Use: GO polar_2d_plot plot_command Uvar Vvar [angle] [#] [limit] ["FILL"]%
+query/ignore $2%<Use: GO polar_2d_plot plot_command Uvar Vvar [angle] [#] [limit] ["FILL"]%
+query/ignore $3%<Use: GO polar_2d_plot plot_command Uvar Vvar [angle] [#] [limit] ["FILL"]%
+
+! extract the vector data ready to plot
+let/quiet polar_rotation=$4"0"
+let/quiet signgr = if ($8"1.0") ge 0.0 then 1.0 else (-1.0)
+
+GO convert_to_polar_2d $2 $5"201" $7"HOLE" polar_U_points.dat
+GO convert_to_polar_2d $3 $5"201" $7"HOLE" polar_V_points.dat
+
+! set up PLOT+ without axis tics
+ppl tics 0,0,0,0
+ppl axlabp 0,0
+
+! rotate the vector components for the polar projection
+! (south direction corrected with signgr 3/96)
+let/quiet polar_vec_sumsq = (-1*signgr) / (x[g=gproj$5"201"]^2 + y[g=gproj$5"201"]^2)^0.5
+let/quiet polar_u = (x*polar[d=polar_V_points.dat] + y*polar[d=polar_U_points.dat]) * polar_vec_sumsq
+let/quiet polar_v = (y*polar[d=polar_V_points.dat] - x*polar[d=polar_U_points.dat]) * polar_vec_sumsq
+
+! produce the plot (box_plot to avoid axis decorations)
+GO box_plot $1/x=-$6"1":$6"1"/y=-$6"1":$6"1" polar_u, polar_v
+
+! coach the user on how to make quick replots
+MESSAGE/Cont "The following vector command can be modified and reused:"
+MESSAGE/Cont >>>GO box_plot $1/x=-$6"1":$6"1"/y=-$6"1":$6"1" polar_u, polar_v
+
+set mode/last verify
+message/continue "NOTE: The map projection capabilities beginning with Ferret v5.0"
+message/continue "provide far more flexibility for plots with curvilinear coordinates."
+message/continue "Run the script  mp_demo  for an introduction"

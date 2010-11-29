@@ -1,0 +1,18 @@
+#! /bin/csh -f
+# *sh* 1/01
+# add a remark to the tail of the benchmark_history.log file
+
+# use this script especially after a failed benchmark to make a note in the
+# benchmark history file explaining why the failure occurred
+
+echo "Generally this routine is uded to add annotations into the"
+echo "benchmark.history.log file to explain the cause of a benchmark failure"
+echo " "
+echo "Begin typing comments now."
+echo "Enter ^D when done."
+
+# put a record of this benchmark run into the benchmark log file
+set bench_hist = "benchmark_history.log"
+echo " "
+echo "----- THE FOLLOWING COMMENTS ADDED MANUALLY:" >> $bench_hist
+cat >> $bench_hist

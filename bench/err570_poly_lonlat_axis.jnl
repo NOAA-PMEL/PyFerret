@@ -1,0 +1,21 @@
+! err570_poly_lonlat_axis.jnl
+! 12/14/04
+!
+! The polygon command gave error messages and under version 5.7 
+!    Symbol not found              
+!    XFOR (I7,'LONE')
+! and similarly for the y axis.
+!
+! RedHat 7 binary, under Debian 3.0 Linux the poly command crashes Ferret. 
+
+LET XTRIANGLE = YSEQUENCE({-1,0,1})
+LET YTRIANGLE = YSEQUENCE({-1,1,-1})
+LET XPTS = 120+30*RANDU(I[i=1:10])
+LET YPTS = 30*RANDU(1+I[i=1:10])
+LET/title="longitude"/units="degrees_east" XT = XTRIANGLE+XPTS
+LET/title="latitude"/units="degrees_north" YT = YTRIANGLE+YPTS
+POLYGON XT, YT, I[I=1:10] 
+
+! Add the same fix to plot_set_up.F for PLOT/VS commands
+
+PLOT/VS XT, YT

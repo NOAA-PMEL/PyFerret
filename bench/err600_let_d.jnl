@@ -1,0 +1,10 @@
+! err600_let_d.jnl
+! Making a LET/D= assignment caused the return of dimension
+! names from the attribute structure fail, and the list of 
+! variable names was incorrect.
+! 28-Nov-2006
+
+use levitus_climatology
+let/d=levitus_climatology temp_20 = temp[d=levitus_climatology,z=0:20@sum]
+list ..dimnames
+list ..varnames

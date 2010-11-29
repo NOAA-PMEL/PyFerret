@@ -1,0 +1,4 @@
+* pre-defined and user-defined grids for PROGRAM GFDL
+	INCLUDE		'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
+
+	EXTERNAL	XGT_GRID_DATA

@@ -1,0 +1,11 @@
+! err550_shade_limits.jnl
+! acm 2/5/03
+
+! SHADE bug: hlimits, vlimits without effect
+
+use coads_climatology
+set view upper; shade sst[l=1]
+
+set view lower; shade/hlimits=212:324/vlimits=-34:23 sst[l=1]
+
+can view

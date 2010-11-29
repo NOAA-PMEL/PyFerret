@@ -1,0 +1,38 @@
+ ********************************************************************************
+ *        comments                                                              *
+ ******************************************************************************** 
+ $FORMAT_RECORD
+   D_TYPE        = '  MC'
+   D_FORMAT      = '  1A'
+ $END
+ $BACKGROUND_RECORD
+   D_TITLE       = '10 Day SST Composite'
+   D_T0TIME      = '01-jan-1970 00:00:00'
+   D_TIME_UNIT   = 86400
+   D_TIME_MODULO = .false.
+   D_CALTYPE	 = 'JULIAN'
+ $END
+ $MESSAGE_RECORD
+      D_MESSAGE     = ' '
+      D_ALERT_ON_OPEN      = .FALSE.
+      D_ALERT_ON_OUTPUT    = .FALSE.
+
+ $END
+ **************************************************
+ $EXTRA_RECORD
+ $END
+ &STEPFILE_RECORD
+   S_FILENAME    = 'sstok_short.nc'
+   S_AUX_SET_NUM = 0
+   S_START       = 12418
+   S_END 	 = 12418
+   S_DELTA       = 2
+   S_NUM_OF_FILES	= 1
+   S_REGVARFLAG  = ' '
+ $END
+
+ **************************************************
+ $STEPFILE_RECORD
+   S_FILENAME           = '**END OF STEPFILES**'
+ $END
+ **************************************************

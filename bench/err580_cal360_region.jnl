@@ -1,0 +1,9 @@
+! err580_cal360_region.jnl
+! Wrong output region: the set region mistakenly tranlated 
+
+def axis/t=15-apr-1990:15-apr-2000:15/units=days/t0=15-apr-1990/calendar=d360 tax
+let a = t[gt=tax]
+load a
+set reg/t=15-apr-1990:15-apr-1991
+sho reg
+

@@ -1,0 +1,17 @@
+! err590_command_cx.jnl
+! bugs 439 and 1390: the command context should apply to immed. mode evaluation
+! only for action commands, not for commands like define
+
+use gt4d011
+def ax/np=`temp,r=lsize`/t=0:100 tax
+let n = `temp,r=lsize`
+def ax/np=`n`/t=0:100 tax
+
+
+! but for an action command, the /I= should apply to the grave-accent
+! expression, correctly giving an error
+
+set mode ignore
+plot/i=100/k=1 temp[x=`temp,r=xend`]
+
+can mode ignore

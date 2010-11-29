@@ -1,0 +1,48 @@
+! polytube_demo.jnl
+! *jd* 5.99
+! *acm* 7/01 update /line= to /color=/thickness=
+
+! Description: demonstrate "lagrangian" plots along a path using color fill
+
+
+set mode verify
+
+! Define a 3-leg plot track with discontinuities
+LET/QUIET     X0 = 240
+LET/QUIET     Y0 = 10
+LET/QUIET     X1 = 180
+LET/QUIET     Y1 = 60
+LET/QUIET     X2 = 150
+LET/QUIET     Y2 = 10
+LET/QUIET     XLEG1 = X0 + (L-1)*(X1-X0)/50
+LET/QUIET     YLEG1 = Y0 + (L-1)*(Y1-Y0)/50
+LET/QUIET     XLEG2 = X1 + (L-51)*(X2-X1)/20
+LET/QUIET     YLEG2 = Y1 + (L-51)*(Y2-Y1)/20
+LET/QUIET     LCURVE = L-71
+LET/QUIET     R0 = 35
+LET/QUIET     RADIUS = R0 - LCURVE/3
+LET/QUIET     XLEG3 = X2+R0 - RADIUS * COS(LCURVE/12)
+LET/QUIET     YLEG3 = Y2 - RADIUS * SIN(LCURVE/12)
+LET/QUIET     XSTRAIGHT = IF L LE 50 THEN XLEG1 ELSE XLEG2
+LET/QUIET     YSTRAIGHT = IF L LE 50 THEN YLEG1 ELSE YLEG2
+LET/QUIET     XTRACK = IF L LE 70 THEN XSTRAIGHT ELSE XLEG3
+LET/QUIET     YTRACK = IF L LE 70 THEN YSTRAIGHT ELSE YLEG3
+
+LET/QUIET     SST = 25 - YTRACK/3
+LET/QUIET     wind = ytrack/20 * RANDN(ytrack)
+SET REGION/L=1:120
+ 
+! Plot SST and indicate the ship track
+go basemap x=120:260 Y=25s:65n 20
+go polytube polygon/over/key/title="SST" xtrack ytrack SST
+plot/vs/line/sym/over/nolab xtrack, ytrack
+\PAUSE
+
+! a similar plot, but a thinner "tube" with a different palette, and another
+! variable drawn dith it
+go basemap x=120:260 Y=25s:65n 20
+go polytube polygon/over/key/pal=no_green xtrack ytrack SST 0.3
+label/nouser `1.05*($ppl$xlen)`,-.5,0,0,.15 @CRSST
+go trackplot plot/vs/line/over/color=green/thickness=2/title="wind" xtrack ytrack wind
+
+

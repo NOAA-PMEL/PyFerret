@@ -1,0 +1,8 @@
+! err570_dollar_zero.jnl
+! (bug 485) Got a command syntax error;
+! $0 in script should return the script name
+
+SET MODE ignore_error
+SAY ($0)
+
+SET MODE/LAST ignore_error

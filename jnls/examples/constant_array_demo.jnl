@@ -1,0 +1,62 @@
+define alias pause message
+
+! constant_array_demo.jnl (4/99)
+
+! Description: Demonstration of the {1, 3, 5} "constant array"  syntax 
+
+! Constant array syntax introduced into Ferret in V5.0
+
+! *acm* 7/01 update /pen= to /color=/thickness=
+
+
+
+! ** Constant arrays allow you quickly to enter lists of constant values.
+
+! SYNTAX:
+! Constant arrays are comma-separated lists enclosed in curly braces.
+! If the list needs to contain gaps (missing values), simply omit the element
+! For example
+
+  LIST {1,3,5}, {1,,5}
+
+pause
+
+! Note that a constant variable is always an array oriented in the X direction
+! To create a constant aray oriented in, say, the Y direction use YSEQUENCE
+
+  STAT/BRIEF YSEQUENCE({1,3,5})
+
+pause
+
+! EXAMPLES
+! Below are several examples illustrating uses of constant arrays
+! 1) plots a triangle
+! 2) plots a series of triangles at data points
+! 3) Samples a variable at a list of subscripts
+
+! Ex 1) plot a triangle
+
+  LET xtriangle = {0,.5,1}
+  LET ytriangle = {0,1,0}
+  POLYGON/COLOR=red/THICKNESS=2 xtriangle, ytriangle, 0
+
+pause
+
+! Ex 2) plot a series of triangles at data points
+! See also XXXX.jnl for a more automated way to do this)
+
+  LET xpts = 10*RANDU(j[j=1:20]+0)	! random X coordinates
+  LET ypts = 10*RANDU(j[j=1:20]+1)	! random Y coordinates
+  LET values = 10* j[j=1:20]		! value at each (x,y) point
+  POLYGON xpts+xtriangle, ypts+ytriangle, values
+
+pause
+
+! Ex 3) Sample Jan, June, and December from sst in coads_climatology
+
+  USE  coads_climatology
+  LET  my_sst_winter = SAMPLEL(sst[Y=0:90N], {1,2,12})
+  LET  my_sst_summer = SAMPLEL(sst[Y=0:90N], {6,7,8})
+  STAT/BRIEF my_sst_winter
+  STAT/BRIEF my_sst_summer
+

@@ -1,0 +1,34 @@
+* CONT_INC.DECL - converted to Unix 2.26.91           
+* COMMON for PLOT+ with all variables declared
+* created for TMAP usage by Steve Hankin 7/88
+c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
+*  V610 *acm* 3/08 - add new MODE NLEVELS
+* V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
+* V65 *acm   2/10 If Open-ended levels were used, symbol LEV_OPNLEVS saves 
+* the /LEV command needed to duplicate the levels
+
+	REAL	ZLEV,CANGLE
+	INTEGER	LDIG,IVCOMP
+	INTEGER	LWGT
+	INTEGER	LCLR
+	INTEGER	NLEV
+	INTEGER	NLEV_DFLT
+	REAL	HGT
+	INTEGER	NARC
+	INTEGER	IAUTOC
+	INTEGER	NLEV2
+	INTEGER	NSIGC
+	INTEGER CONTOUR_FEWER
+	
+*	Following added 8.3.95 *jd*
+	LOGICAL*4 CENTERED,SET_DELTA,NEGINF,POSINF,CONT_KEY
+	REAL	DELTA
+
+* For open-ended color/contour levels
+	CHARACTER*120 lev_str
+	LOGICAL OPENLEV,SET_STD,SET_MEAN,SET_MIN,SET_MAX,NEED_DATA_SCAN,
+     .          USE_HIST
+	REAL	LEV_STD,LEV_MEAN,LEV_MIN,LEV_MAX,LEV_HIST
+
+* requires: INCLUDE 'CONT.INC'                                    
+

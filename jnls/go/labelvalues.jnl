@@ -1,0 +1,143 @@
+\cancel mode verify
+! labelvalues
+! *10/02 *acm* 
+
+! Description: Label locations on a 2-D plot with values and optional text
+!
+!   usage:
+!       GO labelvalues xloc yloc value [size] [location] [prefix] [suffix] [ndigits] [offset]
+!   where:
+!       xloc      horizontal location of the points
+!       yloc      vertical location of the points
+!       value     function value at the points
+!       size      size of the labels (default 0.12 inches)
+!       location  location of the label: right(default), left, above, below
+!       prefix    text and/or a font setting, to preceed each label
+!       suffix    text following each label
+!       ndigits   maximum number of digits to the right of the decimal point
+!       offset    space, in inches, to separate the label from the point
+!                   in the direction of the label position, e.g. labels
+!                   that are "below" with an offset of 0.5 will be half
+!                   and inch below the points.
+!
+! example:
+!       yes? USE coads_climatology
+!       yes? FILL/L=1/X=100:360/Y=-20:60 sst
+!       yes? LET xpts = {123, 198, 245, 260, 330}
+!       yes? LET ypts = {-10,  10, -10,  10, -10}
+!       yes? LET vals = SAMPLEXY(sst[L=1], xpts, ypts)
+!       yes? GO labelvalues.jnl xpts ypts vals 0.14 "left" " " " Deg C" 1
+!
+!       yes? ! or, to set a color and font, for example,
+!       yes? GO labelvalues.jnl xpts ypts vals 0.10 "right" "@P5@TR" " C" 0
+
+!       yes? ! all arguments
+!       yes? GO labelvalues.jnl xpts ypts vals 0.10 "above" "@TR" "Deg C" 1 0.1
+
+! check arguments
+QUERY/IGNORE $1%<Usage: GO labelvalues  xpts ypts var [size] [justify] [prefix] [suffix] [ndigits]%
+QUERY/IGNORE $2%<argument 2 is ypts %
+QUERY/IGNORE $3%<argument 3 is values%
+QUERY/IGNORE $4%0.12%
+QUERY/IGNORE $5%-1|right>-1|left>1|*>-1|%
+
+LET LN_xpts = $1
+LET LN_ypts = $2
+LET LN_vals = $3
+LET LN_lsiz = $4%0.12% 
+
+LET LN_just = $5%-1|right>-1|left>1|above>0|below>0|*>-1|%
+LET LN_vert = $5%0|right>0|left>0|above>1|below>-1|*>0|%
+
+DEFINE SYMBOL LN_prefix = "$6%  %"
+DEFINE SYMBOL LN_suffix = "$7%  %"
+LET LN_prefix_exists = $6"0|*>1"
+LET LN_ndig = $8%-1%
+LET LN_off = $9%0%
+
+! Save region; If user has set a region, then the XSEQUENCE(vals)
+! may be wrong. So we need to cancel it for this script.
+
+DEFINE REGION/DEFAULT save
+CAN REGION/X/Y
+
+LET LN_x = XSEQUENCE(LN_xpts)
+LET LN_y = XSEQUENCE(LN_ypts)
+LET LN_v = XSEQUENCE(LN_vals)
+
+LET LN_x = LN_xpts
+LET LN_y = LN_ypts
+LET LN_v = LN_vals
+
+! See if horizontal offset was requested
+
+LET LN_xfac = 0.
+LET LN_xoff = 0.
+IF `LN_just NE 0` THEN
+   LET LN_xfac = ( ($PPL$XMAX)-($PPL$XMIN) ) / ($PPL$XLEN)
+   LET LN_xoff = -1* LN_just* LN_off * LN_xfac 
+ENDIF
+
+! See if label above or below was requested, and apply vertical offset.
+! Plot these labels to the right of the points, with the first character
+! just above or below the point.
+
+LET LN_yfac = 0.
+LET LN_yoff = 0.
+IF `LN_vert NE 0` THEN
+   LET LN_yfac = ( ($PPL$YMAX)-($PPL$YMIN) ) / ($PPL$YLEN)
+   LET LN_yoff = LN_vert* (LN_off + LN_lsiz)* LN_yfac 
+   IF `LN_vert EQ -1` THEN LET LN_yoff = `LN_yoff` - (LN_lsiz * LN_yfac)
+
+   LET LN_xfac = ( ($PPL$XMAX)-($PPL$XMIN) ) / ($PPL$XLEN)
+   LET LN_xoff = -1* LN_lsiz * LN_xfac 
+   LET LN_just = -1
+ENDIF
+
+
+! Initialize 
+LET LN_p = 0
+LET LN_n = 0
+
+! Case where we arent fixing the formatting of the values
+
+LET LN_npts = `LN_x,return=isize`
+IF `LN_ndig LT 0` THEN
+
+  REPEAT/i=1:`LN_npts` ( \
+    LET LN_xval = LN_x[i=`i`] + LN_xoff;\
+    LET LN_yval = LN_y[i=`i`] + LN_yoff;\
+    LET ln_vval = LN_v[i=`i`];\
+    LET LN_out1 = STRCAT(($LN_prefix),"`ln_vval`");\
+    LET LN_outlab = STRCAT(LN_out1,($LN_suffix));\  
+    LET LN_p = ln_vval AND `LN_prefix_exists eq 1`;\
+    LET LN_n = ln_vval AND `LN_prefix_exists eq 0`;\
+    IF `LN_p NE 0` THEN LABEL `LN_xval`, `LN_yval`, `LN_just`, 0, `LN_lsiz`,  `LN_outlab`;\
+    IF `LN_n NE 0` THEN LABEL `LN_xval`, `LN_yval`, `LN_just`, 0, `LN_lsiz`, "`LN_outlab`")
+ELSE 
+
+! Adjust format of values to show fewer digits if specified.
+
+  REPEAT/i=1:`LN_npts` ( \
+    LET LN_xval = LN_x[i=`i`] + LN_xoff;\  
+    LET LN_yval = LN_y[i=`i`] + LN_yoff;\
+    LET ln_vval = LN_v[i=`i`];\ 
+    LET LN_lab = "`ln_vval`";\
+    LET LN_ndot = STRINDEX(LN_lab, ".");\ 
+    LET LN_nlen = STRLEN(LN_lab);\
+    LET LN_wh = LN_nlen - LN_ndot + LN_ndig;\  
+    LET LN_out1 = SUBSTRING(LN_lab, 1, LN_wh);\
+    LET LN_out2 = STRCAT(($LN_prefix), LN_out1);\
+    LET LN_outlab = STRCAT(LN_out2, ($LN_suffix));\
+    LET LN_p = ln_vval AND `LN_prefix_exists eq 1`;\
+    LET LN_n = ln_vval AND `LN_prefix_exists eq 0`;\
+    IF `LN_p NE 0` THEN LABEL `LN_xval`, `LN_yval`, `LN_just`, 0, `LN_lsiz`, `LN_outlab`;\
+    IF `LN_n NE 0` THEN LABEL `LN_xval`, `LN_yval`, `LN_just`, 0, `LN_lsiz`, "`LN_outlab`")
+ENDIF
+
+! clean up
+SET REGION save
+CANCEL VARIABLE LN_*
+CANCEL SYMBOL LN_*
+
+SET MODE/LAST VERIFY

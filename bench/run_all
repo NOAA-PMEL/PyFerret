@@ -1,0 +1,326 @@
+#! /bin/csh -f
+# run the full benchmark suite
+# *sh* 1/93 - writes errors to separate file
+# *sh* 10/93 - added alpha support
+# *sh* 9/94 - eliminated "-n" from echo lines
+# *sh* 1/95 - version bn320
+# *sh* 3/95 - version bn400
+# *sh* 6/95 - version bn401 - with symbols
+# *sh* 9/95 - version bn420 - with LET/D
+# *sh* 1/96 - 		    - and bn420_stream
+# *sh* 5/96 - version bn430 - added bn430_IF
+# *kob* 8/96- hp uses ftn41 instead of fort.41, so added a check for that
+# *kob* 11/96 - add check for batch functionality.  After original ferret
+#		exits, unset DISPLAY env variable and run ferret with simple,
+#		non-graphical commands. 
+# this procedure will destroy all temporary files (cdf, ez, and metafiles)
+# produced by the previous runs.  It will not destroy the log file, however.
+# *sh* 1/97 - write benchmark version into output log
+# *sh* 7/97 - query and write user comment into log
+# *sh* 1/98 - run bn490_all by default
+# *kob* 2/98 - run bn491_all by default
+# *kob* 4/98 - add status check after running bnxxx_all to prevent continuation
+#              of bench run
+# *sh* 2/99 - run bn500_all by default
+# *sh* request the EF directory. Benchmark versions no longer exist -- use CVS
+# *sh* log the header information to a single benchmark history file
+# acm   4/05 added more .plt files for metafile checking, but fewer bnplot.plt files 
+#            (bn_curv now saves only one).
+# acm   9/06 Change so that all ncdump output is directed to a file all_ncdump.out. 
+#            append this to the log file 
+
+# usage % run_all
+
+# unable to redirect input on Solaris
+# to run benchmark on solaris:
+# 1	cd into bench directory
+# 2	umask 002
+# 3	rm snoopy.dat test.dat test.gt test.unf WV.J34K56L7 F*.cdf test*.cdf newjournal.jnl fort.41 ppllist.out newjournal.jnl bench.mgm
+# 4	(/home/corona/tmap/ferret_link/fer/ferretxgks >all_29jan91att1204.xsol_log) >& all_29jan91att1204.xsol_err
+# V420: ln -s $machine_stream stream_data_link.unf
+# 5	GO bn301_all
+# 6	when done sed 's/@ASFERRET .*Ver.*$/@ASFERRET ... whatever version number .../' <fort.41 >all_29jan91att1204.sol_plt
+# NOTE!!!: The netCDF benchmark will fail if run over an nfs mounted disk.
+#	(incompatibility between OSF and Solaris)
+# node corona has been set up to run the NetCDF benchmark in ~/local_bench
+# as follows:
+#	rm *.cdf
+#	( ../ferret_link/fer/ferretxgks > bn230_cdf_29jul94.log ) > & bn230_cdf_29jul94.err
+#	GO bn230_cdf; quit
+# compare with bn230_cdf_ALPHA_reference.*
+#
+# for now you must also manually check the benchmark bn311_ez_order
+
+
+umask 002     #  make all files group deletable  3/16
+
+# Solaris may have HOSTTYPE=sun, or HOSTTYPE=solaris
+if ( $HOSTTYPE =~ *sun* ) then
+   if ( `uname -r` =~ *5*  ) then
+      set machine = "sol"
+   else
+      set machine = "sun"
+   endif
+else if ( $HOSTTYPE =~ *solaris* ) then
+   set machine = "sol" 
+else if ( $HOSTTYPE =~ *alpha* ) then
+   set machine = "alp" 
+else if ( $HOSTTYPE =~ *aix* ) then
+   set machine = "aix" 
+else if ( $HOSTTYPE =~ *iris* ) then
+   set machine = "sgi"
+else if ( $HOSTTYPE =~ *hp* ) then
+   set machine = "hp"
+else if ( $HOSTTYPE =~ *ia64*) then
+    set machine = "ia64-linux"
+else if ( $HOSTTYPE =~ *x86_64-linux*) then
+    set machine = "x86_64-linux"
+else if ( $HOSTTYPE =~ *linux*) then
+    set machine = "linux"
+else
+   set machine = "unknown_host"
+endif
+
+echo "Enter the path (including filename) to the FERRET version of choice"
+set fver = $<
+
+# XGKS version ?  (use "xg" as the indicator)
+echo $fver | grep -s "xg"
+if ( $status == 0 ) then
+	set machine = "x$machine"
+endif
+
+# which external function libraries to use
+echo "Enter the directory containing the external function libraries"
+set efdir = $<
+
+# *acm* 4/5/05 optionally do externally-linked external function tests 
+# 
+echo "Run tests of externally-linked external functions? Enter y or n"
+set do_shared_obj = $<
+
+# background info to go in the benchmark file
+echo "Enter your name"
+set bmarker = $<
+echo "Enter comment about this benchmark or this version of Ferret"
+# *kob* 4.01 linux needs quotes around the input or spaces throw it off
+set bcomment = "$<"
+
+
+set date_stamp = `date +'%d%h%yAT%H%M'|tr '[A-Z]' '[a-z]'`
+set log_file = "all_${date_stamp}.${machine}_log"
+set err_file = "all_${date_stamp}.${machine}_err"
+set plt_file = "all_${date_stamp}.${machine}_plt"
+set ncdump_log = "all_${date_stamp}.${machine}_ncdump"
+set ncdump_file = "all_ncdump.out"
+rm -f ncdump_file $ncdump_file
+echo " " > $ncdump_file
+
+#set up external functions search path
+setenv FER_EXTERNAL_FUNCTIONS $efdir
+
+# set up the binary unformatted stream test file as a machine-specific link
+set machine_stream = "stream10by5_{$machine}.unf"
+if ( ! -e  $machine_stream ) then
+   echo File $machine_stream does not exist.
+   echo Benchmark bn420_stream will fail.
+   echo To create $machine_stream compile and run make_stream_file.F
+   echo Then rename stream10by5.unf to $machine_stream
+   echo -n 'Continue anyway? (answer "y" for yes)'
+   set answer = $<
+   if ($answer != "y") exit 0
+endif
+rm -f stream_data_link.unf
+ln -s $machine_stream stream_data_link.unf
+
+# set up descriptors for mc data files.  this necessary because linux/F90 
+# requires a different format of input for the namelist reads.  *kob* 4/99
+# if ($machine == "linux") then
+#     foreach file (coads*.des_template)
+#	./linuxize_descriptors $file >! $file:r.des
+#    end
+# else
+    foreach file (coads*.des_template)
+	cp -f $file $file:r.des
+    end
+# endif
+
+#set up proper stream testing jnl file - depends on endianness
+rm -f bn_test_stream.jnl
+if ($machine == "linux" || $machine == "alp" || $machine == "x86_64-linux" || $machine == "ia64-linux") then
+    cp bn_test_stream_little.jnl bn_test_stream.jnl
+else
+    cp bn_test_stream_big.jnl bn_test_stream.jnl
+endif
+
+#Set up for metafile/gif testing
+set check_met = check_metafiles
+
+if ($machine == "linux" || $machine == "ia64-linux") then
+   set check_met = check_metafiles_linux
+endif
+
+echo "Log output in $log_file  Errors in $err_file" 
+echo "Procedure run_all to run all FERRET benchmarks" >&$log_file
+
+echo "Running FERRET version $fver" >>&$log_file
+ls -l $fver >>&$log_file
+echo "Using external functions from $efdir" >>&$log_file
+echo "Running the tests of external functions $do_shared_obj" >>&$log_file
+echo "Benchmark run by $bmarker" >>&$log_file
+echo "Note: $bcomment" >>&$log_file
+echo "ncdump output will be in $ncdump_file, and appended to this log file " >>&$log_file
+
+#set up a generic data environment
+echo "***** Restricting Ferret paths to bench directory *****" >>&$log_file
+source bench_environment >>&$log_file
+Fenv >>&$log_file
+
+# put a record of this benchmark run into the benchmark log file
+set bench_hist = "benchmark_history.log"
+echo " " >>& $bench_hist
+echo " " >>& $bench_hist
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ " >>& $bench_hist
+echo "Log output in $log_file  Errors in $err_file" >>& $bench_hist
+ls -l $fver >>&$bench_hist
+echo "Using external functions from $efdir" >>&$bench_hist
+echo "Benchmark run by $bmarker" >>&$bench_hist
+echo "Note: $bcomment" >>&$bench_hist
+
+touch F.cdf snoopy.dat
+set temp_files = "test.dat test.gt test.unf WV.J34K56L7 F*.cdf test*.cdf newjournal.jnl fort.41 bench.mgm"
+foreach file ($temp_files)
+      /bin/rm -f $file
+end
+
+# 10/97 *kob* mv last created bnplot files to the last_plot directory
+mv bn*.plt* last_plot
+mv p*.plt* last_plot
+mv bn*.gif* last_plot
+mv bn*.ps* last_plot
+
+set now = `date`
+echo "Beginning at $now" >>&$log_file
+cp $log_file $err_file
+echo "Beginning at $now"
+
+# $fver <bn230_all.jnl >>&$log_file        ! problem with missing lines in log
+# $fver <bn230_all_shell.jnl >>&$log_file  ! mixes error lines erratically
+#($fver <bn230_all_shell.jnl >>$log_file) >>&$err_file
+#($fver <bn300_all_shell.jnl >>$log_file) >>&$err_file
+#($fver <bn301_all_shell.jnl >>$log_file) >>&$err_file
+#($fver <bn311_all_shell.jnl >>$log_file) >>&$err_file
+#($fver <{$bver}_all_shell.jnl >>$log_file) >>&$err_file
+($fver <bn_all_0_shell.jnl >>$log_file) >>&$err_file
+($fver <bn_all_shell.jnl >>$log_file) >>&$err_file
+
+
+# check status before continuing *kob* 4/98
+if ($status) then
+    echo "FERRET ERRROR*********************************" >>$log_file
+    exit 1
+endif
+
+# 5/05 *acm* run tests of externally-linked external functions
+if ( $do_shared_obj == "y" ) then
+  ($fver <bn_all_ef_shell.jnl >>$log_file) >>&$err_file
+endif
+
+# Append the ncdump output file to the log file
+echo  " " >>&$log_file
+echo  "-----" >>&$log_file
+echo  "Appending ncdump output" >>&$log_file
+cat  $ncdump_file >>& $log_file
+echo  "-----" >>&$log_file
+echo  "end of ncdump output" >>&$log_file
+echo  " " >>&$log_file
+mv $ncdump_file $ncdump_log
+
+# Now, lets restart ferret and run the bug fix journal file
+# 3.4.98 - moved this to bn491_all *kob*
+#($fver <{$bver}_bug_fixes.jnl >>$log_file) >>&$err_file
+
+# *kob* 11/96 - test out batch ability of ferret
+#set hold_display = $DISPLAY
+#setenv DISPLAY ralf
+#echo "Display now set to "$DISPLAY >>&$log_file
+#($fver < bn430_batch.jnl >> $log_file) >>&$err_file
+#setenv DISPLAY $hold_display
+#echo "Display now set to "$DISPLAY >>&$log_file
+
+echo "about to run test of .ferret script"
+if (-e $HOME/.ferret) then 
+  rm -f ./keep.ferret
+  cp $HOME/.ferret ./keep.ferret
+  rm -f $HOME/.ferret
+endif
+
+cp -f ferret_startup $HOME/.ferret
+($fver  <bn_startupfile_shell.jnl >> $log_file) >>& $err_file
+rm -f $HOME/.ferret
+
+if (-e keep.ferret) then 
+  mv keep.ferret $HOME/.ferret
+endif
+
+set hold_display = $DISPLAY
+unsetenv DISPLAY
+echo "Display no longer set, about to run batch gif test"
+($fver -gif <bn_gif_shell.jnl >> $log_file) >>& $err_file
+echo "Display still not set, about to run batch ps test"
+($fver -batch bnplot.ps <bn_ps_shell.jnl >> $log_file) >>& $err_file
+echo "Display still not set, about to run batch metafile test"
+($fver -batch bat.plt <bn_batch_metafile_shell.jnl >> $log_file) >>& $err_file
+setenv DISPLAY $hold_display
+#echo "Display now set to "$DISPLAY >>&$log_file
+
+set now = `date`
+echo  "Ended at $now" >>&$err_file
+echo  "Ended at $now" >>&$log_file
+echo  "Ended at $now"
+
+# *kob* 8/96
+if ( $HOSTTYPE =~ *hp* ) then
+  sed 's/@ASFERRET .*Ver.*$/@ASFERRET ... whatever version number .../' <ftn41 >$plt_file
+else
+  sed 's/@ASFERRET .*Ver.*$/@ASFERRET ... whatever version number .../' <fort.41 >$plt_file
+endif
+
+#clean_bench_log $log_file
+#echo "Remember to remove metafiles, if any"
+
+#rename plt and gif files - necessary for saving them under cvs
+set count = 1
+while ($count < 5)
+    mv bnplot.plt.~$count~ bnplot-$count.plt
+    @ count++
+end
+
+mv bnplot.gif.~1~ bnplot-1.gif
+mv bnplot.gif.~2~ bnplot-2.gif
+
+mv new.plt bat.plt_9
+mv bat.plt bat.plt_8
+set count = 1
+while ($count < 8)
+    mv bat.plt.~$count~ bat.plt_$count
+    @ count++
+end
+
+# AIX systems don't put leading zeros on numbers like 0.5
+if ( $HOSTTYPE =~ *aix* ) then
+  mv $plt_file temp.tmp
+  sed -e 's/ \.\([0-9]\)/0.\1/g' -e 's/ -\.\([0-9]\)/-0.\1/g' temp.tmp > $plt_file
+  rm temp.tmp
+  mv $log_file temp.tmp
+  sed -e 's/ \.\([0-9]\)/0.\1/g' -e 's/ -\.\([0-9]\)/-0.\1/g' temp.tmp > $log_file
+endif
+
+#let's check the plt and gif and ps files to make sure they look okay
+echo "Checking PLT, GIF and PS files......."
+./$check_met
+
+#Note about checking transparency
+echo "open test_trans.html in a browser to test transparency option in gif mode. The continents should be gray"
+# save size of log file as part of the history record
+ls -l $log_file >>&  $bench_hist

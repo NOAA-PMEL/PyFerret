@@ -1,0 +1,51 @@
+
+def axis/t=101:110:1/units=days/t0=1-jan-2000 tax
+let tt = t[gt=tax]
+let a = RESHAPE({"aaaa", "bb", "ccc", "ddddddddd", "e", "fff", "gggggg", "hh", "iiiii", "jjjjjjjjjjjjjj"}, tt)
+list efstrings(a)
+
+pause
+
+let a = {"one", "m", "mississippi", "iowa", "florida"}
+list maxstrlen(a)
+
+pause
+def axis/x=1:3:1 xax
+def axis/z=2:20:2 zax
+let var = x[gx=xax]  + z[gz=zax]
+let a = RESHAPE({"PMEL", "carries", "out", "interdisciplinary", "scientific", "investigations", "in", "oceanography", "and", "atmospheric", "science.", "Current", "PMEL", "programs", "focus", "on", "open", "ocean", "observations", "in", "support", "of", "long-term", "monitoring", "and", "prediction", "of", "the", "ocean", "environment"}, var)
+
+list pass_thru_string (a)
+pause
+
+list pick_a_string(a,2)
+pause
+
+list maxstrlen(a)
+pause
+
+! Fcns inherit grid of result from both args, so have Ferret conformability rules
+
+list length_of_strings(a)
+
+list string_len_sum(a,"..")
+pause
+
+! Two vars on the same grid
+let a = {"one", "two"}
+let b= {"_", "_bbb"}
+
+list string_len_sum(a, b)
+
+list string_cat3(a,b, ".dat")
+
+pause
+
+
+def axis/x=1:3:1 xax
+def axis/z=2:20:2 zax
+let var = x[gx=xax]  + z[gz=zax]
+let a = RESHAPE({"PMEL", "carries", "out", "interdisciplinary", "scientific", "investigations", "in", "oceanography", "and", "atmospheric", "science.", "Current", "PMEL", "programs", "focus", "on", "open", "ocean", "observations", "in", "support", "of", "long-term", "monitoring", "and", "prediction", "of", "the", "ocean", "environment"}, var)
+
+list string_cat3(a, " ", a)
+

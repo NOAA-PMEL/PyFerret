@@ -1,0 +1,48 @@
+! err61_poly_shade_over_noaxes.jnl
+! See bug 1571
+
+! plot/ax=0,0,0,0 ; poly/over ! redraws the box
+
+set v ul; plot/ax=0,0,0,0 {0,1}; poly/ov {0,1},{0,1}
+set v ur; plot/set/ax=0,0,0,0 {0,1}; ppl plot; poly/ov {0,1},{0,1}
+set v ll; plot/ax=0,0,0,0 {0,1}; plot/ov {0,1}
+set v lr; plot/set/ax=0,0,0,0 {0,1}; ppl plot; plot/ov {0,1}
+can view
+
+! shade over polygon
+set view upper; polygon/thick/color=red/palette=blue/axes=0,0,0,0 {1,2,1}, {2,1,0.5}
+shade/over/i=1:2/j=0:2/patt i+j
+
+set view lower; polygon/thick/color=red/palette=blue/axes=1,1,1,0 {1,2,1}, {2,1,0.5}
+fill/over/i=1:2/j=0:2/patt i+j
+can view
+
+! Polygon over shade
+set view ul
+use err542_poly_over_calendar.nc
+shade/ax=0,1,1,0 pc
+poly/over/fill/pal=red/line/color=black/title="polygon" {220,240,280,250},{-20,70,40,-30}
+
+! Polygon over fill 
+set view ur
+use gt4d011
+let v1={221,225,232,235}
+let v2={20,80,50,30}
+let v3={10,-3,16,3}
+fill/ax=1,0,0,1 temp[j=@ave,l=1]
+go polymark poly/lev=(-5,30,1)/pal=brown/fill/line=1/nolab/over v1 v2 v3 circle 2
+
+set view ll
+plot/ax=0,0,1,1/vl=4:-4/hl=4:-4/vs/line/title="there should be just one triangle" {1,2,3,1},{0,2,1,0}
+poly/ov/col=2/pal=yellow {1,2,3,1},{0,2,1,0}
+
+set view lr
+vector/ax=0,1,1,0/k=1/l=1 u,v
+let v1={221,225,232,235}
+let v2={-3,2,0.5,2}
+let v3={10,-3,16,3}
+go polymark poly/lev=(-5,30,1)/fill/line=1/nolab/over v1 v2 v3 circle 2
+ 
+
+cancel viewports
+ 

@@ -1,0 +1,50 @@
+\cancel mode verify
+
+! convert speed and direction to vector components.
+! Then call stack_stick.jnl to draw stack plot
+
+!  GO water_vector_stack spd dir lower_y upper_y
+
+! Arguments are 
+! $1  speed 
+! $2  direction
+! $3 lower limit on Y axes for all plots
+! $4 upper limit on Y axes for all plots
+
+! Example 
+!   yes? set data 44029a2007.nc
+!   yes? set region/t=1-mar-2007:15-apr-2007/k=1:10
+!   yes? go water_vector_stack.jnl water_spd water_dir -40 40
+
+ can mode logo
+
+
+! Define constants for converting degrees to radians
+
+let pi = atan(1)*4
+let deg2rad = pi/180
+
+! Variables must be on the same grid: Regrid water_dir to the grid of water_spd
+
+let dirr = $2[g=$1]
+
+! If there are units on the water speed variable use the same units for the vector components
+
+define symbol vector_units = "`$1,return=units`"
+
+! Define variables for uu and vv, vector components
+
+IF `($vector_units) EQ " "` THEN
+  let/title="Zonal Current"  uu = ABS(($1))* cos(deg2rad* dirr)
+  let/title="Meridional Current" vv = ABS(($1))* sin(deg2rad* dirr)
+ELSE
+  let/units=($vector_units)/title="Zonal Current "  uu = ABS(($1))* cos(deg2rad* dirr)
+  let/units=($vector_units)/title="Meridional Current " vv = ABS(($1))* sin(deg2rad* dirr)
+ENDIF
+
+! call stack plot script (optional arguments are the min and max vertical limits
+! on the right-hand y axes.)
+
+go stack_stick uu vv $3 $4
+set mode/last verify
+

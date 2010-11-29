@@ -1,0 +1,98 @@
+! bn_subspan_modulo.jnl
+! *sh* 11/02
+
+! a subspan modulo axis is one which is modulo, but the wrapping length
+! exceeds the span of the axis.  Ferret generates a phantom "void point"
+! in order to bring the axis length equal to the modulo length.  The void
+! point is automatically filled with a missing value (psuedo-vars excluded)
+
+! test defining of subspan modulo axes
+! any longitude axis less than 360 degrees
+define axis/x=130e:80w:10 xsub ! yes
+GO bn_subspan_modulo.sub1 X
+define axis/x=-180:179:1/units=longitude/edges xsub ! yes
+GO bn_subspan_modulo.sub1 X
+define axis/x=-180:181:1/units=longitude/edges xsub ! no
+GO bn_subspan_modulo.sub1 X
+
+! not allowed for axis length to exceed modulo length
+set mode ignore
+  define axis/x=130e:500:10/modulo=360 xsub
+canc mode ignore
+
+! automatic detection of climatologies
+def ax/t=1-jan-0000:1-apr-0000/np=3 tsub ! yes
+GO bn_subspan_modulo.sub1 T
+def ax/t=1-jan-0000:1-apr-0000/np=3/edge/units=days tsub ! yes
+GO bn_subspan_modulo.sub1 T
+def ax/t=1-aug-0000:1-aug-0001/np=3/edge/units=days tsub ! yes
+GO bn_subspan_modulo.sub1 T
+def ax/t=31-dec-0000:1-may-0001/np=3/units=days tsub ! yes
+GO bn_subspan_modulo.sub1 T
+! the following start in year 0001
+def ax/t=31-dec-0000:1-may-0001/np=3/edges/units=days tsub ! no
+GO bn_subspan_modulo.sub1 T
+def ax/t=1-jan-0001:1-sep-0001/np=3/units=days tsub ! no
+GO bn_subspan_modulo.sub1 T
+! the following is too long to be a climatological axis
+def ax/t=29-dec-0000:31-dec-0001/np=3/units=days tsub ! no
+GO bn_subspan_modulo.sub1 T
+
+
+! now test Ferret handling of the axes
+! make a test file with a subspan modulo variable
+! (need to postpone setting /modulo=100 cuz pseudo-vars have value on void pt)
+sp rm -f test_subspan_modulo.nc
+define axis/x=41:46:1/modulo=100 xax_subspan
+
+! almost identical irregular axis
+define axis/x/modulo=100 Xirreg_subspan = {41,42,42.1,44,45,46}
+set axis/modulo=100 Xirreg_subspan
+
+let vreg = X[gx=xax_subspan] -40 + 10
+let virr = X[gx=Xirreg_subspan] -40 + 10
+save/file=test_subspan_modulo.nc vreg, virr
+
+! noisy field to test smoothing
+let noise = 0.2 * RANDN(0*vreg+1)
+let vreg_ragged = vreg + noise
+let virr_ragged = virr + noise[g=virr@asn]
+save/file=test_subspan_modulo.nc/append vreg_ragged, virr_ragged
+
+! gappy field to test hole-filling
+let vreg_void = if x[g=vreg] LT 43 OR x[g=vreg] GT 45 THEN vreg
+let virr_void = if x[g=virr] LT 43 OR x[g=virr] GT 45 THEN virr
+save/file=test_subspan_modulo.nc/append vreg_void, virr_void
+save/file=test_subspan_modulo.nc/append vreg_void, virr_void
+
+! now define two-dimensional variables -- modulo in time as well
+define axis/t=0:150:30/edges/units=days/modulo=365.2485/t0=1-jan-0000 tax_subspan
+define axis/T0=1-jan-0000/units=days/modulo=365.2485/edges Tirreg_subspan = {0,31,59.2485,90.2485,120.2485,150.2485}
+let treg = TBOXLO[gt=tax_subspan]
+let tirr = TBOXLO[gt=tirreg_subspan]
+let v2d_reg = vreg + treg
+let v2d_irr = virr + tirr
+save/file=test_subspan_modulo.nc/append v2d_reg, v2d_irr
+
+! 2d with voids
+let treg_void =  if L[g=v2d_reg] NE 3 THEN treg
+let tirr_void =  if L[g=v2d_irr] NE 3 THEN tirr
+let v2d_reg_void = vreg_void + treg_void
+let v2d_irr_void = virr_void + tirr_void
+save/file=test_subspan_modulo.nc/append v2d_reg_void, v2d_irr_void
+
+! string variable on subspan modulo axis
+let my_strings = {"a1","a2","a3","a4","a5","a6"}
+let vreg_strings = my_strings[gx=xax_subspan@asn]
+let virr_strings = my_strings[gx=Xirreg_subspan@asn]
+save/file=test_subspan_modulo.nc/append vreg_strings, virr_strings
+
+canc var/all
+use test_subspan_modulo.nc
+
+go bn_subspan_modulo.sub2 vreg v2d_reg
+SAY **********   END OF REGULAR   AXIS TEST **************
+SAY ********** START OF IRREGULAR AXIS TEST **************
+go bn_subspan_modulo.sub2 virr v2d_irr
+
+

@@ -1,0 +1,18 @@
+! call stack.jnl to draw stack plot
+
+set win/siz=0.4
+can view
+
+set data "http://stout.pmel.noaa.gov/xwang_las_test-FDS/LAS/ndbc-adcp-44030/water_dir-ndbc-adcp-44030"
+
+! set a region ( this will be done elsewhere in LAS )
+set region/t=1-jun-2005:1-jul-2005/k=1:9
+
+
+go stack water_dir
+
+pause
+can view
+set reg/k=6:9
+
+go stack water_dir 0 499

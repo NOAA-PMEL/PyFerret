@@ -1,0 +1,15 @@
+* DATA_INC.DECL - converted to Unix 2.26.91           
+* COMMON for PLOT+ with all variables declared
+* created for TMAP usage by Steve Hankin 7/88
+	INTEGER	ITYPEZ
+	INTEGER	JX
+	INTEGER	JY
+	INTEGER	JZ
+	INTEGER	LUNN
+	INTEGER	LINEN
+	INTEGER	NREC
+	INTEGER	NVAR
+	INTEGER	NGRP
+	REAL	CAY
+	INTEGER	NRNG
+* requires: INCLUDE 'PPLV11INC:DATA.INC'                                    

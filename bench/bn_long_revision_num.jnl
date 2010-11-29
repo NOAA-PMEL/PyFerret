@@ -1,0 +1,18 @@
+! bn_long_revision_num.jnl 
+! ACM 8/30/05
+! revision numbers were previously limited to 2 decimal places: v5.81
+! Now they can be longer, for minor revisions between releases: v5.8101
+
+! ferret version
+sh sym FERRET_VERSION
+
+! history attribute
+let a = 12
+sp echo "bn_long_revision_num.jnl --- history attribute" >> all_ncdump.out
+save/clobber/file=revision.nc a; sp ncdump revision.nc | grep history >> all_ncdump.out
+
+! label in upper right
+go ptest; sh sym lab1
+
+! show commands without an argument, lists version number at the top
+sho command

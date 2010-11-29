@@ -1,0 +1,16 @@
+!err64_return_precision.jnl 
+! most of these resulted in *** - format too small.
+! see bug1611
+
+say `.099,p=-1`
+
+say `.99,p=-1`
+
+say `9.99,p=-1`
+
+say `99.99,p=-1`
+
+say `999.99,p=-1`
+
+say `999.999,p=-2`
+

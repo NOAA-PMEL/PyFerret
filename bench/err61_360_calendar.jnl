@@ -1,0 +1,11 @@
+! err61_360_calendar.jnl
+!
+
+! This first has always been ok
+define axis/t=28-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 time
+list t[gt=time]
+
+! Should be able to specify 30-feb-1909 for a 360-day calendar but it
+! resulted in an error
+define axis/t=30-feb-1909:07-mar-1909:2/units=days/t0=1-jan-1909/calendar=d360 time
+

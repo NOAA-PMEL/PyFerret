@@ -1,0 +1,80 @@
+! bn_mp_zoo.jnl
+! taken from mp_demo.jnl
+! acm 9/2005
+!
+
+define viewport/xlimits=0.000,0.333/ylim=0.666,0.999 tl
+define viewport/xlimits=0.000,0.333/ylim=0.333,0.666 ml 
+define viewport/xlimits=0.000,0.333/ylim=0.000,0.333 bl
+define viewport/xlimits=0.333,0.666/ylim=0.666,0.999 tm
+define viewport/xlimits=0.333,0.666/ylim=0.333,0.666 mm
+define viewport/xlimits=0.333,0.666/ylim=0.000,0.333 bm
+define viewport/xlimits=0.666,0.999/ylim=0.666,0.999 tr
+define viewport/xlimits=0.666,0.999/ylim=0.333,0.666 mr 
+define viewport/xlimits=0.666,0.999/ylim=0.000,0.333 br
+
+use coads_climatology
+set region/l=1/y=0:90
+
+set view tl
+go margins .2, .6, .2, .2
+go mp_hammer
+set grid sst
+shade/nolab/nokey/noaxes sst, x_page, y_page
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Hammer
+
+set view tm
+go mp_sinusoidal
+go margins .2, .6, .2, .2
+shade/nolab/nokey/noaxes sst, x_page, y_page
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Sinusoidal
+
+set view tr
+go mp_lambert_cyl
+go margins .2, .6, .2, .2
+shade/nolab/nokey/noaxes sst, x_page, y_page
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Lambert Equal Area
+
+set view ml
+go mp_bonne
+go margins .2, .6, .2, .2
+shade/nolab/nokey/noaxes sst, x_page, y_page
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Bonne
+
+set view mm
+go mp_mcbryde_fpp
+go margins .2, .6, .2, .2
+shade/nolab/nokey/noaxes sst, x_page, y_page
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 McBryde Flat Polar
+
+set view mr
+go mp_polyconic
+go margins .2, .6, .2, .2
+shade/nolab/nokey/noaxes sst, x_page, y_page
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Polyconic
+
+set view bl
+go mp_orthographic 300 45
+go margins .2, .6, .2, .2
+let masked_sst = sst * mp_mask
+shade/nolab/nokey/noaxes masked_sst, x_page, y_page
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 OrthoGraphic
+
+set view bm
+set region/x=240:420
+go mp_stereographic_eq
+go margins .2, .6, .2, .2
+shade/nolab/nokey/noaxes sst, x_page, y_page
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Stereographic Equatorial
+
+set view br
+set region/x=0:360/y=00:90
+go mp_stereographic_north
+go margins .2, .6, .2, .2
+shade/nolab/nokey/noaxes sst, x_page, y_page
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Stereographic North
+
+can view
+can region
+exit
+

@@ -1,0 +1,65 @@
+!\ CANCEL MODE VERIFY
+! great_circle.jnl
+! Description: Overlay a great circle arc on a lat/lon plot
+
+ ! plotting of great circle between (lat1,lon1) & (lat2,lon2)
+ ! use east longitudes (0-360 unless spanning greenwich meridian
+ ! when a negative longitude is appropriate for the location in
+ ! the western hemisphere)
+ ! Mick Spillane           NOAA/PMEL/OCRD            March 1993
+
+ ! usage:
+ ! GO great_circle lat1 lon1 lat2 lon2 [pen_color]
+ ! Note: all arguments must be numeric - formatted lat/lons not supported
+ !	(e.g. use "160" for 160E, "200" for 160W, "-20" for 20S, "20 for 20N
+
+! check that 4 arguments were supplied and check optional color
+QUERY/IGNORE $4"<Usage: GO great_circle lat1 lon1 lat2 lon2 [pen_color] (numeric positions only)"
+ppl pen 1 $5%1|red>1|green>1|blue>1|thick>1|0>1|1>1|2>1|3>1|4>1|5>1|6>1|7>1|8>1|9>1|10>1|11>1|12>1|13>1|14>1|15>1|16>1|17>1|18>1|<optional pen_color = 0(back), 1(fore), thick, 2-18 or a color%
+
+! assign the arguments
+LET lat1 = $1
+LET lon1 = $2
+LET lat2 = $3
+LET lon2 = $4
+
+ ! degree to radian conversion
+
+let d2r=atan(1.)/45.
+
+ ! cos and sin for end points
+
+let ct1=cos(d2r*lat1)
+let st1=sin(d2r*lat1)
+let ct2=cos(d2r*lat2)
+let st2=sin(d2r*lat2)
+let cp1=cos(d2r*lon1)
+let sp1=sin(d2r*lon1)
+let cp2=cos(d2r*lon2)
+let sp2=sin(d2r*lon2)
+
+let a=ct1*sp1*st2-st1*ct2*sp2
+let b=st1*ct2*cp2-ct1*cp1*st2
+let c=ct1*sp1*ct2*cp2-ct1*cp1*ct2*sp2
+
+ ! lat,lon are points along the great circle
+
+let sp=sin(d2r*lon)
+let cp=cos(d2r*lon)
+
+let lat=atan((a*cp+b*sp)/c)/d2r
+
+ ! use 100 arcs to draw great circle
+
+define axis/z=1:101:1 zgrc
+set region/k=1:101
+let lon=lon1+(k-1)*(lon2-lon1)/100
+
+ ! overlay the great circle on an existing plot
+
+plot/overlay/nolabel/set_up/vs lon,lat
+ppl pen 1 $5"1|red>2|green>3|blue>4|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+ppl plot/overlay
+
+set mode/last verify
+

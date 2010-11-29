@@ -1,0 +1,247 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Set Input Mode functions :
+ *	gslcm_
+ *	gsskm_
+ *	gsvlm_
+ *	gschm_
+ *	gspkm_
+ *	gsstm_
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ *
+ * $Id$
+ * $__Header$
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifndef lint
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+
+/*
+ * gslcm - Set Locator Mode
+ *
+ * int *wkid - pointer to workstation id
+ * int *lcdnr - pointer to locator device number
+ * int *mode - pointer to operating mode
+ * int *esw - pointer to echo switch
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.128
+ */
+/*FORTRAN*/
+gslcm(
+    int            *wkid,
+    int            *lcdnr,
+    int            *mode,
+    int            *esw)
+{
+    debug(("Set Locator Mode %d  %d %d %d \n", *wkid, *lcdnr, *mode, *esw));
+
+    OPERATINGMODE(*mode, errgsetlocmode);
+    ECHOSWITCH(*esw, errgsetlocmode);
+
+    (void) gsetlocmode((Gint) *wkid,
+		       (Gint) *lcdnr,
+		       (Gimode) *mode,
+		       (Gesw) ((*esw) ? FORT_GNECHO : FORT_GECHO));
+}
+
+
+/*
+ * gsskm - Set Stroke Mode
+ *
+ * int *wkid - pointer to workstation id
+ * int *skdnr - pointer to stroke device number
+ * int *mode - pointer to operating mode
+ * int *esw - pointer to echo switch
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.129
+ */
+/*FORTRAN*/
+gsskm(
+    int            *wkid,
+    int            *skdnr,
+    int            *mode,
+    int            *esw)
+
+{
+    debug(("Set Stroke Mode %d %d %d %d \n", *wkid, *skdnr, *mode, *esw));
+
+    OPERATINGMODE(*mode, errgsetstrokemode);
+    ECHOSWITCH(*esw, errgsetstrokemode);
+
+    (void) gsetstrokemode((Gint) *wkid,
+		          (Gint) *skdnr,
+		          (Gimode) *mode,
+		          (Gesw) ((*esw) ? FORT_GNECHO : FORT_GECHO));
+}
+
+
+/*
+ *
+ * gsvlm - Set Valuator Mode
+ *
+ * int *wkid - pointer to workstation id
+ * int *lcdnr - pointer to valuator device number
+ * int *mode - pointer to operating mode
+ * int *esw - pointer to echo switch
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.128
+ */
+/*FORTRAN*/
+gsvlm(
+    int            *wkid,
+    int            *vldnr,
+    int            *mode,
+    int            *esw)
+{
+    debug(("Set Valuator Mode %d %d %d %d \n", *wkid, *vldnr, *mode, *esw));
+
+    OPERATINGMODE(*mode, errgsetvalmode);
+    ECHOSWITCH(*esw, errgsetvalmode);
+
+    (void) gsetvalmode((Gint) *wkid,
+		       (Gint) *vldnr,
+		       (Gimode) *mode,
+		       (Gesw) ((*esw) ? FORT_GNECHO : FORT_GECHO));
+}
+
+
+/*
+ *
+ * gschm - Set Choice Mode
+ *
+ * int *wkid - pointer to workstation id
+ * int *lcdnr - pointer to choice device number
+ * int *mode - pointer to operating mode
+ * int *esw - pointer to echo switch
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.130
+ */
+/*FORTRAN*/
+gschm(
+    int            *wkid,
+    int            *chdnr,
+    int            *mode,
+    int            *esw)
+
+{
+    debug(("Set Choice Mode %d %d %d %d \n", *wkid, *chdnr, *mode, *esw));
+
+    OPERATINGMODE(*mode, errgsetchoicemode);
+    ECHOSWITCH(*esw, errgsetchoicemode);
+
+    (void) gsetchoicemode((Gint) *wkid,
+		          (Gint) *chdnr,
+		          (Gimode) *mode,
+		          (Gesw) ((*esw) ? FORT_GNECHO : FORT_GECHO));
+}
+
+
+/*
+ *
+ * gspkm - Set Pick Mode
+ *
+ * int *wkid - pointer to workstation id
+ * int *lcdnr - pointer to pick device number
+ * int *mode - pointer to operating mode
+ * int *esw - pointer to echo switch
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.128
+ */
+/*FORTRAN*/
+gspkm(
+    int            *wkid,
+    int            *pkdnr,
+    int            *mode,
+    int            *esw)
+{
+    debug(("Set Pick Mode %d %d %d %d \n", *wkid, *pkdnr, *mode, *esw));
+
+    OPERATINGMODE(*mode, errgsetpickmode);
+    ECHOSWITCH(*esw, errgsetpickmode);
+
+    (void) gsetpickmode((Gint) *wkid,
+		        (Gint) *pkdnr,
+		        (Gimode) *mode,
+		        (Gesw) ((*esw) ? FORT_GNECHO : FORT_GECHO));
+}
+
+
+/*
+ *
+ * gsstm - Set String Mode
+ *
+ * int *wkid - pointer to workstation id
+ * int *lcdnr - pointer to string device number
+ * int *mode - pointer to operating mode
+ * int *esw - pointer to echo switch
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.128
+ */
+/*FORTRAN*/
+gsstm(
+    int            *wkid,
+    int            *stdnr,
+    int            *mode,
+    int            *esw)
+{
+
+    debug(("Set String Mode %d %d %d %d \n", *wkid, *stdnr, *mode, *esw));
+
+    OPERATINGMODE(*mode, errgsetstringmode);
+    ECHOSWITCH(*esw, errgsetstringmode);
+
+    (void) gsetstringmode((Gint) *wkid,
+		          (Gint) *stdnr,
+		          (Gimode) *mode,
+		          (Gesw) ((*esw) ? FORT_GNECHO : FORT_GECHO));
+}

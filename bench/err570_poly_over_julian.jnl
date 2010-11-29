@@ -1,0 +1,15 @@
+! err570_poly_over_julian.jnl
+! ACM 11/12/04
+
+! Bug 1066
+! Overlaying data on a Julian time axis got an error:
+!          Differing calendar axes:
+!          first variable is on JULIAN axis
+!          overlaid variable is on GREGORIAN axis
+
+use coads_climatology
+set axis/CAL=JULIAN time
+plot/x=140w/y=0 sst
+plot/ov/vs/line=3 {400,900,900,400}, {25.5,25.5,26.5,25.5}
+poly/ov/pal=green {400,900,900,400}, {25.5,25.5,26.5,25.5}
+

@@ -1,0 +1,198 @@
+ 
+! bn_bounds.jnl
+! testing CDF read and write of file with irregular axes and bounds 
+! and DEFINE AXIS/BOUNDS
+! 5/2005 made changes so the bounds coordinates {1,2} are written to the 
+!        file. If axis is Z, write attribute potitive="up". (bug 1196)
+! 2/10   new examples of bounds which overlap each other.
+
+! Output data on irregular record axis. No need for:
+! save/clobber/RIGID/HEADING=ENHANCED/LLIMITS=1:3/file=a.nc v
+
+use climatological_axes
+let v = t[gt=month_irreg]
+save/clobber/file=a.nc v
+
+sp echo "bn_bounds.jnl --- 1 output of bounds on irreg axes." >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+can data/all
+can var v
+
+! Now use coads with long irregular time axis.
+
+can data/all
+use coads_vwnd
+let v = missing(vwnd,28.5)
+save/clobber/file=a.nc/x=199/y=41/l=40:44 v
+sp echo "bn_bounds.jnl --- 2 long irreg axes." >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+
+! Append later time steps: we add a void point between non-contiguous bounds
+
+save/append/file=a.nc/x=199/y=41/l=50:53 v
+sp echo "bn_bounds.jnl --- 3 Append later time steps, adding a void point" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+can data/all
+can var/all
+
+! Depth axis; bounds {1,2} positive up
+
+define axis/z/depth/units=meters zirr = {0,10,40,70}
+let t2 = z[gz=zirr]
+save/clobber/file=a.nc t2
+sp echo "bn_bounds.jnl --- 4 depth axis, bounds positive up" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+can data/all
+can var/all
+
+! SAVE on irregular time axis, multi-dimensional save.
+! Void point is one time, all X and Y
+
+use climatological_axes
+use coads_climatology
+let v = missing(sst[gt=month_irreg], 28)
+save/clobber/x=181:185/y=1:7/L=1:5/file=a.nc v
+save/append/x=181:185/y=1:7/L=8:9/file=a.nc v
+sp echo "bn_bounds.jnl --- 5 SAVE on irregular time axis, multi-dimensional save." >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+can var v
+
+use a.nc
+list/y=3 v
+list/x=177w v
+can data/all
+can var/all
+ 
+! Define an axis using edges
+def axis/t/edges tax={0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
+list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
+ 
+! Define an axis using bounds.  Note the coordinates need not be
+! centered in the axis cells.
+def axis/t/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.5, 1.5,2.5, 2.5,3.5, 3.5,6.5, 6.5,7.5, 7.5,8.5, 8.5,9.5}
+list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
+
+! Define an axis using bounds, with discontinuity between bounds,
+! detected and changed to contiguous bounds, using lower bound for all cells.
+def axis/t/bounds tax={1,2,3,5,7,8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,4.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
+ 
+! intentional errors
+! coordinate point not inside bounds
+set mode ignore
+def axis/t/bounds tax={1.2,2,3.2,5,7,8.8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+ 
+! First coordinate lower than first lower bound
+def axis/t/bounds tax={0.1,2,3.2,5,7,8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+ 
+! Last coordinate higher than last upper bound
+def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+ 
+! Too few or too many bounds values
+def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5} 
+def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5,10.5}
+
+
+! This set of bounds has overlapping bounds. Use midpoints instead.
+def axis/t/bounds tax=\
+ {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} ,\
+ {0,24, 0,24, 24,48, 24,48, 48,72, 48,72, 72,96, 72,96, 96,120} 
+
+cancel axis tax
+can mode ignore
+
+! SAVE on regular time axis with bounds and edges attributes
+
+use coads_climatology
+list/x=181/y=1/form=(f6.2, 3f10.4) sst, t[gt=sst], tboxlo[gt=sst], tboxhi[gt=sst]
+
+save/clobber/bounds/file=a.nc/x=181/y=1 sst
+sp echo "bn_bounds.jnl --- 6 SAVE on regular time axis with bounds attribute" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+
+save/clobber/edges/file=a.nc/x=181/y=1 sst
+sp echo "bn_bounds.jnl --- 7 SAVE on regular time axis with edges attributes" >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out
+
+! Intentional errors; combinations of qualifiers on SAVE
+set mode ignore
+
+use coads_climatology
+save/clobber/rigid/heading=enhanced/llimits=1:3/bounds/file=a.nc/x=181/y=1 sst
+save/clobber/edges/bounds/file=a.nc/x=181/y=1 sst
+can mode ignore
+
+can data/all
+
+! outputting bounds on all irregular axes
+! test of DEPTH axis
+
+def axis/x xax = {1,2,5,6,7,8}
+def axis/z/depth/bounds zax = {0,20,50,75,120}, {0, 10, 10, 30, 30, 60, 60, 90, 90, 150}
+def axis/t tax = {1,2,9,10,11}
+let v = x[gx=xax] +z[gz=zax] + t[gt=tax]
+save/clobber/file=irrxzt.nc v
+sp echo "bn_bounds.jnl --- 8 outputting bounds on all irregular axes, depth axis" >> all_ncdump.out
+sp ncdump irrxzt.nc >> all_ncdump.out
+
+can data/all
+can var/all
+use irrxzt
+list/x=5/t=5 v, z[gz=v] , zboxlo[gz=v], zboxhi[gz=v]
+can data/all
+ 
+! RIGID/HEAD=ENHANCED works the same; issues a note
+
+use climatological_axes
+use coads_climatology
+let v = sst[gt=month_irreg]
+save/clobber/rigid/head=enh/llimits=1:3/x=181:191/y=1:7/l=1:3/file=a.nc v
+
+! Saving data with regular axes
+! First save without the bounds attribute, result is a file with 
+! irregular time axis, possibly unintended large boxes.
+
+use climatological_axes
+use coads_climatology
+let v = missing(sst[gt=month_reg], 28)
+
+save/clobber/file=a.nc/x=181/y=1/L=1:4 v
+save/append/file=a.nc/x=181/y=1/L=8:10 v
+can data/all
+can var v
+use a.nc
+list v, t[gt=v], tbox[gt=v]
+can data a
+
+! Now save with /bounds
+
+use climatological_axes
+use coads_climatology
+let v = missing(sst[gt=month_reg], 28)
+save/clobber/BOUNDS/file=a.nc/x=181/y=1/L=1:4 v
+save/append/file=a.nc/x=181/y=1/L=8:10 v
+can data/all
+can var v
+use a.nc
+
+list v, t[gt=v], tbox[gt=v]
+can data/all
+
+! gappy_bounds.nc has discontiguous bounds
+! We use the LOWER bound of all axis cells.
+
+use gappy_bounds.nc
+list a, t[gt=a], tboxlo[gt=a], tboxhi[gt=a]
+
+cancel dat/all
+
+! bounds_noenclose has bounds that dont enclose the axis coordinate
+! points.  Use axis midpoints instead.
+
+use bounds_noenclose
+sh axis/t tax
+
+! bounds_overlapping has bounds overlap.  Use axis midpoints instead.
+
+use bounds_overlapping
+sh axis/t tax

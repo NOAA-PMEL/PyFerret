@@ -1,0 +1,101 @@
+\cancel mode verify
+! find_bullseye.jnl
+
+! Description: find bullseye when told if max or min (subroutine)
+! Note: this is a subroutine of bullseye.jnl
+
+! created 4/29/97
+
+! Usage:		arg 1	2   3   4    5         6	
+!	GO bullseye expression xpt ypt xwid ywid "MIN" or "MAX"
+
+!  arg 1 (expression)	- name of variable or expression with bullseye
+!  arg 2 (xpt)		- approximate X location of bull's eye
+!  arg 3 (ypt)		- approximate Y location of bull's eye
+!  arg 4 (xwid)		- width of X box to search
+!  arg 5 (ywid)		- width of Y box to search
+!  arg 6 (MIN or MAX)	- look for local "MIN" or "MAX"
+
+! example:
+!	yes? USE ocean_atlas_annual
+!	yes? GO find_bullseye po4[k=1] 175e 50n 10 10 MAX
+!	yes? show symbol success
+!	yes? show symbol failure_reason
+
+! test validity of arguments
+query/ignore $1%<Usage: GO find_bullseye exprn Xpt Ypt xwidth ywidth MINMAX%
+query/ignore $2%<Usage: GO find_bullseye exprn Xpt Ypt xwidth ywidth MINMAX%
+query/ignore $3%<Usage: GO find_bullseye exprn Xpt Ypt xwidth ywidth MINMAX%
+query/ignore $4%<Usage: GO find_bullseye exprn Xpt Ypt xwidth ywidth MINMAX%
+query/ignore $5%<Usage: GO find_bullseye exprn Xpt Ypt xwidth ywidth MINMAX%
+query/ignore $6"|MIN|MAX|<Argument 6 must be MIN or MAX"
+
+! assign the passed arguments
+! ... the field to be examined (may have square bracket qualifiers)
+LET/QUIET arg1 = $1
+! ... convert location in degrees EWSN into lat/long ranges
+!     expressed as pure numbers (rounded to nearest 1/10 degree)
+define axis/x=-180:360:0.1/unit=longitude x_10ths
+define axis/y=-90:90:0.1/unit=latiitude y_10ths
+define sym xrng X=`X[gx=x_10ths,x=$2]-$4/2`:`X[gx=x_10ths,x=$2]+$4/2` 
+define sym yrng Y=`Y[gy=y_10ths,y=$3]-$5/2`:`Y[gy=y_10ths,y=$3]+$5/2` 
+
+! test that a valid sub-field was passed to us
+LET/QUIET field = arg1[($xrng),($yrng)]	! the rectangle of data to be examined
+define symbol shape `field,return=shape`
+IF ($shape%|XY>0|*>1) THEN
+  SAY You have passed a ($shape) region of data. You need to supply an XY region.
+  define symbol success 0
+  define symbol failure_reason Not an XY region
+  EXIT  
+ENDIF
+
+! define variables
+LET/QUIET eyeval = field[X=@$6,Y=@$6]	! the extrema within that rectangle
+LET/QUIET field0 = field - eyeval	! equals zero at the extrema
+LET/QUIET xloc_array = field0[X=@loc]	! an array in Y containing the X locn
+
+! report the result silently in symbol "success"
+! check to make sure that there is only a single bullseye in the region
+define symbol success 1   ! start by assuming success
+define symbol failure_reason No failure
+LET/QUIET num_eyes = MISSING(xloc_array[y=@ngd],0)
+IF `num_eyes EQ 0` THEN
+   define symbol success 0
+   define symbol failure_reason No bullseye in region
+ELIF `num_eyes GT 1` THEN
+   define symbol success 0
+   define symbol failure_reason Multiple bullseyes in region
+ENDIF
+
+! final check: an extremum on the box boundary is not a real extremum
+IF `($success)` THEN
+! determine the world coord and subscript position of the extrema
+  set grid/save
+  set grid field
+  LET/QUIET xloc = xloc_array[y=@sum]
+  LET/QUIET xloc_array0 = 0 * xloc_array
+  LET/QUIET yloc = xloc_array0[y=@loc]
+  define symbol xloc `xloc`
+  define symbol iloc `i[x=($xloc)]`
+  define symbol yloc `yloc`
+  define symbol jloc `j[y=($yloc)]`
+
+! make sure the extrema is not on the box boundary
+  LET/QUIET irng = I[($xrng)]
+  LET/QUIET jrng = J[($yrng)]
+  IF `irng[i=@min] EQ ($iloc) OR irng[i=@max] EQ ($iloc)` THEN
+    define symbol success 0
+    define symbol failure_reason Extremum lies on region boundary
+  ENDIF
+  IF `jrng[j=@min] EQ ($jloc) OR jrng[j=@max] EQ ($jloc)` THEN
+    define symbol success 0
+    define symbol failure_reason Extremum lies on region boundary
+  ENDIF
+  set grid/restore field
+ENDIF
+
+! clean up
+set mode/last verify
+
+

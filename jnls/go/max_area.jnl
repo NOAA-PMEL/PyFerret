@@ -1,0 +1,14 @@
+\ cancel mode verify
+! max_area.jnl  (11/93)
+
+! Description: set the data plotting area (inside the axes) to the full window
+
+! use this procedure as follows:
+!	GO max_area
+
+! reset to the default plotting with yes? PPL/RESET
+
+ppl origin 0,0
+ppl axlen 'VP_WIDTH','VP_HEIGHT'
+
+set mode/last verify

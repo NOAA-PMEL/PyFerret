@@ -1,0 +1,60 @@
+/*
+ * $Id$
+ */
+
+#ifndef UD_signal_h
+#define UD_signal_h
+
+
+#include "udposix.h"
+#include UD_SYSTEM_SIGNAL_H
+
+
+#ifdef UD_NO_SIGSET_T
+   typedef unsigned long	sigset_t
+#endif
+
+#ifdef UD_NO_SIG_ATOMIC_T
+   typedef int			sig_atomic_t
+#endif
+
+
+#ifdef UD_NO_SIGACTION_STRUCT
+    struct sigaction {
+	void		(*sa_handler)();
+	sigset_t	sa_mask;
+	int		sa_flags;
+    }
+#endif
+
+
+#ifdef UD_NO_SIGEMPTYSET_DECL
+    UD_EXTERN_FUNC(int sigemptyset, (sigset_t *set));
+#endif
+#ifdef UD_NO_SIGADDSET_DECL
+    UD_EXTERN_FUNC(int sigaddset, (sigset_t *set));
+#endif
+#ifdef UD_NO_SIGFILLSET_DECL
+    UD_EXTERN_FUNC(int sigfillset, (sigset_t *set));
+#endif
+#ifdef UD_NO_SIGDELSET_DECL
+    UD_EXTERN_FUNC(int sigdelset, (sigset_t *set));
+#endif
+#ifdef UD_NO_SIGISMEMBER_DECL
+    UD_EXTERN_FUNC(int sigismember, (sigset_t *set));
+#endif
+#ifdef UD_NO_SIGACTION_DECL
+    UD_EXTERN_FUNC(int sigaction, (sigset_t *set));
+#endif
+#ifdef UD_NO_SIGPROCMASK_DECL
+    UD_EXTERN_FUNC(int sigprocmask, (sigset_t *set));
+#endif
+#ifdef UD_NO_SIGPENDING_DECL
+    UD_EXTERN_FUNC(int sigpending, (sigset_t *set));
+#endif
+#ifdef UD_NO_SIGSUSPEND_DECL
+    UD_EXTERN_FUNC(int sigsuspend, (sigset_t *set));
+#endif
+
+
+#endif	/* UD_signal_h not defined above */

@@ -1,0 +1,37 @@
+
+
+
+! Benchmark for sort and sample external Functions
+! ACM 5/99
+
+! V550 *sh* 11/02 - documentation change only, reflecting subspan modulo
+! The use of L=5 on a 3 point time axis triggers a valid subspan modulo calculation
+! V581 *ACM 3/05 Changes in specifying context for arg 2 of SAMPLEJ
+!                see notes in Bugzilla under bug 1187.
+
+can region
+use coads_climatology
+set region/x=141/y=39:49/z=0/l=2
+
+list sst
+
+let tsorted_indices = sortj( sst[j=65:70,x=141,z=0,l=2])
+let tsorted_sst = samplej(sst, tsorted_indices)
+
+list tsorted_indices, tsorted_sst
+
+! test on 2-D data.
+
+can region
+!set data coads_climatology
+set region/l=5
+
+let ysorted_indices = sortj(sst)
+let ysorted_sst = samplej(sst, ysorted_indices[i=0,l=5])
+!shade ysorted_sst
+list/i=0/j=1:15 ysorted_sst
+
+set region/l=5/x=181
+let len = ysorted_sst[j=@ngd]
+list len
+

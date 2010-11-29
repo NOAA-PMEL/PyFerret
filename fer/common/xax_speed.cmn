@@ -1,0 +1,7 @@
+! temp - until incorporated into TMAP library
+* XAX_SPEED.CMN
+* contains information about the relative access speeds of each axis
+
+	INTEGER	    ds_ax_speed( 4, maxdsets )
+
+	COMMON /XAX_SPEED / ds_ax_speed

@@ -1,0 +1,29 @@
+! err611_context_after_error.jnl
+! ACM 11/12/08
+!
+! Bug 1421 - goes back even to older versions of Ferret e.g. 5.41 on stout
+! Context errors after 
+!
+!    list a_regrid[d=1,gt=b[d=2]@mod] 
+!    ...
+!    cancel data/all
+!
+! if the list command is issued before the variable a_regrid is defined.
+
+
+SET MODE ignore_error
+USE bug1421_a
+USE bug1421_b
+
+SHOW DATA
+SHOW AXIS/ALL
+
+DEF AXIS/T/UNITS="days"/T0="1-jan-0001"/cal=noleap tnew = tboxlo[GT=a[D=1]]
+LIST a_regrid[D=1,GT=b[D=2]@MOD]
+LET a_regrid = a[D=1,GT=tnew@ASN]
+LIST a_regrid[D=1,GT=b[D=2]@MOD]
+
+CANCEL DATA/ALL
+SHOW AXIS/ALL
+
+SET MODE/LAST ignore_error

@@ -1,0 +1,5 @@
+
+	CHARACTER*16   plaser_flag
+	PARAMETER (plaser_flag = '....(laser disk)')	
+                                            
+	CHARACTER*3	pframe_hdf_runlen

@@ -1,0 +1,31 @@
+! bn_cancel_upcase_uservar.jnl 
+!
+! Ferret v6.2
+! MODE upcase_only cancelled, now writes lowercase
+! spelling for user-defined variables and for coordinate
+! variables even coming from two different datasets.
+
+CANCEL MODE upcase
+
+! User variable with lowercase letters in the name
+
+DEFINE AXIS/t=1-jan-1999:31-jan-1999:1/units=days/t0=31-dec-1998 tday
+LET MyUpperLowerCaseVar = x[x=1:10] + t[gt=tday]
+save/file=a.nc/clobber MyUpperLowerCaseVar
+
+! Open two datafiles. These have variable and axis
+! names in lowercase.
+
+USE a1478.nc
+USE a_cartesian_bug1179.nc
+
+! Define an output variable with some axes from each dataset.
+LET/D=2 zvar = z[gz=temp[d=2]]
+LET newvar =  0*zvar[d=2] + olr[d=1]
+SET ATT/LIKE=olr[d=1] newvar
+SET ATT/OUTPUT=all newvar
+
+SAVE/APPEND/FILE=a.nc newvar
+SP ncdump -h a.nc
+
+SET MODE/LAST upcase_output

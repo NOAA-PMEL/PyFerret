@@ -1,0 +1,17 @@
+! bn_redefine_taxis_mc.jnl
+! ACM 15-Apr-2005
+
+! Redefine the time axis of a multi-file data set. 
+! Lets us fix a time axis, which may in fact be irregular, but
+! the multi-file reading always makes into a regularly-spaced axis.
+
+set data coads_clim
+list/x=180/y=0 sst
+
+def sym taxisname  `sst,return=taxis`
+
+def axis/t=1-mar-1990:6-mar-1990:1/units=days ($taxisname)
+list/x=180/y=0 sst
+
+def axis/t=1:6:1 ($taxisname)
+list/x=180/y=0 sst

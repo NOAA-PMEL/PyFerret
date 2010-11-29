@@ -1,0 +1,41 @@
+! bn_encode_url.jnl
+!
+! Encode a URL inside Ferret
+
+IF `TEST_OPENDAP("http://ferret.pmel.noaa.gov/thredds/dodsC/NVODS/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112an1.nc.jnl") NE 0` THEN
+   EXIT/SCRIPT
+ENDIF
+
+! This from the example Roland cooked up.
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/NVODS/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112an1.nc.jnl_expr_%7B%7D%7Blet%20top=T0112AN1%5Bz=0%3A100%40ave%5D%7D"
+
+! Now the same thing, encoded in Ferret
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/NVODS/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112an1.nc.jnl_expr_{}{let/UNITS=DEG top=T0112AN1[z=0:100@ave]}"
+
+shade/L=6 top[d=2] - top[d=1]
+
+! Define title or units, allowing there to be spaces...
+
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/NVODS/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112an1.nc.jnl_expr_{}{let/TITLE="Average over Lower 1000m"/units="Deg C" bot=T0112AN1[z=500:1500@ave]}"
+sho dat
+shade/L=6 bot
+
+
+! THESE THINGS DO NOT WORK:
+! 1) executing more than 1 command separated by semicolons. Does not work
+! when viewed through the browser either.
+! Trying to escape semicolon-separated commands in a F-TDS URL. _expr_{}{let/TITLE="Upper_100M"/units=M top=T0112AN1[z=0:100@ave]; set var/units=Q top}
+! Note that the url does NOT work in the browser; get an error:
+!     Error in URL
+!     The URL extension did not match any that are known by this server. ...
+! http://ferret.pmel.noaa.gov/thredds/dodsC/NVODS/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112an1.nc.jnl_expr_{}{let/TITLE="Upper_100M"/units=M top=T0112AN1[z=0:100@ave]; set var/units=Q top}.html
+!
+!use "http://ferret.pmel.noaa.gov/thredds/dodsC/NVODS/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112an1.nc.jnl_expr_{}{let/TITLE="Upper_100M"/units=M top=T0112AN1[z=0:100@ave]; set var/units=Q top}"
+
+! 2) A command which has a grave-accent evaluation of something from the dataset. The set is not 
+! open when the encoding is done, so Ferret cant get information out of it.
+! Trying to escape return= grave accents in a F-TDS URL.
+!
+!use "http://ferret.pmel.noaa.gov/thredds/dodsC/NVODS/woa05_monthly/data_ferret.pmel.noaa.gov_thredds_dodsC_data_PMEL_WOA05nc_monthly_t0112an1.nc.jnl_expr_{}{let/units="`T0112AN1,return=units`" top=T0112AN1[z=0:1000@ave]}"
+
+

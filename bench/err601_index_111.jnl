@@ -1,0 +1,10 @@
+
+! err601_index_111.jnl
+! 11/09/2006 ACM
+! bug 1463 region that points to index -111 on modulo axis confused
+! with unspecified_int4. Fixed by changing to -999.
+
+! x=-203 corresponds to I=-111.
+use coads_climatology
+list x[gx=sst,x=-193:-203]
+

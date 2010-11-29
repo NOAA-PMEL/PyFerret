@@ -1,0 +1,103 @@
+\cancel mode verify
+! error_bars.jnl
+! 6/99 *sh*
+! 7/01 *acm* update /xlimits to /hlimits
+
+! Description: Overlay error bars on a plot
+
+! Usage:                   $1       $2   $3       $4           $5
+! yes?  GO error_bars plot_command base errors [err_down] ["transpose"]
+! $1 - the plot command with qualifiers (eg PLOT/VS/OVER/LINE=2)
+! $2 - underlying points to be marked with error bars
+! $3 - error values associated with points (or error limit above)
+! $4 - [optional] error limit below (if different that $4)
+! $5 - [optional] "transpose" to interchange X and Y axes
+
+! examples
+!         demo script has more examples
+!       yes? go error_bars_demo
+
+! 1) Define synthetic data
+
+!	yes? let xpts = j[j=1:5]
+!	yes? let ypts = sin(xpts)
+!	yes? let errup = 0.6 * RANDU(xpts)
+!	yes? let errdn = 0.6 * RANDU(xpts+1)
+!
+!	yes? plot/hlimits=0:6/vlimits=-2:2/vs/line xpts, ypts
+!	yes? GO error_bars poly/line=2 ypts errup 
+
+!       yes? GO error_bars poly/line=3 ypts errup errdn
+
+
+! 2) Use a data set, but create some dummy error numbers
+!
+! Note that if using transformations to create a 1-dimensional variable
+! from a multi-dimensional variable, the limits must be made explicitly.
+! sst[x=@ave,y=@ave] would cause this script to fail where it uses the 
+! `var,return=shape` syntax.
+
+!	yes? use coads_climatology
+!       yes? let sst_ave = sst[x=0:360@ave,y=-60:60@ave]
+!       yes? let errup = 0.1 + 0*sst_ave
+!       yes? let errdn = 0.2 + 0*sst_ave
+!
+!	yes? plot sst_ave
+!	yes? GO error_bars poly/line=2 sst_ave, errup, errdn
+
+! argument check
+QUERY/IGNORE $1%<usage: yes? GO error_bars plot_command base errors [err_down] ["transpose"]%
+QUERY/IGNORE $2%<usage: yes? GO error_bars plot_command base errors [err_down] ["transpose"]%
+QUERY/IGNORE $3%<usage: yes? GO error_bars plot_command base errors [err_down] ["transpose"]%
+
+! save the input expressions into simple variable definitions
+LET/QUIET ERBy = ($2)
+LET/QUIET ERBerr_up = ($3)
+IF $4"0|*>1" THEN
+   LET/QUIET ERBerr_dn = ($4)
+ELSE
+   LET/QUIET ERBerr_dn = ERBerr_up
+ENDIF
+DEFINE SYMBOL ERBis_transposed  $5"0|*>1"
+
+! determine the orientation of the data (and check that it is 1D)
+DEFINE SYMBOL ERBax `ERBy,return=shape`
+DEFINE SYMBOL ERBbar_dim ($ERBax"|PT>Z|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a point or line")
+DEFINE SYMBOL ERBiax ($ERBax"|X>i|Y>j|Z>k|T>l")
+
+! get the dependent coordinates -- needed since POLYGON is like PLOT/VS
+! typically, "0*ERBy + X[i=lo:hi]", so X is inherited from ERBy
+DEFINE SYMBOL ERBilo `ERBy,return=($ERBiax)start`
+DEFINE SYMBOL ERBihi `ERBy,return=($ERBiax)end`
+LET/QUIET ERBx_raw =  0*ERBy + ($ERBax)
+LET/QUIET ERBx = ERBx_raw[($ERBiax)=($ERBilo):($ERBihi)]
+
+! Z axis plots have a reversed sense of "transposed"
+IF ($ERBax"|Z>1|*>0") THEN
+   DEFINE SYMBOL ERBis_transposed  ($ERBis_transposed"|0>1|1>0")
+ENDIF
+IF ($ERBis_transposed) THEN
+   DEFINE SYMBOL ERBtranspz "/transpose"
+ELSE
+   CANCEL SYMBOL ERBtranspz
+ENDIF
+
+! determine the orientation for the error bar coordinates
+LET/QUIET ERBxbar = ($ERBbar_dim)SEQUENCE({0,0,-1,1,0})
+LET/QUIET ERBybar = ($ERBbar_dim)SEQUENCE({0,1, 1,1,1})
+
+! scale the "T" on the error bar based on the  to data ...
+! NOTE: define the symbol "IbeamWidth" to control the cross bar
+IF ($ERBtranspz"0|*>1) THEN
+   LET/QUIET ERBwidth = ($IbeamWidth".005") * (($YAXIS_MAX"1")-(($YAXIS_MIN"0")))
+ELSE
+   LET/QUIET ERBwidth = ($IbeamWidth".005") * (($XAXIS_MAX"1")-(($XAXIS_MIN"0")))
+ENDIF
+
+$1($ERBtranspz"/over")/over/coord=($ERBbar_dim)) ERBx+ERBxbar*ERBwidth,ERBy+ERBerr_up*ERBybar
+$1($ERBtranspz"/over")/over/coord=($ERBbar_dim)/NOLABEL ERBx+ERBxbar*ERBwidth,ERBy-ERBerr_dn*ERBybar
+
+
+cancel symbol ERB*
+cancel variable ERB*
+set mode/last verify

@@ -1,0 +1,79 @@
+! err581_if_conditional.jnl  bug 918. 
+! acm 10/2005
+! Immediate mode parsing: when in an IF block, and when
+! the IF is false and therefore not being executed.
+! Previously ferret attempted to parse the IF `a` THEN
+! but could not because LET a=1 has not been executed/
+!
+! This should skip to the end, not trying to execute anything inside the IF 0 THEN
+
+if 0 then
+let a = 1
+  if `a` then
+  say ok
+     if 1 then 
+        say "this is an inner if."
+        say "we should NOT see these lines"
+     endif
+  endif
+endif
+
+say "finished the if block"
+
+! Further tests, after this fix, we get an error
+! **ERROR: variable unknown or not in data set: DXYMIN
+! The code that skips statements inside the IF false THEN
+! was bumping a stack on the internal IF statement...
+
+define symbol xend -180
+let key_flag = 0
+
+IF `($xend) GT 360` THEN
+  SAY "point E1"
+  IF `key_flag EQ 0` THEN SAY "point E2"
+  IF `key_flag EQ 0` THEN SAY "point E2 with a comment"   ! comment after the IF command
+  SAY "point E3"
+ENDIF
+let dxymin = 0.20
+if `dxymin lt 0.12` then
+  SAY "point F"
+elif `dxymin lt 0.25` then
+  SAY "point G"
+endif
+
+
+
+! try yet another test with a nested block if, not executed.
+
+define symbol xend -180
+let key_flag = 0
+
+IF `($xend) GT 360` THEN
+  SAY "point E1"
+  IF `key_flag gt 0` THEN 
+     SAY "point E2"
+  ENDIF
+  SAY "point E3"
+ENDIF
+let dxymin = 0.20
+if `dxymin lt 0.12` then
+  SAY "point F"
+elif `dxymin lt 0.25` then
+  SAY "point G"
+endif
+
+! an entire IF ELSE ENDIF inside an IF clause which is not to be executed
+
+IF `($xend) GT 360` THEN
+   IF 1 THEN
+        say "this if block should not execute at all"
+   ELSE
+        say "this ELSE should ot execute either"
+   ENDIF
+ELSE
+  say "this is the ELSE that should execute"
+ENDIF
+
+! ELIF examples
+
+go non_std_refmap 122.0 228.5 5 5 xline 0

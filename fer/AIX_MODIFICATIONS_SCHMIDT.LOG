@@ -1,0 +1,330 @@
+AIX modifications log from Martin Schmidt.
+
+export TMAP_LOCAL=/silotmp/mschmidt/ferret_54
+export HOSTTYPE=aix
+
+_______________________________________________________________________________
+cd list-2.1
+Edit the Makefile
+DEFINES = -O2
+
+MANDIR	= ${TMAP_LOCAL}/man
+LIBDIR	= ${TMAP_LOCAL}/lib
+INCDIR	= ${TMAP_LOCAL}/include
+
+mkdir ../lib ../include
+mkdir -p ../man/man3 
+
+Do this as root for install
+su
+make all
+make install
+make install.man
+
+_______________________________________________________________________________
+cd readline-4.1
+
+CFLAGS='-O2 -qmaxmem=8084' ./configure --prefix=$TMAP_LOCAL
+
+make check
+Target "check" is up to date.
+
+su
+cd ..
+chown -R mschmidt.staff include lib man
+
+cd -
+make install
+OK
+
+cd examples
+make
+rl works
+_______________________________________________________________________________
+cd xgks
+
+change the preprocessor call in configure from CPP to CPP -C
+CPP='${CC-cc} -E' ---> CPP='${CC-cc} -E -C' line 345
+
+./configure --prefix=$TMAP_LOCAL
+
+chmod u+w progs/star.f progs/gksdemo.f
+
+nc progs/star.f progs/gksdemo.f
+First line in star.f uncommented
+argument of setcol in line 900 of gksdemo.f removed
+added to gksdemo.f
+      program gks
+      call gksdem
+      stop
+      end
+      
+make all
+make install
+star draws a yellow star
+gksdemo basically works but crashs in some menue items.
+_______________________________________________________________________________
+cd ppl
+cd tmapadds
+nc fillpol.F setup_color_table.F shade.F
+wrong continuation lines changed
+symlib/setsym.F
+wrong program flow corrected
+
+gmake läuft durch
+_______________________________________________________________________________
+cd fmt  
+edit
+/silotmp/mschmidt/ferret_54/fmt/src/Makefile      
+add$ (FINCLUDES) to comp_nocpp
+nc src/tm_break_date.F
+nc src/tm_secs_from_bc.F
+nc src/tm_secs_to_date.F
+wrong continuation lines changed
+
+cd fer
+
+ ./gui/UxXt.h 
+> #if defined(__STDC__) && !defined(SOLARIS) && !defined(sun4) && !defined(aix)
+---
+< #if defined(__STDC__) && !defined(SOLARIS) && !defined(sun4)
+=====================================================================
+It is not allowed to redefine MAX_MENU_ITEMS. It is only 20 in the Xm system! 
+ ./gui/JC_Utility.h
+> /*#define MAX_MENU_ITEMS 256*/
+---
+< #define MAX_MENU_ITEMS 256
+=====================================================================
+ ./doo/regrid_comments.F 
+> 	REGRID_COMMENTS = "regridded ???"
+---
+< 	REGRID_COMMENTS = 'regridded ???'
+======================================================
+efi/compressk_by.F
+long line splitted
+      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
+     1                             ABSTRACT, IMPLIED_BY_ARGS)
+
+======================================================
+ ./fmt/alg_trans_titl.F
+> 	ALG_TRANS_TITL = "???"
+---
+< 	ALG_TRANS_TITL = '???'
+======================================================
+ ./fmt/lohi_string.F
+> 	   strbuf = "???"
+---
+< 	   strbuf = '???'
+======================================================
+ ./gnl/name_equal_string.F
+>      .			cmnd_buff(:len_cmnd)//" ???", *5000 )
+---
+<      .			cmnd_buff(:len_cmnd)//' ???', *5000 )
+======================================================
+ ./gnl/pop_cs.F
+> 	      STOP "cs_stk_??"
+---
+< 	      STOP 'cs_stk_??'
+======================================================
+ ./gnl/show_1_function.F
+>      1          ef_units*40, ax_remark*64
+---
+< 	1    ef_units*40, ax_remark*64
+> 	         ax_remark = "???"
+---
+< 	         ax_remark = '???'
+======================================================
+ ./gnl/name_equal_string.F
+>      .			cmnd_buff(:len_cmnd)//" ???", *5000 )
+---
+<      .			cmnd_buff(:len_cmnd)//' ???', *5000 )
+======================================================
+ ./ino/read_ez.F
+>  6000	CALL ERRMSG( ferr_internal, status, "READ_EZ ??", *4900 )
+---
+<  6000	CALL ERRMSG( ferr_internal, status, 'READ_EZ ??', *4900 )
+======================================================
+ ./ino/read_binary.F
+<      1		       ds_grid_start(idim,fvar) + 1
+---
+> 	1		       ds_grid_start(idim,fvar) + 1
+======================================================
+./ino/read_delimited.F 
+>  6000 CALL ERRMSG( ferr_internal, status, "READ_EZ ??", *4900 )
+---
+<  6000 CALL ERRMSG( ferr_internal, status, 'READ_EZ ??', *4900 )
+======================================================
+./ino/read_perl.F 
+>     1		          ds_grid_start(idim,fvar) + 1
+---
+<     1		          ds_grid_start(idim,fvar) + 1
+======================================================
+ ./mem/delete_variable.F
+> 	      CALL WARN( "CORRUPTION! mr_protected ????" )
+---
+< 	      CALL WARN( 'CORRUPTION! mr_protected ????' )
+======================================================
+ ./mem/find_var_name.F
+<      1	      THEN
+---
+> 	1	   THEN
+120c120
+<      1	         THEN
+---
+> 	1	      THEN
+134c134
+<      1	   THEN
+---
+> 	1	THEN
+157c157
+<      1	   THEN
+---
+> 	1	THEN
+170c170
+<      1	         THEN
+---
+> 	1	      THEN
+======================================================
+
+ ./rpn/alg_break_up.F
+112c112
+<      1    / 2, 3, 4,-1,-1, 5, 5, 1, 4,  3,10,11,-1,12,-2/
+---
+> 	1    / 2, 3, 4,-1,-1, 5, 5, 1, 4,  3,10,11,-1,12,-2/
+114c114
+<      1    / 7, 3, 7, 7, 7, 7, 7, 7, 7,  3, 7, 7, 7, 7,-2/
+---
+> 	1    / 7, 3, 7, 7, 7, 7, 7, 7, 7,  3, 7, 7, 7, 7,-2/
+116c116
+<      1    / 7, 3,-1,-1,-1, 7, 7, 7, 8,  3, 7,-1,-1, 7,-2/
+---
+> 	1    / 7, 3,-1,-1,-1, 7, 7, 7, 8,  3, 7,-1,-1, 7,-2/
+118c118
+<      1    / 7, 4, 4, 6,-1, 7, 7, 7, 4, -1, 7,-1,-1, 7,-2/
+---
+> 	1    / 7, 4, 4, 6,-1, 7, 7, 7, 4, -1, 7,-1,-1, 7,-2/
+120c120
+<      1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
+---
+> 	1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
+122c122
+<      1    / 6, 6, 6, 9, 5, 6, 6, 6, 6,  6, 6, 6, 6, 6, 6/
+---
+> 	1    / 6, 6, 6, 9, 5, 6, 6, 6, 6,  6, 6, 6, 6, 6, 6/
+124c124
+<      1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
+---
+> 	1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
+126c126
+<      1    / 8, 8, 7, 7, 7, 7, 7, 7, 7,  7, 7, 7, 7, 7,-2/
+---
+> 	1    / 8, 8, 7, 7, 7, 7, 7, 7, 7,  7, 7, 7, 7, 7,-2/
+128c128
+<      1    / 9, 9, 9, 9, 9, 9, 9, 9, 9,  9, 9, 9, 9, 9, 9/
+---
+> 	1    / 9, 9, 9, 9, 9, 9, 9, 9, 9,  9, 9, 9, 9, 9, 9/
+130c130
+<      1    / 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10/
+---
+> 	1    / 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10/
+132c132
+<      1    /11,11,-1,-1,-1,11,11,11,11, 11,11,-1, 5,11,11/
+---
+> 	1    /11,11,-1,-1,-1,11,11,11,11, 11,11,-1, 5,11,11/
+134c134
+<      1    / 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12/
+---
+> 	1    / 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12/
+======================================================
+ ./rpn/alg_trans_code.F
+> 	ALG_TRANS_CODE = "???"
+---
+< 	ALG_TRANS_CODE = '???'
+
+======================================================
+ ./stk/eval_expr.F
+> 	   IF ( cx_stack_ptr .NE. cx_cmnd+1 ) WRITE (6,*) "get_cmnd_???"
+---
+< 	   IF ( cx_stack_ptr .NE. cx_cmnd+1 ) WRITE (6,*) 'get_cmnd_???'
+======================================================
+ ./stk/get_prot_cmnd_data.F
+< 	   IF ( cx_stack_ptr .NE. cx_cmnd+nu ) WRITE (6,*) "get_cmnd_???"
+---
+> 	   IF ( cx_stack_ptr .NE. cx_cmnd+nu ) WRITE (6,*) 'get_cmnd_???'
+======================================================
+ ./stk/is_do_gc_fcn.F
+> 	   IF ( is_cx(isp) .NE. cx_stack_ptr ) WRITE (6,*) "OP_STK??"	! temp
+---
+< 	   IF ( is_cx(isp) .NE. cx_stack_ptr ) WRITE (6,*) 'OP_STK??'	! temp
+======================================================
+ ./stk/is_do_op.F
+> 	   STOP "??? fcn or op"
+---
+< 	   STOP '??? fcn or op'
+232c232
+> 	   IF ( is_cx(isp) .NE. cx_stack_ptr ) WRITE (6,*) "OP_STK??"	! temp
+---
+< 	   IF ( is_cx(isp) .NE. cx_stack_ptr ) WRITE (6,*) 'OP_STK??'	! temp
+======================================================
+
+ ./utl/gcf_get_axis_srcs.F
+>      2	   STOP 'gcf_get_axis_srcs'
+---
+< 	2	STOP 'gcf_get_axis_srcs'
+93c93
+>      2	   STOP 'gcf_get_axis_srcs'
+---
+< 	2	STOP 'gcf_get_axis_srcs'
+====================================================== 
+ ./utl/itsa_modulo_gcf.F
+>      1	.EQ. pgc_axis_supplied_herein 
+---
+< 	1	.EQ. pgc_axis_supplied_herein 
+79c79
+>      1	.EQ. pgc_axis_supplied_herein 
+---
+> 	1	.EQ. pgc_axis_supplied_herein 
+======================================================
+ ./utl/match_quoted_name.F
+>      1	   UPPER_CASE( test_string(i:i) ) ) GOTO 200
+---
+< 	1	   UPPER_CASE( test_string(i:i) ) ) GOTO 200
+======================================================
+ ./xeq/xeq_define.F
+>      .			buff1(:TM_LENSTR1(buff1))//" = ???", *5000 )
+---
+<      .			buff1(:TM_LENSTR1(buff1))//' = ???', *5000 )
+======================================================
+ ./xeq/xeq_endif.F
+>  5400	CALL ERRMSG( ferr_internal, status, "ENDIF ifstk??", *5000)
+---
+<  5400	CALL ERRMSG( ferr_internal, status, 'ENDIF ifstk??', *5000)
+======================================================
+gui/UxXt.h
+comment out line 34
+====================================================== 
+FORTRAN definition instead of underscores
+fmt/src/ez_delimited_read.c FORTRAN(days_from_day0)
+/fmt/src/tm_switch_nan.c
+ef_utility/EF_Util.c
+ccr/free_c_string_array.c
+ccr/init_c_string_array.c
+ccr/copy_c_string.c
+ccr/replace_bad_data_sub.c
+ccr/get_sys_cmnd.c
+ccr/add_c_pointer.c
+ccr/xfer_c_ptrs.c
+ccr/free_c_pointer.c
+ccr/save_c_string.c
+ccr/get_c_string_len.c
+ccr/get_c_string.c
+ccr/get_max_c_string_len.c
+ccr/get_offset_c_string_len.c
+ccr/get_offset_c_string.c
+ccr/binaryRead.h changed definition of FORTRAN
+ccr/compare_c_strings.c
+ccr/replaceable_bad_flags.c
+
+Variable cont_key shifted, since misaligned
+ppl/shade_vars.cmn
+

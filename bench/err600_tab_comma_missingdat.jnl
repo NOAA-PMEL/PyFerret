@@ -1,0 +1,16 @@
+! err600_tab_comma_missingdat.jnl
+! 11/21/2006 acm
+
+! when data contains missing values: extra comma as placeholder
+let a = {1,1,2,1,1,2,1,1}
+let b = {4,4,4,4,4,4,4,4}
+set var/bad=2 a
+list/form=comma a,b
+list/form=comma a,b,a
+
+! when data contains missing values: extra tab as placeholder
+let a = {1,1,2,1,1,2,1,1}
+let b = {4,4,4,4,4,4,4,4}
+set var/bad=2 a
+list/form=tab a,b
+list/form=tab a,b,a

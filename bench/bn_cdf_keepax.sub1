@@ -1,0 +1,43 @@
+! bn230_cdf.sub1
+! benchmark to test multiple netCDF simultaneous accesses
+! requires version 2.30 or later
+! 6/92
+
+! V5 *sh* 7/99 -- clean up files before writing
+
+cancel region
+canc var/all
+cancel data/all
+
+! delete old ones
+sp rm -f test0[a-p].cdf
+
+! write a bunch of em 
+list/format=cdf/keep_axnames/append/l=1:500/file=test0a.cdf l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0b.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0c.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0d.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0e.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0f.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0g.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0h.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0i.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0j.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0k.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0l.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0m.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0n.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0o.cdf/rigid l
+list/format=cdf/keep_axnames/append/l=1:500/file=test0p.cdf/rigid l
+
+! initialize all at once
+set data/format=cdf test0a, test0b, test0c, test0d, test0e, test0f, test0g, test0h, test0i, test0j, test0k, test0l, test0n, test0m, test0o, test0p
+show data 1
+show data/br
+
+! test access to one
+stat l_[d=1]
+
+! test access to all
+stat l_[d=1]-l_[d=2]+l_[d=3]-l_[d=4]+l_[d=5]-l_[d=6]+l_[d=7]-l_[d=8]+l_[d=9]-l_[d=10]+l_[d=11]-l_[d=12]+l_[d=13]-l_[d=14]+l_[d=15]-l_[d=16]
+cancel data/all

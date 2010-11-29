@@ -1,0 +1,186 @@
+! bn_strings.jnl
+
+! 7/01 - test string syntax and behaviors
+
+! 5/4/05 acm remove calls to writev5d, shared obj external function
+!            (put in separate file bn_ef_v5d_strings)
+
+! some test files
+sp rm -f *.str_test *.string_tst
+sp touch dummy1.str_test dummy2.str_test dummy3.str_test dummy4.str_test dummy5.str_test dummy6.str_test dummy7.str_test dummy8.str_test dummy9.str_test
+sp touch dummy1.string_tst dummy2.string_tst dummy3.string_tst dummy4.string_tst dummy5.string_tst dummy6.string_tst dummy7.string_tst dummy8.string_tst
+
+cancel data/all
+
+let a = "testa.v5d"
+list a
+
+let b = "goodbye"
+list a,b
+
+let a = {"hello","goodbye", "wave to me"}
+list a
+list a[i=2:3]
+list/order=x a[i=2:3]
+
+let e = {,"string1",, "string2"}
+list e
+
+list {"string","s2","very long string"},5
+
+set mode ignore
+  let e = {"string1" "string2"}
+  list e
+  let e = {,"string1",5, "string2"}
+  list e
+set mode/last ignore
+
+* mixed single and double quotes
+list/nohead {",a",',b'}
+list/nohead {'"'}, {"'"}
+
+let d = {"INITIALIZE", spawn:"ls *.str_test", "INSERT", spawn:"ls *.string_tst"}
+list d
+stat d
+load d
+
+set mode ignore
+  plot d
+  define axis/x xax = d
+set mode/last ignore
+
+! netCDF file IO
+let a = {"hello"}            ! note - a is an array of length 1
+save/clobber/file=test_string.cdf a
+canc var a
+use test_string
+sh dat test_string
+list a
+canc data test_string
+
+let b = "one line of text"   !  note - b is scalar
+save/clobber/file=test_string.cdf b
+canc var b
+use test_string
+sh dat test_string
+list b
+canc data test_string
+
+let a = {"hello","goodbye", "wave to me"}
+let b = "one line of text"
+save/clobber/file=test_string.cdf a,b
+sp echo "bn_strings.jnl --- 1 original file" >> all_ncdump.out
+sp ncdump test_string.cdf >> all_ncdump.out
+save/append/file=test_string.cdf d
+let b2 = "two line of text"   ! the same string length as b
+sp echo "bn_strings.jnl --- 2 append to file" >> all_ncdump.out
+save/append/file=test_string.cdf b2
+canc var/all
+use test_string.cdf
+show data test_string 
+list/nohead a
+list/nohead b
+
+set var/title="partial filename list" d
+save/clobber/file=test_string.cdf/heading=enhanced d[i=2:5]
+sp echo "bn_strings.jnl --- 3 enhanced heading" >> all_ncdump.out
+sp ncdump test_string.cdf >> all_ncdump.out
+canc data/all
+use test_string
+show data test_string
+list d
+
+! regridding tests
+let a = {spawn:"ls *.str_test"}
+list a
+define axis/x=0.1:0.7:.1 xasn
+list a[gx=xasn@asn]
+define axis/x=1:6:.5 xxact
+list a[gx=xxact@xact]
+define axis/x=1:6:.4 xnrst
+list a[gx=xnrst@nrst]
+set mode ignore
+  list a[gx=xnrst]
+  list a[gx=xnrst@ave]
+  list a[gx=xnrst@var]
+  list a[gx=xnrst@ngd]
+  list a[gx=xnrst@max]
+  list a[gx=xnrst@sum]
+  set axis/modulo xnrst
+  list a[gx=xnrst@mod]
+set mode/last ignore
+
+! functions returning strings
+list/nohead xsequence({"a","b","c","d","e"})
+sh grid
+list/nohead  ysequence({"a","b","c","d","e"})
+sh grid
+list/nohead  zsequence({"a","b","c","d","e"})
+sh grid
+list/nohead  tsequence({"a","b","c","d","e"})
+sh grid
+let a = TSEQUENCE({"a","b","c","d","e"})
+list/l=2:3 a
+
+list/nohead  {"a",,"b"}
+list/nohead  samplei({"a","b",,"d","e","f"},{3,2,,1})
+list/nohead  samplej(YSEQUENCE({"a","b",,"d","e","f"}),{3,2,,1})
+list/nohead  samplek(ZSEQUENCE({"a","b",,"d","e","f"}),{3,2,,1})
+list/nohead  samplel(TSEQUENCE({"a","b",,"d","e","f"}),{3,2,,1})
+
+let a = {"a",," ",""}
+let b = samplej(YSEQUENCE({"a","b",,"d","e","f"}),{2,,1})
+save/clobber/file=foo.cdf a,b
+sp echo "bn_strings.jnl --- 4 sample and ysequence functions on string var" >> all_ncdump.out
+sp ncdump foo.cdf >> all_ncdump.out
+
+let a =  RESHAPE({"a","b",,"d","e","f"},I[i=1:3]+j[j=1:2])
+list  a
+list/i=2:3 a
+list  reshape(a,I[I=1:2]+J[J=1:3])
+list  reshape(a,I[I=1:3]+J[J=1:3])
+list reshape(a,I[I=1:1]+J[J=1:3])
+
+! logical operators applied to strings
+list {"a","b","c"} EQ YSEQUENCE({"A","B","C"})  ! case insensitive
+list {"a","b","c"} NE YSEQUENCE({"a","B","c"})
+list/nohead "b" LT {"a","b","c"}
+list/nohead "b" LE {"a","b","c"}
+list/nohead "b" EQ {"a","b","c"}
+list/nohead "b" GE {"a","b","c"}
+list/nohead "b" GT {"a","b","c"}
+
+! special hacks allow "+" to be a concatenation operator
+list/nohead "hello" + ", friend"
+list/nohead {"hello","goodbye"}+", "+YSEQUENCE({"old","new"})+" "+"friend"
+list/nohead SAMPLEI(XSEQUENCE({"hello","goodbye"}+", "+YSEQUENCE({"old","new"})+" "+"friend"), {2,3})
+
+! special hacks allow IF-THEN-ELSE to apply to strings
+list/nohead if {0,1} THEN "hello"
+list/nohead if {0,1} THEN "hello" ELSE "goodbye"
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", ") + "friend"
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
+list/nohead ysequence({98, 99})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + "friend"
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+99 ELSE "goodbye"+", my ") + "friend"
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+99) + "friend"
+list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", " ELSE "goodbye"+", my ") + 99
+
+! numerical operators applied to strings
+list/nohead "b" - {"a","b"}
+list/nohead "b" * {"a","b"}
+list/nohead "b" / {"a","b"}
+list/nohead "b" ^ {"a","b"}
+list/nohead {"a","b"} + 1
+list/nohead 1 + {"a","b"}
+list/nohead 1 - {"a","b"}
+list/nohead SIN({"a","b","c"})
+list/nohead MAX("a",{"a","b","c"})
+list/nohead MAX(1,{"a","b","c"})
+
+! transformations applied to strings
+let a = {"a","b","c","d"}
+list a[i=@shf]
+list a[i=@shf:-1]
+list a[i=@ave]
+list a[i=@sbx]
+list a[i=@rsum]

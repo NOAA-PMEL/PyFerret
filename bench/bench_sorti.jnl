@@ -1,0 +1,36 @@
+
+
+! Benchmark for sort and sample external Functions
+! ACM 5/99
+
+! V550 *sh* 11/02 - documentation change only, reflecting subspan modulo
+! The use of L=5 on a 3 point time axis triggers a valid subspan modulo calculation
+! V581 *ACM 3/05 Changes in specifying context for arg 2 of SAMPLEI
+!                see notes in Bugzilla under bug 1187.
+
+can region
+use coads_climatology
+set region/x=141:151/y=39/z=0/l=2
+
+list sst
+
+let tsorted_indices = sorti( sst[i=61:66,y=39,z=0,l=2])
+let tsorted_sst = samplei(sst, tsorted_indices)
+
+list tsorted_indices, tsorted_sst
+
+
+! test on 2-d data
+
+can region
+!set data coads_climatology
+set region/l=5
+
+let xsorted_indices = sorti(sst)
+let xsorted_sst = samplei(sst, xsorted_indices[y=0,l=5])
+! shade xsorted_sst
+list/y=0/i=1:15 xsorted_sst
+
+set region/l=5/y=1
+let len = xsorted_sst[i=@ngd]
+list len

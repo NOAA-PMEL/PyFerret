@@ -1,0 +1,25 @@
+! err61_write_bounds.jnl
+! test fixes for bugzilla 1534: write correct bounds
+! when bounds were read in from a netCDF file.
+
+def ax/x/edges xax={1,2,4,8,9}
+let a = x[gx=xax]
+save/clobber/file=a.nc a
+sp ncdump a.nc >> all_ncdump.out
+
+! This is the original bug report
+! The bounds attribute was written but the values were bad,
+! shown as _, _ in the netcdf output.
+can var a
+use a.nc
+save/clobber/file=b.nc a
+sp ncdump a.nc >> all_ncdump.out
+
+! It would also be useful to be able to tell Ferret
+! not to save the bounds at all.
+
+can data/all
+use a.nc
+can att/output (xax).bounds
+save/clobber/file=b.nc a
+sp ncdump a.nc >> all_ncdump.out

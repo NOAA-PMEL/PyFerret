@@ -1,0 +1,102 @@
+\cancel mode verify
+!!
+! frequency_histogram.jnl - *sh* 8/94
+! *acm* Add argument to choose hollow or filled bars. Also fix
+!       the call to bar_chart2.jnl which should use plot/line
+!
+! Description: produce a 1D frequency histogram
+
+! Usage:  
+!    yes? GO frequency_histogram expression lo hi del [weight] [axis]  [style]
+
+! Note: this procedure (actually the bar_chart2 routine) uses the Y axis
+!	internally so it may not work properly if the Y axis has a region
+! 	set (it may even crash).  In this case either include the Y limits
+!	in the expression (i.e. "temp[y=0]" instead of "temp" with Y=0 in the
+!       region) or specify a free axis in the optional [AXIS] parameter
+
+! Note: If this script fails due to a large amount of input data, use 
+!       frequency_histogram2.jnl which does not call Unix sort and awk
+!       tools, but instead uses Ferret functions to compile the bins.
+
+! arguments:
+!    expression  - expression (values) from which histogram is to be computed
+!    lo, hi, del - the range of values for which a histogram is desired
+!    [weight]    - optional expression with weight for each value
+!    [axis]      - a free axis that the procedure can use (if Y isn't free)
+!    [style]     - 0 for hollow bars, 1 for filled.
+
+! Defaults:  weight - "1" ("weight" can be a variable name)
+!            axis - "Y"
+!            style - "0" hollow
+
+! Sample usage:
+!	yes? SET DATA levitus_climatology
+!	yes? GO  frequency_histogram temp[X=0:360,Y=0:45N,Z=0] 0 32 0.5
+!
+!	yes? GO  frequency_histogram temp[X=0:360,Y=0:45N,Z=0] 0 32 0.5 " " y 1
+
+
+! The optional "weight" parameter multiplies each grid cell by the variable
+! supplied.  In the surface temperature example above this might be the
+! area of each grid cell as follows:
+!let r=6370		! radius of earth
+!let pi=atan(1.)*4.
+!let deg2rad=pi/180.
+!let deg2km=2*pi*r/360.
+!let area=xbox[g=TEMP]*ybox[g=TEMP]*cos(y[g=TEMP]*deg2rad)*deg2km*deg2km*1e-6
+!SET VARIABLE/TITLE="Area of grid cells"/Unit="km^22 x 10^-6" area
+!GO frequency_histogram TEMP 0 32 .5 area
+
+query/ignore $1"<Usage: GO frequency_histogram expression lo hi del [weight]"
+query/ignore $2"<Usage: GO frequency_histogram expression lo hi del [weight]"
+query/ignore $3"<Usage: GO frequency_histogram expression lo hi del [weight]"
+query/ignore $4"<Usage: GO frequency_histogram expression lo hi del [weight]"
+let style = $7"0"
+
+! cleanup from previous
+set data/save
+cancel data/noerror frequency_h.dat
+
+! compute an index that numbers the histogram boxes on the desired output plot
+! also cope with missing values ("MISSING()") and data below the minimums
+! ("MAX()").  Data above the max is simply not read in the final commands
+! because it lies beyond the number of points in the grid gindex
+LET/QUIET vmin = $2
+LET/QUIET vmax = $3
+LET/QUIET vdelta = $4
+LET/QUIET vn = INT((vmax-vmin)/vdelta + 0.5) + 1
+LET/QUIET vindex = MISSING(INT(($1-vmin)/vdelta + 0.5) + 1, 0) ! 1 to vn
+LET/QUIET index = MAX(0, vindex) 
+
+! weight function for each grid cell
+LET/QUIET wt_index = $5"1"
+
+! create an output file with all TS grid boxes represented in order
+sp rm -f frequency_h.raw frequency_h.dat
+list/nohead/form=(F10.0,1PG14.7)/file=frequency_h.raw index, wt_index
+list/nohead/form=(F10.0,1PG14.7)/file=frequency_h.raw/append vn+1,0  ! MAX index + 1
+sp sort -n frequency_h.raw | awk -f $FER_DIR/go/frequency.awk > frequency_h.dat
+
+define axis/$6"y|X|Y|Z|T"=$2:$3:$4 yax
+define grid/$6"y|X|Y|Z|T"=yax gindex
+set data/save
+file/grid=gindex/var="-,wt_count" frequency_h.dat
+set variable/title="Sum of Weights" wt_count
+set data/restore
+
+! clean up
+set data/restore
+
+! do a hollow or filled plot
+IF `style EQ 0` THEN
+  message/cont You may want to replot with color qualifiers on PLOT and Ymin specified:
+  message/cont >>>  go bar_chart2 plot/line wt_count[d=frequency_h.dat] $6"y|X|Y|Z|T" clear [Ymin]
+  go bar_chart2 plot/line wt_count[d=frequency_h.dat] $6"y|X|Y|Z|T"
+ELSE
+  message/cont You may want to replot with /HLIM /PALETTE or other qualifiers on PLOT:
+  message/cont >>>  go bar_chart3 poly/line/nolabel/fill wt_count [color] [base]
+  go bar_chart3 poly/line/nolabel/fill wt_count[d=frequency_h.dat] 
+ENDIF
+
+set mode/last verify

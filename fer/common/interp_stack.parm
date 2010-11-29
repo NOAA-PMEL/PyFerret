@@ -1,0 +1,178 @@
+* INTERP_STACK.PARM
+* parameters needed for the functioning of the interpretation stack, only
+*
+* 10/98 *jc* added isact_reduce
+* 6/01 *sh* added isact_event_mask
+
+* minimum working space provided to transformations
+	INTEGER		iswksiz
+	PARAMETER     ( iswksiz = 50 )
+
+* classes of stack activities
+	INTEGER		isact_class_trans,
+     .			isact_class_regrid,
+     .			isact_class_gather,
+     .			isact_class_modulo,
+     .			isact_class_reverse,
+     .			isact_class_impl_grid,
+     .			isact_class_reconcile,
+     .			isact_class_sample,
+     .			isact_class_subspan_fill
+	PARAMETER     ( isact_class_trans    = 1,
+     .			isact_class_regrid   = 2,
+     .			isact_class_gather   = 3,
+     .			isact_class_modulo   = 4,
+     .			isact_class_reverse  = 5,
+     .			isact_class_impl_grid  = 6,
+     .			isact_class_reconcile  = 7,
+     .			isact_class_sample   = 8,
+     .			isact_class_subspan_fill = 9 )
+
+* to help in defining classes of activity codes ...
+	INTEGER		isact_trans_code
+	PARAMETER     (	isact_trans_code  = 100 )
+
+* stack activities
+	INTEGER		isact_request,
+     .			isact_algebra,
+     .			isact_rotate,
+     .			isact_subset,
+     .			isact_xy2other,
+     .			isact_read,
+     .			isact_calculate,
+     .			isact_regrid,
+     .			isact_autogrid,
+     .			isact_gather,
+     .			isact_get_grid,
+     .			isact_modulo,
+     .			isact_reverse,
+     .			isact_impl_grid,
+     .			isact_reconcile,
+     .			isact_reduce,
+     .			isact_sample,
+     .			isact_subspan_fill
+	PARAMETER     ( isact_request		= 1,
+     .			isact_algebra		= 2,
+     .			isact_rotate		= 3,
+     .			isact_subset		= 4,
+     .			isact_xy2other		= 5,
+     .			isact_read		= 6,
+     .			isact_calculate		= 7,
+     .			isact_regrid		= 8,
+     .			isact_autogrid		= 9,
+     .			isact_gather		= 10,
+     .			isact_get_grid		= 11,
+     .			isact_modulo		= 12,
+     .			isact_reverse		= 13,
+     .			isact_impl_grid		= 14,
+     .			isact_reconcile		= 15,
+     .			isact_sample		= 17,
+     .			isact_subspan_fill	= 18,
+     .          	isact_reduce = 16 ) ! never used: GC fcns perform axis reduction
+
+* transformations (which are also stack activities)
+	INTEGER		isact_interp,
+     .			isact_average,
+     .			isact_integ_def,
+     .			isact_integ_indef,
+     .			isact_deriv_cntr,
+     .			isact_deriv_fwrd,
+     .			isact_deriv_bkwd,
+     .			isact_max,
+     .			isact_min,
+     .			isact_smth_median,
+     .			isact_smth_box,
+     .			isact_smth_binml,
+     .			isact_smth_hanng,
+     .			isact_smth_parzn,
+     .			isact_smth_welch,
+     .			isact_shift,
+     .			isact_4d_ave,
+     .			isact_4d_int_def,
+     .			isact_4d_var,
+     .			isact_4d_good_pt,
+     .			isact_4d_bad_pt,
+     .			isact_fill_ave,
+     .			isact_fill_interp,
+     .			isact_fill_near,
+     .			isact_locate,
+     .          	isact_wgted_eq,
+     .          	isact_sum,
+     .          	isact_run_sum,
+     .			isact_std_dev,   ! unused
+     .			isact_variance,
+     .			isact_npoints,   ! unused
+     .			isact_good_pt,
+     .			isact_bad_pt
+	INTEGER		isact_nrst_dist_abv,
+     .			isact_nrst_dist_blw,
+     .			isact_nrst_indx_abv,
+     .			isact_nrst_indx_blw,
+     .			isact_event_mask
+
+	PARAMETER (
+     .		isact_interp		= isact_trans_code + trans_interpolate,
+     .		isact_average		= isact_trans_code + trans_average,
+     .		isact_integ_def		= isact_trans_code + trans_integ_def,
+     .		isact_integ_indef	= isact_trans_code + trans_integ_indef,
+     .		isact_deriv_cntr	= isact_trans_code + trans_deriv_cntr,
+     .		isact_deriv_fwrd	= isact_trans_code + trans_deriv_fwrd,
+     .		isact_deriv_bkwd	= isact_trans_code + trans_deriv_bkwd,
+     .		isact_max		= isact_trans_code + trans_max,
+     .		isact_min		= isact_trans_code + trans_min,
+     .		isact_smth_box		= isact_trans_code + trans_smth_box,
+     .		isact_smth_binml	= isact_trans_code + trans_smth_binml,
+     .		isact_smth_hanng	= isact_trans_code + trans_smth_hanng,
+     .		isact_smth_parzn	= isact_trans_code + trans_smth_parzn,
+     .		isact_smth_welch	= isact_trans_code + trans_smth_welch,
+     .		isact_shift		= isact_trans_code + trans_shift,
+     .		isact_4d_ave		= isact_trans_code + trans_4d_ave,
+     .		isact_4d_int_def	= isact_trans_code + trans_4d_int_def,
+     .		isact_4d_var		= isact_trans_code + trans_4d_var,
+     .		isact_4d_good_pt	= isact_trans_code + trans_4d_good_pt,
+     .		isact_4d_bad_pt		= isact_trans_code + trans_4d_bad_pt,
+     .		isact_fill_ave		= isact_trans_code + trans_fill_ave,
+     .		isact_locate		= isact_trans_code + trans_locate,
+     .          isact_wgted_eq		= isact_trans_code + trans_wgted_eq,
+     .          isact_sum		= isact_trans_code + trans_sum,
+     .          isact_run_sum		= isact_trans_code + trans_run_sum,
+     .		isact_std_dev		= isact_trans_code + trans_std_dev,
+     .		isact_variance		= isact_trans_code + trans_variance,
+     .		isact_npoints		= isact_trans_code + trans_npoints,
+     .		isact_good_pt		= isact_trans_code + trans_good_pt,
+     .		isact_bad_pt		= isact_trans_code + trans_bad_pt,
+     .		isact_fill_interp	= isact_trans_code + trans_fill_interp,
+     .		isact_fill_near		= isact_trans_code + trans_fill_near,
+     .		isact_smth_max		= isact_trans_code + trans_smth_max,
+     .		isact_smth_median	= isact_trans_code + trans_smth_median,
+     .		isact_smth_min		= isact_trans_code + trans_smth_min )
+	PARAMETER (
+     .		isact_nrst_dist_abv = isact_trans_code + trans_nrst_dist_abv,
+     .		isact_nrst_dist_blw = isact_trans_code + trans_nrst_dist_blw,
+     .		isact_nrst_indx_abv = isact_trans_code + trans_nrst_indx_abv,
+     .		isact_nrst_indx_blw = isact_trans_code + trans_nrst_indx_blw,
+     .		isact_event_mask    = isact_trans_code + trans_event_mask)
+
+* classes of stack objects
+	INTEGER		isobj_uvar,
+     .			isobj_1_item
+	PARAMETER     ( isobj_uvar   = 1,
+     .			isobj_1_item = 2 )
+
+* phases in the creation of a "merged" context for algebraic expressions
+	REAL		isalg_transfer, isalg_merge_1, isalg_merge_n,
+     .			isalg_allocate, isalg_getgrid
+	PARAMETER     ( isalg_allocate	= -1.,
+     .			isalg_getgrid   = -123.,
+     .			isalg_transfer	= 1.,
+     .			isalg_merge_1	= 2.,
+     .			isalg_merge_n	= 3. )
+
+* phases of completing operations
+	INTEGER		isphase_allatonce,
+     .			isphase_1,
+     .			isphase_2
+	PARAMETER     ( isphase_allatonce = 1000,
+     .			isphase_1	  = 1,
+     .			isphase_2	  = 2 )
+

@@ -1,0 +1,18 @@
+\cancel mode verify	! ... removing the specified PLOT+ movable label
+! usage:   GO unlabel label_number
+!	where label_number is the label revealed by the command PPL LIST LABELS
+
+!   e.g.  remove the "NOAA/PMEL TMAP" signature label from a plot
+!	   yes? PLOT/SET_UP/I=1:100 SIN(I/6)
+!	   yes? PPL LIST LABELS                ! notice #2 is the one to remove
+!	   yes? GO unlabel 2
+!	   yes? PPL PLOT
+
+
+! test argument before performing any actions
+QUERY/IGNORE $1"<Usage: GO unlabel n,  where n is a PLOT+ movable label number"
+
+! remove the label by setting its location to the origin with no text content
+PPL LABS/NOUSER $1,0,0 @AS
+
+set mode/last verify

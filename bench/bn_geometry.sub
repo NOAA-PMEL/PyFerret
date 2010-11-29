@@ -1,0 +1,27 @@
+! BN200_GEOMETRY.SUB
+! list the variable vtest on variuos geometries
+
+! this routine assumes that a 4-D region and an expression are already set
+
+! lines of data
+LIST/@JPT/@KPT/@LPT/ORDER=X
+LIST/@IPT/@KPT/@LPT/ORDER=Y
+LIST/@IPT/@JPT/@LPT/ORDER=Z
+LIST/@IPT/@JPT/@KPT/ORDER=T
+
+! planes of data
+LIST/@KPT/@LPT	!XY
+LIST/@JPT/@LPT	!XZ
+LIST/@JPT/@KPT	!XT
+LIST/@IPT/@LPT	!YZ
+LIST/@IPT/@KPT	!YT
+LIST/@IPT/@JPT	!ZT
+
+! cubes of data
+LIST/@LPT
+LIST/@KPT
+LIST/@JPT
+LIST/@IPT
+
+! 4D region
+LOAD

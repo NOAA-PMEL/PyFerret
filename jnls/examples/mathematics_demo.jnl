@@ -1,0 +1,62 @@
+! mathematics.jnl *sh* 11/91 - added "pretty" display at end 11/93
+
+! Description: demo of computation and display of "abstract expressions"
+
+! The following example supplied by Ping Chang, PMEL postdoc, 4/90.
+! Vhat and Hhat are the results of a perturbation calculation of Ping's
+
+! in case a region setting was left by a previous command
+CANCEL REGION
+
+LET lg=10
+LET delta=.25
+
+LET a=y/lg
+LET tanh = (EXP(a)-EXP(-1*a))/(EXP(a)+EXP(-1*a))
+LET d = (1+delta*(tanh-1))^.5
+LET b = -1*x/d
+LET vhat=-1*(.5+b)*d[y=@ddc]*EXP(b)/(d*d)
+LET hhat=-1*(.5-b)*d[Y=@DDC]*EXP(b)/d
+
+DEFINE AXIS/X=0:4:.1   xax
+DEFINE AXIS/Y=-20:20:.2/unit="ROSSBY RADIUS" yax
+DEFINE GRID/X=xax/Y=yax gping
+SET GRID gping
+
+! Now we will produce a contour plot of VHAT over the domain.
+! X=[0,4] and Y=[-20,20]
+contour vhat
+
+! Now lets try it again for different values of the parameters.
+LET lg=25
+LET delta=.5
+message
+contour vhat
+
+! We'll finish up with a "pretty picture" of the vhat field
+message
+LET lg=10
+LET delta=.25
+set window/asp=1.4/size=.6
+set view upper
+contour/lev=(-.01,.01,.002)PEN(-.01,0,.002,4)PEN(0,.01,.002,2)DARK(0)/set vhat
+ppl title .3, @TR-(B+1/2)*D_y*e^B/D^2     ! big title with sub/superscripts
+ppl contour
+
+! a wire frame of it at lower resolution right underneath
+set view lower
+DEFINE AXIS/X=0:4:.25   xcoarse
+DEFINE AXIS/Y=-20:20:1.5/unit="ROSSBY RADIUS" ycoarse
+DEFINE GRID/X=xcoarse/Y=ycoarse gcoarse
+SET GRID gcoarse
+wire/nolab/viewpoint=0.5,-80,.004/zscale=1500 vhat
+
+! We will now clean up FERRET for whatever you, the user, will be doing next.
+! To experiment with these mathematical functions further use the command
+!     SET GRID gping
+message
+
+SET GRID abstract
+CANCEL VIEWPORTS
+set wind/asp=.75:ax       ! default aspect ratio
+ppl lev () (-.01,.01,.002,1) pen(-.01,.01,.002,1) ! reset PLOT+ contour colors 

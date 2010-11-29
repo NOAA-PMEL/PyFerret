@@ -1,0 +1,14 @@
+#!/bin/csh -ls
+# 
+#  simple script to restrict the ferret environment when running
+#  benchmark suite.  
+#
+#  *kob* 1/01
+
+setenv FER_DATA .
+setenv FER_DESCR .
+setenv FER_DSETS .
+setenv FER_DAT .
+setenv FER_GRIDS .
+setenv FER_DIR .
+

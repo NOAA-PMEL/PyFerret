@@ -1,0 +1,165 @@
+\cancel mode verify
+! ef_fft_demo.jnl
+! *acm* 4/99
+! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
+! *acm* 3/04 Add a section with FFT_RE, FFT_IM, and FFT_INVERSE
+
+set mode verify
+! Description: Demonstration of external functions for FFT:  
+! FFTA computes amplitude spectrum
+! FFTP computes phase.
+! FFT_RE computes the real part of the FFT
+! FFT_IM computes the imaginary part of the FFT
+! FFT_INVERSE inverts FFT_RE and FFT_IM to the time domain.
+
+! We will plot an FFT for the monthly_navy_winds and look for the
+! annual cycle. Say "show data" to see the length of the time axis. 
+
+PAUSE
+USE monthly_navy_winds
+SHOW DATA
+
+! Define the time series at a point in space.
+! Set the FFT, using explicit time specification.
+! Plot the amplitude spectrum vs frequency.
+
+LET FFT_uwndtim = uwnd[x=150e:130w@ave,y=20n:40n@ave]
+LET FFT_uwndfft = FFTA(FFT_uwndtim[l=1:132])
+SET VARIABLE/TITLE="Amplitude Spectrum" FFT_uwndfft
+
+SET WINDOW/SIZ=0.4
+
+SET VIEW ul
+PLOT FFT_uwndfft
+
+!  For easier interpretation, invert the frequency axis and plot the 
+!  spectrum vs period: months/cycle
+PAUSE
+
+!  Get the frequency increment used in the FFT.
+LET FFT_nf = `FFT_uwndfft,return=lend`
+LET FFT_nyquist = 0.5
+LET FFT_freq1 = FFT_nyquist/ FFT_nf
+
+!  Define a frequency axis.
+DEFINE AXIS/T=`FFT_freq1`:`FFT_nyquist`:`FFT_freq1` faxis
+DEFINE GRID/T=faxis gfftfreq
+LET a = T[g=gfftfreq]
+
+!  Define the period from the frequency axis.
+LET per = 1./a
+
+!  Plot as a "Y VS X" plot, showing the first 24 months where the most energy is.
+!  The PPL ccommands clean up the plot appearance.
+
+SET VIEW ur
+PLOT/VS/LINE/HLIMITS=0:24:2/TITLE="Amplitude Spectrum"/SET_UP per[l=1:`FFT_nf`], FFT_uwndfft
+PPL XFOR (I2)
+PPL XLAB Period, months/cycle
+PPL YLAB 
+PPL PLOT
+
+
+!  Next we will plot the phase
+PAUSE
+
+LET FFT_uwndfftp = FFTP(FFT_uwndtim[l=1:132])
+SET VARIABLE/TITLE="FFT Phase"/UNITS="deg" FFT_uwndfftp
+
+SET VIEW ll
+PLOT FFT_uwndfftp
+
+!  And the phase in months/cycle
+PAUSE
+
+SET VIEW lr
+PLOT/VS/LINE/HLIMITS=0:24:2/TITLE="FFT Phase"/SET_UP per[l=1:`FFT_nf`],FFT_uwndfftp
+PPL XFOR (I2)
+PPL XLAB Period, months/cycle
+PPL YLAB Deg
+PPL PLOT
+
+CANCEL DATA/ALL
+CANCEL VAR/ALL
+
+
+! Now let us look at the FFT_RE, FFT_IM, and FFT_INVERSE functions:
+PAUSE
+CANCEL VIEWPORT
+
+! Define a time series function.
+
+DEFINE AXIS/t=1:366:1 dayt
+DEFINE GRID/T=dayt  tgrid
+SH GRID tgrid
+SET GRID tgrid
+
+LET fcn1 = SIN(0.5*tpts - 6.) /2.
+LET fcn2 = COS(0.3*tpts)
+
+LET sample_function = fcn1 - fcn2 + 0.2* RANDU(tpts)
+LET tpts = t
+
+SET WINDOW/SIZ=0.4
+SET VIEW upper
+PLOT/TITLE="Original SAMPLE_FUNCTION" sample_function
+
+! Compute the equivalent of FFTA(sample_function)
+pause
+
+LET sample_re = FFT_RE(sample_function)
+LET sample_im = FFT_IM(sample_function)
+LET amp_fft = (sample_re* sample_re + sample_im* sample_im)^0.5
+
+! Compare with the computation in fcn FFTA
+
+SET VIEW upper
+PLOT FFTA(sample_function)
+SET VIEW lower
+PLOT amp_fft
+
+! Now overlay amplitude spectrum computed by FFTA
+PAUSE
+PLOT/OVER FFTA(sample_function)
+
+! next compare the phase function
+PAUSE
+! Compute the equivalent of FFTP(sample_function)
+
+LET sample_re = FFT_RE(sample_function)
+LET sample_im = FFT_IM(sample_function)
+
+LET rad = 180.0/ (4.*ATAN(1.))
+LET phas =  rad* ATAN2(-1.*sample_im, sample_re)     ! the computation done in FFTP(v)
+
+! Compare with the computation of FFTA
+
+SET WINDOW/SIZ=0.4
+SET VIEW upper
+PLOT FFTP(sample_function)
+SET VIEW lower
+PLOT phas
+
+! Overlay FFT phase computed by fftp
+PAUSE
+PLOT/OVER FFTP(sample_function)
+
+! Next invert the FFT and compare with original time series
+PAUSE
+
+LET invert_ts = FFT_INVERSE(sample_re, sample_im)
+SET VIEW upper
+PLOT/TITLE="Original SAMPLE_FUNCTION" sample_function
+
+SET VIEW lower
+PLOT invert_ts
+ 
+! Overlay the original time series function
+PAUSE
+PLOT/OVER sample_function
+
+! clean up
+! restore plot state 
+CANCEL SYMBOL FFT_*
+CANCEL VARIABLE FFT_*
+SET MODE/LAST VERIFY	! restore echo behavior

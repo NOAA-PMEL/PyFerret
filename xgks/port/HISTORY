@@ -1,0 +1,97 @@
+VERSION		COMMENTS
+
+1.4.1	1993-3-27
+		Undid 1.4 modification because the library-build rule would
+		fail on platforms where autoconf set RANLIB to `@:'.
+
+		Quoted all define() first arguments in file `aclocal.m4' so
+		that it can be read twice by m4(1) (useful because when 
+		autoconf(1) is executed in this directory, it effectively
+		reads `aclocal.m4' twice).
+
+		Placed under CVS control.
+
+		Corrected UC_CPP_X11 so that it won't generate `-I-I...'.
+
+		Added test for OSF operating system.
+
+		Added CPP_LDM and LD_LDM to missing values checklist.
+
+1.4	1993-3-5
+
+		Modified library creation rules so that nothing is done if
+		LIBOBJS is empty.
+
+1.3.4	1993-3-1
+
+		Modified local autoconf(1) support file`aclocal.m4': added
+		self-lockouts to UC_LIMITS and UC_FLOAT and UC_PROG_CC
+		requirement.
+
+		Modified method in master makefile, `master.mk.in', for
+		producing .f file from .F file.  Now uses symbolic link to
+		.c file.  Necessary because SunOS `acc -E' doesn't handle
+		.F files and SunOS `cpp' gets wrong header files.
+
+		Removed extraneous message about checking for <limits.h>
+		from autoconf(1) macro-support file, aclocal.h.
+
+1.3.3	1993-2-24
+
+		Added modification of existing symbolic link to `ftp'
+		target.
+
+1.3.2	1993-2-23
+
+		Changed rule for making a program in the master makefile.
+		Now, the C compiler only uses $(CFLAGS) and the FORTRAN 
+		compiler only uses $(FFLAGS): the $(LDFLAGS) reference has
+		been removed.  This accomodates compilers that don't pass
+		unknown options to the loader.
+
+		Added `config' to `clean' target.
+
+		Added `aclocal.m4' to MANIFEST so users can play with the
+		autoconf(1)-generated configure script.
+
+1.3.1	Tuesday, February 9, 1993
+
+		Added dependency on library to `program' target.
+
+1.3
+
+		Changed `tar.Z' target: the top-level directory will now be
+		the package name suffixed with the version number (e.g
+		`udunits-1.5/README').
+
+		Removed `configure' targets from Makefile.in and
+		fortc/Makefile.in to comply with autoconf(1) 1.3.
+
+1.2
+
+		Added `SUBDIR_TARGETS = fortc/all' to Makefile.in so that
+		it knows how to make `fortc/all'.
+
+		Changed the way the operating-system is discovered from
+		relying on file /etc/motd to testing for predefined C
+		preprocessing macros.  This is more robust in the face of
+		changes to the /etc/motd file at the expense of being less
+		encompasing (I only know about the predefined macros of AIX,
+		HPUX, IRIX, SunOS, and ULTRIX).
+
+1.1.1
+
+		Added HISTORY (this file) to the distribution.
+
+		Changed procedure for discovering operating-system to use
+		sed(1) rather than awk(1).
+
+		Dropped the `lib' from `fortclib.{h,fc}'.
+
+1.1
+
+		Ported to HPUX.
+
+1.0
+
+		Initial release.  Tested on AIX, IRIX, SunOS, ULTRIX.

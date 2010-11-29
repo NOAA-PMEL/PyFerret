@@ -1,0 +1,103 @@
+! Examples from bn_attributes, where instead of var.att[specifiers]
+! we use var[specifiers].att  where appropriate.
+
+!-----
+
+! SHOW ATTRIBUTE examples
+
+can data/all
+can var/all
+
+use ocean_atlas_temp
+use gt4d011
+use levitus_climatology
+
+sh att temp[d=1].units
+
+
+! note .[d=1].dimnames does not work
+use coads_climatology
+use gt4d011
+
+let vnames = ..dimnames[d=1]
+let lnames = ..dimnames[d=2]
+list vnames 
+list lnames
+
+go bn_reset
+ 
+
+!-----
+! more on number of attributes     
+
+use levitus_climatology
+use ocean_atlas_temp
+let nat = temp.nattrs
+list nat
+
+list (`temp,return=xaxis`)[d=2].nattrs
+
+use gt4d011
+say `temp[d=1].nattrs`
+
+def sym xaxnam  "(`temp[d=1],return=xaxis`)"
+def sym yaxnam  "(`temp[d=1],return=yaxis`)"
+list `($xaxnam)[d=1].nattrs`
+say `($yaxnam)[d=1].nattrs`
+
+go bn_reset
+ 
+!-----
+! more on access to attribute names and values as variables
+
+use coads_climatology
+use levitus_climatology
+use ocean_atlas_temp
+use gt4d011
+
+let a = temp.units
+list/d=3 a
+list temp[d=3].units
+list/d=3 temp.history
+
+can data/all
+can var/all
+
+use coads_climatology
+! This syntax does not work:
+! list sst[d=1].dimnames[i=2]
+
+! But this does
+let a = sst[d=1].dimnames
+list a[i=2]
+
+go bn_reset
+
+! When the variable context is given in an attribute
+! spec, we want to ignore the information except for the
+! dataset, and just return the attribute of the variable.
+
+use coads_climatology
+define symbol ferret_plot_var sst[x=30:39,y=-90:90]
+list ($ferret_plot_var).long_name
+
+use coads_climatology
+define symbol ferret_plot_var sst[d=1,x=30:35,y=-90:90]
+list ($ferret_plot_var).units
+
+use coads_climatology
+use levitus_climatology
+define symbol ferret_plot_var sst[d=1,x=30:35,y=-90:90]
+list ($ferret_plot_var).history
+
+go bn_reset
+
+use levitus_climatology
+use coads_climatology
+
+def sym xaxnam  "(`temp[d=1],return=xaxis`)"
+def sym yaxnam  "(`temp[d=1],return=yaxis`)"
+
+list ($xaxnam)[d=1].modulo
+list ($yaxnam).point_spacing[d=1]
+

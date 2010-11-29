@@ -1,0 +1,88 @@
+\cancel mode verify
+! plot_swath.jnl
+! 6/99 *sh*
+! 1/02 *acm* add note on limits
+
+! Description: Plot a color-filed swath between upper and lower bounds
+
+! Usage:                    $1         $2  $3   $4
+! yes?	GO plot_swath polygon_command ylo yhi [xpts] 
+! $1 - the plot command with qualifiers (eg POLYGON/OVER/KEY)
+! $2 - upper bound variable
+! $3 - lower bound variable
+! $4 - x coordinates (shared by both of the following arguments)
+!    - default is the values of t the underlying axis of argment 2 
+
+! Note:
+!     The variables a and b must be 1-dimensional.  If they have axes
+!     that are normal to the axis of interest, then limits on those axes
+!     must be explicit in the expressions passed in arguments 2 and 3, 
+!     even if the range on that axis is a single point.  See example 3.
+
+! example 1 - difference between two points on a grid
+!	yes? use coads_climatology
+!	yes? let a = sst[y=0,l=1,x=20e:20e]
+!	yes? let b = sst[y=10n,l=1,x=20e:20e]
+!	yes? plot a,b
+!	yes? go plot_swath poly/over/nolabels/palette=black  a b
+
+! example 2 -- 3 colored time series
+!	yes? let base =  T[T=1-jan-1990:1-feb-1990:24] - T[T=1-jan-1990]
+!	yes? let y1 = base^0.5
+!	yes? let y2 = base
+!	yes? let y3 = base^1.1
+!	yes? let y4 = base^1.2
+!	
+!	yes? plot/nolabels y1,y2,y3,y4
+!	yes? go plot_swath poly/over/nolabels/palette=red   y1,y2
+!	yes? go plot_swath poly/over/nolabels/palette=green y2,y3
+!	yes? go plot_swath poly/over/nolabels/palette=blue  y3,y4
+!
+! example 3 -- 2 time series with 1-point z axis.
+!	yes? define axis/T=1-jan-1990:1-feb-1990:24] timeax
+!	yes? define axis/z=1:1:1 zax
+!	yes? define grid/z=zax/t=timeax ztgrid
+!	yes? let tpts = t[gt=ztgrid] - T[T=1-jan-1990]
+!	yes? let zpts = z[gz=ztgrid]
+!	yes? let a1 = tpts + zpts
+!	yes? let a2 = a1 + 100*sin(tpts/100)
+!	yes? plot/nolabels a1,a2
+!       yes? !  note we need to pass explicit Z limits even for a 1-point axis.
+!	yes? go plot_swath poly/over/nolabels/palette=red (a1[k=1]), (a2[k=1])
+!
+! argument check
+QUERY/IGNORE $1"<usage: yes? GO plot_swath polygon_command ylo yhi [xpts]"
+QUERY/IGNORE $2"<usage: yes? GO plot_swath polygon_command ylo yhi [xpts]"
+QUERY/IGNORE $3"<usage: yes? GO plot_swath polygon_command ylo yhi [xpts]"
+
+! save the input expressions into simple variable definitions
+LET/QUIET PSWylo = ($2)
+LET/QUIET PSWyhi = ($3)
+
+! determine the orientation of the data (and check that it is 1D)
+DEFINE SYMBOL PSWax `PSWylo,return=shape`
+DEFINE SYMBOL PSWquad_ax ($PSWax"|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a line")
+DEFINE SYMBOL PSWiax ($PSWax"|X>i|Y>j|Z>k|T>l")
+
+! get the dependent coordinates -- needed since POLYGON is like PLOT/VS
+! typically, "0*PSWylo + X[i=lo:hi]", so X is inherited from PSWylo
+IF $4"0|*>1" THEN
+   LET/QUIET PSWx = $4
+ELSE
+  DEFINE SYMBOL PSWilo `PSWylo,return=($PSWiax)start`
+  DEFINE SYMBOL PSWihi `PSWylo,return=($PSWiax)end`
+  LET/QUIET PSWx_raw =  0*PSWylo + ($PSWax)
+  LET/QUIET PSWx = PSWx_raw[($PSWiax)=($PSWilo):($PSWihi)]
+ENDIF
+
+! break swath into a sequence of discrete quadralaterals
+LET/QUIET PSWpindex = ($PSWquad_ax)[($PSWquad_ax)=1:4]
+LET/QUIET PSWx4_0 = IF PSWpindex EQ 1 OR PSWpindex EQ 4 then PSWx ELSE PSWx[($PSWax)=@shf:1]
+LET/QUIET PSWy4_1 = IF PSWpindex LE 2 then PSWylo ELSE PSWyhi
+LET/QUIET PSWy4_0 = IF PSWpindex EQ 1 OR PSWpindex EQ 4 then PSWy4_1 ELSE PSWy4_1[($PSWax)=@shf:1]
+
+$1/coord_ax=($PSWquad_ax)  PSWx4_0,PSWy4_0
+
+cancel symbol PSW*
+cancel variable PSW*
+set mode/last verify

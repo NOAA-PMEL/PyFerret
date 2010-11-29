@@ -1,0 +1,33 @@
+! err61_contour_subspan_reps.jnl
+! Bug 1659.
+!
+!
+! CONTOUR (or FILL) doesn't work properly with a subspan modulo axis, 
+! unlike SHADE. And we get different CONTOUR results if the subspan modulo 
+! axis coordinates are supplied on the positive vs. the negative modulo branch. 
+
+use coads_climatology
+let a = sst[x=120:284,y=-2:2@ave]
+save/clob/file=a.nc a
+
+can var a
+use a
+set reg/x=125e:70w
+shade/x=-360:360 a
+fill/ov/pal=greyscale/x=-360:360 a
+cont/ov/x=-360:360 a
+
+! Now region in negative x
+
+can dat/all; can var/all
+
+use coads_climatology
+let b = sst[x=-240:-76,y=-2:2@ave]
+save/clob/file=b.nc b
+
+can var b
+use b
+set reg/x=125e:70w
+shade/x=-360:360 b
+fill/ov/pal=greyscale/x=-360:360 b
+cont/ov/x=-360:360 b

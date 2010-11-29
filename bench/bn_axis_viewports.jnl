@@ -1,0 +1,128 @@
+! bn_axis_viewports
+! *sh* 9/01
+
+! demonstrate vieport layout using the /AXES qualifier
+set wind/clear/aspect=1
+def view/axes allax
+
+! make guide lines
+show view allax   ! text = 1
+set view allax
+plot/vs/line/hlim=0:1/vlim=0:1/nolab {0.5,0.5,,0,1},{0,1,,0.5,0.5}
+plot/vs/line/over/nolab {0.25,0.25,,0,1},{0,1,,0.25,0.25}
+plot/vs/line/over/nolab {0.75,0.75,,0,1},{0,1,,0.75,0.75}
+label 0.26,0.95,-1,0,.2 @P2@AC<-At 0.25
+label 0.76,0.95,-1,0,.2 @P3@AC<-At 0.75
+
+! a plot from 0.25 to 0.75
+def view /xlim=0.25:0.75/ylim=0.25:0.75/text=1/axes mid
+set view mid
+plot/vs/hlim=-1:1/vlim=-1:1/line/i=1:200 cos(i/15),sin(i/15)
+show view mid
+ppl list xaxis
+ppl list yaxis
+
+! guidelines showing origin, axlen, white space
+def view /xlim=0.25:0.75/ylim=0.25:0.75/text=1/axes mid2
+set view mid2
+ppl origin 0,0
+define symbol xaxl `($PPL$WIDTH)/2`
+define symbol yaxl `($PPL$HEIGHT)/2`
+ppl axlen `1.2 + ($xaxl) + 1.0`,`1.4 + ($yaxl) + 1.4`
+plot/vs/hlim=-1.2:`($xaxl)+1.0`:0.2/vlim=-1.4:`($yaxl)+1.4`:0.2/nolab/nolab {0,($xaxl)}, {0,($yaxl)}
+
+! again with scale determined automatically
+! make guide lines
+set window/clear
+set view allax
+plot/vs/line/hlim=0:1/vlim=0:1/nolab {0.5,0.5,,0,1},{0,1,,0.5,0.5}
+plot/vs/line/over/nolab {0.25,0.25,,0,1},{0,1,,0.25,0.25}
+plot/vs/line/over/nolab {0.75,0.75,,0,1},{0,1,,0.75,0.75}
+label 0.26,0.95,-1,0,.2 @P2@AC<-At 0.25
+label 0.76,0.95,-1,0,.2 @P3@AC<-At 0.75
+
+! a plot from 0.25 to 0.75
+def view /xlim=0.25:0.75/ylim=0.25:0.75/axes mid
+set view mid
+plot/vs/hlim=-1:1/vlim=-1:1/line/i=1:200/noyadj cos(i/15),sin(i/15)
+show view mid
+ppl list xaxis
+ppl list yaxis
+
+! guidelines showing origin, axlen, white space
+def view /xlim=0.25:0.75/ylim=0.25:0.75/text=1/axes mid2
+set view mid2
+ppl origin 0,0
+define symbol xaxl `($PPL$WIDTH)/2`
+define symbol yaxl `($PPL$HEIGHT)/2`
+ppl axlen `1.2 + ($xaxl) + 1.0`,`1.4 + ($yaxl) + 1.4`
+plot/vs/hlim=-1.2:`($xaxl)+1.0`:0.2/vlim=-1.4:`($yaxl)+1.4`:0.2/nolab/line {0,($xaxl)}, {0,($yaxl)}
+
+set wind/clear
+
+! a full window plot
+set view allax
+plot/vs/hlim=-1:1/vlim=-1:1/line/i=1:200/noyadj cos(i/15),sin(i/15)
+show view mid
+
+set wind/clear
+
+def view/axes/xlim=0:0.5/ylim=0:0.5/text=1 llax
+set view llax
+PLOT/VS/LINE/I=1:314/noyadj i*cos(i/20),i*sin(i/20)
+ppl list xaxis
+ppl list yaxis
+
+def view/axes/xlim=0:0.5/ylim=0.5:1/text=1 lrax
+set view lrax
+PLOT/VS/LINE/I=1:314/noyadj i*cos(i/20),i*sin(i/20)
+ppl list xaxis
+ppl list yaxis
+
+def view/axes/xlim=0.5:1/ylim=0:0.5/text=1 ulax
+set view ulax
+PLOT/VS/LINE/I=1:314/noyadj i*cos(i/20),i*sin(i/20)
+ppl list xaxis
+ppl list yaxis
+
+def view/axes/xlim=0.5:1/ylim=0.5:1/text=1 urax
+set view urax
+PLOT/VS/LINE/I=1:314/noyadj i*cos(i/20),i*sin(i/20)
+ppl list xaxis
+ppl list yaxis
+
+! again with viewport scaling determined automatically
+set wind/clear
+
+def view/axes/xlim=0:0.5/ylim=0:0.5 llax
+show view llax
+set view llax
+PLOT/VS/LINE/I=1:314/nolab i*cos(i/20),i*sin(i/20)
+ppl list xaxis
+ppl list yaxis
+
+def view/axes/xlim=0:0.5/ylim=0.5:1 lrax
+show view lrax
+set view lrax
+PLOT/VS/LINE/I=1:314/nolab i*cos(i/20),i*sin(i/20)
+ppl list xaxis
+ppl list yaxis
+
+def view/axes/xlim=0.5:1/ylim=0:0.5 ulax
+show view ulax
+set view ulax
+PLOT/VS/LINE/I=1:314/nolab i*cos(i/20),i*sin(i/20)
+ppl list xaxis
+ppl list yaxis
+
+def view/axes/xlim=0.5:1/ylim=0.5:1 urax
+show view urax
+set view urax
+PLOT/VS/LINE/I=1:314/nolab i*cos(i/20),i*sin(i/20)
+ppl list xaxis
+ppl list yaxis
+
+cancel view
+go ptest
+ppl list xaxis
+ppl list yaxis

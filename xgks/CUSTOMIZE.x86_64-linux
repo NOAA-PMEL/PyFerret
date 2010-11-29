@@ -1,0 +1,37 @@
+# This file is for customizing the configuation process performed by
+# `./configuration'.  This file consists of sh(1) variable-definition lines.
+# The value given to those variable by this file will override their default
+# values.
+#
+# You can also customize the configuration process via the environment
+# variables seen by ./configure.  For example:
+#
+#     In csh(1):
+#	  % setenv CC acc
+#	  & setenv CFLAGS -g
+#	  % ./configure
+#
+#     In sh(1):
+#	  $ CC=acc CFLAGS=-g ./configure
+#
+# Variables in this file override the environmental ones.
+#
+#############################################################################
+#
+# Type of C compiler (default is `cc'):
+CC='gcc -I/usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/include -I/usr/include -I/usr/include/X11 -I../../include/ -I../../../ppl/include/xgks/ '
+#
+# C compiler flags (default is `-O'):
+CFLAGS='-O2'
+#
+# C preprocessor flags (default is `-DNDEBUG'):
+# CPPFLAGS=-DDEBUG
+#
+# Installation prefix (default is `../..'):
+prefix=..
+
+FC='gfortran -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-length-132 -ffast-math ' 
+OS=linux
+
+LD_X11='-L/usr/X11R6/lib64 -lX11'
+

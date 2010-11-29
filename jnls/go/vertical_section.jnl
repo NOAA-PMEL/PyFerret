@@ -1,0 +1,64 @@
+\cancel mode verify
+! vertical_section.jnl
+! 12/1/94 *sh*
+! 10/2003 *acm*
+
+! Description: Create an arbitrary 2D vertical section from a 3D field
+!
+! Updated in 2003 to use the SAMPLEXY function.  The argument list 
+! has been changed with this update
+
+! NOTE: Also see the script samplexy_demo.jnl for a more ideas on 
+!  creating vertical cross-sections, when the path is not a straight line
+
+! usage:
+!                           arg1         arg2     a3  a4  a5  a6  a7
+!	GO vertical_section plot_command variable xlo,ylo,xhi,yhi,nx
+
+! arguments
+! variable (arg1) - the variable to be sampled.  >>BE SURE TO SPECIFY A
+!			UNIQUE T= OR L= VALUE IN THE DEFINITION<<
+! xlo,ylo,xhi,yhi - the lower left and upper right coordinates of the section
+!			to be extracted.
+!			>> NOTE THAT COORDINATES MUST BE PURELY NUMERICAL:
+!			FOR LONGITUDE DEGREES EAST USE NUMERICAL LONGITUDE
+!			FOR LONGITUDE DEGREES WEST USE 360-LONGITUDE
+!			FOR LATITUDE DEGREES SOUTH USE (-1) * LATITUDE
+!			FOR LATITUDE DEGREES NORTH USE NUMERICAL LATITUDE
+! nx	   (arg7) - the number of desired horizontal points
+
+! examples:
+! 1. Create a section of a variable which is defined in X-Y-Z-T,
+!    at a single time and over a range of depths, with the section
+!    running from (100e,40S) to (300E,40N)
+!       yes? GO vertical_section SHADE/T="1-jan-2001"/z=0:120 var 100,-40,300,40,81
+
+! 2. Create a section of the Levitus climatological temperature running
+!    from (160e,20s) to (140w,30n)
+!
+!	yes? SET DATA levitus_climatology
+!	yes? GO vertical_section FILL "temp[x=150e:130w,y=25s:35n]" 160,-20,220,30,61
+
+! Notes:
+!   1) Quotation marks avoid a syntax error from the comma in "temp[...,...]"
+!   2) The region x=150e:130w,y=25s:35n is a subset of the full data
+!		set chosen (arbitrarily) large enough to encompass the
+!		section to be sampled.
+
+! check the arguments
+query/ignore $1%<Use: GO vertical_section plot_command,variable,xlo,ylo,xhi,yhi,nx%
+query/ignore $2%<Use: GO vertical_section plot_command,variable,xlo,ylo,xhi,yhi,nx%
+query/ignore $3%<Use: GO vertical_section plot_command,variable,xlo,ylo,xhi,yhi,nx%
+query/ignore $4%<Use: GO vertical_section plot_command,variable,xlo,ylo,xhi,yhi,nx%
+query/ignore $5%<Use: GO vertical_section plot_command,variable,xlo,ylo,xhi,yhi,nx%
+query/ignore $6%<Use: GO vertical_section plot_command,variable,xlo,ylo,xhi,yhi,nx%
+query/ignore $7%<Use: GO vertical_section plot_command,variable,xlo,ylo,xhi,yhi,nx%
+
+LET var_vsect = $2
+
+! define the X,Y, and Z coordinates for sampling the 3D field
+LET/QUIET x_vsect = ($5-($3))/($7-1) * (I-1) + ($3)
+LET/QUIET y_vsect = ($6-($4))/($7-1) * (I-1) + ($4)
+
+$1 SAMPLEXY($2, x_vsect[i=1:$7], y_vsect[i=1:$7])
+set mode/last verify

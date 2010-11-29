@@ -1,0 +1,886 @@
+	SUBROUTINE CD_WRITE_AXIS ( cdfid, dset, grid, idim, recdim,
+     .                           loss, hiss, ax_type,  edges_flag, 
+     .                           do_bounds, mode_upcase_output,  
+     .                           keepax_flag, status )
+
+
+*  This software was developed by the Thermal Modeling and Analysis
+*  Project(TMAP) of the National Oceanographic and Atmospheric
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  hereafter referred to as NOAA/PMEL/TMAP.
+*
+*  Access and use of this software shall impose the following
+*  obligations and understandings on the user. The user is granted the
+*  right, without any fee or cost, to use, copy, modify, alter, enhance
+*  and distribute this software, and any derivative works thereof, and
+*  its supporting documentation for any purpose whatsoever, provided
+*  that this entire notice appears in all copies of the software,
+*  derivative works and supporting documentation.  Further, the user
+*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
+*  the use of this software or in any product that includes this
+*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
+*  in any advertising or publicity to endorse or promote any products
+*  or commercial entity unless specific written permission is obtained
+*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
+*  is not obligated to provide the user with any support, consulting,
+*  training or assistance of any kind with regard to the use, operation
+*  and performance of this software nor to provide the user with any
+*  updates, revisions, new versions or "bug fixes".
+*
+*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
+*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
+*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*
+*
+* Write an axis definition out to the current output netCDF file
+* May be a full "parent" definition, a sub_axis, or a "child" (a sub-axis
+* which points to the full axis)
+
+* Programmer Steve Hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+
+* revision 0.0 - 3/92
+*   10/92: for performance reasons the "point_spacing" attribute will not be
+*          maintained on the record axis (see cd_rec_synch)
+*        - and CD_SET_MODE used to put into define mode before writing attribs
+*   12/92: write axes in double precision (esp. for time axis issues) 
+*    3/93: check error status after creating dimension
+*    4/93: check "line_direction" in determining if time_origin is needed
+*    1/95: change logical argument into integer "ax_type"
+*    2/95: write NOAA COOP-compliant files: "days since 1992-02-28",
+*	   "degrees_east", "degrees_north"
+* 10/96 *kob* - Linux port - had to move variable assignments off of
+*		declaration line.
+* v4.91 *kob* 12/97 - added maxchildlen paramater for the max length of 
+*                     a child axis
+* v500 *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
+*                    name to 64 from 24 to match longer line_name
+* V530 *sh* 12/00 - avoid performance problems of switching between netCDF
+*	DEFINE and DATA mode by deferring actual coordinate writes until later
+* v530 *acm* 1/01  calendar axes: write the calendar name if non-Gregorian
+* v541 *sh* 2/02 - added support for line_modulo_len
+* V550 *ACM* 12/02 Write AXIS attribute to output files.
+* V570 *acm*  5/04 write bounds attribute and bounds 2xN coordinates to NetCDF files
+* V581 *acm* 6/05 - Fix for bug 1271, add flag line_shift_origin
+*            and restore original t0 on output
+* V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
+* V600 *acm* 6/06 attribute control.
+* V601 *acm* 9/06 Fix bug 1440: Remove stray "IF (attid .GT. 0) " before call to 
+*                 CD_GET_VAR_ATT_INFO just after DO 200
+* V602 *acm*11/06 Fix bug 1471; new routine CD_AXIS_OUTNAME
+* V602 *acm*12/06 Correct the setting of got_calendar 
+* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V61+  3/08 *acm* (After fixing bug 1534), check for attoutflag on bounds 
+*                  attribute before writing bounds attribute and values.
+* V61_ 5/08 *acm*  Fix bug1574: If the axis is a user-defined axis, get its
+*                  information from the attribute structure; previously only
+*                  did this for user variables.
+* V62  *acm*  2/09 - Fix bug 1634: allow SAVE/KEEP_AXISNAMES so that child axis names
+*                    arent written. They can get too long for OPeNDAP library calls
+* V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
+*                  netcdf3-style calls, which are also consistent with netcdf4.
+* V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
+*                  linked with OPeNDAP library.
+
+* argument definitions:
+*     dset    - dset (if netcdf file, for getting name and attribute 
+*               info from linked-list structure  
+*     cdfid   - netCDF id number for already opened CDF file
+*     grid    - TMAP grid id
+*     idim    - axis orientation (1-4)
+*     recdim  - is this to be the CDF record axis ? (input)
+*     loss    - lo subscript (child axis, only)
+*     hiss    - hi subscript (child axis, only)
+*     status  - return status
+
+* include files
+
+        include 'netcdf.decl'
+#include "netcdf.inc"
+	include 'tmap_errors.parm'
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+        include 'cdf_tmap.parm'
+#include "gt_lib.parm"
+	include 'cd_lib.parm'
+	include 'xdset_info.cmn_text'
+	external xdset_info_data
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
+	include 'xunits.cmn_text'
+
+! Declare netcdf function names. 
+! The ones without trailing underscore are declared in netcdf.inc
+#include "netcdf_declareUnderscore.inc"
+
+
+* argument declarations
+      LOGICAL recdim, do_bounds, mode_upcase_output
+      INTEGER cdfid, dset, grid, idim, loss, hiss, ax_type, 
+     .        edges_flag, keepax_flag, status
+
+* local variable declarations:
+* *kob* explicit definitions not allowed on decl line in linux...
+*       moved it to parameter line 10/96
+      LOGICAL TM_ABSTRACT_AXIS, TM_DATE_OK, MATCH_NAME, NC_GET_ATTRIB,
+     .       abstract, do_warn, got_modulo, got_calendar, got_units, 
+     .       got_positive, got_spacing, got_axis, got_cartesian, got_it,
+     .       coordvar, do_off, do_scale
+      PARAMETER (do_warn = .TRUE. )
+      INTEGER TM_LENSTR1, CD_AXLEN, STR_SAME, 
+     .        dimid, iaxis, axid, cdfstat, lo, hi,
+     .        nlen, elen, axlen, slen, edgid, bndid, npts, dim2d(2)
+      INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, varid,
+     .        llen, vartype, nvdims, nvatts, iatt, attype, attlen,
+     .        attoutflag, istat, maxlen, vdims(8), newid, all_outflag,
+     .        attid, dset_num
+      REAL vals(10)
+
+!      LOGICAL condensed
+!      REAL rlen
+* *kob* 3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
+*                    name to 64 from 24 to match longer line_name
+* *acm* 6/06 - change axis name lengths to 128
+      CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_OUTNAME*64,
+     .       name*128, name_in*128, units*48, datebuff*40, 
+     .       buff*140, attname*128
+
+!      REAL*8 val8_cdf, val8_tmap
+* 12/97
+      INTEGER maxchildlen
+      PARAMETER (maxchildlen = 24)
+
+* initialize
+      iaxis = grid_line(idim, grid)
+      dset_num = dset
+
+      name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )
+
+      name_in = name
+
+* If mode upcase_output is set, then upcase both name and name_in which is 
+* being stored for later use.
+
+      IF (mode_upcase_output) THEN
+         CALL STR_UPCASE( name_in, name)
+         CALL STR_UPCASE( name, name_in)
+      ENDIF
+
+      npts = line_dim(iaxis)
+      abstract = TM_ABSTRACT_AXIS( iaxis )
+
+      bndid = -1
+
+* determine lo/hi limits of the axis to be written
+      IF ( abstract ) THEN
+         lo = loss
+         hi = hiss
+      ELSEIF ( ax_type .EQ. pcdf_full_span ) THEN
+         lo = 1
+         hi = line_dim(iaxis)
+      ELSE
+         lo = loss
+         hi = hiss
+      ENDIF
+!      condensed = line_regular(iaxis) .AND. (hi-lo).GT.3000
+
+* dimension and size for this axis
+      axlen = hi - lo + 1
+      IF ( abstract .OR. ax_type.NE.pcdf_full_span ) THEN
+         IF (keepax_flag .EQ. 0) 
+     .       name = CD_CHILDAX_NAME( name, lo, hi, nlen )
+* *kob* 12/9/97 - use new paramater maxchildlen in length check
+         nlen = MIN(nlen,maxchildlen)
+      ENDIF
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_INQ_DIMID_( cdfid, name(:nlen), dimid)
+#else
+      cdfstat = NF_INQ_DIMID( cdfid, name(:nlen), dimid)
+#endif
+
+* already defined ? (limited consistency checking)
+      IF ( cdfstat .EQ. NF_NOERR ) THEN
+* ... is there a coordinate variable by the same name ?
+#ifdef usingDODSf2cUnderscore
+         cdfstat = NF_INQ_VARID_( cdfid, name(:nlen), axid )
+#else
+         cdfstat = NF_INQ_VARID( cdfid, name(:nlen), axid )
+#endif
+
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
+         IF ( .NOT.recdim ) THEN
+* ... check the length
+            slen = CD_AXLEN( cdfid, dimid, status )
+            IF ( status .NE. merr_ok ) GOTO 5900
+            IF ( axlen .NE. slen ) GOTO 5100
+         ENDIF
+         GOTO 1000
+      ENDIF
+
+* put CDF into define mode so axis can be defined
+      CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
+      IF ( status .NE. merr_ok ) RETURN
+
+* define the dimension
+      IF ( recdim ) THEN
+#ifdef usingDODSf2cUnderscore
+         cdfstat = NF_DEF_DIM_( cdfid, name(:nlen), NF_UNLIMITED, dimid )
+!      ELSEIF ( condensed ) THEN
+!         cdfstat = NF_DEF_DIM_( cdfid, name(:nlen), 2, dimid )
+      ELSE
+         cdfstat = NF_DEF_DIM_( cdfid, name(:nlen), axlen, dimid )
+#else
+         cdfstat = NF_DEF_DIM( cdfid, name(:nlen), NF_UNLIMITED, dimid )
+!      ELSEIF ( condensed ) THEN
+!         cdfstat = NF_DEF_DIM( cdfid, name(:nlen), 2, dimid )
+      ELSE
+         cdfstat = NF_DEF_DIM( cdfid, name(:nlen), axlen, dimid )
+#endif
+
+      ENDIF
+      IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
+
+* create the coordinate variable (12/92 -> double precision)
+#ifdef usingDODSf2cUnderscore
+      cdfstat = NF_DEF_VAR_(cdfid, name(:nlen), NF_DOUBLE, 1, dimid, axid)
+#else
+      cdfstat = NF_DEF_VAR(cdfid, name(:nlen), NF_DOUBLE, 1, dimid, axid)
+#endif
+      IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
+
+* check: can we get the coord var id back??
+#ifdef usingDODSf2cUnderscore
+         cdfstat = NF_INQ_VARID_( cdfid, name(:nlen), newid )
+#else
+         cdfstat = NF_INQ_VARID( cdfid, name(:nlen), newid )
+#endif
+
+* assign its attributes
+      IF (ax_type .EQ. pcdf_child_span) THEN
+#ifdef usingDODSf2cUnderscore
+         cdfstat = NF_PUT_ATT_TEXT_(cdfid, axid, 'child_axis', 1, ' ')
+#else
+         cdfstat = NF_PUT_ATT_TEXT (cdfid, axid, 'child_axis', 1, ' ')
+#endif
+      ENDIF
+!      IF ( condensed ) THEN
+#ifdef usingDODSf2cUnderscore
+!         cdfstat = NF_PUT_ATT_DOUBLE _(cdfid, axid, 'true_size',
+!     .         1, npts)
+#else
+!         cdfstat = NF_PUT_ATT_DOUBLE (cdfid, axid, 'true_size',
+!     .         1, npts)
+#endif
+!      ENDIF
+
+      got_modulo = .FALSE.
+      got_calendar = .FALSE.
+      got_units = .FALSE.
+      got_positive = .FALSE.
+      got_spacing = .FALSE.
+      got_axis = .FALSE.
+      got_cartesian = .FALSE.
+
+! get whatever attributes are available in the linked-list structure.
+! use the name of the parent axis.
+
+      CALL CD_GET_VAR_ID (dset_num, name_in, varid, status)
+
+* If the axis is a user-defined axis, we still dont have its info. Look in 
+* the pseudo-dataset of user-defined coordinate variables.
+
+      IF (varid .EQ. 0 .AND. .NOT.abstract) THEN
+         dset_num = -2
+         CALL CD_GET_VAR_ID (dset_num, name_in, varid, status)
+      ENDIF
+      
+      IF (varid .GT. 0) THEN
+
+* Get axis name into original upper/lowercase form, and get nvatts.
+
+         CALL CD_GET_VAR_INFO (dset_num, varid, buff, vartype, 
+     .                   nvdims, vdims, nvatts, coordvar, 
+     .                   all_outflag, status) 
+
+* If mode upcase_output is set, then upcase the name.
+
+         name_in = buff
+         IF (mode_upcase_output) CALL STR_UPCASE( name_in, buff)
+
+         DO 200 iatt = 1, nvatts
+            attoutflag = 0
+            CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .               iatt, attname, attype, attlen, attoutflag, status )
+
+            maxlen = 140
+            got_it = NC_GET_ATTRIB ( dset_num, varid, attname, 
+     .               do_warn, name_in, maxlen, attlen, attoutflag, 
+     .               buff, vals)
+
+* If the user has not asked for bounds and if its a regular axis then
+* do not write bounds attribute. (The bounds themselves arent written.)
+         IF ( (STR_SAME(attname, 'bounds') .EQ. 0) .AND. 
+     .        ((line_regular(iaxis)) .AND. (.NOT.do_bounds)) ) 
+     .               attoutflag = 0
+
+* Write the attribute, but skip this for the point-spacing attr on record axis.
+
+            IF ( MATCH_NAME (attname,  TM_LENSTR1(attname), 
+     .           'MODULO', 6) ) THEN
+               IF (attype .NE. NF_CHAR .AND. vals(1) .EQ. 0.) THEN
+! Write line_modulo_len 
+                  vals(1) = line_modulo_len(iaxis)
+                  IF (attoutflag .EQ. 1) attype = NF_FLOAT
+               ENDIF
+            ENDIF
+
+            IF ( recdim  .AND. 
+     .           MATCH_NAME (attname,  TM_LENSTR1(attname), 
+     .           'POINT_SPACING', 13) ) THEN
+               got_spacing = .TRUE.
+            ELSE
+               IF (attype .EQ. NF_CHAR .AND. attoutflag .EQ. 1) THEN
+                  llen = TM_LENSTR1(buff)
+                  CALL CD_WRITE_ATTRIB (cdfid, name(:nlen), attname,
+     .                               buff(:llen), .FALSE., status )
+               ELSE IF (attoutflag .EQ. 1) THEN
+                  CALL CD_WRITE_ATTVAL(cdfid, name(:nlen), attname,
+     .                                 vals, attlen, attype, status )
+               ENDIF
+            ENDIF
+
+            slen = TM_LENSTR1(attname)
+            IF (MATCH_NAME (attname,  slen, 'UNITS', 5 ) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_units = .TRUE.
+            IF (MATCH_NAME (attname,  slen, 'CALENDAR', 8 ) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_calendar = .TRUE.
+            IF (MATCH_NAME (attname,  slen, 'MODULO', 6 ) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_modulo = .TRUE.
+            IF (MATCH_NAME (attname,  slen, 'POSITIVE', 8 ) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_positive = .TRUE.
+            IF (MATCH_NAME (attname,  slen, 'POINT_SPACING', 13) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_spacing = .TRUE.
+            IF (MATCH_NAME (attname,  slen, 'AXIS', 4 ) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_axis = .TRUE.
+            IF (MATCH_NAME (attname,  slen, 'CARTESIAN_AXIS', 14 ) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_cartesian = .TRUE.
+
+ 200     CONTINUE
+      ENDIF
+
+* write modulo, t0, etc as attributes if they exist in Ferret 
+* variables line_modulo etc. This is consistent with previous Ferret behavior.
+
+      attoutflag = 1  
+
+* May want to add since t0 
+
+      IF ( line_direction(iaxis) .EQ. 'TI' ) THEN
+         cal_id = TM_GET_CALENDAR_ID (line_cal_name(iaxis))
+         IF (TM_DATE_OK( line_T0(iaxis),cal_id ) ) got_units = .FALSE.
+      ENDIF
+
+      IF ( line_units(iaxis) .NE. ' ' .AND. (.NOT.got_units) ) THEN
+	 units = line_units(iaxis)	 
+
+	 IF ( line_direction(iaxis) .EQ. 'WE'
+     .	.AND. line_unit_code(iaxis) .EQ. pun_degrees ) THEN
+	    units = 'degrees_east'
+	 ELSEIF ( line_direction(iaxis) .EQ. 'SN'
+     .	.AND. line_unit_code(iaxis) .EQ. pun_degrees ) THEN
+	    units = 'degrees_north'
+	ELSEIF ( line_direction(iaxis) .EQ. 'TI'
+     . .AND. TM_DATE_OK( line_T0(iaxis),cal_id )    ) THEN
+            slen = TM_LENSTR1( line_units(iaxis) )
+	    units = line_units(iaxis)(:slen)//' since '
+            IF (line_shift_origin(iaxis)) THEN
+               datebuff = '01-JAN-0001 00:00:00'
+            ELSE
+ 	       datebuff = line_T0(iaxis)
+            ENDIF
+            CALL TM_DATE_REFORMAT(datebuff,pdate_vax,cal_id,
+     .				  units(slen+8:),pdate_numslashnum,
+     .				  .TRUE., status )
+
+	    IF ( status .NE. merr_ok ) GOTO 5900
+	ENDIF
+        slen = TM_LENSTR1( units )
+
+        attname = 'units' 
+        IF (varid .GT. 0) THEN
+           CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, 
+     .                 status)
+           IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .         attid, attname,  attype, attlen, attoutflag, istat )
+        ELSE
+           attoutflag = 1
+        ENDIF
+
+        IF (attoutflag .EQ. 1) 
+#ifdef usingDODSf2cUnderscore
+     .     cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
+     .        	       slen, units(:slen) )
+#else
+     .     cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       slen, units(:slen) )
+#endif
+
+      ENDIF
+      IF ( idim .EQ. t_dim .AND. (.NOT.got_calendar) ) THEN                  ! 4/93 update
+        cal_id = TM_GET_CALENDAR_ID (line_cal_name(iaxis))
+	IF ( line_direction(iaxis) .EQ. 'TI'
+     . .AND. TM_DATE_OK( line_T0(iaxis), cal_id )    ) THEN
+
+            IF (line_shift_origin(iaxis)) THEN
+               datebuff = '01-JAN-0001 00:00:00'
+            ELSE
+ 	       datebuff = line_T0(iaxis)
+            ENDIF
+
+            slen = TM_LENSTR1( datebuff )
+            
+            attname = 'time_origin' 
+            IF (varid .GT. 0) THEN
+               CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, 
+     .                 status)
+               IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .             attid, attname, attype, attlen, attoutflag, istat )
+            ELSE 
+               attoutflag = 1
+            ENDIF
+
+            IF (attoutflag .EQ. 1) 
+#ifdef usingDODSf2cUnderscore
+     .         cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
+     .        	       slen, datebuff(:slen) )
+#else
+     .         cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       slen, datebuff(:slen) )
+#endif
+	ENDIF
+
+!  Write the calendar name
+
+        IF (cal_id .NE. 1) THEN
+          slen = TM_LENSTR1( line_cal_name(iaxis) )
+
+          attname = 'calendar' 
+          IF (varid .GT. 0) THEN
+             CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
+             IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .                attid, attname, attype, attlen, attoutflag, istat )
+          ELSE
+             attoutflag = 1
+          ENDIF
+
+          IF (attoutflag .EQ. 1) 
+#ifdef usingDODSf2cUnderscore
+     .      cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
+     .        	       slen, line_cal_name(iaxis)(:slen))
+#else
+     .      cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       slen, line_cal_name(iaxis)(:slen))
+#endif
+        ENDIF
+      ENDIF
+
+
+      IF ( line_modulo(iaxis) .AND. (.NOT.got_modulo) ) THEN
+	 IF (line_modulo_len(iaxis) .EQ. 0.0D0 ) THEN
+           attname = 'modulo' 
+           IF (varid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_ID(dset_num, varid, attname, attid,status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .              attid, attname, attype, attlen, attoutflag, istat )
+           ELSE
+              attoutflag = 1
+           ENDIF
+           IF (attoutflag .EQ. 1)
+#ifdef usingDODSf2cUnderscore 
+     .       cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
+     .        	       1, ' ' )
+#else
+     .       cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       1, ' ' )
+#endif
+	 ELSE
+           attname = 'modulo' 
+           IF (varid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_ID(dset_num, varid, attname, attid,status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .               attid, attname, attype, attlen, attoutflag, istat )
+           ELSE
+              attoutflag = 1
+           ENDIF
+           IF (attoutflag .EQ. 1) 
+#ifdef usingDODSf2cUnderscore
+     .      cdfstat = NF_PUT_ATT_DOUBLE_( cdfid, axid, attname,
+     .        	       NF_DOUBLE, 1, line_modulo_len(iaxis) )
+#else
+     .      cdfstat = NF_PUT_ATT_DOUBLE( cdfid, axid, attname,
+     .        	       NF_DOUBLE, 1, line_modulo_len(iaxis) )
+#endif
+	 ENDIF
+
+! Check if user want to write modulo=false to the file
+      ELSE IF (got_modulo .AND. (varid .GT. 0) .AND.
+     .         .NOT.line_modulo(iaxis)  ) THEN 
+            attname = 'modulo'
+            CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
+            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .              attid, attname, attype, attlen, attoutflag, istat )
+
+            maxlen = 140
+            got_it = NC_GET_ATTRIB ( dset_num, varid, attname, 
+     .               do_warn, name_in, maxlen, attlen, attoutflag, 
+     .               buff, vals)
+
+            IF (attype .EQ. NF_CHAR .AND. attoutflag .EQ. 1) THEN
+               llen = TM_LENSTR1(buff)
+               CALL CD_WRITE_ATTRIB(cdfid, name(:nlen), attname,
+     .                               'false', .FALSE., status )
+            ELSE IF (attoutflag .EQ. 1) THEN
+               CALL CD_WRITE_ATTVAL(cdfid, name(:nlen), attname,
+     .                              vals, attlen, attype, status )
+            ENDIF
+
+
+      ENDIF
+
+      IF ( idim.EQ.z_dim .AND. line_direction(iaxis).EQ.'UD' .AND.
+     .     (.NOT.got_positive) ) THEN
+           attname = 'positive' 
+           IF (varid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_ID(dset_num, varid, attname, attid,status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .              attid, attname, attype, attlen, attoutflag, istat )
+           ELSE
+              attoutflag = 1
+           ENDIF
+           IF (attoutflag .EQ. 1) 
+#ifdef usingDODSf2cUnderscore
+     .      cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
+     .        	       4, 'down' )
+#else
+     .      cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       4, 'down' )
+#endif
+      ENDIF
+
+* record axis (time, usually) doesn't get coordinate spacing or any
+* coordinates inserted at creation time
+      IF ( recdim ) THEN
+
+         CONTINUE
+      ELSE
+        IF (.NOT. got_spacing) THEN
+        IF ( line_regular(iaxis) ) THEN
+           attname = 'point_spacing' 
+           IF (varid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_ID(dset_num, varid, attname, attid,status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .              attid, attname, attype, attlen, attoutflag, istat )
+           ELSE
+              attoutflag = 1
+           ENDIF
+           IF (attoutflag .EQ. 1) 
+#ifdef usingDODSf2cUnderscore
+     .      cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
+     .        	       4, 'even' )
+#else
+     .      cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       4, 'even' )
+#endif
+        ELSE
+* sub-span axis may not have irregular spacing just cuz parent does
+* 12/00 NO. ... regular appearing coordinates are not necessarily regular --
+*       for example 2 points extracted from an irregular axis will always
+*	appear to be regular, but their box limits are not necessarily so
+           IF ( ax_type .EQ. pcdf_full_span
+     .     .OR. ax_type .EQ. pcdf_sub_span ) THEN
+              attname = 'point_spacing' 
+              IF (varid .GT. 0) THEN
+                 CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, 
+     .                  attid, status)
+                 IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .               attid, attname, attype, attlen, attoutflag, istat )
+              ELSE 
+                 attoutflag = 1
+              ENDIF
+              IF (attoutflag .EQ. 1)
+#ifdef usingDODSf2cUnderscore 
+     .      cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname,
+     .        	       6, 'uneven' )
+#else
+     .      cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
+     .        	       6, 'uneven' )
+#endif
+           ENDIF
+        ENDIF
+        ENDIF  ! got_spacing
+
+* set up for deferred writing of coordinate values (12/00)
+	CALL CD_DEFER_COORD_WRITE(axid, grid, idim, lo, hi,
+     .				  pcd_defer_points)
+
+      ENDIF
+
+* Write AXIS attribute
+
+      IF (.NOT. got_axis) THEN
+
+           attname = 'axis' 
+           IF (varid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid,
+     .                  status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid,
+     .             attid, attname, attype, attlen, attoutflag, istat )
+           ELSE
+              attoutflag = 1
+           ENDIF
+            
+#ifdef usingDODSf2cUnderscore
+          IF (idim .eq. x_dim) THEN
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
+     .        	     ( cdfid, axid, attname, 1, 'X' )
+          ELSE IF (idim .eq. y_dim) THEN
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
+     .        	     ( cdfid, axid, attname, 1, 'Y' )
+          ELSE IF (idim .eq. z_dim) THEN
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
+     .        	     ( cdfid, axid, attname, 1, 'Z' )
+          ELSE IF (idim .eq. t_dim) THEN
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
+     .        	     ( cdfid, axid, attname, 1, 'T' )
+          ENDIF
+#else
+          IF (idim .eq. x_dim) THEN
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
+     .        	     ( cdfid, axid, attname, 1, 'X' )
+          ELSE IF (idim .eq. y_dim) THEN
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
+     .        	     ( cdfid, axid, attname, 1, 'Y' )
+          ELSE IF (idim .eq. z_dim) THEN
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
+     .        	     ( cdfid, axid, attname, 1, 'Z' )
+          ELSE IF (idim .eq. t_dim) THEN
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
+     .        	     ( cdfid, axid, attname, 1, 'T' )
+          ENDIF
+#endif
+       ENDIF
+
+* If the axis came in scaled, and the users asked for scaling on output
+* then return a note.
+
+       IF (varid .GT. 0) THEN
+          do_scale = .FALSE.
+	  do_off = .FALSE.
+          attname = 'scale_factor' 
+          CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid,
+     .               status)
+          IF (attid .GT. 0) THEN
+	     CALL CD_GET_VAR_ATT_INFO (dset_num, varid,
+     .          attid, attname, attype, attlen, attoutflag, istat )
+             IF (attoutflag .EQ. 1) do_scale = .TRUE.
+          ENDIF
+
+          attname = 'add_offset' 
+          CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid,
+     .               status)
+          IF (attid .GT. 0) THEN
+             CALL CD_GET_VAR_ATT_INFO (dset_num, varid,
+     .          attid, attname, attype, attlen, attoutflag, istat )
+             IF (attoutflag .EQ. 1) do_off = .TRUE.
+          ENDIF
+ 
+          IF (do_scale .OR. do_off)  
+     .    CALL TM_NOTE(name(1:nlen)//
+     .      ': Writing scaled coordinates not implemented. Suggest '//
+     .      'using nco operators on output file to pack coord values', 
+     .      lunit_errors)
+       ENDIF
+            
+* does it need axis bounds definitions ?
+
+* Has the user explicitly asked not to write bounds for the variable?
+* If so mark this with the value attoutflag = 2
+
+      attname = 'bounds' 
+      attoutflag = 0
+      IF (varid .GT. 0) THEN
+         CALL CD_GET_VAR_ATT_ID(dset_num, varid, attname, attid,status)
+         IF (attid .GT. 0) THEN
+            CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .      attid, attname, attype, attlen, attoutflag, istat )
+            IF (attoutflag .EQ. 0) attoutflag = 2
+         ENDIF
+      ENDIF
+
+      IF (  (ax_type.EQ.pcdf_full_span .OR. ax_type.EQ.pcdf_sub_span)
+     .  .AND. ( .NOT.line_regular(iaxis) .OR. do_bounds) 
+     .  .AND. ( edges_flag .EQ. 0) 
+     .  .AND. ( attoutflag .NE. 2) ) THEN
+
+         name = name(:nlen)//'_bnds'
+         elen = nlen + 5
+
+* ... define the first dimension of bounds variable (what about record axis??)
+
+         dim2d(2) = dimid    ! Dimension already defined above for coordinates
+
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
+
+* ... second dimension of bounds coordinate variable is 2
+         dim2d(1) = CD_WRITE_BNDSDIM(cdfid, status)
+
+* ... create the bounds variable, if it has not been created.
+#ifdef usingDODSf2cUnderscore
+         IF (bndid .EQ. -1) cdfstat = NF_DEF_VAR_(cdfid, 
+     .    name(:elen), NF_DOUBLE, 2, dim2d, bndid)
+#else
+         IF (bndid .EQ. -1) cdfstat = NF_DEF_VAR(cdfid, 
+     .    name(:elen), NF_DOUBLE, 2, dim2d, bndid)
+#endif
+
+         IF ( cdfstat .NE. NF_NOERR ) GOTO 5220
+
+* ... point to it from axis coordinates definition
+
+         attname = 'bounds' 
+         IF (varid .GT. 0) THEN
+            CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
+            IF (attid .GT. 0) THEN
+               CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .              attid, attname, attype, attlen, attoutflag, istat)
+            ELSE
+               attoutflag = 1
+            ENDIF 
+         ELSE
+            attoutflag = 1
+         ENDIF
+
+         IF (attoutflag .EQ. 1) THEN
+#ifdef usingDODSf2cUnderscore
+            cdfstat = NF_PUT_ATT_TEXT_(cdfid, axid, attname,
+     .                elen, name(:elen))
+#else
+            cdfstat = NF_PUT_ATT_TEXT (cdfid, axid, attname,
+     .                elen, name(:elen))
+#endif
+
+* set up for deferred writing of bounds coordinate values (12/00)
+* Record axis and bounds are written when variable written.
+
+           IF ( .NOT.recdim ) 
+     .       CALL CD_DEFER_COORD_WRITE(bndid, grid, idim, lo, hi,
+     .				  pcd_defer_bounds)
+         ENDIF
+
+      ENDIF
+
+* does it need axis box edge definitions ?  
+* edges_flag = 1 if requested with /EDGES qualifier
+* edges_flag = 2 if requested with /RIGID qualifier
+
+      IF (  (ax_type.EQ.pcdf_full_span .OR. ax_type.EQ.pcdf_sub_span)
+     . .AND. ((edges_flag.EQ.1) .OR.
+     .        (edges_flag.EQ.2 .AND.
+     .         .NOT.line_regular(iaxis) .AND. 
+     .         .NOT.recdim)) ) THEN
+
+         name = name(:nlen)//'edges'
+         elen = nlen + 5
+#ifdef usingDODSf2cUnderscore
+         cdfstat = NF_DEF_DIM_( cdfid, name(:elen), axlen+1, dimid )
+         cdfstat = NF_DEF_VAR_(cdfid, name(:elen), NF_DOUBLE, 1, 
+     .           dimid, edgid)
+#else
+         cdfstat = NF_DEF_DIM( cdfid, name(:elen), axlen+1, dimid )
+         cdfstat = NF_DEF_VAR(cdfid, name(:elen), NF_DOUBLE, 1, 
+     .           dimid, edgid)
+#endif
+         attname = 'edges' 
+         IF (varid .GT. 0) THEN
+            CALL CD_GET_VAR_ATT_ID (dset_num, varid, attname, attid, status)
+            IF (attid .GT. 0) THEN
+               CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
+     .              attid, attname, attype, attlen, attoutflag, istat)
+               IF (edges_flag .GT. 0) attoutflag = 1
+            ELSE
+               attoutflag = 1
+            ENDIF 
+         ELSE
+            attoutflag = 1
+         ENDIF
+         IF (attoutflag .EQ. 1) THEN
+#ifdef usingDODSf2cUnderscore
+            cdfstat = NF_PUT_ATT_TEXT_( cdfid, edgid, attname, 1, ' ' )
+* ... point to it from axis coordinates definition
+            cdfstat = NF_PUT_ATT_TEXT_( cdfid, axid, attname, elen,
+     .                name(:elen) )
+#else
+            cdfstat = NF_PUT_ATT_TEXT( cdfid, edgid, attname, 1, ' ' )
+* ... point to it from axis coordinates definition
+            cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname, elen,
+     .                name(:elen) )
+#endif
+
+* set up for deferref writing of edge coordinate values (12/00)
+	    CALL CD_DEFER_COORD_WRITE(edgid, grid, idim, lo, hi,
+     .				  pcd_defer_edges)
+         ENDIF
+
+      ENDIF
+
+* successful completion
+ 1000 status = merr_ok
+
+      RETURN
+
+* error messages
+ 5100 CONTINUE
+      IF (keepax_flag .EQ. 1) THEN
+         CALL WARN ("Writing a subset of data with original axis names")
+         CALL WARN 
+     . ("  Axis was already written with a different set of coordinates")
+      ENDIF
+      CALL TM_ERRMSG
+     . ( merr_linepredef, status, 'CD_WRITE_AXIS', unspecified_int4,
+     .   unspecified_int4,
+     .  'axis '//name(:nlen)//' doesnt match CDF file',
+     .  no_errstring, *5900 )
+
+ 5200 CALL TM_ERRMSG
+     .     ( cdfstat+pcdferr, status, 'CD_WRITE_AXIS', cdfid,
+     .       unspecified_int4, 'Failed creating coord variable '
+     .       //name(:nlen), no_errstring, *5900 )
+
+ 5220 CALL TM_ERRMSG
+     .     ( cdfstat+pcdferr, status, 'CD_WRITE_AXIS', cdfid,
+     .       unspecified_int4, 
+     .       'Failed creating bounds for coord variable '
+     .       //name(:nlen), no_errstring, *5900 )
+
+ 5300 CALL TM_ERRMSG
+     . ( merr_linepredef, status, 'CD_WRITE_AXIS', unspecified_int4,
+     .   unspecified_int4,
+     .  'Bad CDF file: dimension '//name(:nlen)
+     .  //' exists without coordinates',
+     .  no_errstring, *5900 )
+
+* error exit
+ 5900   RETURN
+	END

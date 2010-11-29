@@ -1,0 +1,36 @@
+C 	calendar.cmn
+C
+C	Common variables used in multiple calendar support
+C	J Davison 10.99
+C	V 1.0
+C
+C	0.00000000000000000000000000000000000000000000000000000000000000001
+C *acm* 12/00  Split into calendar.cmn and calendar.decl
+C *acm* 1/ 01  add cals_days_before_month and cals_month_by_day
+
+	common / all_calendar_specs /
+     .                  max_calendars,
+     .			max_months,
+     .			max_days,
+     .			num_months, 
+     .                  num_days,
+     .			days_before_month,
+     .			month_by_day,
+     .			days_in_month,
+     .			month_names,
+
+     .			allowed_calendars,
+     .			gregorian,
+     .			noleap,
+     .			julian,
+     .			d360,
+     .			all_leap,
+     .                  cals_num_days,
+     .                  cals_yeardays,
+     .			cals_num_months,
+     .			cals_month_names,
+     .			cals_days_in_month,
+     .                  cals_days_before_month,
+     .                  cals_month_by_day,
+     .			calendar_id
+

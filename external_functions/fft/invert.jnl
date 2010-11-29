@@ -1,0 +1,70 @@
+!------------------------------invert.jnl-------------------------------
+! Ansley Manke Nov 2001
+
+ ! Compute FFT of time series; then invert to recover time series.
+
+set win/clear
+DEFINE AXIS/t=1:366:1 dayt
+
+DEFINE GRID/T=dayt  tgrid
+SET GRID tgrid
+LET fcn1 = sin(0.5*tpts - 6.) /2.
+LET fcn2 = cos(0.3*tpts)
+
+!  Use an analytic function.
+
+LET sample_function = fcn1 - fcn2 + 0.2* randu(tpts)
+LET tpts = t
+
+
+set view upper
+plot/title="original function" sample_function
+pause
+
+! Compute the equivalent of FFTA(sample_function)
+
+LET sample_re = fft_re(sample_function)
+LET sample_im = fft_im(sample_function)
+LET amp_fft = (sample_re* sample_re + sample_im* sample_im)^0.5
+
+! Compare with the computation in fcn FFTA
+
+set window/siz=0.4
+set view upper
+plot ffta(sample_function)
+set view lower
+plot amp_fft
+
+message "now overlay amplitude spectrum computed by FFTA"
+plot/over ffta(sample_function)
+
+message "next compare the phase function"
+
+! Compute the equivalent of FFTP(sample_function)
+
+LET rad = 180.0/ 3.141592654
+LET phas = rad* ATAN2(-1.*sample_im, sample_re)     ! the computation done in FFTP(v)
+
+! Compare with the computation of FFTA
+
+set window/siz=0.4
+set view upper
+plot fftp(sample_function)
+set view lower
+plot phas
+
+message "Overlay FFT phase computed by fftp"
+plot/over fftp(sample_function)
+
+
+message "next invert the FFT and compare with original time series"
+
+LET invert_ts = fft_inverse(sample_re, sample_im)
+set view upper
+plot/title="Original SAMPLE_FUNCTION" sample_function
+
+set view lower
+plot invert_ts
+ 
+message "now overlay the original time series function"
+plot/over sample_function

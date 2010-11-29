@@ -1,0 +1,10 @@
+! err611_digit_filename.jnl
+! Under linux, FILE command fails if filename
+! starts with digit(s)
+
+! bug 287 (never had a benchmark test)
+
+REPEAT/RANGE=1:12:2/NAME=m \
+  (LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=`m`a.dat i; \
+   FILE/VAR="a`m`" `m`a.dat; LIST a`m`)
+SHOW DATA

@@ -1,0 +1,82 @@
+! bn401_ez.JNL
+! test all manner of accessing non-TMAP data files
+! V401 modified from bn200_ez.jnl by the addition of a test of UNF reading
+
+
+! quick and dirty
+FILE EZ.DAT
+SHOW DATA/FULL
+LIST V1
+SHOW DATA
+
+! first 2 values from each line
+FILE/VAR="X1,X2" EZ.DAT
+SHOW DATA/FULL
+LIST X1,X2
+SHOW DATA
+
+! all 6 values on each line
+FILE/VAR="X1,X2"/COLUMNS=6 EZ.DAT
+SHOW DATA/FULL
+LIST X1
+SHOW DATA
+
+! all 6 but skip first 2 lines
+FILE/VAR="X1,X2"/COLUMNS=6/SKIP=2 EZ.DAT
+SHOW DATA/FULL
+LIST X1
+SHOW DATA
+
+! take 1st and 4th values on each line as X1
+FILE/VAR="X1,-,X2"/COLUMNS=6/SKIP=2 EZ.DAT
+SHOW DATA/FULL
+LIST X1
+SHOW DATA
+
+! specify the format explicitly
+FILE/VAR="X1,X2"/COLUMNS=6/SKIP=2/FORMAT=(3(F14.0,F7.0)) EZ.DAT
+SHOW DATA/FULL
+LIST X1
+SHOW DATA
+
+! specify the format to skip every second line
+FILE/VAR="X1,X2"/COLUMNS=6/SKIP=1/FORMAT="(3(F14.0,F7.0)/)" EZ.DAT
+SHOW DATA/FULL
+LIST X1
+SHOW DATA
+
+! modify variable title
+SET VARIABLE/TITLE="first variable" X1
+SHOW DATA
+
+! read onto a 2D grid
+DEFINE AXIS/X=1:3:1 xez1
+DEFINE GRID/X=XEZ1/Y=EZ GEZ1
+FILE/VAR="X1,X2"/COLUMNS=6/GRID=GEZ1 EZ.DAT
+SHOW DATA/FULL
+LIST X1
+SHOW DATA
+
+! read onto a 4D grid
+DEFINE AXIS/X=1:1:1 xez2
+DEFINE AXIS/Y=1:3:1 yez
+DEFINE AXIS/Z=1:2:1 zez
+DEFINE GRID/X=XEZ2/Y=YEZ/Z=ZEZ/T=EZ GEZ2
+FILE/VAR="X1,X2"/COLUMNS=6/GRID=GEZ2 EZ.DAT
+SHOW DATA/FULL
+LIST X1
+SHOW DATA
+
+! truncate reading by grid size limit
+DEFINE AXIS/X=1:8:1 xez3
+DEFINE GRID/X=XEZ3 GEZ3
+FILE/VAR="X1,X2"/COLUMNS=6/GRID=GEZ3 EZ.DAT
+SHOW DATA/FULL
+LIST X1
+SHOW DATA
+
+! 8/10/95 -- added tests of unformatted writing and reading
+SP rm -f test.unf
+LIST/FILE=test.unf/format=unf/i=1:10 i
+file/form=unf/var=my_var test.unf
+list my_var

@@ -1,0 +1,338 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Sample Input functions :
+ *	gsmlc_
+ *	gsmsk_
+ *	gsmvl_
+ *	gsmch_
+ *	gsmpk_
+ *	gsmst_
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ *
+ * $Id$
+ * $__Header$
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifdef lint
+    static void	lint_malloc(n) size_t n; { n++; }
+    static void	lint_realloc(p,n) voidp p; size_t n; { (char*)p+n; }
+#   define	malloc(n)	(lint_malloc(n), 0)
+#   define	realloc(p,n)	(lint_realloc(p,n), 0)
+#else
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+extern char    *forttext;
+extern int     *fortint;
+extern Gpoint  *fortpoints;
+extern int      currforttext;
+extern int      currfortint;
+extern int      currfortpoints;
+
+
+/*
+ * gsmlc - Sample Locator
+ *
+ * Parameters :
+ * int *wkid;		workstation identifier
+ * int *lcdnr;		locatordevice number
+ * int *tnr;		normalization transformation number
+ * float *lpx;		locator x position
+ * float *lpy;		locator y position
+ *
+ * See also: ANSI standard p.135
+ */
+/*FORTRAN*/
+gsmlc(
+    int            *wkid,
+    int            *lcdnr,
+    int            *tnr,
+    float          *lpx,
+    float          *lpy)
+{
+    Gloc            response;
+
+    debug(("Sample Locator %d %d \n", *wkid, *lcdnr));
+
+    if (gsampleloc((Gint) *wkid, (Gint) *lcdnr, &response))
+	return;
+
+    *tnr = (int) response.transform;
+    *lpx = (float) response.position.x;
+    *lpy = (float) response.position.y;
+}
+
+
+/*
+ * gsmsk - Sample Stroke
+ *
+ * Parameters :
+ * int *wkid; 		workstation identifier
+ * int *skdnr;		stroke device number
+ * int *n; 		maximum number of points
+ * int *tnr; 		normalization transformation number
+ * int *np; 		number of points
+ * float *pxa;          x points in stroke
+ * float *pya;          y points in stroke
+ *
+ * See also: ANSI standard p.137
+ */
+/*FORTRAN*/
+gsmsk(
+    int            *wkid,
+    int            *skdnr,
+    int            *n,
+    int            *tnr,
+    int            *np,
+    float          *pxa,
+    float          *pya)
+{
+    Gstroke         response;
+    int             i, temp;
+
+    debug(("Sample Stroke %d %d \n", *wkid, *skdnr));
+    debug(("number of points = %d buffsize = %d \n", *np, *n));
+
+    if (*n > currfortpoints) {
+	/*
+	 * Check amount of memory needed.  realloc() more memory if needed.
+	 */
+	fortpoints = (Gpoint *) REALLOC((voidp)fortpoints,
+					(size_t)(*n * sizeof(Gpoint)));
+	if (fortpoints == NULL) {		/* If memory allocation
+						 * unsuccessful, error */
+	    (void) gerrorhand(300, errgsamplestroke, (errfp));
+	    return;
+	} else
+	    currfortpoints = *n;
+    }
+    response.points = (Gpoint *) fortpoints;
+
+    if (gsamplestroke((Gint) *wkid, (Gint) *skdnr, &response))
+	return;
+
+    *tnr = (int) response.transform;
+    *np = (int) response.n_points;
+
+    if (*np > *n)
+	temp = *n;
+    else
+	temp = *np;
+
+    for (i = 0; i < (temp); i++) {
+	pxa[i] = (float) response.points[i].x;
+	pya[i] = (float) response.points[i].y;
+    }
+    debug(("Sample Stroke Completed"));
+}
+
+
+/*
+ * grqvl - Request Valuator
+ *
+ * Parameters :
+ * int *wkid;		workstation identifier
+ * int *vldnr; 		valuator device number
+ * float *val; 		value
+ *
+ * See also: ANSI standard  p.133
+ */
+/*FORTRAN*/
+gsmvl(
+    int            *wkid,
+    int            *vldnr,
+    float          *val)
+{
+    Gfloat          response;
+
+    debug(("Request Valuator %d %d \n", *wkid, *vldnr));
+
+    if (gsampleval((Gint) *wkid, (Gint) *vldnr, (Gfloat *) &response))
+	return;
+
+    *val = (float) response;
+}
+
+
+/*
+ * gsmch - Sample Choice
+ *
+ * Parameters :
+ * int *wkid; 		workstation identifier
+ * int *chdnr; 		choice device number
+ * int *stat;		status
+ * int *chnr; 		choice identifier
+ *
+ * See also: ANSI standard  p.136
+ */
+/*FORTRAN*/
+gsmch(
+    int            *wkid,
+    int            *chdnr,
+    int            *stat,
+    int            *chnr)
+{
+    Gchoice         response;
+
+    debug(("Sample Choice %d %d \n", *wkid, *chdnr));
+
+    if (gsamplechoice((Gint) *wkid, (Gint) *chdnr, &response))
+	return;
+    switch (response.status) {
+    case GC_OK:
+	*stat = (int) FORT_GOK;
+	break;
+    case GC_NOCHOICE:
+	*stat = (int) FORT_GNCHOI;
+	break;
+    case GC_NONE:
+	*stat = (int) FORT_GNONE;
+	break;
+    }
+
+    *chnr = (int) response.choice;
+}
+
+
+/*
+ * gsmpk - Sample Pick
+ *
+ * Parameters :
+ * int *wkid; 		workstation identifier
+ * int *pkdnr; 		pick device number
+ * int *stat;		status
+ * int *sgna;		segment name
+ * int *pkid; 		pick identifier
+ *
+ * See also: ANSI standard  p.137
+ */
+/*FORTRAN*/
+gsmpk(
+    int            *wkid,
+    int            *pkdnr,
+    int            *stat,
+    int            *sgna,
+    int            *pkid)
+{
+    Gpick           response;
+
+    debug(("Sample Pick %d %d \n", *wkid, *pkdnr));
+
+    if (gsamplepick((Gint) *wkid, (Gint) *pkdnr, &response))
+	return;
+
+    switch (response.status) {
+    case GP_OK:
+	*stat = (int) FORT_GOK;
+	break;
+    case GP_NOPICK:
+	*stat = (int) FORT_GNPICK;
+	break;
+    case GP_NONE:
+	*stat = (int) FORT_GNONE;
+	break;
+    }
+
+    *sgna = (int) response.seg;
+    *pkid = (int) response.pickid;
+}
+
+
+/*
+ * gsmst - Sample String
+ *
+ * Parameters :
+ * int *wkid; 		workstation identifier
+ * int *stdnr; 		string device number
+ * int *lostr;		number of characters returned
+ * char *str;		character string
+ *
+ * See also: ANSI standard p.134
+ */
+/*FORTRAN*/
+gsmst(
+    int            *wkid,
+    int            *stdnr,
+    int            *lostr,
+    char           *str)
+{
+    Gchar          *response;
+
+    debug(("Sample String  %d %d \n", *wkid, *stdnr));
+
+    response = (Gchar *) str;
+    if (gsamplestring((Gint) *wkid, (Gint) *stdnr, response))
+	return;
+
+    debug(("response string = %s ", str));
+
+    *lostr = strlen(response);
+}
+
+
+/*
+ * gsmst - Sample String (Subset version)
+ *
+ * Parameters :
+ * int *wkid; 		workstation identifier
+ * int *stdnr; 		string device number
+ * int *lostr;		number of characters returned
+ * char *str;		character string
+ *
+ * See also: ANSI standard p.134
+ */
+/*FORTRAN*/
+gsmsts(
+    int            *wkid,
+    int            *stdnr,
+    int            *lostr,
+    char           *str)
+{
+    Gchar          *response;
+
+    debug(("Sample String (Subset Version)  %d %d \n", *wkid, *stdnr));
+
+    response = (Gchar *) str;
+    if (gsamplestring((Gint) *wkid, (Gint) *stdnr, response))
+	return;
+
+    debug(("response string = %s ", str));
+
+    *lostr = MIN(80, strlen(response));
+}

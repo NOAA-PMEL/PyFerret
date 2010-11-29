@@ -1,0 +1,2948 @@
+Procedure run_all to run all FERRET benchmarks
+Running FERRET version /home/porter/ansley/build/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     49172049 Sep 30 11:25 /home/porter/ansley/build/linux/FERRET/fer/ferretdods_gui
+Using external functions from no
+Running the tests of external functions no
+Benchmark run by ansley
+Note: static build of Ferret v6.3
+ncdump output will be in all_ncdump.out, and appended to this log file 
+***** Restricting Ferret paths to bench directory *****
+PWD=/home/porter/ansley/build/linux/FERRET/bench
+FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
+FER_DIR=.
+CVSROOT=/home/porter/tmap/FERRET_ROOT
+FER_WEB_BROWSER=netscape -ncols 60
+FER_DSETS=.
+FER_DAT=.
+FER_GO=. /home/porter/tmap/ferret/linux/go /home/porter/tmap/ferret/linux/examples /home/porter/tmap/ferret/linux/contrib /home/porter/tmap/ferret/tmap_go
+FER_DATA=.
+FER_DESCR=.
+FER_GRIDS=.
+FER_MODEL_RUNS=/home/porter/tmap/model_runs
+FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
+FER_EXTERNAL_FUNCTIONS=no
+Beginning at Wed Sep 30 11:25:48 PDT 2009
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+        SET EXPRESSION has not been given or implied
+        SET EXPRESSION has not been given or implied
+ls: no/: No such file or directory
+ **ERROR: unknown command qualifier: help
+MESSAGE/CONTINUE /help
+ **ERROR: unknown command: that
+that
+ **ERROR: command syntax: \!
+\! ignore (err cuz bang gets escaped)
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: Value needed for argument 3 in command
+          GO bn_dollar hello
+message/cont $3
+ **ERROR: my error message
+message/cont $3"<my error message"
+ **ERROR: my error message
+message/cont $1"|xxxxx|goodbye<my error message"
+ **ERROR: invalid command: Valid value needed for argument $1
+message/cont $1"greetings|xxxxx|goodbye"
+ *** NOTE: Valid argument $1 choices are: xxxxx|goodbye
+ **ERROR: my error message
+message/cont $3"|hello|goodbye<my error message"
+ **ERROR: invalid command: Valid value needed for argument $3
+message/cont $3">greetings|hello|goodbye"
+ *** NOTE: Valid argument $3 choices are: hello|goodbye
+ **ERROR: my error message
+message/cont $3">greetings|hello|goodbye<my error message"
+ **ERROR: my error message
+message/cont $3">greetings|hello>replacement text|goodbye<my error message"
+ **ERROR: command syntax: empty argument replacement string: $3""
+message/cont $3""
+ **ERROR: command syntax: empty text string provided with ">": <
+message/cont $3"<"
+ **ERROR: invalid command: Valid value needed for argument $3
+message/cont $3"||"
+ *** NOTE: Valid argument $3 choices are: |
+ **ERROR: invalid command: Valid value needed for argument $3
+message/cont $3"|>|"
+ *** NOTE: Valid argument $3 choices are: >|
+ **ERROR: command syntax: empty text string provided with ">": >|
+message/cont $3">|"
+ **ERROR: command syntax: empty text string provided with ">": |<
+message/cont $3"|<"
+ **ERROR: invalid command: Valid value needed for argument $3
+message/cont $3"|>"
+ *** NOTE: Valid argument $3 choices are: >
+ **ERROR: command syntax: arg number not in 1-99 range: $100
+say $100
+ **ERROR: command syntax: arg number not in 1-99 range: $100)
+say ($100)
+ **ERROR: invalid command: Value needed for argument 10 in command
+          GO bn_dollar hello
+say ($10)0
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: unpaired grave accents: message/continue "2+2=`2+2"
+message/continue "2+2=`2+2"
+ **ERROR: variable unknown or not in data set: GARBAGE
+message/continue "2+2=`garbage`"
+ **ERROR: invalid command: grave accent doesnt evaluate to scalar
+          I[i=3:5]
+message/continue "3 numbers: `I[i=3:5]`"
+ **ERROR: invalid command: maximum precision is 10 digits: precision=11
+message/continue "1/3=`1/3,BAD=-999,precision=11`"
+ **ERROR: command syntax: options: "P=prec","B=bad","W=width","ZW=zero-width" or "R=return-item"
+          message/continue "1/3=`1/3BAD=-999`"
+message/continue "1/3=`1/3BAD=-999`"
+ **ERROR: command syntax: options: "P=prec","B=bad","W=width","ZW=zero-width" or "R=return-item"
+          message/continue "1/3=`1/3,qBAD=-999`"
+message/continue "1/3=`1/3,qBAD=-999`"
+ **ERROR: command syntax: unpaired quotation marks, grave accent or brackets
+MESSAGE/CONTINUE \`2+2`
+ **ERROR: command syntax: unpaired quotation marks, grave accent or brackets
+MESSAGE/CONTINUE `2+2\`
+ **ERROR: command syntax: 2+2\
+          illegal character: \
+MESSAGE/CONTINUE `2+2\`+1`
+ **ERROR: command syntax: unpaired quotation marks, grave accent or brackets
+MESSAGE/CONTINUE \`2+2`+1\`
+ **ERROR: command syntax: 1*/3
+          * before / is illegal
+MESSAGE/CONTINUE `1*/3`
+ **ERROR: command syntax: sst*/3
+          * before / is illegal
+MESSAGE/CONTINUE `sst*/3,return=lunits`
+ **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
+            dsetnum,dsetpath,dsettitle,*size,*start,*end,
+            *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
+            calendar,dtype,xmod,tmod,isdepth
+          sst,return=Xsize
+MESSAGE/CONTINUE `sst,return=Xsize`
+ **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
+            dsetnum,dsetpath,dsettitle,*size,*start,*end,
+            *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
+            calendar,dtype,xmod,tmod,isdepth
+          sst,return=trash
+MESSAGE/CONTINUE `sst,return=trash`
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: unknown data set: NOEXIST
+DEFINE VARIABLE/d=noexist a = b
+ **ERROR: variable unknown or not in data set: AIRT[D=GT4D011]
+list/l=1/x=180/y=0 airt[d=gt4d011]
+ **ERROR: invalid command: CANCEL what?
+can var
+ LISTing to file v12file.nc
+ LISTing to file v1file.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: ELSE can only be used between IF and ENDIF
+else
+ **ERROR: invalid command: ENDIF can only be used in an IF clause
+endif
+ **ERROR: invalid command: ELIF can only be used between IF and ENDIF
+elif
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
+          Cannot use multiple IFs in an expression
+LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
+ **ERROR: command syntax: IF I LT 5 THEN I ELSE -9
+          ELSE before - is illegal
+          negative constants need to be enclosed in parentheses
+DEFINE VARIABLE A = IF I LT 5 THEN I ELSE -9
+ **ERROR: variable unknown or not in data set: A1
+load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Ambiguous coordinates on X axis: X[I=1:5] - X[I=6:9]
+ **ERROR: inconsistent sizes of data regions: X axis
+          X[I=6:9] has 4 points (I=6:9)
+          expression has 5 points (I=1:5)
+LIST X[I=1:5] - X[I=6:9]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file WV.J34K56L7
+ LISTing to file test.dat
+ LISTing to file test.dat
+ LISTing to file test.unf
+ LISTing to file test.gt
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XFINE
+Replacing definition of axis XCOARSE
+Replacing definition of axis YFINE
+Replacing definition of axis YCOARSE
+Replacing definition of grid G24
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file test.unf
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
+plot/i=1:10/j=1:20/nolabel i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i,i+j"
+plot/i=1:10/j=1:20/nolabel i,i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j,i"
+plot/i=1:10/j=1:20/nolabel i+j,i
+ **ERROR: dimensions improperly specified: differing axes:
+          first line is on Y axis
+          line 2 is on X axis
+plot/i=1:10/j=1:20/nolabel j,i
+ **ERROR: dimensions improperly specified: unequal line lengths:
+          First expression has 20 points.
+          Expression 2 has 10 points:
+          "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
+plot/i=1:10/j=1:20/vs/line/nolabel j,i
+ **ERROR: dimensions improperly specified: must be a 2D region
+          contour/i=1:10/j=1:20/nolabel i
+contour/i=1:10/j=1:20/nolabel i
+ **ERROR: invalid command: can only CONTOUR  single fields
+          Use /OVERLAY for multiple variables
+contour/i=1:10/j=1:20/nolabel i/j,j/i
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
+Re-defining viewport LM6
+Re-defining viewport UM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+Re-defining viewport LM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+Re-defining viewport UM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+ *** NOTE: /XLIMITS and /YLIMITS are deprecated.
+ *** NOTE: Use /HLIMITS and /VLIMITS instead.
+ **ERROR: invalid command: color=noexist
+          Colors are Black,Red,Green,Blue,LightBlue,Purple, and White
+plot/over/i=1:10/color=noexist i
+ **ERROR: value out of legal range: thick=4
+          Legal range is 1 to 3
+plot/over/i=1:10/thick=4 i
+ **ERROR: value out of legal range: size=-1
+          Symbol size must be positive
+plot/over/i=1:10/size=-1 i
+ Using every   2th vector in the Y direction
+ **ERROR: invalid command: color=noexist
+          Colors are Black,Red,Green,Blue,LightBlue,Purple, and White
+cont/over/i=1:10/color=noexist i
+ **ERROR: unknown command qualifier: thick=4
+cont/over/i=1:10/thick=4 i
+ **ERROR: value out of legal range: sigdig=-1
+          Value must be positive
+cont/over/i=1:10/sigdig=-1 i
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis LON_FIELD_I_AXIS
+Replacing definition of axis LON_FIELD_J_AXIS
+Replacing definition of axis LAT_FIELD_I_AXIS
+Replacing definition of axis LAT_FIELD_J_AXIS
+ **ERROR: inconsistent sizes of data regions: Y coord field lies
+          in different plane from data to be plotted
+shade/nolabel sst, x_page, y_page
+ **ERROR: all data have same value: X coordinate field
+shade/nolabel sst, 0*x_page, y_page
+ **ERROR: all data have same value: Y coordinate field
+shade/nolabel sst, x_page, 0*y_page
+ **ERROR: inconsistent sizes of data regions: Y axis of X position array
+shade/nolabel sst, x_page[j=1:12], y_page
+ **ERROR: value out of legal range: Y coordinates
+          missing value where val is needed
+shade/nolabel sst, x_page, asin(y_page)
+gsetviewport()   52 Viewport is not within the Normalized Device Coordinate unit square
+ **ERROR: inconsistent sizes of data regions: Y axis of X position array
+shade/nolabel sst, x_page[j=1:12], y_page
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: illegal name: TEST*
+define symbol test* = hello
+ **ERROR: invalid command: Value needed for argument 5 in command
+          GO bn_symbols
+define symbol t$5 = hi
+ **ERROR: error message
+message/continue ($test2"<error message")
+ **ERROR: invalid command: Valid value needed for symbol test2
+message/continue ($test2"|hello|bye|")
+ *** NOTE: Valid symbol test2 choices are: hello|bye|
+ **ERROR: error message
+message/continue ($test2"|hello|bye|<error message")
+ **ERROR: invalid command: Valid value needed for symbol t2
+message/continue ($t2"|solong>really hello|bye|")
+ *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: unknown defining grid: GX=NOEXIST
+list temp[gx=noexist]
+ **ERROR: command syntax: P=NOEXIST
+list temp[gx=u,p=noexist]
+ **ERROR: command syntax: used GX=lo:hi:delta with X=lo:hi (ditto for Y,Z, or T)
+          X=160E:160W
+list temp[gx=130e:80w:10,x=160e:160w]
+ **ERROR: command syntax: used GX=lo:hi:delta with X=lo:hi (ditto for Y,Z, or T)
+          I=2:5
+list temp[gx=130e:80w:10,i=2:5]
+ **ERROR: command syntax: used GX=lo:hi:delta with X=lo:hi (ditto for Y,Z, or T)
+          GX=130E:80W:10
+list temp[i=2:5,gx=130e:80w:10]
+ **ERROR: command syntax: GX=lo:hi:delta with no delta (or ditto for Y,Z, or T)
+          GX=130E:80W
+list temp[gx=130e:80w]
+ **ERROR: variable unknown or not in data set: NOEXIST
+list temp[gx=u]	+ noexist
+ **ERROR: illegal limits: TEMP on grid (G004) does not exist at K=30
+          Axis extremes are K=1:27
+list temp[gx=u,k=30]
+ **ERROR: illegal limits: TEMP does not contain K=20
+          Data are available in K =    1:2
+list temp[gx=u,k=20]
+ **ERROR: regridding: Axis orientation not matching request:GX=PSYU
+list temp[gx=psyu]
+ **ERROR: regridding: Axis orientation not matching request:GX=PSYT
+list/i=3:6 X[gx=PSYT]
+ **ERROR: unknown defining grid: GX=NOEXIST
+list tu
+ **ERROR: command syntax: P=NOEXIST
+list tu
+ **ERROR: variable unknown or not in data set: NOEXIST
+list tu
+ **ERROR: illegal limits: TEMP on grid (G004) does not exist at K=30
+          Axis extremes are K=1:27
+list tu
+ **ERROR: illegal limits: TEMP does not contain K=20
+          Data are available in K =    1:2
+list tu
+ **ERROR: regridding: Axis orientation not matching request:GX=PSYU
+list tu
+ Cached data cleared from memory
+ **ERROR: request exceeds memory setting: 24999975 words were requested.
+list temp[gz=z999999,z=5:15]
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+ Cached data cleared from memory
+ *** NOTE: Ambiguous coordinates on X axis: X[X=0.1:10:1.5] +  X[X=1.1:11:1.5]
+ *** NOTE: Ambiguous coordinates on X axis: X[X=0.1:10:1.5] +  X[X=1.1:11:1.5]
+ *** NOTE: Ambiguous coordinates on X axis: TEMP[I=101:120:4]+X[I=101:120:4]
+ **ERROR: invalid command: non-positive delta value: X[I=1:5:-1]
+list x[i=1:5:-1]
+ **ERROR: invalid command: non-positive delta value: X[I=1:5:0]
+list x[i=1:5:0]
+ **ERROR: invalid command: non-positive delta value: X[X=1:5:-1]
+list x[x=1:5:-1]
+ **ERROR: invalid command: non-positive delta value: X[X=1:5:0]
+list x[x=1:5:0]
+ **ERROR: illegal limits: A is not in the range I=101:105
+          Axis extremes are I=1:11
+list a
+ **ERROR: illegal limits: A is not in the range J=46:50
+          Axis extremes are J=1:7
+list a
+ **ERROR: illegal limits: A is not in the range I=101:105
+          Axis extremes are I=1:8
+list a
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file test0a.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0b.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0c.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0d.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0e.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0f.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0g.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0h.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0i.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0j.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0k.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0l.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0m.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0n.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0o.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0p.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
+ *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
+ *** NOTE: Write the data initially with the /BOUNDS qualifier
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test2.cdf
+ LISTing to file FL.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file FTLON.cdf
+ **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
+list/format=cdf/l=1:10/file=test_abs.cdf l
+ LISTing to file test_abs.cdf
+ **TMAP ERR: Requested data range is outside of data set limits
+             inconsistent I axis length for IL
+list/format=cdf/i=5:15/l=5:10/append/file=test_abs.cdf il
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ **TMAP ERR: attempt to redefine line
+             # of dims in variable IJL2 is inconsist. w/ CDF file
+list/format=cdf/append/file=test_abs.cdf ijl2
+ LISTing to file test_abs.cdf
+ **TMAP ERR: attempt to redefine line
+             # of dims in variable IJKL is inconsist. w/ CDF file
+list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]
+ LISTing to file test_abs.cdf
+ **TMAP ERR: error in line definition
+             disordered output coordinate value:         363  Axis: TCENTURY
+list/format=cdf/l=13/append/file=test_abs.cdf l1
+ LISTing to file FI.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: regridding: no target grid specified
+load temp[g=@lin]
+ **ERROR: regridding: no target grid specified
+load temp[gx=@ave]
+ **ERROR: regridding: G=W - more than 1 target grid
+load temp[g=u,g=w]
+ **ERROR: unknown defining grid: G=X --> g=user-or-pseudo-var not allowed
+load temp[g=x]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: xlimits
+plot/xlimits i
+ **ERROR: command syntax: xlimits= i
+plot/xlimits= i
+ **ERROR: command syntax: xlimits=text
+plot/xlimits=text i
+ **ERROR: command syntax: xlimits=1
+plot/xlimits=1 i
+ **ERROR: command syntax: i
+plot/xlimits=1: i
+ **ERROR: command syntax: xlimits=1:: i
+plot/xlimits=1:: i
+ **ERROR: command syntax: i
+plot/xlimits=1:2: i
+ **ERROR: invalid command: Must give a range: xlimits=5:5
+plot/xlimits=5:5 i
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+rm: cannot remove `bench.mgm': No such file or directory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file test_perm10.dat
+ LISTing to file test_perm24.dat
+ LISTing to file test_perm48.dat
+ LISTing to file test_perm48_10.dat
+Replacing definition of grid G12
+Replacing definition of grid G24
+ LISTing to file test_stream.unf
+ LISTing to file test_stream.unf
+ LISTing to file test_stream.unf
+ LISTing to file test_stream.unf
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis OBJ_XAX
+Replacing definition of axis OBJ_YAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis X10
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **TMAP ERR: Attempt to access unsupported feature
+             Descriptor requests delta of 0, please use 1
+             Data set: ./coads_clim_bad_delta.des
+set data coads_clim_bad_delta
+ **TMAP ERR: error in line definition
+             A gap or overlap exists in time axis
+set data coads_clim_step_order
+ **TMAP ERR: non-existent or not on line
+             coads_clim.001b
+list sst
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TIME
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file test.cdf
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: v2-and-minus
+          - before and is illegal
+list v2-and-minus
+ **ERROR: dimensions improperly specified: 9999999 words were requested.
+list x
+ *** NOTE: Check for unspecified limits on an ABSTRACT axis
+ *** NOTE: Use the SHOW GRID command to see the axes
+ **ERROR: dimensions improperly specified: 9999999 words were requested.
+list i
+ *** NOTE: Check for unspecified limits on an ABSTRACT axis
+ *** NOTE: Use the SHOW GRID command to see the axes
+ **ERROR: variable unknown or not in data set: 'i'
+list 'i'
+ **ERROR: command syntax: v2-and-minus[i=5:15@ddc]
+          - before and is illegal
+list v2-and-minus[i=5:15@ddc]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file permutedBinaryTest.dat
+ LISTing to file junk.dat
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+Replacing definition of axis ZAX
+Replacing definition of axis TAX
+ **ERROR: request exceeds memory setting: A negative number of words were requested.
+load num
+ *** NOTE: The current grid is most likely too large
+Replacing definition of axis YAX
+Replacing definition of axis ZAX
+Replacing definition of axis TAX
+ **ERROR: request exceeds memory setting: 1000000000 words were requested.
+load num
+ *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
+ *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+Replacing definition of axis ZAX
+Replacing definition of axis TAX
+ **TMAP ERR: non-existent or not on line
+             NoSuchFile.dat
+SET DATA/EZ/format=stream/var=num/grid=mygrid NoSuchFile.dat
+ **ERROR: Size of file ./junk.dat doesn't match size specified by variables/grid
+load num
+ **ERROR: invalid command: variable permutations only allowed for STREAM format
+SET DATA/EZ/var=num/order=vxyzt/grid=mygrid junk.dat
+ **ERROR: invalid command: invalid argument for /TYPE
+SET DATA/EZ/var=num/type=i3/grid=mygrid/form=stream junk.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+ **ERROR: improper grid or axis definition: NPOINTS=1 incompatible with limits given
+define axis/x=1:5/npoints=1 xax
+Replacing definition of axis XAX
+ **ERROR: improper grid or axis definition: error in start,end,delta
+define axis/x=5/npoints=1/edges xax
+Replacing definition of axis XAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+ **ERROR: improper grid or axis definition: NPOINTS=1 incompatible with limits given
+define axis/t=15-jan-1980:25-jan-1980/npoints=1/unit=days tax
+Replacing definition of axis TAX
+ **ERROR: improper grid or axis definition: error in start,end,delta
+define axis/t=15-jan-1980/npoints=1/unit=days/edges tax
+Replacing definition of axis TAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ **ERROR: improper grid or axis definition: unrepairable repeated axis coords
+define axis/from/x/name=xax {6,6}
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ **ERROR: improper grid or axis definition: unrepairable repeated axis coords
+define axis/from/x/name=xax/edges {6,6}
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ **ERROR: improper grid or axis definition: unrepairable repeated axis coords
+define axis/from/x/name=xax/edges {6,6,6}
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ **ERROR: improper grid or axis definition: unrepairable repeated axis coords
+define axis/from/x/name=xax {6,6,6.000001,7}
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ **ERROR: improper grid or axis definition: unrepairable repeated axis coords
+define axis/from/x/name=xax/edges {6,6,6.000001,7}
+Replacing definition of axis XAX2
+ *** NOTE: (fyi) units are not subject to auto-conversion: BLAHS
+Replacing definition of axis XAX2
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TCAL
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file out.cdf
+ LISTing to file out.cdf
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: noname(i)
+          unknown function "noname"
+stat i, noname(i)
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Not using NetCDF strides for multi-cycle modulo
+ *** NOTE: Stride value not a factor of axis length
+ **ERROR: invalid command: delta values may only modify variable names
+LIST/i=2:4:2 VAR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Not using NetCDF strides for multi-cycle modulo
+ *** NOTE: Stride value not a factor of axis length
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
+ *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
+ *** NOTE: A dummy axis of subscripts will be used
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of grid GX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis YAX
+Replacing definition of grid GG2
+ **ERROR: unknown defining grid: G=NO_EXIST
+load/x=160e/y=5s temp[d=2,k=1,g=no_exist]
+ **ERROR: unknown defining grid: GX=A[D=1]
+load/x=160e/y=5s v2
+Replacing definition of axis Y1
+Replacing definition of axis X2
+Replacing definition of axis Y2
+Replacing definition of grid MYGRID
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TDAYS
+Replacing definition of axis TDAYS
+Replacing definition of axis TDAYS
+Replacing definition of grid TGRID
+Replacing definition of axis TWEEKS
+Replacing definition of axis TWEEKS
+Replacing definition of axis TWEEKS
+ LISTing to file calsst.cdf
+ *** NOTE: /UNIT=MONTHS  ... using 1/12 of 360.00 days
+Replacing definition of grid TGRID
+Replacing definition of axis TDAYS
+Replacing definition of grid TGRID
+ *** NOTE: /UNIT=MONTHS  ... using 1/12 of 365.25 days
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: dash=(1., 2.)
+          DASH[=(dn1,up1,dn2,up2)] takes 4 arguments or no argument
+plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
+ **ERROR: value out of legal range: dash=(-1., 2., 3., 4.)
+          DASH arguments must be positive
+plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Using every   2th vector in the Y direction
+ Using every   2th vector in the Y direction
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis DLOG
+Replacing definition of axis DLOG
+ **ERROR: value out of legal range: Limits for log axis negative or too small: -9.00 : 0.00
+plot/hlog fcn
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of grid TGRID
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
+ **ERROR: error in external function
+LIST vw_fft
+Replacing definition of grid TGRID
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis X10
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: illegal limits: VWND does not contain L=102:150
+          Data are available in L =    1:60
+list tsorted_indices, tsorted_wnd
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: strindex("Ferret is fun for the whole family - real family fun")
+          The strindex function has an incorrect number of arguments
+list strindex("Ferret is fun for the whole family - real family fun")
+ **ERROR: command syntax: strrindex("Ferret is fun for the whole family - real family fun")
+          The strrindex function has an incorrect number of arguments
+list strrindex("Ferret is fun for the whole family - real family fun")
+ **ERROR: command syntax: substring("Have you fed your ferret today", 19)
+          The substring function has an incorrect number of arguments
+list substring("Have you fed your ferret today", 19)
+ **ERROR: command syntax: substring("Have you fed your ferret today")
+          The substring function has an incorrect number of arguments
+list substring("Have you fed your ferret today")
+ **ERROR: command syntax: strcat ("All work and no play")
+          The strcat function has an incorrect number of arguments
+list strcat ("All work and no play")
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file test_modulo.cdf
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Not using NetCDF strides for multi-cycle modulo
+ *** NOTE: Stride value not a factor of axis length
+ *** NOTE: Not using NetCDF strides for multi-cycle modulo
+ *** NOTE: Stride value not a factor of axis length
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Re-defining viewport MID
+Re-defining viewport MID2
+Re-defining viewport LLAX
+Re-defining viewport LRAX
+Re-defining viewport ULAX
+Re-defining viewport URAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: "string2"}
+list e
+ **ERROR: command syntax: 5, "string2"}
+list e
+ **ERROR: illegal data type (float,string,...) for operation: D
+plot d
+ **ERROR: illegal data type (float,string,...) for operation: D
+define axis/x xax = d
+ LISTing to file test_string.cdf
+ LISTing to file test_string.cdf
+ LISTing to file test_string.cdf
+ LISTing to file test_string.cdf
+ LISTing to file test_string.cdf
+ LISTing to file test_string.cdf
+ **ERROR: invalid command: cant use this regrid transform on strings: @LIN
+list a[gx=xnrst]
+ **ERROR: invalid command: cant use this regrid transform on strings: @AVE
+list a[gx=xnrst@ave]
+ **ERROR: invalid command: cant use this regrid transform on strings: @VAR
+list a[gx=xnrst@var]
+ **ERROR: invalid command: cant use this regrid transform on strings: @NGD
+list a[gx=xnrst@ngd]
+ **ERROR: invalid command: cant use this regrid transform on strings: @MAX
+list a[gx=xnrst@max]
+ **ERROR: invalid command: cant use this regrid transform on strings: @SUM
+list a[gx=xnrst@sum]
+ **ERROR: invalid command: cant use this regrid transform on strings: @MOD
+list a[gx=xnrst@mod]
+ LISTing to file foo.cdf
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis X1
+Replacing definition of grid G1
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+Replacing definition of axis Z1
+Replacing definition of grid G1
+ **TMAP ERR: syntax error in string
+             Unrecognized field type: D
+             Data set: ./bn_delimited_read_date_time.dat
+SET DATA/FORM=delimited/type="d, da2,date2"  bn_delimited_read_date_time.dat
+ **TMAP ERR: syntax error in string
+             Unrecognized field type: DATE2
+             Data set: ./bn_delimited_read_date_time.dat
+SET DATA/FORM=delimited/type="da,da, date2"  bn_delimited_read_date_time.dat
+ **ERROR: command syntax: ,,:
+SET DATA/EZ/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file test_good_order.cdf
+ LISTing to file test_bad_order.cdf
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis T2
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Re-defining viewport LL6
+Re-defining viewport UL6
+Re-defining viewport LM6
+Re-defining viewport UM6
+Re-defining viewport LR6
+Re-defining viewport UR6
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+Replacing definition of axis ZAX
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file profiles.nc
+ LISTing to file profiles.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file test_100x100.nc
+ Cached data cleared from memory
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+Replacing definition of grid MYGRID
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file longax.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+ *** NOTE: /UNIT=MONTHS  ... using 1/12 of 365.25 days
+Replacing definition of axis TAX2
+ *** NOTE: /UNIT=MONTHS  ... using 1/12 of 365.25 days
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file string4d.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Not deleted: MONTH_IRREG
+ *** NOTE: Axis is in use by grid (G004)
+ *** NOTE: Not deleted: XEVEN
+ *** NOTE: Axis is in use by grid EVEN
+ *** NOTE: Not deleted: XODD
+ *** NOTE: Axis is in use by grid G13
+ *** NOTE: Not deleted: YEVEN
+ *** NOTE: Axis is in use by grid EVEN
+ *** NOTE: Not deleted: YODD
+ *** NOTE: Axis is in use by grid G2
+ *** NOTE: Not deleted: ZEVEN
+ *** NOTE: Axis is in use by grid EVEN
+ *** NOTE: Not deleted: ZODD
+ *** NOTE: Axis is in use by grid G3
+ *** NOTE: Not deleted: TEVEN
+ *** NOTE: Axis is in use by grid EVEN
+ *** NOTE: Not deleted: TODD
+ *** NOTE: Axis is in use by grid G4
+ *** NOTE: Not deleted: XCOARSE
+ *** NOTE: Axis is in use by grid GCOARSE
+ *** NOTE: Not deleted: YFINE
+ *** NOTE: Axis is in use by grid GFINE
+ *** NOTE: Not deleted: YCOARSE
+ *** NOTE: Axis is in use by grid GCOARSE
+ *** NOTE: Not deleted: XFINE
+ *** NOTE: Axis is in use by grid GFINE
+ *** NOTE: Not deleted: TAX48
+ *** NOTE: Axis is in use by grid G48
+ *** NOTE: Not deleted: XEZ1
+ *** NOTE: Axis is in use by grid GEZ1
+ *** NOTE: Not deleted: XEZ2
+ *** NOTE: Axis is in use by grid GEZ2
+ *** NOTE: Not deleted: YEZ
+ *** NOTE: Axis is in use by grid GEZ2
+ *** NOTE: Not deleted: ZEZ
+ *** NOTE: Axis is in use by grid GEZ2
+ *** NOTE: Not deleted: XEZ3
+ *** NOTE: Axis is in use by grid GEZ3
+ *** NOTE: Not deleted: LON_FIELD_J_AXIS
+ *** NOTE: Axis is in use by grid LON_FIELD_GRID
+ *** NOTE: Not deleted: LAT_FIELD_I_AXIS
+ *** NOTE: Axis is in use by grid LAT_FIELD_GRID
+ *** NOTE: Not deleted: LAT_FIELD_J_AXIS
+ *** NOTE: Axis is in use by grid LAT_FIELD_GRID
+ *** NOTE: Not deleted: LON_FIELD_I_AXIS
+ *** NOTE: Axis is in use by grid LON_FIELD_GRID
+ *** NOTE: Not deleted: XIRREG
+ *** NOTE: Axis is in use by grid GIRREG
+ *** NOTE: Not deleted: TCENTURY
+ *** NOTE: Axis is in use by grid GCENTURY
+ *** NOTE: Not deleted: TAX5DAY
+ *** NOTE: Axis is in use by grid G5DAY
+ *** NOTE: Not deleted: XAX10
+ *** NOTE: Axis is in use by grid G5_10
+ *** NOTE: Not deleted: X5
+ *** NOTE: Axis is in use by grid GSRC
+ *** NOTE: Not deleted: Y2
+ *** NOTE: Axis is in use by grid G10X2
+ *** NOTE: Not deleted: X3
+ *** NOTE: Axis is in use by grid G24
+ *** NOTE: Not deleted: X4
+ *** NOTE: Axis is in use by grid G4D
+ *** NOTE: Not deleted: XPROJ120
+ *** NOTE: Axis is in use by grid GPROJ120
+ *** NOTE: Not deleted: YPROJ120
+ *** NOTE: Axis is in use by grid GPROJ120
+ *** NOTE: Not deleted: Y5
+ *** NOTE: Axis is in use by grid G10X5
+ *** NOTE: Not deleted: Y10
+ *** NOTE: Axis is in use by grid G10X10
+ *** NOTE: Not deleted: OBJ_YAX
+ *** NOTE: Axis is in use by grid OBJ_GRID
+ *** NOTE: Not deleted: OBJ_XAX
+ *** NOTE: Axis is in use by grid OBJ_GRID
+ *** NOTE: Not deleted: TIME1
+ *** NOTE: Axis is in use by grid GHB1
+ *** NOTE: Not deleted: TIME2
+ *** NOTE: Axis is in use by grid GCQ1
+ *** NOTE: Not deleted: TAX
+ *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: Y4
+ *** NOTE: Axis is in use by grid G4D
+ *** NOTE: Not deleted: Z4
+ *** NOTE: Axis is in use by grid G4D
+ *** NOTE: Not deleted: T4
+ *** NOTE: Axis is in use by grid G4D
+ *** NOTE: Not deleted: XCHANNEL
+ *** NOTE: Axis is in use by grid GSIGMA
+ *** NOTE: Not deleted: YRISE
+ *** NOTE: Axis is in use by grid GSIGMA
+ *** NOTE: Not deleted: ZLAYER
+ *** NOTE: Axis is in use by grid GSIGMA
+ *** NOTE: Not deleted: TIME
+ *** NOTE: Axis is in use by grid GSIGMA
+ *** NOTE: Not deleted: Z1
+ *** NOTE: Axis is in use by grid G1
+ *** NOTE: Not deleted: TCAL
+ *** NOTE: Axis is in use by grid GSRC
+ *** NOTE: Not deleted: XTROP
+ *** NOTE: Axis is in use by grid GXYT
+ *** NOTE: Not deleted: YTROP
+ *** NOTE: Axis is in use by grid GXYT
+ *** NOTE: Not deleted: ZAX
+ *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: Y1
+ *** NOTE: Axis is in use by grid GSRC
+ *** NOTE: Not deleted: X2
+ *** NOTE: Axis is in use by grid G24
+ *** NOTE: Not deleted: JMONTHS
+ *** NOTE: Axis is in use by grid JGRID
+ *** NOTE: Not deleted: MONTHT
+ *** NOTE: Axis is in use by grid TGRID
+ *** NOTE: Not deleted: X10
+ *** NOTE: Axis is in use by grid G10X10
+ *** NOTE: Not deleted: YAX
+ *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: XAX
+ *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: TIME4
+ *** NOTE: Axis is in use by grid GXYT
+ *** NOTE: Not deleted: TIME5
+ *** NOTE: Axis is in use by grid GLB1
+ *** NOTE: Not deleted: COADSY
+ *** NOTE: Axis is in use by grid GG1
+ *** NOTE: Not deleted: COADSX
+ *** NOTE: Axis is in use by grid GG
+ *** NOTE: Not deleted: XAXLEVITR1_160
+ *** NOTE: Axis is in use by grid GG1
+ *** NOTE: Not deleted: MONTH_IRREG
+ *** NOTE: Axis is in use by grid (G004)
+ *** NOTE: Not deleted: YAXLEVITR1_90
+ *** NOTE: Axis is in use by grid GG2
+ *** NOTE: Not deleted: ZAXLEVITR1_1
+ *** NOTE: Axis is in use by grid GG2
+ *** NOTE: Not deleted: (AX020)
+ *** NOTE: Axis is in use by grid GG3
+ *** NOTE: Not deleted: XEVEN
+ *** NOTE: Axis is in use by grid EVEN
+ *** NOTE: Not deleted: XODD
+ *** NOTE: Axis is in use by grid G13
+ *** NOTE: Not deleted: YEVEN
+ *** NOTE: Axis is in use by grid EVEN
+ *** NOTE: Not deleted: YODD
+ *** NOTE: Axis is in use by grid G2
+ *** NOTE: Not deleted: ZEVEN
+ *** NOTE: Axis is in use by grid EVEN
+ *** NOTE: Not deleted: ZODD
+ *** NOTE: Axis is in use by grid G3
+ *** NOTE: Not deleted: TEVEN
+ *** NOTE: Axis is in use by grid EVEN
+ *** NOTE: Not deleted: TODD
+ *** NOTE: Axis is in use by grid G4
+ *** NOTE: Not deleted: XCOARSE
+ *** NOTE: Axis is in use by grid GCOARSE
+ *** NOTE: Not deleted: YFINE
+ *** NOTE: Axis is in use by grid GFINE
+ *** NOTE: Not deleted: YCOARSE
+ *** NOTE: Axis is in use by grid GCOARSE
+ *** NOTE: Not deleted: XFINE
+ *** NOTE: Axis is in use by grid GFINE
+ *** NOTE: Not deleted: TAX48
+ *** NOTE: Axis is in use by grid G48
+ *** NOTE: Not deleted: XEZ1
+ *** NOTE: Axis is in use by grid GEZ1
+ *** NOTE: Not deleted: XEZ2
+ *** NOTE: Axis is in use by grid GEZ2
+ *** NOTE: Not deleted: YEZ
+ *** NOTE: Axis is in use by grid GEZ2
+ *** NOTE: Not deleted: ZEZ
+ *** NOTE: Axis is in use by grid GEZ2
+ *** NOTE: Not deleted: XEZ3
+ *** NOTE: Axis is in use by grid GEZ3
+ *** NOTE: Not deleted: LON_FIELD_J_AXIS
+ *** NOTE: Axis is in use by grid LON_FIELD_GRID
+ *** NOTE: Not deleted: LAT_FIELD_I_AXIS
+ *** NOTE: Axis is in use by grid LAT_FIELD_GRID
+ *** NOTE: Not deleted: LAT_FIELD_J_AXIS
+ *** NOTE: Axis is in use by grid LAT_FIELD_GRID
+ *** NOTE: Not deleted: LON_FIELD_I_AXIS
+ *** NOTE: Axis is in use by grid LON_FIELD_GRID
+ *** NOTE: Not deleted: XIRREG
+ *** NOTE: Axis is in use by grid GIRREG
+ *** NOTE: Not deleted: TCENTURY
+ *** NOTE: Axis is in use by grid GCENTURY
+ *** NOTE: Not deleted: TAX5DAY
+ *** NOTE: Axis is in use by grid G5DAY
+ *** NOTE: Not deleted: XAX10
+ *** NOTE: Axis is in use by grid G5_10
+ *** NOTE: Not deleted: X5
+ *** NOTE: Axis is in use by grid GSRC
+ *** NOTE: Not deleted: Y2
+ *** NOTE: Axis is in use by grid G10X2
+ *** NOTE: Not deleted: X3
+ *** NOTE: Axis is in use by grid G24
+ *** NOTE: Not deleted: X4
+ *** NOTE: Axis is in use by grid G4D
+ *** NOTE: Not deleted: XPROJ120
+ *** NOTE: Axis is in use by grid GPROJ120
+ *** NOTE: Not deleted: YPROJ120
+ *** NOTE: Axis is in use by grid GPROJ120
+ *** NOTE: Not deleted: Y5
+ *** NOTE: Axis is in use by grid G10X5
+ *** NOTE: Not deleted: Y10
+ *** NOTE: Axis is in use by grid G10X10
+ *** NOTE: Not deleted: OBJ_YAX
+ *** NOTE: Axis is in use by grid OBJ_GRID
+ *** NOTE: Not deleted: OBJ_XAX
+ *** NOTE: Axis is in use by grid OBJ_GRID
+ *** NOTE: Not deleted: TIME1
+ *** NOTE: Axis is in use by grid GHB1
+ *** NOTE: Not deleted: TIME2
+ *** NOTE: Axis is in use by grid GCQ1
+ *** NOTE: Not deleted: TAX
+ *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: Y4
+ *** NOTE: Axis is in use by grid G4D
+ *** NOTE: Not deleted: Z4
+ *** NOTE: Axis is in use by grid G4D
+ *** NOTE: Not deleted: T4
+ *** NOTE: Axis is in use by grid G4D
+ *** NOTE: Not deleted: XCHANNEL
+ *** NOTE: Axis is in use by grid GSIGMA
+ *** NOTE: Not deleted: YRISE
+ *** NOTE: Axis is in use by grid GSIGMA
+ *** NOTE: Not deleted: ZLAYER
+ *** NOTE: Axis is in use by grid GSIGMA
+ *** NOTE: Not deleted: TIME
+ *** NOTE: Axis is in use by grid GSIGMA
+ *** NOTE: Not deleted: Z1
+ *** NOTE: Axis is in use by grid G1
+ *** NOTE: Not deleted: TCAL
+ *** NOTE: Axis is in use by grid GSRC
+ *** NOTE: Not deleted: XTROP
+ *** NOTE: Axis is in use by grid GXYT
+ *** NOTE: Not deleted: YTROP
+ *** NOTE: Axis is in use by grid GXYT
+ *** NOTE: Not deleted: ZAX
+ *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: Y1
+ *** NOTE: Axis is in use by grid GSRC
+ *** NOTE: Not deleted: X2
+ *** NOTE: Axis is in use by grid G24
+ *** NOTE: Not deleted: JMONTHS
+ *** NOTE: Axis is in use by grid JGRID
+ *** NOTE: Not deleted: MONTHT
+ *** NOTE: Axis is in use by grid TGRID
+ *** NOTE: Not deleted: X10
+ *** NOTE: Axis is in use by grid G10X10
+ *** NOTE: Not deleted: YAX
+ *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: XAX
+ *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: TIME4
+ *** NOTE: Axis is in use by grid GXYT
+ *** NOTE: Not deleted: TIME5
+ *** NOTE: Axis is in use by grid GLB1
+ *** NOTE: Not deleted: COADSY
+ *** NOTE: Axis is in use by grid GG1
+ *** NOTE: Not deleted: COADSX
+ *** NOTE: Axis is in use by grid GG
+ *** NOTE: Not deleted: XAXLEVITR1_160
+ *** NOTE: Axis is in use by grid GG1
+ *** NOTE: Not deleted: YAXLEVITR1_90
+ *** NOTE: Axis is in use by grid GG2
+ *** NOTE: Not deleted: ZAXLEVITR1_1
+ *** NOTE: Axis is in use by grid GG2
+ *** NOTE: Not deleted: (AX020)
+ *** NOTE: Axis is in use by grid GG3
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file test_mod.cdf
+ LISTing to file test_mod.cdf
+ LISTing to file test_mod.cdf
+ **ERROR: improper grid or axis definition: Axis length exceeds modulo length
+define axis/x=130e:500:10/modulo=360 xsub
+ LISTing to file test_mod.cdf
+ LISTing to file test_mod.cdf
+ LISTing to file test_mod.cdf
+ LISTing to file test_mod.cdf
+ LISTing to file test_mod.cdf
+ LISTing to file test_mod.cdf
+ LISTing to file test_mod.cdf
+ LISTing to file test_subspan_modulo.nc
+ LISTing to file test_subspan_modulo.nc
+ LISTing to file test_subspan_modulo.nc
+ LISTing to file test_subspan_modulo.nc
+ LISTing to file test_subspan_modulo.nc
+ LISTing to file test_subspan_modulo.nc
+ LISTing to file test_subspan_modulo.nc
+ *** NOTE: Not using NetCDF strides for multi-cycle modulo
+ *** NOTE: Stride value not a factor of axis length
+ *** NOTE: Not using NetCDF strides for multi-cycle modulo
+ *** NOTE: Stride value not a factor of axis length
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: /THICKNESS ignored  on /SYMBOL=DOT
+ *** NOTE: /SIZE= ignored  on /SYMBOL=DOT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Re-defining viewport UL
+Re-defining viewport UR
+Re-defining viewport LL
+Re-defining viewport LR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Re-defining viewport MID
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Re-defining viewport MID1
+Re-defining viewport MID2
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: value out of legal range: # of contour levels > 500  (3282)
+CONTOUR/L=1/LEV=0.01d sst
+ **ERROR: value out of legal range: # of contour levels > 500  (3282)
+CONTOUR/FILL/L=1/LEV=0.01d sst
+ **ERROR: value out of legal range: # of shade levels > 500  (3282)
+SHADE/L=1/LEV=0.01d sst
+ **ERROR: value out of legal range: # of levels > 500  (4094)
+POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
+ *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
+ *** NOTE: A dummy axis of subscripts will be used
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ls: input.txt: No such file or directory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
+            dsetnum,dsetpath,dsettitle,*size,*start,*end,
+            *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
+            calendar,dtype,xmod,tmod,isdepth
+          axy, return=xx
+MESSAGE/CONTINUE `axy, return=xx`
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+ LISTing to file a.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis YAX
+Replacing definition of axis Z1
+ *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file clim.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
+ *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
+ *** NOTE: A dummy axis of subscripts will be used
+ **ERROR: illegal limits: "DUMMY" does not exist at T=-6.3E+10
+          Axis extremes are T=0.5:32
+list/t=1-jan-1990 dummy
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: Can SET VARIABLE/OFFSET= only with NetCDF datasets
+SET VAR/OFFSET=1 x1
+ **ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets
+SET VAR/SCALE=10 x2
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file longvname.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file longvname.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file eofsp.cdf
+ LISTing to file eofti.cdf
+ LISTing to file eofst.cdf
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file confuse_xz.nc
+ LISTing to file confuse_yz.nc
+ LISTing to file confuse_yt.nc
+ LISTing to file confuse_yzt.nc
+ LISTing to file confuse_xz.nc
+ LISTing to file confuse_yz.nc
+ LISTing to file confuse_yt.nc
+ LISTing to file confuse_yzt.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis YQ
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+SHO VAR/XML
+SHO VAR/XML
+SHO VAR/XML
+SHO VAR/XML
+SHOW VAR/XML
+SHOW VAR/XML
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Using every   5th vector in the X direction
+ Using every   3th vector in the Y direction
+ Using every   2th vector in the X direction
+ *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: REPEAT/NAME requires /RANGE
+rep/name=a say `a`
+ **ERROR: command syntax: L is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/L=
+rep/range=1:3/name=L (use coads_climatology; list/nohead [sst=I=1,j=1])
+ **ERROR: command syntax: I is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/I=
+rep/range=1:3/name=I (use coads_climatology; list/nohead [sst])
+ **ERROR: command syntax: j is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/j=
+rep/range=1:3/name=j (use coads_climatology; list/nohead [sst])
+ **ERROR: command syntax: k is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/k=
+rep/range=1:3/name=k (use coads_climatology; list/nohead [sst])
+ **ERROR: command syntax: X is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/X=
+rep/range=1:3/name=X (use coads_climatology; list/nohead [sst])
+ **ERROR: command syntax: y is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/y=
+rep/range=1:3/name=y (use coads_climatology; list/nohead [sst])
+ **ERROR: command syntax: z is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/z=
+rep/range=1:3/name=z (use coads_climatology; list/nohead [sst])
+ **ERROR: command syntax: tbox is a pseudo-variable; cannot use with REPEAT/RANGE/NAME=
+rep/range=1:3/name=tbox (use coads_climatology; list/nohead[sst,x=181,y=0,t=`tbox`])
+ **ERROR: command syntax: xboxlo is a pseudo-variable; cannot use with REPEAT/RANGE/NAME=
+rep/range=1:3/name=xboxlo (list/nohead xboxlo)
+ **ERROR: command syntax: nested REPEAT loops with the same counter name a
+repeat/range=3:1:-1/name=a list a
+ **ERROR: command syntax: nested REPEAT loops with the same counter name a
+repeat/range=3:1:-1/name=a list a
+ **ERROR: command syntax: nested REPEAT loops with the same counter name a
+repeat/range=3:1:-1/name=a list a
+ **ERROR: command syntax: nested REPEAT loops with the same counter name a
+repeat/range=3:1:-1/name=a list a
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: illegal limits: "TEMP" does not exist at T=AUG-1980:JAN-1982
+          Axis extremes are T=AUG-1982:JAN-1983
+list/t=1-aug-1980:1-jan-1982/i=92/j=35 temp
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX1
+Replacing definition of axis TAX2
+Replacing definition of axis TAX1
+Replacing definition of axis TAX2
+Replacing definition of axis TAX1
+Replacing definition of axis TAX2
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of grid AGRID
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Not using NetCDF strides for multi-cycle modulo
+ *** NOTE: Stride value not a factor of axis length
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis X_AX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ TEMPORARY data cleared from memory
+ TEMPORARY data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+ *** NOTE: Axis definition error on axis: TAX
+ *** NOTE: Bounds given describe non-contiguous axis cells
+ *** NOTE: Using the LOWER bound specified for each axis cell
+Replacing definition of axis TAX
+ **ERROR: improper grid or axis definition: BOUNDS specified do not enclose coordinate points
+def axis/t/bounds tax={1.2,2,3.2,5,7,8.8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+ **ERROR: improper grid or axis definition: BOUNDS specified do not enclose coordinate points
+def axis/t/bounds tax={0.1,2,3.2,5,7,8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+ **ERROR: improper grid or axis definition: BOUNDS specified do not enclose coordinate points
+def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+ **ERROR: improper grid or axis definition: BOUNDS specified do not enclose coordinate points
+def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
+ **ERROR: improper grid or axis definition: dimension of bounds (15) must be 2*N or N+1, N=number of axis coordinates (7)
+def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5,10.5}
+ *** NOTE: Not deleted: TAX
+ *** NOTE: Axis is in use by grid GFORMAT
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ *** NOTE: Cannot have both /BOUNDS and /RIGID Ignoring /RIGID
+ LISTing to file a.nc
+ *** NOTE: Cannot have both /BOUNDS and /EDGES Ignoring /EDGES
+ LISTing to file a.nc
+Replacing definition of axis XAX
+Replacing definition of axis ZAX
+Replacing definition of axis TAX
+ LISTing to file irrxzt.nc
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
+ *** NOTE: This will result in incorrect box sizes on record axis: MONTH_REG
+ *** NOTE: Write the data initially with the /BOUNDS qualifier
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Axis definition error on axis: TGAP
+ *** NOTE: Bounds given describe non-contiguous axis cells
+ *** NOTE: Using the LOWER bound specified for each axis cell
+ *** NOTE: bounds "TAX_bnds" do not enclose point on axis TAX
+ *** NOTE: Substituting coordinate midpoints
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of grid TGRID
+ **ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP
+def axis/t/cal=nogood/t=1-jan-2000:1-jan-2010:1/units=months tax
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Units  not recognized: SOMETHING
+ *** NOTE: They will not be convertible:
+ *** NOTE: Units  not recognized: SOMETHING
+ *** NOTE: They will not be convertible:
+ *** NOTE: Units  not recognized: ZORRO
+ *** NOTE: They will not be convertible:
+ *** NOTE: Units  not recognized for T axis: METERS
+ *** NOTE: They will not be convertible
+ *** NOTE: Units  not recognized for Y axis: SECONDS
+ *** NOTE: They will not be convertible
+Replacing definition of axis TAX
+Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: /UNIT=MONTHS  ... using 1/12 of 365.00 days
+Replacing definition of axis TAX
+Replacing definition of axis ZAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+ LISTing to file xlong.nc
+ LISTing to file xlongshift.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
+ TEMPORARY data cleared from memory
+Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
+ TEMPORARY data cleared from memory
+Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Re-defining viewport VP_1
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+Replacing definition of axis ZAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XFINE
+Replacing definition of axis YFINE
+ LISTing to file fine.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification
+plot/sym/siz=0.3 0*t[gt=vwnd]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: /UNIT=MONTHS  ... using 1/12 of 365.00 days
+Replacing definition of axis TAX
+ LISTing to file aa.nc
+ LISTing to file cc.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: First argument is a letter of the alphabet
+query/ignore $1%q|a|b|c|d|<First argument is a letter of the alphabet%
+ **ERROR: invalid command: Valid value needed for argument $2
+query/ignore $2%|a|b|c|d|%
+ *** NOTE: Valid argument $2 choices are: a|b|c|d|
+ **ERROR: my error message
+message/cont $1"|xxxxx|goodbye<my error message"
+ **ERROR: invalid command: Valid value needed for argument $1
+message/cont $1"greetings|xxxxx|goodbye"
+ *** NOTE: Valid argument $1 choices are: xxxxx|goodbye
+ **ERROR: my error message
+message/cont $3"|hello|goodbye<my error message"
+ **ERROR: invalid command: Valid value needed for argument $3
+message/cont $3">greetings|hello|goodbye"
+ *** NOTE: Valid argument $3 choices are: hello|goodbye
+ **ERROR: my error message
+message/continue ($test2"<my error message")
+ **ERROR: invalid command: Valid value needed for symbol test2
+message/continue ($test2"|hello|bye|")
+ *** NOTE: Valid symbol test2 choices are: hello|bye|
+ **ERROR: my error message
+message/continue ($test2"|hello|bye|<my error message")
+ **ERROR: invalid command: Valid value needed for symbol t2
+message/continue ($t2"|solong>really hello|bye|")
+ *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: delta non-positive on X axis of EX#1
+list/l=1/j=40/i=0:300:0 sst
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file 10a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XQ
+Replacing definition of axis YQ
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Evenly spaced axis has edges definition: TCOADS - ignored
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TIME1
+ *** NOTE: grid  used by data set coads_clim
+ *** NOTE: Redefinition may alter apparent contents of data set
+Replacing definition of axis TIME1
+ *** NOTE: grid  used by data set coads_clim
+ *** NOTE: Redefinition may alter apparent contents of data set
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis COADSX.ILLEGAL
+ *** NOTE: grid  used by data set illeg_axname
+ *** NOTE: Redefinition may alter apparent contents of data set
+ *** NOTE: grid  used by data set illeg_axname
+ *** NOTE: Redefinition may alter apparent contents of data set
+Replacing definition of axis COADSY.ILLEGAL
+ *** NOTE: grid  used by data set illeg_axname
+ *** NOTE: Redefinition may alter apparent contents of data set
+ *** NOTE: grid  used by data set illeg_axname
+ *** NOTE: Redefinition may alter apparent contents of data set
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TIME
+ LISTing to file a.nc
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file longtitle.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file longtitle.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+ **ERROR: improper grid or axis definition: error in start,end,delta
+DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/t myt
+ *** NOTE: /UNIT=MONTHS  ... using 1/12 of 365.00 days
+ **ERROR: improper grid or axis definition: error in start,end,delta
+DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/T/CALENDAR=noleap myt
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file t0_cdc.nc
+ LISTing to file my_cdc_timeaxis.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TGREG
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file revision.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
+          Cannot use multiple IFs in an expression
+LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
+ **ERROR: command syntax: IF I LT 5 THEN I ELSE -9
+          ELSE before - is illegal
+          negative constants need to be enclosed in parentheses
+DEFINE VARIABLE A = IF I LT 5 THEN I ELSE -9
+ **ERROR: variable unknown or not in data set: A1
+load a1,a2,a3
+ **TMAP ERR: non-existent or not on line
+             nofile.nc
+set data nofile.nc
+ **ERROR: invalid command: REPEAT/NAME requires /RANGE
+repeat/name=a (say `a`)
+ **ERROR: command syntax: L is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/L=
+repeat/range=1:3/name=L (use coads_climatology; list/nohead [sst=I=1,j=1])
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
+ **ERROR: error in external function
+LOAD vw_fft
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+Replacing definition of axis XAX
+Replacing definition of axis ZAX
+Replacing definition of axis TAX
+ LISTing to file irrxzt.nc
+Replacing definition of axis ZAX
+Replacing definition of axis ZAX2
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: SHOW ATTRIBUTE given with no argument
+sho att/all
+ **ERROR: unknown data set: d=2
+show att/all temp[d=2]
+ **ERROR: unknown data set: d=2
+show att/all temp[d=2]
+ **ERROR: unknown data set: d=2
+show att/all temp[d=2]
+ **ERROR: unknown data set: d=2
+show att/all temp[d=2]
+ **ERROR: unknown data set: d=2
+show att/all temp[d=2]
+ **ERROR: variable unknown or not in data set: temp[d=2]
+show att/all temp[d=2]
+ **ERROR: variable unknown or not in data set: salt
+show att/all salt
+ **ERROR:                                                   : salt.non
+          attribute nonsense
+sho att salt.nonsense
+ **ERROR: invalid command: dataset not found for varname.attname .
+sho att/all .
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute temp.pp
+ *** NOTE: Changing the length  of attribute temp.pp
+ *** NOTE: Changing the value of attribute temp.some_text
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute temp.long_name
+ *** NOTE: Changing the value of attribute temp.units
+ *** NOTE: Changing the value of attribute temp.missing_value
+ *** NOTE: Changing the value of attribute temp.missing_value
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Changing the value of attribute (PSZT1).positive
+ *** NOTE: Changing the type of attribute (coadsx).modulo
+ *** NOTE: Changing the value of attribute (coadsx).modulo
+ *** NOTE: Changing the value of attribute (TIME4).time_origin
+ **ERROR: command syntax: enclose coordinate variable name in parentheses
+list coadsx.units
+ **ERROR: variable unknown or not in data set: COADSX.UNITS
+list coadsx.units
+ **ERROR: invalid command: Cannot change attribute for direction of axis.
+set att (COADSX81_81).axis = "Z"
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute temp.pp
+ *** NOTE: Changing the length  of attribute temp.pp
+ *** NOTE: Changing the value of attribute temp.some_text
+ *** NOTE: Changing the type of attribute temp.pp
+ *** NOTE: Changing the value of attribute temp.pp
+ *** NOTE: Changing the type of attribute temp.some_text
+ *** NOTE: Changing the value of attribute temp.some_text
+ *** NOTE: Changing the value of attribute temp.long_name
+ *** NOTE: Changing the value of attribute temp.units
+ *** NOTE: Changing the type of attribute temp.pp
+ *** NOTE: Changing the value of attribute temp.pp
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_SHORT to match output type of variable NC_FLOAT
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_SHORT to match output type of variable NC_FLOAT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+Replacing definition of axis ZAX
+Replacing definition of axis TAX
+Replacing definition of grid MYGRID
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_SHORT to match output type of variable NC_FLOAT
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_SHORT to match output type of variable NC_FLOAT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
+ *** NOTE: Converting single precision variable to double on output
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Converting single precision variable to double on output
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ *** NOTE: Changing the value of attribute (COADSX).point_spacing
+ *** NOTE: Changing the value of attribute (COADSY).point_spacing
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
+ ** netCDF error:                                     
+ data in attribute missing_value not representable in output type NC_INT
+LIST/FORMAT=CDF/file=a.nc/clobber/x=132w/k=1 temp
+ **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
+set var/outtype=char broiled
+ **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
+set var/outtype=garbage broiled
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute (PSXT1).units
+ LISTing to file a.nc
+ LISTing to file a.nc
+ *** NOTE: Changing the value of attribute (PSXT1).units
+ *** NOTE: Changing the value of attribute (PSYT1).units
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis X2AX
+ *** NOTE: Changing the value of attribute (z4ax).positive
+ LISTing to file string4d.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Changing the value of attribute (TIME7).units
+ *** NOTE: Changing the value of attribute (TIME7).units
+ *** NOTE: Changing the value of attribute (TIME7).time_origin
+ *** NOTE: Changing the value of attribute (TIME7).time_origin
+ *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+Replacing definition of axis TIME
+ LISTing to file a.nc
+ *** NOTE: Converting single precision variable to double on output
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: New # of line colors will take effect on next new window: SET WIN/NEW then define pen colors
+ Using every   3th vector in the X direction
+ Using every   4th vector in the Y direction
+ *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **TMAP ERR: non-existent or not on line
+             this_is_not_a_file.nc
+SET DAT/FORM=CDF this_is_not_a_file.nc
+ **Internet Data error
+             OPeNDAP Error: Error while reading the URL: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods.dds?.
+The OPeNDAP server returned the following message:
+Not Found: The data source or server could not be found.
+        Often this means that the OPeNDAP server is missing or needs attention;
+        Please contact the server administrator. (OPeNDAP/netCDF Error code 1001)
+             Data set: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods
+SET DAT/FORM=CDF "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
+ **Internet Data error
+             OPeNDAP Error: Couldn't resolve host 'noserver' (OPeNDAP/netCDF Error code 1001)
+             Data set: http://noserver/a/nofile.cdf
+SET DAT/FORM=CDF  "http://noserver/a/nofile.cdf"
+ LISTing to file asc.dat
+ **netCDF error
+             NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
+             Data set: ./asc.nc
+SET DAT/FORM=CDF asc.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file err581_subspanx_fill_bug.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XIR
+ LISTing to file xyir.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: illegal use of transformation:  not all dimensions present on grid
+shade sst[x=@var,k=@var]
+ **ERROR: illegal use of transformation:  not all dimensions present on grid
+shade sst[t=@AVE,Z=@ave]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: /UNIT=MONTHS  ... using 1/12 of 360.00 days
+ LISTing to file t3file.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file 0000_a.nc
+ LISTing to file subdir/a.nc
+ LISTing to file subdir/0000_a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+Replacing definition of axis TAX
+ LISTing to file a.nc
+ *** NOTE: Not deleted: TAX
+ *** NOTE: Axis is in use by grid GFORMAT
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ *** NOTE: Invalid I axis limits ignored: TEMP
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=100/k=1 temp[x=122.5W]"
+plot/i=100/k=1 temp[x=122.5W]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file b.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file b.nc
+ LISTing to file b.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+Replacing definition of axis TIME9
+ *** NOTE: grid  used by data set coads_climatology
+ *** NOTE: Redefinition may alter apparent contents of data set
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TIME
+ LISTing to file a.nc
+ LISTing to file t2.nc
+ LISTing to file t12.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file out.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: it is a child axis already
+set axis/stride=2/offset=1 (AX052)
+ **ERROR: invalid command: not a strided axis: COADSX
+cancel axis/stride COADSX
+ **ERROR: invalid command: offset must be less than stride value
+set axis/stride=2/offset=4 COADSX
+ **ERROR: invalid command: not a strided axis: COADSX
+cancel axis/stride COADSX
+ *** NOTE: Stride value not an integer factor of axis length: Axis loses modulo property
+ LISTing to file d2.nc
+ *** NOTE: Stride value not an integer factor of axis length: Axis loses modulo property
+ **ERROR: invalid command: unknown axis: NORMAL
+set axis/stride=2 NORMAL
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file noleap.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
+ *** NOTE: They will not be convertible:
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file tripolar_missing_lon.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
+ *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
+ *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: bounds "TAX_bnds" do not enclose point on axis TAX
+ *** NOTE: Substituting coordinate midpoints
+ *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
+ *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
+ *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Axis definition error on axis: TGAP
+ *** NOTE: Bounds given describe non-contiguous axis cells
+ *** NOTE: Using the LOWER bound specified for each axis cell
+ *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
+ *** NOTE: They will not be convertible:
+ *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
+ *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
+ *** NOTE: A dummy axis of subscripts will be used
+ **TMAP ERR: non-existent or not on line
+             test_strides.cdf
+SET DAT/FORM=CDF test_strides.cdf
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Cached data cleared from memory
+ Cached data cleared from memory
+ Cached data cleared from memory
+ Cached data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: "300": Number of contour levels must be between 1 and 250
+SHADE/LEV=300/I=1:100/J=1:100 i+j
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+ LISTing to file a.nc
+ LISTing to file b.nc
+ LISTing to file b.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file z1.nc
+ LISTing to file z2.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TIME
+Replacing definition of axis TIME
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TIME
+ LISTing to file a.nc
+ LISTing to file b.nc
+ LISTing to file b.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Using every   5th vector in the X direction
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis ZAX
+ **ERROR: value out of legal range: Median smoother length must be odd
+plot/trans var, var[z=@med:4]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TIME
+Replacing definition of axis TIME
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TIME
+ LISTing to file a.nc
+ LISTing to file b.nc
+ LISTing to file b.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Units on axis "ENS" are not recognized: count
+ *** NOTE: They will not be convertible:
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file 1a.dat
+ LISTing to file 3a.dat
+ LISTing to file 5a.dat
+ LISTing to file 7a.dat
+ LISTing to file 9a.dat
+ LISTing to file 11a.dat
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: variable unknown or not in data set: A_REGRID[D=1,GT=B[D=2]@MOD]
+LIST a_regrid[D=1,GT=b[D=2]@MOD]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file dat.dat
+ LISTing to file a.nc
+ LISTing to file unf.dat
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file lonlat.dat
+ LISTing to file lonlat.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Converting single precision variable to double on output
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+Replacing definition of grid GG
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file b.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+Replacing definition of axis ZAX
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+Replacing definition of axis TAX
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+Replacing definition of axis ZAX
+Replacing definition of axis TAX
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ *** NOTE: @NBD of string variable, counting null strings as missing
+ *** NOTE: @NGD of string variable, counting null strings as missing
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis X1
+Replacing definition of axis Y1
+Replacing definition of grid G1
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file test0a.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0b.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0c.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0d.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0e.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0f.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0g.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0h.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0i.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0j.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0k.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0l.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0m.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0n.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0o.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test0p.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
+ *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
+ *** NOTE: Write the data initially with the /BOUNDS qualifier
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file test2.cdf
+ LISTing to file FL.cdf
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file FTLON.cdf
+ **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
+list/format=cdf/keep_axnames/l=1:10/file=test_abs.cdf l
+ LISTing to file test_abs.cdf
+ **TMAP ERR: Requested data range is outside of data set limits
+             inconsistent I axis length for IL
+list/format=cdf/keep_axnames/i=5:15/l=5:10/append/file=test_abs.cdf il
+ LISTing to file test_abs.cdf
+ LISTing to file test_abs.cdf
+ **TMAP ERR: attempt to redefine line
+             # of dims in variable IJL2 is inconsist. w/ CDF file
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijl2
+ LISTing to file test_abs.cdf
+ **TMAP ERR: attempt to redefine line
+             # of dims in variable IJKL is inconsist. w/ CDF file
+list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkl[k=@ave]
+ LISTing to file test_abs.cdf
+ **TMAP ERR: error in line definition
+             disordered output coordinate value:         363  Axis: TCENTURY
+list/format=cdf/keep_axnames/l=13/append/file=test_abs.cdf l1
+ LISTing to file FI.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
+ LISTing to file test_fil0.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijk
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ikl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSYT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf jkl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXU doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijkl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf/j=1:50/l=2:3 ijl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf/j=51:100/l=2:3 ijl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXU doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf/j=30:40/k=5/l=1:3 ijkl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSZT doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf iavejkl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXU doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijavekl
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXU doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijkavel
+ LISTing to file test_fil.cdf
+ *** NOTE: Writing a subset of data with original axis names
+ *** NOTE:   Axis was already written with a different set of coordinates
+ **TMAP ERR: attempt to redefine line
+             axis PSXU doesnt match CDF file
+list/format=cdf/keep_axnames/append/file=test_fil.cdf ijklave
+ **ERROR: variable unknown or not in data set: IJKL
+show grid ijkl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+Replacing definition of grid TGRID
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+Replacing definition of axis TSEC
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis CAXIS
+ *** NOTE: grid  used by data set grads_bug_file
+ *** NOTE: Redefinition may alter apparent contents of data set
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+Replacing definition of axis TAX
+ *** NOTE: New # of line colors will take effect on next new window: SET WIN/NEW then define pen colors
+ *** NOTE: New number of line colors will take effect on next new window: SET WIN/NEW or SET WIN/CLEAR
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file xz.nc
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file t_bug.nc
+Replacing definition of axis T_AXIS
+ LISTing to file t_bug.nc
+ ** netCDF error: Variable not found
+ T_AXIS_bnds not found. Attempt to append irregular coordinates to NetCDF axis which has no bounds attribute. Write data originally with the /BOUNDS qualifier.
+LIST/FORMAT=CDF/FILE=t_bug.nc/APPEND var
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: invalid command: offset must be greater than or equal to zero
+SET AXIS/STRIDE=12/OFFSET=-1 truemonth
+ **ERROR: invalid command: stride must be greater than zero
+SET AXIS/STRIDE=-1/OFFSET=1 truemonth
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ Cached data cleared from memory
+ls: no/: No such file or directory
+ls: no/: No such file or directory
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
+plot/i=1:10/j=1:20/nolabel i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i,i+j"
+plot/i=1:10/j=1:20/nolabel i,i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j,i"
+plot/i=1:10/j=1:20/nolabel i+j,i
+ **ERROR: dimensions improperly specified: differing axes:
+          first line is on Y axis
+          line 2 is on X axis
+plot/i=1:10/j=1:20/nolabel j,i
+ **ERROR: dimensions improperly specified: unequal line lengths:
+          First expression has 20 points.
+          Expression 2 has 10 points:
+          "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
+plot/i=1:10/j=1:20/vs/line/nolabel j,i
+ **ERROR: dimensions improperly specified: must be a 2D region
+          contour/i=1:10/j=1:20/nolabel i
+contour/i=1:10/j=1:20/nolabel i
+ **ERROR: invalid command: can only CONTOUR  single fields
+          Use /OVERLAY for multiple variables
+contour/i=1:10/j=1:20/nolabel i/j,j/i
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
+Re-defining viewport LM6
+Re-defining viewport UM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+Re-defining viewport LM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+Re-defining viewport UM6
+ Using every   2th vector in the X direction
+ Using every   2th vector in the Y direction
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ls: no/: No such file or directory
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
+plot/i=1:10/j=1:20/nolabel i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i,i+j"
+plot/i=1:10/j=1:20/nolabel i,i+j
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j,i"
+plot/i=1:10/j=1:20/nolabel i+j,i
+ **ERROR: dimensions improperly specified: differing axes:
+          first line is on Y axis
+          line 2 is on X axis
+plot/i=1:10/j=1:20/nolabel j,i
+ **ERROR: dimensions improperly specified: unequal line lengths:
+          First expression has 20 points.
+          Expression 2 has 10 points:
+          "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
+plot/i=1:10/j=1:20/vs/line/nolabel j,i
+ **ERROR: dimensions improperly specified: must be a 2D region
+          contour/i=1:10/j=1:20/nolabel i
+contour/i=1:10/j=1:20/nolabel i
+ **ERROR: invalid command: can only CONTOUR  single fields
+          Use /OVERLAY for multiple variables
+contour/i=1:10/j=1:20/nolabel i/j,j/i
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j
+ **ERROR: invalid command: VECTOR requires paired components
+vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
+Re-defining viewport LM6
+Re-defining viewport UM6
+ls: no/: No such file or directory
+ *** NOTE: Cannot create new windows when batch mode set
+Ended at Wed Sep 30 11:32:28 PDT 2009

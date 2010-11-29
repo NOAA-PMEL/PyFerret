@@ -1,0 +1,101 @@
+\cancel mode verify
+! 2/94 - polar_grid_fancy.jnl
+ 
+
+! NOTE: The map projection capabilities beginning with Ferret v5.0
+! provide far more flexibility for making plots with curvilinear coordinates.
+! Run the script  mp_demo  for an introduction"
+
+
+! Description: overlay "fancy" radial logitude and curved latitude lines
+
+! The internal complexities of this routine are to cope with the following:
+!	o discontinuity at +/-180 (also causes trouble at Y=90)
+!	o contour labels that don't overlap the intersecting grid lines
+!	o color (pen) controls) 
+
+! usage:   GO polar_grid [color] [label_lo_ylimit] [label_hi_ylimit] [overlap] [label_delta_lon] [label_delta_lat]
+!       where
+! color	- may be red, green, blue, thick, or 1-18
+! lo/hi limits 	- the latitude region in which labelling will occur
+!		  default = 32 to 57  (8 and 25 good alt.)
+! overlap	- the amount of overlap between the labelled and unlabelled
+!		  contour segments
+!		  Default = 2 degrees - adjust upward if gaps appear in lines
+! label_delta	- the conset parameter governing the frequency of labels
+!		  Default = 0.0 for lon - adjust upwards if multiple labels appear
+!                 Default = 2.0 for lat -
+!   e.g.   GO polar_grid red        - to use pen color red (2)
+!   e.g.   GO polar_grid 10         - to use pen number 10
+!   e.g.   GO polar_grid  0         - to use pen number 0 (background)
+!   e.g.   GO polar_grid  " " 8 25 - insert labels between 10 and 30 deg lat
+!  use  GO line_samples    to view the first 6 pen numbers
+!       Higher pen numbers cycle with thicker lines (max 18)
+! Note: the rotation parameter is inherited from the other polar routines
+
+
+
+! test argument before performing any actions
+ppl pen 1 $1%1|red>1|green>1|blue>1|thick>1|0>1|1>1|2>1|3>1|4>1|5>1|6>1|7>1|8>1|9>1|10>1|11>1|12>1|13>1|14>1|15>1|16>1|17>1|18>1|<GO polar_grid [pen] [fine-controls] with pen = 0(back), 1(fore), thick, 2-18 or a color%
+
+! set a PLOT+ symbol with the pen color (allows code below to be shorter)
+ppl set pen_color $1"1|red>2|green>3|blue>4|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+
+! use a low resolution grid for speed
+define axis/x=-1:1/npoints=101 x51
+define axis/y=-1:1/npoints=101 y51
+define grid/x=x51/y=y51 g51
+
+! define polar equations for this grid
+GO polar_map_inv_eqns g51
+
+! latitude contours
+ppl conset 0.10,,,,,,,$6"2.0"    ! big labels
+let/quiet mask = if polar_ydeg lt 0 then 1.
+contour/over/nolab/set/lev=(0,60,30,-1)/x=-1:1/y=-1:1 polar_ydeg; ppl conpre @CR; ppl conpst #N; ppl pen 1 'pen_color'; ppl contour/over
+contour/over/nolab/set/lev=(30,60,30,-1)/x=-1:1/y=-1:1 abs(mask*polar_ydeg); ppl conpre @CR; ppl conpst #S; ppl pen 1 'pen_color'; ppl contour/over
+
+! force labelling into a restricted band
+let/quiet polar_epsilon = $4"2"   ! overlap to avoid gaps between line segments
+let/quiet polar_label_region   = if abs(polar_ydeg) le ($3"57"+polar_epsilon) and signgr*polar_ydeg ge ($2"32"-polar_epsilon) then 1
+let/quiet polar_nolabel_region = if abs(polar_ydeg) ge ($3"57"-polar_epsilon) or abs(polar_ydeg) le ($2"32"+polar_epsilon) then 1
+
+! longitude "contours" - need to bypass nasty discontinuity at date line
+let/quiet polar_long = if (175-abs(polar_xdeg180) gt 0) and abs(polar_ydeg) le 80 and signgr*polar_ydeg ge (-0.5) then polar_xdeg180  ! avoid discontinuity
+let/quiet polar_pacific   = if ABS(polar_xdeg180) gt 90 and abs(polar_ydeg) le 80 and signgr*polar_ydeg ge (-0.5) then polar_xdeg180
+let/quiet polar_pac = if polar_pacific lt 0 then 360+polar_pacific else polar_pacific
+let/quiet polar_lon_nolab = if polar_nolabel_region then polar_long
+let/quiet polar_lon_lab   = if polar_label_region   then polar_long
+let/quiet polar_pac_nolab = if polar_nolabel_region then polar_pac
+let/quiet polar_pac_lab   = if polar_label_region   then polar_pac
+
+! Note: CONSET command forces the drawing of more closely-spaced labels
+!       in this case it forsec them into the desired location
+
+! longitude West
+ppl conpst #W; ppl conset,,,,,,,,$5"0"
+contour/over/nolab/lev=(30,150,30,-3)(90,90,1,-1)line(30,150,30)/set/x=-1:1/y=-1:1 (-1)*polar_lon_lab;   ppl pen 1,'pen_color'; ppl contour/over
+contour/over/nolab/lev=(30,150,30,-3)line(30,150,30)/set/x=-1:1/y=-1:1 (-1)*polar_lon_nolab; ppl pen 1,'pen_color'; ppl contour/over
+
+! longitude East and prime meridian
+ppl conpst #E; ppl conset,,,,,,,,$5"0"; contour/over/nolab/lev=(30,150,30,-3)(90,90,1,-1)line(30,150,30)/set/x=-1:1/y=-1:1 polar_lon_lab;   ppl pen 1,'pen_color'; ppl contour/over
+ppl conset,,,,,,,,0.4; ppl conpst #; ppl lev ()(0,0,1,-1)line(0); ppl contour/over
+ppl conpst #E; ppl conset,,,,,,,,$5"0"; contour/over/nolab/lev=(30,150,30,-3)line(30,150,30)/set/x=-1:1/y=-1:1 polar_lon_nolab; ppl pen 1,'pen_color'; ppl contour/over
+ppl conset,,,,,,,,0.4; ppl conpst #; ppl lev ()(0,0,1,-3)line(0); ppl contour/over
+! dateline - must shift discontinuity to Greenwhich
+ppl conset,,,,,,,,$5"0"
+contour/over/nolab/lev=(180,180,1,-1)/set/x=-1:1/y=-1:1 polar_pac_lab ;   ppl pen 1,'pen_color'; ppl contour/over
+contour/over/nolab/lev=(180,180,1,-3)/set/x=-1:1/y=-1:1 polar_pac_nolab ; ppl pen 1,'pen_color'; ppl contour/over
+
+! clean up
+ppl conpst
+ppl conpre
+ppl conset,,,,,,,,5
+!ppl conset 0.8
+ppl pen 1,1
+
+set mode/last verify
+
+message/continue "NOTE: The map projection capabilities beginning with Ferret v5.0"
+message/continue "provide far more flexibility for plots with curvilinear coordinates."
+message/continue "Run the script  mp_demo  for an introduction"

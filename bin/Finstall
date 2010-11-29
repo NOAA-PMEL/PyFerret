@@ -1,0 +1,284 @@
+#! /bin/csh
+# Finstall
+# Does two things:
+# 1) modifies 'ferret_paths template' to specify locations of ferret software &
+# demo data sets and places the result in the appropriate sourcing directory
+# as 'ferret_paths'
+# 2) installs ferret and gksm2ps executables and shared-object external functions from 
+# tar file to $FER_DIR/bin
+#
+# J Davison 4.94
+# NOAA PMEL TMAP
+echo " This script can do two things for you to help install FERRET:"
+echo " "
+echo " (1) Install the FERRET executables into FER_DIR/bin from the"
+echo " compressed .gz file you got (usually) via ftp.  You'll want to run this"
+echo " option if you're installing FERRET for the first time, and also if"
+echo " you're updating the FERRET you have with new 5/26/2009executables."
+echo " "
+echo " (2) Modify the shell script 'ferret_paths_template'"
+echo " to set environment variables FER_DIR and FER_DSETS to the directories"
+echo " at your site where the FERRET software and demonstration data are. "
+echo " "
+echo " The resulting file will be named 'ferret_paths' and placed in a "
+echo " directory you choose.  Executing the 'source' command on that"
+echo " file will set up a FERRET user's environment so that FERRET can be run."
+echo " "
+echo " This option usually only needs to be run if you are installing FERRET"
+echo " on your system for the first time, and 'ferret_paths' is not yet set up."
+
+### Print menu and act on choice 
+menu:
+echo " "
+echo " Enter your choice:"
+echo " (1) Install executables, (2) Customize 'ferret_paths', (3) Exit and do nothing"
+echo -n " (1,2, or 3) --> "
+set choice = $<
+
+if ($choice == 1) goto install_execs
+if ($choice == 2) goto ferret_paths
+if ($choice == 3) exit
+goto menu
+
+### Setup the ferret_paths file ###############################################
+ferret_paths:
+echo " "
+echo " Setup ferret_paths..."
+
+### Get FER_DIR value
+if ($?FER_DIR) then
+	set fer_dir = $FER_DIR
+	echo " "
+	echo " The environment variable FER_DIR is currently defined as"
+	echo " $FER_DIR.  This is the directory where the 'fer_environment'"
+	echo " .gz file was installed." 
+	echo -n " Is that correct and acceptable (y/n) [y] "
+	set ans = $<
+	if ($ans != 'N' && $ans != 'n' ) goto checkfer_dsets
+endif
+
+echo " "
+echo " Enter the complete path of the directory where the 'fer_environment'"
+echo " .gz file was installed (FER_DIR). The location recommended"
+echo " in the FERRET installation guide was '/usr/local/ferret'. "
+
+getfer_dir:
+echo -n " FER_DIR --> "
+set fer_dir = $<
+set fer_dir = $fer_dir
+
+echo $fer_dir | grep '^/' > /dev/null
+if ($status != 0) then
+        echo " Sorry, you can't use relative pathnames..."
+        goto getfer_dir
+endif
+
+if (! -d $fer_dir) then
+        echo " '$fer_dir' is not a directory..."
+        goto getfer_dir
+endif
+
+if (`find $fer_dir/bin -name Fgo -print` == "") then
+        echo " The FERRET environment files are not in $fer_dir..."
+        goto getfer_dir
+endif
+
+### Get FER_DSETS value
+checkfer_dsets:
+echo " "
+if ($?FER_DSETS) then
+	set fer_dsets = $FER_DSETS 
+	echo " The environment variable FER_DSETS is currently defined as"
+	echo " $FER_DSETS.   This is the directory where the 'fer_dsets'"
+	echo " .gz file was installed."
+	echo -n " Is that correct and acceptable (y/n) [y] "
+	set ans = $<
+	if ($ans != 'N' && $ans != 'n' ) goto echo_getferpaths_dir
+endif
+
+getfer_dsets:
+echo " Enter the complete path of the directory where the 'fer_dsets'"
+echo " .gz file was installed (FER_DSETS)."
+echo -n " FER_DSETS --> "
+set fer_dsets = $<
+set fer_dsets = $fer_dsets
+
+echo $fer_dsets | grep '^/' > /dev/null
+if ($status != 0) then
+        echo " Sorry, you can't use relative pathnames..."
+        goto getfer_dsets
+endif
+
+if (! -d $fer_dsets) then
+        echo " '$fer_dsets' is not a directory..."
+        goto getfer_dsets
+endif
+
+if (`find $fer_dsets/data -name "coads_climatology*" -print` == "") then
+        echo " The FERRET demonstration data files are not in $fer_dsets..."
+        goto getfer_dsets
+endif
+
+### Get directory where ferret_paths will go
+echo_getferpaths_dir:
+echo " "
+echo " Enter the complete path of the directory where you want to place the"
+echo " newly created 'ferret_paths' file, for example, '/usr/local'."
+
+getferpaths_dir:
+echo -n " desired 'ferret_paths' location --> "
+set ferpaths_dir = $<
+set ferpaths_dir = $ferpaths_dir
+
+echo $ferpaths_dir | grep '^/' > /dev/null
+if ($status != 0) then
+        echo " Sorry, you can't use relative pathnames..."
+        goto getferpaths_dir
+endif
+
+if (! -d $ferpaths_dir) then
+        echo " '$ferpaths_dir' is not a directory..."
+        goto getferpaths_dir
+endif
+
+
+### If ferret_paths exists, check to see if it's OK to replace
+echo " "
+if (-e $ferpaths_dir/ferret_paths) then
+	echo " $ferpaths_dir/ferret_paths already exists."
+	echo -n " Overwrite? (y/n) [n] "
+	set ans = $<
+	if ($ans != 'Y' && $ans != 'y' ) then
+		echo " Exiting without modifying $ferpaths_dir/ferret_paths..."
+		exit (0)
+	endif
+endif
+
+### Edit the ferret_paths_template file and create ferret_paths
+sed -e "/setenv FER_DIR/c\\
+	 setenv FER_DIR $fer_dir"  \
+    -e "/setenv FER_DSETS/c\\
+	 setenv FER_DSETS $fer_dsets" $fer_dir/bin/ferret_paths_template \
+	 >! $ferpaths_dir/ferret_paths
+
+if ($status != 0) then
+	echo " Unable to create $ferpaths_dir/ferret_paths..."
+	exit (1)
+endif
+
+echo " >>$ferpaths_dir/ferret_paths created.<<"
+echo " "
+goto menu
+
+### Install the executables ###################################################
+install_execs:
+echo " "
+echo " Install executables..."
+echo " "
+
+### Get FER_DIR value
+if ($?FER_DIR) then
+	set fer_dir = $FER_DIR
+	echo " The environment variable FER_DIR is currently defined as"
+	echo " $FER_DIR.  This is the directory where the 'fer_environment'"
+	echo " .gz file was installed." 
+	echo -n " Is that correct and acceptable (y/n) [y] "
+	set ans = $<
+	if ($ans != 'N' && $ans != 'n' ) goto get_.gzloc
+endif
+
+echo " Enter the complete path of the directory where the 'fer_environment'"
+echo " .gz file was installed (FER_DIR). The location recommended"
+echo " in the FERRET installation guide was '/usr/local/ferret'. "
+
+getfer_dir2:
+echo -n " FER_DIR --> "
+set fer_dir = $<
+set fer_dir = $fer_dir
+
+echo $fer_dir | grep '^/' > /dev/null
+if ($status != 0) then
+        echo " Sorry, you can't use relative pathnames..."
+        goto getfer_dir2
+endif
+
+if (! -d $fer_dir) then
+        echo " '$fer_dir' is not a directory..."
+        goto getfer_dir2
+endif
+
+if (`find $fer_dir/bin -name Fgo -print` == "") then
+        echo " The FERRET environment files are not in $fer_dir..."
+        goto getfer_dir2
+endif
+
+### Get directory where ferret executable .gz file is supposed to be
+get_.gzloc:
+echo " "
+echo " Enter the complete path of the directory where you put the"
+echo " 'fer_executables' .gz file."
+
+getferexec_dir:
+echo -n " 'fer_executables.tar.gz' location --> "
+set ferexec_dir = $<
+set ferexec_dir = $ferexec_dir
+
+echo $ferexec_dir | grep '^/' > /dev/null
+if ($status != 0) then
+        echo " Sorry, you can't use relative pathnames..."
+        goto getferexec_dir
+endif
+
+if (! -d $ferexec_dir) then
+        echo " '$ferexec_dir' is not a directory..."
+        goto getferexec_dir
+endif
+
+if (! -e $ferexec_dir/fer_executables.tar.gz) then
+        echo " 'fer_executables.tar.gz' is not in $ferexec_dir..."
+        goto getferexec_dir
+endif
+
+### Move to exec directory and begin work
+pushd $fer_dir/bin > /dev/null
+echo " "
+echo " Moving to $cwd..."
+
+### Rename old execs if they exist; leave date-stamped README logging install
+foreach file (ferret gksm2ps)
+  if (-e $file) then
+	mv $file ${file}_`/bin/date +'%d%h%y'|tr '[A-Z]' '[a-z]'`
+  	if ($status != 0) goto exec_err
+	echo " Renamed existing $file to ${file}_`/bin/date +'%d%h%y'|tr '[A-Z]' '[a-z]'`..."
+  endif
+end
+
+echo "FERRET executables installed this date by $user" >! README_`/bin/date +'%d%h%y'|tr '[A-Z]' '[a-z]'`
+if ($status != 0) goto exec_err
+echo " Created README_`/bin/date +'%d%h%y'|tr '[A-Z]' '[a-z]'` log file..."
+echo 
+
+### Un.gz the exec .gz file
+tar xzf $ferexec_dir/fer_executables.tar.gz 
+if ($status != 0) goto exec_err
+echo " Extracted FERRET executables..."
+
+#### *kob* 5/99 move external function .so files to fer_dir/ext_func/libs
+if (! -d $fer_dir/ext_func/libs) mkdir  $fer_dir/ext_func/libs
+if ($status != 0) goto exec_err
+if (-e add_9.so) then
+  mv *.so $fer_dir/ext_func/libs
+endif
+if ($status != 0) goto exec_err
+
+pushd > /dev/null
+echo " Returning to $cwd..."
+goto menu
+
+### There was a problem installing the executables
+exec_err:
+pushd > /dev/null
+echo " "
+echo "There's a problem manipulating files in $fer_dir.  Check your"
+echo "privileges to change files in that directory and try again."
+exit (1)

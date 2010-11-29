@@ -1,0 +1,55 @@
+/*
+ * $Id$
+ *
+ * This file implements some support routines for FORTRAN-callable C
+ * functions.
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stddef.h>		/* for size_t */
+#include "udalloc.h"
+#include "fortc.h"
+
+
+/*
+ * Return the length of the non-blank portion of a FORTRAN character variable.
+ */
+    size_t
+fclen(string, maxlen)
+    const char	*string;	/* string to have its length returned */
+    int		maxlen;		/* maximum possible length of string */
+{
+    const char	*cp;
+
+    for (cp = string + maxlen; cp > string; --cp)
+	if (cp[-1] != ' ')
+	    break;
+
+    return cp - string;
+}
+
+
+/*
+ * FORTRAN interface to the above routine:
+ */
+    int
+    /*FORTRAN*/
+flen(char *string)
+{
+    return fclen(string, (int)string_len);
+}
+
+
+/*
+ * Duplicate the meaningful portion of a FORTRAN character variable.  Ensure 
+ * it's 0-termination.
+ */
+    char*
+fcdup(string, maxlen)
+    const char	*string;	/* string to be duplicated */
+    int		maxlen;		/* maximum length of string */
+{
+    return udstrndup(string, fclen(string, maxlen));
+}

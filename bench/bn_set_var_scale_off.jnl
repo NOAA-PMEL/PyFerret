@@ -1,0 +1,33 @@
+! Qualifiers /SCALEFACTOR=  and /OFFSET  for SET VARIABLE.
+! Only for NetCDF datasets
+! Applied after NetCDF Scale_factor and add_offset attributes
+! New RETURN= arguments NC_SCALE, NC_OFF for values of NetCDF attributes
+!             and USER_SCALE, USER_OFF for those set with SET VAR
+
+! This dataset has scale_factor and add_offset attributes.
+
+USE err491_attval
+LIST/NOHEAD/PREC=6 elev[x=@ave,y=@ave]
+SET VAR/OFFSET=1 elev
+LIST/NOHEAD/PREC=6 elev[x=@ave,y=@ave]
+SET VAR/SCALE=10 elev
+LIST/NOHEAD/PREC=6 elev[x=@ave,y=@ave]
+
+! Output the values of the scales and offsets
+
+SAY `elev,RETURN=nc_scale`
+SAY `elev,RETURN=nc_off`
+SAY `elev,RETURN=user_scale`
+SAY `elev,RETURN=user_off`
+
+! These SET VAR will produce error msgs: qualifiers are set up only for 
+! variables in NetCDF files
+
+SET MODE IGNORE_ERROR
+
+FILE/VAR=x1,x2 EZ.DAT
+
+SET VAR/OFFSET=1 x1
+SET VAR/SCALE=10 x2
+
+SET MODE/LAST IGNORE_ERROR

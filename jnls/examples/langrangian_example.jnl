@@ -1,0 +1,50 @@
+! langrangian_example.jnl
+! 10/17/95
+! *acm* 7/01 update ppl pen 1,2  to plot/color=
+
+! illustration of tracer plots
+! slow and klunky ... but it works
+
+! clean up past files
+sp rm -f  vwind.prev uwind.prev vwind.next uwind.next
+
+! constant parameters
+let deg2m   = 111177
+let deg2rad = 3.14159/180
+let dtsec   = 21600   		! 6 hours
+
+set dat monthly_navy_winds
+
+set region/y=20s:20n/x=130e:80w
+set region/t=17-JAN-1982
+set mode interp			! only significant if time-varying field
+
+! this causes Ferret to **reread** data files at every access
+! -- it picks up changes to the file this way
+set mode stupid
+
+! base map for Langrangian tracers
+go basemap
+vector/over uwnd,vwnd
+cancel region/x/y
+
+! initial Langrangian "float" locations
+let is = i[i=1:24]	! 24 points in X
+let js = j[j=1:15]	! 15 points in Y
+let xpts = 125 + is*15 +(js-js)
+let ypts = (-22) + js*5 + (is-is)
+plot/vs/over/sym=22/color=red/nolab xpts,ypts
+
+user/command=sample/opt2=c/opt1="hole,standard_bad"/file=uwind.prev uwnd[d=monthly_navy_winds],xpts,ypts,1/0,1/0
+user/command=sample/opt2=c/opt1="hole,standard_bad"/file=vwind.prev vwnd[d=monthly_navy_winds],xpts,ypts,1/0,1/0
+
+file/var=usamp,xloc,yloc uwind.prev
+file/var=vsamp vwind.prev
+
+! redefine xpts and ypts to be the "next" time step
+let xpts = xloc[d=uwind.prev] + ((usamp[d=uwind.prev]*dtsec)/deg2m)/cos(yloc[d=uwind.prev]*deg2rad)
+let ypts = yloc[d=uwind.prev] +  (vsamp[d=vwind.prev]*dtsec)/deg2m
+
+! LOOP
+repeat/l=1:25 go langrangian.sub
+

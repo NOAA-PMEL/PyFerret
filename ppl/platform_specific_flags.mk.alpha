@@ -1,0 +1,74 @@
+#
+# platform_specific_includes.mk.alpha
+#
+# This file is included in other Makefiles and defines
+# platform specific macros
+
+
+INCLUDES        = -I$(TMAP_LOCAL)/src/xgks/include \
+  		  -I../../ppl/include/xgks \
+		  -I/usr/local/include \
+		  -I$(TMAP_LOCAL)/src/xgks/gif \
+		  -I$(TMAP_LOCAL)/src/xgks/ps \
+		  -I$(TMAP_LOCAL)/src/xgks/port \
+                  -I$(TMAP_LOCAL)/src/xgks/src/lib \
+                  -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm \
+		  -I$(TMAP_LOCAL)/include \
+		  -I../common \
+		  -I../gui \
+		  -I../../fmt/cmn \
+		  -I../../ppl/include \
+		  -I. -I$(TMAP_LOCAL)/include/readline
+
+FINCLUDES	= -I../../ppl/tmap_inc \
+		   -I../include -I../../fmt/cmn \
+		   -I../common -I../gui \
+		   -I../../ppl/include  -I../../fer/common
+
+GUI_INCLUDES	=
+
+ 
+F77 		= f77
+CC              = cc
+RANLIB          = /usr/bin/ranlib
+CFLAGS          =  $(DEBUG) -DUSG -DDEC_ALPHA -DFULL_GUI_VERSION -DXT_CODE $(INCLUDES)
+FFLAGS          = -c -extend_source -align dcommons -align records -integer_size 32 -real_size 32 -cpp -u -Df7732_bug -DDEC_FORTRAN -Dxgks -DFlarge_mem -DusingDODSf2cUnderscore -fpe2 -C $(FINCLUDES)
+
+PPLUS_FFLAGS    = -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
+		  -Nl160 -Dxgks -static -fpe2 $(FINCLUDES)
+
+#
+# Below this line are macro definitions used only for the final linking of the executable
+#
+
+LD		= cc
+
+LDFLAGS		= -call_shared -v 
+
+UforLIB  = /usr/lib/libUfor.a
+forLIB   = /usr/lib/libfor.a
+FutilLIB = /usr/lib/libFutil.a
+MotifLIB = /usr/lib/libXm.a
+XtLIB    = /usr/lib/libXt.a
+SMLIB	 = /usr/lib/libSM.a
+ICELIB   = /usr/lib/libICE.a
+dnetLIB  = /usr/lib/libdnet_stub.a
+ostLIB 	 = /usr/lib/libost.a
+
+SYSLIB		= $(MotifLIB) $(XtLIB) -lm $(UforLIB) $(forLIB) $(FutilLIB) $(otsLIB) -lX11 -llist $(dnetLIB) $(SMLIB) $(ICELIB) 
+
+TMLIB		= ../lib/tmap_lib.a
+
+READLINELIB	= -L$(TMAP_LOCAL)/lib -lreadline
+
+GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
+
+
+HDFLIB		= -L/usr/local/lib -ldf -lz /usr/local/lib/libjpeg.a
+CDFLIB		= /usr/local/lib/libnetcdf.a
+
+
+#
+# End of platform_specific_includes.mk.alpha
+#
+

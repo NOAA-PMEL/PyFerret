@@ -1,0 +1,64 @@
+! Continuous shade key
+! test setting it and whether default is restored on next command.
+! also whether behavior consistent when we call shakey
+
+use ocean_atlas_temp
+set region/x=130:290/y=-45:45
+
+set view ul
+shade/title="default shade key" temp[l=1]
+
+set view ur
+shade/key=cont/title="shade/key=cont" temp[l=1]
+
+set view ll
+shade/key=cont/title="cont key with shakey call"/set temp[l=1]
+
+let/quiet x1 = `($ppl$xorg)+0.1`
+let/quiet y1 = `($ppl$yorg)+($ppl$ylen)+0.1`
+let/quiet y2 = `($ppl$yorg)+($ppl$ylen)+0.5`
+
+ppl shakey ,0,-.12,2,,,`x1`,,`y1`,`y2`
+go unlabel 4
+go unlabel 5
+ppl shade
+ppl list shakey
+
+set view lr
+let/quiet x1 = `($ppl$xorg)+1`
+let/quiet x2 = `($ppl$xorg)+($ppl$xlen)-1`
+let/quiet y1 = `($ppl$yorg)`
+shade/title="with shakey, restore default key style"/set temp[l=1]
+ppl shakey ,0,-.12,3,,,`x1`,`x2`,`y1`
+ppl shade
+
+can view
+
+set view ul
+fill/title="default fill key" temp[l=1]
+
+set view ur
+fill/key=cont/title="fill/key=cont" temp[l=1]
+
+set view ll
+fill/key=cont/title="cont key with shakey call"/set temp[l=1]
+
+let/quiet x1 = `($ppl$xorg)+0.1`
+let/quiet y1 = `($ppl$yorg)+($ppl$ylen)+0.1`
+let/quiet y2 = `($ppl$yorg)+($ppl$ylen)+0.5`
+
+ppl shakey ,0,-.12,2,,,`x1`,,`y1`,`y2`
+go unlabel 4
+go unlabel 5
+ppl fill
+ppl list shakey
+
+set view lr
+let/quiet x1 = `($ppl$xorg)+1`
+let/quiet x2 = `($ppl$xorg)+($ppl$xlen)-1`
+let/quiet y1 = `($ppl$yorg)`
+fill/title="with shakey, restore default key style"/set temp[l=1]
+ppl shakey ,0,-.12,3,,,`x1`,`x2`,`y1`
+ppl fill
+
+can view

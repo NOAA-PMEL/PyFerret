@@ -1,0 +1,11 @@
+! err608_precision_neg_numbers.jnl
+! ACM 1/2/2008
+! Bug 1538, precision of immediate-mode output of negative values
+! Fixed in tm_fmt.F
+
+! The output from a LIST command is correct:
+LIST/PREC=10 1.23456789e-15
+
+! In immediate mode, output is incorrect, not enough precision:
+SAY `1.23456789e-15`
+SAY `1.23456789e-15,prec=10`

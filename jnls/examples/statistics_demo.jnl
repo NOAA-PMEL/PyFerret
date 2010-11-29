@@ -1,0 +1,77 @@
+! statistics.jnl - example statistical calculations from FERRET *sh* 11/91
+! Description: demo of some sample distribution functions and plots
+
+! minor changes 11/93 for FERRET V3.01
+
+! some simple manipulations of distribution functions ...
+
+! * * * define and plot a gaussian probability density function * * *
+! "pdf" == "probability density function"
+! "cdf" == "cumulative  density function"
+!     ( the random variable X, normally distributed )
+
+CANCEL REGION   ! in case there's region info left over from previous commands
+
+! define the mathematical variables
+LET PI = 3.14159
+LET XBAR = 2
+LET SIGMA = 1
+LET ARG = (X-XBAR)/SIGMA
+LET/TITLE="gaussian pdf" NORM_PDF = (1./(2*PI)^.5)/SIGMA * EXP(-.5*ARG*ARG)
+LET/TITLE="gaussian cdf" NORM_CDF = NORM_PDF[X=@IIN]
+
+! define the region for plotting and the resolution of calculations
+DEFINE AXIS/X=-10:50:.01 XAXIS
+DEFINE GRID/X=XAXIS G_GAUSS
+SET GRID G_GAUSS	! abstract variables will use g_gauss by default
+SET REGION/x=-2:6
+
+! make a few demo plots:
+! plot the bell curve of the Normal pdf
+MESSAGE
+PLOT NORM_PDF
+! plot the integrated bell curve
+MESSAGE
+PLOT NORM_CDF
+! plot both together scaling the PDF so its max is 1
+MESSAGE
+PLOT NORM_CDF,NORM_PDF/NORM_PDF[X=@MAX]
+
+! define and compute some simple statistics
+LET MEDIAN = NORM_CDF[X=@LOC:.5]	! where is cdf equal to 0.5 ?
+LET WT_PDF = X*NORM_PDF
+LET MEAN = WT_PDF[X=@DIN]		! integrate X*pdf
+LIST MEAN,MEDIAN
+MESSAGE
+
+! * * * define and plot a LOG-NORMAL probability density function * * *
+!    this is done by associating the values from the normal cdf with a
+!    transformed axis - using the fact that exp(x) is monotonic
+
+! write the normal cdf values to a file
+SPAWN rm normal_cdf.dat
+LIST/FILE=normal_cdf.dat/FORMAT=UNFORMATTED/NOHEAD NORM_CDF
+
+! create an exponentially transformed axis
+LET BETA = 5	! 0 maps into beta
+LET LAMDA = .5	
+LET EXP_TRNS = BETA*EXP(LAMDA*X)	! exponentially transformed axis
+DEFINE AXIS/FROM/NAME=AX_EXP/X EXP_TRNS
+DEFINE GRID/X=AX_EXP G_EXP
+
+! associate the exponentail axis with the normal cdf - call the variable lnorm
+! then normalize it and define the pdf as its derivative
+FILE/GRID=G_EXP/FORMAT=UNFORMATTED/VAR=LNORM normal_cdf.dat
+LET LNRM_CDF = LNORM/LNORM[X=@MAX]	! normalize the cdf
+LET LNRM_PDF = LNRM_CDF[X=@DDB]
+
+! plot the log-normal cdf and the scaled pdf
+SET REGION/X=0:50
+MESSAGE
+PLOT LNRM_CDF,LNRM_PDF/LNRM_PDF[X=@MAX]
+
+! define and compute some simple statistics
+LET MEDIAN = LNRM_CDF[X=@LOC:.5]
+LET WT_PDF = X*LNRM_PDF
+LET MEAN = WT_PDF[X=@DIN]	
+LIST MEAN,MEDIAN

@@ -1,0 +1,12 @@
+! err580_show_axis_t
+! bug 1272: wrong range shown when nonstd calendar 
+! 5/22/06 acm
+ 
+ ! SHOW AXIS/T= gives wrong date when calendar not gregorian
+
+def axis/t=1-jan-2000:1-jan-2005:1/units=days/caleandar=noleap tnoleap
+sh axis/t=25-jan-2001:1-feb-2001 tnoleap
+
+
+def axis/t=1-jan-2000:1-jan-2005:1/units=days/caleandar=gregorian tgreg
+sh axis/t=25-jan-2001:1-feb-2001 tgreg

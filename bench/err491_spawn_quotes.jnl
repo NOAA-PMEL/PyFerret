@@ -1,0 +1,6 @@
+! err491_spawn_quotes.jnl
+
+! fixed in xeq_spawn 1/99 *sh*
+
+! this should be a valid command
+SPAWN "date"

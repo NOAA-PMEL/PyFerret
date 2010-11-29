@@ -1,0 +1,30 @@
+! bn_window_title.jnl
+! Define a title for windows rather than just FERRET_1, FERRET_2, ...
+! If no title is set, use SESSION_DATE:SESSION_TIME
+
+go ptest
+sh sym win_title
+
+set win/title="set the title"
+sho sym win_title
+
+go ptest
+set win/new
+set win/title=""/new
+sho sym win_title
+
+set win/title="($session_date):($session_time)"
+
+! If the date or time starts with a blank then we get an extra 
+! underscore in the window title. Evaluating the symbols into
+! new ones gets rid of this blank at the start.
+! the symbols session_date and session_time may have been canceled.
+! If so substitute another string.
+
+DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
+DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
+SET WIN/TITLE="($the_date):($the_time)"
+
+can win/all
+set win/new
+sh sym win_title

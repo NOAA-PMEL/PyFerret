@@ -1,0 +1,33 @@
+! bn_non_COARDS_netCDF.jnl
+! *sh* 3/99
+! *sh* 6/00 -- added true scalar variable, TRUE_SCALAR
+
+! test robust treatment of non-standard netCDF files
+
+use non_COARDS
+
+show data
+show grid/x HAS_NO_AXIS
+show grid/x HAS_UNORDERED_AXIS
+show grid/x HAS_GAPPY_AXIS
+show grid/x HAS_BACKWARDS_AXIS
+show grid/x SCALAR_VAR
+
+show grid/i=1:5 USES_BIG_IRREG
+
+show grid MASKED_SST
+show grid COADSX
+show grid COADSY
+
+show data
+list UNORDERED_AXIS
+list GAPPY_AXIS
+list SCALAR_VAR
+list TRUE_SCALAR
+list HAS_BACKWARDS_AXIS
+
+! With 250000 irregular coordinate storage locations, the variable BIG_IRREG
+! is not created; if irreg axis too long for coord storage, a variable
+! is generated with its values.
+
+! list/i=1:5 BIG_IRREG

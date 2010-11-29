@@ -1,0 +1,47 @@
+\cancel mode verify
+
+! Contributed by Hein Zelle, 11-December-2003
+! Run test_legend.jnl for an example which calls this script.
+
+! script to add a legend line to a plot
+! use this between plot/set_up and ppl plot.
+! it may also work before a plot/overlay, but I'm not sure.
+! if it doesn't, change it to use immediate mode: remove the "on"
+! argument to ppl aline. For skipping lines we'll need to write a more
+! advanced script that keeps track of how many times we've been called
+! so far.
+!
+! go legend line# title [location]
+! 
+! where location is one of ul, ur, ll or lr
+! default location is ul
+
+query/ignore $1%<usage: go legend line# title [location: ul* ur ll lr]%
+query/ignore $2%<usage: go legend line# title [location: ul* ur ll lr]%
+query/ignore $3%1|ul>1|ur>2|ll>3|lr>4|<location must be ul, ur, ll or lr%
+
+if `$3%1|ul>1|ur>2|ll>3|lr>4|% eq 1` then     ! left top
+
+  ppl aline/nouser $1,0.1,`($PPL$YLEN)-0.2*$1`,0.5,`($PPL$YLEN)-0.2*$1`,on
+  ppl labs/nouser $1,0.6,`($PPL$YLEN)-0.05-0.2*$1`,-1,"$2"
+
+elif `$3%1|ul>1|ur>2|ll>3|lr>4|% eq 2` then   ! right top
+
+  ppl aline/nouser $1,`($PPL$XLEN)-0.1`,`($PPL$YLEN)-0.2*$1`,`($PPL$XLEN)-0.5`,`($PPL$YLEN)-0.2*$1`,on
+  ppl labs/nouser $1,`($PPL$XLEN)-0.6`,`($PPL$YLEN)-0.05-0.2*$1`,1,"$2"
+
+elif `$3%1|ul>1|ur>2|ll>3|lr>4|% eq 3` then   ! left bottom
+
+  ppl aline/nouser $1,0.1,`0.2*$1`,0.5,`0.2*$1`,on
+  ppl labs/nouser $1,0.6,`-0.05+0.2*$1`,-1,"$2"
+
+else                                          ! right bottom
+
+  ppl aline/nouser $1,`($PPL$XLEN)-0.1`,`0.2*$1`,`($PPL$XLEN)-0.5`,`0.2*$1`,on
+  ppl labs/nouser $1,`($PPL$XLEN)-0.6`,`-0.05+0.2*$1`,1,"$2"
+
+endif
+
+say label `$1`: "$2"
+
+set mode /last verify

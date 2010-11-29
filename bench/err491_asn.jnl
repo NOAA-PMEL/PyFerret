@@ -1,0 +1,44 @@
+! err491_asn.jnl 4/98 *sh* (extracted from bug reported by Jennifer Adams)
+! Ferret crashes on regridding by association where destination
+! axis does not overlap the input subscript range at all
+
+! fixed with repair to RECVD_REGRID
+
+!set mode diag - removed *sh* 10/99
+set mode ignore	! added for benchmark suite...
+
+let test = y[y=101:200:1]
+let test2 = test[y=151:200]	! defined on 151:200
+
+define axis/y=1:50:1 y50
+list test2[gy=y50@asn]		! request association onto 1:50
+
+!list/y=1:50 test2[gy=y50@asn]		! same misbehavior and crash
+
+cancel mode ignore	! added for benchmark suite...
+
+! v5.4 *kob* 10/01 - need to add exit/script - new exit command qualifiers
+exit/script
+!quit !=====================================
+
+list test2[gy=y50@asn]          ! request association onto 1:50
+ getgrid EX#1     D:-9  I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ getgrid TEST2    D:-9  I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ getgrid TEST     D:-9  I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ allocate dynamic grid (G001)          ABSTRACT  (AX002)   ABSTRACT  ABSTRACT
+ dealloc  dynamic grid (G001)          ABSTRACT  (AX002)   ABSTRACT  ABSTRACT
+ allocate dynamic grid (G001)          ABSTRACT  (AX002)   ABSTRACT  ABSTRACT
+ allocate dynamic grid (G001)          ABSTRACT  (AX002)   ABSTRACT  ABSTRACT
+ allocate dynamic grid (G002)          ABSTRACT  Y50       ABSTRACT  ABSTRACT
+ dealloc  dynamic grid (G002)          ABSTRACT  Y50       ABSTRACT  ABSTRACT
+ allocate dynamic grid (G002)          ABSTRACT  Y50       ABSTRACT  ABSTRACT
+ eval    EX#1     D:-9  I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ allocate dynamic grid (G002)          ABSTRACT  Y50       ABSTRACT  ABSTRACT
+ strip regrid on Y: TEST2 --> (G002)           @ASN
+ eval    TEST2    D: 0  I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ eval    TEST     D: 0  I: -111 -111  J:   51  100  K: -111 -111  L: -111 -111
+ allocate dynamic grid (G001)          ABSTRACT  (AX002)   ABSTRACT  ABSTRACT
+ pseudo  Y        D:-9  I: -111 -111  J:    1  100  K: -111 -111  L: -111 -111
+ dealloc  dynamic grid (G001)          ABSTRACT  (AX002)   ABSTRACT  ABSTRACT
+ dealloc  dynamic grid (G002)          ABSTRACT  Y50       ABSTRACT  ABSTRACT
+Trace/BPT trap

@@ -1,0 +1,54 @@
+CANCEL MODE VERIFY
+CANCEL VARIABLES/ALL   ! clean up from whatever went before
+SET MODE VERIFY
+
+! viewports.jnl - *sh* 11/91 updated (slightly) 11/93 
+! *acm* 7/01 update PPL PEN to /COLOR=/THICKNESS=  and PPL AXTYPE to /NOAXIS 
+
+! Description: a quick (cutsie) demo using line plots and viewports
+
+! The command  "SET VIEWPORT viewport_name" is used to select a viewport.
+! The DEFINE VIEWPORT command is used to define (or redefine) a viewport.
+
+! === This demo displays the figures from GO spirograph in viewports
+
+message
+
+! simple spiral in lower left
+SET VIEWPORT LL		! lower left
+LET xspiral = i^.5*cos(i/20)
+LET yspiral = i^.5*sin(i/20)
+PLOT/VS/LINE/I=1:2000/COLOR=RED/NOAXES/NOLAB xspiral,yspiral
+
+! Define a variable to separate odd and even points.
+! Then draw 10 time around circle, every 10th point.
+SET VIEWPORT LR		! lower right
+LET ODD = MOD(I,2) EQ 0
+LET XPT = IF ODD THEN (-1*SIN(I/10)) ELSE SIN(I/10)
+LET YPT = IF ODD THEN COS(I/10) ELSE (-1*COS(I/10))
+PLOT/VS/LINE/NOLAB/I=1:314/COLOR=green/NOAXES XPT,YPT
+
+! true art ... moving center to the circle
+SET VIEWPORT UL		! upper left
+LET XCNTR = COS(I/30)
+LET YCNTR = SIN(I/30)
+LET XPT1 = IF ODD THEN (-1*SIN(I/10)) ELSE SIN(I/10)
+LET YPT1 = IF ODD THEN COS(I/10) ELSE (-1*COS(I/10))
+LET XPT2 = XPT1 + XCNTR
+LET YPT2 = YPT1 + YCNTR
+PLOT/VS/LINE/NOLAB/I=1:380/COLOR=blue/NOAXES XPT2,YPT2
+
+! 3D wire frame
+SET VIEWPORT UR		! upper right
+LET GAUSS = 2*EXP( -1*(((i-21)/10)^2 + ((j-21)/5)^2) )
+WIRE/NOLAB/I=1:41/J=1:41/VIEW=-4,-10,4 gauss
+
+! a parting thought ...
+SET WINDOW/SIZE=0.5 2
+GO setup_text
+PPL labs 1 0.5,0.5,0 @CI@P2finis; PPL hlabs 1,1.0; PPL plot
+
+message
+GO cleanup_text
+say Done.  See ya
+CANCEL WINDOW 2

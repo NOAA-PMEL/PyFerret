@@ -1,0 +1,104 @@
+SET MODE VERIFY
+! First run bn_all_0.jnl, with everything that came before v6.3.
+
+! ******** V6.3 Additions below ***********
+
+GO bn_reset
+GO bn63_bug_fixes.jnl
+
+GO bn_reset
+GO bn_axis_reversed_syms
+
+GO bn_reset
+GO bn_isdepth
+
+GO bn_reset
+GO bn_var_hist_levels.jnl
+
+
+! ******** V6.4 Additions below ***********
+
+GO bn_reset
+GO bn64_bug_fixes
+
+GO bn_reset
+GO bn_long_grid_names
+
+GO bn_reset
+GO bn_xml_repl
+
+! ******** V6.5 Additions below ***********
+
+GO bn_reset
+GO bn65_bug_fixes
+
+GO bn_reset
+GO bn_txtype_dmy
+
+GO bn_reset
+GO bn_n_open_dsets_sym
+
+GO bn_reset
+GO bn_multi_decade
+
+GO bn_reset
+GO bn_show_xml_file
+
+
+! GO bn_reset
+! GO bn_encode_url
+
+! ******** V6.6 Additions below ***********
+
+GO bn_reset
+GO bn66_bug_fixes
+
+GO bn_reset
+GO bn_netcdf4
+
+GO bn_reset
+GO bn_scat2grid_bin.jnl
+
+! *********** v6.62 Additions ***********
+
+GO bn_reset
+GO bn_axis_dir_symbols
+
+! *********** v6.63 Additions ***********
+
+GO bn_reset
+GO bn663_bug_fixes
+
+GO bn_reset
+GO bn_set_axis_regular
+
+GO bn_reset
+GO bn_set_cancel_redirect
+
+GO bn_reset
+GO bn_min_max_smoothers
+
+GO bn_reset
+GO bn_vector_symbols
+
+GO bn_reset
+GO bn_variance_large
+
+GO bn_reset
+GO bn_labnum_calendar
+
+
+! *********** v6.65 Additions ***********
+GO bn_reset
+GO bn665_bug_fixes
+
+GO bn_reset
+GO bn_floatstr
+
+! Note that allowing mouse-click operations in the current
+! window, not only in window 1, is implemented in v6.3. Not
+! tested in the benchmarks.
+
+! version 2.3 requires exit/command *sh* 3/92
+exit/command
+

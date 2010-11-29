@@ -1,0 +1,220 @@
+\cancel mode verify
+! polyshape.jnl
+! *4/99 *sh* and *jd*
+!  7/01 *acm* update /xlimits and /ylimits to /hlimits and /vlimits
+!  7/01 *acm* add rectangle and tallbox
+!  8/01 *acm* add hletter and lletter for marking highs and lows
+!  2/09 *acm* add bslash and hslash, and variations on some previous shapes
+!             trianglec and deltac are centered vertically
+!             exc is smaller, as are rectanglec and tallboxc.
+
+! Description: define xpolyshape, ypolyshape variables for polygon fills
+
+!   usage:
+!	GO polyshape shape_name
+
+! shape names include:
+!    triangle		delta		square
+!    diamond		pentagon	hexagon
+!    circle		star		plus
+!    ex			rectangle	tallbox
+!    hletter            lletter
+!    trianglec		deltac		exc
+!    rectanglec		tallboxc	fslash
+!    bslash		tletter		tupside
+!    tleft		tright		vright
+!    vleft		rtriangle	ltriangle
+!    uright		uleft
+
+! example:
+!	yes? GO polyshape star 2   ! define double-sized star
+
+! check shape name
+
+query/ignore $1"|triangle|delta|square|diamond|pentagon|hexagon|circle\
+|star|plus|ex|rectangle|tallbox|hletter|lletter|fslash|bslash|trianglec\
+|deltac|exc|rectanglec|tallboxc|tletter|tupside|tleft|tright|vright\
+|vleft|rtriangle|ltriangle|uright|uleft"
+
+IF $1"|triangle>1|*>0|" THEN
+  LET/QUIET xpolyshape = COS(3.14159/180 * X[X=90:`2*120+90`:120])
+  LET/QUIET ypolyshape = SIN(3.14159/180 * X[X=90:`2*120+90`:120])
+ENDIF
+
+IF $1"|delta>1|*>0|" THEN
+  LET/QUIET xpolyshape = COS(3.14159/180 * X[X=30:`2*120+30`:120])
+  LET/QUIET ypolyshape = SIN(3.14159/180 * X[X=30:`2*120+30`:120])
+ENDIF
+
+IF $1"|square>1|*>0|" THEN
+  LET/QUIET xpolyshape = COS(3.14159/180 * X[X=45:`3*90+45`:90])
+  LET/QUIET ypolyshape = SIN(3.14159/180 * X[X=45:`3*90+45`:90])
+  LET/QUIET xpolyshape = {0.8, -0.8, -0.8,  0.8}
+  LET/QUIET ypolyshape = {0.8,  0.8, -0.8, -0.8}
+ENDIF
+
+IF $1"|diamond>1|*>0|" THEN
+  LET/QUIET xpolyshape =  {0.8, 0.0, -0.8,  0.0}
+  LET/QUIET ypolyshape =  {0.0, 0.8,  0.0, -0.8}
+ENDIF
+
+IF $1"|pentagon>1|*>0|" THEN
+  LET/QUIET xpolyshape = 0.9 * COS(3.14159/180 * X[X=90:`4*72+90`:72])
+  LET/QUIET ypolyshape = 0.9 * SIN(3.14159/180 * X[X=90:`4*72+90`:72])
+ENDIF
+
+IF $1"|hexagon>1|*>0|" THEN
+  LET/QUIET xpolyshape = 0.8 * COS(3.14159/180 * X[X=0:`5*60+0`:60])
+  LET/QUIET ypolyshape = 0.8 * SIN(3.14159/180 * X[X=0:`5*60+0`:60])
+ENDIF
+
+IF $1"|circle>1|*>0|" THEN
+  LET/QUIET xpolyshape = 0.8 * COS(3.14159/180 * X[X=0:`23*15+0`:15])
+  LET/QUIET ypolyshape = 0.8 * SIN(3.14159/180 * X[X=0:`23*15+0`:15])
+ENDIF
+
+IF $1"|star>1|*>0|" THEN
+  !LET/QUIET xpen = COS(3.14159/180 * X[X=90:`4*72+90`:72])
+  !LET/QUIET ypen = SIN(3.14159/180 * X[X=90:`4*72+90`:72])
+  !poly/hlimits=-1:1/vlimits=-1:1 xpen,ypen,0
+  !LET/QUIET xpeni = 0.3*COS(3.14159/180 * X[X=`90-36`:`4*72+90-36`:72])
+  !LET/QUIET ypeni = 0.3*SIN(3.14159/180 * X[X=`90-36`:`4*72+90-36`:72])
+  !poly/over/line/hlimits=-1:1/vlimits=-1:1 xpeni,ypeni,0
+  LET/QUIET xpolyshape = { 0.17634 , 0.00000 , -0.17634, -0.95106,  -0.28532,   -0.58779,    0.00000 ,    0.58778 ,    0.28532 ,    0.95106 }
+  LET/QUIET ypolyshape =  { 0.24270,  1.00000,  0.24271,  0.30902,  -0.09270,   -0.80902,  -0.30000,   -0.80902,   -0.09271,   0.30901 }
+ENDIF
+
+IF $1"|plus>1|*>0|" THEN
+!  LET/QUIET poly_d = .2
+!  LET/QUIET xpolyshape = 0.8 * {`-1*poly_d`,`-1*poly_d`,-1,-1,`-1*poly_d`,`-1*poly_d`,`poly_d`,`poly_d`,1,1,`poly_d`,`poly_d`}
+!  LET/QUIET ypolyshape = 0.8 * {1,`poly_d`,`poly_d`,`-1*poly_d`,`-1*poly_d`,-1,-1,`-1*poly_d`,`-1*poly_d`,`poly_d`,`poly_d`,1}
+!  cancel variable poly_d
+  LET/QUIET xpolyshape = {-0.2, -0.2, -0.8,  -0.8,  -0.2, -0.2, 0.2,  0.2,  0.8,  0.8,  0.2, 0.2}
+  LET/QUIET ypolyshape = { 0.8,   0.2,  0.2, -0.2, -0.2, -0.8,  -0.8, -0.2, -0.2, 0.2, 0.2, 0.8}
+ENDIF
+
+IF $1"|ex>1|*>0|" THEN
+LET/QUIET poly_h = .7
+LET/QUIET poly_d = .4
+  ! note: V4.91 bug: cant handle all these grave pairs
+!  LET/QUIET xpolyshape = {`poly_h-poly_d`,0,`-1*(poly_h-poly_d)`,`-1*(poly_h+poly_d)`,`-2*poly_d`,`-1*(poly_h+poly_d)`,`-1*(poly_h-poly_d)`,0,`poly_h-poly_d`,`poly_h+poly_d`,.3,`poly_h+poly_d`}
+!  LET/QUIET ypolyshape = {`poly_h+poly_d`,.3,`poly_h+poly_d`, `poly_h-poly_d`,0,`-1*(poly_h-poly_d)`,`-1*(poly_h+poly_d)`,`-2*poly_d`,`-1*(poly_h+poly_d)`,`-1*(poly_h-poly_d)`,0,`poly_h-poly_d`}
+  LET/QUIET xpolyshape = {`poly_h-poly_d`,0,`-1*(poly_h-poly_d)`,`-1*(poly_h+poly_d)`,`-2*poly_d`,`-1*(poly_h+poly_d)`,`-1*(poly_h-poly_d)`,0,`poly_h-poly_d`,`poly_h+poly_d`,`2*poly_d`,`poly_h+poly_d`}
+  LET/QUIET ypolyshape = {`poly_h+poly_d`,`2*poly_d`,`poly_h+poly_d`, `poly_h-poly_d`,0,`-1*(poly_h-poly_d)`,`-1*(poly_h+poly_d)`,`-2*poly_d`,`-1*(poly_h+poly_d)`,`-1*(poly_h-poly_d)`,0,`poly_h-poly_d`}
+  cancel variable poly_d, poly_h
+ENDIF
+
+IF $1"|rectangle>1|*>0|" THEN
+  LET/QUIET xpolyshape = 2.* COS(3.14159/180 * X[X=45:`3*90+45`:90])
+  LET/QUIET ypolyshape = SIN(3.14159/180 * X[X=45:`3*90+45`:90])
+ENDIF
+
+IF $1"|tallbox>1|*>0|" THEN
+  LET/QUIET xpolyshape = COS(3.14159/180 * X[X=45:`3*90+45`:90])
+  LET/QUIET ypolyshape = 2.* SIN(3.14159/180 * X[X=45:`3*90+45`:90])
+ENDIF
+
+IF $1"|lletter>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.4, -0.4,  0.4,  0.4, -0.2, -0.2, -0.4}
+  LET/QUIET ypolyshape = { 0.8, -0.8, -0.8, -0.6, -0.6,  0.8,  0.8}
+ENDIF
+
+IF $1"|hletter>1|*>0|" THEN
+  LET/QUIET poly_d = .2
+  LET/QUIET poly_h = .1
+  LET/QUIET xpolyshape = {-0.6, -0.6, `-0.6+poly_d`, `-0.6+poly_d`, `0.6-poly_d`, `0.6-poly_d`,  0.6, 0.6, `0.6-poly_d`, `0.6-poly_d`, `-0.6+poly_d`, `-0.6+poly_d`}
+  LET/QUIET ypolyshape = { 0.8, -0.8,          -0.8,   `0.-poly_h`,  `0.-poly_h`,         -0.8, -0.8, 0.8,          0.8,     `poly_h`,      `poly_h`,           0.8}
+  cancel variable poly_d
+ENDIF
+
+IF $1"|fslash>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.8, -0.2, 0.8, 0.2, -0.8}
+  LET/QUIET ypolyshape = {-0.8, -0.8, 0.8, 0.8, -0.8}
+ENDIF
+
+IF $1"|bslash>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.8, -0.2, 0.8, 0.2, -0.8}
+  LET/QUIET ypolyshape = { 0.8,  0.8, -0.8, -0.8,  0.8}
+ENDIF
+
+IF $1"|trianglec>1|*>0|" THEN
+  LET/QUIET xpolyshape = { 0.0, -0.6, 0.6}
+  LET/QUIET ypolyshape = {0.8, -0.8, -0.8}
+ENDIF
+
+IF $1"|deltac>1|*>0|" THEN
+  LET/QUIET xpolyshape = {0.6, -0.6,  0.0, 0.6}
+  LET/QUIET ypolyshape = {0.8,  0.8, -0.8, 0.8}
+ENDIF
+
+IF $1"|exc>1|*>0|" THEN
+LET/QUIET poly_h = .6
+LET/QUIET poly_d = .12
+  LET/QUIET xpolyshape = {`poly_h-poly_d`,0,`-1*(poly_h-poly_d)`,`-1*(poly_h+poly_d)`,`-2*poly_d`,`-1*(poly_h+poly_d)`,`-1*(poly_h-poly_d)`,0,`poly_h-poly_d`,`poly_h+poly_d`,`2*poly_d`,`poly_h+poly_d`}
+  LET/QUIET ypolyshape = {`poly_h+poly_d`,`2*poly_d`,`poly_h+poly_d`, `poly_h-poly_d`,0,`-1*(poly_h-poly_d)`,`-1*(poly_h+poly_d)`,`-2*poly_d`,`-1*(poly_h+poly_d)`,`-1*(poly_h-poly_d)`,0,`poly_h-poly_d`}
+  cancel variable poly_d, poly_h
+ENDIF
+
+IF $1"|rectanglec>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.8,  0.8,  0.8, -0.8, -0.8}
+  LET/QUIET ypolyshape = {-0.3, -0.3,  0.3,  0.3, -0.3}
+ENDIF
+
+IF $1"|tallboxc>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.3, -0.3,  0.3,  0.3, -0.3}
+  LET/QUIET ypolyshape = {-0.8,  0.8,  0.8, -0.8, -0.8}
+ENDIF
+
+
+IF $1"|tletter>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.8, -0.8,  0.8,  0.8,  0.2,  0.2, -0.2, -0.2, -0.8}
+  LET/QUIET ypolyshape = { 0.4,  0.8,  0.8,  0.4,  0.4, -0.8, -0.8,  0.4,  0.4}
+ENDIF
+
+IF $1"|tupside>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.8, -0.8,  0.8,  0.8,  0.2,  0.2, -0.2, -0.2, -0.8}
+  LET/QUIET ypolyshape = {-0.4, -0.8, -0.8, -0.4, -0.4,  0.8,  0.8, -0.4, -0.4}
+ENDIF
+
+IF $1"|tleft>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.8, -0.8,  0.4,  0.4,  0.8,  0.8,  0.4,  0.4, -0.8}
+  LET/QUIET ypolyshape = {-0.2,  0.2,  0.2,  0.8,  0.8, -0.8, -0.8, -0.2, -0.2}
+ENDIF
+
+IF $1"|tright>1|*>0|" THEN
+  LET/QUIET xpolyshape = { 0.8,  0.8, -0.4, -0.4, -0.8, -0.8, -0.4, -0.4,  0.8}
+  LET/QUIET ypolyshape = {-0.2,  0.2,  0.2,  0.8,  0.8, -0.8, -0.8, -0.2, -0.2}
+ENDIF
+
+IF $1"|vright>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.8, 0.8, 0.8, 0.2,  0.8,  0.8, -0.8}
+  LET/QUIET ypolyshape = { 0.0, 0.8, 0.6, 0.0, -0.6, -0.8,  0.0}
+ENDIF
+
+IF $1"|vleft>1|*>0|" THEN
+  LET/QUIET xpolyshape = { 0.8, -0.8, -0.8, -0.2, -0.8, -0.8, 0.8}
+  LET/QUIET ypolyshape = { 0.0,  0.8,  0.6,  0.0, -0.6, -0.8,  0.0}
+ENDIF
+
+IF $1"|rtriangle>1|*>0|" THEN
+  LET/QUIET xpolyshape = {0.8, -0.8, -0.8, 0.8}
+  LET/QUIET ypolyshape = {0.0,  -0.6, 0.6, 0.0}
+ENDIF
+
+IF $1"|ltriangle>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.8, 0.8,  0.8, -0.8}
+  LET/QUIET ypolyshape = {0.0,  -0.6, 0.6, 0.0}
+ENDIF
+
+IF $1"|uright>1|*>0|" THEN
+  LET/QUIET xpolyshape = { 0.8,  0.8, -0.4, -0.4, 0.8, 0.8, -0.8, -0.8,  0.8}
+  LET/QUIET ypolyshape = {-0.8, -0.4, -0.4,  0.4, 0.4, 0.8,  0.8, -0.8, -0.8}
+ENDIF
+
+IF $1"|uleft>1|*>0|" THEN
+  LET/QUIET xpolyshape = {-0.8, -0.8,  0.4,  0.4, -0.8, -0.8,  0.8,  0.8, -0.8}
+  LET/QUIET ypolyshape = {-0.8, -0.4, -0.4,  0.4,  0.4,  0.8,  0.8, -0.8, -0.8}
+ENDIF
+
+set mode/last verify
+

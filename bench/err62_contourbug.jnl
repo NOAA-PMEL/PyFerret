@@ -1,0 +1,18 @@
+! err62_contourbug.jnl
+! Bug 1688
+! contours of curvi data when x units not longitude
+! some contour lines draw across the plot
+
+let xb=x[x=0:290:10]
+let yb=y[y=0:290:10]
+let xb2 = xb + 0*yb
+let zb=I[x=0:290:10]*J[y=0:290:10]
+contour/hlimits=-100:400:50 xb2+zb,xb2,zb
+
+! A FILL version of the same general thing
+let xb = x[x=0:290:10]
+let yb = y[y=0:290:10]
+let xb2 = xb + 0*yb
+let zb = I[x=0:290:10] * J[y=0:290:10]
+fill/hlimits=-100:400:50 0.0000001*(xb2+zb)^3,xb2,zb
+

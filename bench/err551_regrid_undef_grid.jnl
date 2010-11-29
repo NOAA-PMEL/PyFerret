@@ -1,0 +1,57 @@
+! err551_regrid_undef_grid.jnl
+! 5/03 *acm* based on bn_regrid_to_user; more testing of multi-axis GXY=var
+!            syntax, when the destination grid is not yet defined
+
+! test various regridding combos that involve user-defined variables
+! for the target grids
+
+
+set mode ignore_errors
+
+use coads_climatology
+use levitus_climatology
+
+! define test objects
+let a = sst[d=coads_climatology] + 1
+let b = sst + 1		! data set unspecified
+DEFINE AXIS/Y=20s:20n:.5/units=degrees yax
+DEFINE GRID/like=sst[d=coads_climatology]/y=yax gg
+
+! reference data
+list/x=158e:161e/y=6s:4s temp[d=2,k=1]
+
+! basic regrid (implicit grid -- sst and temp geometries are mismatched)
+list/x=160e/y=5s temp[d=2,k=1,gxy=a[d=1]]
+show grid
+
+can data/all
+can var/all
+can grid
+
+! multiple axis syntax: GXY=gg
+define axis/x=1:6:1 x1
+define axis/y=1:4:1 y1
+define axis/z=1:3:1 z1
+define axis/x=1:6:2 x2
+define axis/y=1:4:2 y2
+define axis/z=1:3:2 z2
+let a1 = x[gx=x1]+y[gy=y1]+z[gz=z1]
+let a2 = x[gx=x2]+y[gy=y2]+z[gz=z2]
+list a1
+list a1[gzxy=a2]
+
+can data/all
+can var/all
+
+! Convoluted definitions, LIST needs data on a grid not yet loaded.
+use clim_airt_lev.cdf
+def axis/t=16-JUL-1966:16-MAY-1967:1/unit=month hope_month
+use climatological_axes
+can dat climatological_axes
+
+let dzdt_month = airt[gt=hope_month]
+let dzdt_clim = airt[gt=month_reg@mod]
+let dzdt_anom = dzdt_month - dzdt_clim[gt=dzdt_month@asn]
+set region/x=100w/y=0
+list dzdt_anom
+

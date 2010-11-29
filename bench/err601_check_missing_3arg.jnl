@@ -1,0 +1,28 @@
+! err601_check_missing_3arg.jnl
+! see bug 1485: if missing coordinates in a curvilinear dataset, we should be
+! able to still plot other portions of the data. Check was too broad.
+
+! Create a dataset in curvilinear coordinates with a few missing coordinates.
+use tripolar_subset
+let lon = IF geolon_vert_t gt -276 then geolon_vert_t
+let lat = geolat_vert_t
+save/clobber/file=tripolar_missing_lon.nc lon, lat, ht
+can data/all
+can var/all
+
+! Use this data. If we just look at /I=50:100 the plot works ok
+use tripolar_missing_lon
+stat/i=50:100 lon
+shade/i=50:100 HT,lon,lat
+
+! The STAT command loads all the coordinates, then when 
+! we plot, the check of coordinates looked at all of them
+! rather than just those needed. (error  was 
+! X coordinates missing value where val is needed
+
+can mem/all
+stat LON, LAT
+shade/i=50:100 HT,lon,lat
+
+sp rm -f tripolar_missing_lon.nc
+

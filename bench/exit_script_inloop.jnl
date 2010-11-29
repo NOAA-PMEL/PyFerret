@@ -1,0 +1,8 @@
+! When this script is executed within a loop, all the repeats of the loop
+! should executet but but not the SAY SCRIPT at each iteration of the loop
+! that is inside the script.
+
+SAY $1 
+EXIT/SCRIPT 
+SAY "should not see this line, inside the script 
+

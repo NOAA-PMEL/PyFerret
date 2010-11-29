@@ -1,0 +1,59 @@
+* COMMON with information about the files with data at time steps
+*
+* Also shares storage with info about VAR_FILES for timesteps.
+*
+* *sh* 3/91 - Unix/RISC port: added fp_convert and compress
+*      4/91 - increased size of sf_name to accomodate full path name
+* *kob*4/99 - further increase size of sf_name to accomodate full DODS
+*             path names
+* v5.81 *acm* 4/2005  Add sf_ndxs and sf_ndxe to use indices rather than timesteps
+*                     for indexing mc datasets in mc_read.
+
+	COMMON /XSTEP_FILES/
+     .				sf_name   	(maxstepfiles),	! names of 'em
+     .				sf_setnum 	(maxstepfiles),	! dataset #'s
+     .				sf_aux_set_num 	(maxstepfiles), ! aux set #'s
+     .				sf_nrecperstep	(maxstepfiles), ! # recs in step
+     .				sf_skip   	(maxstepfiles),	! leading recs
+     .				sf_1step  	(maxstepfiles),	! 1st time step
+     .				sf_lastep 	(maxstepfiles),	! last time step
+     .				sf_delta  	(maxstepfiles),	! del. time step
+     .				sf_reclen 	(maxstepfiles),	! record length
+     .				sf_valid  	(maxstepfiles),	! file ok flag
+     .				sf_lunit  	(maxstepfiles),	! unit # if open
+     .				sf_index  	(maxstepfiles),	! index
+     .				sf_regvars	(maxstepfiles),	! const # vars ?
+     .				sf_regtimes	(maxstepfiles),	! reg time inc ?
+     .				sf_cpu_type	(maxstepfiles),	! ieee ? vax ?
+     .				sf_compress	(maxstepfiles),	! compressed ?
+     .				vf_firstvar	(maxvarfiles),	! 1st var in set
+     .				vf_lastvar	(maxvarfiles),	! lst var in set
+     .				sf_ndxs  	(maxstepfiles),	! 1st time index
+     .				sf_ndxe 	(maxstepfiles)	! last time index
+
+	CHARACTER*512	sf_name         ! same as s_filename in descript.def
+	CHARACTER*23	sf_index
+	INTEGER		sf_setnum,sf_aux_set_num,sf_skip,sf_lunit,
+     .			sf_reclen,sf_nrecperstep,sf_cpu_type,sf_ndxs,sf_ndxe
+	REAL*8		sf_1step,sf_lastep,sf_delta
+	LOGICAL*1	sf_valid,sf_regvars,sf_regtimes,
+     .			sf_compress
+
+	CHARACTER*512	vf_name(maxvarfiles)         ! ???same as s_filename in descript.def
+	CHARACTER*23	vf_index(maxvarfiles)
+	INTEGER		vf_setnum(maxvarfiles),vf_firstvar,
+     .			vf_lastvar,vf_skip(maxvarfiles),
+     .			vf_lunit(maxvarfiles),vf_reclen(maxvarfiles),
+     .                  vf_cpu_type(maxvarfiles)
+	LOGICAL*1	vf_valid(maxvarfiles),
+     .			vf_compress(maxvarfiles)
+
+	EQUIVALENCE	(sf_name,vf_name)
+	EQUIVALENCE	(sf_setnum,vf_setnum)
+	EQUIVALENCE	(sf_skip,vf_skip)
+	EQUIVALENCE	(sf_reclen,vf_reclen)
+	EQUIVALENCE	(sf_valid,vf_valid)
+	EQUIVALENCE	(sf_lunit,vf_lunit)
+	EQUIVALENCE	(sf_index,vf_index)
+	EQUIVALENCE	(sf_cpu_type,vf_cpu_type)
+	EQUIVALENCE	(sf_compress,vf_compress)

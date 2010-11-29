@@ -1,0 +1,83 @@
+! bn420_comma_delimited
+
+! 10/2/95 - test comma and tab-delimited outputs
+
+use gt4d011
+
+! all possible 1, 2, and 3 dimensional lists
+!XYZT
+set region/i=95:96/j=41:42/k=2:3/l=5:6
+go bn_comma_delimited.sub comma temp
+!XYZ
+set region/i=95:96/j=41:42/k=2:3/l=5
+go bn_comma_delimited.sub comma temp
+!!XYT
+!set region/i=95:96/j=41:42/k=2/l=5:6
+!go bn_comma_delimited.sub comma temp
+!!XZT
+!set region/i=95:96/j=41/k=2:3/l=5:6
+!go bn_comma_delimited.sub comma temp
+!!YZT
+!set region/i=95/j=41:42/k=2:3/l=5:6
+!!go bn_comma_delimited.sub comma temp
+!XY
+set region/i=95:96/j=41:42/k=2/l=5
+go bn_comma_delimited.sub comma temp
+!XZ
+set region/i=95:96/j=41/k=2:3/l=5
+LIST/FORMAT=comma/precision=5/order=xz temp
+LIST/FORMAT=comma/precision=5/order=zx temp
+!XT
+set region/i=95:96/j=41/k=2/l=5:6
+LIST/FORMAT=comma/precision=5/order=xt temp
+LIST/FORMAT=comma/precision=5/order=tx temp
+!YZ
+set region/i=95/j=41:42/k=2:3/l=5
+LIST/FORMAT=comma/precision=5/order=yz temp
+LIST/FORMAT=comma/precision=5/order=zy temp
+!YT
+set region/i=95/j=41:42/k=2/l=5:6
+LIST/FORMAT=comma/precision=5/order=yt temp
+LIST/FORMAT=comma/precision=5/order=ty temp
+!ZT
+set region/i=95/j=41/k=2:3/l=5:6
+LIST/FORMAT=comma/precision=5/order=zt temp
+LIST/FORMAT=comma/precision=5/order=tz temp
+!X
+set region/i=95:96/j=41/k=2/l=5
+LIST/FORMAT=comma/precision=5/order=x temp
+LIST/FORMAT=comma/precision=5/order=y temp
+!Y
+set region/i=95/j=41:42/k=2/l=5
+LIST/FORMAT=comma/precision=5/order=y temp
+LIST/FORMAT=comma/precision=5/order=x temp
+!Z
+set region/i=95/j=41/k=2:3/l=5
+LIST/FORMAT=comma/precision=5/order=z temp
+LIST/FORMAT=comma/precision=5/order=x temp
+!T
+set region/i=95/j=41/k=2/l=5:6
+LIST/FORMAT=comma/precision=5/order=t temp
+LIST/FORMAT=comma/precision=5/order=x temp
+
+! tab-delimited test
+set region/i=95:96/j=41:42/k=2:3/l=5:6
+LIST/FORMAT=tab temp
+
+! big number formatting test
+set region/i=95:96/j=41:42/k=2/l=5
+LIST/FORMAT=comma/precision=1 randu(i)*temp*1e7
+LIST/FORMAT=comma/precision=9 randu(i)*temp*1e7
+
+! small number formatting test
+set region/i=95:96/j=41:42/k=2/l=5
+LIST/FORMAT=comma/precision=1 randu(i)*temp*1e-7
+LIST/FORMAT=comma/precision=9 randu(i)*temp*1e-7
+
+! multiple variable test
+set region/i=95:96/j=41:42/k=2/l=5
+LIST/FORMAT=comma/precision=5 u,v
+
+! abstract expression test
+set region/i=1:5/j=1:3
+LIST/FORMAT=comma/precision=5 10*j+i

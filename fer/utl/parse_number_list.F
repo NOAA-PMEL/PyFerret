@@ -1,0 +1,89 @@
+	SUBROUTINE PARSE_NUMBER_LIST( string, array, nmax, n, status )
+
+* return an array of floating point values from a list of the form
+* "{ 1, 3,5,7, 9}"
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+
+* V500: *sh* 12/98
+*	   2/99 - bug fix - 2 commas together
+
+* calling argument declarations
+	INTEGER		nmax, n, status
+	REAL		array(nmax)
+	CHARACTER*(*)	string
+
+* internal variable declarations
+	INTEGER 	comma_pos, last_comma_pos, slen
+	CHARACTER	buff*64
+
+#ifdef unix
+	include 'ferret.parm'
+	include 'errmsg.parm'
+#else
+	INCLUDE 'FERRET_CMN:FERRET.PARM'
+	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
+#endif
+
+* initialize
+	n = 0
+	slen	  = LEN( string )
+	last_comma_pos = 0
+
+* trim around the enclosing "{}" brackets
+	IF ( string(slen:slen) .EQ. '}' ) slen = slen - 1
+	IF ( string (1:1) .EQ. '{' ) last_comma_pos = 1
+	IF (last_comma_pos .GE. slen) GOTO 2000
+
+* loop through the comma list decoding and returning values
+ 100	CONTINUE
+	IF (last_comma_pos .GE. slen) THEN
+	   comma_pos = 0	! last item
+	ELSE
+	   comma_pos = INDEX( string(last_comma_pos+1:slen), ',' )
+	ENDIF
+	n = n + 1
+	If ( n .GT. nmax ) GOTO 5100   ! should never happen
+	IF ( comma_pos .EQ. 0 ) THEN
+*  ... last item in list
+	   IF (last_comma_pos .GE. slen) THEN
+	       array(n) = bad_val4			! comma as last item
+	   ELSE
+	      buff = string(last_comma_pos+1:slen)
+	      IF ( buff .EQ. ' ' ) THEN
+	         array(n) = bad_val4
+	      ELSE
+	         READ ( buff, *, ERR=5000 ) array(n)
+	      ENDIF
+	   ENDIF
+	   GOTO 1000
+	ELSEIF ( comma_pos .EQ. 1 ) THEN
+	   array(n) = bad_val4				! 2 commas together
+	ELSE
+* ... read another value
+	   buff = string(last_comma_pos+1:last_comma_pos+comma_pos-1)
+	   IF ( buff .EQ. ' ' ) THEN
+	      array(n) = bad_val4
+	   ELSE
+	      READ ( buff, *, ERR=5000 ) array(n)
+	   ENDIF
+	ENDIF
+	last_comma_pos = last_comma_pos + comma_pos
+	GOTO 100
+
+* success
+ 1000	status = ferr_ok
+	RETURN
+
+* null brackets
+ 2000	n = 1
+	array(1) = bad_val4
+	GOTO 1000
+
+* syntax error
+ 4999	RETURN
+ 5000	CALL ERRMSG( ferr_syntax, status, string(last_comma_pos+1:),
+     .							*4999 )
+ 5100	CALL ERRMSG( ferr_internal, status, string, *4999 )
+	END

@@ -1,0 +1,30 @@
+! err553_contour_find_grid.jnl
+! 11/21/03 ACM
+ 
+! For fine grids, precision isnt sufficient to
+! compute the values to map coordinates to the
+! page.  The bug occurs with smith_sandwell_topo
+! and has to do with large index values in the
+! calculations. This small set ss_small.nc is saved
+! from smith_sandwell_topo.  Then we need to put it on
+! a large grid to see the error.  The first contour
+! command either shows nothing, or a set of contours
+! that are shifted relative to the (correct) second
+! contour plot.
+
+! The fix is to increase precision for some of the
+! calculations in plotz.F, pltit.F and setax.F
+
+use ss_small.nc
+def axis/x=0.16e:0.67w/npoints=10800 xax
+def axis/y=72s:72n/npoints=6336 yax
+def grid/x=xax/y=yax fullgrid
+let rrose = rose[g=fullgrid]
+set grid fullgrid
+set reg/x=137.25w:135.75w/y=58.2n:59.15n
+go mp_mercator
+go mp_aspect
+contour rrose,x_page, y_page
+contour/over/color=red rrose, x_page, y_page
+
+PPLUS/RESET   ! reset aspect ratio

@@ -1,0 +1,64 @@
+! compute cruiseVariance
+
+! create a coarse resolution XYT grid that can be used to anticipate the
+! volume of data in an arbitrary XYT region
+ 
+SET MEM/SIZ=300
+
+DEFINE AXIS/X=-179.5:179.5:1/UNITS=degrees_east/MODULO xlon
+DEFINE AXIS/Y=-89.5:89.5:1/UNITS=degrees_north ylat
+
+LET dx = `0.5* xbox[gx=xlon,i=1]`
+LET dy = `0.5* ybox[gy=ylat,j=1]`
+
+!Data contains lat,lon,date,data_id,cruise_id,cruise_no,fco2_rec
+USE "/home/porter/data/socat/SOCAT_triples_fco2.nc"
+
+SET AXIS/STRIDE=1 `lon,return=xaxis`
+let ntimes = 10000
+let ntimes = 10000000
+
+LET offset1970 = DAYS1900(1970,1,1)
+LET month = MOD(ii-1,12)+1
+LET year = 1970 + INT((ii-1)/12)
+
+! for entire time period of SOCAT
+LET ii = i[i=1:480]
+
+
+!LET ii = i[i=421:433] ! for the year 2005 only
+LET ii = i[i=445:456] ! for the year 2007 only
+
+DEFINE AXIS/T0="1-jan-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - offset1970
+   
+! Variance by cruise of Fco2_rec, with some data in each XYT cell
+LET fvar = fco2_rec
+
+LET/UNITS="Variance"/\
+ TITLE="Variance variable fco2_rec over cruises with carbon obs in 1x1, monthly bins" \
+ fco2_weighted_var = TRACKS2GRID_VAR_XYT(fvar[i=1:`ntimes`],lon[i=1:`ntimes`],lat[i=1:`ntimes`],\
+ date[i=1:`ntimes`],cruise_no[i=1:`ntimes`],x[gx=xlon],y[gy=ylat],t[gt=tmnth])
+
+SP date
+SAVE/CLOBBER/FILE=SOCAT_var.nc fco2_weighted_var
+SP date
+
+can var/all
+use SOCAT_var
+
+
+shade/lev=(0,2200,100)(inf) fco2_weighted_var[t=@ave]
+go fland 20
+
+
+pause
+shade/lev/x=-10:10/y=40:60 fco2_weighted_var[t=@ave]
+SET DATA 1
+GO polymark poly/over/nokey/pal=greyscale lon, lat, cruise_no, square
+
+
+pause
+let fc =  FCO2_WEIGHTED_VAR^0.5
+shade fc[t=@ave]
+go fland 20
+

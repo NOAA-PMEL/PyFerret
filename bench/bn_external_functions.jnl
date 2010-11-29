@@ -1,0 +1,15 @@
+! Jon's benchmarks
+go bench_examples
+
+!Ansley's benchmarks
+! *kob* move bench tests that test internal external functions to their
+!       own file
+exit/script  ! dont have the writev5d function on this machine...
+GO bn_reset
+
+GO bn_reset
+GO bn_ef_v5d_strings.jnl
+
+GO bn_reset
+go bench_v5d 
+

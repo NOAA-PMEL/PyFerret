@@ -1,0 +1,205 @@
+\cancel mode verify
+! polymark_datekey.jnl
+! 11/05 ACM 
+
+! Description: Plot symbols colored by values of a variable along a track
+!              and labelled with dates from a time axis
+!
+!              Needs a basemap or other underlying plot to define scaling
+!              parameters.
+
+! Usage:                    $1              $2   $3    $4       $5      $6     $7
+! Yes?	GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar
+! $1 - the plot command with qualifiers (eg POLYGON/OVER/KEY)
+! $2 - X coordinates of track 
+! $3 - Y coordinates of track 
+! $4 - variable whose values will be plotted along the track (eg SST)
+! $5 - shape of the symbol, as defined by polyshape.jnl 
+! $6 - scale the values by this factor (optional, default 1)
+! $7 - variable on the time axis to use for labelling the key
+! $8 - hr, min, or sec to add :hh or hh:mm or hh:mm:ss
+
+!      shape names include:
+!           triangle           delta           square
+!           diamond            pentagon        hexagon
+!           circle             star            plus
+!           ex
+
+! examples
+!       GO polymark_datekey polygon/over/key lon lat sst diamond " " tax
+
+! In detail, set cruise track as a time series and plot on a map: 
+!       yes? !  The key labels need more space on the right, so define 
+!       yes? !  a viewport leaving amargin on the right
+!
+!       yes? def view/x=0:0.8/y=0:1 xview
+!       yes? set view xview
+!
+!       yes? def axis/t=1-jan-1990:1-mar-1990:1/units=days timeax
+!       yes? LET lpts = L[gt=timeax]
+!       yes? LET xpts = 180 + 50*COS(2*3.14*lpts/60)
+!       yes? LET ypts = 15 + 20*sin(2*3.14*lpts/60)
+!       yes? LET taxvar = t[gt=timeax]
+!
+!       yes? GO basemap x=120:250 Y=25s:65n 20
+!       yes? GO polymark_datekey polygon/over/key  xpts,ypts,lpts,ex,0.5,taxvar
+
+! argument check
+QUERY/IGNORE $1"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar"
+QUERY/IGNORE $2"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar"
+QUERY/IGNORE $3"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar"
+QUERY/IGNORE $7"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar"
+
+! save the input expressions into simple variable definitions
+LET/QUIET PLMxpoly = ($2)
+LET/QUIET PLMypoly = ($3)
+LET/QUIET PLMpolydata = $4"0"
+
+LET tpts = $7
+LET/QUIET PLMlabel = $8"0|hr>1|min>2|sec>3|*>0"
+
+! determine the orientation of the data (and check that it is 1D or a point)
+DEFINE SYMBOL PLMax `PLMxpoly,return=shape`
+DEFINE SYMBOL PLMpoly_ax ($PLMax"|POINT>Z|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a point or line")
+
+! units/inch scale factors
+LET/QUIET PLMdefault_scale =$6"1" *  0.1
+LET/QUIET PLMx_correction = PLMdefault_scale*((($xaxis_max))-(($xaxis_min)))/($ppl$xlen)
+LET/QUIET PLMy_correction = PLMdefault_scale*((($yaxis_max))-(($yaxis_min)))/($ppl$ylen)
+
+! optionally create the polygon coordinates, xpolyshape, ypolyshape
+! else check that the coordinates exist
+IF $5"0|*>1" THEN
+   GO polyshape $5
+ELSE
+   LOAD xpolyshape, ypolyshape  ! THESE MUST BE DEFINED BY GO polyshape
+ENDIF
+
+! make sure that the polygon coordinates are along the correct axis
+! and correct the coordinates for unequal axis scaling and user scale factor 
+LET/QUIET PLMxpolymark = ($PLMpoly_ax)SEQUENCE(xpolyshape) * PLMx_correction
+LET/QUIET PLMypolymark = ($PLMpoly_ax)SEQUENCE(ypolyshape) * PLMy_correction
+
+$1/coord_ax=($PLMpoly_ax)/set  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
+ppl shakey 1,1,0.0000001,100
+ppl fillpol/over
+
+
+! set up the date/time labels for the color key
+! (see insitu_setup.jnl)
+
+LET TLAB_tstart = `$7[L=@min]`
+DEFINE SYMBOL TLAB_tstart = `TLAB_tstart`
+
+LET TLAB_tend = `$7[L=@max]`
+DEFINE SYMBOL TLAB_tend = `TLAB_tend`
+
+LET TLAB_tstep = int((`TLAB_tend`-`TLAB_tstart`)/4)
+DEFINE SYMBOL TLAB_tstep = `TLAB_tstep`
+
+LET dates_same = 0
+
+LET ttime = `($TLAB_tstart)+0*($TLAB_tstep)`
+DEFINE SYMBOL day_0_fourth = `TAX_DATESTRING(ttime, tpts, "day")`
+
+LET ttime = `($TLAB_tstart)+1*($TLAB_tstep)`
+DEFINE SYMBOL day_1_fourth = `TAX_DATESTRING(ttime, tpts, "day")`
+IF `STRCMP("($day_1_fourth)", "($day_0_fourth)") EQ 0` THEN LET dates_same = 1
+
+LET ttime = `($TLAB_tstart)+2*($TLAB_tstep)`
+LET ttime_last = `ttime`
+DEFINE SYMBOL day_2_fourth = `TAX_DATESTRING(ttime, tpts, "day")`
+IF `STRCMP("($day_2_fourth)", "($day_1_fourth)") EQ 0` THEN LET dates_same = 1
+
+LET ttime = `($TLAB_tstart)+3*($TLAB_tstep)`
+LET ttime_last = `ttime`
+DEFINE SYMBOL day_3_fourth = `TAX_DATESTRING(ttime, tpts, "day")`
+IF `STRCMP("($day_3_fourth)", "($day_2_fourth)") EQ 0` THEN LET dates_same = 1
+
+! The last section may be degenerate depending on the 
+! underlying time axis. Force it not to be, within
+! single-precision time coordinates
+
+LET ttime = `($TLAB_tstart)+4*($TLAB_tstep)`
+IF `ttime LE ttime_last` THEN 
+   LET ttime =  = `(1. - 1.e-5)* ($TLAB_tend) - 1`
+ENDIF 
+DEFINE SYMBOL day_4_fourth = `TAX_DATESTRING(ttime, tpts, "day")`
+IF `STRCMP("($day_4_fourth)", "($day_3_fourth)") EQ 0` THEN LET dates_same = 1
+
+! --------
+! If some of the date symbols were repeated, add hours:minutes on a
+! second line under the lables.
+
+IF `dates_same GT 0` THEN
+   IF `PLMlabel LT 2` THEN LET PLMlabel = 2
+
+   LET ttime = `($TLAB_tstart)+0*($TLAB_tstep)`
+   let dayfrac = `TAX_DAYFRAC(ttime, tpts)`
+   IF `PLMlabel GT 0` THEN
+      GO pdatekey_dms
+      DEFINE SYMBOL day_0_fourth = ($day_0_fourth)($dms)
+   ENDIF
+   
+   LET ttime = `($TLAB_tstart)+1*($TLAB_tstep)`
+   let dayfrac = `TAX_DAYFRAC(ttime, tpts)`
+   IF `PLMlabel GT 0` THEN
+      GO pdatekey_dms
+      DEFINE SYMBOL day_1_fourth = ($day_1_fourth)($dms)
+   ENDIF
+   
+   LET ttime = `($TLAB_tstart)+2*($TLAB_tstep)`
+   let dayfrac = `TAX_DAYFRAC(ttime, tpts)`
+   IF `PLMlabel GT 0` THEN
+      GO pdatekey_dms
+      DEFINE SYMBOL day_2_fourth = ($day_2_fourth)($dms)
+   ENDIF
+   
+   LET ttime = `($TLAB_tstart)+3*($TLAB_tstep)`
+   let dayfrac = `TAX_DAYFRAC(ttime, tpts)`
+   IF `PLMlabel GT 0` THEN
+      GO pdatekey_dms
+      DEFINE SYMBOL day_3_fourth = ($day_3_fourth)($dms)
+   ENDIF
+   
+   ! The last section may be degenerate depending on the 
+   ! underlying time axis. Force it not to be, within
+   ! single-precision time coordinates
+   
+   LET ttime = `($TLAB_tstart)+4*($TLAB_tstep)`
+   IF `ttime LE ttime_last` THEN 
+      LET ttime =  = `(1. - 1.e-5)* ($TLAB_tend) - 1`
+   ENDIF 
+   LET dayfrac = `TAX_DAYFRAC(ttime, tpts)`
+   IF `PLMlabel GT 0` THEN
+      GO pdatekey_dms
+      DEFINE SYMBOL day_4_fourth = ($day_4_fourth)($dms)
+   ENDIF
+
+ENDIF
+
+! --------
+
+! Based on what key.F does to define the upper x corner of the colorbar key.
+LET vwid = (($ppl$xlen) + ($ppl$xorg)) * 1.15
+LET rem = vwid - (($ppl$xlen) + ($ppl$xorg))
+LET xmaxx = 0.25*($ppl$xlen)
+LET key_hi = MIN (`($ppl$xorg) + ($ppl$xlen) + xmaxx`,`vwid-0.051*rem`)
+
+LET key_lo = (($ppl$xorg) + ($ppl$xlen) + 0.25*MIN (rem,xmaxx))
+LET key_lo = (($ppl$xlen) + 0.25*MIN (rem,xmaxx))
+LET key_inc = `0.1 * (key_hi - key_lo)`
+
+LET key_hi = `key_lo + 4.0*key_inc`
+LET key_hi = `key_lo + 2.0*key_inc`
+
+label/nouser `key_hi`,`(($ppl$ylen)*0)/4-.05`,-1,0,.12,($day_0_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*1)/4-.05`,-1,0,.12,($day_1_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*2)/4-.05`,-1,0,.12,($day_2_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*3)/4-.05`,-1,0,.12,($day_3_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*4)/4-.05`,-1,0,.12,($day_4_fourth)
+
+cancel symbol PLM*
+cancel variable PLM*
+set mode/last verify
+

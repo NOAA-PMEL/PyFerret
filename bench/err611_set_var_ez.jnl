@@ -1,0 +1,31 @@
+! err611_set_var_ez.jnl
+! 6-Jan-2009
+! Ticket 1615
+!
+! SET VAR/UNITS=  etc for a variable in an EZ dataset
+! The settings were applied within the Ferret session (plots etc)
+! but not added to the attribute structure and not written to
+! output files.
+
+SP echo "err611_set_var_ez.jnl --- " >> all_ncdump.out
+
+! Create an ASCII dataset
+LET a = {1,3,5}
+LIST/NOHEAD/FORM=(F8.1)/FILE=dat.dat/CLOBBER a
+FILE/VAR=my_asc dat.dat
+
+! use SET VAR to add units, title, reset bad value
+SET VAR/UNITS="micrograms/L"/TITLE="chlorophyll"/BAD=3 my_asc
+SHOW DAT/ATT
+SAVE/FILE=a.nc/CLOBBER my_asc
+SP ncdump -h a.nc >> all_ncdump.out
+
+! Create an Unformatted dataset
+LIST/FORM=UNF/file=unf.dat/CLOBBER a
+FILE/FORM=UNF/VAR=my_unf unf.dat
+
+! use SET VAR to add units, title, reset bad value
+SET VAR/UNITS="metres"/TITLE="Some Unformatted input"/BAD=5 my_unf
+SAVE/FILE=a.nc/CLOBBER my_unf
+SP ncdump -h a.nc >> all_ncdump.out
+

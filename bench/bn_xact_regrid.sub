@@ -1,0 +1,31 @@
+\cancel mode ver
+! bn450_xact_regrid.sub -- support routine
+! 10/97
+
+! DEFINE AXES
+! "D" FOR DESTINATION
+! "S" FOR SOURCE
+DEFINE AXIS/$1=1:5:1 $1Dcoarse
+DEFINE AXIS/$1=1:5:.5 $1Dfine
+
+DEFINE AXIS/$1=1:5:1 $1Scoarse
+DEFINE AXIS/$1=0.5:5.5:1 $1Soffsetbig
+DEFINE AXIS/$1=1.5:4.5:1 $1Soffsetsmall
+DEFINE AXIS/$1=1:5:.5 $1Sfine
+DEFINE AXIS/$1=0.25:5.25:.5 $1Sfineoffset
+
+! SOURCE DATA
+LET/QUIET Scoarse = $1[G$1=$1Scoarse]
+LET/QUIET Soffsetbig = $1[G$1=$1Soffsetbig]
+LET/QUIET Soffsetsmall = $1[G$1=$1Soffsetsmall]
+LET/QUIET Sfine = $1[G$1=$1Sfine]
+LET/QUIET Sfineoffset = $1[G$1=$1Sfineoffset]
+
+SET MODE/LAST verify
+! PERFORM REGRIDDINGS
+LIST Scoarse[G$1=$1Dcoarse@XACT]! same src and dst axis
+LIST Scoarse[G$1=$1Dfine@XACT]	! coarse data onto fine grid
+LIST Sfine[G$1=$1Dcoarse@XACT]	! fine data onto coarse grid
+LIST Soffsetbig[G$1=$1Dfine@XACT]   ! non-aligning grid points coarse to fine
+LIST Soffsetsmall[G$1=$1Dfine@XACT] ! non-aligning grid points coarse to fine
+LIST Sfineoffset[G$1=$1Dcoarse@XACT]! non-aligning grid points fine to coarse

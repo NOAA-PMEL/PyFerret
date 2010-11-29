@@ -1,0 +1,88 @@
+\cancel mode verify
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! mp_ocean_stripmap.jnl --  Creates an composite map based on the predefined
+!                           map projection.  
+!		    		
+! Jonathan Callahan
+! 9/97
+!
+
+! Description:  This journal file is not "nice" and is provided as an example only.
+!
+! Usage:                   arg1          arg2            arg3     arg4   arg5
+!  go mp_ocean_stripmap [variable] [levels qualifier] [palette] [fland] [land]
+!
+! arg 1 - variable to be plotted
+! arg 2 - a Ferret style levels qualifier
+! arg 3 - the palette to use
+! arg 4 - flag determining whether mp_go_fland is turned on[1] or off[0]
+! arg 5 - flag determining whether mp_go_land is turned on[1] or off[0]
+
+! Example:
+!   use coads_clmatology
+!   go mp_sinusoidal
+!   set grid sst
+!   go mp_ocean_stripmap sst lev=(-2,20,4)(20,34,2) no_green 1 0
+!
+
+
+define viewport/xlim=0,.333/ylim=0,.51 mp_ll
+define viewport/xlim=.333,.75/ylim=0,.51 mp_lm
+define viewport/xlim=.75,.999/ylim=0,.51 mp_lr
+define viewport/xlim=0,.25/ylim=.5,1 mp_ul
+define viewport/xlim=.25,.667/ylim=.5,1 mp_um
+define viewport/xlim=.667,.999/ylim=.5,1 mp_ur
+
+set data/save
+
+set region/y=-90:0
+
+set grid $1
+palette $3
+set view mp_ll
+set region/x=20:140
+go margins 0,0,0,0
+shade/noaxes/nokey/nolab/$2 $1, x_page, y_page
+if $4 then go mp_fland
+if $5 then go mp_land
+
+set view mp_lm
+set region/x=140:290
+go margins 0,0,0,0
+shade/noaxes/nokey/nolab/$2 $1, x_page, y_page
+if $4 then go mp_fland
+if $5 then go mp_land
+
+set view mp_lr
+set region/x=290:380
+go margins 0,0,0,0
+shade/noaxes/nokey/nolab/$2 $1, x_page, y_page
+if $4 then go mp_fland
+if $5 then go mp_land
+
+set region/y=0:90
+
+set view mp_ul
+set region/x=20:110
+go margins 0,0,0,0
+shade/noaxes/nokey/nolab/$2 $1, x_page, y_page
+if $4 then go mp_fland
+if $5 then go mp_land
+
+set view mp_um
+set region/x=110:260
+go margins 0,0,0,0
+shade/noaxes/nokey/nolab/$2 $1, x_page, y_page
+if $4 then go mp_fland
+if $5 then go mp_land
+
+set view mp_ur
+set region/x=260:380
+go margins 0,0,0,0
+shade/noaxes/nokey/nolab/$2 $1, x_page, y_page
+if $4 then go mp_fland
+if $5 then go mp_land
+
+
+set data/restore
+set mode/last verify

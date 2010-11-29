@@ -1,0 +1,25 @@
+!err490_cdf_childax  *kob*  12/10/97 - initial crash reported by jerry
+
+! ERROR Fixed: listing a netcdf file w/ an extended child axis caused OSF
+!              core dump
+! 
+!  routines modified:    fmt/src/cd_childax_name.F
+!			 fmt/src/cd_write_axis.F
+!                        fmt/src/cd_make_var.F
+! 3.4.98 *kob* add define region statement - needed to include the
+!              bn491_bug_fixes.jnl in w/ bn491_all
+! 5.04.98 *kob* added a readin of the created file.  it turns out that the file wasn't
+! 		able to be read in, because of a bug in the lenght of the line_name variable. it
+!		wasn't long enough to hold the newly created child-axe name
+!		routine modified:  fmt/cmn/xtm_grid.cmn_text
+
+define region/x=130:290/y=-23.5:23.5 t
+set data ocean_atlas_temp
+set reg/@t/z=0/l=1
+save/file=test.cdf/clobber temp
+
+message/continue ********File successfully written******
+
+# new stuff - read the file in
+use test.cdf
+

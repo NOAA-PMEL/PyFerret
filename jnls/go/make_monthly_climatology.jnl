@@ -1,0 +1,112 @@
+\cancel mode verify
+! 2/94 - make_monthly_climatology.jnl
+
+! Description: create a monthly climatology data set
+!  NOTE:  For a more modern methodology, please see the FAQ 
+!  "How do I calculate climatologies and climatological anomalies?" at 
+!  http://www.ferret.noaa.gov/Ferret/FAQ/analysis/climatologies.html
+!  and also the topic "climatology" in the Ferret Users guide.
+
+! usage:  GO make_monthly_climatology variable clim_var_name clim_grid high_month ["append"] [out_file] 
+
+! variable:		variable from which to compute climatology
+!
+! clim_var_name:	name for climatological result variable
+!
+! clim_grid:		name of a grid containing the desired climatological
+!			time axis to use
+!			e.g. SHOW GRID SST[D=coads_climatology]
+!			Note: this argument is included because climatological
+!			time axes may differ:  e.g. equal length months for
+!			modelers, calendar months for data products, etc. 
+!
+! high_month:		highest monthe number in the input data to use
+!
+! (optional) append:	specify "append" to add new variables to a
+!			previously created climatology  (default = "NEW")
+!
+! (optional) out_file:	name of output data set
+!			(default "monthly_climatology.cdf")
+!
+
+! Notes:
+!  1) To produce a climatology with multiple variables use "append" and
+!	call this procedure once for each variable (see example)
+!  2) Known bug:  Each time this procedure is called it creates 12 time
+!	axes.  Ferret will allow a maximum of only 200 axes.  To append
+!	many climatological variables into a file it may be necessary to
+!	exit and restart Ferret.
+
+! Example:
+! Compute a Western Pacific Wind climatology from "monthly_navy_winds".
+! That data set (of FNOC winds) has 132 months in it.
+! Use the climatological time axis from the variable sst[d=coads_climatology]
+
+!	SET DATA coads_climatology
+!	SET DATA monthly_navy_winds
+!	SET REGION/x=130e:180/y=10s:10n
+!	GO make_monthly_climatology uwnd clim_uwind sst[d=coads_climatology] 132 new west_pacific_winds.cdf
+!	GO make_monthly_climatology vwnd clim_vwind sst[d=coads_climatology] 132 append west_pacific_winds.cdf
+
+! Explanation of example:
+! coads_climatology is a data set containing a climatological time axis to use.
+! SET REGION specifies the region of interest.
+! The first call to "GO make_monthly_climatology" computes "clim_uwind"
+! from "UWND" and outputs the results in a new file
+! The second call computes "clim_vwnd" from "VWND" in the same file
+
+! check that parameters are OK to the best we can
+query/ignore $1%<Use: GO make_monthly_climatology variable clim_var_name clim_grid high_month ["append"] [file]%
+query/ignore $2%<Use: GO make_monthly_climatology variable clim_var_name clim_grid high_month ["append"] [file]%
+query/ignore $3%<Use: GO make_monthly_climatology variable clim_var_name clim_grid high_month ["append"] [file]%
+query/ignore $4%<Use: GO make_monthly_climatology variable clim_var_name clim_grid high_month ["append"] [file]%
+query/ignore $5%new|new|append<GO make_monthly_climatology: Argument 5 must be "new" or "append"%
+
+! ------------  START OF PROCEDURE -------------
+
+! clean-up in case the procedure crashed in the past
+cancel data/noerr every_12th_month.cdf
+spawn rm -f every_12th_month.cdf
+
+! if it's a new data set delete any previous one 
+cancel data/noerr $6"monthly_climatology.cdf"
+spawn $5"rm -i|new>rm -i|append>ls -l" $6"monthly_climatology.cdf"
+
+! define the output grid for the result
+define grid/like=$1/T=$3 gmnthclim
+
+! define the "time stamp" variable.
+! This variable is always zero in value but when added to a time-averaged
+! result (which has no fixed point location on a time axis in ferret's view)
+! it will impart its time "stamp" to that variable
+let/quiet clim_stamp = t[g=gmnthclim] - t[g=gmnthclim]
+
+
+! the procedure "one_climatological_month" will write all of the indicated
+! month (1, 2, 3, ..., 12) into a file under the variable name "mnthvar"
+! This statement will define the average of all those months and "stamp" it
+! as the indicated month number.
+! --> LET my_clim_var = input_var[l=1:9999@ave] + clim_stamp
+! (inside one_climatology_month.jnl "input_var" with be every 12th month)
+let/quiet $2 = $1[l=1:9999@ave] + clim_stamp ! output climatology result
+set variable/title=variable:$1 $2
+
+! (crudely) process each of the 12 months
+! --> one_climatology_month variable clim_var_name month_num high_month file
+GO one_climatology_month $1 $2   1   $4 $6"monthly_climatology.cdf"
+GO one_climatology_month $1 $2   2   $4 $6"monthly_climatology.cdf"
+GO one_climatology_month $1 $2   3   $4 $6"monthly_climatology.cdf"
+GO one_climatology_month $1 $2   4   $4 $6"monthly_climatology.cdf"
+GO one_climatology_month $1 $2   5   $4 $6"monthly_climatology.cdf"
+GO one_climatology_month $1 $2   6   $4 $6"monthly_climatology.cdf"
+GO one_climatology_month $1 $2   7   $4 $6"monthly_climatology.cdf"
+GO one_climatology_month $1 $2   8   $4 $6"monthly_climatology.cdf"
+GO one_climatology_month $1 $2   9   $4 $6"monthly_climatology.cdf"
+GO one_climatology_month $1 $2  10   $4 $6"monthly_climatology.cdf"
+GO one_climatology_month $1 $2  11   $4 $6"monthly_climatology.cdf"
+GO one_climatology_month $1 $2  12   $4 $6"monthly_climatology.cdf"
+
+message/cont Type >>USE $6"monthly_climatology.cdf"<< (contains variable $2)
+
+cancel variable $2       ! definition now obsolete; use file values
+set mode/last verify

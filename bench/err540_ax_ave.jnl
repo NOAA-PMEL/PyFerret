@@ -1,0 +1,11 @@
+!err540_ax_ave.jnl
+! 3/02 *acm
+! @AVE getting wrong set of indices for forming the average, having
+! loaded range of indices on the first plot.  ave_regrid_1_axis.F
+
+use coads_climatology 
+def axis/edges/t=1:7306:1461/t0="01-jan-0000"/unit=hour t2 
+plot/x=140w/y=0/sym/line sst,sst[gt=t2@ave]
+
+def axis/edges/t=1:1600:731/t0="01-jan-0000"/unit=hour t2
+plot/x=140w/y=0/sym/line sst,sst[gt=t2@ave]

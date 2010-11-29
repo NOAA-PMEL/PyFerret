@@ -1,0 +1,50 @@
+!  Sunspot example
+
+DEFINE AXIS/T="1-jul-1700":"1-jul-1997":1/unit=yr tsun
+DEFINE GRID/T=tsun gsun
+FILE/VAR=sunspot_index/skip=3/G=gsun/FORMAT=(6x,f6.1) yearssn.dat
+
+!SET MODE META
+PLOT/SET_UP sunspot_index
+PPLUS TXLSZE 0.07
+PPL PLOT
+MESSAGE
+
+LET nd = sunspot_index[l=@NGD]
+LET nf = nd / 2
+LET yquist = 0.5
+LET freq1 = yquist/ nf
+
+DEFINE AXIS/t=`freq1`:`yquist`:`freq1`/UNITS=yr FAXIS
+DEFINE GRID/t=faxis gfreq
+SET GRID gfreq
+LET tpts = t
+
+LET fftsun = ffta(sunspot_index[l=1:`nd`])
+
+PLOT fftsun
+message
+
+!  Show the same plot in years/cycle
+LET fpts = 1./tpts
+
+let nff = fpts[l=@NGD]
+let nfs = fftsun[l=@NGD]
+let nfplot = MIN(`nff`, `nfs`)
+
+PLOT/VS/LINE/SET_UP fpts[l=1:`nfplot`], fftsun[l=1:`nfplot`]
+PPL XLAB YR/cycle
+PPL YLAB Amplitude Spectrum
+PPL XAXIS 0, 30, 1.
+PPL PLOT
+message
+
+!  Plot the power spectrum in years/cyc
+
+LET pspect = fftsun*fftsun
+PLOT/VS/LINE/SET_UP fpts[l=1:`nfplot`], pspect[l=1:`nfplot`]
+PPL XAXIS 1, 30, 1
+PPL XLAB years/cycle
+PPL YLAB Power Spectrum
+PPL PLOT
+MESSAGE

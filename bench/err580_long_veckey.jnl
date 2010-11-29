@@ -1,0 +1,10 @@
+! err580_long_veckey.jnl
+! Bug 1200 The following caused a crash due to the long veckey format spec.
+
+vector/i=1:50/j=1:50/set  j-20+(i-i),i-20+(j-j)
+
+ppl veckey,1,-3,,"(f4.0," x10^-^2 N m^-^2")"
+ppl vector
+
+! restore the default setting
+ppl veckey,0,0,,"(1PG10.3)"

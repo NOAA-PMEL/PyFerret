@@ -1,0 +1,80 @@
+! mercator_demo.jnl  9/96
+
+! Description: Plot a 2-panel demonstration of a Mercator projection
+! Note that Lambert conformal is very similar (see Lambert conformal eqn below)
+
+! usage:   GO mercator_demo [Y_lo, Y_hi] [Y_tics] 
+! Y_lo,Y_hi  - latitude range to plot
+! Y_tics     - the tic spacing on the Mercator plot
+
+! The technique that is used is to create a new Y axis of "page positions"
+! made by transforming the latitudes of the data grid using the
+! Mercator equations. Then "associate" the data with these page positions
+! (replacing the original latitudes) using the "GY=@ASN" syntax.
+
+! The only complication to this is to get the axis tic marks as desired
+! For that we use the REPEAT loop at the end of the demo
+
+!	Map Projections -- A Working Manual
+!	J.P. Snyder
+!	USGS Professional Paper 1395
+!	US Govt Printing Office, 1987.
+
+
+CANCEL REGION
+SET WIND/ASP=1.2
+SET DATA etopo60
+
+! determine J index limits corresponding to requested latitude range
+! (the default range is 80S to 80N)
+LET j_lo = J[G=ROSE,Y=$1"80S"]
+LET j_hi = J[G=ROSE,Y=$2"80N"]
+
+! ***** Standard Rectilinear Projection (for comparison) *****
+SET VIEW upper
+GO magnify 1.2		! looks nicer
+
+SHADE/LEV=(0,10000,1000)/PALETTE=dark_terrestrial/NOKEY/j=`j_lo`:`j_hi` rose
+
+
+! ***** Mercator Projection *****
+SET VIEW lower
+GO magnify 1.2		! looks nicer
+
+! define the vertical page location axis
+! (the transformed latitudes of the grid to be plotted)
+LET pi = 3.141529
+LET degrad = pi/180
+LET radian_lat = degrad * y[g=rose]
+LET yp = LOG(TAN(radian_lat/2 + pi/4))		! Mercator eqn
+! LET yp = SIN(radian_lat)			! Lambert Conformal eqn.
+DEFINE AXIS/from/y/name=ypageax yp
+
+! plot the data on a Mercator projection (omit Y axis)
+SHADE/LEVELS/PALETTE=dark_terrestrial/NOKEY/SET_UP/j=`j_lo`:`j_hi` rose[gy=ypageax@asn]
+PPL YLAB
+PPL AXSET 1,1,0,0	! suppress latitude axes
+PPL TITLE .15 @CRRelief using Mercator Projection
+PALETTE dark_terrestrial;ppl shade;palette default
+PPL AXSET 1,1,1,1
+
+! *** Vertical Axis Tics ***
+
+! draw vertical axis lines
+PPL ALINE/NOUSER 1,0,0,0,($PPL$YLEN)
+PPL ALINE/NOUSER 1,($PPL$XLEN),0,($PPL$XLEN),($PPL$YLEN)
+
+! "lat" will be the latitude of each tic to be drawn
+LET radian_lat=degrad * lat
+DEFINE AXIS/Y=$1"80s":$2"80n":$3"40" ytics
+
+! small correction to get label text to align with tic mark
+LET lat = `y[gy=ytics,y=$1"80s"]`; LET ypage_lo = `yp`
+LET lat = `y[gy=ytics,y=$2"80n"]`; LET ypage_hi = `yp`
+LET yoffset = 0.02*(ypage_hi - ypage_lo)
+
+! draw the tics
+! note 1: the tic at the equator should really be drawn separately
+REPEAT/Y=$1"80s":0:$3"40" (LET lat=`y[gy=ytics]`; PPL ALINE 1,12,`yp`,20,`yp`; LABEL 8,`yp-yoffset`,1,0,.1  "@SR`ABS(lat)`#S")
+REPEAT/Y=0:$2"80n":$3"40" (LET lat=`y[gy=ytics]`; PPL ALINE 1,12,`yp`,20,`yp`; LABEL 8,`yp-yoffset`,1,0,.1  "@SR`lat`#N")
+LABEL -15,0,0,90,.12 LATITUDE

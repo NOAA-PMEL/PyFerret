@@ -1,0 +1,30 @@
+! Benchmark for sort and sample external Functions
+! ACM 7/99
+
+! test sortk, samplek
+ 
+can region
+use gt4d011
+set region/i=99/j=40/l=1
+
+
+let zsorted_indices = sortk(temp)
+let zsorted_temp = samplek(temp, zsorted_indices)
+list zsorted_temp
+
+
+set region/i=100/j=40/l=1
+set view left
+plot temp
+
+let zsorted_indices = sortk(temp)
+let zsorted_temp = samplek(temp, zsorted_indices)
+set view right
+plot zsorted_temp
+
+! this should bail out with indices out of range:
+
+let zsorted_indices = sortk(temp) - 100
+let zsorted_temp = samplek(temp, zsorted_indices)
+list zsorted_temp
+

@@ -1,0 +1,106 @@
+#
+# platform_specific_includes.mk.solaris
+#
+# This file is included in other Makefiles and defines
+# platform specific macros
+
+
+INCLUDES        = -I/opt/local/netcdf-3.4/include \
+		  -I../../xgks/include \
+		  -I../../ppl/include/xgks \
+                  -I/usr/openwin/include \
+		  -I../../xgks/gif \
+		  -I../../xgks/ps \
+		  -I../../xgks/port \
+                  -I../../xgks/src/lib \
+                  -I../../xgks/src/lib/gksm \
+                  -I$(TMAP_LOCAL)/include \
+		  -I/opt/local/include \
+                  -I../common \
+		  -I../../fmt/cmn \
+		  -I../../ppl/include \
+		  -I. -I../../readline-4.1
+
+FINCLUDES	= -I../../ppl/tmap_inc \
+		   -I../include -I../../fmt/cmn \
+		   -I../common \
+		   -I../../ppl/include -I../../fer/common
+
+
+GUI_INCLUDES	= -I/usr/dt/include  -I/usr/openwin/share/include
+
+# New platform type var - *kob* 10/01
+PLATFORM = Solaris 5.8 
+ 
+
+CC              = cc
+RANLIB          = /bin/touch
+CPP_FLAGS       = -DNO_PASSED_CONCAT \
+ -Dcrptd_cat_argument
+CFLAGS          = $(CPP_FLAGS) -Dsolaris -DUSG -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
+FFLAGS          = $(CPP_FLAGS) -e -Nl160  -ffixed-line-length-132 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES) -Dunix -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DusingDODSf2cUnderscore -DNO_INTRINSIC_IN_PARAMETER 
+PPLUS_FFLAGS    = -e -Nl160  -ffixed-line-length-132 -Dxgks -DusingDODSf2cUnderscore -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Dunix $(FINCLUDES)
+
+#
+# Below this line are macro definitions used only for the final linking of the executable
+#
+
+LD		= cc
+LDFLAGS		= -L/usr/openwin/lib -z muldefs -v
+LD_DYN_FLAGS = -G -z text -z muldefs
+
+V77lib = /opt/SUNWspro/SC5.0/lib/libV77.a
+M77lib = /opt/SUNWspro/SC5.0/lib/libM77.a
+F77lib = /opt/SUNWspro/SC5.0/lib/libF77.a
+elflib = /usr/lib/libelf.a
+Xmlib = /home/porter2/tmap/local/solaris/lib/libXm.a
+Xpmlib = /home/porter2/tmap/local/solaris/lib/libXpm.a
+Sunmathlib = /opt/SUNWspro/SC5.0/lib/libsunmath.a
+#nsllib = /usr/lib/libnsl.a
+nsllib = -lnsl
+socketlib = /usr/lib/libsocket.a
+
+SYSLIB		= -lX11  -ldl $(Xpmlib)  ../list-2.1/liblist.a -Bstatic  -L/opt/SUNWspro/lib \
+		  $(V77lib) $(elflib) $(M77lib) $(F77lib) $(Xmlib) -lXt -Bdynamic $(Sunmathlib) -lm \
+		  /usr/ccs/lib/libgen.a -lc \
+		  -Bstatic  -Bdynamic /usr/lib/libICE.so \
+		  /usr/lib/libSM.so 
+
+DODS_SYSLIB	= $(nsllib) $(socketlib) \
+		  /opt/local/hdf/lib/libz_HDF4.1r1.a
+
+TMLIB		= ../lib/tmap_lib.a
+
+READLINELIB	= ../readline-4.1/libreadline.a
+
+GKSLIB		= ../xgks/src/lib/libxgks.a
+
+HDFLIB		= /opt/local/lib/libdf.a
+
+#CDFLIB		= /opt/local/lib/libnetcdf.a
+#CDFLIB		= $(TMAP_LOCAL)/src/netcdf-2.3.2/lib/libnetcdf.a
+#CDFLIB          = /opt/local/netcdf-2.4.2/lib/libnetcdf.a
+#CDFLIB          = /opt/local/netcdf-3.4/lib/libnetcdf.a
+#CDFLIB          = /home/porter/kobrien/src/solaris/netcdf-3.5.0/lib/libnetcdf.a
+
+#DODS_LIBS       = -L$(TMAP_LOCAL)/src/DODS-release-3-4/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a -lrx -lz
+#DODS_LIBS       = -L/home/porter/kobrien/solaris8/DODS  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a -lrx -lz
+
+#DODS_LIBS       =  /home/porter/tmap/OPeNDAP/solaris/v362/lib/libnc-dap.a /home/porter/tmap/OPeNDAP/solaris/v362/lib/libdap.a /home/porter/tmap/OPeNDAP/solaris/v362/lib/libnc-dap.a /home/porter/tmap/OPeNDAP/solaris/v362/lib/libdap.a /home/porter/tmap/OPeNDAP/solaris/v362/lib/libxml2.a   /home/porter/tmap/OPeNDAP/solaris/v362/lib/libcurl.a /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a
+
+# Lots of library specs from the MAKE of dncdump in 
+#    /home/porter/tmap/OPeNDAP/solaris/v362/libnc-dap-3.6.0/ncdump
+# Also some libraries e.g./usr/local/BerkeleyDB.4.2/lib because they
+# are listed as required by libiconv.so, see /usr/local/lib/libiconv.la
+
+DODS_LIBS       =  -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libnc-dap.a /home/porter/tmap/OPeNDAP/solaris/v362/lib/libdap.a -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libcurl.a -lssl -lcrypto -ldl -lsocket -lnsl -lz -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libxml2.a -lz -lpthread -lssl -lcrypto  -ldl -lz -L/usr/local/lib  -L/usr/local/BerkeleyDB.4.2/lib -L/usr/local/ssl/lib -L/usr/openwin/lib -L/usr/lib /usr/local/lib/libiconv.so -lm -lsocket -lnsl -lpthread /usr/local/lib/libgcc_s.so.1
+
+#DODS_LIBS       =  -L/home/porter/ansley/OPeNDAP/solaris8/DODS_v3.7.7_libnc_from_svn/lib /home/porter/ansley/OPeNDAP/solaris8/DODS_v3.7.7_libnc_from_svn/liblibnc-dap.a /home/porter/ansley/OPeNDAP/solaris8/DODS_v3.7.7_libnc_from_svn/liblibdap.a -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libcurl.a -lssl -lcrypto -ldl -lsocket -lnsl -lz -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libxml2.a -lz -lpthread -lssl -lcrypto  -ldl -lz -L/usr/local/lib  -L/usr/local/BerkeleyDB.4.2/lib -L/usr/local/ssl/lib -L/usr/openwin/lib -L/usr/lib /usr/local/lib/libiconv.so -lm -lsocket -lnsl -lpthread /usr/local/lib/libgcc_s.so.1
+
+TERMCAPLIB      =-ltermcap
+
+
+#
+# End of platform_specific_includes.mk.solaris8
+#
+

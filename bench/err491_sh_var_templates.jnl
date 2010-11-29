@@ -1,0 +1,9 @@
+! SHOW VARIABLE templates are not robust
+
+let mld5dec = 1
+
+sho var m*dec		! no response ??
+sho var ml*dec		! no response ??
+sho var mld*dec		! works
+
+

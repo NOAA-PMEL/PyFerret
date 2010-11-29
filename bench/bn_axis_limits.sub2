@@ -1,0 +1,51 @@
+! bn301_axis_limits.sub2
+! exercise the new-V301 /XLIMITS and /YLIMITS qualifiers
+! this file to exercise 2D graphics
+
+set window/clear
+
+* abstract XY contours
+set grid abstract
+set view v11
+contour/x=1:100/y=101:200/lev=(-1,1,.5) sin(x/6)*cos(y/9)
+set view v12
+contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200 sin(x/6)*cos(y/9)
+set view v13
+contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:150 sin(x/6)*cos(y/9)
+set view v14
+contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:150/trans sin(x/6)*cos(y/9)
+
+* formatted XY contours
+set grid gformat
+set view v21
+contour/x=160E:160W/y=15s:25n/lev=(-1,1,.5) sin(x/3)*ABS(Y)^1.5
+set view v22
+contour/x=160E:160W/y=15s:25n/lev=(-1,1,.5)/xlimits=140e:110W:10 sin(x/3)*ABS(Y)^1.5
+set view v23
+contour/x=160E:160W/y=15s:25n/lev=(-1,1,.5)/xlimits=140e:110w:-9/ylimits=0:30N sin(x/3)*ABS(Y)^1.5
+set view v24
+contour/x=160E:160W/y=15s:25n/lev=(-1,1,.5)/xlimits=140e:110w:-9/ylimits=0:30N/trans sin(x/3)*ABS(Y)^1.5
+
+* calendar axis contours involving T
+set grid gformat
+set mode calendar
+set view v31
+contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=1-jan-1978:1-jan-1984 sin(x/3)*sin(t/100)
+set view v32
+contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28110:29115 sin(x/3)*sin(t/100)
+set view v33
+contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28110:29115:-200 sin(x/3)*sin(t/100)   ! delta ignored
+set view v34
+contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=1-jan-1978:1-jan-1984/trans sin(x/3)*sin(t/100)
+
+* non-calendar axis contours involving T
+set grid gformat
+cancel mode calendar
+set view v41
+contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=1-jan-1978:1-jan-1984 sin(x/3)*sin(t/100)
+set view v42
+contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28110:29115 sin(x/3)*sin(t/100)
+set view v43  ! intentionally blank
+contour/x=160E:160W/t=28000:29000/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=1-jan-1975:1-jan-1978 sin(x/3)*sin(t/100)
+set view v44
+contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28000:29000:-400/trans sin(x/3)*sin(t/100)

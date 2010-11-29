@@ -1,0 +1,21 @@
+
+! Palette for ocean/terrestrial elevation.
+! *acm* 12/07 based on topo
+
+! Good levels for world elevation (in meters):
+! (-inf)(-6000,-1000,1000)(-1000,-100,100)(-100,100,10)(0,1000,100)(1000,4000,1000)(inf)
+
+RGB_Mapping By_Value
+
+! Val    R    G    B
+-8000.   0.   0.  40. ! blue-black
+-4000.  30.  30. 100.
+-1000.  50.  50. 100. ! blue
+-500.   40.  70. 100. 
+-100.   50. 100. 100.
+ -50.   40.  80.  70.
+ -0.1   90. 100. 100. ! light green-blue
+  0.    75.  50.  18. ! range of browns
+ 1000.  87.  76.  49.
+ 5000.  96.  91.  76.
+ 6000. 100. 100. 100.

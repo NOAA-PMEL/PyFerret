@@ -1,0 +1,68 @@
+\ cancel mode verify	
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! mp_vertical_perspective.jnl --  Sets up variables for a Vertical Perspective projection using
+!                  'curvilinear coordinates' code in Ferret v4.50
+!		    		
+! Jonathan Callahan
+! 5/97
+
+! Description:  Sets up variables for a Vertical Perspective map of the world
+!
+! Usage:                             arg1             arg2          arg3
+!  go mp_vertical_perspective central_meridian standard_parallel distance(km)
+!
+! arg 1 - longitude used for the center of the projection
+! arg 2 - latitude used for the center of the projection
+! arg 2 - distance above the earth in km
+
+! Example:
+!  use coads_climatology 
+!  go mp_vertical_perspective 300 45 35900
+!  set grid sst
+!  let masked_sst = sst * mp_mask
+!  shade masked_sst[l=1], x_page, y_page
+
+! This journal file comes from equations in the following book:
+!
+!    An Album of Map Projections
+!    U.S. Geological Survey
+!    Professional Paper 1453
+!
+! Equation numbers refer to the equation number in this book.
+
+query/ignore $1"<Please supply a longitude and latitude:    go mp_vertical_perspective 300 45 35900"
+query/ignore $2"<Please supply a longitude and latitude:    go mp_vertical_perspective 300 45 35900"
+query/ignore $3"<Please supply a distance above the Earth:    go mp_Vertical_Perspective 300 0 35900"
+
+if `$2 gt 90` then
+	query/ignore $3"<The latitude must be between -90 and 90"
+elif `$2 lt (-90)` then
+	query/ignore $3"<The latitude must be between -90 and 90"
+endif
+
+let/quiet mp_x = x
+let/quiet mp_central_meridian = $1
+let/quiet mp_y = y
+let/quiet mp_standard_parallel = $2
+
+let/quiet Pi = 3.14159265
+let/quiet deg2rad = Pi / 180.0
+
+let/quiet mp_R = 6.38 * 10^3
+let/quiet mp_P = ($3 + mp_R)/mp_R
+let/quiet mp_k0 = 1
+let/quiet mp_lambda0 = mp_central_meridian * deg2rad
+let/quiet mp_lambda = mp_x * deg2rad
+let/quiet mp_phi = mp_y * deg2rad
+let/quiet mp_phi1 = mp_standard_parallel * deg2rad
+
+let/quiet mp_cos_z = sin(mp_phi1)*sin(mp_phi) + cos(mp_phi1)*cos(mp_phi)*cos(mp_lambda-mp_lambda0)                    ! eqn (112)
+let/quiet mp_bigK = (mp_P-1)/(mp_P-mp_cos_z)                                                                 ! eqn (122)
+
+let/quiet x_page = mp_R * mp_bigK * cos(mp_phi) * sin(mp_lambda-mp_lambda0)                                    ! eqn (114)
+let/quiet y_page = mp_R * mp_bigK * ( cos(mp_phi1)*sin(mp_phi) - sin(mp_phi1)*cos(mp_phi)*cos(mp_lambda-mp_lambda0) )   ! eqn (115)
+
+let/quiet mp_mask = if mp_cos_z ge (1/mp_P) then 1 
+
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+set mode/last verify

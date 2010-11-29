@@ -1,0 +1,10 @@
+! err560_shade_noleap.jnl
+! 4/30/04 ACM
+
+! Crashes on SHADE of variable with NOLEAP axis, and subregion.     
+
+def axis/t/t0=1-jan-2000/units=months/calendar=noleap tax = {1,3,4,5,6,8,9,12}
+def axis/depth/z=0:1000:15 zax
+let a = z[gz=zax] + t[gt=tax]
+
+shade/t=4-jan-2000:10-nov-2000 a

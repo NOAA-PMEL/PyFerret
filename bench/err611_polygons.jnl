@@ -1,0 +1,15 @@
+! err611_polygons.jnl
+! bug 1661
+
+! Polygons over a depth axis, where the 
+! plot is transposed, didnt appear.
+
+! (from error_bars_demo script) Z axis
+define axis/z=1:15:1/depth/units=meters z5
+let/quiet xp4 = Z[gz=z5]
+let/quiet yp4 = SIN(xp4/5)
+let/quiet errors = 0.5/(xp4+5)
+plot/title="vertical profile" yp4
+
+GO error_bars polygon/color=red/thickness=2/title="variability" yp4 errors
+

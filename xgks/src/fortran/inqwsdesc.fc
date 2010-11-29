@@ -1,0 +1,1755 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS inquire workstation description table functions:
+ *	gqwkca_
+ *	gqwkcl_
+ *	gqdsp_
+ *	gqdwka_
+ *	gqplf_
+ *	gqpmf_
+ *	gqfaf_
+ *	gqpaf_
+ *	gqcf_
+ *	gqpcr_
+ *	gqegdp_
+ *	gqgdp_
+ *	gqlwk_
+ *	gqsgp_
+ *	gqdsga_
+ *	gqli_
+ *	gqptxr_
+ *	gqdlc_
+ *	gqdds_
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * Todd Gill
+ * TCS Development
+ * Cambridge MA
+ *
+ * September 29, 2988
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifdef lint
+    static void	lint_malloc(n) size_t n; { n++; }
+#   define	malloc(n)	(lint_malloc(n), 0)
+#else
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+#define	FREE(p)		{ if ((p) != NULL) free((voidp) p); }
+
+
+/*
+ * Return a workstation-identification string based on the Fortran workstation
+ * type number.  This macro handles the user setting an X display-string via
+ * the Fortran subroutine gescid() (ESCAPE SET CONNECTION ID).
+ *
+ * `wtypes' is an array in file "fortxgks.h" that maps a Fortran integer
+ * specification of a workstation type to its C-string equivalent.
+ */
+#define CLIB_WORKSTATION_TYPE(wtype) \
+    (wtypes[(wtype)-1] != NULL \
+        ? wtypes[(wtype)-1] \
+        : xgks_connection != NULL && xgks_connection[0] != 0 \
+            ? xgks_connection \
+            : (char*)NULL)
+
+extern char    *xgks_connection;
+extern char   **wtypes;
+extern int      NUMWTYPES;
+
+
+/*
+ * gqwkca - inquire workstation category
+ *
+ * int *wktype - pointer to workstation type
+ * int *errind - pointer to error indicator
+ * int *wkcat - pointer to workstation category
+ *
+ * Returns: Error 2000 in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.170
+ */
+/*FORTRAN*/
+gqwkca(
+    int            *wtype,
+    int            *errind,
+    int            *wkcat)
+{
+    Gwscat          cat;
+
+    debug(("Inquire Workstation Category %d  \n", *wtype));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqwscategory);
+
+    if (*errind = ginqwscategory(CLIB_WORKSTATION_TYPE(*wtype), &cat))
+	return;
+
+    /*
+     * Here we take advantage of the fact that C enumerated types are
+     * consecutive integers starting at zero.
+     */
+    debug(("        Workstation Category is %d  \n", cat));
+
+    *wkcat = (int) cat;
+}
+
+
+/*
+ * gqwkcl - inquire workstation class
+ *
+ * int *wtype - pointer to workstation type
+ * int *errind - pointer to error indicator
+ * int *vrtype - pointer to workstation class (returned)
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p. 171
+ */
+/*FORTRAN*/
+gqwkcl(
+    int            *wtype,
+    int            *errind,
+    int            *vrtype)
+{
+    Gwsclass        class;
+
+    debug(("Inquire Workstation Class %d  \n", *wtype));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqwsclass);
+
+    if (*errind = ginqwsclass(CLIB_WORKSTATION_TYPE(*wtype), &class))
+	return;
+
+    debug(("        Workstation Class is %d  \n", class));
+
+    *vrtype = (int) class;
+}
+
+
+/*
+ * gqdsp - inquire display space size
+ *
+ * int *wtype  - workstation type
+ * int *errind - error indicator
+ * int *dcunit - display space units
+ * float *rx   - raster x
+ * float *ry   - raster y
+ * int *lx     - device x
+ * int *ly     - device y
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.171
+ */
+/*FORTRAN*/
+gqdsp(
+    int            *wtype,
+    int            *errind,
+    int            *dcunit,
+    float          *rx,
+    float          *ry,
+    int            *lx,
+    int            *ly)
+
+{
+    Gdspsize        dspsz;
+
+    debug(("Inquire Display Space Size %d \n", *wtype));
+    VALIDTYPE(errind, *wtype, 1, (int) NUMWTYPES, errginqdisplayspacesize);
+
+    if (*errind = ginqdisplayspacesize(CLIB_WORKSTATION_TYPE(*wtype),
+				       &dspsz))
+	return;
+
+    *dcunit = (int) dspsz.units;
+    *rx = (float) dspsz.device.x;
+    *ry = (float) dspsz.device.y;
+    *lx = (int) dspsz.raster.x;
+    *ly = (int) dspsz.raster.y;
+
+}
+
+
+/*
+ * gqdwka - inquire dynamic modification of workstation attributes
+ *
+ * int *wtype  - workstation type
+ * int *errind - error indicator
+ * int *plbun  - polyline bundle
+ * int *pmbun  - polymarker bundle
+ * int *txbun  - text bundle
+ * int *fabun  - fill area bundle
+ * int *parep  - pattern rep.
+ * int *colrep - color
+ * int *wktr   - workstation transformation
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.171
+ */
+/*FORTRAN*/
+gqdwka(
+    int            *wtype,
+    int            *errind,
+    int            *plbun,
+    int            *pmbun,
+    int            *txbun,
+    int            *fabun,
+    int            *parep,
+    int            *colrep,
+    int            *wktr)
+
+{
+    Gmodws          dyn;
+
+    debug(("Inquire Dynamic Modification of Workstation Attributes %d \n",
+	   *wtype));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqmodwsattr);
+
+    if (*errind = ginqmodwsattr(CLIB_WORKSTATION_TYPE(*wtype), &dyn))
+	return;
+
+    *plbun = (int) dyn.line;
+    *pmbun = (int) dyn.mark;
+    *txbun = (int) dyn.text;
+    *fabun = (int) dyn.fill;
+    *parep = (int) dyn.pat;
+    *colrep = (int) dyn.colour;
+    *wktr = (int) dyn.wstran;
+}
+
+
+/*
+ * gqplf - inquire polyline facilities
+ *
+ * int *wtype    - workstation type
+ * int *n        - member to return from nlt
+ * int *errind   - error indicator
+ * int *nlt      - list of return info
+ * int *lt       - *nlt[*n] (nth item in nlt)
+ * int *nlw      - number of line widths
+ * float *nomlw  - nominal width
+ * float *rlwmin - minimum width
+ * float *rlwmax - maximum width
+ * int *nppli    - number of predefined polyline bundles
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.173
+ */
+/*FORTRAN*/
+gqplf(
+    int            *wtype,
+    int            *n,
+    int            *errind,
+    int            *nlt,
+    int            *lt,
+    int            *nlw,
+    float          *nomlw,
+    float          *rlwmin,
+    float          *rlwmax,
+    int            *nppli)
+{
+    Glnfac          fac;
+
+    debug(("Inquire Polyline Facilities %d \n", *wtype));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqlinefacil);
+
+    if (*errind = ginqlinefacil(CLIB_WORKSTATION_TYPE(*wtype), &fac))
+	return;
+
+    *nlt = (int) fac.types.number;
+    *nlw = (int) fac.widths;
+    *nomlw = (float) fac.nom;
+    *rlwmin = (float) fac.min;
+    *rlwmax = (float) fac.max;
+    *nppli = (int) fac.predefined;
+
+    VALIDMEMBER(errind, *n, 0, *nlt, errginqlinefacil);
+    if (*n)
+	*lt = (int) fac.types.integers[*n - 1];
+
+    /* free list returned by function */
+    FREE(fac.types.integers);
+}
+
+
+/*
+ * gqpmf - inquire polymarker facilities
+ *
+ * int *wtype    - workstation type
+ * int *n        - member to return from nmt
+ * int *errind   - error indicator
+ * int *nmt      - array of return values
+ * int *mt       - nmt[n]
+ * int *nms      - number of marker sizes
+ * float *nomms  - nominal size
+ * float *rmsmin - minimum size
+ * float *rmsmax - maximum size
+ * int *nppmi    - number of predefined bundles
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.171
+ */
+/*FORTRAN*/
+gqpmf(
+    int            *wtype,
+    int            *n,
+    int            *errind,
+    int            *nmt,
+    int            *mt,
+    int            *nms,
+    float          *nomms,
+    float          *rmsmin,
+    float          *rmsmax,
+    int            *nppmi)
+{
+    Gmkfac          fac;
+
+    debug(("Inquire Polymarker Facilities %d \n", *wtype));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqmarkerfacil);
+
+    if (*errind = ginqmarkerfacil(CLIB_WORKSTATION_TYPE(*wtype), &fac))
+	return;
+
+    *nmt = (int) fac.types.number;
+    *nms = (int) fac.sizes;
+    *nomms = (float) fac.nom;
+    *rmsmin = (float) fac.min;
+    *rmsmax = (float) fac.max;
+    *nppmi = (int) fac.predefined;
+
+
+    VALIDMEMBER(errind, *n, 0, *nmt, errginqmarkerfacil);
+
+    if (*n)
+	*mt = (int) fac.types.integers[*n - 1];
+
+    /* free memory returned by function */
+    FREE(fac.types.integers);
+}
+
+
+/*
+ * gqfaf - inquire fill area facilities
+ *
+ * int *wtype  - workstation type
+ * int *ni     - number of the interior style requested
+ * int *nh     - number of the hatch style requested
+ * int *errind - error indicator
+ * int *nis    - number of available interior styles
+ * int *is     - interiors[ni]
+ * int *nhs    - number of available hatch styles
+ * int *hs     - hatches[nh]
+ * int *npfai  - number of predefined bundles
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.177
+ */
+/*FORTRAN*/
+gqfaf(
+    int            *wtype,
+    int            *ni,
+    int            *nh,
+    int            *errind,
+    int            *nis,
+    int            *is,
+    int            *nhs,
+    int            *hs,
+    int            *npfai)
+{
+    Gflfac          fac;
+
+    debug(("Inquire Fill Area Facilities %d \n", *wtype));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqfillfacil);
+
+    if (*errind = ginqfillfacil(CLIB_WORKSTATION_TYPE(*wtype), &fac))
+	return;
+
+    *nis = (int) fac.interiors.number;
+    *nhs = (int) fac.hatches.number;
+    *npfai = (int) fac.predefined;
+
+    *is = 0;
+    VALIDMEMBER(errind, *ni, 0, *nis, errginqfillfacil);
+    if (*ni)
+	*is = (int) fac.interiors.integers[*ni - 1];
+    FREE(fac.interiors.integers);
+
+    *hs = 0;
+    VALIDMEMBER(errind, *nh, 0, *nhs, errginqfillfacil);
+    if (*nh)
+	*hs = (int) fac.hatches.integers[*nh - 1];
+    FREE(fac.hatches.integers);
+}
+
+
+/*
+ * gqpaf - inquire pattern facilities
+ *
+ * int *wtype  - workstation type
+ * int *errind - error indicator
+ * int *nppai  - number of patterns
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.179
+ */
+/*FORTRAN*/
+gqpaf(
+    int            *wtype,
+    int            *errind,
+    int            *nppai)
+{
+    debug(("Inquire Pattern Facilities %d \n", *wtype));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqpatfacil);
+
+    *errind = ginqpatfacil(CLIB_WORKSTATION_TYPE(*wtype), (Gint *) nppai);
+}
+
+
+/*
+ * gqcf - inquire color facilities
+ *
+ * int *wtype  - workstation type
+ * int *errind - error indicator
+ * int *ncoli  - number of colors
+ * int *cola   - color availability
+ * int *npci   - number of predefined bundles
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.180
+ */
+/*FORTRAN*/
+gqcf(
+    int            *wtype,
+    int            *errind,
+    int            *ncoli,
+    int            *cola,
+    int            *npci)
+{
+    Gcofac          fac;
+
+    debug(("Inquire Color Facilities %d  \n", *wtype));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqcolourfacil);
+
+    if (*errind = ginqcolourfacil(CLIB_WORKSTATION_TYPE(*wtype), &fac))
+	return;
+
+    *ncoli = (int) fac.colours;
+
+    /*
+     * This is supposed to be 0 for color and 1 for mono
+     * but we are getting the reverse.  Quick hack is to negate it.
+     */
+    switch (fac.coavail) {
+    case GCOLOR:
+	*cola = (int) FORT_GCOLOR;
+	break;
+    case GMONOCHROME:
+	*cola = (int) FORT_GMONOC;
+	break;
+    };
+    *npci = (int) fac.predefined;
+
+    debug(("        Number of Colors is %d  \n", *ncoli));
+    debug(("        Color Availibility is %d  \n", *cola));
+    debug(("        Number of Predefined Bundles is %d  \n", *npci));
+}
+
+
+/*
+ * gqppmr - Inquire Predefined Polymarker Representation
+ *
+ * int	*wtype		- pointer to workstation type
+ * int	*pmi		- pointer to predefined polymarker index
+ * int	*errind		- pointer to error indicator
+ * int	*mtype		- pointer to marker type
+ * float *mszsf		- pointer to marker size scale factor
+ * int	*coli		- pointer to polymarker colour index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.175
+ */
+/*FORTRAN*/
+gqppmr(
+    int            *wtype,
+    int            *pmi,
+    int            *errind,
+    int            *mtype,
+    float          *mszsf,
+    int            *coli)
+{
+    Gmkbundl        rep;
+
+    debug(("Inquire Predefined Polymarker Representation \n"));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqpredmarkerrep);
+
+    if (*errind = ginqpredmarkerrep(CLIB_WORKSTATION_TYPE(*wtype),
+	    (Gint) *pmi, &rep))
+	return;
+
+    *mtype = (int) rep.type;
+    *mszsf = (float) rep.size;
+    *coli = (int) rep.color;
+}
+
+
+/*
+ * gqpplr - Inquire Predefined Polyline Representation
+ *
+ * int	*wtype		- pointer to workstation type
+ * int	*pli		- pointer to predefined polline index
+ * int	*errind		- pointer to error indicator
+ * int	*ltype		- pointer to line type
+ * float *lwidth	- pointer to line size scale factor
+ * int	*coli		- pointer to polyline colour index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.175
+ */
+/*FORTRAN*/
+gqpplr(
+    int            *wtype,
+    int            *pli,
+    int            *errind,
+    int            *ltype,
+    float          *lwidth,
+    int            *coli)
+{
+    Glnbundl        rep;
+
+    debug(("Inquire Predefined Polyline Representation: index = %d type = %d\n",
+	  *pli, *wtype - 1));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqpredlinerep);
+
+    if (*errind = ginqpredlinerep(CLIB_WORKSTATION_TYPE(*wtype),
+	    (Gint) *pli, &rep))
+	return;
+
+    *ltype = (int) rep.type;
+    *lwidth = (float) rep.width;
+    *coli = (int) rep.color;
+}
+
+
+/*
+ * gqtxf - Inquire Text Facilities
+ *
+ * int	*wtype		- pointer to workstation type
+ * int	*n		- pointer to list element requested
+ * int	*errind		- pointer to error indicator
+ * int	*nfpp		- pointer to number of text font and precision pairs
+ * int	*font		- pointer to nth element of list of text fonts
+ * int	*prec		- pointer to nth element of list of text precisions
+ *			  (GSTRP, GCHARP, GSTRKP)
+ * int	*nchh		- pointer to number of available character heights
+ * float *minchh	- pointer to minimum character height (DC)
+ * float *maxchh	- pointer to maximum character height (DC)
+ * int	*nchx		- pointer to number of available character expansion
+ *			  factors
+ * float *minchx	- pointer to minimum character expansion factor
+ * float *maxchx	- pointer to maximum character expansion factor
+ * int	*nptxi		- pointer to number of predefined text indices
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.176
+ */
+/*FORTRAN*/
+gqtxf(
+    int            *wtype,
+    int            *n,
+    int            *errind,
+    int            *nfpp,
+    int            *font,
+    int            *prec,
+    int            *nchh,
+    float          *minchh,
+    float          *maxchh,
+    int            *nchx,
+    float          *minchx,
+    float          *maxchx,
+    int            *nptxi)
+{
+    Gtxfac          fac;
+
+    debug(("Inquire Text Facilities  \n"));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqtextfacil);
+
+    if (*errind = ginqtextfacil(CLIB_WORKSTATION_TYPE(*wtype), &fac))
+	return;
+
+    *nfpp = (int) fac.fps;
+    *nchh = (int) fac.heights;
+    *minchh = (float) fac.min_ht;
+    *maxchh = (float) fac.max_ht;
+    *nchx = (int) fac.expansions;
+    *minchx = (float) fac.min_ex;
+    *maxchx = (float) fac.max_ex;
+    *nptxi = (int) fac.predefined;
+
+    VALIDMEMBER(errind, *n, 0, fac.fps, errginqtextfacil);
+    if (*n) {
+	*font = (int) fac.fp_list[*n - 1].font;
+	*prec = (int) fac.fp_list[*n - 1].prec;
+    }
+    FREE(fac.fp_list);
+}
+
+
+/*
+ * gqpcr - inquire predefined color representation
+ *
+ * int *wtype   - workstation type
+ * int *pci     - predefined color index
+ * int *errind  - error indicator
+ * float *red   - % of red
+ * float *green - % of green
+ * float *blue  - % of blue
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.180
+ */
+/*FORTRAN*/
+gqpcr(
+    int            *wtype,
+    int            *pci,
+    int            *errind,
+    float          *red,
+    float          *green,
+    float          *blue)
+{
+    Gcobundl        rep;
+
+    debug(("Inquire Predefined Color Representation %d  %d \n", *wtype, *pci));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqpredcolourrep);
+
+    if (*errind = ginqpredcolourrep(CLIB_WORKSTATION_TYPE(*wtype),
+				    (Gint)*pci, &rep))
+	return;
+
+    *red = (float) rep.red;
+    *green = (float) rep.green;
+    *blue = (float) rep.blue;
+}
+
+
+/*
+ * gqlwk - inquire maximum length of workstation state table
+ *
+ * int *wtype  - workstation type
+ * int *errind - error indicator
+ * int *mplbte - polyline
+ * int *mpmbte - polymarker
+ * int *mtxbte - text
+ * int *mfabte - fill area
+ * int *mpai   - pattern
+ * int *mcoli  - color
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.182
+ */
+/*FORTRAN*/
+gqlwk(
+    int            *wtype,
+    int            *errind,
+    int            *mplbte,
+    int            *mpmbte,
+    int            *mtxbte,
+    int            *mfabte,
+    int            *mpai,
+    int            *mcoli)
+{
+    Gwstables       tables;
+
+    debug(("Inquire Maximum Length of Workstation State Tables %d \n", *wtype));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqmaxwssttables);
+
+    if (*errind = ginqmaxwssttables(CLIB_WORKSTATION_TYPE(*wtype),
+				    &tables))
+	return;
+
+    *mplbte = (int) tables.line;
+    *mpmbte = (int) tables.mark;
+    *mtxbte = (int) tables.text;
+    *mfabte = (int) tables.fill;
+    *mpai = (int) tables.pat;
+    *mcoli = (int) tables.colour;
+}
+
+
+/*
+ * gqsgp - inquire number of segment priorities supported
+ *
+ * int *wtype  - workstation type
+ * int *errind - error indicator
+ * int *nsg    - number of segment priorities supported (returned)
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.183
+ */
+/*FORTRAN*/
+gqsgp(
+    int            *wtype,
+    int            *errind,
+    int            *nsg)
+{
+    debug(("Inquire Number of Segment Priorities Supported %d \n", *wtype));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqnumsegpri);
+
+    *errind = ginqnumsegpri(CLIB_WORKSTATION_TYPE(*wtype), (Gint *) nsg);
+
+    debug(("        Number of Segment Priorities Supported %d \n", *nsg));
+}
+
+
+/*
+ * gqdsga - inquire dynamic modification of segment attributes
+ *
+ * int *wtype  - workstation type
+ * int *errind - error indicator
+ * int *sgtr   - segment transformation
+ * int *vonoff - appearing (turning visible)
+ * int *voffon - disappearing (turning invisible)
+ * int *high   - highlighting
+ * int *sgpr   - segment priority
+ * int *add    - addition of primitive to segment
+ * int *sgdel  - deletion of segment
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.184
+ */
+/*FORTRAN*/
+gqdsga(
+    int            *wtype,
+    int            *errind,
+    int            *sgtr,
+    int            *vonoff,
+    int            *voffon,
+    int            *high,
+    int            *sgpr,
+    int            *add,
+    int            *sgdel)
+{
+    Gmodseg         dyn;
+
+    debug(("Inquire Dynamic Modification of Segment Attributes %d \n", *wtype));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqmodsegattr);
+
+    if (*errind = ginqmodsegattr(CLIB_WORKSTATION_TYPE(*wtype), &dyn))
+	return;
+
+    *sgtr = (int) dyn.transform;
+    *vonoff = (int) dyn.appear;
+    *voffon = (int) dyn.disappear;
+    *high = (int) dyn.highlight;
+    *sgpr = (int) dyn.priority;
+    *add = (int) dyn.addition;
+    *sgdel = (int) dyn.deletion;
+}
+
+
+/*
+ * gqli - inquire number of available logical input devices
+ *
+ * int *wtype  - workstation type
+ * int *errind - error indicator
+ * int *nlcd   - number of locator devices
+ * int *nskd   - number of stroke devices
+ * int *nvld   - number of valuator devices
+ * int *nchd   - number of choice devices
+ * int *npcd   - number of pick devices
+ * int *nstd   - number of string devices
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.184
+ */
+/*FORTRAN*/
+gqli(
+    int            *wtype,
+    int            *errind,
+    int            *nlcd,
+    int            *nskd,
+    int            *nvld,
+    int            *nchd,
+    int            *npcd,
+    int            *nstd)
+{
+    Gnumdev         num;
+
+    debug(("Inquire Number of Availible Logical Input Devices %d \n", *wtype));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqnumavailinput);
+
+    if (*errind = ginqnumavailinput(CLIB_WORKSTATION_TYPE(*wtype), &num))
+	return;
+
+    *nlcd = (int) num.locator;
+    *nskd = (int) num.stroke;
+    *nvld = (int) num.valuator;
+    *nchd = (int) num.choice;
+    *npcd = (int) num.pick;
+    *nstd = (int) num.string;
+}
+
+
+/*
+ * gqptxr - Inquire Predefined Text Representation
+ *
+ * int	*wtype		- pointer to workstation type
+ * int	*ptxi		- pointer to predefined text index
+ * int	*errind		- pointer to error indicator
+ * int	*font		- pointer to text font
+ * int	*prec		- pointer to text precision (GSTRP, GCHARP, GSTRKP)
+ * float *chxp		- character expansion factor
+ * float *chsp		- character spacing
+ * int	*coli		- pointer to text colour index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.177
+ */
+/*FORTRAN*/
+gqptxr(
+    int            *wtype,
+    int            *ptxi,
+    int            *errind,
+    int            *font,
+    int            *prec,
+    float          *chxp,
+    float          *chsp,
+    int            *coli)
+{
+    Gtxbundl        rep;
+
+    debug(("Inquire Prederined Text Representation \n "));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqpredtextrep);
+
+    if (*errind = ginqpredtextrep(CLIB_WORKSTATION_TYPE(*wtype),
+	    (Gint) *ptxi, &rep))
+	return;
+
+    *font = (int) rep.fp.font;
+    switch (rep.fp.prec) {
+    case GSTRING:
+	*prec = (int) FORT_GSTRP;
+	break;
+    case GCHAR:
+	*prec = (int) FORT_GCHARP;
+	break;
+    case GSTROKE:
+	*prec = (int) FORT_GSTRKP;
+	break;
+    }
+    *chxp = (float) rep.ch_exp;
+    *chsp = (float) rep.space;
+    *coli = (int) rep.color;
+}
+
+
+/*
+ * gqpfar - Inquire Predefined Fill Area Representation
+ *
+ * int	*wtype		- pointer to workstation type
+ * int	*pfai		- pointer to predefined fill area index
+ * int	*errind		- pointer to error indicator
+ * int 	*ints		- pointer to fill area interior style (GHOLLO, GSOLID,
+ *			  GPATTR, GHATCH)
+ * int 	*styli		- pointer to fill area style index
+ * int 	*coli		- pointer to fill area colour index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.178
+ */
+/*FORTRAN*/
+gqpfar(
+    int            *wtype,
+    int            *pfai,
+    int            *errind,
+    int            *ints,
+    int            *styli,
+    int            *coli)
+{
+    Gflbundl        rep;
+
+    debug(("Inquire Predefined Fill Area Representation \n"));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqpredfillrep);
+
+    if (*errind = ginqpredfillrep(CLIB_WORKSTATION_TYPE(*wtype),
+				  *pfai, &rep))
+	return;
+
+    *ints = (int) rep.inter;
+    *styli = (int) rep.style;
+    *coli = (int) rep.color;
+}
+
+
+/*
+ * gqppar - Inquire Predefined Pattern Representation
+ *
+ * int	*wtype		- pointer to workstation type
+ * int	*ppai		- pointer to predefined pattern index
+ * int	*dimx, *dimy	- pointers to maximum pattern array dimensions
+ * int	*errind		- pointer to error indicator
+ * int	*dx, *dy 	- pointer to pattern array dimensions
+ * int	*colia[dimx,dimy] - pointer to pattern array
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.179
+ */
+/*FORTRAN*/
+gqppar(
+    int            *wtype,
+    int            *ppai,
+    int            *dimx,
+    int            *dimy,
+    int            *errind,
+    int            *dx,
+    int            *dy,
+    int            *colia)
+{
+    Gptbundl        rep;
+
+    debug(("Inquire Predefined Pattern Representation \n"));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqpredpatrep);
+
+    if (*errind = ginqpredpatrep(CLIB_WORKSTATION_TYPE(*wtype),
+				 (Gint) *ppai, &rep))
+	return;
+
+    *dx = (int) rep.size.x;
+    *dy = (int) rep.size.y;
+    if ((*dx > *dimx) || (*dy > *dimy)) {
+	*errind = 2001;
+	(void) gerrorhand(2001, errginqpredpatrep, (errfp));
+	return;
+    }
+
+    /*
+     * This array does NOT need to be transposed.  Take the dx-by-dy subset
+     * starting at (1,1).
+     */
+    {
+	int             col, row;
+
+	for (row = 0; row < *dy; row++)
+	    for (col = 0; col < *dx; col++)
+		*(colia + (row * *dimx + col)) =
+		    *(rep.array + (row * *dx + col));
+    }
+
+    /*
+     * free memory malloc'ed in ginqpredpatrep in inqfillareas.c by
+     * rep->array = (Gint *)malloc((size_t) (j * sizeof(int))).
+     */
+    FREE(rep.array);
+}
+
+
+/*
+ * gqdlc - Inquire Default Locator Device Data
+ *
+ * int	*wtype		- pointer to workstation type
+ * int	*devno		- pointer to logical input device number
+ * int	*n		- pointer to list element requested
+ * int	*mldr		- pointer to dimension of data record array
+ * int	*errind		- pointer to error indicator
+ * float *dpx,*dpy	- pointers to default initial locator position
+ * int	*ol		- pointer to number of available prompt/echo types
+ * int	*pet		- pointer to nth element of list of available 
+ *			      prompt/echo types
+ * float *earea[4]	- pointer to default echo area in device coordinates
+ *			      XMIN, XMAX, YMIN, YMAX
+ * int	*ldr		- pointer to number of array elements used in data 
+ *			      record
+ * char *datrec		- pointer to data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.185
+ */
+/*FORTRAN*/
+gqdlc(
+    int            *wtype,
+    int            *devno,
+    int            *n,
+    int            *mldr,
+    int            *errind,
+    float          *dpx,
+    float          *dpy,
+    int            *ol,
+    int            *pet,
+    float          *earea,
+    int            *ldr,
+    char           *datrec)
+{
+    Gdefloc         data;
+    int             il;
+    int            *ia;
+    float          *ra;
+    int             rl;
+    int             sl;
+    int            *lstr;
+    Gchar         **str;
+
+    debug(("Inquire Default Locator Device Data \n"));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqdefloc);
+
+    if (*errind = ginqdefloc(CLIB_WORKSTATION_TYPE(*wtype), (Gint) *devno,
+			     &data))
+	return;
+
+    *dpx = (float) data.position.x;
+    *dpy = (float) data.position.y;
+    *ol = (int) data.pets.number;
+    earea[0] = (float) data.e_area.xmin;
+    earea[1] = (float) data.e_area.xmax;
+    earea[2] = (float) data.e_area.ymin;
+    earea[3] = (float) data.e_area.ymax;
+    VALIDMEMBER(errind, *n, 0, data.pets.number, errginqdefloc);
+    if (*n)
+	*pet = (int) data.pets.integers[*n - 1];
+    switch (*pet) {
+    case 1:					/* default */
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 2:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 3:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 4:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 5:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 6:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+    }
+}
+
+
+/*
+ * gqdsk - Inquire Default Stroke Device Data
+ *
+ * int	*wtype		- pointer to workstation type
+ * int	*devno		- pointer to logical input device number
+ * int	*n		- pointer to list element requested
+ * int	*mldr		- pointer to dimension of data record array
+ * int	*errind		- pointer to error indicator
+ * int	*dbufsk		- pointer to maximum input buffer size
+ * int	*ol		- pointer to number of available prompt/echo types
+ * int	*pet		- pointer to nth element of list of available 
+ *			      prompt/echo types
+ * float *earea[4]	- pointer to default echo area in device coordinates
+ *			      XMIN, XMAX, YMIN, YMAX
+ * int	*buflen		- pointer to buffer length for stroke
+ * int	*ldr		- pointer to number of array elements used in data 
+ *			      record
+ * char *datrec		- pointer to data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.186
+ */
+/*FORTRAN*/
+gqdsk(
+    int            *wtype,
+    int            *devno,
+    int            *n,
+    int            *mldr,
+    int            *errind,
+    int            *dbufsk,
+    int            *ol,
+    int            *pet,
+    float          *earea,
+    int            *buflen,
+    int            *ldr,
+    char           *datrec)
+{
+    Gdefstroke      data;
+    Gint            il;
+    Gint            rl;
+    Gint            sl;
+    Gint           *ia;
+    Gfloat         *ra;
+    Gchar         **str;
+    Gint           *lstr;
+
+    debug(("Inquire Default Stroke Device Data \n"));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqdefstroke);
+
+    if (*errind = ginqdefstroke(CLIB_WORKSTATION_TYPE(*wtype),
+				(Gint) *devno, &data))
+	return;
+
+    *dbufsk = (int) data.bufsiz;
+    *ol = (int) data.pets.number;
+    earea[0] = (float) data.e_area.xmin;
+    earea[1] = (float) data.e_area.xmax;
+    earea[2] = (float) data.e_area.ymin;
+    earea[3] = (float) data.e_area.ymax;
+    VALIDMEMBER(errind, *n, 0, data.pets.number, errginqdefstroke);
+    if (*n)
+	*pet = (int) data.pets.integers[*n - 1];
+    switch (*pet) {
+    case 1:					/* default pet */
+	il = 2;
+	rl = 3;
+	sl = 0;
+	*ldr = il + rl + sl;
+	ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+	ra = (Gfloat *) malloc((size_t) (rl * sizeof(Gfloat *)));
+	str = NULL;
+	lstr = NULL;
+	ia[0] = data.record.pet1.bufsiz;
+	ia[1] = data.record.pet1.editpos;
+	ra[0] = data.record.pet1.interval.x;
+	ra[1] = data.record.pet1.interval.y;
+	ra[2] = data.record.pet1.time;
+
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	FREE(ia);
+	FREE(ra);
+	*buflen = (int) data.record.pet1.bufsiz;
+	break;
+
+    case 2:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	*buflen = (int) data.record.pet2.bufsiz;
+	break;
+    case 3:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	*buflen = (int) data.record.pet3.bufsiz;
+	break;
+    case 4:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	*buflen = (int) data.record.pet4.bufsiz;
+    }
+}
+
+
+/*
+ * gqdvl - Inquire Default Valuator Device Data
+ *
+ * int	*wtype		- pointer to workstation type
+ * int	*devno		- pointer to logical input device number
+ * int	*n		- pointer to list element requested
+ * int	*mldr		- pointer to dimension of data record array
+ * int	*errind		- pointer to error indicator
+ * float *dval		- pointer to default initial value
+ * int	*ol		- pointer to number of available prompt/echo types
+ * int	*pet		- pointer to nth element of list of available 
+ *			  prompt/echo types
+ * float *earea[4]	- pointer to default echo area in device coordinates
+ *			  XMIN, XMAX, YMIN, YMAX
+ * float *loval, *hival - pointer to minimal and maximal values
+ * int	*ldr		- pointer to number of array elements used in data 
+ *			  record
+ * char *datrec		- pointer to data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.186
+ */
+/*FORTRAN*/
+gqdvl(
+    int            *wtype,
+    int            *devno,
+    int            *n,
+    int            *mldr,
+    int            *errind,
+    float          *dval,
+    int            *ol,
+    int            *pet,
+    float          *earea,
+    float          *loval,
+    float          *hival,
+    int            *ldr,
+    char           *datrec)
+{
+    Gdefval         data;
+    Gint            il;
+    Gint            rl;
+    Gint            sl;
+    Gint           *ia;
+    Gfloat         *ra;
+    Gchar         **str;
+    Gint           *lstr;
+
+    debug(("Inquire Default Valuator Device Data \n "));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqdefval);
+
+    if (*errind = ginqdefval(CLIB_WORKSTATION_TYPE(*wtype), (Gint) *devno,
+	                     &data))
+	return;
+
+    *dval = (float) data.value;
+    *ol = (int) data.pets.number;
+    earea[0] = (float) data.e_area.xmin;
+    earea[1] = (float) data.e_area.xmax;
+    earea[2] = (float) data.e_area.ymin;
+    earea[3] = (float) data.e_area.ymax;
+    VALIDMEMBER(errind, *n, 0, data.pets.number, errginqdefval);
+    if (*n)
+	*pet = (int) data.pets.integers[*n - 1];
+    switch (*pet) {
+    case 1:					/* default device */
+	il = 0;
+	rl = 2;
+	sl = 0;
+	ia = NULL;
+	ra = (Gfloat *) malloc((size_t) (rl * sizeof(Gfloat *)));
+	str = NULL;
+	lstr = NULL;
+	*ldr = il + rl + sl;
+	ra[0] = data.record.pet1.low;
+	ra[1] = data.record.pet1.high;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	FREE(ra);
+
+	*loval = (float) data.record.pet1.low;
+	*hival = (float) data.record.pet1.high;
+	break;
+    case 2:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	*loval = (float) data.record.pet2.low;
+	*hival = (float) data.record.pet2.high;
+	break;
+    case 3:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	*loval = (float) data.record.pet3.low;
+	*hival = (float) data.record.pet3.high;
+	break;
+    }
+
+}
+
+
+/*
+ * gqdch - Inquire Default Choice Device Data
+ *
+ * int	*wtype 		- pointer to workstation type
+ * int	*devno		- pointer to logical input device number
+ * int	*n		- pointer to list element requested
+ * int	*mldr		- pointer to dimension of data record array
+ * int	*errind		- pointer to error indicator
+ * int	*malt		- pointer to maximum number of alternatives
+ * int	*ol		- pointer to number of available prompt/echo types
+ * int	*pet		- pointer to nth element of list of available 
+ *                        prompt/echo types
+ * float *earea[4]	- pointer to default echo area in device coordinates
+ *			  XMIN, XMAX, YMIN, YMAX
+ * int	*ldr		- pointer to number of array elements used in data 
+ *			  record
+ * char *datrec		- pointer to data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.187
+ */
+/*FORTRAN*/
+gqdch(
+    int            *wtype,
+    int            *devno,
+    int            *n,
+    int            *mldr,
+    int            *errind,
+    int            *malt,
+    int            *ol,
+    int            *pet,
+    float          *earea,
+    int            *ldr,
+    char           *datrec)
+{
+    Gdefchoice      data;
+    Gint            il;
+    Gint            rl;
+    Gint            sl;
+    Gint           *ia;
+    Gfloat         *ra;
+    Gchar         **str;
+    Gint           *lstr;
+    int             i;
+
+    debug(("Inquire Default Choice Device Data \n  "));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqdefchoice);
+    if (*errind = ginqdefchoice(CLIB_WORKSTATION_TYPE(*wtype),
+				(Gint) *devno, &data))
+	return;
+
+    *malt = (int) data.choices;
+    *ol = (int) data.pets.number;
+    earea[0] = (float) data.e_area.xmin;
+    earea[1] = (float) data.e_area.xmax;
+    earea[2] = (float) data.e_area.ymin;
+    earea[3] = (float) data.e_area.ymax;
+    VALIDMEMBER(errind, *n, 0, data.pets.number, errginqdefchoice);
+    if (*n)
+	*pet = (int) data.pets.integers[*n - 1];
+    switch (*pet) {
+    case 1:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 2:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 3:					/* Default pet */
+	il = 1;
+	rl = 0;
+	sl = data.record.pet3.number;
+	*ldr = il + rl + sl;
+	ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+	ra = NULL;
+	ia[0] = data.record.pet3.number;
+	lstr = (Gint *) malloc((size_t) (sl * sizeof(Gint)));
+	for (i = 0; i < sl; i++)
+	    lstr[i] = strlen(data.record.pet3.strings[i]);
+	str = data.record.pet3.strings;
+
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	FREE(ia);
+	FREE(lstr);
+	break;
+    case 4:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 5:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+    }
+
+}
+
+
+/*
+ * gqdpk - Inquire Default Pick Device Data
+ *
+ * int	*wtype		- pointer to workstation type
+ * int	*devno		- pointer to logical input device number
+ * int	*n		- pointer to list element requested
+ * int	*mldr		- pointer to dimension of data record array
+ * int	*errind		- pointer to error indicator
+ * int	*ol		- pointer to number of available prompt/echo types
+ * int	*pet		- pointer to nth element of list of available 
+ *			  prompt/echo types
+ * float *earea[4]	- pointer to default echo area in device coordinates
+ *			  XMIN, XMAX, YMIN, YMAX
+ * int	*ldr		- pointer to number of array elements used in data 
+ *			  record
+ * char	*datrec		- pointer to data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.188
+ */
+/*FORTRAN*/
+gqdpk(
+    int            *wtype,
+    int            *devno,
+    int            *n,
+    int            *mldr,
+    int            *errind,
+    int            *ol,
+    int            *pet,
+    float          *earea,
+    int            *ldr,
+    char           *datrec)
+{
+    Gdefpick        data;
+    int             il;
+    int            *ia;
+    float          *ra;
+    int             rl;
+    int             sl;
+    int            *lstr;
+    Gchar         **str;
+
+    debug(("Inquire Default Pick Device Data"));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqdefpick);
+
+    if (*errind = ginqdefpick(CLIB_WORKSTATION_TYPE(*wtype), 
+			      (Gint) *devno, &data))
+	return;
+
+    *ol = (int) data.pets.number;
+    earea[0] = (float) data.e_area.xmin;
+    earea[1] = (float) data.e_area.xmax;
+    earea[2] = (float) data.e_area.ymin;
+    earea[3] = (float) data.e_area.ymax;
+    VALIDMEMBER(errind, *n, 0, data.pets.number, errginqdefpick);
+    if (*n)
+	*pet = (int) data.pets.integers[*n - 1];
+    switch (*pet) {
+    case 1:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 2:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	break;
+    case 3:
+	il = 0;
+	rl = 0;
+	sl = 0;
+	ra = NULL;
+	ia = NULL;
+	str = NULL;
+	lstr = NULL;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+    }
+}
+
+
+/*
+ * gqdst - Inquire Default String Device Data
+ *
+ * int	*wtype		- pointer to workstation type
+ * int	*devno		- pointer to logical input device number
+ * int	*n 		- pointer to list element requested
+ * int	*mldr		- pointer to dimension of data record array
+ * int	*errind		- pointer to error indicator
+ * int	*mbuff		- pointer to maximum string buffer size
+ * int	*ol		- pointer to number of available prompt/echo types
+ * int	*pet		- pointer to nth element of list of available 
+ *			  prompt/echo types
+ * float *earea[4]	- pointer to default echo area in device coordinates
+ *			  XMIN, XMAX, YMIN, YMAX
+ * int	*buflen		- pointer to buffer length of string
+ * int	*ldr		- pointer to number of array elements used in data 
+ *			  record
+ * char	*datrec		- pointer to data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.188
+ */
+/*FORTRAN*/
+gqdst(
+    int            *wtype,
+    int            *devno,
+    int            *n,
+    int            *mldr,
+    int            *errind,
+    int            *mbuff,
+    int            *ol,
+    int            *pet,
+    float          *earea,
+    int            *buflen,
+    int            *ldr,
+    char           *datrec)
+{
+    Gdefstring      data;
+    Gint            il;
+    Gint            rl;
+    Gint            sl;
+    Gint           *ia;
+    Gfloat         *ra;
+    Gchar         **str;
+    Gint           *lstr;
+
+    debug(("Inquire Default String Device Data \n "));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqdefstring);
+    if (*errind = ginqdefstring(CLIB_WORKSTATION_TYPE(*wtype),
+			        (Gint) *devno, &data))
+	return;
+
+    *mbuff = (int) data.bufsiz;
+    *ol = (int) data.pets.number;
+    earea[0] = (float) data.e_area.xmin;
+    earea[1] = (float) data.e_area.xmax;
+    earea[2] = (float) data.e_area.ymin;
+    earea[3] = (float) data.e_area.ymax;
+    VALIDMEMBER(errind, *n, 0, data.pets.number, errginqdefstring);
+    if (*n)
+	*pet = (int) data.pets.integers[*n - 1];
+    switch (*pet) {
+    case 1:
+	il = 2;
+	rl = 0;
+	sl = 0;
+	lstr = NULL;
+	ra = NULL;
+	str = NULL;
+	*ldr = il + rl + sl;
+	ia = (Gint *) malloc((size_t) (il * sizeof(Gint *)));
+	ia[0] = data.record.pet1.bufsiz;
+	ia[1] = data.record.pet1.position;
+	gprecc(il, ia, rl, ra, sl, lstr, str, *mldr, errind, ldr, datrec);
+	FREE(ia);
+	*buflen = (int) data.record.pet1.bufsiz;
+	break;
+    }
+}
+
+
+/*
+ * gqdds - Inquire Default Deferral State Values
+ *
+ * int	*wtype		- pointer to workstation type
+ * int	*errind		- pointer to error indicator
+ * int	*defmod		- pointer to default deferral mode (GASAP, GBNIG, GBNIL
+ *			  GASTI)
+ * int	*regmod		- pointer to default implicit regeneration mode (GSUPPD,
+ *			  GALLOW)
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.173
+ */
+/*FORTRAN*/
+gqdds(
+    int            *wtype,
+    int            *errind,
+    int            *defmod,
+    int            *regmod)
+{
+    Gdefer          def;
+
+    debug(("Inquire Default Deferral State Values \n"));
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqdefdeferst);
+    if (*errind = ginqdefdeferst(CLIB_WORKSTATION_TYPE(*wtype), &def))
+	return;
+
+    *defmod = (int) def.defmode;
+    switch (def.irgmode) {
+    case GSUPPRESSED:
+	*regmod = (int) FORT_GSUPPD;
+	break;
+    case GALLOWED:
+	*regmod = (int) FORT_GALLOW;
+	break;
+    }
+}
+
+
+/*
+ * gqegdp - Inquire List Element of Available Generalized Drawing Primitives
+ *
+ * int	*wtype		- pointer to workstation type
+ * int  *n		- list element requested
+ * int	*errind		- pointer to error indicator
+ * int	*ngdp		- number of available GDPs
+ * int	*gdpl		- nth element of list of GDP identifiers
+ *
+ * Returns: error 2002 as well as ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.181
+ */
+/*FORTRAN*/
+gqegdp(
+    int            *wtype,
+    int            *n,
+    int            *errind,
+    int            *ngdp,
+    int            *gdpl)
+{
+    Ggdplist        gdps;
+
+    debug(
+	("Inquire List Element of Available Generalized Drawing Primitives\n"));
+
+    VALIDTYPE(errind, *wtype, 1, NUMWTYPES, errginqavailgdp);
+    if (*errind = ginqavailgdp(CLIB_WORKSTATION_TYPE(*wtype), &gdps))
+	return;
+
+    /* set return values not dependent on range check */
+    *ngdp = gdps.number;
+
+    /* is the element they are asking for in the list?... */
+    VALIDMEMBER(errind, *n, 0, gdps.number, errginqavailgdp);
+
+    if (*n)
+	*gdpl = (int) gdps.indices[*n - 1];
+
+    /*
+     * Free memory allocated by the C call.
+     */
+    FREE(gdps.functions);
+    FREE(gdps.indices);
+}
+
+
+/*
+ * gqgdp - Inquire Generalized Drawing Primitive
+ *
+ * int	*wtype		- pointer to workstation type
+ * int  *gdp		- GDP identifier
+ * int	*errind		- pointer to error indicator
+ * int	*nbnd		- number of sets of attributes used
+ * int	*bndl		- list of sets of attributes used (GPLBND, GPMBND,
+ *			  GTXBND, GFABND)
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.182
+ */
+/*FORTRAN*/
+gqgdp(
+    /* ARGSUSED */
+    int            *wtype,
+    int            *gdp,
+    int            *errind,
+    int            *nbnd,
+    int            *bndl)
+{
+}

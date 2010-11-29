@@ -1,0 +1,23 @@
+! err491_delete_child_var.jnl
+! *sh* 4/99
+
+! when a grid-changing variable definition was redefined (replaced)
+! Its child variables were not removed, leading to wrong results
+
+! fixed with mod to XEQ_DEFINE
+
+! why does ypolymark depend on xpolyshape ??
+let xpolyshape = X[X=1:3:1]
+let ypolyshape = X[X=10:30:10]
+
+! THE ACT OF DEFINING XPOLYMARK CHANGES THE OUTCOME ...
+LET xpolymark = XSEQUENCE(xpolyshape) * 1
+LET ypolymark = XSEQUENCE(ypolyshape) * 1
+
+list  ypolymark  ! correct values: 1,2,3
+
+! THE ACT OF DEFINING XPOLYMARK CHANGES THE OUTCOME ...
+LET xpolymark = XSEQUENCE(xpolyshape) * 1
+LET ypolymark = XSEQUENCE(ypolyshape) * 1
+
+list  ypolymark	! incorrect values: 10, 20, 30

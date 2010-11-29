@@ -1,0 +1,10 @@
+C 	century.cmn
+C
+C	Common variables used in modifications to time axis labeling 
+C
+C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots, 
+C              do not make small tics by default.
+
+
+	LOGICAL*4 cenflag, monyrlab, multicenflag
+	COMMON/CENTURY/cenflag, monyrlab, multicenflag

@@ -1,0 +1,63 @@
+! err611_return_precision.jnl
+! 17-Nov-08 ACM
+
+! See bug 1611, where say "a`95,p=1`" yielded "a 95" but
+! "a`94,p=1`" yielded "a94"
+
+say "a`95,p=1`"
+say "a`94,p=1`"
+say "a`95,p=1`"
+say "a`949,p=1`"
+say "a`950,p=1`"
+
+! Note that an immediate expr with prec=0 returns an integer.
+say "a`95,p=0`"
+say "a`94,p=0`"
+say "a`95,p=0`"
+say "a`949,p=0`"
+say "a`950,p=0`"
+
+! Tests for non-integers
+! We always return at least one sig digit
+say "a`0.1,p=0`"
+
+say "a`-95,p=1`"
+say "a`-95.99,p=1`"
+say "a`-95.001,p=1`"
+
+say "a`-94,p=1`"
+say "a`-94.99,p=1`"
+say "a`-94.001,p=1`"
+
+say "a`-95,p=1`"
+say "a`-95.99,p=1`"
+say "a`-95.001,p=1`"
+
+say "a`-949,p=1`"
+say "a`-949.99,p=1`"
+say "a`-949.001,p=1`"
+
+say "a`-950,p=1`"
+say "a`-950.99,p=1`"
+say "a`-950.001,p=1`"
+
+
+say "a`-95,p=0`"
+say "a`-95.99,p=0`"
+say "a`-95.001,p=0`"
+
+say "a`-94,p=0`"
+say "a`-94.99,p=0`"
+say "a`-94.001,p=0`"
+
+say "a`-95,p=0`"
+say "a`-95.99,p=0`"
+say "a`-95.001,p=0`"
+
+say "a`-949,p=0`"
+say "a`-949.99,p=0`"
+say "a`-949.001,p=0`"
+
+say "a`-950,p=0`"
+say "a`-950.99,p=0`"
+say "a`-950.001,p=0`"

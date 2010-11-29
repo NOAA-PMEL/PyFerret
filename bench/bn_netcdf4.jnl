@@ -1,0 +1,82 @@
+! bn_netcdf4.jnl
+! test syntax for controling NetCDF-4 intput and output.
+
+
+
+show nccache
+
+set nccache/siz=4
+
+show nccache
+cancel nccache
+
+show nccache
+
+set nccache/siz=8
+show nccache
+cancel nccache 
+
+! --------------------------
+! Set choice of chunking.
+can dat/all; can var/all; can mem/all
+
+use coads_climatology
+set var/title=deflate_x30_y30 sst
+
+save/file=nc4_deflate4.nc/clobber/ncformat=4/deflate=1/xchunk=30/ychunk=30/tchunk=1 sst
+
+! With /NCFORMAT=3 the other stuff is meaningless.  Will see NOTEs
+yes? save/file=nc4_nodeflate3.nc/clobber/ncformat=3/deflate=1/xchunk=30/ychunk=30/tchunk=1 sst
+
+! --------------------------
+! Compare choices of chunking.
+can var/all; can mem/all
+
+set var/title=deflate_x180_y90 sst
+save/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk=180/ychunk=90/tchunk=1 sst
+
+
+set var/title=undeflated sst
+
+save/file=nc4_nodeflate3.nc/clobber/ncformat=3 sst
+
+save/file=nc4_deflate4_xyt.nc/clobber/ncformat=4/deflate/shuffle/tchunk=2/xchunk=30/ychunk=20  sst
+save/file=nc4_deflate4_defaultchunk.nc/clobber/ncformat=4/deflate/shuffle sst
+
+
+! Write variable as INT
+CAN DAT/all; can var/all; can mem/all
+use levitus_climatology
+SET VAR/OUTTYPE=int/BAD=-99999 temp
+save/clobber/ncformat=classic/file=nc4_inttemp_classic.nc temp
+
+set list/ncformat=4/deflate=1/xchunk=10/ychunk=10/zchunk=1
+save/clobber/file=nc4_inttemp_set_list_deflate_chunk.nc temp
+
+save/clobber/shuffle=1/file=nc4_inttemp_shuffle_set_list_deflate_chunk.nc temp
+
+cancel list/all
+set list/ncformat=classic
+save/clobber/file=nc4_inttemp_set_classic.nc temp
+
+cancel list/all
+
+! Check SHOW LIST, and CANCEL LIST
+
+set list/xchunk=30/ychunk=20/tchunk=5/zchunk=1/deflate=1/shuffle=0/ncformat=4
+sh list/all
+
+can list/all
+sh list/all
+
+! Intentional errors:
+can dat/all
+use coads_climatology
+set mode ignore
+! If set any chunksizes, must set them all
+save/file=nc4_deflate4_t1.nc/clobber/ncformat=4/deflate/shuffle/tchunk=1  sst
+
+! Chunk sizes bigger than dim sizes
+save/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=18/tchunk=15 sst
+can mode ignore
+

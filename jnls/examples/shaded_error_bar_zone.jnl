@@ -1,0 +1,60 @@
+! 7/98 - demonstrate a shaded region (representing a region of uncertainty)
+! behind a line plot
+! *acm* 7/01 update /ylimits to /vlimits
+
+! This example uses a time series -- which has a special difficulty
+
+! Description: Demo of shaded (error uncertainty) region around line plot
+
+! First example -- where time series axis is in units of hours
+DEFINE AXIS/t=1-jan-1980:1-jan-1981:24/UNIT=hours thr
+LET fcn = SIN(T[gt=thr]/500)
+
+! basic plot of function
+PLOT/VLIMITS=-2:2 fcn
+
+! 2D version of function
+LET fcn_2d = z[z=-2:2:.4] - fcn
+
+! illustrate what the 2D function looks like: positive above, negative below
+FILL/PALETTE=centered fcn_2d
+
+! now illustrate a shaded uncertainty regionaround the time series
+FILL/LEV=(-.3)(.3)/PALETTE=gray/NOKEY/TITLE="My Function" fcn_2d
+PLOT/OVER/NOLAB fcn
+MESSAGE  ! pause
+
+!================
+! second example -- a complication if time axis is not in hours
+DEFINE AXIS/t=1-jan-1980:1-jan-1981:1/UNIT=days tday
+LET fcnDAY = SIN(T[gt=tday]/(500/24))
+
+! basic plot of function
+PLOT/VLIMITS=-2:2 fcnDAY
+
+! 2D version of function
+LET fcnDAY_2d = z[z=-2:2:.4] - fcnDAY
+
+! the background plot ...
+! (define a 1-color light gray palette to taste --
+! see "Fpalette -more green.spk" as an example )
+FILL/LEV=(-.3)(.3)/PALETTE=gray/NOKEY/TITLE="My Function" fcnDAY_2d
+
+! and the line plot fails!!
+PLOT/OVER/NOLAB fcnDAY  	! where did the plot go???
+MESSGE
+
+! the problem is evident if you use the command "PPL LIST TAXIS"
+! after both the FILL and the PLOT graphics. You'll see that the
+! value od "DT" is different in the 2 cases. The PLOT command ALWAYS
+! creates PLOT+ time axes in units of hours (DT=60), whereas the FILL
+! (or CONTOUR or SHADE) command uses the original units of the time axis.
+! So, to get around the problem you have to regrid the 2D field to an
+! hourly time axis before plotting it.
+
+! successful plot using hours...
+FILL/LEV=(-.3)(.3)/PALETTE=gray/NOKEY/TITLE="Yes" fcnDAY_2d[gt=thr]
+PLOT/OVER/NOLAB fcn
+
+
+

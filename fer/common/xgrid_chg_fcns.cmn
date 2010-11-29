@@ -1,0 +1,90 @@
+* XGRID_CHG_FCNS.CMN - common declaration of "grid changing functions" --
+* functions which are capable of delivering results on a grid which is
+* differs from the straightforward implications of the input arguments.
+
+* V450:
+* V500: 1/99 added gfcn_arg_type in support of string arguments
+* V533: 6/01 *sh* added gfcn_rtn_type in support of string functions
+
+	INTEGER		pmax_grid_chg_fcns,
+     .			pmax_gfcn_args
+	PARAMETER     (	pmax_grid_chg_fcns = 400,
+     .			pmax_gfcn_args = 1000 )
+
+	COMMON / XGRID_CHG_FCN /
+     .				gfcn_num_internal, 
+     .				gfcn_version,
+     .				gfcn_num_reqd_args, 
+     .				gfcn_arg_ptr,
+     .				gfcn_arg_type, 
+     .				gfcn_rtn_type, 
+     .				gfcn_axis_will_be, 
+     .				gfcn_axis_reduction,
+     .				gfcn_has_vari_args, 
+     .				gfcn_piecemeal_ok, 
+     .				gfcn_axis_implied_from, 
+     .				gfcn_arg_extend_lo, 
+     .				gfcn_arg_extend_hi, 
+     .				gfcn_name,
+     .				gfcn_descr,
+     .				gfcn_arg_name,
+     .				gfcn_arg_units,
+     .				gfcn_arg_descr
+
+
+
+! for a later version -- support for "multi-component variables and functions"
+!     .				gfcn_num_comps, 
+!     .				gfcn_arg_num_comps, 
+
+* number of internally-defined grid-changing functions (inside Ferret)
+	INTEGER		gfcn_num_internal
+
+* version number of grid changing function (tells what features it supports)
+	REAL		gfcn_version          ( pmax_grid_chg_fcns )
+
+* name of grid changing function
+	CHARACTER*40	gfcn_name	      ( pmax_grid_chg_fcns )
+
+* text description of grid changing function
+	CHARACTER*128	 gfcn_descr	      ( pmax_grid_chg_fcns )
+
+* number of arguments and possibility of variable arguments
+	INTEGER		gfcn_num_reqd_args    ( pmax_grid_chg_fcns )
+	LOGICAL		gfcn_has_vari_args    ( pmax_grid_chg_fcns )
+
+* data type of function return
+	INTEGER		gfcn_rtn_type	   ( pmax_gfcn_args )
+
+!* number of components in the result (not used in V450)
+!	INTEGER		gfcn_num_comps    ( pmax_grid_chg_fcns )
+
+* type of axis of result: merged from args, normal, abstract, or custom
+	INTEGER		gfcn_axis_will_be    ( 4, pmax_grid_chg_fcns )
+
+* how to interpret a range on the result axis: pgc_span_retained or pgc_span_reduced
+	INTEGER		gfcn_axis_reduction  ( 4, pmax_grid_chg_fcns )
+
+* for memory optimization: axes where calculation may be performed piecemeal
+	LOGICAL		gfcn_piecemeal_ok  ( 4, pmax_grid_chg_fcns )
+
+* pointer from function to array of information about arguments
+	INTEGER		gfcn_arg_ptr       ( pmax_grid_chg_fcns )
+
+* for each argument: what is its required data type
+	INTEGER		gfcn_arg_type	   ( pmax_gfcn_args )
+
+* for each argument: should its axes be merged into the result grid?
+	LOGICAL		gfcn_axis_implied_from( 4, pmax_gfcn_args )
+
+* for each argument: does Ferret need to extend arg limits relative to result
+	INTEGER		gfcn_arg_extend_lo ( 4, pmax_gfcn_args ),
+     .			gfcn_arg_extend_hi ( 4, pmax_gfcn_args )
+
+* for each argument: what is the name, units, and description of it?
+	CHARACTER	gfcn_arg_name(pmax_gfcn_args)*40 ,
+     .			gfcn_arg_units(pmax_gfcn_args)*40,
+     .			gfcn_arg_descr(pmax_gfcn_args)*128
+
+!* for each argument: how many components in it?
+!	INTEGER		gfcn_arg_num_comps ( pmax_gfcn_args )

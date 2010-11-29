@@ -1,0 +1,18 @@
+* TBLE_INC.DECL - converted to Unix 2.26.91           
+* COMMON for PLOT+ with all variables declared
+* created for TMAP usage by Steve Hankin 7/88
+	REAL	PTAB
+	REAL	DTTAB
+	REAL	FTTAB
+	REAL	WTTAB
+	REAL	STTAB
+	REAL	PCTAB
+	REAL	UNIT
+	INTEGER	NPTAB
+	INTEGER	NDTTAB
+	INTEGER	NFTTAB
+	INTEGER	NWTTAB
+	INTEGER	NSTTAB
+	INTEGER	NPCTAB
+	INTEGER	NUNIT
+* requires: INCLUDE 'PPLV11INC:TBLE.INC'                                    

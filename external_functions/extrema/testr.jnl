@@ -1,0 +1,36 @@
+
+use etopo60
+let neigh = $1%10%
+
+let xmin = 200
+let xmax = 280
+let ymin = 0
+let ymax = 60
+fill/pal=land_sea rose[x=`xmin`:`xmax`,y=`ymin`:`ymax`]
+contour/over/lev=(-6000,4000,500) rose[x=`xmin`:`xmax`,y=`ymin`:`ymax`]
+
+! use script for easier control
+go label_hi_lo rose label `neigh`, `neigh` blue red
+
+! add more labels as H and L?
+let n = min(2, `neigh - 1`)
+
+go label_hi_lo rose mark `n`, `n` purple green
+
+
+!let rosehi = findhi(rose[x=`xmin`:`xmax`,y=`ymin`:`ymax`], `neigh`, `neigh`)
+!let roselo = findlo(rose[x=`xmin`:`xmax`,y=`ymin`:`ymax`], `neigh`, `neigh`)
+
+!let xph = rosehi[i=1]
+!let yph = rosehi[i=2]
+!let zph = rosehi[i=3]
+
+!go polymark poly/over/nolab/pal=white xph,yph,zph,rectangle,1.2
+!repeat/k=1:20 (let xp=xph[j=`k`]; let yp=yph[j=`k`]; let zp=zph[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.5`, 0,0, 0.08, "@cr`zp`")
+
+!let xpl = roselo[i=1]
+!let ypl = roselo[i=2]
+!let zpl = roselo[i=3]
+
+!go polymark poly/over/nolab/pal=red xpl,ypl,zpl,rectangle,1.2
+!repeat/k=1:20 (let xp=xpl[j=`k`]; let yp=ypl[j=`k`]; let zp=zpl[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.5`, 0,0, 0.08, "@cr`zp`")

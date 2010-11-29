@@ -1,0 +1,25 @@
+\canc mode verify
+! bn_subspan_modulo.sub1
+! *sh* 11/2002
+
+! test that a netCDF file which *lacks* a modulo length can autimatically assign it
+
+! usage yes? GO bn_subspan_modulo.sub1 X
+
+! show the axis as it comes in
+say "Axis as created:"
+show axis ($1)sub
+
+! write the axis into a netCDF file
+let A = ($1)[g($1)=($1)sub]
+save/file=test_mod.cdf/clobber a
+sp ncdump -c test_mod.cdf | sed -e '/modulo/d' | ncgen -o test_nomod.cdf
+cancel var A; cancel axis ($1)sub
+
+! examine the axis that is read back
+sp ncdump -h test_nomod.cdf | grep modulo
+use test_nomod
+say "Axis as inferred from netCDF file:"
+show axis ($1)sub
+cancel data test_nomod
+set mode/last verify

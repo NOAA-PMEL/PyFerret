@@ -1,0 +1,9 @@
+\ cancel mode verify
+! unmagnify.jnl  (11/93)
+
+! Description: restore the plot origin and axis lengths to default values
+
+set mode/last verify
+
+GO magnify 1
+

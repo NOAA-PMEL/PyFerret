@@ -1,0 +1,22 @@
+! err550_define_axis_expression.jnl
+! reported by A. Wittenberg.
+!  Axes defined from an expression only took the first part of the
+!  expression The first two axis defines get it wrong (fix in xeq_define.F)
+
+let a = {1,2,3}
+let b = {2,3,4}
+
+def ax/x xax = a/2 + b/2
+list x[gx=xax]
+
+def ax/x xax = (a/2) + (b/2)
+list x[gx=xax]
+
+def ax/x xax = (a/2 + b/2)
+list x[gx=xax]
+
+
+!  Note (acm)  The older syntax defines the axis correctly
+
+def axis/from_data/x/name=xax a/2 + b/2
+list x[gx=xax]

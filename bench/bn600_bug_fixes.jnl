@@ -1,0 +1,97 @@
+! bn600_bug_fixes.jnl
+! test various fixes that went into version 6.00
+! 8/05 *acm*
+!
+
+! Bug 1129 axis formatting when /HLIM sets axis length < 0.15 deg
+GO bn_reset
+GO err581_hlim_axislab.jnl
+
+! Bug 1275 stray characters appear in data lines listing string data
+GO bn_reset
+GO err581_list_stray_chars.jnl
+
+! pattern matching for SHO FUNC failed to match all EF's 
+GO bn_reset
+GO err581_sho_func_pattern_match.jnl
+
+! FILL on data with subspan modulo axis, got wrong data
+GO bn_reset
+GO err581_subspanx_fill_bug.jnl
+
+! bug 1318 Spurious error message on USE file where file has axes with bounds.
+GO bn_reset
+GO err581_use_bounds.jnl
+
+! Bug 1332 variable not scaled unless it is first variable in stepfile.
+GO bn_reset
+GO err581_des_scale.jnl 
+
+! Bug 1335 Zero-contour should be dark line.
+GO bn_reset
+GO err581_contour_zero_lev.jnl
+
+! Bug 1339, code hangs with this combination of (-INF)(INF) levels and shakey
+GO bn_reset
+GO err581_shakey_inf.jnl
+
+! Bug 918, immediate mode parsing in IF blocks
+GO bn_reset
+GO err581_if_conditional.jnl
+
+! Bug 899 
+! Ungraceful STOP if we asl for multi-var transformations on axis where there is no data
+GO bn_reset
+GO err581_illegal_trans.jnl
+
+! Bug 491
+! missing flag gets scaled by scale and offset factors!
+GO bn_reset
+GO err581_missing_scale_off.jnl
+
+! bug 1363
+! SHOW GRID and other output have wrong dates, non-std calendar axesv  
+GO bn_reset
+GO err581_cal_dates_output.jnl
+
+! bug 1365
+! STOP on shade command when modulo-regridding a time-limited nonstd calendar 
+GO bn_reset
+GO err581_noleap_mod.jnl
+
+
+! bug 1392
+! CANCEL DATA errors
+GO bn_reset
+GO err581_cancel_data.jnl
+
+! bug 1394
+! parsing time units of "months_since_event"
+! CANCEL DATA errors
+GO bn_reset
+GO err581_since_units.jnl
+
+
+! bug 1395
+! parsing exponent expressions: 1.0e-5+0*7 misinterpreted
+! CANCEL DATA errors
+GO bn_reset
+GO err581_exp_spaces.jnl
+
+! bugs 439,1390: applying command context
+GO bn_reset.jnl
+GO err581_command_cx.jnl
+
+! bug 1401: define 1-point axis with bounds; gets bounds wrong
+GO bn_reset.jnl
+GO err581_define_1pt_bounds.jnl
+
+! Bug in strrindex when 1st argument is a list of strings
+GO bn_reset.jnl
+GO err581_strrindex.jnl
+
+! POLYGON/LINE over a depth axis.
+GO bn_reset.jnl
+GO err581_poly_rev.jnl
+
+

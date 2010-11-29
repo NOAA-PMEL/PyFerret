@@ -1,0 +1,9 @@
+''' $Id$
+.TH XGKS 3 "23 July 1991" "XGKS Version 2"
+.SH NAME
+XGKS - A GKS library for the X Window System
+.SH SYNOPSIS
+.ft B
+.nh
+#include <xgks.h>
+.sp

@@ -1,0 +1,36 @@
+! bn551_bug_fixes.jnl
+! test various fixes that went into version 5.51
+! 2/03 *acm*
+!
+
+! FILL plots in viewports defined with /AXES, fix clipping bug,
+! and allow color keys to plot beyond viewport limits.
+
+go bn_reset
+GO err550_view_axes_fill.jnl
+
+
+! position on page was incorrect, of first viewport plotted when 
+! defined as a VIEW/AXES viewport.
+go bn_reset
+GO err550_view_axes_position.jnl
+
+! SHADE bug: hlimits, vlimits without effect
+go bn_reset
+GO err550_shade_limits.jnl
+
+! Redefining an axis with a new calendar definition
+go bn_reset
+GO err550_redefine_calendar_axis.jnl
+
+! Bug in defining axis from an expression.
+go bn_reset
+GO err550_define_axis_expression.jnl
+
+! Bug in reading seconds from time origin in nc file.
+go bn_reset
+GO err550_nc_seconds.jnl
+
+! Bug in plotting polymarker dots with pen numbers gt 6
+go bn_reset
+GO err550_dots_thickpens.jnl

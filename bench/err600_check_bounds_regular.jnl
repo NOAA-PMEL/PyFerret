@@ -1,0 +1,14 @@
+! err600_check_bounds_regular.jnl
+! Previously TM_CHECK_BNDS had not been used to check bounds on regular axes.
+! bug1434
+
+! 19-Sep-2006 ACM
+
+use coads_climatology
+save/clobber/l=1/j=45/file=b.nc/bounds sst
+can data/all
+use b
+
+! previously had errors:
+! bounds COADSX_bnds do not enclose point on axis COADSX
+! Substituting coordinate midpoints

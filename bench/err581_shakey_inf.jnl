@@ -1,0 +1,13 @@
+! err581_shakey_inf.jnl
+! acm 9/7/2005
+
+! see bug report 1339; code hangs with this combination of (-INF)(INF) levels
+! and SHAKEY with klab_dig=0 (argument 5)
+
+use coads_climatology
+fill/l=1/lev=(-inf)(0,30,2)(inf)/key/set sst
+ppl shakey 1,0,.12,0,0,4,2,8,7.1,7.4
+ppl fill
+
+ppl/reset  ! undo the SHAKEY setting.
+

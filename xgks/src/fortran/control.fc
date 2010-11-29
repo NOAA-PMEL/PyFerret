@@ -1,0 +1,549 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Control functions :
+ *       gopks()
+ *       gclks()
+ *       gopwk()
+ *	 gclwk()
+ *       gacwk()
+ *	 gdawk() 
+ * 	 gclrwk()
+ *	 grsgwk()
+ * 	 guwk()
+ *	 gsds()
+ *	 gmsg()
+ *	 gmsgs()
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/param.h>
+#include <string.h>
+#include <limits.h>
+#include "xgks.h"
+#include "gks_defines.h"
+#include "fortxgks.h"
+
+#ifdef lint
+    static void	lint_malloc(n) size_t n; { n++; }
+    static void	lint_realloc(p,n) char *p; size_t n; { p+=n; }
+#   define	malloc(n)	(lint_malloc(n), 0)
+#   define	realloc(p,n)	(lint_realloc(p,n), 0)
+#else
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+/* 
+ * Use of the pathconf() function would be more rigorous, but this should
+ * suffice.
+ */
+#ifndef PATH_MAX
+#   define PATH_MAX	_POSIX_PATH_MAX
+#endif
+
+#define INITPOINTS 2048
+#define INITTEXT 512
+#define INITINT 1024
+
+extern int	error_lun;
+extern char     *getlunname();
+extern int	currfortpoints;
+extern int	currforttext;
+extern int	*fortint;
+extern int	currfortint;
+extern char	**wtypes;
+extern char	*xgks_connection;
+extern char	*forttext;
+extern FILE	*errfp;
+extern Gpoint	*fortpoints;
+extern int	NUMWTYPES;
+
+
+/*
+ * gopks - Open  GKS 
+ *	Initialize the static points array (used throughout fortran binding).
+ *	Initialize the static text area (ditto).
+ *	Initialize the static integer area (ditto ditto).
+ *	Set up file pointer (see below for description of tricky stuff)
+ * 
+ * int *errfile			error message file
+ * int *memory			amount of memory units
+ * 
+ * Returns: ANSI standard errors for this function.
+ * 
+ * See also: ANSI standard p.74
+ */
+   void
+/*FORTRAN*/
+gopks(
+    int            *errfile,
+    int            *memory)
+{
+    Gstrlist        wstype;
+    Gint            i;
+    char	   *fname;
+
+    debug(("Open  GKS\n"));
+
+    /* initialize the static points array */
+    if (currfortpoints == 0 || fortpoints == NULL) {
+	currfortpoints	= INITPOINTS;
+	fortpoints	= (Gpoint*)malloc((size_t)(currfortpoints*
+						   sizeof(Gpoint)));
+    }
+
+    /* initialize the static text area */
+    if (currforttext == 0 || forttext == NULL) {
+	currforttext	= INITTEXT;
+	forttext	= (Gchar*)malloc((size_t)(currforttext*sizeof(Gchar)));
+    }
+
+    /* initialize the static integer area */
+    if (currfortint == 0 || fortint == NULL) {
+	currfortint	= INITINT;
+	fortint		= (Gint*)malloc((size_t)(currfortint*sizeof(Gint)));
+    }
+
+    debug(("errfile = %d\n", *errfile));
+
+    error_lun	= *errfile;
+
+    if (error_lun != FORTSTDIN && error_lun != FORTSTDOUT) {
+	/*
+	 * Set up corresponding file descriptor for error-file logical unit
+	 * number. getlunname() is an external routine that, given a logical
+	 * unit number, returns the associated filename.
+	 */
+	fname	= getlunname(error_lun);
+
+	if (fname[0] == 0) {
+	    errfp = stderr;
+	} else {
+	    errfp = fopen(fname, "w");
+	}
+    } else {
+	errfp = stderr;
+	fname	= "<standard error>";
+    }
+
+    debug(("Error filename = %s length = %d\n", fname, strlen(fname)));
+
+    (void) gopengks((Gfile *) (errfp), (Glong) * memory);
+
+    /* inquire available workstation types */
+    (void) ginqavailwstypes(&wstype);
+
+    /* allocate space to store ws types */
+    NUMWTYPES = wstype.number;
+    wtypes = (char **) malloc((size_t) (NUMWTYPES * sizeof(char *)));
+
+    for (i = 0; i < wstype.number; i++) {
+	wtypes[i] = wstype.strings[i];
+	debug(("wstype %d = %s\n", i, wtypes[i]));
+    }
+
+    /* free memory malloc'ed by ginqavailwstypes */
+    GKS_FREE(wstype.strings);
+}
+
+
+/*
+ * gclks - CLOSE GKS free memory malloc'ed for use while GKS was open
+ * 
+ * Returns: ANSI standard errors for this function.
+ * 
+ * See also: ANSI standard p.74
+ */
+    void
+/*FORTRAN*/
+gclks()
+{
+    debug(("Close GKS \n"));
+
+    (void) gclosegks();
+
+    /* free memory allocated for use while GKS Fortran API was open */
+    GKS_FREE(fortpoints);
+    fortpoints		= NULL;
+    currfortpoints	= 0;
+
+    GKS_FREE(forttext);
+    forttext		= NULL;
+    currforttext	= 0;
+
+    GKS_FREE(fortint);
+    fortint		= NULL;
+    currfortint		= 0;
+
+    GKS_FREE(wtypes);
+    wtypes		= NULL;
+
+    if (xgks_connection != NULL) {
+	GKS_FREE(xgks_connection);
+	xgks_connection	= NULL;
+    }
+}
+
+
+/*
+ * gopwk - Open Workstation
+ *	int *wkid		workstation identifier
+ *	int *conid		connection identifier
+ *	int *wtype		workstation type
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+    void
+/*FORTRAN*/
+gopwk(
+    int       *wkid,
+    int       *conid,
+    int       *wtype)
+{
+    Gchar     *connection;
+    char      *getenv();
+
+    debug(("Open Workstation %d conid %d type %d\n", *wkid, *conid,
+	   *wtype - 1));
+
+    debug(("wstype = <%s>\n", wtypes[*wtype - 1]));
+
+    VALIDTYPE((int *) NULL, *wtype, 1, NUMWTYPES, errgopenws);
+
+    if (wtypes[*wtype - 1] != NULL &&
+	    (strcmp(wtypes[*wtype - 1], "MI") == 0 ||
+	     strcmp(wtypes[*wtype - 1], "MO") == 0)) {
+	/*
+	 * "Metafile" workstation requested.  Get the name of the file
+	 * associated with the FORTRAN logical unit number `*conid'.
+	 */
+	char	*fname	= getlunname(*conid);
+
+	if (fname[0]) {
+	    /*
+	     * A file is associated with the LUN "conid".  Use it.
+	     */
+	    connection = fname;
+	} else {
+	    /*
+	     * No file is associated with the LUN "conid".  See if the user
+	     * set a name via the XGKS escape-mechanism, "gescid()".
+	     */
+	    if (xgks_connection != NULL && *xgks_connection) {
+		connection = xgks_connection;
+	    } else {
+		/*
+		 * Nope.  As a last resort, set the name of the metafile to
+		 * that of the error-logging file (and hope it exists).
+		 */
+		connection = fname;
+	    }
+	}
+    } else {
+	if (xgks_connection != NULL && xgks_connection[0] != 0) {
+	    debug(("Using xgks_connection\n"));
+	    connection = xgks_connection;
+	} else {
+	    connection = NULL;
+	}
+    }
+
+    debug(("connection id = \"%s\"\n ", connection == NULL ? "<nil>" :
+	   connection));
+
+    (void) gopenws((Gint) *wkid, connection, wtypes[*wtype - 1]);
+}
+
+
+/*
+ * gclwk -  Close Workstation
+ *	int *wkid;		workstation identifier
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+    void
+/*FORTRAN*/
+gclwk(
+    int     *wkid)
+{
+    debug(("Close Workstation %d\n", *wkid));
+
+    (void) gclosews((Gint) *wkid);
+}
+
+
+/*
+ * gacwk -  Activate Workstation
+ *	int *wkid		workstation identifier
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.75
+ */
+    void
+/*FORTRAN*/
+gacwk(
+    int     *wkid)
+{
+    debug(("Activate Workstation %d\n", *wkid));
+
+    (void) gactivatews((Gint) *wkid);
+}
+
+
+/*
+ * gdawk -  Deactivate Workstation
+ *	int *wkid		workstation identifier
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.76
+ */
+    void
+/*FORTRAN*/
+gdawk(
+    int *wkid)
+{
+    debug(("Deactivate Workstation %d\n", *wkid));
+
+    (void) gdeactivatews((Gint) *wkid);
+}
+
+
+/*
+ * gclrwk -  Clear Workstation
+ *	int *wkid;		workstation identifier
+ *	int *cofl;		control flag
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.76
+ */
+    void
+/*FORTRAN*/
+gclrwk(
+    int *wkid,
+    int *cofl)
+{
+    debug(("Clear Workstation %d (%d)\n", *wkid, *cofl));
+    CLEARCONTROLFLAG(*cofl, errgclearws);
+
+    (void) gclearws((Gint) *wkid, (Gclrflag) *cofl);
+}
+
+
+/*
+ * grsgwk - Redraw all segments on workstation 
+ *	int *wkid;		workstation identifier
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.77
+ */
+    void
+/*FORTRAN*/
+grsgwk(
+    int *wkid)
+{
+    debug(("Redraw Workstation %d\n", *wkid));
+
+    (void) gredrawsegws((Gint) *wkid);
+}
+
+
+/*
+ * guwk  -  Update Workstation 
+ *	int *wkid;		workstation identifier
+ *	int *regfl;		update regeneration flag
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.78
+ */
+    void
+/*FORTRAN*/
+guwk(
+    int *wkid,
+    int *regfl)
+{
+    debug(("Update Workstation %d %d\n", *wkid, *regfl));
+    REGENERATIONFLAG(*regfl, errgupdatews);
+
+    /* Reverse the sense of *regfl */
+    (void) gupdatews((Gint) *wkid, ((Gregen) (*regfl) ? GPERFORM : GPOSTPONE));
+}
+
+
+/*
+ * gsds - Set Deferral State 
+ *	int *wkid;			workstation identifier
+ *	int *defmod;			deferral mode
+ *	int *regmod;			implicit regeneration mode
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.79
+ */
+    void
+/*FORTRAN*/
+gsds(
+    int            *wkid,
+    int            *defmod,
+    int            *regmod)
+{
+    Girgmode        C_regmod;
+    Gdefmode        C_defmod;
+
+    debug(("Set Deferal State %d (%d) (%d)\n", *wkid, *defmod, *regmod));
+    DEFERRALMODE(*defmod, errgsetdeferst);
+    IMPLICITREGENERATIONMODE(*regmod, errgsetdeferst);
+
+    switch (*defmod) {
+    case FORT_GASAP:
+	C_defmod = GASAP;
+	break;
+    case FORT_GBNIG:
+	C_defmod = GBNIG;
+	break;
+    case FORT_GBNIL:
+	C_defmod = GBNIL;
+	break;
+    case FORT_GASTI:
+	C_defmod = GASTI;
+	break;
+    default:
+	C_defmod = (Gdefmode) 0;
+	(void) fprintf(stderr, "error unknown defmod\n");
+    }
+
+    switch (*regmod) {
+    case FORT_GSUPPD:
+	C_regmod = GSUPPRESSED;
+	break;
+    case FORT_GALLOW:
+	C_regmod = GALLOWED;
+	break;
+    default:
+	C_regmod = (Girgmode) 0;
+	(void) fprintf(stderr, "error unknown regmod\n");
+    }
+    (void) gsetdeferst((Gint) *wkid, C_defmod, C_regmod);
+}
+
+
+/*
+ * gmsg - Message
+ *	int    *wkid;                               workstation identifier
+ *	string  mess;                               message 
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.80
+ */
+    void
+/*FORTRAN*/
+gmsg(
+    int *wkid,
+    char *mess)
+{
+    debug(("Message\n"));
+
+    /* make sure we have enought temp. storage to hold the string */
+    if (mess_len > currforttext) {
+	forttext = (Gchar *) urealloc((voidp) forttext,
+				     (size_t) (mess_len * sizeof(Gchar)));
+	if (forttext == NULL) {
+	    (void) gerrorhand(300, errgmessage, (errfp));
+	    currforttext = 0;
+	    return;
+	} else {
+	    currforttext = mess_len;
+	}
+    }
+    (void) strncpy(forttext, mess, (size_t) mess_len);
+    forttext[mess_len] = '\0';
+
+    debug(("<%s> mess_len %d\n", forttext, mess_len));
+
+    (void) gmessage((Gint) *wkid, (Gchar *) forttext);
+}
+
+
+/*
+ * gmsgs - Message FORTRAN 77 Subset Version
+ *	int *wkid;			workstation identifier
+ *	int *lstr;                      length of string
+ *	char *mess;                     message
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+    void
+/*FORTRAN*/
+gmsgs(
+    int     *wkid,
+    int     *lstr,
+    char    *mess)
+{
+    debug(("Message (Subset Version) length = %d\n", *lstr));
+
+    /* make sure we have enought temp. storage to hold the string */
+    if (*lstr > currforttext) {
+	forttext = (Gchar *) urealloc((voidp) forttext,
+				     (size_t) ((*lstr) * sizeof(Gchar)));
+	if (forttext == NULL) {
+	    (void) gerrorhand(300, errgmessage, (errfp));
+	    currforttext = 0;
+	    return;
+	} else {
+	    currforttext = *lstr;
+	}
+    }
+    (void) strncpy(forttext, mess, (size_t)*lstr);
+    forttext[*lstr] = '\0';
+
+    debug(("<%s> length %d\n", forttext, *lstr));
+
+    (void) gmessage((Gint) *wkid, (Gchar *) forttext);
+
+    debug(("Exiting Message (Subset)\n"));
+}

@@ -36,7 +36,7 @@
 *                                                                      V
 
       CALL ef_set_desc(id,
-     . 'Returns float converted to strings according to format spedified' )
+     . 'Returns float converted to strings according to format specified' )
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 

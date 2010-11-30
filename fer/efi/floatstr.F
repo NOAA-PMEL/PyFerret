@@ -55,7 +55,7 @@
       arg = 2
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
-      CALL ef_set_arg_name(id, arg, 'Fmt')
+      CALL ef_set_arg_name(id, arg, 'FMT')
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg,  

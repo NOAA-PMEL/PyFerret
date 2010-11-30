@@ -26,6 +26,7 @@
 * V602 11/06 *acm* - Change unspecified_int4 to -999. Fixes bug 1463 where
 *                    where an index value of -111 was confused with this flag
 * V603 5/07  *acm* - added MODNBD modulo regridding statistic
+*      11/10 *kms* - added category cat_pystat_var (python static variable)
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -125,7 +126,8 @@
      .			cat_temp_var, cat_pseudo_var,
      .			cat_constant, cat_file_rev,
      .			cat_const_var,   cat_string,
-     .                  cat_counter_var, cat_attrib_val
+     .                  cat_counter_var, cat_attrib_val,
+     .                  cat_pystat_var
 	PARAMETER     ( cat_work_mr  = -9,
      .			cat_file_var = 1,
      .			cat_calc_var = 2,
@@ -140,7 +142,8 @@
      .			cat_const_var  = 11,
      .			cat_string     = 12,
      .			cat_counter_var= 13,
-     .			cat_attrib_val= 14 )
+     .			cat_attrib_val = 14,
+     .                  cat_pystat_var = 15 )
 
 * codes referring to the user-defined variables
 	INTEGER		uvar_deleted,

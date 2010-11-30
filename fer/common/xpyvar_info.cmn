@@ -1,0 +1,31 @@
+*
+* information about static variables coming from Python (pyferret.put)
+*
+      INTEGER     maxpyvars
+      PARAMETER ( maxpyvars = 500 )
+*
+      INTEGER*8     pyvar_code_head
+      INTEGER*8     pyvar_ndarray_obj
+      CHARACTER*128 pyvar_code
+      CHARACTER*128 pyvar_title
+      CHARACTER*64  pyvar_units
+      REAL*4        pyvar_missing_flag
+      INTEGER*4     pyvar_dset_number
+      INTEGER*4     pyvar_grid_number
+      INTEGER*4     pyvar_grid_start
+      INTEGER*4     pyvar_grid_end
+      INTEGER*4     pyvar_type
+*
+      COMMON/ XPYVAR_INFO /
+     .         pyvar_code_head,
+     .         pyvar_ndarray_obj(maxpyvars),
+     .         pyvar_code(maxpyvars),
+     .         pyvar_title(maxpyvars),
+     .         pyvar_units(maxpyvars),
+     .         pyvar_missing_flag(maxpyvars),
+     .         pyvar_dset_number(maxpyvars),
+     .         pyvar_grid_number(maxpyvars),
+     .         pyvar_grid_start(4,maxpyvars),
+     .         pyvar_grid_end(4,maxpyvars),
+     .         pyvar_type(maxpyvars)
+

@@ -1,0 +1,81 @@
+#
+# platform_specific_includes.mk.x86_64-linux
+#
+# This file is included Makefiles under the fer, fmt, and ppl directories
+# and defines platform specific macros
+#
+
+#
+# This is assigned only if it is not already defined
+#
+	DIR_PREFIX	?= $(HOME)/pyferret_64dev
+
+#
+# Local defines
+#
+	MYINCLUDES	:= -I$(DIR_PREFIX)/fer/common \
+			   -I$(DIR_PREFIX)/fmt/cmn \
+			   -I$(DIR_PREFIX)/ppl/include \
+			   -I$(DIR_PREFIX)/ppl/include/xgks \
+			   -I$(DIR_PREFIX)/ppl/tmap_inc \
+			   -I$(DIR_PREFIX)/xgks/src/lib \
+			   -I/usr/X11R6/include \
+			   -I/usr/local/include
+
+	MYDEFINES	:= \
+			   -Dcrptd_cat_argument \
+			   -Dgfortran \
+			   -Dreclen_in_bytes \
+			   -Dunix \
+			   -Dxgks \
+			   -DFULL_GUI_VERSION \
+			   -DG77_SIGNAL \
+			   -DG77 \
+			   -DINTERNAL_READ_FORMAT_BUG \
+			   -DLINUX \
+			   -DMANDATORY_FORMAT_WIDTHS \
+			   -DNEED_IAND \
+			   -DNO_DOUBLE_ESCAPE_SLASH \
+			   -DNO_OPEN_CARRIAGECONTROL \
+			   -DNO_OPEN_READONLY \
+			   -DNO_OPEN_RECORDTYPE \
+			   -DNO_OPEN_SHARED \
+			   -DNO_PASSED_CONCAT \
+			   -DNO_PREPEND_STRING \
+			   -DNO_SNGL \
+			   -DSTAR_1_SUPPORTED \
+			   -DVOID_SIGHANDLER \
+			   -DX_REFRESH \
+			   -DXT_CODE \
+
+
+	PLATFORM	:= $(shell uname -rs) (gfortran)
+
+	CPP		:= $(shell which cpp)
+	CC		:= $(shell which gcc)
+	FC		:= $(shell which gfortran)
+	F77		:= $(shell which gfortran)
+	RANLIB		:= $(shell which ranlib)
+	LD		:= $(shell which gfortran)
+
+	CFLAGS		+= $(MYINCLUDES) -P $(MYDEFINES) -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4 -fPIC
+	CPP_FLAGS	:= $(CFLAGS)
+	FFLAGS		+= $(MYINCLUDES) -P $(MYDEFINES) -fno-automatic -fdollar-ok -ffixed-line-length-132 -fPIC -c
+	FCFLAGS		:= $(FFLAGS)
+	F77FLAGS	:= $(FFLAGS)
+	PPLUS_FFLAGS	:= $(FFLAGS)
+	LDFLAGS		+= -v --verbose -L/usr/X11R6/lib64 -L/usr/X11R6/lib -L/usr/local/lib64 -L/usr/local/lib -export-dynamic
+
+	SYSLIB		:= -lXpm -lXm -lXt -lXext -lX11 -lXp -lXmu -lSM -lICE -lnetcdf -lhdf5_hl -lhdf5 -lcurl -lreadline -lncurses -lz -lm -lc
+	GKSLIB		:= $(DIR_PREFIX)/xgks/src/lib/libxgks.a
+
+# use cpp to preprocess the .F files to .f files and then compile the .f files
+# to make debugging possible (line numbers messed up using .F file directly)
+.F.o:
+	rm -f $*.f
+	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de        /de /g' | sed -e 's/de         /de /g' > $*.f
+	$(F77) $(FFLAGS) $*.f -o $*.o
+
+#
+# End of platform_specific_includes.mk.x86_64-linux
+#

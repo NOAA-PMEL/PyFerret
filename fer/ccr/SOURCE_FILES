@@ -19,7 +19,6 @@ compare_c_strings.c\
 copy_c_string.c\
 perl_read.c\
 EF_InternalUtil.c\
-fermain_c.c\
 ferret_dispatch_c.c\
 ferret_query.c\
 free_c_pointer.c\
@@ -30,7 +29,6 @@ get_max_c_string_len.c\
 get_offset_c_string.c\
 get_offset_c_string_len.c\
 get_sys_cmnd.c\
-gui_init.c\
 grab_image_xwd.c\
 init_c_string_array.c\
 linux_routines_c.c\

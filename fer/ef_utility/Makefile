@@ -16,7 +16,7 @@
 #       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
 #
 
-include ../platform_specific_flags.mk.$(HOSTTYPE)
+include ../../platform_specific_flags.mk.$(HOSTTYPE)
 include ./SOURCE_FILES
 include ./SOURCE_FILES_C
 
@@ -30,16 +30,10 @@ OBJS = $(SRCS_C:.c=.o) $(SRCS_F:.F=.o)
 # Targets
 #
 
-all:	ferret_cmn tmap_format $(OBJS)
-
-ferret_cmn:
-	ln -s ../common ./ferret_cmn
-
-tmap_format:
-	ln -s ../../fmt/cmn ./tmap_format
+all:	$(OBJS)
 
 clean:
-	rm -f core *.o *.a *.f ferret_cmn tmap_format
+	rm -f core *.o *.a *.f
 
 #
 # End of Makefile

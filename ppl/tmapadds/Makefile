@@ -14,7 +14,7 @@
 #       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
 #
 
-include ../platform_specific_flags.mk.$(HOSTTYPE)
+include ../../platform_specific_flags.mk.$(HOSTTYPE)
 include ./SOURCE_FILES
 
 #

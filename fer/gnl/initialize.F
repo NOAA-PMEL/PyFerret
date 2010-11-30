@@ -79,6 +79,7 @@
 *                  Use pseudo-dataset of user-defined axes to keep track of attributes.
 * V65   2/10 *acm*- Changes for CLOCK symbols that work with gfortran as well as g77.
 *                   see special_symbol.F
+*     *kms* 11/10 - added cat_pystat_var string_array_init
 
         include 'tmap_errors.parm'  ! error codes
 	include 'tmap_dims.parm'
@@ -96,6 +97,7 @@
         include 'xalgebra.cmn'
 	include 'xvariables.cmn'
 	include 'xtoday.cmn'
+        include 'xpyvar_info.cmn'
 
 * local variable declarations:
 	LOGICAL	GKS_WINDOWS, fexist
@@ -299,6 +301,11 @@
      .                         maxvars,
      .                         128,
      .                         ds_var_code(1))
+
+        CALL string_array_init(pyvar_code_head,
+     .                         maxpyvars,
+     .                         128,
+     .                         pyvar_code(1))
 
         CALL deleted_list_init(uvar_num_items_head,
      .                         uvar_num_items(1),

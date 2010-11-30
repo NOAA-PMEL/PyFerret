@@ -19,12 +19,10 @@ MANIFEST        = COPYRIGHT CUSTOMIZE HISTORY INSTALL MANIFEST \
 		  Makefile.in ORIGIN README VERSION configure \
 		  configure.in
 
-all::		port/all port/install src/all fontdb/all progs/all doc/all
+all::		port/all src/all fontdb/all progs/all doc/all
 
-install::	src/install fontdb/install 
+install::	port/install src/install fontdb/install
 
-clean::		port/clean \
-		src/clean fontdb/clean progs/clean doc/clean
-	rm -f xgks*.tar.Z
+clean::		port/clean src/clean fontdb/clean progs/clean doc/clean
 
 include port/master.mk

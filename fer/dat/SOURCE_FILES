@@ -16,6 +16,7 @@ xonedim_data.F\
 xplot_setup_data.F\
 xplot_state_data.F\
 xprog_state_data.F\
+xpyvar_info_data.F\
 xrevision_data.F\
 xtext_info_data.F\
 xvariables_data.F\

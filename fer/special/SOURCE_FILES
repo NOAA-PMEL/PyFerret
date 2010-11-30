@@ -1,10 +1,5 @@
 SRCS_F = \
-aix_routines.F\
-fake_gks.F\
-fake_ppl.F\
-fake_tmio.F\
 fakes3.F\
-fermain_fortran.F\
 ferret_dispatch.F\
 ferret_query_f.F\
 gui_fakes.F\

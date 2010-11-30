@@ -190,7 +190,7 @@
 * V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
 *       *kms* 7/10 add SET DATA /BROWSE to browse for the dataset
 * V664  8.10 *kms* Add EXIT/TOPYTHON to exit the ferret_dispatch loop 
-*                  but just re-enter the loop if not under pfyrret
+*                  but just re-enter the loop if not under pyferret
 *                  Add DEFINE PYFUNC /NAME=<alias> python.module.name
 
 	include 'ferret.parm'

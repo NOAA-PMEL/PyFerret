@@ -40,6 +40,7 @@
 *
 * V533:  7/01
 * V554 1/04 *acm* - add counter_var 
+*      *kms* 11/10 added cat_pystat_var
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -48,6 +49,7 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xcalc_vars.cmn'
+        include 'xpyvar_info.cmn'
 
 * calling argument declarations:
 	INTEGER	cx
@@ -64,6 +66,10 @@
 	IF     ( category .EQ. cat_file_var ) THEN
 
 	   cx_type(cx) =  ds_var_type(variable)
+
+        ELSEIF ( category .EQ. cat_pystat_var ) THEN
+
+           cx_type(cx) =  pyvar_type(variable)
 
 	ELSEIF ( category .EQ. cat_calc_var ) THEN
 

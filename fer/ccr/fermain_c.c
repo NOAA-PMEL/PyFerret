@@ -135,7 +135,7 @@
 * *acm*  2/07 v602 - add check for overflow on large memory requests (as in xeq_set.F, bug 1438)
 * *kms*  8/10 v664 - Catch SIGILL, SIGFPE, and SIGSEGV and exit gracefully with a stderr message for LAS
 *                    Just re-enter the ferret_dispatch loop if it returns with sBuffer->flags[FRTN_ACTION]
-*                    set to FACTN_NO_ACTION (for EXIT/TOPYTHON when not under pfyrret)
+*                    set to FACTN_NO_ACTION (for EXIT/TOPYTHON when not under pyferret)
 */
 
 #include <wchar.h>

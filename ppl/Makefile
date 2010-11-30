@@ -8,27 +8,12 @@
 #		 links to actual files in fer directory
 # v5.4 *kob* - add the removal of .f files - for linux
 
-#
-# include platform specific definitions of:
-#       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
-#
-
-include platform_specific_flags.mk.$(HOSTTYPE)
-
-
-#
-# Macros
-#
 
 DIRS	= tmapadds complot ourlib plot \
-	plotlib pplepic pplp_only pplusr symlib
+	plotlib pplepic pplusr symlib
 
 LIBS	= complot ourlib plot plotlib pplepic \
 	pplusr symlib
-
-CLEANDIRS = $(DIRS)
-
-DEPDIRS = addsxgks modsxgks pplp_only
 
 
 #
@@ -36,35 +21,20 @@ DEPDIRS = addsxgks modsxgks pplp_only
 #
 
 all:
-	for i in $(DIRS) ; \
-        do \
-        (cd $$i ; echo "making" $@ "in $$i..."; \
-        $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(CFLAGS)" \
-                "FFLAGS=$(PPLUS_FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)"); \
+	for i in $(DIRS) ; do \
+            $(MAKE) -C $$i ; \
         done
 
 
 libraries:
-	for i in $(LIBS) ; \
-        do \
-        (cd $$i ; echo "making" $@ "in $$i..."; \
-        $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(CFLAGS)" \
-                "FFLAGS=$(PPLUS_FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)"); \
+	for i in $(LIBS) ; do \
+            $(MAKE) -C $$i ; \
         done
 
 
 clean:
-	for i in $(CLEANDIRS) ; \
-        do \
-        (cd $$i ; echo "making" $@ "in $$i..."; rm -f *.f; $(MAKE) clean); \
-        done
-
-depend:
-	for i in $(DEPDIRS) ; \
-        do \
-        (cd $$i ; echo "making" $@ "in $$i..."; \
-        $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(CFLAGS)" \
-                "FFLAGS=$(PPLUS_FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)" $@); \
+	for i in $(DIRS) ; do \
+            $(MAKE) -C $$i clean ; \
         done
 
 

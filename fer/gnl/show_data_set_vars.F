@@ -68,6 +68,7 @@
 *                         statements.  use an octal constant instead 
 * V570  *acm* when showing calendar, need  cal_id .LE. max_calendars, not .LT.
 * V600  *acm* 1/06  prevent values of LOG10(0.0) 
+*       *kms* 11/10 added display of pyvars associated with the dataset
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -85,6 +86,7 @@
 	include	'xrisc.cmn'
 	include 'calendar.decl'
 	include 'calendar.cmn'
+        include 'xpyvar_info.cmn'
 
 * calling argument declarations:
 	LOGICAL	full
@@ -275,6 +277,19 @@
      .			'  time range: '//line(:dlen), 0) 
 	   ENDIF
 	ENDIF
+
+* show the data-set-specific pyvar (cat_pystat_var) variables
+        first_time = .TRUE.
+        DO 580 i = 1,maxpyvars
+            IF ( pyvar_ndarray_obj(i) .EQ. 0 ) GOTO 580
+            IF ( pyvar_dset_number(i) .NE. dset ) GOTO 580
+            IF ( first_time ) THEN
+                CALL SPLIT_LIST(pttmode_explct, lun,
+     .                          ' PYVARS -----------------------', 31) 
+                first_time = .FALSE.
+            ENDIF
+            CALL SHOW_1_PYVAR(lun, i, full)
+ 580    CONTINUE
 
 * show the data-set-specific user-defined variables
 * Skip intermediate variables by checking uvar_parent

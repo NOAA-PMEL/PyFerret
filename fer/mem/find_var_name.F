@@ -66,6 +66,7 @@
 *                 variable def for user variables defined with LET/D.
 * v600 6/06 *acm* initialize category to 0 (needed for solaris)
 * V63  *acm* 10/09 Changes for gfortran build
+*      *kms* 11/10 add examination of pyvar (cat_pystat_var) variables
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -78,6 +79,7 @@
 	include	'xdset_parms.cmn'
         include 'xcontrol.cmn'
         include 'errmsg.parm'
+        include 'xpyvar_info.cmn'
 
 * calling argument declarations:
 	INTEGER		dset_num, category, variable
@@ -230,6 +232,23 @@
  60	      CONTINUE
 	   ENDIF
 	ENDIF
+
+* ... check pystat variables
+        CALL string_array_find_quoted(pyvar_code_head,
+     .                                test_name,
+     .                                len_test,
+     .                                string_array_result(1),
+     .                                maxpyvars,
+     .                                num_indices)
+        DO 80 j = 1,num_indices
+            ivar = string_array_result(j)
+            IF ( pyvar_dset_number(ivar) .NE. dset) GOTO 80
+            IF ( pyvar_ndarray_obj(ivar) .EQ. 0 ) GOTO 80
+            category = cat_pystat_var
+            variable = ivar
+            test_name = buff
+            RETURN
+ 80     CONTINUE
 
 * ... check the global user variable definitions defined without /D
 *	DO 100 ivar = 1, max_uvar

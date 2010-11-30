@@ -79,6 +79,7 @@ set_var.F\
 show_1_dsvar.F\
 show_1_function.F\
 show_1_mr.F\
+show_1_pyvar.F\
 show_1_uvar.F\
 show_1_uvar_xml.F\
 show_attribute.F\

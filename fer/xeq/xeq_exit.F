@@ -69,7 +69,7 @@
 *                     not all the way back up out of the loop.
 * V6.11 *acm*  4/08 - Fis bug 1566; EXIT/SCRIPT and IF blocks.
 * V664  *kms*  8/10 - Add EXIT/TOPYTHON and second alternate return to exit the 
-*                     ferret_dispatch loop but just re-enter the loop if not under pfyrret
+*                     ferret_dispatch loop but just re-enter the loop if not under pyferret
 	
         include 'tmap_dims.parm'
 	include 'command.parm'
@@ -166,7 +166,7 @@
 	ENDIF
 
 * Use the second alternate return to exit out of the ferret_dispatch loop
-* but just re-enter the loop if not under pfyrret
+* but just re-enter the loop if not under pyferret
         IF ( qual_given(slash_exit_topython) .GT. 0 ) RETURN 2
 
 * error exit

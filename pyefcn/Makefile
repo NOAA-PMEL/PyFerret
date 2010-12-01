@@ -49,6 +49,6 @@ $(CSRCOBJS): %.o: %.c pyefcn.h $(FERINC_FILES) Makefile
 	$(CC) $(CFLAGS) $(FERINC_FLAGS) $(PYINC_FLAGS) -fPIC -c $< -o $@
 
 libpyefcn.so : $(CSRCOBJS) Makefile
-	$(CC) $(CFLAGS) -shared $(CSRCOJBS) $(FERLIB_FLAGS) $(PYLIB_FLAGS) -o libpyefcn.so
+	$(CC) $(CFLAGS) -shared $(CSRCOBJS) $(FERLIB_FLAGS) $(PYLIB_FLAGS) -o libpyefcn.so
 
 #

@@ -59,7 +59,7 @@
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg,  
-     .     'Fortran format, in parentheses, e.g. (F5.1)')
+     .     'Fortran format, in parentheses, e.g. "(F5.1)"')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
 *                                                                      ^

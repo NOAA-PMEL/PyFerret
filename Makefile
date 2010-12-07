@@ -19,6 +19,7 @@ debug : debugbuild install
 
 .PHONY : optimizedbuild
 optimizedbuild :
+	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer optimizedbuild
 	$(MAKE) -C $(DIR_PREFIX)/pyefcn optimizedlib
 	$(MAKE) -C $(DIR_PREFIX)/ferlib optimizedlib
@@ -26,6 +27,7 @@ optimizedbuild :
 
 .PHONY : debugbuild
 debugbuild : 
+	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer debugbuild
 	$(MAKE) -C $(DIR_PREFIX)/pyefcn debuglib
 	$(MAKE) -C $(DIR_PREFIX)/ferlib debuglib
@@ -54,22 +56,23 @@ endif
 
 .PHONY : clean
 clean :
-	rm -fr build ferret.jnl*
+	rm -fr $(DIR_PREFIX)/build ferret.jnl*
 	$(MAKE) -C $(DIR_PREFIX)/pyefcn clean
 	$(MAKE) -C $(DIR_PREFIX)/ferlib clean
 	@echo ""
 	@echo "    NOTE: Only the (pyferret) build, ferlib, and pyefcn directories were cleaned."
-	@echo "          Use target 'distclean' to also clean the fer, fmt, and ppl directories."
+	@echo "          Use target 'distclean' to also clean the fer, fmt, ppl, and lib directories."
 	@echo ""
 
 .PHONY : distclean
 distclean :
-	rm -fr build ferret.jnl*
+	rm -fr $(DIR_PREFIX)/build ferret.jnl*
 	$(MAKE) -C $(DIR_PREFIX)/pyefcn clean
 	$(MAKE) -C $(DIR_PREFIX)/ferlib clean
 	$(MAKE) -C $(DIR_PREFIX)/fer clean
+	rm -fr $(DIR_PREFIX)/lib
 	@echo ""
-	@echo "    NOTE: Only the (pyferret) build, ferlib, pyefcn, fer, fmt, and ppl directories were cleaned."
+	@echo "    NOTE: Only the (pyferret) build, ferlib, pyefcn, lib, fer, fmt, ppl, and lib directories were cleaned."
 	@echo "          Other directories (in particular, xgks) were not changed."
 	@echo ""
 

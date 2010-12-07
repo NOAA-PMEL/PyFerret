@@ -1,13 +1,12 @@
 #
 # Makefile for building the ferret shared-object library (libferret.so), 
-# the ferret interface shared-object library for python external functions (libpyefcn.so),
 # and the pyferret module with its shared-object library (_pyferret.so).
 #
 
-DIR_PREFIX	:= $(HOME)/pyferret_32dev
-PYINC_FLAGS	:= -I/usr/local/include/python2.6 -I/usr/local/lib/python2.6/site-packages/numpy/core/include
-PYLIB_FLAGS	:= -lpython2.6
-
+#
+# Site-specific defines
+#
+include site_specific.mk
 
 .PHONY : all
 all : optimized
@@ -21,20 +20,20 @@ debug : debugbuild install
 .PHONY : optimizedbuild
 optimizedbuild :
 	$(MAKE) -C $(DIR_PREFIX)/fer optimizedbuild
-	$(MAKE) -C $(DIR_PREFIX)/ferlib optimizedlib
 	$(MAKE) -C $(DIR_PREFIX)/pyefcn optimizedlib
+	$(MAKE) -C $(DIR_PREFIX)/ferlib optimizedlib
 	$(MAKE) pymod
 
 .PHONY : debugbuild
 debugbuild : 
 	$(MAKE) -C $(DIR_PREFIX)/fer debugbuild
-	$(MAKE) -C $(DIR_PREFIX)/ferlib debuglib
 	$(MAKE) -C $(DIR_PREFIX)/pyefcn debuglib
+	$(MAKE) -C $(DIR_PREFIX)/ferlib debuglib
 	$(MAKE) "CFLAGS += -O0 -g" pymod
 
 .PHONY : pymod
 pymod :
-	python2.6 setup.py build
+	$(PYTHON_EXE) setup.py build
 
 .PHONY : install
 install :
@@ -46,11 +45,10 @@ ifeq ( $(strip $(FER_LIBS)), )
 else
 	cp -f $(DIR_PREFIX)/fer/threddsBrowser/threddsBrowser.jar $(FER_LIBS)
 	cp -f $(DIR_PREFIX)/ferlib/libferret.so $(FER_LIBS)
-	cp -f $(DIR_PREFIX)/pyefcn/libpyefcn.so $(FER_LIBS)
 ifeq ( $(USER), "root" )
-	python2.6 setup.py install --skip-build
+	$(PYTHON_EXE) setup.py install --skip-build
 else
-	python2.6 setup.py install --skip-build --user
+	$(PYTHON_EXE) setup.py install --skip-build --user
 endif
 endif
 

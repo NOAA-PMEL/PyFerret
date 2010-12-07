@@ -1,8 +1,12 @@
 from numpy.distutils.core import setup, Extension
+import sys
 import os
 import os.path
 
 # Note: the shared-object library libferret.so needs to be built before building the pyferret modules
+
+# Make sure everything is resolved
+addn_link_args = [ "-Xlinker", "--no-undefined", ]
 
 # Create the pyferret._pyferret Extension
 ext_mods = [ Extension("pyferret._pyferret", sources = [ os.path.join("pyfer", "_pyferretmodule.c"), ],
@@ -11,7 +15,8 @@ ext_mods = [ Extension("pyferret._pyferret", sources = [ os.path.join("pyfer", "
                                                               os.path.join("fmt", "cmn"), 
                                                               os.path.join("fer", "ef_utility"), ],
                                              library_dirs = [ "ferlib", ],
-                                             libraries = [ "ferret", "python2.6", ]), ]
+                                             libraries = [ "ferret", "python%i.%i" % sys.version_info[:2], ],
+                                             extra_link_args = addn_link_args), ]
 
 # Configure the setup
 setup(name = "pyferret", 

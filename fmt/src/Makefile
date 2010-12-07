@@ -21,8 +21,18 @@
 #		     doesn't use pre-processor
 # 08/19/97 - *kob* - added "-Dreclen_in_bytes" to aix flags
 
-include ./SOURCE_FILES
+#
+# Site-specific defines
+#
+include ../../site_specific.mk
+
+#
+# include platform specific definitions of:
+#       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
+#
 include ../../platform_specific_flags.mk.$(HOSTTYPE)
+
+include ./SOURCE_FILES
 
 OBJS= $(SRCS_F:.F=.o) $(SRCS_C:.c=.o) 
 

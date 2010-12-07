@@ -1,14 +1,13 @@
 #
-# This makefile assumes that make has already been run in the xgks and fer subdirectories
-# to build xgks/src/lib/libxgks.a, the required libraries in the lib subdirectory, and the
-# required object files under the fer/ef_utility, fer/special, and ppl/tmapadds subdirectories.
+# This makefile assumes that make has already been run in the xgks, fer, and pyefcn subdirectories
+# to build xgks/src/lib/libxgks.a, pyefcn/libpyefcn.a, the required static libraries in the lib subdirectory,
+# and the required object files under the fer/ef_utility, fer/special, and ppl/tmapadds subdirectories.
 #
 
 #
-# These are assigned only if they are not already defined
+# Site-specific defines
 #
-DIR_PREFIX	?= $(HOME)/pyferret_32dev
-PYINC_FLAGS	?= -I/usr/local/include/python2.6
+include ../site_specific.mk
 
 #
 # Local defines
@@ -25,7 +24,8 @@ FEROBJS_SPL	:= $(DIR_PREFIX)/fer/special/fakes3.o $(DIR_PREFIX)/fer/special/ferr
 FEROBJS_TMA	:= $(wildcard $(DIR_PREFIX)/ppl/tmapadds/*.o)
 FEROBJS_FILES	:= $(FEROBJS_EFU) $(FEROBJS_SPL) $(FEROBJS_TMA)
 
-FERLIBS_FILES	:= $(wildcard $(DIR_PREFIX)/lib/lib*.a) $(DIR_PREFIX)/xgks/src/lib/libxgks.a 
+FERLIBS_FILES	:= $(wildcard $(DIR_PREFIX)/lib/lib*.a) \
+		   $(DIR_PREFIX)/pyefcn/libpyefcn.a $(DIR_PREFIX)/xgks/src/lib/libxgks.a 
 
 .PHONY : all
 all : ferret
@@ -72,8 +72,10 @@ libferret.so : $(CSRCOBJS) $(FSRCOBJS) $(FEROBJS_FILES) $(FERLIBS_FILES) Makefil
 	    -Xlinker --whole-archive \
 	    $(FERLIBS_FILES) \
 	    -Xlinker --no-whole-archive \
-	    -lnetcdff -lhdf5_hl -lhdf5 \
+	    $(PYLIB_FLAGS) \
+	    -lnetcdff -lnetcdf -lhdf5_hl -lhdf5 \
             -lreadline -lhistory -lncurses -lX11 -lcurl -lz -ldl \
+	    -Xlinker --no-undefined \
 	    -o libferret.so
 
 ferret : fermain_so.o libferret.so Makefile

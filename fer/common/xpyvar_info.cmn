@@ -3,8 +3,10 @@
 *
       INTEGER     maxpyvars
       PARAMETER ( maxpyvars = 500 )
+*     memory for a C pointer to an allocated hash set
+      REAL*8        pyvar_code_head
+      REAL*8        pyvar_code_padding
 *
-      INTEGER*8     pyvar_code_head
       INTEGER*8     pyvar_ndarray_obj
       CHARACTER*128 pyvar_code
       CHARACTER*128 pyvar_title
@@ -18,6 +20,7 @@
 *
       COMMON/ XPYVAR_INFO /
      .         pyvar_code_head,
+     .         pyvar_code_padding,
      .         pyvar_ndarray_obj(maxpyvars),
      .         pyvar_code(maxpyvars),
      .         pyvar_title(maxpyvars),

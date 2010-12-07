@@ -85,6 +85,8 @@
 *                  Made external function language check more robust
 *                  Check that GLOBAL_ExternalFunctionsList is not NULL in ef_ptr_from_id_ptr
 *      *kms* 11/10 Check for libpyefcn.so in $FER_LIBS instead of $FER_DIR/lib
+*      *kms* 12/10 Eliminated libpyefcn.so; link to pyefcn static library
+*                  This makes libpython2.X a required library.
 */
 
 
@@ -107,7 +109,8 @@
 #include <sys/errno.h>
 
 #include "EF_Util.h"
-#include "list.h"  /* locally added list library */
+#include "list.h"		/* locally added list library */
+#include "pyefcn.h"		/* python external funtion interfaces */
 
 
 /* ................ Global Variables ................ */
@@ -137,36 +140,6 @@ float *GLOBAL_bad_flag_ptr;
 static jmp_buf jumpbuffer;
 static sigjmp_buf sigjumpbuffer;
 static volatile sig_atomic_t canjump;
-
-/* handle returned from dlopen of $FER_LIBS/libpyefcn.so */
-static void *pyefcn_handle = NULL;
-
-/*
- * pointer to the function in libpyefcn.so:
- *     void pyefcn_init(int id, char modname[], char errmsg[])
- */
-static void (*pyefcn_init_func)(int, char [], char []) = NULL;
-
-/*
- * pointer to the function in libpyefcn.so:
- *     void pyefcn_custom_axes(int id, char modname[], char errmsg[])
- */
-static void (*pyefcn_custom_axes_func)(int, char [], char []) = NULL;
-
-/*
- * pointer to the function in libpyefcn.so:
- *     void pyefcn_result_limits(int id, char modname[], char errmsg[])
- */
-static void (*pyefcn_result_limits_func)(int, char [], char []) = NULL;
-
-/*
- * pointer to the function in libpyefcn.so:
- *     void pyefcn_compute(int id, char modname[], float *arrays[], int numarrays,
- *                         int memlo[][4], int memhi[][4],
- *                         int steplo[][4], int stephi[][4], int incr[][4],
- *                         float badvals[], char errmsg[])
- */
-static void (*pyefcn_compute_func)(int, char [], float *[], int, int [][4], int [][4], int [][4], int [][4], int [][4], float [], char []) = NULL;
 
 static int I_have_scanned_already = FALSE;
 static int I_have_warned_already = TRUE; /* Warning turned off Jan '98 */
@@ -1214,10 +1187,7 @@ int FORTRAN(efcn_already_have_internals)( int *id_ptr )
  * Create a new python-backed external function.  The initialization of
  * this function is done at this time to ensure that the python module is
  * valid and contains suitable functions.  Initialization is accomplished
- * using generic wrapper functions.  These functions are in an external
- * shared-object library $FER_LIBS/libpyefcn.so to avoid requiring
- * a shared-object python library for ferret-users who do not use python-
- * backed external functions.
+ * using generic wrapper functions.
  * Input arguments:
  *    fname - name for the function
  *    lenfname - actual length of the name in fname
@@ -1239,38 +1209,6 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
     ExternalFunction ef; 
     ExternalFunction *ef_ptr; 
     char libname[1024];
-
-    /* Load $FER_LIBS/libpyefcn.so if not already in memory */
-    if ( pyefcn_handle == NULL ) {
-        char *fer_dir;
-
-        fer_dir = getenv("FER_LIBS");
-        if ( fer_dir == NULL ) {
-            strcpy(errstring, "FER_LIBS not defined");
-            *lenerrstring = strlen(errstring);
-            return;
-        }
-        strcpy(libname, fer_dir);
-        strcat(libname, "/libpyefcn.so");
-        pyefcn_handle = dlopen(libname, RTLD_LAZY);
-        if ( pyefcn_handle == NULL ) {
-            sprintf(errstring, "Python-backed external functions not supported \n"
-                            "(unable to load $FER_LIBS/libpyefcn.so: %s)", dlerror());
-            *lenerrstring = strlen(errstring);
-            return;
-        }
-    }
-
-    /* Find the pyefcn_init function in $FER_LIBS/libpyefcn.so */
-    if ( pyefcn_init_func == NULL ) {
-        pyefcn_init_func = (void (*)(int, char [], char []))dlsym(pyefcn_handle, "pyefcn_init");
-        if ( pyefcn_init_func == NULL ) {
-            sprintf(errstring, "Python-backed external functions not supported \n"
-                            "(unable to find pyefcn_init in $FER_LIBS/libpyefcn.so: %s)", dlerror());
-            *lenerrstring = strlen(errstring);
-            return;
-        }
-    }
 
     /* Check string lengths since these values might possibly be exceeded */
     if ( *lenpymod >= EF_MAX_DESCRIPTION_LENGTH ) {
@@ -1344,7 +1282,7 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
     }
     canjump = 1;
 
-    (*pyefcn_init_func)(ef_ptr->id, ef_ptr->path, errstring);
+    pyefcn_init(ef_ptr->id, ef_ptr->path, errstring);
 
     /* Restore the old signal handlers. */
     EF_Util_ressig("create_pyefcn");
@@ -1590,23 +1528,6 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
   else if ( ef_ptr->internals_ptr->language == EF_PYTHON ) {
       char errstring[2048];
 
-      if ( pyefcn_custom_axes_func == NULL ) {
-          /* pyefcn_handle should never be NULL if we got here, but just in case... */
-          if ( pyefcn_handle == NULL ) {
-              fputs("Python-backed external functions not supported \n"
-                    "(handle for $FER_LIBS/libpyefcn.so not assigned in efcn_get_custom_axes)", stderr);
-              *status = FERR_EF_ERROR;
-              return;
-          }
-          pyefcn_custom_axes_func = (void (*)(int, char[], char[])) dlsym(pyefcn_handle, "pyefcn_custom_axes");
-          if ( pyefcn_custom_axes_func == NULL ) {
-              fprintf(stderr, "Python-backed external functions not supported \n"
-                              "(unable to find pyefcn_custom_axes in $FER_LIBS/libpyefcn.so: %s)", dlerror());
-              *status = FERR_EF_ERROR;
-              return;
-          }
-      }
-
       /*
        * Prepare for bailout possibilities by setting a signal handler for
        * SIGFPE, SIGSEGV, SIGINT and SIGBUS and then by cacheing the stack 
@@ -1628,7 +1549,7 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
       canjump = 1;
 
       /* Call pyefcn_custom_axes which in turn calls the ferret_custom_axes method in the python module */
-      (*pyefcn_custom_axes_func)(*id_ptr, ef_ptr->path, errstring);
+      pyefcn_custom_axes(*id_ptr, ef_ptr->path, errstring);
       if ( strlen(errstring) > 0 ) {
           /* (In effect) call ef_bail_out_ to process the error in a standard way */
           ef_err_bail_out_(id_ptr, errstring);
@@ -1739,23 +1660,6 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, float *memory, int *mr_list_p
   else if ( ef_ptr->internals_ptr->language == EF_PYTHON ) {
       char errstring[2048];
 
-      if ( pyefcn_result_limits_func == NULL ) {
-          /* pyefcn_handle should never be NULL if we got here, but just in case... */
-          if ( pyefcn_handle == NULL ) {
-              fputs("Python-backed external functions not supported \n"
-                    "(handle for $FER_LIBS/libpyefcn.so not assigned in efcn_get_result_limits)", stderr);
-              *status = FERR_EF_ERROR;
-              return;
-          }
-          pyefcn_result_limits_func = (void (*)(int, char[], char[])) dlsym(pyefcn_handle, "pyefcn_result_limits");
-          if ( pyefcn_result_limits_func == NULL ) {
-              fprintf(stderr, "Python-backed external functions not supported \n"
-                              "(unable to find pyefcn_result_limits in $FER_LIBS/libpyefcn.so: %s)", dlerror());
-              *status = FERR_EF_ERROR;
-              return;
-          }
-      }
-
       /*
        * Prepare for bailout possibilities by setting a signal handler for
        * SIGFPE, SIGSEGV, SIGINT and SIGBUS and then by cacheing the stack 
@@ -1777,7 +1681,7 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, float *memory, int *mr_list_p
       canjump = 1;
 
       /* Call pyefcn_result_limits which in turn calls the ferret_result_limits method in the python module */
-      (*pyefcn_result_limits_func)(*id_ptr, ef_ptr->path, errstring);
+      pyefcn_result_limits(*id_ptr, ef_ptr->path, errstring);
       if ( strlen(errstring) > 0 ) {
           /* (In effect) call ef_bail_out_ to process the error in a standard way */
           ef_err_bail_out_(id_ptr, errstring);
@@ -2307,24 +2211,6 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
       float badflags[EF_MAX_COMPUTE_ARGS];
       char  errstring[2048];
 
-      if ( pyefcn_compute_func == NULL ) {
-          /* pyefcn_handle should never be NULL if we got here, but just in case... */
-          if ( pyefcn_handle == NULL ) {
-              fputs("Python-backed external functions not supported \n"
-                    "(handle for $FER_LIBS/libpyefcn.so not assigned in efcn_compute)", stderr);
-              *status = FERR_EF_ERROR;
-              return;
-          }
-          pyefcn_compute_func = (void (*)(int, char [], float *[], int, int [][4], int [][4], int [][4], int [][4], int [][4], float[], char []))
-                                dlsym(pyefcn_handle, "pyefcn_compute");
-          if ( pyefcn_compute_func == NULL ) {
-              fprintf(stderr, "Python-backed external functions not supported \n"
-                              "(unable to find pyefcn_compute in $FER_LIBS/libpyefcn.so: %s)", dlerror());
-              *status = FERR_EF_ERROR;
-              return;
-          }
-      }
-
       /* First the results grid array, then the argument grid arrays */
       arg_ptr[0] = memory + mr_arg_offset_ptr[EF_MAX_ARGS];
       for (i = 0; i < i_ptr->num_reqd_args; i++) {
@@ -2371,7 +2257,7 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
       canjump = 1;
 
       /* Call pyefcn_compute which in turn calls the ferret_compute method in the python module */
-      (*pyefcn_compute_func)(*id_ptr, ef_ptr->path, arg_ptr, (i_ptr->num_reqd_args)+1, memlo, memhi, steplo, stephi, incr, badflags, errstring);
+      pyefcn_compute(*id_ptr, ef_ptr->path, arg_ptr, (i_ptr->num_reqd_args)+1, memlo, memhi, steplo, stephi, incr, badflags, errstring);
       if ( strlen(errstring) > 0 ) {
           /* (In effect) call ef_bail_out_ to process the error in a standard way */
           ef_err_bail_out_(id_ptr, errstring);

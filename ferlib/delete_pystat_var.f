@@ -36,8 +36,13 @@
 * Delete a pystat variable.
 *
 * Input:
+*     ivar - the (Fortran) index of the pystat variable to delete.  The
+*            reference count to the python memory associated with this 
+*            data is decremented.
 *
 * Output:
+*     errmsg - error message if unsuccessful; blank if and only if successful
+*     lenerr - length of the actual error message; zero if and only if successful
 *
 
       SUBROUTINE DELETE_PYSTAT_VAR(ivar, errmsg, lenerr)

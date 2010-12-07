@@ -12,11 +12,16 @@
 #    a library.
 
 #
+# Site-specific defines
+#
+include ../../site_specific.mk
+
+#
 # include platform specific definitions of:
 #       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
 #
-
 include ../../platform_specific_flags.mk.$(HOSTTYPE)
+
 include ./SOURCE_FILES
 include ./SOURCE_FILES_C
 

@@ -8,6 +8,11 @@
 # Also the TOOLSUI_JAR file define below must exist
 #
 
+#
+# For the definition of JAVA_HOME
+#
+include ../../site_specific.mk
+
 TOOLSUI_JAR = toolsUI/toolsUI-4.1.jar
 
 JAVA_SOURCE_FILES = $(wildcard src/gov/noaa/pmel/ferret/threddsBrowser/*.java)

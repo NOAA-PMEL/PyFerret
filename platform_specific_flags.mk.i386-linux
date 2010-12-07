@@ -6,9 +6,9 @@
 #
 
 #
-# This is assigned only if it is not already defined
+# DIR_PREFIX is from site_specific.mk which should have been included in prior to this include
 #
-	DIR_PREFIX	?= $(HOME)/pyferret_32dev
+
 
 #
 # Local defines
@@ -19,11 +19,11 @@
 			   -I$(DIR_PREFIX)/ppl/include/xgks \
 			   -I$(DIR_PREFIX)/ppl/tmap_inc \
 			   -I$(DIR_PREFIX)/xgks/src/lib \
+			   -I$(DIR_PREFIX)/pyefcn \
 			   -I/usr/X11R6/include \
 			   -I/usr/local/include
 
-	MYDEFINES	:= \
-			   -Dcrptd_cat_argument \
+	MYDEFINES	:= -Dcrptd_cat_argument \
 			   -Dgfortran \
 			   -Dreclen_in_bytes \
 			   -Dunix \
@@ -46,8 +46,7 @@
 			   -DSTAR_1_SUPPORTED \
 			   -DVOID_SIGHANDLER \
 			   -DX_REFRESH \
-			   -DXT_CODE \
-
+			   -DXT_CODE
 
 	PLATFORM	:= $(shell uname -rs) (gfortran)
 

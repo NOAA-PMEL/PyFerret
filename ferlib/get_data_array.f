@@ -381,11 +381,21 @@
           lenerr = TM_LENSTR(errmsg)
           RETURN
       ENDIF
-      DO 10 k = ss_low,ss_high
+      DO 100 k = ss_low,ss_high
           worldsecs = TM_WORLD(k, grid, axnum, box_middle)
           CALL TSTEP_TO_DATE_OLD(grid, worldsecs, 6, timestr)
-          READ(timestr, FMT=100, ERR=500) day, monthstr, year,
+*         Try to read as DD-MTH-YYYY HH:MM:SS
+*         If fails, try another format
+          READ(timestr, FMT=110, ERR=20) day, monthstr, year,
+     .                                   hour, minute, second
+          GOTO 90
+*         Try to read as DD-MTH HH:MM:SS
+*         If fails, report error
+   20     READ(timestr, FMT=120, ERR=500) day, monthstr, 
      .                                    hour, minute, second
+          year = 0
+   90     CONTINUE
+*         Convert month string to a number
           IF ( monthstr .EQ. 'JAN' ) THEN
               month = 1
           ELSE IF ( monthstr .EQ. 'FEB' ) THEN
@@ -420,8 +430,9 @@
           axcoords(TIMEARRAY_HOURINDEX,q) = hour
           axcoords(TIMEARRAY_MINUTEINDEX,q) = minute
           axcoords(TIMEARRAY_SECONDINDEX,q) = second
-   10 CONTINUE
-  100 FORMAT(I2,X,A3,X,I4,X,I2,X,I2,X,I2)
+  100 CONTINUE
+  110 FORMAT(I2,X,A3,X,I4,X,I2,X,I2,X,I2)
+  120 FORMAT(I2,X,A3,X,I2,X,I2,X,I2)
 
       calname = line_cal_name(line)
       cal_id = TM_GET_CALENDAR_ID(calname)

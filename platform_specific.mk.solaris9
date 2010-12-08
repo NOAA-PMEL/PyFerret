@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.solaris
+# platform_specific.mk.solaris9
 #
 # This file is included in other Makefiles and defines
 # platform specific macros
@@ -87,6 +87,6 @@ DODS_LIBS       =  /local/opendap/lib/libnc-dap.a /local/opendap/lib/libdap.a /l
 TERMCAPLIB      =-ltermcap
 
 #
-# End of platform_specific_includes.mk.solaris8
+# End of platform_specific.mk.solaris9
 #
 

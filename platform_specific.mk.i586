@@ -1,5 +1,5 @@
 #
-# $Id$
+# platform_specific.mk.i586
 # This file is included in other Makefiles and defines
 # platform specific macros
 
@@ -92,5 +92,5 @@ CDFLIB 	= -L/usr/local/src/DODS/lib -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2 -
 TERMCAPLIB	= -ltermcap
 
 #
-# End of platform_specific_includes.mk.i486-linux
+# End of platform_specific.mk.i586
 #

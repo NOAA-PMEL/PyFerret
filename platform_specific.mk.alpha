@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.alpha
+# platform_specific.mk.alpha
 #
 # This file is included in other Makefiles and defines
 # platform specific macros
@@ -71,6 +71,6 @@ CDFLIB		= /usr/local/lib/libnetcdf.a
 
 
 #
-# End of platform_specific_includes.mk.alpha
+# End of platform_specific.mk.alpha
 #
 

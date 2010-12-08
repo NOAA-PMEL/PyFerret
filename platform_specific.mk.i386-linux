@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.x86_64-linux
+# platform_specific.mk.i386-linux
 #
 # This file is included Makefiles under the fer, fmt, and ppl directories
 # and defines platform specific macros
@@ -8,6 +8,7 @@
 #
 # DIR_PREFIX is from site_specific.mk which should have been included in prior to this include
 #
+
 
 #
 # Local defines
@@ -56,13 +57,13 @@
 	RANLIB		:= $(shell which ranlib)
 	LD		:= $(shell which gfortran)
 
-	CFLAGS		+= $(MYINCLUDES) -P $(MYDEFINES) -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4 -fPIC
+	CFLAGS		+= $(MYINCLUDES) -P $(MYDEFINES) -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4 -fPIC 
 	CPP_FLAGS	:= $(CFLAGS)
 	FFLAGS		+= $(MYINCLUDES) -P $(MYDEFINES) -fno-automatic -fdollar-ok -ffixed-line-length-132 -fPIC -c
 	FCFLAGS		:= $(FFLAGS)
 	F77FLAGS	:= $(FFLAGS)
 	PPLUS_FFLAGS	:= $(FFLAGS)
-	LDFLAGS		+= -v --verbose -L/usr/X11R6/lib64 -L/usr/X11R6/lib -L/usr/local/lib64 -L/usr/local/lib -export-dynamic
+	LDFLAGS		+= -v --verbose -L/usr/X11R6/lib -L/usr/local/lib -export-dynamic
 
 	SYSLIB		:= -lXpm -lXm -lXt -lXext -lX11 -lXp -lXmu -lSM -lICE -lnetcdf -lhdf5_hl -lhdf5 -lcurl -lreadline -lncurses -lz -lm -lc
 	GKSLIB		:= $(DIR_PREFIX)/xgks/src/lib/libxgks.a
@@ -75,5 +76,5 @@
 	$(F77) $(FFLAGS) $*.f -o $*.o
 
 #
-# End of platform_specific_includes.mk.x86_64-linux
+# End of platform_specific.mk.i386-linux
 #

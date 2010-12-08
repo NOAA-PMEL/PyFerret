@@ -1,8 +1,8 @@
-	#
-	# platform_specific_includes.mk.ia64-sles10
-	#
-	# This file is included in other Makefiles and defines
-	# platform specific macros
+#
+# platform_specific.mk.ia64-sles10
+#
+# This file is included in other Makefiles and defines
+# platform specific macros
 
 
 	NETCDF4_DIR = /home/acm/altix/local
@@ -97,6 +97,6 @@
 
 	TERMCAPLIB 	=/usr/lib/libncurses.a
 
-	#
-	# End of platform_specific_includes.mk.ia64-sles10
+#
+# End of platform_specific.mk.ia64-sles10
 #

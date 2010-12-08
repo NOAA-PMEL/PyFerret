@@ -1,8 +1,8 @@
-	#
-	# platform_specific_includes.mk.ia64-sles9 
-	#
-	# This file is included in other Makefiles and defines
-	# platform specific macros
+#
+# platform_specific.mk.ia64-sles9 
+#
+# This file is included in other Makefiles and defines
+# platform specific macros
 
 
 	INCLUDES        = -I/usr/lib/gcc-lib/ia64-suse-linux/3.3.3/include \
@@ -88,6 +88,6 @@
 
 	TERMCAPLIB 	=/usr/lib/libncurses.a
 
-	#
-	# End of platform_specific_includes.mk.ia64-sles9
+#
+# End of platform_specific.mk.ia64-sles9
 #

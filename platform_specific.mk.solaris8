@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.solaris
+# platform_specific.mk.solaris8
 #
 # This file is included in other Makefiles and defines
 # platform specific macros
@@ -101,6 +101,6 @@ TERMCAPLIB      =-ltermcap
 
 
 #
-# End of platform_specific_includes.mk.solaris8
+# End of platform_specific.mk.solaris8
 #
 

@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.solaris
+# platform_specific.mk.sun4
 #
 # This file is included in other Makefiles and defines
 # platform specific macros
@@ -38,8 +38,9 @@ PLATFORM = Solaris 5.6
 CC              = cc
 RANLIB          = /bin/touch
 CFLAGS          = -Dsolaris -DUSG -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
-FFLAGS          = -e -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES) -Dunix -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DusingDODSf2cUnderscore
-PPLUS_FFLAGS    = -e -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Dunix $(FINCLUDES)
+FFLAGS          = -e -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES) -Dunix -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DusingDODSf2cUnderscore 
+PPLUS_FFLAGS    = -e -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Dunix $(FINCLUDES) -DusingDODSf2cUnderscore 
+
 
 #-DusingDODSf2cUnderscore 
 #
@@ -90,11 +91,11 @@ HDFLIB		= /opt/local/lib/libdf.a
 #CDFLIB          = /opt/local/netcdf-3.4/lib/libnetcdf.a
 CDFLIB          = /home/ja4/kobrien/src/solaris/netcdf-3.5.0/lib/libnetcdf.a
 
-#DODS_LIBS	= -L/home/stout/kobrien/solaris/DODS_v3.4.5/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a -lrx -lz 
-DODS_LIBS	= -L/home/stout/kobrien/DODS-release-3.4.5/solaris/DODS/lib/ -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a -lrx -lz 
+#DODS_LIBS	= -L/home/stout/kobrien/solaris/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a -lrx -lz 
+DODS_LIBS	= -L/home/stout/kobrien/DODS-release-3.4.5/solaris/DODS/lib/  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a -lrx -lz 
 
 TERMCAPLIB 	= -ltermcap
 
 #
-# End of platform_specific_includes.mk.solaris
+# End of platform_specific.mk.sun4
 #

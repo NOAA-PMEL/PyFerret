@@ -8,7 +8,7 @@ include ../site_specific.mk
 #
 # Platform-specific defines
 #
-include ../platform_specific_flags.mk.$(HOSTTYPE)
+include ../platform_specific.mk.$(HOSTTYPE)
 
 DATE = $(shell /bin/date +%D)
 

@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.aix
+# platform_specific.mk.aix
 #
 # This file is included in other Makefiles and defines
 # platform specific macros
@@ -84,5 +84,5 @@ XTRA_OBJ        = -bstatic special/aix_routines.o
 
 
 #
-# End of platform_specific_includes.mk.aix
+# End of platform_specific.mk.aix
 #

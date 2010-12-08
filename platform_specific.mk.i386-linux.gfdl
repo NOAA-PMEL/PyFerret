@@ -1,8 +1,8 @@
-	#
-	# platform_specific_includes.mk.i386-linux.gfdl
-	#
-	# This file is included in other Makefiles and defines
-	# platform specific macros
+#
+# platform_specific.mk.i386-linux.gfdl
+#
+# This file is included in other Makefiles and defines
+# platform specific macros
 
 
 	NETCDF4_DIR = /home/acm/netcdf4/local
@@ -168,6 +168,6 @@
 	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de /de /g' | sed -e 's/de /de /g' > $*.f	 
 	$(F77) $(FFLAGS) $*.f	 
 
-	#
-	# End of platform_specific_includes.mk.i386-linux.gfdl
+#
+# End of platform_specific.mk.i386-linux.gfdl
 #

@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.i486-linux
+# platform_specific.mk.macintosh
 #
 # This file is included in other Makefiles and defines
 # platform specific macros
@@ -91,5 +91,5 @@ LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/pplda
 
 
 #
-# End of platform_specific_includes.mk.i486-linux
+# End of platform_specific.mk.macintosh
 #

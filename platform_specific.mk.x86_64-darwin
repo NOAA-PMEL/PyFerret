@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.i486-linux
+# platform_specific.mk.x84_64-darwin
 #
 # This file is included in other Makefiles and defines
 # platform specific macros
@@ -86,5 +86,5 @@ LINUX_OBJS  = dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 
 
 #
-# End of platform_specific_flags.mk.x86_64-darwin
+# End of platform_specific.mk.x86_64-darwin
 #

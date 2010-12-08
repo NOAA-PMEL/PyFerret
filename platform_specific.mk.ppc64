@@ -1,9 +1,9 @@
-	#
-	# platform_specific_includes.mk.ppc64
-	# Contributed by support at BSC-CNS, Barcelona, Spain
-	# for build using PPC processors and SLES 9  10/2008
-	# This file is included in other Makefiles and defines
-	# platform specific macros
+#
+# platform_specific.mk.ppc64
+# Contributed by support at BSC-CNS, Barcelona, Spain
+# for build using PPC processors and SLES 9  10/2008
+# This file is included in other Makefiles and defines
+# platform specific macros
 
 
 	INCLUDES        = -I/gpfs/apps/GCC/gcc-4.0.1/include \
@@ -90,6 +90,6 @@
 
 	TERMCAPLIB 	=/usr/lib/libncurses.a
 
-	#
-	# End of platform_specific_includes.mk.ia64-sles9
+#
+# End of platform_specific.mk.ppc64
 #

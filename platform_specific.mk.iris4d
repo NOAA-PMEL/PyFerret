@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.irix6
+# platform_specific.mk.irix4d
 #
 # This file is included in other Makefiles and defines
 # platform specific macros.  Changed by jimp 01/20/99.
@@ -81,5 +81,5 @@ TERMCAPLIB	= -ltermcap
 
 
 #
-# End of platform_specific_includes.mk.irix6
+# End of platform_specific.mk.irix4d
 #

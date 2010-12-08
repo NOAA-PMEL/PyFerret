@@ -233,23 +233,6 @@
 	   ENDIF
 	ENDIF
 
-* ... check pystat variables
-        CALL string_array_find_quoted(pyvar_code_head,
-     .                                test_name,
-     .                                len_test,
-     .                                string_array_result(1),
-     .                                maxpyvars,
-     .                                num_indices)
-        DO 80 j = 1,num_indices
-            ivar = string_array_result(j)
-            IF ( pyvar_dset_number(ivar) .NE. dset) GOTO 80
-            IF ( pyvar_ndarray_obj(ivar) .EQ. 0 ) GOTO 80
-            category = cat_pystat_var
-            variable = ivar
-            test_name = buff
-            RETURN
- 80     CONTINUE
-
 * ... check the global user variable definitions defined without /D
 *	DO 100 ivar = 1, max_uvar
 *	   IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 100
@@ -271,6 +254,50 @@
               test_name = buff
 	      RETURN
  100	      CONTINUE
+
+*       Check pystat variables
+        CALL string_array_find_quoted(pyvar_code_head,
+     .                                test_name,
+     .                                len_test,
+     .                                string_array_result(1),
+     .                                maxpyvars,
+     .                                num_indices)
+        IF ( single_dset ) THEN
+*           Check for an explicitly named data set
+            DO 150 j = 1,num_indices
+                ivar = string_array_result(j)
+                IF ( pyvar_dset_number(ivar) .NE. dset) GOTO 150
+                IF ( pyvar_ndarray_obj(ivar) .EQ. 0 ) GOTO 150
+                category = cat_pystat_var
+                variable = ivar
+                test_name = buff
+                RETURN
+ 150        CONTINUE
+        ELSE
+*           Check for an implicitly named data set - the "current" data set
+            uvdset = cx_data_set(cx_last)
+            IF ( uvdset .NE. unspecified_int4 ) THEN
+                DO 160 j = 1,num_indices
+                    ivar = string_array_result(j)
+                    IF ( pyvar_dset_number(ivar) .NE. dset) GOTO 160
+                    IF ( pyvar_ndarray_obj(ivar) .EQ. 0 ) GOTO 160
+                    category = cat_pystat_var
+                    variable = ivar
+                    test_name = buff
+                    RETURN
+ 160            CONTINUE
+            ENDIF
+        ENDIF
+*       Check pystat variables without an associated dataset
+        DO 170 j = 1,num_indices
+            ivar = string_array_result(j)
+            IF ( pyvar_dset_number(ivar) .NE. unspecified_int4 ) GOTO 170
+            IF ( pyvar_ndarray_obj(ivar) .EQ. 0 ) GOTO 170
+            category = cat_pystat_var
+            variable = ivar
+            test_name = buff
+            RETURN
+ 170    CONTINUE
 
 * check file variables from this data set
 *	DO 200 ivar = 1, maxvars

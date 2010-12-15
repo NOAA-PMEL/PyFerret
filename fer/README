@@ -2,7 +2,7 @@ Introduction
 ------------
 
 Thank you for your interest in Ferret and in compiling Ferret.  This document 
-is designed to assist in getting Ferret compiled and linkedon your system.  
+is designed to assist in getting Ferret compiled and linked on your system.  
 NOTE: These procedures have only be confirmed to work on Linux RedHat systems. 
 These are the only systems we have access to, and therefore the only systems 
 we have compiled and linked Ferret (recently) on. Collaborators have used 
@@ -52,7 +52,7 @@ http://porter.pmel.noaa.gov/Ferret/home/documentation/v6-6-release-notes
 (In the platform_specific_flags files, you will see references to DODS libraries.
 This is from the previous builds which used OPeNDAP libraries from opendap.org. 
 These references will be removed in future but are left in for the time being; 
-as the transition from the opendap.org libraries to the unitdata netCDF-4 
+as the transition from the opendap.org libraries to the Unidata netCDF-4 
 libraries is fairly recent.)
 
 As mentioned below, the Ferret Makefiles reference an area called TMAP_LOCAL.  
@@ -111,7 +111,7 @@ To compile
 1) compile xgks (If Xgks is already installed, you may skip this step)
 	a) run configure
 		> ./configure
-		You may be prompted to create a CUSTOMIZE.YOUR_HOSTYYPE file, ie 
+		You may be prompted to create a CUSTOMIZE.YOUR_HOSTYYPE file, i.e. 
 		CUSTOMIZE.x86_64-linux.
 	b) compile sources
 		> make
@@ -181,7 +181,7 @@ via the command-line directive Fprint
 5) Get the environment tar file for one of our linux versions, from the Ferret 
 Downloads pages. You will need the fonts files, go scripts, and palette files. 
 See the bin/Finstall script and the Ferret installation instructions for 
-sdetails about setting up the environment to run Ferret.
+details about setting up the environment to run Ferret.
 
 
 6) Run Benchmark suite

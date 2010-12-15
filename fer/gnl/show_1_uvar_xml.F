@@ -68,7 +68,8 @@
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
      .            attlen, attype, iatt, dset, ncchar
-	CHARACTER FULL_UVAR_NAME*150, TM_FMT*12,
+	CHARACTER FULL_UVAR_NAME_XML*150, FULL_UVAR_NAME*150, 
+     .            TM_FMT*12,
      .            buff*150, buff2*170, c*1, 
      .            attname*128, attbuff*2048, outstring*2048
 	REAL      vals(10)
@@ -119,7 +120,7 @@ C Write statement that uses number 2075 when we change to using these.)
 
 * ... output variable code, units, grid, and type
 
-        vname = FULL_UVAR_NAME(uvar,slen)
+        vname = FULL_UVAR_NAME_XML(uvar,slen)
 	buff = uvar_text(uvar)
         llen = TM_LENSTR1(buff)
 

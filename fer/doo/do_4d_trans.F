@@ -70,7 +70,7 @@
 
 * internal variable declarations:
 	LOGICAL GEOG_COS_FACTOR, point, yes_ax(4), no_ax(4),
-     .		at_ave, at_var, at_din, at_nbd, at_ngd, short_comp,
+     .		at_ave, at_var, at_din, at_nbd, at_ngd, at_sum, short_comp,
      .		need_cos, one_y
 	INTEGER idim, i, j, ir, jr, kr, lr, ic, jc, kc, lc, grid, nbd, ngd,
      .		com_lo(4), com_hi(4), box_offset(4), offset, ind_lo, ind_hi,
@@ -141,8 +141,10 @@
 	at_din = action .EQ. trans_4d_int_def
 	at_nbd = action .EQ. trans_4d_bad_pt
 	at_ngd = action .EQ. trans_4d_good_pt
-	short_comp = at_ngd .OR. at_nbd		! for speed, only
+	at_sum = action .EQ. trans_4d_sum
+	short_comp = at_ngd .OR. at_nbd	.OR. at_sum	! for speed, only
 
+        print *, 'at_sum, short_comp ', at_sum, short_comp
 * determine the axes to be transformed
 	DO 10 idim = 1, 4
 	  yes_ax(idim) = cx_trans(idim,res_cx) .EQ. action
@@ -153,6 +155,8 @@
 * ... save all 4 axes in one long array with offsets to find the starts
 * Note that "cx_lo_ss(com_cx,idim)" is subtracted so offsets pre-compensate
 *    for the axes starting above index = 1
+
+      IF (.NOT. short_comp) THEN  ! boxes are not needed for ngd, nbd, sum.
 	offset = 0
 	DO 90 idim = 1, 4
 	  IF (yes_ax(idim)) THEN
@@ -212,6 +216,7 @@ C http://mathworld.wolfram.com/Zone.html. Fix for @DIN too.
 	need_cos = GEOG_COS_FACTOR( y_dim,grid )
      .		.AND. yes_xax
      .	 	.AND. cx_lo_s2(com_cx) .NE. unspecified_int4
+        IF ( at_sum ) need_cos = .FALSE.
 	IF ( need_cos ) THEN
 	      one_y = (cx_lo_s2(com_cx) .EQ. cx_hi_s2(com_cx))
 	      DO 120 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
@@ -244,6 +249,8 @@ C (Unless there is just one grid cell in the y direction.)
 	      DO 121 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
  121	      boxes(j+cos_offset)  = 1.0
 	ENDIF
+
+      ENDIF  ! skipped computing boxes for short_comp
 
 * do the transformation: average, integration, variance, ngood, nbad, ...
 
@@ -326,6 +333,7 @@ C (Unless there is just one grid cell in the y direction.)
 	        nbd = nbd + 1
 	      ELSE
 	        ngd = ngd + 1
+		IF (at_sum) dsum = dsum + com(ic,jc,kc,lc)
 	      ENDIF
 
  210	    CONTINUE
@@ -379,10 +387,13 @@ C (Unless there is just one grid cell in the y direction.)
 	  ENDIF
 
 * compute result from accumulators
+          res(ir,jr,kr,lr) = bad_res
 	  IF (at_ngd) THEN
 	     res(ir,jr,kr,lr) = ngd
 	  ELSEIF (at_nbd) THEN
 	     res(ir,jr,kr,lr) = nbd
+	  ELSEIF (at_sum .AND. ngd.GT.0) THEN
+	     res(ir,jr,kr,lr) = dsum
           ELSEIF ( bsum .EQ. 0.0D0 ) THEN
 	     res(ir,jr,kr,lr) = bad_res
 	  ELSEIF (at_din) THEN

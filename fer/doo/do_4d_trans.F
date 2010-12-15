@@ -76,7 +76,8 @@
      .		com_lo(4), com_hi(4), box_offset(4), offset, ind_lo, ind_hi,
      .		cos_offset
 	REAL	BOX_SIZE, unit, bad_com, bad_res, box, mean, diff,
-     .		xbox, ybox, zbox, tbox, yc, yh, yh_2, bb, ybxlo, ybxhi
+     .		xbox, ybox, zbox, tbox, yc, yh, yh_2, bb, ybxlo, ybxhi,
+     .          box1
 	REAL*8	TM_WORLD, dsum, bsum
 
 	include	'ferret.parm'
@@ -218,9 +219,6 @@ C http://mathworld.wolfram.com/Zone.html. Fix for @DIN too.
         IF ( at_sum ) need_cos = .FALSE.
 	IF ( need_cos ) THEN
 	      one_y = (cx_lo_s2(com_cx) .EQ. cx_hi_s2(com_cx))
-	      unit = 1.
-	      IF ( at_din )
-     .          unit = un_convert( line_unit_code(grid_line(idim,grid)) )
 	      DO 120 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 
 C Compute the y boxes if there is a y axis; the computation may be 
@@ -240,16 +238,12 @@ C (Unless there is just one grid cell in the y direction.)
 
 	            boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )
 
-      print *, j,ybxhi,ybxlo,ybxhi-ybxlo,SIN(ybxhi),SIN(ybxlo), SIN(ybxhi)-SIN(ybxlo)
-
 		    ! surface area of sphere depends only on h not on ybox
-		    boxes(j+box_offset(y_dim)) = 1.
+		    boxes(j+box_offset(y_dim)) = 1.  
 
 		    ! for integral need area is radius*radius* delx * h
 		    ! delx already has units that include radius of earth.
-
-                    IF (at_din) boxes(j+cos_offset) = boxes(j+cos_offset)/ABS(ybxhi - ybxlo)
-
+                    IF ( at_din ) boxes(j+box_offset(y_dim)) =  m_radius  
  120         CONTINUE
 	ELSE
 	      DO 121 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
@@ -357,14 +351,14 @@ C (Unless there is just one grid cell in the y direction.)
 
 	      IF ( com(ic,jc,kc,lc) .NE. bad_com ) THEN
 	        box = xbox * ybox * zbox * tbox
+	        box1 = box
 	        IF (need_cos) box = box * boxes(jc+cos_offset)
 	        bsum = bsum + box
 	        dsum = dsum + box*com(ic,jc,kc,lc)
 	      ENDIF
 
  220	    CONTINUE
-      print *, 'last ', xbox, ybox, zbox, tbox, boxes(jc+cos_offset),box, 
-     .         com(ic,jc,kc,lc),'   ', dsum,bsum
+
 ! for variance calculation, only: a 2nd pass ...
 	    IF ( at_var ) THEN
 	      IF (bsum .NE. 0.0D0) THEN
@@ -403,10 +397,8 @@ C (Unless there is just one grid cell in the y direction.)
           ELSEIF ( bsum .EQ. 0.0D0 ) THEN
 	     res(ir,jr,kr,lr) = bad_res
 	  ELSEIF (at_din) THEN
-	     print *, dsum, bsum, dsum/bsum, ' din =', dsum
 	     res(ir,jr,kr,lr) = dsum
 	  ELSE	
-	     print *, dsum, bsum, dsum/bsum, ' average=', dsum/bsum
 	     res(ir,jr,kr,lr) = dsum/bsum	! average or variance
 	  ENDIF
 

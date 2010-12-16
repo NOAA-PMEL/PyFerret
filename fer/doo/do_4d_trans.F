@@ -144,7 +144,6 @@
 	at_sum = action .EQ. trans_4d_sum
 	short_comp = at_ngd .OR. at_nbd	.OR. at_sum	! for speed, only
 
-        print *, 'at_sum, short_comp ', at_sum, short_comp
 * determine the axes to be transformed
 	DO 10 idim = 1, 4
 	  yes_ax(idim) = cx_trans(idim,res_cx) .EQ. action

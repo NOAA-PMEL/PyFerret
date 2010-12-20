@@ -2,8 +2,6 @@
 # Makefile for creating threddsBrowser.jar
 #
 # JAVA_HOME must be defined as the location of a Java 6 Development Kit
-# If not defined, this Makefile will attempt to define it if a directory 
-# matching /usr/local/jdk1.6* is found.
 #
 # Also the TOOLSUI_JAR file define below must exist
 #

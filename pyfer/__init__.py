@@ -19,8 +19,13 @@ indicates no errors.
 
 import sys
 import numpy as np
-import cdms2
-import cdtime
+
+try:
+    import cdms2
+    import cdtime
+except ImportError:
+    print >>sys.stderr, "    WARNING: Unable to import cdms2 and/or cdtime; pyferret.get and pyferret.put will fail"
+
 from _pyferret import *
 
 _MAX_FERRET_NDIM = 4

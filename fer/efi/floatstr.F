@@ -36,7 +36,7 @@
 *                                                                      V
 
       CALL ef_set_desc(id,
-     . 'Returns float converted to strings according to format spedified' )
+     . 'Returns float converted to strings according to format specified' )
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
@@ -55,11 +55,11 @@
       arg = 2
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
-      CALL ef_set_arg_name(id, arg, 'Fmt')
+      CALL ef_set_arg_name(id, arg, 'FMT')
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg,  
-     .     'Fortran format, in parentheses, e.g. (F5.1)')
+     .     'Fortran format, in parentheses, e.g. "(F5.1)"')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
 *                                                                      ^

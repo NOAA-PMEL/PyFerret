@@ -9,6 +9,7 @@ cx_size_str.F\
 date_prec.F\
 field_width.F\
 full_uvar_name.F\
+full_uvar_name_xml.F\
 full_var_title.F\
 geog_label.F\
 get_dset_name.F\

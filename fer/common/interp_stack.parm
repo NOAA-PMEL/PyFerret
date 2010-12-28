@@ -103,7 +103,8 @@
      .			isact_variance,
      .			isact_npoints,   ! unused
      .			isact_good_pt,
-     .			isact_bad_pt
+     .			isact_bad_pt,
+     .			isact_4d_sum
 	INTEGER		isact_nrst_dist_abv,
      .			isact_nrst_dist_blw,
      .			isact_nrst_indx_abv,
@@ -145,7 +146,8 @@
      .		isact_fill_near		= isact_trans_code + trans_fill_near,
      .		isact_smth_max		= isact_trans_code + trans_smth_max,
      .		isact_smth_median	= isact_trans_code + trans_smth_median,
-     .		isact_smth_min		= isact_trans_code + trans_smth_min )
+     .		isact_smth_min		= isact_trans_code + trans_smth_min,
+     .		isact_4d_sum		= isact_trans_code + trans_4d_sum )
 	PARAMETER (
      .		isact_nrst_dist_abv = isact_trans_code + trans_nrst_dist_abv,
      .		isact_nrst_dist_blw = isact_trans_code + trans_nrst_dist_blw,

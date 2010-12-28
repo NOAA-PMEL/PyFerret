@@ -267,7 +267,8 @@
      .                  trans_4d_var,
      .                  trans_4d_good_pt,
      .                  trans_4d_bad_pt,
-     .                  trans_reduced
+     .                  trans_reduced,
+     .                  trans_4d_sum
 	INTEGER		trans_nrst_dist_abv,
      .			trans_nrst_dist_blw,
      .			trans_nrst_indx_abv,
@@ -319,7 +320,8 @@
      .                  trans_4d_var	   = trans_compress_code + 14,
      .                  trans_4d_good_pt   = trans_compress_code + 15,
      .                  trans_4d_bad_pt	   = trans_compress_code + 16,
-     .                  trans_reduced 	   = trans_compress_code + 17)
+     .                  trans_reduced 	   = trans_compress_code + 17,
+     .                  trans_4d_sum 	   = trans_compress_code + 18)
 
 * codes to designate regridding transformations
 ! unused but required to compile V4.11 code:

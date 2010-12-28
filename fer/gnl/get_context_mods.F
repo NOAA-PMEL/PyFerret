@@ -862,6 +862,7 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
      .  .OR.  cx_trans(idim,mods_cx) .EQ. trans_4d_int_def
      .  .OR.  cx_trans(idim,mods_cx) .EQ. trans_4d_good_pt
      .  .OR.  cx_trans(idim,mods_cx) .EQ. trans_4d_bad_pt
+     .  .OR.  cx_trans(idim,mods_cx) .EQ. trans_4d_sum
      .  .OR.  cx_trans(idim,mods_cx) .EQ. trans_4d_var
      .  .OR.  cx_trans(idim,mods_cx) .EQ. trans_reduced ) GOTO 5190
 

@@ -123,6 +123,21 @@ C Write statement that uses number 2075 when we change to using these.)
 	idim   = 1			! use X slot for non-oriented
  110	IF ( idim .EQ. 5 ) idim = 3	! DU --> UD on Z axis
 
+        ! Oriengation still not defined. Look for the axis in the grids
+        IF (orient .EQ. 0) THEN
+	   DO 130 igrid = 1, max_dyn_grids
+	   DO 120 idim = 1, 4
+	      IF ( line .EQ. grid_line(idim,igrid) ) THEN
+	         orient = idim
+	         GOTO 140
+	      ENDIF
+ 120	   CONTINUE
+ 130	   CONTINUE
+        ENDIF
+
+ 140	CONTINUE
+        IF (orient .EQ. 0) RETURN  ! axis has no direction and is not used.
+
 * create a dummy grid with this axis
 * (kludge to use existing code that works with grids)
 	grid_line(idim, mgrid_buff) = line

@@ -254,7 +254,6 @@ c!c	      dst(idst, jdst, k, l) =  area
  60	CONTINUE
 
  100	CONTINUE
-c!c        print *, ' hack in xyave_regrid: return area, not sum-of-var/area'
 
 	RETURN
 	END

@@ -608,7 +608,13 @@
      .		alg_trans_num  ( 40 )	/ trans_smth_min	/,
      .		alg_trans_its_int ( 40)	/ .TRUE.		/,
      .		alg_trans_has_arg ( 40)	/ .TRUE.		/,
-     .		alg_trans_dflt_arg( 40)	/ 3		/
+     .		alg_trans_dflt_arg( 40)	/ 3		        /,
+     .		alg_trans_text ( 41 )	/ 'SM4'  		/, 
+     .		alg_trans_title( 41 )	/ '4D summed'           /,
+     .          alg_trans_num  ( 41 )	/ trans_4d_sum	        /,
+     .		alg_trans_its_int ( 41)	/ .FALSE.		/,
+     .		alg_trans_has_arg ( 41)	/ .FALSE.		/,
+     .		alg_trans_dflt_arg( 41)/ bad_val4		/
 c     .     alg_trans_text ( 38 )   / 'RDC'         /,   ! hidden
 c     .     alg_trans_title( 38 )   / 'reduced'     /,
 c     .     alg_trans_num  ( 38 )   / trans_reduced /,
@@ -668,7 +674,7 @@ c     .		(alg_regrid_code (i),i=prgrd_nearest+1,max_regrid_trans)
 c     .				/11*unspecified_name4/
 
 * translation table for substituting 1D transformations with 4D transforms
-	DATA	num_4d_trans/ 5 /
+	DATA	num_4d_trans/ 6 /
 	DATA	alg_1d_to_4d(1) /trans_average/,
      .		alg_4d_trans(1) /trans_4d_ave/,
      .		alg_1d_to_4d(2) /trans_integ_def/,
@@ -678,7 +684,9 @@ c     .				/11*unspecified_name4/
      .		alg_1d_to_4d(4) /trans_good_pt/,
      .		alg_4d_trans(4) /trans_4d_good_pt/,
      .		alg_1d_to_4d(5) /trans_bad_pt/,
-     .		alg_4d_trans(5) /trans_4d_bad_pt/
+     .		alg_4d_trans(5) /trans_4d_bad_pt/,
+     .		alg_1d_to_4d(6) /trans_sum/,
+     .		alg_4d_trans(6) /trans_4d_sum/
 
 	END
 

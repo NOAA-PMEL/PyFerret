@@ -126,7 +126,7 @@
      .                  DO_SMTH_PARZN, DO_SMTH_WELCH, DO_SUM,
      .                  DO_DIST_LOC, DO_RUN_SUM, DO_NGOOD, DO_NBAD,
      .                  DO_VARIANCE, DO_FILL_INTERP, DO_FILL_NEAR,
-     .			DO_4D_VAR,DO_4D_NGD,DO_4D_NBD,
+     .			DO_4D_VAR,DO_4D_NGD,DO_4D_NBD,DO_4D_SUM,
      .			DO_NEAREST_DIST_ABOVE, DO_NEAREST_DIST_BELOW,
      .			DO_NEAREST_INDEX_ABOVE,DO_NEAREST_INDEX_BELOW,
      .			DO_EVENT, DO_SMTH_MEDIAN, DO_SMTH_MIN, DO_SMTH_MAX
@@ -590,6 +590,8 @@ c	   GOTO 5000
 	      CALL IS_TRANS( memory, DO_4D_NGD, *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_bad_pt		) THEN	! 7/96
 	      CALL IS_TRANS( memory, DO_4D_NBD, *2500, status )
+	   ELSEIF ( act .EQ. isact_4d_sum		) THEN	! 11/10
+	      CALL IS_TRANS( memory, DO_4D_SUM, *2500, status )
 	   ELSEIF ( act .EQ. isact_nrst_dist_abv	) THEN	! 9/97
 	      CALL IS_TRANS( memory, DO_NEAREST_DIST_ABOVE, *2500, status )
 	   ELSEIF ( act .EQ. isact_nrst_dist_blw	) THEN	! 9/97

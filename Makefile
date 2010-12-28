@@ -47,11 +47,7 @@ ifeq ( $(strip $(FER_LIBS)), )
 else
 	cp -f $(DIR_PREFIX)/fer/threddsBrowser/threddsBrowser.jar $(FER_LIBS)
 	cp -f $(DIR_PREFIX)/ferlib/libferret.so $(FER_LIBS)
-ifeq ( $(USER), "root" )
-	$(PYTHON_EXE) setup.py install --skip-build
-else
-	$(PYTHON_EXE) setup.py install --skip-build --user
-endif
+	$(PYTHON_EXE) setup.py install $(PYTHON_INSTALL_FLAGS)
 endif
 
 .PHONY : clean

@@ -67,7 +67,7 @@ $(ALLCOBJS): %.o: %.c ferret_lib.h $(FERINC_FILES) Makefile
 CSRCOBJS := $(filter-out fermain_so.o, $(ALLCOBJS))
 
 libferret.so : $(CSRCOBJS) $(FSRCOBJS) $(FEROBJS_FILES) $(FERLIBS_FILES) Makefile
-	$(F77) $(FFLAGS) -shared \
+	$(F77) $(FFLAGS) $(LDFLAGS) -shared \
 	    $(CSRCOBJS) $(FSRCOBJS) $(FEROBJS_FILES) \
 	    -Xlinker --whole-archive \
 	    $(FERLIBS_FILES) \

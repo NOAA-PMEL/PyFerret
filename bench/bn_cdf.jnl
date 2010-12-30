@@ -17,6 +17,8 @@ list/clobber/format=cdf/l=1:300000/rigid/file=test2.cdf l  ! without record dime
 list/clobber/format=cdf/l=1:5000 l                               ! auto-filename
 list/clobber/format=cdf/t="1-jan-1902":"1-jan-2010"/rigid tlong  ! auto-filename
 
+
+cancel data/all
 ! deliberate errors
 set mode ignore
 list/format=cdf/l=1:10/file=test_abs.cdf l    ! file exists error

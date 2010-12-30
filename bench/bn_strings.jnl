@@ -82,7 +82,8 @@ list/nohead a
 list/nohead b
 
 set var/title="partial filename list" d
-save/clobber/file=test_string.cdf/heading=enhanced d[i=2:5]
+save/clobber/file=test_string2.cdf/heading=enhanced d[i=2:5]
+sp mv test_string2.cdf test_string.cdf
 sp echo "bn_strings.jnl --- 3 enhanced heading" >> all_ncdump.out
 sp ncdump test_string.cdf >> all_ncdump.out
 canc data/all

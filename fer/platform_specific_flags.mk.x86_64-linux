@@ -5,9 +5,10 @@
 	# platform specific macros
 
 #
-        NETCDF4_DIR     = /home/porter/tmap/ferret/x86_64-linux
+#        NETCDF4_DIR     = /home/users/tmap/ferret/x86_64-linux
+	NETCDF4_DIR	= /home/stout/ansley/local/x86
 
-	INCLUDES        = -I /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/include \
+	INCLUDES        = -I /usr/lib/gcc/x86_64-redhat-linux5E/4.1.1/include \
 			  -I/../fmt/cmn/ \
 			  -I/$(NETCDF4_DIR)/include \
 			  -I. \
@@ -30,7 +31,7 @@
 			  -I../../xgks/port 
 
 	CDF_INCLUDES	= -I/$(NETCDF4_DIR)/include
-	DODS_INCLUDES	= -I/home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.3/include/libnc-dap 
+	DODS_INCLUDES	= -I/home/users/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.3/include/libnc-dap 
 	
 	# New platform type var - *kob* 10/01
 	PLATFORM = Linux(gfortran) 2.6.9-89.0.20.ELsmp
@@ -65,7 +66,7 @@
 
 # also consider -ffloat-store. Removing -m64  
 	CFLAGS          =    $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION   -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
-	FFLAGS          =    $(CPP_FLAGS) -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore -fdollar-ok   -ffixed-line-length-132   $(FINCLUDES)
+	FFLAGS          =    $(CPP_FLAGS) -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore -fdollar-ok   -ffixed-line-length-132 -ffpe-trap=overflow $(FINCLUDES)
 	PPLUS_FFLAGS    =    $(CPP_FLAGS) -fno-automatic -c -DusingDODSf2cUnderscore -fno-second-underscore  -fdollar-ok   -ffixed-line-length-132  $(FINCLUDES)
 
         #PROF_FLAGS      = -pg
@@ -74,71 +75,37 @@
 	#
 
 	LD		= gcc 
-	LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib64 -export-dynamic 
+	LDFLAGS		= -v --verbose -L/lib64 -L/usr/lib64 -export-dynamic 
 	 
-	SYSLIB		= -L/usr/X11R6/lib64 \
-			  /usr/lib64/libm.a \
-			  /usr/X11R6/lib64/libXpm.a  \
-			  /usr/X11R6/lib64/libXm.a \
-			  /usr/X11R6/lib64/libXt.a \
-			  /usr/X11R6/lib64/libXext.a \
-			  /usr/X11R6/lib64/libX11.a \
-			  /usr/X11R6/lib64/libXp.a \
-			  /usr/X11R6/lib64/libXmu.a \
-			  /usr/X11R6/lib64/libSM.a \
-			  /usr/X11R6/lib64/libICE.a \
-			  /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/libgcc.a \
-			  /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/libgfortranbegin.a \
-			  /usr/lib/gcc/x86_64-redhat-linux5E/4.1.2/libgfortran.a \
-			  /usr/lib64/libm.a \
+	SYSLIB		= -L/usr/lib64 \
+			  -lm \
+			  -lXpm  \
+			  -lXm \
+			  -lXt \
+			  -lXext \
+			  -lX11 \
+			  -lXp \
+			  -lXmu \
+			  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgcc.a \
+			  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortranbegin.a \
+			  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortran.a \
+			  -L/lib64 -lm 
 
 	TMLIB		= ../lib/tmap_lib.a
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
 	READLINELIB	= /usr/lib64/libreadline.a 
 
-# netcdf4.1 static librarys only (except for libdl)
+# netcdf4.1.x  libraries
 
-	CDFLIB          = $(NETCDF4_DIR)/lib/libnetcdf.a \
+
+	CDFLIB          = $(NETCDF4_DIR)/lib/libnetcdff.a \
+			  $(NETCDF4_DIR)/lib/libnetcdf.a \
 			  $(NETCDF4_DIR)/lib/libhdf5_hl.a \
 			  $(NETCDF4_DIR)/lib/libhdf5.a \
 			  -L/usr/lib64  \
-			  /usr/lib64/libcurl.a  \
-			  /usr/lib64/libssl.a  \
-			  /usr/lib64/libcrypto.a  \
-			  /usr/lib64/libgssapi_krb5.a  \
-			  /usr/lib64/libkrb5.a  \
-			  /usr/lib64/libcom_err.a  \
-			  /usr/lib64/libk5crypto.a  \
-			  /usr/lib64/libresolv.a  \
-			  -L/usr/lib64 -ldl  \
-			  /usr/lib64/libz.a  \
-			  /usr/lib64/libidn.a  \
-			  /usr/lib64/libz.a
+			  -lcurl -ldl -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err -lidn -lssl -lcrypto -lz 
 
-
-# netcdf4.1 standard build
-#	CDFLIB          = $(NETCDF4_DIR)/lib/libnetcdf.a \
-#			  $(NETCDF4_DIR)/lib/libhdf5_hl.a \
-#			  $(NETCDF4_DIR)/lib/libhdf5.a \
-#			  -L/usr/lib64 -lz -lc -lm -lcurl
-
-# netcdf3.6.3
-#	CDFLIB          = /home/nstout/ansley/netcdf-3.6.3/porter/lib/libnetcdf.a -lcurl
-
-
-	DODS_LIBS   	= /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.3/lib/libnc-dap.a \
-			  /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.3/lib/libdap.a\
-			  /home/porter/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.3/lib/libdapclient.a  \
-			  /usr/lib64/libcurl.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a \
-			  /usr/lib64/libgssapi_krb5.a -lkrb5 -lcom_err /usr/lib64/libk5crypto.a \
-			  /usr/lib64/libresolv.a -ldl /usr/lib64/libz.a /usr/lib64/libgssapi_krb5.a \
-			  -lkrb5 /usr/lib64/libk5crypto.a -lcom_err /usr/lib64/libresolv.a \
-			  /usr/lib64/libidn.a /usr/lib64/libssl.a /usr/lib64/libcrypto.a \
-			  /usr/lib64/libssl.a /usr/lib64/libcrypto.a /usr/lib64/libgssapi_krb5.a \
-			  -lkrb5 -lcom_err /usr/lib64/libk5crypto.a /usr/lib64/libresolv.a -ldl \
-			  /usr/lib64/libz.a /usr/lib64/libz.a /usr/lib64/libxml2.a /usr/lib64/libz.a \
-			  -lpthread /usr/lib64/libm.a -lpthread
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 

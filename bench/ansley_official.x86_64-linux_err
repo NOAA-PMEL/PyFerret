@@ -1,27 +1,27 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferret_c
--rwxr-xr-x  1 ansley tmap 52915537 Nov 15 12:20 /home/porter/ansley/x86_64-linux/FERRET/fer/ferret_c
-Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/x86_64-linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 49932512 Dec 29 16:00 /home/users/ansley/x86_64-linux/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/x86_64-linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  fix #1765, #1766, bugs in the TAX_ external functions
+Note: build on dunkel. Return to a single script bn_all.jnl. New function floatstr. Script fixes for netCDF4.1.2, which disallows clobbering an open file.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
-FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
+PWD=/home/users/ansley/x86_64-linux/FERRET/bench
+FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_DIR=.
-CVSROOT=/home/porter/tmap/FERRET_ROOT
 FER_WEB_BROWSER=netscape -ncols 60
 FER_DSETS=.
-FER_DATA_THREDDS=/home/porter/tmap/ferret/linux/fer_dsets http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/catalog.xml
+FER_DATA_THREDDS=/home/users/tmap/ferret/linux/fer_dsets http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/catalog.xml
+FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_DAT=.
-FER_GO=. /home/porter/tmap/ferret/x86_64-linux/go /home/porter/tmap/ferret/x86_64-linux/examples /home/porter/tmap/ferret/x86_64-linux/contrib /home/porter/tmap/ferret/tmap_go
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
-FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func
-Beginning at Mon Nov 15 13:08:55 PST 2010
+FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/x86_64-linux/FERRET/external_functions/ext_func
+Beginning at Wed Dec 29 16:57:41 PST 2010
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -440,9 +440,7 @@ list/format=cdf/i=5:15/l=5:10/append/file=test_abs.cdf il
  **TMAP ERR: attempt to redefine line
              # of dims in variable IJL2 is inconsist. w/ CDF file
 list/format=cdf/append/file=test_abs.cdf ijl2
- LISTing to file test_abs.cdf
- **TMAP ERR: attempt to redefine line
-             # of dims in variable IJKL is inconsist. w/ CDF file
+ **ERROR: variable unknown or not in data set: IJKL[K=@AVE]
 list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]
  LISTing to file test_abs.cdf
  **TMAP ERR: error in line definition
@@ -824,11 +822,11 @@ Replacing definition of grid TGRID
 Replacing definition of axis TWEEKS
 Replacing definition of axis TWEEKS
 Replacing definition of axis TWEEKS
+ LISTing to file calsst.cdf
+ *** NOTE: /UNIT=MONTHS  ... using 1/12 of 360.00 days
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
- LISTing to file calsst.cdf
- *** NOTE: /UNIT=MONTHS  ... using 1/12 of 360.00 days
 Replacing definition of grid TGRID
 Replacing definition of axis TDAYS
 Replacing definition of grid TGRID
@@ -941,7 +939,7 @@ define axis/x xax = d
  LISTing to file test_string.cdf
  LISTing to file test_string.cdf
  *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
- LISTing to file test_string.cdf
+ LISTing to file test_string2.cdf
  *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  **ERROR: invalid command: cant use this regrid transform on strings: @LIN
 list a[gx=xnrst]
@@ -1023,6 +1021,12 @@ Replacing definition of axis TAX
  LISTing to file profiles.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+nco_err_exit(): ERROR nco_open
+Not a netCDF file
+nco_err_exit(): ERROR nco_open
+Not a netCDF file
+nco_err_exit(): ERROR nco_open
+Not a netCDF file
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test_100x100.nc
@@ -1194,6 +1198,8 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAX
  *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: XAXLEVITR1_160
+ *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: TIME4
  *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: TIME5
@@ -1202,8 +1208,6 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
- *** NOTE: Not deleted: XAXLEVITR1_160
- *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: MONTH_IRREG
  *** NOTE: Axis is in use by grid (G004)
  *** NOTE: Not deleted: YAXLEVITR1_90
@@ -1239,9 +1243,9 @@ Replacing definition of axis TAX2
  *** NOTE: Not deleted: TAX48
  *** NOTE: Axis is in use by grid G48
  *** NOTE: Not deleted: XEZ1
-ls: input.txt: No such file or directory
  *** NOTE: Axis is in use by grid GEZ1
  *** NOTE: Not deleted: XEZ2
+ls: input.txt: No such file or directory
  *** NOTE: Axis is in use by grid GEZ2
  *** NOTE: Not deleted: YEZ
  *** NOTE: Axis is in use by grid GEZ2
@@ -1329,6 +1333,8 @@ ls: input.txt: No such file or directory
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAX
  *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: XAXLEVITR1_160
+ *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: TIME4
  *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: TIME5
@@ -1337,8 +1343,6 @@ ls: input.txt: No such file or directory
  *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
- *** NOTE: Not deleted: XAXLEVITR1_160
- *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: YAXLEVITR1_90
  *** NOTE: Axis is in use by grid GG2
  *** NOTE: Not deleted: ZAXLEVITR1_1
@@ -1825,11 +1829,11 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  **ERROR: First argument is a letter of the alphabet
 query/ignore $1%q|a|b|c|d|<First argument is a letter of the alphabet%
+ **ERROR: invalid command: Valid value needed for argument $2
+query/ignore $2%|a|b|c|d|%
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
- **ERROR: invalid command: Valid value needed for argument $2
-query/ignore $2%|a|b|c|d|%
  *** NOTE: Valid argument $2 choices are: a|b|c|d|
  **ERROR: my error message
 message/cont $1"|xxxxx|goodbye<my error message"
@@ -2031,9 +2035,9 @@ sho att/all .
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-syntax error
-context: <htm^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>tauy</b><b>absuu</b><b>absuv</b><b>taux</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
+syntax error, unexpected SCAN_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserverefize 64000000 defmp-iridlc3) store<p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuu</b><b>absuv</b><b>taux</b><b>tauy</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2196,7 +2200,7 @@ Replacing definition of axis TIME
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-             NetCDF: DAP server error (OPeNDAP/netCDF Error code -70)
+             NetCDF: Malformed or inaccessible DAP DDS (OPeNDAP/netCDF Error code -72)
              Data set: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods
 SET DAT/FORM=CDF "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
  **Internet Data error
@@ -2718,9 +2722,7 @@ list/format=cdf/keep_axnames/i=5:15/l=5:10/append/file=test_abs.cdf il
  **TMAP ERR: attempt to redefine line
              # of dims in variable IJL2 is inconsist. w/ CDF file
 list/format=cdf/keep_axnames/append/file=test_abs.cdf ijl2
- LISTing to file test_abs.cdf
- **TMAP ERR: attempt to redefine line
-             # of dims in variable IJKL is inconsist. w/ CDF file
+ **ERROR: variable unknown or not in data set: IJKL[K=@AVE]
 list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkl[k=@ave]
  LISTing to file test_abs.cdf
  **TMAP ERR: error in line definition
@@ -3146,6 +3148,8 @@ show grid garbage
 Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -3241,4 +3245,4 @@ gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSO
 gdeactivatews()    3 GKS not in proper state: GKS shall be in the state WSAC
 gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSOP or in the state WSAC
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Nov 15 13:10:42 PST 2010
+Ended at Wed Dec 29 16:59:17 PST 2010

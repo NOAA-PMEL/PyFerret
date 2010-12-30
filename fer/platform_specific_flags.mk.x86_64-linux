@@ -31,7 +31,6 @@
 			  -I../../xgks/port 
 
 	CDF_INCLUDES	= -I/$(NETCDF4_DIR)/include
-	DODS_INCLUDES	= -I/home/users/ansley/OPeNDAP/x86_64-linux/DODS_v3.9.3/include/libnc-dap 
 	
 	# New platform type var - *kob* 10/01
 	PLATFORM = Linux(gfortran) 2.6.9-89.0.20.ELsmp

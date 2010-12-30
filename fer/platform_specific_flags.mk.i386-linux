@@ -163,13 +163,6 @@
 
 
 #
-# Note we need libcurl.a from /usr/local/lib, not the one in /usr/lib/ so that OPeNDAP 
-# password authentication can work. Note that the order of libraries given by the ncdap-config
-# tool is wrong: -ldapclient must come before -ldap.
-
-	DODS_LIBS = -L/home/users/ansley/OPeNDAP/linux/DODS_v3.8.2/lib -lnc-dap -L/home/porter/ansley/OPeNDAP/linux/DODS_v3.8.2/lib -ldapclient -ldap /usr/lib/libxml2.a /usr/lib/libz.a -lpthread /usr/lib/libm.a /usr/lib/libcurl.a -L/usr/kerberos/lib /usr/lib/libz.a /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/lib/libgssapi_krb5.a /usr/lib/libkrb5.a /usr/lib/libcom_err.a /usr/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a /usr/lib/libpthread.a /usr/lib/libz.a
-	DODS_INCLUDES = -I/home/users/ansley/OPeNDAP/linux/DODS_v3.8.2/include/libnc-dap 
-
 	LINUX_OBJS = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 
 	TERMCAPLIB =/usr/lib/libncurses.a

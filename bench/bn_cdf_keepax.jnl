@@ -15,6 +15,7 @@ list/clobber/format=cdf/keep_axnames/l=1:5000 l                               ! 
 list/clobber/format=cdf/keep_axnames/t="1-jan-1902":"1-jan-2010"/rigid tlong  ! auto-filename
 
 ! deliberate errors
+can dat/all
 set mode ignore
 list/format=cdf/keep_axnames/l=1:10/file=test_abs.cdf l    ! file exists error
 list/format=cdf/keep_axnames/i=5:15/l=5:10/append/file=test_abs.cdf il  ! inconsistent i limits

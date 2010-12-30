@@ -808,7 +808,7 @@ SHOW ATT/ALL (`t2,return=yaxis`)
 save/file=a.nc/clobber/L=1 t2  
 
 sp echo "bn_attributes.jnl --- 25 output new attr on user-defined var" >> all_ncdump.out
-sp ncdump a.nc >> all_ncdump.out
+sp ncdump a.nc >> all_ncdump.out 
 
 
 ! intentional errors
@@ -821,6 +821,8 @@ use gt4d011
 set var/outtype=int4 temp
 save/file=a.nc/clobber/x=132w/k=1 temp
 can data gt4d011
+
+sp rm a.nc
 
 ! specify incorrect output types
 
@@ -838,6 +840,7 @@ go bn_reset
 ! A user-defined variable is used to refer to the axes.
 
 use gt4d011.cdf
+
 let t2 = t*temp
 set att (`t2,return=xaxis`).units = "degrees"
 sh att/all (`t2,return=xaxis`)

@@ -104,6 +104,7 @@ ferret: build
 	      $(SYSLIB) \
 	      -o $(EXECNAME)
 
+
 .PHONY : update
 update:
 	rm -f special/xmake_date_data.[Ffo]

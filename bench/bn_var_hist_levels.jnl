@@ -15,6 +15,17 @@ shade/lev=50v,5mean/title="/LEV=50v,5mean" temp[K=1]
 shade/lev=50v,25max/title="/LEV=50v,25max" temp[K=1]
 shade/lev=50v,1d/title="/LEV=50v,1d" temp[K=1]
 
+! If the data has lots of negative data, the computation of
+! the std deviation was incorrect.  See ticket 1778.
+
+let negvar = -1* temp
+
+shade/lev=50v,-20min/title="/LEV=50v,-20min" negvar[K=1]
+shade/lev=50v,-15mean/title="/LEV=50v,-15mean" negvar[K=1]
+shade/lev=50v,-15max/title="/LEV=50v,-15max" negvar[K=1]
+shade/lev=50v,1d/title="/LEV=50v,1d" negvar[K=1]
 
 ! Histogram-based
 shade/lev=50h/title="/LEV=50h" temp[K=1]
+
+

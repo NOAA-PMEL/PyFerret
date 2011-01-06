@@ -9,7 +9,6 @@
 # DIR_PREFIX is from site_specific.mk which should have been included in prior to this include
 #
 
-
 #
 # Local defines
 #
@@ -20,6 +19,7 @@
 			   -I$(DIR_PREFIX)/ppl/tmap_inc \
 			   -I$(DIR_PREFIX)/xgks/src/lib \
 			   -I$(DIR_PREFIX)/pyefcn \
+			   -I$(DIR_PREFIX)/external_functions/ef_utility \
 			   -I/usr/X11R6/include \
 			   -I/usr/local/include
 
@@ -57,13 +57,14 @@
 	RANLIB		:= $(shell which ranlib)
 	LD		:= $(shell which gfortran)
 
-	CFLAGS		+= $(MYINCLUDES) -P $(MYDEFINES) -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4 -fPIC 
+	CFLAGS		+= $(MYINCLUDES) -P $(MYDEFINES) -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4 -fPIC
 	CPP_FLAGS	:= $(CFLAGS)
 	FFLAGS		+= $(MYINCLUDES) -P $(MYDEFINES) -fno-automatic -fdollar-ok -ffixed-line-length-132 -fPIC -c
 	FCFLAGS		:= $(FFLAGS)
 	F77FLAGS	:= $(FFLAGS)
 	PPLUS_FFLAGS	:= $(FFLAGS)
-	LDFLAGS		+= -v --verbose -L/usr/X11R6/lib -L/usr/local/lib -export-dynamic
+	LDFLAGS		+= -L/usr/local/lib
+	LD_DYN_FLAGS	:= $(LDFLAGS) -L$(DIR_PREFIX)/ferlib -lferret -shared -Xlinker --no-undefined
 
 	SYSLIB		:= -lXpm -lXm -lXt -lXext -lX11 -lXp -lXmu -lSM -lICE -lnetcdf -lhdf5_hl -lhdf5 -lcurl -lreadline -lncurses -lz -lm -lc
 	GKSLIB		:= $(DIR_PREFIX)/xgks/src/lib/libxgks.a

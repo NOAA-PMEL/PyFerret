@@ -15,13 +15,14 @@
 #  noted in the comments at the start of that file.
 
 #
-# include platform specific definitions of:
-#       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
+# include site specific macro definitions
 #
+include ../../site_specific.mk
 
-include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
-
-INCLUDES += -Iferret_cmn
+#
+# include platform specific macro definitions
+#
+include ../../platform_specific.mk.$(HOSTTYPE)
 
 #
 # Matlab specific. Only works for Solaris cc and f77 compiler
@@ -45,18 +46,14 @@ OBJSf = $(SRCS_F:.f=.o)
 # Targets
 #
 
-all:	ferret_cmn matlab.so matlab_func.so
+all:	matlab.so matlab_func.so
 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
-ferret_cmn:
-	ln -s ../ef_utility/ferret_cmn ferret_cmn
-
-
 clean:
-	rm -f core *.so *.o ferret_cmn
+	rm -f *.so *.o
 
 matlab.so: matlab.o matlab_link.o
 	$(LD) -L $(MATLAB_DIR) $(LD_DYN_FLAGS) matlab.o matlab_link.o -leng -lmat -o matlab.so	

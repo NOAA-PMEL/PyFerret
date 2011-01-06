@@ -9,12 +9,16 @@
 # *sh* 2/2000 - removed SAMPLEIJ from target list (replaced by SAMPLEXY)
 #
 # ACM 2/2001  debug macros
+
+#
+# include site specific macro definitions
+#
+include ../../site_specific.mk
+
 #
 # include platform specific macro definitions
 #
-
-include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
- 
+include ../../platform_specific.mk.$(HOSTTYPE)
 
 #
 # Macros
@@ -31,17 +35,14 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 
 .F.so:
 	$(F77) $(FFLAGS)  $<
-	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o minminmax.o maxminmax.o -o $*.so
+	$(LD) $(LD_DYN_FLAGS) $*.o minminmax.o maxminmax.o -o $*.so
 
 #
 # Targets
 #
 
-# all:    ferret_cmn minminmax.o maxminmax.o findhi.so findlo.so
-all:    ferret_cmn 
-
-ferret_cmn:
-	ln -s ../ef_utility/ferret_cmn ferret_cmn
+# all:    minminmax.o maxminmax.o findhi.so findlo.so
+all:    
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
@@ -50,7 +51,7 @@ install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so core a.out temp.* ferret_cmn
+	-rm -f *.o *.so
 
 #
 # End of Makefile

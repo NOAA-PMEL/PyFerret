@@ -14,7 +14,7 @@
 # Macro Definitions
 #
 
-DIRS = contributed examples fft ncedit statistics
+DIRS = contributed examples fft ncedit statistics las
 
 #
 # Targets

@@ -40,6 +40,8 @@ C**
 C**
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 * V664:  8/10 - implement robust method for computing variances (bug 1745)
+* V666:  1/11 - fix bug 1778: missing data not treated correctly. Dont use CMZGE,
+*               so variance result is the same as other Ferret variance calculations
 
 	
 	include 'parampl5_dat.decl'
@@ -77,7 +79,7 @@ c Compute data mean.
         n = 0
         DO 100 i = 1, nsize
 	   x = z(i)
-           IF ( x .NE. badz .AND. (x.LT.CMZGE .AND. x.GE.CMZLE) ) THEN
+	   IF ( x .NE. badz) THEN
   	      sum = sum + Z(i)
               n = n + 1
 	   ENDIF
@@ -98,7 +100,7 @@ c Compute data mean.
  
 	   DO i = 1, nsize
 	      x = Z(i)
-              IF ( x .NE. badz .AND. (x.LT.CMZGE .AND. x.GE.CMZLE) ) THEN
+	      IF ( x .NE. badz) THEN
                  n = n + 1
 		 x = x - zmean
                  xdelta = x - xmean

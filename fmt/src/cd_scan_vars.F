@@ -86,6 +86,7 @@
 *             without global attributes, variables having no missing value 
 *             flags got bad-flag of 0.
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V67   1/11 *acm* Fix ticket 1777. If a coordinate variale is STRING, issue notes.
 *
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -140,7 +141,6 @@
 
       REAL vals  ! potential numerical attributes
       CHARACTER*128 aname
-
 
 * ?? how many bounds variables (bname) might there be ??
 
@@ -250,8 +250,24 @@ c      REAL*8  dg_bad
            IF ( status .NE. merr_ok ) GOTO 5200
            vlen = TM_LENSTR1(vname)
 
+* If it is marked as a coordinate variable but is of string type, then
+* issue a message. The variable of the same name will contain the strings.
+
+	   IF (coordvar .AND. vartyp.EQ.NF_CHAR) THEN 
+	      CALL TM_NOTE(
+     .           'Coordinate variable '//
+     .           vname(:vlen)//' is of type STRING.', lunit_errors )
+              status = STR_UPCASE( buff, vname )
+              CALL TM_NOTE(
+     .           'A dummy axis of subscripts will be used. '// 
+     .           'Variable '//buff(:vlen)//' contains the strings', 
+     .           lunit_errors )
+              GOTO 400
+	   ENDIF   
+	    
 *** DECIDE IF IT IS AN AXIS OR A DEPENDENT VARIABLE
 * if it is not 1D it must be a dependent variable (3/99)
+
 	   IF ( nvdim .NE. 1 ) GOTO 400
 
 * if var name doesn't match a dim name it isn't a coordinate var

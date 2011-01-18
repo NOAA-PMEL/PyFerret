@@ -62,6 +62,8 @@
 *                    msg in coached string substitution
 * V6.2 *acm*  2/09 - Change the text of insufficent memory error to 
 *                    request exceeds memory setting
+* V6.7 *acm*  1/11 - Fix ticket 1768: undefined messages for no-such-attribute
+*                    and error in attribute caused nulls to be written to std out.
 
 	include 'errmsg.parm'	! parameter definitions
 	include 'xerrmsg_text.cmn'	! common declaration
@@ -268,6 +270,16 @@
      .		/ 'illegal data type (float,string,...) for operation'/
 	DATA report_err_code( ferr_data_type - greport )
      .		/ 'data_type' /
+
+	DATA err_text( ferr_unknown_attribute - greport )
+     .		/ 'attribute undefined or invalid attribute name'/
+	DATA report_err_code( ferr_unknown_attribute - greport )
+     .		/ 'unknown_attribute' /
+
+	DATA err_text( ferr_not_attribute - greport )
+     .		/ 'error specifying attribute'/
+	DATA report_err_code( ferr_not_attribute - greport )
+     .		/ 'not_attribute' /
 
 	DATA err_text( ferr_nomessge - greport )
      .		/ ' '/

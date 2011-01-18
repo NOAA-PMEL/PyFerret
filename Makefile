@@ -23,6 +23,7 @@ optimizedbuild :
 	$(MAKE) -C $(DIR_PREFIX)/fer optimizedbuild
 	$(MAKE) -C $(DIR_PREFIX)/pyefcn optimizedlib
 	$(MAKE) -C $(DIR_PREFIX)/ferlib optimizedlib
+	$(MAKE) -C $(DIR_PREFIX)/external_functions
 	$(MAKE) pymod
 
 .PHONY : debugbuild
@@ -31,6 +32,7 @@ debugbuild :
 	$(MAKE) -C $(DIR_PREFIX)/fer debugbuild
 	$(MAKE) -C $(DIR_PREFIX)/pyefcn debuglib
 	$(MAKE) -C $(DIR_PREFIX)/ferlib debuglib
+	$(MAKE) -C $(DIR_PREFIX)/external_functions debug
 	$(MAKE) "CFLAGS += -O0 -g" pymod
 
 .PHONY : pymod
@@ -48,11 +50,20 @@ else
 	cp -f $(DIR_PREFIX)/fer/threddsBrowser/threddsBrowser.jar $(FER_LIBS)
 	cp -f $(DIR_PREFIX)/ferlib/libferret.so $(FER_LIBS)
 	$(PYTHON_EXE) setup.py install $(PYTHON_INSTALL_FLAGS)
+ifeq ( $(strip $(FER_LOCAL_EXTFCNS)), )
+	@echo ""
+	@echo " ERROR: environment variable FER_LOCAL_EXTFCNS is not defined"
+	@echo "        external function .so files not installed"
+	@echo ""
+else
+	$(MAKE) -C $(DIR_PREFIX)/external_functions install
+endif
 endif
 
 .PHONY : clean
 clean :
 	rm -fr $(DIR_PREFIX)/build ferret.jnl*
+	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
 	$(MAKE) -C $(DIR_PREFIX)/pyefcn clean
 	$(MAKE) -C $(DIR_PREFIX)/ferlib clean
 	@echo ""
@@ -63,6 +74,7 @@ clean :
 .PHONY : distclean
 distclean :
 	rm -fr $(DIR_PREFIX)/build ferret.jnl*
+	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
 	$(MAKE) -C $(DIR_PREFIX)/pyefcn clean
 	$(MAKE) -C $(DIR_PREFIX)/ferlib clean
 	$(MAKE) -C $(DIR_PREFIX)/fer clean

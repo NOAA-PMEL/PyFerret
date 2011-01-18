@@ -50,6 +50,8 @@
 * V604 6/07 *acm* Fix bug 1518 If we didnt find the varid in the dataset, it may 
 *                 be a user var
 * V611 5/08 *acm* Fix bug 1578; dataset specifiers applied correctly var[d=1].attname
+* v6.7 1/11 *acm* Fix ticket 1768; do not write nulls when writing err msgs 
+*                 with attname.
 
 	include	'ferret.parm'
 	include 'errmsg.parm'	
@@ -181,9 +183,9 @@
 * above keywords, attnames, etc, are in the file as attribute names, then 
 * they must be enclosed in quotes
 
-             tlen = TM_LENSTR1(attname)
+             alen = TM_LENSTR1(attname)
              IF  (attname(1:1) .EQ. "'" .AND. 
-     .            attname(tlen:tlen) .EQ. "'") THEN
+     .            attname(alen:alen) .EQ. "'") THEN
 
                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname, 
      .              attid, status)
@@ -198,7 +200,7 @@
              IF (status .EQ. atom_not_found) status = 
      .               ferr_unknown_attribute
              vlen = TM_LENSTR1(varname)
-             err_string = 'attribute '//attname//
+             err_string = 'attribute '//attname(:alen)//
      .                       ' not found for dataset '
              GOTO 5200
 
@@ -247,14 +249,14 @@
           err_string = "enclose coordinate variable name in parentheses"
           GOTO 5300
        ENDIF
- 
-        err_string = 'attribute '//attname//
+
+       err_string = 'attribute '//attname(:alen)//
      .              ' not found for variable '// varname(:vlen)
 
 * Is the attribute specified by a number? (check as in find_dset_number)
 	IF ( TM_DIGIT( attname ) ) THEN
 
-	   buff = attname
+	   buff = attname(:alen)
 
 #ifdef MANDATORY_FORMAT_WIDTHS
 	   READ (buff,*, ERR=5200 ) attid
@@ -295,9 +297,9 @@
 * etc, are in the file as attribute names, then they must be enclosed in 
 * quotes to be accessed.
 
-                 tlen = TM_LENSTR1(attname)
+                 alen = TM_LENSTR1(attname)
                  IF  (attname(1:1) .EQ. "'" .AND. 
-     .                attname(tlen:tlen) .EQ. "'") THEN
+     .                attname(alen:alen) .EQ. "'") THEN
                     
                     CALL CD_GET_VAR_ATT_ID (dset, varid, attname,
      .                 attid, status ) 
@@ -308,7 +310,7 @@
                  IF (status .EQ. atom_not_found) status = 
      .               ferr_unknown_attribute
                  vlen = TM_LENSTR1(varname)
-                 err_string = 'attribute '//attname//
+                 err_string = 'attribute '//attname(:alen)//
      .                       ' not found for variable '//
      .                        varname(:vlen)
                  GOTO 5200

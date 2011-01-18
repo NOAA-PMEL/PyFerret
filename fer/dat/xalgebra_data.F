@@ -84,6 +84,7 @@
 * V603 5/07  *acm* - added MODNBD modulo regridding statistic
 * V66+ 4/10  *acm* - change pressure to reference pressure for RHO_UN as 
 *                    suggested by James Orr and Billy Kessler
+* V6.7 1/11  *acm* - fix ticket 1788, initializing alg_trans_*
 
 	include	'ferret.parm'
 	include	'xalgebra.cmn'
@@ -622,8 +623,8 @@ c     .     alg_trans_its_int ( 38) / .FALSE.       /,
 c     .     alg_trans_has_arg ( 38) / .FALSE.       /,
 c     .     alg_trans_dflt_arg( 38) / bad_val4      /
 
-        DATA    (alg_trans_num(i),i = 41, num_transforms)
-     .            /20*unspecified_int4 /
+        DATA    (alg_trans_num(i),i = 42, num_transforms)
+     .            /19*unspecified_int4 /
 
 	DATA
      .		alg_regrid_title( prgrd_exact )		/ ' '	/,
@@ -654,7 +655,7 @@ c     .     alg_trans_dflt_arg( 38) / bad_val4      /
      .		alg_regrid_code ( prgrd_modvar )	/ 'MODVAR'	/
      .		alg_regrid_title( prgrd_modngd )	/ '# gd mod pts'/,
      .		alg_regrid_code ( prgrd_modngd )	/ 'MODNGD'	/
-     .		alg_regrid_title( prgrd_modnbd )	/ '# bad mod pts'/,
+     .		alg_regrid_title( prgrd_modnbd )	/ '#bad mod pts'/,
      .		alg_regrid_code ( prgrd_modnbd )	/ 'MODNBD'	/
      .		alg_regrid_title( prgrd_modsum )	/ 'modulo sum'	/,
      .		alg_regrid_code ( prgrd_modsum )	/ 'MODSUM'	/

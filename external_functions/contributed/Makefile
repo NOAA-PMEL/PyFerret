@@ -20,7 +20,7 @@ include ../../site_specific.mk
 #
 # include platform-specific definitions
 #
-include ../../platform_specific_flags.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(HOSTTYPE)
  
 
 #

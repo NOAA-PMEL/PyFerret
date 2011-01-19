@@ -1,27 +1,27 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/nstout/ansley/build/nstout/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 35874933 Sep 20 12:54 /home/nstout/ansley/build/nstout/FERRET/fer/ferret_c
-Using external functions from /home/nstout/ansley/build/nstout/FERRET/external_functions/ext_func
+Running FERRET version /home/users/tmap/ferret/linux/bin/ferret_v665
+-rwxr-xr-x 1 tmap tmap 35743599 Nov 17 10:51 /home/users/tmap/ferret/linux/bin/ferret_v665
+Using external functions from /home/stout/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: test fix for bug 1754; too-short limit on string lengths for ASCII list
+Note: need benchmark logs for Ferret_v665
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/nstout/ansley/build/nstout/FERRET/bench
-FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
+PWD=/home/stout/ansley/build/linux/FERRET/bench
+FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_DIR=.
-CVSROOT=/home/porter/tmap/FERRET_ROOT
 FER_WEB_BROWSER=netscape -ncols 60
 FER_DSETS=.
-FER_DATA_THREDDS=/home/porter/tmap/ferret/linux/fer_dsets http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/catalog.xml
+FER_DATA_THREDDS=/home/users/tmap/ferret/linux/fer_dsets http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/catalog.xml
+FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_DAT=.
-FER_GO=. /home/porter/tmap/ferret/linux/go /home/porter/tmap/ferret/linux/examples /home/porter/tmap/ferret/linux/contrib /home/porter/tmap/ferret/tmap_go
+FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
-FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/nstout/ansley/build/nstout/FERRET/external_functions/ext_func
-Beginning at Mon Sep 20 12:55:13 PDT 2010
+FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
+FER_EXTERNAL_FUNCTIONS=/home/stout/ansley/build/linux/FERRET/external_functions/ext_func
+Beginning at Tue Jan 18 16:23:43 PST 2011
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -440,9 +440,7 @@ list/format=cdf/i=5:15/l=5:10/append/file=test_abs.cdf il
  **TMAP ERR: attempt to redefine line
              # of dims in variable IJL2 is inconsist. w/ CDF file
 list/format=cdf/append/file=test_abs.cdf ijl2
- LISTing to file test_abs.cdf
- **TMAP ERR: attempt to redefine line
-             # of dims in variable IJKL is inconsist. w/ CDF file
+ **ERROR: variable unknown or not in data set: IJKL[K=@AVE]
 list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]
  LISTing to file test_abs.cdf
  **TMAP ERR: error in line definition
@@ -824,11 +822,11 @@ Replacing definition of grid TGRID
 Replacing definition of axis TWEEKS
 Replacing definition of axis TWEEKS
 Replacing definition of axis TWEEKS
+ LISTing to file calsst.cdf
+ *** NOTE: /UNIT=MONTHS  ... using 1/12 of 360.00 days
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
- LISTing to file calsst.cdf
- *** NOTE: /UNIT=MONTHS  ... using 1/12 of 360.00 days
 Replacing definition of grid TGRID
 Replacing definition of axis TDAYS
 Replacing definition of grid TGRID
@@ -941,7 +939,7 @@ define axis/x xax = d
  LISTing to file test_string.cdf
  LISTing to file test_string.cdf
  *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
- LISTing to file test_string.cdf
+ LISTing to file test_string2.cdf
  *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  **ERROR: invalid command: cant use this regrid transform on strings: @LIN
 list a[gx=xnrst]
@@ -1194,6 +1192,8 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAX
  *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: XAXLEVITR1_160
+ *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: TIME4
  *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: TIME5
@@ -1202,8 +1202,6 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
- *** NOTE: Not deleted: XAXLEVITR1_160
- *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: MONTH_IRREG
  *** NOTE: Axis is in use by grid (G004)
  *** NOTE: Not deleted: YAXLEVITR1_90
@@ -1239,9 +1237,9 @@ Replacing definition of axis TAX2
  *** NOTE: Not deleted: TAX48
  *** NOTE: Axis is in use by grid G48
  *** NOTE: Not deleted: XEZ1
-ls: input.txt: No such file or directory
  *** NOTE: Axis is in use by grid GEZ1
  *** NOTE: Not deleted: XEZ2
+ls: input.txt: No such file or directory
  *** NOTE: Axis is in use by grid GEZ2
  *** NOTE: Not deleted: YEZ
  *** NOTE: Axis is in use by grid GEZ2
@@ -1329,6 +1327,8 @@ ls: input.txt: No such file or directory
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAX
  *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: XAXLEVITR1_160
+ *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: TIME4
  *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: TIME5
@@ -1337,8 +1337,6 @@ ls: input.txt: No such file or directory
  *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
- *** NOTE: Not deleted: XAXLEVITR1_160
- *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: YAXLEVITR1_90
  *** NOTE: Axis is in use by grid GG2
  *** NOTE: Not deleted: ZAXLEVITR1_1
@@ -1825,11 +1823,11 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  **ERROR: First argument is a letter of the alphabet
 query/ignore $1%q|a|b|c|d|<First argument is a letter of the alphabet%
+ **ERROR: invalid command: Valid value needed for argument $2
+query/ignore $2%|a|b|c|d|%
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
- **ERROR: invalid command: Valid value needed for argument $2
-query/ignore $2%|a|b|c|d|%
  *** NOTE: Valid argument $2 choices are: a|b|c|d|
  **ERROR: my error message
 message/cont $1"|xxxxx|goodbye<my error message"
@@ -2031,9 +2029,9 @@ sho att/all .
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-syntax error
-context: <htm^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuv</b><b>absuu</b><b>taux</b><b>tauy</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
+syntax error
+context: <htm^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuv</b><b>taux</b><b>tauy</b><b>absuu</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2403,15 +2401,15 @@ set axis/stride=2 NORMAL
  *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
  *** NOTE: They will not be convertible:
+ *** NOTE: regarding ./climatological_axes.cdf ...
 
    ERROR in External Function chdir:
    Dynamic linking call dlopen() returns --
-   "/home/nstout/ansley/build/nstout/FERRET/external_functions/ext_func/chdir.so: undefined symbol: _gfortran_chdir_i4".
+   "/home/stout/ansley/build/linux/FERRET/external_functions/ext_func/chdir.so: undefined symbol: _gfortran_chdir_i4".
 
    ERROR in External Function neutral:
    Dynamic linking call dlopen() returns --
-   "/home/nstout/ansley/build/nstout/FERRET/external_functions/ext_func/neutral.so: undefined symbol: gamma_n_".
- *** NOTE: regarding ./climatological_axes.cdf ...
+   "/home/stout/ansley/build/linux/FERRET/external_functions/ext_func/neutral.so: undefined symbol: gamma_n_".
  *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
  *** NOTE: A dummy axis of subscripts will be used
@@ -2726,9 +2724,7 @@ list/format=cdf/keep_axnames/i=5:15/l=5:10/append/file=test_abs.cdf il
  **TMAP ERR: attempt to redefine line
              # of dims in variable IJL2 is inconsist. w/ CDF file
 list/format=cdf/keep_axnames/append/file=test_abs.cdf ijl2
- LISTing to file test_abs.cdf
- **TMAP ERR: attempt to redefine line
-             # of dims in variable IJKL is inconsist. w/ CDF file
+ **ERROR: variable unknown or not in data set: IJKL[K=@AVE]
 list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkl[k=@ave]
  LISTing to file test_abs.cdf
  **TMAP ERR: error in line definition
@@ -3067,6 +3063,8 @@ LIST/FORMAT=CDF/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 Replacing definition of grid MYGRID
  *** NOTE: Axis reset to be regular (evenly-spaced): MYX
  *** NOTE: Axis is already regular: MYX
@@ -3075,6 +3073,59 @@ Replacing definition of grid MYGRID
  *** NOTE: Axis reset to be regular (evenly-spaced): MYX1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ *** NOTE: No active redirects to cancel
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ *** NOTE: Axis is already regular: MYAXIS
+ **ERROR: variable unknown or not in data set: GARBAGE
+show grid garbage
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ *** NOTE: stderr is not redirected
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
+ Use the GO command to name a file of FERRET commands to be executed.
+     e.g.   yes? GO filename
+ 
+ Use "GO/HELP filename" to read documentation in  the file to be executed.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3083,6 +3134,20 @@ Replacing definition of grid MYGRID
  Using every   7th vector in the Y direction
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3174,4 +3239,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Sep 20 12:56:49 PDT 2010
+Ended at Tue Jan 18 16:25:08 PST 2011

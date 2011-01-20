@@ -126,7 +126,6 @@
 # X11R6 would normally be in /usr/X11R6/lib
 
 	SYSLIB = \
-	-L/home/nstout/X11R6/lib \
 	-lm \
 	-ldl \
 	-lXp \

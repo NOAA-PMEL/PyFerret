@@ -78,8 +78,6 @@ EXECNAME = ferret_c
 
 WHATGKS = xgks
 
-LD = $(CC) 
-
 EF_CMNS = common/EF_Util.cmn common/EF_Util.parm common/EF_mem_subsc.cmn
 
 #
@@ -93,7 +91,7 @@ ncdf4_static:	.FRC
 	(cd ccr; $(CC) -c $(CFLAGS) gui_init.c)
 	$(MAKE) update
 	$(MAKE) "CFLAGS = $(CFLAGS) " "DEBUG="\
-                "LD = g++" "LDFLAGS=-v --verbose -L/lib -L/usr/X11R6/lib64  -static" \
+                "LDFLAGS= $(LDFLAGS) -static" \
 		"FFLAGS = $(FFLAGS)"  \
 		all
 

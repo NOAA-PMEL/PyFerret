@@ -23,8 +23,6 @@
 			   -I../common \
 			   -I../../ppl/include  -I../../fer/common
 
-	GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include 
-	 
 	GKS_INCLUDES	=-I../../ppl/include/xgks \
 			  -I../../xgks/src/lib \
 			  -Ipplinc/xgks \
@@ -73,42 +71,33 @@
 	# Below this line are macro definitions used only for the final linking of the executable
 	#
 
-	LD		= gcc 
-	LDFLAGS		= -v --verbose -L/lib64 -L/usr/lib64 -export-dynamic 
+	LD		= gfortran
+	LDFLAGS		= -v --verbose -export-dynamic 
 	 
-	SYSLIB		= -L/usr/lib64 \
-			  -lm \
-			  -lXpm  \
-			  -lXm \
-			  -lXt \
-			  -lXext \
-			  -lX11 \
-			  -lXp \
-			  -lXmu \
-			  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgcc.a \
-			  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortranbegin.a \
-			  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortran.a \
-			  -L/lib64 -lm 
+	SYSLIB		= -lX11 \
+			  -lcurl \
+			  -ldl \
+			  -lz  \
+			  -lm  \
+			  -lc 
 
 	TMLIB		= ../lib/tmap_lib.a
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
-	READLINELIB	= /usr/lib64/libreadline.a 
+	READLINELIB	= -lreadline
 
 # netcdf4.1.x  libraries
 
 
 	CDFLIB          = $(NETCDF4_DIR)/lib/libnetcdff.a \
-			  $(NETCDF4_DIR)/lib/libnetcdf.a \
+	                  $(NETCDF4_DIR)/lib/libnetcdf.a \
 			  $(NETCDF4_DIR)/lib/libhdf5_hl.a \
-			  $(NETCDF4_DIR)/lib/libhdf5.a \
-			  -L/usr/lib64  \
-			  -lcurl -ldl -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err -lidn -lssl -lcrypto -lz 
+			  $(NETCDF4_DIR)/lib/libhdf5.a
 
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 
-	TERMCAPLIB 	=/usr/lib64/libncurses.a
+	TERMCAPLIB 	= -lncurses
 
  # .IGNORE:	 
  	 

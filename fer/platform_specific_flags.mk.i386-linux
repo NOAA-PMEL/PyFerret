@@ -5,14 +5,13 @@
 # platform specific macros
 
 	NETCDF4_DIR = /home/users/tmap/ferret/linux/
+#	NETCDF4_DIR = /home/stout/ansley/local/stout/
 
 	CDF_INCLUDES = -I$(NETCDF4_DIR)/include/
 
 	INCLUDES = \
-	-I/usr/lib/gcc/i386-redhat-linux/4.1.2/include \
 	-I. \
 	-I/usr/include \
-	-I/usr/include/X11 \
 	-I../../fmt/cmn \
 	$(CDF_INCLUDES) \
 	-I../common \
@@ -26,10 +25,6 @@
 	-I../common \
 	-I../../ppl/include \
 	-I../../fer/common
-
-	GUI_INCLUDES = \
-	-I/usr/ucbinclude \
-	-I/usr/dt/include 
 
 	GKS_INCLUDES = \
 	-I../../ppl/include/xgks \
@@ -113,58 +108,39 @@
 	# Below this line are macro definitions used only for the final linking of the executable
 	#
 
-	LD = gcc
+	LD = gfortran
 
 	LDFLAGS = \
 	-v \
 	--verbose \
-	-L/lib \
-	-L/usr/lib \
 	-fPIC \
 	-export-dynamic
 
-# X11R6 would normally be in /usr/X11R6/lib
-
 	SYSLIB = \
-	-lm \
-	-ldl \
-	-lXp \
-	-lc \
-	-lXt \
-	-lXm \
-	-lXmu \
-	-lXft \
-	-lXext \
 	-lX11 \
-	-lXp \
-	-lSM \
-	-lICE \
-	-lc \
-	/usr/lib/gcc/i386-redhat-linux/4.1.2/libgcc.a \
-	/usr/lib/gcc/i386-redhat-linux/4.1.2/libgfortran.a
+	-lcurl \
+	-ldl \
+	-lz \
+	-lm \
+	-lc
 
 	TMLIB = ../lib/tmap_lib.a
 
 	GKSLIB = ../xgks/src/lib/libxgks.a
-	READLINELIB = /usr/lib/libreadline.a 
+	READLINELIB = -lreadline
 
 # For netcdf-4
 
-	CDFLIB = $(NETCDF4_DIR)/lib/libnetcdf.a \
-	$(NETCDF4_DIR)/lib/libhdf5_hl.a \
-	$(NETCDF4_DIR)/lib/libhdf5.a \
-	$(NETCDF4_DIR)/lib/libz.a \
-	-L/usr/lib64 \
-	-lz \
-	-lc \
-	-lm \
-	-lcurl
+	CDFLIB = $(NETCDF4_DIR)/lib/libnetcdff.a \
+	         $(NETCDF4_DIR)/lib/libnetcdf.a \
+		 $(NETCDF4_DIR)/lib/libhdf5_hl.a \
+		 $(NETCDF4_DIR)/lib/libhdf5.a
 
 
 #
 	LINUX_OBJS = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 
-	TERMCAPLIB =/usr/lib/libncurses.a
+	TERMCAPLIB = -lncurses
 
 # .IGNORE:	 
  	 

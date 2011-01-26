@@ -90,7 +90,7 @@
       INTEGER STR_SAME, cdfid, remote_dods_id,istat
 * 4/99 *kob* increase temp_axnams
       CHARACTER*64 temp_axnams(4,max_temp_grid)
-      LOGICAL reversed(max_lines:line_ceiling)
+      LOGICAL reversed(max_lines:line_ceiling), shifted
 
 * open the netCDF data file and save global information
       CALL CD_OPEN_DSET ( dset, cdfid, remote_dods_id, status )
@@ -129,7 +129,11 @@
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * replace name linkages between axes and grids with pointers.  Delete dups
+
       CALL CD_CLEAN_GRIDS ( dset, cdfid, temp_axnams, status )
+      IF ( status .NE. merr_ok ) GOTO 5900
+
+      CALL CD_CONSISTENT_AXIS_ORIENT (dset, reversed, perm, status)
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * set use counts and clean up temporary grids and axes

@@ -9,6 +9,7 @@ cd_axlen.F\
 cd_childax_name.F\
 cd_clean_grids.F\
 cd_close_set.F\
+cd_consistent_axis_orient.F\
 cd_conventions_out.F\
 cd_defer_coord_write.F\
 cd_delete_attribute.F\

@@ -491,6 +491,7 @@ C  Get coordinates of output axes.
          DO 300 n = 1, nscat
 
             CALL pickout2 (arg_1, arg_2, n, xx, yy)
+	    IF (xx .NE. bad_flag(ARG1) .AND. yy .NE. bad_flag(ARG2)) THEN
 
             IF (arg_lo_ss(X_AXIS,ARG3) .NE. ef_unspecified_int4) THEN
                val = arg_3(n,j3,k3,l3)
@@ -554,7 +555,7 @@ C                     other end, and use in the gridding computation.
                ENDIF
             ENDIF
 
-
+            ENDIF  ! xx and yy not bad
  300     CONTINUE
 
 *  Put gridded fcn into result variable, dividing by summed weights. (as in

@@ -488,8 +488,8 @@ C  Get coordinates of output axes.
 *  value can be found.
 
          DO 300 n = 1, nscat
-
             CALL pickout2 (arg_1, arg_2, n, yy, zz)
+	    IF (yy .NE. bad_flag(ARG1) .AND. zz .NE. bad_flag(ARG2)) THEN
 
             IF (arg_lo_ss(Y_AXIS,ARG3) .NE. ef_unspecified_int4) THEN
                val = arg_3(i3,n,k3,l3)
@@ -553,7 +553,7 @@ C                     other end, and use in the gridding computation.
                ENDIF
             ENDIF
 
-
+            ENDIF  ! yy and zz not bad
  300     CONTINUE
 
 *  Put gridded z into result variable, dividing by summed weights. (as in

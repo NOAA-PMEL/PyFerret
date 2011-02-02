@@ -1145,7 +1145,8 @@
  1199	IF ( limited_show ) RETURN
 
 * SHOW MEMORY
- 1200	show_str = TM_FMT(max_mem_blks*mem_blk_size/1.E6,3,12,len)  
+ 1200   show_str = TM_FMT( FLOAT(mem_blk_size) * 
+     .                     FLOAT(max_mem_blks) / 1.E6, 3, 12, len)
 	WRITE (risc_buff, *)
      .	   'Current size of FERRET memory cache: '
      .		//show_str(:len)//' MegaWords  (1 word = 4 bytes)'

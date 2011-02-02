@@ -138,21 +138,23 @@
 	mblk_blink( mblk ) = unspecified_int4	! temp diag
 
  5000	RETURN
- 5100	num_str = LEFINT(num_words,num_slen)
+ 5100	CONTINUE
 	IF ( num_words .EQ. 9999999 ) THEN
-	   CALL ERRMSG( ferr_dim_underspec, status,
+          num_str = LEFINT(num_words,num_slen)
+	  CALL ERRMSG( ferr_dim_underspec, status,
      .	  num_str(:num_slen)//' words were requested. ', *5125)
  5125	  CALL WARN('Check for unspecified limits on an ABSTRACT axis')
           CALL WARN('Use the SHOW GRID command to see the axes')
 	ELSE
+          num_str = LEFINT(INT((num_words+0.99999E6)/1.0E6),num_slen)
 	  CALL ERRMSG( ferr_insuff_memory,status,
-     .	  num_str(:num_slen)//' words were requested. ', *5130)
+     .	  num_str(:num_slen)//' Mwords were requested. ', *5130)
  5130	  CALL WARN('You can use SET MEMORY/SIZE=xxx to increase memory.')
           CALL WARN('The "Memory use" section of the FERRET '
      .              //'Users Guide has further tips.') 
 	ENDIF
         GOTO 5000
- 5200	num_str = LEFINT(num_words,num_slen)
+ 5200	CONTINUE
 	CALL ERRMSG( ferr_insuff_memory,status,
      .	'A negative number of words were requested. ', *5210)
  5210	CALL WARN('The current grid is most likely too large')

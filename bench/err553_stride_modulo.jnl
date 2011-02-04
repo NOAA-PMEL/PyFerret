@@ -16,7 +16,7 @@ list var[i=-400:-40:50]
 ! of the data, would have worked under previous versions but
 ! with the last point missing, bug 841
 
-list var[i=`2*1082-400`:`2*1082-40`:50]
+list var[i=`2*1081-400`:`2*1082-40`:50]
 
 ! Previously also, the moduloing could return results
 ! that are one index off, also bug 841

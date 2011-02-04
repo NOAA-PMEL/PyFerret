@@ -42,6 +42,10 @@
   v6.01 9/06 *acm* use a malloc rather than a fixed buffer -> the data
               does not need to be 1-D
 */ 
+/* *acm   2/11 v67  - Call nc_get_varm only if strides and permuted.
+                      Call nc_get_vars if strided, and nc_get_vara if neither permuted
+					  nor strided. */
+
 
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
@@ -65,7 +69,8 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
 			   float *offset, float *scale, float* bad,
 			   int *tmp_start, int *tmp_count, 
 			   int *tmp_stride, int *tmp_imap,
-			   void *dat, int *already_scaled, int *cdfstat, int *status)
+			   void *dat, int *permuted, int *strided, int *already_scaled,
+			   int *cdfstat, int *status)
 
 {
 
@@ -148,8 +153,22 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
       data_double = (double *) malloc(ntotal * sizeof(double));
       assert(data_double);
 
-	  *cdfstat = nc_get_varm_double (*cdfid, vid, start,
+      if (*permuted > 0)
+      {
+      *cdfstat = nc_get_varm_double (*cdfid, vid, start,
 				  count, stride, imap, data_double);
+      }
+	  else if (*strided > 0)
+	  {
+      *cdfstat = nc_get_vars_double (*cdfid, vid, start,
+				  count, stride, data_double);
+      }
+	  else
+	  {
+      *cdfstat = nc_get_vara_double (*cdfid, vid, start,
+				  count, data_double);
+	  }
+
 
       tm_scale_buffer ((float*) dat, data_double, offset,
          scale, bad, ntotal);
@@ -162,8 +181,21 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
   /* read float data */
   else
   {
+      if (*permuted > 0)
+	  {
     *cdfstat = nc_get_varm_float (*cdfid, vid, start,
-				  count, stride, imap, (float*) dat);
+     count, stride, imap, (float*) dat); 
+	  }
+	  else if (*strided > 0)
+	  {
+    *cdfstat = nc_get_vars_float (*cdfid, vid, start,
+     count, stride, (float*) dat);
+      }
+	  else
+	  { 
+    *cdfstat = nc_get_vara_float (*cdfid, vid, start,
+     count, (float*) dat);
+	  }
   }
 
   return;

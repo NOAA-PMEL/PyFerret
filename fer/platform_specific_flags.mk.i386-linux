@@ -108,7 +108,7 @@
 	# Below this line are macro definitions used only for the final linking of the executable
 	#
 
-	LD = gfortran
+	LD = gcc
 
 	LDFLAGS = \
 	-v \
@@ -122,7 +122,9 @@
 	-ldl \
 	-lz \
 	-lm \
-	-lc
+	-lc \
+	/usr/lib/gcc/i386-redhat-linux/4.1.2/libgcc.a \
+	/usr/lib/gcc/i386-redhat-linux/4.1.2/libgfortran.a
 
 	TMLIB = ../lib/tmap_lib.a
 

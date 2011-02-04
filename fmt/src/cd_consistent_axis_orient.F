@@ -87,8 +87,6 @@
 
       iter = 0
       reordered = 0
-      igrid_min = grid_ceiling
-      igrid_max = 0
 
       DO i = 1, 100
          axes_out_of_order(i) = 0
@@ -110,8 +108,6 @@
       igrid = 0               ! to get start of linked list
   10  CALL TM_NEXT_TMP_GRID( igrid, *19)
 
-      igrid_min = MIN(igrid, igrid_min)
-      igrid_max = MAX(igrid, igrid_max)
       DO 100 idim = 1, 4
          iaxis = grid_line(idim, igrid)
          IF (iaxis  .GT. 0) THEN
@@ -129,18 +125,21 @@
       GOTO 10
   19  CONTINUE
 
-      IF (igrid_max .EQ. 0) RETURN
       IF (disordered .EQ. 0) GOTO 2000
 
       CALL HEAP2_V (axes_out_of_order, 0., disordered)
 
-      DO 120 igrid = igrid_min, igrid_max
-         grid_ndims(igrid) = 0
-         DO 110 idim = 1, 4
-            IF (grid_line(idim,igrid) .GT. 0) 
+! Count dimensions of the grids.
+
+      igrid = 0 
+  20  CALL TM_NEXT_TMP_GRID( igrid, *29)
+      grid_ndims(igrid) = 0
+      DO 110 idim = 1, 4
+         IF (grid_line(idim,igrid) .GT. 0) 
      .            grid_ndims(igrid) = grid_ndims(igrid) + 1 
-  110    CONTINUE
-  120 CONTINUE
+  110 CONTINUE
+      GOTO 20
+  29  CONTINUE  ! counting dimensions
 
       iaxis_last = 0
       iorder = 0
@@ -164,70 +163,76 @@ c Find the grid which contains this axis and has the most dimensions.
             igrid1 = 0
             ipos1 = 0
             n_in_grid = 0
-            DO 140 igrid = igrid_min, igrid_max
-               DO 130 idim = 1, 4
-                  IF (grid_line(idim, igrid) .EQ. iaxis .AND. 
-     .                grid_ndims(igrid) .GT. n_in_grid) THEN
-                     igrid1 = igrid
-                     ipos1 = idim
-                     n_in_grid = grid_ndims(igrid)
-                  ENDIF
-  130           CONTINUE
-  140        CONTINUE
+	    
+            igrid = 0 
+  40        CALL TM_NEXT_TMP_GRID( igrid, *49)
+            DO 130 idim = 1, 4
+               IF (grid_line(idim, igrid) .EQ. iaxis .AND. 
+     .             grid_ndims(igrid) .GT. n_in_grid) THEN
+                  igrid1 = igrid
+                  ipos1 = idim
+                  n_in_grid = grid_ndims(igrid)
+               ENDIF
+  130        CONTINUE
+
+            GOTO 40
+  49        CONTINUE  ! Grid with this axis and most dimensions
 
 * Adjust grids based on position already determined for the grid with most axes.
 
-             DO 190 igrid = igrid_min, igrid_max
-                IF (igrid .NE. igrid1) THEN
-                   ipos2 = 0
-                   igrid2 = 0
-                   DO 150 idim = 1, 4
-                      IF (grid_line(idim, igrid).EQ. iaxis .AND. 
-     .                    idim .NE. ipos1)  THEN
-                         igrid2 = igrid
-                         ipos2 = idim
-                      ENDIF
-  150              CONTINUE
+            igrid = 0               ! Loop over all grids comparing with grid1
+  90        CALL TM_NEXT_TMP_GRID( igrid, *99)
+            IF (igrid .NE. igrid1) THEN
+               ipos2 = 0
+               igrid2 = 0
+               DO 150 idim = 1, 4
+                  IF (grid_line(idim, igrid).EQ. iaxis .AND. 
+     .                 idim .NE. ipos1)  THEN
+                     igrid2 = igrid
+                     ipos2 = idim
+                  ENDIF
+  150          CONTINUE
 
-                   IF (igrid2 .NE. 0) THEN
-                      i1 = MIN(ipos1, ipos2)
-                      i2 = MAX(ipos1, ipos2)
-                      shift_ok = .FALSE.
-                      DO 160 idim = i1, i2
+               IF (igrid2 .NE. 0) THEN
+                  i1 = MIN(ipos1, ipos2)
+                  i2 = MAX(ipos1, ipos2)
+                  shift_ok = .FALSE.
+                  DO 160 idim = i1, i2
                          iax = grid_line(idim,igrid2)
 
                          IF (grid_line(idim,igrid2) .LE. 0 .OR.
      .                       line_direction(iax) .EQ. 'NA') 
      .                       shift_ok = .TRUE.
-  160                 CONTINUE
-                      IF (shift_ok) THEN
-                         DO 170 idim = 1, 4
+  160             CONTINUE
+                  IF (shift_ok) THEN
+                     DO 170 idim = 1, 4
                             grid_save(idim) = grid_line(idim,igrid2)
-  170                    CONTINUE
-                         grid_line(ipos1,igrid2) = grid_line(ipos1,igrid1)
-			 line_use_dir(grid_line(ipos1,igrid1)) = ipos1
-                         grid_line(ipos2,igrid2) = mpsnorm
+  170                CONTINUE
+                     grid_line(ipos1,igrid2) = grid_line(ipos1,igrid1)
+                     line_use_dir(grid_line(ipos1,igrid1)) = ipos1
+                     grid_line(ipos2,igrid2) = mpsnorm
 
-                         DO 180 idim = ipos1+1, 4
+                     DO 180 idim = ipos1+1, 4
                             grid_line(idim,igrid2) = grid_save(idim-1)
                             IF (grid_save(idim-1) .NE.mpsnorm) need_iterate = .TRUE.
-  180                    CONTINUE
+  180                CONTINUE
 
-                         reordered = reordered + 1
-                      ELSE
-	                 vlen = TM_LENSTR1(line_name(iaxis)) 
+                     reordered = reordered + 1
+                  ELSE
+                     vlen = TM_LENSTR1(line_name(iaxis)) 
 
-	                 CALL TM_NOTE('Could not adjust grid2 '// 
+                     CALL TM_NOTE('Could not adjust grid2 '// 
      .                         grid_name(igrid2)(1:vlen), lunit_errors)
 
-	                 CALL TM_NOTE('Axes in grids may be inconsistent.',
+                     CALL TM_NOTE('Axes in grids may be inconsistent.',
      .                         lunit_errors)
-                      ENDIF
-    
-                   ENDIF  ! igrid2 .ne. 0
-                ENDIF
+                  ENDIF
+                  
+               ENDIF  ! igrid2 .ne. 0
+            ENDIF
              
-  190        CONTINUE  ! Loop over all grids comparing with grid1
+            GOTO 90
+  99        CONTINUE  ! Loop over all grids comparing with grid1
 
           ENDIF
   200 CONTINUE ! disordered

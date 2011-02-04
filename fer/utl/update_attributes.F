@@ -37,6 +37,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * V600 6/05 *acm* Attribute control.
+* V670  2/11 *acm*   Fixes for inheriting attributes.
 
 * Get the attribute information from the linked-list structure that is needed 
 * to do a plot.
@@ -69,6 +70,7 @@
       CHARACTER*128 vname, buff
 
       varid = cd_varid(uvar)
+      IF (dset .EQ. -1) varid = uvar
 
 * get the vital statistics for this variable
 

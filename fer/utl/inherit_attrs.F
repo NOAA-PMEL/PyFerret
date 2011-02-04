@@ -140,10 +140,13 @@
 * Do this in the c library so we dont have to define a fixed string for
 * string type attributes.
 
+      iflag = 1
       DO 200 iatt = 1, nvatts1
          CALL CD_TRANSFER_ATTRIBUTE (dset1, varid1, iatt, 
      .        dset2, varid2, status)
          IF (status .NE. ferr_ok) GOTO 5040
+         CALL CD_GET_VAR_ATT_NAME (dset1, varid1, iatt, attname, status)
+	 CALL CD_SET_ATT_FLAG (dset2, varid2, attname, iflag, status)
  200  CONTINUE
 
 * Update attribute information used by plotting etc (ds_units, ...)

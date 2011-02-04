@@ -40,10 +40,11 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * V600 8/18/05
+* V670  2/11 *acm*   Fixes for inheriting attributes.
 
 * calling argument declarations
 	INTEGER		nmax, n, dset, varid, status
-	REAL		array(nmax)
+	REAL		array(*)
 	CHARACTER*(*)	varname, attname
 
 * internal variable declarations

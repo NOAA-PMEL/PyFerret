@@ -78,7 +78,7 @@
      .        attid, len, maxlen, status
       REAL dummy
       CHARACTER buff*128, varname*128, attbuff*10, attname*128, dir*4
-      LOGICAL NC_GET_ATTRIB, coordvar, do_warn, got_it
+      LOGICAL	coordvar, do_warn, got_it
 
       dummy = 0.
       do_warn = .FALSE.

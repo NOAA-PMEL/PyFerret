@@ -497,27 +497,11 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
                since_t0 = 0
                status = merr_ok
             ENDIF
-
-*  Append calendar name to units string.
-c           IF (cal_id .GT. GREGORIAN .AND. cal_id .le. max_calendars) THEN
-c                slen = TM_LENSTR1 (line_units(iaxis))
-c                len_cal = TM_LENSTR1 (line_cal_name(iaxis))
-c                line_units(iaxis) = line_units(iaxis)(:slen)//
-c     .                 '('//line_cal_name(iaxis)(:len_cal)//')'
-c           ENDIF
-
          ELSE
             since_t0 = 0        ! flag that no T0 was present
          ENDIF
       ELSEIF ( yyyymmdd_time ) THEN
          line_units(iaxis) = 'days'
-*  Append calendar name to units string.
-c        IF (cal_id .GT. GREGORIAN .AND. cal_id .le. max_calendars) THEN
-c           slen = TM_LENSTR1 (line_units(iaxis))
-c           len_cal = TM_LENSTR1 (line_cal_name(iaxis))
-c           line_units(iaxis) = line_units(iaxis)(:slen)//
-c     .                 '('//line_cal_name(iaxis)(:len_cal)//')'
-c         ENDIF
          line_t0(iaxis) = ' ' ! to be determined when coords are read
          got_torg = .TRUE.
       ELSE
@@ -639,8 +623,14 @@ c         ENDIF
       got_it = NC_GET_ATTRIB(dset, ivar, 'axis',
      .             do_warn, vname(:vlen), maxlen, attlen, 
      .             attoutflag, axis_dir, val)
-      istat = STR_UPCASE( axis_dir, axis_dir )
       IF (got_it) THEN
+         CALL CD_GET_VAR_ATT_ID (dset, ivar, 'axis', iatt, status)
+         CALL CD_GET_VAR_ATT_INFO (dset, ivar, iatt, buff, attype, 
+     .     attlen, attoutflag, status )
+         IF (attype .NE. NCCHAR) got_it = .FALSE.
+      ENDIF
+      IF (got_it) THEN
+         istat = STR_UPCASE( axis_dir, axis_dir )
          IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L' .OR.
      .             axis_dir.EQ.'t' .or. axis_dir.eq.'l') THEN 
             line_direction(iaxis) = 'TI'  ! time
@@ -667,6 +657,13 @@ c         ENDIF
          got_it = NC_GET_ATTRIB(dset, ivar, 'cartesian_axis',
      .              do_warn, vname(:vlen), maxlen, attlen, 
      .              attoutflag, axis_dir, val)
+         IF (got_it) THEN
+            CALL CD_GET_VAR_ATT_ID (dset, ivar, 'cartesian_axis', iatt, status)
+            CALL CD_GET_VAR_ATT_INFO (dset, ivar, iatt, buff, attype, 
+     .     attlen, attoutflag, status )
+            IF (attype .NE. NCCHAR) got_it = .FALSE.
+         ENDIF
+
          IF (got_it) THEN
             IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L' .OR.
      .          axis_dir.EQ.'t' .or. axis_dir.eq.'l') THEN 
@@ -796,78 +793,90 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
          ENDIF
       ENDIF
 
-* Other attributes: 
-* standard_names indicating a sigma-axis in Z
-* Note that there seem to be some standard names related to sigma
+* standard_names indicating a sigma-axis in Z, and standard names 
+* for geophysical axes, longitude, latitude, altitude etc. Note 
+* that there seem to be some standard names related to sigma
 * coordinates that may not indicate a vertical axis, so simply 
 * matching sigma and coordinate is probably not safe.
-*
-* Could probably do more to determine positive direction for these
-* axes, see the CF conventions Doc, Appendix on Dimensionless Vertical
-* Coordinates. (We need to implement some of the common ones, not done
-* here.)
 
       maxlen = bufflen
       got_it = NC_GET_ATTRIB( dset, ivar, 'standard_name', do_warn, 
      .                        vname(:vlen), maxlen, attlen, attoutflag, 
      .                        buff, val)
       IF ( got_it ) THEN
-         IF (STR_CASE_BLIND_COMPARE(
-     .      'atmosphere_hybrid_height_coordinate',buff(:35))
-     .                                     .EQ.str_eq) THEN
+         IF (STR_SAME(
+     .      'atmosphere_hybrid_height_coordinate',buff) .EQ.str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF 
-         IF (STR_CASE_BLIND_COMPARE(
-     .      'atmosphere_hybrid_sigma_pressure_coordinate',buff(:43))
-     .                                     .EQ.str_eq) THEN
+         IF (STR_SAME(
+     .      'atmosphere_hybrid_sigma_pressure_coordinate',buff)
+     .                                     .EQ. str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF
-         IF (STR_CASE_BLIND_COMPARE(
-     .      'atmosphere_hybrid_height_coordinate',buff(:35))
-     .                                     .EQ.str_eq) THEN
+         IF (STR_SAME(
+     .      'atmosphere_hybrid_height_coordinate',buff)
+     .                                     .EQ. str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF
-         IF (STR_CASE_BLIND_COMPARE(
-     .      'atmosphere_ln_pressure_coordinate',buff(:33))
-     .                                     .EQ.str_eq) THEN
+         IF (STR_SAME(
+     .      'atmosphere_ln_pressure_coordinate',buff) .EQ. str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF
-         IF (STR_CASE_BLIND_COMPARE(
-     .      'atmosphere_sigma_coordinate',buff(:27))
-     .                                     .EQ.str_eq) THEN
+         IF (STR_SAME(
+     .      'atmosphere_sigma_coordinate',buff) .EQ. str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF
-         IF (STR_CASE_BLIND_COMPARE(
-     .      'atmosphere_sleve_coordinate',buff(:27))
-     .                                     .EQ.str_eq) THEN
+         IF (STR_SAME(
+     .      'atmosphere_sleve_coordinate',buff) .EQ. str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF
-         IF (STR_CASE_BLIND_COMPARE(
-     .      'land_ice_sigma_coordinate',buff(:25))
-     .                                     .EQ.str_eq) THEN
+         IF (STR_SAME(
+     .      'land_ice_sigma_coordinate',buff) .EQ. str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF
-         IF (STR_CASE_BLIND_COMPARE(
-     .      'ocean_s_coordinate',buff(:19))
-     .                                     .EQ.str_eq) THEN
+         IF (STR_SAME('ocean_s_coordinate',buff) .EQ. str_eq) THEN
             line_direction(iaxis) = 'UD'
          ENDIF
-         IF (STR_CASE_BLIND_COMPARE(
-     .      'ocean_sigma_coordinate',buff(:22))
-     .                                     .EQ.str_eq) THEN
+         IF (STR_SAME('ocean_sigma_coordinate',buff) .EQ. str_eq) THEN
             line_direction(iaxis) = 'UD'
          ENDIF
-         IF (STR_CASE_BLIND_COMPARE(
-     .      'ocean_sigma_z_coordinate',buff(:24))
-     .                                     .EQ.str_eq) THEN
+         IF (STR_SAME(
+     .      'ocean_sigma_z_coordinate',buff) .EQ. str_eq) THEN
             line_direction(iaxis) = 'UD'
          ENDIF
-         IF (STR_CASE_BLIND_COMPARE(
-     .      'ocean_double_sigma_coordinate',buff(:29))
-     .                                     .EQ.str_eq) THEN
+         IF (STR_SAME(
+     .      'ocean_double_sigma_coordinate',buff) .EQ. str_eq) THEN
             line_direction(iaxis) = 'UD'
          ENDIF
-      ENDIF
+
+         IF (STR_SAME('longitude',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'WE'
+            line_units(iaxis) = 'degrees_east'
+         ENDIF
+
+         IF (STR_SAME('latitude',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'SN'
+            line_units(iaxis) = 'degrees_north'
+         ENDIF
+
+         IF (STR_SAME('depth',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'UD'
+         ENDIF
+
+         IF (STR_SAME('altitude',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF
+
+         IF (STR_SAME ('height',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF
+
+         IF (STR_SAME('time',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'TI'
+         ENDIF
+
+      ENDIF  ! end of std names
+
 
 * longitude axes may be encoded "west" (discontinuous at 180, East negative,
 *       West positive) or "east" (standard - 0->360 east from Greenwhich)

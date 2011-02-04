@@ -44,7 +44,7 @@
 * character references or the strings " &amp; " and " &lt; " respectively. 
 * The right angle bracket (>) may be represented using the string " &gt; ", 
 * and MUST, for compatibility, be escaped using either " &gt; " or a character 
-* reference when it appears in the string " ]]> " in content, when that string 
+* reference when it appears in the string " ]]>> " in content, when that string 
 * is not marking the end of a CDATA section. 
 
 * V631 11/09 *acm* 
@@ -56,7 +56,7 @@
 * Local declarations
       INTEGER TM_LENSTR1, i, nchar, lenrepl(3), blen
       CHARACTER*1 rchar(3)
-      CHARACTER*5 repl(3)
+      CHARACTER*6 repl(3)
       
       DATA rchar(1)  /'<'/
       DATA rchar(2)  /'>'/
@@ -67,7 +67,7 @@
 
       DATA lenrepl/4,4,5/
 
-      nchar = 3
+      nchar = 3 
       slen = TM_LENSTR1(string)
       loc = 1
 

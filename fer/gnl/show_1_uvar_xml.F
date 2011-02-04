@@ -46,6 +46,7 @@
 * V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
 *                  with &lt; etc.
 * V650  Write to lun which may be set to a file unit number rather than std out
+* V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
 
         include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -55,6 +56,7 @@
 	include	'xrisc.cmn'
 	include 'xprog_state.cmn'
         include 'errmsg.parm'
+	include 'netcdf.inc'
 
 * calling argument declarations:
 	INTEGER	lun, uvar
@@ -67,23 +69,22 @@
      .          slen, llen, grid, cx_expr, i, j, status,
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
-     .            attlen, attype, iatt, dset, ncchar
+     .            attlen, attype, iatt, dset, alen
 	CHARACTER FULL_UVAR_NAME_XML*150, FULL_UVAR_NAME*150, 
      .            TM_FMT*12,
-     .            buff*150, buff2*170, c*1, 
+     .            buff*150, buff2*170, c*1, atype*10, aname*128, 
      .            attname*128, attbuff*2048, outstring*2048
-	REAL      vals(10)
+	REAL      vals(100)
         LOGICAL TM_HAS_STRING, save_mode_ignore, save_silent_err, new
 
-C New form for attribute output, dont implement it yet. (Check the
-C Write statement that uses number 2075 when we change to using these.)
-
- 2020   FORMAT ('<var name="', A, '" def="', A, '">' )
- 2030   FORMAT( '<attribute name="units" value="', A, '" />' )
- 2040   FORMAT( '<attribute name="long_name" value="', A, '" />' )
- 2070   FORMAT( '<attribute name="missing_value" value="', A, '" />' )
- 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
- 2090   FORMAT ('</var>')
+ 2010  FORMAT ('<var name="', A, '">' )
+ 2020  FORMAT ('<attribute name="', A, '" type="char">' )
+ 2030  FORMAT ('<attribute name="', A, '" type="float">' )
+ 2040  FORMAT ('<attribute name="',  A, '" type="', A,'">' )
+ 2050  FORMAT ('   <value>', A, '</value>')
+ 2055  FORMAT ('   <value><![CDATA[', A, ']]></value>')
+ 2060  FORMAT ('</attribute>')
+ 2070  FORMAT ('</var>')
 
 * initialize
 	IF (uvar_num_items(uvar) .EQ. uvar_deleted  ) RETURN
@@ -121,58 +122,52 @@ C Write statement that uses number 2075 when we change to using these.)
 * ... output variable code, units, grid, and type
 
         vname = FULL_UVAR_NAME_XML(uvar,slen)
-	buff = uvar_text(uvar)
-        llen = TM_LENSTR1(buff)
-
-        IF ( uvar_text(uvar)(1:1) .EQ.'"' .AND.
-     .       uvar_text(uvar)(llen:llen) .EQ.'"' ) THEN
-           buff = '&quot;' // uvar_text(uvar)(2:llen-1) // '&quot;'
-           llen = TM_LENSTR1(buff)
-        ENDIF
-        IF ( TM_HAS_STRING( buff, '"') ) THEN
-           j = 1
-           buff2(1:1) = buff(1:1)
-           DO 100 i = 1, llen
-              c = buff(i:i)
-              IF (c .EQ.'"') THEN
-                 buff2 = buff2(1:j) // '&quot;'
-                 j = j + 6
-              ELSE
-                 buff2 = buff2(1:j) // c
-                 IF (i.GT.1) j = j + 1
-              ENDIF
- 100       CONTINUE
-           buff = buff2
-           llen = TM_LENSTR1(buff)
-        ENDIF
-
         CALL ESCAPE_FOR_XML (vname, outstring, slen)
-        WRITE ( risc_buff, 2020 ) outstring(1:slen), buff(1:llen)
-	
+        WRITE ( risc_buff, 2010 ) outstring(1:slen)
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-	risc_buff = ' '
 
+        WRITE ( risc_buff, 2020 ) 'definition'
+	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	buff = uvar_text(uvar)
+        CALL ESCAPE_FOR_XML (buff, outstring, slen)
+	WRITE (risc_buff, 2055) outstring(1:slen)
+	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	WRITE ( risc_buff, 2060 ) 
+	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+	risc_buff = ' '
 
 * ... title and units 
 	IF ( uvar_units(uvar) .NE. ' ' ) THEN
            CALL ESCAPE_FOR_XML (uvar_units(uvar), outstring, slen)
-	   WRITE(risc_buff, 2030) outstring(1:slen)
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           WRITE ( risc_buff, 2020 ) 'units'
+           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           WRITE (risc_buff, 2055) outstring(1:slen)
+           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           WRITE ( risc_buff, 2060 ) 
+           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
         ENDIF
 
 	IF ( uvar_title(uvar) .NE. ' ' ) THEN
            CALL ESCAPE_FOR_XML (uvar_title(uvar), outstring, slen)
-	   WRITE(risc_buff, 2040) outstring(1:slen)
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           WRITE ( risc_buff, 2020 ) 'long_name'
+           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           WRITE (risc_buff, 2055) outstring(1:slen)
+           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           WRITE ( risc_buff, 2060 ) 
+           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
         ENDIF
 
 * ... bad data flag 
 
-        buff = TM_FMT(uvar_bad_data(uvar), 16,16,slen)
+        buff = TM_FMT(uvar_bad_data(uvar), 7,16,slen)
         CALL ESCAPE_FOR_XML (buff, outstring, slen)
-        WRITE ( risc_buff, 2070 ) outstring(1:slen)
-	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-
+        WRITE ( risc_buff, 2030 ) 'missing_value'
+        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+        WRITE (risc_buff, 2050) outstring(1:slen)
+        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+        WRITE ( risc_buff, 2060 ) 
+        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * All attributes not already listed.
  
@@ -198,22 +193,35 @@ C Write statement that uses number 2075 when we change to using these.)
      .                                .TRUE., vname, blen, attlen, 
      .                                attoutflag, attbuff, vals)
 
+              CALL ESCAPE_FOR_XML (attname, aname, slen)
+
+              IF (attype .EQ. NCCHAR)   atype = 'char'
+              IF (attype .EQ. NCBYTE)   atype = 'byte'
+              IF (attype .EQ. NCSHORT)  atype = 'int'
+              IF (attype .EQ. NCLONG)   atype = 'int'
+              IF (attype .EQ. NCFLOAT)  atype = 'float'
+              IF (attype .EQ. NCDOUBLE) atype = 'double'
+              alen = TM_LENSTR1(atype)
+
+              WRITE (risc_buff, 2040) aname(1:slen), atype(1:alen)
+              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
               IF (attype .NE. NCCHAR) THEN
-                 blen = 1
+                 slen = 1
                  attbuff = ' '
                  DO 150 i = 1, attlen
                     buff = TM_FMT(vals(i), 7, 14, llen)
-                   attbuff(blen:blen+llen+1) = buff//' '
-                    blen = blen + llen + 1
+                    CALL ESCAPE_FOR_XML (buff, outstring, llen)
+                    WRITE ( risc_buff, 2050 ) outstring(1:llen)
+                    CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
  150             CONTINUE
               ELSE 
-                 blen = TM_LENSTR1(attbuff)
+                 CALL ESCAPE_FOR_XML (buff, outstring, llen)
+                 WRITE ( risc_buff, 2050 ) outstring(1:llen)
+                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
               ENDIF
 
-              CALL ESCAPE_FOR_XML (attname, buff2, slen)
-              CALL ESCAPE_FOR_XML (attbuff, outstring, blen)
-              WRITE (risc_buff, 2075) buff2(1:slen), outstring(1:blen),
-     .               buff2(1:slen)
+              WRITE ( risc_buff, 2060 )
               CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
            ENDIF
@@ -226,7 +234,7 @@ C Write statement that uses number 2075 when we change to using these.)
         IF (grid .NE. unspecified_int4) 
      .          CALL SHOW_GRID_XML (lun, grid, cx_expr)
 
-        WRITE ( risc_buff, 2090 )
+        WRITE ( risc_buff, 2070 )
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 	RETURN

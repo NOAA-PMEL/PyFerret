@@ -50,6 +50,7 @@
 * V631 11/09 *acm* For XML-formatted output check for and replace the strings < > and &
 *                  with &lt; etc.
 * V650  Write to show_lun which may be set to a file unit number rather than std out
+* V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -72,7 +73,7 @@
 
 * local variable declarations:
 	LOGICAL		TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB, got_it
-	INTEGER		idim, orient, slen, iset, dset
+	INTEGER		idim, orient, slen, iset, dset, alen
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id, status
 	CHARACTER	TM_FMT*32, buff*80, outbuff*20
 
@@ -83,17 +84,19 @@
      .                  len_attbuff, attoutflag, all_outflag, attid, 
      .                  attlen, attype, iatt
         CHARACTER       vname*128, attname*128, attbuff*2048, 
-     .                  outstring*2048
-	REAL            vals(10)
+     .                  outstring*2048, atype*10
+	REAL            vals(100)
 
-C New form for attribute output, dont implement it yet. (Check the
-C Write statement that uses number 2075 when we change to using these.)
+C New form for attribute output, list values separately.
 
- 2020	FORMAT ( '<attribute name="time_origin" value="', A, '" />' )
- 2030	FORMAT ( '<attribute name="calendar" value="', A, '" />' )
- 2040	FORMAT ( '<attribute name="modulo_length" value="', A, '" />' )
- 2050	FORMAT ( '</axis>' )
- 2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
+
+ 2020	FORMAT ('<attribute name="', A, '" type="char">' )
+ 2030	FORMAT ('<attribute name="', A, '" type="short">' )
+ 2040   FORMAT ('<attribute name="', A, '" type="', A,'">' )
+ 2050   FORMAT ('   <value>', A, '</value>')
+ 2055   FORMAT ('   <value><![CDATA[', A, ']]></value>')
+ 2060   FORMAT ('</attribute>')
+ 2080	FORMAT ( '</axis>' )
 
 * determine orientation
 
@@ -158,34 +161,45 @@ C Write statement that uses number 2075 when we change to using these.)
               buff = line_t0(line)
            ENDIF
 
+* Make sure it is formatted as  2000-11-01 00:00:00
            CALL TM_DATE_REFORMAT (buff, 1, cal_id, outbuff, 2, 
      .        .TRUE., status) 
            CALL ESCAPE_FOR_XML(outbuff, outstring, slen)
-           WRITE ( risc_buff, 2020 ) outstring(1:slen)
+           WRITE ( risc_buff, 2020 ) 'time_origin'
+	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	   WRITE (risc_buff, 2055) outstring(1:slen)
+	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           WRITE ( risc_buff, 2060 ) 
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-* report the calendar of a time axis if "interesting"
+* report the calendar of a time axis
 
-	   IF (cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
-              buff = line_cal_name(line)
-              CALL ESCAPE_FOR_XML(buff, outstring, slen)
-              WRITE ( risc_buff, 2030 ) outstring(1:slen)
-	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-	   ENDIF
+           buff = line_cal_name(line)
+           CALL ESCAPE_FOR_XML(buff, outstring, slen)
+           WRITE ( risc_buff, 2020 ) 'calendar'
+	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           WRITE ( risc_buff, 2055 ) outstring(1:slen)
+	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           WRITE ( risc_buff, 2060 )
+	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	ENDIF
 
 * if line is subspan modulo, report its modulo cycle length
 	IF ( line_modulo(line) .AND. TM_ITS_SUBSPAN_MODULO(line) ) THEN
 	   buff = TM_FMT( SNGL(line_modulo_len(line)),7,32,slen)
            CALL ESCAPE_FOR_XML(buff, outstring, slen)
-	   WRITE (risc_buff, 2040) outstring(1:slen)
+	   WRITE (risc_buff, 2030) 'modulo_length'
+	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	   WRITE ( risc_buff, 2050 ) outstring(1:slen)
+	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	   WRITE ( risc_buff, 2060 )
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	ENDIF
 
         
 * Get the dataset (show line/xml only used for axes in datasets)
 
-        vname = line_name(line)
+        vname = line_name_orig(line)
 	DO 300 iset = 1, maxdsets
 	   IF ( ds_name(iset) .EQ. char_init1024) GOTO 1000
            CALL CD_GET_VAR_ID (iset, vname, varid, status)
@@ -200,26 +214,25 @@ C Write statement that uses number 2075 when we change to using these.)
 
 * Data type of the axis in the file...
 
+        WRITE (risc_buff, 2020) 'infile_datatype'
+        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
         IF (vtype .EQ. ncbyte ) THEN
-           risc_buff = 
-     .         '<attribute name="infile_datatype" value="BYTE" />'
+	   buff = 'BYTE'
         ELSE IF (vtype .EQ. ncchar ) THEN
-           risc_buff = 
-     .         '<attribute name="infile_datatype" value="CHAR" />'
+           buff = 'CHAR'
         ELSE IF (vtype .EQ. ncshort ) THEN
-           risc_buff = 
-     .         '<attribute name="infile_datatype" value="SHORT" />'
+           buff = 'SHORT'
         ELSE IF (vtype .EQ. nclong ) THEN
-           risc_buff = 
-     .         '<attribute name="infile_datatype" value="LONG" />'
+           buff = 'LONG'
         ELSE IF (vtype .EQ. ncfloat ) THEN
-           risc_buff = 
-     .         '<attribute name="infile_datatype" value="FLOAT" />'
+           buff = 'FLOAT'
         ELSE IF (vtype .EQ. ncdouble ) THEN
-           risc_buff = 
-     .         '<attribute name="infile_datatype" value="DOUBLE" />'
+           buff = 'DOUBLE'
         ENDIF
-        
+        CALL ESCAPE_FOR_XML(buff, outstring, slen)
+        WRITE ( risc_buff, 2055 ) outstring(1:slen)
+        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+        WRITE ( risc_buff, 2060 )
         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * All attributes not already listed.
@@ -229,51 +242,66 @@ C Write statement that uses number 2075 when we change to using these.)
      .              attype, attlen, attoutflag, status )
 
            new = .TRUE.
-           new = (STR_SAME(attname, 'direction') .NE. 0) .AND. 
-     .              (STR_SAME(attname, 'units') .NE. 0) .AND. 
-     .              (STR_SAME(attname, 'length') .NE. 0) .AND. 
-     .              (STR_SAME(attname, 'positive') .NE. 0) .AND. 
-     .              (STR_SAME(attname, 'modulo') .NE. 0) .AND. 
+           new = (STR_SAME(attname, 'direction') .NE. 0)        .AND. 
+     .              (STR_SAME(attname, 'units') .NE. 0)         .AND. 
+     .              (STR_SAME(attname, 'length') .NE. 0)        .AND. 
+     .              (STR_SAME(attname, 'positive') .NE. 0)      .AND. 
+     .              (STR_SAME(attname, 'modulo') .NE. 0)        .AND. 
      .              (STR_SAME(attname, 'modulo_length') .NE. 0) .AND. 
-     .              (STR_SAME(attname, 'start') .NE. 0) .AND. 
-     .              (STR_SAME(attname, 'end') .NE. 0) .AND. 
-     .              (STR_SAME(attname, 'time_origin') .NE. 0) .AND. 
-     .              (STR_SAME(attname, 'calendar') .NE. 0) .AND. 
-     .              (STR_SAME(attname, 'point_spacing') .NE. 0)
+     .              (STR_SAME(attname, 'start') .NE. 0)         .AND. 
+     .              (STR_SAME(attname, 'end') .NE. 0)           .AND. 
+     .              (STR_SAME(attname, 'time_origin') .NE. 0)   .AND. 
+     .              (STR_SAME(attname, 'calendar') .NE. 0)      .AND. 
+     .              (STR_SAME(attname, 'point_spacing') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'infile_datatype') .NE. 0)
 
            IF (new) THEN
               blen = 2048  ! len of attbuff
               got_it = NC_GET_ATTRIB (dset, varid, attname, 
      .                                .TRUE., vname, blen, attlen, 
      .                                attoutflag, attbuff, vals)
+              IF (attlen .GT. 0) THEN
+
+              CALL ESCAPE_FOR_XML(attname, outstring, slen)
+
+* Original type of the attribute
+              IF (attype .EQ. NCCHAR)   atype = 'char'
+              IF (attype .EQ. NCBYTE)   atype = 'byte'
+              IF (attype .EQ. NCSHORT)  atype = 'int'
+              IF (attype .EQ. NCLONG)   atype = 'int'
+              IF (attype .EQ. NCFLOAT)  atype = 'float'
+              IF (attype .EQ. NCDOUBLE) atype = 'double'
+              alen = TM_LENSTR1(atype)
+
+	      WRITE (risc_buff, 2040) attname(1:slen), atype(1:alen)
+              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
               IF (attype .NE. NCCHAR) THEN
                  slen = 1
                  attbuff = ' '
                  DO 150 i = 1, attlen
                     buff = TM_FMT(vals(i), 7, 14, llen)
-                    attbuff(slen:slen+llen+1) = buff//' '
-                    slen = slen + llen 
+                    CALL ESCAPE_FOR_XML (buff, outstring, llen)
+	            WRITE ( risc_buff, 2050 ) outstring(1:slen)
+	            CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
  150             CONTINUE
               ELSE 
-                 slen = TM_LENSTR1(attbuff)
+                 CALL ESCAPE_FOR_XML (attbuff, outstring, llen)
+                 WRITE ( risc_buff, 2050 ) outstring(1:llen)
+                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
               ENDIF
 
-! Store the converted attname string in the variable buff, not now needed.
+	      WRITE ( risc_buff, 2060 )
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-              CALL ESCAPE_FOR_XML(attname, buff, slen)
-              CALL ESCAPE_FOR_XML (attbuff, outstring, llen)
-	      WRITE (risc_buff, 2075) buff(1:slen), 
-     .                  outstring(1:llen)
-              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-
+           ENDIF  ! attlen GT 0
            ENDIF
 
  200    CONTINUE
 * closer tag
 
  1000   CONTINUE
-        WRITE ( risc_buff, 2050 ) 
+        WRITE ( risc_buff, 2080 ) 
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 	RETURN

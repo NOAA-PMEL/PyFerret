@@ -1,5 +1,5 @@
-	SUBROUTINE SHOW_GRID_XML( lun, grid, cx_expr )
-
+	SUBROUTINE SHOW_GRID_STRING_XML (lun, grid, cx_expr,
+     .                  stringdimname, strdim)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -60,14 +60,15 @@
 
 
 * calling argument declarations
-	INTEGER lun, grid, cx_expr
+	INTEGER lun, grid, cx_expr, strdim
+	CHARACTER*(*) stringdimname
 
 * local variable declarations:
 	INTEGER TM_LENSTR1, TM_LENSTR, idim, slen, line
         CHARACTER*1 axdir(4)
 	CHARACTER*2048 outstring
         DATA axdir/ 'x', 'y', 'z', 't'/
-
+	CHARACTER TM_FMT*16, show_str*16
 
  2020   FORMAT ('<grid name="',A,'">' )
  2030   FORMAT ('<axes>' )
@@ -81,6 +82,15 @@
 	WRITE ( risc_buff, 2020 ) outstring(1:slen)
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	WRITE ( risc_buff, 2030 ) 
+	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+* First the string-length dimension
+
+	slen = TM_LENSTR(stringdimname)
+
+	CALL ESCAPE_FOR_XML (stringdimname, outstring, slen)
+	WRITE (risc_buff, 2040 ) 'd',
+     .           outstring(1:slen),  'd'
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 	DO 110 idim = 1, 4
@@ -115,6 +125,4 @@
         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
         RETURN
-
 	END
-

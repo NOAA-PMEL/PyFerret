@@ -1,7 +1,5 @@
-	SUBROUTINE SHOW_DATA_SET_XML( lun, dset )
+      SUBROUTINE SHOW_DIM_XML( lun, dname, npts)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -35,75 +33,52 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Output the name and list variables in the data set in xml-style format
+* display basic facts about a dimension that is not a coordinate variable
 
-* programmer - Ansley Manke, based on show_data_set_vars.F
+* programmer - Ansley Manke, based on line_facts_xml.F
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* 6-Aug-2003
-* V5.80 13-Sep-2004 *acm* Add data-set specific user variables to the listing
-*       30-Sep-2004 *acm* Move listing of dataset info to show_data.F, show any
-*                         dataset-specific user-defined variables, use the
-*                         tag <var name> rather than <vname>
-*       13-Oct-2004 *acm* for consistent XML, write <var name="VNAME" />
-* V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
-
+* 27-Jan-2011
+* 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
-	include 'ez_lib.parm'
-	include 'xdset_info.cmn_text'
-	external xdset_info_data
-	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-	include 'xez_info.cmn_text'
-	external xez_info_data
 	include	'ferret.parm'
-	include	'xvariables.cmn'
-	include	'xtext_info.cmn'
-	include	'xprog_state.cmn'
-	include	'xrisc.cmn'
+	include 'xprog_state.cmn'
+	include 'xtext_info.cmn'
+	include 'xrisc.cmn'
+	include 'xdset_info.cmn_text'
 
-* calling argument declarations:
-	INTEGER	lun, dset
-	
+* calling argument declarations
+	INTEGER 	lun, npts
+	CHARACTER*(*)   dname
+
 * local variable declarations:
-	INTEGER TM_LENSTR, TM_LENSTR1, ivar, slen
-        CHARACTER uvarname*150
+	INTEGER		slen, status
+	CHARACTER	TM_FMT*16, show_str*16, outstring*128
 
- 2040   FORMAT ('<var name="', A, '" />' )
+ 2010	FORMAT ( '<axis name="', A, '">' )
+ 2020	FORMAT ( '<attribute name="length" type="short">' )
+ 2030   FORMAT ('   <value>', A, '</value>')
+ 2040   FORMAT ('</attribute>')
+ 2050	FORMAT ( '</axis>' )
 
-* List the variables in the set
+	CALL ESCAPE_FOR_XML (dname, outstring, slen)
+	WRITE ( risc_buff, 2010 ) outstring(1:slen)
+	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-	risc_buff = ' '
+* dimension length
 
-	DO 400 ivar = 1, maxvars
-	   IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 400
-           IF ( ds_var_code(ivar) .EQ. '-' ) GOTO 400
-  
-* ... output variable code
+        show_str = TM_FMT(FLOAT(npts), 16,16,slen)
+        CALL ESCAPE_FOR_XML (show_str, outstring, slen)
+        WRITE ( risc_buff, 2020 ) outstring(1:slen)
+        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-*           slen = TM_LENSTR1(ds_var_code(ivar))
-           CALL string_array_get_strlen1(ds_var_code_head, ivar, slen)
-           WRITE ( risc_buff, 2040 ) ds_var_code(ivar)(1:slen)
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+* close tag
 
- 400	CONTINUE
+        WRITE ( risc_buff, 2050 ) 
+	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+	RETURN
+	END
 
 
-* show the data-set-specific user-defined variables
 
-	DO 600 ivar = 1, max_uvar
-	   IF (uvar_num_items(ivar) .EQ. uvar_deleted  ) GOTO 600
-	   IF (uvar_dset(ivar) .EQ. dset) THEN
-
-* ... output variable name
-
-             uvarname = uvar_name_code(ivar)
-             slen = TM_LENSTR1(uvarname)
-             WRITE ( risc_buff, 2040 ) uvarname(1:slen)
-             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-
-         ENDIF
- 600  CONTINUE
-
-      RETURN
-      END

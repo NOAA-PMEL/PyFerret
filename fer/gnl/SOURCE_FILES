@@ -89,9 +89,11 @@ show_data_set_vars.F\
 show_data_set_vars_xml.F\
 show_data_set_xml.F\
 show_diag_vars.F\
+show_dim_xml.F\
 show_dyn_grids.F\
 show_grid.F\
 show_grid_xml.F\
+show_grid_string_xml.F\
 show_line.F\
 show_line_xml.F\
 show_line_coords.F\

@@ -55,6 +55,7 @@
 *                  with &lt; etc.
 * V650  2/10 *acm* LAS ticket 761: consistency of the missing-value flags. Use a Fortran
 *                  format rather than TM_FMT to write the value to the xml output.
+* V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -83,27 +84,30 @@
      .            ivar, slen, llen, grid, cx_expr, dset_save,
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
-     .            attlen, attype, iatt, status
-	REAL      vals(10)
+     .            attlen, attype, iatt, iset, alen, status
+	REAL      vals(100)
 
-        LOGICAL   NC_GET_ATTRIB, got_it, coordvar, newatt
+        LOGICAL   NC_GET_ATTRIB, got_it, coordvar, newatt, have_units,
+     .            have_title
 
         CHARACTER TM_FMT*16, show_str*16
-        CHARACTER uvarname*150, attname*128, attbuff*2048, buff*14,
-     .            outstring*2048, aname*128
+        CHARACTER uvarname*150, attname*128, attbuff*2048, buff*128,
+     .            outstring*2048, aname*128, atype*10
 
 C New form for attribute output, dont implement it yet. (Check the
 C Write statement that uses number 2075 when we change to using these.)
 
-2020   FORMAT ('<var name="', A, '">' )
-2025   FORMAT ('<attribute name="definition="', A, '">' )
-2030   FORMAT( '<attribute name="units" value="', A, '" />' )
-2040   FORMAT( '<attribute name="long_name" value="', A, '" />' )
-2050   FORMAT( '<attribute name="history" value="', A, '" />' )
-2060   FORMAT( '<attribute name="_FillValue" value="', A, '" />' )
-2070   FORMAT( '<attribute name="missing_value" value="', A, '" />' ) 
-2075   FORMAT( '<attribute name="', A, '" value="', A, '" />' )
-2090   FORMAT ('</var>')
+ 2010  FORMAT ('<var name="', A, '">' )
+ 2020  FORMAT ('<attribute name="', A, '" type="char">' )
+ 2030  FORMAT ('<attribute name="', A, '" type="float">' )
+ 2040  FORMAT ('<attribute name="',  A, '" type="', A,'">' )
+
+ 2050  FORMAT ('   <value>', A, '</value>')
+ 2055  FORMAT ('   <value><![CDATA[', A, ']]></value>')
+ 2060  FORMAT ('</attribute>')
+
+ 2070  FORMAT ('</var>')
+ 1111  FORMAT (1PG16.7)
 
 * describe the variables in the set, including a report on the axes of this grid.
 
@@ -120,74 +124,106 @@ C Write statement that uses number 2075 when we change to using these.)
 * ... output variable code, units, grid, and type
 
 *           slen = TM_LENSTR1(ds_var_code(ivar))
+
+          uvarname = ds_var_code(ivar)
+
+           CALL CD_GET_VAR_ID (dset, uvarname, varid, status)
+           CALL CD_GET_VAR_INFO (dset, varid, uvarname, vtype, nvdims,
+     .           vdims, nvatts, coordvar, all_outflag, status)
+
            CALL string_array_get_strlen1(ds_var_code_head, ivar, slen)
-           CALL ESCAPE_FOR_XML (ds_var_code(ivar), outstring, slen)
-           WRITE ( risc_buff, 2020 ) outstring(1:slen)
+           CALL ESCAPE_FOR_XML (uvarname, outstring, slen)
+           WRITE ( risc_buff, 2010 ) outstring(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
            slen = TM_LENSTR(ds_var_units(ivar))
            IF (ds_var_units(ivar)(1:2) .NE. char_init 
      .           .AND. slen.GT.0) THEN
               CALL ESCAPE_FOR_XML (ds_var_units(ivar), outstring, slen)
-              WRITE ( risc_buff, 2030 ) outstring(1:slen)  
+              WRITE ( risc_buff, 2020 ) 'units'
               CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              WRITE (risc_buff, 2055) outstring(1:slen)
+              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              WRITE ( risc_buff, 2060 ) 
+              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
            ENDIF
 
            slen = TM_LENSTR(ds_var_title(ivar))
            IF (ds_var_title(ivar)(1:2) .NE. char_init 
      .           .AND. slen.GT.0) THEN
               CALL ESCAPE_FOR_XML (ds_var_title(ivar), outstring, slen)
-              WRITE ( risc_buff, 2040 ) outstring(1:slen)
-	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              WRITE ( risc_buff, 2020 ) 'long_name'
+              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              WRITE (risc_buff, 2055) outstring(1:slen)
+              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              WRITE ( risc_buff, 2060 ) 
+              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
 
            slen = TM_LENSTR(ds_var_titl_mod(ivar))
            IF (ds_var_titl_mod(ivar)(1:2) .NE. char_init 
      .           .AND. slen.GT.0) THEN
               CALL ESCAPE_FOR_XML (ds_var_titl_mod(ivar), outstring, slen)
-              WRITE ( risc_buff, 2050 ) outstring(1:slen)
-	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              WRITE ( risc_buff, 2020 ) 'history'
+              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              WRITE (risc_buff, 2055) outstring(1:slen)
+              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              WRITE ( risc_buff, 2060 ) 
+              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
 
 ! missing_flag comes from attribute FillValue; 
 ! bad_flag comes from missing_value
 
-           show_str = TM_FMT(ds_missing_flag(ivar), 16,16,slen)
-	   WRITE (show_str, 1111) ds_missing_flag(ivar)
-1111	   FORMAT (1PG16.7)
+           show_str = TM_FMT(ds_missing_flag(ivar), 7,16,slen)
+c	   WRITE (show_str, 1111) ds_missing_flag(ivar)
           uvarname = ds_var_code(ivar)
           CALL CD_GET_VAR_ID (dset, uvarname, varid, status)
 	   
           attname = '_FillValue'
           CALL CD_GET_VAR_ATT_ID (dset, varid, attname, iatt, status)
           IF (status .EQ. ferr_ok) THEN
-             show_str = TM_FMT(ds_bad_flag(ivar), 16,16,slen)
-             WRITE (show_str, 1111) ds_missing_flag(ivar)
+             show_str = TM_FMT(ds_bad_flag(ivar), 7,16,slen)
+c             WRITE (show_str, 1111) ds_missing_flag(ivar)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
-             WRITE ( risc_buff, 2060 ) outstring(1:slen)
+             WRITE ( risc_buff, 2030 ) '_FillValue' 
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             WRITE (risc_buff, 2050) outstring(1:slen)
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             WRITE ( risc_buff, 2060 ) 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
           ENDIF
 
           attname = 'missing_value'
           CALL CD_GET_VAR_ATT_ID (dset, varid, attname, iatt, status)
           IF (status .EQ. ferr_ok) THEN
-             show_str = TM_FMT(ds_missing_flag(ivar), 16,16,slen)
-	     WRITE (show_str, 1111) ds_missing_flag(ivar)
+             show_str = TM_FMT(ds_missing_flag(ivar), 7,16,slen)
+c	     WRITE (show_str, 1111) ds_missing_flag(ivar)
              slen = TM_LENSTR(show_str)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
-             WRITE ( risc_buff, 2070 ) outstring(1:slen)
-	     CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             WRITE ( risc_buff, 2030 ) 'missing_value'
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             WRITE (risc_buff, 2050) outstring(1:slen)
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             WRITE ( risc_buff, 2060 ) 
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
           ENDIF
+
 
           IF (ds_var_type(ivar) .EQ. ptype_string ) THEN
-               risc_buff = 
-     .         '<attribute name="ferret_datatype" value="STRING" />'
+             show_str = 'STRING'
           ELSE
-               risc_buff = 
-     .         '<attribute name="ferret_datatype" value="FLOAT" />'
+             show_str = 'FLOAT'
           ENDIF
+          CALL ESCAPE_FOR_XML (show_str, outstring, slen)
+          WRITE ( risc_buff, 2020 ) 'ferret_datatype'
+          CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-	  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+          WRITE (risc_buff, 2055) outstring(1:slen)
+          CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+          WRITE ( risc_buff, 2060 ) 
+          CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * other attributes
 
@@ -199,26 +235,27 @@ C Write statement that uses number 2075 when we change to using these.)
 * Data type of the variable in the file...
 
            IF (vtype .EQ. ncbyte ) THEN
-              risc_buff = 
-     .         '<attribute name="infile_datatype" value="BYTE" />'
+              show_str = 'BYTE'
            ELSE IF (vtype .EQ. ncchar ) THEN
-              risc_buff = 
-     .         '<attribute name="infile_datatype" value="CHAR" />'
+              show_str = 'CHAR'
            ELSE IF (vtype .EQ. ncshort ) THEN
-              risc_buff = 
-     .         '<attribute name="infile_datatype" value="SHORT" />'
+              show_str = 'SHORT'
            ELSE IF (vtype .EQ. nclong ) THEN
-              risc_buff = 
-     .         '<attribute name="infile_datatype" value="LONG" />'
+              show_str = 'LONG'
            ELSE IF (vtype .EQ. ncfloat ) THEN
-              risc_buff = 
-     .         '<attribute name="infile_datatype" value="FLOAT" />'
+              show_str = 'FLOAT'
            ELSE IF (vtype .EQ. ncdouble ) THEN
-              risc_buff = 
-     .         '<attribute name="infile_datatype" value="DOUBLE" />'
+              show_str = 'DOUBLE'
            ENDIF
 
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           CALL ESCAPE_FOR_XML (show_str, outstring, slen)
+           WRITE ( risc_buff, 2020 ) 'infile_datatype'
+           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+           WRITE (risc_buff, 2055) outstring(1:slen)
+           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           WRITE ( risc_buff, 2060 ) 
+           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * All attributes not already listed.
 * Skip 'parent_grid', 'slab_min_index', 'slab_max_index' as these
@@ -229,48 +266,72 @@ C Write statement that uses number 2075 when we change to using these.)
      .              attype, attlen, attoutflag, status )
 
               newatt = .TRUE.
-              newatt = (STR_SAME(attname, 'units') .NE. 0)      .AND. 
-     .              (STR_SAME(attname, 'long_name') .NE. 0)     .AND. 
-     .              (STR_SAME(attname, 'history') .NE. 0)       .AND. 
-     .              (STR_SAME(attname, 'missing_value') .NE. 0) .AND. 
-     .              (STR_SAME(attname, '_FillValue') .NE. 0) .AND. 
-     .              (STR_SAME(attname, 'parent_grid') .NE. 0) .AND. 
+              newatt = (STR_SAME(attname, 'units') .NE. 0)       .AND. 
+     .              (STR_SAME(attname, 'long_name') .NE. 0)      .AND. 
+     .              (STR_SAME(attname, 'history') .NE. 0)        .AND. 
+     .              (STR_SAME(attname, 'missing_value') .NE. 0)  .AND. 
+     .              (STR_SAME(attname, '_FillValue') .NE. 0)     .AND. 
+     .              (STR_SAME(attname, 'parent_grid') .NE. 0)    .AND. 
      .              (STR_SAME(attname, 'slab_min_index') .NE. 0) .AND. 
-     .              (STR_SAME(attname, 'slab_max_index') .NE. 0)
+     .              (STR_SAME(attname, 'slab_max_index') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'ferret_datatype') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'infile_datatype') .NE. 0)
 
               IF (newatt) THEN
                  blen = 2048  ! len of attbuff
                  got_it = NC_GET_ATTRIB (dset, varid, attname, 
      .                                .TRUE., uvarname, blen, attlen, 
      .                                attoutflag, attbuff, vals)
-
-                 IF (attype .NE. NCCHAR) THEN
-                    blen = 1
-                    attbuff = ' '
-                    DO 150 i = 1, attlen
-                       buff = TM_FMT(vals(i), 7, 14, llen)
-                       attbuff(blen:blen+llen+1) = buff//' '
-                       blen = blen + llen + 1
- 150                CONTINUE
-                 ELSE 
-                    blen = TM_LENSTR1(attbuff)
-                 ENDIF
+                 IF (attlen .GT. 0) THEN
 
                  CALL ESCAPE_FOR_XML (attname, aname, slen)
-                 CALL ESCAPE_FOR_XML (attbuff, outstring, blen)
-	         WRITE (risc_buff, 2075) aname(1:slen), 
-     .                  outstring(1:blen)
 
-                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+		 IF (attype .EQ. NCCHAR)   atype = 'char'
+		 IF (attype .EQ. NCBYTE)   atype = 'byte'
+		 IF (attype .EQ. NCSHORT)  atype = 'int'
+		 IF (attype .EQ. NCLONG)   atype = 'int'
+		 IF (attype .EQ. NCFLOAT)  atype = 'float'
+		 IF (attype .EQ. NCDOUBLE) atype = 'double'
+		 alen = TM_LENSTR1(atype)
 
+		 WRITE (risc_buff, 2040) aname(1:slen), atype(1:alen)
+		 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+		 IF (attype .NE. NCCHAR) THEN
+		    slen = 1
+		    attbuff = ' '
+		    DO 150 i = 1, attlen
+                       buff = TM_FMT(vals(i), 7, 14, llen)
+                       CALL ESCAPE_FOR_XML (buff, outstring, llen)
+                       WRITE ( risc_buff, 2050 ) outstring(1:llen)
+                       CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+ 150                CONTINUE
+		 ELSE 
+		    CALL ESCAPE_FOR_XML (attbuff, outstring, llen)
+		    WRITE ( risc_buff, 2055 ) outstring(1:llen)
+		    CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+		 ENDIF
+
+		 WRITE ( risc_buff, 2060 )
+		 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+              ENDIF  ! attlen GT 0
               ENDIF
 
  200       CONTINUE
 
            grid = ds_grid_number(ivar)
-           CALL SHOW_GRID_XML (lun, grid, unspecified_int4)
 
-	   WRITE ( risc_buff, 2090 )
+! If its a string get the name and length of the string dimension.
+           IF (vtype .EQ. NCCHAR ) THEN
+              CALL CD_GET_DS_DIMS (dset, vdims(1), buff, npts, status)
+              CALL SHOW_GRID_STRING_XML (lun, grid, unspecified_int4,
+     .                  buff, npts)
+	   ELSE
+              CALL SHOW_GRID_XML (lun, grid, unspecified_int4)
+	   ENDIF
+
+	   WRITE ( risc_buff, 2070 )
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
  400	CONTINUE
@@ -287,60 +348,190 @@ C Write statement that uses number 2075 when we change to using these.)
              uvarname = uvar_name_code(ivar)
              IF (uvar_parent(ivar) .NE. 0) GOTO 600
 
+	     iset = -1
+	     CALL CD_GET_VAR_ID (iset, uvarname, varid, status)
+             CALL CD_GET_VAR_INFO (iset, varid, uvarname, vtype, nvdims, 
+     .          vdims, nvatts, coordvar, all_outflag, status)
+
              CALL ESCAPE_FOR_XML (uvarname, outstring, slen)
-             WRITE ( risc_buff, 2020 ) outstring(1:slen)
+             WRITE ( risc_buff, 2010 ) outstring(1:slen)
+
+
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
              slen = TM_LENSTR1(uvar_text(ivar))
              CALL ESCAPE_FOR_XML (uvar_text(ivar), outstring, slen)
-             WRITE ( risc_buff, 2025 ) outstring(1:slen)
+             WRITE ( risc_buff, 2020 ) 'definition'
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             WRITE (risc_buff, 2055) outstring(1:slen)
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             WRITE ( risc_buff, 2060 ) 
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
+
+* Write the units and title
              slen = TM_LENSTR(uvar_units(ivar))
              IF (uvar_units(ivar)(1:2) .NE. char_init 
      .             .AND. slen.GT.0) THEN
                 slen = TM_LENSTR1(uvar_units(ivar))
                 CALL ESCAPE_FOR_XML (uvar_units(ivar), outstring, slen)
-                WRITE ( risc_buff, 2030 ) outstring(1:slen)  
+                WRITE ( risc_buff, 2020 ) 'units'
                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+                WRITE (risc_buff, 2055) outstring(1:slen)
+                CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+                WRITE ( risc_buff, 2060 ) 
+                CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+		have_units = .TRUE.
              ENDIF
 
              slen = TM_LENSTR(uvar_title(ivar))
              IF (uvar_title(ivar)(1:2) .NE. char_init 
      .             .AND. slen.GT.0) THEN
                 CALL ESCAPE_FOR_XML (uvar_title(ivar), outstring, slen)
-                WRITE ( risc_buff, 2040 ) outstring(1:slen)
+                WRITE ( risc_buff, 2020 ) 'long_name'
                 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+                WRITE (risc_buff, 2055) outstring(1:slen)
+                CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+                WRITE ( risc_buff, 2060 ) 
+                CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+		have_title = .TRUE.
              ENDIF
 
 ! missing_flag comes from attribute FillValue; 
 ! bad_flag comes from missing_value
 
-             show_str = TM_FMT(uvar_bad_data(ivar), 16,16,slen)
+             show_str = TM_FMT(uvar_bad_data(ivar), 7,16,slen)
+c	     WRITE (show_str, 1111) uvar_bad_data(ivar)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
-             WRITE ( risc_buff, 2060 ) outstring(1:slen)
+             WRITE ( risc_buff, 2030 ) '_FillValue' 
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             WRITE (risc_buff, 2050) outstring(1:slen)
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             WRITE ( risc_buff, 2060 ) 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-             show_str = TM_FMT(uvar_bad_data(ivar), 16,16,slen)
+
+             show_str = TM_FMT(uvar_bad_data(ivar), 7,16,slen)
+c	     WRITE (show_str, 1111) uvar_bad_data(ivar)
              CALL ESCAPE_FOR_XML (show_str, outstring, slen)
-             WRITE ( risc_buff, 2070 ) outstring(1:slen)
+             WRITE ( risc_buff, 2030 ) 'missing_value'
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             WRITE (risc_buff, 2050) outstring(1:slen)
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             WRITE ( risc_buff, 2060 ) 
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
              IF (uvar_data_type(ivar,dset) .EQ. ptype_string ) THEN
-                risc_buff = 
-     .         '<attribute name="ferret_datatype" value="STRING" />'
+                show_str = 'STRING'
              ELSE
-                risc_buff = 
-     .         '<attribute name="ferret_datatype" value="FLOAT" />'
+                show_str = 'FLOAT'
              ENDIF
 
+             CALL ESCAPE_FOR_XML (show_str, outstring, slen)
+             WRITE ( risc_buff, 2020 ) 'ferret_datatype'
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+             WRITE (risc_buff, 2055) outstring(1:slen)
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             WRITE ( risc_buff, 2060 ) 
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+* Now get other attributes that may have been assigned.
+             iset = -1
+	     CALL CD_GET_VAR_ID (iset, uvarname, varid, status)
+             CALL CD_GET_VAR_INFO (iset, varid, uvarname, vtype, nvdims, 
+     .          vdims, nvatts, coordvar, all_outflag, status)
+             IF (status .NE. ferr_ok) GOTO 600  ! or where?
+             DO 700 iatt = 1, nvatts
+
+                CALL CD_GET_VAR_ATT_INFO (iset, varid, iatt, attname, 
+     .              attype, attlen, attoutflag, status )
+
+* All attributes not already listed.
+* Skip 'parent_grid', 'slab_min_index', 'slab_max_index' as these
+* wind up causing an incomplete spec of the grid in the F-TDS dataset.
+* For transformed variables, the range, min, and max from the original variable
+* do not apply.
+* Attributes are inherited from the defining variable. That variable got 
+* attributes direction, infile_datatype when writing from the header file
+* based on the original dataset.  Skip those two here.
+
+                newatt = .TRUE.
+                newatt = 
+     .              (STR_SAME(attname, 'missing_value')  .NE. 0) .AND. 
+     .              (STR_SAME(attname, '_FillValue')     .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'parent_grid')    .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'slab_min_index') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'slab_max_index') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'valid_range') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'valid_min') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'valid_max') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'direction') .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'infile_datatype') .NE. 0)
+
+                IF (STR_SAME(attname, 'units').EQ.0 .AND.have_units) 
+     .                newatt = .FALSE.
+                IF (STR_SAME(attname, 'long_name').EQ.0 .AND.
+     .                have_title) newatt = .FALSE.
+
+
+                IF (newatt) THEN
+                   blen = 2048  ! len of attbuff
+                   got_it = NC_GET_ATTRIB (iset, varid, attname, 
+     .                                .TRUE., uvarname, blen, attlen, 
+     .                                attoutflag, attbuff, vals)
+                   IF (attlen .GT. 0) THEN
+
+                   CALL ESCAPE_FOR_XML (attname, aname, slen)
+
+                   IF (attype .EQ. NCCHAR)   atype = 'char'
+                   IF (attype .EQ. NCBYTE)   atype = 'byte'
+                   IF (attype .EQ. NCSHORT)  atype = 'int'
+                   IF (attype .EQ. NCLONG)   atype = 'int'
+                   IF (attype .EQ. NCFLOAT)  atype = 'float'
+                   IF (attype .EQ. NCDOUBLE) atype = 'double'
+                   alen = TM_LENSTR1(atype)
+
+                   WRITE (risc_buff, 2040) aname(1:slen), atype(1:alen)
+                   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+                   IF (attype .NE. NCCHAR) THEN
+                      slen = 1
+                      attbuff = ' '
+                      DO 750 i = 1, attlen
+                         buff = TM_FMT(vals(i), 7, 14, llen)
+                         CALL ESCAPE_FOR_XML (buff, outstring, llen)
+                         WRITE ( risc_buff, 2050 ) outstring(1:llen)
+                         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+ 750                  CONTINUE
+                   ELSE 
+		      CALL ESCAPE_FOR_XML (attbuff, outstring, llen)
+		      WRITE ( risc_buff, 2055 ) outstring(1:llen)
+		      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+		   ENDIF
+
+                   WRITE ( risc_buff, 2060 )
+                   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+                ENDIF  ! attlen GT 0
+                ENDIF
+ 
+ 700         CONTINUE
+
+* The grid
              grid = GRID_FROM_NAME_XML( uvarname, cx_last, cx_expr, status )
-             IF ( status .NE. ferr_ok ) GOTO 5100
+	     
+* If its a string get the name and length of the string dimension.
+* (but how to do this for a user-defined variable?)
+c             IF (vtype .EQ. NCCHAR ) THEN
+c                CALL CD_GET_DS_DIMS (iset, vdims(1), buff, npts, status)
+c                CALL SHOW_GRID_STRING_XML (lun, grid, cx_expr,
+c     .                  buff, npts)
+c             ELSE
+                CALL SHOW_GRID_XML (lun, grid, cx_expr)
+c             ENDIF
+c             IF ( status .NE. ferr_ok ) GOTO 5100
 
-             grid = uvar_grid(ivar,dset)
-             IF (grid .NE. unspecified_int4) 
-     .          CALL SHOW_GRID_XML (lun, grid, cx_expr)
-
-
-             WRITE ( risc_buff, 2090 )
+             WRITE ( risc_buff, 2070 )
              CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
          ENDIF

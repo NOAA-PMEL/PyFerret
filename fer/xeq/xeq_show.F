@@ -261,13 +261,14 @@
      .          llen, loc, cat, var, attoutflag, all_outflag, dot, 
      .          vseq, attid, save_deleted_list_result(max_uvar),
      .          cache_size, cache_nelems, cache_preemption,
-     .          sho_file
-	REAL	xtemp, ytemp, attvals(10), cache_mb, cache_n, cache_p
+     .          sho_file, idim, ndims, nvars, ngatts, recdim, npts
+	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
      .		default*10, show_str*2048, arg*24, name*32, arg30*30
 	CHARACTER	varatt*641, varname*512, attname*128,
-     .			efname*40, upname*40, aname*128, outstring*2048
-
+     .			efname*40, upname*40, aname*128, outstring*2048,
+     .                  dname*128
+   
 * 10/01 *kob* had to change decl of axesOrCorner for picky f95
         CHARACTER*6 axesOrCorner(2)
 
@@ -288,6 +289,7 @@
 
 * initialize
 	show_lun = ttout_lun
+	sxml = .FALSE.
 
 * command given with /ALL ?
 	risc_buff = ' '
@@ -518,6 +520,33 @@
               ENDIF
               GOTO 460
  470       CONTINUE
+*  ... For xml output show the dimensions in the dataset that are not
+*      axes, from the default dataset
+c           IF (sxml) THEN
+c              dset = cx_data_set(cx_last)
+c	      CALL CD_GET_DS_INFO (dset, ndims, nvars, ngatts,
+c     .                             recdim, status)
+c              DO 480 idim = 1, ndims
+c	         CALL CD_GET_DS_DIMS (dset, idim, dname, npts, status)
+c		 IF (status .NE. ferr_ok) GOTO 480
+c ! check for coordinate variable. If not a coordinate, its just a dimension.
+c		 CALL CD_GET_VAR_ID (dset, dname, varid, status)
+c	         IF (status .NE. ferr_ok) THEN 
+c                    IF (firstxml) THEN
+c                       risc_buff = '<axes>'
+c                       CALL SPLIT_LIST(pttmode_explct, show_lun,
+c     .                              risc_buff, 0)
+c                       firstxml = .FALSE.
+c                    ENDIF
+c	            CALL SHOW_DIM_XML( show_lun, dname, npts)
+c		 ENDIF
+c 480          CONTINUE
+c           ENDIF
+
+
+
+
+
 	ENDIF
         IF (.NOT. firstxml .AND. sxml) THEN
            risc_buff = '</axes>'
@@ -1542,7 +1571,7 @@
            varname = show_str
            dot = INDEX(show_str,'.')
            IF (dot .GT. 0) varname = show_str(1:dot-1)
-           CALL FIND_VAR_NAME(pdset_irrelevant, varname, cat, var)
+           CALL FIND_VAR_NAME(dset, varname, cat, var)
            IF (  var .NE. munknown_var_name .AND.
      .            cat .EQ. cat_user_var) dset = -1
 

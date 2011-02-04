@@ -207,6 +207,8 @@
 *                  a previous definition of a time axis.
 * V65 *acm*  2/10  Minor change to error message
 * V664  8/10 *kms* Add DEFINE PYFUNC /NAME=<alias> python.module.name
+* V67   1/11 *acm* User-defined attributes are set to /OUTPUT=1  by default.
+*                  Write the calendar attribute, even if its the default Gregorian
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -1535,9 +1537,6 @@ C /units=months  is 1/12 of the length of the year
                  attoutflag = 1
                  attlen = TM_LENSTR1(cal_name)
 
-* By default if an axis is on the standard Gregorian calendar we do
-* not write out the calendar attribute
-                 IF (cal_id .eq. GREGORIAN) attoutflag = 0
                  CALL CD_PUT_NEW_ATTR (dset_to_add, varid, attname, 
      .             attype, attlen, attoutflag, cal_name, 
      .             dummy, status) 
@@ -1810,8 +1809,8 @@ C /units=months  is 1/12 of the length of the year
 	   ENDIF
 	ENDIF
 
-* ... DEFINE ATT/OUTPUT varname.attname
-      attoutflag = 0
+* ... DEFINE ATT/OUTPUT varname.attname.  By default output flag is set to 1
+      attoutflag = 1
       iqual = qual_given( slash_output ) 
       IF ( iqual .GT. 0 ) attoutflag = 1 
 

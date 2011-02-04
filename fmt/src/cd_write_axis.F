@@ -139,7 +139,7 @@
      .        llen, vartype, nvdims, nvatts, iatt, attype, attlen,
      .        attoutflag, istat, maxlen, vdims(8), newid, all_outflag,
      .        attid, dset_num
-      REAL vals(10)
+      REAL vals(100)
 
 !      LOGICAL condensed
 !      REAL rlen

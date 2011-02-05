@@ -214,7 +214,7 @@ main (int oargc, char *oargv[])
 
   int i=1;
   int j=1;
-  float rmem_size;
+  double rmem_size;
   int using_gui = 0;
   int pplmem_size;
 
@@ -244,14 +244,14 @@ main (int oargc, char *oargv[])
   }
 
   /* decode the command line options: "-memsize", and "-unmapped" */
-  rmem_size = mem_size/1.E6;
+  rmem_size = (double)mem_size/1.E6;
   while (i<argc) {
     if (strcmp(argv[i],"-version")==0){
       FORTRAN(version_only)();
 	  exit(0);
     } else if (strcmp(argv[i],"-memsize")==0){
       if (++i==argc) help_text();
-      if ( sscanf(argv[i++],"%f",&rmem_size) != 1 ) help_text();
+      if ( sscanf(argv[i++],"%lf",&rmem_size) != 1 ) help_text();
       if ( rmem_size <= 0.0 ) help_text();
       mem_size = (size_t)(rmem_size * 1.E6);
     } else if (strcmp(argv[i],"-unmapped")==0) {
@@ -366,7 +366,7 @@ main (int oargc, char *oargv[])
   mem_blk_size =  mem_size / max_mem_blks;
   j = (int)(mem_size - ((size_t)mem_blk_size * (size_t) max_mem_blks));
   if ( (mem_blk_size <= 0) || (j < 0) || (j >= max_mem_blks) ) { 
-    printf("Internal overflow expressing %#.1f Mwords as words (%ul) \n",rmem_size,(unsigned long)mem_size);
+    printf("Internal overflow expressing %#.1f Mwords as words (%lu) \n",rmem_size,(unsigned long)mem_size);
     printf("Unable to allocate the requested %#.1f Mwords of memory.\n",rmem_size);
     exit(0);
   }
@@ -428,6 +428,8 @@ static void command_line_run(float **memory){
   int ipath = 0;
   int len_str = 0;
   int script_resetmem = 0;
+  size_t blk_size;
+  double rmem_size;
 
   /* turn on ^C interrupts  */
   /* 10/97 *kob* add check for gui now that there is only one main program */
@@ -511,22 +513,34 @@ static void command_line_run(float **memory){
       old_mem_blk_size = mem_blk_size;
       mem_blk_size = sBuffer->flags[FRTN_IDATA1];
       mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
-      /*
-	printf("memory reconfiguration requested: %ul\n",(unsigned long)mem_size);
-	printf("new mem_blk_size = %d\n",mem_blk_size);
-      */
-      free( (void *) *memory );
-      *memory = (float *) malloc(mem_size*sizeof(float));
-      if ( *memory == NULL ) {
-	printf("Unable to allocate %#.1f Mwords of memory.\n", (double)(mem_size)/1.E6);
+      /* Make sure this has not overflowed */
+      blk_size = mem_size / (size_t) max_mem_blks;
+      if ( blk_size != (size_t)mem_blk_size ) {
+        rmem_size = (double)mem_blk_size * (double)max_mem_blks / 1.0E6;
+        printf("Internal overflow expressing %#.1f Mwords as words (%lu) \n",rmem_size,(unsigned long)mem_size);
+        printf("Unable to allocate the requested %#.1f Mwords of memory.\n",rmem_size);
 	mem_blk_size = old_mem_blk_size;
 	mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
+	printf("Memory remaining at %#.1f Mwords.\n", (double)mem_size/1.E6);
+      }
+      else {
+        /*
+	  printf("memory reconfiguration requested: %lu\n",(unsigned long)mem_size);
+	  printf("new mem_blk_size = %d\n",mem_blk_size);
+        */
+        free( (void *) *memory );
         *memory = (float *) malloc(mem_size*sizeof(float));
         if ( *memory == NULL ) {
-          printf("Unable to reallocate previous memory of %#.1f Mwords.\n",(double)(mem_size)/1.E6);
-          exit(0);
+          printf("Unable to allocate %#.1f Mwords of memory.\n", (double)mem_size/1.E6);
+          mem_blk_size = old_mem_blk_size;
+	  mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
+          *memory = (float *) malloc(mem_size*sizeof(float));
+          if ( *memory == NULL ) {
+            printf("Unable to reallocate previous memory of %#.1f Mwords.\n",(double)(mem_size)/1.E6);
+            exit(0);
+          }
+	  printf("Restoring previous memory of %#.1f Mwords.\n", (double)(mem_size)/1.E6);
         }
-	printf("Restoring previous memory of %#.1f Mwords.\n", (double)(mem_size)/1.E6);
       }
       FORTRAN(init_memory)( &mem_blk_size, &max_mem_blks );
       script_resetmem = 1;

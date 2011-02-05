@@ -45,6 +45,7 @@
 *                         dataset-specific user-defined variables, use the
 *                         tag <var name> rather than <vname>
 *       13-Oct-2004 *acm* for consistent XML, write <var name="VNAME" />
+* V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"

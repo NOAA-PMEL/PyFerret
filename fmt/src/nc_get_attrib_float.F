@@ -72,7 +72,7 @@
       INTEGER	    dset, varid, attlen, attoutflag
       CHARACTER*(*) attrib, vname
       REAL          vals(*)
-      real*8        dval(40)
+      real*8        dval(100)
 
 #include "gt_lib.parm"
       include 'netcdf.decl'

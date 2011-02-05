@@ -55943,7 +55943,7 @@ SORTI(DAT)
           Y: passed to result grid
           Z: passed to result grid
           T: passed to result grid
-    Alternative function called for other argument types: SORTI_STR                               
+    Alternative function called for other argument types: SORTI_STR
  
  
 let ai = {"a rat in the house will eat the zucchini", \

@@ -52,7 +52,7 @@ use non_COARDS.cdf
 use ocean_atlas_temp.cdf
 use reverse_axes.cdf
 use TAO_SST_clim.cdf
-use test_strides.cdf
+use epic_formatted_file.nc
 use weird_name1.cdf
 
 cancel mode ignore_error

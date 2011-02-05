@@ -20,7 +20,7 @@ ext_mods = [ Extension("pyferret._pyferret", sources = [ os.path.join("pyfer", "
 
 # Configure the setup
 setup(name = "pyferret", 
-      version = "7.0",
+      version = "7.0.0",
       description = "python package providing ferret functionality",
       long_description = "python package providing ferret functionality",
       author = "Karl M. Smith",

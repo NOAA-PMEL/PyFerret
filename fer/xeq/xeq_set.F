@@ -167,6 +167,7 @@
 *       *kms* 5/10 add SET REDIRECT /TEE /JOURNAL /FILE /APPEND /CLOBBER
 *                  for stdout/stderr redirection
 * V66   *kms* 5/10 LIB_GET_LUN is a subroutine, not a function
+*       *kms* 2/11 return "mem_blk_size" instead of "mem_size" in reconfig
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -1259,7 +1260,7 @@ c *kob* 4/97
 
 	   reconfig = INT(val_buf*1E6/(max_mem_blks*100))
 	   IF (reconfig .EQ. 0) reconfig = 1
-	   reconfig = reconfig * max_mem_blks*100
+	   reconfig = reconfig * 100
 
            IF (reconfig .LT. 0) THEN
               reconfig = 0

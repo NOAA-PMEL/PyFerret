@@ -73,6 +73,8 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V67  *acm* 1/11  Choose between routinesi from the NetCDF API: varm if permutations,
+*                  vars if strides but no perm, var if no strides or perm.
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -115,7 +117,7 @@
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
 	LOGICAL      NC_GET_ATTRIB, 
-     .               permuted, do_warn, already_scaled, got_it, tf2, 
+     .               do_warn, already_scaled, got_it, tf2, 
      .               coordvar
         INTEGER      TM_LENSTR1,
      .               cdfid, varid, idim, lasdim, cdfstat, dim, idim2,
@@ -123,7 +125,7 @@
      .		     imap(4), trans(4), memsize(4), count(4),
      .		     grid_dims(4), fildim, memdim, filstride(4),
      .               maxlen, attlen, attoutflag, vtype, nvdims, nvatts, 
-     .               outflag, dlen, err_status, i
+     .               outflag, dlen, err_status, i, permuted, strided
         REAL vdims(10), val
 	CHARACTER*1	dimnam(4)
 	CHARACTER*13	TM_STRING
@@ -158,7 +160,8 @@
         dim_hi(2) = a_hi_y
         dim_hi(3) = a_hi_z
         dim_hi(4) = a_hi_t
-	permuted  = .FALSE.
+	permuted  = 0
+	strided  = 0
         do_warn = .TRUE.
 
 * check for error conditions
@@ -177,7 +180,7 @@
            IF ( ds_ordering(idim,ivar) .EQ. 0 ) GOTO 20
 	   ndim = ndim + 1
            IF ( ABS(ds_ordering(idim,ivar)) .LE. lasdim )
-     .          permuted = .TRUE.
+     .          permuted = 1
            lasdim = ABS(ds_ordering(idim,ivar))
  20     CONTINUE
 * ... sort the list of relevant axes into grid_dims
@@ -223,6 +226,7 @@
            start(fildim)   = use_lo(memdim) - 
      .                         ds_grid_start(memdim,ivar) + 1
 	   filstride(fildim) = stride(memdim)
+           IF (stride(memdim) .GT. 1) strided = 1
  100    CONTINUE
 
 *  compute the memory array size (for cases where strides are used)
@@ -288,7 +292,7 @@
      .                 use_lo(2),
      .                 use_lo(3),
      .                 use_lo(4)), 
-     .             already_scaled, cdfstat, status)
+     .             permuted, strided, already_scaled, cdfstat, status)
            IF ( cdfstat .NE. NF_NOERR ) GOTO 5500           
 
            IF (status .NE. merr_ok) THEN   ! try to read as single precision floats
@@ -298,7 +302,7 @@
      .             var(use_lo(1),
      .                 use_lo(2),
      .                 use_lo(3),
-     .                 use_lo(4)), cdfstat)
+     .                 use_lo(4)), permuted, strided, cdfstat)
 	      IF ( cdfstat .NE. NF_NOERR ) GOTO 5500
            ENDIF
 
@@ -309,7 +313,7 @@
      .             var(use_lo(1),
      .                 use_lo(2),
      .                 use_lo(3),
-     .                 use_lo(4)), cdfstat)
+     .                 use_lo(4)), permuted, strided, cdfstat)
 	   IF ( cdfstat .NE. NF_NOERR ) GOTO 5500
         ENDIF
 

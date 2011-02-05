@@ -23,7 +23,8 @@ optimizedbuild :
 	$(MAKE) -C $(DIR_PREFIX)/fer optimizedbuild
 	$(MAKE) -C $(DIR_PREFIX)/pyefcn optimizedlib
 	$(MAKE) -C $(DIR_PREFIX)/ferlib optimizedlib
-	$(MAKE) -C $(DIR_PREFIX)/external_functions
+	# $(MAKE) -C $(DIR_PREFIX)/external_functions
+	@echo "***** NOTE: external function .so files not built *****"
 	$(MAKE) pymod
 
 .PHONY : debugbuild
@@ -32,7 +33,8 @@ debugbuild :
 	$(MAKE) -C $(DIR_PREFIX)/fer debugbuild
 	$(MAKE) -C $(DIR_PREFIX)/pyefcn debuglib
 	$(MAKE) -C $(DIR_PREFIX)/ferlib debuglib
-	$(MAKE) -C $(DIR_PREFIX)/external_functions debug
+	# $(MAKE) -C $(DIR_PREFIX)/external_functions debug
+	@echo "***** NOTE: external function .so files not built *****"
 	$(MAKE) "CFLAGS += -O0 -g" pymod
 
 .PHONY : pymod
@@ -56,7 +58,8 @@ ifeq ( $(strip $(FER_LOCAL_EXTFCNS)), )
 	@echo "        external function .so files not installed"
 	@echo ""
 else
-	$(MAKE) -C $(DIR_PREFIX)/external_functions install
+	# $(MAKE) -C $(DIR_PREFIX)/external_functions install
+	@echo "***** NOTE: external function .so files not installed *****"
 endif
 endif
 

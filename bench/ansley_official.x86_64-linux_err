@@ -2025,7 +2025,7 @@ show att/all temp[d=2]
 show att/all temp[d=2]
  **ERROR: variable unknown or not in data set: salt
 show att/all salt
- **ERROR:                                                   : salt.non
+ **ERROR: : salt.non
           attribute nonsense
 sho att salt.nonsense
  **ERROR: invalid command: dataset not found for varname.attname .

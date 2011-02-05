@@ -67,6 +67,9 @@
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build
                       Other changes to correctly deal with the scalar case dim=0 */ 
+/* *acm   2/11 v67  - Call nc_get_varm only if strides and permuted.
+                      Call nc_get_vars if strided, and nc_get_vara if neither permuted
+					  nor strided. */
 
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
@@ -88,7 +91,8 @@ void tm_unblockify_ferret_strings(void *dat, char *pbuff,
 void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims, 
 			   int *tmp_start, int *tmp_count, 
 			   int *tmp_stride, int *tmp_imap,
-			   void *dat, int *cdfstat )
+			   void *dat, int *permuted, int *strided,
+			   int *cdfstat )
 {
 
   /* convert FORTRAN-index-ordered, FORTRAN-1-referenced ids, count,
@@ -180,20 +184,44 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
       for (i=0; i<=ndim; i++) imap[i] *= (ptrdiff_t)maxstrlen;      
       imap[ndimsp] = 1;
 
+      if (*permuted > 0)
+      {
       *cdfstat = nc_get_varm_text (*cdfid, vid, start,
                                     count, stride, imap, pbuff);
+      }
+	  else if (*strided > 0)
+	  {
+      *cdfstat = nc_get_vars_text (*cdfid, vid, start,
+                                    count, stride, pbuff);
+      }
+	  else
+	  {
+      *cdfstat = nc_get_vara_text (*cdfid, vid, start,
+                                    count, pbuff);
+	  }
 
       tm_unblockify_ferret_strings(dat, pbuff, bufsiz, (int)maxstrlen);
       free(pbuff);
 
   /* FLOAT data */
   } else
+	  
+      if (*permuted > 0)
+	  {
     *cdfstat = nc_get_varm_float (*cdfid, vid, start,
      count, stride, imap, (float*) dat); 
+	  }
+	  else if (*strided > 0)
+	  {
+    *cdfstat = nc_get_vars_float (*cdfid, vid, start,
+     count, stride, (float*) dat);
+      }
+	  else
+	  { 
+    *cdfstat = nc_get_vara_float (*cdfid, vid, start,
+     count, (float*) dat);
+	  }
 
-/* replace the above with this for testing */
-/*    *cdfstat = nc_get_vara_float (*cdfid, vid, start,
-     count, (float*) dat); */
   return;
 }
 

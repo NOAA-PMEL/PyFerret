@@ -136,6 +136,9 @@
 * *kms*  8/10 v664 - Catch SIGILL, SIGFPE, and SIGSEGV and exit gracefully with a stderr message for LAS
 *                    Just re-enter the ferret_dispatch loop if it returns with sBuffer->flags[FRTN_ACTION]
 *                    set to FACTN_NO_ACTION (for EXIT/TOPYTHON when not under pyferret)
+* *kms*  2/11      - Make mem_size a size_t variable - malloc's expected variable type.
+*                    Change resize requests to pass mem_blk_size (an int) instead of
+*                    mem_size (a size_t) in sBuffer->flags[FRTN_IDATA1]
 */
 
 #include <wchar.h>
@@ -195,8 +198,10 @@ static int ttout_lun=TTOUT_LUN,
   max_mem_blks=PMAX_MEM_BLKS,
   mem_blk_size,
   old_mem_blk_size,
-  pmemsize,
-  mem_size = PMEM_BLK_SIZE * PMAX_MEM_BLKS;
+  pmemsize;
+
+/* make mem_size the appropriate type for malloc (size_t usually unsigned long) */
+static size_t mem_size = PMEM_BLK_SIZE * PMAX_MEM_BLKS;
 
 
 main (int oargc, char *oargv[])
@@ -209,7 +214,7 @@ main (int oargc, char *oargv[])
 
   int i=1;
   int j=1;
-  float rmem_size;
+  double rmem_size;
   int using_gui = 0;
   int pplmem_size;
 
@@ -239,16 +244,16 @@ main (int oargc, char *oargv[])
   }
 
   /* decode the command line options: "-memsize", and "-unmapped" */
-  rmem_size = mem_size/1.E6;
+  rmem_size = (double)mem_size/1.E6;
   while (i<argc) {
     if (strcmp(argv[i],"-version")==0){
       FORTRAN(version_only)();
 	  exit(0);
     } else if (strcmp(argv[i],"-memsize")==0){
       if (++i==argc) help_text();
-      if ( sscanf(argv[i++],"%f",&rmem_size) != 1 ) help_text();
+      if ( sscanf(argv[i++],"%lf",&rmem_size) != 1 ) help_text();
       if ( rmem_size <= 0.0 ) help_text();
-      mem_size = rmem_size * 1.E6;
+      mem_size = (size_t)(rmem_size * 1.E6);
     } else if (strcmp(argv[i],"-unmapped")==0) {
       WindowMapping(0);  /* new routine added to xopws.c */
       i++;    /* advance to next argument */
@@ -359,26 +364,29 @@ main (int oargc, char *oargv[])
 
   /* initial allocation of memory space */
   mem_blk_size =  mem_size / max_mem_blks;
-  *memory = (float *) malloc(mem_size*sizeof(float));
-  if ( *memory == (float *)0 ) {
-    printf("Unable to allocate the requested %f Mwords of memory.\n",mem_size/1.E6);
+  j = (int)(mem_size - ((size_t)mem_blk_size * (size_t) max_mem_blks));
+  if ( (mem_blk_size <= 0) || (j < 0) || (j >= max_mem_blks) ) { 
+    printf("Internal overflow expressing %#.1f Mwords as words (%lu) \n",rmem_size,(unsigned long)mem_size);
+    printf("Unable to allocate the requested %#.1f Mwords of memory.\n",rmem_size);
     exit(0);
   }
-  if (mem_blk_size < 0)
-  { printf("internal overflow expressing %g Mwords as words %g \n",rmem_size,mem_size);
-    printf("Unable to allocate the requested %g Mwords of memory.\n",rmem_size);
+  /* Reset mem_size to exactly the size Ferret thinks it is being handed */
+  mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
+  *memory = (float *) malloc(mem_size*sizeof(float));
+  if ( *memory == NULL ) {
+    printf("Unable to allocate the requested %#.1f Mwords of memory.\n",(double)mem_size/1.E6);
     exit(0);
   }
  
   /* initial allocation of PPLUS memory size pointer*/
-  pplmem_size = 0.5* 1.E6;  
+  pplmem_size = (int)(0.5* 1.E6);  
   FORTRAN(save_ppl_memory_size)( &pplmem_size ); 
   ppl_memory = (float *) malloc(sizeof(float) * pplmem_size );
 
-  if ( ppl_memory == (float *)0 ) {
-    printf("Unable to allocate the initial %f words of PLOT memory.\n",pplmem_size);
+  if ( ppl_memory == NULL ) {
+    printf("Unable to allocate the initial %d words of PLOT memory.\n",pplmem_size);
     exit(0);
- }
+  }
   /* initialize stuff: keyboard, todays date, grids, GFDL terms, PPL brain */
   FORTRAN(initialize)();
 
@@ -419,9 +427,9 @@ static void command_line_run(float **memory){
   char init_command[2176], script_file[2048], *home = getenv("HOME");
   int ipath = 0;
   int len_str = 0;
-  int j = 0;
   int script_resetmem = 0;
-
+  size_t blk_size;
+  double rmem_size;
 
   /* turn on ^C interrupts  */
   /* 10/97 *kob* add check for gui now that there is only one main program */
@@ -455,11 +463,11 @@ static void command_line_run(float **memory){
 	  strcat( init_command, "; GO \"" ); 
 	  strcat( init_command, script_file );
 	  strcat( init_command, "\"" );
-	  strcat( init_command, "\ ");
+	  strcat( init_command, " ");
 	  } else {
 	  strcat( init_command, "; GO " ); 
 	  strcat( init_command, script_file );
-	  strcat( init_command, " "); 
+	  strcat( init_command, " ");
       }
 	  if (arg_pos !=0) {
 	       len_str = strlen(init_command);
@@ -503,30 +511,39 @@ static void command_line_run(float **memory){
     /* ***** REALLOCATE MEMORY ***** */
     if (sBuffer->flags[FRTN_ACTION] == FACTN_MEM_RECONFIGURE) {
       old_mem_blk_size = mem_blk_size;
-      mem_size = sBuffer->flags[FRTN_IDATA1];
-      mem_blk_size = mem_size / max_mem_blks;
-      /*
-	printf("memory reconfiguration requested: %d\n",mem_size);
-	printf("new mem_blk_size = %d\n",mem_blk_size);
-      */
-      free ( (void *) *memory );
-      *memory = (float *) malloc(mem_size*sizeof(float));
-      if ( *memory == 0 ) {
-	printf("Unable to allocate %f Mwords of memory.\n",mem_size/1.E6 );
+      mem_blk_size = sBuffer->flags[FRTN_IDATA1];
+      mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
+      /* Make sure this has not overflowed */
+      blk_size = mem_size / (size_t) max_mem_blks;
+      if ( blk_size != (size_t)mem_blk_size ) {
+        rmem_size = (double)mem_blk_size * (double)max_mem_blks / 1.0E6;
+        printf("Internal overflow expressing %#.1f Mwords as words (%lu) \n",rmem_size,(unsigned long)mem_size);
+        printf("Unable to allocate the requested %#.1f Mwords of memory.\n",rmem_size);
 	mem_blk_size = old_mem_blk_size;
-	mem_size = mem_blk_size * max_mem_blks;
-	*memory = (float *) malloc(mem_size*sizeof(float));
-	if ( *memory == (float *)0 ) {
-	  printf("Unable to reallocate previous memory of %f Mwords.\n",mem_size/1.E6 );
-	  exit(0);
-	} else {
-	  printf("Restoring previous memory of %f Mwords.\n",mem_size/1.E6 );
-	}
+	mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
+	printf("Memory remaining at %#.1f Mwords.\n", (double)mem_size/1.E6);
+      }
+      else {
+        /*
+	  printf("memory reconfiguration requested: %lu\n",(unsigned long)mem_size);
+	  printf("new mem_blk_size = %d\n",mem_blk_size);
+        */
+        free( (void *) *memory );
+        *memory = (float *) malloc(mem_size*sizeof(float));
+        if ( *memory == NULL ) {
+          printf("Unable to allocate %#.1f Mwords of memory.\n", (double)mem_size/1.E6);
+          mem_blk_size = old_mem_blk_size;
+	  mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
+          *memory = (float *) malloc(mem_size*sizeof(float));
+          if ( *memory == NULL ) {
+            printf("Unable to reallocate previous memory of %#.1f Mwords.\n",(double)(mem_size)/1.E6);
+            exit(0);
+          }
+	  printf("Restoring previous memory of %#.1f Mwords.\n", (double)(mem_size)/1.E6);
+        }
       }
       FORTRAN(init_memory)( &mem_blk_size, &max_mem_blks );
-	  if (its_script)
-		{script_resetmem = 1;}
-	  script_resetmem = 1;  /* Likewise if the SET MEM is in the init script */
+      script_resetmem = 1;
     }
 
     /* ***** EXIT ***** */

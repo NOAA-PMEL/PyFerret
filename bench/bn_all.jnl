@@ -743,6 +743,10 @@ GO bn665_bug_fixes
 GO bn_reset
 GO bn_floatstr
 
+! *********** v6.7 Additions ***********
+GO bn_reset
+GO bn67_bug_fixes
+
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not
 ! tested in the benchmarks.

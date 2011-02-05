@@ -161,6 +161,8 @@
 *                              whats in netcdf.inc from netcdf4.
 *      *kms* 5/10  Fix scaling/offset bug: using iaxis instead of i inside loops 334 and 336
 *
+* V67 *acm* 1/11   WE, SN, not XX, YY in line_direction
+
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
 *       dset     - dataset number for already opened CDF file
@@ -238,7 +240,7 @@
       CHARACTER*2 dcode
 
       INTEGER tt  ! nice short name
-      EQUIVALENCE (tt,lunit_errors)
+      EQUIVALENCE (tt,c)
 
       INTEGER bufflen
       PARAMETER (bufflen = 256)
@@ -495,27 +497,11 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
                since_t0 = 0
                status = merr_ok
             ENDIF
-
-*  Append calendar name to units string.
-c           IF (cal_id .GT. GREGORIAN .AND. cal_id .le. max_calendars) THEN
-c                slen = TM_LENSTR1 (line_units(iaxis))
-c                len_cal = TM_LENSTR1 (line_cal_name(iaxis))
-c                line_units(iaxis) = line_units(iaxis)(:slen)//
-c     .                 '('//line_cal_name(iaxis)(:len_cal)//')'
-c           ENDIF
-
          ELSE
             since_t0 = 0        ! flag that no T0 was present
          ENDIF
       ELSEIF ( yyyymmdd_time ) THEN
          line_units(iaxis) = 'days'
-*  Append calendar name to units string.
-c        IF (cal_id .GT. GREGORIAN .AND. cal_id .le. max_calendars) THEN
-c           slen = TM_LENSTR1 (line_units(iaxis))
-c           len_cal = TM_LENSTR1 (line_cal_name(iaxis))
-c           line_units(iaxis) = line_units(iaxis)(:slen)//
-c     .                 '('//line_cal_name(iaxis)(:len_cal)//')'
-c         ENDIF
          line_t0(iaxis) = ' ' ! to be determined when coords are read
          got_torg = .TRUE.
       ELSE
@@ -637,8 +623,14 @@ c         ENDIF
       got_it = NC_GET_ATTRIB(dset, ivar, 'axis',
      .             do_warn, vname(:vlen), maxlen, attlen, 
      .             attoutflag, axis_dir, val)
-      istat = STR_UPCASE( axis_dir, axis_dir )
       IF (got_it) THEN
+         CALL CD_GET_VAR_ATT_ID (dset, ivar, 'axis', iatt, status)
+         CALL CD_GET_VAR_ATT_INFO (dset, ivar, iatt, buff, attype, 
+     .     attlen, attoutflag, status )
+         IF (attype .NE. NCCHAR) got_it = .FALSE.
+      ENDIF
+      IF (got_it) THEN
+         istat = STR_UPCASE( axis_dir, axis_dir )
          IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L' .OR.
      .             axis_dir.EQ.'t' .or. axis_dir.eq.'l') THEN 
             line_direction(iaxis) = 'TI'  ! time
@@ -666,15 +658,22 @@ c         ENDIF
      .              do_warn, vname(:vlen), maxlen, attlen, 
      .              attoutflag, axis_dir, val)
          IF (got_it) THEN
+            CALL CD_GET_VAR_ATT_ID (dset, ivar, 'cartesian_axis', iatt, status)
+            CALL CD_GET_VAR_ATT_INFO (dset, ivar, iatt, buff, attype, 
+     .     attlen, attoutflag, status )
+            IF (attype .NE. NCCHAR) got_it = .FALSE.
+         ENDIF
+
+         IF (got_it) THEN
             IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L' .OR.
      .          axis_dir.EQ.'t' .or. axis_dir.eq.'l') THEN 
                line_direction(iaxis) = 'TI'  ! time
             ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I' .OR.
      .               axis_dir.eq.'x' .or. axis_dir.eq.'i') THEN
-            line_direction(iaxis) = 'XX'
+            line_direction(iaxis) = 'WE'
             ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J' .OR.
      .               axis_dir.eq.'y' .or. axis_dir.eq.'j') THEN
-             line_direction(iaxis) = 'YY'
+             line_direction(iaxis) = 'SN'
             ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K' .OR.
      .               axis_dir.eq.'z' .or. axis_dir.eq.'k') THEN
                line_direction(iaxis) = 'DU'
@@ -754,25 +753,6 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
          ENDIF
       ENDIF
 
-! Try variable name clues
-
-* ... then check axis name for clues in T, Z directions
-      IF (line_direction(iaxis) .EQ. 'NA') THEN
-         IF ( INDEX(vupcase, 'TIME') .GT. 0
-     .      .OR.  INDEX(vupcase, 'DATE') .GT. 0
-     .      .OR.  vupcase .EQ. 'T'               ) THEN
-            line_direction(iaxis) = 'TI'  ! time
-         ELSEIF ( INDEX(vupcase, 'DEPTH') .GT. 0 ) THEN
-            line_direction(iaxis) = 'UD'
-         ELSEIF ( INDEX(vupcase, 'ELEV') .GT. 0
-     .     .OR.  INDEX(vupcase, 'HEIGHT') .GT. 0 ) THEN
-            line_direction(iaxis) = 'DU'
-         ELSEIF ( INDEX(vupcase, 'LAYER') .GT. 0
-     .   .OR.  INDEX(vupcase, 'LEVEL') .GT. 0 ) THEN
-            line_direction(iaxis) = 'DU'
-         ENDIF
-      ENDIF   
-
 ! See if the long-name contains a string that indicates a z axis
       maxlen = bufflen
       got_it = NC_GET_ATTRIB( dset,ivar,'long_name',
@@ -790,20 +770,6 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
          IF (STR_CASE_BLIND_COMPARE('depth',buff(:5)) .EQ. str_eq) 
      .           line_direction(iaxis) = 'UD'
       ENDIF
-
-* Note: there are some unfortunate ambiguities about how the TMAP library
-*     uses line_direction:  it refers both to orientation and to the formatting
-*     that should be used for the axis.  Thus an axis name of X* is sufficient
-*     to pin down orientation but not to pin down formatting.  At a future
-*     time it may be desirable to separate these two concepts into separate
-*     variables and to make this routine (and TM_READ_GRIDFILE) sensitive to
-*     axis names X*, Y*, and Z* (among others?).
-
-* Note: 6/03 ACM  The AXIS and CARTESIAN_AXIS attributes allow us to do this.
-*     if these are present, then the line_direction is set to XX or YY or TT
-*     and then other attributes are used to determine the units and other
-*     formatting information.  See also xeq_define, as these designations are
-*     used for axes there as well.
 
 * the attribute "positive=down", etc. may help
       maxlen = bufflen
@@ -827,14 +793,90 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
          ENDIF
       ENDIF
 
-* If still undefined, try the starting letter.
+* standard_names indicating a sigma-axis in Z, and standard names 
+* for geophysical axes, longitude, latitude, altitude etc. Note 
+* that there seem to be some standard names related to sigma
+* coordinates that may not indicate a vertical axis, so simply 
+* matching sigma and coordinate is probably not safe.
 
-      IF (line_direction(iaxis) .EQ. 'NA') THEN
-         IF ( INDEX(vupcase(1:1), 'X') .GT. 0 ) line_direction(iaxis) = 'XX'
-         IF ( INDEX(vupcase(1:1), 'Y') .GT. 0 ) line_direction(iaxis) = 'YY'
-         IF ( INDEX(vupcase(1:1), 'Z') .GT. 0 ) line_direction(iaxis) = 'DU'
-         IF ( INDEX(vupcase(1:1), 'T') .GT. 0 ) line_direction(iaxis) = 'TI'
-      ENDIF
+      maxlen = bufflen
+      got_it = NC_GET_ATTRIB( dset, ivar, 'standard_name', do_warn, 
+     .                        vname(:vlen), maxlen, attlen, attoutflag, 
+     .                        buff, val)
+      IF ( got_it ) THEN
+         IF (STR_SAME(
+     .      'atmosphere_hybrid_height_coordinate',buff) .EQ.str_eq) THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF 
+         IF (STR_SAME(
+     .      'atmosphere_hybrid_sigma_pressure_coordinate',buff)
+     .                                     .EQ. str_eq) THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF
+         IF (STR_SAME(
+     .      'atmosphere_hybrid_height_coordinate',buff)
+     .                                     .EQ. str_eq) THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF
+         IF (STR_SAME(
+     .      'atmosphere_ln_pressure_coordinate',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF
+         IF (STR_SAME(
+     .      'atmosphere_sigma_coordinate',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF
+         IF (STR_SAME(
+     .      'atmosphere_sleve_coordinate',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF
+         IF (STR_SAME(
+     .      'land_ice_sigma_coordinate',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF
+         IF (STR_SAME('ocean_s_coordinate',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'UD'
+         ENDIF
+         IF (STR_SAME('ocean_sigma_coordinate',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'UD'
+         ENDIF
+         IF (STR_SAME(
+     .      'ocean_sigma_z_coordinate',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'UD'
+         ENDIF
+         IF (STR_SAME(
+     .      'ocean_double_sigma_coordinate',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'UD'
+         ENDIF
+
+         IF (STR_SAME('longitude',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'WE'
+            line_units(iaxis) = 'degrees_east'
+         ENDIF
+
+         IF (STR_SAME('latitude',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'SN'
+            line_units(iaxis) = 'degrees_north'
+         ENDIF
+
+         IF (STR_SAME('depth',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'UD'
+         ENDIF
+
+         IF (STR_SAME('altitude',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF
+
+         IF (STR_SAME ('height',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF
+
+         IF (STR_SAME('time',buff) .EQ. str_eq) THEN
+            line_direction(iaxis) = 'TI'
+         ENDIF
+
+      ENDIF  ! end of std names
+
 
 * longitude axes may be encoded "west" (discontinuous at 180, East negative,
 *       West positive) or "east" (standard - 0->360 east from Greenwhich)
@@ -844,7 +886,6 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
      .  .OR.    ( its_epic
      .      .AND. (INDEX(vupcase, 'LON') .GT. 0)
      .      .AND. .NOT.TM_HAS_STRING(line_units(iaxis),'east') )
-
 
 * was a regular time axis forced on us by the user?
       IF (tregular) THEN

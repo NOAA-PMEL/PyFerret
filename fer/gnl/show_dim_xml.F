@@ -1,5 +1,4 @@
-	SUBROUTINE ATTRIB_VALS( array, nmax, n, 
-     .			    dset, varid, varname, attname, status )
+      SUBROUTINE SHOW_DIM_XML( lun, dname, npts)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,51 +32,53 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+*
+* display basic facts about a dimension that is not a coordinate variable
 
-* get float attribute values
-
-* programmer - Ansley Manke
-* NOAA/PMEL, Seattle, WA - TMAP
-
-* V600 8/18/05
-* V670  2/11 *acm*   Fixes for inheriting attributes.
+* programmer - Ansley Manke, based on line_facts_xml.F
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* 27-Jan-2011
+* 
+	include 'tmap_dims.parm'
+#	include "tmap_dset.parm"
+	include	'ferret.parm'
+	include 'xprog_state.cmn'
+	include 'xtext_info.cmn'
+	include 'xrisc.cmn'
+	include 'xdset_info.cmn_text'
 
 * calling argument declarations
-	INTEGER		nmax, n, dset, varid, status
-	REAL		array(*)
-	CHARACTER*(*)	varname, attname
+	INTEGER 	lun, npts
+	CHARACTER*(*)   dname
 
-* internal variable declarations
-        LOGICAL         NC_GET_ATTRIB, got_em, do_warn
-	INTEGER 	TM_LENSTR1, attlen, vlen, alen, aflag
-        CHARACTER*10    buff
+* local variable declarations:
+	INTEGER		slen, status
+	CHARACTER	TM_FMT*16, show_str*16, outstring*128
 
-	include 'ferret.parm'
-        include 'errmsg.parm'
+ 2010	FORMAT ( '<axis name="', A, '">' )
+ 2020	FORMAT ( '<attribute name="length" type="short">' )
+ 2030   FORMAT ('   <value>', A, '</value>')
+ 2040   FORMAT ('</attribute>')
+ 2050	FORMAT ( '</axis>' )
 
-* initialize
-	n = 0
-        do_warn = .FALSE.
+	CALL ESCAPE_FOR_XML (dname, outstring, slen)
+	WRITE ( risc_buff, 2010 ) outstring(1:slen)
+	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-* Get float values 
-	got_em = NC_GET_ATTRIB ( dset, varid, attname,
-     .                           do_warn, varname, nmax,
-     .                           attlen, aflag, buff, array )
-        IF (.NOT. got_em) GOTO 5000
-	n = attlen
+* dimension length
 
+        show_str = TM_FMT(FLOAT(npts), 16,16,slen)
+        CALL ESCAPE_FOR_XML (show_str, outstring, slen)
+        WRITE ( risc_buff, 2020 ) outstring(1:slen)
+        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-* success
- 	status = ferr_ok
+* close tag
+
+        WRITE ( risc_buff, 2050 ) 
+	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
 	RETURN
-
-* syntax error
- 4999   RETURN
- 5000	vlen = TM_LENSTR1(varname)
-        alen = TM_LENSTR1(attname)
-        buff = varname(:vlen)//"."//attname(:alen)
-        vlen = vlen + alen + 1
-        CALL ERRMSG( ferr_unknown_attribute, status, 
-     .  'attribute not found:  '//buff(:vlen), *4999 )
-
 	END
+
+
+

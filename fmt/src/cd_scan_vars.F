@@ -87,6 +87,8 @@
 *             flags got bad-flag of 0.
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * V67   1/11 *acm* Fix ticket 1777. If a coordinate variale is STRING, issue notes.
+* V67   1/11 *acm* Fix ticket 1794. If no missing/fillvalue, issue a warning ONLY
+*             when diagnostic mode is set.
 *
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -110,7 +112,8 @@
 	external xdset_info_data
         include 'xdset_info.cd_equiv'
         include 'xio.cmn_text'
-        external xio_data
+	include 'xdiag_ctrl.cmn_text'
+	external xdiag_ctrl_data
 
 * argument declarations:
 	LOGICAL        reversed(max_lines:line_ceiling), tregular
@@ -448,8 +451,9 @@ c      REAL*8  dg_bad
 
 
 * if neither missing flag nor _FillValue was defined, use NaN.
+* Issue the warning only if we are in MODE DIAGNOSTIC
 	IF (nomissing ) THEN
-	   IF (do_warn) CALL WARN(
+	   IF (do_warn .AND. tmap_diag_on) CALL WARN(
      .         'If no missing_value or _FillValue attribute on '//
      .        'variables, will use NaN')
         ENDIF

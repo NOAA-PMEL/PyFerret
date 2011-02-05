@@ -39,10 +39,11 @@
 * Note: the looping/axis labelling procedures of LIST_MULTI are cleaner and
 *	more efficient than this - this could be improved easily (*sh* 7/90)
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
+* programmer - Ansley Manke
+* NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 *
+* V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
+
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -279,7 +280,7 @@
 	DO i = 1, 4
 	   idim = perm(i)
 	   IF ( .NOT.need_doc(i) .AND. idim.EQ.t_dim .AND.
-     .	     cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
+     .	     cal_id .LE. max_calendars) THEN
 	      slen = TM_LENSTR(cal_name)
 	      CALL SPLIT_LIST( pttmode_explct, list_lun,
      .                  '             CALENDAR : '

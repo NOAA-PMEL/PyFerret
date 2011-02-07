@@ -67,6 +67,7 @@
 * 4/10 - Fix #1735; For averages other than in Y direction the above fix 
 *        failed to set ybox sizes and cos correction. Still need to set these.
 * 8/10 - One further fix to #1735
+* 2/11 - One further fix to #1348: @DIN over 1 grid cell in Y
 
 * internal variable declarations:
 	LOGICAL GEOG_COS_FACTOR, point, yes_ax(4), no_ax(4),

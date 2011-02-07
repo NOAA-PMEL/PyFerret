@@ -238,11 +238,18 @@ C (Unless there is just one grid cell in the y direction.)
 	            boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )
 
 		    ! surface area of sphere depends only on h not on ybox
-		    boxes(j+box_offset(y_dim)) = 1.  
+		    IF (.NOT.at_din) boxes(j+box_offset(y_dim)) = 1.  
 
 		    ! for integral need area is radius*radius* delx * h
 		    ! delx already has units that include radius of earth.
-                    IF ( at_din ) boxes(j+box_offset(y_dim)) =  m_radius  
+                    IF ( at_din ) then
+ 		       boxes(j+box_offset(y_dim)) =  m_radius 
+		    ENDIF
+		    ! Single-point Y axis or Y not part of the integral
+                    IF ( at_din .AND. no_ax(y_dim)) THEN
+	               boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )/
+     .                                          (ybxhi - ybxlo)
+                    ENDIF
  120         CONTINUE
 	ELSE
 	      DO 121 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)

@@ -237,6 +237,8 @@ GO bn_gc_functions
 !added in bn491 - originally had this in run_all, but moved it here to 
 ! properly echo commands  *kob*
 GO bn_reset
+set mode verify  ! somehow this was off
+
 GO bn491_bug_fixes.jnl
 
 ! ******** V500 Additions below ***********

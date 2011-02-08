@@ -19,6 +19,7 @@ indicates no errors.
 
 import sys
 import numpy as np
+import numpy.ma as ma
 
 try:
     import cdms2
@@ -30,17 +31,20 @@ from _pyferret import *
 
 _MAX_FERRET_NDIM = 4
 
-def start(memsize=25.6, journal=True, verify=True):
+def start(memsize=25.6, journal=True, verify=True, graphics=True):
     """
     Initializes Ferret.  This allocates the initial amount of memory for Ferret
     (from Python-managed memory), opens the journal file, if requested, and sets
-    Ferret's verify mode.  This does NOT run any user initialization scripts.
+    Ferret's verify mode.  If graphics is False, Ferret's graphics window is never
+    displayed.  (Traditional Ferret's "-gif" command-line option.)
+    This does NOT run any user initialization scripts.
 
     Arguments:
         memsize: the size, in megawords (where a "word" is 32 bits),
                  to allocate for Ferret's memory block
         journal: turn on Ferret's journal mode?
         verify: turn on Ferret's verify mode?
+        graphics: allow display of Ferret's graphics window?
     Returns:
         True is successful
         False if Ferret has already been started
@@ -56,7 +60,7 @@ def start(memsize=25.6, journal=True, verify=True):
     except:
         raise ValueError, "memsize must be a positive number"
 
-    return _pyferret._start(flt_memsize, bool(journal), bool(verify))
+    return _pyferret._start(flt_memsize, bool(journal), bool(verify), bool(graphics))
 
 
 def resize(memsize):
@@ -114,12 +118,121 @@ def run(command=None):
         str_command = command
     retval = _pyferret._run(str_command)
     if (retval[0] == _pyferret._FERR_EXIT_PROGRAM) and (retval[1] == "EXIT"):
-        # python -i -c ... intercepts the sys.exit(0) and stays in python
-        # so _pyferret._run() makes a C exit(0) call instead and doesn't return
+        # python -i -c ... intercepts the sys.exit(0) and stays in python.
+        # So _pyferret._run(), when is gets the Ferret "exit" command,
+        # instead makes a call in C to exit(0) and doesn't return.
         # This was kept here in case it can be made to work.
         stop()
         sys.exit(0)
     return retval
+
+
+def getdata(name, create_mask=True):
+    """
+    Returns the numeric array and axes information for the data variable
+    described in name.
+
+    Arguments:
+        name: the name of the numeric data to retrieve
+        create_mask: return the numeric data array as a MaskedArray object?
+    Returns:
+        A dictionary contains the numeric data array and axes information.
+        The dictionary contains the following key/value pairs:
+            'data': the numeric data array.  If create_mask is True, this
+                    will be a NumPy float32 MaskedArray object with the
+                    masked array properly assigned.  If create_mask is False,
+                    this will just be a NumPy float32 ndarray.
+            'missing_value': the missing data value.  This will be a NumPy
+                    float32 ndarray containing a single value.
+            'data_unit': a string describing the unit of the data.
+            'axis_types': a list of integer values describing the type of
+                    each axis.  Possible values are the following constants
+                    defined by the pyferret module:
+                        AXISTYPE_LONGITUDE
+                        AXISTYPE_LATITUDE
+                        AXISTYPE_LEVEL
+                        AXISTYPE_TIME
+                        AXISTYPE_CUSTOM   (axis units not recognized by ferret)
+                        AXISTYPE_ABSTRACT (axis is unit-less integer values)
+                        AXISTYPE_NORMAL   (axis is normal to the data)
+            'axis_names': a list of strings giving the name of each axis
+            'axis_units': a list of strings giving the unit of each axis.
+                    If the axis type is AXISTYPE_TIME, this names the calendar
+                    used for the timestamps, as one of the following strings:
+                        'CALTYPE_360DAY'
+                        'CALTYPE_NOLEAP'
+                        'CALTYPE_GREGORIAN'
+                        'CALTYPE_JULIAN'
+                        'CALTYPE_ALLLEAP'
+                        'CALTYPE_NONE'    (calendar not specified)
+            'axis_coords': a list of NumPy ndarrays giving the coordinate values
+                    for each axis.  If the axis type is neither AXISTYPE_TIME
+                    nor AXISTYPE_NORMAL, a NumPy float64 ndarray is given.  If
+                    the axis is type AXISTYPE_TIME, a NumPy integer ndarray of
+                    shape (N,6) where N is the number of axis coordinates.  The
+                    six integer values per axis coordinate are the day, month,
+                    year, hour, minute, and second of the associate calendar
+                    for this time axis.  The following constants defined by the
+                    pyferret module give the values of these six indices:
+                        TIMEARRAY_DAYINDEX
+                        TIMEARRAY_MONTHINDEX
+                        TIMEARRAY_YEARINDEX
+                        TIMEARRAY_HOURINDEX
+                        TIMEARRAY_MINUTEINDEX
+                        TIMEARRAY_SECONDINDEX
+                    (Thus, axis_coords[t,pyferret.TIMEARRAY_YEARINDEX]
+                     gives the year of time axis coordinate t.)
+        Note: a relative time axis will be of type AXISTYPE_CUSTOM with a unit
+              indicating the starting point; such as 'days since 01-JAN-2000'
+    Raises:
+        ValueError if the data name is invalid
+        MemoryError if Ferret has not been started or has been stopped
+    """
+    # lists of units (in uppercase) for checking if a custom axis is actual a longitude axis
+    UC_LONGITUDE_UNITS = [ "DEG E", "DEG_E", "DEG EAST", "DEG_EAST",
+                           "DEGREES E", "DEGREES_E", "DEGREES EAST", "DEGREES_EAST",
+                           "DEG W", "DEG_W", "DEG WEST", "DEG_WEST",
+                           "DEGREES W", "DEGREES_W", "DEGREES WEST", "DEGREES_WEST" ]
+    # lists of units (in uppercase) for checking if a custom axis is actual a latitude axis
+    UC_LATITUDE_UNITS  = [ "DEG N", "DEG_N", "DEG NORTH", "DEG_NORTH",
+                           "DEGREES N", "DEGREES_N", "DEGREES NORTH", "DEGREES_NORTH",
+                           "DEG S", "DEG_S", "DEG SOUTH", "DEG_SOUTH",
+                           "DEGREES S", "DEGREES_S", "DEGREES SOUTH", "DEGREES_SOUTH" ]
+    if not isinstance(name, str):
+        raise ValueError, "name must be a string"
+    elif name.isspace():
+        raise ValueError, "name cannot be an empty string"
+    # get the data and related information from Ferret
+    vals = _pyferret._get(name)
+    # break apart the tuple to simplify (returning a dictionary would have been better)
+    data = vals[0]
+    bdfs = vals[1]
+    data_unit = vals[2]
+    axis_types = vals[3]
+    axis_names = vals[4]
+    axis_units = vals[5]
+    axis_coords = vals[6]
+    # A custom axis could be standard axis that is not in Ferret's expected order,
+    # so check the units
+    for k in xrange(_MAX_FERRET_NDIM):
+        if axis_types[k] == AXISTYPE_CUSTOM:
+            uc_units = axis_units[k].upper()
+            if uc_units in UC_LONGITUDE_UNITS:
+                axis_types[k] = AXISTYPE_LONGITUDE
+            elif uc_units in UC_LATITUDE_UNITS:
+                axis_types[k] = AXISTYPE_LATITUDE
+    if create_mask:
+        if np.isnan(bdfs[0]):
+            # NaN comparisons always return False, even to another NaN
+            datavar = ma.array(data, fill_value=bdfs[0], mask=np.isnan(data))
+        else:
+            # since values in data and bdfs[0] are all float32 values assigned by Ferret,
+            # using equality should work correctly
+            datavar = ma.array(data, fill_value=bdfs[0], mask=( data == bdfs[0] ))
+    else:
+        datavar = data
+    return { "data":datavar, "missing_value":bdfs, "data_unit":data_unit, "axis_types":axis_types,
+             "axis_names":axis_names, "axis_units":axis_units, "axis_coords":axis_coords }
 
 
 def get(name, create_mask=True):
@@ -128,6 +241,7 @@ def get(name, create_mask=True):
 
     Arguments:
         name: the name of the numeric data array to retrieve
+        create_mask: create the mask for the TransientVariable object?
     Returns:
         A cdms2 TransientVariable object (cdms2.tvariable) containing the
         numeric data.  The data, axes, and missing value will be assigned.
@@ -136,6 +250,8 @@ def get(name, create_mask=True):
     Raises:
         ValueError if the data name is invalid
         MemoryError if Ferret has not been started or has been stopped
+    See also:
+        getdata
     """
     # lists of units (in uppercase) for checking if a custom axis is actual a longitude axis
     UC_LONGITUDE_UNITS = [ "DEG E", "DEG_E", "DEG EAST", "DEG_EAST",
@@ -174,34 +290,34 @@ def get(name, create_mask=True):
     # create the axis list for this variable
     var_axes = [ ]
     for k in xrange(_MAX_FERRET_NDIM):
-        if axis_types[k] == _pyferret._AXISTYPE_LONGITUDE:
-            newaxis = cdms2.createAxis(axis_coords[k],id=axis_names[k])
+        if axis_types[k] == AXISTYPE_LONGITUDE:
+            newaxis = cdms2.createAxis(axis_coords[k], id=axis_names[k])
             newaxis.units = axis_units[k]
             newaxis.designateLongitude()
             var_axes.append(newaxis)
-        elif axis_types[k] == _pyferret._AXISTYPE_LATITUDE:
-            newaxis = cdms2.createAxis(axis_coords[k],id=axis_names[k])
+        elif axis_types[k] == AXISTYPE_LATITUDE:
+            newaxis = cdms2.createAxis(axis_coords[k], id=axis_names[k])
             newaxis.units = axis_units[k]
             newaxis.designateLatitude()
             var_axes.append(newaxis)
-        elif axis_types[k] == _pyferret._AXISTYPE_LEVEL:
-            newaxis = cdms2.createAxis(axis_coords[k],id=axis_names[k])
+        elif axis_types[k] == AXISTYPE_LEVEL:
+            newaxis = cdms2.createAxis(axis_coords[k], id=axis_names[k])
             newaxis.units = axis_units[k]
             newaxis.designateLevel()
             var_axes.append(newaxis)
-        elif axis_types[k] == _pyferret._AXISTYPE_TIME:
+        elif axis_types[k] == AXISTYPE_TIME:
             # create the time axis from cdtime.comptime (component time) objects
             time_coords = axis_coords[k]
             timevals = [ ]
             for t in xrange(time_coords.shape[0]):
-                day = time_coords[t,_pyferret._TIMEARRAY_DAYINDEX]
-                month = time_coords[t,_pyferret._TIMEARRAY_MONTHINDEX]
-                year = time_coords[t,_pyferret._TIMEARRAY_YEARINDEX]
-                hour = time_coords[t,_pyferret._TIMEARRAY_HOURINDEX]
-                minute = time_coords[t,_pyferret._TIMEARRAY_MINUTEINDEX]
-                second = time_coords[t,_pyferret._TIMEARRAY_SECONDINDEX]
+                day = time_coords[t, TIMEARRAY_DAYINDEX]
+                month = time_coords[t, TIMEARRAY_MONTHINDEX]
+                year = time_coords[t, TIMEARRAY_YEARINDEX]
+                hour = time_coords[t, TIMEARRAY_HOURINDEX]
+                minute = time_coords[t, TIMEARRAY_MINUTEINDEX]
+                second = time_coords[t, TIMEARRAY_SECONDINDEX]
                 timevals.append( cdtime.comptime(year,month,day,hour,minute,second) )
-            newaxis = cdms2.createAxis(timevals,id=axis_names[k])
+            newaxis = cdms2.createAxis(timevals, id=axis_names[k])
             # designate the calendar
             if axis_units[k] == "CALTYPE_360DAY":
                 calendar_type = cdtime.Calendar360
@@ -220,17 +336,17 @@ def get(name, create_mask=True):
             newaxis.designateTime(calendar=calendar_type)
             # and finally append it to the axis list
             var_axes.append(newaxis)
-        elif axis_types[k] == _pyferret._AXISTYPE_CUSTOM:
+        elif axis_types[k] == AXISTYPE_CUSTOM:
             # custom axis which could be standard axis that is
             # not in Ferret's expected order, so check the units
             uc_units = axis_units[k].upper()
             lc_vals = axis_units[k].lower().split()
             if uc_units in UC_LONGITUDE_UNITS:
-                newaxis = cdms2.createAxis(axis_coords[k],id=axis_names[k])
+                newaxis = cdms2.createAxis(axis_coords[k], id=axis_names[k])
                 newaxis.units = axis_units[k]
                 newaxis.designateLongitude()
             elif uc_units in UC_LATITUDE_UNITS:
-                newaxis = cdms2.createAxis(axis_coords[k],id=axis_names[k])
+                newaxis = cdms2.createAxis(axis_coords[k], id=axis_names[k])
                 newaxis.units = axis_units[k]
                 newaxis.designateLatitude()
             elif (len(lc_vals) > 2) and (lc_vals[1] == "since") and (lc_vals[0] in LC_TIME_UNITS):
@@ -250,16 +366,16 @@ def get(name, create_mask=True):
                 for t in xrange(axis_coords[k].shape[0]):
                     dtval = cdtime.reltime(axis_coords[k][t], relunit);
                     timevals.append(dtval)
-                newaxis = cdms2.createAxis(timevals,id=axis_names[k])
+                newaxis = cdms2.createAxis(timevals, id=axis_names[k])
                 newaxis.designateTime()
             else:
-                newaxis = cdms2.createAxis(axis_coords[k],id=axis_names[k])
+                newaxis = cdms2.createAxis(axis_coords[k], id=axis_names[k])
                 newaxis.units = axis_units[k]
             var_axes.append(newaxis)
-        elif axis_types[k] == _pyferret._AXISTYPE_ABSTRACT:
-            newaxis = cdms2.createAxis(axis_coords[k],id=axis_names[k])
+        elif axis_types[k] == AXISTYPE_ABSTRACT:
+            newaxis = cdms2.createAxis(axis_coords[k], id=axis_names[k])
             var_axes.append(newaxis)
-        elif axis_types[k] == _pyferret._AXISTYPE_NORMAL:
+        elif axis_types[k] == AXISTYPE_NORMAL:
             var_axes.append(None)
         else:
             raise RuntimeError, "Unexpected axis type of %d" % axis_types[k]
@@ -347,7 +463,7 @@ def put(datavar, axis_pos=None, dset='', name=None, title=None):
     axis_list = datavar.getAxisList()
     if len(axis_list) > _MAX_FERRET_NDIM:
         raise ValueError, "More than %d axes is not supported in Ferret at this time" % _MAX_FERRET_NDIM
-    axis_types = [ _pyferret._AXISTYPE_NORMAL ] * _MAX_FERRET_NDIM
+    axis_types = [ AXISTYPE_NORMAL ] * _MAX_FERRET_NDIM
     axis_names = [ "" ] * _MAX_FERRET_NDIM
     axis_units = [ "" ] * _MAX_FERRET_NDIM
     axis_coords = [ None ] * _MAX_FERRET_NDIM
@@ -364,17 +480,17 @@ def put(datavar, axis_pos=None, dset='', name=None, title=None):
         #
         # assign the axis information
         if axis.isLongitude():
-            axis_types[k] = _pyferret._AXISTYPE_LONGITUDE
+            axis_types[k] = AXISTYPE_LONGITUDE
             if not axis_units[k]:
                 axis_units[k] = "DEGREES_E"
             axis_coords[k] = np.array(axis_data, dtype=np.float64, copy=1)
         elif axis.isLatitude():
-            axis_types[k] = _pyferret._AXISTYPE_LATITUDE
+            axis_types[k] = AXISTYPE_LATITUDE
             if not axis_units[k]:
                 axis_units[k] = "DEGREES_N"
             axis_coords[k] = np.array(axis_data, dtype=np.float64, copy=1)
         elif axis.isLevel():
-            axis_types[k] = _pyferret._AXISTYPE_LEVEL
+            axis_types[k] = AXISTYPE_LEVEL
             axis_coords[k] = np.array(axis_data, dtype=np.float64, copy=1)
         elif axis.isTime():
             #
@@ -383,13 +499,13 @@ def put(datavar, axis_pos=None, dset='', name=None, title=None):
                 time_coords = np.empty((len(axis_data),6), dtype=np.int32, order="C")
                 for t in xrange(len(axis_data)):
                     tval = axis_data[t]
-                    time_coords[t,_pyferret._TIMEARRAY_DAYINDEX] = tval.day
-                    time_coords[t,_pyferret._TIMEARRAY_MONTHINDEX] = tval.month
-                    time_coords[t,_pyferret._TIMEARRAY_YEARINDEX] = tval.year
-                    time_coords[t,_pyferret._TIMEARRAY_HOURINDEX] = tval.hour
-                    time_coords[t,_pyferret._TIMEARRAY_MINUTEINDEX] = tval.minute
-                    time_coords[t,_pyferret._TIMEARRAY_SECONDINDEX] = int(tval.second)
-                axis_types[k] = _pyferret._AXISTYPE_TIME
+                    time_coords[t, TIMEARRAY_DAYINDEX] = tval.day
+                    time_coords[t, TIMEARRAY_MONTHINDEX] = tval.month
+                    time_coords[t, TIMEARRAY_YEARINDEX] = tval.year
+                    time_coords[t, TIMEARRAY_HOURINDEX] = tval.hour
+                    time_coords[t, TIMEARRAY_MINUTEINDEX] = tval.minute
+                    time_coords[t, TIMEARRAY_SECONDINDEX] = int(tval.second)
+                axis_types[k] = AXISTYPE_TIME
                 axis_coords[k] = time_coords
                 # assign the axis_units value to the CALTYPE_ calendar type string
                 calendar_type = axis.getCalendar()
@@ -406,17 +522,17 @@ def put(datavar, axis_pos=None, dset='', name=None, title=None):
                         raise ValueError, "The cdtime.MixedCalendar not support by pyferret"
                     raise ValueError, "Unknown cdtime calendar %s" % str(calendar_type)
             except AttributeError:
-                axis_types[k] = _pyferret._AXISTYPE_CUSTOM
+                axis_types[k] = AXISTYPE_CUSTOM
             #
             # if not comptime objects, assume reltime objects - create as a custom axis
-            if axis_types[k] == _pyferret._AXISTYPE_CUSTOM:
+            if axis_types[k] == AXISTYPE_CUSTOM:
                 time_coords = np.empty((len(axis_data),), dtype=np.float64)
                 for t in xrange(len(axis_data)):
                     time_coords[t] = axis_data[t].value
                 axis_coords[k] = timecoords
                 # assign axis_units as the reltime units - makes sure all are the same
                 axis_units[k] = axis_data[0].units
-                for t in xrange(1,len(axis_data)):
+                for t in xrange(1, len(axis_data)):
                     if axis_data[t].units != axis_units[k]:
                         raise ValueError, "Relative time axis does not have a consistent start point"
         #
@@ -425,13 +541,13 @@ def put(datavar, axis_pos=None, dset='', name=None, title=None):
         elif not ( (axis_units[k] == "") and (len(axis_data) == 1) and (axis_data[0] == 0.0) and \
                    (axis_data.dtype == np.dtype('float64')) and \
                    axis_names[k].startswith("axis_") and axis_names[k][5:].isdigit() ):
-            axis_types[k] = _pyferret._AXISTYPE_CUSTOM
+            axis_types[k] = AXISTYPE_CUSTOM
             axis_coords[k] = np.array(axis_data, dtype=np.float64, copy=1)
             # if a unitless integer value axis, it is abstract instead of custom
             if axis_units[k] == "":
                 axis_int_vals = np.array(axis_data, dtype=int)
                 if np.allclose(axis_data, axis_int_vals):
-                    axis_types[k] = _pyferret._AXISTYPE_ABSTRACT
+                    axis_types[k] = AXISTYPE_ABSTRACT
     #
     # figure out the desired axis order
     if axis_pos != None:
@@ -455,16 +571,16 @@ def put(datavar, axis_pos=None, dset='', name=None, title=None):
         ferr_axis = [ -1 ] * _MAX_FERRET_NDIM
         # assign positions of longitude/latitude/level/time
         for k in xrange(len(axis_types)):
-           if axis_types[k] == _pyferret._AXISTYPE_LONGITUDE:
+           if axis_types[k] == AXISTYPE_LONGITUDE:
                if not X_AXIS in ferr_axis:
                    ferr_axis[k] = X_AXIS
-           elif axis_types[k] == _pyferret._AXISTYPE_LATITUDE:
+           elif axis_types[k] == AXISTYPE_LATITUDE:
                if not Y_AXIS in ferr_axis:
                    ferr_axis[k] = Y_AXIS
-           elif axis_types[k] == _pyferret._AXISTYPE_LEVEL:
+           elif axis_types[k] == AXISTYPE_LEVEL:
                if not Z_AXIS in ferr_axis:
                    ferr_axis[k] = Z_AXIS
-           elif axis_types[k] == _pyferret._AXISTYPE_TIME:
+           elif axis_types[k] == AXISTYPE_TIME:
                if not T_AXIS in ferr_axis:
                    ferr_axis[k] = T_AXIS
         # fill in other axes types in unused positions

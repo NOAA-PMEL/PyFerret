@@ -45,6 +45,7 @@ void ef_get_arg_subscripts_(int *id, int steplo[][4], int stephi[][4], int incr[
 void ef_get_coordinates_(int *id, int *arg, int *axis, int *lo, int *hi, double *coords);
 void ef_get_box_size_(int *id, int *arg, int *axis, int *lo, int *hi, float *sizes);
 void ef_get_box_limits_(int *id, int *arg, int *axis, int *lo, int *hi, float *lo_lims, float *hi_lims);
+void set_batch_graphics_(char *meta_name);
 
 /* Ferret's OK return status value */
 #define FERR_OK 3
@@ -87,6 +88,7 @@ static char pyferretStartDocstring[] =
     "                       to allocate for Ferret's memory block (default 25.6) \n"
     "    journal = <bool>: initial state of Ferret's journal mode (default True) \n"
     "    verify = <bool>: initial state of Ferret's verify mode (default True) \n"
+    "    graphics = <bool>: display graphics? (default True) \n"
     "\n"
     "Returns: \n"
     "    True is successful \n"
@@ -98,12 +100,14 @@ static char pyferretStartDocstring[] =
 
 static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 {
-    static char *argNames[] = {"memsize", "journal", "verify", NULL};
+    static char *argNames[] = {"memsize", "journal", "verify", "graphics", NULL};
     float mwMemSize = 25.6;
     PyObject *pyoJournal = NULL;
     PyObject *pyoVerify = NULL;
+    PyObject *pyoGraphics = NULL;
     int journalFlag = 1;
     int verifyFlag = 1;
+    int graphicsFlag = 1;
     int ferMemSize;
     int pplMemSize;
     int status;
@@ -117,8 +121,9 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     }
 
     /* Parse the arguments, checking if an Exception was raised */
-    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|fO!O!", argNames, &mwMemSize,
-                                       &PyBool_Type, &pyoJournal, &PyBool_Type, &pyoVerify) )
+    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|fO!O!O!", argNames, &mwMemSize,
+                                       &PyBool_Type, &pyoJournal, &PyBool_Type, &pyoVerify,
+                                       &PyBool_Type, &pyoGraphics) )
         return NULL;
 
     /* Interpret the booleans - Py_False and Py_True are singleton non-NULL objects, so just use == */
@@ -126,6 +131,8 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
         journalFlag = 0;
     if ( pyoVerify == Py_False )
         verifyFlag = 0;
+    if ( pyoGraphics == Py_False )
+        graphicsFlag = 0;
 
     /* Initialize the shared buffer sBuffer */
     set_shared_buffer();
@@ -143,6 +150,13 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     if ( ferMemory == NULL )
         return PyErr_NoMemory();
     set_fer_memory(ferMemory, ferMemSize);
+
+    /* Inhibit graphics display if requested */
+    if ( graphicsFlag == 0 ) {
+       char meta_name[16];
+       strcpy(meta_name, ".gif");
+       set_batch_graphics_(meta_name);
+    }
 
     /* Initialize stuff: keyboard, todays date, grids, GFDL terms, PPL brain */
     initialize_();
@@ -589,6 +603,7 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
             Py_INCREF(Py_None);
             axis_coords[k] = Py_None;
             axis_units[k][0] = '\0';
+            axis_names[k][0] = '\0';
             break;
         default:
             sprintf(errmsg, "Unexpected axis type of %d", axis_types[k]);
@@ -1448,22 +1463,22 @@ PyMODINIT_FUNC init_pyferret(void)
     PyModule_AddIntConstant(mod, "ARG8", 7);
     PyModule_AddIntConstant(mod, "ARG9", 8);
 
+    /* Parameters for interpreting axis data */
+    PyModule_AddIntConstant(mod, "AXISTYPE_LONGITUDE",    AXISTYPE_LONGITUDE);
+    PyModule_AddIntConstant(mod, "AXISTYPE_LATITUDE",     AXISTYPE_LATITUDE);
+    PyModule_AddIntConstant(mod, "AXISTYPE_LEVEL",        AXISTYPE_LEVEL);
+    PyModule_AddIntConstant(mod, "AXISTYPE_TIME",         AXISTYPE_TIME);
+    PyModule_AddIntConstant(mod, "AXISTYPE_CUSTOM",       AXISTYPE_CUSTOM);
+    PyModule_AddIntConstant(mod, "AXISTYPE_ABSTRACT",     AXISTYPE_ABSTRACT);
+    PyModule_AddIntConstant(mod, "AXISTYPE_NORMAL",       AXISTYPE_NORMAL);
+    PyModule_AddIntConstant(mod, "TIMEARRAY_DAYINDEX",    TIMEARRAY_DAYINDEX);
+    PyModule_AddIntConstant(mod, "TIMEARRAY_MONTHINDEX",  TIMEARRAY_MONTHINDEX);
+    PyModule_AddIntConstant(mod, "TIMEARRAY_YEARINDEX",   TIMEARRAY_YEARINDEX);
+    PyModule_AddIntConstant(mod, "TIMEARRAY_HOURINDEX",   TIMEARRAY_HOURINDEX);
+    PyModule_AddIntConstant(mod, "TIMEARRAY_MINUTEINDEX", TIMEARRAY_MINUTEINDEX);
+    PyModule_AddIntConstant(mod, "TIMEARRAY_SECONDINDEX", TIMEARRAY_SECONDINDEX);
+
     /* Private parameter return value from _pyferret._run indicating the program should shut down */
     PyModule_AddIntConstant(mod, "_FERR_EXIT_PROGRAM", FERR_EXIT_PROGRAM);
-
-    /* Private parameters for converting axis data to cdms2.axis objects */
-    PyModule_AddIntConstant(mod, "_AXISTYPE_LONGITUDE",    AXISTYPE_LONGITUDE);
-    PyModule_AddIntConstant(mod, "_AXISTYPE_LATITUDE",     AXISTYPE_LATITUDE);
-    PyModule_AddIntConstant(mod, "_AXISTYPE_LEVEL",        AXISTYPE_LEVEL);
-    PyModule_AddIntConstant(mod, "_AXISTYPE_TIME",         AXISTYPE_TIME);
-    PyModule_AddIntConstant(mod, "_AXISTYPE_CUSTOM",       AXISTYPE_CUSTOM);
-    PyModule_AddIntConstant(mod, "_AXISTYPE_ABSTRACT",     AXISTYPE_ABSTRACT);
-    PyModule_AddIntConstant(mod, "_AXISTYPE_NORMAL",       AXISTYPE_NORMAL);
-    PyModule_AddIntConstant(mod, "_TIMEARRAY_DAYINDEX",    TIMEARRAY_DAYINDEX);
-    PyModule_AddIntConstant(mod, "_TIMEARRAY_MONTHINDEX",  TIMEARRAY_MONTHINDEX);
-    PyModule_AddIntConstant(mod, "_TIMEARRAY_YEARINDEX",   TIMEARRAY_YEARINDEX);
-    PyModule_AddIntConstant(mod, "_TIMEARRAY_HOURINDEX",   TIMEARRAY_HOURINDEX);
-    PyModule_AddIntConstant(mod, "_TIMEARRAY_MINUTEINDEX", TIMEARRAY_MINUTEINDEX);
-    PyModule_AddIntConstant(mod, "_TIMEARRAY_SECONDINDEX", TIMEARRAY_SECONDINDEX);
 }
 

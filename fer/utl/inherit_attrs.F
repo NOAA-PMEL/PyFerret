@@ -37,6 +37,7 @@
 * variable in varname2, dataset dset2.  dset2 has been determined in xeq_set.F
 * V600  4/06 *acm*   attribute handling
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* V670  2/11 *acm*   Fixes for inheriting attributes.
 
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'      

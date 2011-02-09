@@ -67,8 +67,8 @@ endif
 clean :
 	rm -fr $(DIR_PREFIX)/build ferret.jnl*
 	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
-	$(MAKE) -C $(DIR_PREFIX)/pyefcn clean
 	$(MAKE) -C $(DIR_PREFIX)/ferlib clean
+	$(MAKE) -C $(DIR_PREFIX)/pyefcn clean
 	@echo ""
 	@echo "    NOTE: Only the (pyferret) build, ferlib, and pyefcn directories were cleaned."
 	@echo "          Use target 'distclean' to also clean the fer, fmt, ppl, and lib directories."
@@ -78,8 +78,8 @@ clean :
 distclean :
 	rm -fr $(DIR_PREFIX)/build ferret.jnl*
 	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
-	$(MAKE) -C $(DIR_PREFIX)/pyefcn clean
 	$(MAKE) -C $(DIR_PREFIX)/ferlib clean
+	$(MAKE) -C $(DIR_PREFIX)/pyefcn clean
 	$(MAKE) -C $(DIR_PREFIX)/fer clean
 	rm -fr $(DIR_PREFIX)/lib
 	@echo ""

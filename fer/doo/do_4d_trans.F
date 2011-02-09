@@ -67,6 +67,7 @@
 * 4/10 - Fix #1735; For averages other than in Y direction the above fix 
 *        failed to set ybox sizes and cos correction. Still need to set these.
 * 8/10 - One further fix to #1735
+* 2/11 - One further fix to #1348: @DIN over 1 grid cell in Y
 
 * internal variable declarations:
 	LOGICAL GEOG_COS_FACTOR, point, yes_ax(4), no_ax(4),
@@ -238,11 +239,18 @@ C (Unless there is just one grid cell in the y direction.)
 	            boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )
 
 		    ! surface area of sphere depends only on h not on ybox
-		    boxes(j+box_offset(y_dim)) = 1.  
+		    IF (.NOT.at_din) boxes(j+box_offset(y_dim)) = 1.  
 
 		    ! for integral need area is radius*radius* delx * h
 		    ! delx already has units that include radius of earth.
-                    IF ( at_din ) boxes(j+box_offset(y_dim)) =  m_radius  
+                    IF ( at_din ) then
+ 		       boxes(j+box_offset(y_dim)) =  m_radius 
+		    ENDIF
+		    ! Single-point Y axis or Y not part of the integral
+                    IF ( at_din .AND. no_ax(y_dim)) THEN
+	               boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )/
+     .                                          (ybxhi - ybxlo)
+                    ENDIF
  120         CONTINUE
 	ELSE
 	      DO 121 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)

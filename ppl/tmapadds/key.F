@@ -92,7 +92,9 @@
 *                 argument klab_len by the same amount in subsequent calls to TM_FMT_DIGITS  
 *                 when we are writing the numeric labels on the key. 
 * V610 *acm* 3/08 For larger default number of levels, make fewer labels when the key is short.
-* V630  *acm* 9/09 Fix color key labels that run off the edge of the plot 
+* V630 *acm* 9/09 Fix color key labels that run off the edge of the plot 
+* V670 *acm* 2/11 Fix ticket 1798. The fix to 1339 starting label loops at ndx=lev1+1 
+*                 was not applied to loop 20 for horizontal keys.
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -365,7 +367,8 @@
 10	continue
 
         IF (incr .GT. 0) THEN
-	do 20 ndx = 1,shd_levels+1,incr
+	do 20 ndx = lev1,shd_levels+1,incr
+
 *	   WRITE OUT CORRESPONDING VALUE
 
 CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE		

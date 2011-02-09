@@ -217,41 +217,41 @@ C http://mathworld.wolfram.com/Zone.html. Fix for @DIN too.
      .		.AND. yes_xax
      .	 	.AND. cx_lo_s2(com_cx) .NE. unspecified_int4
         IF ( at_sum ) need_cos = .FALSE.
+        one_y = (cx_lo_ww(y_dim,res_cx) .EQ. cx_hi_ww(y_dim,res_cx))
+
 	IF ( need_cos ) THEN
-	      one_y = (cx_lo_s2(com_cx) .EQ. cx_hi_s2(com_cx))
-	      DO 120 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO 120 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 
 C Compute the y boxes if there is a y axis; the computation may be 
 C avgs in other directions but we need the ybox size at a given y
 C The top and bottom boxes extend only to the coordinate locations,
 C (Unless there is just one grid cell in the y direction.)
 
-	            ybxlo = deg2rad* 
+	      ybxlo = deg2rad* 
      .                SNGL(TM_WORLD(j, grid, y_dim, box_lo_lim) )
-                   IF (j .EQ. cx_lo_s2(com_cx) .AND. .NOT.one_y)
+	      IF (j .EQ. cx_lo_s2(com_cx) .AND. .NOT.one_y)
      .                ybxlo = deg2rad* cx_lo_ww(y_dim,res_cx)
 
-	            ybxhi = deg2rad* 
+	      ybxhi = deg2rad* 
      .                SNGL(TM_WORLD(j, grid, y_dim, box_hi_lim) )
-                    IF (j .EQ. cx_hi_s2(com_cx) .AND. .NOT.one_y)
+	      IF (j .EQ. cx_hi_s2(com_cx) .AND. .NOT.one_y)
      .                ybxhi = deg2rad* cx_hi_ww(y_dim,res_cx)
 
-	            boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )
+	      boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )
 
-		    ! surface area of sphere depends only on h not on ybox
-		    IF (.NOT.at_din) boxes(j+box_offset(y_dim)) = 1.  
+	      ! surface area of sphere depends only on h not on ybox
+	      IF (.NOT.at_din) boxes(j+box_offset(y_dim)) = 1.  
 
-		    ! for integral need area is radius*radius* delx * h
-		    ! delx already has units that include radius of earth.
-                    IF ( at_din ) then
+	      ! for integral need area is radius*radius* delx * h
+	      ! delx already has units that include radius of earth.
+	      IF ( at_din ) then
  		       boxes(j+box_offset(y_dim)) =  m_radius 
-		    ENDIF
-		    ! Single-point Y axis or Y not part of the integral
-                    IF ( at_din .AND. no_ax(y_dim)) THEN
-	               boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )/
-     .                                          (ybxhi - ybxlo)
-                    ENDIF
- 120         CONTINUE
+	      ENDIF
+	      ! Single-point Y axis or Y not part of the integral
+	      IF ( at_din .AND. no_ax(y_dim))
+     .           boxes(j+cos_offset) = COS( deg2rad * 
+     .           SNGL( TM_WORLD(j,grid,y_dim,box_middle)) )
+ 120       CONTINUE
 	ELSE
 	      DO 121 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
  121	      boxes(j+cos_offset)  = 1.0

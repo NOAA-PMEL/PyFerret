@@ -44,13 +44,13 @@ float *ppl_memory;
 sharedMem *sBuffer;
 
 /* assign the memory for ferret's use */
-void set_fer_memory(float *mem, int mem_size)
+void set_fer_memory(float *mem, size_t mem_size)
 {
     int max_mem_blks = PMAX_MEM_BLKS;
     int mem_blk_size;
 
     memory = mem;
-    mem_blk_size = mem_size / max_mem_blks;
+    mem_blk_size = (int)(mem_size / (size_t)max_mem_blks);
     init_memory_( &mem_blk_size, &max_mem_blks );
 }
 

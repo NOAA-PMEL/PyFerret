@@ -34,6 +34,13 @@
 
 #include "Python.h"
 #include "numpy/arrayobject.h"
+
+#include <wchar.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "ferret.h"
 #include "ferret_shared_buffer.h"
 #include "EF_Util.h"
@@ -78,7 +85,10 @@ static void pyefcn_signal_handler(int signum)
 static char pyferretStartDocstring[] =
     "Initializes Ferret.  This allocates the initial amount of memory for Ferret \n"
     "(from Python-managed memory), opens the journal file, if requested, and sets \n"
-    "Ferret's verify mode.  This does NOT run any user initialization scripts. \n"
+    "Ferret's verify mode.  If metaname is empty, Ferret's graphics are displayed \n"
+    "on the X-Windows display; otherwise, this value is used as the initial filename \n"
+    "for the graphics metafile.  This routine does NOT run any user initialization \n"
+    "scripts. \n"
     "\n"
     "Required arguments: \n"
     " (none) \n"
@@ -88,7 +98,7 @@ static char pyferretStartDocstring[] =
     "                       to allocate for Ferret's memory block (default 25.6) \n"
     "    journal = <bool>: initial state of Ferret's journal mode (default True) \n"
     "    verify = <bool>: initial state of Ferret's verify mode (default True) \n"
-    "    graphics = <bool>: display graphics? (default True) \n"
+    "    metaname = <string>: filename for Ferret graphics (default empty) \n"
     "\n"
     "Returns: \n"
     "    True is successful \n"
@@ -100,16 +110,15 @@ static char pyferretStartDocstring[] =
 
 static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 {
-    static char *argNames[] = {"memsize", "journal", "verify", "graphics", NULL};
-    float mwMemSize = 25.6;
+    static char *argNames[] = {"memsize", "journal", "verify", "metaname", NULL};
+    double mwMemSize = 25.6;
     PyObject *pyoJournal = NULL;
     PyObject *pyoVerify = NULL;
-    PyObject *pyoGraphics = NULL;
+    char *metaname = NULL;
     int journalFlag = 1;
     int verifyFlag = 1;
-    int graphicsFlag = 1;
-    int ferMemSize;
     int pplMemSize;
+    size_t ferMemSize;
     int status;
     int ttoutLun = TTOUT_LUN;
     int one_cmnd_mode_int;
@@ -121,9 +130,8 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     }
 
     /* Parse the arguments, checking if an Exception was raised */
-    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|fO!O!O!", argNames, &mwMemSize,
-                                       &PyBool_Type, &pyoJournal, &PyBool_Type, &pyoVerify,
-                                       &PyBool_Type, &pyoGraphics) )
+    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|fO!O!s", argNames, &mwMemSize,
+                 &PyBool_Type, &pyoJournal, &PyBool_Type, &pyoVerify, &metaname) )
         return NULL;
 
     /* Interpret the booleans - Py_False and Py_True are singleton non-NULL objects, so just use == */
@@ -131,31 +139,33 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
         journalFlag = 0;
     if ( pyoVerify == Py_False )
         verifyFlag = 0;
-    if ( pyoGraphics == Py_False )
-        graphicsFlag = 0;
+    if ( metaname[0] == '\0' )
+        metaname = NULL;
 
     /* Initialize the shared buffer sBuffer */
     set_shared_buffer();
 
     /* Initial allocation of PPLUS memory */
     pplMemSize = 0.5 * 1.0E+6;
-    pplMemory = (float *) PyMem_Malloc(pplMemSize * sizeof(float));
+    pplMemory = (float *) PyMem_Malloc((size_t)pplMemSize * (size_t)sizeof(float));
     if ( pplMemory == NULL )
         return PyErr_NoMemory();
     set_ppl_memory(pplMemory, pplMemSize);
 
     /* Initial allocation of Ferret memory */
-    ferMemSize = mwMemSize * 1.0E+6;
-    ferMemory = (float *) PyMem_Malloc(ferMemSize * sizeof(float));
+    ferMemSize = (size_t) (mwMemSize * 1.0E+6);
+    ferMemory = (float *) PyMem_Malloc(ferMemSize * (size_t)sizeof(float));
     if ( ferMemory == NULL )
         return PyErr_NoMemory();
     set_fer_memory(ferMemory, ferMemSize);
 
     /* Inhibit graphics display if requested */
-    if ( graphicsFlag == 0 ) {
-       char meta_name[16];
-       strcpy(meta_name, ".gif");
-       set_batch_graphics_(meta_name);
+    if ( metaname != NULL ) {
+       /* Make a copy of the name just in case set_batch_graphics_ changes something */
+       char my_meta_name[256];
+       strncpy(my_meta_name, metaname, 256);
+       my_meta_name[255] = '\0';
+       set_batch_graphics_(my_meta_name);
     }
 
     /* Initialize stuff: keyboard, todays date, grids, GFDL terms, PPL brain */
@@ -192,15 +202,23 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 
 /*
  * Helper function to reallocate Ferret's memory from Python.
- * Argument: memSize is the new number of floats of Ferret's memory block
+ * Argument: the new number of floats of Ferret's memory block is given by 
+ *           blksiz * PMAX_MEM_BLKS (defined in ferret.h as 2000)
  * Returns: zero if fails, non-zero if successful
  */
-static int resizeFerretMemory(int ferMemSize)
+static int resizeFerretMemory(int blksiz)
 {
     float *newFerMemory;
+    size_t ferMemSize;
 
+    if ( blksiz <= 0 )
+        return 0;
+    ferMemSize = (size_t)blksiz * (size_t)PMAX_MEM_BLKS;
+    /* Check for overflow */
+    if ( (size_t)blksiz != ferMemSize / (size_t)PMAX_MEM_BLKS )
+        return 0;
     /* Reallocate the new amount of memory for Ferret */
-    newFerMemory = (float *) PyMem_Realloc(ferMemory, ferMemSize * sizeof(float));
+    newFerMemory = (float *) PyMem_Realloc(ferMemory, ferMemSize * (size_t)sizeof(float));
     if ( newFerMemory == NULL )
         return 0;
 
@@ -231,7 +249,7 @@ static char pyferretResizeMemoryDocstring[] =
 static PyObject *pyferretResizeMemory(PyObject *self, PyObject *args, PyObject *kwds)
 {
     static char *argNames[] = {"memsize", NULL};
-    float mwMemSize;
+    double mwMemSize;
 
     /* If not initialized, raise a MemoryError */
     if ( ! ferretInitialized ) {
@@ -240,11 +258,11 @@ static PyObject *pyferretResizeMemory(PyObject *self, PyObject *args, PyObject *
     }
 
     /* Parse the arguments, checking if an Exception was raised */
-    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "f", argNames, &mwMemSize) )
+    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "d", argNames, &mwMemSize) )
         return NULL;
 
     /* Reallocate the new amount of memory for Ferret */
-    if ( resizeFerretMemory((int) (mwMemSize * 1.0E+6)) == 0 ) {
+    if ( resizeFerretMemory((int) (mwMemSize * 1.0E+6 / (double)PMAX_MEM_BLKS)) == 0 ) {
         Py_INCREF(Py_False);
         return Py_False;
     }
@@ -316,7 +334,8 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
         if ( sBuffer->flags[FRTN_ACTION] == FACTN_MEM_RECONFIGURE ) {
             /* resize, then re-enter if not single-command mode */
             if ( resizeFerretMemory(sBuffer->flags[FRTN_IDATA1]) == 0 ) {
-                printf("Unable to resize to %f Mwords of memory.\n", (sBuffer->flags[FRTN_IDATA1])/1.0E+6);
+                printf("Unable to resize to %f Mwords of memory.\n", 
+                       (double)(sBuffer->flags[FRTN_IDATA1]) * (double)PMAX_MEM_BLKS / 1.0E+6);
             }
         }
         else {

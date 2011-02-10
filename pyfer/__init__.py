@@ -20,6 +20,7 @@ indicates no errors.
 import sys
 import numpy as np
 import numpy.ma as ma
+import logging
 
 try:
     import cdms2
@@ -30,21 +31,23 @@ except ImportError:
 from _pyferret import *
 
 _MAX_FERRET_NDIM = 4
+my_logger = None
 
-def start(memsize=25.6, journal=True, verify=True, graphics=True):
+def start(memsize=25.6, journal=True, verify=True, metaname=None):
     """
     Initializes Ferret.  This allocates the initial amount of memory for Ferret
     (from Python-managed memory), opens the journal file, if requested, and sets
-    Ferret's verify mode.  If graphics is False, Ferret's graphics window is never
-    displayed.  (Traditional Ferret's "-gif" command-line option.)
-    This does NOT run any user initialization scripts.
+    Ferret's verify mode.  If metaname is None or empty, Ferret's graphics are
+    are displayed on the X-Windows display; otherwise, this value is used as the
+    initial filename for the graphics metafile.  This routine does NOT run any
+    user initialization scripts.
 
     Arguments:
-        memsize: the size, in megawords (where a "word" is 32 bits),
-                 to allocate for Ferret's memory block
-        journal: turn on Ferret's journal mode?
-        verify: turn on Ferret's verify mode?
-        graphics: allow display of Ferret's graphics window?
+        memsize:  the size, in megafloats (where a "float" is 4 bytes),
+                  to allocate for Ferret's memory block
+        journal:  turn on Ferret's journal mode?
+        verify:   turn on Ferret's verify mode?
+        metaname: filename for Ferret graphics, can be None or empty
     Returns:
         True is successful
         False if Ferret has already been started
@@ -53,14 +56,28 @@ def start(memsize=25.6, journal=True, verify=True, graphics=True):
         MemoryError if unable to allocate the needed memory
         IOError if unable to open the journal file
     """
+    # check memsize
     try:
         flt_memsize = float(memsize)
         if flt_memsize <= 0.0:
             raise ValueError
     except:
         raise ValueError, "memsize must be a positive number"
-
-    return _pyferret._start(flt_memsize, bool(journal), bool(verify), bool(graphics))
+    # check metaname
+    if metaname == None:
+        str_metaname = ""
+    elif not isinstance(metaname, str):
+        raise ValueError, "metaname must either be None or a string"
+    elif metaname.isspace():
+        str_metaname = ""
+    else:
+        str_metaname = metaname
+    # debug logging
+    if my_logger:
+        my_logger.debug('calling _pyferret._start(%f, %s, %s, "%s")' % \
+                        (flt_memsize, str(bool(journal)), str(bool(verify)), str_metaname) )
+    # the actual call
+    return _pyferret._start(flt_memsize, bool(journal), bool(verify), str_metaname)
 
 
 def resize(memsize):
@@ -68,7 +85,7 @@ def resize(memsize):
     Resets the the amount of memory allocated for Ferret from Python-managed memory.
 
     Arguments:
-        memsize: the new size, in megawords (where a "word" is 32 bits),
+        memsize: the new size, in megafloats (where a "float" is 4 bytes),
                  for Ferret's memory block
     Returns:
         True if successful - Ferret has the new amount of memory
@@ -77,13 +94,17 @@ def resize(memsize):
         ValueError if memsize if not a positive number
         MemoryError if Ferret has not been started or has been stopped
     """
+    # check memsize
     try:
         flt_memsize = float(memsize)
         if flt_memsize <= 0.0:
             raise ValueError
     except:
         raise ValueError, "memsize must be a positive number"
-
+    # debug logging
+    if my_logger:
+        my_logger.debug('calling _pyferret._resize(%f)' % flt_memsize)
+    # the actual call
     return _pyferret._resize(flt_memsize)
 
 
@@ -108,6 +129,7 @@ def run(command=None):
         ValueError if command is neither None nor a String
         MemoryError if Ferret has not been started or has been stopped
     """
+    # check command
     if command == None:
         str_command = ""
     elif not isinstance(command, str):
@@ -116,6 +138,10 @@ def run(command=None):
         str_command = ""
     else:
         str_command = command
+    # debug logging
+    if my_logger:
+        my_logger.debug('calling _pyferret._run("%s")' % str_command)
+    # the actual call
     retval = _pyferret._run(str_command)
     if (retval[0] == _pyferret._FERR_EXIT_PROGRAM) and (retval[1] == "EXIT"):
         # python -i -c ... intercepts the sys.exit(0) and stays in python.
@@ -130,7 +156,7 @@ def run(command=None):
 def getdata(name, create_mask=True):
     """
     Returns the numeric array and axes information for the data variable
-    described in name.
+    described in name as a dictionary.
 
     Arguments:
         name: the name of the numeric data to retrieve
@@ -187,6 +213,8 @@ def getdata(name, create_mask=True):
     Raises:
         ValueError if the data name is invalid
         MemoryError if Ferret has not been started or has been stopped
+    See also:
+        get
     """
     # lists of units (in uppercase) for checking if a custom axis is actual a longitude axis
     UC_LONGITUDE_UNITS = [ "DEG E", "DEG_E", "DEG EAST", "DEG_EAST",
@@ -198,10 +226,14 @@ def getdata(name, create_mask=True):
                            "DEGREES N", "DEGREES_N", "DEGREES NORTH", "DEGREES_NORTH",
                            "DEG S", "DEG_S", "DEG SOUTH", "DEG_SOUTH",
                            "DEGREES S", "DEGREES_S", "DEGREES SOUTH", "DEGREES_SOUTH" ]
+    # check name
     if not isinstance(name, str):
         raise ValueError, "name must be a string"
     elif name.isspace():
         raise ValueError, "name cannot be an empty string"
+    # debug logging
+    if my_logger:
+        my_logger.debug('calling _pyferret._get("%s")' % name)
     # get the data and related information from Ferret
     vals = _pyferret._get(name)
     # break apart the tuple to simplify (returning a dictionary would have been better)
@@ -212,6 +244,13 @@ def getdata(name, create_mask=True):
     axis_names = vals[4]
     axis_units = vals[5]
     axis_coords = vals[6]
+    # debug logging
+    if my_logger:
+        my_logger.debug('    missing_value = %f' % bdfs[0])
+        my_logger.debug('    data_unit = %s' % data_unit)
+        my_logger.debug('    axis_types = %s' % str(axis_types))
+        my_logger.debug('    axis_names = %s' % str(axis_names))
+        my_logger.debug('    axis_units = %s' % str(axis_units))
     # A custom axis could be standard axis that is not in Ferret's expected order,
     # so check the units
     for k in xrange(_MAX_FERRET_NDIM):
@@ -221,6 +260,10 @@ def getdata(name, create_mask=True):
                 axis_types[k] = AXISTYPE_LONGITUDE
             elif uc_units in UC_LATITUDE_UNITS:
                 axis_types[k] = AXISTYPE_LATITUDE
+    # debug logging
+    if my_logger:
+        my_logger.debug('    axis_types after long/lat check = %s' % str(axis_types))
+    # _pyferret._get returns a copy of the data, so no need to force a copy
     if create_mask:
         if np.isnan(bdfs[0]):
             # NaN comparisons always return False, even to another NaN
@@ -237,7 +280,7 @@ def getdata(name, create_mask=True):
 
 def get(name, create_mask=True):
     """
-    Returns the numeric data array described in name.
+    Returns the numeric data array described in name as a TransientVariable object.
 
     Arguments:
         name: the name of the numeric data array to retrieve
@@ -253,16 +296,6 @@ def get(name, create_mask=True):
     See also:
         getdata
     """
-    # lists of units (in uppercase) for checking if a custom axis is actual a longitude axis
-    UC_LONGITUDE_UNITS = [ "DEG E", "DEG_E", "DEG EAST", "DEG_EAST",
-                           "DEGREES E", "DEGREES_E", "DEGREES EAST", "DEGREES_EAST",
-                           "DEG W", "DEG_W", "DEG WEST", "DEG_WEST",
-                           "DEGREES W", "DEGREES_W", "DEGREES WEST", "DEGREES_WEST" ]
-    # lists of units (in uppercase) for checking if a custom axis is actual a latitude axis
-    UC_LATITUDE_UNITS  = [ "DEG N", "DEG_N", "DEG NORTH", "DEG_NORTH",
-                           "DEGREES N", "DEGREES_N", "DEGREES NORTH", "DEGREES_NORTH",
-                           "DEG S", "DEG_S", "DEG SOUTH", "DEG_SOUTH",
-                           "DEGREES S", "DEGREES_S", "DEGREES SOUTH", "DEGREES_SOUTH" ]
     # lists of units (in lowercase) for checking if a custom axis can be represented by a cdtime.reltime
     # the unit must be followed by "since" and something else
     LC_TIME_UNITS = [ "s", "sec", "secs", "second", "seconds",
@@ -273,20 +306,26 @@ def get(name, create_mask=True):
                       "season", "seasons",
                       "yr", "year", "years" ]
     lc_month_nums = { "jan":1, "feb":2, "mar":3, "apr":4, "may":5, "jun":6, "jul":7, "aug":8, "sep":9, "oct":10, "nov":11, "dec":12 }
-    if not isinstance(name, str):
-        raise ValueError, "name must be a string"
-    elif name.isspace():
-        raise ValueError, "name cannot be an empty string"
-    # get the data and related information from Ferret
-    vals = _pyferret._get(name)
-    # break apart the tuple to simplify (returning a dictionary would have been better)
-    data = vals[0]
-    bdfs = vals[1]
-    data_unit = vals[2]
-    axis_types = vals[3]
-    axis_names = vals[4]
-    axis_units = vals[5]
-    axis_coords = vals[6]
+    # debug logging
+    if my_logger:
+        my_logger.debug('calling getdata("%s")' % name)
+    # get the data and related information from Ferret,
+    # building on what was done in getdata
+    data_dict = getdata(name, create_mask)
+    data = data_dict["data"]
+    bdfs = data_dict["missing_value"]
+    data_unit = data_dict["data_unit"]
+    axis_types = data_dict["axis_types"]
+    axis_names = data_dict["axis_names"]
+    axis_units = data_dict["axis_units"]
+    axis_coords = data_dict["axis_coords"]
+    if my_logger:
+        my_logger.debug('Returned from call to getdata("%s"):' % name)
+        my_logger.debug('    missing_value = %f' % bdfs[0])
+        my_logger.debug('    data_unit = %s' % data_unit)
+        my_logger.debug('    axis_types = %s' % str(axis_types))
+        my_logger.debug('    axis_names = %s' % str(axis_names))
+        my_logger.debug('    axis_units = %s' % str(axis_units))
     # create the axis list for this variable
     var_axes = [ ]
     for k in xrange(_MAX_FERRET_NDIM):
@@ -337,19 +376,10 @@ def get(name, create_mask=True):
             # and finally append it to the axis list
             var_axes.append(newaxis)
         elif axis_types[k] == AXISTYPE_CUSTOM:
-            # custom axis which could be standard axis that is
-            # not in Ferret's expected order, so check the units
-            uc_units = axis_units[k].upper()
+            # Check a custom axis for relative time units.  Note that getdata has
+            # already dealt with longitude or latitude not in Ferret's standard position.
             lc_vals = axis_units[k].lower().split()
-            if uc_units in UC_LONGITUDE_UNITS:
-                newaxis = cdms2.createAxis(axis_coords[k], id=axis_names[k])
-                newaxis.units = axis_units[k]
-                newaxis.designateLongitude()
-            elif uc_units in UC_LATITUDE_UNITS:
-                newaxis = cdms2.createAxis(axis_coords[k], id=axis_names[k])
-                newaxis.units = axis_units[k]
-                newaxis.designateLatitude()
-            elif (len(lc_vals) > 2) and (lc_vals[1] == "since") and (lc_vals[0] in LC_TIME_UNITS):
+            if (len(lc_vals) > 2) and (lc_vals[1] == "since") and (lc_vals[0] in LC_TIME_UNITS):
                 # (unit) since (start_date)
                 datevals = lc_vals[2].split("-")
                 try:
@@ -379,23 +409,22 @@ def get(name, create_mask=True):
             var_axes.append(None)
         else:
             raise RuntimeError, "Unexpected axis type of %d" % axis_types[k]
-    # _pyferret._get returns a copy of the data, so createVariable does not need to make a copy
+    # debug logging
+    if my_logger:
+        my_logger.debug('calling cdms2.createVariable(<data>, fill_value=%f, axes=%s, id="%s", attribures={"name":"%s", "units":"%s"})' % \
+                                                      (bdfs[0], str(var_axes), name, name, data_unit))
+    # Since _pyferret._get (and thus getdata) returns a copy of the data,
+    # createVariable does not need to force a copy.  The mask, if request,
+    # has been created by getdata.
     datavar = cdms2.createVariable(data, fill_value=bdfs[0], axes=var_axes, id=name,
                                    attributes={"name":name, "units":data_unit})
-    if create_mask:
-        if np.isnan(bdfs[0]):
-            # NaN comparisons always return False, even to another NaN
-            datavar.mask = np.isnan(data)
-        else:
-            # since values in data and bdfs[0] are all float32 values assigned by Ferret,
-            # using equality should work correctly
-            datavar.mask = ( data == bdfs[0] )
     return datavar
 
 
 def put(datavar, axis_pos=None, dset='', name=None, title=None):
     """
-    Creates a Ferret data variable with a copy of the data given in datavar.
+    Creates a Ferret data variable with a copy of the data given in datavar,
+    an AbtractVariable object.
 
     Arguments:
         datavar:  a cdms2 AbstractVariable describing the data variable
@@ -645,6 +674,11 @@ def put(datavar, axis_pos=None, dset='', name=None, title=None):
     #
     # now make a copy of the data as (contiguous) 32-bit floats in Fortran order
     fdata = np.array(data, dtype=np.float32, order='F', copy=1)
+    # debug logging
+    if my_logger:
+        my_logger.debug('calling _pyferret._put("%s", "%s", <data>, %f, "%s", "%s", %s, %s, %s, <axis_coords>)' % \
+                                                (codename, titlename, bdfval, data_unit, dset_str, 
+                                                 str(axis_types), str(axis_names),str(axis_units)) )
     #
     # _pyferret._put will throw an Exception if there is a problem
     _pyferret._put(codename, titlename, fdata, bdfval, data_unit, dset_str,
@@ -662,6 +696,10 @@ def stop():
         False if Ferret has not been started or has already been stopped
         True otherwise
     """
+    # debug logging
+    if my_logger:
+        my_logger.debug('calling _pyferret._stop()')
+    # make the actual call
     return _pyferret._stop()
 
 
@@ -803,27 +841,31 @@ def get_axis_coordinates(id, arg, axis):
     Raises:
         ValueError if id, arg, or axis is invalid
     """
+    # check the id
     try:
         int_id = int(id)
         if int_id < 0:
             raise ValueError
     except:
         raise ValueError, "id must be a positive integer value"
-
+    # check the arg index
     try:
         int_arg = int(arg)
         if (int_arg < ARG1) or (int_arg > ARG9):
             raise ValueError
     except:
         raise ValueError, "arg must be an integer value in [%d,%d]" % (ARG1,ARG9)
-
+    # check the axis index
     try:
         int_axis = int(axis)
         if (int_axis < X_AXIS) or (int_axis > T_AXIS):
             raise ValueError
     except:
         raise ValueError, "axis must be an integer value in [%d,%d]" % (X_AXIS,T_AXIS)
-
+    # debug logging
+    if my_logger:
+        my_logger.debug('calling _pyferret._get_axis_coordinates(%d, %d, %d)' % (int_id, int_arg, int_axis))
+    # make the actual call
     return _pyferret._get_axis_coordinates(int_id, int_arg, int_axis)
 
 
@@ -842,27 +884,31 @@ def get_axis_box_sizes(id, arg, axis):
     Raises:
         ValueError if id, arg, or axis is invalid
     """
+    # check the id
     try:
         int_id = int(id)
         if int_id < 0:
             raise ValueError
     except:
         raise ValueError, "id must be a positive integer value"
-
+    # check the arg index
     try:
         int_arg = int(arg)
         if (int_arg < ARG1) or (int_arg > ARG9):
             raise ValueError
     except:
         raise ValueError, "arg must be an integer value in [%d,%d]" % (ARG1,ARG9)
-
+    # check the axis index
     try:
         int_axis = int(axis)
         if (int_axis < X_AXIS) or (int_axis > T_AXIS):
             raise ValueError
     except:
         raise ValueError, "axis must be an integer value in [%d,%d]" % (X_AXIS,T_AXIS)
-
+    # debug logging
+    if my_logger:
+        my_logger.debug('calling _pyferret._get_axis_box_sizes(%d, %d, %d)' % (int_id, int_arg, int_axis))
+    # make the actual call
     return _pyferret._get_axis_box_sizes(int_id, int_arg, int_axis)
 
 
@@ -881,27 +927,31 @@ def get_axis_box_limits(id, arg, axis):
     Raises:
         ValueError if id, arg, or axis is invalid
     """
+    # check the id
     try:
         int_id = int(id)
         if int_id < 0:
             raise ValueError
     except:
         raise ValueError, "id must be a positive integer value"
-
+    # check the arg index
     try:
         int_arg = int(arg)
         if (int_arg < ARG1) or (int_arg > ARG9):
             raise ValueError
     except:
         raise ValueError, "arg must be an integer value in [%d,%d]" % (ARG1,ARG9)
-
+    # check the axis index
     try:
         int_axis = int(axis)
         if (int_axis < X_AXIS) or (int_axis > T_AXIS):
             raise ValueError
     except:
         raise ValueError, "axis must be an integer value in [%d,%d]" % (X_AXIS,T_AXIS)
-
+    # debug logging
+    if my_logger:
+        my_logger.debug('calling _pyferret._get_axis_box_limits(%d, %d, %d)' % (int_id, int_arg, int_axis))
+    # make the actual call
     return _pyferret._get_axis_box_limits(int_id, int_arg, int_axis)
 
 
@@ -925,26 +975,30 @@ def get_axis_info(id, arg, axis):
     Raises:
         ValueError if id, arg, or axis is invalid
     """
+    # check the id
     try:
         int_id = int(id)
         if int_id < 0:
             raise ValueError
     except:
         raise ValueError, "id must be a positive integer value"
-
+    # check the arg index
     try:
         int_arg = int(arg)
         if (int_arg < ARG1) or (int_arg > ARG9):
             raise ValueError
     except:
         raise ValueError, "arg must be an integer value in [%d,%d]" % (ARG1,ARG9)
-
+    # check the axis index
     try:
         int_axis = int(axis)
         if (int_axis < X_AXIS) or (int_axis > T_AXIS):
             raise ValueError
     except:
         raise ValueError, "axis must be an integer value in [%d,%d]" % (X_AXIS,T_AXIS)
-
+    # debug logging
+    if my_logger:
+        my_logger.debug('calling _pyferret._get_axis_info(%d, %d, %d)' % (int_id, int_arg, int_axis))
+    # make the actual call
     return _pyferret._get_axis_info(int_id, int_arg, int_axis)
 

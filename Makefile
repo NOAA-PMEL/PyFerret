@@ -1,6 +1,7 @@
 #
-# Makefile for building the ferret shared-object library (libferret.so), 
-# and the pyferret module with its shared-object library (_pyferret.so).
+# Makefile for building and installing the ferret shared-object library 
+# (libferret.so), the pyferret module with its shared-object library 
+# (_pyferret.so), and the ferret.py script.
 #
 
 #

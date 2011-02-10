@@ -1,0 +1,64 @@
+#! /bin/csh
+# This c-shell script is used to set environment variables need by 
+# pyferret, and then execute ferret.py in python.  The intent of this 
+# script is to provide a traditional Ferret interface through pyferret.
+
+# pythonN.N executable to use
+# set pyname = python2.4
+set pyname = python2.6
+
+# Python directory containing the pyferret package and ferret.py.
+set pysite = /home/users/ksmith/.local/lib/${pyname}/site-packages
+
+# Make sure FER_* environment variables are assigned
+if ( ! $?FER_DIR ) then
+#   Either source the ferret_paths script to assign the environment variables
+#    source /home/users/tmap/bin/ferret_paths >&! /dev/null
+#
+#   Or just throw an error if they should have already been defined
+    echo "**ERROR: Ferret environment variables are not defined"
+    exit 1
+#
+endif
+
+# FER_LIBS may not be defined by ferret_paths.  This names the directory
+# containing threddsBrowser.jar and toolsUI.jar.  This script also assumes
+# this is the directory containing libferret.so (when setting LD_LIBRARY_PATH).
+if ( ! $?FER_LIBS ) then
+    setenv FER_LIBS ${FER_DIR}/lib
+endif
+
+# directory containing libferret.so
+set libferret_dir = ${FER_LIBS}
+
+# Make sure pyferret is found in python
+if ( ! $?PYTHONPATH ) then
+    setenv PYTHONPATH ${pysite}
+else
+    if ( ${PYTHONPATH} !~ *${pysite}* ) then
+        setenv PYTHONPATH ${pysite}:${PYTHONPATH}
+    endif
+endif
+
+if ( $?LD_LIBRARY_PATH ) then
+#   Some libraries (noteably, netcdf and hdf5 libraries) needed by libferret.so
+#   are very likely to be in /usr/local/lib. Note that /usr/local/lib can easily
+#   be part of a path to something else so carefully check for exactly that path
+    if ( ( ${LD_LIBRARY_PATH} !~ *:/usr/local/lib:* ) && \
+         ( ${LD_LIBRARY_PATH} !~ /usr/local/lib:* ) && \
+         ( ${LD_LIBRARY_PATH} !~ *:/usr/local/lib ) && \
+         ( ${LD_LIBRARY_PATH} !~ /usr/local/lib ) ) then
+            setenv LD_LIBRARY_PATH /usr/local/lib:${LD_LIBRARY_PATH}
+        endif
+    endif
+#   Make sure libferret.so is seen.
+    if ( ${LD_LIBRARY_PATH} !~ *${libferret_dir}* ) then
+        setenv LD_LIBRARY_PATH ${libferret_dir}:${LD_LIBRARY_PATH}
+    endif
+else
+    setenv LD_LIBRARY_PATH ${libferret_dir}:/usr/local/lib
+endif
+
+# Finally, run pyferret
+${pyname} -i ${pysite}/ferret.py $*
+

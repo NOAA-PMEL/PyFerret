@@ -121,3 +121,13 @@ else
 	echo "    PS files look good......"
 endif
 
+# clean up
+rm -f *.plt.ps
+rm -f *.meta.ps
+rm -f *.diff.ps*
+rm -f *.diff_ps*
+rm -f *.diff_gif*
+rm -f *bat.ps
+rm -f diff*.ps
+rm -f master*.ps
+rm -f bat*.plt*.ps

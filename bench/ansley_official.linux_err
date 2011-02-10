@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 35406068 Feb  7 14:22 /home/users/ansley/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 47573219 Feb  9 16:14 /home/users/ansley/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: v6.67beta2; xml, fix bug 1348 for @DIN on one-point y axis
+Note: fix to do_4d_trans.F for integrals @DIN at a single Y
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/users/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/linux/FERRET/external_functions/ext_func
-Beginning at Mon Feb 7 14:50:33 PST 2011
+Beginning at Wed Feb 9 16:16:35 PST 2011
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2049,7 +2049,7 @@ sho att/all .
  *** NOTE: Changing the value of attribute (coadsx).modulo
  *** NOTE: Changing the value of attribute (TIME4).time_origin
 syntax error, unexpected SCAN_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>tauy</b><b>absuv</b><b>taux</b><b>absuu</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
+context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuv</b><b>taux</b><b>tauy</b><b>absuu</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  **ERROR: command syntax: enclose coordinate variable name in parentheses
 list coadsx.units
  **ERROR: variable unknown or not in data set: COADSX.UNITS
@@ -2243,14 +2243,6 @@ Replacing definition of axis TAX
  *** NOTE: Not deleted: TAX
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: cannot parse "units since date", date= "EVENT"; leaving units string
-
-   ERROR in External Function chdir:
-   Dynamic linking call dlopen() returns --
-   "/home/users/ansley/linux/FERRET/external_functions/ext_func/chdir.so: undefined symbol: _gfortran_chdir_i4".
-
-   ERROR in External Function neutral:
-   Dynamic linking call dlopen() returns --
-   "/home/users/ansley/linux/FERRET/external_functions/ext_func/neutral.so: undefined symbol: gamma_n_".
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3208,5 +3200,13 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
+gdeactivatews()    3 GKS not in proper state: GKS shall be in the state WSAC
+gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSOP or in the state WSAC
+gdeactivatews()    3 GKS not in proper state: GKS shall be in the state WSAC
+gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSOP or in the state WSAC
+gdeactivatews()    3 GKS not in proper state: GKS shall be in the state WSAC
+gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSOP or in the state WSAC
+gdeactivatews()    3 GKS not in proper state: GKS shall be in the state WSAC
+gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSOP or in the state WSAC
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Feb 7 14:52:33 PST 2011
+Ended at Wed Feb 9 16:18:52 PST 2011

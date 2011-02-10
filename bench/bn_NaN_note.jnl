@@ -1,0 +1,15 @@
+! bn_NaN_note.jnl
+! Ferret v6.7  2/2011
+! The message about no missing flags, and assuming NaN,
+! is issued only when MODE DIAGNOSTIC is turned on.
+
+! This dataset has no missing-valueu flags on its variables
+! No notes on opening it
+USE test0
+!
+! Close it and then open it with MODE DIAG
+! Now we get the NOTE
+GO bn_reset
+SET MODE diag
+USE test0
+CANCEL MODE diag

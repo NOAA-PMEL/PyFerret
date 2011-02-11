@@ -29,9 +29,9 @@
 			  -I../../xgks/port 
 
 	CDF_INCLUDES	= -I/$(NETCDF4_DIR)/include
-	
-	# New platform type var - *kob* 10/01
-	PLATFORM = Linux(gfortran) 2.6.9-89.0.20.ELsmp
+
+	# New platform type var - *acm* 2/11
+	PLATFORM = Linux(gfortran) 2.6.18-238.1.1.el5
 
 	CC              = gcc
 	CXX		= c++

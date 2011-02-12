@@ -804,75 +804,60 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
      .                        vname(:vlen), maxlen, attlen, attoutflag, 
      .                        buff, val)
       IF ( got_it ) THEN
-         IF (STR_SAME(
-     .      'atmosphere_hybrid_height_coordinate',buff) .EQ.str_eq) THEN
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'atmosphere_hybrid_height_coordinate',buff(:35))
+     .                                     .EQ.str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF 
-         IF (STR_SAME(
-     .      'atmosphere_hybrid_sigma_pressure_coordinate',buff)
-     .                                     .EQ. str_eq) THEN
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'atmosphere_hybrid_sigma_pressure_coordinate',buff(:43))
+     .                                     .EQ.str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF
-         IF (STR_SAME(
-     .      'atmosphere_hybrid_height_coordinate',buff)
-     .                                     .EQ. str_eq) THEN
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'atmosphere_hybrid_height_coordinate',buff(:35))
+     .                                     .EQ.str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF
-         IF (STR_SAME(
-     .      'atmosphere_ln_pressure_coordinate',buff) .EQ. str_eq) THEN
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'atmosphere_ln_pressure_coordinate',buff(:33))
+     .                                     .EQ.str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF
-         IF (STR_SAME(
-     .      'atmosphere_sigma_coordinate',buff) .EQ. str_eq) THEN
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'atmosphere_sigma_coordinate',buff(:27))
+     .                                     .EQ.str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF
-         IF (STR_SAME(
-     .      'atmosphere_sleve_coordinate',buff) .EQ. str_eq) THEN
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'atmosphere_sleve_coordinate',buff(:27))
+     .                                     .EQ.str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF
-         IF (STR_SAME(
-     .      'land_ice_sigma_coordinate',buff) .EQ. str_eq) THEN
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'land_ice_sigma_coordinate',buff(:25))
+     .                                     .EQ.str_eq) THEN
             line_direction(iaxis) = 'DU'
          ENDIF
-         IF (STR_SAME('ocean_s_coordinate',buff) .EQ. str_eq) THEN
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'ocean_s_coordinate',buff(:19))
+     .                                     .EQ.str_eq) THEN
             line_direction(iaxis) = 'UD'
          ENDIF
-         IF (STR_SAME('ocean_sigma_coordinate',buff) .EQ. str_eq) THEN
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'ocean_sigma_coordinate',buff(:22))
+     .                                     .EQ.str_eq) THEN
             line_direction(iaxis) = 'UD'
          ENDIF
-         IF (STR_SAME(
-     .      'ocean_sigma_z_coordinate',buff) .EQ. str_eq) THEN
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'ocean_sigma_z_coordinate',buff(:24))
+     .                                     .EQ.str_eq) THEN
             line_direction(iaxis) = 'UD'
          ENDIF
-         IF (STR_SAME(
-     .      'ocean_double_sigma_coordinate',buff) .EQ. str_eq) THEN
+         IF (STR_CASE_BLIND_COMPARE(
+     .      'ocean_double_sigma_coordinate',buff(:29))
+     .                                     .EQ.str_eq) THEN
             line_direction(iaxis) = 'UD'
-         ENDIF
-
-         IF (STR_SAME('longitude',buff) .EQ. str_eq) THEN
-            line_direction(iaxis) = 'WE'
-            line_units(iaxis) = 'degrees_east'
-         ENDIF
-
-         IF (STR_SAME('latitude',buff) .EQ. str_eq) THEN
-            line_direction(iaxis) = 'SN'
-            line_units(iaxis) = 'degrees_north'
-         ENDIF
-
-         IF (STR_SAME('depth',buff) .EQ. str_eq) THEN
-            line_direction(iaxis) = 'UD'
-         ENDIF
-
-         IF (STR_SAME('altitude',buff) .EQ. str_eq) THEN
-            line_direction(iaxis) = 'DU'
-         ENDIF
-
-         IF (STR_SAME ('height',buff) .EQ. str_eq) THEN
-            line_direction(iaxis) = 'DU'
-         ENDIF
-
-         IF (STR_SAME('time',buff) .EQ. str_eq) THEN
-            line_direction(iaxis) = 'TI'
          ENDIF
 
       ENDIF  ! end of std names

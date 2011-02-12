@@ -89,6 +89,8 @@
 * V67   1/11 *acm* Fix ticket 1777. If a coordinate variale is STRING, issue notes.
 * V67   1/11 *acm* Fix ticket 1794. If no missing/fillvalue, issue a warning ONLY
 *             when diagnostic mode is set.
+* v67   2/11 *acm* Do the notes about no missing/fillvalue for each variable,
+*             when in diagnostic mode. So move that back to cd_get_1_dep_var.
 *
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -112,15 +114,13 @@
 	external xdset_info_data
         include 'xdset_info.cd_equiv'
         include 'xio.cmn_text'
-	include 'xdiag_ctrl.cmn_text'
-	external xdiag_ctrl_data
 
 * argument declarations:
 	LOGICAL        reversed(max_lines:line_ceiling), tregular
 	INTEGER	      dset, cdfid, status
 
 * local parameter definitions:
-	LOGICAL	    do_warn, nomissing
+	LOGICAL	    do_warn
 	INTEGER     str_eq
 	PARAMETER ( str_eq = 0,
      .		    do_warn = .TRUE. )
@@ -309,8 +309,6 @@ c      REAL*8  dg_bad
 	las_pos  = 1    ! reduces redundant search for space
 	got_a_variable = .FALSE.
 	
-        nomissing = .FALSE.
-
 	DO 1000 ivcd = 1,nvars
 
 * initialize
@@ -386,7 +384,7 @@ c      REAL*8  dg_bad
 
 * PROCESS A DEPENDENT VARIANLE
  500	   CALL CD_GET_1_DEP_VAR ( dset, cdfid, ivcd, las_pos, global_bad, 
-     .				   ivtm, nomissing, status )
+     .				   ivtm, status )
 
            IF (status .NE. merr_ok) GOTO 5900
 	   IF ( ivtm .NE. 0 ) THEN
@@ -405,7 +403,7 @@ c      REAL*8  dg_bad
 	      CALL CD_GET_VAR_ID ( dset, 'time2', epic_t2, status )
 	      IF ( epic_t2 .GT. 0 ) THEN
 	        CALL CD_GET_1_DEP_VAR (dset,cdfid, epic_t2,
-     .			las_pos, global_bad, ivtm, nomissing, status )
+     .			las_pos, global_bad, ivtm, status )
 	        IF (status .NE. merr_ok) GOTO 5900
 	        IF ( ivtm .NE. 0 ) THEN
 	          las_pos = ivtm	! optimizes next hunt for slot
@@ -448,15 +446,6 @@ c      REAL*8  dg_bad
      .                                    LEN(ds_var_code(ivtm)))
  310    CONTINUE
 	ENDIF
-
-
-* if neither missing flag nor _FillValue was defined, use NaN.
-* Issue the warning only if we are in MODE DIAGNOSTIC
-	IF (nomissing ) THEN
-	   IF (do_warn .AND. tmap_diag_on) CALL WARN(
-     .         'If no missing_value or _FillValue attribute on '//
-     .        'variables, will use NaN')
-        ENDIF
 
 * successful completion
 	status = merr_ok

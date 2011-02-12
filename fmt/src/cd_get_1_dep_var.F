@@ -1,5 +1,5 @@
 	SUBROUTINE CD_GET_1_DEP_VAR ( dset, cdfid, ivcd, las_pos, global_bad, 
-     .				      ivtm, nomissing, status )
+     .				      ivtm, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -61,6 +61,8 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V663 *acm* 7/10  If neither missing_flag nor _FillValue attribute, use NaN.
 *                  but set an output attribute containing the Ferret default.
+* v67   2/11 *acm* Do the notes about no missing/fillvalue for each variable,
+*             when in diagnostic mode. So move that back to cd_get_1_dep_var.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -89,12 +91,13 @@
         include 'xdset_info.cd_equiv'
         include 'xio.cmn_text'
         external xio_data
-
+	include 'xdiag_ctrl.cmn_text'
+	external xdiag_ctrl_data
 
       LOGICAL NC_GET_ATTRIB_FLOAT, NC_GET_ATTRIB_STRING, 
      .        NC_GET_ATTRIB, CD_GET_BOUNDS,
      .        got_it, got_bad, got_missing, tf2,
-     .        do_warn, coordvar, nomissing
+     .        do_warn, coordvar
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1, TM_FERRET_VARTYPE, 
      .        cdfstat, idim,
@@ -316,14 +319,10 @@ c        ENDIF
              IF ( .NOT.got_missing .AND. .NOT.got_bad) THEN
                 CALL SET_NAN (ds_missing_flag(ivtm))
 		CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm) )
-                nomissing = .TRUE.
-c	        attoutflag = 1
-c		buff = ' '
-c		aname = '_FillValue'
-c		val = ds_bad_flag(ivtm)
-c		attlen = 1
-c	        CALL CD_PUT_NEW_ATTR (dset, ivcd, aname, NF_FLOAT,
-c    .                attlen, attoutflag, buff, val, status)
+		IF (do_warn .AND. tmap_diag_on) CALL WARN(
+     .'No missing_value or _FillValue attribute. Using NaN for variable: ' 
+     . //vname(:vlen)) 
+
              ENDIF
 
 *  *kob* call SWITCH_NAN to make sure if NaN exisits, its in ds_missing_flag

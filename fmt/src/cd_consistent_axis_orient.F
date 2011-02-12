@@ -74,12 +74,12 @@
 * local variable declarations:
 
       INTEGER TM_LENSTR1, i, j, igrid, igrid_min, igrid_max, idim, iaxis, 
-     .        disordered, reordered, axes_out_of_order(100), n_in_grid,  
+     .        disordered, reordered, n_in_grid,  
      .        grid_save(4), igrid1, ipos1, igrid2, ipos2, kk, 
      .        iaxis_last, iax, iorder, tmvar, ivar, vartyp, nvdims, 
      .        vdims(8), nvatts, vlen, istat, lastdim, tmplines(4)
       LOGICAL shift_ok, need_iterate, coordvar, all_outflag, permuted
-
+      REAL axes_out_of_order(100)
       CHARACTER vname*128
 
       INTEGER grid_ndims (max_grids:grid_ceiling), 
@@ -89,7 +89,7 @@
       reordered = 0
 
       DO i = 1, 100
-         axes_out_of_order(i) = 0
+         axes_out_of_order(i) = 0.
       ENDDO
       DO i = 0, line_ceiling
          line_use_dir(i) = 0
@@ -116,7 +116,7 @@
             ELSE
                IF ( line_use_dir(iaxis) .NE. idim) THEN
                   disordered = disordered + 1
-                  axes_out_of_order(disordered) = iaxis
+                  axes_out_of_order(disordered) = FLOAT(iaxis)
                ENDIF
             ENDIF
          ENDIF
@@ -124,7 +124,7 @@
 
       GOTO 10
   19  CONTINUE
-
+      
       IF (disordered .EQ. 0) GOTO 2000
 
       CALL HEAP2_V (axes_out_of_order, 0., disordered)
@@ -145,7 +145,7 @@
       iorder = 0
       DO 200 i = 1, disordered
          iorder = iorder + 1
-         iaxis = axes_out_of_order(iorder)
+         iaxis = INT(axes_out_of_order(iorder))
 	 IF (iaxis.EQ.iaxis_last .OR. iaxis.EQ.0) GOTO 200
          iaxis_last = iaxis
 

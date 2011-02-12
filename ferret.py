@@ -134,17 +134,14 @@ def fer_main(arglist):
         init_script = os.path.join(home_val, '.ferret')
         if os.path.exists(init_script):
             if my_logger:
-                my_logger.debug('calling pyferret.run(\'go "%s"\')' % init_script)
-            pyferret.run('go "%s"' % init_script)
+                my_logger.debug('calling pyferret.run(\'go "%s" ; exit /topy\')' % init_script)
+            pyferret.run('go "%s" ; exit /topy' % init_script)
     # if a command-line script is given, run the script and exit completely
     if script != None:
         script_line = " ".join(script)
         if my_logger:
-            my_logger.debug('calling pyferret.run(\'go "%s"\')' % script_line)
-        pyferret.run('go "%s"' % script_line)
-        if my_logger:
-            my_logger.debug('calling pyferret.run("exit") to quit')
-        pyferret.run("exit")
+            my_logger.debug('calling pyferret.run(\'go "%s" ; exit /program\')' % script_line)
+        pyferret.run('go "%s" ; exit /program' % script_line)
         raise SystemExit
     # otherwise, go into Ferret command-line processing until "exit /topy"
     if my_logger:

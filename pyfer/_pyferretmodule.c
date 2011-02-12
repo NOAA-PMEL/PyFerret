@@ -70,6 +70,7 @@ void set_batch_graphics_(char *meta_name);
 static int ferretInitialized = 0;
 
 /* for memory management in this module */
+static size_t ferMemSize;
 static float *ferMemory = NULL;
 static float *pplMemory = NULL;
 
@@ -94,8 +95,8 @@ static char pyferretStartDocstring[] =
     " (none) \n"
     "\n"
     "Optional arguments: \n"
-    "    memsize = <float>: the size, in megawords (where a \"word\" is 32 bits), \n"
-    "                       to allocate for Ferret's memory block (default 25.6) \n"
+    "    memsize = <float>: the size, in megafloats (where a floats is 4 bytes), \n"
+    "                       to allocate for Ferret's memory cache (default 25.6) \n"
     "    journal = <bool>: initial state of Ferret's journal mode (default True) \n"
     "    verify = <bool>: initial state of Ferret's verify mode (default True) \n"
     "    metaname = <string>: filename for Ferret graphics (default empty) \n"
@@ -118,7 +119,6 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     int journalFlag = 1;
     int verifyFlag = 1;
     int pplMemSize;
-    size_t ferMemSize;
     int status;
     int ttoutLun = TTOUT_LUN;
     int one_cmnd_mode_int;
@@ -202,28 +202,39 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 
 /*
  * Helper function to reallocate Ferret's memory from Python.
- * Argument: the new number of floats of Ferret's memory block is given by 
+ * Argument: the new number of floats of Ferret's memory cache is given by 
  *           blksiz * PMAX_MEM_BLKS (defined in ferret.h as 2000)
  * Returns: zero if fails, non-zero if successful
  */
 static int resizeFerretMemory(int blksiz)
 {
-    float *newFerMemory;
-    size_t ferMemSize;
+    size_t newFerMemSize;
 
+    /* Get the new size for the memory and check for overflow */
     if ( blksiz <= 0 )
         return 0;
-    ferMemSize = (size_t)blksiz * (size_t)PMAX_MEM_BLKS;
-    /* Check for overflow */
-    if ( (size_t)blksiz != ferMemSize / (size_t)PMAX_MEM_BLKS )
-        return 0;
-    /* Reallocate the new amount of memory for Ferret */
-    newFerMemory = (float *) PyMem_Realloc(ferMemory, ferMemSize * (size_t)sizeof(float));
-    if ( newFerMemory == NULL )
+    newFerMemSize = (size_t)blksiz * (size_t)PMAX_MEM_BLKS;
+    if ( (size_t)blksiz != newFerMemSize / (size_t)PMAX_MEM_BLKS )
         return 0;
 
+    /* 
+     * Free the old memory and allocate new memory rather than use
+     * realloc since the contents of the old memory isn't needed.
+     * This could also result in a better garbage collection.
+     */
+    PyMem_Free(ferMemory);
+    ferMemory = (float *) PyMem_Malloc(newFerMemSize * (size_t)sizeof(float));
+    if ( ferMemory == NULL ) {
+        ferMemory = (float *) PyMem_Malloc(ferMemSize * (size_t)sizeof(float));
+        if ( ferMemory == NULL ) {
+            fprintf(stderr, "**ERROR: Unable to restore Ferret's memory cache of %f Mfloats\n", (double)ferMemSize / 1.0E6); 
+            exit(1);
+        }
+        return 0;
+    }
+
     /* Reallocation successful; assign the new memory */
-    ferMemory = newFerMemory;
+    ferMemSize = newFerMemSize;
     set_fer_memory(ferMemory, ferMemSize);
     return 1;
 }
@@ -233,8 +244,8 @@ static char pyferretResizeMemoryDocstring[] =
     "Reset the the amount of memory allocated for Ferret from Python-managed memory. \n"
     "\n"
     "Required arguments: \n"
-    "    memsize = <float>: the new size, in megawords (where a \"word\" is 32 bits), \n"
-    "                       for Ferret's memory block \n"
+    "    memsize = <float>: the new size, in megafloats (where a float is 4 bytes), \n"
+    "                       for Ferret's memory cache \n"
     "\n"
     "Optional arguments: \n"
     "    (none) \n"
@@ -301,7 +312,9 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
 {
     static char *argNames[] = {"command", NULL};
     const char *command;
+    const char *iter_command;
     int  one_cmnd_mode_int;
+    int  cmnd_stack_level;
     char errmsg[2112];
     int  errval;
 
@@ -327,22 +340,29 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
         one_cmnd_mode_int = 1;
 
     /* do-loop only for dealing with Ferret "SET MEMORY /SIZE=..." resize command */
+    iter_command = command;
     do {
+        cmnd_stack_level = 0;
         /* Run the Ferret command */
-        ferret_dispatch_c(ferMemory, command, sBuffer);
+        ferret_dispatch_c(ferMemory, iter_command, sBuffer);
 
         if ( sBuffer->flags[FRTN_ACTION] == FACTN_MEM_RECONFIGURE ) {
             /* resize, then re-enter if not single-command mode */
             if ( resizeFerretMemory(sBuffer->flags[FRTN_IDATA1]) == 0 ) {
-                printf("Unable to resize to %f Mwords of memory.\n", 
+                printf("Unable to resize Ferret's memory cache to %f Mfloats\n", 
                        (double)(sBuffer->flags[FRTN_IDATA1]) * (double)PMAX_MEM_BLKS / 1.0E+6);
+                printf("Ferret's memory cache remains at %f Mfloats\n", 
+                       (double)(ferMemSize) / 1.0E+6);
             }
+            cmnd_stack_level = sBuffer->flags[FRTN_IDATA2];
+            /* submit an empty command after resizing to continue on with whaterever was going on */
+            iter_command = "";
         }
         else {
-            /* not a memory resize command */
+            /* not a memory resize command (probably an exit command) */
             break;
         }
-    } while ( one_cmnd_mode_int == 0 );
+    } while ( (one_cmnd_mode_int == 0) || (cmnd_stack_level > 0) );
 
     /* Set back to single command mode */
     if ( one_cmnd_mode_int == 0 ) {
@@ -982,6 +1002,7 @@ static PyObject *pyferretStop(PyObject *self)
     /* Free memory allocated for Ferret */
     PyMem_Free(ferMemory);
     ferMemory = NULL;
+    ferMemSize = 0;
     PyMem_Free(pplMemory);
     pplMemory = NULL;
 

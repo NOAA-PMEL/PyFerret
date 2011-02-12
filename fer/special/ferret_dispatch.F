@@ -301,7 +301,7 @@ c	DO 2 i = 1, 200
 	CALL CLEANUP_LAST_CMND( cmnd_stack_level )
 	IF ( .NOT.mode_gui ) THEN
            IF ( one_cmnd_mode .AND. (cmnd_stack_level .EQ. 0) ) THEN
-              RETURN
+              GOTO 450
            ENDIF
 	   GOTO 5
 	ELSEIF ( cmnd_stack_level .GT. 0 ) THEN
@@ -321,6 +321,7 @@ c	DO 2 i = 1, 200
 	rtn_flags(frtn_status)  = gui_status
 	rtn_flags(frtn_action)  = factn_mem_reconfigure
 	rtn_flags(frtn_idata1)  = reconfig
+	rtn_flags(frtn_idata2)  = cmnd_stack_level
 	RETURN
 
 * exit the dispatch loop - if from pyferret, to return control to python

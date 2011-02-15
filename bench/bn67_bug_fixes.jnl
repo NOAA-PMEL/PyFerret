@@ -1,0 +1,10 @@
+! bn67_bug_fixes.jnl
+! test various fixes that went into version 6.7
+! 2/2011 ACM
+
+GO bn_reset
+GO err665_sum_4d_labels
+
+GO bn_reset
+GO err665_din.jnl
+

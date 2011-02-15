@@ -1,0 +1,6 @@
+! A multi-dimensioned sum is now done as a 4D transformation.
+! the labels on a LISTing of the result contained ???
+! ticket 1788
+
+use coads_climatology
+list sst[X=125E,Y=75S:75N@sum,l=1:12@sum]

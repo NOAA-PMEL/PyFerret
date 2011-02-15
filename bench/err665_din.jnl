@@ -1,0 +1,41 @@
+! err665_din
+! Fixing incorrect latitude corrections for single-point y axis,
+! and the @DIN transformation. See ticket 1348, comment 12.
+
+! Compute the correct area of a 10m-deep, 1-deglon cell at 26.5N.
+let pi = 3.1415926
+let/unit="m"/title="authalic radius of earth" r_authalic = 6371005
+let/unit="degrees_north" lat = 26.5
+let/unit="degrees_east" dx = 1 
+let/unit="m" dz = 10
+let dx_meters = r_authalic * cos(lat * pi/180) * (dx * pi/180)
+list dx_meters*dz
+
+! Next try to reproduce this with Ferret.
+! First make a one-cell XYZ variable, with a value of 1.
+def ax/x=279:280:1/modulo=360/unit=degrees_east/edge xax
+def ax/y=`lat-0.5`:`lat+0.5`:1/unit=degrees_north/edge yax
+def ax/z=0:10:10/unit=m/edge/depth zax
+let p = 1+0*(x[gx=xax]+y[gy=yax]+z[gz=zax])
+
+! Compute its integral (area) over XZ.
+list p[x=279:380@din,z=0:10@din]
+
+
+! Now do it farther north.
+LET/unit="degrees_north" lat = 72.5
+list dx_meters*dz
+
+! Next try to reproduce this with Ferret.
+! Compute its integral (area) over XZ.
+def ax/y=`lat-0.5`:`lat+0.5`:1/unit=degrees_north/edge yax
+list p[x=279:380@din,z=0:10@din]
+
+! Now in the south.
+LET/unit="degrees_north" lat = -72.5
+list dx_meters*dz
+
+! Next try to reproduce this with Ferret.
+! Compute its integral (area) over XZ.
+def ax/y=`lat-0.5`:`lat+0.5`:1/unit=degrees_north/edge yax
+list p[x=279:380@din,z=0:10@din]

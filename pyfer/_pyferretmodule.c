@@ -119,6 +119,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     int journalFlag = 1;
     int verifyFlag = 1;
     int pplMemSize;
+    size_t blksiz;
     int status;
     int ttoutLun = TTOUT_LUN;
     int one_cmnd_mode_int;
@@ -130,7 +131,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     }
 
     /* Parse the arguments, checking if an Exception was raised */
-    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|fO!O!s", argNames, &mwMemSize,
+    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!s", argNames, &mwMemSize,
                  &PyBool_Type, &pyoJournal, &PyBool_Type, &pyoVerify, &metaname) )
         return NULL;
 
@@ -146,14 +147,20 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     set_shared_buffer();
 
     /* Initial allocation of PPLUS memory */
-    pplMemSize = 0.5 * 1.0E+6;
+    pplMemSize = 0.5 * 1.0E6;
     pplMemory = (float *) PyMem_Malloc((size_t)pplMemSize * (size_t)sizeof(float));
     if ( pplMemory == NULL )
         return PyErr_NoMemory();
     set_ppl_memory(pplMemory, pplMemSize);
 
-    /* Initial allocation of Ferret memory */
-    ferMemSize = (size_t) (mwMemSize * 1.0E+6);
+    /* Initial allocation of Ferret memory - multiples of 100 PMAX_MEM_BLKS */
+    blksiz  = (size_t) ((mwMemSize * 1.0E6 + (double)PMAX_MEM_BLKS - 1.0) / (double)PMAX_MEM_BLKS);
+    blksiz  = (blksiz + 99) / 100;
+    blksiz *= 100;
+    ferMemSize = blksiz * (size_t)PMAX_MEM_BLKS;
+    /* Check for overflow */
+    if ( blksiz != ferMemSize / (size_t)PMAX_MEM_BLKS )
+        return PyErr_NoMemory();
     ferMemory = (float *) PyMem_Malloc(ferMemSize * (size_t)sizeof(float));
     if ( ferMemory == NULL )
         return PyErr_NoMemory();
@@ -208,13 +215,16 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
  */
 static int resizeFerretMemory(int blksiz)
 {
+    size_t actual_blksiz;
     size_t newFerMemSize;
 
     /* Get the new size for the memory and check for overflow */
     if ( blksiz <= 0 )
         return 0;
-    newFerMemSize = (size_t)blksiz * (size_t)PMAX_MEM_BLKS;
-    if ( (size_t)blksiz != newFerMemSize / (size_t)PMAX_MEM_BLKS )
+    actual_blksiz = (blksiz  + 99)/ 100;
+    actual_blksiz *= 100;
+    newFerMemSize = actual_blksiz * (size_t)PMAX_MEM_BLKS;
+    if ( actual_blksiz != newFerMemSize / (size_t)PMAX_MEM_BLKS )
         return 0;
 
     /* 
@@ -273,7 +283,7 @@ static PyObject *pyferretResizeMemory(PyObject *self, PyObject *args, PyObject *
         return NULL;
 
     /* Reallocate the new amount of memory for Ferret */
-    if ( resizeFerretMemory((int) (mwMemSize * 1.0E+6 / (double)PMAX_MEM_BLKS)) == 0 ) {
+    if ( resizeFerretMemory((int) ((mwMemSize * 1.0E6 + (double)PMAX_MEM_BLKS - 1.0) / (double)PMAX_MEM_BLKS)) == 0 ) {
         Py_INCREF(Py_False);
         return Py_False;
     }
@@ -350,9 +360,9 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
             /* resize, then re-enter if not single-command mode */
             if ( resizeFerretMemory(sBuffer->flags[FRTN_IDATA1]) == 0 ) {
                 printf("Unable to resize Ferret's memory cache to %f Mfloats\n", 
-                       (double)(sBuffer->flags[FRTN_IDATA1]) * (double)PMAX_MEM_BLKS / 1.0E+6);
+                       (double)(sBuffer->flags[FRTN_IDATA1]) * (double)PMAX_MEM_BLKS / 1.0E6);
                 printf("Ferret's memory cache remains at %f Mfloats\n", 
-                       (double)(ferMemSize) / 1.0E+6);
+                       (double)(ferMemSize) / 1.0E6);
             }
             cmnd_stack_level = sBuffer->flags[FRTN_IDATA2];
             /* submit an empty command after resizing to continue on with whaterever was going on */

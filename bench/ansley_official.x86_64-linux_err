@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/x86_64-linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 49934752 Jan  3 16:40 /home/users/ansley/x86_64-linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 36568410 Feb 11 17:09 /home/users/ansley/x86_64-linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/x86_64-linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix ticket 1778: negative values and variance-based levels.
+Note: for datasets w/ vars having no missing or _FillValue, in MODE DIAG, write out the warning for all vars
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/users/ansley/x86_64-linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/x86_64-linux/FERRET/external_functions/ext_func
-Beginning at Mon Jan 3 16:41:17 PST 2011
+Beginning at Fri Feb 11 17:11:52 PST 2011
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -335,7 +335,7 @@ list tu
  **ERROR: regridding: Axis orientation not matching request:GX=PSYU
 list tu
  Cached data cleared from memory
- **ERROR: request exceeds memory setting: 24999975 words were requested.
+ **ERROR: request exceeds memory setting: 25 Mwords were requested.
 list temp[gz=z999999,z=5:15]
  *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
  *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -613,7 +613,7 @@ load num
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
- **ERROR: request exceeds memory setting: 1000000000 words were requested.
+ **ERROR: request exceeds memory setting: 1001 Mwords were requested.
 load num
  *** NOTE: You can use SET MEMORY/SIZE=xxx to increase memory.
  *** NOTE: The "Memory use" section of the FERRET Users Guide has further tips.
@@ -797,7 +797,6 @@ LIST/i=2:4:2 VAR
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of grid GX
@@ -824,11 +823,17 @@ Replacing definition of axis TWEEKS
 Replacing definition of axis TWEEKS
  LISTing to file calsst.cdf
  *** NOTE: /UNIT=MONTHS  ... using 1/12 of 360.00 days
+Replacing definition of grid TGRID
+Replacing definition of axis TDAYS
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
-Replacing definition of grid TGRID
-Replacing definition of axis TDAYS
+nco_err_exit(): ERROR nco_open
+Not a netCDF file
+nco_err_exit(): ERROR nco_open
+Not a netCDF file
+nco_err_exit(): ERROR nco_open
+Not a netCDF file
 Replacing definition of grid TGRID
  *** NOTE: /UNIT=MONTHS  ... using 1/12 of 365.25 days
  PERMANENT data cleared from memory
@@ -902,11 +907,9 @@ list strcat ("All work and no play")
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test_modulo.cdf
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
@@ -932,15 +935,11 @@ plot d
  **ERROR: illegal data type (float,string,...) for operation: D
 define axis/x xax = d
  LISTing to file test_string.cdf
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
- LISTing to file test_string.cdf
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  LISTing to file test_string.cdf
  LISTing to file test_string.cdf
  LISTing to file test_string.cdf
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
+ LISTing to file test_string.cdf
  LISTing to file test_string2.cdf
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  **ERROR: invalid command: cant use this regrid transform on strings: @LIN
 list a[gx=xnrst]
  **ERROR: invalid command: cant use this regrid transform on strings: @AVE
@@ -1021,12 +1020,6 @@ Replacing definition of axis TAX
  LISTing to file profiles.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-nco_err_exit(): ERROR nco_open
-Not a netCDF file
-nco_err_exit(): ERROR nco_open
-Not a netCDF file
-nco_err_exit(): ERROR nco_open
-Not a netCDF file
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test_100x100.nc
@@ -1075,7 +1068,6 @@ Replacing definition of axis TAX2
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file string4d.nc
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: regarding ./climatological_axes.cdf ...
@@ -1245,7 +1237,6 @@ Replacing definition of axis TAX2
  *** NOTE: Not deleted: XEZ1
  *** NOTE: Axis is in use by grid GEZ1
  *** NOTE: Not deleted: XEZ2
-ls: input.txt: No such file or directory
  *** NOTE: Axis is in use by grid GEZ2
  *** NOTE: Not deleted: YEZ
  *** NOTE: Axis is in use by grid GEZ2
@@ -1263,6 +1254,7 @@ ls: input.txt: No such file or directory
  *** NOTE: Axis is in use by grid LON_FIELD_GRID
  *** NOTE: Not deleted: XIRREG
  *** NOTE: Axis is in use by grid GIRREG
+ls: input.txt: No such file or directory
  *** NOTE: Not deleted: TCENTURY
  *** NOTE: Axis is in use by grid GCENTURY
  *** NOTE: Not deleted: TAX5DAY
@@ -1372,7 +1364,6 @@ define axis/x=130e:500:10/modulo=360 xsub
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
  LISTing to file test_subspan_modulo.nc
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
@@ -1450,7 +1441,6 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
@@ -1482,7 +1472,6 @@ Replacing definition of axis Z1
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
  *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
  *** NOTE: A dummy axis of subscripts will be used
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  **ERROR: illegal limits: "DUMMY" does not exist at T=-6.3E+10
           Axis extremes are T=0.5:32
 list/t=1-jan-1990 dummy
@@ -1530,7 +1519,6 @@ Replacing definition of axis YQ
  TEMPORARY data cleared from memory
 Replacing definition of axis TAX
 Replacing definition of axis XAX
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 SHO VAR/XML
@@ -1831,9 +1819,6 @@ Replacing definition of axis TAX
 query/ignore $1%q|a|b|c|d|<First argument is a letter of the alphabet%
  **ERROR: invalid command: Valid value needed for argument $2
 query/ignore $2%|a|b|c|d|%
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  *** NOTE: Valid argument $2 choices are: a|b|c|d|
  **ERROR: my error message
 message/cont $1"|xxxxx|goodbye<my error message"
@@ -1854,6 +1839,9 @@ message/continue ($test2"|hello|bye|")
 message/continue ($test2"|hello|bye|<my error message")
  **ERROR: invalid command: Valid value needed for symbol t2
 message/continue ($t2"|solong>really hello|bye|")
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
  *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1907,7 +1895,6 @@ Replacing definition of axis COADSY.ILLEGAL
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1967,7 +1954,6 @@ Replacing definition of axis TGREG
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file revision.nc
@@ -2025,8 +2011,8 @@ show att/all temp[d=2]
 show att/all temp[d=2]
  **ERROR: variable unknown or not in data set: salt
 show att/all salt
- **ERROR: : salt.non
-          attribute nonsense
+ **ERROR: attribute undefined or invalid attribute name: salt.nonsense
+          attribute nonsense not found for variable SALT
 sho att salt.nonsense
  **ERROR: invalid command: dataset not found for varname.attname .
 sho att/all .
@@ -2035,9 +2021,6 @@ sho att/all .
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
-syntax error, unexpected SCAN_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserverefize 64000000 defmp-iridlc3) store<p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuu</b><b>absuv</b><b>taux</b><b>tauy</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2046,7 +2029,6 @@ context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 4
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2066,6 +2048,8 @@ context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 4
  *** NOTE: Changing the type of attribute (coadsx).modulo
  *** NOTE: Changing the value of attribute (coadsx).modulo
  *** NOTE: Changing the value of attribute (TIME4).time_origin
+syntax error, unexpected SCAN_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserverefize 64000000 defmp-iridlc3) store<p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>tauy</b><b>absuu</b><b>absuv</b><b>taux</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  **ERROR: command syntax: enclose coordinate variable name in parentheses
 list coadsx.units
  **ERROR: variable unknown or not in data set: COADSX.UNITS
@@ -2130,7 +2114,6 @@ Replacing definition of grid MYGRID
  *** NOTE: Converting single precision variable to double on output
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -2149,7 +2132,6 @@ Replacing definition of grid MYGRID
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute missing_value not representable in output type NC_INT
 LIST/FORMAT=CDF/file=a.nc/clobber/x=132w/k=1 temp
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
 set var/outtype=char broiled
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
@@ -2181,7 +2163,6 @@ Replacing definition of axis X2AX
  *** NOTE: Changing the value of attribute (TIME7).time_origin
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 Replacing definition of axis TIME
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  LISTing to file a.nc
  *** NOTE: Converting single precision variable to double on output
  LISTing to file a.nc
@@ -2292,7 +2273,6 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2311,9 +2291,6 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
@@ -2335,9 +2312,6 @@ Replacing definition of axis TIME
  LISTing to file out.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: invalid command: it is a child axis already
@@ -2357,7 +2331,6 @@ set axis/stride=2 NORMAL
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2371,7 +2344,6 @@ set axis/stride=2 NORMAL
  *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  LISTing to file tripolar_missing_lon.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2386,10 +2358,8 @@ set axis/stride=2 NORMAL
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
  *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
  *** NOTE: A dummy axis of subscripts will be used
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
  *** NOTE: Substituting coordinate midpoints
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
  *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
  *** NOTE: A dummy axis of subscripts will be used
@@ -2400,11 +2370,6 @@ set axis/stride=2 NORMAL
  *** NOTE: modulo = "j"
  *** NOTE: Undecipherable value of netCDF attribute modulo on variable time_moderr
  *** NOTE: modulo = "j"
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
  *** NOTE: They will not be convertible:
  *** NOTE: regarding ./climatological_axes.cdf ...
@@ -2413,17 +2378,12 @@ set axis/stride=2 NORMAL
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
- **TMAP ERR: non-existent or not on line
-             test_strides.cdf
-SET DAT/FORM=CDF test_strides.cdf
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2559,7 +2519,6 @@ Replacing definition of axis TIME
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  **ERROR: variable unknown or not in data set: A_REGRID[D=1,GT=B[D=2]@MOD]
 LIST a_regrid[D=1,GT=b[D=2]@MOD]
  PERMANENT data cleared from memory
@@ -2883,10 +2842,8 @@ Replacing definition of axis CAXIS
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  LISTing to file a.nc
  LISTing to file a.nc
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2908,7 +2865,6 @@ Replacing definition of axis TAX
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2994,8 +2950,6 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  LISTing to file list_of_numbers.dat
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3142,12 +3096,27 @@ show grid garbage
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- *** NOTE: If no missing_value or _FillValue attribute on variables, will use NaN
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+Replacing definition of axis YAX
+Replacing definition of axis ZAX
+Replacing definition of axis YAX
+Replacing definition of axis YAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3236,13 +3205,5 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
-gdeactivatews()    3 GKS not in proper state: GKS shall be in the state WSAC
-gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSOP or in the state WSAC
-gdeactivatews()    3 GKS not in proper state: GKS shall be in the state WSAC
-gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSOP or in the state WSAC
-gdeactivatews()    3 GKS not in proper state: GKS shall be in the state WSAC
-gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSOP or in the state WSAC
-gdeactivatews()    3 GKS not in proper state: GKS shall be in the state WSAC
-gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSOP or in the state WSAC
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Jan 3 16:42:53 PST 2011
+Ended at Fri Feb 11 17:13:37 PST 2011

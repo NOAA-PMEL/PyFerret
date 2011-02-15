@@ -136,7 +136,7 @@
         IF (status  .NE. ferr_ok) THEN
            dset_try = -1
            CALL CD_GET_VAR_ID (dset_try, varname, varid, status)
-           IF (status .EQ. ferr_ok) dset = -1
+           IF (status .EQ. ferr_ok) dset_in = -1
         ENDIF
 
 

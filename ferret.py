@@ -42,7 +42,7 @@ def fer_main(arglist):
     script = None
     print_help = False
     just_exit = False
-    # check is python debug logging is specified
+    # check if python debug logging is specified
     if "-pydebug" in arglist:
         logging.basicConfig(filename="ferret_pydebug.log", filemode="w", level=logging.DEBUG)
         my_logger = logging.getLogger("ferret")
@@ -86,7 +86,7 @@ def fer_main(arglist):
             elif opt == "-version":
                 just_exit = True
                 break
-            elif opt == "-help":
+            elif (opt == "-help") or (opt == "-h") or (opt == "--help"):
                 print_help = True
                 break
             elif opt == "-script":
@@ -99,6 +99,8 @@ def fer_main(arglist):
                         raise ValueError, "a script filename must be given for the -script value"
                 except:
                     raise ValueError, "a script filename must be given for the -script value"
+                # -script implies -nojnl
+                my_journal = False
                 break
             elif opt == "-pydebug":
                 pass
@@ -121,6 +123,7 @@ def fer_main(arglist):
         if my_logger:
             my_logger.debug('calling pyferret.run("exit") to quit')
         pyferret.run("exit")
+        # should not get here
         raise SystemExit
     # debug logging
     if my_logger:
@@ -142,8 +145,9 @@ def fer_main(arglist):
         if my_logger:
             my_logger.debug('calling pyferret.run(\'go "%s" ; exit /program\')' % script_line)
         pyferret.run('go "%s" ; exit /program' % script_line)
+        # should not get here
         raise SystemExit
-    # otherwise, go into Ferret command-line processing until "exit /topy"
+    # otherwise, go into Ferret command-line processing until "exit /topy" or "exit /program"
     if my_logger:
         my_logger.debug('calling pyferret.run()')
     result = pyferret.run()

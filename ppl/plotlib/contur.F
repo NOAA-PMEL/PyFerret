@@ -64,6 +64,7 @@
 *  v581 5/2005 *acm* Add CONTOUR/MOD capability for modulo replications for 
 *                    curvilinear data
 * V630  *acm* 9/09 change a message only
+C  v67  2/2011 *acm* Fix ticket 1799; do contouring in larger sections.
 
 ****************************************************************************
 C**
@@ -105,9 +106,9 @@ c     ind10 should be dimensioned at least nx by ny/10 rounded up.
 c     kab should be dimensioned at least nx/10+2 by ny/10+2 .
 c
 c     oceanography emr   dec/69
-	dimension z(nxs,nys),px(nx),py(ny),s(1200),ind10(57,6)
+	dimension z(nxs,nys),px(nx),py(ny),s(1200),ind10(285,30)
 	dimension x(1200),y(1200)
-	dimension zmaxb(10,10),zminb(10,10),kab(07,07)
+	dimension zmaxb(10,10),zminb(10,10),kab(31,31)
 
 	dimension  zlev(2),  ndecl(2),lwgtl(2),xc(11),yc(11),ixpon(10)
 	dimension lclr(2)

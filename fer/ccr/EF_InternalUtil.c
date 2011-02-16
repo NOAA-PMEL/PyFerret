@@ -2456,6 +2456,10 @@ void FORTRAN(efcn_get_descr)( int *id_ptr, char *descr )
  * Find an external function based on its integer ID and
  * return the name of an alternate function that operates 
  * with string arguments.
+ *
+ * *kms* 2/11 - assign blank-terminated (not null-terminated)
+ * string since code using this name expects this style.
+ * Assumes alt_str_name has been intialized to all-blank.
  */
 void FORTRAN(efcn_get_alt_type_fcn)( int *id_ptr, char *alt_str_name )
 {
@@ -2464,6 +2468,7 @@ void FORTRAN(efcn_get_alt_type_fcn)( int *id_ptr, char *alt_str_name )
   if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
   strcpy(alt_str_name, ef_ptr->internals_ptr->alt_fcn_name);
+  alt_str_name[strlen(alt_str_name)] = ' ';
 
   return;
 }

@@ -38,17 +38,16 @@
 *
 * 
 C  v581 5/2005 *acm* From conseg.F for one modulo replication of a contour plot
-C       
+C  v67  2/2011 *acm* Fix ticket 1799; do contouring in larger sections.
 
 	include 'MISS.INC'
 
-	dimension zz(57,57),z(nxs,nys),px(nx),py(ny)
+	dimension zz(285,285),z(nxs,nys),px(nx),py(ny)
 	dimension zlev(2),ndecl(2),lwgtl(2),lclr(2)
         integer izz, lseg
 
-        izz = 57
+        izz = 285
         lseg = (izz-1)-2
-
 
 C       Calculate the beginning and ending index values (iam,ibm) and
 C       the number of index values (nxx) along the X axis in this 

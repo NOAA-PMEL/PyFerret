@@ -293,7 +293,9 @@
 * See if there is a function for alternative argument types
 	IF ( its_gc .AND. detail ) THEN
 
-	   ! null string is returned if alt_type_fcn doesnt exist
+*          alt_name is blank-terminated (not null-terminated)
+*          and is unchanged if alt_type_fcn does not exist
+           alt_name = ' '
 	   CALL efcn_get_alt_type_fcn( ifcn, alt_name )
 
 	   ifcn_alt = GCF_FIND_FCN( alt_name )

@@ -306,6 +306,12 @@ C (Unless there is just one grid cell in the y direction.)
 	ENDIF
 
 * pathological case: world coordinate range of zero along an xform axis
+
+          lc = l_lo
+          kc = k_lo
+          jc = j_lo
+          ic = i_lo
+
           IF ( point ) THEN    ! 8/92
 	    IF (at_din) THEN
                IF (com(ic,jc,kc,lc) .EQ. bad_com) THEN

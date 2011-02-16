@@ -1,10 +1,10 @@
-	SUBROUTINE TM_SPLIT_MESSAGE( chout, next_line )
+        SUBROUTINE TM_SPLIT_MESSAGE( chout, next_line )
 
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administrations (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -42,26 +42,14 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V300:  6/16/93 - for prototype GUI interface
-
-#ifdef unix
-	include 'xalt_messages.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:XALT_MESSAGES.CMN_TEXT'
-#endif
+* V6.7  *kms*  2/11  - call SPLIT_LIST to output the message appropriately
 
 * calling arguments
-	INTEGER chout
-	CHARACTER*(*) next_line
+        INTEGER chout
+        CHARACTER*(*) next_line
 
-* internal variable declarations
-	INTEGER TM_LENSTR1
-
-
-	IF ( alt_messages ) THEN
-	   CALL TM_ADD_MESSAGE( next_line )
-	ELSE
-	   WRITE ( chout, '(A)' ) next_line(:TM_LENSTR1(next_line))
-	ENDIF
-
-	RETURN
-	END
+*       first arg (mode) unused
+        CALL SPLIT_LIST(0, chout, next_line, 0)
+        
+        RETURN
+        END

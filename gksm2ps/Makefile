@@ -77,10 +77,10 @@ hp:
 i386-linux:	
 	${MAKE} gksm2ps \
 		CC=gcc \
-		CFLAGS="-g -I/usr/lib/gcc-lib/i386-redhat-linux/3.2.3/include -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
+		CFLAGS="-g -I/usr/lib/gcc/i386-redhat-linux/4.1.2/include -I/usr/include -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
 		GKLIB="../xgks/src/lib/libxgks.a" \
-		LIB="-L/usr/X11R6/lib -lX11 -lm"
+		LIB="-lX11 -lm"
 
 i486-linux:	
 	${MAKE} gksm2ps \
@@ -93,7 +93,10 @@ i486-linux:
 i586:
 	${MAKE} gksm2ps \
 		CC=gcc \
-		CFLAGS="-I/usr/lib/gcc-lib/i686-pc-cygwin/2.95.3-5/include/ -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
+		CFLAGS="-I/usr/lib/gcc-lib/i686-pc-cygwin/2.95.3-5/include/ 
+			  -I/usr/include \
+			  -I/usr/include/X11 \
+			  -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
 		GKLIB="../xgks/src/lib/libxgks.a" \
 		LIB="-L/usr/X11R6.4/lib -lX11 -lm"
@@ -101,10 +104,10 @@ i586:
 x86_64-linux:	
 	${MAKE} gksm2ps \
 		CC=gcc \
-		CFLAGS="-g -I/usr/lib/gcc/x86_64-redhat-linux/3.4.3/include -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
+		CFLAGS="-I/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
 		GKLIB="../xgks/src/lib/libxgks.a" \
-		LIB="-L/usr/X11R6/lib64 -lX11 -lm"
+		LIB="-lX11 -lm"
 gksm2ps:
 	$(CC) $(CFLAGS) $(LDFLAGS) -o gksm2ps gksm2ps.c xpreview.c \
 	 resize_xgks_window.c set_background.c gksm.c batch_graphics.c \

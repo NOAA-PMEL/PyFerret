@@ -145,7 +145,9 @@
 * If so, check the argument types for it.
 
         IF (check_alt_fcn) THEN
-	   ! null string is returned if alt_type_fcn doesnt exist
+*          alt_name is blank-terminated (not null-terminated)
+*          and is unchanged if alt_type_fcn does not exist
+           alt_name = ' '
 	   CALL efcn_get_alt_type_fcn( ifcn, alt_name )  
 	   ifcn = GCF_FIND_FCN( alt_name )
       

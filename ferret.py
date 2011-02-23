@@ -1,7 +1,6 @@
 import sys
 import os
 import pyferret
-import logging
 
 
 def fer_main(arglist):
@@ -42,16 +41,6 @@ def fer_main(arglist):
     script = None
     print_help = False
     just_exit = False
-    # check if python debug logging is specified
-    if "-pydebug" in arglist:
-        logging.basicConfig(filename="ferret_pydebug.log", filemode="w", level=logging.DEBUG)
-        my_logger = logging.getLogger("ferret")
-    else:
-        my_logger = None
-    pyferret.my_logger = my_logger
-    # debug logging
-    if my_logger:
-        my_logger.debug("fer_main(%s) called" % str(arglist))
     # To be compatible with traditional Ferret command-line options
     # (that are still supported), we need to parse the options by hand.
     try:
@@ -93,8 +82,6 @@ def fer_main(arglist):
                 k += 1
                 try:
                     script = arglist[k:]
-                    if my_logger:
-                        my_logger.debug('found script list: %s' % str(script))
                     if len(script) == 0:
                         raise ValueError, "a script filename must be given for the -script value"
                 except:
@@ -102,8 +89,6 @@ def fer_main(arglist):
                 # -script implies -nojnl
                 my_journal = False
                 break
-            elif opt == "-pydebug":
-                pass
             else:
                 raise ValueError, "unrecognized option '%s'" % opt
             k += 1
@@ -117,18 +102,10 @@ def fer_main(arglist):
         just_exit = True
     if just_exit:
         # print the ferret header then exit completely
-        if my_logger:
-            my_logger.debug('calling pyferret.start(journal=False, verify=False, metaname=".gif") in the quit process')
         pyferret.start(journal=False, verify=False, metaname=".gif")
-        if my_logger:
-            my_logger.debug('calling pyferret.run("exit") to quit')
         pyferret.run("exit")
         # should not get here
         raise SystemExit
-    # debug logging
-    if my_logger:
-        my_logger.debug('calling pyferret.start(memsize=%s, journal=%s, verify=%s, metaname="%s")' % \
-                        (str(my_memsize), str(my_journal), str(my_verify), str(my_metaname)) )
     # start ferret
     pyferret.start(memsize=my_memsize, journal=my_journal, verify=my_verify, metaname=my_metaname)
     # run the ${HOME}/.ferret script if it exists
@@ -136,20 +113,14 @@ def fer_main(arglist):
     if home_val:
         init_script = os.path.join(home_val, '.ferret')
         if os.path.exists(init_script):
-            if my_logger:
-                my_logger.debug('calling pyferret.run(\'go "%s" ; exit /topy\')' % init_script)
             pyferret.run('go "%s" ; exit /topy' % init_script)
     # if a command-line script is given, run the script and exit completely
     if script != None:
         script_line = " ".join(script)
-        if my_logger:
-            my_logger.debug('calling pyferret.run(\'go "%s" ; exit /program\')' % script_line)
         pyferret.run('go "%s" ; exit /program' % script_line)
         # should not get here
         raise SystemExit
     # otherwise, go into Ferret command-line processing until "exit /topy" or "exit /program"
-    if my_logger:
-        my_logger.debug('calling pyferret.run()')
     result = pyferret.run()
     return result
 

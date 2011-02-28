@@ -1,0 +1,16 @@
+! err665_centered_lev
+! Bug 1803; computation of new levels isnt requested for
+! centered levels after a SHADE/LINE/LEV=c or FILL/LINE/LEV=c
+
+USE coads_climatology
+SHADE/L=1/LINE/KEY/LEV=c sst
+SHO SYM lev*
+
+SHADE/L=1/LINE/KEY/LEV=10c sst
+SHO SYM lev*
+
+FILL/L=3/LINE/KEY/LEV=c sst
+SHO SYM lev*
+
+FILL/L=3/LINE/KEY/LEV=10c sst
+SHO SYM lev*

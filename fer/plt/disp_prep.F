@@ -63,6 +63,8 @@
 * V608 - 10/07   - *acm* Give more detail int he error message when the number 
 *                  of contour levels given is too large
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
+* V670  *acm* 2/11 Fix bug 1803. Centered levels confused with variance-based centered
+*                  levels.
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -321,6 +323,7 @@
 		       IF (val .NE. bad_val4) THEN
 		          nlev = val
 		          IF (val.LE.0. .OR. val.GT.250.) GOTO 5150
+			  IF (.NOT. openlev) iautoc = 1
 		       ENDIF
 		    ELSE
 

@@ -1,6 +1,9 @@
 #ifndef FERRET_LIB_H_
 #define FERRET_LIB_H_
 
+#include <wchar.h>
+#include <stdlib.h>
+
 extern float *memory;
 extern float *ppl_memory;
 
@@ -47,28 +50,34 @@ void decref_pyobj_(void *pyobj_ptr_ptr);
 void add_pystat_var_(void *data_ndarray_ptr_ptr, char codename[], char title[], char units[],
                      float *bdfval, char dset[], int axis_nums[MAX_FERRET_NDIM],
                      int axis_starts[MAX_FERRET_NDIM], int axis_ends[MAX_FERRET_NDIM],
-                     char errmsg[], int *len_errmsg, int len_codename, int len_title,
-                     int len_units, int len_dset, int maxlenerrmsg);
+                     char errmsg[], int *lenerrmsg, int len_codename, int len_title,
+                     int len_units, int len_dset, int maxlen_errmsg);
 void clear_fer_last_error_info_(void);
 void ef_get_single_axis_info_(int *id, int *argnum, int *axisnum,
-                              char axis_name[], char axis_unit[],
+                              char axisname[], char axisunit[],
                               int *backwards_axis, int *modulo_axis, int *regular_axis,
-                              int axis_name_maxlen, int axis_unit_maxlen);
+                              int maxlen_axisname, int maxlen_axisunit);
 void finalize_(void);
+void get_axis_num_(int *axisnum, int *axisstart, int *axisend, char axisname[], char axisunit[], 
+                   double axiscoords[], int *numcoords, AXISTYPE *axistype, char *errmsg, 
+                   int *lenerrmsg, int maxlen_axisname, int maxlen_axisunit, int maxlen_errmsg);
 void get_data_array_params_(char dataname[], int *lendataname, float *memory, int *arraystart,
                             int memlo[MAX_FERRET_NDIM], int memhi[MAX_FERRET_NDIM],
                             int steplo[MAX_FERRET_NDIM], int stephi[MAX_FERRET_NDIM],
                             int incr[MAX_FERRET_NDIM], char dataunit[], int *lendataunit,
                             AXISTYPE axtypes[MAX_FERRET_NDIM], float *badval, char errmsg[],
-                            int *lenerrmsg, int maxdatanamelen, int maxdataunitlen, int maxerrmsglen);
-void get_data_array_coordinates_(double axiscoords[], char axisunits[], char axisname[],
+                            int *lenerrmsg, int maxlen_dataname, int maxlen_dataunit, int maxlen_errmsg);
+void get_data_array_coordinates_(double axiscoords[], char axisunit[], char axisname[],
                                  int *axisnum, int *numcoords, char errmsg[], int *lenerrmsg,
-                                 int maxaxisunitslen, int maxaxisnamelen, int maxerrmsglen);
+                                 int maxlen_axisunit, int maxlen_axisname, int maxlen_errmsg);
 void get_data_array_time_coords_(int timecoords[][6], CALTYPE *caltype, char axisname[],
                                  int *axisnum, int *numcoords, char errmsg[], int *lenerrmsg,
-                                 int maxaxisnamelen, int maxerrmsglen);
-void get_fer_last_error_info_(int *errval, char errmsg[], int maxerrmsglen);
+                                 int maxlen_axisname, int maxlen_errmsg);
+void get_fer_last_error_info_(int *errval, char errmsg[], int maxlen_errmsg);
 void get_ferret_params_(char errnames[][32], int errvals[], int *numvals);
+void get_time_axis_num_(int *axisnum, int *axisstart, int *axisend, char axisname[], 
+                        CALTYPE *calendartype, int axiscoords[][6], int *numcoords,
+                        char *errmsg, int *lenerrmsg, int maxlen_axisname, int maxlen_errmsg);
 void init_journal_(int *status);
 void initialize_(void);
 void no_journal_(void);

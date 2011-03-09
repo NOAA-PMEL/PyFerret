@@ -885,6 +885,15 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
                 return NULL;
             }
             axis_coords[k] = PyArray_DATA(seqitem);
+            get_axis_num_(&(axis_nums[k]), &(axis_starts[k]), &(axis_ends[k]), axis_names[k],
+                          axis_units[k], axis_coords[k], &(num_coords[k]), &(axis_types[k]),
+                          errmsg, &len_errmsg, strlen(axis_names[k]), strlen(axis_units[k]), 2048);
+            if ( len_errmsg > 0 ) {
+                errmsg[len_errmsg] = '\0';
+                PyErr_SetString(PyExc_ValueError, errmsg);
+                Py_DECREF(axis_coords_tuple);
+                return NULL;
+            }
             break;
         case AXISTYPE_TIME:
             /* int32 (N,6)-ndarray containing component time values; the calendar given in axis_units */
@@ -922,25 +931,27 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
                 return NULL;
             }
             axis_coords[k] = PyArray_DATA(seqitem);
+            get_time_axis_num_(&(axis_nums[k]), &(axis_starts[k]), &(axis_ends[k]),
+                               axis_names[k], &calendar_type, axis_coords[k], &(num_coords[k]),
+                               errmsg, &len_errmsg, strlen(axis_names[k]), 2048);
+            if ( len_errmsg > 0 ) {
+                errmsg[len_errmsg] = '\0';
+                PyErr_SetString(PyExc_ValueError, errmsg);
+                Py_DECREF(axis_coords_tuple);
+                return NULL;
+            }
             break;
         case AXISTYPE_NORMAL:
             /* axis normal to the results - ignore sequence item (probably None) */
-            num_coords[k] = 0;
-            axis_coords[k] = NULL;
+            axis_nums[0] = 0; /* ferret.parm value for a normal line (mnormal) */
+            axis_starts[k] = 0;
+            axis_ends[k] = 0;
             break;
         default:
             PyErr_SetString(PyExc_ValueError, "Unexpected axis_type when processing axis coordinates");
             Py_DECREF(axis_coords_tuple);
             return NULL;
         }
-    }
-
-    /* Get Ferret numbers, starts, and end for these axes */
-    for (k = 0; k < MAX_FERRET_NDIM; k++) {
-        /* Stubbed - should use axis_types, axis_names, axis_units, num_coords, and axis_coords to create or find an axis in Ferret */
-        axis_nums[k] = -1;
-        axis_starts[k] = 0;
-        axis_ends[k] = 0;
     }
 
     /* The information in axis_coords_tuple no longer needed */

@@ -67,10 +67,7 @@
       INCLUDE 'xprog_state.cmn'
       INCLUDE 'xtm_grid.cmn_text'
       INCLUDE 'xvariables.cmn'
-
-*     MAX_FERRET_NDIM parameter value (must match that in ferret_lib.h)
-      INTEGER MAX_FERRET_NDIM
-      PARAMETER(MAX_FERRET_NDIM = 4)
+      INCLUDE 'ferret_lib.parm'
 
 *     Passed arguments
       CHARACTER*(*) datnam, datunit, errmsg
@@ -79,18 +76,6 @@
      .              steplo(MAX_FERRET_NDIM), stephi(MAX_FERRET_NDIM),
      .              incr(MAX_FERRET_NDIM), axtyp(MAX_FERRET_NDIM)
       REAL          memory(*), badflg
-
-*     AXISTYPE parameter values (must match those in ferret_lib.h)
-      INTEGER    AXISTYPE_LONGITUDE, AXISTYPE_LATITUDE, AXISTYPE_LEVEL,
-     .           AXISTYPE_TIME, AXISTYPE_CUSTOM, AXISTYPE_ABSTRACT,
-     .           AXISTYPE_NORMAL
-      PARAMETER (AXISTYPE_LONGITUDE = 1,
-     .           AXISTYPE_LATITUDE = 2,
-     .           AXISTYPE_LEVEL = 3,
-     .           AXISTYPE_TIME = 4,
-     .           AXISTYPE_CUSTOM = 5,
-     .           AXISTYPE_ABSTRACT = 6,
-     .           AXISTYPE_NORMAL = 7)
 
 *     Function declarations
       INTEGER TM_LENSTR
@@ -321,32 +306,12 @@
       INCLUDE 'xcontext.cmn'
       INCLUDE 'xtm_grid.cmn_text'
       INCLUDE 'xvariables.cmn'
+      INCLUDE 'ferret_lib.parm'
 
 *     Passed arguments
       CHARACTER*(*) axname, errmsg
       INTEGER       caltyp, axnum, numcoords, lenerr
       INTEGER       axcoords(6,numcoords)
-
-*     TIMEARRAY_INDEX parameter values (must be one more than those in ferret_lib.h)
-      INTEGER TIMEARRAY_DAYINDEX, TIMEARRAY_MONTHINDEX,
-     .        TIMEARRAY_YEARINDEX, TIMEARRAY_HOURINDEX,
-     .        TIMEARRAY_MINUTEINDEX, TIMEARRAY_SECONDINDEX
-      PARAMETER (TIMEARRAY_DAYINDEX  = 1,
-     .           TIMEARRAY_MONTHINDEX = 2,
-     .           TIMEARRAY_YEARINDEX = 3,
-     .           TIMEARRAY_HOURINDEX = 4,
-     .           TIMEARRAY_MINUTEINDEX = 5,
-     .           TIMEARRAY_SECONDINDEX = 6)
-*     CALTYPE parameter values (must match those in ferret_lib.h)
-      INTEGER CALTYPE_NONE, CALTYPE_360DAY,
-     .        CALTYPE_NOLEAP, CALTYPE_GREGORIAN,
-     .        CALTYPE_JULIAN, CALTYPE_ALLLEAP
-      PARAMETER (CALTYPE_NONE = -1,
-     .           CALTYPE_360DAY = 0,
-     .           CALTYPE_NOLEAP = 50000,
-     .           CALTYPE_GREGORIAN = 52425,
-     .           CALTYPE_JULIAN = 52500,
-     .           CALTYPE_ALLLEAP = 60000)
 
 *     Function declarations
       INTEGER TM_LENSTR, TM_GET_CALENDAR_ID

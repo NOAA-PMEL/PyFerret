@@ -48,6 +48,9 @@
 * 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
 * V551 *acm*  2/03 - fix bug where seconds were wiped out. See cc comments
 * V600 *acm* 2/06 - Fix for bug 1394, do err msg only if do_err flag true
+* V67  *acm* 3/11 - If there is a T between the date and time in the unitsi 
+*                   string "months since yyyy-mm-ddThh:mm:ss (as in GRIB files) 
+*                   allow that. Replace T with a space. Ticket 1806.
 
 
 * ARGUMENT DEFINITIONS
@@ -92,6 +95,9 @@
 * ... note:  this is a quick and dirty kludge parser.  Use the udunits package
 *	     for a more robust approach
 * ... the format looks like (e.g.) 1992-10-8 15:15:42.5 
+
+*     If there is a T between the date and time (as in GRIB files) replace with a space.
+           IF (date(11:11) .EQ. 'T') date(11:11) = ' '
 
 	   CALL TM_FTOC_STRNG( date(:dlen), dhol, slen)
 	   status = TM_BREAK_FMT_DATE_C(dhol, year, month,

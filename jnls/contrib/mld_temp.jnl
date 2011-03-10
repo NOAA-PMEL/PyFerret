@@ -1,0 +1,71 @@
+\ cancel mode verify
+!
+! Description : To find Mixed Layer Depth (MLD) based on temperature criteria.
+!               MLD is defined here as the depth at which the temperature 
+!               changes from that at surface by 1^oC (default value) or the
+!               given delta_T. Temperature inversions > delta_T will be 
+!               taken careoff.
+!
+!               This MLD will be same as the commonly referred Isothermal
+!               Layer Depth (ILD) for the given delta_T.
+!
+! Arguments   : Mandatory : $1 - temperature variable
+!             : Optional  : $2 - delta_T : amount of temperature change 
+!                                          (default is 1^oC)
+!
+! Usage       :  yes? GO mld_temp temp, 0.5         ! <---- CORRECT 
+!
+!                yes? GO mld_temp temp[d=1], 0.5    ! <---- WRONG
+!
+!                the resulting MLD will be available in the variable "mld_t"
+!                
+! Note        : 1. The temperature field is assumed to be on proper Z-axis, 
+!                  with 'meters' units.
+!
+!               2. Variables defined here has a prefix of "tml_".
+!
+!               3. If you want to remove the Z-axis information from the MLD 
+!                  variable, use any of the following methods
+!
+!                   a) define a new variable and use Z=@AVE to eliminate the
+!                       Z-axis information (this will not change the MLD values
+!                       since there is only one value).
+!     
+!                       yes? let mld = mld_t[Z=@AVE]
+!
+!                   b) Use RESHAPE command with grid without Z-Axis (this may be 
+!                       bit slower than above method)  
+!
+!                       yes? let grid_xyt = x[gx=temp]*0+y[gy=temp]*0+t[gt=temp]*0
+!                       yes? let mld = RESHAPE(mld_t, grid_xyt)
+!
+! Example     :  yes? set data levitus_climatology
+!                yes? set reg/x=30:120/y=-30:30
+!                yes? go mld_temp temp, 0.5
+!                yes? fill mld_t
+! 
+! Author : Jaison Kurian
+! Contact: jaison@caos.iisc.ernet.in
+! Date   : 04-MAR-2006
+! Modifications : None
+!----------------------------------------------------------------------------
+
+    let tml_te = $1"<Usage: go mld_temp[.jnl] temp [delta_T]"
+    let tml_cr = $2"1.0"
+
+    let tml_temp_sfc     = tml_te[k=1]
+    let tml_temp_sfc_m_cr= tml_temp_sfc - tml_cr   ! delta_T ^oC < that at sfc
+    let tml_temp_sfc_p_cr= tml_temp_sfc + tml_cr   ! delta_T ^oC < that at sfc
+    let tml_zero_at_m_cr = tml_te - tml_temp_sfc_m_cr
+    let mld_m_cr         = tml_zero_at_m_cr[Z=@LOC:0]
+    let tml_zero_at_p_cr = tml_te - tml_temp_sfc_p_cr
+    let mld_p_cr         = tml_zero_at_p_cr[Z=@LOC:0]
+    let mld_p            = IF mld_p_cr THEN mld_p_cr ELSE mld_m_cr
+    let mld_m            = IF mld_m_cr THEN mld_m_cr ELSE mld_p_cr
+    let mld_t            = MIN(mld_p, mld_m)
+
+
+    set var/title="MLD based on Temperature criteria (delta_T = `tml_cr`^oC)"\
+           /units=meters mld_t
+
+    set mode/last verify

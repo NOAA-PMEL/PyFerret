@@ -1,0 +1,79 @@
+\ cancel mode verify
+!
+! Go File  "mlbase_var"  
+! ---------------------
+!
+! Description : 1. To find the value of a variable (say temp or salt) at 
+!                  the base of the given Mixed Layer (ML). Result will be 
+!                  available as a variable with a prefix of the given field 
+!                  (var) as "var_mlbase".
+!
+!               2. To extend the given Mixed Layer Depth (MLD) to the base 
+!                  of the corresponding grid cells. Result will be availabe 
+!                  as avariable, "mld_extn".
+!
+! Arguments   : Mandatory : $1 - variable to be used for extracting values 
+!                                                               at ML base
+!             : Mandatory : $2 - MLD variable
+!
+! Usage       : yes? GO mlbase_var temp, mld           ! <---- CORRECT
+! 
+!               yes? GO mlbase_var temp[d=1], mld[d=2] ! <---- WRONG
+!
+!                    results will be available as the following variables
+!                       -->  "var_mlbase" & "mld_extn"
+!
+! Note        : 1. The given "field" is assumed to be on proper Z-axis 
+!                  (with 'meters' units).
+!               2. Variables defined here has a prefix of "ml_".
+!               3. It is assumed that given variable is at the middle of the 
+!                    depth-grid cell. 
+!               4. If you want to remove the Z-axis information from the 
+!                    final output variable "var_mlbase", please see the
+!                    Note 3 in mld_temp.jnl (or mld_dens.jnl).
+!
+! Example     :  yes? use levitus_climatology
+!                yes? set reg/x=30:120/y=-30:30
+!                yes? go mld_temp temp
+!                yes? go mlbase_var temp, mld_t
+!                yes? list/x=60/y=10 mld_t
+!                yes? list/x=60/y=10 mld_extn
+!                yes? list/x=60/y=10 temp_mlbase
+!                yes? list/x=60/y=10 temp
+!                yes? fill temp_mlbase
+!
+! Author : Jaison Kurian
+! Contact: jaison@caos.iisc.ernet.in
+! Date   : 04-MAR-2006
+! Modifications : None
+!----------------------------------------------
+   
+  
+   let ml_var      = $1"<Usage: go mlbase_var[.jnl] var mld"
+   let ml_mld      = $2"<Usage: go mlbase_var[.jnl] var mld"
+
+   define symbol cvar = $1
+
+   let ml_zvals    = Z[GZ=ml_var]
+   let ml_cell_bot = ml_zvals + (ml_zvals[k=@SHF:1]-ml_zvals)/2
+   let ml_cell_top = ml_zvals - (ml_zvals[k=@SHF:1]-ml_zvals)/2
+
+! extend MLD to the base of the grid cell
+
+   let ml_mld_mask    = IF ml_cell_top LT ml_mld THEN 1 
+   let ml_mld_extn_1  = ml_cell_bot * ml_mld_mask !because "K" will be the same
+   let ml_mld_kvals   = K[g=ml_mld_extn_1] + ml_mld_extn_1 * 0
+   let ml_mld_kzero   = ml_mld_kvals - ml_mld_kvals[k=1:`ml_mld_kvals,r=kend`@MAX]
+   let ml_mld_extn_z  = ml_mld_extn_1 * ml_mld_kzero[k=@WEQ:0]
+   let mld_extn       = ml_mld_extn_z[k=@SUM]
+
+! find Temp at base of ML
+
+   let ml_bot_mask    = IF ml_cell_top GE ml_mld THEN 1
+   let ml_var_bot     = ml_var * ml_bot_mask
+   let ml_var_kvals   = k[g=ml_var_bot] + ml_var_bot * 0
+   let ml_var_kzero   = ml_var_kvals - ml_var_kvals[k=1:`ml_var_kvals,r=kend`@MIN]
+   let ml_var_base_z  = ml_var_bot * ml_var_kzero[k=@WEQ:0]
+   let ($cvar)_mlbase = ml_var_base_z[k=@SUM]
+
+   set mode/last verify

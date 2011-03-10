@@ -36,11 +36,6 @@
 * Steve Hankin
 * Dac, 2000
 
-* This function reads a GODAE (FNMOC) ship observations file (name passed
-* in) and returns the variables in a multi-dimensional array NoxNv where
-* No is the number of obs in the file and Nv is the number of variables
-* read (list of variables as per source code)
-
 * In this subroutine we provide information about
 * the function.  The user configurable information 
 * consists of the following:
@@ -178,7 +173,6 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-*  names, units, characteristics of variables to send to Vis5D utility functions.
 
         INTEGER slen
         CHARACTER str_time*12

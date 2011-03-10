@@ -1,0 +1,97 @@
+! def_monthaxis_days.jnl
+
+\cancel mode verify
+
+!**************************************************************
+! Description: Define a time axis in days in specific calendar 
+!              Each grid cell begins at first of the month
+!              Axis coordinates are at the middle of each month
+!
+! Usage: go def_monthaxis_days.jnl calendar year_start year_end [axis_name] [year_ref]
+!
+! Arguments:
+! 		calendar(case insensitive) =	
+!				STANDARD or GREGORIAN
+!				JULIAN
+!				NOLEAP   or 365_DAY
+!				ALL_LEAP or 366_DAY
+!				360_DAY
+!
+!		year_start =    start year for axis
+!
+!		year_end =      start year for axis
+!
+!		axis_name =     if not specifed, monthaxis is used
+!
+!		year_ref =      if not specified, set to year_start
+! 
+! Examples:
+!            go def_monthaxis_days.jnl NOLEAP 2002 2005 mytaxis 
+!            go def_monthaxis_days.jnl ALL_LEAP 2002 2005 mytaxis
+!            go def_monthaxis_days.jnl 360_DAY 2002 2005 mytaxis 
+!
+! Notes:
+!
+! Calls:
+!
+! Author: Patrick Brockmann
+! Contact: Patrick.Brockmann@cea.fr
+! $Date: $
+! $Name: $
+! $Revision: $
+! History:
+! Modification:
+!
+!**************************************************************
+
+!=====================================================
+let calendar=UPCASE("($01)")
+let year_start=($02)
+let year_end=($03)
+def sym axisname=($04%monthaxis%)
+let year_ref=($05%($02)%)
+
+let nbyears=year_end-year_start+1
+
+!=====================================================
+IF `(calendar EQ "STANDARD") OR (calendar EQ "GREGORIAN")` THEN
+	let indices = L[L=1:`nbyears*12`]
+	let month = MOD(indices-1,12)+1
+	let year = year_start + INT((indices-1)/12)
+	define axis/units="days"/T0="01-JAN-`year_ref`"/edges/cal="GREGORIAN" ($axisname) = DAYS1900(year,month,1)-DAYS1900(`year_ref`,1,1)
+
+!=====================================================
+ELIF `(calendar EQ "JULIAN")` THEN
+	let indices = L[L=1:`nbyears*12`]
+	let month = MOD(indices-1,12)+1
+	let year = year_start + INT((indices-1)/12)
+	define axis/units="days"/T0="01-JAN-`year_ref`"/edges/cal="JULIAN" ($axisname) = DAYS1900(year,month,1)-DAYS1900(`year_ref`,1,1)
+
+!=====================================================
+ELIF `(calendar EQ "NOLEAP") OR (calendar EQ "365_DAY")` THEN
+	let nbdays={31,28,31,30,31,30,31,31,30,31,30,31}
+	define axis/units="days"/T0="01-JAN-`year_ref`"/edges/cal="NOLEAP" ($axisname) = `(year_start-year_ref)*365`+xcat(0,xsequence(365*(j[j=1:`nbyears`]-1)+nbdays[i=@rsum]))
+
+!=====================================================
+ELIF `(calendar EQ "ALL_LEAP") OR (calendar EQ "366_DAY")` THEN
+	let nbdays={31,29,31,30,31,30,31,31,30,31,30,31}
+	define axis/units="days"/T0="01-JAN-`year_ref`"/edges/cal="ALL_LEAP" ($axisname) = `(year_start-year_ref)*366`+xcat(0,xsequence(366*(j[j=1:`nbyears`]-1)+nbdays[i=@rsum]))
+
+!=====================================================
+ELIF `calendar EQ "360_DAY"` THEN
+	define axis/units="days"/T0="01-JAN-`year_ref`"/edges/cal="360_DAY"/t="01-JAN-`year_start`":"30-DEC-`year_end`":30 ($axisname)
+
+!=====================================================
+ELSE
+ 	say "`calendar` not known"
+ 	say "Possible calendars are : STANDARD (or GREGORIAN), JULIAN, NOLEAP (or 365_DAY), ALL_LEAP (or 366_DAY), 360_DAY"
+	exit
+
+!=====================================================
+ENDIF
+
+show axis ($axisname)
+
+!**************************************************************
+set mode/last verify
+

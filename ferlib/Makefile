@@ -10,6 +10,11 @@
 include ../site_specific.mk
 
 #
+# Platform-specific defines
+#
+include ../platform_specific.mk.$(HOSTTYPE)
+
+#
 # Local defines
 #
 FERINC_FLAGS	:= -I$(DIR_PREFIX)/fer/common -I$(DIR_PREFIX)/fmt/cmn -I$(DIR_PREFIX)/ppl/tmap_inc
@@ -51,23 +56,22 @@ debuglib :
 
 .PHONY : clean
 clean :
-	rm -f *.o *.so ferret ferret.jnl*
+	rm -f *.f *.o *.so ferret ferret.jnl*
 
 # build rule for Fortran file objects in this directory
-FSRCOBJS := $(patsubst %.f, %.o, $(wildcard *.f))
-$(FSRCOBJS): %.o: %.f $(FERINC_FILES) Makefile
-	$(F77) $(FFLAGS) $(FERINC_FLAGS) -ffixed-line-length-132 -fPIC -c $< -o $@
+FSRCOBJS := $(patsubst %.F, %.o, $(wildcard *.F))
+$(FSRCOBJS): %.o: %.F $(FERINC_FILES) Makefile
 
 # build rule for C file objects in this directory
 ALLCOBJS := $(patsubst %.c, %.o, $(wildcard *.c))
 $(ALLCOBJS): %.o: %.c ferret_lib.h $(FERINC_FILES) Makefile
-	$(CC) $(CFLAGS) $(FERINC_FLAGS) $(PYINC_FLAGS) -fPIC -c $< -o $@
+	$(CC) $(CFLAGS) $(FERINC_FLAGS) $(PYINC_FLAGS) -fPIC -c $*.c -o $*.o
 
 # don't include main in the library
 CSRCOBJS := $(filter-out fermain_so.o, $(ALLCOBJS))
 
 libferret.so : $(CSRCOBJS) $(FSRCOBJS) $(FEROBJS_FILES) $(FERLIBS_FILES) Makefile
-	$(F77) $(FFLAGS) $(LDFLAGS) -shared \
+	$(F77) $(LDFLAGS) -shared \
 	    $(CSRCOBJS) $(FSRCOBJS) $(FEROBJS_FILES) \
 	    -Xlinker --whole-archive \
 	    $(FERLIBS_FILES) \

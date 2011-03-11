@@ -39,7 +39,11 @@
      .                        numcoords, axistype, errmsg, lenerrmsg)
       IMPLICIT NONE
 
+#include "gt_lib.parm"
+#include "tmap_dset.parm"
+      INCLUDE 'implicit.parm'
       INCLUDE 'tmap_dims.parm'
+      INCLUDE 'tmap_errors.parm'
       INCLUDE 'xtm_grid.cmn_text'
       INCLUDE 'ferret_lib.parm'
 
@@ -52,15 +56,13 @@
 
 *     Function declarations
       INTEGER TM_LENSTR, TM_UNIT_ID, STR_UPCASE
-      LOGICAL TM_LEGAL_NAME
+      LOGICAL TM_LEGAL_NAME, CHECK_LINE_SUBSET
 
 *     Local arguments
-      CHARACTER*(64) up_axisname
-      INTEGER axisunitcode, i, j, k, sts
-      REAL*8  delta, eps, value
-      LOGICAL regular
-      LOGICAL modu
-      REAL*8  modulen
+      CHARACTER*(64) capaxname
+      INTEGER axucode, k, sts, first_pt, j
+      REAL*8  delta, eps, value, modulen
+      LOGICAL reg, modu
 
 *     Sanity check
       IF ( numcoords .LT. 1 ) THEN
@@ -71,29 +73,30 @@
 
 *     Uppercase the name for comparisons
       IF ( axisname .NE. '' ) THEN
-          sts = STR_UPCASE(up_axisname, axisname)
-          IF ( .NOT. TM_LEGAL_NAME(up_axisname) ) THEN
+          sts = STR_UPCASE(capaxname, axisname)
+          IF ( .NOT. TM_LEGAL_NAME(capaxname) ) THEN
               errmsg = 'Invalid axis name given'
               lenerrmsg = TM_LENSTR(errmsg)
               RETURN
           ENDIF
       ELSE
-          up_axisname = ''
+          capaxname = ''
       ENDIF
 
 *     Get the code number of known units; returns zero for unknown units
-      axisunitcode = TM_UNIT_ID(axisunit)
+      axucode = TM_UNIT_ID(axisunit)
 
       delta = (axiscoords(numcoords) - axiscoords(1)) / (numcoords - 1)
       eps = abs(delta) * 1.0E-7
-      if ( eps .LT. 1.0E-32 )
-     .    eps = 1.0E-32
+      IF ( eps .LT. 1.0E-32 ) THEN
+          eps = 1.0E-32
+      ENDIF
 *     Check for regular coordinates
-      regular = .TRUE.
+      reg = .TRUE.
       DO 10 k = 2, numcoords-1
          value = axiscoords(1) + (k-1) * delta
          IF ( abs(value - axiscoords(k)) .GT. eps ) THEN
-             regular = .FALSE.
+             reg = .FALSE.
              GOTO 20
          ENDIF
    10 CONTINUE
@@ -109,78 +112,93 @@
           modulen = 0.0
       ENDIF
 
-*     See if a line already exists with the provided info
-      IF ( up_axisname .NE. '' ) THEN
-          DO 100 k = 1, max_dyn_lines
-*             Check quick and easy things before strings
-              IF ( .NOT. regular .EQV. line_regular(k) )
-     .            GOTO 100
-              IF ( .NOT. modu .EQV. line_modulo(k) )
-     .            GOTO 100
-              IF ( modu .AND. (modulen .NE. line_modulo_len(k)) )
-     .            GOTO 100
-              IF ( axisunitcode .NE. line_unit_code(k) )
-     .            GOTO 100
-              IF ( (axisunitcode .EQ. 0) .AND.
-     .             (axisunit .NE. line_units(k)) )
-     .            GOTO 100
-*             ??? Do we really care if the name matches
-*                 as long as everything else does ???
-              IF ( up_axisname .NE. line_name(k) )
-     .            GOTO 100
-*             Check the coordinates - may be a subset
-              IF ( regular ) THEN
-                  IF ( abs(delta - line_delta(k)) .GT. eps )
-     .                GOTO 100
-                  DO 30 j = 1, line_dim(k)
-                      value = line_start(k) + (j-1) * line_delta(k)
-                      IF ( abs(value - axiscoords(1)) .LT. eps ) THEN
-                          i = j + numcoords - 1
-                          IF ( i .GT. line_dim(k) )
-     .                        GOTO 100
-*                         Successfully found the regular axis
-                          axisnum = k
-                          axisstart = j
-                          axisend = i
-                          GOTO 500
-                      ENDIF
-  30              CONTINUE
-              ELSE
-*                 Find the first coordinate
-                  DO 40 j = 1, line_dim(k)
-                      value = line_mem(line_subsc1(k) + j - 1)
-                      IF ( abs(value - axiscoords(1)) .LT. eps )
-     .                    GOTO 50
-   40             CONTINUE
-                  GOTO 100
-*                 Check the rest of the coordinates
-   50             IF ( (j + numcoords - 1) .GT. line_dim(k) )
-     .                GOTO 100
-                  DO 60 i = 2, numcoords
-                      value = line_mem(line_subsc1(k) + j + i - 2)
-                      IF ( abs(value - axiscoords(i)) .GE. eps )
-     .                    GOTO 100
-   60             CONTINUE
-*                 Successfully found the irregular axis
+*     See if a dynamic line already exists containing the provided info
+      k = max_lines
+   50 k = line_flink(k)
+      IF ( k .LE. max_lines ) THEN
+          GOTO 100
+      ENDIF
+      IF ( line_class(k) .EQ. pline_class_basic ) THEN
+          IF ( CHECK_LINE_SUBSET(k, axisstart, axisend, capaxname,
+     .                    axisunit, axiscoords, numcoords, delta, eps,
+     .                    reg, modu, modulen, axucode) ) THEN
+              axisnum = k
+              GOTO 500
+          ENDIF
+      ENDIF
+      GOTO 50
+
+*     See if a permanent line already exists containing the provided info
+ 100  CONTINUE
+      DO 110 k = 1, max_lines
+          IF ( (line_name(k) .NE. char_init16) .AND.
+     .         (line_class(k) .EQ. pline_class_basic) ) THEN
+              IF ( CHECK_LINE_SUBSET(k, axisstart, axisend, capaxname,
+     .                   axisunit, axiscoords, numcoords, delta, eps,
+     .                   reg, modu, modulen, axucode) ) THEN
                   axisnum = k
-                  axisstart = j
-                  axisend = i
                   GOTO 500
               ENDIF
-  100    CONTINUE
-      ENDIF
+          ENDIF
+  110 CONTINUE
 
-*     If we got here, there is no line matching the description.
-*     So create one.
-*     Stubbed
-      axisnum = -1
-      axisstart = 0
-      axisend = 0
+*     If we got here, there is no line containing the provided info.
+*     So create a dynamic line.
+  150 CALL TM_ALLO_DYN_LINE(k, sts)
+      IF ( sts .NE. merr_ok ) THEN
+          errmsg = 'No space left for a new dynamic line'
+          lenerrmsg = TM_LENSTR(errmsg)
+          RETURN
+      ENDIF
+      IF ( capaxname .EQ. '' ) THEN
+          WRITE(line_name(k), 160) (k - max_lines)
+  160     FORMAT('(AX',I3.3,')')
+          line_name_orig(k) = line_name(k)
+      ELSE
+          line_name(k)      = capaxname
+          line_name_orig(k) = axisname
+      ENDIF
+      line_units(k)         = axisunit
+      line_unit_code(k)     = axucode
+      line_t0(k)            = char_init20
+      line_shift_origin(k)  = .FALSE.
+      line_tunit(k)         = 0.0
+      line_parent(k)        = 0
+      line_class(k)         = pline_class_basic
+      line_modulo(k)        = modu
+      line_modulo_len(k)    = modulen
+      IF ( axistype .EQ. AXISTYPE_LONGITUDE ) THEN
+          line_direction(k) = axis_orients(1)
+      ELSE IF ( axistype .EQ. AXISTYPE_LATITUDE ) THEN
+          line_direction(k) = axis_orients(2)
+      ELSE IF ( axistype .EQ. AXISTYPE_LEVEL ) THEN
+          line_direction(k) = axis_orients(3)
+      ELSE 
+          line_direction(k) = 'NA'
+      ENDIF
+      line_regular(k)       = reg
+      IF ( reg ) THEN
+          line_subsc1(k)    = unspecified_int4
+          line_start(k)     = axiscoords(1)
+          line_delta(k)     = delta
+      ELSE
+          first_pt          = next_line_mem_pos
+          next_line_mem_pos = first_pt + numcoords
+          DO 170 J = 1, numcoords
+              line_mem(first_pt + j - 1) = axiscoords(j)
+  170     CONTINUE
+          line_subsc1(k)    = first_pt
+          line_start(k)     = axiscoords(1)
+          line_delta(k)     = unspecified_val8
+      ENDIF
+      line_dim(k)           = numcoords
+      line_use_cnt(k)       = 0
+
+      axisnum = k
+      axisstart = 1
+      axisend = numcoords
 
   500 lenerrmsg = 0
-      WRITE(*,*) 'axisnum = ', axisnum
-      WRITE(*,*) 'axisstart = ', axisstart
-      WRITE(*,*) 'axisend = ', axisend
       RETURN
 
       END
@@ -202,22 +220,35 @@
      .              axiscoords, numcoords, lenerrmsg
       DIMENSION     axiscoords(6,numcoords)
 
-*     Local arguments
-      INTEGER k
+*     Function declarations
+      INTEGER TM_LENSTR, STR_UPCASE
+      LOGICAL TM_LEGAL_NAME, CHECK_LINE_SUBSET
 
-      WRITE(*,*) 'axisname = ', axisname
-      WRITE(*,*) 'caltype = ', caltype
-      WRITE(*,*) 'numcoords = ', numcoords
-      IF ( numcoords .GE. 1 ) THEN
-          WRITE(*,*) 'axiscoords(*,1) = ', (axiscoords(k,1),k=1,6)
-          WRITE(*,*) 'axiscoords(*,', numcoords, ') = ',
-     .                (axiscoords(k,numcoords),k=1,6)
+*     Local arguments
+      CHARACTER*(64) capaxname
+      INTEGER k, sts, first_pt, j
+      REAL*8  delta, eps, value, modulen
+      LOGICAL reg, modu
+
+*     Sanity check
+      IF ( numcoords .LT. 1 ) THEN
+          errmsg = 'Non-positive numcoords passed to GET_TIME_AXIS_NUM'
+          lenerrmsg = TM_LENSTR(errmsg)
+          RETURN
       ENDIF
 
-*     Stubbed
-      axisnum = -1
-      axisstart = 1
-      axisend = 1
+*     Uppercase the name for comparisons
+      IF ( axisname .NE. '' ) THEN
+          sts = STR_UPCASE(capaxname, axisname)
+          IF ( .NOT. TM_LEGAL_NAME(capaxname) ) THEN
+              errmsg = 'Invalid axis name given'
+              lenerrmsg = TM_LENSTR(errmsg)
+              RETURN
+          ENDIF
+      ELSE
+          capaxname = ''
+      ENDIF
+
 
       lenerrmsg = 0
       RETURN

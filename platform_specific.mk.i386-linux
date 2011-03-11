@@ -73,7 +73,7 @@
 # to make debugging possible (line numbers messed up using .F file directly)
 .F.o:
 	rm -f $*.f
-	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de        /de /g' | sed -e 's/de         /de /g' > $*.f
+	$(CPP) -traditional $(CPP_FLAGS) $*.F | sed -e 's/de        /de /g' | sed -e 's/de         /de /g' > $*.f
 	$(F77) $(FFLAGS) $*.f -o $*.o
 
 #

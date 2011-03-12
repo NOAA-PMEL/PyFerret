@@ -32,7 +32,6 @@
 
 
 
-*
 *     Checks if a subsection of superline can describe the axis given
 *     by the rest of the arguments other that axisstart and axisend.
 *     If so, axisstart and axisend are assigned the first and last 
@@ -93,7 +92,8 @@
 *     Check the coordinates - may be a subset
       IF ( reg ) THEN
 *         First check the spacing between coordinates
-          IF ( abs(delta - line_delta(k)) .GT. eps ) THEN
+          IF ( (numcoords .GT. 1) .AND. 
+     .         (abs(delta - line_delta(k)) .GT. eps) ) THEN
               CHECK_LINE_SUBSET = .FALSE.
               RETURN
           ENDIF
@@ -149,3 +149,68 @@
 
       END
 
+
+
+*     Checks if a subsection of superline can describe the axis given
+*     by the rest of the arguments other that axisstart and axisend.
+*     If so, axisstart and axisend are assigned the first and last 
+*     index of the coordinates of the line in superline.  A blank
+*     (empty) axisname will match any line name.
+*     Note: superline is assumed to be a valid line.
+*     Note: If superline is exactly the line described, axisstart will
+*           be assigned one and axisend will be assigned numcoords.
+*     Note: axiscoords are assumed to be in units of time since 
+*           01-JAN-0000 00:00:00, and adjustments to a different start
+*           for superline are made by this function.
+
+      LOGICAL FUNCTION CHECK_TIME_LINE_SUBSET(superline, axisstart, 
+     .                            axisend, axisname, axiscoords,
+     .                            numcoords, delta, eps, reg,
+     .                            modu, modulen, axucode)
+      IMPLICIT NONE
+
+      INCLUDE 'tmap_dims.parm'
+      INCLUDE 'xtm_grid.cmn_text'
+      INCLUDE 'ferret_lib.parm'
+
+*     Passed arguments
+      INTEGER       superline, axisstart, axisend,
+     .              numcoords, axucode
+      CHARACTER*(*) axisname
+      REAL*8        axiscoords, delta, eps, modulen
+      LOGICAL       reg, modu
+      DIMENSION     axiscoords(numcoords)
+
+*     Local arguments
+      INTEGER       i, j, k
+      REAL*8        value
+
+*     First check the quick and easy, then go to the strings and coordinates
+      k = superline
+      IF ( .NOT. reg .EQV. line_regular(k) ) THEN
+          CHECK_TIME_LINE_SUBSET = .FALSE.
+          RETURN
+      ENDIF
+      IF ( .NOT. modu .EQV. line_modulo(k) ) THEN
+          CHECK_TIME_LINE_SUBSET = .FALSE.
+          RETURN
+      ENDIF
+      IF ( modu .AND. (modulen .NE. line_modulo_len(k)) ) THEN
+          CHECK_TIME_LINE_SUBSET = .FALSE.
+          RETURN
+      ENDIF
+      IF ( axucode .NE. line_unit_code(k) ) THEN
+          CHECK_TIME_LINE_SUBSET = .FALSE.
+          RETURN
+      ENDIF
+      IF ( (axisname .NE. '') .AND. (axisname .NE. line_name(k)) ) THEN
+          CHECK_TIME_LINE_SUBSET = .FALSE.
+          RETURN
+      ENDIF
+
+*     STUBBED
+
+      CHECK_TIME_LINE_SUBSET = .FALSE.
+      RETURN
+
+      END

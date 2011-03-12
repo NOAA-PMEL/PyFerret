@@ -168,7 +168,9 @@ def getdata(name, create_mask=True):
         create_mask: return the numeric data array as a MaskedArray object?
     Returns:
         A dictionary contains the numeric data array and axes information.
-        The dictionary contains the following key/value pairs:
+        Note that 'name' is not assigned, which is required for the putdata
+        method.  The dictionary contains the following key/value pairs:
+            'title' : the string passed in the name argument
             'data': the numeric data array.  If create_mask is True, this
                     will be a NumPy float32 MaskedArray object with the
                     masked array properly assigned.  If create_mask is False,
@@ -266,7 +268,7 @@ def getdata(name, create_mask=True):
             datavar = ma.array(data, fill_value=bdfs[0], mask=( data == bdfs[0] ))
     else:
         datavar = data
-    return { "name": name, "data":datavar, "missing_value":bdfs, "data_unit":data_unit, 
+    return { "title": name, "data":datavar, "missing_value":bdfs, "data_unit":data_unit, 
              "axis_types":axis_types, "axis_names":axis_names, "axis_units":axis_units, 
              "axis_coords":axis_coords }
 
@@ -394,7 +396,7 @@ def get(name, create_mask=True):
             raise RuntimeError, "Unexpected axis type of %d" % axis_types[k]
     # getdata returns a copy of the data, thus createVariable does not 
     # need to force a copy.  The mask, if request, was created by getdata.
-    datavar = cdms2.createVariable(data, fill_value=bdfs[0], axes=var_axes, id=name,
+    datavar = cdms2.createVariable(data, fill_value=bdfs[0], axes=var_axes,
                                    attributes={"name":name, "units":data_unit})
     return datavar
 

@@ -230,7 +230,11 @@
             DO 202 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
                i1 = arg_lo_ss(X_AXIS,ARG1)
                DO 102 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-                  result(i,j,k,l) = work_new(i1,j1)
+	          IF (work_new(i1,j1) .NE. bad_flag(1)) THEN
+                     result(i,j,k,l) = work_new(i1,j1)
+		  ELSE
+		     result(i,j,k,1) = bad_flag_result
+		  ENDIF
                   i1 = i1 + arg_incr(X_AXIS,ARG1)
  102           CONTINUE
                j1 = j1 + arg_incr(Y_AXIS,ARG1)

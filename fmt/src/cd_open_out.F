@@ -50,6 +50,9 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V67  *acm* 3/11  Turns out that specifying NF_CLASSIC_MODEL without also
+*                  saying NF_NETCDF4 isn't considered correct. Add NF_NETCDF4
+*                  whenever using NF_CLASSIC_MODEL
 
 * argument definitions:
 *       cdfname - desired output file name
@@ -104,7 +107,7 @@
 
 * ... let netCDF detect the error if the file already exists
 
-         IF (netcdf4_type .EQ. 3) cdftype = NF_CLASSIC_MODEL
+         IF (netcdf4_type .EQ. 3) cdftype = OR(NF_CLASSIC_MODEL,NF_NETCDF4)
          IF (netcdf4_type .EQ. 4) cdftype = NF_NETCDF4
          IF (netcdf4_type .EQ. 6) cdftype = NF_64BIT_OFFSET
 

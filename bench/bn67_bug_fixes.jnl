@@ -11,3 +11,6 @@ GO err665_din
 GO bn_reset
 GO err665_centered_lev
 
+GO bn_reset
+GO err665_hours_since_T
+

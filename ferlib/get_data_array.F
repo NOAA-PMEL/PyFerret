@@ -204,6 +204,7 @@
       INCLUDE 'xcontext.cmn'
       INCLUDE 'xtm_grid.cmn_text'
       INCLUDE 'xunits.cmn_text'
+      EXTERNAL XUNITS_DATA
       INCLUDE 'xvariables.cmn'
 
 *     Passed arguments

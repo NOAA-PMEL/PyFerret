@@ -95,7 +95,7 @@
       axucode = TM_UNIT_ID(axisunit)
 
       IF ( numcoords .GT. 1 ) THEN
-          delta = (axiscoords(numcoords) - axiscoords(1)) / 
+          delta = (axiscoords(numcoords) - axiscoords(1)) /
      .                       (numcoords - 1)
       ELSE
           delta = 0.0
@@ -144,8 +144,8 @@
 *     See if a permanent line already exists containing the provided info
  100  CONTINUE
       DO 110 k = 1, max_lines
-          IF ( (line_name(k) .NE. char_init16) .AND.
-     .         (line_class(k) .EQ. pline_class_basic) ) THEN
+          IF ( (line_class(k) .EQ. pline_class_basic) .AND.
+     .         (line_name(k) .NE. char_init16) ) THEN
               IF ( CHECK_LINE_SUBSET(k, axisstart, axisend, capaxname,
      .                   axisunit, axiscoords, numcoords, delta, eps,
      .                   reg, modu, modulen, axucode) ) THEN
@@ -186,7 +186,7 @@
           line_direction(k) = axis_orients(2)
       ELSE IF ( axistype .EQ. AXISTYPE_LEVEL ) THEN
           line_direction(k) = axis_orients(3)
-      ELSE 
+      ELSE
           line_direction(k) = 'NA'
       ENDIF
       line_dim(k)           = numcoords
@@ -209,7 +209,7 @@
               line_mem(first_pt + j - 1) = axiscoords(j)
   170     CONTINUE
 *         Compute and store the box boundries
-          line_mem(first_pt + numcoords) = 
+          line_mem(first_pt + numcoords) =
      .         axiscoords(1) - 0.5 * (axiscoords(2) - axiscoords(1))
           DO 180 j = 2, numcoords
               line_mem(first_pt + numcoords + j - 1) =
@@ -259,6 +259,7 @@
       INCLUDE 'tmap_errors.parm'
       INCLUDE 'xtm_grid.cmn_text'
       INCLUDE 'xunits.cmn_text'
+      EXTERNAL XUNITS_DATA
       INCLUDE 'ferret_lib.parm'
 
 *     Passed arguments
@@ -274,8 +275,9 @@
 
 *     Local arguments
       CHARACTER*(64) capaxname, axisunit
+      CHARACTER*(16) calname
       INTEGER        sts, calid, k, axucode, first_pt, j
-      REAL*8         modulen, delta, eps, value
+      REAL*8         modulen, delta, eps, value, base
       LOGICAL        modu, reg
 
 *     Sanity check
@@ -395,7 +397,7 @@
      .                        sts) / un_convert(axucode)
   160 CONTINUE
       IF ( numcoords .GT. 1 ) THEN
-          delta = (line_mem(first_pt + numcoords - 1) - 
+          delta = (line_mem(first_pt + numcoords - 1) -
      .             line_mem(first_pt)) / (numcoords - 1)
       ELSE
           delta = 0.0
@@ -420,10 +422,11 @@
       IF ( k .LE. max_lines ) THEN
           GOTO 300
       ENDIF
-      IF ( line_class(k) .EQ. pline_class_basic ) THEN
+      IF ( (line_class(k) .EQ. pline_class_basic) .AND.
+     .     (line_t0(k) .NE. char_init20) ) THEN
           IF ( CHECK_TIME_LINE_SUBSET(k, axisstart, axisend, capaxname,
-     .                    line_mem(first_pt), numcoords, delta, eps,
-     .                    reg, modu, modulen, axucode) ) THEN
+     .                    calid, line_mem(first_pt), numcoords, delta,
+     .                    eps, reg, modu, modulen, axucode) ) THEN
               axisnum = k
               GOTO 500
           ENDIF
@@ -433,11 +436,13 @@
 *     See if a permanent line already exists containing the provided info
  300  CONTINUE
       DO 310 k = 1, max_lines
-          IF ( (line_name(k) .NE. char_init16) .AND.
-     .         (line_class(k) .EQ. pline_class_basic) ) THEN
-              IF ( CHECK_TIME_LINE_SUBSET(k, axisstart, axisend, 
-     .                   capaxname, line_mem(first_pt), numcoords,
-     .                   delta, eps, reg, modu, modulen, axucode) ) THEN
+          IF ( (line_class(k) .EQ. pline_class_basic) .AND.
+     .         (line_name(k) .NE. char_init16) .AND.
+     .         (line_t0(k) .NE. char_init20) ) THEN
+              IF ( CHECK_TIME_LINE_SUBSET(k, axisstart, axisend,
+     .                   capaxname, calid, line_mem(first_pt),
+     .                   numcoords, delta, eps, reg, modu, modulen,
+     .                   axucode) ) THEN
                   axisnum = k
                   GOTO 500
               ENDIF
@@ -462,7 +467,14 @@
       ENDIF
       line_units(k)         = axisunit
       line_unit_code(k)     = axucode
-      line_t0(k)            = '01-JAN-0000 00:00:00'
+      IF ( modu ) THEN
+          line_t0(k)        = '01-JAN-0000 00:00:00'
+          base = 0.0
+      ELSE
+          line_t0(k)        = '01-JAN-1900 00:00:00'
+          base = TM_SECS_FROM_BC(calid, 1900, 1, 1, 0, 0, 0, sts)
+      ENDIF
+      line_cal_name(k)      = allowed_calendars(calid)
       line_shift_origin(k)  = .FALSE.
       line_tunit(k)         = un_convert(axucode)
       line_parent(k)        = 0
@@ -474,10 +486,10 @@
       line_regular(k)       = reg
       IF ( reg ) THEN
           line_subsc1(k)    = unspecified_int4
-          line_start(k)     = line_mem(first_pt)
+          line_start(k)     = line_mem(first_pt) - base
           line_delta(k)     = delta
       ELSE
-*         first_pt and the coordinates already assigned
+*         first_pt already assigned
           next_line_mem_pos = first_pt + 2 * numcoords + 1
           IF ( next_line_mem_pos .GT. maxlinestore ) THEN
               CALL TM_DEALLO_DYN_LINE(k)
@@ -485,6 +497,9 @@
               lenerrmsg = TM_LENSTR(errmsg)
               RETURN
           ENDIF
+*         Modify the coordinates to the new t0 baseline
+          DO 370 j = 1, numcoords
+  370         line_mem(first_pt+j-1) = line_mem(first_pt+j-1) - base
 *         Compute and store the box boundries
           line_mem(first_pt + numcoords) = line_mem(first_pt) - 0.5 *
      .                   (line_mem(first_pt + 1) - line_mem(first_pt))
@@ -492,9 +507,9 @@
               line_mem(first_pt + numcoords + j - 1) = 0.5 *
      .        (line_mem(first_pt + j - 1) + line_mem(first_pt + j- 2))
   380     CONTINUE
-          line_mem(first_pt + 2 * numcoords) = 
+          line_mem(first_pt + 2 * numcoords) =
      .         line_mem(first_pt + numcoords - 1) +
-     .         0.5 * (line_mem(first_pt + numcoords - 1) - 
+     .         0.5 * (line_mem(first_pt + numcoords - 1) -
      .                line_mem(first_pt + numcoords - 2))
 *         Assign the line info
           line_subsc1(k)    = first_pt

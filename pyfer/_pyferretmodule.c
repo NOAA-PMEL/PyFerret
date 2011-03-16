@@ -943,7 +943,7 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
             break;
         case AXISTYPE_NORMAL:
             /* axis normal to the results - ignore sequence item (probably None) */
-            axis_nums[0] = 0; /* ferret.parm value for a normal line (mnormal) */
+            axis_nums[k] = 0;   /* ferret.parm value for a normal line (mnormal) */
             axis_starts[k] = 0;
             axis_ends[k] = 0;
             break;

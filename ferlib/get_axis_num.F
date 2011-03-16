@@ -101,8 +101,8 @@
           delta = 0.0
       ENDIF
       eps = abs(delta) * 1.0E-7
-      IF ( eps .LT. 1.0E-32 ) THEN
-          eps = 1.0E-32
+      IF ( eps .LT. 1.0E-14 ) THEN
+          eps = 1.0E-14
       ENDIF
 *     Check for regular coordinates
       reg = .TRUE.
@@ -403,8 +403,8 @@
           delta = 0.0
       ENDIF
       eps = abs(delta) * 1.0E-7
-      IF ( eps .LT. 1.0E-32 ) THEN
-          eps = 1.0E-32
+      IF ( eps .LT. 1.0E-14 ) THEN
+          eps = 1.0E-14
       ENDIF
 *     Check for regular coordinates
       reg = .TRUE.

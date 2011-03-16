@@ -47,8 +47,13 @@
       IMPLICIT NONE
 
       INCLUDE 'ferret.parm'
+      INCLUDE 'errmsg.parm'
+      INCLUDE 'tmap_dims.parm'
+      INCLUDE 'tmap_errors.parm'
       INCLUDE 'xcontext.cmn'
       INCLUDE 'xprog_state.cmn'
+      INCLUDE 'xtm_grid.cmn_text'
+      INCLUDE 'xfr_grid.cmn'
       INCLUDE 'xpyvar_info.cmn'
 
 *     MAX_FERRET_NDIM parameter value (must match that in ferret_lib.h)
@@ -65,12 +70,14 @@
      .              axis_ends(MAX_FERRET_NDIM)
 
 *     Function declarations
-      INTEGER TM_LENSTR, STR_UPCASE, FIND_DSET_NUMBER
-      LOGICAL TM_LEGAL_NAME
+      INTEGER       TM_LENSTR, STR_UPCASE, FIND_DSET_NUMBER
+      LOGICAL       TM_LEGAL_NAME
 
 *     Local variables
-      INTEGER k, ds_num, cx, vpos, category, ivar
+      INTEGER       k, ds_num, cx, vpos, category, ivar,
+     .              ingrid, outgrid, sts
       CHARACTER*128 varname
+      LOGICAL       its_dyn
 
 *     Check the name for this pyvar
       IF ( LEN(codename) .GT. 128 ) THEN
@@ -143,24 +150,34 @@
 *     Only floats supported at this time
       pyvar_type(vpos) = ptype_float
 
-* Debug
-      WRITE(*,*) 'vpos = ', vpos
-      WRITE(*,*) 'pyvar_ndarray_obj(vpos) = ', pyvar_ndarray_obj(vpos)
-      WRITE(*,*) 'pyvar_code(vpos) = ', pyvar_code(vpos)
-      WRITE(*,*) 'pyvar_title(vpos) = ', pyvar_title(vpos)
-      WRITE(*,*) 'pyvar_units(vpos) = ', pyvar_units(vpos)
-      WRITE(*,*) 'pyvar_missing_flag(vpos) = ', pyvar_missing_flag(vpos)
-      WRITE(*,*) 'pyvar_dset_number(vpos) = ', pyvar_dset_number(vpos)
-      WRITE(*,*) 'pyvar_type(vpos)  = ', pyvar_type(vpos)
-
-*     Stubbed - use axis_nums to find or create a grid
-      pyvar_grid_number(vpos) = unspecified_int4
-
+*     Use axis_nums to find or create a grid
+      CALL ALLO_GRID(ingrid, sts)
+      IF ( sts .NE. ferr_ok ) THEN
+          errmsg = 'Out of memory for a new temporary grid'
+          lenerr = TM_LENSTR(errmsg)
+          RETURN
+      ENDIF
+      CALL INIT_GRID(ingrid, '', mnormal)
       DO 30 k = 1,MAX_FERRET_NDIM
+          grid_line(k,ingrid) = axis_nums(k)
+          CALL TM_USE_LINE(axis_nums(k))
+   30 CONTINUE
+      CALL TM_GET_LIKE_DYN_GRID(ingrid, its_dyn, outgrid,
+     .                          grd_stk_ptr, sts)
+      IF ( sts .NE. merr_ok ) THEN
+          CALL DEALLO_GRID(sts)
+          errmsg = 'Out of memory for a new dynamic grid'
+          lenerr = TM_LENSTR(errmsg)
+          RETURN
+      ENDIF
+      pyvar_grid_number(vpos) = outgrid
+      CALL DEALLO_GRID(sts)
+
+*     Assign the start and end indices of the axes in this grid
+      DO 40 k = 1,MAX_FERRET_NDIM
           pyvar_grid_start(k,vpos) = axis_starts(k)
           pyvar_grid_end(k,vpos) = axis_ends(k)
-   30 CONTINUE
-
+   40 CONTINUE
 
 *     Success
       errmsg = ' '

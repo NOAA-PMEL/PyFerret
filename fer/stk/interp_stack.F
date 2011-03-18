@@ -429,6 +429,11 @@
 	   CALL IS_READ( memory, *10, *2000, status )
 	   GOTO 5000
 
+* ... get a python static variable ?
+        ELSEIF ( cat .EQ. cat_pystat_var ) THEN
+           CALL IS_PYSTAT_VAR(memory, *10, *2000, status)
+           GOTO 5000
+
 * ... calculate from internal model-diagnostic code ?
 	ELSEIF ( cat .EQ. cat_calc_var	) THEN
 	   CALL IS_CALC   ( memory, *10, *2000, status )

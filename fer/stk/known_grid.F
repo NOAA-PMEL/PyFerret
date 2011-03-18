@@ -53,6 +53,7 @@
 	include	'xvariables.cmn'
 	include	'xcalc_vars.cmn'
         include 'xfr_grid.cmn'
+        INCLUDE 'xpyvar_info.cmn'
 
 * calling argument declarations:
 	INTEGER	data_set, category, variable
@@ -65,6 +66,9 @@
 
 	   KNOWN_GRID = ds_grid_number( variable )
 
+        ELSEIF ( category .EQ. cat_pystat_var ) THEN
+
+           KNOWN_GRID = pyvar_grid_number( variable )
 
 	ELSEIF ( category .EQ. cat_calc_var ) THEN
 

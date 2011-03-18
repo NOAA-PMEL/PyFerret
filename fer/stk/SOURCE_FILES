@@ -30,6 +30,7 @@ is_gather.F\
 is_grid_mode.F\
 is_modulo.F\
 is_pseudo.F\
+is_pystat_var.F\
 is_read.F\
 is_reconcile.F\
 is_regrid.F\

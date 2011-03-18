@@ -45,6 +45,7 @@ void set_fer_memory(float *mem, size_t mem_size);
 void set_ppl_memory(float *mem, int mem_size);
 void set_shared_buffer(void);
 void decref_pyobj_(void *pyobj_ptr_ptr);
+void copy_pystat_data_(float dest[], void *data_ndarray_ptr);
 
 /* Prototypes for library Fortan functions accessed from C routines */
 void add_pystat_var_(void *data_ndarray_ptr_ptr, char codename[], char title[], char units[],

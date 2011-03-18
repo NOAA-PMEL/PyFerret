@@ -1,19 +1,19 @@
 #! /bin/csh
-# This c-shell script is used to set environment variables need by 
-# pyferret, and then execute ferret.py in python.  The intent of this 
+# This c-shell script is used to set environment variables need by
+# pyferret, and then execute ferret.py in python.  The intent of this
 # script is to provide a traditional Ferret interface through pyferret.
 
 # pythonN.N executable to use
-# set pyname = python2.4
-set pyname = python2.6
+set pyname = python2.4
+# set pyname = python2.6
 
 # Python directory containing the pyferret package and ferret.py.
-set pysite = /home/users/ksmith/.local/lib/${pyname}/site-packages
+set pysite = ${HOME}/.local/lib/${pyname}/site-packages
 
 # Make sure FER_* environment variables are assigned
 if ( ! $?FER_DIR ) then
 #   Either source the ferret_paths script to assign the environment variables
-#    source /home/users/tmap/bin/ferret_paths >&! /dev/null
+#   source /my/path/to/ferret_paths >&! /dev/null
 #
 #   Or just throw an error if they should have already been defined
     echo "**ERROR: Ferret environment variables are not defined"

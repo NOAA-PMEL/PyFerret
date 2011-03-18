@@ -76,10 +76,11 @@
       pyvar_ndarray_obj(ivar) = 0
 
 *     Clear the name from the array and hash table
-      CALL string_array_modify(pyvar_code_head, ivar,
+      CALL STRING_ARRAY_MODIFY(pyvar_code_head, ivar,
      .                         undef_name, LEN(undef_name))
 
-*     Stubbed - delete the grid at pyvar_grid_number(vpos)
+*     Decrement the reference count to the associated grid and its lines
+      CALL DEALLO_DYN_GRID(pyvar_grid_number(ivar))
 
 *     Success
       errmsg = ' '

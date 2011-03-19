@@ -9,12 +9,11 @@ import os.path
 addn_link_args = [ "-Xlinker", "--no-undefined", ]
 
 # Create the pyferret._pyferret Extension
-ext_mods = [ Extension("pyferret._pyferret", sources = [ os.path.join("pyfer", "_pyferretmodule.c"), ],
-                                             include_dirs = [ "ferlib", 
-                                                              os.path.join("fer", "common"), 
+ext_mods = [ Extension("pyferret._pyferret", sources = [ os.path.join("pyfermod", "_pyferretmodule.c"), ],
+                                             include_dirs = [ os.path.join("fer", "common"), 
                                                               os.path.join("fmt", "cmn"), 
                                                               os.path.join("fer", "ef_utility"), ],
-                                             library_dirs = [ "ferlib", ],
+                                             library_dirs = [ "lib", ],
                                              libraries = [ "ferret", "python%i.%i" % sys.version_info[:2], ],
                                              extra_link_args = addn_link_args), ]
 
@@ -28,6 +27,6 @@ setup(name = "pyferret",
       url = "http://ferret.pmel.noaa.gov/Ferret",
       py_modules = [ "ferret", ],
       packages = [ "pyferret", ],
-      package_dir = { "pyferret":"pyfer", },
+      package_dir = { "pyferret":"pyfermod", },
       ext_modules = ext_mods)
 

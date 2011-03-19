@@ -32,7 +32,8 @@
  *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "Python.h"
+#include <Python.h>
+#include "pyferret.h"
 
 void decref_pyobj_(void *pyobj_ptr_ptr)
 {

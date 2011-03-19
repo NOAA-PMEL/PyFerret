@@ -977,6 +977,7 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
      * The reference count will be decremented by Ferret when no longer needed.
      */
     Py_INCREF(data_ndarray);
+    fprintf(stderr, "data_ndarray in pyferretPutData = %lX\n", (long)data_ndarray);
 
     Py_INCREF(Py_None);
     return Py_None;

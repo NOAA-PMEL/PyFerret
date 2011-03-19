@@ -1,5 +1,5 @@
-#ifndef FERRET_LIB_H_
-#define FERRET_LIB_H_
+#ifndef PYFERRET_H_
+#define PYFERRET_H_
 
 #include <wchar.h>
 #include <stdlib.h>

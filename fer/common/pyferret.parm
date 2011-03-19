@@ -1,10 +1,10 @@
-*  FERRET_LIB.PARM
+*  PYFERRET.PARM
 
-*     maximum Ferret grid dimension parameter (must match that in ferret_lib.h)
+*     maximum Ferret grid dimension parameter (must match that in pyferret.h)
       INTEGER MAX_FERRET_NDIM
       PARAMETER(MAX_FERRET_NDIM = 4)
 
-*     axis type parameters (must match those in ferret_lib.h)
+*     axis type parameters (must match those in pyferret.h)
       INTEGER    AXISTYPE_LONGITUDE, AXISTYPE_LATITUDE, AXISTYPE_LEVEL,
      .           AXISTYPE_TIME, AXISTYPE_CUSTOM, AXISTYPE_ABSTRACT,
      .           AXISTYPE_NORMAL
@@ -16,7 +16,7 @@
      .           AXISTYPE_ABSTRACT = 6,
      .           AXISTYPE_NORMAL = 7)
 
-*     time array index parameters (must be one more than those in ferret_lib.h)
+*     time array index parameters (must be one more than those in pyferret.h)
       INTEGER TIMEARRAY_DAYINDEX, TIMEARRAY_MONTHINDEX,
      .        TIMEARRAY_YEARINDEX, TIMEARRAY_HOURINDEX,
      .        TIMEARRAY_MINUTEINDEX, TIMEARRAY_SECONDINDEX
@@ -27,7 +27,7 @@
      .           TIMEARRAY_MINUTEINDEX = 5,
      .           TIMEARRAY_SECONDINDEX = 6)
 
-*     calendar type parameters (must match those in ferret_lib.h)
+*     calendar type parameters (must match those in pyferret.h)
       INTEGER CALTYPE_NONE, CALTYPE_360DAY,
      .        CALTYPE_NOLEAP, CALTYPE_GREGORIAN,
      .        CALTYPE_JULIAN, CALTYPE_ALLLEAP

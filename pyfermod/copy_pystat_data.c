@@ -32,9 +32,10 @@
  *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "Python.h"
-#include "numpy/arrayobject.h"
-#include "ferret_lib.h"
+#include <Python.h>
+#include <numpy/arrayobject.h>
+#include "pyferret.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -51,12 +52,14 @@ void copy_pystat_data_(float dest[], void *data_ndarray_ptr)
     npy_intp num_items;
 
     data_ndarray = *( (PyObject **) data_ndarray_ptr);
+    fprintf(stderr, "data_ndarray in copy_pystat_data_ = %lX\n", (long)data_ndarray);
 
     /* Sanity check:
      *    PyArray_Size returns 0 if the object is not an appropriate type
      *    ISFARRAY_RO checks if it is F-contiguous, aligned, and in machine byte-order 
      */
-    num_items = PyArray_Size(data_ndarray);
+    num_items = PyArray_SIZE(data_ndarray);
+    fprintf(stderr, "PyArray_SIZE(data_ndarray) = %uld\n", (unsigned long)num_items);
     if ( (num_items < 1) || (PyArray_TYPE(data_ndarray) != NPY_FLOAT) ||
          (! PyArray_ISFARRAY_RO(data_ndarray)) || (! PyArray_CHKFLAGS(data_ndarray, NPY_OWNDATA)) ) {
         fflush(stdout);

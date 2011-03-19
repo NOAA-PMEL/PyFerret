@@ -1,3 +1,7 @@
+
+ifndef PLATFORM_SPECIFIC_
+PLATFORM_SPECIFIC_ := 1
+
 #
 # platform_specific.mk.i386-linux
 #
@@ -79,3 +83,6 @@
 #
 # End of platform_specific.mk.i386-linux
 #
+
+endif
+

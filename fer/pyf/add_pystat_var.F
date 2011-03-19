@@ -56,7 +56,7 @@
       INCLUDE 'xfr_grid.cmn'
       INCLUDE 'xpyvar_info.cmn'
 
-*     MAX_FERRET_NDIM parameter value (must match that in ferret_lib.h)
+*     MAX_FERRET_NDIM parameter value (must match that in pyferret.h)
       INTEGER MAX_FERRET_NDIM
       PARAMETER(MAX_FERRET_NDIM = 4)
 

@@ -32,11 +32,10 @@
  *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <wchar.h>
-#include <stdlib.h>
+#include <Python.h>
 #include "ferret.h"
 #include "ferret_shared_buffer.h"
-#include "ferret_lib.h"
+#include "pyferret.h"
 
 /* create the extern pointers to the allocated memory */
 float *memory;

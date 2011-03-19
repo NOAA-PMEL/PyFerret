@@ -53,7 +53,7 @@
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'tmap_errors.parm'
       INCLUDE 'xtm_grid.cmn_text'
-      INCLUDE 'ferret_lib.parm'
+      INCLUDE 'pyferret.parm'
 
 *     Passed arguments
       CHARACTER*(*) axisname, axisunit, errmsg
@@ -260,7 +260,7 @@
       INCLUDE 'xtm_grid.cmn_text'
       INCLUDE 'xunits.cmn_text'
       EXTERNAL XUNITS_DATA
-      INCLUDE 'ferret_lib.parm'
+      INCLUDE 'pyferret.parm'
 
 *     Passed arguments
       CHARACTER*(*) axisname, errmsg

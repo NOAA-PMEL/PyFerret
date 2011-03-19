@@ -67,7 +67,7 @@
       INCLUDE 'xprog_state.cmn'
       INCLUDE 'xtm_grid.cmn_text'
       INCLUDE 'xvariables.cmn'
-      INCLUDE 'ferret_lib.parm'
+      INCLUDE 'pyferret.parm'
 
 *     Passed arguments
       CHARACTER*(*) datnam, datunit, errmsg
@@ -307,7 +307,7 @@
       INCLUDE 'xcontext.cmn'
       INCLUDE 'xtm_grid.cmn_text'
       INCLUDE 'xvariables.cmn'
-      INCLUDE 'ferret_lib.parm'
+      INCLUDE 'pyferret.parm'
 
 *     Passed arguments
       CHARACTER*(*) axname, errmsg

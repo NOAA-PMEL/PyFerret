@@ -49,7 +49,7 @@
 
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'xtm_grid.cmn_text'
-      INCLUDE 'ferret_lib.parm'
+      INCLUDE 'pyferret.parm'
 
 *     Passed arguments
       INTEGER       superline, axisstart, axisend,
@@ -177,7 +177,7 @@
       INCLUDE 'xtm_grid.cmn_text'
       INCLUDE 'xunits.cmn_text'
       EXTERNAL XUNITS_DATA
-      INCLUDE 'ferret_lib.parm'
+      INCLUDE 'pyferret.parm'
 
 *     Passed arguments
       INTEGER       superline, axisstart, axisend,

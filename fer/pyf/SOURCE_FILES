@@ -1,0 +1,10 @@
+SRCS_F = \
+add_pystat_var.F \
+check_line_subset.F \
+clear_fer_last_error_info.F \
+delete_pystat_var.F \
+ef_get_single_axis_info.F \
+get_axis_num.F \
+get_data_array.F \
+get_fer_last_error_info.F \
+get_ferret_params.F

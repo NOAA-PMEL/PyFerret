@@ -25,7 +25,6 @@ include ./LIB_NAME
 # Macros
 #
 
-#OBJS = $(SRCS_F:.F=.o)
 OBJS = $(SRCS_C:.c=.o) $(SRCS_F:.F=.o)
 
 
@@ -42,7 +41,7 @@ $(LIB): $(OBJS)
 
 
 clean:
-	rm -f core *.o *.a *.f
+	rm -f *.o *.f $(LIB)
 
 #
 # End of Makefile

@@ -22,11 +22,7 @@ include ../../site_specific.mk
 include ../../platform_specific.mk.$(HOSTTYPE)
 
 include ./SOURCE_FILES
-
-#
-# non-default suffix rules
-#
-
+include ./LIB_NAME
 
 #
 # Macros
@@ -39,17 +35,17 @@ OBJS = $(SRCS_C:.c=.o) $(SRCS_F:.F=.o)
 # Targets
 #
 
-all:	$(OBJS)
+all:	$(LIB)
 
 
-depend:
-	makedepend $(PPLUS_CFLAGS) $(SRCS_C)
- 
+$(LIB): $(OBJS)
+	$(AR) $(ARFLAGS) $@ $(OBJS)
+	$(RANLIB) $@
+
 
 clean:
-	rm -f core *.o *.f
-
-
+	rm -f *.o *.f $(LIB)
+ 
 #
 # End of Makefile
 #

@@ -26,11 +26,6 @@ include ./SOURCE_FILES
 include ./LIB_NAME
 
 #
-# non-default suffix rules
-#
-
-
-#
 # Macros
 #
 
@@ -48,13 +43,8 @@ $(LIB): $(OBJS)
 	$(RANLIB) $@
 
 
-depend:
-	makedepend $(PPLUS_CFLAGS) $(SRCS_C)
- 
-
 clean:
-	rm -f core *.o *.f
-
+	rm -f *.o *.f $(LIB)
 
 #
 # End of Makefile

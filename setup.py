@@ -24,6 +24,7 @@ for libname in os.listdir("lib"):
 lib_list = fer_lib_list[:]
 lib_list.extend(fer_lib_list)
 lib_list.extend(fer_lib_list)
+lib_list.extend(fer_lib_list)
 lib_list.append("python%i.%i" % sys.version_info[:2])
 lib_list.extend( ( "netcdff", "netcdf", "hdf5_hl", "hdf5",
                    "readline", "history", "ncurses", "X11",
@@ -48,10 +49,10 @@ for srcname in ( "fakes3.o", "ferret_dispatch.o", "ferret_query_f.o",
 for srcname in os.listdir(dirname):
     if (srcname[0] == 'x') and (srcname[-7:] == "_data.o"):
         addnobjs_list.append(os.path.join(dirname, srcname))
-dirname = os.path.join("ppl", "tmapadds")
-for srcname in os.listdir(dirname):
-    if srcname[-2:] == ".o":
-        addnobjs_list.append(os.path.join(dirname, srcname))
+# dirname = os.path.join("ppl", "tmapadds")
+# for srcname in os.listdir(dirname):
+#     if srcname[-2:] == ".o":
+#         addnobjs_list.append(os.path.join(dirname, srcname))
 
 # Create the pyferret._pyferret Extension
 ext_mods = [ Extension("pyferret._pyferret", include_dirs = incdir_list, 

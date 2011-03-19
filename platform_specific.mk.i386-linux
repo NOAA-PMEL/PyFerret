@@ -22,7 +22,7 @@ PLATFORM_SPECIFIC_ := 1
 			   -I$(DIR_PREFIX)/ppl/include/xgks \
 			   -I$(DIR_PREFIX)/ppl/tmap_inc \
 			   -I$(DIR_PREFIX)/xgks/src/lib \
-			   -I$(DIR_PREFIX)/pyefcn \
+			   -I$(DIR_PREFIX)/pyfermod \
 			   -I$(DIR_PREFIX)/external_functions/ef_utility \
 			   -I/usr/X11R6/include \
 			   -I/usr/local/include

@@ -20,12 +20,10 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 include ./SOURCE_FILES
 include ./LIB_NAME
 
-#CFLAGS += -I../gui
 #
 # Macros
 #
 
-#OBJS = $(SRCS_F:.F=.o)
 OBJS = $(SRCS_C:.c=.o) $(SRCS_F:.F=.o)
 
 
@@ -40,17 +38,8 @@ $(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)
 	$(RANLIB) $@
 
-ferret_cmn:
-	ln -s ../common ferret_cmn
-
-#
-# Special case for Perl interpreter
-#
-#perl_read.o : perl_read.c
-#	cc -g -c perl_read.c `perl -MExtUtils::Embed -e ccopts`
-
 clean:
-	rm -f core *.o *.a *.f
+	rm -f *.o *.f $(LIB)
 
 #
 # End of Makefile

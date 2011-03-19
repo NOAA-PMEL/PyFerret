@@ -28,12 +28,9 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 include ./SOURCE_FILES
 include ./LIB_NAME
 
-#INCLUDES += -Iferret_cmn
-
 #
 # Macros
 #
-
 
 
 OBJS = $(SRCS_C:.c=.o) $(SRCS_F:.F=.o)
@@ -43,17 +40,14 @@ OBJS = $(SRCS_C:.c=.o) $(SRCS_F:.F=.o)
 # Targets
 #
 
-all:	ferret_cmn $(LIB)
+all:	$(LIB)
 
 $(LIB): $(OBJS) 
 	$(AR) $(ARFLAGS) $@ $(OBJS) 
 	$(RANLIB) $@
 
-ferret_cmn:
-	ln -s ../common ferret_cmn
-
 clean:
-	rm -f core *.o *.a *.f ferret_cmn
+	rm -f *.o *.f $(LIB)
 
 #
 # End of Makefile

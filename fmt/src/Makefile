@@ -33,14 +33,14 @@ include ../../site_specific.mk
 include ../../platform_specific.mk.$(HOSTTYPE)
 
 include ./SOURCE_FILES
+include ./LIB_NAME
 
 OBJS= $(SRCS_F:.F=.o) $(SRCS_C:.c=.o) 
 
-LIBLOC=../../lib
-$(LIBLOC)/libtmap.a: $(OBJS) 
-	ar r $(LIBLOC)/libtmap.a $(OBJS)
-	$(RANLIB) $(LIBLOC)/libtmap.a
+$(LIB): $(OBJS) 
+	ar r $(LIB) $(OBJS)
+	$(RANLIB) $(LIB)
 
 clean:
-	rm -f *.o *.f
+	rm -f *.o *.f $(LIB)
 

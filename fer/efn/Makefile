@@ -41,7 +41,7 @@ $(LIB): $(OBJS)
 
 
 clean:
-	rm -f core *.o *.a *.f
+	rm -f *.o *.f $(LIB)
 
 #
 # End of Makefile

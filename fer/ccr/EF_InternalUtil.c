@@ -110,7 +110,7 @@
 
 #include "EF_Util.h"
 #include "list.h"		/* locally added list library */
-#include "pyefcn.h"		/* python external funtion interfaces */
+#include "pyferret.h"		/* python external funtion interfaces */
 
 
 /* ................ Global Variables ................ */

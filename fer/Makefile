@@ -60,6 +60,8 @@ update:
 
 .PHONY : special_code
 special_code: update
+	# the XGKS library needs to be build prior to building pyferret
+	cp ../xgks/src/lib/libxgks.a ../lib
 	$(MAKE) -C special all
 
 

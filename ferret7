@@ -22,14 +22,10 @@ if ( ! $?FER_DIR ) then
 endif
 
 # FER_LIBS may not be defined by ferret_paths.  This names the directory
-# containing threddsBrowser.jar and toolsUI.jar.  This script also assumes
-# this is the directory containing libferret.so (when setting LD_LIBRARY_PATH).
+# containing threddsBrowser.jar and toolsUI.jar.
 if ( ! $?FER_LIBS ) then
     setenv FER_LIBS ${FER_DIR}/lib
 endif
-
-# directory containing libferret.so
-set libferret_dir = ${FER_LIBS}
 
 # Make sure pyferret is found in python
 if ( ! $?PYTHONPATH ) then
@@ -51,12 +47,8 @@ if ( $?LD_LIBRARY_PATH ) then
             setenv LD_LIBRARY_PATH /usr/local/lib:${LD_LIBRARY_PATH}
         endif
     endif
-#   Make sure libferret.so is seen.
-    if ( ${LD_LIBRARY_PATH} !~ *${libferret_dir}* ) then
-        setenv LD_LIBRARY_PATH ${libferret_dir}:${LD_LIBRARY_PATH}
-    endif
 else
-    setenv LD_LIBRARY_PATH ${libferret_dir}:/usr/local/lib
+    setenv LD_LIBRARY_PATH /usr/local/lib
 endif
 
 # Finally, run pyferret

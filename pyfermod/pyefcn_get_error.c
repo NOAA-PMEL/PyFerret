@@ -32,11 +32,11 @@
  *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "Python.h"
-#include "pyefcn.h"
+#include <Python.h>
+#include "pyferret.h"
 
 /*
- * See pyefcn.h for information on this function
+ * See pyferret.h for information on this function
  */
 char *pyefcn_get_error()
 {

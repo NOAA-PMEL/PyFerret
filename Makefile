@@ -22,7 +22,6 @@ debug : debugbuild install
 optimizedbuild :
 	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
-	$(MAKE) -C $(DIR_PREFIX)/pyefcn optimized
 	# $(MAKE) -C $(DIR_PREFIX)/external_functions
 	@echo "***** NOTE: external function .so files not built *****"
 	$(MAKE) pymod
@@ -31,7 +30,6 @@ optimizedbuild :
 debugbuild : 
 	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
-	$(MAKE) -C $(DIR_PREFIX)/pyefcn debug
 	# $(MAKE) -C $(DIR_PREFIX)/external_functions debug
 	@echo "***** NOTE: external function .so files not built *****"
 	$(MAKE) "CFLAGS += -O0 -g" pymod
@@ -65,11 +63,10 @@ endif
 clean :
 	rm -fr $(DIR_PREFIX)/build ferret.jnl*
 	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
-	$(MAKE) -C $(DIR_PREFIX)/pyefcn clean
 	$(MAKE) -C $(DIR_PREFIX)/fer clean
 	rm -fr $(DIR_PREFIX)/lib
 	@echo ""
-	@echo "    NOTE: Only the (pyferret) build, pyefcn, fer, fmt, ppl, and lib directories were cleaned."
+	@echo "    NOTE: Only the (pyferret) build, fer, fmt, ppl, and lib directories were cleaned."
 	@echo "          Other directories (in particular, xgks) were not changed."
 	@echo ""
 

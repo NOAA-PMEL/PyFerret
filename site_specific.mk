@@ -5,14 +5,6 @@
 DIR_PREFIX	:= $(H)/pyferret_32dev
 # DIR_PREFIX	:= $(H)/pyferret_64dev
 
-# Flags for python 2.x and numpy include directories.
-PYINC_FLAGS	:= -I/usr/include/python2.4 -I/usr/lib/python2.4/site-packages/numpy/core/include
-# PYINC_FLAGS	:= -I/usr/local/include/python2.6 -I/usr/local/lib/python2.6/site-packages/numpy/core/include
-
-# Flags for the python 2.x library.
-PYLIB_FLAGS	:= -lpython2.4
-# PYLIB_FLAGS	:= -lpython2.6
-
 # Python 2.x executable to invoke for build and install.
 PYTHON_EXE	:= python2.4
 # PYTHON_EXE	:= python2.6

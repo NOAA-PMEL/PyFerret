@@ -32,14 +32,14 @@
  *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "Python.h"
-#include "numpy/arrayobject.h"
-#include "pyefcn.h"
+#include <Python.h>
+#include <numpy/arrayobject.h>
+#include "pyferret.h"
 
 static const char *AXIS_NAMES[MAX_FERRET_NDIM] = { "X", "Y", "Z", "T" };
 
 /*
- * See pyefcn.h for information on this function
+ * See pyferret.h for information on this function
  */
 void pyefcn_result_limits(int id, char modname[], char errmsg[])
 {

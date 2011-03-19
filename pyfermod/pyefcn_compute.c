@@ -32,13 +32,13 @@
  *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "Python.h"
-#include "numpy/arrayobject.h"
-#include "pyefcn.h"
+#include <Python.h>
+#include <numpy/arrayobject.h>
+#include "pyferret.h"
 #include "EF_Util.h"
 
 /*
- * See pyefcn.h for information on this function
+ * See pyferret.h for information on this function
  */
 void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
                     int memlo[][MAX_FERRET_NDIM], int memhi[][MAX_FERRET_NDIM],

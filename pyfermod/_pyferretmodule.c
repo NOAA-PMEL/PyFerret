@@ -32,19 +32,18 @@
  *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "Python.h"
-#include "numpy/arrayobject.h"
-
-#include <wchar.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <Python.h>
+#include <numpy/arrayobject.h>
 
 #include "ferret.h"
 #include "ferret_shared_buffer.h"
 #include "EF_Util.h"
-#include "ferret_lib.h"
+#include "pyferret.h"
+
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 /* Prototypes for some Ferret external function utility functions */
 ExternalFunction *ef_ptr_from_id_ptr(int *id_ptr);

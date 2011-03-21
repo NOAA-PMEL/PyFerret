@@ -116,6 +116,43 @@ typedef struct {
   ExternalFunctionInternals *internals_ptr;
 } ExternalFunction;
 
+/* ... Declarations of functions called from the EF code .... */
+
+void ef_version_test_( float * );
+
+void ef_set_num_args_( int *, int * );
+void ef_set_num_work_arrays_( int *, int * );
+void ef_set_work_array_lens_( int *, int *, int *, int *, int *, int * );
+void ef_set_work_array_dims_( int *, int *, int *, int *, int *, int *, int *, int *, int *, int * );
+void ef_set_has_vari_args_( int *, int * );
+void ef_set_axis_inheritance_( int *, int *, int *, int *, int * );
+void ef_set_piecemeal_ok_( int *, int *, int *, int *, int * );
+void ef_set_result_type_(int *, int *);
+void ef_set_desc_sub_(int *, char *);
+
+void ef_set_axis_influence_( int *, int *, int *, int *, int *, int * );
+void ef_set_axis_reduction_( int *, int *, int *, int *, int * );
+void ef_set_axis_extend_( int *, int *, int *, int *, int * );
+void ef_set_axis_limits_(int *, int *, int *, int *);
+
+void ef_set_arg_type_( int *, int *, int *);
+void ef_set_arg_name_sub_(int *, int *, char *);
+void ef_set_arg_desc_sub_(int *, int *, char *);
+void ef_set_custom_axis_sub_(int *, int *, float *, float *, float *, char *, int *);
+
+void ef_get_bad_flags_(int *, float *, float *);
+void ef_get_arg_type_(int *, int *, int *);
+void ef_get_result_type_(int *, int *);
+
+void ef_get_one_val_(int *, int *, float *);
+
+void ef_put_string_(char* , int* , char** );
+void ef_put_string_ptr_(char**, char**);
+
+void ef_get_cx_list_(int *);
+void ef_get_mr_list_(int *);
+void ef_get_mres_(int *);
+
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 #define FORTRAN(a) a

@@ -181,9 +181,11 @@
 
 	IF ( cx_variable( var_cx ) .EQ. munknown_var_name ) GOTO 5100
 
-* set the data type of the variable
+* set the data type of the variable'
 	IF ( cx_category(var_cx) .EQ. cat_file_var ) THEN
 	   cx_type(var_cx) = ptype_float   ! TO BE GENERALIZED LATER (8/00)
+        ELSEIF ( cx_category(var_cx) .EQ. cat_pystat_var ) THEN
+           cx_type(var_cx) = ptype_float   ! TO BE GENERALIZED LATER
 	ELSEIF (cx_category(var_cx) .EQ. cat_calc_var ) THEN
 	   cx_type(var_cx) = ptype_float
 	ELSEIF (cx_category(var_cx) .EQ. cat_counter_var ) THEN

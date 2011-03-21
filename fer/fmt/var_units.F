@@ -66,6 +66,7 @@
 	include	'xcontext.cmn'
 	include	'xcalc_vars.cmn'
 	include	'xvariables.cmn'
+	include	'xpyvar_info.cmn'
 
 * calling argument declarations
 	INTEGER	cx
@@ -83,6 +84,10 @@
 	IF     ( category .EQ. cat_file_var ) THEN
 
 	   VAR_UNITS = ds_var_units( variable )
+
+        ELSEIF ( category .EQ. cat_pystat_var ) THEN
+
+           VAR_UNITS = pyvar_units( variable )
 
 	ELSEIF ( category .EQ. cat_calc_var ) THEN
 

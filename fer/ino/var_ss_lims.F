@@ -48,7 +48,6 @@
 *	      there are uncertainties whether special circumstances in FERRET
 *	      may lead to problem behavior
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -58,15 +57,7 @@
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xfr_grid.cmn'	! 10/93
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	include	'FERRET_CMN:XFR_GRID.CMN'
-#endif
+	include	'xpyvar_info.cmn'
 
 * calling argument declarations
 	INTEGER idim, cx, lo_ss, hi_ss
@@ -95,7 +86,8 @@
 * ... end of 10/93 additions
 
 * cannot return answer under several conditions
-	IF ( cat  .NE. cat_file_var
+	IF ( ( cat .NE. cat_file_var
+     .   .AND. cat .NE. cat_pystat_var )
      .  .OR. dset .EQ. unspecified_int4
      .  .OR. line .EQ. mnormal
      .  .OR. cx_unstand_grid(cx)	 ) THEN
@@ -105,7 +97,13 @@
 	ENDIF
 
 * return subscript limits
- 110	lo_ss = ds_grid_start(idim, var)
-	hi_ss = ds_grid_end  (idim, var)
- 1000	RETURN
+        IF ( cat .EQ. cat_file_var ) THEN
+           lo_ss = ds_grid_start(idim, var)
+           hi_ss = ds_grid_end  (idim, var)
+        ELSE
+           lo_ss = pyvar_grid_start(idim, var)
+           hi_ss = pyvar_grid_end  (idim, var)
+        ENDIF
+        RETURN
+
 	END

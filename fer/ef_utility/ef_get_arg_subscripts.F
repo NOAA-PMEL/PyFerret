@@ -106,7 +106,8 @@ c* to be accessible to the external function.
                 ELSE
 * ... result axis is imposed by the EF and this arg has no explicit limits
 *     so infer the limits from the nature of the variable
-                  IF (  cat .EQ. cat_file_var ) THEN
+                  IF ( (cat .EQ. cat_file_var) .OR.
+     .                 (cat .EQ. cat_pystat_var) ) THEN
 *    ... get limits of file variable (possibly less than full-axis)
                     CALL VAR_SS_LIMS( idim, cx_list(iarg),
      .                                arg_lo_ss(idim,iarg),

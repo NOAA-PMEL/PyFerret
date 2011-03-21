@@ -635,8 +635,9 @@
 * then purge cached calculations (8/95)
 	IF ( dset .GT. pdset_irrelevant ) THEN
 	   CALL FIND_VAR_NAME ( dset, buff1, cat, var )
-	   IF ( cat .EQ. cat_file_var
-     .	  .AND. var .NE. munknown_var_name ) CALL PURGE_ALL_UVARS
+	   IF ( ( (cat .EQ. cat_file_var) .OR.
+     .            (cat .EQ. cat_pystat_var) ) .AND.
+     .          (var .NE. munknown_var_name) ) CALL PURGE_ALL_UVARS
 	ENDIF
 
 * if this is a global forground definition that replaces any variable
@@ -1963,7 +1964,9 @@ C /units=months  is 1/12 of the length of the year
 
 * Update attribute information used by plotting etc (ds_units, ...)
             CALL FIND_VAR_NAME (dset, varname, cat, uvar)
-            IF (cat .EQ. cat_user_var .OR. cat .EQ. cat_file_var)
+            IF ( (cat .EQ. cat_user_var) .OR.
+     .           (cat .EQ. cat_file_var) .OR.
+     .           (cat .EQ. cat_pystat_var) )
      .           CALL UPDATE_ATTRIBUTES (dset, uvar)
 
 

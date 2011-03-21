@@ -54,6 +54,7 @@
 	include 'xprog_state.cmn'
 	include 'xvariables.cmn'
 	include 'xrisc.cmn'
+	include 'xpyvar_info.cmn'
       INCLUDE 'netcdf.inc'
 
 * local parameter declarations:
@@ -314,6 +315,16 @@
               ds_var_off(var)   = offset
               ds_var_scaleit(var)       = .TRUE.
            ENDIF
+
+        ELSEIF ( cat .EQ. cat_pystat_var ) THEN
+
+           IF ( units .NE. char_init16 ) pyvar_units( var )  = units
+           IF ( title .NE. char_init80 ) pyvar_title( var )  = title
+           IF ( bad  .NE. real4_init  ) THEN
+              CALL PURGE_ALL_UVARS       ! delete (possibly dependent) uvars
+              pyvar_missing_flag(var) = bad
+           ENDIF
+
 	ELSE
 * ... user-defined var
 

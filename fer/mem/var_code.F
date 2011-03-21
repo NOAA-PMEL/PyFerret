@@ -53,7 +53,6 @@
 * V500: 12/98 *sh* - added cat_const_var ... of the form "{1,3,5}"
 *	 1/99 *sh8 ... and cat_string
 
-#ifdef unix
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
 	external xdset_info_data
@@ -61,14 +60,7 @@
 	include	'xvariables.cmn'
 	include	'xcalc_vars.cmn'
 	include	'xalgebra.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XCALC_VARS.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-#endif
+	include	'xpyvar_info.cmn'
 
 * calling argument declarations:
 	INTEGER category, variable
@@ -80,6 +72,10 @@
      . .OR.	 category .EQ. cat_file_rev ) THEN
 
 	   VAR_CODE = ds_var_code( variable )
+
+        ELSEIF ( category .EQ. cat_pystat_var ) THEN
+
+           VAR_CODE = pyvar_code( variable )
 
 	ELSEIF ( category .EQ. cat_calc_var ) THEN
 

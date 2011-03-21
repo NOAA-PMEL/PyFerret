@@ -79,6 +79,7 @@
 	include	'xcalc_vars.cmn'
 	include	'xcontext.cmn'
 	include	'xalgebra.cmn'
+        include 'xpyvar_info.cmn'
         include 'errmsg.parm'
 
 * calling argument declarations
@@ -121,6 +122,13 @@
               ENDIF
 	   ENDIF
 
+        ELSEIF ( cat .EQ. cat_pystat_var ) THEN
+
+           IF ( pyvar_title( var ) .EQ. ' ' ) THEN
+              var_title = VAR_CODE( cat, var )
+           ELSE
+              var_title = pyvar_title( var )
+           ENDIF
 
 	ELSEIF ( cat .EQ. cat_calc_var ) THEN
 

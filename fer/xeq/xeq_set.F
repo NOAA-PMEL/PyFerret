@@ -1593,7 +1593,9 @@ c *kob* 4/97
 
 * Update attribute information used by plotting etc (ds_units, ...)
             CALL FIND_VAR_NAME (dset_num, varname, cat, uvar)
-            IF (cat .EQ. cat_user_var .OR. cat .EQ. cat_file_var)
+            IF ( (cat .EQ. cat_user_var) .OR.
+     .           (cat .EQ. cat_file_var) .OR.
+     .           (cat .EQ. cat_pystat_var) )
      .           CALL UPDATE_ATTRIBUTES (dset_num, uvar)
 
         ENDIF

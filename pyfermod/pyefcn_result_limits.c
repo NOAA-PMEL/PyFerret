@@ -33,8 +33,11 @@
  */
 
 #include <Python.h>
+#define PY_ARRAY_UNIQUE_SYMBOL pyferret_ARRAY_API
+#define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
 #include "pyferret.h"
+#include "EF_Util.h"
 
 static const char *AXIS_NAMES[MAX_FERRET_NDIM] = { "X", "Y", "Z", "T" };
 
@@ -53,9 +56,6 @@ void pyefcn_result_limits(int id, char modname[], char errmsg[])
     int        subseqlen;
     PyObject  *itemobj;
     int        limits[2];
-
-    /* Make sure Python is loaded in memory */
-    Py_Initialize();
 
     /*
      * Import the user's Python module

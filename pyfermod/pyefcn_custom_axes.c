@@ -33,6 +33,8 @@
  */
 
 #include <Python.h>
+#define PY_ARRAY_UNIQUE_SYMBOL pyferret_ARRAY_API
+#define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
 #include "pyferret.h"
 #include "EF_Util.h"
@@ -57,9 +59,6 @@ void pyefcn_custom_axes(int id, char modname[], char errmsg[])
     char      *strptr;
     char       unit_name[EF_MAX_NAME_LENGTH];
     int        is_modulo;
-
-    /* Make sure Python is loaded in memory */
-    Py_Initialize();
 
     /*
      * Import the user's Python module

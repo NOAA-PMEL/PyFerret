@@ -33,6 +33,7 @@
  */
 
 #include <Python.h>
+#define PY_ARRAY_UNIQUE_SYMBOL pyferret_ARRAY_API
 #include <numpy/arrayobject.h>
 
 #include "ferret.h"
@@ -129,6 +130,9 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
         return Py_False;
     }
 
+    /* Import the function-pointer table for the PyArray_* functions */
+    import_array1(NULL);
+
     /* Parse the arguments, checking if an Exception was raised */
     if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!s", argNames, &mwMemSize,
                  &PyBool_Type, &pyoJournal, &PyBool_Type, &pyoVerify, &metaname) )
@@ -208,7 +212,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 
 /*
  * Helper function to reallocate Ferret's memory from Python.
- * Argument: the new number of floats of Ferret's memory cache is given by 
+ * Argument: the new number of floats of Ferret's memory cache is given by
  *           blksiz * PMAX_MEM_BLKS (defined in ferret.h as 2000)
  * Returns: zero if fails, non-zero if successful
  */
@@ -226,7 +230,7 @@ static int resizeFerretMemory(int blksiz)
     if ( actual_blksiz != newFerMemSize / (size_t)PMAX_MEM_BLKS )
         return 0;
 
-    /* 
+    /*
      * Free the old memory and allocate new memory rather than use
      * realloc since the contents of the old memory isn't needed.
      * This could also result in a better garbage collection.
@@ -236,7 +240,7 @@ static int resizeFerretMemory(int blksiz)
     if ( ferMemory == NULL ) {
         ferMemory = (float *) PyMem_Malloc(ferMemSize * (size_t)sizeof(float));
         if ( ferMemory == NULL ) {
-            fprintf(stderr, "**ERROR: Unable to restore Ferret's memory cache of %f Mfloats\n", (double)ferMemSize / 1.0E6); 
+            fprintf(stderr, "**ERROR: Unable to restore Ferret's memory cache of %f Mfloats\n", (double)ferMemSize / 1.0E6);
             exit(1);
         }
         return 0;
@@ -358,9 +362,9 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
         if ( sBuffer->flags[FRTN_ACTION] == FACTN_MEM_RECONFIGURE ) {
             /* resize, then re-enter if not single-command mode */
             if ( resizeFerretMemory(sBuffer->flags[FRTN_IDATA1]) == 0 ) {
-                printf("Unable to resize Ferret's memory cache to %f Mfloats\n", 
+                printf("Unable to resize Ferret's memory cache to %f Mfloats\n",
                        (double)(sBuffer->flags[FRTN_IDATA1]) * (double)PMAX_MEM_BLKS / 1.0E6);
-                printf("Ferret's memory cache remains at %f Mfloats\n", 
+                printf("Ferret's memory cache remains at %f Mfloats\n",
                        (double)(ferMemSize) / 1.0E6);
             }
             cmnd_stack_level = sBuffer->flags[FRTN_IDATA2];
@@ -453,12 +457,6 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
     char         axis_units[MAX_FERRET_NDIM][64];
     char         axis_names[MAX_FERRET_NDIM][64];
     CALTYPE      calendar_type;
-
-    /* make the PyArray_* functions available */
-    if ( _import_array() < 0 ) {
-        PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import");
-        return NULL;
-    }
 
     /* If not initialized, raise a MemoryError */
     if ( ! ferretInitialized ) {
@@ -744,12 +742,6 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
     char         errmsg[2048];
     int          len_errmsg;
 
-    /* make the PyArray_* functions available */
-    if ( _import_array() < 0 ) {
-        PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import");
-        return NULL;
-    }
-
     /* If not initialized, raise a MemoryError */
     if ( ! ferretInitialized ) {
         PyErr_SetString(PyExc_MemoryError, "Ferret not started");
@@ -757,8 +749,9 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
     }
 
     /* Parse the arguments, checking if an Exception was raised - borrowed references to the PyObjects */
-    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "ssOOssOOOO", argNames, &codename, &title, &data_ndarray, &bdfval_ndarray,
-                           &units, &dset, &axis_types_tuple, &axis_names_tuple, &axis_units_tuple, &axis_coords_tuple) )
+    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "ssOOssOOOO", argNames, &codename, &title,
+                                       &data_ndarray, &bdfval_ndarray, &units, &dset, &axis_types_tuple,
+                                       &axis_names_tuple, &axis_units_tuple, &axis_coords_tuple) )
         return NULL;
 
     /* PyArray_Size returns 0 if the object is not an appropriate type */
@@ -976,7 +969,6 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
      * The reference count will be decremented by Ferret when no longer needed.
      */
     Py_INCREF(data_ndarray);
-    fprintf(stderr, "data_ndarray in pyferretPutData = %lX\n", (long)data_ndarray);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -1060,12 +1052,6 @@ static PyObject *pyefcnGetAxisCoordinates(PyObject *self, PyObject *args, PyObje
     int               lo, hi;
     npy_intp          shape[1];
     PyObject         *coords_ndarray;
-
-    /* make the PyArray_* functions available */
-    if ( _import_array() < 0 ) {
-        PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import");
-        return NULL;
-    }
 
     /* Parse the arguments, checking if an Exception was raised */
     if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "iii", argNames, &id, &arg, &axis) )
@@ -1165,12 +1151,6 @@ static PyObject *pyefcnGetAxisBoxSizes(PyObject *self, PyObject *args, PyObject 
     npy_intp          shape[1];
     PyObject         *sizes_ndarray;
 
-    /* make the PyArray_* functions available */
-    if ( _import_array() < 0 ) {
-        PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import");
-        return NULL;
-    }
-
     /* Parse the arguments, checking if an Exception was raised */
     if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "iii", argNames, &id, &arg, &axis) )
         return NULL;
@@ -1268,12 +1248,6 @@ static PyObject *pyefcnGetAxisBoxLimits(PyObject *self, PyObject *args, PyObject
     int               lo, hi;
     npy_intp          shape[1];
     PyObject         *low_limits_ndarray, *high_limits_ndarray;
-
-    /* make the PyArray_* functions available */
-    if ( _import_array() < 0 ) {
-        PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import");
-        return NULL;
-    }
 
     /* Parse the arguments, checking if an Exception was raised */
     if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "iii", argNames, &id, &arg, &axis) )
@@ -1388,12 +1362,6 @@ static PyObject *pyefcnGetAxisInfo(PyObject *self, PyObject *args, PyObject *kwd
     PyObject         *backwards_bool;
     PyObject         *modulo_bool;
     PyObject         *regular_bool;
-
-    /* make the PyArray_* functions available */
-    if ( _import_array() < 0 ) {
-        PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import");
-        return NULL;
-    }
 
     /* Parse the arguments, checking if an Exception was raised */
     if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "iii", argNames, &id, &arg, &axis) )

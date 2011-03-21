@@ -33,6 +33,8 @@
  */
 
 #include <Python.h>
+#define PY_ARRAY_UNIQUE_SYMBOL pyferret_ARRAY_API
+#define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
 #include "pyferret.h"
 #include <stdio.h>
@@ -52,14 +54,12 @@ void copy_pystat_data_(float dest[], void *data_ndarray_ptr)
     npy_intp num_items;
 
     data_ndarray = *( (PyObject **) data_ndarray_ptr);
-    fprintf(stderr, "data_ndarray in copy_pystat_data_ = %lX\n", (long)data_ndarray);
 
     /* Sanity check:
      *    PyArray_Size returns 0 if the object is not an appropriate type
      *    ISFARRAY_RO checks if it is F-contiguous, aligned, and in machine byte-order 
      */
-    num_items = PyArray_SIZE(data_ndarray);
-    fprintf(stderr, "PyArray_SIZE(data_ndarray) = %uld\n", (unsigned long)num_items);
+    num_items = PyArray_Size(data_ndarray);
     if ( (num_items < 1) || (PyArray_TYPE(data_ndarray) != NPY_FLOAT) ||
          (! PyArray_ISFARRAY_RO(data_ndarray)) || (! PyArray_CHKFLAGS(data_ndarray, NPY_OWNDATA)) ) {
         fflush(stdout);

@@ -33,6 +33,8 @@
  */
 
 #include <Python.h>
+#define PY_ARRAY_UNIQUE_SYMBOL pyferret_ARRAY_API
+#define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
 #include "pyferret.h"
 #include "EF_Util.h"
@@ -65,10 +67,6 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     int        deltas[2];
     int        val;
     PyObject  *keysobj;
-
-    /* Make sure Python and Numpy are loaded in memory */
-    Py_Initialize();
-    import_array();
 
     /*
      * Import the user's Python module

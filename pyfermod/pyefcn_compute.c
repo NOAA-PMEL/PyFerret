@@ -33,6 +33,8 @@
  */
 
 #include <Python.h>
+#define PY_ARRAY_UNIQUE_SYMBOL pyferret_ARRAY_API
+#define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
 #include "pyferret.h"
 #include "EF_Util.h"
@@ -50,7 +52,6 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
     int j, k;
     npy_intp shape[MAX_FERRET_NDIM];
     npy_intp strides[MAX_FERRET_NDIM];
-    float *datptr;
     int itemsize;
     int datatype;
     int flags;
@@ -60,10 +61,6 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
     PyObject *idobj;
     PyObject *inpobj;
     PyObject *result;
-
-    /* Initialize Python and Numpy if needed */
-    Py_Initialize();
-    import_array();
 
     /* Sanity check */
     if ( (numarrays < 2) || (numarrays > EF_MAX_COMPUTE_ARGS) ) {

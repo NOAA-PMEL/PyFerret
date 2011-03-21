@@ -32,7 +32,6 @@
  *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <Python.h>
 #include "ferret.h"
 #include "ferret_shared_buffer.h"
 #include "pyferret.h"

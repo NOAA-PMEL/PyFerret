@@ -1,0 +1,72 @@
+\ cancel mode verify
+!
+! Description : To find Mixed Layer Depth (MLD) based on density criteria.
+!               MLD is defined here as the depth at which the density 
+!               increases from that at surface by an amount equal to the
+!               increase in density caused by the given (or the 1^oC default
+!               value) decrease in temperature. Please note that salinity
+!               will be the surface salinity and the densities are referenced
+!               to actual depth.
+!
+! Arguments   : Mandatory : $1 - salinity variable
+!                         : $2 - temperature variable
+!             : Optional  : $3 - delta_T : amount of temperature decrease 
+!                                          (default is 1^oC)
+!
+! Usage       :  yes? GO mld_dens temp, salt, 0.5            ! <---- CORRECT 
+!
+!                yes? GO mld_dens temp[d=1], salt[d=2], 0.5  ! <---- WRONG
+!
+!                the resulting MLD will be available in the variable "mld_d"
+!                
+! Note        : 1. Pressure/Density values will be found inside the script 
+!                  assuming that the temperature and salinity fields are on
+!                  proper Z-axis, with 'meters' units.
+!
+!               2. Variables defined here has a prefix of "dml_".
+!
+!               3. If you want to remove the Z-axis information from the MLD 
+!                  variable, use any of the following methods
+!
+!                   a) define a new variable and use Z=@AVE to eliminate the
+!                       Z-axis information (this will not change the MLD values
+!                       since there is only one value).
+!     
+!                       yes? let mld = mld_d[Z=@AVE]
+!
+!                   b) Use RESHAPE command with grid without Z-Axis (this may be 
+!                       bit slower than above method)  
+!
+!                       yes? let grid_xyt = x[gx=temp]*0+y[gy=temp]*0+t[gt=temp]*0
+!                       yes? let mld = RESHAPE(mld_d, grid_xyt)
+!
+! Example     :  yes? set data levitus_climatology
+!                yes? set reg/x=30:120/y=-30:30
+!                yes? go mld_dens salt, temp, 0.5
+!                yes? fill mld_d
+! 
+! Author : Jaison Kurian
+! Contact: jaison@caos.iisc.ernet.in
+! Date   : 04-MAR-2006
+! Modifications : None
+!----------------------------------------------------------------------------
+
+    let dml_sa = $1"<Usage: go mld_dens[.jnl] salt temp [delta_T]"
+    let dml_te = $2"<Usage: go mld_dens[.jnl] salt temp [delta_T]"
+    let dml_cr = $3"1.0"
+
+    let dml_press        = Z[GZ=dml_sa]
+    let dml_dens         = RHO_UN(dml_sa, dml_te, dml_press)     
+    let dml_temp_sfc     = dml_te[k=1]
+    let dml_salt_sfc     = dml_sa[k=1]
+    let dml_temp_sfc_m_cr= dml_temp_sfc - dml_cr   ! delta_T ^oC  <  that at sfc
+                                                   
+    ! If you want to refer the densities to the surface pressure, set the
+    ! the third argument to RHO_UN below to dml_press[k=1] or 0.
+                    
+    let dml_dens_at_mld  = RHO_UN(dml_salt_sfc, dml_temp_sfc_m_cr, dml_press) 
+    let dml_zero_at_mld  = dml_dens - dml_dens_at_mld
+    let mld_d            = dml_zero_at_mld[Z=@loc:0]
+
+    set var/title="MLD Based on Density criteria (delta_T = `dml_cr`^oC)"\
+           /units=meters mld_d

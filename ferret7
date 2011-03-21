@@ -4,8 +4,8 @@
 # script is to provide a traditional Ferret interface through pyferret.
 
 # pythonN.N executable to use
-set pyname = python2.4
-# set pyname = python2.6
+# set pyname = python2.4
+set pyname = python2.6
 
 # Python directory containing the pyferret package and ferret.py.
 set pysite = ${HOME}/.local/lib/${pyname}/site-packages

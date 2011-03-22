@@ -16,4 +16,10 @@ PYTHON_INSTALL_FLAGS	:= --user
 # Java 1.6 jdk home directory ( $(JAVA_HOME)/bin/javac is called to build threddsBrowser.jar ).
 JAVA_HOME	:= /usr/java/latest
 
+# Installation directory for HDF5 (contains include and lib subdirectories)
+HDF5_DIR	:= /usr/local/hdf5_185p1
+
+# Installation directory for NetCDF (contains include and lib subdirectories)
+NETCDF_DIR	:= /usr/local/netcdf_411
+
 #

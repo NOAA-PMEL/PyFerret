@@ -36,7 +36,7 @@ debugbuild :
 
 .PHONY : pymod
 pymod :
-	$(PYTHON_EXE) setup.py build
+	export HDF5_DIR=$(HDF5_DIR) ; export NETCDF_DIR=$(NETCDF_DIR) ; $(PYTHON_EXE) setup.py build
 
 .PHONY : install
 install :
@@ -47,7 +47,7 @@ ifeq ( $(strip $(FER_LIBS)), )
 	@echo ""
 else
 	cp -f $(DIR_PREFIX)/fer/threddsBrowser/threddsBrowser.jar $(FER_LIBS)
-	$(PYTHON_EXE) setup.py install $(PYTHON_INSTALL_FLAGS)
+	export HDF5_DIR=$(HDF5_DIR) ; export NETCDF_DIR=$(NETCDF_DIR) ; $(PYTHON_EXE) setup.py install $(PYTHON_INSTALL_FLAGS)
 ifeq ( $(strip $(FER_LOCAL_EXTFCNS)), )
 	@echo ""
 	@echo " ERROR: environment variable FER_LOCAL_EXTFCNS is not defined"
@@ -66,8 +66,9 @@ clean :
 	$(MAKE) -C $(DIR_PREFIX)/fer clean
 	rm -fr $(DIR_PREFIX)/lib
 	@echo ""
-	@echo "    NOTE: Only the (pyferret) build, fer, fmt, ppl, and lib directories were cleaned."
-	@echo "          Other directories (in particular, xgks) were not changed."
+	@echo "    NOTE: Only the build, external_functions, fer, fmt, ppl,"
+	@echo "          and lib directories were cleaned.  Other directories"
+	@echo "          (in particular, xgks) were not changed."
 	@echo ""
 
 #

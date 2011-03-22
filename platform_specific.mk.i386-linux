@@ -1,16 +1,13 @@
-
-ifndef PLATFORM_SPECIFIC_
-PLATFORM_SPECIFIC_ := 1
-
 #
 # platform_specific.mk.i386-linux
 #
-# This file is included Makefiles under the fer, fmt, and ppl directories
-# and defines platform specific macros
+# This file is included Makefiles under the external_functions, fer,
+# fmt, and ppl directories and defines platform specific macros
 #
 
 #
-# DIR_PREFIX is from site_specific.mk which should have been included in prior to this include
+# DIR_PREFIX, HDF5_DIR, and NETCDF_DIR is from site_specific.mk
+# which should have been included in prior to this include
 #
 
 #
@@ -24,7 +21,8 @@ PLATFORM_SPECIFIC_ := 1
 			   -I$(DIR_PREFIX)/xgks/src/lib \
 			   -I$(DIR_PREFIX)/pyfermod \
 			   -I$(DIR_PREFIX)/external_functions/ef_utility \
-			   -I/usr/X11R6/include \
+			   -I$(HDF5_DIR)/include \
+			   -I$(NETCDF_DIR)/include \
 			   -I/usr/local/include
 
 	MYDEFINES	:= -Dcrptd_cat_argument \
@@ -50,7 +48,8 @@ PLATFORM_SPECIFIC_ := 1
 			   -DSTAR_1_SUPPORTED \
 			   -DVOID_SIGHANDLER \
 			   -DX_REFRESH \
-			   -DXT_CODE
+			   -DXT_CODE \
+			   -fPIC
 
 	PLATFORM	:= $(shell uname -rs) (gfortran)
 
@@ -59,30 +58,21 @@ PLATFORM_SPECIFIC_ := 1
 	FC		:= $(shell which gfortran)
 	F77		:= $(shell which gfortran)
 	RANLIB		:= $(shell which ranlib)
-	LD		:= $(shell which gfortran)
 
-	CFLAGS		+= $(MYINCLUDES) -P $(MYDEFINES) -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4 -fPIC
-	CPP_FLAGS	:= $(CFLAGS)
-	FFLAGS		+= $(MYINCLUDES) -P $(MYDEFINES) -fno-automatic -fdollar-ok -ffixed-line-length-132 -fPIC -c
-	FCFLAGS		:= $(FFLAGS)
-	F77FLAGS	:= $(FFLAGS)
-	PPLUS_FFLAGS	:= $(FFLAGS)
-	LDFLAGS		+= -L/usr/local/lib
-	LD_DYN_FLAGS	:= $(LDFLAGS) -L$(DIR_PREFIX)/ferlib -lferret -shared -Xlinker --no-undefined
+	CPP_FLAGS	+= $(MYINCLUDES) $(MYDEFINES) -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
+	CFLAGS		+= $(MYINCLUDES) $(MYDEFINES) -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
+	FFLAGS		+= $(MYINCLUDES) $(MYDEFINES) -fno-automatic -fdollar-ok -ffixed-line-length-132
 
-	SYSLIB		:= -lXpm -lXm -lXt -lXext -lX11 -lXp -lXmu -lSM -lICE -lnetcdf -lhdf5_hl -lhdf5 -lcurl -lreadline -lncurses -lz -lm -lc
-	GKSLIB		:= $(DIR_PREFIX)/xgks/src/lib/libxgks.a
+# cancel the default rule for .f -> .o to prevent objects from being built
+# from .f files that are out-of-date with respect to their corresponding .F file
+%.o : %.f
 
 # use cpp to preprocess the .F files to .f files and then compile the .f files
-# to make debugging possible (line numbers messed up using .F file directly)
-.F.o:
+%.o : %.F
 	rm -f $*.f
 	$(CPP) -traditional $(CPP_FLAGS) $*.F | sed -e 's/de        /de /g' | sed -e 's/de         /de /g' > $*.f
-	$(F77) $(FFLAGS) $*.f -o $*.o
+	$(F77) $(FFLAGS) -c $*.f -o $*.o
 
 #
 # End of platform_specific.mk.i386-linux
 #
-
-endif
-

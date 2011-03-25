@@ -102,11 +102,13 @@
 
       CHARACTER*126 buff
       WRITE (buff, 10)
-   10 FORMAT ('Average by cruise, when gridding scattered ',
-     .        'data to XYT grid.')
+   10 FORMAT ('Weighted variance by cruise, when gridding scattered ',
+     .        'data to XYT grid. K=2, average cell span, cruises in cell')
       CALL ef_set_desc(id, buff)
 
       CALL ef_set_num_args(id, 8)
+c      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS,
+c     .        IMPLIED_BY_ARGS, ABSTRACT, IMPLIED_BY_ARGS)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS,
      .        IMPLIED_BY_ARGS, NORMAL, IMPLIED_BY_ARGS)
 
@@ -173,6 +175,40 @@
 
       RETURN 
       END
+
+c*
+c* In this subroutine we provide information about the lo and hi
+c* limits associated with each abstract or custom axis.   The user 
+c* configurable information consists of the following:
+c*
+c* lo_ss               lo subscript for an axis
+c*
+c* hi_ss               hi subscript for an axis
+c*
+c
+c      SUBROUTINE tracks2grid_var_xyt_result_limits(id)
+c
+c      INCLUDE 'ferret_cmn/EF_Util.cmn'
+c      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+c
+c      INTEGER id
+c
+c* **********************************************************************
+c*                                           USER CONFIGURABLE PORTION |
+c*                                                                     |
+c*                                                                     V
+c
+c
+c      CALL ef_set_axis_limits(id, Z_AXIS, 1, 2)
+c*                                                                     ^
+c*                                                                     |
+c*                                           USER CONFIGURABLE PORTION |
+c* **********************************************************************
+c
+c      RETURN 
+c      END
+
+
 *
 * In this subroutine we request an amount of storage to be supplied
 * by Ferret and passed as an additional argument.
@@ -242,15 +278,13 @@
 * for computing s^2  sum of wi*(xi - weighted_mean)**2
 * x,y,t direction: output grid
 * z direction: 30 (max cruises per cell?)
-*   There are more efficient ways to do this, but this is 
-*   a clean way.
       CALL ef_set_work_array_dims (id, 8, 1, 1, 1, 1, 
      .                             nxout, nyout, 30, ntout)
 
 * span
 * for arc length for cruises in grid cell.
 * x,y,t direction: output grid
-* z direction: 0 (max cruises per cell?)
+* z direction: 30 (max cruises per cell?)
       CALL ef_set_work_array_dims (id, 9, 1, 1, 1, 1, 
      .                             nxout, nyout, 30, ntout)
 
@@ -636,7 +670,7 @@ C  Get coordinates of output axes.
                      print *, 'Num_obs in cell at I,J,L = ', i,j,L, 
      .               ' is', nc_cell
 		     CALL ef_bail_out (id,
-     .      'too many cruises in cell. increase K size of work array 8')
+     .      'too many cruises in cell. increase K size of work arrays 8,9')
 		  ENDIF
 
 		  cruisemean(i,j,nc_cell,l) = unwtd_mean
@@ -706,7 +740,7 @@ C  Get coordinates of output axes.
                      print *, 'Num_obs in cell at I,J,L = ', i,j,L, 
      .               ' is', nc_cell
 		     CALL ef_bail_out (id,
-     .      'too many cruises in cell. increase K size of work array 8')
+     .      'too many cruises in cell. increase K size of work arrays 8,9')
 		  ENDIF
 
 		  cruisemean(i,j,nc_cell,l) = unwtd_mean
@@ -734,8 +768,10 @@ C  Get coordinates of output axes.
 
                IF (nc_cell .EQ. 0) THEN
                    result(i,j,k,l) = bad_flag_result
+c                   result(i,j,2,l) = bad_flag_result
                ELSE IF (nc_cell .EQ. 1) THEN
                    result(i,j,k,l) = 0.
+c                   result(i,j,2,l) = span(i,j,1,L)
 
 * Compute sum of (cruise-cell-averages - weighted cell mean) squared\
 
@@ -763,11 +799,13 @@ C  Get coordinates of output axes.
                   V1 = wi_sums(i,j,1,l)
                   V2 = wsumsq
                   denom = V1*V1 - V2
-
-                  IF (denom .NE. 0.) THEN
+		  
+                  IF (ABS(denom) .GT. 1.e-6) THEN
                      result(i,j,k,l) = wsumsq_ijl* V1/denom
+c                     IF (wsumsq .GT. 0.) result(i,j,2,l) = sqrt(wsumsq)
                   ELSE
                      result(i,j,k,l) = bad_flag_result
+c                     result(i,j,2,l) = bad_flag_result
                   ENDIF
 	       ENDIF
 

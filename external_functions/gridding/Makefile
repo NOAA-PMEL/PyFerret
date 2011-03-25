@@ -13,7 +13,7 @@
 #
 
 include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
- 
+
 #
 # Macros
 #
@@ -34,7 +34,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 	cc ${CFLAGS} -c $<
 
 .f.o:
-	$(F77) $(FFLAGS) $<
+	$(F77) $(FFLAGS) -g  $<
 
 #
 # Targets

@@ -5,10 +5,11 @@
 	# platform specific macros
 
 #
-#        NETCDF4_DIR     = /home/users/tmap/ferret/x86_64-linux
-	NETCDF4_DIR	= /home/stout/ansley/local/x86
 
-	INCLUDES        = -I /usr/lib/gcc/x86_64-redhat-linux5E/4.1.1/include \
+#	NETCDF4_DIR     = /home/users/tmap/ferret/x86_64-linux
+	NETCDF4_DIR     = /home/users/ansley/local/x86
+
+	INCLUDES        = -I /usr/lib/gcc/x86_64-redhat-linux/4.1.2/include \
 			  -I/../fmt/cmn/ \
 			  -I/$(NETCDF4_DIR)/include \
 			  -I. \
@@ -23,6 +24,8 @@
 			   -I../common \
 			   -I../../ppl/include  -I../../fer/common
 
+	GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include 
+	 
 	GKS_INCLUDES	=-I../../ppl/include/xgks \
 			  -I../../xgks/src/lib \
 			  -Ipplinc/xgks \
@@ -71,33 +74,51 @@
 	# Below this line are macro definitions used only for the final linking of the executable
 	#
 
-	LD		= gfortran
-	LDFLAGS		= -v --verbose -export-dynamic 
+	LD		= gcc
+	LDFLAGS		= -v --verbose -export-dynamic
 	 
+
 	SYSLIB		= -lX11 \
-			  -lcurl \
-			  -ldl \
-			  -lz  \
-			  -lm  \
-			  -lc 
+			  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgcc.a \
+			  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortran.a \
+			  /usr/lib64/libm.a \
+			  -L/usr/lib64 -lc
 
 	TMLIB		= ../lib/tmap_lib.a
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
-	READLINELIB	= -lreadline
+	READLINELIB	= /usr/lib64/libreadline.a 
 
-# netcdf4.1.x  libraries
+# netcdf4.1 static librarys only (except for libdl)
+# $(NETCDF4_DIR)/lib/libnetcdff.a  (needed for netcdf4.1.2 and higher)
 
-
-	CDFLIB          = $(NETCDF4_DIR)/lib/libnetcdff.a \
-	                  $(NETCDF4_DIR)/lib/libnetcdf.a \
-			  $(NETCDF4_DIR)/lib/libhdf5_hl.a \
-			  $(NETCDF4_DIR)/lib/libhdf5.a
-
+	CDFLIB = $(NETCDF4_DIR)/lib/libnetcdff.a \
+			  $(NETCDF4_DIR)/lib/libnetcdf.a \
+			  /usr/local/hdf5_186/lib/libhdf5_hl.a \
+			  /usr/local/hdf5_186/lib/libhdf5.a \
+			  -L/usr/lib64  \
+			  /usr/lib64/libcurl.a  \
+			  /usr/lib64/libssl.a  \
+			  /usr/lib64/libcrypto.a  \
+			  /usr/lib64/libgssapi_krb5.a  \
+			  /usr/lib64/libkrb5.a  \
+			  /usr/lib64/libkrb5support.a  \
+			  /usr/lib64/libgssapi_krb5.a  \
+			  /usr/lib64/libkrb5.a  \
+			  /usr/lib64/libkrb5support.a  \
+			  -L/usr/lib64 -lkeyutils  \
+			  -L/usr/lib64 -lselinux  \
+			  /usr/lib64/libcom_err.a  \
+			  /usr/lib64/libk5crypto.a  \
+			  /usr/lib64/libresolv.a  \
+			  -L/usr/lib64 -ldl  \
+			  /usr/local/lib/libz.a  \
+			  /usr/lib64/libidn.a  \
+			  /usr/local/lib/libz.a 
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 
-	TERMCAPLIB 	= -lncurses
+	TERMCAPLIB 	=/usr/lib64/libncurses.a
 
  # .IGNORE:	 
  	 

@@ -295,7 +295,11 @@
 * ... inform the operator.  If running in -script mode, exit from Ferret.
 	      CALL TM_SPLIT_MESSAGE( err_lun,
      .   'Command file, command group, or REPEAT execution aborted')
-              IF (its_script) STOP '-script mode, ERROR RUNNING SCRIPT'  !exit the program
+              IF (its_script) THEN
+	         CALL TM_SPLIT_MESSAGE( err_lun, 'ERROR RUNNING SCRIPT')
+	         status = 1
+		 CALL EXIT(status)
+	      ENDIF
 	   ENDIF
 	ENDIF
 

@@ -66,14 +66,14 @@
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
       arg = 1
-      CALL ef_set_arg_name(id, arg, 'A')
+      CALL ef_set_arg_name(id, arg, 'DATA')
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg, 'this arg is filled')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 2
-      CALL ef_set_arg_name(id, arg, 'B')
+      CALL ef_set_arg_name(id, arg, 'MASK')
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg, 
@@ -81,7 +81,7 @@
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 3
-      CALL ef_set_arg_name(id, arg, 'C')
+      CALL ef_set_arg_name(id, arg, 'N')
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg, 'the maximum number of fill-passes')

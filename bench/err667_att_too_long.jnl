@@ -1,5 +1,6 @@
- ! err667_att_too_long.jnl 
- ! bug 1839; too-long string attribute causes crash or hang 
+! err667_att_too_long.jnl 
+! 3/25/2011 ACM
+! bug 1839; too-long string attribute causes crash or hang 
 
 use toolong.nc
 sh dat/att

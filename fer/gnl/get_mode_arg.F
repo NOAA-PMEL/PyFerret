@@ -62,6 +62,8 @@
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 * V600: *acm* 5/06 - add new MODE LINECOLORS:[arg]
 * V610  *acm* 3/08 - add new MODE NLEVELS:argument
+* V67   *acm* 3/11 - Fix for ticket 1819, size of arg for MODE DESPERATE,
+*                    and allow for a floating-point input
 
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -72,6 +74,7 @@
 
 * calling argument declarations
 	INTEGER		mode, arg, status
+	REAL		farg
 	CHARACTER*(*)	text
 
 * local variable declarations:
@@ -113,8 +116,9 @@
 	   GOTO 5010	! unknown argument
 
 	ELSEIF ( mode .EQ. pmode_desperate ) THEN
-	   READ ( text, '(BN,I10)', ERR=5010 ) iarg
-	   IF ( iarg.LT.1 ) GOTO 5010
+	   READ ( text, *, ERR=5010 ) farg
+	   IF (farg .GT. 1.e9 .OR. farg .LE. 0) GOTO 5030
+           iarg = INT(farg)
 	   arg = iarg
 
 	ELSEIF ( mode .EQ. pmode_verify ) THEN
@@ -171,18 +175,25 @@
  5010   tlen = TM_LENSTR1(text)
         risc_buff = text(:tlen)
         CALL ERRMSG( ferr_out_of_range, status,
-     .               'illegal mode argument < 6'//risc_buff, *5500 )
+     .   'illegal mode argument < 6'//risc_buff, *5500 )
  5020   tlen = TM_LENSTR1(text)
         risc_buff = text(:tlen)
         CALL ERRMSG( ferr_out_of_range, status,
      .   'illegal mode argument must be in [1,250] '//risc_buff, *5500 )
+ 5030   tlen = TM_LENSTR1(text)
+        risc_buff = text(:tlen)
+        CALL ERRMSG( ferr_out_of_range, status,
+     .   'illegal mode argument. Negative or > 1.e+9, ', *5500 )
 #else
  5010   tlen = TM_LENSTR1(text)
         CALL ERRMSG( ferr_out_of_range, status,
-     .               'illegal mode argument < 6 '//text(:tlen), *5500 )
+     .   'illegal mode argument < 6 '//text(:tlen), *5500 )
  5020   tlen = TM_LENSTR1(text)
         CALL ERRMSG( ferr_out_of_range, status,
      .   'illegal mode argument must be in [1,250] '//text(:tlen), *5500 )
+ 5030   tlen = TM_LENSTR1(text)
+        CALL ERRMSG( ferr_out_of_range, status,
+     .   'illegal mode argument > 1.e+9, ', *5500 )
 #endif
  5500   IF ( mode .EQ. pmode_verify ) CALL WARN(
      .          'Legal VERIFY arguments are DEFAULT, ALL, and ALWAYS')

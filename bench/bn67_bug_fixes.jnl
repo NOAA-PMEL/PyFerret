@@ -17,3 +17,6 @@ GO err665_hours_since_T
 GO bn_reset
 GO err667_att_too_long
 
+GO bn_reset
+GO err667_mode_desperate
+

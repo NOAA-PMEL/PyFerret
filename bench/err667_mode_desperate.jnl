@@ -1,0 +1,22 @@
+! err667_mode_desperate
+! 3/25/2011 ACM
+! Fixing bug 1819: too-large requests for value of
+! MODE DESPERATE, and formatting of the value of the
+! setting in SHOW MODE.
+
+set mode ignore
+
+! setting too large
+set mode desperate `9999999999`
+show mode desperate
+
+! another setting too large (previously value 
+! was set to the first 10 digits of this)
+set mode desperate 1234567890123456789
+show mode desperate
+
+! Previously couldnt handle a floating point
+! input. Now we can.
+set mode desperate `96 * 1024 * 1024`
+show mode desperate
+can mode ignore

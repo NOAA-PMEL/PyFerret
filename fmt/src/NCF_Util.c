@@ -808,6 +808,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
 
 /*----
  * Find a variable attribute based on the dataset ID and variable ID and attribute name.
+ * On input, len is the max len to load.
  * Return the attribute, len, and its string or numeric value.
  */
  int FORTRAN(ncf_get_var_attr) (int *dset, int *varid, char* attname, char* string, int *len, double* val)
@@ -850,16 +851,16 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
 
   att_ptr=(ncatt *)list_curr(varattlist); 
 
-  *len = att_ptr->len;
   if (att_ptr->type == NC_CHAR)
   { 
 
-	  strcpy(string, att_ptr->string); 
+	  strncpy(string, att_ptr->string, *len); 
   }
   else 
   { for (i = 0; i < att_ptr->len; i++) {
 	  val[i] = att_ptr->vals[i]; }
   }
+  *len = att_ptr->len;
   return_val = FERR_OK;
   return return_val;
 }

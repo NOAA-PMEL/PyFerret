@@ -80,6 +80,7 @@
               CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, aname, 
      .                  attype, attlen, attoutflag, status )
 
+              IF (attoutflag .EQ. 0) GOTO 80
               IF (attlen .GT. 100 .AND. attype .NE. ptype_char) 
      .            attlen = 100
               got_it = NC_GET_ATTRIB ( dset, varid, aname, do_warn, 

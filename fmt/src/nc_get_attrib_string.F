@@ -122,6 +122,7 @@
 
       dset_num = dset
       IF (dset_num .LT. -2) dset_num = -2
+      attlen = maxlen  ! for strings dont want to overrun the length
       status = NCF_GET_VAR_ATTR(dset_num, varid, ghol, fhol, attlen, dval)
 
       IF ( status .NE. merr_ok ) THEN
@@ -163,8 +164,18 @@
      .             '" in netCDF variable: '//vname
       lenb = TM_LENSTR1( string )
       IF ( do_warn ) CALL TM_NOTE( string(:lenb), tt )
-      IF ( do_warn.AND.too_long ) WRITE (tt,'(1X,A,I4)')
-     .                       'Maximum characters: ',maxlen
+      IF ( do_warn .AND. too_long ) THEN
+         WRITE (string, 1000) maxlen
+1000     FORMAT ('Maximum characters: ',I4, ' ')
+         lenb = TM_LENSTR1( string )
+         CALL TM_NOTE( string(:lenb), tt )
+         WRITE (string, 1010) maxlen
+1010     FORMAT ('--TRUNCATED TO LENGTH ',I4, '--')
+         lenb = TM_LENSTR1( string )
+	 CALL TM_CTOF_STRNG( fhol, string(lenb+2:maxlen), (maxlen-lenb))
+	 
+	 attlen = maxlen
+      ENDIF
       RETURN
 
 * Note about unexpected attribute type

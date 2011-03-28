@@ -12,11 +12,11 @@ LET dx = `0.5* xbox[gx=xlon,i=1]`
 LET dy = `0.5* ybox[gy=ylat,j=1]`
 
 !Data contains lat,lon,date,data_id,cruise_id,cruise_no,fco2_rec
-USE "/home/porter/data/socat/SOCAT_triples_fco2.nc"
+USE "/home/data/socat/SOCAT_triples_1.3_fco2.nc"
 
 SET AXIS/STRIDE=1 `lon,return=xaxis`
 let ntimes = 10000
-let ntimes = 10000000
+let ntimes = `lon,return=isize`
 
 LET offset1970 = DAYS1900(1970,1,1)
 LET month = MOD(ii-1,12)+1
@@ -27,7 +27,7 @@ LET ii = i[i=1:480]
 
 
 !LET ii = i[i=421:433] ! for the year 2005 only
-LET ii = i[i=445:456] ! for the year 2007 only
+!LET ii = i[i=445:456] ! for the year 2007 only
 
 DEFINE AXIS/T0="1-jan-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - offset1970
    

@@ -12,7 +12,6 @@
 ! Arguments:
 ! 		calendar(case insensitive) =	
 !				STANDARD or GREGORIAN
-!				JULIAN
 !				NOLEAP   or 365_DAY
 !				ALL_LEAP or 366_DAY
 !				360_DAY
@@ -30,7 +29,7 @@
 !            go def_monthaxis_days.jnl ALL_LEAP 2002 2005 mytaxis
 !            go def_monthaxis_days.jnl 360_DAY 2002 2005 mytaxis 
 !
-! Notes:
+! Notes: For the present, the JULIAN calendar is not included.
 !
 ! Calls:
 !
@@ -55,17 +54,17 @@ let nbyears=year_end-year_start+1
 
 !=====================================================
 IF `(calendar EQ "STANDARD") OR (calendar EQ "GREGORIAN")` THEN
-	let indices = L[L=1:`nbyears*12`]
+	let indices = L[L=1:`1+nbyears*12`]
 	let month = MOD(indices-1,12)+1
 	let year = year_start + INT((indices-1)/12)
 	define axis/units="days"/T0="01-JAN-`year_ref`"/edges/cal="GREGORIAN" ($axisname) = DAYS1900(year,month,1)-DAYS1900(`year_ref`,1,1)
 
 !=====================================================
-ELIF `(calendar EQ "JULIAN")` THEN
-	let indices = L[L=1:`nbyears*12`]
-	let month = MOD(indices-1,12)+1
-	let year = year_start + INT((indices-1)/12)
-	define axis/units="days"/T0="01-JAN-`year_ref`"/edges/cal="JULIAN" ($axisname) = DAYS1900(year,month,1)-DAYS1900(`year_ref`,1,1)
+!ELIF `(calendar EQ "JULIAN")` THEN
+!	let indices = L[L=1:`1+nbyears*12`]
+!	let month = MOD(indices-1,12)+1
+!	let year = year_start + INT((indices-1)/12)
+!	define axis/units="days"/T0="01-JAN-`year_ref`"/edges/cal="JULIAN" ($axisname) = DAYS1900(year,month,1)-DAYS1900(`year_ref`,1,1)
 
 !=====================================================
 ELIF `(calendar EQ "NOLEAP") OR (calendar EQ "365_DAY")` THEN

@@ -59,7 +59,7 @@
       CALL ef_set_desc(id, descrip)
   100 FORMAT ('Write a webrowset file with cruise numbers and IDs')
 
-      CALL ef_set_num_args(id, 3)
+      CALL ef_set_num_args(id, 4)
       CALL ef_set_axis_inheritance(id,  ABSTRACT,
      .     NORMAL, NORMAL, NORMAL)
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
@@ -72,12 +72,19 @@
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 2
+      CALL ef_set_arg_name(id, arg, 'id')
+      CALL ef_set_arg_unit(id, arg, ' ')
+      CALL ef_set_arg_type (id, arg, STRING_ARG)
+      CALL ef_set_arg_desc(id, arg, 'Cruise name (string)')
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+
+      arg = 3
       CALL ef_set_arg_name(id, arg, 'Cruise_Mask')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_desc(id, arg, 'Mask =1 at start of each cruise')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
       
-      arg = 3
+      arg = 4
       CALL ef_set_arg_name(id, arg, 'filename')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_type (id, arg, STRING_ARG)
@@ -121,7 +128,7 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE write_webrow_compute(id, arg_1, arg_2, arg_3, result)
+      SUBROUTINE write_webrow_compute(id, arg_1, arg_2, arg_3, arg_4, result)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -131,8 +138,12 @@
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
       REAL arg_1(2,mem1lox:mem1hix, mem1loy:mem1hiy, 
      .           mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, 
+      REAL arg_2(2,mem2lox:mem2hix, mem2loy:mem2hiy, 
      .           mem2loz:mem2hiz, mem2lot:mem2hit)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, 
+     .           mem3loz:mem3hiz, mem3lot:mem3hit)
+      REAL arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, 
+     .           mem4loz:mem4hiz, mem4lot:mem4hit)
       REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit)
 
@@ -150,11 +161,11 @@
 *                                                                      V
 
       INTEGER i,j,k,l
-      INTEGER slen, iunit, icruise, nd
+      INTEGER slen, blen, iunit, icruise, nd
       INTEGER i1,j1,k1,l1, i2,j2,k2,l2
       CHARACTER*512 fname
       CHARACTER*100 errtxt
-      CHARACTER*512 buff
+      CHARACTER*512 buff, buff_cname
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -162,7 +173,7 @@
 
 C  Get file name
 
-      arg = 3
+      arg = 4
       CALL ef_get_arg_string(id, arg, fname)
 
       iunit = 19
@@ -197,11 +208,12 @@ C  Get file name
       l1 = arg_lo_ss(T_AXIS,ARG1)
       i = res_lo_ss(X_AXIS)
 
+* If the cruise_name is different from the cruise_id,
+* write the cruise_name in parentheses after the ID.
+
       icruise = 0
       DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
-         IF (arg_2(i1,j1,k1,l1) .NE. bad_flag(ARG2)) THEN
-            CALL EF_GET_STRING_ARG_ELEMENT(id, ARG1, arg_1,
-     .                          i1,j1,k1,l1, slen, buff)
+         IF (arg_3(i1,j1,k1,l1) .NE. bad_flag(ARG3)) THEN
             icruise = icruise + 1 
 	    IF (icruise .LT. 10) 
      .	       WRITE (iunit, 1010) icruise
@@ -209,6 +221,24 @@ C  Get file name
      .	       WRITE (iunit, 1012) icruise
 	    IF (icruise .GE. 100) 
      .	        WRITE (iunit, 1014) icruise
+	    IF (icruise .GE. 1000) 
+     .	        WRITE (iunit, 1015) icruise
+
+            CALL EF_GET_STRING_ARG_ELEMENT(id, ARG1, arg_1,
+     .                          i1,j1,k1,l1, slen, buff)
+            CALL EF_GET_STRING_ARG_ELEMENT(id, ARG2, arg_2,
+     .                          i1,j1,k1,l1, blen, buff_cname)
+            IF (slen .EQ. blen) THEN
+	       IF (buff(:slen) .EQ. buff_cname(:slen)) blen = 0
+	    ENDIF
+            IF (blen .GT. 0) THEN
+	       buff(slen+1:slen+2) = ' ('
+	       slen = slen + 2
+	       buff(slen+1:slen+blen) = buff_cname(:blen)
+	       slen = slen + blen
+	       buff(slen+1:slen+1) = ')'
+	       slen = slen + 1
+	    ENDIF
 
             WRITE (iunit, 1020) buff(1:slen)
 	 ENDIF
@@ -217,6 +247,7 @@ C  Get file name
 1010  FORMAT('<currentRow>'/'<columnValue>'/I1/'</columnValue>')
 1012  FORMAT('<currentRow>'/'<columnValue>'/I2/'</columnValue>')
 1014  FORMAT('<currentRow>'/'<columnValue>'/I3/'</columnValue>')
+1015  FORMAT('<currentRow>'/'<columnValue>'/I4/'</columnValue>')
 1020  FORMAT('<columnValue>'/A/'</columnValue>'/'</currentRow>')
 
 * Write closing tag.

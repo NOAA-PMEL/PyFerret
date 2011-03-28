@@ -165,6 +165,7 @@
 * V65   3/10 *acm* SHOW/OUTFILE=  writes the output to a file rather than std out.
 *                  Implemented so far only for SHOW AXIS, SHOW DATA, SHOW VAR, SHOW GRID,
 *                  to be implemented for all SHOW subcommands in the future
+* V67   *acm* 3/11 - Fix for ticket 1819, size of arg for MODE DESPERATE
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -250,7 +251,7 @@
      .          firstxml, got_it, coordvar, sattr, do_err, sho_out
 	INTEGER TM_LENSTR1, TM_LENSTR, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
-     .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM,
+     .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM, STR_SAME,
      .		category, mods_cx, v1_blk1, v1_nblks, grid, cx,
      .		status, iqual, mode, iset, i, icmnd, isub, n,
      .		len, len0, iuvar, ivar, dset, line, ivp, i1, i2,
@@ -793,6 +794,8 @@ c           ENDIF
 	      show_str(36:) = mode_grat_buff(:dlen)
 	   ELSEIF ( mode_arg( mode,1 ) .NE. unspecified_int4 ) THEN
 	      WRITE ( show_str(36:42), '(I7)' ) mode_arg( mode,1 )
+	      IF (STR_SAME(show_str(36:42), '*******') .EQ. 0) 
+     .		 WRITE ( show_str(36:47), '(I11)' ) mode_arg( mode,1 )
 	   ENDIF
 	   CALL SPLIT_LIST(pttmode_explct, show_lun,
      .			show_str(:TM_LENSTR1(show_str)), 0)

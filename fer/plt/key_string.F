@@ -47,6 +47,7 @@
 * V420:	 9/25/95 - comments appropriate to dynamic grids
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars and VAR_TITLE to 128
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars and name to 256 (ds_name)
+* V67  *acm* 3/11- fix ticket 1821
 
 	include	'ferret.parm'
 	include	'xcontext.cmn'
@@ -82,6 +83,8 @@
 * begin with the code for this variable	
 	KEY_STRING = VAR_CODE( categ, var )
 	IF ( INDEX(KEY_STRING,'#') .GT. 0 ) KEY_STRING = VAR_TITLE ( cx )
+	IF ( INDEX(KEY_STRING,'(C') .GT. 0 .AND. INDEX(KEY_STRING,',V') .GT. 0) 
+     .                                KEY_STRING = VAR_TITLE ( cx )
 	slen = TM_LENSTR1( KEY_STRING )
 
 * document the data set

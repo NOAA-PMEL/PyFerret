@@ -63,6 +63,8 @@
      .		       ypos_loss_dim2:ypos_hiss_dim2)
 
 * internal variable declarations:
+
+	LOGICAL TM_FPEQ 
 	INTEGER i, j, i1, i2, j1, j2
         REAL xx, yy, up, dn
 
@@ -95,6 +97,8 @@
                  ilo = MIN(i,ilo)
                  ihi = MAX(i,ihi)
               ENDIF
+	      IF (TM_FPEQ(xx, dn)) ilo = MIN(i,ilo)
+	      IF (TM_FPEQ(xx, up)) ihi = MAX(i,ihi)
            ENDIF
   100   CONTINUE
 
@@ -127,6 +131,8 @@
                  jlo = MIN(j, jlo)
                  jhi = MAX(j, jhi)
               ENDIF
+	      IF (TM_FPEQ(yy, dn)) jlo = MIN(j, jlo)
+	      IF (TM_FPEQ(yy, up)) jhi = MAX(j, jhi)
            ENDIF
   200   CONTINUE
 

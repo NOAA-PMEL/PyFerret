@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 48663003 Mar  9 12:58 /home/users/ansley/linux/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/linux/FERRET/external_functions/ext_func
+-rwxr-xr-x 1 ansley tmap 48649924 Mar 25 11:41 /home/users/ansley/linux/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/linux/FERRET/external_functions/ext_func/
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix to ticket 1806: allow date strings with T as in  ** hours since 2011-03-08T12:00:00 **
+Note:  v67 with NetCDF4.1.2 and ncdump installed
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/users/ansley/linux/FERRET/bench
@@ -20,8 +20,8 @@ FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/linux/FERRET/external_functions/ext_func
-Beginning at Wed Mar 9 13:08:05 PST 2011
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/linux/FERRET/external_functions/ext_func/
+Beginning at Fri Mar 25 11:50:35 PDT 2011
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2048,8 +2048,8 @@ sho att/all .
  *** NOTE: Changing the type of attribute (coadsx).modulo
  *** NOTE: Changing the value of attribute (coadsx).modulo
  *** NOTE: Changing the value of attribute (TIME4).time_origin
-syntax error
-context: <htm^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>taux</b><b>absuv</b><b>tauy</b><b>absuu</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
+syntax error, unexpected SCAN_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>tauy</b><b>taux</b><b>absuu</b><b>absuv</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  **ERROR: command syntax: enclose coordinate variable name in parentheses
 list coadsx.units
  **ERROR: variable unknown or not in data set: COADSX.UNITS
@@ -2181,7 +2181,7 @@ Replacing definition of axis TIME
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-             NetCDF: DAP server error (OPeNDAP/netCDF Error code -70)
+             NetCDF: Malformed or inaccessible DAP DDS (OPeNDAP/netCDF Error code -72)
              Data set: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods
 SET DAT/FORM=CDF "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
  **Internet Data error
@@ -3118,6 +3118,17 @@ Replacing definition of axis YAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0001.SURF.nc b40.coup_carb.004.cam2.h0.0002.SURF.nc b40.coup_carb.004.cam2.h0.0003.SURF.nc b40.coup_carb.004.cam2.h0.0004.SURF.nc b40.coup_carb.004.cam2.h0.0005.SURF.nc b40.coup_carb.004.cam2.h0.0006.SURF.nc b40.coup_carb.004.cam2.h0.0007.SURF.nc b40.coup_carb.004.cam2.h0.0008.SURF.nc b40.coup_carb.004.cam2.h0.0009.SURF.nc b40.coup_carb.004.cam2.h0.0010.SURF.nc b40.coup_carb.004.cam2.h0.0011.SURF.nc b40.coup_carb.004.cam2.h0.0012.SURF.nc b40.coup_carb.004.cam2.h0.0013.SURF.nc b40.coup_carb.004.cam2.h0.0014.SURF.nc b40.coup_carb.004.cam2.h0.0015.SURF.nc b40.coup_carb.004.cam2.h0.0016.SURF.nc b40.coup_carb.004.cam2.h0.0017.SURF.nc b40.coup_carb.004.cam2.h0.0018.SURF.nc b40.coup_carb.004.cam2.h0.0019.SURF.nc b40.coup_carb.004.cam2.h0.0020.SURF.nc b40.coup_carb.004.cam2.h0.0021.SURF.nc b40.coup_carb.004.cam2.h0.0022.SURF.nc b40.coup_carb.004.cam2.h0.0023.SURF.nc b40.coup_carb.004.cam2.h0.0024.SURF.nc b40.coup_carb.004.cam2.h0.0025.SURF.nc b40.coup_carb.004.cam2.h0.0026.SURF.nc b40.coup_carb.004.cam2.h0.0027.SURF.nc b40.coup_carb.004.cam2.h0.0028.SURF.nc b40.coup_carb.004.cam2.h0.0029.SURF.nc b40.coup_carb.004.cam2.h0.0030.SURF.nc b40.coup_carb.004.cam2.h0.0031.SURF.nc b40.coup_carb.004.cam2.h0.0032.SURF.nc b40.coup_carb.004.cam2.h0.0033.SURF.nc b40.coup_carb.004.c:
+ *** NOTE: Maximum characters: 2048
+ LISTing to file aa.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
+set mode desperate 1.E+10
+ **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
+set mode desperate 1234567890123456789
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
@@ -3218,4 +3229,4 @@ gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSO
 gdeactivatews()    3 GKS not in proper state: GKS shall be in the state WSAC
 gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSOP or in the state WSAC
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Mar 9 13:10:10 PST 2011
+Ended at Fri Mar 25 11:52:33 PDT 2011

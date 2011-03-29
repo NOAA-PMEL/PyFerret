@@ -38,13 +38,16 @@ mr_in_use.F\
 mr_not_in_use.F\
 mvar_num_dims.F\
 new_mr_w_edges.F\
+purge_all_memory.F\
+purge_all_pystat_vars.F\
 purge_all_uvars.F\
 purge_dset.F\
 purge_file_var.F\
 purge_mr_axis.F\
 purge_mr_grid.F\
+purge_pystat_var.F\
+purge_pystat_dset_vars.F\
 purge_user_var.F\
-purge_all_memory.F\
 re_assign_variable.F\
 release_work_spc.F\
 un_cache.F\

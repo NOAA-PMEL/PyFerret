@@ -36,7 +36,8 @@ debugbuild :
 
 .PHONY : pymod
 pymod :
-	export HDF5_DIR=$(HDF5_DIR) ; export NETCDF_DIR=$(NETCDF_DIR) ; $(PYTHON_EXE) setup.py build
+	rm -fr $(DIR_PREFIX)/build
+	cd $(DIR_PREFIX) ; export HDF5_DIR=$(HDF5_DIR) ; export NETCDF_DIR=$(NETCDF_DIR) ; $(PYTHON_EXE) setup.py build
 
 .PHONY : install
 install :
@@ -47,7 +48,7 @@ ifeq ( $(strip $(FER_LIBS)), )
 	@echo ""
 else
 	cp -f $(DIR_PREFIX)/fer/threddsBrowser/threddsBrowser.jar $(FER_LIBS)
-	export HDF5_DIR=$(HDF5_DIR) ; export NETCDF_DIR=$(NETCDF_DIR) ; $(PYTHON_EXE) setup.py install $(PYTHON_INSTALL_FLAGS)
+	cd $(DIR_PREFIX) ; export HDF5_DIR=$(HDF5_DIR) ; export NETCDF_DIR=$(NETCDF_DIR) ; $(PYTHON_EXE) setup.py install $(PYTHON_INSTALL_FLAGS)
 ifeq ( $(strip $(FER_LOCAL_EXTFCNS)), )
 	@echo ""
 	@echo " ERROR: environment variable FER_LOCAL_EXTFCNS is not defined"

@@ -64,6 +64,7 @@
 	include	'xfr_grid.cmn'
 	include 'xvariables.cmn'
 	include 'xcalc_vars.cmn'
+        include 'xpyvar_info.cmn'
 
 * calling argument declaration:
 	INTEGER	grid, status
@@ -100,6 +101,18 @@
 !	   DO 20 cvar = 1, num_calc_vars
 ! 20	   IF ( cvar_grid(cvar,dset) .EQ. grid ) GOTO 5100
 ! 25	CONTINUE
+
+* make sure grid is not used by any pystat variables
+        DO 30 ivar = 1, maxpyvars
+           IF ( pyvar_ndarray_obj(ivar) .EQ. 0 ) GOTO 30
+           IF ( pyvar_grid_number(ivar) .EQ. grid ) THEN
+              CALL WARN('grid ' // grid_name(grid)(:glen) //
+     .            ' used by python data variable ' // pyvar_code(ivar))
+              CALL WARN(
+     .      'Redefinition may alter apparent contents of the variable')
+              CALL PURGE_PYSTAT_VAR(ivar)
+           ENDIF
+ 30     CONTINUE
 
 * the coast is clear
 * ...clear out the memory variables

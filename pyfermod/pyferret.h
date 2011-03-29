@@ -68,9 +68,9 @@ void get_data_array_params_(char dataname[], int *lendataname, float *memory, in
                             int incr[MAX_FERRET_NDIM], char dataunit[], int *lendataunit,
                             AXISTYPE axtypes[MAX_FERRET_NDIM], float *badval, char errmsg[],
                             int *lenerrmsg, int maxlen_dataname, int maxlen_dataunit, int maxlen_errmsg);
-void get_data_array_coordinates_(double axiscoords[], char axisunit[], char axisname[],
-                                 int *axisnum, int *numcoords, char errmsg[], int *lenerrmsg,
-                                 int maxlen_axisunit, int maxlen_axisname, int maxlen_errmsg);
+void get_data_array_coords_(double axiscoords[], char axisunit[], char axisname[],
+                            int *axisnum, int *numcoords, char errmsg[], int *lenerrmsg,
+                            int maxlen_axisunit, int maxlen_axisname, int maxlen_errmsg);
 void get_data_array_time_coords_(int timecoords[][6], CALTYPE *caltype, char axisname[],
                                  int *axisnum, int *numcoords, char errmsg[], int *lenerrmsg,
                                  int maxlen_axisname, int maxlen_errmsg);

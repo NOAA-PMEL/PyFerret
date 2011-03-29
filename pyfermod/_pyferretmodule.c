@@ -565,8 +565,8 @@ static PyObject *pyferretGetData(PyObject *self, PyObject *args, PyObject *kwds)
             /* get the coordinates and the units string */
             q = k+1;
             j = (int) shape[k];
-            get_data_array_coordinates_((double *)PyArray_DATA(axis_coords[k]), axis_units[k], axis_names[k],
-                                        &q, &j, errmsg, &lenerrmsg, 64, 64, 2112);
+            get_data_array_coords_((double *)PyArray_DATA(axis_coords[k]), axis_units[k],
+                                   axis_names[k], &q, &j, errmsg, &lenerrmsg, 64, 64, 2112);
             if ( lenerrmsg > 0 ) {
                 errmsg[lenerrmsg] = '\0';
                 PyErr_SetString(PyExc_ValueError, errmsg);

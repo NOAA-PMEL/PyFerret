@@ -40,112 +40,145 @@
 *     Note: superline is assumed to be a valid line.
 *     Note: If superline is exactly the line described, axisstart will
 *           be assigned one and axisend will be assigned numcoords.
-*
-      LOGICAL FUNCTION CHECK_LINE_SUBSET(superline, axisstart, axisend,
-     .                               axisname, axisunit, axiscoords,
-     .                               numcoords, delta, eps, reg,
-     .                               modu, modulen, axucode)
+*     Note: axiscoords are assumed to be in units of time since
+*           01-JAN-0000 00:00:00, and adjustments to a different start
+*           for superline are made by this function.
+
+      LOGICAL FUNCTION CHECK_TIME_LINE_SUBSET(superline, axisstart,
+     .                            axisend, axisname, calid,
+     .                            axiscoords, numcoords, delta, eps,
+     .                            reg, modu, modulen, axucode)
       IMPLICIT NONE
 
+      INCLUDE 'calendar.decl'
+      INCLUDE 'calendar.cmn'
       INCLUDE 'tmap_dims.parm'
+      INCLUDE 'tmap_errors.parm'
       INCLUDE 'xtm_grid.cmn_text'
+      INCLUDE 'xunits.cmn_text'
+      EXTERNAL XUNITS_DATA
       INCLUDE 'pyferret.parm'
 
 *     Passed arguments
       INTEGER       superline, axisstart, axisend,
-     .              numcoords, axucode
-      CHARACTER*(*) axisname, axisunit
+     .              calid, numcoords, axucode
+      CHARACTER*(*) axisname
       REAL*8        axiscoords, delta, eps, modulen
       LOGICAL       reg, modu
       DIMENSION     axiscoords(numcoords)
 
+*     Function declarations
+      REAL*8        TM_SECS_FROM_BC
+
 *     Local arguments
-      INTEGER       i, j, k
-      REAL*8        value
+      INTEGER       i, j, k, sts,
+     .              t0yr, t0mon, t0day, t0hr, t0min, t0sec
+      REAL*8        base, value, factor
 
 *     First check the quick and easy, then go to the strings and coordinates
       k = superline
       IF ( .NOT. reg .EQV. line_regular(k) ) THEN
-          CHECK_LINE_SUBSET = .FALSE.
+          CHECK_TIME_LINE_SUBSET = .FALSE.
           RETURN
       ENDIF
       IF ( .NOT. modu .EQV. line_modulo(k) ) THEN
-          CHECK_LINE_SUBSET = .FALSE.
+          CHECK_TIME_LINE_SUBSET = .FALSE.
           RETURN
       ENDIF
-      IF ( modu .AND. 
-     .     (abs(modulen - line_modulo_len(k)) .GT. eps) ) THEN
-          CHECK_LINE_SUBSET = .FALSE.
+*     units can be different as long as they are time units
+      IF ( (line_unit_code(k) .LT. pun_1st_time) .OR.
+     .     (line_unit_code(k) .GT. pun_last_time) ) THEN
+          CHECK_TIME_LINE_SUBSET = .FALSE.
           RETURN
       ENDIF
-      IF ( axucode .NE. line_unit_code(k) ) THEN
-          CHECK_LINE_SUBSET = .FALSE.
-          RETURN
-      ENDIF
-      IF ( (axucode .EQ. 0) .AND. (axisunit .NE. line_units(k)) ) THEN
-          CHECK_LINE_SUBSET = .FALSE.
+*     Adjustment factor for unit conversion from superline to the described line
+      factor = un_convert(line_unit_code(k)) / un_convert(axucode)
+*     line_modulo_len not always set for time axes - ignore
+*     IF ( modu ) THEN
+*         value = line_modulo_len(k) * factor
+*         IF ( abs(modulen - value) .GT. eps ) THEN
+*             CHECK_LINE_SUBSET = .FALSE.
+*             RETURN
+*         ENDIF
+*     ENDIF
+      IF ( allowed_calendars(calid) .NE. line_cal_name(k) ) THEN
+          CHECK_TIME_LINE_SUBSET = .FALSE.
           RETURN
       ENDIF
       IF ( (axisname .NE. '') .AND. (axisname .NE. line_name(k)) ) THEN
-          CHECK_LINE_SUBSET = .FALSE.
+          CHECK_TIME_LINE_SUBSET = .FALSE.
           RETURN
       ENDIF
+*     Adjust for the t0 baseline of the line
+      CALL TM_BREAK_DATE(line_t0(k), calid, t0yr, t0mon,
+     .                   t0day, t0hr, t0min, t0sec, sts)
+      IF ( sts .NE. merr_ok ) THEN
+          CHECK_TIME_LINE_SUBSET = .FALSE.
+          RETURN
+      ENDIF
+      base = TM_SECS_FROM_BC(calid, t0yr, t0mon, t0day, t0hr, t0min,
+     .                    t0sec, sts) / un_convert(line_unit_code(k))
 *     Check the coordinates - may be a subset
       IF ( reg ) THEN
 *         First check the spacing between coordinates
-          IF ( (numcoords .GT. 1) .AND.
-     .         (abs(delta - line_delta(k)) .GT. eps) ) THEN
-              CHECK_LINE_SUBSET = .FALSE.
-              RETURN
+          IF ( numcoords .GT. 1 ) THEN
+              value = line_delta(k) * factor
+              IF ( abs(delta - value) .GT. eps ) THEN
+                  CHECK_TIME_LINE_SUBSET = .FALSE.
+                  RETURN
+              ENDIF
           ENDIF
 *         Look for the first coordinate
-          DO 30 j = 1, line_dim(k)
-              value = line_start(k) + (j-1) * line_delta(k)
+          DO 130 j = 1, line_dim(k)
+              value = line_start(k) + (j-1) * line_delta(k) + base
+              value = value * factor
               IF ( abs(value - axiscoords(1)) .LT. eps ) THEN
 *                 Verify the last coordinate is in there
                   i = j + numcoords - 1
                   IF ( i .GT. line_dim(k) ) THEN
-                      CHECK_LINE_SUBSET = .FALSE.
+                      CHECK_TIME_LINE_SUBSET = .FALSE.
                       RETURN
                   ENDIF
 *                 Successfully found the regular axis
                   axisstart = j
                   axisend = i
-                  CHECK_LINE_SUBSET = .TRUE.
+                  CHECK_TIME_LINE_SUBSET = .TRUE.
                   RETURN
               ENDIF
-  30      CONTINUE
+ 130      CONTINUE
       ELSE
 *         Find the first coordinate
-          DO 40 j = 1, line_dim(k)
-              value = line_mem(line_subsc1(k) + j - 1)
+          DO 140 j = 1, line_dim(k)
+              value = line_mem(line_subsc1(k) + j - 1) + base
+              value = value * factor
               IF ( abs(value - axiscoords(1)) .LT. eps ) THEN
-                  GOTO 50
+                  GOTO 150
               ENDIF
-   40     CONTINUE
+  140     CONTINUE
 *         First coordinate not found
-          CHECK_LINE_SUBSET = .FALSE.
+          CHECK_TIME_LINE_SUBSET = .FALSE.
           RETURN
 *         First coordinate found; check the rest of the coordinates
-   50     IF ( (j + numcoords - 1) .GT. line_dim(k) ) THEN
-              CHECK_LINE_SUBSET = .FALSE.
+  150     IF ( (j + numcoords - 1) .GT. line_dim(k) ) THEN
+              CHECK_TIME_LINE_SUBSET = .FALSE.
               RETURN
           ENDIF
-          DO 60 i = 2, numcoords
-              value = line_mem(line_subsc1(k) + j + i - 2)
+          DO 160 i = 2, numcoords
+              value = line_mem(line_subsc1(k) + j + i - 2) + base
+              value = value * factor
               IF ( abs(value - axiscoords(i)) .GE. eps ) THEN
-                  CHECK_LINE_SUBSET = .FALSE.
+                  CHECK_TIME_LINE_SUBSET = .FALSE.
                   RETURN
               ENDIF
-   60     CONTINUE
+  160     CONTINUE
 *         Successfully found the irregular axis
           axisstart = j
           axisend = i
-          CHECK_LINE_SUBSET = .TRUE.
+          CHECK_TIME_LINE_SUBSET = .TRUE.
           RETURN
       ENDIF
 
-      CHECK_LINE_SUBSET = .FALSE.
+      CHECK_TIME_LINE_SUBSET = .FALSE.
       RETURN
 
       END

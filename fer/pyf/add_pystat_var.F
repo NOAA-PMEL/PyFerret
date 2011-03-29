@@ -119,6 +119,7 @@
           IF ( category .EQ. cat_user_var ) THEN
               CALL DELETE_USER_VAR(ivar)
           ELSE IF ( category .EQ. cat_pystat_var ) THEN
+              CALL PURGE_PYSTAT_VAR(ivar)
               CALL DELETE_PYSTAT_VAR(ivar, errmsg, lenerr)
               IF ( lenerr .GT. 0 ) RETURN
           ELSE

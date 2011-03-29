@@ -31,63 +31,25 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
-
 *
-* Delete a pystat variable.
-* NOTE: this does NOT purge ferret-memory copies of this variable.
-*       CALL PURGE_PYSTAT_VAR prior to calling this function
-*       to purge ferret-memory copies of only this variable.
-*
-* Input:
-*     ivar - the (Fortran) index of the pystat variable to delete.  The
-*            reference count to the python memory associated with this 
-*            data is decremented.
-*
-* Output:
-*     errmsg - error message if unsuccessful; blank if and only if successful
-*     lenerr - length of the actual error message; zero if and only if successful
+* Delete all pystat variables in Ferret.
+* Also purges all ferret-memory copies of all pystat variables.
 *
 
-      SUBROUTINE DELETE_PYSTAT_VAR(ivar, errmsg, lenerr)
+      SUBROUTINE DELETE_ALL_PYSTAT_VARS()
       IMPLICIT NONE
 
       INCLUDE 'xpyvar_info.cmn'
 
-*     Passed arguments
-      CHARACTER*(*) errmsg
-      INTEGER       ivar, lenerr
+      CHARACTER*2048 errmsg
+      INTEGER k, lenerr
 
-      CHARACTER*2 undef_name
-      PARAMETER ( undef_name = '%%' )
-
-*     Function declarations
-      INTEGER TM_LENSTR
-
-      IF ( (ivar .LT. 1) .OR. (ivar .GT. maxpyvars) ) THEN
-          WRITE(errmsg,*) 'Invalid pystat variable number: ', ivar
-          lenerr = TM_LENSTR(errmsg)
-          RETURN
-      ENDIF
-      IF ( pyvar_ndarray_obj(ivar) .EQ. 0 ) THEN
-          WRITE(errmsg,*) 'No pystat variable at position ', ivar
-          lenerr = TM_LENSTR(errmsg)
-          RETURN
-      ENDIF
-
-*     Decrement the reference count to the ndarray object
-      CALL DECREF_PYOBJ(pyvar_ndarray_obj(ivar))
-      pyvar_ndarray_obj(ivar) = 0
-
-*     Clear the name from the array and hash table
-      CALL STRING_ARRAY_MODIFY(pyvar_code_head, ivar,
-     .                         undef_name, LEN(undef_name))
-
-*     Decrement the reference count to the associated grid and its lines
-      CALL DEALLO_DYN_GRID(pyvar_grid_number(ivar))
-
-*     Success
-      errmsg = ' '
-      lenerr = 0
+      CALL PURGE_ALL_PYSTAT_VARS()
+      DO 200 k = 1,maxpyvars
+          IF ( pyvar_ndarray_obj(k) .NE. 0 ) THEN
+              CALL DELETE_PYSTAT_VAR(k, errmsg, lenerr)
+          ENDIF
+  200 CONTINUE
       RETURN
 
       END

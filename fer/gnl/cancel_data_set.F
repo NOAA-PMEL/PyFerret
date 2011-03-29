@@ -62,6 +62,9 @@
 * local variable declarations:
 	INTEGER	iclim, iclim_user
 
+* purge and delete any cat_pystat_var variables associated with this dataset
+        CALL DELETE_PYSTAT_DSET_VARS( iset )
+
 * delete any memory variables from this data set
 * ( necessary because their pointers will lead to incorrect data set 
 *   information and possibly misleading output )

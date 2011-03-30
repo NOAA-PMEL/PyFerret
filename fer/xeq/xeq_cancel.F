@@ -131,6 +131,7 @@
 * V63   *acm* 9/09 Fix bug 1691: deallocate use of dynamic axis when it is found in a grid.
 *                  If more than one grid uses the dyn axis, deallocate use of axis for each.
 * V66   *kms* 5/10 add CANCEL REDIRECT for stdout/stderr redirection
+* V700  *kms* 3/11 Add CANCEL PYVAR /ALL /DATASET
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -205,7 +206,8 @@
 
 * select subcommand
 	GOTO ( 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
-     .        1100,1200,1300,1400,1500,1600,1700, 1800 ) subcmnd_num
+     .        1100,1200,1300,1400,1500,1600,1700, 1800, 1900 ) 
+     .       subcmnd_num
 
 * CANCEL '    '
 * arrival at this point usually means an illegal subcommand was given
@@ -1121,6 +1123,53 @@ c	ENDIF
 	RETURN
 
 
+* CANCEL PYVAR
+* modeled after CANCEL VAR
+*       /D=xxx: has the user requested CANCEL PYVAR/D= ?
+ 1900   iqual = qual_given( slash_canc_var_data )
+        IF ( iqual .GT. 0 ) THEN
+           CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .                        buff, status )
+           IF ( status .NE. ferr_ok ) RETURN
+           IF ( buff .EQ. ' ' ) THEN
+              iset = pdset_irrelevant         ! "/D", alone for default-to-dset
+              buff = 'No current data set'    ! ... for error reporting
+              IF ( iset .EQ. unspecified_int4) GOTO 5130
+           ELSE
+              iset = FIND_DSET_NUMBER( buff )
+              IF ( iset .EQ. unspecified_int4) GOTO 5130
+           ENDIF
+        ELSE
+           iset = unspecified_int4
+        ENDIF
+        IF ( slash_all ) THEN
+           CALL PURGE_ALL_UVARS
+*          The following purges then deletes all pystat variables
+           CALL DELETE_ALL_PYSTAT_VARS()
+        ELSEIF ( (num_items .EQ. 0) .AND. 
+     .           (iset .NE. unspecified_int4) ) THEN
+           CALL PURGE_ALL_UVARS
+*          The following purges then deletes all pystat variables in a given dataset
+           CALL DELETE_PYSTAT_DSET_VARS(iset)
+        ELSE
+           IF (num_items .EQ. 0) GOTO 5010
+           DO 1920 item = 1, num_items
+              i1 = STR_UPCASE(buff,
+     .                 cmnd_buff(item_start(item):item_end(item)))
+*             Decode specified variable name of form VNAME[D=iset]
+              CALL PARSE_NAM_DSET( buff, cx_last, iset,
+     .                             category, variable, mod_cx, status )
+              IF ( status .NE. ferr_ok ) RETURN
+              IF ( variable .EQ. munknown_var_name ) GOTO 5110
+              IF ( category .NE. cat_pystat_var ) GOTO 5140
+              CALL PURGE_ALL_UVARS
+              CALL PURGE_PYSTAT_VAR(variable)
+              CALL DELETE_PYSTAT_VAR(variable, buff, i1)
+ 1920      CONTINUE
+        ENDIF
+        RETURN
+
+
 * error exits
  5000	RETURN
  5010	CALL ERRMSG( ferr_invalid_command, status,
@@ -1138,6 +1187,8 @@ c	ENDIF
      .		'can only CANCEL variables you DEFINE '//buff, *5000 )
  5130	CALL ERRMSG( ferr_unknown_data_set, status,
      .			buff(:TM_LENSTR1(buff)), *5000 )
+ 5140	CALL ERRMSG( ferr_invalid_command, status,
+     .		'not a pyvar (variable from Python): '//buff, *5000 )
  5310	CALL ERRMSG( ferr_invalid_command, status,
      .		'/ALL with named region or axis qualifier', *5000 )
  5400	CALL ERRMSG( ferr_invalid_command, status,

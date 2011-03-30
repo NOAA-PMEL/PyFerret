@@ -37,6 +37,7 @@
 * V6.6  *kms* 5/10 add SET REDIRECT and CANCEL REDIRECT for stdout/stderr redirection
 *       *kms* 7/10 add OPEN alias for SET DATA /BROWSE
 * V664  8/10 *kms* Add DEFINE PYFUNC /NAME=<alias> python.module.name
+* V700  *kms* 3/11 Add CANCEL PYVAR /ALL /DATASET
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -207,7 +208,7 @@
      .			nqual3p = 1, nqual_at3q = nqual_at3p + nqual3p,	!'ALIAS'
      .			nqual3q = 1, nqual_at3r = nqual_at3q + nqual3q,	!'SYMBOL'
      .			nqual3r = 1, nqual_at3s = nqual_at3r + nqual3r,	!'NCCACHE'
-     .			nqual3s = 3, nqual_at3t = nqual_at3s + nqual3s,	!'****'
+     .			nqual3s = 3, nqual_at3t = nqual_at3s + nqual3s,	!'PYVAR'
      .			nqual3t = 3, nqual_at4a = nqual_at3t + nqual3t	!'****'
      .		      )
 

@@ -192,6 +192,7 @@
 * V664  8.10 *kms* Add EXIT/TOPYTHON to exit the ferret_dispatch loop 
 *                  but just re-enter the loop if not under pyferret
 *                  Add DEFINE PYFUNC /NAME=<alias> python.module.name
+* V700  *kms* 3/11 Add CANCEL PYVAR /ALL /DATASET
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -743,12 +744,12 @@
 	   DATA num_qualifs      (nsub_at3 +17)	/ nqual3r	/
 	   DATA qualifier_pointer(nsub_at3 +17)	/ nqual_at3r	/
 		DATA qualifiers  (nqual_at3r+0)	/ '****'	/
-* CANCEL ****							  ! unused(s)
-	   DATA subcommands      (nsub_at3 +18)	/ '****'	/
+* CANCEL PYVAR
+	   DATA subcommands      (nsub_at3 +18)	/ 'PYVAR'	/
 	   DATA num_qualifs      (nsub_at3 +18)	/ nqual3s	/
 	   DATA qualifier_pointer(nsub_at3 +18)	/ nqual_at3s	/
-		DATA qualifiers  (nqual_at3s+0)	/ '****'	/
-		DATA qualifiers  (nqual_at3s+1)	/ '****'	/
+		DATA qualifiers  (nqual_at3s+0)	/ 'ALL'		/
+		DATA qualifiers  (nqual_at3s+1)	/ 'DATASET'	/
 		DATA qualifiers  (nqual_at3s+2)	/ '****'	/
 * CANCEL ****							  ! unused(t)
 	   DATA subcommands      (nsub_at3 +19)	/ '****'	/

@@ -735,7 +735,8 @@ def putdata(datavar_dict, axis_pos=None):
     except AttributeError:
         raise ValueError, "The value of 'data' must be a NumPy ndarray (or derived from an ndarray)"
     #
-    # assign any defaults on the axis information not given, and make a copy of the axis coordinates
+    # assign any defaults on the axis information not given, 
+    # and make a copy of the axis coordinates (to ensure they are well-behaved)
     for k in xrange(_MAX_FERRET_NDIM):
         if axis_types[k] == AXISTYPE_LONGITUDE:
             if not axis_units[k]:
@@ -766,12 +767,9 @@ def putdata(datavar_dict, axis_pos=None):
             if axis_coords[k].shape[0] != shape[k]:
                 raise ValueError, "number of coordinates for axis %d does not match the number of data points" % (k+1)
         elif axis_types[k] == AXISTYPE_ABSTRACT:
-            if axis_coords[k]:
-                axis_coords[k] = np.array(axis_coords[k], dtype=np.float64, copy=1)
-                if axis_coords[k].shape[0] != shape[k]:
-                    raise ValueError, "number of coordinates for axis %d does not match the number of data points" % (k+1)
-            else:
-                axis_coords[k] = None
+            axis_coords[k] = np.array(axis_coords[k], dtype=np.float64, copy=1)
+            if axis_coords[k].shape[0] != shape[k]:
+                raise ValueError, "number of coordinates for axis %d does not match the number of data points" % (k+1)
         elif axis_types[k] == AXISTYPE_NORMAL:
             axis_coords[k] = None
         else:

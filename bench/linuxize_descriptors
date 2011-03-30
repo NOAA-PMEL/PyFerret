@@ -1,4 +1,6 @@
 #!/bin/csh
+# NOTE THAT THIS WAS NEEDED ONLY for Linux executables thru v5.51.
+# After that Ferret under linux was built with g77.
 # This shell script is designed to take an existing descriptor file
 # and translate it into an acceptable format for linux Ferret.  The reason this
 # needs to be done is because linux Ferret was compiled w/ F90, and it 

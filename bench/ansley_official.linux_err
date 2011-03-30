@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 48649924 Mar 25 11:41 /home/users/ansley/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 47976932 Mar 28 10:33 /home/users/ansley/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/linux/FERRET/external_functions/ext_func/
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  v67 with NetCDF4.1.2 and ncdump installed
+Note: v67 with NetCDF4.1.2 and ncdump installed; SAVE/RIGID no longer deprecated
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/users/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/linux/FERRET/external_functions/ext_func/
-Beginning at Fri Mar 25 11:50:35 PDT 2011
+Beginning at Mon Mar 28 10:34:12 PDT 2011
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -363,35 +363,20 @@ list a
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test0a.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0b.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0c.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0d.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0e.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0f.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0g.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0h.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0i.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0j.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0k.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0l.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0m.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0n.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0o.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0p.cdf
  LISTing to file test_abs.cdf
  LISTing to file test_abs.cdf
@@ -424,10 +409,8 @@ list a
  *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
  *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
  *** NOTE: Write the data initially with the /BOUNDS qualifier
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test2.cdf
  LISTing to file FL.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file FTLON.cdf
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/l=1:10/file=test_abs.cdf l
@@ -659,6 +642,9 @@ Replacing definition of axis TAX
 Replacing definition of axis TAX
 Replacing definition of axis TAX
  *** NOTE: Axis has repeated values -- micro-adjusting ...
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
 Replacing definition of axis XAX
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
@@ -825,15 +811,6 @@ Replacing definition of axis TWEEKS
  *** NOTE: /UNIT=MONTHS  ... using 1/12 of 360.00 days
 Replacing definition of grid TGRID
 Replacing definition of axis TDAYS
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
-nco_err_exit(): ERROR nco_open
-Not a netCDF file
-nco_err_exit(): ERROR nco_open
-Not a netCDF file
-nco_err_exit(): ERROR nco_open
-Not a netCDF file
 Replacing definition of grid TGRID
  *** NOTE: /UNIT=MONTHS  ... using 1/12 of 365.25 days
  PERMANENT data cleared from memory
@@ -1254,7 +1231,6 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid LON_FIELD_GRID
  *** NOTE: Not deleted: XIRREG
  *** NOTE: Axis is in use by grid GIRREG
-ls: input.txt: No such file or directory
  *** NOTE: Not deleted: TCENTURY
  *** NOTE: Axis is in use by grid GCENTURY
  *** NOTE: Not deleted: TAX5DAY
@@ -1297,6 +1273,7 @@ ls: input.txt: No such file or directory
  *** NOTE: Axis is in use by grid GSIGMA
  *** NOTE: Not deleted: YRISE
  *** NOTE: Axis is in use by grid GSIGMA
+ls: input.txt: No such file or directory
  *** NOTE: Not deleted: ZLAYER
  *** NOTE: Axis is in use by grid GSIGMA
  *** NOTE: Not deleted: TIME
@@ -1679,7 +1656,6 @@ def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,
  *** NOTE: Axis is in use by grid GFORMAT
  LISTing to file a.nc
  LISTing to file a.nc
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  *** NOTE: Cannot have both /BOUNDS and /RIGID Ignoring /RIGID
  LISTing to file a.nc
  *** NOTE: Cannot have both /BOUNDS and /EDGES Ignoring /EDGES
@@ -1690,7 +1666,6 @@ Replacing definition of axis TAX
  LISTing to file irrxzt.nc
  *** NOTE: regarding ./climatological_axes.cdf ...
  *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -1839,9 +1814,6 @@ message/continue ($test2"|hello|bye|")
 message/continue ($test2"|hello|bye|<my error message")
  **ERROR: invalid command: Valid value needed for symbol t2
 message/continue ($t2"|solong>really hello|bye|")
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1883,6 +1855,9 @@ Replacing definition of axis COADSX.ILLEGAL
  *** NOTE: grid  used by data set illeg_axname
  *** NOTE: Redefinition may alter apparent contents of data set
  *** NOTE: grid  used by data set illeg_axname
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
  *** NOTE: Redefinition may alter apparent contents of data set
 Replacing definition of axis COADSY.ILLEGAL
  *** NOTE: grid  used by data set illeg_axname
@@ -2048,8 +2023,6 @@ sho att/all .
  *** NOTE: Changing the type of attribute (coadsx).modulo
  *** NOTE: Changing the value of attribute (coadsx).modulo
  *** NOTE: Changing the value of attribute (TIME4).time_origin
-syntax error, unexpected SCAN_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>tauy</b><b>taux</b><b>absuu</b><b>absuv</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  **ERROR: command syntax: enclose coordinate variable name in parentheses
 list coadsx.units
  **ERROR: variable unknown or not in data set: COADSX.UNITS
@@ -2089,6 +2062,8 @@ set att (COADSX81_81).axis = "Z"
  LISTing to file a.nc
  LISTing to file a.nc
  PERMANENT data cleared from memory
+syntax error, unexpected SCAN_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>tauy</b><b>taux</b><b>absuu</b><b>absuv</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
@@ -2604,35 +2579,20 @@ Replacing definition of grid G1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file test0a.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0b.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0c.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0d.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0e.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0f.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0g.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0h.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0i.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0j.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0k.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0l.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0m.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0n.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0o.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0p.cdf
  LISTing to file test_abs.cdf
  LISTing to file test_abs.cdf
@@ -2665,10 +2625,8 @@ Replacing definition of grid G1
  *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
  *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
  *** NOTE: Write the data initially with the /BOUNDS qualifier
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test2.cdf
  LISTing to file FL.cdf
- *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file FTLON.cdf
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/keep_axnames/l=1:10/file=test_abs.cdf l
@@ -3229,4 +3187,4 @@ gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSO
 gdeactivatews()    3 GKS not in proper state: GKS shall be in the state WSAC
 gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSOP or in the state WSAC
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Mar 25 11:52:33 PDT 2011
+Ended at Mon Mar 28 10:36:02 PDT 2011

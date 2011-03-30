@@ -59,6 +59,9 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V67  *acm* 3/11  Fix bug 1750. Revert to older behavior: if grid uses same axis
+*                  name but different contents, write both to file with the name
+*                  Ferret uses internally.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -92,7 +95,7 @@
       CHARACTER*(*) gname
 
 * local variable declarations:
-      LOGICAL gmod
+      LOGICAL gmod, name_from_grid
       INTEGER TM_LENSTR1, 
      .        defid, defdim, nlen, slen, cdfstat, iaxis, idim, glen, i
 * *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
@@ -195,7 +198,7 @@
      .           idim.EQ.recdim,
      .           lo(idim), hi(idim), pcdf_full_span, 
      .           edges_flag, do_bounds, mode_upcase_output,
-     .           keepax_flag, status ) 
+     .           keepax_flag, name_from_grid, status ) 
 
             IF ( status .NE. merr_ok ) GOTO 5900
          ENDIF

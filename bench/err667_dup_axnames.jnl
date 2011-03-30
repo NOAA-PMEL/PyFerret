@@ -1,0 +1,26 @@
+! err667_dup_axnames.jnl
+! See bug 1750
+!
+! create two files with same-named y-axis
+def ax/y=-90:90:5 yax_dup_axnames
+let g = y[gy=yax_dup_axnames]
+save/clob/file=g.nc g
+def ax/y=-30:30:5 yax_dup_axnames
+let h = y[gy=yax_dup_axnames]
+save/clob/file=h.nc h
+
+can var g h
+can ax yax_dup_axnames
+! collect variables into a single file
+use g.nc
+use h.nc
+
+save/clob/file="gh.nc" g[d=1], h[d=2]
+
+! When the two datasets are opened, they both have Y axes with the same name
+! but different contents, so internally the axis of H is named yax_dup_axnames1. 
+! If there is not a duplicate name in the output file, we want to write H with 
+! the original axis name. Check for that. 
+
+save/clob/file="justh.nc" h[d=2]
+save/clob/file="justg.nc" g[d=1]

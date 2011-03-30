@@ -44,6 +44,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V533 *sh* 7/01 - based upon OPERATE.F
+* V67  *acm 3/11 - Fix bugs 1764,1795 (copy/paste errors in setting up 3rd component)
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -55,7 +56,7 @@
 	INTEGER	operation, num_com, com_cx(4), mr1, mr2, mr3, mres
 	REAL    com1( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit )
         REAL*8	com2( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
-     .  	com3( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
+     .  	com3( m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,m3lot:m3hit ),
      .          res( m5lox:m5hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit )
 
 * internal variable declarations:
@@ -79,7 +80,7 @@
      .	(lo(1,3),si3), (lo(2,3),sj3), (lo(3,3),sk3), (lo(4,3),sl3),
      .	(inc(1,1),di1),(inc(2,1),dj1),(inc(3,1),dk1),(inc(4,1),dl1),
      .	(inc(1,2),di2),(inc(2,2),dj2),(inc(3,2),dk2),(inc(4,2),dl2),
-     .	(inc(1,2),di3),(inc(2,3),dj3),(inc(3,3),dk3),(inc(4,3),dl3)
+     .	(inc(1,3),di3),(inc(2,3),dj3),(inc(3,3),dk3),(inc(4,3),dl3)
 
 * flag for bad or missing values
         bad1 = mr_bad_data ( mr1 )

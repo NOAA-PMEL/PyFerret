@@ -1,7 +1,7 @@
 	SUBROUTINE CD_WRITE_AXIS ( cdfid, dset, grid, idim, recdim,
      .                           loss, hiss, ax_type,  edges_flag, 
      .                           do_bounds, mode_upcase_output,  
-     .                           keepax_flag, status )
+     .                           keepax_flag, name_from_grid, status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -86,6 +86,9 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V67  *acm* 3/11  Fix bug 1750. Revert to older behavior: if grid uses same axis
+*                  name but different contents, write both to file with the name
+*                  Ferret uses internally.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -120,7 +123,7 @@
 
 
 * argument declarations
-      LOGICAL recdim, do_bounds, mode_upcase_output
+      LOGICAL recdim, do_bounds, mode_upcase_output, name_from_grid
       INTEGER cdfid, dset, grid, idim, loss, hiss, ax_type, 
      .        edges_flag, keepax_flag, status
 
@@ -160,8 +163,9 @@
       dset_num = dset
 
       name = CD_AXIS_OUTNAME( dset_num, grid, idim, nlen )
-
       name_in = name
+      
+      name_from_grid = .FALSE.
 
 * If mode upcase_output is set, then upcase both name and name_in which is 
 * being stored for later use.
@@ -187,7 +191,6 @@
          lo = loss
          hi = hiss
       ENDIF
-!      condensed = line_regular(iaxis) .AND. (hi-lo).GT.3000
 
 * dimension and size for this axis
       axlen = hi - lo + 1
@@ -213,13 +216,56 @@
 #endif
 
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
-         IF ( .NOT.recdim ) THEN
-* ... check the length
+	 IF (.NOT. recdim) THEN 
             slen = CD_AXLEN( cdfid, dimid, status )
             IF ( status .NE. merr_ok ) GOTO 5900
-            IF ( axlen .NE. slen ) GOTO 5100
-         ENDIF
-         GOTO 1000
+            IF ( keepax_flag .NE. 1 .AND. .NOT.abstract) THEN
+
+* ... check the length
+               IF ( axlen .NE. slen ) THEN
+
+* use the basic name straight from the grid
+                  name = line_name(iaxis)
+                  nlen = TM_LENSTR1( name )
+		        name_in = name   ! ??
+
+
+* If mode upcase_output is set, then upcase name
+
+                  IF (mode_upcase_output) THEN
+                     CALL STR_UPCASE( buff, name)
+                  ENDIF
+
+                  npts = line_dim(iaxis)
+                  abstract = TM_ABSTRACT_AXIS( iaxis )
+
+                  bndid = -1
+
+* determine lo/hi limits of the axis to be written
+                  IF ( abstract ) THEN
+                     lo = loss
+                     hi = hiss
+                  ELSEIF ( ax_type .EQ. pcdf_full_span ) THEN
+                     lo = 1
+                     hi = line_dim(iaxis)
+                  ELSE
+                     lo = loss
+                     hi = hiss
+                  ENDIF
+
+* dimension and size for this axis
+                  axlen = hi - lo + 1
+
+* Yes, use the basic name straight from the grid
+	          name_from_grid = .TRUE.
+                  
+	       ENDIF
+            ELSE 
+               IF (axlen .NE. slen ) GOTO 5100
+               GOTO 1000
+            ENDIF
+	 ENDIF
+	 IF (.NOT. name_From_grid) GOTO 1000
       ENDIF
 
 * put CDF into define mode so axis can be defined
@@ -230,14 +276,10 @@
       IF ( recdim ) THEN
 #ifdef usingDODSf2cUnderscore
          cdfstat = NF_DEF_DIM_( cdfid, name(:nlen), NF_UNLIMITED, dimid )
-!      ELSEIF ( condensed ) THEN
-!         cdfstat = NF_DEF_DIM_( cdfid, name(:nlen), 2, dimid )
       ELSE
          cdfstat = NF_DEF_DIM_( cdfid, name(:nlen), axlen, dimid )
 #else
          cdfstat = NF_DEF_DIM( cdfid, name(:nlen), NF_UNLIMITED, dimid )
-!      ELSEIF ( condensed ) THEN
-!         cdfstat = NF_DEF_DIM( cdfid, name(:nlen), 2, dimid )
       ELSE
          cdfstat = NF_DEF_DIM( cdfid, name(:nlen), axlen, dimid )
 #endif

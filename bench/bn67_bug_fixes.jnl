@@ -20,3 +20,8 @@ GO err667_att_too_long
 GO bn_reset
 GO err667_mode_desperate
 
+GO bn_reset
+GO err667_dup_axnames
+
+GO bn_reset
+GO err667_string_if

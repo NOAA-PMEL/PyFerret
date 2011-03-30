@@ -20,6 +20,7 @@
 
 * internal variable declarations:
       INTEGER cx, cx_var, pyvar, idim, mr, sts2
+      LOGICAL give_warning
 
 * initialize
       cx = is_cx(isp)
@@ -61,32 +62,37 @@
       is_mr(isp) = mr
 
       DO 200 idim = 1,4
+          give_warning = .FALSE.
           IF ( cx_lo_ss(cx,idim) .LT. cx_lo_ss(cx_var,idim) ) THEN
+              IF ( cx_hi_ss(cx,idim) .LT. cx_lo_ss(cx_var,idim) ) THEN
+*                 Error - the requested data is completely out of range
+                  GOTO 5200
+              ENDIF
               IF ( (cx_lo_ss(cx_last,idim) .NE. unspecified_int4)
      .             .OR.  cx_given(idim,cx) ) THEN
-* ... error: the user explicitly requested more than there is
-                 GOTO 5200
-              ENDIF
-              IF ( cx_hi_ss(cx,idim) .LT. cx_lo_ss(cx_var,idim) ) THEN
-* ... requested data is completely out of range of python array data
-                 GOTO 5200
+*                 Warn - explicitly requested more data than what exists
+                  give_warning = .TRUE.
               ENDIF
               cx_lo_ss(cx,idim) = cx_lo_ss(cx_var,idim)
               cx_lo_ww(idim,cx) = cx_lo_ww(idim,cx_var)
           ENDIF
           IF ( cx_hi_ss(cx,idim) .GT. cx_hi_ss(cx_var,idim) ) THEN
+              IF ( cx_lo_ss(cx,idim) .GT. cx_hi_ss(cx_var,idim) ) THEN
+*                 Error - the requested data is completely out of range
+                  GOTO 5200
+              ENDIF
               IF ( (cx_hi_ss(cx_last,idim) .NE. unspecified_int4)
      .             .OR.  cx_given(idim,cx) ) THEN
-* ... error: the user explicitly requested more than there is
-                 GOTO 5200
+*                 Warn - explicitly requested more data than what exists
+                  give_warning = .TRUE.
               ENDIF
-              IF ( cx_lo_ss(cx,idim) .GT. cx_hi_ss(cx_var,idim) ) THEN
-* ... requested data is completely out of range of python array data
-                 GOTO 5200
-              ENDIF
-* ... no error: the region was filled in by FERRET automatically
               cx_hi_ss(cx,idim) = cx_hi_ss(cx_var,idim)
               cx_hi_ww(idim,cx) = cx_hi_ww(idim,cx_var)
+          ENDIF
+          IF ( give_warning ) THEN
+              CALL WARN('Given range exceeds actual for the '
+     .                  // ww_dim_name(idim) // ' axis of ' // 
+     .                  VAR_CODE(cat_pystat_var,pyvar))
           ENDIF
  200  CONTINUE
 

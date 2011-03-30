@@ -142,6 +142,8 @@
 *                    to store the title
 * V6.5  *acm* 1/10 new qualifiers for LIST netCDF4: NCFORMAT,
 *                  XCHUNK,YCHUNK,ZCHUNK,TCHUNK,COMPRESSION,SHUFFLE,ENDIAN
+* V6.7  *acm* 3/11 Remove warning deprecating /RIGID. There are still valid reasons
+*                  to want to set the time axis to NOT be the record axis.
 
         include 'tmap_errors.parm'
 	include	'ferret.parm'
@@ -268,9 +270,6 @@
         i = qual_given( slash_rigid )
         IF ( i .GT. 0 ) THEN
            cdf_recax = 'N'   ! no record axis
-           CALL WARN(
-     .       '/RIGID is deprecated. By default axis bounds are '//
-     .       'written for irregular axes.')
         ELSE
            cdf_recax = 'T'   ! "T" is record axis
         ENDIF

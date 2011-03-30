@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 47976932 Mar 28 10:33 /home/users/ansley/linux/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/linux/FERRET/external_functions/ext_func/
+-rwxr-xr-x 1 ansley tmap 47977645 Mar 29 18:01 /home/users/ansley/linux/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: v67 with NetCDF4.1.2 and ncdump installed; SAVE/RIGID no longer deprecated
+Note: fixed the stringif bug, fix bug 1750
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/users/ansley/linux/FERRET/bench
@@ -20,8 +20,8 @@ FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/linux/FERRET/external_functions/ext_func/
-Beginning at Mon Mar 28 10:34:12 PDT 2011
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/linux/FERRET/external_functions/ext_func
+Beginning at Wed Mar 30 09:24:46 PDT 2011
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3087,6 +3087,16 @@ set mode desperate 1.E+10
 set mode desperate 1234567890123456789
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file g.nc
+Replacing definition of axis YAX_DUP_AXNAMES
+ LISTing to file h.nc
+ LISTing to file gh.nc
+ LISTing to file justh.nc
+ LISTing to file justg.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
@@ -3187,4 +3197,4 @@ gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSO
 gdeactivatews()    3 GKS not in proper state: GKS shall be in the state WSAC
 gactivatews()    6 GKS not in proper state: GKS shall be either in the state WSOP or in the state WSAC
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Mar 28 10:36:02 PDT 2011
+Ended at Wed Mar 30 09:26:42 PDT 2011

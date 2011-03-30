@@ -78,6 +78,9 @@
 * V66  *acm* 3/10  Settings for NetCDF-4 files. 
 * V66  *acm* 3/10  Check: If chunk size given is larger than grid size in that
 *                  direction, then its an error.
+* V67  *acm* 3/11  Fix bug 1750. Revert to older behavior: if grid uses same axis
+*                  name but different contents, write both to file with the name
+*                  Ferret uses internally.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -129,7 +132,7 @@
 
 * local variable declarations:
       LOGICAL TM_ABSTRACT_AXIS, CD_USE_RECDIM, 
-     .        itsa_slab, need_child(4), itsa_strvar
+     .        itsa_slab, need_child(4), itsa_strvar, name_from_grid(4)
       INTEGER TM_LENSTR1, CD_ISIT_RECDIM, CD_WRITE_STRDIM,
      .        dimid(5), iaxis, cdfstat, dims, idim, varid, vartyp,
      .        nvdims, vdims(6), nvatts, nlen, glen, vlen, ax_type,
@@ -256,7 +259,7 @@
                CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, .FALSE.,
      .                   lo(idim), hi(idim), pcdf_child_span, 
      .                   .FALSE., .FALSE., mode_upcase_output, 
-     .                   keepax_flag, status)
+     .                   keepax_flag, name_from_grid(idim), status)
                IF ( status .NE. merr_ok ) GOTO 5900
             ENDIF
  250     CONTINUE
@@ -276,7 +279,7 @@
      .			       idim.EQ.recdim, lo(idim), hi(idim), 
      .			       ax_type, edges_flag, do_bounds, 
      .                         mode_upcase_output, keepax_flag, 
-     .                         status )
+     .                         name_from_grid(idim), status )
               IF ( status .NE. merr_ok ) GOTO 5900
 	    ENDIF
  260     CONTINUE
@@ -301,6 +304,10 @@
       DO 300 idim = 1, 4
          iaxis = grid_line(idim,grid)
          buff = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
+	 IF (name_from_grid(idim)) THEN 
+* using the basic name straight from the grid
+            buff = line_name(iaxis)
+	 ENDIF
          lname = buff
          IF (mode_upcase_output) CALL STR_UPCASE( lname, buff)
 

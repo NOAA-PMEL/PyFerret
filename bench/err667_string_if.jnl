@@ -1,0 +1,13 @@
+! err667_string_if.jnl
+! Previously both of these LIST commands caused a crash.
+! tickets 1764, 1795
+! 
+
+let a = {"x","y"}
+let b = IF a EQ "x" THEN "z" ELSE a
+list b
+
+let strings = {"a","b"}
+list IF strings EQ "a" THEN "" ELSE strings
+
+

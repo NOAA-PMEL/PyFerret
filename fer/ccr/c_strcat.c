@@ -70,7 +70,7 @@ void c_strcat_(in_ptr1, in_ptr2, out_ptr)
       while (*tmp1) {
 	*tmp2++ = *tmp1++;
       }
-      *tmp2 = NULL;
+      *tmp2 = '\0';
     }
   else
     assert(*out_ptr);

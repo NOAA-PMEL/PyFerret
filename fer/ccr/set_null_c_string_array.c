@@ -60,7 +60,7 @@ void set_null_c_string_array_(fer_ptr, nstr)
 
       *each_str_ptr = (char *) malloc(sizeof(char));
       assert(*each_str_ptr);
-      **each_str_ptr = NULL;
+      **each_str_ptr = '\0';
 
       each_str_ptr += 8/sizeof(char**);
     }

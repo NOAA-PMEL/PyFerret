@@ -1622,7 +1622,7 @@ LIST *ncf_get_ds_varlist( int *dset)
   ncdset *nc_ptr=NULL;
   static LIST *list_ptr=NULL;
 
-  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL ) { return; }
+  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL ) { return NULL; }
 
   list_ptr=nc_ptr->dsetvarlist; 
   return list_ptr;

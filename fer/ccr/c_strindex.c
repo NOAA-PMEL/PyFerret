@@ -61,7 +61,7 @@ void c_strindex_(in_ptr1, in_ptr2, out_ptr)
    if ( result) {
      *out_ptr = (result-(*in_ptr1)+1); 
    } else {
-     *out_ptr = NULL;
+     *out_ptr = 0;
    }
 
   

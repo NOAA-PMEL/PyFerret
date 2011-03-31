@@ -57,7 +57,8 @@ void list_free();
 #define LIST_BACK	2
 #define LIST_FRNT	4
 #define LIST_CURR	8
-#define LIST_REAR	18   /* 16 + 2, since REAR implies BACKwards. */
+#define LIST_REAR	18
+/* 16 + 2, since REAR implies BACKwards. */
 #define LIST_SAVE	32
 #define LIST_ALTR	64
 

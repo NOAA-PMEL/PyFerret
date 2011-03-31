@@ -12,6 +12,7 @@ PYTHON_EXE	:= python2.6
 # Flags for specifying the installation directory for "$(PYTHON_EXE) setup.py install"
 # PYTHON_INSTALL_FLAGS	:= --prefix=$(HOME)/.local
 PYTHON_INSTALL_FLAGS	:= --user
+# PYTHON_INSTALL_FLAGS	:= --prefix=$(FER_DIR)
 
 # Java 1.6 jdk home directory ( $(JAVA_HOME)/bin/javac is called to build threddsBrowser.jar ).
 JAVA_HOME	:= /usr/java/latest

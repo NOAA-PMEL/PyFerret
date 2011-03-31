@@ -9,6 +9,10 @@ set pyname = python2.6
 
 # Python directory containing the pyferret package and ferret.py.
 set pysite = ${HOME}/.local/lib/${pyname}/site-packages
+# if ( $?FER_DIR ) then
+#     set pysite = ${FER_DIR}/lib/${pyname}/site-packages
+# endif
+
 
 # Make sure FER_* environment variables are assigned
 if ( ! $?FER_DIR ) then
@@ -37,9 +41,9 @@ else
 endif
 
 if ( $?LD_LIBRARY_PATH ) then
-#   Some libraries (noteably, netcdf and hdf5 libraries) needed by libferret.so
-#   are very likely to be in /usr/local/lib. Note that /usr/local/lib can easily
-#   be part of a path to something else so carefully check for exactly that path
+#   Some libraries are very likely to be in /usr/local/lib
+#   Note that /usr/local/lib can easily be part of a path 
+#   to something else so carefully check for exactly that path
     if ( ( ${LD_LIBRARY_PATH} !~ *:/usr/local/lib:* ) && \
          ( ${LD_LIBRARY_PATH} !~ /usr/local/lib:* ) && \
          ( ${LD_LIBRARY_PATH} !~ *:/usr/local/lib ) && \

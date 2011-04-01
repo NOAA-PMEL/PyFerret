@@ -5,10 +5,12 @@ CANCEL MODE VERIFY
 
 ! 6/24/2004  add new definitions for masked variables, so that
 ! CORREL will be corrected (see the FAQ on computing correleations).
+! 4/2011 compute nm1 based on the number of VALID data.
 
 ! compute n/n-1 factor to get the variances exact
-let l1 = l
-let nm1 = l1[l=@max] - l1[l=@min]
+let l1 = mask_pq
+let nm1 = l1[l=@ngd] - 1
+IF `nm1 eq 0` then exit/script
 let ndnm1 = (nm1+1)/nm1
 
 ! redefine terms with n/n-1 factor 
@@ -21,5 +23,4 @@ let/quiet/title="VARIANCE OF P WHEN Q PRESENT" P_VAR_MASK = P_DSQ_MASK[l=@ave] *
 let/quiet/title="VARIANCE OF Q WHEN P PRESENT" Q_VAR_MASK = Q_DSQ_MASK[l=@ave] * ndnm1
 
 
-SET GRID P
-SET MODE/LAST VERIFY
+SET 

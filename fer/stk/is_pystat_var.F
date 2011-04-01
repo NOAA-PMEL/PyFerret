@@ -90,9 +90,9 @@
               cx_hi_ww(idim,cx) = cx_hi_ww(idim,cx_var)
           ENDIF
           IF ( give_warning ) THEN
-              CALL WARN('Given range exceeds actual for the '
-     .                  // ww_dim_name(idim) // ' axis of ' // 
-     .                  VAR_CODE(cat_pystat_var,pyvar))
+              CALL WARN('The range requested exceeds the range defined'
+     .                  // ' on the ' // ww_dim_name(idim) // 
+     .                  ' axis of ' // VAR_CODE(cat_pystat_var,pyvar))
           ENDIF
  200  CONTINUE
 

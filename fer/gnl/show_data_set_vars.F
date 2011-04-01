@@ -285,7 +285,7 @@
             IF ( pyvar_dset_number(i) .NE. dset ) GOTO 580
             IF ( first_time ) THEN
                 CALL SPLIT_LIST(pttmode_explct, lun,
-     .                          ' PYVARS -----------------------', 31) 
+     .                          ' ------ Python Variables ------', 31) 
                 first_time = .FALSE.
             ENDIF
             CALL SHOW_1_PYVAR(lun, i, full)

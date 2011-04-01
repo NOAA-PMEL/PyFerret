@@ -67,7 +67,7 @@ special_code: update
 
 .PHONY : ppl_libraries
 ppl_libraries:
-	$(MAKE) -C ../ppl all
+	$(MAKE) -C ../ppl
 
 
 .PHONY : fmt_libraries
@@ -78,7 +78,9 @@ fmt_libraries:
 .PHONY : fer_libraries
 fer_libraries: update
 	for i in $(LIBS) ; do \
-            $(MAKE) -C $$i ; \
+            if ! $(MAKE) -C $$i ; then \
+                exit 1 ; \
+            fi ; \
         done
 
 

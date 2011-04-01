@@ -76,6 +76,7 @@
 /*                    reason for this as these variables are always single precision.*/
 /* *acm* 5/09 *acm*	  Fix bug 1664. For user variables, varid matches the uvar from Ferret. */
 /*                    therefore it may be larger than nc_ptr->nvars */
+/* *acm* 3/11 *acm*	  Fix bug 1825. Routine ncf_get_var_seq no longer called */
 
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
@@ -125,7 +126,6 @@ int  FORTRAN(ncf_get_var_name)( int *, int *, char *);
 int  FORTRAN(ncf_get_var_id)( int *, int*, char *); 
 int  FORTRAN(ncf_get_var_id_case)( int *, int*, char *); 
 int  FORTRAN(ncf_get_var_axflag)( int *, int *, int *, int *); 
-int  FORTRAN(ncf_get_var_seq)( int *, char *); 
 int  FORTRAN(ncf_get_var_attr_name) (int *, int *, int *, int *, char*);
 int  FORTRAN(ncf_get_var_attr_id) (int *, int *, char* , int*);
 int  FORTRAN(ncf_get_var_attr_id_case) (int *, int *, char* , int*);
@@ -607,60 +607,6 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
   *iflag = var_ptr->all_outflag;
 
   return FERR_OK;
-}
-
-
-/* ----
- * Find a variable in a dataset based on the dataset integer ID and 
- * variable name. Return the variable sequence number: variable count 
- * without the coordinate variables.
- */
- int FORTRAN(ncf_get_var_seq) (int *dset, char string[])
-
-{
-  ncdset *nc_ptr=NULL;
-  ncvar *var_ptr=NULL;
-  int i;
-  int status=LIST_OK;
-  int return_val;
-  LIST *varlist;
-  LIST *dummy;
-  int seq;
-  int ivar;
-
-  return_val = ATOM_NOT_FOUND;  
-  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL )return return_val;
-
-   /*
-   * Get the list of variables. Make sure varname is in the dataset.
-   */
-  varlist = ncf_get_ds_varlist(dset);
-  status = list_traverse(varlist, string, NCF_ListTraverse_FoundVarName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) {
-    return_val = ATOM_NOT_FOUND;
-    return return_val;
-  }
-  
-  var_ptr=(ncvar *)list_curr(varlist); 
-  ivar = var_ptr->varid;
-
-  /* 
-   *Move through all the variables up to varid, counting non-coordinate ones.
-   */
-
-  dummy = list_mvfront(varlist);
-  seq = 0;
-  var_ptr=(ncvar *)list_front(varlist); 
-  for (i = 0; i < ivar; i++)
-  { if (var_ptr->is_axis != TRUE) 
-	    {  seq = seq + 1;
-        }
-     dummy = list_mvnext(varlist);
-     var_ptr=(ncvar *)list_curr(varlist);  
-  }
-
-  free(dummy);
-  return seq;
 }
 
 /* ----

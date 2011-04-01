@@ -166,6 +166,7 @@
 *                  Implemented so far only for SHOW AXIS, SHOW DATA, SHOW VAR, SHOW GRID,
 *                  to be implemented for all SHOW subcommands in the future
 * V67   *acm* 3/11 - Fix for ticket 1819, size of arg for MODE DESPERATE
+* V67   *acm* 3/11 - Fix for ticket 1825, call cd_get_var_id instead of cd_get_var_seq
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -262,7 +263,8 @@
      .          llen, loc, cat, var, attoutflag, all_outflag, dot, 
      .          vseq, attid, save_deleted_list_result(max_uvar),
      .          cache_size, cache_nelems, cache_preemption,
-     .          sho_file, idim, ndims, nvars, ngatts, recdim, npts
+     .          sho_file, idim, ndims, nvars, ngatts, recdim, npts,
+     .          var_num, vartype, outflag
 	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
      .		default*10, show_str*2048, arg*24, name*32, arg30*30
@@ -914,9 +916,18 @@ c           ENDIF
                        ELSE
                          len = INDEX(arg,'[') - 1
                          IF (INDEX(arg,'.') .NE. 0) GOTO 5100
-                         CALL CD_GET_VAR_SEQ( dset, arg(:len), varid )
-                         IF (varid .GT. 0) CALL SHOW_1_DSVAR (
-     .                         show_lun, dset, arg, varid, show_str)
+			 CALL CD_GET_VAR_ID (dset, arg(:len), varid, status)
+                         IF (status .EQ. ferr_ok) THEN
+			    var_num = varid
+			    DO 1010 ivar = 1, varid
+			      CALL CD_GET_VAR_INFO (dset, ivar, arg(:len), 
+     .                           vartype, nvdims, vdims, nvatts, coordvar, 
+     .                           outflag, cdfstat)
+                              IF (coordvar) var_num = var_num - 1
+ 1010			    CONTINUE
+			    CALL SHOW_1_DSVAR (
+     .                         show_lun, dset, arg, var_num, show_str)
+                         ENDIF
                        ENDIF
 
                     ENDIF
@@ -928,8 +939,17 @@ c           ENDIF
 *  if not a user var, see if its a dataset variable from a nc file.
                        len = TM_LENSTR1(arg)
                        IF (INDEX(arg,'.') .NE. 0) GOTO 5100
-                       CALL cd_get_var_seq( rqst_dset, arg(:len), varid )
-                       IF (varid .GT. 0) THEN
+                       CALL CD_GET_VAR_ID (dset, arg(:len), varid, status)
+                       IF (status .EQ. ferr_ok)  THEN
+			    var_num = varid
+			    DO 1011 ivar = 1, varid
+			      CALL CD_GET_VAR_INFO (dset, ivar, arg(:len), 
+     .                           vartype, nvdims, vdims, nvatts, coordvar, 
+     .                           outflag, cdfstat)
+                              IF (coordvar) var_num = var_num - 1
+ 1011			    CONTINUE
+			    CALL SHOW_1_DSVAR (
+     .                         show_lun, dset, arg, var_num, show_str)
                           CALL SHOW_1_DSVAR( show_lun, 
      .                      rqst_dset, arg, varid, show_str)
                        ELSE 

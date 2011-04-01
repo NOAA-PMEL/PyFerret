@@ -25,3 +25,6 @@ GO err667_dup_axnames
 
 GO bn_reset
 GO err667_string_if
+
+GO bn_reset
+GO err667_show_var_twice

@@ -27,6 +27,9 @@
 # v6.1 release 3/06 *acm* - Remove (beta) as DEBUG_TITLE for official release
 #  v6.6 07/10 *kms* - added threddsBrowser to DIRS (for clean)
 #                     created threddsBrowser target and added it to all
+# v6.7 4/11 *kms* - renamed old "all" target to "build" and made the "all"
+#                   target go to the desired default target ncdf4;
+#                   cleaned-up tages
 # 
 # include platform specific macro definitions
 #
@@ -84,31 +87,26 @@ EF_CMNS = common/EF_Util.cmn common/EF_Util.parm common/EF_mem_subsc.cmn
 # Targets
 #
 
-all:	fmt_libraries fer_libraries ppl_libraries special_code ferret threddsBrowser
+all: ncdf4
+
+build: update fmt_libraries fer_libraries ppl_libraries special_code ferret threddsBrowser
+
+ncdf4:	.FRC
+	mkdir -p ../lib
+	$(MAKE) "GUI_FAKES=special/gui_fakes.o" build
 
 # Dont seem to have all the static libraries we need for this.
 ncdf4_static:	.FRC
-	(cd ccr; $(CC) -c $(CFLAGS) gui_init.c)
-	$(MAKE) update
-	$(MAKE) "CFLAGS = $(CFLAGS) " "DEBUG="\
-                "LDFLAGS= $(LDFLAGS) -static" \
-		"FFLAGS = $(FFLAGS)"  \
-		all
-
-ncdf4:	.FRC
-	(cd ccr; $(CC) -c $(CFLAGS) gui_init.c)
-	$(MAKE) update
-	$(MAKE) "FFLAGS = $(FFLAGS) "  \
-		"CFLAGS = $(CFLAGS) " \
-		"GUI_FAKES=special/gui_fakes.o" all
+	mkdir -p ../lib
+	$(MAKE) "LDFLAGS= $(LDFLAGS) -static" \
+		"GUI_FAKES=special/gui_fakes.o" build
 
 # Need -O0 (no optimization) at end of CFLAGS/FFLAGS to override previous optimization flags
 debug:	.FRC
-	(cd ccr; $(CC) -c -g $(CFLAGS) gui_init.c)
-	$(MAKE) update
-	$(MAKE) "DEBUG=-g" "FFLAGS = $(FFLAGS) -Ddebug -O0 -g"  \
+	mkdir -p ../lib
+	$(MAKE) "FFLAGS = $(FFLAGS) -Ddebug -O0 -g"  \
 		"CFLAGS = $(CFLAGS) -O0 -g" \
-		"GUI_FAKES=special/gui_fakes.o" all
+		"GUI_FAKES=special/gui_fakes.o" build
 
 
 ferret:	
@@ -154,52 +152,47 @@ libraries: ppl_libraries fer_libraries
 
 
 fmt_libraries: .FRC
-	(cd ../fmt/src ; \
-	$(MAKE) "CC=$(CC)" "CFLAGS=$(DEBUG) $(CFLAGS)" \
-		"FFLAGS=$(DEBUG) $(FFLAGS)");
+	$(MAKE) -C ../fmt/src
 
 fer_libraries: .FRC
 	for i in $(LIBS) ; \
         do \
-        (cd $$i ; echo "making" $@ "in $$i..."; \
-        $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(DEBUG) $(CFLAGS) $(GKS_INCLUDES)" \
-                "FFLAGS=$(DEBUG) $(FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)"); \
+            if ! $(MAKE) -C $$i ; then \
+                exit 1 ; \
+            fi ; \
         done
 
 
 ppl_libraries: .FRC
-	(cd ../ppl ; $(MAKE) "PPLUS_FFLAGS=$(DEBUG) $(PPLUS_FFLAGS) $(GKS_INCLUDES)" \
-                              "CFLAGS=$(DEBUG) $(CFLAGS) $(GKS_INCLUDES)" all);
-
+	$(MAKE) -C ../ppl all
 
 special_code: .FRC
-	(cd special ; $(MAKE) "FFLAGS=$(DEBUG) $(FFLAGS)" all);
+	$(MAKE) -C special all
 
 threddsBrowser: .FRC
-	(cd threddsBrowser ; $(MAKE) all)
+	$(MAKE) -C threddsBrowser all
 
 clean: fmt_clean ppl_clean fer_clean 
-	(cd ../lib ; rm -f *.a *.so);
+	rm -f ../lib/*.a ../lib/*.so
+	rm -f special/xmake_date_data.F special/xplatform_type_data.F special/xrevision_type_data.F
 
 ppl_clean: .FRC
-	(cd ../ppl ; $(MAKE) clean);
+	$(MAKE) -C ../ppl clean
 
 fer_clean: .FRC
 	for i in $(CLEANDIRS) ; \
         do \
-        (cd $$i ; echo "making" $@ "in $$i..."; rm -f *.f; $(MAKE) clean); \
+            $(MAKE) -C $$i clean ; \
         done
 
 fmt_clean: .FRC
-	(cd ../fmt/src; rm -f *.[fo])
+	$(MAKE) -C ../fmt/src clean
 
 depend: .FRC
-	(cd ../ppl ; $(MAKE) depend);
+	$(MAKE) -C ../ppl depend
 	for i in $(DEPDIRS) ; \
         do \
-        (cd $$i ; echo "making" $@ "in $$i..."; \
-        $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(CFLAGS)" \
-                "FFLAGS=$(FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)" $@); \
+            $(MAKE) -C $$i $@ ; \
         done
 
 

@@ -46,7 +46,7 @@ ferret_cmn:
 #	cc -g -c perl_read.c `perl -MExtUtils::Embed -e ccopts`
 
 clean:
-	rm -f core *.o *.a *.f
+	rm -f core *.o *.a *.f $(LIB)
 
 #
 # End of Makefile

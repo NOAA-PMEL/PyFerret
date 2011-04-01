@@ -22,15 +22,6 @@
 # 08/19/97 - *kob* - added "-Dreclen_in_bytes" to aix flags
 
 
-.c.o:
-	($(CC) $(CFLAGS) -c $(DEBUG) $(<F))
-
-.F.o: 
-	($(FC) -c $(DEBUG) $(FFLAGS) $(<F))
-
-.f.o: 
-	($(FC) -c $(DEBUG) $(FFLAGS) $(<F))
-
 include ./SOURCE_FILES
 include ../../fer/platform_specific_flags.mk.$(HOSTTYPE)
 
@@ -38,46 +29,15 @@ OBJS= $(SRCS_F:.F=.o) $(SRCS_C:.c=.o)
 
 LIBLOC=../../lib
 $(LIBLOC)/tmap_lib.a:	$(OBJS)
-		ar r $(LIBLOC)/tmap_lib.a $(OBJS)
-		$(RANLIB) $(LIBLOC)/tmap_lib.a
-
-debug:  
-	${MAKE} clean
-	${MAKE} DEBUG=-g $(LIBLOC)/tmap_deblib.a
-
-$(LIBLOC)/tmap_deblib.a:	$(OBJS)
-		- mv $(LIBLOC)/tmap_debuglib.a $(LIBLOC)/tmap_debuglib.a.pre_`date +%m%d%y`
-		ar r $(LIBLOC)/tmap_debuglib.a $(OBJS)
-		$(RANLIB) $(LIBLOC)/tmap_debuglib.a
+	ar r $(LIBLOC)/tmap_lib.a $(OBJS)
+	$(RANLIB) $(LIBLOC)/tmap_lib.a
 
 links:
-	/bin/rm -f tmap_format
-	ln -s ../cmn          tmap_format
+	rm -f tmap_format
+	ln -s ../cmn tmap_format
 
 
 
 clean:
-	/bin/rm *.o *.f
-
-
-
-#comp:
-#	$(F77) $(DEBUG) $(FFLAGS) *.F
-#	$(CC) $(CCFLAGS) $(DEBUG) *.c
-
-
-comp_nocpp:
-	for file in ${FFILES} ; \
-	do \
-		touch `echo $${file} | sed -e 's/.F/.f/g'`; \
-		rm `echo $${file} | sed -e 's/.F/.f/g'`; \
-                /lib/cpp ${CPPFLAGS} -traditional $${file} > `echo $${file} | sed -e 's/.F/.f/g'`; \
-                ${FC} $(FFLAGS) $(DEBUG) `echo $${file} | sed -e 's/.F/.f/g'`; \
-	done
-	$(CC) $(CCFLAGS) $(DEBUG) *.c
-
-
-
-#.F.o:
-#	$(FC) $(DEBUG) $(FFLAGS) -c $<
+	rm -f *.o *.f $(LIBLOC)/tmap_lib.a
 

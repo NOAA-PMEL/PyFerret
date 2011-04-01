@@ -59,7 +59,7 @@ depend:
  
 
 clean:
-	rm -f core *.o *.a
+	rm -f core *.o *.a $(LIB)
 
 
 #

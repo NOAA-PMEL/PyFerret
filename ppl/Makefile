@@ -38,33 +38,31 @@ DEPDIRS = addsxgks modsxgks pplp_only
 all:
 	for i in $(DIRS) ; \
         do \
-        (cd $$i ; echo "making" $@ "in $$i..."; \
-        $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(CFLAGS)" \
-                "FFLAGS=$(PPLUS_FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)"); \
+            if ! $(MAKE) -C $$i ; then \
+                exit 1 ; \
+            fi ; \
         done
 
 
 libraries:
 	for i in $(LIBS) ; \
         do \
-        (cd $$i ; echo "making" $@ "in $$i..."; \
-        $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(CFLAGS)" \
-                "FFLAGS=$(PPLUS_FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)"); \
+            if ! $(MAKE) -C $$i ; then \
+                exit 1 ; \
+            fi ; \
         done
 
 
 clean:
 	for i in $(CLEANDIRS) ; \
         do \
-        (cd $$i ; echo "making" $@ "in $$i..."; rm -f *.f; $(MAKE) clean); \
+            $(MAKE) -C $$i clean ; \
         done
 
 depend:
 	for i in $(DEPDIRS) ; \
         do \
-        (cd $$i ; echo "making" $@ "in $$i..."; \
-        $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(CFLAGS)" \
-                "FFLAGS=$(PPLUS_FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)" $@); \
+            $(MAKE) -C $$i depend ; \
         done
 
 

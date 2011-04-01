@@ -50,7 +50,6 @@
 	CPP_FLAGS = \
 	$(INCLUDES) \
 	-O \
-	-P \
 	-fPIC \
 	-Dunix \
 	-Dgfortran \
@@ -164,10 +163,13 @@
 
 	TERMCAPLIB = -lncurses
 
-# .IGNORE:	 
- 	 
- .F.o:	 
-	rm -f $*.f	 
+# cancel the default rule for .f -> .o to prevent objects from being built
+# from .f files that are out-of-date with respect to their corresponding .F file
+%.o : %.f
+
+# use cpp to preprocess the .F files to .f files and then compile the .f files
+%.o : %.F
+	rm -f $*.f
 	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de /de /g' | sed -e 's/de /de /g' > $*.f	 
 	$(F77) $(FFLAGS) $*.f	 
 

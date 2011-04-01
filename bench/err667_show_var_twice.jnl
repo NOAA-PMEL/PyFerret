@@ -1,0 +1,13 @@
+ ! err667_show_var_twice.jnl
+ ! ticket 1825
+
+use coads_climatology
+sh var sst[d=1]
+sh var sst[d=1]
+
+!should return nothing
+sh var airt
+
+let/d=1 airt2 = airt*2
+sh var airt2[d=1]
+sh var airt2[d=1]

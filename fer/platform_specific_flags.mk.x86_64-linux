@@ -17,7 +17,8 @@
 			  -I/usr/include/X11 \
 			  -I../common \
 			  -I../../fmt/cmn \
-			  -I../../ppl/include
+			  -I../../ppl/include \
+			  $(GKS_INCLUDES)
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			   -I../include -I../../fmt/cmn \

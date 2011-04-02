@@ -41,9 +41,6 @@
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <wchar.h>
-#include <X11/Intrinsic.h>
-#include <X11/StringDefs.h>
-#include <X11/Xlib.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "ferret.h"
@@ -55,6 +52,9 @@
 #include "ferret_shared_buffer.h"
 #include "ferret.h"
 #ifdef LINK_GUI_AS_MAIN
+#include <X11/Intrinsic.h>
+#include <X11/StringDefs.h>
+#include <X11/Xlib.h>
 #include "ferret_structures.h"
 #include "JC_Utility.h" /* for windows[] and window_count in the SGI_POPUPS section */
 #ifndef DESIGN_TIME

@@ -1,12 +1,13 @@
+#include <wchar.h>
 #ifdef USE_PERL
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
 #include <EXTERN.h>
 #include <perl.h>
 #endif
 #include <assert.h>
 #include "binaryRead.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 #ifdef USE_PERL
 static char Errbuf[8192];

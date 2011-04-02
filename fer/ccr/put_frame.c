@@ -68,6 +68,7 @@ and optionally (non-ANSI cc compilers) with    -DNO_CC_PROTOTYPES
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdio.h>
+#include <string.h>
 #include "ferret.h"
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES

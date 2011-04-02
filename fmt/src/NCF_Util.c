@@ -332,7 +332,7 @@ int  FORTRAN(ncf_inq_var_att)( int *dset, int *varid, int *attid, char attname[]
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
   if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
@@ -632,7 +632,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
   if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
@@ -679,7 +679,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
   if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
@@ -727,7 +727,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
   if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
@@ -775,7 +775,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
   if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
@@ -1568,7 +1568,7 @@ LIST *ncf_get_ds_varlist( int *dset)
   ncdset *nc_ptr=NULL;
   static LIST *list_ptr=NULL;
 
-  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL ) { return; }
+  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL ) { return NULL; }
 
   list_ptr=nc_ptr->dsetvarlist; 
   return list_ptr;
@@ -1593,7 +1593,7 @@ LIST *ncf_get_ds_var_attlist( int *dset, int *varid)
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return NULL;
 
   var_ptr=(ncvar *)list_curr(varlist); 
 
@@ -1985,7 +1985,7 @@ int  FORTRAN(ncf_add_var_num_att)( int *dset, int *varid, char attname[], int *a
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
   if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
@@ -2057,7 +2057,7 @@ int  FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[], int
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
   if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
@@ -2137,7 +2137,7 @@ int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *a
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
   
@@ -2222,7 +2222,7 @@ int  FORTRAN(ncf_rename_var)( int *dset, int *varid, char newvarname[])
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
 
@@ -2254,7 +2254,7 @@ int  FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *atty
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
   if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
@@ -2352,7 +2352,7 @@ int  FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *a
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
   if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
@@ -2453,7 +2453,7 @@ int  FORTRAN(ncf_delete_var_att)( int *dset, int *varid, char attname[])
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
   if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
@@ -2544,7 +2544,7 @@ int  FORTRAN(ncf_set_att_flag)( int *dset, int *varid, char attname[], int *atto
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
   if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
@@ -2606,7 +2606,7 @@ int  FORTRAN(ncf_set_var_out_flag)( int *dset, int *varid, int *all_outflag)
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
 
@@ -2761,7 +2761,7 @@ int  FORTRAN(ncf_set_var_outtype)( int *dset, int *varid, int *outtype)
   varlist = ncf_get_ds_varlist(dset);
 
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
 
@@ -2794,7 +2794,7 @@ int  FORTRAN(ncf_set_axdir)( int *dset, int *varid, int *axdir)
 
   return_val = ATOM_NOT_FOUND;
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
 
@@ -2837,7 +2837,7 @@ int  FORTRAN(ncf_transfer_att)(int *dset1, int *varid1, int *iatt, int *dset2, i
   varlist1 = ncf_get_ds_varlist(dset1);
 
   status = list_traverse(varlist1, varid1, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr1=(ncvar *)list_curr(varlist1); 
   if (var_ptr1->natts < 1) return ATOM_NOT_FOUND;
@@ -2865,7 +2865,7 @@ int  FORTRAN(ncf_transfer_att)(int *dset1, int *varid1, int *iatt, int *dset2, i
   varlist2 = ncf_get_ds_varlist(dset2);
 
   status = list_traverse(varlist2, varid2, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-  if ( status != LIST_OK ) return;
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr2=(ncvar *)list_curr(varlist2); 
   

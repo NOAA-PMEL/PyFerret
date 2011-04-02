@@ -55,7 +55,7 @@ void set_null_c_string_(out_ptr)
 
   *out_ptr = (char *) malloc(sizeof(char));
   assert(*out_ptr);
-  **out_ptr = NULL;
+  **out_ptr = '\0';
       
 
    return;

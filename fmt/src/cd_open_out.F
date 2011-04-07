@@ -77,7 +77,7 @@
 
 * local variable declarations:
       LOGICAL file_exists, do_append
-      INTEGER cstat, clobber_mode, cdfstat, cdftype
+      INTEGER cstat, clobber_mode, cdfstat, cdftype, mode_flag
 
 * initialize netCDF
 * does it exist already ?
@@ -107,11 +107,14 @@
          IF (netcdf4_type .EQ. 3) cdftype = NF_CLASSIC_MODEL
          IF (netcdf4_type .EQ. 4) cdftype = NF_NETCDF4
          IF (netcdf4_type .EQ. 6) cdftype = NF_64BIT_OFFSET
+	 
+         mode_flag = IOR(nf_netcdf4, cdftype )
+         mode_flag = IOR(mode_flag, clobber_mode) 
 
 #ifdef usingDODSf2cUnderscore
-         cdfstat = NF_CREATE_(cdfname, OR(clobber_mode,cdftype), cdfid)
+         cdfstat = NF_CREATE_(cdfname, mode_flag, cdfid)
 #else
-         cdfstat = NF_CREATE(cdfname, OR(clobber_mode,cdftype), cdfid)
+         cdfstat = NF_CREATE(cdfname, mode_flag, cdfid)
 #endif
 
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100

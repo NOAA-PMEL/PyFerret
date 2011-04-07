@@ -72,7 +72,7 @@
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 2
-      CALL ef_set_arg_name(id, arg, 'id')
+      CALL ef_set_arg_name(id, arg, 'name')
       CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_type (id, arg, STRING_ARG)
       CALL ef_set_arg_desc(id, arg, 'Cruise name (string)')

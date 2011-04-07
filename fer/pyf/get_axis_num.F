@@ -67,7 +67,7 @@
       LOGICAL TM_LEGAL_NAME, CHECK_LINE_SUBSET
 
 *     Local arguments
-      CHARACTER*(64) capaxname
+      CHARACTER*(64) capaxname, uniqaxname
       INTEGER        axucode, k, sts, first_pt, j
       REAL*8         delta, eps, value, modulen
       LOGICAL        reg, modu
@@ -156,21 +156,28 @@
   110 CONTINUE
 
 *     If we got here, there is no line containing the provided info.
-*     So create a dynamic line.
-  150 CALL TM_ALLO_DYN_LINE(k, sts)
+      IF ( capaxname .NE. '' ) THEN
+*         If a name is given, make sure it is unique, or make it unique.
+*         Do this first so the newly created dynamic line will not interfere.
+          CALL TM_NEW_LINE_NAME(capaxname, uniqaxname)
+      ENDIF
+*     Now create the dynamic line
+      CALL TM_ALLO_DYN_LINE(k, sts)
       IF ( sts .NE. merr_ok ) THEN
           errmsg = 'No space left for a new dynamic line'
           lenerrmsg = TM_LENSTR(errmsg)
           RETURN
       ENDIF
+*     Assign it a unique name.
       IF ( capaxname .EQ. '' ) THEN
           WRITE(line_name(k), 160) (k - max_lines)
   160     FORMAT('(AX',I3.3,')')
           line_name_orig(k) = line_name(k)
       ELSE
-          line_name(k)      = capaxname
+          line_name(k)      = uniqaxname
           line_name_orig(k) = axisname
       ENDIF
+*     Assign the rest of the line info
       line_units(k)         = axisunit
       line_unit_code(k)     = axucode
       line_t0(k)            = char_init20

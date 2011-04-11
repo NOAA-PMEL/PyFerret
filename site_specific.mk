@@ -23,4 +23,7 @@ HDF5_DIR	:= /usr/local/hdf5_185p1
 # Installation directory for NetCDF (contains include and lib subdirectories)
 NETCDF_DIR	:= /usr/local/netcdf_411
 
+# Installation directory for readline v6.x (contains include and lib subdirectories)
+READLINE_DIR	:= /usr/local/readline_62
+
 #

@@ -21,6 +21,7 @@ debug : debugbuild install
 .PHONY : optimizedbuild
 optimizedbuild :
 	mkdir -p $(DIR_PREFIX)/lib
+	cp $(READLINE_DIR)/lib/libreadline.a $(READLINE_DIR)/lib/libhistory.a $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
 	# $(MAKE) -C $(DIR_PREFIX)/external_functions
 	@echo "***** NOTE: external function .so files not built *****"
@@ -29,6 +30,7 @@ optimizedbuild :
 .PHONY : debugbuild
 debugbuild : 
 	mkdir -p $(DIR_PREFIX)/lib
+	cp $(READLINE_DIR)/lib/libreadline.a $(READLINE_DIR)/lib/libhistory.a $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
 	# $(MAKE) -C $(DIR_PREFIX)/external_functions debug
 	@echo "***** NOTE: external function .so files not built *****"

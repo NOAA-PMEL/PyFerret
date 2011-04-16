@@ -34,9 +34,9 @@ lib_list.extend(fer_lib_list)
 lib_list.extend(fer_lib_list)
 lib_list.extend(fer_lib_list)
 lib_list.append("python%i.%i" % sys.version_info[:2])
-lib_list.extend( ( "netcdf", "hdf5_hl", "hdf5", "readline",
-                   "history", "ncurses", "X11", "curl", "z",
-                   "dl", "gfortran", "m", ) )
+lib_list.extend( ( "netcdff", "netcdf", "hdf5_hl", "hdf5",
+                   "readline", "history", "ncurses", "X11",
+                   "curl", "z", "dl", "gfortran", "m", ) )
 
 # Get the list of C source files in pyfermod
 src_list = [ ]
@@ -51,7 +51,7 @@ for srcname in os.listdir(dirname):
     if srcname[-2:] == ".o":
         addnobjs_list.append(os.path.join(dirname, srcname))
 dirname = os.path.join("fer", "special")
-for srcname in ( "fakes3.o", "ferret_dispatch.o", "ferret_query_f.o", 
+for srcname in ( "fakes3.o", "ferret_dispatch.o", "ferret_query_f.o",
                  "gui_fakes.o", "linux_routines.o", ):
     addnobjs_list.append(os.path.join(dirname, srcname))
 for srcname in os.listdir(dirname):
@@ -59,7 +59,7 @@ for srcname in os.listdir(dirname):
         addnobjs_list.append(os.path.join(dirname, srcname))
 
 # Create the pyferret._pyferret Extension
-ext_mods = [ Extension("pyferret._pyferret", include_dirs = incdir_list, 
+ext_mods = [ Extension("pyferret._pyferret", include_dirs = incdir_list,
                                              sources = src_list,
                                              extra_objects = addnobjs_list,
                                              library_dirs = libdir_list,

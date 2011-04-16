@@ -25,10 +25,10 @@ JAVA_HOME	:= /usr/java/latest
 # JAVA_HOME	:= /usr/lib/jvm/java-1.6.0-sun
 
 ## Installation directory for HDF5 (contains include and lib subdirectories)
-HDF5_DIR	:= /usr/local/hdf5_185p1
+HDF5_DIR	:= /usr/local/hdf5_186
 
 ## Installation directory for NetCDF (contains include and lib subdirectories)
-NETCDF_DIR	:= /usr/local/netcdf_411
+NETCDF_DIR	:= /usr/local/netcdf_412
 
 ## Installation directory for readline v6.x (contains include and lib subdirectories)
 READLINE_DIR	:= /usr/local/readline_62

@@ -30,11 +30,11 @@ GOB_OBJS = ocn_obs.o
 #
 
 .c.so:
-	cc ${GOBFLAGS} ${CFLAGS} $<
+	cc ${CFLAGS} -c $<
 	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so 
 
 .F.so:
-	$(F77) $(FFLAGS) $<
+	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so 
 
 #
@@ -42,9 +42,6 @@ GOB_OBJS = ocn_obs.o
 #
 
 all:	ocn_obs.o godae_obs.o godae_obs.so
-
-debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

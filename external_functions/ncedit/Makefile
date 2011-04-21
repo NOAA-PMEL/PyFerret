@@ -32,20 +32,14 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 #
 
 .F.so:
-	$(F77) $(FFLAGS) $<
+	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
-
-.f.o:
-	$(F77) $(FFLAGS) $<
 
 #
 # Targets
 #
 
 all:	nco.so nco_attr.so 
-
-debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

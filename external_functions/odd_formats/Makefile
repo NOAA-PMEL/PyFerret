@@ -28,10 +28,8 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 # Rules
 #
 
-.F.o:
-	$(F77) $(FFLAGS) -u -c $<
-
-.o.so:
+.F.so:
+	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so
 
 #
@@ -39,9 +37,6 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 #
 
 all:	index_to_grid.so
-
-debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) -g -C -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
 
 install:
 	cp *.so $(MY_LOCAL_EXTFCNS)

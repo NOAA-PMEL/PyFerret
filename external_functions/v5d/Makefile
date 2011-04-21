@@ -33,10 +33,10 @@ V5D_OBJS = binio.o v5d.o
 #
 
 .c.o:
-	cc ${V5DFLAGS} ${CFLAGS} $<
+	$(CC) ${V5DFLAGS} ${CFLAGS} -c $<
 
 .F.so:
-	$(F77) $(FFLAGS) $<
+	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(V5D_OBJS) $*.o -o $*.so 
 
 #
@@ -44,9 +44,6 @@ V5D_OBJS = binio.o v5d.o
 #
 
 all:	binio.o v5d.o writev5d.so
-
-debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

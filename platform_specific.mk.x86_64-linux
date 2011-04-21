@@ -66,7 +66,7 @@
 
 # LD and LD_DYN_FLAGS only used for generating external function shared-object libraries
 	LD		:= $(shell which gfortran)
-	LD_DYN_FLAGS	:= -shared -rdynamic
+	LD_DYN_FLAGS	:= -shared -rdynamic 
 
 # cancel the default rule for .f -> .o to prevent objects from being built
 # from .f files that are out-of-date with respect to their corresponding .F file

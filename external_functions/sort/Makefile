@@ -32,27 +32,14 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 #
 
 .F.so:
-	$(F77) $(FFLAGS) $<
+	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
-
-.c.o:
-	cc ${CFLAGS} $<
-
-.f.o:
-	$(F77) $(FFLAGS) $<
 
 #
 # Targets
 #
-#all:    bin_index_wt.so 
 
-# all:    is_element_of.so is_element_of_str.so element_index.so element_index_str.so sampleyz.so samplexz.so samplexy_closest.so samplexy_curv.so
-
-# all:    is_element_of.so samplexy_curv_avg.so samplexy_curv_nrst.so
 all:    sorti_str.so bin_index_wt.so samplei_multi.so samplej_multi.so samplek_multi.so samplel_multi.so is_element_of_str_nocase.so 
-
-debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

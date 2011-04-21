@@ -32,14 +32,8 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 #
 
 .F.so:
-	$(F77) $(FFLAGS) $<
+	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
-
-.c.o:
-	cc ${CFLAGS} $<
-
-.f.o:
-	$(F77) $(FFLAGS) $<
 
 #
 # Targets
@@ -47,9 +41,6 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 
 all:	student_t_cutoff.so minmax.so
   
-debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
-
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 

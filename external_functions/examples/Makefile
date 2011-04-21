@@ -46,9 +46,6 @@ new:	pass_thru_string.so pick_a_string.so strings_as_args.so stringlengths.so
  
 extra:	custom.so extend.so status.so strings.so times_table.so
 
-debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) -g" "CFLAGS = $(CFLAGS) -g"  all
-
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 

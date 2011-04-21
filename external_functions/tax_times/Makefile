@@ -36,16 +36,11 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 # Targets
 #
 
-#all:	tax
-
 all:	tax_index_datestring.so
 
 tax:    tax_year.so tax_month.so tax_day.so tax_units.so \
 	tax_dayfrac.so tax_jday.so tax_jday1900.so tax_yearfrac.so\
 	tax_datestring.so
-
-debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

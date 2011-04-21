@@ -31,10 +31,10 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 #
 
 .F.o: 
-	$(F77) $(FFLAGS) -g -c $<
+	$(F77) $(FFLAGS) -c $<
 
 .F.so:
-	$(F77) $(FFLAGS)  $<
+	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $*.o minminmax.o maxminmax.o -o $*.so
 
 #
@@ -43,9 +43,6 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 
 # all:    minminmax.o maxminmax.o findhi.so findlo.so
 all:    
-
-debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

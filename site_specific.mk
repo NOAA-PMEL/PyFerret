@@ -2,8 +2,8 @@
 
 ## Full path name of the directory containing this file (the ferret root directory).
 ## Do not use $(shell pwd) since this is included in Makefiles in other directories.
-# DIR_PREFIX	:= $(HOME)/pyferret_32dev
-DIR_PREFIX	:= $(HOME)/pyferret_64dev
+DIR_PREFIX	:= $(HOME)/pyferret_32dev
+# DIR_PREFIX	:= $(HOME)/pyferret_64dev
 
 ## Python 2.x executable to invoke for build and install.
 # PYTHON_EXE	:= python2.4

@@ -33,11 +33,11 @@ DAT_OBJS = date_decode.o time_decode.o secs_to_ymdhms.o
 #
 
 .c.so:
-	cc ${DATFLAGS} ${CFLAGS} $<
+	cc ${CFLAGS} -c $<
 	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
 
 .F.so:
-	$(F77) $(FFLAGS) $<
+	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
 
 #
@@ -47,9 +47,6 @@ DAT_OBJS = date_decode.o time_decode.o secs_to_ymdhms.o
 # all:	date_decode.o time_decode.o secs_to_ymdhms.o date1900.o date1900.so minutes24.o minutes24.so days1900toymdhms.o days1900toymdhms.so
 
 all:	
-
-debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)"  all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

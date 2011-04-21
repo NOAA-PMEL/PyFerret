@@ -25,12 +25,8 @@ DAT_OBJS = flag2ddups.o
 # Rules
 #
 
-.c.so:
-	cc ${DATFLAGS} ${CFLAGS} $<
-	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
-
 .F.so:
-	$(F77) $(FFLAGS) $<
+	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
 
 #
@@ -39,9 +35,6 @@ DAT_OBJS = flag2ddups.o
 
 # all:	$(DAT_OBJS) scat2ddups.o scat2ddups.so
 all:	
-
-debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)"  all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

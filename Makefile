@@ -23,8 +23,7 @@ optimizedbuild :
 	mkdir -p $(DIR_PREFIX)/lib
 	cp $(READLINE_DIR)/lib/libreadline.a $(READLINE_DIR)/lib/libhistory.a $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
-	# $(MAKE) -C $(DIR_PREFIX)/external_functions
-	@echo "***** NOTE: external function .so files not built *****"
+	$(MAKE) -C $(DIR_PREFIX)/external_functions optimized
 	$(MAKE) pymod
 
 .PHONY : debugbuild
@@ -32,8 +31,7 @@ debugbuild :
 	mkdir -p $(DIR_PREFIX)/lib
 	cp $(READLINE_DIR)/lib/libreadline.a $(READLINE_DIR)/lib/libhistory.a $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
-	# $(MAKE) -C $(DIR_PREFIX)/external_functions debug
-	@echo "***** NOTE: external function .so files not built *****"
+	$(MAKE) -C $(DIR_PREFIX)/external_functions debug
 	$(MAKE) "CFLAGS += -O0 -g" pymod
 
 .PHONY : pymod
@@ -43,24 +41,9 @@ pymod :
 
 .PHONY : install
 install :
-ifeq ( $(strip $(FER_LIBS)), )
-	@echo ""
-	@echo " ERROR: environment variable FER_LIBS is not defined"
-	@echo "        installation unsuccessful"
-	@echo ""
-else
 	cp -f $(DIR_PREFIX)/fer/threddsBrowser/threddsBrowser.jar $(FER_LIBS)
+	$(MAKE) -C $(DIR_PREFIX)/external_functions install
 	cd $(DIR_PREFIX) ; export HDF5_DIR=$(HDF5_DIR) ; export NETCDF_DIR=$(NETCDF_DIR) ; $(PYTHON_EXE) setup.py install $(PYTHON_INSTALL_FLAGS)
-ifeq ( $(strip $(FER_LOCAL_EXTFCNS)), )
-	@echo ""
-	@echo " ERROR: environment variable FER_LOCAL_EXTFCNS is not defined"
-	@echo "        external function .so files not installed"
-	@echo ""
-else
-	# $(MAKE) -C $(DIR_PREFIX)/external_functions install
-	@echo "***** NOTE: external function .so files not installed *****"
-endif
-endif
 
 .PHONY : clean
 clean :

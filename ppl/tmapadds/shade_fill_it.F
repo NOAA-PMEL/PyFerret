@@ -104,9 +104,6 @@ c      IF (curvilinear ) THEN
         first = .TRUE.  ! for curvilinear curv_coord_add_sub
 	DO 50 j = jlo, jtop
 
-           if (j .gt. 196) then
-	      nothing = 0
-	   endif
 ! initialize these so that the check in BAD_XY_COORD doesn't get caught
 ! in a loop
            py(1) = ys(j)

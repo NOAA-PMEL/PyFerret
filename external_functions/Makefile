@@ -9,6 +9,16 @@
 #             directories below compile only example functions, functions
 #             under development, or used locally by PMEL/TMAP (e.g.romea fcns)
  
+#
+# Site-specific defines
+#
+include ../site_specific.mk
+
+#
+# include platform specific definitions of:
+#       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
+#
+include ../platform_specific.mk.$(HOSTTYPE)
 
 #
 # Macro Definitions
@@ -20,33 +30,40 @@ DIRS = contributed examples fft ncedit statistics las
 # Targets
 #
 
-all:
-	for i in $(DIRS); \
-		do \
-			(cd $$i; echo "making" $@ "in $$i..."; \
-			$(MAKE) );\
-		done
+.PHONY : all
+all: optimized
 
+.PHONY : optimized
+optimized:
+	$(MAKE) "CFLAGS += -O2" "FFLAGS += -O2" build
+
+.PHONY : debug
 debug:
-	for i in $(DIRS); \
-		do \
-			(cd $$i; echo "making debug" $@ "in $$i..."; \
-			$(MAKE) debug);\
-		done
+	$(MAKE) "CFLAGS += -O0 -g" "FFLAGS += -O0 -g" build
 
+.PHONY: build
+build:
+	for i in $(DIRS) ; do \
+            if ! $(MAKE) -C $$i ; then \
+                exit 1 ; \
+            fi ; \
+        done
+
+.PHONY: install
 install:
-	for i in $(DIRS); \
-		do \
-			(cd $$i; echo "installing" $@ "in $$i..."; \
-			$(MAKE) install );\
-		done
+	for i in $(DIRS) ; do \
+            if ! $(MAKE) -C $$i install ; then \
+                exit 1 ; \
+            fi ; \
+        done
 
+.PHONY: clean
 clean:
-	for i in $(DIRS); \
-		do \
-			(cd $$i; echo "cleaning" $@ "in $$i..."; \
-			$(MAKE) clean);\
-		done
+	for i in $(DIRS) ; do \
+            if ! $(MAKE) -C $$i clean ; then \
+                exit 1 ; \
+            fi ; \
+        done
 
 #
 # End of Makefile

@@ -38,23 +38,15 @@ SUB_OBJS = eofsubs.o
 #   once eof_space etc are linked into Ferret dont need SUB_OBJS
 
 .F.so:
-	$(F77) $(FFLAGS) $<
+	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
 
-
-#.f.so:
-#	$(F77) $(FFLAGS)  $<
-#	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so 
 
 #
 # Targets
 #
 
-# all:	eofsubs.o eoft.so eof_space.so eof_tfunc.so eof_stat.so
 all:	eofsvd_space.so eof_space_fix.so eof_tfunc_fix.so eof_stat_fix.so
-
-debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

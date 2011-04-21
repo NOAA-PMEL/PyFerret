@@ -135,7 +135,9 @@ C	XGKS DOESN'T DEFINE GMOUTP
 
         its_meta = ITS_META_GRAPHICS()
         batch = ITS_BATCH_GRAPHICS()
-        meta_batch = batch .AND. its_meta
+        IF (batch) THEN
+           IF (its_meta) meta_batch = .TRUE.
+        ENDIF
 
 #ifdef xgks
 	if (meta_actv .OR. meta_batch) then

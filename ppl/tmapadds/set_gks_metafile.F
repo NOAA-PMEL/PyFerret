@@ -102,7 +102,9 @@
 * Metafile output only?
         its_meta = ITS_META_GRAPHICS()
         batch = ITS_BATCH_GRAPHICS()
-        meta_batch = batch .AND. its_meta
+        IF (batch) THEN
+           IF (its_meta) meta_batch = .TRUE.
+        ENDIF
 
 *	MASSAGE COMMAND STRING OF FORM "WS=xxx,META"
 	call upnsquish (label,str,end)	 	 	   	

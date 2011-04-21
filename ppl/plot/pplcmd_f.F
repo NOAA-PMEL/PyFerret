@@ -1339,7 +1339,10 @@ C	CLSPLT
 
 	    its_meta = ITS_META_GRAPHICS()
 	    batch = ITS_BATCH_GRAPHICS()
-	    meta_batch = batch .AND. its_meta
+
+	    IF (batch) THEN
+	       IF (its_meta) meta_batch = .TRUE.
+	    ENDIF
             its_open = meta_open
             if (meta_batch .and. ws_state.GT.0) its_open = .true.
 

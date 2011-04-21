@@ -142,7 +142,9 @@
 
 	its_meta = its_meta_GRAPHICS()
 	batch = ITS_BATCH_GRAPHICS()
-	meta_batch = batch .AND. its_meta
+        IF (batch) THEN
+           IF (its_meta) meta_batch = .TRUE.
+        ENDIF
 
 * /TITLE=text
 * This text becomes the name of the workstation. The name gets truncated 

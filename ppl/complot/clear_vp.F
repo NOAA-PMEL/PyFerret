@@ -66,8 +66,9 @@
 
         its_meta = ITS_META_GRAPHICS()
         batch = ITS_BATCH_GRAPHICS()
-        meta_batch = batch .AND. its_meta
-
+        IF (batch) THEN
+           IF (its_meta) meta_batch = .TRUE.
+        ENDIF
 	IF ( vp_num .EQ. mvp_dflt ) THEN
 
 *  clear entire screen

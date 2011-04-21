@@ -78,7 +78,9 @@
 	its_meta = its_meta_GRAPHICS()
 	batch = ITS_BATCH_GRAPHICS()
 	its_gif = ITS_GIF_GRAPHICS()
-	meta_batch = batch .AND. its_meta
+        IF (batch) THEN
+           IF (its_meta) meta_batch = .TRUE.
+        ENDIF
 
 * initialize in case of error (not an adequate response, really)
 	x_pixel_dim = 1

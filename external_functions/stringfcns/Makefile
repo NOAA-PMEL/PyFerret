@@ -28,7 +28,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 .F.so:
-	$(F77) $(FFLAGS) $<
+	$(F77) $(FFLAGS) -g $<
 	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
 
 .c.o:
@@ -41,7 +41,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # Targets
 #
 
-all:	ferret_cmn efstrings.so maxstrlen.so pass_thru_string.so pick_a_string.so string_cat3.so string_len_sum.so strings_as_args.so length_of_strings.so
+all:	ferret_cmn str_missing.so efstrings.so maxstrlen.so pass_thru_string.so pick_a_string.so string_cat3.so string_len_sum.so strings_as_args.so length_of_strings.so
 
 
 debug:

@@ -5,8 +5,7 @@ A Python extension module that interfaces with Ferret functionality
 and provides methods for Ferret external functions written in Python.
 
 In order to use this module:
-    start must first be called to allocate the required memory 
-            and initialize Ferret
+    either start or init must first be called to initialize Ferret
     resize can be used to resize Ferret's allocated memory block
     run is used to submit individual Ferret commands or enter 
             into Ferret's command prompting mode
@@ -35,6 +34,7 @@ functions provided by this module are:
 """
 
 import sys
+import os
 import numpy as np
 import numpy.ma as ma
 
@@ -47,6 +47,139 @@ except ImportError:
 from _pyferret import *
 
 _MAX_FERRET_NDIM = 4
+
+def init(arglist=None, enterferret=True):
+    """
+    Interprets the traditional Ferret options given in arglist and
+    starts pyferret appropriately.  If ${HOME}/.ferret exists, that 
+    script is then executed.
+
+    If '-script' is given with a script filename, this method calls 
+    the run method with the ferret go command, the script filename, 
+    and any arguments, and then exits completely (exits python).
+
+    Otherwise, if enterferret is False, this method just returns the
+    success return value of the run method: (FERR_OK, '')
+    
+    If enterferret is True this routine calls the run method with no 
+    arguments in order to enter into Ferret command-line processing.
+    The value returned from call to the run method is then returned.
+    """
+
+    ferret_help_message = \
+    """
+
+    Usage:  ferret7  [-memsize <N>]  [-batch [<filename>]]  [-gif]  [-nojnl]  [-noverify]
+                     [-version]  [-help]  [-script <scriptname> [ <scriptarg> ... ]]
+
+       -memsize:   initialize the memory cache size to <N> (default 25.6) megafloats
+                   (where 1 float = 4 bytes)
+       -batch:     output directly to metafile <filename> (default "metafile.plt")
+                   without X-Windows
+       -gif:       output to GIF file without X-Windows only with the FRAME command
+       -nojnl:     on startup don't open a journal file (can be turned on later with
+                   SET MODE JOURNAL)
+       -noverify:  on startup turn off verify mode (can be turned on later with
+                   SET MODE VERIFY)
+       -version:   print the Ferret header with version number and quit
+       -help:      print this help message and quit
+       -script:    execute the script <scriptname> with any arguments specified,
+                   and exit (THIS MUST BE SPECIFIED LAST)
+
+    """
+    my_metaname = None
+    my_memsize = 25.6
+    my_journal = True
+    my_verify = True
+    script = None
+    print_help = False
+    just_exit = False
+    # To be compatible with traditional Ferret command-line options
+    # (that are still supported), we need to parse the options by hand.
+    try:
+        k = 0
+        while k < len(arglist):
+            opt = arglist[k]
+            if opt == "-memsize":
+                k += 1
+                try:
+                    my_memsize = float(arglist[k])
+                except:
+                    raise ValueError, "a positive number must be given for a -memsize value"
+                if my_memsize <= 0.0:
+                    raise ValueError, "a positive number must be given for a -memsize value"
+            elif opt == "-batch":
+                my_metaname = "metafile.plt"
+                k += 1
+                # -batch has an optional argument
+                try:
+                    if arglist[k][0] != '-':
+                        my_metaname = arglist[k]
+                    else:
+                        k -= 1
+                except:
+                    k -= 1
+            elif opt == "-gif":
+                my_metaname = ".gif"
+            elif opt == "-nojnl":
+                my_journal = False
+            elif opt == "-noverify":
+                my_verify = False
+            elif opt == "-version":
+                just_exit = True
+                break
+            elif (opt == "-help") or (opt == "-h") or (opt == "--help"):
+                print_help = True
+                break
+            elif opt == "-script":
+                k += 1
+                try:
+                    script = arglist[k:]
+                    if len(script) == 0:
+                        raise ValueError, "a script filename must be given for the -script value"
+                except:
+                    raise ValueError, "a script filename must be given for the -script value"
+                # -script implies -nojnl
+                my_journal = False
+                break
+            else:
+                raise ValueError, "unrecognized option '%s'" % opt
+            k += 1
+    except ValueError, errmsg:
+        # print the error message then mark for print the help message
+        print >>sys.stderr, "\n%s" % errmsg
+        print_help = True
+    if print_help:
+        # print the help message, then mark for exiting
+        print >>sys.stderr, ferret_help_message
+        just_exit = True
+    if just_exit:
+        # print the ferret header then exit completely
+        start(journal=False, verify=False, metaname=".gif")
+        run("exit")
+        # should not get here
+        raise SystemExit
+    # start ferret
+    start(memsize=my_memsize, journal=my_journal, verify=my_verify, metaname=my_metaname)
+    # run the ${HOME}/.ferret script if it exists
+    home_val = os.environ.get('HOME')
+    if home_val:
+        init_script = os.path.join(home_val, '.ferret')
+        if os.path.exists(init_script):
+            run('go "%s" ; exit /topy' % init_script)
+    # if a command-line script is given, run the script and exit completely
+    if script != None:
+        script_line = " ".join(script)
+        run('go "%s" ; exit /program' % script_line)
+        # should not get here
+        raise SystemExit
+    # if they don't want to enter ferret, return the success value from run
+    if not enterferret:
+        return (FERR_OK, '')
+    # otherwise, go into Ferret command-line processing until "exit /topy" or "exit /program"
+    result = run()
+    return result
+
 
 def start(memsize=25.6, journal=True, verify=True, metaname=None):
     """

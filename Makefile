@@ -23,16 +23,16 @@ optimizedbuild :
 	mkdir -p $(DIR_PREFIX)/lib
 	cp $(READLINE_DIR)/lib/libreadline.a $(READLINE_DIR)/lib/libhistory.a $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
-	$(MAKE) -C $(DIR_PREFIX)/external_functions optimized
 	$(MAKE) pymod
+	$(MAKE) -C $(DIR_PREFIX)/external_functions optimized
 
 .PHONY : debugbuild
 debugbuild : 
 	mkdir -p $(DIR_PREFIX)/lib
 	cp $(READLINE_DIR)/lib/libreadline.a $(READLINE_DIR)/lib/libhistory.a $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
-	$(MAKE) -C $(DIR_PREFIX)/external_functions debug
 	$(MAKE) "CFLAGS += -O0 -g" pymod
+	$(MAKE) -C $(DIR_PREFIX)/external_functions debug
 
 .PHONY : pymod
 pymod :
@@ -42,13 +42,14 @@ pymod :
 .PHONY : install
 install :
 	cp -f $(DIR_PREFIX)/fer/threddsBrowser/threddsBrowser.jar $(FER_LIBS)
-	$(MAKE) -C $(DIR_PREFIX)/external_functions install
 	cd $(DIR_PREFIX) ; export HDF5_DIR=$(HDF5_DIR) ; export NETCDF_DIR=$(NETCDF_DIR) ; $(PYTHON_EXE) setup.py install $(PYTHON_INSTALL_FLAGS)
+	# $(MAKE) -C $(DIR_PREFIX)/external_functions install
+	@echo "***** NOTE: external functions not installed *****"
 
 .PHONY : clean
 clean :
-	rm -fr $(DIR_PREFIX)/build ferret.jnl*
 	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
+	rm -fr $(DIR_PREFIX)/build ferret.jnl*
 	$(MAKE) -C $(DIR_PREFIX)/fer clean
 	rm -fr $(DIR_PREFIX)/lib
 	@echo ""

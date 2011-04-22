@@ -54,6 +54,7 @@
 *        skip the call to GDSG. The segments are in fact deleted by gclosews 
 *        (gclwk called in pltit when closing one plot and opening a new one)
 *        and that results in the error message when gdsg is called here.
+* V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
 
 	include 'xplot_state.cmn'		! viewport info
 	include 'gkscm1_inc.decl'	! with wsid
@@ -66,6 +67,7 @@
 
         its_meta = ITS_META_GRAPHICS()
         batch = ITS_BATCH_GRAPHICS()
+	meta_batch = .FALSE.
         IF (batch) THEN
            IF (its_meta) meta_batch = .TRUE.
         ENDIF

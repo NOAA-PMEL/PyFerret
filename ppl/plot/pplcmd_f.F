@@ -124,6 +124,7 @@ C                  year to DAY,MONTH or to MONTH.
 *                  that was opened. New RENAMPL command.
 C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots, 
 C              do not make small tics by default.
+* V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
 
 c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
@@ -1339,7 +1340,7 @@ C	CLSPLT
 
 	    its_meta = ITS_META_GRAPHICS()
 	    batch = ITS_BATCH_GRAPHICS()
-
+	    meta_batch = .FALSE.
 	    IF (batch) THEN
 	       IF (its_meta) meta_batch = .TRUE.
 	    ENDIF

@@ -140,7 +140,8 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
+** V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
+
 	include 'lines_inc.decl'
 	include 'LINES.INC'
 	include 'pen_inc.decl'
@@ -196,6 +197,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
         its_meta = ITS_META_GRAPHICS()
         batch = ITS_BATCH_GRAPHICS()
+	meta_batch = .FALSE.
 	IF (batch) THEN
 	   IF (its_meta) meta_batch = .TRUE.
 	ENDIF

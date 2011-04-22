@@ -4,7 +4,7 @@ import os
 import os.path
 
 # Make sure everything is resolved
-addn_link_args = [ "-Xlinker", "--no-undefined", ]
+addn_link_args = [ "-fPIC", "-rdynamic", "-Xlinker", "--no-undefined", ]
 
 # (Non-standard) Directories containing .h include files
 incdir_list = [ "pyfermod",

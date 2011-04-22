@@ -55,6 +55,7 @@
 *              and PPL$YPIXEL.  If not in gif  or batch mode, we get the window size 
 *              from a GKS call.
 * V602: *acm* 1/07 Changes for metafile-batch mode
+* V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
 
         include 'pltcom_dat.decl'
         include 'PLTCOM.DAT'
@@ -78,7 +79,10 @@
 	its_meta = its_meta_GRAPHICS()
 	batch = ITS_BATCH_GRAPHICS()
 	its_gif = ITS_GIF_GRAPHICS()
-	meta_batch = batch .AND. its_meta
+	meta_batch = .FALSE.
+        IF (batch) THEN
+           IF (its_meta) meta_batch = .TRUE.
+        ENDIF
 
 * initialize in case of error (not an adequate response, really)
 	x_pixel_dim = 1

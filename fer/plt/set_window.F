@@ -82,6 +82,7 @@
 *  v600 *acm* 5/2006 Flag no_plot_yet: changes so user can change the number of 
 *                  line colors.
 * V602: *acm* 1/07 Changes for metafile-batch mode
+* V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
 
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
@@ -142,7 +143,10 @@
 
 	its_meta = its_meta_GRAPHICS()
 	batch = ITS_BATCH_GRAPHICS()
-	meta_batch = batch .AND. its_meta
+	meta_batch = .FALSE.
+        IF (batch) THEN
+           IF (its_meta) meta_batch = .TRUE.
+        ENDIF
 
 * /TITLE=text
 * This text becomes the name of the workstation. The name gets truncated 

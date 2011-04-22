@@ -59,6 +59,7 @@
 * V608 *acm*10/07  true batch mode for metafiles; flag meta_batch
 *         distinguises this case from other batch modes.
 * V610  *acm* 3/08 Fixes for metafile batch mode
+* V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
 
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
@@ -102,7 +103,10 @@
 * Metafile output only?
         its_meta = ITS_META_GRAPHICS()
         batch = ITS_BATCH_GRAPHICS()
-        meta_batch = batch .AND. its_meta
+	meta_batch = .FALSE.
+        IF (batch) THEN
+           IF (its_meta) meta_batch = .TRUE.
+        ENDIF
 
 *	MASSAGE COMMAND STRING OF FORM "WS=xxx,META"
 	call upnsquish (label,str,end)	 	 	   	

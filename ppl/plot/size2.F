@@ -142,6 +142,7 @@ C     THEY WERE WIDTH INCHES (OR MM) WIDE AND HEIGHT INCHES (OR
 C     MM) HIGH.
 C
 C
+* V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
 
    	include 'pltcom_dat.decl'	! with declarations
 	include 'PLTCOM.DAT'	! with declarations
@@ -183,8 +184,10 @@ C
 
       its_meta = ITS_META_GRAPHICS()
       batch = ITS_BATCH_GRAPHICS()
-      meta_batch = batch .AND. its_meta
-
+      meta_batch = .FALSE.
+      IF (batch) THEN
+         IF (its_meta) meta_batch = .TRUE.
+      ENDIF
 C
 C     INSURE THAT THE PARAMETERS ARE POSITIVE AND CONVERT THEM
 C     TO INTERNAL INCREMENTS.

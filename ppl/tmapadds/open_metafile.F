@@ -53,6 +53,7 @@
 *                       problems when trying to link gksm2ps
 * V602  1/07 *acm*  true batch mode for metafiles; flag meta_batch
 *         distinguises this case from other batch modes.
+* V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
 
 	include 'pltcom_dat.decl'! with declarations    
 	include 'PLTCOM.DAT'! with declarations    
@@ -135,7 +136,10 @@ C	XGKS DOESN'T DEFINE GMOUTP
 
         its_meta = ITS_META_GRAPHICS()
         batch = ITS_BATCH_GRAPHICS()
-        meta_batch = batch .AND. its_meta
+	meta_batch = .FALSE.
+        IF (batch) THEN
+           IF (its_meta) meta_batch = .TRUE.
+        ENDIF
 
 #ifdef xgks
 	if (meta_actv .OR. meta_batch) then

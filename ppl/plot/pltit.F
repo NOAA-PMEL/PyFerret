@@ -17,7 +17,7 @@
 *  the use of this software or in any product that includes this
 *  software. The names TMAP, NOAA and/or PMEL, however, may not be used
 *  in any advertising or publicity to endorse or promote any products
-*  or commercial entity unless specific written permission is obtained
+*  or commercial entity unless specific written per/x=178.5:179.5 uwndion is obtained
 *  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
 *  is not obligated to provide the user with any support, consulting,
 *  training or assistance of any kind with regard to the use, operation
@@ -89,6 +89,8 @@
 * *acm* 5/09 *acm* Fixes for bug 1663. When redrawing axes after a POLY/OVERLAY
 *                  do not do any axis labels
 * V6.5  3/10 *acm* When re-plotting axes, do not redraw the main label.
+* v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
+*              within a grid cell
 *
 *****************************************************
 
@@ -122,7 +124,7 @@
 *  the use of this software or in any product that includes this
 *  software. The names TMAP, NOAA and/or PMEL, however, may not be used
 *  in any advertising or publicity to endorse or promote any products
-*  or commercial entity unless specific written permission is obtained
+*  or commercial entity unless specific written per/x=178.5:179.5 uwndion is obtained
 *  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
 *  is not obligated to provide the user with any support, consulting,
 *  training or assistance of any kind with regard to the use, operation
@@ -138,7 +140,8 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
+** V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
+
 	include 'lines_inc.decl'
 	include 'LINES.INC'
 	include 'pen_inc.decl'
@@ -170,6 +173,9 @@
 	include 'xinterrupt.cmn'	! 1/89 *sh* - interrupts
 	include 'labels_inc.decl'
 	include 'LABELS.INC'
+	include 'miss_inc.decl'
+	include 'MISS.INC'
+
 
 * special COMMON to let this routine know if FERRET is in control
 
@@ -191,7 +197,10 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
         its_meta = ITS_META_GRAPHICS()
         batch = ITS_BATCH_GRAPHICS()
-        meta_batch = batch .AND. its_meta
+	meta_batch = .FALSE.
+	IF (batch) THEN
+	   IF (its_meta) meta_batch = .TRUE.
+	ENDIF
 
 	mainlab = 1  ! Flag: Draw the main label in calls to DAXIS
 
@@ -268,6 +277,7 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	CALL COLOR(IPEN(0))
 	IF(.NOT.SOVER)THEN
 	    CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL)
+	    IF (ABS(XF) .GT. CMZGE .OR. ABS(YF) .GT. CMZGE) GOTO 3333  ! fill/contour but 1 grid point
 	    CALL DAXIS(XF,YF,NMX,NMY,MAINLAB)
 
 		XLPLOT=DBLE(XL) 

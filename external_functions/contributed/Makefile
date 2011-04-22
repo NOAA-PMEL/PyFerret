@@ -41,8 +41,7 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 # Targets
 #
 
-# all:    chdir.so neutral.so fill_xy.so
-all:    chdir.so fill_xy.so
+all:	fill_xy.so
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

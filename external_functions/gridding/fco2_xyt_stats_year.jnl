@@ -1,0 +1,95 @@
+DEFINE AXIS/T0="1-jan-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - offset1970
+
+! Count of cruises with some data in each XYT cell
+   ! Send a scalar as argument 1 to just count the cruises
+   LET var = 1
+   LET/UNITS="count"/TITLE="Number of cruises" \
+     count_cruise = TRACKS2GRID_AVE_XYT(var,LON,LAT,DATE,CRUISE_NO,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
+   
+   SAVE/($file_qual)/FILE="($gridded_outfile)" count_cruise
+   DEFINE SYMBOL file_qual = APPEND
+
+! Mean by cruise of Fco2_rec, with some data in each XYT cell
+   LET var = fco2_rec
+   LET/UNITS="umol"/TITLE="fco2 mean - per cruise weighted" \
+    fco2_cruise_ave = TRACKS2GRID_AVE_XYT(VAR,LON,LAT,DATE,CRUISE_NO,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
+   
+   SAVE/APPEND/FILE="($gridded_outfile)" fco2_cruise_ave
+   
+! Mean longitude distance from grid cell center, cruise mean.
+   LET var = lon
+   LET lon_cruise_ave = TRACKS2GRID_AVE_XYT(VAR,LON,LAT,DATE,CRUISE_NO,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
+   
+   LET nearest_lon = IF lon_cruise_ave GE 0 THEN (INT(lon_cruise_ave) + 0.5) ELSE (INT(lon_cruise_ave) - 0.5)
+
+   LET/UNITS="Deg E"/TITLE="Longitude offset bias - per cruise weighted" \
+    lon_cruise_del_ave = (nearest_lon - lon_cruise_ave)
+   
+   SAVE/APPEND/FILE="($gridded_outfile)" lon_cruise_del_ave
+
+! Variance by cruise of Fco2_rec, with some data in each XYT cell
+   LET fvar = fco2_rec
+
+   LET/UNITS="umol"/TITLE="fco2 std. dev. - per cruise weighted" \
+    fco2_weighted_std = tracks2grid_std_xyt(fvar,lon,lat,\
+    date,cruise_no,x[gx=xlon],y[gy=ylat],t[gt=tmnth])
+
+   SAVE/APPEND/FILE="($gridded_outfile)" fco2_weighted_std
+
+! Mean latitude distance from grid cell center, cruise mean.
+   LET var = lat
+   LET lat_cruise_ave = TRACKS2GRID_AVE_XYT(VAR,LON,LAT,DATE,CRUISE_NO,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
+   
+   LET nearest_lat = IF lat_cruise_ave GE 0 THEN (INT(lat_cruise_ave) + 0.5) ELSE (INT(lat_cruise_ave) - 0.5)
+
+   LET/UNITS="Deg N"/TITLE="Latitude offset bias - per cruise weighted" \
+    lat_cruise_del_ave = (nearest_lat - lat_cruise_ave)
+   
+   SAVE/APPEND/FILE="($gridded_outfile)" lat_cruise_del_ave
+
+
+! Now count all of observations in each XYT cell
+   LET var = fco2_rec
+   LET/Units="count"/TITLE="Number of obs" \
+     count_nbin = SCAT2GRID_NBIN_XYT(LON,LAT,DATE,var,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
+   
+   SAVE/APPEND/FILE="($gridded_outfile)" count_nbin
+
+! Mean delta-longitude of all observations in each XYT cell
+   LET nearest_lon = IF lon GE 0 THEN (INT(lon) + 0.5) ELSE (INT(lon) - 0.5)
+   LET x_from_lon = (lon - nearest_lon) 
+   LET/UNITS="Deg E"/TITLE="Longitude offset bias - unweighted all obs" \
+     mean_lon_del = SCAT2GRID_BIN_XYT(LON,LAT,DATE,x_from_lon,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
+   
+   SAVE/APPEND/FILE="($gridded_outfile)" mean_lon_del
+
+
+! Mean latitude distance from cell center, all observations in each XYT cell
+   LET nearest_lat = IF lat GE 0 THEN (INT(lat) + 0.5) ELSE (INT(lat) - 0.5)
+   LET y_from_lat = (lat - nearest_lat)
+   LET/UNITS="Deg N"/TITLE="Latitude offset bias - unweighted all obs" \
+     mean_lat_del = SCAT2GRID_BIN_XYT(LON,LAT,DATE,y_from_lat,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
+   
+   SAVE/APPEND/FILE="($gridded_outfile)" mean_lat_del
+
+! Mean fco2_rec, all observations in each XYT cell
+   LET/UNITS="umol"/TITLE="fco2 mean - unweighted all obs" \
+     mean_fco2_rec = SCAT2GRID_BIN_XYT(LON,LAT,DATE,fco2_rec,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
+   
+   SAVE/APPEND/FILE="($gridded_outfile)" mean_fco2_rec
+
+! unweighted std dev fco2
+   LET/UNITS=umol/TITLE="fco2 std - unweighted all obs" \
+     fco2_std_unwtd = SCAT2GRID_STD_XYT(lon, lat, date, fco2_rec, x[gx=xlon], y[gy=ylat], t[gt=tmnth])
+   SAVE/APPEND/FILE="($gridded_outfile)" fco2_std_unwtd
+
+! Min and max fco2.  These are computed from one function with min at k=1, max at k=2.
+! Use the Z=1:1@ave to remove the Z axis from the grid of the variable on output.
+   LET minmax = SCAT2GRID_MINMAX_XYT(lon, lat, date, fco2_rec, x[gx=xlon], y[gy=ylat], t[gt=tmnth])
+   LOAD minmax
+
+   LET/UNITS=umol/TITLE="fco2 min - unweighted all obs" fco2_min_unwtd = minmax[z=1:1@ave]
+   SAVE/APPEND/FILE="($gridded_outfile)" fco2_min_unwtd
+
+   LET/UNITS=umol/TITLE="fco2 max - unweighted all obs" fco2_max_unwtd = minmax[z=2:2@ave]
+   SAVE/APPEND/FILE="($gridded_outfile)" fco2_max_unwtd

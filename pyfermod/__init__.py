@@ -4,16 +4,16 @@ A Python module for running Ferret.
 A Python extension module that interfaces with Ferret functionality
 and provides methods for Ferret external functions written in Python.
 
-In order to use this module:
-    either start or init must first be called to initialize Ferret
+In this module:
+    init or start must first be called to initialize Ferret
     resize can be used to resize Ferret's allocated memory block
-    run is used to submit individual Ferret commands or enter 
+    run is used to submit individual Ferret commands or enter
             into Ferret's command prompting mode
-    get and getdata are used to retrieve (a copy of) a Ferret 
+    get and getdata are used to retrieve (a copy of) a Ferret
             numeric data array
-    put and putdata is used to add (a copy of) a numeric data 
+    put and putdata is used to add (a copy of) a numeric data
             array into Ferret
-    stop can be used to shutdown Ferret and free the allocated 
+    stop can be used to shutdown Ferret and free the allocated
             memory.
 
 The FERR_* values are the possible values of err_int in the return
@@ -21,15 +21,15 @@ values from the run command.  The err_int return value FERR_OK
 indicates no errors.
 
 For writing Ferret external functions in Python, see the help message
-printed by ferret_pyfunc().  Methods available to these external 
+printed by ferret_pyfunc().  Methods available to these external
 functions provided by this module are:
-    get_axis_coordinates returns the "world" coordinates for an axis 
+    get_axis_coordinates returns the "world" coordinates for an axis
             of an argument to the external function
-    get_axis_box_sizes returns the "box sizes", in "world" coordinate 
+    get_axis_box_sizes returns the "box sizes", in "world" coordinate
             units, for an axis of an argument to the external function
     get_axis_box_limits returns the "box limits", in "world" coordinate
             units, for an axis of an argument to the external function
-    get_axis_info returns a dictionary of information about the axis 
+    get_axis_info returns a dictionary of information about the axis
             of an argument to the external function
 """
 
@@ -37,6 +37,7 @@ import sys
 import os
 import numpy as np
 import numpy.ma as ma
+import StringIO
 
 try:
     import cdms2
@@ -51,17 +52,17 @@ _MAX_FERRET_NDIM = 4
 def init(arglist=None, enterferret=True):
     """
     Interprets the traditional Ferret options given in arglist and
-    starts pyferret appropriately.  If ${HOME}/.ferret exists, that 
+    starts pyferret appropriately.  If ${HOME}/.ferret exists, that
     script is then executed.
 
-    If '-script' is given with a script filename, this method calls 
-    the run method with the ferret go command, the script filename, 
+    If '-script' is given with a script filename, this method calls
+    the run method with the ferret go command, the script filename,
     and any arguments, and then exits completely (exits python).
 
     Otherwise, if enterferret is False, this method just returns the
     success return value of the run method: (FERR_OK, '')
-    
-    If enterferret is True this routine calls the run method with no 
+
+    If enterferret is True this routine calls the run method with no
     arguments in order to enter into Ferret command-line processing.
     The value returned from call to the run method is then returned.
     """
@@ -291,6 +292,112 @@ def run(command=None):
     return retval
 
 
+def metastr(datadict):
+    """
+    Creates a string representation of the metadata in a data dictionary.
+    Print this string to show a nicely formatted display of the metadata.
+
+    Arguments:
+        datadict: a data dictionary, as returned by the getdata method.
+    Returns:
+        the string representation of the metadata in datadict.
+    Raises:
+        TypeError if datadict is not a dictionary
+    """
+    uc_month = { 1: "JAN", 2:"FEB", 3:"MAR", 4:"APR", 5:"MAY", 6:"JUN",
+                 7:"JUL", 8:"AUG", 9:"SEP", 10:"OCT", 11:"NOV", 12:"DEC" }
+    if not isinstance(datadict, dict):
+        raise TypeError, "datadict is not a dictionary"
+    # specify an order of output for standard keys, leaving out "data"
+    keylist = [ "name", "title", "dset", "data_unit", "missing_value",
+                "axis_names", "axis_types", "axis_units", "axis_coords" ]
+    # append non-standard keys in alphabetical order
+    for key in sorted(datadict.keys()):
+        if (key != "data") and (key not in keylist):
+            keylist.append(key)
+    # create the metadata string using StringIO
+    strbuf = StringIO.StringIO()
+    for key in keylist:
+        try:
+            # make sure the key:value pair exists
+            val = datadict[key]
+            # just in case the key is not a string (for printing)
+            keystr = str(key)
+            if keystr == "axis_coords":
+                print >>strbuf, keystr + ":"
+                for (idx, item) in enumerate(val):
+                    # add the axis name (which will be present if coordinates
+                    # are given) as a label for the axis coordinates
+                    itemlabel = "   '" + datadict["axis_names"][idx] + "': "
+                    if datadict["axis_types"][idx] == AXISTYPE_TIME:
+                        # add a translation of each of the time 6-tuples
+                        strlist = [ ]
+                        for subitem in item:
+                            strlist.append(" %s = %02d-%3s-%04d %02d:%02d:%02d" % \
+                                           (str(subitem),
+                                                subitem[TIMEARRAY_DAYINDEX],
+                                       uc_month[subitem[TIMEARRAY_MONTHINDEX]],
+                                                subitem[TIMEARRAY_YEARINDEX],
+                                                subitem[TIMEARRAY_HOURINDEX],
+						subitem[TIMEARRAY_MINUTEINDEX],
+                                                subitem[TIMEARRAY_SECONDINDEX],) )
+                        if len(strlist) == 0:
+                           strlist.append("[]")
+                        else:
+                           strlist[0] = "[" + strlist[0][1:]
+                           strlist[-1] = strlist[-1] + "]"
+                    else:
+                        # just print the values of non-time axis coordinates
+                        strlist = str(item).split('\n')
+                    # adjust the subsequent-line-indent if multiple lines
+                    itemstr = itemlabel + strlist[0]
+                    indent = " " * len(itemlabel)
+                    for addstr in strlist[1:]:
+                        itemstr += "\n" + indent + addstr
+                    print >>strbuf, itemstr
+            elif keystr == "axis_types":
+                # add a translation of the axis type number
+                valstr = "("
+                for (idx, item) in enumerate(val):
+                    if idx > 0:
+                        valstr += ", "
+                    valstr += str(item)
+                    if item == AXISTYPE_LONGITUDE:
+                        valstr += "=longitude"
+                    elif item == AXISTYPE_LATITUDE:
+                        valstr += "=latitude"
+                    elif item == AXISTYPE_LEVEL:
+                        valstr += "=level"
+                    elif item == AXISTYPE_TIME:
+                        valstr += "=time"
+                    elif item == AXISTYPE_CUSTOM:
+                        valstr += "=custom"
+                    elif item == AXISTYPE_ABSTRACT:
+                        valstr += "=abstract"
+                    elif item == AXISTYPE_NORMAL:
+                        valstr += "=unused"
+                valstr += ")"
+                print >>strbuf, keystr + ": " + valstr
+            elif keystr == "missing_value":
+                # print the one value in the missing value array
+                print >>strbuf, keystr + ": " + str(val[0])
+            else:
+                # just print as "key: value", except
+                # adjust the subsequent-line-indent if multiple lines
+                strlist = str(val).split('\n')
+                valstr = strlist[0]
+                indent = " " * (len(keystr) + 2)
+                for addstr in strlist[1:]:
+                    valstr += "\n" + indent + addstr
+                print >>strbuf, keystr + ": " + valstr
+        except KeyError:
+            # known key not present - ignore
+            pass
+    strval = strbuf.getvalue()
+    strbuf.close()
+    return strval
+
+
 def getdata(name, create_mask=True):
     """
     Returns the numeric array and axes information for the data variable
@@ -401,8 +508,8 @@ def getdata(name, create_mask=True):
             datavar = ma.array(data, fill_value=bdfs[0], mask=( data == bdfs[0] ))
     else:
         datavar = data
-    return { "title": name, "data":datavar, "missing_value":bdfs, "data_unit":data_unit, 
-             "axis_types":axis_types, "axis_names":axis_names, "axis_units":axis_units, 
+    return { "title": name, "data":datavar, "missing_value":bdfs, "data_unit":data_unit,
+             "axis_types":axis_types, "axis_names":axis_names, "axis_units":axis_units,
              "axis_coords":axis_coords }
 
 
@@ -433,7 +540,8 @@ def get(name, create_mask=True):
                       "mo", "month", "months",
                       "season", "seasons",
                       "yr", "year", "years" ]
-    lc_month_nums = { "jan":1, "feb":2, "mar":3, "apr":4, "may":5, "jun":6, "jul":7, "aug":8, "sep":9, "oct":10, "nov":11, "dec":12 }
+    lc_month_nums = { "jan":1, "feb":2, "mar":3, "apr":4, "may":5, "jun":6,
+                      "jul":7, "aug":8, "sep":9, "oct":10, "nov":11, "dec":12 }
     # get the data and related information from Ferret,
     # building on what was done in getdata
     data_dict = getdata(name, create_mask)
@@ -512,7 +620,7 @@ def get(name, create_mask=True):
                     relunit = " ".join(lc_vals)
                 timevals = [ ]
                 for t in xrange(axis_coords[k].shape[0]):
-                    dtval = cdtime.reltime(axis_coords[k][t], relunit);
+                    dtval = cdtime.reltime(axis_coords[k][t], relunit)
                     timevals.append(dtval)
                 newaxis = cdms2.createAxis(timevals, id=axis_names[k])
                 newaxis.designateTime()
@@ -527,7 +635,7 @@ def get(name, create_mask=True):
             var_axes.append(None)
         else:
             raise RuntimeError, "Unexpected axis type of %d" % axis_types[k]
-    # getdata returns a copy of the data, thus createVariable does not 
+    # getdata returns a copy of the data, thus createVariable does not
     # need to force a copy.  The mask, if request, was created by getdata.
     datavar = cdms2.createVariable(data, fill_value=bdfs[0], axes=var_axes,
                                    attributes={"name":name, "units":data_unit})
@@ -547,12 +655,12 @@ def put(datavar, axis_pos=None):
                   before extracting the data as 32-bit floating-point
                   values for Ferret.  In addition to the data and axes
                   described in datavar, the following attributes are used:
-                      id: the code name for the variable in Ferret (eg, 
-                          'SST').  This name must be present and, ideally, 
-                          should not contain spaces, quotes, or algebraic 
+                      id: the code name for the variable in Ferret (eg,
+                          'SST').  This name must be present and, ideally,
+                          should not contain spaces, quotes, or algebraic
                           symbols.
-                      name: the title name of the variable in Ferret (eg, 
-                          'Sea Surface Temperature').  If not present, the 
+                      name: the title name of the variable in Ferret (eg,
+                          'Sea Surface Temperature').  If not present, the
                           value of the id attribute is used.
                       units: the unit name for the data.  If not present,
                           no units are associated with the data.
@@ -608,7 +716,7 @@ def put(datavar, axis_pos=None):
     try:
         dset_str = str(datavar.dset).strip()
     except AttributeError:
-        dset_str = "";
+        dset_str = ""
     #
     # get the list of axes and initialize the axis information lists
     axis_list = datavar.getAxisList()
@@ -701,7 +809,7 @@ def put(datavar, axis_pos=None):
                      'missing_vaue': missingval, 'data_unit': data_unit, 'axis_types': axis_types,
                      'axis_names': axis_names, 'axis_units': axis_units, 'axis_coords': axis_coords }
     #
-    # use putdata to set defaults, rearrange axes, and add copies 
+    # use putdata to set defaults, rearrange axes, and add copies
     # of data in the appropriate format to Ferret
     putdata(datavar_dict, axis_pos)
     return None
@@ -717,7 +825,7 @@ def putdata(datavar_dict, axis_pos=None):
         datavar_dict: a dictionary with the following keys and associated values:
             'name': the code name for the variable in Ferret (eg, 'SST').
                     Must be given.
-            'title': the title name for the variable in Ferret (eg, 'Sea Surface 
+            'title': the title name for the variable in Ferret (eg, 'Sea Surface
                     Temperature').  If not given, the value of 'name' is used.
             'dset' : the Ferret dataset name or number to associate with this new data
                     variable.  If blank or not given, the current dataset is used.  If
@@ -740,7 +848,7 @@ def putdata(datavar_dict, axis_pos=None):
                         AXISTYPE_ABSTRACT (axis is unit-less integer values)
                         AXISTYPE_NORMAL   (axis is normal to the data)
                     If not given, AXISTYPE_ABSTRACT will be used if the data array
-                    has data for that axis (shape element greater than one); otherwise, 
+                    has data for that axis (shape element greater than one); otherwise,
                     AXISTYPE_NORMAL will be used.
             'axis_names': a list of strings giving the name of each axis.  If not given,
                     Ferret will generate names if needed.
@@ -754,17 +862,17 @@ def putdata(datavar_dict, axis_pos=None):
                         'CALTYPE_ALLLEAP'
                         'CALTYPE_NONE'    (calendar not specified)
                     If not given, 'DEGREES_E' will be used for AXISTYPE_LONGITUDE,
-                    'DEGREES_N' for AXISTYPE_LATITUDE, 'CALTYPE_GREGORIAN' for 
+                    'DEGREES_N' for AXISTYPE_LATITUDE, 'CALTYPE_GREGORIAN' for
                     AXISTYPE_TIME, and no units will be given for other axis types.
             'axis_coords': a list of arrays of coordinates for each axis.
-                    If the axis type is neither AXISTYPE_TIME nor AXISTYPE_NORMAL, 
-                    a one-dimensional numeric list or ndarray should be given (the 
-                    values will be stored as floating-point values).  
-                    If the axis is type AXISTYPE_TIME, a two-dimension list or ndarray 
-                    with shape (N,6), where N is the number of time points, should be 
-                    given.  The six integer values per time point are the day, month, 
-                    year, hour, minute, and second of the associate calendar for this 
-                    time axis.  The following constants defined by the pyferret module 
+                    If the axis type is neither AXISTYPE_TIME nor AXISTYPE_NORMAL,
+                    a one-dimensional numeric list or ndarray should be given (the
+                    values will be stored as floating-point values).
+                    If the axis is type AXISTYPE_TIME, a two-dimension list or ndarray
+                    with shape (N,6), where N is the number of time points, should be
+                    given.  The six integer values per time point are the day, month,
+                    year, hour, minute, and second of the associate calendar for this
+                    time axis.  The following constants defined by the pyferret module
                     give the values of these six indices:
                         TIMEARRAY_DAYINDEX
                         TIMEARRAY_MONTHINDEX
@@ -772,19 +880,19 @@ def putdata(datavar_dict, axis_pos=None):
                         TIMEARRAY_HOURINDEX
                         TIMEARRAY_MINUTEINDEX
                         TIMEARRAY_SECONDINDEX
-                    (Thus, axis_coords[t, pyferret.TIMEARRAY_YEARINDEX] gives the year of 
+                    (Thus, axis_coords[t, pyferret.TIMEARRAY_YEARINDEX] gives the year of
                      time point t.)
                     An array of coordinates must be given if the axis does not have a type
-                    of AXISTYPE_NORMAL or AXISTYPE_ABSTRACT (or if axis types are not given). 
-            Note: a relative time axis should be given as type AXISTYPE_CUSTOM, with a 
+                    of AXISTYPE_NORMAL or AXISTYPE_ABSTRACT (or if axis types are not given).
+            Note: a relative time axis should be given as type AXISTYPE_CUSTOM, with a
                   unit indicating the starting point, such as 'days since 01-JAN-2000'
 
         axis_pos: a four-tuple giving the Ferret positions for each axis in datavar.
-            If the axes in datavar are in (time, level, lat., long.) order, the tuple 
-            (T_AXIS, Z_AXIS, Y_AXIS, X_AXIS) should be used for proper axis handling in 
-            Ferret.  If not given (or None), the first longitude axis will be made the 
-            X_AXIS, the first latitude axis will be made the Y_AXIS, the first level axis 
-            will be made the Z_AXIS, the first time axis will be made the T_AXIS, and 
+            If the axes in datavar are in (time, level, lat., long.) order, the tuple
+            (T_AXIS, Z_AXIS, Y_AXIS, X_AXIS) should be used for proper axis handling in
+            Ferret.  If not given (or None), the first longitude axis will be made the
+            X_AXIS, the first latitude axis will be made the Y_AXIS, the first level axis
+            will be made the Z_AXIS, the first time axis will be made the T_AXIS, and
             any remaining axes are then filled into the remaining unassigned positions.
 
     Returns:
@@ -846,7 +954,7 @@ def putdata(datavar_dict, axis_pos=None):
             axis_units[k] = given_axis_units[k]
     # axis coordinates
     axis_coords = [ None ] * _MAX_FERRET_NDIM
-    given_axis_coords = datavar_dict.get('axis_coords', None);
+    given_axis_coords = datavar_dict.get('axis_coords', None)
     if given_axis_coords:
         if len(given_axis_coords) > _MAX_FERRET_NDIM:
             raise ValueError, "More than %d axes (in the coordinates) is not supported in Ferret at this time" % _MAX_FERRET_NDIM
@@ -856,7 +964,7 @@ def putdata(datavar_dict, axis_pos=None):
     # data array
     datavar = datavar_dict['data']
     #
-    # For any axis with data (shape > 1), if AXISTYPE_NORMAL (presumably from not being specified), 
+    # For any axis with data (shape > 1), if AXISTYPE_NORMAL (presumably from not being specified),
     # change to AXISTYPE_ABSTRACT.  Note that a shape == 1 could either be normal or a singleton axis.
     try:
         shape = datavar.shape
@@ -868,7 +976,7 @@ def putdata(datavar_dict, axis_pos=None):
     except AttributeError:
         raise ValueError, "The value of 'data' must be a NumPy ndarray (or derived from an ndarray)"
     #
-    # assign any defaults on the axis information not given, 
+    # assign any defaults on the axis information not given,
     # and make a copy of the axis coordinates (to ensure they are well-behaved)
     for k in xrange(_MAX_FERRET_NDIM):
         if axis_types[k] == AXISTYPE_LONGITUDE:
@@ -930,38 +1038,38 @@ def putdata(datavar_dict, axis_pos=None):
         ferr_axis = [ -1 ] * _MAX_FERRET_NDIM
         # assign positions of longitude/latitude/level/time
         for k in xrange(len(axis_types)):
-           if axis_types[k] == AXISTYPE_LONGITUDE:
-               if not X_AXIS in ferr_axis:
-                   ferr_axis[k] = X_AXIS
-           elif axis_types[k] == AXISTYPE_LATITUDE:
-               if not Y_AXIS in ferr_axis:
-                   ferr_axis[k] = Y_AXIS
-           elif axis_types[k] == AXISTYPE_LEVEL:
-               if not Z_AXIS in ferr_axis:
-                   ferr_axis[k] = Z_AXIS
-           elif axis_types[k] == AXISTYPE_TIME:
-               if not T_AXIS in ferr_axis:
-                   ferr_axis[k] = T_AXIS
+            if axis_types[k] == AXISTYPE_LONGITUDE:
+                if not X_AXIS in ferr_axis:
+                    ferr_axis[k] = X_AXIS
+            elif axis_types[k] == AXISTYPE_LATITUDE:
+                if not Y_AXIS in ferr_axis:
+                    ferr_axis[k] = Y_AXIS
+            elif axis_types[k] == AXISTYPE_LEVEL:
+                if not Z_AXIS in ferr_axis:
+                    ferr_axis[k] = Z_AXIS
+            elif axis_types[k] == AXISTYPE_TIME:
+                if not T_AXIS in ferr_axis:
+                    ferr_axis[k] = T_AXIS
         # fill in other axes types in unused positions
         if not X_AXIS in ferr_axis:
-           ferr_axis[ferr_axis.index(-1)] = X_AXIS
+            ferr_axis[ferr_axis.index(-1)] = X_AXIS
         if not Y_AXIS in ferr_axis:
-           ferr_axis[ferr_axis.index(-1)] = Y_AXIS
+            ferr_axis[ferr_axis.index(-1)] = Y_AXIS
         if not Z_AXIS in ferr_axis:
-           ferr_axis[ferr_axis.index(-1)] = Z_AXIS
+            ferr_axis[ferr_axis.index(-1)] = Z_AXIS
         if not T_AXIS in ferr_axis:
-           ferr_axis[ferr_axis.index(-1)] = T_AXIS
+            ferr_axis[ferr_axis.index(-1)] = T_AXIS
         try:
-           ferr_axis.index(-1)
-           raise RuntimeError, "Unexpected undefined axis position (_MAX_FERRET_NDIM increased?) in ferr_axis " + str(ferr_axis)
+            ferr_axis.index(-1)
+            raise RuntimeError, "Unexpected undefined axis position (_MAX_FERRET_NDIM increased?) in ferr_axis " + str(ferr_axis)
         except ValueError:
-           # expected result
-           pass
+            # expected result
+            pass
     #
     # get the missing data value as a 32-bit float
     bdfval = np.array(missingval, dtype=np.float32)
     #
-    # if a masked array, make sure the masked values are set 
+    # if a masked array, make sure the masked values are set
     # to the missing value, and get the ndarray underneath
     try:
         if np.any(datavar.mask):
@@ -1017,7 +1125,7 @@ def putdata(datavar_dict, axis_pos=None):
 def stop():
     """
     Shuts down and release all memory used by Ferret.
-    After calling this function do not call any Ferret functions except 
+    After calling this function do not call any Ferret functions except
     start, which will restart Ferret and re-enable the other functions.
 
     Returns:

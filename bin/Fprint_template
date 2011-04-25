@@ -44,7 +44,7 @@ rm -f Fprint_output*.ps
 set output_args   	= " "
 set output        	= "printer"
 set printer_named	= 0
-set translator_args  	= "-l ps -d cps"
+set translator_args  	= "-l cps -d cps"
 
 set gksm2ps_files 	= ""
 set mtt_files		= ""

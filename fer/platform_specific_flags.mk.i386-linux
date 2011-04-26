@@ -5,20 +5,13 @@
 # platform specific macros
 
 #	NETCDF4_DIR = /home/users/tmap/ferret/linux/
-#	NETCDF4_DIR = /home/stout/ansley/local/stout/
 	NETCDF4_DIR = /home/users/ansley/local/linux/
-
-	CDF_INCLUDES = -I$(NETCDF4_DIR)/include/
 	
-	LIBCF_DIR = /home/users/ansley/libcf/linux
-	LIBCF_INCLUDES = -I$(LIBCF_DIR)/include
-
 	INCLUDES = \
 	-I. \
 	-I/usr/include \
 	-I../../fmt/cmn \
-	$(CDF_INCLUDES) \
-	$(LIBCF_INCLUDES) \
+	-I$(NETCDF4_DIR)/include/ \
 	-I../common \
 	-I../../ppl/include \
 	$(GKS_INCLUDES)
@@ -112,7 +105,7 @@
 	# Below this line are macro definitions used only for the final linking of the executable
 	#
 
-	LD = gcc
+	LD = gfortran
 
 	LDFLAGS = \
 	-v \
@@ -121,19 +114,14 @@
 	-export-dynamic
 
 
-# For netCDF4.1.2 using new hdf5 and zlib, the correct zlib is in
-# /usr/local/lib so look there first
 #	-L/usr/local/lib  -L/usr/lib
 
 	SYSLIB = \
 	-lX11 \
 	-lcurl \
 	-ldl \
-	/usr/local/lib/libz.a \
 	-lm \
-	-lc \
-	/usr/lib/gcc/i386-redhat-linux/4.1.2/libgcc.a \
-	/usr/lib/gcc/i386-redhat-linux/4.1.2/libgfortran.a
+	-lc 
 
 	TMLIB = ../lib/tmap_lib.a
 
@@ -141,6 +129,8 @@
 	READLINELIB = -lreadline
 
 # For netcdf-4
+# For netCDF4.1.2 using new hdf5 and zlib, the correct zlib is in
+# /usr/local/lib so look there first
 
 	CDFLIB = $(NETCDF4_DIR)/lib/libnetcdff.a \
 	         $(NETCDF4_DIR)/lib/libnetcdf.a \
@@ -148,17 +138,6 @@
 		 /usr/local/hdf5_186/lib/libhdf5.a \
 		 /usr/local/lib/libz.a
 
-
-# For libcf
-
-	LIBCFLIB = $(LIBCF_DIR)/lib/libcf.a \
-		 $(LIBCF_DIR)/lib/libcf_src.a \
-		 /usr/local/lib/liblapack.a \
-		 /usr/local/lib/libf77blas.a \
-		 /usr/local/lib/libcblas.a \
-		 /usr/local/lib/libatlas.a
-
-#
 	LINUX_OBJS = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 
 	TERMCAPLIB = -lncurses

@@ -36,7 +36,6 @@
 
 include platform_specific_flags.mk.$(HOSTTYPE)
 
-CFLAGS += -I../gui
 #
 # Macros
 #
@@ -47,15 +46,15 @@ CFLAGS += -I../gui
 
 GUI_FAKES = special/gui_fakes.o
 
-DIRS	= ccr ctx dat doo efi efn ef_utility fmt gnl gui ino mem  \
+DIRS	= ccr ctx dat doo efi efn ef_utility fmt gnl ino mem  \
 	ocn plt rpn special stk utl xeq threddsBrowser
 
-LIBS	= ccr ctx dat doo efi efn ef_utility fmt gnl gui ino mem \
+LIBS	= ccr ctx dat doo efi efn ef_utility fmt gnl ino mem \
 	ocn plt rpn stk utl xeq
 
 CLEANDIRS = $(DIRS)
 
-DEPDIRS = ccr gui
+DEPDIRS = ccr
 
 FERLIBS = -L../lib -lxeq -lgnl -lferplt -lrpn -lstk -ldoo -locn \
 	-lctx -lfmt -lino -lmem -lutl -ldat -lccr -lefi -lefn
@@ -116,7 +115,6 @@ ferret:
 		$(FEROBJS) \
 		$(GUI_FAKES) \
 		$(XTRA_OBJ) \
-		$(GUILIB) \
 		$(GKSOBJ) \
 		$(PPLOBJS) \
 		$(EFUOBJS) \

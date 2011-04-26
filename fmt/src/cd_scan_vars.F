@@ -91,6 +91,7 @@
 *             when diagnostic mode is set.
 * v67   2/11 *acm* Do the notes about no missing/fillvalue for each variable,
 *             when in diagnostic mode. So move that back to cd_get_1_dep_var.
+* V68   4/11 *acm* fix 1848: skip vars with dim>4 or string vars with dim>5
 *
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -152,7 +153,6 @@
       CHARACTER    vname*128, name*16, buff*128
       CHARACTER*128 bname(30)
       REAL*4  global_bad
-c      REAL*8  dg_bad
       REAL dg_bad
 
       INTEGER tt  ! nice short name
@@ -357,6 +357,20 @@ c      REAL*8  dg_bad
                  IF (MATCH_NAME(vname, len_test, bname(ivar), len_mchars )) GOTO 1000
    30         CONTINUE
            ENDIF
+
+* is it a supported dimensionality (strings can be 5D) ?
+          IF ( nvdim .GT. 5 ) THEN
+             CALL TM_NOTE('Unsupported netCDF # of axes for variable. Ignoring '
+     .             //vname(:vlen), tt )
+             GOTO 1000
+          ENDIF
+
+* is it a supported dimensionality (numeric can be 4D)?
+          IF ( nvdim .GT. 4 .AND. vartyp.NE. NCCHAR ) THEN
+             CALL TM_NOTE('Unsupported netCDF # of axes for variable. Ignoring '
+     .             //vname(:vlen), tt )
+             GOTO 1000
+          ENDIF
 
 *** DECIDE IF IT IS AN AXIS OR A DEPENDENT VARIABLE
 * if it is not 1D it must be a dependent variable (3/99)

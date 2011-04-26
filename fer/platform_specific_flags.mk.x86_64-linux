@@ -9,8 +9,7 @@
 #	NETCDF4_DIR     = /home/users/tmap/ferret/x86_64-linux
 	NETCDF4_DIR     = /home/users/ansley/local/x86
 
-	INCLUDES        = -I /usr/lib/gcc/x86_64-redhat-linux/4.1.2/include \
-			  -I/../fmt/cmn/ \
+	INCLUDES        =  -I/../fmt/cmn/ \
 			  -I/$(NETCDF4_DIR)/include \
 			  -I. \
 			  -I/usr/include \
@@ -31,8 +30,6 @@
 			  -I../../xgks/src/lib \
 			  -Ipplinc/xgks \
 			  -I../../xgks/port 
-
-	CDF_INCLUDES	= -I/$(NETCDF4_DIR)/include
 
 	# New platform type var - *acm* 2/11
 	PLATFORM = Linux(gfortran) 2.6.18-238.1.1.el5
@@ -75,15 +72,15 @@
 	# Below this line are macro definitions used only for the final linking of the executable
 	#
 
-	LD		= gcc
+	LD		= gfortran
 	LDFLAGS		= -v --verbose -export-dynamic
 	 
-
 	SYSLIB		= -lX11 \
-			  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgcc.a \
-			  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortran.a \
-			  /usr/lib64/libm.a \
-			  -L/usr/lib64 -lc
+			  -lcurl \
+			  -ldl \
+			  -lz  \
+			  -lm \
+			  -lc 
 
 	TMLIB		= ../lib/tmap_lib.a
 
@@ -93,29 +90,11 @@
 # netcdf4.1 static librarys only (except for libdl)
 # $(NETCDF4_DIR)/lib/libnetcdff.a  (needed for netcdf4.1.2 and higher)
 
-	CDFLIB = $(NETCDF4_DIR)/lib/libnetcdff.a \
-			  $(NETCDF4_DIR)/lib/libnetcdf.a \
-			  /usr/local/hdf5_186/lib/libhdf5_hl.a \
-			  /usr/local/hdf5_186/lib/libhdf5.a \
-			  -L/usr/lib64  \
-			  /usr/lib64/libcurl.a  \
-			  /usr/lib64/libssl.a  \
-			  /usr/lib64/libcrypto.a  \
-			  /usr/lib64/libgssapi_krb5.a  \
-			  /usr/lib64/libkrb5.a  \
-			  /usr/lib64/libkrb5support.a  \
-			  /usr/lib64/libgssapi_krb5.a  \
-			  /usr/lib64/libkrb5.a  \
-			  /usr/lib64/libkrb5support.a  \
-			  -L/usr/lib64 -lkeyutils  \
-			  -L/usr/lib64 -lselinux  \
-			  /usr/lib64/libcom_err.a  \
-			  /usr/lib64/libk5crypto.a  \
-			  /usr/lib64/libresolv.a  \
-			  -L/usr/lib64 -ldl  \
-			  /usr/local/lib/libz.a  \
-			  /usr/lib64/libidn.a  \
-			  /usr/local/lib/libz.a 
+	CDFLIB          = $(NETCDF4_DIR)/lib/libnetcdff.a \
+	                  $(NETCDF4_DIR)/lib/libnetcdf.a \
+			  $(NETCDF4_DIR)/lib/libhdf5_hl.a \
+			  $(NETCDF4_DIR)/lib/libhdf5.a \
+			  /usr/local/lib/libz.a
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 
@@ -127,8 +106,8 @@
 
 # use cpp to preprocess the .F files to .f files and then compile the .f files
 %.o : %.F
-	rm -f $*.f	 
-	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e        's/de        /de /g' | sed -e  's/de         /de /g' > $*.f	 
+	rm -f $*.f
+	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de /de /g' | sed -e 's/de /de /g' > $*.f	 
 	$(F77) $(FFLAGS) $*.f	 
 
 #

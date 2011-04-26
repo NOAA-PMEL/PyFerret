@@ -52,6 +52,8 @@
 *                 If the string starts with @ do not set ASCII font
 *                 for title and X and Y label; lets user set pen and font.
 *                 Note can do colors and ASCII fonts, if set pen first: @P2@AC
+* V68  *acm*  4/11 - more on bug 1098. Break up labels by sending <NL> to pplus
+*                    instead of creating multiple moveable labels. 
 
 	include	'ferret.parm'
 	include	'plot_setup.parm'
@@ -69,12 +71,32 @@
      .          las_brk_pt, nlines
 	REAL	SYMWID, ymid, width, ht, frac, frac_width, las_frac, xend,
      .          htsave
+	CHARACTER*1 break_char
 
 * initialize
 	ymid = ypos + ysize*0.5
 	ht = MIN( lab_ht, ysize )
 	slen = TM_LENSTR1( string )
-	brk_pt = INDEX( string(:slen), ',' )
+
+* Choose the break character. If there are commas use them. If there
+* are any slashes, use that.  Else use underscore or dash.
+
+	break_char = ','
+	brk_pt = INDEX( string(:slen), break_char )
+	IF (brk_pt .EQ. 0) THEN
+	   IF (INDEX( string(:slen), '/' ) .NE. 0) break_char = '/'
+	   brk_pt = INDEX( string(:slen), break_char )
+	ENDIF 
+	IF (brk_pt .EQ. 0) THEN
+	   IF (INDEX( string(:slen), '_' ) .NE. 0) break_char = '_'
+	   brk_pt = INDEX( string(:slen), break_char )
+	ENDIF 
+	IF (brk_pt .EQ. 0) THEN
+	   IF (INDEX( string(:slen), '-' ) .NE. 0) break_char = '-'
+	   brk_pt = INDEX( string(:slen), break_char )
+	ENDIF 
+
+	brk_pt = INDEX( string(:slen), break_char )
 	risc_buff = string			! for RISC/FORTRAN
 
 * compute the width of the string in the font that it will be presented
@@ -124,9 +146,11 @@
 	ENDIF
 
 * titles and axis labels cannot be broken into multiple lines
-	IF ( lab_type .EQ. ppl_movlab ) THEN
-	   nlines = 2
-	ELSE
+* (unless the user does it with <NL> inserted in the strings)
+
+	nlines = 2
+	IF ( (lab_type.EQ.ppl_title) .OR. (lab_type.EQ.ppl_xlab) 
+     .        .OR. (lab_type.EQ.ppl_ylab)  ) THEN
 	   nlines = 1
 	ENDIF
 
@@ -149,7 +173,7 @@ c	   frac_width = SYMWID( ht, brk_pt+3, '@AS'//risc_buff(:brk_pt)  )
 	ENDIF
 	frac = frac_width / width
 	IF ( ABS(0.5-frac) .LT. ABS(0.5-las_frac) ) THEN
-	   nex_brk_pt = INDEX( string(brk_pt+1:), ',' ) + brk_pt
+	   nex_brk_pt = INDEX( string(brk_pt+1:), break_char ) + brk_pt
 	   IF ( nex_brk_pt.EQ.brk_pt .OR. nex_brk_pt.EQ.slen ) GOTO 200
 	   las_frac   = frac
 	   las_brk_pt = brk_pt
@@ -168,12 +192,11 @@ c	   frac_width = SYMWID( ht, brk_pt+3, '@AS'//risc_buff(:brk_pt)  )
 * WRITE STRING AS 2 LINES
  200	width = MAX(frac, 1.-frac) * width
 	ht = MIN( ysize*0.4, ht*MIN(1.,xsize/width) )
-* ... line 1
+
+* ... line 1<NL>line 2
 	CALL PUT_LABEL( lab_type, xend, ymid, justify, ht,
-     .			string(:brk_pt), xaxrel, yaxrel )
-* ... line 2
-	CALL PUT_LABEL( lab_type, xend, ypos, justify, ht,
-     .			string(brk_pt+1:), xaxrel, yaxrel )
+     .			string(:brk_pt)//'<NL>'//string(brk_pt+1:), 
+     .			xaxrel, yaxrel )
 	RETURN
 
 

@@ -64,6 +64,7 @@
 *      *acm* 10/01  remove VMS includes
 * V580 *acm* 11/04 - bug 1098 url is cut off; keep going to the last /
 * V581: *acm*/3/05 - increase length of strings for dataset title to 1024
+* V68  *acm*  4/11 - more on bug 1098. Call the url the OPeNDAP label, break it up.
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -88,7 +89,8 @@
      .			line_buff*1024, genl_buff*255, cal_buff*32
 	INTEGER		TM_LENSTR, idim, len, lablen,
      .			nlabs, dset_num, tlen, lab2
-	REAL 		ul_yspace, ul_labht,  ul_ypos, ul_ysqueeze
+	REAL 		ul_yspace, ul_labht, ul_ypos, ul_ysqueeze,
+     .			yoff, ur_labht
 	EQUIVALENCE	( ppl_buff, genl_buff )	! save space
 
 * extra upper left label to display the year ?(in case its not on the time axis)
@@ -162,18 +164,27 @@
 * ... name of data set
 ! 5/91	   CALL GET_DSET_NAME( dset_num, line_buff, lablen )
 	   CALL GET_SHORT_DSET_NAME( dset_num, line_buff, lablen )
-	   CALL PUT_LABEL( ppl_movlab-ppl_dset, 0.0, ul_yorigin,
-     .			   ppl_right_just,
-     .			   ul_labht0,
-     .			   'DATA SET: '//line_buff(:lablen), 
+
+           yoff = ul_yorigin
+           ur_labht = ul_labht0
+	   IF ( ds_des_name(dset_num)(1:7) .EQ. 'http://' ) THEN
+              yoff = ul_yorigin - 0.5*ul_yspace
+              ur_labht = 0.75*ul_labht0
+	   ENDIF
+	   CALL BOX_LABEL( ppl_movlab-ppl_dset, 
+     .			   'DATA SET: '//line_buff(:lablen),
+     .			   0.0, yoff,
+     .			   0.5*xlen,  1.5*letsize_dset_title,
+     .			   ur_labht, ppl_right_just,
      .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
+
 * ... title of data set
 	   CALL GET_DSET_TITLE( dset_num, line_buff, lablen )
 	   CALL BOX_LABEL( ppl_movlab-ppl_datitl, line_buff(:lablen),
-     .			   0.5, 0.3, 0.75*xlen, 1.5*letsize_dset_title,
+     .			   0.5, 0.3, 0.8*xlen, 1.5*letsize_dset_title,
      .			   letsize_dset_title, ppl_centered,
      .			   lab_loc_axlen_times, lab_loc_axlen_plus )
-* ... DODS URL of data set
+* ... OPeNDAP URL of data set
 * bug 1098 url is cut off; keep going to the last /
 
 	   IF ( ds_des_name(dset_num)(1:7) .EQ. 'http://' ) THEN
@@ -185,12 +196,15 @@
 	      ENDDO
 	      lablen = INDEX(ds_des_name(dset_num)(8+lablen:),'/')
      .		     + 7 + lablen
-	      CALL PUT_LABEL( ppl_movlab-ppl_dodsurl, 0.0,
-     .			   ul_yorigin + 1.1*ul_yspace,
-     .			   ppl_right_just,
-     .			   0.75*ul_labht0,
-     .			   'DODS URL: '//ds_des_name(dset_num)(:lablen), 
+
+              yoff = ul_yorigin + 0.5*ul_yspace
+	      CALL BOX_LABEL( ppl_movlab-ppl_dodsurl, 
+     .			   'OPeNDAP URL: '//ds_des_name(dset_num)(:lablen),
+     .			   0.0, yoff,
+     .			   0.4*xlen,  1.5*letsize_dset_title,
+     .			   ur_labht, ppl_right_just,
      .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
+
 	   ENDIF
 	ENDIF
 

@@ -194,7 +194,9 @@ foreach file ($temp_files)
 end
 
 # 10/97 *kob* mv last created bnplot files to the last_plot directory
+#  4/11 *acm* mv last created bat.plt* files to the last_plot directory
 mv bn*.plt* last_plot
+mv bat*.plt* last_plot
 mv p*.plt* last_plot
 mv bn*.gif* last_plot
 mv bn*.ps* last_plot

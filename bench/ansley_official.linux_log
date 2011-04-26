@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 33288941 Apr 26 13:38 /home/users/ansley/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 33289325 Apr 26 16:16 /home/users/ansley/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix ticket 1098: Split URL labels and long dataset labels into 2 lines (nodebug)
+Note: fix ticket 1848: refuse to try to work with variables having too many dimensions.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/users/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/linux/FERRET/external_functions/ext_func
-Beginning at Tue Apr 26 14:08:33 PDT 2011
+Beginning at Tue Apr 26 16:26:32 PDT 2011
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10239,11 +10239,11 @@ FERRET_PLATFORM = "Linux rh5 (gfortran) 2.6.18-238.1.1.el5P"
 NETCDF_VERSION = "4.1.2 of Apr  4 2011 14:01:37 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "26-Apr-11"
-SESSION_TIME = "14:08"
-DELTA_CPU = "4.65129"
-CLOCK_SECS = "6.893"
+SESSION_TIME = "16:26"
+DELTA_CPU = "4.70128"
+CLOCK_SECS = "6.851"
 CURRENT_DATE = "26-Apr-11"
-CURRENT_TIME = "14:08:40"
+CURRENT_TIME = "16:26:39"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10265,11 +10265,11 @@ FERRET_PLATFORM = "Linux rh5 (gfortran) 2.6.18-238.1.1.el5P"
 NETCDF_VERSION = "4.1.2 of Apr  4 2011 14:01:37 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "26-Apr-11"
-SESSION_TIME = "14:08"
-DELTA_CPU = "0.001"
-CLOCK_SECS = "6.894"
+SESSION_TIME = "16:26"
+DELTA_CPU = "0"
+CLOCK_SECS = "6.852"
 CURRENT_DATE = "26-Apr-11"
-CURRENT_TIME = "14:08:40"
+CURRENT_TIME = "16:26:39"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10279,7 +10279,7 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "26-Apr-11"
-SESSION_TIME = "14:08"
+SESSION_TIME = "16:26"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10290,12 +10290,12 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "26-Apr-11"
-SESSION_TIME = "14:08"
+SESSION_TIME = "16:26"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "26-Apr-11"
-SESSION_TIME = "14:08"
+SESSION_TIME = "16:26"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10329,7 +10329,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.7"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "26-APR-2011 14:08:40"
+LAB3 = "26-APR-2011 16:26:39"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10429,11 +10429,11 @@ FERRET_PLATFORM = "Linux rh5 (gfortran) 2.6.18-238.1.1.el5P"
 NETCDF_VERSION = "4.1.2 of Apr  4 2011 14:01:37 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "26-Apr-11"
-SESSION_TIME = "14:08"
-DELTA_CPU = "0.008998"
-CLOCK_SECS = "6.903"
+SESSION_TIME = "16:26"
+DELTA_CPU = "0.009998"
+CLOCK_SECS = "6.861"
 CURRENT_DATE = "26-Apr-11"
-CURRENT_TIME = "14:08:40"
+CURRENT_TIME = "16:26:39"
 N_OPEN_DSETS = "0"
  
  
@@ -25369,7 +25369,7 @@ h
  
 ! but OK in this case
 SAY ($undefined|"hh")
-Tue Apr 26 14:08:48 PDT 2011
+Tue Apr 26 16:26:51 PDT 2011
  !-> MESSAGE/CONTINUE hh
 hh
  
@@ -45972,7 +45972,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS26-APR-2011 14:09:24
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS26-APR-2011 16:27:28
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.990E+00 0.078    0  SYSTEM  @ASLONGITUDE : 179.5E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47394,7 +47394,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "26-Apr-11:14:08"
+WIN_TITLE = "26-Apr-11:16:26"
  
 set win/title="set the title"
 sho sym win_title
@@ -47412,7 +47412,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="26-Apr-11:14:08"
+ !-> set win/title="26-Apr-11:16:26"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47423,14 +47423,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 26-Apr-11
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 14:08
+ !-> DEFINE SYMBOL the_time = 16:26
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="26-Apr-11:14:08"
+ !-> SET WIN/TITLE="26-Apr-11:16:26"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "26-Apr-11:14:08"
+WIN_TITLE = "26-Apr-11:16:26"
  
 GO bn_reset
 cancel mode verify
@@ -57907,10 +57907,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "42.1396"
-CLOCK_SECS = "76.495"
+DELTA_CPU = "42.3016"
+CLOCK_SECS = "80.657"
 CURRENT_DATE = "26-Apr-11"
-CURRENT_TIME = "14:09:49"
+CURRENT_TIME = "16:27:53"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57919,8 +57919,8 @@ CURRENT_TIME = "14:09:49"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.036995"
-CLOCK_SECS = "76.568"
+DELTA_CPU = "0.039993"
+CLOCK_SECS = "80.76"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57934,60 +57934,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.343948
+ !-> DEFINE VARIABLE ten_plots = 0.339951
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "77.266"
+CLOCK_SECS = "81.525"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "77.267"
+CLOCK_SECS = "81.525"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.032993
- !-> DEFINE VARIABLE sumcpu =0.032993
-!-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.033997
- !-> DEFINE VARIABLE sumcpu =0.06699
-!-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.037994
- !-> DEFINE VARIABLE sumcpu =0.104984
+ !-> DEFINE VARIABLE sumcpu =0.037994
+!-> REPEAT: K=2
+ !-> DEFINE VARIABLE dt = 0.038994
+ !-> DEFINE VARIABLE sumcpu =0.076988
+!-> REPEAT: K=3
+ !-> DEFINE VARIABLE dt = 0.034992
+ !-> DEFINE VARIABLE sumcpu =0.11198
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.143978
+ !-> DEFINE VARIABLE dt = 0.047993
+ !-> DEFINE VARIABLE sumcpu =0.159973
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.182972
+ !-> DEFINE VARIABLE dt = 0.037994
+ !-> DEFINE VARIABLE sumcpu =0.197967
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.221966
+ !-> DEFINE VARIABLE dt = 0.047993
+ !-> DEFINE VARIABLE sumcpu =0.24596
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.034996
- !-> DEFINE VARIABLE sumcpu =0.256962
+ !-> DEFINE VARIABLE dt = 0.042995
+ !-> DEFINE VARIABLE sumcpu =0.288955
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.039993
- !-> DEFINE VARIABLE sumcpu =0.296955
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.32595
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.031994
- !-> DEFINE VARIABLE sumcpu =0.328949
+ !-> DEFINE VARIABLE dt = 0.038994
+ !-> DEFINE VARIABLE sumcpu =0.364944
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.030994
- !-> DEFINE VARIABLE sumcpu =0.359943
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.401939
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.359943
-0.359943
+ !-> MESSAGE/CONTINUE 0.401939
+0.401939
 sh sym CLOCK_SECS
-CLOCK_SECS = "78.368"
+CLOCK_SECS = "82.707"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "26-Apr-11"
-SESSION_TIME = "14:08"
+SESSION_TIME = "16:26"
 CURRENT_DATE = "26-Apr-11"
-CURRENT_TIME = "14:09:51"
+CURRENT_TIME = "16:27:55"
  
  
 ! ******** V6.3 Additions below ***********
@@ -66332,7 +66332,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.7  "                                                           
  3    /  3:" ! Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 04/26/11"                     
- 4    /  4:" ! 26-Apr-11 14:08     "                                                    
+ 4    /  4:" ! 26-Apr-11 16:26     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -67710,6 +67710,26 @@ sh var airt2[d=1]
  
 GO bn_reset
 cancel mode verify
+GO err667_5d_netcdf
+! err66_5d_netcdf.jnl
+! see ticket 1848.  If more than 4D for numeric or 5D for strings, issue a warning and
+! ignore the variable.
+ 
+use nc5d.nc
+use string5d.nc
+show data
+     currently SET data sets:
+    1> ./nc5d.nc
+ name     title                             I         J         K         L
+ PSI      STREAM FUNCTION                  1:18      1:22      ...       1:25
+ 
+    2> ./string5d.nc  (default)
+ name     title                             I         J         K         L
+ 
+ 
+ 
+GO bn_reset
+cancel mode verify
 GO bn_NaN_note
 ! bn_NaN_note.jnl
 ! Ferret v6.7  2/2011
@@ -67742,7 +67762,7 @@ yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.7  
  	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 04/26/11
- 	26-Apr-11 14:10     
+ 	26-Apr-11 16:28     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -71005,7 +71025,7 @@ yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.7  
  	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 04/26/11
- 	26-Apr-11 14:10     
+ 	26-Apr-11 16:28     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
@@ -71017,11 +71037,11 @@ FERRET_PLATFORM = "Linux rh5 (gfortran) 2.6.18-238.1.1.el5P"
 NETCDF_VERSION = "4.1.2 of Apr  4 2011 14:01:37 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "26-Apr-11"
-SESSION_TIME = "14:10"
-DELTA_CPU = "0.028995"
-CLOCK_SECS = "0.201"
+SESSION_TIME = "16:28"
+DELTA_CPU = "0.027995"
+CLOCK_SECS = "0.193"
 CURRENT_DATE = "26-Apr-11"
-CURRENT_TIME = "14:10:18"
+CURRENT_TIME = "16:28:21"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -71042,7 +71062,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "26-Apr-11:14:10"
+WIN_TITLE = "26-Apr-11:16:28"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -71103,7 +71123,7 @@ abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcde
  	NOAA/PMEL TMAP
  	FERRET v6.7  
  	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 04/26/11
- 	26-Apr-11 14:10     
+ 	26-Apr-11 16:28     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -71321,7 +71341,7 @@ yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.7  
  	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 04/26/11
- 	26-Apr-11 14:10     
+ 	26-Apr-11 16:28     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -71435,7 +71455,7 @@ yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.7  
  	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 04/26/11
- 	26-Apr-11 14:10     
+ 	26-Apr-11 16:28     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -71519,4 +71539,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Tue Apr 26 14:10:20 PDT 2011
+Ended at Tue Apr 26 16:28:23 PDT 2011

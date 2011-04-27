@@ -87,6 +87,8 @@
 #include <xgks.h>
 #include <gks_implem.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <time.h>
 
@@ -1202,7 +1204,7 @@ main (argc, argv)
 
       /* Check version number of metafile against gksm2ps */
       if ((meta_file = fopen (file[i],"r")) == NULL) {
-	fprintf ( stderr, "Can't open %s\n", meta_file);
+	fprintf ( stderr, "Can't open %s\n", file[i]);
 	exit (1);
       }
 

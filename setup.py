@@ -68,9 +68,9 @@ ext_mods = [ Extension("pyferret._pyferret", include_dirs = incdir_list,
 
 # Configure the setup
 setup(name = "pyferret",
-      version = "7.0.0",
-      description = "python package providing ferret functionality",
-      long_description = "python package providing ferret functionality",
+      version = "7.0.0.3",
+      description = "python module providing ferret functionality",
+      long_description = "python module providing ferret functionality",
       author = "Karl M. Smith",
       author_email = "karl.smith@noaa.gov",
       url = "http://ferret.pmel.noaa.gov/Ferret",

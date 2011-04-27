@@ -1,0 +1,105 @@
+! compute cruiseDensity
+
+! create a coarse resolution XYT grid that can be used to anticipate the
+! volume of data in an arbitrary XYT region
+ 
+SET MEM/SIZ=300
+
+DEFINE AXIS/X=-179.5:179.5:1/UNITS=degrees_east/MODULO xlon
+DEFINE AXIS/Y=-89.5:89.5:1/UNITS=degrees_north ylat
+
+LET dx = `0.5* xbox[gx=xlon,i=1]`
+LET dy = `0.5* ybox[gy=ylat,j=1]`
+
+!Data contains lat,lon,date,data_id,cruise_id,cruise_no,fco2_rec
+! USE "/home/data/socat/SOCAT_triples_fco2.nc"
+ USE "/home/data/socat/SOCAT_triples_AD_1.3_fco2.nc"
+
+!SET AXIS/STRIDE=100 `lon,return=xaxis`
+
+
+LET offset1970 = DAYS1900(1970,1,1)
+LET month = MOD(ii-1,12)+1
+LET year = 1970 + INT((ii-1)/12)
+
+! for entire time period of SOCAT
+LET ii = i[i=1:480]
+
+! for the year 2005, alone
+LET ii = i[i=421:433]
+
+LET i1 = 1
+LET i2 = 61
+LET del = 60
+
+DEFINE SYMBOL file_qual = CLOBBER  ! First time CLOBBBER, afterwards APPEND to the file.
+DEFINE SYMBOL gridded_outfile = /home/data/socat/SOCAT_tracks_gridded_stats_AD.nc
+DEFINE SYMBOL gridded_outfile = /home/data/socat/SOCAT_tracks_gridded_stats_testvar.nc
+
+repeat/range=1:10:1 ( \
+ LET ii = i[i=`i1`:`i2`]; \
+ GO fco2_xyt_stats_year.jnl; \
+ LET i1 = `i2`; \
+ LET i2 = `i2+del`; \
+ IF `i1 GT 480` THEN exit/loop; \
+ )
+
+
+exit/script
+
+! Add a global variable (need a better way to do this!)
+can var/all
+use "($gridded_outfile)"
+define att ..description = "Flags A-D and WOCE flag of 2"
+
+set mem/siz=500
+save/clobber/file="/home/data/socat/gridded_with_desc.nc" COUNT_CRUISE,FCO2_CRUISE_AVE,LON_CRUISE_DEL_AVE,FCO2_WEIGHTED_STD,LAT_CRUISE_DEL_AVE,COUNT_NBIN,MEAN_LON_DEL,MEAN_LAT_DEL,MEAN_FCO2_REC,FCO2_STD_UNWTD,FCO2_MIN_UNWTD,FCO2_MAX_UNWTD
+can data/all
+sp mv /home/data/socat/gridded_with_desc.nc ($gridded_outfile)
+
+
+ exit/script
+
+! Test the output
+PAUSE
+CAN DAT/ALL
+CAN VAR/ALL
+
+USE "/home/data/socat/SOCAT_tracks_gridded_stats_var.nc"
+
+SH DAT
+REPEAT/RANGE=1970:2009:1/NAME=yr (\
+DEFINE SYMBOL yr = `yr`; \
+ SET VIEW ul; \
+ LET cruise_count_max = count_cruise[T=1-JAN-($yr):31-DEC-($yr)@SUM];\
+ SHADE/SET/LEV=(1,10,1)(inf)/TITLE=cruise_count_year_sum IF cruise_count_max GT 0 THEN cruise_count_max;\
+ GO unlabel 5;\
+ PPL shade;\
+ SET VIEW ur; \
+ LET count_nbin_max = count_nbin[T=1-JAN-($yr):31-DEC-($yr)@SUM];\
+ SHADE/LEV=(1,100,10)(inf)/TITLE=count_nbin_year_sum IF count_nbin_max GT 0 THEN count_nbin_max;\
+ SET VIEW ll; \
+ SHADE/LEV=(-inf)(220,480,20)(inf)/TITLE=fco2_cruise_ave[T=@AVE] fco2_cruise_ave[T=1-JAN-($yr):31-DEC-($yr)@AVE]; \
+ SET VIEW lr; \
+ SHADE/TITLE=mean_lon_del[T=@AVE] mean_lon_del[T=1-JAN-($yr):31-DEC-($yr)@AVE]; \
+ PAUSE; \
+ PPL SHASET RESET)
+
+can view
+set win/asp=2
+
+SH DAT
+REPEAT/RANGE=1970:2009:1/NAME=yr (\
+DEFINE SYMBOL yr = `yr`; \
+ SET VIEW upper; \
+ LET cruise_count_max = count_cruise[T=1-JAN-($yr):31-DEC-($yr)@SUM];\
+ SHADE/SET/LEV=(1,10,1)(inf)/TITLE=cruise_count_year_sum IF cruise_count_max GT 0 THEN cruise_count_max;\
+ GO unlabel 5;\
+ PPL shade;\
+ SET VIEW lower; \
+ LET var_max  = FCO2_WEIGHTED_VAR[T=1-JAN-($yr):31-DEC-($yr)@max];\
+ SHADE/LEV=(1,100,10)(inf)/TITLE=max_var_year IF var_max GT 0 THEN var_max;\
+ PAUSE; \
+ PPL SHASET RESET)
+
+

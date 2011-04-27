@@ -71,6 +71,8 @@
 * V604 *acm* 6/07 Allow longer strings for OPeNDAP file-open errors. Call these
 *                 **Internet Data error 
 * V63  *acm* 10/09 Changes for gfortran build
+* V68  *acm*  4/11 Error codes for NetCDF-4 (HDF) errors are in the range -101 to -116
+
 
 * arguments:
 *	status_in	- error code from calling program
@@ -219,7 +221,7 @@ c#endif
 * *kob* 7/99 - Update for netCDF v3.4
 * acm 1/10 - CD_TRANSLATE_ERROR calls error translation routine.
 
-	ELSEIF ( (status_in .GE. pcdferr-100) .AND.
+	ELSEIF ( (status_in .GE. pcdferr-120) .AND.
      .		 (status_in .LE. pcdferr + pcdferrmax) ) THEN
 * xxxxx can we get filename from netCDF call ???           
 * xxxxx cdfid and varid are available as dset_num, sf_num

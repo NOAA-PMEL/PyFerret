@@ -4,7 +4,7 @@
 # 1) modifies 'ferret_paths template' to specify locations of ferret software &
 # demo data sets and places the result in the appropriate sourcing directory
 # as 'ferret_paths'
-# 2) installs ferret and gksm2ps executables and shared-object external functions from 
+# 2) installs ferret and gksm2ps executables and shared-object external functions from
 # tar file to $FER_DIR/bin
 #
 # J Davison 4.94
@@ -27,7 +27,7 @@ echo " "
 echo " This option usually only needs to be run if you are installing FERRET"
 echo " on your system for the first time, and 'ferret_paths' is not yet set up."
 
-### Print menu and act on choice 
+### Print menu and act on choice
 menu:
 echo " "
 echo " Enter your choice:"
@@ -51,7 +51,7 @@ if ($?FER_DIR) then
 	echo " "
 	echo " The environment variable FER_DIR is currently defined as"
 	echo " $FER_DIR.  This is the directory where the 'fer_environment'"
-	echo " .gz file was installed." 
+	echo " .gz file was installed."
 	echo -n " Is that correct and acceptable (y/n) [y] "
 	set ans = $<
 	if ($ans != 'N' && $ans != 'n' ) goto checkfer_dsets
@@ -87,7 +87,7 @@ endif
 checkfer_dsets:
 echo " "
 if ($?FER_DSETS) then
-	set fer_dsets = $FER_DSETS 
+	set fer_dsets = $FER_DSETS
 	echo " The environment variable FER_DSETS is currently defined as"
 	echo " $FER_DSETS.   This is the directory where the 'fer_dsets'"
 	echo " .gz file was installed."
@@ -142,32 +142,61 @@ if (! -d $ferpaths_dir) then
 endif
 
 
-### If ferret_paths exists, check to see if it's OK to replace
+### If ferret_paths.csh exists, check to see if it's OK to replace
 echo " "
-if (-e $ferpaths_dir/ferret_paths) then
-	echo " $ferpaths_dir/ferret_paths already exists."
+if (-e $ferpaths_dir/ferret_paths.csh ) then
+	echo " $ferpaths_dir/ferret_paths.csh already exists."
 	echo -n " Overwrite? (y/n) [n] "
 	set ans = $<
 	if ($ans != 'Y' && $ans != 'y' ) then
-		echo " Exiting without modifying $ferpaths_dir/ferret_paths..."
-		exit (0)
+		echo " NOT changing $ferpaths_dir/ferret_paths.csh"
+		goto ferpaths_sh
 	endif
 endif
 
-### Edit the ferret_paths_template file and create ferret_paths
+### Edit the ferret_paths_template.csh file to create the ferret_paths.csh file
 sed -e "/setenv FER_DIR/c\\
-	 setenv FER_DIR $fer_dir"  \
+	 setenv FER_DIR \"$fer_dir\""  \
     -e "/setenv FER_DSETS/c\\
-	 setenv FER_DSETS $fer_dsets" $fer_dir/bin/ferret_paths_template \
-	 >! $ferpaths_dir/ferret_paths
+	 setenv FER_DSETS \"$fer_dsets\"" $fer_dir/bin/ferret_paths_template.csh \
+	 >! $ferpaths_dir/ferret_paths.csh
 
 if ($status != 0) then
-	echo " Unable to create $ferpaths_dir/ferret_paths..."
+	echo " Unable to create $ferpaths_dir/ferret_paths.csh"
 	exit (1)
 endif
 
-echo " >>$ferpaths_dir/ferret_paths created.<<"
+echo " >>$ferpaths_dir/ferret_paths.csh created.<<"
 echo " "
+
+ferpaths_sh:
+### If ferret_paths.sh exists, check to see if it's OK to replace
+echo " "
+if (-e $ferpaths_dir/ferret_paths.sh ) then
+	echo " $ferpaths_dir/ferret_paths.sh already exists."
+	echo -n " Overwrite? (y/n) [n] "
+	set ans = $<
+	if ($ans != 'Y' && $ans != 'y' ) then
+		echo " NOT changing $ferpaths_dir/ferret_paths.sh"
+		goto menu
+	endif
+endif
+
+### Edit the ferret_paths_template.sh file to create the ferret_paths.sh file
+sed -e "/export FER_DIR=/c\\
+	 export FER_DIR=\"$fer_dir\""  \
+    -e "/export FER_DSETS=/c\\
+	 export FER_DSETS=\"$fer_dsets\"" $fer_dir/bin/ferret_paths_template.sh \
+	 >! $ferpaths_dir/ferret_paths.sh
+
+if ($status != 0) then
+	echo " Unable to create $ferpaths_dir/ferret_paths.sh"
+	exit (1)
+endif
+
+echo " >>$ferpaths_dir/ferret_paths.sh created.<<"
+echo " "
+
 goto menu
 
 ### Install the executables ###################################################
@@ -181,7 +210,7 @@ if ($?FER_DIR) then
 	set fer_dir = $FER_DIR
 	echo " The environment variable FER_DIR is currently defined as"
 	echo " $FER_DIR.  This is the directory where the 'fer_environment'"
-	echo " .gz file was installed." 
+	echo " .gz file was installed."
 	echo -n " Is that correct and acceptable (y/n) [y] "
 	set ans = $<
 	if ($ans != 'N' && $ans != 'n' ) goto get_.gzloc
@@ -256,10 +285,10 @@ end
 echo "FERRET executables installed this date by $user" >! README_`/bin/date +'%d%h%y'|tr '[A-Z]' '[a-z]'`
 if ($status != 0) goto exec_err
 echo " Created README_`/bin/date +'%d%h%y'|tr '[A-Z]' '[a-z]'` log file..."
-echo 
+echo
 
 ### Un.gz the exec .gz file
-tar xzf $ferexec_dir/fer_executables.tar.gz 
+tar xzf $ferexec_dir/fer_executables.tar.gz
 if ($status != 0) goto exec_err
 echo " Extracted FERRET executables..."
 

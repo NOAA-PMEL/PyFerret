@@ -22,10 +22,6 @@ To build Ferret:
 
         * In the xgks/ directory, run configure and make.  It may ask you to create a CUSTOMIZE file with locations of libraries. See CUSTOMIZE.x86_64-linux for an example.
 
-        * In list-2.1 directory,  make.
-
-        * In readline, configure and make.
-
         * In fer/  look at the platform_specific flags files that are there. The most recent example of these files is platform_specific_flags.mk.x86_64-linux. You will need to create such a file for your system, with the desired compilers, compiler flags, locations of include files, and definitions for linking with the libraries. The compiler flags also need to be in a platform_specific_flags file in the FERRET/ppl directory.  To find the compiler flags needed for the OPeNDAP libraries (listed in the Makefile under DODS_LIBS) look at where you built the library libnc_dap, and find where dncdump was created.  The Makefile in that directory will give you a starting place for the libraries needed.
 
         * build the Ferret executable. In FERRET/fer, run make with one of these targets.

@@ -104,8 +104,10 @@ get_ferpaths_dir() {
         else
 #           resolve relative pathnames
             ferpaths_dir=`cd "${ferpaths_dir}" ; pwd`
-#           if ferret_paths.{sh,csh} exists, check to see if it's OK to replace
-            if [ -f "${ferpaths_dir}/ferret_paths.csh" ] || [ -f "${ferpaths_dir}/ferret_paths.sh" ]; then
+#           if ferret_paths* exists, check to see if it's OK to replace
+            if [ -f "${ferpaths_dir}/ferret_paths.csh" ] || \
+               [ -f "${ferpaths_dir}/ferret_paths.sh" ] || \
+               [ -f "${ferpaths_dir}/ferret_paths" ] ; then
                 echo " "
                 if [ -f "${ferpaths_dir}/ferret_paths.csh" ]; then
                     echo " ${ferpaths_dir}/ferret_paths.csh already exists"
@@ -113,7 +115,10 @@ get_ferpaths_dir() {
                 if [ -f "${ferpaths_dir}/ferret_paths.sh" ]; then
                     echo " ${ferpaths_dir}/ferret_paths.sh already exists"
                 fi
-                read -p " Overwrite? (n/y) [n] " ans
+                if [ -f "${ferpaths_dir}/ferret_paths" ]; then
+                    echo " ${ferpaths_dir}/ferret_path already exists"
+                fi
+                read -p " Rename and create new? (n/y) [n] " ans
                 if [ "${ans}" == "Y" ] || [ "${ans}" == "y" ]; then
                     return 0
                 fi
@@ -133,12 +138,14 @@ get_ferpaths_dir() {
 
 ### Edit the ferret_paths_template.{csh,sh} files to create the ferret_paths.{csh,sh} files
 create_ferret_paths() {
+#   Check for existing ferret_paths.csh
     if [ -f "${ferpaths_dir}/ferret_paths.csh" ]; then
         mv -f "${ferpaths_dir}/ferret_paths.csh" "${ferpaths_dir}/ferret_paths.csh.old"
         echo " "
         echo " Existing ${ferpaths_dir}/ferret_paths.csh "
         echo " moved to ${ferpaths_dir}/ferret_paths.csh.old "
     fi
+#   Create new ferret_paths.csh
     if sed -e "/setenv FER_DIR/c\\
 setenv FER_DIR \"${fer_dir}\"" \
            -e "/setenv FER_DSETS/c\\
@@ -151,13 +158,14 @@ setenv FER_DSETS \"${fer_dsets}\"" \
         echo " "
         echo " Unable to create ${ferpaths_dir}/ferret_paths.csh "
     fi
-
+#   Check for existing ferret_paths.sh
     if [ -f "${ferpaths_dir}/ferret_paths.sh" ]; then
         mv -f "${ferpaths_dir}/ferret_paths.sh" "${ferpaths_dir}/ferret_paths.sh.old"
         echo " "
         echo " Existing ${ferpaths_dir}/ferret_paths.sh "
         echo " moved to ${ferpaths_dir}/ferret_paths.sh.old "
     fi
+#   Create new ferret_paths.sh
     if sed -e "/export FER_DIR=/c\\
 export FER_DIR=\"${fer_dir}\"" \
            -e "/export FER_DSETS=/c\\
@@ -169,6 +177,34 @@ export FER_DSETS=\"${fer_dsets}\"" \
     else
         echo " "
         echo " Unable to create ${ferpaths_dir}/ferret_paths.sh"
+    fi
+#   Check for existing ferret_paths
+    if [ -f "${ferpaths_dir}/ferret_paths" ]; then
+        mv -f "${ferpaths_dir}/ferret_paths" "${ferpaths_dir}/ferret_paths.old"
+        echo " "
+        echo " Existing ${ferpaths_dir}/ferret_paths "
+        echo " moved to ${ferpaths_dir}/ferret_paths.old "
+    fi
+#   Copy the appropriate file
+#   Note: $SHELL may not be defined in bash
+    if echo "${SHELL}" | grep -q 'csh$' ; then
+        if ( cd "${ferpaths_dir}" ; ln -s "ferret_paths.csh" "ferret_paths" ) ; then
+            echo " "
+            echo " Created ${ferpaths_dir}/ferret_paths "
+            echo " as a link to ${ferpaths_dir}/ferret_paths.csh "
+        else
+            echo " "
+            echo " Unable to create ${ferpaths_dir}/ferret_paths "
+        fi
+    else
+        if ( cd "${ferpaths_dir}" ; ln -s "ferret_paths.sh" "ferret_paths" ) ; then
+            echo " "
+            echo " Created ${ferpaths_dir}/ferret_paths "
+            echo " as a link to ${ferpaths_dir}/ferret_paths.sh "
+        else
+            echo " "
+            echo " Unable to create ${ferpaths_dir}/ferret_paths "
+        fi
     fi
 }
 
@@ -258,7 +294,8 @@ install_execs() {
         if ( cd "${fer_dir}/ext_func/libs" ; tar xzf "${ferexec_dir}/fer_executables.tar.gz" ${feref_files} ) ; then
             timestamp=`/bin/date +' %D %T'`
             echo " Extracted external function files to ${fer_dir}/ext_func/libs "
-            echo " For more details, see '${timestamp}' entries in the log file ${logfile} "
+            echo " For more details, see '${timestamp}' entries in the log file "
+            echo " ${logfile} "
             for effile in ${feref_files} ; do
                 echo "${timestamp} Extracted ${effile} to ${fer_dir}/ext_func/libs " >> "${logfile}"
             done
@@ -293,6 +330,7 @@ install_execs() {
 
 ### Main script
 ### Info message printed only once
+echo " "
 echo " This script can do two things for you to help install Ferret: "
 echo " "
 echo " (1) Install the Ferret executables into FER_DIR/bin from the "
@@ -308,14 +346,19 @@ echo "     FER_DIR and FER_DSETS to the directories at your site "
 echo "     containing the Ferret software and demonstration data. "
 echo " "
 echo "     The files 'ferret_paths.csh' and 'ferret_paths.sh' are "
-echo "     created in a directory you choose.  Sourcing one of these "
-echo "     files ('source ferret_paths.csh' for c-shell users, "
-echo "     '. ferret_paths.sh' for bash users) will set up a user's "
-echo "     environment for running ferret. "
+echo "     created in a directory you choose.  Furthermore, the link "
+echo "     'ferret_paths' will be created using the appropriate file "
+echo "     for the current shell. "
+echo " "
+echo "     Sourcing one of these files ('source ferret_paths.csh' "
+echo "     for c-shell users, '. ferret_paths.sh' for bash users) "
+echo "     will set up a user's environment for running ferret. "
+echo "     You should also be able to use 'source ferret_paths'. "
 echo " "
 echo "     You will want to run this option if you are installing "
-echo "     Ferret for the first time or if you relocated where Ferret "
-echo "     is installed. "
+echo "     Ferret for the first time or if you relocated where "
+echo "     Ferret is installed. "
+echo " "
 
 ### Print menu and act on choice
 until [ "$choice" == "3" ]; do

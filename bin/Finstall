@@ -7,7 +7,6 @@
 ##    sourcing directory as 'ferret_paths'
 ## 2) installs ferret and gksm2ps executables and shared-object external
 ##    functions from tar file to $FER_DIR/bin
-set -x
 
 
 ### Assign $fer_dir, the desired FER_DIR value

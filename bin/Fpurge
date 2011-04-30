@@ -1,15 +1,15 @@
-#! /bin/csh -f
+#! /bin/sh
 # Fpurge
 # remove all but the current version of the indicated file(s)
 
 # example usage:  Fpurge metafile.plt
 
 # no argument given: explain the ropes
-if ($#argv != "1") then
+if [ $# -ne "1" ]; then
      echo '*** Syntax error - name 1 filename as template, only ***'
      echo '  Usage:  Fpurge  filename.extension'
      echo 'Example:  Fpurge ferret.jnl'
      exit
-endif
+fi
 
-rm {$argv[1]}.~*~
+rm "$1".~*~

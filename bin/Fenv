@@ -1,4 +1,4 @@
-#! /bin/csh -f
+#! /bin/sh
 # Fenv    
 # list the environment variables relevant to the FERRET program
 

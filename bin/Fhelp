@@ -1,63 +1,59 @@
-#! /bin/csh -f
+#! /bin/sh
 #! *sh* 10/91
 #! Fhelp
 #! enter the Ferret Users Guide at the indicated line number
 #! If no line number is given then coach on usage
 
 # no argument given: explain the ropes
-if ($#argv == "0") then
+if [ $# -eq 0 ]; then
      echo ' '
-     echo '	*** Fhelp - Interactive help for FERRET ***'
+     echo '    *** Fhelp - Interactive help for FERRET ***'
      echo ' '
-     echo '	Fhelp enters the FERRET Users Guide at a given line number'
-     echo '	      or at the first occurrence of a given string'
+     echo '    Fhelp enters the FERRET Users Guide at a given line number'
+     echo '          or at the first occurrence of a given string'
      echo ' '
-     echo '		Correct usage is:  Fhelp line_number'
-     echo '		              or   Fhelp string'
-     echo '	             For example:  Fhelp "getting started"'
+     echo '        Correct usage is:  Fhelp line_number'
+     echo '                      or:  Fhelp string'
+     echo '             For example:  Fhelp "getting started"'
      echo ' '
-     echo '	When reading the Users Guide use standard "more" commands:'
-     echo '	? = help   b = back 1 page   CR = next line  space = next page'
+     echo '    When reading the Users Guide use standard "more" commands:'
+     echo '    ? = help   b = back 1 page   CR = next line  space = next page'
      echo ' '
      echo ' '
-     echo '	Also available: Fapropos'
-     echo '	Fapropos scans the FERRET Users Guide for a character string'
-     echo '	and reports the lines where it occurs'
+     echo '    Also available: Fapropos'
+     echo '    Fapropos scans the FERRET Users Guide for a character string'
+     echo '    and reports the lines where it occurs'
      echo ' '
-     echo '		Correct usage is:  Fapropos  string'
+     echo '        Correct usage is:  Fapropos  string'
      echo ' '
-      exit
-endif
+     exit
+fi
 
 # too many arguments: explain the syntax
-if ( $#argv >= 2 ) then
+if [ $# -gt 1 ]; then
      echo " "
-     echo "	*** Syntax error in command entered ***"
+     echo "    *** Syntax error in command entered ***"
      echo " "
-     echo "		Correct usage is:  Fhelp line_number"
+     echo "        Correct usage is:  Fhelp line_number"
      echo " "
      echo ' '
-     echo '	Use Fapropos to scan the FERRET Users Guide for a character string'
-     echo '	and determine the lines where it occurs'
+     echo '    Use Fapropos to scan the FERRET Users Guide for a character string'
+     echo '    and determine the lines where it occurs'
      echo ' '
-     echo '		Correct usage is:  Fapropos  string'
+     echo '        Correct usage is:  Fapropos  string'
      exit
-endif
+fi
 
 # did user enter a line number or a string
-    echo $argv[1] | grep -s '^[0-9]*$'
-
-# enter the FERRET manual 2 lines before the requested line
-if ( $status == 0 ) then
-
-#  line number
-   @ argv[1] -= 2
-   more -d +$argv[1] $FER_DIR/doc/ferret_users_guide.txt
-   exit
+if echo $1 | grep -E -q '^[0-9]+$' ; then
+#    line number - enter the FERRET manual 2 lines before the requested line
+     startpos=`echo "$1 - 2" | bc`
+     more -d +${startpos} ${FER_DIR}/doc/ferret_users_guide.txt
 else
-#  string: use grep for case-insensitive search
-   set line = `grep -in "$argv[1]" $FER_DIR/doc/ferret_users_guide.txt | head -1 | sed 's/^\([0-9]*\):.*$/\1/' `
-   @ line -= 2
-   more -d +{$line} $FER_DIR/doc/ferret_users_guide.txt
-
-endif
+#    string: use grep for case-insensitive search and start 2 lines before the first occurence
+     startpos=`grep -in "$1" ${FER_DIR}/doc/ferret_users_guide.txt | head -1 | sed 's/^\([0-9]*\):.*$/\1/'`
+     if [ -n "${startpos}" ]; then
+         startpos=`echo "${startpos} - 2" | bc`
+         more -d +${startpos} ${FER_DIR}/doc/ferret_users_guide.txt
+     fi
+fi

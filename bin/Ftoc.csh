@@ -1,16 +1,16 @@
-#! /bin/sh
+#! /bin/csh -f
 #! *sh* 10/91
 #! Ftoc
 #! browse the Table of Contents of the Ferret Users Guide
 
 # enter the Table of Contents at the top
-if [ $# -eq 0 ]; then
+if ($#argv == "0") then
    more -d $FER_DIR/doc/ferret_ug_toc.txt
    exit
-fi
+endif
 
 # too many arguments: explain the syntax
-if [ $# -gt 1 ]; then
+if ($#argv >= 2) then
      echo " "
      echo "     *** Syntax error in command entered ***"
      echo " "
@@ -19,7 +19,7 @@ if [ $# -gt 1 ]; then
      echo "     Note: multi-word strings need to be enclosed in quotations"
      echo " "
      exit
-fi
+endif
 
 # use grep for case-insensitive search
-grep -i "$1" $FER_DIR/doc/ferret_ug_toc.txt
+   grep -i "$argv[1]" $FER_DIR/doc/ferret_ug_toc.txt

@@ -1,21 +1,21 @@
-#! /bin/sh
+#! /bin/csh -f
 #! *sh* 10/91
 #! Findex
 #! browse the Index of the Ferret Users Guide
 
 # enter the Index at the top
-if [ $# -eq 0 ]; then
+if ($#argv == "0") then
    echo "Note: Index page numbers refer to the hard copy FERRET User's Guide"
    echo "      The on-line FERRET User's Guide is not page numbered"
    echo -n "Hit <CR> to continue ..."
    echo " " 
-   read pause
+   set pause = $<
    more -d $FER_DIR/doc/ferret_ug_index.txt
    exit
-fi
+endif
 
 # too many arguments: explain the syntax
-if [ $# -gt 1 ]; then
+if ($#argv >= 2) then
      echo " "
      echo "*** Syntax error in command entered ***"
      echo " "
@@ -24,12 +24,11 @@ if [ $# -gt 1 ]; then
      echo "     Note: multi-word strings need to be enclosed in quotations"
      echo " "
      exit
-fi
+endif
 
 # use grep for case-insensitive search
-echo "****************************************************************************"
-echo "*** Index page numbers refer to the hard copy or PDF FERRET User's Guide ***"
-echo "*** The on-line document is not page numbered                            ***"
-echo "****************************************************************************"
-echo " "
-grep -i "$1" $FER_DIR/doc/ferret_ug_index.txt
+   echo "*** Index page numbers refer to the hard copy or PDF FERRET User's Guide ***"
+   echo "*** The on-line document is not page numbered                     ***"
+   echo "*********************************************************************"
+   echo " "
+   grep -i "$argv[1]" $FER_DIR/doc/ferret_ug_index.txt

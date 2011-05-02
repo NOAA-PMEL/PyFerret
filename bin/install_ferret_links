@@ -1,4 +1,4 @@
-#! /bin/csh
+#! /bin/sh
 # install FERRET links in the /usr/local/bin area - eliminating the need to
 # modify the PATH variable
 # ver 1.0 4/92 *sh* - based on INSTALL_BIN routine
@@ -7,37 +7,38 @@
 # "i" (install) - copies sources, links and other files to installation area
 # "r" (remove)  - removes the "i" files
 
-ask:
-echo "Install (i) or remove (r)?"
-set activity = $<
-switch($activity)
-case "i":
-  echo "Installing FERRET links"
-  breaksw
-case "r":
-  echo "Removing FERRET links"
-  breaksw
-default:
-  echo "You must answer i or r"
-  goto ask
-endsw
-date
+until [ "$activity" == "i" ] || [ "$activity" == "r" ] || [ "$activity" == "q" ]; do
+   read -p "Install (i), remove (r), or quit (q)? " activity
+   case "$activity" in
+      "i")
+         echo "Installing FERRET links"
+         ;;
+      "r")
+         echo "Removing FERRET links"
+         ;;
+      "q")
+         exit
+         ;;
+      *)
+         echo "You must answer i, r, or q"
+   esac
+done
 
 # basic definitions
-set source_area = $FER_DIR/bin
-set dest_area = /usr/local/bin
+source_area="$FER_DIR/bin"
+dest_area="/usr/local/bin"
 
-cd $source_area
-set files = *
-foreach file ($files)
-  switch($activity)
-  case "i":
-    if ($file !~ *~ ) ln -s $source_area/$file $dest_area/$file
-    breaksw
-  case "r":
-    rm -f $dest_area/$file
-    breaksw
-  endsw
-end
+cd "$source_area"
+for binfile in * ; do
+   case "$activity" in
+      "i")
+         if ! echo $binfile | grep -q '~$' ; then
+            ln -s "$source_area/$binfile" "$dest_area/$binfile"
+         fi
+         ;;
+      "r")
+         rm "$dest_area/$binfile"
+         ;;
+   esac
+done
 
-date

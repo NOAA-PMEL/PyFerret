@@ -1,5 +1,5 @@
-#! /bin/csh -f
+#! /bin/sh
 # Fenv    
 # list the environment variables relevant to the FERRET program
 
-env | grep FER
+env | grep FER | sort

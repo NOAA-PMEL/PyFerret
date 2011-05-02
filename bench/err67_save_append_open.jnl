@@ -1,0 +1,25 @@
+! err67_save_append_open.jnl
+! ticket 1832   
+! SAVE to a file that's open for reading
+
+! Create a file
+use gt4d011.cdf
+save/clobber/file=a.nc temp
+can data/all
+
+! Open for reading
+use a.nc
+let tempave = temp[t=@ave]
+let temp_mm = temp - tempave
+
+! read from the file and then append to it
+save/append/file=a.nc temp_mm
+
+! The dataset still shows just the original contents
+sh dat
+can dat/all
+
+! Close it and open again.
+! Now it shows the variable we appended
+use a.nc
+sh dat

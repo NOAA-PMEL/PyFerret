@@ -31,3 +31,7 @@ GO err667_show_var_twice
 
 GO bn_reset
 GO err667_5d_netcdf
+
+GO bn_reset
+GO err67_save_append_open
+

@@ -45,20 +45,16 @@ repeat/range=1:10:1 ( \
  )
 
 
+! Add global attributes
+
+let status = nco_attr("/home/data/socat/SOCAT_tracks_gridded_stats_testvar.nc", "global", "comment", "c", "a",\
+"Flags A-D and WOCE flag of 2 \nProvisional - Apr. 27, 2011")
+load status
+let status = nco_attr("/home/data/socat/SOCAT_tracks_gridded_stats_testvar.nc", "global", "title", "c", "a",\
+"SOCAT gridded; Provisional - Apr. 27, 2011")
+load status
+
 exit/script
-
-! Add a global variable (need a better way to do this!)
-can var/all
-use "($gridded_outfile)"
-define att ..description = "Flags A-D and WOCE flag of 2"
-
-set mem/siz=500
-save/clobber/file="/home/data/socat/gridded_with_desc.nc" COUNT_CRUISE,FCO2_CRUISE_AVE,LON_CRUISE_DEL_AVE,FCO2_WEIGHTED_STD,LAT_CRUISE_DEL_AVE,COUNT_NBIN,MEAN_LON_DEL,MEAN_LAT_DEL,MEAN_FCO2_REC,FCO2_STD_UNWTD,FCO2_MIN_UNWTD,FCO2_MAX_UNWTD
-can data/all
-sp mv /home/data/socat/gridded_with_desc.nc ($gridded_outfile)
-
-
- exit/script
 
 ! Test the output
 PAUSE

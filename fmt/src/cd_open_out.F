@@ -50,6 +50,7 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V67  *acm* 4/11  Fix ticket 1832, open file correctly for NetCDF4.1.2 and higher.
 
 * argument definitions:
 *       cdfname - desired output file name
@@ -77,7 +78,7 @@
 
 * local variable declarations:
       LOGICAL file_exists, do_append
-      INTEGER cstat, clobber_mode, cdfstat, cdftype, mode_flag
+      INTEGER cstat, clobber_mode, cdfstat, cdftype
 
 * initialize netCDF
 * does it exist already ?
@@ -104,18 +105,25 @@
 
 * ... let netCDF detect the error if the file already exists
 
-         IF (netcdf4_type .EQ. 3) cdftype = NF_CLASSIC_MODEL
-         IF (netcdf4_type .EQ. 4) cdftype = NF_NETCDF4
-         IF (netcdf4_type .EQ. 6) cdftype = NF_64BIT_OFFSET
-	 
-         mode_flag = IOR(nf_netcdf4, cdftype )
-         mode_flag = IOR(mode_flag, clobber_mode) 
+         IF (netcdf4_type .EQ. 3) THEN 
+	    cdftype = NF_CLASSIC_MODEL
 
 #ifdef usingDODSf2cUnderscore
-         cdfstat = NF_CREATE_(cdfname, mode_flag, cdfid)
+            cdfstat = NF_CREATE_(cdfname, clobber_mode, cdfid)
 #else
-         cdfstat = NF_CREATE(cdfname, mode_flag, cdfid)
+            cdfstat = NF_CREATE(cdfname, clobber_mode, cdfid)
 #endif
+         ELSE
+
+            IF (netcdf4_type .EQ. 4) cdftype = NF_NETCDF4
+            IF (netcdf4_type .EQ. 6) cdftype = NF_64BIT_OFFSET
+#ifdef usingDODSf2cUnderscore
+            cdfstat = NF_CREATE_(cdfname, OR(clobber_mode,cdftype), cdfid)
+#else
+            cdfstat = NF_CREATE(cdfname, OR(clobber_mode,cdftype), cdfid)
+#endif
+
+         ENDIF
 
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5100
          CALL CD_SET_MODE( cdfid, pcd_reset_define, status )

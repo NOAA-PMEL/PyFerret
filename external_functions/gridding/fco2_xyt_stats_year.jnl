@@ -7,6 +7,7 @@ DEFINE AXIS/T0="1-jan-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - of
      count_cruise = TRACKS2GRID_AVE_XYT(var,LON,LAT,DATE,CRUISE_NO,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
    
    SAVE/($file_qual)/FILE="($gridded_outfile)" count_cruise
+   sh axis tmnth
    DEFINE SYMBOL file_qual = APPEND
 
 ! Mean by cruise of Fco2_rec, with some data in each XYT cell
@@ -15,6 +16,7 @@ DEFINE AXIS/T0="1-jan-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - of
     fco2_cruise_ave = TRACKS2GRID_AVE_XYT(VAR,LON,LAT,DATE,CRUISE_NO,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
    
    SAVE/APPEND/FILE="($gridded_outfile)" fco2_cruise_ave
+   sh axis tmnth
    
 ! Mean longitude distance from grid cell center, cruise mean.
    LET var = lon
@@ -26,6 +28,7 @@ DEFINE AXIS/T0="1-jan-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - of
     lon_cruise_del_ave = (nearest_lon - lon_cruise_ave)
    
    SAVE/APPEND/FILE="($gridded_outfile)" lon_cruise_del_ave
+   sh axis tmnth
 
 ! Variance by cruise of Fco2_rec, with some data in each XYT cell
    LET fvar = fco2_rec
@@ -35,6 +38,7 @@ DEFINE AXIS/T0="1-jan-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - of
     date,cruise_no,x[gx=xlon],y[gy=ylat],t[gt=tmnth])
 
    SAVE/APPEND/FILE="($gridded_outfile)" fco2_weighted_std
+   sh axis tmnth
 
 ! Mean latitude distance from grid cell center, cruise mean.
    LET var = lat
@@ -46,6 +50,7 @@ DEFINE AXIS/T0="1-jan-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - of
     lat_cruise_del_ave = (nearest_lat - lat_cruise_ave)
    
    SAVE/APPEND/FILE="($gridded_outfile)" lat_cruise_del_ave
+   sh axis tmnth
 
 
 ! Now count all of observations in each XYT cell
@@ -54,6 +59,7 @@ DEFINE AXIS/T0="1-jan-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - of
      count_nbin = SCAT2GRID_NBIN_XYT(LON,LAT,DATE,var,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
    
    SAVE/APPEND/FILE="($gridded_outfile)" count_nbin
+   sh axis tmnth
 
 ! Mean delta-longitude of all observations in each XYT cell
    LET nearest_lon = IF lon GE 0 THEN (INT(lon) + 0.5) ELSE (INT(lon) - 0.5)
@@ -62,6 +68,7 @@ DEFINE AXIS/T0="1-jan-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - of
      mean_lon_del = SCAT2GRID_BIN_XYT(LON,LAT,DATE,x_from_lon,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
    
    SAVE/APPEND/FILE="($gridded_outfile)" mean_lon_del
+   sh axis tmnth
 
 
 ! Mean latitude distance from cell center, all observations in each XYT cell
@@ -71,17 +78,20 @@ DEFINE AXIS/T0="1-jan-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - of
      mean_lat_del = SCAT2GRID_BIN_XYT(LON,LAT,DATE,y_from_lat,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
    
    SAVE/APPEND/FILE="($gridded_outfile)" mean_lat_del
+   sh axis tmnth
 
 ! Mean fco2_rec, all observations in each XYT cell
    LET/UNITS="umol"/TITLE="fco2 mean - unweighted all obs" \
      mean_fco2_rec = SCAT2GRID_BIN_XYT(LON,LAT,DATE,fco2_rec,X[GX=xlon],Y[GY=ylat],T[GT=tmnth])
    
    SAVE/APPEND/FILE="($gridded_outfile)" mean_fco2_rec
+   sh axis tmnth
 
 ! unweighted std dev fco2
    LET/UNITS=umol/TITLE="fco2 std - unweighted all obs" \
      fco2_std_unwtd = SCAT2GRID_STD_XYT(lon, lat, date, fco2_rec, x[gx=xlon], y[gy=ylat], t[gt=tmnth])
    SAVE/APPEND/FILE="($gridded_outfile)" fco2_std_unwtd
+   sh axis tmnth
 
 ! Min and max fco2.  These are computed from one function with min at k=1, max at k=2.
 ! Use the Z=1:1@ave to remove the Z axis from the grid of the variable on output.
@@ -90,6 +100,9 @@ DEFINE AXIS/T0="1-jan-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - of
 
    LET/UNITS=umol/TITLE="fco2 min - unweighted all obs" fco2_min_unwtd = minmax[z=1:1@ave]
    SAVE/APPEND/FILE="($gridded_outfile)" fco2_min_unwtd
+   sh axis tmnth
 
    LET/UNITS=umol/TITLE="fco2 max - unweighted all obs" fco2_max_unwtd = minmax[z=2:2@ave]
    SAVE/APPEND/FILE="($gridded_outfile)" fco2_max_unwtd
+
+   sh axis tmnth

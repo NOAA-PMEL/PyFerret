@@ -8,7 +8,7 @@
 # "r" (remove)  - removes the "i" files
 
 until [ "$activity" == "i" ] || [ "$activity" == "r" ] || [ "$activity" == "q" ]; do
-   read -p "Install (i), remove (r), or quit (q)?" activity
+   read -p "Install (i), remove (r), or quit (q)? " activity
    case "$activity" in
       "i")
          echo "Installing FERRET links"

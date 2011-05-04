@@ -1,6 +1,6 @@
 #! /bin/csh
 ## This c-shell script is used to set environment variables need by
-## pyferret, and then execute ferret.py in python.  The intent of this
+## pyferret, and then init and run pyferret.  The intent of this
 ## script is to provide a traditional Ferret interface through pyferret.
 
 

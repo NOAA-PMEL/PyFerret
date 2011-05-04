@@ -41,6 +41,7 @@ pymod :
 
 .PHONY : install
 install :
+	mkdir -p $(FERLIBS)
 	cp -f $(DIR_PREFIX)/fer/threddsBrowser/threddsBrowser.jar $(FER_LIBS)
 	cd $(DIR_PREFIX) ; export HDF5_DIR=$(HDF5_DIR) ; export NETCDF_DIR=$(NETCDF_DIR) ; $(PYTHON_EXE) setup.py install $(PYTHON_INSTALL_FLAGS)
 	# $(MAKE) -C $(DIR_PREFIX)/external_functions install

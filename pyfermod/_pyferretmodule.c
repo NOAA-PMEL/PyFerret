@@ -870,9 +870,18 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
             /* PyArray_Size returns 0 if the object is not an appropriate type */
             /* ISCARRAY_RO checks if it is C-contiguous, aligned and in machine byte-order */
             num_coords[k] = PyArray_Size(seqitem);
-            if ( (num_coords[k] < 1) || (PyArray_TYPE(seqitem) != NPY_DOUBLE) ||
-                 (! PyArray_ISCARRAY_RO(seqitem)) ) {
-                PyErr_SetString(PyExc_ValueError, "an item of axis_coords is not an appropriate ndarray of type float64");
+            if ( num_coords[k] < 1 ) {
+                PyErr_SetString(PyExc_ValueError, "a standard axis of axis_coords has an invalid number of coordinates");
+                Py_DECREF(axis_coords_tuple);
+                return NULL;
+            }
+            if ( PyArray_TYPE(seqitem) != NPY_DOUBLE ) {
+                PyErr_SetString(PyExc_ValueError, "a standard axis of axis_coords has an invalid type");
+                Py_DECREF(axis_coords_tuple);
+                return NULL;
+            }
+            if ( ! PyArray_ISCARRAY_RO(seqitem) ) {
+                PyErr_SetString(PyExc_ValueError, "a standard axis of axis_coords is not an appropriate ndarray");
                 Py_DECREF(axis_coords_tuple);
                 return NULL;
             }
@@ -892,9 +901,19 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
             /* PyArray_Size returns 0 if the object is not an appropriate type */
             /* ISCARRAY_RO checks if it is C-contiguous, aligned and in machine byte-order */
             num_coords[k] = PyArray_Size(seqitem);
-            if ( (num_coords[k] < 1) || ((num_coords[k] % 6) != 0) || (PyArray_TYPE(seqitem) != NPY_INT) ||
-                 (! PyArray_ISCARRAY_RO(seqitem)) ) {
-                PyErr_SetString(PyExc_ValueError, "an item of axis_coords is not an appropriate ndarray of type int32");
+            if ( (num_coords[k] < 1) || ((num_coords[k] % 6) != 0) ) {
+                PyErr_SetString(PyExc_ValueError, "an absolute-time axis of axis_coords has an invalid number of coordinates");
+                Py_DECREF(axis_coords_tuple);
+                return NULL;
+            }
+            if ( (PyArray_TYPE(seqitem) != NPY_INT) &&
+                 ((PyArray_TYPE(seqitem) != NPY_LONG) || (NPY_SIZEOF_LONG != 4)) ) {
+                PyErr_SetString(PyExc_ValueError, "an absolute-time axis of axis_coords has an invalid type");
+                Py_DECREF(axis_coords_tuple);
+                return NULL;
+            }
+            if ( ! PyArray_ISCARRAY_RO(seqitem) ) {
+                PyErr_SetString(PyExc_ValueError, "an absolute-time axis of axis_coords is not an appropriate ndarray");
                 Py_DECREF(axis_coords_tuple);
                 return NULL;
             }

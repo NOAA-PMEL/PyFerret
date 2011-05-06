@@ -81,6 +81,7 @@
 * V65  *acm* 2/10- all warnings and notes to std error not std out
 * V663 *acm* 6/10 Fix bug where error message on bad time axis in des file 
 *                 overflows its text buffer
+* v67  *ACM* 5/11 lengthen string for error messages: long filenames overran string
 
 * CALLING ARGUMENTS
 *	dset_num - the data set fow which a time axis is desired
@@ -105,7 +106,7 @@
 
 *
 * LOCAL DEFINITIONS
-	CHARACTER*80	string
+	CHARACTER*1080	string
 	CHARACTER*13	TM_STRING
         CHARACTER*20    buff
 	INTEGER*4	scr, nsteps, istp, cpos, cpos1, bpos, bpos0,

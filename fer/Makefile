@@ -93,7 +93,6 @@ build: update fmt_libraries fer_libraries ppl_libraries special_code ferret thre
 ncdf4:	.FRC
 	mkdir -p ../lib
 	$(MAKE) "GUI_FAKES=special/gui_fakes.o" \
-		"DEBUG_TITLE = nc413snapshot" \
 		build
 
 # Dont seem to have all the static libraries we need for this.
@@ -106,7 +105,6 @@ ncdf4_static:	.FRC
 debug:	.FRC
 	mkdir -p ../lib
 	$(MAKE) "FFLAGS = $(FFLAGS) -Ddebug -O0 -g"  \
-		"DEBUG_TITLE = nc413snapshot" \
 		"CFLAGS = $(CFLAGS) -O0 -g" \
 		"GUI_FAKES=special/gui_fakes.o" build
 

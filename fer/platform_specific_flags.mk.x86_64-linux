@@ -7,8 +7,7 @@
 #
 
 #	NETCDF4_DIR     = /home/users/tmap/ferret/x86_64-linux
-#	NETCDF4_DIR     = /home/users/ansley/local/x86
-	NETCDF4_DIR     = /home/users/ansley/local/x86_nc413
+	NETCDF4_DIR     = /home/users/ansley/local/x86
 
 	INCLUDES        =  -I/../fmt/cmn/ \
 			  -I/$(NETCDF4_DIR)/include \

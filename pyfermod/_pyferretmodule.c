@@ -1528,5 +1528,7 @@ PyMODINIT_FUNC init_pyferret(void)
 
     /* Private parameter return value from _pyferret._run indicating the program should shut down */
     PyModule_AddIntConstant(mod, "_FERR_EXIT_PROGRAM", FERR_EXIT_PROGRAM);
+    /* Private parameter giving the maximum number of axis allowed in Ferret */
+    PyModule_AddIntConstant(mod, "_MAX_FERRET_NDIM", 4);
 }
 

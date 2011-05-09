@@ -80,6 +80,8 @@
 
 /* Need to include wchar.h for RH9 - *kob* 10/03 */
 #include <wchar.h>
+#include <stdlib.h>
+#include <string.h>
 #include "udposix.h"
 #include <math.h>
 #include <X11/Xlib.h>

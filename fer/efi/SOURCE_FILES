@@ -61,6 +61,7 @@ nco_attr.F\
 nco.F\
 nobad.F\
 pickindex.F\
+pt_in_poly.F\
 rect_to_curv.F\
 sampleij.F\
 samplet_date.F\

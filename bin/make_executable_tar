@@ -1,0 +1,52 @@
+#! /bin/csh -x
+# make_executable_tar
+# ver 1.0 5/99 *kob* 
+
+# this script encourages the tar file producer to make several manual
+# sanity checks but it does not enforce behavior
+
+if ( $#argv == 1 ) then
+   set targ_dist_parent = $argv[1]
+   set bin_dir = $targ_dist_parent
+else
+   echo usage:
+   echo "         make_environment_tar binary_area machine_type "
+   echo e.g. "'make_executable_tar /home/users/ansley/ferret_install_utilities/bin'"
+   echo will make a gzipped tar file with the Ferret executables that are 
+   echo in the /home/users/ansley/ferret_install_utilities/bin directory  
+   exit 0
+endif
+
+cd $bin_dir
+
+# get tar file location
+echo "Enter directory path to create the gzipped tar file in"
+set ans = $<
+set ctar_file = $ans/fer_executables.tar
+echo "Ready to create gzipped tar file $ctar_file"
+ready:
+echo "OK to continue ?"
+set ans = $<
+switch($ans)
+case y:
+   breaksw
+case n:
+   exit 0
+default:
+   echo "must answer y or n"
+   goto ready
+endsw
+
+# make the gzipped tar file
+rm -f .tar_create_log
+tar vcf $ctar_file * >& $bin_dir/.tar_create_log
+
+gzip $ctar_file
+
+ls -l $ctar_file.*
+echo "If there are any problems w/ the tar file, see "$bin_dir/".tar_create_log for"
+echo "more information"
+
+
+
+

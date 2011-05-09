@@ -24,8 +24,8 @@ What is needed
 Besides Fortran and C compilers, the following libraries are necessary to compile
 and link Ferret:
  
-	* netCDF library (version 4.1+ recommended; version 3.2 can be used)
-        * HDF libraries (version 1.8.4, or higher as recommended with the 
+	* netCDF library (version 4.2+ recommended; version 3.2 can be used)
+        * HDF libraries (the correct version as recommended with the 
 	               netCDF build instructions. Not needed if linking 
 		       with netCDF3.2)
         * Xgks libraries (source included)
@@ -41,10 +41,10 @@ The netCDF downloads can be found here:
 http://www.unidata.ucar.edu/software/netCDF/ 
 Build netCDF4.x with hdf5, version 1.8.4 (or higher, as recommended with the 
 netCDF source code you download); and with --enable-fortran in the configuration.
-Then configure netCDF4.1 with --with-hdf5,  --enable-netCDF-4  --enable-dap for
+Then configure netCDF4.2 with the hdf libraries specified,  --enable-netCDF-4  --enable-dap for
 for netCDF-4 features and OPeNDAP dataset access.
 
-The current official release of Ferret is linked with netCDF4.1.1 and has syntax 
+The current official release of Ferret is linked with netCDF4.2 and has syntax 
 for writing netCDF4 datasets (hdf5 chunking and compression.)  See the release 
 notes for Ferret v6.6. at 
 http://porter.pmel.noaa.gov/Ferret/home/documentation/v6-6-release-notes

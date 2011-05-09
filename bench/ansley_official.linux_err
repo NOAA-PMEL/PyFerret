@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ../fer/ferret_c
--rwxr-xr-x 1 ansley tmap 34563805 May  2 13:34 ../fer/ferret_c
-Using external functions from ../external_functions/ext_func
+Running FERRET version /home/stout/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 34569200 May  6 11:29 /home/stout/ansley/build/linux/FERRET/fer/ferret_c
+Using external functions from /home/stout/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: v6.7 release
+Note: v6.7 release, netCDF4.1.2
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/stout/ansley/build/linux/FERRET/bench
@@ -20,9 +20,9 @@ FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/stout/ansley/build/linux/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/ansley/tarfiles/lin/ppl/fonts
-Beginning at Mon May 2 13:42:01 PDT 2011
+Beginning at Fri May 6 11:30:26 PDT 2011
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3104,6 +3104,10 @@ Replacing definition of axis YAX_DUP_AXNAMES
  *** NOTE: Unsupported netCDF # of axes for variable. Ignoring AXY
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: broiled
@@ -3196,4 +3200,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon May 2 13:43:41 PDT 2011
+Ended at Fri May 6 11:32:06 PDT 2011

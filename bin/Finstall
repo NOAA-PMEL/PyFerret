@@ -253,7 +253,7 @@ install_execs() {
     fi
 
 #   The list of files - ferret* and gksm2ps - that will be going in $fer_dir/bin
-    ferbin_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz ferret\* gksm2ps 2> /dev/null`
+    ferbin_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz --wildcards ferret\* gksm2ps 2> /dev/null`
 #   Rename old executables if they exist
     for binfile in ${ferbin_files} ; do
         if [ -f "${fer_dir}/bin/${binfile}" ]; then
@@ -282,7 +282,7 @@ install_execs() {
     fi
 
 #   The list of files - *.so - that will be going in $fer_dir/ext_func/libs
-    feref_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz \*.so 2> /dev/null`
+    feref_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz --wildcards \*.so 2> /dev/null`
 #   Don't bother renaming existing files
 #   Check if there are any external function files provided
     if [ -n "${feref_files}" ]; then

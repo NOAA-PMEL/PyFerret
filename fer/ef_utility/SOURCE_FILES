@@ -1,6 +1,7 @@
 SRCS_F = \
 ef_bail_out.F\
 ef_get_arg_info.F\
+ef_get_arg_mem_subscripts.F\
 ef_get_arg_string.F\
 ef_get_arg_subscripts.F\
 ef_get_arg_ss_extremes.F\
@@ -15,6 +16,7 @@ ef_get_coordinates.F\
 ef_get_one_arg_string.F\
 ef_get_one_val_sub.F\
 ef_get_one_val_sub_sub.F\
+ef_get_res_mem_subscripts.F\
 ef_get_res_subscripts.F\
 ef_get_string_arg_element.F\
 ef_get_string_arg_element_len.F\

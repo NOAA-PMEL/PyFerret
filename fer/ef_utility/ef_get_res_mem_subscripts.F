@@ -1,11 +1,5 @@
-c*
-c* ef_get_res_subscripts.F
-c*
-c* Jonathan Callahan
-c* Apr 6th 1998
-c*
-c*
-   
+*
+* ef_get_res_subscripts.F
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -39,39 +33,28 @@ c*
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-c*
-c* Initialize the result context limits the EF will use.  
-c*
+*
+* Return the array memory limits in the common blocks for those
+* times when they cannot be retrieved directly.
+*
+      SUBROUTINE EF_GET_RES_MEM_SUBSCRIPTS(id, res_memlo, res_memhi)
 
-      SUBROUTINE EF_GET_RES_SUBSCRIPTS(id, res_lo_ss,
-     .     res_hi_ss, res_incr)
-
-      INCLUDE 'ferret.parm'
-      INCLUDE 'xvariables.cmn'
       INCLUDE 'EF_Util.parm'
+      INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER id, res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER idim
+* argument declarations
+      INTEGER id, res_memlo(4), res_memhi(4)
 
-      INTEGER mres
+      res_memlo(1) = memreslox
+      res_memlo(2) = memresloy
+      res_memlo(3) = memresloz
+      res_memlo(4) = memreslot
 
-c* The memory resident id for the rsult, "mres", was cached by 
-c* Ferret and must be retrieved to be accessible to the external function.
-      CALL EF_GET_MRES(mres)
+      res_memhi(1) = memreshix
+      res_memhi(2) = memreshiy
+      res_memhi(3) = memreshiz
+      res_memhi(4) = memreshit
 
-      DO 100 idim=1,4
-
-         res_lo_ss(idim) = mr_lo_ss(mres, idim)
-         res_hi_ss(idim) = mr_hi_ss(mres, idim)
-         IF (res_lo_ss(idim) .EQ. res_hi_ss(idim)) 
-     .        THEN
-            res_incr(idim) = 0
-         ELSE
-            res_incr(idim) = 1
-         ENDIF
-
- 100  CONTINUE
-
-      RETURN 
+      RETURN
       END
 

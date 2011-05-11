@@ -204,7 +204,13 @@
       NAMES(52) = 'AXIS_REDUCED' // CHAR(0)
       VALUES(52) = reduced
 
-      NUMVALS = 52
+      NAMES(53) = 'FLOAT_ARG' // CHAR(0)
+      VALUES(53) = float_arg
+
+      NAMES(54) = 'STRING_ARG' // CHAR(0)
+      VALUES(54) = string_arg
+
+      NUMVALS = 54
       RETURN
       END
 

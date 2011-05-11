@@ -19,13 +19,14 @@ def ferret_init(id):
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS),
-                "argnames": ("PDName", "PDParams", "Abscissae"),
-                "argdescripts": ("Probability distribution name: 1-normal, 2-chisq",
-                                 "Parameters for this probability distribution",
-                                 "Points at which to calculate the probability density function values"),
-		"influences": ((False, False, False, False),
-		               (False, False, False, False),
-		               (True,  True,  True,  True)),
+                "argnames": ("Abscissae", "PDName", "PDParams"),
+                "argdescripts": ("Points at which to calculate the probability density function values",
+                                 "Probability distribution name",
+                                 "Parameters for this probability distribution"),
+                "argtypes": (pyferret.FLOAT_ARG, pyferret.STRING_ARG, pyferret.FLOAT_ARG),
+                "influences": ((True,  True,  True,  True),
+                               (False, False, False, False),
+                               (False, False, False, False)),
               }
     return retdict
 
@@ -33,27 +34,21 @@ def ferret_init(id):
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     """
     Assigns result with the probability density function values for the
-    probability distribution indicated by inputs[0] using the parameters
-    given in inputs[1] at the abscissa values given by inputs[2].
+    probability distribution indicated by inputs[1] using the parameters
+    given in inputs[2] at the abscissa values given by inputs[0].
     """
-    distribname = (inputs[0].reshape(-1))[0]
-    distribparams = inputs[1].reshape(-1)
+    distribname = inputs[1]
+    distribparams = inputs[2].reshape(-1)
     distrib = pyferret.stats.getdistrib(distribname, distribparams)
-    badmask = ( numpy.fabs(inputs[2] - inpbdfs[2]) < 1.0E-5 )
-    goodmask = numpy.logical_not(badmask)
-    result[badmask] = resbdf
-    # array[goodmask] is a 1-D array
-    result[goodmask] = distrib.pdf(inputs[2][goodmask])
+    pyferret.stats.assignpdf(result, resbdf, distrib, inputs[0], inpbdfs[0])
 
 
 #
 # The rest of this is just for testing this module at the command line
 #
 if __name__ == "__main__":
-    print "ferret_init(0) returned: \n%s" % str(ferret_init(0))
-
     # Normal distribution along the Y axis
-    pfnum = numpy.array([1.0], dtype=numpy.float32)
+    pfname = "norm"
     pfparams = numpy.array([5.0, 2.0], dtype=numpy.float32)
     distf = scipy.stats.norm(5.0, 2.0)
     xvals = numpy.arange(0.0, 10.1, 0.5)
@@ -67,46 +62,17 @@ if __name__ == "__main__":
         else:
             abscissa[0, j, 0, 0] = xvals[j]
             expected[0, j, 0, 0] = pdfvals[j]
-    inpbdfs = numpy.array([0.0, 0.0, -1.0], dtype=numpy.float32)
+    inpbdfs = numpy.array([-1.0, 0.0, 0.0], dtype=numpy.float32)
 
     result = -888.0 * numpy.ones((1, 21, 1, 1), dtype=numpy.float32, order='F')
     resbdf = numpy.array([-2.0], dtype=numpy.float32)
 
-    ferret_compute(0, result, resbdf, (pfnum, pfparams, abscissa), inpbdfs)
-
-    print "Expected (flattened) = %s" % str(expected.reshape(-1))
-    print "Result (flattened) = %s" % str(result.reshape(-1))
+    ferret_compute(0, result, resbdf, (abscissa, pfname, pfparams), inpbdfs)
 
     if not numpy.allclose(result, expected):
-        raise ValueError, "Unexpected result"
-
-    # Chi-squared distribution along the Z axis
-    pfnum = numpy.array([2.0], dtype=numpy.float32)
-    pfparams = numpy.array([2.0], dtype=numpy.float32)
-    distf = scipy.stats.chi2(2.0)
-    xvals = numpy.arange(0.5, 10.6, 0.5)
-    pdfvals = distf.pdf(xvals)
-    abscissa = numpy.empty((1, 1, 21, 1), dtype=numpy.float32, order='F')
-    expected = numpy.empty((1, 1, 21, 1), dtype=numpy.float32, order='F')
-    for k in xrange(21):
-        if (k % 7) == 1:
-            abscissa[0, 0, k, 0] = -1.0
-            expected[0, 0, k, 0] = -2.0
-        else:
-            abscissa[0, 0, k, 0] = xvals[k]
-            expected[0, 0, k, 0] = pdfvals[k]
-    inpbdfs = numpy.array([0.0, 0.0, -1.0], dtype=numpy.float32)
-
-    result = -888.0 * numpy.ones((1, 1, 21, 1), dtype=numpy.float32, order='F')
-    resbdf = numpy.array([-2.0], dtype=numpy.float32)
-
-    ferret_compute(0, result, resbdf, (pfnum, pfparams, abscissa), inpbdfs)
-
-    print "Expected (flattened) = %s" % str(expected.reshape(-1))
-    print "Result (flattened) = %s" % str(result.reshape(-1))
-
-    if not numpy.allclose(result, expected):
-        raise ValueError, "Unexpected result"
+        print "Expected (flattened) = %s" % str(expected.reshape(-1))
+        print "Result (flattened) = %s" % str(result.reshape(-1))
+        raise ValueError("Unexpected result")
 
     # All successful
     print "Success"

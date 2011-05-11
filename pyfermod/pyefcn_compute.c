@@ -50,6 +50,8 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
     PyObject *nameobj;
     PyObject *usermod;
     int j, k;
+    int argtype;
+    char argtext[2048];
     npy_intp shape[MAX_FERRET_NDIM];
     npy_intp strides[MAX_FERRET_NDIM];
     int itemsize;
@@ -83,8 +85,52 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
         return;
     }
 
-    /* Create PyArray objects around the Fortran data arrays */
+    /* Create the Python objects for the inputs and result. */
     for (j = 0; j < numarrays; j++) {
+        if ( j > 0 ) {
+            argtype = -1;
+            ef_get_arg_type_(&id, &j, &argtype);
+            if ( argtype == STRING_ARG ) {
+                /* String argument; just create a PyString for this argument "array" */
+                /* Assumes gcc standard for passing Hollerith strings */
+                ef_get_arg_string_(&id, &j, argtext, 2048);
+                for (k = 2048; k > 0; k--)
+                    if ( ! isspace(argtext[k-1]) )
+                        break;
+                ndarrays[j] = PyString_FromStringAndSize(argtext, k);
+                if ( ndarrays[j] == NULL ) {
+                    /* Problems - Release references to the previous PyArray objects, assign errmsg, and return. */
+                    PyErr_Clear();
+                    sprintf(errmsg, "Problems creating a Python string from input argument %d", j);
+                    while ( j > 0 ) {
+                        j--;
+                        Py_DECREF(ndarrays[j]);
+                    }
+                    Py_DECREF(usermod);
+                    return;
+                }
+                /* Done with this string input argument */
+                continue;
+            }
+            if ( argtype != FLOAT_ARG ) {
+                /*
+                 * Unknown type or error getting the type (invalid id).  Release references
+                 * to the previous PyArray objects, assign errmsg, and return.
+                 */
+                PyErr_Clear();
+                if ( argtype == -1 )
+                    sprintf(errmsg, "Invalid function id %d", id);
+                else
+                    sprintf(errmsg, "Unexpected error: unknown argtype %d for arg %d", argtype, j);
+                while ( j > 0 ) {
+                    j--;
+                    Py_DECREF(ndarrays[j]);
+                }
+                Py_DECREF(usermod);
+                return;
+            }
+        }
+        /* Create a PyArray object around the Fortran data array */
         /* Gets the dimensions of the array */
         for (k = 0; k < MAX_FERRET_NDIM; k++)
             shape[k] = (npy_intp) ((stephi[j][k] - steplo[j][k] + incr[j][k]) / (incr[j][k]));

@@ -59,16 +59,17 @@ def init(arglist=None, enterferret=True):
     Otherwise, if enterferret is False, this method just returns the
     success return value of the run method: (FERR_OK, '')
 
-    If enterferret is True this routine calls the run method with no
-    arguments in order to enter into Ferret command-line processing.
-    The value returned from call to the run method is then returned.
+    If enterferret is True (unless '-python' is given in arglist)
+    this routine calls the run method with no arguments in order to
+    enter into Ferret command-line processing.  The value returned
+    from call to the run method is then returned.
     """
 
     ferret_help_message = \
     """
 
     Usage:  ferret7  [-memsize <N>]  [-batch [<filename>]]  [-gif]  [-nojnl]  [-noverify]
-                     [-version]  [-help]  [-script <scriptname> [ <scriptarg> ... ]]
+                     [-python]  [-version]  [-help]  [-script <scriptname> [ <scriptarg> ... ]]
 
        -memsize:   initialize the memory cache size to <N> (default 25.6) megafloats
                    (where 1 float = 4 bytes)
@@ -79,6 +80,8 @@ def init(arglist=None, enterferret=True):
                    SET MODE JOURNAL)
        -noverify:  on startup turn off verify mode (can be turned on later with
                    SET MODE VERIFY)
+       -python:    start at the Python prompt instead of the Ferret prompt
+                   (the ferret prompt can be obtained entering 'pyferret.run()')
        -version:   print the Ferret header with version number and quit
        -help:      print this help message and quit
        -script:    execute the script <scriptname> with any arguments specified,
@@ -89,6 +92,7 @@ def init(arglist=None, enterferret=True):
     my_memsize = 25.6
     my_journal = True
     my_verify = True
+    my_enterferret = enterferret
     script = None
     print_help = False
     just_exit = False
@@ -103,9 +107,9 @@ def init(arglist=None, enterferret=True):
                 try:
                     my_memsize = float(arglist[k])
                 except:
-                    raise ValueError, "a positive number must be given for a -memsize value"
+                    raise ValueError("a positive number must be given for a -memsize value")
                 if my_memsize <= 0.0:
-                    raise ValueError, "a positive number must be given for a -memsize value"
+                    raise ValueError("a positive number must be given for a -memsize value")
             elif opt == "-batch":
                 my_metaname = "metafile.plt"
                 k += 1
@@ -123,6 +127,8 @@ def init(arglist=None, enterferret=True):
                 my_journal = False
             elif opt == "-noverify":
                 my_verify = False
+            elif opt == "-python":
+                my_enterferret = False
             elif opt == "-version":
                 just_exit = True
                 break
@@ -134,14 +140,14 @@ def init(arglist=None, enterferret=True):
                 try:
                     script = arglist[k:]
                     if len(script) == 0:
-                        raise ValueError, "a script filename must be given for the -script value"
+                        raise ValueError("a script filename must be given for the -script value")
                 except:
-                    raise ValueError, "a script filename must be given for the -script value"
+                    raise ValueError("a script filename must be given for the -script value")
                 # -script implies -nojnl
                 my_journal = False
                 break
             else:
-                raise ValueError, "unrecognized option '%s'" % opt
+                raise ValueError("unrecognized option '%s'" % opt)
             k += 1
     except ValueError, errmsg:
         # print the error message then mark for print the help message
@@ -154,7 +160,7 @@ def init(arglist=None, enterferret=True):
     if just_exit:
         # print the ferret header then exit completely
         start(journal=False, verify=False, metaname=".gif")
-        run("exit")
+        run("exit /program")
         # should not get here
         raise SystemExit
     # start ferret
@@ -164,15 +170,26 @@ def init(arglist=None, enterferret=True):
     if home_val:
         init_script = os.path.join(home_val, '.ferret')
         if os.path.exists(init_script):
-            run('go "%s" ; exit /topy' % init_script)
+            try:
+                run('go "%s"; exit /topy' % init_script)
+            except:
+                print >>sys.stderr, " **Error: exception raised in runnning script %s" % init_script
+                run('exit /program')
+                # should not get here
+                raise SystemExit
     # if a command-line script is given, run the script and exit completely
     if script != None:
         script_line = " ".join(script)
-        run('go "%s" ; exit /program' % script_line)
+        try:
+            run('go "%s"; exit /program' % script_line)
+        except:
+            print >>sys.stderr, " **Error: exception raised in running script %s" * script_line
+        # If exception or if returned early, force shutdown
+        run('exit /program')
         # should not get here
         raise SystemExit
     # if they don't want to enter ferret, return the success value from run
-    if not enterferret:
+    if not my_enterferret:
         return (_pyferret.FERR_OK, '')
     # otherwise, go into Ferret command-line processing until "exit /topy" or "exit /program"
     result = run()
@@ -208,12 +225,12 @@ def start(memsize=25.6, journal=True, verify=True, metaname=None):
         if flt_memsize <= 0.0:
             raise ValueError
     except:
-        raise ValueError, "memsize must be a positive number"
+        raise ValueError("memsize must be a positive number")
     # check metaname
     if metaname == None:
         str_metaname = ""
     elif not isinstance(metaname, str):
-        raise ValueError, "metaname must either be None or a string"
+        raise ValueError("metaname must either be None or a string")
     elif metaname.isspace():
         str_metaname = ""
     else:
@@ -242,7 +259,7 @@ def resize(memsize):
         if flt_memsize <= 0.0:
             raise ValueError
     except:
-        raise ValueError, "memsize must be a positive number"
+        raise ValueError("memsize must be a positive number")
     # the actual call
     return _pyferret._resize(flt_memsize)
 
@@ -272,7 +289,7 @@ def run(command=None):
     if command == None:
         str_command = ""
     elif not isinstance(command, str):
-        raise ValueError, "command must either be None or a string"
+        raise ValueError("command must either be None or a string")
     elif command.isspace():
         str_command = ""
     else:
@@ -304,7 +321,7 @@ def metastr(datadict):
     uc_month = { 1: "JAN", 2:"FEB", 3:"MAR", 4:"APR", 5:"MAY", 6:"JUN",
                  7:"JUL", 8:"AUG", 9:"SEP", 10:"OCT", 11:"NOV", 12:"DEC" }
     if not isinstance(datadict, dict):
-        raise TypeError, "datadict is not a dictionary"
+        raise TypeError("datadict is not a dictionary")
     # specify an order of output for standard keys, leaving out "data"
     keylist = [ "name", "title", "dset", "data_unit", "missing_value",
                 "axis_names", "axis_types", "axis_units", "axis_coords" ]
@@ -472,9 +489,9 @@ def getdata(name, create_mask=True):
                            "DEGREES S", "DEGREES_S", "DEGREES SOUTH", "DEGREES_SOUTH" ]
     # check name
     if not isinstance(name, str):
-        raise ValueError, "name must be a string"
+        raise ValueError("name must be a string")
     elif name.isspace():
-        raise ValueError, "name cannot be an empty string"
+        raise ValueError("name cannot be an empty string")
     # get the data and related information from Ferret
     vals = _pyferret._get(name)
     # break apart the tuple to simplify (returning a dictionary would have been better)
@@ -591,10 +608,10 @@ def get(name, create_mask=True):
                 calendar_type = cdtime.JulianCalendar
             else:
                 if axis_units[k] == "CALTYPE_ALLLEAP":
-                    raise ValueError, "The all-leap calendar not support by cdms2"
+                    raise ValueError("The all-leap calendar not support by cdms2")
                 if axis_units[k] == "CALTYPE_NONE":
-                    raise ValueError, "Undesignated calendar not support by cdms2"
-                raise RuntimeError, "Unexpected calendar type of %s" % axis_units[k]
+                    raise ValueError("Undesignated calendar not support by cdms2")
+                raise RuntimeError("Unexpected calendar type of %s" % axis_units[k])
             newaxis.designateTime(calendar=calendar_type)
             # and finally append it to the axis list
             var_axes.append(newaxis)
@@ -631,7 +648,7 @@ def get(name, create_mask=True):
         elif axis_types[k] == _pyferret.AXISTYPE_NORMAL:
             var_axes.append(None)
         else:
-            raise RuntimeError, "Unexpected axis type of %d" % axis_types[k]
+            raise RuntimeError("Unexpected axis type of %d" % axis_types[k])
     # getdata returns a copy of the data, thus createVariable does not
     # need to force a copy.  The mask, if request, was created by getdata.
     datavar = cdms2.createVariable(data, fill_value=bdfs[0], axes=var_axes,
@@ -692,7 +709,7 @@ def put(datavar, axis_pos=None):
     # code name for the Ferret variable
     codename = datavar.id.strip()
     if codename == "":
-        raise ValueError, "The id attribute must be a non-blank string"
+        raise ValueError("The id attribute must be a non-blank string")
     #
     # title name for the Ferret variable
     try:
@@ -718,7 +735,7 @@ def put(datavar, axis_pos=None):
     # get the list of axes and initialize the axis information lists
     axis_list = datavar.getAxisList()
     if len(axis_list) > _pyferret._MAX_FERRET_NDIM:
-        raise ValueError, "More than %d axes is not supported in Ferret at this time" % _pyferret._MAX_FERRET_NDIM
+        raise ValueError("More than %d axes is not supported in Ferret at this time" % _pyferret._MAX_FERRET_NDIM)
     axis_types = [ _pyferret.AXISTYPE_NORMAL ] * _pyferret._MAX_FERRET_NDIM
     axis_names = [ "" ] * _pyferret._MAX_FERRET_NDIM
     axis_units = [ "" ] * _pyferret._MAX_FERRET_NDIM
@@ -771,8 +788,8 @@ def put(datavar, axis_pos=None):
                     axis_units[k] = "CALTYPE_JULIAN"
                 else:
                     if calendar_type == cdtime.MixedCalendar:
-                        raise ValueError, "The cdtime.MixedCalendar not support by pyferret"
-                    raise ValueError, "Unknown cdtime calendar %s" % str(calendar_type)
+                        raise ValueError("The cdtime.MixedCalendar not support by pyferret")
+                    raise ValueError("Unknown cdtime calendar %s" % str(calendar_type))
             except AttributeError:
                 axis_types[k] = _pyferret.AXISTYPE_CUSTOM
             #
@@ -786,7 +803,7 @@ def put(datavar, axis_pos=None):
                 axis_units[k] = axis_data[0].units
                 for t in xrange(1, len(axis_data)):
                     if axis_data[t].units != axis_units[k]:
-                        raise ValueError, "Relative time axis does not have a consistent start point"
+                        raise ValueError("Relative time axis does not have a consistent start point")
         #
         # cdms2 will create an axis if None (normal axis) was given, so create a
         # custom or abstract axis only if it does not look like a cdms2-created axis
@@ -909,7 +926,7 @@ def putdata(datavar_dict, axis_pos=None):
     if codename != None:
         codename = str(codename).strip()
     if not codename:
-        raise ValueError, "The value of 'name' must be a non-blank string"
+        raise ValueError("The value of 'name' must be a non-blank string")
     #
     # title for the variable
     titlename = str(datavar_dict.get('title', codename)).strip()
@@ -928,7 +945,7 @@ def putdata(datavar_dict, axis_pos=None):
     given_axis_types = datavar_dict.get('axis_types', None)
     if given_axis_types:
         if len(given_axis_types) > _pyferret._MAX_FERRET_NDIM:
-            raise ValueError, "More than %d axes (in the types) is not supported in Ferret at this time" % _pyferret._MAX_FERRET_NDIM
+            raise ValueError("More than %d axes (in the types) is not supported in Ferret at this time" % _pyferret._MAX_FERRET_NDIM)
         for k in xrange(len(given_axis_types)):
             axis_types[k] = given_axis_types[k]
     #
@@ -937,7 +954,7 @@ def putdata(datavar_dict, axis_pos=None):
     given_axis_names = datavar_dict.get('axis_names', None)
     if given_axis_names:
         if len(given_axis_names) > _pyferret._MAX_FERRET_NDIM:
-            raise ValueError, "More than %d axes (in the names) is not supported in Ferret at this time" % _pyferret._MAX_FERRET_NDIM
+            raise ValueError("More than %d axes (in the names) is not supported in Ferret at this time" % _pyferret._MAX_FERRET_NDIM)
         for k in xrange(len(given_axis_names)):
             axis_names[k] = given_axis_names[k]
     #
@@ -946,7 +963,7 @@ def putdata(datavar_dict, axis_pos=None):
     given_axis_units = datavar_dict.get('axis_units', None)
     if given_axis_units:
         if len(given_axis_units) > _pyferret._MAX_FERRET_NDIM:
-            raise ValueError, "More than %d axes (in the units) is not supported in Ferret at this time" % _pyferret._MAX_FERRET_NDIM
+            raise ValueError("More than %d axes (in the units) is not supported in Ferret at this time" % _pyferret._MAX_FERRET_NDIM)
         for k in xrange(len(given_axis_units)):
             axis_units[k] = given_axis_units[k]
     # axis coordinates
@@ -954,7 +971,7 @@ def putdata(datavar_dict, axis_pos=None):
     given_axis_coords = datavar_dict.get('axis_coords', None)
     if given_axis_coords:
         if len(given_axis_coords) > _pyferret._MAX_FERRET_NDIM:
-            raise ValueError, "More than %d axes (in the coordinates) is not supported in Ferret at this time" % _pyferret._MAX_FERRET_NDIM
+            raise ValueError("More than %d axes (in the coordinates) is not supported in Ferret at this time" % _pyferret._MAX_FERRET_NDIM)
         for k in xrange(len(given_axis_units)):
             axis_coords[k] = given_axis_coords[k]
     #
@@ -966,12 +983,12 @@ def putdata(datavar_dict, axis_pos=None):
     try:
         shape = datavar.shape
         if len(shape) > _pyferret._MAX_FERRET_NDIM:
-            raise ValueError, "More than %d axes (in the data) is not supported in Ferret at this time" % _pyferret._MAX_FERRET_NDIM
+            raise ValueError("More than %d axes (in the data) is not supported in Ferret at this time" % _pyferret._MAX_FERRET_NDIM)
         for k in xrange(len(shape)):
             if (shape[k] > 1) and (axis_types[k] == _pyferret.AXISTYPE_NORMAL):
                 axis_types[k] = _pyferret.AXISTYPE_ABSTRACT
     except AttributeError:
-        raise ValueError, "The value of 'data' must be a NumPy ndarray (or derived from an ndarray)"
+        raise ValueError("The value of 'data' must be a NumPy ndarray (or derived from an ndarray)")
     #
     # assign any defaults on the axis information not given,
     # and make a copy of the axis coordinates (to ensure they are well-behaved)
@@ -981,44 +998,44 @@ def putdata(datavar_dict, axis_pos=None):
                 axis_units[k] = "DEGREES_E"
             axis_coords[k] = numpy.array(axis_coords[k], dtype=numpy.float64, copy=1)
             if axis_coords[k].shape[0] != shape[k]:
-                raise ValueError, "number of coordinates for axis %d does not match the number of data points" % (k+1)
+                raise ValueError("number of coordinates for axis %d does not match the number of data points" % (k+1))
         elif axis_types[k] == _pyferret.AXISTYPE_LATITUDE:
             if not axis_units[k]:
                 axis_units[k] = "DEGREES_N"
             axis_coords[k] = numpy.array(axis_coords[k], dtype=numpy.float64, copy=1)
             if axis_coords[k].shape[0] != shape[k]:
-                raise ValueError, "number of coordinates for axis %d does not match the number of data points" % (k+1)
+                raise ValueError("number of coordinates for axis %d does not match the number of data points" % (k+1))
         elif axis_types[k] == _pyferret.AXISTYPE_LEVEL:
             axis_coords[k] = numpy.array(axis_coords[k], dtype=numpy.float64, copy=1)
             if axis_coords[k].shape[0] != shape[k]:
-                raise ValueError, "number of coordinates for axis %d does not match the number of data points" % (k+1)
+                raise ValueError("number of coordinates for axis %d does not match the number of data points" % (k+1))
         elif axis_types[k] == _pyferret.AXISTYPE_TIME:
             if not axis_units[k]:
                 axis_units[k] = "CALTYPE_GREGORIAN"
             axis_coords[k] = numpy.array(axis_coords[k], dtype=numpy.int32, order='C', copy=1)
             if axis_coords[k].shape[0] != shape[k]:
-                raise ValueError, "number of coordinates for axis %d does not match the number of data points" % (k+1)
+                raise ValueError("number of coordinates for axis %d does not match the number of data points" % (k+1))
             if axis_coords[k].shape[1] != 6:
-                raise ValueError, "number of components (second index) for time axis %d is not 6" % (k+1)
+                raise ValueError("number of components (second index) for time axis %d is not 6" % (k+1))
         elif axis_types[k] == _pyferret.AXISTYPE_CUSTOM:
             axis_coords[k] = numpy.array(axis_coords[k], dtype=numpy.float64, copy=1)
             if axis_coords[k].shape[0] != shape[k]:
-                raise ValueError, "number of coordinates for axis %d does not match the number of data points" % (k+1)
+                raise ValueError("number of coordinates for axis %d does not match the number of data points" % (k+1))
         elif axis_types[k] == _pyferret.AXISTYPE_ABSTRACT:
             axis_coords[k] = numpy.array(axis_coords[k], dtype=numpy.float64, copy=1)
             if axis_coords[k].shape[0] != shape[k]:
-                raise ValueError, "number of coordinates for axis %d does not match the number of data points" % (k+1)
+                raise ValueError("number of coordinates for axis %d does not match the number of data points" % (k+1))
         elif axis_types[k] == _pyferret.AXISTYPE_NORMAL:
             axis_coords[k] = None
         else:
-            raise RuntimeError, "Unexpected axis_type of %d" % axis_types[k]
+            raise RuntimeError("Unexpected axis_type of %d" % axis_types[k])
     #
     # figure out the desired axis order
     if axis_pos != None:
         # start with the positions provided by the user
         ferr_axis = list(axis_pos)
         if len(ferr_axis) < len(shape):
-            raise ValueError, "axis_pos, if given, must provide a position for each axis in the data"
+            raise ValueError("axis_pos, if given, must provide a position for each axis in the data")
         # append undefined axes positions, which were initialized to AXISTYPE_NORMAL
         if not _pyferret.X_AXIS in ferr_axis:
             ferr_axis.append(_pyferret.X_AXIS)
@@ -1030,7 +1047,7 @@ def putdata(datavar_dict, axis_pos=None):
             ferr_axis.append(_pyferret.T_AXIS)
         # intentionally left as 4 (instead of _MAX_FERRET_NDIM) since new axes will need to be appended
         if len(ferr_axis) != 4:
-            raise ValueError, "axis_pos can contain at most one of each of the pyferret integer values X_AXIS, Y_AXIS, Z_AXIS, or T_AXIS"
+            raise ValueError("axis_pos can contain at most one of each of the pyferret integer values X_AXIS, Y_AXIS, Z_AXIS, or T_AXIS")
     else:
         ferr_axis = [ -1 ] * _pyferret._MAX_FERRET_NDIM
         # assign positions of longitude/latitude/level/time
@@ -1058,7 +1075,7 @@ def putdata(datavar_dict, axis_pos=None):
             ferr_axis[ferr_axis.index(-1)] = _pyferret.T_AXIS
         try:
             ferr_axis.index(-1)
-            raise RuntimeError, "Unexpected undefined axis position (_MAX_FERRET_NDIM increased?) in ferr_axis " + str(ferr_axis)
+            raise RuntimeError("Unexpected undefined axis position (_MAX_FERRET_NDIM increased?) in ferr_axis " + str(ferr_axis))
         except ValueError:
             # expected result
             pass
@@ -1163,6 +1180,10 @@ def ferret_pyfunc():
                             [optional; default: (A, B, ...)]
             "argdescripts": N-tuple of descriptions for the input arguments
                             [optional; default: no descriptions]
+            "argtypes":     N-tuple of FLOAT_ARG or STRING_ARG, indicating whether
+                            the input argument is an array of floating-point values
+                            or a single string value.
+                            [optional; default: FLOAT_ARG for every argument]
             "influences":   N-tuple of 4-tuples of booleans indicating whether the
                             corresponding input argument's (X,Y,Z,T) axis influences
                             the result grid's (X,Y,Z,T) axis.  [optional; default,
@@ -1276,21 +1297,21 @@ def get_axis_coordinates(id, arg, axis):
         if int_id < 0:
             raise ValueError
     except:
-        raise ValueError, "id must be a positive integer value"
+        raise ValueError("id must be a positive integer value")
     # check the arg index
     try:
         int_arg = int(arg)
         if (int_arg < _pyferret.ARG1) or (int_arg > _pyferret.ARG9):
             raise ValueError
     except:
-        raise ValueError, "arg must be an integer value in [%d,%d]" % (_pyferret.ARG1,_pyferret.ARG9)
+        raise ValueError("arg must be an integer value in [%d,%d]" % (_pyferret.ARG1,_pyferret.ARG9))
     # check the axis index
     try:
         int_axis = int(axis)
         if (int_axis < _pyferret.X_AXIS) or (int_axis > _pyferret.T_AXIS):
             raise ValueError
     except:
-        raise ValueError, "axis must be an integer value in [%d,%d]" % (_pyferret.X_AXIS,_pyferret.T_AXIS)
+        raise ValueError("axis must be an integer value in [%d,%d]" % (_pyferret.X_AXIS,_pyferret.T_AXIS))
     # make the actual call
     return _pyferret._get_axis_coordinates(int_id, int_arg, int_axis)
 
@@ -1316,21 +1337,21 @@ def get_axis_box_sizes(id, arg, axis):
         if int_id < 0:
             raise ValueError
     except:
-        raise ValueError, "id must be a positive integer value"
+        raise ValueError("id must be a positive integer value")
     # check the arg index
     try:
         int_arg = int(arg)
         if (int_arg < _pyferret.ARG1) or (int_arg > _pyferret.ARG9):
             raise ValueError
     except:
-        raise ValueError, "arg must be an integer value in [%d,%d]" % (_pyferret.ARG1,_pyferret.ARG9)
+        raise ValueError("arg must be an integer value in [%d,%d]" % (_pyferret.ARG1,_pyferret.ARG9))
     # check the axis index
     try:
         int_axis = int(axis)
         if (int_axis < _pyferret.X_AXIS) or (int_axis > _pyferret.T_AXIS):
             raise ValueError
     except:
-        raise ValueError, "axis must be an integer value in [%d,%d]" % (_pyferret.X_AXIS,_pyferret.T_AXIS)
+        raise ValueError("axis must be an integer value in [%d,%d]" % (_pyferret.X_AXIS,_pyferret.T_AXIS))
     # make the actual call
     return _pyferret._get_axis_box_sizes(int_id, int_arg, int_axis)
 
@@ -1356,21 +1377,21 @@ def get_axis_box_limits(id, arg, axis):
         if int_id < 0:
             raise ValueError
     except:
-        raise ValueError, "id must be a positive integer value"
+        raise ValueError("id must be a positive integer value")
     # check the arg index
     try:
         int_arg = int(arg)
         if (int_arg < _pyferret.ARG1) or (int_arg > _pyferret.ARG9):
             raise ValueError
     except:
-        raise ValueError, "arg must be an integer value in [%d,%d]" % (_pyferret.ARG1,_pyferret.ARG9)
+        raise ValueError("arg must be an integer value in [%d,%d]" % (_pyferret.ARG1,_pyferret.ARG9))
     # check the axis index
     try:
         int_axis = int(axis)
         if (int_axis < _pyferret.X_AXIS) or (int_axis > _pyferret.T_AXIS):
             raise ValueError
     except:
-        raise ValueError, "axis must be an integer value in [%d,%d]" % (_pyferret.X_AXIS,_pyferret.T_AXIS)
+        raise ValueError("axis must be an integer value in [%d,%d]" % (_pyferret.X_AXIS,_pyferret.T_AXIS))
     # make the actual call
     return _pyferret._get_axis_box_limits(int_id, int_arg, int_axis)
 
@@ -1401,21 +1422,21 @@ def get_axis_info(id, arg, axis):
         if int_id < 0:
             raise ValueError
     except:
-        raise ValueError, "id must be a positive integer value"
+        raise ValueError("id must be a positive integer value")
     # check the arg index
     try:
         int_arg = int(arg)
         if (int_arg < _pyferret.ARG1) or (int_arg > _pyferret.ARG9):
             raise ValueError
     except:
-        raise ValueError, "arg must be an integer value in [%d,%d]" % (_pyferret.ARG1,_pyferret.ARG9)
+        raise ValueError("arg must be an integer value in [%d,%d]" % (_pyferret.ARG1,_pyferret.ARG9))
     # check the axis index
     try:
         int_axis = int(axis)
         if (int_axis < _pyferret.X_AXIS) or (int_axis > _pyferret.T_AXIS):
             raise ValueError
     except:
-        raise ValueError, "axis must be an integer value in [%d,%d]" % (_pyferret.X_AXIS,_pyferret.T_AXIS)
+        raise ValueError("axis must be an integer value in [%d,%d]" % (_pyferret.X_AXIS,_pyferret.T_AXIS))
     # make the actual call
     return _pyferret._get_axis_info(int_id, int_arg, int_axis)
 

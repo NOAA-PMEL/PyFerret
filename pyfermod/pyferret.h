@@ -59,6 +59,8 @@ void ef_get_single_axis_info_(int *id, int *argnum, int *axisnum,
                               int *backwards_axis, int *modulo_axis, int *regular_axis,
                               int maxlen_axisname, int maxlen_axisunit);
 void finalize_(void);
+void ef_get_arg_type_(int *id, int *argnum, int *argtype);
+void ef_get_arg_string_(int *id, int *argnum, char *argtext, int maxlen_argtext);
 void get_axis_num_(int *axisnum, int *axisstart, int *axisend, char axisname[], char axisunit[], 
                    double axiscoords[], int *numcoords, AXISTYPE *axistype, char *errmsg, 
                    int *lenerrmsg, int maxlen_axisname, int maxlen_axisunit, int maxlen_errmsg);

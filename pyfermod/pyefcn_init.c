@@ -60,6 +60,7 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     int        rsltaxes[MAX_FERRET_NDIM];
     PyObject  *itemobj;
     char       name[EF_MAX_NAME_LENGTH];
+    int        argtype;
     PyObject  *subseqobj;
     int        subseqlen;
     PyObject  *subsubseqobj;
@@ -313,6 +314,56 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     Py_XDECREF(seqobj);
 
     /*
+     * "argtypes": N-tuple of types for the input arguments [optional, default: FLOAT_ARG]
+     *             FLOAT_ARG and STRING_ARG are supported
+     */
+    valobj = PyDict_GetItemString(initdict, "argtypes"); /* borrowed reference */
+    if ( valobj != NULL ) {
+        seqobj = PySequence_Fast(valobj, "argtypes value");
+        if ( seqobj == NULL ) {
+            PyErr_Clear();
+            Py_DECREF(initdict);
+            strcpy(errmsg, "Invalid \"argtypes\" value (not a tuple or list)");
+            return;
+        }
+        seqlen = (int) PySequence_Fast_GET_SIZE(seqobj);
+        if ( seqlen > num_args ) {
+            Py_DECREF(seqobj);
+            Py_DECREF(initdict);
+            strcpy(errmsg, "Invalid \"argtypes\" value (tuple or list with too many items)");
+            return;
+        }
+    }
+    else {
+        seqobj = NULL;
+        seqlen = -1;
+    }
+    for (j = 0; j < num_args; j++) {
+        /* FLOAT_ARG is the default */
+        argtype = FLOAT_ARG;
+        if ( j < seqlen ) {
+            /* Get the type from the tuple */
+            itemobj = PySequence_Fast_GET_ITEM(seqobj, (Py_ssize_t) j); /* borrowed reference */
+            switch( (int) PyInt_AsLong(itemobj) ) {
+                case FLOAT_ARG:
+                    argtype = FLOAT_ARG;
+                    break;
+                case STRING_ARG:
+                    argtype = STRING_ARG;
+                    break;
+                default:
+                    Py_DECREF(seqobj);
+                    Py_DECREF(initdict);
+                    sprintf(errmsg, "Unknown \"argtypes\" value for ARG%d", j+1);
+                    return;
+            }
+        }
+        q = j+1;
+        ef_set_arg_type_(&id, &q, &argtype);
+    }
+    Py_XDECREF(seqobj);
+
+    /*
      * "influences": N-tuple of 4-tuples of booleans indicating whether the corresponding input
      *               argument's (X,Y,Z,T) axis influences the result grid's (X,Y,Z,T) axis.
      *               [optional, None for a 4-tuple and default: True for each value]
@@ -516,8 +567,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
         }
         if ( (strcmp(strptr, "numargs") != 0) && (strcmp(strptr, "descript") != 0) &&
              (strcmp(strptr, "axes") != 0) && (strcmp(strptr, "argnames") != 0) &&
-             (strcmp(strptr, "argdescripts") != 0) && (strcmp(strptr, "influences") != 0) &&
-             (strcmp(strptr, "extends") != 0) ) {
+             (strcmp(strptr, "argdescripts") != 0) && (strcmp(strptr, "argtypes") != 0) &&
+             (strcmp(strptr, "influences") != 0) && (strcmp(strptr, "extends") != 0) ) {
             sprintf(errmsg, "Invalid key \"%s\" in the dictionary returned from %s in %s", strptr, INIT_METHOD_NAME, modname);
             Py_DECREF(seqobj);
             Py_DECREF(keysobj);

@@ -53,7 +53,7 @@ def getdistrib(distribname, distribparams):
         if gamma <= 0.0:
            raise ValueError("Invalid parameter for the Cauchy distribution")
         distrib = scipy.stats.cauchy(m, gamma)
-    elif (lcdistname == "chi2") or (lcdistname == "chi_square"):
+    elif (lcdistname == "chi2") or (lcdistname == "chi-square"):
         if len(distribparams) != 1:
            raise ValueError("One parameter expected for the Chi-squared distribution")
         degfree = float(distribparams[0])
@@ -107,7 +107,7 @@ def getdistrib(distribname, distribparams):
         if b <= 0.0:
            raise ValueError("Invalid parameter for the Laplace distribution")
         distrib = scipy.stats.laplace(mu, b)
-    elif (lcdistname == "lognorm") or (lcdistname == "log_normal"):
+    elif (lcdistname == "lognorm") or (lcdistname == "log-normal"):
         if len(distribparams) != 2:
            raise ValueError("Two parameters expected for the Log-normal distribution")
         mu = math.exp(float(distribparams[0]))
@@ -115,7 +115,7 @@ def getdistrib(distribname, distribparams):
         if sigma <= 0.0:
            raise ValueError("Invalid parameter for the Log-normal distribution")
         distrib = scipy.stats.lognorm(sigma, scale=mu)
-    elif (lcdistname == "nbinom") or (lcdistname == "negative_binomial"):
+    elif (lcdistname == "nbinom") or (lcdistname == "negative-binomial"):
         if len(distribparams) != 2:
            raise ValueError("Two parameters expected for the Negative-binomial distribution")
         numsuccess = float(distribparams[0])
@@ -146,14 +146,14 @@ def getdistrib(distribname, distribparams):
         if mu <= 0.0:
            raise ValueError("Invalid parameter for the Poisson distribution")
         distrib = scipy.stats.poisson(mu)
-    elif (lcdistname == "t") or (lcdistname == "students_t"):
+    elif (lcdistname == "t") or (lcdistname == "students-t"):
         if len(distribparams) != 1:
            raise ValueError("One parameter expected for the Student-t distribution")
         degfree = float(distribparams[0])
         if degfree <= 0.0:
            raise ValueError("Invalid parameter for the Student-t distribution")
         distrib = scipy.stats.t(degfree)
-    elif lcdistname == "weibull":
+    elif (lcdistname == "weibull_min") or (lcdistname == "weibull"):
         if len(distribparams) != 2:
            raise ValueError("Two parameters expected for the Weibull distribution")
         k =  float(distribparams[0])
@@ -170,14 +170,14 @@ def getdistrib(distribname, distribparams):
 
 def assignpdf(result, resbdf, distrib, input, inpbdf):
     """
-    Assigns the probability density function values of a distribution
-    at specified positions.  At undefined positions, the results will
-    be assigned as undefined.
+    Assigns the probability density function values of a continuous
+    distribution at specified positions.  At undefined positions,
+    the results will be assigned as undefined.
 
     Arguments:
         result  - the numpy.ndarray to be assigned with the pdf values
         resbdf  - the undefined value for result
-        distrib - the distribution to use
+        distrib - the continuous distribution to use
                   (a scipy.stats frozen distribution object)
         input   - the points at which to compute the pdf values
                   (a numpy.ndarray object)
@@ -194,6 +194,34 @@ def assignpdf(result, resbdf, distrib, input, inpbdf):
     result[badmask] = resbdf
     # array[goodmask] is a flattened array
     result[goodmask] = distrib.pdf(input[goodmask])
+
+
+def assignpmf(result, resbdf, distrib, input, inpbdf):
+    """
+    Assigns the probability mass function values of a discrete
+    distribution at specified positions.  At undefined positions,
+    the results will be assigned as undefined.
+
+    Arguments:
+        result  - the numpy.ndarray to be assigned with the pmf values
+        resbdf  - the undefined value for result
+        distrib - the discrete distribution to use
+                  (a scipy.stats frozen distribution object)
+        input   - the points at which to compute the pmf values
+                  (a numpy.ndarray object)
+        inpbdf  - the undefined value for input
+
+    Returns:
+        None
+
+    Raises:
+        ValueError or AttributeError if arguments are not valid
+    """
+    badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
+    goodmask = numpy.logical_not(badmask)
+    result[badmask] = resbdf
+    # array[goodmask] is a flattened array
+    result[goodmask] = distrib.pmf(input[goodmask])
 
 
 #
@@ -261,12 +289,12 @@ if __name__ == "__main__":
     distname = "cauchy"
     distparms = [ m, gamma ]
     distf = getdistrib(distname, distparms)
-    # mean, variance, skew, kurtosis undefined; instead check pdfs
-    xvals = numpy.arange(0.0, 10.1, 1.0)
+    # mean, variance, skew, kurtosis undefined; instead check some pdf values
+    xvals = numpy.arange(0.0, 10.1, 0.5)
     foundpdfs = distf.pdf(xvals)
     expectedpdfs = (gamma / numpy.pi) / ((xvals - m)**2 + gamma**2)
     if not numpy.allclose(foundpdfs, expectedpdfs):
-        raise ValueError("pdfs(0.0:10.1:1.0) of %s(%#.1f,%#.1f): expected %s; found %s" % \
+        raise ValueError("pdfs(0.0:10.1:0.5) of %s(%#.1f,%#.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedpdfs), str(foundpdfs)))
 
     # Exponential distribution
@@ -289,10 +317,10 @@ if __name__ == "__main__":
     # foundstats = distf.stats("mvsk")
     foundstats = distf.stats("mv")
     expectedstats = ( dofd / (dofd - 2.0),
-                      2.0 * dofd**2 * (dofd + dofn - 2.0) / \
+                      2.0 * dofd**2 * (dofn + dofd - 2.0) / \
                           (dofn * (dofd - 2.0)**2 * (dofd - 4.0)),
-                      # 2.0 * ((dofd + 2.0 * dofn - 2.0) / (dofd - 6.0)) * \
-                      #     math.sqrt(2.0 * (dofd - 4.0) / (dofn * (dofn + dofd - 2.0))),
+                      # ((2.0 * dofn + dofd - 2.0) / (dofd - 6.0)) * \
+                      #     math.sqrt(8.0 * (dofd - 4.0) / (dofn * (dofn + dofd - 2.0))),
                       # 12.0 * (20.0 * dofd - 8.0 * dofd**2 + dofd**3 + 44.0 * dofn - 32.0 * dofn * dofd + \
                       #     5.0 * dofd**2 * dofn - 22.0 * dofn**2 + 5.0 * dofd * dofn**2 - 16.0) / \
                       #     (dofn * (dofd - 6.0) * (dofd - 8.0) * (dofn + dofd - 2)),
@@ -301,6 +329,17 @@ if __name__ == "__main__":
         # raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
         raise ValueError("(mean, var) of %s(%.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    # since skew and kurtosis is not coming out as expected, check some pdf values
+    xvals = numpy.arange(0.0, 10.1, 0.5)
+    foundpdfs = distf.pdf(xvals)
+    factor = scipy.special.gamma(0.5 * (dofn + dofd)) / \
+             (scipy.special.gamma(0.5 * dofn) * scipy.special.gamma(0.5 *dofd))
+    factor *= math.pow(dofn, 0.5 * dofn) * math.pow(dofd, 0.5 * dofd)
+    expectedpdfs = factor * numpy.power(xvals, 0.5 * dofn - 1.0) / \
+                   numpy.power(dofd + dofn * xvals, 0.5 * (dofn + dofd))
+    if not numpy.allclose(foundpdfs, expectedpdfs):
+        raise ValueError("pdfs(0.0:10.1:0.5) of %s(%#.1f,%#.1f): expected %s; found %s" % \
+                          (distname, distparms[0], distparms[1], str(expectedpdfs), str(foundpdfs)))
 
     # Gamma distribution
     alpha = 5.0
@@ -320,8 +359,8 @@ if __name__ == "__main__":
     distparms = [ prob ]
     distf = getdistrib(distname, distparms)
     foundstats = distf.stats("mvsk")
-    expectedstats = ( 1.0 / prob, 
-                     (1.0 - prob) / prob**2, 
+    expectedstats = ( 1.0 / prob,
+                     (1.0 - prob) / prob**2,
                      (2.0 - prob) / math.sqrt(1.0 - prob),
                      6.0 + prob**2 / (1.0 - prob),
                     )
@@ -350,7 +389,6 @@ if __name__ == "__main__":
                       #      (numgood * (numtotal - numgood)) + \
                       #      3.0 * numdrawn * (numtotal - numdrawn) * (numtotal + 6.0) / numtotal**2 - 6.0),
                     )
-                 
     if not numpy.allclose(foundstats, expectedstats):
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], distparms[2], str(expectedstats), str(foundstats)))
@@ -453,7 +491,7 @@ if __name__ == "__main__":
 
     # Weibull distribution
     k = 3.0
-    lambdaflt = 5.0 
+    lambdaflt = 5.0
     distname = "weibull"
     distparms = [ k, lambdaflt ]
     distf = getdistrib(distname, distparms)

@@ -171,11 +171,11 @@ def getdistrib(distribname, distribparams):
 def assignpdf(result, resbdf, distrib, input, inpbdf):
     """
     Assigns the probability density function values of a continuous
-    distribution at specified positions.  At undefined positions,
-    the results will be assigned as undefined.
+    distribution at specified positions.  At undefined positions, the
+    results will be assigned as undefined.
 
     Arguments:
-        result  - the numpy.ndarray to be assigned with the pdf values
+        result  - the numpy.ndarray to be assigned the pdf values
         resbdf  - the undefined value for result
         distrib - the continuous distribution to use
                   (a scipy.stats frozen distribution object)
@@ -190,6 +190,7 @@ def assignpdf(result, resbdf, distrib, input, inpbdf):
         ValueError or AttributeError if arguments are not valid
     """
     badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
+    badmask = numpy.logical_or(badmask, numpy.isnan(input))
     goodmask = numpy.logical_not(badmask)
     result[badmask] = resbdf
     # array[goodmask] is a flattened array
@@ -198,12 +199,12 @@ def assignpdf(result, resbdf, distrib, input, inpbdf):
 
 def assignpmf(result, resbdf, distrib, input, inpbdf):
     """
-    Assigns the probability mass function values of a discrete
-    distribution at specified positions.  At undefined positions,
-    the results will be assigned as undefined.
+    Assigns the probability mass function values of a discrete distribution
+    at specified positions.  At undefined positions, the results will be
+    assigned as undefined.
 
     Arguments:
-        result  - the numpy.ndarray to be assigned with the pmf values
+        result  - the numpy.ndarray to be assigned the pmf values
         resbdf  - the undefined value for result
         distrib - the discrete distribution to use
                   (a scipy.stats frozen distribution object)
@@ -218,10 +219,157 @@ def assignpmf(result, resbdf, distrib, input, inpbdf):
         ValueError or AttributeError if arguments are not valid
     """
     badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
+    badmask = numpy.logical_or(badmask, numpy.isnan(input))
     goodmask = numpy.logical_not(badmask)
     result[badmask] = resbdf
     # array[goodmask] is a flattened array
     result[goodmask] = distrib.pmf(input[goodmask])
+
+
+def assigncdf(result, resbdf, distrib, input, inpbdf):
+    """
+    Assigns the cumulative distribution function values of a distribution
+    at specified positions.  At undefined positions, the results will be
+    assigned as undefined.
+
+    Arguments:
+        result  - the numpy.ndarray to be assigned the cdf values
+        resbdf  - the undefined value for result
+        distrib - the distribution to use
+                  (a scipy.stats frozen distribution object)
+        input   - the points at which to compute the cdf values
+                  (a numpy.ndarray object)
+        inpbdf  - the undefined value for input
+
+    Returns:
+        None
+
+    Raises:
+        ValueError or AttributeError if arguments are not valid
+    """
+    badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
+    badmask = numpy.logical_or(badmask, numpy.isnan(input))
+    goodmask = numpy.logical_not(badmask)
+    result[badmask] = resbdf
+    # array[goodmask] is a flattened array
+    result[goodmask] = distrib.cdf(input[goodmask])
+
+
+def assignsf(result, resbdf, distrib, input, inpbdf):
+    """
+    Assigns the suvival function values of a distribution at specified
+    positions.  At undefined positions, the results will be assigned as
+    undefined.
+
+    Arguments:
+        result  - the numpy.ndarray to be assigned the sf values
+        resbdf  - the undefined value for result
+        distrib - the distribution to use
+                  (a scipy.stats frozen distribution object)
+        input   - the points at which to compute the sf values
+                  (a numpy.ndarray object)
+        inpbdf  - the undefined value for input
+
+    Returns:
+        None
+
+    Raises:
+        ValueError or AttributeError if arguments are not valid
+    """
+    badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
+    badmask = numpy.logical_or(badmask, numpy.isnan(input))
+    goodmask = numpy.logical_not(badmask)
+    result[badmask] = resbdf
+    # array[goodmask] is a flattened array
+    result[goodmask] = distrib.sf(input[goodmask])
+
+
+def assignppf(result, resbdf, distrib, input, inpbdf):
+    """
+    Assigns the percent point function values of a distribution at
+    specified positions.  At undefined positions, the results will
+    be assigned as undefined.
+
+    Arguments:
+        result  - the numpy.ndarray to be assigned the ppf values
+        resbdf  - the undefined value for result
+        distrib - the distribution to use
+                  (a scipy.stats frozen distribution object)
+        input   - the points at which to compute the ppf values
+                  (a numpy.ndarray object)
+        inpbdf  - the undefined value for input
+
+    Returns:
+        None
+
+    Raises:
+        ValueError or AttributeError if arguments are not valid
+    """
+    badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
+    badmask = numpy.logical_or(badmask, numpy.isnan(input))
+    goodmask = numpy.logical_not(badmask)
+    result[badmask] = resbdf
+    # array[goodmask] is a flattened array
+    result[goodmask] = distrib.ppf(input[goodmask])
+
+
+def assignisf(result, resbdf, distrib, input, inpbdf):
+    """
+    Assigns the inverse survival function values of a distribution at
+    specified positions.  At undefined positions, the results will be
+    assigned as undefined.
+
+    Arguments:
+        result  - the numpy.ndarray to be assigned the isf values
+        resbdf  - the undefined value for result
+        distrib - the distribution to use
+                  (a scipy.stats frozen distribution object)
+        input   - the points at which to compute the isf values
+                  (a numpy.ndarray object)
+        inpbdf  - the undefined value for input
+
+    Returns:
+        None
+
+    Raises:
+        ValueError or AttributeError if arguments are not valid
+    """
+    badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
+    badmask = numpy.logical_or(badmask, numpy.isnan(input))
+    goodmask = numpy.logical_not(badmask)
+    result[badmask] = resbdf
+    # array[goodmask] is a flattened array
+    result[goodmask] = distrib.isf(input[goodmask])
+
+
+def assignrvs(result, resbdf, distrib, input, inpbdf):
+    """
+    Assigns the random variates of a distribution at positions in the
+    result array corresponding to defined values in the input array.
+    At undefined positions in the input array, the results array value
+    will be undefined.
+
+    Arguments:
+        result  - the numpy.ndarray to be assigned the random variates
+        resbdf  - the undefined value for result
+        distrib - the distribution to use
+                  (a scipy.stats frozen distribution object)
+        input   - the input array indicating positions to be assigned
+                  (a numpy.ndarray object)
+        inpbdf  - the undefined value for input
+
+    Returns:
+        None
+
+    Raises:
+        ValueError or AttributeError if arguments are not valid
+    """
+    badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
+    badmask = numpy.logical_or(badmask, numpy.isnan(input))
+    goodmask = numpy.logical_not(badmask)
+    result[badmask] = resbdf
+    # result[goodmask] is a flattened array
+    result[goodmask] = distrib.rvs(len(result[goodmask]))
 
 
 #

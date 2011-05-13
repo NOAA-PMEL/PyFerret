@@ -11,7 +11,7 @@ import pyferret.stats
 
 def ferret_init(id):
     """
-    Initialization for the statspdf python-backed ferret external function
+    Initialization for the stats_pdf python-backed ferret external function
     """
     retdict = { "numargs": 3,
                 "descript": "Returns probability density function values for a specified distribution",

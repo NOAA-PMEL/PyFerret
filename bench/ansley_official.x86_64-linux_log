@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/stout/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 35561726 May  6 11:28 /home/stout/ansley/build/x86/FERRET/fer/ferret_c
-Using external functions from /home/stout/ansley/build/x86/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/x86_64-linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 35731645 May 17 09:32 /home/users/ansley/x86_64-linux/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/x86_64-linux/FERRET/external_functions/ext_func/
 Running the tests of external functions y
 Benchmark run by ansley
-Note: v6.7 release, netCDF4.1.2
+Note: fixes for tax_ functions when time axis is modulo
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/stout/ansley/build/x86/FERRET/bench
+PWD=/home/users/ansley/x86_64-linux/FERRET/bench
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_DIR=.
 FER_WEB_BROWSER=netscape -ncols 60
@@ -15,13 +15,13 @@ FER_DSETS=.
 FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_DAT=.
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/bakerTrunk/JavaSource/resources/iosp/scripts/
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/stout/ansley/build/x86/FERRET/external_functions/ext_func
-Beginning at Fri May 6 11:31:36 PDT 2011
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/x86_64-linux/FERRET/external_functions/ext_func/
+Beginning at Tue May 17 09:32:34 PDT 2011
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10234,16 +10234,16 @@ show symbols/all
 PPL$XPIXEL = "406"
 PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.7"
+FERRET_VERSION = "6.71"
 FERRET_PLATFORM = "Linux(gfortran) 2.6.18-238.1.1.el5"
 NETCDF_VERSION = "4.1.2 of Apr 18 2011 08:33:01 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 6-May-11"
-SESSION_TIME = "11:31"
-DELTA_CPU = "5.39518"
-CLOCK_SECS = "9.033"
-CURRENT_DATE = " 6-May-11"
-CURRENT_TIME = "11:31:45"
+SESSION_DATE = "17-May-11"
+SESSION_TIME = "09:32"
+DELTA_CPU = "5.02024"
+CLOCK_SECS = "6.457"
+CURRENT_DATE = "17-May-11"
+CURRENT_TIME = "09:32:40"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10260,16 +10260,16 @@ show symbol/all
 PPL$XPIXEL = "406"
 PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.7"
+FERRET_VERSION = "6.71"
 FERRET_PLATFORM = "Linux(gfortran) 2.6.18-238.1.1.el5"
 NETCDF_VERSION = "4.1.2 of Apr 18 2011 08:33:01 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 6-May-11"
-SESSION_TIME = "11:31"
+SESSION_DATE = "17-May-11"
+SESSION_TIME = "09:32"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "9.034"
-CURRENT_DATE = " 6-May-11"
-CURRENT_TIME = "11:31:45"
+CLOCK_SECS = "6.458"
+CURRENT_DATE = "17-May-11"
+CURRENT_TIME = "09:32:40"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10278,8 +10278,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 6-May-11"
-SESSION_TIME = "11:31"
+SESSION_DATE = "17-May-11"
+SESSION_TIME = "09:32"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10289,13 +10289,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 6-May-11"
-SESSION_TIME = "11:31"
+SESSION_DATE = "17-May-11"
+SESSION_TIME = "09:32"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 6-May-11"
-SESSION_TIME = "11:31"
+SESSION_DATE = "17-May-11"
+SESSION_TIME = "09:32"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10327,9 +10327,9 @@ Q23456789012345678901234567XXX = "6"
 ! show the upper left coordinate limits labels as symbols
 plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
-LAB1 = "FERRET Ver. 6.7"
+LAB1 = "FERRET Ver. 6.71"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "06-MAY-2011 11:31:45"
+LAB3 = "17-MAY-2011 09:32:40"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10424,16 +10424,16 @@ show symbols/all
 PPL$XPIXEL = "406"
 PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.7"
+FERRET_VERSION = "6.71"
 FERRET_PLATFORM = "Linux(gfortran) 2.6.18-238.1.1.el5"
 NETCDF_VERSION = "4.1.2 of Apr 18 2011 08:33:01 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 6-May-11"
-SESSION_TIME = "11:31"
-DELTA_CPU = "0.008998"
-CLOCK_SECS = "9.044"
-CURRENT_DATE = " 6-May-11"
-CURRENT_TIME = "11:31:45"
+SESSION_DATE = "17-May-11"
+SESSION_TIME = "09:32"
+DELTA_CPU = "0.009998"
+CLOCK_SECS = "6.467"
+CURRENT_DATE = "17-May-11"
+CURRENT_TIME = "09:32:40"
 N_OPEN_DSETS = "0"
  
  
@@ -25338,7 +25338,7 @@ stat/i=1:3/j=1:3 a
  Standard deviation: 1.2247
  
 ! 3/01 *kob* uncomment the below - seems to run on all systems
-Fri May  6 11:31:54 PDT 2011
+Tue May 17 09:32:46 PDT 2011
 ! GO err491_long_gif_name.jnl ! moved to bn_gif.jnl
  
 GO bn_reset
@@ -45962,11 +45962,11 @@ ppl list labels
  @ASdeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 6.7
+ LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 6.71
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS06-MAY-2011 11:32:33
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS17-MAY-2011 09:33:19
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.990E+00 0.078    0  SYSTEM  @ASLONGITUDE : 179.5E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47243,7 +47243,7 @@ GO bn_long_revision_num.jnl
  
 ! ferret version
 sh sym FERRET_VERSION
-FERRET_VERSION = "6.7"
+FERRET_VERSION = "6.71"
  
 ! history attribute
 let a = 12
@@ -47261,7 +47261,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET   version6.7:
+ Commands in Program FERRET   version6.71:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE
  SET REGION/I/J/K/L/X/Y/Z/T/DX/DY/DZ/DT/DI/DJ/DK/DL
@@ -47388,7 +47388,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "6-May-11:11:31"
+WIN_TITLE = "17-May-11:09:32"
  
 set win/title="set the title"
 sho sym win_title
@@ -47406,7 +47406,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 6-May-11:11:31"
+ !-> set win/title="17-May-11:09:32"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47415,16 +47415,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  6-May-11
+ !-> DEFINE SYMBOL the_date = 17-May-11
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 11:31
+ !-> DEFINE SYMBOL the_time = 09:32
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="6-May-11:11:31"
+ !-> SET WIN/TITLE="17-May-11:09:32"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "6-May-11:11:31"
+WIN_TITLE = "17-May-11:09:32"
  
 GO bn_reset
 cancel mode verify
@@ -49979,7 +49979,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
      attributes for dataset: ./coads_climatology.cdf
@@ -51753,7 +51753,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.7    6-May-11
+ .                               history         CHAR        24   T       FERRET V6.71   17-May-11
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51794,7 +51794,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        23   T       FERRET V6.7    6-May-11
+ .                               history         CHAR        24   T       FERRET V6.71   17-May-11
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -53365,6 +53365,7 @@ ADD_9(A,B,C,D,E,F,G,H,I)
 AVET(A)
 CHDIR(TO_DIRECTORY)
 DATES(var)
+EFSTRINGS(--)
 FACTORIAL(A)
 FFT_AMP(A)
 FFTA_SAMPLE(A)
@@ -53372,17 +53373,27 @@ FFTA(A)
 FFT_PHAS(A)
 FFTP(A)
 FILL_XY(A,B,C)
+FLOATSTR(A,Fmt)
+LENGTH_OF_STRINGS(--)
+MAXSTRLEN(A)
 MINMAX(A)
 NCO_ATTR(FileName,VariableName,AttributeName,AttType,Mode,AttributeValue)
 NCO(operator,arguments)
 NEUTRAL(S,T)
 PASS_THRU(A)
+PASS_THRU_STRING(A)
 PERCENT_GOOD_T(A)
+PICK_A_STRING(A,N)
 STORAGE(A)
 STRING_ARG(A,string)
+STRING_CAT3(A,B,C)
+STRING_LEN_SUM(S1,S2)
+STRINGS_AS_ARGS(S1,S2,NCHAR)
 STUDENT_T_CUTOFF(P,nf)
 SUBTRACT(A,B)
-WRITE_WEBROW(id,id,Cruise_Mask,filename)
+TRACKS2GRID_AVE_XYT(VAR,XPTS,YPTS,TPTS,ICRUISE,XAXPTS,YAXPTS,TAXPTS)
+TRACKS2GRID_VAR_XYT(VAR,XPTS,YPTS,TPTS,ICRUISE,XAXPTS,YAXPTS,TAXPTS)
+WRITE_WEBROW(id,name,Cruise_Mask,filename)
  
  
 GO bn_reset
@@ -56307,25 +56318,6 @@ list indx_aj, samplej(aj,indx_aj)
 let indx_bj = SORTJ(bj)
 list indx_bj, samplej(bj,indx_bj)
              Y: 0.5 to 7.5
- Column  1: INDX_BJ is SORTJ(BJ)
- Column  2: EX#2 is SAMPLEJ(BJ,INDX_BJ)
-          INDX_BJ   EX#2
-1   / 1:  7.000000 "0"  
-2   / 2:  1.000000 "AB" 
-3   / 3:  2.000000 "C"  
-4   / 4:  4.000000 "aa" 
-5   / 5:  5.000000 "abc"
-6   / 6:      .... ""   
-7   / 7:      .... ""   
- 
- 
-! SORTK
-let ak = zsequence(ai)
-let bk = zsequence(bi)
- 
-let indx_ak = SORTK(ak)
-list indx_ak, samplek(ak,indx_ak)
-             Z: 0.5 to 4.5
 netcdf a {
 dimensions:
 	XAX1_10 = 10 ;
@@ -56375,9 +56367,28 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
+ Column  1: INDX_BJ is SORTJ(BJ)
+ Column  2: EX#2 is SAMPLEJ(BJ,INDX_BJ)
+          INDX_BJ   EX#2
+1   / 1:  7.000000 "0"  
+2   / 2:  1.000000 "AB" 
+3   / 3:  2.000000 "C"  
+4   / 4:  4.000000 "aa" 
+5   / 5:  5.000000 "abc"
+6   / 6:      .... ""   
+7   / 7:      .... ""   
+ 
+ 
+! SORTK
+let ak = zsequence(ai)
+let bk = zsequence(bi)
+ 
+let indx_ak = SORTK(ak)
+list indx_ak, samplek(ak,indx_ak)
+             Z: 0.5 to 4.5
  Column  1: INDX_AK is SORTK(AK)
  Column  2: EX#2 is SAMPLEK(AK,INDX_AK)
           INDX_AK                       EX#2
@@ -57901,10 +57912,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "43.5704"
-CLOCK_SECS = "83.409"
-CURRENT_DATE = " 6-May-11"
-CURRENT_TIME = "11:32:59"
+DELTA_CPU = "41.7577"
+CLOCK_SECS = "67.102"
+CURRENT_DATE = "17-May-11"
+CURRENT_TIME = "09:33:41"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57913,8 +57924,8 @@ CURRENT_TIME = "11:32:59"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.049992"
-CLOCK_SECS = "83.481"
+DELTA_CPU = "0.045994"
+CLOCK_SECS = "67.181"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57928,60 +57939,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.368942
+ !-> DEFINE VARIABLE ten_plots = 0.405937
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "84.277"
+CLOCK_SECS = "67.914"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "84.277"
+CLOCK_SECS = "67.915"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.039993
- !-> DEFINE VARIABLE sumcpu =0.039993
+ !-> DEFINE VARIABLE dt = 0.048992
+ !-> DEFINE VARIABLE sumcpu =0.048992
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.041996
- !-> DEFINE VARIABLE sumcpu =0.081989
+ !-> DEFINE VARIABLE dt = 0.048992
+ !-> DEFINE VARIABLE sumcpu =0.097984
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.044991
- !-> DEFINE VARIABLE sumcpu =0.12698
+ !-> DEFINE VARIABLE dt = 0.045994
+ !-> DEFINE VARIABLE sumcpu =0.143978
 !-> REPEAT: K=4
  !-> DEFINE VARIABLE dt = 0.043995
- !-> DEFINE VARIABLE sumcpu =0.170975
+ !-> DEFINE VARIABLE sumcpu =0.187973
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.041992
- !-> DEFINE VARIABLE sumcpu =0.212967
+ !-> DEFINE VARIABLE dt = 0.044991
+ !-> DEFINE VARIABLE sumcpu =0.232964
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.043995
- !-> DEFINE VARIABLE sumcpu =0.256962
+ !-> DEFINE VARIABLE dt = 0.040997
+ !-> DEFINE VARIABLE sumcpu =0.273961
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.041992
- !-> DEFINE VARIABLE sumcpu =0.298954
+ !-> DEFINE VARIABLE dt = 0.043991
+ !-> DEFINE VARIABLE sumcpu =0.317952
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.041996
- !-> DEFINE VARIABLE sumcpu =0.34095
+ !-> DEFINE VARIABLE dt = 0.053993
+ !-> DEFINE VARIABLE sumcpu =0.371945
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.042992
- !-> DEFINE VARIABLE sumcpu =0.383942
+ !-> DEFINE VARIABLE dt = 0.049992
+ !-> DEFINE VARIABLE sumcpu =0.421937
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.422936
+ !-> DEFINE VARIABLE dt = 0.049992
+ !-> DEFINE VARIABLE sumcpu =0.471929
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.422936
-0.422936
+ !-> MESSAGE/CONTINUE 0.471929
+0.471929
 sh sym CLOCK_SECS
-CLOCK_SECS = "85.386"
+CLOCK_SECS = "68.994"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 6-May-11"
-SESSION_TIME = "11:31"
-CURRENT_DATE = " 6-May-11"
-CURRENT_TIME = "11:33:01"
+SESSION_DATE = "17-May-11"
+SESSION_TIME = "09:32"
+CURRENT_DATE = "17-May-11"
+CURRENT_TIME = "09:33:43"
  
  
 ! ******** V6.3 Additions below ***********
@@ -60045,6 +60056,268 @@ go polymark "poly/ov/nolab/pal=red/line=1" pos pos " " circle .5
  
  
 GO bn_reset
+cancel mode verify
+GO bn_txtype_dmy
+! bn_txtype_dmy.jnl
+! 2/2010 ACM
+!
+! Testing Time Axis plot style "DMY" labels the year
+! as well as month or day,month on MON and DAY axes.
+! Symbol TXTYPE_SETTING contains YR, MON, DAY after the
+! axis type has been set for the axis; lets us plot/set
+! and then choose the time axis label style
+! Useful when going across years or plotting with /NOLAB
+ 
+set win/asp=1
+use gtsa056_2.cdf
+ 
+! Plot the whole series; txtype is YR
+plot/x=140w/y=-1/k=1/set temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "YR"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 0 THEN PPL TXTYPE,MON,DMY
+ppl plot
+ 
+! This will be MON
+shade/x=140w/k=1/t=1-feb-1982:15-apr-1982/set temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "MON"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 1 THEN PPL TXTYPE,MON,DMY
+ppl shade
+ 
+! Also MON so setting not changed.
+contour/x=140w/k=1/t=1-feb-1982:15-feb-1982/set temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "MON"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 1 THEN PPL TXTYPE,MON,DMY
+ppl contour
+ 
+ 
+! Is DAY so setting not changed.
+ 
+plot/set/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "DAY"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 0 THEN PPL TXTYPE,MON,DMY
+ppl plot
+ 
+! Set PPL TXTYPE with DAY,DMY
+plot/set/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "DAY"
+if ($TXTYPE_SETTING"0|DAY>1|*>0") THEN PPL TXTYPE,DAY,DMY
+ !-> if 1 THEN PPL TXTYPE,DAY,DMY
+ppl plot
+ 
+! If the type is going to be EITHER DAY or MON then set
+! the style to DMY. Leave the 1st argument blank to keep the
+! default
+plot/set/x=140w/y=-1/k=1/t=27-feb-1982:28-mar-1982 temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "MON"
+if ($TXTYPE_SETTING"0|DAY>1|MON>1|*>0") THEN PPL TXTYPE,,DMY
+ !-> if 1 THEN PPL TXTYPE,,DMY
+ppl plot
+ 
+ 
+! Same commands with the TIME axis on the vertical
+! Plot the whole series; txtype is YR
+plot/x=140w/y=-1/k=1/set temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "YR"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 0 THEN PPL TXTYPE,MON,DMY
+ppl plot
+ 
+! This will be MON
+shade/y=-1/k=1/t=1-feb-1982:15-apr-1982/set temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "MON"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 1 THEN PPL TXTYPE,MON,DMY
+ppl shade
+ 
+! Also MON so setting not changed.
+contour/y=-1/k=1/t=1-feb-1982:15-feb-1982/set temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "MON"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 1 THEN PPL TXTYPE,MON,DMY
+ppl contour
+ 
+ 
+! Is DAY so setting not changed.
+ 
+plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "DAY"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 0 THEN PPL TXTYPE,MON,DMY
+ppl plot
+ 
+! Set PPL TXTYPE with DAY,DMY
+plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "DAY"
+if ($TXTYPE_SETTING"0|DAY>1|*>0") THEN PPL TXTYPE,DAY,DMY
+ !-> if 1 THEN PPL TXTYPE,DAY,DMY
+ppl plot
+ 
+! If the type is going to be EITHER DAY or MON then set
+! the style to DMY. Leave the 1st argument blank to keep the
+! default
+plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:28-mar-1982 temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "MON"
+if ($TXTYPE_SETTING"0|DAY>1|MON>1|*>0") THEN PPL TXTYPE,,DMY
+ !-> if 1 THEN PPL TXTYPE,,DMY
+ppl plot
+ 
+! make sure this setting doesnt persist
+plot/y=-1/k=1/t=5-mar-1982:28-mar-1982/x=144w temp
+plot/y=-1/k=1/t=5-mar-1982:28-apr-1982/x=144w temp
+ 
+GO bn_reset
+cancel mode verify
+GO bn_n_open_dsets_sym
+ !  bn_n_open_dsets_sym.jnl
+! Ferret v6.5
+! New special symbol N_OPEN_DSETS, evaulated when requested.
+! Gives a count of the number of open datasets.
+ 
+! Initially should be zero
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "0"
+ 
+! Open some datasets
+use dstitle
+use TAO_SST_clim
+use clim_airt_lev
+ 
+! Check
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "3"
+ 
+! Open a few more. Any type of data
+set data tok_short.des
+ 
+list/clobber/file=list_of_numbers.dat/nohead/norowhead {1,3,4,5,6,8,9}
+file/var=v1 list_of_numbers.dat
+ 
+! now  there are five
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "5"
+ 
+! cancel a couple
+can data 3
+can data TAO_SST_clim
+ 
+! Now three
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "3"
+ 
+can dat/all
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "0"
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO bn_multi_decade
+! bn_multi_decade.jnl
+! New default no-small tics for multi-decade plots
+! See bug 670
+ 
+def axis/t="01-JAN-1860":"30-DEC-2300":5/edges/units="Days"/cal="360d" simutaxis1
+let tvar = t[gt=simutaxis1]*-1E+34
+ 
+define view/x=0:1/y=0.000:0.125 v1
+define view/x=0:1/y=0.125:0.250 v2
+define view/x=0:1/y=0.250:0.375 v3
+define view/x=0:1/y=0.375:0.500 v4
+define view/x=0:1/y=0.500:0.625 v5
+define view/x=0:1/y=0.625:0.750 v6
+define view/x=0:1/y=0.750:0.875 v7
+define view/x=0:1/y=0.875:1.000 v8
+ 
+! Plot a variety of time axis lengths.
+set view v1; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1870]
+set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
+ 
+! New default: no small tics for multi-decade plots
+set view v3; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
+set view v4; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
+set view v5; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
+set view v6; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
+set view v7; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar
+ 
+! can plot the tics even on a multi-decade axis by specifying PPL TICS.
+set view v8; plot/nolab/ax=0,1,0,0/vlim=0:1/set tvar
+  ppl tics,0.1,0.25
+  ppl plot
+ 
+cancel view
+ 
+! Test vertical time axes.
+ 
+define view/x=0.000:0.125/y=0:1 v1
+define view/x=0.125:0.250/y=0:1 v2
+define view/x=0.250:0.375/y=0:1 v3
+define view/x=0.375:0.500/y=0:1 v4
+define view/x=0.500:0.625/y=0:1 v5
+define view/x=0.625:0.750/y=0:1 v6
+define view/x=0.750:0.875/y=0:1 v7
+define view/x=0.875:1.000/y=0:1 v8
+ 
+! Plot a variety of time axis lengths.
+set view v1; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1870]
+set view v2; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
+ 
+! New default: no small tics for multi-decade plots
+set view v3; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
+set view v4; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
+set view v5; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
+set view v6; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
+set view v7; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar
+ 
+! can plot the tics even on a multi-decade axis by specifying PPL TICS.
+set view v8; plot/trans/nolab/ax=0,0,1,0/hlim=0:1/set tvar
+  ppl tics,0.1,0.25
+  ppl plot
+ 
+cancel view
+ 
+GO bn_reset
+cancel mode verify
+GO bn_show_xml_file
+! bn_show_xml_file.jnl
+! Testing SHOW DATA/OUTFILE
+!         SHOW AXIS/OUTFILE
+!         SHOW VAR/OUTFILE
+!         SAY/OUTFILE
+!
+! Similar to LAS iosp script header.jnl
+! capability to be expanded to all SHOW commands in the future.
+ 
+use gt4d011
+ 
+DEFINE SYMBOL output_xml_file = the_xml_file.xml
+ 
+say/quiet/outfile=($output_xml_file)/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+ !-> MESSAGE/CONTINUE/quiet/outfile=the_xml_file.xml/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+say/quiet/outfile=($output_xml_file)/append <data>
+ !-> MESSAGE/CONTINUE/quiet/outfile=the_xml_file.xml/append <data>
+ 
+show var/xml/append/outfile=($output_xml_file)
+ !-> show var/xml/append/outfile=the_xml_file.xml
+show data/var/xml/append/outfile=($output_xml_file)
+ !-> show data/var/xml/append/outfile=the_xml_file.xml
+show axis/all/xml/append/outfile=($output_xml_file)
+ !-> show axis/all/xml/append/outfile=the_xml_file.xml
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <data>
 <datasets>
@@ -64743,268 +65016,6 @@ GO bn_reset
 </axis>
 </axes>
 </data>
-cancel mode verify
-GO bn_txtype_dmy
-! bn_txtype_dmy.jnl
-! 2/2010 ACM
-!
-! Testing Time Axis plot style "DMY" labels the year
-! as well as month or day,month on MON and DAY axes.
-! Symbol TXTYPE_SETTING contains YR, MON, DAY after the
-! axis type has been set for the axis; lets us plot/set
-! and then choose the time axis label style
-! Useful when going across years or plotting with /NOLAB
- 
-set win/asp=1
-use gtsa056_2.cdf
- 
-! Plot the whole series; txtype is YR
-plot/x=140w/y=-1/k=1/set temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "YR"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 0 THEN PPL TXTYPE,MON,DMY
-ppl plot
- 
-! This will be MON
-shade/x=140w/k=1/t=1-feb-1982:15-apr-1982/set temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "MON"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 1 THEN PPL TXTYPE,MON,DMY
-ppl shade
- 
-! Also MON so setting not changed.
-contour/x=140w/k=1/t=1-feb-1982:15-feb-1982/set temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "MON"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 1 THEN PPL TXTYPE,MON,DMY
-ppl contour
- 
- 
-! Is DAY so setting not changed.
- 
-plot/set/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "DAY"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 0 THEN PPL TXTYPE,MON,DMY
-ppl plot
- 
-! Set PPL TXTYPE with DAY,DMY
-plot/set/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "DAY"
-if ($TXTYPE_SETTING"0|DAY>1|*>0") THEN PPL TXTYPE,DAY,DMY
- !-> if 1 THEN PPL TXTYPE,DAY,DMY
-ppl plot
- 
-! If the type is going to be EITHER DAY or MON then set
-! the style to DMY. Leave the 1st argument blank to keep the
-! default
-plot/set/x=140w/y=-1/k=1/t=27-feb-1982:28-mar-1982 temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "MON"
-if ($TXTYPE_SETTING"0|DAY>1|MON>1|*>0") THEN PPL TXTYPE,,DMY
- !-> if 1 THEN PPL TXTYPE,,DMY
-ppl plot
- 
- 
-! Same commands with the TIME axis on the vertical
-! Plot the whole series; txtype is YR
-plot/x=140w/y=-1/k=1/set temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "YR"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 0 THEN PPL TXTYPE,MON,DMY
-ppl plot
- 
-! This will be MON
-shade/y=-1/k=1/t=1-feb-1982:15-apr-1982/set temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "MON"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 1 THEN PPL TXTYPE,MON,DMY
-ppl shade
- 
-! Also MON so setting not changed.
-contour/y=-1/k=1/t=1-feb-1982:15-feb-1982/set temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "MON"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 1 THEN PPL TXTYPE,MON,DMY
-ppl contour
- 
- 
-! Is DAY so setting not changed.
- 
-plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "DAY"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 0 THEN PPL TXTYPE,MON,DMY
-ppl plot
- 
-! Set PPL TXTYPE with DAY,DMY
-plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "DAY"
-if ($TXTYPE_SETTING"0|DAY>1|*>0") THEN PPL TXTYPE,DAY,DMY
- !-> if 1 THEN PPL TXTYPE,DAY,DMY
-ppl plot
- 
-! If the type is going to be EITHER DAY or MON then set
-! the style to DMY. Leave the 1st argument blank to keep the
-! default
-plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:28-mar-1982 temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "MON"
-if ($TXTYPE_SETTING"0|DAY>1|MON>1|*>0") THEN PPL TXTYPE,,DMY
- !-> if 1 THEN PPL TXTYPE,,DMY
-ppl plot
- 
-! make sure this setting doesnt persist
-plot/y=-1/k=1/t=5-mar-1982:28-mar-1982/x=144w temp
-plot/y=-1/k=1/t=5-mar-1982:28-apr-1982/x=144w temp
- 
-GO bn_reset
-cancel mode verify
-GO bn_n_open_dsets_sym
- !  bn_n_open_dsets_sym.jnl
-! Ferret v6.5
-! New special symbol N_OPEN_DSETS, evaulated when requested.
-! Gives a count of the number of open datasets.
- 
-! Initially should be zero
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "0"
- 
-! Open some datasets
-use dstitle
-use TAO_SST_clim
-use clim_airt_lev
- 
-! Check
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "3"
- 
-! Open a few more. Any type of data
-set data tok_short.des
- 
-list/clobber/file=list_of_numbers.dat/nohead/norowhead {1,3,4,5,6,8,9}
-file/var=v1 list_of_numbers.dat
- 
-! now  there are five
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "5"
- 
-! cancel a couple
-can data 3
-can data TAO_SST_clim
- 
-! Now three
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "3"
- 
-can dat/all
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "0"
- 
- 
-GO bn_reset
-cancel mode verify
-GO bn_multi_decade
-! bn_multi_decade.jnl
-! New default no-small tics for multi-decade plots
-! See bug 670
- 
-def axis/t="01-JAN-1860":"30-DEC-2300":5/edges/units="Days"/cal="360d" simutaxis1
-let tvar = t[gt=simutaxis1]*-1E+34
- 
-define view/x=0:1/y=0.000:0.125 v1
-define view/x=0:1/y=0.125:0.250 v2
-define view/x=0:1/y=0.250:0.375 v3
-define view/x=0:1/y=0.375:0.500 v4
-define view/x=0:1/y=0.500:0.625 v5
-define view/x=0:1/y=0.625:0.750 v6
-define view/x=0:1/y=0.750:0.875 v7
-define view/x=0:1/y=0.875:1.000 v8
- 
-! Plot a variety of time axis lengths.
-set view v1; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1870]
-set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
- 
-! New default: no small tics for multi-decade plots
-set view v3; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
-set view v4; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
-set view v5; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
-set view v6; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
-set view v7; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar
- 
-! can plot the tics even on a multi-decade axis by specifying PPL TICS.
-set view v8; plot/nolab/ax=0,1,0,0/vlim=0:1/set tvar
-  ppl tics,0.1,0.25
-  ppl plot
- 
-cancel view
- 
-! Test vertical time axes.
- 
-define view/x=0.000:0.125/y=0:1 v1
-define view/x=0.125:0.250/y=0:1 v2
-define view/x=0.250:0.375/y=0:1 v3
-define view/x=0.375:0.500/y=0:1 v4
-define view/x=0.500:0.625/y=0:1 v5
-define view/x=0.625:0.750/y=0:1 v6
-define view/x=0.750:0.875/y=0:1 v7
-define view/x=0.875:1.000/y=0:1 v8
- 
-! Plot a variety of time axis lengths.
-set view v1; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1870]
-set view v2; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
- 
-! New default: no small tics for multi-decade plots
-set view v3; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
-set view v4; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
-set view v5; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
-set view v6; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
-set view v7; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar
- 
-! can plot the tics even on a multi-decade axis by specifying PPL TICS.
-set view v8; plot/trans/nolab/ax=0,0,1,0/hlim=0:1/set tvar
-  ppl tics,0.1,0.25
-  ppl plot
- 
-cancel view
- 
-GO bn_reset
-cancel mode verify
-GO bn_show_xml_file
-! bn_show_xml_file.jnl
-! Testing SHOW DATA/OUTFILE
-!         SHOW AXIS/OUTFILE
-!         SHOW VAR/OUTFILE
-!         SAY/OUTFILE
-!
-! Similar to LAS iosp script header.jnl
-! capability to be expanded to all SHOW commands in the future.
- 
-use gt4d011
- 
-DEFINE SYMBOL output_xml_file = the_xml_file.xml
- 
-say/quiet/outfile=($output_xml_file)/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
- !-> MESSAGE/CONTINUE/quiet/outfile=the_xml_file.xml/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
-say/quiet/outfile=($output_xml_file)/append <data>
- !-> MESSAGE/CONTINUE/quiet/outfile=the_xml_file.xml/append <data>
- 
-show var/xml/append/outfile=($output_xml_file)
- !-> show var/xml/append/outfile=the_xml_file.xml
-show data/var/xml/append/outfile=($output_xml_file)
- !-> show data/var/xml/append/outfile=the_xml_file.xml
-show axis/all/xml/append/outfile=($output_xml_file)
- !-> show axis/all/xml/append/outfile=the_xml_file.xml
 say/quiet/outfile=($output_xml_file)/append </data>
  !-> MESSAGE/CONTINUE/quiet/outfile=the_xml_file.xml/append </data>
  
@@ -66324,9 +66335,9 @@ list contents
              VARIABLE : { SPAWN:"cat redirect_journal.txt" }
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
- 2    /  2:" ! FERRET v6.7  "                                                           
- 3    /  3:" ! Linux(gfortran) 2.6.18-238.1.1.el5 - 05/06/11"                           
- 4    /  4:" !  6-May-11 11:31     "                                                    
+ 2    /  2:" ! FERRET v6.71  "                                                          
+ 3    /  3:" ! Linux(gfortran) 2.6.18-238.1.1.el5 - 05/17/11"                           
+ 4    /  4:" ! 17-May-11 09:32     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -67784,6 +67795,91 @@ SET MODE diag
 USE test0
 CANCEL MODE diag
  
+! *********** v6.8 Additions ***********
+GO bn_reset
+cancel mode verify
+GO bn68_bug_fixes
+! bn67_bug_fixes.jnl
+! test various fixes that went into version 6.7
+! 5/2011 ACM
+ 
+GO bn_reset
+cancel mode verify
+GO err67_tax_modtime
+! err67_tax_modtime.jnl
+! 5/17/2011
+! tickets 1853, 1854: TAX_* functions returned
+! incorrect results when the time axis is modulo
+ 
+use climatological_axes
+can dat climatological_axes
+let tvar = t[gt=month_reg]
+ 
+list/L=15:20 tax_datestring(t[gt=tvar],tvar,"hour")
+             VARIABLE : TAX_DATESTRING(T[GT=TVAR],TVAR,"hour")
+             SUBSET   : 6 points (TIME)
+ 17-MAR      / 15:"17-MAR 08"
+ 16-APR      / 16:"16-APR 19"
+ 17-MAY      / 17:"17-MAY 05"
+ 16-JUN      / 18:"16-JUN 16"
+ 17-JUL      / 19:"17-JUL 02"
+ 16-AUG      / 20:"16-AUG 13"
+list/L=15:20 tax_datestring(t[gt=tvar],tvar,"day")
+             VARIABLE : TAX_DATESTRING(T[GT=TVAR],TVAR,"day")
+             SUBSET   : 6 points (TIME)
+ 17-MAR      / 15:"17-MAR"
+ 16-APR      / 16:"16-APR"
+ 17-MAY      / 17:"17-MAY"
+ 16-JUN      / 18:"16-JUN"
+ 17-JUL      / 19:"17-JUL"
+ 16-AUG      / 20:"16-AUG"
+list/L=15:20 tax_dayfrac(t[gt=tvar],tvar), tax_dayfrac(t[gt=tvar],tvar)*24.
+             TIME: 02-MAR 03:32 to 31-AUG 18:27
+ Column  1: TAX_DAYFRAC(T[GT=TVAR],TVAR)
+ Column  2: EX#2 is TAX_DAYFRAC(T[GT=TVAR],TVAR)*24.
+             (C001,V002)   EX#2
+17-MAR      / 15:  0.3663   8.79
+16-APR      / 16:  0.8031  19.28
+17-MAY      / 17:  0.2400   5.76
+16-JUN      / 18:  0.6769  16.25
+17-JUL      / 19:  0.1138   2.73
+16-AUG      / 20:  0.5506  13.21
+list/L=15:20 tax_day(t[gt=tvar],tvar), tax_jday(t[gt=tvar],tvar)
+             TIME: 02-MAR 03:32 to 31-AUG 18:27
+ Column  1: TAX_DAY(T[GT=TVAR],TVAR)
+ Column  2: TAX_JDAY(T[GT=TVAR],TVAR)
+             (C001,V002)  (C001,V005)
+17-MAR      / 15:   17.00    76.0
+16-APR      / 16:   16.00   106.0
+17-MAY      / 17:   17.00   137.0
+16-JUN      / 18:   16.00   167.0
+17-JUL      / 19:   17.00   198.0
+16-AUG      / 20:   16.00   228.0
+list/L=15:20 tax_month(t[gt=tvar],tvar), tax_yearfrac(t[gt=tvar],tvar)
+             TIME: 02-MAR 03:32 to 31-AUG 18:27
+ Column  1: TAX_MONTH(T[GT=TVAR],TVAR)
+ Column  2: TAX_YEARFRAC(T[GT=TVAR],TVAR)
+             (C001,V002)  (C001,V005)
+17-MAR      / 15:   3.000  0.2082
+16-APR      / 16:   4.000  0.2904
+17-MAY      / 17:   5.000  0.3753
+16-JUN      / 18:   6.000  0.4575
+17-JUL      / 19:   7.000  0.5425
+16-AUG      / 20:   8.000  0.6247
+list/L=15:20 tax_year(t[gt=tvar],tvar)
+             VARIABLE : TAX_YEAR(T[GT=TVAR],TVAR)
+             SUBSET   : 6 points (TIME)
+ 17-MAR      / 15:....
+ 16-APR      / 16:....
+ 17-MAY      / 17:....
+ 16-JUN      / 18:....
+ 17-JUL      / 19:....
+ 16-AUG      / 20:....
+list tax_units(tvar)
+             VARIABLE : TAX_UNITS(TVAR)
+          3600.
+ 
+ 
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not
 ! tested in the benchmarks.
@@ -67796,9 +67892,9 @@ yes? ! run bn_all_ef tests
 yes? 
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
- 	FERRET v6.7  
- 	Linux(gfortran) 2.6.18-238.1.1.el5 - 05/06/11
- 	 6-May-11 11:33     
+ 	FERRET v6.71  
+ 	Linux(gfortran) 2.6.18-238.1.1.el5 - 05/17/11
+ 	17-May-11 09:34     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -68651,7 +68747,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68675,7 +68771,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68699,7 +68795,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68738,7 +68834,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68773,7 +68869,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68813,7 +68909,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68867,7 +68963,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68921,7 +69017,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68975,7 +69071,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69020,7 +69116,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69111,7 +69207,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69178,7 +69274,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69228,7 +69324,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69303,7 +69399,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69330,7 +69426,7 @@ variables:
 		X_:_FillValue = -1.e+34f ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -69354,7 +69450,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -69380,11 +69476,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -69414,7 +69510,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69486,7 +69582,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69527,7 +69623,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69566,7 +69662,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69669,7 +69765,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -69705,7 +69801,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -69728,7 +69824,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69754,7 +69850,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69774,7 +69870,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69795,7 +69891,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69834,7 +69930,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -69870,7 +69966,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -69904,7 +70000,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -69933,7 +70029,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69966,7 +70062,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69992,7 +70088,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70033,7 +70129,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -70131,7 +70227,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -70170,7 +70266,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70253,7 +70349,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70290,7 +70386,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70327,7 +70423,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70375,7 +70471,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70430,7 +70526,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70470,7 +70566,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70510,7 +70606,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70542,7 +70638,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70573,7 +70669,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -70602,7 +70698,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -70631,7 +70727,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -70689,7 +70785,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70730,7 +70826,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70749,37 +70845,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	float A(XAX) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70809,7 +70875,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	float A(XAX) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70858,7 +70954,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70896,7 +70992,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70914,7 +71010,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 err611_set_var_ez.jnl --- 
@@ -70933,7 +71029,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70951,7 +71047,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -70969,7 +71065,7 @@ variables:
 		A:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70990,7 +71086,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71020,7 +71116,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -71045,7 +71141,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.7    6-May-11" ;
+		:history = "FERRET V6.71   17-May-11" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
@@ -71059,25 +71155,25 @@ yes?
 yes? 
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
- 	FERRET v6.7  
- 	Linux(gfortran) 2.6.18-238.1.1.el5 - 05/06/11
- 	 6-May-11 11:33     
+ 	FERRET v6.71  
+ 	Linux(gfortran) 2.6.18-238.1.1.el5 - 05/17/11
+ 	17-May-11 09:34     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
 PPL$XPIXEL = "656"
 PPL$YPIXEL = "492"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.7"
+FERRET_VERSION = "6.71"
 FERRET_PLATFORM = "Linux(gfortran) 2.6.18-238.1.1.el5"
 NETCDF_VERSION = "4.1.2 of Apr 18 2011 08:33:01 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 6-May-11"
-SESSION_TIME = "11:33"
-DELTA_CPU = "0.024995"
-CLOCK_SECS = "0.21"
-CURRENT_DATE = " 6-May-11"
-CURRENT_TIME = "11:33:26"
+SESSION_DATE = "17-May-11"
+SESSION_TIME = "09:34"
+DELTA_CPU = "0.034994"
+CLOCK_SECS = "0.156"
+CURRENT_DATE = "17-May-11"
+CURRENT_TIME = "09:34:04"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -71098,7 +71194,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "6-May-11:11:33"
+WIN_TITLE = "17-May-11:09:34"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -71157,9 +71253,9 @@ yes?
 yes? GO bn_gif
 abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
  	NOAA/PMEL TMAP
- 	FERRET v6.7  
- 	Linux(gfortran) 2.6.18-238.1.1.el5 - 05/06/11
- 	 6-May-11 11:33     
+ 	FERRET v6.71  
+ 	Linux(gfortran) 2.6.18-238.1.1.el5 - 05/17/11
+ 	17-May-11 09:34     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -71375,9 +71471,9 @@ yes?
 yes? 
 yes? GO bn_ps
  	NOAA/PMEL TMAP
- 	FERRET v6.7  
- 	Linux(gfortran) 2.6.18-238.1.1.el5 - 05/06/11
- 	 6-May-11 11:33     
+ 	FERRET v6.71  
+ 	Linux(gfortran) 2.6.18-238.1.1.el5 - 05/17/11
+ 	17-May-11 09:34     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -71489,9 +71585,9 @@ yes?
 yes? 
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
- 	FERRET v6.7  
- 	Linux(gfortran) 2.6.18-238.1.1.el5 - 05/06/11
- 	 6-May-11 11:33     
+ 	FERRET v6.71  
+ 	Linux(gfortran) 2.6.18-238.1.1.el5 - 05/17/11
+ 	17-May-11 09:34     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -71575,4 +71671,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Fri May 6 11:33:28 PDT 2011
+Ended at Tue May 17 09:34:05 PDT 2011

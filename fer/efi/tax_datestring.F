@@ -123,6 +123,17 @@
       CHARACTER*3 precistring
       REAL*8 ddate
 
+*  variables for checking axis characteristics (modulo axes)
+
+      CHARACTER ax_name(4)*16, ax_units(4)*16
+      LOGICAL backward(4), modulo(4), regular(4), tmodulo
+
+*  Check to see if time axis of arg 2 is modulo
+
+      CALL ef_get_axis_info(id, 2, ax_name, ax_units, backward,
+     .     modulo, regular)
+      IF (modulo(4)) tmodulo = .TRUE.
+
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_result_type(id, rtype)
 
@@ -161,44 +172,86 @@ C     Get the string value of dates and put them in the result.
                     CALL EF_GET_AXIS_DATES 
      .                (id, ARG2, ddate, 1, datestring)
 
-                    If(precistring .EQ. 'sec') THEN
-                     slen = 20
-                     CALL EF_PUT_STRING (datestring, slen,
-     .                    result(1,i,j,k,l))
+                    IF (.NOT. tmodulo) THEN
+                       If(precistring .EQ. 'sec') THEN
+                        slen = 20
+                        CALL EF_PUT_STRING (datestring, slen,
+     .                       result(1,i,j,k,l))
                  
-                    ELSE If(precistring .EQ. 'min') THEN
-                     slen = 17
-                     CALL EF_PUT_STRING (datestring(1:17), slen,
+                       ELSE If(precistring .EQ. 'min') THEN
+                        slen = 17
+                        CALL EF_PUT_STRING (datestring(1:17), slen,
+     .                       result(1,i,j,k,l))
+
+                       ELSE If(precistring .EQ. 'hou') THEN
+                        slen = 14
+                        CALL EF_PUT_STRING (datestring(1:14), slen,
+     .                       result(1,i,j,k,l))
+
+                       ELSE If(precistring .EQ. 'day') THEN
+                        slen = 11
+                        CALL EF_PUT_STRING (datestring(1:11), slen, 
+     .                       result(1,i,j,k,l))
+
+                       ELSE IF(precistring .EQ. 'mon') THEN
+                        slen = 8
+                        CALL EF_PUT_STRING (datestring(4:11), slen,
+     .                       result(1,i,j,k,l))
+
+                       ELSE IF(precistring .EQ. 'yea') THEN
+                        slen = 4
+                        CALL EF_PUT_STRING (datestring(8:11), slen,
      .                    result(1,i,j,k,l))
 
-                    ELSE If(precistring .EQ. 'hou') THEN
-                     slen = 14
-                     CALL EF_PUT_STRING (datestring(1:14), slen,
-     .                    result(1,i,j,k,l))
+                       ELSE
+                        slen = 20
+                        CALL EF_PUT_STRING (datestring, slen,
+     .                       result(1,i,j,k,l))
 
-                    ELSE If(precistring .EQ. 'day') THEN
-                     slen = 11
-                     CALL EF_PUT_STRING (datestring(1:11), slen, 
-     .                    result(1,i,j,k,l))
-
-                    ELSE IF(precistring .EQ. 'mon') THEN
-                     slen = 8
-                     CALL EF_PUT_STRING (datestring(4:11), slen,
-     .                    result(1,i,j,k,l))
-
-                    ELSE IF(precistring .EQ. 'yea') THEN
-                     slen = 4
-                     CALL EF_PUT_STRING (datestring(8:11), slen,
-     .                    result(1,i,j,k,l))
-
-                    ELSE
-                     slen = 20
-                     CALL EF_PUT_STRING (datestring, slen,
-     .                    result(1,i,j,k,l))
-
-                    ENDIF
+                       ENDIF
                  
-		 ELSE
+		    ELSE  ! modulo time axis.  Datestring looks like 15-FEB 02:54:36
+
+		       If(precistring .EQ. 'sec') THEN
+                        slen = 15
+                        CALL EF_PUT_STRING (datestring(1:15), slen,
+     .                       result(1,i,j,k,l))
+                 
+                       ELSE If(precistring .EQ. 'min') THEN
+                        slen = 12
+                        CALL EF_PUT_STRING (datestring(1:12), slen,
+     .                       result(1,i,j,k,l))
+
+                       ELSE If(precistring .EQ. 'hou') THEN
+                        slen = 9
+                        CALL EF_PUT_STRING (datestring(1:9), slen,
+     .                       result(1,i,j,k,l))
+
+                       ELSE If(precistring .EQ. 'day') THEN
+                        slen = 6
+                        CALL EF_PUT_STRING (datestring(1:6), slen, 
+     .                       result(1,i,j,k,l))
+
+                       ELSE IF(precistring .EQ. 'mon') THEN
+                        slen = 3
+                        CALL EF_PUT_STRING (datestring(4:6), slen,
+     .                       result(1,i,j,k,l))
+
+                       ELSE IF(precistring .EQ. 'yea') THEN
+                          datestring = '...'
+                          slen = 3
+                          CALL EF_PUT_STRING (datestring, slen,
+     .                       result(1,i,j,k,l))
+
+                       ELSE
+                        slen = 15
+                        CALL EF_PUT_STRING (datestring, slen,
+     .                       result(1,i,j,k,l))
+
+                       ENDIF
+                    ENDIF  ! Modulo time
+
+		 ELSE  ! ddate .NE. bad_flag(ARG1)
                     datestring = '...'
                     slen = 3
                     CALL EF_PUT_STRING (datestring, slen,

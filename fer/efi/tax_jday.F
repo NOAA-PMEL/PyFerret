@@ -128,6 +128,18 @@
       INTEGER i,j,k,l,m 
       INTEGER i1, j1, k1, l1
 
+*  variables for checking axis characteristics (modulo axes)
+
+      CHARACTER ax_name(4)*16, ax_units(4)*16
+      LOGICAL backward(4), modulo(4), regular(4), tmodulo
+
+*  Check to see if time axis of arg 2 is modulo
+
+      CALL ef_get_axis_info(id, 2, ax_name, ax_units, backward,
+     .     modulo, regular)
+      IF (modulo(4)) tmodulo = .TRUE.
+
+
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
@@ -151,8 +163,14 @@
                 CALL ef_get_axis_dates(id,ARG2,ddate,1,datebuf)
 
 *     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date.
-                READ (datebuf, 110, err=900) 
-     .               day_of_mon, cmon, iyear
+                IF (.NOT. tmodulo) THEN
+                   READ (datebuf,110,err=900) day_of_mon, cmon, iyear
+
+*     modulo: Datebuf is in form "DD-MON HH:MM:SS". Read date.
+                ELSE
+                   READ (datebuf,110,err=900) day_of_mon, cmon
+                   iyear = 1901  ! nominally non-leap year 
+                ENDIF
 
                 CALL JULIAN_DAY_OF_YEAR(cmon, day_of_mon, iyear, 
      .               day_of_year, days_this_year)

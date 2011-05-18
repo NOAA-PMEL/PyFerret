@@ -34,7 +34,7 @@ let imax = 457  ! through the end of 2007
 
 DEFINE SYMBOL file_qual = CLOBBER  ! First time CLOBBBER, afterwards APPEND to the file.
 DEFINE SYMBOL gridded_outfile = /home/data/socat/SOCAT_tracks_gridded_stats_AD.nc
-DEFINE SYMBOL gridded_outfile = /home/data/socat/SOCAT_tracks_gridded_stats_testvar.nc
+DEFINE SYMBOL gridded_outfile = /home/data/socat/SOCAT_tracks_gridded_monthly.nc
 
 repeat/range=1:10:1 ( \
  LET ii = i[i=`i1`:`i2`]; \
@@ -48,7 +48,7 @@ repeat/range=1:10:1 ( \
 
 ! Add global attributes
 
-let status = nco_attr("/home/data/socat/SOCAT_tracks_gridded_stats.nc", "global", "title", "c", "a",\
+let status = nco_attr("($gridded_outfile)", "global", "title", "c", "a",\
 "SOCAT gridded. SOCAT v1.4 May 2011, QC-Flags A-D, WOCE-Flag 2" )
 load status
 

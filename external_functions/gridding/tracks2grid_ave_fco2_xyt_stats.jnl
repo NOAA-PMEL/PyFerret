@@ -17,7 +17,7 @@ LET dy = `0.5* ybox[gy=ylat,j=1]`
 
 !SET AXIS/STRIDE=100 `lon,return=xaxis`
 
-
+! Triples have time with origin at start of 1970.
 LET offset1970 = DAYS1900(1970,1,1)
 LET month = MOD(ii-1,12)+1
 LET year = 1970 + INT((ii-1)/12)
@@ -25,12 +25,12 @@ LET year = 1970 + INT((ii-1)/12)
 ! for entire time period of SOCAT
 LET ii = i[i=1:480]
 
-! for the year 2005, alone
-LET ii = i[i=421:433]
-
+! Repeat and do the calculation for 5-year intervals.
 LET i1 = 1
 LET i2 = 61
 LET del = 60
+
+let imax = 457  ! through the end of 2007
 
 DEFINE SYMBOL file_qual = CLOBBER  ! First time CLOBBBER, afterwards APPEND to the file.
 DEFINE SYMBOL gridded_outfile = /home/data/socat/SOCAT_tracks_gridded_stats_AD.nc
@@ -41,17 +41,15 @@ repeat/range=1:10:1 ( \
  GO fco2_xyt_stats_year.jnl; \
  LET i1 = `i2`; \
  LET i2 = `i2+del`; \
- IF `i1 GT 480` THEN exit/loop; \
+ IF `i2 GT imax` THEN LET i2 = `imax`; \
+ IF `i1 GE imax` THEN exit/loop; \
  )
 
 
 ! Add global attributes
 
-let status = nco_attr("/home/data/socat/SOCAT_tracks_gridded_stats_testvar.nc", "global", "comment", "c", "a",\
-"Flags A-D and WOCE flag of 2 \nProvisional - Apr. 27, 2011")
-load status
 let status = nco_attr("/home/data/socat/SOCAT_tracks_gridded_stats_testvar.nc", "global", "title", "c", "a",\
-"SOCAT gridded; Provisional - Apr. 27, 2011")
+"SOCAT gridded. Provisional- Apr. 27, 2011, QC-Flags A-D, WOCE-Flag 2" )
 load status
 
 exit/script
@@ -64,7 +62,7 @@ CAN VAR/ALL
 USE "/home/data/socat/SOCAT_tracks_gridded_stats_var.nc"
 
 SH DAT
-REPEAT/RANGE=1970:2009:1/NAME=yr (\
+REPEAT/RANGE=1970:2007:1/NAME=yr (\
 DEFINE SYMBOL yr = `yr`; \
  SET VIEW ul; \
  LET cruise_count_max = count_cruise[T=1-JAN-($yr):31-DEC-($yr)@SUM];\
@@ -85,7 +83,7 @@ can view
 set win/asp=2
 
 SH DAT
-REPEAT/RANGE=1970:2009:1/NAME=yr (\
+REPEAT/RANGE=1970:2007:1/NAME=yr (\
 DEFINE SYMBOL yr = `yr`; \
  SET VIEW upper; \
  LET cruise_count_max = count_cruise[T=1-JAN-($yr):31-DEC-($yr)@SUM];\

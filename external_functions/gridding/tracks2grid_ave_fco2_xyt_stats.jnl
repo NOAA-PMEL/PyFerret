@@ -48,52 +48,7 @@ repeat/range=1:10:1 ( \
 
 ! Add global attributes
 
-let status = nco_attr("/home/data/socat/SOCAT_tracks_gridded_stats_testvar.nc", "global", "title", "c", "a",\
-"SOCAT gridded. Provisional- Apr. 27, 2011, QC-Flags A-D, WOCE-Flag 2" )
+let status = nco_attr("/home/data/socat/SOCAT_tracks_gridded_stats.nc", "global", "title", "c", "a",\
+"SOCAT gridded. May 2011, QC-Flags A-D, WOCE-Flag 2" )
 load status
-
-exit/script
-
-! Test the output
-PAUSE
-CAN DAT/ALL
-CAN VAR/ALL
-
-USE "/home/data/socat/SOCAT_tracks_gridded_stats_var.nc"
-
-SH DAT
-REPEAT/RANGE=1970:2007:1/NAME=yr (\
-DEFINE SYMBOL yr = `yr`; \
- SET VIEW ul; \
- LET cruise_count_max = count_cruise[T=1-JAN-($yr):31-DEC-($yr)@SUM];\
- SHADE/SET/LEV=(1,10,1)(inf)/TITLE=cruise_count_year_sum IF cruise_count_max GT 0 THEN cruise_count_max;\
- GO unlabel 5;\
- PPL shade;\
- SET VIEW ur; \
- LET count_nbin_max = count_nbin[T=1-JAN-($yr):31-DEC-($yr)@SUM];\
- SHADE/LEV=(1,100,10)(inf)/TITLE=count_nbin_year_sum IF count_nbin_max GT 0 THEN count_nbin_max;\
- SET VIEW ll; \
- SHADE/LEV=(-inf)(220,480,20)(inf)/TITLE=fco2_cruise_ave[T=@AVE] fco2_cruise_ave[T=1-JAN-($yr):31-DEC-($yr)@AVE]; \
- SET VIEW lr; \
- SHADE/TITLE=mean_lon_del[T=@AVE] mean_lon_del[T=1-JAN-($yr):31-DEC-($yr)@AVE]; \
- PAUSE; \
- PPL SHASET RESET)
-
-can view
-set win/asp=2
-
-SH DAT
-REPEAT/RANGE=1970:2007:1/NAME=yr (\
-DEFINE SYMBOL yr = `yr`; \
- SET VIEW upper; \
- LET cruise_count_max = count_cruise[T=1-JAN-($yr):31-DEC-($yr)@SUM];\
- SHADE/SET/LEV=(1,10,1)(inf)/TITLE=cruise_count_year_sum IF cruise_count_max GT 0 THEN cruise_count_max;\
- GO unlabel 5;\
- PPL shade;\
- SET VIEW lower; \
- LET var_max  = FCO2_WEIGHTED_VAR[T=1-JAN-($yr):31-DEC-($yr)@max];\
- SHADE/LEV=(1,100,10)(inf)/TITLE=max_var_year IF var_max GT 0 THEN var_max;\
- PAUSE; \
- PPL SHASET RESET)
-
 

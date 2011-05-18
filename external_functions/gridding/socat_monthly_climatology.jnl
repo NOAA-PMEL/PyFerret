@@ -3,7 +3,7 @@
  ! average the fco2 averages
  ! min and max the fco2 min and max.
 
-use "/home/data/socat/SOCAT_tracks_gridded_stats_AD_new.nc"
+use "/home/data/socat/SOCAT_tracks_gridded_stats_testvar.nc"
 
 
 define symbol outfile = /home/data/socat/SOCAT_tracks_gridded_month_clim.nc

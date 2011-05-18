@@ -19,7 +19,7 @@ def ferret_init(id):
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS),
-                "argnames": ("Abscissae", "PDName", "PDParams"),
+                "argnames": ("ABSCISSAE", "PDNAME", "PDPARAMS"),
                 "argdescripts": ("Points at which to calculate the probability mass function values",
                                  "Name of a discrete probability distribution",
                                  "Parameters for this discrete probability distribution"),

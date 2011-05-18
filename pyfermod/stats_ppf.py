@@ -19,7 +19,7 @@ def ferret_init(id):
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS),
-                "argnames": ("Quantiles", "PDName", "PDParams"),
+                "argnames": ("QUANTILES", "PDNAME", "PDPARAMS"),
                 "argdescripts": ("Probabilities (0-1) at which to calculate the percent point function values",
                                  "Name of a probability distribution",
                                  "Parameters for this probability distribution"),

@@ -19,7 +19,7 @@ def ferret_init(id):
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS),
-                "argnames": ("Template", "PDName", "PDParams"),
+                "argnames": ("TEMPLATE", "PDNAME", "PDPARAMS"),
                 "argdescripts": ("Template array for the random variates array to be created",
                                  "Name of a probability distribution",
                                  "Parameters for this probability distribution"),

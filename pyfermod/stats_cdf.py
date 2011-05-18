@@ -19,7 +19,7 @@ def ferret_init(id):
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS),
-                "argnames": ("Abscissae", "PDName", "PDParams"),
+                "argnames": ("ABSCISSAE", "PDNAME", "PDPARAMS"),
                 "argdescripts": ("Points at which to calculate the cumulative distribution function values",
                                  "Name of a probability distribution",
                                  "Parameters for this probability distribution"),

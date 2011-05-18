@@ -52,8 +52,6 @@
 			   -DXT_CODE \
 			   -fPIC
 
-	PLATFORM	:= $(shell uname -rs) (gfortran)
-
 	CPP		:= $(shell which cpp)
 	CC		:= $(shell which gcc)
 	FC		:= $(shell which gfortran)

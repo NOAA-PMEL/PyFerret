@@ -49,7 +49,8 @@ from _pyferret import *
 def init(arglist=None, enterferret=True):
     """
     Interprets the traditional Ferret options given in arglist and
-    starts pyferret appropriately.  If ${HOME}/.ferret exists, that
+    starts pyferret appropriately.  Defines all the standard Ferret
+    Python external functions.  If ${HOME}/.ferret exists, that
     script is then executed.
 
     If '-script' is given with a script filename, this method calls
@@ -88,6 +89,17 @@ def init(arglist=None, enterferret=True):
                    and exit (THIS MUST BE SPECIFIED LAST)
 
     """
+
+    std_pyefs = ( "stats_cdf",
+                  # "stats_helper",
+                  "stats_isf",
+                  "stats_pdf",
+                  "stats_pmf",
+                  "stats_ppf",
+                  "stats_rvs",
+                  "stats_sf",
+                )
+
     my_metaname = None
     my_memsize = 25.6
     my_journal = True
@@ -160,34 +172,40 @@ def init(arglist=None, enterferret=True):
     if just_exit:
         # print the ferret header then exit completely
         start(journal=False, verify=False, metaname=".gif")
-        run("exit /program")
+        result = run("exit /program")
         # should not get here
         raise SystemExit
-    # start ferret
-    start(memsize=my_memsize, journal=my_journal, verify=my_verify, metaname=my_metaname)
+    # start ferret without journaling
+    start(memsize=my_memsize, journal=False, verify=my_verify, metaname=my_metaname)
+    # define all the Ferret standard Python external functions
+    for fname in std_pyefs:
+        result = run("DEFINE PYFUNC pyferret.%s" % fname)
     # run the ${HOME}/.ferret script if it exists
     home_val = os.environ.get('HOME')
     if home_val:
         init_script = os.path.join(home_val, '.ferret')
         if os.path.exists(init_script):
             try:
-                run('go "%s"; exit /topy' % init_script)
+                result = run('go "%s"; exit /topy' % init_script)
             except:
                 print >>sys.stderr, " **Error: exception raised in runnning script %s" % init_script
-                run('exit /program')
+                result = run('exit /program')
                 # should not get here
                 raise SystemExit
     # if a command-line script is given, run the script and exit completely
     if script != None:
         script_line = " ".join(script)
         try:
-            run('go "%s"; exit /program' % script_line)
+            result = run('go "%s"; exit /program' % script_line)
         except:
             print >>sys.stderr, " **Error: exception raised in running script %s" * script_line
         # If exception or if returned early, force shutdown
-        run('exit /program')
+        result = run('exit /program')
         # should not get here
         raise SystemExit
+    # if journaling desired, now turn on journaling
+    if my_journal:
+        result = run("SET MODE JOURNAL")
     # if they don't want to enter ferret, return the success value from run
     if not my_enterferret:
         return (_pyferret.FERR_OK, '')

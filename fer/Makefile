@@ -13,7 +13,9 @@ include ../site_specific.mk
 #
 include ../platform_specific.mk.$(HOSTTYPE)
 
-DATE = $(shell /bin/date +%D)
+PLATFORM := $(shell uname -rs)
+VERSION_INFO := (PyFerret alpha 4)
+DATE := $(shell /bin/date +%D)
 
 #
 # Macros
@@ -53,7 +55,7 @@ update:
 	rm -f special/xmake_date_data.[Ffo]
 	sed "s&xxxxxxxx&$(DATE)&" < special/xmake_date_data.template > special/xmake_date_data.F
 	rm -f special/xrevision_type_data.[Ffo]
-	sed -e 's&mmmmmmmm&&' -e 's&(/&(&' -e 's&/)&)&' < special/xrevision_type_data.template > special/xrevision_type_data.F 
+	sed -e 's&mmmmmmmm&$(VERSION_INFO)&' -e 's&(/&(&' -e 's&/)&)&' < special/xrevision_type_data.template > special/xrevision_type_data.F 
 	rm -f special/xplatform_type_data.[Ffo]
 	sed -e 's&mmmmmmmm&$(PLATFORM)&' -e 's&(/&(&' -e 's&/)&)&' < special/xplatform_type_data.template > special/xplatform_type_data.F 
 

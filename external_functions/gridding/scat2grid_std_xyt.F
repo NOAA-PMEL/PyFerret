@@ -417,7 +417,7 @@ C  Get coordinates of output axes.
 *  of the scattered point.
 
            IF  (modulox(1) .AND. xx.NE.bad_flag(ARG1))
-     .         CALL modscat (xaxlo, nx, 1, xx)
+     .         CALL modscatminmax (xaxlo(1,1,1,1), xaxhi(nx,1,1,1), 1, xx)
 
 *  Put fcn into result variable.
 
@@ -494,7 +494,7 @@ C  Get coordinates of output axes.
 *  of the scattered point.
 
             IF  (modulox(1) .AND. xx.NE.bad_flag(ARG1))
-     .         CALL modscat (xaxlo, nx, 1, xx)
+     .         CALL modscatminmax (xaxlo(1,1,1,1), xaxhi(nx,1,1,1), 1, xx)
 
 *  Accumulate obs-mean in cells; using counts[k=2]
 

@@ -221,7 +221,7 @@
 * x,y,t direction: output grid
 * z direction: 1..3
       CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, 
-     .                             nxout, nyout, 2, ntout)
+     .                             nxout, nyout, 3, ntout)
 
 * cell_avg  work array - work array - sum and counts over cruises for cell average
 * x,y,t direction: output grid

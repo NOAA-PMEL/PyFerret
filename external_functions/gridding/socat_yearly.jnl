@@ -1,0 +1,93 @@
+ ! Compute yearly averages of SOCAT gridded data:
+ ! sum the counts
+ ! average the fco2 averages
+ ! min and max the fco2 min and max.
+
+use "/home/data/socat/SOCAT_tracks_gridded_stats_AD_new.nc"
+set mem/siz=70
+
+define symbol outfile = /home/data/socat/SOCAT_tracks_gridded_yearly.nc
+sp rm -f outfile
+
+! Define output time axis
+
+DEFINE AXIS/t="1-jan-1970":"31-dec-2007":1/edges/units=year tyear
+
+
+! Regrid each variable to the yearly axis using the appropriate transform.
+
+define symbol invar = count_ncruise  ! count_ncruise or ($invar)
+define sym op = SUM
+
+define symbol title_out=`($invar)[d=1],return=title` 
+define symbol units_out=`($invar)[d=1],return=units`
+
+! Sum for each month, adding to the dataset
+let/title="($title_out)"/units="($units_out)"  ($invar)_year = ($invar)[gt=tyear@($op)]
+save/file="($outfile)"/clobber ($invar)_year
+
+! Now the same for count_nobs
+define symbol invar = count_nobs  ! count_ncruise or count_nobs
+define symbol op = SUM
+
+define symbol title_out=`($invar)[d=1],return=title`
+define symbol units_out=`($invar)[d=1],return=units`
+
+! add to dataset
+let/title="($title_out)"/units="($units_out)"  ($invar)_year = ($invar)[gt=tyear@($op)]
+save/file="($outfile)"/append ($invar)_year
+
+
+! For FCO2 variables, average.
+define symbol invar = fco2_ave_weighted
+define symbol op = AVE
+
+define symbol title_out=`($invar)[d=1],return=title`
+define symbol units_out=`($invar)[d=1],return=units`
+
+
+! add to dataset
+let/title="($title_out)"/units="($units_out)"  ($invar)_year = ($invar)[gt=tyear@($op)]
+save/file="($outfile)"/append ($invar)_year
+
+! For FCO2 variables, average.
+define symbol invar = fco2_ave_unwtd
+define symbol op = AVE
+
+define symbol title_out=`($invar)[d=1],return=title`
+define symbol units_out=`($invar)[d=1],return=units`
+
+
+! add to dataset
+let/title="($title_out)"/units="($units_out)"  ($invar)_year = ($invar)[gt=tyear@($op)]
+save/file="($outfile)"/append ($invar)_year
+
+! For FCO2 min and max, use the min and max.
+define symbol invar = fco2_min_unwtd
+define symbol op = MIN
+
+define symbol title_out=`($invar)[d=1],return=title`
+define symbol units_out=`($invar)[d=1],return=units`
+
+
+! add to dataset
+let/title="($title_out)"/units="($units_out)"  ($invar)_year = ($invar)[gt=tyear@($op)]
+save/file="($outfile)"/append ($invar)_year
+
+! For FCO2 min and max, use the min and max.
+define symbol invar = fco2_max_unwtd
+define symbol op = MAX
+
+define symbol title_out=`($invar)[d=1],return=title`
+define symbol units_out=`($invar)[d=1],return=units`
+
+
+! add to dataset
+let/title="($title_out)"/units="($units_out)"  ($invar)_year = ($invar)[gt=tyear@($op)]
+save/file="($outfile)"/append ($invar)_year
+
+! Add global attribute
+
+let status = nco_attr("($outfile)", "global", "title", "c", "a",\
+"SOCAT gridded. Provisional- Apr. 27, 2011, QC-Flags A-D, WOCE-Flag 2 Yearly" )
+load status

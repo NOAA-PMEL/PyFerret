@@ -33,6 +33,7 @@ def create_all_scripts():
         # Get the long name from the description resembling 
         # "Beta(ALPHA, BETA)" or "F or Fisher(DFN, DFD)" (use first long name)
         distriblongname = distribinfo[j][1].split()[0].split('(')[0]
+        distribnamelist.append( ( distribinfo[j][0], distriblongname, ) )
     # List of supported functions
     funcnamelist  = [ ( "cdf", "cumulative density function", ),
                       ( "isf", "inverse survival function", ),
@@ -51,8 +52,8 @@ def create_all_scripts():
                 scriptname = "stats_%s_%s.py" %  (distribname, funcname)
                 # Verify the script does not already exist.
                 if not os.path.exists(scriptname):
-                    createscript(scriptname, distribname, distriblongname,
-                                             funcname, funclongname)
+                    create_script(scriptname, distribname, distriblongname,
+                                              funcname, funclongname)
             except AttributeError:
                 # function does not exist for the distribution - skip
                 pass
@@ -61,6 +62,5 @@ if __name__ == "__main__":
     # create all scripts from the 'stats_template' file
     if not os.path.exists("stats_template"):
         raise ValueError("The file 'stats_template' does not exist")
-    # create_all_scripts()
-    create_script("stats_nbinom_cdf.py", "nbinom", "Negative-Binomial", "cdf", "cumulative density function")
+    create_all_scripts()
 

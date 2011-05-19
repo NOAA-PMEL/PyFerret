@@ -32,10 +32,10 @@ def ferret_init(id):
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     """
-    Assigns result with random variates of the probability distribution 
-    indicated by inputs[1] (a string) using the parameters given in 
-    inputs[2].  Random variates will be assigned to positions corresponding 
-    to defined positions in inputs[0].  For positions where the inputs[0] 
+    Assigns result with random variates of the probability distribution
+    indicated by inputs[1] (a string) using the parameters given in
+    inputs[2].  Random variates will be assigned to positions corresponding
+    to defined positions in inputs[0].  For positions where the inputs[0]
     value is undefined, the result value will be undefined.
     """
     distribname = inputs[1]

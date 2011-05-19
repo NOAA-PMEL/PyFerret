@@ -1,5 +1,5 @@
 """
-Returns the array of survival function values for a 
+Returns the array of survival function values for a
 probability distribution and set of abscissa values.
 """
 import numpy

@@ -99,6 +99,7 @@ def init(arglist=None, enterferret=True):
                   "stats_ppf",
                   "stats_rvs",
                   "stats_sf",
+                  "stats_norm_cdf",
                   "stats_norm_pdf",
                 )
 

@@ -267,7 +267,7 @@ def getdistrib(distribname=None, distribparams=None):
 
 def getinitdict(distribname, funcname):
     """
-    Returns a dictionary appropriate for the return value of ferret_init 
+    Returns a dictionary appropriate for the return value of ferret_init
     in a Ferret stats_<disribname>_<funcname> PyEF
 
     Arguments:
@@ -297,12 +297,12 @@ def getinitdict(distribname, funcname):
         descript = "Returns (X=PTS,Y=%s) array of %s values for %s prob. distrib." % \
                    (paramdescripts[0][0], funclongname, distribname)
         axes = ( pyferret.AXIS_CUSTOM,
-                 pyferret.AXIS_CUSTOM, 
+                 pyferret.AXIS_CUSTOM,
                  pyferret.AXIS_DOES_NOT_EXIST,
                  pyferret.AXIS_DOES_NOT_EXIST, )
         argnames = ( "PTS", paramdescripts[0][0], )
         argdescripts = ( "Point(s) at which to calculate the %s values" % funclongname,
-                         "%s parameter(s)" % paramdescripts[0][1], )
+                         "Parameter(s) defining the %s" % paramdescripts[0][1], )
         argtypes = ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, )
         influences = ( ( False, False, False, False, ),
                        ( False, False, False, False, ), )
@@ -310,14 +310,14 @@ def getinitdict(distribname, funcname):
         # info for distributions with two parameters
         descript = "Returns (X=PTS,Y=%s,Z=%s) array of %s values for %s prob. distrib." % \
                    (paramdescripts[0][0], paramdescripts[1][0], funclongname, distribname)
-        axes = ( pyferret.AXIS_CUSTOM, 
-                 pyferret.AXIS_CUSTOM, 
-                 pyferret.AXIS_CUSTOM, 
+        axes = ( pyferret.AXIS_CUSTOM,
+                 pyferret.AXIS_CUSTOM,
+                 pyferret.AXIS_CUSTOM,
                  pyferret.AXIS_DOES_NOT_EXIST, )
         argnames = ( "PTS", paramdescripts[0][0], paramdescripts[1][0], )
         argdescripts = ( "Point(s) at which to calculate the %s values" % funclongname,
-                         "%s parameter(s)" % paramdescripts[0][1], 
-                         "%s parameter(s)" % paramdescripts[1][1], )
+                         "Parameter(s) defining the %s" % paramdescripts[0][1],
+                         "Parameter(s) defining the %s" % paramdescripts[1][1], )
         argtypes = ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, )
         influences = ( ( False, False, False, False, ),
                        ( False, False, False, False, ),
@@ -325,17 +325,17 @@ def getinitdict(distribname, funcname):
     elif (numargs == 4):
         # info for distributions with three parameters
         descript = "Returns (X=PTS,Y=%s,Z=%s,T=%s) array of %s values for %s prob. distrib." % \
-                   (paramdescripts[0][0], paramdescripts[1][0], paramdescripts[2][0], 
+                   (paramdescripts[0][0], paramdescripts[1][0], paramdescripts[2][0],
                     funclongname, distribname)
-        axes = ( pyferret.AXIS_CUSTOM, 
-                 pyferret.AXIS_CUSTOM, 
-                 pyferret.AXIS_CUSTOM, 
+        axes = ( pyferret.AXIS_CUSTOM,
+                 pyferret.AXIS_CUSTOM,
+                 pyferret.AXIS_CUSTOM,
                  pyferret.AXIS_CUSTOM, )
         argnames = ( "PTS", paramdescripts[0][0], paramdescripts[1][0], paramdescripts[2][0], )
         argdescripts = ( "Point(s) at which to calculate the %s values" % funclongname,
-                         "%s parameter(s)" % paramdescripts[0][1], 
-                         "%s parameter(s)" % paramdescripts[1][1], 
-                         "%s parameter(s)" % paramdescripts[2][1], )
+                         "Parameter(s) defining the %s" % paramdescripts[0][1],
+                         "Parameter(s) defining the %s" % paramdescripts[1][1],
+                         "Parameter(s) defining the %s" % paramdescripts[2][1], )
         argtypes = ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, )
         influences = ( ( False, False, False, False, ),
                        ( False, False, False, False, ),
@@ -404,7 +404,7 @@ def getdistribfunc(distrib, funcname):
 
 def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
     """
-    Assigns result with the funcname function values for the distribname 
+    Assigns result with the funcname function values for the distribname
     probability distributions defined by parameters in inputs[1:]
     at the abscissa values given in inputs[0].
     """

@@ -90,14 +90,16 @@ def init(arglist=None, enterferret=True):
 
     """
 
-    std_pyefs = ( "stats_cdf",
+    std_pyefs = (
                   # "stats_helper",
+                  "stats_cdf",
                   "stats_isf",
                   "stats_pdf",
                   "stats_pmf",
                   "stats_ppf",
                   "stats_rvs",
                   "stats_sf",
+                  "stats_norm_pdf",
                 )
 
     my_metaname = None
@@ -179,7 +181,7 @@ def init(arglist=None, enterferret=True):
     start(memsize=my_memsize, journal=False, verify=my_verify, metaname=my_metaname)
     # define all the Ferret standard Python external functions
     for fname in std_pyefs:
-        result = run("DEFINE PYFUNC pyferret.%s" % fname)
+        result = run("DEFINE PYFUNC pyferret.stats.%s" % fname)
     # run the ${HOME}/.ferret script if it exists
     home_val = os.environ.get('HOME')
     if home_val:

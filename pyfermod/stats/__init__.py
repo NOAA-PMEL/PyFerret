@@ -5,6 +5,7 @@ import math
 import numpy
 import scipy.stats
 import scipy.special
+import pyferret
 
 
 def getdistrib(distribname=None, distribparams=None):
@@ -43,32 +44,32 @@ def getdistrib(distribname=None, distribparams=None):
                   if the distribution parameters are invalid
     """
     if distribname == None:
-        return ( ( "beta", "Beta(alpha, beta)", ),
-                 ( "binom", "Binomial(n, p)", ),
-                 ( "cauchy", "Cauchy(m, gamma)", ),
-                 ( "chi2", "Chi-Square(df)", ),
-                 ( "expon", "Exponential(lambda)", ),
-                 ( "exponweib", "Exponentiated-Weibull(k, lambda, alpha)", ),
-                 ( "f", "F or Fisher(dfn, dfd)", ),
-                 ( "gamma", "Gamma(alpha, theta)" ),
-                 ( "geom", "Geometric or Shifted-Geometric(p)", ),
-                 ( "hypergoem", "Hypergeometric(ngood, ntotal, ndrawn)", ),
-                 ( "laplace", "Laplace(mu, b)", ),
-                 ( "lognorm", "Log-Normal(mu, sigma)", ),
-                 ( "nbinom", "Negative-Binomial(n, p)", ),
-                 ( "norm", "Normal(mu, sigma)", ),
-                 ( "pareto", "Pareto(xm, alpha)", ),
-                 ( "poisson", "Poisson(mu)", ),
-                 ( "t", "Students-T(df)", ),
-                 ( "weibull_min", "Weibull(k, lambda)", ),
+        return ( ( "beta", "Beta(ALPHA, BETA)", ),
+                 ( "binom", "Binomial(N, P)", ),
+                 ( "cauchy", "Cauchy(M, GAMMA)", ),
+                 ( "chi2", "Chi-Square(DF)", ),
+                 ( "expon", "Exponential(LAMBDA)", ),
+                 ( "exponweib", "Exponentiated-Weibull(K, LAMBDA, ALPHA)", ),
+                 ( "f", "F or Fisher(DFN, DFD)", ),
+                 ( "gamma", "Gamma(ALPHA, THETA)" ),
+                 ( "geom", "Geometric or Shifted-Geometric(P)", ),
+                 ( "hypergoem", "Hypergeometric(NGOOD, NTOTAL, NDRAWN)", ),
+                 ( "laplace", "Laplace(MU, B)", ),
+                 ( "lognorm", "Log-Normal(MU, SIGMA)", ),
+                 ( "nbinom", "Negative-Binomial(N, P)", ),
+                 ( "norm", "Normal(MU, SIGMA)", ),
+                 ( "pareto", "Pareto(XM, ALPHA)", ),
+                 ( "poisson", "Poisson(MU)", ),
+                 ( "t", "Students-T(DF)", ),
+                 ( "weibull_min", "Weibull(K, LAMBDA)", ),
                )
 
     lcdistname = str(distribname).lower()
     distrib = None
     if lcdistname == "beta":
         if distribparams == None:
-            return ( ( "alpha", "first shape", ),
-                     ( "beta", "second shape", ), )
+            return ( ( "ALPHA", "first shape", ),
+                     ( "BETA", "second shape", ), )
         if len(distribparams) != 2:
             raise ValueError("Two parameters expected for the Beta distribution")
         alpha = float(distribparams[0])
@@ -78,8 +79,8 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.beta(alpha, beta)
     elif (lcdistname == "binom") or (lcdistname == "binomial"):
         if distribparams == None:
-            return ( ( "n", "number of trials", ),
-                     ( "p", "success probability in each trial", ), )
+            return ( ( "N", "number of trials", ),
+                     ( "P", "success probability in each trial", ), )
         if len(distribparams) != 2:
             raise ValueError("Two parameters expected for the Binomial distribution")
         nflt = float(distribparams[0])
@@ -89,8 +90,8 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.binom(nflt, prob)
     elif lcdistname == "cauchy":
         if distribparams == None:
-            return ( ( "m", "location (median)", ),
-                     ( "gamma", "scale (half-width at half-maximum)", ), )
+            return ( ( "M", "location (median)", ),
+                     ( "GAMMA", "scale (half-width at half-maximum)", ), )
         if len(distribparams) != 2:
             raise ValueError("Two parameters expected for the Cauchy distribution")
         m = float(distribparams[0])
@@ -100,7 +101,7 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.cauchy(m, gamma)
     elif (lcdistname == "chi2") or (lcdistname == "chi-square"):
         if distribparams == None:
-            return ( ( "df", "degrees of freedom", ), )
+            return ( ( "DF", "degrees of freedom", ), )
         if len(distribparams) != 1:
             raise ValueError("One parameter expected for the Chi-Square distribution")
         degfree = float(distribparams[0])
@@ -109,7 +110,7 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.chi2(degfree)
     elif (lcdistname == "expon") or (lcdistname == "exponential"):
         if distribparams == None:
-            return ( ( "lambda", "rate (inverse scale)", ), )
+            return ( ( "LAMBDA", "rate (inverse scale)", ), )
         if len(distribparams) != 1:
             raise ValueError("One parameter expected for the Exponential distribution")
         lambdaflt = float(distribparams[0])
@@ -118,9 +119,9 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.expon(scale=(1.0/lambdaflt))
     elif (lcdistname == "exponweib") or (lcdistname == "exponentiated-weibull"):
         if distribparams == None:
-            return ( ( "k", "Weibull shape", ),
-                     ( "lambda", "scale", ),
-                     ( "alpha", "power shape", ), )
+            return ( ( "K", "Weibull shape", ),
+                     ( "LAMBDA", "scale", ),
+                     ( "ALPHA", "power shape", ), )
         if len(distribparams) != 3:
             raise ValueError("Three parameters expected for the Exponentiated-Weibull distribution")
         k =  float(distribparams[0])
@@ -131,8 +132,8 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.exponweib(alpha, k, scale=lambdaflt)
     elif (lcdistname == "f") or (lcdistname == "fisher"):
         if distribparams == None:
-            return ( ( "dfn", "numerator degrees of freedom", ),
-                     ( "dfd", "denominator degrees of freedom", ), )
+            return ( ( "DFN", "numerator degrees of freedom", ),
+                     ( "DFD", "denominator degrees of freedom", ), )
         if len(distribparams) != 2:
            raise ValueError("Two parameters expected for the F distribution")
         dfnum = float(distribparams[0])
@@ -142,8 +143,8 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.f(dfnum, dfdenom)
     elif lcdistname == "gamma":
         if distribparams == None:
-            return ( ( "alpha", "shape", ),
-                     ( "theta", "scale", ), )
+            return ( ( "ALPHA", "shape", ),
+                     ( "THETA", "scale", ), )
         if len(distribparams) != 2:
             raise ValueError("Two parameters expected for the Gamma distribution")
         alpha = float(distribparams[0])
@@ -153,7 +154,7 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.gamma(alpha, scale=theta)
     elif (lcdistname == "geom") or (lcdistname == "geometric") or (lcdistname == "shifted-geometric"):
         if distribparams == None:
-            return ( ( "p", "success probability", ), )
+            return ( ( "P", "success probability", ), )
         if len(distribparams) != 1:
             raise ValueError("One parameter expected for the Shifted-Geometric distribution")
         prob = float(distribparams[0])
@@ -162,9 +163,9 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.geom(prob)
     elif (lcdistname == "hypergeom") or (lcdistname == "hypergeometric"):
         if distribparams == None:
-            return ( ( "ntotal", "total number of items", ),
-                     ( "ngood", "total number of 'success' items", ),
-                     ( "ndrawn", "number of items selected", ), )
+            return ( ( "NTOTAL", "total number of items", ),
+                     ( "NGOOD", "total number of 'success' items", ),
+                     ( "NDRAWN", "number of items selected", ), )
         if len(distribparams) != 3:
            raise ValueError("Three parameters expected for the Hypergeometric distribution")
         numtotal = float(distribparams[0])
@@ -175,8 +176,8 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.hypergeom(numtotal, numgood, numdrawn)
     elif lcdistname == "laplace":
         if distribparams == None:
-            return ( ( "mu", "location (mean)", ),
-                     ( "b", "scale", ), )
+            return ( ( "MU", "location (mean)", ),
+                     ( "B", "scale", ), )
         if len(distribparams) != 2:
             raise ValueError("Two parameters expected for the Laplace distribution")
         mu = float(distribparams[0])
@@ -186,8 +187,8 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.laplace(mu, b)
     elif (lcdistname == "lognorm") or (lcdistname == "log-normal"):
         if distribparams == None:
-            return ( ( "mu", "log-scale (mean of the natural log of the distribution)", ),
-                     ( "sigma", "shape (std. dev. of the natural log of the distribution)", ), )
+            return ( ( "MU", "log-scale (mean of the natural log of the distribution)", ),
+                     ( "SIGMA", "shape (std. dev. of the natural log of the distribution)", ), )
         if len(distribparams) != 2:
             raise ValueError("Two parameters expected for the Log-Normal distribution")
         mu = math.exp(float(distribparams[0]))
@@ -197,8 +198,8 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.lognorm(sigma, scale=mu)
     elif (lcdistname == "nbinom") or (lcdistname == "negative-binomial"):
         if distribparams == None:
-            return ( ( "n", "number of successes to stop", ),
-                     ( "p", "success probability in each trial", ), )
+            return ( ( "N", "number of successes to stop", ),
+                     ( "P", "success probability in each trial", ), )
         if len(distribparams) != 2:
             raise ValueError("Two parameters expected for the Negative-Binomial distribution")
         numsuccess = float(distribparams[0])
@@ -208,8 +209,8 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.nbinom(numsuccess, prob)
     elif (lcdistname == "norm") or (lcdistname == "normal"):
         if distribparams == None:
-            return ( ( "mu", "mean", ),
-                     ( "sigma", "standard deviation", ), )
+            return ( ( "MU", "mean value", ),
+                     ( "SIGMA", "standard deviation", ), )
         if len(distribparams) != 2:
             raise ValueError("Two parameters expected for the Normal distribution")
         mu = float(distribparams[0])
@@ -219,8 +220,8 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.norm(mu, sigma)
     elif lcdistname == "pareto":
         if distribparams == None:
-            return ( ( "xm", "scale (minimum abscissa value)", ),
-                     ( "alpha", "shape", ), )
+            return ( ( "XM", "scale (minimum abscissa value)", ),
+                     ( "ALPHA", "shape", ), )
         if len(distribparams) != 2:
             raise ValueError("Two parameters expected for the Pareto distribution")
         xm =  float(distribparams[0])
@@ -230,7 +231,7 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.pareto(alpha, scale=xm)
     elif lcdistname == "poisson":
         if distribparams == None:
-            return ( ( "mu", "expected number of occurences", ), )
+            return ( ( "MU", "expected number of occurences", ), )
         if len(distribparams) != 1:
             raise ValueError("One parameter expected for the Poisson distribution")
         mu = float(distribparams[0])
@@ -239,7 +240,7 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.poisson(mu)
     elif (lcdistname == "t") or (lcdistname == "students-t"):
         if distribparams == None:
-            return ( ( "df", "degrees of freedom", ), )
+            return ( ( "DF", "degrees of freedom", ), )
         if len(distribparams) != 1:
             raise ValueError("One parameter expected for the Students-T distribution")
         degfree = float(distribparams[0])
@@ -248,8 +249,8 @@ def getdistrib(distribname=None, distribparams=None):
         distrib = scipy.stats.t(degfree)
     elif (lcdistname == "weibull_min") or (lcdistname == "weibull"):
         if distribparams == None:
-            return ( ( "k", "shape", ),
-                     ( "lambda", "scale", ), )
+            return ( ( "K", "shape", ),
+                     ( "LAMBDA", "scale", ), )
         if len(distribparams) != 2:
             raise ValueError("Two parameters expected for the Weibull distribution")
         k =  float(distribparams[0])
@@ -264,208 +265,210 @@ def getdistrib(distribname=None, distribparams=None):
     return distrib
 
 
-def assignpdf(result, resbdf, distrib, input, inpbdf):
+def getinitdict(distribname, funcname):
     """
-    Assigns the probability density function values of a continuous
-    distribution at specified positions.  At undefined positions, the
-    results will be assigned as undefined.
+    Returns a dictionary appropriate for the return value of ferret_init 
+    in a Ferret stats_<disribname>_<funcname> PyEF
 
     Arguments:
-        result  - the numpy.ndarray to be assigned the pdf values
-        resbdf  - the undefined value for result
-        distrib - the continuous distribution to use
-                  (a scipy.stats frozen distribution object)
-        input   - the points at which to compute the pdf values
-                  (a numpy.ndarray object)
-        inpbdf  - the undefined value for input
-
-    Returns:
-        None
-
-    Raises:
-        ValueError or AttributeError if arguments are not valid
+       distribname - name of the probability distribution
+       funcname - name of the scipy.stats function
     """
-    badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
-    badmask = numpy.logical_or(badmask, numpy.isnan(input))
-    goodmask = numpy.logical_not(badmask)
-    result[badmask] = resbdf
-    # array[goodmask] is a flattened array
-    result[goodmask] = distrib.pdf(input[goodmask])
+    # generate a long function name from the scipy.stats function name
+    if ( funcname == "cdf" ):
+        funclongname = "cumulative density function"
+    elif ( funcname == "isf" ):
+        funclongname = "inversion survival function"
+    elif ( funcname == "pdf" ):
+        funclongname = "probability distribution function"
+    elif ( funcname == "pmf" ):
+        funclongname = "probability mass function"
+    elif ( funcname == "ppf" ):
+        funclongname = "percent point function"
+    elif ( funcname == "sf" ):
+        funclongname = "survival function"
+    else:
+        raise ValueError("Unsupported scipy.stats function name '%s'" % funcname)
+    # Get the distribution parameters information
+    paramdescripts = getdistrib(distribname, None)
+    numargs = len(paramdescripts) + 1
+    if ( numargs == 2 ):
+        # info for distributions with one parameter
+        descript = "Returns (X=PTS,Y=%s) array of %s values for %s prob. distrib." % \
+                   (paramdescripts[0][0], funclongname, distribname)
+        axes = ( pyferret.AXIS_CUSTOM,
+                 pyferret.AXIS_CUSTOM, 
+                 pyferret.AXIS_DOES_NOT_EXIST,
+                 pyferret.AXIS_DOES_NOT_EXIST, )
+        argnames = ( "PTS", paramdescripts[0][0], )
+        argdescripts = ( "Point(s) at which to calculate the %s values" % funclongname,
+                         "%s parameter(s)" % paramdescripts[0][1], )
+        argtypes = ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, )
+        influences = ( ( False, False, False, False, ),
+                       ( False, False, False, False, ), )
+    elif (numargs == 3):
+        # info for distributions with two parameters
+        descript = "Returns (X=PTS,Y=%s,Z=%s) array of %s values for %s prob. distrib." % \
+                   (paramdescripts[0][0], paramdescripts[1][0], funclongname, distribname)
+        axes = ( pyferret.AXIS_CUSTOM, 
+                 pyferret.AXIS_CUSTOM, 
+                 pyferret.AXIS_CUSTOM, 
+                 pyferret.AXIS_DOES_NOT_EXIST, )
+        argnames = ( "PTS", paramdescripts[0][0], paramdescripts[1][0], )
+        argdescripts = ( "Point(s) at which to calculate the %s values" % funclongname,
+                         "%s parameter(s)" % paramdescripts[0][1], 
+                         "%s parameter(s)" % paramdescripts[1][1], )
+        argtypes = ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, )
+        influences = ( ( False, False, False, False, ),
+                       ( False, False, False, False, ),
+                       ( False, False, False, False, ), )
+    elif (numargs == 4):
+        # info for distributions with three parameters
+        descript = "Returns (X=PTS,Y=%s,Z=%s,T=%s) array of %s values for %s prob. distrib." % \
+                   (paramdescripts[0][0], paramdescripts[1][0], paramdescripts[2][0], 
+                    funclongname, distribname)
+        axes = ( pyferret.AXIS_CUSTOM, 
+                 pyferret.AXIS_CUSTOM, 
+                 pyferret.AXIS_CUSTOM, 
+                 pyferret.AXIS_CUSTOM, )
+        argnames = ( "PTS", paramdescripts[0][0], paramdescripts[1][0], paramdescripts[2][0], )
+        argdescripts = ( "Point(s) at which to calculate the %s values" % funclongname,
+                         "%s parameter(s)" % paramdescripts[0][1], 
+                         "%s parameter(s)" % paramdescripts[1][1], 
+                         "%s parameter(s)" % paramdescripts[2][1], )
+        argtypes = ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, )
+        influences = ( ( False, False, False, False, ),
+                       ( False, False, False, False, ),
+                       ( False, False, False, False, ),
+                       ( False, False, False, False, ), )
+    else:
+        raise ValueError("Unexpected number of arguments: %d" % numargs)
+    # Create and return the dictionary
+    return { "numargs": numargs,
+             "descript": descript,
+             "axes": axes,
+             "argnames": argnames,
+             "argdescripts": argdescripts,
+             "argtypes": argtypes,
+             "influences": influences, }
 
 
-def assignpmf(result, resbdf, distrib, input, inpbdf):
+def getcustomaxisvals(id, distribname):
     """
-    Assigns the probability mass function values of a discrete distribution
-    at specified positions.  At undefined positions, the results will be
-    assigned as undefined.
+    Returns a 4-tuple of custom axis values appropriate for the return value
+    of ferret_custom_axis in a Ferret stats_<disribname>_<funcname> PyEF
 
     Arguments:
-        result  - the numpy.ndarray to be assigned the pmf values
-        resbdf  - the undefined value for result
-        distrib - the discrete distribution to use
-                  (a scipy.stats frozen distribution object)
-        input   - the points at which to compute the pmf values
-                  (a numpy.ndarray object)
-        inpbdf  - the undefined value for input
-
-    Returns:
-        None
-
-    Raises:
-        ValueError or AttributeError if arguments are not valid
+       distribname - name of the probability distribution
     """
-    badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
-    badmask = numpy.logical_or(badmask, numpy.isnan(input))
+    # Get the distribution parameters information
+    paramdescripts = getdistrib(distribname, None)
+    numargs = len(paramdescripts) + 1
+    namelist = [ "PTS", None, None, None ]
+    for k in xrange(1, numargs):
+        namelist[k] = paramdescripts[k-1][0]
+    argvals = ( pyferret.ARG1, pyferret.ARG2, pyferret.ARG3, pyferret.ARG4 )
+    axisvals = ( pyferret.X_AXIS, pyferret.Y_AXIS, pyferret.Z_AXIS, pyferret.T_AXIS )
+    customaxisvals = [ None, None, None, None ]
+    for k in xrange(numargs):
+        arglen = 1
+        for axis in axisvals:
+            axis_info = pyferret.get_axis_info(id, argvals[k], axis)
+            num = axis_info.get("size", -1)
+            if num > 0:
+                arglen *= num
+        # if all axes have undefined lengths, assume it is a single value
+        customaxisvals[k] = ( 1, arglen, 1, namelist[k], False )
+    return customaxisvals
+
+
+def getdistribfunc(distrib, funcname):
+    """
+    Returns the distrib.funcname function for recognized funcnames
+    """
+    if ( funcname == "cdf" ):
+        return distrib.cdf
+    elif ( funcname == "isf" ):
+        return distrib.isf
+    elif ( funcname == "pdf" ):
+        return distrib.pdf
+    elif ( funcname == "pmf" ):
+        return distrib.pmf
+    elif ( funcname == "ppf" ):
+        return distrib.ppf
+    elif ( funcname == "sf" ):
+        return distrib.sf
+    else:
+        raise ValueError("Unsupported scipy.stats function name '%s'" % funcname)
+
+
+def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
+    """
+    Assigns result with the funcname function values for the distribname 
+    probability distributions defined by parameters in inputs[1:]
+    at the abscissa values given in inputs[0].
+    """
+    ptvals = inputs[0].reshape(-1, order='F')
+    badmask = ( numpy.fabs(ptvals - inpbdfs[0]) < 1.0E-5 )
+    badmask = numpy.logical_or(badmask, numpy.isnan(ptvals))
     goodmask = numpy.logical_not(badmask)
-    result[badmask] = resbdf
-    # array[goodmask] is a flattened array
-    result[goodmask] = distrib.pmf(input[goodmask])
-
-
-def assigncdf(result, resbdf, distrib, input, inpbdf):
-    """
-    Assigns the cumulative distribution function values of a distribution
-    at specified positions.  At undefined positions, the results will be
-    assigned as undefined.
-
-    Arguments:
-        result  - the numpy.ndarray to be assigned the cdf values
-        resbdf  - the undefined value for result
-        distrib - the distribution to use
-                  (a scipy.stats frozen distribution object)
-        input   - the points at which to compute the cdf values
-                  (a numpy.ndarray object)
-        inpbdf  - the undefined value for input
-
-    Returns:
-        None
-
-    Raises:
-        ValueError or AttributeError if arguments are not valid
-    """
-    badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
-    badmask = numpy.logical_or(badmask, numpy.isnan(input))
-    goodmask = numpy.logical_not(badmask)
-    result[badmask] = resbdf
-    # array[goodmask] is a flattened array
-    result[goodmask] = distrib.cdf(input[goodmask])
-
-
-def assignsf(result, resbdf, distrib, input, inpbdf):
-    """
-    Assigns the suvival function values of a distribution at specified
-    positions.  At undefined positions, the results will be assigned as
-    undefined.
-
-    Arguments:
-        result  - the numpy.ndarray to be assigned the sf values
-        resbdf  - the undefined value for result
-        distrib - the distribution to use
-                  (a scipy.stats frozen distribution object)
-        input   - the points at which to compute the sf values
-                  (a numpy.ndarray object)
-        inpbdf  - the undefined value for input
-
-    Returns:
-        None
-
-    Raises:
-        ValueError or AttributeError if arguments are not valid
-    """
-    badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
-    badmask = numpy.logical_or(badmask, numpy.isnan(input))
-    goodmask = numpy.logical_not(badmask)
-    result[badmask] = resbdf
-    # array[goodmask] is a flattened array
-    result[goodmask] = distrib.sf(input[goodmask])
-
-
-def assignppf(result, resbdf, distrib, input, inpbdf):
-    """
-    Assigns the percent point function values of a distribution at
-    specified positions.  At undefined positions, the results will
-    be assigned as undefined.
-
-    Arguments:
-        result  - the numpy.ndarray to be assigned the ppf values
-        resbdf  - the undefined value for result
-        distrib - the distribution to use
-                  (a scipy.stats frozen distribution object)
-        input   - the points at which to compute the ppf values
-                  (a numpy.ndarray object)
-        inpbdf  - the undefined value for input
-
-    Returns:
-        None
-
-    Raises:
-        ValueError or AttributeError if arguments are not valid
-    """
-    badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
-    badmask = numpy.logical_or(badmask, numpy.isnan(input))
-    goodmask = numpy.logical_not(badmask)
-    result[badmask] = resbdf
-    # array[goodmask] is a flattened array
-    result[goodmask] = distrib.ppf(input[goodmask])
-
-
-def assignisf(result, resbdf, distrib, input, inpbdf):
-    """
-    Assigns the inverse survival function values of a distribution at
-    specified positions.  At undefined positions, the results will be
-    assigned as undefined.
-
-    Arguments:
-        result  - the numpy.ndarray to be assigned the isf values
-        resbdf  - the undefined value for result
-        distrib - the distribution to use
-                  (a scipy.stats frozen distribution object)
-        input   - the points at which to compute the isf values
-                  (a numpy.ndarray object)
-        inpbdf  - the undefined value for input
-
-    Returns:
-        None
-
-    Raises:
-        ValueError or AttributeError if arguments are not valid
-    """
-    badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
-    badmask = numpy.logical_or(badmask, numpy.isnan(input))
-    goodmask = numpy.logical_not(badmask)
-    result[badmask] = resbdf
-    # array[goodmask] is a flattened array
-    result[goodmask] = distrib.isf(input[goodmask])
-
-
-def assignrvs(result, resbdf, distrib, input, inpbdf):
-    """
-    Assigns the random variates of a distribution at positions in the
-    result array corresponding to defined values in the input array.
-    At undefined positions in the input array, the results array value
-    will be undefined.
-
-    Arguments:
-        result  - the numpy.ndarray to be assigned the random variates
-        resbdf  - the undefined value for result
-        distrib - the distribution to use
-                  (a scipy.stats frozen distribution object)
-        input   - the input array indicating positions to be assigned
-                  (a numpy.ndarray object)
-        inpbdf  - the undefined value for input
-
-    Returns:
-        None
-
-    Raises:
-        ValueError or AttributeError if arguments are not valid
-    """
-    badmask = ( numpy.fabs(input - inpbdf) < 1.0E-5 )
-    badmask = numpy.logical_or(badmask, numpy.isnan(input))
-    goodmask = numpy.logical_not(badmask)
-    result[badmask] = resbdf
-    # result[goodmask] is a flattened array
-    result[goodmask] = distrib.rvs(len(result[goodmask]))
+    numparams = len(inputs) - 1
+    if numparams == 1:
+        p1vals = inputs[1].reshape(-1, order='F')
+        # check that result is the required shape
+        expshape = ( len(ptvals), len(p1vals), 1, 1 )
+        if result.shape != expshape:
+            raise ValueError("Results array size mismatch; expected: %s; found %s" % \
+                             (str(expshape), str(result.shape)))
+        for j in xrange(expshape[1]):
+            try:
+                distrib = getdistrib(distribname, ( p1vals[j], ))
+                distribfunc = getdistribfunc(distrib, funcname)
+                result[goodmask, j, 0, 0] = getdistribfunc(distrib, funcname)(ptvals[goodmask])
+                result[badmask, j, 0, 0] = resbdf
+            except ValueError, msg:
+                # print msg
+                result[:, j, 0, 0] = resbdf
+    elif numparams == 2:
+        p1vals = inputs[1].reshape(-1, order='F')
+        p2vals = inputs[2].reshape(-1, order='F')
+        # check that result is the required shape
+        expshape = ( len(ptvals), len(p1vals), len(p2vals), 1 )
+        if result.shape != expshape:
+            raise ValueError("Results array size mismatch; expected: %s; found %s" % \
+                             (str(expshape), str(result.shape)))
+        for j in xrange(expshape[1]):
+            for k in xrange(expshape[2]):
+                try:
+                    distrib = getdistrib(distribname, ( p1vals[j], p2vals[k], ))
+                    distribfunc = getdistribfunc(distrib, funcname)
+                    result[goodmask, j, k, 0] = distribfunc(ptvals[goodmask])
+                    result[badmask, j, k, 0] = resbdf
+                except ValueError, msg:
+                    # print msg
+                    result[:, j, k, 0] = resbdf
+    elif numparams == 3:
+        p1vals = inputs[1].reshape(-1, order='F')
+        p2vals = inputs[2].reshape(-1, order='F')
+        p3vals = inputs[3].reshape(-1, order='F')
+        # check that result is the required shape
+        expshape = ( len(ptvals), len(p1vals), len(p2vals), len(p3vals) )
+        if result.shape != expshape:
+            raise ValueError("Results array size mismatch; expected: %s; found %s" % \
+                             (str(expshape), str(result.shape)))
+        for j in xrange(expshape[1]):
+            for k in xrange(expshape[2]):
+                for q in xrange(expshape[3]):
+                    try:
+                        distrib = getdistrib(distribname, ( p1vals[j], p2vals[k], p3vals[q], ))
+                        distribfunc = getdistribfunc(distrib, funcname)
+                        result[goodmask, j, k, q] = distribfunc(ptvals[goodmask])
+                        result[badmask, j, k, q] = resbdf
+                    except ValueError, msg:
+                        # print msg
+                        result[:, j, k, q] = resbdf
+    else:
+        raise ValueError("Unexpected number of parameters: %d" % numparams)
 
 
 #
@@ -475,7 +478,7 @@ if __name__ == "__main__":
     # Test the distribution scipy name and parameters given to getdistrib
     # give the expected distribution.  (Primarily that the parameters
     # are interpreted and assigned correctly.)  Testing of the long names
-    # and other functions are performed by the stats_*.py scipts.
+    # is performed by the stats_helper.py script.
 
     distdescripts = getdistrib(None, None)
     if len(distdescripts) != 18:

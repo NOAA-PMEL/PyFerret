@@ -2,7 +2,6 @@
 Returns the array of random variates for a probability distribution
 assigned to positions corresponding to defined values in an input array.
 """
-import sys
 import numpy
 import scipy.stats
 import pyferret
@@ -20,7 +19,7 @@ def ferret_init(id):
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS),
                 "argnames": ("TEMPLATE", "PDNAME", "PDPARAMS"),
-                "argdescripts": ("Template array for the random variates array to be created",
+                "argdescripts": ("Template array for the array of random variates to be returned",
                                  "Name of a probability distribution",
                                  "Parameters for this probability distribution"),
                 "argtypes": (pyferret.FLOAT_ARG, pyferret.STRING_ARG, pyferret.FLOAT_ARG),
@@ -34,14 +33,20 @@ def ferret_init(id):
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     """
     Assigns result with random variates of the probability distribution 
-    indicated by inputs[1] (a string) using the parameters given in inputs[2].
-    Random variates will be assigned to positions corresponding to defined
-    positions in input[0].
+    indicated by inputs[1] (a string) using the parameters given in 
+    inputs[2].  Random variates will be assigned to positions corresponding 
+    to defined positions in inputs[0].  For positions where the inputs[0] 
+    value is undefined, the result value will be undefined.
     """
     distribname = inputs[1]
     distribparams = inputs[2].reshape(-1)
     distrib = pyferret.stats.getdistrib(distribname, distribparams)
-    pyferret.stats.assignrvs(result, resbdf, distrib, inputs[0], inpbdfs[0])
+    badmask = ( numpy.fabs(inputs[0] - inpbdfs[0]) < 1.0E-5 )
+    badmask = numpy.logical_or(badmask, numpy.isnan(inputs[0]))
+    goodmask = numpy.logical_not(badmask)
+    result[badmask] = resbdf
+    # result[goodmask] is a flattened array
+    result[goodmask] = distrib.rvs(len(result[goodmask]))
 
 
 #

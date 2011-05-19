@@ -2,7 +2,6 @@
 Returns an array of strings describing
 the parameters for a probability distribution.
 """
-import sys
 import numpy
 import pyferret
 import pyferret.stats

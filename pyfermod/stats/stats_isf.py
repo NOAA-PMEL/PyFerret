@@ -2,7 +2,6 @@
 Returns the array of inverse survival function values for
 a probability distribution and set of quantile values.
 """
-import sys
 import numpy
 import scipy.stats
 import pyferret
@@ -19,7 +18,7 @@ def ferret_init(id):
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS),
-                "argnames": ("QUANTILES", "PDNAME", "PDPARAMS"),
+                "argnames": ("PROBS", "PDNAME", "PDPARAMS"),
                 "argdescripts": ("Probabilities (0-1) at which to calculate the inverse survival function values",
                                  "Name of a probability distribution",
                                  "Parameters for this probability distribution"),
@@ -35,12 +34,18 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     """
     Assigns result with the inverse survival function values for the probability
     distribution indicated by inputs[1] (a string) using the parameters given in
-    inputs[2] at the quantile values given by inputs[0].
+    inputs[2] at the quantile values given by inputs[0].  For undefined quantile
+    values, the result value will be undefined.
     """
     distribname = inputs[1]
     distribparams = inputs[2].reshape(-1)
     distrib = pyferret.stats.getdistrib(distribname, distribparams)
-    pyferret.stats.assignisf(result, resbdf, distrib, inputs[0], inpbdfs[0])
+    badmask = ( numpy.fabs(inputs[0] - inpbdfs[0]) < 1.0E-5 )
+    badmask = numpy.logical_or(badmask, numpy.isnan(inputs[0]))
+    goodmask = numpy.logical_not(badmask)
+    result[badmask] = resbdf
+    # array[goodmask] is a flattened array
+    result[goodmask] = distrib.isf(inputs[0][goodmask])
 
 
 #

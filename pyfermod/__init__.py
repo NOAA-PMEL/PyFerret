@@ -113,6 +113,11 @@ def init(arglist=None, enterferret=True):
                   "stats_cauchy_pdf",
                   "stats_cauchy_ppf",
                   "stats_cauchy_sf",
+                  "stats_chi_cdf",
+                  "stats_chi_isf",
+                  "stats_chi_pdf",
+                  "stats_chi_ppf",
+                  "stats_chi_sf",
                   "stats_chi2_cdf",
                   "stats_chi2_isf",
                   "stats_chi2_pdf",
@@ -143,6 +148,16 @@ def init(arglist=None, enterferret=True):
                   "stats_geom_pmf",
                   "stats_geom_ppf",
                   "stats_geom_sf",
+                  "stats_hypergeom_cdf",
+                  "stats_hypergeom_isf",
+                  "stats_hypergeom_pmf",
+                  "stats_hypergeom_ppf",
+                  "stats_hypergeom_sf",
+                  "stats_invgamma_cdf",
+                  "stats_invgamma_isf",
+                  "stats_invgamma_pdf",
+                  "stats_invgamma_ppf",
+                  "stats_invgamma_sf",
                   "stats_laplace_cdf",
                   "stats_laplace_isf",
                   "stats_laplace_pdf",
@@ -173,11 +188,21 @@ def init(arglist=None, enterferret=True):
                   "stats_poisson_pmf",
                   "stats_poisson_ppf",
                   "stats_poisson_sf",
+                  "stats_randint_cdf",
+                  "stats_randint_isf",
+                  "stats_randint_pmf",
+                  "stats_randint_ppf",
+                  "stats_randint_sf",
                   "stats_t_cdf",
                   "stats_t_isf",
                   "stats_t_pdf",
                   "stats_t_ppf",
                   "stats_t_sf",
+                  "stats_uniform_cdf",
+                  "stats_uniform_isf",
+                  "stats_uniform_pdf",
+                  "stats_uniform_ppf",
+                  "stats_uniform_sf",
                   "stats_weibull_cdf",
                   "stats_weibull_isf",
                   "stats_weibull_pdf",
@@ -265,6 +290,9 @@ def init(arglist=None, enterferret=True):
     # define all the Ferret standard Python external functions
     for fname in std_pyefs:
         result = run("DEFINE PYFUNC pyferret.stats.%s" % fname)
+    # if journaling desired, now turn on journaling
+    if my_journal and (script == None):
+        result = run("SET MODE JOURNAL")
     # run the ${HOME}/.ferret script if it exists
     home_val = os.environ.get('HOME')
     if home_val:
@@ -288,9 +316,6 @@ def init(arglist=None, enterferret=True):
         result = run('exit /program')
         # should not get here
         raise SystemExit
-    # if journaling desired, now turn on journaling
-    if my_journal:
-        result = run("SET MODE JOURNAL")
     # if they don't want to enter ferret, return the success value from run
     if not my_enterferret:
         return (_pyferret.FERR_OK, '')

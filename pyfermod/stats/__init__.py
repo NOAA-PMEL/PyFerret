@@ -7,6 +7,8 @@ import scipy.stats
 import scipy.special
 import pyferret
 
+# The number of supported distributions
+NUM_DISTRIBS = 22
 
 def getdistrib(distribname=None, distribparams=None):
     """
@@ -47,20 +49,24 @@ def getdistrib(distribname=None, distribparams=None):
         return ( ( "beta", "Beta(ALPHA, BETA)", ),
                  ( "binom", "Binomial(N, P)", ),
                  ( "cauchy", "Cauchy(M, GAMMA)", ),
+                 ( "chi", "Chi(DF)", ),
                  ( "chi2", "Chi-Square(DF)", ),
                  ( "expon", "Exponential(LAMBDA)", ),
                  ( "exponweib", "Exponentiated-Weibull(K, LAMBDA, ALPHA)", ),
                  ( "f", "F or Fisher(DFN, DFD)", ),
                  ( "gamma", "Gamma(ALPHA, THETA)" ),
                  ( "geom", "Geometric or Shifted-Geometric(P)", ),
-                 ( "hypergoem", "Hypergeometric(NGOOD, NTOTAL, NDRAWN)", ),
+                 ( "hypergeom", "Hypergeometric(NGOOD, NTOTAL, NDRAWN)", ),
+                 ( "invgamma", "Inverse-Gamma(ALPHA, BETA)", ),
                  ( "laplace", "Laplace(MU, B)", ),
                  ( "lognorm", "Log-Normal(MU, SIGMA)", ),
                  ( "nbinom", "Negative-Binomial(N, P)", ),
                  ( "norm", "Normal(MU, SIGMA)", ),
                  ( "pareto", "Pareto(XM, ALPHA)", ),
                  ( "poisson", "Poisson(MU)", ),
+                 ( "randint", "Random-Integer or Discrete-Uniform(MIN, MAX)", ),
                  ( "t", "Students-T(DF)", ),
+                 ( "uniform", "Uniform(MIN, MAX)", ),
                  ( "weibull_min", "Weibull(K, LAMBDA)", ),
                )
 
@@ -99,6 +105,15 @@ def getdistrib(distribname=None, distribparams=None):
         if gamma <= 0.0:
             raise ValueError("Invalid parameter for the Cauchy distribution")
         distrib = scipy.stats.cauchy(m, gamma)
+    elif lcdistname == "chi":
+        if distribparams == None:
+            return ( ( "DF", "degrees of freedom", ), )
+        if len(distribparams) != 1:
+            raise ValueError("One parameter expected for the Chi distribution")
+        degfree = float(distribparams[0])
+        if degfree <= 0.0:
+            raise ValueError("Invalid parameter for the Chi distribution")
+        distrib = scipy.stats.chi(degfree)
     elif (lcdistname == "chi2") or (lcdistname == "chi-square"):
         if distribparams == None:
             return ( ( "DF", "degrees of freedom", ), )
@@ -174,6 +189,17 @@ def getdistrib(distribname=None, distribparams=None):
         if (numtotal <= 0.0) or (numgood < 0.0) or (numdrawn < 0.0):
            raise ValueError("Invalid parameter(s) for the Hypergeometric distribution")
         distrib = scipy.stats.hypergeom(numtotal, numgood, numdrawn)
+    elif (lcdistname == "invgamma") or (lcdistname == "inverse-gamma"):
+        if distribparams == None:
+            return ( ( "ALPHA", "shape", ),
+                     ( "BETA", "scale", ), )
+        if len(distribparams) != 2:
+            raise ValueError("Two parameters expected for the Inverse-Gamma distribution")
+        alpha = float(distribparams[0])
+        beta = float(distribparams[1])
+        if (alpha <= 0.0) or (beta <= 0.0):
+            raise ValueError("Invalid parameter(s) for the Inverse-Gamma distribution")
+        distrib = scipy.stats.invgamma(alpha, scale=beta)
     elif lcdistname == "laplace":
         if distribparams == None:
             return ( ( "MU", "location (mean)", ),
@@ -238,6 +264,22 @@ def getdistrib(distribname=None, distribparams=None):
         if mu <= 0.0:
             raise ValueError("Invalid parameter for the Poisson distribution")
         distrib = scipy.stats.poisson(mu)
+    elif (lcdistname == "randint") or (lcdistname == "random-integer") or (lcdistname == "discrete-uniform"):
+        if distribparams == None:
+            return ( ( "MIN", "minimum integer", ),
+                     ( "MAX", "maximum integer (included)", ), )
+        if len(distribparams) != 2:
+            raise ValueError("Two parameters expected for the Random-Integer distribution")
+        min = int(distribparams[0])
+        max = int(distribparams[1])
+        # randint takes int values, thus float values are truncated
+        # this could lead to unexpected behavior (eg, one might expect
+        # (0.9,10.1) to be treated as [1,11) but instead it becomes [0,10)
+        minflt = float(distribparams[0])
+        maxflt = float(distribparams[1])
+        if (min >= max) or (min != minflt) or (max != maxflt):
+            raise ValueError("Invalid parameters for the Random-Integer distribution")
+        distrib = scipy.stats.randint(min, max + 1)
     elif (lcdistname == "t") or (lcdistname == "students-t"):
         if distribparams == None:
             return ( ( "DF", "degrees of freedom", ), )
@@ -247,6 +289,17 @@ def getdistrib(distribname=None, distribparams=None):
         if degfree <= 0.0:
             raise ValueError("Invalid parameter for the Students-T distribution")
         distrib = scipy.stats.t(degfree)
+    elif lcdistname == "uniform":
+        if distribparams == None:
+            return ( ( "MIN", "minimum", ),
+                     ( "MAX", "maximum", ), )
+        if len(distribparams) != 2:
+            raise ValueError("Two parameters expected for the Uniform distribution")
+        min = float(distribparams[0])
+        max = float(distribparams[1])
+        if min >= max:
+            raise ValueError("Invalid parameters for the Uniform distribution")
+        distrib = scipy.stats.uniform(loc=min, scale=(max - min))
     elif (lcdistname == "weibull_min") or (lcdistname == "weibull"):
         if distribparams == None:
             return ( ( "K", "shape", ),
@@ -479,11 +532,10 @@ if __name__ == "__main__":
     # give the expected distribution.  (Primarily that the parameters
     # are interpreted and assigned correctly.)  Testing of the long names
     # is performed by the stats_helper.py script.
-
     distdescripts = getdistrib(None, None)
-    if len(distdescripts) != 18:
-        raise ValueError("number of distribution description pairs: expected 18; found %d" % \
-                         len(distdescripts))
+    if len(distdescripts) != NUM_DISTRIBS:
+        raise ValueError("number of distribution description pairs: expected %d; found %d" % \
+                         (NUM_DISTRIBS, len(distdescripts)))
 
     # Beta distribution
     distname = "beta"
@@ -532,6 +584,33 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    print "%s: PASS" % distname
+
+    # Chi distribution
+    distname = "chi"
+    descript = getdistrib(distname, None)
+    if len(descript) != 1:
+        print "%s: FAIL" % distname
+        raise ValueError("number of parameter description pairs for %s: expected 1; found %d:" % \
+                         (distname, len(descript)))
+    degfree = 10
+    distparms = [ degfree ]
+    distf = getdistrib(distname, distparms)
+    foundstats = distf.stats("mvsk")
+    mean = math.sqrt(2.0) * scipy.special.gamma(0.5 * (degfree + 1.0)) / \
+                            scipy.special.gamma(0.5 * degfree)
+    variance = degfree - mean**2
+    stdev = math.sqrt(variance)
+    skew = mean * (1.0 - 2.0 * variance) / stdev**3
+    expectedstats = ( mean,
+                      variance,
+                      skew,
+                      2.0 * (1.0 - mean * stdev * skew - variance) / variance,
+                    )
+    if not numpy.allclose(foundstats, expectedstats):
+        print "%s: FAIL" % distname
+        raise ValueError("(mean, var, skew, kurtosis) of %s(%d.0): expected %s; found %s" % \
+                          (distname, distparms[0], str(expectedstats), str(foundstats)))
     print "%s: PASS" % distname
 
     # Chi-squared distribution
@@ -734,6 +813,29 @@ if __name__ == "__main__":
                           (distname, distparms[0], distparms[1], distparms[2], str(expectedstats), str(foundstats)))
     print "%s: PASS" % distname
 
+    # Inverse-Gamma distribution
+    distname = "invgamma"
+    descript = getdistrib(distname, None)
+    if len(descript) != 2:
+        print "%s: FAIL" % distname
+        raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
+                         (distname, len(descript)))
+    alpha = 7.0  # must be > 4 for the kurtosis formula
+    beta = 3.0
+    distparms = [ alpha, beta ]
+    distf = getdistrib(distname, distparms)
+    foundstats = distf.stats("mvsk")
+    expectedstats = ( beta / (alpha - 1.0),
+                      beta**2 / ((alpha - 1.0)**2 * (alpha - 2.0)),
+                      4.0 * math.sqrt(alpha - 2.0) / (alpha - 3.0),
+                      (30.0 * alpha - 66.0)/ ((alpha - 3.0) * (alpha - 4.0)),
+                    )
+    if not numpy.allclose(foundstats, expectedstats):
+        print "%s: FAIL" % distname
+        raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
+                          (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    print "%s: PASS" % distname
+
     # Laplace distribution
     distname = "laplace"
     descript = getdistrib(distname, None)
@@ -860,6 +962,38 @@ if __name__ == "__main__":
                           (distname, distparms[0], str(expectedstats), str(foundstats)))
     print "%s: PASS" % distname
 
+    # Random Integer (Discrete Uniform) distribution
+    distname = "randint"
+    descript = getdistrib(distname, None)
+    if len(descript) != 2:
+        print "%s: FAIL" % distname
+        raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
+                         (distname, len(descript)))
+    a = -5.0
+    b = 13.0
+    distparms = [ a, b ]
+    distf = getdistrib(distname, distparms)
+    # foundstats = distf.stats("mvsk")
+    foundstats = distf.stats("mvs")
+    n = b - a + 1.0
+    # expectedstats = ( 0.5 * (a + b), (n**2 - 1.0) / 12.0, 0.0, -6.0 * (n**2 + 1) / (5.0 * (n**2 - 1)) )
+    expectedstats = ( 0.5 * (a + b), (n**2 - 1.0) / 12.0, 0.0, )
+    if not numpy.allclose(foundstats, expectedstats):
+        print "%s: FAIL" % distname
+        # raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
+        raise ValueError("(mean, var, skew) of %s(%.1f, %.1f): expected %s; found %s" % \
+                          (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    xvals = numpy.arange(a - 1.0, b + 1.1, 1.0)
+    expectedpmfs = numpy.ones((n+2,), dtype=float) / n
+    expectedpmfs[0] = 0.0
+    expectedpmfs[n+1] = 0.0
+    foundpmfs = distf.pmf(xvals)
+    if not numpy.allclose(foundpmfs, expectedpmfs):
+        print "%s: FAIL" % distname
+        raise ValueError("pmfs(%.1f:%.1f:1.0) of %s(%.1f, %.1f): expected %s; found %s" % \
+              (a - 1.0, b + 1.1, distname, distparms[0], distparms[1], str(expectedpmfs), str(foundpmfs)))
+    print "%s: PASS" % distname
+
     # Student's-t distribution
     distname = "t"
     descript = getdistrib(distname, None)
@@ -876,6 +1010,25 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f): expected %s; found %s" % \
                           (distname, distparms[0], str(expectedstats), str(foundstats)))
+    print "%s: PASS" % distname
+
+    # Uniform distribution
+    distname = "uniform"
+    descript = getdistrib(distname, None)
+    if len(descript) != 2:
+        print "%s: FAIL" % distname
+        raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
+                         (distname, len(descript)))
+    a = -5.0
+    b = 13.0
+    distparms = [ a, b ]
+    distf = getdistrib(distname, distparms)
+    foundstats = distf.stats("mvsk")
+    expectedstats = ( 0.5 * (a + b), (b - a)**2 / 12.0, 0.0, -6.0 / 5.0 )
+    if not numpy.allclose(foundstats, expectedstats):
+        print "%s: FAIL" % distname
+        raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
+                          (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
     print "%s: PASS" % distname
 
     # Weibull distribution

@@ -3,7 +3,7 @@
  ! average the fco2 averages
  ! min and max the fco2 min and max.
 
-use "/home/data/socat/SOCAT_tracks_gridded_stats_testvar.nc"
+use "/home/data/socat/SOCAT_tracks_gridded_monthly.nc"
 
 
 define symbol outfile = /home/data/socat/SOCAT_tracks_gridded_month_clim.nc
@@ -26,7 +26,7 @@ if `tax_month(LL[L=1], LL) NE 1` THEN
 endif
  
 ! For plotting the climatologies
-define sym levsym=v,0min
+define sym levsym=(v,0min)
 keymark,1
 set win/siz=0.5
 
@@ -92,5 +92,5 @@ repeat/range=1:12/name=m (let imon = `m`; go clim_month)
 ! Add global attributes
 
 let status = nco_attr("($outfile)", "global", "title", "c", "a",\
-"SOCAT gridded. Provisional- Apr. 27, 2011, QC-Flags A-D, WOCE-Flag 2 Monthly Climatology" )
+"SOCAT gridded v1.4 May 2011, QC-Flags A-D, WOCE-Flag 2 Monthly Climatology" )
 load status

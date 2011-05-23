@@ -89,5 +89,5 @@ save/file="($outfile)"/append ($invar)_year
 ! Add global attribute
 
 let status = nco_attr("($outfile)", "global", "title", "c", "a",\
-"SOCAT gridded. Provisional- Apr. 27, 2011, QC-Flags A-D, WOCE-Flag 2 Yearly" )
+"SOCAT gridded v1.4 May 2011, QC-Flags A-D, WOCE-Flag 2 Yearly" )
 load status

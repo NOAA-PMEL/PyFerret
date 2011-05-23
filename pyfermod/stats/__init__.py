@@ -329,17 +329,26 @@ def getinitdict(distribname, funcname):
     """
     # generate a long function name from the scipy.stats function name
     if ( funcname == "cdf" ):
-        funclongname = "cumulative density function"
+        funcaction = "calculate"
+        funcreturn = "cumulative density function values"
     elif ( funcname == "isf" ):
-        funclongname = "inversion survival function"
+        funcaction = "calculate"
+        funcreturn = "inversion survival function values"
     elif ( funcname == "pdf" ):
-        funclongname = "probability distribution function"
+        funcaction = "calculate"
+        funcreturn = "probability distribution function values"
     elif ( funcname == "pmf" ):
-        funclongname = "probability mass function"
+        funcaction = "calculate"
+        funcreturn = "probability mass function values"
     elif ( funcname == "ppf" ):
-        funclongname = "percent point function"
+        funcaction = "calculate"
+        funcreturn = "percent point function values"
     elif ( funcname == "sf" ):
-        funclongname = "survival function"
+        funcaction = "calculate"
+        funcreturn = "survival function values"
+    elif ( funcname == "rvs" ):
+        funcaction = "assign"
+        funcreturn = "random variates"
     else:
         raise ValueError("Unsupported scipy.stats function name '%s'" % funcname)
     # Get the distribution parameters information
@@ -347,28 +356,28 @@ def getinitdict(distribname, funcname):
     numargs = len(paramdescripts) + 1
     if ( numargs == 2 ):
         # info for distributions with one parameter
-        descript = "Returns (X=PTS,Y=%s) array of %s values for %s prob. distrib." % \
-                   (paramdescripts[0][0], funclongname, distribname)
+        descript = "Returns (X=PTS,Y=%s) array of %s for %s prob. distrib." % \
+                   (paramdescripts[0][0], funcreturn, distribname)
         axes = ( pyferret.AXIS_CUSTOM,
                  pyferret.AXIS_CUSTOM,
                  pyferret.AXIS_DOES_NOT_EXIST,
                  pyferret.AXIS_DOES_NOT_EXIST, )
         argnames = ( "PTS", paramdescripts[0][0], )
-        argdescripts = ( "Point(s) at which to calculate the %s values" % funclongname,
+        argdescripts = ( "Point(s) at which to %s the %s" % (funcaction, funcreturn),
                          "Parameter(s) defining the %s" % paramdescripts[0][1], )
         argtypes = ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, )
         influences = ( ( False, False, False, False, ),
                        ( False, False, False, False, ), )
     elif (numargs == 3):
         # info for distributions with two parameters
-        descript = "Returns (X=PTS,Y=%s,Z=%s) array of %s values for %s prob. distrib." % \
-                   (paramdescripts[0][0], paramdescripts[1][0], funclongname, distribname)
+        descript = "Returns (X=PTS,Y=%s,Z=%s) array of %s for %s prob. distrib." % \
+                   (paramdescripts[0][0], paramdescripts[1][0], funcreturn, distribname)
         axes = ( pyferret.AXIS_CUSTOM,
                  pyferret.AXIS_CUSTOM,
                  pyferret.AXIS_CUSTOM,
                  pyferret.AXIS_DOES_NOT_EXIST, )
         argnames = ( "PTS", paramdescripts[0][0], paramdescripts[1][0], )
-        argdescripts = ( "Point(s) at which to calculate the %s values" % funclongname,
+        argdescripts = ( "Point(s) at which to %s the %s" % (funcaction, funcreturn),
                          "Parameter(s) defining the %s" % paramdescripts[0][1],
                          "Parameter(s) defining the %s" % paramdescripts[1][1], )
         argtypes = ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, )
@@ -377,15 +386,15 @@ def getinitdict(distribname, funcname):
                        ( False, False, False, False, ), )
     elif (numargs == 4):
         # info for distributions with three parameters
-        descript = "Returns (X=PTS,Y=%s,Z=%s,T=%s) array of %s values for %s prob. distrib." % \
+        descript = "Returns (X=PTS,Y=%s,Z=%s,T=%s) array of %s for %s prob. distrib." % \
                    (paramdescripts[0][0], paramdescripts[1][0], paramdescripts[2][0],
-                    funclongname, distribname)
+                    funcreturn, distribname)
         axes = ( pyferret.AXIS_CUSTOM,
                  pyferret.AXIS_CUSTOM,
                  pyferret.AXIS_CUSTOM,
                  pyferret.AXIS_CUSTOM, )
         argnames = ( "PTS", paramdescripts[0][0], paramdescripts[1][0], paramdescripts[2][0], )
-        argdescripts = ( "Point(s) at which to calculate the %s values" % funclongname,
+        argdescripts = ( "Point(s) at which to %s the %s" % (funcaction, funcreturn),
                          "Parameter(s) defining the %s" % paramdescripts[0][1],
                          "Parameter(s) defining the %s" % paramdescripts[1][1],
                          "Parameter(s) defining the %s" % paramdescripts[2][1], )
@@ -451,6 +460,8 @@ def getdistribfunc(distrib, funcname):
         return distrib.ppf
     elif ( funcname == "sf" ):
         return distrib.sf
+    elif ( funcname == "rvs" ):
+        return distrib.rvs
     else:
         raise ValueError("Unsupported scipy.stats function name '%s'" % funcname)
 
@@ -459,7 +470,7 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
     """
     Assigns result with the funcname function values for the distribname
     probability distributions defined by parameters in inputs[1:]
-    at the abscissa values given in inputs[0].
+    using the abscissa or template values given in inputs[0].
     """
     ptvals = inputs[0].reshape(-1, order='F')
     badmask = ( numpy.fabs(ptvals - inpbdfs[0]) < 1.0E-5 )
@@ -467,45 +478,53 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
     goodmask = numpy.logical_not(badmask)
     numparams = len(inputs) - 1
     if numparams == 1:
-        p1vals = inputs[1].reshape(-1, order='F')
+        par1vals = inputs[1].reshape(-1, order='F')
         # check that result is the required shape
-        expshape = ( len(ptvals), len(p1vals), 1, 1 )
+        expshape = ( len(ptvals), len(par1vals), 1, 1 )
         if result.shape != expshape:
             raise ValueError("Results array size mismatch; expected: %s; found %s" % \
                              (str(expshape), str(result.shape)))
         for j in xrange(expshape[1]):
             try:
-                distrib = getdistrib(distribname, ( p1vals[j], ))
+                distrib = getdistrib(distribname, ( par1vals[j], ))
                 distribfunc = getdistribfunc(distrib, funcname)
-                result[goodmask, j, 0, 0] = getdistribfunc(distrib, funcname)(ptvals[goodmask])
+                if funcname == "rvs":
+                    # goodmask is one-D
+                    result[goodmask, j, 0, 0] = getdistribfunc(distrib, funcname)(len(goodmask))
+                else:
+                    result[goodmask, j, 0, 0] = getdistribfunc(distrib, funcname)(ptvals[goodmask])
                 result[badmask, j, 0, 0] = resbdf
             except ValueError, msg:
                 # print msg
                 result[:, j, 0, 0] = resbdf
     elif numparams == 2:
-        p1vals = inputs[1].reshape(-1, order='F')
-        p2vals = inputs[2].reshape(-1, order='F')
+        par1vals = inputs[1].reshape(-1, order='F')
+        par2vals = inputs[2].reshape(-1, order='F')
         # check that result is the required shape
-        expshape = ( len(ptvals), len(p1vals), len(p2vals), 1 )
+        expshape = ( len(ptvals), len(par1vals), len(par2vals), 1 )
         if result.shape != expshape:
             raise ValueError("Results array size mismatch; expected: %s; found %s" % \
                              (str(expshape), str(result.shape)))
         for j in xrange(expshape[1]):
             for k in xrange(expshape[2]):
                 try:
-                    distrib = getdistrib(distribname, ( p1vals[j], p2vals[k], ))
+                    distrib = getdistrib(distribname, ( par1vals[j], par2vals[k], ))
                     distribfunc = getdistribfunc(distrib, funcname)
-                    result[goodmask, j, k, 0] = distribfunc(ptvals[goodmask])
+                    if funcname == "rvs":
+                        # goodmask is one-D
+                        result[goodmask, j, k, 0] = getdistribfunc(distrib, funcname)(len(goodmask))
+                    else:
+                        result[goodmask, j, k, 0] = getdistribfunc(distrib, funcname)(ptvals[goodmask])
                     result[badmask, j, k, 0] = resbdf
                 except ValueError, msg:
                     # print msg
                     result[:, j, k, 0] = resbdf
     elif numparams == 3:
-        p1vals = inputs[1].reshape(-1, order='F')
-        p2vals = inputs[2].reshape(-1, order='F')
-        p3vals = inputs[3].reshape(-1, order='F')
+        par1vals = inputs[1].reshape(-1, order='F')
+        par2vals = inputs[2].reshape(-1, order='F')
+        par3vals = inputs[3].reshape(-1, order='F')
         # check that result is the required shape
-        expshape = ( len(ptvals), len(p1vals), len(p2vals), len(p3vals) )
+        expshape = ( len(ptvals), len(par1vals), len(par2vals), len(par3vals) )
         if result.shape != expshape:
             raise ValueError("Results array size mismatch; expected: %s; found %s" % \
                              (str(expshape), str(result.shape)))
@@ -513,9 +532,13 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
             for k in xrange(expshape[2]):
                 for q in xrange(expshape[3]):
                     try:
-                        distrib = getdistrib(distribname, ( p1vals[j], p2vals[k], p3vals[q], ))
+                        distrib = getdistrib(distribname, ( par1vals[j], par2vals[k], par3vals[q], ))
                         distribfunc = getdistribfunc(distrib, funcname)
-                        result[goodmask, j, k, q] = distribfunc(ptvals[goodmask])
+                        if funcname == "rvs":
+                            # goodmask is one-D
+                            result[goodmask, j, k, q] = getdistribfunc(distrib, funcname)(len(goodmask))
+                        else:
+                            result[goodmask, j, k, q] = getdistribfunc(distrib, funcname)(ptvals[goodmask])
                         result[badmask, j, k, q] = resbdf
                     except ValueError, msg:
                         # print msg

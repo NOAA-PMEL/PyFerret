@@ -1,7 +1,8 @@
 """
 Returns the array of probability distribution function values
-for the Weibull probability distribution using
-the given arrays for the abscissa values and each of the parameters values.
+for the Weibull probability distribution
+using the given arrays for the abscissa or template
+values and each of the parameters values.
 """
 import numpy
 import pyferret

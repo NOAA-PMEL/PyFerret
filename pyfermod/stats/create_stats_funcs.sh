@@ -5,7 +5,7 @@ import os.path
 import scipy.stats
 import pyferret.stats
 
-def create_script(scriptname, distribname, distriblongname, funcname, funclongname):
+def create_script(scriptname, distribname, distriblongname, funcname, funcreturn):
     """
     Creates scriptname from 'stats_template' using remaining arguments
     for replacement strings in the template file.
@@ -16,7 +16,7 @@ def create_script(scriptname, distribname, distriblongname, funcname, funclongna
         line = line.replace("<distribname>", distribname)
         line = line.replace("<distriblongname>", distriblongname)
         line = line.replace("<funcname>", funcname)
-        line = line.replace("<funclongname>", funclongname)
+        line = line.replace("<funcreturn>", funcreturn)
         print >>scriptfile, line,
     templatefile.close()
     scriptfile.close()
@@ -35,25 +35,29 @@ def create_all_scripts():
         distriblongname = distribinfo[j][1].split()[0].split('(')[0]
         distribnamelist.append( ( distribinfo[j][0], distriblongname, ) )
     # List of supported functions
-    funcnamelist  = [ ( "cdf", "cumulative density function", ),
-                      ( "isf", "inverse survival function", ),
-                      ( "pdf", "probability distribution function", ),
-                      ( "pmf", "probability mass function", ),
-                      ( "ppf", "percent point function", ),
-                      ( "sf",  "survival function", ), ]
+    funcnamelist  = [ ( "cdf", "cumulative density function values", ),
+                      ( "isf", "inverse survival function values", ),
+                      ( "pdf", "probability distribution function values", ),
+                      ( "pmf", "probability mass function values", ),
+                      ( "ppf", "percent point function values", ),
+                      ( "sf",  "survival function values", ),
+                      ( "rvs", "random variates", ), ]
     # Loop of the list of distributions and functions, creating the script
     # if it does not exist and if the function exists for that distribution.
     for (distribname, distriblongname) in distribnamelist:
-        for (funcname, funclongname) in funcnamelist:
+        for (funcname, funcreturn) in funcnamelist:
             try:
                 # Verify the function exists for the distribution.
                 # This raises an AttributeError is it does not.
                 statsfunc = eval("scipy.stats.%s.%s" % (distribname,funcname))
-                scriptname = "stats_%s_%s.py" %  (distribname, funcname)
+                if distribname == "weibull_min":
+                    scriptname = "stats_weibull_%s.py" % funcname
+                else:
+                    scriptname = "stats_%s_%s.py" % (distribname, funcname)
                 # Verify the script does not already exist.
                 if not os.path.exists(scriptname):
                     create_script(scriptname, distribname, distriblongname,
-                                              funcname, funclongname)
+                                              funcname, funcreturn)
             except AttributeError:
                 # function does not exist for the distribution - skip
                 pass

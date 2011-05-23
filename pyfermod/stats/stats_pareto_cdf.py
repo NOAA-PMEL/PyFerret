@@ -1,7 +1,8 @@
 """
 Returns the array of cumulative density function values
-for the Pareto probability distribution using
-the given arrays for the abscissa values and each of the parameters values.
+for the Pareto probability distribution
+using the given arrays for the abscissa or template
+values and each of the parameters values.
 """
 import numpy
 import pyferret

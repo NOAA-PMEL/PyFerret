@@ -1,7 +1,8 @@
 """
 Returns the array of percent point function values
-for the Cauchy probability distribution using
-the given arrays for the abscissa values and each of the parameters values.
+for the Cauchy probability distribution
+using the given arrays for the abscissa or template
+values and each of the parameters values.
 """
 import numpy
 import pyferret

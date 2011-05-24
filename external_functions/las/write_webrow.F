@@ -44,7 +44,7 @@
 
       SUBROUTINE write_webrow_init(id)
 
-      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
 
       INTEGER id, arg
       CHARACTER*100 descrip
@@ -101,7 +101,7 @@
 
       SUBROUTINE write_webrow_result_limits(id)
 
-      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
 
       INTEGER id
       INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
@@ -130,8 +130,8 @@
 *
       SUBROUTINE write_webrow_compute(id, arg_1, arg_2, arg_3, arg_4, result)
 
-      INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
       INTEGER id, arg
 

@@ -130,6 +130,17 @@
       INTEGER i,j,k,l
       INTEGER i1, j1, k1, l1
 
+*  variables for checking axis characteristics (modulo axes)
+
+      CHARACTER ax_name(4)*16, ax_units(4)*16
+      LOGICAL backward(4), modulo(4), regular(4), tmodulo
+
+*  Check to see if time axis of arg 2 is modulo
+
+      CALL ef_get_axis_info(id, 2, ax_name, ax_units, backward,
+     .     modulo, regular)
+      IF (modulo(4)) tmodulo = .TRUE.
+
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
@@ -153,7 +164,14 @@
                    CALL ef_get_axis_dates(id,ARG2,ddate,1,datebuf)
 
 *     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read time.
-                   READ (datebuf,120,err=900) ihour, iminute, isec
+                   IF (.NOT. tmodulo) THEN
+                      READ (datebuf,120,err=900) ihour, iminute, isec
+		      
+*     modulo: Datebuf is in form "DD-MON HH:MM:SS".
+		   ELSE 
+                      READ (datebuf,130,err=900) ihour, iminute, isec
+                   ENDIF
+
                    result(i,j,k,l)=(isec/3600.+iminute/60.+ihour)/24.
 
                 ELSE
@@ -172,9 +190,9 @@
          i1 = i1 + arg_incr(X_AXIS,ARG1)
  400  CONTINUE
 
-* 110  FORMAT (i2, 1x, a3, 1x, i4) 
  120  FORMAT (11x, 3(1x,i2))
-
+ 130  FORMAT (6x, 3(1x,i2))
+ 
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |

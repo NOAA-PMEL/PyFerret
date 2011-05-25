@@ -39,7 +39,7 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 # Targets
 #
 
-all:	write_webrow.so
+all:	write_webrow.so list_value_xml.so
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

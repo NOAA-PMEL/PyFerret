@@ -17,7 +17,7 @@ LET dy = `0.5* ybox[gy=ylat,j=1]`
 
 !SET AXIS/STRIDE=100 `lon,return=xaxis`
 
-
+! Triples have time with origin at start of 1970.
 LET offset1970 = DAYS1900(1970,1,1)
 LET month = MOD(ii-1,12)+1
 LET year = 1970 + INT((ii-1)/12)
@@ -25,77 +25,30 @@ LET year = 1970 + INT((ii-1)/12)
 ! for entire time period of SOCAT
 LET ii = i[i=1:480]
 
-! for the year 2005, alone
-LET ii = i[i=421:433]
-
+! Repeat and do the calculation for 5-year intervals.
 LET i1 = 1
 LET i2 = 61
 LET del = 60
 
+let imax = 457  ! through the end of 2007
+
 DEFINE SYMBOL file_qual = CLOBBER  ! First time CLOBBBER, afterwards APPEND to the file.
 DEFINE SYMBOL gridded_outfile = /home/data/socat/SOCAT_tracks_gridded_stats_AD.nc
-DEFINE SYMBOL gridded_outfile = /home/data/socat/SOCAT_tracks_gridded_stats_testvar.nc
+DEFINE SYMBOL gridded_outfile = /home/data/socat/SOCAT_tracks_gridded_monthly.nc
 
 repeat/range=1:10:1 ( \
  LET ii = i[i=`i1`:`i2`]; \
  GO fco2_xyt_stats_year.jnl; \
  LET i1 = `i2`; \
  LET i2 = `i2+del`; \
- IF `i1 GT 480` THEN exit/loop; \
+ IF `i2 GT imax` THEN LET i2 = `imax`; \
+ IF `i1 GE imax` THEN exit/loop; \
  )
 
 
 ! Add global attributes
 
-let status = nco_attr("/home/data/socat/SOCAT_tracks_gridded_stats_testvar.nc", "global", "comment", "c", "a",\
-"Flags A-D and WOCE flag of 2 \nProvisional - Apr. 27, 2011")
+let status = nco_attr("($gridded_outfile)", "global", "title", "c", "a",\
+"SOCAT gridded. SOCAT v1.4 May 2011, QC-Flags A-D, WOCE-Flag 2" )
 load status
-let status = nco_attr("/home/data/socat/SOCAT_tracks_gridded_stats_testvar.nc", "global", "title", "c", "a",\
-"SOCAT gridded; Provisional - Apr. 27, 2011")
-load status
-
-exit/script
-
-! Test the output
-PAUSE
-CAN DAT/ALL
-CAN VAR/ALL
-
-USE "/home/data/socat/SOCAT_tracks_gridded_stats_var.nc"
-
-SH DAT
-REPEAT/RANGE=1970:2009:1/NAME=yr (\
-DEFINE SYMBOL yr = `yr`; \
- SET VIEW ul; \
- LET cruise_count_max = count_cruise[T=1-JAN-($yr):31-DEC-($yr)@SUM];\
- SHADE/SET/LEV=(1,10,1)(inf)/TITLE=cruise_count_year_sum IF cruise_count_max GT 0 THEN cruise_count_max;\
- GO unlabel 5;\
- PPL shade;\
- SET VIEW ur; \
- LET count_nbin_max = count_nbin[T=1-JAN-($yr):31-DEC-($yr)@SUM];\
- SHADE/LEV=(1,100,10)(inf)/TITLE=count_nbin_year_sum IF count_nbin_max GT 0 THEN count_nbin_max;\
- SET VIEW ll; \
- SHADE/LEV=(-inf)(220,480,20)(inf)/TITLE=fco2_cruise_ave[T=@AVE] fco2_cruise_ave[T=1-JAN-($yr):31-DEC-($yr)@AVE]; \
- SET VIEW lr; \
- SHADE/TITLE=mean_lon_del[T=@AVE] mean_lon_del[T=1-JAN-($yr):31-DEC-($yr)@AVE]; \
- PAUSE; \
- PPL SHASET RESET)
-
-can view
-set win/asp=2
-
-SH DAT
-REPEAT/RANGE=1970:2009:1/NAME=yr (\
-DEFINE SYMBOL yr = `yr`; \
- SET VIEW upper; \
- LET cruise_count_max = count_cruise[T=1-JAN-($yr):31-DEC-($yr)@SUM];\
- SHADE/SET/LEV=(1,10,1)(inf)/TITLE=cruise_count_year_sum IF cruise_count_max GT 0 THEN cruise_count_max;\
- GO unlabel 5;\
- PPL shade;\
- SET VIEW lower; \
- LET var_max  = FCO2_WEIGHTED_VAR[T=1-JAN-($yr):31-DEC-($yr)@max];\
- SHADE/LEV=(1,100,10)(inf)/TITLE=max_var_year IF var_max GT 0 THEN var_max;\
- PAUSE; \
- PPL SHASET RESET)
-
 

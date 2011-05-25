@@ -24,6 +24,7 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 #
 
 .SUFFIXES: .so
+SUB_OBJS = modscatminmax.o nobsxytv.o
 
 #
 # Rules
@@ -31,13 +32,13 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 
 .F.so:
 	$(F77) $(FFLAGS) -c  $<
-	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so
+	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so
 
 #
 # Targets
 #
 
-all:	tracks2grid_std_xyt.so tracks2grid_ave_xyt.so scat2grid_std_xyt.so scat2grid_minmax_xyt.so
+all:	$(SUB_OBJS) tracks2grid_std_xyt.so tracks2grid_ave_xyt.so scat2grid_std_xyt.so scat2grid_minmax_xyt.so
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

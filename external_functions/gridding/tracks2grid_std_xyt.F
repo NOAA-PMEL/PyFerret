@@ -51,7 +51,8 @@
 * cruise buffer as you do so, so it is ready to average the next cruise. 
 *
 * This function will return the std for the averages, based on weighted means,
-* for small samples, http://wapedia.mobi/en/Weighted_mean#7.
+* for small samples, http://wapedia.mobi/en/Weighted_mean#6. and
+* http://wapedia.mobi/en/Weighted_mean#7.
 * 
 *
 * In this subroutine we provide information about
@@ -110,7 +111,7 @@
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS,
      .        IMPLIED_BY_ARGS, NORMAL, IMPLIED_BY_ARGS)
 
-      CALL ef_set_num_work_arrays(id, 9)
+      CALL ef_set_num_work_arrays(id, 8)
 
 * Output grid is determined by arguments 4, 5, 6, the result's x, y, t axes. 
 
@@ -218,9 +219,9 @@
 
 * obs_cruise  work array - sum and counts of observations per cruise
 * x,y,t direction: output grid
-* z direction: 1..2
+* z direction: 1..3
       CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, 
-     .                             nxout, nyout, 2, ntout)
+     .                             nxout, nyout, 3, ntout)
 
 * cell_avg  work array - work array - sum and counts over cruises for cell average
 * x,y,t direction: output grid
@@ -228,29 +229,24 @@
       CALL ef_set_work_array_dims (id, 5, 1, 1, 1, 1, 
      .                             nxout, nyout, 2, ntout)
 
-* wi_sums k=1, sum of weights wi = sum of obs in the cells
+* wi_sums k=1, sum of cruiseweight wi = sum of obs in the cells
 * x,y,t direction: output grid
 * z direction: 1
       CALL ef_set_work_array_dims (id, 6, 1, 1, 1, 1, 
      .                             nxout, nyout, 1, ntout)
 
-* cruisespan getting the min and max lon/lat for computing
-* the span of a cruise in each cell. 
-      CALL ef_set_work_array_dims (id, 7, 1, 1, 1, 1, 
-     .                             nxout, nyout, 4, ntout)
-
 * cruisemean saving individual weighted cruise means. 
 * for computing s^2  sum of wi*(xi - weighted_mean)**2
 * x,y,t direction: output grid
 * z direction: 30 (max cruises per cell?)
-      CALL ef_set_work_array_dims (id, 8, 1, 1, 1, 1, 
+      CALL ef_set_work_array_dims (id, 7, 1, 1, 1, 1, 
      .                             nxout, nyout, 30, ntout)
 
-* span
-* for arc length for cruises in grid cell.
+* cruiseweight saving individual cruiseweight. 
+* for computing s^2  sum of wi*(xi - weighted_mean)**2
 * x,y,t direction: output grid
 * z direction: 30 (max cruises per cell?)
-      CALL ef_set_work_array_dims (id, 9, 1, 1, 1, 1, 
+      CALL ef_set_work_array_dims (id, 8, 1, 1, 1, 1, 
      .                             nxout, nyout, 30, ntout)
 
       RETURN
@@ -262,7 +258,7 @@
 
       SUBROUTINE tracks2grid_std_xyt_compute(id, arg_1, arg_2, arg_3, 
      .     arg_4, arg_5, arg_6, arg_7, arg_8, result, xax, yax, tax, 
-     .     obs_cruise, cell_avg, wi_sums, cruisespan, cruisemean, span)
+     .     obs_cruise, cell_avg, wi_sums, cruisemean, cruiseweight)
 
 *  arg_1  var
 *  arg_2  xpts  \
@@ -328,8 +324,8 @@
 
 
       REAL dx, dy, xxbeg, xxend, yybeg, yyend
-      REAL spansq, cellspan, cellmean, wt_cruise_mean, unwtd_mean,
-     .     wsumsq_ijl, wsumsq, diffsum
+      REAL cellmean, wt_cruise_mean, unwtd_mean,
+     .     wsumsq_ijl, wsumsq, diffsum, wtcruise, wtsq
 
       REAL*8 xax1,xaxf, yax1,yaxf, tax1,taxf
       INTEGER indx(4,2)
@@ -348,12 +344,10 @@
      .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
       REAL wi_sums(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
      .               wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
-      REAL cruisespan(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
+      REAL cruisemean(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
      .               wrk7loz:wrk7hiz, wrk7lot:wrk7hit)
-      REAL cruisemean(wrk8lox:wrk8hix, wrk8loy:wrk8hiy,
+      REAL cruiseweight(wrk8lox:wrk8hix, wrk8loy:wrk8hiy,
      .               wrk8loz:wrk8hiz, wrk8lot:wrk8hit)
-      REAL span(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
-     .               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
 
       CHARACTER*250 errtxt
 
@@ -524,7 +518,7 @@ C  Get coordinates of output axes.
       ENDDO
 
       DO L = 1, nt
-      DO k = 1, 2
+      DO k = 1, 3
       DO j = 1, ny
       DO i = 1, nx
          obs_cruise(i,j,k,L) = 0.
@@ -544,7 +538,7 @@ C  Get coordinates of output axes.
       ENDDO
 
       DO L = 1, nt
-      DO k = 1, wrk8hiz
+      DO k = 1, wrk7hiz
       DO j = 1, ny
       DO i = 1, nx
          cruisemean(i,j,k,L) = 0.
@@ -554,22 +548,11 @@ C  Get coordinates of output axes.
       ENDDO
 
       DO L = 1, nt
-      DO k = 1, wrk9hiz
+      DO k = 1, wrk7hiz
       DO j = 1, ny
       DO i = 1, nx
-         span(i,j,k,L) = 0.
+         cruiseweight(i,j,k,L) = 0.
       ENDDO
-      ENDDO
-      ENDDO
-      ENDDO
-
-      DO L = 1, nt
-      DO j = 1, ny
-      DO i = 1, nx
-         cruisespan(i,j,1,L) =  1000
-         cruisespan(i,j,2,L) = -1000.
-         cruisespan(i,j,3,L) =  1000.
-         cruisespan(i,j,4,L) = -1000.
       ENDDO
       ENDDO
       ENDDO
@@ -593,6 +576,7 @@ C  Get coordinates of output axes.
       indx(4,1) = nt
       indx(4,2) = 1
 
+      icstart = 1
       DO 300 n = 1, nscat
 
          CALL pickoutxytcv (obs_only, arg_1, arg_2, arg_3, arg_4, arg_5,
@@ -601,12 +585,12 @@ C  Get coordinates of output axes.
      .          yy .EQ. bad_flag(ARG3) .OR. tt .EQ. bad_flag(ARG4) ) GOTO 300
 
 * We have come to the end of a cruise loop over cells represented by the last cruise,
-* summing and counting the observations in the cruise, computing weights. 
-* weights are span of cruise across cell
+* summing and counting the observations in the cruise, computing cruiseweight. 
 * cruisemean is weighted cruise mean in cell
-* cell_avg(i,j,1,L) weighted cruise mean averaged over cruises in cell
+* cruiseweight are variances for cruise mean in cell
+* cell_avg(i,j,1,L) cruise mean averaged over cruises in cell
 * cell_avg(i,j,2,L) is count of cruises in cell
-* wi_sums(i,j,1,L) sum of weights wi in cell
+* wi_sums(i,j,1,L) sum of cruiseweight wi in cell
 
          IF (ncc .NE. icruise) THEN  
 	    icend = n-1
@@ -615,31 +599,27 @@ C  Get coordinates of output axes.
             DO j = indx(2,1), indx(2,2)
             DO i = indx(1,1), indx(1,2)
 
-
 	       IF (obs_cruise(i,j,2,L) .GT. 0.) THEN
-                  spansq = (cruisespan(i,j,2,l)-cruisespan(i,j,1,l))**2 +
-     .                     (cruisespan(i,j,4,l)-cruisespan(i,j,3,l))**2
-                  cellspan = SQRT(spansq)
 
-                  wt_cruise_mean = cellspan*
-     .                obs_cruise(i,j,1,L)/obs_cruise(i,j,2,L)
-                  unwtd_mean = obs_cruise(i,j,1,L)/obs_cruise(i,j,2,L)
+                  wt_cruise_mean = obs_cruise(i,j,1,L)/obs_cruise(i,j,3,L)
+
+                  unwtd_mean = obs_cruise(i,j,1,L) ! nobsxytv_var returns mean already computed
 
                   cell_avg(i,j,1,L) = cell_avg(i,j,1,L) + wt_cruise_mean
                   cell_avg(i,j,2,L) = cell_avg(i,j,2,L) + 1.  
 
-		  wi_sums(i,j,1,l) = wi_sums(i,j,1,l) + cellspan
+		  wi_sums(i,j,1,l) = wi_sums(i,j,1,l) + 1./obs_cruise(i,j,3,L)
 
 		  nc_cell = cell_avg(i,j,2,L)
-		  IF (nc_cell .GT. wrk8hiz) THEN
+		  IF (nc_cell .GT. wrk7hiz) THEN
                      print *, 'Num_obs in cell at I,J,L = ', i,j,L, 
      .               ' is', nc_cell
 		     CALL ef_bail_out (id,
-     .      'too many cruises in cell. increase K size of work arrays 8,9')
+     .      'too many cruises in cell. increase K size of work array 7,8')
 		  ENDIF
 
 		  cruisemean(i,j,nc_cell,l) = unwtd_mean
-		  span(i,j,nc_cell,l) = cellspan
+		  cruiseweight(i,j,nc_cell,l) = 1./obs_cruise(i,j,3,L)
 
 	       ENDIF
 
@@ -655,6 +635,7 @@ C  Get coordinates of output axes.
             DO i = indx(1,1), indx(1,2)
 	       obs_cruise(i,j,1,L) = 0.
 	       obs_cruise(i,j,2,L) = 0.
+	       obs_cruise(i,j,3,L) = 0.
             ENDDO
             ENDDO
             ENDDO
@@ -669,12 +650,10 @@ C  Get coordinates of output axes.
 
 	 ENDIF
 
-*  Count and add up observations in each cell, in this cruise. Span computes the arc
-*  length of the current cruise.
-
-         CALL nobsxytv_span (obs_only, xx, yy, tt, vv, nx, ny, nt, 
-     .           x1, y1, t1, dx, dy, dt, xf, yf, tf, indx, obs_cruise,
-     .           cruisespan)
+*  Count and add up observations in each cell, in this cruise. 
+     
+         CALL nobsxytv_var (obs_only, xx, yy, tt, vv, nx, ny, nt, 
+     .           x1, y1, t1, dx, dy, dt, xf, yf, tf, indx, obs_cruise)
 
  300  CONTINUE
 
@@ -687,29 +666,26 @@ C  Get coordinates of output axes.
             DO i = indx(1,1), indx(1,2)
 
 	       IF (obs_cruise(i,j,2,L) .GT. 0.) THEN
-                  spansq = (cruisespan(i,j,2,l)-cruisespan(i,j,1,l))**2 +
-     .                     (cruisespan(i,j,4,l)-cruisespan(i,j,3,l))**2
-                  cellspan = SQRT(spansq)
 
-                  wt_cruise_mean = cellspan*
-     .                obs_cruise(i,j,1,L)/obs_cruise(i,j,2,L)
-                  unwtd_mean = obs_cruise(i,j,1,L)/obs_cruise(i,j,2,L)
+                  wt_cruise_mean = obs_cruise(i,j,1,L)/obs_cruise(i,j,3,L)
+
+                  unwtd_mean = obs_cruise(i,j,1,L) ! nobsxytv_var returns mean already computed
 
                   cell_avg(i,j,1,L) = cell_avg(i,j,1,L) + wt_cruise_mean
                   cell_avg(i,j,2,L) = cell_avg(i,j,2,L) + 1.  
 
-		  wi_sums(i,j,1,l) = wi_sums(i,j,1,l) + cellspan
+		  wi_sums(i,j,1,l) = wi_sums(i,j,1,l) + 1./obs_cruise(i,j,3,L)
 
 		  nc_cell = cell_avg(i,j,2,L)
-		  IF (nc_cell .GT. wrk8hiz) THEN
+		  IF (nc_cell .GT. wrk7hiz) THEN
                      print *, 'Num_obs in cell at I,J,L = ', i,j,L, 
      .               ' is', nc_cell
 		     CALL ef_bail_out (id,
-     .      'too many cruises in cell. increase K size of work arrays 8,9')
+     .      'too many cruises in cell. increase K size of work array 7,8')
 		  ENDIF
 
 		  cruisemean(i,j,nc_cell,l) = unwtd_mean
-		  span(i,j,nc_cell,l) = cellspan
+		  cruiseweight(i,j,nc_cell,l) = 1./obs_cruise(i,j,3,L)
 
 	       ENDIF
 
@@ -718,9 +694,9 @@ C  Get coordinates of output axes.
       ENDDO
       
 *  Put gridded fcn into result variable.
-* wi_sums(i,j,1,L) sum of weights wi in cell
-* V1 sum of weights
-* V2 sum of weights squared
+* wi_sums(i,j,1,L) sum of cruiseweight wi in cell
+* V1 sum of cruiseweight
+* V2 sum of cruiseweight squared
 * for s^2  wsumsq sum of wi*(xi - weighted_mean)**2
 
       k = res_lo_ss(Z_AXIS)
@@ -736,7 +712,7 @@ C  Get coordinates of output axes.
                    result(i,j,2,l) = bad_flag_result
                ELSE IF (nc_cell .EQ. 1) THEN
                    result(i,j,k,l) = 0.
-                   result(i,j,2,l) = span(i,j,1,L)
+                   result(i,j,2,l) = wi_sums(i,j,1,L)
 
 * Compute sum of (cruise-cell-averages - weighted cell mean) squared\
 
@@ -748,17 +724,17 @@ C  Get coordinates of output axes.
                   wsumsq = 0.
 		  v1 = 0.
                   DO 500, nk = 1, nc_cell
-                      cellspan = span(i,j,nk,L)
+                      wtcruise = cruiseweight(i,j,nk,L)
 		      unwtd_mean = cruisemean(i,j,nk,L)
 
-		      spansq = cellspan*cellspan
-		      wsumsq = wsumsq + spansq
+		      wtsq = wtcruise*wtcruise
+		      wsumsq = wsumsq + wtsq  
 
 * Sum the squares of difference of unweighted cruise means 
 * minus weighted cell mean
 
 		      diffsum = unwtd_mean - cellmean
-                      wsumsq_ijl = wsumsq_ijl + cellspan*(diffsum)**2
+                      wsumsq_ijl = wsumsq_ijl + wtcruise*(diffsum)**2
 
  500              CONTINUE
                   V1 = wi_sums(i,j,1,l)
@@ -767,10 +743,8 @@ C  Get coordinates of output axes.
 		  
                   IF (ABS(denom) .GT. 1.e-6) THEN
                      result(i,j,k,l) = SQRT(wsumsq_ijl* V1/denom)
-c                     IF (wsumsq .GT. 0.) result(i,j,2,l) = sqrt(wsumsq)
                   ELSE
                      result(i,j,k,l) = bad_flag_result
-c                     result(i,j,2,l) = bad_flag_result
                   ENDIF
 	       ENDIF
 
@@ -836,28 +810,29 @@ c............all calcs done in gridbox units
 c............xx/x1/xf all in same units
 c............yy/y1/yf all in same units
 
+c this version returns the cell mean in obs(ig,jg,1,Lg)
+c this version returns the cell variance in obs(ig,jg,3,Lg)
+
 c  i	xx,yy,tt=x/y/t location of data pt (data units)
 c  i	nx,ny,nt=size of grids
 c  i	x1,y1,L1=west/south/earliest edge of grid (center of 1st box in data units)
-c  o 	obs_cruise(nx,ny,nt) number of obs in each (x,y,t) gridbox
-c  o 	cellspan arc length for cruise in current xyt gridbox
+c  o 	obs(nx,ny,nt) number of obs in each (x,y,t) gridbox
 c--------------------------------------------------------------------------
 
-	SUBROUTINE nobsxytv_span (obs_only, xx, yy, tt, vv, nx, ny, nt, 
-     .             x1, y1, t1, dx, dy, dt, xf, yf, tf, indx, obs_cruise,
-     .             cruisespan)
+	SUBROUTINE nobsxytv_var (obs_only, xx, yy, tt, vv, nx, ny, nt, 
+     .             x1, y1, t1, dx, dy, dt, xf, yf, tf, indx, obs)
 
 
 * Argument declarations
 
         INTEGER nx, ny, nt, obs_only, indx(4,2)
 	REAL xx, yy, tt, vv, x1, y1, t1, dx, dy, dt, xf, 
-     .       yf, tf, obs_cruise(nx,ny,2,nt), cruisespan(nx,ny,4,nt)
+     .       yf, tf, obs(nx,ny,3,nt)
 
 * Local variable declarations
 
         REAL xxg, yyg, ttg
-        INTEGER ig, jg, Lg
+        INTEGER ig, jg, Lg ! !!!!!!!!!!!!!!!!!!!!!!!! adding t dimension throughtout
 
 	xxg = (xx-x1)/ dx + 1.		  ! grid values of data location
 	yyg = (yy-y1)/ dy + 1.
@@ -871,28 +846,21 @@ c.................sum the value and count in each (x,y,t) gridbox
 	IF (ig.LT.1 .OR. ig.GT.nx) RETURN
 	IF (lg.LT.1 .OR. lg.GT.nt) RETURN
 
+* See below for def of algorithm, mean, delta, M2
 
 	IF (obs_only .EQ. 0) THEN
            IF (ig.GE.1 .AND. ig.LE.nx .AND. jg.GE.1 .AND. jg.LE.ny .AND.
      .       Lg.GE.1 .AND. Lg.LE.nt   ) THEN
-     		obs_cruise(ig,jg,1,Lg) = obs_cruise(ig,jg,1,Lg) + vv
-     		obs_cruise(ig,jg,2,Lg) = obs_cruise(ig,jg,2,Lg) + 1.
+     		obs(ig,jg,2,Lg) = obs(ig,jg,2,Lg) + 1.	! count
+		delta = vv - obs(ig,jg,1,Lg)
+		obs(ig,jg,1,Lg) = obs(ig,jg,1,Lg) + delta/obs(ig,jg,2,Lg) ! current est of mean
+		obs(ig,jg,3,Lg) = obs(ig,jg,3,Lg) - delta*(vv - obs(ig,jg,1,Lg)) !M2
 	   ENDIF
 	ELSE
 	   IF (ig.GE.1 .AND. ig.LE.nx .AND. jg.GE.1 .AND. jg.LE.ny .AND.
      .      Lg.GE.1 .AND. Lg.LE.nt   ) THEN
-     		obs_cruise(ig,jg,1,Lg) = obs_cruise(ig,jg,1,Lg) + 1.
+     		obs(ig,jg,1,Lg) = obs(ig,jg,1,Lg) + 1.
 	   ENDIF
-	ENDIF
-
-* Keep the min and max lon and lat, to use in computing the span of the
-* cruise in this grid cell.
-	IF (ig.GE.1 .AND. ig.LE.nx .AND. jg.GE.1 .AND. jg.LE.ny .AND.
-     .       Lg.GE.1 .AND. Lg.LE.nt ) THEN
-           cruisespan(ig,jg,1,Lg) = MIN(cruisespan(ig,jg,1,Lg), xx)
-           cruisespan(ig,jg,2,Lg) = MAX(cruisespan(ig,jg,2,Lg), xx)
-           cruisespan(ig,jg,3,Lg) = MIN(cruisespan(ig,jg,3,Lg), yy)
-           cruisespan(ig,jg,4,Lg) = MAX(cruisespan(ig,jg,4,Lg), yy)
 	ENDIF
 
 * Store the min and max index used in this cruise
@@ -905,3 +873,25 @@ c.................sum the value and count in each (x,y,t) gridbox
 
 	RETURN
 	END
+
+
+
+
+
+c ----------------
+c http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#On-line_algorithm
+c def online_variance(data):
+c     n = 0
+c     mean = 0
+c     M2 = 0
+c 
+c     for x in data:
+c         n = n + 1
+c         delta = x - mean
+c         mean = mean + delta/n
+c         M2 = M2 + delta*(x - mean)  # This expression uses the new value of mean
+c 
+c     variance_n = M2/n
+c     variance = M2/(n - 1)
+c     return variance
+c ------------------

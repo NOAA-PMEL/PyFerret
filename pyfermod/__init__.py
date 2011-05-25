@@ -90,14 +90,7 @@ def init(arglist=None, enterferret=True):
 
     """
 
-    std_pyefs = ( # "stats_helper",
-                  "stats_cdf",
-                  "stats_isf",
-                  "stats_pdf",
-                  "stats_pmf",
-                  "stats_ppf",
-                  "stats_rvs",
-                  "stats_sf",
+    std_pyefs = ( 
                   "stats_beta_cdf",
                   "stats_beta_isf",
                   "stats_beta_pdf",
@@ -230,6 +223,15 @@ def init(arglist=None, enterferret=True):
                   "stats_weibull_ppf",
                   "stats_weibull_rvs",
                   "stats_weibull_sf",
+                  "stats_cdf",
+                  "stats_fit",
+                  "stats_isf",
+                  "stats_pdf",
+                  "stats_pmf",
+                  "stats_ppf",
+                  "stats_rvs",
+                  "stats_sf",
+                  # "stats_helper",
                 )
 
     my_metaname = None

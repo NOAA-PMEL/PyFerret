@@ -1,0 +1,10 @@
+! err665_hours_since_T.jnl
+! Ticket 1806: allow time-axis units string to 
+! be written with a T between the date and time parts, 
+! e.g. units: "hours since 2011-03-08T12:00:00Z"
+
+! Check that T0 includes hour 12:00
+! Previously the hours, minutes, seconds were set to 00
+
+use hourst.nc
+sh axis/all hourax

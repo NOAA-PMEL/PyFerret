@@ -4,11 +4,13 @@
 * Ansley Manke
 * May 24, 2011
 *
-* This function writes a string value to an xml string, with a given tag 
-* and option to  enclose it in CDATA escape. e.g.
+* This function writes a string value to an xml string, and with a given tag 
+* and option to enclose it in CDATA escape. e.g.
 *
 *		<label><![CDATA[Z (m):]]></label>
 *		<value><![CDATA[0]]></value>
+*
+* it then lists the string to the named file.
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -61,9 +63,8 @@
       CALL ef_set_desc(id, fcn_descr)
   100 FORMAT('write a string in xml format with specified ',
      .        'tag and optional CDATA escape sequence')
-      CALL ef_set_result_type(id, STRING_RETURN)
 
-      CALL ef_set_num_args(id, 3)
+      CALL ef_set_num_args(id, 4)
       CALL ef_set_axis_inheritance(id, ABSTRACT, NORMAL, 
      .			NORMAL, NORMAL)
 
@@ -89,6 +90,13 @@
       CALL ef_set_arg_desc(id, arg, 
      .'enter 1 to request CDATA escape, 0 otherwise')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+
+      arg = 4
+      CALL ef_set_arg_name(id, arg, 'outputfile')
+      CALL ef_set_arg_unit(id, arg, ' ')
+      CALL ef_set_arg_desc(id, arg, 'the filename to write to')
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_arg_type (id, arg, STRING_ARG)
 
 *                                                                      ^
 *                                                                      |
@@ -152,7 +160,7 @@
 * In this subroutine we compute the result
 *
       SUBROUTINE list_value_xml_compute(id, arg_1, arg_2, arg_3, 
-     .           result)
+     .           arg_4, result)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -166,8 +174,10 @@
      .           mem2loz:mem2hiz, mem2lot:mem2hit)
       REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, 
      .     mem3loz:mem3hiz, mem3lot:mem3hit)
+      REAL arg_4(2,mem4lox:mem4hix, mem4loy:mem4hiy,
+     .           mem4loz:mem4hiz, mem4lot:mem4hit)
 
-      REAL result(2,memreslox:memreshix, memresloy:memreshiy, 
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .     memresloz:memreshiz, memreslot:memreshit)
 
 
@@ -190,7 +200,10 @@
       INTEGER i3, j3, k3, l3
       INTEGER TM_LENSTR1, vlen, tlen, slen
       CHARACTER*128 outstring, first, second, third
-      CHARACTER*50 tag, value
+      CHARACTER*1028 outfile
+      CHARACTER*50 tag
+      CHARACTER*2048 value
+      CHARACTER*100 errtxt
       INTEGER cdata_flag
 
 *  variables for checking axis characteristics (modulo axes)
@@ -227,6 +240,16 @@
 
       cdata_flag = INT(arg_3(i3,j3,k3,l3))
 
+
+      i4 = arg_lo_ss(X_AXIS,ARG4)
+      j4 = arg_lo_ss(Y_AXIS,ARG4)
+      k4 = arg_lo_ss(Z_AXIS,ARG4)
+      l4 = arg_lo_ss(T_AXIS,ARG4)
+*     Get the value (string)
+      CALL ef_get_string_arg_element(id, ARG4, arg_4,
+     .     i4,j4,k4,l4,flen,outfile)
+
+
 *		<value><![CDATA[0]]></value>
 *		<value>0</value>
 
@@ -236,6 +259,7 @@
 1030  FORMAT('<',a, '>')
 1040  FORMAT(a, '</')
 1050  FORMAT(a, '>')
+1060  FORMAT(a)
 
       IF (cdata_flag .EQ. 1) THEN
          write (first,  1000) tag(1:tlen)
@@ -256,14 +280,34 @@
       ENDIF
       vlen = TM_LENSTR1(outstring)
       
+
+
+      iunit = 19
+
+       OPEN( UNIT        = iunit,
+     .       FILE        = outfile,
+     .       FORM        = 'FORMATTED',
+     .       ACCESS      = 'APPEND',
+     .       ERR         = 5010 )
+
+      WRITE (iunit, 1060) outstring(1:vlen)
+      CLOSE (iunit, ERR = 5020 )
+
       i = res_lo_ss(X_AXIS)
       j = res_lo_ss(Y_AXIS)
       k = res_lo_ss(Z_AXIS)
       l = res_lo_ss(T_AXIS)
+      result(i,j,k,l) = 1
 
-      CALL EF_PUT_STRING (outstring(1:vlen), vlen, 
-     .                       result(1,i,j,k,l))
+      RETURN
      
+5010  CONTINUE
+      WRITE(errtxt,*) 'Error opening file ', fname
+      CALL EF_BAIL_OUT(id, errtxt)
+5020  CONTINUE
+      WRITE(errtxt,*) 'Error closing file ', fname
+      CALL EF_BAIL_OUT(id, errtxt)
+      RETURN
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |

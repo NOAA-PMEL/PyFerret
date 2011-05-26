@@ -46,6 +46,7 @@ char *pyefcn_get_error()
     PyObject *exc_type;
     PyObject *exc_value;
     PyObject *exc_traceback;
+    PyObject *exc_string;
 
     /* Initialize errmsg to no message */
     errmsg[0] = '\0';
@@ -53,9 +54,16 @@ char *pyefcn_get_error()
     /* Check for an exception */
     PyErr_Fetch(&exc_type, &exc_value, &exc_traceback);
     if ( exc_type != NULL ) {
-        /* Exception found and cleared - get the message */
-        if ( (exc_value != NULL) && PyString_Check(exc_value) ) {
-            strcpy(errmsg, PyString_AsString(exc_value));
+        /* Exception found and cleared - first normalize exc_value */
+        PyErr_NormalizeException(&exc_type, &exc_value, &exc_traceback);
+        /* Now exc_value is guaranteed to be an Exception object of class (or subclass of) exc_type */
+        if ( exc_value != NULL ) {
+            /* Get the string by calling Python str method with the exception */
+            exc_string = PyObject_Str(exc_value);
+            if ( exc_string != NULL ) {
+                strcpy(errmsg, PyString_AsString(exc_string));
+                Py_DECREF(exc_string);
+            }
         }
         /* Since there was an exception, make sure errmsg is not empty */
         if ( errmsg[0] == '\0' ) {

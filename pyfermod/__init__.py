@@ -335,7 +335,7 @@ def init(arglist=None, enterferret=True):
         try:
             result = run('go "%s"; exit /program' % script_line)
         except:
-            print >>sys.stderr, " **Error: exception raised in running script %s" * script_line
+            print >>sys.stderr, " **Error: exception raised in running script %s" % script_line
         # If exception or if returned early, force shutdown
         result = run('exit /program')
         # should not get here

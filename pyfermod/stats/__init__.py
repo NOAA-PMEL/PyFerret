@@ -329,185 +329,200 @@ def getfitparams(values, distribname, estparams):
     lcdistname = str(distribname).lower()
     fitparams = None
     if lcdistname == "beta":
-        if len(estparams) != 2:
-            raise ValueError("Two parameters expected for the Beta distribution")
+        if (len(estparams) < 2) or (len(estparams) > 4):
+            raise ValueError("Two to four parameter estimates expected for the Beta distribution fit")
         alpha = float(estparams[0])
         beta = float(estparams[1])
         if (alpha <= 0.0) or (beta <= 0.0):
-            raise ValueError("Invalid parameter(s) for the Beta distribution")
-        fitparams = scipy.stats.beta.fit(values, a=alpha, b=beta, loc=0.0, scale=1.0)
-        estparams = ( alpha, beta, 0.0, 1.0 )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
+            raise ValueError("Invalid parameter estimate(s) for the Beta distribution fit")
+        offset = 0.0
+        scaling = 1.0
+        try:
+            offset = float(estparams[2])
+            scaling = float(estparams[3])
+        except IndexError:
+            pass
+        fitparams = scipy.stats.beta.fit(values, a=alpha, b=beta, loc=offset, scale=scaling)
     elif lcdistname == "cauchy":
         if len(estparams) != 2:
-            raise ValueError("Two parameters expected for the Cauchy distribution")
+            raise ValueError("Two parameter estimates expected for the Cauchy distribution fit")
         m = float(estparams[0])
         gamma = float(estparams[1])
         if gamma <= 0.0:
-            raise ValueError("Invalid parameter for the Cauchy distribution")
+            raise ValueError("Invalid parameter estimate for the Cauchy distribution fit")
         fitparams = scipy.stats.cauchy.fit(values, loc=m, scale=gamma)
-        estparams = ( m, gamma, )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
     elif lcdistname == "chi":
-        if len(estparams) != 1:
-            raise ValueError("One parameter expected for the Chi distribution")
+        if (len(estparams) < 1) or (len(estparams) > 3):
+            raise ValueError("One to three parameter estimates expected for the Chi distribution fit")
         degfree = float(estparams[0])
         if degfree <= 0.0:
-            raise ValueError("Invalid parameter for the Chi distribution")
-        fitparams = scipy.stats.chi.fit(values, df=degfree, loc=0.0, scale=1.0)
-        estparams = ( degfree, 0.0, 1.0 )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
+            raise ValueError("Invalid parameter estimate for the Chi distribution fit")
+        offset = 0.0
+        scaling = 1.0
+        try:
+            offset = float(estparams[1])
+            scaling = float(estparams[2])
+        except IndexError:
+            pass
+        fitparams = scipy.stats.chi.fit(values, df=degfree, loc=offset, scale=scaling)
     elif (lcdistname == "chi2") or (lcdistname == "chi-square"):
-        if len(estparams) != 1:
-            raise ValueError("One parameter expected for the Chi-Square distribution")
+        if (len(estparams) < 1) or (len(estparams) > 3):
+            raise ValueError("One to three parameter estimates expected for the Chi-Square distribution fit")
         degfree = float(estparams[0])
         if degfree <= 0.0:
-            raise ValueError("Invalid parameter for the Chi-Square distribution")
-        fitparams = scipy.stats.chi2.fit(values, df=degfree, loc=0.0, scale=1.0)
-        estparams = ( degfree, 0.0, 1.0 )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
+            raise ValueError("Invalid parameter estimate for the Chi-Square distribution")
+        offset = 0.0
+        scaling = 1.0
+        try:
+            offset = float(estparams[1])
+            scaling = float(estparams[2])
+        except IndexError:
+            pass
+        fitparams = scipy.stats.chi2.fit(values, df=degfree, loc=offset, scale=scaling)
     elif (lcdistname == "expon") or (lcdistname == "exponential"):
-        if len(estparams) != 1:
-            raise ValueError("One parameter expected for the Exponential distribution")
+        if (len(estparams) < 1) or (len(estparams) > 2):
+            raise ValueError("One or two parameter estimates expected for the Exponential distribution fit")
         lambdaflt = float(estparams[0])
         if lambdaflt <= 0.0:
-            raise ValueError("Invalid parameter for the Exponential distribution")
-        fitparams = scipy.stats.expon.fit(values, loc=0.0, scale=(1.0/lambdaflt))
-        estparams = ( 0.0, 1.0/lambdaflt, )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
+            raise ValueError("Invalid parameter estimate for the Exponential distribution")
+        try:
+            offset = float(estparams[1])
+        except IndexError:
+            offset = 0.0
+        fitparams = scipy.stats.expon.fit(values, loc=offset, scale=(1.0/lambdaflt))
         fitparams = ( 1.0 / fitparams[1], fitparams[0], )
     elif (lcdistname == "exponweib") or (lcdistname == "exponentiated-weibull"):
-        if len(estparams) != 3:
-            raise ValueError("Three parameters expected for the Exponentiated-Weibull distribution")
+        if (len(estparams) < 3) or (len(estparams) > 4):
+            raise ValueError("Three or four parameter estimates expected for the Exponentiated-Weibull distribution fit")
         k =  float(estparams[0])
         lambdaflt = float(estparams[1])
         alpha = float(estparams[2])
         if (k <= 0.0) or (lambdaflt <= 0.0) or (alpha <= 0):
-            raise ValueError("Invalid parameter(s) for the Exponentiated-Weibull distribution")
-        fitparams = scipy.stats.exponweib.fit(values, a=alpha, c=k, loc=0.0, scale=lambdaflt)
-        estparams = ( alpha, k, 0.0, lambdaflt, )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
+            raise ValueError("Invalid parameter estimate(s) for the Exponentiated-Weibull distribution fit")
+        try:
+            offset = float(estparams[3])
+        except IndexError:
+            offset = 0.0
+        fitparams = scipy.stats.exponweib.fit(values, a=alpha, c=k, loc=offset, scale=lambdaflt)
         fitparams = ( fitparams[1], fitparams[3], fitparams[0], fitparams[2], )
     elif (lcdistname == "f") or (lcdistname == "fisher"):
-        if len(estparams) != 2:
-           raise ValueError("Two parameters expected for the F distribution")
+        if (len(estparams) < 2) or (len(estparams) > 4):
+            raise ValueError("Two to four parameter estimates expected for the F distribution fit")
         dfnum = float(estparams[0])
         dfdenom = float(estparams[1])
         if (dfnum <= 0.0) or (dfdenom <= 0.0):
-           raise ValueError("Invalid parameter(s) for the F distribution")
-        fitparams = scipy.stats.f.fit(values, dfn=dfnum, dfd=dfdenom, loc=0.0, scale=1.0)
-        estparams = ( dfnum, dfdenom, 0.0, 1.0, )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
+           raise ValueError("Invalid parameter estimate(s) for the F distribution fit")
+        offset = 0.0
+        scaling = 1.0
+        try:
+            offset = float(estparams[2])
+            scaling = float(estparams[3])
+        except IndexError:
+            pass
+        fitparams = scipy.stats.f.fit(values, dfn=dfnum, dfd=dfdenom, loc=offset, scale=scaling)
     elif lcdistname == "gamma":
-        if len(estparams) != 2:
-            raise ValueError("Two parameters expected for the Gamma distribution")
+        if (len(estparams) < 2) or (len(estparams) > 3):
+            raise ValueError("Two or three parameter estimates expected for the Gamma distribution fit")
         alpha = float(estparams[0])
         theta = float(estparams[1])
         if (alpha <= 0.0) or (theta <= 0.0):
-            raise ValueError("Invalid parameter(s) for the Gamma distribution")
-        fitparams = scipy.stats.gamma.fit(values, a=alpha, loc=0.0, scale=theta)
-        estparams = ( alpha, 0.0, theta, )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
+            raise ValueError("Invalid parameter estimate(s) for the Gamma distribution fit")
+        try:
+            offset = float(estparams[2])
+        except IndexError:
+            offset = 0.0
+        fitparams = scipy.stats.gamma.fit(values, a=alpha, loc=offset, scale=theta)
         fitparams = ( fitparams[0], fitparams[2], fitparams[1], )
     elif (lcdistname == "invgamma") or (lcdistname == "inverse-gamma"):
-        if len(estparams) != 2:
-            raise ValueError("Two parameters expected for the Inverse-Gamma distribution")
+        if (len(estparams) < 2) or (len(estparams) > 3):
+            raise ValueError("Two or three parameter estimates expected for the Inverse-Gamma distribution fit")
         alpha = float(estparams[0])
         beta = float(estparams[1])
         if (alpha <= 0.0) or (beta <= 0.0):
-            raise ValueError("Invalid parameter(s) for the Inverse-Gamma distribution")
-        fitparams = scipy.stats.invgamma.fit(values, a=alpha, loc=0.0, scale=beta)
-        estparams = ( alpha, 0.0, beta, )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
+            raise ValueError("Invalid parameter estimate(s) for the Inverse-Gamma distribution fit")
+        try:
+            offset = float(estparams[2])
+        except IndexError:
+            offset = 0.0
+        fitparams = scipy.stats.invgamma.fit(values, a=alpha, loc=offset, scale=beta)
         fitparams = ( fitparams[0], fitparams[2], fitparams[1], )
     elif lcdistname == "laplace":
         if len(estparams) != 2:
-            raise ValueError("Two parameters expected for the Laplace distribution")
+            raise ValueError("Two parameter estimates expected for the Laplace distribution fit")
         mu = float(estparams[0])
         b = float(estparams[1])
         if b <= 0.0:
-            raise ValueError("Invalid parameter for the Laplace distribution")
+            raise ValueError("Invalid parameter estimate for the Laplace distribution fit")
         fitparams = scipy.stats.laplace.fit(values, loc=mu, scale=b)
-        estparams = ( mu, b, )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
     elif (lcdistname == "lognorm") or (lcdistname == "log-normal"):
-        if len(estparams) != 2:
-            raise ValueError("Two parameters expected for the Log-Normal distribution")
+        if (len(estparams) < 2) or (len(estparams) > 3):
+            raise ValueError("Two or three parameter estimates expected for the Log-Normal distribution fit")
         mu = math.exp(float(estparams[0]))
         sigma = float(estparams[1])
         if sigma <= 0.0:
-            raise ValueError("Invalid parameter for the Log-Normal distribution")
-        fitparams = scipy.stats.lognorm.fit(values, s=sigma, loc=0.0, scale=mu)
-        estparams = ( sigma, 0.0, mu, )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
+            raise ValueError("Invalid parameter estimate for the Log-Normal distribution fit")
+        try:
+            offset = float(estparams[2])
+        except IndexError:
+            offset = 0.0
+        fitparams = scipy.stats.lognorm.fit(values, s=sigma, loc=offset, scale=mu)
         fitparams = ( math.log(fitparams[2]), fitparams[0], fitparams[1], )
     elif (lcdistname == "norm") or (lcdistname == "normal"):
         if len(estparams) != 2:
-            raise ValueError("Two parameters expected for the Normal distribution")
+            raise ValueError("Two parameter estimates expected for the Normal distribution fit")
         mu = float(estparams[0])
         sigma = float(estparams[1])
         if sigma <= 0.0:
-            raise ValueError("Invalid parameter for the Normal distribution")
+            raise ValueError("Invalid parameter estimate for the Normal distribution fit")
         fitparams = scipy.stats.norm.fit(values, loc=mu, scale=sigma)
-        estparams = ( mu, sigma, )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
     elif lcdistname == "pareto":
-        if len(estparams) != 2:
-            raise ValueError("Two parameters expected for the Pareto distribution")
+        if (len(estparams) < 2) or (len(estparams) > 3):
+            raise ValueError("Two or three parameter estimates expected for the Pareto distribution fit")
         xm =  float(estparams[0])
         alpha = float(estparams[1])
         if (xm <= 0.0) or (alpha <= 0.0):
-            raise ValueError("Invalid parameter(s) for the Pareto distribution")
-        fitparams = scipy.stats.pareto.fit(values, b=alpha, loc=0.0, scale=xm)
-        estparams = ( alpha, 0.0, xm, )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
+            raise ValueError("Invalid parameter estimate(s) for the Pareto distribution fit")
+        try:
+            offset = float(estparams[2])
+        except IndexError:
+            offset = 0.0
+        fitparams = scipy.stats.pareto.fit(values, b=alpha, loc=offset, scale=xm)
         fitparams = ( fitparams[2], fitparams[0], fitparams[1], )
     elif (lcdistname == "t") or (lcdistname == "students-t"):
-        if len(estparams) != 1:
-            raise ValueError("One parameter expected for the Students-T distribution")
+        if (len(estparams) < 1) or (len(estparams) > 3):
+            raise ValueError("One to three parameter estimates expected for the Students-T distribution fit")
         degfree = float(estparams[0])
         if degfree <= 0.0:
-            raise ValueError("Invalid parameter for the Students-T distribution")
-        fitparams = scipy.stats.t.fit(values, df=degfree, loc=0.0, scale=1.0)
-        estparams = ( degfree, 0.0, 1.0, )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
+            raise ValueError("Invalid parameter estimate for the Students-T distribution fit")
+        offset = 0.0
+        scaling = 1.0
+        try:
+            offset = float(estparams[1])
+            scaling = float(estparams[2])
+        except IndexError:
+            pass
+        fitparams = scipy.stats.t.fit(values, df=degfree, loc=offset, scale=scaling)
     elif lcdistname == "uniform":
         if len(estparams) != 2:
-            raise ValueError("Two parameters expected for the Uniform distribution")
+            raise ValueError("Two parameter estimates expected for the Uniform distribution fit")
         min = float(estparams[0])
         max = float(estparams[1])
         if min >= max:
-            raise ValueError("Invalid parameters for the Uniform distribution")
+            raise ValueError("Invalid parameter estimates for the Uniform distribution fit")
         fitparams = scipy.stats.uniform.fit(values, loc=min, scale=(max - min))
-        estparams = ( min, (max - min), )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
         fitparams = ( fitparams[0], fitparams[0] + fitparams[1], )
     elif (lcdistname == "weibull_min") or (lcdistname == "weibull"):
-        if len(estparams) != 2:
-            raise ValueError("Two parameters expected for the Weibull distribution")
+        if (len(estparams) < 2) or (len(estparams) > 3):
+            raise ValueError("Two or three parameter estimates expected for the Weibull distribution fit")
         k =  float(estparams[0])
         lambdaflt = float(estparams[1])
         if (k <= 0.0) or (lambdaflt <= 0.0):
-            raise ValueError("Invalid parameter(s) for the Weibull distribution")
-        fitparams = scipy.stats.weibull_min.fit(values, c=k, loc=0.0, scale=lambdaflt)
-        estparams = ( k, 0.0, lambdaflt, )
-        if numpy.allclose(fitparams, estparams):
-            raise ValueError("Fit parameters identical to estimate parameters")
+            raise ValueError("Invalid parameter estimate(s) for the Weibull distribution fit")
+        try:
+            offset = float(estparams[2])
+        except IndexError:
+            offset = 0.0
+        fitparams = scipy.stats.weibull_min.fit(values, c=k, loc=offset, scale=lambdaflt)
         fitparams = ( fitparams[0], fitparams[2], fitparams[1], )
     else:
         raise ValueError("Unknown probability function %s" % str(distribname))
@@ -789,6 +804,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc and scale to the expected params
     distparms.append(0.0)
     distparms.append(1.0)
@@ -854,6 +870,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
@@ -894,6 +911,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc and scale to the expected params
     distparms.append(0.0)
     distparms.append(1.0)
@@ -933,6 +951,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc and scale to the expected params
     distparms = [ degfree, 0.0, 1.0 ]
     if not numpy.allclose(fitparms, distparms, rtol=0.4, atol=0.4):
@@ -967,6 +986,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc to the expected params
     distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
@@ -1004,6 +1024,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc to the expected params
     distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
@@ -1060,6 +1081,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc and scale to the expected params
     distparms.append(0.0)
     distparms.append(1.0)
@@ -1096,6 +1118,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc to the expected params
     distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
@@ -1200,6 +1223,7 @@ if __name__ == "__main__":
     # get rid of any major outliers - seems to give invgamma.fit problems
     sample = sample[ numpy.logical_and((sample > 0.1), (sample < 2.0)) ]
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc to the expected params
     distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.2, atol=0.4):
@@ -1234,6 +1258,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
@@ -1270,6 +1295,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc to the expected params
     distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
@@ -1332,6 +1358,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
@@ -1369,6 +1396,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc to the expected params
     distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
@@ -1462,6 +1490,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc and scale to the expected params
     distparms.append(0.0)
     distparms.append(1.0)
@@ -1496,6 +1525,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
@@ -1538,6 +1568,7 @@ if __name__ == "__main__":
 
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc to the expected params
     distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):

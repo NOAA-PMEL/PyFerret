@@ -226,6 +226,7 @@ def init(arglist=None, enterferret=True):
                   "stats_cdf",
                   "stats_fit",
                   "stats_isf",
+                  "stats_histogram",
                   "stats_pdf",
                   "stats_pmf",
                   "stats_ppf",

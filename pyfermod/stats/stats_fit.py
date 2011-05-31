@@ -13,8 +13,8 @@ def ferret_init(id):
     Initialization for the stats_fit python-backed ferret external function
     """
     retdict = { "numargs": 3,
-                "descript": "Returns parameters for a probability distribution that best fit given data",
-                "axes": ( pyferret.AXIS_ABSTRACT,
+                "descript": "Returns parameters for a probability distribution that best fit all defined data values",
+                "axes": ( pyferret.AXIS_CUSTOM,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
@@ -30,13 +30,14 @@ def ferret_init(id):
     return retdict
 
 
-def ferret_result_limits(id):
+def ferret_custom_axes(id):
     """
-    Define the limits of the abstract axis of the array containing the returned
-    parameters.  A "location" and a "scale" parameter, if not considered one of
-    the "standard" parameters, is appended to the "standard" parameters.
+    Define the limits and (unit)name of the custom axis of the array
+    containing the returned parameters.  A "location" and a "scale"
+    parameter, if not considered one of the "standard" parameters, is
+    appended to the "standard" parameters.
     """
-    return ( ( 1, 5, ), None, None, None, )
+    return ( ( 1, 5, 1, "PARAMS", False, ), None, None, None, )
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):

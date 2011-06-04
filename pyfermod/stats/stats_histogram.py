@@ -53,16 +53,16 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     # get the histogram bin limits from the axis box limits
     if not numpy.allclose(limits_tuple[0][1:], limits_tuple[1][:-1]):
         raise ValueError("Unexpected error: gaps exist between axis box limits")
-    bin_limits = numpy.empty( ( len(limits_tuple[1]) + 1, ), dtype=numpy.float64)
-    bin_limits[0] = limits_tuple[0][0]
-    bin_limits[1:] = limits_tuple[1]
+    bin_edges = numpy.empty( ( len(limits_tuple[1]) + 1, ), dtype=numpy.float64)
+    bin_edges[0] = limits_tuple[0][0]
+    bin_edges[1:] = limits_tuple[1]
     # get the clean data as a flattened array
     badmask = ( numpy.fabs(inputs[0] - inpbdfs[0]) < 1.0E-5 )
     badmask = numpy.logical_or(badmask, numpy.isnan(inputs[0]))
     goodmask = numpy.logical_not(badmask)
     values = inputs[0][goodmask]
     # compute the histogram and assign the counts to result
-    (hist, edges) = numpy.histogram(values, bins=bin_limits)
+    (hist, edges) = numpy.histogram(values, bins=bin_edges)
     if axis_used == pyferret.X_AXIS:
         result[:,0,0,0] = hist
     elif axis_used == pyferret.Y_AXIS:
@@ -92,8 +92,8 @@ if __name__ == "__main__":
             return None
         limits = numpy.array([1.0, 2.0, 3.0, 4.0, 6.0, 9.0], dtype=numpy.float64)
         return (limits[:-1], limits[1:])
-    # create the input values array
-    values = numpy.arange(0.0, 10.11, 0.1, dtype=numpy.float32).reshape((1,6,1,17), order='F')
+    # create the input values array with values on the edges and outside
+    values = numpy.arange(0.0, 10.2, 0.1, dtype=numpy.float32).reshape((1,6,1,17), order='F')
     # create the expected results array
     expected = -1.0 * numpy.ones((1,1,5,1), dtype=numpy.float32, order='F')
     expected[0,0,:,0] = (10.0, 10.0, 10.0, 20.0, 31.0)
@@ -103,8 +103,7 @@ if __name__ == "__main__":
     result = 999.0 * expected
     resbdf = numpy.array([-1.0], dtype=numpy.float32)
     inpbdfs = numpy.array([-1.0, -1.0], dtype=numpy.float32)
-    inputs = ( values, None, )
-    ferret_compute(0, result, resbdf, inputs, inpbdfs)
+    ferret_compute(0, result, resbdf, ( values, None, ), inpbdfs)
     # verify the results
     if not numpy.allclose(result, expected):
         raise ValueError("Unexpected results; expected:\n%s\nfound:\n%s" % (str(expected), str(result)))

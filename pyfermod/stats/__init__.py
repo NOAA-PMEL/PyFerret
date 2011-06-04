@@ -10,33 +10,477 @@ import pyferret
 # The number of supported distributions
 NUM_DISTRIBS = 22
 
-def getdistrib(distribname=None, distribparams=None):
+def getdistname(distribname):
+    """
+    Returns the "scipy.stats" name for a probability distribution named in
+    distribname, or if the probability distribution name is not recognized
+    or supported.  If distribname is None, this instead returns a list of
+    string tuples, where the first name in each tuple is the scipy.stats
+    name, the second name is a "full name" and any other names are other
+    recognized aliases.
+    """
+    if distribname == None:
+        return ( ( "beta", "Beta", ),
+                 ( "binom", "Binomial", ),
+                 ( "cauchy", "Cauchy", ),
+                 ( "chi", "Chi", ),
+                 ( "chi2", "Chi-Square", ),
+                 ( "expon", "Exponential", ),
+                 ( "exponweib", "Exponentiated-Weibull", ),
+                 ( "f", "F", "Fisher", ),
+                 ( "gamma", "Gamma", ),
+                 ( "geom", "Geometric", "Shifted-Geometric", ),
+                 ( "hypergeom", "Hypergeometric", ),
+                 ( "invgamma", "Inverse-Gamma", ),
+                 ( "laplace", "Laplace", ),
+                 ( "lognorm", "Log-Normal", ),
+                 ( "nbinom", "Negative-Binomial", ),
+                 ( "norm", "Normal", ),
+                 ( "pareto", "Pareto", ),
+                 ( "poisson", "Poisson", ),
+                 ( "randint", "Random-Integer", "Discrete-Uniform", ),
+                 ( "t", "Students-T", ),
+                 ( "uniform", "Uniform", ),
+                 ( "weibull_min", "Weibull", ),
+               )
+    lcdistname = str(distribname).lower()
+    if lcdistname == "beta":
+        return "beta"
+    if (lcdistname == "binom") or (lcdistname == "binomial"):
+        return "binom"
+    if lcdistname == "cauchy":
+        return "cauchy"
+    if lcdistname == "chi":
+        return "chi"
+    if (lcdistname == "chi2") or (lcdistname == "chi-square"):
+        return "chi2"
+    if (lcdistname == "expon") or (lcdistname == "exponential"):
+        return "expon"
+    if (lcdistname == "exponweib") or (lcdistname == "exponentiated-weibull"):
+        return "exponweib"
+    if (lcdistname == "f") or (lcdistname == "fisher"):
+        return "f"
+    if lcdistname == "gamma":
+        return "gamma"
+    if (lcdistname == "geom") or (lcdistname == "geometric") or (lcdistname == "shifted-geometric"):
+        return "geom"
+    if (lcdistname == "hypergeom") or (lcdistname == "hypergeometric"):
+        return "hypergeom"
+    if (lcdistname == "invgamma") or (lcdistname == "inverse-gamma"):
+        return "invgamma"
+    if lcdistname == "laplace":
+        return "laplace"
+    if (lcdistname == "lognorm") or (lcdistname == "log-normal"):
+        return "lognorm"
+    if (lcdistname == "nbinom") or (lcdistname == "negative-binomial"):
+        return "nbinom"
+    if (lcdistname == "norm") or (lcdistname == "normal"):
+        return "norm"
+    if lcdistname == "pareto":
+        return "pareto"
+    if lcdistname == "poisson":
+        return "poisson"
+    if (lcdistname == "randint") or (lcdistname == "random-integer") or (lcdistname == "discrete-uniform"):
+        return "randint"
+    if (lcdistname == "t") or (lcdistname == "students-t"):
+        return "t"
+    if lcdistname == "uniform":
+        return "uniform"
+    if (lcdistname == "weibull_min") or (lcdistname == "weibull"):
+        return "weibull_min"
+    return None
+
+
+def getdistparams(distname, params, tostd=False):
+    """
+    Converts between "standard" parameters for a probability function and
+    the tuple of numeric parameters expected for the scipy.stats function.
+
+    Arguments:
+        distname - the "scipy.stats" name for the probability distribution
+        params - the parameters for the probability distribution, or None
+        tostd - convert from scipy.stats to standard parameters?
+
+    Returns:
+        If params is None, a list of string pairs describing the standard
+        parameters for the distribution.
+
+        If tostd is False, a tuple of scipy.stats parameters corresponding 
+        to the standard parameters given in params.  The given parameters
+        are explicitly converted to the correct type (thus strings could 
+        be given) and error checking is performed.  Additional offset and 
+        scaling parameters, if appropriate, can be given.
+
+        If tostd is True, a tuple of standard parameters corresponding
+        to the scipy.stats parameters given in params.  No explicit type 
+        conversion or error checking is performed.  Offset and scaling
+        parameters, if appropriate, are assumed to be given.
+
+    Raises:
+        ValueError if the parameters are inappropriate for the probabiity
+        distribution.
+    """
+    if distname == "beta":
+        if params == None:
+            return ( ( "ALPHA", "first shape", ),
+                     ( "BETA", "second shape", ), )
+        if tostd:
+            return ( params[0], params[1], params[2], params[3], )
+        if (len(params) < 2) or (len(params) > 4):
+            raise ValueError("Two to four parameters expected for the Beta distribution")
+        alpha = float(params[0])
+        beta = float(params[1])
+        if (alpha <= 0.0) or (beta <= 0.0):
+            raise ValueError("Invalid parameter(s) for the Beta distribution")
+        offset = 0.0
+        scaling = 1.0
+        try:
+            offset = float(params[2])
+            scaling = float(params[3])
+        except IndexError:
+            pass
+        return ( alpha, beta, offset, scaling, )
+    if distname == "binom":
+        if params == None:
+            return ( ( "N", "number of trials", ),
+                     ( "P", "success probability in each trial", ), )
+        if tostd:
+            return ( params[0], params[1], )
+        if len(params) != 2:
+            raise ValueError("Two parameters expected for the Binomial distribution")
+        nflt = float(params[0])
+        prob = float(params[1])
+        if (nflt < 0.0) or (prob < 0.0) or (prob > 1.0):
+            raise ValueError("Invalid parameter(s) for the Binomial distribution")
+        return ( nflt, prob, )
+    if distname == "cauchy":
+        if params == None:
+            return ( ( "M", "location (median)", ),
+                     ( "GAMMA", "scale (half-width at half-maximum)", ), )
+        if tostd:
+            return ( params[0], params[1], )
+        if len(params) != 2:
+            raise ValueError("Two parameters expected for the Cauchy distribution")
+        m = float(params[0])
+        gamma = float(params[1])
+        if gamma <= 0.0:
+            raise ValueError("Invalid parameter for the Cauchy distribution")
+        return ( m, gamma, )
+    if distname == "chi":
+        if params == None:
+            return ( ( "DF", "degrees of freedom", ), )
+        if tostd:
+            return ( params[0], params[1], params[2], )
+        if (len(params) < 1) or (len(params) > 3):
+            raise ValueError("One to three parameters expected for the Chi distribution")
+        degfree = float(params[0])
+        if degfree <= 0.0:
+            raise ValueError("Invalid parameter for the Chi distribution")
+        offset = 0.0
+        scaling = 1.0
+        try:
+            offset = float(params[1])
+            scaling = float(params[2])
+        except IndexError:
+            pass
+        return ( degfree, offset, scaling, )
+    if distname == "chi2":
+        if params == None:
+            return ( ( "DF", "degrees of freedom", ), )
+        if tostd:
+            return ( params[0], params[1], params[2], )
+        if (len(params) < 1) or (len(params) > 3):
+            raise ValueError("One to three parameters expected for the Chi-Square distribution")
+        degfree = float(params[0])
+        if degfree <= 0.0:
+            raise ValueError("Invalid parameter for the Chi-Square distribution")
+        offset = 0.0
+        scaling = 1.0
+        try:
+            offset = float(params[1])
+            scaling = float(params[2])
+        except IndexError:
+            pass
+        return ( degfree, offset, scaling, )
+    if distname == "expon":
+        if params == None:
+            return ( ( "LAMBDA", "rate (inverse scale)", ), )
+        if tostd:
+            return ( 1.0 / params[1], params[0], )
+        if (len(params) < 1) or (len(params) > 2):
+            raise ValueError("One or two parameters expected for the Exponential distribution")
+        lambdaflt = float(params[0])
+        if lambdaflt <= 0.0:
+            raise ValueError("Invalid parameter for the Exponential distribution")
+        try:
+            offset = float(params[1])
+        except IndexError:
+            offset = 0.0
+        return ( offset, 1.0 / lambdaflt, )
+    if distname == "exponweib":
+        if params == None:
+            return ( ( "K", "Weibull shape", ),
+                     ( "LAMBDA", "scale", ),
+                     ( "ALPHA", "power shape", ), )
+        if tostd:
+            return ( params[1], params[3], params[0], params[2], )
+        if (len(params) < 3) or (len(params) > 4):
+            raise ValueError("Three or four parameters expected for the Exponentiated-Weibull distribution")
+        k =  float(params[0])
+        lambdaflt = float(params[1])
+        alpha = float(params[2])
+        if (k <= 0.0) or (lambdaflt <= 0.0) or (alpha <= 0):
+            raise ValueError("Invalid parameter(s) for the Exponentiated-Weibull distribution")
+        try:
+            offset = float(params[3])
+        except IndexError:
+            offset = 0.0
+        return ( alpha, k, offset, lambdaflt, )
+    if distname == "f":
+        if params == None:
+            return ( ( "DFN", "numerator degrees of freedom", ),
+                     ( "DFD", "denominator degrees of freedom", ), )
+        if tostd:
+            return ( params[0], params[1], params[2], params[3], )
+        if (len(params) < 2) or (len(params) > 4):
+            raise ValueError("Two to four parameters expected for the F distribution")
+        dfnum = float(params[0])
+        dfdenom = float(params[1])
+        if (dfnum <= 0.0) or (dfdenom <= 0.0):
+           raise ValueError("Invalid parameter(s) for the F distribution")
+        offset = 0.0
+        scaling = 1.0
+        try:
+            offset = float(params[2])
+            scaling = float(params[3])
+        except IndexError:
+            pass
+        return ( dfnum, dfdenom, offset, scaling, )
+    if distname == "gamma":
+        if params == None:
+            return ( ( "ALPHA", "shape", ),
+                     ( "THETA", "scale", ), )
+        if tostd:
+            return ( params[0], params[2], params[1], )
+        if (len(params) < 2) or (len(params) > 3):
+            raise ValueError("Two or three parameters expected for the Gamma distribution")
+        alpha = float(params[0])
+        theta = float(params[1])
+        if (alpha <= 0.0) or (theta <= 0.0):
+            raise ValueError("Invalid parameter(s) for the Gamma distribution")
+        try:
+            offset = float(params[2])
+        except IndexError:
+            offset = 0.0
+        return ( alpha, offset, theta, )
+    if distname == "geom":
+        if params == None:
+            return ( ( "P", "success probability", ), )
+        if tostd:
+            return ( params[0], )
+        if len(params) != 1:
+            raise ValueError("One parameter expected for the Shifted-Geometric distribution")
+        prob = float(params[0])
+        if (prob < 0.0) or (prob > 1.0):
+            raise ValueError("Invalid parameter for the Shifted-Geometric distribution")
+        return ( prob, )
+    if distname == "hypergeom":
+        if params == None:
+            return ( ( "NTOTAL", "total number of items", ),
+                     ( "NGOOD", "total number of 'success' items", ),
+                     ( "NDRAWN", "number of items selected", ), )
+        if tostd:
+            return ( params[0], params[1], params[2], )
+        if len(params) != 3:
+           raise ValueError("Three parameters expected for the Hypergeometric distribution")
+        numtotal = float(params[0])
+        numgood = float(params[1])
+        numdrawn = float(params[2])
+        if (numtotal <= 0.0) or (numgood < 0.0) or (numdrawn < 0.0):
+           raise ValueError("Invalid parameter(s) for the Hypergeometric distribution")
+        return ( numtotal, numgood, numdrawn, )
+    if distname == "invgamma":
+        if params == None:
+            return ( ( "ALPHA", "shape", ),
+                     ( "BETA", "scale", ), )
+        if tostd:
+            return ( params[0], params[2], params[1], )
+        if (len(params) < 2) or (len(params) > 3):
+            raise ValueError("Two or three parameters expected for the Inverse-Gamma distribution")
+        alpha = float(params[0])
+        beta = float(params[1])
+        if (alpha <= 0.0) or (beta <= 0.0):
+            raise ValueError("Invalid parameter(s) for the Inverse-Gamma distribution")
+        try:
+            offset = float(params[2])
+        except IndexError:
+            offset = 0.0
+        return ( alpha, offset, beta, )
+    if distname == "laplace":
+        if params == None:
+            return ( ( "MU", "location (mean)", ),
+                     ( "B", "scale", ), )
+        if tostd:
+            return ( params[0], params[1], )
+        if len(params) != 2:
+            raise ValueError("Two parameters expected for the Laplace distribution")
+        mu = float(params[0])
+        b = float(params[1])
+        if b <= 0.0:
+            raise ValueError("Invalid parameters for the Laplace distribution")
+        return ( mu, b, )
+    if distname == "lognorm":
+        if params == None:
+            return ( ( "MU", "log-scale (mean of the natural log of the distribution)", ),
+                     ( "SIGMA", "shape (std. dev. of the natural log of the distribution)", ), )
+        if tostd:
+            return ( math.log(params[2]), params[0], params[1], )
+        if (len(params) < 2) or (len(params) > 3):
+            raise ValueError("Two or three parameters expected for the Log-Normal distribution")
+        mu = math.exp(float(params[0]))
+        sigma = float(params[1])
+        if sigma <= 0.0:
+            raise ValueError("Invalid parameter for the Log-Normal distribution")
+        try:
+            offset = float(params[2])
+        except IndexError:
+            offset = 0.0
+        return ( sigma, offset, mu, )
+    if distname == "nbinom":
+        if params == None:
+            return ( ( "N", "number of successes to stop", ),
+                     ( "P", "success probability in each trial", ), )
+        if tostd:
+            return ( params[0], params[1], )
+        if len(params) != 2:
+            raise ValueError("Two parameters expected for the Negative-Binomial distribution")
+        numsuccess = float(params[0])
+        prob = float(params[1])
+        if (numsuccess < 1.0) or (prob <= 0.0) or (prob > 1.0):
+            raise ValueError("Invalid parameter(s) for the Negative-Binomial distribution")
+        return ( numsuccess, prob, )
+    if distname == "norm":
+        if params == None:
+            return ( ( "MU", "mean value", ),
+                     ( "SIGMA", "standard deviation", ), )
+        if tostd:
+            return ( params[0], params[1], )
+        if len(params) != 2:
+            raise ValueError("Two parameters expected for the Normal distribution")
+        mu = float(params[0])
+        sigma = float(params[1])
+        if sigma <= 0.0:
+            raise ValueError("Invalid parameter for the Normal distribution")
+        return ( mu, sigma, )
+    if distname == "pareto":
+        if params == None:
+            return ( ( "XM", "scale (minimum abscissa value)", ),
+                     ( "ALPHA", "shape", ), )
+        if tostd:
+            return ( params[2], params[0], params[1], )
+        if (len(params) < 2) or (len(params) > 3):
+            raise ValueError("Two or three parameters expected for the Pareto distribution")
+        xm =  float(params[0])
+        alpha = float(params[1])
+        if (xm <= 0.0) or (alpha <= 0.0):
+            raise ValueError("Invalid parameter(s) for the Pareto distribution")
+        try:
+            offset = float(params[2])
+        except IndexError:
+            offset = 0.0
+        return ( alpha, offset, xm, )
+    if distname == "poisson":
+        if params == None:
+            return ( ( "MU", "expected number of occurences", ), )
+        if tostd:
+            return ( params[0], )
+        if len(params) != 1:
+            raise ValueError("One parameter expected for the Poisson distribution")
+        mu = float(params[0])
+        if mu <= 0.0:
+            raise ValueError("Invalid parameter for the Poisson distribution")
+        return ( mu, )
+    if distname == "randint":
+        if params == None:
+            return ( ( "MIN", "minimum integer", ),
+                     ( "MAX", "maximum integer (included)", ), )
+        if tostd:
+            return ( params[0], params[1] - 1, )
+        if len(params) != 2:
+            raise ValueError("Two parameters expected for the Random-Integer distribution")
+        min = int(params[0])
+        max = int(params[1])
+        # randint takes int values, thus float values are truncated
+        # this could lead to unexpected behavior (eg, one might expect
+        # (0.9,10.1) to be treated as [1,11) but instead it becomes [0,10)
+        minflt = float(params[0])
+        maxflt = float(params[1])
+        if (min >= max) or (min != minflt) or (max != maxflt):
+            raise ValueError("Invalid parameters for the Random-Integer distribution")
+        return ( min, max + 1, )
+    if distname == "t":
+        if params == None:
+            return ( ( "DF", "degrees of freedom", ), )
+        if tostd:
+            return ( params[0], params[1], params[2], )
+        if (len(params) < 1) or (len(params) > 3):
+            raise ValueError("One to three parameters expected for the Students-T distribution")
+        degfree = float(params[0])
+        if degfree <= 0.0:
+            raise ValueError("Invalid parameter for the Students-T distribution")
+        offset = 0.0
+        scaling = 1.0
+        try:
+            offset = float(params[1])
+            scaling = float(params[2])
+        except IndexError:
+            pass
+        return ( degfree, offset, scaling, )
+    if distname == "uniform":
+        if params == None:
+            return ( ( "MIN", "minimum", ),
+                     ( "MAX", "maximum", ), )
+        if tostd:
+            return ( params[0], params[0] + params[1], )
+        if len(params) != 2:
+            raise ValueError("Two parameters expected for the Uniform distribution")
+        min = float(params[0])
+        max = float(params[1])
+        if min >= max:
+            raise ValueError("Invalid parameters for the Uniform distribution")
+        return ( min, max - min, )
+    if distname == "weibull_min":
+        if params == None:
+            return ( ( "K", "shape", ),
+                     ( "LAMBDA", "scale", ), )
+        if tostd:
+            return ( params[0], params[2], params[1], )
+        if (len(params) < 2) or (len(params) > 3):
+            raise ValueError("Two or three parameters expected for the Weibull distribution")
+        k =  float(params[0])
+        lambdaflt = float(params[1])
+        if (k <= 0.0) or (lambdaflt <= 0.0):
+            raise ValueError("Invalid parameter(s) for the Weibull distribution")
+        try:
+            offset = float(params[2])
+        except IndexError:
+            offset = 0.0
+        return ( k, offset, lambdaflt, )
+    return None
+
+
+def getdistrib(distribname, distribparams):
     """
     Creates and returns scipy.stats "frozen" probability distribution
     object.  Converts the "standard" parameters (including ordering)
     for a distribution in order to appropriately call the constructor
     for the scipy.stats frozen distribution object.
 
-    If distribparams is None (or not given), this instead returns a tuple
-    of (param_name, param_descript) string pairs.  The value param_name
-    is the parameter name and the value param_descript is a description
-    of the parameter.
-
-    If distribname is None (or not given), this instead returns a tuple
-    of (dist_name, dist_descript) string pairs.  The value dist_name is
-    the abbreviated name of the probability distribution and the value
-    dist_descript is a full name of the distribution with parameters
-    names.
-
     Arguments:
        distribname - name of the distribution
-       distribparams - tuple/list/array of input parameters
+       distribparams - tuple/list/array of standard input parameters
 
     Returns:
-       if distribname is None (or not given), a tuple of (dist_name,
-           dist_descript) string pairs; otherwise,
-       if distribparams is None (or not given), a tuple of (param_name,
-           param_descript) string pairs; otherwise,
        the scipy.stats "frozen" distribution object described by
            distribname and distribparams
 
@@ -45,276 +489,16 @@ def getdistrib(distribname=None, distribparams=None):
                   if the incorrect number of parameters are given, or
                   if the distribution parameters are invalid
     """
-    if distribname == None:
-        return ( ( "beta", "Beta(ALPHA, BETA)", ),
-                 ( "binom", "Binomial(N, P)", ),
-                 ( "cauchy", "Cauchy(M, GAMMA)", ),
-                 ( "chi", "Chi(DF)", ),
-                 ( "chi2", "Chi-Square(DF)", ),
-                 ( "expon", "Exponential(LAMBDA)", ),
-                 ( "exponweib", "Exponentiated-Weibull(K, LAMBDA, ALPHA)", ),
-                 ( "f", "F or Fisher(DFN, DFD)", ),
-                 ( "gamma", "Gamma(ALPHA, THETA)" ),
-                 ( "geom", "Geometric or Shifted-Geometric(P)", ),
-                 ( "hypergeom", "Hypergeometric(NGOOD, NTOTAL, NDRAWN)", ),
-                 ( "invgamma", "Inverse-Gamma(ALPHA, BETA)", ),
-                 ( "laplace", "Laplace(MU, B)", ),
-                 ( "lognorm", "Log-Normal(MU, SIGMA)", ),
-                 ( "nbinom", "Negative-Binomial(N, P)", ),
-                 ( "norm", "Normal(MU, SIGMA)", ),
-                 ( "pareto", "Pareto(XM, ALPHA)", ),
-                 ( "poisson", "Poisson(MU)", ),
-                 ( "randint", "Random-Integer or Discrete-Uniform(MIN, MAX)", ),
-                 ( "t", "Students-T(DF)", ),
-                 ( "uniform", "Uniform(MIN, MAX)", ),
-                 ( "weibull_min", "Weibull(K, LAMBDA)", ),
-               )
-
-    lcdistname = str(distribname).lower()
-    distrib = None
-    if lcdistname == "beta":
-        if distribparams == None:
-            return ( ( "ALPHA", "first shape", ),
-                     ( "BETA", "second shape", ), )
-        if len(distribparams) != 2:
-            raise ValueError("Two parameters expected for the Beta distribution")
-        alpha = float(distribparams[0])
-        beta = float(distribparams[1])
-        if (alpha <= 0.0) or (beta <= 0.0):
-            raise ValueError("Invalid parameter(s) for the Beta distribution")
-        distrib = scipy.stats.beta(alpha, beta)
-    elif (lcdistname == "binom") or (lcdistname == "binomial"):
-        if distribparams == None:
-            return ( ( "N", "number of trials", ),
-                     ( "P", "success probability in each trial", ), )
-        if len(distribparams) != 2:
-            raise ValueError("Two parameters expected for the Binomial distribution")
-        nflt = float(distribparams[0])
-        prob = float(distribparams[1])
-        if (nflt < 0.0) or (prob < 0.0) or (prob > 1.0):
-            raise ValueError("Invalid parameter(s) for the Binomial distribution")
-        distrib = scipy.stats.binom(nflt, prob)
-    elif lcdistname == "cauchy":
-        if distribparams == None:
-            return ( ( "M", "location (median)", ),
-                     ( "GAMMA", "scale (half-width at half-maximum)", ), )
-        if len(distribparams) != 2:
-            raise ValueError("Two parameters expected for the Cauchy distribution")
-        m = float(distribparams[0])
-        gamma = float(distribparams[1])
-        if gamma <= 0.0:
-            raise ValueError("Invalid parameter for the Cauchy distribution")
-        distrib = scipy.stats.cauchy(loc=m, scale=gamma)
-    elif lcdistname == "chi":
-        if distribparams == None:
-            return ( ( "DF", "degrees of freedom", ), )
-        if len(distribparams) != 1:
-            raise ValueError("One parameter expected for the Chi distribution")
-        degfree = float(distribparams[0])
-        if degfree <= 0.0:
-            raise ValueError("Invalid parameter for the Chi distribution")
-        distrib = scipy.stats.chi(degfree)
-    elif (lcdistname == "chi2") or (lcdistname == "chi-square"):
-        if distribparams == None:
-            return ( ( "DF", "degrees of freedom", ), )
-        if len(distribparams) != 1:
-            raise ValueError("One parameter expected for the Chi-Square distribution")
-        degfree = float(distribparams[0])
-        if degfree <= 0.0:
-            raise ValueError("Invalid parameter for the Chi-Square distribution")
-        distrib = scipy.stats.chi2(degfree)
-    elif (lcdistname == "expon") or (lcdistname == "exponential"):
-        if distribparams == None:
-            return ( ( "LAMBDA", "rate (inverse scale)", ), )
-        if len(distribparams) != 1:
-            raise ValueError("One parameter expected for the Exponential distribution")
-        lambdaflt = float(distribparams[0])
-        if lambdaflt <= 0.0:
-            raise ValueError("Invalid parameter for the Exponential distribution")
-        distrib = scipy.stats.expon(scale=(1.0/lambdaflt))
-    elif (lcdistname == "exponweib") or (lcdistname == "exponentiated-weibull"):
-        if distribparams == None:
-            return ( ( "K", "Weibull shape", ),
-                     ( "LAMBDA", "scale", ),
-                     ( "ALPHA", "power shape", ), )
-        if len(distribparams) != 3:
-            raise ValueError("Three parameters expected for the Exponentiated-Weibull distribution")
-        k =  float(distribparams[0])
-        lambdaflt = float(distribparams[1])
-        alpha = float(distribparams[2])
-        if (k <= 0.0) or (lambdaflt <= 0.0) or (alpha <= 0):
-            raise ValueError("Invalid parameter(s) for the Exponentiated-Weibull distribution")
-        distrib = scipy.stats.exponweib(alpha, k, scale=lambdaflt)
-    elif (lcdistname == "f") or (lcdistname == "fisher"):
-        if distribparams == None:
-            return ( ( "DFN", "numerator degrees of freedom", ),
-                     ( "DFD", "denominator degrees of freedom", ), )
-        if len(distribparams) != 2:
-           raise ValueError("Two parameters expected for the F distribution")
-        dfnum = float(distribparams[0])
-        dfdenom = float(distribparams[1])
-        if (dfnum <= 0.0) or (dfdenom <= 0.0):
-           raise ValueError("Invalid parameter(s) for the F distribution")
-        distrib = scipy.stats.f(dfnum, dfdenom)
-    elif lcdistname == "gamma":
-        if distribparams == None:
-            return ( ( "ALPHA", "shape", ),
-                     ( "THETA", "scale", ), )
-        if len(distribparams) != 2:
-            raise ValueError("Two parameters expected for the Gamma distribution")
-        alpha = float(distribparams[0])
-        theta = float(distribparams[1])
-        if (alpha <= 0.0) or (theta <= 0.0):
-            raise ValueError("Invalid parameter(s) for the Gamma distribution")
-        distrib = scipy.stats.gamma(alpha, scale=theta)
-    elif (lcdistname == "geom") or (lcdistname == "geometric") or (lcdistname == "shifted-geometric"):
-        if distribparams == None:
-            return ( ( "P", "success probability", ), )
-        if len(distribparams) != 1:
-            raise ValueError("One parameter expected for the Shifted-Geometric distribution")
-        prob = float(distribparams[0])
-        if (prob < 0.0) or (prob > 1.0):
-            raise ValueError("Invalid parameter for the Shifted-Geometric distribution")
-        distrib = scipy.stats.geom(prob)
-    elif (lcdistname == "hypergeom") or (lcdistname == "hypergeometric"):
-        if distribparams == None:
-            return ( ( "NTOTAL", "total number of items", ),
-                     ( "NGOOD", "total number of 'success' items", ),
-                     ( "NDRAWN", "number of items selected", ), )
-        if len(distribparams) != 3:
-           raise ValueError("Three parameters expected for the Hypergeometric distribution")
-        numtotal = float(distribparams[0])
-        numgood = float(distribparams[1])
-        numdrawn = float(distribparams[2])
-        if (numtotal <= 0.0) or (numgood < 0.0) or (numdrawn < 0.0):
-           raise ValueError("Invalid parameter(s) for the Hypergeometric distribution")
-        distrib = scipy.stats.hypergeom(numtotal, numgood, numdrawn)
-    elif (lcdistname == "invgamma") or (lcdistname == "inverse-gamma"):
-        if distribparams == None:
-            return ( ( "ALPHA", "shape", ),
-                     ( "BETA", "scale", ), )
-        if len(distribparams) != 2:
-            raise ValueError("Two parameters expected for the Inverse-Gamma distribution")
-        alpha = float(distribparams[0])
-        beta = float(distribparams[1])
-        if (alpha <= 0.0) or (beta <= 0.0):
-            raise ValueError("Invalid parameter(s) for the Inverse-Gamma distribution")
-        distrib = scipy.stats.invgamma(alpha, scale=beta)
-    elif lcdistname == "laplace":
-        if distribparams == None:
-            return ( ( "MU", "location (mean)", ),
-                     ( "B", "scale", ), )
-        if len(distribparams) != 2:
-            raise ValueError("Two parameters expected for the Laplace distribution")
-        mu = float(distribparams[0])
-        b = float(distribparams[1])
-        if b <= 0.0:
-            raise ValueError("Invalid parameter for the Laplace distribution")
-        distrib = scipy.stats.laplace(loc=mu, scale=b)
-    elif (lcdistname == "lognorm") or (lcdistname == "log-normal"):
-        if distribparams == None:
-            return ( ( "MU", "log-scale (mean of the natural log of the distribution)", ),
-                     ( "SIGMA", "shape (std. dev. of the natural log of the distribution)", ), )
-        if len(distribparams) != 2:
-            raise ValueError("Two parameters expected for the Log-Normal distribution")
-        mu = math.exp(float(distribparams[0]))
-        sigma = float(distribparams[1])
-        if sigma <= 0.0:
-            raise ValueError("Invalid parameter for the Log-Normal distribution")
-        distrib = scipy.stats.lognorm(sigma, scale=mu)
-    elif (lcdistname == "nbinom") or (lcdistname == "negative-binomial"):
-        if distribparams == None:
-            return ( ( "N", "number of successes to stop", ),
-                     ( "P", "success probability in each trial", ), )
-        if len(distribparams) != 2:
-            raise ValueError("Two parameters expected for the Negative-Binomial distribution")
-        numsuccess = float(distribparams[0])
-        prob = float(distribparams[1])
-        if (numsuccess < 1.0) or (prob <= 0.0) or (prob > 1.0):
-            raise ValueError("Invalid parameter(s) for the Negative-Binomial distribution")
-        distrib = scipy.stats.nbinom(numsuccess, prob)
-    elif (lcdistname == "norm") or (lcdistname == "normal"):
-        if distribparams == None:
-            return ( ( "MU", "mean value", ),
-                     ( "SIGMA", "standard deviation", ), )
-        if len(distribparams) != 2:
-            raise ValueError("Two parameters expected for the Normal distribution")
-        mu = float(distribparams[0])
-        sigma = float(distribparams[1])
-        if sigma <= 0.0:
-            raise ValueError("Invalid parameter for the Normal distribution")
-        distrib = scipy.stats.norm(loc=mu, scale=sigma)
-    elif lcdistname == "pareto":
-        if distribparams == None:
-            return ( ( "XM", "scale (minimum abscissa value)", ),
-                     ( "ALPHA", "shape", ), )
-        if len(distribparams) != 2:
-            raise ValueError("Two parameters expected for the Pareto distribution")
-        xm =  float(distribparams[0])
-        alpha = float(distribparams[1])
-        if (xm <= 0.0) or (alpha <= 0.0):
-            raise ValueError("Invalid parameter(s) for the Pareto distribution")
-        distrib = scipy.stats.pareto(alpha, scale=xm)
-    elif lcdistname == "poisson":
-        if distribparams == None:
-            return ( ( "MU", "expected number of occurences", ), )
-        if len(distribparams) != 1:
-            raise ValueError("One parameter expected for the Poisson distribution")
-        mu = float(distribparams[0])
-        if mu <= 0.0:
-            raise ValueError("Invalid parameter for the Poisson distribution")
-        distrib = scipy.stats.poisson(mu)
-    elif (lcdistname == "randint") or (lcdistname == "random-integer") or (lcdistname == "discrete-uniform"):
-        if distribparams == None:
-            return ( ( "MIN", "minimum integer", ),
-                     ( "MAX", "maximum integer (included)", ), )
-        if len(distribparams) != 2:
-            raise ValueError("Two parameters expected for the Random-Integer distribution")
-        min = int(distribparams[0])
-        max = int(distribparams[1])
-        # randint takes int values, thus float values are truncated
-        # this could lead to unexpected behavior (eg, one might expect
-        # (0.9,10.1) to be treated as [1,11) but instead it becomes [0,10)
-        minflt = float(distribparams[0])
-        maxflt = float(distribparams[1])
-        if (min >= max) or (min != minflt) or (max != maxflt):
-            raise ValueError("Invalid parameters for the Random-Integer distribution")
-        distrib = scipy.stats.randint(min, max + 1)
-    elif (lcdistname == "t") or (lcdistname == "students-t"):
-        if distribparams == None:
-            return ( ( "DF", "degrees of freedom", ), )
-        if len(distribparams) != 1:
-            raise ValueError("One parameter expected for the Students-T distribution")
-        degfree = float(distribparams[0])
-        if degfree <= 0.0:
-            raise ValueError("Invalid parameter for the Students-T distribution")
-        distrib = scipy.stats.t(degfree)
-    elif lcdistname == "uniform":
-        if distribparams == None:
-            return ( ( "MIN", "minimum", ),
-                     ( "MAX", "maximum", ), )
-        if len(distribparams) != 2:
-            raise ValueError("Two parameters expected for the Uniform distribution")
-        min = float(distribparams[0])
-        max = float(distribparams[1])
-        if min >= max:
-            raise ValueError("Invalid parameters for the Uniform distribution")
-        distrib = scipy.stats.uniform(loc=min, scale=(max - min))
-    elif (lcdistname == "weibull_min") or (lcdistname == "weibull"):
-        if distribparams == None:
-            return ( ( "K", "shape", ),
-                     ( "LAMBDA", "scale", ), )
-        if len(distribparams) != 2:
-            raise ValueError("Two parameters expected for the Weibull distribution")
-        k =  float(distribparams[0])
-        lambdaflt = float(distribparams[1])
-        if (k <= 0.0) or (lambdaflt <= 0.0):
-            raise ValueError("Invalid parameter(s) for the Weibull distribution")
-        distrib = scipy.stats.weibull_min(k, scale=lambdaflt)
-    else:
+    if (distribname == None) or (distribparams == None):
+        raise ValueError("Neither distribname nor distribparams can be None")
+    distscipyname = getdistname(distribname)
+    if distscipyname == None:
         raise ValueError("Unknown probability function %s" % str(distribname))
-    if distrib == None:
-        raise ValueError("Unexpected problem obtaining the probability distribution object")
+    distscipyparams = getdistparams(distscipyname, distribparams)
+    if distscipyparams == None:
+        raise ValueError("Unknown (for params) probability function %s" % str(distribname))
+    distfunc = eval("scipy.stats.%s" % distscipyname)
+    distrib = distfunc(*distscipyparams)
     return distrib
 
 
@@ -326,9 +510,9 @@ def getfitparams(values, distribname, estparams):
     data with no missing values).  Initial estimates for these "standard"
     parameters are given in estparams.
     """
-    lcdistname = str(distribname).lower()
+    distname = getdistname(distribname)
     fitparams = None
-    if lcdistname == "beta":
+    if distname == "beta":
         if (len(estparams) < 2) or (len(estparams) > 4):
             raise ValueError("Two to four parameter estimates expected for the Beta distribution fit")
         alpha = float(estparams[0])
@@ -343,7 +527,7 @@ def getfitparams(values, distribname, estparams):
         except IndexError:
             pass
         fitparams = scipy.stats.beta.fit(values, a=alpha, b=beta, loc=offset, scale=scaling)
-    elif lcdistname == "cauchy":
+    elif distname == "cauchy":
         if len(estparams) != 2:
             raise ValueError("Two parameter estimates expected for the Cauchy distribution fit")
         m = float(estparams[0])
@@ -351,7 +535,7 @@ def getfitparams(values, distribname, estparams):
         if gamma <= 0.0:
             raise ValueError("Invalid parameter estimate for the Cauchy distribution fit")
         fitparams = scipy.stats.cauchy.fit(values, loc=m, scale=gamma)
-    elif lcdistname == "chi":
+    elif distname == "chi":
         if (len(estparams) < 1) or (len(estparams) > 3):
             raise ValueError("One to three parameter estimates expected for the Chi distribution fit")
         degfree = float(estparams[0])
@@ -365,12 +549,12 @@ def getfitparams(values, distribname, estparams):
         except IndexError:
             pass
         fitparams = scipy.stats.chi.fit(values, df=degfree, loc=offset, scale=scaling)
-    elif (lcdistname == "chi2") or (lcdistname == "chi-square"):
+    elif distname == "chi2":
         if (len(estparams) < 1) or (len(estparams) > 3):
             raise ValueError("One to three parameter estimates expected for the Chi-Square distribution fit")
         degfree = float(estparams[0])
         if degfree <= 0.0:
-            raise ValueError("Invalid parameter estimate for the Chi-Square distribution")
+            raise ValueError("Invalid parameter estimate for the Chi-Square distribution fit")
         offset = 0.0
         scaling = 1.0
         try:
@@ -379,19 +563,19 @@ def getfitparams(values, distribname, estparams):
         except IndexError:
             pass
         fitparams = scipy.stats.chi2.fit(values, df=degfree, loc=offset, scale=scaling)
-    elif (lcdistname == "expon") or (lcdistname == "exponential"):
+    elif distname == "expon":
         if (len(estparams) < 1) or (len(estparams) > 2):
             raise ValueError("One or two parameter estimates expected for the Exponential distribution fit")
         lambdaflt = float(estparams[0])
         if lambdaflt <= 0.0:
-            raise ValueError("Invalid parameter estimate for the Exponential distribution")
+            raise ValueError("Invalid parameter estimate for the Exponential distribution fit")
         try:
             offset = float(estparams[1])
         except IndexError:
             offset = 0.0
         fitparams = scipy.stats.expon.fit(values, loc=offset, scale=(1.0/lambdaflt))
         fitparams = ( 1.0 / fitparams[1], fitparams[0], )
-    elif (lcdistname == "exponweib") or (lcdistname == "exponentiated-weibull"):
+    elif distname == "exponweib":
         if (len(estparams) < 3) or (len(estparams) > 4):
             raise ValueError("Three or four parameter estimates expected for the Exponentiated-Weibull distribution fit")
         k =  float(estparams[0])
@@ -405,7 +589,7 @@ def getfitparams(values, distribname, estparams):
             offset = 0.0
         fitparams = scipy.stats.exponweib.fit(values, a=alpha, c=k, loc=offset, scale=lambdaflt)
         fitparams = ( fitparams[1], fitparams[3], fitparams[0], fitparams[2], )
-    elif (lcdistname == "f") or (lcdistname == "fisher"):
+    elif distname == "f":
         if (len(estparams) < 2) or (len(estparams) > 4):
             raise ValueError("Two to four parameter estimates expected for the F distribution fit")
         dfnum = float(estparams[0])
@@ -420,7 +604,7 @@ def getfitparams(values, distribname, estparams):
         except IndexError:
             pass
         fitparams = scipy.stats.f.fit(values, dfn=dfnum, dfd=dfdenom, loc=offset, scale=scaling)
-    elif lcdistname == "gamma":
+    elif distname == "gamma":
         if (len(estparams) < 2) or (len(estparams) > 3):
             raise ValueError("Two or three parameter estimates expected for the Gamma distribution fit")
         alpha = float(estparams[0])
@@ -433,7 +617,7 @@ def getfitparams(values, distribname, estparams):
             offset = 0.0
         fitparams = scipy.stats.gamma.fit(values, a=alpha, loc=offset, scale=theta)
         fitparams = ( fitparams[0], fitparams[2], fitparams[1], )
-    elif (lcdistname == "invgamma") or (lcdistname == "inverse-gamma"):
+    elif distname == "invgamma":
         if (len(estparams) < 2) or (len(estparams) > 3):
             raise ValueError("Two or three parameter estimates expected for the Inverse-Gamma distribution fit")
         alpha = float(estparams[0])
@@ -446,7 +630,7 @@ def getfitparams(values, distribname, estparams):
             offset = 0.0
         fitparams = scipy.stats.invgamma.fit(values, a=alpha, loc=offset, scale=beta)
         fitparams = ( fitparams[0], fitparams[2], fitparams[1], )
-    elif lcdistname == "laplace":
+    elif distname == "laplace":
         if len(estparams) != 2:
             raise ValueError("Two parameter estimates expected for the Laplace distribution fit")
         mu = float(estparams[0])
@@ -454,7 +638,7 @@ def getfitparams(values, distribname, estparams):
         if b <= 0.0:
             raise ValueError("Invalid parameter estimate for the Laplace distribution fit")
         fitparams = scipy.stats.laplace.fit(values, loc=mu, scale=b)
-    elif (lcdistname == "lognorm") or (lcdistname == "log-normal"):
+    elif distname == "lognorm":
         if (len(estparams) < 2) or (len(estparams) > 3):
             raise ValueError("Two or three parameter estimates expected for the Log-Normal distribution fit")
         mu = math.exp(float(estparams[0]))
@@ -467,7 +651,7 @@ def getfitparams(values, distribname, estparams):
             offset = 0.0
         fitparams = scipy.stats.lognorm.fit(values, s=sigma, loc=offset, scale=mu)
         fitparams = ( math.log(fitparams[2]), fitparams[0], fitparams[1], )
-    elif (lcdistname == "norm") or (lcdistname == "normal"):
+    elif distname == "norm":
         if len(estparams) != 2:
             raise ValueError("Two parameter estimates expected for the Normal distribution fit")
         mu = float(estparams[0])
@@ -475,7 +659,7 @@ def getfitparams(values, distribname, estparams):
         if sigma <= 0.0:
             raise ValueError("Invalid parameter estimate for the Normal distribution fit")
         fitparams = scipy.stats.norm.fit(values, loc=mu, scale=sigma)
-    elif lcdistname == "pareto":
+    elif distname == "pareto":
         if (len(estparams) < 2) or (len(estparams) > 3):
             raise ValueError("Two or three parameter estimates expected for the Pareto distribution fit")
         xm =  float(estparams[0])
@@ -488,7 +672,7 @@ def getfitparams(values, distribname, estparams):
             offset = 0.0
         fitparams = scipy.stats.pareto.fit(values, b=alpha, loc=offset, scale=xm)
         fitparams = ( fitparams[2], fitparams[0], fitparams[1], )
-    elif (lcdistname == "t") or (lcdistname == "students-t"):
+    elif distname == "t":
         if (len(estparams) < 1) or (len(estparams) > 3):
             raise ValueError("One to three parameter estimates expected for the Students-T distribution fit")
         degfree = float(estparams[0])
@@ -502,7 +686,7 @@ def getfitparams(values, distribname, estparams):
         except IndexError:
             pass
         fitparams = scipy.stats.t.fit(values, df=degfree, loc=offset, scale=scaling)
-    elif lcdistname == "uniform":
+    elif distname == "uniform":
         if len(estparams) != 2:
             raise ValueError("Two parameter estimates expected for the Uniform distribution fit")
         min = float(estparams[0])
@@ -511,7 +695,7 @@ def getfitparams(values, distribname, estparams):
             raise ValueError("Invalid parameter estimates for the Uniform distribution fit")
         fitparams = scipy.stats.uniform.fit(values, loc=min, scale=(max - min))
         fitparams = ( fitparams[0], fitparams[0] + fitparams[1], )
-    elif (lcdistname == "weibull_min") or (lcdistname == "weibull"):
+    elif distname == "weibull_min":
         if (len(estparams) < 2) or (len(estparams) > 3):
             raise ValueError("Two or three parameter estimates expected for the Weibull distribution fit")
         k =  float(estparams[0])
@@ -538,7 +722,7 @@ def getinitdict(distribname, funcname):
 
     Arguments:
        distribname - name of the probability distribution
-       funcname - name of the scipy.stats function
+       funcname - name of the scipy.stats probability distribution function
     """
     # generate a long function name from the scipy.stats function name
     if ( funcname == "cdf" ):
@@ -565,7 +749,8 @@ def getinitdict(distribname, funcname):
     else:
         raise ValueError("Unsupported scipy.stats function name '%s'" % funcname)
     # Get the distribution parameters information
-    paramdescripts = getdistrib(distribname, None)
+    distscipyname = getdistname(distribname)
+    paramdescripts = getdistparams(distscipyname, None)
     numargs = len(paramdescripts) + 1
     if ( numargs == 2 ):
         # info for distributions with one parameter
@@ -637,7 +822,8 @@ def getcustomaxisvals(id, distribname):
        distribname - name of the probability distribution
     """
     # Get the distribution parameters information
-    paramdescripts = getdistrib(distribname, None)
+    distscipyname = getdistname(distribname)
+    paramdescripts = getdistparams(distscipyname, None)
     numargs = len(paramdescripts) + 1
     namelist = [ "PTS", None, None, None ]
     for k in xrange(1, numargs):
@@ -764,26 +950,33 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
 # The rest of this is just for testing this module at the command line
 #
 if __name__ == "__main__":
+    # Test getdistname names
+    namelist = getdistname(None)
+    if len(namelist) != NUM_DISTRIBS:
+        raise ValueError("Number of distributions: expected %d; found %d" % \
+                         (NUM_DISTRIBS, len(distdescripts)))
+    for nametuple in namelist:
+        for name in nametuple:
+            statsname = getdistname(name)
+            if statsname != nametuple[0]:
+                raise ValueError("getdistname(%s): expected %s; found %s" % \
+                                 (name, nametuple[0], statsname))
+
     # Test the distribution scipy name and parameters given to getdistrib
     # give the expected distribution.  (Primarily that the parameters
     # are interpreted and assigned correctly.)  Testing of the long names
     # is performed by the stats_helper.py script.
 
 
-    # Number of distributions
-    distdescripts = getdistrib(None, None)
-    if len(distdescripts) != NUM_DISTRIBS:
-        raise ValueError("number of distribution description pairs: expected %d; found %d" % \
-                         (NUM_DISTRIBS, len(distdescripts)))
-
-
     # Beta distribution
     distname = "beta"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d" % \
                          (distname, len(descript)))
+    del descript
+
     alpha = 1.5
     beta = 2.75
     distparms = [ alpha, beta ]
@@ -801,32 +994,36 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    del alpha, beta, foundstats, expectedstats
 
-    sample = distf.rvs(25000)
-    fitparms = getfitparams(sample, distname, distparms)
-    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc and scale to the expected params
     distparms.append(0.0)
     distparms.append(1.0)
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
+    sample = distf.rvs(25000)
+    fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, alpha, beta, distparms, distf, foundstats, expectedstats, sample, fitparms
     print "%s: PASS" % distname
 
 
     # Binomial distribution
     distname = "binom"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     ntrials = 20.0
     prob = 0.25
     distparms = [ ntrials, prob ]
@@ -841,20 +1038,27 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    del ntrials, prob, foundstats, expectedstats
 
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     # no binom.fit function
+    del distparms, distf, newparms
 
-    del descript, ntrials, prob, distparms, distf, foundstats, expectedstats
     print "%s: PASS" % distname
 
 
     # Cauchy distribution
     distname = "cauchy"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     m = 5.0
     gamma = 2.0
     distparms = [ m, gamma ]
@@ -867,7 +1071,12 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("pdfs(0.0:10.1:0.5) of %s(%#.1f,%#.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedpdfs), str(foundpdfs)))
+    del m, gamma, xvals, foundpdfs, expectedpdfs
 
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
     print "%s fitparams: %s" % (distname, str(fitparms))
@@ -875,21 +1084,20 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, m, gamma, distparms, distf, xvals, foundpdfs, expectedpdfs, sample, fitparms
     print "%s: PASS" % distname
 
 
     # Chi distribution
     distname = "chi"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 1:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 1; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     degfree = 10
     distparms = [ degfree ]
     distf = getdistrib(distname, distparms)
@@ -908,32 +1116,36 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%d.0): expected %s; found %s" % \
                           (distname, distparms[0], str(expectedstats), str(foundstats)))
+    del degfree, foundstats, mean, variance, stdev, skew, expectedstats
 
-    sample = distf.rvs(25000)
-    fitparms = getfitparams(sample, distname, distparms)
-    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc and scale to the expected params
     distparms.append(0.0)
     distparms.append(1.0)
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
+    sample = distf.rvs(25000)
+    fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     if not numpy.allclose(fitparms, distparms, rtol=0.4, atol=0.4):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, degfree, distparms, distf, foundstats, mean, variance, stdev, skew, expectedstats, sample, fitparms
     print "%s: PASS" % distname
 
 
     # Chi-squared distribution
     distname = "chi2"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 1:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 1; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     degfreestr = "10"
     distparms = [ degfreestr ]
     distf = getdistrib(distname, distparms)
@@ -948,31 +1160,34 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%s): expected %s; found %s" % \
                           (distname, distparms[0], str(expectedstats), str(foundstats)))
+    del degfreestr, foundstats, expectedstats
 
+    # append the default loc and scale to the expected (numeric) params
+    distparms = [ degfree, 0.0, 1.0 ]
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
     print "%s fitparams: %s" % (distname, str(fitparms))
-    # append the default loc and scale to the expected params
-    distparms = [ degfree, 0.0, 1.0 ]
     if not numpy.allclose(fitparms, distparms, rtol=0.4, atol=0.4):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del degfree, distparms, distf, newparms, sample, fitparms
 
-    del descript, degfreestr, distparms, distf, foundstats, degfree, expectedstats, sample, fitparms
     print "%s: PASS" % distname
 
 
     # Exponential distribution
     distname = "expon"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 1:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 1; found %d:" % \
                          (distname, len(descript)))
+    del descript
 
     lambdaflt = 11.0
     distparms = [ lambdaflt ]
@@ -983,30 +1198,35 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f): expected %s; found %s" % \
                           (distname, distparms[0], str(expectedstats), str(foundstats)))
+    del lambdaflt, foundstats, expectedstats
 
+    # append the default loc to the expected params
+    distparms.append(0.0)
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
     print "%s fitparams: %s" % (distname, str(fitparms))
-    # append the default loc to the expected params
-    distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, lambdaflt, distparms, distf, foundstats, expectedstats, sample, fitparms
     print "%s: PASS" % distname
+
 
     # Exponentiated Weibull distribution
     distname = "exponweib"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 3:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 3; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     k = 3.0
     lambdaflt = 5.0
     alpha = 2.5
@@ -1021,31 +1241,35 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("cdfs(0.0:10.1:0.5) of %s(%#.1f,%#.1f%#.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], distparms[2], str(expectedcdfs), str(foundcdfs)))
+    del k, lambdaflt, alpha, xvals, foundcdfs, expectedcdfs
 
+    # append the default loc to the expected params
+    distparms.append(0.0)
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
     print "%s fitparams: %s" % (distname, str(fitparms))
-    # append the default loc to the expected params
-    distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, k, lambdaflt, alpha, distparms, distf, xvals, foundcdfs, expectedcdfs, sample, fitparms
     print "%s: PASS" % distname
 
 
     # F distribution
     distname = "f"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     dofn = 7.0
     dofd = 11.0   # needs to be larger than 8.0 for kurtosis formula
     distparms = [ dofn, dofd ]
@@ -1078,33 +1302,36 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("pdfs(0.0:10.1:0.5) of %s(%#.1f,%#.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedpdfs), str(foundpdfs)))
+    del dofn, dofd, foundstats, expectedstats, xvals, foundpdfs, factor, expectedpdfs
 
-    sample = distf.rvs(25000)
-    fitparms = getfitparams(sample, distname, distparms)
-    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc and scale to the expected params
     distparms.append(0.0)
     distparms.append(1.0)
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
+    sample = distf.rvs(25000)
+    fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     if not numpy.allclose(fitparms, distparms, rtol=0.2, atol=0.4):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, dofn, dofd, distparms, distf, foundstats, expectedstats
-    del xvals, foundpdfs, factor, expectedpdfs, sample, fitparms
     print "%s: PASS" % distname
 
 
     # Gamma distribution
     distname = "gamma"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     alpha = 5.0
     theta = 3.0
     distparms = [ alpha, theta ]
@@ -1115,31 +1342,35 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    del alpha, theta, foundstats, expectedstats
 
+    # append the default loc to the expected params
+    distparms.append(0.0)
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
     print "%s fitparams: %s" % (distname, str(fitparms))
-    # append the default loc to the expected params
-    distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, alpha, theta, distparms, distf, foundstats, expectedstats, sample, fitparms
     print "%s: PASS" % distname
 
 
     # Geometric distribution
     distname = "geom"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 1:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 1; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     prob = 0.25
     distparms = [ prob ]
     distf = getdistrib(distname, distparms)
@@ -1153,20 +1384,27 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f): expected %s; found %s" % \
                           (distname, distparms[0], str(expectedstats), str(foundstats)))
+    del prob, foundstats, expectedstats
 
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     # no geom.fit function
+    del distparms, distf, newparms
 
-    del descript, prob, distparms, distf, foundstats, expectedstats
     print "%s: PASS" % distname
 
 
     # Hypergeometric distribution
     distname = "hypergeom"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 3:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 3; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     numtotal = 29.0
     numgood = 13.0
     numdrawn = 17.0
@@ -1190,20 +1428,27 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], distparms[2], str(expectedstats), str(foundstats)))
+    del numtotal, numgood, numdrawn, foundstats, expectedstats
 
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     # no hypergeom.fit function
+    del distparms, distf, newparms
 
-    del descript, numtotal, numgood, numdrawn, distparms, distf, foundstats, expectedstats
     print "%s: PASS" % distname
 
 
     # Inverse-Gamma distribution
     distname = "invgamma"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     alpha = 7.0  # must be > 4 for the kurtosis formula
     beta = 3.0
     distparms = [ alpha, beta ]
@@ -1218,33 +1463,37 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    del alpha, beta, foundstats, expectedstats
 
+    # append the default loc to the expected params
+    distparms.append(0.0)
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     sample = distf.rvs(25000)
     # get rid of any major outliers - seems to give invgamma.fit problems
     sample = sample[ numpy.logical_and((sample > 0.1), (sample < 2.0)) ]
     fitparms = getfitparams(sample, distname, distparms)
     print "%s fitparams: %s" % (distname, str(fitparms))
-    # append the default loc to the expected params
-    distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.2, atol=0.4):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, alpha, beta, distparms, distf, foundstats, expectedstats, sample, fitparms
     print "%s: PASS" % distname
 
 
     # Laplace distribution
     distname = "laplace"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     mu = 5.0
     b = 3.0
     distparms = [ mu, b ]
@@ -1255,7 +1504,12 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    del mu, b, foundstats, expectedstats
 
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
     print "%s fitparams: %s" % (distname, str(fitparms))
@@ -1263,21 +1517,20 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, mu, b, distparms, distf, foundstats, expectedstats, sample, fitparms
     print "%s: PASS" % distname
 
 
     # Log-normal distribution
     distname = "lognorm"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     mu = 0.8
     sigma = 0.5
     distparms = [ mu, sigma ]
@@ -1292,31 +1545,35 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    del mu, sigma, foundstats, expectedstats
 
+    # append the default loc to the expected params
+    distparms.append(0.0)
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
     print "%s fitparams: %s" % (distname, str(fitparms))
-    # append the default loc to the expected params
-    distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, mu, sigma, distparms, distf, foundstats, expectedstats, sample, fitparms
     print "%s: PASS" % distname
 
 
     # Negative-binomial distribution
     distname = "nbinom"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     numsuccess = 5.0
     prob = 0.25
     distparms = [ numsuccess, prob ]
@@ -1331,20 +1588,27 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    del numsuccess, prob, foundstats, expectedstats
 
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     # no nbinom.fit function
+    del distparms, distf, newparms
 
-    del descript, numsuccess, prob, distparms, distf, foundstats, expectedstats
     print "%s: PASS" % distname
 
 
     # Normal distribution
     distname = "norm"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     mu = 5.0
     sigma = 3.0
     distparms = numpy.array([ mu, sigma ], dtype=numpy.float32)
@@ -1355,7 +1619,12 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    del mu, sigma, foundstats, expectedstats
 
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
     print "%s fitparams: %s" % (distname, str(fitparms))
@@ -1363,21 +1632,20 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, mu, sigma, distparms, distf, foundstats, expectedstats, sample, fitparms
     print "%s: PASS" % distname
 
 
     # Pareto distribution
     distname = "pareto"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     xm = 3.0
     alpha = 5.0  # must be larger than 4 for kurtosis formula
     distparms = [ xm, alpha ]
@@ -1393,31 +1661,35 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    del xm, alpha, foundstats, expectedstats
 
+    # append the default loc to the expected params
+    distparms.append(0.0)
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
     print "%s fitparams: %s" % (distname, str(fitparms))
-    # append the default loc to the expected params
-    distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, xm, alpha, distparms, distf, foundstats, expectedstats, sample, fitparms
     print "%s: PASS" % distname
 
 
     # Poisson distribution
     distname = "poisson"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 1:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 1; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     mu = 7.0
     distparms = [ mu ]
     distf = getdistrib(distname, distparms)
@@ -1427,20 +1699,27 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f): expected %s; found %s" % \
                           (distname, distparms[0], str(expectedstats), str(foundstats)))
+    del mu, foundstats, expectedstats
 
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     # no poisson.fit function
+    del distparms, distf, newparms
 
-    del descript, mu, distparms, distf, foundstats, expectedstats
     print "%s: PASS" % distname
 
 
     # Random Integer (Discrete Uniform) distribution
     distname = "randint"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     a = -5.0
     b = 13.0
     distparms = [ a, b ]
@@ -1464,20 +1743,27 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("pmfs(%.1f:%.1f:1.0) of %s(%.1f, %.1f): expected %s; found %s" % \
               (a - 1.0, b + 1.1, distname, distparms[0], distparms[1], str(expectedpmfs), str(foundpmfs)))
+    del a, b, foundstats, n, expectedstats, xvals, expectedpmfs, foundpmfs
 
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     # no randint.fit function
+    del distparms, distf, newparms
 
-    del descript, a, b, distparms, distf, foundstats, n, expectedstats, xvals, expectedpmfs, foundpmfs
     print "%s: PASS" % distname
 
 
     # Student's-t distribution
     distname = "t"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 1:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 1; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     degfree = 11.0
     distparms = [ degfree ]
     distf = getdistrib(distname, distparms)
@@ -1487,31 +1773,36 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f): expected %s; found %s" % \
                           (distname, distparms[0], str(expectedstats), str(foundstats)))
+    del degfree, foundstats, expectedstats
 
-    sample = distf.rvs(25000)
-    fitparms = getfitparams(sample, distname, distparms)
-    print "%s fitparams: %s" % (distname, str(fitparms))
     # append the default loc and scale to the expected params
     distparms.append(0.0)
     distparms.append(1.0)
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
+    sample = distf.rvs(25000)
+    fitparms = getfitparams(sample, distname, distparms)
+    print "%s fitparams: %s" % (distname, str(fitparms))
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, degfree, distparms, distf, foundstats, expectedstats, sample, fitparms
     print "%s: PASS" % distname
+
 
     # Uniform distribution
     distname = "uniform"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     a = -5.0
     b = 13.0
     distparms = [ a, b ]
@@ -1522,7 +1813,12 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    del a, b, foundstats, expectedstats
 
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
     print "%s fitparams: %s" % (distname, str(fitparms))
@@ -1530,20 +1826,20 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, a, b, distparms, distf, foundstats, expectedstats, sample, fitparms
     print "%s: PASS" % distname
+
 
     # Weibull distribution
     distname = "weibull_min"
-    descript = getdistrib(distname, None)
+    descript = getdistparams(distname, None)
     if len(descript) != 2:
         print "%s: FAIL" % distname
         raise ValueError("number of parameter description pairs for %s: expected 2; found %d:" % \
                          (distname, len(descript)))
+    del descript
+
     k = 3.0
     lambdaflt = 5.0
     distparms = [ k, lambdaflt ]
@@ -1565,23 +1861,25 @@ if __name__ == "__main__":
         print "%s: FAIL" % distname
         raise ValueError("(mean, var, skew, kurtosis) of %s(%.1f, %.1f): expected %s; found %s" % \
                           (distname, distparms[0], distparms[1], str(expectedstats), str(foundstats)))
+    del k, lambdaflt, foundstats, gam1, gam2, gam3, gam4, mu, sigma, expectedstats
 
+    # append the default loc to the expected params
+    distparms.append(0.0)
+    newparms = getdistparams(distname, getdistparams(distname, distparms, tostd=False), tostd=True)
+    if not numpy.allclose(newparms, distparms):
+        print "%s: FAIL" % distname
+        raise ValueError("coversion of full %s params to scipy then back to std changed" % distname)
     sample = distf.rvs(25000)
     fitparms = getfitparams(sample, distname, distparms)
     print "%s fitparams: %s" % (distname, str(fitparms))
-    # append the default loc to the expected params
-    distparms.append(0.0)
     if not numpy.allclose(fitparms, distparms, rtol=0.1, atol=0.2):
         print "%s: FAIL" % distname
         raise ValueError("fitparams of %s: expected %s; found %s" % \
                                       (distname, str(distparms), str(fitparms)))
-    if numpy.allclose(fitparms, distparms):
-        print "%s: FAIL" % distname
-        raise ValueError("fitparams of %s identical to input params" % distname)
+    del distparms, distf, newparms, sample, fitparms
 
-    del descript, k, lambdaflt, distparms, distf, foundstats
-    del gam1, gam2, gam3, gam4, mu, sigma, expectedstats, sample, fitparms
     print "%s: PASS" % distname
+
 
     # All successful
     print "Success"

@@ -37,7 +37,9 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
 # The rest of this is just for testing this module at the command line
 #
 if __name__ == "__main__":
-    print "ferret_init(0) = %s" % str(ferret_init(0))
+    # make sure the calls to ferret_init does not cause problems
+    dummy = ferret_init(0)
+    # test ferret_compute
     xvals = numpy.arange(-2.0, 2.1, 1.0)
     muvals = numpy.arange(-1.5, 1.6, 1.0)
     # first sigma is invalid

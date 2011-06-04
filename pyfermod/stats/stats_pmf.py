@@ -52,28 +52,32 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
 # The rest of this is just for testing this module at the command line
 #
 if __name__ == "__main__":
+    # make sure ferret_init does not have problems
+    info = ferret_init(0)
+
     # Binomial distribution along the Y axis
-    pfname = "binom"
-    pfparams = numpy.array([25, 0.15], dtype=numpy.float32)
-    distf = scipy.stats.binom(25, 0.15)
-    xvals = numpy.arange(0.0, 25.1, 1.0)
+    numtrials = 25
+    prob = 0.15
+    dimen = 26
+    distf = scipy.stats.binom(numtrials, prob)
+    xvals = numpy.arange(0, dimen)
     pmfvals = distf.pmf(xvals)
-    abscissa = numpy.empty((1, 26, 1, 1), dtype=numpy.float32, order='F')
-    expected = numpy.empty((1, 26, 1, 1), dtype=numpy.float32, order='F')
-    for j in xrange(26):
+
+    pfname = "binom"
+    pfparams = numpy.array([numtrials, prob], dtype=numpy.float32)
+    inpbdfs = numpy.array([-1.0, 0.0, 0.0], dtype=numpy.float32)
+    resbdf = numpy.array([-2.0], dtype=numpy.float32)
+    abscissa = numpy.empty((1, dimen, 1, 1), dtype=numpy.float32, order='F')
+    expected = numpy.empty((1, dimen, 1, 1), dtype=numpy.float32, order='F')
+    for j in xrange(dimen):
         if (j % 7) == 2:
-            abscissa[0, j, 0, 0] = -1.0
-            expected[0, j, 0, 0] = -2.0
+            abscissa[0, j, 0, 0] = inpbdfs[0]
+            expected[0, j, 0, 0] = resbdf[0]
         else:
             abscissa[0, j, 0, 0] = xvals[j]
             expected[0, j, 0, 0] = pmfvals[j]
-    inpbdfs = numpy.array([-1.0, 0.0, 0.0], dtype=numpy.float32)
-
-    result = -888.0 * numpy.ones((1, 26, 1, 1), dtype=numpy.float32, order='F')
-    resbdf = numpy.array([-2.0], dtype=numpy.float32)
-
+    result = -888.0 * numpy.ones((1, dimen, 1, 1), dtype=numpy.float32, order='F')
     ferret_compute(0, result, resbdf, (abscissa, pfname, pfparams), inpbdfs)
-
     if not numpy.allclose(result, expected):
         print "Result (flattened) = %s" % str(result.reshape(-1))
         print "Expected (flattened) = %s" % str(expected.reshape(-1))

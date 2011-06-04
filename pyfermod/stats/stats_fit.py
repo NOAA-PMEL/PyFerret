@@ -6,6 +6,7 @@ import math
 import numpy
 import pyferret
 import pyferret.stats
+import scipy.stats
 
 
 def ferret_init(id):
@@ -65,17 +66,25 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
 # The rest of this is just for testing this module at the command line
 #
 if __name__ == "__main__":
-    # Normal distribution along the Y axis
+    # make sure ferret_init does not have problems
+    info = ferret_init(0)
+
+    # Normal distribution in the YZ plane
+    ydimen = 100
+    zdimen = 125
+    mu = 5.0
+    sigma = 2.0
+    distf = scipy.stats.norm(mu, sigma)
+    sample = distf.rvs(ydimen * zdimen)
+
     pfname = "norm"
-    pfparams = numpy.array([5.0, 2.0], dtype=numpy.float32)
-    distf = pyferret.stats.getdistrib(pfname, pfparams)
-    sample = distf.rvs(100 * 100)
+    pfparams = numpy.array([mu, sigma], dtype=numpy.float32)
     inpbdfs = numpy.array([-9999.0, -8888.0, -7777.0], dtype=numpy.float32)
     resbdf = numpy.array([-6666.0], dtype=numpy.float32)
-    values = numpy.empty((1, 100, 100, 1), dtype=numpy.float32, order='F')
+    values = numpy.empty((1, ydimen, zdimen, 1), dtype=numpy.float32, order='F')
     index = 0
-    for j in xrange(100):
-        for k in xrange(100):
+    for j in xrange(ydimen):
+        for k in xrange(zdimen):
             if (index % 103) == 13:
                 values[0, j, k, 0] = inpbdfs[0]
             else:
@@ -83,12 +92,12 @@ if __name__ == "__main__":
             index += 1
     result = -5555.0 * numpy.ones((5,), dtype=numpy.float32, order='F')
     ferret_compute(0, result, resbdf, (values, pfname, pfparams), inpbdfs)
-    if (abs(result[0] - 5.0) > 0.2) or \
-       (abs(result[1] - 2.0) > 0.2) or \
+    if (abs(result[0] - mu) > 0.2) or \
+       (abs(result[1] - sigma) > 0.2) or \
        (abs(result[2] - resbdf[0]) > 1.0E-5) or \
        (abs(result[3] - resbdf[0]) > 1.0E-5) or \
        (abs(result[4] - resbdf[0]) > 1.0E-5):
-        expected = ( 5.0, 2.0, resbdf[0], resbdf[0], resbdf[0], )
+        expected = ( mu, sigma, resbdf[0], resbdf[0], resbdf[0], )
         raise ValueError("Norm fit fail; expected params: %s; found %s" % (str(expected), str(result)))
 
     # All successful

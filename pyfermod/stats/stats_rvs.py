@@ -53,32 +53,37 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
 # The rest of this is just for testing this module at the command line
 #
 if __name__ == "__main__":
-    # Normal distribution along the Y axis
+    # Get a large sample from a normal distribution with small variance
+    # so the mean and stdev will be very close
+    mu = 5.0
+    sigma = 0.5
+    # probability of randomly choosing -65536.0 is essentially zero
+    undefval = -65536.0
+    xdim = 19
+    ydim = 21
+    zdim = 17
+    tdim = 23
+
     pfname = "norm"
-    pfparams = numpy.array([5.0, 0.5], dtype=numpy.float32)
-    distf = scipy.stats.norm(5.0, 0.5)
-    # Get a large sample so the mean and stdev will be very close
-    template = numpy.empty((19, 21, 17, 23), dtype=numpy.float32, order='F')
-    expectedgood = numpy.empty((19, 21, 17, 23), dtype=bool, order='F')
+    pfparams = numpy.array([mu, sigma], dtype=numpy.float32)
+    inpbdfs = numpy.array([-1.0, 0.0, 0.0], dtype=numpy.float32)
+    resbdf = numpy.array([undefval], dtype=numpy.float32)
+    # template initialized to all zero != impbdfs[0]
+    template = numpy.zeros((xdim, ydim, zdim, tdim), dtype=numpy.float32, order='F')
+    expectedgood = numpy.empty((xdim, ydim, zdim, tdim), dtype=bool, order='F')
     index = 0
-    for i in xrange(19):
-        for j in xrange(21):
-            for k in xrange(17):
-                for l in xrange(23):
-                    index += 1
-                    if (index % 53) == 0:
-                        template[i, j, k, l] = -1.0
+    for i in xrange(xdim):
+        for j in xrange(ydim):
+            for k in xrange(zdim):
+                for l in xrange(tdim):
+                    if (index % 53) == 1:
+                        template[i, j, k, l] = inpbdfs[0]
                         expectedgood[i, j, k, l] = False
                     else:
-                        template[i, j, k, l] = 1.0
                         expectedgood[i, j, k, l] = True
-    inpbdfs = numpy.array([-1.0, 0.0, 0.0], dtype=numpy.float32)
-
-    result = -8888.0 * numpy.ones((19, 21, 17, 23), dtype=numpy.float32, order='F')
-    resbdf = numpy.array([-65536.0], dtype=numpy.float32)
-
+                    index += 1
+    result = -8888.0 * numpy.ones((xdim, ydim, zdim, tdim), dtype=numpy.float32, order='F')
     ferret_compute(0, result, resbdf, (template, pfname, pfparams), inpbdfs)
-    # probability of randomly choosing -65536.0 from this normal distribution is essentially zero
     resultgood = ( result != resbdf )
     if numpy.any( resultgood !=  expectedgood ):
         raise ValueError("Assigned random variates does not match template")

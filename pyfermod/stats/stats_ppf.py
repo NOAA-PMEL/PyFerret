@@ -52,28 +52,32 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
 # The rest of this is just for testing this module at the command line
 #
 if __name__ == "__main__":
+    # make sure ferret_init does not have problems
+    info = ferret_init(0)
+
     # Normal distribution along the Y axis
-    pfname = "norm"
-    pfparams = numpy.array([5.0, 2.0], dtype=numpy.float32)
-    distf = scipy.stats.norm(5.0, 2.0)
-    qvals = numpy.arange(0.05, 0.951, 0.05)
+    dimen = 25
+    mu = 5.0
+    sigma = 2.0
+    distf = scipy.stats.norm(mu, sigma)
+    qvals = numpy.linspace(0.05, 0.95, dimen)
     ppfvals = distf.ppf(qvals)
-    quantiles = numpy.empty((1, 19, 1, 1), dtype=numpy.float32, order='F')
-    expected = numpy.empty((1, 19, 1, 1), dtype=numpy.float32, order='F')
-    for j in xrange(19):
-        if (j % 7) == 2:
-            quantiles[0, j, 0, 0] = -1.0
-            expected[0, j, 0, 0] = -2.0
-        else:
-            quantiles[0, j, 0, 0] = qvals[j]
-            expected[0, j, 0, 0] = ppfvals[j]
+
+    pfname = "norm"
+    pfparams = numpy.array([mu, sigma], dtype=numpy.float32)
     inpbdfs = numpy.array([-1.0, 0.0, 0.0], dtype=numpy.float32)
-
-    result = -888.0 * numpy.ones((1, 19, 1, 1), dtype=numpy.float32, order='F')
     resbdf = numpy.array([-2.0], dtype=numpy.float32)
-
-    ferret_compute(0, result, resbdf, (quantiles, pfname, pfparams), inpbdfs)
-
+    quantile = numpy.empty((1, dimen, 1, 1), dtype=numpy.float32, order='F')
+    expected = numpy.empty((1, dimen, 1, 1), dtype=numpy.float32, order='F')
+    for j in xrange(dimen):
+        if (j % 7) == 2:
+            quantile[0, j, 0, 0] = inpbdfs[0]
+            expected[0, j, 0, 0] = resbdf[0]
+        else:
+            quantile[0, j, 0, 0] = qvals[j]
+            expected[0, j, 0, 0] = ppfvals[j]
+    result = -888.0 * numpy.ones((1, dimen, 1, 1), dtype=numpy.float32, order='F')
+    ferret_compute(0, result, resbdf, (quantile, pfname, pfparams), inpbdfs)
     if not numpy.allclose(result, expected):
         print "Expected (flattened) = %s" % str(expected.reshape(-1))
         print "Result (flattened) = %s" % str(result.reshape(-1))

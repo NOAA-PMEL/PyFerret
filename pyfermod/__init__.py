@@ -224,14 +224,16 @@ def init(arglist=None, enterferret=True):
                   "stats_weibull_rvs",
                   "stats_weibull_sf",
                   "stats_cdf",
-                  "stats_fit",
                   "stats_isf",
-                  "stats_histogram",
                   "stats_pdf",
                   "stats_pmf",
                   "stats_ppf",
                   "stats_rvs",
                   "stats_sf",
+                  "stats_fit",
+                  "stats_histogram",
+                  "stats_linregress",
+                  "stats_probplotvals",
                   # "stats_helper",
                 )
 

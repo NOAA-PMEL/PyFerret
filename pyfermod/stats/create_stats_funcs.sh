@@ -27,13 +27,7 @@ def create_all_scripts():
     not already exist, for all the supported distributions and functions.
     """
     # List of supported distributions
-    distribinfo = pyferret.stats.getdistrib(None, None)
-    distribnamelist = [ ]
-    for j in xrange(len(distribinfo)):
-        # Get the long name from the description resembling 
-        # "Beta(ALPHA, BETA)" or "F or Fisher(DFN, DFD)" (use first long name)
-        distriblongname = distribinfo[j][1].split()[0].split('(')[0]
-        distribnamelist.append( ( distribinfo[j][0], distriblongname, ) )
+    distnamelist = pyferret.stats.getdistname(None, None)
     # List of supported functions
     funcnamelist  = [ ( "cdf", "cumulative density function values", ),
                       ( "isf", "inverse survival function values", ),
@@ -44,19 +38,21 @@ def create_all_scripts():
                       ( "rvs", "random variates", ), ]
     # Loop of the list of distributions and functions, creating the script
     # if it does not exist and if the function exists for that distribution.
-    for (distribname, distriblongname) in distribnamelist:
+    for ( distname, distlongname, ) in distnamelist:
+        # distname = nametuple[0]
+        # distlongname = nametuple[1]
         for (funcname, funcreturn) in funcnamelist:
             try:
                 # Verify the function exists for the distribution.
                 # This raises an AttributeError is it does not.
-                statsfunc = eval("scipy.stats.%s.%s" % (distribname,funcname))
-                if distribname == "weibull_min":
+                statsfunc = eval("scipy.stats.%s.%s" % (distname,funcname))
+                if distname == "weibull_min":
                     scriptname = "stats_weibull_%s.py" % funcname
                 else:
-                    scriptname = "stats_%s_%s.py" % (distribname, funcname)
+                    scriptname = "stats_%s_%s.py" % (distname, funcname)
                 # Verify the script does not already exist.
                 if not os.path.exists(scriptname):
-                    create_script(scriptname, distribname, distriblongname,
+                    create_script(scriptname, distname, distlongname,
                                               funcname, funcreturn)
             except AttributeError:
                 # function does not exist for the distribution - skip

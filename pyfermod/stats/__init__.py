@@ -7,20 +7,23 @@ import scipy.stats
 import scipy.special
 import pyferret
 
-# The number of supported distributions
-NUM_DISTRIBS = 22
 
-def getdistname(distribname):
+def getdistname(distribname=None):
     """
-    Returns the "scipy.stats" name for a probability distribution named in
-    distribname, or if the probability distribution name is not recognized
-    or supported.  If distribname is None, this instead returns a list of
-    string tuples, where the first name in each tuple is the scipy.stats
-    name, the second name is a "full name" and any other names are other
-    recognized aliases.
+    Translates probability distribution names into scipy.stats names.
+    Arguments:
+        distribname - the distribution name, or None.
+    Returns:
+        If distribname is given (and not None), the "scipy.stats" name for 
+            the probability distribution given in distribname, or None if 
+            the probability distribution name is not recognized or supported.  
+        If distribname is not given (or None), returns a list of string 
+            tuples, where the first name in each tuple is the scipy.stats 
+            name, the second name is a "full name" and any other names are 
+            other recognized aliases.
     """
-    if distribname == None:
-        return ( ( "beta", "Beta", ),
+    namelist = (
+                 ( "beta", "Beta", ),
                  ( "binom", "Binomial", ),
                  ( "cauchy", "Cauchy", ),
                  ( "chi", "Chi", ),
@@ -43,7 +46,10 @@ def getdistname(distribname):
                  ( "uniform", "Uniform", ),
                  ( "weibull_min", "Weibull", ),
                )
+    if distribname == None:
+        return namelist
     lcdistname = str(distribname).lower()
+    # Testing below verifies the above names are all recognized in the following
     if lcdistname == "beta":
         return "beta"
     if (lcdistname == "binom") or (lcdistname == "binomial"):
@@ -448,6 +454,7 @@ def getdistparams(distname, params, tostd=False):
         max = float(params[1])
         if min >= max:
             raise ValueError("Invalid parameters for the Uniform distribution")
+        # these are the "loc" and "scale" parameters for the uniform distribution
         return ( min, max - min, )
     if distname == "weibull_min":
         if params == None:
@@ -473,21 +480,20 @@ def getdistrib(distribname, distribparams):
     """
     Creates and returns scipy.stats "frozen" probability distribution
     object.  Converts the "standard" parameters (including ordering)
-    for a distribution in order to appropriately call the constructor
-    for the scipy.stats frozen distribution object.
+    for a distribution to appropriate parameters for calling the
+    constructor of the scipy.stats frozen distribution object.
 
     Arguments:
-       distribname - name of the distribution
+       distribname - name of the probability distribution
        distribparams - tuple/list/array of standard input parameters
 
     Returns:
-       the scipy.stats "frozen" distribution object described by
-           distribname and distribparams
+       the scipy.stats "frozen" probability distribution object
+           described by distribname and distribparams
 
     Raises:
-       ValueError if the distribution name is not recognized by this routine,
-                  if the incorrect number of parameters are given, or
-                  if the distribution parameters are invalid
+       ValueError if the distribution name is not recognized by this 
+                  routine or if the distribution parameters are invalid
     """
     if (distribname == None) or (distribparams == None):
         raise ValueError("Neither distribname nor distribparams can be None")
@@ -510,209 +516,24 @@ def getfitparams(values, distribname, estparams):
     data with no missing values).  Initial estimates for these "standard"
     parameters are given in estparams.
     """
-    distname = getdistname(distribname)
-    fitparams = None
-    if distname == "beta":
-        if (len(estparams) < 2) or (len(estparams) > 4):
-            raise ValueError("Two to four parameter estimates expected for the Beta distribution fit")
-        alpha = float(estparams[0])
-        beta = float(estparams[1])
-        if (alpha <= 0.0) or (beta <= 0.0):
-            raise ValueError("Invalid parameter estimate(s) for the Beta distribution fit")
-        offset = 0.0
-        scaling = 1.0
-        try:
-            offset = float(estparams[2])
-            scaling = float(estparams[3])
-        except IndexError:
-            pass
-        fitparams = scipy.stats.beta.fit(values, a=alpha, b=beta, loc=offset, scale=scaling)
-    elif distname == "cauchy":
-        if len(estparams) != 2:
-            raise ValueError("Two parameter estimates expected for the Cauchy distribution fit")
-        m = float(estparams[0])
-        gamma = float(estparams[1])
-        if gamma <= 0.0:
-            raise ValueError("Invalid parameter estimate for the Cauchy distribution fit")
-        fitparams = scipy.stats.cauchy.fit(values, loc=m, scale=gamma)
-    elif distname == "chi":
-        if (len(estparams) < 1) or (len(estparams) > 3):
-            raise ValueError("One to three parameter estimates expected for the Chi distribution fit")
-        degfree = float(estparams[0])
-        if degfree <= 0.0:
-            raise ValueError("Invalid parameter estimate for the Chi distribution fit")
-        offset = 0.0
-        scaling = 1.0
-        try:
-            offset = float(estparams[1])
-            scaling = float(estparams[2])
-        except IndexError:
-            pass
-        fitparams = scipy.stats.chi.fit(values, df=degfree, loc=offset, scale=scaling)
-    elif distname == "chi2":
-        if (len(estparams) < 1) or (len(estparams) > 3):
-            raise ValueError("One to three parameter estimates expected for the Chi-Square distribution fit")
-        degfree = float(estparams[0])
-        if degfree <= 0.0:
-            raise ValueError("Invalid parameter estimate for the Chi-Square distribution fit")
-        offset = 0.0
-        scaling = 1.0
-        try:
-            offset = float(estparams[1])
-            scaling = float(estparams[2])
-        except IndexError:
-            pass
-        fitparams = scipy.stats.chi2.fit(values, df=degfree, loc=offset, scale=scaling)
-    elif distname == "expon":
-        if (len(estparams) < 1) or (len(estparams) > 2):
-            raise ValueError("One or two parameter estimates expected for the Exponential distribution fit")
-        lambdaflt = float(estparams[0])
-        if lambdaflt <= 0.0:
-            raise ValueError("Invalid parameter estimate for the Exponential distribution fit")
-        try:
-            offset = float(estparams[1])
-        except IndexError:
-            offset = 0.0
-        fitparams = scipy.stats.expon.fit(values, loc=offset, scale=(1.0/lambdaflt))
-        fitparams = ( 1.0 / fitparams[1], fitparams[0], )
-    elif distname == "exponweib":
-        if (len(estparams) < 3) or (len(estparams) > 4):
-            raise ValueError("Three or four parameter estimates expected for the Exponentiated-Weibull distribution fit")
-        k =  float(estparams[0])
-        lambdaflt = float(estparams[1])
-        alpha = float(estparams[2])
-        if (k <= 0.0) or (lambdaflt <= 0.0) or (alpha <= 0):
-            raise ValueError("Invalid parameter estimate(s) for the Exponentiated-Weibull distribution fit")
-        try:
-            offset = float(estparams[3])
-        except IndexError:
-            offset = 0.0
-        fitparams = scipy.stats.exponweib.fit(values, a=alpha, c=k, loc=offset, scale=lambdaflt)
-        fitparams = ( fitparams[1], fitparams[3], fitparams[0], fitparams[2], )
-    elif distname == "f":
-        if (len(estparams) < 2) or (len(estparams) > 4):
-            raise ValueError("Two to four parameter estimates expected for the F distribution fit")
-        dfnum = float(estparams[0])
-        dfdenom = float(estparams[1])
-        if (dfnum <= 0.0) or (dfdenom <= 0.0):
-           raise ValueError("Invalid parameter estimate(s) for the F distribution fit")
-        offset = 0.0
-        scaling = 1.0
-        try:
-            offset = float(estparams[2])
-            scaling = float(estparams[3])
-        except IndexError:
-            pass
-        fitparams = scipy.stats.f.fit(values, dfn=dfnum, dfd=dfdenom, loc=offset, scale=scaling)
-    elif distname == "gamma":
-        if (len(estparams) < 2) or (len(estparams) > 3):
-            raise ValueError("Two or three parameter estimates expected for the Gamma distribution fit")
-        alpha = float(estparams[0])
-        theta = float(estparams[1])
-        if (alpha <= 0.0) or (theta <= 0.0):
-            raise ValueError("Invalid parameter estimate(s) for the Gamma distribution fit")
-        try:
-            offset = float(estparams[2])
-        except IndexError:
-            offset = 0.0
-        fitparams = scipy.stats.gamma.fit(values, a=alpha, loc=offset, scale=theta)
-        fitparams = ( fitparams[0], fitparams[2], fitparams[1], )
-    elif distname == "invgamma":
-        if (len(estparams) < 2) or (len(estparams) > 3):
-            raise ValueError("Two or three parameter estimates expected for the Inverse-Gamma distribution fit")
-        alpha = float(estparams[0])
-        beta = float(estparams[1])
-        if (alpha <= 0.0) or (beta <= 0.0):
-            raise ValueError("Invalid parameter estimate(s) for the Inverse-Gamma distribution fit")
-        try:
-            offset = float(estparams[2])
-        except IndexError:
-            offset = 0.0
-        fitparams = scipy.stats.invgamma.fit(values, a=alpha, loc=offset, scale=beta)
-        fitparams = ( fitparams[0], fitparams[2], fitparams[1], )
-    elif distname == "laplace":
-        if len(estparams) != 2:
-            raise ValueError("Two parameter estimates expected for the Laplace distribution fit")
-        mu = float(estparams[0])
-        b = float(estparams[1])
-        if b <= 0.0:
-            raise ValueError("Invalid parameter estimate for the Laplace distribution fit")
-        fitparams = scipy.stats.laplace.fit(values, loc=mu, scale=b)
-    elif distname == "lognorm":
-        if (len(estparams) < 2) or (len(estparams) > 3):
-            raise ValueError("Two or three parameter estimates expected for the Log-Normal distribution fit")
-        mu = math.exp(float(estparams[0]))
-        sigma = float(estparams[1])
-        if sigma <= 0.0:
-            raise ValueError("Invalid parameter estimate for the Log-Normal distribution fit")
-        try:
-            offset = float(estparams[2])
-        except IndexError:
-            offset = 0.0
-        fitparams = scipy.stats.lognorm.fit(values, s=sigma, loc=offset, scale=mu)
-        fitparams = ( math.log(fitparams[2]), fitparams[0], fitparams[1], )
-    elif distname == "norm":
-        if len(estparams) != 2:
-            raise ValueError("Two parameter estimates expected for the Normal distribution fit")
-        mu = float(estparams[0])
-        sigma = float(estparams[1])
-        if sigma <= 0.0:
-            raise ValueError("Invalid parameter estimate for the Normal distribution fit")
-        fitparams = scipy.stats.norm.fit(values, loc=mu, scale=sigma)
-    elif distname == "pareto":
-        if (len(estparams) < 2) or (len(estparams) > 3):
-            raise ValueError("Two or three parameter estimates expected for the Pareto distribution fit")
-        xm =  float(estparams[0])
-        alpha = float(estparams[1])
-        if (xm <= 0.0) or (alpha <= 0.0):
-            raise ValueError("Invalid parameter estimate(s) for the Pareto distribution fit")
-        try:
-            offset = float(estparams[2])
-        except IndexError:
-            offset = 0.0
-        fitparams = scipy.stats.pareto.fit(values, b=alpha, loc=offset, scale=xm)
-        fitparams = ( fitparams[2], fitparams[0], fitparams[1], )
-    elif distname == "t":
-        if (len(estparams) < 1) or (len(estparams) > 3):
-            raise ValueError("One to three parameter estimates expected for the Students-T distribution fit")
-        degfree = float(estparams[0])
-        if degfree <= 0.0:
-            raise ValueError("Invalid parameter estimate for the Students-T distribution fit")
-        offset = 0.0
-        scaling = 1.0
-        try:
-            offset = float(estparams[1])
-            scaling = float(estparams[2])
-        except IndexError:
-            pass
-        fitparams = scipy.stats.t.fit(values, df=degfree, loc=offset, scale=scaling)
-    elif distname == "uniform":
-        if len(estparams) != 2:
-            raise ValueError("Two parameter estimates expected for the Uniform distribution fit")
-        min = float(estparams[0])
-        max = float(estparams[1])
-        if min >= max:
-            raise ValueError("Invalid parameter estimates for the Uniform distribution fit")
-        fitparams = scipy.stats.uniform.fit(values, loc=min, scale=(max - min))
-        fitparams = ( fitparams[0], fitparams[0] + fitparams[1], )
-    elif distname == "weibull_min":
-        if (len(estparams) < 2) or (len(estparams) > 3):
-            raise ValueError("Two or three parameter estimates expected for the Weibull distribution fit")
-        k =  float(estparams[0])
-        lambdaflt = float(estparams[1])
-        if (k <= 0.0) or (lambdaflt <= 0.0):
-            raise ValueError("Invalid parameter estimate(s) for the Weibull distribution fit")
-        try:
-            offset = float(estparams[2])
-        except IndexError:
-            offset = 0.0
-        fitparams = scipy.stats.weibull_min.fit(values, c=k, loc=offset, scale=lambdaflt)
-        fitparams = ( fitparams[0], fitparams[2], fitparams[1], )
-    else:
+    if (distribname == None) or (estparams == None):
+        raise ValueError("Neither distribname nor estparams can be None")
+    distscipyname = getdistname(distribname)
+    if distscipyname == None:
         raise ValueError("Unknown probability function %s" % str(distribname))
-    if fitparams == None:
-        raise ValueError("Unexpected problem parameterizing a distribution to fit given values")
-    return fitparams
+    estscipyparams = getdistparams(distscipyname, estparams)
+    if estscipyparams == None:
+        raise ValueError("Unknown (for params) probability function %s" % str(distribname))
+    try:
+        fitfunc = eval("scipy.stats.%s.fit" % distscipyname)
+    except AttributeError:
+        raise ValueError("No fit function for probability function %s" % str(distribname))
+    if distscipyname == "uniform":
+        # "params" keyword for the uniform distribution does not work as expected
+        fitscipyparams = fitfunc(values, loc=estscipyparams[0], scale=estscipyparams[1])
+    else:
+        fitscipyparams = fitfunc(values, params=estscipyparams)
+    return getdistparams(distscipyname, fitscipyparams, tostd=True)
 
 
 def getinitdict(distribname, funcname):
@@ -952,9 +773,9 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
 if __name__ == "__main__":
     # Test getdistname names
     namelist = getdistname(None)
-    if len(namelist) != NUM_DISTRIBS:
-        raise ValueError("Number of distributions: expected %d; found %d" % \
-                         (NUM_DISTRIBS, len(distdescripts)))
+    if len(namelist) < 22:
+        raise ValueError("Too few of distributions: expected at least 22; found %d" % \
+                         len(distdescripts))
     for nametuple in namelist:
         for name in nametuple:
             statsname = getdistname(name)

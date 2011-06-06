@@ -6,6 +6,7 @@ import numpy
 import scipy.stats
 import scipy.special
 import pyferret
+# junk comment
 
 
 def getdistname(distribname=None):

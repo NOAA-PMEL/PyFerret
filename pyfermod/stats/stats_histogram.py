@@ -9,7 +9,7 @@ DOING_UNIT_TEST = False
 
 def ferret_init(id):
     """
-    Initialization for the stats_fit python-backed ferret external function
+    Initialization for the stats_histogram Ferret PyEF
     """
     retdict = { "numargs": 2,
                 "descript": "Returns unweighted histogram bin counts for all defined data values",

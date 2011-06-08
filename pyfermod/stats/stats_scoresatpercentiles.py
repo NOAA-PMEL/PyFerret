@@ -1,5 +1,5 @@
 """
-Returns interpolated scores at percentiles through a sample
+Returns interpolated scores (values) at percentiles through a sample
 """
 import numpy
 import pyferret
@@ -11,14 +11,14 @@ def ferret_init(id):
     Initialization for the stats_scoresatpercentiles.py Ferret PyEF
     """
     retdict = { "numargs": 2,
-                "descript": "Returns interpolated scores/values that are given percentiles through a sample",
+                "descript": "Returns interpolated scores (values) that are given percentiles through a sample",
                 "axes": ( pyferret.AXIS_IMPLIED_BY_ARGS,
                           pyferret.AXIS_IMPLIED_BY_ARGS,
                           pyferret.AXIS_IMPLIED_BY_ARGS,
                           pyferret.AXIS_IMPLIED_BY_ARGS, ),
                 "argnames": ( "SAMPLE", "PERCENTILES", ),
-                "argdescripts": ( "Sample of scores/values",
-                                  "Percentiles (0-100) through sample to find values for", ),
+                "argdescripts": ( "Sample of scores (values)",
+                                  "Percentiles (0-100) through sample to find scores (values) for", ),
                 "argtypes": ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, ),
                 "influences": ( ( False, False, False, False, ),
                                 ( True,  True,  True,  True, ), ),
@@ -83,7 +83,7 @@ if __name__ == "__main__":
                 pval += 1
             index += 1
     if pval != 101:
-        raise ValueError("Unexpected pval of %d (ydim,zdim too small)" % pval)
+        raise ValueError("Unexpected final pval of %d (ydim,zdim too small)" % pval)
     prcnts = numpy.empty((1, 1, zdim, 1), dtype=numpy.float32, order='F')
     expected = numpy.empty((1, 1, zdim, 1), dtype=numpy.float32, order='F')
     prcnts[:,:,:,:] = inpbdfs[1]

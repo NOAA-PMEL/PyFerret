@@ -1,5 +1,5 @@
 """
-Returns interpolated percentiles through a sample of scores/values
+Returns interpolated percentiles through a sample of scores (values)
 """
 import numpy
 import pyferret
@@ -11,14 +11,14 @@ def ferret_init(id):
     Initialization for the stats_percentilesofscores.py Ferret PyEF
     """
     retdict = { "numargs": 2,
-                "descript": "Returns interpolated percentiles (0-100) through a sample of given scores",
+                "descript": "Returns interpolated percentiles (0-100) through a sample for given scores (values)",
                 "axes": ( pyferret.AXIS_IMPLIED_BY_ARGS,
                           pyferret.AXIS_IMPLIED_BY_ARGS,
                           pyferret.AXIS_IMPLIED_BY_ARGS,
                           pyferret.AXIS_IMPLIED_BY_ARGS, ),
                 "argnames": ( "SAMPLE", "SCORES", ),
-                "argdescripts": ( "Sample of scores/values",
-                                  "Scores/values to find percentiles through sample", ),
+                "argdescripts": ( "Sample of scores (values)",
+                                  "Scores (values) to find percentiles through sample", ),
                 "argtypes": ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, ),
                 "influences": ( ( False, False, False, False, ),
                                 ( True,  True,  True,  True, ), ),
@@ -28,12 +28,13 @@ def ferret_init(id):
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     """
-    Assigns result with interpolated percentiles through a sample that
-    correspond to given scores/values.  The sample scores/values are given
-    in inputs[0], and the scores/values to find percentiles of are given in
-    inputs[0].  Undefined values in inputs[0] are eliminated before using
-    them in scipy.stats.percentileofscore.  Undefined values in inputs[1]
-    return corresponding undefined values in result.
+    Assigns result with interpolated percentiles through a sample
+    that correspond to given scores.  The sample scores are given
+    in inputs[0], and the scores to find percentiles of are given
+    in inputs[0].  Undefined values in inputs[0] are eliminated
+    before using them in scipy.stats.percentileofscore.  Undefined
+    values in inputs[1] return corresponding undefined values in
+    result.
     """
     # make sure result has the expected dimensions
     if result.shape != inputs[1].shape:
@@ -83,7 +84,7 @@ if __name__ == "__main__":
                 pval += 1
             index += 1
     if pval != 101:
-        raise ValueError("Unexpected pval of %d (ydim,zdim too small)" % pval)
+        raise ValueError("Unexpected final pval of %d (ydim,zdim too small)" % pval)
     scores = numpy.empty((1, 1, zdim, 1), dtype=numpy.float32, order='F')
     expected = numpy.empty((1, 1, zdim, 1), dtype=numpy.float32, order='F')
     scores[:,:,:,:] = inpbdfs[1]

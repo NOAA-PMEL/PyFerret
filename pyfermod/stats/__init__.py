@@ -14,12 +14,12 @@ def getdistname(distribname=None):
     Arguments:
         distribname - the distribution name, or None.
     Returns:
-        If distribname is given (and not None), the "scipy.stats" name for 
-            the probability distribution given in distribname, or None if 
-            the probability distribution name is not recognized or supported.  
-        If distribname is not given (or None), returns a list of string 
-            tuples, where the first name in each tuple is the scipy.stats 
-            name, the second name is a "full name" and any other names are 
+        If distribname is given (and not None), the "scipy.stats" name for
+            the probability distribution given in distribname, or None if
+            the probability distribution name is not recognized or supported.
+        If distribname is not given (or None), returns a list of string
+            tuples, where the first name in each tuple is the scipy.stats
+            name, the second name is a "full name" and any other names are
             other recognized aliases.
     """
     namelist = (
@@ -111,14 +111,14 @@ def getdistparams(distname, params, tostd=False):
         If params is None, a list of string pairs describing the standard
         parameters for the distribution.
 
-        If tostd is False, a tuple of scipy.stats parameters corresponding 
+        If tostd is False, a tuple of scipy.stats parameters corresponding
         to the standard parameters given in params.  The given parameters
-        are explicitly converted to the correct type (thus strings could 
-        be given) and error checking is performed.  Additional offset and 
+        are explicitly converted to the correct type (thus strings could
+        be given) and error checking is performed.  Additional offset and
         scaling parameters, if appropriate, can be given.
 
         If tostd is True, a tuple of standard parameters corresponding
-        to the scipy.stats parameters given in params.  No explicit type 
+        to the scipy.stats parameters given in params.  No explicit type
         conversion or error checking is performed.  Offset and scaling
         parameters, if appropriate, are assumed to be given.
 
@@ -492,7 +492,7 @@ def getdistrib(distribname, distribparams):
            described by distribname and distribparams
 
     Raises:
-       ValueError if the distribution name is not recognized by this 
+       ValueError if the distribution name is not recognized by this
                   routine or if the distribution parameters are invalid
     """
     if (distribname == None) or (distribparams == None):

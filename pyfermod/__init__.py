@@ -235,6 +235,7 @@ def init(arglist=None, enterferret=True):
                   "stats_linregress",
                   "stats_percentilesofscores",
                   "stats_probplotvals",
+                  "stats_stats",
                   "stats_scoresatpercentiles",
                   # "stats_helper",
                 )

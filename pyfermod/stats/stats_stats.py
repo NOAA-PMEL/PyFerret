@@ -27,7 +27,10 @@ def ferret_init(id):
 
 
 def ferret_custom_axes(id):
-    return ( ( 1, 4, 1, "STATS", False ), None, None, None, )
+    """
+    Define custom axis of the stats_stats.py Ferret PyEF
+    """
+    return ( ( 1, 4, 1, "M,V,S,K", False ), None, None, None, )
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):

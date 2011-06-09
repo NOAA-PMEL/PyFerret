@@ -38,7 +38,7 @@ def ferret_custom_axes(id):
     parameter, if not considered one of the "standard" parameters, is
     appended to the "standard" parameters.
     """
-    return ( ( 1, 5, 1, "PARAMS", False, ), None, None, None, )
+    return ( ( 1, 5, 1, "PDPARAMS", False, ), None, None, None, )
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):

@@ -40,7 +40,7 @@ def ferret_custom_axes(id):
     incorrect.  The value returned is close but larger than the
     square of the correct value.)
     """
-    return ( ( 1, 4, 1, "PARAMS", False, ), None, None, None, )
+    return ( ( 1, 4, 1, "M,B,R,N", False, ), None, None, None, )
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
@@ -100,6 +100,7 @@ def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     # the incorrect standard error of the estimate (fitparams[4])
     # number of good pts
     result[3] = numpts
+
 
 #
 # The rest of this is just for testing this module at the command line

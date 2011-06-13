@@ -126,7 +126,7 @@
 	real		xmaxx,ymaxx,vwidth,vheight,karht
 	real		xx,yy,xxx,yyy
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
-     .                  val, del, x_inc_inf, y_inc_inf, frac, fixx
+     .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, angl
         real*8          val_n, val_last
 	character*12	text,tm_fmt, TM_FMT_DIGITS, txt_out, blanks
         character*20    buff
@@ -367,6 +367,10 @@
 10	continue
 
         IF (incr .GT. 0) THEN
+	
+        angl = 0.0
+	IF (angle_keylab .NE. -999) angl = angle_keylab
+
 	do 20 ndx = lev1,shd_levels+1,incr
 
 *	   WRITE OUT CORRESPONDING VALUE
@@ -388,9 +392,13 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
 	   xx = (kx_lo + x_inc*real(ndx-1))/1000.0
      .		 - karht*real(str_len)/2.0 - xorg
+       if (angl .NE. 0) xx = 
+     .		 (kx_lo + x_inc*real(ndx-1))/1000.0 - xorg
+
 	   yy = (ky_hi - 5.0 * y_inc)/1000.0 - yorg - 1.5*karht
            IF (kuser_loc(3) .OR. kuser_loc(4) ) 
      .            yy = (ky_lo - y_inc)/1000.0-yorg-1.5*karht
+     
 
 * If klab_size negative put the key labels on the top rather than the 
 * bottom of the key
@@ -398,6 +406,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
            IF (klab_size .LT. 0) THEN
               yy = (ky_hi)/1000.0 - yorg + karht
            ENDIF
+       if (angl .NE. 0) yy = yy - 0.5*karht
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
 	   if (makep .eq. 'SHADE' .or. makep .eq. 'FILLPOL' .OR.
@@ -407,8 +416,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	      xxx = xx
 	      yyy = yy
 	   endif
-
-	   call symbel (xxx,yyy,0.0,karht,str_len,text(1:str_len))
+	   call symbel (xxx,yyy,angl,karht,str_len,text(1:str_len))
 
 20	continue
         ENDIF
@@ -592,6 +600,9 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
         ystart = 0.
         IF (lev1 .NE. 1) ystart = y_inc
+	
+        angl = 0.0
+	IF (angle_keylab .NE. -999) angl = angle_keylab
 
         IF (incr .GT. 0) THEN
         do 1020 ndx = lev1,shd_levels+1,incr

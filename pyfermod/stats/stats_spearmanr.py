@@ -30,7 +30,7 @@ def ferret_init(id):
 
 def ferret_custom_axes(id):
     """
-    Define custom axis of the stats_stats.py Ferret PyEF
+    Define custom axis of the stats_spearmanr Ferret PyEF
     """
     return ( ( 1, 2, 1, "R,N", False ), None, None, None, )
 

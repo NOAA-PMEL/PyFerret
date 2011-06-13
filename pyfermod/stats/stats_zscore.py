@@ -14,7 +14,7 @@ def ferret_init(id):
     Initialization for the stats_zscore PyEF
     """
     retdict = { "numargs": 1,
-                "descript": "Returns standard scores for data values relative to" \
+                "descript": "Returns standard scores for data values relative to " \
                             "a normal distribution with same mean and variance as the data",
                 "axes": ( pyferret.AXIS_IMPLIED_BY_ARGS,
                           pyferret.AXIS_IMPLIED_BY_ARGS,

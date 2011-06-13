@@ -13,7 +13,7 @@ def ferret_init(id):
     Initialization for the stats_isf python-backed ferret external function
     """
     retdict = { "numargs": 3,
-                "descript": "Returns inverse suvivial function values for a probability distribution",
+                "descript": "Returns inverse survival function values for a probability distribution",
                 "axes": (pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS,
                          pyferret.AXIS_IMPLIED_BY_ARGS,

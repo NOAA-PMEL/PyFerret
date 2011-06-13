@@ -18,7 +18,7 @@ def ferret_init(id):
                           pyferret.AXIS_IMPLIED_BY_ARGS, ),
                 "argnames": ( "SAMPLE", "PERCENTILES", ),
                 "argdescripts": ( "Sample of scores (values)",
-                                  "Percentiles (0-100) through sample to find scores (values) for", ),
+                                  "Percentiles (0-100) through sample to find scores (values) of", ),
                 "argtypes": ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, ),
                 "influences": ( ( False, False, False, False, ),
                                 ( True,  True,  True,  True, ), ),

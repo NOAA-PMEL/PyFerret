@@ -24,13 +24,15 @@ For writing Ferret external functions in Python, see the help message
 printed by ferret_pyfunc().  Methods available to these external
 functions provided by this module are:
     get_axis_coordinates returns the "world" coordinates for an axis
-            of an argument to the external function
+            of an argument to the external function.
     get_axis_box_sizes returns the "box sizes", in "world" coordinate
-            units, for an axis of an argument to the external function
+            units, for an axis of an argument to the external function.
     get_axis_box_limits returns the "box limits", in "world" coordinate
-            units, for an axis of an argument to the external function
+            units, for an axis of an argument to the external function.
     get_axis_info returns a dictionary of information about the axis
-            of an argument to the external function
+            of an argument to the external function.
+    get_arg_one_val returns the value of an argument that is the type
+            FLOAT_ONEVAL or STRING_ONEVAL.
 """
 
 import sys
@@ -42,7 +44,8 @@ try:
     import cdms2
     import cdtime
 except ImportError:
-    print >>sys.stderr, "    WARNING: Unable to import cdms2 and/or cdtime; pyferret.get and pyferret.put will fail"
+    print >>sys.stderr, "    WARNING: Unable to import cdms2 and/or cdtime;\n" \
+                        "             the Python functions pyferret.get and pyferret.put will fail"
 from _pyferret import *
 
 
@@ -90,7 +93,7 @@ def init(arglist=None, enterferret=True):
 
     """
 
-    std_pyefs = ( 
+    std_pyefs = (
                   "stats_beta_cdf",
                   "stats_beta_isf",
                   "stats_beta_pdf",
@@ -1347,10 +1350,11 @@ def ferret_pyfunc():
                             [optional; default: (A, B, ...)]
             "argdescripts": N-tuple of descriptions for the input arguments
                             [optional; default: no descriptions]
-            "argtypes":     N-tuple of FLOAT_ARG or STRING_ARG, indicating whether
-                            the input argument is an array of floating-point values
-                            or a single string value.
-                            [optional; default: FLOAT_ARG for every argument]
+            "argtypes":     N-tuple of FLOAT_ARRAY, FLOAT_ONEVAL, STRING_ARRAY, or
+                            STRING_ONEVAL, indicating whether the input argument is
+                            an array of floating-point values, a single floating point
+                            value, an array of strings, or a single string value.
+                            [optional; default: FLOAT_ARRAY for every argument]
             "influences":   N-tuple of 4-tuples of booleans indicating whether the
                             corresponding input argument's (X,Y,Z,T) axis influences
                             the result grid's (X,Y,Z,T) axis.  [optional; default,
@@ -1606,4 +1610,38 @@ def get_axis_info(id, arg, axis):
         raise ValueError("axis must be an integer value in [%d,%d]" % (_pyferret.X_AXIS,_pyferret.T_AXIS))
     # make the actual call
     return _pyferret._get_axis_info(int_id, int_arg, int_axis)
+
+
+def get_arg_one_val(id, arg):
+    """
+    Returns the value of the indicated FLOAT_ONEVAL or STRING_ONEVAL argument.
+    Can be called from the ferret_result_limits or ferret_custom_axes method
+    of an external function.
+
+    Arguments:
+        id: the Ferret id of the external function
+        arg: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9)
+    Returns:
+        the value of the argument, either as a float (if a FLOAT_ONEVAL)
+        or a string (if STRING_ONEVAL)
+    Raises:
+        ValueError if id or arg is invalid, or if the argument type is not
+        FLOAT_ONEVAL or STRING_ONEVAL
+    """
+    # check the id
+    try:
+        int_id = int(id)
+        if int_id < 0:
+            raise ValueError
+    except:
+        raise ValueError("id must be a positive integer value")
+    # check the arg index
+    try:
+        int_arg = int(arg)
+        if (int_arg < _pyferret.ARG1) or (int_arg > _pyferret.ARG9):
+            raise ValueError
+    except:
+        raise ValueError("arg must be an integer value in [%d,%d]" % (_pyferret.ARG1,_pyferret.ARG9))
+    # make the actual call
+    return _pyferret._get_arg_one_val(int_id, int_arg)
 

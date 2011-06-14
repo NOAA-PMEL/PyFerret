@@ -41,6 +41,7 @@
 #include "EF_Util.h"
 #include "pyferret.h"
 
+#include <ctype.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1461,6 +1462,112 @@ static PyObject *pyefcnGetAxisInfo(PyObject *self, PyObject *args, PyObject *kwd
 }
 
 
+static char pyefcnGetArgOneValDocstring[] =
+    "Returns the value of the indicated FLOAT_ONEVAL or STRING_ONEVAL argument. \n"
+    "\n"
+    "Required arguments: \n"
+    "    id = <int>: the ferret id of the external function \n"
+    "    arg = <int>: the index (zero based) of the argument (can use ARG1, ARG2, ..., ARG9) \n"
+    "\n"
+    "Optional arguments: \n"
+    "    (none) \n"
+    "\n"
+    "Returns: \n"
+    "    the value of the argument, either as a float (if a FLOAT_ONEVAL) \n"
+    "    or a string (if STRING_ONEVAL) \n"
+    "\n"
+    "Raises: \n"
+    "    ValueError if id or arg is invalid, or if the argument type is not \n"
+    "               FLOAT_ONEVAL or STRING_ONEVAL \n";
+
+static PyObject *pyefcnGetArgOneVal(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    static char      *argNames[] = {"id", "arg", NULL};
+    int               id, arg;
+    ExternalFunction *ef_ptr;
+    PyObject         *modname;
+    PyObject         *usermod;
+    PyObject         *initdict;
+    PyObject         *typetuple;
+    PyObject         *typeobj;
+    float             float_val;
+    PyObject         *valobj;
+    char              str_val[2048];
+    int               k;
+
+    /* Parse the arguments, checking if an Exception was raised */
+    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "ii", argNames, &id, &arg) )
+        return NULL;
+
+    /* Check for obvious errors in the arguments passed */
+    ef_ptr = ef_ptr_from_id_ptr(&id);
+    if ( (ef_ptr == NULL) || ! ef_ptr->already_have_internals ) {
+        PyErr_SetString(PyExc_ValueError, "Invalid ferret external function id");
+        return NULL;
+    }
+    if ( (arg < 0) || (arg >= EF_MAX_ARGS) ||
+         ((arg >= ef_ptr->internals_ptr->num_reqd_args) && ! ef_ptr->internals_ptr->has_vari_args) ) {
+        PyErr_SetString(PyExc_ValueError, "Invalid argument index");
+        return NULL;
+    }
+
+    /* Get the Python module (should already be imported) */
+    modname = PyString_FromString(ef_ptr->path);
+    if ( modname == NULL )
+        return NULL;
+    usermod = PyImport_Import(modname);
+    Py_DECREF(modname);
+    if ( usermod == NULL )
+        return NULL;
+
+     /* Call the initialization method to get the argument types */
+    initdict = PyObject_CallMethod(usermod, INIT_METHOD_NAME, "i", id);
+    Py_DECREF(usermod);
+    if ( initdict == NULL )
+        return NULL;
+    typetuple = PyDict_GetItemString(initdict, "argtypes"); /* borrowed reference */
+    if ( typetuple == NULL ) {
+        /* Key not present; no exception raised */
+        Py_DECREF(initdict);
+        PyErr_SetString(PyExc_ValueError, "argtype is neither FLOAT_ONEVAL nor STRING_ONEVAL");
+        return NULL;
+    }
+
+    /* Get the type of this argument */
+    typeobj = PySequence_GetItem(typetuple, (Py_ssize_t) arg);
+    if ( typeobj == NULL ) {
+        PyErr_Clear();
+        Py_DECREF(initdict);
+        PyErr_SetString(PyExc_ValueError, "argtype is neither FLOAT_ONEVAL nor STRING_ONEVAL");
+        return NULL;
+    }
+    switch( (int) PyInt_AsLong(typeobj) ) {
+        case FLOAT_ONEVAL:
+            k = arg + 1;
+            ef_get_one_val_(&id, &k, &float_val);
+            valobj = PyFloat_FromDouble((double)float_val);
+            break;
+        case STRING_ONEVAL:
+        case STRING_ARG:
+            k = arg + 1;
+            /* Assumes gcc standard for passing Hollerith strings */
+            ef_get_arg_string_(&id, &k, str_val, 2048);
+            for (k = 2048; k > 0; k--)
+                if ( ! isspace(str_val[k-1]) )
+                    break;
+            valobj = PyString_FromStringAndSize(str_val, k);
+            break;
+        default:
+            PyErr_Clear();   /* Just to be safe */
+            PyErr_SetString(PyExc_ValueError, "argtype is neither FLOAT_ONEVAL nor STRING_ONEVAL");
+            valobj = NULL;
+    }
+    Py_DECREF(typeobj);
+    Py_DECREF(initdict);
+    return valobj;
+}
+
+
 /* List of Python functions and their docstrings available in this module */
 static struct PyMethodDef pyferretMethods[] = {
     {"_start", (PyCFunction) pyferretStart, METH_VARARGS | METH_KEYWORDS, pyferretStartDocstring},
@@ -1473,6 +1580,7 @@ static struct PyMethodDef pyferretMethods[] = {
     {"_get_axis_box_sizes", (PyCFunction) pyefcnGetAxisBoxSizes, METH_VARARGS | METH_KEYWORDS, pyefcnGetAxisBoxSizesDocstring},
     {"_get_axis_box_limits", (PyCFunction) pyefcnGetAxisBoxLimits, METH_VARARGS | METH_KEYWORDS, pyefcnGetAxisBoxLimitsDocstring},
     {"_get_axis_info", (PyCFunction) pyefcnGetAxisInfo, METH_VARARGS | METH_KEYWORDS, pyefcnGetAxisInfoDocstring},
+    {"_get_arg_one_val", (PyCFunction) pyefcnGetArgOneVal, METH_VARARGS | METH_KEYWORDS, pyefcnGetArgOneValDocstring},
     {NULL, (PyCFunction) NULL, 0, NULL}
 };
 
@@ -1495,6 +1603,12 @@ PyMODINIT_FUNC init_pyferret(void)
     for (k = 0; k < numvals; k++) {
         PyModule_AddIntConstant(mod, names[k], values[k]);
     }
+
+    /* Add parameters for the python EF argument types */
+    PyModule_AddIntConstant(mod, "FLOAT_ARRAY", FLOAT_ARRAY);
+    PyModule_AddIntConstant(mod, "FLOAT_ONEVAL", FLOAT_ONEVAL);
+    PyModule_AddIntConstant(mod, "STRING_ARRAY", STRING_ARRAY);
+    PyModule_AddIntConstant(mod, "STRING_ONEVAL", STRING_ONEVAL);
 
     /* Add parameters for the python axis functions */
     PyModule_AddIntConstant(mod, "X_AXIS", 0);

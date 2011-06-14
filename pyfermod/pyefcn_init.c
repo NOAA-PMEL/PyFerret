@@ -89,7 +89,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     }
 
     /*
-     * Call the initialization method in the user's python module with the ferret function ID as the sole argument
+     * Call the initialization method in the user's python module
+     * with the ferret function ID as the sole argument
      */
     initdict = PyObject_CallMethod(usermod, INIT_METHOD_NAME, "i", id);
     /* usermod no longer needed */
@@ -105,7 +106,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
      */
     if ( ! PyDict_Check(initdict) ) {
         Py_DECREF(initdict);
-        sprintf(errmsg, "Invalid return value (not a dictionary) from %s in %s", INIT_METHOD_NAME, modname);
+        sprintf(errmsg, "Invalid return value (not a dictionary) from %s in %s",
+                        INIT_METHOD_NAME, modname);
         return;
     }
 
@@ -115,7 +117,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     valobj = PyDict_GetItemString(initdict, "numargs"); /* borrowed reference */
     if ( valobj == NULL ) {
         Py_DECREF(initdict);
-        sprintf(errmsg, "\"numargs\" not defined in the dictionary returned from %s in %s", INIT_METHOD_NAME, modname);
+        sprintf(errmsg, "\"numargs\" not defined in the dictionary returned from %s in %s",
+                        INIT_METHOD_NAME, modname);
         return;
     }
     num_args = (int) PyInt_AsLong(valobj);
@@ -133,7 +136,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     valobj = PyDict_GetItemString(initdict, "descript"); /* borrowed reference */
     if ( valobj == NULL ) {
         Py_DECREF(initdict);
-        sprintf(errmsg, "\"descript\" not defined in the dictionary returned from %s in %s", INIT_METHOD_NAME, modname);
+        sprintf(errmsg, "\"descript\" not defined in the dictionary returned from %s in %s",
+                        INIT_METHOD_NAME, modname);
         return;
     }
     strptr = PyString_AsString(valobj);
@@ -169,7 +173,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
         if ( seqlen > MAX_FERRET_NDIM ) {
             Py_DECREF(seqobj);
             Py_DECREF(initdict);
-            sprintf(errmsg, "Invalid \"axes\" value (tuple or list with more than %d items)", MAX_FERRET_NDIM);
+            sprintf(errmsg, "Invalid \"axes\" value (tuple or list with more than %d items)",
+                             MAX_FERRET_NDIM);
             return;
         }
     }
@@ -208,7 +213,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                 default:
                     Py_DECREF(seqobj);
                     Py_DECREF(initdict);
-                    sprintf(errmsg, "Invalid \"axes\" value (not one of the AXIS_* values) for the %s axis", AXIS_NAMES[k]);
+                    sprintf(errmsg, "Invalid \"axes\" value (not one of the AXIS_* values) for the %s axis",
+                                    AXIS_NAMES[k]);
                     return;
             }
         }
@@ -314,8 +320,13 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     Py_XDECREF(seqobj);
 
     /*
-     * "argtypes": N-tuple of types for the input arguments [optional, default: FLOAT_ARG]
-     *             FLOAT_ARG and STRING_ARG are supported
+     * "argtypes": N-tuple of types for the input arguments [optional, default: FLOAT_ARRAY]
+     *             FLOAT_ARRAY, FLOAT_ONEVAL, STRING_ARRAY, and STRING_ONEVAL are supported
+     *             FLOAT_ARG and STRING_ARG as accepted for backward compatibility.
+     *             FLOAT_ARG is treated like FLOAT_ARRAY, and STRING_ARG like STRING_ONEVAL.
+     * Note: the distiction between array values and single values is only important for
+     *       pyferret: how to get the (string) values from ferret.  Ferret only expects to
+     *       find FLOAT_ARG or STRING_ARG.
      */
     valobj = PyDict_GetItemString(initdict, "argtypes"); /* borrowed reference */
     if ( valobj != NULL ) {
@@ -345,9 +356,13 @@ void pyefcn_init(int id, char modname[], char errmsg[])
             /* Get the type from the tuple */
             itemobj = PySequence_Fast_GET_ITEM(seqobj, (Py_ssize_t) j); /* borrowed reference */
             switch( (int) PyInt_AsLong(itemobj) ) {
+                case FLOAT_ONEVAL:
+                case FLOAT_ARRAY:
                 case FLOAT_ARG:
                     argtype = FLOAT_ARG;
                     break;
+                case STRING_ONEVAL:
+                case STRING_ARRAY:
                 case STRING_ARG:
                     argtype = STRING_ARG;
                     break;
@@ -401,7 +416,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                     PyErr_Clear();
                     Py_DECREF(seqobj);
                     Py_DECREF(initdict);
-                    sprintf(errmsg, "Invalid \"influences\" value (not None, a tuple, or a list) for ARG%d", j+1);
+                    sprintf(errmsg, "Invalid \"influences\" value (not None, a tuple, or a list) "
+                                    "for ARG%d", j+1);
                     return;
                 }
                 subseqlen = (int) PySequence_Fast_GET_SIZE(subseqobj);
@@ -409,7 +425,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                     Py_DECREF(subseqobj);
                     Py_DECREF(seqobj);
                     Py_DECREF(initdict);
-                    sprintf(errmsg, "Invalid \"influences\" value (tuple or list with more than %d items) for ARG%d", MAX_FERRET_NDIM, j+1);
+                    sprintf(errmsg, "Invalid \"influences\" value (tuple or list with more than %d items) "
+                                    "for ARG%d", MAX_FERRET_NDIM, j+1);
                     return;
                 }
                 for (k = 0; k < subseqlen; k++) {
@@ -423,7 +440,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                         Py_DECREF(subseqobj);
                         Py_DECREF(seqobj);
                         Py_DECREF(initdict);
-                        sprintf(errmsg, "Invalid \"influences\" value (not True or False) for the %s axis of ARG%d", AXIS_NAMES[k], j+1);
+                        sprintf(errmsg, "Invalid \"influences\" value (not True or False) for the %s axis "
+                                        "of ARG%d", AXIS_NAMES[k], j+1);
                         return;
                     }
                 }
@@ -434,8 +452,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
             if ( (axisvals[q] == YES) && (rsltaxes[q] != IMPLIED_BY_ARGS) && (rsltaxes[q] != REDUCED) ) {
                 Py_DECREF(seqobj);
                 Py_DECREF(initdict);
-                sprintf(errmsg, "Invalid YES \"influences\" value (result axis not IMPLIED_BY_ARGS or REDUCED) for the %s axis of ARG%d", 
-                                AXIS_NAMES[k], j+1);
+                sprintf(errmsg, "Invalid YES \"influences\" value (result axis not IMPLIED_BY_ARGS or REDUCED) "
+                                "for the %s axis of ARG%d", AXIS_NAMES[k], j+1);
                 return;
             }
         }
@@ -476,7 +494,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                     PyErr_Clear();
                     Py_DECREF(seqobj);
                     Py_DECREF(initdict);
-                    sprintf(errmsg, "Invalid \"extends\" value (not None, a tuple, or a list) for ARG%d", j+1);
+                    sprintf(errmsg, "Invalid \"extends\" value (not None, a tuple, or a list) "
+                                    "for ARG%d", j+1);
                     return;
                 }
                 subseqlen = (int) PySequence_Fast_GET_SIZE(subseqobj);
@@ -484,7 +503,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                     Py_DECREF(subseqobj);
                     Py_DECREF(seqobj);
                     Py_DECREF(initdict);
-                    sprintf(errmsg, "Invalid \"extends\" value (tuple or list with more than %d items) for ARG%d", MAX_FERRET_NDIM, j+1);
+                    sprintf(errmsg, "Invalid \"extends\" value (tuple or list with more than %d items) "
+                                    "for ARG%d", MAX_FERRET_NDIM, j+1);
                     return;
                 }
                 for (k = 0; k < subseqlen; k++) {
@@ -497,8 +517,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                             Py_DECREF(subseqobj);
                             Py_DECREF(seqobj);
                             Py_DECREF(initdict);
-                            sprintf(errmsg, "Invalid \"extends\" value (not None, a tuple, or a list) for the %s axis of ARG%d", 
-                                            AXIS_NAMES[k], j+1);
+                            sprintf(errmsg, "Invalid \"extends\" value (not None, a tuple, or a list) "
+                                            "for the %s axis of ARG%d", AXIS_NAMES[k], j+1);
                             return;
                         }
                         subsubseqlen = PySequence_Fast_GET_SIZE(subsubseqobj);
@@ -507,8 +527,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                             Py_DECREF(subseqobj);
                             Py_DECREF(seqobj);
                             Py_DECREF(initdict);
-                            sprintf(errmsg, "Invalid \"extends\" value (tuple or list with more that two items) for the %s axis of ARG%d", 
-                                            AXIS_NAMES[k], j+1);
+                            sprintf(errmsg, "Invalid \"extends\" value (tuple or list with more that two items) "
+                                            "for the %s axis of ARG%d", AXIS_NAMES[k], j+1);
                         }
                         deltas[0] = 0; deltas[1] = 0;
                         for (q = 0; q < subsubseqlen; q++) {
@@ -521,11 +541,11 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                                 Py_DECREF(seqobj);
                                 Py_DECREF(initdict);
                                 if ( q == 0 )
-                                    sprintf(errmsg, "Invalid first \"extends\" value (not an int) for the %s axis of ARG%d", 
-                                                    AXIS_NAMES[k], j+1);
+                                    sprintf(errmsg, "Invalid first \"extends\" value (not an int) "
+                                                    "for the %s axis of ARG%d", AXIS_NAMES[k], j+1);
                                 else
-                                    sprintf(errmsg, "Invalid second \"extends\" value (not an int) for the %s axis of ARG%d", 
-                                                    AXIS_NAMES[k], j+1);
+                                    sprintf(errmsg, "Invalid second \"extends\" value (not an int) "
+                                                    "for the %s axis of ARG%d", AXIS_NAMES[k], j+1);
                                 return;
                             }
                             deltas[q] = val;
@@ -535,8 +555,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
                             Py_DECREF(subseqobj);
                             Py_DECREF(seqobj);
                             Py_DECREF(initdict);
-                            sprintf(errmsg, "Invalid \"extends\" value (result axis not IMPLIED_BY_ARGS) for the %s axis of ARG%d", 
-                                            AXIS_NAMES[k], j+1);
+                            sprintf(errmsg, "Invalid \"extends\" value (result axis not IMPLIED_BY_ARGS) "
+                                            "for the %s axis of ARG%d", AXIS_NAMES[k], j+1);
                             return;
                         }
                         q = j+1;
@@ -562,14 +582,16 @@ void pyefcn_init(int id, char modname[], char errmsg[])
             Py_DECREF(seqobj);
             Py_DECREF(keysobj);
             Py_DECREF(initdict);
-            sprintf(errmsg, "Invalid key (not a string) in the dictionary returned from %s in %s", INIT_METHOD_NAME, modname);
+            sprintf(errmsg, "Invalid key (not a string) in the dictionary returned from %s in %s",
+                            INIT_METHOD_NAME, modname);
             return;
         }
         if ( (strcmp(strptr, "numargs") != 0) && (strcmp(strptr, "descript") != 0) &&
              (strcmp(strptr, "axes") != 0) && (strcmp(strptr, "argnames") != 0) &&
              (strcmp(strptr, "argdescripts") != 0) && (strcmp(strptr, "argtypes") != 0) &&
              (strcmp(strptr, "influences") != 0) && (strcmp(strptr, "extends") != 0) ) {
-            sprintf(errmsg, "Invalid key \"%s\" in the dictionary returned from %s in %s", strptr, INIT_METHOD_NAME, modname);
+            sprintf(errmsg, "Invalid key \"%s\" in the dictionary returned from %s in %s",
+                            strptr, INIT_METHOD_NAME, modname);
             Py_DECREF(seqobj);
             Py_DECREF(keysobj);
             Py_DECREF(initdict);

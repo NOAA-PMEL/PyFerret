@@ -61,8 +61,9 @@ void ef_get_single_axis_info_(int *id, int *argnum, int *axisnum,
 void finalize_(void);
 void ef_get_arg_type_(int *id, int *argnum, int *argtype);
 void ef_get_arg_string_(int *id, int *argnum, char *argtext, int maxlen_argtext);
-void get_axis_num_(int *axisnum, int *axisstart, int *axisend, char axisname[], char axisunit[], 
-                   double axiscoords[], int *numcoords, AXISTYPE *axistype, char *errmsg, 
+void ef_get_one_val_(int *id, int *arg, float *val);
+void get_axis_num_(int *axisnum, int *axisstart, int *axisend, char axisname[], char axisunit[],
+                   double axiscoords[], int *numcoords, AXISTYPE *axistype, char *errmsg,
                    int *lenerrmsg, int maxlen_axisname, int maxlen_axisunit, int maxlen_errmsg);
 void get_data_array_params_(char dataname[], int *lendataname, float *memory, int *arraystart,
                             int memlo[MAX_FERRET_NDIM], int memhi[MAX_FERRET_NDIM],
@@ -78,7 +79,7 @@ void get_data_array_time_coords_(int timecoords[][6], CALTYPE *caltype, char axi
                                  int maxlen_axisname, int maxlen_errmsg);
 void get_fer_last_error_info_(int *errval, char errmsg[], int maxlen_errmsg);
 void get_ferret_params_(char errnames[][32], int errvals[], int *numvals);
-void get_time_axis_num_(int *axisnum, int *axisstart, int *axisend, char axisname[], 
+void get_time_axis_num_(int *axisnum, int *axisstart, int *axisend, char axisname[],
                         CALTYPE *calendartype, int axiscoords[][6], int *numcoords,
                         char *errmsg, int *lenerrmsg, int maxlen_axisname, int maxlen_errmsg);
 void init_journal_(int *status);
@@ -94,6 +95,12 @@ void turnoff_verify_(int *status);
 #define COMPUTE_METHOD_NAME "ferret_compute"
 #define CUSTOM_AXES_METHOD_NAME "ferret_custom_axes"
 #define RESULT_LIMITS_METHOD_NAME "ferret_result_limits"
+
+/* My external function argument types */
+#define FLOAT_ARRAY 9
+#define FLOAT_ONEVAL 17
+#define STRING_ARRAY 10
+#define STRING_ONEVAL 18
 
 /*
  * Initialization routine for the ferret python external function associated
@@ -119,6 +126,10 @@ void turnoff_verify_(int *status);
  *     "argnames": N-tuple of names for the input arguments [optional, default: (A, B, ...)]
  *     "argdescripts": N-tuple of descriptions for the input arguments
  *                     [optional, default: no descriptions]
+ *     "argtypes": N-tuple of FLOAT_ARRAY, FLOAT_ONEVAL, STRING_ARRAY, or STRING_ONEVAL,
+ *                 indicating whether the input argument is an array of floating-point values,
+ *                 a single floating point value, an array of strings, or a single string value.
+ *                 [optional; default: FLOAT_ARRAY for every argument]
  *     "influences": N-tuple of 4-tuples of booleans indicating whether the corresponding input
  *                   argument's (X,Y,Z,T) axis influences the result grid's (X,Y,Z,T) axis.
  *                   [optional, default and when None is given for a 4-tuple: True for every axis]

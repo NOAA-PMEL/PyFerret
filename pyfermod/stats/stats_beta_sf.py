@@ -19,13 +19,6 @@ def ferret_init(id):
     return pyferret.stats.getinitdict(DISTRIB_NAME, FUNC_NAME)
 
 
-def ferret_custom_axes(id):
-    """
-    Custom axis definitions for the stats_beta_sf Ferret PyEF
-    """
-    return pyferret.stats.getcustomaxisvals(id, DISTRIB_NAME);
-
-
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):
     """
     Result array assignment for the stats_beta_sf Ferret PyEF

@@ -198,7 +198,7 @@ c Set jj as in plotz based on fine levels.
       i1 = 1
       IF (ilev .GT. 1) THEN
          zlev(ilev) = znpf + dzf* FLOAT(i1-1)
-         DO WHILE ((zlev(ilev) .LE. zlev(ilev-1)) ) 
+         DO WHILE ((zlev(ilev) .LT. zlev(ilev-1)) ) 
 	    i1 = 2
 	    zlev(ilev) = znpchi + dzc* FLOAT(i1-1)
 	 ENDDO
@@ -283,7 +283,7 @@ c Set jj as in plotz based on fine levels.
       i1 = 1
       IF (ilev .GT. 1) THEN
          zlev(ilev) = znpchi + dzc* FLOAT(i1-1)
-         DO WHILE ((zlev(ilev) .LE. zlev(ilev-1)) ) 
+         DO WHILE ((zlev(ilev) .LT. zlev(ilev-1)) ) 
 	    i1 = 2
 	    zlev(ilev) = znpchi + dzc* FLOAT(i1-1)
 	 ENDDO
@@ -324,8 +324,11 @@ c Set jj as in plotz based on fine levels.
       slen = TM_LENSTR1(lev_str)
       if1 = ilev
 
+* If needed then add (inf)
+* If centered and there is (-inf) then add (inf)
+
       nlev2 = ilev
-      IF (zmax .GT. zmpchi) THEN
+      IF ((zmax .GT. zmpchi) .OR. (centered .AND. neginf)) THEN
          posinf = .TRUE.
          zlev(nlev2) = MAX (zlev(nlev2-1), zmax + 1. )
 	 lev_str = lev_str(:slen)//'(inf)'
@@ -336,6 +339,29 @@ c Set jj as in plotz based on fine levels.
 
       lwgt(nlev2) = lwgt(nlev2-1)
       ldig(nlev2) = ldig(nlev2-1)
+
+      IF (centered .AND. (.NOT.posinf)) THEN
+         IF (zlev(nlev2) .EQ. zlev(nlev2-1)) THEN
+	    ilev = ilev - 1
+	    nlev2 = nlev2 - 1
+	 ENDIF
+      ENDIF
+
+* if centered and there is (inf) then add (-inf) if its not there.
+
+      IF ( (centered .AND. posinf) .AND. (.NOT.neginf) ) THEN
+         DO 106 i=ilev,1,-1
+            lwgt(i+1) = lwgt(i)
+            ldig(i+1) = ldig(i)
+            zlev(i+1) = zlev(i)
+ 106     CONTINUE 
+         ilev = ilev + 1
+	 nlev2 = ilev
+	 neginf = .TRUE.
+	 lev_str = '(-inf)'//lev_str(:slen)
+         slen = TM_LENSTR1(lev_str)
+      ENDIF
+
 
 * If a min or max was explicitly set, then chop off the 
 * levels with that setting.
@@ -375,19 +401,20 @@ c Set jj as in plotz based on fine levels.
       ENDIF
 
 * Remove duplicate levels
-      zlast = zlev(1)
       levcount = nlev2
+      zlast = zlev(1)
       do 530 i = 2, nlev2 
          IF ( TM_FPEQ(zlev(i), zlast) ) THEN
-	       do 520 k = i,levcount
+            do 520 k = i,levcount
                zlev(k-1) = zlev(k)
                ldig(k-1) = ldig(k)
                lclr(k-1) = lclr(k)
                lwgt(k-1) = lwgt(k)
  520        CONTINUE
-            levcount = levcount-1
-	 ENDIF
-	 zlast = zlev(i)
+         zlev(k) = 0.
+         levcount = levcount-1
+         ENDIF
+         zlast = zlev(i)
  530  CONTINUE
       nlev2 = levcount
 

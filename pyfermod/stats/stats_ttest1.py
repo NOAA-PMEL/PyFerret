@@ -21,7 +21,7 @@ def ferret_init(id):
                 "argnames": ( "SAMPLE", "POPMEANS", ),
                 "argdescripts": ( "Sample data to compare",
                                   "Proposed population means (averages)", ),
-                "argtypes": ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, ),
+                "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
                 "influences": ( (False, False, False, False),
                                 (False, False, False, False), ),
               }

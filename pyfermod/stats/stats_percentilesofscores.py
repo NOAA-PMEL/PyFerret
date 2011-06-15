@@ -19,7 +19,7 @@ def ferret_init(id):
                 "argnames": ( "SAMPLE", "SCORES", ),
                 "argdescripts": ( "Sample of scores (values)",
                                   "Scores (values) to find percentiles through sample", ),
-                "argtypes": ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, ),
+                "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
                 "influences": ( ( False, False, False, False, ),
                                 ( True,  True,  True,  True, ), ),
               }

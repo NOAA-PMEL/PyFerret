@@ -35,7 +35,7 @@ def ferret_init(id):
                 "argdescripts": ("Sample values for the ordered response data",
                                  "Name of a continuous probability distribution for the order statistic medians",
                                  "Parameters for this continuous probability distribution"),
-                "argtypes": (pyferret.FLOAT_ARG, pyferret.STRING_ARG, pyferret.FLOAT_ARG),
+                "argtypes": (pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY),
                 "influences": ((False, False, False, False),
                                (False, False, False, False),
                                (False, False, False, False)),
@@ -54,7 +54,7 @@ def ferret_custom_axes(id):
         num = axis_info.get("size", -1)
         if num > 1:
             size *= num
-    return ( (1, size, 1, "VALUE_NUM", False, ), (1, 3, 1, "RETURN_NUM", False, ), None, None, )
+    return ( (1, size, 1, "VALUE_NUM", False, ), (1, 3, 1, "OSM,ORD,P", False, ), None, None, )
 
 
 def ferret_compute(id, result, resbdf, inputs, inpbdfs):

@@ -20,7 +20,7 @@ def ferret_init(id):
                 "argnames": ( "VALS", "BINS_TEMPLATE", ),
                 "argdescripts": ( "Values to put into bins and then count",
                                   "Template argument whose one defined axis gives midpoints of bins", ),
-                "argtypes": ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, ),
+                "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
                 "influences": ( ( False, False, False, False, ),
                                 ( True,  True,  True,  True, ), ),
               }

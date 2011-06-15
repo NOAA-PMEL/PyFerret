@@ -21,7 +21,7 @@ def ferret_init(id):
                 "argnames": ( "SAMPLEA", "SAMPLEB", ),
                 "argdescripts": ( "First sample data array",
                                   "Second sample data array", ),
-                "argtypes": ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, ),
+                "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
                 "influences": ( (False, False, False, False),
                                 (False, False, False, False), ),
               }

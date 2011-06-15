@@ -573,55 +573,44 @@ def getinitdict(distribname, funcname):
     distscipyname = getdistname(distribname)
     paramdescripts = getdistparams(distscipyname, None)
     numargs = len(paramdescripts) + 1
+    axes = ( pyferret.AXIS_IMPLIED_BY_ARGS,
+             pyferret.AXIS_IMPLIED_BY_ARGS,
+             pyferret.AXIS_IMPLIED_BY_ARGS,
+             pyferret.AXIS_IMPLIED_BY_ARGS, )
     if ( numargs == 2 ):
         # info for distributions with one parameter
-        descript = "Returns (X=PTS,Y=%s) array of %s for %s prob. distrib." % \
-                   (paramdescripts[0][0], funcreturn, distribname)
-        axes = ( pyferret.AXIS_CUSTOM,
-                 pyferret.AXIS_CUSTOM,
-                 pyferret.AXIS_DOES_NOT_EXIST,
-                 pyferret.AXIS_DOES_NOT_EXIST, )
+        descript = "Returns array of %s for %s prob. distrib." % (funcreturn, distribname)
         argnames = ( "PTS", paramdescripts[0][0], )
         argdescripts = ( "Point(s) at which to %s the %s" % (funcaction, funcreturn),
                          "Parameter(s) defining the %s" % paramdescripts[0][1], )
-        argtypes = ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, )
-        influences = ( ( False, False, False, False, ),
-                       ( False, False, False, False, ), )
+        argtypes = ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, )
+        influences = ( (True, True, True, True, ),
+                       (True, True, True, True, ), )
     elif (numargs == 3):
         # info for distributions with two parameters
-        descript = "Returns (X=PTS,Y=%s,Z=%s) array of %s for %s prob. distrib." % \
-                   (paramdescripts[0][0], paramdescripts[1][0], funcreturn, distribname)
-        axes = ( pyferret.AXIS_CUSTOM,
-                 pyferret.AXIS_CUSTOM,
-                 pyferret.AXIS_CUSTOM,
-                 pyferret.AXIS_DOES_NOT_EXIST, )
+        descript = "Returns array of %s for %s prob. distrib." % (funcreturn, distribname)
         argnames = ( "PTS", paramdescripts[0][0], paramdescripts[1][0], )
         argdescripts = ( "Point(s) at which to %s the %s" % (funcaction, funcreturn),
                          "Parameter(s) defining the %s" % paramdescripts[0][1],
                          "Parameter(s) defining the %s" % paramdescripts[1][1], )
-        argtypes = ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, )
-        influences = ( ( False, False, False, False, ),
-                       ( False, False, False, False, ),
-                       ( False, False, False, False, ), )
+        argtypes = ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, )
+        influences = ( (True, True, True, True, ),
+                       (True, True, True, True, ),
+                       (True, True, True, True, ), )
     elif (numargs == 4):
         # info for distributions with three parameters
-        descript = "Returns (X=PTS,Y=%s,Z=%s,T=%s) array of %s for %s prob. distrib." % \
-                   (paramdescripts[0][0], paramdescripts[1][0], paramdescripts[2][0],
-                    funcreturn, distribname)
-        axes = ( pyferret.AXIS_CUSTOM,
-                 pyferret.AXIS_CUSTOM,
-                 pyferret.AXIS_CUSTOM,
-                 pyferret.AXIS_CUSTOM, )
+        descript = "Returns array of %s for %s prob. distrib." % (funcreturn, distribname)
         argnames = ( "PTS", paramdescripts[0][0], paramdescripts[1][0], paramdescripts[2][0], )
         argdescripts = ( "Point(s) at which to %s the %s" % (funcaction, funcreturn),
                          "Parameter(s) defining the %s" % paramdescripts[0][1],
                          "Parameter(s) defining the %s" % paramdescripts[1][1],
                          "Parameter(s) defining the %s" % paramdescripts[2][1], )
-        argtypes = ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, )
-        influences = ( ( False, False, False, False, ),
-                       ( False, False, False, False, ),
-                       ( False, False, False, False, ),
-                       ( False, False, False, False, ), )
+        argtypes = ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY,
+                     pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, )
+        influences = ( (True, True, True, True, ),
+                       (True, True, True, True, ),
+                       (True, True, True, True, ),
+                       (True, True, True, True, ), )
     else:
         raise ValueError("Unexpected number of arguments: %d" % numargs)
     # Create and return the dictionary
@@ -632,36 +621,6 @@ def getinitdict(distribname, funcname):
              "argdescripts": argdescripts,
              "argtypes": argtypes,
              "influences": influences, }
-
-
-def getcustomaxisvals(id, distribname):
-    """
-    Returns a 4-tuple of custom axis values appropriate for the return value
-    of ferret_custom_axis in a Ferret stats_<disribname>_<funcname> PyEF
-
-    Arguments:
-       distribname - name of the probability distribution
-    """
-    # Get the distribution parameters information
-    distscipyname = getdistname(distribname)
-    paramdescripts = getdistparams(distscipyname, None)
-    numargs = len(paramdescripts) + 1
-    namelist = [ "PTS", None, None, None ]
-    for k in xrange(1, numargs):
-        namelist[k] = paramdescripts[k-1][0]
-    argvals = ( pyferret.ARG1, pyferret.ARG2, pyferret.ARG3, pyferret.ARG4 )
-    axisvals = ( pyferret.X_AXIS, pyferret.Y_AXIS, pyferret.Z_AXIS, pyferret.T_AXIS )
-    customaxisvals = [ None, None, None, None ]
-    for k in xrange(numargs):
-        arglen = 1
-        for axis in axisvals:
-            axis_info = pyferret.get_axis_info(id, argvals[k], axis)
-            num = axis_info.get("size", -1)
-            if num > 0:
-                arglen *= num
-        # if all axes have undefined lengths, assume it is a single value
-        customaxisvals[k] = ( 1, arglen, 1, namelist[k], False )
-    return customaxisvals
 
 
 def getdistribfunc(distrib, funcname):
@@ -692,77 +651,212 @@ def assignresultsarray(distribname, funcname, result, resbdf, inputs, inpbdfs):
     probability distributions defined by parameters in inputs[1:]
     using the abscissa or template values given in inputs[0].
     """
-    ptvals = inputs[0].reshape(-1, order='F')
-    badmask = ( numpy.fabs(ptvals - inpbdfs[0]) < 1.0E-5 )
-    badmask = numpy.logical_or(badmask, numpy.isnan(ptvals))
+    # get the masks for the PTS data
+    pts = inputs[0]
+    badmask = ( numpy.fabs(pts - inpbdfs[0]) < 1.0E-5 )
+    badmask = numpy.logical_or(badmask, numpy.isnan(pts))
     goodmask = numpy.logical_not(badmask)
+    # figure out the axes for the parameters
     numparams = len(inputs) - 1
+    if numparams > 0:
+        par1axis = -1
+        for k in xrange(4):
+            if inputs[1].shape[k] > 1:
+                if par1axis != -1:
+                    raise ValueError("Parameters arrays can have only one defined, non-singular axis")
+                par1axis = k
+        if par1axis >= 0:
+            if pts.shape[par1axis] > 1:
+                raise ValueError("Unexpected error: shape[%d] of PTS and PAR1 both > 1" % par1axis)
+        par1vals = inputs[1].reshape(-1)
+        # temporary results array for a given first parameter
+        tmp1result = numpy.empty(pts.shape, dtype=numpy.float32, order='F')
+        tmp1result[badmask] = resbdf
+    if numparams > 1:
+        par2axis = -1
+        for k in xrange(4):
+            if inputs[2].shape[k] > 1:
+                if par2axis != -1:
+                    raise ValueError("Parameters arrays can have only one defined, non-singular axis")
+                par2axis = k
+        if par2axis >= 0:
+            if pts.shape[par2axis] > 1:
+                raise ValueError("Unexpected error: shape[%d] of PTS and PAR2 both > 1" % par2axis)
+            if par1axis == par2axis:
+                raise ValueError("Unexpected error: shape[%d] of PAR1 and PAR2 both > 1" % par2axis)
+        par2vals = inputs[2].reshape(-1)
+        # temporary results array for a given second parameter and all of the first parameters
+        if par1axis == -1:
+            tmp2result = tmp1result
+        else:
+            if par1axis == 0:
+                shape = ( len(par1vals), tmp1result.shape[1], tmp1result.shape[2], tmp1result.shape[3], )
+            elif par1axis == 1:
+                shape = ( tmp1result.shape[0], len(par1vals), tmp1result.shape[2], tmp1result.shape[3], )
+            elif par1axis == 2:
+                shape = ( tmp1result.shape[0], tmp1result.shape[1], len(par1vals), tmp1result.shape[3], )
+            elif par1axis == 3:
+                shape = ( tmp1result.shape[0], tmp1result.shape[1], tmp1result.shape[2], len(par1vals), )
+            else:
+                raise ValueError("Unexpected par1axis of %d" % par1axis)
+            tmp2result = numpy.empty(shape, dtype=numpy.float32, order='F')
+    if numparams > 2:
+        par3axis = -1
+        for k in xrange(4):
+            if inputs[3].shape[k] > 1:
+                if par3axis != -1:
+                    raise ValueError("Parameters arrays can have only one defined, non-singular axis")
+                par3axis = k
+        if par3axis >= 0:
+            if pts.shape[par3axis] > 1:
+                raise ValueError("Unexpected error: shape[%d] of PTS and PAR3 both > 1" % par3axis)
+            if par1axis == par3axis:
+                raise ValueError("Unexpected error: shape[%d] of PAR1 and PAR3 both > 1" % par3axis)
+            if par2axis == par3axis:
+                raise ValueError("Unexpected error: shape[%d] of PAR2 and PAR3 both > 1" % par3axis)
+        par3vals = inputs[3].reshape(-1)
+        # temporary results array for a given third parameter and all of the first and second parameters
+        if par2axis == -1:
+            tmp3result = tmp2result
+        else:
+            if par2axis == 0:
+                shape = ( len(par2vals), tmp2result.shape[1], tmp2result.shape[2], tmp2result.shape[3], )
+            elif par2axis == 1:
+                shape = ( tmp2result.shape[0], len(par2vals), tmp2result.shape[2], tmp2result.shape[3], )
+            elif par2axis == 2:
+                shape = ( tmp2result.shape[0], tmp2result.shape[1], len(par3vals), tmp3result.shape[3], )
+            elif par3axis == 3:
+                shape = ( tmp3result.shape[0], tmp3result.shape[1], tmp3result.shape[2], len(par3vals), )
+            else:
+                raise ValueError("Unexpected par2axis of %d" % par2axis)
+            tmp3result = numpy.empty(shape, dtype=numpy.float32, order='F')
+    # deal with each number of parameters separately when assigning results
     if numparams == 1:
-        par1vals = inputs[1].reshape(-1, order='F')
-        # check that result is the required shape
-        expshape = ( len(ptvals), len(par1vals), 1, 1 )
-        if result.shape != expshape:
-            raise ValueError("Results array size mismatch; expected: %s; found %s" % \
-                             (str(expshape), str(result.shape)))
-        for j in xrange(expshape[1]):
+        for j in xrange(len(par1vals)):
             try:
+                if math.isnan(par1vals[j]) or (math.fabs(par1vals[j] - inpbdfs[1]) < 1.0E-5):
+                    raise ValueError
                 distrib = getdistrib(distribname, ( par1vals[j], ))
                 distribfunc = getdistribfunc(distrib, funcname)
                 if funcname == "rvs":
-                    # goodmask is one-D
-                    result[goodmask, j, 0, 0] = getdistribfunc(distrib, funcname)(len(goodmask))
+                    tmp1result[goodmask] = getdistribfunc(distrib, funcname)(len(pts[goodmask]))
                 else:
-                    result[goodmask, j, 0, 0] = getdistribfunc(distrib, funcname)(ptvals[goodmask])
-                result[badmask, j, 0, 0] = resbdf
-            except ValueError, msg:
-                # print msg
-                result[:, j, 0, 0] = resbdf
+                    tmp1result[goodmask] = getdistribfunc(distrib, funcname)(pts[goodmask])
+            except ValueError:
+                tmp1result[goodmask] = resbdf
+            # Appropriately assign the tmp1result to result
+            if par1axis == -1:
+                result[:, :, :, :] = tmp1result
+            elif par1axis == 0:
+                result[j, :, :, :] = tmp1result[0, :, :, :]
+            elif par1axis == 1:
+                result[:, j, :, :] = tmp1result[:, 0, :, :]
+            elif par1axis == 2:
+                result[:, :, j, :] = tmp1result[:, :, 0, :]
+            elif par1axis == 3:
+                result[:, :, :, j] = tmp1result[:, :, :, 0]
+            else:
+                raise ValueError("Unexpected par1axis of %d" % par1axis)
     elif numparams == 2:
-        par1vals = inputs[1].reshape(-1, order='F')
-        par2vals = inputs[2].reshape(-1, order='F')
-        # check that result is the required shape
-        expshape = ( len(ptvals), len(par1vals), len(par2vals), 1 )
-        if result.shape != expshape:
-            raise ValueError("Results array size mismatch; expected: %s; found %s" % \
-                             (str(expshape), str(result.shape)))
-        for j in xrange(expshape[1]):
-            for k in xrange(expshape[2]):
+        for k in xrange(len(par2vals)):
+            for j in xrange(len(par1vals)):
                 try:
+                    if math.isnan(par2vals[k]) or (math.fabs(par2vals[k] - inpbdfs[2]) < 1.0E-5) or \
+                       math.isnan(par1vals[j]) or (math.fabs(par1vals[j] - inpbdfs[1]) < 1.0E-5):
+                        raise ValueError
                     distrib = getdistrib(distribname, ( par1vals[j], par2vals[k], ))
                     distribfunc = getdistribfunc(distrib, funcname)
                     if funcname == "rvs":
-                        # goodmask is one-D
-                        result[goodmask, j, k, 0] = getdistribfunc(distrib, funcname)(len(goodmask))
+                        tmp1result[goodmask] = getdistribfunc(distrib, funcname)(len(pts[goodmask]))
                     else:
-                        result[goodmask, j, k, 0] = getdistribfunc(distrib, funcname)(ptvals[goodmask])
-                    result[badmask, j, k, 0] = resbdf
-                except ValueError, msg:
-                    # print msg
-                    result[:, j, k, 0] = resbdf
+                        tmp1result[goodmask] = getdistribfunc(distrib, funcname)(pts[goodmask])
+                except ValueError:
+                    tmp1result[goodmask] = resbdf
+                # Appropriately assign the tmp1result to tmp2result
+                if par1axis == -1:
+                    # in this case tmp2result is tmp1result
+                    pass
+                elif par1axis == 0:
+                    tmp2result[j, :, :, :] = tmp1result[0, :, :, :]
+                elif par1axis == 1:
+                    tmp2result[:, j, :, :] = tmp1result[:, 0, :, :]
+                elif par1axis == 2:
+                    tmp2result[:, :, j, :] = tmp1result[:, :, 0, :]
+                elif par1axis == 3:
+                    tmp2result[:, :, :, j] = tmp1result[:, :, :, 0]
+                else:
+                    raise ValueError("Unexpected par1axis of %d" % par1axis)
+            # Appropriately assign the tmp2result to result
+            if par2axis == -1:
+                result[:, :, :, :] = tmp2result
+            elif par2axis == 0:
+                result[k, :, :, :] = tmp2result[0, :, :, :]
+            elif par2axis == 1:
+                result[:, k, :, :] = tmp2result[:, 0, :, :]
+            elif par2axis == 2:
+                result[:, :, k, :] = tmp2result[:, :, 0, :]
+            elif par2axis == 3:
+                result[:, :, :, k] = tmp2result[:, :, :, 0]
+            else:
+                raise ValueError("Unexpected par2axis of %d" % par2axis)
     elif numparams == 3:
-        par1vals = inputs[1].reshape(-1, order='F')
-        par2vals = inputs[2].reshape(-1, order='F')
-        par3vals = inputs[3].reshape(-1, order='F')
-        # check that result is the required shape
-        expshape = ( len(ptvals), len(par1vals), len(par2vals), len(par3vals) )
-        if result.shape != expshape:
-            raise ValueError("Results array size mismatch; expected: %s; found %s" % \
-                             (str(expshape), str(result.shape)))
-        for j in xrange(expshape[1]):
-            for k in xrange(expshape[2]):
-                for q in xrange(expshape[3]):
+        for q in xrange(len(par3vals)):
+            for k in xrange(len(par2vals)):
+                for j in xrange(len(par1vals)):
                     try:
+                        if math.isnan(par3vals[q]) or (math.fabs(par3vals[q] - inpbdfs[3]) < 1.0E-5) or \
+                           math.isnan(par2vals[k]) or (math.fabs(par2vals[k] - inpbdfs[2]) < 1.0E-5) or \
+                           math.isnan(par1vals[j]) or (math.fabs(par1vals[j] - inpbdfs[1]) < 1.0E-5):
+                            raise ValueError
                         distrib = getdistrib(distribname, ( par1vals[j], par2vals[k], par3vals[q], ))
                         distribfunc = getdistribfunc(distrib, funcname)
                         if funcname == "rvs":
-                            # goodmask is one-D
-                            result[goodmask, j, k, q] = getdistribfunc(distrib, funcname)(len(goodmask))
+                            tmp1result[goodmask] = getdistribfunc(distrib, funcname)(len(pts[goodmask]))
                         else:
-                            result[goodmask, j, k, q] = getdistribfunc(distrib, funcname)(ptvals[goodmask])
-                        result[badmask, j, k, q] = resbdf
-                    except ValueError, msg:
-                        # print msg
-                        result[:, j, k, q] = resbdf
+                            tmp1result[goodmask] = getdistribfunc(distrib, funcname)(pts[goodmask])
+                    except ValueError:
+                        tmp1result[goodmask] = resbdf
+                    # Appropriately assign the tmp1result to tmp2result
+                    if par1axis == -1:
+                        # in this case tmp2result is tmp1result
+                        pass
+                    elif par1axis == 0:
+                        tmp2result[j, :, :, :] = tmp1result[0, :, :, :]
+                    elif par1axis == 1:
+                        tmp2result[:, j, :, :] = tmp1result[:, 0, :, :]
+                    elif par1axis == 2:
+                        tmp2result[:, :, j, :] = tmp1result[:, :, 0, :]
+                    elif par1axis == 3:
+                        tmp2result[:, :, :, j] = tmp1result[:, :, :, 0]
+                    else:
+                        raise ValueError("Unexpected par1axis of %d" % par1axis)
+                # Appropriately assign the tmp2result to tmp3result
+                if par2axis == -1:
+                    # in this case tmp3result is tmp2result
+                    pass
+                elif par2axis == 0:
+                    tmp3result[k, :, :, :] = tmp2result[0, :, :, :]
+                elif par2axis == 1:
+                    tmp3result[:, k, :, :] = tmp2result[:, 0, :, :]
+                elif par2axis == 2:
+                    tmp3result[:, :, k, :] = tmp2result[:, :, 0, :]
+                elif par2axis == 3:
+                    tmp3result[:, :, :, k] = tmp2result[:, :, :, 0]
+                else:
+                    raise ValueError("Unexpected par2axis of %d" % par2axis)
+            # Appropriately assign the tmp3result to result
+            if par3axis == -1:
+                result[:, :, :, :] = tmp3result
+            elif par3axis == 0:
+                result[q, :, :, :] = tmp3result[0, :, :, :]
+            elif par3axis == 1:
+                result[:, q, :, :] = tmp3result[:, 0, :, :]
+            elif par3axis == 2:
+                result[:, :, q, :] = tmp3result[:, :, 0, :]
+            elif par3axis == 3:
+                result[:, :, :, q] = tmp3result[:, :, :, 0]
+            else:
+                raise ValueError("Unexpected par3axis of %d" % par3axis)
     else:
         raise ValueError("Unexpected number of parameters: %d" % numparams)
 
@@ -785,9 +879,9 @@ if __name__ == "__main__":
 
     # Test the distribution scipy name and parameters given to getdistrib
     # give the expected distribution.  (Primarily that the parameters
-    # are interpreted and assigned correctly.)  Testing of the long names
-    # is performed by the stats_helper.py script.
-
+    # are interpreted and assigned correctly.)
+    # Testing of the long names is performed by the stats_helper.py script.
+    # Testing of assignresultsarray is done in the stats_norm_*.py scipts.
 
     # Beta distribution
     distname = "beta"

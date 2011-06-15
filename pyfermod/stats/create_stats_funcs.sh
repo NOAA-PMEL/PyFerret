@@ -27,7 +27,7 @@ def create_all_scripts():
     not already exist, for all the supported distributions and functions.
     """
     # List of supported distributions
-    distnamelist = pyferret.stats.getdistname(None, None)
+    distnamelist = pyferret.stats.getdistname(None)
     # List of supported functions
     funcnamelist  = [ ( "cdf", "cumulative density function values", ),
                       ( "isf", "inverse survival function values", ),
@@ -38,9 +38,9 @@ def create_all_scripts():
                       ( "rvs", "random variates", ), ]
     # Loop of the list of distributions and functions, creating the script
     # if it does not exist and if the function exists for that distribution.
-    for ( distname, distlongname, ) in distnamelist:
-        # distname = nametuple[0]
-        # distlongname = nametuple[1]
+    for nametuple in distnamelist:
+        distname = nametuple[0]
+        distlongname = nametuple[1]
         for (funcname, funcreturn) in funcnamelist:
             try:
                 # Verify the function exists for the distribution.

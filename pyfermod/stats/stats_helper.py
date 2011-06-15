@@ -19,9 +19,9 @@ def ferret_init(id):
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "PDNAME", ),
                 "argdescripts": ( "Name of a probability distribution (or blank for all)", ),
-                "argtypes": ( pyferret.STRING_ARG, ),
+                "argtypes": ( pyferret.STRING_ONEVAL, ),
                 "influences": ( (False,  False,  False,  False), ),
-                "resulttype": pyferret.STRING_ARG,
+                "resulttype": pyferret.STRING_ARRAY,
               }
     return retdict
 

@@ -22,7 +22,7 @@ def ferret_init(id):
                 "argdescripts": ("Points at which to calculate the probability density function values",
                                  "Name of a continuous probability distribution",
                                  "Parameters for this continuous probability distribution"),
-                "argtypes": (pyferret.FLOAT_ARG, pyferret.STRING_ARG, pyferret.FLOAT_ARG),
+                "argtypes": (pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY),
                 "influences": ((True,  True,  True,  True),
                                (False, False, False, False),
                                (False, False, False, False)),

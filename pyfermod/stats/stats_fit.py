@@ -23,7 +23,7 @@ def ferret_init(id):
                 "argdescripts": ( "Values to fit with the probability distribution",
                                   "Name of the probability distribution type to use",
                                   "Initial parameter estimates for this probability distribution", ),
-                "argtypes": ( pyferret.FLOAT_ARG, pyferret.STRING_ARG, pyferret.FLOAT_ARG, ),
+                "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY, ),
                 "influences": ( ( False, False, False, False, ),
                                 ( False, False, False, False, ),
                                 ( False, False, False, False, ), ),

@@ -22,7 +22,7 @@ def ferret_init(id):
                 "argdescripts": ("Probabilities (0-1) at which to calculate the percent point function values",
                                  "Name of a probability distribution",
                                  "Parameters for this probability distribution"),
-                "argtypes": (pyferret.FLOAT_ARG, pyferret.STRING_ARG, pyferret.FLOAT_ARG),
+                "argtypes": (pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY),
                 "influences": ((True,  True,  True,  True),
                                (False, False, False, False),
                                (False, False, False, False)),

@@ -20,7 +20,7 @@ def ferret_init(id):
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "VALUES", ),
                 "argdescripts": ( "Array of values to find the statistical values of", ),
-                "argtypes": ( pyferret.FLOAT_ARG, ),
+                "argtypes": ( pyferret.FLOAT_ARRAY, ),
                 "influences": ( ( False, False, False, False, ), )
               }
     return retdict

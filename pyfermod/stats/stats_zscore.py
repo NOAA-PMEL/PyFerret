@@ -22,7 +22,7 @@ def ferret_init(id):
                           pyferret.AXIS_IMPLIED_BY_ARGS, ),
                 "argnames": ( "VALUES", ),
                 "argdescripts": ( "Array of data values", ),
-                "argtypes": ( pyferret.FLOAT_ARG, ),
+                "argtypes": ( pyferret.FLOAT_ARRAY, ),
                 "influences": ( (True,  True,  True,  True), ),
               }
     return retdict

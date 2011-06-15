@@ -21,7 +21,7 @@ def ferret_init(id):
                 "argnames": ( "XVALS", "YVALS", ),
                 "argdescripts": ( "Abscissa values for the linear regression fit",
                                   "Ordinate values for the linear regression fit", ),
-                "argtypes": ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, ),
+                "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
                 "influences": ( ( False, False, False, False, ),
                                 ( False, False, False, False, ), ),
               }

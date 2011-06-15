@@ -36,6 +36,9 @@
 #define PY_ARRAY_UNIQUE_SYMBOL pyferret_ARRAY_API
 #define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
 #include "pyferret.h"
 #include "EF_Util.h"
 
@@ -49,14 +52,21 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
 {
     PyObject *nameobj;
     PyObject *usermod;
-    int j, k;
-    int argtype;
-    char argtext[2048];
-    npy_intp shape[MAX_FERRET_NDIM];
-    npy_intp strides[MAX_FERRET_NDIM];
-    int itemsize;
-    int datatype;
-    int flags;
+    PyObject *initdict;
+    PyObject *typetuple;
+    PyObject *typeobj;
+    int       j, k;
+    int       datatypes[EF_MAX_COMPUTE_ARGS+1];
+    npy_intp  shape[MAX_FERRET_NDIM];
+    npy_intp  strides[MAX_FERRET_NDIM];
+    int       itemsize;
+    int       flags;
+    float    *dataptr;
+    int       maxlength;
+    int       length;
+    double   *dptr;
+    npy_intp  d0, d1, d2, d3;
+    npy_intp  indices[4];
     PyObject *ndarrays[EF_MAX_COMPUTE_ARGS];
     PyObject *inpbadvals_ndarray;
     PyObject *resbadval_ndarray;
@@ -85,19 +95,172 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
         return;
     }
 
+    /* Call the initialization method to find out the data types */
+    initdict = PyObject_CallMethod(usermod, INIT_METHOD_NAME, "i", id);
+    if ( initdict == NULL ) {
+        Py_DECREF(usermod);
+        sprintf(errmsg, "Error when calling %s in %s: %s", INIT_METHOD_NAME, modname, pyefcn_get_error());
+        return;
+    }
+    /* Currently the result has to be FLOAT_ARRAY */
+    datatypes[0] = FLOAT_ARRAY;
+    /* Find out the argument types */
+    typetuple = PyDict_GetItemString(initdict, "argtypes"); /* borrowed reference */
+    /* If typetuple is NULL, the key is not present but no exception was raised */
+    j = 1;
+    if ( typetuple != NULL ) {
+        for ( ; j < numarrays; j++) {
+            /* Get the type of this argument */
+            typeobj = PySequence_GetItem(typetuple, (Py_ssize_t) (j-1));
+            if ( typeobj == NULL ) {
+                PyErr_Clear();
+                break;
+            }
+            datatypes[j] = (int) PyInt_AsLong(typeobj);
+            Py_DECREF(typeobj);
+        }
+    }
+    /* Assign the default FLOAT_ARRAY for any unspecified types */
+    for ( ; j < numarrays; j++)
+        datatypes[j] = FLOAT_ARRAY;
+    Py_DECREF(initdict);
+
     /* Create the Python objects for the inputs and result. */
     for (j = 0; j < numarrays; j++) {
-        if ( j > 0 ) {
-            argtype = -1;
-            ef_get_arg_type_(&id, &j, &argtype);
-            if ( argtype == STRING_ARG ) {
-                /* String argument; just create a PyString for this argument "array" */
-                /* Assumes gcc standard for passing Hollerith strings */
-                ef_get_arg_string_(&id, &j, argtext, 2048);
-                for (k = 2048; k > 0; k--)
-                    if ( ! isspace(argtext[k-1]) )
+        switch( datatypes[j] ) {
+            case FLOAT_ARRAY:
+            case FLOAT_ARG:
+                /* Get the dimensions of the array */
+                for (k = 0; k < MAX_FERRET_NDIM; k++)
+                    shape[k] = (npy_intp) ((stephi[j][k] - steplo[j][k] + incr[j][k]) / (incr[j][k]));
+                /* Get the strides through the passed memory as a (float *) */
+                strides[0] = 1;
+                for (k = 0; k < 3; k++)
+                    strides[k+1] = strides[k] * (npy_intp) (memhi[j][k] - memlo[j][k] + 1);
+                /* Get the actual starting point in the array */
+                dataptr = data[j];
+                for (k = 0; k < MAX_FERRET_NDIM; k++)
+                    dataptr += strides[k] * (npy_intp) (steplo[j][k] - memlo[j][k]);
+                /* Convert to strides through places in memory to be assigned, and as a (byte *) */
+                itemsize = sizeof(float);
+                for (k = 0; k < MAX_FERRET_NDIM; k++)
+                    strides[k] *= (npy_intp) (incr[j][k] * itemsize);
+                /* Get the flags for the array - only results can be written to; others are read-only */
+                for (k = 0; k < MAX_FERRET_NDIM; k++)
+                    if ( (incr[j][k] != 1) || (steplo[j][k] != memlo[j][k]) )
                         break;
-                ndarrays[j] = PyString_FromStringAndSize(argtext, k);
+                if ( k < MAX_FERRET_NDIM )
+                    flags = NPY_ALIGNED | NPY_NOTSWAPPED;
+                else
+                    flags = NPY_F_CONTIGUOUS | NPY_ALIGNED | NPY_NOTSWAPPED;
+                if ( j == 0 )
+                    flags = flags | NPY_WRITEABLE;
+                /* Create a PyArray object around the array */
+                ndarrays[j] = PyArray_New(&PyArray_Type, MAX_FERRET_NDIM, shape, NPY_FLOAT,
+                                          strides, dataptr, itemsize, flags, NULL);
+                if ( ndarrays[j] == NULL ) {
+                    /* Problem - release references to the previous PyArray objects, assign errmsg, and return */
+                    PyErr_Clear();
+                    sprintf(errmsg, "Unable to create ndarray[%d]", j);
+                    while ( j > 0 ) {
+                        j--;
+                        Py_DECREF(ndarrays[j]);
+                    }
+                    Py_DECREF(usermod);
+                    return;
+                }
+                break;
+            case FLOAT_ONEVAL:
+                assert( j > 0 );
+                /* Sinple float argument; just create a PyFloat for this argument */
+                ndarrays[j] = PyFloat_FromDouble((double) (data[j][0]));
+                if ( ndarrays[j] == NULL ) {
+                    /* Problems - Release references to the previous PyArray objects, assign errmsg, and return. */
+                    PyErr_Clear();
+                    sprintf(errmsg, "Problems creating a Python float from input argument %d", j);
+                    while ( j > 0 ) {
+                        j--;
+                        Py_DECREF(ndarrays[j]);
+                    }
+                    Py_DECREF(usermod);
+                    return;
+                }
+                break;
+            case STRING_ARRAY:
+                assert( j > 0 );
+                /* Get the dimensions of the array */
+                for (k = 0; k < MAX_FERRET_NDIM; k++)
+                    shape[k] = (npy_intp) ((stephi[j][k] - steplo[j][k] + incr[j][k]) / (incr[j][k]));
+                /* Get the strides through the passed memory as a (double *) */
+                strides[0] = 1;
+                for (k = 0; k < 3; k++)
+                    strides[k+1] = strides[k] * (npy_intp) (memhi[j][k] - memlo[j][k] + 1);
+                /* Get the actual starting point in the array */
+                dptr = (double *) (data[j]);
+                for (k = 0; k < MAX_FERRET_NDIM; k++)
+                    dptr += strides[k] * (npy_intp) (steplo[j][k] - memlo[j][k]);
+                dataptr = (float *) dptr;
+                /* Get the length of the longest string */
+                maxlength = 0;
+                for (d3 = 0; d3 < shape[3] * strides[3]; d3 += strides[3]) {
+                    for (d2 = 0; d2 < shape[2] * strides[2]; d2 += strides[2]) {
+                        for (d1 = 0; d1 < shape[1] * strides[1]; d1 += strides[1]) {
+                            for (d0 = 0; d0 < shape[0] * strides[0]; d0 += strides[0]) {
+                                /*
+                                 * The data array values are pointers to strings,
+                                 * but is cast as an array of doubles
+                                 */
+                                dptr = ((double *) dataptr) + d0 + d1 + d2 + d3;
+                                length = strlen(*((char **) dptr));
+                                if ( maxlength < length )
+                                    maxlength = length;
+                            }
+                        }
+                    }
+                }
+                /* Convert to the next larger multiple of 8 */
+                maxlength  = (maxlength + 8) / 8;
+                maxlength *= 8;
+                /* Create a PyArray object of strings to hold a copy of the data */
+                itemsize = maxlength * sizeof(char);
+                ndarrays[j] = PyArray_New(&PyArray_Type, MAX_FERRET_NDIM, shape, NPY_STRING,
+                                          NULL, NULL, itemsize, NPY_FARRAY_RO, NULL);
+                if ( ndarrays[j] == NULL ) {
+                    /* Problem - release references to the previous PyArray objects, assign errmsg, and return */
+                    PyErr_Clear();
+                    sprintf(errmsg, "Unable to create ndarray[%d]", j);
+                    while ( j > 0 ) {
+                        j--;
+                        Py_DECREF(ndarrays[j]);
+                    }
+                    Py_DECREF(usermod);
+                    return;
+                }
+                /* Assign all the strings in the array */
+                indices[3] = 0;
+                for (d3 = 0; d3 < shape[3] * strides[3]; d3 += strides[3]) {
+                    indices[2] = 0;
+                    for (d2 = 0; d2 < shape[2] * strides[2]; d2 += strides[2]) {
+                        indices[1] = 0;
+                        for (d1 = 0; d1 < shape[1] * strides[1]; d1 += strides[1]) {
+                            indices[0] = 0;
+                            for (d0 = 0; d0 < shape[0] * strides[0]; d0 += strides[0]) {
+                                dptr = ((double *) dataptr) + d0 + d1 + d2 + d3;
+                                strcpy((char *) PyArray_GetPtr(ndarrays[j], indices), *((char **) dptr));
+                                (indices[0])++;
+                            }
+                            (indices[1])++;
+                        }
+                        (indices[2])++;
+                    }
+                    (indices[3])++;
+                }
+                break;
+            case STRING_ONEVAL:
+            case STRING_ARG:
+                assert( j > 0 );
+                /* String argument; just create a PyString for this argument */
+                ndarrays[j] = PyString_FromString(*((char **) (data[j])));
                 if ( ndarrays[j] == NULL ) {
                     /* Problems - Release references to the previous PyArray objects, assign errmsg, and return. */
                     PyErr_Clear();
@@ -109,65 +272,17 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
                     Py_DECREF(usermod);
                     return;
                 }
-                /* Done with this string input argument */
-                continue;
-            }
-            if ( argtype != FLOAT_ARG ) {
-                /*
-                 * Unknown type or error getting the type (invalid id).  Release references
-                 * to the previous PyArray objects, assign errmsg, and return.
-                 */
+                break;
+            default:
+                /* Unknown type - Release references to the previous PyArray objects, assign errmsg, and return. */
                 PyErr_Clear();
-                if ( argtype == -1 )
-                    sprintf(errmsg, "Invalid function id %d", id);
-                else
-                    sprintf(errmsg, "Unexpected error: unknown argtype %d for arg %d", argtype, j);
+                sprintf(errmsg, "Unexpected error: unknown datatypes[%d] of %d", j, datatypes[j]);
                 while ( j > 0 ) {
                     j--;
                     Py_DECREF(ndarrays[j]);
                 }
                 Py_DECREF(usermod);
                 return;
-            }
-        }
-        /* Create a PyArray object around the Fortran data array */
-        /* Gets the dimensions of the array */
-        for (k = 0; k < MAX_FERRET_NDIM; k++)
-            shape[k] = (npy_intp) ((stephi[j][k] - steplo[j][k] + incr[j][k]) / (incr[j][k]));
-        /* Get the strides through the passed memory as a (float *) */
-        strides[0] = 1;
-        for (k = 0; k < 3; k++)
-            strides[k+1] = strides[k] * (npy_intp) (memhi[j][k] - memlo[j][k] + 1);
-        /* Get the actual starting point in the array */
-        for (k = 0; k < MAX_FERRET_NDIM; k++)
-            data[j] += strides[k] * (npy_intp) (steplo[j][k] - memlo[j][k]);
-        /* Convert to strides through places in memory to be assigned, and as a (byte *) */
-        datatype = NPY_FLOAT;
-        itemsize = sizeof(float);
-        for (k = 0; k < MAX_FERRET_NDIM; k++)
-            strides[k] *= (npy_intp) (incr[j][k] * itemsize);
-        /* Get the flags for the array - only the results array can be written to; the others are read-only */
-        for (k = 0; k < MAX_FERRET_NDIM; k++)
-            if ( (incr[j][k] != 1) || (steplo[j][k] != memlo[j][k]) )
-                break;
-        if ( k < MAX_FERRET_NDIM )
-            flags = NPY_ALIGNED | NPY_NOTSWAPPED;
-        else
-            flags = NPY_F_CONTIGUOUS | NPY_ALIGNED | NPY_NOTSWAPPED;
-        if ( j == 0 )
-            flags = flags | NPY_WRITEABLE;
-        /* Create a PyArray object around the array */
-        ndarrays[j] = PyArray_New(&PyArray_Type, MAX_FERRET_NDIM, shape, datatype, strides, data[j], itemsize, flags, NULL);
-        if ( ndarrays[j] == NULL ) {
-            /* Problem - release references to the previous PyArray objects, assign errmsg, and return */
-            PyErr_Clear();
-            sprintf(errmsg, "Unable to create ndarray[%d]", j);
-            while ( j > 0 ) {
-                j--;
-                Py_DECREF(ndarrays[j]);
-            }
-            Py_DECREF(usermod);
-            return;
         }
     }
 
@@ -179,11 +294,11 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
 
     /* Create PyArray objects around the input bad values array and the result bad value */
     shape[0] = numarrays - 1;
-    datatype = NPY_FLOAT;
     strides[0] = sizeof(float);
     itemsize = sizeof(float);
     flags = NPY_FARRAY_RO;
-    inpbadvals_ndarray = PyArray_New(&PyArray_Type, 1, shape, datatype, strides, &(badvals[1]), itemsize, flags, NULL);
+    inpbadvals_ndarray = PyArray_New(&PyArray_Type, 1, shape, NPY_FLOAT,
+                                     strides, &(badvals[1]), itemsize, flags, NULL);
     if ( inpbadvals_ndarray == NULL ) {
         /* Problem - release references to the previous PyArray objects, assign errmsg, and return */
         PyErr_Clear();
@@ -194,7 +309,8 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
         return;
     }
     shape[0] = 1;
-    resbadval_ndarray = PyArray_New(&PyArray_Type, 1, shape, datatype, strides, badvals, itemsize, flags, NULL);
+    resbadval_ndarray = PyArray_New(&PyArray_Type, 1, shape, NPY_FLOAT,
+                                    strides, badvals, itemsize, flags, NULL);
     if ( resbadval_ndarray == NULL ) {
         /* Problem - release references to the previous PyArray objects, assign errmsg, and return */
         PyErr_Clear();
@@ -211,7 +327,8 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
 
     /* Call the ferret_compute function in the module */
     nameobj = PyString_FromString(COMPUTE_METHOD_NAME);
-    result = PyObject_CallMethodObjArgs(usermod, nameobj, idobj, ndarrays[0], resbadval_ndarray, inpobj, inpbadvals_ndarray, NULL);
+    result = PyObject_CallMethodObjArgs(usermod, nameobj, idobj, ndarrays[0], resbadval_ndarray,
+                                                                 inpobj, inpbadvals_ndarray, NULL);
 
     /* Release all the PyObjects no longer needed */
     Py_XDECREF(result);

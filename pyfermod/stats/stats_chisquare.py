@@ -23,7 +23,7 @@ def ferret_init(id):
                 "argdescripts": ( "Sample counts of categorical data",
                                   "Expected counts or relative frequencies (will be adjusted)",
                                   "Difference from standard (N-1) degrees of freedom (num. computed parameters)", ),
-                "argtypes": ( pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, pyferret.FLOAT_ARG, ),
+                "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, pyferret.FLOAT_ARRAY, ),
                 "influences": ( (False, False, False, False),
                                 (False, False, False, False),
                                 (False, False, False, False), ),

@@ -23,7 +23,7 @@ def ferret_init(id):
                 "argdescripts": ( "Sample data array",
                                   "Name of a continuous probability distribution",
                                   "Parameters for this continuous probability distribution"),
-                "argtypes": ( pyferret.FLOAT_ARG, pyferret.STRING_ARG, pyferret.FLOAT_ARG, ),
+                "argtypes": ( pyferret.FLOAT_ARRAY, pyferret.STRING_ONEVAL, pyferret.FLOAT_ARRAY, ),
                 "influences": ( (False, False, False, False),
                                 (False, False, False, False),
                                 (False, False, False, False), ),

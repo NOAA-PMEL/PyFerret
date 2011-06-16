@@ -60,9 +60,6 @@
 
 # =========== Initially make no modifications below this line ===========
 
-#  Default Ferret document browser
-   export FER_WEB_BROWSER="netscape -ncols 60"
-
    export FER_EXTERNAL_FUNCTIONS="$FER_DIR/ext_func/libs"
 
    export FER_GO=". $FER_DIR/go $FER_DIR/examples $FER_DIR/contrib"
@@ -71,7 +68,6 @@
    export FER_DESCR=". $FER_DSETS/descr"
    export FER_GRIDS=". $FER_DSETS/grids"
 
-   export TMAP="$FER_DIR/fmt"
    export PLOTFONTS="$FER_DIR/ppl/fonts"
    export FER_FONTS="$FER_DIR/ppl/fonts"
    export SPECTRA="$FER_DIR/ppl"         # for old ferret versions

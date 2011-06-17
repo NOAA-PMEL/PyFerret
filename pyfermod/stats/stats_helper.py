@@ -13,6 +13,8 @@ def ferret_init(id):
     """
     retdict = { "numargs": 1,
                 "descript": "Help on probability distribution names or parameters",
+                "restype": pyferret.STRING_ARRAY,
+                "resstrlen": 256,
                 "axes": ( pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST,
@@ -21,7 +23,6 @@ def ferret_init(id):
                 "argdescripts": ( "Name of a probability distribution (or blank for all)", ),
                 "argtypes": ( pyferret.STRING_ONEVAL, ),
                 "influences": ( (False,  False,  False,  False), ),
-                "resulttype": pyferret.STRING_ARRAY,
               }
     return retdict
 
@@ -100,11 +101,12 @@ def print_help():
     Print the stats_helper messages to console (using print in Python).
     This is also designed to test the other functions of this module.
     """
-    dummy = ferret_init(0)
+    info = ferret_init(0)
+    stype = "S%d" % info["resstrlen"]
     sizetuple = ferret_result_limits(0)
     max_strings = sizetuple[0][1]
     distrib_array = numpy.empty((max_strings, 1, 1, 1), \
-                                dtype=numpy.dtype('S128'), order='F')
+                                dtype=numpy.dtype(stype), order='F')
     # Some initialization for testing
     for k in xrange(max_strings):
         distrib_array[k, 0, 0, 0] = "Unassigned %d" % k

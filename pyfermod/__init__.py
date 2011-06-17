@@ -249,7 +249,7 @@ def init(arglist=None, enterferret=True):
                   "stats_ttest2ind",
                   "stats_ttest2rel",
                   "stats_zscore",
-                  # "stats_helper",
+                  "stats_helper",
                 )
 
     my_metaname = None
@@ -1334,6 +1334,12 @@ def ferret_pyfunc():
         Returns a dictionary defining the following keys:
             "numargs":      number of input arguments [1 - 9; required]
             "descript":     string description of the function [required]
+            "restype":      one of FLOAT_ARRAY or STRING_ARRAY, indicating whether
+                            the result is an array of floating-point values or strings
+                            [optional, default FLOAT_ARRAY]
+            "resstrlen":    if the result type is an array of strings, this specifies
+                            the (maximum) length of the strings in the array
+                            [optional, default: 128]
             "axes":         4-tuple (X,Y,Z,T) of result grid axis defining values,
                             which are:
                                     AXIS_ABSTRACT:        indexed, ferret_result_limits

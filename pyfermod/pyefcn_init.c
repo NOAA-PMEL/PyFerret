@@ -50,6 +50,8 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     PyObject  *usermod;
     PyObject  *initdict;
     int        num_args;
+    int        restype;
+    int        resstrlen;
     char      *strptr;
     char       descript[EF_MAX_DESCRIPTION_LENGTH];
     PyObject  *seqobj;
@@ -150,6 +152,46 @@ void pyefcn_init(int id, char modname[], char errmsg[])
     strncpy(descript, strptr, EF_MAX_DESCRIPTION_LENGTH);
     descript[EF_MAX_DESCRIPTION_LENGTH - 1] = '\0';
     ef_set_desc_sub_(&id, descript);
+
+    /*
+     * "restype": type of the result argument [optional, default: FLOAT_ARRAY]
+     */
+    valobj = PyDict_GetItemString(initdict, "restype"); /* borrowed reference */
+    if ( valobj != NULL ) {
+        restype = (int) PyInt_AsLong(valobj);
+        if ( restype == FLOAT_ARRAY ) {
+            restype = FLOAT_RETURN;
+        }
+        else if ( restype == STRING_ARRAY ) {
+            restype = STRING_RETURN;
+        }
+        else {
+            PyErr_Clear();
+            Py_DECREF(initdict);
+            strcpy(errmsg, "Invalid \"restype\" value (not FLOAT_ARRAY nor STRING_ARRAY)");
+            return;
+        }
+    }
+    else {
+        /* Key not present but no error raised */
+        restype = FLOAT_RETURN;
+    }
+    ef_set_result_type_(&id, &restype);
+
+    /*
+     * "resstrlen": (maximum) length of strings in the result string array [optional]
+     * Not used here; just check the value if given.  Default assigned by pyefcn_compute
+     */
+    valobj = PyDict_GetItemString(initdict, "resstrlen"); /* borrowed reference */
+    if ( valobj != NULL ) {
+        resstrlen = (int) PyInt_AsLong(valobj);
+        if ( resstrlen < 1 ) {
+            PyErr_Clear();
+            Py_DECREF(initdict);
+            strcpy(errmsg, "Invalid \"resstrlen\" value (not a positive integer)");
+            return;
+        }
+    }
 
     /*
      * "axes": 4-tuple (X,Y,Z,T) of result grid axis defining values:
@@ -587,6 +629,7 @@ void pyefcn_init(int id, char modname[], char errmsg[])
             return;
         }
         if ( (strcmp(strptr, "numargs") != 0) && (strcmp(strptr, "descript") != 0) &&
+             (strcmp(strptr, "restype") != 0) && (strcmp(strptr, "resstrlen") != 0) &&
              (strcmp(strptr, "axes") != 0) && (strcmp(strptr, "argnames") != 0) &&
              (strcmp(strptr, "argdescripts") != 0) && (strcmp(strptr, "argtypes") != 0) &&
              (strcmp(strptr, "influences") != 0) && (strcmp(strptr, "extends") != 0) ) {

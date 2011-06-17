@@ -57,6 +57,7 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
     PyObject *typeobj;
     int       j, k;
     int       datatypes[EF_MAX_COMPUTE_ARGS+1];
+    int       resstrlen;
     npy_intp  shape[MAX_FERRET_NDIM];
     npy_intp  strides[MAX_FERRET_NDIM];
     int       itemsize;
@@ -73,6 +74,7 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
     PyObject *idobj;
     PyObject *inpobj;
     PyObject *result;
+    char     *strptr;
 
     /* Sanity check */
     if ( (numarrays < 2) || (numarrays > EF_MAX_COMPUTE_ARGS) ) {
@@ -102,11 +104,21 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
         sprintf(errmsg, "Error when calling %s in %s: %s", INIT_METHOD_NAME, modname, pyefcn_get_error());
         return;
     }
-    /* Currently the result has to be FLOAT_ARRAY */
-    datatypes[0] = FLOAT_ARRAY;
+    /* Get the result type - default FLOAT_ARRAY */
+    typeobj = PyDict_GetItemString(initdict, "restype"); /* borrowed reference */
+    if ( typeobj != NULL )
+        datatypes[0] = (int) PyInt_AsLong(typeobj);
+    else
+        datatypes[0] = FLOAT_ARRAY;
+    /* Get the (maximum) length of strings in a string result array - default 128 */
+    typeobj = PyDict_GetItemString(initdict, "resstrlen"); /* borrowed reference */
+    if ( typeobj != NULL )
+        resstrlen = (int) PyInt_AsLong(typeobj);
+    else
+        resstrlen = 128;
     /* Find out the argument types */
     typetuple = PyDict_GetItemString(initdict, "argtypes"); /* borrowed reference */
-    /* If typetuple is NULL, the key is not present but no exception was raised */
+    /* If typetuple is NULL, the key is not present but no error was raised */
     j = 1;
     if ( typetuple != NULL ) {
         for ( ; j < numarrays; j++) {
@@ -187,7 +199,6 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
                 }
                 break;
             case STRING_ARRAY:
-                assert( j > 0 );
                 /* Get the dimensions of the array */
                 for (k = 0; k < MAX_FERRET_NDIM; k++)
                     shape[k] = (npy_intp) ((stephi[j][k] - steplo[j][k] + incr[j][k]) / (incr[j][k]));
@@ -200,60 +211,76 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
                 for (k = 0; k < MAX_FERRET_NDIM; k++)
                     dptr += strides[k] * (npy_intp) (steplo[j][k] - memlo[j][k]);
                 dataptr = (float *) dptr;
-                /* Get the length of the longest string */
-                maxlength = 0;
-                for (d3 = 0; d3 < shape[3] * strides[3]; d3 += strides[3]) {
-                    for (d2 = 0; d2 < shape[2] * strides[2]; d2 += strides[2]) {
-                        for (d1 = 0; d1 < shape[1] * strides[1]; d1 += strides[1]) {
-                            for (d0 = 0; d0 < shape[0] * strides[0]; d0 += strides[0]) {
-                                /*
-                                 * The data array values are pointers to strings,
-                                 * but is cast as an array of doubles
-                                 */
-                                dptr = ((double *) dataptr) + d0 + d1 + d2 + d3;
-                                length = strlen(*((char **) dptr));
-                                if ( maxlength < length )
-                                    maxlength = length;
+                if ( j == 0 ) {
+                    /* result argument - create PyArray of string to hold results to be assigned */
+                    itemsize = resstrlen * sizeof(char);
+                    ndarrays[j] = PyArray_New(&PyArray_Type, MAX_FERRET_NDIM, shape, NPY_STRING,
+                                              NULL, NULL, itemsize, NPY_FARRAY, NULL);
+                    if ( ndarrays[j] == NULL ) {
+                        /* Problem - release references to the previous PyArray objects, assign errmsg, and return */
+                        PyErr_Clear();
+                        sprintf(errmsg, "Unable to create ndarray[%d]", j);
+                        /* First array creation attempt  - no other ndarray element */
+                        Py_DECREF(usermod);
+                        return;
+                    }
+                }
+                else {
+                    /* Input argument - get the length of the longest string */
+                    maxlength = 0;
+                    for (d3 = 0; d3 < shape[3] * strides[3]; d3 += strides[3]) {
+                        for (d2 = 0; d2 < shape[2] * strides[2]; d2 += strides[2]) {
+                            for (d1 = 0; d1 < shape[1] * strides[1]; d1 += strides[1]) {
+                                for (d0 = 0; d0 < shape[0] * strides[0]; d0 += strides[0]) {
+                                    /*
+                                     * The data array values are pointers to strings,
+                                     * but is cast as an array of doubles
+                                     */
+                                    dptr = ((double *) dataptr) + d0 + d1 + d2 + d3;
+                                    length = strlen(*((char **) dptr));
+                                    if ( maxlength < length )
+                                        maxlength = length;
+                                }
                             }
                         }
                     }
-                }
-                /* Convert to the next larger multiple of 8 */
-                maxlength  = (maxlength + 8) / 8;
-                maxlength *= 8;
-                /* Create a PyArray object of strings to hold a copy of the data */
-                itemsize = maxlength * sizeof(char);
-                ndarrays[j] = PyArray_New(&PyArray_Type, MAX_FERRET_NDIM, shape, NPY_STRING,
-                                          NULL, NULL, itemsize, NPY_FARRAY_RO, NULL);
-                if ( ndarrays[j] == NULL ) {
-                    /* Problem - release references to the previous PyArray objects, assign errmsg, and return */
-                    PyErr_Clear();
-                    sprintf(errmsg, "Unable to create ndarray[%d]", j);
-                    while ( j > 0 ) {
-                        j--;
-                        Py_DECREF(ndarrays[j]);
-                    }
-                    Py_DECREF(usermod);
-                    return;
-                }
-                /* Assign all the strings in the array */
-                indices[3] = 0;
-                for (d3 = 0; d3 < shape[3] * strides[3]; d3 += strides[3]) {
-                    indices[2] = 0;
-                    for (d2 = 0; d2 < shape[2] * strides[2]; d2 += strides[2]) {
-                        indices[1] = 0;
-                        for (d1 = 0; d1 < shape[1] * strides[1]; d1 += strides[1]) {
-                            indices[0] = 0;
-                            for (d0 = 0; d0 < shape[0] * strides[0]; d0 += strides[0]) {
-                                dptr = ((double *) dataptr) + d0 + d1 + d2 + d3;
-                                strcpy((char *) PyArray_GetPtr(ndarrays[j], indices), *((char **) dptr));
-                                (indices[0])++;
-                            }
-                            (indices[1])++;
+                    /* Convert to the next larger multiple of 8 */
+                    maxlength  = (maxlength + 8) / 8;
+                    maxlength *= 8;
+                    /* Create a PyArray object of strings to hold a copy of the data */
+                    itemsize = maxlength * sizeof(char);
+                    ndarrays[j] = PyArray_New(&PyArray_Type, MAX_FERRET_NDIM, shape, NPY_STRING,
+                                              NULL, NULL, itemsize, NPY_FARRAY_RO, NULL);
+                    if ( ndarrays[j] == NULL ) {
+                        /* Problem - release references to the previous PyArray objects, assign errmsg, and return */
+                        PyErr_Clear();
+                        sprintf(errmsg, "Unable to create ndarray[%d]", j);
+                        while ( j > 0 ) {
+                            j--;
+                            Py_DECREF(ndarrays[j]);
                         }
-                        (indices[2])++;
+                        Py_DECREF(usermod);
+                        return;
                     }
-                    (indices[3])++;
+                    /* Assign all the strings in the array */
+                    indices[3] = 0;
+                    for (d3 = 0; d3 < shape[3] * strides[3]; d3 += strides[3]) {
+                        indices[2] = 0;
+                        for (d2 = 0; d2 < shape[2] * strides[2]; d2 += strides[2]) {
+                            indices[1] = 0;
+                            for (d1 = 0; d1 < shape[1] * strides[1]; d1 += strides[1]) {
+                                indices[0] = 0;
+                                for (d0 = 0; d0 < shape[0] * strides[0]; d0 += strides[0]) {
+                                    dptr = ((double *) dataptr) + d0 + d1 + d2 + d3;
+                                    strcpy((char *) PyArray_GetPtr((PyArrayObject *) (ndarrays[j]), indices), *((char **) dptr));
+                                    (indices[0])++;
+                                }
+                                (indices[1])++;
+                            }
+                            (indices[2])++;
+                        }
+                        (indices[3])++;
+                    }
                 }
                 break;
             case STRING_ONEVAL:
@@ -337,14 +364,58 @@ void pyefcn_compute(int id, char modname[], float *data[], int numarrays,
     Py_DECREF(resbadval_ndarray);
     Py_DECREF(inpbadvals_ndarray);
     Py_DECREF(inpobj);
-    Py_DECREF(ndarrays[0]);
     Py_DECREF(usermod);
 
     /* If the ferret_compute call was unsuccessful (raised an exception), assign errmsg from its message */
-    if ( result == NULL )
+    if ( result == NULL ) {
         sprintf(errmsg, "Error when calling %s in %s: %s", COMPUTE_METHOD_NAME, modname, pyefcn_get_error());
-    else
-        errmsg[0] = '\0';
+        Py_DECREF(ndarrays[0]);
+        return;
+    }
 
+    /*
+     * If the return type is an array of strings, assign
+     * the Ferret array with copies of the NumPy strings
+     */
+    if ( datatypes[0] == STRING_ARRAY ) {
+        /* Get the dimensions of the array */
+        for (k = 0; k < MAX_FERRET_NDIM; k++)
+            shape[k] = (npy_intp) ((stephi[0][k] - steplo[0][k] + incr[0][k]) / (incr[0][k]));
+        /* Get the strides through the passed memory as a (double *) */
+        strides[0] = 1;
+        for (k = 0; k < 3; k++)
+            strides[k+1] = strides[k] * (npy_intp) (memhi[0][k] - memlo[0][k] + 1);
+        /* Get the actual starting point in the array */
+        dptr = (double *) (data[0]);
+        for (k = 0; k < MAX_FERRET_NDIM; k++)
+            dptr += strides[k] * (npy_intp) (steplo[0][k] - memlo[0][k]);
+        dataptr = (float *) dptr;
+        /* Assign all the strings in the array */
+        indices[3] = 0;
+        for (d3 = 0; d3 < shape[3] * strides[3]; d3 += strides[3]) {
+            indices[2] = 0;
+            for (d2 = 0; d2 < shape[2] * strides[2]; d2 += strides[2]) {
+                indices[1] = 0;
+                for (d1 = 0; d1 < shape[1] * strides[1]; d1 += strides[1]) {
+                    indices[0] = 0;
+                    for (d0 = 0; d0 < shape[0] * strides[0]; d0 += strides[0]) {
+                        strptr = (char *) PyArray_GetPtr((PyArrayObject *) (ndarrays[0]), indices);
+                        for (j = 0; j < resstrlen; j++)
+                            if ( strptr[j] == '\0' )
+                                break;
+                        dptr = ((double *) dataptr) + d0 + d1 + d2 + d3;
+                        ef_put_string_(strptr, &j, (char **) dptr);
+                        (indices[0])++;
+                    }
+                    (indices[1])++;
+                }
+                (indices[2])++;
+            }
+            (indices[3])++;
+        }
+    }
+    Py_DECREF(ndarrays[0]);
+
+    errmsg[0] = '\0';
     return;
 }

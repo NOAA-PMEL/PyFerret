@@ -1,4 +1,4 @@
-	SUBROUTINE CHOOSE_CX_WW( uvar, exp_cx, imp_cx, idim, ww_lo, ww_hi )
+	SUBROUTINE CHOOSE_CX_WW( uvar, exp_cx, imp_cx, idim, ww_lo, ww_hi, np)
 
 *
 *
@@ -50,23 +50,17 @@
 *               over-ride options
 *       8/97 - *kob*  - check cx_calender rather than ww_low to see if time entered is a
 *                       date string or a time step
+* v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
+*              within a grid cell
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'command.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
-	INTEGER uvar, exp_cx, imp_cx, idim
+	INTEGER uvar, exp_cx, imp_cx, idim, np
 	REAL*8	ww_lo, ww_hi
 
 * internal variable declarations:
@@ -127,6 +121,13 @@
 	      ww_hi = MIN( ww_hiw, ww_hi )
 	   ENDIF
 	ENDIF
+	
+
+* For a one-point axis and contour plot, return the lo and hi ww requested
+        IF (np .EQ. 1) THEN
+	   ww_lo = cx_lo_ww(idim,imp_cx)
+	   ww_hi = cx_hi_ww(idim,imp_cx)
+        ENDIF
 
 	RETURN
 	END

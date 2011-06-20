@@ -48,22 +48,15 @@
 *        7/22/92 - turn off in-plane key info e.g. xy plane: VECT u,v[g=temp]
 *  1/28/93 - for SHADE, CONTOUR and VECTOR return a 2D region if possible
 * V500: *sh* added POLYGON command
+* v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
+*              within a grid cell
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'command.parm'
 	include	'slash.parm'
 	include	'xcontext.cmn'
 	include	'xplot_setup.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:COMMAND.PARM'
-	INCLUDE	'FERRET_CMN:SLASH.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XPLOT_SETUP.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations
         INTEGER ncx, cx_list(ncx)
@@ -91,6 +84,8 @@
  100             CONTINUE
                  DO 110 icx = 1, ncx
                     cx = cx_list(icx)
+                    cx = cx_cmnd
+
 * suitable dimensions must have valid ww coords and indices
                     IF ( cx_lo_ss(cx,idim) .EQ. unspecified_int4
      .              .OR. cx_lo_ww(idim,cx) .EQ. unspecified_val8

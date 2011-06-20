@@ -43,16 +43,12 @@
 *
 * revision 0.0 - 3/2/88
 * V200:  5/19/89 - 4D symmetrical
+* V68    4/11  Allow shade, vector plots of degenerate regions - world region 
+*              within a grid cell
 
-#ifdef unix
 	include	'ferret.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	n, mg
@@ -73,7 +69,7 @@
 	   IF ( grid(i) .NE. val1 ) THEN
 	      IF     ( val1       .EQ. bad_flag ) THEN
 	         val1 = grid(i)
-	      ELSEIF ( grid(i) .NE. bad_flag ) THEN
+	      ELSEIF ( grid(i) .NE. bad_flag .OR. n.EQ.1 ) THEN
 	         NO_GRID_RANGE = .FALSE.
 	         RETURN
 	      ENDIF

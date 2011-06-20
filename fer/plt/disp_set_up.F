@@ -146,6 +146,8 @@
 * V630 *acm*  9/09 Introduction of syntax for variance-based and histogram levels
 * V663 *acm* 07/10 If openlevels computation fails (very-large value data fields)
 *                  then issue a warning and do linear levels instead.
+* v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
+*              within a grid cell
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -197,7 +199,8 @@ C plus those starting w/ xbox_bounds:
      .                  cal_name_2*32
         CHARACTER*1     axdir(4)
 
-	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, user_title, time_axis,
+	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, TM_FPEQ, 
+     .			user_title, time_axis,
      .			regrid_1, regrid_2, no_y_rng, edges_ok,
      .			ITS_GIF_GRAPHICS, its_gif, REGULARLY_SPACED,
      .                  irregular
@@ -301,7 +304,7 @@ C   set up memory for the flag grid
 
 * check for valid data plane
 	CALL GET_CX_DIMS( ctx, ndim, dims )
-	IF ( ndim .NE. 2 ) GOTO 5160
+	IF ( ndim .GT. 2 ) GOTO 5160
 	IF ( overlay ) THEN
 * *sh* 1/93 - restrictions less: coords merely have to be valid in 2D plane
            IF ( cx_lo_ss(ctx,dim1) .EQ. unspecified_int4
@@ -309,7 +312,7 @@ C   set up memory for the flag grid
            IF ( cx_lo_ss(ctx,dim2) .EQ. unspecified_int4
      .     .OR. cx_lo_ww(dim2,ctx) .GE. cx_hi_ww(dim2,ctx) ) GOTO 5150
 	ELSEIF ( vector) THEN     ! 1/94
-	   IF ( nplot_axis .NE. 2 ) GOTO 5160
+	   IF ( nplot_axis .GT. 2 ) GOTO 5160
 	ENDIF
 
 * check # of variables and consistency in X and Y component dimensions
@@ -534,9 +537,10 @@ C   set up memory for the flag grid
 	      ENDIF
 	      delta = unspecified_val8
 	   ELSE
-	      CALL CHOOSE_CX_WW( uvar, cx_cmnd, ctx, dim1, xaxlo, xaxhi )
+	      CALL CHOOSE_CX_WW( uvar, cx_cmnd, ctx, dim1, xaxlo, xaxhi, size1 )
               IF (shade_trim) CALL TRIM_AXIS_ENDS( uvar, cx_cmnd, ctx, 
      .                        dim1, xaxlo, xaxhi )
+              IF (xaxlo .GE. xaxhi) GOTO 5160
 	      delta = unspecified_val8
 	   ENDIF
 
@@ -610,11 +614,13 @@ C ACM added 8/2001 save cal id if vertical time axis
 	      ENDIF
 	      delta = unspecified_val8
 	   ELSE
-	      CALL CHOOSE_CX_WW( uvar, cx_cmnd, ctx, dim2, yaxlo, yaxhi )
+	      CALL CHOOSE_CX_WW( uvar, cx_cmnd, ctx, dim2, yaxlo, yaxhi, size2 )
               IF (shade_trim) CALL TRIM_AXIS_ENDS( uvar, cx_cmnd, ctx, 
      .                        dim2, yaxlo, yaxhi )
+              IF (yaxlo .GE. yaxhi) GOTO 5160
 	      delta = unspecified_val8
 	   ENDIF
+
 	   vaxlo = yaxlo	! save limits so overlays
 	   vaxhi = yaxhi	! will know them
 
@@ -785,7 +791,7 @@ C ACM added 8/2001 save cal id if vertical time axis
      .			      plot_title(:37+slen),
      .			      lab_loc_absolute, lab_loc_axlen_plus )
 	   ENDIF
-* ... offset components ?
+* ... offset components (staggered vectors)?
 	   IF (   cx_lo_ww(dim1,ctx) .NE. cx_lo_ww(dim1,cty)
      .	     .OR. cx_hi_ww(dim1,ctx) .NE. cx_hi_ww(dim1,cty)
      .	     .OR. cx_lo_ww(dim2,ctx) .NE. cx_lo_ww(dim2,cty)

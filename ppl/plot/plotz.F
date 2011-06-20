@@ -91,6 +91,8 @@ C
 *                 using TM_FPEQ to compare zlev(i) to 0., within machine accuracy.
 * V604 *acm& 7/07 Fix bug 1519. The setting of levels info was incorrectly resetting the
 *                 highest and lowest level when doing (-inf) and (inf) levels spec.
+* v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
+*              within a grid cell
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -268,8 +270,10 @@ C       ~OF - page offset to the beginning of an axis?
 	call trans(0,xmin,ymin,xtm,ytm)
 	call trans(0,xmax,ymax,xtx,ytx)
 	DXFF = (XHPLOT - XLPLOT)/(xtx-xtm)
+	IF (TM_FPEQ(xtx, xtm)) DXFF = 1.
 	DXOF = (XLPLOT) - DXFF*xtm
 	DYFF = (YHPLOT - YLPLOT)/(ytx-ytm)
+	IF (TM_FPEQ(xtx, xtm)) DXFF = 1.
 	DYOF = (YLPLOT) - DYFF*ytm
 
 	XFF = DXFF
@@ -299,6 +303,8 @@ C       multiplying the index value by the DX or DY delta values.
 
 	   DX = (xtx - xtm)/(NX - 1)
 	   DY = (ytx - ytm)/(NY - 1)
+	   IF (NX .EQ. 1) DX = 1.
+	   IF (NY .EQ. 1) DY = 1.
 
 	   DO 500 I=1,NX
 	      XX(IZLEN+I)=DX*(I-1)+xtm

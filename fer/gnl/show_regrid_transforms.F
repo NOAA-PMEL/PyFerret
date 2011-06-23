@@ -45,6 +45,7 @@
 *			"num_transforms" ==> "max_regrid_trans"
 *	  4/96 - branching bug detected by Sun f77 compiler
 * V650  Write to show_lun which may be set to a file unit number rather than std out
+* V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 
 	include	'ferret.parm'
 	include	'xprog_state.cmn'
@@ -61,14 +62,14 @@
 	n=0
 	DO 110 i = prgrd_linear_interp, max_regrid_trans
 	   IF ( alg_regrid_code(i) .EQ. unspecified_name4 ) GOTO 110
-	   IF ( i .EQ. prgrd_xy_ave ) GOTO 110  ! special cases
+	   IF ( i .EQ. prgrd_xy_ave .OR. i .EQ. prgrd_xy_lin ) GOTO 110  ! special cases
 	   n = n+1
  110	CONTINUE
 * locate half-way point in the list
 	i = 0
 	DO 112 i2 =  prgrd_linear_interp, max_regrid_trans
 	   IF ( alg_regrid_code(i2) .EQ. unspecified_name4 ) GOTO 112
-	   IF ( i2 .EQ. prgrd_xy_ave ) GOTO 112  ! special cases
+	   IF ( i2 .EQ. prgrd_xy_ave .OR. i .EQ. prgrd_xy_lin ) GOTO 112  ! special cases
            i = i+1
 	   IF ( i .GT. (n+1)/2 ) GOTO 115
  112	CONTINUE
@@ -87,13 +88,13 @@
 * ... locate first pointer
            DO 120 i1 = i1+1, max_regrid_trans
 	      IF ( alg_regrid_code(i1) .EQ. unspecified_name4 ) GOTO 120
-	      IF ( i1 .EQ. prgrd_xy_ave ) GOTO 120  ! special cases
+	      IF ( i1 .EQ. prgrd_xy_ave .OR. i .EQ. prgrd_xy_lin ) GOTO 120  ! special cases
 	      GOTO 121
  120	   CONTINUE
 * ... locate second pointer
  121	   DO 130 i2 = i2+1,  max_regrid_trans
 	      IF ( alg_regrid_code(i2) .EQ. unspecified_name4 ) GOTO 130
-	      IF ( i2 .EQ. prgrd_xy_ave ) GOTO 130  ! special cases
+	      IF ( i2 .EQ. prgrd_xy_ave .OR. i .EQ. prgrd_xy_lin ) GOTO 130  ! special cases
 	      GOTO 131
  130	   CONTINUE
  131	   IF ( i .LE. n/2 ) THEN

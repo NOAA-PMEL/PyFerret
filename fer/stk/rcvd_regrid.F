@@ -70,6 +70,7 @@
 *		    since subspan modulo default length is N not N+1
 * v580 *acm* 11/04 Store cal_id in cx_cal_id, the calendar ID used when  
 *                  computing world coordinates
+* V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 
 
 * calling argument declarations:
@@ -135,7 +136,8 @@
 * for "window"ing   we need source area   containing  the destination area
 * for exact match   we need source points aligning w/ the destination points
 * for nrst match    do as for averaging
-	IF ( rgrd_trans .EQ. prgrd_linear_interp ) THEN
+	IF ( rgrd_trans .EQ. prgrd_linear_interp
+     .      .OR. rgrd_trans .EQ. prgrd_xy_lin ) THEN
 	   dst_where_loest = box_middle
 	   dst_where_hiest = box_middle
 	   src_where_loest = box_middle

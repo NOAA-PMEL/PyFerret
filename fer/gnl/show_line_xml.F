@@ -72,7 +72,8 @@
 	INTEGER 	lun, line
 
 * local variable declarations:
-	LOGICAL		TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB, got_it
+	LOGICAL		TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB, GEOG_LABEL, 
+     .                  got_it, calendar
 	INTEGER		idim, orient, slen, iset, dset, alen
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id, status
 	CHARACTER	TM_FMT*32, buff*80, outbuff*20
@@ -151,37 +152,39 @@ C New form for attribute output, list values separately.
 
 * report /T0= for formatted time axis
 	IF ( line_direction(line) .EQ. 'TI' ) THEN
-        
-	   buff = line_cal_name (line)
-	   cal_id = TM_GET_CALENDAR_ID (buff)
+	   calendar = GEOG_LABEL(idim, grid)
+           IF (calendar) THEN
+	      buff = line_cal_name (line)
+	      cal_id = TM_GET_CALENDAR_ID (buff)
 
-           IF (line_shift_origin(line)) THEN
-              buff = '01-JAN-0001 00:00:00'
-           ELSE
-              buff = line_t0(line)
-           ENDIF
+              IF (line_shift_origin(line)) THEN
+                 buff = '01-JAN-0001 00:00:00'
+              ELSE
+                 buff = line_t0(line)
+              ENDIF
 
 * Make sure it is formatted as  2000-11-01 00:00:00
-           CALL TM_DATE_REFORMAT (buff, 1, cal_id, outbuff, 2, 
+              CALL TM_DATE_REFORMAT (buff, 1, cal_id, outbuff, 2, 
      .        .TRUE., status) 
-           CALL ESCAPE_FOR_XML(outbuff, outstring, slen)
-           WRITE ( risc_buff, 2020 ) 'time_origin'
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-	   WRITE (risc_buff, 2055) outstring(1:slen)
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-           WRITE ( risc_buff, 2060 ) 
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              CALL ESCAPE_FOR_XML(outbuff, outstring, slen)
+              WRITE ( risc_buff, 2020 ) 'time_origin'
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	      WRITE (risc_buff, 2055) outstring(1:slen)
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              WRITE ( risc_buff, 2060 ) 
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * report the calendar of a time axis
 
-           buff = line_cal_name(line)
-           CALL ESCAPE_FOR_XML(buff, outstring, slen)
-           WRITE ( risc_buff, 2020 ) 'calendar'
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-           WRITE ( risc_buff, 2055 ) outstring(1:slen)
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-           WRITE ( risc_buff, 2060 )
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              buff = line_cal_name(line)
+              CALL ESCAPE_FOR_XML(buff, outstring, slen)
+              WRITE ( risc_buff, 2020 ) 'calendar'
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              WRITE ( risc_buff, 2055 ) outstring(1:slen)
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              WRITE ( risc_buff, 2060 )
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	   ENDIF
 	ENDIF
 
 * if line is subspan modulo, report its modulo cycle length
@@ -196,7 +199,6 @@ C New form for attribute output, list values separately.
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	ENDIF
 
-        
 * Get the dataset (show line/xml only used for axes in datasets)
 
         vname = line_name_orig(line)

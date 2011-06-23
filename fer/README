@@ -144,7 +144,7 @@ To compile
 	b) Compile and link 
 	> make ncdf4
 		this will compile sources in the fmt, ppl and fer directories
-		and will also link Ferret. The executable will be Ferret_c
+		and will also link Ferret. The executable will be ferret_c
 		
 	  Other targets:
 	> make debug
@@ -220,7 +220,10 @@ frustration with our in-depth knowledge of the code.
 
 Questions, problems or suggestions can be directed to:
 
-	contact_Ferret@noaa.gov
+	oar.pmel.contact_ferret@noaa.gov
+
+Or see the "support" page http://ferret.pmel.noaa.gov/Ferret/support for more
+about how to get help.
 
 Good luck, and happy Ferreting!
 

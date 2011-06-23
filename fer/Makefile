@@ -38,7 +38,7 @@ all: optimized
 
 .PHONY : optimized
 optimized:
-	$(MAKE) "CFLAGS += -O2" "FFLAGS += -O2" build
+	$(MAKE) "CFLAGS += -O" "FFLAGS += -O" build
 
 
 .PHONY : debug

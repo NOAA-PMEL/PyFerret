@@ -23,7 +23,7 @@ optimizedbuild :
 	mkdir -p $(DIR_PREFIX)/lib
 	cp $(READLINE_DIR)/lib/libreadline.a $(READLINE_DIR)/lib/libhistory.a $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
-	$(MAKE) pymod
+	$(MAKE) "CFLAGS += -O" pymod
 	$(MAKE) -C $(DIR_PREFIX)/external_functions optimized
 
 .PHONY : debugbuild

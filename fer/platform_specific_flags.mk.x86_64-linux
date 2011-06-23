@@ -72,10 +72,14 @@
 	# Below this line are macro definitions used only for the final linking of the executable
 	#
 
-	LD		= gfortran
-	LDFLAGS		= -v --verbose -export-dynamic
-	 
+	LD		= gcc
+	LDFLAGS		= -v --verbose -export-dynamic -static-libgcc -static-gfortran -static-libc++
+
+
+#/usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortran.a \
+
 	SYSLIB		= -lX11 \
+			  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortran.a \
 			  -lcurl \
 			  -ldl \
 			  -lz  \

@@ -1,6 +1,7 @@
 	SUBROUTINE DO_XYLIN_REGRID( cx_lims, src, msrc, dst, mdst,
      .				    work, src_cx, dst_cx, 
-     .				    iwork2, iwork3, iwork4, itot )
+     .				    iwork2, iwork3, iwork4, iwork5, 
+     .				    itot )
 
 *
 *
@@ -44,6 +45,8 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 *
 * 6/22/2011
+*                    The XY linear regridding matches past Ferret behavior, 
+*                    not using bilinear regridding for now
 
 * calling argument declarations:
 	INTEGER	cx_lims, axis, msrc, mdst, iwork2, itot, src_cx, dst_cx
@@ -56,7 +59,8 @@
      .			   cx_lo_ss(cx_lims,x_dim), cx_hi_ss(cx_lims,x_dim),
      .			   cx_lo_ss(cx_lims,y_dim), cx_hi_ss(cx_lims,y_dim),
      .			   src, msrc, dst, mdst, src_cx, dst_cx, 
-     .                     work(1), work(iwork2), work(iwork3), work(iwork4) )
+     .                     work(1), work(iwork2), work(iwork3), work(iwork4),
+     .                     work(iwork5) )
 
 	RETURN
 	END	

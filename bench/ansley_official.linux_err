@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 34580418 Jun 23 10:32 /home/users/ansley/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 34652265 Jun 24 16:37 /home/users/ansley/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: testing fix for bug 1862 using new XYLIN_regrid analogous to XYAVE_regrid
+Note: Further fix - interpolate in Y then X  - for bug 1862 using new XYLIN_regrid analogous to XYAVE_regrid
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/users/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/linux/FERRET/external_functions/ext_func
-Beginning at Thu Jun 23 10:35:04 PDT 2011
+Beginning at Fri Jun 24 16:39:59 PDT 2011
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3114,6 +3114,10 @@ Replacing definition of axis YAX_DUP_AXNAMES
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
  PERMANENT data cleared from memory
@@ -3212,4 +3216,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jun 23 10:36:44 PDT 2011
+Ended at Fri Jun 24 16:41:38 PDT 2011

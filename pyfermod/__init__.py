@@ -258,75 +258,76 @@ def init(arglist=None, enterferret=True):
     my_verify = True
     my_enterferret = enterferret
     script = None
-    print_help = False
-    just_exit = False
     # To be compatible with traditional Ferret command-line options
     # (that are still supported), we need to parse the options by hand.
-    try:
-        k = 0
-        while k < len(arglist):
-            opt = arglist[k]
-            if opt == "-memsize":
-                k += 1
-                try:
-                    my_memsize = float(arglist[k])
-                except:
-                    raise ValueError("a positive number must be given for a -memsize value")
-                if my_memsize <= 0.0:
-                    raise ValueError("a positive number must be given for a -memsize value")
-            elif opt == "-batch":
-                my_metaname = "metafile.plt"
-                k += 1
-                # -batch has an optional argument
-                try:
-                    if arglist[k][0] != '-':
-                        my_metaname = arglist[k]
-                    else:
+    if arglist:
+        print_help = False
+        just_exit = False
+        try:
+            k = 0
+            while k < len(arglist):
+                opt = arglist[k]
+                if opt == "-memsize":
+                    k += 1
+                    try:
+                        my_memsize = float(arglist[k])
+                    except:
+                        raise ValueError("a positive number must be given for a -memsize value")
+                    if my_memsize <= 0.0:
+                        raise ValueError("a positive number must be given for a -memsize value")
+                elif opt == "-batch":
+                    my_metaname = "metafile.plt"
+                    k += 1
+                    # -batch has an optional argument
+                    try:
+                        if arglist[k][0] != '-':
+                            my_metaname = arglist[k]
+                        else:
+                            k -= 1
+                    except:
                         k -= 1
-                except:
-                    k -= 1
-            elif opt == "-gif":
-                my_metaname = ".gif"
-            elif opt == "-nojnl":
-                my_journal = False
-            elif opt == "-noverify":
-                my_verify = False
-            elif opt == "-python":
-                my_enterferret = False
-            elif opt == "-version":
-                just_exit = True
-                break
-            elif (opt == "-help") or (opt == "-h") or (opt == "--help"):
-                print_help = True
-                break
-            elif opt == "-script":
-                k += 1
-                try:
-                    script = arglist[k:]
-                    if len(script) == 0:
+                elif opt == "-gif":
+                    my_metaname = ".gif"
+                elif opt == "-nojnl":
+                    my_journal = False
+                elif opt == "-noverify":
+                    my_verify = False
+                elif opt == "-python":
+                    my_enterferret = False
+                elif opt == "-version":
+                    just_exit = True
+                    break
+                elif (opt == "-help") or (opt == "-h") or (opt == "--help"):
+                    print_help = True
+                    break
+                elif opt == "-script":
+                    k += 1
+                    try:
+                        script = arglist[k:]
+                        if len(script) == 0:
+                            raise ValueError("a script filename must be given for the -script value")
+                    except:
                         raise ValueError("a script filename must be given for the -script value")
-                except:
-                    raise ValueError("a script filename must be given for the -script value")
-                # -script implies -nojnl
-                my_journal = False
-                break
-            else:
-                raise ValueError("unrecognized option '%s'" % opt)
-            k += 1
-    except ValueError, errmsg:
-        # print the error message then mark for print the help message
-        print >>sys.stderr, "\n%s" % errmsg
-        print_help = True
-    if print_help:
-        # print the help message, then mark for exiting
-        print >>sys.stderr, ferret_help_message
-        just_exit = True
-    if just_exit:
-        # print the ferret header then exit completely
-        start(journal=False, verify=False, metaname=".gif")
-        result = run("exit /program")
-        # should not get here
-        raise SystemExit
+                    # -script implies -nojnl
+                    my_journal = False
+                    break
+                else:
+                    raise ValueError("unrecognized option '%s'" % opt)
+                k += 1
+        except ValueError, errmsg:
+            # print the error message then mark for print the help message
+            print >>sys.stderr, "\n%s" % errmsg
+            print_help = True
+        if print_help:
+            # print the help message, then mark for exiting
+            print >>sys.stderr, ferret_help_message
+            just_exit = True
+        if just_exit:
+            # print the ferret header then exit completely
+            start(journal=False, verify=False, metaname=".gif")
+            result = run("exit /program")
+            # should not get here
+            raise SystemExit
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify, metaname=my_metaname)
     # define all the Ferret standard Python external functions
@@ -1142,7 +1143,7 @@ def putdata(datavar_dict, axis_pos=None):
     if given_axis_coords:
         if len(given_axis_coords) > _pyferret._MAX_FERRET_NDIM:
             raise ValueError("More than %d axes (in the coordinates) is not supported in Ferret at this time" % _pyferret._MAX_FERRET_NDIM)
-        for k in xrange(len(given_axis_units)):
+        for k in xrange(len(given_axis_coords)):
             axis_coords[k] = given_axis_coords[k]
     #
     # data array
@@ -1192,9 +1193,13 @@ def putdata(datavar_dict, axis_pos=None):
             if axis_coords[k].shape[0] != shape[k]:
                 raise ValueError("number of coordinates for axis %d does not match the number of data points" % (k+1))
         elif axis_types[k] == _pyferret.AXISTYPE_ABSTRACT:
-            axis_coords[k] = numpy.array(axis_coords[k], dtype=numpy.float64, copy=1)
-            if axis_coords[k].shape[0] != shape[k]:
-                raise ValueError("number of coordinates for axis %d does not match the number of data points" % (k+1))
+            if axis_coords[k] != None:
+                axis_coords[k] = numpy.array(axis_coords[k], dtype=numpy.float64, copy=1)
+                if axis_coords[k].shape[0] != shape[k]:
+                    raise ValueError("number of coordinates for axis %d does not match the number of data points" % (k+1))
+            else:
+                # axis needed but not specified
+                axis_coords[k] = numpy.arange(1.0, float(shape[k]) + 0.5, 1.0, dtype=numpy.float64)
         elif axis_types[k] == _pyferret.AXISTYPE_NORMAL:
             axis_coords[k] = None
         else:

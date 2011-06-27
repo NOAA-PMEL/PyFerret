@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/x86_64-linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 35731645 May 17 09:32 /home/users/ansley/x86_64-linux/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/x86_64-linux/FERRET/external_functions/ext_func/
+-rwxr-xr-x 1 ansley tmap 35724491 Jun 24 16:51 /home/users/ansley/x86_64-linux/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/x86_64-linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes for tax_ functions when time axis is modulo
+Note: Further fix - interpolate in Y then X  - for bug 1862, equiv to previous Ferret regrid results
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/users/ansley/x86_64-linux/FERRET/bench
@@ -15,13 +15,13 @@ FER_DSETS=.
 FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_DAT=.
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/bakerTrunk/JavaSource/resources/iosp/scripts/
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/x86_64-linux/FERRET/external_functions/ext_func/
-Beginning at Tue May 17 09:32:34 PDT 2011
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/x86_64-linux/FERRET/external_functions/ext_func
+Beginning at Fri Jun 24 16:53:35 PDT 2011
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2063,7 +2063,7 @@ set att (COADSX81_81).axis = "Z"
  LISTing to file a.nc
  PERMANENT data cleared from memory
 syntax error, unexpected SCAN_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserverefize 64000000 defmp-iridlc3) store<p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>taux</b><b>absuu</b><b>tauy</b><b>absuv</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
+context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserverefize 64000000 defmp-iridlc3) store<p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuu</b><b>taux</b><b>tauy</b><b>absuv</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
@@ -3118,6 +3118,17 @@ Replacing definition of axis YAX_DUP_AXNAMES
  *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file cc.nc
+ LISTing to file c1.nc
+ TEMPORARY data cleared from memory
+ LISTing to file c2.nc
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -3205,4 +3216,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue May 17 09:34:05 PDT 2011
+Ended at Fri Jun 24 16:55:08 PDT 2011

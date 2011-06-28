@@ -20,12 +20,12 @@ get_fer_dir() {
         echo " file was installed. "
         echo " "
         read -p " Is that correct and acceptable (y/n) [y] " ans
-        if [ -z "${ans}" ] || [ "${ans}" == "Y" ] || [ "${ans}" == "y" ]; then
+        if [ -z "${ans}" ] || [ "${ans}" = "Y" ] || [ "${ans}" = "y" ]; then
             return 0
         fi
     fi
 
-    until [ 0 == 1 ]; do
+    until [ 0 = 1 ]; do
         echo " "
         echo " Enter the name of the directory where the 'fer_environment.tar.gz' "
         echo " file was installed (FER_DIR).  The location recommended in the "
@@ -61,12 +61,12 @@ get_fer_dsets() {
         echo " installed."
         echo " "
         read -p " Is that correct and acceptable (y/n) [y] " ans
-        if [ -z "${ans}" ] || [ "${ans}" == "Y" ] || [ "${ans}" == "y" ]; then
+        if [ -z "${ans}" ] || [ "${ans}" = "Y" ] || [ "${ans}" = "y" ]; then
             return 0
         fi
     fi
 
-    until [ 0 == 1 ]; do
+    until [ 0 = 1 ]; do
         echo " "
         echo " Enter the name of the directory where the 'fer_dsets.tar.gz' "
         echo " file was installed (FER_DSETS)."
@@ -92,7 +92,7 @@ get_fer_dsets() {
 
 ### Assign $ferpaths_dir, the directory to contain the ferret_paths.* files
 get_ferpaths_dir() {
-    until [ 0 == 1 ]; do
+    until [ 0 = 1 ]; do
         echo " "
         echo " Enter the name of the directory where you want to place "
         echo " the newly created 'ferret_paths.csh' and 'ferret_path.sh' "
@@ -119,7 +119,7 @@ get_ferpaths_dir() {
                     echo " ${ferpaths_dir}/ferret_path already exists"
                 fi
                 read -p " Rename and create new? (n/y) [n] " ans
-                if [ "${ans}" == "Y" ] || [ "${ans}" == "y" ]; then
+                if [ "${ans}" = "Y" ] || [ "${ans}" = "y" ]; then
                     return 0
                 fi
                 read -p " Select a different directory? (y/n) [y] " ans
@@ -211,7 +211,7 @@ export FER_DSETS=\"${fer_dsets}\"" \
 
 ### Assign $ferexec_dir, the directory containing the fer_executables.tar.gz file
 get_ferexec_dir() {
-    until [ 0 == 1 ]; do
+    until [ 0 = 1 ]; do
         echo " "
         echo " Enter the name of the directory where containing the "
         echo " 'fer_executables.tar.gz file. "
@@ -361,7 +361,7 @@ echo "     Ferret is installed. "
 echo " "
 
 ### Print menu and act on choice
-until [ "$choice" == "3" ]; do
+until [ "$choice" = "3" ]; do
     echo " "
     echo " Enter your choice:"
     echo " (1) Install executables, (2) Customize ferret_paths files, (3) Exit"

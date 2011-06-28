@@ -54,14 +54,14 @@ for subdir in ${FER_PALETTE}; do
    filelist=`cd "${subdir}" ; find * -maxdepth 0 -type f -name \*"${template}"\* -print`
    if [ -n "${filelist}" ]; then
       echo "* * * * * * * * in ${subdir}"
-      if [ -z "${option}" ] || [ "${option}" == "-d" ]; then
+      if [ -z "${option}" ] || [ "${option}" = "-d" ]; then
          for palfile in ${filelist} ; do
             descript=`cd ${subdir} ; grep -i ' description: ' ${palfile} | sed -e 's/\! [dD][eE][sS][cC][rR][iI][pP][tT][iI][oO][nN]: //'`
             echo "${palfile}: ${descript}"
          done
-      elif [ "${option}" == "-l" ]; then
+      elif [ "${option}" = "-l" ]; then
          ( cd "${subdir}" ; /bin/ls -l ${filelist} )
-      elif [ "${option}" == "-m" ] || [ "${option}" == "-more" ]; then
+      elif [ "${option}" = "-m" ] || [ "${option}" = "-more" ]; then
          ( cd "${subdir}" ; more ${filelist} )
       else
          echo "Invalid option: ${option}"

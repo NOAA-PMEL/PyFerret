@@ -67,6 +67,7 @@ do_variance.F\
 do_window_regrid.F\
 do_xact_regrid.F\
 do_xyave_regrid.F\
+do_xylin_regrid.F\
 geog_cos_factor.F\
 get_linear_coef.F\
 hanng_wt.F\
@@ -86,4 +87,5 @@ welch_wt.F\
 window_regrid_1_axis.F\
 xact_ptr_regrid_1_axis.F\
 xact_regrid_1_axis.F\
-xyave_regrid.F 
+xyave_regrid.F\
+xylin_regrid.F 

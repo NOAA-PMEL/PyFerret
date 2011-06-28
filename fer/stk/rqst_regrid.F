@@ -67,6 +67,7 @@
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars 
 * v580 *acm* 11/04 Store cal_id in cx_cal_id, the calendar ID used when  
 *                  computing world coordinates
+* V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -141,6 +142,7 @@
 	   src_cal_id = TM_GET_CALENDAR_ID (line_cal_name(src_taxis))
            IF (dst_cal_id .NE. src_cal_id) THEN
                IF (rgrd_trans .NE. prgrd_linear_interp .AND. 
+     .		   rgrd_trans .NE. prgrd_xy_lin        .AND. 
      .		   rgrd_trans .NE. prgrd_associate     .AND. 
      .		   rgrd_trans .NE. prgrd_nearest )  GOTO 5020
            ENDIF
@@ -152,7 +154,8 @@
 * for interpolation we need source points surrounding the destination points
 * for averaging     we need source area   surrounding the destination area
 * for exact match   we need source points aligning w/ the destination points
-	IF ( rgrd_trans .EQ. prgrd_linear_interp ) THEN
+	IF ( rgrd_trans .EQ. prgrd_linear_interp
+     .	   .OR.  rgrd_trans.EQ.prgrd_xy_lin ) THEN
 	   where_loest = box_middle
 	   where_hiest = box_middle
 	ELSEIF ( rgrd_trans.EQ.prgrd_min

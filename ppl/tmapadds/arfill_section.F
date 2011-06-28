@@ -39,6 +39,8 @@
 *     extracted from arfill.F, fill a section of a modulo (curvilinear) plot.
 *
 * ACM 4/13/05
+* v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
+*              within a grid cell
 
       REAL z(nx,ny),x(nx),y(ny),zlev(nlev), x_extra, y_extra, 
      .     xadd, lmin, lmax
@@ -95,6 +97,7 @@ C     Divide the region into rectangles or triangles and feed these
 C     small elements to drawpoly()
 
       buffer_empty = .true.
+      status = ferr_no_range  ! will be returned if nothing is plotted.
 
       do 200 j=jlo,jtop-1
          jj = j
@@ -188,6 +191,7 @@ c
  100     continue
          if (.not. buffer_empty) call flush_buffered_fillpoly(xadd,
      .                     lmin, lmax)
+         status = ferr_ok
  200  continue
       
       return

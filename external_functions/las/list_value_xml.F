@@ -199,8 +199,8 @@
       INTEGER i1, j1, k1, l1
       INTEGER i3, j3, k3, l3
       INTEGER TM_LENSTR1, vlen, tlen, slen
-      CHARACTER*128 outstring, first, second, third
-      CHARACTER*1028 outfile
+      CHARACTER*2048 outstring, first, second, third
+      CHARACTER*2048 outfile
       CHARACTER*50 tag
       CHARACTER*2048 value
       CHARACTER*100 errtxt

@@ -69,6 +69,8 @@
 * V603   5/07  Fixes for bug 900 and 1487. If the start or end point is the 
 *              modulo subspan void point, return the actual first or last axis 
 *              point instead.
+* V68    4/11  Allow shade, vector plots of degenerate regions - world region 
+*              within a grid cell
 
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -84,7 +86,7 @@
 	CHARACTER*1 horiz_or_vert
 
 * internal variable declarations:
-	LOGICAL	BKWD_AXIS, TM_ITS_SUBSPAN_MODULO, is_subspan,
+	LOGICAL	BKWD_AXIS, TM_ITS_SUBSPAN_MODULO, TM_FPEQ, is_subspan,
      .          void_at_start, void_at_end
 	INTEGER	CGRID_AXIS, TM_LENSTR1, lo_cx, hi_cx, grid, i, iaxis,
      .          ilen, ier, ist
@@ -112,8 +114,12 @@
               lo_world = -1.
               hi_world =  1.
            ELSE
-              lo_world = axis(lo_cx) * 0.99
-              hi_world = axis(lo_cx) * 1.01
+              lo_world = axis(lo_cx) * 0.999
+              hi_world = axis(lo_cx) * 1.001
+	      IF ( TM_FPEQ(lo_world, hi_world) ) THEN 
+                 lo_world = axis(lo_cx) * 0.99
+                 hi_world = axis(lo_cx) * 1.01
+	      ENDIF
            ENDIF
            RETURN
         ENDIF

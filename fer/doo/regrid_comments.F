@@ -44,6 +44,7 @@
 *		    of name is basis for not using the associated variable
 * V533: 6/01 *sh* - @XACT doesn't need a comment if for xact strides
 * V552  4/03 *acm*  up gname_from_number to 128 characters (variable names)
+* V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 
 	include	'tmap_dims.parm'
 	include	'implicit.parm'
@@ -61,15 +62,17 @@
 	INTEGER cx
 
 * internal variable declarations
-	LOGICAL add_on, stat_grid, non_atlin
+	LOGICAL add_on, stat_grid, non_atlin, lin_regrid
 	INTEGER	TM_LENSTR1, KNOWN_GRID,
      .		var, categ, dset, mlen, maxlen, idim, std_grid, n,
      .		axis, slen
 	CHARACTER TM_FMT*16, GNAME_FROM_NUMBER*128, units*24, trans*8
+      character*80 mybuff
 
 * initialize
 	IF ( .NOT. cx_unstand_grid(cx) ) THEN
 	   REGRID_COMMENTS = ' '
+	   mybuff = ' '
 	   RETURN
 	ENDIF
 	var     = cx_variable( cx )
@@ -81,6 +84,7 @@
 
 * starting blank unavoidable with FORTRAN strings -- removed later
 	REGRID_COMMENTS = ' '
+	mybuff = ' '
 	mlen = 1
 
 * not appending to anything
@@ -90,11 +94,13 @@
 	stat_grid =  grid_name(cx_grid(cx))(1:1) .NE. '('
 	IF ( stat_grid ) THEN
 	   REGRID_COMMENTS = GNAME_FROM_NUMBER(dset, cx_grid(cx), mlen)
+	   mybuff = GNAME_FROM_NUMBER(dset, cx_grid(cx), mlen)
 	   mlen = mlen + 1	! blank at end in case there's more
 * ... only go on if there are transforms to report
 	   DO 10 idim = 1, 4
 	     IF (cx_regrid_trans(idim,cx) .NE. prgrd_linear_interp
-     .	   .AND. cx_regrid_trans(idim,cx) .NE. prgrd_exact ) THEN
+     .	   .AND. cx_regrid_trans(idim,cx) .NE. prgrd_exact
+     .	   .AND. cx_regrid_trans(idim,cx) .NE. prgrd_xy_lin) THEN
 	       GOTO 50
 	     ENDIF
  10	   CONTINUE
@@ -110,8 +116,10 @@
 	   axis = grid_line(idim,cx_grid(cx))
 	   IF ( axis .NE. grid_line(idim,std_grid) ) THEN
 	      n = n + 1
+	      lin_regrid = ( (cx_regrid_trans(idim,cx).EQ.prgrd_linear_interp) .OR. 
+     .             (cx_regrid_trans(idim,cx).EQ.prgrd_xy_lin) )
 	      non_atlin = non_atlin
-     .	      .OR. ( cx_regrid_trans(idim,cx).NE.prgrd_linear_interp
+     .	      .OR. ( .NOT. lin_regrid 
      .		.AND. .NOT.( cx_regrid_trans(idim,cx) .EQ. prgrd_xact_pts
      .	               .AND. line_class(axis) .EQ. pline_class_stride ) )
 	   ENDIF
@@ -125,6 +133,7 @@
 * ... lead-in string
 	      IF (add_on) THEN
 	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen)//', '
+	         mybuff = mybuff(:mlen)//', '
 	         mlen = MIN( maxlen, mlen+2 )
 	      ELSE
 	         add_on = .TRUE.
@@ -132,6 +141,8 @@
 	      IF ( line_regular(axis) .AND. .NOT.stat_grid ) THEN
 * ... delta
 	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
+     .				 TM_FMT(SNGL(line_delta(axis)),2,8,slen)
+	         mybuff = mybuff(:mlen) //
      .				 TM_FMT(SNGL(line_delta(axis)),2,8,slen)
 	         mlen = MIN( maxlen, mlen+slen )
 * ... units
@@ -147,16 +158,21 @@
 	         slen = TM_LENSTR1(units)
 	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
      .				   ' '// units(:slen)//' '
+	         mybuff = mybuff(:mlen) //
+     .				   ' '// units(:slen)//' '
 	         mlen = MIN( maxlen, mlen+slen+2 )
 	      ENDIF
 * ... axis
 	      REGRID_COMMENTS = REGRID_COMMENTS(:mlen) // 'on '
+     .					//ww_dim_name(idim)
+	      mybuff = mybuff(:mlen) // 'on '
      .					//ww_dim_name(idim)
 	      mlen = MIN( maxlen, mlen+4 )
 * ... @transform
 	      IF (non_atlin) THEN
 	         trans = alg_regrid_code(cx_regrid_trans(idim,cx))
 	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen)//'@'//trans
+	         mybuff = mybuff(:mlen)//'@'//trans
 	         mlen = MIN(maxlen,mlen+1+TM_LENSTR1(trans) )
 	      ENDIF
 	   ENDIF
@@ -165,12 +181,16 @@
 
 * signal if the string has been truncated for being too long
 	IF ( mlen .EQ. maxlen ) REGRID_COMMENTS(maxlen:maxlen) = '*'
+	IF ( mlen .EQ. maxlen ) mybuff(maxlen:maxlen) = '*'
 
 * remove silly blanks from the start and end
 	IF ( REGRID_COMMENTS(1:1) .EQ. ' ' ) REGRID_COMMENTS
      .					= REGRID_COMMENTS(2:maxlen)
+	IF ( mybuff(1:1) .EQ. ' ' ) mybuff
+     .					= mybuff(2:maxlen)
         mlen = mlen - 1
 	IF ( REGRID_COMMENTS(mlen:mlen) .EQ. ' ' ) mlen = mlen - 1
+	IF ( mybuff(mlen:mlen) .EQ. ' ' ) mlen = mlen - 1
 
 * successful completion
 	RETURN

@@ -74,6 +74,7 @@
 *                   for use in comparisons (define grid/like=var), the request 
 *                   got turned into a regrid instead of a stride. Change the test
 *                   for may_have_strides.
+* V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -91,7 +92,7 @@
 
 * internal variable declarations:
 	LOGICAL	ITSA_MODULO_REGRID, ITSA_MODULO_AXIS,  TM_ITS_CDF,
-     .		xy_ave, last_axis, may_have_strides, has_strides,
+     .		xy_regrid, last_axis, may_have_strides, has_strides,
      .		unacceptable_modulo
 	INTEGER	KNOWN_GRID, CAXIS_MODLEN, TM_AXIS_STRIDE, CX_DIM_LEN,
      .		idim, axis_list(4), naxis, var_grid, src_grid, dst_grid,
@@ -157,8 +158,9 @@
  50	naxis = 1
 	axis_list(1) = axis	
 	has_strides = .FALSE.
-	xy_ave = cx_regrid_trans(axis,src_cx) .EQ. prgrd_xy_ave
-	IF ( cx_regrid_trans(axis,src_cx) .EQ. prgrd_xy_ave ) THEN
+	xy_regrid = (cx_regrid_trans(axis,src_cx) .EQ. prgrd_xy_ave).OR. 
+     .           (cx_regrid_trans(axis,src_cx) .EQ. prgrd_xy_lin)
+	IF ( xy_regrid)   THEN
 	   naxis = 2
 	   axis_list(2) = y_dim
 	ELSEIF ( may_have_strides ) THEN
@@ -205,7 +207,7 @@
 	   CALL TM_DEALLO_DYN_LINE(grid_line(axis,src_grid))
 	   grid_line( axis, src_grid ) = grid_line( axis, var_grid )
 	   CALL TM_USE_LINE(grid_line(axis,var_grid)) ! 9/96
-	   IF (xy_ave) THEN
+	   IF (xy_regrid) THEN
 ! 9/96: changed DEALLO grid_line(axis,src_grid) to grid_line(y_dim,src_grid)
 	      CALL TM_DEALLO_DYN_LINE(grid_line(y_dim,src_grid))
 	      grid_line(y_dim,src_grid) = grid_line(y_dim,var_grid)

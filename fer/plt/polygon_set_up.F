@@ -120,6 +120,9 @@
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 * V650 *acm*  3/10  Check calendar id only if polygon data is not a list on an
 *                   abstract time axis.  Fix for bug 1722.
+* V671 *acm*  5/11  For the 1D form of polygon plots, the check for adequate 
+*                   PLOT+ memory was not adequate - we need x,y, and variable 
+
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -625,7 +628,7 @@ c	ind_dim = plot_axis(1)
  250	   npts = end-start+1
 
            IF (oneD_form) THEN
-              plot_mem_used = plot_mem_used + npts
+              plot_mem_used = plot_mem_used + 3*npts
               CALL reallo_envelope(plot_mem_used)
            ENDIF
 

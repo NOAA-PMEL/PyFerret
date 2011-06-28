@@ -48,7 +48,7 @@
 *	with regridding needed along axis "axis"
 
 *	ss12 holds the indices of nearest grid nodes on src_grd for nodes
-*	on dst_grd. T holds the interpolation coefficients.
+*	on dst_grd. COEF holds the interpolation coefficients.
 
 *	The interpolation algorithm is taken from Numerical Recipes, Chapter 3,
 *	Section "Interpolation in Two or More Dimensions"

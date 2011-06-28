@@ -26,7 +26,8 @@
 * V602 11/06 *acm* - Change unspecified_int4 to -999. Fixes bug 1463 where
 *                    where an index value of -111 was confused with this flag
 * V603 5/07  *acm* - added MODNBD modulo regridding statistic
-*      11/10 *kms* - added category cat_pystat_var (python static variable)
+* V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
+* V700 11/10 *kms* - added category cat_pystat_var (python static variable)
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -332,6 +333,7 @@
      .			prgrd_linear_interp,
      .			prgrd_average,
      .			prgrd_xy_ave,
+     .			prgrd_xy_lin,
      .			prgrd_xact_pts,
      .			prgrd_associate,
      .			prgrd_variance,
@@ -355,6 +357,7 @@
      .			prgrd_linear_interp	= 2,
      .			prgrd_average		= 3,
      .			prgrd_xy_ave		= 4,
+     .			prgrd_xy_lin		= 20,
      .			prgrd_xact_pts		= 5,
      .			prgrd_associate		= 6,
      .			prgrd_variance		= 7,

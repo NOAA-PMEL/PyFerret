@@ -1,4 +1,7 @@
-	LOGICAL FUNCTION NO_GRID_RANGE( grid, n, mg, val1 )
+	SUBROUTINE DO_XYLIN_REGRID( cx_lims, src, msrc, dst, mdst,
+     .				    work, src_cx, dst_cx, 
+     .				    iwork2, iwork3, iwork4, iwork5, 
+     .				    itot )
 
 *
 *
@@ -35,48 +38,29 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* determine if all the data indicated are of the same value
+* call the xy-linear regridding routine with appropriate work arrays
+* 
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
+* programmer - Ansley Manke, from do_xyave_regrid.F
+* NOAA/PMEL, Seattle, WA - TMAP
 *
-* revision 0.0 - 3/2/88
-* V200:  5/19/89 - 4D symmetrical
-* V68    4/11  Allow shade, vector plots of degenerate regions - world region 
-*              within a grid cell
-
-	include	'ferret.parm'
-	include 'xvariables.cmn'
-	include 'xcontext.cmn'
+* 6/22/2011
+*                    The XY linear regridding matches past Ferret behavior, 
+*                    not using bilinear regridding for now
 
 * calling argument declarations:
-	INTEGER	n, mg
-	REAL 	val1, grid( n )
+	INTEGER	cx_lims, axis, msrc, mdst, iwork2, itot, src_cx, dst_cx
+	REAL	src(*), dst(*), work(itot)
 
-* internal variable declarations:
-	INTEGER	i
-	REAL	bad_flag
+	include	'ferret.parm'
+	include	'xcontext.cmn'
 
-* initialize
-	bad_flag = mr_bad_data( mg )
+	CALL XYLIN_REGRID( cx_lims,
+     .			   cx_lo_ss(cx_lims,x_dim), cx_hi_ss(cx_lims,x_dim),
+     .			   cx_lo_ss(cx_lims,y_dim), cx_hi_ss(cx_lims,y_dim),
+     .			   src, msrc, dst, mdst, src_cx, dst_cx, 
+     .                     work(1), work(iwork2), work(iwork3), work(iwork4),
+     .                     work(iwork5) )
 
-* comparison value (ends up as first non-bad value)
-	val1 = bad_flag
-
-* check all data within the indicated context
-	DO 100 i = 1, n
-	   IF ( grid(i) .NE. val1 ) THEN
-	      IF     ( val1       .EQ. bad_flag ) THEN
-	         val1 = grid(i)
-	      ELSEIF ( grid(i) .NE. bad_flag .OR. n.EQ.1 ) THEN
-	         NO_GRID_RANGE = .FALSE.
-	         RETURN
-	      ENDIF
-	   ENDIF
- 100	CONTINUE
-
-* they were all identical - val1=bad_flag if they were all bad
-	NO_GRID_RANGE = .TRUE.
 	RETURN
-	END
+	END	

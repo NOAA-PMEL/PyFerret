@@ -7,7 +7,7 @@
 # "i" (install) - copies sources, links and other files to installation area
 # "r" (remove)  - removes the "i" files
 
-until [ "$activity" == "i" ] || [ "$activity" == "r" ] || [ "$activity" == "q" ]; do
+until [ "$activity" = "i" ] || [ "$activity" = "r" ] || [ "$activity" = "q" ]; do
    read -p "Install (i), remove (r), or quit (q)? " activity
    case "$activity" in
       "i")

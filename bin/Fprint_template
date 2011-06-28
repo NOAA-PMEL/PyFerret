@@ -50,7 +50,7 @@ print_usage() {
    echo "   -X: send the plots to your X Window for preview"
    echo "   -p: page orientation, landscape or portrait"
    echo "   -#: print more than one copy of the plots"
-   echo "   -l: line styles, ps == monochrome, cps == color"
+   echo "   -l: line styles, ps = monochrome, cps = color"
    echo "   -R: do not rename files with a date stamp appended (default is to stamp)"
    echo "   -C: Output a CMYK postscript file (default is RGB)"
    echo "Examples: "
@@ -59,7 +59,7 @@ print_usage() {
    echo "    Fprint -p portrait -R metafile.plt.~2~"
 }
 
-if [ $# -eq 0 ] || [ "$1" == "-h" ] || [ "$1" == "-help" ]; then
+if [ $# -eq 0 ] || [ "$1" = "-h" ] || [ "$1" = "-help" ]; then
    print_usage
    exit
 fi
@@ -86,7 +86,7 @@ while [ $# != 0 ]; do
       "-P")
          shift
          val=`echo $1 | cut -c1`
-         if [ "$val" == "-" ]; then
+         if [ "$val" = "-" ]; then
             err_txt="-P $1"
             print_usage
             exit 1
@@ -101,7 +101,7 @@ while [ $# != 0 ]; do
       "-o")
          shift
          val=`echo $1 | cut -c1`
-         if [ "$val" == "-" ]; then
+         if [ "$val" = "-" ]; then
             err_txt="-o $1"
             print_usage
             exit 1
@@ -120,7 +120,7 @@ while [ $# != 0 ]; do
       "-#")
          shift
          val=`echo $1 | cut -c1`
-         if [ "$val" == "-" ]; then
+         if [ "$val" = "-" ]; then
             err_txt="-# $1"
             print_usage
             exit 1
@@ -132,7 +132,7 @@ while [ $# != 0 ]; do
       "-p")
          shift
          val=`echo $1 | cut -c1`
-         if [ "$val" == "-" ]; then
+         if [ "$val" = "-" ]; then
             err_txt="-p $1"
             print_usage
             exit 1
@@ -149,7 +149,7 @@ while [ $# != 0 ]; do
       "-l")
          shift
          val=`echo $1 | cut -c1`
-         if [ "$val" == "-" ]; then
+         if [ "$val" = "-" ]; then
             err_txt="-l $1"
             print_usage
             exit 1
@@ -166,7 +166,7 @@ while [ $# != 0 ]; do
       "-d")
          shift
          val=`echo $1 | cut -c1`
-         if [ "$val" == "-" ]; then
+         if [ "$val" = "-" ]; then
             err_txt="-d $1"
             print_usage
             exit 1
@@ -210,7 +210,7 @@ while [ $# != 0 ]; do
    esac
 done
 
-if [ "$output" == "printer" ] && [ $printer_named -ne 0 ]; then
+if [ "$output" = "printer" ] && [ $printer_named -ne 0 ]; then
 
 ############################ MODIFY HERE ###################################
 
@@ -258,7 +258,7 @@ if [ "$output" == "printer" ] && [ $printer_named -ne 0 ]; then
 fi
 
 # Now process the metafile(s) and print the plot file if appropriate
-if [ `uname -s` == "OSF1" ]; then
+if [ `uname -s` = "OSF1" ]; then
    REMOVE=""
 fi
 case $output in

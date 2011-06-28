@@ -85,6 +85,7 @@
 * V66+ 4/10  *acm* - change pressure to reference pressure for RHO_UN as 
 *                    suggested by James Orr and Billy Kessler
 * V6.7 1/11  *acm* - fix ticket 1788, initializing alg_trans_*
+* V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 
 	include	'ferret.parm'
 	include	'xalgebra.cmn'
@@ -635,6 +636,8 @@ c     .     alg_trans_dflt_arg( 38) / bad_val4      /
      .		alg_regrid_code ( prgrd_average )	/ 'AVE'	/,
      .		alg_regrid_title( prgrd_xy_ave )	/ 'area avgd'	/,
      .		alg_regrid_code ( prgrd_xy_ave )	/ 'AAV'	/,
+     .		alg_regrid_title( prgrd_xy_lin )	/ 'lin. interp.'	/,
+     .		alg_regrid_code ( prgrd_xy_lin )	/ 'LIN'	/,
      .		alg_regrid_title( prgrd_xact_pts )	/ 'exact match'	/,
      .		alg_regrid_code ( prgrd_xact_pts )	/ 'XACT'	/
      .		alg_regrid_title( prgrd_associate )	/ 'index assn'	/,

@@ -79,6 +79,9 @@
 *                     of source data is already in4/15/03 memory
 * V554:  3/04 *acm* Fix the check for done_by_strides.
 * V603 5/07  *acm* - added MODNBD modulo regridding statistic
+* V671:  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
+*                    The XY linear regridding matches past Ferret behavior, 
+*                    not using bilinear regridding for now
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -96,12 +99,12 @@
 
 * internal variable declarations:
 	LOGICAL	TM_ITS_CDF,
-     .		xy_ave, valid, valid_y, has_impl_save, done_by_strides,
+     .		xy_regrid, valid, valid_y, has_impl_save, done_by_strides,
      .		itsa_string
 	INTEGER hi_isp, lo_isp, axis, cx_valid, idim,
      .		rgrd_trans, mrlist(5), wk_size, wk_size2,
      .		dst_cx, src_cx, dst_mr, src_mr, ngd_mr, ave_mr,
-     .		blk1, axis_list(4), naxis, i, nbd_mr
+     .		blk1, axis_list(4), naxis, i, nbd_mr, nxsrc
 	CHARACTER dtype*4
 
 *        ... interpretation stack setup at the time this is called ...
@@ -124,10 +127,11 @@
 
 * what is the regridding transformation for this axis ?
 	rgrd_trans = cx_regrid_trans( axis, dst_cx )
-	xy_ave = rgrd_trans .EQ. prgrd_xy_ave
-	IF ( xy_ave ) THEN
+	xy_regrid = ( (rgrd_trans .EQ. prgrd_xy_ave) .OR. 
+     .                (rgrd_trans .EQ. prgrd_xy_lin) )
+	IF ( xy_regrid ) THEN
 	   IF (axis.NE.x_dim) CALL ERRMSG
-     .		( ferr_internal, status, 'rgrd_xy_ave', *5000 )	! diagnostic
+     .		( ferr_internal, status, 'rgrd_xy_regrid', *5000 )	! diagnostic
 	   naxis = 2
 	   axis_list(2) = y_dim
 	ENDIF
@@ -201,7 +205,7 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	      CALL CONFINE_AXIS( axis, cx_valid, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
            ENDIF
-	   IF ( xy_ave ) THEN
+	   IF ( xy_regrid ) THEN
 	      CALL RCVD_REGRID( src_cx, dst_cx, y_dim, wk_size2,
      .		cx_lo_ss(cx_valid,y_dim),cx_hi_ss(cx_valid,y_dim), status)
 	      cx_by_ss( y_dim, cx_valid ) = .TRUE.
@@ -238,8 +242,11 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	CALL NON_ARRAY_SUBSC( mrlist, 2 )
 
 * reserve working array space
-	IF ( xy_ave ) THEN
+	IF ( rgrd_trans .EQ. prgrd_xy_ave) THEN
 	   CALL GET_WORK_SPC( wk_size+wk_size2, blk1, status )
+	ELSEIF (rgrd_trans .EQ. prgrd_xy_lin) THEN
+	   nxsrc = cx_hi_ss(cx_valid,x_dim)-cx_lo_ss(cx_valid,x_dim) + 1
+	   CALL GET_WORK_SPC( nxsrc*wk_size2+2*(wk_size+wk_size2), blk1, status )
 	ELSE
 	   CALL GET_WORK_SPC( 2*wk_size, blk1, status )
 	ENDIF
@@ -276,6 +283,15 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
      .			memory(1, blk1), src_cx, dst_cx,
      .                  wk_size+1, wk_size+wk_size2 )
+	ELSEIF ( rgrd_trans .EQ. prgrd_xy_lin ) THEN
+	   IF ( itsa_string ) GOTO 5010
+	   CALL DO_XYLIN_REGRID( cx_valid,
+     .			memory(1,mr_blk1(src_mr)), src_mr,
+     .			memory(1,mr_blk1(dst_mr)), dst_mr,
+     .			memory(1, blk1), src_cx, dst_cx,
+     .                  wk_size+1, 2*wk_size+1, 
+     .                  2*wk_size+wk_size2+1, 2*(wk_size+wk_size2)+1, 
+     .                  nxsrc*wk_size2+2*(wk_size+wk_size2) )
 	ELSEIF ( rgrd_trans.EQ.prgrd_min
      .	   .OR. rgrd_trans.EQ.prgrd_max ) THEN
 	   IF ( itsa_string ) GOTO 5010

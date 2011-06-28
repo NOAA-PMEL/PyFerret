@@ -133,6 +133,7 @@
 *		in get_context_mods by gx=name
 * V533: *sh* 6/01 - set regrid transform for strides to prgrd_xact_pts
 * V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
+* V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -386,6 +387,16 @@
      .    .AND. GEOG_COS_FACTOR(y_dim,use_grid) ) THEN
               cx_regrid_trans(x_dim,cx) = prgrd_xy_ave
               cx_regrid_trans(y_dim,cx) = prgrd_xy_ave
+           ENDIF
+        ENDIF
+
+* change X and Y linear interpolation to call do_xylin_regrid if appropriate  ! 6/11
+        IF ( cx_regrid_trans(x_dim,cx) .EQ. prgrd_linear_interp
+     . .AND. cx_regrid_trans(y_dim,cx) .EQ. prgrd_linear_interp ) THEN
+           IF ( GEOG_COS_FACTOR(y_dim,std_grid)
+     .    .AND. GEOG_COS_FACTOR(y_dim,use_grid) ) THEN
+              cx_regrid_trans(x_dim,cx) = prgrd_xy_lin
+              cx_regrid_trans(y_dim,cx) = prgrd_xy_lin
            ENDIF
         ENDIF
 

@@ -66,6 +66,8 @@
 * v581 *acm* 3/05 open levels (-INF) (INF)
 * v611 *acm* 4/08 Fix bug 1567: Set jj as in PLOTZ so SHADE/LINE gets labels with 
 *                 enough precision
+* v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
+*              within a grid cell
 
 
 	include		'parampl5_dat.decl'
@@ -137,6 +139,8 @@ C       multiplying the index value by the DX or DY delta values.
 
 	   DX = (XMAX - XMIN)/(NX - 1)
 	   DY = (YMAX - YMIN)/(NY - 1)
+	   IF (NX .EQ. 1) DX = 1.
+	   IF (NY .EQ. 1) DY = 1.
 
 	   DO 500 I=1,NX
 	      XX(IZLEN+I)=DX*(I-1)+XMIN

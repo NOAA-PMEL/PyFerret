@@ -70,6 +70,8 @@ C     v5.00 *jd* 2.99 Add fill optimization
 *                     removed to their own files.
 *     v5.81 *acm* 4/05 Changes for FILL/MOD. Draw replications for curvilinear datasets
 C V602 *acm* 2/07 check status coming out of CURV_COORD_RANGE; part of fix to bug 1485
+* v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
+*              within a grid cell
 
 	include 	'ARFILL.INC'
         include         'GKSCM1.INC'
@@ -207,7 +209,7 @@ C     Generate a color/gray scale key.
 C     Restore standard key style afterward (do this here, to 
 C     catch both contour and contour/set calls).
 C     
-        if (do_key .AND. .NOT.interrupted) THEN
+        if (do_key .AND. .NOT.interrupted .AND. status .EQ. ferr_ok) THEN
             call key ! 1/89 - *sh*
            CALL SHADE_KEY_CONT (0)
         ENDIF

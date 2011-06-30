@@ -38,12 +38,12 @@ endif
 ## =========== the Ferret's defaults.                                  ===========
 
 
-## Append ${FER_DIR}/bin to ${PATH}
+## Prepend ${FER_DIR}/bin to ${PATH}
 ## System Manager: If you prefer not to modify PATH here, you may comment
 ## out these lines and execute the file $FER_DIR/bin/install_ferret_links
 ## which will create ferret links in /usr/local/bin.
 if ( "${PATH}" !~ "*${FER_DIR}/bin*" ) then
-    setenv PATH "${PATH}:${FER_DIR}/bin"
+    setenv PATH "${FER_DIR}/bin:${PATH}"
     rehash
 endif
 

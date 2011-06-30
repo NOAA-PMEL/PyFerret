@@ -39,12 +39,12 @@ fi
 ## =========== the Ferret's defaults.                                  ===========
 
 
-## Append ${FER_DIR}/bin to ${PATH}
+## Prepend ${FER_DIR}/bin to ${PATH}
 ## System Manager: If you prefer not to modify PATH here, you may comment
 ## out these lines and execute the file $FER_DIR/bin/install_ferret_links
 ## which will create ferret links in /usr/local/bin.
 if ! echo "${PATH}" | grep -q "${FER_DIR}/bin"; then
-    export PATH="${PATH}:${FER_DIR}/bin"
+    export PATH="${FER_DIR}/bin:${PATH}"
 fi
 
 ## Space-separated list of default sites for ThreddsBrowser

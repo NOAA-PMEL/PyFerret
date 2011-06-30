@@ -36,7 +36,7 @@ gksm2ps:
 	../ppl/tmapadds/ws_line_bundle.o \
 	../ppl/tmapadds/restore_saved_line_colors.o \
 	../ppl/tmapadds/query_xgks_wkstn.o \
-	$(GKLIB) $(LIB)-o gksm2ps 
+	$(GKLIB) $(LIB) -o gksm2ps 
 
 clean:
 	rm -f *.o gksm2ps

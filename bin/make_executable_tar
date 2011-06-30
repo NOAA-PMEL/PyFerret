@@ -1,52 +1,162 @@
-#! /bin/csh -x
-# make_executable_tar
-# ver 1.0 5/99 *kob* 
+#! /bin/csh
 
-# this script encourages the tar file producer to make several manual
-# sanity checks but it does not enforce behavior
+# mycp needs to recursively copy subdirectories for the lib/python* directories
+set mycp = "/bin/cp -v -r --preserve=timestamp"
+set mylns = "/bin/ln -v -s"
 
-if ( $#argv == 1 ) then
-   set targ_dist_parent = $argv[1]
-   set bin_dir = $targ_dist_parent
-else
-   echo usage:
-   echo "         make_environment_tar binary_area machine_type "
-   echo e.g. "'make_executable_tar /home/users/ansley/ferret_install_utilities/bin'"
-   echo will make a gzipped tar file with the Ferret executables that are 
-   echo in the /home/users/ansley/ferret_install_utilities/bin directory  
-   exit 0
+echo ""
+if ( ($#argv < 2) || ($#argv > 3)  ) then
+   echo "Usage:  $0  <ferret_dir>  [ <pyferret_install_dir> ] <target_dir> "
+   echo ""
+   echo "    The required files will be copied from the ferret source directory "
+   echo "    <ferret_dir>, in which ferret or pyferret, gksm2ps, and the font files "
+   echo "    have been built.  If this is a build of pyferret, <pyferret_install_dir> "
+   echo "    should also be given as the installation directory for pyferret (e.g., "
+   echo '    $FER_DIR).  All lib/python* subdirectories of this directory will be '
+   echo "    copied.  All the files required will be copied to a temporary directory "
+   echo "    which this script will create.  Any missing executables will be noted. "
+   echo "    The file fer_executables.tar.gz will be written in <target_dir>, which "
+   echo "    must already exist. "
+   echo ""
+   exit 1
 endif
 
-cd $bin_dir
+if ( ! -d "$1" ) then
+   echo "$1 does not exist or is not a directory"
+   echo ""
+   exit 1
+endif
+set ferret_dir = `cd "$1" ; pwd`
+if ( ! -d "$2" ) then
+   echo "$2 does not exist or is not a directory"
+   echo ""
+   exit 1
+endif
+if ( $#argv == 2 ) then
+   set pyferret_dir = ""
+   set target_dir = `cd "$2" ; pwd`
+else
+   set pyferret_dir = `cd "$2" ; pwd`
+   if ( ! -d "$3" ) then
+      echo "$3 does not exist or is not a directory"
+      echo ""
+      exit 1
+   endif
+   set target_dir = `cd "$3" ; pwd`
+endif
 
-# get tar file location
-echo "Enter directory path to create the gzipped tar file in"
+# Get the version of ferret recorded in the code
+set version = `awk '/revision_level/ {print $4}' ${ferret_dir}/fer/dat/xrevision_data.F`
+if ( ($status != 0) || ("${version}" == "") ) then
+   echo "Unable to read the version number from xrevision_data.F in ${ferret_dir}/fer/dat"
+   echo ""
+   exit 1
+endif
+echo "Ferret version number is ${version}"
+echo ""
+
+# Make a clean temporary directory for the tar file contents
+set temp_dir = "/var/tmp/fer_exe_$$"
+rm -fr ${temp_dir}
+mkdir ${temp_dir}
+
+mkdir ${temp_dir}/bin
+
+# Copy fer/ferret_c
+if ( -x ${ferret_dir}/fer/ferret_c ) then
+   ${mycp} ${ferret_dir}/fer/ferret_c ${temp_dir}/bin/ferret_v${version}
+   cd ${temp_dir}/bin
+   ${mylns} ferret_v${version} ferret
+else 
+   echo "No ferret_c executable found in ${ferret_dir}/fer"
+#  An error only if pyferret_dir was not given
+   if ( "${pyferret_dir}" == "" ) then
+      echo ""
+      exit 1
+   else
+      echo "   ferret_v<n> and ferret symbolic link not created"
+      echo ""
+   endif
+endif
+
+# Copy gksm2ps/gksm2ps
+if ( ! -x ${ferret_dir}/gksm2ps/gksm2ps ) then
+   echo "No gksm2ps executable found in ${ferret_dir}/gksm2ps"
+   echo ""
+   exit 1
+endif
+${mycp} ${ferret_dir}/gksm2ps/gksm2ps ${temp_dir}/bin/gksm2ps
+
+# Copy font files from bin/build_fonts/unix/
+set fer_files = ${ferret_dir}/bin/build_fonts/unix/f*
+if ( ($status != 0) || ("${fer_files}" == "") ) then
+   echo "No font files found in ${ferret_dir}/bin/build_fonts/unix"
+   echo ""
+   exit 1
+endif
+mkdir ${temp_dir}/ppl
+mkdir ${temp_dir}/ppl/fonts
+${mycp} ${fer_files} ${temp_dir}/ppl/fonts
+
+# Copy fer/threddsBrowser/threddsBrowser.jar and 
+# fer/threddsBrowser/toolsUI/toolsUI*.jar
+set tb_jar = ${ferret_dir}/fer/threddsBrowser/threddsBrowser.jar
+if ( ! -r ${tb_jar} ) then
+   echo "No threddsBrowser.jar file found ${ferret_dir}/fer/threddsBrowser"
+   echo ""
+   exit 1
+endif
+set toolsui_jar = ${ferret_dir}/fer/threddsBrowser/toolsUI/toolsUI-*.jar
+if ( ($status != 0) || ("${toolsui_jar}" == "") ) then
+   echo "No toolsUI-*.jar file found in ${ferret_dir}/fer/threddsBrowser/toolUI"
+   echo ""
+   exit 1
+endif
+mkdir ${temp_dir}/lib
+${mycp} ${tb_jar} ${toolsui_jar} ${temp_dir}/lib
+cd ${temp_dir}/lib
+${mylns} toolsUI-*.jar toolsUI.jar
+
+# Copy pyferret files
+if ( "${pyferret_dir}" != "" ) then
+   set python_dirs = ${pyferret_dir}/lib/python*
+   if ( ($status != 0) || ("${python_dirs}" == "") ) then
+      echo "No python* directories found in ${pyferret_dir}/lib"
+      echo ""
+      exit 1
+   endif
+   ${mycp} ${python_dirs} ${temp_dir}/lib
+endif
+
+# Create the tar file
+set ctar_file = "${target_dir}/fer_executables.tar.gz"
+echo ""
+echo "The tar file will be created from the contents of "
+echo "${temp_dir}"
+echo "(which can now be examined or tweaked from another shell/window)"
+echo ""
+echo -n "Create gzipped tar file ${ctar_file} (y/n)? "
 set ans = $<
-set ctar_file = $ans/fer_executables.tar
-echo "Ready to create gzipped tar file $ctar_file"
-ready:
-echo "OK to continue ?"
-set ans = $<
-switch($ans)
-case y:
-   breaksw
-case n:
-   exit 0
-default:
-   echo "must answer y or n"
-   goto ready
-endsw
+while ( ("${ans}" != "y") && ("${ans}" != "n") )
+   echo -n "Answer either y or n: "
+   set ans = $<
+end
+if ( "${ans}" == "y" ) then
+   echo ""
+   cd ${temp_dir}
+   rm -f "${ctar_file}"
+   tar cvzf "${ctar_file}" *
+   echo ""
+   ls -l "${ctar_file}"
+else
+   echo ""
+   echo "Tar file NOT created"
+endif
 
-# make the gzipped tar file
-rm -f .tar_create_log
-tar vcf $ctar_file * >& $bin_dir/.tar_create_log
-
-gzip $ctar_file
-
-ls -l $ctar_file.*
-echo "If there are any problems w/ the tar file, see "$bin_dir/".tar_create_log for"
-echo "more information"
-
-
-
+# Clean up
+echo ""
+echo "Cleaning up - removing ${temp_dir}"
+cd "${target_dir}"
+rm -fr "${temp_dir}"
+echo ""
 

@@ -1,66 +1,85 @@
-#! /bin/csh -x
-# make_source_tar
-# ver 1.0 6/10 *acm*
-# ver 2.0 11/10 *acm* change CVS to svn
+#! /bin/csh
 
-# this script gets the source code, asking for any particular tag, or for trunk
-
-if ( $#argv == 2 ) then
-   set targ_dist_parent = $argv[1]
-   set tag = $argv[2]
-   set source_dir = $targ_dist_parent
-else
+if ( $#argv != 2 ) then
+   echo "Usage:  $0  <svn_repository>  <target_dir> "
    echo ""
-   echo usage:
-   echo make_source_tar target_area tag
-   echo   OR make_source_tar target_area trunk
-   echo e.g. "'make_source_tar /home/users/tmap/ferret v6_6_2_release'" will make a 
-   echo gzipped tar file of the corresponding Ferret source in the directory
-   echo "'/home/users/tmap/ferret/v6_6_2_release'"
-   echo "use HEAD if no tag or branch to be used"
+   echo "    The required files will be extracted from <svn_repository> "
+   echo "    (e.g., 'file:///home/users/tmap/svn/repos/ferret/trunk') "
+   echo "    to a temporary directory which this script will create. "
+   echo "    The gzipped tar file fer_source.tar.gz will be written in "
+   echo "    <target_dir>, which must already exist. "
    echo ""
- exit 0
+   exit 1
 endif
 
-cd $source_dir
-mkdir $tag
-cd $tag
-
-#use svn now to checkout desired files
-echo "Extracting FERRET source code......."
-
-if ( $tag == trunk ) then
-   svn checkout file:///home/users/tmap/svn/repos/ferret/trunk FERRET >&! .install_log
-else
-   svn checkout file:///home/users/tmap/svn/repos/ferret/tags/$tag FERRET >&! .install_log
+set info = `svn info "$1"`
+if ( "${info}" == "" ) then
+#  svn has printed an appropriate error message
+#  (but still returned a zero status)
+   echo ""
+   exit 1
 endif
-cp ./FERRET/fer/README ./FERRET
+set repository = "$1"
 
-# get tar file location
-set ctar_file = fer_source.tar
-echo "Ready to create gzipped tar file $ctar_file"
-ready:
-echo "OK to continue ?"
+if ( ! -d "$2" ) then
+   echo "$2 does not exist or is not a directory "
+   echo ""
+   exit 1
+endif
+# Make sure target_dir is a full pathname
+set target_dir = `cd "$2" ; pwd`
+
+# Decide what to call the directory checked-out from svn
+set fer_name = ${repository:t}
+if ( ${fer_name} == "trunk" ) then
+   set datestamp = `date +%F`
+   set fer_name = "ferret_${datestamp}"
+else if ( ${fer_name} == "pyferret" ) then
+   set datestamp = `date +%F`
+   set fer_name = "pyferret_${datestamp}"
+endif
+
+# Make a clean temporary directory for the tar file contents
+set temp_dir = "/var/tmp/fer_src_$$"
+rm -fr ${temp_dir}
+mkdir ${temp_dir}
+cd ${temp_dir}
+
+# Checkout the required files
+echo "Extracting FERRET source code "
+echo "from ${repository} "
+echo "to ${temp_dir}/${fer_name} "
+svn checkout -q ${repository} ${fer_name}
+
+# Create the tar file
+set ctar_file = "${target_dir}/fer_source.tar.gz"
+echo ""
+echo "The tar file will be created from the contents "
+echo "(except for the .svn subdirectories) of "
+echo "${temp_dir}"
+echo "(which can now be examined or tweaked from another shell/window)"
+echo ""
+echo -n "Create gzipped tar file ${ctar_file} (y/n)? "
 set ans = $<
-switch($ans)
-case y:
-   breaksw
-case n:
-   exit 0
-default:
-   echo "must answer y or n"
-   goto ready
-endsw
+while ( ("${ans}" != "y") && ("${ans}" != "n") )
+   echo -n "Answer either y or n: "
+   set ans = $<
+end
+if ( "${ans}" == "y" ) then
+   echo ""
+   rm -f "${ctar_file}"
+   tar cvzf "${ctar_file}" --exclude .svn "${fer_name}"
+   echo ""
+   ls -l "${ctar_file}"
+else
+   echo ""
+   echo "Tar file NOT created"
+endif
 
-# make the gzipped tar file
-cd $source_dir/$tag
-rm -f .tar_create_log
-tar vcf $ctar_file  --exclude .svn .  >& ./tar_create_log
-gzip $ctar_file
-ls -l $ctar_file*
-echo "If there are any problems w/ the tar file, see "$source_dir/".tar_create_log for"
-echo "more information"
-
-
-
+# Clean up
+echo ""
+echo "Cleaning up - removing ${temp_dir}"
+cd "${target_dir}"
+rm -fr "${temp_dir}"
+echo ""
 

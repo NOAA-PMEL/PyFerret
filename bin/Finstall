@@ -139,9 +139,9 @@ get_ferpaths_dir() {
 
 
 ### Write a message to ${fer_dir}/bin/Finstall.log (creating it if it does not exist)
-write_log_message(msg) {
+write_log_message() {
 #   Sanity check
-    if [ -n "${fer_dir}" ]; then
+    if [ -z "${fer_dir}" ]; then
         echo " Unexpected script error: fer_dir not defined in write_log_message "
         exit 1
     fi
@@ -157,7 +157,7 @@ write_log_message(msg) {
     fi
 
     timestamp=`/bin/date +' %D %T'`
-    if ! echo "${timestamp} ${msg} " >> "${logfile}" ; then
+    if ! echo "${timestamp} $1 " >> "${logfile}" ; then
         return 1
     fi
 }
@@ -171,8 +171,8 @@ create_ferret_paths() {
             echo " "
             echo " Renamed existing ${ferpaths_dir}/ferret_paths.csh "
             echo "               to ${ferpaths_dir}/ferret_paths.csh.old "
-            write_log_message("Renamed existing ${ferpaths_dir}/ferret_paths.csh")
-            write_log_message("              to ${ferpaths_dir}/ferret_paths.csh.old")
+            write_log_message "Renamed existing ${ferpaths_dir}/ferret_paths.csh"
+            write_log_message "              to ${ferpaths_dir}/ferret_paths.csh.old"
         fi
     fi
 #   Create new ferret_paths.csh
@@ -184,11 +184,11 @@ setenv FER_DSETS \"${fer_dsets}\"" \
            > "${ferpaths_dir}/ferret_paths.csh" ; then
         echo " "
         echo " Created ${ferpaths_dir}/ferret_paths.csh "
-        write_log_message("Created ${ferpaths_dir}/ferret_paths.csh")
+        write_log_message "Created ${ferpaths_dir}/ferret_paths.csh"
     else
         echo " "
         echo " Unable to create ${ferpaths_dir}/ferret_paths.csh "
-        write_log_message("Unable to create ${ferpaths_dir}/ferret_paths.csh")
+        write_log_message "Unable to create ${ferpaths_dir}/ferret_paths.csh"
     fi
 #   Check for existing ferret_paths.sh
     if [ -f "${ferpaths_dir}/ferret_paths.sh" ]; then
@@ -196,8 +196,8 @@ setenv FER_DSETS \"${fer_dsets}\"" \
             echo " "
             echo " Renamed existing ${ferpaths_dir}/ferret_paths.sh "
             echo "               to ${ferpaths_dir}/ferret_paths.sh.old "
-            write_log_message("Renamed existing ${ferpaths_dir}/ferret_paths.sh")
-            write_log_message("              to ${ferpaths_dir}/ferret_paths.sh.old")
+            write_log_message "Renamed existing ${ferpaths_dir}/ferret_paths.sh"
+            write_log_message "              to ${ferpaths_dir}/ferret_paths.sh.old"
         fi
     fi
 #   Create new ferret_paths.sh
@@ -209,11 +209,11 @@ export FER_DSETS=\"${fer_dsets}\"" \
            > "${ferpaths_dir}/ferret_paths.sh" ; then
         echo " "
         echo " Created ${ferpaths_dir}/ferret_paths.sh "
-        write_log_message("Created ${ferpaths_dir}/ferret_paths.sh")
+        write_log_message "Created ${ferpaths_dir}/ferret_paths.sh"
     else
         echo " "
         echo " Unable to create ${ferpaths_dir}/ferret_paths.sh"
-        write_log_message("Unable to create ${ferpaths_dir}/ferret_paths.sh")
+        write_log_message "Unable to create ${ferpaths_dir}/ferret_paths.sh"
     fi
 #   Check for existing ferret_paths
     if [ -f "${ferpaths_dir}/ferret_paths" ]; then
@@ -221,8 +221,8 @@ export FER_DSETS=\"${fer_dsets}\"" \
             echo " "
             echo " Renamed existing ${ferpaths_dir}/ferret_paths "
             echo "               to ${ferpaths_dir}/ferret_paths.old "
-            write_log_message("Renamed existing ${ferpaths_dir}/ferret_paths")
-            write_log_message("              to ${ferpaths_dir}/ferret_paths.old")
+            write_log_message "Renamed existing ${ferpaths_dir}/ferret_paths"
+            write_log_message "              to ${ferpaths_dir}/ferret_paths.old"
         fi
     fi
 #   Copy the appropriate file
@@ -232,24 +232,24 @@ export FER_DSETS=\"${fer_dsets}\"" \
             echo " "
             echo " Created ${ferpaths_dir}/ferret_paths "
             echo "     as a link to ${ferpaths_dir}/ferret_paths.csh "
-            write_log_message("Created ${ferpaths_dir}/ferret_paths")
-            write_log_message("    as a link to ${ferpaths_dir}/ferret_paths.csh")
+            write_log_message "Created ${ferpaths_dir}/ferret_paths"
+            write_log_message "    as a link to ${ferpaths_dir}/ferret_paths.csh"
         else
             echo " "
             echo " Unable to create ${ferpaths_dir}/ferret_paths "
-            write_log_message("Unable to create ${ferpaths_dir}/ferret_paths")
+            write_log_message "Unable to create ${ferpaths_dir}/ferret_paths"
         fi
     else
         if ( cd "${ferpaths_dir}" ; ln -s "ferret_paths.sh" "ferret_paths" ) ; then
             echo " "
             echo " Created ${ferpaths_dir}/ferret_paths "
             echo "     as a link to ${ferpaths_dir}/ferret_paths.sh "
-            write_log_message("Created ${ferpaths_dir}/ferret_paths")
-            write_log_message("    as a link to ${ferpaths_dir}/ferret_paths.sh")
+            write_log_message "Created ${ferpaths_dir}/ferret_paths"
+            write_log_message "    as a link to ${ferpaths_dir}/ferret_paths.sh"
         else
             echo " "
             echo " Unable to create ${ferpaths_dir}/ferret_paths "
-            write_log_message("Unable to create ${ferpaths_dir}/ferret_paths")
+            write_log_message "Unable to create ${ferpaths_dir}/ferret_paths"
         fi
     fi
 }
@@ -281,22 +281,22 @@ get_ferexec_dir() {
 
 ### Install the contents of $ferexec_dir/fer_executables.tar.gz into $fer_dir
 install_execs() {
-    write_log_message("Installing/updating from ${ferexec_dir}/fer_executables.tar.gz")
+    write_log_message "Installing/updating from ${ferexec_dir}/fer_executables.tar.gz"
 
 #   Get the list of files in the tar file
     exetar_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz`
-    if [ -n "${exetar_file}" ]; then
+    if [ -z "${exetar_file}" ]; then
 #        tar should have already printed a more appropriate error message
          echo " No files found in ${ferexec_dir}/fer_executables.tar.gz "
-         write_log_message("No files found in ${ferexec_dir}/fer_executables.tar.gz")
+         write_log_message "No files found in ${ferexec_dir}/fer_executables.tar.gz"
          return 1
     fi
 
 #   Make sure the tar file is the right format
     lib_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz lib`
-    if [ -n "${lib_files}" ]; then
+    if [ -z "${lib_files}" ]; then
          echo " Aborting - old style fer_executables.tar.gz "
-         write_log_message("Aborting - old style fer_executables.tar.gz")
+         write_log_message "Aborting - old style fer_executables.tar.gz"
          return 1
     fi
 
@@ -306,10 +306,10 @@ install_execs() {
     for exefile in ${exetar_files} ; do
         if [ -f "${fer_dir}/${exefile}" ]; then
             if mv -f "${fer_dir}/${exefile}" "${fer_dir}/${exefile}.old" ; then
-                write_log_message("Renamed existing ${exefile} to ${exefile}.old")
+                write_log_message "Renamed existing ${exefile} to ${exefile}.old"
             else
                 echo " Aborting - unable to rename ${fer_dir}/${exefile} "
-                write_log_message("Aborting - unable to rename ${exefile}")
+                write_log_message "Aborting - unable to rename ${exefile}"
                 return 1
             fi
         fi
@@ -320,7 +320,7 @@ install_execs() {
     echo "                    to ${fer_dir} "
     if ( cd "${fer_dir}" ; tar xzf "${ferexec_dir}/fer_executables.tar.gz" ) ; then
         for exefile in ${exetar_files} ; do
-            write_log_message("Extracted ${exefile}")
+            write_log_message "Extracted ${exefile}"
         done
     else
         return 1

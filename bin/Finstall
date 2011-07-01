@@ -285,7 +285,7 @@ install_execs() {
 
 #   Get the list of files in the tar file
     exetar_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz`
-    if [ -z "${exetar_file}" ]; then
+    if [ -z "${exetar_files}" ]; then
 #        tar should have already printed a more appropriate error message
          echo " No files found in ${ferexec_dir}/fer_executables.tar.gz "
          write_log_message "No files found in ${ferexec_dir}/fer_executables.tar.gz"

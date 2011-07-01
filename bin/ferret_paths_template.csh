@@ -56,9 +56,9 @@ setenv FER_DATA_THREDDS "${FER_DATA_THREDDS} ${FER_DSETS}"
 
 ## Space-separated lists of directories examined when searching
 ## for (data, descriptor, grid, go-script) files without path components
-setenv FER_DATA ". ${FER_DIR}/fer_dsets/data ${FER_DIR}/go ${FER_DIR}/examples"
-setenv FER_DESCR ". ${FER_DIR}/fer_dsets/descr"
-setenv FER_GRIDS ". ${FER_DIR}/fer_dsets/grids"
+setenv FER_DATA ". ${FER_DSETS}/data ${FER_DIR}/go ${FER_DIR}/examples"
+setenv FER_DESCR ". ${FER_DSETS}/descr"
+setenv FER_GRIDS ". ${FER_DSETS}/grids"
 setenv FER_GO ". ${FER_DIR}/go ${FER_DIR}/examples ${FER_DIR}/contrib"
 
 ## Space-separated list of directories containing traditional

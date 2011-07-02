@@ -19,6 +19,8 @@ optimized :
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
 	$(MAKE) "CFLAGS += -O" pymod
 	$(MAKE) -C $(DIR_PREFIX)/external_functions optimized
+	$(MAKE) -C $(DIR_PREFIX)/gksm2ps
+	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 .PHONY : debug
 debug : 
@@ -27,6 +29,8 @@ debug :
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
 	$(MAKE) "CFLAGS += -O0 -g" pymod
 	$(MAKE) -C $(DIR_PREFIX)/external_functions debug
+	$(MAKE) -C $(DIR_PREFIX)/gksm2ps
+	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 ## The following builds _pyferret.so, then installs that shared-object library and all the
 ## python scripts into $(DIR_PREFIX)/pyferret_install.  This install directory can then be
@@ -49,14 +53,14 @@ install :
 
 .PHONY : clean
 clean :
+	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix clean
+	$(MAKE) -C $(DIR_PREFIX)/gksm2ps clean
 	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
-	rm -fr $(DIR_PREFIX)/build ferret.jnl*
+	rm -fr $(DIR_PREFIX)/pyferret_install $(DIR_PREFIX)/build ferret.jnl*
 	$(MAKE) -C $(DIR_PREFIX)/fer clean
 	rm -fr $(DIR_PREFIX)/lib
 	@echo ""
-	@echo "    NOTE: Only the build, external_functions, fer, fmt, ppl,"
-	@echo "          and lib directories were cleaned.  Other directories"
-	@echo "          (in particular, xgks) were not changed."
+	@echo "    NOTE: The xgks directory was not cleaned."
 	@echo ""
 
 #

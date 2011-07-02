@@ -19,7 +19,7 @@ if ( ! $?FER_DIR ) then
 endif
 
 
-## Assign the Python directory containing the pyferret package and ferret.py
+## Assign the directory containing the pyferret Python package (directory)
 ## One of:
 ## (a) the default user-specific site
 ##     Defining pysite not required if Python 2.6 or later.
@@ -38,6 +38,13 @@ endif
 ## (c) a custom directory (for example, if installed under $FER_DIR)
 ##     Defining pysite required.
 set pysite = "${FER_DIR}/lib/${pyname}/site-packages"
+## set pysite = "${FER_DIR}/lib/${pyname}/site-packages"
+## should be correct for the normal Ferret installation.
+
+
+##
+## ==== The following should not need any modifications ====
+##
 
 
 ## Add pysite to the Python search path given by PYTHONPATH

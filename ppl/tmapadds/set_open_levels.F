@@ -404,7 +404,7 @@ c Set jj as in plotz based on fine levels.
       levcount = nlev2
       zlast = zlev(1)
       do 530 i = 2, nlev2 
-         IF ( TM_FPEQ(zlev(i), zlast) ) THEN
+         IF ( TM_FPEQ(zlev(i), zlast) .AND. i.LT.levcount ) THEN
             do 520 k = i,levcount
                zlev(k-1) = zlev(k)
                ldig(k-1) = ldig(k)

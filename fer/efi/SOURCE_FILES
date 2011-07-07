@@ -50,6 +50,7 @@ is_element_of_str.F\
 is_element_of_str_n.F\
 labwid.F\
 lanczos.F\
+list_value_xml.F\
 lsl_lowpass.F\
 maxminmax.F\
 minmax.F\
@@ -134,6 +135,7 @@ transpose_yz.F\
 transpose_zt.F\
 treverse.F\
 unique_str2int.F\
+write_webrow.F\
 xauto_cor.F\
 xcat.F\
 xcat_str.F\

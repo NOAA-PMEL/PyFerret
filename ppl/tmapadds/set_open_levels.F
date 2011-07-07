@@ -141,7 +141,7 @@ c Set jj as in plotz based on fine levels.
       ELSE
          jj = nsigc - IFIX(ALOG10(ABS(zmpf-znpf)) + .5)
       ENDIF 
-      IF (jj .LE. 0) jj= - 1
+      IF (jj .LE. 0) jj= -1
 
       ! -inf
       IF (zmin .LT. znpclo) THEN
@@ -160,16 +160,10 @@ c Set jj as in plotz based on fine levels.
 
       do 101 i = 1, nlev3 
 
-         lwgt(ilev) = 2
          ldig(ilev) = -1
          zlev(ilev) = znpclo + dzc* FLOAT(i-1)
          IF (zlev(ilev) .GT. znpf) goto 102
 
-         IF (zlev(ilev).GT.0.) then
-            lwgt(ilev) = 1
-         ELSE
-            lwgt(ilev) = 3
-         ENDIF
          ldig(ilev) = jj
 	 IF (centered) THEN
 	    ilev = ilev + 1
@@ -185,7 +179,6 @@ c Set jj as in plotz based on fine levels.
 
       IF (neginf) THEN
          zlev(1) = MIN( zlev(2), zmin-1. )
-         lwgt(1) = lwgt(2)
          ldig(1) = ldig(2)
       ENDIF
 
@@ -225,16 +218,10 @@ c Set jj as in plotz based on fine levels.
 
       DO 103 i=i1,nlev3 
 
-         lwgt(ilev) = 2
          ldig(ilev) = -1
          zlev(ilev) = znpf + dzf* FLOAT(i-1)
          IF (zlev(ilev) .GT. znpchi) goto 104
 
-         IF (zlev(ilev).GT.0.) then
-            lwgt(ilev) = 1
-         ELSE
-            lwgt(ilev) = 3
-         ENDIF
          ldig(ilev) = jj
 
 	 IF (centered) THEN
@@ -256,7 +243,6 @@ c Set jj as in plotz based on fine levels.
          neginf = .TRUE.
 	 DO i = ilev, 2, -1
 	    zlev(i) = zlev(i-1)
-	    lwgt(i) = lwgt(i-1)
 	    ldig(i) = ldig(i-1)
 	 ENDDO
 	 
@@ -291,14 +277,8 @@ c Set jj as in plotz based on fine levels.
 
       DO 105 i=i1,nlev3 
 
-         lwgt(ilev) = 2
          ldig(ilev) = -1
          zlev(ilev) = znpchi + dzc* FLOAT(i-1)
-         IF (zlev(ilev).GT.0.) then
-            lwgt(ilev) = 1
-         ELSE
-            lwgt(ilev) = 3
-         ENDIF
          ldig(ilev) = jj
 
 	 IF (centered) THEN
@@ -330,7 +310,7 @@ c Set jj as in plotz based on fine levels.
       nlev2 = ilev
       IF ((zmax .GT. zmpchi) .OR. (centered .AND. neginf)) THEN
          posinf = .TRUE.
-         zlev(nlev2) = MAX (zlev(nlev2-1), zmax + 1. )
+         zlev(nlev2) = MAX (zlev(nlev2-1)+1, zmax + 1. )
 	 lev_str = lev_str(:slen)//'(inf)'
          slen = TM_LENSTR1(lev_str)
       ELSE   
@@ -339,16 +319,16 @@ c Set jj as in plotz based on fine levels.
 
       IF ((centered .AND. posinf) .AND.(.NOT.neginf)) THEN
          neginf = .TRUE.
-	 do i = nlev2, 2, -1
-           zlev(i) = zlev(i-1)
-	 ENDDO
+	 DO 106 i = nlev2, 1, -1
+           ldig(i+1) = ldig(i)
+           zlev(i+1) = zlev(i)
+ 106     CONTINUE 
 	 nlev2 = nlev2 + 1
-	 zlev(1) =  MIN (zlev(1), zmin - 1. )
+	 zlev(1) =  MIN (zlev(1)-1, zmin - 1. )
 	 lev_str = '(-inf)'//lev_str(:slen)
          slen = TM_LENSTR1(lev_str)
       ENDIF
 
-      lwgt(nlev2) = lwgt(nlev2-1)
       ldig(nlev2) = ldig(nlev2-1)
 
       IF (centered .AND. (.NOT.posinf)) THEN
@@ -361,11 +341,10 @@ c Set jj as in plotz based on fine levels.
 * if centered and there is (inf) then add (-inf) if its not there.
 
       IF ( (centered .AND. posinf) .AND. (.NOT.neginf) ) THEN
-         DO 106 i=ilev,1,-1
-            lwgt(i+1) = lwgt(i)
+         DO 107 i=ilev,1,-1
             ldig(i+1) = ldig(i)
             zlev(i+1) = zlev(i)
- 106     CONTINUE 
+ 107     CONTINUE 
          ilev = ilev + 1
 	 nlev2 = ilev
 	 neginf = .TRUE.
@@ -387,11 +366,10 @@ c Set jj as in plotz based on fine levels.
                IF (lev_min .LE. zlev(i)) index = i
             ENDDO
             IF (index .GT. 1) THEN
-               DO i = index, nlev2
+               DO 108 i = index, nlev2
                   zlev(i-index+1) = zlev(i)
-                  lwgt(i-index+1) = lwgt(i)
                   ldig(i-index+1) = ldig(i)
-               ENDDO
+ 108           CONTINUE 
                nlev2 = nlev2-index+1
             ENDIF
          ENDIF
@@ -418,8 +396,6 @@ c Set jj as in plotz based on fine levels.
             do 520 k = i,levcount
                zlev(k-1) = zlev(k)
                ldig(k-1) = ldig(k)
-               lclr(k-1) = lclr(k)
-               lwgt(k-1) = lwgt(k)
  520        CONTINUE
             levcount = levcount-1
          ENDIF
@@ -438,19 +414,34 @@ c Set jj as in plotz based on fine levels.
 	 IF (posinf) i2 = nlev2-1
 	 IF (.NOT. TM_FPEQ(ABS(zlev(i1)), zlev(i2) ) ) THEN
 	    IF (ABS(zlev(i1)) .GT. zlev(i2)) THEN
-	       DO i = nlev2+1, i2+1, -1
+	       DO 109 i = nlev2+1, i2+1, -1
 	         zlev(i) = zlev(i-1)
-	       ENDDO
+                 ldig(i) = ldig(i-1)
+ 109	       CONTINUE
 	       zlev(nlev2) = ABS(zlev(i1))
+               ldig(nlev2) = ldig(i1)
 	    ELSE
-	       DO i = nlev2+1, i1, -1
+	       DO 110 i = nlev2+1, i1, -1
 	         zlev(i) = zlev(i-1)
-	       ENDDO
+                 ldig(i) = ldig(i-1)
+ 110	       CONTINUE
 	       zlev(nlev2) = -1.*zlev(i2)
+	       ldig(nlev2) = ldig(i2)
+
 	    ENDIF
 	    nlev2 = nlev2 + 1
 	 ENDIF
       ENDIF
+
+* Set lwgt - as in lev.F
+      DO 111 i = 1, nlev2
+         IF (zlev(i).GT.0.) THEN
+            lwgt(i) = 1
+         ELSE
+            lwgt(i) = 3
+         ENDIF
+	 IF (TM_FPEQ(zlev(i), 0.)) lwgt(i) = 2 
+ 111  CONTINUE
 
       RETURN
       END

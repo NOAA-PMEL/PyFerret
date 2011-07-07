@@ -155,7 +155,7 @@ c Set jj as in plotz based on fine levels.
 
       nlev2 =1 
 
-      nlev3=(zmpclo-znpclo)/ dzc + 1
+      nlev3 = NINT((zmpchi-znpchi)/ dzc) + 1
       nlev2 = nlev2 + nlev3
 
       do 101 i = 1, nlev3 
@@ -189,7 +189,7 @@ c Set jj as in plotz based on fine levels.
          ldig(1) = ldig(2)
       ENDIF
 
-      nlev3=(zmpf-znpf)/ dzf + 1
+      nlev3 = NINT((zmpf-znpf)/ dzf) + 1
       nlev2 = nlev2 + nlev3
 
       IF (zlev(ilev-1) .GT. znpf) ilev = ilev - 1
@@ -263,7 +263,7 @@ c Set jj as in plotz based on fine levels.
          zlev(1) = zmin-1.
 	 ilev = ilev + 1
       ENDIF
-      nlev3=(zmpchi-znpchi)/ dzc + 1
+      nlev3 = NINT((zmpchi-znpchi)/ dzc) + 1
       nlev2 = nlev2 + nlev3
 
       IF (zlev(ilev-1) .GT. znpchi) ilev = ilev - 1
@@ -337,6 +337,17 @@ c Set jj as in plotz based on fine levels.
          zlev(nlev2) = zmpchi
       ENDIF
 
+      IF ((centered .AND. posinf) .AND.(.NOT.neginf)) THEN
+         neginf = .TRUE.
+	 do i = nlev2, 2, -1
+           zlev(i) = zlev(i-1)
+	 ENDDO
+	 nlev2 = nlev2 + 1
+	 zlev(1) =  MIN (zlev(1), zmin - 1. )
+	 lev_str = '(-inf)'//lev_str(:slen)
+         slen = TM_LENSTR1(lev_str)
+      ENDIF
+
       lwgt(nlev2) = lwgt(nlev2-1)
       ldig(nlev2) = ldig(nlev2-1)
 
@@ -361,7 +372,6 @@ c Set jj as in plotz based on fine levels.
 	 lev_str = '(-inf)'//lev_str(:slen)
          slen = TM_LENSTR1(lev_str)
       ENDIF
-
 
 * If a min or max was explicitly set, then chop off the 
 * levels with that setting.
@@ -411,12 +421,36 @@ c Set jj as in plotz based on fine levels.
                lclr(k-1) = lclr(k)
                lwgt(k-1) = lwgt(k)
  520        CONTINUE
-         zlev(k) = 0.
-         levcount = levcount-1
+            levcount = levcount-1
          ENDIF
          zlast = zlev(i)
  530  CONTINUE
       nlev2 = levcount
+
+* Finally, because of rounding when computing nlev3, when making centered 
+* levels there can still be different numbers of levels above and below 
+* zero. Force centered levels.
+
+      IF (centered) THEN
+         i1 = 1
+	 i2 = nlev2
+	 IF (neginf) i1 = 2
+	 IF (posinf) i2 = nlev2-1
+	 IF (.NOT. TM_FPEQ(ABS(zlev(i1)), zlev(i2) ) ) THEN
+	    IF (ABS(zlev(i1)) .GT. zlev(i2)) THEN
+	       DO i = nlev2+1, i2+1, -1
+	         zlev(i) = zlev(i-1)
+	       ENDDO
+	       zlev(nlev2) = ABS(zlev(i1))
+	    ELSE
+	       DO i = nlev2+1, i1, -1
+	         zlev(i) = zlev(i-1)
+	       ENDDO
+	       zlev(nlev2) = -1.*zlev(i2)
+	    ENDIF
+	    nlev2 = nlev2 + 1
+	 ENDIF
+      ENDIF
 
       RETURN
       END

@@ -5,18 +5,15 @@ set mycp = "/bin/cp -v -r --preserve=timestamp"
 set mylns = "/bin/ln -v -s"
 
 echo ""
-if ( ($#argv < 2) || ($#argv > 3)  ) then
-   echo "Usage:  $0  <ferret_dir>  [ <pyferret_install_dir> ] <target_dir> "
+if ( $#argv != 2 ) then
+   echo "Usage:  $0  <ferret_dir>  <target_dir> "
    echo ""
    echo "    The required files will be copied from the ferret source directory "
    echo "    <ferret_dir>, in which ferret or pyferret, gksm2ps, and the font files "
-   echo "    have been built.  If this is a build of pyferret, <pyferret_install_dir> "
-   echo "    should also be given as the installation directory for pyferret (e.g., "
-   echo '    $FER_DIR).  All lib/python* subdirectories of this directory will be '
-   echo "    copied.  All the files required will be copied to a temporary directory "
-   echo "    which this script will create.  Any missing executables will be noted. "
-   echo "    The file fer_executables.tar.gz will be written in <target_dir>, which "
-   echo "    must already exist. "
+   echo "    have been built.  All the files required will be copied to a temporary "
+   echo "    directory which this script will create.  Any missing executables will "
+   echo "    be noted.  The gzipped tar file fer_executables.tar.gz will be written "
+   echo "    in <target_dir>, which must already exist. "
    echo ""
    exit 1
 endif
@@ -32,17 +29,14 @@ if ( ! -d "$2" ) then
    echo ""
    exit 1
 endif
-if ( $#argv == 2 ) then
+set target_dir = `cd "$2" ; pwd`
+
+set pyferret_dir = "${ferret_dir}/pyferret_install"
+if ( ! -d "${pyferret_dir}" ) then
+   echo "${pyferret_dir} does not exist or is not a directory"
+   echo "    pyferret module not created"
+   echo ""
    set pyferret_dir = ""
-   set target_dir = `cd "$2" ; pwd`
-else
-   set pyferret_dir = `cd "$2" ; pwd`
-   if ( ! -d "$3" ) then
-      echo "$3 does not exist or is not a directory"
-      echo ""
-      exit 1
-   endif
-   set target_dir = `cd "$3" ; pwd`
 endif
 
 # Get the version of ferret recorded in the code
@@ -79,6 +73,13 @@ else
    endif
 endif
 
+# Copy the external function shared-object library files
+mkdir -p ${temp_dir}/ext_func/libs
+# If pyferret, do not copy the .so files at this time due to pyferret bug
+if ( "${pyferret_dir}" == "" ) then
+   find ${ferret_dir}/external_functions -type f -perm -100 -name \*.so -exec ${mycp} {} ${temp_dir}/ext_func/libs \;
+endif
+
 # Copy gksm2ps/gksm2ps
 if ( ! -x ${ferret_dir}/gksm2ps/gksm2ps ) then
    echo "No gksm2ps executable found in ${ferret_dir}/gksm2ps"
@@ -106,16 +107,19 @@ if ( ! -r ${tb_jar} ) then
    echo ""
    exit 1
 endif
-set toolsui_jar = ${ferret_dir}/fer/threddsBrowser/toolsUI/toolsUI-*.jar
-if ( ($status != 0) || ("${toolsui_jar}" == "") ) then
-   echo "No toolsUI-*.jar file found in ${ferret_dir}/fer/threddsBrowser/toolUI"
-   echo ""
-   exit 1
-endif
 mkdir ${temp_dir}/lib
-${mycp} ${tb_jar} ${toolsui_jar} ${temp_dir}/lib
+${mycp} ${tb_jar} ${temp_dir}/lib
 cd ${temp_dir}/lib
-${mylns} toolsUI-*.jar toolsUI.jar
+# Create a symbolic link to a non-existant toolsUI-4.2.jar file
+${mylns} toolsUI-4.2.jar toolsUI.jar
+# To minimize size, the toolsUI-4.2.jar file is not included.
+# Someone (the user?) needs to download the latest jar file 
+# from a link under:
+#   http://www.unidata.ucar.edu/downloads/netcdf/index.jsp
+# At this time, netcdf-java library version 4:
+#   http://www.unidata.ucar.edu/downloads/netcdf/netcdf-java-4/index.jsp
+# with the specific ftp link:
+#   ftp://ftp.unidata.ucar.edu/pub/netcdf-java/v4.2/toolsUI-4.2.jar
 
 # Copy pyferret files
 if ( "${pyferret_dir}" != "" ) then

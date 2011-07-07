@@ -108,7 +108,7 @@
 	# Below this line are macro definitions used only for the final linking of the executable
 	#
 
-	LD = gfortran
+	LD = gcc
 
 	LDFLAGS = \
 	-v \
@@ -121,6 +121,7 @@
 
 	SYSLIB = \
 	-lX11 \
+	/usr/lib/gcc/i386-redhat-linux/4.1.1/libgfortran.a \
 	-lcurl \
 	-ldl \
 	-lm \

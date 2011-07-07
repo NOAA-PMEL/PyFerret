@@ -110,16 +110,11 @@ endif
 mkdir ${temp_dir}/lib
 ${mycp} ${tb_jar} ${temp_dir}/lib
 cd ${temp_dir}/lib
-# Create a symbolic link to a non-existant toolsUI-4.2.jar file
-${mylns} toolsUI-4.2.jar toolsUI.jar
-# To minimize size, the toolsUI-4.2.jar file is not included.
-# Someone (the user?) needs to download the latest jar file 
-# from a link under:
-#   http://www.unidata.ucar.edu/downloads/netcdf/index.jsp
-# At this time, netcdf-java library version 4:
-#   http://www.unidata.ucar.edu/downloads/netcdf/netcdf-java-4/index.jsp
-# with the specific ftp link:
-#   ftp://ftp.unidata.ucar.edu/pub/netcdf-java/v4.2/toolsUI-4.2.jar
+# Create a symbolic link to a non-existant toolsUI-4.1.jar file
+${mylns} toolsUI-4.1.jar toolsUI.jar
+# To minimize size, the toolsUI-4.1.jar file is not included.
+# Someone (the user?) needs to download the jar file from:
+#   ftp://ftp.unidata.ucar.edu/pub/netcdf-java/v4.1/toolsUI-4.1.jar
 
 # Copy pyferret files
 if ( "${pyferret_dir}" != "" ) then

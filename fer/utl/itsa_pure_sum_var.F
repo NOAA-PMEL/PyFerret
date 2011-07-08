@@ -93,7 +93,8 @@
 
 	  ELSEIF ( itype .EQ. alg_if_marker
      .    .OR.     itype .EQ. alg_then_marker
-     .	      .OR. itype .EQ. alg_log_struct) THEN
+     .	      .OR. itype .EQ. alg_log_struct
+     .	      .OR. itype .EQ. alg_log_vstruct) THEN
 	     GOTO 100
 
 	  ELSEIF ( itype .EQ. alg_function  ) THEN

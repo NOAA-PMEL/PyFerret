@@ -1,4 +1,4 @@
-      SUBROUTINE OPERATE (	operation, num_com, com_cx,
+      SUBROUTINE OPERATE (	operation, num_com, ifv, com_cx,
      .				com1, mr1,
      .				com2, mr2,
      .				com3, mr3,
@@ -75,6 +75,8 @@
 *      5/00 *sh* - bug fix in line checking month>12
 * v5.40*acm* add comment: days1900 returns days since 1-jan-1900, STANDARD CALENDAR
 * V600 4/06  *acm*  return the result from days_from_day0 in dummy, for 64-bit build
+* V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
+*		   zero as valid.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -83,6 +85,7 @@
 	include 'xcontext.cmn'
 
 * calling argument declarations:
+	LOGICAL ifv
 	INTEGER	operation, num_com, com_cx(4), mr1, mr2, mr3, mr4, mres
 	REAL    com1( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
      .		com2( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
@@ -92,7 +95,7 @@
 
 * internal variable declarations:
 	LOGICAL	first
-	INTEGER CX_DIM_LEN, i, j, k, l, icom, idim,
+	INTEGER CX_DIM_LEN, op, i, j, k, l, icom, idim,
      .		i1, j1, k1, l1, i2, j2, k2, l2,
      .		i3, j3, k3, l3, i4, j4, k4, l4,
      .		di1, dj1, dk1, dl1, di2, dj2, dk2, dl2,
@@ -102,6 +105,7 @@
 	REAL	RANDU, RANDN, RHO_UNESCO, THETA_FOFF,
      .		DAYS_FROM_DAY0,
      .          bad1, bad2, bad3, bad4, bad_res, dummy
+     .          op_repl
 
 * equivalence conveniences
 * "inc" is the increments for each axis of each component
@@ -128,6 +132,18 @@
 	bad4 = mr_bad_data ( mr4 )
 	bad_res = mr_bad_data( mres )
 
+* For operations, e.g.  IF var GT a THEN b, create a mask of 1's and 0's.
+* but for expressions using IFV, the mask needs to be 1's and bad-values.
+* If its an IFV expression then use the corresponding THEN and ELSE.
+
+        op = operation
+	op_repl = 0.
+	IF (ifv) THEN
+	   op_repl = bad_res
+	   IF (op .EQ. 45) op = 47
+	   IF (op .EQ. 46) op = 48
+        ENDIF
+
 * compute the delta increment for each axis of each component
 	DO 10 icom = 1, num_com
 	DO 10 idim = 1, 4
@@ -153,7 +169,7 @@
      .		3100,3200,3300,3400,3500,3600,3700,3800,3900,4000,
      .		4100,4200,4300,
      .
-     .		4400,4500,4600					   ) operation
+     .		4400,4500,4600,4700,4800		   ) op
 
 * ----------------------------------------------------------------------------
 * ------- OPERATORS -------------
@@ -354,7 +370,7 @@
      .	     .AND. com2(i2,j2,k2,l2).NE.0.0 ) THEN
 		 res(i,j,k,l) = 1.0
 	      ELSE
-		 res(i,j,k,l) = 0.0
+		 res(i,j,k,l) = op_repl
 	      ENDIF
 	   ENDIF
  610	CONTINUE
@@ -390,13 +406,14 @@
      .	      .OR. com2(i2,j2,k2,l2).NE.0.0 ) THEN
 		 res(i,j,k,l) = 1.0
 	      ELSE
-		 res(i,j,k,l) = 0.0
+		 res(i,j,k,l) = op_repl
 	      ENDIF
 	   ENDIF
  710	CONTINUE
 	RETURN
 
 * "GT" - mask of 1's where grid 1 exceeds grid 2, 0's elsewhere
+* "GT" - mask of 1's where grid 1 exceeds grid 2, bad-val elsewhere
  800	l1 = sl1
 	l2 = sl2
 	DO 810 l = mr_lo_s4(mres), mr_hi_s4(mres)
@@ -425,13 +442,14 @@
 	      IF ( com1(i1,j1,k1,l1) .GT. com2(i2,j2,k2,l2) ) THEN
 		 res(i,j,k,l) = 1.0
 	      ELSE
-		 res(i,j,k,l) = 0.0
+		 res(i,j,k,l) = op_repl
 	      ENDIF
 	   ENDIF
  810	CONTINUE
 	RETURN
 
 * "GE" - mask of 1's where grid 1 exceeds or equals grid 2, 0's elsewhere
+* "GE" - mask of 1's where grid 1 exceeds or equals grid 2, bad elsewhere
  900	l1 = sl1
 	l2 = sl2
 	DO 910 l = mr_lo_s4(mres), mr_hi_s4(mres)
@@ -460,13 +478,14 @@
 	      IF ( com1(i1,j1,k1,l1) .GE. com2(i2,j2,k2,l2) ) THEN
 		 res(i,j,k,l) = 1.0
 	      ELSE
-		 res(i,j,k,l) = 0.0
+		 res(i,j,k,l) = op_repl
 	      ENDIF
 	   ENDIF
  910	CONTINUE
 	RETURN
 
 * "LT" - mask of 1's where grid 1 is less than grid 2, 0's elsewhere
+* "LT" - mask of 1's where grid 1 is less than grid 2, bad elsewhere
  1000	l1 = sl1
 	l2 = sl2
 	DO 1010 l = mr_lo_s4(mres), mr_hi_s4(mres)
@@ -495,13 +514,14 @@
 	      IF ( com1(i1,j1,k1,l1) .LT. com2(i2,j2,k2,l2) ) THEN
 		 res(i,j,k,l) = 1.0
 	      ELSE
-		 res(i,j,k,l) = 0.0
+		 res(i,j,k,l) = op_repl
 	      ENDIF
 	   ENDIF
  1010	CONTINUE
 	RETURN
 
 * "LE" - mask of 1's where grid 1 is less than or equal to grid 2, 0's elsewhere
+* "LE" - mask of 1's where grid 1 is less than or equal to grid 2, bad elsewhere
  1100	l1 = sl1
 	l2 = sl2
 	DO 1110 l = mr_lo_s4(mres), mr_hi_s4(mres)
@@ -530,13 +550,14 @@
 	      IF ( com1(i1,j1,k1,l1) .LE. com2(i2,j2,k2,l2) ) THEN
 		 res(i,j,k,l) = 1.0
 	      ELSE
-		 res(i,j,k,l) = 0.0
+		 res(i,j,k,l) = op_repl
 	      ENDIF
 	   ENDIF
  1110	CONTINUE
 	RETURN
 
 * "EQ" - mask of 1's where grids are equal, 0's elsewhere
+* "EQ" - mask of 1's where grids are equal, bad elsewhere
  1200	l1 = sl1
 	l2 = sl2
 	DO 1210 l = mr_lo_s4(mres), mr_hi_s4(mres)
@@ -565,7 +586,7 @@
 	      IF ( com1(i1,j1,k1,l1) .EQ. com2(i2,j2,k2,l2) ) THEN
 		 res(i,j,k,l) = 1.0
 	      ELSE
-		 res(i,j,k,l) = 0.0
+		 res(i,j,k,l) = op_repl
 	      ENDIF
 	   ENDIF
  1210	CONTINUE
@@ -600,7 +621,7 @@
 	      IF ( com1(i1,j1,k1,l1) .NE. com2(i2,j2,k2,l2) ) THEN
 		 res(i,j,k,l) = 1.0
 	      ELSE
-		 res(i,j,k,l) = 0.0
+		 res(i,j,k,l) = op_repl
 	      ENDIF
 	   ENDIF
  1310	CONTINUE
@@ -1235,6 +1256,84 @@
 	      ENDIF
 	   ENDIF
  4610	CONTINUE
+	RETURN
+
+* "THEN" - comes from IFV (condition) THEN (choice)   ... no "ELSE" given
+* component 1 is the condition.  component 2 is the choice
+ 4700	l1 = sl1
+	l2 = sl2
+	DO 4710 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	l1 = l1 + dl1
+	l2 = l2 + dl2
+	k1 = sk1
+	k2 = sk2
+	 DO 4710 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	 k1 = k1 + dk1
+	 k2 = k2 + dk2
+	 j1 = sj1
+	 j2 = sj2
+	  DO 4710 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  j1 = j1 + dj1
+	  j2 = j2 + dj2
+	  i1 = si1
+	  i2 = si2
+	   DO 4710 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   i1 = i1 + di1
+	   i2 = i2 + di2
+	   IF ( com1(i1,j1,k1,l1) .NE. bad1
+     .	  .AND. com2(i2,j2,k2,l2) .NE. bad2	 ) THEN
+	      res(i,j,k,l) = com2(i2,j2,k2,l2)
+	   ELSE
+	      res(i,j,k,l) = bad_res
+	   ENDIF
+
+ 4710	CONTINUE
+	RETURN
+* "ELSE" - comes from IFV (condition) THEN (choice1) ELSE (choice2)
+* component 1 is the condition.  components 2 and 3 are the choices
+ 4800	l1 = sl1
+	l2 = sl2
+	l3 = sl3
+	DO 4810 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	l1 = l1 + dl1
+	l2 = l2 + dl2
+	l3 = l3 + dl3
+	k1 = sk1
+	k2 = sk2
+	k3 = sk3
+	 DO 4810 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	 k1 = k1 + dk1
+	 k2 = k2 + dk2
+	 k3 = k3 + dk3
+	 j1 = sj1
+	 j2 = sj2
+	 j3 = sj3
+	  DO 4810 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  j1 = j1 + dj1
+	  j2 = j2 + dj2
+	  j3 = j3 + dj3
+	  i1 = si1
+	  i2 = si2
+	  i3 = si3
+	   DO 4810 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   i1 = i1 + di1
+	   i2 = i2 + di2
+	   i3 = i3 + di3
+	   IF ( com1(i1,j1,k1,l1) .NE. bad1 ) THEN
+	      IF ( com2(i2,j2,k2,l2) .NE. bad2 ) THEN
+	         res(i,j,k,l) = com2(i2,j2,k2,l2)
+	      ELSE
+	         res(i,j,k,l) = bad_res
+	      ENDIF
+	   ELSE
+	      IF ( com3(i3,j3,k3,l3) .NE. bad3 ) THEN
+	         res(i,j,k,l) = com3(i3,j3,k3,l3)
+	      ELSE
+	         res(i,j,k,l) = bad_res
+	      ENDIF
+	   ENDIF
+ 4810	CONTINUE
+
 	RETURN
 
 * error exits

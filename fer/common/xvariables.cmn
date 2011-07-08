@@ -52,6 +52,8 @@
 *                  twice as a limit that users have run into.
 * V61  3/08 *acm*  increase max_mrs again to 501.
 * V62  2/09 *acm*  increase initial memory by 4.
+* V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
+*		   zero as valid. 
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -243,6 +245,7 @@ c     .			max_intrp	  = 200  )
      .		mr_del_last_mblk,
      .		mr_del_last_size,
      .
+     .		uvar_ifv	 ( max_uvar ),
      .		uvar_by_ss	 ( 4, max_uvar ),
      .		uvar_lo_ss	 ( max_uvar, 4 ),
      .		uvar_hi_ss	 ( max_uvar, 4 ),
@@ -343,7 +346,8 @@ c     .			max_intrp	  = 200  )
      .			uvar_need_dset,
      .			uvar_mod_pseudo,
      .			uvar_by_ss,
-     .			has_uvar_gc
+     .			has_uvar_gc,
+     .			uvar_ifv
 	REAL*8          uvar_name_code_head,
      .                  uvar_name_code_padding,       
      .                  uvar_num_items_head,

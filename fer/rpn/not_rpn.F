@@ -50,6 +50,8 @@
 *	alg_grid_chg_fcn, alg_child_var, and alg_const_var
 *        1/99 -- and alg_string
 * V554 1/04 *acm* - add counter variables for named REPEAT/RANGE control
+* V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
+*		   zero as valid. 
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -75,7 +77,8 @@
  10	atom = atom + 1
 	IF ( atom_type(atom) .EQ. alg_finished ) THEN
 	   GOTO 500
-	ELSEIF ( atom_type(atom) .EQ. alg_log_struct ) THEN
+	ELSEIF ( atom_type(atom) .EQ. alg_log_struct.OR.
+     .           atom_type(atom) .EQ. alg_log_vstruct ) THEN
 	   GOTO 5100
 	ELSEIF ( atom_type(atom) .EQ. alg_punctuation ) THEN
 	   IF ( atom_id(atom) .EQ. comma ) THEN

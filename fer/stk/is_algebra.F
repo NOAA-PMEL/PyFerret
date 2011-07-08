@@ -91,7 +91,9 @@
 * v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
 * V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
 *                   varname.attname
-* v664 9/10 *acm* Check variables for NaN and replace (unless the bad-value IS Na
+* v664 9/10 *acm* Check variables for NaN and replace (unless the bad-value IS NaN
+* V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
+*		   zero as valid. 
 
 	include 'netcdf.decl'
 #include "netcdf.inc"
@@ -263,7 +265,8 @@
 	   GOTO 400
 	ELSEIF ( itype .EQ. alg_function
      .	    .OR. itype .EQ. alg_operator
-     .	    .OR. itype .EQ. alg_log_struct   ) THEN
+     .	    .OR. itype .EQ. alg_log_struct
+     .	    .OR. itype .EQ. alg_log_vstruct   ) THEN
 	   GOTO 500
 	ELSEIF ( itype .EQ. alg_grid_chg_fcn ) THEN
 	   GOTO 600
@@ -440,7 +443,7 @@
 * ...and changing variable protections appropriately
 * ...also pop the space they used on the context stack
  500	CALL IS_DO_OP( memory, itype, uvar_text(uvar)(start:end),
-     .		       lo_isp, status )
+     .		       lo_isp, uvar_ifv(uvar), status )
 	IF ( status .NE. ferr_ok ) RETURN
 	GOTO 100
 

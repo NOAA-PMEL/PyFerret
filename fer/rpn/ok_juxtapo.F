@@ -49,6 +49,8 @@
 * V554 1/04 *acm* Add category alg_counter_var for counter variables; REPEAT/RANGE=/NAME=
 * V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
 *                   varname.attname
+* V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
+*		   zero as valid. 
 
 	include		'ferret.parm'
 	include		'rpn.parm'
@@ -115,6 +117,12 @@
 
 *	   WHERE,THEN OR ELSE
 	   if (atom_type(atom(i)) .eq. alg_log_struct) then
+	      ndx(i) = 7
+	      goto 100
+	   end if
+
+*	   IFV,THEN OR ELSE
+	   if (atom_type(atom(i)) .eq. alg_log_vstruct) then
 	      ndx(i) = 7
 	      goto 100
 	   end if

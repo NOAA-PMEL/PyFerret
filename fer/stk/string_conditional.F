@@ -45,6 +45,9 @@
 
 * V533 *sh* 7/01 - based upon OPERATE.F
 * V67  *acm 3/11 - Fix bugs 1764,1795 (copy/paste errors in setting up 3rd component)
+* V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
+*		   zero as valid. 
+*		   (String expressions with IFV are identical to behavior with IF.)
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -67,7 +70,8 @@
      .		di1, dj1, dk1, dl1, di2, dj2, dk2, dl2,
      .		di3, dj3, dk3, dl3,
      .		si1, sj1, sk1, sl1, si2, sj2, sk2, sl2,
-     .		si3, sj3, sk3, sl3
+     .		si3, sj3, sk3, sl3,
+     .          op
         REAL    bad1
 
 * equivalence conveniences
@@ -102,9 +106,11 @@
  4	lo(idim,icom) = cx_lo_ss(com_cx(icom),idim) - inc(idim,icom)
 
 * operator number (1 thru 3 OK)
-        IF (operation.LT.1 .OR. operation.GT.3) STOP 'STR OP?'
+        op = operation
+        IF (op .EQ. 5) op = 3  ! IFV works as for IF
+        IF (op.LT.1 .OR. op.GT.3) STOP 'STR OP?'
 
-        GOTO (100,200,300) operation
+        GOTO (100,200,300) op
 
  100	CONTINUE
 * "THEN" - comes from IF (condition) THEN (choice)   ... no "ELSE" given

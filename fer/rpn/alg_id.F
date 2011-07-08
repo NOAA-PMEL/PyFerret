@@ -61,6 +61,8 @@
 *                   varname.attname
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * V600 *acm* 6/06 - fix declarations, found by solaris compiler
+* V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
+*		   zero as valid. 
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -125,6 +127,15 @@
      .				alg_struct, num_log_structs )
 	   IF ( imatch .NE. atom_not_found ) THEN
 	      at_type(i) = alg_log_struct
+	      at_id(i)   = imatch
+	      GOTO 100
+	   ENDIF
+
+* logic structure with IFV?
+	   imatch = STR_MATCH (	text(at_start(i):at_end(i)),
+     .				alg_vstruct, num_log_structs )
+	   IF ( imatch .NE. atom_not_found ) THEN
+	      at_type(i) = alg_log_vstruct
 	      at_id(i)   = imatch
 	      GOTO 100
 	   ENDIF

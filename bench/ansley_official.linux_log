@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 34652265 Jun 24 16:37 /home/users/ansley/linux/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/linux/FERRET/external_functions/ext_func
+Running FERRET version /home/stout/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 33268450 Jul  7 11:38 /home/stout/ansley/build/linux/FERRET/fer/ferret_c
+Using external functions from /home/stout/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Further fix - interpolate in Y then X  - for bug 1862 using new XYLIN_regrid analogous to XYAVE_regrid
+Note: link with NetCDF4.1.3, Ferret v6.71 release candidate
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/users/ansley/linux/FERRET/bench
+PWD=/home/stout/ansley/build/linux/FERRET/bench
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_DIR=.
 FER_WEB_BROWSER=netscape -ncols 60
@@ -15,13 +15,13 @@ FER_DSETS=.
 FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
 FER_LIBS=/home/users/tmap/ferret/linux/lib
 FER_DAT=.
-FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
+FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/bakerTrunk/JavaSource/resources/iosp/scripts/
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/linux/FERRET/external_functions/ext_func
-Beginning at Fri Jun 24 16:39:59 PDT 2011
+FER_EXTERNAL_FUNCTIONS=/home/stout/ansley/build/linux/FERRET/external_functions/ext_func
+Beginning at Thu Jul 7 12:41:55 PDT 2011
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10236,14 +10236,14 @@ PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.71"
 FERRET_PLATFORM = "Linux rh5 (gfortran) 2.6.18-238.1.1.el5P"
-NETCDF_VERSION = "4.1.2 of May  2 2011 09:30:59 $"
+NETCDF_VERSION = "4.1.3 of Jul  7 2011 11:15:07 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "24-Jun-11"
-SESSION_TIME = "16:39"
-DELTA_CPU = "4.81227"
-CLOCK_SECS = "7.081"
-CURRENT_DATE = "24-Jun-11"
-CURRENT_TIME = "16:40:06"
+SESSION_DATE = " 7-Jul-11"
+SESSION_TIME = "12:41"
+DELTA_CPU = "4.56231"
+CLOCK_SECS = "6.767"
+CURRENT_DATE = " 7-Jul-11"
+CURRENT_TIME = "12:42:02"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10262,14 +10262,14 @@ PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.71"
 FERRET_PLATFORM = "Linux rh5 (gfortran) 2.6.18-238.1.1.el5P"
-NETCDF_VERSION = "4.1.2 of May  2 2011 09:30:59 $"
+NETCDF_VERSION = "4.1.3 of Jul  7 2011 11:15:07 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "24-Jun-11"
-SESSION_TIME = "16:39"
-DELTA_CPU = "0"
-CLOCK_SECS = "7.082"
-CURRENT_DATE = "24-Jun-11"
-CURRENT_TIME = "16:40:06"
+SESSION_DATE = " 7-Jul-11"
+SESSION_TIME = "12:41"
+DELTA_CPU = "9.99E-04"
+CLOCK_SECS = "6.768"
+CURRENT_DATE = " 7-Jul-11"
+CURRENT_TIME = "12:42:02"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10278,8 +10278,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "24-Jun-11"
-SESSION_TIME = "16:39"
+SESSION_DATE = " 7-Jul-11"
+SESSION_TIME = "12:41"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10289,13 +10289,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "24-Jun-11"
-SESSION_TIME = "16:39"
+SESSION_DATE = " 7-Jul-11"
+SESSION_TIME = "12:41"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "24-Jun-11"
-SESSION_TIME = "16:39"
+SESSION_DATE = " 7-Jul-11"
+SESSION_TIME = "12:41"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10329,7 +10329,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.71"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "24-JUN-2011 16:40:06"
+LAB3 = "07-JUL-2011 12:42:02"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10426,14 +10426,14 @@ PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.71"
 FERRET_PLATFORM = "Linux rh5 (gfortran) 2.6.18-238.1.1.el5P"
-NETCDF_VERSION = "4.1.2 of May  2 2011 09:30:59 $"
+NETCDF_VERSION = "4.1.3 of Jul  7 2011 11:15:07 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "24-Jun-11"
-SESSION_TIME = "16:39"
-DELTA_CPU = "0.009998"
-CLOCK_SECS = "7.091"
-CURRENT_DATE = "24-Jun-11"
-CURRENT_TIME = "16:40:06"
+SESSION_DATE = " 7-Jul-11"
+SESSION_TIME = "12:41"
+DELTA_CPU = "0.008999"
+CLOCK_SECS = "6.777"
+CURRENT_DATE = " 7-Jul-11"
+CURRENT_TIME = "12:42:02"
 N_OPEN_DSETS = "0"
  
  
@@ -25241,7 +25241,7 @@ GO err491_single_char_replace.jnl
  
 ! 4/99 *sh*
  
-Fri Jun 24 16:40:14 PDT 2011
+Thu Jul  7 12:42:09 PDT 2011
 ! erroneous error trap for single character symbol replacement
 !  **ERROR: command syntax: empty argument replacement string: ($undefined|"h")
 SAY ($undefined|"h")
@@ -28975,20 +28975,8 @@ stat $1[gx=xtrop,gy=ytrop]
  Maximum value: 31
  Mean    value: 26.908 (unweighted average)
  Standard deviation: 1.778
-shade $1[gx=xtrop,gy=ytrop]
- !-> shade sst[gx=xtrop,gy=ytrop]
- eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- allocate dynamic grid (G015)          XTROP     YTROP     NORMAL    TIME4
- strip regrid on X: SST --> (G015)           @LIN
- reading SST      M:393 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- regrid  SST      M:392 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- dealloc  dynamic grid (G015)          XTROP     YTROP     NORMAL    TIME4
-setting up 2D plot
- -DELETE SST      M:374 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
-PPL plot 178  complete
 CONFUSE
  dealloc  dynamic grid (G015)          XTROP     YTROP     NORMAL    TIME4
- -DELETE SST      M:392 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  -DELETE SST      M:412 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
@@ -29008,7 +28996,7 @@ stat $1[gx=xtrop,gy=ytrop]
  allocate dynamic grid (G015)          XTROP     YTROP     NORMAL    TIME4
  strip regrid on X: SST --> (G015)           @LIN
  reading SST      M:412 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- regrid  SST      M:392 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ regrid  SST      M:393 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  dealloc  dynamic grid (G015)          XTROP     YTROP     NORMAL    TIME4
  
              SEA SURFACE TEMPERATURE
@@ -29029,7 +29017,7 @@ stat $1[gx=xtrop,gy=ytrop]
 define grid/like=$1/x=xtrop/y=ytrop gxyt
  !-> define grid/like=sst/x=xtrop/y=ytrop gxyt
  dealloc  dynamic grid (G015)          XTROP     YTROP     NORMAL    TIME4
- -DELETE SST      M:392 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SST      M:393 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  getgrid EX#1     C:  6 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
 stat $1[g=gxyt]
@@ -29038,8 +29026,8 @@ stat $1[g=gxyt]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST --> GXYT             @LIN
- reading SST      M:392 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- regrid  SST      M:374 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ reading SST      M:393 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ regrid  SST      M:392 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SEA SURFACE TEMPERATURE
              regrid: GXYT
@@ -29062,16 +29050,16 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:371 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:374 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1[g=gxyt]
  !-> stat sst[g=gxyt]
- -DELETE I        M:371 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:374 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST --> GXYT             @LIN
- reading SST      M:371 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- regrid  SST      M:369 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ reading SST      M:374 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ regrid  SST      M:371 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SEA SURFACE TEMPERATURE
              regrid: GXYT
@@ -29098,8 +29086,8 @@ stat $1xyt
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    SSTXYT   C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST --> GXYT             @LIN
- reading SST      M:360 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- regrid  SST      M:349 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ reading SST      M:369 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ regrid  SST      M:360 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST[G=GXYT]
              LONGITUDE: 129.5E to 79.5W
@@ -29121,16 +29109,46 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:331 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:344 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1xyt
  !-> stat sstxyt
- -DELETE I        M:331 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:344 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    SSTXYT   C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST --> GXYT             @LIN
- reading SST      M:331 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ reading SST      M:344 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ regrid  SST      M:331 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ 
+             SST[G=GXYT]
+             LONGITUDE: 129.5E to 79.5W
+             LATITUDE: 20.5S to 20.5N
+             Z:  N/A
+             TIME: JAN
+             DATA SET: ./coads_climatology.cdf
+ 
+ Total # of data points: 6191 (151*41*1*1)
+ # flagged as bad  data: 151
+ Minimum value: 20.428
+ Maximum value: 31
+ Mean    value: 26.908 (unweighted average)
+ Standard deviation: 1.778
+ 
+let $1xyt = $1[g=gxyt]
+ !-> DEFINE VARIABLE sstxyt = sst[g=gxyt]
+ dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
+ -DELETE SSTXYT   M:328 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SSTXYT   M:349 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
+stat $1xyt
+ !-> stat sstxyt
+ getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ getgrid SSTXYT   C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ eval    SSTXYT   C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ strip regrid on X: SST --> GXYT             @LIN
+ reading SST      M:349 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  regrid  SST      M:328 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST[G=GXYT]
@@ -29146,36 +29164,6 @@ stat $1xyt
  Maximum value: 31
  Mean    value: 26.908 (unweighted average)
  Standard deviation: 1.778
- 
-let $1xyt = $1[g=gxyt]
- !-> DEFINE VARIABLE sstxyt = sst[g=gxyt]
- dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
- -DELETE SSTXYT   M:326 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SSTXYT   M:344 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
-stat $1xyt
- !-> stat sstxyt
- getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- getgrid SSTXYT   C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- eval    SSTXYT   C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- strip regrid on X: SST --> GXYT             @LIN
- reading SST      M:344 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- regrid  SST      M:326 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- 
-             SST[G=GXYT]
-             LONGITUDE: 129.5E to 79.5W
-             LATITUDE: 20.5S to 20.5N
-             Z:  N/A
-             TIME: JAN
-             DATA SET: ./coads_climatology.cdf
- 
- Total # of data points: 6191 (151*41*1*1)
- # flagged as bad  data: 151
- Minimum value: 20.428
- Maximum value: 31
- Mean    value: 26.908 (unweighted average)
- Standard deviation: 1.778
 CONFUSE
  dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -29183,17 +29171,17 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:293 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:300 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1xyt
  !-> stat sstxyt
- -DELETE I        M:293 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:300 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    SSTXYT   C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST --> GXYT             @LIN
- reading SST      M:293 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- regrid  SST      M:288 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ reading SST      M:300 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ regrid  SST      M:293 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST[G=GXYT]
              LONGITUDE: 129.5E to 79.5W
@@ -29216,7 +29204,7 @@ stat $1[x=@ave]
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST[X=20E:20E(380)@AVE,D=1]
- reading SST      M:281 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M:283 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  doing --> SST[X=20E:20E(380)@AVE,D=1]
  
              SEA SURFACE TEMPERATURE
@@ -29239,16 +29227,16 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:274 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:280 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1[x=@ave]
  !-> stat sst[x=@ave]
- -DELETE I        M:274 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:280 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST[X=20E:20E(380)@AVE,D=1]
- reading SST      M:274 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M:280 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  doing --> SST[X=20E:20E(380)@AVE,D=1]
  
              SEA SURFACE TEMPERATURE
@@ -29277,7 +29265,7 @@ stat $1xave
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    SSTXAVE  C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST[X=20E:20E(380)@AVE,D=1]
- reading SST      M:267 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M:273 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  doing --> SST[X=20E:20E(380)@AVE,D=1]
  
              SST[X=@AVE]
@@ -29300,17 +29288,17 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:232 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:247 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1xave
  !-> stat sstxave
- -DELETE I        M:232 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:247 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    SSTXAVE  C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST[X=20E:20E(380)@AVE,D=1]
- reading SST      M:232 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M:247 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  doing --> SST[X=20E:20E(380)@AVE,D=1]
  
              SST[X=@AVE]
@@ -29335,7 +29323,7 @@ stat $1[x=@sbx]
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST[I=1:180@SBX:3,D=1]
  strip moduloing SST on X axis:     0   181
- reading SST      M:191 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M:213 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  doing moduloing SST on X axis:     1   180
  doing --> SST[I=1:180@SBX:3,D=1]
  
@@ -29360,17 +29348,17 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:172 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:177 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1[x=@sbx]
  !-> stat sst[x=@sbx]
- -DELETE I        M:172 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:177 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST[I=1:180@SBX:3,D=1]
  strip moduloing SST on X axis:     0   181
- reading SST      M:172 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M:177 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  doing moduloing SST on X axis:     1   180
  doing --> SST[I=1:180@SBX:3,D=1]
  
@@ -29402,7 +29390,7 @@ stat $1sbx
  eval    SSTSBX   C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST[I=1:180@SBX:3,D=1]
  strip moduloing SST on X axis:     0   181
- reading SST      M:158 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M:166 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  doing moduloing SST on X axis:     1   180
  doing --> SST[I=1:180@SBX:3,D=1]
  
@@ -29426,10 +29414,10 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:121 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:123 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1sbx
  !-> stat sstsbx
- -DELETE I        M:121 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:123 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
@@ -29437,7 +29425,7 @@ stat $1sbx
  eval    SSTSBX   C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST[I=1:180@SBX:3,D=1]
  strip moduloing SST on X axis:     0   181
- reading SST      M:121 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M:123 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  doing moduloing SST on X axis:     1   180
  doing --> SST[I=1:180@SBX:3,D=1]
  
@@ -29472,9 +29460,9 @@ stat $1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    SST5     C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M: 89 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M: 13 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M: 13 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ reading SST      M: 93 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M: 89 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M: 89 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  
              SST+5
              LONGITUDE: 20E to 20E(380)
@@ -29496,18 +29484,18 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M: 13 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M: 89 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1
  !-> stat sst5
- -DELETE I        M: 13 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M: 89 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    SST5     C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M: 13 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:294 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:294 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ reading SST      M: 89 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:375 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:375 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  
              SST+5
              LONGITUDE: 20E to 20E(380)
@@ -29535,10 +29523,10 @@ stat $1[gx=xtrop]
  allocate dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  strip regrid on X: SST5 --> (G015)           @LIN
  eval    SST5     C:  7 I:   55  131  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:294 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:330 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:330 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M:330 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M:375 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:388 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:388 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  SST5     M:388 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
  dealloc  dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  
              SST+5
@@ -29557,16 +29545,16 @@ stat $1[gx=xtrop]
  Standard deviation: 9.8848
 CONFUSE
  dealloc  dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
- -DELETE SST5     M:330 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:388 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:330 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:388 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1[gx=xtrop]
  !-> stat sst5[gx=xtrop]
- -DELETE I        M:330 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:388 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
@@ -29576,10 +29564,10 @@ stat $1[gx=xtrop]
  allocate dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  strip regrid on X: SST5 --> (G015)           @LIN
  eval    SST5     C:  7 I:   55  131  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:330 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:234 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:234 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M:234 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M:388 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:272 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:272 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  SST5     M:272 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
  dealloc  dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  
              SST+5
@@ -29602,7 +29590,7 @@ let $1x = $1[gx=xtrop]
 stat $1x
  !-> stat sst5x
  dealloc  dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
- -DELETE SST5     M:234 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:272 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid SST5X    C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
@@ -29614,10 +29602,10 @@ stat $1x
  allocate dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  strip regrid on X: SST5 --> (G015)           @LIN
  eval    SST5     C:  9 I:   55  131  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:234 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:493 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:493 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M:493 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M:272 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:426 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:426 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  SST5     M:426 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
  dealloc  dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  
              SST5[GX=XTROP]
@@ -29640,10 +29628,10 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:173 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:218 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1x
  !-> stat sst5x
- -DELETE I        M:173 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:218 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
@@ -29652,10 +29640,10 @@ stat $1x
  allocate dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  strip regrid on X: SST5 --> (G015)           @LIN
  eval    SST5     C:  9 I:   55  131  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:173 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:170 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:170 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M:170 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M:218 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:173 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:173 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  SST5     M:173 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
  dealloc  dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  
              SST5[GX=XTROP]
@@ -29684,10 +29672,10 @@ stat $1[g=gx]
  allocate dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  strip regrid on X: SST5 --> (G015)           @LIN
  eval    SST5     C:  7 I:   55  131  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:147 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:109 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:109 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M:109 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M:157 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:147 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:147 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  SST5     M:147 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
  dealloc  dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  
              SST+5
@@ -29711,10 +29699,10 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:415 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M: 15 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1[g=gx]
  !-> stat sst5[g=gx]
- -DELETE I        M:415 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M: 15 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
@@ -29724,10 +29712,10 @@ stat $1[g=gx]
  allocate dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  strip regrid on X: SST5 --> (G015)           @LIN
  eval    SST5     C:  7 I:   55  131  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:415 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:370 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:370 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M:370 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ reading SST      M: 15 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:415 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:415 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  SST5     M:415 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
  dealloc  dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  
              SST+5
@@ -29753,10 +29741,10 @@ stat $1[gx=xtrop,gy=ytrop]
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST5 --> GXYT             @LIN
  eval    SST5     C:  7 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- reading SST      M:278 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- constan cnst     M:229 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:229 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M:229 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ reading SST      M:346 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ constan cnst     M:278 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:278 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  SST5     M:278 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST+5
              regrid: GXYT
@@ -29772,18 +29760,6 @@ stat $1[gx=xtrop,gy=ytrop]
  Maximum value: 36
  Mean    value: 31.908 (unweighted average)
  Standard deviation: 1.778
-shade $1[gx=xtrop,gy=ytrop]
- !-> shade sst5[gx=xtrop,gy=ytrop]
- eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- strip regrid on X: SST5 --> GXYT             @LIN
- eval    SST5     C:  7 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- reading SST      M:167 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- constan cnst     M:145 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:145 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M:145 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
-setting up 2D plot
- -DELETE SST5     M:445 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
-PPL plot 179  complete
 CONFUSE
  dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -29791,19 +29767,19 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:445 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:168 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1[gx=xtrop,gy=ytrop]
  !-> stat sst5[gx=xtrop,gy=ytrop]
- -DELETE I        M:445 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:168 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST5 --> GXYT             @LIN
  eval    SST5     C:  7 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- reading SST      M:445 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- constan cnst     M:440 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:440 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M:440 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ reading SST      M:168 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ constan cnst     M:167 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:167 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  SST5     M:167 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST+5
              regrid: GXYT
@@ -29832,10 +29808,10 @@ stat $1[g=gxyt]
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST5 --> GXYT             @LIN
  eval    SST5     C:  7 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- reading SST      M:327 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- constan cnst     M:310 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:310 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M:310 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ reading SST      M:497 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ constan cnst     M:445 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:445 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  SST5     M:445 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST+5
              regrid: GXYT
@@ -29858,19 +29834,19 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:210 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:391 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1[g=gxyt]
  !-> stat sst5[g=gxyt]
- -DELETE I        M:210 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:391 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST5 --> GXYT             @LIN
  eval    SST5     C:  7 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- reading SST      M:210 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- constan cnst     M:120 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:120 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M:120 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ reading SST      M:391 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ constan cnst     M:327 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:327 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  SST5     M:327 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST+5
              regrid: GXYT
@@ -29894,6 +29870,41 @@ stat $1xyt
  dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid SST5XYT  C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ eval    SST5XYT  C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
+ strip regrid on X: SST5 --> GXYT             @LIN
+ eval    SST5     C:  9 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ reading SST      M:290 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ constan cnst     M:210 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:210 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  SST5     M:210 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ 
+             SST5[G=GXYT]
+             LONGITUDE: 129.5E to 79.5W
+             LATITUDE: 20.5S to 20.5N
+             Z:  N/A
+             TIME: JAN
+             DATA SET: ./coads_climatology.cdf
+ 
+ Total # of data points: 6191 (151*41*1*1)
+ # flagged as bad  data: 151
+ Minimum value: 25.428
+ Maximum value: 36
+ Mean    value: 31.908 (unweighted average)
+ Standard deviation: 1.778
+CONFUSE
+ dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
+ getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
+ pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ strip limits reconciliation : EX#1
+ eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
+ pseudo  I        M:106 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+stat $1xyt
+ !-> stat sst5xyt
+ -DELETE I        M:106 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
+ getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    SST5XYT  C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST5 --> GXYT             @LIN
@@ -29916,86 +29927,49 @@ stat $1xyt
  Maximum value: 36
  Mean    value: 31.908 (unweighted average)
  Standard deviation: 1.778
-CONFUSE
- dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
- getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
- pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- strip limits reconciliation : EX#1
- eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:254 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
-stat $1xyt
- !-> stat sst5xyt
- -DELETE I        M:254 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
- getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- eval    SST5XYT  C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- strip regrid on X: SST5 --> GXYT             @LIN
- eval    SST5     C:  9 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- reading SST      M:254 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- constan cnst     M:190 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:190 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M:190 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- 
-             SST5[G=GXYT]
-             LONGITUDE: 129.5E to 79.5W
-             LATITUDE: 20.5S to 20.5N
-             Z:  N/A
-             TIME: JAN
-             DATA SET: ./coads_climatology.cdf
- 
- Total # of data points: 6191 (151*41*1*1)
- # flagged as bad  data: 151
- Minimum value: 25.428
- Maximum value: 36
- Mean    value: 31.908 (unweighted average)
- Standard deviation: 1.778
  
 let $1xyt = $1[g=gxyt]
  !-> DEFINE VARIABLE sst5xyt = sst5[g=gxyt]
  dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
- -DELETE SST5XYT  M: 91 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SST5XYT  M:113 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  -DELETE SST5XYT  M:255 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
- -DELETE SST5X    M:157 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5X    M:218 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5X    M:165 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5X    M:287 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
  dealloc  dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
- -DELETE SST5     M:109 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:170 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:370 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:493 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M: 15 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M: 92 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST5     M:113 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST5     M:120 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SST5     M:145 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SST5     M:165 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:168 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST5     M:190 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SST5     M:229 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SST5     M:272 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:287 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:290 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST5     M:310 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SST5     M:346 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:147 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:173 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:415 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:426 I:    1  151  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M: 13 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:109 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:120 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST5     M:145 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST5     M:167 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SST5     M:170 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:210 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SST5     M:229 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST5     M:234 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:278 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SST5     M:294 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:310 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST5     M:327 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SST5     M:330 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:370 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST5     M:373 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST5     M:375 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:388 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:391 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST5     M:426 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:440 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SST5     M:440 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST5     M:445 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  -DELETE SST5     M:479 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SST5     M:497 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST5     M:493 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
- -DELETE SSTSBX   M: 93 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SSTSBX   M:123 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SSTSBX   M:107 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SSTSBX   M:124 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
- -DELETE SSTXAVE  M:213 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SSTXAVE  M:247 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SSTXAVE  M:221 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SSTXAVE  M:256 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
- -DELETE SSTXYT   M:283 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SSTXYT   M:300 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SSTXYT   M:288 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SSTXYT   M:326 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
 stat $1xyt
  !-> stat sst5xyt
@@ -30007,10 +29981,10 @@ stat $1xyt
  eval    SST5XYT  C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST5 --> GXYT             @LIN
  eval    SST5     C:  9 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- reading SST      M:300 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- constan cnst     M:283 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:283 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M:283 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ reading SST      M:326 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ constan cnst     M:288 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:288 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  SST5     M:288 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST5[G=GXYT]
              LONGITUDE: 129.5E to 79.5W
@@ -30032,20 +30006,20 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:123 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:124 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1xyt
  !-> stat sst5xyt
- -DELETE I        M:123 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:124 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    SST5XYT  C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST5 --> GXYT             @LIN
  eval    SST5     C:  9 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- reading SST      M:123 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- constan cnst     M: 93 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M: 93 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- regrid  SST5     M: 93 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ reading SST      M:124 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ constan cnst     M:107 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:107 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  SST5     M:107 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST5[G=GXYT]
              LONGITUDE: 129.5E to 79.5W
@@ -30069,9 +30043,9 @@ stat $1[x=@ave]
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST5[X=???@AVE,D=1]
  eval    SST5     C:  7 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:440 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:426 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:426 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ reading SST      M:445 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:440 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:440 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  doing --> SST5[X=20E:20E(380)@AVE,D=1]
  
              SST+5
@@ -30094,19 +30068,19 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:388 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:370 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1[x=@ave]
  !-> stat sst5[x=@ave]
- -DELETE I        M:388 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:370 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST5[X=???@AVE,D=1]
  eval    SST5     C:  7 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:388 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:375 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:375 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ reading SST      M:370 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:330 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:330 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  doing --> SST5[X=20E:20E(380)@AVE,D=1]
  
              SST+5
@@ -30136,9 +30110,9 @@ stat $1xave
  eval    SST5XAVE C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST5[X=???@AVE,D=1]
  eval    SST5     C:  9 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:346 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:310 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:310 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ reading SST      M:310 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:294 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:294 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  doing --> SST5[X=20E:20E(380)@AVE,D=1]
  
              SST5[X=@AVE]
@@ -30161,10 +30135,10 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:272 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:229 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1xave
  !-> stat sst5xave
- -DELETE I        M:272 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:229 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
@@ -30172,9 +30146,9 @@ stat $1xave
  eval    SST5XAVE C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST5[X=???@AVE,D=1]
  eval    SST5     C:  9 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:272 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:229 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:229 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ reading SST      M:229 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:210 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:210 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  doing --> SST5[X=20E:20E(380)@AVE,D=1]
  
              SST5[X=@AVE]
@@ -30199,9 +30173,9 @@ stat $1[x=@sbx]
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST5[X=???@SBX:3,D=1]
  eval    SST5     C:  7 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:165 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:145 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:145 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ reading SST      M:145 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:120 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:120 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  doing --> SST5[I=1:180@SBX:3,D=1]
  
              SST+5
@@ -30225,19 +30199,19 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:113 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M: 13 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1[x=@sbx]
  !-> stat sst5[x=@sbx]
- -DELETE I        M:113 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M: 13 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST5[X=???@SBX:3,D=1]
  eval    SST5     C:  7 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:113 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M: 92 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M: 92 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ reading SST      M: 13 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:426 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:426 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  doing --> SST5[I=1:180@SBX:3,D=1]
  
              SST+5
@@ -30268,9 +30242,9 @@ stat $1sbx
  eval    SST5SBX  C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST5[X=???@SBX:3,D=1]
  eval    SST5     C:  9 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:493 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:370 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:370 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ reading SST      M:173 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:147 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:147 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  doing --> SST5[I=1:180@SBX:3,D=1]
  
              SST5[X=@SBX]
@@ -30293,10 +30267,10 @@ CONFUSE
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -999 -999  K: -999 -999  L:    1    1
- pseudo  I        M:218 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:255 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
 stat $1sbx
  !-> stat sst5sbx
- -DELETE I        M:218 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:255 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
@@ -30304,9 +30278,9 @@ stat $1sbx
  eval    SST5SBX  C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip --> SST5[X=???@SBX:3,D=1]
  eval    SST5     C:  9 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
- reading SST      M:218 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- constan cnst     M:157 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE cnst     M:157 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ reading SST      M:255 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ constan cnst     M:113 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:113 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  doing --> SST5[I=1:180@SBX:3,D=1]
  
              SST5[X=@SBX]
@@ -30348,7 +30322,7 @@ list/nohead a            ! evaluate it now
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- pseudo  I        M: 87 I:    1   10  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M: 92 I:    1   10  J: -999 -999  K: -999 -999  L: -999 -999
  1    /  1:   1.0000
  2    /  2:   2.0000
  3    /  3:   3.0000
@@ -30362,38 +30336,38 @@ list/nohead a            ! evaluate it now
  
 let a = XSEQUENCE(j[j=1:5])
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
- -DELETE A        M:489 I:    1   10  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M: 91 I:    1   10  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
- -DELETE I        M: 87 I:    1   10  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE SST5SBX  M: 91 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5SBX  M:109 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE I        M: 92 I:    1   10  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE SST5SBX  M:165 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5SBX  M:190 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
- -DELETE SST5XAVE M:168 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5XAVE M:287 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5XAVE M:167 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5XAVE M:234 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
- -DELETE SST5XYT  M:213 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SST5XYT  M:221 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  -DELETE SST5XYT  M:479 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
- -DELETE SST5     M: 15 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M: 92 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M: 93 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SST5     M:107 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SST5     M:109 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:113 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST5     M:120 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:145 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:157 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:147 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST5     M:170 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:190 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:229 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:247 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST5     M:255 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:283 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SST5     M:290 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:310 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:370 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:210 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:254 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:256 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST5     M:278 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:287 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:288 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SST5     M:294 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:327 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:330 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST5     M:373 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:375 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:391 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:426 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST5     M:497 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST5     M:415 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:426 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:440 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST5     M:493 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
 say `a,return=isize`     ! evaluate it now
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -30408,18 +30382,18 @@ say `a,return=isize`     ! evaluate it now
  eval    A        C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C01,V11 C:  8 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C11,V11 C: 10 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- pseudo  J        M:497 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
+ pseudo  J        M:493 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
  !-> MESSAGE/CONTINUE 5
 5
 list/nohead a            ! cache hit
- -DELETE J        M:497 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
+ -DELETE J        M:493 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C01,V11 C:  8 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C11,V11 C: 10 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- pseudo  J        M:497 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
+ pseudo  J        M:493 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
  1   / 1:  1.00000
  2   / 2:  2.00000
  3   / 3:  3.00000
@@ -30429,14 +30403,14 @@ list/nohead a            ! cache hit
 let a = SAMPLEI(I[i=1:100], {8,5,3})
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  -DELETE (C11,V11 M:373 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
- -DELETE (C11,V11 M:426 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
+ -DELETE (C11,V11 M:440 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
  dealloc  dynamic grid YABSTRACT       NORMAL    ABSTRACT  NORMAL    NORMAL
- -DELETE J        M:497 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
- -DELETE (C01,V11 M:370 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE (C01,V11 M:391 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE J        M:493 I: -999 -999  J:    1    5  K: -999 -999  L: -999 -999
+ -DELETE (C01,V11 M:330 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE (C01,V11 M:426 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
- -DELETE A        M:310 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE A        M:375 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:327 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:415 I:    1    5  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
 say `a,return=isize`     ! evaluate it now
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -30450,31 +30424,31 @@ say `a,return=isize`     ! evaluate it now
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C01,V11 C:  8 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- const_v {8,5,3}  M:375 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {8,5,3}  M:415 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     3
  eval    (C09,V11 C: 12 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- pseudo  I        M:370 I:    1  100  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE (C01,V11 M:391 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
- -DELETE A        M:310 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE tpry     M:426 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE {8,5,3}  M:375 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:330 I:    1  100  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE (C01,V11 M:426 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
+ -DELETE A        M:327 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:440 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {8,5,3}  M:415 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  !-> MESSAGE/CONTINUE 3
 3
 list/nohead a            ! cache hit
- -DELETE I        M:370 I:    1  100  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:330 I:    1  100  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C01,V11 C:  8 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- const_v {8,5,3}  M:370 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ const_v {8,5,3}  M:330 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  doing sampling tpry on I axis:     1     3
  eval    (C09,V11 C: 12 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  pseudo  I        M:373 I:    1  100  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE (C01,V11 M:391 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
- -DELETE tpry     M:426 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE tpry     M:283 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE {8,5,3}  M:370 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE (C01,V11 M:426 I:    1    3  J: -999 -999  K: -999 -999  L:    3    3
+ -DELETE tpry     M:440 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:288 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE {8,5,3}  M:330 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  1   / 1:  8.00000
  2   / 2:  5.00000
  3   / 3:  3.00000
@@ -30483,14 +30457,14 @@ spawn rm -f foo.bar*
 spawn touch foo.bar1 foo.bar2 foo.bar3
 let a = SPAWN("ls foo.bar*")
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
- -DELETE (C09,V11 M:290 I:    1  100  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE (C09,V11 M:497 I:    1  100  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE (C09,V11 M:294 I:    1  100  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE (C09,V11 M:493 I:    1  100  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
- -DELETE (C01,V11 M:310 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE (C01,V11 M:426 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE (C01,V11 M:327 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE (C01,V11 M:440 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
- -DELETE A        M:370 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE A        M:375 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:330 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:415 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  -DELETE I        M:373 I:    1  100  J: -999 -999  K: -999 -999  L: -999 -999
 say `a,return=isize`     ! evaluate it now
@@ -30508,7 +30482,7 @@ list/nohead a            ! cache hit
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- string str      M:370 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ string str      M:330 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  1   / 1:"foo.bar1"
  2   / 2:"foo.bar2"
  3   / 3:"foo.bar3"
@@ -30516,8 +30490,8 @@ list/nohead a            ! cache hit
 ! RESHAPE, alone, is set to require matched limits in order to make a cache hit
 let a = RESHAPE(I[I=1:3]+10*j[j=1:3], I[i=1:9])
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
- -DELETE A        M:375 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE A        M:426 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:415 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:440 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
 say `a,return=isize`
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -30536,34 +30510,34 @@ say `a,return=isize`
  eval    A        C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C01,V11 C:  8 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C09,V11 C: 10 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- pseudo  I        M:426 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- constan cnst     M:375 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- pseudo  J        M:310 I: -999 -999  J:    1    3  K: -999 -999  L: -999 -999
- -DELETE J        M:310 I: -999 -999  J:    1    3  K: -999 -999  L: -999 -999
- -DELETE cnst     M:375 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE tpry     M:497 I: -999 -999  J:    1    3  K: -999 -999  L: -999 -999
- -DELETE I        M:426 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:440 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:415 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  J        M:327 I: -999 -999  J:    1    3  K: -999 -999  L: -999 -999
+ -DELETE J        M:327 I: -999 -999  J:    1    3  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:415 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:493 I: -999 -999  J:    1    3  K: -999 -999  L: -999 -999
+ -DELETE I        M:440 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C31,V11 C: 11 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- pseudo  I        M:426 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:440 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
  !-> MESSAGE/CONTINUE 9
 9
 list/nohead a            ! no cache hit
- -DELETE I        M:426 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:440 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  eval    A        C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C01,V11 C:  8 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C09,V11 C: 10 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- pseudo  I        M:426 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- constan cnst     M:283 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- pseudo  J        M:391 I: -999 -999  J:    1    3  K: -999 -999  L: -999 -999
- -DELETE J        M:391 I: -999 -999  J:    1    3  K: -999 -999  L: -999 -999
- -DELETE cnst     M:283 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE tpry     M:255 I: -999 -999  J:    1    3  K: -999 -999  L: -999 -999
- -DELETE I        M:426 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:440 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ constan cnst     M:288 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  J        M:426 I: -999 -999  J:    1    3  K: -999 -999  L: -999 -999
+ -DELETE J        M:426 I: -999 -999  J:    1    3  K: -999 -999  L: -999 -999
+ -DELETE cnst     M:288 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE tpry     M:287 I: -999 -999  J:    1    3  K: -999 -999  L: -999 -999
+ -DELETE I        M:440 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
  eval    (C31,V11 C: 11 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- pseudo  I        M:426 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ pseudo  I        M:440 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
  1   / 1:  11.0000
  2   / 2:  12.0000
  3   / 3:  13.0000
@@ -30582,88 +30556,86 @@ EXIT/SCRIPT
 GO bn_reset
 cancel mode verify
  -DELETE SST      M: 13 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M: 15 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST      M: 89 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M: 93 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST      M:106 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST      M:107 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:108 I:    0  181  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:113 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:121 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:123 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST      M:124 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:146 I:    0  181  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:147 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:108 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:121 I:    0  181  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:123 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:124 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST      M:145 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:146 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST      M:154 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:158 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:165 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:157 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:158 I:    0  181  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST      M:166 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:167 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST      M:169 I:    0  181  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:172 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:173 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:168 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST      M:169 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:172 I:    0  181  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:173 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST      M:177 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:188 I:    0  181  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:191 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:210 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST      M:218 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:221 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:232 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:234 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:254 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST      M:256 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:267 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:272 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:273 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:274 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:278 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST      M:280 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:281 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:288 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SST      M:293 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST      M:294 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:188 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:191 I:    0  181  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:213 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:218 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:229 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:232 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:247 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:255 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:267 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:272 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:273 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:274 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:280 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:281 I: -999 -999  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:283 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:290 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST      M:293 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  -DELETE SST      M:300 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST      M:326 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SST      M:327 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST      M:310 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:326 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  -DELETE SST      M:328 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SST      M:330 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:331 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST      M:331 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  -DELETE SST      M:344 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  -DELETE SST      M:345 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:346 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:349 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SST      M:360 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST      M:369 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SST      M:371 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST      M:374 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
- -DELETE SST      M:388 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:392 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST      M:346 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST      M:349 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST      M:360 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SST      M:369 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST      M:370 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:371 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
+ -DELETE SST      M:374 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST      M:375 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:388 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:391 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST      M:392 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  -DELETE SST      M:393 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  -DELETE SST      M:396 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST      M:412 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST      M:415 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST      M:428 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST      M:431 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:440 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST      M:442 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
- -DELETE SST      M:445 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ -DELETE SST      M:445 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST      M:471 I:   55  131  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST      M:488 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
  -DELETE SST      M:492 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
- -DELETE SST      M:493 I:    1  180  J:    1   90  K: -999 -999  L:    1    1
+ -DELETE SST      M:497 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
- -DELETE (C31,V11 M:255 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE (C31,V11 M:497 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE (C31,V11 M:287 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE (C31,V11 M:493 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
- -DELETE (C09,V11 M:283 I:    1    3  J:    1    3  K: -999 -999  L: -999 -999
- -DELETE (C09,V11 M:375 I:    1    3  J:    1    3  K: -999 -999  L: -999 -999
+ -DELETE (C09,V11 M:288 I:    1    3  J:    1    3  K: -999 -999  L: -999 -999
+ -DELETE (C09,V11 M:415 I:    1    3  J:    1    3  K: -999 -999  L: -999 -999
  dealloc  dynamic grid (G015)          ABSTRACT  ABSTRACT  NORMAL    NORMAL
- -DELETE (C01,V11 M:310 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE (C01,V11 M:391 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE (C01,V11 M:327 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE (C01,V11 M:426 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
- -DELETE A        M:247 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE A        M:290 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:278 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:294 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
- -DELETE I        M:426 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE str      M:370 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE I        M:440 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE str      M:330 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE str      M:373 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
 GO bn_regrid_to_user		! G=user_var and related
 ! bn_regrid_to_user
@@ -33113,7 +33085,7 @@ list/nohead b            ! using rdstride
  doing moduloing A on X axis:     2     2
  -DELETE A        M:344 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
  nulrgd  A        M:344 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE A        M:247 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:255 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
  18   / 1:  18.0000
  20   / 2:  20.0000
@@ -33128,9 +33100,9 @@ list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
  allocate dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
  strip regrid on X: A --> (G017)           @XACT
  strip moduloing A on X axis:     1    25
- reading A        M:327 I:    1   20  J: -999 -999  K: -999 -999  L: -999 -999
+ reading A        M:326 I:    1   20  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing A on X axis:     1    20
- regrid  A        M:396 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  A        M:393 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
  1    / 1:   1.0000
  4    / 2:   4.0000
@@ -33143,7 +33115,7 @@ list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
  25   / 9:   5.0000
 list/nohead b            ! reuse of cached result
  dealloc  dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
- -DELETE A        M:396 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:393 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
@@ -33153,12 +33125,12 @@ list/nohead b            ! reuse of cached result
  strip moduloing A on X axis:    18    22
  rdstride A        C: 11 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing A on X axis:    18    20
- -DELETE A        M:396 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:393 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
  rdstride A        C: 11 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing A on X axis:     2     2
- -DELETE A        M:396 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
- nulrgd  A        M:396 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE A        M:388 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:393 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
+ nulrgd  A        M:393 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:391 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
  18   / 1:  18.0000
  20   / 2:  20.0000
@@ -33361,7 +33333,7 @@ list/nohead a[i=106:145:5]
 set mode diag
 list/nohead str[i=18:23:2] ! using rdstride
  dealloc  dynamic grid (G017)          (AX010)   NORMAL    NORMAL    NORMAL
- -DELETE A        M:360 I:    1    8  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:369 I:    1    8  J: -999 -999  K: -999 -999  L: -999 -999
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
  dealloc  dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
@@ -33372,12 +33344,12 @@ list/nohead str[i=18:23:2] ! using rdstride
  strip moduloing STR on X axis:    18    22
  rdstride STR      C:  9 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing STR on X axis:    18    20
- -DELETE STR      M:360 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE STR      M:369 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
  rdstride STR      C:  9 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing STR on X axis:     2     2
- -DELETE STR      M:360 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
- nulrgd  STR      M:360 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE STR      M:345 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE STR      M:369 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
+ nulrgd  STR      M:369 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE STR      M:346 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
  18   / 1:"r"
  20   / 2:"t"
@@ -33392,9 +33364,9 @@ list/nohead str[i=1:25:3]  ! no strides --> reads full region without strides
  allocate dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
  strip regrid on X: STR --> (G017)           @XACT
  strip moduloing STR on X axis:     1    25
- reading STR      M:345 I:    1   20  J: -999 -999  K: -999 -999  L: -999 -999
+ reading STR      M:346 I:    1   20  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing STR on X axis:     1    20
- regrid  STR      M:278 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid  STR      M:280 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
  1    / 1:"a"
  4    / 2:"d"
@@ -34383,13 +34355,6 @@ define axis/t=1-jan-0001:20-jan-0001:1 begtime
 let tpts = t[gt=begtime]
 set view ul
 plot/axes=1,0,0,1 sin(tpts/15)
-col1,col2,col3,col4,col5
-one,,1.1,24S,130E,,1e1,"word 1"
-    two,,2.2,24N,130W,2S,,"word 2"
-three,,3.3,24,130,3N,3e-2," wd 3 "
-
-five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
-extra line
  
 set view ur
 plot/axes=1,0,0,1/trans sin(tpts/15)
@@ -34460,6 +34425,13 @@ let yy =  if abs(y[gt=sst]) le 20 then 10 else  (100-abs(y[gt=sst]+1))/ 10.
  
 set reg/l=1
 vec/noax/xskip=16/yskip=8/len=15/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
+col1,col2,col3,col4,col5
+one,,1.1,24S,130E,,1e1,"word 1"
+    two,,2.2,24N,130W,2S,,"word 2"
+three,,3.3,24,130,3N,3e-2," wd 3 "
+
+five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
+extra line
 vec/over/xskip=16/yskip=8/len=15 fsst*0+yy*mp_mask,fsst*0, x_page,y_page
  
 ! Irregular axes, and manual axis scaling
@@ -34633,11 +34605,6 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 5   / 5: "five"      ...  4.40000 -24.0000 -130.000 "91" -400.000 "word 4" "aa"  77.0000
 6   / 6: "extra line"...     ....     ....     .... " "      .... " "      " "      ....
  
-col1,col2,col3,col4,col5
-12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
 ! insist that all columns be treated as string
 file/format=delim/skip=1/type=text bn_delimited_read_1.dat
 list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
@@ -34675,6 +34642,11 @@ show data
  
 list a1,a2,a3,a4,a5
              DATA SET: ./bn_delimited_read_1.dat
+col1,col2,col3,col4,col5
+12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
              X: 0.5 to 6.5
  Column  1: A1
  Column  2: A2
@@ -34875,6 +34847,10 @@ list v1,v2,v3,v4,v5,v6,v7,v8
 3   / 3:     ....     ..........  36495.0  36220.0......
 4   / 4:  36496.0  36221.0......  36496.0  36221.0......
 show data 2
+12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
      currently SET data sets:
     2> ./bn_delimited_read_date_time.dat  (default)
  name     title                             I         J         K         L
@@ -35012,10 +34988,6 @@ list V1,V2,V3,V4
  Column  4: V4
               V1     V2                        V3                       V4
 1   / 1:  12.0000  1.00000 "99,1999-03-01,12:00, 13:45:36.5,12"       1.00000
-12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
 2   / 2:  12.0000  2.00000 "99,1999-03-02,01:00:13.5, 14:45:36.5,12"  2.00000
 3   / 3:  12.0000  3.00000 "99x,1999-03-03x,2:00x, 15:45x,12"         3.00000
 4   / 4:  12.0000  4.00000 "99,1999-03-04,03:00, 16:45:36.5, 12"      4.00000
@@ -36150,7 +36122,7 @@ shade a[i=1:100:10]
  dealloc  dynamic grid (G006)          (AX010)   YAX1_100  NORMAL    NORMAL
 setting up 2D plot
  -DELETE A        M:  3 I:    1   10  J:    1  100  K: -999 -999  L: -999 -999
-PPL plot 264  complete
+PPL plot 262  complete
 ppl list stats
 
 
@@ -45313,6 +45285,47 @@ LET BA3 = BA4-FAULT_WIDTH*COS(DIP*DTOR)*COS((270-STRK)*DTOR)/111.32
 LET SRC_LAT = {53.307,52.9,53.687,53.28,54.076,53.654,54.36,53.93,54.596,54.16,54.83,54.4,55.133,54.72,55.509,55.12,55.97,55.598,56.473,56.1,56.975,56.603,57.512,57.14}
 LET SRC_LON = {193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}
 LET NSRCS = 24
+LET MX_MX = 474.27
+LET MXTOP = IF MX_MX GT HA_LC_T1DLV THEN MX_MX ELSE HA_LC_TPLV
+LET MN_MN = -284.33
+LET MXBOT = IF MN_MN LT HA_LC_B1DLV THEN MN_MN ELSE HA_LC_BTLV
+LET SL_X = 0.
+LET SL_X2 = 7.207
+LET SL_Y = 5.518+.26
+LET TIT_X = 7.207/2
+LET TIT_Y = 5.518+.85
+LET TSUCHR = 0.09
+LET NTSULNS = IF 1 THEN 3 ELSE 2
+LET NCTSULNS = 85
+ 
+let str1a = STRLEN("($source_list)")
+ !-> DEFINE VARIABLE str1a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
+let lstr1 = STRLEN("+")
+ 
+let str2a = STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
+list str2a
+             VARIABLE : STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
+          162.000
+ 
+def sym aLIST = Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.7
+ 
+let lstr2 = STRLEN("($alist)")
+ !-> DEFINE VARIABLE lstr2 = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.7")
+ 
+let str3a = STRLEN("($source_list)")
+ !-> DEFINE VARIABLE str3a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
+list str3a
+             VARIABLE : STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.7
+          247.000
+ 
+!let a = 12; list a
+ 
+LET STR3 = STRLEN("abcd")
+list str3
+             VARIABLE : STRLEN("abcd")
+          4.00000
+ 
+let str4a = STRLEN("($source_list)")
              VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
@@ -45364,47 +45377,6 @@ DATA:
 224.60300
 224.60350
 224.60400
-LET MX_MX = 474.27
-LET MXTOP = IF MX_MX GT HA_LC_T1DLV THEN MX_MX ELSE HA_LC_TPLV
-LET MN_MN = -284.33
-LET MXBOT = IF MN_MN LT HA_LC_B1DLV THEN MN_MN ELSE HA_LC_BTLV
-LET SL_X = 0.
-LET SL_X2 = 7.207
-LET SL_Y = 5.518+.26
-LET TIT_X = 7.207/2
-LET TIT_Y = 5.518+.85
-LET TSUCHR = 0.09
-LET NTSULNS = IF 1 THEN 3 ELSE 2
-LET NCTSULNS = 85
- 
-let str1a = STRLEN("($source_list)")
- !-> DEFINE VARIABLE str1a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
-let lstr1 = STRLEN("+")
- 
-let str2a = STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
-list str2a
-             VARIABLE : STRLEN("{193.63,193.94,194.97,195.29,196.43,196.69,197.9,198.12,199.43,199.62,200.88,201.11,202.26,202.57,203.6,204,204.9,205.34,206.21,206.66,207.54,207.99,208.94,209.4}")
-          162.000
- 
-def sym aLIST = Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.7
- 
-let lstr2 = STRLEN("($alist)")
- !-> DEFINE VARIABLE lstr2 = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.7")
- 
-let str3a = STRLEN("($source_list)")
- !-> DEFINE VARIABLE str3a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
-list str3a
-             VARIABLE : STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.7
-          247.000
- 
-!let a = 12; list a
- 
-LET STR3 = STRLEN("abcd")
-list str3
-             VARIABLE : STRLEN("abcd")
-          4.00000
- 
-let str4a = STRLEN("($source_list)")
  !-> DEFINE VARIABLE str4a = STRLEN("Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23")
  
 list str4a
@@ -45832,7 +45804,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS24-JUN-2011 16:40:46
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS07-JUL-2011 12:42:43
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.990E+00 0.078    0  SYSTEM  @ASLONGITUDE : 179.5E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47254,7 +47226,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "24-Jun-11:16:39"
+WIN_TITLE = "7-Jul-11:12:41"
  
 set win/title="set the title"
 sho sym win_title
@@ -47272,7 +47244,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="24-Jun-11:16:39"
+ !-> set win/title=" 7-Jul-11:12:41"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47281,16 +47253,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 24-Jun-11
+ !-> DEFINE SYMBOL the_date =  7-Jul-11
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 16:39
+ !-> DEFINE SYMBOL the_time = 12:41
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="24-Jun-11:16:39"
+ !-> SET WIN/TITLE="7-Jul-11:12:41"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "24-Jun-11:16:39"
+WIN_TITLE = "7-Jul-11:12:41"
  
 GO bn_reset
 cancel mode verify
@@ -49678,6 +49650,48 @@ sh dat/att
   
 (XAXLEVITR1_160)       DOUBLE    units           CHAR        12   T       degrees_east
                                  modulo          CHAR        1    T
+netcdf a {
+dimensions:
+	PSXT91_108 = 18 ;
+	PSYT35_56 = 22 ;
+	bnds = 2 ;
+	PSZT1_10 = 10 ;
+	TIME1 = UNLIMITED ; // (25 currently)
+variables:
+	double PSXT91_108(PSXT91_108) ;
+		PSXT91_108:units = "degrees_east" ;
+		PSXT91_108:modulo = 360. ;
+		PSXT91_108:point_spacing = "even" ;
+		PSXT91_108:axis = "X" ;
+	double PSYT35_56(PSYT35_56) ;
+		PSYT35_56:units = "degrees_north" ;
+		PSYT35_56:point_spacing = "uneven" ;
+		PSYT35_56:axis = "Y" ;
+		PSYT35_56:bounds = "PSYT35_56_bnds" ;
+	double PSYT35_56_bnds(PSYT35_56, bnds) ;
+	double PSZT1_10(PSZT1_10) ;
+		PSZT1_10:units = "METERS" ;
+		PSZT1_10:positive = "down" ;
+		PSZT1_10:point_spacing = "uneven" ;
+		PSZT1_10:axis = "Z" ;
+		PSZT1_10:bounds = "PSZT1_10_bnds" ;
+	double PSZT1_10_bnds(PSZT1_10, bnds) ;
+	double TIME1(TIME1) ;
+		TIME1:units = "hour since 1980-01-14 14:00:00" ;
+		TIME1:time_origin = "14-JAN-1980 14:00:00" ;
+		TIME1:axis = "T" ;
+	double FAREN(TIME1, PSZT1_10, PSYT35_56, PSXT91_108) ;
+		FAREN:missing_value = -9.99999979021477e+33 ;
+		FAREN:_FillValue = -9.99999979021477e+33 ;
+		FAREN:long_name = "TEMP*9/5 + 32" ;
+		FAREN:units = "Deg F" ;
+		FAREN:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
+		FAREN:history = "From gt4d011" ;
+
+// global attributes:
+		:history = "FERRET V6.71    7-Jul-11" ;
+		:Conventions = "CF-1.0" ;
+}
                                  point_spacing   CHAR        4    T       even
                                  orig_file_axnameCHAR        14   F       XAXLEVITR1_160
                                  new_att         CHAR        9    T       something
@@ -49852,48 +49866,6 @@ DEFINE ATT/OUTPUT ..FERRET_comment = "File written via LAS. Attributes are inher
 SET ATT/OUTPUT=all .
  
 SET ATT/OUTPUT=all broiled
-netcdf a {
-dimensions:
-	PSXT91_108 = 18 ;
-	PSYT35_56 = 22 ;
-	bnds = 2 ;
-	PSZT1_10 = 10 ;
-	TIME1 = UNLIMITED ; // (25 currently)
-variables:
-	double PSXT91_108(PSXT91_108) ;
-		PSXT91_108:units = "degrees_east" ;
-		PSXT91_108:modulo = 360. ;
-		PSXT91_108:point_spacing = "even" ;
-		PSXT91_108:axis = "X" ;
-	double PSYT35_56(PSYT35_56) ;
-		PSYT35_56:units = "degrees_north" ;
-		PSYT35_56:point_spacing = "uneven" ;
-		PSYT35_56:axis = "Y" ;
-		PSYT35_56:bounds = "PSYT35_56_bnds" ;
-	double PSYT35_56_bnds(PSYT35_56, bnds) ;
-	double PSZT1_10(PSZT1_10) ;
-		PSZT1_10:units = "METERS" ;
-		PSZT1_10:positive = "down" ;
-		PSZT1_10:point_spacing = "uneven" ;
-		PSZT1_10:axis = "Z" ;
-		PSZT1_10:bounds = "PSZT1_10_bnds" ;
-	double PSZT1_10_bnds(PSZT1_10, bnds) ;
-	double TIME1(TIME1) ;
-		TIME1:units = "hour since 1980-01-14 14:00:00" ;
-		TIME1:time_origin = "14-JAN-1980 14:00:00" ;
-		TIME1:axis = "T" ;
-	double FAREN(TIME1, PSZT1_10, PSYT35_56, PSXT91_108) ;
-		FAREN:missing_value = -9.99999979021477e+33 ;
-		FAREN:_FillValue = -9.99999979021477e+33 ;
-		FAREN:long_name = "TEMP*9/5 + 32" ;
-		FAREN:units = "Deg F" ;
-		FAREN:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
-		FAREN:history = "From gt4d011" ;
-
-// global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
-		:Conventions = "CF-1.0" ;
-}
 SAVE/CLOBBER/FILE=a.nc broiled
  
 sp echo "bn_attributes.jnl --- 28 Define a new global attribute" >> all_ncdump.out
@@ -51619,7 +51591,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.71   24-Jun-11
+ .                               history         CHAR        24   T       FERRET V6.71    7-Jul-11
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51660,7 +51632,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.71   24-Jun-11
+ .                               history         CHAR        24   T       FERRET V6.71    7-Jul-11
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -52797,9 +52769,6 @@ cancel mode ignore_error
  
 GO bn_reset
 cancel mode verify
-Internal overflow expressing 500000.0 Mwords as words (1783793664) 
-Unable to allocate the requested 500000.0 Mwords of memory.
-Memory remaining at 0.2 Mwords.
 GO bn603_bug_fixes
 ! bn603_bug_fixes.jnl
 ! test various fixes that went into version 6.03
@@ -52891,6 +52860,9 @@ LIST/NOHEAD/I=91:94/J=37/K=1/L=1 temp,salt
  
 ! Previously this did not have the effect of changing the precision.
 LIST/NOHEAD/I=91:94/J=37/K=1/L=1/PREC=3 temp,salt
+Internal overflow expressing 500000.0 Mwords as words (1783793664) 
+Unable to allocate the requested 500000.0 Mwords of memory.
+Memory remaining at 0.2 Mwords.
 139.5W / 91:  27.3  2.37E-04
 138.5W / 92:  27.3  2.38E-04
 137.5W / 93:  27.2  2.38E-04
@@ -53247,7 +53219,6 @@ STORAGE(A)
 STRING_ARG(A,string)
 STUDENT_T_CUTOFF(P,nf)
 SUBTRACT(A,B)
-WRITE_WEBROW(id,name,Cruise_Mask,filename)
  
  
 GO bn_reset
@@ -56225,58 +56196,6 @@ list indx_al, samplel(al,indx_al)
  Column  2: EX#2 is SAMPLEL(AL,INDX_AL)
           INDX_AL                       EX#2
 1   / 1:  4.000000 "A rat in the house will eat the ICE CREAM"  
-netcdf a {
-dimensions:
-	XAX1_10 = 10 ;
-	tday = UNLIMITED ; // (31 currently)
-	lon1_5 = 5 ;
-	lat1_5 = 5 ;
-	bnds = 2 ;
-	zt = 10 ;
-	time1478 = 3 ;
-variables:
-	double XAX1_10(XAX1_10) ;
-		XAX1_10:point_spacing = "even" ;
-		XAX1_10:axis = "X" ;
-	double tday(tday) ;
-		tday:units = "DAYS since 1998-12-31 00:00:00" ;
-		tday:axis = "T" ;
-		tday:calendar = "GREGORIAN" ;
-		tday:time_origin = "31-DEC-1998" ;
-	float MyUpperLowerCaseVar(tday, XAX1_10) ;
-		MyUpperLowerCaseVar:missing_value = -1.e+34f ;
-		MyUpperLowerCaseVar:_FillValue = -1.e+34f ;
-		MyUpperLowerCaseVar:long_name = "X[X=1:10] + T[GT=TDAY]" ;
-	double lon1_5(lon1_5) ;
-		lon1_5:point_spacing = "even" ;
-		lon1_5:axis = "X" ;
-	double lat1_5(lat1_5) ;
-		lat1_5:point_spacing = "uneven" ;
-		lat1_5:axis = "Y" ;
-		lat1_5:bounds = "lat1_5_bnds" ;
-	double lat1_5_bnds(lat1_5, bnds) ;
-	double zt(zt) ;
-		zt:units = "meters" ;
-		zt:positive = "down" ;
-		zt:point_spacing = "uneven" ;
-		zt:axis = "Z" ;
-		zt:bounds = "zt_bnds" ;
-	double zt_bnds(zt, bnds) ;
-	double time1478(time1478) ;
-		time1478:calendar = "NOLEAP" ;
-		time1478:point_spacing = "even" ;
-		time1478:axis = "T" ;
-	float newvar(time1478, zt, lat1_5, lon1_5) ;
-		newvar:missing_value = -999.f ;
-		newvar:_FillValue = -999.f ;
-		newvar:long_name = "outgoing longwave radiation" ;
-		newvar:units = "watts/m2" ;
-		newvar:history = "From a" ;
-
-// global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
-		:Conventions = "CF-1.0" ;
-}
 2   / 2:  2.000000 "a rat in the house will eat the ice cream"  
 3   / 3:  1.000000 "a rat in the house will eat the zucchini"   
 4   / 4:  3.000000 "ze rats in the house will eat the ice cream"
@@ -56350,6 +56269,58 @@ list ypts, tpts, sampl_pts
 20   / 20: -20.65415   780.000      ....
 21   / 21: -41.65880   820.000      ....
 22   / 22:  39.13533   860.000      ....
+netcdf a {
+dimensions:
+	XAX1_10 = 10 ;
+	tday = UNLIMITED ; // (31 currently)
+	lon1_5 = 5 ;
+	lat1_5 = 5 ;
+	bnds = 2 ;
+	zt = 10 ;
+	time1478 = 3 ;
+variables:
+	double XAX1_10(XAX1_10) ;
+		XAX1_10:point_spacing = "even" ;
+		XAX1_10:axis = "X" ;
+	double tday(tday) ;
+		tday:units = "DAYS since 1998-12-31 00:00:00" ;
+		tday:axis = "T" ;
+		tday:calendar = "GREGORIAN" ;
+		tday:time_origin = "31-DEC-1998" ;
+	float MyUpperLowerCaseVar(tday, XAX1_10) ;
+		MyUpperLowerCaseVar:missing_value = -1.e+34f ;
+		MyUpperLowerCaseVar:_FillValue = -1.e+34f ;
+		MyUpperLowerCaseVar:long_name = "X[X=1:10] + T[GT=TDAY]" ;
+	double lon1_5(lon1_5) ;
+		lon1_5:point_spacing = "even" ;
+		lon1_5:axis = "X" ;
+	double lat1_5(lat1_5) ;
+		lat1_5:point_spacing = "uneven" ;
+		lat1_5:axis = "Y" ;
+		lat1_5:bounds = "lat1_5_bnds" ;
+	double lat1_5_bnds(lat1_5, bnds) ;
+	double zt(zt) ;
+		zt:units = "meters" ;
+		zt:positive = "down" ;
+		zt:point_spacing = "uneven" ;
+		zt:axis = "Z" ;
+		zt:bounds = "zt_bnds" ;
+	double zt_bnds(zt, bnds) ;
+	double time1478(time1478) ;
+		time1478:calendar = "NOLEAP" ;
+		time1478:point_spacing = "even" ;
+		time1478:axis = "T" ;
+	float newvar(time1478, zt, lat1_5, lon1_5) ;
+		newvar:missing_value = -999.f ;
+		newvar:_FillValue = -999.f ;
+		newvar:long_name = "outgoing longwave radiation" ;
+		newvar:units = "watts/m2" ;
+		newvar:history = "From a" ;
+
+// global attributes:
+		:history = "FERRET V6.71    7-Jul-11" ;
+		:Conventions = "CF-1.0" ;
+}
 23   / 23:  22.88071   900.000      ....
 24   / 24: -41.03288   940.000      ....
 25   / 25:  33.34976   980.000      ....
@@ -57766,10 +57737,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "39.728"
-CLOCK_SECS = "69.318"
-CURRENT_DATE = "24-Jun-11"
-CURRENT_TIME = "16:41:08"
+DELTA_CPU = "38.9471"
+CLOCK_SECS = "69.915"
+CURRENT_DATE = " 7-Jul-11"
+CURRENT_TIME = "12:43:05"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57778,8 +57749,8 @@ CURRENT_TIME = "16:41:08"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.047997"
-CLOCK_SECS = "69.423"
+DELTA_CPU = "0.050991"
+CLOCK_SECS = "70.037"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57793,60 +57764,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.341946
+ !-> DEFINE VARIABLE ten_plots = 0.346947
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "9.99E-04"
-CLOCK_SECS = "70.532"
+DELTA_CPU = "0.001003"
+CLOCK_SECS = "71.002"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "70.532"
+CLOCK_SECS = "71.003"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.041996
- !-> DEFINE VARIABLE sumcpu =0.041996
+ !-> DEFINE VARIABLE dt = 0.034992
+ !-> DEFINE VARIABLE sumcpu =0.034992
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.039993
- !-> DEFINE VARIABLE sumcpu =0.081989
+ !-> DEFINE VARIABLE dt = 0.037994
+ !-> DEFINE VARIABLE sumcpu =0.072986
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.049992
- !-> DEFINE VARIABLE sumcpu =0.131981
+ !-> DEFINE VARIABLE dt = 0.037994
+ !-> DEFINE VARIABLE sumcpu =0.11098
 !-> REPEAT: K=4
  !-> DEFINE VARIABLE dt = 0.034996
- !-> DEFINE VARIABLE sumcpu =0.166977
+ !-> DEFINE VARIABLE sumcpu =0.145976
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.203972
+ !-> DEFINE VARIABLE dt = 0.038994
+ !-> DEFINE VARIABLE sumcpu =0.18497
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.034992
- !-> DEFINE VARIABLE sumcpu =0.238964
+ !-> DEFINE VARIABLE dt = 0.043995
+ !-> DEFINE VARIABLE sumcpu =0.228965
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.045994
- !-> DEFINE VARIABLE sumcpu =0.284958
+ !-> DEFINE VARIABLE dt = 0.031994
+ !-> DEFINE VARIABLE sumcpu =0.260959
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.047993
- !-> DEFINE VARIABLE sumcpu =0.332951
+ !-> DEFINE VARIABLE dt = 0.037994
+ !-> DEFINE VARIABLE sumcpu =0.298953
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.039993
- !-> DEFINE VARIABLE sumcpu =0.372944
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.335948
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.032993
- !-> DEFINE VARIABLE sumcpu =0.405937
+ !-> DEFINE VARIABLE dt = 0.038994
+ !-> DEFINE VARIABLE sumcpu =0.374942
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.405937
-0.405937
+ !-> MESSAGE/CONTINUE 0.374942
+0.374942
 sh sym CLOCK_SECS
-CLOCK_SECS = "71.799"
+CLOCK_SECS = "72.371"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "24-Jun-11"
-SESSION_TIME = "16:39"
-CURRENT_DATE = "24-Jun-11"
-CURRENT_TIME = "16:41:11"
+SESSION_DATE = " 7-Jul-11"
+SESSION_TIME = "12:41"
+CURRENT_DATE = " 7-Jul-11"
+CURRENT_TIME = "12:43:08"
  
  
 ! ******** V6.3 Additions below ***********
@@ -58699,9 +58670,9 @@ sh sym lev*
 LEV_TEXT = "50V"
 LEV_MIN = "-2"
 LEV_MAX = "30.74"
-LEV_NUM = "56"
+LEV_NUM = "46"
 LEV_DEL = "irregular"
-LEV_OPNLEVS = "(-2,3.05,0.505)(3.5,25.5,0.5)(25.5,25.5,0.505)(inf)"
+LEV_OPNLEVS = "(-2,-2,0.505)(3.5,25.5,0.5)(25.4,25.4,0.505)(inf)"
  
 shade/line/lev=50v,5min/title="/LEV=50v,5min" temp[K=1]
 shade/line/lev=50v,5mean/title="/LEV=50v,5mean" temp[K=1]
@@ -59154,7 +59125,7 @@ plot temp
  eval    EX#1     C:  4 I:   50   50  J:   45   45  K:    1    1  L:    3  170
  found   TEMP     M: 36 I:   50   51  J:   45   50  K:    1    2  L:    1  172
 setting up plot
-PPL plot 738  complete
+PPL plot 736  complete
 plot/over temp[g=u]
  dealloc  dynamic grid PS3DT1          PSXT1     PSYT1     PSZT1     TIME13
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59170,7 +59141,7 @@ plot/over temp[g=u]
  regrid  TEMP     M: 27 I:   50   50  J:   45   45  K:    1    1  L:    1    2
  doing moduloing TEMP on T axis:     1     2
 setting up plot
-PPL plot 739  complete
+PPL plot 737  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT1     TIME13
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59182,7 +59153,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day]
  regrid  TEMP     M: 23 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 26 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 740  complete
+PPL plot 738  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890]
  dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT1     TAX5DAY
  -DELETE TEMP     M: 23 I:   50   50  J:   45   45  K:    1    1  L:    2  104
@@ -59198,7 +59169,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890]
  regrid  TEMP     M: 23 I:    7    7  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 26 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 741  complete
+PPL plot 739  complete
 plot/over temp[g=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59214,7 +59185,7 @@ plot/over temp[g=u@ave]
  regrid  TEMP     M: 19 I:   50   50  J:   45   45  K:    1    1  L:    1    2
  doing moduloing TEMP on T axis:     1     2
 setting up plot
-PPL plot 742  complete
+PPL plot 740  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT1     TIME13
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59226,7 +59197,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
  regrid  TEMP     M: 17 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 18 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 743  complete
+PPL plot 741  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT1     TAX5DAY
  -DELETE TEMP     M: 17 I:   50   50  J:   45   45  K:    1    1  L:    2  104
@@ -59244,7 +59215,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  regrid  TEMP     M: 16 I:    7    7  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 13 I:   45   56  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 744  complete
+PPL plot 742  complete
 plot/over temp[g=u@asn]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59266,7 +59237,7 @@ plot/over temp[g=u@asn]
  -DELETE TEMP     M: 15 I:   50   50  J:   45   45  K:    1    1  L:    1    2
  doing moduloing TEMP on T axis:     1     2
 setting up plot
-PPL plot 745  complete
+PPL plot 743  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@asn]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT1     TIME13
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59284,7 +59255,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@asn]
  regrid  TEMP     M: 10 I:    7    7  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 11 I:    7    7  J:   45   45  K:    1    1  L:    2  104
 setting up plot
-PPL plot 746  complete
+PPL plot 744  complete
 plot/over temp[g=u,gt=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59296,7 +59267,7 @@ plot/over temp[g=u,gt=u@ave]
  found   TEMP     M: 24 I:   50   50  J:   45   45  K:    1    1  L:    3  170
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT1     TIME13
 setting up plot
-PPL plot 747  complete
+PPL plot 745  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT1     TIME13
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59308,7 +59279,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5da
  regrid  TEMP     M: 25 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 11 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 748  complete
+PPL plot 746  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT1     TAX5DAY
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59323,7 +59294,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefg
  regrid  TEMP     M: 11 I:    7    7  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 21 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 749  complete
+PPL plot 747  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@asn]  ! invalid interpretation of data
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59335,7 +59306,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5da
  regrid  TEMP     M:  9 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 21 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 750  complete
+PPL plot 748  complete
  
  
 set mode/last diag
@@ -60003,6 +59974,106 @@ ppl plot
 plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:28-mar-1982 temp
 sh sym TXTYPE_SETTING
 TXTYPE_SETTING = "MON"
+if ($TXTYPE_SETTING"0|DAY>1|MON>1|*>0") THEN PPL TXTYPE,,DMY
+ !-> if 1 THEN PPL TXTYPE,,DMY
+ppl plot
+ 
+! make sure this setting doesnt persist
+plot/y=-1/k=1/t=5-mar-1982:28-mar-1982/x=144w temp
+plot/y=-1/k=1/t=5-mar-1982:28-apr-1982/x=144w temp
+ 
+GO bn_reset
+cancel mode verify
+GO bn_n_open_dsets_sym
+ !  bn_n_open_dsets_sym.jnl
+! Ferret v6.5
+! New special symbol N_OPEN_DSETS, evaulated when requested.
+! Gives a count of the number of open datasets.
+ 
+! Initially should be zero
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "0"
+ 
+! Open some datasets
+use dstitle
+use TAO_SST_clim
+use clim_airt_lev
+ 
+! Check
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "3"
+ 
+! Open a few more. Any type of data
+set data tok_short.des
+ 
+list/clobber/file=list_of_numbers.dat/nohead/norowhead {1,3,4,5,6,8,9}
+file/var=v1 list_of_numbers.dat
+ 
+! now  there are five
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "5"
+ 
+! cancel a couple
+can data 3
+can data TAO_SST_clim
+ 
+! Now three
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "3"
+ 
+can dat/all
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "0"
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO bn_multi_decade
+! bn_multi_decade.jnl
+! New default no-small tics for multi-decade plots
+! See bug 670
+ 
+def axis/t="01-JAN-1860":"30-DEC-2300":5/edges/units="Days"/cal="360d" simutaxis1
+let tvar = t[gt=simutaxis1]*-1E+34
+ 
+define view/x=0:1/y=0.000:0.125 v1
+define view/x=0:1/y=0.125:0.250 v2
+define view/x=0:1/y=0.250:0.375 v3
+define view/x=0:1/y=0.375:0.500 v4
+define view/x=0:1/y=0.500:0.625 v5
+define view/x=0:1/y=0.625:0.750 v6
+define view/x=0:1/y=0.750:0.875 v7
+define view/x=0:1/y=0.875:1.000 v8
+ 
+! Plot a variety of time axis lengths.
+set view v1; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1870]
+set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
+ 
+! New default: no small tics for multi-decade plots
+set view v3; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
+set view v4; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
+set view v5; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
+set view v6; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
+set view v7; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar
+ 
+! can plot the tics even on a multi-decade axis by specifying PPL TICS.
+set view v8; plot/nolab/ax=0,1,0,0/vlim=0:1/set tvar
+  ppl tics,0.1,0.25
+  ppl plot
+ 
+cancel view
+ 
+! Test vertical time axes.
+ 
+define view/x=0.000:0.125/y=0:1 v1
+define view/x=0.125:0.250/y=0:1 v2
+define view/x=0.250:0.375/y=0:1 v3
+define view/x=0.375:0.500/y=0:1 v4
+define view/x=0.500:0.625/y=0:1 v5
+define view/x=0.625:0.750/y=0:1 v6
+define view/x=0.750:0.875/y=0:1 v7
+define view/x=0.875:1.000/y=0:1 v8
+ 
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <data>
 <datasets>
@@ -64647,106 +64718,6 @@ TXTYPE_SETTING = "MON"
 </axis>
 </axes>
 </data>
-if ($TXTYPE_SETTING"0|DAY>1|MON>1|*>0") THEN PPL TXTYPE,,DMY
- !-> if 1 THEN PPL TXTYPE,,DMY
-ppl plot
- 
-! make sure this setting doesnt persist
-plot/y=-1/k=1/t=5-mar-1982:28-mar-1982/x=144w temp
-plot/y=-1/k=1/t=5-mar-1982:28-apr-1982/x=144w temp
- 
-GO bn_reset
-cancel mode verify
-GO bn_n_open_dsets_sym
- !  bn_n_open_dsets_sym.jnl
-! Ferret v6.5
-! New special symbol N_OPEN_DSETS, evaulated when requested.
-! Gives a count of the number of open datasets.
- 
-! Initially should be zero
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "0"
- 
-! Open some datasets
-use dstitle
-use TAO_SST_clim
-use clim_airt_lev
- 
-! Check
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "3"
- 
-! Open a few more. Any type of data
-set data tok_short.des
- 
-list/clobber/file=list_of_numbers.dat/nohead/norowhead {1,3,4,5,6,8,9}
-file/var=v1 list_of_numbers.dat
- 
-! now  there are five
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "5"
- 
-! cancel a couple
-can data 3
-can data TAO_SST_clim
- 
-! Now three
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "3"
- 
-can dat/all
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "0"
- 
- 
-GO bn_reset
-cancel mode verify
-GO bn_multi_decade
-! bn_multi_decade.jnl
-! New default no-small tics for multi-decade plots
-! See bug 670
- 
-def axis/t="01-JAN-1860":"30-DEC-2300":5/edges/units="Days"/cal="360d" simutaxis1
-let tvar = t[gt=simutaxis1]*-1E+34
- 
-define view/x=0:1/y=0.000:0.125 v1
-define view/x=0:1/y=0.125:0.250 v2
-define view/x=0:1/y=0.250:0.375 v3
-define view/x=0:1/y=0.375:0.500 v4
-define view/x=0:1/y=0.500:0.625 v5
-define view/x=0:1/y=0.625:0.750 v6
-define view/x=0:1/y=0.750:0.875 v7
-define view/x=0:1/y=0.875:1.000 v8
- 
-! Plot a variety of time axis lengths.
-set view v1; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1870]
-set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
- 
-! New default: no small tics for multi-decade plots
-set view v3; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
-set view v4; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
-set view v5; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
-set view v6; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
-set view v7; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar
- 
-! can plot the tics even on a multi-decade axis by specifying PPL TICS.
-set view v8; plot/nolab/ax=0,1,0,0/vlim=0:1/set tvar
-  ppl tics,0.1,0.25
-  ppl plot
- 
-cancel view
- 
-! Test vertical time axes.
- 
-define view/x=0.000:0.125/y=0:1 v1
-define view/x=0.125:0.250/y=0:1 v2
-define view/x=0.250:0.375/y=0:1 v3
-define view/x=0.375:0.500/y=0:1 v4
-define view/x=0.500:0.625/y=0:1 v5
-define view/x=0.625:0.750/y=0:1 v6
-define view/x=0.750:0.875/y=0:1 v7
-define view/x=0.875:1.000/y=0:1 v8
- 
 ! Plot a variety of time axis lengths.
 set view v1; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1870]
 set view v2; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
@@ -66112,8 +66083,8 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.71  "                                                          
- 3    /  3:" ! Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 06/24/11"                     
- 4    /  4:" ! 24-Jun-11 16:39     "                                                    
+ 3    /  3:" ! Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 07/07/11"                     
+ 4    /  4:" !  7-Jul-11 12:41     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -67286,7 +67257,7 @@ LEV_MIN = "-32"
 LEV_MAX = "32"
 LEV_NUM = "32"
 LEV_DEL = "2"
-LEV_OPNLEVS = "(-2.E+25,5.35E+25,1.05E+25)(6.E+25,2.66E+19,5.E+24)(2.66E+26,2.66E+26,1.05E+25)(inf)"
+LEV_OPNLEVS = "(-2.E+25,-2.E+25,1.05E+25)(6.E+25,2.7E+26,5.E+24)(2.66E+26,2.66E+26,1.05E+25)(inf)"
  
 SHADE/L=1/LINE/KEY/LEV=10c sst
 SHO SYM lev*
@@ -67295,7 +67266,7 @@ LEV_MIN = "-35"
 LEV_MAX = "35"
 LEV_NUM = "14"
 LEV_DEL = "5"
-LEV_OPNLEVS = "(-2.E+25,5.35E+25,1.05E+25)(6.E+25,2.66E+19,5.E+24)(2.66E+26,2.66E+26,1.05E+25)(inf)"
+LEV_OPNLEVS = "(-2.E+25,-2.E+25,1.05E+25)(6.E+25,2.7E+26,5.E+24)(2.66E+26,2.66E+26,1.05E+25)(inf)"
  
 FILL/L=3/LINE/KEY/LEV=c sst
 SHO SYM lev*
@@ -67304,7 +67275,7 @@ LEV_MIN = "-34"
 LEV_MAX = "34"
 LEV_NUM = "34"
 LEV_DEL = "2"
-LEV_OPNLEVS = "(-2.E+25,5.35E+25,1.05E+25)(6.E+25,2.66E+19,5.E+24)(2.66E+26,2.66E+26,1.05E+25)(inf)"
+LEV_OPNLEVS = "(-2.E+25,-2.E+25,1.05E+25)(6.E+25,2.7E+26,5.E+24)(2.66E+26,2.66E+26,1.05E+25)(inf)"
  
 FILL/L=3/LINE/KEY/LEV=10c sst
 SHO SYM lev*
@@ -67313,7 +67284,7 @@ LEV_MIN = "-35"
 LEV_MAX = "35"
 LEV_NUM = "14"
 LEV_DEL = "5"
-LEV_OPNLEVS = "(-2.E+25,5.35E+25,1.05E+25)(6.E+25,2.66E+19,5.E+24)(2.66E+26,2.66E+26,1.05E+25)(inf)"
+LEV_OPNLEVS = "(-2.E+25,-2.E+25,1.05E+25)(6.E+25,2.7E+26,5.E+24)(2.66E+26,2.66E+26,1.05E+25)(inf)"
  
 GO bn_reset
 cancel mode verify
@@ -67816,8 +67787,8 @@ yes?
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.71  
- 	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 06/24/11
- 	24-Jun-11 16:41     
+ 	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 07/07/11
+ 	 7-Jul-11 12:43     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -68670,7 +68641,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68694,7 +68665,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68718,7 +68689,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68757,7 +68728,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68792,7 +68763,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68832,7 +68803,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68886,7 +68857,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68940,7 +68911,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68994,7 +68965,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69039,7 +69010,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69130,7 +69101,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69197,7 +69168,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69247,7 +69218,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69322,7 +69293,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69349,7 +69320,7 @@ variables:
 		X_:_FillValue = -1.e+34f ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -69373,7 +69344,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -69399,11 +69370,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -69433,7 +69404,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69505,7 +69476,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69546,7 +69517,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69585,7 +69556,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69688,7 +69659,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -69724,7 +69695,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -69747,7 +69718,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69773,7 +69744,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69793,7 +69764,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69814,7 +69785,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69853,7 +69824,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -69889,7 +69860,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -69923,7 +69894,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -69952,7 +69923,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69985,7 +69956,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70011,7 +69982,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70052,7 +70023,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -70150,7 +70121,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -70189,7 +70160,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70272,7 +70243,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70309,7 +70280,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70346,7 +70317,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70394,7 +70365,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70449,7 +70420,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70489,7 +70460,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70529,7 +70500,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70561,7 +70532,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70592,7 +70563,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -70621,7 +70592,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -70650,7 +70621,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -70708,7 +70679,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70749,7 +70720,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70768,37 +70739,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	float A(XAX) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70828,7 +70769,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	float A(XAX) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70877,7 +70848,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70915,7 +70886,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70933,7 +70904,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 err611_set_var_ez.jnl --- 
@@ -70952,7 +70923,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70970,7 +70941,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -70988,7 +70959,7 @@ variables:
 		A:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71009,7 +70980,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71039,7 +71010,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -71064,7 +71035,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   24-Jun-11" ;
+		:history = "FERRET V6.71    7-Jul-11" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
@@ -71079,8 +71050,8 @@ yes?
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.71  
- 	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 06/24/11
- 	24-Jun-11 16:41     
+ 	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 07/07/11
+ 	 7-Jul-11 12:43     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
@@ -71089,14 +71060,14 @@ PPL$YPIXEL = "492"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.71"
 FERRET_PLATFORM = "Linux rh5 (gfortran) 2.6.18-238.1.1.el5P"
-NETCDF_VERSION = "4.1.2 of May  2 2011 09:30:59 $"
+NETCDF_VERSION = "4.1.3 of Jul  7 2011 11:15:07 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "24-Jun-11"
-SESSION_TIME = "16:41"
+SESSION_DATE = " 7-Jul-11"
+SESSION_TIME = "12:43"
 DELTA_CPU = "0.025995"
-CLOCK_SECS = "0.196"
-CURRENT_DATE = "24-Jun-11"
-CURRENT_TIME = "16:41:36"
+CLOCK_SECS = "0.238"
+CURRENT_DATE = " 7-Jul-11"
+CURRENT_TIME = "12:43:32"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -71117,7 +71088,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "24-Jun-11:16:41"
+WIN_TITLE = "7-Jul-11:12:43"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -71177,8 +71148,8 @@ yes? GO bn_gif
 abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
  	NOAA/PMEL TMAP
  	FERRET v6.71  
- 	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 06/24/11
- 	24-Jun-11 16:41     
+ 	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 07/07/11
+ 	 7-Jul-11 12:43     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -71395,8 +71366,8 @@ yes?
 yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.71  
- 	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 06/24/11
- 	24-Jun-11 16:41     
+ 	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 07/07/11
+ 	 7-Jul-11 12:43     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -71509,8 +71480,8 @@ yes?
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.71  
- 	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 06/24/11
- 	24-Jun-11 16:41     
+ 	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 07/07/11
+ 	 7-Jul-11 12:43     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -71594,4 +71565,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Fri Jun 24 16:41:38 PDT 2011
+Ended at Thu Jul 7 12:43:34 PDT 2011

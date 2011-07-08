@@ -24,7 +24,7 @@ include ../platform_specific.mk.$(HOSTTYPE)
 # Macro Definitions
 #
 
-DIRS = contributed examples fft ncedit statistics las
+DIRS = contributed examples fft ncedit statistics
 
 #
 # Targets

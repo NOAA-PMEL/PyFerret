@@ -141,7 +141,7 @@ c Set jj as in plotz based on fine levels.
       ELSE
          jj = nsigc - IFIX(ALOG10(ABS(zmpf-znpf)) + .5)
       ENDIF 
-      IF (jj .LE. 0) jj= - 1
+      IF (jj .LE. 0) jj= -1
 
       ! -inf
       IF (zmin .LT. znpclo) THEN
@@ -155,21 +155,15 @@ c Set jj as in plotz based on fine levels.
 
       nlev2 =1 
 
-      nlev3=(zmpclo-znpclo)/ dzc + 1
+      nlev3 = NINT((zmpchi-znpchi)/ dzc) + 1
       nlev2 = nlev2 + nlev3
 
       do 101 i = 1, nlev3 
 
-         lwgt(ilev) = 2
          ldig(ilev) = -1
          zlev(ilev) = znpclo + dzc* FLOAT(i-1)
          IF (zlev(ilev) .GT. znpf) goto 102
 
-         IF (zlev(ilev).GT.0.) then
-            lwgt(ilev) = 1
-         ELSE
-            lwgt(ilev) = 3
-         ENDIF
          ldig(ilev) = jj
 	 IF (centered) THEN
 	    ilev = ilev + 1
@@ -185,11 +179,10 @@ c Set jj as in plotz based on fine levels.
 
       IF (neginf) THEN
          zlev(1) = MIN( zlev(2), zmin-1. )
-         lwgt(1) = lwgt(2)
          ldig(1) = ldig(2)
       ENDIF
 
-      nlev3=(zmpf-znpf)/ dzf + 1
+      nlev3 = NINT((zmpf-znpf)/ dzf) + 1
       nlev2 = nlev2 + nlev3
 
       IF (zlev(ilev-1) .GT. znpf) ilev = ilev - 1
@@ -225,16 +218,10 @@ c Set jj as in plotz based on fine levels.
 
       DO 103 i=i1,nlev3 
 
-         lwgt(ilev) = 2
          ldig(ilev) = -1
          zlev(ilev) = znpf + dzf* FLOAT(i-1)
          IF (zlev(ilev) .GT. znpchi) goto 104
 
-         IF (zlev(ilev).GT.0.) then
-            lwgt(ilev) = 1
-         ELSE
-            lwgt(ilev) = 3
-         ENDIF
          ldig(ilev) = jj
 
 	 IF (centered) THEN
@@ -256,14 +243,13 @@ c Set jj as in plotz based on fine levels.
          neginf = .TRUE.
 	 DO i = ilev, 2, -1
 	    zlev(i) = zlev(i-1)
-	    lwgt(i) = lwgt(i-1)
 	    ldig(i) = ldig(i-1)
 	 ENDDO
 	 
          zlev(1) = zmin-1.
 	 ilev = ilev + 1
       ENDIF
-      nlev3=(zmpchi-znpchi)/ dzc + 1
+      nlev3 = NINT((zmpchi-znpchi)/ dzc) + 1
       nlev2 = nlev2 + nlev3
 
       IF (zlev(ilev-1) .GT. znpchi) ilev = ilev - 1
@@ -291,14 +277,8 @@ c Set jj as in plotz based on fine levels.
 
       DO 105 i=i1,nlev3 
 
-         lwgt(ilev) = 2
          ldig(ilev) = -1
          zlev(ilev) = znpchi + dzc* FLOAT(i-1)
-         IF (zlev(ilev).GT.0.) then
-            lwgt(ilev) = 1
-         ELSE
-            lwgt(ilev) = 3
-         ENDIF
          ldig(ilev) = jj
 
 	 IF (centered) THEN
@@ -330,14 +310,25 @@ c Set jj as in plotz based on fine levels.
       nlev2 = ilev
       IF ((zmax .GT. zmpchi) .OR. (centered .AND. neginf)) THEN
          posinf = .TRUE.
-         zlev(nlev2) = MAX (zlev(nlev2-1), zmax + 1. )
+         zlev(nlev2) = MAX (zlev(nlev2-1)+1, zmax + 1. )
 	 lev_str = lev_str(:slen)//'(inf)'
          slen = TM_LENSTR1(lev_str)
       ELSE   
          zlev(nlev2) = zmpchi
       ENDIF
 
-      lwgt(nlev2) = lwgt(nlev2-1)
+      IF ((centered .AND. posinf) .AND.(.NOT.neginf)) THEN
+         neginf = .TRUE.
+	 DO 106 i = nlev2, 1, -1
+           ldig(i+1) = ldig(i)
+           zlev(i+1) = zlev(i)
+ 106     CONTINUE 
+	 nlev2 = nlev2 + 1
+	 zlev(1) =  MIN (zlev(1)-1, zmin - 1. )
+	 lev_str = '(-inf)'//lev_str(:slen)
+         slen = TM_LENSTR1(lev_str)
+      ENDIF
+
       ldig(nlev2) = ldig(nlev2-1)
 
       IF (centered .AND. (.NOT.posinf)) THEN
@@ -350,18 +341,16 @@ c Set jj as in plotz based on fine levels.
 * if centered and there is (inf) then add (-inf) if its not there.
 
       IF ( (centered .AND. posinf) .AND. (.NOT.neginf) ) THEN
-         DO 106 i=ilev,1,-1
-            lwgt(i+1) = lwgt(i)
+         DO 107 i=ilev,1,-1
             ldig(i+1) = ldig(i)
             zlev(i+1) = zlev(i)
- 106     CONTINUE 
+ 107     CONTINUE 
          ilev = ilev + 1
 	 nlev2 = ilev
 	 neginf = .TRUE.
 	 lev_str = '(-inf)'//lev_str(:slen)
          slen = TM_LENSTR1(lev_str)
       ENDIF
-
 
 * If a min or max was explicitly set, then chop off the 
 * levels with that setting.
@@ -377,11 +366,10 @@ c Set jj as in plotz based on fine levels.
                IF (lev_min .LE. zlev(i)) index = i
             ENDDO
             IF (index .GT. 1) THEN
-               DO i = index, nlev2
+               DO 108 i = index, nlev2
                   zlev(i-index+1) = zlev(i)
-                  lwgt(i-index+1) = lwgt(i)
                   ldig(i-index+1) = ldig(i)
-               ENDDO
+ 108           CONTINUE 
                nlev2 = nlev2-index+1
             ENDIF
          ENDIF
@@ -404,19 +392,56 @@ c Set jj as in plotz based on fine levels.
       levcount = nlev2
       zlast = zlev(1)
       do 530 i = 2, nlev2 
-         IF ( TM_FPEQ(zlev(i), zlast) ) THEN
+         IF ( TM_FPEQ(zlev(i), zlast) .AND. i.LT.levcount ) THEN
             do 520 k = i,levcount
                zlev(k-1) = zlev(k)
                ldig(k-1) = ldig(k)
-               lclr(k-1) = lclr(k)
-               lwgt(k-1) = lwgt(k)
  520        CONTINUE
-         zlev(k) = 0.
-         levcount = levcount-1
+            levcount = levcount-1
          ENDIF
          zlast = zlev(i)
  530  CONTINUE
       nlev2 = levcount
+
+* Finally, because of rounding when computing nlev3, when making centered 
+* levels there can still be different numbers of levels above and below 
+* zero. Force centered levels.
+
+      IF (centered) THEN
+         i1 = 1
+	 i2 = nlev2
+	 IF (neginf) i1 = 2
+	 IF (posinf) i2 = nlev2-1
+	 IF (.NOT. TM_FPEQ(ABS(zlev(i1)), zlev(i2) ) ) THEN
+	    IF (ABS(zlev(i1)) .GT. zlev(i2)) THEN
+	       DO 109 i = nlev2+1, i2+1, -1
+	         zlev(i) = zlev(i-1)
+                 ldig(i) = ldig(i-1)
+ 109	       CONTINUE
+	       zlev(nlev2) = ABS(zlev(i1))
+               ldig(nlev2) = ldig(i1)
+	    ELSE
+	       DO 110 i = nlev2+1, i1, -1
+	         zlev(i) = zlev(i-1)
+                 ldig(i) = ldig(i-1)
+ 110	       CONTINUE
+	       zlev(nlev2) = -1.*zlev(i2)
+	       ldig(nlev2) = ldig(i2)
+
+	    ENDIF
+	    nlev2 = nlev2 + 1
+	 ENDIF
+      ENDIF
+
+* Set lwgt - as in lev.F
+      DO 111 i = 1, nlev2
+         IF (zlev(i).GT.0.) THEN
+            lwgt(i) = 1
+         ELSE
+            lwgt(i) = 3
+         ENDIF
+	 IF (TM_FPEQ(zlev(i), 0.)) lwgt(i) = 2 
+ 111  CONTINUE
 
       RETURN
       END

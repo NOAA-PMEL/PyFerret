@@ -7,7 +7,11 @@
 #
 
 #	NETCDF4_DIR     = /home/users/tmap/ferret/x86_64-linux
-	NETCDF4_DIR     = /home/users/ansley/local/x86
+#	NETCDF4_DIR     = /home/users/ansley/local/x86
+	NETCDF4_DIR     = /home/users/ansley/local/x86/x86_nc413
+	
+#	HDF5_DIR      = /usr/local/hdf5_186
+	HDF5_DIR      = /home/users/ansley/local/x86/x86_nc413
 
 	INCLUDES        =  -I/../fmt/cmn/ \
 			  -I/$(NETCDF4_DIR)/include \
@@ -96,8 +100,8 @@
 
 	CDFLIB          = $(NETCDF4_DIR)/lib/libnetcdff.a \
 	                  $(NETCDF4_DIR)/lib/libnetcdf.a \
-			  /usr/local/hdf5_186/lib/libhdf5_hl.a \
-			  /usr/local/hdf5_186/lib/libhdf5.a \
+			  $(HDF5_DIR)/lib/libhdf5_hl.a \
+			  $(HDF5_DIR)/lib/libhdf5.a \
 			  /usr/local/lib/libz.a
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o

@@ -11,7 +11,7 @@ associated with the shapefile.
 import pyferret
 import shapefile
 
-def ferret_init(pyef_id):
+def ferret_init(efid):
     """
     Initialization for the shapefile_writeval PyEF
     """
@@ -33,14 +33,14 @@ def ferret_init(pyef_id):
     return retdict
 
 
-def ferret_result_limits(pyef_id):
+def ferret_result_limits(efid):
     """
     Abstract axis limits for the shapefile_writeval PyEF
     """
     return ( (1, 1), None, None, None, )
 
 
-def ferret_compute(pyef_id, result, resbdf, inputs, inpbdfs):
+def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     """
     Create the shapefile named in inputs[0] using the values array given
     in inputs[1].  The bounding box limits of the X and Y axes of inputs[1] 
@@ -55,16 +55,16 @@ def ferret_compute(pyef_id, result, resbdf, inputs, inpbdfs):
     shapefile_name = inputs[0]
     shapefile_values = inputs[1]
     # Get the X and Y axis box limits for the quadrilateral coordinates
-    x_box_limits = pyferret.get_axis_box_limits(pyef_id, pyferret.ARG2, pyferret.X_AXIS)
+    x_box_limits = pyferret.get_axis_box_limits(efid, pyferret.ARG2, pyferret.X_AXIS)
     if x_box_limits == None:
         raise ValueError("Unable to determine the X axis box limits")
     num_xs = len(x_box_limits) - 1
-    y_box_limits = pyferret.get_axis_box_limits(pyef_id, pyferret.ARG2, pyferret.Y_AXIS)
+    y_box_limits = pyferret.get_axis_box_limits(efid, pyferret.ARG2, pyferret.Y_AXIS)
     if y_box_limits == None:
         raise ValueError("Unable to determine the y axis box limits")
     num_ys = len(y_box_limits) - 1
     # Get the elevation/depth coordinates
-    z_coords = pyferret.get_axis_coordinates(pyef_id, pyferret.ARG2, pyferret.Z_AXIS)
+    z_coords = pyferret.get_axis_coordinates(efid, pyferret.ARG2, pyferret.Z_AXIS)
     # z_coords can be None
     # Assign the appropriate type shapes
     if z_coords == None:
@@ -77,7 +77,7 @@ def ferret_compute(pyef_id, result, resbdf, inputs, inpbdfs):
     sf = shapefile.Writer(shapetype)
     # Time coordinates become 
     # TODO: need get_time_axis_coordinates in order to generate meaningful values
-    t_coords = pyferret.get_axis_coordinates(pyef_id, pyferret.ARG2, pyferret.T_AXIS)
+    t_coords = pyferret.get_axis_coordinates(efid, pyferret.ARG2, pyferret.T_AXIS)
     # t_coords can be None
     # Add the fields to the associated database
     # TODO: get reasonable names and sizes for the fields

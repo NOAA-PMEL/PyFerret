@@ -8,7 +8,7 @@ import numpy
 import pyferret
 import shapefile
 
-def ferret_init(id):
+def ferret_init(efid):
     """
     Initialization for the shapefile_readxy PyEF
     """
@@ -31,14 +31,14 @@ def ferret_init(id):
     return retdict
 
 
-def ferret_result_limits(id):
+def ferret_result_limits(efid):
     """
     Abstract axis limits for the shapefile_readxy PyEF
     """
-    maxpts = pyferret.get_arg_one_val(id, pyferret.ARG2)
+    maxpts = pyferret.get_arg_one_val(efid, pyferret.ARG2)
     maxpts = int(maxpts)
     if maxpts == -1:
-        shapefile_name = pyferret.get_arg_one_val(id, pyferret.ARG1)
+        shapefile_name = pyferret.get_arg_one_val(efid, pyferret.ARG1)
         sf = shapefile.Reader(shapefile_name)
         maxpts = 0
         for shp in sf.shapes():
@@ -48,7 +48,7 @@ def ferret_result_limits(id):
     return ( (1, maxpts), (1, 2), None, None, )
 
 
-def ferret_compute(id, result, resbdf, inputs, inpbdfs):
+def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     """
     Read the shapefile named in inputs[0] and assign result[:,0,0,0]
     and result[:,1,0,0] with the X and Y coordinates of the shapes

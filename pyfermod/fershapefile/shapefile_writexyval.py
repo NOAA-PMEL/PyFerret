@@ -145,10 +145,6 @@ if __name__ == "__main__":
                        geolat_c[1:,  1:,  :, :] + geolat_c[1:,  :-1, :, :]) * 0.25 * numpy.pi / 180.0)
     vals *= ( numpy.pi / 180.0 )**2
 
-    # create a copy of the longitudes that go from -180 to 180
-    geolon_max180 = numpy.array(geolon_c, dtype=numpy.float32, order='F', copy=True)
-    geolon_max180[ geolon_max180 > 180.0 ] = geolon_max180[ geolon_max180 > 180.0 ] - 360.0
-
     # make sure these calls do not generate errors
     info = ferret_init(0)
     del info
@@ -158,7 +154,7 @@ if __name__ == "__main__":
     resbdf = numpy.array([9999.0], dtype=numpy.float32)
     inpbdfs = numpy.array([8888.0, 7777.0, 6666.0, 5555.0, 4444.0], dtype=numpy.float32)
     result = numpy.ones((1,1,1,1), dtype=numpy.float32)
-    ferret_compute(0, result, resbdf, (shapefilename, geolon_max180, geolat_c, vals, "corner"), inpbdfs)
+    ferret_compute(0, result, resbdf, (shapefilename, geolon_c, geolat_c, vals, "corner"), inpbdfs)
 
     sfreader = shapefile.Reader(shapefilename)
     shapes = sfreader.shapes()

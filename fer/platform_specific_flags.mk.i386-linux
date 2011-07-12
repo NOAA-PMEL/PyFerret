@@ -4,11 +4,8 @@
 # This file is included in other Makefiles and defines
 # platform specific macros
 
-#	NETCDF4_DIR = /home/users/tmap/ferret/linux/
-#	NETCDF4_DIR = /home/users/ansley/local/linux/
-	NETCDF4_DIR = /home/users/ansley/local/linux_nc413
-#	HDF5_DIR = /usr/local/hdf5_186
-	HDF5_DIR = /home/users/ansley/local/linux_nc413
+	NETCDF4_DIR = /usr/local/netcdf_413
+	HDF5_DIR = /usr/local/hdf5_187
 	
 	INCLUDES = \
 	-I. \

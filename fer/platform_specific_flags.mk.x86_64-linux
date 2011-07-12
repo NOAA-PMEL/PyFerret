@@ -6,12 +6,8 @@
 
 #
 
-#	NETCDF4_DIR     = /home/users/tmap/ferret/x86_64-linux
-#	NETCDF4_DIR     = /home/users/ansley/local/x86
-	NETCDF4_DIR     = /home/users/ansley/local/x86/x86_nc413
-	
-#	HDF5_DIR      = /usr/local/hdf5_186
-	HDF5_DIR      = /home/users/ansley/local/x86/x86_nc413
+	NETCDF4_DIR     = /usr/local/netcdf_413
+	HDF5_DIR	= /usr/local/hdf5_187
 
 	INCLUDES        =  -I/../fmt/cmn/ \
 			  -I/$(NETCDF4_DIR)/include \

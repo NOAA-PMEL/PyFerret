@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/stout/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 33545683 Jul 14 11:18 /home/stout/ansley/build/linux/FERRET/fer/ferret_c
-Using external functions from /home/stout/ansley/build/linux/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 34656037 Jul 14 16:31 /home/users/ansley/linux/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: rebuild netCDF4.1.3 and update to ppl/plotlib/contur.F
+Note: fixing ticket 1870.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/stout/ansley/build/linux/FERRET/bench
+PWD=/home/users/ansley/linux/FERRET/bench
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_DIR=.
 FER_WEB_BROWSER=netscape -ncols 60
@@ -20,9 +20,9 @@ FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/stout/ansley/build/linux/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/linux/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/ansley/tarfiles/lin/ppl/fonts
-Beginning at Thu Jul 14 11:20:13 PDT 2011
+Beginning at Thu Jul 14 16:36:34 PDT 2011
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3130,6 +3130,8 @@ Replacing definition of axis YAX_DUP_AXNAMES
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: IFV I GT 3 THEN ( IFV I LT 5 THEN I ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
 LIST/ORDER=X  IFV I GT 3 THEN ( IFV I LT 5 THEN I ELSE -9 ) ELSE .333
@@ -3226,4 +3228,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jul 14 11:21:44 PDT 2011
+Ended at Thu Jul 14 16:38:13 PDT 2011

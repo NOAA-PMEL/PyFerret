@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/stout/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 33545683 Jul 14 11:18 /home/stout/ansley/build/linux/FERRET/fer/ferret_c
-Using external functions from /home/stout/ansley/build/linux/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 34656037 Jul 14 16:31 /home/users/ansley/linux/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: rebuild netCDF4.1.3 and update to ppl/plotlib/contur.F
+Note: fixing ticket 1870.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/stout/ansley/build/linux/FERRET/bench
+PWD=/home/users/ansley/linux/FERRET/bench
 FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_DIR=.
 FER_WEB_BROWSER=netscape -ncols 60
@@ -20,9 +20,9 @@ FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/stout/ansley/build/linux/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/linux/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/ansley/tarfiles/lin/ppl/fonts
-Beginning at Thu Jul 14 11:20:13 PDT 2011
+Beginning at Thu Jul 14 16:36:34 PDT 2011
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10240,11 +10240,11 @@ FERRET_PLATFORM = "Linux rh5 (gfortran) 2.6.18-238.1.1.el5P"
 NETCDF_VERSION = "4.1.3 of Jul 12 2011 11:52:03 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "14-Jul-11"
-SESSION_TIME = "11:20"
-DELTA_CPU = "4.5743"
-CLOCK_SECS = "6.64"
+SESSION_TIME = "16:36"
+DELTA_CPU = "4.54931"
+CLOCK_SECS = "6.963"
 CURRENT_DATE = "14-Jul-11"
-CURRENT_TIME = "11:20:19"
+CURRENT_TIME = "16:36:41"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10266,11 +10266,11 @@ FERRET_PLATFORM = "Linux rh5 (gfortran) 2.6.18-238.1.1.el5P"
 NETCDF_VERSION = "4.1.3 of Jul 12 2011 11:52:03 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "14-Jul-11"
-SESSION_TIME = "11:20"
-DELTA_CPU = "0"
-CLOCK_SECS = "6.64"
+SESSION_TIME = "16:36"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "6.964"
 CURRENT_DATE = "14-Jul-11"
-CURRENT_TIME = "11:20:19"
+CURRENT_TIME = "16:36:41"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10280,7 +10280,7 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "14-Jul-11"
-SESSION_TIME = "11:20"
+SESSION_TIME = "16:36"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10291,12 +10291,12 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "14-Jul-11"
-SESSION_TIME = "11:20"
+SESSION_TIME = "16:36"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "14-Jul-11"
-SESSION_TIME = "11:20"
+SESSION_TIME = "16:36"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10330,7 +10330,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.71"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "14-JUL-2011 11:20:19"
+LAB3 = "14-JUL-2011 16:36:41"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10430,11 +10430,11 @@ FERRET_PLATFORM = "Linux rh5 (gfortran) 2.6.18-238.1.1.el5P"
 NETCDF_VERSION = "4.1.3 of Jul 12 2011 11:52:03 $"
 FERRET_MEMORY = "25.6"
 SESSION_DATE = "14-Jul-11"
-SESSION_TIME = "11:20"
+SESSION_TIME = "16:36"
 DELTA_CPU = "0.008999"
-CLOCK_SECS = "6.649"
+CLOCK_SECS = "6.973"
 CURRENT_DATE = "14-Jul-11"
-CURRENT_TIME = "11:20:19"
+CURRENT_TIME = "16:36:41"
 N_OPEN_DSETS = "0"
  
  
@@ -25242,7 +25242,7 @@ GO err491_single_char_replace.jnl
  
 ! 4/99 *sh*
  
-Thu Jul 14 11:20:27 PDT 2011
+Thu Jul 14 16:36:49 PDT 2011
 ! erroneous error trap for single character symbol replacement
 !  **ERROR: command syntax: empty argument replacement string: ($undefined|"h")
 SAY ($undefined|"h")
@@ -40764,7 +40764,7 @@ SHO AXIS/XML `temp,return=yaxis`
    <value>48.56797</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -40772,8 +40772,8 @@ SHO AXIS/XML `temp,return=yaxis`
 <attribute name="infile_datatype" type="char">
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
-<attribute name="edges" type="char">
-   <value>PSYTedges</value>
+<attribute name="bounds" type="char">
+   <value>PSYT_bnds</value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
    <value>PSYT</value>
@@ -40803,7 +40803,7 @@ SHO AXIS/XML `temp,return=zaxis`
    <value><![CDATA[down]]></value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -40811,8 +40811,8 @@ SHO AXIS/XML `temp,return=zaxis`
 <attribute name="infile_datatype" type="char">
    <value><![CDATA[DOUBLE]]></value>
 </attribute>
-<attribute name="edges" type="char">
-   <value>PSZTedges</value>
+<attribute name="bounds" type="char">
+   <value>PSZT_bnds</value>
 </attribute>
 <attribute name="orig_file_axname" type="char">
    <value>PSZT</value>
@@ -45805,7 +45805,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS14-JUL-2011 11:20:56
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS14-JUL-2011 16:37:24
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.990E+00 0.078    0  SYSTEM  @ASLONGITUDE : 179.5E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47227,7 +47227,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "14-Jul-11:11:20"
+WIN_TITLE = "14-Jul-11:16:36"
  
 set win/title="set the title"
 sho sym win_title
@@ -47245,7 +47245,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="14-Jul-11:11:20"
+ !-> set win/title="14-Jul-11:16:36"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47256,14 +47256,14 @@ set win/title="($session_date):($session_time)"
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
  !-> DEFINE SYMBOL the_date = 14-Jul-11
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 11:20
+ !-> DEFINE SYMBOL the_time = 16:36
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="14-Jul-11:11:20"
+ !-> SET WIN/TITLE="14-Jul-11:16:36"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "14-Jul-11:11:20"
+WIN_TITLE = "14-Jul-11:16:36"
  
 GO bn_reset
 cancel mode verify
@@ -57740,10 +57740,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "38.8311"
-CLOCK_SECS = "63.12"
+DELTA_CPU = "38.9051"
+CLOCK_SECS = "71.365"
 CURRENT_DATE = "14-Jul-11"
-CURRENT_TIME = "11:21:16"
+CURRENT_TIME = "16:37:45"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57752,8 +57752,8 @@ CURRENT_TIME = "11:21:16"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.036995"
-CLOCK_SECS = "63.189"
+DELTA_CPU = "0.035992"
+CLOCK_SECS = "71.429"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57767,60 +57767,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.335949
+ !-> DEFINE VARIABLE ten_plots = 0.329952
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "0"
-CLOCK_SECS = "63.837"
+CLOCK_SECS = "72.039"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "63.838"
+CLOCK_SECS = "72.04"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.035995
-!-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.07199
-!-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.108985
-!-> REPEAT: K=4
  !-> DEFINE VARIABLE dt = 0.035992
- !-> DEFINE VARIABLE sumcpu =0.144977
-!-> REPEAT: K=5
+ !-> DEFINE VARIABLE sumcpu =0.035992
+!-> REPEAT: K=2
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.07298701
+!-> REPEAT: K=3
  !-> DEFINE VARIABLE dt = 0.037994
- !-> DEFINE VARIABLE sumcpu =0.182971
-!-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.039993
- !-> DEFINE VARIABLE sumcpu =0.222964
-!-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.259959
-!-> REPEAT: K=8
+ !-> DEFINE VARIABLE sumcpu =0.110981
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.034996
+ !-> DEFINE VARIABLE sumcpu =0.145977
+!-> REPEAT: K=5
  !-> DEFINE VARIABLE dt = 0.040993
- !-> DEFINE VARIABLE sumcpu =0.300952
+ !-> DEFINE VARIABLE sumcpu =0.18697
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.032997
+ !-> DEFINE VARIABLE sumcpu =0.219967
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.037994
+ !-> DEFINE VARIABLE sumcpu =0.257961
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.033993
+ !-> DEFINE VARIABLE sumcpu =0.291954
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.041996
- !-> DEFINE VARIABLE sumcpu =0.342948
+ !-> DEFINE VARIABLE dt = 0.038994
+ !-> DEFINE VARIABLE sumcpu =0.330948
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.036995
- !-> DEFINE VARIABLE sumcpu =0.379943
+ !-> DEFINE VARIABLE dt = 0.031998
+ !-> DEFINE VARIABLE sumcpu =0.362946
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.379943
-0.379943
+ !-> MESSAGE/CONTINUE 0.362946
+0.362946
 sh sym CLOCK_SECS
-CLOCK_SECS = "64.999"
+CLOCK_SECS = "73.116"
  
 SH SYM session_date, current_date, session_time, current_time
 SESSION_DATE = "14-Jul-11"
-SESSION_TIME = "11:20"
+SESSION_TIME = "16:36"
 CURRENT_DATE = "14-Jul-11"
-CURRENT_TIME = "11:21:18"
+CURRENT_TIME = "16:37:47"
  
  
 ! ******** V6.3 Additions below ***********
@@ -60518,7 +60518,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>50</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -60587,7 +60587,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>19.70274</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -60796,7 +60796,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>46</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value><![CDATA[yes]]></value>
@@ -60839,7 +60839,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>8281</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -60978,7 +60978,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>0000-05-15 05:57:00</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value><![CDATA[yes]]></value>
@@ -61105,7 +61105,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value><![CDATA[down]]></value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -61174,7 +61174,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>22026.46</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -61552,7 +61552,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>1900-05-17 23:56:00</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -61581,7 +61581,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value><![CDATA[down]]></value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -61601,7 +61601,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>1</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -61774,7 +61774,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>204.9013</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value><![CDATA[yes]]></value>
@@ -61817,7 +61817,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>5</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -61837,7 +61837,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>3</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -61860,7 +61860,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>1997-12-16 12:00:00</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -62059,7 +62059,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>2849</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -62145,7 +62145,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>24</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value><![CDATA[yes]]></value>
@@ -62191,7 +62191,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>6</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -62214,7 +62214,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>0000-12-16 12:00:00</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value><![CDATA[yes]]></value>
@@ -62321,7 +62321,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>18</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -62626,7 +62626,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>0002-08-16 12:00:00</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -62866,7 +62866,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>5</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -63082,7 +63082,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>13</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -63131,7 +63131,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>0000-12-16 12:00:00</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value><![CDATA[yes]]></value>
@@ -63397,7 +63397,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>48.56797</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -63475,7 +63475,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value><![CDATA[down]]></value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -63498,7 +63498,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>455</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value><![CDATA[yes]]></value>
@@ -63544,7 +63544,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>76.4638</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -63567,7 +63567,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>90</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -63668,7 +63668,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>149.539</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value><![CDATA[yes]]></value>
@@ -64012,7 +64012,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>1</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -64032,7 +64032,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>1.80618</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -64205,7 +64205,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>0000-12-15 17:49:00</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value><![CDATA[yes]]></value>
@@ -64410,7 +64410,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>150</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value><![CDATA[yes]]></value>
@@ -64433,7 +64433,7 @@ define view/x=0.250:0.375/y=0:1 v3
    <value>150</value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -66087,7 +66087,7 @@ list contents
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.71  "                                                          
  3    /  3:" ! Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 07/14/11"                     
- 4    /  4:" ! 14-Jul-11 11:20     "                                                    
+ 4    /  4:" ! 14-Jul-11 16:36     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -66743,7 +66743,7 @@ REPEAT/RANGE=1:`nd`/NAME=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
    <value><![CDATA[down]]></value>
 </attribute>
 <attribute name="point_spacing" type="char">
-   <value>odd</value>
+   <value>uneven</value>
 </attribute>
 <attribute name="modulo" type="char">
    <value>no</value>
@@ -66759,6 +66759,9 @@ REPEAT/RANGE=1:`nd`/NAME=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
 </attribute>
 <attribute name="orig_file_axname" type="char">
    <value>zt</value>
+</attribute>
+<attribute name="bounds" type="char">
+   <value>zt_bnds</value>
 </attribute>
 </axis>
 </axes>
@@ -67779,6 +67782,49 @@ list/x=330/y=40:90 filled[d=3,gxy=filled[d=2]]
  
 GO bn_reset
 cancel mode verify
+GO err67_reverse_bounds.jnl
+! err67_reverse_bounds.jnl
+!
+! Bug in reversing the bounds when an axis is reversed
+! previously this gave a warning:
+! NOTE: Error in bounds "lev_bnds" or bounds do not enclose point
+ 
+use reverse_z_bnds.nc
+list lev_var, zboxlo[gz=lev_var], zboxhi[gz=lev_var]
+             DATA SET: ./reverse_z_bnds.nc
+             Z: 0 to 1
+ Column  1: LEV_VAR is a variable on the depth axis (none)
+ Column  2: ZBOXLO is ZBOXLO (axis LEV)
+ Column  3: ZBOXHI is ZBOXHI (axis LEV)
+            LEV_VAR   ZBOXLO ZBOXHI
+0      /  1:   24.00  0.0000  0.009
+0.0216 /  2:   23.00  0.0089  0.034
+0.0542 /  3:   22.00  0.0343  0.074
+0.1001 /  4:   21.00  0.0741  0.126
+0.1574 /  5:   20.00  0.1262  0.189
+0.2239 /  6:   19.00  0.1886  0.259
+0.2977 /  7:   18.00  0.2593  0.336
+0.3765 /  8:   17.00  0.3361  0.417
+0.4565 /  9:   16.00  0.4170  0.496
+0.5318 / 10:   15.00  0.4961  0.568
+0.5998 / 11:   14.00  0.5676  0.632
+0.6608 / 12:   13.00  0.6320  0.690
+0.7152 / 13:   12.00  0.6896  0.741
+0.7635 / 14:   11.00  0.7408  0.786
+0.806  / 15:   10.00  0.7861  0.826
+0.8432 / 16:    9.00  0.8259  0.860
+0.8754 / 17:    8.00  0.8605  0.890
+0.9031 / 18:    7.00  0.8903  0.916
+0.9266 / 19:    6.00  0.9158  0.937
+0.9464 / 20:    5.00  0.9374  0.955
+0.9628 / 21:    4.00  0.9554  0.970
+0.9763 / 22:    3.00  0.9703  0.982
+0.9873 / 23:    2.00  0.9824  0.992
+0.9961 / 24:    1.00  0.9922  1.000
+ 
+ 
+GO bn_reset
+cancel mode verify
 GO bn_ifv
 ! bn_ifv.jnl
 ! test IFV IfValid masking for a variety of combos
@@ -67925,7 +67971,7 @@ yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.71  
  	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 07/14/11
- 	14-Jul-11 11:21     
+ 	14-Jul-11 16:38     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -71188,7 +71234,7 @@ yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.71  
  	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 07/14/11
- 	14-Jul-11 11:21     
+ 	14-Jul-11 16:38     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
@@ -71200,11 +71246,11 @@ FERRET_PLATFORM = "Linux rh5 (gfortran) 2.6.18-238.1.1.el5P"
 NETCDF_VERSION = "4.1.3 of Jul 12 2011 11:52:03 $"
 FERRET_MEMORY = "31"
 SESSION_DATE = "14-Jul-11"
-SESSION_TIME = "11:21"
-DELTA_CPU = "0.030995"
-CLOCK_SECS = "0.193"
+SESSION_TIME = "16:38"
+DELTA_CPU = "0.031994"
+CLOCK_SECS = "0.208"
 CURRENT_DATE = "14-Jul-11"
-CURRENT_TIME = "11:21:42"
+CURRENT_TIME = "16:38:11"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -71225,7 +71271,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "14-Jul-11:11:21"
+WIN_TITLE = "14-Jul-11:16:38"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -71286,7 +71332,7 @@ abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcde
  	NOAA/PMEL TMAP
  	FERRET v6.71  
  	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 07/14/11
- 	14-Jul-11 11:21     
+ 	14-Jul-11 16:38     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -71504,7 +71550,7 @@ yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.71  
  	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 07/14/11
- 	14-Jul-11 11:21     
+ 	14-Jul-11 16:38     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -71618,7 +71664,7 @@ yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.71  
  	Linux rh5 (gfortran) 2.6.18-238.1.1.el5P - 07/14/11
- 	14-Jul-11 11:21     
+ 	14-Jul-11 16:38     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -71702,4 +71748,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Thu Jul 14 11:21:44 PDT 2011
+Ended at Thu Jul 14 16:38:13 PDT 2011

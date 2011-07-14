@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/stout/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 34195051 Jul 12 12:25 /home/stout/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 34197099 Jul 14 11:18 /home/stout/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/stout/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: v6.71 release candidate with netCDF4.1.3
+Note: rebuild netCDF4.1.3 and update to ppl/plotlib/contur.F
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/stout/ansley/build/x86/FERRET/bench
@@ -15,13 +15,13 @@ FER_DSETS=.
 FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
 FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_DAT=.
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go /home/users/ansley/bakerTrunk/JavaSource/resources/iosp/scripts/ /home/users/ansley/tomcat6/webapps/las/WEB-INF/classes/resources/ferret/temp/
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/stout/ansley/build/x86/FERRET/external_functions/ext_func
-Beginning at Tue Jul 12 12:26:29 PDT 2011
+Beginning at Thu Jul 14 11:23:09 PDT 2011
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3225,4 +3225,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Jul 12 12:28:15 PDT 2011
+Ended at Thu Jul 14 11:25:02 PDT 2011

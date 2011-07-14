@@ -1,0 +1,8 @@
+! err67_reverse_bounds.jnl
+!
+! Bug in reversing the bounds when an axis is reversed
+! previously this gave a warning:
+! NOTE: Error in bounds "lev_bnds" or bounds do not enclose point
+
+use reverse_z_bnds.nc
+list lev_var, zboxlo[gz=lev_var], zboxhi[gz=lev_var]

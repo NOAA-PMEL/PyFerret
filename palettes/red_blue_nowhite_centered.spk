@@ -1,0 +1,14 @@
+! red_blue_nowhite_centered.spk
+! (inverse of palette contributed by Ryo Furue as r_b_nowhite.spk)
+! variation on red_blue.spk without white.
+! (inverse of palette contributed by Ryo Furue as r_b_nowhite.spk)
+! dark red -> red -> blue -> dark blue
+!
+   0      40   0   0
+  20     100   0   0
+  30     100  45  45
+  49.999 100  90  90
+  50.001  90  90 100
+  70      45  70 100
+  80       0  50 100
+ 100       0  20  40

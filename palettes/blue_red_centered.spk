@@ -1,0 +1,14 @@
+! blue_red_centered.spk
+! (contributed by Ryo Furue as r_b.spk)
+! dark blue -> blue -> white -> red -> dark red
+!
+   0       0  20  40
+  20       0  50 100
+  30      45  70 100
+  44      90  90 100
+  49.001 100 100 100
+  50.999 100 100 100
+  56     100  90  90
+  70     100  45  45
+  80     100   0   0
+ 100      40   0   0

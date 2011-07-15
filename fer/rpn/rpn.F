@@ -55,18 +55,13 @@
 * V532 5/01 *sh* - improve error message about unknon function in FCN(a)
 * V533 7/01 *sh* - insert alg_if_marker and alg_then_marker instead of no_op
 *		   to enable IF cond THEN string1 ELSE string2 
+* V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
+*		   zero as valid. 
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'rpn.parm'
 	include 'xalgebra.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:RPN.PARM'
-	INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-#endif
 
 	integer		at_typ_in(maxatoms),atom_id(maxatoms),
      .			atom_start(maxatoms),atom_end(maxatoms),
@@ -128,7 +123,8 @@
      .	  .OR. atom_type(inf_ptr) .eq. alg_function )
      .						fcn_ndx = fcn_ndx + 1
 	
-	   if (atom_type(inf_ptr) .eq. alg_log_struct) then
+	   if (atom_type(inf_ptr) .eq. alg_log_struct .OR.
+     .         atom_type(inf_ptr) .EQ. alg_log_vstruct ) then
 
 *	      KEEP TRACK OF WHERE-THEN-ELSE CLAUSE VALIDITY
 * ... when "WHERE" is encountered increase the nesting level, wte_ndx
@@ -240,14 +236,16 @@
 	if (wte_ndx .gt. 1) then
 * ... "WHERE" is a no-op at RPN execution time
 	   DO 64 i = 1, atom_cnt
- 64	   IF ( atom_type(i) .EQ. alg_log_struct
+ 64	   IF ( ((atom_type(i) .EQ. alg_log_struct) .OR. 
+     .           (atom_type(i) .EQ. alg_log_vstruct) )
      .	  .AND. atom_id(i)   .EQ. where ) at_typ_in(i) = alg_then_marker
 	   IF (wte_cnt(2) .eq. where) THEN
 	      goto 5100
 	   ELSEIF ( wte_cnt(2) .EQ. pelse ) THEN
 * ... WHERE-THEN-ELSE --> THEN becomes a no-op
 	      DO 66 i = 1, atom_cnt
- 66	      IF ( atom_type(i) .EQ. alg_log_struct
+ 66	      IF ( ((atom_type(i) .EQ. alg_log_struct) .OR. 
+     .              (atom_type(i) .EQ. alg_log_vstruct) )
      .	     .AND. atom_id(i)   .EQ. pthen ) at_typ_in(i) = alg_if_marker
 	   ENDIF
 	end if

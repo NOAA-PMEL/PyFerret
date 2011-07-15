@@ -27,6 +27,8 @@
 *                    where an index value of -111 was confused with this flag
 * V603 5/07  *acm* - added MODNBD modulo regridding statistic
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
+* V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
+*		   zero as valid. 
 * V700 11/10 *kms* - added category cat_pystat_var (python static variable)
 
 * this should always match maxdsets in TMAP_FORMAT:
@@ -396,7 +398,8 @@
      .			alg_const_var,
      .			alg_string,
      .                  alg_counter_var,
-     .                  alg_attrib_val
+     .                  alg_attrib_val,
+     .                  alg_log_vstruct
 	PARAMETER     (	alg_operator   = 1,
      .			alg_constant   = 2,
      .			alg_variable   = 3,
@@ -415,7 +418,8 @@
      .			alg_const_var    = 15,
      .			alg_string	 = 16,
      .                  alg_counter_var  = 17,
-     .                  alg_attrib_val   = 18 )
+     .                  alg_attrib_val   = 18,
+     .                  alg_log_vstruct  = 19 )
 
 * codes to distinguish between context choices
 * (contexts describe space/time/variable/transformation/data_set,etc.)

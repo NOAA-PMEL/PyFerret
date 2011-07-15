@@ -1,4 +1,5 @@
-	SUBROUTINE IS_DO_OP( memory, alg_type, alg_text, lo_isp, status )
+	SUBROUTINE IS_DO_OP( memory, alg_type, alg_text, lo_isp, 
+     ,                       ifv, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -73,6 +74,8 @@
 * V630:  9/09 *acm* Fix bug 1380: If the operation is a EQ,NE,LT,LE,GT,GE on 
 *                 string arguments, the result is numeric. Set cx_type(res_cx) 
 *                 accordingly, then compound conditinals will work.
+* V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
+*		   zero as valid.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -84,6 +87,7 @@
 	include	'xfr_grid.cmn'	! w/ mgrid_abstract
 
 * calling arguments
+	LOGICAL		ifv
 	INTEGER		alg_type, lo_isp, status
 	REAL		memory( mem_blk_size, max_mem_blks )
 	CHARACTER*(*)	alg_text
@@ -137,7 +141,8 @@
 	   num_com = 2
 	   op_num  = iop
 * ... logic structure
-	ELSEIF ( alg_type .EQ. alg_log_struct   ) THEN
+	ELSEIF ( alg_type .EQ. alg_log_struct .OR.
+     .           alg_type .EQ. alg_log_vstruct ) THEN
 	   ilogic = STR_MATCH (	alg_text, alg_struct, num_log_structs )
 	   IF ( ilogic .EQ. atom_not_found ) STOP ' bad if-then err'
 	   IF ( ilogic .EQ. pthen ) THEN
@@ -148,6 +153,7 @@
 	      STOP 'bad if'
 	   ENDIF
 	   op_num  = ilogic + offset_logic_struc
+	   IF (alg_type .EQ. alg_log_vstruct) op_num = op_num + 2
 	ELSE
 	   STOP '??? fcn or op'
 	ENDIF
@@ -157,7 +163,8 @@
 
 * classify the data type of the arguments
 * ... ignore type of "cond" in IF cond THEN result
-	IF ( alg_type .EQ. alg_log_struct ) THEN
+	IF ( alg_type .EQ. alg_log_struct .OR.
+     .       alg_type .EQ. alg_log_vstruct ) THEN
 	  i1 = 2 ! ignore "cond"
 	ELSE
 	  i1 = 1
@@ -262,7 +269,7 @@
             cx_type(res_cx) = ptype_float
 	  ENDIF
 	ELSE
-	  CALL OPERATE ( op_num, num_com, is_cx(frame_bottom),
+	  CALL OPERATE ( op_num, num_com, ifv, is_cx(frame_bottom),
      .			 memory(1, mr_blk1(mr1) ),   mr1,
      .			 memory(1, mr_blk1(mr2) ),   mr2,
      .			 memory(1, mr_blk1(mr3) ),   mr3,

@@ -86,6 +86,8 @@
 *                    suggested by James Orr and Billy Kessler
 * V6.7 1/11  *acm* - fix ticket 1788, initializing alg_trans_*
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
+* V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
+*		   zero as valid. 
 
 	include	'ferret.parm'
 	include	'xalgebra.cmn'
@@ -332,6 +334,11 @@
 	DATA alg_struct(  1 ) / 'IF' /,		! formerly "WHERE"
      .	     alg_struct(  2 ) / 'THEN' /,
      .	     alg_struct(  3 ) / 'ELSE' /
+
+* logical if-valid structures:
+	DATA alg_vstruct(  1 ) / 'IFV' /,	
+     .	     alg_vstruct(  2 ) / 'THEN' /,
+     .	     alg_vstruct(  3 ) / 'ELSE' /
 
 * punctuation:
 	DATA alg_punct(  1 ) / ',' /,

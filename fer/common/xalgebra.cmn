@@ -9,6 +9,8 @@
 * V554 3/04 *acm* - reorder items in the common block to avoid warning msg when compiling
 * V600 2/06 *acm* - reorder items again, to avoid warning msg when compiling
 * V600 2/06 *kob* - declare alg_pvar_head as double, for 64-bit build
+* V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
+*		   zero as valid. 
 
 	INTEGER		num_operators ,num_functions, num_pseudo_vars,
      .			num_log_structs, num_punctuations,
@@ -50,6 +52,7 @@
      .				alg_fcn_descr,
      .				alg_punct,
      .				alg_struct,
+     .				alg_vstruct,
      .				alg_pvar,
      .				alg_cvar,
      .				countervar_name,
@@ -80,6 +83,7 @@
 	CHARACTER*80	alg_fcn_descr    ( num_functions )
 	CHARACTER*1	alg_punct	 ( num_punctuations )
 	CHARACTER*8	alg_struct	 ( num_log_structs )
+	CHARACTER*8	alg_vstruct	 ( num_log_structs )
 	CHARACTER*8	alg_pvar         ( num_pseudo_vars )
 	CHARACTER*128	alg_cvar         ( num_counter_vars )
         CHARACTER*128   countervar_name  ( num_counter_vars )

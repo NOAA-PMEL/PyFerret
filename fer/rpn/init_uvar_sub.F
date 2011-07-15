@@ -71,6 +71,8 @@
 *                  use when writing out user-defined variables when MODE UPCASE_OUTPUT 
 *                  is cancelled.
 * V63  *acm* 10/09 Changes for gfortran build
+* V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
+*		   zero as valid. 
 
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
@@ -89,7 +91,7 @@
 
 * internal variable declarations:
 	LOGICAL inquote
-	INTEGER	        TM_LENSTR1, TM_LENSTR, i, 
+	INTEGER	        TM_LENSTR1, TM_LENSTR, STR_SAME, i, 
      .                  natom_rpn, rpn_order(maxatoms), i2, quote_type,
      .                  dset_to_add, slen, iat, varid, type, coordvar
 	CHARACTER	err_string*255, c*1, attname*128
@@ -211,7 +213,10 @@ c* copy title, units, dset, and missing flag into buffers
 	   uvar_item_end  (i,uvar) = at_end  (rpn_order(i)) - txstart + 1
 	   uvar_item_type (i,uvar) = at_type (rpn_order(i))
  300	CONTINUE
-
+        uvar_ifv(uvar) = .FALSE.
+        IF ( STR_SAME( uvar_text(uvar)(1:3), 'IFV' ) .EQ. 0 )  
+     .      uvar_ifv(uvar) = .TRUE.
+        
 !* add a terminator to the end of the list of RPN-ordered atoms
 !	natom_rpn = natom_rpn + 1
 !	uvar_item_type (natom_rpn,uvar) = alg_finished

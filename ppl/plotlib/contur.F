@@ -104,11 +104,13 @@ c**	yct = y center about which to rotate plot
 c**
 c     ind10 should be dimensioned at least nx by ny/10 rounded up.
 c     kab should be dimensioned at least nx/10+2 by ny/10+2 .
+c     If these dimensions are raised, increase the size of workspace
+c     s, x, y, x_curv, y_curv proportionally.
 c
 c     oceanography emr   dec/69
-	dimension z(nxs,nys),px(nx),py(ny),s(1200),ind10(285,30)
-	dimension x(1200),y(1200)
-	dimension zmaxb(10,10),zminb(10,10),kab(31,31)
+	dimension z(nxs,nys),px(nx),py(ny),s(6000),ind10(300,40)
+	dimension x(6000),y(6000)
+	dimension zmaxb(10,10),zminb(10,10),kab(40,40)
 
 	dimension  zlev(2),  ndecl(2),lwgtl(2),xc(11),yc(11),ixpon(10)
 	dimension lclr(2)
@@ -153,7 +155,7 @@ C	Place init into data stmt *jd* 12.96 linux
 
 C     Curvilinear coordinates declarations
         integer icurv, status
-        real x_curv(1200), y_curv(1200)
+        real x_curv(6000), y_curv(6000)
 
 c
 c     initialize
@@ -161,6 +163,7 @@ c*******************************************************************************
 c
 	if(nlev)1200,1200,12
 12	pi=3.1415926
+
 c
 c	apply the rotation and scaling
 c

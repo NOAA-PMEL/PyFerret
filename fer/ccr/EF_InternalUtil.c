@@ -850,6 +850,14 @@ void FORTRAN(pt_in_poly_work_size)(int *);
 void FORTRAN(pt_in_poly_compute)(int *, float *, float *, float *, 
   float *, float *, float *, float *);
 
+void FORTRAN(list_value_xml_init)(int *);
+void FORTRAN(list_value_xml_result_limits)(int *);
+void FORTRAN(list_value_xml_compute)(int *, float *, float *, float *, float *, float *);
+
+void FORTRAN(write_webrow_init)(int *);
+void FORTRAN(write_webrow_result_limits)(int *);
+void FORTRAN(write_webrow_compute)(int *, float *, float *, float *, float *, float *);
+
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -897,7 +905,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 130
+#define N_INTEF 132
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -1033,6 +1041,8 @@ struct {
    strcpy(I_EFnames[127].funcname, "zcat");
    strcpy(I_EFnames[128].funcname, "zcat_str");
    strcpy(I_EFnames[129].funcname, "zreverse");
+   strcpy(I_EFnames[130].funcname, "list_value_xml");
+   strcpy(I_EFnames[131].funcname, "write_webrow");
 /*    
  *  ------------------------------------ 
  */
@@ -3732,6 +3742,14 @@ else if ( !strcmp(name,"floatstr_compute_") ) return (void *)FORTRAN(floatstr_co
 else if ( !strcmp(name,"pt_in_poly_init_") ) return (void *)FORTRAN(pt_in_poly_init);
 else if ( !strcmp(name,"pt_in_poly_work_size_") ) return (void *)FORTRAN(pt_in_poly_work_size);
 else if ( !strcmp(name,"pt_in_poly_compute_") ) return (void *)FORTRAN(pt_in_poly_compute);
+
+else if ( !strcmp(name,"list_value_xml_init_") ) return (void *)FORTRAN(list_value_xml_init);
+else if ( !strcmp(name,"list_value_xml_result_limits_") ) return (void *)FORTRAN(list_value_xml_result_limits);
+else if ( !strcmp(name,"list_value_xml_compute_") ) return (void *)FORTRAN(list_value_xml_compute);
+
+else if ( !strcmp(name,"write_webrow_init_") ) return (void *)FORTRAN(write_webrow_init);
+else if ( !strcmp(name,"write_webrow_result_limits_") ) return (void *)FORTRAN(write_webrow_result_limits);
+else if ( !strcmp(name,"write_webrow_compute_") ) return (void *)FORTRAN(write_webrow_compute);
 
  }
 /*  End of function pointer list for internally-linked External Functions

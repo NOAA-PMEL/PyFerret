@@ -266,6 +266,7 @@ def init(arglist=None, enterferret=True):
         std_pyefs.extend((
                   "fershapefile.shapefile_readxy",
                   "fershapefile.shapefile_writeval",
+                  "fershapefile.shapefile_writexyval",
                   ))
     except ImportError:
         print >>sys.stderr, "    WARNING: Unable to import shapefile;\n" \

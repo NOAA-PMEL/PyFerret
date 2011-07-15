@@ -1,0 +1,51 @@
+! bn_ifv.jnl
+! test IFV IfValid masking for a variety of combos
+
+
+
+! operators
+CANCEL REGION
+SET REGION/I=1:5/J=1:5
+
+! IF, THEN, ELSE
+LIST/ORDER=X  IFV I GT 3 THEN I
+LIST/ORDER=X  IFV I GT 3 THEN I ELSE 0
+! error: nested IFV tests
+SET MODE IGNORE_ERRORS
+LIST/ORDER=X  IFV I GT 3 THEN ( IFV I LT 5 THEN I ELSE -9 ) ELSE .333	! err
+LET A = ifv I LT 5 THEN I ELSE -9					! err
+SET MODE/LAST IGNORE_ERRORS
+LET A = ifv I LT 5 THEN I ELSE (-9)
+LIST/ORDER=X  IFV I GT 3 THEN ( A ) ELSE .333
+CANCEL REGION
+
+LET r =  {1,2,0,1,,3,4,5,0,,1}
+LIST r, IF r THEN 1, IFV r THEN 1, IF r THEN 1 ELSE 2, IFV r THEN 1 ELSE 2
+
+! Mask with data that has integer values including zero,
+USE coads_climatology
+SET REG/L=1
+LET intvar = INT(sst/5)
+
+SET VIEW ul
+SHADE IF intvar THEN 1
+STAT IF intvar THEN 1
+
+SET VIEW ur
+SHADE IFV intvar THEN 1
+STAT IFV intvar THEN 1
+  
+! IFV on string arguments behaves just like IF.
+
+LET a = {"x","y"}
+LET b = IF a EQ "x" THEN "z" ELSE a
+LIST b
+LET b = IFV a EQ "x" THEN "z" ELSE a
+LIST b
+
+ 
+let strings = {"a","b",}
+list IF strings EQ "a" THEN "" ELSE strings
+ 
+let strings = {"a","b",}
+list IFV strings EQ "a" THEN "" ELSE strings

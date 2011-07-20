@@ -39,10 +39,10 @@ def lonlatdistance(pt1lon, pt1lat, pt2lon, pt2lat):
     Returns:
         The great circle distance(s) in degrees [0.0, 180.0]
     """
-    lon1 = numpy.deg2rad(numpy.array(pt1lon, dtype=float))
-    lat1 = numpy.deg2rad(numpy.array(pt1lat, dtype=float))
-    lon2 = numpy.deg2rad(numpy.array(pt2lon, dtype=float))
-    lat2 = numpy.deg2rad(numpy.array(pt2lat, dtype=float))
+    lon1 = numpy.deg2rad(numpy.asarray(pt1lon, dtype=float))
+    lat1 = numpy.deg2rad(numpy.asarray(pt1lat, dtype=float))
+    lon2 = numpy.deg2rad(numpy.asarray(pt2lon, dtype=float))
+    lat2 = numpy.deg2rad(numpy.asarray(pt2lat, dtype=float))
     dellat = numpy.power(numpy.sin(0.5 * (lat2 - lat1)), 2.0)
     dellon = numpy.cos(lat1) * numpy.cos(lat2) * \
              numpy.power(numpy.sin(0.5 * (lon2 - lon1)), 2.0)
@@ -67,78 +67,79 @@ def lonlatintersect(gc1lon1, gc1lat1, gc1lon2, gc1lat2,
         gc2lat2 - latitude(s) of the second point on the second great circle
     Returns:
         ( (pt1lon, pt1lat), (pt2lon, pt2lat) ) - the longitudes and latitudes
-                  of the two intersections of the two great circles.  NaN will 
-                  be returned for both longitudes and latitudes if a great 
+                  of the two intersections of the two great circles.  NaN will
+                  be returned for both longitudes and latitudes if a great
                   circle is not well-defined, or the two great-circles coincide.
-
-    If arrays are given, all arguments must be arrays with the same shape.
-    The four returned arrays will have this same shape.
     """
+    # Minimum acceptable norm of a cross product
+    # arcsin(1.0E-7) = 0.02" or 0.64 m on the Earth
+    MIN_NORM = 1.0E-7
     # Convert longitudes and latitudes to points on a unit sphere
-    ptlonr = numpy.deg2rad(numpy.array(gc1lon1, dtype=float))
-    ptlatr = numpy.deg2rad(numpy.array(gc1lat1, dtype=float))
-    gcz = numpy.sin(ptlatr)
+    # The "+ 0.0 * ptlonr" is to broadcast gcz if needed
+    ptlonr = numpy.deg2rad(numpy.asarray(gc1lon1, dtype=float))
+    ptlatr = numpy.deg2rad(numpy.asarray(gc1lat1, dtype=float))
+    gcz = numpy.sin(ptlatr) + 0.0 * ptlonr
     coslat = numpy.cos(ptlatr)
     gcy = coslat * numpy.sin(ptlonr)
     gcx = coslat * numpy.cos(ptlonr)
-    gc1xyz1 = numpy.array((gcx, gcy, gcz))
+    gc1xyz1 = numpy.array([gcx, gcy, gcz])
     #
-    ptlonr = numpy.deg2rad(numpy.array(gc1lon2, dtype=float))
-    ptlatr = numpy.deg2rad(numpy.array(gc1lat2, dtype=float))
-    gcz = numpy.sin(ptlatr)
+    ptlonr = numpy.deg2rad(numpy.asarray(gc1lon2, dtype=float))
+    ptlatr = numpy.deg2rad(numpy.asarray(gc1lat2, dtype=float))
+    gcz = numpy.sin(ptlatr) + 0.0 * ptlonr
     coslat = numpy.cos(ptlatr)
     gcy = coslat * numpy.sin(ptlonr)
     gcx = coslat * numpy.cos(ptlonr)
-    gc1xyz2 = numpy.array((gcx, gcy, gcz))
+    gc1xyz2 = numpy.array([gcx, gcy, gcz])
     #
-    ptlonr = numpy.deg2rad(numpy.array(gc2lon1, dtype=float))
-    ptlatr = numpy.deg2rad(numpy.array(gc2lat1, dtype=float))
-    gcz = numpy.sin(ptlatr)
+    ptlonr = numpy.deg2rad(numpy.asarray(gc2lon1, dtype=float))
+    ptlatr = numpy.deg2rad(numpy.asarray(gc2lat1, dtype=float))
+    gcz = numpy.sin(ptlatr) + 0.0 * ptlonr
     coslat = numpy.cos(ptlatr)
     gcy = coslat * numpy.sin(ptlonr)
     gcx = coslat * numpy.cos(ptlonr)
-    gc2xyz1 = numpy.array((gcx, gcy, gcz))
+    gc2xyz1 = numpy.array([gcx, gcy, gcz])
     #
-    ptlonr = numpy.deg2rad(numpy.array(gc2lon2, dtype=float))
-    ptlatr = numpy.deg2rad(numpy.array(gc2lat2, dtype=float))
-    gcz = numpy.sin(ptlatr)
+    ptlonr = numpy.deg2rad(numpy.asarray(gc2lon2, dtype=float))
+    ptlatr = numpy.deg2rad(numpy.asarray(gc2lat2, dtype=float))
+    gcz = numpy.sin(ptlatr) + 0.0 * ptlonr
     coslat = numpy.cos(ptlatr)
     gcy = coslat * numpy.sin(ptlonr)
     gcx = coslat * numpy.cos(ptlonr)
-    gc2xyz2 = numpy.array((gcx, gcy, gcz))
-    # Get the unit-perpendicular to the plane going through
-    # the origin and the two points on each great circle.
-    # If the norm of the cross product is too small, 
-    # the great circle is not well-defined, so zero it out.
+    gc2xyz2 = numpy.array([gcx, gcy, gcz])
+    # Get the unit-perpendicular to the plane going through the
+    # origin and the two points on each great circle.  If the
+    # norm of the cross product is too small, the great circle
+    # is not well-defined, so zero it out so NaN is produced.
     gc1pp = numpy.cross(gc1xyz1, gc1xyz2, axis=0)
     norm = (gc1pp[0]**2 + gc1pp[1]**2 + gc1pp[2]**2)**0.5
     if len(norm.shape) == 0:
-        if numpy.fabs(norm) < 1.0E-15:
+        if numpy.fabs(norm) < MIN_NORM:
             norm = 0.0
     else:
-        norm[ numpy.fabs(norm) < 1.0E-15 ] = 0.0
+        norm[ numpy.fabs(norm) < MIN_NORM ] = 0.0
     gc1pp /= norm
     gc2pp = numpy.cross(gc2xyz1, gc2xyz2, axis=0)
     norm = (gc2pp[0]**2 + gc2pp[1]**2 + gc2pp[2]**2)**0.5
     if len(norm.shape) == 0:
-        if numpy.fabs(norm) < 1.0E-15:
+        if numpy.fabs(norm) < MIN_NORM:
             norm = 0.0
     else:
-        norm[ numpy.fabs(norm) < 1.0E-15 ] = 0.0
+        norm[ numpy.fabs(norm) < MIN_NORM ] = 0.0
     gc2pp /= norm
     # The line of intersection of the two planes is perpendicular
     # to the two plane-perpendiculars and goes through the origin.
     # Points of intersection are the points on this line one unit
-    # from the origin.
-    # If the norm of the cross product is too small,
-    # the two planes coincide.
+    # from the origin.  If the norm of the cross product is too
+    # small, the two planes are practically indistiguishable from
+    # each other (coincide).
     pt1xyz = numpy.cross(gc1pp, gc2pp, axis=0)
     norm = (pt1xyz[0]**2 + pt1xyz[1]**2 + pt1xyz[2]**2)**0.5
     if len(norm.shape) == 0:
-        if numpy.fabs(norm) < 1.0E-15:
+        if numpy.fabs(norm) < MIN_NORM:
             norm = 0.0
     else:
-        norm[ numpy.fabs(norm) < 1.0E-15 ] = 0.0
+        norm[ numpy.fabs(norm) < MIN_NORM ] = 0.0
     pt1xyz /= norm
     pt2xyz = -1.0 * pt1xyz
     # Convert back to longitudes and latitudes
@@ -147,6 +148,96 @@ def lonlatintersect(gc1lon1, gc1lat1, gc1lon2, gc1lat2,
     pt2lats = numpy.rad2deg(numpy.arcsin(pt2xyz[2]))
     pt2lons = numpy.rad2deg(numpy.arctan2(pt2xyz[1], pt2xyz[0]))
     return ( (pt1lons, pt1lats), (pt2lons, pt2lats) )
+
+
+def lonlatfwdpt(origlon, origlat, endlon, endlat, fwdfact):
+    """
+    Find the longitude and latitude of a point that is a given factor
+    times the distance along the great circle from an origination point
+    to an ending point.
+
+    Note that the shorter great circle arc from the origination point
+    to the ending point is always used.
+
+    If O is the origination point, E is the ending point, and P is
+    the point returned from this computation, a factor value of:
+        0.5: P bisects the great circle arc between O and E
+        2.0: E bisects the great circle arc between O and P
+       -1.0: O bisects the great circle arc between P and E
+
+    Arguments:
+        origlon - longitude(s) of the origination point
+        origlat - latitude(s) of the origination point
+        endlon  - longitude(s) of the ending point
+        endlat  - latitude(s) of the ending point
+        fwdfact - forward distance factor(s)
+
+    Returns:
+        (ptlon, ptlat) - longitude and latitude of the computed point(s).
+                         NaN will be returned for both the longitude and
+                         latitude if the great circle is not well-defined.
+    """
+    # Minimum acceptable norm of a cross product
+    # arcsin(1.0E-7) = 0.02" or 0.64 m on the Earth
+    MIN_NORM = 1.0E-7
+    # Convert longitudes and latitudes to points on a unit sphere
+    # The "+ 0.0 * ptlonr" is to broadcast gcz if needed
+    ptlonr = numpy.deg2rad(numpy.asarray(origlon, dtype=float))
+    ptlatr = numpy.deg2rad(numpy.asarray(origlat, dtype=float))
+    gcz = numpy.sin(ptlatr) + 0.0 * ptlonr
+    coslat = numpy.cos(ptlatr)
+    gcy = coslat * numpy.sin(ptlonr)
+    gcx = coslat * numpy.cos(ptlonr)
+    origxyz = numpy.array([gcx, gcy, gcz])
+    #
+    ptlonr = numpy.deg2rad(numpy.asarray(endlon, dtype=float))
+    ptlatr = numpy.deg2rad(numpy.asarray(endlat, dtype=float))
+    gcz = numpy.sin(ptlatr) + 0.0 * ptlonr
+    coslat = numpy.cos(ptlatr)
+    gcy = coslat * numpy.sin(ptlonr)
+    gcx = coslat * numpy.cos(ptlonr)
+    endxyz = numpy.array([gcx, gcy, gcz])
+    # Determine the rotation matrix about the origin that takes
+    # origxyz to (1,0,0) (equator and prime meridian) and endxyz
+    # to (x,y,0) with y > 0 (equator in eastern hemisphere).
+    #
+    # The first row of the matrix is origxyz.
+    #
+    # The third row of the matrix is the normalized cross product
+    # of origxyz and endxyz.  (The great circle plane perpendicular.)
+    # If the norm of this cross product is too small, the great
+    # circle is not well-defined, so zero it out so NaN is produced.
+    gcpp = numpy.cross(origxyz, endxyz, axis=0)
+    norm = (gcpp[0]**2 + gcpp[1]**2 + gcpp[2]**2)**0.5
+    if len(norm.shape) == 0:
+        if numpy.fabs(norm) < MIN_NORM:
+            norm = 0.0
+    else:
+        norm[ numpy.fabs(norm) < MIN_NORM ] = 0.0
+    gcpp /= norm
+    # The second row of the matrix is the cross product of the
+    # third row (gcpp) and the first row (origxyz).  This will
+    # have norm 1.0 since gcpp and origxyz are perpendicular
+    # unit vectors.
+    fwdax = numpy.cross(gcpp, origxyz, axis=0)
+    # Get the coordinates of the rotated end point.
+    endtrx = origxyz[0] * endxyz[0] + origxyz[1] * endxyz[1] + origxyz[2] * endxyz[2]
+    endtry = fwdax[0]   * endxyz[0] + fwdax[1]   * endxyz[1] + fwdax[2]   * endxyz[2]
+    # Get the angle along the equator of the rotated end point, multiply
+    # by the given factor, and convert this new angle back to coordinates.
+    fwdang  = numpy.arctan2(endtry, endtrx)
+    fwdang *= numpy.asarray(fwdfact, dtype=float)
+    fwdtrx  = numpy.cos(fwdang)
+    fwdtry  = numpy.sin(fwdang)
+    # Rotate the new point back to the original coordinate system
+    # The inverse rotation matrix is the transpose of that matrix.
+    fwdx = origxyz[0] * fwdtrx + fwdax[0] * fwdtry
+    fwdy = origxyz[1] * fwdtrx + fwdax[1] * fwdtry
+    fwdz = origxyz[2] * fwdtrx + fwdax[2] * fwdtry
+    # Convert the point coordinates into longitudes and latitudes
+    ptlat = numpy.rad2deg(numpy.arcsin(fwdz))
+    ptlon = numpy.rad2deg(numpy.arctan2(fwdy, fwdx))
+    return (ptlon, ptlat)
 
 
 def equidistscatter(min_lon, min_lat, max_lon, max_lat, min_gcdist, dfactor=5.0):
@@ -259,8 +350,8 @@ def equidistscatter(min_lon, min_lat, max_lon, max_lat, min_gcdist, dfactor=5.0)
         for lon in lonvals:
             denslons.append(lon)
             denslats.append(lat)
-    denslons = numpy.array(denslons)
-    denslats = numpy.array(denslats)
+    denslons = numpy.asarray(denslons)
+    denslats = numpy.asarray(denslats)
 
     # create a random permutation of the indices to use for the selection order
     availinds = numpy.random.permutation(len(denslats))
@@ -272,7 +363,7 @@ def equidistscatter(min_lon, min_lat, max_lon, max_lat, min_gcdist, dfactor=5.0)
         # Compute the distance of the available points to the selected point
         gcdists = lonlatdistance(denslons[ind], denslats[ind],
                                  denslons[availinds], denslats[availinds])
-        # Remove indices of any remaining points too close to this point
+        # Remove indices of any available points too close to this point
         availinds = availinds[ gcdists >= mindeg ]
     # sort the selected indices so the longitudes and latitudes have some order
     selectinds = numpy.sort(selectinds)
@@ -300,7 +391,7 @@ if __name__ == "__main__":
     print "Meridional distance: PASS"
     print
 
-    # Play with some distances between cities
+    # Play with some distances between cities (deg W, deg N)
     seattle =  (122.0 + (20.0 / 60.0), 47.0 + (37.0 / 60.0))
     portland = (122.0 + (41.0 / 60.0), 45.0 + (31.0 / 60.0))
     spokane =  (117.0 + (26.0 / 60.0), 47.0 + (40.0 / 60.0))
@@ -314,14 +405,14 @@ if __name__ == "__main__":
     lats1, lats2 = numpy.meshgrid(lats, lats)
     dists = lonlatdistance(lons1, lats1, lons2, lats2)
     dists *= DEG2RAD * EARTH_MR * KM2MI
-    print "Seattle:  %.2f W, %.2f N" % seattle
-    print "Portland: %.2f W, %.2f N" % portland
-    print "Spokane:  %.2f W, %.2f N" % spokane
-    print "Computed distances (mi)"
-    print "              Seattle     Portland    Spokane"
-    print "   Seattle     %5.0f       %5.0f       %5.0f" % (dists[0,0], dists[0,1], dists[0,2])
-    print "   Portland    %5.0f       %5.0f       %5.0f" % (dists[1,0], dists[1,1], dists[1,2])
-    print "   Spokane     %5.0f       %5.0f       %5.0f" % (dists[2,0], dists[2,1], dists[2,2])
+    expected = [ [   0, 146, 228 ],
+                 [ 146,   0, 290 ],
+                 [ 228, 290,   0 ] ]
+    if not numpy.allclose(dists, expected, rtol=0.01):
+        raise ValueError("Seattle, Portland, Spokane distance matrix in miles\n" \
+                         "    expect: %s\n"
+                         "    found:  %s" % (str(expected), str(dists)))
+    print "Seattle, Portland, Spokane distance matrix: PASS"
     print
 
     lons = ( austin[0], houston[0], dallas[0] )
@@ -330,54 +421,52 @@ if __name__ == "__main__":
     lats1, lats2 = numpy.meshgrid(lats, lats)
     dists = lonlatdistance(lons1, lats1, lons2, lats2)
     dists *= DEG2RAD * EARTH_MR * KM2MI
-    print "Austin:  %.2f W, %.2f N" % austin
-    print "Houston: %.2f W, %.2f N" % houston
-    print "Dallas:  %.2f W, %.2f N" % dallas
-    print "Computed distances (mi)"
-    print "              Austin      Houston     Dallas"
-    print "   Austin      %5.0f       %5.0f       %5.0f" % (dists[0,0], dists[0,1], dists[0,2])
-    print "   Houston     %5.0f       %5.0f       %5.0f" % (dists[1,0], dists[1,1], dists[1,2])
-    print "   Dallas      %5.0f       %5.0f       %5.0f" % (dists[2,0], dists[2,1], dists[2,2])
+    expected = [ [   0, 145, 184 ],
+                 [ 145,   0, 224 ],
+                 [ 184, 224,   0 ] ]
+    if not numpy.allclose(dists, expected, rtol=0.01):
+        raise ValueError("Austin, Houston, Dallas distance matrix in miles\n" \
+                         "    expect: %s\n"
+                         "    found:  %s" % (str(expected), str(dists)))
+    print "Austin, Houston, Dallas distance matrix: PASS"
     print
 
     # Test lonlatintersect
     # Intersections of the equator with meridians
-    arr000 = numpy.zeros((10,), dtype=float)
-    arrn90 = -90.0 * numpy.ones((10,), dtype=float)
     ((pt1lons, pt1lats), (pt2lons, pt2lats)) = \
-            lonlatintersect(arr000, arr000, tenten, arr000, \
-                            arr000, arrn90, tenten, tenten)
+            lonlatintersect(0.0, 0.0, tenten, 0.0, \
+                            0.0, -90.0, tenten, tenten)
     # First of the first great circle and last of the second great circle are not well-defined
     expvalid = numpy.array([ True ] + ([ False ]*8) + [ True ])
     validity = numpy.isnan(pt1lons)
     if not numpy.allclose(validity, expvalid):
-        raise ValueError("Validity of pt1lons: expect: %s, found %s" % \
+        raise ValueError("Validity of pt1lons: expect: %s, found: %s" % \
                           (str(expvalid), str(validity)))
     validity = numpy.isnan(pt1lats)
     if not numpy.allclose(validity, expvalid):
-        raise ValueError("Validity of pt1lats: expect: %s, found %s" % \
+        raise ValueError("Validity of pt1lats: expect: %s, found: %s" % \
                           (str(expvalid), str(validity)))
     validity = numpy.isnan(pt2lons)
     if not numpy.allclose(validity, expvalid):
-        raise ValueError("Validity of pt2lons: expect: %s, found %s" % \
+        raise ValueError("Validity of pt2lons: expect: %s, found: %s" % \
                           (str(expvalid), str(validity)))
     validity = numpy.isnan(pt2lats)
     if not numpy.allclose(validity, expvalid):
-        raise ValueError("Validity of pt2lats: expect: %s, found %s" % \
+        raise ValueError("Validity of pt2lats: expect: %s, found: %s" % \
                           (str(expvalid), str(validity)))
     if not numpy.allclose(pt1lons[1:-1], tenten[1:-1]):
-        raise ValueError("Valid pt1lons: expect: %s, found %s" %\
-                          (str(arr000[1:-1]), str(pt1lons[1:-1])))
-    if not numpy.allclose(pt1lats[1:-1], arr000[1:-1]):
-        raise ValueError("Valid pt1lats: expect: %s, found %s" %\
-                          (str(arr000[1:-1]), str(pt1lats[1:-1])))
+        raise ValueError("Valid pt1lons: expect: %s, found: %s" %\
+                          (str(tenten[1:-1]), str(pt1lons[1:-1])))
+    if not numpy.allclose(pt1lats[1:-1], 0.0):
+        raise ValueError("Valid pt1lats: expect: all zeros, found: %s" %\
+                          str(pt1lats[1:-1]))
     if not numpy.allclose(pt2lons[1:-1], tenten[1:-1]-180.0):
         raise ValueError("Valid pt2lons: expect: %s, found %s" %\
                           (str(tenten[1:-1]-180.0), str(pt2lons[1:-1])))
-    if not numpy.allclose(pt2lats[1:-1], arr000[1:-1]):
-        raise ValueError("Valid pt2lats: expect: %s, found %s" %\
-                          (str(arr000[1:-1]), str(pt2lats[1:-1])))
-    print "Equator/meridian intersections PASS"
+    if not numpy.allclose(pt2lats[1:-1], 0.0):
+        raise ValueError("Valid pt2lats: expect: all zeros, found %s" %\
+                          str(pt2lats[1:-1]))
+    print "Equator/meridian intersections: PASS"
     print
 
     ((pt1lons, pt1lats), (pt2lons, pt2lats)) = \
@@ -390,9 +479,84 @@ if __name__ == "__main__":
                          (str([45.0, 90.0, 135.0, -90.0]),
                           str([float(pt1lons), float(pt1lats),
                                float(pt2lons), float(pt2lats)])))
-    print "Mini north pole cross intersections PASS"
+    print "Mini north pole cross intersections: PASS"
     print
 
+
+    # Test lonlatfwdpt
+    lons, lats = lonlatfwdpt(portland[0], portland[1], spokane[0], spokane[1], 0.0)
+    if not ( numpy.allclose(lons, portland[0]) and numpy.allclose(lats, portland[1]) ):
+        raise ValueError("Zero forward from portland to spokane: expect %s, found %s" % \
+                         (str(portland), str((lons, lats))))
+    print "Zero forward: PASS"
+    print
+
+    lons, lats = lonlatfwdpt(portland[0], portland[1], spokane[0], spokane[1], 1.0)
+    if not ( numpy.allclose(lons, spokane[0]) and numpy.allclose(lats, spokane[1]) ):
+        raise ValueError("One forward from portland to spokane: expect %s, found %s" % \
+                         (str(spokane), str((lons, lats))))
+    print "One forward: PASS"
+    print
+
+    lons, lats = lonlatfwdpt(0.0, 0.0, tenten, 0.0, 3.0)
+    expectlons = 3.0 * tenten
+    expectlons[ expectlons > 180.0 ] -= 360.0
+    # The first great circle is not well-defined
+    expvalid = numpy.array([ True ] + ([ False ]*9))
+    validity = numpy.isnan(lons)
+    if not numpy.allclose(validity, expvalid):
+        raise ValueError("Validity of fwd equator lons: expect: %s, found: %s" % \
+                          (str(expvalid), str(validity)))
+    validity = numpy.isnan(lats)
+    if not numpy.allclose(validity, expvalid):
+        raise ValueError("Validity of fwd equator lats: expect: %s, found: %s" % \
+                          (str(expvalid), str(validity)))
+    if not numpy.allclose(lons[1:], expectlons[1:]):
+        raise ValueError("Valid fwd equator lons: expect: %s, found: %s" %\
+                          (str(expectlons[1:]), str(lons[1:])))
+    if not numpy.allclose(lats[1:], 0.0):
+        raise ValueError("Valid fwd equator lats: expect: all zeros, found: %s" %\
+                          str(lats[1:]))
+    print "Fwd equator: PASS"
+    print
+
+    lons, lats = lonlatfwdpt(0.0, -90.0, 0.0, tenten, 2.0)
+    # First longitude could be anything, but this algorithm gives 0.0
+    expectlats = 90.0 - 2.0 * tenten
+    # The last great circle is not well-defined
+    expvalid = numpy.array(([ False ]*9) + [ True ])
+    validity = numpy.isnan(lons)
+    if not numpy.allclose(validity, expvalid):
+        raise ValueError("Validity of fwd prime meridian lons: expect: %s, found: %s" % \
+                          (str(expvalid), str(validity)))
+    validity = numpy.isnan(lats)
+    if not numpy.allclose(validity, expvalid):
+        raise ValueError("Validity of fwd prime meridian lats: expect: %s, found: %s" % \
+                          (str(expvalid), str(validity)))
+    # First longitude could be anything so ignore it
+    # Others should be either 180 == -180
+    poslons = lons[:]
+    poslons[ poslons < 0.0 ] += 360.0
+    if not numpy.allclose(lons[1:-1], 180.0):
+        raise ValueError("Valid fwd prime meridian lons: expect: all 180.0 or -180.0, found: %s" %\
+                          str(lons[1:-1]))
+    if not numpy.allclose(lats[:-1], expectlats[:-1]):
+        raise ValueError("Valid fwd prime meridian lats: expect: %s, found: %s" %\
+                          (str(expectlats[:-1]), str(lats[:-1])))
+    print "Fwd prime meridian: PASS"
+    print
+
+    lons, lats = lonlatfwdpt(0.0, 0.0, 45.0, 45.0, (2.0, 3.0, 4.0, 5.0))
+    expectlons = [ 135.0, 180.0, -135.0, -45.0 ]
+    expectlats = [  45.0,   0.0,  -45.0, -45.0 ]
+    if not numpy.allclose(lons, expectlons):
+        raise ValueError("Fwd diagonal lons: expect: %s, found: %s" %\
+                          (str(expectlons), str(lons)))
+    if not numpy.allclose(lats, expectlats):
+        raise ValueError("Fwd diagonal lats: expect: %s, found: %s" %\
+                          (str(expectlats), str(lats)))
+    print "Fwd diagonal: PASS"
+    print
 
     # Test equdistscatter
     lons, lats = equidistscatter(0.0, 0.0, 0.0, 0.0, 1.0)

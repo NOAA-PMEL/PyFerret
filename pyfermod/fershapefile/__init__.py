@@ -55,8 +55,8 @@ def quadxycentroids(xvals, yvals):
     Raises:
         ValueError if the arguments are invalid
     """
-    xarray = numpy.array(xvals, dtype=float)
-    yarray = numpy.array(yvals, dtype=float)
+    xarray = numpy.asarray(xvals, dtype=float)
+    yarray = numpy.asarray(yvals, dtype=float)
     if len(xarray.shape) < 2:
         raise ValueError("xvals and yvals must be (at least) two dimensional")
     if xarray.shape != yarray.shape:
@@ -105,8 +105,8 @@ def quadxycenters(xvals, yvals):
     Raises:
         ValueError if the arguments are invalid
     """
-    xarray = numpy.array(xvals, dtype=float)
-    yarray = numpy.array(yvals, dtype=float)
+    xarray = numpy.asarray(xvals, dtype=float)
+    yarray = numpy.asarray(yvals, dtype=float)
     if len(xarray.shape) < 2:
         raise ValueError("xvals and yvals must be (at least) two dimensional")
     if xarray.shape != yarray.shape:
@@ -318,6 +318,7 @@ if __name__ == "__main__":
     os.remove("%s.dbf" % shapefilename)
     os.remove("%s.shp" % shapefilename)
     os.remove("%s.shx" % shapefilename)
+    os.remove("%s.prj" % shapefilename)
 
     print "addquadxyvalues: SUCCESS"
 

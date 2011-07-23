@@ -83,12 +83,13 @@
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
 
-# For netCDF4 using new hdf5 and new zlib (in SYSLIB)
+# For netCDF4 using new hdf5 and new zlib
 
 	CDFLIB		= $(NETCDF4_DIR)/lib64/libnetcdff.a \
 			  $(NETCDF4_DIR)/lib64/libnetcdf.a \
 			  $(HDF5_DIR)/lib64/libhdf5_hl.a \
-			  $(HDF5_DIR)/lib64/libhdf5.a 
+			  $(HDF5_DIR)/lib64/libhdf5.a \
+			  $(LIBZ_DIR)/lib64/libz.a
 
 	LINUX_OBJS	= special/linux_routines.o \
 			  dat/*.o \

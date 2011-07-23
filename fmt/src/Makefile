@@ -22,8 +22,9 @@
 # 08/19/97 - *kob* - added "-Dreclen_in_bytes" to aix flags
 
 
+include ../../site_specific.mk
+include ../../fer/platform_specific_flags.mk.$(BUILDTYPE)
 include ./SOURCE_FILES
-include ../../fer/platform_specific_flags.mk.$(HOSTTYPE)
 
 OBJS= $(SRCS_F:.F=.o) $(SRCS_C:.c=.o) 
 

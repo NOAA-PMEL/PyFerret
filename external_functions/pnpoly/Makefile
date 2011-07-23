@@ -4,7 +4,8 @@
 # include platform specific macro definitions
 #
 
-include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
+include ../../site_specific.mk
+include ../ef_utility/platform_specific_flags.mk.$(BUILDTYPE)
  
 
 #
@@ -21,14 +22,14 @@ SUB_OBJS = pnpoly_subs.o
 #
 
 .F.so:
-	$(F77) $(FFLAGS) -g $<
-	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS)  $*.o -o $*.so 
+	$(F77) $(FFLAGS) -c $<
+	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so 
 
 .c.o:
-	cc ${CFLAGS} $<
+	$(CC) ${CFLAGS} -c $<
 
 .f.o:
-	$(F77) $(FFLAGS) $<
+	$(F77) $(FFLAGS) -c $<
 
 #
 # Targets

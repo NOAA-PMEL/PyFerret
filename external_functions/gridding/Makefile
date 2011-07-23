@@ -12,7 +12,8 @@
 #  include platform specific macro definitions
 #
 
-include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
+include ../../site_specific.mk
+include ../ef_utility/platform_specific_flags.mk.$(BUILDTYPE)
 
 #
 # Macros
@@ -28,14 +29,14 @@ SUB_OBJS = modscatminmax.o nobsxytv.o
 
 
 .F.so:
-	$(F77) $(FFLAGS) -g -c  $<
+	$(F77) $(FFLAGS) -c  $<
 	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $(SYSLIBS) $*.o -o $*.so
  
 .c.o:
-	cc ${CFLAGS} -c $<
+	$(CC) ${CFLAGS} -c $<
 
 .f.o:
-	$(F77) $(FFLAGS) -g  $<
+	$(F77) $(FFLAGS) -c  $<
 
 #
 # Targets

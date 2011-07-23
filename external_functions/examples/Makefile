@@ -13,7 +13,8 @@
 #
 # include platform specific macro definitions
 #
-include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
+include ../../site_specific.mk
+include ../ef_utility/platform_specific_flags.mk.$(BUILDTYPE)
  
 #
 # Macros

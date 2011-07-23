@@ -11,7 +11,8 @@
 # include platform specific macro definitions
 #
 
-include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
+include ../../site_specific.mk
+include ../ef_utility/platform_specific_flags.mk.$(BUILDTYPE)
  
 
 #
@@ -25,7 +26,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 .F.o:
-	$(F77) $(FFLAGS) -u -c $<
+	$(F77) $(FFLAGS) -c $<
 
 .o.so:
 	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o -o $*.so

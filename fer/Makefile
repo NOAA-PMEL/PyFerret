@@ -34,7 +34,8 @@
 # include platform specific macro definitions
 #
 
-include platform_specific_flags.mk.$(HOSTTYPE)
+include ../site_specific.mk
+include platform_specific_flags.mk.$(BUILDTYPE)
 
 #
 # Macros

@@ -14,7 +14,8 @@
 # include platform specific macro definitions
 #
 
-include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
+include ../../site_specific.mk
+include ../ef_utility/platform_specific_flags.mk.$(BUILDTYPE)
 
 #
 # Macros
@@ -29,11 +30,11 @@ DAT_OBJS = date_decode.o time_decode.o secs_to_ymdhms.o
 #
 
 .c.so:
-	cc ${DATFLAGS} ${CFLAGS} $<
+	$(CC) ${DATFLAGS} ${CFLAGS} -c $<
 	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
 
 .F.so:
-	$(F77) $(FFLAGS) $<
+	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
 
 #

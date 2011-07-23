@@ -5,38 +5,35 @@
 # platform specific macros
 # ACM 2/2001 debug flags
 
+INCLUDES	= -I. -I../../fmt/cmn -I../common -I../ef_utility/ferret_cmn -Iferret_cmn
 
-INCLUDES        = -I/usr/lib/gcc/i386-redhat-linux/4.1.2/include/ \
-			-I. -I../../readline-4.1 \
-			-I/usr/include \
-			-I/usr/include/X11 \
-			-I../../fmt/cmn \
-			-I../common \
-			-I../../fmt/cmn \
-			-I../../ppl/include \
-			-I. -I../readline-4.1 \
-			$(GKS_INCLUDES)
+CCSHFLAG	=
+CC		= gcc
+CFLAGS		= -fPIC -m32 -march=i486 -u -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -O2 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
 
-INCLUDES       = -I../../fmt/cmn -I../common -I../ef_utility/ferret_cmn -Iferret_cmn
-
-
-CCSHFLAG        =
-CC              = gcc
-RANLIB          = /usr/bin/ranlib
-CFLAGS          = -c -u -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -O2 -m486 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
-FC              = gfortran
+FC		= gfortran
 F77		= gfortran
-F77SHFLAG       = 
-FFLAGS          = -c -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-length-132 -malign-double $(INCLUDES)
-LD_DYN_FLAGS    = -G -shared
-SYSLIBS         = -lc
+F77SHFLAG	=
+FFLAGS		= -fPIC -m32 -march=i486 -Dunix -Dgfortran -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-length-132 -malign-double $(INCLUDES)
 
-CPP             = /lib/cpp
-CPP_FLAGS       = -P -traditional $(INCLUDES)
+RANLIB		= /usr/bin/ranlib
+
+LD		= gfortran
+LD_DYN_FLAGS	= -fPIC -m32 -march=i486 -shared -static-libgfortran
+SYSLIBS		=
+
+CPP		= /lib/cpp
+CPP_FLAGS	= -P -traditional $(INCLUDES)
 CFLAGS_DEBUG	= -g -Ddebug
 FFLAGS_DEBUG	= -g -C -E -Ddebug
 
-.F.o:
+# cancel the default rule for .f -> .o to prevent objects from being built
+# from .f files that are out-of-date with respect to their corresponding .F file
+%.o : %.f
+
+# use cpp to preprocess the .F files to .f files and then compile the .f files
+%.o : %.F
 	rm -f $*.f
-	$(CPP) $(CPP_FLAGS) $(<F) | sed -e        's/de    /de /g' | sed -e  's/de         /de /g' > $*.f
-	$(F77) $(FFLAGS) $*.f
+	$(CPP) $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
+	$(F77) $(FFLAGS) -c $*.f
+

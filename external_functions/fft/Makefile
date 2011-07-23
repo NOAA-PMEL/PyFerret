@@ -15,8 +15,9 @@
 # include platform specific macro definitions
 #
 
-include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
-include fft_platform_specific_flags.mk.$(HOSTTYPE)
+include ../../site_specific.mk
+include ../ef_utility/platform_specific_flags.mk.$(BUILDTYPE)
+include fft_platform_specific_flags.mk.$(BUILDTYPE)
 
 #
 # Macros
@@ -31,8 +32,8 @@ SUB_OBJS = fftinv_subs.o
 #
 
 .F.so:
-	$(F77)  $(FFLAGS)  $<
-	$(LD) $(LD_DYN_FLAGS)   $(SUB_OBJS) $*.o -o $*.so 
+	$(F77)  $(FFLAGS)  -c $<
+	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so 
 
 #
 # Targets

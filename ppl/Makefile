@@ -13,7 +13,8 @@
 #       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
 #
 
-include platform_specific_flags.mk.$(HOSTTYPE)
+include ../site_specific.mk
+include platform_specific_flags.mk.$(BUILDTYPE)
 
 
 #

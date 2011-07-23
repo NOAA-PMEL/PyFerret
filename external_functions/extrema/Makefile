@@ -13,7 +13,8 @@
 # include platform specific macro definitions
 #
 
-include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
+include ../../site_specific.mk
+include ../ef_utility/platform_specific_flags.mk.$(BUILDTYPE)
  
 
 #
@@ -27,10 +28,10 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 .F.o: 
-	$(F77) $(FFLAGS) -g -c $<
+	$(F77) $(FFLAGS) -c $<
 
 .F.so:
-	$(F77) $(FFLAGS)  $<
+	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o minminmax.o maxminmax.o -o $*.so
 
 #

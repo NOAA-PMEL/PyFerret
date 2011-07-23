@@ -2,9 +2,9 @@
 
 ## Machine for which to build Ferret
 ## Use $(HOSTTYPE) to build natively for the machine you are using
-# BUILDTYPE	= $(HOSTTYPE)
+BUILDTYPE	= $(HOSTTYPE)
 # BUILDTYPE	= x86_64-linux
-BUILDTYPE	= i386-linux
+# BUILDTYPE	= i386-linux
 
 ## Installation directory for HDF5 static libraries
 ## (contains include and lib or lib64 subdirectories)

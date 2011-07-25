@@ -51,7 +51,7 @@ install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so core a.out temp.* efn ferret_cmn
+	-rm -f *.f *.o *.so core a.out temp.* efn ferret_cmn
 
 #
 # End of Makefile

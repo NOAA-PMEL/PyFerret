@@ -73,7 +73,7 @@
 
 * local variable declarations:
 	LOGICAL		TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB, GEOG_LABEL, 
-     .                  got_it, calendar
+     .                  got_it, calendar, bounds_done
 	INTEGER		idim, orient, slen, iset, dset, alen
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id, status
 	CHARACTER	TM_FMT*32, buff*80, outbuff*20
@@ -239,21 +239,23 @@ C New form for attribute output, list values separately.
 
 * All attributes not already listed.
 
+	bounds_done = .FALSE.
+
         DO 200 iatt = 1, nvatts
            CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
      .              attype, attlen, attoutflag, status )
 
            new = .TRUE.
-           new = (STR_SAME(attname, 'direction') .NE. 0)        .AND. 
-     .              (STR_SAME(attname, 'units') .NE. 0)         .AND. 
-     .              (STR_SAME(attname, 'length') .NE. 0)        .AND. 
-     .              (STR_SAME(attname, 'positive') .NE. 0)      .AND. 
-     .              (STR_SAME(attname, 'modulo') .NE. 0)        .AND. 
+           new = (STR_SAME(attname,    'direction')     .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'units')         .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'length')        .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'positive')      .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'modulo')        .NE. 0) .AND. 
      .              (STR_SAME(attname, 'modulo_length') .NE. 0) .AND. 
-     .              (STR_SAME(attname, 'start') .NE. 0)         .AND. 
-     .              (STR_SAME(attname, 'end') .NE. 0)           .AND. 
-     .              (STR_SAME(attname, 'time_origin') .NE. 0)   .AND. 
-     .              (STR_SAME(attname, 'calendar') .NE. 0)      .AND. 
+     .              (STR_SAME(attname, 'start')         .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'end')           .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'time_origin')   .NE. 0) .AND. 
+     .              (STR_SAME(attname, 'calendar')      .NE. 0) .AND. 
      .              (STR_SAME(attname, 'point_spacing') .NE. 0) .AND. 
      .              (STR_SAME(attname, 'infile_datatype') .NE. 0)
 
@@ -264,7 +266,14 @@ C New form for attribute output, list values separately.
      .                                attoutflag, attbuff, vals)
               IF (attlen .GT. 0) THEN
 
+	      IF (STR_SAME(attname, 'edges')  .EQ. 0) THEN
+	         attname = 'bounds'
+	         slen = TM_LENSTR1(vname)
+	         attbuff = vname(1:slen)//'_bnds'
+              ENDIF
+
               CALL ESCAPE_FOR_XML(attname, outstring, slen)
+	      IF (STR_SAME(attname, 'bounds') .EQ. 0) bounds_done = .TRUE.
 
 * Original type of the attribute
               IF (attype .EQ. NCCHAR)   atype = 'char'
@@ -300,6 +309,31 @@ C New form for attribute output, list values separately.
            ENDIF
 
  200    CONTINUE
+
+* Write a bounds attribute for unevenly-spaced axes even if the intput file
+* didnt have a bounds or edges attribute.
+
+	IF ( (.NOT.bounds_done) .AND. (.NOT.line_regular( line )) ) THEN
+	   attname = 'bounds'
+	   atype = 'char'
+	   slen = TM_LENSTR1(attname)
+	   alen = TM_LENSTR1(atype)
+
+	   WRITE (risc_buff, 2040) attname(1:slen), atype(1:alen)
+	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+	   slen = TM_LENSTR1(vname)
+	   attbuff = vname(1:slen)//'_bnds'
+
+	   CALL ESCAPE_FOR_XML (attbuff, outstring, llen)
+	   WRITE ( risc_buff, 2050 ) outstring(1:llen)
+	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+
+	   WRITE ( risc_buff, 2060 )
+	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	ENDIF
+
 * closer tag
 
  1000   CONTINUE

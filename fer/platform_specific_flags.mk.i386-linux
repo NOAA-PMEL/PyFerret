@@ -102,7 +102,7 @@
 	# Below this line are macro definitions used only for the final linking of the executable
 	#
 
-	LD = gfortran
+	LD = gcc
 
 	LDFLAGS = \
 		-v \
@@ -110,16 +110,18 @@
 		-m32 \
 		-march=i486 \
 		-fPIC \
-		-export-dynamic \
-		-static-libgfortran
-
-# /usr/lib/gcc/i386-redhat-linux/4.1.1/libgfortran.a \
+		-export-dynamic
 
 	SYSLIB = \
 		-lX11 \
 		-lcurl \
 		-ldl \
-		$(LIBZ_DIR)/lib/libz.a
+		$(LIBZ_DIR)/lib/libz.a \
+		-Wl,-Bstatic -lgfortran -Wl,-Bdynamic \
+		-lm
+
+# -static-libgfortran can be used with gfortran 4.4 but not 4.1
+# /usr/lib/gcc/i386-redhat-linux/4.1.1/libgfortran.a
 
 	TMLIB = ../lib/tmap_lib.a
 

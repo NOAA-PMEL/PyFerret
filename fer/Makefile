@@ -131,8 +131,7 @@ ferret:
 		$(CDFLIB) \
 		$(HDFLIB) \
 		$(GKSLIB) \
-		$(SYSLIB) \
-		$(DODS_SYSLIB)
+		$(SYSLIB)
 	chmod +x $(EXECNAME)
 
 update: .FRC

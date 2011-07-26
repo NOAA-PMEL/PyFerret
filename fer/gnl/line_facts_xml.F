@@ -251,7 +251,7 @@
               WRITE ( risc_buff, 2075 ) 'even'
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ELSE
-              WRITE ( risc_buff, 2070 ) 'odd'
+              WRITE ( risc_buff, 2070 ) 'uneven'
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
            WRITE ( risc_buff, 2080 )

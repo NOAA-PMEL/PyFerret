@@ -11,7 +11,7 @@ include ../../site_specific.mk
 #
 # include platform specific macro definitions
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 
 #
 # Macros
@@ -27,7 +27,7 @@ DAT_OBJS = flag2ddups.o
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
+	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so
 
 #
 # Targets

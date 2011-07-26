@@ -6,65 +6,73 @@
 #
 
 #
-# DIR_PREFIX, HDF5_DIR, and NETCDF_DIR is from site_specific.mk
-# which should have been included in prior to this include
+# DIR_PREFIX, HDF5_DIR, NETCDF4_DIR, READLINE6_DIR, and LIBZ125_DIR 
+# are from site_specific.mk which should have been included prior
+# to this include.
 #
+
+#
+# Directories for the libraries
+#
+	HDF5_LIBDIR		= $(HDF5_DIR)/lib
+	NETCDF4_LIBDIR		= $(NETCDF4_DIR)/lib
+	READLINE6_LIBDIR	= $(READLINE6_DIR)/lib
+	LIBZ125_LIBDIR		= $(LIBZ125_DIR)/lib
 
 #
 # Local defines
 #
-	MYINCLUDES	:= -I$(DIR_PREFIX)/fer/common \
-			   -I$(DIR_PREFIX)/fmt/cmn \
-			   -I$(DIR_PREFIX)/ppl/include \
-			   -I$(DIR_PREFIX)/ppl/include/xgks \
-			   -I$(DIR_PREFIX)/ppl/tmap_inc \
-			   -I$(DIR_PREFIX)/xgks/src/lib \
-			   -I$(DIR_PREFIX)/pyfermod \
-			   -I$(DIR_PREFIX)/external_functions/ef_utility \
-			   -I$(HDF5_DIR)/include \
-			   -I$(NETCDF_DIR)/include \
-			   -I$(READLINE_DIR)/include \
-			   -I/usr/local/include
+	MYINCLUDES	= -I$(DIR_PREFIX)/fer/common \
+			  -I$(DIR_PREFIX)/fmt/cmn \
+			  -I$(DIR_PREFIX)/ppl/include \
+			  -I$(DIR_PREFIX)/ppl/include/xgks \
+			  -I$(DIR_PREFIX)/ppl/tmap_inc \
+			  -I$(DIR_PREFIX)/xgks/src/lib \
+			  -I$(DIR_PREFIX)/pyfermod \
+			  -I$(DIR_PREFIX)/external_functions/ef_utility \
+			  -I$(HDF5_DIR)/include \
+			  -I$(NETCDF4_DIR)/include \
+			  -I$(READLINE6_DIR)/include \
+			  -I/usr/local/include
 
-	MYDEFINES	:= -Dcrptd_cat_argument \
-			   -Dgfortran \
-			   -Dreclen_in_bytes \
-			   -Dunix \
-			   -Dxgks \
-			   -DFULL_GUI_VERSION \
-			   -DG77_SIGNAL \
-			   -DG77 \
-			   -DINTERNAL_READ_FORMAT_BUG \
-			   -DLINUX \
-			   -DMANDATORY_FORMAT_WIDTHS \
-			   -DNEED_IAND \
-			   -DNO_DOUBLE_ESCAPE_SLASH \
-			   -DNO_OPEN_CARRIAGECONTROL \
-			   -DNO_OPEN_READONLY \
-			   -DNO_OPEN_RECORDTYPE \
-			   -DNO_OPEN_SHARED \
-			   -DNO_PASSED_CONCAT \
-			   -DNO_PREPEND_STRING \
-			   -DNO_SNGL \
-			   -DSTAR_1_SUPPORTED \
-			   -DVOID_SIGHANDLER \
-			   -DX_REFRESH \
-			   -DXT_CODE \
-			   -fPIC
+	MYDEFINES	= -Dcrptd_cat_argument \
+			  -Dgfortran \
+			  -Dreclen_in_bytes \
+			  -Dunix \
+			  -Dxgks \
+			  -DFULL_GUI_VERSION \
+			  -DG77_SIGNAL \
+			  -DG77 \
+			  -DINTERNAL_READ_FORMAT_BUG \
+			  -DLINUX \
+			  -DMANDATORY_FORMAT_WIDTHS \
+			  -DNEED_IAND \
+			  -DNO_DOUBLE_ESCAPE_SLASH \
+			  -DNO_OPEN_CARRIAGECONTROL \
+			  -DNO_OPEN_READONLY \
+			  -DNO_OPEN_RECORDTYPE \
+			  -DNO_OPEN_SHARED \
+			  -DNO_PASSED_CONCAT \
+			  -DNO_PREPEND_STRING \
+			  -DNO_SNGL \
+			  -DSTAR_1_SUPPORTED \
+			  -DVOID_SIGHANDLER \
+			  -DX_REFRESH \
+			  -DXT_CODE
 
-	CPP		:= $(shell which cpp)
-	CC		:= $(shell which gcc)
-	FC		:= $(shell which gfortran)
-	F77		:= $(shell which gfortran)
-	RANLIB		:= $(shell which ranlib)
+	CPP		= $(shell which cpp)
+	CC		= $(shell which gcc)
+	FC		= $(shell which gfortran)
+	F77		= $(shell which gfortran)
+	RANLIB		= $(shell which ranlib)
 
-	CPP_FLAGS	+= $(MYINCLUDES) $(MYDEFINES) -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
-	CFLAGS		+= $(MYINCLUDES) $(MYDEFINES) -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
-	FFLAGS		+= $(MYINCLUDES) $(MYDEFINES) -fno-automatic -fdollar-ok -ffixed-line-length-132
+	CPP_FLAGS	+= $(MYINCLUDES) $(MYDEFINES) -fPIC -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
+	CFLAGS		+= $(MYINCLUDES) $(MYDEFINES) -fPIC -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
+	FFLAGS		+= $(MYINCLUDES) $(MYDEFINES) -fPIC -fno-automatic -fdollar-ok -ffixed-line-length-132
 
 # LD and LD_DYN_FLAGS only used for generating external function shared-object libraries
-	LD		:= $(shell which gfortran)
-	LD_DYN_FLAGS	:= -shared -rdynamic
+	LD		= $(shell which gfortran)
+	LD_DYN_FLAGS	= -shared -rdynamic
 
 # cancel the default rule for .f -> .o to prevent objects from being built
 # from .f files that are out-of-date with respect to their corresponding .F file
@@ -73,7 +81,7 @@
 # use cpp to preprocess the .F files to .f files and then compile the .f files
 %.o : %.F
 	rm -f $*.f
-	$(CPP) -traditional $(CPP_FLAGS) $*.F | sed -e 's/de        /de /g' | sed -e 's/de         /de /g' > $*.f
+	$(CPP) -traditional $(CPP_FLAGS) $*.F | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
 	$(F77) $(FFLAGS) -c $*.f -o $*.o
 
 #

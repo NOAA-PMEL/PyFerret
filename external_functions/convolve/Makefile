@@ -15,7 +15,7 @@ include ../../site_specific.mk
 #
 # include platform specific macro definitions
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 
 #
 # Macros
@@ -35,7 +35,7 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 # Targets
 #
 
-# all:	convolvei.so convolvej.so convolvek.so convolvel.so 
+# all:	convolvei.so convolvej.so convolvek.so convolvel.so
 all:	
 
 

@@ -4,10 +4,10 @@
 # January 20 1998
 # Jonathan Callahan
 #
-#  15-Nov-1999 Ansley Manke  
+#  15-Nov-1999 Ansley Manke
 #  remove refs to ef_utility/*.o  (now in ferret executable)
 #
-#  ACM 2/2001  debug macros 
+#  ACM 2/2001  debug macros
 #  ACM 2/2002  change targets to all and extras; somehow standard
 #               not working well w/ linux.
 
@@ -19,8 +19,8 @@ include ../../site_specific.mk
 #
 # include platform specific macro definitions
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
- 
+include ../../platform_specific.mk.$(BUILDTYPE)
+
 #
 # Macros
 #
@@ -34,7 +34,6 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 .F.so:
 	$(F77) $(FFLAGS) -c  $<
 	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so
- 
 
 #
 # Targets
@@ -43,7 +42,7 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 all:	add_9.so avet.so pass_thru.so percent_good_t.so storage.so string_arg.so subtract.so factorial.so dates.so
 
 new:	pass_thru_string.so pick_a_string.so strings_as_args.so stringlengths.so
- 
+
 extra:	custom.so extend.so status.so strings.so times_table.so
 
 install:

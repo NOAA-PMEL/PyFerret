@@ -12,7 +12,7 @@ include ../../site_specific.mk
 #
 # include platform specific macro definitions
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 
 #
 # Macros
@@ -33,7 +33,7 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 #
 
 # all:	list_good.so xcat.so ycat.so zcat.so tcat.so xreverse.so yreverse.so zreverse.so treverse.so
-all:	list_good.so 
+all:	list_good.so
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

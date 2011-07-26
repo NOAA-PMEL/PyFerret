@@ -4,7 +4,7 @@
 # *sh* 12/27/00
 # *sh* 1/02 -- updated to add expndi_by
 # *sh* 2/02 -- updated to add expndi_by_z
-# *acm*2/02 -- cmprsi_by has been replaced by family of compress_by 
+# *acm*2/02 -- cmprsi_by has been replaced by family of compress_by
 #              functions, which are internally linked.
 #
 
@@ -16,7 +16,7 @@ include ../../site_specific.mk
 #
 # include platform specific macro definitions
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 
 #
 # Macros

@@ -1,0 +1,14 @@
+! red_blue_gray_centered.spk
+! (inverse of palette contributed by Ryo Furue as r_b_gray.spk)
+! dark red -> red -> gray -> b -> dark b
+!
+   0      40   0   0
+  20     100   0   0
+  30     100  45  45
+  44     100  85  85
+  44.001  85  85  85
+  55.999  85  85  85
+  56      85  85 100
+  70      45  70 100
+  80       0  50 100
+ 100       0  20  40

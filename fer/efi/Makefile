@@ -4,7 +4,7 @@
 # Feb 28, 2000  -- based on other TMAP external functions makefiles
 # Ansley Manke
 # Jonathan Callahan (with some help from Joe Sirott)
-# 
+#
 # *acm* 3/23/2000 link  ../common to ferret_cmn  rather than using the
 #       link in ef_utility (which may not be present when this is compiled.)
 #
@@ -23,7 +23,7 @@ include ../../site_specific.mk
 # include platform specific definitions of:
 #       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 
 include ./SOURCE_FILES
 include ./LIB_NAME
@@ -42,8 +42,8 @@ OBJS = $(SRCS_C:.c=.o) $(SRCS_F:.F=.o)
 
 all:	$(LIB)
 
-$(LIB): $(OBJS) 
-	$(AR) $(ARFLAGS) $@ $(OBJS) 
+$(LIB): $(OBJS)
+	$(AR) $(ARFLAGS) $@ $(OBJS)
 	$(RANLIB) $@
 
 clean:

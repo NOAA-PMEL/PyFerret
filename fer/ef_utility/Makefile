@@ -7,9 +7,9 @@
 # Ansley Manke 11/99 NOTE:
 #    We DO NOT want to make the ef_utility/*.o files into a libaray.
 #    The ferret Makefile is to link these object files in the executable.
-#    Because they are only called by external functions they are not seen 
-#    as unresolved references and therefore not searched for if they are in 
-#    a library.
+#    Because they are only called by external functions they are not seen
+#    as unresolved references and therefore not searched for if they are
+#    in a library.
 
 #
 # Site-specific defines
@@ -20,7 +20,7 @@ include ../../site_specific.mk
 # include platform specific definitions of:
 #       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 
 include ./SOURCE_FILES
 include ./SOURCE_FILES_C

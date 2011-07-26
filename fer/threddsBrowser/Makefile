@@ -23,17 +23,13 @@ clean :
 	rm -fr threddsBrowser.jar bin
 
 threddsBrowser.jar : $(JAVA_SOURCE_FILES) Makefile
-ifdef JAVA_HOME
 	rm -fr threddsBrowser.jar bin
 	mkdir bin
+ifdef JAVA_HOME
 	$(JAVA_HOME)/bin/javac -sourcepath src -classpath bin:$(TOOLSUI_JAR) -d bin $(JAVA_SOURCE_FILES)
 	$(JAVA_HOME)/bin/jar cf threddsBrowser.jar -C bin gov/noaa/pmel/ferret/threddsBrowser
 else
-	@echo "***"
-	@echo "*** WARNING"
-	@echo "*** JAVA_HOME must be defined as the location of a Java 1.6 Development Kit"
-	@echo "*** for example, /usr/java/jdk1.6.0_22 or /usr/java/latest"
-	@echo "*** optional threddsBrowser.jar not built (SET DATA /BROWSE won't work)"
-	@echo "***"
+	javac -sourcepath src -classpath bin:$(TOOLSUI_JAR) -d bin $(JAVA_SOURCE_FILES)
+	jar cf threddsBrowser.jar -C bin gov/noaa/pmel/ferret/threddsBrowser
 endif
 

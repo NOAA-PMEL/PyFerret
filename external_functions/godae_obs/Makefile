@@ -15,7 +15,7 @@ include ../../site_specific.mk
 #
 # include platform specific macro definitions
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 
 #
 # Macros
@@ -31,11 +31,11 @@ GOB_OBJS = ocn_obs.o
 
 .c.so:
 	cc ${CFLAGS} -c $<
-	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so 
+	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so 
+	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so
 
 #
 # Targets

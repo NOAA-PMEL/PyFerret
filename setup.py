@@ -12,15 +12,17 @@ incdir_list = [ "pyfermod",
                 os.path.join("fmt", "cmn"),
                 os.path.join("fer", "ef_utility"), ]
 
-# (Non-standard) Directories containing libraries to link
-hdf5_dir = os.getenv("HDF5_DIR")
-if hdf5_dir == None:
-    raise ValueError, "Environment variable HDF5_DIR is not defined"
-netcdf_dir = os.getenv("NETCDF_DIR")
-if netcdf_dir == None:
-    raise ValueError, "Environment variable NETCDF_DIR is not defined"
-libdir_list = [ "lib", str(hdf5_dir) + "/lib",
-                str(netcdf_dir) + "/lib", "/usr/local/lib" ]
+# Non-standard directories containing libraries to link
+hdf5_libdir = os.getenv("HDF5_LIBDIR")
+if hdf5_libdir == None:
+    raise ValueError, "Environment variable HDF5_LIBDIR is not defined"
+netcdf4_libdir = os.getenv("NETCDF4_LIBDIR")
+if netcdf4_libdir == None:
+    raise ValueError, "Environment variable NETCDF4_LIBDIR is not defined"
+libz125_libdir = os.getenv("LIBZ125_LIBDIR")
+if libz125_libdir == None:
+    raise ValueError, "Environment variable LIBZ125_LIBDIR is not defined"
+libdir_list = [ "lib", str(hdf5_libdir), str(netcdf4_libdir), str(libz125_libdir) ]
 
 # Get the list of ferret static libraries
 # Stripping off the "lib" prefix and the ".a" suffix
@@ -68,7 +70,7 @@ ext_mods = [ Extension("pyferret._pyferret", include_dirs = incdir_list,
 
 # Configure the setup
 setup(name = "pyferret",
-      version = "7.0.0.4",
+      version = "7.0.0.5",
       description = "python module providing ferret functionality",
       long_description = "python module providing ferret functionality",
       author = "Karl M. Smith",

@@ -3,9 +3,9 @@
 #
 # January 20 1998
 # Jonathan Callahan
-# Ansley Manke: compile subroutines separately w/ fewer flags. 
+# Ansley Manke: compile subroutines separately w/ fewer flags.
 #
-#  15-Nov-1999 Ansley Manke  
+#  15-Nov-1999 Ansley Manke
 #  remove refs to ef_utility/*.o  (now in ferret executable)
 #
 # 2/2001  debug macros
@@ -20,9 +20,8 @@ include ../../site_specific.mk
 #
 # include platform specific macro definitions
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
-
-include fft_platform_specific_flags.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
+include fft_platform_specific_flags.mk.$(BUILDTYPE)
 
 #
 # Macros
@@ -38,7 +37,7 @@ SUB_OBJS = fftinv_subs.o
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so 
+	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so
 
 #
 # Targets

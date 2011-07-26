@@ -4,7 +4,7 @@
 # Feb 28, 2000  -- based on other TMAP external functions makefiles
 # Ansley Manke
 # Jonathan Callahan (with some help from Joe Sirott)
-# 
+#
 # *acm* 3/23/2000 link  ../common to ferret_cmn  rather than using the
 #       link in ef_utility (which may not be present when this is compiled.)
 #  ACM  2/2001  debug macros
@@ -22,7 +22,7 @@ include ../../site_specific.mk
 #
 # include platform specific macro definitions
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 
 #
 # Matlab specific. Only works for Solaris cc and f77 compiler

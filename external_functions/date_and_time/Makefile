@@ -4,7 +4,7 @@
 # January 20 1998
 # Jonathan Callahan
 #
-#  15-Nov-1999 Ansley Manke  
+#  15-Nov-1999 Ansley Manke
 #  remove refs to ef_utility/*.o  (now in ferret executable)
 #
 # dec-00 adapted for "date_and_time" function
@@ -18,7 +18,7 @@ include ../../site_specific.mk
 #
 # include platform specific macro definitions
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 
 #
 # Macros
@@ -33,12 +33,12 @@ DAT_OBJS = date_decode.o time_decode.o secs_to_ymdhms.o
 #
 
 .c.so:
-	cc ${CFLAGS} -c $<
-	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
+	$(CC) ${CFLAGS} -c $<
+	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
+	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so
 
 #
 # Targets

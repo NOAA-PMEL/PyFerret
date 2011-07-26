@@ -7,7 +7,7 @@
 # define variables
 # 8/22/95 - *kob* only have tmap_lib now, for both debug and non-debug
 # 12/20/95 - # ifdef NINT_WRITE_UNMATCH added
-#             to the routine TM_FMT. 
+#             to the routine TM_FMT.
 #	     For now we should **not** use NINT_WRITE_UNMATCH during
 #	     compilation anywhere -- the code that needed it was
 #            applicable to VAX FORTRAN.  However, if we see odd
@@ -15,29 +15,20 @@
 #            D=NINT_WRITE_UNMATCH.
 # 6/28/96  - *kob*  modify linux entry for an actual linux machine
 #		    with fortran
-# 11/12/96 - *kob* - modify makefile so by default it will create both a 
+# 11/12/96 - *kob* - modify makefile so by default it will create both a
 #		   - non-debug and debug version of the tmap libray
 # 11/14/96 - *kob* - Add Linux entry similar to that of AIX - linux f77
 #		     doesn't use pre-processor
 # 08/19/97 - *kob* - added "-Dreclen_in_bytes" to aix flags
 
-#
-# Site-specific defines
-#
 include ../../site_specific.mk
-
-#
-# include platform specific definitions of:
-#       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
-#
-include ../../platform_specific.mk.$(HOSTTYPE)
-
+include ../../platform_specific.mk.$(BUILDTYPE)
 include ./SOURCE_FILES
 include ./LIB_NAME
 
-OBJS= $(SRCS_F:.F=.o) $(SRCS_C:.c=.o) 
+OBJS= $(SRCS_F:.F=.o) $(SRCS_C:.c=.o)
 
-$(LIB): $(OBJS) 
+$(LIB): $(OBJS)
 	ar r $(LIB) $(OBJS)
 	$(RANLIB) $(LIB)
 

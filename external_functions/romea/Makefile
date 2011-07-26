@@ -4,7 +4,7 @@
 # January 20 1998
 # Jonathan Callahan
 #
-#  15-Nov-1999 Ansley Manke  
+#  15-Nov-1999 Ansley Manke
 #  remove refs to ef_utility/*.o  (now in ferret executable)
 #  ACM  2/2001  debug macros
 
@@ -16,7 +16,7 @@ include ../../site_specific.mk
 #
 # include platform specific macro definitions
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 
 #
 # Macros
@@ -24,7 +24,7 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 
 .SUFFIXES: .so
 
-SUB_OBJS = rr_density.o 
+SUB_OBJS = rr_density.o
 
 #
 # Rules
@@ -33,7 +33,6 @@ SUB_OBJS = rr_density.o
 .F.so:
 	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so
- 
 
 #
 # Targets

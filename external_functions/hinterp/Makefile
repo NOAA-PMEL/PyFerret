@@ -4,10 +4,10 @@
 # January 20 1998
 # Jonathan Callahan
 #
-#  15-Nov-1999 Ansley Manke  
+#  15-Nov-1999 Ansley Manke
 #  remove refs to ef_utility/*.o  (now in ferret executable)
 #
-#  ACM 2/2001  debug macros 
+#  ACM 2/2001  debug macros
 #  ACM 2/2002  change targets to all and extras; somehow standard
 #               not working well w/ linux.
 
@@ -19,7 +19,7 @@ include ../../site_specific.mk
 #
 # include platform specific macro definitions
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 
 #
 # Macros
@@ -33,14 +33,14 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
+	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so
 
 #
 # Targets
 #
 
 # all:	rect_to_curv.so curv_to_rect_map.so curv_to_rect.so curv_range.so
-all:	curv_to_rect_fsu.so 
+all:	curv_to_rect_fsu.so
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

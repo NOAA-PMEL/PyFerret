@@ -2,7 +2,6 @@
 # Makefile for the ppl libraries
 #
 
-
 DIRS	= tmapadds complot ourlib plot \
 	  plotlib pplepic pplusr symlib
 

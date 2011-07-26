@@ -4,7 +4,7 @@
 # January 20 1998
 # Jonathan Callahan
 #
-#  15-Nov-1999 Ansley Manke  
+#  15-Nov-1999 Ansley Manke
 #  remove refs to ef_utility/*.o  (now in ferret executable)
 # *sh* 2/2000 - removed SAMPLEIJ from target list (replaced by SAMPLEXY)
 #
@@ -18,7 +18,7 @@ include ../../site_specific.mk
 #
 # include platform specific macro definitions
 #
-include ../../platform_specific.mk.$(HOSTTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 
 #
 # Macros
@@ -30,7 +30,7 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 # Rules
 #
 
-.F.o: 
+.F.o:
 	$(F77) $(FFLAGS) -c $<
 
 .F.so:
@@ -42,7 +42,7 @@ include ../../platform_specific.mk.$(HOSTTYPE)
 #
 
 # all:    minminmax.o maxminmax.o findhi.so findlo.so
-all:    
+all:
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

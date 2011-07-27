@@ -111,7 +111,7 @@ debug:	.FRC
 
 
 ferret:	
-	- mv $(EXECNAME) $(EXECNAME)_pre_`date +'%d%h'|tr '[A-Z]' '[a-z]'`
+	- mv $(EXECNAME) $(EXECNAME)_`ls -l $(EXECNAME) | awk '{print $$6"_"$$7}' | tr [A-Z] [a-z]`
 	- $(LD) $(LDFLAGS) -o $(EXECNAME) \
 		$(FERMAIN) \
 		$(FEROBJS) \
@@ -135,6 +135,7 @@ ferret:
 	chmod +x $(EXECNAME)
 
 update: .FRC
+	- mv $(EXECNAME) $(EXECNAME)_`ls -l $(EXECNAME) | awk '{print $$6"_"$$7}' | tr [A-Z] [a-z]`
 	${MAKE} update_date DATE=`/bin/date +%D`
 	rm -f special/xrevision_type_data.[Ffo]
 	sed -e 's&mmmmmmmm&($(DEBUG_TITLE)/$(GUI))&' -e 's&(/&(&' -e 's&/)&)&' < special/xrevision_type_data.template > special/xrevision_type_data.F 
@@ -172,6 +173,7 @@ threddsBrowser: .FRC
 	$(MAKE) -C threddsBrowser all
 
 clean: fmt_clean ppl_clean fer_clean 
+	- mv $(EXECNAME) $(EXECNAME)_`ls -l $(EXECNAME) | awk '{print $$6"_"$$7}' | tr [A-Z] [a-z]`
 	rm -f ../lib/*.a ../lib/*.so
 	rm -f special/xmake_date_data.F special/xplatform_type_data.F special/xrevision_type_data.F
 

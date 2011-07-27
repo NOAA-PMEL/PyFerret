@@ -7,6 +7,9 @@
 #    Expects environment variables F77 and PLOTFONTS to be defined.
 #    No need for any compiler flags.
 
+include ../../../site_specific.mk
+include ../../../fer/platform_specific_flags.mk.$(BUILDTYPE)
+
 all:    binary 
 
 binary:	binary.f

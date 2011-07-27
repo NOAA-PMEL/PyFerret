@@ -14,7 +14,8 @@
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \
-			  $(GKS_INCLUDES)
+			  $(GKS_INCLUDES) \
+			  -I/use/local/include
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			  -I../include \

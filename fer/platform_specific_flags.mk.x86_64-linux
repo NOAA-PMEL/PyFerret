@@ -16,7 +16,8 @@
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \
-			  $(GKS_INCLUDES)
+			  $(GKS_INCLUDES) \
+			  -I/usr/local/include
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			  -I../include \
@@ -98,7 +99,12 @@
 			  ../fmt/src/x*.o \
 			  ../ppl/plot/ppldata.o
 
-	TERMCAPLIB 	= -lncurses
+# Use the home-built libncurses.so to build so
+# libtinfo.so is not a requirement from RHEL6
+# builds.
+# (But use the system ncurses.so.5 for running.)
+
+	TERMCAPLIB	= -L/usr/local/lib64 -lncurses
 
 	READLINELIB	= $(READLINE_DIR)/lib64/libreadline.a \
 			  $(READLINE_DIR)/lib64/libhistory.a

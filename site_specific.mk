@@ -23,8 +23,8 @@ NETCDF4_DIR	= /usr/local/netcdf_413
 ## Installation directory for readline static libraries
 ## (contains include and lib or lib64 subdirectories)
 # READLINE_DIR	= /
-# READLINE_DIR	= /usr
-READLINE_DIR	= /usr/local
+# READLINE_DIR	= /usr/local
+READLINE_DIR	= /usr
 
 ## Installation directory for libz static library
 ## (contains include and lib or lib64 subdirectories)

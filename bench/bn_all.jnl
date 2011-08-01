@@ -752,6 +752,10 @@ GO bn67_bug_fixes
 GO bn_reset
 GO bn_NaN_note
 
+! *********** v6.71 Additions ***********
+GO bn_reset
+GO bn671_bug_fixes
+
 ! *********** v6.8 Additions ***********
 GO bn_reset
 GO bn68_bug_fixes

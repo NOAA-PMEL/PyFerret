@@ -1,0 +1,42 @@
+As of August 2011 we now have a single make procedure for compiling and linking Ferret. 
+
+
+NetCDF4. or higher is required for building Ferret. The library netcdf4.2 or higher
+is recommended.  For building the libraries and Ferret, we have used 
+gfortran. The netcdf downloads can be found here: http://www.unidata.ucar.edu/software/netcdf/.
+Build netcdf4.+ with the appropriate vesion of hdf5 given in the netCDF instructions; and with 
+--enable-fortran in the configuration. Specify the hdf5 libraries, --enable-netcdf-4
+--enable-dap for   for netcdf-4 features and OPeNDAP dataset access.
+
+The current official release of Ferret is linked with netcdf4.2 and has syntax for 
+writing netcdf4 datasets (hdf5 chunking and compression.)  See the release notes 
+for Ferret v6.6 at http://porter.pmel.noaa.gov/Ferret/home/documentation/v6-6-release-notes
+
+
+To build Ferret:
+
+  * Under the FERRET directory you will find a file called site_specifid.mk.  Edit this file
+  and insert the locations of the HDF5, NetCDF, and readline directories, and java.  Java is
+  used only for the ThreddsBrowser facility of Ferret and is not required.
+
+  * Still in the top-level FERRET directory, run "make". This will compile and link Ferret, 
+  gksm2ps, external functions, and the fonts files.  The Ferret executable is the file
+  FERRET/fer/ferret_c
+  
+
+  * as it finishes, you will see a line similar to 
+
+        make[1]: Leaving directory '/home/users/ansley/linux/FERRET/bin/build_fonts/unix'
+	
+    Take note of this directory.
+
+
+  * Get the environment tar file for one of our linux versions. You will need the go scripts, 
+  and palette files. See the bin/Finstall script and the Ferret installation instructions for 
+  details about setting up the environment to run Ferret.  You could run Finstall as described
+  in the installation instructions, but replace the binary file "ferret_vxx" with the executable
+  you have built, and bin/ppl/fonts/ with the fonts files in .../FERRET/bin/build_fonts/unix
+
+  * Once you have an executable, go into the FERRET/bench directory to run tests. There is a 
+  simple README file which will get you started with running the Ferret benchmark scripts.  
+  You will run a shell script called "run_all" which starts the benchmark job.

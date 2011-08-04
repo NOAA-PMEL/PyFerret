@@ -1,5 +1,9 @@
 ## Site-dependent definitions included in Makefiles
 
+## Temporary hacks to use old readline libraries and
+## netcdf4.1.2 and hdf1.8.6 libraries 
+## on RH6 machines these are installed in local ansley directories
+
 ## Machine for which to build Ferret
 ## Use $(HOSTTYPE) to build natively for the machine you are using
 BUILDTYPE	= $(HOSTTYPE)
@@ -10,20 +14,26 @@ BUILDTYPE	= $(HOSTTYPE)
 ## (contains include and lib or lib64 subdirectories)
 # HDF5_DIR	= /usr
 # HDF5_DIR	= /usr/local
-# HDF5_DIR	= /usr/local/hdf5_186
-HDF5_DIR	= /usr/local/hdf5_187
+# HDF5_DIR	= /home/users/tmap/flat_32
+# HDF5_DIR	= /home/users/tmap/flat_64
+HDF5_DIR	= /usr/local/hdf5_186
+# HDF5_DIR	= /usr/local/hdf5_187
 
 ## Installation directory for NetCDF static libraries
 ## (contains include and lib or lib64 subdirectories)
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
-# NETCDF4_DIR	= /usr/local/netcdf_412
-NETCDF4_DIR	= /usr/local/netcdf_413
+# NETCDF4_DIR	= /home/users/tmap/flat_32
+# NETCDF4_DIR	= /home/users/tmap/flat_64
+NETCDF4_DIR	= /usr/local/netcdf_412
+# NETCDF4_DIR	= /usr/local/netcdf_413
 
 ## Installation directory for readline static libraries
 ## (contains include and lib or lib64 subdirectories)
 # READLINE_DIR	= /
 # READLINE_DIR	= /usr/local
+# READLINE_DIR	= /home/users/tmap/flat_32/readline-4.1
+# READLINE_DIR	= /home/users/tmap/flat_64/readline-4.1
 READLINE_DIR	= /usr
 
 ## Installation directory for libz static library

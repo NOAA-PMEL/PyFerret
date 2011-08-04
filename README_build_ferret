@@ -1,7 +1,7 @@
 As of August 2011 we now have a single make procedure for compiling and linking Ferret. 
 
 
-NetCDF4. or higher is required for building Ferret. The library netcdf4.2 or higher
+NetCDF4.1 or higher is required for building Ferret. The library netcdf4.2 or higher
 is recommended.  For building the libraries and Ferret, we have used 
 gfortran. The netcdf downloads can be found here: http://www.unidata.ucar.edu/software/netcdf/.
 Build netcdf4.+ with the appropriate vesion of hdf5 given in the netCDF instructions; and with 

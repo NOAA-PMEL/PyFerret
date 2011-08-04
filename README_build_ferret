@@ -31,12 +31,13 @@ To build Ferret:
     Take note of this directory.
 
 
-  * Get the environment tar file for one of our linux versions. You will need the go scripts, 
-  and palette files. See the bin/Finstall script and the Ferret installation instructions for 
-  details about setting up the environment to run Ferret.  You could run Finstall as described
+  * Get the environment and datasets tar files for one of our linux versions. You will need the 
+  go scripts, and palette files. See the bin/Finstall script and the Ferret installation instructions 
+  for details about setting up the environment to run Ferret.  You could run Finstall as described
   in the installation instructions, but replace the binary file "ferret_vxx" with the executable
-  you have built, and bin/ppl/fonts/ with the fonts files in .../FERRET/bin/build_fonts/unix
+  you have built, and bin/ppl/fonts/ with the fonts files in .../FERRET/bin/build_fonts/unix. 
 
   * Once you have an executable, go into the FERRET/bench directory to run tests. There is a 
   simple README file which will get you started with running the Ferret benchmark scripts.  
   You will run a shell script called "run_all" which starts the benchmark job.
+

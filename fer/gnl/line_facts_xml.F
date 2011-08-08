@@ -117,7 +117,7 @@
            status = 0
 	ELSE
 
-	   axis_name = line_name_orig(line)
+	   axis_name = line_name(line)
 
 * header
 

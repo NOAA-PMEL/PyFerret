@@ -13,29 +13,26 @@ def ferret_init(efid):
     """
     Initialization for the shapefile_writexyval PyEF
     """
-    retdict = { "numargs": 6,
+    retdict = { "numargs": 5,
                 "descript": "Writes a shapefile of XY quadrilaterals from the curvilinear data arrays.",
                 "restype": pyferret.FLOAT_ARRAY,
                 "axes": ( pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
-                "argnames": ( "SHAPEFILE", "GRIDX", "GRIDY", "GRIDVALS", "GRIDLOC", "MAPPRJ"),
+                "argnames": ( "SHAPEFILE", "GRIDX", "GRIDY", "GRIDVALS", "MAPPRJ"),
                 "argdescripts": ( "Name for the shapefile (any extension given is ignored)",
                                   "X (Longitude) grid values for the shapefile; must be 2D on X and Y",
                                   "Y (Latitude) grid values for the shapefile; must be 2D on X and Y",
-                                  "Values for the shapes; must be 2D on X and Y",
-                                  'Location of the X and Y grid values, either "centroid", "center" or "corner"',
+                                  "Values for the shapes (or grid centers); must be 2D on X and Y",
                                   "Either a common name or a WKT description for the map projection; " \
                                       "if blank, WGS 84 is used", ),
                 "argtypes": ( pyferret.STRING_ONEVAL,
                               pyferret.FLOAT_ARRAY,
                               pyferret.FLOAT_ARRAY,
                               pyferret.FLOAT_ARRAY,
-                              pyferret.STRING_ONEVAL,
                               pyferret.STRING_ONEVAL, ),
                 "influences": ( (False, False, False, False),
-                                (False, False, False, False),
                                 (False, False, False, False),
                                 (False, False, False, False),
                                 (False, False, False, False),
@@ -55,56 +52,39 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     """
     Create the shapefile named in inputs[0] using the grid X coordinates given
     in inputs[1], grid Y coordinates given in inputs[2], and grid values given
-    in inputs[3].  If inputs[4] is "center", then the values are taken to be
-    at the X,Y coordinates and quadrilaterals are created from bounding boxes
-    around these points.  If inputs[4] is "corner", the X,Y coordinates are
-    used for the quadrilaterals and must have an additional value along each
-    dimension, and the value [i,j] is used for the quadrilateral with diagonal
-    corners [i, j] and [i+1, j+1].  Either a common name or a WKT description
-    of the map projection for the coordinated should be given in inputs[5].
-    If blank, WGS 84 is used.  If successful, fills result (which might as
-    well be a 1x1x1x1 array) with zeros.  If problems, an error will be raised.
+    in inputs[3].  The X,Y coordinates are used for the quadrilaterals vertices
+    and must have an additional value along each dimension.  The value [i,j]
+    is used for the quadrilateral with diagonal corners [i, j] and [i+1, j+1]. 
+    Either a common name or a WKT description of the map projection for the
+    coordinated should be given in inputs[4].  If blank, WGS 84 is used. 
+    If successful, fills result (which might as well be a 1x1x1x1 array) with
+    zeros.  If problems, an error will be raised.
     """
     shapefile_name = inputs[0]
     grid_xs = inputs[1]
     grid_ys = inputs[2]
     grid_vals = inputs[3]
-    grid_loc = inputs[4].lower()
-    shapefile_mapprj = inputs[5]
+    shapefile_mapprj = inputs[4]
     # Verify the shapes are as expected
     if (grid_vals.shape[2] != 1) or (grid_vals.shape[3] != 1):
         raise ValueError("GRIDVALS Z and T axes must be undefined or singleton axes")
-    if grid_loc == "center":
-        if (grid_xs.shape != grid_vals.shape) or (grid_ys.shape != grid_vals.shape):
-            raise ValueError('For a "center" grid, GRIDX and GRIDY must have ' \
-                             'the same dimensions as GRIDVALS')
-    elif grid_loc == "corner":
-        exp_shape = ( grid_vals.shape[0] + 1, grid_vals.shape[1] + 1, 1, 1 )
-        if (grid_xs.shape != exp_shape) or (grid_ys.shape != exp_shape):
-            raise ValueError('For a "corner" grid, GRIDX and GRIDY must have ' \
-                             'one additional element along the X and Y axes')
-    else:
-        raise ValueError("Unknown GRIDLOCATION of %s" % grid_loc)
+    exp_shape = ( grid_vals.shape[0] + 1, grid_vals.shape[1] + 1, 1, 1 )
+    if (grid_xs.shape != exp_shape) or (grid_ys.shape != exp_shape):
+         raise ValueError('GRIDX and GRIDY must have one additional element along the X and Y axes')
     # Create the shapefile writer object
     sfwriter = shapefile.Writer(shapefile.POLYGON)
     # Create the field for the value
     # TODO: get reasonable name and sizes for the field
     sfwriter.field("Value", "N", 20, 7)
     # Add all the shapes with their values
-    if grid_loc == "center":
-         # TODO: stubbed
-         raise ValueError("Stubbed")
-    elif grid_loc == "corner":
-        for j in xrange(grid_vals.shape[1]):
-            for i in xrange(grid_vals.shape[0]):
-                pyferret.fershapefile.addquadxyvalues(sfwriter,
-                         (grid_xs[i,   j,   0, 0], grid_ys[i,   j,   0, 0]),
-                         (grid_xs[i,   j+1, 0, 0], grid_ys[i,   j+1, 0, 0]),
-                         (grid_xs[i+1, j+1, 0, 0], grid_ys[i+1, j+1, 0, 0]),
-                         (grid_xs[i+1, j,   0, 0], grid_ys[i+1, j,   0, 0]),
-                         None, grid_vals[i, j, 0, :].tolist())
-    else:
-        raise ValueError("Unknown GRIDLOCATION of %s" % grid_loc)
+    for j in xrange(grid_vals.shape[1]):
+        for i in xrange(grid_vals.shape[0]):
+            pyferret.fershapefile.addquadxyvalues(sfwriter,
+                     (grid_xs[i,   j,   0, 0], grid_ys[i,   j,   0, 0]),
+                     (grid_xs[i,   j+1, 0, 0], grid_ys[i,   j+1, 0, 0]),
+                     (grid_xs[i+1, j+1, 0, 0], grid_ys[i+1, j+1, 0, 0]),
+                     (grid_xs[i+1, j,   0, 0], grid_ys[i+1, j,   0, 0]),
+                     None, grid_vals[i, j, 0, :].tolist())
     sfwriter.save(shapefile_name)
     # Create the .prj file from the map projection common name or the WKT description
     pyferret.fershapefile.createprjfile(shapefile_mapprj, shapefile_name)
@@ -150,9 +130,6 @@ if __name__ == "__main__":
     vals += (geolon_c[1:,  :-1, :, :] * geolat_c[1:,  1:,  :, :] - geolon_c[1:,  1:,  :, :]) * geolat_c[1:,  :-1, :, :]
     vals += (geolon_c[1:,  1:,  :, :] * geolat_c[:-1, 1:,  :, :] - geolon_c[:-1, 1:,  :, :]) * geolat_c[1:,  1:,  :, :]
     vals += (geolon_c[:-1, 1:,  :, :] * geolat_c[:-1, :-1, :, :] - geolon_c[:-1, :-1, :, :]) * geolat_c[:-1, 1:,  :, :]
-    vals *= numpy.cos((geolat_c[:-1, :-1, :, :] + geolat_c[:-1, 1:,  :, :] + \
-                       geolat_c[1:,  1:,  :, :] + geolat_c[1:,  :-1, :, :]) * 0.25 * numpy.pi / 180.0)
-    vals *= ( numpy.pi / 180.0 )**2
 
     # make sure these calls do not generate errors
     info = ferret_init(0)
@@ -163,7 +140,7 @@ if __name__ == "__main__":
     resbdf = numpy.array([9999.0], dtype=numpy.float32)
     inpbdfs = numpy.array([8888.0, 7777.0, 6666.0, 5555.0, 4444.0, 3333.0], dtype=numpy.float32)
     result = numpy.ones((1,1,1,1), dtype=numpy.float32)
-    ferret_compute(0, result, resbdf, (shapefilename, geolon_c, geolat_c, vals, "corner", ""), inpbdfs)
+    ferret_compute(0, result, resbdf, (shapefilename, geolon_c, geolat_c, vals, ""), inpbdfs)
 
     sfreader = shapefile.Reader(shapefilename)
     shapes = sfreader.shapes()
@@ -205,10 +182,10 @@ if __name__ == "__main__":
                          "    expect: %s\n" \
                          "    found:  %s" % (wgs84_descript, descript))
 
-    os.remove("%s.dbf" % shapefilename)
-    os.remove("%s.shp" % shapefilename)
-    os.remove("%s.shx" % shapefilename)
-    os.remove("%s.prj" % shapefilename)
+    # os.remove("%s.dbf" % shapefilename)
+    # os.remove("%s.shp" % shapefilename)
+    # os.remove("%s.shx" % shapefilename)
+    # os.remove("%s.prj" % shapefilename)
 
     print "shapefile_writexyval: SUCCESS"
 

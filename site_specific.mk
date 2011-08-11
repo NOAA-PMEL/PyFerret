@@ -17,15 +17,15 @@ PYTHON_EXE	= python2.6
 ## (contains include and lib or lib64 subdirectories)
 # HDF5_DIR	= /usr
 # HDF5_DIR	= /usr/local
-# HDF5_DIR	= /usr/local/hdf5_186
-HDF5_DIR	= /usr/local/hdf5_187
+HDF5_DIR	= /usr/local/hdf5_186
+# HDF5_DIR	= /usr/local/hdf5_187
 
 ## Installation directory for NetCDF static libraries
 ## (contains include and lib or lib64 subdirectories)
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
-# NETCDF4_DIR	= /usr/local/netcdf_412
-NETCDF4_DIR	= /usr/local/netcdf_413
+NETCDF4_DIR	= /usr/local/netcdf_412
+# NETCDF4_DIR	= /usr/local/netcdf_413
 
 ## Installation directory for readline static libraries
 ## (contains include and lib or lib64 subdirectories)

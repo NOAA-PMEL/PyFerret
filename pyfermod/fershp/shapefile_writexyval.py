@@ -8,7 +8,7 @@ associated with missing values are omitted from the shapefile.
 
 import shapefile
 import pyferret
-import pyferret.fershapefile
+import pyferret.fershp
 
 def ferret_init(efid):
     """
@@ -93,7 +93,7 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
         for i in xrange(grid_vals.shape[0]):
             if grid_vals[i, j, 0, 0] != missing_val:
                 shape_written = True
-                pyferret.fershapefile.addquadxyvalues(sfwriter,
+                pyferret.fershp.addquadxyvalues(sfwriter,
                          (grid_xs[i,   j,   0, 0], grid_ys[i,   j,   0, 0]),
                          (grid_xs[i,   j+1, 0, 0], grid_ys[i,   j+1, 0, 0]),
                          (grid_xs[i+1, j+1, 0, 0], grid_ys[i+1, j+1, 0, 0]),
@@ -104,7 +104,7 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     sfwriter.save(shapefile_name)
 
     # Create the .prj file from the map projection common name or the WKT description
-    pyferret.fershapefile.createprjfile(map_projection, shapefile_name)
+    pyferret.fershp.createprjfile(map_projection, shapefile_name)
     result[:, :, :, :] = 0
 
 

@@ -9,7 +9,7 @@ associated with the shapefile.
 """
 
 import pyferret
-import pyferret.fershapefile
+import pyferret.fershp
 import shapefile
 
 def ferret_init(efid):
@@ -97,18 +97,18 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
         for i in xrange(len(lowerxs)):
             if values[i, j, 0, 0] != missing_value:
                 shape_written = True
-                pyferret.fershapefile.addquadxyvalues(sfwriter,
-                                      ( lowerxs[i], lowerys[j] ),
-                                      ( lowerxs[i], upperys[j] ),
-                                      ( upperxs[i], upperys[j] ),
-                                      ( upperxs[i], lowerys[j] ),
-                                      None, [ float(values[i, j, 0, 0]) ])
+                pyferret.fershp.addquadxyvalues(sfwriter,
+                                  ( lowerxs[i], lowerys[j] ),
+                                  ( lowerxs[i], upperys[j] ),
+                                  ( upperxs[i], upperys[j] ),
+                                  ( upperxs[i], lowerys[j] ),
+                                  None, [ float(values[i, j, 0, 0]) ])
     if not shape_written:
         raise ValueError("All values are missing values")
     sfwriter.save(shapefile_name)
 
     # Create the .prj file from the map projection common name or the WKT description
-    pyferret.fershapefile.createprjfile(map_projection, shapefile_name)
+    pyferret.fershp.createprjfile(map_projection, shapefile_name)
     result[:, :, :, :] = 0
 
 

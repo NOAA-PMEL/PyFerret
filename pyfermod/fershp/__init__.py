@@ -6,7 +6,7 @@ import numpy
 import shapefile
 import os
 import os.path
-import pyferret.fershapefile.mapprj
+import pyferret.fershp.mapprj
 
 
 def createprjfile(shapefile_mapprj, shapefile_name):
@@ -25,12 +25,12 @@ def createprjfile(shapefile_mapprj, shapefile_name):
     # If the string given looks like a WKT description, just use it;
     # otherwise, try to convert the name into a description.
     if (not shapefile_mapprj) or shapefile_mapprj.isspace():
-        prj_descript = pyferret.fershapefile.mapprj.name_to_descript("WGS 84")
+        prj_descript = pyferret.fershp.mapprj.name_to_descript("WGS 84")
     elif shapefile_mapprj.startswith('GEOGCS["') or \
          shapefile_mapprj.startswith('PROJCS["'):
         prj_descript = shapefile_mapprj
     else:
-        prj_descript = pyferret.fershapefile.mapprj.name_to_descript(shapefile_mapprj)
+        prj_descript = pyferret.fershp.mapprj.name_to_descript(shapefile_mapprj)
     (sfname, ext) = os.path.splitext(shapefile_name)
     prjfile = file("%s.prj" % sfname, "w")
     print >>prjfile, prj_descript

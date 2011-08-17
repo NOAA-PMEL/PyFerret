@@ -22,11 +22,11 @@ def ferret_init(efid):
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "SHAPEFILE", "VALUE", "VALNAME", "MAPPRJ"),
-                "argdescripts": ( "Name for the shapefile (any extension given is ignored)",
-                                  "Value(s) for the shapes; X and Y axes required, " \
+                "argdescripts": ( "Shapefile name (any extension given is ignored)",
+                                  "Shape values; X and Y axes required, " \
                                       "Z axis optional, T axis undefined or singleton",
-                                  "Field name for the value in the shapefile",
-                                  "Common name or WKT description for map projection; " \
+                                  "Name for the shape value",
+                                  "Common name or WKT description of map projection; " \
                                       "if blank, WGS 84 is used", ),
                 "argtypes": ( pyferret.STRING_ONEVAL,
                               pyferret.FLOAT_ARRAY,
@@ -57,7 +57,7 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     or a WKT description of the map projection for the coordinated
     should be given in inputs[3].  If blank, WGS 84 is used.  If
     successful, fills result (which might as well be a 1x1x1x1 array)
-    with zeros.  If problems, an error will be raised.
+    with zeros.  If a problem occurs, an error will be raised.
     """
     shapefile_name = inputs[0]
     values = inputs[1]

@@ -3,9 +3,7 @@ Creates a shapefile with a given root name using data from a given value
 array.  The shapes are quadrilaterals in the X,Y-plane at a given Z (if
 this axis is used).  The vertices of the quadrilaterals are the values
 of the bounding boxes of the X and Y axes of the given value array.  The
-value(s) associated with each shape comes from the value array.  If the
-T axis is used, each T-axis coordinate generates a field in the database
-associated with the shapefile.
+value(s) associated with each shape comes from the value array.
 """
 
 import pyferret
@@ -17,7 +15,7 @@ def ferret_init(efid):
     Initialization for the shapefile_writeval PyEF
     """
     retdict = { "numargs": 4,
-                "descript": "Writes a shapefile of XY quadrilaterals that are associated with the given values",
+                "descript": "Writes a shapefile of XY quadrilaterals associated with given values",
                 "restype": pyferret.FLOAT_ARRAY,
                 "axes": ( pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_DOES_NOT_EXIST,
@@ -25,10 +23,10 @@ def ferret_init(efid):
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "SHAPEFILE", "VALUE", "VALNAME", "MAPPRJ"),
                 "argdescripts": ( "Name for the shapefile (any extension given is ignored)",
-                                  "Value(s) for the shapes; must have X and Y axes " \
-                                      "but either no or singleton Z and T axes",
+                                  "Value(s) for the shapes; X and Y axes required, " \
+                                      "Z axis optional, T axis undefined or singleton",
                                   "Field name for the value in the shapefile",
-                                  "Either a common name or a WKT description for the map projection; " \
+                                  "Common name or WKT description for map projection; " \
                                       "if blank, WGS 84 is used", ),
                 "argtypes": ( pyferret.STRING_ONEVAL,
                               pyferret.FLOAT_ARRAY,
@@ -70,8 +68,8 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     map_projection = inputs[3]
 
     # Verify the shapes are as expected
-    if (values.shape[2] > 1) or (values.shape[3] > 1):
-        raise ValueError("The Z and T axes of the given values must be undefined or singleton axes")
+    if values.shape[3] > 1:
+        raise ValueError("The T axis must be undefined or a singleton axis")
 
     # Get the X axis box limits for the quadrilateral coordinates
     x_box_limits = pyferret.get_axis_box_limits(efid, pyferret.ARG2, pyferret.X_AXIS)
@@ -87,22 +85,43 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     lowerys = y_box_limits[0]
     upperys = y_box_limits[1]
 
+    # Get the elevation/depth coordinates, or None if they do not exist
+    z_coords = pyferret.get_axis_coordinates(efid, pyferret.ARG2, pyferret.Z_AXIS)
+
     # Create polygons with a single field value
-    sfwriter = shapefile.Writer(shapefile.POLYGON)
+    if z_coords == None:
+        sfwriter = shapefile.Writer(shapefile.POLYGON)
+    else:
+        sfwriter = shapefile.Writer(shapefile.POLYGONZ)
     sfwriter.field(field_name, "N", 20, 7)
 
     # Write out the shapes and the records
     shape_written = False
-    for j in xrange(len(lowerys)):
-        for i in xrange(len(lowerxs)):
-            if values[i, j, 0, 0] != missing_value:
-                shape_written = True
-                pyferret.fershp.addquadxyvalues(sfwriter,
-                                  ( lowerxs[i], lowerys[j] ),
-                                  ( lowerxs[i], upperys[j] ),
-                                  ( upperxs[i], upperys[j] ),
-                                  ( upperxs[i], lowerys[j] ),
-                                  None, [ float(values[i, j, 0, 0]) ])
+    if z_coords == None:
+        for j in xrange(len(lowerys)):
+            for i in xrange(len(lowerxs)):
+                if values[i, j, 0, 0] != missing_value:
+                    pyferret.fershp.addquadxyvalues(sfwriter,
+                                    ( lowerxs[i], lowerys[j] ),
+                                    ( lowerxs[i], upperys[j] ),
+                                    ( upperxs[i], upperys[j] ),
+                                    ( upperxs[i], lowerys[j] ),
+                                    None,
+                                    [ float(values[i, j, 0, 0]) ])
+                    shape_written = True
+    else:
+        for k in xrange(len(z_coords)):
+            for j in xrange(len(lowerys)):
+                for i in xrange(len(lowerxs)):
+                    if values[i, j, k, 0] != missing_value:
+                        pyferret.fershp.addquadxyvalues(sfwriter,
+                                        ( lowerxs[i], lowerys[j] ),
+                                        ( lowerxs[i], upperys[j] ),
+                                        ( upperxs[i], upperys[j] ),
+                                        ( upperxs[i], lowerys[j] ),
+                                        z_coords[k],
+                                        [ float(values[i, j, k, 0]) ])
+                        shape_written = True
     if not shape_written:
         raise ValueError("All values are missing values")
     sfwriter.save(shapefile_name)

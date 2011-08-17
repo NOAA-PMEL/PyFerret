@@ -13,16 +13,16 @@ def ferret_init(efid):
     Initialization for the shapefile_readxy PyEF
     """
     retdict = { "numargs": 2,
-                "descript": "Returns X,Y coordinates from the points in the indicated shapefile.  "
-                            "The missing value separates coordinates between shapes.",
+                "descript": "Returns X,Y coordinates of shapes from shapefile.  "
+                            "Missing value separates shapes.",
                 "restype": pyferret.FLOAT_ARRAY,
                 "axes": ( pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_ABSTRACT,
                           pyferret.AXIS_DOES_NOT_EXIST,
                           pyferret.AXIS_DOES_NOT_EXIST, ),
                 "argnames": ( "SHAPEFILE", "MAXPTS", ),
-                "argdescripts": ( "Name of the shapefile (any extension given is ignored)",
-                                  "Maximum number of points to return (-1 for all, but reads the shapefile twice)", ),
+                "argdescripts": ( "Shapefile name (any extension given is ignored)",
+                                  "Max. number of points to return (-1 for all, but reads shapefile twice)", ),
                 "argtypes": ( pyferret.STRING_ONEVAL,
                               pyferret.FLOAT_ONEVAL, ),
                 "influences": ( (False, False, False, False),

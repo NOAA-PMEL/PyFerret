@@ -76,7 +76,7 @@ setup(name = "pyferret",
       author = "Karl M. Smith",
       author_email = "karl.smith@noaa.gov",
       url = "http://ferret.pmel.noaa.gov/Ferret",
-      packages = [ "pyferret", "pyferret.stats", "pyferret.fershapefile", ],
+      packages = [ "pyferret", "pyferret.stats", "pyferret.fershp", ],
       package_dir = { "pyferret":"pyfermod", },
       ext_modules = ext_mods)
 

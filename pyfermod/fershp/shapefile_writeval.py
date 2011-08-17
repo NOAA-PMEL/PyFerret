@@ -64,7 +64,7 @@ def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     missing_value = inpbdfs[1]
     field_name = inputs[2].strip()
     if not field_name:
-        field_name = "Value"
+        field_name = "VALUE"
     map_projection = inputs[3]
 
     # Verify the shapes are as expected

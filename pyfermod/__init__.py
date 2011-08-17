@@ -265,6 +265,7 @@ def init(arglist=None, enterferret=True):
         import shapefile
         std_pyefs.extend((
                   "fershp.shapefile_readxy",
+                  "fershp.shapefile_readxyval",
                   "fershp.shapefile_writeval",
                   "fershp.shapefile_writexyval",
                   ))

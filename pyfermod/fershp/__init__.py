@@ -119,8 +119,9 @@ def quadxycenters(xvals, yvals):
 def addquadxyvalues(sfwriter, pt0, pt1, pt2, pt3, zcoord, vals):
     """
     Adds a quadrilateral shape to sfwriter defined by the X,Y vertices
-    pt0 - pt1 - pt2 - pt3 - pt0, and possibly the common Z coordinate zcoord,
-    along with the associated values in vals.
+    pt0 - pt1 - pt2 - pt3 - pt0, and possibly the common Z coordinate
+    (or array of Z coordinates) zcoord, along with the associated values
+    in vals.
 
     Arguments:
        sfwriter - the shapefile.Writer object to add the shape and values to
@@ -129,10 +130,14 @@ def addquadxyvalues(sfwriter, pt0, pt1, pt2, pt3, zcoord, vals):
                   quadrilateral; in sequence, but not necessarily the correct
                   winding.  Any coordinates after the first two in each point
                   are ignored.
-       zcoord   - the numeric Z coordinate for this quadrilateral; may be None
+       zcoord   - the numeric Z coordinate or array of numeric Z coordinates
+                  for this quadrilateral; may be None
        vals     - the list of values to be associated with this shape.  The
                   fields for these values must already have been created in
                   sfwriter.
+
+    Note: the winding of the quadrilateral is determined only using the X and
+          Y coordinates, even when multiple Z coordinates are provided.
     """
     # Get the correct polygon type
     if zcoord != None:
@@ -164,11 +169,23 @@ def addquadxyvalues(sfwriter, pt0, pt1, pt2, pt3, zcoord, vals):
         part.append([ x2, y2 ])
         part.append([ x1, y1 ])
         part.append([ x0, y0 ])
-    # Append the Z coordinate if given
+    # Append the Z coordinate(s) if given
     if zcoord != None:
-        z = float(zcoord)
-        for pt in part:
-            pt.append(z)
+        try:
+            # First try it as a single Z coordinate for all points
+            z = float(zcoord)
+            for pt in part:
+                pt.append(z)
+        except TypeError:
+            if len(zcoord) != 4:
+                raise ValueError("zcoord must be None, a single value, or a list of four values")
+            # Assume it is an array of numbers
+            if dqarea < 0.0:
+                zvals = list(zcoord) + [ zcoord[0] ]
+            else:
+                zvals = [ zcoord[0] ] + list(zcoord[::-1])
+            for (pt, z) in zip(part, zvals):
+                pt.append(float(z))
     # Add the shape
     sfwriter.poly([ part, ], shapetype)
     # Add the values for this shape
@@ -281,15 +298,15 @@ if __name__ == "__main__":
     print "quadxycenters: SUCCESS"
 
     # Test addquadxyvalues
-    zval = -5.34
     coords = [ [0.0, 0.0], [1.0, 0.0], [1.0, -1.0], [2.0, 1.0] ]
+    zval = [ -5.34, -4.23, -3.12, -2.01 ]
     vals = [ 3.28573, 7.46952 ]
     expectedxy = [ coords[0], coords[3], coords[2], coords[1], coords[0] ]
-    expectedz = [ zval, zval, zval, zval, zval ]
+    expectedz = [ zval[0], zval[3], zval[2], zval[1], zval[0] ]
     # Create the shapefile
     sfwriter = shapefile.Writer(shapefile.POLYGONZ)
-    sfwriter.field("Val0", "N", 20, 7)
-    sfwriter.field("Val1", "N", 20, 7)
+    sfwriter.field("VAL0", "N", 20, 7)
+    sfwriter.field("VAL1", "N", 20, 7)
     # Add the shape and values and save the shapefile
     addquadxyvalues(sfwriter, coords[0], coords[1], coords[2], coords[3], zval, vals)
     sfwriter.save(shapefilename)

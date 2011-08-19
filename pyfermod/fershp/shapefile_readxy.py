@@ -1,5 +1,5 @@
 """
-Returns the X,Y (presumably longitude,latitude)
+Returns the X and Y (presumably longitude,latitude)
 coordinates from the points in the indicated shapefile.
 The missing value separates coordinates between shapes.
 """
@@ -51,9 +51,10 @@ def ferret_result_limits(efid):
 def ferret_compute(efid, result, resbdf, inputs, inpbdfs):
     """
     Read the shapefile named in inputs[0] and assign result[:,0,0,0]
-    and result[:,1,0,0] with the X and Y coordinates of the shapes
-    contained in the shapefile.  The missing value, resbdf, is assigned
-    as the coordinates of a point separating different shapes.
+    with the X coordinates, and result[:,1,0,0] with the Y coordinates
+    of the shapes contained in the shapefile.  The missing value,
+    resbdf, is assigned as the coordinates of a point separating
+    different shapes.
     """
     result[:,:,:,:] = resbdf
     sf = shapefile.Reader(inputs[0])
@@ -119,5 +120,5 @@ if __name__ == "__main__":
     print "total (including missing-value separators) = %d" % total
     print "out of a maximum of %d" %  result.shape[0]
     print "number of shapes = %d" % shape_num
-    print "SUCCESS"
+    print "shapefile_readxy: SUCCESS"
 

@@ -8,7 +8,7 @@
 #    No need for any compiler flags.
 
 include ../../../site_specific.mk
-include ../../../fer/platform_specific_flags.mk.$(BUILDTYPE)
+include ../../../platform_specific.mk.$(BUILDTYPE)
 
 all:    binary 
 

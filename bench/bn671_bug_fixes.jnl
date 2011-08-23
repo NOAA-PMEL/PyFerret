@@ -1,0 +1,18 @@
+! bn671_bug_fixes.jnl
+! test various fixes that went into version 6.71
+! 4/2011 ACM
+
+GO bn_reset
+GO err67_tax_modtime
+
+GO bn_reset
+GO err67_save_append_open
+
+GO bn_reset
+GO err67_regridding_dyn
+
+GO bn_reset
+GO err67_reverse_bounds
+
+GO bn_reset
+GO err67_nrst_trans

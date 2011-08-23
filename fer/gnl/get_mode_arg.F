@@ -175,7 +175,7 @@
  5010   tlen = TM_LENSTR1(text)
         risc_buff = text(:tlen)
         CALL ERRMSG( ferr_out_of_range, status,
-     .   'illegal mode argument < 6'//risc_buff, *5500 )
+     .   'illegal mode argument '//risc_buff, *5500 )
  5020   tlen = TM_LENSTR1(text)
         risc_buff = text(:tlen)
         CALL ERRMSG( ferr_out_of_range, status,

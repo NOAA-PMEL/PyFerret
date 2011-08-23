@@ -85,11 +85,11 @@
 
 	DO 110 idim = 1, 4
            line = grid_line(idim, grid)
-           slen = TM_LENSTR(line_name_orig(line))
+           slen = TM_LENSTR(line_name(line))
 
            IF (line .GT. 0  .AND.  slen .GT. 0 .AND.
      .         cx_expr .EQ. unspecified_int4) THEN
-              CALL ESCAPE_FOR_XML (line_name_orig(line), outstring, slen)
+              CALL ESCAPE_FOR_XML (line_name(line), outstring, slen)
               WRITE (risc_buff, 2040 ) axdir(idim),
      .           outstring(1:slen), axdir(idim)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -100,9 +100,9 @@
 
               IF ( cx_hi_ss(cx_expr,idim).NE.unspecified_int4 .AND. 
      .	           cx_lo_ss(cx_expr,idim).NE.unspecified_int4 ) THEN
-                 slen = TM_LENSTR1(line_name_orig(line))
+                 slen = TM_LENSTR1(line_name(line))
                  WRITE (risc_buff, 2040 ) axdir(idim),
-     .              line_name_orig(line)(1:slen), axdir(idim)
+     .              line_name(line)(1:slen), axdir(idim)
 	         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
               ENDIF
            ENDIF

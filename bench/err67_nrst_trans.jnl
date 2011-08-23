@@ -1,0 +1,10 @@
+! err67_nrst_trans.jnl
+!
+! See ticket 1875: for short axes the @NRST transform 
+! missed points - no valid data was returned from this LIST.
+
+define axis/x=333:335:1 xax
+define axis/x=300:400:10 xlong
+let x3 = x[gx=xax]
+let var = x3[gx=xlong@nrst]
+list var

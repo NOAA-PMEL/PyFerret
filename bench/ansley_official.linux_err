@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 34656037 Jul 14 16:31 /home/users/ansley/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 33403723 Aug  1 14:23 /home/users/ansley/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixing ticket 1870.
+Note: fixing 1875: short-axis grids and @NRST. Rename script to bn671_bug_fixes: upcoming release of v671.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/users/ansley/linux/FERRET/bench
@@ -22,7 +22,7 @@ FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/linux/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/ansley/tarfiles/lin/ppl/fonts
-Beginning at Thu Jul 14 16:36:34 PDT 2011
+Beginning at Mon Aug 1 14:24:49 PDT 2011
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2064,7 +2064,7 @@ set att (COADSX81_81).axis = "Z"
  LISTing to file a.nc
  PERMANENT data cleared from memory
 syntax error, unexpected SCAN_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>tauy</b><b>absuu</b><b>taux</b><b>absuv</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
+context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuu</b><b>absuv</b><b>tauy</b><b>taux</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
@@ -3132,6 +3132,11 @@ Replacing definition of axis YAX_DUP_AXNAMES
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis XAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: IFV I GT 3 THEN ( IFV I LT 5 THEN I ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
 LIST/ORDER=X  IFV I GT 3 THEN ( IFV I LT 5 THEN I ELSE -9 ) ELSE .333
@@ -3228,4 +3233,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jul 14 16:38:13 PDT 2011
+Ended at Mon Aug 1 14:26:30 PDT 2011

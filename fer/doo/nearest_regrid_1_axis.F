@@ -69,6 +69,10 @@
 * v580 *acm* 11/04 Fix the definition of ok_neg111; if -111 is at
 *                  either end of the interval we cannot distinguish
 *                  it as a valid index from its use as the bad flag.
+* v671 *acm*  8/11 Fix ticket 1875: Odd behavior if source axis is short.
+*                  stems from using GET_LINEAR_COEF; linear interp of one
+*                  point to a multi-point axis doesnt make sense, but can
+*                  define the @NRST regridding.
 
 	include 'ferret.parm'
 	include 'xvariables.cmn'
@@ -85,9 +89,12 @@
 
 * INTERNAL VARIABLE DECLARATIONS:
 	LOGICAL	found1, ok_neg111
-	INTEGER i, j, k, l,
+	INTEGER i, j, k, l, ii, status,
      .		ss, src_lo, src_hi, src_grd, dst_grd
 	REAL	bad_src, bad_dst
+	REAL*8	TM_WORLD, TDEST_WORLD, xsrc, xdst, xmin, xmax
+
+
 
 ******************************************************************************
 
@@ -117,13 +124,45 @@
      .               ss12(dst_hi) .LT. unspecified_int4) 
 
 * convert linear interp subscript points to nearest subscript pointer
-! ... determine the closer of the surrounding coefficients
+* ... determine the closer of the surrounding coefficients
+        found1 = .FALSE.
 	DO 10 i = dst_lo, dst_hi
 	   IF ( ss12(i) .NE. unspecified_int4 .OR. 
      .          ss12(i) .EQ. unspecified_int4 .AND. ok_neg111) THEN
 	      IF (coef(i) .GE. 0.5) ss12(i) =  ss12(i) + 1
+	      found1 = .TRUE.
 	   ENDIF
  10	CONTINUE
+	
+* ... If there is just one source point, all of the data is "nearest". 
+	IF (src_lo .EQ. src_hi) THEN
+	   DO i = dst_lo, dst_hi
+	      ss12(i) = src_lo
+	   ENDDO
+	ENDIF
+
+* ... . See if the axes overlap - if so can define the subscripts for the transform.
+	IF (.NOT.found1) THEN
+
+* initialize
+	   IF ( axis .EQ. t_dim ) THEN
+*             TDST_WORLD gives dates from the source axis as they would be
+*	      encoded on the destination axis 
+*      ==>    ALL TIME/DATE CALCULATIONS ARE DONE IN THE SOURCE AXIS ENCODING
+	      CALL TDEST_WORLD_INIT ( dst_grd, src_grd, status ) ! src<->dst
+	      IF ( status .NE. ferr_ok ) RETURN  ! note - status not passed !!
+   	   ENDIF
+
+           xmin = TM_WORLD( src_lo, src_grd, axis, box_middle )
+           xmax = TM_WORLD( src_hi, src_grd, axis, box_middle )
+	   DO i = dst_lo, dst_hi
+	      ii = i
+              xdst = TDEST_WORLD( i, dst_grd, axis, box_middle )
+	      IF (xdst .LT. xmin) ss12(i) = src_lo
+	      IF (xdst .GT. xmax) ss12(i) = src_hi
+	   ENDDO
+	ENDIF
+
 * ... fill upper end of subscript list with highest available source ss
 	found1 = .FALSE.
 	DO i = dst_lo, dst_hi
@@ -156,7 +195,9 @@
 	         DO 100 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 100 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 100 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
- 100	         dst(i,j,k,l) = src(ss,j,k,l)
+		    dst(i,j,k,l) = src(ss,j,k,l)
+		    print *, i, ss, src(ss,j,k,l)
+ 100	         CONTINUE
 	      ELSE
 	         DO 102 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 102 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)

@@ -1,119 +1,152 @@
-#! /bin/csh -x
-# make_environment_tar
-# ver 1.0 4/94 *sh*
-# ver 2.0 5/99 *kob* massive upgrade to include CVS
-# ver 3.0 11/10 *acm* change from CVS to svn
+#! /bin/csh
 
-# this script encourages the tar file producer to make several manual
-# sanity checks but it does not enforce behavior
-
-#Make sure we are running on an OSF machine - only kind right now which can
-# run svn
-set thost = `uname -s`
-
-if ( $#argv == 2 ) then
-   set targ_dist_parent = $argv[1]
-   set machine_type = $argv[2]
-   set source_dir = $targ_dist_parent/$machine_type
-else
+echo ""
+if ( $#argv == 3 ) then
+    if ( "$3" == "-y" ) then
+        set auto_ans = "y"
+    endif
+endif
+if ( ($#argv < 2) || ($#argv > 3) || \
+     (($#argv == 3) && (! $?auto_ans)) ) then
+   echo "Usage:  $0  <svn_repository>  <target_dir>  [ -y ] "
    echo ""
-   echo usage:
-   echo make_environment_tar target_area machine_type
-   echo machine_type may be solaris, alpha, sgi, linux, x86_64-linux, or win32
-   echo e.g. "'make_environment_tar /home/users/ansley/ferret_install_utilities x86_64-linux'" will extract  
-   echo files for the Ferret environment in the directory
-   echo "'/home/users/ansley/ferret_install_utilities/x86_64-linux'"
-   echo and ask for a location to place the gzipped tar file
+   echo "    Creates the Ferret installation file fer_environment.tar.gz. "
+   echo "    The required files will be extracted from the subversion "
+   echo "    repository <svn_repository>; for example, "
+   echo "        file:///home/users/tmap/svn/repos/ferret/trunk "
+   echo "    to a temporary directory which this script will create. "
+   echo "    Font files and lib files are NOT included in the tar file "
+   echo "    generated.  The gzipped tar file fer_environment.tar.gz "
+   echo "    will be written in <target_dir>, which must already exist. "
+   echo "    If the option third argument '-y' is given, any questions "
+   echo "    normally asked by the script will be automatically answered "
+   echo "    with 'y'. "
    echo ""
- exit 0
+   echo "    Special case: if <svn_repository> is '.', then the required "
+   echo "    files will be copied from the current directory instead of "
+   echo "    being extracted from a subversion repository.  Thus, in "
+   echo "    this case, this script should probably be invoked as: "
+   echo "        bin/make_environment_tar . <target_dir> "
+   echo ""
+   exit 1
 endif
 
-cd $source_dir
+if ( "$1" == "." ) then
+    set source_dir = `pwd`
+else
+    set info = `svn info "$1"`
+    if ( "${info}" == "" ) then
+#  svn has printed an appropriate error message
+#  (but still returned a zero status)
+       echo ""
+       exit 1
+    endif
+endif
+set repository = "$1"
 
-#use svn now to checkout desired files
-echo "Extracting FERRET environment files......."
-svn checkout file:///home/users/tmap/svn/repos/ferret/trunk/bin >& .install_log
-svn checkout file:///home/users/tmap/svn/repos/ferret/trunk/jnls >>& .install_log
-svn checkout file:///home/users/tmap/svn/repos/ferret/trunk/external_functions >>& .install_log
-svn checkout file:///home/users/tmap/svn/repos/ferret/trunk/palettes >>& .install_log
-svn checkout file:///home/users/tmap/svn/repos/ferret/trunk/bin >>& .install_log
+if ( ! -d "$2" ) then
+   echo "$2 does not exist "
+   echo ""
+   exit 1
+endif
+# Make sure target_dir is a full pathname
+set target_dir = `cd "$2" ; pwd`
 
-#Now move these files into the proper position
-echo "Doing a bit of rearranging now......."
+# Make a clean temporary directory for the tar file contents
+set temp_dir = "/var/tmp/fer_env_$$"
+rm -fr ${temp_dir}
+mkdir ${temp_dir}
+cd ${temp_dir}
+
+# Copy or checkout the required files.  The copying intentionally
+# makes exactly the same directory structure as the check-out in
+# order to minimize the divergent parts of this script.
+if ( "${repository}" == "." ) then
+    echo "Copying FERRET environment files "
+    echo "from ${source_dir} "
+    echo "to ${temp_dir} "
+    echo "   shell scripts"
+    cp -f -r ${source_dir}/bin .
+    echo "   journal files"
+    cp -f -r ${source_dir}/jnls .
+    echo "   external function source files"
+    cp -f -r ${source_dir}/external_functions .
+    echo "   palettes"
+    cp -f -r ${source_dir}/palettes .
+else
+    echo "Extracting FERRET environment files "
+    echo "from ${repository} "
+    echo "to ${temp_dir} "
+    echo "   shell scripts"
+    svn checkout -q ${repository}/bin
+    echo "   journal files"
+    svn checkout -q ${repository}/jnls
+    echo "   external function source files"
+    svn checkout -q ${repository}/external_functions
+    echo "   palettes"
+    svn checkout -q ${repository}/palettes
+endif
+
+# Move files into thier proper position
+echo "Doing a bit of rearranging"
 mv jnls/* .
 rm -rf jnls
 mv palettes ppl
 mkdir ext_func
 mv external_functions ext_func/src
 
+# Remove files that should not be distributed
+echo "Removing clutter"
+rm -f bin/Fapropos* >& /dev/null
+rm -f bin/Fhelp* >& /dev/null
+rm -f bin/Findex* >& /dev/null
+rm -f bin/Finstall.[^c]* >& /dev/null
+rm -f bin/Ftoc* >& /dev/null
+rm -f bin/ferret_paths*_template >& /dev/null
+rm -f bin/make_*_tar >& /dev/null
+rm -fr bin/fonts_* >& /dev/null
+rm -fr bin/build_fonts/original
 
-#Copy fonts
-echo "Copying fonts......."
-cd ppl >& /dev/null
-mkdir fonts
-cd fonts >& /dev/null
-if ($machine_type == linux || $machine_type == win32) then
-    cp -p /home/users/tmap/ferret/linux/ppl/fonts/f* .
-else
-    cp -p /home/users/tmap/ferret/x86_64-linux/ppl/fonts/f* .
-endif
-
-#cd ../.. >& /dev/null
-pwd
-cd ../.. 
-pwd
-
-# Now set up the proper soft links
-echo "Setting Up links......."
-# cd bin >& /dev/null
-cd bin 
+# Now set up the proper symbolic links
+echo "Setting up symbolic links"
+cd bin
 ln -s Fdescr Fdesc
 ln -s Fgrids Fgrid
 ln -s Fprint_template Fprint
+cd ..
 
-# Remove refs to old doc/ directory
-rm -f Fapropos*
-rm -f Fhelp*
-rm -f Findex*
-rm -f Ftoc*
-cd .. >& /dev/null
+# Create the tar file
+set ctar_file = "${target_dir}/fer_environment.tar.gz"
+echo ""
+echo "The tar file will be created from the contents of "
+echo "${temp_dir}"
+echo "(which can now be examined or tweaked from another shell/window)"
+echo ""
+echo -n "Create gzipped tar file ${ctar_file} (y/n)? "
+if ( $?auto_ans ) then
+    set ans = "${auto_ans}"
+else
+    set ans = $<
+endif
+while ( ("${ans}" != "y") && ("${ans}" != "n") )
+   echo -n "Answer either y or n: "
+   set ans = $<
+end
+if ( "${ans}" == "y" ) then
+   echo ""
+   rm -f "${ctar_file}"
+   tar cvzf "${ctar_file}" --exclude .svn *
+   echo ""
+   ls -l "${ctar_file}"
+else
+   echo ""
+   echo "Tar file NOT created"
+endif
 
-pwd
-
-mkdir lib
-cd lib 
-cp $FER_DIR/lib/threddsBrowser.jar .
-cp $FER_DIR/lib/toolsUI-4.1.jar .
-ln -s toolsUI-4.1.jar toolsUI.jar
-cd ../
-
-# get tar file location
-echo "Enter directory path to create the gzipped tar file in"
-set ans = $<
-set ctar_file = $ans/fer_environment.tar
-echo "Ready to create gzipped tar file $ctar_file"
-ready:
-echo "OK to continue ?"
-set ans = $<
-switch($ans)
-case y:
-   breaksw
-case n:
-   exit 0
-default:
-   echo "must answer y or n"
-   goto ready
-endsw
-
-# make the gzipped tar file
-cd $source_dir
-rm -f .tar_create_log
-tar vcf $ctar_file  --exclude .svn *  >& ./tar_create_log
-gzip $ctar_file
-ls -l $ctar_file*
-echo "If there are any problems w/ the tar file, see "$source_dir/".tar_create_log for"
-echo "more information"
-
-
-
+# Clean up
+echo ""
+echo "Cleaning up - removing ${temp_dir}"
+cd "${target_dir}"
+rm -fr "${temp_dir}"
+echo ""
 

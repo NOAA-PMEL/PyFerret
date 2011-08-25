@@ -5,8 +5,10 @@
 ## 1) modifies 'ferret_paths template' to specify locations of ferret
 ##    software and demo data sets and places the result in the indicated
 ##    sourcing directory as 'ferret_paths'
-## 2) installs ferret and gksm2ps executables and shared-object external
-##    functions from tar file to $FER_DIR/bin
+## 2) extracts the contents of fer_executables.tar.gz into $FER_DIR
+##    after renaming any existing files that would have been overwritten
+## All changes are recorded, with a timestamp, in the log file
+## $FER_DIR/bin/Finstall.log
 
 
 ### Assign $fer_dir, the desired FER_DIR value
@@ -17,7 +19,7 @@ get_fer_dir() {
         echo " The environment variable FER_DIR is currently defined as "
         echo " '${FER_DIR}' "
         echo " This is the directory where the 'fer_environment.tar.gz' "
-        echo " file was installed. "
+        echo " file was installed/extracted. "
         echo " "
         read -p " Is that correct and acceptable (y/n) [y] " ans
         if [ -z "${ans}" ] || [ "${ans}" = "Y" ] || [ "${ans}" = "y" ]; then
@@ -28,8 +30,8 @@ get_fer_dir() {
     until [ 0 = 1 ]; do
         echo " "
         echo " Enter the name of the directory where the 'fer_environment.tar.gz' "
-        echo " file was installed (FER_DIR).  The location recommended in the "
-        echo " Ferret installation guide was '/usr/local/ferret'. "
+        echo " file was installed/extracted (FER_DIR).  The location recommended "
+        echo " in the Ferret installation guide was '/usr/local/ferret'. "
         echo " "
         read -p " FER_DIR --> " fer_dir
         if [ ! -d "${fer_dir}" ]; then
@@ -58,7 +60,7 @@ get_fer_dsets() {
         echo " The environment variable FER_DSETS is currently defined as "
         echo " '${FER_DSETS}' "
         echo " This is the directory where the 'fer_dsets.tar.gz' file was "
-        echo " installed."
+        echo " installed/extracted."
         echo " "
         read -p " Is that correct and acceptable (y/n) [y] " ans
         if [ -z "${ans}" ] || [ "${ans}" = "Y" ] || [ "${ans}" = "y" ]; then
@@ -69,7 +71,7 @@ get_fer_dsets() {
     until [ 0 = 1 ]; do
         echo " "
         echo " Enter the name of the directory where the 'fer_dsets.tar.gz' "
-        echo " file was installed (FER_DSETS)."
+        echo " file was installed/extracted (FER_DSETS)."
         echo " "
         read -p " FER_DSETS --> " fer_dsets
         if [ ! -d "${fer_dsets}" ]; then
@@ -136,14 +138,42 @@ get_ferpaths_dir() {
 }
 
 
+### Write a message to ${fer_dir}/bin/Finstall.log (creating it if it does not exist)
+write_log_message() {
+#   Sanity check
+    if [ -z "${fer_dir}" ]; then
+        echo " Unexpected script error: fer_dir not defined in write_log_message "
+        exit 1
+    fi
+#   get_fer_dir ensures ${fer_dir}/bin already exists
+#   Create Finstall.log file if it does not exist
+    logfile="${fer_dir}/bin/Finstall.log"
+    if [ ! -f "${logfile}" ]; then
+        echo " Creating Finstall.log in ${fer_dir}/bin "
+        timestamp=`/bin/date +' %D %T'`
+        if ! echo "${timestamp} Created Finstall.log " > "${logfile}" ; then
+            return 1
+        fi
+    fi
+
+    timestamp=`/bin/date +' %D %T'`
+    if ! echo "${timestamp} $1 " >> "${logfile}" ; then
+        return 1
+    fi
+}
+
+
 ### Edit the ferret_paths_template.{csh,sh} files to create the ferret_paths.{csh,sh} files
 create_ferret_paths() {
 #   Check for existing ferret_paths.csh
     if [ -f "${ferpaths_dir}/ferret_paths.csh" ]; then
-        mv -f "${ferpaths_dir}/ferret_paths.csh" "${ferpaths_dir}/ferret_paths.csh.old"
-        echo " "
-        echo " Existing ${ferpaths_dir}/ferret_paths.csh "
-        echo " moved to ${ferpaths_dir}/ferret_paths.csh.old "
+        if mv -f "${ferpaths_dir}/ferret_paths.csh" "${ferpaths_dir}/ferret_paths.csh.old"; then
+            echo " "
+            echo " Renamed existing ${ferpaths_dir}/ferret_paths.csh "
+            echo "               to ${ferpaths_dir}/ferret_paths.csh.old "
+            write_log_message "Renamed existing ${ferpaths_dir}/ferret_paths.csh"
+            write_log_message "              to ${ferpaths_dir}/ferret_paths.csh.old"
+        fi
     fi
 #   Create new ferret_paths.csh
     if sed -e "/setenv FER_DIR/c\\
@@ -154,16 +184,21 @@ setenv FER_DSETS \"${fer_dsets}\"" \
            > "${ferpaths_dir}/ferret_paths.csh" ; then
         echo " "
         echo " Created ${ferpaths_dir}/ferret_paths.csh "
+        write_log_message "Created ${ferpaths_dir}/ferret_paths.csh"
     else
         echo " "
         echo " Unable to create ${ferpaths_dir}/ferret_paths.csh "
+        write_log_message "Unable to create ${ferpaths_dir}/ferret_paths.csh"
     fi
 #   Check for existing ferret_paths.sh
     if [ -f "${ferpaths_dir}/ferret_paths.sh" ]; then
-        mv -f "${ferpaths_dir}/ferret_paths.sh" "${ferpaths_dir}/ferret_paths.sh.old"
-        echo " "
-        echo " Existing ${ferpaths_dir}/ferret_paths.sh "
-        echo " moved to ${ferpaths_dir}/ferret_paths.sh.old "
+        if mv -f "${ferpaths_dir}/ferret_paths.sh" "${ferpaths_dir}/ferret_paths.sh.old"; then
+            echo " "
+            echo " Renamed existing ${ferpaths_dir}/ferret_paths.sh "
+            echo "               to ${ferpaths_dir}/ferret_paths.sh.old "
+            write_log_message "Renamed existing ${ferpaths_dir}/ferret_paths.sh"
+            write_log_message "              to ${ferpaths_dir}/ferret_paths.sh.old"
+        fi
     fi
 #   Create new ferret_paths.sh
     if sed -e "/export FER_DIR=/c\\
@@ -174,36 +209,83 @@ export FER_DSETS=\"${fer_dsets}\"" \
            > "${ferpaths_dir}/ferret_paths.sh" ; then
         echo " "
         echo " Created ${ferpaths_dir}/ferret_paths.sh "
+        write_log_message "Created ${ferpaths_dir}/ferret_paths.sh"
     else
         echo " "
         echo " Unable to create ${ferpaths_dir}/ferret_paths.sh"
+        write_log_message "Unable to create ${ferpaths_dir}/ferret_paths.sh"
     fi
 #   Check for existing ferret_paths
     if [ -f "${ferpaths_dir}/ferret_paths" ]; then
-        mv -f "${ferpaths_dir}/ferret_paths" "${ferpaths_dir}/ferret_paths.old"
-        echo " "
-        echo " Existing ${ferpaths_dir}/ferret_paths "
-        echo " moved to ${ferpaths_dir}/ferret_paths.old "
+        if mv -f "${ferpaths_dir}/ferret_paths" "${ferpaths_dir}/ferret_paths.old"; then
+            echo " "
+            echo " Renamed existing ${ferpaths_dir}/ferret_paths "
+            echo "               to ${ferpaths_dir}/ferret_paths.old "
+            write_log_message "Renamed existing ${ferpaths_dir}/ferret_paths"
+            write_log_message "              to ${ferpaths_dir}/ferret_paths.old"
+        fi
+    fi
+#   Check for existing ferret7
+    if [ -f "${fer_dir}/bin/ferret7" ]; then
+        if mv -f "${fer_dir}/bin/ferret7" "${fer_dir}/bin/ferret7.old"; then
+            echo " "
+            echo " Renamed existing ${fer_dir}/bin/ferret7 "
+            echo "               to ${fer_dir}/bin/ferret7.old "
+            write_log_message "Renamed existing ${fer_dir}/bin/ferret7"
+            write_log_message "              to ${fer_dir}/bin/ferret7.old"
+        fi
     fi
 #   Copy the appropriate file
-#   Note: $SHELL may not be defined in bash
+#   Note: $SHELL may not be defined in a Bourne-type shell
     if echo "${SHELL}" | grep -q 'csh$' ; then
         if ( cd "${ferpaths_dir}" ; ln -s "ferret_paths.csh" "ferret_paths" ) ; then
             echo " "
             echo " Created ${ferpaths_dir}/ferret_paths "
-            echo " as a link to ${ferpaths_dir}/ferret_paths.csh "
+            echo "     as a link to ferret_paths.csh "
+            write_log_message "Created ${ferpaths_dir}/ferret_paths"
+            write_log_message "    as a link to ferret_paths.csh"
         else
             echo " "
             echo " Unable to create ${ferpaths_dir}/ferret_paths "
+            write_log_message "Unable to create ${ferpaths_dir}/ferret_paths"
+        fi
+        if [ -f "${fer_dir}/bin/ferret7.csh" ]; then
+            if ( cd "${fer_dir}/bin" ; ln -s "ferret7.csh" "ferret7" ) ; then
+                echo " "
+                echo " Created ${fer_dir}/bin/ferret7 "
+                echo "     as a link to ferret7.csh "
+                write_log_message "Created ${fer_dir}/bin/ferret7"
+                write_log_message "    as a link to ferret7.csh"
+            else
+                echo " "
+                echo " Unable to create ${fer_dir}/bin/ferret7 "
+                write_log_message "Unable to create ${fer_dir}/bin/ferret7"
+            fi
         fi
     else
         if ( cd "${ferpaths_dir}" ; ln -s "ferret_paths.sh" "ferret_paths" ) ; then
             echo " "
             echo " Created ${ferpaths_dir}/ferret_paths "
-            echo " as a link to ${ferpaths_dir}/ferret_paths.sh "
+            echo "     as a link to ferret_paths.sh "
+            write_log_message "Created ${ferpaths_dir}/ferret_paths"
+            write_log_message "    as a link to ferret_paths.sh"
         else
             echo " "
             echo " Unable to create ${ferpaths_dir}/ferret_paths "
+            write_log_message "Unable to create ${ferpaths_dir}/ferret_paths"
+        fi
+        if [ -f "${fer_dir}/bin/ferret7.sh" ]; then
+            if ( cd "${fer_dir}/bin" ; ln -s "ferret7.sh" "ferret7" ) ; then
+                echo " "
+                echo " Created ${fer_dir}/bin/ferret7 "
+                echo "     as a link to ferret7.sh "
+                write_log_message "Created ${fer_dir}/bin/ferret7"
+                write_log_message "    as a link to ferret7.sh"
+            else
+                echo " "
+                echo " Unable to create ${fer_dir}/bin/ferret7 "
+                write_log_message "Unable to create ${fer_dir}/bin/ferret7"
+            fi
         fi
     fi
 }
@@ -213,7 +295,7 @@ export FER_DSETS=\"${fer_dsets}\"" \
 get_ferexec_dir() {
     until [ 0 = 1 ]; do
         echo " "
-        echo " Enter the name of the directory where containing the "
+        echo " Enter the name of the directory containing the "
         echo " 'fer_executables.tar.gz file. "
         read -p " 'fer_executables.tar.gz' location --> " ferexec_dir
         if [ ! -d "${ferexec_dir}" ]; then
@@ -233,97 +315,51 @@ get_ferexec_dir() {
 }
 
 
-### Install the contents of $ferexec_dir/fer_executables.tar.gz into
-### the appropriate subdirectories of $fer_dir
+### Install the contents of $ferexec_dir/fer_executables.tar.gz into $fer_dir
 install_execs() {
-#   Create Finstall.log file if it does not exist
-    logfile="${fer_dir}/bin/Finstall.log"
-    echo " "
-    if [ ! -f "${logfile}" ]; then
-        echo " Creating Finstall.log in ${fer_dir}/bin "
-        timestamp=`/bin/date +' %D %T'`
-        if ! echo "${timestamp} Created Finstall.log " > "${logfile}" ; then
-            return 1
-        fi
+    write_log_message "Installing/updating from ${ferexec_dir}/fer_executables.tar.gz"
+
+#   Get the list of files in the tar file
+    exetar_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz`
+    if [ -z "${exetar_files}" ]; then
+#        tar should have already printed a more appropriate error message
+         echo " No files found in ${ferexec_dir}/fer_executables.tar.gz "
+         write_log_message "No files found in ${ferexec_dir}/fer_executables.tar.gz"
+         return 1
     fi
 
-    timestamp=`/bin/date +' %D %T'`
-    if ! echo "${timestamp} Installing/updating from ${ferexec_dir}/fer_executables.tar.gz " >> "${logfile}" ; then
-        return 1
+#   Make sure the tar file is the right format
+    lib_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz lib`
+    if [ -z "${lib_files}" ]; then
+         echo " Aborting - old style fer_executables.tar.gz "
+         write_log_message "Aborting - old style fer_executables.tar.gz"
+         return 1
     fi
 
-#   The list of files - ferret* and gksm2ps - that will be going in $fer_dir/bin
-    ferbin_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz --wildcards ferret\* gksm2ps 2> /dev/null`
-#   Rename old executables if they exist
-    for binfile in ${ferbin_files} ; do
-        if [ -f "${fer_dir}/bin/${binfile}" ]; then
-            if mv -f "${fer_dir}/bin/${binfile}" "${fer_dir}/bin/${binfile}.old" ; then
-                echo " Renamed existing ${binfile} to ${binfile}.old "
-                timestamp=`/bin/date +' %D %T'`
-                echo "${timestamp} Renamed existing ${binfile} to ${binfile}.old " >> "${logfile}"
+#   Rename old files if they exist
+    echo " Renaming (by appending '.old') any existing files in ${fer_dir} "
+    echo "     that will be replaced by files in ${ferexec_dir}/fer_executables.tar.gz "
+    for exefile in ${exetar_files} ; do
+        if [ -f "${fer_dir}/${exefile}" ]; then
+            if mv -f "${fer_dir}/${exefile}" "${fer_dir}/${exefile}.old" ; then
+                write_log_message "Renamed existing ${exefile} to ${exefile}.old"
             else
+                echo " Aborting - unable to rename ${fer_dir}/${exefile} "
+                write_log_message "Aborting - unable to rename ${exefile}"
                 return 1
             fi
         fi
     done
-#   Check if there are any files to go into $fer_dir/bin
-    if [ -n "${ferbin_files}" ]; then
-#       $fer_dir/bin guaranteed to exist by get_fer_dir()
-#       Extract these files into $fer_dir/bin
-        if ( cd "${fer_dir}/bin" ; tar xzf "${ferexec_dir}/fer_executables.tar.gz" ${ferbin_files} ) ; then
-            timestamp=`/bin/date +' %D %T'`
-            for binfile in ${ferbin_files} ; do
-                echo " Extracted ${binfile} to ${fer_dir}/bin "
-                echo "${timestamp} Extracted ${binfile} to ${fer_dir}/bin " >> "${logfile}"
-            done
-        else
-            return 1
-        fi
-    fi
 
-#   The list of files - *.so - that will be going in $fer_dir/ext_func/libs
-    feref_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz --wildcards \*.so 2> /dev/null`
-#   Don't bother renaming existing files
-#   Check if there are any external function files provided
-    if [ -n "${feref_files}" ]; then
-#       Make sure ${fer_dir}/ext_func/libs exists
-        if ! mkdir -p "${fer_dir}/ext_func/libs" ; then
-            return 1
-        fi
-#       Extract these files into $fer_dir/ext_func/libs
-        if ( cd "${fer_dir}/ext_func/libs" ; tar xzf "${ferexec_dir}/fer_executables.tar.gz" ${feref_files} ) ; then
-            timestamp=`/bin/date +' %D %T'`
-            echo " Extracted external function files to ${fer_dir}/ext_func/libs "
-            echo " For more details, see '${timestamp}' entries in the log file "
-            echo " ${logfile} "
-            for effile in ${feref_files} ; do
-                echo "${timestamp} Extracted ${effile} to ${fer_dir}/ext_func/libs " >> "${logfile}"
-            done
-        else
-            return 1
-        fi
-    fi
-
-#   The list of files that will be going in $fer_dir/lib
-    ferlib_files=`tar tzf ${ferexec_dir}/fer_executables.tar.gz lib 2> /dev/null`
-#   Don't bother renaming existing files
-#   Check if there are any lib files provided
-    if [ -n "${ferlib_files}" ]; then
-#       Make sure ${fer_dir}/lib exists
-        if ! mkdir -p "${fer_dir}/lib" ; then
-            return 1
-        fi
-#       Extract the lib files into $fer_dir
-        if ( cd "${fer_dir}" ; tar xzf "${ferexec_dir}/fer_executables.tar.gz" ${ferlib_files} ) ; then
-            timestamp=`/bin/date +' %D %T'`
-            echo " Extracted lib files to ${fer_dir}/lib "
-            echo " For more details, see '${timestamp}' entries in the log file ${logfile} "
-            for libfile in ${ferlib_files} ; do
-                echo "${timestamp} Extracted ${libfile} to ${fer_dir}/lib " >> "${logfile}"
-            done
-        else
-            return 1
-        fi
+#   Extract the files into $fer_dir
+    echo " Extracting files from ${ferexec_dir}/fer_executables.tar.gz "
+    echo "                    to ${fer_dir} "
+    if ( cd "${fer_dir}" ; tar xzf "${ferexec_dir}/fer_executables.tar.gz" ) ; then
+        for exefile in ${exetar_files} ; do
+            write_log_message "Extracted ${exefile}"
+        done
+    else
+        return 1
     fi
 }
 
@@ -334,7 +370,7 @@ echo " "
 echo " This script can do two things for you to help install Ferret: "
 echo " "
 echo " (1) Install the Ferret executables into FER_DIR/bin from the "
-echo "     compressed .gz file you got (usually) via ftp."
+echo "     fer_executables.tar.gz file."
 echo " "
 echo "     You will want to run this option if you are installing "
 echo "     Ferret for the first time or if you are updating Ferret "

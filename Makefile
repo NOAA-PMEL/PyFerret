@@ -21,7 +21,7 @@ optimized :
 	$(MAKE) -C bin/build_fonts/unix
 
 .PHONY : debug
-debug : 
+debug :
 	mkdir -p lib
 	$(MAKE) xgks/Makefile
 	$(MAKE) -C xgks
@@ -39,6 +39,8 @@ xgks/Makefile :
 ## Clean all the directories
 .PHONY : clean
 clean :
+	rm -fr fer_executables.tar.gz
+	rm -fr fer_environment.tar.gz
 	$(MAKE) -C bin/build_fonts/unix clean
 	$(MAKE) -C gksm2ps clean
 	$(MAKE) -C external_functions clean
@@ -55,5 +57,28 @@ xgksclean :
 	find xgks -name Makefile -exec rm -f {} \;
 	rm -f xgks/port/master.mk
 	rm -f xgks/port/udposix.h
+
+
+## Install Ferret binaries, scripts, and other files into $(INSTALL_FER_DIR)
+.PHONY : install
+install : install_env install_exes
+
+## Create the fer_environment.tar.gz files and then extract it into $(INSTALL_FER_DIR)
+.PHONY :  install_env
+install_env :
+	rm -f fer_environment.tar.gz
+	bin/make_environment_tar . . -y
+	mkdir -p $(INSTALL_FER_DIR)
+	mv -f fer_environment.tar.gz $(INSTALL_FER_DIR)
+	( cd $(INSTALL_FER_DIR) ; tar xvzf fer_environment.tar.gz )
+
+## Create the fer_executables.tar.gz files and then extract it into $(INSTALL_FER_DIR)
+.PHONY : install_exes
+install_exes :
+	rm -f fer_executables.tar.gz
+	bin/make_executable_tar . . -y
+	mkdir -p $(INSTALL_FER_DIR)
+	mv -f fer_executables.tar.gz $(INSTALL_FER_DIR)
+	( cd $(INSTALL_FER_DIR) ; tar xvzf fer_executables.tar.gz )
 
 ##

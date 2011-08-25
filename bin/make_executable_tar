@@ -1,52 +1,187 @@
-#! /bin/csh -x
-# make_executable_tar
-# ver 1.0 5/99 *kob* 
+#! /bin/csh
 
-# this script encourages the tar file producer to make several manual
-# sanity checks but it does not enforce behavior
+# mycp needs to recursively copy subdirectories for the lib/python* directories
+# verbose flag used to create info messages when running this script
+set mycp = "/bin/cp -v -r --preserve=timestamp"
+set mylns = "/bin/ln -v -s"
 
-if ( $#argv == 1 ) then
-   set targ_dist_parent = $argv[1]
-   set bin_dir = $targ_dist_parent
-else
-   echo usage:
-   echo "         make_environment_tar binary_area machine_type "
-   echo e.g. "'make_executable_tar /home/users/ansley/ferret_install_utilities/bin'"
-   echo will make a gzipped tar file with the Ferret executables that are 
-   echo in the /home/users/ansley/ferret_install_utilities/bin directory  
-   exit 0
+echo ""
+if ( $#argv == 3 ) then
+    if ( "$3" == "-y" ) then
+        set auto_ans = "y"
+    endif
+endif
+if ( ($#argv < 2) || ($#argv > 3) || \
+     (($#argv == 3) && (! $?auto_ans)) ) then
+   echo "Usage:  $0  <ferret_dir>  <target_dir>  [ -y ] "
+   echo ""
+   echo "    Creates the Ferret installation file fer_executables.tar.gz. "
+   echo "    The required files will be copied from the ferret source directory "
+   echo "    <ferret_dir>, in which ferret or pyferret, gksm2ps, and the font files "
+   echo "    have been built.  All the files required will be copied to a temporary "
+   echo "    directory which this script will create.  Any missing executables will "
+   echo "    be noted.  The gzipped tar file fer_executables.tar.gz will be written "
+   echo "    in <target_dir>, which must already exist.  If the optional third "
+   echo "    argument '-y' is given, any questions normally asked by the script "
+   echo "    will be automatically answered with 'y'. "
+   echo ""
+   exit 1
 endif
 
-cd $bin_dir
+if ( ! -d "$1" ) then
+   echo "$1 does not exist or is not a directory"
+   echo ""
+   exit 1
+endif
+set ferret_dir = `cd "$1" ; pwd`
+if ( ! -d "$2" ) then
+   echo "$2 does not exist or is not a directory"
+   echo ""
+   exit 1
+endif
+set target_dir = `cd "$2" ; pwd`
 
-# get tar file location
-echo "Enter directory path to create the gzipped tar file in"
-set ans = $<
-set ctar_file = $ans/fer_executables.tar
-echo "Ready to create gzipped tar file $ctar_file"
-ready:
-echo "OK to continue ?"
-set ans = $<
-switch($ans)
-case y:
-   breaksw
-case n:
-   exit 0
-default:
-   echo "must answer y or n"
-   goto ready
-endsw
+set pyferret_dir = "${ferret_dir}/pyferret_install"
+if ( ! -d "${pyferret_dir}" ) then
+   echo "${pyferret_dir} does not exist or is not a directory"
+   echo "    pyferret module not created"
+   echo ""
+   set pyferret_dir = ""
+endif
 
-# make the gzipped tar file
-rm -f .tar_create_log
-tar vcf $ctar_file * >& $bin_dir/.tar_create_log
+# Get the version of ferret recorded in the code
+set version = `awk '/revision_level/ {print $4}' ${ferret_dir}/fer/dat/xrevision_data.F`
+if ( ($status != 0) || ("${version}" == "") ) then
+   echo "Unable to read the version number from xrevision_data.F in ${ferret_dir}/fer/dat"
+   echo ""
+   exit 1
+endif
+echo "Ferret version number is ${version}"
+echo ""
 
-gzip $ctar_file
+# Make a clean temporary directory for the tar file contents
+set temp_dir = "/var/tmp/fer_exe_$$"
+rm -fr ${temp_dir}
+mkdir ${temp_dir}
 
-ls -l $ctar_file.*
-echo "If there are any problems w/ the tar file, see "$bin_dir/".tar_create_log for"
-echo "more information"
+mkdir ${temp_dir}/bin
 
+# Copy fer/ferret_c
+if ( -x ${ferret_dir}/fer/ferret_c ) then
+   ${mycp} ${ferret_dir}/fer/ferret_c ${temp_dir}/bin/ferret_v${version}
+   cd ${temp_dir}/bin
+   ${mylns} ferret_v${version} ferret
+else
+   echo "No ferret_c executable found in ${ferret_dir}/fer"
+#  An error only if pyferret_dir was not given
+   if ( "${pyferret_dir}" == "" ) then
+      echo ""
+      exit 1
+   else
+      echo "   ferret_v<n> and ferret symbolic link not created"
+      echo ""
+   endif
+endif
 
+# Copy the external function shared-object library files
+mkdir -p ${temp_dir}/ext_func/libs
+# If pyferret, do not copy the .so files at this time due to pyferret bug
+if ( "${pyferret_dir}" == "" ) then
+   find ${ferret_dir}/external_functions -type f -perm -100 -name \*.so -exec ${mycp} {} ${temp_dir}/ext_func/libs \;
+endif
 
+# Copy gksm2ps/gksm2ps
+if ( ! -x ${ferret_dir}/gksm2ps/gksm2ps ) then
+   echo "No gksm2ps executable found in ${ferret_dir}/gksm2ps"
+   echo ""
+   exit 1
+endif
+${mycp} ${ferret_dir}/gksm2ps/gksm2ps ${temp_dir}/bin/gksm2ps
+
+# Copy font files from bin/build_fonts/unix/
+set fer_files = ${ferret_dir}/bin/build_fonts/unix/f*
+if ( ($status != 0) || ("${fer_files}" == "") ) then
+   echo "No font files found in ${ferret_dir}/bin/build_fonts/unix"
+   echo ""
+   exit 1
+endif
+mkdir ${temp_dir}/ppl
+mkdir ${temp_dir}/ppl/fonts
+${mycp} ${fer_files} ${temp_dir}/ppl/fonts
+
+# Copy fer/threddsBrowser/threddsBrowser.jar
+set tb_jar = ${ferret_dir}/fer/threddsBrowser/threddsBrowser.jar
+if ( ! -r ${tb_jar} ) then
+   echo "No threddsBrowser.jar file found ${ferret_dir}/fer/threddsBrowser"
+   echo ""
+   exit 1
+endif
+mkdir ${temp_dir}/lib
+${mycp} ${tb_jar} ${temp_dir}/lib
+
+# Either copy fer/threddsBrowser/toolsUI/toolsUI-4.1.jar ...
+set toolsui_jar = ${ferret_dir}/fer/threddsBrowser/toolsUI/toolsUI-4.1.jar
+if ( ! -r ${toolsui_jar} ) then
+   echo "No toolsUI-4.1.jar file found ${ferret_dir}/fer/threddsBrowser/toolsUI"
+   echo ""
+   exit 1
+endif
+${mycp} ${toolsui_jar} ${temp_dir}/lib
+# ... or print a message about how to get toolsUI-4.1.jar
+# echo "To minimize size, the toolsUI-4.1.jar file is not included."
+# echo "The user needs to download the jar file from:"
+# echo "  ftp://ftp.unidata.ucar.edu/pub/netcdf-java/v4.1/toolsUI-4.1.jar"
+# echo "(or we can just grab it from <ferret_dir>/fer/threddsBrowser/toolsUI/)"
+# echo 'and put it under the $FER_LIBS ($FER_DIR/lib) subdirectory'
+
+# Create a symbolic link to a (possibly non-existant) toolsUI-4.1.jar file
+cd ${temp_dir}/lib
+${mylns} toolsUI-4.1.jar toolsUI.jar
+
+# Copy pyferret files
+if ( "${pyferret_dir}" != "" ) then
+   set python_dirs = ${pyferret_dir}/lib/python*
+   if ( ($status != 0) || ("${python_dirs}" == "") ) then
+      echo "No python* directories found in ${pyferret_dir}/lib"
+      echo ""
+      exit 1
+   endif
+   ${mycp} ${python_dirs} ${temp_dir}/lib
+endif
+
+# Create the tar file
+set ctar_file = "${target_dir}/fer_executables.tar.gz"
+echo ""
+echo "The tar file will be created from the contents of "
+echo "${temp_dir}"
+echo "(which can now be examined or tweaked from another shell/window)"
+echo ""
+echo -n "Create gzipped tar file ${ctar_file} (y/n)? "
+if ( $?auto_ans ) then
+    set ans = "${auto_ans}"
+else
+    set ans = $<
+endif
+while ( ("${ans}" != "y") && ("${ans}" != "n") )
+   echo -n "Answer either y or n: "
+   set ans = $<
+end
+if ( "${ans}" == "y" ) then
+   echo ""
+   cd ${temp_dir}
+   rm -f "${ctar_file}"
+   tar cvzf "${ctar_file}" *
+   echo ""
+   ls -l "${ctar_file}"
+else
+   echo ""
+   echo "Tar file NOT created"
+endif
+
+# Clean up
+echo ""
+echo "Cleaning up - removing ${temp_dir}"
+cd "${target_dir}"
+rm -fr "${temp_dir}"
+echo ""
 

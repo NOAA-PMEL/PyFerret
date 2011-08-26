@@ -19,10 +19,10 @@ if hdf5_libdir == None:
 netcdf4_libdir = os.getenv("NETCDF4_LIBDIR")
 if netcdf4_libdir == None:
     raise ValueError, "Environment variable NETCDF4_LIBDIR is not defined"
-libz125_libdir = os.getenv("LIBZ125_LIBDIR")
-if libz125_libdir == None:
-    raise ValueError, "Environment variable LIBZ125_LIBDIR is not defined"
-libdir_list = [ "lib", str(hdf5_libdir), str(netcdf4_libdir), str(libz125_libdir) ]
+libz_libdir = os.getenv("LIBZ_LIBDIR")
+if libz_libdir == None:
+    raise ValueError, "Environment variable LIBZ_LIBDIR is not defined"
+libdir_list = [ "lib", str(hdf5_libdir), str(netcdf4_libdir), str(libz_libdir) ]
 
 # Get the list of ferret static libraries
 # Stripping off the "lib" prefix and the ".a" suffix

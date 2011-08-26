@@ -16,7 +16,7 @@ all : optimized
 .PHONY : optimized
 optimized :
 	mkdir -p $(DIR_PREFIX)/lib
-	cp $(READLINE6_LIBDIR)/libreadline.a $(READLINE6_LIBDIR)/libhistory.a $(DIR_PREFIX)/lib
+	cp $(READLINE_LIBDIR)/libreadline.a $(READLINE_LIBDIR)/libhistory.a $(DIR_PREFIX)/lib
 	$(MAKE) $(DIR_PREFIX)/xgks/Makefile
 	$(MAKE) -C $(DIR_PREFIX)/xgks
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
@@ -28,7 +28,7 @@ optimized :
 .PHONY : debug
 debug :
 	mkdir -p $(DIR_PREFIX)/lib
-	cp $(READLINE6_LIBDIR)/libreadline.a $(READLINE6_LIBDIR)/libhistory.a $(DIR_PREFIX)/lib
+	cp $(READLINE_LIBDIR)/libreadline.a $(READLINE_LIBDIR)/libhistory.a $(DIR_PREFIX)/lib
 	$(MAKE) $(DIR_PREFIX)/xgks/Makefile
 	$(MAKE) -C $(DIR_PREFIX)/xgks
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
@@ -50,25 +50,14 @@ pymod :
 	( cd $(DIR_PREFIX) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export LIBZ125_LIBDIR=$(LIBZ125_LIBDIR) ; \
+	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
 	  $(PYTHON_EXE) setup.py install --prefix=$(DIR_PREFIX)/pyferret_install )
-
-## The following is for installing the updated threddsBrowser.jar into $(FER_LIBS) and
-## the updated _pyferret.so and python scripts into $(FER_DIR)/lib without having to go
-## through the make_executables_tar script.
-.PHONY : install
-install :
-	mkdir -p $(FER_LIBS)
-	cp -f $(DIR_PREFIX)/fer/threddsBrowser/threddsBrowser.jar $(FER_LIBS)
-	( cd $(DIR_PREFIX) ; \
-	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
-	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export LIBZ125_LIBDIR=$(LIBZ125_LIBDIR) ; \
-	  $(PYTHON_EXE) setup.py install --prefix=$(FER_DIR) )
 
 ## Remove everything that was built as well as the configure of xgks
 .PHONY : clean
 clean :
+	rm -fr fer_executables.tar.gz
+	rm -fr fer_environment.tar.gz
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix clean
 	$(MAKE) -C $(DIR_PREFIX)/gksm2ps clean
 	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
@@ -85,5 +74,41 @@ xgksclean :
 	find $(DIR_PREFIX)/xgks -name Makefile -exec rm -f {} \;
 	rm -f $(DIR_PREFIX)/xgks/port/master.mk
 	rm -f $(DIR_PREFIX)/xgks/port/udposix.h
+
+
+## Install Ferret binaries, scripts, and other files into $(INSTALL_FER_DIR)
+.PHONY : install
+install : install_env install_exes
+
+## Create the fer_environment.tar.gz files and then extract it into $(INSTALL_FER_DIR)
+.PHONY :  install_env
+install_env :
+	rm -f fer_environment.tar.gz
+	bin/make_environment_tar . . -y
+	mkdir -p $(INSTALL_FER_DIR)
+	mv -f fer_environment.tar.gz $(INSTALL_FER_DIR)
+	( cd $(INSTALL_FER_DIR) ; tar xvzf fer_environment.tar.gz )
+
+## Create the fer_executables.tar.gz files and then extract it into $(INSTALL_FER_DIR)
+.PHONY : install_exes
+install_exes :
+	rm -f fer_executables.tar.gz
+	bin/make_executable_tar . . -y
+	mkdir -p $(INSTALL_FER_DIR)
+	mv -f fer_executables.tar.gz $(INSTALL_FER_DIR)
+	( cd $(INSTALL_FER_DIR) ; tar xvzf fer_executables.tar.gz )
+
+## The following is for installing the updated threddsBrowser.jar, _pyferret.so, 
+## and python scripts into $(INSTALL_FER_DIR)/lib without having to go
+## through the make_executables_tar script.
+.PHONY : update
+update :
+	mkdir -p $(INSTALL_FER_DIR)/lib
+	cp -f $(DIR_PREFIX)/fer/threddsBrowser/threddsBrowser.jar $(INSTALL_FER_DIR)/lib
+	( cd $(DIR_PREFIX) ; \
+	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
+	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
+	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
+	  $(PYTHON_EXE) setup.py install --prefix=$(INSTALL_FER_DIR) )
 
 ##

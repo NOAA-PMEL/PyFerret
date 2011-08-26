@@ -6,7 +6,7 @@
 #
 
 #
-# DIR_PREFIX, HDF5_DIR, NETCDF4_DIR, READLINE6_DIR, and LIBZ125_DIR 
+# DIR_PREFIX, HDF5_DIR, NETCDF4_DIR, READLINE_DIR, and LIBZ_DIR 
 # are from site_specific.mk which should have been included prior
 # to this include.
 #
@@ -14,10 +14,10 @@
 #
 # Directories for the libraries
 #
-	HDF5_LIBDIR		= $(HDF5_DIR)/lib
-	NETCDF4_LIBDIR		= $(NETCDF4_DIR)/lib
-	READLINE6_LIBDIR	= $(READLINE6_DIR)/lib
-	LIBZ125_LIBDIR		= $(LIBZ125_DIR)/lib
+	HDF5_LIBDIR	= $(HDF5_DIR)/lib
+	NETCDF4_LIBDIR	= $(NETCDF4_DIR)/lib
+	READLINE_LIBDIR	= $(READLINE_DIR)/lib
+	LIBZ_LIBDIR	= $(LIBZ_DIR)/lib
 
 #
 # Local defines
@@ -32,7 +32,7 @@
 			  -I$(DIR_PREFIX)/external_functions/ef_utility \
 			  -I$(HDF5_DIR)/include \
 			  -I$(NETCDF4_DIR)/include \
-			  -I$(READLINE6_DIR)/include \
+			  -I$(READLINE_DIR)/include \
 			  -I/usr/local/include
 
 	MYDEFINES	= -Dcrptd_cat_argument \
@@ -66,13 +66,13 @@
 	F77		= $(shell which gfortran)
 	RANLIB		= $(shell which ranlib)
 
-	CPP_FLAGS	+= $(MYINCLUDES) $(MYDEFINES) -fPIC -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
-	CFLAGS		+= $(MYINCLUDES) $(MYDEFINES) -fPIC -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
-	FFLAGS		+= $(MYINCLUDES) $(MYDEFINES) -fPIC -fno-automatic -fdollar-ok -ffixed-line-length-132
+	CPP_FLAGS	+= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
+	CFLAGS		+= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
+	FFLAGS		+= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -fno-automatic -fdollar-ok -ffixed-line-length-132
 
 # LD and LD_DYN_FLAGS only used for generating external function shared-object libraries
 	LD		= $(shell which gfortran)
-	LD_DYN_FLAGS	= -shared -rdynamic
+	LD_DYN_FLAGS	= -m32 -fPIC -shared -rdynamic
 
 # cancel the default rule for .f -> .o to prevent objects from being built
 # from .f files that are out-of-date with respect to their corresponding .F file

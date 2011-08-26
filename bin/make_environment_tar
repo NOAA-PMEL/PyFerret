@@ -1,25 +1,46 @@
 #! /bin/csh
 
 echo ""
-if ( $#argv != 2 ) then
-   echo "Usage:  $0  <svn_repository>  <target_dir> "
+if ( $#argv == 3 ) then
+    if ( "$3" == "-y" ) then
+        set auto_ans = "y"
+    endif
+endif
+if ( ($#argv < 2) || ($#argv > 3) || \
+     (($#argv == 3) && (! $?auto_ans)) ) then
+   echo "Usage:  $0  <svn_repository>  <target_dir>  [ -y ] "
    echo ""
-   echo "    The required files will be extracted from <svn_repository> "
-   echo "    (e.g., 'file:///home/users/tmap/svn/repos/ferret/trunk') "
+   echo "    Creates the Ferret installation file fer_environment.tar.gz. "
+   echo "    The required files will be extracted from the subversion "
+   echo "    repository <svn_repository>; for example, "
+   echo "        file:///home/users/tmap/svn/repos/ferret/trunk "
    echo "    to a temporary directory which this script will create. "
    echo "    Font files and lib files are NOT included in the tar file "
    echo "    generated.  The gzipped tar file fer_environment.tar.gz "
    echo "    will be written in <target_dir>, which must already exist. "
+   echo "    If the option third argument '-y' is given, any questions "
+   echo "    normally asked by the script will be automatically answered "
+   echo "    with 'y'. "
+   echo ""
+   echo "    Special case: if <svn_repository> is '.', then the required "
+   echo "    files will be copied from the current directory instead of "
+   echo "    being extracted from a subversion repository.  Thus, in "
+   echo "    this case, this script should probably be invoked as: "
+   echo "        bin/make_environment_tar . <target_dir> "
    echo ""
    exit 1
 endif
 
-set info = `svn info "$1"`
-if ( "${info}" == "" ) then
+if ( "$1" == "." ) then
+    set source_dir = `pwd`
+else
+    set info = `svn info "$1"`
+    if ( "${info}" == "" ) then
 #  svn has printed an appropriate error message
 #  (but still returned a zero status)
-   echo ""
-   exit 1
+       echo ""
+       exit 1
+    endif
 endif
 set repository = "$1"
 
@@ -29,7 +50,7 @@ if ( ! -d "$2" ) then
    exit 1
 endif
 # Make sure target_dir is a full pathname
-set target_dir = ` cd "$2" ; pwd`
+set target_dir = `cd "$2" ; pwd`
 
 # Make a clean temporary directory for the tar file contents
 set temp_dir = "/var/tmp/fer_env_$$"
@@ -37,18 +58,34 @@ rm -fr ${temp_dir}
 mkdir ${temp_dir}
 cd ${temp_dir}
 
-# Checkout the required files
-echo "Extracting FERRET environment files "
-echo "from ${repository} "
-echo "to ${temp_dir} "
-echo "   shell scripts"
-svn checkout -q ${repository}/bin
-echo "   journal files"
-svn checkout -q ${repository}/jnls
-echo "   external function source files"
-svn checkout -q ${repository}/external_functions
-echo "   palettes"
-svn checkout -q ${repository}/palettes
+# Copy or checkout the required files.  The copying intentionally
+# makes exactly the same directory structure as the check-out in
+# order to minimize the divergent parts of this script.
+if ( "${repository}" == "." ) then
+    echo "Copying FERRET environment files "
+    echo "from ${source_dir} "
+    echo "to ${temp_dir} "
+    echo "   shell scripts"
+    cp -f -r ${source_dir}/bin .
+    echo "   journal files"
+    cp -f -r ${source_dir}/jnls .
+    echo "   external function source files"
+    cp -f -r ${source_dir}/external_functions .
+    echo "   palettes"
+    cp -f -r ${source_dir}/palettes .
+else
+    echo "Extracting FERRET environment files "
+    echo "from ${repository} "
+    echo "to ${temp_dir} "
+    echo "   shell scripts"
+    svn checkout -q ${repository}/bin
+    echo "   journal files"
+    svn checkout -q ${repository}/jnls
+    echo "   external function source files"
+    svn checkout -q ${repository}/external_functions
+    echo "   palettes"
+    svn checkout -q ${repository}/palettes
+endif
 
 # Move files into thier proper position
 echo "Doing a bit of rearranging"
@@ -86,7 +123,11 @@ echo "${temp_dir}"
 echo "(which can now be examined or tweaked from another shell/window)"
 echo ""
 echo -n "Create gzipped tar file ${ctar_file} (y/n)? "
-set ans = $<
+if ( $?auto_ans ) then
+    set ans = "${auto_ans}"
+else
+    set ans = $<
+endif
 while ( ("${ans}" != "y") && ("${ans}" != "n") )
    echo -n "Answer either y or n: "
    set ans = $<

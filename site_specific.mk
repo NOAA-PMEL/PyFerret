@@ -13,6 +13,11 @@ BUILDTYPE	= $(HOSTTYPE)
 ## Python 2.x executable to invoke for build and install.
 PYTHON_EXE	= python2.6
 
+## Installation directory for built Ferret.  Using the "install"
+## Makefile target circumvents the need to create the fer_*.tar.gz
+## files just for creating a Ferret installation.
+INSTALL_FER_DIR = $(FER_DIR)
+
 ## Installation directory for HDF5 static libraries
 ## (contains include and lib or lib64 subdirectories)
 # HDF5_DIR	= /usr
@@ -29,15 +34,17 @@ NETCDF4_DIR	= /usr/local/netcdf_412
 
 ## Installation directory for readline static libraries
 ## (contains include and lib or lib64 subdirectories)
-# READLINE6_DIR	= /
-# READLINE6_DIR	= /usr
-READLINE6_DIR	= /usr/local
+## Version 6.x needed for PyFerret
+# READLINE_DIR	= /
+# READLINE_DIR	= /usr
+READLINE_DIR	= /usr/local
 
 ## Installation directory for libz static library
 ## (contains lib or lib64 subdirectory)
-# LIBZ125_DIR	= /
-# LIBZ125_DIR	= /usr
-LIBZ125_DIR	= /usr/local
+## Version 1.2.5 recommended by NetCDF
+# LIBZ_DIR	= /
+# LIBZ_DIR	= /usr
+LIBZ_DIR	= /usr/local
 
 ## Java 1.6 jdk home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,

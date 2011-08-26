@@ -7,7 +7,7 @@
 ##    sourcing directory as 'ferret_paths'
 ## 2) extracts the contents of fer_executables.tar.gz into $FER_DIR
 ##    after renaming any existing files that would have been overwritten
-## All changes are recorded, with a timestamp, in the log file 
+## All changes are recorded, with a timestamp, in the log file
 ## $FER_DIR/bin/Finstall.log
 
 

@@ -1,19 +1,29 @@
 #! /bin/csh
 
 # mycp needs to recursively copy subdirectories for the lib/python* directories
+# verbose flag used to create info messages when running this script
 set mycp = "/bin/cp -v -r --preserve=timestamp"
 set mylns = "/bin/ln -v -s"
 
 echo ""
-if ( $#argv != 2 ) then
-   echo "Usage:  $0  <ferret_dir>  <target_dir> "
+if ( $#argv == 3 ) then
+    if ( "$3" == "-y" ) then
+        set auto_ans = "y"
+    endif
+endif
+if ( ($#argv < 2) || ($#argv > 3) || \
+     (($#argv == 3) && (! $?auto_ans)) ) then
+   echo "Usage:  $0  <ferret_dir>  <target_dir>  [ -y ] "
    echo ""
+   echo "    Creates the Ferret installation file fer_executables.tar.gz. "
    echo "    The required files will be copied from the ferret source directory "
    echo "    <ferret_dir>, in which ferret or pyferret, gksm2ps, and the font files "
    echo "    have been built.  All the files required will be copied to a temporary "
    echo "    directory which this script will create.  Any missing executables will "
    echo "    be noted.  The gzipped tar file fer_executables.tar.gz will be written "
-   echo "    in <target_dir>, which must already exist. "
+   echo "    in <target_dir>, which must already exist.  If the optional third "
+   echo "    argument '-y' is given, any questions normally asked by the script "
+   echo "    will be automatically answered with 'y'. "
    echo ""
    exit 1
 endif
@@ -61,7 +71,7 @@ if ( -x ${ferret_dir}/fer/ferret_c ) then
    ${mycp} ${ferret_dir}/fer/ferret_c ${temp_dir}/bin/ferret_v${version}
    cd ${temp_dir}/bin
    ${mylns} ferret_v${version} ferret
-else 
+else
    echo "No ferret_c executable found in ${ferret_dir}/fer"
 #  An error only if pyferret_dir was not given
    if ( "${pyferret_dir}" == "" ) then
@@ -99,8 +109,7 @@ mkdir ${temp_dir}/ppl
 mkdir ${temp_dir}/ppl/fonts
 ${mycp} ${fer_files} ${temp_dir}/ppl/fonts
 
-# Copy fer/threddsBrowser/threddsBrowser.jar and 
-# fer/threddsBrowser/toolsUI/toolsUI*.jar
+# Copy fer/threddsBrowser/threddsBrowser.jar
 set tb_jar = ${ferret_dir}/fer/threddsBrowser/threddsBrowser.jar
 if ( ! -r ${tb_jar} ) then
    echo "No threddsBrowser.jar file found ${ferret_dir}/fer/threddsBrowser"
@@ -109,12 +118,25 @@ if ( ! -r ${tb_jar} ) then
 endif
 mkdir ${temp_dir}/lib
 ${mycp} ${tb_jar} ${temp_dir}/lib
+
+# Either copy fer/threddsBrowser/toolsUI/toolsUI-4.1.jar ...
+set toolsui_jar = ${ferret_dir}/fer/threddsBrowser/toolsUI/toolsUI-4.1.jar
+if ( ! -r ${toolsui_jar} ) then
+   echo "No toolsUI-4.1.jar file found ${ferret_dir}/fer/threddsBrowser/toolsUI"
+   echo ""
+   exit 1
+endif
+${mycp} ${toolsui_jar} ${temp_dir}/lib
+# ... or print a message about how to get toolsUI-4.1.jar
+# echo "To minimize size, the toolsUI-4.1.jar file is not included."
+# echo "The user needs to download the jar file from:"
+# echo "  ftp://ftp.unidata.ucar.edu/pub/netcdf-java/v4.1/toolsUI-4.1.jar"
+# echo "(or we can just grab it from <ferret_dir>/fer/threddsBrowser/toolsUI/)"
+# echo 'and put it under the $FER_LIBS ($FER_DIR/lib) subdirectory'
+
+# Create a symbolic link to a (possibly non-existant) toolsUI-4.1.jar file
 cd ${temp_dir}/lib
-# Create a symbolic link to a non-existant toolsUI-4.1.jar file
 ${mylns} toolsUI-4.1.jar toolsUI.jar
-# To minimize size, the toolsUI-4.1.jar file is not included.
-# Someone (the user?) needs to download the jar file from:
-#   ftp://ftp.unidata.ucar.edu/pub/netcdf-java/v4.1/toolsUI-4.1.jar
 
 # Copy pyferret files
 if ( "${pyferret_dir}" != "" ) then
@@ -135,7 +157,11 @@ echo "${temp_dir}"
 echo "(which can now be examined or tweaked from another shell/window)"
 echo ""
 echo -n "Create gzipped tar file ${ctar_file} (y/n)? "
-set ans = $<
+if ( $?auto_ans ) then
+    set ans = "${auto_ans}"
+else
+    set ans = $<
+endif
 while ( ("${ans}" != "y") && ("${ans}" != "n") )
    echo -n "Answer either y or n: "
    set ans = $<

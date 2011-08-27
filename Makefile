@@ -16,7 +16,9 @@ all : optimized
 .PHONY : optimized
 optimized :
 	mkdir -p $(DIR_PREFIX)/lib
-	cp $(READLINE_LIBDIR)/libreadline.a $(READLINE_LIBDIR)/libhistory.a $(DIR_PREFIX)/lib
+	if [ -r $(READLINE_LIBDIR)/libreadline.a ]; then \
+	    cp $(READLINE_LIBDIR)/libreadline.a $(READLINE_LIBDIR)/libhistory.a $(DIR_PREFIX)/lib; \
+	fi
 	$(MAKE) $(DIR_PREFIX)/xgks/Makefile
 	$(MAKE) -C $(DIR_PREFIX)/xgks
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
@@ -28,7 +30,9 @@ optimized :
 .PHONY : debug
 debug :
 	mkdir -p $(DIR_PREFIX)/lib
-	cp $(READLINE_LIBDIR)/libreadline.a $(READLINE_LIBDIR)/libhistory.a $(DIR_PREFIX)/lib
+	if [ -r $(READLINE_LIBDIR)/libreadline.a ]; then \
+	    cp $(READLINE_LIBDIR)/libreadline.a $(READLINE_LIBDIR)/libhistory.a $(DIR_PREFIX)/lib; \
+	fi
 	$(MAKE) $(DIR_PREFIX)/xgks/Makefile
 	$(MAKE) -C $(DIR_PREFIX)/xgks
 	$(MAKE) -C $(DIR_PREFIX)/fer debug

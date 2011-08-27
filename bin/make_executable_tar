@@ -140,9 +140,9 @@ ${mylns} toolsUI-4.1.jar toolsUI.jar
 
 # Copy pyferret files
 if ( "${pyferret_dir}" != "" ) then
-   set python_dirs = ${pyferret_dir}/lib/python*
+   set python_dirs = `find ${pyferret_dir} -type d -name python\*`
    if ( ($status != 0) || ("${python_dirs}" == "") ) then
-      echo "No python* directories found in ${pyferret_dir}/lib"
+      echo "No python* directories found under ${pyferret_dir}"
       echo ""
       exit 1
    endif

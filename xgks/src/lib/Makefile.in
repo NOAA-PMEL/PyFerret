@@ -7,6 +7,7 @@ LIBRARY		= xgks
 FONTDBDIR	= "$(LIBDIR)/xgksfonts"
 CPPFLAGS	= -I../../port -DFONTDBDIR='$(FONTDBDIR)' @CPP_X11@ @CPPFLAGS@
 CFLAGS		= @CFLAGS@
+FFLAGS		= @FFLAGS@
 
 HEADERS		= xgks.h
 headers		= event.h fillarea.h font.h gks_defines.h gks_errors.h \

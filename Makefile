@@ -22,7 +22,7 @@ optimized :
 	$(MAKE) $(DIR_PREFIX)/xgks/Makefile
 	$(MAKE) -C $(DIR_PREFIX)/xgks
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
-	$(MAKE) "CFLAGS += -O" pymod
+	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod
 	$(MAKE) -C $(DIR_PREFIX)/external_functions optimized
 	$(MAKE) -C $(DIR_PREFIX)/gksm2ps
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
@@ -36,7 +36,7 @@ debug :
 	$(MAKE) $(DIR_PREFIX)/xgks/Makefile
 	$(MAKE) -C $(DIR_PREFIX)/xgks
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
-	$(MAKE) "CFLAGS += -O0 -g" pymod
+	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" pymod
 	$(MAKE) -C $(DIR_PREFIX)/external_functions debug
 	$(MAKE) -C $(DIR_PREFIX)/gksm2ps
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix

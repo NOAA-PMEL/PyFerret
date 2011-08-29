@@ -35,11 +35,11 @@ all: optimized
 
 .PHONY : optimized
 optimized:
-	$(MAKE) "CFLAGS += -O" "FFLAGS += -O" build
+	$(MAKE) "CFLAGS = $(CFLAGS) -O" "FFLAGS = $(FFLAGS) -O" build
 
 .PHONY : debug
 debug:
-	$(MAKE) "CFLAGS += -O0 -g" "FFLAGS += -O0 -g" build
+	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" "FFLAGS = $(FFLAGS) -O0 -g" build
 
 .PHONY: build
 build:

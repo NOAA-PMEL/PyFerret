@@ -110,7 +110,7 @@ case $srcdir in
   .|/*|~*) ;;
   *) srcdir=`cd $srcdir; pwd` ;; # Make relative path absolute.
 esac
- if [ -r CUSTOMIZE.$BUILDTYPE ]; then
+if [ -r CUSTOMIZE.$BUILDTYPE ]; then
   echo reading configuration customizations from file CUSTOMIZE.$BUILDTYPE
   . ./CUSTOMIZE.$BUILDTYPE
 fi

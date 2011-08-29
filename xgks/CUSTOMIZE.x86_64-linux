@@ -22,13 +22,13 @@
 CC='gcc'
 #
 # C compiler flags (default is `-O'):
-CFLAGS='-I${HOME}/pyferret_64dev/xgks/include -I${HOME}/pyferret_64dev/ppl/include/xgks -m64 -fPIC -O2'
+CFLAGS='-m64 -fPIC -O2'
 #
 # Installation prefix (default is `../..'):
 prefix=..
 
 FC='gfortran'
-FFLAGS='-I${HOME}/pyferret_64dev/xgks/include -I${HOME}/pyferret_64dev/ppl/include/xgks -m64 -fPIC -O2 -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-length-132 -ffast-math'
+FFLAGS='-m64 -fPIC -O2 -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-length-132 -ffast-math'
 OS=linux
 
 LD_X11='-lX11'

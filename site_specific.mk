@@ -16,13 +16,14 @@ PYTHON_EXE	= python2.6
 ## Installation directory for built Ferret.  Using the "install"
 ## Makefile target circumvents the need to create the fer_*.tar.gz
 ## files just for creating a Ferret installation.
-INSTALL_FER_DIR = $(FER_DIR)
+INSTALL_FER_DIR	= $(FER_DIR)
 
 ## Installation directory for HDF5 static libraries
 ## (contains include and lib or lib64 subdirectories)
 # HDF5_DIR	= /usr
 # HDF5_DIR	= /usr/local
 HDF5_DIR	= /usr/local/hdf5_186
+# HDF5_DIR	= /usr/local/hdf5_186_64
 # HDF5_DIR	= /usr/local/hdf5_187
 
 ## Installation directory for NetCDF static libraries
@@ -30,18 +31,21 @@ HDF5_DIR	= /usr/local/hdf5_186
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
 NETCDF4_DIR	= /usr/local/netcdf_412
+# NETCDF4_DIR	= /usr/local/netcdf_412_64
 # NETCDF4_DIR	= /usr/local/netcdf_413
 
 ## Installation directory for readline static libraries
 ## (contains include and lib or lib64 subdirectories)
-## Version 6.x needed for PyFerret
+## If only shared-object library is available, it will
+## be used instead.  Version 6.x needed for PyFerret
 # READLINE_DIR	= /
 # READLINE_DIR	= /usr
 READLINE_DIR	= /usr/local
 
 ## Installation directory for libz static library
 ## (contains lib or lib64 subdirectory)
-## Version 1.2.5 recommended by NetCDF
+## If only shared-object library is available, it will
+## be used instead.  Version 1.2.5 recommended by NetCDF
 # LIBZ_DIR	= /
 # LIBZ_DIR	= /usr
 LIBZ_DIR	= /usr/local

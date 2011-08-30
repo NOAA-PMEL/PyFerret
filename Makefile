@@ -22,7 +22,7 @@ optimized :
 	$(MAKE) $(DIR_PREFIX)/xgks/Makefile
 	$(MAKE) -C $(DIR_PREFIX)/xgks
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
-	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod
+	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod_optimized
 	$(MAKE) -C $(DIR_PREFIX)/external_functions optimized
 	$(MAKE) -C $(DIR_PREFIX)/gksm2ps
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
@@ -36,7 +36,7 @@ debug :
 	$(MAKE) $(DIR_PREFIX)/xgks/Makefile
 	$(MAKE) -C $(DIR_PREFIX)/xgks
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
-	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" pymod
+	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" pymod_debug
 	$(MAKE) -C $(DIR_PREFIX)/external_functions debug
 	$(MAKE) -C $(DIR_PREFIX)/gksm2ps
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
@@ -48,12 +48,35 @@ $(DIR_PREFIX)/xgks/Makefile :
 ## The following builds _pyferret.so, then installs that shared-object library and all the
 ## python scripts into $(DIR_PREFIX)/pyferret_install.  This install directory can then be
 ## used for the <pyferret_install_dir> argument to make_executables_tar.
-.PHONY : pymod
-pymod :
+.PHONY : pymod_optimized
+pymod_optimized :
 	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/pyferret_install
 	( cd $(DIR_PREFIX) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
+	  export READLINE_LIBDIR=$(READLINE_LIBDIR) ; \
+	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
+	  $(PYTHON_EXE) setup.py build )
+	( cd $(DIR_PREFIX) ; \
+	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
+	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
+	  export READLINE_LIBDIR=$(READLINE_LIBDIR) ; \
+	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
+	  $(PYTHON_EXE) setup.py install --optimized --prefix=$(DIR_PREFIX)/pyferret_install )
+
+.PHONY : pymod_debug
+pymod_debug :
+	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/pyferret_install
+	( cd $(DIR_PREFIX) ; \
+	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
+	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
+	  export READLINE_LIBDIR=$(READLINE_LIBDIR) ; \
+	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
+	  $(PYTHON_EXE) setup.py build --debug )
+	( cd $(DIR_PREFIX) ; \
+	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
+	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
+	  export READLINE_LIBDIR=$(READLINE_LIBDIR) ; \
 	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
 	  $(PYTHON_EXE) setup.py install --prefix=$(DIR_PREFIX)/pyferret_install )
 
@@ -112,6 +135,7 @@ update :
 	( cd $(DIR_PREFIX) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
+	  export READLINE_LIBDIR=$(READLINE_LIBDIR) ; \
 	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
 	  $(PYTHON_EXE) setup.py install --prefix=$(INSTALL_FER_DIR) )
 

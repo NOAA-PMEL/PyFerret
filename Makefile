@@ -22,7 +22,7 @@ optimized :
 	$(MAKE) $(DIR_PREFIX)/xgks/Makefile
 	$(MAKE) -C $(DIR_PREFIX)/xgks
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
-	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod_optimized
+	$(MAKE) "CFLAGS = $(CFLAGS) -O2" pymod_optimized
 	$(MAKE) -C $(DIR_PREFIX)/external_functions optimized
 	$(MAKE) -C $(DIR_PREFIX)/gksm2ps
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
@@ -62,7 +62,7 @@ pymod_optimized :
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export READLINE_LIBDIR=$(READLINE_LIBDIR) ; \
 	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
-	  $(PYTHON_EXE) setup.py install --optimized --prefix=$(DIR_PREFIX)/pyferret_install )
+	  $(PYTHON_EXE) setup.py install -O2 --prefix=$(DIR_PREFIX)/pyferret_install )
 
 .PHONY : pymod_debug
 pymod_debug :
@@ -72,13 +72,13 @@ pymod_debug :
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export READLINE_LIBDIR=$(READLINE_LIBDIR) ; \
 	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
-	  $(PYTHON_EXE) setup.py build --debug )
+	  $(PYTHON_EXE) setup.py build -g )
 	( cd $(DIR_PREFIX) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export READLINE_LIBDIR=$(READLINE_LIBDIR) ; \
 	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
-	  $(PYTHON_EXE) setup.py install --prefix=$(DIR_PREFIX)/pyferret_install )
+	  $(PYTHON_EXE) setup.py install -O0 --prefix=$(DIR_PREFIX)/pyferret_install )
 
 ## Remove everything that was built as well as the configure of xgks
 .PHONY : clean

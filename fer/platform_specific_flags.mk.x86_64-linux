@@ -116,7 +116,7 @@
 # use cpp to preprocess the .F files to .f files and then compile the .f files
 %.o : %.F
 	rm -f $*.f
-	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
+	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
 	$(F77) $(FFLAGS) -c $*.f	 
 
 #

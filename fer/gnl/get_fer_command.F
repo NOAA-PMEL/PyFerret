@@ -90,6 +90,8 @@
 * *kob* 4/06 - back off my_readline call - needed for 64-bit port
 * v603 *acm* 5/07 Housekeeping: initialize arg_start and arg_end
 *                 before call to parse_command
+* V6.7 *kms* 8/11 add check for one-command mode before prompting
+*                 user for the next command
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -143,7 +145,16 @@
 	ENDIF
 
 * select source for input
- 20	GOTO (100,200,300) input_source
+* If in one-command mode but asking to prompt user for the next
+* command, then we got here from reaching the end of a go file
+* or a multi-command line.  So return to the first alternative
+* since the user is never prompted by ferret in one-command mode.
+ 20     IF ( one_cmnd_mode .AND. (input_source .EQ. 1) ) THEN
+           RETURN 1
+        ENDIF
+        GOTO (100,200,300) input_source
+
+
 
 ************** OPERATOR AS SOURCE OF COMMAND LINE ****************************
 

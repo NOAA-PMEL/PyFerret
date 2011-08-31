@@ -35,6 +35,7 @@
 * V610  *acm* 3/08 - add new MODE NLEVELS
 * V614  *acm* 10/08 - add new MODE NODATA_LAB
 * V6.6  *kms* 5/10 - add redirect_* variables and parameters for stdout/stderr redirection.
+* V6.7  *kms* 8/11 - moved one_cmnd_mode here since needed outside ferret_dispatch.F
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -162,7 +163,8 @@
      .          its_script,
      .          grat_on,
      .          shade_trim,
-     .          silent_err
+     .          silent_err,
+     .          one_cmnd_mode
 
 
 ! Note: available_char_var is unused
@@ -222,7 +224,7 @@
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,
      .		genl_storage, its_script, grat_on,
-     .          shade_trim, silent_err,
+     .          shade_trim, silent_err, one_cmnd_mode,
      .		ppl_wait, mode_name,
      .          scriptfile_name, show_file
 

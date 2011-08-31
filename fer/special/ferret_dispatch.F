@@ -160,9 +160,6 @@
 	EXTERNAL XGRID_CHG_FCNS_DATA,
      .		 XEZ_INFO_DATA
 
-        LOGICAL one_cmnd_mode
-        COMMON  /ONE_CMND_MODE_CMN/ one_cmnd_mode
-
 * temporarily we simply declare the "memory" array right here
 * calling argument declarations
 	INTEGER nflags, nchars, rtn_flags(nflags), nerrlines
@@ -348,15 +345,13 @@ c	DO 2 i = 1, 200
 *     after each submitted command is complete
 *
         SUBROUTINE SET_ONE_CMND_MODE(new_mode_int)
-        INTEGER new_mode_int
-        LOGICAL one_cmnd_mode
-        COMMON  /ONE_CMND_MODE_CMN/ one_cmnd_mode
-        one_cmnd_mode = (new_mode_int .NE. 0)
-        END
 
-        BLOCK DATA ONE_CMND_MODE_DATA
-        LOGICAL one_cmnd_mode
-        COMMON  /ONE_CMND_MODE_CMN/ one_cmnd_mode
-        DATA one_cmnd_mode /.FALSE./
+        INCLUDE 'xprog_state.cmn'
+
+        INTEGER new_mode_int
+
+        one_cmnd_mode = (new_mode_int .NE. 0)
+        RETURN
+
         END
 

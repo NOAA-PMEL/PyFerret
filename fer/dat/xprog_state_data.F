@@ -101,6 +101,7 @@
 * V614  *acm* 10/08 - add new MODE NODATA_LAB
 * V6.2  *acm*  5/09 - new default number levels is 30 pmode_nlevels
 *                If this is changed, also change it in ppl/plot/ppldata.F
+* V6.7  *kms* 8/11 - moved one_cmnd_mode here since needed outside ferret_dispatch.F
 
 	include 'ferret.parm'
 	include 'movies.parm'
@@ -114,7 +115,8 @@
      .		prompt_len	/ 5 	/
 
 	DATA	input_source	/ input_from_tty /,
-     .		mouse_input 	/.FALSE./
+     .		mouse_input 	/.FALSE./,
+     .          one_cmnd_mode   /.FALSE./
 
 	DATA	last_cmnd_buff/' '/,
      .		len_last_cmnd/1/

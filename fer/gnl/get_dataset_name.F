@@ -42,10 +42,13 @@
         include 'slash.parm'
         include 'xprog_state.cmn'
 
+	LOGICAL do_jnl
         INTEGER RUN_THREDDS_BROWSER, TM_LENSTR,
      .          len_name, buff_len, loc
         CHARACTER*512 dataset_name
         CHARACTER*2048 err_warn_msg
+
+	do_jnl = mode_journal .AND. jrnl_lun.NE.unspecified_int4 
 
 * Run the browser to get the dataset name
         dataset_name = ' '
@@ -54,7 +57,7 @@
 
 * Check if there was an error running the browser
         IF ( len_name .LT. 0 ) THEN
-            CALL SPLIT_LIST(pttmode_ops, jrnl_lun, 
+            IF (do_jnl) CALL SPLIT_LIST(pttmode_ops, jrnl_lun, 
      .                      '!-> **ERROR**', 0)
             CALL SPLIT_LIST(pttmode_ops, ttout_lun, 
      .                      '!-> **ERROR**', 0)
@@ -65,7 +68,7 @@
 
 * Check if the user canceled out
         IF ( len_name .EQ. 0 ) THEN
-            CALL SPLIT_LIST(pttmode_ops, jrnl_lun, 
+            IF (do_jnl) CALL SPLIT_LIST(pttmode_ops, jrnl_lun, 
      .                      '!-> **CANCEL**', 0)
             CALL SPLIT_LIST(pttmode_ops, ttout_lun, 
      .                      '!-> **CANCEL**', 0)
@@ -87,7 +90,7 @@
         ENDIF
 
 * Include the quotes in the filename printed to stdout and the journal
-        CALL SPLIT_LIST(pttmode_ops, jrnl_lun, 
+        IF (do_jnl) CALL SPLIT_LIST(pttmode_ops, jrnl_lun, 
      .                  '!-> ' // cmnd_buff, 0)
         CALL SPLIT_LIST(pttmode_ops, ttout_lun, 
      .                  '!-> ' // cmnd_buff, 0)

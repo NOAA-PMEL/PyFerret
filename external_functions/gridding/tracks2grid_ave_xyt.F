@@ -102,7 +102,7 @@
      .        'data to XYT grid.')
       CALL ef_set_desc(id, buff)
 
-      CALL ef_set_num_args(id, 9)
+      CALL ef_set_num_args(id, 8)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS,
      .        IMPLIED_BY_ARGS, NORMAL, IMPLIED_BY_ARGS)
 
@@ -160,12 +160,6 @@
      .       'units and origin as tpts')
       CALL ef_set_arg_desc(id, arg, buff)
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
-
-      arg = 9
-      CALL ef_set_arg_name(id, arg, 'MASK')
-      CALL ef_set_arg_desc(id, arg, 
-     .  'XY MASK on output grid: compute result if mask=1')
-      CALL ef_set_axis_influence(id, arg, YES, YES, NO, NO)
 
 *                                                                      ^
 *                                                                      |
@@ -237,7 +231,7 @@
 *
 
       SUBROUTINE tracks2grid_ave_xyt_compute(id, arg_1, arg_2, arg_3, 
-     .     arg_4, arg_5, arg_6, arg_7, arg_8, arg_9, result, 
+     .     arg_4, arg_5, arg_6, arg_7, arg_8, result, 
      .      xax, yax, tax, obs_cruise, obs)
 
 *  arg_1  var
@@ -532,13 +526,6 @@ C  Get coordinates of output axes.
      .           n, vv, xx, yy, tt, ncc)
          IF (vv .EQ. bad_flag(ARG1) .OR. xx .EQ. bad_flag(ARG2) .OR. 
      .          yy .EQ. bad_flag(ARG3) .OR. tt .EQ. bad_flag(ARG4) ) GOTO 300
-         imask = INT(1+(xx-xax1)/dx)
-	 if (xx .LT. xax(imask,1,1,1) - dx/2) imask = imask - 1
-	 if (xx .GT. xax(imask,1,1,1) + dx/2) imask = imask + 1
-         jmask = INT(1+(yy-yax1)/dy)
-	 if (yy .LT. yax(jmask,1,1,1) - dy/2) jmask = jmask - 1
-	 if (yy .GT. yax(jmask,1,1,1) + dy/2) jmask = jmask + 1
-	 IF (arg_9(imask,jmask,1,1) .EQ. 0) GOTO 300
 
          IF (ncc .NE. icruise) THEN
 	    

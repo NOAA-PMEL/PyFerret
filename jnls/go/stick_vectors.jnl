@@ -42,8 +42,15 @@ QUERY/IGNORE $3%<Usage: GO stick_vectors "VECTOR"/[QUALS] U V half_inch_value ["
 ! set up the PLOT+ as if for a 2-line plot
 $1/SET_UP $2, $3
 
+! If the plot command includes /OVER, then that needs to be added to the
+! PPL PLOTUV command.
+
+DEFINE SYMBOL upcommand = `UPCASE("($1)")`
+IF `STRINDEX("($upcommand)","OV") GT 0` THEN DEFINE SYMBOL qualifiers = /OVER
+
+
 ! ... but display it with the PLOTUV command
-PPL PLOTUV $4"0" $5"1"
+PPL PLOTUV($qualifiers) $4"0" $5"1"
 
 set mode/last verify
 

@@ -301,7 +301,7 @@ class PyQtQueuedViewerProcess(Process):
         self.__queue = joinablequeue
 
     def run(self):
-        self.__app = QApplication(sys.argv)
+        self.__app = QApplication(["PyQtQueuedViewer"])
         self.__viewer = PyQtQueuedViewer(self.__queue)
         result = self.__app.exec_()
         self.__queue.close()
@@ -336,7 +336,7 @@ class _PyQtCommandQueuer(QDialog):
 if __name__ == "__main__":
     from Queue import Queue
     
-    app = QApplication(sys.argv)
+    app = QApplication(["PyQtQueuedViewer"])
     cmndqueue = Queue()
     viewer = PyQtQueuedViewer(cmndqueue)
     drawcmnds = []

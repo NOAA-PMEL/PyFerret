@@ -72,6 +72,7 @@ ext_mods = [ Extension("pyferret._pyferret", include_dirs = incdir_list,
                                              extra_link_args = addn_link_args), ]
 
 # Configure the setup
+queuedviewerdir = os.path.join("queuedviewer", "src", "queuedviewer")
 setup(name = "pyferret",
       version = "7.0.0.5",
       description = "python module providing ferret functionality",
@@ -79,7 +80,7 @@ setup(name = "pyferret",
       author = "Karl M. Smith",
       author_email = "karl.smith@noaa.gov",
       url = "http://ferret.pmel.noaa.gov/Ferret",
-      packages = [ "pyferret", "pyferret.stats", "pyferret.fershp", ],
-      package_dir = { "pyferret":"pyfermod", },
+      packages = [ "pyferret", "pyferret.stats", "pyferret.fershp", "queuedviewer", ],
+      package_dir = { "pyferret":"pyfermod", "queuedviewer":queuedviewerdir, },
       ext_modules = ext_mods)
 

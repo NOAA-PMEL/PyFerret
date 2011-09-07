@@ -1,6 +1,5 @@
 
 from multiprocessing import JoinableQueue
-from pyqtqueuedviewer import PyQtQueuedViewerProcess
 import sys
 
 class QueuedViewer(object):
@@ -19,6 +18,10 @@ class QueuedViewer(object):
         '''
         self.__jqueue = JoinableQueue()
         if viewertype == "PyQt":
+            try:
+                from pyqtqueuedviewer import PyQtQueuedViewerProcess
+            except ImportError:
+                raise TypeError("The PyQt viewer requires the PyQt4 and sip packages")
             self.__vprocess = PyQtQueuedViewerProcess(self.__jqueue)
         else:
             raise TypeError("Unknown viewer type %s" % str(viewertype))

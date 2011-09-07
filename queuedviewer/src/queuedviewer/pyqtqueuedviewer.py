@@ -1,16 +1,29 @@
+'''
+PyQtQueuedViewer is a graphics viewer application written in PyQt4 that
+receives its drawing and other commands primarily from another application
+through a queue.  A limited number of commands are provided by the viewer
+itself to allow saving and some manipulation of the displayed scene.  The
+controlling application, however, will be unaware of these modifications
+made to the scene.
+
+PyQtQueuedViewerProcess is used to create and run a PyQtQueuedViewer.
+
+This package was developed by the Thermal Modeling and Analysis Project
+(TMAP) of the National Oceanographic and Atmospheric Administration's (NOAA)
+Pacific Marine Environmental Lab (PMEL).
+'''
+
 import sip
 sip.setapi('QVariant', 2)
 
-from PyQt4.QtCore import QPointF, QTimer
-from PyQt4.QtGui import QAction, QApplication, QBrush, QDialog, QFileDialog, \
-                        QFont, QGraphicsScene, QGraphicsView, QImage, \
-                        QMainWindow, QMessageBox, QPen, QPainter, QPolygonF, \
-                        QPushButton
-from pyqtqueuecmndhelper import PyQtQueueCmndHelper
+from PyQt4.QtCore import QString, QTimer
+from PyQt4.QtGui import QAction, QApplication, QDialog, QFileDialog, \
+                        QGraphicsScene, QGraphicsView, QImage, \
+                        QMainWindow, QMessageBox, QPainter, QPushButton
+from pyqtqvcmndhelper import PyQtQVCmndHelper
 from multiprocessing import Process
 from Queue import Empty
 import math
-import sys
 
 
 class PyQtQueuedViewer(QMainWindow):
@@ -19,9 +32,11 @@ class PyQtQueuedViewer(QMainWindow):
 
     A drawing command is a dictionary with string keys that will be interpreted
     into the appropriate PyQt command(s).  For example,
-      { "action":"drawText", "text":"Hello", 
+      { "action":"drawText", "id":"annotation",
+        "text":"Hello",
         "font":{"family":"Times", "size":36, "italic":True},
-        "fill":{color:"darkred"}, "outline":{color:"black"},
+        "fill":{"color":0x880000, "style":"cross"},
+        "outline":{"color":"black"},
         "location":(25,35) }
 
     The command { "action":"exit" } will shutdown the viewer and is the only way
@@ -40,6 +55,7 @@ class PyQtQueuedViewer(QMainWindow):
         self.createActions()
         self.createMenus()
         self.__gritems = { }
+        self.__helper = PyQtQVCmndHelper(self.__scene, self.__gritems)
         self.__lastfilename = ""
         self.__shuttingdown = False
         self.__timer = QTimer(self)
@@ -53,26 +69,26 @@ class PyQtQueuedViewer(QMainWindow):
         of the actions are not transferred in addAction, thus the need
         to maintain references here.
         '''
-        self.__saveAct = QAction("&Save", self, shortcut="Ctrl+S",
-                                 statusTip="Save the current scene",
+        self.__saveAct = QAction(self.tr("&Save"), self, shortcut=self.tr("Ctrl+S"),
+                                 statusTip=self.tr("Save the current scene"),
                                  triggered=self.inquireSaveFilename)
-        self.__refreshAct = QAction("Re&fresh", self, shortcut="Ctrl+F",
-                                    statusTip="Refresh the current scene",
+        self.__refreshAct = QAction(self.tr("Re&fresh"), self, shortcut=self.tr("Ctrl+F"),
+                                    statusTip=self.tr("Refresh the current scene"),
                                     triggered=self.refreshScene)
-        self.__resizeAct = QAction("&Resize", self, shortcut="Ctrl+R",
-                                   statusTip="Resize the underlying scene",
+        self.__resizeAct = QAction(self.tr("&Resize"), self, shortcut=self.tr("Ctrl+R"),
+                                   statusTip=self.tr("Resize the underlying scene"),
                                    triggered=self.inquireResizeScene)
-        self.__hideAct = QAction("&Hide", self, shortcut="Ctrl+H",
-                                 statusTip="Hide the viewer",
+        self.__hideAct = QAction(self.tr("&Hide"), self, shortcut=self.tr("Ctrl+H"),
+                                 statusTip=self.tr("Hide the viewer"),
                                  triggered=self.hide)
-        self.__aboutAct = QAction("&About", self,
-                                  statusTip="Show information about this viewer", 
+        self.__aboutAct = QAction(self.tr("&About"), self,
+                                  statusTip=self.tr("Show information about this viewer"), 
                                   triggered=self.aboutMsg)
-        self.__aboutQtAct = QAction("About &Qt", self,
-                                    statusTip="Show information about the Qt library",
+        self.__aboutQtAct = QAction(self.tr("About &Qt"), self,
+                                    statusTip=self.tr("Show information about the Qt library"),
                                     triggered=self.aboutQtMsg)
-        self.__exitAct = QAction("E&xit", self, 
-                                 statusTip="Shut down the viewer",
+        self.__exitAct = QAction(self.tr("E&xit"), self, 
+                                 statusTip=self.tr("Shut down the viewer"),
                                  triggered=self.exitViewer)
 
     def createMenus(self):
@@ -80,13 +96,14 @@ class PyQtQueuedViewer(QMainWindow):
         Create the menu items for the viewer 
         using the previously created actions.
         '''
-        sceneMenu = self.menuBar().addMenu("&Scene")
+        menuBar = self.menuBar()
+        sceneMenu = menuBar.addMenu(menuBar.tr("&Scene"))
         sceneMenu.addAction(self.__saveAct)
         sceneMenu.addAction(self.__refreshAct)
         sceneMenu.addAction(self.__resizeAct)
         sceneMenu.addSeparator()
         sceneMenu.addAction(self.__hideAct)
-        helpMenu = self.menuBar().addMenu("&Help")
+        helpMenu = menuBar.addMenu(menuBar.tr("&Help"))
         helpMenu.addAction(self.__aboutAct)
         helpMenu.addAction(self.__aboutQtAct)
         helpMenu.addSeparator()
@@ -113,8 +130,8 @@ class PyQtQueuedViewer(QMainWindow):
         self.close()
 
     def aboutMsg(self):
-        QMessageBox.about(self, "About PyQtQueuedViewer",
-            "\n" \
+        QMessageBox.about(self, self.tr("About PyQtQueuedViewer"),
+            self.tr("\n" \
             "PyQtQueuedViewer is a graphics viewer application that " \
             "receives its drawing and other commands primarily from " \
             "another application through a queue.  A limited number " \
@@ -131,10 +148,10 @@ class PyQtQueuedViewer(QMainWindow):
             "\n\n" \
             "PyQtViewer was developed by the Thermal Modeling and Analysis " \
             "Project (TMAP) of the National Oceanographic and Atmospheric " \
-            "Administration's (NOAA) Pacific Marine Environmental Lab (PMEL). ")
+            "Administration's (NOAA) Pacific Marine Environmental Lab (PMEL). "))
 
     def aboutQtMsg(self):
-        QMessageBox.aboutQt(self, "About Qt")
+        QMessageBox.aboutQt(self, self.tr("About Qt"))
 
     def refreshScene(self):
         '''
@@ -187,24 +204,29 @@ class PyQtQueuedViewer(QMainWindow):
         Prompt the user for the name of the file into which to save the scene.
         The file format will be determined from the filename extension.
         '''
-        formatTypes = ( ( "png", "Portable Networks Graphics (*.png)" ),
-                        ( "jpeg", "Joint Photographic Experts Group (*.jpeg *.jpg *.jpe)" ),
-                        ( "tiff", "Tagged Image File Format (*.tiff *.tif)" ),
-                        ( "ppm", "Portable Pixmap (*.ppm)" ),
-                        ( "xpm", "X11 Pixmap (*.xpm)" ),
-                        ( "xbm", "X11 Bitmap (*.xbm)" ),
-                        ( "bmp", "Windows Bitmap (*.bmp)" ), )
-        filters = ";;".join([ t[1] for t in formatTypes ])
+        formatTypes = ( ( "png", self.tr("Portable Networks Graphics (*.png)") ),
+                        ( "jpeg", self.tr("Joint Photographic Experts Group (*.jpeg *.jpg *.jpe)") ),
+                        ( "tiff", self.tr("Tagged Image File Format (*.tiff *.tif)") ),
+                        ( "ppm", self.tr("Portable Pixmap (*.ppm)") ),
+                        ( "xpm", self.tr("X11 Pixmap (*.xpm)") ),
+                        ( "xbm", self.tr("X11 Bitmap (*.xbm)") ),
+                        ( "bmp", self.tr("Windows Bitmap (*.bmp)") ), )
+        # tr returns QStrings so the following does not work
+        # filters = ";;".join( [ t[1] for t in formatTypes ] )
+        filters = QString(formatTypes[0][1])
+        for typePair in formatTypes[1:]:
+            filters.append(";;")
+            filters.append(typePair[1])
         (fileName, fileFilter) = QFileDialog.getSaveFileNameAndFilter(self, 
-                                            "Save the current scene as ", 
+                                            self.tr("Save the current scene as "), 
                                             self.__lastfilename, filters)
-        for (fmt, fmtName) in formatTypes:
-            if fileFilter == fmtName:
-                fileFormat = fmt
-                break
-        else:
-            raise RuntimeError("Unexpected file format name %s" % fileFilter)
         if fileName:
+            for (fmt, fmtQName) in formatTypes:
+                if fmtQName.compare(fileFilter) == 0:
+                    fileFormat = fmt
+                    break
+            else:
+                raise RuntimeError( self.tr("Unexpected file format name '%1'").arg(fileFilter) )
             self.saveSceneToFile(fileName, fileFormat)
             self.__lastfilename = fileName
 
@@ -252,29 +274,29 @@ class PyQtQueuedViewer(QMainWindow):
         elif cmndact == "refresh":
             self.refreshScene()
         elif cmndact == "resizeScene":
-            myrect = PyQtQueueCmndHelper.getRect(cmnd)
+            myrect = self.__helper.getRect(cmnd)
             self.resizeScene(myrect.x(), myrect.y(),
                              myrect.width(), myrect.height())
         elif cmndact == "resizeViewer":
-            myrect = PyQtQueueCmndHelper.getRect(cmnd)
+            myrect = self.__helper.getRect(cmnd)
             self.resizeViewer(myrect.width(), myrect.height())
         elif cmndact == "save":
             self.saveScene()
         elif cmndact == "show":
             self.show()
         elif cmndact == "addPolygon":
-            self.addPolygon(cmnd)
+            self.__helper.addPolygon(cmnd)
         elif cmndact == "addText":
-            self.addSimpleText(cmnd)
+            self.__helper.addSimpleText(cmnd)
         else:
-            raise ValueError("Unknown command action %s" % str(cmndact))
+            raise ValueError( self.tr("Unknown command action %1").arg(str(cmndact)) )
 
     def clearScene(self):
         '''
         Removes all graphical items from the scene, leaving an empty scene.
         '''
         self.__scene.clear()
-        self.__gritems = { }
+        self.__gritems.clear()
 
     def saveScene(self, cmnd):
         '''
@@ -284,93 +306,6 @@ class PyQtQueuedViewer(QMainWindow):
         '''
         fileName = cmnd["filename"]
         self.saveSceneToFile(fileName)
-
-    def addSimpleText(self, cmnd):
-        '''
-        Add a "simple" text item to the viewer.  Raises a KeyError if either
-        the "text" or "id" key is not given.
-
-        Recognized keys from cmnd:
-            "id": identification string for this graphics item
-            "text": string to displayed
-            "font": dictionary describing the font to use; 
-                    see PyQtQueueCmndHelper.getFontFromCommand
-            "fill": dictionary describing the brush used to draw the text; 
-                    see PyQtQueueCmndHelper.getBrushFromCommand
-            "outline": dictionary describing the pen used to outline the text; 
-                       see PyQtQueueCmndHelper.getPenFromCommand
-            "location": (x,y) location for the start of text in pixels 
-                        from the upper left corner of the scene
-        '''
-        myid = cmnd["id"]
-        # If this is a new ID, create an empty list of graphics items
-        # associated with this ID.
-        if self.__gritems.get(myid) == None:
-            self.__gritems[myid] = [ ]
-        # Create the simple text graphics item
-        try:
-            myfont = PyQtQueueCmndHelper.getFontFromCommand(cmnd, "font")
-        except KeyError:
-            myfont = QFont()
-        mygrtext = self.__scene.addSimpleText(cmnd["text"], myfont)
-        try:
-            mybrush = PyQtQueueCmndHelper.getBrushFromCommand(cmnd, "fill")
-            mygrtext.setBrush(mybrush)
-        except KeyError:
-            pass
-        try:
-            mypen = PyQtQueueCmndHelper.getPenFromCommand(cmnd, "outline")
-            mygrtext.setPen(mypen)
-        except KeyError:
-            pass
-        try:
-            (x, y) = cmnd["location"] 
-            mygrtext.translate(x, y)
-        except KeyError:
-            pass
-        # Add this graphics item to list associated with the given ID
-        self.__gritems[myid].append(mygrtext)
-
-    def addPolygon(self, cmnd):
-        '''
-        Adds a polygon item to the viewer.  Raises a KeyError if either
-        the "points" or the "id" key is not given.
-
-        Recognized keys from cmnd:
-            "id": identification string for this graphics item
-            "points": the vertices of the polygon as a list of (x,y) points
-                      of pixel values from the upper left corner of the scene
-            "fill": dictionary describing the brush used to fill the polygon; 
-                    see PyQtQueueCmndHelper.getBrushFromCommand
-            "outline": dictionary describing the pen used to outline the polygon; 
-                       see PyQtQueueCmndHelper.getPenFromCommand
-            "offset": (x,y) offset, in pixels from the upper left corner of 
-                      the scene, for the polygon
-        '''
-        myid = cmnd["id"]
-        # If this is a new ID, create an empty list of graphics items
-        # associated with this ID.
-        if self.__gritems.get(myid) == None:
-            self.__gritems[myid] = [ ]
-        # Create the polygon graphics item
-        mypoints = cmnd["points"]
-        mypolygon = QPolygonF([ QPointF(x,y) for (x,y) in mypoints ])
-        try:
-            (x, y) = cmnd["offset"]
-            mypolygon.translate(x, y)
-        except KeyError:
-            pass
-        try:
-            mypen = PyQtQueueCmndHelper.getPenFromCommand(cmnd, "outline")
-        except KeyError:
-            mypen = QPen()
-        try:
-            mybrush = PyQtQueueCmndHelper.getBrushFromCommand(cmnd, "fill")
-        except KeyError:
-            mybrush = QBrush()
-        mygrpolygon = self.__scene.addPolygon(mypolygon, mypen, mybrush)
-        # Add this graphics item to list associated with the given ID
-        self.__gritems[myid].append(mygrpolygon)
 
 
 class PyQtQueuedViewerProcess(Process):
@@ -413,7 +348,8 @@ class _PyQtCommandQueuer(QDialog):
 
 if __name__ == "__main__":
     from Queue import Queue
-    
+    import sys
+
     app = QApplication(["PyQtQueuedViewer"])
     cmndqueue = Queue()
     viewer = PyQtQueuedViewer(cmndqueue)

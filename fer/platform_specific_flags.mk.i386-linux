@@ -42,7 +42,6 @@
 		$(INCLUDES) \
 		-m32 \
 		-march=i486 \
-		-O \
 		-fPIC \
 		-Dunix \
 		-Dgfortran \
@@ -97,8 +96,6 @@
 		-fdollar-ok \
 		-ffixed-line-length-132 \
 		$(FINCLUDES)
-
-#	PROF_FLAGS = -pg
 
 	# Below this line are macro definitions used only for the final linking of the executable
 	#

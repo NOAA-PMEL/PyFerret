@@ -10,6 +10,7 @@ CPP_X11		= @CPP_X11@
 INCLUDES	= -I../src/lib -I../port
 CPPFLAGS	= @CPPFLAGS@
 CFLAGS		= $(INCLUDES) $(DEFINES) @CFLAGS@
+FFLAGS		= $(INCLUDES) $(DEFINES) @FFLAGS@
 prefix		= ..
 CSRCS		= defcolors.c font.c hanoi.c mi.c pline.c pmark.c
 #FSRCS		= gksdemo.f star.f

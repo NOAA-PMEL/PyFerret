@@ -35,7 +35,7 @@
 	CPP		= /lib/cpp
 
 	CPP_FLAGS       = $(INCLUDES) \
-			  -m64 -O2 \
+			  -m64 \
 			  -fPIC -Dunix -Dgfortran   \
 			  -DNO_OPEN_SHARED \
 			  -DNO_OPEN_RECORDTYPE -DNO_SNGL  \

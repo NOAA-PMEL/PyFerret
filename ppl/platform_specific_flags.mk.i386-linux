@@ -40,7 +40,6 @@
 		$(INCLUDES) \
 		-m32 \
 		-march=i486 \
-		-O \
 		-fPIC \
 		-Dunix \
 		-Dgfortran \
@@ -95,8 +94,6 @@
 		-fdollar-ok \
 		-ffixed-line-length-132 \
 		$(FINCLUDES)
-
-#	PROF_FLAGS = -pg
 
 # cancel the default rule for .f -> .o to prevent objects from being built
 # from .f files that are out-of-date with respect to their corresponding .F file

@@ -93,20 +93,23 @@ build: update fmt_libraries fer_libraries ppl_libraries special_code ferret thre
 
 ncdf4:	.FRC
 	mkdir -p ../lib
-	$(MAKE) "GUI_FAKES=special/gui_fakes.o" \
+	$(MAKE) "CFLAGS=$(CFLAGS) -O -DNDEBUG" \
+		"FFLAGS=$(FFLAGS) -O -DNDEBUG" \
+		"GUI_FAKES=special/gui_fakes.o" \
 		build
 
 # Dont seem to have all the static libraries we need for this.
 ncdf4_static:	.FRC
 	mkdir -p ../lib
-	$(MAKE) "LDFLAGS= $(LDFLAGS) -static" \
+	$(MAKE) "CFLAGS=$(CFLAGS) -O -DNDEBUG" \
+		"FFLAGS=$(FFLAGS) -O -DNDEBUG" \
+		"LDFLAGS=$(LDFLAGS) -static" \
 		"GUI_FAKES=special/gui_fakes.o" build
 
-# Need -O0 (no optimization) at end of CFLAGS/FFLAGS to override previous optimization flags
 debug:	.FRC
 	mkdir -p ../lib
-	$(MAKE) "FFLAGS = $(FFLAGS) -Ddebug -O0 -g"  \
-		"CFLAGS = $(CFLAGS) -O0 -g" \
+	$(MAKE) "CFLAGS = $(CFLAGS) -Ddebug -O0 -g"  \
+		"FFLAGS = $(FFLAGS) -Ddebug -O0 -g" \
 		"GUI_FAKES=special/gui_fakes.o" build
 
 

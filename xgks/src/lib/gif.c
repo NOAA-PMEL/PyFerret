@@ -32,6 +32,8 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
 *
+* kms - 9/2011 - commented out unused/uninitialized num_pt 
+*                and erroneous assert(num_pt > 0) in GIFcellArray
 */
 
 
@@ -995,14 +997,14 @@ GIFcellArray(Metafile *mf, int num, Gpoint *ll, Gpoint *ur, Gpoint *lr, Gint row
 	double accum;
 	int tox, toy;
 	int i, j, p;
-	int num_pt;
+	/* int num_pt; */
 
     mf_cgmo		**cgmo	= &mf->cgmo;
     for (imf = 0; imf < num; ++imf) {
 	Gint	i;
 	GIFmetafile *meta = find_meta(cgmo[imf]);
 	assert(meta);
-	assert(num_pt > 0);
+	/* assert(num_pt > 0); */
 	meta->resize = 0;	/* Not OK to resize */
 
 

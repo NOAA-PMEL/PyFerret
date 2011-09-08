@@ -2,7 +2,7 @@
 
 ## Full path name of the directory containing this file (the ferret root directory).
 ## Do not use $(shell pwd) since this is included in Makefiles in other directories.
-DIR_PREFIX	= $(HOME)/pyferret_64dev
+DIR_PREFIX	= $(HOME)/pyferret_n64dev
 
 ## Machine for which to build Ferret
 ## Use $(HOSTTYPE) to build natively for the machine you are using
@@ -22,16 +22,16 @@ INSTALL_FER_DIR	= $(FER_DIR)
 ## (contains include and lib or lib64 subdirectories)
 # HDF5_DIR	= /usr
 # HDF5_DIR	= /usr/local
-HDF5_DIR	= /usr/local/hdf5_186
-# HDF5_DIR	= /usr/local/hdf5_186_64
+# HDF5_DIR	= /usr/local/hdf5_186
+HDF5_DIR	= /usr/local/hdf5_186_64
 # HDF5_DIR	= /usr/local/hdf5_187
 
 ## Installation directory for NetCDF static libraries
 ## (contains include and lib or lib64 subdirectories)
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
-NETCDF4_DIR	= /usr/local/netcdf_412
-# NETCDF4_DIR	= /usr/local/netcdf_412_64
+# NETCDF4_DIR	= /usr/local/netcdf_412
+NETCDF4_DIR	= /usr/local/netcdf_412_64
 # NETCDF4_DIR	= /usr/local/netcdf_413
 
 ## Installation directory for readline static libraries
@@ -39,8 +39,8 @@ NETCDF4_DIR	= /usr/local/netcdf_412
 ## If only shared-object library is available, it will
 ## be used instead.  Version 6.x needed for PyFerret
 # READLINE_DIR	= /
-# READLINE_DIR	= /usr
-READLINE_DIR	= /usr/local
+READLINE_DIR	= /usr
+# READLINE_DIR	= /usr/local
 
 ## Installation directory for libz static library
 ## (contains lib or lib64 subdirectory)

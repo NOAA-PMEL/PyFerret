@@ -72,7 +72,6 @@ ext_mods = [ Extension("pyferret._pyferret", include_dirs = incdir_list,
                                              extra_link_args = addn_link_args), ]
 
 # Configure the setup
-queuedviewerdir = os.path.join("queuedviewer", "src", "queuedviewer")
 setup(name = "pyferret",
       version = "7.0.0.5",
       description = "python module providing ferret functionality",
@@ -80,7 +79,22 @@ setup(name = "pyferret",
       author = "Karl M. Smith",
       author_email = "karl.smith@noaa.gov",
       url = "http://ferret.pmel.noaa.gov/Ferret",
-      packages = [ "pyferret", "pyferret.stats", "pyferret.fershp", "queuedviewer", ],
-      package_dir = { "pyferret":"pyfermod", "queuedviewer":queuedviewerdir, },
+      packages = [ "pyferret", "pyferret.stats", "pyferret.fershp", ],
+      package_dir = { "pyferret":"pyfermod", },
       ext_modules = ext_mods)
+setup(name = "queuedviewer",
+      version = "0.0.0.1",
+      description = "graphics viewer controlled by a command queue",
+      long_description = "A graphics viewer application that receives its " \
+                         "drawing and other commands primarily from another " \
+                         "application through a queue.  A limited number of " \
+                         "commands are provided by the viewer itself to allow " \
+                         "saving and some manipulation of the displayed scene.  " \
+                         "The controlling application, however, will be unaware " \
+                         "of these modifications made to the scene.",
+      author = "Karl M. Smith",
+      author_email = "karl.smith@noaa.gov",
+      url = "http://ferret.pmel.noaa.gov/Ferret",
+      packages = [ "queuedviewer", ],
+      package_dir = { "queuedviewer":"qviewmod", })
 

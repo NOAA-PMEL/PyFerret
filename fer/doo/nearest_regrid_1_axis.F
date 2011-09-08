@@ -75,6 +75,7 @@
 *                  define the @NRST regridding.
 
 	include 'ferret.parm'
+	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xcontext.cmn'
@@ -196,7 +197,6 @@
 	         DO 100 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 100 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 		    dst(i,j,k,l) = src(ss,j,k,l)
-		    print *, i, ss, src(ss,j,k,l)
  100	         CONTINUE
 	      ELSE
 	         DO 102 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)

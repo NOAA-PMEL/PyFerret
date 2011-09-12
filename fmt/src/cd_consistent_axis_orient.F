@@ -42,6 +42,7 @@
 * revision 0.0 - 1/11 
 * V67 1/11 *acm*  Ticket 1774. Changes for making sure axes have the same direction
 *                 in all  grids of a dataset.
+* V672 8/11 *acm* When reordering axes, dont wipe out an existing axis that is not being moved.
 
 * argument definitions:
 *      dset        - TMAP data set pointer
@@ -213,8 +214,10 @@ c Find the grid which contains this axis and has the most dimensions.
                      grid_line(ipos2,igrid2) = mpsnorm
 
                      DO 180 idim = ipos1+1, 4
-                            grid_line(idim,igrid2) = grid_save(idim-1)
-                            IF (grid_save(idim-1) .NE.mpsnorm) need_iterate = .TRUE.
+                        IF (grid_save(idim-1).NE.mpsnorm) THEN
+                           grid_line(idim,igrid2) = grid_save(idim-1)
+			   need_iterate = .TRUE.
+			ENDIF
   180                CONTINUE
 
                      reordered = reordered + 1

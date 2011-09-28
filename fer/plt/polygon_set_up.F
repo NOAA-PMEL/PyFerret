@@ -413,7 +413,7 @@ c	ind_dim = plot_axis(1)
           npoly = 0
 	ELSE
 *    ... coords are 2D arrays of color_dim X coord_dim
-           npoly = cx_hi_ss(cx_x,color_dim)
+           npoly = cx_hi_ss(cx_x,color_dim) - cx_lo_ss(cx_x,color_dim) + 1
 	ENDIF
 
 * loop through all the polygons variables loading them into PPLUS

@@ -89,7 +89,6 @@ clean :
 	$(MAKE) -C $(DIR_PREFIX)/gksm2ps clean
 	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
 	rm -fr $(DIR_PREFIX)/pyferret_install $(DIR_PREFIX)/build ferret.jnl*
-	find $(DIR_PREFIX)/qviewmod -name '*.py[co]' -exec rm -f {} ';'
 	find $(DIR_PREFIX)/pyfermod -name '*.py[co]' -exec rm -f {} ';'
 	$(MAKE) -C $(DIR_PREFIX)/fer clean
 	rm -fr $(DIR_PREFIX)/lib

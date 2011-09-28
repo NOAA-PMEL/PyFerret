@@ -7,22 +7,19 @@ PACKAGE		= xgks
 MAJOR_NO	= @MAJOR_NO@
 MINOR_NO	= @MINOR_NO@
 
-SUBDIRS		= port src fontdb progs doc
+SUBDIRS		= port src
 
 SUBDIR_TARGETS	= port/all port/install port/clean port/distclean \
-		  src/all src/install src/clean src/distclean \
-		  fontdb/all fontdb/install fontdb/clean fontdb/distclean \
-		  progs/all progs/install progs/clean progs/distclean \
-		  doc/all doc/install doc/clean doc/distclean
+		  src/all src/install src/clean src/distclean
 
 MANIFEST        = COPYRIGHT CUSTOMIZE HISTORY INSTALL MANIFEST \
 		  Makefile.in ORIGIN README VERSION configure \
 		  configure.in
 
-all::		port/all src/all fontdb/all progs/all doc/all
+all::		port/all src/all
 
-install::	port/install src/install fontdb/install
+install::	port/install src/install
 
-clean::		port/clean src/clean fontdb/clean progs/clean doc/clean
+clean::		port/clean src/clean
 
 include port/master.mk

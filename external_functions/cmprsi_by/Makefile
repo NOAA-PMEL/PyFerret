@@ -36,8 +36,8 @@ include ../../platform_specific.mk.$(BUILDTYPE)
 # Targets
 #
 
-# all:	expndi_by.so expndi_by_z.so expndi_by_t.so
-all:	cmprsi_by.so
+# all:	expndi_by.so expndi_by_z.so expndi_by_t.so cmprsi_by.so
+all:	expndi_by_z_counts.so expndi_id_by_z_counts.so
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

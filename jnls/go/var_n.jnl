@@ -23,4 +23,3 @@ let/quiet/title="VARIANCE OF P WHEN Q PRESENT" P_VAR_MASK = P_DSQ_MASK[l=@ave] *
 let/quiet/title="VARIANCE OF Q WHEN P PRESENT" Q_VAR_MASK = Q_DSQ_MASK[l=@ave] * ndnm1
 
 
-SET 

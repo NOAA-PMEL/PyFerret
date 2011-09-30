@@ -1,28 +1,27 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/stout/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 34125009 Jul 26 14:52 /home/stout/ansley/build/x86/FERRET/fer/ferret_c
-Using external functions from /home/stout/ansley/build/x86/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 34132167 Sep 20 16:14 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: v6.71 with new build process
+Note: link ferret_v6.72 with netcdf4.2 snapshot of 9/19/2011
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/stout/ansley/build/x86/FERRET/bench
-FER_LINK_DIR=/home/users/tmap/ferret_link/linux
-FER_DIR=.
-FER_WEB_BROWSER=netscape -ncols 60
-FER_DSETS=.
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
-FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
 FER_DAT=.
-FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_DATA=.
+FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
 FER_DESCR=.
+FER_DIR=.
+FER_DSETS=.
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/x86/FERRET/external_functions/ext_func
+FER_GO=. /home/users/tmap/ferret/x86_64-linux/go /home/users/tmap/ferret/x86_64-linux/examples /home/users/tmap/ferret/x86_64-linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
-PLOTFONTS=/home/stout/ansley/build/x86/FERRET/bin/build_fonts/unix/
+FER_LIBS=/home/users/tmap/ferret/x86_64-linux/lib
+FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/stout/ansley/build/x86/FERRET/external_functions/ext_func
-Beginning at Tue Jul 26 14:54:33 PDT 2011
+FER_WEB_BROWSER=netscape -ncols 60
+PWD=/home/users/ansley/build/x86/FERRET/bench
+Beginning at Tue Sep 20 16:15:19 PDT 2011
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10235,16 +10234,16 @@ show symbols/all
 PPL$XPIXEL = "406"
 PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.71"
-FERRET_PLATFORM = "Linux 2.6.18-238.9.1.el5 64-bit"
-NETCDF_VERSION = "4.1.3 of Jul 11 2011 16:35:16 $"
+FERRET_VERSION = "6.72"
+FERRET_PLATFORM = "Linux 2.6.18-274.el5 64-bit"
+NETCDF_VERSION = "4.2-snapshot2011091920 of Sep 20 2011 15:37:53 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "26-Jul-11"
-SESSION_TIME = "14:54"
-DELTA_CPU = "5.2822"
-CLOCK_SECS = "7.994"
-CURRENT_DATE = "26-Jul-11"
-CURRENT_TIME = "14:54:41"
+SESSION_DATE = "20-Sep-11"
+SESSION_TIME = "16:15"
+DELTA_CPU = "5.58615"
+CLOCK_SECS = "7.396"
+CURRENT_DATE = "20-Sep-11"
+CURRENT_TIME = "16:15:27"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10261,16 +10260,16 @@ show symbol/all
 PPL$XPIXEL = "406"
 PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.71"
-FERRET_PLATFORM = "Linux 2.6.18-238.9.1.el5 64-bit"
-NETCDF_VERSION = "4.1.3 of Jul 11 2011 16:35:16 $"
+FERRET_VERSION = "6.72"
+FERRET_PLATFORM = "Linux 2.6.18-274.el5 64-bit"
+NETCDF_VERSION = "4.2-snapshot2011091920 of Sep 20 2011 15:37:53 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "26-Jul-11"
-SESSION_TIME = "14:54"
+SESSION_DATE = "20-Sep-11"
+SESSION_TIME = "16:15"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "7.995"
-CURRENT_DATE = "26-Jul-11"
-CURRENT_TIME = "14:54:41"
+CLOCK_SECS = "7.397"
+CURRENT_DATE = "20-Sep-11"
+CURRENT_TIME = "16:15:27"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10279,8 +10278,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "26-Jul-11"
-SESSION_TIME = "14:54"
+SESSION_DATE = "20-Sep-11"
+SESSION_TIME = "16:15"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10290,13 +10289,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "26-Jul-11"
-SESSION_TIME = "14:54"
+SESSION_DATE = "20-Sep-11"
+SESSION_TIME = "16:15"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "26-Jul-11"
-SESSION_TIME = "14:54"
+SESSION_DATE = "20-Sep-11"
+SESSION_TIME = "16:15"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10328,9 +10327,9 @@ Q23456789012345678901234567XXX = "6"
 ! show the upper left coordinate limits labels as symbols
 plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
-LAB1 = "FERRET Ver. 6.71"
+LAB1 = "FERRET Ver. 6.72"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "26-JUL-2011 14:54:41"
+LAB3 = "20-SEP-2011 16:15:27"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10425,16 +10424,16 @@ show symbols/all
 PPL$XPIXEL = "406"
 PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.71"
-FERRET_PLATFORM = "Linux 2.6.18-238.9.1.el5 64-bit"
-NETCDF_VERSION = "4.1.3 of Jul 11 2011 16:35:16 $"
+FERRET_VERSION = "6.72"
+FERRET_PLATFORM = "Linux 2.6.18-274.el5 64-bit"
+NETCDF_VERSION = "4.2-snapshot2011091920 of Sep 20 2011 15:37:53 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "26-Jul-11"
-SESSION_TIME = "14:54"
-DELTA_CPU = "0.008999"
-CLOCK_SECS = "8.004"
-CURRENT_DATE = "26-Jul-11"
-CURRENT_TIME = "14:54:41"
+SESSION_DATE = "20-Sep-11"
+SESSION_TIME = "16:15"
+DELTA_CPU = "0.008998"
+CLOCK_SECS = "7.407"
+CURRENT_DATE = "20-Sep-11"
+CURRENT_TIME = "16:15:27"
 N_OPEN_DSETS = "0"
  
  
@@ -25219,7 +25218,7 @@ stat/i=1:3/j=1:3 a
  Standard deviation: 1.2247
  
 ! 3/01 *kob* uncomment the below - seems to run on all systems
-Tue Jul 26 14:54:51 PDT 2011
+Tue Sep 20 16:15:34 PDT 2011
 ! GO err491_long_gif_name.jnl ! moved to bn_gif.jnl
  
 GO bn_reset
@@ -40605,10 +40604,10 @@ SHO DATA/VAR/XML
 </attribute>
 <grid name="PS3DT1">
 <axes>
-<xaxis>PSXT</xaxis>
+<xaxis>PSXT1</xaxis>
 <yaxis>PSYT</yaxis>
 <zaxis>PSZT</zaxis>
-<taxis>TIME</taxis>
+<taxis>TIME6</taxis>
 </axes>
 </grid>
 </var>
@@ -40636,7 +40635,7 @@ SHO DATA/VAR/XML
 <xaxis>PSXU</xaxis>
 <yaxis>PSYU</yaxis>
 <zaxis>PSZT</zaxis>
-<taxis>TIME</taxis>
+<taxis>TIME6</taxis>
 </axes>
 </grid>
 </var>
@@ -40661,10 +40660,10 @@ SHO DATA/VAR/XML
 </attribute>
 <grid name="PS3DW1">
 <axes>
-<xaxis>PSXT</xaxis>
+<xaxis>PSXT1</xaxis>
 <yaxis>PSYT</yaxis>
 <zaxis>PSZW</zaxis>
-<taxis>TIME</taxis>
+<taxis>TIME6</taxis>
 </axes>
 </grid>
 </var>
@@ -40691,7 +40690,7 @@ SHO DATA/VAR/XML
 <axes>
 <xaxis>PSXU</xaxis>
 <yaxis>PSYU</yaxis>
-<taxis>TIME</taxis>
+<taxis>TIME6</taxis>
 </axes>
 </grid>
 </var>
@@ -40704,14 +40703,14 @@ SHO GRID/XML ps3du1
 <xaxis>PSXU</xaxis>
 <yaxis>PSYU</yaxis>
 <zaxis>PSZT</zaxis>
-<taxis>TIME</taxis>
+<taxis>TIME6</taxis>
 </axes>
 </grid>
  
 SHO AXIS/XML `temp,return=xaxis`
  !-> SHO AXIS/XML PSXT1
 <axes>
-<axis name="PSXT">
+<axis name="PSXT1">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -40816,7 +40815,7 @@ SHO AXIS/XML `temp,return=zaxis`
 SHO AXIS/XML `temp,return=taxis`
  !-> SHO AXIS/XML TIME6
 <axes>
-<axis name="TIME">
+<axis name="TIME6">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -40893,10 +40892,10 @@ SHO DATA/VAR/XML
 </attribute>
 <grid name="PS3DT1">
 <axes>
-<xaxis>PSXT</xaxis>
+<xaxis>PSXT1</xaxis>
 <yaxis>PSYT</yaxis>
 <zaxis>PSZT</zaxis>
-<taxis>TIME</taxis>
+<taxis>TIME6</taxis>
 </axes>
 </grid>
 </var>
@@ -40924,7 +40923,7 @@ SHO DATA/VAR/XML
 <xaxis>PSXU</xaxis>
 <yaxis>PSYU</yaxis>
 <zaxis>PSZT</zaxis>
-<taxis>TIME</taxis>
+<taxis>TIME6</taxis>
 </axes>
 </grid>
 </var>
@@ -40949,10 +40948,10 @@ SHO DATA/VAR/XML
 </attribute>
 <grid name="PS3DW1">
 <axes>
-<xaxis>PSXT</xaxis>
+<xaxis>PSXT1</xaxis>
 <yaxis>PSYT</yaxis>
 <zaxis>PSZW</zaxis>
-<taxis>TIME</taxis>
+<taxis>TIME6</taxis>
 </axes>
 </grid>
 </var>
@@ -40979,7 +40978,7 @@ SHO DATA/VAR/XML
 <axes>
 <xaxis>PSXU</xaxis>
 <yaxis>PSYU</yaxis>
-<taxis>TIME</taxis>
+<taxis>TIME6</taxis>
 </axes>
 </grid>
 </var>
@@ -41003,7 +41002,7 @@ SHO DATA/VAR/XML
 <axes>
 <yaxis>PSYT</yaxis>
 <zaxis>PSZT</zaxis>
-<taxis>TIME</taxis>
+<taxis>TIME6</taxis>
 </axes>
 </grid>
 </var>
@@ -41033,7 +41032,7 @@ SHO DATA/VAR/XML
 <axes>
 <xaxis>COADSX</xaxis>
 <yaxis>COADSY</yaxis>
-<taxis>TIME</taxis>
+<taxis>TIME4</taxis>
 </axes>
 </grid>
 </var>
@@ -41076,9 +41075,9 @@ SHO VAR/XML
 </attribute>
 <grid name="PS3DT1">
 <axes>
-<xaxis>PSXT</xaxis>
+<xaxis>PSXT1</xaxis>
 <yaxis>PSYT</yaxis>
-<taxis>TIME</taxis>
+<taxis>TIME6</taxis>
 </axes>
 </grid>
 </var>
@@ -41103,9 +41102,9 @@ SHO VAR/XML
 </attribute>
 <grid name="PS3DT1">
 <axes>
-<xaxis>PSXT</xaxis>
+<xaxis>PSXT1</xaxis>
 <yaxis>PSYT</yaxis>
-<taxis>TIME</taxis>
+<taxis>TIME6</taxis>
 </axes>
 </grid>
 </var>
@@ -41126,9 +41125,9 @@ SHO VAR/XML
 </attribute>
 <grid name="PS3DT1">
 <axes>
-<xaxis>PSXT</xaxis>
+<xaxis>PSXT1</xaxis>
 <yaxis>PSYT</yaxis>
-<taxis>TIME</taxis>
+<taxis>TIME6</taxis>
 </axes>
 </grid>
 </var>
@@ -41143,7 +41142,7 @@ SHO VAR/XML
 <axes>
 <xaxis>COADSX</xaxis>
 <yaxis>COADSY</yaxis>
-<taxis>TIME</taxis>
+<taxis>TIME4</taxis>
 </axes>
 </grid>
 </var>
@@ -41177,7 +41176,7 @@ SHOW VAR/XML
 <axes>
 <xaxis>COADSX</xaxis>
 <yaxis>COADSY</yaxis>
-<taxis>TIME</taxis>
+<taxis>TIME4</taxis>
 </axes>
 </grid>
 </var>
@@ -45795,11 +45794,11 @@ ppl list labels
  @ASdeg C                                                                       
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 6.71
+ LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 6.72
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS26-JUL-2011 14:55:29
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS20-SEP-2011 16:16:08
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.990E+00 0.078    0  SYSTEM  @ASLONGITUDE : 179.5E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47076,7 +47075,7 @@ GO bn_long_revision_num.jnl
  
 ! ferret version
 sh sym FERRET_VERSION
-FERRET_VERSION = "6.71"
+FERRET_VERSION = "6.72"
  
 ! history attribute
 let a = 12
@@ -47094,7 +47093,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET   version6.71:
+ Commands in Program FERRET   version6.72:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE
  SET REGION/I/J/K/L/X/Y/Z/T/DX/DY/DZ/DT/DI/DJ/DK/DL
@@ -47221,7 +47220,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "26-Jul-11:14:54"
+WIN_TITLE = "20-Sep-11:16:15"
  
 set win/title="set the title"
 sho sym win_title
@@ -47239,7 +47238,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="26-Jul-11:14:54"
+ !-> set win/title="20-Sep-11:16:15"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47248,16 +47247,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 26-Jul-11
+ !-> DEFINE SYMBOL the_date = 20-Sep-11
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 14:54
+ !-> DEFINE SYMBOL the_time = 16:15
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="26-Jul-11:14:54"
+ !-> SET WIN/TITLE="20-Sep-11:16:15"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "26-Jul-11:14:54"
+WIN_TITLE = "20-Sep-11:16:15"
  
 GO bn_reset
 cancel mode verify
@@ -49681,7 +49680,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
   
@@ -51586,7 +51585,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.71   26-Jul-11
+ .                               history         CHAR        24   T       FERRET V6.72   20-Sep-11
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51627,7 +51626,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.71   26-Jul-11
+ .                               history         CHAR        24   T       FERRET V6.72   20-Sep-11
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -52407,7 +52406,7 @@ save/clobber/file=noleap.nc v
 use noleap.nc
 sh axis/xml timenoleap
 <axes>
-<axis name="timenoleap">
+<axis name="TIMENOLEAP">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -53258,8 +53257,8 @@ show var/xml
 </attribute>
 <grid name="(G104)">
 <axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
+<xaxis>PSXT1</xaxis>
+<yaxis>PSYT1</yaxis>
 </axes>
 </grid>
 </var>
@@ -53286,9 +53285,9 @@ show var/xml
 </attribute>
 <grid name="PS3DT2">
 <axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
-<taxis>TIME1</taxis>
+<xaxis>PSXT1</xaxis>
+<yaxis>PSYT1</yaxis>
+<taxis>TIME11</taxis>
 </axes>
 </grid>
 </var>
@@ -54096,7 +54095,7 @@ SHOW DATA/VAR/XML
 </attribute>
 <grid name="GII1">
 <axes>
-<zaxis>zaxis_orig</zaxis>
+<zaxis>ZAXIS_ORIG</zaxis>
 </axes>
 </grid>
 </var>
@@ -54121,7 +54120,7 @@ SHOW DATA/VAR/XML
 </attribute>
 <grid name="GIX1">
 <axes>
-<zaxis>zaxis_orig</zaxis>
+<zaxis>ZAXIS_ORIG</zaxis>
 </axes>
 </grid>
 </var>
@@ -54143,7 +54142,7 @@ SHOW DATA/VAR/XML
 </attribute>
 <grid name="(G104)">
 <axes>
-<zaxis>zaxis_des</zaxis>
+<zaxis>ZAXIS_DES</zaxis>
 </axes>
 </grid>
 </var>
@@ -56308,7 +56307,7 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 17   / 17: -22.96677   660.000  637.5332
@@ -57733,10 +57732,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "44.3583"
-CLOCK_SECS = "83.766"
-CURRENT_DATE = "26-Jul-11"
-CURRENT_TIME = "14:55:57"
+DELTA_CPU = "42.8605"
+CLOCK_SECS = "71.233"
+CURRENT_DATE = "20-Sep-11"
+CURRENT_TIME = "16:16:30"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57745,8 +57744,8 @@ CURRENT_TIME = "14:55:57"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.045994"
-CLOCK_SECS = "83.845"
+DELTA_CPU = "0.038994"
+CLOCK_SECS = "71.305"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57760,60 +57759,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.37994
+ !-> DEFINE VARIABLE ten_plots = 0.360947
 sh sym DELTA_CPU, CLOCK_SECS
 DELTA_CPU = "9.99E-04"
-CLOCK_SECS = "85.023"
+CLOCK_SECS = "72.126"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "85.024"
+CLOCK_SECS = "72.126"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.046993
- !-> DEFINE VARIABLE sumcpu =0.046993
+ !-> DEFINE VARIABLE dt = 0.042995
+ !-> DEFINE VARIABLE sumcpu =0.042995
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.039997
- !-> DEFINE VARIABLE sumcpu =0.08699
+ !-> DEFINE VARIABLE dt = 0.039993
+ !-> DEFINE VARIABLE sumcpu =0.082988
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.040993
- !-> DEFINE VARIABLE sumcpu =0.127983
+ !-> DEFINE VARIABLE dt = 0.037994
+ !-> DEFINE VARIABLE sumcpu =0.120982
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.041992
- !-> DEFINE VARIABLE sumcpu =0.169975
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.157977
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.040993
- !-> DEFINE VARIABLE sumcpu =0.210968
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.194972
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.045994
- !-> DEFINE VARIABLE sumcpu =0.256962
-!-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.040997
- !-> DEFINE VARIABLE sumcpu =0.297959
-!-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.046989
- !-> DEFINE VARIABLE sumcpu =0.344948
-!-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.044994
- !-> DEFINE VARIABLE sumcpu =0.389942
-!-> REPEAT: K=10
  !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.428936
+ !-> DEFINE VARIABLE sumcpu =0.233966
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.038994
+ !-> DEFINE VARIABLE sumcpu =0.27296
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.042992
+ !-> DEFINE VARIABLE sumcpu =0.315952
+!-> REPEAT: K=9
+ !-> DEFINE VARIABLE dt = 0.040993
+ !-> DEFINE VARIABLE sumcpu =0.356945
+!-> REPEAT: K=10
+ !-> DEFINE VARIABLE dt = 0.043995
+ !-> DEFINE VARIABLE sumcpu =0.40094
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.428936
-0.428936
+ !-> MESSAGE/CONTINUE 0.40094
+0.40094
 sh sym CLOCK_SECS
-CLOCK_SECS = "86.318"
+CLOCK_SECS = "73.241"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "26-Jul-11"
-SESSION_TIME = "14:54"
-CURRENT_DATE = "26-Jul-11"
-CURRENT_TIME = "14:55:59"
+SESSION_DATE = "20-Sep-11"
+SESSION_TIME = "16:15"
+CURRENT_DATE = "20-Sep-11"
+CURRENT_TIME = "16:16:32"
  
  
 ! ******** V6.3 Additions below ***********
@@ -59585,7 +59584,7 @@ sh dat/xml/var
 <axes>
 <xaxis>COADSX</xaxis>
 <yaxis>COADSY</yaxis>
-<taxis>TIME</taxis>
+<taxis>TIME10</taxis>
 </axes>
 </grid>
 </var>
@@ -60071,10 +60070,10 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
 </attribute>
 <grid name="PS3DT2">
 <axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
-<zaxis>PSZT</zaxis>
-<taxis>TIME1</taxis>
+<xaxis>PSXT1</xaxis>
+<yaxis>PSYT1</yaxis>
+<zaxis>PSZT1</zaxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -60099,10 +60098,10 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
 </attribute>
 <grid name="PS3DT2">
 <axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
-<zaxis>PSZT</zaxis>
-<taxis>TIME1</taxis>
+<xaxis>PSXT1</xaxis>
+<yaxis>PSYT1</yaxis>
+<zaxis>PSZT1</zaxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -60129,8 +60128,8 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
 <axes>
 <xaxis>PSXU</xaxis>
 <yaxis>PSYU</yaxis>
-<zaxis>PSZT</zaxis>
-<taxis>TIME1</taxis>
+<zaxis>PSZT1</zaxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -60157,8 +60156,8 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
 <axes>
 <xaxis>PSXU</xaxis>
 <yaxis>PSYU</yaxis>
-<zaxis>PSZT</zaxis>
-<taxis>TIME1</taxis>
+<zaxis>PSZT1</zaxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -60183,10 +60182,10 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
 </attribute>
 <grid name="PS3DW2">
 <axes>
-<xaxis>PSXT</xaxis>
-<yaxis>PSYT</yaxis>
+<xaxis>PSXT1</xaxis>
+<yaxis>PSYT1</yaxis>
 <zaxis>PSZW</zaxis>
-<taxis>TIME1</taxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -60213,7 +60212,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
 <axes>
 <xaxis>PSXU</xaxis>
 <yaxis>PSYU</yaxis>
-<taxis>TIME1</taxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -60240,7 +60239,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
 <axes>
 <xaxis>PSXU</xaxis>
 <yaxis>PSYU</yaxis>
-<taxis>TIME1</taxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -60267,14 +60266,14 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
 <axes>
 <xaxis>PSXU</xaxis>
 <yaxis>PSYU</yaxis>
-<taxis>TIME1</taxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
 </dataset>
 </datasets>
 <axes>
-<axis name="xeven">
+<axis name="XEVEN">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -60294,7 +60293,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="xodd">
+<axis name="XODD">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -60314,7 +60313,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="yeven">
+<axis name="YEVEN">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -60334,7 +60333,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="yodd">
+<axis name="YODD">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -60354,7 +60353,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="zeven">
+<axis name="ZEVEN">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -60374,7 +60373,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="zodd">
+<axis name="ZODD">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -60394,7 +60393,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="teven">
+<axis name="TEVEN">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -60423,7 +60422,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="todd">
+<axis name="TODD">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -60452,7 +60451,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="xcoarse">
+<axis name="XCOARSE">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -60478,7 +60477,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>360</value>
 </attribute>
 </axis>
-<axis name="yir">
+<axis name="YIR">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -60498,7 +60497,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="ycoarse">
+<axis name="YCOARSE">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -60521,7 +60520,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="xax_subspan">
+<axis name="XAX_SUBSPAN">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -60544,7 +60543,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>100</value>
 </attribute>
 </axis>
-<axis name="yfine">
+<axis name="YFINE">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -60567,7 +60566,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="tax48">
+<axis name="TAX48">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -60596,7 +60595,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="xez1">
+<axis name="XEZ1">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -60616,7 +60615,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="xez2">
+<axis name="XEZ2">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -60636,7 +60635,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="yez">
+<axis name="YEZ">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -60656,7 +60655,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="zez">
+<axis name="ZEZ">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -60676,7 +60675,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="xez3">
+<axis name="XEZ3">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -60696,7 +60695,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="lon_field_j_axis">
+<axis name="LON_FIELD_J_AXIS">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -60716,7 +60715,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="lat_field_i_axis">
+<axis name="LAT_FIELD_I_AXIS">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -60736,7 +60735,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="lat_field_j_axis">
+<axis name="LAT_FIELD_J_AXIS">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -60756,7 +60755,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="Xirreg_subspan">
+<axis name="XIRREG_SUBSPAN">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -60779,7 +60778,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>100</value>
 </attribute>
 </axis>
-<axis name="lon_field_i_axis">
+<axis name="LON_FIELD_I_AXIS">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -60799,7 +60798,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="xirreg">
+<axis name="XIRREG">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -60819,7 +60818,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="tcentury">
+<axis name="TCENTURY">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -60848,7 +60847,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="tax5day">
+<axis name="TAX5DAY">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -60877,7 +60876,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="xax10">
+<axis name="XAX10">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -60903,7 +60902,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>360</value>
 </attribute>
 </axis>
-<axis name="tax_subspan">
+<axis name="TAX_SUBSPAN">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -60935,7 +60934,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>365.2485</value>
 </attribute>
 </axis>
-<axis name="Tirreg_subspan">
+<axis name="TIRREG_SUBSPAN">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -60967,7 +60966,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>365.2485</value>
 </attribute>
 </axis>
-<axis name="t1980s">
+<axis name="T1980S">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -60996,7 +60995,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="xtest">
+<axis name="XTEST">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61016,7 +61015,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="ytest">
+<axis name="YTEST">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -61036,7 +61035,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="y1">
+<axis name="Y1">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -61059,7 +61058,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="zirr">
+<axis name="ZIRR">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -61085,7 +61084,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="x5">
+<axis name="X5">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61105,7 +61104,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="tax1">
+<axis name="TAX1">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -61134,7 +61133,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[360_DAY]]></value>
 </attribute>
 </axis>
-<axis name="zlog">
+<axis name="ZLOG">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -61154,7 +61153,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="z1">
+<axis name="Z1">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -61174,7 +61173,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="z2">
+<axis name="Z2">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -61194,7 +61193,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="hope_month">
+<axis name="HOPE_MONTH">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -61223,7 +61222,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="dayt">
+<axis name="DAYT">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -61243,7 +61242,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="yq">
+<axis name="YQ">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -61263,7 +61262,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="y2">
+<axis name="Y2">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -61283,7 +61282,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="x3">
+<axis name="X3">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61303,7 +61302,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="x4">
+<axis name="X4">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61323,7 +61322,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="xproj120">
+<axis name="XPROJ120">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61343,7 +61342,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="yproj120">
+<axis name="YPROJ120">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -61363,7 +61362,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="y5">
+<axis name="Y5">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -61383,7 +61382,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="y10">
+<axis name="Y10">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -61403,7 +61402,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="obj_yax">
+<axis name="OBJ_YAX">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -61423,7 +61422,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="xaxj">
+<axis name="XAXJ">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61443,7 +61442,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="obj_xax">
+<axis name="OBJ_XAX">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61463,7 +61462,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="'coadsx.illegal'">
+<axis name="'COADSX.ILLEGAL'">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61509,7 +61508,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name=" ">
+<axis name="TIME2">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -61538,7 +61537,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="dlog">
+<axis name="DLOG">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -61561,7 +61560,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="ddlog">
+<axis name="DDLOG">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61581,7 +61580,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="y3ax">
+<axis name="Y3AX">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -61601,7 +61600,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="tax2">
+<axis name="TAX2">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -61630,7 +61629,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[360_DAY]]></value>
 </attribute>
 </axis>
-<axis name="tt">
+<axis name="TT">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -61659,7 +61658,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="x_ax">
+<axis name="X_AX">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61679,7 +61678,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="tdays">
+<axis name="TDAYS">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -61708,7 +61707,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[ALL_LEAP]]></value>
 </attribute>
 </axis>
-<axis name="xaxshift">
+<axis name="XAXSHIFT">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61731,7 +61730,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[yes]]></value>
 </attribute>
 </axis>
-<axis name="xfine">
+<axis name="XFINE">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61757,7 +61756,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>360</value>
 </attribute>
 </axis>
-<axis name="xq">
+<axis name="XQ">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61777,7 +61776,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="layer_between_two_pressure_difference_from_ground">
+<axis name="LAYER_BETWEEN_TWO_PRESSURE_DIFFERENCE_FROM_GROUND">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61797,7 +61796,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="time">
+<axis name="TIME">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -61817,7 +61816,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="tjul">
+<axis name="TJUL">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -61846,7 +61845,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[JULIAN]]></value>
 </attribute>
 </axis>
-<axis name="aax">
+<axis name="AAX">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61866,7 +61865,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="'coadsy.illegal'">
+<axis name="'COADSY.ILLEGAL'">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -61889,7 +61888,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="xfull">
+<axis name="XFULL">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -61912,7 +61911,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="zax">
+<axis name="ZAX">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -61932,7 +61931,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="tnoleap">
+<axis name="TNOLEAP">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -61961,7 +61960,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[NOLEAP]]></value>
 </attribute>
 </axis>
-<axis name="tgreg">
+<axis name="TGREG">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -61990,7 +61989,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="simutaxis1">
+<axis name="SIMUTAXIS1">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -62019,7 +62018,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[360D]]></value>
 </attribute>
 </axis>
-<axis name="zax2">
+<axis name="ZAX2">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -62039,7 +62038,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="x2ax">
+<axis name="X2AX">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -62062,7 +62061,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>360</value>
 </attribute>
 </axis>
-<axis name="z4ax">
+<axis name="Z4AX">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -62082,7 +62081,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="t2ax">
+<axis name="T2AX">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -62102,7 +62101,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="xirr">
+<axis name="XIRR">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -62128,7 +62127,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>360</value>
 </attribute>
 </axis>
-<axis name="yfull">
+<axis name="YFULL">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -62151,7 +62150,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="xir">
+<axis name="XIR">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -62171,7 +62170,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="mon_irreg_nlp">
+<axis name="MON_IRREG_NLP">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -62200,7 +62199,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[NOLEAP]]></value>
 </attribute>
 </axis>
-<axis name="z5">
+<axis name="Z5">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -62255,7 +62254,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="x1">
+<axis name="X1">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -62278,7 +62277,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[yes]]></value>
 </attribute>
 </axis>
-<axis name="yirr">
+<axis name="YIRR">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -62301,7 +62300,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="y4">
+<axis name="Y4">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -62321,7 +62320,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="z4">
+<axis name="Z4">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -62361,7 +62360,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="xchannel">
+<axis name="XCHANNEL">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -62384,7 +62383,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="yrise">
+<axis name="YRISE">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -62407,7 +62406,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="zlayer">
+<axis name="ZLAYER">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -62433,7 +62432,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="tsub">
+<axis name="TSUB">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -62465,7 +62464,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>365.2425</value>
 </attribute>
 </axis>
-<axis name="xsub">
+<axis name="XSUB">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -62491,7 +62490,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>360</value>
 </attribute>
 </axis>
-<axis name="timenoleap">
+<axis name="TIMENOLEAP">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -62520,7 +62519,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[NOLEAP]]></value>
 </attribute>
 </axis>
-<axis name="yaxis">
+<axis name="YAXIS">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -62543,7 +62542,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="zaxis_orig">
+<axis name="ZAXIS_ORIG">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -62563,7 +62562,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="zaxis_des">
+<axis name="ZAXIS_DES">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -62583,7 +62582,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="tnew">
+<axis name="TNEW">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -62612,7 +62611,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[NOLEAP]]></value>
 </attribute>
 </axis>
-<axis name="xobs">
+<axis name="XOBS">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -62632,7 +62631,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="xax">
+<axis name="XAX">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -62652,7 +62651,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="t1">
+<axis name="T1">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -62710,7 +62709,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="tcal">
+<axis name="TCAL">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -62739,7 +62738,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="tday">
+<axis name="TDAY">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -62768,7 +62767,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="x100">
+<axis name="X100">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -62794,7 +62793,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>360</value>
 </attribute>
 </axis>
-<axis name="t31">
+<axis name="T31">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -62823,7 +62822,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="myzaxis">
+<axis name="MYZAXIS">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -62872,7 +62871,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="xtrop">
+<axis name="XTROP">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -62898,7 +62897,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>360</value>
 </attribute>
 </axis>
-<axis name="ytrop">
+<axis name="YTROP">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -62921,7 +62920,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="tsec">
+<axis name="TSEC">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -62950,7 +62949,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="vert_axis_up">
+<axis name="VERT_AXIS_UP">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -62970,7 +62969,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="x2">
+<axis name="X2">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -62990,7 +62989,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="zup">
+<axis name="ZUP">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -63013,7 +63012,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="jmonths">
+<axis name="JMONTHS">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -63042,7 +63041,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[JULIAN]]></value>
 </attribute>
 </axis>
-<axis name="t_axis">
+<axis name="T_AXIS">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -63062,7 +63061,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="zdn">
+<axis name="ZDN">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -63088,7 +63087,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="tax_c">
+<axis name="TAX_C">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -63117,7 +63116,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[NOLEAP]]></value>
 </attribute>
 </axis>
-<axis name="vert_axis_dn">
+<axis name="VERT_AXIS_DN">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -63140,7 +63139,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="yax">
+<axis name="YAX">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -63163,7 +63162,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="tax">
+<axis name="TAX">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -63192,7 +63191,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[NOLEAP]]></value>
 </attribute>
 </axis>
-<axis name="montht">
+<axis name="MONTHT">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -63221,7 +63220,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="x10">
+<axis name="X10">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -63241,7 +63240,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name=" ">
+<axis name="TIME6">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -63270,7 +63269,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name=" ">
+<axis name="TIME8">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -63299,7 +63298,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[JULIAN]]></value>
 </attribute>
 </axis>
-<axis name=" ">
+<axis name="TIME11">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -63328,7 +63327,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="PSXT">
+<axis name="PSXT1">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -63354,7 +63353,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>360</value>
 </attribute>
 </axis>
-<axis name="PSYT">
+<axis name="PSYT1">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -63377,7 +63376,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="TIME1">
+<axis name="TIME12">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -63406,7 +63405,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="YAXLEVITR1_90">
+<axis name="(AX131)">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -63429,7 +63428,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="PSZT">
+<axis name="PSZT1">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -63455,7 +63454,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="lon_t">
+<axis name="LON_T">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -63478,7 +63477,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[yes]]></value>
 </attribute>
 </axis>
-<axis name="lon_u">
+<axis name="LON_U">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -63501,7 +63500,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="lat_t">
+<axis name="LAT_T">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -63524,7 +63523,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="lat_u">
+<axis name="LAT_U">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -63547,7 +63546,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="TIME">
+<axis name="TIME10">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -63579,7 +63578,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>8765.82</value>
 </attribute>
 </axis>
-<axis name="COADSY">
+<axis name="(AX052)">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -63602,7 +63601,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="COADSX">
+<axis name="(AX050)">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -63674,7 +63673,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="TIME">
+<axis name="TIME7">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -63703,7 +63702,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="DAYT">
+<axis name="DAYT1">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -64130,7 +64129,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="TIME">
+<axis name="TIME3">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -64249,7 +64248,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[GREGORIAN]]></value>
 </attribute>
 </axis>
-<axis name="lon_true">
+<axis name="LON_TRUE">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -64275,7 +64274,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>360</value>
 </attribute>
 </axis>
-<axis name="lon_moderr">
+<axis name="LON_MODERR">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -64298,7 +64297,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="lon_false">
+<axis name="LON_FALSE">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -64321,7 +64320,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="lon_mod_nounits">
+<axis name="LON_MOD_NOUNITS">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -64341,7 +64340,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[yes]]></value>
 </attribute>
 </axis>
-<axis name="lon_usual">
+<axis name="LON_USUAL">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -64367,7 +64366,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>360</value>
 </attribute>
 </axis>
-<axis name="time_true">
+<axis name="TIME_TRUE">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -64390,7 +64389,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[yes]]></value>
 </attribute>
 </axis>
-<axis name="time_moderr">
+<axis name="TIME_MODERR">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -64413,7 +64412,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="time_false">
+<axis name="TIME_FALSE">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -64436,7 +64435,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="time_mod_nounits">
+<axis name="TIME_MOD_NOUNITS">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -64456,7 +64455,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[yes]]></value>
 </attribute>
 </axis>
-<axis name="time_usual">
+<axis name="TIME_USUAL">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -64479,7 +64478,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value><![CDATA[yes]]></value>
 </attribute>
 </axis>
-<axis name="COADSY">
+<axis name="(AX020)">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -64577,7 +64576,7 @@ set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
    <value>no</value>
 </attribute>
 </axis>
-<axis name="TIME">
+<axis name="TIME4">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -66078,9 +66077,9 @@ list contents
              VARIABLE : { SPAWN:"cat redirect_journal.txt" }
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
- 2    /  2:" ! FERRET v6.71  "                                                          
- 3    /  3:" ! Linux 2.6.18-238.9.1.el5 64-bit - 07/26/11"                              
- 4    /  4:" ! 26-Jul-11 14:54     "                                                    
+ 2    /  2:" ! FERRET v6.72  "                                                          
+ 3    /  3:" ! Linux 2.6.18-274.el5 64-bit - 09/20/11"                                  
+ 4    /  4:" ! 20-Sep-11 16:15     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -66577,10 +66576,10 @@ sh dat/var/xml
 </attribute>
 <grid name="GHU1">
 <axes>
-<xaxis>grid_x_T</xaxis>
-<yaxis>grid_y_T</yaxis>
-<zaxis>zt</zaxis>
-<taxis>TIME</taxis>
+<xaxis>GRID_X_T</xaxis>
+<yaxis>GRID_Y_T</yaxis>
+<zaxis>ZT</zaxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -66599,7 +66598,7 @@ REPEAT/RANGE=1:`nd`/NAME=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
  !-> DEFINE SYMBOL m = 1
  !-> SH AXIS/XML TIME12
 <axes>
-<axis name="TIME">
+<axis name="TIME12">
 <attribute name="direction" type="char">
    <value><![CDATA[L]]></value>
 </attribute>
@@ -66633,7 +66632,7 @@ REPEAT/RANGE=1:`nd`/NAME=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
  !-> DEFINE SYMBOL m = 2
  !-> SH AXIS/XML grid_x_T
 <axes>
-<axis name="grid_x_T">
+<axis name="GRID_X_T">
 <attribute name="direction" type="char">
    <value><![CDATA[I]]></value>
 </attribute>
@@ -66676,7 +66675,7 @@ REPEAT/RANGE=1:`nd`/NAME=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
  !-> DEFINE SYMBOL m = 3
  !-> SH AXIS/XML grid_y_T
 <axes>
-<axis name="grid_y_T">
+<axis name="GRID_Y_T">
 <attribute name="direction" type="char">
    <value><![CDATA[J]]></value>
 </attribute>
@@ -66716,7 +66715,7 @@ REPEAT/RANGE=1:`nd`/NAME=m (DEFINE SYMBOL m = `m`; SH AXIS/XML `axis_names[i=($m
  !-> DEFINE SYMBOL m = 4
  !-> SH AXIS/XML zt
 <axes>
-<axis name="zt">
+<axis name="ZT">
 <attribute name="direction" type="char">
    <value><![CDATA[K]]></value>
 </attribute>
@@ -66791,10 +66790,10 @@ SH VAR/XML
 </attribute>
 <grid name="GHU1">
 <axes>
-<xaxis>grid_x_T</xaxis>
-<yaxis>grid_y_T</yaxis>
-<zaxis>zt</zaxis>
-<taxis>TIME</taxis>
+<xaxis>GRID_X_T</xaxis>
+<yaxis>GRID_Y_T</yaxis>
+<zaxis>ZT</zaxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -66821,10 +66820,10 @@ SH DAT/VAR/XML
 </attribute>
 <grid name="GHU1">
 <axes>
-<xaxis>grid_x_T</xaxis>
-<yaxis>grid_y_T</yaxis>
-<zaxis>zt</zaxis>
-<taxis>TIME</taxis>
+<xaxis>GRID_X_T</xaxis>
+<yaxis>GRID_Y_T</yaxis>
+<zaxis>ZT</zaxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -66846,10 +66845,10 @@ SH DAT/VAR/XML
 </attribute>
 <grid name="GHU1">
 <axes>
-<xaxis>grid_x_T</xaxis>
-<yaxis>grid_y_T</yaxis>
-<zaxis>zt</zaxis>
-<taxis>TIME</taxis>
+<xaxis>GRID_X_T</xaxis>
+<yaxis>GRID_Y_T</yaxis>
+<zaxis>ZT</zaxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -66872,9 +66871,9 @@ SH VAR/XML
 </attribute>
 <grid name="GHU1">
 <axes>
-<xaxis>grid_x_T</xaxis>
-<yaxis>grid_y_T</yaxis>
-<taxis>TIME</taxis>
+<xaxis>GRID_X_T</xaxis>
+<yaxis>GRID_Y_T</yaxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -66901,10 +66900,10 @@ SH DAT/VAR/XML
 </attribute>
 <grid name="GHU1">
 <axes>
-<xaxis>grid_x_T</xaxis>
-<yaxis>grid_y_T</yaxis>
-<zaxis>zt</zaxis>
-<taxis>TIME</taxis>
+<xaxis>GRID_X_T</xaxis>
+<yaxis>GRID_Y_T</yaxis>
+<zaxis>ZT</zaxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -66926,9 +66925,9 @@ SH DAT/VAR/XML
 </attribute>
 <grid name="GHU1">
 <axes>
-<xaxis>grid_x_T</xaxis>
-<yaxis>grid_y_T</yaxis>
-<taxis>TIME</taxis>
+<xaxis>GRID_X_T</xaxis>
+<yaxis>GRID_Y_T</yaxis>
+<taxis>TIME12</taxis>
 </axes>
 </grid>
 </var>
@@ -67541,12 +67540,12 @@ SET MODE diag
 USE test0
 CANCEL MODE diag
  
-! *********** v6.8 Additions ***********
+! *********** v6.71 Additions ***********
 GO bn_reset
 cancel mode verify
-GO bn68_bug_fixes
-! bn68_bug_fixes.jnl
-! test various fixes that went into version 6.8
+GO bn671_bug_fixes
+! bn671_bug_fixes.jnl
+! test various fixes that went into version 6.71
 ! 4/2011 ACM
  
 GO bn_reset
@@ -67775,7 +67774,7 @@ list/x=330/y=40:90 filled[d=3,gxy=filled[d=2]]
  
 GO bn_reset
 cancel mode verify
-GO err67_reverse_bounds.jnl
+GO err67_reverse_bounds
 ! err67_reverse_bounds.jnl
 !
 ! Bug in reversing the bounds when an axis is reversed
@@ -67815,6 +67814,40 @@ list lev_var, zboxlo[gz=lev_var], zboxhi[gz=lev_var]
 0.9873 / 23:    2.00  0.9824  0.992
 0.9961 / 24:    1.00  0.9922  1.000
  
+GO bn_reset
+cancel mode verify
+GO err67_nrst_trans
+! err67_nrst_trans.jnl
+!
+! See ticket 1875: for short axes the @NRST transform
+! missed points - no valid data was returned from this LIST.
+ 
+define axis/x=333:335:1 xax
+define axis/x=300:400:10 xlong
+let x3 = x[gx=xax]
+let var = x3[gx=xlong@nrst]
+list var
+             VARIABLE : X3[GX=XLONG@NRST]
+             SUBSET   : 11 points (X)
+ 300   /  1:   ....
+ 310   /  2:   ....
+ 320   /  3:   ....
+ 330   /  4:  333.0
+ 340   /  5:  335.0
+ 350   /  6:   ....
+ 360   /  7:   ....
+ 370   /  8:   ....
+ 380   /  9:   ....
+ 390   / 10:   ....
+ 400   / 11:   ....
+ 
+! *********** v6.8 Additions ***********
+GO bn_reset
+cancel mode verify
+GO bn68_bug_fixes
+! bn68_bug_fixes.jnl
+! test various fixes that went into version 6.8
+!
  
 GO bn_reset
 cancel mode verify
@@ -67962,9 +67995,9 @@ yes? ! run bn_all_ef tests
 yes? 
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
- 	FERRET v6.71  
- 	Linux 2.6.18-238.9.1.el5 64-bit - 07/26/11
- 	26-Jul-11 14:56     
+ 	FERRET v6.72  
+ 	Linux 2.6.18-274.el5 64-bit - 09/20/11
+ 	20-Sep-11 16:16     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -68817,7 +68850,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68841,7 +68874,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68865,7 +68898,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68904,7 +68937,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68939,7 +68972,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -68979,7 +69012,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69033,7 +69066,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69087,7 +69120,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69141,7 +69174,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69186,7 +69219,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69277,7 +69310,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69344,7 +69377,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69394,7 +69427,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69469,7 +69502,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69496,7 +69529,7 @@ variables:
 		X_:_FillValue = -1.e+34f ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -69520,7 +69553,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -69546,11 +69579,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -69580,7 +69613,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69652,7 +69685,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69693,7 +69726,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69732,7 +69765,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69835,7 +69868,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -69871,7 +69904,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -69894,7 +69927,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69920,7 +69953,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69940,7 +69973,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69961,7 +69994,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70000,7 +70033,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -70036,7 +70069,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -70070,7 +70103,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -70099,7 +70132,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70132,7 +70165,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70158,7 +70191,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70199,7 +70232,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -70297,7 +70330,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -70336,7 +70369,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70419,7 +70452,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70456,7 +70489,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70493,7 +70526,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70541,7 +70574,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70596,7 +70629,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70636,7 +70669,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70676,7 +70709,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70708,7 +70741,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70739,7 +70772,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -70768,7 +70801,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -70797,7 +70830,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -70855,7 +70888,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70896,7 +70929,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -70915,37 +70948,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	float A(XAX) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70975,7 +70978,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	float A(XAX) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71024,7 +71057,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71062,7 +71095,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71080,7 +71113,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 err611_set_var_ez.jnl --- 
@@ -71099,7 +71132,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71117,7 +71150,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -71135,7 +71168,7 @@ variables:
 		A:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71156,7 +71189,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71186,7 +71219,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -71211,7 +71244,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.71   26-Jul-11" ;
+		:history = "FERRET V6.72   20-Sep-11" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
@@ -71225,25 +71258,25 @@ yes?
 yes? 
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
- 	FERRET v6.71  
- 	Linux 2.6.18-238.9.1.el5 64-bit - 07/26/11
- 	26-Jul-11 14:56     
+ 	FERRET v6.72  
+ 	Linux 2.6.18-274.el5 64-bit - 09/20/11
+ 	20-Sep-11 16:16     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
 PPL$XPIXEL = "656"
 PPL$YPIXEL = "492"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = "6.71"
-FERRET_PLATFORM = "Linux 2.6.18-238.9.1.el5 64-bit"
-NETCDF_VERSION = "4.1.3 of Jul 11 2011 16:35:16 $"
+FERRET_VERSION = "6.72"
+FERRET_PLATFORM = "Linux 2.6.18-274.el5 64-bit"
+NETCDF_VERSION = "4.2-snapshot2011091920 of Sep 20 2011 15:37:53 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "26-Jul-11"
-SESSION_TIME = "14:56"
-DELTA_CPU = "0.029994"
-CLOCK_SECS = "0.212"
-CURRENT_DATE = "26-Jul-11"
-CURRENT_TIME = "14:56:24"
+SESSION_DATE = "20-Sep-11"
+SESSION_TIME = "16:16"
+DELTA_CPU = "0.027995"
+CLOCK_SECS = "0.177"
+CURRENT_DATE = "20-Sep-11"
+CURRENT_TIME = "16:16:55"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -71264,7 +71297,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "26-Jul-11:14:56"
+WIN_TITLE = "20-Sep-11:16:16"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -71323,9 +71356,9 @@ yes?
 yes? GO bn_gif
 abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
  	NOAA/PMEL TMAP
- 	FERRET v6.71  
- 	Linux 2.6.18-238.9.1.el5 64-bit - 07/26/11
- 	26-Jul-11 14:56     
+ 	FERRET v6.72  
+ 	Linux 2.6.18-274.el5 64-bit - 09/20/11
+ 	20-Sep-11 16:16     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -71541,9 +71574,9 @@ yes?
 yes? 
 yes? GO bn_ps
  	NOAA/PMEL TMAP
- 	FERRET v6.71  
- 	Linux 2.6.18-238.9.1.el5 64-bit - 07/26/11
- 	26-Jul-11 14:56     
+ 	FERRET v6.72  
+ 	Linux 2.6.18-274.el5 64-bit - 09/20/11
+ 	20-Sep-11 16:16     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -71655,9 +71688,9 @@ yes?
 yes? 
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
- 	FERRET v6.71  
- 	Linux 2.6.18-238.9.1.el5 64-bit - 07/26/11
- 	26-Jul-11 14:56     
+ 	FERRET v6.72  
+ 	Linux 2.6.18-274.el5 64-bit - 09/20/11
+ 	20-Sep-11 16:16     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -71741,4 +71774,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Tue Jul 26 14:56:27 PDT 2011
+Ended at Tue Sep 20 16:16:57 PDT 2011

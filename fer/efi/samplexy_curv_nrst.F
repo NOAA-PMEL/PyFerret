@@ -258,7 +258,7 @@
       INTEGER ii, jj
       REAL xpt, ypt, ydiff, yd
       REAL xptmin, xptmax, xcoordmin, xcoordmax
-      REAL add_xcoord, xadd, xcoord, xlast, dd
+      REAL add_xcoord, xadd, xcoord, dd
       REAL xbot, xtop, ybot, ytop, dmin
       CHARACTER*255 err_msg
 
@@ -412,7 +412,6 @@ C Check that sample x and y are simple lists of points - same length
             xcoord = arg_2(i2,j2,k2,l2) + xadd
             icross = 1
             IF ((xpt - xcoord) .LT. 0.) icross = -1
-	    xlast = xcoord
 
             DO 100 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
                xcoord = arg_2(i2,j2,k2,l2) + xadd
@@ -420,20 +419,13 @@ C Check that sample x and y are simple lists of points - same length
                iloc = 1
                IF ((xpt-xcoord) .LT. 0. ) iloc = -1
 
-               IF (ABS(xcoord-xlast) .GE.300.) THEN  ! reinitialize icross
+               IF (icross .NE. iloc)THEN
+                  nloc = nloc + 1
+                  xlocations(nloc,1,1,1) = MAX(i2-1,1)
+                  xlocations(nloc,2,1,1) = j2
                   icross = 1
                   IF ((xpt - xcoord) .LT. 0.) icross = -1
-	       ELSE
-                  IF (icross .NE. iloc .AND.
-     .                 ABS(xcoord-xlast) .LT.300.)THEN
-                     nloc = nloc + 1
-                     xlocations(nloc,1,1,1) = MAX(i2-1,1)
-                     xlocations(nloc,2,1,1) = j2
-                     icross = 1
-                     IF ((xpt - xcoord) .LT. 0.) icross = -1
-                  ENDIF
                ENDIF
-	       xlast = xcoord
   100       CONTINUE
 
   200    CONTINUE

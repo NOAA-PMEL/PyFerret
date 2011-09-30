@@ -257,7 +257,7 @@
       LOGICAL need_modulo
       INTEGER ibot, itop, jbot, jtop
       INTEGER nloc, iloc, ptloc, icross
-      REAL xpt, ypt, ydiff, yd, add_xcoord, xadd, xcoord, xlast
+      REAL xpt, ypt, ydiff, yd, add_xcoord, xadd, xcoord
       REAL xptmin, xptmax, xcoordmin, xcoordmax
       REAL fxbot, fxtop, fbb, ftb, fbt, ftt
       REAL xbot, xtop, ybot, ytop
@@ -412,30 +412,25 @@ C Check that sample x and y are simple lists of points - same length
          DO 200 j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
             i2 = arg_lo_ss(X_AXIS,ARG2)
             xcoord = arg_2(i2,j2,k2,l2) + xadd
+c               icross = SIGN(1, (xpt - xcoord) )
             icross = 1
             IF ((xpt - xcoord) .LT. 0.) icross = -1
 
             DO 100 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
+c               iloc = SIGN(1, (xpt-xcoord) )
                xcoord = arg_2(i2,j2,k2,l2) + xadd
 
                iloc = 1
                IF ((xpt-xcoord) .LT. 0. ) iloc = -1
 
-
-               IF (ABS(xcoord-xlast) .GE.300.) THEN  ! reinitialize icross
+               IF (icross .NE. iloc)THEN
+                  nloc = nloc + 1
+                  xlocations(nloc,1,1,1) = MAX(i2-1,1)
+                  xlocations(nloc,2,1,1) = j2
+c                  icross = SIGN(1, (xpt - xcoord) )
                   icross = 1
                   IF ((xpt - xcoord) .LT. 0.) icross = -1
-	       ELSE
-                  IF (icross .NE. iloc)THEN
-                     nloc = nloc + 1
-                     xlocations(nloc,1,1,1) = MAX(i2-1,1)
-                     xlocations(nloc,2,1,1) = j2
-                     icross = 1
-                     IF ((xpt - xcoord) .LT. 0.) icross = -1
-                  ENDIF
                ENDIF
-	       xlast = xcoord
-
   100       CONTINUE
 
   200    CONTINUE

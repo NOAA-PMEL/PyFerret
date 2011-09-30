@@ -327,8 +327,34 @@
      .	     alg_arg_descr    ( 33 ) / ' '	    /,
      .	     alg_arg_name     ( 34 ) / 'day'	    /,
      .	     alg_arg_units    ( 34 ) / ' '	    /,
-     .	     alg_arg_descr    ( 34 ) / ' '	    /
-	DATA (alg_fcn(i),i=23,num_functions)/ 3*unspecified_name4 /
+     .	     alg_arg_descr    ( 34 ) / ' '	    /,
+     .       alg_fcn		( 23 ) / 'RANDU2'    /,
+     .	     alg_num_fcn_args	( 23 ) / 2 	    /
+     .	     alg_fcn_descr	( 23 )
+     .		/ 'random uniform [0,1), Alternate algorithm' /,
+     .	     alg_fcn_arg_ptr    ( 23 ) / 35	    /,
+     .	     alg_arg_name     ( 35 ) / 'A'	    /,
+     .	     alg_arg_units    ( 35 ) / ' '	    /,
+     .	     alg_arg_descr    ( 35 ) /
+     .			'field of random values will have shape of A'/,
+     .	     alg_arg_name     ( 36 ) / 'ISEED'	    /,
+     .	     alg_arg_units    ( 36 ) / ' '	    /,
+     .	     alg_arg_descr    ( 36 ) / 
+     .         '-1=sys clock, 0=continue w/ previous seed, N>0 user-defined seed'/,
+     .       alg_fcn		( 24 ) / 'RANDN2'    /,
+     .	     alg_num_fcn_args	( 24 ) / 2 	    /,
+     .	     alg_fcn_descr	( 24 )
+     .			/ 'random normal, Alternate algorithm' /,
+     .	     alg_fcn_arg_ptr    ( 24 ) / 37	    /,
+     .	     alg_arg_name     ( 37 ) / 'A'	    /,
+     .	     alg_arg_units    ( 37 ) / ' '	    /,
+     .	     alg_arg_descr    ( 37 ) /
+     .			'field of random values will have shape of A'/,
+     .	     alg_arg_name     ( 38 ) / 'ISEED'	    /,
+     .	     alg_arg_units    ( 38 ) / ' '	    /,
+     .	     alg_arg_descr    ( 38 ) /
+     .         '-1=sys clock, 0=continue w/ previous seed, N>0 user-defined seed'/
+	DATA (alg_fcn(i),i=23,num_functions)/ 3*unspecified_name4 /  
 
 * logical structures:
 	DATA alg_struct(  1 ) / 'IF' /,		! formerly "WHERE"

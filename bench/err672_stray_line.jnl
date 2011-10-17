@@ -1,0 +1,16 @@
+! err672_stray_line.jnl
+! bug 1545, present in older versions of Ferret too.
+! Lines ( as in go land ), that go near but outside the outer 
+! corners of the plot, either from the bottom to the left side 
+! of the plot, or from the top to the left, but not crossing 
+! any axis, may cause a stray line to be drawn outward from the 
+! corner.
+
+use coads_climatology
+shade/noax/nolab/nokey sst[x=148.68:262.0,y=-29.83:45.35,L=1]
+
+! Line near but not crossing from top to left
+plot/vs/over/nolab/line/sym {148.83, 148.33}, {45.5, 45.25}
+
+! Line near but not crossing from bottom to the left
+plot/over/vs/nolab/line/sym {148.83, 148.17}, {-29.96, -29.68}

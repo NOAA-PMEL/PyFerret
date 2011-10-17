@@ -48,6 +48,13 @@ C	      70 XINTER = XMXMN(IAND(LOWFLG,3))
 C	      logic to deal with a pair of points whose connecting segment
 C		crosses the corner of the window is wrong
 C	      ...bounds checking is OFF to match Denbo's compile stmt
+C *acm* 10/11 Fix ticket 1545. Further fix for the case where the connecting 
+C             segment does not cross the corner, but e.g. one point is to the 
+C             left of the plot and the other above. See examples in ticket 
+C             1545. In this case at label 70, XINTER is set to zero, and that 
+C             value is used in computing YINTR and ZINTR. Once XYINTR is
+C             set to the xmin or xmax, then need to call TRANS again and
+C             define values before ABPLT is called.
 ****************************************************************
 C     CALL XYZPLT
 
@@ -63,12 +70,9 @@ C      DIMENSION XMXMN(2),YMXMN(2)
       EQUIVALENCE (XMXMN(1),XMAX),(YMXMN(1),YMAX)
       REAL xinter, yinter, zinter, dx, dy, dz, cosx, cosy, cosz, dist
 
-#ifdef unix
       include 'pltcom_dat.decl'
       include 'PLTCOM.DAT'
-#else
-      INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
-#endif
+
 C end of FERRET mod
 ******************************************************************
 C     CHECK THE PLOTTING MODE.
@@ -158,25 +162,11 @@ C     CHECK THE OLD AND NEW POINTS TO SEE IF THEY ARE BOTH OUT-
 C     SIDE THE BOUNDARY OF THE WINDOW IN THE SAME DIRECTION.  IF
 C     SO, NO INTERCEPT EXISTS.
 
-C	RSX-11M
-
-C      IF(IIAND(LOWFLG,OWFLG) .NE. 0)GO TO 190
-
-C	END RSX-11M
-C	VAX/VMS
-
-#ifdef unix
 # ifdef NEED_IAND
        IF(IAND(LOWFLG,OWFLG) .NE. 0)GOTO 190
 # else
        IF(AND(LOWFLG,OWFLG) .NE. 0)GOTO 190
 # endif
-#else
-       IF(IAND(LOWFLG,OWFLG) .NE. 0)GOTO 190
-#endif
-
-C	END VAX/VMS
-
 
 C     CHECK THE OLD POINT TO SEE IF IT IS WITHIN THE BOUNDARY OF
 C     THE WINDOW.  IF NOT, COMPUTE THE INTERCEPT.
@@ -185,28 +175,20 @@ C     THE WINDOW.  IF NOT, COMPUTE THE INTERCEPT.
 
 C     CHECK THE HORIZONTAL LIMITS OF THE WINDOW.
 
-#ifdef unix
 # ifdef NEED_IAND
       IF(ISHFT(LOWFLG,-2) .EQ. 0)GO TO 70
 # else
       IF(rSHIFT(LOWFLG,2) .EQ. 0)GO TO 70
 # endif
-#else
-      IF(ISHFT(LOWFLG,-2) .EQ. 0)GO TO 70
-#endif
 
 C     THE POINT IS OUTSIDE THE HORIZONTAL LIMITS OF THE WINDOW.
 C     CALCULATE THE INTERCEPT.
 
-#ifdef unix
 # ifdef NEED_IAND
       YINTER = YMXMN(ISHFT(LOWFLG,-2))
 # else
       YINTER = YMXMN(rSHIFT(LOWFLG,2))
 # endif
-#else
-      YINTER = YMXMN(ISHFT(LOWFLG,-2))
-#endif
 
       ZINTER = (ZNEW - ZOLD) * (YINTER - YOLD) / (YNEW - YOLD) +
      * ZOLD
@@ -222,15 +204,14 @@ C     OF THE WINDOW
 C     THE POINT IS OUTSIDE THE VERTICAL LIMITS OF THE WINDOW.
 C     CALCULATE THE INTERCEPT.
 
-#ifdef unix
+      irecompute = 0
 # ifdef NEED_IAND
  70   XINTER = XMXMN(IAND(LOWFLG,3))
+      IF (IAND(LOWFLG,3) .LT.1 .OR. IAND(LOWFLG,3).GT.2) irecompute = 1
 # else
  70   XINTER = XMXMN(AND(LOWFLG,3))
+      IF (AND(LOWFLG,3) .LT.1 .OR. AND(LOWFLG,3).GT.2) irecompute = 1
 # endif
-#else
- 70   XINTER = XMXMN(IAND(LOWFLG,3))
-#endif 
 
       YINTER = (YNEW - YOLD) * (XINTER - XOLD) / (XNEW - XOLD) +
      * YOLD
@@ -273,28 +254,21 @@ C     THE WINDOW.  IF NOT, COMPUTE THE INTERCEPT.
 
 C     CHECK THE HORIZONTAL LIMITS OF THE WINDOW.
 
-#ifdef unix
 # ifdef NEED_IAND
       IF(ISHFT(OWFLG,-2) .EQ. 0)GO TO 100
 # else
       IF(rSHIFT(OWFLG,2) .EQ. 0)GO TO 100
 # endif
-#else
-      IF(ISHFT(OWFLG,-2) .EQ. 0)GO TO 100
-#endif
 
 C     THE POINT IS OUTSIDE THE HORIZONTAL LIMITS OF THE WINDOW.
 C     CALCULATE THE INTERCEPT.
 
-#ifdef unix
 # ifdef NEED_IAND
       YINTER = YMXMN(ISHFT(OWFLG,-2))
 # else
       YINTER = YMXMN(rSHIFT(OWFLG,2))
 # endif
-#else
-      YINTER = YMXMN(ISHFT(OWFLG,-2))
-#endif
+
       ZINTER = (ZNEW - ZOLD) * (YINTER - YOLD) / (YNEW - YOLD) +
      * ZOLD
       XINTER = (XNEW - XOLD) * (YINTER - YOLD) / (YNEW - YOLD) +
@@ -308,19 +282,29 @@ C     OF THE WINDOW.
 
 C     THE POINT IS OUTSIDE THE VERTICAL LIMITS OF THE WINDOW.
 C     CALCULATE THE INTERCEPT.
-#ifdef unix
+
 # ifdef NEED_IAND
  100  XINTER = XMXMN(IAND(OWFLG,3))
 # else
  100  XINTER = XMXMN(AND(OWFLG,3))
 # endif
-#else
- 100  XINTER = XMXMN(IAND(OWFLG,3))
-#endif
+
       YINTER = (YNEW - YOLD) * (XINTER - XOLD) / (XNEW - XOLD) +
      * YOLD
       ZINTER = (ZNEW - ZOLD) * (XINTER - XOLD) / (XNEW - XOLD) +
      * ZOLD
+
+C recompute these now that we have a correct xinter and corrected yintr, zintr
+C and before calling abplt.
+
+      IF (irecompute .EQ. 1) THEN
+         CALL TFORM(XINTER,YINTER,ZINTER)
+         XOLD = XINTER
+         YOLD = YINTER
+         ZOLD = ZINTER
+         AOLD = ANEW
+         BOLD = BNEW 
+      ENDIF
 
 C     CHECK THE PLOTTING MODE.
 
@@ -348,15 +332,12 @@ C     LINE.
 
 C     DRAW A DASHED LINE ONE SEGMENT AT A TIME.
 
-#ifdef unix
 # ifdef NEED_IAND
  140  PENF = IAND(IDSEG,1) .NE. 0
 # else 
  140  PENF = AND(IDSEG,1) .NE. 0
 # endif
-#else
- 140  PENF = IAND(IDSEG,1) .NE. 0
-#endif
+
       IF(SEG .GE. DIST)GO TO 150
       XOLD = XOLD + SEG * COSX
       YOLD = YOLD + SEG * COSY
@@ -371,15 +352,13 @@ C     PLOT TO THE END OF THE SEGMENT.
 
       CALL ABPLT
       DIST = DIST - SEG
-#ifdef unix
+
 # ifdef NEED_IAND
       IDSEG = IAND(IDSEG,3) + 1
 # else
       IDSEG = AND(IDSEG,3) + 1
 # endif
-#else
-      IDSEG = IAND(IDSEG,3) + 1
-#endif
+
       SEG = DSEG(IDSEG)
       GO TO 140
  150  SEG = SEG - DIST

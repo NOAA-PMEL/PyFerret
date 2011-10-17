@@ -1,5 +1,7 @@
 ! Test randu2 and randn2 with newer random-number algorithm.
 ! 9/2011 acm
+! Note that most of these results will differe from one
+! run of the benchmarks to the next.
 
 let xbig = x[i=1:20000:1]
 let xx = x[i=1:6:1]

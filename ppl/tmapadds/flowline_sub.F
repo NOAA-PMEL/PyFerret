@@ -116,12 +116,13 @@ C  Local declarations
      .     vel, velmean, sqsum, cos_factor, dx, dy, count, sd, xxc, yyc,
      .     upi, upj, upij, vpi, vpj, vpij, xfuser, yfuser, ylousr,
      .     xlousr, xt, yt, xx1, yy1, xl, yl, vfact
-      INTEGER LNBLK, i, ii, jj, ii1, ij1, i2, j2, mx, my, ipt, acnt, icol, 
+      INTEGER LNBLK, TM_LENSTR1, 
+     .     i, ii, jj, ii1, ij1, i2, j2, mx, my, ipt, acnt, icol, 
      .     scol, dis, iindex, jjndex, ii1index, iacc, iisav, iscl, imn, 
-     .     jmn, j, iz, jz, iss, jss, imx, jmx, iln
+     .     jmn, j, iz, jz, iss, jss, imx, jmx, iln, slen
       LOGICAL bflg
 
-      CHARACTER*30 veclab
+      CHARACTER*30 veclab, buff*30, symbuff*30
       EXTERNAL lnblk
 
 C     Curvilinear coordinates declarations
@@ -784,6 +785,21 @@ C  From vector
 C
 C	DRAW SCALE  make arrow scale at XT,YT
 C
+
+C  Make a label containing the scale factor. 
+C  Save it in a symbol even if the label not drawn.
+
+	CALL COLOR(IPEN(0))
+	WRITE (VECLAB,66) 1./vfact
+  66    FORMAT ('flow arrow scale', 1pg8.2)
+
+C   Save the value in a symbol PPL_VECLEN
+	symbuff = 'PPL_VECLEN'
+	CALL GETSYM( symbuff, buff, i2, i1 )
+	IF ( i1 .EQ. 0 ) CALL DELSYM(symbuff,i1)
+	slen = TM_LENSTR1(veclab)
+	CALL PUTSYM( symbuff, veclab, slen, i2)
+
 	IF(.NOT. VKEY)THEN
 	    CALL COLOR(IPEN(0))
 	    RETURN
@@ -816,13 +832,12 @@ C  Make a sample line and label it with the scale factor.
 C	DRAW LABEL
 
 	CALL COLOR(IPEN(0))
-	WRITE (VECLAB,66) 1./vfact
-  66    FORMAT ('flow arrow scale', 1pg8.2)
 	ILN=LNBLK(VECLAB,30)
 c	XL = XX1 + 2.* hlabs/XF+0.2/xf
 	XL = XX1 + .125/XF
 	YL = YY1 - HLABS*0.5/YF
 	CALL SYMBEL(XL,YL,0.,HLABS,ILN,VECLAB)
+
 3333	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
 
       RETURN

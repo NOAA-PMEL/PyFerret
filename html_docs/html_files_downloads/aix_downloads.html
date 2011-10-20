@@ -1,0 +1,88 @@
+<HTML>
+<HEAD>
+  
+  <TITLE>Ferret Downloads</TITLE>
+</HEAD>
+<BODY>
+
+<P>&nbsp;</P>
+
+<P><CENTER><B><FONT SIZE="+3">Downloading Ferret for IBM AIX</FONT></B></CENTER></P>
+
+<P><B><FONT SIZE="+1">Ferret </FONT></B><B><I><FONT size=3 color="red">v6.301</FONT></I></B> </P>
+
+<BLOCKQUOTE>
+  <P><B><I><FONT SIZE="+1">Because IBM AIX is one of the <A HREF="cooperative_support.html">Cooperatively 
+    Supported</A> operating systems platforms, we have to rely on users to port 
+    Ferret to this platform. Thanks go to Hendrik Merx of the Max Planck Institut 
+	in completing the port of Ferret to this platform.
+	</FONT></I></B></P>
+</BLOCKQUOTE>
+
+
+
+Ferret built on AIX.5.3.
+
+<P><B><U><FONT SIZE="+1">Installation Instructions</FONT></U></B></P>
+
+<UL>
+  <LI><A HREF="ferret_installation_and_update_guide_v600.html">Installation
+  and update guide</A>
+</UL>
+<P><b>Note:</b> The executables tar file includes two Ferret executables: 
+<pre>
+ferret_c.NetCDF
+ferret_c.OPeNDAP
+</pre>
+The <b>ferret_c.NetCDF</b> binary is linked against the NetCDF 4.0.1 library; 
+<b>ferret_c.OpeNDAP</b> against libdap-3.8.2 and libnc-dap-3.7.3. The 
+excutable with NetCDF 4.0.1 is included if you are interested in testing 
+it; these libraries are quite new. They include DAP access that enables 
+remote-file access, and this will in the future replace the OPeNDAP 
+libraries for netCDF and remote-DAP dataset access in Ferret, but it is 
+still in under final development. The name "ferret" is soft-linked to the 
+ferret executable linked with the OPeNDAP libraries and so by default it 
+will be installed as the Ferret executable.
+</P><P>
+The external functions cabability desn't work with these executables. 
+Please unset the environment variable FER_EXTERNAL_FUNCTIONS, or set it 
+to point to an empty directory.
+
+</P>
+
+<P><B><U><FONT SIZE="+1">Environment and Executable files</FONT></U></B></P>
+
+<P>These are files that are <I><U>required</U></I> for Ferret
+installation (Compressed files using Unix &quot;compress&quot;
+command)</P>
+
+<UL>
+  <LI><A HREF="ftp://ftp.pmel.noaa.gov/ferret/pub/ibm_aix/fer_executables.tar.gz">Ferret 
+    Executables</A> 
+  <LI><A HREF="ftp://ftp.pmel.noaa.gov/ferret/pub/ibm_aix/fer_environment.tar.gz">Ferret 
+    Environment</A> 
+  <LI><A HREF="ftp://ftp.pmel.noaa.gov/ferret/pub/data/fer_dsets.tar.Z">Ferret
+  Datasets</A>
+  <UL>
+    <LI>Some of the data files within this collection are not absolutely
+    required for Ferret installation. See the <A HREF="ferret_installation_and_update_guide_v600.html#Reducing_Disk_Space">Installation
+    and update guide</A> for guidance.
+  </UL>
+</UL>
+
+<P><B><U><FONT SIZE="+1">Documentation</FONT></U></B></P>
+
+<UL>
+  <LI><A HREF="http://ferret.pmel.noaa.gov/Ferret/">On-line Ferret Web Pages</A>
+
+</UL>
+
+<P><A HREF="misc_data.html"><B><U><FONT SIZE="+1">Miscellaneous Datasets</FONT></U></B></A></P>
+
+<P><A HREF="ftp://ftp.pmel.noaa.gov/ferret/pub/ibm_aix/previous_versions"><B><U><FONT
+ SIZE="+1">Previous Versions</FONT></U></B></A></P>
+
+<P><A HREF="aix_release_history.html"><B><FONT SIZE="+1">Release History</FONT></B></A> 
+</BODY>
+</HTML>
+<!--#include virtual="/footer.txt" -->

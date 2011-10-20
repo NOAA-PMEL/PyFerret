@@ -1,0 +1,63 @@
+<html>
+<head>   <title>Ferret v6.07 release notes</title>
+</head><Body><C><h1>
+<B>Ferret Version v6.07 Release Notes</B></h1>
+<font size=+1>27-August-2007</font>
+<BR><BR>
+<P>Version 6.07 is required for users who wish to install the upcoming release of LAS (Live Access Server) 
+software, release Armstrong 1.0. It includes Linux 32-bit and 64-bit executables, with statically-linked 
+versions of both. A Solaris 8 version is also included, however it is linked with an older OPeNDAP 
+library. Further Solaris builds are in the works and will be released shortly.
+<BR><BR>
+<H2>Enhancements and Bug fixes in Version 6.07</H2>
+<UL>
+<LI>Ferret executables are built with static libraries where possible (linux systems). In particular 
+a number of X11 libraries are now loaded as static libraries.<BR><BR></LI>
+
+<LI>Both dynamic and static executables are available for both 32-bit and 64-bit linux systems.<BR><BR></LI>
+
+<LI>A new symbol FERRET_MEMORY is defined when Ferret starts up and reset on a SET MEMORY 
+command. It shows the Ferret memory as seen by SHOW MEMORY, in MegaWords.
+<PRE>
+    yes? show memory
+    Current size of FERRET memory cache: 6.4 MegaWords  (1 word = 4 bytes)
+    yes? show symbol ferret_memory
+    FERRET_MEMORY = "6.4"
+
+    yes? IF `($ferret_memory"6.4") LT 10` THEN \
+	   SET AXIS/STRIDE=5 `var,RETURN=xaxis`</PRE>
+<BR></LI>
+
+<LI>SHOW VARIABLE/XML used by LAS is changed to write correct XML output when the definition of the 
+variable includes quotes, as in a time interval that is given by dates in quotation marks. <BR><BR></LI>
+
+<LI>Some PPLUS errors were previously sent to std output. Now these are sent to std error.<BR><BR></LI>
+
+<LI>Messages produced by DEFINE, SET and CANCEL commands, and informational/warning messages starting
+with <B>**NOTE</B> were previously sent to std output. Now these are sent to std error. For instance,
+the messages in BOLD text below now go to std error<BR>
+<PRE>
+    yes? USE etopo60
+    yes? DEFINE AXIS/X=1:360:1 `rose,RETURN=xaxis`
+     !-> DEFINE AXIS/X=1:360:1 ETOPO60X
+    <B>Replacing definition of axis ETOPO60X
+     *** NOTE: grid  used by data set etopo60
+     *** NOTE: Redefinition may alter apparent contents of data set</B>
+	 
+    yes? SET AXIS/UNITS="new units" `rose,RETURN=xaxis`
+     !-> SET AXIS/UNITS="new units" ETOPO60X1
+     <B>*** NOTE: Units  not recognized: NEW UNITS
+     *** NOTE: They will not be convertible:</B>
+</B>
+<BR><BR></LI>
+
+<LI>A bug fix: Some irregular axes in netCDF files were detected as regular in v6.05. This is fixed.<BR><BR></LI>
+
+</UL><BR><BR>
+
+
+<BR><BR>
+
+</BODY>
+</HTML>
+<!--#include virtual="/footer.txt" -->

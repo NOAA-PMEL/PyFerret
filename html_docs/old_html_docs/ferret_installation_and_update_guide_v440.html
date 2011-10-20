@@ -1,0 +1,592 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Ferret Installation and Update Guide</title>
+</head>
+
+<body>
+<p>
+<a href="../">Ferret Home Page</a>
+<p>
+
+<h1 align="center">Ferret Installation and Update Guide</h1>
+<h1 align="center">Version 4.91 -- UNIX</h1>
+<h2 align="center">June 1998</h2>
+<p>
+
+<hr>
+<p>
+<table cellpadding=0 cellspacing=0>
+
+  <tr>
+  <td width="50%" valign=top halign=center>
+  <center><h2>Installing Ferret</h2></center>
+  </td>
+
+  <td width="50%" valign=top halign=center>
+  <center><h2>Updating Ferret</h2></center>
+  </td>
+  </tr>
+  
+  <tr>
+    <td width="50%" valign=top>
+    <ul><br>
+
+  <li><a href="#Introduction">Welcome!</a>
+  <li><a href="#Downloading">Downloading the tar files</a>
+  <li><a href="#Installing_Support">Installing support files</a>
+  <li><a href="#Installing_Executables">Installing Ferret</a>
+  <li><a href="#Running_Ferret_with_GUI">Running Ferret with the GUI</a>
+  <li><a href="#Setting_up_GKS">Setting up DISPLAY</a>
+  <li><a href="#Documentation">Documentation</a>
+  <li><a href="#Reducing_Disk_Space">Reducing Disk Space Required</a>
+  <li><a href="#Setting_up_an_Account">Setting up an account</a>
+  <li><a href="#Special_Environment_Variables">Special variables and files</a>
+  <li><a href="#Setting_up_Hard_Copy">Setting up the hard copy environment</a>
+
+  </ul>
+  </td>
+
+  <td width="50%" valign=top>
+  <ul><br>
+
+  <li><a href="#Update_install">Introduction</a>
+  <li><a href="#Update_environment">Support files</a>
+  <li><a href="#Update_executables">Ferret executables</a>
+
+  </ul>
+  </td>
+
+</tr>
+</table>
+
+
+
+
+<hr>
+
+<a name="Introduction"><h2>Welcome to the Ferret user community!</h2></a>
+
+This installation guide assumes the installer is familiar with the UNIX
+system.  He or she must be familiar with the file system of the target
+computer, and may need system privileges if installing Ferret in a 
+root-owned directory.
+<p>
+If you install this software we ask you to 
+please notify  <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#111;&#97;&#114;&#46;&#112;&#109;&#101;&#108;&#46;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#95;&#102;&#101;&#114;&#114;&#101;&#116;&#64;&#110;&#111;&#97;&#97;&#46;&#103;&#111;&#118;">
+        &#111;&#97;&#114;&#46;&#112;&#109;&#101;&#108;&#46;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#95;&#102;&#101;&#114;&#114;&#101;&#116;&#64;&#110;&#111;&#97;&#97;&#46;&#103;&#111;&#118; </a>
+and indicate what type of computer system you are using.  
+
+We've also formed a Ferret Users Group so that
+
+<ul>
+  <li>we can let you know of significant new developments.<br>
+      (occasional messages -- e.g. availability of point-and_click Ferret)
+  <li>Ferret users can share questions and solutions.
+</ul>
+
+To join, simply email to <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;Majordomo@ferret.wrc.noaa.gov">Majordomo@ferret.wrc.noaa.gov</a>
+and include a message which says:
+<pre>
+    subscribe ferret_users</pre>
+<blockquote>(Note this must be in the message <strong>BODY</strong> -- not in the subject line.)</blockquote>
+<p>
+To learn about the users list without joining send this message instead to
+the same address:
+<pre>
+    info ferret_users</pre>
+<p>
+
+<a name="Downloading"><h2>Downloading the tar files</h2></a>
+
+You will require approximately 30 Mbytes of disk space to install
+Ferret, preferably on your `<code>/usr/local</code>' file system.  Another 30 Mbytes
+are needed on a disk device to install the demonstration data sets.  If disk
+space is a problem, the section <a href="#Reducing_Disk_Space">Reducing Disk 
+Space Required</a> in this
+installation guide provides assistance with which files are safe to delete.
+
+<P>The Ferret distribution is made up of three compressed tar files:</P>
+
+<ul>
+  <li>fer_executables.tar.Z (Ferret and utilities)
+  <li>fer_environment.tar.Z (support files)
+  <li>fer_dsets.tar.Z (sample data sets)
+</ul>
+
+All three of these files need to be placed on your system.   After acquiring them, follow the steps below to install the application.
+
+<A name="Installing_Support"><h2>Installing support files</h2></a>
+
+<ol>
+  <li>Determine a suitable location on your file system to install the
+      Ferret program and its support files.  The location we recommend is
+      `<code>/usr/local</code>'.  You will need 30 Mb available there.  From there, create the
+      directory `<code>ferret</code>', and change directory to it.
+      <!pre><p>
+      <ul>
+	<code>% cd /usr/local</code> <!i>(our recommendation, but it's your choice)<!/i><br>
+	<code>% mkdir ferret</code><br>
+	<code>% cd ferret</code><br>
+      </ul><p>
+      <!/pre>
+      This guide will use the name <code>$FER_DIR</code> to refer to this directory
+      (`<code>/usr/local/ferret</code>' -- or your choice, if different).
+      <p>
+
+  <li>The file `<code>fer_environment.tar.Z</code>' holds the Ferret support directories
+      and associated files.  To install the file
+      <pre>
+      % zcat $GET_LOCATION/fer_environment.tar.Z | tar xvf -</pre>
+      
+      where <code>$GET_LOCATION</code> is the directory you put the compressed tar file
+      in when getting it via ftp.  Be sure you're in the <code>$FER_DIR</code> directory
+      when you run this command.  When that's done, running `<code>ls</code>' in that
+      directory should give the following listing:
+      <pre> 
+      % ls -1F
+      bin/
+      contrib/
+      doc/
+      examples/            
+      go/
+      ppl/
+      </pre>
+      <p>
+
+  <li>Now determine a location on your file system suitable for Ferret's
+      sample data files.  You'll need 30 Mb available.  From there create a
+      directory `<code>fer_dsets</code>', and change directory to there.
+      <p>
+      <ul>
+	<code>% cd ...</code>  (for example, `<code>/home/data_disk</code>')<br>
+	<code>% mkdir fer_dsets</code><br>
+	<code>% cd fer_dsets</code><br>
+      </ul>
+      <p>
+      This guide will refer to this directory by the name <code>$FER_DSETS</code>.
+
+      <p>
+
+  <li>Extract the sample data set directories from their compressed format:
+      <pre>
+      % zcat $GET_LOCATION/fer_dsets.tar.Z | tar xvf -</pre>
+
+      Again, <code>$GET_LOCATION</code> is the directory where the tar file resides.  Be
+      sure to be in <code>$FER_DSETS</code> when running this command.  Executing `<code>ls</code>'
+      from that directory should give the following listing:
+      <pre>
+      % ls -1F
+      data/
+      descr/
+      grids/
+      </pre>
+      
+</ol>
+
+<a name="Installing_Executables"><h2>Completing the installation with Finstall</h2></a>
+
+After these directories are created, two steps complete the installation of
+Ferret, and you can begin using it. There is a shell script called
+`<code>Finstall</code>' to help you with these two tasks. (One other step documented in
+the section Setting Up the Hard Copy Environment sets up easy printing
+of hard copy from Ferret plots.)
+<p>
+The Finstall script is in the `<code>bin</code>' subdirectory of <code>$FER_DIR</code> (where you put
+the Ferret support files) and can be invoked by referencing the complete path 
+to it:
+<ul>
+  <code>% /usr/local/ferret/bin/Finstall</code>      (for example)
+</ul>
+
+Finstall will then ask you to select from two options, corresponding to the 
+remaining steps: 
+<ol>
+  <li><a name="install_executables"><b>Install executables:</b></a><br>
+      This option extracts files from the compressed tar file
+      `<code>fer_executables.tar.Z</code>'.  You'll want to run this option if you're installing 
+      Ferret for the first time, and also if you're updating a Ferret you already 
+      have.
+      <p>
+      When these files are extracted by Finstall they're placed in `<code>$FER_DIR/bin</code>'; 
+      the two files extracted are the Ferret program itself (`<code>ferret</code>') and the
+      program that translates Ferret's graphics metafiles to PostScript for hard 
+      copy (`<code>gksm2ps</code>').
+      <p>
+      To install the executable:
+      <ol>
+	<li>Select Option 1 after invoking Finstall.
+	<li>Finstall prompts you for the directory you installed the Ferret 
+	    support files in (<code>$FER_DIR)</code>.  Enter the complete path to that directory. 
+	<li>Finstall prompts you for the directory you currently have the 
+	    fer_executables tar file in (<code>$GET_LOCATION</code>).  Enter the complete path 
+	    to that directory.
+	<li>Finstall then installs the executables in `<code>$FER_DIR/bin</code>'.
+      </ol>
+      <p>
+      
+  <li><a name="customize_ferret_paths"><b>Customize `<code>ferret_paths</code>':</b></a><br>
+      This option modifies the `<code>ferret_paths_template</code>' 
+      script to set environment variables FER_DIR and FER_DSETS to the directories 
+      at your site where the Ferret software and demonstration data were placed.  
+      The modified file is written out as `<code>ferret_paths</code>' and placed in a directory 
+      you will be asked to specify.   
+      <blockquote>
+      We <strong>STRONGLY RECOMMEND</strong> that the new file <strong>NOT</strong> be placed anywhere inside of the
+      <code>$FER_DIR</code> directory tree. Modifications inside of <code>$FER_DIR</code> may cause 
+      complications when future versions of Ferret are installed.  Instead, we 
+      recommend that the new file be created in `<code>/usr/local</code>' or another directory 
+      that will be in the users' PATH variable.  This guide will refer to that 
+      directory by the name <code>$SET_FER</code>.  The `<code>ferret_paths</code>' file, after it's customized,
+      may be used to set up the users' environment to run Ferret (For more detail, 
+      see the explanation in `<code>$FER_DIR/bin/ferret_paths_template</code>').
+      </blockquote>
+      To customize `<code>ferret_paths</code>':
+      <ol>
+	<li>Select Option 2 after invoking Finstall.
+	<li>Finstall prompts you for the directory you installed the Ferret 
+	    support files in <code>$FER_DIR</code>.  Enter the complete path to that directory.
+	<li>Finstall prompts you for the directory you installed the Ferret sample
+	    data files in (<code>$FER_DSETS</code>).  Enter the complete path to that directory.
+	<li>Finstall prompts you for the directory you wish to place the 
+	    <code>ferret_paths</code> file in <code>$SET_FER</code>.  Enter the complete path to that 
+	    directory.
+	<li>Finstall then creates `<code>ferret_paths</code>' in the directory you specified.
+      </ol>
+      <p>
+      After the `<code>ferret_paths</code>' file customization is complete, execute the Ferret 
+      setup procedure with the command
+      <pre>
+      % source $SET_FER/ferret_paths</pre>
+
+</ol>
+
+Access to Ferret and its supporting routines is through the addition of 
+`<code>$FER_DIR/bin</code>' to your PATH environment variable.  This addition will be done 
+automatically when the command `<code>source $SET_FER/ferret_paths</code>' is issued.
+<p>
+Ferret can now be run by entering
+<pre>
+    % ferret</pre>
+
+<a name="Running_Ferret_with_GUI"><h2>Running Ferret with the GUI</h2></a>
+
+Ferret can be run with the Graphical User Interface (GUI) by entering
+<pre>
+    % ferret -gui</pre>
+
+If you wish to customize the ferret GUI you must first install
+the file `<code>$FER_DIR/doc/Ferret_4.40_xdefaults</code>' which 
+contains parameter defaults used by your X windows system to run 
+the Ferret GUI. The GUI has fallback resources in case no app-defaults
+file is found but these are ignored if the app-defaults file exists.
+(regardless of what the app-defaults file contains!)<br>
+Therefore: 
+<strong>You should not delete
+any entries when modifying the app-defaults file.</strong>
+<p>
+To install `<code>Ferret_4.40_xdefaults</code>':
+
+<ol>
+  <li>Use the Unix `<code>su</code>' command to become super-user. (Get help 
+      from your system manager if this command is unfamiliar.)
+  <li>Create a soft link in the X11 defaults directory to the `<code>$FER_DIR/doc/Ferret_4.40_xdefaults</code>' file
+      The soft link should have the name `<code>Ferret</code>'. On
+      systems based on Motif window managers (most Unix systems)
+      this will be the command:
+      <pre>ln -s $FER_DIR/doc/Ferret_4.40_xdefaults /usr/lib/X11/app-defaults/Ferret</pre>
+      On Sun systems running OpenWindows use, instead, the command:
+      <pre>ln -s $FER_DIR/doc/Ferret_4.40_xdefaults /usr/openwin/lib/X11/app-defaults/Ferret</pre>      
+</ol>
+
+<a name="Setting_up_GKS"><h2>Setting up your display environment</h2></a>
+
+To get graphical output from Ferret at your workstation, you must have the 
+X Windows environment variable DISPLAY defined properly.  Set the variable to 
+point to the workstation screen where you want Ferret graphical output 
+displayed.  In the example below graphics output will be sent to the screen 
+of workstation <code>anorak</code>.
+<pre>
+    % setenv DISPLAY anorak:0.0</pre>
+
+Ferret supports X Window graphical output, and PostScript is used to provide 
+hard copy of plots.  Sequential screen images can also be saved as HDF "raster8" files 
+and animated; single images can be saved as "gif" files.
+
+<a name="Documentation"><h2>Documentation</h2></a>
+
+Examine the files located in `<code>$FER_DIR/doc</code>' for a number of online documents 
+about Ferret.  Files ending in `<code>.ps</code>' are in PostScript format and are intended 
+for printing on PostScript printers.  Other documents are not intended for 
+hard copy but are ASCII text versions of the PostScript documents.  They are 
+suitable for on-line review.
+<p>
+The script `<code>print_ferret_docs</code>' when run will present a menu from which you 
+may choose documents to be printed.
+<p>
+For a productive and smooth start using Ferret, review the Demonstration Files
+section of the Ferret User's Guide (Type `<code>Fhelp "demonstration files"</code>' at the 
+shell prompt for a list). Tutorial scripts demonstrating Ferret data sets and 
+usage are documented there.  We recommend trying them out first.
+<p>
+In addition, the tutorial scripts (journal files) in `<code>$FER_DIR/examples</code>' are 
+excellent source material for your own scripts.  Copy any or all to your own 
+area and print out, study and modify them to suit your needs.
+<p>
+Note that the interactive help available from the commands Fhelp, Fapropos, 
+and Ftoc require that the files `<code>ferret_users_guide.txt</code>' and `<code>ferret_ug_toc.txt</code>' 
+be online.
+<p>
+As of September 1996, a new Ferret User's Guide for Ferret V4.4 is under
+development -- not yet distributed. The information contained in the Ferret
+User's Guide with this release may refer to version 3.1 of Ferret. The on-line
+release notes available at <a href="../Documentation/ferret_documentation">the Ferret Documentation pages</a> should be referenced
+to augment this version of the user's guide.
+<p>
+Additional on-line documents, including this installation guide, are also
+avalable at the URL above.
+
+
+<a name="Reducing_Disk_Space"><h2>Reducing Disk Space Required</h2></a>
+
+Various directories and files may be deleted if disk space is a concern.  
+Below is an outline of the considerations for deletable directories.
+<p>
+If you have no use for PostScript documentation files you may 
+delete `<code>$FER_DIR/doc/*.ps</code>' (`<code>pplus_fonts.ps</code>' is over 2 Mb).  If you have no 
+use for online copies of the documentation in ASCII files then you may safely 
+delete from directory `<code>$FER_DIR/ferret/doc</code>' all files, `<code>*.txt</code>', except 
+`<code>ferret_users_guide.txt</code>' and `<code>ferret_ug_toc.txt</code>'.  Up to 1 Mb may be recovered.
+<p>
+You may selectively delete the data files in `<code>$FER_DATA/data</code>'.  These files are 
+used by several of the GO examples located in `<code>$FER_DIR/examples</code>'.  Potential 
+savings of up to 25 Mbytes are possible by deleting these data.
+
+
+<a name="Setting_up_an_Account"><h2>Setting up an account to run Ferret</h2></a>
+
+To set up a user account to run Ferret (C-shell only) add the following line to the `<code>.login</code>'
+file for that account:
+<ul>
+<code>% source $SET_FER/ferret_paths</code>   (see <a href="#customize_ferret_paths">Customize <code>ferret_paths</code></a>)
+</ul>
+To properly set up the account to produce plots and other graphs, a user must
+have set the environment variable DISPLAY, as explained above.  This can be 
+done by using the `<code>setenv</code>' command in the user's `<code>.login</code>' file, for example:
+<pre>
+    % setenv DISPLAY anorak:0.0</pre>
+
+
+<a name="Special_Environment_Variables"><h2>Special Environment Variables and Files</h2></a>
+
+The three environment variables FER_DATA, FER_DESCR, and FER_GRID have been 
+set up to point to the sample data sets included with Ferret.  Each of these 
+defines a path to the files Ferret needs to properly access data sets. The 
+pathlist can be expanded to suit your needs.  In particular, FER_DATA may be 
+a path to directories residing on several devices; thereby allowing data sets 
+to be large, quite possibly spanning more than one file system.  (NetCDF files
+are pointed to by FER_DATA.)
+<p>
+As you become more familiar with Ferret through use and reading documentation,
+you may want to modify these pathlists from the way they are now defined in 
+the script `<code>ferret_paths</code>'.  A file in directory `<code>$FER_DIR/bin</code>' called 
+`my_ferret_paths_template' will help with this.  See the section in the 
+Ferret user's guide covering UNIX account set up for that optional 
+modification.
+<p>
+Ferret also uses an optional initialization file, `<code>.ferret</code>', located in the 
+user's $HOME (login) directory.  This file, if it exists, will be executed 
+automatically each time Ferret is started up, permitting Ferret to be tailored
+to individual needs and styles.  The format of the file is like any other 
+Ferret "GO" file -- an ASCII file of Ferret commands, one command per line.
+
+
+<a name="Setting_up_Hard_Copy"><h2>Setting up the Hard Copy Environment</h2></a>
+
+Hard copies can be made from Ferret plots very easily.
+<p>
+Plots must be saved on disk as "metafiles" before hard copy can be made; the 
+GKSM metafile format is used to record Ferret plots on disk.  To create 
+metafiles, within a Ferret session, invoke the Ferret command `<code>SET MODE META</code>'.
+Subsequent plots will be saved in metafiles.  To cancel recording of plots, 
+specify `<code>CANCEL MODE META</code>'. The metafiles will by default be named 
+`<code>metafile.plt</code>' and sequential, emacs-style version numbers are used to uniquely
+identify each plot file by appending a suffix of `<code>.~nnn~</code>', where <code>nnn</code> is a unique
+version number.
+<p>
+There is a shell script supplied with Ferret (, in the `<code>$FER_DIR/bin</code>' directory, 
+that both translates the metafiles to PostScript and routes the resulting 
+files to a printer.  You'll usually use the script -- modified slightly to 
+include the printers at your site -- to print Ferret plots.  (For consistency 
+at Ferret installations, we ask that if you use the script you retain the
+syntax outlined below for its use. Feel free to modify the syntax and give it 
+another name, or write new scripts; but please use a different command name 
+in that case.)
+<p>
+The example script is named `<code>Fprint_template</code>'.  The modified file should be 
+called `<code>Fprint</code>' and placed in a directory that will be in a user's PATH (we 
+suggest `<code>/usr/local</code>').  As with the `<code>ferret_paths</code>' file (see section Customize 
+`ferret_paths') we strongly recommend the edited file not be placed in the 
+$FER_DIR directory tree.  Please look in the  `<code>Fprint_template</code>' file for 
+instructions to help you add your site's printers to the script.  There is an 
+Fprint document in the `<code>$FER_DIR/doc</code>' directory suitable for general use as a 
+guide to Fprint's syntax.
+<p>
+The command Fprint has a syntax allowing specification of the printer to be 
+used and the metafiles to be processed.  Invoking `<code>Fprint -help</code>' will give u
+sage information.  `<code>Fprint</code>' uses as default the printer named by the 
+environment variable PRINTER; or the destination printer can be named:  Here 
+are a few examples:
+<ul>
+  <code>% Fprint metafile.plt*</code><br>     
+  <code>% Fprint -P </code><i>printer_name</i><code> metafile.plt*</code><br>
+  <code>% Fprint -P </code><i>printer_name</i><code> metafile.plt.~3~ metafile.plt.~7~</code><br>
+</ul>
+The first example sends files `<code>metafile.plt*</code>' to the default printer 
+(determined by environmen t variable PRINTER), the second sends all 
+`<code>metafile.plt*</code>' files to `<i>printer_name</i>', and the last sends the indicated 
+plots to that same printer.
+<p>
+Fprint can be used to translate a metafile and output the result to a disk 
+file in PostScript format; Fprint also renders metafiles on a 
+X Window workstation for review.
+<p>
+Hard copy of a plot is generated by Fprint in two steps: 
+<ol>
+  <li>conversion of the device independent GKS metafile to PostScript, the 
+      well-known page description language
+      <p>
+  <li>routing the PostScript file to a particular device.  
+</ol>
+
+The conversion is done by the command `<code>gksm2ps</code>', which is supplied with 
+Ferret.  Both its syntax and examples of use are given in the Ferret User's 
+Guide.  An example of its use to convert one plot file (`<code>metafile.plt</code>') 
+to a PostScript file (`<code>gksm2ps_output.ps</code>') is:
+<pre>
+    % gksm2ps -o gksm2ps_output.ps metafile.plt</pre>
+
+Routing that file to a printer could be done manually with:
+<pre>
+    % lpr -s gksm2ps_output.ps </pre>
+
+
+<a name="Update_install"><h2>Updating your Ferret installation</h2></a>
+
+The Ferret system has two components, the environment -- or support -- files, 
+and the executables.  We may add enhancements to the two parts independently.
+If Ferret was installed at your site months ago, or you receive 
+Ferret User Group 
+listserver email announcing an update, consider updating your installation.  
+Here's how you can update either or both components:
+
+<a name="Update_environment"><h2>Updating the environment files</h2></a>
+
+The update contains recent enhancements, usually including Ferret scripts
+adding new capabilities, demonstration scripts, documentation, and more.
+The latest update (or "patch") to the environment files is in the distribution
+directory for each system we support, and named
+<pre>
+    patch_DATE.tar.Z        where "DATE" is a date, for example "28aug95"
+</pre>
+The file name has the date we created the latest update.  If you have gotten
+updates before, check the patch README file in your directory $FER_DIR; 
+if it was created before that date, you will benefit from picking up
+the latest update.  If you've not gotten updates previously and the patch file
+is more recent than your Ferret installation, the update will have something
+new.
+
+<p>
+The update procedure uses the shell script "Fpatch".  The update (the patch)
+should be added only after you have installed FERRET on your system. Follow 
+these steps to install the patch file:
+<p>
+<ul>
+<li> Get the patch_DATE.tar.Z file in binary mode.
+
+<li> Also get the file 'Fpatch', then change its mode to be executable: 
+<pre>
+    % chmod +x Fpatch
+</pre>
+<li> Begin the patch install by invoking<p>
+<pre>
+    % Fpatch
+</pre>
+<ol>
+    <li> Select Option 1 after invoking Fpatch.
+
+    <li> Fpatch prompts you for the directory you installed the FERRET
+    support files in ($FER_DIR).  Enter the complete path to that directory.
+
+    <li> Fpatch prompts you for the directory you currently have the
+    patch file in.  Enter the complete path to that directory.
+
+    <li> Fpatch will prompt you for the patch file name.  Enter it here.
+
+    <li> Fpatch then installs the new files in $FER_DIR, and creates a
+    README file in that directory logging the date of the update and the
+    name of the patch file.
+</ol>
+</ul>
+
+
+<a name="Update_executables"><h2>Updating the Ferret executables</h2></a>
+
+The file 'fer_executables.tar.Z' in the distribution 
+directory holds the ferret and gksm2ps
+programs that you picked up when you first installed Ferret.  We update those
+with enhancements and bug fixes periodically.
+<p>
+Get and examine the file 
+in the distribution
+ directory named 'FERRET_VERSION_HERE_IS_...'.  It lists the version
+of ferret and gksm2ps available.  If the version of either is higher than what
+you have, you will benefit from picking up the update and installing it. 
+To find the version of Ferret you have installed, run 
+<pre>
+    % ferret
+</pre>
+When ferret 
+starts up it will list the version number, e.g., "Version 4.10 - 08/25/95". 
+You can determine the version of gksm2ps you have by running 
+<pre>
+    % gksm2ps -v
+</pre>
+The application will respond with, e.g., "Version number of gksm2ps: Mod 1.03".
+<p>
+
+To update these files:
+
+<ul>
+<li>Get the fer_executables.tar.Z file in binary mode.
+
+<li>As in your original installation, run the script 
+<pre>
+    % Finstall (it is in your directory $FER_DIR/bin)
+</pre>
+<ol>
+    <li>Select Option 1 after invoking Finstall.
+
+    <li>Finstall prompts you for the directory you installed the FERRET 
+    support files in ($FER_DIR).  Enter the complete path to that directory. 
+
+    <li>Finstall prompts you for the directory you currently have the 
+    fer_executables.tar.Z file in.  Enter the complete path 
+    to that directory.
+    
+    <li>Finstall then installs the executables in $FER_DIR/bin.              
+</ol>
+</ul>
+
+<hr>
+<font size=-1>
+<p>
+ 
+Comments: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#111;&#97;&#114;&#46;&#112;&#109;&#101;&#108;&#46;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#95;&#102;&#101;&#114;&#114;&#101;&#116;&#64;&#110;&#111;&#97;&#97;&#46;&#103;&#111;&#118;">
+        &#111;&#97;&#114;&#46;&#112;&#109;&#101;&#108;&#46;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#95;&#102;&#101;&#114;&#114;&#101;&#116;&#64;&#110;&#111;&#97;&#97;&#46;&#103;&#111;&#118; </a><p>
+ 
+<!-- hhmts start -->
+Last modified: Fri Jan  7 11:28:52 PST 2000
+<!-- hhmts end --><br>
+ 
+<!--#include virtual="/footer.txt" -->
+</body> </html>

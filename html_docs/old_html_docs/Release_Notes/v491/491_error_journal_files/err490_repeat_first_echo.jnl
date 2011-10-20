@@ -1,0 +1,23 @@
+! err490_repeat_first_echo (created later 23/98)
+
+! for the first REPEAT loop on T the formatting of the "verify" output
+! is based on the last previous command given
+
+! fixed 1/98 sh&kob
+!  relevant routines (bug not yet fixed)
+!		       gnl/cs_command.F
+!                      xeq/xeq_repeat.F
+!                      ctx/cs_set_context.F
+
+set mode calendar
+can mode interp
+
+! cause the "last" command to be non-calendar
+stat t[t=15]
+
+! now note the first loop echo
+set mode verify
+define axis/t=1-jan-1980:1-jan-1981:1/units=days tax
+repeat/t=1-jan-1980:2-jan-1980:24 stat t[gt=tax]
+
+message/cont Note: THE ECHO-ONE REPEAT BUG HAS NOT BEEN FIXED

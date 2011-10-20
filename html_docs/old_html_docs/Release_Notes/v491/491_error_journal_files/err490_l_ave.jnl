@@ -1,0 +1,60 @@
+! err490_lave.jnl 12/1/97 - *sh* (reported by Weimin Wang)
+! L=@AVE is failing to compress to a point
+
+! 2/28/97:
+! bug from this script re-emerged 2/98 after change to MERGE_GRID
+! (see err491_explicit_limits.jnl)
+! This time it was fixed in MERGE_GRID by correcting inconsistent use of
+! the variable expl_com_lim
+
+! 12/97: ---------------------
+! ==> fixed  in IS_GRID_MODE with more thorough initialization
+!  probably was introduced with changes to is-uvar_grid and merge_grid
+! when GCF functions were introduced
+
+! the bug was introduced between ferret_c_pre_10jan (created Dec. 19 '96)
+! and ferret_c_passed_bench (created Jan 22  1997). This is when the GCF
+! changes were made
+
+! tracing the problem (axis T):
+!  in IS_TRANS the bad case enters with cx_hi_ww(cx=6)=91369
+!	       the successful case with it set BAD
+!			==> result is that T axis doesn't get fleshed out
+
+! IS_TRANS gets the cx=6 value from IS_ALGEBRA's call to GET_VAR_CONTEXT
+
+! In turn this gets it from cx=4 which is set early in INTERP_STACK (dflt_cx)
+
+! INTERP_STACK works correctly when uvar_given(4,ex#1)=-1 ("uvlim_irrelevant")
+! ==> for some reason uvar_given(4,ex#1) is 7 (uvlim_needed) in the bad case
+
+! ... need to look in is_uvar_grid and esp. merge_grid
+! ---------------------------
+! *kob* 3/98 - modifed to use coads_vwnd.cdf data set.  this is a local data
+!              set (ie, it resides in the bench area).  this was important for
+!	        benchmarking the sgi version (on cyborg and vikenty) because
+!		not all tmap disks were available.
+
+cancel memory/all
+set mode diag
+
+! *kob* set data coads
+set data coads_vwnd
+
+set region/x=160w/y=40n
+set region/l=1:50
+
+! 12/97: this works OK -- a single point ... with value of zero!
+! 2/98: now it gets a list of values, where the first one, only is correct
+let tseries =  vwnd[l=1:50]
+list tseries[l=@ave]
+
+! this gets a list of values!
+cancel memory/all
+load tseries
+list tseries[l=@ave]
+
+! and finally a crash ...
+list/l=1 tseries[l=1:50@ave]
+
+quit

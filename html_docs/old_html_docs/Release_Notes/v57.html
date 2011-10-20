@@ -1,0 +1,336 @@
+<html>
+<head>   <title>Ferret v5.7 release notes</title>
+</head><body><C><h1>
+<B>Ferret Version 5.7 Release Notes</B></h1>
+<font size=+1>June 29, 2004</font>
+</C><BR><BR>
+<H2>New Features and Enhancements in Version 5.7</H2>
+<UL>
+<LI><a href="#nc_bounds">Implementation of NetCDF bounds attribute.</A> Axes may be specified 
+with N*2 upper and lower bounds defining the edges of each axis cell.</LI><BR><BR>
+
+<LI><a href="#set_ax">SET AXIS/CALENDAR= /T0= /UNITS=</A> New sub-qualifiers allow resetting 
+these axis attributes </LI><BR><BR>
+
+<LI><a href="#cancel_ax">CANCEL AXIS/DEPTH</A> unsets the DEPTH attribute (This is a parallel
+to SET AXIS/DEPTH)</LI><BR><BR>
+
+<LI><a href="#return_cal">RETURN=CALENDAR</A> gives access to the calendar attribute of an axis</LI><BR><BR>
+
+<LI><a href="#all_leap">New calendar, ALL_LEAP</A> or 366_DAY, in which all years have 
+366 days. </LI><BR><BR>
+
+<LI><a href="#noleap">365_DAY </A> as an alternate name for NOLEAP calendar. </LI><BR><BR>
+
+<LI><a href="#mode_graticule">MODE graticule</A>, to turn on and set the style of graticule 
+lines at tic marks</LI><BR><BR>
+
+<LI><a href="#date_string">A new script, datestring.jnl</A>, forms a date string from numeric 
+values of year, month, day, and optionally hour, minute, second.</LI><BR><BR>
+</UL>
+
+<BR>
+
+<H2>New Features and Enhancements in Version 5.7</H2>
+
+
+<UL>
+
+<LI><A NAME="nc_bounds"><B>Implementation of the bounds attribute for coordinate axes, as 
+specified in the CF standard. </B><BR> 
+See Section 7.1 of the CF standard,
+<a href="http://www.cgd.ucar.edu/cms/eaton/cf-metadata/CF-1.0.html"> 
+http://www.cgd.ucar.edu/cms/eaton/cf-metadata/CF-1.0.html</A></P>
+<P>The coordinates on the axis may be anywhere within the cells defined by the upper and
+lower cell bounds.  There is no change to how Ferret uses the upper and lower bounds of of 
+axis cells (also known as boxes). They may be listed or otherwise accessed using the 
+pseudo-variables XBOXLO, XBHOXH, YBOXLO, etc. <BR><BR>
+<UL>
+<LI>Ferret reads NetCDF files which have the bounds attribute. For instance, the ncdump
+output for a short file might appear as follows:
+<PRE>
+netcdf irrx {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	float V(XAX) ;
+		V:missing_value = -1.e+34f ;
+		V:_FillValue = -1.e+34f ;
+		V:long_name = "SEA SURFACE TEMPERATURE" ;
+
+// global attributes:
+		:history = "FERRET V5.60    4-Jun-04" ;
+data:
+
+ XAX = 1, 2, 5, 6 ;
+
+ XAX_bnds =
+  0., 1.5,
+  1.5, 2.5,
+  2.5, 5.5,
+  5.5, 7. ;
+
+ V = 
+  28.20222,
+  28.36456,
+  28.35381,
+  28.2165,
+  28.48889,
+  28.31556 ;
+}
+</PRE>
+The CF standard allows for axes in a file that may have discontiguous bounds (the upper bound of
+one cell is not the same as the lower bound of the next cell). Ferret does not allow such an axis.
+When such a file is read, we arbitrarily choose to use the lower bounds throughout, with the upper 
+bound of the topmost cell to close the definition.  This way all axes have contiguous upper and 
+lower bounds.  A warning message is issued.
+</LI><BR><BR>
+
+<LI>A new qualifier DEFINE AXIS/BOUNDS allows us to define an axis from lists of coordinates and
+bounds.  The upper bound of each cell must be the same as the lower bound of the next cell.
+The coordinates must be inside (or may coincide with) the cell bounds. Spaces are used here
+to clarify the pairs of bounds, but are not necessary and do not affect the way the data is read.
+<BR><BR>
+<B>Examples:</B>
+<PRE>
+   yes? DEF AXIS/X/BOUNDS xax = \
+       {1,2,5,6}, {0.5,1.5, 1.5,2.5, 2.5,5.5, 5.5,6.5}
+   yes? DEF AXIS/Z/DEPTH/BOUNDS zax = \
+       {0,20,50,75,120}, {0,10, 10,30, 30,60, 60,90, 90,150}
+</PRE>
+</LI><BR><BR>
+
+<LI>To request that bounds be written for all of the axes of a variable, even for regular axes, 
+<PRE>
+   yes? SAVE/BOUNDS/file=bnds.nc var
+</PRE>
+</LI>
+
+<LI>By default, the bounds attribute will be written to NetCDF files for all
+irregular axes. Regular axes may also be saved with bounds by specifying SAVE/BOUNDS<BR><BR>
+<B>Examples:</B>
+<PRE>
+   yes? USE climatological_axes
+   yes? LET v = L[GT=month_irreg]   ! variable with an irregular axis 
+   yes? SAVE/FILE=bnds.nc/L=1:4 v   ! bounds attribute on time axis.
+   </PRE>
+<P>Note that we no longer need to use the qualifiers /RIGID /LLIMITS= 
+to write a file with an irregularly-spaced time axis.  We will be able to append more 
+time steps to the file and keep the correct point spacing.
+<PRE>
+   yes? SAVE/APPEND/FILE=bnds.nc/L=5:6 v 
+</PRE>
+<P>If there is a gap between time steps in the file and the first time step being
+appended, Ferret inserts a void point whose bounds are the upper bound of the last time
+in the file, and the lower bound of the first time step being appended.  Append
+steps 10:12 to the file, and then look at the variable and its coordinates:
+
+<PRE>
+   yes? SAVE/APPEND/FILE=bnds.nc/L=10:12 v
+
+   yes? CANCEL VAR v
+   yes? USE bnds.nc
+   yes? LIST v, TBOXLO[gt=v], TBOXHI[gt=v], TBOX[gt=v]
+
+             DATA SET: ./bnds.nc
+             TIME: 01-JAN      00:00 to 31-DEC      05:49
+ Column  1: V is L[GT=MONTH_IRREG]
+ Column  2: TBOXLO is TBOXLO (axis MONTH_IRREG1)
+ Column  3: TBOXHI is TBOXHI (axis MONTH_IRREG1)
+ Column  4: TBOX is TBOX (axis MONTH_IRREG1)
+                         V TBOXLO TBOXHI   TBOX 
+16-JAN      12 /  1:   1.00    0.0   31.0  31.00
+15-FEB      02 /  2:   2.00   31.0   59.2  28.24
+15-MAR      17 /  3:   3.00   59.2   90.2  31.00
+15-APR      05 /  4:   4.00   90.2  120.2  30.00
+15-MAY      17 /  5:   5.00  120.2  151.2  31.00
+15-JUN      05 /  6:   6.00  151.2  181.2  30.00
+15-AUG      05 /  7:   ....  181.2  273.2  92.00
+15-OCT      17 /  8:  10.00  273.2  304.2  31.00
+15-NOV      05 /  9:  11.00  304.2  334.2  30.00
+15-DEC      17 / 10:  12.00  334.2  365.2  31.00
+</PRE>
+
+</LI><BR><BR> 
+
+
+<P>Time steps appended to this file will have a void point added as in the example
+above, if there is a gap between time steps in the file and those being appended.</P>
+<P>If appending data to a file which has a regular time axis and no bounds, if there is
+a gap between the time steps in the file and those being appended, Ferret has
+always written an axis which is irregular and which has large box sizes at the gap.  
+Now, Ferret will issue a note suggesting that bounds would define the time axis more 
+accurately.
+<PRE>
+   yes? use coads_climatology  ! Has a regular time axis
+   yes? save/l=1:4/clobber/file=b.nc sst[x=180,y=0]
+
+   yes? save/append/L=6:9/file=b.nc sst[x=180,y=0]
+
+ *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
+ *** NOTE: This will result in incorrect box sizes on record axis: TIME
+ *** NOTE: Write the data initially with the /BOUNDS qualifier</PRE>
+ </LI><BR><BR>
+
+<LI>Existing scripts with SAVE/RIGID/HEADING=ENHANCED/LLIMITS still
+work and produce files identical to those written by earlier Ferret versions.
+</LI><BR><BR>
+
+<LI>Existing files with the edges attribute are correctly read by Ferret.
+</LI><BR><BR>
+
+<LI>A qualifier SAVE/EDGES outputs the older edges attribute on all axes for the variable
+</LI><BR><BR>
+</UL>
+
+<LI><A NAME="set_ax"><B>SET AXIS/CALENDAR= /T0= /UNITS= axisname</B> <BR>
+These new qualifiers let us reset axis attributes CALENDAR, T0, and UNITS
+for an axis, whether it was part of a NetCDF dataset or defined by the user. These
+do not change the coordinates of the axis, but only the attribute and therefore
+they will change the way the coordinates are interpreted by Ferret.
+<PRE>
+    yes? USE myfile.nc
+    yes? SHOW axis `var,return=taxis`  ! Say the calendar attribute is incorrect
+    yes? SET AXIS/CALENDAR="noleap" TIMEAX</PRE>
+
+
+SET AXIS/CALENDAR and SET AXIS/T0 are ignored for all except time axes.  T0 is
+input in the Ferret format for date strings "dd-mmm-yyyy:00:00:00", with the hours, minutes
+and seconds portion optional.  (See the command DEFINE AXIS/T0=).  UNITS are expressed as 
+a string and are converted according to the usual rules for Ferret axes, see "axis, units" 
+in the Users Guide. 
+</LI><BR><BR>
+
+<LI><A NAME="cancel_ax"><B>CANCEL AXIS/DEPTH axisname</B> unsets the DEPTH attribute for a 
+Z axis, which may have been set with a positive="down" attribute in a NetCDF file, or with a 
+DEFINE AXIS/DEPTH or SET AXIS/DEPTH command. </LI><BR><BR>
+
+<LI><A NAME="return_cal"><B>RETURN=CALENDAR</B> gives access to the calendar attribute 
+of an axis</LI><PRE>
+   
+   yes? USE mydata
+   yes? SAY `sst,RETURN=calendar`
+    !-> MESSAGE/CONTINUE GREGORIAN
+   GREGORIAN
+   
+   yes? SET AXIS/CALENDAR=julian `sst,RETURN=taxis`
+    !-> SET AXIS/CALENDAR=julian T_AX
+   
+   yes? SHOW AXIS T_AX
+    name       axis              # pts   start                end
+    T_AX    TIME               648 i   13-JAN-1946 12:00    13-DEC-1999 12:00
+   T0 = 01-JAN-1700 00:00:00
+   CALENDAR = JULIAN
+      Axis span (to cell edges) = 19723
+   
+   yes? SAY `sst,RETURN=cal`
+    !-> MESSAGE/CONTINUE JULIAN
+   JULIAN </PRE>  
+   
+<BR><BR>
+
+<LI><A NAME="all_leap"><B>New calendar, ALL_LEAP</B> or 366_DAY, in which all years have 366 days.  That is,
+every year has a leap day on February 29. This calendar definition is one of those defined by the CF standard 
+for NetCDF files. <BR><BR>
+
+<LI><A NAME="noleap"><B>365_DAY </B>is now an alternate name for the NOLEAP calendar. <BR><BR>
+
+<LI><A NAME="mode_graticule"><B>MODE GRATICULE </B><BR>
+The qualifier /GRATICULE for plot commands was introduced in Ferret v5.6. <B>MODE graticule</B> allows the user
+to turn on graticules, and set the line style, making one setting for horizontal and vertical
+graticule lines.  This setting applies to all subsequent plots, until another SET MODE graticule
+command is made, or CANCEL MODE graticule. The syntax is:</P>
+
+<P><B>SET MODE graticule[:setting]</B><BR><BR>
+
+For example:
+<PRE>
+   yes? ! turns on thin, black lines for all plots.
+   yes? SET MODE grat  
+   yes? USE coads_climatology
+   yes? VECTOR/L=1 uwnd,vwnd; go fland
+<IMG SRC="v57_grat.gif" BORDER="1"> 
+
+
+
+   yes? ! Change the setting to dashed lines
+
+   yes? SET MODE grat:dash  
+   yes? PLOT/i=1:40 sin(i/6), sin(i/8)
+<IMG SRC="v57_gratdash.gif" BORDER="1"> 
+
+
+
+   yes? ! Further settings, in parentheses or quotes
+
+   yes? SET MODE grat:(dash,COLOR=red)
+   yes? set data etopo20
+   yes? shade/pal=greyscale rose
+<IMG SRC="v57_reddash.gif" BORDER="1"> 
+
+
+
+   yes? ! different settings for large and small tics   
+
+   yes? SET MODE grat:"LARGE(COLOR=blue),SMALL(COLOR=lightblue)"
+   yes? USE monthly_navy_winds
+   yes? SET REGION/X=180/Y=0/T=1-may-1989:1-may-1992
+   yes? PLOT uwnd
+   <IMG SRC="v57_grattime.gif" BORDER="1"> 
+</PRE>
+<BR>
+
+<LI><A NAME="date_string"><B>Journal script datestring.jnl </B>returns a date string as a symbol, 
+DATE_SYMBOL in the correct format to use in Ferret commands, for instance in defining a time axis.
+If no hour, minute, date are given, the script returns a string with only the month, year, and date.
+<PRE>
+    yes? go datestring 2004 1 1 12 30 22
+        DATE_SYMBOL = "1-JAN-2004 12:30:22"
+    yes? def sym start_date ($date_symbol)
+    
+    yes? go datestring 2004 11 1
+        DATE_SYMBOL = "1-NOV-2004"
+    yes? def sym end_date ($date_symbol)
+    
+    yes? define axis/t="($start_date)":"($end_date)":1/t0="($start_date)" tax
+</PRE></LI><BR><BR>
+
+
+</UL>
+<H2>Bug fixes</H2>
+<UL>
+
+<LI>Optimization of internal handling of strings results in a moderate improvement
+in performance.
+</LI><BR><BR>
+
+<LI>Fixed a bug in the automatic setting of the levels on a SHADE plot, when
+the range of data in the field is small:<BR>
+<PRE>yes? shade/i=1:10/j=1:10 i*j*0.0033</PRE>
+<BR></LI>
+
+<LI>Regridding to a range of data where the index reached certain negative
+values resulted in spurious gaps.  This has been fixed.
+</LI><BR><BR>
+
+<LI>A bug in the representation of the edges of the plot area for cellarray plots 
+(SHADE output in GIF mode).  The outer half-cell width of the grid boxes were incorrectly sized.
+</LI><BR><BR>
+
+<LI>Bug in drawing a time axis for some date ranges, resulted in Ferret halting.
+This is fixed.
+</LI><BR><BR>
+
+</UL>
+
+<BR>
+
+</BODY>
+</HTML>
+<!--#include virtual="/footer.txt" -->

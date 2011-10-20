@@ -1,0 +1,28 @@
+! err491_explicit_limits
+! 2/98 *sh*
+! bugs reported by Mark Wetzler and Mike Knezevitch
+
+! ferret was assigning uvar_given = uvlim_irrelevant to axes of uvars where
+! the limits were given in square brackets.
+
+! fixed by change in MERGE_GRID (2/23/98)
+
+! Note that the repair caused a bug in err490_l_ave to re-emerge. That bug
+! was fixed through a further repair to MERGE_GRID (2/28/98)
+
+SET MODE DIAGNOSTIC
+
+! Wetzler bug
+! @AVE is ignored -- size of result on X is 5 points instead of 1
+let p = i[i=1:5]
+let q = i[i=1:5]
+let pq = p*q
+stat pq[i=@ave]
+
+! Knezevitch bug
+! causes crash in nest_region_class.F
+let timestamp = DAYS1900(1998,02,23) - DAYS1900(1998,02,1)
+list timestamp[i=1:1]
+
+
+

@@ -1,0 +1,108 @@
+WINDOWS_README
+Running Ferret under virtual Linux
+
+Unfortunately, the latest Ferret is not available for Windows users. 
+Our projects do not support us to maintain Ferret in the Windows environment.
+
+Windows users with some familiarity of Linux or Unix are strongly
+encouraged to install VirtualBox, create a virtual Linux system, and
+install and use Ferret from the virtual Linux system.  (If this is a
+company computer, make sure you are permitted to create virtual machines
+on your system.)  This will allow you to also use your usual Windows
+programs while also using Ferret or other Linux programs.
+
+While we cannot provide support on doing this, the following information
+should help you get started (if you do not have an systems administrator
+that can do this for you).
+If you have questions about VirtualBox or the Linux system you install,
+please consult their help pages.  We cannot provide support for these
+products.
+
+You can download VirtualBox for free from
+http://www.virtualbox.org
+Follow their instructions for installing this product.  This is a very
+simple process.
+
+Then download a Linux system such as Ubuntu or Mandriva (there are many
+others as well).  Free version of Ubuntu or Madriva Linux systems you
+can be obtained by going to
+
+http://www.ubuntu.com
+
+or
+
+http://www.mandriva.com
+
+and navigating to the download page for the free system.  Download the
+"ISO image" (a file that would be a installation CD).  Currently only a
+64-bit version of Ferret is available, so you probably will want the ISO
+image for the 64-bit version of the Linux system.  You do NOT need to
+create a CD from this ISO image; instead, VirtualBox uses the downloaded
+file directly.
+
+To create a virtual machine: 
+
+- Start-up VirtualBox, select the "New" button to start the "Create New
+Virtual System" wizard.  - Select "Linux" and the Operating System under 
+"OS Type", and select the appropriate value for "Version" (Ubuntu, 
+Ubuntu (64-bit), Mandriva, Mandriva (64-bit), etc - there are many types).  
+If you downloaded the ISO image for a 32-bit Linux system, select the one 
+without the "(64-bit)" tag.
+- You may want to increase the base memory size if you have lots of
+memory on your system.  I personally suggest about 1024Mb if that is in
+the "green area" of the slider (less than half your Windows system
+memory).  Realize that when the virtual system is running, that amount
+of memory is completely used in your Windows system memory and not
+available to other Windows programs.
+- Create a new virtual boot hard disk with dynamic expanding storage and
+give plenty of space (maybe 40 to 80 GB).  This creates a file on your
+Windows hard drive.  The size setting is the maximum amount of hard disk
+space the virtual drive file will use, but the actual size of the file
+on your Windows hard drive is whatever is currently being using by the
+virtual machine (the Linux system).
+- Select "Finish" to create the machine.
+
+
+You probably want to increase the video memory for the virtual machine:
+- Select the newly created machine
+- Select the "Settings" button
+- Select the "Display" item
+- Maximize the video memory setting.  Unlike system memory, the video
+    memory is shared between the virtual machine and other Windows programs.
+- Select "OK" to close the Setting dialog box
+
+To get the virtual machine up and running:
+- Start the virtual machine.  It will report "FATAL: No bootable medium
+found! System halted".  - From this new window's menubar, select Devices -> 
+CD/DVD Devices -> Choose a virtual CD/DVD disk file...
+- Navigate to the Linux ISO image file you downloaded.
+- Select "Open" to close the dialog box
+- From the menubar select Machine -> Reset to restart the virtual machine
+It should now start and run the installation procedure for that Linux
+system.  This installation process should include creating at least one
+user for the system.
+
+When the Linux installation asks you to remove the CD before restarting:
+- From the machine window's menubar select Devices -> CD/DVD Devices ->
+Remove disk from virtual drive.
+
+At this point you should have a working virtual Linux system.  When you
+start it, you can log in, download Ferret installation files (using the
+internet browser provided by the Linux system), and install Ferret from
+the command line using a console window in the Linux system.  Consult
+the Ferret installation help pages for more information.
+
+If you find the internet connection slower than usual, you may want to
+change the network adapter from "NAT" to "Bridged Adapter" to improve
+connection speed.  This is again in the "Settings" dialog under
+"Network".  "NAT" goes through Windows to connect to the internet,
+whereas "Bridged Adapter" connects directly to the network card in your
+system.
+
+Again, if you have questions about VirtualBox or the Linux system you
+installed, please consult their help pages.  We cannot provide support
+for these products.  We have to focus on helping people with Ferret and
+improving Ferret.
+
+
+Happy Ferreting

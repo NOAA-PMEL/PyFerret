@@ -13,7 +13,7 @@ CFLAGS		= @CFLAGS@
 PORT_CFORTRAN	= @PORT_CFORTRAN@
 NEED_FORTC	= @NEED_FORTC@
 
-PORT_HEADERS	= @PORT_HEADERS@
+PORT_HEADERS	= 
 made_headers	= float.h limits.h signal.h stdarg.h stddef.h stdlib.h \
 		  string.h time.h
 LIBOBJS		= uddummy.o @LIBOBJS@

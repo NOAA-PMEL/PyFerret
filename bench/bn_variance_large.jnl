@@ -10,3 +10,4 @@ LET huge = sst*1.e25
 STAT/L=1 huge
 SHADE/L=1/LEV=v huge
 
+CANCEL SYMBOL lev*

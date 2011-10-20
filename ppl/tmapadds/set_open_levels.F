@@ -37,6 +37,8 @@
 * V65 *acm   2/10 If Open-ended levels were used, symbol LEV_OPNLEVS saves 
 * the /LEV command needed to duplicate the levels
 * v663 *acm* 7/10 Fix bug where min value was not inside the lowest level.
+* v671 *acm* 6/11 For centered levels if there is (-inf) force (inf) and vice versa.
+* v673 *acm* 10/11 Fix cut-and-paste bug on first setting of nlev3.
 
       include 'parampl5_dat.decl'
       include 'PARAMPL5.DAT'
@@ -155,7 +157,7 @@ c Set jj as in plotz based on fine levels.
 
       nlev2 =1 
 
-      nlev3 = NINT((zmpchi-znpchi)/ dzc) + 1
+      nlev3 = NINT((zmpclo-znpclo)/ dzc) + 1
       nlev2 = nlev2 + nlev3
 
       do 101 i = 1, nlev3 

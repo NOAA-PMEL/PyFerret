@@ -1,3 +1,5 @@
 ! bn68_bug_fixes.jnl
 ! test various fixes that went into version 6.8
 ! 
+GO bn_reset
+GO err672_stray_line

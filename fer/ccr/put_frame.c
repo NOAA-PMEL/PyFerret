@@ -135,6 +135,7 @@ if (GIFFlush(&ws->mf, filename) != OK){
 */
   if(*transp > 0)
     { 
+/* white background was used */
 	  if(((int)*red == 0) && ((int)*green == 0) && ((int)*blue == 0))
        {
 		  if (GIFFlusht0(&ws->mf, filename) != OK)
@@ -143,6 +144,7 @@ if (GIFFlush(&ws->mf, filename) != OK){
             return;
           }
 	   }
+/* black background was used */
 	  if(((int)*red == 1) && ((int)*green == 1) && ((int)*blue == 1))
        {
 		  if (GIFFlusht1(&ws->mf, filename) != OK)
@@ -153,6 +155,8 @@ if (GIFFlush(&ws->mf, filename) != OK){
 	   }
     }
 	else
+/* not transparent */
+
 		if (GIFFlush(&ws->mf, filename) != OK)
 		{
          sprintf(errmsg, "Couldn't write out GIF file %s\n", filename);

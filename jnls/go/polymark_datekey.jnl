@@ -181,7 +181,12 @@ ENDIF
 ! --------
 
 ! Based on what key.F does to define the upper x corner of the colorbar key.
+! If we are in a viewport, start with vp_width
+! 10/2011 change size of labels to 0.1
+
 LET vwid = (($ppl$xlen) + ($ppl$xorg)) * 1.15
+IF ($vp_width"0|*>1") THEN let vwid = ($vp_width)
+
 LET rem = vwid - (($ppl$xlen) + ($ppl$xorg))
 LET xmaxx = 0.25*($ppl$xlen)
 LET key_hi = MIN (`($ppl$xorg) + ($ppl$xlen) + xmaxx`,`vwid-0.051*rem`)
@@ -193,11 +198,11 @@ LET key_inc = `0.1 * (key_hi - key_lo)`
 LET key_hi = `key_lo + 4.0*key_inc`
 LET key_hi = `key_lo + 2.0*key_inc`
 
-label/nouser `key_hi`,`(($ppl$ylen)*0)/4-.05`,-1,0,.12,($day_0_fourth)
-label/nouser `key_hi`,`(($ppl$ylen)*1)/4-.05`,-1,0,.12,($day_1_fourth)
-label/nouser `key_hi`,`(($ppl$ylen)*2)/4-.05`,-1,0,.12,($day_2_fourth)
-label/nouser `key_hi`,`(($ppl$ylen)*3)/4-.05`,-1,0,.12,($day_3_fourth)
-label/nouser `key_hi`,`(($ppl$ylen)*4)/4-.05`,-1,0,.12,($day_4_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*0)/4-.05`,-1,0,.10,($day_0_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*1)/4-.05`,-1,0,.10,($day_1_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*2)/4-.05`,-1,0,.10,($day_2_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*3)/4-.05`,-1,0,.10,($day_3_fourth)
+label/nouser `key_hi`,`(($ppl$ylen)*4)/4-.05`,-1,0,.10,($day_4_fourth)
 
 cancel symbol PLM*
 cancel variable PLM*

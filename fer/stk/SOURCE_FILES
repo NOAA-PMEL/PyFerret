@@ -16,6 +16,7 @@ get_prot_cmnd_data.F\
 get_uvar_grid.F\
 hunt.F\
 i1mach.F\
+init_random_seed.F\
 interp_context.F\
 interp_stack.F\
 is_algebra.F\
@@ -50,6 +51,7 @@ pass_ambig_lims.F\
 potent_size.F\
 push_interp_stack.F\
 randn.F\
+randn2.F\
 randu.F\
 rcvd_regrid.F\
 regrid_lims.F\

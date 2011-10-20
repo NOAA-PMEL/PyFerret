@@ -77,6 +77,8 @@
 * V600 4/06  *acm*  return the result from days_from_day0 in dummy, for 64-bit build
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid.
+* V672 9/11  *acm* add RANDU2,RANDN2.  The way RANDN works, with SAVEd variables,
+*                  it's not going to work well as an external function.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -101,8 +103,8 @@
      .		di1, dj1, dk1, dl1, di2, dj2, dk2, dl2,
      .		di3, dj3, dk3, dl3, di4, dj4, dk4, dl4,
      .		si1, sj1, sk1, sl1, si2, sj2, sk2, sl2,
-     .		si3, sj3, sk3, sl3, si4, sj4, sk4, sl4
-	REAL	RANDU, RANDN, RHO_UNESCO, THETA_FOFF,
+     .		si3, sj3, sk3, sl3, si4, sj4, sk4, sl4, inseed
+	REAL	RANDU, RANDN, RANDN2, RHO_UNESCO, THETA_FOFF,
      .		DAYS_FROM_DAY0,
      .          bad1, bad2, bad3, bad4, bad_res, dummy
      .          op_repl
@@ -1170,8 +1172,59 @@
  4010	CONTINUE
 	RETURN
 
+
+* "RANDU2" - random uniform 
+* Call the gfortran RANDOM_SEED and RANDOM_SEED functions.
+* See ticket 1886 for discussions of RANDU
+*
+* iseed = 0   use previous seed - don't reinitialize
+* iseed = -1 initialize using system clock
+* iseed = integer > 0 initialize using that integer: results will be repeatable
+
  4100	CONTINUE
+	l2 = sl2
+	k2 = sk2
+	j2 = sj2
+	i2 = si2
+        inseed = INT(com2(i2,j2,k2,l2))
+        CALL INIT_RANDOM_SEED(inseed)
+	DO 4110 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	 DO 4110 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	  DO 4110 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	   DO 4110 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
+	      res(i,j,k,l) = bad_res
+	   ELSE
+	      CALL RANDOM_NUMBER(res(i,j,k,l))
+	   ENDIF
+ 4110	CONTINUE
+	RETURN
+
+* "RANDN2" - random normal using gfortran RANDOM_SEED and RANDOM_SEED functions.
+* seed set as for RANDU2
  4200	CONTINUE
+	l2 = sl2
+	k2 = sk2
+	j2 = sj2
+	i2 = si2
+	first = .TRUE.
+        inseed = INT(com2(i2,j2,k2,l2))
+	DO 4210 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	 DO 4210 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	  DO 4210 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	   DO 4210 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
+	      res(i,j,k,l) = bad_res
+	   ELSEIF ( first ) THEN
+	      res(i,j,k,l) = RANDN2( inseed )
+	      first = .FALSE.
+	   ELSE
+	      res(i,j,k,l) = RANDN2(0)
+	   ENDIF
+
+ 4210	CONTINUE
+	RETURN
+
  4300	CONTINUE
 	STOP 'FUNCTION NOT IMPLEMENTED'
 

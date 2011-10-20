@@ -35,6 +35,7 @@ else
    svn checkout file:///home/users/tmap/svn/repos/ferret/tags/$tag FERRET >&! .install_log
 endif
 cp ./FERRET/fer/README ./FERRET
+rm -rf html_docs
 
 # get tar file location
 set ctar_file = fer_source.tar

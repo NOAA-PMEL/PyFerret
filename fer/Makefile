@@ -108,8 +108,8 @@ ncdf4_static:	.FRC
 
 debug:	.FRC
 	mkdir -p ../lib
-	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g"  \
-		"FFLAGS = $(FFLAGS) -O0 -g" \
+	$(MAKE) "CFLAGS = $(CFLAGS) -O -g"  \
+		"FFLAGS = $(FFLAGS) -O -g" \
 		"GUI_FAKES=special/gui_fakes.o" build
 
 

@@ -66,6 +66,8 @@
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
+      CALL ef_set_num_work_arrays(id, 1)
+
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
@@ -88,10 +90,60 @@
       RETURN 
       END
 
+
+*
+* In this subroutine we request an amount of storage to be supplied
+* by Ferret and passed as an additional argument.
+*
+      SUBROUTINE tax_year_work_size(id)
+
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+
+      INTEGER id
+
+* **********************************************************************
+*                                            USER CONFIGURABLE PORTION |
+*                                                                      |
+*                                                                      V
+
+*
+* Set the work array X/Y/Z/T dimensions
+*
+* ef_set_work_array_lens(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+*
+      INTEGER array_num, nt1, nt2
+      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
+     .     arg_incr(4,1:EF_MAX_ARGS)
+
+      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+
+
+*  Allocate double the length of the T axis of ARG2 for REAL*8 work array.
+
+      nt1 = arg_lo_ss(T_AXIS,ARG2)
+
+      nt2 = nt1 + 
+     .     2* (arg_hi_ss(T_AXIS,ARG2)  - arg_lo_ss(T_AXIS,ARG2) + 1)
+
+      array_num = 1
+
+      CALL ef_set_work_array_dims(id, array_num,
+     .     nt1, 1, 1, 1, nt2, 1, 1, 1)
+
+
+*                                                                      ^
+*                                                                      |
+*                                            USER CONFIGURABLE PORTION |
+* **********************************************************************
+
+      RETURN 
+      END
+
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE tax_year_compute(id, arg_1, arg_2, result)
+      SUBROUTINE tax_year_compute(id, arg_1, arg_2, result, taxdat)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
@@ -106,6 +158,10 @@
 
       REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit)
+
+*  Declare work array
+      REAL*8 taxdat(wrk1lox:wrk1lox+(wrk1hix-wrk1lox)/2,wrk1loy:wrk1hiy,
+     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -122,12 +178,14 @@
       CHARACTER*20 datebuf
       INTEGER iyear, day_of_mon
       CHARACTER*3 cmon
-      CHARACTER*80 err_msg
-
-      REAL*8 ddate
+      INTEGER L2, LL
+      LOGICAL TM_FPEQ, first
+      CHARACTER*255 err_msg
+      REAL   rdate, rdate_last
+      REAL*8 ddate, d1, d2
 
       INTEGER i,j,k,l
-      INTEGER i1, j1, k1, l1 
+      INTEGER i1, j1, k1, l1
 
 *  variables for checking axis characteristics (modulo axes)
 
@@ -138,12 +196,16 @@
 
       CALL ef_get_axis_info(id, 2, ax_name, ax_units, backward,
      .     modulo, regular)
-      IF (modulo(4)) tmodulo = .TRUE.
+      tmodulo = modulo(4)
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+      CALL ef_get_coordinates(id, ARG2, T_AXIS,
+     .   arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2), taxdat)
+
+      first = .TRUE.
       i1 = arg_lo_ss(X_AXIS,ARG1)
       DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
@@ -156,15 +218,40 @@
               l1 = arg_lo_ss(T_AXIS,ARG1)
               DO 100 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-                ddate = arg_1(i1,j1,k1,l1)
-		IF (ddate .NE. bad_flag(ARG1)) THEN
+                 rdate =  arg_1(i1,j1,k1,l1)   
+                 ddate = rdate  
+		 IF (rdate .NE. bad_flag(ARG1)) THEN
+
+                    IF (.NOT.tmodulo) THEN
+C  Convert date back to nearest double precision coordinate value
+
+                       IF (.NOT.first .AND. TM_FPEQ(rdate, rdate_last)) THEN
+C                        Create a message saying arg1 values at index are duplicate
+		          CALL TAX_FORMAT_MESSAGE (L1, err_msg)
+		          GOTO 999
+		       ENDIF
+
+		       first = .FALSE.
+		       rdate_last = rdate
+
+                       ddate = rdate
+		       LL = arg_lo_ss(T_AXIS,ARG2)
+		       L2 = arg_lo_ss(T_AXIS,ARG2)+1
+		       d1 = ABS(taxdat(L2,1,1,1) - taxdat(LL,1,1,1))
+		       LL = 1
+		       DO 110 L2 = arg_lo_ss(T_AXIS,ARG2)+1, arg_hi_ss(T_AXIS,ARG2)
+		          d2 = ABS(ddate - taxdat(L2,1,1,1))
+		          IF (d2 .LT. d1) LL = L2
+  110                  CONTINUE
+		       ddate = taxdat(LL,1,1,1)
+                    ENDIF  ! tmodulo
 
 *     Get the string-date for each time
                    CALL ef_get_axis_dates(id,ARG2,ddate,1,datebuf)
 
 *     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date.
                    IF (.NOT. tmodulo) THEN
-		      READ (datebuf,110,err=900) day_of_mon, cmon, iyear
+		      READ (datebuf,1010,err=900) day_of_mon, cmon, iyear
                       result(i,j,k,l) = iyear
 		   ELSE
 		      result(i,j,k,l) = bad_flag_result
@@ -185,12 +272,7 @@
          i1 = i1 + arg_incr(X_AXIS,ARG1)
  400  CONTINUE
 
- 110  FORMAT (i2, 1x, a3, 1x, i4) 
-
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
+ 1010  FORMAT (i2, 1x, a3, 1x, i4) 
 
       RETURN 
   900 CONTINUE
@@ -198,6 +280,14 @@
       WRITE (err_msg,*) 
      .  'Error assigning dates/times to timestamp for tax_year',  
      .  datebuf
+
+      RETURN
+ 999  CALL ef_bail_out (id, err_msg)
+
+*                                                                      ^
+*                                                                      |
+*                                            USER CONFIGURABLE PORTION |
+* **********************************************************************
 
       RETURN
       END

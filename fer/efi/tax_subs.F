@@ -35,7 +35,7 @@
 *
 ****************************************************************
 *
-* V6.2 ACM 2/12/2009  Fix bug 1629 in JULIAN_DAY_OF_YEAR. Always
+* V6.2 ACM 2/12/2008  Fix bug 1629 in JULIAN_DAY_OF_YEAR. Always
 *          set ndaymo(2) to either 28 or 29. It does not get reset
 *          by the DATA statement on re-entry to the routine.
 
@@ -220,3 +220,45 @@
 *                                                                      |
 *                                                                      |
 * **********************************************************************
+
+
+      SUBROUTINE tax_format_message (L1, err_msg)
+C   Create a message saying arg1 values at index are duplicate
+
+      INTEGER L1
+      CHARACTER*(*) err_msg
+      
+      REAL v1, v2
+      INTEGER n1, n2
+      CHARACTER TM_FMT*15, buff1*15, buff2*15
+
+      v1 = L1-1
+      v2 = L1
+      buff1 = TM_FMT(v1, 10,12, n1) 
+      buff2 = TM_FMT(v2, 10, 10, n2) 
+      
+      IF (n1 .GE. 14 .OR. n2 .GE. 14) THEN
+         WRITE (err_msg, 1014) L1-1, L1
+      ELSEIF (n1 .GE. 12 .OR. n2 .GE. 12) THEN
+         WRITE (err_msg, 1012) L1-1, L1
+      ELSEIF (n1 .GE. 10 .OR. n2 .GE. 10) THEN
+         WRITE (err_msg, 1010) L1-1, L1
+      ELSEIF (n1 .GE. 8 .OR. n2 .GE. 8) THEN
+         WRITE (err_msg, 1008) L1-1, L1
+      ELSE
+         WRITE (err_msg, 1000) buff1(1:n1), buff2(1:n1)
+      ENDIF
+
+1000  FORMAT ('Duplicate times in ARG1, may arise from double- to single- ',
+     .          'precision conversion. At indices ', A, ',', A)
+1014  FORMAT ('Duplicate times in ARG1, may arise from double- to single- ',
+     .          'precision conversion. At indices ', 2i16)
+1012  FORMAT ('Duplicate times in ARG1, may arise from double- to single- ',
+     .          'precision conversion. At indices ', 2i14)
+1010  FORMAT ('Duplicate times in ARG1, may arise from double- to single- ',
+     .          'precision conversion. At indices ', 2i12)
+1008  FORMAT ('Duplicate times in ARG1, may arise from double- to single- ',
+     .          'precision conversion. At indices ', 2i10)
+
+      RETURN
+      END

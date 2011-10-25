@@ -43,8 +43,6 @@ list/l=1:7 TAX_yearfrac(t[gt=var], var)
 
 def axis/t="1-jan-2008":"31-dec-2010":1/units=seconds/t0="1-jan-2008" mytaxis
 let tt = t[gt=mytaxis]
-sh axis mytaxis
-pause
 
 let a =  TAX_year(tt[t="02-JUN-2010:13:34:40":"02-JUN-2010:13:34:50"], tt[L=76340000:76350000])
 let b =  TAX_jday(tt[t="02-JUN-2010:13:34:40":"02-JUN-2010:13:34:50"], tt[L=76340000:76350000])
@@ -53,7 +51,6 @@ let c =  TAX_dayfrac(tt[t="02-JUN-2010:13:34:40":"02-JUN-2010:13:34:50"], tt[L=7
 list/prec=7 a
 list/prec=7 b
 list/prec=7 c
-pause
 
 ! Can do this example
 let a =  TAX_year(tt[t="13-JAN-2008:13:34:40":"13-JAN-2008:13:34:50"], tt[L=1080000:1090000])

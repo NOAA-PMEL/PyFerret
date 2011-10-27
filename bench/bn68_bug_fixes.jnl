@@ -6,3 +6,7 @@ GO err672_stray_line
 
 GO bn_reset
 GO err672_tax_functions_prec
+
+
+GO bn_reset
+GO err672_subscr_precision

@@ -26,6 +26,7 @@
 			  -I$(DIR_PREFIX)/ppl/include \
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \
 			  -I$(DIR_PREFIX)/pyfermod \
+			  -I$(DIR_PREFIX)/external_functions/ef_utility \
 			  -I$(HDF5_DIR)/include \
 			  -I$(NETCDF4_DIR)/include \
 			  -I/usr/local/include

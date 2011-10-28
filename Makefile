@@ -19,6 +19,8 @@ optimized :
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O2" pymod_optimized
+	$(MAKE) -C $(DIR_PREFIX)/external_functions optimized
+	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 .PHONY : debug
 debug :
@@ -26,6 +28,8 @@ debug :
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" pymod_debug
+	$(MAKE) -C $(DIR_PREFIX)/external_functions debug
+	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 ## The following builds _pyferret.so, then installs that shared-object library and all the
 ## python scripts into $(DIR_PREFIX)/pyferret_install.  This install directory can then be
@@ -59,6 +63,8 @@ pymod_debug :
 clean :
 	rm -fr fer_executables.tar.gz
 	rm -fr fer_environment.tar.gz
+	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix clean
+	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
 	rm -fr $(DIR_PREFIX)/pyferret_install $(DIR_PREFIX)/build ferret.jnl*
 	find $(DIR_PREFIX)/pviewmod -name '*.py[co]' -exec rm -f {} ';'
 	find $(DIR_PREFIX)/pyfermod -name '*.py[co]' -exec rm -f {} ';'

@@ -38,6 +38,7 @@
                  for better performance. This function is to modify a variable
                  in an array and keep the two lists updated.
  */
+#include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 #include "deleted_list.h"
 

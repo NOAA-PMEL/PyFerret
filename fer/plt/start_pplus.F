@@ -169,7 +169,7 @@
 *  note: subsequent windows will still have their deferral states at default
 *	 but no problems are caused by that because FERRET and PPLUS agree on
 *	 the window viewport coordinates (see PPLUS SIZE2)
-!	CALL GSDS( wsid, gasap, gallow )
+!	CALL FGD_GSDS( wsid, gasap, gallow )
 ! further bug - repeated SET WINDOW/SIZE=x for same x cause segment to go
 ! invisible
 	RETURN

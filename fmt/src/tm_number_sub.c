@@ -34,6 +34,8 @@
 *
 */
 
+#include <Python.h> /* make sure Python.h is first */
+#include <stdio.h>
 
 
 /* Function called by tm_number to test if a string is a valid number

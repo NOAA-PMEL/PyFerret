@@ -242,15 +242,15 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	if (clear .and. no_vpt_flag) then			!12.1.89 JD
 
 	   if (.not. meta_clsplt) then				!1.25.90 JD
-              call gdawk (meta_wsid)     			!11.6.89 JD
-	      call gclwk (meta_wsid)				!11.6.89 JD
+              call FGD_GDAWK(meta_wsid)     			!11.6.89 JD
+	      call FGD_GCLWK(meta_wsid)				!11.6.89 JD
 	      close (meta_lun)					!11.6.89 JD
 *             TEMP FIX DUE TO GKS BUG  *JD* 5.91
 * ----        close (aux_lun)
 	   end if						!11.6.89 JD
 
 	   call open_metafile					!11.6.89 JD
-	   call gacwk (meta_wsid)				!11.6.89 JD
+	   call FGD_GACWK(meta_wsid)				!11.6.89 JD
 #ifndef xgks
 	   call meta_version					!2.24.93
 #endif

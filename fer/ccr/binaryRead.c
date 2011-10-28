@@ -8,7 +8,7 @@
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *kob*  4/06 v600 - changes for 64-bit build */
-#include <wchar.h>
+#include <Python.h> /* make sure Python.h is first */
 #include "binaryRead.h"
 #include <stdlib.h>
 #include <stdio.h>

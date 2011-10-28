@@ -83,12 +83,12 @@
 
 *	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
        call set_fill_ndx (ndx)
-       call gfa (3,px,py)
+       call FGD_GFA(3,px,py)
 
 * Outline
        px(4) = px(1)
        py(4) = py(1)
-       IF (.NOT. cont_key) call gpl (4,px,py)
+       IF (.NOT. cont_key) call FGD_GPL(4,px,py)
        
 
 * Annotate min

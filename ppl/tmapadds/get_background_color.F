@@ -48,7 +48,7 @@
 
         ndx = 1
 
-        call gqcr (wsid,ndx,type,error,red,green,blue)
+        call FGD_GQCR(wsid,ndx,type,error,red,green,blue)
 
 	return
 	end

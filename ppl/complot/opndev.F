@@ -264,11 +264,11 @@ c
 	       IF ( PPL_in_FERRET ) THEN
 	         CALL CLEAR_VP
 	       ELSE
-!	         CALL GCLRWK(WSID,0)				! original
+!	         CALL FGD_GCLRWK(WSID,0)			! original
 		 control_flag = 0				! Mod JD
-	         CALL GCLRWK(WSID,control_flag)			! Mod JD
+	         CALL FGD_GCLRWK(WSID,control_flag)
 #ifdef xgks
-* leave out	 if (meta_actv) CALL GCLRWK(meta_wsid,control_flag) ! Mod JD
+* leave out      if (meta_actv) CALL FGD_GCLRWK(meta_wsid,control_flag)
 #else
 		 if (meta_actv) call meta_clear (control_flag)	! Mod JD
 #endif

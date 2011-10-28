@@ -36,6 +36,7 @@
 /*
   06/04 *ywei* -Created to calculate the hash value for a string.
  */
+#include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 #include "string_array.h"
 

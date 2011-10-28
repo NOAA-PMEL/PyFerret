@@ -187,10 +187,10 @@ C       Check switches
 * set up GKS environment (code copied from SHADE_SUB)
 
 *	GET PROPER SCALING, NDC COORDINATES, ETC FOR FILL
-	call gqcntn (error,trans_no)
+	call FGD_GQCNTN(error,trans_no)
 	if (error .ne. 0) goto 1100
 
-	call gqnt (trans_no,error,w,v)
+	call FGD_GQNT(trans_no,error,w,v)
 	if (error .ne. 0) goto 1100
 
 	call get_user_coords (w,v,ndc,uc,xinv,yinv)
@@ -207,14 +207,13 @@ C       Check switches
 *	NOW SET THE CLIPPING RECTANGLE AROUND THEM AND PATTERN SIZE
 * v4.91 *kob* had to add <cr> after first line below
 
-	call gswn (my_trans,uc(1)*xinv,uc(2)*xinv,uc(3)*yinv,uc(4)*yinv)
-        call gsvp (my_trans,ndc(1),ndc(2),ndc(3),ndc(4))
-	if (fill_it) call gselnt (my_trans)
+	call FGD_GSWN(my_trans,uc(1)*xinv,uc(2)*xinv,uc(3)*yinv,uc(4)*yinv)
+        call FGD_GSVP(my_trans,ndc(1),ndc(2),ndc(3),ndc(4))
+	if (fill_it) call FGD_GSELNT(my_trans)
 
-	call gqclip (error,cflag,ndc)
-	call gqclip (error,cflag,ndc)
+	call FGD_GQCLIP(error,cflag,ndc)
 	if (error .ne. 0) goto 1000
-	if (cflag .NE. iwind) call gsclip (iwind)
+	if (cflag .NE. iwind) call FGD_GSCLIP(iwind)
 
 *************************************
 
@@ -315,8 +314,8 @@ C      set already.
 	      ENDIF
 
 	      if (nvertex .gt. 2) then
-		 if (line_it) call gselnt (my_trans)
-		 CALL GFA(nvertex, x(xvertexbase), x(ypolybase)) 
+		 if (line_it) call FGD_GSELNT(my_trans)
+		 CALL FGD_GFA(nvertex, x(xvertexbase), x(ypolybase)) 
 	      end if
 	   end if
 
@@ -330,7 +329,7 @@ C      set already.
 		 IF (YEQ.AND.X(ypolybase+nvertex-1).EQ.CMYEQ) GOTO 199
  158	      CONTINUE
 
-	      if (fill_it) call gselnt (trans_no)
+	      if (fill_it) call FGD_GSELNT(trans_no)
 	      nvertex = 0
 
 	      DO 160 J=IBASE+1,IBASE+llen
@@ -354,8 +353,8 @@ C      set already.
 
 
 * ... restore GKS transforms following FILLPOL 
- 1000	call gsclip (cflag)
-	call gselnt (trans_no)
+ 1000	call FGD_GSCLIP(cflag)
+	call FGD_GSELNT(trans_no)
 
 * ... and DO THE KEY
 	if (fill_it .and. do_key .AND. .NOT.interrupted) then

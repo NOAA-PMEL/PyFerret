@@ -1,6 +1,7 @@
 #ifndef RUNTHREDDSBROWSER_H_
 #define RUNTHREDDSBROWSER_H_
 
+#include <Python.h> /* make sure Python.h is alway first */
 #include <sys/types.h>
 #include <stdio.h>
 

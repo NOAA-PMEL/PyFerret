@@ -57,6 +57,9 @@ hh:mm:ss are optional (defaulting to 00:00:00) or seconds, alone may be omitted
 
 */
 
+#include <Python.h> /* make sure Python.h is first */
+#include <stdio.h>
+
 #ifdef _NO_PROTO
 #  ifdef NO_ENTRY_NAME_UNDERSCORES
 int tm_break_fmt_date_c(date,

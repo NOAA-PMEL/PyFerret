@@ -75,6 +75,7 @@ Make the same change in v5d.h, v5d.c, and v5df_fer.h
 
 
 
+#include <Python.h> /* make sure Python.h is first */
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>

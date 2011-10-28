@@ -200,7 +200,7 @@ c      IF (curvilinear ) THEN
 	   i = i - 1
 
 	   CALL set_fill_ndx (fill_ndx)
-	   CALL gfa (npt,px,py)
+	   CALL FGD_GFA(npt,px,py)
 
 *	   TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
 *	   FILL_NDX TO PRIVATE ITEM -- no, forget it *jd* 10.22.92

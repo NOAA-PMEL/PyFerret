@@ -34,6 +34,9 @@
 *
 */
 
+#include <Python.h> /* make sure Python.h is first */
+#include <math.h>
+
 /* tm_check_inf.c :
 /*  see if value is positive or negative Inf */
 

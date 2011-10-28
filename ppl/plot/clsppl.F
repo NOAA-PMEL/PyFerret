@@ -40,6 +40,8 @@
 *	J Davison 11.28.88 modified for compatibility to v1.1 PPL
 *	k obrien 3.11.97 added ifdef for linux port to ignore "unlink"
 * V602: *acm* 1/07 Changes for metafile-batch mode
+*       *kms* 10/11 set GKSOPN and GKS_OPEN flags to .FALSE.
+*                   after closing GKS
 
 	include 'symkey_inc.decl'
 	include 'SYMKEY.INC'
@@ -49,6 +51,7 @@
 	include 'LUNITS.INC'
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
+	include 'gkscm2.cmn'
 
 #ifdef core
         include 'CORECM.INC'
@@ -82,6 +85,8 @@ C
 	    CALL BINFSH
 	    PLTFLG = .FALSE.
 	ENDIF
+        GKSOPN = .FALSE.
+        GKS_OPEN = .FALSE.
 	RETURN
 	END
 
@@ -103,29 +108,29 @@ C
 ********************************************************************************
 
 
-        CALL GQOPS (istate)  ! In batch mode the graphics may not be active now. 
+        CALL FGD_GQOPS(istate)  ! In batch mode the graphics may not be active now. 
 
         if (gksopn) then 
            if ( istate .GE. 2 ) then
-	      member = 1
-              call gqacwk (member,er_status,num_active,rmember)
+              member = 1
+              call FGD_GQACWK(member,er_status,num_active,rmember)
               if (num_active .lt. 1) goto 20
 
               do 10 i = 1,num_active
-                 call gqacwk (1,er_status,j,rmember)
-                 call gdawk (rmember)
+                 call FGD_GQACWK(1,er_status,j,rmember)
+                 call FGD_GDAWK(rmember)
 10            continue
 
-20            call gqopwk (member,er_status,num_open,rmember)
+20            call FGD_GQOPWK(member,er_status,num_open,rmember)
               if (num_open .lt. 1) goto 40
 
               do 30 i = 1,num_open
-                 call gqopwk (1,er_status,j,rmember)
-                 call gclwk (rmember)
+                 call FGD_GQOPWK(1,er_status,j,rmember)
+                 call FGD_GCLWK(rmember)
 30            continue
 
            endif    ! istate
-40         call gclks ()
+40         call FGD_GCLKS()
         end if
 
         return

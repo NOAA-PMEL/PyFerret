@@ -39,6 +39,9 @@
 
 /* *acm* - 8/18/10 */
 
+#include <Python.h> /* make sure Python.h is first */
+#include <math.h>
+
 void check_nan_data_sub_ ( float *src, 
 			   int *size, float *data_bad )
 

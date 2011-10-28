@@ -21,11 +21,11 @@ DATE := $(shell /bin/date +%D)
 # Macros
 #
 
-DIRS = ccr ctx dat doo efi efn ef_utility fmt gnl ino mem  \
-       ocn plt pyf rpn special stk utl xeq threddsBrowser
+DIRS = ccr ctx dat doo efi efn ef_utility fmt gnl grdel ino mem  \
+       ocn plt pyf rpn special stk utl xeq
 
-LIBS = ccr ctx dat doo efi efn ef_utility fmt gnl ino mem \
-       ocn plt pyf rpn stk utl xeq
+LIBS = ccr ctx dat doo efi efn ef_utility fmt gnl grdel ino mem \
+       ocn plt pyf rpn stk utl xeq 
 
 #
 # Targets
@@ -49,7 +49,7 @@ debug:
 
 
 .PHONY : build
-build: update special_code ppl_libraries fmt_libraries fer_libraries threddsBrowser
+build: update special_code ppl_libraries fmt_libraries fer_libraries
 
 
 .PHONY : update
@@ -64,8 +64,6 @@ update:
 
 .PHONY : special_code
 special_code: update
-	# the XGKS library needs to be build prior to building pyferret
-	cp ../xgks/src/lib/libxgks.a ../lib
 	$(MAKE) -C special all
 
 
@@ -86,11 +84,6 @@ fer_libraries: update
                 exit 1 ; \
             fi ; \
         done
-
-
-.PHONY : threddsBrowser
-threddsBrowser:
-	$(MAKE) -C threddsBrowser all
 
 
 .PHONY : clean

@@ -43,6 +43,9 @@
                 NaN's in the data, and also swap the old and new bad.  This 
 		could happen if use did a set var/bad=nan - new feature */
 
+#include <Python.h> /* make sure Python.h is first */
+#include <math.h>
+
 void replace_bad_data_sub_ ( float *old_bad, float *src, 
 			   int *size, float *new_bad )
 

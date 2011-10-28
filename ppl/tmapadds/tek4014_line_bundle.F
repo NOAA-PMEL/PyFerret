@@ -57,7 +57,7 @@
 	   thickness = real (j)*2.0 - 1.0
 
            do 10 i = 1,6
-              call gsplr (zwsid,i+6*(j-1),ltype(i),thickness,1)
+              call FGD_GSPLR(zwsid,i+6*(j-1),ltype(i),thickness,1)
 10        continue
 20     continue
 #else
@@ -66,7 +66,7 @@
 	   thickness = real (j)*2.0 - 1.0
 
 	   do 10 i = 1,5
-	      call gsplr (zwsid,i+5*(j-1),ltype(i),thickness,1)
+	      call FGD_GSPLR(zwsid,i+5*(j-1),ltype(i),thickness,1)
 10	   continue
 20	continue
 #endif

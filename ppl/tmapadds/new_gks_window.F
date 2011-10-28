@@ -62,12 +62,11 @@
       nlen = TM_LENSTR1(window_title)
       IF (nlen .GT. 1 .OR. window_title .NE. '_')
      .    window_name = 'FERRET_'//kwsid(2:2)//'_'//window_title
-      nlen = TM_LENSTR1(window_name)
-      call gesspn (window_name,nlen)
-      call gopwk (ws_id,6,4)
+      call FGD_GESSPN(window_name)
+      call FGD_GOPWK(ws_id,6,4)
 
 *     SET DEFERRAL STATE TO GENERATE OUTPUT AS SOON AS POSSIBLE
-      call gsds (ws_id,gasap,gsuppd)
+      call FGD_GSDS(ws_id,gasap,gsuppd)
 #else
 #ifdef atc_gks
       integer         con_id
@@ -104,7 +103,7 @@
          call guesc050 (con_id,conid_options)
          call guesc005 (con_id)
       endif
-      call gopwk (ws_id,con_id,wstype)
+      call FGD_GOPWK(ws_id,con_id,wstype)
 #else
 #   ifdef unix
 *     Define the conid string by use of pack record (GPREC) and the FORTAN 
@@ -118,15 +117,15 @@
       mldr = 10
       lstr(1) = len (xname)
       str(1)  = xname
-      call gprec (il,ia,rl,ra,sl,lstr,str,mldr,errind,ldr,idr)
+      call FGD_GPREC(il,ia,rl,ra,sl,lstr,str,mldr,errind,ldr,idr)
 
       fctid = gecon
       lidr  = 28
       mlodr = 0
       lodr  = 0
-      call gesc (fctid,lidr,idr,mlodr,lodr,odr)
+      call FGD_GESC(fctid,lidr,idr,mlodr,lodr,odr)
 
-      call gopwk (ws_id,0,0)
+      call FGD_GOPWK(ws_id,0,0)
 #   else
       call GKS$OPEN_WS (ws_id,xname,0)
 #   endif

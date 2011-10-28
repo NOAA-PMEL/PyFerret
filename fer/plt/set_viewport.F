@@ -99,7 +99,7 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 	ELSE
 * set new viewport - delete any segments showing in this viewport
 	   DO 200 iseg = vp_seg0(vp_num)+1, vp_segn(vp_num)
- 200	   CALL GDSG( iseg ) 
+ 200	   CALL FGD_GDSG( iseg ) 
            CALL PPL_SHASET( 'PROTECT' ) ! protect the colors already on-screen
 	ENDIF
 
@@ -113,7 +113,7 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 * For viewport/AXES viewports, update ASIZE and BSIZE here,
 * or else the first viewport plotted is in the wrong place.
         IF (vp_by_axis(vp_num)) THEN
-           CALL GQOPS (istate)  ! In batch mode the graphics may not be active now. 
+           CALL FGD_GQOPS(istate)  ! In batch mode the graphics may not be active now. 
            IF (istate .GE. 2) CALL SIZE (width,height)
         ENDIF
 
@@ -156,13 +156,13 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
         ENDIF
 * set viewport in NDC to limits requested
 
-	CALL GSVP(wsid,fctx*xov, fctx*xcv,
-     .		       fcty*yov, fcty*ycv )
+	CALL FGD_GSVP(wsid,fctx*xov, fctx*xcv,
+     .                     fcty*yov, fcty*ycv )
 
 * set world coordinate window to preserve 1:1 aspect
 
-	CALL GSWN(wsid, 0.0, ( xcv-xov )*asize*scale,
-     .		        0.0, ( ycv-yov )*bsize*scale  )
+	CALL FGD_GSWN(wsid, 0.0, ( xcv-xov )*asize*scale,
+     .                      0.0, ( ycv-yov )*bsize*scale  )
 
 	IF ( newstyle_vp ) THEN
 
@@ -179,16 +179,16 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
      .			        xoei, yoei, xcei, ycei,
      .                          xov,  yov,  xcv,  ycv)
 
-	   CALL GSELNT(wsid)     ! no clipping 11/92 (below) for PPL BOX ON 
+	   CALL FGD_GSELNT(wsid)     ! no clipping 11/92 (below) for PPL BOX ON 
 
 	ELSE
 * emulate old-style, non-automated viewports
 * select normalization transformation and turn on clipping
-	   CALL GSELNT(wsid)
+	   CALL FGD_GSELNT(wsid)
 	   IF ( clip ) THEN
-	      CALL GSCLIP(gclip)
+	      CALL FGD_GSCLIP(gclip)
 	   ELSE
-	      CALL GSCLIP(gnclip)
+	      CALL FGD_GSCLIP(gnclip)
 	   ENDIF
 	ENDIF
 

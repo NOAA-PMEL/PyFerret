@@ -41,112 +41,33 @@
  * J Davison 8.24.93/12.17.93
  */
 
-/* Changed include order of gks_implem.h to remove errors in compile (set 
- * **before** stdlib.h) for linux port *jd* 1.28.97
- * More hacks to support batch mode (i.e. no display available) *js* 8.97
- * Prevent null pointer dereference for ws if no X display available *js* 2.99
- */
-
-/* Remove XCheckWindowEvent to see if that's causing the occasional hangs
- * *jd* 2.23.99
- *
- * *acm* 8/27/04
+/* 
  * Return ix and iy, the size of the window in pixels.  This will be saved
  * in common so that in gif and batch modes we can return them in symbols
  * PPL$XPIXEL and PPL$YPIXEL.
- *
  */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
-#include "udposix.h"
-#include "gks_implem.h"
-#include "cgm/cgm.h"
-#include "cgm/cgm_implem.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h> 
+#include <Python.h> /* make sure Python.h is first */
+#include "grdel.h"
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-resize_xgks_window (ws_id, x, y, ix, iy)
-#else
-resize_xgks_window_ (ws_id, x, y, ix, iy)
-#endif
 
-Gint *ws_id;
-float *x;
-float *y;
-int   *ix,*iy;
-
+void resize_xgks_window_(int *ws_id, float *x, float *y, int *ix, int *iy)
 {
-  WS_STATE_ENTRY *ws;
+    float zeroval = 0.0;
+    float dpix, dpiy;
 
-  Display       **dpy;
-  Window         *win;
-  GC             *gc;
+    /* 
+     * Go back to just calling gswkcp to resize the window using
+     * graphics delegate function calls.
+     */
+    fgd_gswkvp_(ws_id, &zeroval, x, &zeroval, y);
 
-  XEvent          evnt;
-  Gint            val;
-  Gpoint          size;
-
-  float           xf,yf,aspect;
-
-  int             xw_event,scr; 
-  time_t          t0,t_now,*tp;
-
-/*****************************************************************************/
-
-  ws  = OPEN_WSID (*ws_id);
-  if (ws && ws->dpy){
-    scr = DefaultScreen (ws->dpy);
-
-    xf = ((float) DisplayWidth(ws->dpy,scr)) /((float) DisplayWidthMM(ws->dpy,scr));
-    yf = ((float) DisplayHeight(ws->dpy,scr))/((float) DisplayHeightMM(ws->dpy,scr));
-  } else {
-    xf = 1280.0/361.0;		/* Standard 20" monitor width/size */
-    yf = 1024.0/289.0;
-  }
-
-  *ix = (*x)*1000.0*xf;
-  *iy = (*y)*1000.0*yf;
-
-  if (*x > *y) {
-    aspect = (*y / *x);
-    size.x = 1000;
-    size.y = 1000 * aspect;
-    }
-  else {
-    aspect = (*x / *y);
-    size.x = 1000 * aspect;
-    size.y = 1000;
-    }
-  gescsetdcsize (*ws_id, size);
-
-  if (ws){
-    if (ws->ewstype == X_WIN && ws->dpy){
-      XResizeWindow (ws->dpy,ws->win,*ix,*iy);
-      tp = &t_now;
-      t0 = time(0);
-  
-/*
- *    do { 
- *    xw_event = XCheckWindowEvent (ws->dpy,ws->win,StructureNotifyMask,&evnt);
- *     time (tp);
- *   } while (xw_event && (t_now - t0 < 3));
- *
- */
-
-    } else if (ws->ewstype == MO){
-      int type = ws->mf.cgmo->type;
-      if (type == MF_GIF){
-	Gpoint nsize;
-	nsize.x = *ix;
-	nsize.y = *iy;
-	GIFresize(ws, nsize);
-      } else if (type == MF_PS){
-	PSresize(ws, size);
-      }
-    }
-  }
+    /*
+     * Compute the window width and height in pixels to return
+     * in ix and iy.
+     */
+    fgd_getdpi_(ws_id, &dpix, &dpiy);
+    *ix = (int) ( (*x) * dpix * 1000.0 / 25.4 );
+    *iy = (int) ( (*y) * dpiy * 1000.0 / 25.4 );
 }
+

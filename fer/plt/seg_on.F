@@ -73,7 +73,7 @@
 	IF ( curr_seg_name .EQ. 10000 ) curr_seg_name = 1	! avoid overflow
 
 * create segment
-	CALL GCRSG( curr_seg_name )
+	CALL FGD_GCRSG( curr_seg_name )
 
 * store its name as the highest segment in the viewport
 	vp_segn( vp_num ) = curr_seg_name

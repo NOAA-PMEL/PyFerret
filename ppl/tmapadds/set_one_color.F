@@ -41,6 +41,9 @@
 *	*jd* 1.14.94 Mod for background setting in xgks
 *       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
 * V610  *acm* 3/08 Fixes for metafile batch mode
+*       *kms* 10/11 white is gks color 0 and black is gks color 1
+*             (opposite of XWindows).  Since gks colors are used
+*             in the graphics delegate, switch these values.
 
 #   ifndef atc_gks
         include        'gkspar.inc'
@@ -65,7 +68,7 @@
 
 #ifdef xgks
 	integer		black, white
-	data		black/0/,white/1/
+	data		black/1/,white/0/
 #endif
 
 	LOGICAL ITS_BATCH_GRAPHICS
@@ -86,12 +89,12 @@
 #else
            do 5 i = 1,num_line_colors
 #endif
-	      call gqpcr (wstype,i,err,val(red),val(green),val(blue))
+	      call FGD_GQPCR(wstype,i,err,val(red),val(green),val(blue))
 	      if (err .ne. 0) goto 5
-cc	      if (meta_actv) call gscr (wsid,i,val(red),val(green),val(blue))
-	      call gscr (wsid,i,val(red),val(green),val(blue))
+cc	      if (meta_actv) call FGD_GSCR(wsid,i,val(red),val(green),val(blue))
+	      call FGD_GSCR(wsid,i,val(red),val(green),val(blue))
 	      if (meta_actv .and. .not. meta_clsplt) 
-     .		call gscr (meta_wsid,i,val(red),val(green),val(blue))
+     .		call FGD_GSCR(meta_wsid,i,val(red),val(green),val(blue))
 5	   continue
 	   goto 1000
 	end if
@@ -116,8 +119,8 @@ cc	      if (meta_actv) call gscr (wsid,i,val(red),val(green),val(blue))
 10	continue
 
 #ifndef xgks
-cc	if (meta_actv) call gscr (wsid,ndx,val(red),val(green),val(blue))
-	call gscr (wsid,ndx,val(red),val(green),val(blue))
+cc	if (meta_actv) call FGD_GSCR(wsid,ndx,val(red),val(green),val(blue))
+	call FGD_GSCR(wsid,ndx,val(red),val(green),val(blue))
 #else
 *	FOR X, PERMIT ONLY WHITE OR BLACK BACKGROUNDS FOR NOW
 	if (ndx .eq. 0) then
@@ -130,15 +133,15 @@ cc	if (meta_actv) call gscr (wsid,ndx,val(red),val(green),val(blue))
 	   endif
 	else
 cc	   if (meta_actv) 
-cc     .        call gscr (wsid,ndx,val(red),val(green),val(blue))
+cc     .        call FGD_GSCR(wsid,ndx,val(red),val(green),val(blue))
 
-	   call gscr (wsid,ndx,val(red),val(green),val(blue))
+	   call FGD_GSCR(wsid,ndx,val(red),val(green),val(blue))
 	endif
 #endif
 
 	if (meta_actv .and. .not. meta_clsplt) then
 #ifndef xgks
-           call gscr (meta_wsid,ndx,val(red),val(green),val(blue))
+           call FGD_GSCR(meta_wsid,ndx,val(red),val(green),val(blue))
 #else
 *	   FOR X, PLACE NO INDEX 0 IN METAFILE, AND INDEX 1 CANNOT BE WHITE
 	   if (ndx .eq. 0) goto 1000
@@ -146,12 +149,12 @@ cc     .        call gscr (wsid,ndx,val(red),val(green),val(blue))
 	      if (val(red)   .eq. 1.0 .and.
      .		  val(green) .eq. 1.0 .and. 
      .		  val(blue)  .eq. 1.0) then 
-                  call gscr (meta_wsid,ndx,0.0,0.0,0.0)
+                  call FGD_GSCR(meta_wsid,ndx,0.0,0.0,0.0)
 	      else
-                 call gscr (meta_wsid,ndx,val(red),val(green),val(blue))
+                 call FGD_GSCR(meta_wsid,ndx,val(red),val(green),val(blue))
 	      endif
 	   else
-              call gscr (meta_wsid,ndx,val(red),val(green),val(blue))
+              call FGD_GSCR(meta_wsid,ndx,val(red),val(green),val(blue))
 	   endif
 #endif
 	endif
@@ -167,8 +170,8 @@ cc     .        call gscr (wsid,ndx,val(red),val(green),val(blue))
 **** trying to fix batch bug ***
 
 #ifndef atc_gks
-cc       if (meta_actv) call guwk (wsid,gpostp)
-        call guwk (wsid,gpostp)
+cc       if (meta_actv) call FGD_GUWK(wsid,gpostp)
+        call FGD_GUWK(wsid,gpostp)
 #endif
 
         return

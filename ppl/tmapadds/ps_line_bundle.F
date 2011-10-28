@@ -76,8 +76,8 @@ C	For linux *jd* 12.96 put initialization in data statements
            dotsize = thickness/ 2.
 
 	   do 10 i = 1,6
-	      call gsplr (zwsid,i+6*(j-1),ltype(i),thickness,1)
-	      call gspmr (zwsid,i+6*(j-1),marktype,dotsize,1) 
+	      call FGD_GSPLR(zwsid,i+6*(j-1),ltype(i),thickness,1)
+	      call FGD_GSPMR(zwsid,i+6*(j-1),marktype,dotsize,1) 
 
 10	   continue
 20	continue

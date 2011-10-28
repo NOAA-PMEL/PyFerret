@@ -10,7 +10,8 @@ addn_link_args = [ "-fPIC", "-rdynamic", "-Xlinker", "--no-undefined", ]
 incdir_list = [ "pyfermod",
                 os.path.join("fer", "common"),
                 os.path.join("fmt", "cmn"),
-                os.path.join("fer", "ef_utility"), ]
+                os.path.join("fer", "ef_utility"),
+                os.path.join("fer", "grdel"), ]
 
 # Non-standard directories containing libraries to link
 hdf5_libdir = os.getenv("HDF5_LIBDIR")
@@ -19,28 +20,23 @@ if hdf5_libdir == None:
 netcdf4_libdir = os.getenv("NETCDF4_LIBDIR")
 if netcdf4_libdir == None:
     raise ValueError, "Environment variable NETCDF4_LIBDIR is not defined"
-readline_libdir = os.getenv("READLINE_LIBDIR")
-if readline_libdir == None:
-    raise ValueError, "Environment variable READLINE_LIBDIR is not defined"
-libz_libdir = os.getenv("LIBZ_LIBDIR")
-if libz_libdir == None:
-    raise ValueError, "Environment variable LIBZ_LIBDIR is not defined"
-libdir_list = [ "lib", str(hdf5_libdir), str(netcdf4_libdir), str(readline_libdir), str(libz_libdir) ]
+libdir_list = [ "lib", str(hdf5_libdir), str(netcdf4_libdir), ]
 
 # Get the list of ferret static libraries
 # Stripping off the "lib" prefix and the ".a" suffix
 fer_lib_list = [ ]
 for libname in os.listdir("lib"):
-    fer_lib_list.append(libname[3:-2])
+    if (libname[:3] == "lib") and (libname[-2:] == ".a"):
+        fer_lib_list.append(libname[3:-2])
 # Create the list of libraries to link
 # fer_lib_list is included multiple times to resolve interdependencies
 lib_list = fer_lib_list[:]
 lib_list.extend(fer_lib_list)
 lib_list.extend(fer_lib_list)
 lib_list.extend(fer_lib_list)
+lib_list.extend(fer_lib_list)
 lib_list.append("python%i.%i" % sys.version_info[:2])
 lib_list.extend( ( "netcdff", "netcdf", "hdf5_hl", "hdf5",
-                   "readline", "history", "ncurses", "X11",
                    "curl", "z", "dl", "gfortran", "m", ) )
 
 # Get the list of C source files in pyfermod
@@ -49,7 +45,7 @@ for srcname in os.listdir("pyfermod"):
     if srcname[-2:] == ".c":
         src_list.append(os.path.join("pyfermod", srcname))
 
-# Get the list of extra additional objects to be linked in
+# Get the list of additional objects to be linked in
 addnobjs_list = [ ]
 dirname = os.path.join("fer", "ef_utility")
 for srcname in os.listdir(dirname):
@@ -79,7 +75,23 @@ setup(name = "pyferret",
       author = "Karl M. Smith",
       author_email = "karl.smith@noaa.gov",
       url = "http://ferret.pmel.noaa.gov/Ferret",
-      packages = [ "pyferret", "pyferret.stats", "pyferret.fershp", ],
+      packages = [ "pyferret", "pyferret.fershp", "pyferret.graphbind", "pyferret.stats", ],
       package_dir = { "pyferret":"pyfermod", },
       ext_modules = ext_mods)
+
+setup(name = "pipedviewer",
+      version = "0.0.0.1",
+      description = "graphics viewer controlled by a command pipe",
+      long_description = "A graphics viewer application that receives its " \
+                         "drawing and other commands primarily from another " \
+                         "application through a pipe.  A limited number of " \
+                         "commands are provided by the viewer itself to allow " \
+                         "saving and some manipulation of the displayed scene.  " \
+                         "The controlling application, however, will be unaware " \
+                         "of these modifications made to the scene.",
+      author = "Karl M. Smith",
+      author_email = "karl.smith@noaa.gov",
+      url = "http://ferret.pmel.noaa.gov/Ferret",
+      packages = [ "pipedviewer", ],
+      package_dir = { "pipedviewer":"pviewmod", })
 

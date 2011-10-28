@@ -38,6 +38,7 @@
                  for better performance. This function is for cleaning up
                  the data structure.
  */
+#include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 #include "deleted_list.h"
 

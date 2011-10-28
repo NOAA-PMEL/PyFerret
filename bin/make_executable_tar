@@ -17,7 +17,7 @@ if ( ($#argv < 2) || ($#argv > 3) || \
    echo ""
    echo "    Creates the Ferret installation file fer_executables.tar.gz. "
    echo "    The required files will be copied from the ferret source directory "
-   echo "    <ferret_dir>, in which ferret or pyferret, gksm2ps, and the font files "
+   echo "    <ferret_dir>, in which ferret or pyferret, and the font files "
    echo "    have been built.  All the files required will be copied to a temporary "
    echo "    directory which this script will create.  Any missing executables will "
    echo "    be noted.  The gzipped tar file fer_executables.tar.gz will be written "
@@ -90,14 +90,6 @@ if ( "${pyferret_dir}" == "" ) then
    find ${ferret_dir}/external_functions -type f -perm -100 -name \*.so -exec ${mycp} {} ${temp_dir}/ext_func/libs \;
 endif
 
-# Copy gksm2ps/gksm2ps
-if ( ! -x ${ferret_dir}/gksm2ps/gksm2ps ) then
-   echo "No gksm2ps executable found in ${ferret_dir}/gksm2ps"
-   echo ""
-   exit 1
-endif
-${mycp} ${ferret_dir}/gksm2ps/gksm2ps ${temp_dir}/bin/gksm2ps
-
 # Copy font files from bin/build_fonts/unix/
 set fer_files = ${ferret_dir}/bin/build_fonts/unix/f*
 if ( ($status != 0) || ("${fer_files}" == "") ) then
@@ -109,20 +101,20 @@ mkdir ${temp_dir}/ppl
 mkdir ${temp_dir}/ppl/fonts
 ${mycp} ${fer_files} ${temp_dir}/ppl/fonts
 
-# Copy fer/threddsBrowser/threddsBrowser.jar
-set tb_jar = ${ferret_dir}/fer/threddsBrowser/threddsBrowser.jar
+# Copy threddsBrowser/threddsBrowser.jar
+set tb_jar = ${ferret_dir}/threddsBrowser/threddsBrowser.jar
 if ( ! -r ${tb_jar} ) then
-   echo "No threddsBrowser.jar file found ${ferret_dir}/fer/threddsBrowser"
+   echo "No threddsBrowser.jar file found ${ferret_dir}/threddsBrowser"
    echo ""
    exit 1
 endif
 mkdir ${temp_dir}/lib
 ${mycp} ${tb_jar} ${temp_dir}/lib
 
-# Either copy fer/threddsBrowser/toolsUI/toolsUI-4.1.jar ...
-set toolsui_jar = ${ferret_dir}/fer/threddsBrowser/toolsUI/toolsUI-4.1.jar
+# Either copy threddsBrowser/toolsUI/toolsUI-4.1.jar ...
+set toolsui_jar = ${ferret_dir}/threddsBrowser/toolsUI/toolsUI-4.1.jar
 if ( ! -r ${toolsui_jar} ) then
-   echo "No toolsUI-4.1.jar file found ${ferret_dir}/fer/threddsBrowser/toolsUI"
+   echo "No toolsUI-4.1.jar file found ${ferret_dir}/threddsBrowser/toolsUI"
    echo ""
    exit 1
 endif
@@ -131,7 +123,7 @@ ${mycp} ${toolsui_jar} ${temp_dir}/lib
 # echo "To minimize size, the toolsUI-4.1.jar file is not included."
 # echo "The user needs to download the jar file from:"
 # echo "  ftp://ftp.unidata.ucar.edu/pub/netcdf-java/v4.1/toolsUI-4.1.jar"
-# echo "(or we can just grab it from <ferret_dir>/fer/threddsBrowser/toolsUI/)"
+# echo "(or we can just grab it from <ferret_dir>/threddsBrowser/toolsUI/)"
 # echo 'and put it under the $FER_LIBS ($FER_DIR/lib) subdirectory'
 
 # Create a symbolic link to a (possibly non-existant) toolsUI-4.1.jar file

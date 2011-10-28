@@ -71,9 +71,9 @@
                       Call nc_get_vars if strided, and nc_get_vara if neither permuted
 					  nor strided. */
 
+#include <Python.h> /* make sure Python.h is first */
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
-/*#include <stdio.h>*/
 #include <stdlib.h>
 #include <netcdf.h>
 #include <assert.h>

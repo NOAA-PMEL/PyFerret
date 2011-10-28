@@ -78,7 +78,7 @@
          ierr = 0
       else
 *        TAKE WHAT WE GET FOR TEKS ETC
-         call gqdsp (wstype,ierr,imeter,x,y,ix,iy)
+         call FGD_GQDSP(wstype,ierr,imeter,x,y,ix,iy)
       endif
 #elif xgks
 	 ierr = 0
@@ -89,7 +89,7 @@
 	 iy = 1024
 #else
 *     USING DEC GKS USE NORMAL QUERY
-      call gqdsp (wstype,ierr,imeter,x,y,ix,iy)
+      call FGD_GQDSP(wstype,ierr,imeter,x,y,ix,iy)
 #endif
       
       return

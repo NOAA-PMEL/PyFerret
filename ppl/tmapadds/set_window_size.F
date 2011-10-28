@@ -75,7 +75,7 @@
 *	Use the escape -5304 from ATC to resize Xwindowse.  Units are in meters
 *       -- to be converted to pixels (raster units).
 
-	call gqwkc (wsid,ierr,conid,wstype)
+	call FGD_GQWKC(wsid,ierr,conid,wstype)
 
 	if (wstype/100 .eq. ws_xwindow/100) then 
 *	   FIND CONVERSION FACTOR FROM PIXELS TO MM FOR THIS MONITOR
@@ -89,10 +89,10 @@
 	   ia(2) = xsize * 1000.0 / xfactor
 	   ia(3) = ysize * 1000.0 / yfactor
 
-           call gprec (3, ia, 0, ra, 0, 0, str, 80, ierr, lidr, datarec)
+           call FGD_GPREC(3, ia, 0, ra, 0, 0, str, 80, ierr, lidr, datarec)
            call guesc (-5304, lidr, datarec, 80, lodr, odr)
 	else 
-	   call gswkvp (wsid,xmin,xmax,ymin,ymax)
+	   call FGD_GSWKVP(wsid,xmin,xmax,ymin,ymax)
 	endif
 #elif xgks
 	call resize_xgks_window (wsid,xmax-xmin,ymax-ymin,pixx,pixy)
@@ -102,7 +102,7 @@ c       Also need to resize the metafile window, if it is open *js* 8.97
      .             pixx,pixy)
 	end if
 #else
-	call gswkvp (wsid,xmin,xmax,ymin,ymax)
+	call FGD_GSWKVP(wsid,xmin,xmax,ymin,ymax)
 #endif
 
 1000	return

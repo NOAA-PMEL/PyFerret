@@ -350,7 +350,7 @@ C	Moved variable initialization into data statement for linux *jd* 12.96
 
 *******************************************************************************
 
-	call gprec (4,ix,4,x,1,lstr,str,10,ierr,ldr,datrec)
+	call FGD_GPREC(4,ix,4,x,1,lstr,str,10,ierr,ldr,datrec)
 	call gwitm (meta_wsid,item_type,80,ldr,datrec)
 
 	return

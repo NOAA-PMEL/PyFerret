@@ -70,7 +70,7 @@
 	if (area_bundles) then
 
 *	   MISSING VALUE IS SOLID FILL
-	   call gsfar (zwsid,1,gsolid,1,1)
+	   call FGD_GSFAR(zwsid,1,gsolid,1,1)
 
 *	   GO THRU AVAILABLE HATCHING LEVELS 
 	   do 10 ndx = 1,shd_levels
@@ -79,14 +79,14 @@
 #else
 	      patt = -1 - (ndx-1)*9/(shd_levels)
 #endif
-	      call gsfar (zwsid,ndx+1,ghatch,patt,1)
+	      call FGD_GSFAR(zwsid,ndx+1,ghatch,patt,1)
 10	   continue
 	else
 #ifdef atc_gks
 	   call guesc020 (zwsid,gsalws)
 #endif
-	   call gsfais (ghatch)
-	   call gsfaci (1)
+	   call FGD_GSFAIS(ghatch)
+	   call FGD_GSFACI(1)
 	endif
 
 	return

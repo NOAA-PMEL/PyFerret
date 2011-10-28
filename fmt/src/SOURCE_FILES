@@ -91,7 +91,6 @@ ez_mod_vars.F\
 ez_permuted_index.F\
 ez_read.F\
 ez_update_var.F\
-free_time.F\
 gt_find_rec.F\
 gt_find_tstep.F\
 gt_full_grid.F\
@@ -286,7 +285,6 @@ xsys_names_data.F\
 xunits_data.F 
 
 SRCS_C = \
-alloca.c\
 cd_rd_r8_as_r4.c\
 cd_read_dp.c\
 cd_read_scale.c\
@@ -300,9 +298,6 @@ deleted_list_get_undel.c\
 deleted_list_init.c\
 deleted_list_modify.c\
 ez_delimited_read.c\
-my_close.c\
-my_open.c\
-my_readline.c\
 NCF_Util.c\
 str_case_blind_compare_sub.c\
 str_upcase_sub.c\

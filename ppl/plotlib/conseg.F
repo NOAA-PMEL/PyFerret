@@ -106,10 +106,10 @@ C       Plot will be rotated by 'ang' degrees.
 
 *	GET PROPER SCALING, NDC COORDINATES, ETC FOR FILL
         IF (curvilinear) THEN 
-	   CALL gqcntn (error,trans_no)
+	   CALL FGD_GQCNTN(error,trans_no)
 	   IF (error .NE. 0) GOTO 1000
 
-	   CALL gqnt (trans_no,error,w,v)
+	   CALL FGD_GQNT(trans_no,error,w,v)
 	   IF (error .NE. 0) GOTO 1000
 
 	   CALL get_user_coords (w,v,ndc,uc,xinv,yinv)

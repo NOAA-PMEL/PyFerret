@@ -1,9 +1,6 @@
 #ifndef PYFERRET_H_
 #define PYFERRET_H_
 
-#include <wchar.h>
-#include <stdlib.h>
-
 extern float *memory;
 extern float *ppl_memory;
 

@@ -46,6 +46,7 @@
 #define FORTRAN(a) a##_
 #endif
 
+#include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>

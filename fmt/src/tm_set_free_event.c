@@ -48,13 +48,12 @@
 /* 11/96 *kob* - Linux port - had to have double quotes around the STOP
                               message */
 
-#ifdef unix
+/*
+ * 10/11 *kms* - removed the contents of this function since the readline
+ *               method in the pyferret Python module (Python raw_input)
+ *               now used to read user input with readline functionality
+ */
 
-/* this routine will only work on a unix system */
-
-#define NULL 0
-
-typedef int Function ();
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 void tm_set_free_event(n)
 #else
@@ -62,29 +61,6 @@ void tm_set_free_event_(n)
 #endif
 int *n;
 {
-  extern Function *rl_event_hook;
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-  void free_time();
-#else
-  void free_time_();
-#endif
-
-
-
-  if (*n) 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-    rl_event_hook = (Function *)free_time;
-#else
-    rl_event_hook = (Function *)free_time_;
-#endif
-  else
-    rl_event_hook = (Function *)NULL;
-  
-
+    ;
 }
-
-#else
-    STOP "TM_SET_FREE_EVENT isn't used by VMS"
-
-#endif
 

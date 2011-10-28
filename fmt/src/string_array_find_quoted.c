@@ -41,6 +41,7 @@
                 be case blind, but the model name should be upper-case.
     4/06 *kob*  change type of 1st argument to double, for 64-bit build
  */
+#include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 #include "string_array.h"
 

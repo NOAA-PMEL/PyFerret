@@ -1,3 +1,0 @@
-char *fxgksvers () {
-  return "$Id$";
-}

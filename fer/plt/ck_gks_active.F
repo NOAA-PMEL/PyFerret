@@ -67,7 +67,7 @@
 	IF ( .NOT.gksopn ) RETURN
 
 * get GKS operating state
-	CALL GQOPS( state )
+	CALL FGD_GQOPS( state )
 
 * states:
 *	0 - GKS closed

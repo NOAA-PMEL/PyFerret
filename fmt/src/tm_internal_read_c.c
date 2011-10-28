@@ -34,6 +34,8 @@
 *
 */
 
+#include <Python.h> /* make sure Python.h is first */
+#include <stdio.h>
 
 
 /* *kob* 10/95

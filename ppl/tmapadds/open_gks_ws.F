@@ -107,7 +107,7 @@
 ******************************************************************************** initialize
 	batch = ITS_BATCH_GRAPHICS()	! 7/97
 	IF (batch) THEN
-	   CALL GOPKS(1,-1)  
+	   CALL FGD_GOPKS(1)  
 !	   xwind_id = GKS_X_CONID( wsid )	! obsolete?
 	   meta_wsid = wsid  ! cuckoo's egg -- output ws will be metafile
 * ... metafile will be opened and activated later
@@ -120,7 +120,7 @@ C
 C       OPEN AND INITIALIZE GKS     
 C   
 #ifdef atc_gks
-	call gopks (6,0)
+	call FGD_GOPKS(6)
         conid  = 1
 
 	if (ppl_in_ferret) then
@@ -152,24 +152,24 @@ C
            call guesc050 (conid,conid_options)
            call guesc005 (conid)
 	endif
-	call gopwk (wsid,conid,wstype)
+	call FGD_GOPWK(wsid,conid,wstype)
 #else
 #ifndef xgks
-	CALL GOPKS(ERRFIL)  
+	CALL FGD_GOPKS(ERRFIL)  
 #else
-	CALL GOPKS(1,-1)  
+	CALL FGD_GOPKS(1)  
 #endif
 	if (wstype .eq. ws_tek4014 .or. wstype .eq. ws_tek4107) then
 *	   open (ws_lun,file=ws_file,status='old')
-*	   call gopwk (wsid,ws_lun,wstype)
-           CALL GOPWK(WSID, 0, 0)
+*	   call FGD_GOPWK(wsid,ws_lun,wstype)
+           CALL FGD_GOPWK(WSID, 0, 0)
 	elseif ( PPL_in_FERRET .and. (wstype. eq. ws_xwindow
      .				 .or. wstype .eq. 0)) THEN
 * ... remote node connection option for FERRET
 	   xwind_id = GKS_X_CONID( wsid )
 #   ifdef unix
 #ifndef xgks
-	CALL GOPWK(WSID, 0, 0)
+	CALL FGD_GOPWK(WSID, 0, 0)
 #else
 	if (ppl_in_ferret) then
 
@@ -191,32 +191,32 @@ C
            ier = 0
            CALL SETSYM ("WIN_TITLE "//window_title(:nlen), nlen+10, ier, status)
 
-	   call gesspn (window_name)
+	   call FGD_GESSPN(window_name)
 	else
-	   call gesspn ('PPLP')
+	   call FGD_GESSPN('PPLP')
 	endif
-  	CALL GOPWK(WSID,6,4)       
+  	CALL FGD_GOPWK(WSID,6,4)       
 #endif
 #   else
 	   CALL GKS$OPEN_WS( wsid, xwind_id, 0 )
 #   endif
 	else
 #ifndef xgks
-	   CALL GOPWK(WSID,CONID,WSTYPE)       
+	   CALL FGD_GOPWK(WSID,CONID,WSTYPE)       
 #else
 	if (ppl_in_ferret) then
-	   call gesspn ('FERRET_1',8)
+	   call FGD_GESSPN('FERRET_1')
 	else
-	   call gesspn ('PPLP',4)
+	   call FGD_GESSPN('PPLP')
 	endif
-	   CALL GOPWK(WSID,6,4)       
+	   CALL FGD_GOPWK(WSID,6,4)       
 #endif
 	endif
 #endif
-	CALL GACWK(WSID)    
+	CALL FGD_GACWK(WSID)    
     
 *       SET DEFERRAL STATE TO GENERATE OUTPUT AS SOON AS POSSIBLE   
-	call gsds (wsid,gasap,gsuppd) 
+	call FGD_GSDS(wsid,gasap,gsuppd) 
 
  500	CONTINUE	! 7/97 -- from here on BATCH mode, too
 
@@ -225,12 +225,12 @@ C
 	LPEN=.NOT.PEN       
 
 *	SET POLYLINE AND FILL AREA ATTRIBUTES BUNDLED
-	call gqasf (error,asf)				  
-	if (error .ne. 0) goto 1000			     
-								
-	asf(1)  = gbundl					 
-	asf(2)  = gbundl					 
-	asf(3)  = gbundl		
+	call FGD_GQASF(error,asf)
+	if (error .ne. 0) goto 1000
+
+	asf(1)  = gbundl
+	asf(2)  = gbundl
+	asf(3)  = gbundl
 
 *	SET POLYMARKER AREA ATTRIBUTES BUNDLED *acm* 8/2001
 *       (see ws_line_bundld.F and ps_line_bundle.F)
@@ -240,22 +240,22 @@ C
 	asf(6)  = gbundl
         
 	if (area_bundles) then
-	   asf(11) = gbundl					 
-	   asf(12) = gbundl					 
-	   asf(13) = gbundl					 
+	   asf(11) = gbundl
+	   asf(12) = gbundl
+	   asf(13) = gbundl
         else
            asf(11) = gindiv
            asf(12) = gindiv
            asf(13) = gindiv
-           call gsfais (gsolid)	
+           call FGD_GSFAIS(gsolid)
         endif
-	call gsasf (asf)
+	call FGD_GSASF(asf)
 	
 *	SET UP DEFAULT LINE BUNDLES FOR WS
 	IF ( .NOT.batch ) call setup_line_bundles (wsid,wstype) 
 *ATC two lines following -- commented out for now
-*	call gscr (wsid,0,1.0,1.0,1.0)
-*	call gscr (wsid,1,0.0,0.0,0.0)
+*	call FGD_GSCR(wsid,0,1.0,1.0,1.0)
+*	call FGD_GSCR(wsid,1,0.0,0.0,0.0)
 
 	return
 

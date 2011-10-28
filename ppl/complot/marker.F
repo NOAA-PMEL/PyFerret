@@ -48,6 +48,6 @@ C
 
       INTEGER icode
 
-      CALL gspmi (max(icode,1)) ! polymarker index
+      CALL FGD_GSPMI(max(icode,1)) ! polymarker index
 
       END

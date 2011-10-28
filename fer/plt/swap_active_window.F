@@ -84,7 +84,7 @@
            FCTY=1.0
         ENDIF            
 
-        CALL GQWKC(wsid,IER,ID,ITYPE)
+        CALL FGD_GQWKC(wsid,IER,ID,ITYPE)
         CALL QUERY_DISPLAY_SIZE(ITYPE,IER,IMETER,
      .       DMAXX,DMAXY,IRX,IRY)
 
@@ -111,21 +111,21 @@
            anim_id = active_win_id
            wsid = win_id9
 *     deactivate what will become the animated window
-           CALL GDAWK( anim_id)
+           CALL FGD_GDAWK( anim_id)
            wn_active(anim_id) = .FALSE.
 *     activate the unmapped window
-           CALL GACWK( wsid)
+           CALL FGD_GACWK( wsid)
            wn_active(wsid) = .TRUE.
 
 *     if we've already done a plot set window size accordingly
            IF (.NOT. new_window) THEN
 *     set its correct size if we've done a plot
-              CALL GSWKWN(wsid,0.0,FCTX,0.0,FCTY)
+              CALL FGD_GSWKWN(wsid,0.0,FCTX,0.0,FCTY)
               CALL SET_WINDOW_SIZE (wsid,WKXMN,WKXMX,WKYMN,WKYMX)
-              CALL GSWKWN(anim_id,0.0,FCTX,0.0,FCTY)
+              CALL FGD_GSWKWN(anim_id,0.0,FCTX,0.0,FCTY)
               CALL SET_WINDOW_SIZE (anim_id,WKXMN,WKXMX,WKYMN,WKYMX)
            ELSE
-              CALL GSELNT(wsid)
+              CALL FGD_GSELNT(wsid)
            ENDIF
 
            CALL XGKS_X_EVENTS
@@ -150,7 +150,7 @@
                     vp_segn(iseg) = 0
                  ENDIF
  200          CONTINUE
-              CALL GUWK( wsid, 1 )
+              CALL FGD_GUWK( wsid, 1 )
               CALL PPL_SHASET( 'PROTECT' ) ! protect the colors already on-screen
            ENDIF
            
@@ -158,13 +158,13 @@
            wsid = active_win_id
            anim_id = win_id9
 *     deactivate what is now the unmapped window
-           CALL GDAWK(anim_id)
+           CALL FGD_GDAWK(anim_id)
            wn_active(anim_id) = .FALSE.
 *     close unmapped window
-           CALL GCLWK(anim_id)
+           CALL FGD_GCLWK(anim_id)
            wn_open ( anim_id ) = .FALSE.
 *     activate the mapped window for continued ferret use
-           CALL GACWK(wsid)
+           CALL FGD_GACWK(wsid)
            wn_active(wsid) = .TRUE.
 
 

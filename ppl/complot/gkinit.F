@@ -66,25 +66,25 @@ c
 c
 c	open and initialize gks
 c
-C Mod these three JD 3.7.91	    call gopks(errfil)
-C                                   call gopwk(wsid,conid,wstype)
-C	                            call gacwk(wsid)
+C Mod these three JD 3.7.91	    call FGD_GOPKS(errfil)
+C                                   call FGD_GOPWK(wsid,conid,wstype)
+C	                            call FGD_GACWK(wsid)
 
-	    call gopks(1)
-	    call gopwk(wsid,0,0)
-	    call gacwk(wsid)
+	    call FGD_GOPKS(1)
+	    call FGD_GOPWK(wsid,0,0)
+	    call FGD_GACWK(wsid)
 	    gksopn=.true.
 	    lpen=.not.pen
 	endif
-	call gswn(1,0.0,asize,0.0,bsize)
-	call gselnt(1)
-	call gsvp(1,0.0,fctx,0.0,fcty)
+	call FGD_GSWN(1,0.0,asize,0.0,bsize)
+	call FGD_GSELNT(1)
+	call FGD_GSVP(1,0.0,fctx,0.0,fcty)
 c
 c	set up the size of the display window
 c
-	call gqwkc(wsid,ier,id,itype)
-	call gqdsp(itype,ier,imeter,dmaxx,dmaxy,irx,iry)
-c	call gqmds(itype,ier,imeter,dmaxx,dmaxy,irx,iry)
+	call FGD_GQWKC(wsid,ier,id,itype)
+	call FGD_GQDSP(itype,ier,imeter,dmaxx,dmaxy,irx,iry)
+c	call FGD_GQMDS(itype,ier,imeter,dmaxx,dmaxy,irx,iry)
 
 	if(wksaut)then
 	    xln=asize*2.54e-5
@@ -117,22 +117,22 @@ c
 c
 c	set the ndc window
 c
-	    call gswkwn(wsid,0.0,fctx,0.0,fcty)
+	    call FGD_GSWKWN(wsid,0.0,fctx,0.0,fcty)
 c
 c	set device (workstation) viewport
 c
-	    call gswkvp(wsid,wkxmn,wkxmx,wkymn,wkymx)
+	    call FGD_GSWKVP(wsid,wkxmn,wkxmx,wkymn,wkymx)
 	else
 c
 c	if not auto wkxmn and wkxmx etc are fractions of dmaxx
 c	and dmaxy
 c
-	    call gswkwn(wsid,0.0,fctx,0.0,fcty)
+	    call FGD_GSWKWN(wsid,0.0,fctx,0.0,fcty)
 	    xmn=dmaxx*wkxmn
 	    xmx=dmaxx*wkxmx
 	    ymn=dmaxy*wkymn
 	    ymx=dmaxy*wkymx
-	    call gswkvp(wsid,xmn,xmx,ymn,ymx)
+	    call FGD_GSWKVP(wsid,xmn,xmx,ymn,ymx)
 	endif
 c
 	return

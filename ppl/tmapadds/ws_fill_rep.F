@@ -86,10 +86,10 @@ C	data stmt added for linux *jd* 12.96
 *	   USE PATTERNS -- NOT ENOUGH COLORS AVAILABLE
 	   if (area_bundles) then
 *	      MISSING VALUE PATTERN
-	      call gsfar (zwsid,1,gpattr,2,1)
+	      call FGD_GSFAR(zwsid,1,gpattr,2,1)
 
 *	      LOWEST DATA PATTERN IS BLACK
-	      call gsfar (zwsid,2,gsolid,1,1)
+	      call FGD_GSFAR(zwsid,2,gsolid,1,1)
 
 	      if (shd_levels .eq. 1) goto 30
 *	      GO THRU AVAILABLE PATTERNS
@@ -101,7 +101,7 @@ C	data stmt added for linux *jd* 12.96
 #else
 	         patt = 28 - ndx*14/(shd_levels-1)
 #endif
-	         call gsfar (zwsid,ndx+2,gpattr,patt,1)
+	         call FGD_GSFAR(zwsid,ndx+2,gpattr,patt,1)
 10	      continue
 	   else
 	      call hatch_fill_rep (zwsid)
@@ -153,8 +153,8 @@ c	      write (6,'(/a)') ' PPL+ error: You''re attempting to use '//
 
 *	   NOW SET THE FILL REP
 	   do 20 ndx = 1,shd_levels
-	      call gsfar (zwsid,ndx+lo_color_ndx(zwsid)+1,gsolid,1,
-     .						lo_color_ndx(zwsid)-1+ndx)
+	      call FGD_GSFAR(zwsid, ndx+lo_color_ndx(zwsid)+1, gsolid,
+     .                       1, lo_color_ndx(zwsid)-1+ndx)
 20	   continue
 	end if
 

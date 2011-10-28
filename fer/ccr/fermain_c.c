@@ -141,7 +141,7 @@
 *                    mem_size (a size_t) in sBuffer->flags[FRTN_IDATA1]
 */
 
-#include <wchar.h>
+#include <Python.h> /* make sure Python.h is first */
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>

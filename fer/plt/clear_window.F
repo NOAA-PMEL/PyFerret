@@ -57,14 +57,15 @@
 
 * internal variable declarations:
 
-        CALL GQOPS (istate)
+        CALL FGD_GQOPS (istate)
 
 ! --- start of 9/95 addition
 * explicitly delete segments to avoid XGKS memory leak
 	DO 200 ivp =  mvp_dflt, max_viewport
 	   IF ( vp_segn(ivp) .NE. 0 ) THEN 
 	      DO 100 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
- 100	       IF ( gksopn .AND. (istate .GE. 2) ) CALL GDSG( iseg ) 
+ 100	       IF ( gksopn .AND. (istate .GE. 2) )
+     .            CALL FGD_GDSG( iseg ) 
 	   ENDIF
 *  and mark segment as deleted
 	   vp_seg0(ivp) = 0
@@ -74,8 +75,8 @@
 
 * tell GKS to clear the named "workstation" (window)
 
-        CALL GQOPS (istate)
-	IF (istate .GE. 2) CALL GCLRWK(wid,0)
+        CALL FGD_GQOPS (istate)
+	IF (istate .GE. 2) CALL FGD_GCLRWK(wid,0)
 
 * tell PPLUS to close the metafile if it's open
 	CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )

@@ -58,7 +58,7 @@ c                  Do not make a call to GPL on "move with the pen up".
 #else
 	    call gkinit
 C
-	    CALL GCLRWK(WSID,0)
+	    CALL FGD_GCLRWK(WSID,0)
 #endif
 	    GKSOPN=.TRUE.
 	    LPEN=.NOT.PEN
@@ -120,10 +120,8 @@ C
 	    X(2)=X(1)
 	    Y(2)=Y(1)
 	    IPT=2
-c	ENDIF
-c	CALL GPL(IPT,X,Y)
 	ELSE
-	  CALL GPL(IPT,X,Y)
+	    CALL FGD_GPL(IPT,X,Y)
 	ENDIF
 	RETURN
 	END

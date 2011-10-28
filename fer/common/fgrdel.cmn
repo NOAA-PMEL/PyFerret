@@ -1,0 +1,127 @@
+*
+* COMMON BLOCK for graphics delegate objects
+*
+
+* Maximums as parameters.  Note that the maximum number
+* of color, brush, font, pen and symbol objects is per
+* window object.  These objects from one window cannot
+* be shared with another window.
+
+        INTEGER maxwindowobjs,
+     .          maxcolorobjs,
+     .          maxbrushobjs,
+     .          maxfontobjs,
+     .          maxpenobjs,
+     .          maxsymbolobjs,
+     .          maxtransforms
+
+* maxwindowobjs should match (or exceed)
+* max_windows in xplot_state.cmn
+
+        PARAMETER(maxwindowobjs = 9,
+     .            maxcolorobjs = 256,
+     .            maxbrushobjs = 256,
+     .            maxfontobjs = 16,
+     .            maxpenobjs = 256,
+     .            maxsymbolobjs = 256,
+     .            maxtransforms = 64)
+
+* A NULL object (zero) as a parameter.
+* Undefined objects are set to nullobj
+
+        REAL*8 nullobj
+        PARAMETER(nullobj = 0.0)
+
+* The following are actually pointers to objects
+
+        REAL*8 windowobjs(maxwindowobjs),
+     .         colorobjs(maxcolorobjs, maxwindowobjs),
+     .         brushobjs(maxbrushobjs, maxwindowobjs),
+     .         fontobjs(maxfontobjs, maxwindowobjs),
+     .         penobjs(maxpenobjs, maxwindowobjs),
+     .         symbolobjs(maxsymbolobjs, maxwindowobjs)
+
+* Factor for normalized device coordinates.
+* Set by GSWKWN defining the NDC limits of the full window.
+        REAL   ndcxmax(maxwindowobjs),
+     .         ndcymax(maxwindowobjs)
+
+* Coordinate transformation information (independent of window)
+* View limits defined in [0,1] normalized device coordinates
+        REAL   viewleftfrac(maxtransforms),
+     .         viewbottomfrac(maxtransforms),
+     .         viewrightfrac(maxtransforms),
+     .         viewtopfrac(maxtransforms)
+
+* Coordinate transformation information (independent of window)
+* View limits defined in user (world) coordinates
+        REAL   viewleftcoord(maxtransforms),
+     .         viewbottomcoord(maxtransforms),
+     .         viewrightcoord(maxtransforms),
+     .         viewtopcoord(maxtransforms)
+
+* Size of the full window in inches.  Used when creating
+* the window and updated when the window is resized.
+        REAL   windowwidth(maxwindowobjs),
+     .         windowheight(maxwindowobjs)
+
+* The ID number of the "active" window.  Zero means none are active.
+        INTEGER activewindow
+
+* The ID number of the "active" transformation.  Zero means the
+* implicit identity transformation is active.
+        INTEGER activetransform
+
+* The number of the "active" brush of the activewindowid window
+* used for filling areas.
+* Zero means no brush is active and if a brush is needed, create
+* a temporary brush from lastbrushcolor and lastbrushstyle.
+        INTEGER activebrush
+
+* The brush color number and style to use when creating a temporary
+* brush (activebrush not specified) when filling areas.
+        INTEGER lastbrushcolor
+        CHARACTER*64 lastbrushstyle
+        INTEGER lastbstylen
+
+* The ID number of the "active" pen of the activewindowid window
+* used for drawing lines.
+        INTEGER activepen
+
+* The ID number of the "active" symbol of the activewindowid window
+* used for drawing markers.
+        INTEGER activesymbol
+
+* Whether to display the window when created and updated.
+        LOGICAL showwindow(maxwindowobjs)
+
+* Number of the colorobj to use for clearing the window.
+        INTEGER clearcolor(maxwindowobjs)
+
+* Color RGB fractions of color objects created
+* Only used for inquiries about colors
+        REAL colorrgb(3, maxcolorobjs, maxwindowobjs)
+
+* Color ID number and sizes to use to draw the symbol object
+        INTEGER symbolcolor(maxsymbolobjs, maxwindowobjs)
+        REAL symbolsize(maxsymbolobjs, maxwindowobjs)
+
+* Name of the graphics engine to use when creating a window.
+        CHARACTER*64 enginename
+
+* Title for the window to be created.  The program flow
+* sets this in a separate call before creating a window.
+        CHARACTER*128 windowtitle
+
+* And finally the common block containing all these variables
+        COMMON /FGRDEL/ windowobjs, colorobjs, brushobjs,
+     .         fontobjs, penobjs, symbolobjs, colorrgb,
+     .         symbolsize, windowwidth, windowheight,
+     .         ndcxmax, ndcymax, viewleftfrac, viewbottomfrac,
+     .         viewrightfrac, viewtopfrac, viewleftcoord,
+     .         viewbottomcoord, viewrightcoord, viewtopcoord,
+     .         activewindow, activetransform, activebrush,
+     .         activepen, activesymbol, lastbrushcolor,
+     .         lastbstylen, clearcolor, symbolcolor, showwindow,
+     .         lastbrushstyle, enginename, windowtitle
+

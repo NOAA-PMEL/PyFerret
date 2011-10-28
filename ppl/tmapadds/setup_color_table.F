@@ -89,12 +89,12 @@
 	      b_val	= sb(cl_0) + b_inc*(lvl - slvl(cl_0))
 
 *             NOW SET THE COLOR OF THIS INDEX/LEVEL
-	      call gscr (zwsid,ndx,r_val,g_val,b_val)
+	      call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val)
  50	   end do
 
 *	   SET R,G,B FOR FIRST AND LAST LEVELS
- 100	   call gscr (zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl))
- 101	   call gscr (zwsid,ndx_lo,sr(1),sg(1),sb(1))
+ 100	   call FGD_GSCR(zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl))
+ 101	   call FGD_GSCR(zwsid,ndx_lo,sr(1),sg(1),sb(1))
 
 	else if (rgb_mapping .eq. by_value) then
 	   if (ncl .eq. 0) then
@@ -118,9 +118,9 @@
 	   
 *	      LOCATE THIS LEVEL IN THE SPECIFIED SPECTRUM LEVELS
 	      if (lvl .lt. slvl(1)) then
-		 call gscr (zwsid,ndx,sr(1),sg(1),sb(1))
+		 call FGD_GSCR(zwsid,ndx,sr(1),sg(1),sb(1))
 	      else if  (lvl .ge. slvl(ncl)) then
-		 call gscr (zwsid,ndx,sr(ncl),sg(ncl),sb(ncl))
+		 call FGD_GSCR(zwsid,ndx,sr(ncl),sg(ncl),sb(ncl))
 	      else
 		 do 110 t_cl = cl_0,ncl-1
 		    if (lvl .lt. slvl(t_cl+1)) then
@@ -144,15 +144,15 @@
 		 b_val	= sb(cl_0) + b_inc*(lvl - slvl(cl_0))
 
 *                NOW SET THE COLOR OF THIS INDEX/LEVEL
-		 call gscr (zwsid,ndx,r_val,g_val,b_val)
+		 call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val)
 	      end if
  150	   end do
 
 	   goto 2000
 
 *	   SET R,G,B FOR FIRST AND LAST LEVELS
- 200	   call gscr (zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl))
- 201	   call gscr (zwsid,ndx_lo,sr(1),sg(1),sb(1))
+ 200	   call FGD_GSCR(zwsid,ndx_hi,sr(ncl),sg(ncl),sb(ncl))
+ 201	   call FGD_GSCR(zwsid,ndx_lo,sr(1),sg(1),sb(1))
 
 	else if (rgb_mapping .eq. by_level) then
 *	   ATOMIC COLORS -- AS MANY COLORS AS SET IN COLOR PALETTE
@@ -161,7 +161,7 @@
 	      g_val = sg(ndx - ndx_lo + 1)    
 	      b_val = sb(ndx - ndx_lo + 1)    
 
-	      call gscr (zwsid,ndx,r_val,g_val,b_val)
+	      call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val)
  1000	   end do
 	end if
 

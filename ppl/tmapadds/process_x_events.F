@@ -65,15 +65,15 @@
 
 	if (.not. gks_open) goto 1000
 
-	call gqopwk (0,err,num_open,wsid)
+	call FGD_GQOPWK(0,err,num_open,wsid)
 	if (err. ne. 0) goto 1000
 
 	do 10 i = 1,num_open
-	   call gqopwk (i,err,num,wsid)
+	   call FGD_GQOPWK(i,err,num,wsid)
 	   if (err. ne. 0) goto 10
 
            ia(1) = wsid
-           call gprec (1,ia,0,ra,0,0,str,80,ierr,lidr,datarec)
+           call FGD_GPREC(1,ia,0,ra,0,0,str,80,ierr,lidr,datarec)
            call guesc (-5399,lidr,datarec,80,lodr,odr)
 10	continue
 

@@ -62,7 +62,7 @@
 ******************************************************************************
 
 *	GET WORLD COORDINATES AND PIXEL DIMENSIONS OF FRAME
-	call  gqcntn (error_status,transno)
+	call  FGD_GQCNTN(error_status,transno)
 	if (error_status .ne. 0) goto 1000
 
         IF(ASIZE.GT.BSIZE)THEN
@@ -72,11 +72,11 @@
            FCTX=ASIZE/BSIZE
            FCTY=1.0
         ENDIF
-	CALL GSWN(new_trans, 0.0, asize, 0.0, bsize )
-	CALL GSVP(new_trans, 0.0, fctx,  0.0, fcty )
-	call gselnt (new_trans)
+	CALL FGD_GSWN(new_trans, 0.0, asize, 0.0, bsize )
+	CALL FGD_GSVP(new_trans, 0.0, fctx,  0.0, fcty )
+	call FGD_GSELNT(new_trans)
 
-	call gqnt (new_trans,error_status,world,ndc)
+	call FGD_GQNT(new_trans,error_status,world,ndc)
 	if (error_status .ne. 0) goto 1000
 
         x_minw = world(1)
@@ -84,17 +84,17 @@
         y_minw = world(3)
         y_maxw = world(4)
 
-	call gqpxad(ws_id,x_minw,y_maxw,x_maxw,y_minw,
+	call FGD_GQPXAD(ws_id,x_minw,y_maxw,x_maxw,y_minw,
      .	error_status,x_pixel_dim,y_pixel_dim)
 
 	if (error_status .ne. 0) goto 1000
 	
-	call gselnt (transno)
+	call FGD_GSELNT(transno)
         status = ferr_ok
         return
 
 *	GKS ERROR EXIT
-1000	call gselnt (ws_id)
+1000	call FGD_GSELNT(ws_id)
 	status = ferr_tmap_error
 	return
 

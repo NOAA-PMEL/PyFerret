@@ -16,34 +16,16 @@ all : optimized
 .PHONY : optimized
 optimized :
 	mkdir -p $(DIR_PREFIX)/lib
-	if [ -r $(READLINE_LIBDIR)/libreadline.a ]; then \
-	    cp $(READLINE_LIBDIR)/libreadline.a $(READLINE_LIBDIR)/libhistory.a $(DIR_PREFIX)/lib; \
-	fi
-	$(MAKE) $(DIR_PREFIX)/xgks/Makefile
-	$(MAKE) -C $(DIR_PREFIX)/xgks
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
+	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O2" pymod_optimized
-	$(MAKE) -C $(DIR_PREFIX)/external_functions optimized
-	$(MAKE) -C $(DIR_PREFIX)/gksm2ps
-	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 .PHONY : debug
 debug :
 	mkdir -p $(DIR_PREFIX)/lib
-	if [ -r $(READLINE_LIBDIR)/libreadline.a ]; then \
-	    cp $(READLINE_LIBDIR)/libreadline.a $(READLINE_LIBDIR)/libhistory.a $(DIR_PREFIX)/lib; \
-	fi
-	$(MAKE) $(DIR_PREFIX)/xgks/Makefile
-	$(MAKE) -C $(DIR_PREFIX)/xgks
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
+	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" pymod_debug
-	$(MAKE) -C $(DIR_PREFIX)/external_functions debug
-	$(MAKE) -C $(DIR_PREFIX)/gksm2ps
-	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
-
-## Configure xgks to create the Makefile if it does not exist
-$(DIR_PREFIX)/xgks/Makefile :
-	( cd $(DIR_PREFIX)/xgks; export BUILDTYPE=$(BUILDTYPE); ./configure )
 
 ## The following builds _pyferret.so, then installs that shared-object library and all the
 ## python scripts into $(DIR_PREFIX)/pyferret_install.  This install directory can then be
@@ -54,14 +36,10 @@ pymod_optimized :
 	( cd $(DIR_PREFIX) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export READLINE_LIBDIR=$(READLINE_LIBDIR) ; \
-	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
 	  $(PYTHON_EXE) setup.py build )
 	( cd $(DIR_PREFIX) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export READLINE_LIBDIR=$(READLINE_LIBDIR) ; \
-	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
 	  $(PYTHON_EXE) setup.py install -O2 --prefix=$(DIR_PREFIX)/pyferret_install )
 
 .PHONY : pymod_debug
@@ -70,39 +48,23 @@ pymod_debug :
 	( cd $(DIR_PREFIX) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export READLINE_LIBDIR=$(READLINE_LIBDIR) ; \
-	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
 	  $(PYTHON_EXE) setup.py build -g )
 	( cd $(DIR_PREFIX) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export READLINE_LIBDIR=$(READLINE_LIBDIR) ; \
-	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
 	  $(PYTHON_EXE) setup.py install -O0 --prefix=$(DIR_PREFIX)/pyferret_install )
 
-## Remove everything that was built as well as the configure of xgks
+## Remove everything that was built
 .PHONY : clean
 clean :
 	rm -fr fer_executables.tar.gz
 	rm -fr fer_environment.tar.gz
-	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix clean
-	$(MAKE) -C $(DIR_PREFIX)/gksm2ps clean
-	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
 	rm -fr $(DIR_PREFIX)/pyferret_install $(DIR_PREFIX)/build ferret.jnl*
+	find $(DIR_PREFIX)/pviewmod -name '*.py[co]' -exec rm -f {} ';'
 	find $(DIR_PREFIX)/pyfermod -name '*.py[co]' -exec rm -f {} ';'
+	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser clean
 	$(MAKE) -C $(DIR_PREFIX)/fer clean
 	rm -fr $(DIR_PREFIX)/lib
-	$(MAKE) xgksclean
-
-## Thoroughly clean the xgks directory
-.PHONY : xgksclean
-xgksclean :
-	$(MAKE) -C $(DIR_PREFIX)/xgks clean
-	$(MAKE) -C $(DIR_PREFIX)/xgks distclean
-	find $(DIR_PREFIX)/xgks -name Makefile -exec rm -f {} \;
-	rm -f $(DIR_PREFIX)/xgks/port/master.mk
-	rm -f $(DIR_PREFIX)/xgks/port/udposix.h
-
 
 ## Install Ferret binaries, scripts, and other files into $(INSTALL_FER_DIR)
 .PHONY : install
@@ -132,12 +94,10 @@ install_exes :
 .PHONY : update
 update :
 	mkdir -p $(INSTALL_FER_DIR)/lib
-	cp -f $(DIR_PREFIX)/fer/threddsBrowser/threddsBrowser.jar $(INSTALL_FER_DIR)/lib
+	cp -f $(DIR_PREFIX)/threddsBrowser/threddsBrowser.jar $(INSTALL_FER_DIR)/lib
 	( cd $(DIR_PREFIX) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  export READLINE_LIBDIR=$(READLINE_LIBDIR) ; \
-	  export LIBZ_LIBDIR=$(LIBZ_LIBDIR) ; \
 	  $(PYTHON_EXE) setup.py install --prefix=$(INSTALL_FER_DIR) )
 
 ##

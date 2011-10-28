@@ -89,7 +89,7 @@
 	y_pixel_dim = 1
 
 *	GET WORLD COORDINATES AND PIXEL DIMENSIONS OF FRAME
-	call  gqcntn (error_status,transno)
+	call  FGD_GQCNTN(error_status,transno)
 	if (error_status .ne. 0) RETURN
 
         IF(ASIZE.GT.BSIZE)THEN
@@ -99,11 +99,11 @@
            FCTX=ASIZE/BSIZE
            FCTY=1.0
         ENDIF
-	CALL GSWN(new_trans, 0.0, asize, 0.0, bsize )
-	CALL GSVP(new_trans, 0.0, fctx,  0.0, fcty )
-	call gselnt (new_trans)
+	CALL FGD_GSWN(new_trans, 0.0, asize, 0.0, bsize )
+	CALL FGD_GSVP(new_trans, 0.0, fctx,  0.0, fcty )
+	call FGD_GSELNT(new_trans)
 
-	call gqnt (new_trans,error_status,world,ndc)
+	call FGD_GQNT(new_trans,error_status,world,ndc)
 	if (error_status .ne. 0) GOTO 1000
 
         x_minw = world(1)
@@ -118,10 +118,10 @@
 ! If not a gif or metafile batch window get pixel workstation from gks
 
         IF ((.NOT.meta_batch) .AND. (.NOT.its_gif)) 
-     .	CALL gqpxad(ws_id,x_minw,y_maxw,
+     .	CALL FGD_GQPXAD(ws_id,x_minw,y_maxw,
      .	x_maxw,y_minw,error_status,x_pixel_dim,y_pixel_dim)
 
- 1000	call gselnt (transno)
+ 1000	call FGD_GSELNT(transno)
         return
 
 	end

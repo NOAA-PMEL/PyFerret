@@ -86,7 +86,7 @@
 	LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
         LOGICAL its_meta, batch, meta_batch
 
-C	XGKS DOESN'T DEFINE GMOUTP 
+C	XGKS DOES NOT DEFINE GMOUTP 
 	integer		gmoutp
 	parameter	(gmoutp=2)
 
@@ -107,24 +107,24 @@ C	XGKS DOESN'T DEFINE GMOUTP
 #endif
 #ifdef atc_gks
 *	OPEN OUTPUT GKSM METAFILE
-*       TEST TO SEE IF FILE NAME IS VALID -- ATC DOESN'T EXPLICITLY OPEN FILE
+*       TEST TO SEE IF FILE NAME IS VALID -- ATC DOES NOT EXPLICITLY OPEN FILE
 	open (unit=meta_lun,file=meta_file,status='new',err=100)
         close (meta_lun,status='delete')
 
 	call guesc050 (meta_lun,meta_file)
 	theWsType = 1002
-	call gopwk(meta_wsid,meta_lun,1002)
+	call FGD_GOPWK(meta_wsid,meta_lun,1002)
 #else
 	theWsType = gmoutp
 #endif
 
-	call gopwk(meta_wsid,meta_lun,theWsType)
-*	call gsds (meta_wsid,gasap,gsuppd) !Better to be 'At Some TIme'
-	call gsds (meta_wsid,gasti,gsuppd) 
+	call FGD_GOPWK(meta_wsid,meta_lun,theWsType)
+*	call FGD_GSDS(meta_wsid,gasap,gsuppd) !Better to be 'At Some TIme'
+	call FGD_GSDS(meta_wsid,gasti,gsuppd) 
 
-*	IS THE GUWK CALL NEEDED FOR THE METAFILE TOO? DON'T KNOW...
+*	IS THE GUWK CALL NEEDED FOR THE METAFILE TOO? DO NOT KNOW...
 *       WILL TRY TO LIVE W/O IT
-*	call guwk (meta_wsid,gpostp?gperfo)
+*	call FGD_GUWK(meta_wsid,gpostp?gperfo)
 
 *	SET UP DEFAULT LINE BUNDLES FOR METAFILE WS
 *    -- PLACE NO LINE BUNDLE INFO IN METAFILE (4.22.91)
@@ -144,25 +144,25 @@ C	XGKS DOESN'T DEFINE GMOUTP
 #ifdef xgks
 	if (meta_actv .OR. meta_batch) then
 *		ALLOW NO WHITE LINES IN METAFILE (FOR NOW)
-                call gqcr (wsid,1,type,error,red,green,blue)
+                call FGD_GQCR(wsid,1,type,error,red,green,blue)
                 if (error .eq. 0) then
 		   if (red   .eq. 1.0 .and. 
      .		       green .eq. 1.0 .and.
      .		       blue  .eq. 1.0) then
-                      call gscr (meta_wsid,1,0.0,0.0,0.0)
+                      call FGD_GSCR(meta_wsid,1,0.0,0.0,0.0)
 		    else
-                      call gscr (meta_wsid,1,red,green,blue)
+                      call FGD_GSCR(meta_wsid,1,red,green,blue)
 		    endif
                 else
-                   call gscr (meta_wsid,1,0.0,0.0,0.0)
+                   call FGD_GSCR(meta_wsid,1,0.0,0.0,0.0)
                 endif
 
                 do ndx = 2,num_line_colors
-                   call gqcr (wsid,ndx,type,error,red,green,blue)
+                   call FGD_GQCR(wsid,ndx,type,error,red,green,blue)
                    if (error .eq. 0) then
-                      call gscr (meta_wsid,ndx,red,green,blue)
+                      call FGD_GSCR(meta_wsid,ndx,red,green,blue)
                    else
-                      call gscr (meta_wsid,ndx,0.0,0.0,0.0)
+                      call FGD_GSCR(meta_wsid,ndx,0.0,0.0,0.0)
                    endif
                 end do
 	end if

@@ -42,7 +42,7 @@
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm*  3/05 v581 - return bad_value if input cannot be converted to numeric */
-#include <wchar.h>
+#include <Python.h> /* make sure Python.h is first */
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>

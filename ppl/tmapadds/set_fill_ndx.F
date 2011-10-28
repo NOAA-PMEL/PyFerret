@@ -36,7 +36,7 @@
 
 	if (area_bundles) then
 *	   USE SET FILL AREA INDEX
-	   call gsfai (fill_ndx+lo_color_ndx(wsid))
+	   call FGD_GSFAI(fill_ndx+lo_color_ndx(wsid))
 	else
 *	   HOW MANY COLORS HAVE WE?
            call query_xgks_wkstn (wstype,error,max_pline,max_pmark,
@@ -48,11 +48,11 @@
 *             USE ATOMIC COLORS?
 	      if (rgb_mapping .ne. by_level) then
 *                SMOOTH OUT COLORS TO FULL RANGE
-	         call gsfaci (fill_ndx+lo_color_ndx(wsid)-2)
+	         call FGD_GSFACI(fill_ndx+lo_color_ndx(wsid)-2)
 	      else
 *                USE ATOMIC COLORS -- REUSE AS NECESSARY
 		 color_ndx = mod((fill_ndx - 2),ncl) + 2
-		 call gsfaci (color_ndx+lo_color_ndx(wsid)-2)
+		 call FGD_GSFACI(color_ndx+lo_color_ndx(wsid)-2)
 	      end if
 	   else
 #ifdef atc_gks
@@ -68,7 +68,7 @@
 		    spc = (min_spc + incr*delta_spc) * 0.707
 	      endif
 
-	      call gsfasi (style)
+	      call FGD_GSFASI(style)
 	      call guesc061 (wsid,1,spc)
 #endif
 	   endif
@@ -78,10 +78,10 @@
 	pattern_ndx = mod((fill_ndx - 2),npat) + 1
 
 	if (patterns(pattern_ndx) .eq. solid) then
-	   call gsfais (GSOLID)
+	   call FGD_GSFAIS(GSOLID)
 	else
-	   call gsfais (GHATCH)
-	   call gsfasi (-1 * patterns(pattern_ndx))
+	   call FGD_GSFAIS(GHATCH)
+	   call FGD_GSFASI(-1 * patterns(pattern_ndx))
 	end if
 #endif
 

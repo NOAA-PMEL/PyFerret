@@ -47,7 +47,7 @@
 
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
+#include <Python.h> /* make sure Python.h is first */
 #include <signal.h>
 #include <stdio.h>
 #include <math.h>

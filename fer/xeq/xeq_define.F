@@ -1578,7 +1578,7 @@ C /units=months  is 1/12 of the length of the year
 	   CALL SPLIT_LIST(pttmode_ops, err_lun,
      .			'Re-defining viewport '//vp_name(ivp), 0)
 	   DO 614 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
- 614	   CALL GDSG( iseg ) 
+ 614	   CALL FGD_GDSG( iseg ) 
 	   vp_seg0 ( ivp ) = 0
 	   vp_segn ( ivp ) = 0
 	ENDIF

@@ -50,7 +50,7 @@
         INTEGER ierr,conid,wstype
 
 *******************************************************************************
-c	call gqwkc (wsid,ierr,conid,wstype)
+c	call FGD_GQWKC(wsid,ierr,conid,wstype)
 
         x_pixel_dim = pixx
         y_pixel_dim = pixy

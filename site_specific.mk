@@ -2,7 +2,7 @@
 
 ## Full path name of the directory containing this file (the ferret root directory).
 ## Do not use $(shell pwd) since this is included in Makefiles in other directories.
-DIR_PREFIX	= $(HOME)/pyferret_64dev
+DIR_PREFIX	= $(HOME)/pyferret
 
 ## Machine for which to build Ferret
 ## Use $(HOSTTYPE) to build natively for the machine you are using
@@ -12,6 +12,7 @@ BUILDTYPE	= $(HOSTTYPE)
 
 ## Python 2.x executable to invoke for build and install.
 PYTHON_EXE	= python2.6
+PYTHONINCDIR   := $(shell $(PYTHON_EXE) -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()")
 
 ## Installation directory for built Ferret.  Using the "install"
 ## Makefile target circumvents the need to create the fer_*.tar.gz
@@ -23,7 +24,6 @@ INSTALL_FER_DIR	= $(FER_DIR)
 # HDF5_DIR	= /usr
 # HDF5_DIR	= /usr/local
 HDF5_DIR	= /usr/local/hdf5_186
-# HDF5_DIR	= /usr/local/hdf5_186_64
 # HDF5_DIR	= /usr/local/hdf5_187
 
 ## Installation directory for NetCDF static libraries
@@ -31,24 +31,7 @@ HDF5_DIR	= /usr/local/hdf5_186
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
 NETCDF4_DIR	= /usr/local/netcdf_412
-# NETCDF4_DIR	= /usr/local/netcdf_412_64
 # NETCDF4_DIR	= /usr/local/netcdf_413
-
-## Installation directory for readline static libraries
-## (contains include and lib or lib64 subdirectories)
-## If only shared-object library is available, it will
-## be used instead.  Version 6.x needed for PyFerret
-# READLINE_DIR	= /
-# READLINE_DIR	= /usr
-READLINE_DIR	= /usr/local
-
-## Installation directory for libz static library
-## (contains lib or lib64 subdirectory)
-## If only shared-object library is available, it will
-## be used instead.  Version 1.2.5 recommended by NetCDF
-# LIBZ_DIR	= /
-# LIBZ_DIR	= /usr
-LIBZ_DIR	= /usr/local
 
 ## Java 1.6 jdk home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,

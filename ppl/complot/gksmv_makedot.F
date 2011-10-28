@@ -60,7 +60,7 @@ c
 #else
 	    call gkinit
 C
-	    CALL GCLRWK(WSID,0)
+	    CALL FGD_GCLRWK(WSID,0)
 #endif
 	    GKSOPN=.TRUE.
 	    LPEN=.NOT.PEN
@@ -111,6 +111,6 @@ C
 	    ydot(2)=ydot(1)
 	    IPT=2
 	ENDIF
-	CALL GPM(IPT,xdot,ydot)
+	CALL FGD_GPM(IPT,xdot,ydot)
 	RETURN
 	END

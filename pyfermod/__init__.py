@@ -37,6 +37,8 @@ functions provided by this module are:
 
 import sys
 import os
+# import readline so that raw_input makes use of it
+import readline
 import numpy
 import numpy.ma
 import StringIO
@@ -46,6 +48,9 @@ try:
 except ImportError:
     print >>sys.stderr, "    WARNING: Unable to import cdms2 and/or cdtime;\n" \
                         "             the Python functions pyferret.get and pyferret.put will fail"
+
+import pyferret.graphbind
+import pipedviewer.pviewpyferbind
 from _pyferret import *
 
 
@@ -80,7 +85,7 @@ def init(arglist=None, enterferret=True):
        -batch:     output directly to metafile <filename> (default "metafile.plt")
                    without X-Windows
        -gif:       output to GIF file without X-Windows only with the FRAME command
-       -nojnl:     on startup don't open a journal file (can be turned on later with
+       -nojnl:     on startup do not open a journal file (can be turned on later with
                    SET MODE JOURNAL)
        -noverify:  on startup turn off verify mode (can be turned on later with
                    SET MODE VERIFY)
@@ -352,6 +357,11 @@ def init(arglist=None, enterferret=True):
             result = run("exit /program")
             # should not get here
             raise SystemExit
+    # Add PViewPyFerretBindings, as "PyQtPipedViewer" to the known bindings
+    knownengines = pyferret.graphbind.knownPyFerretEngines()
+    if not ("PyQtPipedViewer" in knownengines):
+        pyferret.graphbind.addPyFerretBindings("PyQtPipedViewer", 
+                           pipedviewer.pviewpyferbind.PViewPyFerretBindings)
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify, metaname=my_metaname)
     # define all the Ferret standard Python external functions
@@ -1346,6 +1356,31 @@ def stop():
         True otherwise
     """
     return _pyferret._stop()
+
+
+def _readline(myprompt):
+    """
+    Prompts the user for input and returns the line read.
+
+    Used for reading commands in the Ferret command loop.
+    Just uses the built-in function raw_input.  Since the
+    readline module was imported, readline features are
+    provided.
+
+    Arguments:
+        myprompt - prompt string to use
+    Returns:
+        the string read in, or None if EOFError occurs
+    """
+    try:
+        if myprompt:
+            myline = raw_input(myprompt)
+        else:
+            myline = raw_input()
+    except EOFError:
+        myline = None
+
+    return myline
 
 
 def ferret_pyfunc():

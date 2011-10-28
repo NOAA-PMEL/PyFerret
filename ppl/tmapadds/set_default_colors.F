@@ -55,11 +55,11 @@
 	do 50 ndx = ndx_lo,ndx_hi
 
 *	   WHAT IS THE DEFAULT COLOR FOR EACH NDX?
-	   call gqpcr (zwstype,ndx,err,r_val,g_val,b_val)
+	   call FGD_GQPCR(zwstype,ndx,err,r_val,g_val,b_val)
 	   if (err .eq. 0) then
 
 *	   SET THE COLOR OF THIS NDX
-   	      call gscr (zwsid,ndx,r_val,g_val,b_val)
+   	      call FGD_GSCR(zwsid,ndx,r_val,g_val,b_val)
 	   endif
 50	end do
 

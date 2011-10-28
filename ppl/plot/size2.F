@@ -199,8 +199,9 @@ C
 #ifdef xgks
 	   if (meta_actv .OR. meta_batch) then
 	      IF (ITS_GKSM(meta_wsid) .EQ. 1) THEN	! *sh* 4/97
-	         call gswkwn (meta_wsid,0.0,fctx,0.0,fcty)
-	         call gswkvp (meta_wsid,0.0,asize/factor,0.0,bsize/factor)
+	         call FGD_GSWKWN(meta_wsid, 0.0, fctx, 0.0, fcty)
+	         call FGD_GSWKVP(meta_wsid, 0.0, asize/factor,
+     .                                      0.0, bsize/factor)
 	      ENDIF
 	   end if
 #else
@@ -259,13 +260,13 @@ C
 C
 C	OPEN AND INITIALIZE GKS
 C
-!		CALL GOPKS(ERRFIL)
-!		CALL GOPWK(WSID,CONID,WSTYPE)
-!		CALL GACWK(WSID)
+!		CALL FGD_GOPKS(ERRFIL)
+!		CALL FGD_GOPWK(WSID,CONID,WSTYPE)
+!		CALL FGD_GACWK(WSID)
 !
 *               jd mod 9.7.88 begin
 *		SET DEFERRAL STATE TO GENERATE OUTPUT AS SOON AS POSSIBLE
-!               call gsds (wsid,gasap,gsuppd)
+!               call FGD_GSDS(wsid,gasap,gsuppd)
 *               jd mod 9.7.88 end
 !
 !		GKSOPN=.TRUE.
@@ -291,7 +292,7 @@ C
      .			     tmsize, tmscale, tmxclip, tmyclip, tmxll, tmyll )
 
 * The following calls to GSVP, GSWN, GSELNT refer to wsid but are not
-* restricted in action to a particular WS.  All WS's use the same normalization
+* restricted in action to a particular WS.  All WS use the same normalization
 * transform, the active one, set by SELNT.  In particular the metafile output
 * WS will be affected by these calls. jd 3.15.89
 *
@@ -300,33 +301,33 @@ C
 * 9/29 - "1" --> wsid *sh*
 
 *	MAX function inserted JD 3.22.90	
-	CALL GSVP(MAX (wsid,1), fctx*tmxorg, fctx*tmxclip, 
+	CALL FGD_GSVP(MAX (wsid,1), fctx*tmxorg, fctx*tmxclip, 
      .	fcty*tmyorg, fcty*tmyclip )
 
 * set world coordinate window to preserve 1:1 aspect
 * 9/29 - "1" --> wsid *sh*
 	scale = 1.0 / SQRT( tmsize )
 *	MAX function inserted JD 3.22.90	
-	CALL GSWN(MAX (wsid,1), 0.0, ( tmxclip-tmxorg )*scale*asize,
-     .				0.0, ( tmyclip-tmyorg )*scale*bsize  )
+	CALL FGD_GSWN(MAX (wsid,1), 0.0, (tmxclip-tmxorg)*scale*asize,
+     .				    0.0, (tmyclip-tmyorg)*scale*bsize)
 
 *select normalization transformation and turn on clipping
 * 9/29 - "1" --> wsid *sh*
 *	MAX function inserted JD 3.22.90	
-	CALL GSELNT(MAX (wsid,1))
+	CALL FGD_GSELNT(MAX (wsid,1))
 	IF ( clip ) THEN
-	   CALL GSCLIP(gclip)
+	   CALL FGD_GSCLIP(gclip)
 	ELSE
-	   CALL GSCLIP(gnclip)
+	   CALL FGD_GSCLIP(gnclip)
 	ENDIF
 
 * end of 9/1/88 and 9/13/88 FERRET mods
 c
 c	set up the size of the display window
 c
-	    CALL GQWKC(WSID,IER,ID,ITYPE)
-*	    CALL GQDSP(ITYPE,IER,IMETER,DMAXX,DMAXY,IRX,IRY) Replaced 3.25.92
-	    call query_display_size (ITYPE,IER,IMETER,DMAXX,DMAXY,IRX,IRY)
+	    CALL FGD_GQWKC(WSID,IER,ID,ITYPE)
+*	    CALL FGD_GQDSP(ITYPE,IER,IMETER,DMAXX,DMAXY,IRX,IRY) Replaced 3.25.92
+	    call query_display_size(ITYPE,IER,IMETER,DMAXX,DMAXY,IRX,IRY)
 C
 	    IF(WKSAUT)THEN
 		XLN=ASIZE*2.54E-5
@@ -382,38 +383,39 @@ C	SET THE NDC WINDOW
 
 *	Next 5 lines *jd* 3.25.92
 	if (.not. PPL_IN_FERRET) then
-	   call gswn(1,0.0,asize,0.0,bsize)
-     	   call gsvp(1,0.0,fctx,0.0,fcty)
-	   call gselnt (1)
+	   call FGD_GSWN(1,0.0,asize,0.0,bsize)
+     	   call FGD_GSVP(1,0.0,fctx,0.0,fcty)
+	   call FGD_GSELNT(1)
 	endif
 
 C
-*		CALL GSWKWN(WSID,0.0,FCTX,0.0,FCTY) Mod below made JD 3.22.90
+*		CALL FGD_GSWKWN(WSID,0.0,FCTX,0.0,FCTY) Mod below made JD 3.22.90
 		if (wsid .gt. 0 .AND. (.NOT.meta_batch)) 
-     .              CALL GSWKWN(WSID,0.0,FCTX,0.0,FCTY)
+     .              CALL FGD_GSWKWN(WSID,0.0,FCTX,0.0,FCTY)
 #ifdef xgks
 	   if (meta_actv .OR. meta_batch) then
-	      call gswkwn (meta_wsid,0.0,fctx,0.0,fcty)
-	      call gswkvp (meta_wsid,0.0,asize/factor,0.0,bsize/factor)
+              call FGD_GSWKWN(meta_wsid, 0.0, fctx, 0.0, fcty)
+              call FGD_GSWKVP(meta_wsid, 0.0, asize/factor,
+     .                                   0.0, bsize/factor)
 	   end if
 #else
-	   if (meta_actv .OR. meta_batch) call meta_ws_xform (fctx,fcty,asize,bsize) ! JD
+	   if (meta_actv .OR. meta_batch) call meta_ws_xform(fctx,fcty,asize,bsize) ! JD
 #endif
 C
 C	SET DEVICE (WORKSTATION) VIEWPORT
 C
 *               jd mod 9.7.88 begin
                 if (imeter .eq. 0) then
-*                   CALL GSWKVP(WSID,WKXMN,WKXMX,WKYMN,WKYMX) Mod JD 3.22.90
-* Replaced 3.25.92  if (wsid .gt. 0) CALL GSWKVP(WSID,WKXMN,WKXMX,WKYMN,WKYMX)
+*                   CALL FGD_GSWKVP(WSID,WKXMN,WKXMX,WKYMN,WKYMX) Mod JD 3.22.90
+* Replaced 3.25.92  if (wsid .gt. 0) CALL FGD_GSWKVP(WSID,WKXMN,WKXMX,WKYMN,WKYMX)
 	            if (wsid .gt. 0) call set_window_size 
      .					(WSID,WKXMN,WKXMX,WKYMN,WKYMX)
                 else
 *                   USE DENBO INCHES
-*                   CALL GSWKVP(WSID,0.0,dmaxx,0.0,dmaxy) Mod JD 3.22.90
-* Replaced 3.25.92  if (wsid .gt. 0) CALL GSWKVP(WSID,0.0,dmaxx,0.0,dmaxy)
-		    if (wsid .gt. 0) call set_window_size 
-     .					(WSID,0.0,dmaxx,0.0,dmaxy)	
+*                   CALL FGD_GSWKVP(WSID,0.0,dmaxx,0.0,dmaxy) Mod JD 3.22.90
+* Replaced 3.25.92  if (wsid .gt. 0) CALL FGD_GSWKVP(WSID,0.0,dmaxx,0.0,dmaxy)
+                    if (wsid .gt. 0) call set_window_size 
+     .                                (WSID,0.0,dmaxx,0.0,dmaxy)
                 end if
 *               jd mod 9.7.88 end
 	    ELSE
@@ -421,14 +423,15 @@ C
 C	IF NOT AUTO WKXMN AND WKXMX ETC ARE FRACTIONS OF DMAXX
 C	AND DMAXY
 C
-*		CALL GSWKWN(WSID,0.0,FCTX,0.0,FCTY) Mod JD 3.22.90
+*		CALL FGD_GSWKWN(WSID,0.0,FCTX,0.0,FCTY) Mod JD 3.22.90
 		if (wsid .gt. 0 .AND. (.NOT.meta_batch)) 
-     .             CALL GSWKWN(WSID,0.0,FCTX,0.0,FCTY)
+     .             CALL FGD_GSWKWN(WSID,0.0,FCTX,0.0,FCTY)
 
 #ifdef xgks
 	   if (meta_actv .OR. meta_batch) then
-	      call gswkwn (meta_wsid,0.0,fctx,0.0,fcty)
-	      call gswkvp (meta_wsid,0.0,asize/factor,0.0,bsize/factor)
+              call FGD_GSWKWN(meta_wsid, 0.0, fctx, 0.0, fcty)
+              call FGD_GSWKVP(meta_wsid, 0.0, asize/factor,
+     .                                   0.0, bsize/factor)
 	   end if
 #else
 	   if (meta_actv .OR. meta_batch) call meta_ws_xform (fctx,fcty,asize,bsize) ! JD
@@ -437,16 +440,17 @@ C
 		XMX=DMAXX*WKXMX
 		YMN=DMAXY*WKYMN
 		YMX=DMAXY*WKYMX
-* 		CALL GSWKVP(WSID,XMN,XMX,YMN,YMX) Mod JD 3.22.90
-* Replaced 3.92	if (wsid .gt. 0) CALL GSWKVP(WSID,XMN,XMX,YMN,YMX)
-		if (wsid .gt. 0) call set_window_size 
-     .					(WSID,XMN,XMX,YMN,YMX)	
+* 		CALL FGD_GSWKVP(WSID,XMN,XMX,YMN,YMX) Mod JD 3.22.90
+* Replaced 3.92	if (wsid .gt. 0) CALL FGD_GSWKVP(WSID,XMN,XMX,YMN,YMX)
+                if (wsid .gt. 0) call set_window_size 
+     .                                (WSID,XMN,XMX,YMN,YMX)
 
 	    ENDIF
 
 * FERRET mod: force immediate update of display
-*	   CALL GUWK( wsid, 1 ) Mod JD 3.22.90
-	   if (wsid .gt. 0 .AND. (.NOT.meta_batch) ) CALL GUWK( wsid, 1 )
+*	   CALL FGD_GUWK( wsid, 1 ) Mod JD 3.22.90
+           IF (wsid .gt. 0 .AND. (.NOT.meta_batch) )
+     .             CALL FGD_GUWK(wsid, 1)
 	ENDIF
 C
 C     CALCULATE THE OFF-SCREEN FLAG.

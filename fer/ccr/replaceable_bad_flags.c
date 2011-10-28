@@ -34,12 +34,16 @@
 *
 */
 
-/* replaceable_bad_flags :
-/*  check for a missing or bad value flag of NaN.  if either flag is Nan, */
-/*  or if the flags differ, return a true. otherwise, if both flags are the */
-/*  same and not NaN, no need to replace them, so return a false
+#include <Python.h> /* make sure Python.h is first */
+#include <math.h>
 
-/* *kob* - 2/18/99 */
+/*
+ * replaceable_bad_flags :
+ *  check for a missing or bad value flag of NaN.  if either flag is Nan,
+ *  or if the flags differ, return a true. otherwise, if both flags are the
+ *  same and not NaN, no need to replace them, so return a false
+ * *kob* - 2/18/99
+ */
 
 int replaceable_bad_flags_ (bad1, bad2)
      float *bad1, *bad2;

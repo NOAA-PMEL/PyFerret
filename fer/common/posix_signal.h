@@ -3,6 +3,7 @@
 #ifndef	__ourhdr_h
 #define	__ourhdr_h
 
+#include <Python.h> /* make sure Python.h is always first */
 #include	<sys/types.h>	/* required for some of our prototypes */
 #include	<stdio.h>		/* for convenience */
 #include	<stdlib.h>		/* for convenience */

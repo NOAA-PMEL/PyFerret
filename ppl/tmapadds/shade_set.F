@@ -127,19 +127,19 @@
 	   return
 	end if
 
-10      CALL GQOPS (istate)  ! In batch mode the graphics may not be active now. 
+10      CALL FGD_GQOPS(istate)  ! In batch mode the graphics may not be active now. 
         IF (istate .GE. 2) THEN
 
 *       SET THE SHADES                                                
 #ifdef atc_gks
-	   call gsds (wsid,gasti,gallow) !This action necessary?
+	   call FGD_GSDS(wsid,gasti,gallow) !This action necessary?
 	   if (.not. protect_used_colors) call set_fill_area_rep (wsid,wstype)
-	   call gsds (wsid,gasap,gsuppd)   
+	   call FGD_GSDS(wsid,gasap,gsuppd)
                                                           
 #else
  	   if (.not. protect_used_colors) 
      .   	call set_fill_area_rep (wsid,wstype)
-           if (meta_actv) call guwk (wsid,gpostp)	
+           if (meta_actv) call FGD_GUWK(wsid,gpostp)
 
 #endif
 *4.91   if (meta_actv) call set_fill_area_rep (meta_wsid,meta_wstype)

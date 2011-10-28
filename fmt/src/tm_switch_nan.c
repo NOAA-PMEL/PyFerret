@@ -34,6 +34,9 @@
 *
 */
 
+#include <Python.h> /* make sure Python.h is first */
+#include <math.h>
+
 /* tm_switch_nan :
 /*  check for a missing or bad value flag of NaN.  if either flag is Nan, */
 /*  then make sure it's ds_missing_flag and if both are NaN, make sure to */

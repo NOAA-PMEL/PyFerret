@@ -50,7 +50,7 @@
 
 	do 40 j = 1, num_line_colors     
            IF (ndx_save_colors(j) .EQ. j) 
-     .	   CALL gscr (zwsid,j,val_red(j),val_green(j), val_blue(j))
+     .	   CALL FGD_GSCR(zwsid,j,val_red(j),val_green(j), val_blue(j))
   40	CONTINUE
 
         RETURN

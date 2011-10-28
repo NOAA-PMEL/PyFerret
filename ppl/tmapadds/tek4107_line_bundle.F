@@ -59,8 +59,8 @@
 #endif
 
 	integer		zwsid,ndx,fktr
-	integer		index(6)
-	data		index /1,3,6,9,11,13/
+	integer		indx(6)
+	data		indx /1,3,6,9,11,13/
 
 C	data statement above added 12.96 *jd* for linux port
 
@@ -69,7 +69,8 @@ C	data statement above added 12.96 *jd* for linux port
 *	TEK4107 HAS LIMITED COLOR INDICES -- USE AVAILABLE COLORS
 	do 20 ndx = 1,6
 	   do 10 fktr = 1,3
-	      call gsplr (zwsid,(fktr-1)*6+ndx,1,real(fktr),index)
+	      call FGD_GSPLR(zwsid, (fktr-1)*6+ndx, 1, 
+     .                       real(fktr), indx(ndx))
 10	   continue
 20	continue
 

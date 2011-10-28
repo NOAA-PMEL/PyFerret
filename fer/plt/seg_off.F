@@ -64,7 +64,7 @@
      .	.OR. .NOT. gksopn	) RETURN	! not a VAXstation
 
 * close current segment
-	CALL GCLSG( )
+	CALL FGD_GCLSG( )
 
 	RETURN
 	END

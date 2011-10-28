@@ -96,11 +96,11 @@
 *	COLOR WORKSTATIONS:
 #ifdef xgks
 
-        call gscr (zwsid,2,1.0,0.0,0.0)   ! pre-defined colors
-        call gscr (zwsid,3,0.0,1.0,0.0)
-        call gscr (zwsid,4,0.0,0.0,1.0)
-        call gscr (zwsid,5,0.0,1.0,1.0)
-        call gscr (zwsid,6,1.0,0.0,1.0) 
+        call FGD_GSCR(zwsid,2,1.0,0.0,0.0)   ! pre-defined colors
+        call FGD_GSCR(zwsid,3,0.0,1.0,0.0)
+        call FGD_GSCR(zwsid,4,0.0,0.0,1.0)
+        call FGD_GSCR(zwsid,5,0.0,1.0,1.0)
+        call FGD_GSCR(zwsid,6,1.0,0.0,1.0) 
      
 ! Set up initial values for further colors as grey
 ! range them between 0.6,0.6,0.6 and 0.9,0.9,0.9
@@ -111,7 +111,7 @@
            IF (num_line_colors .EQ. 1) grey = 0.8
 
            do 40 j = 7, num_line_colors     
-              call gscr (zwsid,j,grey,grey,grey)
+              call FGD_GSCR(zwsid,j,grey,grey,grey)
   40       continue
            grey = grey + frac
         ENDIF
@@ -130,8 +130,8 @@
               index = (fktr-1)*num_line_colors+j
               thickness = real(fktr)
 
-	      call gspmr (zwsid,index,marktype,dotsize,j)
-	      call gsplr (zwsid,index,1,thickness,j)
+	      call FGD_GSPMR(zwsid,index,marktype,dotsize,j)
+	      call FGD_GSPLR(zwsid,index,1,thickness,j)
        
 10	   continue
 20	continue
@@ -142,8 +142,8 @@
 100	do 120 j = 1,3
 	   thickness = real (j)
 	   do 110 i = 1,6
-	      call gspmr (zwsid,i+6*(j-1),ltype(i),thickness,1)
-	      call gsplr (zwsid, i, marktype, dotsize, 1)
+	      call FGD_GSPMR(zwsid,i+6*(j-1),ltype(i),thickness,1)
+	      call FGD_GSPLR(zwsid, i, marktype, dotsize, 1)
 110	   continue
 120	continue                   
 

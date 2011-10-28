@@ -346,7 +346,7 @@
 
 *	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
 	   call set_fill_ndx (ndx)
-	   call gfa (4,px,py)
+	   call FGD_GFA(4,px,py)
 
 *	   TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
 *	   NDX TO PRIVATE ITEM -- forget it 10.22
@@ -354,7 +354,7 @@
 
 	   kpx(5) = kpx(1)
 	   kpy(5) = kpy(1)
-	   IF (.NOT. cont_key) call gpl (5,kpx,kpy)
+	   IF (.NOT. cont_key) call FGD_GPL(5,kpx,kpy)
 
            ENDIF ! neginf or posinf
 
@@ -570,7 +570,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
 *	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
 	      call set_fill_ndx (ndx)
-	      call gfa (4,px,py)
+	      call FGD_GFA(4,px,py)
 
 *	   TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
 *	   NDX TO PRIVATE ITEM - forget it 10.22
@@ -578,7 +578,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
               kpx(5) = kpx(1)
               kpy(5) = kpy(1)
-              IF (.NOT. cont_key) call gpl (5,kpx,kpy)
+              IF (.NOT. cont_key) call FGD_GPL(5,kpx,kpy)
 
            ENDIF ! neginf or posinf
 

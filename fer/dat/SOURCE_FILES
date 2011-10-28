@@ -6,6 +6,7 @@ xcommand_data.F\
 xcontext_data.F\
 xcontrol_data.F\
 xdset_parms_data.F\
+xfgrdel_data.F\
 xfr_grid_data.F\
 xgfdl_error_text_data.F\
 xgfdl_masks_data.F\

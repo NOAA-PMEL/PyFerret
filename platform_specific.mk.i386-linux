@@ -1,14 +1,13 @@
 #
 # platform_specific.mk.i386-linux
 #
-# This file is included Makefiles under the external_functions, fer,
-# fmt, and ppl directories and defines platform specific macros
+# This file is included in Makefiles under the external_functions,
+# fer, fmt, and ppl directories and defines platform specific macros
 #
 
 #
-# DIR_PREFIX, HDF5_DIR, NETCDF4_DIR, READLINE_DIR, and LIBZ_DIR 
-# are from site_specific.mk which should have been included prior
-# to this include.
+# DIR_PREFIX, HDF5_DIR, and NETCDF4_DIR are from site_specific.mk
+# which should have been included prior to this include.
 #
 
 #
@@ -16,23 +15,19 @@
 #
 	HDF5_LIBDIR	= $(HDF5_DIR)/lib
 	NETCDF4_LIBDIR	= $(NETCDF4_DIR)/lib
-	READLINE_LIBDIR	= $(READLINE_DIR)/lib
-	LIBZ_LIBDIR	= $(LIBZ_DIR)/lib
 
 #
 # Local defines
 #
-	MYINCLUDES	= -I$(DIR_PREFIX)/fer/common \
+	MYINCLUDES	= -I$(PYTHONINCDIR) \
+			  -I$(DIR_PREFIX)/fer/common \
+			  -I$(DIR_PREFIX)/fer/grdel \
 			  -I$(DIR_PREFIX)/fmt/cmn \
 			  -I$(DIR_PREFIX)/ppl/include \
-			  -I$(DIR_PREFIX)/ppl/include/xgks \
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \
-			  -I$(DIR_PREFIX)/xgks/src/lib \
 			  -I$(DIR_PREFIX)/pyfermod \
-			  -I$(DIR_PREFIX)/external_functions/ef_utility \
 			  -I$(HDF5_DIR)/include \
 			  -I$(NETCDF4_DIR)/include \
-			  -I$(READLINE_DIR)/include \
 			  -I/usr/local/include
 
 	MYDEFINES	= -Dcrptd_cat_argument \

@@ -112,9 +112,9 @@ C
 *    Do scaling as in shade_sub, using gks calls.
 *    Get proper scaling, world coordinates, etc for fill
 
-	CALL gqcntn (error,trans_no)
+	CALL FGD_GQCNTN(error,trans_no)
 	IF (error .NE. 0) GOTO 1000
-	CALL gqnt (trans_no,error,w,v)
+	CALL FGD_GQNT(trans_no,error,w,v)
 	IF (error .NE. 0) GOTO 1000
 
 *     Get world coordinates for for clipping region.
@@ -217,7 +217,7 @@ c
 	fill_ndx = index + 2
 
 	call set_fill_ndx (fill_ndx) 
-	call gfa (nout,xc,yc)
+	call FGD_GFA(nout,xc,yc)
 
 *	TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
 *	NDX TO PRIVATE ITEM - forget it 10.22

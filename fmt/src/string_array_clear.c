@@ -38,6 +38,7 @@
                  functiions
     4/06 *kob*  change type of argument to double, for 64-bit build
  */
+#include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 #include "string_array.h"
 

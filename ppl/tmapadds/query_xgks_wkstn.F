@@ -21,8 +21,8 @@ c v491 *kob* 2/98 - moved this out of ppladd_open_metafile
 	LOGICAL		ITS_BATCH_GRAPHICS, batch
 
 	if (.not.its_batch_graphics() .and. zwstype .eq. ws_xwindow) then
-	   call gqlwk(zwstype,error,max_pline,max_pmark,
-     1	   max_text,max_fill_area,max_pattern,max_color)
+	   call FGD_GQLWK(zwstype,error,max_pline,max_pmark,
+     1	        max_text,max_fill_area,max_pattern,max_color)
 	else
 	   error = 0
 	   max_pline = 20

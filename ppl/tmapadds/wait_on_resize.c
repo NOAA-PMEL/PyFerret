@@ -36,54 +36,10 @@
 
 
 
-/* Wait for signal of resize if resize happens.  Callable from FORTRAN.  
- * 
- * J Davison 3.7.94
- */
+/* Wait for signal of resize if resize happens.  Callable from FORTRAN.  */
 
-/* Changed include order of gks_implem.h to remove errors in compile (set 
- * **before** stdlib.h) for linux port *jd* 1.28.97
- */
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
-#include "udposix.h"
-#include "gks_implem.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h> 
-
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-wait_on_resize (ws_id)
-#else
-wait_on_resize_ (ws_id)
-#endif
-
-Gint *ws_id;
-
+void wait_on_resize_(int *ws_id)
 {
-  WS_STATE_ENTRY *ws;
-
-  Display       **dpy;
-  Window         *win;
-  GC             *gc;
-
-  XEvent          evnt;
-
-  int             xw_event,scr; 
-  time_t          t0,t_now,*tp;
-
-/*****************************************************************************/
-
-  ws  = OPEN_WSID (*ws_id);
-  scr = DefaultScreen (ws->dpy);
-
-  tp = &t_now;
-  t0 = time(0);
-  do { 
-       xw_event = XCheckWindowEvent (ws->dpy,ws->win,StructureNotifyMask,&evnt);
-       time (tp);
-     } while (xw_event && (t_now - t0 < 3));
+    ;
 }
 

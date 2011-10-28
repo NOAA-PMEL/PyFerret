@@ -165,7 +165,7 @@ C
             call crinit
 #else
 	    call gkinit
-	    CALL GCLRWK(WSID,0)
+	    CALL FGD_GCLRWK(WSID,0)
 #endif
 C
 	    GKSOPN=.TRUE.
@@ -178,8 +178,8 @@ C
 *	CALL GSPMCI(ICODE) ! acm 8/7/01 for reference,not called
 #endif
 
-1000	call gspli (max(icode,1)) ! JD 3.23.89 & 3.13.90
-	call gspmi (max(icode,1)) ! acm 8/7/01  polymarker index
+1000	call FGD_GSPLI(max(icode,1)) ! JD 3.23.89 & 3.13.90
+	call FGD_GSPMI(max(icode,1)) ! acm 8/7/01  polymarker index
 
 100	GOTO(50,30,30,30,40,30,40),PTYPE + 3
    40  COLOUR = ICODE

@@ -134,12 +134,12 @@
 * ... clear segments from it
 	      CALL SET_VIEWPORT( mvp_dflt )
 * ... deactivate it
-	      CALL GDAWK( n )
+	      CALL FGD_GDAWK( n )
 	      wn_active( n ) = .FALSE.
 * ... activate lowest available window, if any
 	      DO 70 lo = 1, max_windows
 	         IF ( lo.NE.n  .AND. wn_open(lo) ) THEN
-	            CALL GACWK( lo )
+	            CALL FGD_GACWK( lo )
 	            wn_active( lo ) = .TRUE.
 	            wsid = lo
 	            GOTO 80
@@ -149,7 +149,7 @@
 	   ENDIF
 	      
 * close the specified window
- 80	   CALL GCLWK( n )
+ 80	   CALL FGD_GCLWK( n )
 ! old UIS code
 !	   CLOSE ( UNIT=n+50, ERR=5010 )
 	   wn_open ( n ) = .FALSE.

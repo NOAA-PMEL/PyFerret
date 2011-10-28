@@ -40,8 +40,7 @@
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 /* V63  *acm* 10/09 Changes for gfortran build */
 
-#include <wchar.h>
-/* #include <stdlib.h> */
+#include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 #include <string.h>
 

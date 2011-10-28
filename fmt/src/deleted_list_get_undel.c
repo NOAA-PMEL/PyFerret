@@ -38,6 +38,7 @@
                  for better performance. This function is to get the undeleted
                  list.
  */
+#include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 #include "deleted_list.h"
 

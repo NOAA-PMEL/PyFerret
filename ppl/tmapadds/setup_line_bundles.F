@@ -56,7 +56,7 @@
 ******************************************************************************
 
 *	SET UP LINE BUNDLE FOR 'PEN N,0' CALLS -- USE INDEX 19 JD 2.19.92
-        call gsplr (zwsid,19,1,1.0,0)
+        call FGD_GSPLR(zwsid,19,1,1.0,0)
 
 #ifdef atc_gks
 	if (zwstype/100 .eq. ws_xwindow/100 .or. zwstype .eq. ws_uis) then

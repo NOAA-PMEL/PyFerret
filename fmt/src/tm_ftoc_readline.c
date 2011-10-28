@@ -30,7 +30,7 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
 *
 */
 
@@ -50,13 +50,21 @@
    from tmap library - modified readline include to that end */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
- 
-#include <wchar.h>
+/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/
+/*
+ * *kms* 10/11 use a static memory line in server mode
+ *             (eliminate many small malloc/free calls);
+ *             make end-of-line clean-up cleaner and more portable;
+ *             do not add lines to readline history when in server mode.
+ * *kms* 10/11 change to using pyferret._readline to get the line
+ *             when not in server mode.
+ */
+
+#include <Python.h> /* make sure Python.h is first */
+#include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <strings.h>
-#include <readline/readline.h>
+#include <string.h>
 
 /* Easier way of handling FORTRAN calls with underscore/no underscore */
 #ifdef NO_ENTRY_NAME_UNDERSCORES
@@ -65,46 +73,131 @@
 #define FORTRAN(a) a##_
 #endif
 
+/* Static memory to contain the line read */
+#define STATIC_LINE_LEN 2048
+static char static_line[STATIC_LINE_LEN];
 
-/* A static variable for holding the line. */
-static char *line_read = (char *)NULL;
+/*
+ * Prompt the user, using the input argument prompt, for the next input
+ * line, then read and return that line.  Calls pyferret._readline, which
+ * uses the raw_input function in Python to do this so other Python
+ * operations are not blocked by our own call to a readline function.
+ * Returns NULL on error or EOF.
+ */
+static char *pyferret_readline(char *prompt)
+{
+    PyObject *nameobj;
+    PyObject *moduleobj;
+    PyObject *resultobj;
+    char *resultstr;
+    int   resultstrlen;
+
+    /* get the pyferret module - assumes Python is running */
+    nameobj = PyString_FromString("pyferret");
+    if ( nameobj == NULL ) {
+        sprintf(static_line, "**ERROR pyferret_readline in tm_ftoc_readline.c: "
+                             "problems creating a Python string from 'pyferret': %s\n",
+                             pyefcn_get_error());
+        return NULL;
+    }
+    moduleobj = PyImport_Import(nameobj);
+    if ( moduleobj == NULL ) {
+        sprintf(static_line, "**ERROR pyferret_readline in tm_ftoc_readline.c: "
+                             "problems importing the pyferret module: %s\n",
+                             pyefcn_get_error());
+        Py_DECREF(nameobj);
+        return NULL;
+    }
+    /* done with nameobj */
+    Py_DECREF(nameobj);
+
+    /* call pyferret._readline - a NULL prompt turns into a Python None argument */
+    resultobj = PyObject_CallMethod(moduleobj, "_readline", "s", prompt);
+    if ( resultobj == NULL ) {
+        sprintf(static_line, "**ERROR pyferret_readline in tm_ftoc_readline.c: "
+                             "problems with the call to pyferret._readline: %s\n",
+                             pyefcn_get_error());
+        Py_DECREF(moduleobj);
+        return NULL;
+    }
+    /* done with moduleobj */
+    Py_DECREF(moduleobj);
+
+    /* first check if None was returned == EOF */
+    if ( resultobj == Py_None ) {
+        Py_DECREF(resultobj);
+        return NULL;
+    }
+
+    /* get the string out of the result object */
+    resultstr = PyString_AsString(resultobj);
+    if ( resultstr == NULL ) {
+        sprintf(static_line, "**ERROR pyferret_readline in tm_ftoc_readline.c: "
+                             "problems interpreting the return value of pyferret._readline: %s\n",
+                             pyefcn_get_error());
+        Py_DECREF(resultobj);
+        return NULL;
+    }
+
+    /* just truncate if the string is too long */
+    resultstrlen = strlen(resultstr);
+    if ( resultstrlen >= STATIC_LINE_LEN )
+        resultstrlen = STATIC_LINE_LEN - 1;
+
+    /* trim off any trailing whitespace */
+    resultstrlen--;
+    while ( (resultstrlen >= 0) && isspace(resultstr[resultstrlen]) ) {
+        resultstrlen--;
+    }
+    resultstrlen++;
+
+    /* make a copy of the string since resultstr belongs to resultobj */
+    strncpy(static_line, resultstr, resultstrlen);
+    static_line[resultstrlen] = '\0';
+
+    /* done with resultobj */
+    Py_DECREF(resultobj);
+
+    /* return the static memory copy of the line */
+    return static_line;
+}
+
 
 /* Read a string, and return a pointer to it.  Returns NULL on EOF. */
-char *do_gets ( prompt )
-  char *prompt;
-
+static char *do_gets(char *prompt)
 {
-  /* If the buffer has already been allocated, return the memory
-     to the free pool. */
-  if (line_read != (char *)NULL)
-    {
-      free (line_read);
-      line_read = (char *)NULL;
+    char *line_read;
+
+    /* Get a line from the user. */
+    if ( ! FORTRAN(is_server)() ) {
+        /* Use pyferret._readline to get user input */
+        line_read = pyferret_readline(prompt);
+    }
+    else {
+        /* Server mode - just read the next line directly */
+        int linelen;
+
+        /* Prompt the user and get the answer */
+        fputs(prompt, stdout);
+        fflush(stdout);
+        fgets(static_line, STATIC_LINE_LEN - 1, stdin);
+
+        /* Trim off any trailing whitespace */
+        linelen = strlen(static_line);
+        linelen--;
+        while ( (linelen >= 0) && isspace(static_line[linelen]) ) {
+            linelen--;
+        }
+        linelen++;
+        static_line[linelen] = '\0';
+
+        /* Set the line read to the static memory line */
+        line_read = static_line;
     }
 
-  /* Get a line from the user. */
-  /* If running in server mode, don't use fancy readline stuff */
-
-  if (!FORTRAN(is_server)()){
-    line_read = readline (prompt);
-  } else {
-    char* loc;
-    fputs(prompt, stdout);
-    fflush(stdout);
-    line_read = (char *)malloc(2048);
-    fgets(line_read, 2047, stdin);
-    loc = rindex(line_read, '\n');
-    if (loc != 0){
-      *loc = '\0';
-    }
-  }
-
-  /* If the line has any text in it, save it on the history. */
-  if (line_read && *line_read)
-    add_history (line_read);
-
-  return (line_read);
+    return line_read;
 }
+
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 tm_ftoc_readline( prompt, buff )

@@ -177,31 +177,31 @@
 
 	   if (.not.meta_actv) then
 	      if (.not. meta_clsplt) then 
-		 call gacwk (meta_wsid)
+		 call FGD_GACWK(meta_wsid)
 #ifndef xgks
 		 call meta_version
 #endif
 #ifdef xgks
 *               ALLOW NO WHITE LINES IN METAFILE (FOR NOW)
-                call gqcr (wsid,1,type,error,red,green,blue)
+                call FGD_GQCR(wsid,1,type,error,red,green,blue)
                 if (error .eq. 0) then
                    if (red   .eq. 1.0 .and.
      .                 green .eq. 1.0 .and.
      .                 blue  .eq. 1.0) then
-                      call gscr (meta_wsid,1,0.0,0.0,0.0)
+                      call FGD_GSCR(meta_wsid,1,0.0,0.0,0.0)
                     else
-                      call gscr (meta_wsid,1,red,green,blue)
+                      call FGD_GSCR(meta_wsid,1,red,green,blue)
                     endif
                 else
-                   call gscr (meta_wsid,1,0.0,0.0,0.0)
+                   call FGD_GSCR(meta_wsid,1,0.0,0.0,0.0)
                 endif
 
 		do ndx = 2,num_line_colors
-		   call gqcr (wsid,ndx,type,error,red,green,blue)	
+		   call FGD_GQCR(wsid,ndx,type,error,red,green,blue)
 		   if (batch .or. error .eq. 0) then
-		      call gscr (meta_wsid,ndx,red,green,blue)
+		      call FGD_GSCR(meta_wsid,ndx,red,green,blue)
 		   else
-		      call gscr (meta_wsid,ndx,0.0,0.0,0.0)
+		      call FGD_GSCR(meta_wsid,ndx,0.0,0.0,0.0)
 		   endif
 		end do
 #endif
@@ -219,7 +219,7 @@ c	      IF ( batch .AND. (.NOT.meta_batch)) THEN
 	else
 *	   IF NO "META" IN PLTYPE CMD DEACTIVATE METAFILE FOR NOW IF ACTIVE
 	   if (meta_actv) then
-	      if (.not. meta_clsplt) call gdawk (meta_wsid)
+	      if (.not. meta_clsplt) call FGD_GDAWK(meta_wsid)
 	      meta_actv = .false.
 	   end if
 	end if

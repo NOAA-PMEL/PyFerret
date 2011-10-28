@@ -215,7 +215,7 @@ C
 	    call newframe()
 	    call createretainseg(1)
 #else
-	    CALL GCLRWK(WSID,0)
+	    CALL FGD_GCLRWK(WSID,0)
 #endif
 	ELSE
 	    HPSCLA=779.

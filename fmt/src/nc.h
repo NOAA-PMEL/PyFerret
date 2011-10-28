@@ -10,6 +10,7 @@
  *	netcdf library 'private' data structures, objects and interfaces
  */
 
+#include <Python.h> /* make sure Python.h is first */
 #include	"ncconfig.h"
 #include	<stddef.h>	/* size_t */
 #include	<sys/types.h>	/* off_t */

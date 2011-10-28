@@ -34,158 +34,25 @@
 *
 */
 
-
-
-/* put_frame( ws_id, filename, status )
-* dump an XGKS window as a GIF file
-
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
-* revision 0.0 - 8/03/94
-* 
-* *kob* 5/25/95 replaced defunct ifdef confition AIX_XLF with current 
-                NO_ENTRY_NAME_UNDERSCORES
-compile with these flags to locate the include files:
-        -I$TMAP_LOCAL/src/xgks-2.5.5/port \
-        -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib \
-        -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib/gksm
-
-and optionally (non-ANSI cc compilers) with    -DNO_CC_PROTOTYPES
-* *js* 9.97 added put_frame_batch 
-
-* *jli* 5/08 changed the parameters of put_frame_batch() for making 
-* transparent images
-*/
-
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
-#include "gks_implem.h" /* ditto */
-#include "wslist.h"
-#include "cgm/cgm.h"		/* for public, API details */
-#include "cgm/cgm_implem.h"		/* for implementation details */
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <stdio.h>
-#include <string.h>
+#include <Python.h> /* make sure Python.h is first */
 #include "ferret.h"
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-put_frame( ws_id, filename, errstr, format, status )
-#else
-put_frame_( ws_id, filename, errstr, format, status )
-#endif
-   char *filename, *errstr, *format;
-   int *ws_id, *status;
-
+void put_frame_(int *ws_id, char *filename, char *errstr, char *format, int *status)
 {
-  WS_STATE_ENTRY *ws;
-  Display *mydisplay;
-  Window   mywindow;
-
-/* determine the XGKS ws state entry structure from ws_id */
-  ws  = OPEN_WSID (*ws_id);	
-
-/* the next 2 lines are diagnostic
-     mydisplay = ws->dpy;
-     mywindow  = ws->win;
-*/
-
-/* call up the capture routine */
-/* Errors internal to Window_Dump com out in errstr */
-   Window_Dump(ws->win,ws->dpy,filename,format);
-   *status = 0;   /* not much use, really */
-
-   return;
+   /* TODO: save to file */
+   ;
 }
 
-/*
-void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format,
-                               char *errmsg, int *status)
-
-void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format, char *transparent_color,
-                               , int *red, int *green, int *blue, char *errmsg, int *status)
+void put_frame_batch_(int *ws_id, char *filename, char *format, int *transp,
+               float *red, float *green, float *blue, char *errmsg, int *status)
 {
-*/
-
-/*  acm create separate GIFFlush routines for transparency. Passing the argumetns transp, red, green, blue
-    in direcly into GIFFlush as arguments did not work on porter.
-*/
-void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format, int *transp, float *red, float *green,
-                              float *blue, char *errmsg, int *status)
-{
-  char oldfilename[BUFSIZ];
-  WS_STATE_ENTRY *ws = OPEN_WSID(*ws_id);
-  *status = 0;
-
-  if (ws == 0 || ws->mf.any == 0){
-    strcpy(errmsg, "No open workstations for batch FRAME command");
-    return;
-  }
-
-  if (ws->mf.any->type != MF_GIF){
-    strcpy(errmsg, "Batch FRAME only works for GIF files");
-    return;
-  }
-/*
-if (GIFFlush(&ws->mf, filename) != OK){
-
-  if (GIFFlush(&ws->mf, filename, transparent_color) != OK){
-*/
-  if(*transp > 0)
-    { 
-/* white background was used */
-	  if(((int)*red == 0) && ((int)*green == 0) && ((int)*blue == 0))
-       {
-		  if (GIFFlusht0(&ws->mf, filename) != OK)
-	      {
-            sprintf(errmsg, "Couldn't write out GIF file %s\n", filename);
-            return;
-          }
-	   }
-/* black background was used */
-	  if(((int)*red == 1) && ((int)*green == 1) && ((int)*blue == 1))
-       {
-		  if (GIFFlusht1(&ws->mf, filename) != OK)
-	      {
-            sprintf(errmsg, "Couldn't write out GIF file %s\n", filename);
-            return;
-          }
-	   }
-    }
-	else
-/* not transparent */
-
-		if (GIFFlush(&ws->mf, filename) != OK)
-		{
-         sprintf(errmsg, "Couldn't write out GIF file %s\n", filename);
-         return;
-		{
-	} 
-   }
-
+    /* TODO: save to file with indicated background color set to transparent */
+    ;
 }
 
-void FORTRAN(put_temp_frame_batch)(int *ws_id, char *filename, int *length)
+void put_temp_frame_batch_(int *ws_id, char *filename, int *length)
 {
-  char format[BUFSIZ], errmsg[BUFSIZ];
-  int status;
-  float red;
-  float green;
-  float blue;
-  int trans;
-  char *tname = tempnam("/tmp", "fer");
-  WS_STATE_ENTRY *ws = OPEN_WSID(*ws_id);
-  status = 0;
-  strcpy(filename, tname);
-  strcat(filename, ".gif");
-  red = 0;
-  green = 0;
-  blue = 0;
-  trans = 1;
-  FORTRAN(put_frame_batch)(ws_id, filename, format, &trans, &red, &green, &blue, errmsg, &status);
-  *length = strlen(filename);
-  free(tname);
+    /* TODO: save to a temporary file which is then used for ??? */
+    ;
 }
 

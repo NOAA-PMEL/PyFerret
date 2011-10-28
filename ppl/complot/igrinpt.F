@@ -236,7 +236,7 @@ C	    GKS DEVICE
 C
 	    CALL PPLGFLUSH
 	    iwkid = window_id  
-	    CALL GQCHS(iwkid,1,10,ERRIND,MODE,ESW,ISTAT,ICHOICE,
+	    CALL FGD_GQCHS(iwkid,1,10,ERRIND,MODE,ESW,ISTAT,ICHOICE,
      *	    PET,EAREA,LDR,RECORD)
 	    STRING(5) = 'Left'
 	    STRING(4) = 'Center'
@@ -265,23 +265,23 @@ C
 	    LDR=5
 	    IRECSZ=10
 
-	    CALL GPREC(0,NULLI,0,NULLR,5,SIZES,STRING,IRECSZ,
+	    CALL FGD_GPREC(0,NULLI,0,NULLR,5,SIZES,STRING,IRECSZ,
      *	    ISTAT,LDR,RECORD)
-	    CALL GINCH(iwkid,1,1,5,PET,EAREA(1),EAREA(2),EAREA(3),
+	    CALL FGD_GINCH(iwkid,1,1,5,PET,EAREA(1),EAREA(2),EAREA(3),
      *	    EAREA(4),LDR,RECORD)
 
         IF (show_menu) THEN     ! **************
-	    CALL GRQCH(iwkid,1,ISTAT,ICHOICE)       ! put up menu and get answer
+	    CALL FGD_GRQCH(iwkid,1,ISTAT,ICHOICE)       ! put up menu and get answer
         ELSE
             ichoice = 5         ! always left justified
         ENDIF                   ! **************
 	    IGRNPT=CHCE(ICHOICE)
-	    CALL GSVPIP(1,0,0)
-	    CALL GQLCS(iwkid,1,1,7,ERRIND,MODE,ESW,XFORM,LOCX,LOCY,
-     *	    PET,EAREA,LDR,RECORD)
+	    CALL FGD_GSVPIP(1,0,0)
+	    CALL FGD_GQLCS(iwkid,1,1,7,ERRIND,MODE,ESW,XFORM,
+     *	                   LOCX,LOCY,PET,EAREA,LDR,RECORD)
 	    PET = 3
-	    CALL GQWKC(iwkid,ERRIND,CONID,WSTYPE)
-	    CALL GQDSP(WSTYPE,ERRIND,DCUNIT,DCX,DCY,IRSX,IRSY)
+	    CALL FGD_GQWKC(iwkid,ERRIND,CONID,WSTYPE)
+	    CALL FGD_GQDSP(WSTYPE,ERRIND,DCUNIT,DCX,DCY,IRSX,IRSY)
 	    EAREA(2)=DCX
 	    EAREA(4)=DCY
 
@@ -289,9 +289,9 @@ C
 	    CALL GINLC(iwkid,1,XFORM,LOCX,LOCY,PET,EAREA(1),EAREA(2),
      *	    EAREA(3),EAREA(4),LDR,RECORD)
 #endif
-	    CALL GSLCM(iwkid,1,0,1)
-	    CALL GRQLC(iwkid,1,ISTAT,XFORM,LOCX,LOCY)  ! get mouse click (X,Y)
-	    CALL GQNT(XFORM,ERRIND,WIND,VIEW)
+	    CALL FGD_GSLCM(iwkid,1,0,1)
+	    CALL FGD_GRQLC(iwkid,1,ISTAT,XFORM,LOCX,LOCY)  ! get mouse click (X,Y)
+	    CALL FGD_GQNT(XFORM,ERRIND,WIND,VIEW)
 	    AOLD= LOCX
 	    BOLD= LOCY
 #endif

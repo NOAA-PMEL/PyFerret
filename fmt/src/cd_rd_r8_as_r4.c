@@ -51,8 +51,8 @@
 
 /*#include "tmap_format/netcdf.h"*/
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <Python.h> /* make sure Python.h is first */
 #include <stddef.h>  /* size_t, ptrdiff_t  gfortran on linux rh5*/
-#include <wchar.h>
 #include <netcdf.h>      /* usually in /usr/local/include */
 /* Suns need to include stdio.h to get definition for NULL */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build */

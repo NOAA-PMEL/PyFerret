@@ -79,23 +79,23 @@
 	      DO 110 ivp =  mvp_dflt, max_viewport
 		 if (.NOT.meta_batch .AND. vp_seg0(ivp) .NE. 0 ) THEN 
 	            DO 100 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
- 100	            CALL GDSG( iseg ) 
+ 100	            CALL FGD_GDSG( iseg ) 
 	         ENDIF
 *  and mark segment as deleted
 	         vp_seg0(ivp) = 0
 	         vp_segn(ivp) = 0
  110	      CONTINUE
 
-	      CALL GCLRWK(WSID,0)
+	      CALL FGD_GCLRWK(WSID,0)
 	   ENDIF
 
 	ELSE
 
 * clear viewport only - delete segments
 	   DO 200 iseg = vp_seg0(vp_num)+1 , vp_segn(vp_num)
- 200	   CALL GDSG( iseg ) 
+ 200	   CALL FGD_GDSG( iseg ) 
 * immediate update of screen to reflect deleted segments
-	   CALL GUWK( wsid, 1 )
+	   CALL FGD_GUWK( wsid, 1 )
 	ENDIF
 
 	vp_seg0( vp_num ) = curr_seg_name

@@ -34,14 +34,14 @@
 
 NOTE: Needs error checking to see that the realloc actually worked.
 
-/* reallo_ppl_memory.c
+* reallo_ppl_memory.c
 
    Enlarge the memory allocated to the PLOT+ buffer.
    Ferret v5.52 *acm* 6/5/04 fix typo in print statement 
 */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
+#include <Python.h> /* make sure Python.h is first */
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>

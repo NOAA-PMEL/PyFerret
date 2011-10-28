@@ -7,6 +7,7 @@
 #ifndef _NCIO_H_
 #define _NCIO_H_
 
+#include <Python.h> /* make sure Python.h is first */
 #include <stddef.h>	/* size_t */
 #include <sys/types.h>	/* off_t */
 #include "netcdf.h"

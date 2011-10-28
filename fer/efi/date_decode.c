@@ -57,6 +57,7 @@ float FORTRAN(days_from_day0) (double* days_1900, int* iyr, int* imon,
 void FORTRAN(date_decode) (char *strdate, float *rdum);
 
 
+#include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>

@@ -77,7 +77,7 @@
 *	GO THRU AVAILABLE INDICES FOR FILL REP
 	do 100 ndx = 1,shd_levels
 	   color = 2 + (ndx-1)*14/(shd_levels)
-	   call gsfar (zwsid,ndx+1,gsolid,1,color)
+	   call FGD_GSFAR(zwsid,ndx+1,gsolid,1,color)
 100	continue
 	return
 

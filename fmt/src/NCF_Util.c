@@ -78,8 +78,8 @@
 /*                    therefore it may be larger than nc_ptr->nvars */
 /* *acm* 3/11 *acm*	  Fix bug 1825. Routine ncf_get_var_seq no longer called */
 
+#include <Python.h> /* make sure Python.h is first */
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
-#include <wchar.h>
 #include <unistd.h>		/* for convenience */
 #include <stdlib.h>		/* for convenience */
 #include <stdio.h>		/* for convenience */

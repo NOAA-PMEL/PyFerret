@@ -3,6 +3,7 @@
    http://grads.sourcearchive.com/documentation/2.0.a7.1-3/main.html */
 
 
+#include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
 #include <malloc.h>
 #include <math.h>

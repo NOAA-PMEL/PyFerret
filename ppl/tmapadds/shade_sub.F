@@ -183,23 +183,23 @@ C       data statement of my_trans added for linux port *jd* 12.96
      .     CALL set_fill_area_rep (meta_wsid,meta_wstype)
 
 *	GET PROPER SCALING, NDC COORDINATES, ETC FOR FILL
-	CALL gqcntn (error,trans_no)
+	CALL FGD_GQCNTN(error,trans_no)
 	IF (error .NE. 0) GOTO 1000
 
-	CALL gqnt (trans_no,error,w,v)
+	CALL FGD_GQNT(trans_no,error,w,v)
 	IF (error .NE. 0) GOTO 1000
 
 	CALL get_user_coords (w,v,ndc,uc,xinv,yinv)
 
 *	NOW SET THE CLIPPING RECTANGLE AROUND THEM AND PATTERN SIZE
 
-	CALL gswn (my_trans,uc(1)*xinv,uc(2)*xinv,uc(3)*yinv,uc(4)*yinv)
-	CALL gsvp (my_trans,ndc(1),ndc(2),ndc(3),ndc(4))
-	CALL gselnt (my_trans)
+	CALL FGD_GSWN(my_trans,uc(1)*xinv,uc(2)*xinv,uc(3)*yinv,uc(4)*yinv)
+	CALL FGD_GSVP(my_trans,ndc(1),ndc(2),ndc(3),ndc(4))
+	CALL FGD_GSELNT(my_trans)
 
-	CALL gqclip (error,cflag,ndc)
+	CALL FGD_GQCLIP(error,cflag,ndc)
 	IF (error .NE. 0) GOTO 1000
-	IF (cflag .NE. gclip) CALL gsclip (gclip)
+	IF (cflag .NE. gclip) CALL FGD_GSCLIP(gclip)
 
 *	SET UP COORDINATES FOR CENTER OF EACH GRID BOX
 
@@ -379,7 +379,7 @@ c If all the data is missing don't make the cellarray call
 
          IF (plot_cell) THEN
             DO 90 i = 0, pmax
-               CALL gsfaci (i)
+               CALL FGD_GSFACI(i)
 90          CONTINUE
 
 * If the data rectangle doesnt take up the whole plot box, reset
@@ -398,7 +398,7 @@ c If all the data is missing don't make the cellarray call
                cy2 = half
             ENDIF
 
-            CALL gca (cx1, cy1, cx2, cy2, mx,my, 1,1, mx,my, cells)
+            CALL FGD_GCA(cx1, cy1, cx2, cy2, mx,my, 1,1, mx,my, cells)
          ENDIF
 
       ELSE  ! non-cellarray:
@@ -463,10 +463,10 @@ c If all the data is missing don't make the cellarray call
 * post-interrupt re-entry				! 1/89 - *sh*
 
 *	BACK TO PREVIOUS CLIPPING
-	CALL gsclip (cflag)
+	CALL FGD_GSCLIP(cflag)
 
 *	BACK TO OLD TRANSFORM
-	CALL gselnt (trans_no)
+	CALL FGD_GSELNT(trans_no)
 
 *	DO THE KEY
 	IF (do_key .AND. .NOT.interrupted) CALL key	! 1/89 - *sh*

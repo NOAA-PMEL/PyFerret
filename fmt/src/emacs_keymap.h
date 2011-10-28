@@ -19,6 +19,8 @@
    along with Readline; see the file COPYING.  If not, write to the Free
    Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 
+#include <Python.h> /* make sure Python.h is first */
+
 #ifndef BUFSIZ
 #include <stdio.h>
 #endif /* BUFSIZ */

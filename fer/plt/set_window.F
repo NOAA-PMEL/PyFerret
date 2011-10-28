@@ -387,13 +387,13 @@ c           ENDIF
 
         DO 100 wn = 1, max_windows
            IF ( wn_active( wn ) ) THEN
-              IF (.NOT.meta_batch) CALL GDAWK( wn )
+              IF (.NOT.meta_batch) CALL FGD_GDAWK( wn )
 	      wn_active( wn ) = .FALSE.
 	   ENDIF
  100	CONTINUE
 
 * activate window
-	IF (.NOT.meta_batch) CALL GACWK(n)
+	IF (.NOT.meta_batch) CALL FGD_GACWK(n)
 
 *set up sizing
 * (capitalized code from Denbo's SUBROUTINE COLOR )
@@ -406,15 +406,15 @@ c           ENDIF
 	ENDIF
 * ... define normalization transformation n (actually selected down below)
 	IF ( chg_window ) THEN
-	   CALL GSWN(n,0.0,ASIZE,0.0,BSIZE)
-	   CALL GSVP(n, 0.0, FCTX, 0.0, FCTY )
+	   CALL FGD_GSWN(n,0.0,ASIZE,0.0,BSIZE)
+	   CALL FGD_GSVP(n, 0.0, FCTX, 0.0, FCTY )
 	ENDIF
 
 	IF ( .NOT.physical_chg ) GOTO 1000
 c
 c	set up the size of the display window
 c
-	    CALL GQWKC(n,IER,ID,ITYPE)
+	    CALL FGD_GQWKC(n,IER,ID,ITYPE)
 	    CALL QUERY_DISPLAY_SIZE(ITYPE,IER,IMETER,
      .                              DMAXX,DMAXY,IRX,IRY)
 
@@ -448,7 +448,7 @@ c
 C
 C	SET THE NDC WINDOW
 C
-		CALL GSWKWN(n,0.0,FCTX,0.0,FCTY)
+		CALL FGD_GSWKWN(n,0.0,FCTX,0.0,FCTY)
 C
 C	SET DEVICE (WORKSTATION) VIEWPORT
 C
@@ -458,7 +458,7 @@ C
 C	IF NOT AUTO WKXMN AND WKXMX ETC ARE FRACTIONS OF DMAXX
 C	AND DMAXY
 C
-		CALL GSWKWN(n,0.0,FCTX,0.0,FCTY)
+		CALL FGD_GSWKWN(n,0.0,FCTX,0.0,FCTY)
 		XMN=DMAXX*WKXMN
 		XMX=DMAXX*WKXMX
 		YMN=DMAXY*WKYMN
@@ -467,10 +467,10 @@ C
 	    ENDIF
 
 * force immediate creation of the window on the screen
-	CALL GUWK( n, 1 )
+	CALL FGD_GUWK( n, 1 )
 
 * turn on normalization transform (same as window number and wsid)
- 1000	CALL GSELNT(n)
+ 1000	CALL FGD_GSELNT(n)
 
 * successful completion
 	wsid = n

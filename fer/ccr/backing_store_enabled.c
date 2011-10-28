@@ -33,54 +33,17 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-
-* *kob* v5.41 - check to see if X server is currently enabled with
-*               backing store.
-
-* */
+*/
 
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
-#include "gks_implem.h"
-#include "wslist.h"
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <stdio.h>
-#include <stdlib.h>
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-backing_store_enabled(ws_id, bs)
-#else
-backing_store_enabled_(ws_id, bs)
-#endif
-     int *ws_id;
-     int *bs;
+/*
+ * *kob* v5.41 - check to see if X server is currently enabled with
+ *               backing store.
+ */
 
+void backing_store_enabled_(int *ws_id, int *bs)
 {
-  WS_STATE_ENTRY *ws;
-  XWindowAttributes win_info;
-
-/* determine the XGKS ws state entry structure from ws_id */
-  ws  = OPEN_WSID (*ws_id);
-  
-
-  /*
-   * Get the parameters of the window being dumped.
-   */
-  if (ws->dpy) {
-    if(!XGetWindowAttributes(ws->dpy, ws->win, &win_info)) 
-      {
-	fprintf (stderr, "Can't get target window attributes.");
-	exit(1);
-      }
-    /* Check for backing store */
-    if (win_info.backing_store) {
-      *bs = 1;
-    } else {
-      *bs = 0;
-    }
-  }
-  
+    *bs = 0; /* TODO: ? */
 }
 

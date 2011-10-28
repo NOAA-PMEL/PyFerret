@@ -67,10 +67,14 @@ if ( "${repository}" == "." ) then
     echo "to ${temp_dir} "
     echo "   shell scripts"
     cp -f -r ${source_dir}/bin .
+    rm -f ./bin/build_fonts/unix/binary ./bin/build_fonts/unix/fnt*.* >& /dev/null
     echo "   journal files"
     cp -f -r ${source_dir}/jnls .
     echo "   external function source files"
     cp -f -r ${source_dir}/external_functions .
+#   remove any object files and libraries from this copy
+#   of what is suppose to be just the source files
+    find ./external_functions -name \*.so -o -name \*.a -o -name \*.o -exec rm -f {} \;
     echo "   palettes"
     cp -f -r ${source_dir}/palettes .
 else
@@ -105,7 +109,7 @@ rm -f bin/Ftoc* >& /dev/null
 rm -f bin/ferret_paths*_template >& /dev/null
 rm -f bin/make_*_tar >& /dev/null
 rm -fr bin/fonts_* >& /dev/null
-rm -fr bin/build_fonts/original
+rm -fr bin/build_fonts/original >& /dev/null
 
 # Now set up the proper symbolic links
 echo "Setting up symbolic links"

@@ -373,7 +373,7 @@ C
 C	READ COMMAND FROM INPUT AND PARSE
 C
 	MBUFF=1
-10	call gqops (ws_state)
+10	call FGD_GQOPS(ws_state)
 !	If GKS WS is active, flush output buffer before leaving if just plotted
 	if (ws_state .ge. 3) then
 	  if (makep .eq. 'CONTOUR'
@@ -1348,15 +1348,15 @@ C	CLSPLT
             if (meta_batch .and. ws_state.GT.0) its_open = .true.
 
 	    if (its_open .and. .not. meta_clsplt .and. .not. first_meta) then
-	       if (meta_actv .OR. meta_batch) call gdawk (meta_wsid)
-	       call gclwk (meta_wsid)
+	       if (meta_actv .OR. meta_batch) call FGD_GDAWK(meta_wsid)
+	       call FGD_GCLWK(meta_wsid)
 	       close (meta_lun)
 	       meta_clsplt = .true.
                meta_actv = .false.     ! mode state is still saved in mode_metafile
 	       vpt_was_set = .false.
 	    elseif (meta_batch .and. vpt_was_set ) then
-	       call gdawk (meta_wsid)
-	       call gclwk (meta_wsid)
+	       call FGD_GDAWK(meta_wsid)
+	       call FGD_GCLWK(meta_wsid)
 	       close (meta_lun)
 	       meta_clsplt = .true.
                meta_actv = .false.

@@ -25,7 +25,11 @@ from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, \
                          QMainWindow, QMessageBox, QPainter, QPalette, \
                          QPen, QPicture, QPixmap, QPolygonF, QPrintDialog, \
                          QPrinter, QPushButton, QScrollArea
-from PyQt4.QtSvg  import QSvgGenerator
+try:
+    from PyQt4.QtSvg  import QSvgGenerator
+    HAS_QSvgGenerator = True
+except ImportError:
+    HAS_QSvgGenerator = False
                          
 from pyqtcmndhelper import PyQtCmndHelper
 from pyqtresizedialog import PyQtResizeDialog
@@ -343,7 +347,7 @@ class PyQtPipedViewer(QMainWindow):
         Prompt the user for the name of the file into which to save the scene.
         The file format will be determined from the filename extension.
         '''
-        formattypes = ( ( "png",
+        formattypes = [ ( "png",
                           self.tr("PNG - Portable Networks Graphics (*.png)") ),
                         ( "jpeg",
                           self.tr("JPEG - Joint Photographic Experts Group (*.jpeg *.jpg *.jpe)") ),
@@ -353,8 +357,6 @@ class PyQtPipedViewer(QMainWindow):
                           self.tr("PDF - Portable Document Format (*.pdf)") ),
                         ( "ps",
                           self.tr("PS - PostScript (*.ps)") ),
-                        ( "svg",
-                          self.tr("SVG - Scalable Vector Graphics (*.svg)") ),
                         ( "bmp",
                           self.tr("BMP - Windows Bitmap (*.bmp)") ),
                         ( "ppm",
@@ -362,7 +364,10 @@ class PyQtPipedViewer(QMainWindow):
                         ( "xpm",
                           self.tr("XPM - X11 Pixmap (*.xpm)") ),
                         ( "xbm",
-                          self.tr("XBM - X11 Bitmap (*.xbm)") ), )
+                          self.tr("XBM - X11 Bitmap (*.xbm)") ), ]
+        if HAS_QSvgGenerator:
+            formattypes.insert(5, ( "svg",
+                          self.tr("SVG - Scalable Vector Graphics (*.svg)") ) )
         # tr returns QStrings so the following does not work
         # filters = ";;".join( [ t[1] for t in formattypes ] )
         filters = QString(formattypes[0][1])
@@ -402,13 +407,17 @@ class PyQtPipedViewer(QMainWindow):
                 # needs a PS QPrinter
                 myformat = 'ps'
             elif ( fileext == 'svg' ):
-                # needs a QSvgGenerator
                 myformat = 'svg'
             else:
                 # use a QImage and it figure out the format
                 myformat = None
         else:
             myformat = imageformat.lower()
+
+        # The RHEL5 distribution of Qt4 does not have a QSvgGenerator
+        if (not HAS_QSvgGenerator) and (myformat == 'svg'):
+            raise ValueError( self.tr("Your version of Qt does not " \
+                                  "support generation of SVG files") )
 
         pixmapsize = self.__label.pixmap().size()
 
@@ -424,7 +433,12 @@ class PyQtPipedViewer(QMainWindow):
             else:
                 printer.setOutputFormat(QPrinter.PdfFormat)
             printer.setColorMode(printer.Color)
-            printer.setPaperSize(QPrinter.Letter)
+            try:
+                printer.setPaperSize(QPrinter.Letter)
+            except AttributeError:
+                # setPaperSize defined in 4.4 and made setPageSize obsolete
+                # but RHEL5 Qt4 is 4.2.1
+                printer.setPageSize(QPrinter.Letter)
             if ( pixmapsize.width > pixmapsize.height ):
                 printer.setOrientation(QPrinter.Landscape)
             else:
@@ -443,6 +457,7 @@ class PyQtPipedViewer(QMainWindow):
             self.paintScene(painter)
             painter.end()
         elif myformat == 'svg':
+            # if HAS_QSvgGenerator is False, it should never get here
             generator = QSvgGenerator()
             generator.setFileName(filename)
             generator.setSize(pixmapsize)

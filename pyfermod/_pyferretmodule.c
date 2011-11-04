@@ -90,21 +90,25 @@ static void pyefcn_signal_handler(int signum)
 
 
 static char pyferretStartDocstring[] =
-    "Initializes Ferret.  This allocates the initial amount of memory for Ferret \n"
-    "(from Python-managed memory), opens the journal file, if requested, and sets \n"
-    "Ferret's verify mode.  If metaname is empty, Ferret's graphics are displayed \n"
-    "on the X-Windows display; otherwise, this value is used as the initial filename \n"
-    "for the graphics metafile.  This routine does NOT run any user initialization \n"
-    "scripts. \n"
+    "Initializes Ferret.  This allocates the initial amount of memory for \n"
+    "Ferret (from Python-managed memory), opens the journal file, if requested, \n"
+    "and sets Ferret's verify mode.  If restrict is True, some Ferret commands \n"
+    "will not be available (to provide a secured session).  Once restrict is set, \n"
+    "it cannot be unset.  If server is True, Ferret will be run in server mode. \n"
+    "If metaname is empty (and not in server mode), Ferret's graphics will be \n"
+    "displayed by default;  otherwise, this value is used as the initial filename \n"
+    "for output graphics.  This routine does NOT run any user initialization scripts. \n"
     "\n"
     "Required arguments: \n"
     " (none) \n"
     "\n"
     "Optional arguments: \n"
-    "    memsize = <float>: the size, in megafloats (where a floats is 4 bytes), \n"
+    "    memsize = <float>: the size, in megafloats (where a float is 4 bytes), \n"
     "                       to allocate for Ferret's memory cache (default 25.6) \n"
-    "    journal = <bool>: initial state of Ferret's journal mode (default True) \n"
-    "    verify = <bool>: initial state of Ferret's verify mode (default True) \n"
+    "    journal = <bool>: journal Ferret commands? (default True) \n"
+    "    verify = <bool>: echo Ferret commands? (default True) \n"
+    "    restrict = <bool>: restrict Ferret's capabilities? (default False) \n"
+    "    server = <bool>: run Ferret in server mode? (default False) \n"
     "    metaname = <string>: filename for Ferret graphics (default empty) \n"
     "\n"
     "Returns: \n"
@@ -117,13 +121,18 @@ static char pyferretStartDocstring[] =
 
 static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 {
-    static char *argNames[] = {"memsize", "journal", "verify", "metaname", NULL};
+    static char *argNames[] = {"memsize", "journal", "verify", "restrict", 
+                               "server", "metaname", NULL};
     double mwMemSize = 25.6;
     PyObject *pyoJournal = NULL;
     PyObject *pyoVerify = NULL;
+    PyObject *pyoRestrict = NULL;
+    PyObject *pyoServer = NULL;
     char *metaname = NULL;
     int journalFlag = 1;
     int verifyFlag = 1;
+    int restrictFlag = 0;
+    int serverFlag = 0;
     int pplMemSize;
     size_t blksiz;
     int status;
@@ -140,8 +149,10 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     import_array1(NULL);
 
     /* Parse the arguments, checking if an Exception was raised */
-    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!s", argNames, &mwMemSize,
-                 &PyBool_Type, &pyoJournal, &PyBool_Type, &pyoVerify, &metaname) )
+    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!O!O!s",
+                 argNames, &mwMemSize, &PyBool_Type, &pyoJournal,
+                 &PyBool_Type, &pyoVerify, &PyBool_Type, &pyoRestrict,
+                 &PyBool_Type, &pyoServer, &metaname) )
         return NULL;
 
     /* Interpret the booleans - Py_False and Py_True are singleton non-NULL objects, so just use == */
@@ -149,8 +160,18 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
         journalFlag = 0;
     if ( pyoVerify == Py_False )
         verifyFlag = 0;
+    if ( pyoRestrict == Py_True )
+        restrictFlag = 1;
+    if ( pyoServer == Py_True )
+        serverFlag = 1;
     if ( metaname[0] == '\0' )
         metaname = NULL;
+
+    /* Deal with the restrict and server flags right away */
+    if ( restrictFlag != 0 )
+        set_secure();
+    if ( serverFlag != 0 )
+        set_server();
 
     /* Initialize the shared buffer sBuffer */
     set_shared_buffer();

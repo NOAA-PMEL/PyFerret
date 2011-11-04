@@ -77,25 +77,40 @@ def init(arglist=None, enterferret=True):
     ferret_help_message = \
     """
 
-    Usage:  ferret7  [-memsize <N>]  [-batch [<filename>]]  [-gif]  [-nojnl]  [-noverify]
-                     [-python]  [-version]  [-help]  [-script <scriptname> [ <scriptarg> ... ]]
+    Usage:  ferret7  [-memsize <N>]  [-batch [<filename>]]  [-nojnl]  [-noverify]
+                     [-secure]  [-server]  [-python]  [-version]  [-help]  [-gif]
+                     [-unmapped]  [-script <scriptname> [ <scriptarg> ... ]]
 
        -memsize:   initialize the memory cache size to <N> (default 25.6) megafloats
                    (where 1 float = 4 bytes)
-       -batch:     output directly to metafile <filename> (default "metafile.plt")
-                   without X-Windows
-       -gif:       output to GIF file without X-Windows only with the FRAME command
+
+       -batch:     output graphics to <filename> (default "ferret.png") instead of
+                   displaying to the console; the file format will be guessed from
+                   the filename extension
+
        -nojnl:     on startup do not open a journal file (can be turned on later with
                    SET MODE JOURNAL)
+
        -noverify:  on startup turn off verify mode (can be turned on later with
                    SET MODE VERIFY)
+
+       -secure:    restrict Ferret's capabilities
+
+       -server:    run Ferret in server mode
+
        -python:    start at the Python prompt instead of the Ferret prompt
                    (the ferret prompt can be obtained entering 'pyferret.run()')
+
        -version:   print the Ferret header with version number and quit
+
        -help:      print this help message and quit
+
+       -gif        and
+       -unmapped:  inhibit the display of graphics to the console; grahics can
+                   be written to file using the FRAME /FILE command
+
        -script:    execute the script <scriptname> with any arguments specified,
                    and exit (THIS MUST BE SPECIFIED LAST)
-
     """
 
     # Create the list of standard ferret PyEFs to create
@@ -285,6 +300,8 @@ def init(arglist=None, enterferret=True):
     my_memsize = 25.6
     my_journal = True
     my_verify = True
+    my_restrict = False
+    my_server = False
     my_enterferret = enterferret
     script = None
     # To be compatible with traditional Ferret command-line options
@@ -305,7 +322,7 @@ def init(arglist=None, enterferret=True):
                     if my_memsize <= 0.0:
                         raise ValueError("a positive number must be given for a -memsize value")
                 elif opt == "-batch":
-                    my_metaname = "metafile.plt"
+                    my_metaname = "ferret.png"
                     k += 1
                     # -batch has an optional argument
                     try:
@@ -317,10 +334,17 @@ def init(arglist=None, enterferret=True):
                         k -= 1
                 elif opt == "-gif":
                     my_metaname = ".gif"
+                elif opt == "-unmapped":
+                    # just treat -unmapped the same as -gif
+                    my_metaname = ".gif"
                 elif opt == "-nojnl":
                     my_journal = False
                 elif opt == "-noverify":
                     my_verify = False
+                elif opt == "-secure":
+                    my_restrict = True
+                elif opt == "-server":
+                    my_server = True
                 elif opt == "-python":
                     my_enterferret = False
                 elif opt == "-version":
@@ -363,7 +387,8 @@ def init(arglist=None, enterferret=True):
         pyferret.graphbind.addPyFerretBindings("PyQtPipedViewer", 
                            pipedviewer.pviewpyferbind.PViewPyFerretBindings)
     # start ferret without journaling
-    start(memsize=my_memsize, journal=False, verify=my_verify, metaname=my_metaname)
+    start(memsize=my_memsize, journal=False, verify=my_verify,
+          restrict=my_restrict, server=my_server, metaname=my_metaname)
     # define all the Ferret standard Python external functions
     for fname in std_pyefs:
         result = run("DEFINE PYFUNC pyferret.%s" % fname)
@@ -401,20 +426,25 @@ def init(arglist=None, enterferret=True):
     return result
 
 
-def start(memsize=25.6, journal=True, verify=True, metaname=None):
+def start(memsize=25.6, journal=True, verify=True,
+          restrict=False, server=False, metaname=None):
     """
-    Initializes Ferret.  This allocates the initial amount of memory for Ferret
-    (from Python-managed memory), opens the journal file, if requested, and sets
-    Ferret's verify mode.  If metaname is None or empty, Ferret's graphics are
-    are displayed on the X-Windows display; otherwise, this value is used as the
-    initial filename for the graphics metafile.  This routine does NOT run any
-    user initialization scripts.
+    Initializes Ferret.  This allocates the initial amount of memory for
+    Ferret (from Python-managed memory), opens the journal file, if requested,
+    and sets Ferret's verify mode.  If restrict is True, some Ferret commands
+    will not be available (to provide a secured session).  Once restrict is set,
+    it cannot be unset.  If server is True, Ferret will be run in server mode.
+    If metaname is empty (and not in server mode), Ferret's graphics will be
+    displayed by default;  otherwise, this value is used as the initial filename
+    for output graphics.  This routine does NOT run any user initialization scripts.
 
     Arguments:
         memsize:  the size, in megafloats (where a "float" is 4 bytes),
                   to allocate for Ferret's memory block
         journal:  turn on Ferret's journal mode?
         verify:   turn on Ferret's verify mode?
+        restrict: restrict Ferret's capabilities?
+        server:   put Ferret in server mode?
         metaname: filename for Ferret graphics, can be None or empty
     Returns:
         True is successful
@@ -441,7 +471,8 @@ def start(memsize=25.6, journal=True, verify=True, metaname=None):
     else:
         str_metaname = metaname
     # the actual call
-    return _pyferret._start(flt_memsize, bool(journal), bool(verify), str_metaname)
+    return _pyferret._start(flt_memsize, bool(journal), bool(verify),
+                            bool(restrict), bool(server), str_metaname)
 
 
 def resize(memsize):

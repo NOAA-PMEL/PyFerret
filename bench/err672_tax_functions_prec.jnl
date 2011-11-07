@@ -1,0 +1,64 @@
+! See ticket 1642: arg 1 of TAX_* functions
+! is a single-precision variale representing double-precision coords.
+
+
+set mode ignore
+
+define axis/t=30-jan-2010:31-dec-2010:86400/unit=seconds taxis
+let var = t[gt=taxis]
+
+! Previously this was incorrect- varied in the seconds place
+list/l=1:7 TAX_DATESTRING(t[gt=var],var,"seconds")
+
+! Note there is no complete fix. This axis needs more than single-
+! precision representation at the far end.
+list/t=1-dec-2010:5-dec-2010 TAX_DATESTRING(t[gt=var],var,"seconds")
+
+! Likewise all these were off by a bit (except month and year)
+list/l=1:7 TAX_DAY(t[gt=var], var)
+list/l=1:7 TAX_DAYFRAC(t[gt=var], var)
+list/l=1:7 TAX_jday1900(t[gt=var], var)
+list/l=1:7 TAX_jday(t[gt=var], var)
+list/l=1:7 TAX_month(t[gt=var], var)
+list/l=1:7 TAX_year(t[gt=var], var)
+list/l=1:7 TAX_yearfrac(t[gt=var], var)
+
+! This axis even worse, all results the same
+! All of these will bail out with repeated ARG1 values 
+define axis/t=1-jan-2010:2-jan-2010:5/unit=seconds taxis
+let var = t[gt=taxis]
+list/l=1:7 TAX_DATESTRING(t[gt=var,L=1:50],var[L=1:50],"seconds")
+
+list/l=1:7 TAX_DAY(t[gt=var], var)
+list/l=1:7 TAX_DAYFRAC(t[gt=var], var)
+list/l=1:7 TAX_jday1900(t[gt=var], var)
+list/l=1:7 TAX_jday(t[gt=var], var)
+list/l=1:7 TAX_month(t[gt=var], var)
+list/l=1:7 TAX_year(t[gt=var], var)
+list/l=1:7 TAX_yearfrac(t[gt=var], var)
+
+! This example from Patrick B. Output of TAX_dayfrac repeats.
+! We need to just return an error mesage. Cant represent 2.5 years
+! of seconds as a single-precision variable. (Can't represent even a month...)
+
+def axis/t="1-jan-2008":"31-dec-2010":1/units=seconds/t0="1-jan-2008" mytaxis
+let tt = t[gt=mytaxis]
+
+let a =  TAX_year(tt[t="02-JUN-2010:13:34:40":"02-JUN-2010:13:34:50"], tt[L=76340000:76350000])
+let b =  TAX_jday(tt[t="02-JUN-2010:13:34:40":"02-JUN-2010:13:34:50"], tt[L=76340000:76350000])
+let c =  TAX_dayfrac(tt[t="02-JUN-2010:13:34:40":"02-JUN-2010:13:34:50"], tt[L=76340000:76350000])
+
+list/prec=7 a
+list/prec=7 b
+list/prec=7 c
+
+! Can do this example
+let a =  TAX_year(tt[t="13-JAN-2008:13:34:40":"13-JAN-2008:13:34:50"], tt[L=1080000:1090000])
+let b =  TAX_jday(tt[t="13-JAN-2008:13:34:40":"13-JAN-2008:13:34:50"], tt[L=1080000:1090000])
+let c =  TAX_dayfrac(tt[t="13-JAN-2008:13:34:40":"13-JAN-2008:13:34:50"], tt[L=1080000:1090000])
+
+list/prec=7 a
+list/prec=7 b
+list/prec=7 c
+
+can mode ignore

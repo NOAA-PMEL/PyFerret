@@ -1,0 +1,10 @@
+! err672_subscr_precision.jnl
+! See ticket 1888. 
+
+
+def axis/t="1-jan-2008":"31-dec-2010":1/units=sec/t0="1-jan-2008" mytaxis
+let tt = t[gt=mytaxis]
+
+! This command should list 11 timesteps, previously listed only 8 (64-bit)
+! or 9 (32-bit).
+list/t="02-JUN-2010:13:34:40":"02-JUN-2010:13:34:50" tt

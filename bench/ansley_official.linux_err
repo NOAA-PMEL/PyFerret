@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 33444259 Oct 17 16:22 /home/users/ansley/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 33403637 Oct 27 11:17 /home/users/ansley/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  testing fix for bug 1545: stray line with GO land, depending on region
+Note: Fix for 1888, precision in computing subscripts, in isubscr_cx.F and same changes in isubscript.F   
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/users/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/linux/FERRET/external_functions/ext_func
-Beginning at Mon Oct 17 16:27:53 PDT 2011
+Beginning at Thu Oct 27 12:12:47 PDT 2011
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -2062,8 +2062,8 @@ set att (COADSX81_81).axis = "Z"
  LISTing to file a.nc
  LISTing to file a.nc
  PERMANENT data cleared from memory
-syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuv</b><b>taux</b><b>absuu</b><b>tauy</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
+syntax error, unexpected SCAN_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuv</b><b>taux</b><b>tauy</b><b>absuu</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
@@ -3058,6 +3058,39 @@ show grid garbage
  TEMPORARY data cleared from memory
 Replacing definition of axis TAX
  PERMANENT data cleared from memory
+
+Bailing out of external function "tax_datestring":
+	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
+
+Bailing out of external function "tax_day":
+	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
+
+Bailing out of external function "tax_dayfrac":
+	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
+
+Bailing out of external function "tax_jday1900":
+	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
+
+Bailing out of external function "tax_jday":
+	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
+
+Bailing out of external function "tax_month":
+	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
+
+Bailing out of external function "tax_year":
+	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
+
+Bailing out of external function "tax_yearfrac":
+	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
+
+Bailing out of external function "tax_year":
+	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices   76340081  76340082
+
+Bailing out of external function "tax_jday":
+	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices   76340081  76340082
+
+Bailing out of external function "tax_dayfrac":
+	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices   76340081  76340082
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3134,6 +3167,33 @@ Replacing definition of axis YAX_DUP_AXNAMES
 Replacing definition of axis XAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis TAXIS
+ **ERROR: error in external function
+list/l=1:7 TAX_DATESTRING(t[gt=var,L=1:50],var[L=1:50],"seconds")
+ **ERROR: error in external function
+list/l=1:7 TAX_DAY(t[gt=var], var)
+ **ERROR: error in external function
+list/l=1:7 TAX_DAYFRAC(t[gt=var], var)
+ **ERROR: error in external function
+list/l=1:7 TAX_jday1900(t[gt=var], var)
+ **ERROR: error in external function
+list/l=1:7 TAX_jday(t[gt=var], var)
+ **ERROR: error in external function
+list/l=1:7 TAX_month(t[gt=var], var)
+ **ERROR: error in external function
+list/l=1:7 TAX_year(t[gt=var], var)
+ **ERROR: error in external function
+list/l=1:7 TAX_yearfrac(t[gt=var], var)
+ **ERROR: error in external function
+list/prec=7 a
+ **ERROR: error in external function
+list/prec=7 b
+ **ERROR: error in external function
+list/prec=7 c
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3243,4 +3303,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Oct 17 16:29:31 PDT 2011
+Ended at Thu Oct 27 12:14:28 PDT 2011

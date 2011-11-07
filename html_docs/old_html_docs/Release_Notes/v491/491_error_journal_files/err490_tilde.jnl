@@ -1,0 +1,15 @@
+! err490_tilde.jnl  12/9/97 - *kob* reported by kob
+
+! ERROR: "~" char crashing ferret
+! go ~/xxxx would cause a Trace/BPT trap
+! this will result in an error ( "file not found") message, which is correct 
+! because absolute paths have to be in quotes
+! 
+!  routine modified:  fmt/src/tm_path_list.F
+
+
+set mode ignore
+go ~/bench/echo.jnl  ! ERROR
+can mode ignore
+go "~/bench/echo.jnl" 
+ 

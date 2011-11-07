@@ -254,7 +254,6 @@
 
                sum = 0.
                lasthalf = 0.
-c               print *, ' forming the zdepth array. k, zdepth:'
 
                DO 500 k = klo, khi
                   zdepth(k,1,1,1) = 0.
@@ -267,7 +266,6 @@ c               print *, ' forming the zdepth array. k, zdepth:'
 * the sum of thicknesses up to the deepest.
 
                   IF (sum .NE. 0.) zdepth(k,1,1,1) = sum
-c                  print *, k, zdepth(k,1,1,1)
 500           CONTINUE
               zmin = zdepth(klo,1,1,1)
               zmax = zdepth(khi,1,1,1)

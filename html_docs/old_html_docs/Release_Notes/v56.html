@@ -1,0 +1,284 @@
+<html>
+<head>   <title>Ferret v5.6 release notes</title>
+</head><body><C><h1>
+<B>Ferret Version 5.6 Release Notes</B></h1>
+<font size=+1>April 9, 2004</font>
+</C><BR><BR>
+<H2>New Features and Enhancements in Version 5.6</H2>
+<UL>
+<LI><a href="#repeat_range">New options for REPEAT</A> introduce a "FOREACH" functionality with  REPEAT/RANGE=[/NAME=]<BR><BR></LI>
+<LI><a href="#graticules">New qualifiers to draw graticule lines</A>, that is, guide lines across plots at the tic marks of the axes.<BR><BR>
+<LI><a href="#palettes">New palette files</A><BR>
+</UL>
+<H2>Bug fixes</H2>
+<UL>
+
+
+<LI>Make the definition of an axis with /UNITS=year the same as with
+/UNITS=yr; and have the axis take on the length of the year according 
+to the calendar specified. The default year length is 365.2425 days.
+<BR><BR></LI>
+
+<LI>Plot polygons correctly when the 1-D form of the POLYGON command
+is used, e.g. (POLY/FILL/LINE {2,2,4,4,,8,10,6,},  {10,15,15,10,,6,4,4,,} )
+<BR><BR></LI>
+
+<LI>Can do an ASCII LIST of string and numeric data together; previously 
+this crashed Ferret.
+<BR><BR></LI>
+
+<LI>For longitude axes, do not label 0 degrees with E. This is now
+ consistent with the labelling of latitude axes.
+<BR><BR></LI>
+
+<LI>When reading from a NetCDF file using strides, a DEFINE GRID/LIKE=var
+command had caused Ferret to use regridding rather than a strided read.
+<BR><BR></LI>
+
+<LI>Set the LEVELS symbols on POLYGON commands, as they are for 
+CONTOUR, SHADE, and FILL, previously these were not defined after a call to POLYGON<BR>
+yes? POLY xpts, ypts
+yes? SHOW SYMBOL lev*
+<BR><BR></LI>
+
+<LI>Fixes for cellarray plots (used for SHADE commands in -gif mode)
+so that they work correctly if we are using /HLIMITS or /VLIMITS to use a
+different range on the plotting axes than the range of the data that has been loaded.
+<BR><BR></LI>
+
+<LI>Let region names have longer string lengths, up to 24 characters.  Previously 
+could define regions with long names but not retrieve them correctly.
+<BR><BR></LI>
+
+<LI>Warning message restored if we have specified a range of coordinates 
+outside the bounds of an axis.
+<BR><BR></LI>
+
+<LI>PLOT/SYM/SIZE= now changes the size of the symbols correctly.
+<BR><BR></LI>
+
+<LI>Improvements to the labels on shade keys: the 5th argument to PPL SHAKEY, 
+<B>klab_dig</B>, sets the actual number of decimal places (klab_dig < 0) in the key; 
+previously it had set a maximum number of decimal places.
+<BR><BR></LI>
+
+</UL>
+
+<BR>
+
+<H2>New Features and Enhancements in Version 5.6</H2>
+
+
+<UL>
+<LI><A NAME="repeat_range"><B>New options REPEAT/RANGE=[/NAME=]</B><BR>
+<P>The new /RANGE qualifier lets us use REPEAT looping which is independent of any grid or axis. 
+You may define a range to loop over, and optionally name the repeat counter.  The name
+that is used is undefined after the loop terminates. This syntax can be used
+for nested loops, and can be used together with standard REPEAT loops which use I=,J=,X=,
+and so on.</P>
+<P>A word of caution is in order about REPEAT/RANGE.  If you find yourself doing some operation 
+to every element of a variable along an axis, or using REPEAT to do regridding, integrals or 
+averages, you will want to rethink whether you are unnecessarily complicating your scripts and 
+probably slowing your calculations. Do not use REPEAT to duplicate Ferret's capability of operating 
+on entire grids or axes in a single command.  Using Ferret's commands for regridding, transformations, 
+and so on will be more efficient and foolproof than "programming" with REPEAT loops.  New Ferret 
+users should study Chapter 1-4 of the Ferret Users Guide for guidance on using Ferret expressions
+for computation.
+
+</P>
+<P><B>Examples of REPEAT/RANGE=[/NAME=]:</B>
+<P>
+<UL><LI>
+Simplest case
+   <PRE><B>    yes? LET a = 12
+    yes? REPEAT/RANGE=1:3 (LET a = `a+2`; LIST a)</B>
+      !-> REPEAT: REPCOUNT:1
+       !-> DEFINE VARIABLE a = 14
+                   VARIABLE : 14
+                14.00
+      !-> REPEAT: REPCOUNT:2
+       !-> DEFINE VARIABLE a = 16
+                   VARIABLE : 16
+                16.00
+      !-> REPEAT: REPCOUNT:3
+       !-> DEFINE VARIABLE a = 18
+                   VARIABLE : 18
+                18.00
+ </PRE>
+ </LI>
+<LI>With a named loop counter
+<PRE><B>    yes? REPEAT/RANGE=1:7:3/NAME=s (LIST/NOHEAD s)</B>
+      !-> REPEAT: S:1
+                1.000
+      !-> REPEAT: S:4
+                4.000
+      !-> REPEAT: S:7
+                7.000
+ </PRE>
+
+ </LI>
+<LI>To loop over a list (FOREACH functionality) where the loop is independent
+  of any region that may be set
+ <PRE><B>    yes? SET REGION/x=300:360/y=40:60/z=0:100/t="1-jan-2000:1-jan-2004"
+
+    yes? LET file_list = {"month_2.nc", "month_5.nc", "month_8.nc"}
+
+    yes? REPEAT/RANGE=1:3/NAME=m (LET name = file_list[i=`m`]; \
+                                  USE `name`; \
+                                  GO myscript}
+    </PRE>
+</B>    
+</LI>
+<LI>  Another example, using the loop counter variable within the loop
+<PRE><B>    yes? USE levitus_climatology 
+    yes? SET REGION/X=100:300/Y=0/Z=10
+    yes? PLOT temp
+ 
+    yes? LET r1 = INT( temp[X=@MIN]) + 1
+    yes? LET r2 = INT( temp[X=@MAX]) - 1
+
+    yes? REP/RANGE=`r1`:`r2`:3/NAME=tt (PLOT/OVER MAX(temp,`tt`) )</B>
+
+     !-> REP/RANGE=23:29:3/NAME=tt (PLOT/OVER MAX(temp,`tt`) )
+    !-> REPEAT: TT:23
+     !-> PLOT/OVER MAX(temp,23)
+    !-> REPEAT: TT:26
+     !-> PLOT/OVER MAX(temp,26)
+    !-> REPEAT: TT:29
+     !-> PLOT/OVER MAX(temp,29)
+ 
+ </PRE>
+            
+</UL>
+<LI><A NAME="graticules"><P><B>Qualifiers /GRATICULE, /HGRATICULE and /VGRATICULE </B><BR>
+set graticule lines across plots at the tic marks. They are available on the PLOT, 
+CONTOUR, FILL, SHADE, and VECTOR commands.   </P>
+
+<P><B>PLOT/GRATICULE[=linetype]</B><BR>
+is a single command to turn the graticules for both 
+the horizontal and the vertical axes on. By default the graticules are drawn as 
+thin black lines at each large tic mark. The colors and the thickness settings 
+have the same options as the settings for PLOT lines. The syntax is </P>
+
+&nbsp;&nbsp;&nbsp;PLOT/GRAT[=(dash or line, COLOR=colorname, THICKNESS[=value]]) var<BR>
+<PRE>
+    yes? PLOT/GRAT=(dash,COLOR=red) var
+
+    yes? SHADE/GRAT=(COLOR=white) rose
+
+    yes? PLOT/GRAT=(THICK=3)/t=1-jan-1990:1-jan-2002 my_data
+</PRE>
+
+<P><B>PLOT/HGRATICULE[=linetype] /VGRATICULE[=linetype]</B> <BR>
+These two qualifiers give the user separate control of horizontal and vertical 
+tics. Each takes the same optional arguments as /GRATICULE. 
+<BR><BR></LI>
+<P>Any of the three qualifiers /GRAT /HGRAT /VGRAT can take arguments to also turn 
+on graticule drawing at small tic marks and set the line type for the small-tic 
+graticules, using the same arguments.<BR><BR>
+<PRE>
+    PLOT/GRAT="LARGE(arguments),SMALL(arguments)" var
+</PRE>
+<BR>
+Examples:<BR><BR><BR>
+<PRE>
+    <B>yes? PLOT/GRAT=dash/i=1:40 sin(i/6), sin(i/8)</B><BR>
+<IMG SRC="v56_gratdash.gif" BORDER="1"> 
+<BR><BR><BR><BR>
+
+
+    <B>yes? USE etopo20; set reg w
+    yes? SHADE/GRAT=(COLOR=white) rose</B><BR>
+<IMG SRC="v56_gratshade.gif" BORDER="1"> 
+<BR><BR>
+<BR><BR>
+
+    <B>yes? DEF AXIS/Z/DEPTH dlog=exp(k[k=1:10])
+    yes? LET fcn = k[gz=dlog]
+    yes? PLOT/VLOG/VLIMITS=1:10000/HGRAT="LARGE(COLOR=red),SMALL(COLOR=lightblue)"/VGRAT fcn
+</B><BR>
+<IMG SRC="v56_gratlog.gif" BORDER="1"> 
+<BR><BR><BR><BR>
+
+
+    <B>yes? USE monthly_navy_winds
+    yes? SET REGION/X=180/Y=0/T=1-may-1989:1-may-1992
+    yes? PLOT/HGRAT/VGRAT="LARGE(COLOR=blue),SMALL(COLOR=lightblue)" uwnd
+</B><BR>
+<IMG SRC="v56_grattime.gif" BORDER="1"> 
+<BR><BR>
+
+</PRE>
+
+<LI><A NAME="palettes"><P><B>New palette files </B><BR><BR>
+<UL>
+<LI><B>topo.spk</B>, a palette defined by_value for use with topography/bathymetry data sets.
+Because the colors are defined by value, each color corresponds to the 
+same value of elevation regardless of the range of elevation on the plot.
+The palette looks best when the levels are selected to have more levels
+near zero meters elevation and fewer levels at high altitudes and deep depths.</P>
+
+<P>For an area with a wide range of depths and altitudes:
+<PRE><B>
+    yes? USE "http://www.ferret.noaa.gov/cgi-bin/nph-dods/data/PMEL/smith_sandwell_topo_v8_2.nc"
+
+    yes? SET REGION/X=110:160/Y=-40:0
+    yes? SHADE/PAL=topo/LEV=(-9000,-1000,1000)(-1000,-100,100)\
+         (-100,100,10)(100,1000,100)(1000,6000,1000) rose
+</PRE></B><BR>
+<IMG SRC="v56_topo1.gif" BORDER="1"> 
+<BR><BR><BR><BR>
+
+<P>For a smaller area and new levels specified, the same colors are used at each elevation:
+<PRE><B>
+    yes? USE use "http://www.ferret.noaa.gov/cgi-bin/nph-dods/data/PMEL/smith_sandwell_topo_v8_2.nc"
+    yes? SET REGION/X=134:144/Y=-18:-8
+    yes? SHADE/PAL=topo/LEV=(-2600,-100,50)(-100,100,5)(100,500,50) rose
+
+</PRE></B><BR>
+<IMG SRC="v56_topo2.gif" BORDER="1"> 
+</LI><BR><BR><BR>
+
+<LI><B>Additional single-color palettes</B>, useful for plotting individual dots
+using the POLYGON command, e.g. 
+<PRE><B>
+    yes? SHADE/pal=land_sea/lev=(-1000,1000,100) rose
+    yes? LET xpts = {135,136.6,142}
+    yes? LET ypts = {-12.5,-12.0,-11.7}
+    yes? GO polymark POLY/OVER/NOKEY/NOLAB/LINE/PAL=magenta xpts, ypts, , square
+
+    yes? LET xpts = {138,139,140,141}
+    yes? let ypts = {-15, -15, -15.5, -14.}
+    yes? GO polymark POLY/OVER/NOKEY/NOLAB/LINE/PAL=orange_dark xpts, ypts, , square
+
+</B>
+</PRE>
+<IMG SRC="v56_polycolors.gif" BORDER="1"> 
+
+<P>See also the color palettes FAQ for more uses of these palettes, 
+<a href="http://ferret.pmel.noaa.gov/static/FAQ/graphics/colorpalettes.html">Ferret Color Palettes</a>
+</P>The entire list of single-color palettes is:<BR><BR>
+<TABLE BORDER=0 width=50% cellspacing=10>
+
+</TD> </TR>
+<TR><TD>black<BR>white</TD> <TD>orange<BR>orange_dark<BR>orange_light</TD> </TR>
+<TR><TD>blue<BR>blue_dark<BR>blue_light</TD> <TD>pink<BR>pink_dark<BR>pink_light</TD> </TR>
+<TR><TD>brown<BR>brown_dark<BR>brown_light</TD> <TD>purple<BR>purple_dark<BR>purple_light</TD> </TR>
+<TR><TD>cyan<BR>cyan_dark<BR>cyan_light</TD> <TD>red<BR>red_dark<BR>red_light</TD> </TR>
+<TR><TD>gray<BR>gray_dark<BR>gray_light</TD> <TD>tan<BR>tan_dark<BR>tan_light</TD> </TR>
+<TR><TD>green<BR>green_dark<BR>green_light</TD> <TD>violet<BR>violet_dark<BR>violet_light</TD> </TR>
+<TR><TD>grey<BR>grey_dark<BR>grey_light</TD>  <TD>yellow<BR>yellow_dark<BR>yellow_light</TD> </TR>
+<TR><TD>magenta<BR>magenta_dark<BR>magenta_light</TD>
+
+</TABLE>
+
+</LI><BR><BR>
+
+
+</UL>
+
+<BR>
+
+</BODY>
+</HTML>
+<!--#include virtual="/footer.txt" -->

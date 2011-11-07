@@ -147,7 +147,6 @@
               DO 100 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
                 DO 99 iun=pun_1st_time, pun_last_time 
-*                  print *, un_name(iun)
 
                   CALL LOWER_CASE(axunits(4))
                   IF( ( un_name(iun) .EQ. axunits(4))           .OR.

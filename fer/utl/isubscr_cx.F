@@ -48,7 +48,11 @@
 * V612 *acm* 8/08 - Bug 1594. For 64-bit, when translating to within axis 
 *                   limits, the comparison IF (wcoord .GT. aend) yielded FALSE 
 *                   when in fact the coordinate values should be equal. Use 
-*                   TM_FPEQ to test for equality first.
+*                   TM_FFPEQ to test for equality first.
+* V673: *acm* 10/11 Bug 1888. Single-precision calculations in the block starting
+*                   * quick sol'n if axis points are regularly spaced
+*                   did not give enough accuracy for axes defined in terms of 
+*                   seconds.  Convert all this to double-precision calculations.
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -61,12 +65,12 @@
 	REAL*8	world_coord
 
 * internal variable declarations:
-	LOGICAL	TM_FPEQ, TM_ITS_SUBSPAN_MODULO, regular
+	LOGICAL	TM_DFPEQ, TM_ITS_SUBSPAN_MODULO, regular
 	INTEGER	lo_look, hi_look, axis, ibot, itop, look,
      .		line_len, isubsc, num_mod
-	REAL 	subsc, wc, ae
 	REAL*8	SECS_TO_TSTEP, TM_WORLD, TM_WW_AXLEN,
-     .		wwindex, wcoord, half_way, start, aend, span, first, last
+     .		wwindex, wcoord, half_way, start, aend, span, 
+     .		first, last, dsubsc
 
 * initialize
         isubsc = 0
@@ -125,9 +129,7 @@
 
 * ... now translate to within axis limits saving modulo number
 
-           wc = wcoord
-           ae = aend
-           IF (.NOT.TM_FPEQ(wc, ae) .AND. (wcoord .GT. aend)) THEN
+           IF (.NOT.TM_DFPEQ(wcoord, aend) .AND. (wcoord .GT. aend)) THEN
 	      num_mod = ( wcoord - start ) / span
 ! 10/92 bug fix: if wcoord is an exact multiple of length (e.g. wccord=24.
 !       start=0., span=12.) then modulo remap to top of ax rather than bottom
@@ -159,9 +161,9 @@
 
 * quick sol'n if axis points are regularly spaced
 	ELSEIF ( regular ) THEN
-	   subsc = SNGL( (wcoord-first)/line_delta(axis) ) + .5
-	   isubsc = INT( subsc )
-	   IF ( subsc .EQ. FLOAT( isubsc ) ) THEN
+	   dsubsc = (wcoord-first)/line_delta(axis) + .5
+	   isubsc = INT( dsubsc )
+	   IF ( TM_DFPEQ(dsubsc,DBLE( isubsc )) ) THEN
 * ...... value is on box boundary
 	      IF     ( round_code .EQ. round_up ) THEN
 	         isubsc = isubsc + 1
@@ -207,7 +209,7 @@
 	      half_way = TM_WORLD(hi_look, grid, idim, box_lo_lim)
 
 * value on box boundary ?
-	      IF ( TM_FPEQ( SNGL(half_way), SNGL(wcoord) ) ) THEN
+	      IF ( TM_DFPEQ( half_way, wcoord ) ) THEN
 	         IF     ( round_code .EQ. round_up ) THEN
 		    isubsc = hi_look
 	         ELSEIF ( round_code .EQ. round_dn ) THEN

@@ -1,0 +1,39 @@
+<HTML>
+<HEAD>
+  <TITLE>FERRET and Shared-object libraries</TITLE>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<h3>A note for ferret releases V6.71 and higher, about shared-object libraries:</h3><BR>
+<p>
+We now statically link libgfortran in our builds, so the only shared-object library version difference between the different RHEL platforms is libcurl.so (.3 under RHEL5 and .4 under RHEL6).  Below is a list of the shared-object libraries we explicitly use.</p>
+<p>
+For the RHEL5 builds of ferret:
+<br><pre>
+        libncurses.so.5
+        libX11.so.6
+        libcurl.so.3
+        libdl.so.2
+        libm.so.6
+        libc.so.6
+</pre><br>
+For the RHEL6 builds of ferret:
+<br><pre>
+        libncurses.so.5
+        libX11.so.6
+        libcurl.so.4
+        libdl.so.2
+        libm.so.6
+        libc.so.6
+</pre>
+<p>
+These are very standard Linux system shared-object libraries.  If you run ldd on the ferret executable, you will see more shared-object libraries required.  These additional libraries are used by the above libraries and so the versions vary between Linux systems.  But the appropriate versions of these additional libraries will be present if the libraries ferret require were installed either with the system or by package-manager software.
+<br> </p>
+
+<A HREF="ferret_downloads.html">Return to Ferret Downloads page</A>
+
+</BODY>
+</HTML>
+<!--#include virtual="/footer.txt" -->
+

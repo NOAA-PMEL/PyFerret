@@ -761,22 +761,28 @@ void FORTRAN(nco_compute)(int *, float *, float *, float *);
 
 
 void FORTRAN(tax_datestring_init)(int *);
+void FORTRAN(tax_datestring_work_size)(int *);
 void FORTRAN(tax_datestring_compute)(int *, float *, float *, float *, float *);
 
 void FORTRAN(tax_day_init)(int *);
-void FORTRAN(tax_day_compute)(int *, float *, float *, float *);
+void FORTRAN(tax_day_work_size)(int *);
+void FORTRAN(tax_day_compute)(int *, float *, float *, float *, float *);
 
 void FORTRAN(tax_dayfrac_init)(int *);
-void FORTRAN(tax_dayfrac_compute)(int *, float *, float *, float *);
+void FORTRAN(tax_dayfrac_work_size)(int *);
+void FORTRAN(tax_dayfrac_compute)(int *, float *, float *, float *, float *);
 
 void FORTRAN(tax_jday1900_init)(int *);
-void FORTRAN(tax_jday1900_compute)(int *, float *, float *, float *);
+void FORTRAN(tax_jday1900_work_size)(int *);
+void FORTRAN(tax_jday1900_compute)(int *, float *, float *, float *, float *);
 
 void FORTRAN(tax_jday_init)(int *);
-void FORTRAN(tax_jday_compute)(int *, float *, float *, float *);
+void FORTRAN(tax_jday_work_size)(int *);
+void FORTRAN(tax_jday_compute)(int *, float *, float *, float *, float *);
 
 void FORTRAN(tax_month_init)(int *);
-void FORTRAN(tax_month_compute)(int *, float *, float *, float *);
+void FORTRAN(tax_month_work_size)(int *);
+void FORTRAN(tax_month_compute)(int *, float *, float *, float *, float *);
 
 void FORTRAN(tax_times_init)(int *);
 void FORTRAN(tax_times_compute)(int *, float *, float *);
@@ -789,10 +795,12 @@ void FORTRAN(tax_units_init)(int *);
 void FORTRAN(tax_units_compute)(int *, float *, float*);
 
 void FORTRAN(tax_year_init)(int *);
-void FORTRAN(tax_year_compute)(int *, float *, float *, float *);
+void FORTRAN(tax_year_work_size)(int *);
+void FORTRAN(tax_year_compute)(int *, float *, float *, float *, float *);
 
 void FORTRAN(tax_yearfrac_init)(int *);
-void FORTRAN(tax_yearfrac_compute)(int *, float *, float *, float *);
+void FORTRAN(tax_yearfrac_work_size)(int *);
+void FORTRAN(tax_yearfrac_compute)(int *, float *, float *, float *, float *);
 
 void FORTRAN(fill_xy_init)(int *);
 void FORTRAN(fill_xy_compute)(int *, float *, float *, float *, float *);
@@ -3685,21 +3693,27 @@ else if ( !strcmp(name,"nco_attr_compute_") ) return (void *)FORTRAN(nco_attr_co
 
 
 else if ( !strcmp(name,"tax_datestring_init_") ) return (void *)FORTRAN(tax_datestring_init);
+else if ( !strcmp(name,"tax_datestring_work_size_") ) return (void *)FORTRAN(tax_datestring_work_size);
 else if ( !strcmp(name,"tax_datestring_compute_") ) return (void *)FORTRAN(tax_datestring_compute);
 
 else if ( !strcmp(name,"tax_day_init_") ) return (void *)FORTRAN(tax_day_init);
+else if ( !strcmp(name,"tax_day_work_size_") ) return (void *)FORTRAN(tax_day_work_size);
 else if ( !strcmp(name,"tax_day_compute_") ) return (void *)FORTRAN(tax_day_compute);
 
 else if ( !strcmp(name,"tax_dayfrac_init_") ) return (void *)FORTRAN(tax_dayfrac_init);
+else if ( !strcmp(name,"tax_dayfrac_work_size_") ) return (void *)FORTRAN(tax_dayfrac_work_size);
 else if ( !strcmp(name,"tax_dayfrac_compute_") ) return (void *)FORTRAN(tax_dayfrac_compute);
 
 else if ( !strcmp(name,"tax_jday1900_init_") ) return (void *)FORTRAN(tax_jday1900_init);
+else if ( !strcmp(name,"tax_jday1900_work_size_") ) return (void *)FORTRAN(tax_jday1900_work_size);
 else if ( !strcmp(name,"tax_jday1900_compute_") ) return (void *)FORTRAN(tax_jday1900_compute);
 
 else if ( !strcmp(name,"tax_jday_init_") ) return (void *)FORTRAN(tax_jday_init);
+else if ( !strcmp(name,"tax_jday_work_size_") ) return (void *)FORTRAN(tax_jday_work_size);
 else if ( !strcmp(name,"tax_jday_compute_") ) return (void *)FORTRAN(tax_jday_compute);
 
 else if ( !strcmp(name,"tax_month_init_") ) return (void *)FORTRAN(tax_month_init);
+else if ( !strcmp(name,"tax_month_work_size_") ) return (void *)FORTRAN(tax_month_work_size);
 else if ( !strcmp(name,"tax_month_compute_") ) return (void *)FORTRAN(tax_month_compute);
 
 else if ( !strcmp(name,"tax_times_init_") ) return (void *)FORTRAN(tax_times_init);
@@ -3713,9 +3727,11 @@ else if ( !strcmp(name,"tax_units_init_") ) return (void *)FORTRAN(tax_units_ini
 else if ( !strcmp(name,"tax_units_compute_") ) return (void *)FORTRAN(tax_units_compute);
 
 else if ( !strcmp(name,"tax_year_init_") ) return (void *)FORTRAN(tax_year_init);
+else if ( !strcmp(name,"tax_year_work_size_") ) return (void *)FORTRAN(tax_year_work_size);
 else if ( !strcmp(name,"tax_year_compute_") ) return (void *)FORTRAN(tax_year_compute);
 
 else if ( !strcmp(name,"tax_yearfrac_init_") ) return (void *)FORTRAN(tax_yearfrac_init);
+else if ( !strcmp(name,"tax_yearfrac_work_size_") ) return (void *)FORTRAN(tax_yearfrac_work_size);
 else if ( !strcmp(name,"tax_yearfrac_compute_") ) return (void *)FORTRAN(tax_yearfrac_compute);
 
 else if ( !strcmp(name,"fill_xy_init_") ) return (void *)FORTRAN(fill_xy_init);

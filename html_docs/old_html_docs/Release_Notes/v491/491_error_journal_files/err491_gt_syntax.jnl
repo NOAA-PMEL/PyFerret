@@ -1,0 +1,15 @@
+! err491_gt_syntax.jnl
+
+! 3/2/98 *sh*
+
+! parse error interpreting   gt="date":"date":delta
+
+! fixed in GET_CONTEXT_MODS:  variable "name" too short to hold date string
+!			    and check for lo:hi:delta wasn't allowing date
+!			    in quotes
+
+
+let tday t[t="1-jan-1990:12:00":"15-jan-1990:12:00":24]
+list tday[gt="1-jan-1990:12:00":"15-jan-1990:12:00":120]
+
+! **ERROR: regridding: GT="1-JAN-1990:12:00":"15-JAN-1990:12:00":120 : @ttt syntax

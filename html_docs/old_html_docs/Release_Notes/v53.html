@@ -1,0 +1,994 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Ansley Manke">
+   <meta name="GENERATOR" content="Mozilla/4.75 [en] (WinNT; U) [Netscape]">
+   <title>v53</title>
+</head>
+<body>
+
+<h1>
+Ferret Version 5.3 and Version 5.4&nbsp; Release Notes</h1>
+
+<h2>
+New&nbsp; in Version 5.3</h2>
+
+<ul>
+<li>
+<a href="#alpha-level string">Alpha-level support for string variables</a></li>
+
+<li>
+<a href="#calendar axes">Support for non-Gregorian calendar axes</a></li>
+
+<li>
+<a href="#capture unix shell output">Output from Unix shell commands may
+be captured in Ferret</a></li>
+
+<li>
+<a href="#date/time symbols">New automatically defined symbols for date
+and time</a></li>
+
+<li>
+<a href="#xboxlo,xboxhi">New pseudo-variables reveal grid cell bounds</a></li>
+
+<li>
+<a href="#show axis">SHOW AXIS (and SHOW GRID/[axis]) enhanced</a></li>
+
+<li>
+<a href="#show grid arguments">SHOW GRID, SET GRID, DEFINE GRID/LIKE= and
+SET VAR/GRID=&nbsp;&nbsp;&nbsp; can take expressions as arguments</a></li>
+
+<li>
+<a href="#expressions formatting">Immediate mode (grave accent) expressions
+formatting</a></li>
+
+<li>
+<a href="#nrst">Nearest coordinate regridding transformation @NRST</a></li>
+
+<li>
+<a href="#symbols in repeat loops">Ferret symbols (e.g. "($symbol)") used
+inside REPEAT loops are now re-translated at each repetition of the loop</a></li>
+
+<li>
+<a href="#multi-line">Multi-line commands (continuation lines)</a></li>
+
+<li>
+<a href="#command buffer length">The length of the command buffer is increased
+to 2048 characters</a></li>
+
+<li>
+<a href="#return arguments">New immediate mode RETURN arguments: RETURN=DSET,
+DSETNUM, DSETPATH, BAD</a></li>
+
+<li>
+<a href="#99args">Up to 99 arguments for GO commands using either $nn or
+($nn) syntax</a></li>
+
+<li>
+<a href="#EVN">New transformation @EVNT ("event mask")</a></li>
+
+<li>
+<a href="#setvar/name">Added SET VARIABLE/NAME=</a></li>
+
+<li>
+<a href="#NetCDF modulo">NetCDF time axes encoded as year 0000 or 0001
+are automatically flagged as modulo</a></li>
+
+<br>&nbsp;
+<li>
+<a href="#animate on the fly">Ability to animate on the fly</a></li>
+
+<li>
+<a href="#flowline">FLOWLINE command draws continuous flowlines from vector
+components</a></li>
+
+<li>
+<a href="#plot/step">Step function plots</a></li>
+
+<li>
+<a href="#log axes">New PLOT qualifiers /VLOG and /HLOG set log axis for
+plots.</a></li>
+
+<br>&nbsp;
+<li>
+<a href="#delimited files">Ability to read "delimited" files (e.g. Excel
+spreadsheet outputs)</a></li>
+
+<li>
+<a href="#MC checking">Enhanced ability to associate time series files
+into a MC (multi-CDF) data set</a></li>
+
+<li>
+<a href="#save/append">Performance of netCDF "SAVE/APPEND ..." greatly
+increased for large file output</a></li>
+
+<li>
+<a href="#windows files">Support for command files created by Windows (embedded
+CR characters)</a></li>
+
+<li>
+<a href="#ef utility for custom axes">More external functions utility calls
+may be made during custom axis creation</a></li>
+
+<li>
+<a href="#zaxreplace">New functions ZAXREPLACE_AVG and ZAXREPLACE_BIN</a></li>
+
+<li>
+<a href="#eofargs">Arguments to EOF functions changed</a></li>
+</ul>
+
+<h2>
+New in Version 5.4</h2>
+
+<ul>
+<li>
+<a href="#strings">Support for string variables</a></li>
+
+<li>
+<a href="#modulo strides">Strides can be applied across the "branch point"
+of a modulo variable</a></li>
+
+<li>
+<a href="#nesting go files">Nesting of GO files no longer limited to 10
+deep.</a></li>
+
+<li>
+<a href="#exit qualifiers">New qualifiers EXIT/LOOP, EXIT/SCRIPT, EXIT/PROMPT,
+EXIT/PROGRAM</a></li>
+
+<li>
+<a href="#define view/axes">New qualifier /AXES for&nbsp; DEFINE VIEW</a></li>
+
+<li>
+<a href="#dashed lines">Control of dashed lines with PLOT/DASH=</a></li>
+
+<li>
+<a href="#memsize">Doubled the default memory to 6.4 Mwords</a></li>
+
+<li>
+<a href="#ppl memory buffer">Plotting is no longer limited by a fixed plot
+memory buffer</a></li>
+
+<li>
+<a href="#plot/axes">New plot qualifier /AXES[=top,bottom,left,right] turns
+plotting of individual axes off and on</a></li>
+
+<li>
+<a href="#sym=dot">New PLOT/SYMBOL=DOT</a></li>
+
+<li>
+<a href="#compress_by">New functions COMPRESS_BY compress data according
+to a mask</a></li>
+
+<li>
+<a href="#list heading">Modified heading output of LIST command</a></li>
+
+<li>
+<a href="#list/width">New qualifier: LIST/WIDTH=columns</a></li>
+
+<li>
+<a href="#/title">Allow SET DATA/TITLE= for NetCDF, DODS datasets</a></li>
+</ul>
+
+<h2>
+Bug Fixes in Version 5.3</h2>
+
+<ul>
+<li>
+Buffer size increase allows STAT to handle larger summaries</li>
+
+<li>
+Allow External functions using FORTRAN complex variables</li>
+
+<li>
+Bug fix in EF framework: didn't handle custom axes if EF had more than
+one argument</li>
+
+<li>
+Ferret does not crash if a segmentation fault occurs within an external
+function</li>
+
+<li>
+Distinct axes that were dynamic and irregular were not always recognized
+as different</li>
+
+<li>
+Permutation error when multiple variables of differing shape are written
+at once</li>
+
+<li>
+SAVE used on a subset of an irregular axis did not write cell boundaries
+into the output file</li>
+
+<li>
+MODE VERIFY output is suppressed for lines skipped due to IF-THEN-ELSE</li>
+
+<li>
+Scaling bugs fixed in scripts polytube.jnl and polymark.jnl</li>
+
+<li>
+Auto-labelling of axes improved when many digits are needed (e.g. scale
+from 1020 to 1021)</li>
+
+<li>
+Allow filenames to include commas (if name is enclosed in quotations) (needed
+for DODS constrained URLs)</li>
+
+<li>
+Limit on string lengths fixed (e.g. long DODS filenames)</li>
+
+<li>
+Bug fixed in the journal script right_axis_plot.jnl</li>
+
+<li>
+EOF functions had inconsistency in treatment of bad-data flags.</li>
+
+<li>
+DEFINE AXIS/FROM failed to check if n=1</li>
+
+<li>
+DEFINE AXIS where n=1 gave bogus box limits</li>
+
+<li>
+SAMPLEXY function works on fields with modulo axes.</li>
+
+<li>
+The length of the buffer for the LEVELS qualifier (i.e. for SHADE or CONTOUR)
+has been increased from 80 to 1028 characters.</li>
+
+<li>
+Mixed regridding gx=sst and y=lo:hi:del could ignore the lo:hi:del</li>
+
+<li>
+STAT command applied to values all greater than 1.E34</li>
+
+<li>
+Allow British spelling "metre"</li>
+
+<li>
+Detect extra colon in "i=1:5:2:"</li>
+
+<li>
+SCAT2GRIDGAUSS* and SCAT2GRIDLAPLACE*&nbsp; functions allow input to be
+function of both time and the spatial dimension not being gridded, e.g.&nbsp;
+SCAT2GRIDGAUSS_XY&nbsp; grids in XY a function of time and/or depth.</li>
+
+<li>
+Bug related to region information left after a REPEAT loop</li>
+</ul>
+
+<h2>
+Bug Fixes in Version 5.4</h2>
+
+<ul>
+<li>
+PLOT+ command "list yaxis" now says "YORG+" (instead of "XORG="</li>
+
+<li>
+Negative times improperly formatted on output</li>
+
+<li>
+Data set names may begin with digits</li>
+
+<li>
+Strings sent to PLOT+ label commands via "LABEL" may contain single quotes</li>
+
+<li>
+No longer output documentation on data set for, e.g.,&nbsp; let fcn = SIN(T[gt=tax]/10);
+plot t[g=fcn]</li>
+
+<li>
+SET VAR/NAME=&nbsp; allowed duplicate variable names</li>
+
+<li>
+VECTOR plotting improved for curvilinear coordinate plots.&nbsp; VECTOR/LENGTH
+works.</li>
+
+<li>
+Plotting bug in version 5.33 fixed: first two points weren't connected</li>
+
+<li>
+Contour levels bug: In the sequence <i>SHADE var; CONTOUR/OVER/LEV var</i>&nbsp;
+levels weren't properly set by SHADE command</li>
+
+<li>
+Fix format problem when listing negative subscripts on modulo axes</li>
+
+<li>
+LET VAR2 = VAR1[d={this is limited to less than 40 characters}]</li>
+
+<li>
+Line plot bug where first point in a line plot was left off, and where
+plot/vs gave a connecting line without /LINE</li>
+</ul>
+
+<h2>
+Improved error messages</h2>
+
+<ul>
+<li>
+During axis definition "unknown axis units" is replaced by "units are not
+subject to auto-conversion"</li>
+
+<li>
+Improved error message for unknown function "LET b = UNKNOWN(a)"</li>
+
+<li>
+Remove annoying warning about unknown axis units during FFTA and other
+dynamic axes</li>
+
+<li>
+<font size=+0>When user doesn't specify limits on ABSTRACT axis say&nbsp;
+NOTE: Check for unspecified limits on an ABSTRACT axis instead of NOTE:
+You can use SET MEMORY/SIZE=xxx to increase memory</font></li>
+
+<li>
+<font size=+0>Longer dataset name allowed for commands such as LET Var2=var1[d=data_set_name]</font></li>
+</ul>
+
+<h2>
+<a NAME="New Features and"></a>New Features and Enhancements:</h2>
+
+<h3>
+<a NAME="alpha-level string"></a>Alpha-level support for string variables</h3>
+
+<blockquote>NOTE: See significant additions to capabilities in <a href="#strings">V5.4</a></blockquote>
+
+<h3>
+<a NAME="calendar axes"></a>Support for non-Gregorian calendar axes</h3>
+
+<blockquote>The NetCDF conventions document discusses and defines usage
+for different calendar axes.&nbsp; See:
+<br><a href="http://www.cgd.ucar.edu/cms/eaton/netcdf/merge_current.html#cal">http://www.cgd.ucar.edu/cms/eaton/netcdf/merge_current.html#cal</a>
+<p>The NetCDF conventions recommend that the calendar be specified by the
+attribute <b>calendar</b> which is assigned to the time coordinate variable.
+These conventions for calendars are implemented in Ferret version 5.3&nbsp;
+The calendars defined are: Gregorian (the default), noleap (365 day years),
+Julian (every four years is leap year), 360day (years are 360 days divided
+into 30-day months).&nbsp; These calendars are compatible with the Udunits
+standard which has slightly different naming conventions.
+<br>NetCDF files use the attribute time:calendar when there is a non-Gregorian
+calendar associated with a data set, i.e.
+<br>&nbsp; <tt>time:calendar=noleap</tt>
+<p><tt>Example: </tt>Define a calendar axis, regrid an existing variable
+to this axis:
+<br><tt>yes? DEFINE AXIS/CALENDAR=360DAY/T="15-JAN-1982":"15-DEC-1985":30/UNITS=days&nbsp;
+tmodel</tt>
+<br><tt>yes? LET twind = uwnd[GT=tmodel@NRST]</tt>
+<p>When regridding from one calendar axis to another the length of a year
+is assumed to be constant, therefore the regridding calculates a scale
+factor based on the length of a second in each calendar, computed from
+the number of seconds per year for the calendars.</blockquote>
+
+<h3>
+<br>
+<a NAME="capture unix shell output"></a>Output from Unix shell commands
+may be captured in Ferret</h3>
+As with this example.
+<p><tt>&nbsp;&nbsp;&nbsp;&nbsp; yes? let a = {system:"ls"}</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; yes? list a</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{SYSTEM:"ls"}</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp; / 1:"TutorialModels98.zip"</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp; / 2:"ferret.jnl"</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3&nbsp;&nbsp; / 3:"movies.zip"</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4&nbsp;&nbsp; / 4:"movies1.zip"</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5&nbsp;&nbsp; / 5:"movies2.zip"</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6&nbsp;&nbsp; / 6:"movies3.zip"</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 7&nbsp;&nbsp; / 7:"roseent8054c_timelocked2.exe"</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8&nbsp;&nbsp; / 8:"tutorial.zip"</tt>
+<br>&nbsp;
+<h3>
+<a NAME="date/time symbols"></a>New automatically defined symbols for date
+and time</h3>
+
+<ul>
+<li>
+($SESSION_DATE)</li>
+
+<li>
+($SESSION_TIME)</li>
+</ul>
+
+<h3>
+<a NAME="xboxlo,xboxhi"></a>New pseudo-variables reveal grid cell bounds</h3>
+
+<blockquote>XBOXLO, XBOXHI, YBOXLO, ... reveal the grid cell lower and
+upper bounds explicitly</blockquote>
+
+<h3>
+<a NAME="show axis"></a>SHOW AXIS (and SHOW GRID/[axis]) enhanced</h3>
+
+<blockquote>enhanced to show lower bound of each grid cell</blockquote>
+<a NAME="show grid arguments"></a><b><font size=+1>SHOW GRID, SET GRID,
+DEFINE GRID/LIKE= and SET VAR/GRID=&nbsp;&nbsp;&nbsp; can take expressions
+as arguments</font></b>
+<h3>
+<a NAME="expressions formatting"></a>Immediate mode (grave accent) expressions
+formatting</h3>
+
+<blockquote>These may be formatted with w=width or zw=zero-filled width.
+For example
+<p><tt>yes? SAY Answer: `5.3,w=8`</tt>
+<br><tt>Answer:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5.3</tt>
+<br><tt>yes? SAY Answer: `5.3,zw=8`</tt>
+<br><tt>Answer: 000005.3</tt></blockquote>
+
+<h3>
+<a NAME="nrst"></a>Nearest coordinate regridding transformation @NRST</h3>
+
+<blockquote>Nearest coordinate regridding VAR[GX=newaxis@NRST] chooses
+the value from the source axis coordinate closest to the destination axis.
+If source coordinates above and below are equally close to a destination
+coordinate the value at the&nbsp; lower coordinate will be chosen. (This
+is most useful for regridding between axes whose coordinate values are
+very close, though not exactly matched -- e.g. between equally and unequally
+spaced monthly time axes.)</blockquote>
+
+<h3>
+<a NAME="symbols in repeat loops"></a>Ferret symbols (e.g. "($symbol)")
+that are used inside of REPEAT loops are now re-translated at each repetition
+of the loop</h3>
+
+<h3>
+<a NAME="multi-line"></a>Multi-line commands (continuation lines)</h3>
+
+<blockquote>Command lines ending with back slash are regarded as incomplete
+-- a special prompt is given to indicate that the next line is a continuation
+.
+<p>Example:
+<br><tt>yes? let a = 123 + 456 + \</tt>
+<br><tt>...? 789</tt>
+<br><tt>yes? list a</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+123 + 456 + 789</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1368.</tt>
+<br>&nbsp;</blockquote>
+<a NAME="command buffer length"></a><b><font size=+1>The length of the
+command buffer is increased to 2048 characters</font></b>
+<h3>
+<a NAME="return arguments"></a>New immediate mode RETURN arguments</h3>
+
+<ul>
+<li>
+RETURN=DSET, DSETNUM, DSETPATH to&nbsp; recover data set information from
+an expression</li>
+
+<li>
+RETURN=BAD to recover the missing value flag from an expression</li>
+</ul>
+
+<h3>
+<a NAME="99args"></a>Up to 99 arguments for Go commands using either $nn
+or ($nn) syntax</h3>
+
+<ul>The syntax $nn (nn may be 1 through 99) is equivalent to to ($nn),
+however the parentheses enclosed form is generally preferred as it avoids
+ambiguities:
+<ul>
+<li>
+<tt>XSEQUENCE($1)</tt> will be misinterpreted whereas <tt>XSEQUENCE(($1))</tt>
+is clear</li>
+
+<li>
+<tt>($1)2.dat</tt> will substitute argument 1 as a prefix to <tt>"2.dat"</tt>
+and <tt>($12).dat</tt> will substitute argument 12 as a prefix to <tt>".dat"</tt>.
+Specifying <tt>$12.dat</tt> is equivalent to <tt>($12).dat</tt> but is
+less clear.</li>
+</ul>
+</ul>
+
+<h3>
+<a NAME="EVN"></a>New transformation @EVNT ("event mask")<tt>.</tt></h3>
+
+<ul>This transformation locates "events" in data. An event is the occurrence
+of a particular value. The output steps up by a value of 1 for each event,
+starting from a value of zero. (If the variable takes on exactly the value
+of the event trigger the +1 step occurs on that point.&nbsp; If it crosses
+the value, either ascending or descending, the step occurs on the first
+point after the crossing.)
+<p>For example, if you wanted to know the maximum value of the second wave,
+where (say) rising above a magnitude of 0.1 in variable "ht" represented
+the onset of a wave, then
+<p><tt>&nbsp;&nbsp; yes? let wave2_mask = IF ht[T=@evnt:0.1] EQ 2 THEN
+1</tt>
+<p><tt>is a mask for the second wave, only. The maximum waveheight may
+be found with</tt>
+<p><tt>&nbsp;&nbsp; yes? let wave2_ht = wave2_mask * ht</tt>
+<br><tt>&nbsp;&nbsp; yes? let wave2_max_ht = wave2_ht[T=@max]</tt>
+<p>Note that @EVNT can be used together with @LOC and @WEQ to determine
+the location when an event occurs and the value of other variables as the
+event occurs, respectively. Since there may be missing values in the data,
+and since the instant at which the event occurs may lie immediately before
+the step in value for the event mask, the following expression is a general
+solution.
+<p><tt>&nbsp;&nbsp; yes? let event_mask = my_var[t=@evnt:&lt;value>]</tt>
+<br><tt>&nbsp;&nbsp; yes? let event_n = IF ABS(MISSING(event_mask[L=@SBX],event_mask)-n)
+LE 0.67 THEN</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; my_var</tt>
+<p>So that
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; event_n[t=@loc:&lt;value>]&nbsp; is the
+time at which event "n" occurs</tt>
+<br>and
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; event_n[t=@weq:&lt;value>]&nbsp; is the
+integrating kernel (see @WEQ)</tt></ul>
+
+<h3>
+&nbsp;<a NAME="setvar/name"></a>Added SET VARIABLE/NAME=</h3>
+
+<blockquote>This is effectively a RENAME command -- applies to all classes
+of variables (not pseudo-variables). Useful for "repairing" variables whose
+definitions are inadequate as-is but whose variable names are significant.
+A common application of this is in creating output netCDF files in which
+contain modified versions of variables from input files.</blockquote>
+<a NAME="NetCDF modulo"></a><b><font size=+1>NetCDF time axes encoded as
+year 0000 or 0001 are automatically flagged as modulo</font></b>
+<h3>
+<a NAME="animate on the fly"></a>Ability to animate on the fly</h3>
+
+<blockquote><tt>REPEAT/ANIMATE[/LOOP=n]</tt>
+<br>is used to start an animation sequence. Given LOOP=n, the animation
+sequence will repeat n times.
+<p>Example:
+<br><tt>&nbsp;&nbsp;&nbsp; yes? set data coads_climatology</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; yes? repeat/l=1:12/animate/loop=5 (shade sst;
+go fland)</tt>
+<p>Known bug/feature:&nbsp; It is necessary to execute some other plot
+before animating.&nbsp; Otherwise, the first time through the animation,
+the graphics window remains blank.&nbsp; This restriction will be lifted
+in the official V5.3 release.
+<p>NOTE: In order to properly display on SGI's, it is necessary to have
+backing store enabled for the Xserver.
+<br>&nbsp;</blockquote>
+
+<h3>
+<a NAME="flowline"></a><font size=+1>FLOWLINE command draws "flowlines"
+from vector components</font></h3>
+
+<blockquote>(in beta versions this was named STREAKLINE).&nbsp; A new qualifier
+to the VECTOR command VECTOR/FLOWLINE (alias FLOWLINE) draws continuous
+flowlines from the vector components U and V.&nbsp;&nbsp; The qualifier
+/DENSITY controls the number of lines drawn.&nbsp; There is also a 4-argument
+form of this command for drawing flowlines in curvilinear coordinates.
+<b>Note
+that Ferret does not compute a stream function, but draws a pathline integration
+of a 2-dimensional instantaneous flow field.&nbsp;&nbsp; In a 3-dimensional
+flow field the plots are only useful as a qualitative visualization tool</b>.
+<p>Example:
+<br><tt>yes? USE coads_climatology</tt>
+<br><tt>yes? SET REGION/x=150e:130w/y=40s:50n/l=6</tt>
+<br><tt>yes? FLOW/DENSITY=4 uwnd,vwnd</tt>
+<p>The underlying algorithm is used with permission from the GrADS program.
+Our thanks to COLA, the Center for Ocean-Land-Atmosphere Studies, for access
+to this technique.</blockquote>
+
+<h3>
+<a NAME="plot/step"></a>Step function plots</h3>
+
+<blockquote>PLOT/STEP and PLOT/STEP=connected
+<br>These qualifiers give a plot style that is consistent with grid cell
+interpretation of data. Especially useful for time series to show the span
+of each time bin.</blockquote>
+
+<blockquote>&nbsp;</blockquote>
+
+<h3>
+<a NAME="log axes"></a>New PLOT qualifiers /VLOG and /HLOG set log axes
+for plots.</h3>
+
+<ul>/VLOG sets a vertical log axis, /HLOG sets a horizontal log axis. If
+/VLIMITS or /HLIMITS is specified, they should be in data units (not log10
+axis units).&nbsp;&nbsp; If the axis is a depth axis, an inverse log axis
+is drawn.
+<p>Note that setting axtype with a PPLUS call before the plot call will
+not result in a log plot, though making an axtype setting with PLOT/SET_UP
+still works as in previous versions.
+<p>new syntax:
+<br><tt>&nbsp;&nbsp; yes? PLOT/VLOG/VLIMITS=10:1000&nbsp; my_ fcn&nbsp;
+! plots a function on a log axis</tt>
+<p>replaces older syntax:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; yes? ppl axtype 1, 3
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; yes? PLOT/VLIMITS=1:3 my_fcn&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+! This will NOT produce a log plot, as the
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+! PLOT command resets the status of the axes.
+<br>&nbsp;
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; yes? PLOT/SET_UP/vlimits=1:3
+my_fcn&nbsp;&nbsp; ! These commands duplicates the new syntax.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; yes? ppl axtype, 1, 3
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; yes? ppl plot
+<br>&nbsp;</ul>
+
+<h3>
+<a NAME="delimited files"></a>Ability to read "delimited" files (e.g. Excel
+spreadsheet outputs)</h3>
+
+<blockquote><tt>SET DATA/FORMAT=DELIMITED[/DELIMITERS=][/TYPE=][/VAR=]
+filename</tt>
+<p>initializes a file of mixed numerical, string, and date fields. If the
+data types are not specified the file will be analyzed automatically to
+determine data types. Using delimited files, the number of variables that
+can be read from a single file is increased from 20 to 100.
+<p>/DELIMITER - list of field delimiters. Default is tab or comma&nbsp;&nbsp;
+e.g. /DELIM="X,\t,\,"
+<br>special characters include
+<blockquote>
+<li>
+\b - blank</li>
+
+<li>
+\t - tab</li>
+
+<li>
+\n - newline</li>
+
+<li>
+\nnn - decimal value from ASCII table</li>
+</blockquote>
+/TYPE is the list of data types of the fields. Field types may be any of
+<blockquote>
+<li>
+"-" - skipped</li>
+
+<li>
+NUMERIC</li>
+
+<li>
+TEXT</li>
+
+<li>
+LATITUDE - e.g.&nbsp; 87S or 21.5N (interpreted as negative or positive,
+respectively)</li>
+
+<li>
+LONGITUDE - e.g. 160W or 30E (interpreted as negative or positive, respectively)</li>
+
+<li>
+DATE - e.g. mm/dd/yy or mm/dd/yyyy or yyyy-mm-dd or yyyymmdd - value returned
+is days from 1-jan-1900 (consistent with the DAYS1900 function)</li>
+
+<br>EURODATE - e.g. dd/mm/yy or dd/mm/yyyy or yyyy-mm-dd TIME - e.g. hh:mm
+or hh:mm:ss.s</blockquote>
+</blockquote>
+
+<h3>
+<a NAME="MC checking"></a>Enhanced ability to associate time series files
+into a MC (multi-CDF) data set</h3>
+
+<blockquote>Previous to version 5.2 Ferret performs sanity checking on
+an MC data set by comparing the time coordinates with those found in the
+data files as the data are read.&nbsp; In version 5.3 and higher no sanity
+checks are performed. This means that the MC descriptor mechanism can be
+used to associate into time series groups of files that are not internally
+self documenting with respect to time, however, it also shifts an additional
+burden onto the user of carefully checking the validity of the STEPFILE
+records in the descriptor files.&nbsp;&nbsp; Also note there is enhanced
+documentation of MC descriptors in the Users Guide, Chapter 10 sec 4.</blockquote>
+<a NAME="save/append"></a><b><font size=+1>Performance of netCDF "SAVE/APPEND
+..." greatly increased for large file output</font></b>
+<p><a NAME="windows files"></a><b><font size=+1>Support for command files
+created by Windows (embedded CR characters)</font></b>
+<blockquote>Files written by Windows software have embedded carriage return
+characters.&nbsp; Journal files with this formatting can now be read by
+Ferret.</blockquote>
+
+<h3>
+<a NAME="ef utility for custom axes"></a>External functions utility calls
+may be made during custom axis creation</h3>
+
+<ul>
+<li>
+<b>ef_get_one_val</b>&nbsp;&nbsp; can be called to obtain constant values
+during custom axis creation</li>
+
+<li>
+<b>ef_get_string</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; can be called
+to obtain a string value during custom axis creation</li>
+</ul>
+<a NAME="zaxreplace"></a><b><font size=+1>New functions ZAXREPLACE_AVG
+and ZAXREPLACE_BIN</font></b>
+<blockquote>These functions are similar to ZAXREPLACE but use other regridding
+methods to replace a Z axis
+<p>ZAXREPLACE_AVG(V,ZVALS,ZAX)
+<br>Use weighted averaging to convert between alternative monotonic Z axes.&nbsp;
+The weighting is done according to the portion&nbsp; of the source box that lies within
+the destination grid cell.
+<p>ZAXREPLACE_BIN(V,ZVALS,ZAX)
+<br>Use unweighted averaging to convert between alternative monotonic Z
+axes.&nbsp; The function finds the source points within each destination box and averages them.</blockquote>
+
+<a NAME="eofargs"></a><b><font size=+1>Arguments to EOF functions changed.</font></b>
+<p>The second argument in previous versions has been removed.  This argument had the
+functions scale and return only EOF spatial and time functions
+up to a given percent variance explained.  However this didn't save much 
+computation.  The functions now return all the EOF's.
+<pre>
+     yes?  SHOW FUNCTION eof_*
+     EOF_SPACE(A,frac_timeser)
+         Compute EOF spacial fields from XYT field
+         A: Variable in x,y,t; may be fcn of z
+         frac_timeser: Use only those time series with this fraction valid data
+     EOF_STAT(A,frac_timeser)
+         EOF statistics from XYT field. j=1:#EOFs, j=2:%variation,j=3:eigenvalues
+         A: Variable in x,y,t; may be fcn of z
+         frac_timeser: Use only those time series with this fraction valid data
+     EOF_TFUNC(A,frac_timeser)
+         Compute EOF time functions from XYT field.
+         A: Variable in x,y,t; may be fcn of z
+         frac_timeser: Use only those time series with this fraction valid data</pre><br>
+
+<p><a NAME="strings"></a><b><font size=+1>Support for string variables</font></b>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; yes? LET a =&nbsp; {"s1","s2", ,"s3"}
+<br>&nbsp;&nbsp;&nbsp;&nbsp; yes? LIST a
+<br>&nbsp;&nbsp;&nbsp;&nbsp; yes? SAVE/CLOBBER/FILE=test_string.cdf/HEADING=enhanced
+a[i=2:4]
+<br>&nbsp;&nbsp;&nbsp;&nbsp; yes? LIST a[i=@shf]
+<ul>
+<li>
+Strings in an array may be variable length</li>
+
+<br>&nbsp;
+<li>
+The syntax {"a","b","c"} denotes an array of strings.&nbsp; Two commas
+in a row denotes a null (missing value) string. Single and double quoted
+strings are both allowed.</li>
+
+<br>&nbsp;
+<li>
+Algebraic operations:</li>
+
+<ul>
+<li>
+Logical operators EQ, LT, LE, ... These operators are case-insensitive
+(functions will be provided later that are case-sensitive and include UPCASE,
+DNCASE)</li>
+
+<li>
+@SHF</li>
+
+<li>
+IF cond THEN string_array1 ELSE string_array2</li>
+
+<li>
+Concatenation with "+":&nbsp;&nbsp; a = "good" + "bye"</li>
+
+<li>
+SAMPLE* functions may take string or numerical arrays as arguments</li>
+
+<li>
+Regridding with @ASN, @XACT, @NRST</li>
+
+<br>&nbsp;</ul>
+
+<li>
+Input and output to netCDF files.&nbsp; In the file the string axis is
+the fastest moving dimension and all strings are the same length (equal
+to the maximum length of the strings being written). Extra character spaces
+are padded with nulls. If variable length strings are written out, then
+when read back they will again be variable length.</li>
+
+<br>&nbsp;
+<li>
+Function SPAWN executes a Unix system command and returns the result in
+a string array.</li>
+
+<br>&nbsp;
+<li>
+The syntax "SPAWN:"command" allows the output of a Unix command to be mixed
+with other strings. For example,</li>
+
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LET a = {"first.nc", SPAWN:"ls
+*.nc","last.nc"}
+<br>&nbsp;
+<li>
+Internally all variables now have data types</li>
+
+<br>&nbsp;
+<li>
+Grave accents around a scalar string variable return the string</li>
+
+<br>&nbsp;
+<li>
+(alpha) can create external functions where arguments may be either string
+or float -- e.g. "var" in SAMPLEI(var, indices)</li>
+
+<br>&nbsp;
+<li>
+(alpha) functions can return strings (e.g. SPAWN)</li>
+</ul>
+<a NAME="modulo strides"></a><b><font size=+1>Strides can be applied across
+the "branch point" of a modulo variable</font></b>
+<blockquote>Strides can be applied across the "branch point" of a modulo
+variable without loss of efficiency for netCDF data set, as long as the
+stride is an integer fraction of the modulo length* (the number of points
+on the axis)</blockquote>
+<a NAME="nesting go files"></a><b><font size=+1>Nesting of GO files is
+no longer limited to 10 deep.</font></b>
+<blockquote>Ferret now supports up to 200 deep, but typically you will
+limited to fewer by Unix itself.</blockquote>
+<a NAME="exit qualifiers"></a><b><font size=+1>New qualifiers EXIT/LOOP,
+EXIT/SCRIPT, EXIT/PROMPT, EXIT/PROGRAM</font></b>
+<blockquote><tt>EXIT/LOOP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit from
+current repeat loop</tt>
+<br><tt>EXIT/SCRIPT&nbsp;&nbsp;&nbsp;&nbsp; exit from current script</tt>
+<br><tt>EXIT/PROMPT&nbsp;&nbsp;&nbsp;&nbsp; exit to Ferret prompt</tt>
+<br><tt>EXIT/PROGRAM&nbsp;&nbsp;&nbsp; exit program completely</tt>
+<p>"QUIT" in a command file is an alias for EXIT without a qualifier.&nbsp;
+It will exit the current script, or the program if you are at the Ferret
+prompt.</blockquote>
+
+<p><br><a NAME="define view/axes"></a><b><font size=+1>New option for defining
+viewports,&nbsp; DEFINE VIEW/AXES</font></b>
+<blockquote>Here the user's limits are interpreted as the normalized positions
+of the plot axes rather than of the entire viewport.&nbsp; For example:
+<blockquote><tt>yes? DEFINE VIEWPORT/AXES/XLIM=0.5:1/YLIM=0:0.5 lrax</tt>
+<br><tt>yes? SET VIEW lrax</tt>
+<br><tt>yes? PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20); pause</tt>
+<br><tt>yes? PLOT/VS/LINE/NOYADJUST/I=1:314 i*cos(i/20),i*sin(i/20)</tt></blockquote>
+</blockquote>
+
+<ul>
+<li>
+Can change PPL ORIGIN and PPL AXLEN only <i>after</i> SET VIEW is issued</li>
+
+<li>
+Use new qualifier PLOT/NOYADJUST to avoid resetting the Y origin -- relevant
+during PLOT commands that require extra room for a large key block under
+the axes or for viewports that lie close to the bottom of the window where
+there may not be much room below the Y axis</li>
+</ul>
+<a NAME="memsize"></a><b><font size=+1>Doubled the default memory to 6.4
+Mwords</font></b>
+<blockquote>Recall that you can always change the memory at startup with
+the -memsize option, or during a Ferret session with the SET MEMORY command.</blockquote>
+<a NAME="ppl memory buffer"></a><b><font size=+1>Plotting is no longer
+limited by a fixed plot memory buffer</font></b>.
+<blockquote>Memory for plotting is allocated as needed.&nbsp; Previously
+there was a fixed memory buffer used for plotting.</blockquote>
+<br>
+<a NAME="dashed lines"></a><b><font size=+1>Control of dashed lines with
+PLOT/DASH[=dn1,up1,dn2,up2]</font></b>
+<blockquote>This allows use of all the color and thickness controls available
+with the PLOT qualifiers and control over the dash characteristics using
+the arguments as in the PPLUS "LINE" command:&nbsp; DOWN1, UP1, DOWN2,
+UP2 in inches.
+<p>Example:
+<br><tt>plot/dash/i=1:1000 sin(62.8*i)</tt>
+<br><tt>plot/over/dash=(0.4,0.1,0.4,0.1)/color=red/thick/i=1:1000 sin(62.8*(i+10)
+)</tt>
+<br><tt>plot/over/dash=(0.1,0.1,0.04,0.05)/color=blue/thick=1/i=1:1000
+sin(62.8*(i+20) )</tt>
+<br>&nbsp;</blockquote>
+<a NAME="plot/axes"></a><b><font size=+1>New plot qualifier /AXES[=top,bottom,left,right]</font></b>
+<blockquote>For all plot commands, turns plotting of individual axes off
+and on.&nbsp; This replaces the use of the "PPL AXSET" command.&nbsp; The
+syntax is
+<p>PLOT/AXES[=top,bottom,left,right]&nbsp; where the arguments are 1 to
+turn the axis on and 0 to turn it off.&nbsp; For example:
+<p>CONTOUR/AXES=0,1,1,0&nbsp; sst&nbsp;&nbsp; ! Plots the bottom and left
+axes only</blockquote>
+
+<p><br><a NAME="sym=dot"></a><b><font size=+1>New PLOT/SYMBOL=DOT</font></b>
+<blockquote>Makes a dot at each point.&nbsp; This implements the GKS "dot"
+polymarker,&nbsp; which uses the smallest dot that can be represented on
+the display device (Note the dots may not show up well on all devices).</blockquote>
+<a NAME="compress_by"></a><b><font size=+1>New functions COMPRESS*_BY compress
+data according to a mask</font></b>
+<blockquote>COMPRESSI_BY (var, mask), COMPRESSJ_BY (var, mask), COMPRESSK_BY
+(var, mask), COMPRESSL_BY (var, mask)</blockquote>
+
+<blockquote>Compress variable "dat" along its I (or J, K, or L) axis using
+the (multi-dimensional) mask supplied in the second argument.
+<br>For example:
+<p><tt>yes? LET mask = {1,,1,,1} + 0*L[l=101:102] + 0*K[k=10:11]</tt>
+<br><tt>yes? LIST mask</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{1,,1,,1} + 0*L[L=101:102] + 0*K[K=10:11]</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5</tt>
+<br><tt>&nbsp;---- L:101 T:&nbsp;&nbsp; 101</tt>
+<br><tt>&nbsp;10&nbsp;&nbsp; / 10:&nbsp; 1.000&nbsp;&nbsp; ....&nbsp; 1.000&nbsp;&nbsp;
+....&nbsp; 1.000</tt>
+<br><tt>&nbsp;11&nbsp;&nbsp; / 11:&nbsp; 1.000&nbsp;&nbsp; ....&nbsp; 1.000&nbsp;&nbsp;
+....&nbsp; 1.000</tt>
+<br><tt>&nbsp;---- L:102 T:&nbsp;&nbsp; 102</tt>
+<br><tt>&nbsp;10&nbsp;&nbsp; / 10:&nbsp; 1.000&nbsp;&nbsp; ....&nbsp; 1.000&nbsp;&nbsp;
+....&nbsp; 1.000</tt>
+<br><tt>&nbsp;11&nbsp;&nbsp; / 11:&nbsp; 1.000&nbsp;&nbsp; ....&nbsp; 1.000&nbsp;&nbsp;
+....&nbsp; 1.000</tt>
+<p><tt>yes?&nbsp; LIST compressi_by({11,22,33,44,55},mask)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+COMPRESSI_BY({11,22,33,44,55},MASK)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5</tt>
+<br><tt>&nbsp;---- L:101 T:&nbsp;&nbsp; 101</tt>
+<br><tt>&nbsp;10&nbsp;&nbsp; / 10:&nbsp; 11.00&nbsp; 33.00&nbsp; 55.00&nbsp;&nbsp;
+....&nbsp;&nbsp; ....</tt>
+<br><tt>&nbsp;11&nbsp;&nbsp; / 11:&nbsp; 11.00&nbsp; 33.00&nbsp; 55.00&nbsp;&nbsp;
+....&nbsp;&nbsp; ....</tt>
+<br><tt>&nbsp;---- L:102 T:&nbsp;&nbsp; 102</tt>
+<br><tt>&nbsp;10&nbsp;&nbsp; / 10:&nbsp; 11.00&nbsp; 33.00&nbsp; 55.00&nbsp;&nbsp;
+....&nbsp;&nbsp; ....</tt>
+<br><tt>&nbsp;11&nbsp;&nbsp; / 11:&nbsp; 11.00&nbsp; 33.00&nbsp; 55.00&nbsp;&nbsp;
+....&nbsp;&nbsp; ....</tt></blockquote>
+<a NAME="list heading"></a><b><font size=+1>Modified heading output of
+LIST command</font></b>
+<blockquote>New lines list the file name and path, and complete information
+on the subset of the data being listed.&nbsp; See the next section on LIST/WIDTH
+for an example.</blockquote>
+<a NAME="list/width"></a><b><font size=+1>New qualifier: LIST/WIDTH=columns</font></b>
+<blockquote>For multi-column output, controls the width of the listing
+on the page, for example:
+<p><tt>yes? USE coads_climatology</tt>
+<br><tt>yes? LIST/L=1/WIDTH=50/Y=0:4 sst</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+VARIABLE : SEA SURFACE TEMPERATURE (Deg C)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+DATA SET : COADS Monthly Climatology (1946-1989)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+FILENAME : coads_climatology.des</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+FILEPATH : /home/ja9/tmap/fer_dsets/descr/</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SUBSET&nbsp;&nbsp; : 180 by 2 points (LONGITUDE-LATITUDE)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TIME&nbsp;&nbsp;&nbsp;&nbsp; : 16-JAN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 06:00</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... listing every&nbsp; 36th point</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+21E&nbsp;&nbsp;&nbsp; 93E&nbsp;&nbsp; 165E&nbsp;&nbsp; 123W&nbsp;&nbsp;&nbsp;
+51W</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1&nbsp;&nbsp;&nbsp;&nbsp; 37&nbsp;&nbsp;&nbsp;&nbsp; 73&nbsp;&nbsp;&nbsp;
+109&nbsp;&nbsp;&nbsp; 145</tt>
+<br><tt>&nbsp;3N&nbsp;&nbsp; / 47:&nbsp;&nbsp; ....&nbsp; 28.30&nbsp; 29.04&nbsp;
+25.36&nbsp; 27.49</tt>
+<br><tt>&nbsp;1N&nbsp;&nbsp; / 46:&nbsp;&nbsp; ....&nbsp; 28.29&nbsp; 29.12&nbsp;
+24.82&nbsp; 27.49</tt>
+<p><tt>yes? LIST/L=1/WIDTH=80/Y=0:4 sst</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+VARIABLE : SEA SURFACE TEMPERATURE (Deg C)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+DATA SET : COADS Monthly Climatology (1946-1989)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+FILENAME : coads_climatology.des</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+FILEPATH : /home/ja9/tmap/fer_dsets/descr/</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SUBSET&nbsp;&nbsp; : 180 by 2 points (LONGITUDE-LATITUDE)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TIME&nbsp;&nbsp;&nbsp;&nbsp; : 16-JAN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 06:00</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... listing every&nbsp; 18th point</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+21E&nbsp;&nbsp;&nbsp; 57E&nbsp;&nbsp;&nbsp; 93E&nbsp;&nbsp; 129E&nbsp;&nbsp;
+165E&nbsp;&nbsp; 159W&nbsp;&nbsp; 123W&nbsp;&nbsp;&nbsp; 87W&nbsp;&nbsp;&nbsp;
+51W&nbsp;&nbsp;&nbsp; 15W</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1&nbsp;&nbsp;&nbsp;&nbsp; 19&nbsp;&nbsp;&nbsp;&nbsp; 37&nbsp;&nbsp;&nbsp;&nbsp;
+55&nbsp;&nbsp;&nbsp;&nbsp; 73&nbsp;&nbsp;&nbsp;&nbsp; 91&nbsp;&nbsp;&nbsp;
+109&nbsp;&nbsp;&nbsp; 127&nbsp;&nbsp;&nbsp; 145&nbsp;&nbsp;&nbsp; 163</tt>
+<br><tt>&nbsp;3N&nbsp;&nbsp; / 47:&nbsp;&nbsp; ....&nbsp; 27.42&nbsp; 28.30&nbsp;
+28.10&nbsp; 29.04&nbsp; 27.30&nbsp; 25.36&nbsp; 27.08&nbsp; 27.49&nbsp;
+27.90</tt>
+<br><tt>&nbsp;1N&nbsp;&nbsp; / 46:&nbsp;&nbsp; ....&nbsp; 27.67&nbsp; 28.29&nbsp;
+28.48&nbsp; 29.12&nbsp; 26.62&nbsp; 24.82&nbsp; 25.82&nbsp; 27.49&nbsp;
+27.41</tt>
+<br>&nbsp;</blockquote>
+<a NAME="/title"></a><b><font size=+1>Allow the qualifier /TITLE for DODS
+or NetCDF datasets</font></b>
+<blockquote>SET DATA/TITLE&nbsp; associates a title with a dataset (previously
+not allowd for these file types.<b><font size=+1>)</font></b>
+<br><b><font size=+1></font></b>&nbsp;
+<br><b><font size=+1></font></b>&nbsp;</blockquote>
+
+<!--#include virtual="/footer.txt" -->
+</body>
+</html>

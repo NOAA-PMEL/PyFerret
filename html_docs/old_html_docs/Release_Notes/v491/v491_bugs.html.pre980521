@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>Ferret Version 4.91 bug-fix list</TITLE>
+</HEAD>
+<BODY>
+
+<H1>Ferret Version 4.91: bugs fixed</H1>
+<hr>
+    <ul>
+      <li>Fprint problems solved
+	<ul>
+	  <li> colored lines not converted to dashes
+	  <li> monochrome printer problems
+	</ul>
+
+      <li> l=@ave failing to compress to a point
+
+      <li>Problem displaying to Truecolor displays 
+
+      <li> command parser crash when more than 20 elements are included on a command line
+
+      <li> increased allowed size of variable definitions
+
+      <li> shade levels not set properly when top level of field is negative
+
+
+      <li> extended child axis names caused crash when writing netcdf files
+
+      <li> using the "~" in a go command crashed osf version of ferret
+ 
+      <li> @AVE transformation was being ignored when explicit limits were given
+
+      <li> parse error interpreting   gt="date":"date":delta
+
+</ul>
+<hr>
+<i><!-- hhmts start -->
+Last modified: Thu Apr  2 19:30:46 MET DST 1998
+<!-- hhmts end -->
+</BODY>
+</HTML>
+
+

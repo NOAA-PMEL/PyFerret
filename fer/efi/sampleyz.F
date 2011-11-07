@@ -441,8 +441,6 @@ cbf         IF (zpt - zax(k1,1,1,1) ) .LE. eps) kmatch = k1
 
          ENDIF
 
-c         print *, ' ypt,zpt,jbot,kbot', ypt,zpt,jbot,kbot
-
          IF (kmatch .NE. 0) then
             ktop = kbot
          ELSE

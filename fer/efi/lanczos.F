@@ -240,9 +240,6 @@
          weight( k,0,0,0) = ( sin(bb)/pik - sin(aa)/pik )*sigma
       end do
 
-c      print*,'Weights for k=0,...,n:'
-c      print*,(weight(k,0,0,0), k=0,nn)
-
 ! For testing, calculate the response function...
 c      da = .0005
 c      aa = 0.0

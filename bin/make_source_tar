@@ -38,6 +38,7 @@ else if ( ${fer_name} == "pyferret" ) then
    set datestamp = `date +%F`
    set fer_name = "pyferret_${datestamp}"
 endif
+rm -rf html_docs
 
 # Make a clean temporary directory for the tar file contents
 set temp_dir = "/var/tmp/fer_src_$$"

@@ -1,0 +1,17 @@
+! err491_attrib_dp.jnl
+! kob  4/23/98
+
+! bug reported by  Donald S. Dunbar 4/21/98
+! 
+! there was a difference in behavior between v445 and v491.  the problem was
+! that between the versions, a bug was introduced into cd_get_attval.F 
+! which caused invalid values to be used if an attribute contained double
+! precision values.  the lines below read in a small sample of DD's cdf file
+! and list the variable elev. values should be around 2-3.
+!
+! routine modifed:  fmt/src/cd_get_attval.F
+
+
+use err491_attval.cdf 
+list elev
+

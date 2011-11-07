@@ -1,0 +1,20 @@
+! err491_days1900.jnl
+
+! 4/16/98 *kob*
+
+! crash w/ scalar variable passed to days1900 function
+
+! fixed in stk/operate.F:  array references were incorrect for com2 and
+! 			   com3 arrays at line ~1101
+
+
+let day = randu(i) * 30
+let year = 1901 + randu(i)*50
+let month = 5 + 0*i		! array
+
+let jday = days1900(year,month,day)
+list/i=1:5 jday			! OK
+
+let month = 5			! scalar
+list/i=1:5 jday			! crash!!
+

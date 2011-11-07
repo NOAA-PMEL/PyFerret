@@ -1,0 +1,31 @@
+!
+! err491_interp.jnl 
+
+! bug reported by billy kessler
+
+! below script caused the following error message:
+! Subscript out of range on file do_fill_interp.F, line 333, procedure do_fill_interp.
+! Subscript number 4 has value 157 in array com.
+! Abort
+
+! fixed by *sh*  w/ mod to utl/confine_axis.F
+! 
+
+
+define axis/t=15-jan-1984:15-dec-1996/npoints=156/unit=mon tax180mon
+define axis/y=10s:10n:1/unit=lat yax180by1
+define grid/t=tax180mon/y=yax180by1 gytdegbymonb
+
+file/format=unf/col=`156*21*8`/g=gytdegbymonb/var="smax,smz,smt,smd,so25,dh,sss,to25"/ord=ty epic-180-sal-map.dat
+
+set variable/bad=1.e35 so25
+
+! eliminate a single bad point
+let so25fx1 = if l ne 98 then so25 else 1.e35
+let so25fl = so25fx1[d=epic-180-sal-map.dat,l=@fln]
+let so25flsm = so25fl[l=@spz:3]
+
+
+! crashes
+plot/t=1-jan-1987:31-dec-1996 so25flsm[y=6s:3s@ave]
+

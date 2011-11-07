@@ -1,0 +1,71 @@
+<html>
+<head>
+   <title>Ferret v5.51 release notes</title>
+</head>
+<body>
+<C>
+<h1>
+<B>Ferret Version 5.51 Release Notes</B></h1>
+<font size=+1>March 3, 2003</font>
+</C>
+<BR><BR>
+<B><font size=+2>This is primarily a bug fix release.  Bug Fixes:</font></B>
+<BR><BR>
+
+
+<LI><B>Bug with SHADE/HLIMITS /VLIMITS fixed. </B>The limits were applied
+to the axes, but the full range of data was used for the plot itself. (Bug was
+seen in sessions where only x-windows open, but not if a metafile was open, 
+and not in batch mode.)</LI><BR><BR>
+
+<LI><B>Can now use filenames that begin with a digit. </B>Previously, 
+"set data 12v1.cdf; can data 12v1" saw an argument starting with a digit 
+as a dataset number rather than a file name.</LI><BR><BR>
+
+<LI><B>Treat .nc extension consistently the way .cdf is used.</B> Previously, 
+for instance, the following failed to find and cancel dataset dat1:<BR>
+<PRE>
+    yes? use dat1.nc
+    yes? cancel dat1</PRE>
+</LI>
+
+
+<LI><B>Fix FILL plots in viewports defined with /AXES</B>. Fill plots were
+incorrectly clipped in these viewports.
+</LI><BR><BR>
+
+
+<LI><B>Plot a color key for viewport plots</B>, even if the key lies outside
+the viewport. This particularly applies to viewports that are defined with 
+/AXES.  Note that color keys are easily removed with SHADE/NOKEY or FILL/NOKEY.
+</LI><BR><BR>
+
+<LI><B>Fix location on page of the 1st viewport plotted</B>. When a viewport
+is defined with the /AXES qualifier, the first time in a session that
+a viewport was plotted it was mis-positioned on the plot page.
+</LI><BR><BR>
+
+<LI><B>Can re-define a time axis to have a different calendar type. </B>
+If a time axis is defined, its calendar can be changed by issuing a new
+DEFINE AXIS/CALENDAR= command.
+</LI><BR><BR>
+
+<LI><B>Bug reading seconds portion time origin from some NetCDF files. </B>
+Both of these formats are valid: "10-JUN-1996 04:03:36", and  "1996-06-10 04:03:36"
+</LI><BR><BR>
+
+<LI><B>Axes can be defined using more complex expressions.</B> For example,
+<PRE>
+    yes? LET a = {1,2,3}
+    yes? LET b = {2,3,4}
+
+    yes? DEFINE AXIS/X xax = a/2 + b/2
+    yes? LIST x[GX=XAX]
+</PRE>
+</LI><BR>
+
+</ul>
+
+<!--#include virtual="/footer.txt" -->
+</body>
+</html>

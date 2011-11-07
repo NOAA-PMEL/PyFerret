@@ -1,0 +1,179 @@
+<html>
+<head>
+   <title>Ferret V5.41 Release Notes</title>
+</head>
+<body>
+
+<h1>
+Ferret Version 5.41 Release notes</h1>
+
+<ul>
+<li>
+<a href="#new_features">New Features and Enhancements in Version 
+5.41</a><br><br></li>
+
+<li>
+<a href="#changes">Changes to options in Version 5.41</a><br><br></li>
+
+
+<li>
+<a href="#bug_fixes">Bug fixes in Version 5.41</a><br><br></li>
+
+
+<li>
+<a href="#known_bugs">Known bugs in Version 5.41</a><br><br></li>
+</ul>
+
+<blockquote>
+<blockquote>&nbsp;</blockquote>
+
+<h2>
+<a NAME="new_features"></a>New Features and Enhancements in Version 
+5.41</h2>
+
+<ul>
+
+
+<li>
+<b>New attribute for calendar type in NetCDF descriptor 
+files.&nbsp;&nbsp;</b> In the $BACKGROUND_RECORD use 
+D_CALTYPE&nbsp;&nbsp; =&nbsp; 'NOLEAP'&nbsp; for example, to specify a 
+non-standard calendar type for your data.<br><br></li>
+
+<li>
+<b>New internal string handling functions:&nbsp; </b>STRLEN, UPCASE, DNCASE,
+STRINDEX, STRRINDEX, SUBSTRING, STRCAT and STRFLOAT.<br><br></li>
+
+<li>
+<b>New option for continuous color keys</b> FILL/KEY=CONTINUOUS, and 
+SHADE/KEY=CONTINUOUS
+plot a color key without the lines between the different levels.<br><br></li>
+
+<li>
+<b>New option VECTOR/NOKEY</b><br><br></li>
+
+<li>
+<b>New option CANCEL AXIS/ALL</b>&nbsp; cancels user-defined axes, and 
+restores coordinate storage for irregularly-spaced axes.&nbsp; Also, 
+"yes? CANCEL AXIS axisname" cancels an axis and restores the coordinate 
+storage used when an irregular axes was defined.<br><br></li>
+
+<li>
+<b>Symbols YAXIS_MIN and YAXIS_MAX always defined after a plot is drawn.</b>
+Previously these were only defined when /VLIM option was specified on 
+the plotting command.  Now they are also defined when auto-scaling is used.
+<br><br></li>
+
+</ul>
+
+<h2><a NAME="changes"></a>Changed option in Version 5.41</h2>
+<ul><li>
+<b>PLOT/SYMBOL=DOT has been temporarily removed.</b>&nbsp; We need to 
+resolve some issues regarding metafiles and postscript.  This option 
+will be restored in future versions.
+<br><br></li></ul>
+
+<h2>
+<a NAME="bug_fixes"></a>Bug fixes in Version 5.41</h2>
+
+<ul>
+<li><b>Installation: Error messages about <i>libXm.so.2: cannot open shared 
+object file</i></b>&nbsp; Motif libraries are no longer required, as 
+they are linked statically in with the Ferret executable.<br><br></li>
+
+<li>
+<b>"**ERROR: illegal data type (float,string,...) for operation:"</b> 
+This error message occurred for some graphical operations on expressions 
+involving IF--THEN.&nbsp; Fixed.<br><br></li>
+
+<li>
+<b>Bug in strides at the IO level</b> which resulted in improper 
+wrapping of data (highly visible corruption).&nbsp; Fixed.<br><br></li>
+
+<li>
+<b>Ferret hangs when attempting to access invalid DODS URLS</b> Fixed.<br><br></li>
+
+<li>
+<b>SET DATA filename</b>&nbsp; finds files with the extension .nc as 
+well as .cdf<br><br></li>
+
+<li>
+<b>GIF creation now works with TrueColor visuals</b> as well as 
+PseudoColor visuals<br><br></li>
+
+<li>
+<b>Nested REPEATs involving parentheses </b>were parsed incorrectly. 
+Fixed.<br><br></li>
+
+<li>
+<b>Bugs/backwards compatibility issues with PPL commands.</b>  Previous 
+behavior is restored.  PPL commands make settings that persist 
+throughout the Ferret session.  Qualifiers to plot commands have their  
+effect only on that command:
+<UL>
+<li><b>PPL AXLABP</b> settings persist.<br><br></li>
+<li><b>PPL AXSET</b> persists; PLOT/AXES=  or SHADE/NOAXES apply only to 
+that one command.<br><br></li>
+<li><b>PPL LINE</b> settings persist, setting dash characteristics; 
+PLOT/DASH settings are only for that plot command<br><br></li>
+</UL>
+<li>
+<b>PLOT/VS/DASH[=]</b>&nbsp;&nbsp; allows dashed lines on PLOT/VS 
+plots.<br><br></li>
+
+<li>
+<b>SAMPLEXY function</b> did not check for missing data in the (x,y) 
+values to sample.<br><br></li>
+
+<li>
+<b>Horizontal log plots </b>had wrong pattern of tic marks on the axis.<br><br></li>
+
+<li>
+<b>POLYGONS with missing vertices</b> in overlay plots were not treated 
+correctly.<br><br></li>
+
+<li>
+<b>POLYGON plots now load all the PPLUS memory </b>needed for the plot 
+once per polygon call.<br><br></li>
+
+<li>
+<b>Overlays on POLYGON plots </b>now work.<br><br></li>
+
+<li>
+<b>POLYGON plots over a depth axis </b>work correctly (previously needed 
+a workaround where the vertices on the depth axis had to be multiplied 
+by -1).<br><br></li>
+
+<li>
+<b>Axis label formatting</b> for small negative numbers has been 
+corrected.<br><br></li>
+
+<li>
+<b>Regridding with @AVE</b> between unlike grids gave wrong results in 
+some cases. This is corrected.<br><br></li>
+
+<li>
+<b>Overlays having No Valid Data</b> now put this information in the key, 
+rather than across the middle of the plot.<br><br></li>
+
+</ul>
+
+
+<h2>
+<a NAME="known_bugs"></a>Known bugs  Version 5.41</h2>
+
+<ul>
+<li><b>Scaling of Curvilinear Vectors:</b> Vector arrows in curvilinear 
+coordinates are not scaled.  We have a fix for this which will be in the
+next release.<br><br></li>
+
+<li><b>Support for GIF creation using 24 bit color (TrueColor) visuals</b> 
+does not work under Solaris. <br><br></li>
+</ul>
+
+<p><br>
+<hr align="Left"><tt>17-Sep-2002</tt>
+
+<!--#include virtual="/footer.txt" -->
+</body>
+</html>

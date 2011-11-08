@@ -64,6 +64,7 @@ class PyQtPipedViewer(QMainWindow):
         '''
         super(PyQtPipedViewer, self).__init__()
         self.__pipe = cmndPipe
+        # create the label, that will serve as the canvas, in a scrolled area
         self.__scrollarea = QScrollArea(self)
         self.__label = QLabel(self.__scrollarea)
         defaultwidth = 850
@@ -87,8 +88,12 @@ class PyQtPipedViewer(QMainWindow):
         self.__somethingdrawn = False
         # maximum user Y coordinate - used by adjustPoint
         self.__userymax = 1.0
+        # scaling, upper left coordinates, and pictures for drawing
         self.__scalefactor = 1.0
+        self.__leftx = 0.0
+        self.__uppery = 0.0
         self.__viewpics = [ ]
+        # command helper object
         self.__helper = PyQtCmndHelper(self)
         self.createActions()
         self.createMenus()
@@ -238,9 +243,9 @@ class PyQtPipedViewer(QMainWindow):
         # start with a scaling call
         painter.scale(self.__scalefactor, self.__scalefactor)
         # redraw all the pictures
+        upperleftpt = QPointF(self.__leftx, self.__uppery)
         for viewpic in self.__viewpics:
-            # Using viewpic.play(painter) act differently with a QPrinter
-            painter.drawPicture(0, 0, viewpic) 
+            painter.drawPicture(upperleftpt, viewpic) 
 
     def redrawScene(self):
         '''
@@ -385,21 +390,33 @@ class PyQtPipedViewer(QMainWindow):
             else:
                 raise RuntimeError( self.tr("Unexpected file format name '%1'") \
                                         .arg(fileFilter) )
-            self.saveSceneToFile(fileName, fileFormat, True)
+            self.saveSceneToFile(fileName, fileFormat, True, True)
             self.__lastfilename = fileName
 
-    def saveSceneToFile(self, filename, imageformat=None, showPrintDialog=False):
+    def saveSceneToFile(self, filename, imageformat=None,
+                        transparentbkg=True, showPrintDialog=False):
         '''
-        Save the current scene to the named file.  If imageformat is None,
-        the format is guessed from the filename extension.
+        Save the current scene to the named file.  If imageformat
+        is None, the format is guessed from the filename extension.
+
+        If transparentbkg is False, the entire scene is initialized
+        to the last clearing color, using a filled rectangle for
+        vector images.
+        If transparentbkg is True, the alpha channel of the last
+        clearing color is set to zero before using it to initialize
+        the background color of raster images, and no background
+        filled rectangle is drawn in vector images.
+
+        If showPrintDialog is True, the standard printer options
+        dialog will be shown for PostScript and PDF formats,
+        allowing customizations to the file to be created.
         '''
         if ( imageformat == None ):
             # Guess the image format from the filename extension
             # to determine if it is a vector type, and if so,
             # which type. All the raster types use a QImage, which
             # does this guessing of format when saving the image. 
-            (fileroot, fileext) = os.path.splitext(filename)
-            fileext = fileext.lower()
+            fileext = ( os.path.splitext(filename)[1] ).lower()
             if ( fileext == 'pdf' ):
                 # needs a PDF QPrinter
                 myformat = 'pdf'
@@ -432,30 +449,69 @@ class PyQtPipedViewer(QMainWindow):
                 printer.setOutputFormat(QPrinter.PostScriptFormat)
             else:
                 printer.setOutputFormat(QPrinter.PdfFormat)
+            # Print to file in color
             printer.setColorMode(printer.Color)
+            # Default paper size (letter)
             try:
                 printer.setPaperSize(QPrinter.Letter)
             except AttributeError:
-                # setPaperSize defined in 4.4 and made setPageSize obsolete
-                # but RHEL5 Qt4 is 4.2.1
+                # setPaperSize introduced in 4.4 and made setPageSize obsolete
+                # but RHEL5 Qt4 is 4.2
                 printer.setPageSize(QPrinter.Letter)
+            # Default orientation
             if ( pixmapsize.width > pixmapsize.height ):
                 printer.setOrientation(QPrinter.Landscape)
             else:
                 printer.setOrientation(QPrinter.Portrait)
+            # Since printing to file (and not a printer), use the full page
+            # Also, ferret already has incorporated a margin in the drawing
+            printer.setFullPage(True)
+            # Interactive modifications?
             if showPrintDialog:
                 # bring up a dialog to allow the user to tweak the default settings
                 printdialog = QPrintDialog(printer, self)
                 printdialog.setWindowTitle(
-                            self.tr("Save Scene PS/PDF Options"))
+                            self.tr("Save Scene PS/PDF Options (Margins Ignored)"))
                 if printdialog.exec_() != QDialog.Accepted:
                     return
-            # Send the drawing commands to the QPrinter
-            # Do not use the scaling factor since the printer
-            # dictates the size of the drawing 
+            # Set up to send the drawing commands to the QPrinter
             painter = QPainter(printer)
+            pagerect = printer.pageRect()
+            if not transparentbkg:
+                # draw a rectangle filling the entire scene
+                # with the last clearing color
+                painter.save()
+                painter.fillRect(QRectF(pagerect), self.__lastclearcolor)
+                painter.restore()
+            # Determine the scaling factor for filling the page
+            xscale  = float(pagerect.width()) / float(printer.resolution())
+            xscale /= float(pixmapsize.width()) / float(self.physicalDpiX())
+            yscale  = float(pagerect.height()) / float(printer.resolution())
+            yscale /= float(pixmapsize.height()) / float(self.physicalDpiY())
+            factor  = min(xscale, yscale)
+            # Determine the offset to center the picture
+            gapxinch  = float(pagerect.width()) / float(printer.resolution())
+            gapxinch -= factor * float(pixmapsize.width()) / float(self.physicalDpiX())
+            gapxinch *= 0.5
+            gapyinch  = float(pagerect.height()) / float(printer.resolution())
+            gapyinch -= factor * float(pixmapsize.height()) / float(self.physicalDpiY())
+            gapyinch *= 0.5
+            # Save the current scaling factor, upper-left coords
+            origscaling = self.__scalefactor
+            origleftx = self.__leftx
+            origuppery = self.__uppery
+            # Temporarily reset the scaling factor (to fit the page)
+            # and upper-left coords (to center on the page)
+            self.__scalefactor *= factor
+            self.__leftx = gapxinch * printer.resolution() / self.__scalefactor
+            self.__uppery = gapyinch * printer.resolution() / self.__scalefactor
+            # Draw the scene to the printer
             self.paintScene(painter)
             painter.end()
+            # Restore the original scaling factor, upper-left coords
+            self.__scalefactor = origscaling
+            self.__leftx = origleftx
+            self.__uppery = origuppery
         elif myformat == 'svg':
             # if HAS_QSvgGenerator is False, it should never get here
             generator = QSvgGenerator()
@@ -465,6 +521,14 @@ class PyQtPipedViewer(QMainWindow):
                         pixmapsize.width(), pixmapsize.height()) )
             # paint the scene to this QSvgGenerator
             painter = QPainter(generator)
+            if not transparentbkg:
+                # draw a rectangle filling the entire scene
+                # with the last clearing color
+                painter.save()
+                painter.fillRect(
+                        QRectF(0, 0, pixmapsize.width(), pixmapsize.height()),
+                        self.__lastclearcolor )
+                painter.restore()
             self.paintScene(painter)
             painter.end()
         else:
@@ -472,6 +536,8 @@ class PyQtPipedViewer(QMainWindow):
             # Initialize the image by filling it with
             # the last clearing color's ARGB int value
             (redint, greenint, blueint, alphaint) = self.__lastclearcolor.getRgb()
+            if transparentbkg:
+                alphaint = 0
             fillint = ((alphaint * 256 + redint) * 256 + greenint) * 256 + blueint
             image.fill(fillint)
             # paint the scene to this QImage 
@@ -514,7 +580,8 @@ class PyQtPipedViewer(QMainWindow):
         elif cmndact == "save":
             filename = cmnd["filename"]
             fileformat = cmnd.get("fileformat", None)
-            self.saveSceneToFile(filename, fileformat, False)
+            transparentbkg = cmnd.get("transparentbkg", False)
+            self.saveSceneToFile(filename, fileformat, transparentbkg, False)
         elif cmndact == "setTitle":
             self.setWindowTitle(cmnd["title"])
         elif cmndact == "show":

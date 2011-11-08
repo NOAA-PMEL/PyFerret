@@ -166,18 +166,21 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
             cmnd = { "action":"hide" }
         self.__window.submitCommand(cmnd)
 
-    def saveWindow(self, filename, fileformat = None):
+    def saveWindow(self, filename, fileformat = None, transparentbkg = True):
         '''
         Save the contents of the window to a file.
 
         Arguments:
             filename: name of the file to create
             fileformat: name of the format to use
+            transparentbkg: should the background be transparent?
 
         If fileformat is None or empty, the fileformat
         is guessed from the filename extension.
         '''
-        cmnd = { "action":"save", "filename":filename }
+        cmnd = { "action":"save",
+                 "filename":filename,
+                 "tranparentbkg": transparentbkg }
         if fileformat:
             cmnd["fileformat"] = fileformat
         self.__window.submitCommand(cmnd)

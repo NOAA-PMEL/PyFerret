@@ -48,6 +48,12 @@
  * *js* 8.97 added clipping 
  * *js* 6.99 If resize is called with primitives, primitives are discarded 
  * (previously, error message was issued, and no resize occurred).
+ * *acm* 11/11 Fixing LAS ticket 1150. Previously the initial gif file is ".gif"
+ *             and that name was used to decide in GIFFlush whether to output
+ *             the image. Now we may rename that file to avoid collisions of
+ *             multiple Ferret processes. Do not test for .gif filename but
+ *             in GIFmoClose do not call GIFFlush (which never did anything at 
+ *             the point of closing). 
  */
 
 /*
@@ -554,8 +560,7 @@ GIFmoClose(Metafile *mf)
   if (mf != NULL && mf->cgmo != NULL) {
     mf_cgmo *cgmo	= mf->cgmo;
     GIFmetafile *meta = find_meta(cgmo);
-//    status = GIFFlush(mf, meta->ws->conn);
-    status = GIFFlush(mf, meta->ws->conn);
+    /*  status = GIFFlush(mf, meta->ws->conn); */
 
     if (meta != 0){
       destroy_meta(cgmo, meta);
@@ -568,46 +573,17 @@ GIFmoClose(Metafile *mf)
   return status;
 }
 
-/*
-/*int GIFFlush(Metafile *mf, char *filename)  */
-/*{  */
-/*  mf_cgmo *cgmo	= mf->cgmo;  */
-/*  GIFmetafile *meta = find_meta(cgmo);  */
-/*  int status = 1;  */
-/*  */
-/* /* File w/ ".gif" only are not created (Ferret hack) */  
-/*  if (strcasecmp(filename, ".gif") != 0){  */
-/*    FILE *fp = fopen(filename, "w");  */
-/*    if (fp != NULL && meta != 0){  */
-/*      status = OK;  */
-/*      gdImageGif(meta->image, fp);  */
-/*      fclose(fp);  */
-/*    }  */
-/*  } else {  */
-/*    status = OK;  */
-/*  }  */
-/*  return status;  */
-/*}  */
-
-/* TEST GIFFlush for transparency   */
-
-
 int GIFFlush(Metafile *mf, char *filename)
 {
   mf_cgmo *cgmo	= mf->cgmo;
   GIFmetafile *meta = find_meta(cgmo);
   int status = 1;
 
-  /* File w/ ".gif" only are not created (Ferret hack) */
-  if (strcasecmp(filename, ".gif") != 0){
-    FILE *fp = fopen(filename, "w");
-    if (fp != NULL && meta != 0){
-      status = OK;
-      gdImageGif(meta->image, fp);
-      fclose(fp);
-    }
-  } else {
+  FILE *fp = fopen(filename, "w");
+  if (fp != NULL && meta != 0){
     status = OK;
+    gdImageGif(meta->image, fp);
+    fclose(fp);
   }
   return status;
 }
@@ -624,47 +600,41 @@ int GIFFlusht0(Metafile *mf, char *filename)
   int tcolor;
   int i;
 
-  /* File w/ ".gif" only are not created (Ferret hack) */
-  if (strcasecmp(filename, ".gif") != 0){
-    FILE *fp = fopen(filename, "w");
-    if (fp != NULL && meta != 0){
-      status = OK;
+  FILE *fp = fopen(filename, "w");
+  if (fp != NULL && meta != 0){
+    status = OK;
 
-      gdImageGif(meta->image, fp);/*save the image as gif */
-      fclose(fp);
+    gdImageGif(meta->image, fp);/*save the image as gif */
+    fclose(fp);
 
       /* open the gif, change transparency and then save */
       
-        FILE *inGif;
-        FILE *ouGif;
-        gdImagePtr gifImg;
+    FILE *inGif;
+    FILE *ouGif;
+    gdImagePtr gifImg;
 
-        inGif = fopen(filename,"rb");
-        /*ouLog = fopen("/home/porter/jing/trans/FERRET/fer/tst4.gif","w");*/
-        gifImg = gdImageCreateFromGif(inGif);
-        fclose(inGif);
+    inGif = fopen(filename,"rb");
+    gifImg = gdImageCreateFromGif(inGif);
+    fclose(inGif);
 
-        /*ouGif = fopen("/home/porter/jing/trans/FERRET/fer/tst4.gif","w");*/
-        ouGif = fopen(filename,"w");
+    ouGif = fopen(filename,"w");
 
         //(0,0,0) is for white background
-        tcolor   = gdImageColorClosest(gifImg, 255, 255, 255);
+    tcolor   = gdImageColorClosest(gifImg, 255, 255, 255);
 
- for (i=0; i < 256; i+=1) {
+    for (i=0; i < 256; i+=1) {
 
         tcolor   = gdImageColorClosest(gifImg, i, i, i);
- }
-
-        gdImageColorTransparent(gifImg, tcolor);
-
-        gdImageGif(gifImg, ouGif);
-
-        fclose(ouGif);
-        gdImageDestroy(gifImg);
     }
-  } else {
-    status = OK;
-  }
+
+    gdImageColorTransparent(gifImg, tcolor);
+
+    gdImageGif(gifImg, ouGif);
+
+    fclose(ouGif);
+    gdImageDestroy(gifImg);
+    }
+
   return status;
 }
 
@@ -680,43 +650,36 @@ int GIFFlusht1(Metafile *mf, char *filename)
   int tcolor;
   int white;
 
-  /* File w/ ".gif" only are not created (Ferret hack) */
-  if (strcasecmp(filename, ".gif") != 0){
-    FILE *fp = fopen(filename, "w");
-    if (fp != NULL && meta != 0){
-      status = OK;
+  FILE *fp = fopen(filename, "w");
+  if (fp != NULL && meta != 0){
+    status = OK;
 
-      gdImageGif(meta->image, fp);/*save the image as gif */
-      fclose(fp);
+    gdImageGif(meta->image, fp);/*save the image as gif */
+    fclose(fp);
 
       /* open the gif, change transparency and then save */
-        FILE *inGif;
-        FILE *ouGif;
-        gdImagePtr gifImg;
+    FILE *inGif;
+    FILE *ouGif;
+    gdImagePtr gifImg;
 
-        inGif = fopen(filename,"rb");
-        /*ouLog = fopen("/home/porter/jing/trans/FERRET/fer/tst4.gif","w");*/
-        gifImg = gdImageCreateFromGif(inGif);
-        fclose(inGif);
+    inGif = fopen(filename,"rb");
+    gifImg = gdImageCreateFromGif(inGif);
+    fclose(inGif);
 
-        /*ouGif = fopen("/home/porter/jing/trans/FERRET/fer/tst4.gif","w");*/
-        ouGif = fopen(filename,"w");
+    ouGif = fopen(filename,"w");
 
         //(1,1,1) is for black background
-          tcolor = gdImageColorClosest(gifImg, 0, 0, 0);;
-          gdImageColorTransparent(gifImg, tcolor);
+    tcolor = gdImageColorClosest(gifImg, 0, 0, 0);;
+    gdImageColorTransparent(gifImg, tcolor);
 
-        gdImageGif(gifImg, ouGif);
+    gdImageGif(gifImg, ouGif);
 
-        fclose(ouGif);
-        gdImageDestroy(gifImg);
-      
-    }
-  } else {
-    status = OK;
-  }
+    fclose(ouGif);
+    gdImageDestroy(gifImg);
+	}
   return status;
 }
+
 
 void GIFresize(WS_STATE_PTR ws, Gpoint size)
 {

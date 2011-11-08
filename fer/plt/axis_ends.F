@@ -74,7 +74,7 @@
 	INTEGER		axtp, status
 	REAL		x1, x2, uminr, umaxr, dint
 	REAL*8		firstl, lastl, epsilon, eps2
-	PARAMETER	(epsilon=1.e-45)
+	PARAMETER	(epsilon=1.e-35)
 
 	STATUS = ferr_ok 
 

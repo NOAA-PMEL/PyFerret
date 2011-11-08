@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -56,93 +56,67 @@
 * V602: *acm* 1/07 Changes for metafile-batch mode: Ignore FRAME in 
 *                  batch mode, except when in batch GIF mode.
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT[=color]
+* V7.0  *kms* 11/11 changes for saving using the graphics delegate
 
-	include 'ferret.parm'
-	include 'errmsg.parm'
-	include 'slash.parm'
-	include 'xprog_state.cmn'
-	include 'xplot_state.cmn'
-	include 'xplot_setup.cmn'
+        IMPLICIT NONE
+        INCLUDE 'ferret.parm'
+        INCLUDE 'errmsg.parm'
+        INCLUDE 'slash.parm'
+        INCLUDE 'xprog_state.cmn'
+        INCLUDE 'xplot_state.cmn'
+        INCLUDE 'xplot_setup.cmn'
+
+* internal function return value declarations:
+        INTEGER   TM_LENSTR1
 
 * internal variable declarations:
-	LOGICAL		ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
-     .                  is_format, is_file, its_gif, batch
-	INTEGER		TM_LENSTR1, STR_SAME, status, loc, flen, qp
-	CHARACTER	format*3, filename*255
-
-* initialize
-	is_format = qual_given( slash_frame_format ).GT.0
-	is_file   = qual_given( slash_frame_file   ).GT.0
-
-* Ignore FRAME in batch mode, except when in batch GIF mode.
-
-	its_gif = ITS_GIF_GRAPHICS()
-	batch = ITS_BATCH_GRAPHICS()
-
-        IF (batch .AND. .NOT.its_gif) RETURN
+        INTEGER   sts, loc, flen
+        CHARACTER fformat*5, filename*255
 
 * decode the qualifiers, if any
 
-* FRAME/TRANSPARENT[=color]
+* FRAME/TRANSPARENT
 
-	transparent = 0
-	qp = qual_given( slash_frame_transp )
-	IF (qp .GT. 0 .AND. .NOT. animate) THEN
-	   IF ( .NOT. batch ) CALL WARN 
-     . ('ignoring FRAME/TRANSPARENT. It takes effect only in GIF mode')
+        transparent = 0
+        loc = qual_given( slash_frame_transp )
+        IF (loc .GT. 0 .AND. .NOT. animate) THEN
            transparent = 1
-           CALL EQUAL_STR_LC( cmnd_buff(qual_start(qp):qual_end(qp)),
-     .                transparent_color, status )
-           IF (STR_SAME(transparent_color, ' ') .EQ. 0)
-     .                transparent_color = 'white'
         ENDIF
 
-* FRAME/FORMAT="HDF" or "GIF"
-	IF ( is_format ) THEN
-	   loc = qual_given( slash_frame_format )
-	   CALL EQUAL_STRING(
+* FRAME/FORMAT=...
+        loc = qual_given( slash_frame_format )
+        IF ( loc .GT. 0 ) THEN
+           CALL EQUAL_STR_LC(
      .          cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                    format, status )
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   IF ( format .NE. 'GIF' .AND. format .NE. 'HDF' ) GOTO 5100
-	ELSE
-	   format = 'HDF'
-	ENDIF
+     .                    fformat, sts )
+           IF ( sts .NE. ferr_ok ) GOTO 5000
+        ELSE
+           fformat = ''
+        ENDIF
 
 * FRAME/FILE=filename
-	IF ( is_file ) THEN
-	   loc = qual_given( slash_frame_file )
-	   CALL EQUAL_STR_LC(
+        loc = qual_given( slash_frame_file )
+        IF ( loc .GT. 0 ) THEN
+           CALL EQUAL_STR_LC(
      .          cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                    filename, status )
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	ELSEIF ( format .EQ. 'GIF' ) THEN
-	   filename = 'ferret.gif'
-	ELSE
-	   filename = frame_file	! saved SET MOVIE/FILE name
-	ENDIF
-	flen = TM_LENSTR1(filename)
-
-* a format of "GIF" can be implied by a filename ending in .gif or .GIF
-* any other name will implicitly be an HDF file (unless explicit w/ /FORM=)
-	IF ( .NOT.is_format .AND. flen .GT. 4) THEN
-	   IF ( filename(flen-3:flen) .EQ. '.gif'
-     .     .OR. filename(flen-3:flen) .EQ. '.GIF' )  format = 'GIF'
-	ENDIF
+     .                    filename, sts )
+           IF ( sts .NE. ferr_ok ) GOTO 5000
+        ELSEIF ( fformat .NE. '' ) THEN
+           filename = 'ferret.' // fformat
+        ELSE
+           filename = frame_file        ! saved SET MOVIE/FILE name
+        ENDIF
+        flen = TM_LENSTR1(filename)
 
 * rename previous versions of this file using a version number scheme
-	IF ( format .EQ. 'GIF' )  CALL TM_PARK_LAST_VERSION
-     .			( filename(:flen), status )
+        CALL TM_PARK_LAST_VERSION(filename(:flen), sts)
 
 * save that baby
-        CALL SAVE_FRAME(filename(:flen), format, status)
+        CALL SAVE_FRAME(filename(:flen), fformat, sts)
 
-	RETURN
+        RETURN
 
 * error exits
- 5000	RETURN
- 5100	CALL ERRMSG( ferr_invalid_command, status,
-     .               'illegal format type - must be "HDF" or "GIF"'
-     .		     //pCR//cmnd_buff(:len_cmnd), *5000 )
-	END
+ 5000   RETURN
+        END
 

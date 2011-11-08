@@ -183,7 +183,7 @@
      .			cx_buff_x, cx_buff_y,
      .			phlim, pvlim, pxdenig, pydenig,
      .                  cal_id, tax, x_axtyp, y_axtyp, n,
-     .                  ss_x_save, ss_y_save
+     .                  ss_x_save, ss_y_save, hblk1
 
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -198,7 +198,7 @@
 * local parameter declarations:
 	LOGICAL		range_rqd
 	PARAMETER     ( range_rqd = .TRUE. )
-	PARAMETER     ( epsilon = 1.E-45 )
+	PARAMETER     ( epsilon = 1.E-35 )
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,

@@ -64,7 +64,8 @@ grdelBool grdelWindowClear(grdelType window, grdelType fillcolor);
 grdelBool grdelWindowSetSize(grdelType window, float width, float height);
 grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible);
 grdelBool grdelWindowSave(grdelType window, const char *filename,
-               int filenamelen, const char *fileformat, int formatlen);
+                          int filenamelen, const char *fileformat,
+                          int formatlen, int transparentbkg);
 grdelBool grdelWindowDpi(grdelType window, float *dpix, float *dpiy);
 
 /*
@@ -76,8 +77,8 @@ void fgdwindelete_(int *success, void **window);
 void fgdwinclear_(int *success, void **window, void **fillcolor);
 void fgdwinsetsize_(int *success, void **window, float *width, float *height);
 void fgdwinsetvis_(int *success, void **window, int *visible);
-void fgdwinsave_(int *success, void **window, char *filename,
-               int *namelen, char *fileformat, int *formatlen);
+void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
+                 char *fileformat, int *formatlen, int *tranparentbkg);
 void fgdwindpi(int *success, void **window, float *dpix, float *dpiy);
 
 /*

@@ -32,7 +32,6 @@ get_sys_cmnd.c\
 init_c_string_array.c\
 linux_routines_c.c\
 list.c\
-put_frame.c\
 replaceable_bad_flags.c \
 replace_bad_data_sub.c \
 run_thredds_browser.c\

@@ -84,25 +84,16 @@ void FORTRAN(set_batch_graphics)(char *outfile)
   char * result;
   int modestate;
 
-
   assert(outfile);
   length = strlen(outfile);
   modestate = 1;
   FORTRAN(save_metafile_name)(outfile, &length, &modestate);
   its_batch = -1;
 
-  result = strstr(outfile,".gif"); 
-  if (result)  {
-      its_gif = -1;
-   }
-  result = strstr(outfile,".ps"); 
-  if (result)  {
-      its_ps = -1;
-   }
-  result = strstr(outfile,".plt"); 
-  if (result)  {
-      its_meta = -1;
-   }
+  /* 
+   * GKS metafile format no longer supported;
+   * same work flow regardless of other formats.
+   */
   return;
 }
 
@@ -129,8 +120,4 @@ int FORTRAN(its_meta_graphics)()
 {
    return (its_meta);
 }
-
-
-      
-
 

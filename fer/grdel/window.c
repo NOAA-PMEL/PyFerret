@@ -400,6 +400,7 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
  *     filenamelen: actual length of the file name
  *     fileformat: name of the format to use
  *     formatlen: actual length of the format name
+ *     transparentbkg: make the background transparent?
  *
  * If fileformat is NULL, the fileformat is guessed from the
  * filename extension.
@@ -408,9 +409,11 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
  * If failure, grdelerrmsg contains an explanatory message.
  */
 grdelBool grdelWindowSave(grdelType window, const char *filename,
-		       int filenamelen, const char *fileformat, int formatlen)
+		          int filenamelen, const char *fileformat,
+                          int formatlen, int transparentbkg)
 {
     GDWindow *mywindow;
+    PyObject *transparentbool;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
@@ -426,8 +429,14 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
     }
     mywindow = (GDWindow *) window;
 
-    result = PyObject_CallMethod(mywindow->bindings, "saveWindow", "s#s#",
-                      filename, filenamelen, fileformat, formatlen);
+    if ( transparentbkg == 0 )
+        transparentbool = Py_False;
+    else
+        transparentbool = Py_True;
+
+    result = PyObject_CallMethod(mywindow->bindings, "saveWindow", "s#s#O",
+                                 filename, filenamelen,
+                                 fileformat, formatlen, transparentbool);
     if ( result == NULL ) {
         sprintf(grdelerrmsg, "grdleWindowSave: error when calling "
                 "the binding's saveWindow method: %s", pyefcn_get_error());
@@ -598,6 +607,7 @@ void fgdwinsetvis_(int *success, void **window, int *visible)
  *     filenamelen: actual length of the file name
  *     fileformat: name of the format to use
  *     formatlen: actual length of the format name
+ *     transparentbkg: make the background transparent?
  *
  * If formatlen is zero, the fileformat is guessed from the
  * filename extension.
@@ -606,12 +616,13 @@ void fgdwinsetvis_(int *success, void **window, int *visible)
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
  */
-void fgdwinsave_(int *success, void **window, char *filename,
-                 int *namelen, char *fileformat, int *formatlen)
+void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
+                 char *fileformat, int *formatlen, int *transparentbkg)
 {
     grdelBool result;
 
-    result = grdelWindowSave(*window, filename, *namelen, fileformat, *formatlen);
+    result = grdelWindowSave(*window, filename, *namelen,
+                             fileformat, *formatlen, *transparentbkg);
     *success = result;
 }
 

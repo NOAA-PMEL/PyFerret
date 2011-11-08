@@ -68,7 +68,7 @@
 	LOGICAL		ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
      .                  is_format, is_file, its_gif, batch
 	INTEGER		TM_LENSTR1, STR_SAME, status, loc, flen, qp
-	CHARACTER	format*3, filename*255
+	CHARACTER	format*3, filename*1028
 
 * initialize
 	is_format = qual_given( slash_frame_format ).GT.0
@@ -117,7 +117,9 @@
      .                    filename, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	ELSEIF ( format .EQ. 'GIF' ) THEN
-	   filename = 'ferret.gif'
+	   CALL GET_METAFILE_NAME(filename)
+	   IF (STR_SAME(filename, '.gif') .EQ. 0)
+     .                filename = 'ferret.gif'
 	ELSE
 	   filename = frame_file	! saved SET MOVIE/FILE name
 	ENDIF

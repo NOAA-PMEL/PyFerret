@@ -69,7 +69,7 @@ ext_mods = [ Extension("pyferret._pyferret", include_dirs = incdir_list,
 
 # Configure the setup
 setup(name = "pyferret",
-      version = "7.0.0.5",
+      version = "7.0.0.6",
       description = "python module providing ferret functionality",
       long_description = "python module providing ferret functionality",
       author = "Karl M. Smith",

@@ -64,6 +64,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "grdel.h"
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 #define FORTRAN(a) a
@@ -88,12 +89,15 @@ void FORTRAN(set_batch_graphics)(char *outfile)
   length = strlen(outfile);
   modestate = 1;
   FORTRAN(save_metafile_name)(outfile, &length, &modestate);
-  its_batch = -1;
 
   /* 
    * GKS metafile format no longer supported;
    * same work flow regardless of other formats.
+   * Batch graphics now only sets the default 
+   * visibility to FALSE for all Windows.
    */
+  FORTRAN(fgd_hide_all_windows)();
+
   return;
 }
 

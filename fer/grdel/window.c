@@ -133,10 +133,12 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
         PyMem_Free(window);
         return NULL;
     }
-    if ( visible )
+    if ( visible ) {
         visiblebool = Py_True;
-    else
+    }
+    else {
         visiblebool = Py_False;
+    }
     window->bindings = PyObject_CallMethod(module, "createWindow", "s#s#ddO",
                                 engine, enginelen, title, titlelen,
                                 (double) width, (double) height, visiblebool);
@@ -373,10 +375,12 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
     }
     mywindow = (GDWindow *) window;
 
-    if ( visible )
+    if ( visible ) {
         visiblebool = Py_True;
-    else
+    }
+    else {
         visiblebool = Py_False;
+    }
 
     result = PyObject_CallMethod(mywindow->bindings, "showWindow", "O",
                                  visiblebool);

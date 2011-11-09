@@ -129,7 +129,7 @@ class PyQtPipedViewer(QMainWindow):
         self.__hideact = QAction(self.tr("&Hide"), self,
                                 shortcut=self.tr("Ctrl+H"),
                                 statusTip=self.tr("Hide the viewer"),
-                                triggered=self.showMinimized)
+                                triggered=self.hide)
         self.__aboutact = QAction(self.tr("&About"), self,
                                 statusTip=self.tr("Show information about this viewer"), 
                                 triggered=self.aboutMsg)
@@ -169,7 +169,7 @@ class PyQtPipedViewer(QMainWindow):
             event.accept()
         else:
             event.ignore()
-            self.showMinimized()
+            self.hide()
 
     def exitViewer(self):
         '''
@@ -572,7 +572,7 @@ class PyQtPipedViewer(QMainWindow):
         elif cmndact == "exit":
             self.exitViewer()
         elif cmndact == "hide":
-            self.showMinimized()
+            self.hide()
         elif cmndact == "redraw":
             self.redrawScene()
         elif cmndact == "resize":

@@ -1021,9 +1021,11 @@ static PyObject *pyferretPutData(PyObject *self, PyObject *args, PyObject *kwds)
 }
 
 static char pyferretStopDocstring[] =
-    "Shuts down and release all memory used by Ferret. \n"
-    "After calling this function do not call any Ferret functions except start, \n"
-    "which will restart Ferret and re-enable the other functions. \n"
+    "Runs a series of Ferret commands to return Ferret to \n"
+    "its default state, then shuts down and releases all \n"
+    "memory used by Ferret.  After calling this function do \n"
+    "not call any Ferret functions except start, which will \n"
+    "restart Ferret and re-enable the other functions. \n"
     "\n"
     "Required arguments: \n"
     "    (none) \n"
@@ -1048,12 +1050,13 @@ static PyObject *pyferretStop(PyObject *self)
 
     /* Run commands to clear/reset Ferret's state */
     ferret_dispatch_c(ferMemory, "SET GRID ABSTRACT", sBuffer);
-    ferret_dispatch_c(ferMemory, "CANCEL VARIABLE/ALL", sBuffer);
-    ferret_dispatch_c(ferMemory, "CANCEL SYMBOL/ALL", sBuffer);
-    ferret_dispatch_c(ferMemory, "CANCEL DATA/ALL", sBuffer);
-    ferret_dispatch_c(ferMemory, "CANCEL REGION/ALL", sBuffer);
-    ferret_dispatch_c(ferMemory, "CANCEL MEMORY/ALL", sBuffer);
-    ferret_dispatch_c(ferMemory, "EXIT", sBuffer);
+    ferret_dispatch_c(ferMemory, "CANCEL WINDOW /ALL", sBuffer);
+    ferret_dispatch_c(ferMemory, "CANCEL VARIABLE /ALL", sBuffer);
+    ferret_dispatch_c(ferMemory, "CANCEL SYMBOL /ALL", sBuffer);
+    ferret_dispatch_c(ferMemory, "CANCEL DATA /ALL", sBuffer);
+    ferret_dispatch_c(ferMemory, "CANCEL REGION /ALL", sBuffer);
+    ferret_dispatch_c(ferMemory, "CANCEL MEMORY /ALL", sBuffer);
+    ferret_dispatch_c(ferMemory, "EXIT /PROGRAM", sBuffer);
 
     /* Free memory allocated inside Ferret */
     finalize_();
@@ -1068,6 +1071,50 @@ static PyObject *pyferretStop(PyObject *self)
     /* Return True */
     Py_INCREF(Py_True);
     return Py_True;
+}
+
+
+static char pyferretQuitDocstring[] =
+    "Shuts down and release all memory used by Ferret. \n"
+    "This function is intended to be used with the atexit module \n"
+    "to ensure an open viewer window does not hang Python shutdown. \n"
+    "\n"
+    "Required arguments: \n"
+    "    (none) \n"
+    "\n"
+    "Optional arguments: \n"
+    "    (none) \n"
+    "\n"
+    "Returns: \n"
+    "    None \n";
+
+static PyObject *pyferretQuit(PyObject *self)
+{
+    /* If not initialized, nothing to do; just return None */
+    if ( ! ferretInitialized ) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+
+    /* Set to uninitialized */
+    ferretInitialized = 0;
+
+    /* Let Ferret do its orderly shutdown - including closing viewers */
+    ferret_dispatch_c(ferMemory, "EXIT /PROGRAM", sBuffer);
+
+    /* Free memory allocated inside Ferret */
+    finalize_();
+
+    /* Free memory allocated for Ferret */
+    PyMem_Free(ferMemory);
+    ferMemory = NULL;
+    ferMemSize = 0;
+    PyMem_Free(pplMemory);
+    pplMemory = NULL;
+
+    /* Return None */
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 
 
@@ -1632,6 +1679,7 @@ static struct PyMethodDef pyferretMethods[] = {
     {"_put", (PyCFunction) pyferretPutData, METH_VARARGS | METH_KEYWORDS, pyferretPutDataDocstring},
     {"_resize", (PyCFunction) pyferretResizeMemory, METH_VARARGS | METH_KEYWORDS, pyferretResizeMemoryDocstring},
     {"_stop", (PyCFunction) pyferretStop, METH_NOARGS, pyferretStopDocstring},
+    {"_quit", (PyCFunction) pyferretQuit, METH_NOARGS, pyferretQuitDocstring},
     {"_get_axis_coordinates", (PyCFunction) pyefcnGetAxisCoordinates, METH_VARARGS | METH_KEYWORDS, pyefcnGetAxisCoordinatesDocstring},
     {"_get_axis_box_sizes", (PyCFunction) pyefcnGetAxisBoxSizes, METH_VARARGS | METH_KEYWORDS, pyefcnGetAxisBoxSizesDocstring},
     {"_get_axis_box_limits", (PyCFunction) pyefcnGetAxisBoxLimits, METH_VARARGS | METH_KEYWORDS, pyefcnGetAxisBoxLimitsDocstring},

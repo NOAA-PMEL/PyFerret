@@ -49,6 +49,7 @@ void fgd_bkgcolor_(int *windowid, int *colorindex);
 void fgd_getdpi_(int *windowid, float *dpix, float *dpiy);
 void fgd_gswkvp_(int *windowid, float *xmin, float *xmax,
                                 float *ymin, float *ymax);
+void fgd_hide_all_windows_(void);
 
 /*
  * "Window" refers to the full canvas; however, no drawing, except possibly

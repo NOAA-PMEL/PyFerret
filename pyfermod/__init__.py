@@ -1378,9 +1378,11 @@ def putdata(datavar_dict, axis_pos=None):
 
 def stop():
     """
-    Shuts down and release all memory used by Ferret.
-    After calling this function do not call any Ferret functions except
-    start, which will restart Ferret and re-enable the other functions.
+    Runs a series of Ferret commands to return Ferret to
+    its default state, then shuts down and releases all
+    memory used by Ferret.  After calling this function do
+    not call any Ferret functions except start, which will
+    restart Ferret and re-enable the other functions.
 
     Returns:
         False if Ferret has not been started or has already been stopped
@@ -1745,4 +1747,10 @@ def get_arg_one_val(id, arg):
         raise ValueError("arg must be an integer value in [%d,%d]" % (_pyferret.ARG1,_pyferret.ARG9))
     # make the actual call
     return _pyferret._get_arg_one_val(int_id, int_arg)
+
+
+# register the _pyferret._quit function with atexit to ensure
+# open viewer windows do not hang a Python shutdown
+import atexit
+atexit.register(_pyferret._quit)
 

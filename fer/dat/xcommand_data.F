@@ -249,7 +249,7 @@
 	   DATA qualifier_pointer(nsub_at1 + 3)	/ nqual_at1d	/
 * SET VIEWPORT/SIZE/ORIGIN/CLIP
 		DATA qualifiers  (nqual_at1d+0)	/ '****'	/
-* SET EXPRSIONION
+* SET EXPRSION
 	   DATA subcommands      (nsub_at1 + 4)	/ 'EXPRSION'	/
 	   DATA num_qualifs      (nsub_at1 + 4)	/ nqual1e	/
 	   DATA qualifier_pointer(nsub_at1 + 4)	/ nqual_at1e	/
@@ -386,8 +386,8 @@
 		DATA qualifiers  (nqual_at1p+5)	/ '****'	/
 		DATA qualifiers  (nqual_at1p+6)	/ '****'	/
 		DATA qualifiers  (nqual_at1p+7)	/ '****'	/
-* SET ****							  ! unused (q)
-	   DATA subcommands      (nsub_at1 +16)	/ '****'	/
+* SET GIFFILE							  ! set default gif filename and the pointer used in gif mode
+	   DATA subcommands      (nsub_at1 +16)	/ 'GIFFILE'	/
 	   DATA num_qualifs      (nsub_at1 +16)	/ nqual1q	/
 	   DATA qualifier_pointer(nsub_at1 +16)	/ nqual_at1q	/
 * SET **** / ****
@@ -593,12 +593,12 @@
 	   DATA qualifier_pointer(nsub_at2 +18)	/ nqual_at2s	/
 * SHOW NCCACHE/ ****
 		DATA qualifiers  (nqual_at2s+0)	/ '****'	/
-* SHOW ****							  ! unused(t)
-	   DATA subcommands      (nsub_at2 +19)	/ '****'	/
+* SHOW GIFFILE
+	   DATA subcommands      (nsub_at2 +19)	/ 'GIFFILE'	/
 	   DATA num_qualifs      (nsub_at2 +19)	/ nqual2t	/
 	   DATA qualifier_pointer(nsub_at2 +19)	/ nqual_at2t	/
-* SHOW ****
-		DATA qualifiers  (nqual_at2t+0)	/ 'ALL'		/
+* SHOW GIFFILE/ ****
+		DATA qualifiers  (nqual_at2t+0)	/ '****'	/
 * SHOW FUNCTION
 	   DATA subcommands      (nsub_at2 +20)	/ 'FUNCTION'	/
 	   DATA num_qualifs      (nsub_at2 +20)	/ nqual2u	/

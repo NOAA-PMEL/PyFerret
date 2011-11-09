@@ -258,7 +258,7 @@
 
 * select subcommand
 	GOTO ( 100,200,300,400,500,600,700,800,900,1000,
-     .        1100,1200,1300,1400,1500,1600 ) subcmnd_num
+     .        1100,1200,1300,1400,1500,1600,1700 ) subcmnd_num
 
 * SET '    ' 
 * arrival at this point usually means an illegal subcommand was given
@@ -1812,6 +1812,19 @@ c *kob* 4/97
      .             'Either /JOURNAL or /FILE= must be given', *5000 )
         ENDIF
         RETURN
+	
+* SET GIFFILE
+ 1700	IF ( num_args .EQ. 0 ) GOTO 5100
+
+* When not in gif mode, ignore SET GIFFILE
+        its_gif = ITS_GIF_GRAPHICS()
+        IF ( .NOT. its_gif ) THEN
+	   CALL WARN ('Not in GIF mode: ignoring SET GIFFILE')
+        ELSE
+	   slen = item_end(1) - item_start(1) + 1
+	   CALL SAVE_METAFILE_NAME (cmnd_buff(item_start(1):item_end(1)), slen)
+        ENDIF
+	RETURN
 
 * error exits
  5000	RETURN

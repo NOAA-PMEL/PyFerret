@@ -397,7 +397,8 @@ class PyQtPipedViewer(QMainWindow):
                         transparentbkg=True, showPrintDialog=False):
         '''
         Save the current scene to the named file.  If imageformat
-        is None, the format is guessed from the filename extension.
+        is empty or None, the format is guessed from the filename
+        extension.
 
         If transparentbkg is False, the entire scene is initialized
         to the last clearing color, using a filled rectangle for
@@ -411,19 +412,19 @@ class PyQtPipedViewer(QMainWindow):
         dialog will be shown for PostScript and PDF formats,
         allowing customizations to the file to be created.
         '''
-        if ( imageformat == None ):
+        if not imageformat:
             # Guess the image format from the filename extension
             # to determine if it is a vector type, and if so,
             # which type. All the raster types use a QImage, which
             # does this guessing of format when saving the image. 
             fileext = ( os.path.splitext(filename)[1] ).lower()
-            if ( fileext == 'pdf' ):
+            if fileext == '.pdf':
                 # needs a PDF QPrinter
                 myformat = 'pdf'
-            elif ( fileext == 'ps' ):
+            elif fileext == '.ps':
                 # needs a PS QPrinter
                 myformat = 'ps'
-            elif ( fileext == 'svg' ):
+            elif fileext == '.svg':
                 myformat = 'svg'
             else:
                 # use a QImage and it figure out the format

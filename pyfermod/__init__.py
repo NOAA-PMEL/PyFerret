@@ -333,10 +333,10 @@ def init(arglist=None, enterferret=True):
                     except:
                         k -= 1
                 elif opt == "-gif":
-                    my_metaname = ".gif"
+                    my_metaname = "ferret.png"
                 elif opt == "-unmapped":
                     # just treat -unmapped the same as -gif
-                    my_metaname = ".gif"
+                    my_metaname = "ferret.png"
                 elif opt == "-nojnl":
                     my_journal = False
                 elif opt == "-noverify":
@@ -377,7 +377,7 @@ def init(arglist=None, enterferret=True):
             just_exit = True
         if just_exit:
             # print the ferret header then exit completely
-            start(journal=False, verify=False, metaname=".gif")
+            start(journal=False, verify=False, metaname="ferret.png")
             result = run("exit /program")
             # should not get here
             raise SystemExit

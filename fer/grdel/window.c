@@ -429,10 +429,12 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
     }
     mywindow = (GDWindow *) window;
 
-    if ( transparentbkg == 0 )
+    if ( transparentbkg == 0 ) {
         transparentbool = Py_False;
-    else
+    }
+    else {
         transparentbool = Py_True;
+    }
 
     result = PyObject_CallMethod(mywindow->bindings, "saveWindow", "s#s#O",
                                  filename, filenamelen,

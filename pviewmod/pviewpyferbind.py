@@ -180,7 +180,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         '''
         cmnd = { "action":"save",
                  "filename":filename,
-                 "tranparentbkg": transparentbkg }
+                 "transparentbkg": transparentbkg }
         if fileformat:
             cmnd["fileformat"] = fileformat
         self.__window.submitCommand(cmnd)

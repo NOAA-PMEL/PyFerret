@@ -91,6 +91,8 @@
 * V6.5  3/10 *acm* When re-plotting axes, do not redraw the main label.
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
+* v7    11/11 *kms* added call to update the drawing when done
+*                   (include GKSCM1.INC and call FGD_GUWK)
 *
 *****************************************************
 
@@ -175,6 +177,7 @@
 	include 'LABELS.INC'
 	include 'miss_inc.decl'
 	include 'MISS.INC'
+	include 'GKSCM1.INC'
 
 
 * special COMMON to let this routine know if FERRET is in control
@@ -521,6 +524,9 @@ C
 *************************************
 * TMAP addition: close segment and possibly write "** INTERRUPTED **" on plot
 	IF ( PPL_in_FERRET ) CALL SEG_OFF
+*       update the drawing now
+        CALL FGD_GUWK(WSID, 0)
+*
 	IF ( interrupted ) CALL INTERRUPT( *5000 )	! 1/89 - *sh*
  4999	RETURN
  5000	CALL SAY_INTERRUPTED

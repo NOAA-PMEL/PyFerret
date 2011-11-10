@@ -395,13 +395,20 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
                        (double)(ferMemSize) / 1.0E6);
             }
             cmnd_stack_level = sBuffer->flags[FRTN_IDATA2];
-            /* submit an empty command after resizing to continue on with whaterever was going on */
-            iter_command = "";
         }
         else {
-            /* not a memory resize command (probably an exit command) */
-            break;
+            /* 
+             * Not a memory resize command; probably an exit command.
+             * Do not allow return to the Python prompt if in restricted mode
+             * (is_secure_() returns non-zero).
+             */
+            if ( is_secure_() == 0 )
+               break;
+            if ( sBuffer->flags[FRTN_ACTION] == FACTN_EXIT )
+               exit(0);
         }
+        /* submit an empty command to continue on with whaterever was going on */
+	iter_command = "";
     } while ( (one_cmnd_mode_int == 0) || (cmnd_stack_level > 0) );
 
     /* Set back to single command mode */

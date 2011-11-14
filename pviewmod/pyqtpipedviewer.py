@@ -67,8 +67,8 @@ class PyQtPipedViewer(QMainWindow):
         # create the label, that will serve as the canvas, in a scrolled area
         self.__scrollarea = QScrollArea(self)
         self.__label = QLabel(self.__scrollarea)
-        defaultwidth = 850
-        defaultheight = 600
+        defaultwidth = 970
+        defaultheight = 750
         mypixmap = QPixmap(defaultwidth, defaultheight)
         # initialize default color for clearScene to transparent white
         self.__lastclearcolor = QColor(0xFFFFFF)
@@ -533,13 +533,28 @@ class PyQtPipedViewer(QMainWindow):
             self.paintScene(painter)
             painter.end()
         else:
-            image = QImage(pixmapsize, QImage.Format_ARGB32)
-            # Initialize the image by filling it with
-            # the last clearing color's ARGB int value
-            (redint, greenint, blueint, alphaint) = self.__lastclearcolor.getRgb()
+            # ARGB32_Premultiplied is reported significantly faster than ARGB32
+            image = QImage(pixmapsize, QImage.Format_ARGB32_Premultiplied)
             if transparentbkg:
-                alphaint = 0
-            fillint = ((alphaint * 256 + redint) * 256 + greenint) * 256 + blueint
+                # Note that this gives black for formats not supporting the alpha
+                # channel (JPEG) whereas ARGB32 with 0x00FFFFFF gives white
+                fillint = 0
+            else:
+                # Initialize the image by filling it with
+                # the last clearing color's ARGB int value
+                (redint, greenint, blueint, alphaint) = self.__lastclearcolor.getRgb()
+                # Multiply the RGB values by the alpha factor
+                alphafactor = alphaint / 255.0
+                redint = int( redint * alphafactor + 0.5 )
+                if redint > alphaint:
+                    redint = alphaint
+                greenint = int( greenint * alphafactor + 0.5 )
+                if greenint > alphaint:
+                    greenint = alphaint
+                blueint = int( blueint * alphafactor + 0.5 )
+                if blueint > alphaint:
+                    blueint = alphaint
+                fillint = ((alphaint * 256 + redint) * 256 + greenint) * 256 + blueint
             image.fill(fillint)
             # paint the scene to this QImage 
             painter = QPainter(image)
@@ -673,6 +688,18 @@ class PyQtPipedViewer(QMainWindow):
         # Note that __activepainter has to end before __activepicture will
         # draw anything.  So no need to add it to __viewpics until then.
 
+    def maxLengthView(self):
+        '''
+        Returns the length of the longest side of the current view
+        in units of pixels.  Raises an AttributeError if there is no
+        current view defined. 
+        '''
+        if not self.__activepainter:
+            raise AttributeError( self.tr('viewMaxLength called without an active View') )
+        viewrect = self.__activepainter.viewport()
+        maxlength = max(viewrect.width(), viewrect.height())
+        return maxlength
+
     def endView(self):
         '''
         Ends the current view and appends it to the list of pictures
@@ -733,7 +760,8 @@ class PyQtPipedViewer(QMainWindow):
             "points": point centers as a list of (x,y) coordinates
             "symbol": name of the symbol to use
                     (see PyQtCmndHelper.getSymbolFromCmnd)
-            "size": size, in view units, of the symbol
+            "size": size of the symbol in units of 0.001 of the length
+                    of the longest side of the View
             "color": color name or 24-bit RGB integer value (eg, 0xFF0088)
             "alpha": alpha value from 0 (transparent) to 255 (opaque)
 
@@ -762,7 +790,7 @@ class PyQtPipedViewer(QMainWindow):
                 mypen = QPen(mybrush, 16.0, Qt.SolidLine, 
                              Qt.RoundCap, Qt.RoundJoin)
                 self.__activepainter.setPen(mypen)
-            scalefactor = ptsize / 100.0
+            scalefactor = ptsize * (self.maxLengthView() / 1000.0) / 50.0
             for xyval in ptcoords:
                 (adjx, adjy) = self.adjustPoint( xyval )
                 self.__activepainter.save()

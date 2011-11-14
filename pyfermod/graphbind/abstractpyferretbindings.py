@@ -185,7 +185,7 @@ class AbstractPyFerretBindings(object):
 
         Arguments:
             familyname: name of the font family (e.g., "Helvetica", "Times")
-            fontsize: desired size of the font in View units
+            fontsize: desired size of the font
             italic: use the italic version of the font?
             bold: use the bold version of the font?
             underlined: use the underlined version of the font?
@@ -210,7 +210,8 @@ class AbstractPyFerretBindings(object):
 
         Arguments:
             color: Color to use
-            width: line width in View units
+            width: line width in units of 0.001 of the length
+                   of the longest side of the View
             style: line style name (e.g., "solid", "dash")
             capstyle: end-cap style name (e.g., "square")
             joinstyle: join style name (e.g., "bevel")
@@ -289,7 +290,8 @@ class AbstractPyFerretBindings(object):
             ptsy: the Y-coordinates of the points in View units
             symbol: the Symbol to use to draw a point
             color: color of the Symbol
-            ptsize: size of the symbol in View units
+            ptsize: size of the symbol in units of 0.001 of the
+                    length of the longest side of the View
         '''
         raise AttributeError()
 

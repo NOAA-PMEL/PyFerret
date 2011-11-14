@@ -243,7 +243,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         Arguments:
             familyname: name of the font family (e.g., "Helvetica", "Times");
                         None or an empty string uses the default font
-            fontsize: desired size of the font in View units
+            fontsize: desired size of the font
             italic: use the italic version of the font?
             bold: use the bold version of the font?
             underlined: use the underlined version of the font?
@@ -274,7 +274,8 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
 
         Arguments:
             color: Color to use
-            width: line width in View units
+            width: line width in units of 0.001 of the length
+                   of the longest side of the View
             style: line style name (e.g., "solid", "dash")
             capstyle: end-cap style name (e.g., "square")
             joinstyle: join style name (e.g., "bevel")
@@ -385,7 +386,8 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
             ptsy: the Y-coordinates of the points in View units
             symbol: the Symbol to use to draw a point
             color: color of the Symbol (if None of empty, default color used)
-            ptsize: size of the symbol in View units
+            ptsize: size of the symbol in units of 0.001 of the length
+                    of the longest side of the View
         '''
         if len(ptsx) != len(ptsy):
             raise ValueError("the lengths of ptsx and ptsy are not the same")
@@ -633,7 +635,7 @@ if __name__ == "__main__":
     bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
     bindinst.deleteSymbol(mysymbol)
     # Draw a white dash line between some of the points
-    mypen = bindinst.createPen(mycolors[1], 8, "dash", "round", "round")
+    mypen = bindinst.createPen(mycolors[1], 10, "dash", "round", "round")
     ptsx = (600, 300, 700, 500, 300, 100)
     ptsy = (100, 300, 500, 700, 500, 900)
     bindinst.drawMultiline(ptsx, ptsy, mypen)

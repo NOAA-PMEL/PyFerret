@@ -62,8 +62,9 @@
         joinstyle = 'round'
         jstylen = 5
 
-*       Adjust the line width to typical user coordinates
-        adjwidth = 10.0 * linewidth
+*       Adjust the line width to units of 0.001 of 
+*       the longest side of the current View
+        adjwidth = 16.0 * linewidth
 
 *       If a pen object already exists, delete it
         IF ( penobjs(pennum, windowid) .NE. nullobj ) THEN

@@ -1034,8 +1034,8 @@ C	PLTNME
 *	    ISYM=LNBLK(TEMP,2048)
 *	    CALL PUTSYM(SYM,TEMP,ISYM,IER)
 8000	    IF(N.EQ.0)THEN
-		meta_file='metafile.plt'
-		TEMP='metafile.plt'
+		meta_file='ferret.png'
+		TEMP='ferret.png'
 	    ELSE
 		meta_file=LABEL
 		TEMP=LABEL
@@ -1350,14 +1350,16 @@ C	CLSPLT
 	    if (its_open .and. .not. meta_clsplt .and. .not. first_meta) then
 	       if (meta_actv .OR. meta_batch) call FGD_GDAWK(meta_wsid)
 	       call FGD_GCLWK(meta_wsid)
-	       close (meta_lun)
+*              *kms* graphics delegate now does all the graphics output
+*	       close (meta_lun)
 	       meta_clsplt = .true.
                meta_actv = .false.     ! mode state is still saved in mode_metafile
 	       vpt_was_set = .false.
 	    elseif (meta_batch .and. vpt_was_set ) then
 	       call FGD_GDAWK(meta_wsid)
 	       call FGD_GCLWK(meta_wsid)
-	       close (meta_lun)
+*              *kms* graphics delegate now does all the graphics output
+*	       close (meta_lun)
 	       meta_clsplt = .true.
                meta_actv = .false.
 	       vpt_was_set = .false.
@@ -1370,9 +1372,11 @@ C	RENAMPL
 *	Close and rename the metafile; reopen.
             strr = LABEL
 	    IF (its_open .AND. first_meta) THEN
-	       CLOSE (meta_lun, STATUS='KEEP')
+*              *kms* graphics delegate now does all the graphics output
+*	       CLOSE (meta_lun, STATUS='KEEP')
 	       CALL RENAME(strr, meta_file)
-	       OPEN (UNIT=meta_lun,file=meta_file)
+*              *kms* graphics delegate now does all the graphics output
+*	       OPEN (UNIT=meta_lun,file=meta_file)
 	    END IF        
 
 	    GOTO 10

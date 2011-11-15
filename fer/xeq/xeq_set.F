@@ -627,7 +627,7 @@ c *kob* 4/97
                     ELSE
                        CALL GET_METAFILE_NAME(ustring)
                        IF (STR_SAME(ustring,'dummy.plt') .EQ. 0) CALL PPLCMD
-     .			( from, line, 0, 'PLTNME metafile.plt', 1, 1 )
+     .			( from, line, 0, 'PLTNME ferret.png', 1, 1 )
                     ENDIF
 
                     IF ( gksopn .AND. first_meta) THEN

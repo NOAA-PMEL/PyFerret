@@ -247,7 +247,8 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	   if (.not. meta_clsplt) then				!1.25.90 JD
               call FGD_GDAWK(meta_wsid)     			!11.6.89 JD
 	      call FGD_GCLWK(meta_wsid)				!11.6.89 JD
-	      close (meta_lun)					!11.6.89 JD
+*             *kms* graphics delegate now does all the graphics output
+*	      close (meta_lun)					!11.6.89 JD
 *             TEMP FIX DUE TO GKS BUG  *JD* 5.91
 * ----        close (aux_lun)
 	   end if						!11.6.89 JD

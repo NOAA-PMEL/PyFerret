@@ -32,7 +32,6 @@ key_lo_inf_vert.F\
 key_hi_inf_vert.F\
 kurv.F\
 line_key.F\
-metafile_writes.F\
 new_gks_window.F\
 open_gks_ws.F\
 open_metafile.F\

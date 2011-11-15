@@ -4,6 +4,7 @@
 
 /* non-ANSI function prototypes */
 #ifdef NO_ENTRY_NAME_UNDERSCORES      /*added ifdef for HP port *kob* 6.95*/
+
 void ctrlc_ast();   /* pointer to ^C interrupt routine */
 void initialize();
 void set_ctrl_c(); /* void set_ctrl_c_( void (*CTRLC_AST_)() ); */ 
@@ -29,7 +30,13 @@ void gescinqxattr();
 /*
  * End of 04.20.99
  */
+
+void set_secure();
+void set_server();
+int  is_secure();
+
 #else
+
 void ctrlc_ast_();   /* pointer to ^C interrupt routine */
 void initialize_();
 void set_ctrl_c_(); /* void set_ctrl_c_( void (*CTRLC_AST_)() ); */ 
@@ -56,6 +63,10 @@ void gescinqxattr();
 /*
  * End of 04.20.99
  */
+
+void set_secure();
+void set_server();
+int  is_secure_();
 
 #endif
 

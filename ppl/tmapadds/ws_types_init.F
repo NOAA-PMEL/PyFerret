@@ -93,7 +93,7 @@
 
 *	INITIALIZE METAFILE NAME
 
-	data		meta_file/'metafile.plt'/
+	data		meta_file/'ferret.png'/
 
 
 	end

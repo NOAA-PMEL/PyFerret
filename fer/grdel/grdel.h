@@ -66,7 +66,7 @@ grdelBool grdelWindowSetSize(grdelType window, float width, float height);
 grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible);
 grdelBool grdelWindowSave(grdelType window, const char *filename,
                           int filenamelen, const char *fileformat,
-                          int formatlen, int transparentbkg);
+                          int formatlen, grdelBool transparentbkg);
 grdelBool grdelWindowDpi(grdelType window, float *dpix, float *dpiy);
 
 /*
@@ -94,7 +94,9 @@ grdelBool grdelWindowViewBegin(grdelType window,
                                float leftfrac, float bottomfrac,
                                float rightfrac, float topfrac,
                                float leftcoord, float bottomcoord,
-                               float rightcoord, float topcoord);
+                               float rightcoord, float topcoord,
+                               int clipit);
+grdelBool grdelWindowViewClip(grdelType window, int clipit);
 grdelBool grdelWindowViewEnd(grdelType window);
 
 /*
@@ -104,7 +106,9 @@ void fgdviewbegin_(int *success, void **window,
                    float *leftfrac, float *bottomfrac,
                    float *rightfrac, float *topfrac,
                    float *leftcoord, float *bottomcoord,
-                   float *rightcoord, float *topcoord);
+                   float *rightcoord, float *topcoord,
+                   int *clipit);
+void fgdviewclip_(int *success, void **window, int *clipit);
 void fgdviewend_(int *success, void **window);
 
 /*

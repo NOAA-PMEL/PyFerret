@@ -146,7 +146,7 @@
 !     Create a view in the top left corner
       CALL FGDVIEWBEGIN(success, mywindow,
      .                  0.0, 0.5, 0.5, 1.0,
-     .                  0.0, 0.0, 1000.0, 1000.0)
+     .                  0.0, 0.0, 1000.0, 1000.0, 1)
       IF ( success .EQ. 0 ) THEN
           WRITE(*,*) '21 FGDVIEWBEGIN failed'
           GOTO 900
@@ -259,7 +259,7 @@
 !     Create a view of almost the whole window
       CALL FGDVIEWBEGIN(success, mywindow,
      .                  0.05, 0.05, 0.95, 0.95,
-     .                  0.0, 0.0, 1000.0, 1000.0)
+     .                  0.0, 0.0, 1000.0, 1000.0, 1)
       IF ( success .EQ. 0 ) THEN
           WRITE(*,*) '36 FGDVIEWBEGIN failed'
           GOTO 900
@@ -329,7 +329,7 @@
 !     Create a view of the whole window
       CALL FGDVIEWBEGIN(success, mywindow,
      .                  0.0, 0.0, 1.0, 1.0,
-     .                  0.0, 0.0, 1000.0, 1000.0)
+     .                  0.0, 0.0, 1000.0, 1000.0, 1)
       IF ( success .EQ. 0 ) THEN
           WRITE(*,*) '46 FGDVIEWBEGIN failed'
           GOTO 900

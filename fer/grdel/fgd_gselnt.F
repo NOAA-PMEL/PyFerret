@@ -14,7 +14,7 @@
         REAL lftfrac, rgtfrac, btmfrac, topfrac,
      .       lftcoord, rgtcoord, btmcoord, topcoord,
      .       dpix, dpiy
-        INTEGER success, errmsglen
+        INTEGER clipit, success, errmsglen
         CHARACTER*2048 errmsg
 
 *       Sanity checks - transform 0 is an implicit transform
@@ -60,10 +60,17 @@
 *       End any view that may currently be active
 *       There might not be one started, so ignore any errors
         CALL FGDVIEWEND(success, windowobjs(activewindow))
+
+        IF ( cliptoview(activewindow) ) THEN
+            clipit = 1
+        ELSE
+            clipit = 0
+        ENDIF
 *       Begin the new view
         CALL FGDVIEWBEGIN(success, windowobjs(activewindow),
      .                    lftfrac, btmfrac, rgtfrac, topfrac,
-     .                    lftcoord, btmcoord, rgtcoord, topcoord)
+     .                    lftcoord, btmcoord, rgtcoord, topcoord,
+     .                    clipit)
         IF ( success .EQ. 0 ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)

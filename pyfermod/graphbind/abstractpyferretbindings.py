@@ -60,7 +60,8 @@ class AbstractPyFerretBindings(object):
     def beginView(self, leftfrac = 0.0, bottomfrac = 0.0,
                         rightfrac = 1.0, topfrac = 1.0,
                         leftcoord = 0, bottomcoord = 0,
-                        rightcoord = 1000, topcoord = 1000):
+                        rightcoord = 1000, topcoord = 1000,
+                        clipit = True):
         '''
         Creates a "View object" for the given Window.  Here, a View is a
         rectangular region in the drawing area with its own coordinate
@@ -84,9 +85,19 @@ class AbstractPyFerretBindings(object):
                          for the right side of the view
             topcoord:    user coordinate
                          for the top side of the view
+            clipit:      clip drawing to this view?
 
         Note that leftfrac < rightfrac, bottomfrac < topfrac since the
         origin of Windows and Views is the bottom left corner.
+        '''
+        raise AttributeError()
+
+    def clipView(self, clipit):
+        '''
+        Enable or disable clipping to the current View.
+
+        Arguments:
+            clipit: clip drawings to the current View?
         '''
         raise AttributeError()
 

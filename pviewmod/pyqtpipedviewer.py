@@ -24,7 +24,15 @@ from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, \
                          QDialog, QFileDialog, QImage, QLabel, \
                          QMainWindow, QMessageBox, QPainter, QPalette, \
                          QPen, QPicture, QPixmap, QPolygonF, QPrintDialog, \
-                         QPrinter, QPushButton, QScrollArea, QTransform
+                         QPrinter, QPushButton, QScrollArea
+
+try:
+    from PyQt4.QtGui import QTransform
+    HAS_QTransform = True
+except ImportError:
+    from PyQt4.QtGui import QMatrix
+    HAS_QTransform = False
+
 try:
     from PyQt4.QtSvg  import QSvgGenerator
     HAS_QSvgGenerator = True
@@ -37,6 +45,7 @@ from pyqtscaledialog import PyQtScaleDialog
 from multiprocessing import Pipe, Process
 import os
 import time
+
 
 class PyQtPipedViewer(QMainWindow):
     '''
@@ -611,6 +620,8 @@ class PyQtPipedViewer(QMainWindow):
             self.showNormal()
         elif cmndact == "beginView":
             self.beginView(cmnd)
+        elif cmndact == "clipView":
+            self.clipView(cmnd)
         elif cmndact == "endView":
             self.endView()
         elif cmndact == "drawMultiline":
@@ -641,6 +652,7 @@ class PyQtPipedViewer(QMainWindow):
             "usercoords": a dictionary of sides positions (see
                     PyQtCmndHelper.getSidesFromCmnd) giving the
                     user coordinates for the sides of the new View.
+            "clip": clip to the new View? (default: True)
 
         Note that the view fraction values are based on (0,0) being the
         bottom left corner and (1,1) being the top right corner.  Thus,
@@ -672,10 +684,8 @@ class PyQtPipedViewer(QMainWindow):
                                       "bottom in pixels = %1, top in pixels = %2") \
                                   .arg(str(bottompixel)).arg(str(toppixel)) )
         # Create the view rectangle in device coordinates
-        vpoly = QPolygonF( [ QPointF(leftpixel, height - bottompixel),
-                             QPointF(rightpixel, height - bottompixel),
-                             QPointF(rightpixel, height - toppixel),
-                             QPointF(leftpixel, height - toppixel) ] )
+        vrectf = QRectF(leftpixel, height - toppixel,
+                       rightpixel - leftpixel, toppixel - bottompixel)
         # Get the user coordinates for this view rectangle
         winrect = self.__helper.getSidesFromCmnd(cmnd["usercoords"])
         leftcoord = winrect.left()
@@ -690,32 +700,55 @@ class PyQtPipedViewer(QMainWindow):
             raise ValueError( self.tr("Invalid bottom, top user coordinates: " \
                                       "bottom = %1, top = %2") \
                                   .arg(str(bottomcoord)).arg(str(topcoord)) )
-        leftcoord = winrect.left()
-        rightcoord = winrect.right()
         # Create the view rectangle in user (world) coordinates
         # adjustPoint will correct for the flipped, zero-based Y coordinate
-        wpoly = QPolygonF( [ QPointF(leftcoord, topcoord - bottomcoord),
-                             QPointF(rightcoord, topcoord - bottomcoord),
-                             QPointF(rightcoord, 0.0),
-                             QPointF(leftcoord, 0.0) ] )
-        # cliprect = QRectF(leftcoord, 0.0, rightcoord - leftcoord, topcoord - bottomcoord)
-        # Create the transformation to take the user coordinates to device coordinates
-        wvtrans = QTransform()
-        if not QTransform.quadToQuad(wpoly, vpoly, wvtrans):
-            raise ValueError( self.tr("Unable to create the view transformation") )
+        wrectf = QRectF(leftcoord, 0.0, rightcoord - leftcoord, topcoord - bottomcoord)
+        # Compute the entries in the transformation matrix
+        m11 = vrectf.width() / wrectf.width()
+        m12 = 0.0
+        m21 = 0.0
+        m22 = vrectf.height() / wrectf.height()
+        dx = vrectf.left() - (m11 * wrectf.left())
+        dy = vrectf.top() - (m22 * wrectf.top())
         # Create the new picture and painter, and set the view transformation
         self.__activepicture = QPicture()
         self.__activepainter = QPainter(self.__activepicture)
         self.__activepainter.save()
+        # Assign the transformation to take the user coordinates to device coordinates
         self.__activepainter.setWorldMatrixEnabled(True)
-        self.__activepainter.setWorldTransform(wvtrans, False)
-        # self.__activepainter.setClipRect(cliprect, Qt.ReplaceClip)
+        if HAS_QTransform:
+            wvtrans = QTransform(m11, m12, m21, m22, dx, dy)
+            self.__activepainter.setWorldTransform(wvtrans, False)
+        else:
+            wvtrans = QMatrix(m11, m12, m21, m22, dx, dy)
+            self.__activepainter.setWorldMatrix(wvtrans, False)
+        # Set the clip rectangle to that of the view - activates clipping
+        self.__activepainter.setClipRect(wrectf, Qt.ReplaceClip)
+        try:
+           clipit = cmnd["clip"]
+           if not clipit:
+               self.__activepainter.setClipping(False)
+        except KeyError:
+           pass
         # Note that __activepainter has to end before __activepicture will
         # draw anything.  So no need to add it to __viewpics until then.
         # save the current view width and height
         self.__viewwidth = rightpixel - leftpixel
         self.__viewheight = toppixel - bottompixel
         self.__userymax = winrect.top()
+
+    def clipView(self, cmnd):
+        '''
+        If cmnd["clip"] is True, activates clipping to the
+        current view rectangle.  If cmnd["clip"] is False,
+        disable clipping in this view.
+
+        Raises a KeyError if the "clip" key is not given.
+        '''
+        if cmnd["clip"]:
+            self.__activepainter.setClipping(True)
+        else:
+            self.__activepainter.setClipping(False)
 
     def maxLengthView(self):
         '''
@@ -777,7 +810,6 @@ class PyQtPipedViewer(QMainWindow):
         finally:
             # return the painter to the default state
             self.__activepainter.restore()
-
 
     def drawPoints(self, cmnd):
         '''

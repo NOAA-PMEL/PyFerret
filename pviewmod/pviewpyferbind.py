@@ -69,7 +69,8 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         return True
 
     def beginView(self, leftfrac, bottomfrac, rightfrac, topfrac,
-                  leftcoord, bottomcoord, rightcoord, topcoord):
+                  leftcoord, bottomcoord, rightcoord, topcoord,
+                  clipit = True):
         '''
         Start a view in the PyQtPipedViewer Window.
 
@@ -90,22 +91,45 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
                          for the right side of the view
             topcoord:    user coordinate
                          for the top side of the view
+            clipit:      clip drawings to this View?
         '''
-        leftflt = float(leftfrac)
-        bottomflt = float(bottomfrac)
-        rightflt = float(rightfrac)
-        topflt = float(topfrac)
-        if (0.0 > leftflt) or (leftflt >= rightflt) or (rightflt > 1.0):
-            raise ValueError("leftfrac and rightfrac must be in [0.0, 1.0] " \
-                             "with leftfrac < rightfrac")
-        if (0.0 > bottomflt) or (bottomflt >= topflt) or (topflt > 1.0):
-            raise ValueError("bottomfrac and topfrac must be in [0.0, 1.0] " \
-                             "with bottomfrac < topfrac")
+        leftfracflt = float(leftfrac)
+        bottomfracflt = float(bottomfrac)
+        rightfracflt = float(rightfrac)
+        topfracflt = float(topfrac)
+        if (0.0 > leftfracflt) or (leftfracflt >= rightfracflt) or (rightfracflt > 1.0):
+            raise ValueError("leftfrac (%f) and rightfrac (%f) must be in [0.0, 1.0] " \
+                             "with leftfrac < rightfrac" % (leftfracflt, rightfracflt))
+        if (0.0 > bottomfracflt) or (bottomfracflt >= topfracflt) or (topfracflt > 1.0):
+            raise ValueError("bottomfrac (%f) and topfrac (%f) must be in [0.0, 1.0] " \
+                             "with bottomfrac < topfrac" % (bottomfracflt, topfracflt))
+        leftcoordflt = float(leftcoord)
+        bottomcoordflt = float(bottomcoord)
+        rightcoordflt = float(rightcoord)
+        topcoordflt = float(topcoord)
+        if leftcoordflt >= rightcoordflt:
+            raise ValueError("leftcoord (%f) must be less than rightcoord (%f)" \
+                             % (leftcoordflt, rightcoordflt))
+        if bottomcoordflt >= topcoordflt:
+            raise ValueError("bottomcoord (%f) must be less than topcoord (%f)" \
+                             % (bottomcoordflt, topcoordflt))
         cmnd = { "action":"beginView",
-                 "viewfracs":{"left":leftflt, "bottom":bottomflt,
-                              "right":rightflt, "top":topflt},
-                 "usercoords":{"left":leftcoord, "bottom":bottomcoord,
-                              "right":rightcoord, "top":topcoord} }
+                 "viewfracs":{"left":leftfracflt, "bottom":bottomfracflt,
+                              "right":rightfracflt, "top":topfracflt},
+                 "usercoords":{"left":leftcoordflt, "bottom":bottomcoordflt,
+                              "right":rightcoordflt, "top":topcoordflt},
+                 "clip":bool(clipit) }
+        self.__window.submitCommand(cmnd)
+
+    def clipView(self, clipit):
+        '''
+        Enable or disable clipping to the current View.
+
+        Arguments:
+            clipit: clip drawings to the current View?
+        '''
+        cmnd = { "action":"clipView",
+                 "clip":bool(clipit) }
         self.__window.submitCommand(cmnd)
 
     def endView(self):

@@ -96,6 +96,9 @@
 * active window.  Reset to .FALSE. when the view changes.
         LOGICAL somethingdrawn
 
+* Whether clip the drawing to the current view
+        LOGICAL cliptoview(maxwindowobjs)
+
 * Whether to display the window when created and updated.
         LOGICAL showwindow(maxwindowobjs)
 
@@ -127,6 +130,6 @@
      .         activewindow, activetransform, activebrush,
      .         activepen, activesymbol, lastbrushcolor,
      .         lastbstylen, clearcolor, symbolcolor, showwindow,
-     .         somethingdrawn, lastbrushstyle, enginename,
-     .         windowtitle
+     .         cliptoview, somethingdrawn, lastbrushstyle,
+     .         enginename, windowtitle
 

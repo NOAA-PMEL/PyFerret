@@ -284,9 +284,9 @@ grdelBool grdelWindowClear(grdelType window, grdelType fillcolor)
     mywindow = (GDWindow *) window;
     colorobj = grdelColorVerify(fillcolor, window);
     if ( colorobj == NULL ) {
-    	strcpy(grdelerrmsg, "grdelWindowClear: fillcolor argument is not "
-    	                    "a valid grdel Color for the window");
-    	return (grdelBool) 0;
+        strcpy(grdelerrmsg, "grdelWindowClear: fillcolor argument is not "
+                            "a valid grdel Color for the window");
+        return (grdelBool) 0;
     }
 
     result = PyObject_CallMethod(mywindow->bindings, "clearWindow", "O",
@@ -413,8 +413,8 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
  * If failure, grdelerrmsg contains an explanatory message.
  */
 grdelBool grdelWindowSave(grdelType window, const char *filename,
-		          int filenamelen, const char *fileformat,
-                          int formatlen, int transparentbkg)
+                          int filenamelen, const char *fileformat,
+                          int formatlen, grdelBool transparentbkg)
 {
     GDWindow *mywindow;
     PyObject *transparentbool;
@@ -427,24 +427,24 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
 #endif
 
     if ( grdelWindowVerify(window) == NULL ) {
-        strcpy(grdelerrmsg, "grdleWindowSave: window argument is not "
+        strcpy(grdelerrmsg, "grdelWindowSave: window argument is not "
                             "a grdel Window");
         return (grdelBool) 0;
     }
     mywindow = (GDWindow *) window;
 
-    if ( transparentbkg == 0 ) {
-        transparentbool = Py_False;
+    if ( transparentbkg ) {
+        transparentbool = Py_True;
     }
     else {
-        transparentbool = Py_True;
+        transparentbool = Py_False;
     }
 
     result = PyObject_CallMethod(mywindow->bindings, "saveWindow", "s#s#O",
                                  filename, filenamelen,
                                  fileformat, formatlen, transparentbool);
     if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdleWindowSave: error when calling "
+        sprintf(grdelerrmsg, "grdelWindowSave: error when calling "
                 "the binding's saveWindow method: %s", pyefcn_get_error());
         return (grdelBool) 0;
     }
@@ -673,6 +673,7 @@ void fgdwindpi_(int *success, void **window, float *dpix, float *dpiy)
  *     bottomcoord: user coordinate of the bottom side of the View
  *     rightcoord: user coordinate of the right side of the View
  *     topcoord: user coordinate of the top side of the View
+ *     clipit: clip drawing to this View?
  *
  * The Window and View coordinates start at the bottom left corner and
  * increase to the top right corner; thus rightfrac must be larger than
@@ -685,18 +686,21 @@ grdelBool grdelWindowViewBegin(grdelType window,
                                float leftfrac, float bottomfrac,
                                float rightfrac, float topfrac,
                                float leftcoord, float bottomcoord,
-                               float rightcoord, float topcoord)
+                               float rightcoord, float topcoord,
+                               grdelBool clipit)
 {
     GDWindow *mywindow;
+    PyObject *clipbool;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelWindowViewBegin called: "
             "window = %X, "
-            "viewfrac  = (%f, %f, %f, %f)"
-            "usercoord = (%f, %f, %f, %f)\n",
+            "viewfrac  = (%f, %f, %f, %f) "
+            "usercoord = (%f, %f, %f, %f) "
+            "clipit = %d\n",
             window, leftfrac, bottomfrac, rightfrac, topfrac,
-                    leftcoord, bottomcoord, rightcoord, topcoord);
+            leftcoord, bottomcoord, rightcoord, topcoord, clipit);
     fflush(debuglogfile);
 #endif
 
@@ -711,12 +715,19 @@ grdelBool grdelWindowViewBegin(grdelType window,
                             "already has a View defined");
         return (grdelBool) 0;
     }
+    if ( clipit ) {
+       clipbool = Py_True;
+    }
+    else {
+       clipbool = Py_False;
+    }
 
-    result = PyObject_CallMethod(mywindow->bindings, "beginView", "dddddddd",
+    result = PyObject_CallMethod(mywindow->bindings, "beginView", "ddddddddO",
                                  (double) leftfrac, (double) bottomfrac,
                                  (double) rightfrac, (double) topfrac,
                                  (double) leftcoord, (double) bottomcoord,
-                                 (double) rightcoord, (double) topcoord);
+                                 (double) rightcoord, (double) topcoord,
+                                 clipbool);
     if ( result == NULL ) {
         sprintf(grdelerrmsg, "grdelWindowViewBegin: Error when calling "
                 "the binding's beginView method: %s", pyefcn_get_error());
@@ -725,6 +736,59 @@ grdelBool grdelWindowViewBegin(grdelType window,
     Py_DECREF(result);
 
     mywindow->hasview = (grdelBool) 1;
+    grdelerrmsg[0] = '\0';
+    return (grdelBool) 1;
+}
+
+/*
+ * Enable or disable clipping to the current View.
+ *
+ * Arguments:
+ *     clipit: clip to the current View?
+ *
+ * Returns success (nonzero) or failure (zero).
+ * If failure, grdelerrmsg contains an explanatory message.
+ */
+grdelBool grdelWindowViewClip(grdelType window, grdelBool clipit)
+{
+    GDWindow *mywindow;
+    PyObject *clipbool;
+    PyObject *result;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelWindowViewClip called: "
+            "window = %X "
+            "clipit = %d\n",
+            window, clipit);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelWindowVerify(window) == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowViewClip: window argument is not "
+                            "a grdel Window");
+        return (grdelBool) 0;
+    }
+    mywindow = (GDWindow *) window;
+    if ( ! mywindow->hasview ) {
+        strcpy(grdelerrmsg, "grdelWindowViewClip: window does not "
+                            "have a view defined");
+        return (grdelBool) 0;
+    }
+    if ( clipit ) {
+       clipbool = Py_True;
+    }
+    else {
+       clipbool = Py_False;
+    }
+
+    result = PyObject_CallMethod(mywindow->bindings, "clipView", "O", clipbool);
+    if ( result == NULL ) {
+        sprintf(grdelerrmsg, "grdelWindowViewClip: error when calling "
+                "the binding's clipView method: %s", pyefcn_get_error());
+        return (grdelBool) 0;
+    }
+    Py_DECREF(result);
+
     grdelerrmsg[0] = '\0';
     return (grdelBool) 1;
 }
@@ -793,6 +857,7 @@ grdelBool grdelWindowViewEnd(grdelType window)
  *     bottomcoord: user coordinate of the bottom side of the View
  *     rightcoord: user coordinate of the right side of the View
  *     topcoord: user coordinate of the top side of the View
+ *     clipit: clip drawing to this View? (zero: no, non-zero: yes)
  *
  * The Window and View coordinates start at the bottom left corner and
  * increase to the top right corner; thus rightfrac must be larger than
@@ -806,13 +871,31 @@ void fgdviewbegin_(int *success, void **window,
                    float *leftfrac, float *bottomfrac,
                    float *rightfrac, float *topfrac,
                    float *leftcoord, float *bottomcoord,
-                   float *rightcoord, float *topcoord)
+                   float *rightcoord, float *topcoord,
+                   int *clipit)
 {
     grdelBool result;
 
-    result = grdelWindowViewBegin(*window,
-                  *leftfrac, *bottomfrac, *rightfrac, *topfrac,
-                  *leftcoord, *bottomcoord, *rightcoord, *topcoord);
+    result = grdelWindowViewBegin(*window, *leftfrac, *bottomfrac,
+                  *rightfrac, *topfrac, *leftcoord, *bottomcoord,
+                  *rightcoord, *topcoord, *clipit);
+    *success = result;
+}
+
+/*
+ * Enable or disable clipping to the current View.
+ *
+ * Input Arguments:
+ *     clipit: clip to the current View? (zero: no, non-zero: yes)
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void fgdviewclip_(int *success, void **window, int *clipit)
+{
+    grdelBool result;
+
+    result = grdelWindowViewClip(*window, *clipit);
     *success = result;
 }
 

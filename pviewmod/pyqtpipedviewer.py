@@ -9,7 +9,7 @@ be unaware of these modifications made to the image.
 PyQtPipedEditorProcess is used to create and run a PyQtPipedViewer.
 
 This package was developed by the Thermal Modeling and Analysis
-Project (TMAP) of the National Oceanographic and Atmospheric 
+Project (TMAP) of the National Oceanographic and Atmospheric
 Administration's (NOAA) Pacific Marine Environmental Lab (PMEL).
 '''
 
@@ -24,19 +24,19 @@ from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, \
                          QDialog, QFileDialog, QImage, QLabel, \
                          QMainWindow, QMessageBox, QPainter, QPalette, \
                          QPen, QPicture, QPixmap, QPolygonF, QPrintDialog, \
-                         QPrinter, QPushButton, QScrollArea
+                         QPrinter, QPushButton, QScrollArea, QTransform
 try:
     from PyQt4.QtSvg  import QSvgGenerator
     HAS_QSvgGenerator = True
 except ImportError:
     HAS_QSvgGenerator = False
-                         
+
 from pyqtcmndhelper import PyQtCmndHelper
 from pyqtresizedialog import PyQtResizeDialog
 from pyqtscaledialog import PyQtScaleDialog
 from multiprocessing import Pipe, Process
-import math
 import os
+import time
 
 class PyQtPipedViewer(QMainWindow):
     '''
@@ -84,6 +84,8 @@ class PyQtPipedViewer(QMainWindow):
         self.__minsize = 128
         self.__activepicture = None
         self.__activepainter = None
+        self.__viewwidth = 0.0
+        self.__viewheight = 0.0
         # flag indicating whether the active picture contains anything worth saving
         self.__somethingdrawn = False
         # maximum user Y coordinate - used by adjustPoint
@@ -99,6 +101,7 @@ class PyQtPipedViewer(QMainWindow):
         self.createMenus()
         self.__lastfilename = ""
         self.__shuttingdown = False
+        # check the command queue anytime there are no window events to deal with
         self.__timer = QTimer(self)
         self.__timer.timeout.connect(self.checkCommandPipe)
         self.__timer.setInterval(0)
@@ -131,18 +134,18 @@ class PyQtPipedViewer(QMainWindow):
                                 statusTip=self.tr("Hide the viewer"),
                                 triggered=self.hide)
         self.__aboutact = QAction(self.tr("&About"), self,
-                                statusTip=self.tr("Show information about this viewer"), 
+                                statusTip=self.tr("Show information about this viewer"),
                                 triggered=self.aboutMsg)
         self.__aboutqtact = QAction(self.tr("About &Qt"), self,
                                 statusTip=self.tr("Show information about the Qt library"),
                                 triggered=self.aboutQtMsg)
-        self.__exitact = QAction(self.tr("E&xit"), self, 
+        self.__exitact = QAction(self.tr("E&xit"), self,
                                 statusTip=self.tr("Shut down the viewer"),
                                 triggered=self.exitViewer)
 
     def createMenus(self):
         '''
-        Create the menu items for the viewer 
+        Create the menu items for the viewer
         using the previously created actions.
         '''
         menuBar = self.menuBar()
@@ -225,7 +228,7 @@ class PyQtPipedViewer(QMainWindow):
         # fill in the background
         self.__label.pixmap().fill(self.__lastclearcolor)
         # make sure label knows to redraw itself
-        self.__label.update() 
+        self.__label.update()
 
     def paintScene(self, painter):
         '''
@@ -245,7 +248,7 @@ class PyQtPipedViewer(QMainWindow):
         # redraw all the pictures
         upperleftpt = QPointF(self.__leftx, self.__uppery)
         for viewpic in self.__viewpics:
-            painter.drawPicture(upperleftpt, viewpic) 
+            painter.drawPicture(upperleftpt, viewpic)
 
     def redrawScene(self):
         '''
@@ -286,7 +289,7 @@ class PyQtPipedViewer(QMainWindow):
     def resizeScene(self, width, height):
         '''
         Resize the scene to the given width and height in units
-        of 0.001 inches. 
+        of 0.001 inches.
         '''
         newwidth = int(width * 0.001 * self.physicalDpiX() + 0.5)
         if newwidth < self.__minsize:
@@ -379,7 +382,7 @@ class PyQtPipedViewer(QMainWindow):
         for typePair in formattypes[1:]:
             filters.append(";;")
             filters.append(typePair[1])
-        (fileName, fileFilter) = QFileDialog.getSaveFileNameAndFilter(self, 
+        (fileName, fileFilter) = QFileDialog.getSaveFileNameAndFilter(self,
                                         self.tr("Save the current scene as "),
                                         self.__lastfilename, filters)
         if fileName:
@@ -416,7 +419,7 @@ class PyQtPipedViewer(QMainWindow):
             # Guess the image format from the filename extension
             # to determine if it is a vector type, and if so,
             # which type. All the raster types use a QImage, which
-            # does this guessing of format when saving the image. 
+            # does this guessing of format when saving the image.
             fileext = ( os.path.splitext(filename)[1] ).lower()
             if fileext == '.pdf':
                 # needs a PDF QPrinter
@@ -518,7 +521,7 @@ class PyQtPipedViewer(QMainWindow):
             generator = QSvgGenerator()
             generator.setFileName(filename)
             generator.setSize(pixmapsize)
-            generator.setViewBox( QRect(0, 0, 
+            generator.setViewBox( QRect(0, 0,
                         pixmapsize.width(), pixmapsize.height()) )
             # paint the scene to this QSvgGenerator
             painter = QPainter(generator)
@@ -556,7 +559,7 @@ class PyQtPipedViewer(QMainWindow):
                     blueint = alphaint
                 fillint = ((alphaint * 256 + redint) * 256 + greenint) * 256 + blueint
             image.fill(fillint)
-            # paint the scene to this QImage 
+            # paint the scene to this QImage
             painter = QPainter(image)
             self.paintScene(painter)
             painter.end()
@@ -565,19 +568,23 @@ class PyQtPipedViewer(QMainWindow):
 
     def checkCommandPipe(self):
         '''
-        Check the pipe for a command.  If there are any, get and 
-        perform one command only, then return.
+        Get and perform an commands waiting in the pipe.
+        Limit the number of commands if more than 0.5 s
+        have passed to ensure responsiveness of the GUI.
         '''
+        starttime = time.clock()
         try:
-            if self.__pipe.poll():
+            while self.__pipe.poll():
                 cmnd = self.__pipe.recv()
                 self.processCommand(cmnd)
+                if time.clock() - starttime > 0.5:
+                    break
         except EOFError:
             self.exitViewer()
 
     def processCommand(self, cmnd):
         '''
-        Examine the action of cmnd and call the appropriate 
+        Examine the action of cmnd and call the appropriate
         method to deal with this command.  Raises a KeyError
         if the "action" key is missing.
         '''
@@ -632,15 +639,12 @@ class PyQtPipedViewer(QMainWindow):
                     fractions [0.0, 1.0] of the way through the
                     scene for the sides of the new View.
             "usercoords": a dictionary of sides positions (see
-                    PyQtCmndHelper.getSizedFromCmnd) giving the
-                    user coordinates (integer values) for the
-                    sides of the new View.
+                    PyQtCmndHelper.getSidesFromCmnd) giving the
+                    user coordinates for the sides of the new View.
 
-        Note that the view fraction values are based on (0,0) being the 
+        Note that the view fraction values are based on (0,0) being the
         bottom left corner and (1,1) being the top right corner.  Thus,
-        leftfrac < rightfrac and bottomfrac < topfrac.  The user coordinates 
-        for (left, bottom) will be mapped to the view fraction
-        coordinates (0,0).
+        left < right and bottom < top.
 
         Raises a KeyError if either the "viewfracs" or the "usercoords"
         key is not given.
@@ -653,51 +657,75 @@ class PyQtPipedViewer(QMainWindow):
         width = float( self.__label.pixmap().width() ) / self.__scalefactor
         height = float( self.__label.pixmap().height() ) / self.__scalefactor
         viewrect = self.__helper.getSidesFromCmnd(cmnd["viewfracs"])
-        leftfrac = int( viewrect.left() * float(width) )
-        rightfrac = int( math.ceil(viewrect.right() * float(width)) )
-        bottomfrac = int( viewrect.bottom() * float(height) )
-        topfrac = int( math.ceil(viewrect.top() * float(height)) )
+        leftpixel = viewrect.left() * width
+        rightpixel = viewrect.right() * width
+        bottompixel = viewrect.bottom() * height
+        toppixel = viewrect.top() * height
         # perform the checks after turning into units of pixels
         # to make sure the values are significantly different
-        if (0 > leftfrac) or (leftfrac >= rightfrac) or (rightfrac > width):
-            raise ValueError( self.tr("Invalid leftfrac/rightfrac view fractions: " \
-                                      "0.0 <= leftfrac < rightfrac <= 1.0") )
-        if (0 > bottomfrac) or (bottomfrac >= topfrac) or (topfrac > height):
-            raise ValueError( self.tr("Invalid bottomfrac/topfrac view fractions: " \
-                                      "0.0 <= bottomfrac < topfrac <= 1.0") )
-        # Set the view rectangle in pixels from the top left corner
-        viewrect = QRect(leftfrac, height - topfrac, rightfrac - leftfrac, topfrac - bottomfrac)
+        if (0.0 > leftpixel) or (leftpixel >= rightpixel) or (rightpixel > width):
+            raise ValueError( self.tr("Invalid left, right view fractions: " \
+                                      "left in pixels = %1, right in pixels = %2") \
+                                  .arg(str(leftpixel)).arg(str(rightpixel)) )
+        if (0.0 > bottompixel) or (bottompixel >= toppixel) or (toppixel > height):
+            raise ValueError( self.tr("Invalid bottom, top view fractions: " \
+                                      "bottom in pixels = %1, top in pixels = %2") \
+                                  .arg(str(bottompixel)).arg(str(toppixel)) )
+        # Create the view rectangle in device coordinates
+        vpoly = QPolygonF( [ QPointF(leftpixel, height - bottompixel),
+                             QPointF(rightpixel, height - bottompixel),
+                             QPointF(rightpixel, height - toppixel),
+                             QPointF(leftpixel, height - toppixel) ] )
         # Get the user coordinates for this view rectangle
         winrect = self.__helper.getSidesFromCmnd(cmnd["usercoords"])
-        leftcoord = int ( math.floor(winrect.left()) )
-        rightcoord = int( math.ceil(winrect.right()) )
-        bottomcoord = int( math.floor(winrect.bottom()) )
-        topcoord = int ( math.ceil(winrect.top()) )
-        # Set the window coordinates from the top left corner
+        leftcoord = winrect.left()
+        rightcoord = winrect.right()
+        bottomcoord = winrect.bottom()
+        topcoord = winrect.top()
+        if leftcoord >= rightcoord:
+            raise ValueError( self.tr("Invalid left, right user coordinates: " \
+                                      "left = %1, right = %2") \
+                                  .arg(str(leftcoord)).arg(str(rightcoord)) )
+        if bottomcoord >= topcoord:
+            raise ValueError( self.tr("Invalid bottom, top user coordinates: " \
+                                      "bottom = %1, top = %2") \
+                                  .arg(str(bottomcoord)).arg(str(topcoord)) )
+        leftcoord = winrect.left()
+        rightcoord = winrect.right()
+        # Create the view rectangle in user (world) coordinates
         # adjustPoint will correct for the flipped, zero-based Y coordinate
-        self.__userymax = topcoord
-        winrect = QRect(leftcoord, 0.0, rightcoord - leftcoord, topcoord - bottomcoord)
-        # Create the new picture and painter, and set the viewport and window
+        wpoly = QPolygonF( [ QPointF(leftcoord, topcoord - bottomcoord),
+                             QPointF(rightcoord, topcoord - bottomcoord),
+                             QPointF(rightcoord, 0.0),
+                             QPointF(leftcoord, 0.0) ] )
+        # cliprect = QRectF(leftcoord, 0.0, rightcoord - leftcoord, topcoord - bottomcoord)
+        # Create the transformation to take the user coordinates to device coordinates
+        wvtrans = QTransform()
+        if not QTransform.quadToQuad(wpoly, vpoly, wvtrans):
+            raise ValueError( self.tr("Unable to create the view transformation") )
+        # Create the new picture and painter, and set the view transformation
         self.__activepicture = QPicture()
         self.__activepainter = QPainter(self.__activepicture)
         self.__activepainter.save()
-        self.__activepainter.setViewport(viewrect)
-        self.__activepainter.setWindow(winrect)
-        # Clip off anything drawn outside the view
-        self.__activepainter.setClipRect(winrect)
+        self.__activepainter.setWorldMatrixEnabled(True)
+        self.__activepainter.setWorldTransform(wvtrans, False)
+        # self.__activepainter.setClipRect(cliprect, Qt.ReplaceClip)
         # Note that __activepainter has to end before __activepicture will
         # draw anything.  So no need to add it to __viewpics until then.
+        # save the current view width and height
+        self.__viewwidth = rightpixel - leftpixel
+        self.__viewheight = toppixel - bottompixel
+        self.__userymax = winrect.top()
 
     def maxLengthView(self):
         '''
         Returns the length of the longest side of the current view
         in units of pixels.  Raises an AttributeError if there is no
-        current view defined. 
+        current view defined.
         '''
         if not self.__activepainter:
             raise AttributeError( self.tr('viewMaxLength called without an active View') )
-        viewrect = self.__activepainter.viewport()
-        maxlength = max(viewrect.width(), viewrect.height())
+        maxlength = max(self.__viewwidth, self.__viewheight)
         return maxlength
 
     def endView(self):
@@ -719,7 +747,7 @@ class PyQtPipedViewer(QMainWindow):
     def drawMultiline(self, cmnd):
         '''
         Draws a collection of connected line segments.
-        
+
         Recognized keys from cmnd:
             "points": consecutive endpoints of the connected line
                     segments as a list of (x, y) coordinates
@@ -749,13 +777,13 @@ class PyQtPipedViewer(QMainWindow):
         finally:
             # return the painter to the default state
             self.__activepainter.restore()
-        
+
 
     def drawPoints(self, cmnd):
         '''
         Draws a collection of discrete points using a single symbol
-        for each point.  
-        
+        for each point.
+
         Recognized keys from cmnd:
             "points": point centers as a list of (x,y) coordinates
             "symbol": name of the symbol to use
@@ -787,7 +815,7 @@ class PyQtPipedViewer(QMainWindow):
                 self.__activepainter.setPen(Qt.NoPen)
             else:
                 self.__activepainter.setBrush(Qt.NoBrush)
-                mypen = QPen(mybrush, 16.0, Qt.SolidLine, 
+                mypen = QPen(mybrush, 16.0, Qt.SolidLine,
                              Qt.RoundCap, Qt.RoundJoin)
                 self.__activepainter.setPen(mypen)
             scalefactor = ptsize * (self.maxLengthView() / 1000.0) / 50.0
@@ -850,8 +878,8 @@ class PyQtPipedViewer(QMainWindow):
     def drawRectangle(self, cmnd):
         '''
         Draws a rectangle in the current view using the information
-        in the dictionary cmnd. 
-        
+        in the dictionary cmnd.
+
         Recognized keys from cmnd:
             "left": x-coordinate of left edge of the rectangle
             "bottom": y-coordinate of the bottom edge of the rectangle
@@ -905,7 +933,7 @@ class PyQtPipedViewer(QMainWindow):
         '''
         Draws a multi-colored rectangle in the current view using
         the information in the dictionary cmnd.
-        
+
         Recognized keys from cmnd:
             "left": x-coordinate of left edge of the rectangle
             "bottom": y-coordinate of the bottom edge of the rectangle
@@ -930,7 +958,7 @@ class PyQtPipedViewer(QMainWindow):
                     in a color dictionary
             ValueError: if the width or height of the rectangle is
                     not positive; if the value of the "numrows" or
-                    "numcols" key is not positive; if a color 
+                    "numcols" key is not positive; if a color
                     dictionary does not produce a valid color
             IndexError: if not enough colors were given
         '''
@@ -1038,7 +1066,7 @@ class PyQtPipedViewer(QMainWindow):
     def adjustPoint(self, xypair):
         '''
         Returns appropriate "view" window (logical) coordinates
-        corresponding to the coordinate pair given in xypair 
+        corresponding to the coordinate pair given in xypair
         obtained from a command.
         '''
         (xpos, ypos) = xypair
@@ -1048,7 +1076,7 @@ class PyQtPipedViewer(QMainWindow):
 
 class PyQtPipedViewerProcess(Process):
     '''
-    A Process specifically tailored for creating a PyQtPipedViewer. 
+    A Process specifically tailored for creating a PyQtPipedViewer.
     '''
     def __init__(self, cmndpipe):
         '''
@@ -1076,7 +1104,7 @@ class PyQtPipedViewerProcess(Process):
 class _PyQtCommandSubmitter(QDialog):
     '''
     Testing dialog for controlling the addition of commands to a pipe.
-    Used for testing PyQtPipedViewer in the same process as the viewer. 
+    Used for testing PyQtPipedViewer in the same process as the viewer.
     '''
     def __init__(self, parent, cmndpipe, cmndlist):
         '''
@@ -1094,7 +1122,7 @@ class _PyQtCommandSubmitter(QDialog):
     def submitNextCommand(self):
         '''
         Submit the next command from the command list to the command pipe,
-        or shutdown if there are no more commands to submit. 
+        or shutdown if there are no more commands to submit.
         '''
         try:
             self.__pipe.send(self.__cmndlist[self.__nextcmnd])
@@ -1108,14 +1136,14 @@ if __name__ == "__main__":
     import sys
 
     # vertices of a pentagon (roughly) centered in a 1000 x 1000 square
-    pentagonpts = ( (504.5, 100.0), (100.0, 393.9), 
-                    (254.5, 869.4), (754.5, 869.4), 
+    pentagonpts = ( (504.5, 100.0), (100.0, 393.9),
+                    (254.5, 869.4), (754.5, 869.4),
                     (909.0, 393.9),  )
     # create the list of commands to submit
     drawcmnds = []
     drawcmnds.append( { "action":"setTitle", "title":"Tester" } )
     drawcmnds.append( { "action":"show" } )
-    drawcmnds.append( { "action":"clear", "color":0xF8F8F8})
+    drawcmnds.append( { "action":"clear", "color":0xFFFFFF})
     drawcmnds.append( { "action":"resize",
                         "width":5000,
                         "height":5000 } )
@@ -1130,7 +1158,7 @@ if __name__ == "__main__":
                         "fill":{"color":"black", "alpha":64},
                         "outline":{"color":"blue"} } )
     drawcmnds.append( { "action":"drawPolygon",
-                        "points":pentagonpts, 
+                        "points":pentagonpts,
                         "fill":{"color":"lightblue"},
                         "outline":{"color":"black",
                                    "width": 50,
@@ -1138,22 +1166,22 @@ if __name__ == "__main__":
                                    "capstyle":"round",
                                    "joinstyle":"round" } } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=100", 
+                        "text":"y=100",
                         "font":{"family":"Times", "size":200},
                         "fill":{"color":0x880000},
                         "location":(100,100) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=300", 
+                        "text":"y=300",
                         "font":{"family":"Times", "size":200},
                         "fill":{"color":0x880000},
                         "location":(100,300) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=500", 
+                        "text":"y=500",
                         "font":{"family":"Times", "size":200},
                         "fill":{"color":0x880000},
                         "location":(100,500) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=700", 
+                        "text":"y=700",
                         "font":{"family":"Times", "size":200},
                         "fill":{"color":0x880000},
                         "location":(100,700) } )
@@ -1175,40 +1203,40 @@ if __name__ == "__main__":
                                    {"color":0x0000FF, "alpha":128},
                                    {"color":0x880088, "alpha":128} ) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"R", 
+                        "text":"R",
                         "font":{"size":200, "bold": True},
                         "fill":{"color":"black"},
-                        "rotate":-45, 
+                        "rotate":-45,
                         "location":(200,600) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"Y", 
+                        "text":"Y",
                         "font":{"size":200, "bold": True},
                         "fill":{"color":"black"},
-                        "rotate":-45, 
+                        "rotate":-45,
                         "location":(200,150) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"G", 
+                        "text":"G",
                         "font":{"size":200, "bold": True},
                         "fill":{"color":"black"},
-                        "rotate":-45, 
+                        "rotate":-45,
                         "location":(500,600) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"C", 
+                        "text":"C",
                         "font":{"size":200, "bold": True},
                         "fill":{"color":"black"},
-                        "rotate":-45, 
+                        "rotate":-45,
                         "location":(500,150) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"B", 
+                        "text":"B",
                         "font":{"size":200, "bold": True},
                         "fill":{"color":"black"},
-                        "rotate":-45, 
+                        "rotate":-45,
                         "location":(800,600) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"M", 
+                        "text":"M",
                         "font":{"size":200, "bold": True},
                         "fill":{"color":"black"},
-                        "rotate":-45, 
+                        "rotate":-45,
                         "location":(800,150) } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
@@ -1288,7 +1316,7 @@ if __name__ == "__main__":
                                    (300, 500),
                                    (100, 900) ),
                         "pen": {"color":"white",
-                                "width":8,
+                                "width":10,
                                 "style":"dash",
                                 "capstyle":"round",
                                 "joinstyle":"round"} } )

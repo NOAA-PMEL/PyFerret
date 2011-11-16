@@ -12,7 +12,8 @@
         INCLUDE 'fgrdel.cmn'
 
         REAL lftfrac, rgtfrac, btmfrac, topfrac,
-     .       lftcoord, rgtcoord, btmcoord, topcoord
+     .       lftcoord, rgtcoord, btmcoord, topcoord,
+     .       dpix, dpiy
         INTEGER success, errmsglen
         CHARACTER*2048 errmsg
 
@@ -31,7 +32,7 @@
 
         activetransform = transnum
 *       Get the view limits and 
-*       adjust the view fractions by the limits defined by FGD_GQWKWN
+*       adjust the view fractions by the limits defined by FGD_GSWKWN
         IF ( transnum .NE. 0 ) THEN
             lftfrac = viewleftfrac(transnum) / ndcxmax(activewindow)
             rgtfrac = viewrightfrac(transnum) / ndcxmax(activewindow)
@@ -42,16 +43,19 @@
             rgtcoord = viewrightcoord(transnum)
             topcoord = viewtopcoord(transnum)
         ELSE
-*           This should never actually be used except to end a view.
-*           Since user coordinate may be integers, use 1000.0 * I
+*           This should be the identity transform.
+*           Normally this is only used to end a view.
             lftfrac = 0.0
             btmfrac = 0.0
             rgtfrac = 1.0
             topfrac = 1.0
             lftcoord = 0.0
             btmcoord = 0.0
-            rgtcoord = 1000.0 * ndcxmax(activewindow)
-            topcoord = 1000.0 * ndcymax(activewindow)
+            CALL FGD_GETDPI(activewindow, dpix, dpiy)
+            rgtcoord = windowwidth(activewindow) * dpix *
+     .                 ndcxmax(activewindow)
+            topcoord = windowheight(activewindow) * dpiy *
+     .                 ndcymax(activewindow)
         ENDIF
 *       End any view that may currently be active
 *       There might not be one started, so ignore any errors
@@ -65,6 +69,7 @@
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
+        somethingdrawn = .FALSE.
 
         RETURN
         END

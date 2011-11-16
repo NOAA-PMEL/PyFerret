@@ -15,13 +15,12 @@
      .       (transnum .GT. maxtransforms) ) THEN
             STOP 'FGD_GSWN: Invalid transnum value'
         ENDIF
-*       Since the world coordinates may be treated as
-*       integer values make sure there is significant
-*       difference between the min and max values.
-        IF ( (xmax - xmin) .LT. 5 ) THEN
+        IF ( (xmax - xmin) .LE. 0.0 ) THEN
+            WRITE(*,*) 'FGD_GSWN: xmin = ', xmin, ', xmax = ', xmax
             STOP 'FGD_GSWN: invalid xmin, xmax values'
         ENDIF
-        IF ( (ymax - ymin) .LT. 5 ) THEN
+        IF ( (ymax - ymin) .LE. 0.0 ) THEN
+            WRITE(*,*) 'FGD_GSWN: ymin = ', ymin, ', ymax = ', ymax
             STOP 'FGD_GSWN: invalid ymin, ymax values'
         ENDIF
 

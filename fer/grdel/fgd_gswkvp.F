@@ -53,6 +53,13 @@
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
 
+*       Since this has the potential to change the view,
+*       if this is the active window, reselect the active
+*       transform.
+        IF ( windowid .EQ. activewindow ) THEN
+            CALL FGD_GSELNT(activetransform)
+        ENDIF
+
         RETURN
         END
 

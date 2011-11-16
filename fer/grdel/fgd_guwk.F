@@ -34,13 +34,13 @@
 
 *       If the window is not the active window, any view in
 *       this window should already have been ended.  But if
-*       the window is the active window, there probably is
-*       drawn data in a view that is still active (not ended).
-*       So end the active view so the drawn data will show up,
+*       the window is the active window, and there is drawn
+*       data in a view that is still active (not ended),
+*       end the active view so the drawn data will show up,
 *       but start a new view in the same position with the
 *       same coordinates.  Do this by reselecting the current
 *       transformation.
-        IF ( windowid .EQ. activewindow ) THEN
+        IF ( (windowid .EQ. activewindow) .AND. somethingdrawn ) THEN
             CALL FGD_GSELNT(activetransform)
         ENDIF
 

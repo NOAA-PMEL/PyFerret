@@ -92,6 +92,10 @@
 * used for drawing markers.
         INTEGER activesymbol
 
+* Whether something has been drawn in the current view of the
+* active window.  Reset to .FALSE. when the view changes.
+        LOGICAL somethingdrawn
+
 * Whether to display the window when created and updated.
         LOGICAL showwindow(maxwindowobjs)
 
@@ -123,5 +127,6 @@
      .         activewindow, activetransform, activebrush,
      .         activepen, activesymbol, lastbrushcolor,
      .         lastbstylen, clearcolor, symbolcolor, showwindow,
-     .         lastbrushstyle, enginename, windowtitle
+     .         somethingdrawn, lastbrushstyle, enginename,
+     .         windowtitle
 

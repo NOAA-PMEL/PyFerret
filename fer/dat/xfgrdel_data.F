@@ -49,6 +49,9 @@
         DATA lastbrushstyle / 'solid' /
         DATA lastbstylen / 5 /
 
+* Nothing has been drawn to the current view of the active window
+        DATA somethingdrawn / .FALSE. /
+
 * Display the window on creation and updates.
 * Window ID 9 is for creating animations, thus not shown by default.
         DATA showwindow / .TRUE., .TRUE., .TRUE.,

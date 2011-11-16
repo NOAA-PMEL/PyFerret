@@ -676,9 +676,7 @@ void fgdwindpi_(int *success, void **window, float *dpix, float *dpiy)
  *
  * The Window and View coordinates start at the bottom left corner and
  * increase to the top right corner; thus rightfrac must be larger than
- * leftfrac, and topfrac must be larger than bottomfrac.  The user (world)
- * coordinates could be treated as integer values, so the values for
- * opposite sides should be significantly different.
+ * leftfrac, and topfrac must be larger than bottomfrac.
  *
  * Returns success (nonzero) or failure (zero).
  * If failure, grdelerrmsg contains an explanatory message.
@@ -711,16 +709,6 @@ grdelBool grdelWindowViewBegin(grdelType window,
     if ( mywindow->hasview ) {
         strcpy(grdelerrmsg, "grdelWindowViewBegin: window "
                             "already has a View defined");
-        return (grdelBool) 0;
-    }
-    if ( (0.0 > leftfrac) || (leftfrac >= rightfrac) || (rightfrac > 1.0) ) {
-        strcpy(grdelerrmsg, "grdelWindowViewBegin: leftfrac and rightfrac "
-               "must be in [0.0, 1.0] with leftfrac < rightfrac");
-        return (grdelBool) 0;
-    }
-    if ( (0.0 > bottomfrac) || (bottomfrac >= topfrac) || (topfrac > 1.0) ) {
-        strcpy(grdelerrmsg, "grdelWindowViewBegin: bottomfrac and topfrac "
-               "must be in [0.0, 1.0] with bottomfrac < topfrac");
         return (grdelBool) 0;
     }
 

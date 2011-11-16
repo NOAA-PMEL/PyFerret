@@ -2,7 +2,7 @@
 Class for providings PipedViewer bindings for PyFerret graphical functions.
 An instance of the bindings class is created for each PipedViewer created.
 The createWindow method of the bindings is used to create a new PipedViewer
-for an instance of the bindings. 
+for an instance of the bindings.
 
 This package was developed by the Thermal Modeling and Analysis Project
 (TMAP) of the National Oceanographic and Atmospheric Administration's (NOAA)
@@ -19,7 +19,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
     should be called to associate a new PipedViewer with the
     bindings instance.
     '''
-    
+
     def __init__(self):
         '''
         Create an instance of the the PipedViewer bindings for PyFerret
@@ -38,7 +38,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
            width: width of the Window, in units of 0.001 inches
            height: height of the Window, in units of 0.001 inches
            visible: display Window on start-up?
-        
+
         Raises a RuntimeError if an active window is already associated
         with these bindings.
 
@@ -101,7 +101,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         if (0.0 > bottomflt) or (bottomflt >= topflt) or (topflt > 1.0):
             raise ValueError("bottomfrac and topfrac must be in [0.0, 1.0] " \
                              "with bottomfrac < topfrac")
-        cmnd = { "action":"beginView", 
+        cmnd = { "action":"beginView",
                  "viewfracs":{"left":leftflt, "bottom":bottomflt,
                               "right":rightflt, "top":topflt},
                  "usercoords":{"left":leftcoord, "bottom":bottomcoord,
@@ -118,7 +118,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         '''
         Clears the Window of all drawings.  The Window is filled
         (initialized) with fillcolor.
- 
+
         Arguments:
             fillcolor: Color to fill (initialize) the Window
         '''
@@ -145,7 +145,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
 
     def windowDpi(self):
         '''
-        Returns a two-tuple containing the screen resolution 
+        Returns a two-tuple containing the screen resolution
         of the Window, in dots per inch, in the horizontal (X)
         and vertical (Y) directions.
         '''
@@ -512,7 +512,7 @@ if __name__ == "__main__":
     import time
     import pyferret
     import pyferret.graphbind
-    
+
     # Initiate pyferret, but stay in python
     pyferret.init(None, False)
     # Create a "PyQtPipedViewer" window, with the title "Tester"
@@ -555,18 +555,18 @@ if __name__ == "__main__":
             bindinst.createColor(0.0, 0.0, 1.0, 0.25),
             # 15 translucent magenta
             bindinst.createColor(0.5, 0.0, 0.5, 0.25),
-            # 16 ransparent white background
+            # 16 transparent white background
             bindinst.createColor(1.0, 1.0, 1.0, 0.0),
     ]
     # x and y coordinates of the vertices of a pentagon
     # (roughly) centered in a 1000 x 1000 square
     pentaptsx = ( 504.5, 100.0, 254.5, 754.5, 909.0, )
     pentaptsy = ( 100.0, 393.9, 869.4, 869.4, 393.9, )
-    # Clear the window in transparent white
-    bindinst.clearWindow(mycolors[16])
+    # Clear the window in opaque white
+    bindinst.clearWindow(mycolors[1])
     # Create a view in the top left corner
     bindinst.beginView(0.0, 0.5, 0.5, 1.0, 0, 0, 1000, 1000)
-    # Draw a translucent black rentagle over most of the view
+    # Draw a translucent black rectangle over most of the view
     mybrush = bindinst.createBrush(mycolors[8], "solid")
     bindinst.drawRectangle(50, 50, 950, 950, mybrush, None)
     bindinst.deleteBrush(mybrush)

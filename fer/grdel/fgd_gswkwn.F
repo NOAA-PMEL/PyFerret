@@ -33,6 +33,13 @@
         ndcxmax(windowid) = xmax
         ndcymax(windowid) = ymax
 
+*       Since this has the potential to change the view,
+*       if this is the active window, reselect the active
+*       transform.
+        IF ( windowid .EQ. activewindow ) THEN
+            CALL FGD_GSELNT(activetransform)
+        ENDIF
+
         RETURN
         END
 

@@ -236,6 +236,8 @@ c        IF(has_more.NE.1) goto 210
 	   gui_status = ferr_ok	! a clean bill o' health at GO termination
 	   RETURN 1
 	ELSE
+*          Consider an update of the graphics
+           CALL FGD_CONSIDER_UPDATE()
 	   GOTO 20
 	ENDIF
 

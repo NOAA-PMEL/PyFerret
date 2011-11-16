@@ -146,32 +146,13 @@
 	IF ( qual_given( slash_continue ) .GT. 0
      .	.OR. mode_gui) RETURN
 
-* Output a GIF frame if in server mode
+* do not wait if in server mode
         IF  (IS_SERVER()) then
-*
-* Assuming the following is fossil code and commenting it out
-* ( PUT_TEMP_FRAME_BATCH created a gif image
-*   with a created filename of the form /tmp/fer*.gif
-*   with (white as the) transparent background. )
-* It does get invoked but the file it creates is not used.(?)
-*
-*          IF (ITS_BATCH_GRAPHICS()) then
-*             DO wsid = 1, max_windows
-*                IF ( wn_active(wsid) ) THEN
-* output a GIF frame
-*                   CALL PUT_TEMP_FRAME_BATCH(wsid, ctmpfile, rlen)
-*                   CALL TM_CTOF_STRNG(ctmpfile, tmpfile, rlen)
-*                   CALL TM_SPLIT_MESSAGE(ttout_lun,
-*    1                '<!-- ferret: gif='//tmpfile(:rlen)//' -->')
-*                ENDIF
-*             END DO
-*          ENDIF
-*
-* End of commenting out fossil code
-*
            RETURN
         ENDIF
 
+* pausing, so make sure the graphics (if any) are updated
+        CALL FGD_CONSIDER_UPDATE(.TRUE.)
 
 * prompt for <CR> ?
 * (in gui mode ferret_dispatch will send a flag back to the GUI)

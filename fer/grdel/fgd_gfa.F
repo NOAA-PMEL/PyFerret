@@ -93,6 +93,7 @@
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
+        somethingdrawn = .TRUE.
 
 *       If a temporary brush was created, delete it
         IF ( tempbrush .NE. nullobj ) THEN

@@ -41,6 +41,7 @@
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
+        somethingdrawn = .TRUE.
 
         RETURN
         END

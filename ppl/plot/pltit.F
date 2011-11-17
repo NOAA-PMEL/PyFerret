@@ -245,8 +245,14 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	   if (.not. meta_clsplt) then				!1.25.90 JD
               call FGD_GDAWK(meta_wsid)     			!11.6.89 JD
 	      call FGD_GCLWK(meta_wsid)				!11.6.89 JD
+*
 *             *kms* graphics delegate now does all the graphics output
 *	      close (meta_lun)					!11.6.89 JD
+*             *kms* so save the graphics at this time to meta_file
+              IF ( meta_lun .NE. 0 ) THEN
+                  CALL FGD_SAVE_WINDOW(meta_file)
+                  meta_lun = 0
+              ENDIF
 *             TEMP FIX DUE TO GKS BUG  *JD* 5.91
 * ----        close (aux_lun)
 	   end if						!11.6.89 JD

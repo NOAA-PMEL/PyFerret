@@ -1,4 +1,4 @@
-	SUBROUTINE CLSPPL
+        SUBROUTINE CLSPPL
 
 *
 *
@@ -35,31 +35,31 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-*	Modified 9.27.88 J Davison TMAP/JISAO/PMEL
-*	to close GKS properly if it is opened.
-*	J Davison 11.28.88 modified for compatibility to v1.1 PPL
-*	k obrien 3.11.97 added ifdef for linux port to ignore "unlink"
+*       Modified 9.27.88 J Davison TMAP/JISAO/PMEL
+*       to close GKS properly if it is opened.
+*       J Davison 11.28.88 modified for compatibility to v1.1 PPL
+*       k obrien 3.11.97 added ifdef for linux port to ignore "unlink"
 * V602: *acm* 1/07 Changes for metafile-batch mode
 *       *kms* 10/11 set GKSOPN and GKS_OPEN flags to .FALSE.
 *                   after closing GKS
 
-	include 'symkey_inc.decl'
-	include 'SYMKEY.INC'
-	include 'cmdcom_inc.decl'
-	include 'CMDCOM.INC'
-	include 'lunits_inc.decl'
-	include 'LUNITS.INC'
-	include 'pltcom_dat.decl'
-	include 'PLTCOM.DAT'
-	include 'gkscm2.cmn'
+        include 'symkey_inc.decl'
+        include 'SYMKEY.INC'
+        include 'cmdcom_inc.decl'
+        include 'CMDCOM.INC'
+        include 'lunits_inc.decl'
+        include 'LUNITS.INC'
+        include 'pltcom_dat.decl'
+        include 'PLTCOM.DAT'
+        include 'gkscm2.cmn'
 
 #ifdef core
         include 'CORECM.INC'
 #endif
 C
-C	CLOSES FILES USED BY PLOT5+
+C       CLOSES FILES USED BY PLOT5+
 C
-	CALL ATFLSH
+        CALL ATFLSH
 #ifdef unix
         call dbmclose(keyln1)
 #ifndef F90_NO_UNLINK
@@ -69,7 +69,7 @@ C
         call close_gks !See bottom of this file. J Davison 9.27.88
 #else
         call close_gks !See bottom of this file. J Davison 9.27.88
-	CLOSE(KEYLN1,DISP='DELETE')
+        CLOSE(KEYLN1,DISP='DELETE')
 #endif
 #ifdef core
         if(gksopn)then
@@ -79,31 +79,28 @@ C
         endif
 #endif
  
-	IF(PLTFLG)THEN
-	    PEN = .FALSE.
-	    CALL ZABMV
-	    CALL BINFSH
-	    PLTFLG = .FALSE.
-	ENDIF
+        IF(PLTFLG)THEN
+            PEN = .FALSE.
+            CALL ZABMV
+            CALL BINFSH
+            PLTFLG = .FALSE.
+        ENDIF
         GKSOPN = .FALSE.
         GKS_OPEN = .FALSE.
-	RETURN
-	END
+        RETURN
+        END
 
         SUBROUTINE CLOSE_GKS
 
 *       Written to close GKS if it is open, deactivate and close workstations
 *       J Davison 9.27.88
 
-#ifdef unix
-        include         'pltcom_dat.decl'
-        include         'PLTCOM.DAT'
-#else
-        INCLUDE         'PPLV11INC:pltcom.dat'
-#endif
+        include 'pltcom_dat.decl'
+        include 'PLTCOM.DAT'
+        include 'gkscm2.cmn'
 
-        integer         member,er_status,num_active,rmember,i,j,
-     .                  num_open, istate
+        integer member,er_status,num_active,rmember,i,j,
+     .          num_open, istate
 
 ********************************************************************************
 
@@ -112,6 +109,13 @@ C
 
         if (gksopn) then 
            if ( istate .GE. 2 ) then
+*
+*             *kms* Save the graphics to meta_file if appropriate
+              IF ( meta_lun .NE. 0 ) THEN
+                  CALL FGD_SAVE_WINDOW(meta_file)
+                  meta_lun = 0
+              ENDIF
+
               member = 1
               call FGD_GQACWK(member,er_status,num_active,rmember)
               if (num_active .lt. 1) goto 20
@@ -119,18 +123,18 @@ C
               do 10 i = 1,num_active
                  call FGD_GQACWK(1,er_status,j,rmember)
                  call FGD_GDAWK(rmember)
-10            continue
+ 10           continue
 
-20            call FGD_GQOPWK(member,er_status,num_open,rmember)
+ 20           call FGD_GQOPWK(member,er_status,num_open,rmember)
               if (num_open .lt. 1) goto 40
 
               do 30 i = 1,num_open
                  call FGD_GQOPWK(1,er_status,j,rmember)
                  call FGD_GCLWK(rmember)
-30            continue
+ 30           continue
 
            endif    ! istate
-40         call FGD_GCLKS()
+ 40        call FGD_GCLKS()
         end if
 
         return

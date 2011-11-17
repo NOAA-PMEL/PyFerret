@@ -1040,6 +1040,8 @@ C	PLTNME
 		meta_file=LABEL
 		TEMP=LABEL
 	    ENDIF
+*           *kms* mark that the graphics are to be saved
+            meta_lun = 1
 	    SYM='*PPL$PLTNME'
 	    ISYM=LNBLK(TEMP,2048)
 	    CALL PUTSYM(SYM,TEMP,ISYM,IER)
@@ -1352,6 +1354,11 @@ C	CLSPLT
 	       call FGD_GCLWK(meta_wsid)
 *              *kms* graphics delegate now does all the graphics output
 *	       close (meta_lun)
+*              *kms* so save the graphics at this time to meta_file
+               IF ( meta_lun .NE. 0 ) THEN
+                   CALL FGD_SAVE_WINDOW(meta_file)
+                   meta_lun = 0
+               ENDIF
 	       meta_clsplt = .true.
                meta_actv = .false.     ! mode state is still saved in mode_metafile
 	       vpt_was_set = .false.
@@ -1360,6 +1367,11 @@ C	CLSPLT
 	       call FGD_GCLWK(meta_wsid)
 *              *kms* graphics delegate now does all the graphics output
 *	       close (meta_lun)
+*              *kms* so save the graphics at this time to meta_file
+               IF ( meta_lun .NE. 0 ) THEN
+                   CALL FGD_SAVE_WINDOW(meta_file)
+                   meta_lun = 0
+               ENDIF
 	       meta_clsplt = .true.
                meta_actv = .false.
 	       vpt_was_set = .false.
@@ -1374,9 +1386,16 @@ C	RENAMPL
 	    IF (its_open .AND. first_meta) THEN
 *              *kms* graphics delegate now does all the graphics output
 *	       CLOSE (meta_lun, STATUS='KEEP')
+*              *kms* so save the graphics at this time to meta_file
+               IF ( meta_lun .NE. 0 ) THEN
+                   CALL FGD_SAVE_WINDOW(meta_file)
+                   meta_lun = 0
+               ENDIF
 	       CALL RENAME(strr, meta_file)
 *              *kms* graphics delegate now does all the graphics output
 *	       OPEN (UNIT=meta_lun,file=meta_file)
+*              *kms* mark that the graphics are to be saved
+               meta_lun = 1
 	    END IF        
 
 	    GOTO 10

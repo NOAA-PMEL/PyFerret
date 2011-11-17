@@ -102,7 +102,10 @@
 	meta_wsid = 101
 *       MOD *JD* 3.25.91 Ultrix doesn't like LUN >= 19 for GOPWK
 *	meta_lun  = 112
-	meta_lun  = 18
+*	meta_lun  = 18
+* *kms* meta_lun now used as a indicator if the graphics should be
+*       saved (non-zero) or not (zero) to meta_file
+        meta_lun  = 0
 *	meta_file = 'metafile.plt' -- initialize in block data
 
 	tmp_wsid = 102

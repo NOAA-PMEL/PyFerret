@@ -297,6 +297,7 @@ def init(arglist=None, enterferret=True):
                             "             shapefile_* Ferret functions will not be added"
 
     my_metaname = None
+    my_unmapped = False
     my_memsize = 25.6
     my_journal = True
     my_verify = True
@@ -333,10 +334,10 @@ def init(arglist=None, enterferret=True):
                     except:
                         k -= 1
                 elif opt == "-gif":
-                    my_metaname = "ferret.png"
+                    # just treat -gif the same as -unmapped
+                    my_unmapped = True
                 elif opt == "-unmapped":
-                    # just treat -unmapped the same as -gif
-                    my_metaname = "ferret.png"
+                    my_unmapped = True
                 elif opt == "-nojnl":
                     my_journal = False
                 elif opt == "-noverify":
@@ -384,11 +385,12 @@ def init(arglist=None, enterferret=True):
     # Add PViewPyFerretBindings, as "PyQtPipedViewer" to the known bindings
     knownengines = pyferret.graphbind.knownPyFerretEngines()
     if not ("PyQtPipedViewer" in knownengines):
-        pyferret.graphbind.addPyFerretBindings("PyQtPipedViewer", 
+        pyferret.graphbind.addPyFerretBindings("PyQtPipedViewer",
                            pipedviewer.pviewpyferbind.PViewPyFerretBindings)
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify,
-          restrict=my_restrict, server=my_server, metaname=my_metaname)
+          restrict=my_restrict, server=my_server,
+          metaname=my_metaname, unmapped=my_unmapped)
     # define all the Ferret standard Python external functions
     for fname in std_pyefs:
         result = run("DEFINE PYFUNC pyferret.%s" % fname)
@@ -426,17 +428,19 @@ def init(arglist=None, enterferret=True):
     return result
 
 
-def start(memsize=25.6, journal=True, verify=True,
-          restrict=False, server=False, metaname=None):
+def start(memsize=25.6, journal=True, verify=True, restrict=False,
+          server=False, metaname=None, unmapped=False):
     """
-    Initializes Ferret.  This allocates the initial amount of memory for
-    Ferret (from Python-managed memory), opens the journal file, if requested,
-    and sets Ferret's verify mode.  If restrict is True, some Ferret commands
-    will not be available (to provide a secured session).  Once restrict is set,
-    it cannot be unset.  If server is True, Ferret will be run in server mode.
-    If metaname is empty (and not in server mode), Ferret's graphics will be
-    displayed by default;  otherwise, this value is used as the initial filename
-    for output graphics.  This routine does NOT run any user initialization scripts.
+    Initializes Ferret.  This allocates the initial amount of memory
+    for Ferret (from Python-managed memory), opens the journal file,
+    if requested, and sets Ferret's verify mode.  If restrict is True,
+    some Ferret commands will not be available (to provide a secured
+    session).  Once restrict is set, it cannot be unset.  If server 
+    is True, Ferret will be run in server mode.  If metaname is not 
+    empty this value is used as the initial filename for automatic 
+    output of graphics, and the graphics viewer will not be displayed.
+    If unmapped is True, the graphics viewer will not be displayed.
+    This routine does NOT run any user initialization scripts.
 
     Arguments:
         memsize:  the size, in megafloats (where a "float" is 4 bytes),
@@ -445,7 +449,8 @@ def start(memsize=25.6, journal=True, verify=True,
         verify:   turn on Ferret's verify mode?
         restrict: restrict Ferret's capabilities?
         server:   put Ferret in server mode?
-        metaname: filename for Ferret graphics, can be None or empty
+        metaname: filename for Ferret graphics; can be None or empty
+        unmapped: hide the graphics viewer?
     Returns:
         True is successful
         False if Ferret has already been started
@@ -472,7 +477,8 @@ def start(memsize=25.6, journal=True, verify=True,
         str_metaname = metaname
     # the actual call
     return _pyferret._start(flt_memsize, bool(journal), bool(verify),
-                            bool(restrict), bool(server), str_metaname)
+                            bool(restrict), bool(server), str_metaname,
+                            bool(unmapped))
 
 
 def resize(memsize):
@@ -589,7 +595,7 @@ def metastr(datadict):
                                        uc_month[subitem[_pyferret.TIMEARRAY_MONTHINDEX]],
                                                 subitem[_pyferret.TIMEARRAY_YEARINDEX],
                                                 subitem[_pyferret.TIMEARRAY_HOURINDEX],
-						subitem[_pyferret.TIMEARRAY_MINUTEINDEX],
+                                                subitem[_pyferret.TIMEARRAY_MINUTEINDEX],
                                                 subitem[_pyferret.TIMEARRAY_SECONDINDEX],) )
                         if len(strlist) == 0:
                            strlist.append("[]")

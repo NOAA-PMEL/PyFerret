@@ -110,6 +110,7 @@ static char pyferretStartDocstring[] =
     "    restrict = <bool>: restrict Ferret's capabilities? (default False) \n"
     "    server = <bool>: run Ferret in server mode? (default False) \n"
     "    metaname = <string>: filename for Ferret graphics (default empty) \n"
+    "    unmapped = <bool>: hide the graphics viewer? (default False) \n"
     "\n"
     "Returns: \n"
     "    True is successful \n"
@@ -121,18 +122,20 @@ static char pyferretStartDocstring[] =
 
 static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 {
-    static char *argNames[] = {"memsize", "journal", "verify", "restrict", 
-                               "server", "metaname", NULL};
+    static char *argNames[] = {"memsize", "journal", "verify", "restrict",
+                               "server", "metaname", "unmapped", NULL};
     double mwMemSize = 25.6;
     PyObject *pyoJournal = NULL;
     PyObject *pyoVerify = NULL;
     PyObject *pyoRestrict = NULL;
     PyObject *pyoServer = NULL;
+    PyObject *pyoUnmapped = NULL;
     char *metaname = NULL;
     int journalFlag = 1;
     int verifyFlag = 1;
     int restrictFlag = 0;
     int serverFlag = 0;
+    int unmappedFlag = 0;
     int pplMemSize;
     size_t blksiz;
     int status;
@@ -149,10 +152,11 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     import_array1(NULL);
 
     /* Parse the arguments, checking if an Exception was raised */
-    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!O!O!s",
+    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|dO!O!O!O!sO!",
                  argNames, &mwMemSize, &PyBool_Type, &pyoJournal,
                  &PyBool_Type, &pyoVerify, &PyBool_Type, &pyoRestrict,
-                 &PyBool_Type, &pyoServer, &metaname) )
+                 &PyBool_Type, &pyoServer, &metaname,
+                 &PyBool_Type, &pyoUnmapped) )
         return NULL;
 
     /* Interpret the booleans - Py_False and Py_True are singleton non-NULL objects, so just use == */
@@ -166,6 +170,8 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
         serverFlag = 1;
     if ( metaname[0] == '\0' )
         metaname = NULL;
+    if ( pyoUnmapped == Py_True )
+        unmappedFlag = 1;
 
     /* Deal with the restrict and server flags right away */
     if ( restrictFlag != 0 )
@@ -196,12 +202,20 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
         return PyErr_NoMemory();
     set_fer_memory(ferMemory, ferMemSize);
 
-    /* Inhibit graphics display if requested */
-    if ( metaname != NULL ) {
-       /* Make a copy of the name just in case set_batch_graphics_ changes something */
+    if ( (metaname != NULL) || (unmappedFlag != 0) ) {
+       /*
+        * Set the default graphics filename for saving before ending.
+        * Make a copy of the name just in case set_batch_graphics_ changes
+        * something.  This also hides the graphics viewer.
+        */
        char my_meta_name[256];
-       strncpy(my_meta_name, metaname, 256);
-       my_meta_name[255] = '\0';
+       if ( metaname != NULL ) {
+           strncpy(my_meta_name, metaname, 256);
+           my_meta_name[255] = '\0';
+       }
+       else {
+           my_meta_name[0] = '\0';
+       }
        set_batch_graphics_(my_meta_name);
     }
 
@@ -397,7 +411,7 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
             cmnd_stack_level = sBuffer->flags[FRTN_IDATA2];
         }
         else {
-            /* 
+            /*
              * Not a memory resize command; probably an exit command.
              * Do not allow return to the Python prompt if in restricted mode
              * (is_secure_() returns non-zero).
@@ -408,7 +422,7 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
                exit(0);
         }
         /* submit an empty command to continue on with whaterever was going on */
-	iter_command = "";
+        iter_command = "";
     } while ( (one_cmnd_mode_int == 0) || (cmnd_stack_level > 0) );
 
     /* Set back to single command mode */

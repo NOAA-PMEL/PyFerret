@@ -892,15 +892,18 @@ class PyQtPipedViewer(QMainWindow):
         try:
             self.__activepainter.setRenderHint(QPainter.Antialiasing, True)
             try:
-                mypen = self.__helper.getPenFromCmnd(cmnd["outline"])
-                self.__activepainter.setPen(mypen)
-            except KeyError:
-                self.__activepainter.setPen(Qt.NoPen)
-            try:
                 mybrush = self.__helper.getBrushFromCmnd(cmnd["fill"])
-                self.__activepainter.setBrush(mybrush)
             except KeyError:
-                self.__activepainter.setBrush(Qt.NoBrush)
+                mybrush = Qt.NoBrush
+            try:
+                mypen = self.__helper.getPenFromCmnd(cmnd["outline"])
+            except KeyError:
+                if ( mybrush == Qt.NoBrush ):
+                    raise ValueError( self.tr('drawPolygon called without a Brush or Pen') )
+                # Use a cosmetic Pen matching the brush
+                mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+            self.__activepainter.setBrush(mybrush)
+            self.__activepainter.setPen(mypen)
             self.__activepainter.drawPolygon(mypolygon)
             self.__somethingdrawn = True
         finally:

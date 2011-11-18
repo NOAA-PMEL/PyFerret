@@ -104,8 +104,8 @@
 *	meta_lun  = 112
 *	meta_lun  = 18
 * *kms* meta_lun now used as a indicator if the graphics should be
-*       saved (non-zero) or not (zero) to meta_file
-        meta_lun  = 0
+*       saved (non-zero) or not (zero) to meta_file,
+*       and is initialized in block data (ws_types_init.F)
 *	meta_file = 'metafile.plt' -- initialize in block data
 
 	tmp_wsid = 102

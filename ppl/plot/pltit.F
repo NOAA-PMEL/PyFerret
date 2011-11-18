@@ -243,26 +243,24 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	if (clear .and. no_vpt_flag) then			!12.1.89 JD
 
 	   if (.not. meta_clsplt) then				!1.25.90 JD
-              call FGD_GDAWK(meta_wsid)     			!11.6.89 JD
-	      call FGD_GCLWK(meta_wsid)				!11.6.89 JD
-*
-*             *kms* graphics delegate now does all the graphics output
-*	      close (meta_lun)					!11.6.89 JD
-*             *kms* so save the graphics at this time to meta_file
+*             *kms* deactivate and close the workstation after FGD_SAVE_WINDOW
+*                   which relies on the workstation to do the save
               IF ( meta_lun .NE. 0 ) THEN
                   CALL FGD_SAVE_WINDOW(meta_file)
                   meta_lun = 0
               ENDIF
-*             TEMP FIX DUE TO GKS BUG  *JD* 5.91
-* ----        close (aux_lun)
+              CALL FGD_GDAWK(meta_wsid)
+              CALL FGD_GCLWK(meta_wsid)
 	   end if						!11.6.89 JD
 
-	   call open_metafile					!11.6.89 JD
-	   call FGD_GACWK(meta_wsid)				!11.6.89 JD
+*          *kms* first activate the workstation so that meta_wsid
+*                is the active workstation for OPEN_METAFILE
+           CALL FGD_GACWK(meta_wsid)
+           CALL OPEN_METAFILE
 #ifndef xgks
 	   call meta_version					!2.24.93
 #endif
-	   IF (.NOT. meta_batch) meta_actv = .true.					!11.6.89 JD
+	   IF (.NOT. meta_batch) meta_actv = .true.		!11.6.89 JD
 	   meta_clsplt = .false.				!1.25.90 JD
 	end if							!11.6.89 JD
 10      if (meta_actv.OR. meta_batch) then ! Put both following stmts in if section

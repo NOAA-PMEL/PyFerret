@@ -1816,13 +1816,11 @@ c *kob* 4/97
 * SET GIFFILE
  1700	IF ( num_args .EQ. 0 ) GOTO 5100
 
-* When not in gif mode, ignore SET GIFFILE
-        its_gif = ITS_GIF_GRAPHICS()
-        IF ( .NOT. its_gif ) THEN
-	   CALL WARN ('Not in GIF mode: ignoring SET GIFFILE')
-        ELSE
-	   slen = item_end(1) - item_start(1) + 1
-	   CALL SAVE_METAFILE_NAME (cmnd_buff(item_start(1):item_end(1)), slen)
+* *kms* with the graphics delegate, treat it the same as set mode meta:"filename"
+        buff2 = cmnd_buff(item_start(1):item_end(1))
+        IF ( buff2 .NE. ' ' ) THEN
+            IF ( .NOT. pplus_started ) CALL START_PPLUS
+            CALL PPLCMD(from, line, 0, 'PLTNME ' // buff2, 1, 1)
         ENDIF
 	RETURN
 

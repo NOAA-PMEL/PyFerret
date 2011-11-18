@@ -238,6 +238,11 @@ c	      IF ( batch .AND. (.NOT.meta_batch)) THEN
 	integer*1 mname(clen)
 #endif  
 	call tm_ctof_strng(mname, meta_file, clen)
+*       *kms* set meta_lun to non-zero to indicate the graphics
+*             are to be saved.  Do not call OPEN_METAFILE since
+*             this is only called on start-up and there is no
+*             active window.
+        meta_lun = 1
 	return
 	end
 	

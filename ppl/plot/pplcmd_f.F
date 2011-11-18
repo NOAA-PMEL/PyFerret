@@ -1033,15 +1033,22 @@ C	PLTNME
 *	    SYM='*PPL$PLTNME'
 *	    ISYM=LNBLK(TEMP,2048)
 *	    CALL PUTSYM(SYM,TEMP,ISYM,IER)
-8000	    IF(N.EQ.0)THEN
-		meta_file='ferret.png'
-		TEMP='ferret.png'
+*
+*           *kms* First check if this is actually a rename
+8000        IF ( meta_lun .NE. 0 ) THEN
+               CALL FGD_SAVE_WINDOW(meta_file)
+               meta_lun = 0
+            ENDIF
+            IF(N.EQ.0)THEN
+                meta_file='ferret.png'
+                TEMP='ferret.png'
 	    ELSE
 		meta_file=LABEL
 		TEMP=LABEL
 	    ENDIF
-*           *kms* mark that the graphics are to be saved
-            meta_lun = 1
+*           *kms* Mark that the graphics are to be saved
+*                 and clear the active window
+            CALL OPEN_METAFILE
 	    SYM='*PPL$PLTNME'
 	    ISYM=LNBLK(TEMP,2048)
 	    CALL PUTSYM(SYM,TEMP,ISYM,IER)
@@ -1350,28 +1357,28 @@ C	CLSPLT
             if (meta_batch .and. ws_state.GT.0) its_open = .true.
 
 	    if (its_open .and. .not. meta_clsplt .and. .not. first_meta) then
-	       if (meta_actv .OR. meta_batch) call FGD_GDAWK(meta_wsid)
-	       call FGD_GCLWK(meta_wsid)
 *              *kms* graphics delegate now does all the graphics output
-*	       close (meta_lun)
-*              *kms* so save the graphics at this time to meta_file
+*                    so save the graphics at this time to meta_file
+*                    (before deactivating and closing the workstation)
                IF ( meta_lun .NE. 0 ) THEN
                    CALL FGD_SAVE_WINDOW(meta_file)
                    meta_lun = 0
                ENDIF
+               if (meta_actv .OR. meta_batch) call FGD_GDAWK(meta_wsid)
+               call FGD_GCLWK(meta_wsid)
 	       meta_clsplt = .true.
                meta_actv = .false.     ! mode state is still saved in mode_metafile
 	       vpt_was_set = .false.
 	    elseif (meta_batch .and. vpt_was_set ) then
-	       call FGD_GDAWK(meta_wsid)
-	       call FGD_GCLWK(meta_wsid)
 *              *kms* graphics delegate now does all the graphics output
-*	       close (meta_lun)
-*              *kms* so save the graphics at this time to meta_file
+*                    so save the graphics at this time to meta_file
+*                    (before deactivating and closing the workstation)
                IF ( meta_lun .NE. 0 ) THEN
                    CALL FGD_SAVE_WINDOW(meta_file)
                    meta_lun = 0
                ENDIF
+               call FGD_GDAWK(meta_wsid)
+               call FGD_GCLWK(meta_wsid)
 	       meta_clsplt = .true.
                meta_actv = .false.
 	       vpt_was_set = .false.
@@ -1385,17 +1392,16 @@ C	RENAMPL
             strr = LABEL
 	    IF (its_open .AND. first_meta) THEN
 *              *kms* graphics delegate now does all the graphics output
-*	       CLOSE (meta_lun, STATUS='KEEP')
-*              *kms* so save the graphics at this time to meta_file
+*                    so save the graphics at this time to meta_file
                IF ( meta_lun .NE. 0 ) THEN
                    CALL FGD_SAVE_WINDOW(meta_file)
                    meta_lun = 0
                ENDIF
 	       CALL RENAME(strr, meta_file)
 *              *kms* graphics delegate now does all the graphics output
-*	       OPEN (UNIT=meta_lun,file=meta_file)
-*              *kms* mark that the graphics are to be saved
-               meta_lun = 1
+*                    mark that the graphics are to be saved
+*                    and clear the active window
+               CALL OPEN_METAFILE
 	    END IF        
 
 	    GOTO 10

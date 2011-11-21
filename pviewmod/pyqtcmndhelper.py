@@ -88,7 +88,7 @@ class SymbolPath(object):
             painterpath: the QPainterPath representing this symbol
             isfilled: if True, the symbol should be drawn with a
                     solid brush; if False, the symbol should be
-                    drawn with a solid pen 
+                    drawn with a solid pen
         '''
         super(SymbolPath, self).__init__()
         self.__painterpath = painterpath
@@ -110,7 +110,7 @@ class SymbolPath(object):
 
 class PyQtCmndHelper(object):
     '''
-    Helper class of static methods for dealing with commands 
+    Helper class of static methods for dealing with commands
     sent to a PyQt piped viewer.
     '''
     def __init__(self, parent):
@@ -126,7 +126,7 @@ class PyQtCmndHelper(object):
         '''
         Returns a QFont based on the information in the dictionary
         fontinfo.
-        
+
         Recognized keys in the font dictionary are:
             "family": font family name (string)
             "size": size in View units (int)
@@ -161,13 +161,13 @@ class PyQtCmndHelper(object):
         Returns a QBrush based on the information in the dictionary
         brushinfo.  A ValueError is raised if the value for the
         "style" key, if given, is not recognized.
-        
+
         Recognized keys in the fill dictionary are:
             "color": color name or 24-bit RGB integer value
                          (eg, 0xFF0088)
             "alpha": alpha value from 0 (transparent) to 255 (opaque)
             "style": brush style name ("solid", "dense1" to "dense7",
-                         "none", "hor", "ver", "cross", 
+                         "none", "hor", "ver", "cross",
                          "bdiag", "fdiag", "diagcross")
         '''
         try:
@@ -221,7 +221,7 @@ class PyQtCmndHelper(object):
         peninfo.  A ValueError is raised if the value for the
         "style", "capstyle", or "joinstyle" key, if given, is not
         recognized.
-        
+
         Recognized keys in the outline dictionary are:
             "color": color name or 24-bit RGB integer value
                          (eg, 0xFF0088)
@@ -296,7 +296,7 @@ class PyQtCmndHelper(object):
 
     def getSymbolFromCmnd(self, symbol):
         '''
-        Returns a SymbolPath of the specified symbol.  
+        Returns a SymbolPath of the specified symbol.
         Recognized symbols are:
             '.' (period): filled circle
             'o' (lowercase oh): unfilled circle
@@ -378,7 +378,7 @@ class PyQtCmndHelper(object):
         except KeyError:
             pass
         return myrect
-        
+
     def getSidesFromCmnd(self, rectinfo):
         '''
         Returns a SidesQRectF based on the information in the dictionary
@@ -408,8 +408,8 @@ class PyQtCmndHelper(object):
     def getColorFromCmnd(self, colorinfo):
         '''
         Returns a QColor based on the information in the dictionary
-        colorinfo.  Raises a KeyError if the "color" key is not given. 
-        
+        colorinfo.  Raises a KeyError if the "color" key is not given.
+
         Recognized keys are:
             "color": color name or 24-bit RGB integer value
                          (eg, 0xFF0088)

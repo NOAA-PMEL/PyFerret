@@ -27,7 +27,7 @@ class PyQtScaleDialog(QDialog):
         message as the dialog message, and scale as the current
         scaling value which gives a pixmap of size width and
         height.  The minimum acceptable width and heights are
-        given by minwidth and minheight.   
+        given by minwidth and minheight.
         '''
         super(PyQtScaleDialog, self).__init__(parent)
         self.setWindowTitle(title)
@@ -47,10 +47,10 @@ class PyQtScaleDialog(QDialog):
         heightlabel = QLabel(self.tr("Height  (min %1)  ") \
                                  .arg(self.FLTSTR_FORMAT % minheight), self)
         self.__heightlabel = QLabel(self.FLTSTR_FORMAT % height, self)
-        buttonbox = QDialogButtonBox(QDialogButtonBox.Ok | 
+        buttonbox = QDialogButtonBox(QDialogButtonBox.Ok |
                                      QDialogButtonBox.Cancel |
                                      QDialogButtonBox.Reset)
-        
+
         layout = QGridLayout()
         layout.addWidget(messagelabel, 0, 0, 1, 2)
         layout.addWidget(scalelabel, 1, 0)
@@ -73,21 +73,21 @@ class PyQtScaleDialog(QDialog):
         if okay:
             newwidth = self.__width * newscale / self.__scale
             self.__widthlabel.setText(self.FLTSTR_FORMAT % newwidth)
-            newheight = self.__height * newscale / self.__scale 
+            newheight = self.__height * newscale / self.__scale
             self.__heightlabel.setText(self.FLTSTR_FORMAT % newheight)
-            
+
     def checkValues(self):
         okay = self.getValues()[1]
         if okay:
             self.accept()
         else:
-            QMessageBox.warning(self, self.tr("Invalid value"), 
+            QMessageBox.warning(self, self.tr("Invalid value"),
                                 self.tr("Scale value is not valid"))
 
     def getValues(self):
         (newscale, okay) = self.__scaleedit.text().toFloat()
         newwidth = self.__width * newscale / self.__scale
-        newheight = self.__height * newscale / self.__scale 
+        newheight = self.__height * newscale / self.__scale
         if (not okay) or (newwidth < self.__minwidth) \
                       or (newheight < self.__minheight):
             return (0.0, False)

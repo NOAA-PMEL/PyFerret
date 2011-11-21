@@ -22,7 +22,7 @@ class PyQtResizeDialog(QDialog):
         '''
         Creates a resize dialog with title as the window title,
         message as the dialog message, and width and height as
-        the initial values of the respective QLineEdit widgets.  
+        the initial values of the respective QLineEdit widgets.
         '''
         super(PyQtResizeDialog, self).__init__(parent)
         self.setWindowTitle(title)
@@ -43,10 +43,10 @@ class PyQtResizeDialog(QDialog):
         self.__heightedit = QLineEdit(str(height), self)
         heightlabel.setBuddy(self.__heightedit)
 
-        buttonbox = QDialogButtonBox(QDialogButtonBox.Ok | 
+        buttonbox = QDialogButtonBox(QDialogButtonBox.Ok |
                                      QDialogButtonBox.Cancel |
                                      QDialogButtonBox.Reset)
-        
+
         layout = QGridLayout()
         layout.addWidget(messagelabel, 0, 0, 1, 2)
         layout.addWidget(widthlabel, 1, 0)
@@ -66,7 +66,7 @@ class PyQtResizeDialog(QDialog):
         if okay:
             self.accept()
         else:
-            QMessageBox.warning(self, self.tr("Invalid value"), 
+            QMessageBox.warning(self, self.tr("Invalid value"),
                                 self.tr("Values are not valid"))
 
     def getValues(self):

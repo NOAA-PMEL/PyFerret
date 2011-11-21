@@ -29,7 +29,7 @@ class AbstractPyFerretBindings(object):
         '''
         super(AbstractPyFerretBindings, self).__init__()
 
-    def createWindow(self, title, width, height, visible = True):
+    def createWindow(self, title, width, height, visible):
         '''
         Creates a "Window object" for this graphics engine.  Here,
         a Window is the complete drawing area.  However, no drawing
@@ -49,19 +49,16 @@ class AbstractPyFerretBindings(object):
     def deleteWindow(self):
         '''
         Deletes the Window associated with this instance of the bindings.
-        When this call returns True, the Window should not be visible and
-        all resources associated with this Window should have been released.
-        After returning True, this instance of the bindings should be deleted
-        and considered no longer usable.  If False is returned, this instance
-        of the bindings should be usable.
+        When this call returns True, the Window should not be visible,
+        all resources associated with this Window should have been released,
+        After calling this function, this instance of the bindings should
+        be deleted and considered no longer usable.
         '''
         return False
 
-    def beginView(self, leftfrac = 0.0, bottomfrac = 0.0,
-                        rightfrac = 1.0, topfrac = 1.0,
-                        leftcoord = 0, bottomcoord = 0,
-                        rightcoord = 1000, topcoord = 1000,
-                        clipit = True):
+    def beginView(self, leftfrac, bottomfrac, rightfrac, topfrac,
+                        leftcoord, bottomcoord, rightcoord, topcoord,
+                        clipit):
         '''
         Creates a "View object" for the given Window.  Here, a View is a
         rectangular region in the drawing area with its own coordinate
@@ -70,22 +67,22 @@ class AbstractPyFerretBindings(object):
 
         Arguments:
             leftfrac:    [0,1] fraction of the Window width
-                         for the left side of the view
+                         for the left side of the View
             bottomfrac:  [0,1] fraction of the Window height
-                         for the bottom side of the view
+                         for the bottom side of the View
             rightfrac:   [0,1] fraction of the Window width
-                         for the right side of the view
+                         for the right side of the View
             topfrac:     [0,1] fraction of the Window height
-                         for the top side of the view
+                         for the top side of the View
             leftcoord:   user coordinate
-                         for the left side of the view
+                         for the left side of the View
             bottomcoord: user coordinate
-                         for the bottom side of the view
+                         for the bottom side of the View
             rightcoord:  user coordinate
-                         for the right side of the view
+                         for the right side of the View
             topcoord:    user coordinate
-                         for the top side of the view
-            clipit:      clip drawing to this view?
+                         for the top side of the View
+            clipit:      clip drawing to this View?
 
         Note that leftfrac < rightfrac, bottomfrac < topfrac since the
         origin of Windows and Views is the bottom left corner.
@@ -105,6 +102,12 @@ class AbstractPyFerretBindings(object):
         '''
         Closes the current View.  When this call returns, the graphics 
         drawn to the View should be visible in its Window.
+        '''
+        raise AttributeError()
+
+    def updateWindow(self):
+        '''
+        Indicates the viewer should update the graphics displayed.
         '''
         raise AttributeError()
 
@@ -136,7 +139,7 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
-    def showWindow(self, visible = True):
+    def showWindow(self, visible):
         '''
         Display or hide a Window.  A graphics engine that does not
         have the ability to display a Window will always raise an
@@ -147,7 +150,7 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
-    def saveWindow(self, filename, fileformat = None, transparentbkg = True):
+    def saveWindow(self, filename, fileformat, transparentbkg):
         '''
         Save the contents of the window to a file.
 
@@ -161,7 +164,7 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
-    def createColor(self, redfrac, greenfrac, bluefrac, opaquefrac = 1.0):
+    def createColor(self, redfrac, greenfrac, bluefrac, opaquefrac):
         '''
         Returns a Color object from fractional [0.0, 1.0] intensities
         of the red, green, and blue channels.
@@ -189,8 +192,7 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
-    def createFont(self, familyname, fontsize, italic = False,
-                   bold = False, underlined = False):
+    def createFont(self, familyname, fontsize, italic, bold, underlined):
         '''
         Returns a Font object.
 
@@ -214,8 +216,7 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
-    def createPen(self, color, width, style,
-                  capstyle = None, joinstyle = None):
+    def createPen(self, color, width, style, capstyle, joinstyle):
         '''
         Returns a Pen object.
 
@@ -361,7 +362,7 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
-    def drawText(self, text, startx, starty, font, color, rotate = 0):
+    def drawText(self, text, startx, starty, font, color, rotate):
         '''
         Draws text.
 

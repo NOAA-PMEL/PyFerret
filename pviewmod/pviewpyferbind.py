@@ -70,27 +70,27 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
 
     def beginView(self, leftfrac, bottomfrac, rightfrac, topfrac,
                   leftcoord, bottomcoord, rightcoord, topcoord,
-                  clipit = True):
+                  clipit):
         '''
         Start a view in the PyQtPipedViewer Window.
 
         Arguments:
             leftfrac:    [0,1] fraction of the Window width
-                         for the left side of the view
+                         for the left side of the View
             bottomfrac:  [0,1] fraction of the Window height
-                         for the bottom side of the view
+                         for the bottom side of the View
             rightfrac:   [0,1] fraction of the Window width
-                         for the right side of the view
+                         for the right side of the View
             topfrac:     [0,1] fraction of the Window height
-                         for the top side of the view
+                         for the top side of the View
             leftcoord:   user coordinate
-                         for the left side of the view
+                         for the left side of the View
             bottomcoord: user coordinate
-                         for the bottom side of the view
+                         for the bottom side of the View
             rightcoord:  user coordinate
-                         for the right side of the view
+                         for the right side of the View
             topcoord:    user coordinate
-                         for the top side of the view
+                         for the top side of the View
             clipit:      clip drawings to this View?
         '''
         leftfracflt = float(leftfrac)
@@ -138,6 +138,13 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         '''
         self.__window.submitCommand( { "action":"endView" } )
 
+    def updateWindow(self):
+        '''
+        Indicates the viewer should update the graphics displayed.
+        '''
+        cmnd = { "action":"update" }
+        self.__window.submitCommand(cmnd)
+
     def clearWindow(self, fillcolor):
         '''
         Clears the Window of all drawings.  The Window is filled
@@ -176,7 +183,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         # TODO: actually get the screen resolution from the window.
         return (144.0, 144.0)
 
-    def showWindow(self, visible = True):
+    def showWindow(self, visible):
         '''
         Display or hide a Window.
 
@@ -190,7 +197,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
             cmnd = { "action":"hide" }
         self.__window.submitCommand(cmnd)
 
-    def saveWindow(self, filename, fileformat = None, transparentbkg = True):
+    def saveWindow(self, filename, fileformat, transparentbkg):
         '''
         Save the contents of the window to a file.
 
@@ -209,7 +216,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
             cmnd["fileformat"] = fileformat
         self.__window.submitCommand(cmnd)
 
-    def createColor(self, redfrac, greenfrac, bluefrac, opaquefrac = 1.0):
+    def createColor(self, redfrac, greenfrac, bluefrac, opaquefrac):
         '''
         Returns a Color object from fractional [0.0, 1.0]
         intensities of the red, green, and blue channels.
@@ -257,10 +264,9 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         Arguments:
             color: Color to be deleted
         '''
-        pass
+        del color
 
-    def createFont(self, familyname, fontsize, italic = False,
-                   bold = False, underlined = False):
+    def createFont(self, familyname, fontsize, italic, bold, underlined):
         '''
         Returns a Font object.
 
@@ -289,10 +295,9 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         Arguments:
             font: Font to be deleted
         '''
-        pass
+        del font
 
-    def createPen(self, color, width, style = "solid",
-                  capstyle = None, joinstyle = None):
+    def createPen(self, color, width, style, capstyle, joinstyle):
         '''
         Returns a Pen object.
 
@@ -327,9 +332,9 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         Arguments:
             pen: Pen to be deleted
         '''
-        pass
+        del pen
 
-    def createBrush(self, color, style = "solid"):
+    def createBrush(self, color, style):
         '''
         Returns a Brush object.
 
@@ -354,7 +359,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         Arguments:
             brush: Brush to be deleted
         '''
-        pass
+        del brush
 
     def createSymbol(self, symbolname):
         '''
@@ -382,7 +387,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         Arguments:
             symbol: Symbol to be deleted
         '''
-        pass
+        del symbol
 
     def drawMultiline(self, ptsx, ptsy, pen):
         '''
@@ -502,7 +507,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
                  "colors":colors }
         self.__window.submitCommand(cmnd)
 
-    def drawText(self, text, startx, starty, font, color, rotate = 0):
+    def drawText(self, text, startx, starty, font, color, rotate):
         '''
         Draws text.
 
@@ -589,7 +594,7 @@ if __name__ == "__main__":
     # Clear the window in opaque white
     bindinst.clearWindow(mycolors[1])
     # Create a view in the top left corner
-    bindinst.beginView(0.0, 0.5, 0.5, 1.0, 0, 0, 1000, 1000)
+    bindinst.beginView(0.0, 0.5, 0.5, 1.0, 0, 0, 1000, 1000, True)
     # Draw a translucent black rectangle over most of the view
     mybrush = bindinst.createBrush(mycolors[8], "solid")
     bindinst.drawRectangle(50, 50, 950, 950, mybrush, None)
@@ -611,7 +616,7 @@ if __name__ == "__main__":
     bindinst.showWindow(True)
     raw_input("Press Enter to continue")
     # Create a view of almost the whole window
-    bindinst.beginView(0.05, 0.05, 0.95, 0.95, 0, 0, 1000, 1000)
+    bindinst.beginView(0.05, 0.05, 0.95, 0.95, 0, 0, 1000, 1000, True)
     # Draw a translucent multicolor rectangle covering most of the window
     bindinst.drawMulticolorRectangle(50, 50, 950, 950, 2, 3, mycolors[10:])
     # Draw letters indicating the expected colors
@@ -627,7 +632,7 @@ if __name__ == "__main__":
     bindinst.showWindow(True)
     raw_input("Press Enter to continue")
     # Create a view of the whole window
-    bindinst.beginView(0.0, 0.0, 1.0, 1.0, 0, 0, 1000, 1000)
+    bindinst.beginView(0.0, 0.0, 1.0, 1.0, 0, 0, 1000, 1000, True)
     # Draw points using various symbols
     ptsy = (100, 300, 500, 700, 900)
     ptsx = (100, 100, 100, 100, 100)

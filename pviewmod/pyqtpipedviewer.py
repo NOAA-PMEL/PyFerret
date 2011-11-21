@@ -19,7 +19,7 @@ try:
 except AttributeError:
     pass
 
-from PyQt4.QtCore import Qt, QPointF,QRect, QRectF, QString, QTimer
+from PyQt4.QtCore import Qt, QPointF,QRect, QRectF, QSize, QString, QTimer
 from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, \
                          QDialog, QFileDialog, QImage, QLabel, \
                          QMainWindow, QMessageBox, QPainter, QPalette, \
@@ -93,12 +93,15 @@ class PyQtPipedViewer(QMainWindow):
         self.__minsize = 128
         self.__activepicture = None
         self.__activepainter = None
-        self.__viewwidth = 0.0
-        self.__viewheight = 0.0
+        self.__fracsides = None
+        self.__usersides = None
+        self.__clipit = True
         # flag indicating whether the active picture contains anything worth saving
         self.__somethingdrawn = False
         # maximum user Y coordinate - used by adjustPoint
         self.__userymax = 1.0
+        # maximum view length in pixels - used to adjust line widths and symbol sizes
+        self.__maxlengthview = 0.0
         # scaling, upper left coordinates, and pictures for drawing
         self.__scalefactor = 1.0
         self.__leftx = 0.0
@@ -126,10 +129,10 @@ class PyQtPipedViewer(QMainWindow):
                                 shortcut=self.tr("Ctrl+S"),
                                 statusTip=self.tr("Save the current scene"),
                                 triggered=self.inquireSaveFilename)
-        self.__redrawact = QAction(self.tr("Re&draw"), self,
-                                shortcut=self.tr("Ctrl+D"),
-                                statusTip=self.tr("Redraw the current scene"),
-                                triggered=self.redrawScene)
+        self.__updateact = QAction(self.tr("&Update"), self,
+                                shortcut=self.tr("Ctrl+U"),
+                                statusTip=self.tr("Update the current scene"),
+                                triggered=self.updateScene)
         self.__scaleact = QAction(self.tr("Sc&ale"), self,
                                 shortcut=self.tr("Ctrl+A"),
                                 statusTip=self.tr("Scale the scene (canvas and drawn images change)"),
@@ -160,7 +163,7 @@ class PyQtPipedViewer(QMainWindow):
         menuBar = self.menuBar()
         sceneMenu = menuBar.addMenu(menuBar.tr("&Scene"))
         sceneMenu.addAction(self.__saveact)
-        sceneMenu.addAction(self.__redrawact)
+        sceneMenu.addAction(self.__updateact)
         sceneMenu.addAction(self.__scaleact)
         # sceneMenu.addAction(self.__resizeact)
         sceneMenu.addSeparator()
@@ -224,8 +227,14 @@ class PyQtPipedViewer(QMainWindow):
         clearScene call (or transparent white if a color has never
         been specified).
         '''
-        # loose all the pictures
-        self.__viewpics = [ ]
+        # if there is an active view, end it now
+        if self.__activepainter:
+            self.endView()
+            hadactiveview = True
+        else:
+            hadactiveview = False
+        # delete all the pictures
+        self.__viewpics[:] = [ ]
         # get the color for the background
         if colorinfo:
             try :
@@ -234,10 +243,14 @@ class PyQtPipedViewer(QMainWindow):
                     self.__lastclearcolor = mycolor
             except KeyError:
                 pass
-        # fill in the background
+        # fill in the background - just do a direct draw
         self.__label.pixmap().fill(self.__lastclearcolor)
         # make sure label knows to redraw itself
         self.__label.update()
+        # restart the active view if there was one
+        if hadactiveview:
+            self.beginViewFromSides(self.__fracsides, self.__usersides,
+                                    self.__clipit)
 
     def paintScene(self, painter):
         '''
@@ -259,22 +272,27 @@ class PyQtPipedViewer(QMainWindow):
         for viewpic in self.__viewpics:
             painter.drawPicture(upperleftpt, viewpic)
 
-    def redrawScene(self):
+    def redrawScene(self, pixsize = None):
         '''
-        Redraw the current scene from the beginning
+        Redraw the current scene from the beginning.
+        The argument pixmapsize, if not None, is a
+        QSize giving the size of the new Pixmap to use;
+        otherwise, the size of the pixmap in the label
+        is used.
         '''
+        # create the scene in a new pixmap
+        if pixsize:
+            newpixmap = QPixmap(pixsize)
+        else:
+            newpixmap = QPixmap(self.__label.pixmap().size())
         # fill the scene using the last clearing color
-        self.__label.pixmap().fill(self.__lastclearcolor)
-        # create a painter to draw to the label pixmap (calls begin)
-        painter = QPainter(self.__label.pixmap())
-        # save needed to so rescaling starts back with the original size
-        painter.save()
+        newpixmap.fill(self.__lastclearcolor)
+        # draw the scene to the new pixmap
+        painter = QPainter(newpixmap)
         self.paintScene(painter)
-        # return to original settings (before scaling) and end
-        painter.restore()
         painter.end()
-        # make sure label knows to redraw itself
-        self.__label.update()
+        # replace the pixmap displayed by the label
+        self.__label.setPixmap(newpixmap)
 
     def inquireResizeScene(self):
         '''
@@ -310,8 +328,7 @@ class PyQtPipedViewer(QMainWindow):
         if (newwidth != pixmap.width()) or (newheight != pixmap.height()):
             self.__label.setMinimumSize(newwidth, newheight)
             self.__label.resize(newwidth, newheight)
-            self.__label.setPixmap(QPixmap(newwidth, newheight))
-            self.redrawScene()
+            self.redrawScene(QSize(newwidth, newheight))
 
     def inquireScaleScene(self):
         '''
@@ -352,12 +369,21 @@ class PyQtPipedViewer(QMainWindow):
             newwidth = int(newfactor * spixmap.width() + 0.5)
             newheight = int(newfactor * spixmap.height() + 0.5)
         if (newwidth != spixmap.width()) or (newheight != spixmap.height()):
+            # If there is an active View, end it now
+            if self.__activepainter:
+                self.endView()
+                hadactiveview = True
+            else:
+                hadactiveview = False
             # Set the new scaling factor and create a new pixmap for the scaled image
             self.__scalefactor = newfactor
             self.__label.setMinimumSize(newwidth, newheight)
             self.__label.resize(newwidth, newheight)
-            self.__label.setPixmap(QPixmap(newwidth, newheight))
-            self.redrawScene()
+            self.redrawScene(QSize(newwidth, newheight))
+            # If there was an active View, restart it in this new system
+            if hadactiveview:
+                self.beginViewFromSides(self.__fracsides, self.__usersides,
+                                        self.__clipit)
 
     def inquireSaveFilename(self):
         '''
@@ -578,7 +604,7 @@ class PyQtPipedViewer(QMainWindow):
     def checkCommandPipe(self):
         '''
         Get and perform an commands waiting in the pipe.
-        Limit the number of commands if more than 0.5 s
+        Limit the number of commands if more than 0.1 s
         have passed to ensure responsiveness of the GUI.
         '''
         starttime = time.clock()
@@ -586,7 +612,7 @@ class PyQtPipedViewer(QMainWindow):
             while self.__pipe.poll():
                 cmnd = self.__pipe.recv()
                 self.processCommand(cmnd)
-                if time.clock() - starttime > 0.5:
+                if time.clock() - starttime > 0.1:
                     break
         except EOFError:
             self.exitViewer()
@@ -604,8 +630,8 @@ class PyQtPipedViewer(QMainWindow):
             self.exitViewer()
         elif cmndact == "hide":
             self.hide()
-        elif cmndact == "redraw":
-            self.redrawScene()
+        elif cmndact == "update":
+            self.updateScene()
         elif cmndact == "resize":
             mysize = self.__helper.getSizeFromCmnd(cmnd)
             self.resizeScene(mysize.width(), mysize.height())
@@ -661,18 +687,39 @@ class PyQtPipedViewer(QMainWindow):
         Raises a KeyError if either the "viewfracs" or the "usercoords"
         key is not given.
         '''
+        # Get the view rectangle in fractions of the full scene
+        fracsides = self.__helper.getSidesFromCmnd(cmnd["viewfracs"])
+        # Get the user coordinates for this view rectangle
+        usersides = self.__helper.getSidesFromCmnd(cmnd["usercoords"])
+        # Should graphics be clipped to this view?
+        try:
+           clipit = cmnd["clip"]
+        except KeyError:
+           clipit = True
+        self.beginViewFromSides(fracsides, usersides, clipit)
+
+    def beginViewFromSides(self, fracsides, usersides, clipit):
+        '''
+        Setup a new viewport and window for drawing on a portion
+        (possibly all) of the scene.  The view in fractions of
+        the full scene are given in fracsides.  The user coordinates
+        for this view are given in usersides.  Sets the clipping
+        rectangle to this view.  If clipit is True, graphics
+        will be clipped to this view.
+        '''
         # If a view is still active, automatically end it
-        if self.__activepainter or self.__activepicture:
+        if self.__activepainter:
             self.endView()
         # Get the location for the new view in terms of pixels.
         # Take into account any scaling of the view
-        width = float( self.__label.pixmap().width() ) / self.__scalefactor
-        height = float( self.__label.pixmap().height() ) / self.__scalefactor
-        viewrect = self.__helper.getSidesFromCmnd(cmnd["viewfracs"])
-        leftpixel = viewrect.left() * width
-        rightpixel = viewrect.right() * width
-        bottompixel = viewrect.bottom() * height
-        toppixel = viewrect.top() * height
+        pixwidth = self.__label.pixmap().width()
+        pixheight = self.__label.pixmap().height()
+        width = float( pixwidth ) / self.__scalefactor
+        height = float( pixheight ) / self.__scalefactor
+        leftpixel = fracsides.left() * width
+        rightpixel = fracsides.right() * width
+        bottompixel = fracsides.bottom() * height
+        toppixel = fracsides.top() * height
         # perform the checks after turning into units of pixels
         # to make sure the values are significantly different
         if (0.0 > leftpixel) or (leftpixel >= rightpixel) or (rightpixel > width):
@@ -687,11 +734,10 @@ class PyQtPipedViewer(QMainWindow):
         vrectf = QRectF(leftpixel, height - toppixel,
                        rightpixel - leftpixel, toppixel - bottompixel)
         # Get the user coordinates for this view rectangle
-        winrect = self.__helper.getSidesFromCmnd(cmnd["usercoords"])
-        leftcoord = winrect.left()
-        rightcoord = winrect.right()
-        bottomcoord = winrect.bottom()
-        topcoord = winrect.top()
+        leftcoord = usersides.left()
+        rightcoord = usersides.right()
+        bottomcoord = usersides.bottom()
+        topcoord = usersides.top()
         if leftcoord >= rightcoord:
             raise ValueError( self.tr("Invalid left, right user coordinates: " \
                                       "left = %1, right = %2") \
@@ -714,28 +760,34 @@ class PyQtPipedViewer(QMainWindow):
         self.__activepicture = QPicture()
         self.__activepainter = QPainter(self.__activepicture)
         self.__activepainter.save()
+        # Set the viewport and window just to be safe
+        self.__activepainter.setViewport(0, 0, pixwidth, pixheight)
+        self.__activepainter.setWindow(0, 0, pixwidth, pixheight)
         # Assign the transformation to take the user coordinates to device coordinates
-        self.__activepainter.setWorldMatrixEnabled(True)
         if HAS_QTransform:
             wvtrans = QTransform(m11, m12, m21, m22, dx, dy)
-            self.__activepainter.setWorldTransform(wvtrans, False)
+            self.__activepainter.setWorldTransform(wvtrans, True)
         else:
             wvtrans = QMatrix(m11, m12, m21, m22, dx, dy)
-            self.__activepainter.setWorldMatrix(wvtrans, False)
-        # Set the clip rectangle to that of the view - activates clipping
+            self.__activepainter.setWorldMatrix(wvtrans, True)
+        self.__activepainter.setWorldMatrixEnabled(True)
+        # Set the clip rectangle to that of the view; this also activates clipping
         self.__activepainter.setClipRect(wrectf, Qt.ReplaceClip)
-        try:
-           clipit = cmnd["clip"]
-           if not clipit:
-               self.__activepainter.setClipping(False)
-        except KeyError:
-           pass
+        # Disable clipping if not desired at this time
+        if not clipit:
+           self.__activepainter.setClipping(False)
         # Note that __activepainter has to end before __activepicture will
         # draw anything.  So no need to add it to __viewpics until then.
-        # save the current view width and height
-        self.__viewwidth = rightpixel - leftpixel
-        self.__viewheight = toppixel - bottompixel
-        self.__userymax = winrect.top()
+        self.__somethingdrawn = False
+        # Save the maximum side length, in pixels, of the view at unit scaling
+        self.__maxlengthview = max( vrectf.width(), vrectf.height() )
+        # Save the current view sides and clipit setting for recreating the view.
+        # Just save the original objects (assume calling functions do not keep them)
+        self.__fracsides = fracsides
+        self.__usersides = usersides
+        self.__clipit = clipit
+        # Pull out the top coordinate since this is used a lot (via adjustPoint)
+        self.__userymax = usersides.top()
 
     def clipView(self, cmnd):
         '''
@@ -747,19 +799,20 @@ class PyQtPipedViewer(QMainWindow):
         '''
         if cmnd["clip"]:
             self.__activepainter.setClipping(True)
+            self.__clipit = True
         else:
             self.__activepainter.setClipping(False)
+            self.__clipit = False
 
     def maxLengthView(self):
         '''
         Returns the length of the longest side of the current view
-        in units of pixels.  Raises an AttributeError if there is no
-        current view defined.
+        in units of pixels when the scaling factor is one.
+        Raises an AttributeError if there is no current view defined.
         '''
         if not self.__activepainter:
             raise AttributeError( self.tr('viewMaxLength called without an active View') )
-        maxlength = max(self.__viewwidth, self.__viewheight)
-        return maxlength
+        return self.__maxlengthview
 
     def endView(self):
         '''
@@ -774,8 +827,24 @@ class PyQtPipedViewer(QMainWindow):
         if self.__somethingdrawn:
             self.__viewpics.append(self.__activepicture)
             self.__somethingdrawn = False
+            # Only redraw the scene if a picture was added
+            self.redrawScene()
         self.__activepicture = None
-        self.redrawScene()
+
+    def updateScene(self):
+        '''
+        Updates the displayed graphics to include all drawn elements.
+        '''
+        if self.__somethingdrawn:
+            # There is an active picture containing something,
+            # so end the view to add this picture and redraw,
+            # then restart the view.
+            self.endView()
+            self.beginViewFromSides(self.__fracsides, self.__usersides,
+                                    self.__clipit)
+        else:
+            # Nothing new, but still redraw the scene
+            self.redrawScene()
 
     def drawMultiline(self, cmnd):
         '''
@@ -850,7 +919,7 @@ class PyQtPipedViewer(QMainWindow):
                 mypen = QPen(mybrush, 16.0, Qt.SolidLine,
                              Qt.RoundCap, Qt.RoundJoin)
                 self.__activepainter.setPen(mypen)
-            scalefactor = ptsize * (self.maxLengthView() / 1000.0) / 50.0
+            scalefactor = ptsize * (self.__maxlengthview / 1000.0) / 50.0
             for xyval in ptcoords:
                 (adjx, adjy) = self.adjustPoint( xyval )
                 self.__activepainter.save()

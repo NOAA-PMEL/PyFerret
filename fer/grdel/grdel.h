@@ -62,6 +62,7 @@ grdelType grdelWindowCreate(const char *engine, int enginelen, const char *title
 PyObject *grdelWindowVerify(grdelType window);
 grdelBool grdelWindowDelete(grdelType window);
 grdelBool grdelWindowClear(grdelType window, grdelType fillcolor);
+grdelBool grdelWindowUpdate(grdelType window);
 grdelBool grdelWindowSetSize(grdelType window, float width, float height);
 grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible);
 grdelBool grdelWindowSave(grdelType window, const char *filename,
@@ -76,6 +77,7 @@ void fgdwincreate_(void **window, char *engine, int *enginelen, char *title,
                int *titlelen, float *width, float *height, int *visible);
 void fgdwindelete_(int *success, void **window);
 void fgdwinclear_(int *success, void **window, void **fillcolor);
+void fgdwinupdate_(int *success, void **window);
 void fgdwinsetsize_(int *success, void **window, float *width, float *height);
 void fgdwinsetvis_(int *success, void **window, int *visible);
 void fgdwinsave_(int *success, void **window, char *filename, int *namelen,

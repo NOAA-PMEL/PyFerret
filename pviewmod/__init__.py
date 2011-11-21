@@ -56,8 +56,8 @@ class PipedViewer(object):
 
 if __name__ == "__main__":
     # vertices of a pentagon (roughly) centered in a 1000 x 1000 square
-    pentagonpts = ( (504.5, 100.0), (100.0, 393.9), 
-                    (254.5, 869.4), (754.5, 869.4), 
+    pentagonpts = ( (504.5, 100.0), (100.0, 393.9),
+                    (254.5, 869.4), (754.5, 869.4),
                     (909.0, 393.9),  )
     # create the list of commands to submit
     drawcmnds = []
@@ -69,7 +69,7 @@ if __name__ == "__main__":
                         "height":5000 } )
     drawcmnds.append( { "action":"beginView",
                         "viewfracs": {"left":0.0, "bottom":0.5,
-                                      "right":0.5, "top":1.0 }, 
+                                      "right":0.5, "top":1.0 },
                         "usercoords": {"left":0, "bottom":0,
                                        "right":1000, "top":1000}, } )
     drawcmnds.append( { "action":"drawRectangle",
@@ -78,7 +78,7 @@ if __name__ == "__main__":
                         "fill":{"color":"black", "alpha":64},
                         "outline":{"color":"blue"} } )
     drawcmnds.append( { "action":"drawPolygon",
-                        "points":pentagonpts, 
+                        "points":pentagonpts,
                         "fill":{"color":"lightblue"},
                         "outline":{"color":"black",
                                    "width": 50,
@@ -86,22 +86,22 @@ if __name__ == "__main__":
                                    "capstyle":"round",
                                    "joinstyle":"round" } } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=100", 
+                        "text":"y=100",
                         "font":{"family":"Times", "size":200},
                         "fill":{"color":0x880000},
                         "location":(100,100) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=300", 
+                        "text":"y=300",
                         "font":{"family":"Times", "size":200},
                         "fill":{"color":0x880000},
                         "location":(100,300) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=500", 
+                        "text":"y=500",
                         "font":{"family":"Times", "size":200},
                         "fill":{"color":0x880000},
                         "location":(100,500) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=700", 
+                        "text":"y=700",
                         "font":{"family":"Times", "size":200},
                         "fill":{"color":0x880000},
                         "location":(100,700) } )
@@ -123,40 +123,40 @@ if __name__ == "__main__":
                                    {"color":0x0000FF, "alpha":128},
                                    {"color":0x880088, "alpha":128} ) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"R", 
+                        "text":"R",
                         "font":{"size":200, "bold": True},
                         "fill":{"color":"black"},
-                        "rotate":-45, 
+                        "rotate":-45,
                         "location":(200,600) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"Y", 
+                        "text":"Y",
                         "font":{"size":200, "bold": True},
                         "fill":{"color":"black"},
-                        "rotate":-45, 
+                        "rotate":-45,
                         "location":(200,150) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"G", 
+                        "text":"G",
                         "font":{"size":200, "bold": True},
                         "fill":{"color":"black"},
-                        "rotate":-45, 
+                        "rotate":-45,
                         "location":(500,600) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"C", 
+                        "text":"C",
                         "font":{"size":200, "bold": True},
                         "fill":{"color":"black"},
-                        "rotate":-45, 
+                        "rotate":-45,
                         "location":(500,150) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"B", 
+                        "text":"B",
                         "font":{"size":200, "bold": True},
                         "fill":{"color":"black"},
-                        "rotate":-45, 
+                        "rotate":-45,
                         "location":(800,600) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"M", 
+                        "text":"M",
                         "font":{"size":200, "bold": True},
                         "fill":{"color":"black"},
-                        "rotate":-45, 
+                        "rotate":-45,
                         "location":(800,150) } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )

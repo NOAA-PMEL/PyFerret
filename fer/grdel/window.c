@@ -197,8 +197,6 @@ PyObject *grdelWindowVerify(grdelType window)
 grdelBool grdelWindowDelete(grdelType window)
 {
     GDWindow *mywindow;
-    PyObject *modulename;
-    PyObject *module;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
@@ -206,7 +204,6 @@ grdelBool grdelWindowDelete(grdelType window)
             "window = %X\n", window);
     fflush(debuglogfile);
 #endif
-
 
     if ( grdelWindowVerify(window) == NULL ) {
         strcpy(grdelerrmsg, "grdelWindowDelete: window argument is not "
@@ -294,6 +291,46 @@ grdelBool grdelWindowClear(grdelType window, grdelType fillcolor)
     if ( result == NULL ) {
         sprintf(grdelerrmsg, "grdelWindowClear: Error when calling "
                 "the binding's clearWindow method: %s", pyefcn_get_error());
+        return (grdelBool) 0;
+    }
+    Py_DECREF(result);
+
+    grdelerrmsg[0] = '\0';
+    return (grdelBool) 1;
+}
+
+/*
+ * Updates a Window, adding any new drawing elements and redrawing.
+ *
+ * Arguments:
+ *     window: Window to be updated
+ *
+ * Returns success or failure.  If failure, grdelerrmsg contains
+ * an explanatory message.
+ */
+grdelBool grdelWindowUpdate(grdelType window)
+{
+    GDWindow *mywindow;
+    PyObject *result;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelWindowUpdate called: "
+            "window = %X\n", window);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelWindowVerify(window) == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowUpdate: window argument is not "
+                            "a grdel Window");
+        return (grdelBool) 0;
+    }
+    mywindow = (GDWindow *) window;
+
+    /* Call the updateWindow method of the bindings instance. */
+    result = PyObject_CallMethod(mywindow->bindings, "updateWindow", NULL);
+    if ( result == NULL ) {
+        sprintf(grdelerrmsg, "grdelWindowUpdate: error when calling "
+                "the binding's updateWindow method: %s", pyefcn_get_error());
         return (grdelBool) 0;
     }
     Py_DECREF(result);
@@ -563,6 +600,23 @@ void fgdwinclear_(int *success, void **window, void **fillcolor)
     grdelBool result;
 
     result = grdelWindowClear(*window, *fillcolor);
+    *success = result;
+}
+
+/*
+ * Updates a Window, adding any new drawing elements and redrawing.
+ *
+ * Input Arguments:
+ *     window: Window to be updated
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void fgdwinupdate_(int *success, void **window)
+{
+    grdelBool result;
+
+    result = grdelWindowUpdate(*window);
     *success = result;
 }
 

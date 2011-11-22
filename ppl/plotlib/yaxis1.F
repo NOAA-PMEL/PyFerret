@@ -53,6 +53,9 @@ C        1/06  xvaloff,yvaloff add this amount to each x or y axis label.
 C              (axis data was read as double precision and converted to single 
 C              after applying an offset.)
 
+* 11/2011 ACM Fixing ticket 1896: When needed, reset the size of numerical axis
+*             labes, so the labels dont run off the edge of the plot.
+
 C**
 C**    @(#)yaxis1.f	1.1    3/10/88
 C**
@@ -223,9 +226,42 @@ C
 		Y=YT
 	ENDIF
 	ISTOP=INT((YHI-Y)/(YTIC*LINTY)+0.000001)
-	YWIDT=0.
 
 	y0 = y
+
+C First compute max axis-label width without writing labels 
+C (ITYPE=3 arg to SCINOT) 
+
+	YWIDT=0.
+
+        YSAVE = Y
+        DO 199 I=0,ISTOP
+	IF ( interrupted ) RETURN		! TMAP interrupt
+        TEMP=SIGSZ*Y/YUNIT
+        IF (yvaloff .EQ. 0) THEN
+           CALL NUMCDE(TEMP,YLAB,NC,IFORMT,YDMS)
+        ELSE
+           CALL NUMCDE_OFF(TEMP,YLAB,NC,IFORMT,YDMS,yvaloff)
+        ENDIF
+        CALL SCINOT(XTEMP,Y,0.,ABSSZ,NC,YLAB,3,WID,XFACT,YFACT)
+
+	Y=y0+YTIC*LINTY*(i+1)
+	if (abs(y) .lt. epsilon*abs(y0)) y = 0.0
+
+	IF(WID.GT.YWIDT)YWIDT=WID
+199	CONTINUE
+
+* Use origin and label-size info that is in common to possibly
+* reset the axis-label size for this axis only, so the labels dont
+* run off the edge.
+
+        CALL RESET_LABSIZ (YWID, YWIDT, ABSSZ)
+
+* Now make the labels.
+
+	YWIDT=0.
+	Y = YSAVE
+
 	DO 200 I=0,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt
         TEMP=SIGSZ*Y/YUNIT

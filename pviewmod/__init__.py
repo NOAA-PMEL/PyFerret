@@ -22,13 +22,15 @@ class PipedViewer(object):
         Currently supported viewer types are:
             "PyQtPipedViewer": PyQtPipedViewer using PyQt4
         '''
-        (self.__recvpipe, self.__sendpipe) = Pipe(False)
+        (self.__cmndrecvpipe, self.__cmndsendpipe) = Pipe(False)
+        (self.__rspdrecvpipe, self.__rspdsendpipe) = Pipe(False)
         if viewertype == "PyQtPipedViewer":
             try:
                 from pyqtpipedviewer import PyQtPipedViewerProcess
             except ImportError:
                 raise TypeError("The PyQt viewer requires PyQt4")
-            self.__vprocess = PyQtPipedViewerProcess(self.__recvpipe)
+            self.__vprocess = PyQtPipedViewerProcess(self.__cmndrecvpipe,
+                                                     self.__rspdsendpipe)
         else:
             raise TypeError("Unknown viewer type %s" % str(viewertype))
         self.__vprocess.start()
@@ -38,7 +40,21 @@ class PipedViewer(object):
         '''
         Submit the command cmnd to the command pipe for the viewer.
         '''
-        self.__sendpipe.send(cmnd)
+        self.__cmndsendpipe.send(cmnd)
+
+    def checkForResponse(self, timeout = 0.0):
+        '''
+        Check for a reponse from the viewer.  The argument timeout
+        (a number) is the maximum time in seconds to block (default:
+        0.0; returns immediately).  If timeout is None, it will block
+        until something is read.  Returns the response from the viewer,
+        or None if there was no response in the allotted time.
+        '''
+        if self.__rspdrecvpipe.poll(timeout):
+            response = self.__rspdrecvpipe.recv()
+        else:
+            response = None
+        return response
 
     def waitForViewerExit(self):
         '''
@@ -47,7 +63,8 @@ class PipedViewer(object):
         have been the last command submitted to the command pipe
         before calling this method.
         '''
-        self.__sendpipe.close()
+        self.__cmndsendpipe.close()
+        self.__rspdrecvpipe.close()
         self.__vprocess.join()
 
     def getViewerExitCode(self):
@@ -71,7 +88,8 @@ if __name__ == "__main__":
                         "viewfracs": {"left":0.0, "bottom":0.5,
                                       "right":0.5, "top":1.0 },
                         "usercoords": {"left":0, "bottom":0,
-                                       "right":1000, "top":1000}, } )
+                                       "right":1000, "top":1000},
+                        "clip":True } )
     drawcmnds.append( { "action":"drawRectangle",
                         "left": 50, "bottom":50,
                         "right":950, "top":950,
@@ -111,7 +129,8 @@ if __name__ == "__main__":
                         "viewfracs": {"left":0.05, "bottom":0.05,
                                       "right":0.95, "top":0.95 },
                         "usercoords": {"left":0, "bottom":0,
-                                       "right":1000, "top":1000}, } )
+                                       "right":1000, "top":1000},
+                        "clip":True } )
     drawcmnds.append( { "action":"drawMulticolorRectangle",
                         "left": 50, "bottom":50,
                         "right":950, "top":950,
@@ -164,7 +183,8 @@ if __name__ == "__main__":
                         "viewfracs": {"left":0.0, "bottom":0.0,
                                       "right":1.0, "top":1.0 },
                         "usercoords": {"left":0, "bottom":0,
-                                       "right":1000, "top":1000}, } )
+                                       "right":1000, "top":1000},
+                        "clip":True } )
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (100, 100),
                                    (100, 300),
@@ -251,9 +271,13 @@ if __name__ == "__main__":
         # submit the commands, pausing after each "show" command
         for cmd in drawcmnds:
             pviewer.submitCommand(cmd)
+            response = pviewer.checkForResponse()
+            while response:
+                print "Response: %s" % str(response)
+                response = pviewer.checkForResponse()
             if cmd["action"] == "show":
                 raw_input("Press Enter to continue")
-        # end of the command - shut down and check return value
+        # end of the commands - shut down and check return value
         pviewer.waitForViewerExit()
         result = pviewer.getViewerExitCode()
         if result != 0:

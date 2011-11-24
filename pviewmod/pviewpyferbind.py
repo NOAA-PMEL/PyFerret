@@ -29,6 +29,23 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         super(PViewPyFerretBindings, self).__init__()
         self.__window = None
 
+    def checkForErrorResponse(self):
+        '''
+        Checks the response pipe for a message.  If anything is found,
+        a RuntimeError is raised with the string of the full response.
+        '''
+        fullresponse = None
+        response = self.__window.checkForResponse()
+        while response:
+            if fullresponse:
+                fullresponse += '\n'
+                fullresponse += str(response)
+            else:
+                fullresponse = str(response)
+            response = self.__window.checkForResponse()
+        if fullresponse:
+            raise RuntimeError(fullresponse)
+
     def createWindow(self, title, width, height, visible):
         '''
         Creates a PyQtPipedViewer.
@@ -40,7 +57,8 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
            visible: display Window on start-up?
 
         Raises a RuntimeError if an active window is already associated
-        with these bindings.
+        with these bindings, or if there were problems with creating
+        the window.
 
         Returns True.
         '''
@@ -55,6 +73,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
                                       "height":float(height) } )
         if visible:
             self.__window.submitCommand( {"action":"show"} )
+        self.checkForErrorResponse()
         return True
 
     def deleteWindow(self):
@@ -63,9 +82,12 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
 
         Returns True.
         '''
-        self.__window.submitCommand( { "action":"exit" } )
-        self.__window.waitForViewerExit()
-        self.__window = None
+        try:
+            self.__window.submitCommand( { "action":"exit" } )
+            self.checkForErrorResponse()
+            self.__window.waitForViewerExit()
+        finally:
+            self.__window = None
         return True
 
     def beginView(self, leftfrac, bottomfrac, rightfrac, topfrac,
@@ -120,6 +142,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
                               "right":rightcoordflt, "top":topcoordflt},
                  "clip":bool(clipit) }
         self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
 
     def clipView(self, clipit):
         '''
@@ -131,12 +154,14 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         cmnd = { "action":"clipView",
                  "clip":bool(clipit) }
         self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
 
     def endView(self):
         '''
         Close a View in the PyQtPipedViewer Window
         '''
         self.__window.submitCommand( { "action":"endView" } )
+        self.checkForErrorResponse()
 
     def updateWindow(self):
         '''
@@ -144,6 +169,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         '''
         cmnd = { "action":"update" }
         self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
 
     def clearWindow(self, fillcolor):
         '''
@@ -160,6 +186,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
             cmnd = { }
         cmnd["action"] = "clear"
         self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
 
     def resizeWindow(self, width, height):
         '''
@@ -173,6 +200,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
                  "width":width,
                  "height":height }
         self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
 
     def windowDpi(self):
         '''
@@ -180,8 +208,31 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         of the Window, in dots per inch, in the horizontal (X)
         and vertical (Y) directions.
         '''
-        # TODO: actually get the screen resolution from the window.
-        return (144.0, 144.0)
+        cmnd = { "action":"dpi" }
+        self.__window.submitCommand(cmnd)
+        response = None
+        try:
+            # Wait indefinitely for a response
+            # Make sure it is a valid response
+            response = self.__window.checkForResponse(None)
+            if (type(response) != tuple) or (len(response) != 2):
+                raiseValueError
+            dpix = float(response[0])
+            dpiy = float(response[1])
+            if (dpix <= 0.0) or (dpiy <= 0.0):
+                raise ValueError
+        except Exception:
+            if not response:
+                # error raised before a response obtained
+                raise
+            fullresponse = str(response)
+            response = self.__window.checkForResponse()
+            while response:
+                fullresponse += '\n'
+                fullresponse += response
+                response = self.__window.checkForResponse()
+            raise RuntimeError(fullresponse)
+        return (dpix, dpiy)
 
     def showWindow(self, visible):
         '''
@@ -196,6 +247,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         else:
             cmnd = { "action":"hide" }
         self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
 
     def saveWindow(self, filename, fileformat, transparentbkg):
         '''
@@ -215,6 +267,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         if fileformat:
             cmnd["fileformat"] = fileformat
         self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
 
     def createColor(self, redfrac, greenfrac, bluefrac, opaquefrac):
         '''
@@ -405,6 +458,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
                  "points":points,
                  "pen":pen }
         self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
 
     def drawPoints(self, ptsx, ptsy, symbol, color, ptsize):
         '''
@@ -431,6 +485,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         cmnd["symbol"] = symbol
         cmnd["size"] = ptsize
         self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
 
     def drawPolygon(self, ptsx, ptsy, brush, pen):
         '''
@@ -453,6 +508,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         if pen:
             cmnd["outline"] = pen
         self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
 
     def drawRectangle(self, left, bottom, right, top, brush, pen):
         '''
@@ -476,6 +532,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         if pen:
             cmnd["outline"] = pen
         self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
 
     def drawMulticolorRectangle(self, left, bottom, right, top,
                                 numrows, numcols, colors):
@@ -506,6 +563,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
                  "numrows":numrows, "numcols":numcols,
                  "colors":colors }
         self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
 
     def drawText(self, text, startx, starty, font, color, rotate):
         '''
@@ -534,6 +592,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         if rotate != 0.0:
             cmnd["rotate"] = rotate
         self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
 
 
 

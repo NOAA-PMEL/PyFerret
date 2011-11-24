@@ -3,7 +3,7 @@ PyQtPipedViewer is a graphics viewer application written in PyQt4
 that receives its drawing and other commands primarily from another
 application through a pipe.  A limited number of commands are
 provided by the viewer itself to allow saving and some manipulation
-of the displayed image.  The controlling application, however, will
+of the displayed image.  The controlling application, however, may
 be unaware of these modifications made to the image.
 
 PyQtPipedEditorProcess is used to create and run a PyQtPipedViewer.
@@ -40,12 +40,15 @@ except ImportError:
     HAS_QSvgGenerator = False
 
 from pyqtcmndhelper import PyQtCmndHelper
-from pyqtresizedialog import PyQtResizeDialog
 from pyqtscaledialog import PyQtScaleDialog
 from multiprocessing import Pipe, Process
+import sys
 import os
 import time
 
+# Limit the number of drawing commands per picture
+# to avoid the appearance of being "stuck"
+MAX_DRAWS_PER_PICTURE = 1024
 
 class PyQtPipedViewer(QMainWindow):
     '''
@@ -67,12 +70,14 @@ class PyQtPipedViewer(QMainWindow):
     the viewer.
     '''
 
-    def __init__(self, cmndPipe):
+    def __init__(self, cmndpipe, rspdpipe):
         '''
-        Create a PyQt viewer with with given command pipe.
+        Create a PyQt viewer which reads commands from the Pipe
+        cmndpipe and writes responses back to rspdpipe.
         '''
         super(PyQtPipedViewer, self).__init__()
-        self.__pipe = cmndPipe
+        self.__cmndpipe = cmndpipe
+        self.__rspdpipe = rspdpipe
         # create the label, that will serve as the canvas, in a scrolled area
         self.__scrollarea = QScrollArea(self)
         self.__label = QLabel(self.__scrollarea)
@@ -91,24 +96,27 @@ class PyQtPipedViewer(QMainWindow):
         self.__scrollarea.setBackgroundRole(QPalette.Dark)
         self.setCentralWidget(self.__scrollarea)
         self.__minsize = 128
+        # QPicture/QPainter pair for the current view
         self.__activepicture = None
         self.__activepainter = None
+        # data for recreating the current view
         self.__fracsides = None
         self.__usersides = None
         self.__clipit = True
-        # flag indicating whether the active picture contains anything worth saving
-        self.__somethingdrawn = False
+        # number of drawing commands in the activepainter
+        self.__drawcount = 0
         # maximum user Y coordinate - used by adjustPoint
         self.__userymax = 1.0
         # maximum view length in pixels - used to adjust line widths and symbol sizes
         self.__maxlengthview = 0.0
-        # scaling, upper left coordinates, and pictures for drawing
+        # scaling, upper left coordinates, and pictures for creating the scene
         self.__scalefactor = 1.0
         self.__leftx = 0.0
         self.__uppery = 0.0
         self.__viewpics = [ ]
         # command helper object
         self.__helper = PyQtCmndHelper(self)
+        # Create the menubar
         self.createActions()
         self.createMenus()
         self.__lastfilename = ""
@@ -127,20 +135,20 @@ class PyQtPipedViewer(QMainWindow):
         '''
         self.__saveact = QAction(self.tr("&Save"), self,
                                 shortcut=self.tr("Ctrl+S"),
-                                statusTip=self.tr("Save the current scene"),
+                                statusTip=self.tr("Save the scene to file"),
                                 triggered=self.inquireSaveFilename)
-        self.__updateact = QAction(self.tr("&Update"), self,
-                                shortcut=self.tr("Ctrl+U"),
-                                statusTip=self.tr("Update the current scene"),
-                                triggered=self.updateScene)
         self.__scaleact = QAction(self.tr("Sc&ale"), self,
                                 shortcut=self.tr("Ctrl+A"),
                                 statusTip=self.tr("Scale the scene (canvas and drawn images change)"),
-                                triggered=self.inquireScaleScene)
-        # self.__resizeact = QAction(self.tr("&Resize"), self,
-        #                         shortcut=self.tr("Ctrl+R"),
-        #                         statusTip=self.tr("Resize the scene (only canvas changes"),
-        #                         triggered=self.inquireResizeScene)
+                                triggered=self.inquireSceneScale)
+        self.__updateact = QAction(self.tr("&Update"), self,
+                                shortcut=self.tr("Ctrl+U"),
+                                statusTip=self.tr("Update the scene to the current content"),
+                                triggered=self.updateScene)
+        self.__redrawact = QAction(self.tr("&Redraw"), self,
+                                shortcut=self.tr("Ctrl+R"),
+                                statusTip=self.tr("Clear and redraw the scene to the current content"),
+                                triggered=self.redisplayScene)
         self.__hideact = QAction(self.tr("&Hide"), self,
                                 shortcut=self.tr("Ctrl+H"),
                                 statusTip=self.tr("Hide the viewer"),
@@ -163,9 +171,9 @@ class PyQtPipedViewer(QMainWindow):
         menuBar = self.menuBar()
         sceneMenu = menuBar.addMenu(menuBar.tr("&Scene"))
         sceneMenu.addAction(self.__saveact)
-        sceneMenu.addAction(self.__updateact)
         sceneMenu.addAction(self.__scaleact)
-        # sceneMenu.addAction(self.__resizeact)
+        sceneMenu.addAction(self.__updateact)
+        sceneMenu.addAction(self.__redrawact)
         sceneMenu.addSeparator()
         sceneMenu.addAction(self.__hideact)
         helpMenu = menuBar.addMenu(menuBar.tr("&Help"))
@@ -176,9 +184,9 @@ class PyQtPipedViewer(QMainWindow):
 
     def closeEvent(self, event):
         '''
-        Override so the viewer cannot be closed from user GUI actions;
-        instead only hide the window.  The viewer can only be closed
-        by submitting the {"action":"exit"} command.
+        Override so the viewer cannot be closed from the
+        user selecting the windowframe close ('X') button.
+        Instead only hide the window.
         '''
         if self.__shuttingdown:
             event.accept()
@@ -188,7 +196,7 @@ class PyQtPipedViewer(QMainWindow):
 
     def exitViewer(self):
         '''
-        Close and exit the viewer
+        Close and exit the viewer.
         '''
         self.__timer.stop()
         self.__shuttingdown = True
@@ -254,13 +262,13 @@ class PyQtPipedViewer(QMainWindow):
 
     def paintScene(self, painter):
         '''
-        Draws the current scene using painter.
+        Draws the complete current scene using the given QPainter.
 
         The argument painter should be a QPainter that has been
-        initialized (QPainter.begin) with the appropriate
-        QPainterDevice.  Assumes the appropriate initialization
-        has been performed on that QPaintDevice (e.g., QImage.fill
-        or QPixmap.fill with the desired background color).
+        initialized with the appropriate QPainterDevice.  Assumes
+        the appropriate initialization has been performed on that
+        QPaintDevice (e.g., QImage.fill or QPixmap.fill with the
+        desired background color).
 
         The call to painter.end() will need to be made after
         calling this function.
@@ -272,46 +280,33 @@ class PyQtPipedViewer(QMainWindow):
         for viewpic in self.__viewpics:
             painter.drawPicture(upperleftpt, viewpic)
 
-    def redrawScene(self, pixsize = None):
+    def displayLastPicture(self):
         '''
-        Redraw the current scene from the beginning.
-        The argument pixmapsize, if not None, is a
-        QSize giving the size of the new Pixmap to use;
-        otherwise, the size of the pixmap in the label
-        is used.
+        Draws the last picture to the displayed scene.
         '''
-        # create the scene in a new pixmap
-        if pixsize:
-            newpixmap = QPixmap(pixsize)
-        else:
-            newpixmap = QPixmap(self.__label.pixmap().size())
+        if self.__viewpics:
+            # draw the scene to the pixmap of the label
+            painter = QPainter(self.__label.pixmap())
+            painter.scale(self.__scalefactor, self.__scalefactor)
+            upperleftpt = QPointF(self.__leftx, self.__uppery)
+            painter.drawPicture(upperleftpt, self.__viewpics[-1])
+            painter.end()
+            self.__label.update()
+
+    def redisplayScene(self):
+        '''
+        Clear and redraw all the pictures to the displayed scene.
+        '''
         # fill the scene using the last clearing color
-        newpixmap.fill(self.__lastclearcolor)
-        # draw the scene to the new pixmap
-        painter = QPainter(newpixmap)
+        self.__label.pixmap().fill(self.__lastclearcolor)
+        # draw the scene to the pixmap of the label
+        # Drawing to a new pixmap and then replacing the pixmap
+        # of the label does not seem make anything faster.
+        painter = QPainter(self.__label.pixmap())
         self.paintScene(painter)
         painter.end()
-        # replace the pixmap displayed by the label
-        self.__label.setPixmap(newpixmap)
-
-    def inquireResizeScene(self):
-        '''
-        Prompt the user for the desired size, in inches,
-        of the scene.
-        '''
-        pixsize = self.__label.pixmap().size()
-        currwidth = float(pixsize.width()) / float(self.physicalDpiX())
-        currheight = float(pixsize.height()) / float(self.physicalDpiY())
-        minwidth = float(self.__minsize) / float(self.physicalDpiX())
-        minheight = float(self.__minsize) / float(self.physicalDpiY())
-        resizeDialog = PyQtResizeDialog(self.tr("New Scene Size"),
-                                 self.tr("New size, in inches, for the scene"),
-                                 currwidth, currheight,
-                                 minwidth, minheight, self)
-        if resizeDialog.exec_():
-            (newwidth, newheight, okay) = resizeDialog.getValues()
-            if okay:
-                self.resizeScene(1000.0 * newwidth, 1000.0 * newheight)
+        # make sure the label knows to update
+        self.__label.update()
 
     def resizeScene(self, width, height):
         '''
@@ -328,9 +323,10 @@ class PyQtPipedViewer(QMainWindow):
         if (newwidth != pixmap.width()) or (newheight != pixmap.height()):
             self.__label.setMinimumSize(newwidth, newheight)
             self.__label.resize(newwidth, newheight)
-            self.redrawScene(QSize(newwidth, newheight))
+            self.__label.setPixmap(QPixmap(newwidth, newheight))
+            self.redisplayScene()
 
-    def inquireScaleScene(self):
+    def inquireSceneScale(self):
         '''
         Prompt the user for the desired scaling factor for the scene.
         '''
@@ -379,7 +375,8 @@ class PyQtPipedViewer(QMainWindow):
             self.__scalefactor = newfactor
             self.__label.setMinimumSize(newwidth, newheight)
             self.__label.resize(newwidth, newheight)
-            self.redrawScene(QSize(newwidth, newheight))
+            self.__label.setPixmap(QPixmap(newwidth, newheight))
+            self.redisplayScene()
             # If there was an active View, restart it in this new system
             if hadactiveview:
                 self.beginViewFromSides(self.__fracsides, self.__usersides,
@@ -603,18 +600,20 @@ class PyQtPipedViewer(QMainWindow):
 
     def checkCommandPipe(self):
         '''
-        Get and perform an commands waiting in the pipe.
-        Limit the number of commands if more than 0.1 s
-        have passed to ensure responsiveness of the GUI.
+        Get and perform a single command if any anre waiting in the pipe.
         '''
-        starttime = time.clock()
         try:
-            while self.__pipe.poll():
-                cmnd = self.__pipe.recv()
+            if self.__cmndpipe.poll():
+                cmnd = self.__cmndpipe.recv()
                 self.processCommand(cmnd)
-                if time.clock() - starttime > 0.1:
-                    break
-        except EOFError:
+        except Exception:
+            # EOFError should never from recv since
+            # the call is after poll returns True
+            (exctype, excval) = sys.exc_info()[:2]
+            if excval:
+                self.__rspdpipe.send("**ERROR %s: %s" % (str(exctype), str(excval)))
+            else:
+                self.__rspdpipe.send("**ERROR %s" % str(exctype))
             self.exitViewer()
 
     def processCommand(self, cmnd):
@@ -630,8 +629,13 @@ class PyQtPipedViewer(QMainWindow):
             self.exitViewer()
         elif cmndact == "hide":
             self.hide()
+        elif cmndact == "dpi":
+            windowdpi = ( self.physicalDpiX(), self.physicalDpiY() )
+            self.__rspdpipe.send(windowdpi)
         elif cmndact == "update":
             self.updateScene()
+        elif cmndact == "redraw":
+            self.redisplayScene()
         elif cmndact == "resize":
             mysize = self.__helper.getSizeFromCmnd(cmnd)
             self.resizeScene(mysize.width(), mysize.height())
@@ -778,7 +782,7 @@ class PyQtPipedViewer(QMainWindow):
            self.__activepainter.setClipping(False)
         # Note that __activepainter has to end before __activepicture will
         # draw anything.  So no need to add it to __viewpics until then.
-        self.__somethingdrawn = False
+        self.__drawcount = 0
         # Save the maximum side length, in pixels, of the view at unit scaling
         self.__maxlengthview = max( vrectf.width(), vrectf.height() )
         # Save the current view sides and clipit setting for recreating the view.
@@ -817,34 +821,31 @@ class PyQtPipedViewer(QMainWindow):
     def endView(self):
         '''
         Ends the current view and appends it to the list of pictures
-        drawn in the scene.  The scene is redrawn with the added view
-        contents.
+        drawn in the scene.  This last picture is drawn to the displayed
+        scene.
         '''
         self.__activepainter.restore()
         self.__activepainter.end()
         self.__activepainter = None
         # Only save the active picture if it contains something
-        if self.__somethingdrawn:
+        if self.__drawcount > 0:
             self.__viewpics.append(self.__activepicture)
-            self.__somethingdrawn = False
-            # Only redraw the scene if a picture was added
-            self.redrawScene()
+            self.__drawcount = 0
+            # Display this picture in the scene (do not redraw everything)
+            self.displayLastPicture()
         self.__activepicture = None
 
     def updateScene(self):
         '''
         Updates the displayed graphics to include all drawn elements.
         '''
-        if self.__somethingdrawn:
-            # There is an active picture containing something,
-            # so end the view to add this picture and redraw,
-            # then restart the view.
+        # If there is an active picture containing something,
+        # end the view, thus adding and display this picture,
+        # then restart the view.
+        if self.__drawcount > 0:
             self.endView()
             self.beginViewFromSides(self.__fracsides, self.__usersides,
                                     self.__clipit)
-        else:
-            # Nothing new, but still redraw the scene
-            self.redrawScene()
 
     def drawMultiline(self, cmnd):
         '''
@@ -875,10 +876,13 @@ class PyQtPipedViewer(QMainWindow):
             self.__activepainter.setRenderHint(QPainter.Antialiasing, True)
             self.__activepainter.setPen(mypen)
             self.__activepainter.drawPolyline(endpts)
-            self.__somethingdrawn = True
+            self.__drawcount += 1
         finally:
             # return the painter to the default state
             self.__activepainter.restore()
+        # Limit the number of drawing commands per picture
+        if self.__drawcount >= MAX_DRAWS_PER_PICTURE:
+            self.updateScene()
 
     def drawPoints(self, cmnd):
         '''
@@ -929,10 +933,13 @@ class PyQtPipedViewer(QMainWindow):
                     self.__activepainter.drawPath(sympath.painterPath())
                 finally:
                     self.__activepainter.restore()
-            self.__somethingdrawn = True
+            self.__drawcount += len(ptcoords)
         finally:
             # return the painter to the default state
             self.__activepainter.restore()
+        # Limit the number of drawing commands per picture
+        if self.__drawcount >= MAX_DRAWS_PER_PICTURE:
+            self.updateScene()
 
     def drawPolygon(self, cmnd):
         '''
@@ -974,10 +981,13 @@ class PyQtPipedViewer(QMainWindow):
             self.__activepainter.setBrush(mybrush)
             self.__activepainter.setPen(mypen)
             self.__activepainter.drawPolygon(mypolygon)
-            self.__somethingdrawn = True
+            self.__drawcount += 1
         finally:
             # return the painter to the default state
             self.__activepainter.restore()
+        # Limit the number of drawing commands per picture
+        if self.__drawcount >= MAX_DRAWS_PER_PICTURE:
+            self.updateScene()
 
     def drawRectangle(self, cmnd):
         '''
@@ -1028,10 +1038,13 @@ class PyQtPipedViewer(QMainWindow):
             except KeyError:
                 self.__activepainter.setBrush(Qt.NoBrush)
             self.__activepainter.drawRect(myrect)
-            self.__somethingdrawn = True
+            self.__drawcount += 1
         finally:
             # return the painter to the default state
             self.__activepainter.restore()
+        # Limit the number of drawing commands per picture
+        if self.__drawcount >= MAX_DRAWS_PER_PICTURE:
+            self.updateScene()
 
     def drawMulticolorRectangle(self, cmnd):
         '''
@@ -1105,10 +1118,13 @@ class PyQtPipedViewer(QMainWindow):
                     colorindex += 1
                     self.__activepainter.setBrush(mybrush)
                     self.__activepainter.drawRect(myrect)
-            self.__somethingdrawn = True
+            self.__drawcount += numcols * numrows
         finally:
             # return the painter to the default state
             self.__activepainter.restore()
+        # Limit the number of drawing commands per picture
+        if self.__drawcount >= MAX_DRAWS_PER_PICTURE:
+            self.updateScene()
 
     def drawSimpleText(self, cmnd):
         '''
@@ -1162,10 +1178,13 @@ class PyQtPipedViewer(QMainWindow):
             except KeyError:
                 pass
             self.__activepainter.drawText(0, 0, mytext)
-            self.__somethingdrawn = True
+            self.__drawcount += 1
         finally:
             # return the painter to the default state
             self.__activepainter.restore()
+        # Limit the number of drawing commands per picture
+        if self.__drawcount >= MAX_DRAWS_PER_PICTURE:
+            self.updateScene()
 
     def adjustPoint(self, xypair):
         '''
@@ -1182,13 +1201,14 @@ class PyQtPipedViewerProcess(Process):
     '''
     A Process specifically tailored for creating a PyQtPipedViewer.
     '''
-    def __init__(self, cmndpipe):
+    def __init__(self, cmndpipe, rspdpipe):
         '''
         Create a Process that will produce a PyQtPipedViewer
-        attached to the given Pipe when run.
+        attached to the given Pipes when run.
         '''
         Process.__init__(self)
-        self.__pipe = cmndpipe
+        self.__cmndpipe = cmndpipe
+        self.__rspdpipe = rspdpipe
 
     def run(self):
         '''
@@ -1196,9 +1216,10 @@ class PyQtPipedViewerProcess(Process):
         to the Pipe of this instance.
         '''
         self.__app = QApplication(["PyQtPipedViewer"])
-        self.__viewer = PyQtPipedViewer(self.__pipe)
+        self.__viewer = PyQtPipedViewer(self.__cmndpipe, self.__rspdpipe)
         result = self.__app.exec_()
-        self.__pipe.close()
+        self.__cmndpipe.close()
+        self.__rspdpipe.close()
         SystemExit(result)
 
 #
@@ -1210,14 +1231,15 @@ class _PyQtCommandSubmitter(QDialog):
     Testing dialog for controlling the addition of commands to a pipe.
     Used for testing PyQtPipedViewer in the same process as the viewer.
     '''
-    def __init__(self, parent, cmndpipe, cmndlist):
+    def __init__(self, parent, cmndpipe, rspdpipe, cmndlist):
         '''
         Create a QDialog with a single QPushButton for controlling
         the submission of commands from cmndlist to cmndpipe.
         '''
         QDialog.__init__(self, parent)
         self.__cmndlist = cmndlist
-        self.__pipe = cmndpipe
+        self.__cmndpipe = cmndpipe
+        self.__rspdpipe = rspdpipe
         self.__nextcmnd = 0
         self.__button = QPushButton("Submit next command", self)
         self.__button.pressed.connect(self.submitNextCommand)
@@ -1229,16 +1251,17 @@ class _PyQtCommandSubmitter(QDialog):
         or shutdown if there are no more commands to submit.
         '''
         try:
-            self.__pipe.send(self.__cmndlist[self.__nextcmnd])
+            self.__cmndpipe.send(self.__cmndlist[self.__nextcmnd])
             self.__nextcmnd += 1
+            while self.__rspdpipe.poll():
+                print "Response: %s" % str(self.__rspdpipe.recv())
         except IndexError:
-            self.__pipe.close()
+            self.__rspdpipe.close()
+            self.__cmndpipe.close()
             self.close()
 
 
 if __name__ == "__main__":
-    import sys
-
     # vertices of a pentagon (roughly) centered in a 1000 x 1000 square
     pentagonpts = ( (504.5, 100.0), (100.0, 393.9),
                     (254.5, 869.4), (754.5, 869.4),
@@ -1247,7 +1270,7 @@ if __name__ == "__main__":
     drawcmnds = []
     drawcmnds.append( { "action":"setTitle", "title":"Tester" } )
     drawcmnds.append( { "action":"show" } )
-    drawcmnds.append( { "action":"clear", "color":0xFFFFFF})
+    drawcmnds.append( { "action":"clear", "color":0xFFFFFF} )
     drawcmnds.append( { "action":"resize",
                         "width":5000,
                         "height":5000 } )
@@ -1255,7 +1278,8 @@ if __name__ == "__main__":
                         "viewfracs":{"left":0.0, "bottom":0.5,
                                      "right":0.5, "top":1.0},
                         "usercoords":{"left":0, "bottom":0,
-                                      "right":1000, "top":1000} } )
+                                      "right":1000, "top":1000},
+                        "clip":True } )
     drawcmnds.append( { "action":"drawRectangle",
                         "left": 50, "bottom":50,
                         "right":950, "top":950,
@@ -1295,7 +1319,8 @@ if __name__ == "__main__":
                         "viewfracs":{"left":0.05, "bottom":0.05,
                                      "right":0.95, "top":0.95},
                         "usercoords":{"left":0, "bottom":0,
-                                      "right":1000, "top":1000} } )
+                                      "right":1000, "top":1000},
+                        "clip":True } )
     drawcmnds.append( { "action":"drawMulticolorRectangle",
                         "left": 50, "bottom":50,
                         "right":950, "top":950,
@@ -1348,7 +1373,8 @@ if __name__ == "__main__":
                         "viewfracs":{"left":0.0, "bottom":0.0,
                                      "right":1.0, "top":1.0},
                         "usercoords":{"left":0, "bottom":0,
-                                      "right":1000, "top":1000} } )
+                                      "right":1000, "top":1000},
+                        "clip":True } )
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (100, 100),
                                    (100, 300),
@@ -1430,10 +1456,12 @@ if __name__ == "__main__":
     # start PyQt
     app = QApplication(["PyQtPipedViewer"])
     # create a PyQtPipedViewer in this process
-    recvpipe, sendpipe = Pipe(False)
-    viewer = PyQtPipedViewer(recvpipe)
+    cmndrecvpipe, cmndsendpipe = Pipe(False)
+    rspdrecvpipe, rspdsendpipe = Pipe(False)
+    viewer = PyQtPipedViewer(cmndrecvpipe, rspdsendpipe)
     # create a command submitter dialog
-    tester = _PyQtCommandSubmitter(viewer, sendpipe, drawcmnds)
+    tester = _PyQtCommandSubmitter(viewer, cmndsendpipe,
+                                   rspdrecvpipe, drawcmnds)
     tester.show()
     # let it all run
     result = app.exec_()

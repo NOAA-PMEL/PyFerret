@@ -2,8 +2,8 @@
 * Inquire pixel array dimensions from user (world) coordinates.
 *
 
-        SUBROUTINE FGD_GQPXAD(windowid, left, top, right, 
-     .                    bottom, istat, widthpix, heightpix)
+        SUBROUTINE FGD_GQPXAD(windowid, left, top, right, bottom,
+     .                        istat, widthpix, heightpix)
 
         IMPLICIT NONE
         INTEGER windowid, istat, widthpix, heightpix
@@ -18,7 +18,7 @@
         CHARACTER*2048 errmsg
 
 *       Sanity checks
-        IF ( (windowid .LT. 1) .OR. 
+        IF ( (windowid .LT. 1) .OR.
      .       (windowid .GT. maxwindowobjs) ) THEN
             STOP 'FGD_GQPXAD: Invalid windowid value'
         ENDIF
@@ -53,9 +53,9 @@
         mywidth = mywidth * windowwidth(windowid) * dpix
         myheight = myheight * windowheight(windowid) * dpiy
 
-*       make sure the widht and height are positive integers
+*       make sure the width and height are positive integers
         widthpix = INT(ABS(mywidth))
         heightpix = INT(ABS(myheight))
         istat = 0
         RETURN
-        END 
+        END

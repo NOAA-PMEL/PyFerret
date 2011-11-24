@@ -20,7 +20,10 @@
 *       Set to the number of hash styles supported
 *       although this might not be what it actually means
         maxpatterns = 7
-        maxcolors = maxcolorobjs
+*       Some issues with trying to define too many colors;
+*       try reducing the reported number of available color
+*       objects that can be created.
+        maxcolors = maxcolorobjs - 5
         stat = 0
 
         RETURN

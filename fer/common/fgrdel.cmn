@@ -19,12 +19,12 @@
 * max_windows in xplot_state.cmn
 
         PARAMETER(maxwindowobjs = 9,
-     .            maxcolorobjs = 512,
-     .            maxbrushobjs = 512,
-     .            maxfontobjs = 16,
-     .            maxpenobjs = 512,
-     .            maxsymbolobjs = 128,
-     .            maxtransforms = 64)
+     .            maxcolorobjs = 255,
+     .            maxbrushobjs = 250,
+     .            maxfontobjs = 50,
+     .            maxpenobjs = 250,
+     .            maxsymbolobjs = 100,
+     .            maxtransforms = 50)
 
 * A NULL object (zero) as a parameter.
 * Undefined objects are set to nullobj

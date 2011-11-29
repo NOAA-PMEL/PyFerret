@@ -18,7 +18,7 @@ class PyQtScaleDialog(QDialog):
     are not smaller than the specified minimums.
     '''
 
-    FLTSTR_FORMAT = "%#6.2f"
+    FLTSTR_FORMAT = "%#.2f"
 
     def __init__(self, title, message, scale, width, height,
                  minwidth, minheight, parent=None):
@@ -43,24 +43,24 @@ class PyQtScaleDialog(QDialog):
         messagelabel = QLabel(message, self)
         messagelabel.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
-        scalelabel = QLabel(self.tr("&Scale "), self)
+        scalelabel = QLabel(self.tr("&Scale: "), self)
         self.__scaleedit = QLineEdit(self.FLTSTR_FORMAT % self.__scale, self)
         scalelabel.setBuddy(self.__scaleedit)
 
-        widthbegin = QLabel(self.tr("Width "), self)
+        widthbegin = QLabel(self.tr("Width: "), self)
         self.__pixwidthlabel = QLabel(str(int(self.__pixwidth + 0.5)), self)
-        widthmiddle = QLabel(self.tr("pixels  ("))
+        widthmiddle = QLabel(self.tr("pixels, or"))
         self.__inchwidthlabel = QLabel(self.FLTSTR_FORMAT % self.__inchwidth)
-        widthend = QLabel(self.tr("inches on the screen)"))
-        minwidthlabel = QLabel(self.tr("must not be less than %1 pixels") \
+        widthend = QLabel(self.tr("inches on the screen"))
+        minwidthlabel = QLabel(self.tr("(must not be less than %1 pixels)") \
                                .arg(str(self.__minpixwidth)))
 
-        heightbegin = QLabel(self.tr("Height"), self)
+        heightbegin = QLabel(self.tr("Height:"), self)
         self.__pixheightlabel = QLabel(str(int(self.__pixheight + 0.5)), self)
-        heightmiddle = QLabel(self.tr("pixels  ("))
+        heightmiddle = QLabel(self.tr("pixels, or"))
         self.__inchheightlabel = QLabel(self.FLTSTR_FORMAT % self.__inchheight)
-        heightend = QLabel(self.tr("inches on the screen)"))
-        minheightlabel = QLabel(self.tr("must not be less than %1 pixels") \
+        heightend = QLabel(self.tr("inches on the screen"))
+        minheightlabel = QLabel(self.tr("(must not be less than %1 pixels)") \
                                .arg(str(self.__minpixheight)))
 
         buttonbox = QDialogButtonBox(QDialogButtonBox.Ok |

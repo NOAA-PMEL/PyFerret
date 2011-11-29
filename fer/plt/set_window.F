@@ -111,8 +111,8 @@
 	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, wn, n,
      .          qp, ivp, colon_pos, tlen, i, s1, idone
 	REAL	dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,
-     .		bigness, scale, xstretch, ystretch, aspect,
-     .		ref_len
+     .		scale, xstretch, ystretch, aspect, ref_len
+*       REAL    bigness
 	CHARACTER	UPPER_CASE*1, GKS_X_CONID*16,
      .			arg1*1, buffer*24, xwind_id*80, short_buff*24
 * ... for GKS escape call:
@@ -433,11 +433,12 @@ c
 	        yln = wn_scale(n) * yln
 
 * ... too big to fit ?
-	        bigness = MIN( dmaxx/xln, dmaxy/yln )
-	        IF ( bigness .LT. 1.0 ) THEN
-	           xln = xln * bigness
-	           yln = yln * bigness
-	        ENDIF
+* "too big" no longer an issue
+*               bigness = MIN( dmaxx/xln, dmaxy/yln )
+*               IF ( bigness .LT. 1.0 ) THEN
+*                  xln = xln * bigness
+*                  yln = yln * bigness
+*               ENDIF
 
 * ... put lower left of each window at a different place if possible
 	        wkxmn = MIN( xlowlef(n), dmaxx-xln )

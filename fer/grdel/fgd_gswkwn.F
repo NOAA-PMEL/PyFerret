@@ -29,16 +29,15 @@
         IF ( ymin .NE. 0.0 ) THEN
             STOP 'FGD_GSWKWN: Unexpected non-zero ymin'
         ENDIF
+        IF ( xmax .GT. 1.0 ) THEN
+            STOP 'FGD_GSWKWN: Unexpected xmax greater than one'
+        ENDIF
+        IF ( ymax .GT. 1.0 ) THEN
+            STOP 'FGD_GSWKWN: Unexpected ymax greater than one'
+        ENDIF
 
         ndcxmax(windowid) = xmax
         ndcymax(windowid) = ymax
-
-*       Since this has the potential to change the view,
-*       if this is the active window, reselect the active
-*       transform.
-        IF ( windowid .EQ. activewindow ) THEN
-            CALL FGD_GSELNT(activetransform)
-        ENDIF
 
         RETURN
         END

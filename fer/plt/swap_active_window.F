@@ -122,6 +122,7 @@
 *     set its correct size if we've done a plot
               CALL FGD_GSWKWN(wsid,0.0,FCTX,0.0,FCTY)
               CALL SET_WINDOW_SIZE (wsid,WKXMN,WKXMX,WKYMN,WKYMX)
+              CALL FGD_GSELNT(wsid)
               CALL FGD_GSWKWN(anim_id,0.0,FCTX,0.0,FCTY)
               CALL SET_WINDOW_SIZE (anim_id,WKXMN,WKXMX,WKYMN,WKYMX)
            ELSE

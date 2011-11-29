@@ -63,7 +63,7 @@
 
 *	GET WORLD COORDINATES AND PIXEL DIMENSIONS OF FRAME
 	call  FGD_GQCNTN(error_status,transno)
-	if (error_status .ne. 0) goto 1000
+	if (error_status .ne. 0) goto 1100
 
         IF(ASIZE.GT.BSIZE)THEN
            FCTY=BSIZE/ASIZE
@@ -94,8 +94,8 @@
         return
 
 *	GKS ERROR EXIT
-1000	call FGD_GSELNT(ws_id)
-	status = ferr_tmap_error
+ 1000   call FGD_GSELNT(transno)
+ 1100   status = ferr_tmap_error
 	return
 
 	end

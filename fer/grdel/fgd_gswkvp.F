@@ -31,11 +31,11 @@
 
 *       Compute the window width and height in inches
 *       Assume a half inch minimum for the width and height
-        newwidth = (xmax - xmin) * 1000.0 / 25.4
+        newwidth = (xmax - xmin) * (1000.0 / 25.4)
         IF ( newwidth .LE. 0.5 ) THEN
             STOP 'FGD_GSWKVP: invalid width'
         ENDIF
-        newheight = (ymax - ymin) * 1000.0 / 25.4
+        newheight = (ymax - ymin) * (1000.0 / 25.4)
         IF ( newheight .LE. 0.5 ) THEN
             STOP 'FGD_GSWKVP: invalid height'
         ENDIF
@@ -51,13 +51,6 @@
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
-        ENDIF
-
-*       Since this has the potential to change the view,
-*       if this is the active window, reselect the active
-*       transform.
-        IF ( windowid .EQ. activewindow ) THEN
-            CALL FGD_GSELNT(activetransform)
         ENDIF
 
         RETURN

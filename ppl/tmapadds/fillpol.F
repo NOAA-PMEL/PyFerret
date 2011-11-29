@@ -353,8 +353,8 @@ C      set already.
 
 
 * ... restore GKS transforms following FILLPOL 
- 1000	call FGD_GSCLIP(cflag)
-	call FGD_GSELNT(trans_no)
+ 1000   call FGD_GSELNT(trans_no)
+        call FGD_GSCLIP(cflag)
 
 * ... and DO THE KEY
 	if (fill_it .and. do_key .AND. .NOT.interrupted) then

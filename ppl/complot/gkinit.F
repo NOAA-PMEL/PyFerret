@@ -76,9 +76,6 @@ C	                            call FGD_GACWK(wsid)
 	    gksopn=.true.
 	    lpen=.not.pen
 	endif
-	call FGD_GSWN(1,0.0,asize,0.0,bsize)
-	call FGD_GSELNT(1)
-	call FGD_GSVP(1,0.0,fctx,0.0,fcty)
 c
 c	set up the size of the display window
 c
@@ -134,6 +131,12 @@ c
 	    ymx=dmaxy*wkymx
 	    call FGD_GSWKVP(wsid,xmn,xmx,ymn,ymx)
 	endif
-c
+*
+*       Set the transformation matrix *after* setting the window size
+*
+        CALL FGD_GSWN(1,0.0,asize,0.0,bsize)
+        CALL FGD_GSVP(1,0.0,fctx,0.0,fcty)
+        CALL FGD_GSELNT(1)
+*
 	return
 	end

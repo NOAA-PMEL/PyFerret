@@ -31,8 +31,9 @@
         ENDIF
 
         activetransform = transnum
-*       Get the view limits and 
-*       adjust the view fractions by the limits defined by FGD_GSWKWN
+*       Get the view limits and adjust, realizing that the
+*       full window is thought of as going from [0.0,0.0]
+*       to [ndcxmax,ndcymax] (set by FGD_GSWKWN).
         IF ( transnum .NE. 0 ) THEN
             lftfrac = viewleftfrac(transnum) / ndcxmax(activewindow)
             rgtfrac = viewrightfrac(transnum) / ndcxmax(activewindow)
@@ -42,6 +43,18 @@
             btmcoord = viewbottomcoord(transnum)
             rgtcoord = viewrightcoord(transnum)
             topcoord = viewtopcoord(transnum)
+            IF ( (lftfrac .LT. 0.0) .OR.
+     .           (lftfrac .GE. rgtfrac) .OR.
+     .           (rgtfrac .GT. 1.0) .OR.
+     .           (btmfrac .LT. 0.0) .OR.
+     .           (btmfrac .GE. topfrac) .OR.
+     .           (topfrac .GT. 1.0) ) THEN
+                WRITE(*,*) 'lft, btm, rgt, top fracs = ',
+     .                     lftfrac, btmfrac, rgtfrac, topfrac
+                WRITE(*,*) 'lft, btm, rgt, top coords = ',
+     .                     lftcoord, btmcoord, rgtcoord, topcoord
+                STOP 'FGD_GSELNT: invalid adjusted view fractions'
+            ENDIF
         ELSE
 *           This should be the identity transform.
 *           Normally this is only used to end a view.
@@ -52,10 +65,8 @@
             lftcoord = 0.0
             btmcoord = 0.0
             CALL FGD_GETDPI(activewindow, dpix, dpiy)
-            rgtcoord = windowwidth(activewindow) * dpix *
-     .                 ndcxmax(activewindow)
-            topcoord = windowheight(activewindow) * dpiy *
-     .                 ndcymax(activewindow)
+            rgtcoord = windowwidth(activewindow) * dpix
+            topcoord = windowheight(activewindow) * dpiy
         ENDIF
 *       End any view that may currently be active
 *       There might not be one started, so ignore any errors

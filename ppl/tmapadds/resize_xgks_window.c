@@ -57,7 +57,7 @@ void resize_xgks_window_(int *ws_id, float *x, float *y, int *ix, int *iy)
     float dpix, dpiy;
 
     /* 
-     * Go back to just calling gswkcp to resize the window using
+     * Go back to just calling gswkvp to resize the window using
      * graphics delegate function calls.
      */
     fgd_gswkvp_(ws_id, &zeroval, x, &zeroval, y);

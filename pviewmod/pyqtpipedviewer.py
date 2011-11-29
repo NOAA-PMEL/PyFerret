@@ -19,7 +19,7 @@ try:
 except AttributeError:
     pass
 
-from PyQt4.QtCore import Qt, QPointF,QRect, QRectF, QSize, QString, QTimer
+from PyQt4.QtCore import Qt, QPointF,QRect, QRectF, QString, QTimer
 from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, \
                          QDialog, QFileDialog, QImage, QLabel, \
                          QMainWindow, QMessageBox, QPainter, QPalette, \
@@ -44,7 +44,7 @@ from pyqtscaledialog import PyQtScaleDialog
 from multiprocessing import Pipe, Process
 import sys
 import os
-import time
+
 
 # Limit the number of drawing commands per picture
 # to avoid the appearance of being "stuck"
@@ -331,11 +331,11 @@ class PyQtPipedViewer(QMainWindow):
         Prompt the user for the desired scaling factor for the scene.
         '''
         pixsize = self.__label.pixmap().size()
-        currwidth = float(pixsize.width()) / float(self.physicalDpiX())
-        currheight = float(pixsize.height()) / float(self.physicalDpiY())
-        minwidth = float(self.__minsize) / float(self.physicalDpiX())
-        minheight = float(self.__minsize) / float(self.physicalDpiY())
-        scaledlg = PyQtScaleDialog(self.tr("Scale Scene Size"),
+        currwidth = pixsize.width()
+        currheight = pixsize.height()
+        minwidth = self.__minsize
+        minheight = self.__minsize
+        scaledlg = PyQtScaleDialog(self.tr("Scene Size Scaling"),
                                    self.tr("Scaling factor for the scene"),
                                    self.__scalefactor, currwidth, currheight,
                                    minwidth, minheight, self)
@@ -697,9 +697,9 @@ class PyQtPipedViewer(QMainWindow):
         usersides = self.__helper.getSidesFromCmnd(cmnd["usercoords"])
         # Should graphics be clipped to this view?
         try:
-           clipit = cmnd["clip"]
+            clipit = cmnd["clip"]
         except KeyError:
-           clipit = True
+            clipit = True
         self.beginViewFromSides(fracsides, usersides, clipit)
 
     def beginViewFromSides(self, fracsides, usersides, clipit):
@@ -779,7 +779,7 @@ class PyQtPipedViewer(QMainWindow):
         self.__activepainter.setClipRect(wrectf, Qt.ReplaceClip)
         # Disable clipping if not desired at this time
         if not clipit:
-           self.__activepainter.setClipping(False)
+            self.__activepainter.setClipping(False)
         # Note that __activepainter has to end before __activepicture will
         # draw anything.  So no need to add it to __viewpics until then.
         self.__drawcount = 0

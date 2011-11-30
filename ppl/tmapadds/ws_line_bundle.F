@@ -35,7 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-*	Routine to set up the line bundles for generic WS's.
+*	Routine to set up the line bundles for generic WSs.
 *	J Davison JISAO/PMEL/TMAP 3.23.89
 *	*jd* 2.19.92 mod to support atc gks
 *	*jd* 8.10.93 mod to support XGKS line colors -- force setting
@@ -56,6 +56,7 @@
 *       *acm* 2/2003 polymarker dot line bundles had not been set for pen > 6
 *  v600 *acm* 5/2006 User can change the number of line colors.
 
+        IMPLICIT NONE
         INCLUDE 'parampl5_dat.decl'
         INCLUDE 'PARAMPL5.DAT'
         INCLUDE 'plt_inc.decl'
@@ -107,13 +108,15 @@
 
         IF (num_line_colors .GT. 6) THEN
            frac = (0.9-0.6)/FLOAT(num_line_colors - 6)
-           grey = 0.6
-           IF (num_line_colors .EQ. 1) grey = 0.8
-
-           do 40 j = 7, num_line_colors     
+           IF ( num_line_colors .EQ. 7 ) THEN
+               grey = 0.8
+           ELSE
+               grey = 0.6
+           ENDIF
+           DO 40 j = 7, num_line_colors
               call FGD_GSCR(zwsid,j,grey,grey,grey)
-  40       continue
-           grey = grey + frac
+              grey = grey + frac
+  40       CONTINUE
         ENDIF
 
 	IF (saved_line_colors .GT. 0) THEN

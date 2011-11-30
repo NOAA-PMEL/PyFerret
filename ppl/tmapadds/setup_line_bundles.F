@@ -1,4 +1,4 @@
-	SUBROUTINE SETUP_LINE_BUNDLES (zwsid,zwstype)
+        SUBROUTINE SETUP_LINE_BUNDLES(zwsid,zwstype)
 
 *
 *
@@ -35,57 +35,48 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-*	Routine to set polyline indices bundled and set up the bundles
-*	for WS zwsid of type zwstype.
-*	J Davison JISAO/PMEL/TMAP 3.23.89
-*	*jd* 2.19.92 mod to support atc gks
-
+*       Routine to set polyline indices bundled and set up the bundles
+*       for WS zwsid of type zwstype.
+*       J Davison JISAO/PMEL/TMAP 3.23.89
+*       *jd* 2.19.92 mod to support atc gks
 *       *acm* 8/2001  add polymarker call for PLOT/SYMBOL=DOT  
- 
+*       *kms* 11/2011 only use ws_line_bundle
+*
 * gsplr: wkid, line index, line type, linewidth scale factor, color index
 * gspmr: wkid, marker index, marker type(dot=1), size scale factor (const for dot), color
 
-#ifdef unix
-	include		'ws_types.cmn'
-#else
-	include		'tmap_pplv11inc:ws_types.inc'
-#endif
+        INTEGER zwsid,zwstype
 
-	integer		zwsid,zwstype
+        INCLUDE 'ws_types.cmn'
 
 ******************************************************************************
 
-*	SET UP LINE BUNDLE FOR 'PEN N,0' CALLS -- USE INDEX 19 JD 2.19.92
-        call FGD_GSPLR(zwsid,19,1,1.0,0)
+*       SET UP LINE BUNDLE FOR 'PEN N,0' CALLS -- USE INDEX 19 JD 2.19.92
+        CALL FGD_GSPLR(zwsid,19,1,1.0,0)
 
-#ifdef atc_gks
-	if (zwstype/100 .eq. ws_xwindow/100 .or. zwstype .eq. ws_uis) then
-#else
-	if (zwstype .eq. ws_xwindow .or. zwstype .eq. ws_uis) then
-#endif
-*	   XWINDOW (OR UIS) WORKSTATION 
-	   call ws_line_bundle (zwsid,zwstype)
+* ifdef atc_gks
+*       if (zwstype/100 .eq. ws_xwindow/100 .or. zwstype .eq. ws_uis) then
+* else
+*       if (zwstype .eq. ws_xwindow .or. zwstype .eq. ws_uis) then
+* endif
+*          XWINDOW (OR UIS) WORKSTATION 
+*          call ws_line_bundle (zwsid,zwstype)
+*       else if (zwstype .eq. ws_ps_mono) then
+*          MONOCHROME POSTSCRIPT ATTRIBUTES
+*          call ps_line_bundle (zwsid)
+*       else if (zwstype .eq. ws_tek4014) then
+*          TEK 4014
+*          call tek4014_line_bundle (zwsid)
+*       else if (zwstype .eq. ws_tek4107) then
+*          TEK 4107
+*          call tek4107_line_bundle (zwsid)
+*       else
+*          SETUP DEFAULT LINE BUNDLES
+*          call ws_line_bundle (zwsid,zwstype)
+*       end if
 
-	else if (zwstype .eq. ws_ps_mono) then
-*	   MONOCHROME POSTSCRIPT ATTRIBUTES
-	   call ps_line_bundle (zwsid)
+        CALL WS_LINE_BUNDLE(zwsid,zwstype)
+        RETURN
 
-	else if (zwstype .eq. ws_tek4014) then
-*	   TEK 4014
-	   call tek4014_line_bundle (zwsid)
-
-	else if (zwstype .eq. ws_tek4107) then
-*	   TEK 4107
-	   call tek4107_line_bundle (zwsid)
-
-	else
-*	   SETUP DEFAULT LINE BUNDLES
-	   call ws_line_bundle (zwsid,zwstype)
-	end if
-
-
-
-	return
-
-	end
+        END
 

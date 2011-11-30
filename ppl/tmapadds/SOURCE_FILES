@@ -42,7 +42,6 @@ pplld_pts.F\
 ppllocator.F\
 pplp_ver_data.F\
 process_x_events.F\
-ps_line_bundle.F\
 query_display_size.F\
 query_xgks_wkstn.F\
 restore_saved_line_colors.F\
@@ -75,10 +74,6 @@ shade_key_cont.F\
 shade_set.F\
 shade_sub.F\
 strmar.F\
-tek4014_fill_rep.F\
-tek4014_line_bundle.F\
-tek4107_fill_rep.F\
-tek4107_line_bundle.F\
 upnsquish.F\
 use_linear_levels.F\
 vec_arrows.F\

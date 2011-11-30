@@ -1,0 +1,20 @@
+! err672_vert_axislabel.jnl
+! bug 1896
+!
+! When the vertical axis needs a lot of characters
+! in the numeric axis, the axis label runs off the edge
+! of the plot
+
+
+define axis/x=1:100:1 xax
+let/units="Observation value" var = 1.e37 * sin(randu(x[gx=xax])-1)
+plot var
+
+use nc5d.nc
+plot/x=130w psi[t=@din]
+
+! If the margins are too small the method just makes a nominal setting.
+go margins 0.2 0.6 0.2, 0.2
+plot/i=1:200 (sin(x/30))
+
+go margins "reset"

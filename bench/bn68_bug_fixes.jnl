@@ -10,3 +10,6 @@ GO err672_tax_functions_prec
 
 GO bn_reset
 GO err672_subscr_precision
+
+GO bn_reset
+GO err672_vert_axislabel

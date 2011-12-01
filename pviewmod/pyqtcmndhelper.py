@@ -226,8 +226,7 @@ class PyQtCmndHelper(object):
             "color": color name or 24-bit RGB integer value
                          (eg, 0xFF0088)
             "alpha": alpha value from 0 (transparent) to 255 (opaque)
-            "width": pen width in units of 0.001 of the length of the
-                     longest side of the View (float)
+            "width": pen width (scales with the size of the view)
             "style": pen style name ("solid", "dash", "dot", "dashdot",
                          "dashdotdot")
             "capstyle": pen cap style name ("square", "flat", "round")
@@ -240,9 +239,6 @@ class PyQtCmndHelper(object):
             mypen = QPen()
         try:
             penwidth = float(peninfo["width"])
-            # Convert from units of 0.001 of the length
-            # of the longest side of the View to pixels
-            penwidth *= self.__parent.maxLengthView() / 1000.0
             mypen.setWidthF(penwidth)
         except KeyError:
             pass

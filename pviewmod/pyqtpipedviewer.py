@@ -44,6 +44,7 @@ from pyqtscaledialog import PyQtScaleDialog
 from multiprocessing import Pipe, Process
 import sys
 import os
+import math
 
 
 # Limit the number of drawing commands per picture
@@ -107,8 +108,6 @@ class PyQtPipedViewer(QMainWindow):
         self.__drawcount = 0
         # maximum user Y coordinate - used by adjustPoint
         self.__userymax = 1.0
-        # maximum view length in pixels - used to adjust line widths and symbol sizes
-        self.__maxlengthview = 0.0
         # scaling, upper left coordinates, and pictures for creating the scene
         self.__scalefactor = 1.0
         self.__leftx = 0.0
@@ -783,8 +782,6 @@ class PyQtPipedViewer(QMainWindow):
         # Note that __activepainter has to end before __activepicture will
         # draw anything.  So no need to add it to __viewpics until then.
         self.__drawcount = 0
-        # Save the maximum side length, in pixels, of the view at unit scaling
-        self.__maxlengthview = max( vrectf.width(), vrectf.height() )
         # Save the current view sides and clipit setting for recreating the view.
         # Just save the original objects (assume calling functions do not keep them)
         self.__fracsides = fracsides
@@ -807,16 +804,6 @@ class PyQtPipedViewer(QMainWindow):
         else:
             self.__activepainter.setClipping(False)
             self.__clipit = False
-
-    def maxLengthView(self):
-        '''
-        Returns the length of the longest side of the current view
-        in units of pixels when the scaling factor is one.
-        Raises an AttributeError if there is no current view defined.
-        '''
-        if not self.__activepainter:
-            raise AttributeError( self.tr('viewMaxLength called without an active View') )
-        return self.__maxlengthview
 
     def endView(self):
         '''
@@ -893,8 +880,7 @@ class PyQtPipedViewer(QMainWindow):
             "points": point centers as a list of (x,y) coordinates
             "symbol": name of the symbol to use
                     (see PyQtCmndHelper.getSymbolFromCmnd)
-            "size": size of the symbol in units of 0.001 of the length
-                    of the longest side of the View
+            "size": size of the symbol (scales with view size)
             "color": color name or 24-bit RGB integer value (eg, 0xFF0088)
             "alpha": alpha value from 0 (transparent) to 255 (opaque)
 
@@ -920,10 +906,10 @@ class PyQtPipedViewer(QMainWindow):
                 self.__activepainter.setPen(Qt.NoPen)
             else:
                 self.__activepainter.setBrush(Qt.NoBrush)
-                mypen = QPen(mybrush, 16.0, Qt.SolidLine,
+                mypen = QPen(mybrush, 15.0, Qt.SolidLine,
                              Qt.RoundCap, Qt.RoundJoin)
                 self.__activepainter.setPen(mypen)
-            scalefactor = ptsize * (self.__maxlengthview / 1000.0) / 50.0
+            scalefactor = ptsize / 100.0
             for xyval in ptcoords:
                 (adjx, adjy) = self.adjustPoint( xyval )
                 self.__activepainter.save()

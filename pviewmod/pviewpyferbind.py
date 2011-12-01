@@ -356,8 +356,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
 
         Arguments:
             color: Color to use
-            width: line width in units of 0.001 of the length
-                   of the longest side of the View
+            width: line width (scales with the size of the View)
             style: line style name (e.g., "solid", "dash")
             capstyle: end-cap style name (e.g., "square")
             joinstyle: join style name (e.g., "bevel")
@@ -469,8 +468,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
             ptsy: the Y-coordinates of the points in View units
             symbol: the Symbol to use to draw a point
             color: color of the Symbol (if None of empty, default color used)
-            ptsize: size of the symbol in units of 0.001 of the length
-                    of the longest side of the View
+            ptsize: size of the symbol (scales with the size of the View)
         '''
         if len(ptsx) != len(ptsy):
             raise ValueError("the lengths of ptsx and ptsy are not the same")

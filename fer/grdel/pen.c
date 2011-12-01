@@ -23,7 +23,8 @@ typedef struct GDpen_ {
  * Arguments:
  *     window: Window in which this pen is to be used
  *     color: Color to use
- *     width: line width in View units
+ *     width: line width in units of 0.001 of the length
+ *            of the longest side of the view
  *     style: line style name (e.g., "solid", "dash")
  *     stylelen: actual length of the style name
  *     capstyle: end-cap style name (e.g., "square")
@@ -158,7 +159,8 @@ grdelBool grdelPenDelete(grdelType pen)
  * Input Arguments:
  *     window: Window in which this pen is to be used
  *     color: Color to use
- *     width: line width in View units
+ *     width: line width in units of 0.001 of the length
+ *            of the longest side of the view
  *     style: line style name (e.g., "solid", "dash")
  *     stylelen: actual length of the style name
  *     capstyle: end-cap style name (e.g., "square")

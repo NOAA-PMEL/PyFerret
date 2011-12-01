@@ -132,7 +132,6 @@
 	   do 10 fktr = 1,3     ! thickness
               index = (fktr-1)*num_line_colors+j
               thickness = real(fktr)
-
 	      call FGD_GSPMR(zwsid,index,marktype,dotsize,j)
 	      call FGD_GSPLR(zwsid,index,1,thickness,j)
        
@@ -143,10 +142,10 @@
 
 *	MONOCHROME WORKSTATIONS:
 100	do 120 j = 1,3
-	   thickness = real (j)
+           thickness = real(j)
 	   do 110 i = 1,6
-	      call FGD_GSPMR(zwsid,i+6*(j-1),ltype(i),thickness,1)
-	      call FGD_GSPLR(zwsid, i, marktype, dotsize, 1)
+	      call FGD_GSPMR(zwsid,i+6*(j-1),marktype,dotsize,1)
+	      call FGD_GSPLR(zwsid,i+6*(j-1),ltype(i),thickness,1)
 110	   continue
 120	continue                   
 

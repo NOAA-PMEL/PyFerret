@@ -222,8 +222,7 @@ class AbstractPyFerretBindings(object):
 
         Arguments:
             color: Color to use
-            width: line width in units of 0.001 of the length
-                   of the longest side of the View
+            width: line width (scales with the size of the View)
             style: line style name (e.g., "solid", "dash")
             capstyle: end-cap style name (e.g., "square")
             joinstyle: join style name (e.g., "bevel")
@@ -302,8 +301,7 @@ class AbstractPyFerretBindings(object):
             ptsy: the Y-coordinates of the points in View units
             symbol: the Symbol to use to draw a point
             color: color of the Symbol
-            ptsize: size of the symbol in units of 0.001 of the
-                    length of the longest side of the View
+            ptsize: size of the Symbol (scales with the size of the View)
         '''
         raise AttributeError()
 

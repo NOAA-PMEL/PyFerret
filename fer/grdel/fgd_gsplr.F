@@ -1,10 +1,16 @@
 *
-* Create a pen object.
-* (set polyline representation)
+* Create a pen object.  (set polyline representation)
+*
+* The linewidth in GSK was a factor, so not very clear
+* what the units should be.  The line widths here scale
+* with the size of the view, but still not sure what
+* the units actually are.  The factor applied to the
+* line width was determined to reproduce Ferret line
+* widths in a default screen.
 *
 
-        SUBROUTINE FGD_GSPLR(windowid, pennum, 
-     .                 linestyle, linewidth, colorindex)
+        SUBROUTINE FGD_GSPLR(windowid, pennum, linestyle,
+     .                       linewidth, colorindex)
 
         IMPLICIT NONE
         INTEGER windowid, pennum, linestyle, colorindex
@@ -16,8 +22,8 @@
 
         INTEGER colornum, stylen, cstylen, jstylen,
      .          success, errmsglen
-        CHARACTER*64 stylename, capstyle, joinstyle
         REAL adjwidth
+        CHARACTER*64 stylename, capstyle, joinstyle
         CHARACTER*2048 errmsg
 
 *       Sanity checks
@@ -41,6 +47,9 @@
             STOP 'FGD_GSPLR: null colorobj'
         ENDIF
 
+*       Line width
+        adjwidth = 15.0 * linewidth
+
 *       Line type
         IF ( linestyle .EQ. 1 ) THEN
             stylename = 'solid'
@@ -61,10 +70,6 @@
         cstylen = 5
         joinstyle = 'round'
         jstylen = 5
-
-*       Adjust the line width to units of 0.001 of 
-*       the longest side of the current View
-        adjwidth = 16.0 * linewidth
 
 *       If a pen object already exists, delete it
         IF ( penobjs(pennum, windowid) .NE. nullobj ) THEN

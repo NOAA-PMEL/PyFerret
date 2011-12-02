@@ -88,7 +88,14 @@ void FORTRAN(set_batch_graphics)(char *outfile)
   assert(outfile);
   length = strlen(outfile);
   modestate = 1;
-  FORTRAN(save_metafile_name)(outfile, &length, &modestate);
+  /*
+   * This can be called with (-batch) or without
+   * (-gif or -unmapped) a filename.  Only call
+   * save_metafile_name if a name is given (-batch).
+   */
+  if ( length > 0 ) {
+    FORTRAN(save_metafile_name)(outfile, &length, &modestate);
+  }
 
   /* 
    * GKS metafile format no longer supported;

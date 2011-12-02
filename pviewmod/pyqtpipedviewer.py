@@ -44,7 +44,6 @@ from pyqtscaledialog import PyQtScaleDialog
 from multiprocessing import Pipe, Process
 import sys
 import os
-import math
 
 
 # Limit the number of drawing commands per picture
@@ -82,8 +81,8 @@ class PyQtPipedViewer(QMainWindow):
         # create the label, that will serve as the canvas, in a scrolled area
         self.__scrollarea = QScrollArea(self)
         self.__label = QLabel(self.__scrollarea)
-        defaultwidth = 970
-        defaultheight = 750
+        defaultwidth = 1110
+        defaultheight = 890
         mypixmap = QPixmap(defaultwidth, defaultheight)
         # initialize default color for clearScene to transparent white
         self.__lastclearcolor = QColor(0xFFFFFF)
@@ -96,7 +95,7 @@ class PyQtPipedViewer(QMainWindow):
         self.__scrollarea.setWidget(self.__label)
         self.__scrollarea.setBackgroundRole(QPalette.Dark)
         self.setCentralWidget(self.__scrollarea)
-        self.__minsize = 128
+        self.__minsize = 256
         # QPicture/QPainter pair for the current view
         self.__activepicture = None
         self.__activepainter = None
@@ -104,7 +103,7 @@ class PyQtPipedViewer(QMainWindow):
         self.__fracsides = None
         self.__usersides = None
         self.__clipit = True
-        # number of drawing commands in the activepainter
+        # number of drawing commands in the active painter
         self.__drawcount = 0
         # maximum user Y coordinate - used by adjustPoint
         self.__userymax = 1.0
@@ -120,7 +119,11 @@ class PyQtPipedViewer(QMainWindow):
         self.createMenus()
         self.__lastfilename = ""
         self.__shuttingdown = False
-        # check the command queue anytime there are no window events to deal with
+        # Set the initial size of the viewer
+        mwwidth = defaultwidth + 8
+        mwheight = defaultheight + 8 + self.menuBar().height() + self.statusBar().height()
+        self.resize(mwwidth, mwheight)
+        # check the command queue any time there are no window events to deal with
         self.__timer = QTimer(self)
         self.__timer.timeout.connect(self.checkCommandPipe)
         self.__timer.setInterval(0)

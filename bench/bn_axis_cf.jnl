@@ -45,7 +45,7 @@ sp ncdump -h a.nc >> all_ncdump.out
 
 use bn_strides
 sh att/all (TTIME)
-save/clobber/file=a.nc
+save/clobber/file=a.nc xytvar
 
 sp echo "bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since" >> all_ncdump.out
 sp ncdump -h a.nc >> all_ncdump.out

@@ -766,6 +766,9 @@ GO bn_ifv
 GO bn_reset
 GO bn_randu2_randn2
 
+GO bn_reset
+GO bn_axis_cf
+
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not
 ! tested in the benchmarks.

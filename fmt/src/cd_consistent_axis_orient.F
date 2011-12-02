@@ -69,7 +69,7 @@
       include 'xdset_info.cd_equiv'
 
 * argument declarations
-      LOGICAL  reversed(max_lines:line_ceiling)
+      LOGICAL  reversed(max_lines:line_ceiling), already_noted(max_lines:line_ceiling)
       INTEGER dset, perm(4), status
 
 * local variable declarations:
@@ -84,14 +84,27 @@
       CHARACTER vname*128
 
       INTEGER grid_ndims (max_grids:grid_ceiling), 
-     .        line_use_dir(0:line_ceiling)
+     .        line_use_dir(0:3000)
+
+      INTEGER copy_of_grids (4, 500)
 
       iter = 0
       reordered = 0
 
+      DO igrid = 501, 508
+      DO idim = 1, 4
+         copy_of_grids(idim, igrid-500) = grid_line(idim, igrid)
+      ENDDO
+      ENDDO
+
+      DO i = max_lines,line_ceiling
+         already_noted = .FALSE.
+      ENDDO
+
       DO i = 1, 100
          axes_out_of_order(i) = 0.
       ENDDO
+
       DO i = 0, line_ceiling
          line_use_dir(i) = 0
       ENDDO
@@ -111,6 +124,7 @@
 
       DO 100 idim = 1, 4
          iaxis = grid_line(idim, igrid)
+
          IF (iaxis  .GT. 0) THEN
             IF (line_use_dir (iaxis) .EQ. 0) THEN
                line_use_dir(iaxis) = idim
@@ -144,20 +158,21 @@
 
       iaxis_last = 0
       iorder = 0
-      DO 200 i = 1, disordered
+      DO 220 i = 1, disordered
          iorder = iorder + 1
          iaxis = INT(axes_out_of_order(iorder))
-	 IF (iaxis.EQ.iaxis_last .OR. iaxis.EQ.0) GOTO 200
+	 IF (iaxis.EQ.iaxis_last .OR. iaxis.EQ.0) GOTO 220
          iaxis_last = iaxis
 
-C Can this happen? Axis marked with a direction but is in inconsistent position in grids?
-         IF (line_direction(iaxis) .NE. 'NA') THEN
+C Axis marked with a direction but is in inconsistent position in grids?
+         IF (line_direction(iaxis).NE.'NA' .AND. .NOT.already_noted(iaxis)) THEN
 	    vlen = TM_LENSTR1(line_name(iaxis)) 
             CALL TM_NOTE( 'Axis '//line_name(iaxis)(1:vlen)//' marked as '//
      .          line_direction(iaxis), lunit_errors )
             CALL TM_NOTE(
      .          'but it has different directions in grids. '//
      .          'Axes in grids may be inconsistent.', lunit_errors)
+            already_noted(iaxis) = .TRUE.
          ELSE
 
 c Find the grid which contains this axis and has the most dimensions.
@@ -207,15 +222,16 @@ c Find the grid which contains this axis and has the most dimensions.
   160             CONTINUE
                   IF (shift_ok) THEN
                      DO 170 idim = 1, 4
-                            grid_save(idim) = grid_line(idim,igrid2)
+                        grid_save(idim) = grid_line(idim,igrid2)
   170                CONTINUE
+
                      grid_line(ipos1,igrid2) = grid_line(ipos1,igrid1)
                      line_use_dir(grid_line(ipos1,igrid1)) = ipos1
                      grid_line(ipos2,igrid2) = mpsnorm
 
-                     DO 180 idim = ipos1+1, 4
+                     DO 180 idim = ipos2+1, 4
                         IF (grid_save(idim-1).NE.mpsnorm) THEN
-                           grid_line(idim,igrid2) = grid_save(idim-1)
+                           grid_line(idim-1,igrid2) = grid_save(idim)
 			   need_iterate = .TRUE.
 			ENDIF
   180                CONTINUE
@@ -224,8 +240,8 @@ c Find the grid which contains this axis and has the most dimensions.
                   ELSE
                      vlen = TM_LENSTR1(line_name(iaxis)) 
 
-                     CALL TM_NOTE('Could not adjust grid2 '// 
-     .                         grid_name(igrid2)(1:vlen), lunit_errors)
+                     CALL TM_NOTE('Could not adjust grid containing axis '// 
+     .                       line_name(iaxis)(1:vlen), lunit_errors)
 
                      CALL TM_NOTE('Axes in grids may be inconsistent.',
      .                         lunit_errors)
@@ -238,7 +254,7 @@ c Find the grid which contains this axis and has the most dimensions.
   99        CONTINUE  ! Loop over all grids comparing with grid1
 
           ENDIF
-  200 CONTINUE ! disordered
+  220 CONTINUE ! disordered
 
       iter = iter + 1
       IF (iter .LT. 10) GOTO 1000
@@ -249,11 +265,40 @@ c Find the grid which contains this axis and has the most dimensions.
  2000 CONTINUE 
       IF (reordered .GT. 0) THEN
 * * * * loop through each variable in this TMAP data set * * *
-      DO 230 tmvar = 1,maxvars
-         IF ( ds_var_setnum(tmvar) .NE. dset ) GOTO 230
+      DO 250 tmvar = 1,maxvars
+         IF ( ds_var_setnum(tmvar) .NE. dset ) GOTO 250
          igrid = ds_grid_number(tmvar)
+
+* Check.  Did we wind up with a different number of axes after
+* attempt to fix the grids?
+
+         ncheck = 0
+         DO 200 idim = 1, 4
+	       IF (grid_line(idim,igrid) .GT. 0) ncheck = ncheck + 1
+  200     CONTINUE 
+
+         IF (ncheck .NE. grid_ndims(igrid)) THEN
+* Issue warnings
+            ivar = cd_varid(tmvar)
+            CALL CD_GET_VAR_INFO(dset, ivar, vname, vartyp, nvdims,
+     .                 vdims, nvatts, coordvar, all_outflag, istat)
+            vlen = TM_LENSTR1(vname) 
+            CALL TM_NOTE(' ', lunit_errors)
+            CALL TM_NOTE('Could not adjust grid for variable '// 
+     .                 vname(1:vlen), lunit_errors)
+            CALL TM_NOTE('Axes in grids may be inconsistent.',
+     .                 lunit_errors)
+* Restore grids as they were read. At least the data can be viewed
+* and perhaps used to fix the file.
+
+            DO 210 idim = 1, 4
+	       grid_line(idim,igrid) = copy_of_grids(idim,igrid-500)
+  210       CONTINUE 
+ 
+         ENDIF
+
 	 ndim = 0
-	 DO 210 idim = 1, 4
+	 DO 230 idim = 1, 4
 	    iaxis = grid_line(idim, igrid)
 	    ds_grid_start(idim,tmvar) = 1
 	    ds_grid_end(idim,tmvar) = 1
@@ -268,21 +313,22 @@ c Find the grid which contains this axis and has the most dimensions.
 	       IF ( perm(idim).NE.unspecified_int4 .AND. perm(idim).LT.0) 
      .		  ds_ordering(ndim,tmvar) = -1 * ds_ordering(ndim,tmvar)
 	    ENDIF
-  210    CONTINUE 
+
+  230    CONTINUE 
 
 * Now apply user-supplied ordering and reversals
 	 permuted  = .FALSE.
 
         lastdim = 0
-        DO 220 idim = 1, 4
+        DO 240 idim = 1, 4
            tmplines(idim) = ds_ordering(idim,tmvar)
 
-           IF (perm(idim).EQ.0 .OR. perm(idim).EQ.unspecified_int4) GOTO 220
+           IF (perm(idim).EQ.0 .OR. perm(idim).EQ.unspecified_int4) GOTO 240
            IF ( ABS(perm(idim)) .LE. lastdim ) permuted = .TRUE.
            IF ( perm(idim).NE.unspecified_int4 .AND. perm(idim).LT.0 )
      .		   permuted = .TRUE.
            lastdim = ABS(perm(idim))
- 220     CONTINUE
+ 240     CONTINUE
 
 * get the variable name
          IF (permuted) THEN
@@ -295,7 +341,7 @@ c Find the grid which contains this axis and has the most dimensions.
      .                           nvdims, vname(:vlen))
          ENDIF
 
-  230 CONTINUE
+  250 CONTINUE
       ENDIF
 
       RETURN

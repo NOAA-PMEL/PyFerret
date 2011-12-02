@@ -104,6 +104,7 @@ lib_get_lun.F\
 mc_init_dset.F\
 mc_read.F\
 str_case_blind_compare.F\
+str_dncase.F\
 str_same.F\
 str_upcase.F\
 nc_get_attrib.F\
@@ -304,6 +305,7 @@ my_close.c\
 my_open.c\
 my_readline.c\
 NCF_Util.c\
+str_dncase_sub.c\
 str_case_blind_compare_sub.c\
 str_upcase_sub.c\
 string_array_clear.c\

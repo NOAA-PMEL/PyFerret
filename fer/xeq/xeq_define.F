@@ -1321,11 +1321,17 @@ C /units=months  is 1/12 of the length of the year
 * is it a formattable axis ?
 	IF ( orient .EQ. x_dim ) THEN
 	   line_direction( iline ) = 'XX'
-           IF (iunit .EQ. pun_degrees) line_direction( iline ) = 'WE'
+           IF (iunit .EQ. pun_degrees) THEN
+	      line_direction( iline ) = 'WE'
+	      line_units( iline ) = 'degrees_east'
+	   ENDIF
 
 	ELSEIF ( orient .EQ. y_dim  ) THEN
            line_direction( iline ) = 'YY'
-	   IF (iunit .EQ. pun_degrees) line_direction( iline ) = 'SN'
+	   IF (iunit .EQ. pun_degrees) THEN
+	      line_direction( iline ) = 'SN'
+	      line_units( iline ) = 'degrees_north'
+	   ENDIF
 
 	ELSEIF ( orient .EQ. z_dim ) THEN
            IF ( qual_given( slash_depth ) .GT. 0 ) THEN

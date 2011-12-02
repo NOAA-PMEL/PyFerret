@@ -227,7 +227,7 @@
      .        all_outflag, dir, attlen, itop, irev, attype, iatt, ibx1
 
       REAL    rbuff, delta, first_delta, val, epsilon, lm_len, 
-     .        scale, offset
+     .        scale, offset, dummy
       REAL*8  TM_LONW2LONE, TM_WW_AXLEN, tmp8, axwwlen , rdelta, 
      .        dscale, doffset
       CHARACTER*12 TM_LEFINT
@@ -751,6 +751,20 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
                line_direction(iaxis) = 'WE'
             ENDIF
          ENDIF
+	 IF (line_direction(iaxis) .EQ. 'WE') THEN
+	    line_units(iaxis) = 'degrees_east'
+	    slen = TM_LENSTR1(line_units(iaxis))
+	    dummy = 1.
+	    CALL CD_REPLACE_ATTR (dset, ivar, 'units', NF_CHAR, slen,
+     .            line_units(iaxis), dummy, status)
+	 ENDIF
+	 IF (line_direction(iaxis) .EQ. 'SN') THEN
+	    line_units(iaxis) = 'degrees_north'
+	    slen = TM_LENSTR1(line_units(iaxis))
+	    dummy = 1.
+	    CALL CD_REPLACE_ATTR (dset, ivar, 'units', NF_CHAR, slen,
+     .            line_units(iaxis), dummy, status)
+	 ENDIF
       ENDIF
 
 ! See if the long-name contains a string that indicates a z axis

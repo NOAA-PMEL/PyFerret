@@ -151,7 +151,7 @@
 * *acm* 6/06 - change axis name lengths to 128
       CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_OUTNAME*64,
      .       name*128, name_in*128, units*48, datebuff*40, 
-     .       buff*140, attname*128
+     .       buff*140, buff2*140, attname*128
 
 !      REAL*8 val8_cdf, val8_tmap
 * 12/97
@@ -387,6 +387,10 @@
                got_spacing = .TRUE.
             ELSE
                IF (attype .EQ. NF_CHAR .AND. attoutflag .EQ. 1) THEN
+		  IF (MATCH_NAME (attname,  5, 'UNITS', 5) ) THEN
+                     buff2 = buff
+                     status = STR_DNCASE(buff, buff2)
+		  ENDIF
                   llen = TM_LENSTR1(buff)
                   CALL CD_WRITE_ATTRIB (cdfid, name(:nlen), attname,
      .                               buff(:llen), .FALSE., status )
@@ -455,8 +459,11 @@
             CALL TM_DATE_REFORMAT(datebuff,pdate_vax,cal_id,
      .				  units(slen+8:),pdate_numslashnum,
      .				  .TRUE., status )
-
 	    IF ( status .NE. merr_ok ) GOTO 5900
+
+            buff2 = units
+            status = STR_DNCASE(units, buff2)
+
 	ENDIF
         slen = TM_LENSTR1( units )
 
@@ -723,6 +730,41 @@
           ENDIF
 #endif
        ENDIF
+
+* If the axis is a know geophysical direction write the standard name 
+* attribute for it.
+
+      attname = 'standard_name'
+      IF ( line_direction(iaxis) .EQ. 'WE') THEN
+         buff = 'longitude'
+	 llen = TM_LENSTR1(buff)
+         CALL CD_WRITE_ATTRIB (cdfid, name(:nlen), attname,
+     .        buff(:llen), .FALSE., status )
+      ENDIF
+      IF ( line_direction(iaxis) .EQ. 'SN') THEN
+         buff = 'latitude'
+	 llen = TM_LENSTR1(buff)
+         CALL CD_WRITE_ATTRIB (cdfid, name(:nlen), attname,
+     .        buff(:llen), .FALSE., status )
+      ENDIF
+      IF ( line_direction(iaxis) .EQ. 'UD') THEN
+         buff = 'depth'
+	 llen = TM_LENSTR1(buff)
+         CALL CD_WRITE_ATTRIB (cdfid, name(:nlen), attname,
+     .        buff(:llen), .FALSE., status )
+      ENDIF
+      IF ( line_direction(iaxis) .EQ. 'DU') THEN
+         buff = 'altitude'
+	 llen = TM_LENSTR1(buff)
+         CALL CD_WRITE_ATTRIB (cdfid, name(:nlen), attname,
+     .        buff(:llen), .FALSE., status )
+      ENDIF
+      IF ( line_direction(iaxis) .EQ. 'TI') THEN
+         buff = 'time'
+	 llen = TM_LENSTR1(buff)
+         CALL CD_WRITE_ATTRIB (cdfid, name(:nlen), attname,
+     .        buff(:llen), .FALSE., status )
+      ENDIF
 
 * If the axis came in scaled, and the users asked for scaling on output
 * then return a note.

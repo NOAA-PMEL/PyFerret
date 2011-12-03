@@ -277,7 +277,7 @@ class PyQtPipedViewer(QMainWindow):
             self.beginViewFromSides(self.__fracsides, self.__usersides,
                                     self.__clipit)
 
-    def paintScene(self, painter, pictures, statusmsg):
+    def paintScene(self, painter, drawall, statusmsg):
         '''
         Draws the complete current scene using the given QPainter.
 
@@ -287,8 +287,8 @@ class PyQtPipedViewer(QMainWindow):
         QPaintDevice (e.g., QImage.fill or QPixmap.fill with the
         desired background color).
 
-        The argument pictures should be the array of QPictures
-        that should be drawn using the painter.
+        If drawall is True, all the saved pictures are drawn;
+        if False, only the currently undrawn pictures are drawn. 
 
         If statusmsg is not None and not empty, this string will
         be displayed in the status bar prior to drawing each
@@ -302,10 +302,15 @@ class PyQtPipedViewer(QMainWindow):
         # redraw all the pictures
         upperleftpt = QPointF(self.__leftx, self.__uppery)
         hasmsg = bool(statusmsg)
-        for viewpic in pictures:
+        if drawall:
+            startindex = 0
+        else:
+            startindex = self.__lastpicdrawn
+        for k in xrange(startindex, len(self.__viewpics), 1):
             if hasmsg:
-                self.statusBar().showMessage(statusmsg)
-            painter.drawPicture(upperleftpt, viewpic)
+                mymsg = "%s (pic %d)" % (statusmsg, k+1)
+                self.statusBar().showMessage(mymsg)
+            painter.drawPicture(upperleftpt, self.__viewpics[k])
         if hasmsg:
             self.statusBar().clearMessage()
 
@@ -321,8 +326,7 @@ class PyQtPipedViewer(QMainWindow):
             return
         # Draw the undrawn pictures to the pixmap of the label
         painter = QPainter(self.__label.pixmap())
-        self.paintScene(painter, self.__viewpics[self.__lastpicdrawn:],
-                                 "Drawing")
+        self.paintScene(painter, False, "Drawing")
         painter.end()
         self.__lastpicdrawn = len(self.__viewpics)
         self.__label.update()
@@ -588,7 +592,7 @@ class PyQtPipedViewer(QMainWindow):
             self.__leftx = gapxinch * printer.resolution() / self.__scalefactor
             self.__uppery = gapyinch * printer.resolution() / self.__scalefactor
             # Draw the scene to the printer
-            self.paintScene(painter, self.__viewpics, "Saving")
+            self.paintScene(painter, True, "Saving")
             painter.end()
             # Restore the original scaling factor, upper-left coords
             self.__scalefactor = origscaling
@@ -609,7 +613,7 @@ class PyQtPipedViewer(QMainWindow):
                 painter.fillRect( QRectF(0, 0, pixsize.width(), pixsize.height()),
                                   self.__lastclearcolor )
                 painter.restore()
-            self.paintScene(painter, self.__viewpics, "Saving")
+            self.paintScene(painter, True, "Saving")
             painter.end()
         else:
             # ARGB32_Premultiplied is reported significantly faster than ARGB32
@@ -637,7 +641,7 @@ class PyQtPipedViewer(QMainWindow):
             image.fill(fillint)
             # paint the scene to this QImage
             painter = QPainter(image)
-            self.paintScene(painter, self.__viewpics, "Saving")
+            self.paintScene(painter, True, "Saving")
             painter.end()
             # save the image to file
             image.save(myfilename, myformat)

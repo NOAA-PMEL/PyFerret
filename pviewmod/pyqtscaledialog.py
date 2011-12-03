@@ -45,6 +45,7 @@ class PyQtScaleDialog(QDialog):
 
         scalelabel = QLabel(self.tr("&Scale: "), self)
         self.__scaleedit = QLineEdit(self.FLTSTR_FORMAT % self.__scale, self)
+        self.__scaleedit.selectAll()
         scalelabel.setBuddy(self.__scaleedit)
 
         widthbegin = QLabel(self.tr("Width: "), self)
@@ -94,6 +95,10 @@ class PyQtScaleDialog(QDialog):
         layout.addWidget(buttonbox, 6, 0, 1, 5)
 
         self.setLayout(layout)
+
+        # The OK button is not the default here in Qt4.2
+        okbutton = buttonbox.button(QDialogButtonBox.Ok)
+        okbutton.setDefault(True)
 
         self.connect(self.__scaleedit, SIGNAL("textChanged(QString)"), self.updateValues)
         self.connect(buttonbox, SIGNAL("accepted()"), self.checkValues)

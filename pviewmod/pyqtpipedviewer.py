@@ -19,7 +19,7 @@ try:
 except AttributeError:
     pass
 
-from PyQt4.QtCore import Qt, QPointF,QRect, QRectF, QString, QTimer
+from PyQt4.QtCore import Qt, QPointF, QRect, QRectF, QSize, QString, QTimer
 from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, \
                          QDialog, QFileDialog, QImage, QLabel, \
                          QMainWindow, QMessageBox, QPainter, QPalette, \
@@ -43,12 +43,13 @@ from pyqtcmndhelper import PyQtCmndHelper
 from pyqtscaledialog import PyQtScaleDialog
 from multiprocessing import Pipe, Process
 import sys
+import time
 import os
 
 
 # Limit the number of drawing commands per picture
 # to avoid the appearance of being "stuck"
-MAX_DRAWS_PER_PICTURE = 1024
+MAX_DRAWS_PER_PICTURE = 128
 
 class PyQtPipedViewer(QMainWindow):
     '''
@@ -89,28 +90,25 @@ class PyQtPipedViewer(QMainWindow):
         self.__drawcount = 0
         # maximum user Y coordinate - used by adjustPoint
         self.__userymax = 1.0
-        # scaling, upper left coordinates, and pictures for creating the scene
+        # scaling and and pictures for creating the scene
         self.__scalefactor = 1.0
-        self.__leftx = 0.0
-        self.__uppery = 0.0
-        self.__lastpicdrawn = 0
         self.__viewpics = [ ]
+        # values used to decide if the label needs to be updated 
+        self.__lastpicdrawn = 0
+        self.__createpixmap = True
+        self.__clearpixmap = True
         # initialize default color for clearScene to transparent white
         self.__lastclearcolor = QColor(0xFFFFFF)
         self.__lastclearcolor.setAlpha(0)
         # create the label, that will serve as the canvas, in a scrolled area
         self.__scrollarea = QScrollArea(self)
         self.__label = QLabel(self.__scrollarea)
-        # default size = sqrt(0.75) * (1280, 1024)
-        defaultwidth = 1110
-        defaultheight = 890
-        # set values on the label for proper scroll area handling
-        self.__label.setMinimumSize(defaultwidth, defaultheight)
-        self.__label.resize(defaultwidth, defaultheight)
-        # set the label pixmap
-        mypixmap = QPixmap(defaultwidth, defaultheight)
-        mypixmap.fill(self.__lastclearcolor)
-        self.__label.setPixmap(mypixmap)
+        # set the default label size = sqrt(0.75) * (1280, 1024)
+        # and set other label values for the scrolled area
+        self.__labelwidth = 1110
+        self.__labelheight = 890
+        self.__label.setMinimumSize(self.__labelwidth, self.__labelheight)
+        self.__label.resize(self.__labelwidth, self.__labelheight)
         # setup the scrolled area
         self.__scrollarea.setWidget(self.__label)
         self.__scrollarea.setBackgroundRole(QPalette.Dark)
@@ -126,8 +124,8 @@ class PyQtPipedViewer(QMainWindow):
         # Put in a default message in the statusbar
         self.statusBar().showMessage("Ready")
         # Set the initial size of the viewer
-        mwwidth = defaultwidth + 8
-        mwheight = defaultheight + 8 + self.menuBar().height() + self.statusBar().height()
+        mwwidth = self.__labelwidth + 8
+        mwheight = self.__labelheight + 8 + self.menuBar().height() + self.statusBar().height()
         self.resize(mwwidth, mwheight)
         # check the command queue any time there are no window events to deal with
         self.__timer = QTimer(self)
@@ -156,7 +154,7 @@ class PyQtPipedViewer(QMainWindow):
         self.__redrawact = QAction(self.tr("&Redraw"), self,
                                 shortcut=self.tr("Ctrl+R"),
                                 statusTip=self.tr("Clear and redraw the scene to the current content"),
-                                triggered=self.redisplayScene)
+                                triggered=self.redrawScene)
         self.__hideact = QAction(self.tr("&Hide"), self,
                                 shortcut=self.tr("Ctrl+H"),
                                 statusTip=self.tr("Hide the viewer"),
@@ -195,7 +193,8 @@ class PyQtPipedViewer(QMainWindow):
         When the viewer is going to be shown, make sure all
         the current pictures are displayed in the scene.
         '''
-        self.displayLastPictures()
+        # update, ignoring the visibility flags
+        self.drawLastPictures(True)
         event.accept()
 
     def closeEvent(self, event):
@@ -242,6 +241,78 @@ class PyQtPipedViewer(QMainWindow):
     def aboutQtMsg(self):
         QMessageBox.aboutQt(self, self.tr("About Qt"))
 
+    def paintScene(self, painter, first, leftx, uppery, scalefactor, statusmsg):
+        '''
+        Draws the pictures self.__viewpics[first:] using the QPainter
+        painter.  This QPainter should have been initialized
+        appropriately for the QPaintDevice to which it is painting
+        (e.g., QImage.fill with the desired background color).
+
+        The point (leftx, uppery) is the offset of the origin prior to
+        scaling using scalefactor.  (All are floating point values.)
+
+        The status bar will be updated with a message derived from
+        statusmsg before drawing each picture.  Upon completion, the
+        status bar will be reset to the "Ready" message.
+
+        The call to painter.end() will need to be made after calling
+        this function.
+        '''
+        # get the origin for drawing the pictures after scaling
+        myorigin = QPointF(leftx / scalefactor, uppery / scalefactor)
+        # apply the scaling factor in both dimensions
+        painter.scale(scalefactor, scalefactor)
+        # create the incomplete status message
+        mymsg = self.tr("%s (piece %%1 of %%2)" % statusmsg)
+        endstr = str(len(self.__viewpics))
+        # draw the appropriate pictures
+        k = first
+        for viewpic in self.__viewpics[first:]:
+            k += 1
+            # show the progress message
+            self.statusBar().showMessage( mymsg.arg(str(k)).arg(endstr) )
+            # draw the picture
+            painter.drawPicture(myorigin, viewpic)
+        # done - clear the status message
+        self.statusBar().showMessage( self.tr("Ready") )
+
+    def drawLastPictures(self, ignorevis):
+        '''
+        Update the scene with pictures yet to be drawn.
+        If ignorevis is True, the update will be done
+        even if the viewer is not visible; otherwise
+        drawing to the scene label is only done if the
+        viewer is visible.
+        '''
+        if not ignorevis:
+            if self.isHidden() or self.isMinimized():
+                # Not shown, so do not waste time drawing
+                return
+        if self.__createpixmap:
+            # Create and assign a cleared pixmap
+            mypixmap = QPixmap(self.__label.size())
+            mypixmap.fill(self.__lastclearcolor)
+            self.__label.setPixmap(mypixmap)
+            self.__createpixmap = False
+            self.__clearpixmap = False
+        elif self.__clearpixmap:
+            # Clear the existing pixmap
+            self.__label.pixmap().fill(self.__lastclearcolor)
+            self.__clearpixmap = False
+        elif len(self.__viewpics) <= self.__lastpicdrawn:
+            # Nothing changed so just return
+            return
+        # Only create the QPainter if there are pictures
+        # to draw (this is more than just a clear)
+        if len(self.__viewpics) > self.__lastpicdrawn:
+            painter = QPainter(self.__label.pixmap())
+            self.paintScene(painter, self.__lastpicdrawn, \
+                            0.0, 0.0, self.__scalefactor, "Drawing")
+            painter.end()
+        self.__lastpicdrawn = len(self.__viewpics)
+        # make sure the label known to redraw
+        self.__label.update()
+
     def clearScene(self, colorinfo):
         '''
         Removes all view pictures, and fills the scene with the color
@@ -251,16 +322,13 @@ class PyQtPipedViewer(QMainWindow):
         clearScene call (or transparent white if a color has never
         been specified).
         '''
-        # if there is an active view with something in it,
-        # end it now without drawing it
+        # If there is an active View with content,
+        # end it now, but do not update the scene
         if self.__activepainter and (self.__drawcount > 0):
             self.endView(False)
             restartview = True
         else:
             restartview = False
-        # delete all the pictures
-        self.__viewpics[:] = [ ]
-        self.__lastpicdrawn = 0
         # get the color to use for clearing (the background color)
         if colorinfo:
             try :
@@ -269,69 +337,19 @@ class PyQtPipedViewer(QMainWindow):
                     self.__lastclearcolor = mycolor
             except KeyError:
                 pass
-        # clear the pixmap in the label
-        self.__label.pixmap().fill(self.__lastclearcolor)
-        self.__label.update()
-        # restart the active view if needed
+        # Delete all the pictures from the list and
+        # mark that the pixmap needs to be cleared
+        self.__viewpics[:] = [ ]
+        self.__clearpixmap = True
+        self.__lastpicdrawn = 0
+        # Update the scene label if visible
+        self.drawLastPictures(False)
+        # If there was an non-empty active View, restart it
         if restartview:
             self.beginViewFromSides(self.__fracsides, self.__usersides,
                                     self.__clipit)
 
-    def paintScene(self, painter, drawall, statusmsg):
-        '''
-        Draws the complete current scene using the given QPainter.
-
-        The argument painter should be a QPainter that has been
-        initialized with the appropriate QPainterDevice.  Assumes
-        the appropriate initialization has been performed on that
-        QPaintDevice (e.g., QImage.fill or QPixmap.fill with the
-        desired background color).
-
-        If drawall is True, all the saved pictures are drawn;
-        if False, only the currently undrawn pictures are drawn. 
-
-        If statusmsg is not None and not empty, this string will
-        be displayed in the status bar prior to drawing each
-        picture.  When complete, the status bar will be cleared.
-
-        The call to painter.end() will need to be made after
-        calling this function.
-        '''
-        # start with a scaling call
-        painter.scale(self.__scalefactor, self.__scalefactor)
-        # redraw all the pictures
-        upperleftpt = QPointF(self.__leftx, self.__uppery)
-        hasmsg = bool(statusmsg)
-        if drawall:
-            startindex = 0
-        else:
-            startindex = self.__lastpicdrawn
-        for k in xrange(startindex, len(self.__viewpics), 1):
-            if hasmsg:
-                mymsg = "%s (pic %d)" % (statusmsg, k+1)
-                self.statusBar().showMessage(mymsg)
-            painter.drawPicture(upperleftpt, self.__viewpics[k])
-        if hasmsg:
-            self.statusBar().clearMessage()
-
-    def displayLastPictures(self):
-        '''
-        Draws pictures yet to be drawn to the displayed scene.
-        '''
-        # Do not draw it if nobody sees it 
-        if self.isHidden():
-            return
-        # Check if there is anything new to draw
-        if len(self.__viewpics) <= self.__lastpicdrawn:
-            return
-        # Draw the undrawn pictures to the pixmap of the label
-        painter = QPainter(self.__label.pixmap())
-        self.paintScene(painter, False, "Drawing")
-        painter.end()
-        self.__lastpicdrawn = len(self.__viewpics)
-        self.__label.update()
-
-    def redisplayScene(self):
+    def redrawScene(self):
         '''
         Clear and redraw all the pictures to the displayed scene.
         '''
@@ -341,11 +359,12 @@ class PyQtPipedViewer(QMainWindow):
             hadactiveview = True
         else:
             hadactiveview = False
-        # clear the scene
-        self.__label.pixmap().fill(self.__lastclearcolor)
-        # redraw all the pictures
+        # mark that the pixmap needs to be cleared
+        # and all the pictures redrawn
+        self.__clearpixmap = True
         self.__lastpicdrawn = 0
-        self.displayLastPictures()
+        # Update the scene label if visible
+        self.drawLastPictures(False)
         # If there was an active View, restart it in this new system
         if hadactiveview:
             self.beginViewFromSides(self.__fracsides, self.__usersides,
@@ -362,29 +381,26 @@ class PyQtPipedViewer(QMainWindow):
         newheight = int(height * 0.001 * self.physicalDpiY() + 0.5)
         if newheight < self.__minsize:
             newheight = self.__minsize
-        pixsize = self.__label.pixmap().size()
-        if (newwidth != pixsize.width()) or (newheight != pixsize.height()):
-            # Set label values so the scrollarea knows of the new size 
+        if (newwidth != self.__labelwidth) or (newheight != self.__labelheight):
+            # Resize the label and Set label values
+            # so the scrollarea knows of the new size
+            self.__labelwidth = newwidth
+            self.__labelheight = newheight
             self.__label.setMinimumSize(newwidth, newheight)
             self.__label.resize(newwidth, newheight)
-            # Create a new pixmap in the label
-            self.__label.setPixmap(QPixmap(newwidth, newheight))
+            # mark that the pixmap needs to be recreated
+            self.__createpixmap = True
             # Redraw the scene from the beginning
-            self.redisplayScene()
+            self.redrawScene()
 
     def inquireSceneScale(self):
         '''
         Prompt the user for the desired scaling factor for the scene.
         '''
-        pixsize = self.__label.pixmap().size()
-        currwidth = pixsize.width()
-        currheight = pixsize.height()
-        minwidth = self.__minsize
-        minheight = self.__minsize
         scaledlg = PyQtScaleDialog(self.tr("Scene Size Scaling"),
-                                   self.tr("Scaling factor (both horiz. and vert.) for the scene"),
-                                   self.__scalefactor, currwidth, currheight,
-                                   minwidth, minheight, self)
+                       self.tr("Scaling factor (both horiz. and vert.) for the scene"),
+                       self.__scalefactor, self.__labelwidth, self.__labelheight,
+                       self.__minsize, self.__minsize, self)
         if scaledlg.exec_():
             (newscale, okay) = scaledlg.getValues()
             if okay:
@@ -399,27 +415,29 @@ class PyQtPipedViewer(QMainWindow):
         '''
         newfactor = float(factor)
         factorratio = newfactor / self.__scalefactor
-        pixsize = self.__label.pixmap().size()
-        newwidth = int(factorratio * pixsize.width() + 0.5)
-        newheight = int(factorratio * pixsize.height() + 0.5)
+        newwidth = int(factorratio * self.__labelwidth + 0.5)
+        newheight = int(factorratio * self.__labelheight + 0.5)
         if (newwidth < self.__minsize) or (newheight < self.__minsize):
             # Set to minimum size
-            if pixsize.width() <= pixsize.height():
-                newfactor = float(self.__minsize) / float(pixsize.width())
+            if self.__labelwidth <= self.__labelheight:
+                newfactor = float(self.__minsize) / float(self.__labelwidth)
             else:
-                newfactor = float(self.__minsize) / float(pixsize.height())
-            newwidth = int(newfactor * pixsize.width() + 0.5)
-            newheight = int(newfactor * pixsize.height() + 0.5)
-        if (newwidth != pixsize.width()) or (newheight != pixsize.height()):
+                newfactor = float(self.__minsize) / float(self.__labelheight)
+            newwidth = int(newfactor * self.__labelwidth + 0.5)
+            newheight = int(newfactor * self.__labelheight + 0.5)
+        if (newwidth != self.__labelwidth) or (newheight != self.__labelheight):
             # Set the new scaling factor
             self.__scalefactor = newfactor
-            # Set label values so the scrollarea knows of the new size 
+            # Resize the label and set label values
+            # so the scrollarea knows of the new size 
+            self.__labelwidth = newwidth
+            self.__labelheight = newheight
             self.__label.setMinimumSize(newwidth, newheight)
             self.__label.resize(newwidth, newheight)
-            # Create a new pixmap in the label
-            self.__label.setPixmap(QPixmap(newwidth, newheight))
+            # mark that the pixmap needs to be recreated
+            self.__createpixmap = True
             # Redraw the scene from the beginning
-            self.redisplayScene()
+            self.redrawScene()
 
     def inquireSaveFilename(self):
         '''
@@ -522,8 +540,6 @@ class PyQtPipedViewer(QMainWindow):
             raise ValueError( self.tr("Your version of Qt does not " \
                                       "support generation of SVG files") )
 
-        pixsize = self.__label.pixmap().size()
-
         if (myformat == 'ps') or (myformat == 'pdf'):
             # Setup the QPrinter that will be used to create the PS or PDF file
             printer = QPrinter(QPrinter.HighResolution)
@@ -545,7 +561,7 @@ class PyQtPipedViewer(QMainWindow):
                 # but RHEL5 Qt4 is 4.2
                 printer.setPageSize(QPrinter.Letter)
             # Default orientation
-            if ( pixsize.width() > pixsize.height() ):
+            if ( self.__labelwidth > self.__labelheight ):
                 printer.setOrientation(QPrinter.Landscape)
             else:
                 printer.setOrientation(QPrinter.Portrait)
@@ -560,102 +576,127 @@ class PyQtPipedViewer(QMainWindow):
                             self.tr("Save Scene PS/PDF Options (Margins Ignored)"))
                 if printdialog.exec_() != QDialog.Accepted:
                     return
+            # Determine the scaling factor and offsets for centering and filling the page
+            pagerect = printer.pageRect()
+            (printleftx, printuppery, printfactor) = \
+                self.computeScaleAndOffset(pagerect.width(), pagerect.height(),
+                                           printer.resolution())
             # Set up to send the drawing commands to the QPrinter
             painter = QPainter(printer)
-            pagerect = printer.pageRect()
             if not transparentbkg:
                 # draw a rectangle filling the entire scene
                 # with the last clearing color
                 painter.save()
                 painter.fillRect(QRectF(pagerect), self.__lastclearcolor)
                 painter.restore()
-            # Determine the scaling factor for filling the page
-            xscale  = float(pagerect.width()) / float(printer.resolution())
-            xscale /= float(pixsize.width()) / float(self.physicalDpiX())
-            yscale  = float(pagerect.height()) / float(printer.resolution())
-            yscale /= float(pixsize.height()) / float(self.physicalDpiY())
-            factor  = min(xscale, yscale)
-            # Determine the offset to center the picture
-            gapxinch  = float(pagerect.width()) / float(printer.resolution())
-            gapxinch -= factor * float(pixsize.width()) / float(self.physicalDpiX())
-            gapxinch *= 0.5
-            gapyinch  = float(pagerect.height()) / float(printer.resolution())
-            gapyinch -= factor * float(pixsize.height()) / float(self.physicalDpiY())
-            gapyinch *= 0.5
-            # Save the current scaling factor, upper-left coords
-            origscaling = self.__scalefactor
-            origleftx = self.__leftx
-            origuppery = self.__uppery
-            # Temporarily reset the scaling factor (to fit the page)
-            # and upper-left coords (to center on the page)
-            self.__scalefactor *= factor
-            self.__leftx = gapxinch * printer.resolution() / self.__scalefactor
-            self.__uppery = gapyinch * printer.resolution() / self.__scalefactor
             # Draw the scene to the printer
-            self.paintScene(painter, True, "Saving")
+            self.paintScene(painter, 0, printleftx, printuppery, printfactor, "Saving")
             painter.end()
-            # Restore the original scaling factor, upper-left coords
-            self.__scalefactor = origscaling
-            self.__leftx = origleftx
-            self.__uppery = origuppery
         elif myformat == 'svg':
             # if HAS_QSvgGenerator is False, it should never get here
             generator = QSvgGenerator()
             generator.setFileName(myfilename)
-            generator.setSize(pixsize)
-            generator.setViewBox( QRect(0, 0, pixsize.width(), pixsize.height()) )
+            generator.setSize( QSize(self.__labelwidth, self.__labelheight) )
+            generator.setViewBox( QRect(0, 0, self.__labelwidth, self.__labelheight) )
             # paint the scene to this QSvgGenerator
             painter = QPainter(generator)
             if not transparentbkg:
                 # draw a rectangle filling the entire scene
                 # with the last clearing color
                 painter.save()
-                painter.fillRect( QRectF(0, 0, pixsize.width(), pixsize.height()),
+                painter.fillRect( QRectF(0, 0, self.__labelwidth, self.__labelheight),
                                   self.__lastclearcolor )
                 painter.restore()
-            self.paintScene(painter, True, "Saving")
+            self.paintScene(painter, 0, 0.0, 0.0, self.__scalefactor, "Saving")
             painter.end()
         else:
             # ARGB32_Premultiplied is reported significantly faster than ARGB32
-            image = QImage(pixsize, QImage.Format_ARGB32_Premultiplied)
+            image = QImage( QSize(self.__labelwidth, self.__labelheight),
+                            QImage.Format_ARGB32_Premultiplied )
+            # Initialize the image
             if transparentbkg:
                 # Note that this gives black for formats not supporting the alpha
                 # channel (JPEG) whereas ARGB32 with 0x00FFFFFF gives white
-                fillint = 0
+                image.fill(0)
             else:
-                # Initialize the image by filling it with
-                # the last clearing color's ARGB int value
-                (redint, greenint, blueint, alphaint) = self.__lastclearcolor.getRgb()
-                # Multiply the RGB values by the alpha factor
-                alphafactor = alphaint / 255.0
-                redint = int( redint * alphafactor + 0.5 )
-                if redint > alphaint:
-                    redint = alphaint
-                greenint = int( greenint * alphafactor + 0.5 )
-                if greenint > alphaint:
-                    greenint = alphaint
-                blueint = int( blueint * alphafactor + 0.5 )
-                if blueint > alphaint:
-                    blueint = alphaint
-                fillint = ((alphaint * 256 + redint) * 256 + greenint) * 256 + blueint
-            image.fill(fillint)
+                # Clear the image with self.__lastclearcolor
+                self.clearImage(image)
             # paint the scene to this QImage
             painter = QPainter(image)
-            self.paintScene(painter, True, "Saving")
+            self.paintScene(painter, 0, 0.0, 0.0, self.__scalefactor, "Saving")
             painter.end()
             # save the image to file
             image.save(myfilename, myformat)
 
+    def computeScaleAndOffset(self, printwidth, printheight, printresolution):
+        '''
+        Computes the scaling factor and upper left coordinates required so
+        the current scene will be centered and fill the page on described
+        by printwidth, printheight, and printresolution.
+
+        Arguments:
+            printwidth: width of the print page in pixels
+            printheight: height of the print page in pixels
+            printresolution: resolution of the print page in DPI
+
+        Returns:
+            (leftx, uppery, scalefactor) giving the required
+            left offset, top offset, and scaling factor for
+            the paintScene method.
+        '''
+        # get the widths and heights of the printer page and label in inches
+        fltprintresolution = float(printresolution)
+        fltprintwidth = float(printwidth) / fltprintresolution
+        fltprintheight = float(printheight) / fltprintresolution
+        fltlabelwidth = float(self.__labelwidth) / float(self.physicalDpiX())
+        fltlabelheight = float(self.__labelheight) / float(self.physicalDpiY())
+        # Determine the scaling factor for filling the page
+        scalefactor = min(fltprintwidth / fltlabelwidth, 
+                          fltprintheight / fltlabelheight)
+        # Determine the offset to center the picture
+        leftx  = 0.5 * fltprintresolution * \
+                (fltprintwidth - scalefactor * fltlabelwidth)
+        uppery = 0.5 * fltprintresolution * \
+                (fltprintheight - scalefactor * fltlabelheight)
+        # Account for the current scaling factor in the label size
+        scalefactor *= self.__scalefactor
+        return (leftx, uppery, scalefactor)
+
+    def clearImage(self, image):
+        '''
+        Clears the Format_ARGB32_Premultiplied QImage given by image
+        with the last clearing color.
+        '''
+        (redint, greenint, blueint, alphaint) = self.__lastclearcolor.getRgb()
+        # Multiply the RGB values by the alpha factor
+        alphafactor = alphaint / 255.0
+        redint = int( redint * alphafactor + 0.5 )
+        if redint > alphaint:
+            redint = alphaint
+        greenint = int( greenint * alphafactor + 0.5 )
+        if greenint > alphaint:
+            greenint = alphaint
+        blueint = int( blueint * alphafactor + 0.5 )
+        if blueint > alphaint:
+            blueint = alphaint
+        fillint = ((alphaint * 256 + redint) * 256 + greenint) * 256 + blueint
+        image.fill(fillint)
+
     def checkCommandPipe(self):
         '''
-        Get and perform a single command if any are waiting in the pipe.
+        Get and perform commands waiting in the pipe.
+        Stop when no more commands or if more than
+        100 msec have passed.
         '''
         try:
-            if self.__cmndpipe.poll():
+            starttime = time.clock()
+            while self.__cmndpipe.poll():
                 cmnd = self.__cmndpipe.recv()
                 self.processCommand(cmnd)
+                if (time.clock() - starttime) > 0.1:
+                    break
         except Exception:
-            # EOFError should never from recv since
+            # EOFError should never arise from recv since
             # the call is after poll returns True
             (exctype, excval) = sys.exc_info()[:2]
             if excval:
@@ -683,7 +724,7 @@ class PyQtPipedViewer(QMainWindow):
         elif cmndact == "update":
             self.updateScene()
         elif cmndact == "redraw":
-            self.redisplayScene()
+            self.redrawScene()
         elif cmndact == "resize":
             mysize = self.__helper.getSizeFromCmnd(cmnd)
             self.resizeScene(mysize.width(), mysize.height())
@@ -764,9 +805,8 @@ class PyQtPipedViewer(QMainWindow):
             self.endView(True)
         # Get the location for the new view in terms of pixels.
         # Take into account any scaling of the view
-        pixsize = self.__label.pixmap().size()
-        width = float( pixsize.width() ) / self.__scalefactor
-        height = float( pixsize.height() ) / self.__scalefactor
+        width = float( self.__labelwidth ) / self.__scalefactor
+        height = float( self.__labelheight ) / self.__scalefactor
         leftpixel = fracsides.left() * width
         rightpixel = fracsides.right() * width
         bottompixel = fracsides.bottom() * height
@@ -812,8 +852,8 @@ class PyQtPipedViewer(QMainWindow):
         self.__activepainter = QPainter(self.__activepicture)
         self.__activepainter.save()
         # Set the viewport and window just to be safe
-        self.__activepainter.setViewport(0, 0, pixsize.width(), pixsize.height())
-        self.__activepainter.setWindow(0, 0, pixsize.width(), pixsize.height())
+        self.__activepainter.setViewport(0, 0, self.__labelwidth, self.__labelheight)
+        self.__activepainter.setWindow(0, 0, self.__labelwidth, self.__labelheight)
         # Assign the transformation to take the user coordinates to device coordinates
         if HAS_QTransform:
             wvtrans = QTransform(m11, m12, m21, m22, dx, dy)
@@ -868,7 +908,7 @@ class PyQtPipedViewer(QMainWindow):
             self.__drawcount = 0
             if update:
                 # update the scene
-                self.displayLastPictures()
+                self.drawLastPictures(False)
         self.__activepicture = None
 
     def updateScene(self):
@@ -1286,6 +1326,7 @@ class _PyQtCommandSubmitter(QDialog):
         or shutdown if there are no more commands to submit.
         '''
         try:
+            print "Command: %s" % str(self.__cmndlist[self.__nextcmnd])
             self.__cmndpipe.send(self.__cmndlist[self.__nextcmnd])
             self.__nextcmnd += 1
             while self.__rspdpipe.poll():
@@ -1306,6 +1347,7 @@ if __name__ == "__main__":
     drawcmnds.append( { "action":"setTitle", "title":"Tester" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"clear", "color":0xFFFFFF} )
+    drawcmnds.append( { "action":"dpi"} )
     drawcmnds.append( { "action":"resize",
                         "width":5000,
                         "height":5000 } )

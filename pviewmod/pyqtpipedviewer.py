@@ -616,10 +616,11 @@ class PyQtPipedViewer(QMainWindow):
             if transparentbkg:
                 # Note that this gives black for formats not supporting the alpha
                 # channel (JPEG) whereas ARGB32 with 0x00FFFFFF gives white
-                image.fill(0)
+                fillint = 0
             else:
                 # Clear the image with self.__lastclearcolor
-                self.clearImage(image)
+                fillint = self.computeARGB32PreMultInt(self.__lastclearcolor)
+            image.fill(fillint)
             # paint the scene to this QImage
             painter = QPainter(image)
             self.paintScene(painter, 0, 0.0, 0.0, self.__scalefactor, "Saving")
@@ -661,12 +662,11 @@ class PyQtPipedViewer(QMainWindow):
         scalefactor *= self.__scalefactor
         return (leftx, uppery, scalefactor)
 
-    def clearImage(self, image):
+    def computeARGB32PreMultInt(self, color):
         '''
-        Clears the Format_ARGB32_Premultiplied QImage given by image
-        with the last clearing color.
+        Returns the Format_ARGB32_Premultiplied integer value of the given color.
         '''
-        (redint, greenint, blueint, alphaint) = self.__lastclearcolor.getRgb()
+        (redint, greenint, blueint, alphaint) = color.getRgb()
         # Multiply the RGB values by the alpha factor
         alphafactor = alphaint / 255.0
         redint = int( redint * alphafactor + 0.5 )
@@ -679,7 +679,7 @@ class PyQtPipedViewer(QMainWindow):
         if blueint > alphaint:
             blueint = alphaint
         fillint = ((alphaint * 256 + redint) * 256 + greenint) * 256 + blueint
-        image.fill(fillint)
+        return fillint
 
     def checkCommandPipe(self):
         '''

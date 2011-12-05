@@ -104,6 +104,6 @@ update :
 	( cd $(DIR_PREFIX) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
-	  $(PYTHON_EXE) setup.py install --prefix=$(INSTALL_FER_DIR) )
+	  $(PYTHON_EXE) setup.py install -O2 --prefix=$(INSTALL_FER_DIR) )
 
 ##

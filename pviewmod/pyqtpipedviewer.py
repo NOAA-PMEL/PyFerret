@@ -684,15 +684,23 @@ class PyQtPipedViewer(QMainWindow):
     def checkCommandPipe(self):
         '''
         Get and perform commands waiting in the pipe.
-        Stop when no more commands or if more than
-        100 msec have passed.
+        Stop when no more commands or if more than 50
+        milliseconds have passed.
         '''
         try:
             starttime = time.clock()
-            while self.__cmndpipe.poll():
+            # Wait up to 2 milliseconds waiting for a command.
+            # This prevents unchecked spinning when there is
+            # nothing to do (Qt immediately calling this method
+            # again only for this method to immediately return).
+            while self.__cmndpipe.poll(0.002):
                 cmnd = self.__cmndpipe.recv()
                 self.processCommand(cmnd)
-                if (time.clock() - starttime) > 0.1:
+                # Continue to try to process commands until
+                # more than 50 milliseconds have passed.
+                # This reduces Qt overhead when there are lots
+                # of commands waiting in the queue.
+                if (time.clock() - starttime) > 0.050:
                     break
         except Exception:
             # EOFError should never arise from recv since

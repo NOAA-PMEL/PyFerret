@@ -257,23 +257,34 @@ class PyQtPipedViewer(QMainWindow):
         The call to painter.end() will need to be made after calling
         this function.
         '''
+        # change the cursor to warn the user this may take some time
+        QApplication.setOverrideCursor(Qt.WaitCursor)
         # get the origin for drawing the pictures after scaling
         myorigin = QPointF(leftx / scalefactor, uppery / scalefactor)
         # apply the scaling factor in both dimensions
         painter.scale(scalefactor, scalefactor)
         # create the incomplete status message
-        mymsg = self.tr("%s (piece %%1 of %%2)" % statusmsg)
-        endstr = str(len(self.__viewpics))
+        if (first + 1) < len(self.__viewpics):
+            mymsg = self.tr("%s (piece %%1 of %%2)" % statusmsg)
+            endstr = str(len(self.__viewpics))
+        else:
+            mymsg = self.tr("%s (piece %%1)" % statusmsg)
+            endstr = None
         # draw the appropriate pictures
         k = first
         for viewpic in self.__viewpics[first:]:
             k += 1
             # show the progress message
-            self.statusBar().showMessage( mymsg.arg(str(k)).arg(endstr) )
+            if endstr != None:
+                self.statusBar().showMessage( mymsg.arg(str(k)).arg(endstr) )
+            else:
+                self.statusBar().showMessage( mymsg.arg(str(k)) )
             # draw the picture
             painter.drawPicture(myorigin, viewpic)
         # done - clear the status message
         self.statusBar().showMessage( self.tr("Ready") )
+        # restore the cursor back to normal
+        QApplication.restoreOverrideCursor()
 
     def drawLastPictures(self, ignorevis):
         '''

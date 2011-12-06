@@ -538,13 +538,6 @@ def run(command=None):
         str_command = command
     # the actual call
     retval = _pyferret._run(str_command)
-    if (retval[0] == _pyferret._FERR_EXIT_PROGRAM) and (retval[1] == "EXIT"):
-        # python -i -c ... intercepts the sys.exit(0) and stays in python.
-        # So _pyferret._run(), when is gets the Ferret "exit" command,
-        # instead makes a call in C to exit(0) and doesn't return.
-        # This was kept here in case it can be made to work.
-        stop()
-        sys.exit(0)
     return retval
 
 

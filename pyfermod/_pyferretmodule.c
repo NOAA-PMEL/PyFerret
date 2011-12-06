@@ -1672,36 +1672,6 @@ static PyObject *pyefcnGetArgOneVal(PyObject *self, PyObject *args, PyObject *kw
 }
 
 
-static char pyferretTesterDocstring[] =
-    "Calls the Fortran subroutine FGDTEST, which tests \n"
-    "calling the graphics delegate function from Fortran. \n"
-    "Bindings for PyQtPipedViewer need to be in pyferret \n"
-    "for this test to succeed. \n"
-    "\n"
-    "Required arguments: \n"
-    "    (none) \n"
-    "\n"
-    "Optional arguments: \n"
-    "    (none) \n"
-    "\n"
-    "Returns: \n"
-    "    The bindings object ('Window') created \n"
-    "    by the test function. \n"
-    "\n";
-
-static PyObject *pyferretTester(PyObject *self)
-{
-    void *mywindow;
-    PyObject *bindings;
-
-    fgdtest_(&mywindow);
-    bindings = grdelWindowVerify(mywindow);
-
-    /* Return the bindings object */
-    return bindings;
-}
-
-
 /* List of Python functions and their docstrings available in this module */
 static struct PyMethodDef pyferretMethods[] = {
     {"_start", (PyCFunction) pyferretStart, METH_VARARGS | METH_KEYWORDS, pyferretStartDocstring},
@@ -1716,7 +1686,6 @@ static struct PyMethodDef pyferretMethods[] = {
     {"_get_axis_box_limits", (PyCFunction) pyefcnGetAxisBoxLimits, METH_VARARGS | METH_KEYWORDS, pyefcnGetAxisBoxLimitsDocstring},
     {"_get_axis_info", (PyCFunction) pyefcnGetAxisInfo, METH_VARARGS | METH_KEYWORDS, pyefcnGetAxisInfoDocstring},
     {"_get_arg_one_val", (PyCFunction) pyefcnGetArgOneVal, METH_VARARGS | METH_KEYWORDS, pyefcnGetArgOneValDocstring},
-    {"tester", (PyCFunction) pyferretTester, METH_NOARGS, pyferretTesterDocstring},
     {NULL, (PyCFunction) NULL, 0, NULL}
 };
 

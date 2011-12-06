@@ -368,6 +368,7 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
     const char *command;
     const char *iter_command;
     int  one_cmnd_mode_int;
+    void (*oldsighand)(int);
     int  cmnd_stack_level;
     char errmsg[2112];
     int  errval;
@@ -393,6 +394,12 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
     else
         one_cmnd_mode_int = 1;
 
+    /* Catch let ferret deal with ctrl-C while in ferret mode */
+    oldsighand = signal(SIGINT, ctrlc_ast_);
+    if ( oldsighand == SIG_ERR ) {
+        PyErr_SetString(PyExc_SystemError, "Unable to catch SIGTERM while in Ferret");
+        return NULL;
+    }
     /* do-loop only for dealing with Ferret "SET MEMORY /SIZE=..." resize command */
     iter_command = command;
     do {
@@ -418,12 +425,15 @@ static PyObject *pyferretRunCommand(PyObject *self, PyObject *args, PyObject *kw
              */
             if ( is_secure_() == 0 )
                break;
-            if ( sBuffer->flags[FRTN_ACTION] == FACTN_EXIT )
+            if ( sBuffer->flags[FRTN_ACTION] == FACTN_EXIT ) {
+               signal(SIGTERM, oldsighand);
                exit(0);
+            }
         }
         /* submit an empty command to continue on with whaterever was going on */
         iter_command = "";
     } while ( (one_cmnd_mode_int == 0) || (cmnd_stack_level > 0) );
+    signal(SIGINT, oldsighand);
 
     /* Set back to single command mode */
     if ( one_cmnd_mode_int == 0 ) {

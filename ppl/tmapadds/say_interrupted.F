@@ -66,5 +66,8 @@
 
 	CALL SYMBEL( x, y, ang, ht, 20, string )
 
+* *kms* 12/2011 - add call to update the window to show this message
+        CALL FGD_CONSIDER_UPDATE(.TRUE.)
+
 	RETURN
 	END

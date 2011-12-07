@@ -68,6 +68,8 @@
 *                         statements.  use an octal constant instead 
 * V570  *acm* when showing calendar, need  cal_id .LE. max_calendars, not .LT.
 * V600  *acm* 1/06  prevent values of LOG10(0.0) 
+* V68   *acm* 12/11 Fix ticket 1905. Axis-lengths that need more than 6 characters
+*                   were being cut off.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -95,12 +97,12 @@
 	INTEGER 	TM_LENSTR1, TM_LENSTR, TM_GET_CALENDAR_ID, 
      .			ivar, i, dlen, len, grid, taxis, slen(4), tlen, 
      .			nfields, kvar, field_types(maxezvars), 
-     .			cal_id, len_cal, j, num_indices
-	CHARACTER	LEFINT*6, LOHI_STRING*48, TM_FMT*14, 
+     .			cal_id, len_cal, j, num_indices, rlen(4), iok
+	CHARACTER	LEFINT*16, LOHI_STRING*48, TM_FMT*14, 
      .			TM_GET_CAL*32, 
      .			line*255, cal_name*32
 	REAL*8		TM_WORLD, lo, hi
-        CHARACTER       rbuff(8)*8, delims*128, c*1
+        CHARACTER       rbuff(8)*8, short*6, long*16, delims*128, c*1
 
 * internal parameter declarations:
         CHARACTER*1     tab
@@ -111,7 +113,7 @@
 #endif
 
 
-* initiailze
+* initialize
 	its_delimited = ds_type(dset) .EQ. pds_type_ez
      .            .AND. ds_parm_text(1,dset)(:4) .eq. 'DELI'
 
@@ -138,7 +140,10 @@
                  slen(i)  = LOG10( FLOAT(ds_grid_start(i,ivar)) )
               ENDIF
               slen(i)  = MIN( 6, 8-slen(i) )   ! last few characters in buffer
-              rbuff(i) = LEFINT(ds_grid_end(i,ivar),dlen)
+              long = LEFINT(ds_grid_end(i,ivar),dlen)
+              rlen(i) = dlen
+              short = LEFINT(ds_grid_end(i,ivar),dlen)
+              rbuff(i) = short
  100       CONTINUE
            line = ds_var_code(ivar)
 * ... separate into two lines if variable code is too long (11/92)
@@ -159,7 +164,52 @@
 		 risc_buff(tlen:tlen+2) = '...'
 	      ENDIF
  150	   CONTINUE
+
+* See if any axis lengths were too long for the standard formatting.
+* Do a more brute-force formatting which may or may not line up 
+* all variables perfectly
+
+           iok = 1
+           DO 160 i = 1, 4
+	      IF (rlen(i) .GT. 6) iok = 0
+ 160	   CONTINUE
+
+	   IF (iok .EQ. 0) THEN  ! re-format the line for this variable
 	   
+           line = ds_var_code(ivar)
+* ... separate into two lines if variable code is too long (11/92)
+           IF ( TM_LENSTR1( line ) .GT. 8 ) THEN
+	      risc_buff = ' '
+              WRITE ( risc_buff, '(1X,A)' ) ds_var_code(ivar)
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+              line = ' '
+           ENDIF
+	   WRITE ( risc_buff, 4010 )	line,
+     .				        ds_var_title(ivar)
+           tlen = MAX(40, TM_LENSTR1(risc_buff))
+	   risc_buff(tlen+1:tlen+2) = '  ' 
+           tlen = tlen + 2
+
+           DO 170 i = 1, 4
+	      IF ( grid_line(i,ds_grid_number(ivar)) .EQ. mnormal) THEN
+		 risc_buff(tlen:tlen+8) = '   ...   '
+		 tlen = tlen + 9
+              ELSE
+                 long = LEFINT(ds_grid_start(i,ivar),dtlen)
+	         risc_buff(tlen+1:tlen+dlen) = long(1:dlen)
+	         tlen = TM_LENSTR1(risc_buff)
+	         risc_buff(tlen+1:tlen+1) = ":"
+	         tlen = tlen + 1
+                 long = LEFINT(ds_grid_end(i,ivar),dlen)
+	         risc_buff(tlen+1:tlen+dlen) = long(1:dlen)
+	         tlen = TM_LENSTR1(risc_buff)
+	         risc_buff(tlen+1:tlen+2) = '  ' 
+	         tlen = tlen + 2
+
+	      ENDIF
+ 170	   CONTINUE
+	   ENDIF ! iok
+
  3200	FORMAT(' name',T11,'title',T45,'I',T55,'J',T65,'K',T75,'L')
 ! in V220: 4010 FORMAT( 1X,A8,1X,A29,T40,3(I5,':',A4),(I5,':',A5) )
 * ... write to array first to avoid line wraps due to blanks at end

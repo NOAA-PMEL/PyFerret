@@ -87,7 +87,7 @@ class PyQtPipedImager(QMainWindow):
         self.__drawcount = 0
         # Limit the number of drawing commands between updates
         # to the displayed scene to avoid the appearance of being "stuck"
-        self.__max_draws = 256
+        self.__maxdraws = 256
         # maximum user Y coordinate - used by adjustPoint
         self.__userymax = 1.0
         # scaling (zoom) factor for creating the displayed scene
@@ -475,7 +475,7 @@ class PyQtPipedImager(QMainWindow):
                 # Initialize with an opaque version of the last clearing color
                 opaquecolor = QColor(self.__lastclearcolor)
                 opaquecolor.setAlpha(255)
-                fillint = self.computeARGB32PreMultInt(opaquecolor)
+                fillint = self.__helper.computeARGB32PreMultInt(opaquecolor)
             image.fill(fillint)
             # paint the scene to this QImage
             painter = QPainter(image)
@@ -764,7 +764,7 @@ class PyQtPipedImager(QMainWindow):
             # return the painter to the default state
             self.__activepainter.restore()
         # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__max_draws_per_picture:
+        if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
     def drawPoints(self, cmnd):
@@ -820,7 +820,7 @@ class PyQtPipedImager(QMainWindow):
             # return the painter to the default state
             self.__activepainter.restore()
         # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__max_draws_per_picture:
+        if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
     def drawPolygon(self, cmnd):
@@ -868,7 +868,7 @@ class PyQtPipedImager(QMainWindow):
             # return the painter to the default state
             self.__activepainter.restore()
         # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__max_draws_per_picture:
+        if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
     def drawRectangle(self, cmnd):
@@ -925,7 +925,7 @@ class PyQtPipedImager(QMainWindow):
             # return the painter to the default state
             self.__activepainter.restore()
         # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__max_draws_per_picture:
+        if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
     def drawMulticolorRectangle(self, cmnd):
@@ -1005,7 +1005,7 @@ class PyQtPipedImager(QMainWindow):
             # return the painter to the default state
             self.__activepainter.restore()
         # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__max_draws_per_picture:
+        if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
     def drawSimpleText(self, cmnd):
@@ -1065,7 +1065,7 @@ class PyQtPipedImager(QMainWindow):
             # return the painter to the default state
             self.__activepainter.restore()
         # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__max_draws_per_picture:
+        if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
     def adjustPoint(self, xypair):

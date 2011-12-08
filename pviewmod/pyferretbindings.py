@@ -1,8 +1,12 @@
 '''
-Class for providings PipedViewer bindings for PyFerret graphical functions.
-An instance of the bindings class is created for each PipedViewer created.
-The createWindow method of the bindings is used to create a new PipedViewer
-for an instance of the bindings.
+The PyFerretBindings class is a base class providing common
+methods in PipedViewer bindings for PyFerret graphics methods.
+
+The PViewPyFerretBindings class is a subclass of PyFerretBindings
+using PyQtPipedViewer as the viewer.
+
+The PImagePyFerretBindings class is a subclass of PyFerretBindings
+using PyQtImageViewer as the viewer. 
 
 This package was developed by the Thermal Modeling and Analysis Project
 (TMAP) of the National Oceanographic and Atmospheric Administration's (NOAA)
@@ -12,12 +16,12 @@ Pacific Marine Environmental Lab (PMEL).
 from pyferret.graphbind.abstractpyferretbindings import AbstractPyFerretBindings
 from pipedviewer import PipedViewer
 
-class PViewPyFerretBindings(AbstractPyFerretBindings):
+
+class PyFerretBindings(AbstractPyFerretBindings):
     '''
-    PipedViewer bindings for PyFerret graphical functions.  After
-    creating an instance of the bindings, the createWindow method
-    should be called to associate a new PipedViewer with the
-    bindings instance.
+    Common methods in PipedViewer bindings for PyFerret graphical
+    functions.  The createWindow method should be defined in a
+    subclass in order to create a valid bindings class for PyFerret.
     '''
 
     def __init__(self):
@@ -26,8 +30,41 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         graphical functions.  The createWindow method should be called
         to associate a new PipedViewer with these bindings.
         '''
-        super(PViewPyFerretBindings, self).__init__()
+        super(PyFerretBindings, self).__init__()
         self.__window = None
+
+    def createPipedViewerWindow(self, viewertype,
+                                title, width, height, visible):
+        '''
+        Creates a PipedViewer of viewertype as the window of this
+        instance of the bindings.
+
+        Arguments:
+            viewertype: type of PipedViewer to use 
+            title: display title for the Window
+            width: width of the Window, in units of 0.001 inches
+            height: height of the Window, in units of 0.001 inches
+            visible: display Window on start-up?
+
+        Raises a RuntimeError if an active window is already associated
+        with these bindings, or if there were problems with creating
+        the window.
+
+        Returns True.
+        '''
+        if self.__window != None:
+            raise RuntimeError("createWindow called from bindings " \
+                               "with an active window")
+        self.__window = PipedViewer(viewertype)
+        self.__window.submitCommand( { "action":"setTitle",
+                                      "title":str(title) } )
+        self.__window.submitCommand( { "action":"resize",
+                                      "width":float(width),
+                                      "height":float(height) } )
+        if visible:
+            self.__window.submitCommand( {"action":"show"} )
+        self.checkForErrorResponse()
+        return True
 
     def checkForErrorResponse(self):
         '''
@@ -45,36 +82,6 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
             response = self.__window.checkForResponse()
         if fullresponse:
             raise RuntimeError(fullresponse)
-
-    def createWindow(self, title, width, height, visible):
-        '''
-        Creates a PyQtPipedViewer.
-
-        Arguments:
-           title: display title for the Window
-           width: width of the Window, in units of 0.001 inches
-           height: height of the Window, in units of 0.001 inches
-           visible: display Window on start-up?
-
-        Raises a RuntimeError if an active window is already associated
-        with these bindings, or if there were problems with creating
-        the window.
-
-        Returns True.
-        '''
-        if self.__window != None:
-            raise RuntimeError("createWindow called from bindings " \
-                               "with an active window")
-        self.__window = PipedViewer("PyQtPipedViewer")
-        self.__window.submitCommand( { "action":"setTitle",
-                                      "title":str(title) } )
-        self.__window.submitCommand( { "action":"resize",
-                                      "width":float(width),
-                                      "height":float(height) } )
-        if visible:
-            self.__window.submitCommand( {"action":"show"} )
-        self.checkForErrorResponse()
-        return True
 
     def deleteWindow(self):
         '''
@@ -216,7 +223,7 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
             # Make sure it is a valid response
             response = self.__window.checkForResponse(None)
             if (type(response) != tuple) or (len(response) != 2):
-                raiseValueError
+                raise ValueError
             dpix = float(response[0])
             dpiy = float(response[1])
             if (dpix <= 0.0) or (dpiy <= 0.0):
@@ -593,150 +600,191 @@ class PViewPyFerretBindings(AbstractPyFerretBindings):
         self.checkForErrorResponse()
 
 
+class PViewPyFerretBindings(PyFerretBindings):
+    '''
+    PyFerretBindings using PyQtPipedViewer as the viewer.
+    '''
+
+    def createWindow(self, title, width, height, visible):
+        '''
+        Creates PyFerret bindings using a PyQtPipedViewer.
+
+        Arguments:
+            title: display title for the Window
+            width: width of the Window, in units of 0.001 inches
+            height: height of the Window, in units of 0.001 inches
+            visible: display Window on start-up?
+
+        Raises a RuntimeError if an active window is already associated
+        with these bindings, or if there were problems with creating
+        the window.
+
+        Returns True.
+        '''
+        result = self.createPipedViewerWindow("PyQtPipedViewer",
+                                     title, width, height, visible)
+        return result
+
+
+class PImagePyFerretBindings(PyFerretBindings):
+    '''
+    PyFerretBindings using PyQtPipedImager as the viewer.
+    '''
+
+    def createWindow(self, title, width, height, visible):
+        '''
+        Creates PyFerret bindings using a PyQtPipedImager.
+
+        Arguments:
+            title: display title for the Window
+            width: width of the Window, in units of 0.001 inches
+            height: height of the Window, in units of 0.001 inches
+            visible: display Window on start-up?
+
+        Raises a RuntimeError if an active window is already associated
+        with these bindings, or if there were problems with creating
+        the window.
+
+        Returns True.
+        '''
+        result = self.createPipedViewerWindow("PyQtPipedImager",
+                                     title, width, height, visible)
+        return result
+
+
 
 if __name__ == "__main__":
-    import time
     import pyferret
     import pyferret.graphbind
 
-    # Initiate pyferret, but stay in python
-    pyferret.init(None, False)
-    # Create a "PyQtPipedViewer" window, with the title "Tester"
-    # The follow raises an error or returns None if there is a problem
-    bindinst = pyferret.graphbind.createWindow("PyQtPipedViewer", "Tester", 5000, 5000, True)
-    # Create the one font that will be used here
-    # - default font, 1/5th of the view in size
-    myfont = bindinst.createFont(None, 200, False, False, False)
-    # Create a list of colors that will be used here
-    mycolors = [
-            #  0 opaque black
-            bindinst.createColor(0.0, 0.0, 0.0, 1.0),
-            #  1 opaque white
-            bindinst.createColor(1.0, 1.0, 1.0, 1.0),
-            #  2 opaque red
-            bindinst.createColor(1.0, 0.0, 0.0, 1.0),
-            #  3 opaque yellowish
-            bindinst.createColor(0.6, 0.5, 0.0, 1.0),
-            #  4 opaque green
-            bindinst.createColor(0.0, 1.0, 0.0, 1.0),
-            #  5 opaque cyan
-            bindinst.createColor(0.0, 0.5, 0.5, 1.0),
-            #  6 opaque blue
-            bindinst.createColor(0.0, 0.0, 1.0, 1.0),
-            #  7 opaque magenta
-            bindinst.createColor(0.5, 0.0, 0.5, 1.0),
-            #  8 translucent black
-            bindinst.createColor(0.0, 0.0, 0.0, 0.25),
-            #  9 translucent white
-            bindinst.createColor(1.0, 1.0, 1.0, 0.25),
-            # 10 translucent red
-            bindinst.createColor(1.0, 0.0, 0.0, 0.25),
-            # 11 translucent yellowish
-            bindinst.createColor(0.6, 0.5, 0.0, 0.25),
-            # 12 translucent green
-            bindinst.createColor(0.0, 1.0, 0.0, 0.25),
-            # 13 translucent cyan
-            bindinst.createColor(0.0, 0.5, 0.5, 0.25),
-            # 14 translucent blue
-            bindinst.createColor(0.0, 0.0, 1.0, 0.25),
-            # 15 translucent magenta
-            bindinst.createColor(0.5, 0.0, 0.5, 0.25),
-            # 16 transparent white background
-            bindinst.createColor(1.0, 1.0, 1.0, 0.0),
-    ]
     # x and y coordinates of the vertices of a pentagon
     # (roughly) centered in a 1000 x 1000 square
     pentaptsx = ( 504.5, 100.0, 254.5, 754.5, 909.0, )
     pentaptsy = ( 100.0, 393.9, 869.4, 869.4, 393.9, )
-    # Clear the window in opaque white
-    bindinst.clearWindow(mycolors[1])
-    # Create a view in the top left corner
-    bindinst.beginView(0.0, 0.5, 0.5, 1.0, 0, 0, 1000, 1000, True)
-    # Draw a translucent black rectangle over most of the view
-    mybrush = bindinst.createBrush(mycolors[8], "solid")
-    bindinst.drawRectangle(50, 50, 950, 950, mybrush, None)
-    bindinst.deleteBrush(mybrush)
-    # Draw a opaque blue polygon with solid black outline
-    mybrush = bindinst.createBrush(mycolors[6], "solid")
-    mypen = bindinst.createPen(mycolors[0], 6, "solid", "round", "round")
-    bindinst.drawPolygon(pentaptsx, pentaptsy, mybrush, mypen)
-    bindinst.deletePen(mypen)
-    bindinst.deleteBrush(mybrush)
-    # Draw some red text strings
-    bindinst.drawText("y=100", 100, 100, myfont, mycolors[2], 0)
-    bindinst.drawText("y=300", 100, 300, myfont, mycolors[2], 0)
-    bindinst.drawText("y=500", 100, 500, myfont, mycolors[2], 0)
-    bindinst.drawText("y=700", 100, 700, myfont, mycolors[2], 0)
-    # End of this view
-    bindinst.endView()
-    # Window should already be shown, but just to make sure
-    bindinst.showWindow(True)
-    raw_input("Press Enter to continue")
-    # Create a view of almost the whole window
-    bindinst.beginView(0.05, 0.05, 0.95, 0.95, 0, 0, 1000, 1000, True)
-    # Draw a translucent multicolor rectangle covering most of the window
-    bindinst.drawMulticolorRectangle(50, 50, 950, 950, 2, 3, mycolors[10:])
-    # Draw letters indicating the expected colors
-    bindinst.drawText("R", 200, 600, myfont, mycolors[0], -45)
-    bindinst.drawText("Y", 200, 150, myfont, mycolors[0], -45)
-    bindinst.drawText("G", 500, 600, myfont, mycolors[0], -45)
-    bindinst.drawText("C", 500, 150, myfont, mycolors[0], -45)
-    bindinst.drawText("B", 800, 600, myfont, mycolors[0], -45)
-    bindinst.drawText("M", 800, 150, myfont, mycolors[0], -45)
-    # End of this view
-    bindinst.endView()
-    # Window should already be shown, but just to make sure
-    bindinst.showWindow(True)
-    raw_input("Press Enter to continue")
-    # Create a view of the whole window
-    bindinst.beginView(0.0, 0.0, 1.0, 1.0, 0, 0, 1000, 1000, True)
-    # Draw points using various symbols
-    ptsy = (100, 300, 500, 700, 900)
-    ptsx = (100, 100, 100, 100, 100)
-    mysymbol = bindinst.createSymbol(".")
-    bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
-    bindinst.deleteSymbol(mysymbol)
-    ptsx = (200, 200, 200, 200, 200)
-    mysymbol = bindinst.createSymbol("o")
-    bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
-    bindinst.deleteSymbol(mysymbol)
-    ptsx = (300, 300, 300, 300, 300)
-    mysymbol = bindinst.createSymbol("+")
-    bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[6], 50)
-    bindinst.deleteSymbol(mysymbol)
-    ptsx = (400, 400, 400, 400, 400)
-    mysymbol = bindinst.createSymbol("x")
-    bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
-    bindinst.deleteSymbol(mysymbol)
-    ptsx = (500, 500, 500, 500, 500)
-    mysymbol = bindinst.createSymbol("*")
-    bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
-    bindinst.deleteSymbol(mysymbol)
-    ptsx = (600, 600, 600, 600, 600)
-    mysymbol = bindinst.createSymbol("^")
-    bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[6], 50)
-    bindinst.deleteSymbol(mysymbol)
-    ptsx = (700, 700, 700, 700, 700)
-    mysymbol = bindinst.createSymbol("#")
-    bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
-    bindinst.deleteSymbol(mysymbol)
-    # Draw a white dash line between some of the points
-    mypen = bindinst.createPen(mycolors[1], 10, "dash", "round", "round")
-    ptsx = (600, 300, 700, 500, 300, 100)
-    ptsy = (100, 300, 500, 700, 500, 900)
-    bindinst.drawMultiline(ptsx, ptsy, mypen)
-    bindinst.deletePen(mypen)
-    # End of this view
-    bindinst.endView()
-    # Window should already be shown, but just to make sure
-    bindinst.showWindow(True)
-    raw_input("Press Enter to continue")
-    try:
-        while 1:
-            bindinst.deleteColor(mycolors.pop())
-    except IndexError:
-        pass
-    bindinst.deleteFont(myfont)
-    bindinst.deleteWindow()
-    print "Success"
+
+    # RGBA tuples of the colors to create
+    colorvals = ( (0.0, 0.0, 0.0, 1.0),   #  0 opaque black
+                  (1.0, 1.0, 1.0, 1.0),   #  1 opaque white
+                  (1.0, 0.0, 0.0, 1.0),   #  2 opaque red
+                  (0.6, 0.5, 0.0, 1.0),   #  3 opaque yellowish
+                  (0.0, 1.0, 0.0, 1.0),   #  4 opaque green
+                  (0.0, 0.5, 0.5, 1.0),   #  5 opaque cyan
+                  (0.0, 0.0, 1.0, 1.0),   #  6 opaque blue
+                  (0.5, 0.0, 0.5, 1.0),   #  7 opaque magenta
+                  (0.0, 0.0, 0.0, 0.25),  #  8 translucent black
+                  (1.0, 1.0, 1.0, 0.25),  #  9 translucent white
+                  (1.0, 0.0, 0.0, 0.25),  # 10 translucent red
+                  (0.6, 0.5, 0.0, 0.25),  # 11 translucent yellowish
+                  (0.0, 1.0, 0.0, 0.25),  # 12 translucent green
+                  (0.0, 0.5, 0.5, 0.25),  # 13 translucent cyan
+                  (0.0, 0.0, 1.0, 0.25),  # 14 translucent blue
+                  (0.5, 0.0, 0.5, 0.25),  # 15 translucent magenta
+                  (1.0, 1.0, 1.0, 0.0),   # 16 transparent white
+                )
+
+    # Initiate pyferret, but stay in python
+    pyferret.init(None, False)
+    for viewertype in ("PyQtPipedViewer", "PyQtPipedImager"):
+        print "Testing bindings for %s" % viewertype
+        # Create a viewer window
+        title = viewertype + "Tester"
+        bindinst = pyferret.graphbind.createWindow(viewertype,
+                                      title, 5000, 5000, True)
+        # Create the one font that will be used here
+        # - default font, 1/5th of the view in size
+        myfont = bindinst.createFont(None, 200, False, False, False)
+        # Create a list of colors that will be used here
+        mycolors = [ bindinst.createColor(r, g, b, a) \
+                     for (r, g, b, a) in colorvals ]
+        # Clear the window in opaque white
+        bindinst.clearWindow(mycolors[1])
+        # Create a view in the top left corner
+        bindinst.beginView(0.0, 0.5, 0.5, 1.0, 0, 0, 1000, 1000, True)
+        # Draw a translucent black rectangle over most of the view
+        mybrush = bindinst.createBrush(mycolors[8], "solid")
+        bindinst.drawRectangle(50, 50, 950, 950, mybrush, None)
+        bindinst.deleteBrush(mybrush)
+        # Draw a opaque blue polygon with solid black outline
+        mybrush = bindinst.createBrush(mycolors[6], "solid")
+        mypen = bindinst.createPen(mycolors[0], 6, "solid", "round", "round")
+        bindinst.drawPolygon(pentaptsx, pentaptsy, mybrush, mypen)
+        bindinst.deletePen(mypen)
+        bindinst.deleteBrush(mybrush)
+        # Draw some red text strings
+        bindinst.drawText("y=100", 100, 100, myfont, mycolors[2], 0)
+        bindinst.drawText("y=300", 100, 300, myfont, mycolors[2], 0)
+        bindinst.drawText("y=500", 100, 500, myfont, mycolors[2], 0)
+        bindinst.drawText("y=700", 100, 700, myfont, mycolors[2], 0)
+        # End of this view
+        bindinst.endView()
+        # Window should already be shown, but just to make sure
+        bindinst.showWindow(True)
+        raw_input("Press Enter to continue")
+        # Create a view of almost the whole window
+        bindinst.beginView(0.05, 0.05, 0.95, 0.95, 0, 0, 1000, 1000, True)
+        # Draw a translucent multicolor rectangle covering most of the window
+        bindinst.drawMulticolorRectangle(50, 50, 950, 950, 2, 3, mycolors[10:])
+        # Draw letters indicating the expected colors
+        bindinst.drawText("R", 200, 600, myfont, mycolors[0], -45)
+        bindinst.drawText("Y", 200, 150, myfont, mycolors[0], -45)
+        bindinst.drawText("G", 500, 600, myfont, mycolors[0], -45)
+        bindinst.drawText("C", 500, 150, myfont, mycolors[0], -45)
+        bindinst.drawText("B", 800, 600, myfont, mycolors[0], -45)
+        bindinst.drawText("M", 800, 150, myfont, mycolors[0], -45)
+        # End of this view
+        bindinst.endView()
+        # Window should already be shown, but just to make sure
+        bindinst.showWindow(True)
+        raw_input("Press Enter to continue")
+        # Create a view of the whole window
+        bindinst.beginView(0.0, 0.0, 1.0, 1.0, 0, 0, 1000, 1000, True)
+        # Draw points using various symbols
+        ptsy = (100, 300, 500, 700, 900)
+        ptsx = (100, 100, 100, 100, 100)
+        mysymbol = bindinst.createSymbol(".")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
+        bindinst.deleteSymbol(mysymbol)
+        ptsx = (200, 200, 200, 200, 200)
+        mysymbol = bindinst.createSymbol("o")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
+        bindinst.deleteSymbol(mysymbol)
+        ptsx = (300, 300, 300, 300, 300)
+        mysymbol = bindinst.createSymbol("+")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[6], 50)
+        bindinst.deleteSymbol(mysymbol)
+        ptsx = (400, 400, 400, 400, 400)
+        mysymbol = bindinst.createSymbol("x")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
+        bindinst.deleteSymbol(mysymbol)
+        ptsx = (500, 500, 500, 500, 500)
+        mysymbol = bindinst.createSymbol("*")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
+        bindinst.deleteSymbol(mysymbol)
+        ptsx = (600, 600, 600, 600, 600)
+        mysymbol = bindinst.createSymbol("^")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[6], 50)
+        bindinst.deleteSymbol(mysymbol)
+        ptsx = (700, 700, 700, 700, 700)
+        mysymbol = bindinst.createSymbol("#")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
+        bindinst.deleteSymbol(mysymbol)
+        # Draw a white dash line between some of the points
+        mypen = bindinst.createPen(mycolors[1], 10, "dash", "round", "round")
+        ptsx = (600, 300, 700, 500, 300, 100)
+        ptsy = (100, 300, 500, 700, 500, 900)
+        bindinst.drawMultiline(ptsx, ptsy, mypen)
+        bindinst.deletePen(mypen)
+        # End of this view
+        bindinst.endView()
+        # Window should already be shown, but just to make sure
+        bindinst.showWindow(True)
+        raw_input("Press Enter to continue")
+        try:
+            while 1:
+                bindinst.deleteColor(mycolors.pop())
+        except IndexError:
+            pass
+        bindinst.deleteFont(myfont)
+        bindinst.deleteWindow()
+        print "Done with bindings for %s" % viewertype
 

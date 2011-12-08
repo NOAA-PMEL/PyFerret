@@ -18,8 +18,6 @@ class PyQtScaleDialog(QDialog):
     are not smaller than the specified minimums.
     '''
 
-    FLTSTR_FORMAT = "%#.2f"
-
     def __init__(self, title, message, scale, width, height,
                  minwidth, minheight, parent=None):
         '''
@@ -39,6 +37,8 @@ class PyQtScaleDialog(QDialog):
         self.__inchheight = float(height) / float(self.physicalDpiY())
         self.__minpixwidth = int(minwidth)
         self.__minpixheight = int(minheight)
+
+        self.FLTSTR_FORMAT = "%#.2f"
 
         messagelabel = QLabel(message, self)
         messagelabel.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)

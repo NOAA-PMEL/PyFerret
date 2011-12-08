@@ -1,6 +1,11 @@
 '''
-Class to create, send commands, and shutdown PipedViewers.
-Currently, the only known viewer type is "PyQtPipedViewer".
+The PipedViewer class is used to create, send commands, and
+shutdown viewers in this module.  Currently, the only known
+viewer types are "PyQtPipedViewer" and "PyQtPipedImager".
+
+This package was developed by the Thermal Modeling and Analysis Project
+(TMAP) of the National Oceanographic and Atmospheric Administration's (NOAA)
+Pacific Marine Environmental Lab (PMEL).
 '''
 
 from multiprocessing import Pipe
@@ -21,15 +26,24 @@ class PipedViewer(object):
 
         Currently supported viewer types are:
             "PyQtPipedViewer": PyQtPipedViewer using PyQt4
+            "PyQtPipedImager": PyQtPipedImager using PyQt4
         '''
+        super(PipedViewer, self).__init__()
         (self.__cmndrecvpipe, self.__cmndsendpipe) = Pipe(False)
         (self.__rspdrecvpipe, self.__rspdsendpipe) = Pipe(False)
         if viewertype == "PyQtPipedViewer":
             try:
                 from pyqtpipedviewer import PyQtPipedViewerProcess
             except ImportError:
-                raise TypeError("The PyQt viewer requires PyQt4")
+                raise TypeError("The PyQt viewers requires PyQt4")
             self.__vprocess = PyQtPipedViewerProcess(self.__cmndrecvpipe,
+                                                     self.__rspdsendpipe)
+        elif viewertype == "PyQtPipedImager":
+            try:
+                from pyqtpipedimager import PyQtPipedImagerProcess
+            except ImportError:
+                raise TypeError("The PyQt viewers requires PyQt4")
+            self.__vprocess = PyQtPipedImagerProcess(self.__cmndrecvpipe,
                                                      self.__rspdsendpipe)
         else:
             raise TypeError("Unknown viewer type %s" % str(viewertype))
@@ -264,12 +278,14 @@ if __name__ == "__main__":
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"exit" } )
 
-    # Test each known viewer.  Currently only PyQtPipedViewer is complete.
-    for viewername in ( "PyQtPipedViewer", ):
+    # Test each known viewer.
+    for viewername in ( "PyQtPipedViewer", "PyQtPipedImager", ):
+        print "Testing Viewer %s" % viewername
         # create the viewer
         pviewer = PipedViewer(viewername)
         # submit the commands, pausing after each "show" command
         for cmd in drawcmnds:
+            print "Command: %s" % str(cmd)
             pviewer.submitCommand(cmd)
             response = pviewer.checkForResponse()
             while response:
@@ -284,4 +300,3 @@ if __name__ == "__main__":
             sys.exit(result)
         else:
             print "Done with %s" % viewername
-

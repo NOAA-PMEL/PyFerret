@@ -433,11 +433,11 @@ c
 	        yln = wn_scale(n) * yln
 
 * ... too big to fit ?
-	        bigness = MIN( dmaxx/xln, dmaxy/yln )
-	        IF ( bigness .LT. 1.0 ) THEN
-	           xln = xln * bigness
-	           yln = yln * bigness
-	        ENDIF
+*	        bigness = MIN( dmaxx/xln, dmaxy/yln )
+*	        IF ( bigness .LT. 1.0 ) THEN
+*	           xln = xln * bigness
+*	           yln = yln * bigness
+*	        ENDIF
 
 * ... put lower left of each window at a different place if possible
 	        wkxmn = MIN( xlowlef(n), dmaxx-xln )

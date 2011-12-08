@@ -362,11 +362,11 @@ C
 	        yln = tmscale * yln
 
 * ... too big to fit ?
-	        bigness = MIN( dmaxx/xln, dmaxy/yln )
-	        IF ( bigness .LT. 1.0 ) THEN
-	           xln = xln * bigness
-	           yln = yln * bigness
-	        ENDIF
+*	        bigness = MIN( dmaxx/xln, dmaxy/yln )
+*	        IF ( bigness .LT. 1.0 ) THEN
+*	           xln = xln * bigness
+*	           yln = yln * bigness
+*	        ENDIF
 
 * ... put lower left of each window at a different place if possible
 * ... further modified 8/26/88 to have resettable lower left

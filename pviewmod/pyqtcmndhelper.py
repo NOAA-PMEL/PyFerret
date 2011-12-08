@@ -422,3 +422,24 @@ class PyQtCmndHelper(object):
             pass
         return mycolor
 
+    def computeARGB32PreMultInt(self, color):
+        '''
+        Returns the Format_ARGB32_Premultiplied integer value
+        of the given QColor.
+        '''
+        (redint, greenint, blueint, alphaint) = color.getRgb()
+        # Multiply the RGB values by the alpha factor
+        alphafactor = alphaint / 255.0
+        redint = int( redint * alphafactor + 0.5 )
+        if redint > alphaint:
+            redint = alphaint
+        greenint = int( greenint * alphafactor + 0.5 )
+        if greenint > alphaint:
+            greenint = alphaint
+        blueint = int( blueint * alphafactor + 0.5 )
+        if blueint > alphaint:
+            blueint = alphaint
+        fillint = ((alphaint * 256 + redint) * 256 + \
+                   greenint) * 256 + blueint
+        return fillint
+

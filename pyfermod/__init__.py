@@ -50,7 +50,7 @@ except ImportError:
                         "             the Python functions pyferret.get and pyferret.put will fail"
 
 import pyferret.graphbind
-import pipedviewer.pviewpyferbind
+import pipedviewer.pyferretbindings
 from _pyferret import *
 
 
@@ -386,7 +386,10 @@ def init(arglist=None, enterferret=True):
     knownengines = pyferret.graphbind.knownPyFerretEngines()
     if not ("PyQtPipedViewer" in knownengines):
         pyferret.graphbind.addPyFerretBindings("PyQtPipedViewer",
-                           pipedviewer.pviewpyferbind.PViewPyFerretBindings)
+                           pipedviewer.pyferretbindings.PViewPyFerretBindings)
+    if not ("PyQtPipedImager" in knownengines):
+        pyferret.graphbind.addPyFerretBindings("PyQtPipedImager",
+                           pipedviewer.pyferretbindings.PImagePyFerretBindings)
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify,
           restrict=my_restrict, server=my_server,

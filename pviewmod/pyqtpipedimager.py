@@ -79,6 +79,8 @@ class PyQtPipedImager(QMainWindow):
         self.__sceneimage = None
         # QPainter attached to the scene QImage
         self.__activepainter = None
+        # Antialias when drawing?
+        self.__antialias = False
         # data for recreating the current view
         self.__fracsides = None
         self.__usersides = None
@@ -86,8 +88,9 @@ class PyQtPipedImager(QMainWindow):
         # number of drawing commands in the active painter
         self.__drawcount = 0
         # Limit the number of drawing commands between updates
-        # to the displayed scene to avoid the appearance of being "stuck"
-        self.__maxdraws = 256
+        # to the displayed scene (if there is one) to avoid the
+        # appearance of being "stuck".
+        self.__maxdraws = 512
         # maximum user Y coordinate - used by adjustPoint
         self.__userymax = 1.0
         # scaling (zoom) factor for creating the displayed scene
@@ -100,11 +103,11 @@ class PyQtPipedImager(QMainWindow):
         # set the initial label size and other values for the scrolled area
         self.__label.setMinimumSize(self.__scenewidth, self.__sceneheight)
         self.__label.resize(self.__scenewidth, self.__sceneheight)
-        self.__minsize = 256
         # setup the scrolled area
         self.__scrollarea.setWidget(self.__label)
         self.__scrollarea.setBackgroundRole(QPalette.Dark)
         self.setCentralWidget(self.__scrollarea)
+        self.__minsize = 128
         # command helper object
         self.__helper = PyQtCmndHelper(self)
         # create the scene image
@@ -756,7 +759,8 @@ class PyQtPipedImager(QMainWindow):
         # save the default state of the painter
         self.__activepainter.save()
         try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing, True)
+            self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                               self.__antialias)
             self.__activepainter.setPen(mypen)
             self.__activepainter.drawPolyline(endpts)
             self.__drawcount += 1
@@ -791,7 +795,8 @@ class PyQtPipedImager(QMainWindow):
         # save the default state of the painter
         self.__activepainter.save()
         try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing, True)
+            self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                               self.__antialias)
             try:
                 mycolor = self.__helper.getColorFromCmnd(cmnd)
                 mybrush = QBrush(mycolor, Qt.SolidPattern)
@@ -848,7 +853,8 @@ class PyQtPipedImager(QMainWindow):
         # save the default state of the painter
         self.__activepainter.save()
         try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing, True)
+            self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                               self.__antialias)
             try:
                 mybrush = self.__helper.getBrushFromCmnd(cmnd["fill"])
             except KeyError:
@@ -909,6 +915,8 @@ class PyQtPipedImager(QMainWindow):
         # save the default state of the painter
         self.__activepainter.save()
         try:
+            self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                               self.__antialias)
             try:
                 mypen = self.__helper.getPenFromCmnd(cmnd["outline"])
                 self.__activepainter.setPen(mypen)
@@ -987,6 +995,8 @@ class PyQtPipedImager(QMainWindow):
         # save the default state of the painter
         self.__activepainter.save()
         try:
+            self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                               self.__antialias)
             self.__activepainter.setPen(Qt.NoPen)
             width = width / float(numcols)
             height = height / float(numrows)
@@ -1040,7 +1050,8 @@ class PyQtPipedImager(QMainWindow):
         # save the default state of the painter
         self.__activepainter.save()
         try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing, True)
+            self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                               self.__antialias)
             # Move the coordinate system so the origin is at the start
             # of the text so that rotation is about this point
             self.__activepainter.translate(xpos, ypos)

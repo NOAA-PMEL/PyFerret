@@ -75,9 +75,20 @@ class PyQtPipedViewer(QMainWindow):
         super(PyQtPipedViewer, self).__init__()
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
+        # default scene size = sqrt(0.75) * (1280, 1024)
+        self.__scenewidth = 1110
+        self.__sceneheight = 890
+        # initial default color for clearScene (transparent white, but
+        # with premultiplied alpha, the color here does not matter)
+        self.__lastclearcolor = QColor(0xFFFFFF)
+        self.__lastclearcolor.setAlpha(0)
+        # List of QPictures creating the current scene
+        self.__viewpics = [ ]
         # QPicture/QPainter pair for the current view
         self.__activepicture = None
         self.__activepainter = None
+        # Antialias when drawing?
+        self.__antialias = False
         # data for recreating the current view
         self.__fracsides = None
         self.__usersides = None
@@ -85,34 +96,27 @@ class PyQtPipedViewer(QMainWindow):
         # number of drawing commands in the active painter
         self.__drawcount = 0
         # Limit the number of drawing commands per picture
-        # when visible to avoid the appearance of being "stuck"
-        self.__max_draws_per_picture = 256
+        # to avoid the appearance of being "stuck"
+        self.__maxdraws = 512
         # maximum user Y coordinate - used by adjustPoint
         self.__userymax = 1.0
-        # scaling and and pictures for creating the scene
+        # scaling factor for creating the displayed scene
         self.__scalefactor = 1.0
-        self.__viewpics = [ ]
-        # values used to decide if the label needs to be updated 
+        # values used to decide if the scene needs to be updated 
         self.__lastpicdrawn = 0
         self.__createpixmap = True
         self.__clearpixmap = True
-        # initialize default color for clearScene to transparent white
-        self.__lastclearcolor = QColor(0xFFFFFF)
-        self.__lastclearcolor.setAlpha(0)
         # create the label, that will serve as the canvas, in a scrolled area
         self.__scrollarea = QScrollArea(self)
         self.__label = QLabel(self.__scrollarea)
-        # set the default label size = sqrt(0.75) * (1280, 1024)
-        # and set other label values for the scrolled area
-        self.__labelwidth = 1110
-        self.__labelheight = 890
-        self.__label.setMinimumSize(self.__labelwidth, self.__labelheight)
-        self.__label.resize(self.__labelwidth, self.__labelheight)
+        # set the initial label size and other values for the scrolled area
+        self.__label.setMinimumSize(self.__scenewidth, self.__sceneheight)
+        self.__label.resize(self.__scenewidth, self.__sceneheight)
         # setup the scrolled area
         self.__scrollarea.setWidget(self.__label)
         self.__scrollarea.setBackgroundRole(QPalette.Dark)
         self.setCentralWidget(self.__scrollarea)
-        self.__minsize = 256
+        self.__minsize = 128
         # command helper object
         self.__helper = PyQtCmndHelper(self)
         # Create the menubar
@@ -123,8 +127,9 @@ class PyQtPipedViewer(QMainWindow):
         # Put in a default message in the statusbar
         self.statusBar().showMessage("Ready")
         # Set the initial size of the viewer
-        mwwidth = self.__labelwidth + 8
-        mwheight = self.__labelheight + 8 + self.menuBar().height() + self.statusBar().height()
+        mwwidth = self.__scenewidth + 8
+        mwheight = self.__sceneheight + 8 + self.menuBar().height() + \
+                                            self.statusBar().height()
         self.resize(mwwidth, mwheight)
         # check the command queue any time there are no window events to deal with
         self.__timer = QTimer(self)
@@ -247,7 +252,7 @@ class PyQtPipedViewer(QMainWindow):
         appropriately for the QPaintDevice to which it is painting
         (e.g., QImage.fill with the desired background color).
 
-        The point (leftx, uppery) is the offset of the origin prior to
+        The point (leftx, uppery) is the offset of the origin after
         scaling using scalefactor.  (All are floating point values.)
 
         The status bar will be updated with a message derived from
@@ -259,10 +264,6 @@ class PyQtPipedViewer(QMainWindow):
         '''
         # change the cursor to warn the user this may take some time
         QApplication.setOverrideCursor(Qt.WaitCursor)
-        # get the origin for drawing the pictures after scaling
-        myorigin = QPointF(leftx / scalefactor, uppery / scalefactor)
-        # apply the scaling factor in both dimensions
-        painter.scale(scalefactor, scalefactor)
         # create the incomplete status message
         if (first + 1) < len(self.__viewpics):
             mymsg = self.tr("%s (piece %%1 of %%2)" % statusmsg)
@@ -270,6 +271,10 @@ class PyQtPipedViewer(QMainWindow):
         else:
             mymsg = self.tr("%s (piece %%1)" % statusmsg)
             endstr = None
+        # get the origin for drawing the pictures after scaling
+        myorigin = QPointF(leftx, uppery)
+        # apply the scaling factor in both dimensions
+        painter.scale(scalefactor, scalefactor)
         # draw the appropriate pictures
         k = first
         for viewpic in self.__viewpics[first:]:
@@ -391,14 +396,16 @@ class PyQtPipedViewer(QMainWindow):
         newheight = int(height * 0.001 * self.physicalDpiY() + 0.5)
         if newheight < self.__minsize:
             newheight = self.__minsize
-        if (newwidth != self.__labelwidth) or (newheight != self.__labelheight):
-            # Resize the label and Set label values
+        if (newwidth != self.__scenewidth) or (newheight != self.__sceneheight):
+            # Resize the label and set label values
             # so the scrollarea knows of the new size
-            self.__labelwidth = newwidth
-            self.__labelheight = newheight
-            self.__label.setMinimumSize(newwidth, newheight)
-            self.__label.resize(newwidth, newheight)
+            labelwidth = int(newwidth * self.__scalefactor + 0.5)
+            labelheight = int(newheight * self.__scalefactor + 0.5)
+            self.__label.setMinimumSize(labelwidth, labelheight)
+            self.__label.resize(labelwidth, labelheight)
             # mark that the pixmap needs to be recreated
+            self.__scenewidth = newwidth
+            self.__sceneheight = newheight
             self.__createpixmap = True
             # Redraw the scene from the beginning
             self.redrawScene()
@@ -407,9 +414,11 @@ class PyQtPipedViewer(QMainWindow):
         '''
         Prompt the user for the desired scaling factor for the scene.
         '''
+        labelwidth = int(self.__scenewidth * self.__scalefactor + 0.5)
+        labelheight = int(self.__sceneheight * self.__scalefactor + 0.5)
         scaledlg = PyQtScaleDialog(self.tr("Scene Size Scaling"),
                        self.tr("Scaling factor (both horiz. and vert.) for the scene"),
-                       self.__scalefactor, self.__labelwidth, self.__labelheight,
+                       self.__scalefactor, labelwidth, labelheight,
                        self.__minsize, self.__minsize, self)
         if scaledlg.exec_():
             (newscale, okay) = scaledlg.getValues()
@@ -424,26 +433,25 @@ class PyQtPipedViewer(QMainWindow):
         factor is applied.
         '''
         newfactor = float(factor)
-        factorratio = newfactor / self.__scalefactor
-        newwidth = int(factorratio * self.__labelwidth + 0.5)
-        newheight = int(factorratio * self.__labelheight + 0.5)
-        if (newwidth < self.__minsize) or (newheight < self.__minsize):
+        newlabwidth = int(newfactor * self.__scenewidth + 0.5)
+        newlabheight = int(newfactor * self.__sceneheight + 0.5)
+        if (newlabwidth < self.__minsize) or (newlabheight < self.__minsize):
             # Set to minimum size
-            if self.__labelwidth <= self.__labelheight:
-                newfactor = float(self.__minsize) / float(self.__labelwidth)
+            if self.__scenewidth <= self.__sceneheight:
+                newfactor = float(self.__minsize) / float(self.__scenewidth)
             else:
-                newfactor = float(self.__minsize) / float(self.__labelheight)
-            newwidth = int(newfactor * self.__labelwidth + 0.5)
-            newheight = int(newfactor * self.__labelheight + 0.5)
-        if (newwidth != self.__labelwidth) or (newheight != self.__labelheight):
+                newfactor = float(self.__minsize) / float(self.__sceneheight)
+            newlabwidth = int(newfactor * self.__scenewidth + 0.5)
+            newlabheight = int(newfactor * self.__sceneheight + 0.5)
+        oldlabwidth = int(self.__scalefactor * self.__scenewidth + 0.5)
+        oldlabheight = int(self.__scalefactor * self.__sceneheight + 0.5)
+        if (newlabwidth != oldlabwidth) or (newlabheight != oldlabheight):
             # Set the new scaling factor
             self.__scalefactor = newfactor
             # Resize the label and set label values
-            # so the scrollarea knows of the new size 
-            self.__labelwidth = newwidth
-            self.__labelheight = newheight
-            self.__label.setMinimumSize(newwidth, newheight)
-            self.__label.resize(newwidth, newheight)
+            # so the scrollarea knows of the new size
+            self.__label.setMinimumSize(newlabwidth, newlabheight)
+            self.__label.resize(newlabwidth, newlabheight)
             # mark that the pixmap needs to be recreated
             self.__createpixmap = True
             # Redraw the scene from the beginning
@@ -492,7 +500,13 @@ class PyQtPipedViewer(QMainWindow):
             else:
                 raise RuntimeError( self.tr("Unexpected file format name '%1'") \
                                         .arg(fileFilter) )
-            self.saveSceneToFile(fileName, fileFormat, True, True)
+            if (fileFormat == "png") or \
+               (fileFormat == "tiff") or \
+               (fileFormat == "xpm"):
+                transparentbkg = True
+            else:
+                transparentbkg = False
+            self.saveSceneToFile(fileName, fileFormat, transparentbkg, True)
             self.__lastfilename = fileName
 
     def saveSceneToFile(self, filename, imageformat=None,
@@ -537,9 +551,8 @@ class PyQtPipedViewer(QMainWindow):
         else:
             myformat = imageformat.lower()
 
-        # the filename may need to be change for gif -> png
+        # Silently convert gif filename and format to png
         if myformat == 'gif':
-            # gif not supported - silently change to png
             myformat = 'png'
             myfilename = os.path.splitext(filename)[0] + ".png"
         else:
@@ -571,7 +584,7 @@ class PyQtPipedViewer(QMainWindow):
                 # but RHEL5 Qt4 is 4.2
                 printer.setPageSize(QPrinter.Letter)
             # Default orientation
-            if ( self.__labelwidth > self.__labelheight ):
+            if ( self.__scenewidth > self.__sceneheight ):
                 printer.setOrientation(QPrinter.Landscape)
             else:
                 printer.setOrientation(QPrinter.Portrait)
@@ -606,22 +619,26 @@ class PyQtPipedViewer(QMainWindow):
             # if HAS_QSvgGenerator is False, it should never get here
             generator = QSvgGenerator()
             generator.setFileName(myfilename)
-            generator.setSize( QSize(self.__labelwidth, self.__labelheight) )
-            generator.setViewBox( QRect(0, 0, self.__labelwidth, self.__labelheight) )
+            imagewidth = int(self.__scenewidth * self.__scalefactor + 0.5)
+            imageheight = int(self.__sceneheight * self.__scalefactor + 0.5)
+            generator.setSize( QSize(imagewidth, imageheight) )
+            generator.setViewBox( QRect(0, 0, imagewidth, imageheight) )
             # paint the scene to this QSvgGenerator
             painter = QPainter(generator)
             if not transparentbkg:
                 # draw a rectangle filling the entire scene
                 # with the last clearing color
                 painter.save()
-                painter.fillRect( QRectF(0, 0, self.__labelwidth, self.__labelheight),
+                painter.fillRect( QRectF(0, 0, imagewidth, imageheight),
                                   self.__lastclearcolor )
                 painter.restore()
             self.paintScene(painter, 0, 0.0, 0.0, self.__scalefactor, "Saving")
             painter.end()
         else:
             # ARGB32_Premultiplied is reported significantly faster than ARGB32
-            image = QImage( QSize(self.__labelwidth, self.__labelheight),
+            imagewidth = int(self.__scenewidth * self.__scalefactor + 0.5)
+            imageheight = int(self.__sceneheight * self.__scalefactor + 0.5)
+            image = QImage( QSize(imagewidth, imageheight),
                             QImage.Format_ARGB32_Premultiplied )
             # Initialize the image
             if transparentbkg:
@@ -659,18 +676,19 @@ class PyQtPipedViewer(QMainWindow):
         fltprintresolution = float(printresolution)
         fltprintwidth = float(printwidth) / fltprintresolution
         fltprintheight = float(printheight) / fltprintresolution
-        fltlabelwidth = float(self.__labelwidth) / float(self.physicalDpiX())
-        fltlabelheight = float(self.__labelheight) / float(self.physicalDpiY())
+        fltscenewidth = float(self.__scenewidth) / float(self.physicalDpiX())
+        fltsceneheight = float(self.__sceneheight) / float(self.physicalDpiY())
         # Determine the scaling factor for filling the page
-        scalefactor = min(fltprintwidth / fltlabelwidth, 
-                          fltprintheight / fltlabelheight)
+        scalefactor = min(fltprintwidth / fltscenewidth, 
+                          fltprintheight / fltsceneheight)
         # Determine the offset to center the picture
         leftx  = 0.5 * fltprintresolution * \
-                (fltprintwidth - scalefactor * fltlabelwidth)
+                (fltprintwidth - scalefactor * fltscenewidth)
         uppery = 0.5 * fltprintresolution * \
-                (fltprintheight - scalefactor * fltlabelheight)
-        # Account for the current scaling factor in the label size
-        scalefactor *= self.__scalefactor
+                (fltprintheight - scalefactor * fltsceneheight)
+        # Account for the scaling factor in the offsets
+        leftx /= scalefactor
+        uppery /= scalefactor
         return (leftx, uppery, scalefactor)
 
     def checkCommandPipe(self):
@@ -802,10 +820,9 @@ class PyQtPipedViewer(QMainWindow):
         # If a view is still active, automatically end it
         if self.__activepainter:
             self.endView(True)
-        # Get the location for the new view in terms of pixels.
-        # Take into account any scaling of the view
-        width = float( self.__labelwidth ) / self.__scalefactor
-        height = float( self.__labelheight ) / self.__scalefactor
+        # Get the location for the new view in terms of scene pixels.
+        width = float(self.__scenewidth)
+        height = float(self.__sceneheight)
         leftpixel = fracsides.left() * width
         rightpixel = fracsides.right() * width
         bottompixel = fracsides.bottom() * height
@@ -851,8 +868,8 @@ class PyQtPipedViewer(QMainWindow):
         self.__activepainter = QPainter(self.__activepicture)
         self.__activepainter.save()
         # Set the viewport and window just to be safe
-        self.__activepainter.setViewport(0, 0, self.__labelwidth, self.__labelheight)
-        self.__activepainter.setWindow(0, 0, self.__labelwidth, self.__labelheight)
+        self.__activepainter.setViewport(0, 0, self.__scenewidth, self.__sceneheight)
+        self.__activepainter.setWindow(0, 0, self.__scenewidth, self.__sceneheight)
         # Assign the transformation to take the user coordinates to device coordinates
         if HAS_QTransform:
             wvtrans = QTransform(m11, m12, m21, m22, dx, dy)
@@ -948,7 +965,8 @@ class PyQtPipedViewer(QMainWindow):
         # save the default state of the painter
         self.__activepainter.save()
         try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing, True)
+            self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                               self.__antialias)
             self.__activepainter.setPen(mypen)
             self.__activepainter.drawPolyline(endpts)
             self.__drawcount += 1
@@ -956,7 +974,7 @@ class PyQtPipedViewer(QMainWindow):
             # return the painter to the default state
             self.__activepainter.restore()
         # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__max_draws_per_picture:
+        if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
     def drawPoints(self, cmnd):
@@ -983,7 +1001,8 @@ class PyQtPipedViewer(QMainWindow):
         # save the default state of the painter
         self.__activepainter.save()
         try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing, True)
+            self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                               self.__antialias)
             try:
                 mycolor = self.__helper.getColorFromCmnd(cmnd)
                 mybrush = QBrush(mycolor, Qt.SolidPattern)
@@ -1012,7 +1031,7 @@ class PyQtPipedViewer(QMainWindow):
             # return the painter to the default state
             self.__activepainter.restore()
         # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__max_draws_per_picture:
+        if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
     def drawPolygon(self, cmnd):
@@ -1040,7 +1059,8 @@ class PyQtPipedViewer(QMainWindow):
         # save the default state of the painter
         self.__activepainter.save()
         try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing, True)
+            self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                               self.__antialias)
             try:
                 mybrush = self.__helper.getBrushFromCmnd(cmnd["fill"])
             except KeyError:
@@ -1060,7 +1080,7 @@ class PyQtPipedViewer(QMainWindow):
             # return the painter to the default state
             self.__activepainter.restore()
         # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__max_draws_per_picture:
+        if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
     def drawRectangle(self, cmnd):
@@ -1101,6 +1121,8 @@ class PyQtPipedViewer(QMainWindow):
         # save the default state of the painter
         self.__activepainter.save()
         try:
+            self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                               self.__antialias)
             try:
                 mypen = self.__helper.getPenFromCmnd(cmnd["outline"])
                 self.__activepainter.setPen(mypen)
@@ -1117,7 +1139,7 @@ class PyQtPipedViewer(QMainWindow):
             # return the painter to the default state
             self.__activepainter.restore()
         # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__max_draws_per_picture:
+        if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
     def drawMulticolorRectangle(self, cmnd):
@@ -1179,6 +1201,8 @@ class PyQtPipedViewer(QMainWindow):
         # save the default state of the painter
         self.__activepainter.save()
         try:
+            self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                               self.__antialias)
             self.__activepainter.setPen(Qt.NoPen)
             width = width / float(numcols)
             height = height / float(numrows)
@@ -1197,7 +1221,7 @@ class PyQtPipedViewer(QMainWindow):
             # return the painter to the default state
             self.__activepainter.restore()
         # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__max_draws_per_picture:
+        if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
     def drawSimpleText(self, cmnd):
@@ -1232,7 +1256,8 @@ class PyQtPipedViewer(QMainWindow):
         # save the default state of the painter
         self.__activepainter.save()
         try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing, True)
+            self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                               self.__antialias)
             # Move the coordinate system so the origin is at the start
             # of the text so that rotation is about this point
             self.__activepainter.translate(xpos, ypos)
@@ -1257,7 +1282,7 @@ class PyQtPipedViewer(QMainWindow):
             # return the painter to the default state
             self.__activepainter.restore()
         # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__max_draws_per_picture:
+        if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
     def adjustPoint(self, xypair):

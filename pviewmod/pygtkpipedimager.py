@@ -7,6 +7,7 @@ import gtk.gdk
 import gobject
 import sys
 import time
+import math
 
 from pygtkcmndhelper import PyGtkCmndHelper, RectF, SimpleTransform
 from pygtkscaledialog import PyGtkScaleDialog
@@ -50,8 +51,6 @@ class PyGtkPipedImager(gtk.Window):
         self.__activetrans = None
         # clipping rectangle for the current view
         self.__cliprect = None
-        # Antialias when drawing?
-        self.__antialias = False
         # data for recreating the current view
         self.__fracsides = None
         self.__usersides = None
@@ -119,6 +118,11 @@ class PyGtkPipedImager(gtk.Window):
         scaleitem.connect("activate", self.inquireScale, None)
         scenemenu.append(scaleitem)
         scaleitem.show()
+        # Scene -> Refresh
+        refreshitem = gtk.MenuItem("_Refresh")
+        refreshitem.connect("activate", self.refreshDrawArea, None)
+        scenemenu.append(refreshitem)
+        refreshitem.show()
         # Scene separator
         separator = gtk.SeparatorMenuItem()
         scenemenu.append(separator)
@@ -197,6 +201,9 @@ class PyGtkPipedImager(gtk.Window):
                                               self.__scaledheight)
         # clear the scene and queue a redraw of the entire drawing area
         self.clearScene(None)
+        # restart any active view with the new scene size
+        if self.__activetrans != None:
+            self.beginViewFromSides(self.__fracsides, self.__usersides, self.__clipit)
 
     def runViewer(self):
         '''
@@ -207,6 +214,12 @@ class PyGtkPipedImager(gtk.Window):
         the gtk processing loop until gtk.main_quit is called.
         '''
         gtk.main()
+
+    def refreshDrawArea(self, widget, data):
+        '''
+        Callback for refreshing the scene draw area
+        '''
+        self.__scenedrawarea.queue_draw_area(0, 0, self.__scaledwidth, self.__scaledheight)
 
     def hideViewer(self, widget, data):
         '''
@@ -365,7 +378,7 @@ class PyGtkPipedImager(gtk.Window):
         # Check if the scaled scene size has actually changed
         if (newscaledwidth != self.__scaledwidth) or \
            (newscaledheight != self.__scaledheight):
-            # Set the new scaling factor
+            # Set the new scaling factor - the scene pixmap does not change
             self.__scalefactor = newfactor
             # get rid of any scaled pixmap
             self.__scaledpixmap = None
@@ -382,6 +395,22 @@ class PyGtkPipedImager(gtk.Window):
     def inquireSaveFile(self, widget, data):
         '''
         Prompt the user for the name of the file into which to save the scene.
+        '''
+        # TODO:
+        pass
+
+    def saveSceneToFile(self, filename, imageformat, transparentbkg):
+        '''
+        Save the current scene to the named file.  If imageformat
+        is empty or None, the format is guessed from the filename
+        extension.
+
+        If transparentbkg is False, the last clearing color, as an
+        opaque color, is drawn to the image before drawing the
+        current scene.
+
+        If transparentbkg is True and the scaling factor is 1.0,
+        the current scene image is used directly for saving.
         '''
         # TODO:
         pass
@@ -443,42 +472,32 @@ class PyGtkPipedImager(gtk.Window):
             mysize = self.__helper.getSizeFromCmnd(cmnd)
             self.resizeScene(mysize.width(), mysize.height())
         elif cmndact == "save":
-            # TODO: filename = cmnd["filename"]
-            # TODO: fileformat = cmnd.get("fileformat", None)
-            # TODO: transparentbkg = cmnd.get("transparentbkg", False)
-            # TODO: self.saveSceneToFile(filename, fileformat, transparentbkg)
-            pass
+            filename = cmnd["filename"]
+            fileformat = cmnd.get("fileformat", None)
+            transparentbkg = cmnd.get("transparentbkg", False)
+            self.saveSceneToFile(filename, fileformat, transparentbkg)
         elif cmndact == "setTitle":
             self.set_title(cmnd["title"])
         elif cmndact == "show":
             self.show()
         elif cmndact == "beginView":
             self.beginView(cmnd)
-            pass
         elif cmndact == "clipView":
-            # TODO: self.clipView(cmnd)
-            pass
+            self.__clipit = bool( cmnd["clip"] )
         elif cmndact == "endView":
-            # TODO: self.endView(True)
-            pass
+            self.__activetrans = None
         elif cmndact == "drawMultiline":
-            # TODO: self.drawMultiline(cmnd)
-            pass
+            self.drawMultiline(cmnd)
         elif cmndact == "drawPoints":
-            # TODO: self.drawPoints(cmnd)
-            pass
+            self.drawPoints(cmnd)
         elif cmndact == "drawPolygon":
-            # TODO: self.drawPolygon(cmnd)
-            pass
+            self.drawPolygon(cmnd)
         elif cmndact == "drawRectangle":
-            # TODO: self.drawRectangle(cmnd)
-            pass
+            self.drawRectangle(cmnd)
         elif cmndact == "drawMulticolorRectangle":
-            # TODO: self.drawMulticolorRectangle(cmnd)
-            pass
+            self.drawMulticolorRectangle(cmnd)
         elif cmndact == "drawText":
-            # TODO: self.drawSimpleText(cmnd)
-            pass
+            self.drawSimpleText(cmnd)
         else:
             raise ValueError("Unknown command action %s" % str(cmndact) )
 
@@ -583,25 +602,26 @@ class PyGtkPipedImager(gtk.Window):
         # Get the location for the new view in terms of pixels.
         width = float(self.__scenewidth)
         height = float(self.__sceneheight)
-        leftpixel = fracsides.left() * width
-        rightpixel = fracsides.right() * width
-        bottompixel = fracsides.bottom() * height
-        toppixel = fracsides.top() * height
+        leftpixel = int( math.floor(fracsides.left() * width) )
+        rightpixel = int( math.ceil(fracsides.right() * width) )
+        bottompixel = int( math.floor(fracsides.bottom() * height) )
+        toppixel = int( math.ceil(fracsides.top() * height) )
         # perform the checks after turning into units of pixels
         # to make sure the values are significantly different
-        if (0.0 > leftpixel) or (leftpixel >= rightpixel) or (rightpixel > width):
+        if (0 > leftpixel) or (leftpixel >= rightpixel) or (rightpixel > self.__scenewidth):
             raise ValueError( "Invalid left, right view fractions: " \
-                              "left in pixels = %#f, right in pixels = %#f" % \
+                              "left in pixels = %d, right in pixels = %d" % \
                               (leftpixel, rightpixel) )
-        if (0.0 > bottompixel) or (bottompixel >= toppixel) or (toppixel > height):
+        if (0 > bottompixel) or (bottompixel >= toppixel) or (toppixel > self.__sceneheight):
             raise ValueError( "Invalid bottom, top view fractions: " \
-                              "bottom in pixels = %#f, top in pixels = %#f" % \
+                              "bottom in pixels = %d, top in pixels = %d" % \
                               (bottompixel, toppixel) )
-        # Create the view rectangle in device coordinates
-        vrectf = RectF(leftpixel, height - toppixel,
+        # Create the view rectangle in device coordinates (as floats)
+        vrectf = RectF(leftpixel, self.__sceneheight - toppixel,
                        rightpixel - leftpixel, toppixel - bottompixel)
-        # Save the device coordinate rectangle for clipping
-        self.__cliprect = vrectf
+        # Save the device coordinate rectangle (as integers) for clipping
+        self.__cliprect = gtk.gdk.Rectangle(leftpixel, self.__sceneheight - toppixel,
+                       rightpixel - leftpixel, toppixel - bottompixel)
         # Save whether clipping should be performed
         self.__clipit = clipit
         # Get the user coordinates for this view rectangle
@@ -634,19 +654,374 @@ class PyGtkPipedImager(gtk.Window):
         # Pull out the top coordinate since this is used a lot (via adjustPoint)
         self.__userymax = usersides.top()
 
+    def drawMultiline(self, cmnd):
+        '''
+        Draws a collection of connected line segments.
+
+        Recognized keys from cmnd:
+            "points": consecutive endpoints of the connected line
+                    segments as a list of (x, y) coordinates
+            "pen": dictionary describing the line used to draw the
+                    segments (see PyGtkCmndHelper.setLineFromCmnd)
+
+        The coordinates are user coordinates from the bottom left corner.
+
+        Raises:
+            KeyError if the "points" or "pen" key is not given
+            ValueError if there are fewer than two endpoints given
+        '''
+        # Get the points in device coordinates
+        ptcoords = cmnd["points"]
+        if len(ptcoords) < 2:
+            raise ValueError("fewer that two endpoints given")
+        adjpts = [ self.adjustPoint(xypair) for xypair in ptcoords ]
+        # Create the GC for this drawing
+        gc = self.__scenepixmap.new_gc(background=self.__lastclearcolor)
+        if self.__clipit:
+            gc.set_clip_rectangle(self.__cliprect)
+        # Set values for the line
+        self.__helper.setLineFromCmnd(gc, cmnd["pen"])
+        # Draw the lines
+        self.__scenepixmap.draw_lines(gc, adjpts)
+        # Check if the draw area is visible to see if the
+        # draw requests are needed
+        if self.__scenedrawarea.get_property("visible"):
+            # queue redraws of the scene if appropriate
+            self.queueSceneRedrawFromPoints(adjpts, gc.line_width, False)
+
+    def drawPoints(self, cmnd):
+        '''
+        Draws a collection of discrete points using a single symbol
+        for each point.
+
+        Recognized keys from cmnd:
+            "points": point centers as a list of (x,y) coordinates
+            "symbol": name of the symbol to use
+                    (see PyGtkCmndHelper.getSymbolFromCmnd)
+            "size": size of the symbol (scales with view size)
+            "color": color name (eg, "white", "#FF0088") or 
+                     a 24-bit RGB integer value (eg, 0xFF0088)
+ 
+        The coordinates are user coordinates from the bottom left corner.
+
+        Raises a KeyError if the "symbol", "points", or "size" key
+        is not given.
+        '''
+        # TODO:
+        pass
+
+    def drawPolygon(self, cmnd):
+        '''
+        Draws a polygon item to the viewer.
+
+        Recognized keys from cmnd:
+            "points": the vertices of the polygon as a list of (x,y)
+                    coordinates
+            "fill": dictionary describing the brush used to fill the
+                    polygon; see PyGtkCmndHelper.setFillFromCmnd
+                    If not given, the polygon will not be filled.
+            "outline": dictionary describing the line used to outline
+                    the polygon; see PyGtkCmndHelper.setLineFromCmnd
+
+        The coordinates are user coordinates from the bottom left corner.
+
+        Raises a KeyError if the "points" key is not given.
+        '''
+        # Get the points in device coordinates
+        ptcoords = cmnd["points"]
+        adjpts = [ self.adjustPoint(xypair) for xypair in ptcoords ]
+        # Create the GC for this drawing
+        gc = self.__scenepixmap.new_gc(background=self.__lastclearcolor)
+        if self.__clipit:
+            gc.set_clip_rectangle(self.__cliprect)
+        # Set values for the line first so the fill color,
+        # if given, is the foreground color.
+        try:
+            self.__helper.setLineFromCmnd(gc, cmnd["outline"])
+        except KeyError:
+            # add a single-pixel line around the polygon to
+            # mask the white-lines-in-a-fill bug in Ferret
+            gc.set_line_attributes(1, gtk.gdk.LINE_SOLID, gtk.gdk.CAP_ROUND,
+                                   gtk.gdk.JOIN_ROUND)
+        # Set values for the fill
+        try:
+            self.__helper.setFillFromCmnd(gc, cmnd["fill"])
+            filled = True
+        except KeyError:
+            filled = False
+        # Draw the polygon
+        self.__scenepixmap.draw_polygon(gc, filled, adjpts)
+        # explicitly close the polygon for an unfilled redraw
+        if (not filled) and (adjpts[0] != adjpts[-1]):
+            adjpts.append(adjpts[0])
+        # Check if the draw area is visible to see if the
+        # draw requests are needed
+        if self.__scenedrawarea.get_property("visible"):
+            # queue redraws of the scene if appropriate
+            self.queueSceneRedrawFromPoints(adjpts, gc.line_width, filled)
+
+    def drawRectangle(self, cmnd):
+        '''
+        Draws a rectangle in the current view using the information
+        in the dictionary cmnd.
+
+        Recognized keys from cmnd:
+            "left": x-coordinate of left edge of the rectangle
+            "bottom": y-coordinate of the bottom edge of the rectangle
+            "right": x-coordinate of the right edge of the rectangle
+            "top": y-coordinate of the top edge of the rectangle
+            "fill": dictionary describing the brush used to fill the
+                    rectangle; see PyGtkCmndHelper.setFillFromCmnd
+                    If not given, the rectangle will not be filled.
+            "outline": dictionary describing the line used to outline
+                    the rectangle; see PyGtkCmndHelper.setLineFromCmnd
+
+        The coordinates are user coordinates from the bottom left corner.
+
+        Raises a ValueError if the width or height of the rectangle
+        is not positive.
+        '''
+        # get the left, bottom, right, and top values
+        # any keys not given get a zero value
+        sides = self.__helper.getSidesFromCmnd(cmnd)
+        # adjust to actual view coordinates from the top left
+        lefttop = self.adjustPoint( (sides.left(), sides.top()) )
+        rightbottom = self.adjustPoint( (sides.right(), sides.bottom()) )
+        width = rightbottom[0] - lefttop[0]
+        if width <= 0:
+            raise ValueError("width of the rectangle in not positive")
+        height = rightbottom[1] - lefttop[1]
+        if height <= 0:
+            raise ValueError("height of the rectangle in not positive")
+        # Create the GC for this drawing
+        gc = self.__scenepixmap.new_gc(background=self.__lastclearcolor)
+        if self.__clipit:
+            gc.set_clip_rectangle(self.__cliprect)
+        # Set values for the line first so the fill color,
+        # if given, is the foreground color.
+        try:
+            self.__helper.setLineFromCmnd(gc, cmnd["outline"])
+        except KeyError:
+            pass
+        # Set values for the fill
+        try:
+            self.__helper.setFillFromCmnd(gc, cmnd["fill"])
+            filled = True
+        except KeyError:
+            filled = False
+        # Draw the rectangle
+        self.__scenepixmap.draw_rectangle(gc, filled, lefttop[0], lefttop[1],
+                                          width, height)
+        # Check if the draw area is visible to see if the
+        # draw requests are needed
+        if self.__scenedrawarea.get_property("visible"):
+            # queue redraw of the scene
+            adjpts = [ lefttop,
+                      (lefttop[0] + width, lefttop[1]),
+                      (lefttop[0] + width, lefttop[1] + height),
+                      (lefttop[0], lefttop[1] + height),
+                       lefttop ]
+            self.queueSceneRedrawFromPoints(adjpts, gc.line_width, filled)
+
+    def drawMulticolorRectangle(self, cmnd):
+        '''
+        Draws a multi-colored rectangle in the current view using
+        the information in the dictionary cmnd.
+
+        Recognized keys from cmnd:
+            "left": x-coordinate of left edge of the rectangle
+            "bottom": y-coordinate of the bottom edge of the rectangle
+            "right": x-coordinate of the right edge of the rectangle
+            "top": y-coordinate of the top edge of the rectangle
+            "numrows": the number of equally spaced rows
+                    to subdivide the rectangle into
+            "numcols": the number of equally spaced columns
+                    to subdivide the rectangle into
+            "colors": iterable representing a flattened column-major
+                    2-D array of color dictionaries
+                    (see PyGtkCmndHelper.getcolorFromCmnd) which are
+                    used to solidly fill each of the cells.  The first
+                    row is at the top; the first column is on the left.
+
+        The coordinates are user coordinates from the bottom left corner.
+
+        Raises:
+            KeyError: if the "numrows", "numcols", or "colors" keys
+                    are not given; if the "color" key is not given
+                    in a color dictionary
+            ValueError: if the width or height of the rectangle is
+                    not positive; if the value of the "numrows" or
+                    "numcols" key is not positive; if a color
+                    dictionary does not produce a valid color
+            IndexError: if not enough colors were given
+        '''
+        # get the left, bottom, right, and top values
+        # any keys not given get a zero value
+        sides = self.__helper.getSidesFromCmnd(cmnd)
+        # convert to device coordinates from the top left
+        lefttop = self.adjustPoint( (sides.left(), sides.top()) )
+        rightbottom = self.adjustPoint( (sides.right(), sides.bottom()) )
+        fullwidth = rightbottom[0] - lefttop[0]
+        if fullwidth <= 0:
+            raise ValueError("width of the rectangle in not positive")
+        fullheight = rightbottom[1] - lefttop[1]
+        if fullheight <= 0:
+            raise ValueError("height of the rectangle in not positive")
+        numrows = int( cmnd["numrows"] + 0.5 )
+        if numrows < 1:
+            raise ValueError("numrows not a positive integer value")
+        numcols = int( cmnd["numcols"] + 0.5 )
+        if numcols < 1:
+            raise ValueError("numcols not a positive integer value")
+        colors = [ self.__helper.getColorFromCmnd(colorinfo) \
+                                 for colorinfo in cmnd["colors"] ]
+        if len(colors) < (numrows * numcols):
+            raise IndexError("not enough colors given")
+        # Determine the device coordinates for all the rectangles
+        fltwidth = float(fullwidth) / float(numcols)
+        lefts = [ lefttop[0] + int( fltwidth * float(j) + 0.5 ) for j in xrange(numcols) ]
+        widths = [ lefts[j] - lefts[j-1] for j in xrange(1, numcols) ]
+        widths.append(rightbottom[0] - lefts[-1])
+        fltheight = float(fullheight) / float(numrows)
+        tops = [ lefttop[1] + int( fltheight * float(k) + 0.5 ) for k in xrange(numrows) ]
+        heights = [ tops[k] - tops[k-1] for k in xrange(1, numrows) ]
+        heights.append(rightbottom[1] - tops[-1])
+        # Create the GC for this drawing
+        gc = self.__scenepixmap.new_gc(background=self.__lastclearcolor)
+        if self.__clipit:
+            gc.set_clip_rectangle(self.__cliprect)
+        gc.set_line_attributes(0, gtk.gdk.LINE_SOLID, gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_ROUND)
+        gc.set_fill(gtk.gdk.SOLID)
+        colorindex = 0
+        for j in xrange(numcols):
+            for k in xrange(numrows):
+                if (widths[j] > 0) and (heights[k] > 0):
+                    # Assign the fill color
+                    gc.set_foreground(colors[colorindex])
+                    # Draw the cell of the rectangle
+                    self.__scenepixmap.draw_rectangle(gc, True, lefts[j], tops[k],
+                                                      widths[j], heights[k])
+                colorindex += 1
+        if self.__scenedrawarea.get_property("visible"):
+            # queue redraw of the scene
+            adjpts = [ lefttop,
+                      (rightbottom[0], lefttop[1]),
+                      rightbottom,
+                      (lefttop[0], rightbottom[1]),
+                       lefttop ]
+            self.queueSceneRedrawFromPoints(adjpts, gc.line_width, True)
+
+    def drawSimpleText(self, cmnd):
+        '''
+        Draws a "simple" text item in the current view.
+        Raises a KeyError if the "text" key is not given.
+
+        Recognized keys from cmnd:
+            "text": string to displayed
+            "font": dictionary describing the font to use;  see
+                    PyGtkCmndHelper.setFontFromCmnd.  If not given
+                    the default font for this viewer is used.
+            "color": color name (eg, "white", "#FF0088") or 
+                     a 24-bit RGB integer value (eg, 0xFF0088)
+                     giving the color of the text.
+            "rotate": clockwise rotation of the text in degrees
+            "location": (x,y) location (user coordinates) in the
+                    current view window for the baseline of the
+                    start of text.
+        '''
+        # TODO:
+        pass
+
+    def queueSceneRedrawFromPoints(self, adjpts, linewidth, filled):
+        '''
+        Queues scene drawing area redraws of rectangle(s) covering
+        the lines, polygon, or rectangle described by the arguments:
+            adjpts: device coordinates of the points used in
+                    drawing the lines, polygon, or rectangle
+            linewidth: width of the line used in the drawing
+            filled: whether the (polygon) was filled or not
+        '''
+        if linewidth < 1:
+            linewidth = 1
+        if not filled:
+            # Queue a redraw of the rectangle affected by each line segment
+            # Gtk will combine rectangles prior to the redraw.
+            prevpair = None
+            for xypair in adjpts:
+                # Need pairs of points, skip the first point
+                if prevpair != None:
+                    # Get the enclosing rectangle in scene pixmap coordinates
+                    if prevpair[0] <= xypair[0]:
+                        xmin = prevpair[0] - linewidth
+                        xmax = xypair[0] + linewidth
+                    else:
+                        xmin = xypair[0] - linewidth
+                        xmax = prevpair[0] + linewidth
+                    if prevpair[1] <= xypair[1]:
+                        ymin = prevpair[1] - linewidth
+                        ymax = xypair[1] + linewidth
+                    else:
+                        ymin = xypair[1] - linewidth
+                        ymax = prevpair[1] + linewidth
+                    # Scale the scene pixmap coordinates
+                    xmin = int( math.floor(xmin * self.__scalefactor) )
+                    xmin = max(xmin, 0)
+                    xmax = int( math.ceil(xmax * self.__scalefactor) )
+                    xmax = min(xmax, self.__scaledwidth)
+                    ymin = int( math.floor(ymin * self.__scalefactor) )
+                    ymin = max(ymin, 0)
+                    ymax = int( math.ceil(ymax * self.__scalefactor) )
+                    ymax = min(ymax, self.__scaledheight)
+                    # Queue the redraw of this rectangle in the scene drawing area
+                    self.__scenedrawarea.queue_draw_area(xmin, ymin,
+                                                         xmax - xmin, ymax - ymin)
+                # Record this point for the next iteration
+                prevpair = xypair
+        else:
+            # Get the enclosing rectangle in scene pixmap coordinates
+            xmin = self.__scenewidth
+            xmax = 0
+            ymin = self.__sceneheight
+            ymax = 0
+            for xypair in adjpts:
+                xmin = min(xmin, xypair[0] - linewidth)
+                xmax = max(xmax, xypair[0] + linewidth)
+                ymin = min(ymin, xypair[1] - linewidth)
+                ymax = max(ymax, xypair[1] + linewidth)
+            # Scale the scene pixmap coordinates
+            xmin = int( math.floor(xmin * self.__scalefactor) )
+            xmin = max(xmin, 0)
+            xmax = int( math.ceil(xmax * self.__scalefactor) )
+            xmax = min(xmax, self.__scaledwidth)
+            ymin = int( math.floor(ymin * self.__scalefactor) )
+            ymin = max(ymin, 0)
+            ymax = int( math.ceil(ymax * self.__scalefactor) )
+            ymax = min(ymax, self.__scaledheight)
+            # Queue the redraw of this rectangle in the scene drawing area
+            self.__scenedrawarea.queue_draw_area(xmin, ymin,
+                                                 xmax - xmin, ymax - ymin)
+
     def adjustPoint(self, xypair):
         '''
-        Returns appropriate device coordinates pair
-        corresponding to the user coordinates pair
-        given in xypair obtained from a command.
+        Returns appropriate device coordinates as a pair of integer
+        corresponding to the user coordinates pair given in xypair.
 
-        This adjusts for the flipped y coordinate
-        as well as transforming the point. 
+        This adjusts for the flipped y coordinate as well as 
+        transforming the point. 
         '''
         (userx, usery) = xypair
-        usery = self.__userymax - usery
-        (devx, devy) = self.__activetrans.transform(userx, usery)
+        usery = self.__userymax - float(usery)
+        (devx, devy) = self.__activetrans.transform(float(userx), usery)
+        devx = int(devx + 0.5)
+        devy = int(devy + 0.5)
         return (devx, devy)
+
+    def getScenePixmapSize(self):
+        '''
+        Returns the size of the current scene pixmap as an int tuple
+        (width, height).
+        '''
+        return (self.__scenewidth, self.__sceneheight)
 
 
 class PyGtkPipedImagerProcess(Process):

@@ -113,13 +113,13 @@ class PyQtCmndHelper(object):
     Helper class of static methods for dealing with commands
     sent to a PyQt piped viewer.
     '''
-    def __init__(self, parent):
+    def __init__(self, viewer):
         '''
-        Creates a cmndpipe command helper.  The widget parent is only
-        used for determining the default font and for translation
-        of error messages.
+        Creates a cmndpipe command helper.  The widget viewer
+        is only used for determining the default font and for
+        translation of error messages.
         '''
-        self.__parent = parent
+        self.__viewer = viewer
         self.__symbolpaths = { }
 
     def getFontFromCmnd(self, fontinfo):
@@ -137,7 +137,7 @@ class PyQtCmndHelper(object):
         try:
             myfont = QFont(fontinfo["family"])
         except KeyError:
-            myfont = self.__parent.font()
+            myfont = self.__viewer.font()
         try:
             myfont.setPixelSize( int(fontinfo["size"] + 0.5) )
         except KeyError:
@@ -208,7 +208,7 @@ class PyQtCmndHelper(object):
             elif mystyle == "diagcross":
                 mystyle = Qt.DiagCrossPattern
             else:
-                raise ValueError( self.__parent.tr( \
+                raise ValueError( self.__viewer.tr( \
                       "Unknown brush style %1").arg(str(mystyle)) )
             mybrush.setStyle(mystyle)
         except KeyError:
@@ -255,7 +255,7 @@ class PyQtCmndHelper(object):
             elif mystyle == "dashdotdot":
                 mystyle = Qt.DashDotDotLine
             else:
-                raise ValueError( self.__parent.tr( \
+                raise ValueError( self.__viewer.tr( \
                       "Unknown pen style %1").arg(str(mystyle)) )
             mypen.setStyle(mystyle)
         except KeyError:
@@ -269,7 +269,7 @@ class PyQtCmndHelper(object):
             elif mystyle == "round":
                 mystyle = Qt.RoundCap
             else:
-                raise ValueError( self.__parent.tr( \
+                raise ValueError( self.__viewer.tr( \
                       "Unknown pen cap style %1").arg(str(mystyle)) )
             mypen.setCapStyle(mystyle)
         except KeyError:
@@ -283,7 +283,7 @@ class PyQtCmndHelper(object):
             elif mystyle == "round":
                 mystyle = Qt.RoundJoin
             else:
-                raise ValueError( self.__parent.tr( \
+                raise ValueError( self.__viewer.tr( \
                       "Unknown pen join style %1").arg(str(mystyle)) )
             mypen.setJoinStyle(mystyle)
         except KeyError:

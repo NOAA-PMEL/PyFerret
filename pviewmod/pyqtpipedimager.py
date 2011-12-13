@@ -210,6 +210,9 @@ class PyQtPipedImager(QMainWindow):
         self.close()
 
     def aboutMsg(self):
+        '''
+        Display a message dialog about this program.
+        '''
         QMessageBox.about(self, self.tr("About PyQtPipedImager"),
             self.tr("\n" \
             "PyQtPipedImager is a graphics viewer application that " \
@@ -391,7 +394,6 @@ class PyQtPipedImager(QMainWindow):
     def inquireSaveFilename(self):
         '''
         Prompt the user for the name of the file into which to save the scene.
-        The file format will be determined from the filename extension.
         '''
         formattypes = [ ( "png",
                           self.tr("PNG - Portable Networks Graphics (*.png)") ),

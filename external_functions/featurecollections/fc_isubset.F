@@ -216,8 +216,8 @@
          IF ( arg_1(i1,j1,k1,l1) .EQ. bad_flag(1) ) GOTO 600  ! done
          IF ( arg_2(i2,j2,k2,l2) .EQ. bad_flag(2) ) GOTO 600
 
-	 i4 = arg_1(i1,j1,k1,l1)     ! start index
-         count = arg_2(i2,j2,k2,l2)  ! number to put
+	 i4 = INT(arg_1(i1,j1,k1,l1))     ! start index
+         count = INT(arg_2(i2,j2,k2,l2))  ! number to put
 
          l4 = arg_lo_ss(T_AXIS,ARG4)
          DO 400 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
@@ -242,7 +242,7 @@
 
       i2 = i2 + arg_incr(X_AXIS,ARG2)
       j2 = j2 + arg_incr(Y_AXIS,ARG2)
-      k2 = k2 + arg_incr(X_AXIS,ARG2)
+      k2 = k2 + arg_incr(Z_AXIS,ARG2)
       l2 = l2 + arg_incr(T_AXIS,ARG2)
  500  CONTINUE
 

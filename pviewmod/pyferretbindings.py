@@ -2,10 +2,13 @@
 The PyFerretBindings class is a base class providing common
 methods in PipedViewer bindings for PyFerret graphics methods.
 
-The PViewPyFerretBindings class is a subclass of PyFerretBindings
+The PyQtViewPyFerretBindings class is a subclass of PyFerretBindings
 using PyQtPipedViewer as the viewer.
 
-The PImagePyFerretBindings class is a subclass of PyFerretBindings
+The PyQtImagePyFerretBindings class is a subclass of PyFerretBindings
+using PyQtImageViewer as the viewer. 
+
+The PyGtkImagePyFerretBindings class is a subclass of PyFerretBindings
 using PyQtImageViewer as the viewer. 
 
 This package was developed by the Thermal Modeling and Analysis Project
@@ -600,7 +603,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.checkForErrorResponse()
 
 
-class PViewPyFerretBindings(PyFerretBindings):
+class PyQtViewPyFerretBindings(PyFerretBindings):
     '''
     PyFerretBindings using PyQtPipedViewer as the viewer.
     '''
@@ -626,7 +629,7 @@ class PViewPyFerretBindings(PyFerretBindings):
         return result
 
 
-class PImagePyFerretBindings(PyFerretBindings):
+class PyQtImagePyFerretBindings(PyFerretBindings):
     '''
     PyFerretBindings using PyQtPipedImager as the viewer.
     '''
@@ -651,6 +654,30 @@ class PImagePyFerretBindings(PyFerretBindings):
                                      title, width, height, visible)
         return result
 
+class PyGtkImagePyFerretBindings(PyFerretBindings):
+    '''
+    PyFerretBindings using PyGtkPipedImager as the viewer.
+    '''
+
+    def createWindow(self, title, width, height, visible):
+        '''
+        Creates PyFerret bindings using a PyGtkPipedImager.
+
+        Arguments:
+            title: display title for the Window
+            width: width of the Window, in units of 0.001 inches
+            height: height of the Window, in units of 0.001 inches
+            visible: display Window on start-up?
+
+        Raises a RuntimeError if an active window is already associated
+        with these bindings, or if there were problems with creating
+        the window.
+
+        Returns True.
+        '''
+        result = self.createPipedViewerWindow("PyGtkPipedImager",
+                                     title, width, height, visible)
+        return result
 
 
 if __name__ == "__main__":
@@ -684,7 +711,7 @@ if __name__ == "__main__":
 
     # Initiate pyferret, but stay in python
     pyferret.init(None, False)
-    for viewertype in ("PyQtPipedViewer", "PyQtPipedImager"):
+    for viewertype in ("PyQtPipedViewer", "PyQtPipedImager", "PyGtkPipedViewer"):
         print "Testing bindings for %s" % viewertype
         # Create a viewer window
         title = viewertype + "Tester"

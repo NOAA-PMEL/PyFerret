@@ -386,10 +386,13 @@ def init(arglist=None, enterferret=True):
     knownengines = pyferret.graphbind.knownPyFerretEngines()
     if not ("PyQtPipedViewer" in knownengines):
         pyferret.graphbind.addPyFerretBindings("PyQtPipedViewer",
-                           pipedviewer.pyferretbindings.PViewPyFerretBindings)
+                           pipedviewer.pyferretbindings.PyQtViewPyFerretBindings)
     if not ("PyQtPipedImager" in knownengines):
         pyferret.graphbind.addPyFerretBindings("PyQtPipedImager",
-                           pipedviewer.pyferretbindings.PImagePyFerretBindings)
+                           pipedviewer.pyferretbindings.PyQtImagePyFerretBindings)
+    if not ("PyGtkPipedImager" in knownengines):
+        pyferret.graphbind.addPyFerretBindings("PyGtkPipedImager",
+                           pipedviewer.pyferretbindings.PyGtkImagePyFerretBindings)
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify,
           restrict=my_restrict, server=my_server,

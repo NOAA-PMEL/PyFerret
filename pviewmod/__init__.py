@@ -27,6 +27,7 @@ class PipedViewer(object):
         Currently supported viewer types are:
             "PyQtPipedViewer": PyQtPipedViewer using PyQt4
             "PyQtPipedImager": PyQtPipedImager using PyQt4
+            "PyGtkPipedImager": PyGtkPipedImager using PyGtk 2.10 or later
         '''
         super(PipedViewer, self).__init__()
         (self.__cmndrecvpipe, self.__cmndsendpipe) = Pipe(False)
@@ -45,6 +46,13 @@ class PipedViewer(object):
                 raise TypeError("The PyQt viewers requires PyQt4")
             self.__vprocess = PyQtPipedImagerProcess(self.__cmndrecvpipe,
                                                      self.__rspdsendpipe)
+        elif viewertype == "PyGtkPipedImager":
+            try:
+                from pygtkpipedimager import PyGtkPipedImagerProcess
+            except ImportError:
+                raise TypeError("The PyGtk viewers requires PyGtk 2.10 or later")
+            self.__vprocess = PyGtkPipedImagerProcess(self.__cmndrecvpipe,
+                                                      self.__rspdsendpipe)
         else:
             raise TypeError("Unknown viewer type %s" % str(viewertype))
         self.__vprocess.start()

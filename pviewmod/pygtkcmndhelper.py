@@ -184,6 +184,10 @@ class SimpleTransform(object):
     Helper class to perform simple coordinate transformations
     '''
     def __init__(self, sx, sy, dx, dy):
+        '''
+        Initialize the transform with the x and y scaling factors
+        sx and sy, and the x and y translation values dx and dy.
+        '''
         super(SimpleTransform, self).__init__()
         self.__sx = sx
         self.__sy = sy
@@ -191,6 +195,12 @@ class SimpleTransform(object):
         self.__dy = dy
 
     def transform(self, userx, usery):
+        '''
+        Returns the transformed point (devx, devy) corresponding
+        to the input point (userx, usery).
+            devx = sx * userx + dx
+            devy = sy * usery + dy
+        '''
         devx = self.__sx * userx + self.__dx
         devy = self.__sy * usery + self.__dy
         return (devx, devy)

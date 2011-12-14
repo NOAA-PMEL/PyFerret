@@ -674,7 +674,7 @@ class PyGtkPipedImager(gtk.Window):
         ptcoords = cmnd["points"]
         if len(ptcoords) < 2:
             raise ValueError("fewer that two endpoints given")
-        adjpts = [ self.adjustPoint(xypair) for xypair in ptcoords ]
+        adjpts = [ self.adjustPoint(xypair, round) for xypair in ptcoords ]
         # Create the GC for this drawing
         gc = self.__scenepixmap.new_gc(background=self.__lastclearcolor)
         if self.__clipit:
@@ -729,7 +729,7 @@ class PyGtkPipedImager(gtk.Window):
         '''
         # Get the points in device coordinates
         ptcoords = cmnd["points"]
-        adjpts = [ self.adjustPoint(xypair) for xypair in ptcoords ]
+        adjpts = [ self.adjustPoint(xypair, round) for xypair in ptcoords ]
         # Create the GC for this drawing
         gc = self.__scenepixmap.new_gc(background=self.__lastclearcolor)
         if self.__clipit:
@@ -785,8 +785,8 @@ class PyGtkPipedImager(gtk.Window):
         # any keys not given get a zero value
         sides = self.__helper.getSidesFromCmnd(cmnd)
         # adjust to actual view coordinates from the top left
-        lefttop = self.adjustPoint( (sides.left(), sides.top()) )
-        rightbottom = self.adjustPoint( (sides.right(), sides.bottom()) )
+        lefttop = self.adjustPoint( (sides.left(), sides.top()), math.floor )
+        rightbottom = self.adjustPoint( (sides.right(), sides.bottom()), math.ceil )
         width = rightbottom[0] - lefttop[0]
         if width <= 0:
             raise ValueError("width of the rectangle in not positive")
@@ -859,8 +859,8 @@ class PyGtkPipedImager(gtk.Window):
         # any keys not given get a zero value
         sides = self.__helper.getSidesFromCmnd(cmnd)
         # convert to device coordinates from the top left
-        lefttop = self.adjustPoint( (sides.left(), sides.top()) )
-        rightbottom = self.adjustPoint( (sides.right(), sides.bottom()) )
+        lefttop = self.adjustPoint( (sides.left(), sides.top()), math.floor  )
+        rightbottom = self.adjustPoint( (sides.right(), sides.bottom()), math.ceil )
         fullwidth = rightbottom[0] - lefttop[0]
         if fullwidth <= 0:
             raise ValueError("width of the rectangle in not positive")
@@ -1001,19 +1001,26 @@ class PyGtkPipedImager(gtk.Window):
             self.__scenedrawarea.queue_draw_area(xmin, ymin,
                                                  xmax - xmin, ymax - ymin)
 
-    def adjustPoint(self, xypair):
+    def adjustPoint(self, xypair, intfunc):
         '''
         Returns appropriate device coordinates as a pair of integer
         corresponding to the user coordinates pair given in xypair.
 
         This adjusts for the flipped y coordinate as well as 
-        transforming the point. 
+        transforming the point.
+        
+        If intfunc is not None, this function is applied to the floating
+        point values of the transformed point prior to casting them
+        as integers to be return.
         '''
         (userx, usery) = xypair
         usery = self.__userymax - float(usery)
         (devx, devy) = self.__activetrans.transform(float(userx), usery)
-        devx = int(devx + 0.5)
-        devy = int(devy + 0.5)
+        if intfunc != None:
+            devx = intfunc(devx)
+            devy = intfunc(devy)
+        devx = int(devx)
+        devy = int(devy)
         return (devx, devy)
 
     def getScenePixmapSize(self):

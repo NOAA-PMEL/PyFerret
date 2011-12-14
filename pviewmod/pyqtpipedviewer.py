@@ -273,7 +273,7 @@ class PyQtPipedViewer(QMainWindow):
             endstr = None
         # get the origin for drawing the pictures after scaling
         myorigin = QPointF(leftx, uppery)
-        # apply the scaling factor in both dimensions
+        # set the scaling factor for the pictures
         painter.scale(scalefactor, scalefactor)
         # draw the appropriate pictures
         k = first
@@ -609,9 +609,7 @@ class PyQtPipedViewer(QMainWindow):
             if not transparentbkg:
                 # draw a rectangle filling the entire scene
                 # with the last clearing color
-                painter.save()
                 painter.fillRect(QRectF(pagerect), self.__lastclearcolor)
-                painter.restore()
             # Draw the scene to the printer
             self.paintScene(painter, 0, printleftx, printuppery, printfactor, "Saving")
             painter.end()
@@ -628,10 +626,8 @@ class PyQtPipedViewer(QMainWindow):
             if not transparentbkg:
                 # draw a rectangle filling the entire scene
                 # with the last clearing color
-                painter.save()
                 painter.fillRect( QRectF(0, 0, imagewidth, imageheight),
                                   self.__lastclearcolor )
-                painter.restore()
             self.paintScene(painter, 0, 0.0, 0.0, self.__scalefactor, "Saving")
             painter.end()
         else:
@@ -866,7 +862,6 @@ class PyQtPipedViewer(QMainWindow):
         # Create the new picture and painter, and set the view transformation
         self.__activepicture = QPicture()
         self.__activepainter = QPainter(self.__activepicture)
-        self.__activepainter.save()
         # Set the viewport and window just to be safe
         self.__activepainter.setViewport(0, 0, self.__scenewidth, self.__sceneheight)
         self.__activepainter.setWindow(0, 0, self.__scenewidth, self.__sceneheight)
@@ -915,7 +910,6 @@ class PyQtPipedViewer(QMainWindow):
         drawn in the scene.  If update is True, the displayed scene
         is updated.
         '''
-        self.__activepainter.restore()
         self.__activepainter.end()
         self.__activepainter = None
         # Only save the active picture if it contains something
@@ -962,17 +956,12 @@ class PyQtPipedViewer(QMainWindow):
         endpts = QPolygonF( [ QPointF(xypair[0], xypair[1]) \
                                   for xypair in adjpts ] )
         mypen = self.__helper.getPenFromCmnd(cmnd["pen"])
-        # save the default state of the painter
-        self.__activepainter.save()
-        try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                               self.__antialias)
-            self.__activepainter.setPen(mypen)
-            self.__activepainter.drawPolyline(endpts)
-            self.__drawcount += 1
-        finally:
-            # return the painter to the default state
-            self.__activepainter.restore()
+        self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                           self.__antialias)
+        self.__activepainter.setBrush(Qt.NoBrush)
+        self.__activepainter.setPen(mypen)
+        self.__activepainter.drawPolyline(endpts)
+        self.__drawcount += 1
         # Limit the number of drawing commands per picture
         if self.__drawcount >= self.__maxdraws:
             self.updateScene()
@@ -998,38 +987,33 @@ class PyQtPipedViewer(QMainWindow):
         ptcoords = cmnd["points"]
         ptsize = cmnd["size"]
         sympath = self.__helper.getSymbolFromCmnd(cmnd["symbol"])
-        # save the default state of the painter
-        self.__activepainter.save()
+        self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                           self.__antialias)
         try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                               self.__antialias)
+            mycolor = self.__helper.getColorFromCmnd(cmnd)
+            mybrush = QBrush(mycolor, Qt.SolidPattern)
+        except KeyError:
+            mybrush = QBrush(Qt.SolidPattern)
+        if sympath.isFilled():
+            self.__activepainter.setBrush(mybrush)
+            self.__activepainter.setPen(Qt.NoPen)
+        else:
+            self.__activepainter.setBrush(Qt.NoBrush)
+            mypen = QPen(mybrush, 15.0, Qt.SolidLine,
+                         Qt.RoundCap, Qt.RoundJoin)
+            self.__activepainter.setPen(mypen)
+        scalefactor = ptsize / 100.0
+        for xyval in ptcoords:
+            (adjx, adjy) = self.adjustPoint( xyval )
+            # save so the translation and scale are not permanent
+            self.__activepainter.save()
             try:
-                mycolor = self.__helper.getColorFromCmnd(cmnd)
-                mybrush = QBrush(mycolor, Qt.SolidPattern)
-            except KeyError:
-                mybrush = QBrush(Qt.SolidPattern)
-            if sympath.isFilled():
-                self.__activepainter.setBrush(mybrush)
-                self.__activepainter.setPen(Qt.NoPen)
-            else:
-                self.__activepainter.setBrush(Qt.NoBrush)
-                mypen = QPen(mybrush, 15.0, Qt.SolidLine,
-                             Qt.RoundCap, Qt.RoundJoin)
-                self.__activepainter.setPen(mypen)
-            scalefactor = ptsize / 100.0
-            for xyval in ptcoords:
-                (adjx, adjy) = self.adjustPoint( xyval )
-                self.__activepainter.save()
-                try:
-                    self.__activepainter.translate(adjx, adjy)
-                    self.__activepainter.scale(scalefactor, scalefactor)
-                    self.__activepainter.drawPath(sympath.painterPath())
-                finally:
-                    self.__activepainter.restore()
-            self.__drawcount += len(ptcoords)
-        finally:
-            # return the painter to the default state
-            self.__activepainter.restore()
+                self.__activepainter.translate(adjx, adjy)
+                self.__activepainter.scale(scalefactor, scalefactor)
+                self.__activepainter.drawPath(sympath.painterPath())
+            finally:
+                self.__activepainter.restore()
+        self.__drawcount += len(ptcoords)
         # Limit the number of drawing commands per picture
         if self.__drawcount >= self.__maxdraws:
             self.updateScene()
@@ -1056,29 +1040,23 @@ class PyQtPipedViewer(QMainWindow):
         adjpoints = [ self.adjustPoint(xypair) for xypair in mypoints ]
         mypolygon = QPolygonF( [ QPointF(xypair[0], xypair[1]) \
                                      for xypair in adjpoints ] )
-        # save the default state of the painter
-        self.__activepainter.save()
+        self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                           self.__antialias)
         try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                               self.__antialias)
-            try:
-                mybrush = self.__helper.getBrushFromCmnd(cmnd["fill"])
-            except KeyError:
-                mybrush = Qt.NoBrush
-            try:
-                mypen = self.__helper.getPenFromCmnd(cmnd["outline"])
-            except KeyError:
-                if ( mybrush == Qt.NoBrush ):
-                    raise ValueError( self.tr('drawPolygon called without a Brush or Pen') )
-                # Use a cosmetic Pen matching the brush
-                mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-            self.__activepainter.setBrush(mybrush)
-            self.__activepainter.setPen(mypen)
-            self.__activepainter.drawPolygon(mypolygon)
-            self.__drawcount += 1
-        finally:
-            # return the painter to the default state
-            self.__activepainter.restore()
+            mybrush = self.__helper.getBrushFromCmnd(cmnd["fill"])
+        except KeyError:
+            mybrush = Qt.NoBrush
+        try:
+            mypen = self.__helper.getPenFromCmnd(cmnd["outline"])
+        except KeyError:
+            if ( mybrush == Qt.NoBrush ):
+                raise ValueError( self.tr('drawPolygon called without a Brush or Pen') )
+            # Use a cosmetic Pen matching the brush
+            mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        self.__activepainter.setBrush(mybrush)
+        self.__activepainter.setPen(mypen)
+        self.__activepainter.drawPolygon(mypolygon)
+        self.__drawcount += 1
         # Limit the number of drawing commands per picture
         if self.__drawcount >= self.__maxdraws:
             self.updateScene()
@@ -1118,26 +1096,20 @@ class PyQtPipedViewer(QMainWindow):
         if height <= 0.0:
             raise ValueError("height of the rectangle in not positive")
         myrect = QRectF(lefttop[0], lefttop[1], width, height)
-        # save the default state of the painter
-        self.__activepainter.save()
+        self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                           self.__antialias)
         try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                               self.__antialias)
-            try:
-                mypen = self.__helper.getPenFromCmnd(cmnd["outline"])
-                self.__activepainter.setPen(mypen)
-            except KeyError:
-                self.__activepainter.setPen(Qt.NoPen)
-            try:
-                mybrush = self.__helper.getBrushFromCmnd(cmnd["fill"])
-                self.__activepainter.setBrush(mybrush)
-            except KeyError:
-                self.__activepainter.setBrush(Qt.NoBrush)
-            self.__activepainter.drawRect(myrect)
-            self.__drawcount += 1
-        finally:
-            # return the painter to the default state
-            self.__activepainter.restore()
+            mypen = self.__helper.getPenFromCmnd(cmnd["outline"])
+            self.__activepainter.setPen(mypen)
+        except KeyError:
+            self.__activepainter.setPen(Qt.NoPen)
+        try:
+            mybrush = self.__helper.getBrushFromCmnd(cmnd["fill"])
+            self.__activepainter.setBrush(mybrush)
+        except KeyError:
+            self.__activepainter.setBrush(Qt.NoBrush)
+        self.__activepainter.drawRect(myrect)
+        self.__drawcount += 1
         # Limit the number of drawing commands per picture
         if self.__drawcount >= self.__maxdraws:
             self.updateScene()
@@ -1198,28 +1170,22 @@ class PyQtPipedViewer(QMainWindow):
         if len(colors) < (numrows * numcols):
             raise IndexError("not enough colors given")
 
-        # save the default state of the painter
-        self.__activepainter.save()
-        try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                               self.__antialias)
-            self.__activepainter.setPen(Qt.NoPen)
-            width = width / float(numcols)
-            height = height / float(numrows)
-            myrect = QRectF(lefttop[0], lefttop[1], width, height)
-            colorindex = 0
-            for j in xrange(numcols):
-                myrect.moveLeft(lefttop[0] + j * width)
-                for k in xrange(numrows):
-                    myrect.moveTop(lefttop[1] + k * height)
-                    mybrush = QBrush(colors[colorindex], Qt.SolidPattern)
-                    colorindex += 1
-                    self.__activepainter.setBrush(mybrush)
-                    self.__activepainter.drawRect(myrect)
-            self.__drawcount += numcols * numrows
-        finally:
-            # return the painter to the default state
-            self.__activepainter.restore()
+        self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                           self.__antialias)
+        self.__activepainter.setPen(Qt.NoPen)
+        width = width / float(numcols)
+        height = height / float(numrows)
+        myrect = QRectF(lefttop[0], lefttop[1], width, height)
+        colorindex = 0
+        for j in xrange(numcols):
+            myrect.moveLeft(lefttop[0] + j * width)
+            for k in xrange(numrows):
+                myrect.moveTop(lefttop[1] + k * height)
+                mybrush = QBrush(colors[colorindex], Qt.SolidPattern)
+                colorindex += 1
+                self.__activepainter.setBrush(mybrush)
+                self.__activepainter.drawRect(myrect)
+        self.__drawcount += numcols * numrows
         # Limit the number of drawing commands per picture
         if self.__drawcount >= self.__maxdraws:
             self.updateScene()
@@ -1227,7 +1193,7 @@ class PyQtPipedViewer(QMainWindow):
     def drawSimpleText(self, cmnd):
         '''
         Draws a "simple" text item in the current view.
-        Raises a KeyError if the "text" key is not given.
+        Raises a KeyError if the "text" or "location" key is not given.
 
         Recognized keys from cmnd:
             "text": string to displayed
@@ -1244,36 +1210,30 @@ class PyQtPipedViewer(QMainWindow):
                     start of text.
         '''
         mytext = cmnd["text"]
+        startpt = cmnd["location"]
+        (xpos, ypos) = self.adjustPoint(startpt)
+        self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                           self.__antialias)
+        self.__activepainter.setBrush(Qt.NoBrush)
         try:
-            startpt = cmnd["location"]
-            (xpos, ypos) = self.adjustPoint(startpt)
+            mypen = self.__helper.getPenFromCmnd(cmnd["fill"])
+            self.__activepainter.setPen(mypen)
         except KeyError:
-            # Almost certainly an error, so put it someplace
-            # where it will be seen, hopefully as an error.
-            winrect = self.__activepainter.window()
-            xpos = winrect.width() / 2.0
-            ypos = winrect.height() / 2.0
-        # save the default state of the painter
+            pass
+        # save so the font, translation, and rotation are not permanent
         self.__activepainter.save()
         try:
-            self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                               self.__antialias)
-            # Move the coordinate system so the origin is at the start
-            # of the text so that rotation is about this point
-            self.__activepainter.translate(xpos, ypos)
             try:
                 myfont = self.__helper.getFontFromCmnd(cmnd["font"])
                 self.__activepainter.setFont(myfont)
             except KeyError:
                 pass
+            # Move the coordinate system so the origin is at the start
+            # of the text so that rotation is about this point
+            self.__activepainter.translate(xpos, ypos)
             try:
                 rotdeg = cmnd["rotate"]
                 self.__activepainter.rotate(rotdeg)
-            except KeyError:
-                pass
-            try:
-                mypen = self.__helper.getPenFromCmnd(cmnd["fill"])
-                self.__activepainter.setPen(mypen)
             except KeyError:
                 pass
             self.__activepainter.drawText(0, 0, mytext)

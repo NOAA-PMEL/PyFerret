@@ -296,8 +296,8 @@ class PyGtkCmndHelper(object):
         # Scale the line width for the size of the current scene pixmap
         if linewidth > 0:
             (pixwidth, pixheight) = self.__viewer.getScenePixmapSize()
-            adjfactor = 0.0005 * (pixwidth + pixheight)
-            linewidth = int( linewidth * adjfactor + 0.5 )
+            adjfactor = 0.00005 * (pixwidth + pixheight)
+            linewidth = int( round(linewidth * adjfactor) )
             if linewidth < 1:
                 linewidth = 1
         # Get the line style from somewhere

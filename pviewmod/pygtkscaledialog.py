@@ -94,9 +94,7 @@ class PyGtkScaleDialog(gtk.Dialog):
         # "show" the table and everything in it
         dlgtable.show_all()
         # set the default button
-        okbutton = self.get_widget_for_response(gtk.RESPONSE_ACCEPT)
-        okbutton.set_flags(gtk.CAN_DEFAULT)
-        self.set_default(okbutton)
+        self.set_default_response(gtk.RESPONSE_ACCEPT)
         # select all the text in the text edit
         self.__scaleedit.select_region(0, -1)
         # update all the label values when the scaling value changes

@@ -786,14 +786,15 @@ class PyQtPipedImager(QMainWindow):
         '''
         ptcoords = cmnd["points"]
         ptsize = cmnd["size"]
+        scalefactor = float(ptsize) / 100.0
         sympath = self.__helper.getSymbolFromCmnd(cmnd["symbol"])
-        self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                           self.__antialias)
         try:
             mycolor = self.__helper.getColorFromCmnd(cmnd)
             mybrush = QBrush(mycolor, Qt.SolidPattern)
         except KeyError:
             mybrush = QBrush(Qt.SolidPattern)
+        self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                           self.__antialias)
         if sympath.isFilled():
             self.__activepainter.setBrush(mybrush)
             self.__activepainter.setPen(Qt.NoPen)
@@ -802,7 +803,6 @@ class PyQtPipedImager(QMainWindow):
             mypen = QPen(mybrush, 15.0, Qt.SolidLine,
                          Qt.RoundCap, Qt.RoundJoin)
             self.__activepainter.setPen(mypen)
-        scalefactor = ptsize / 100.0
         for xyval in ptcoords:
             (adjx, adjy) = self.adjustPoint( xyval )
             # Need a save so the translate and scale is not permanent
@@ -840,8 +840,6 @@ class PyQtPipedImager(QMainWindow):
         adjpoints = [ self.adjustPoint(xypair) for xypair in mypoints ]
         mypolygon = QPolygonF( [ QPointF(xypair[0], xypair[1]) \
                                      for xypair in adjpoints ] )
-        self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                           self.__antialias)
         try:
             mybrush = self.__helper.getBrushFromCmnd(cmnd["fill"])
         except KeyError:
@@ -853,6 +851,8 @@ class PyQtPipedImager(QMainWindow):
                 raise ValueError( self.tr('drawPolygon called without a Brush or Pen') )
             # Use a cosmetic Pen matching the brush
             mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                           self.__antialias)
         self.__activepainter.setBrush(mybrush)
         self.__activepainter.setPen(mypen)
         self.__activepainter.drawPolygon(mypolygon)
@@ -896,18 +896,21 @@ class PyQtPipedImager(QMainWindow):
         if height <= 0.0:
             raise ValueError("height of the rectangle in not positive")
         myrect = QRectF(lefttop[0], lefttop[1], width, height)
-        self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                           self.__antialias)
-        try:
-            mypen = self.__helper.getPenFromCmnd(cmnd["outline"])
-            self.__activepainter.setPen(mypen)
-        except KeyError:
-            self.__activepainter.setPen(Qt.NoPen)
         try:
             mybrush = self.__helper.getBrushFromCmnd(cmnd["fill"])
-            self.__activepainter.setBrush(mybrush)
         except KeyError:
-            self.__activepainter.setBrush(Qt.NoBrush)
+            mybrush = Qt.NoBrush
+        try:
+            mypen = self.__helper.getPenFromCmnd(cmnd["outline"])
+        except KeyError:
+            if ( mybrush == Qt.NoBrush ):
+                raise ValueError( self.tr('drawRectangle called without a Brush or Pen') )
+            # Use a cosmetic Pen matching the brush
+            mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                           self.__antialias)
+        self.__activepainter.setBrush(mybrush)
+        self.__activepainter.setPen(mypen)
         self.__activepainter.drawRect(myrect)
         self.__drawcount += 1
         # Limit the number of drawing commands per picture
@@ -969,13 +972,11 @@ class PyQtPipedImager(QMainWindow):
                                  for colorinfo in cmnd["colors"] ]
         if len(colors) < (numrows * numcols):
             raise IndexError("not enough colors given")
-
-        self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                           self.__antialias)
-        self.__activepainter.setPen(Qt.NoPen)
         width = width / float(numcols)
         height = height / float(numrows)
         myrect = QRectF(lefttop[0], lefttop[1], width, height)
+        self.__activepainter.setRenderHint(QPainter.Antialiasing,
+                                           self.__antialias)
         colorindex = 0
         for j in xrange(numcols):
             myrect.moveLeft(lefttop[0] + j * width)
@@ -983,7 +984,10 @@ class PyQtPipedImager(QMainWindow):
                 myrect.moveTop(lefttop[1] + k * height)
                 mybrush = QBrush(colors[colorindex], Qt.SolidPattern)
                 colorindex += 1
+                # Use a cosmetic Pen matching the brush
+                mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
                 self.__activepainter.setBrush(mybrush)
+                self.__activepainter.setPen(mypen)
                 self.__activepainter.drawRect(myrect)
         self.__drawcount += numcols * numrows
         # Limit the number of drawing commands per picture

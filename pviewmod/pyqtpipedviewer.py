@@ -1099,15 +1099,18 @@ class PyQtPipedViewer(QMainWindow):
         self.__activepainter.setRenderHint(QPainter.Antialiasing,
                                            self.__antialias)
         try:
-            mypen = self.__helper.getPenFromCmnd(cmnd["outline"])
-            self.__activepainter.setPen(mypen)
-        except KeyError:
-            self.__activepainter.setPen(Qt.NoPen)
-        try:
             mybrush = self.__helper.getBrushFromCmnd(cmnd["fill"])
-            self.__activepainter.setBrush(mybrush)
         except KeyError:
-            self.__activepainter.setBrush(Qt.NoBrush)
+            mybrush = Qt.NoBrush
+        try:
+            mypen = self.__helper.getPenFromCmnd(cmnd["outline"])
+        except KeyError:
+            if ( mybrush == Qt.NoBrush ):
+                raise ValueError( self.tr('drawPolygon called without a Brush or Pen') )
+            # Use a cosmetic Pen matching the brush
+            mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        self.__activepainter.setBrush(mybrush)
+        self.__activepainter.setPen(mypen)
         self.__activepainter.drawRect(myrect)
         self.__drawcount += 1
         # Limit the number of drawing commands per picture
@@ -1172,7 +1175,6 @@ class PyQtPipedViewer(QMainWindow):
 
         self.__activepainter.setRenderHint(QPainter.Antialiasing,
                                            self.__antialias)
-        self.__activepainter.setPen(Qt.NoPen)
         width = width / float(numcols)
         height = height / float(numrows)
         myrect = QRectF(lefttop[0], lefttop[1], width, height)
@@ -1183,7 +1185,10 @@ class PyQtPipedViewer(QMainWindow):
                 myrect.moveTop(lefttop[1] + k * height)
                 mybrush = QBrush(colors[colorindex], Qt.SolidPattern)
                 colorindex += 1
+                # cosmetic pen of the same color
+                mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
                 self.__activepainter.setBrush(mybrush)
+                self.__activepainter.setPen(mypen)
                 self.__activepainter.drawRect(myrect)
         self.__drawcount += numcols * numrows
         # Limit the number of drawing commands per picture

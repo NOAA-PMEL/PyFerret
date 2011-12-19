@@ -46,6 +46,10 @@
         REAL   ndcxmax(maxwindowobjs),
      .         ndcymax(maxwindowobjs)
 
+* Number of dots (pixels) per inch.  Assigned when creating the window.
+        REAL   windowdpix(maxwindowobjs),
+     .         windowdpiy(maxwindowobjs)
+
 * Coordinate transformation information (independent of window)
 * View limits defined in [0,1] normalized device coordinates
         REAL   viewleftfrac(maxtransforms),
@@ -123,12 +127,12 @@
 * And finally the common block containing all these variables
         COMMON /FGRDEL/ windowobjs, colorobjs, brushobjs,
      .         fontobjs, penobjs, symbolobjs, colorrgb,
-     .         symbolsize, windowwidth, windowheight,
-     .         ndcxmax, ndcymax, viewleftfrac, viewbottomfrac,
-     .         viewrightfrac, viewtopfrac, viewleftcoord,
-     .         viewbottomcoord, viewrightcoord, viewtopcoord,
-     .         activewindow, activetransform, activebrush,
-     .         activepen, activesymbol, lastbrushcolor,
+     .         symbolsize, windowdpix, windowdpiy, windowwidth,
+     .         windowheight, ndcxmax, ndcymax, viewleftfrac,
+     .         viewbottomfrac, viewrightfrac, viewtopfrac,
+     .         viewleftcoord, viewbottomcoord, viewrightcoord,
+     .         viewtopcoord, activewindow, activetransform,
+     .         activebrush, activepen, activesymbol, lastbrushcolor,
      .         lastbstylen, clearcolor, symbolcolor, showwindow,
      .         cliptoview, somethingdrawn, lastbrushstyle,
      .         enginename, windowtitle

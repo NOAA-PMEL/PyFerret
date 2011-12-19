@@ -24,10 +24,12 @@
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
+        INTEGER TM_LENSTR
+
+        REAL newwidth, newheight, dpix, dpiy
+        INTEGER engnamelen, wintitlelen,
+     .          showit, success, errmsglen
         CHARACTER*2048 errmsg
-        INTEGER TM_LENSTR, engnamelen, wintitlelen,
-     .                     showit, errmsglen
-        REAL newwidth, newheight
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR.
@@ -75,7 +77,14 @@
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
-
+*       Get the horizontal and vertical DPI so this is called only once
+        CALL FGDWINDPI(success, windowobjs(windowid),
+     .                 windowdpix(windowid), windowdpiy(windowid))
+        IF ( success .EQ. 0 ) THEN
+            errmsg = ' '
+            CALL FGDERRMSG(errmsg, errmsglen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+        ENDIF
         RETURN
         END
 

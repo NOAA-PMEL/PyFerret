@@ -65,6 +65,10 @@
         DATA ndcxmax / maxwindowobjs * 1.0 /
         DATA ndcymax / maxwindowobjs * 1.0 /
 
+* "Uninitialized" DPI values
+        DATA windowdpix / maxwindowobjs * 0.0 /
+        DATA windowdpiy / maxwindowobjs * 0.0 /
+
 * Coordinate transformation data independent of windows
         DATA viewleftfrac / maxtransforms * 0.0 /
         DATA viewbottomfrac / maxtransforms * 0.0 /

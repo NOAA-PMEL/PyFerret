@@ -91,6 +91,10 @@
             ENDIF
    50   CONTINUE
 
+*       Clear the DPI values just to be safe
+        windowdpix(windowid) = 0.0
+        windowdpiy(windowid) = 0.0
+
 *       Delete the window
         CALL FGDWINDELETE(success, windowobjs(windowid))
         IF ( success .EQ. 0 ) THEN

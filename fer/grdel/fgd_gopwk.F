@@ -26,10 +26,10 @@
 
         INTEGER TM_LENSTR
 
-        REAL newwidth, newheight, dpix, dpiy
         INTEGER engnamelen, wintitlelen,
      .          showit, success, errmsglen
         CHARACTER*2048 errmsg
+        REAL wdth, hght, dpix, dpiy
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR.
@@ -43,8 +43,6 @@
 *       Create the window
         engnamelen = TM_LENSTR(enginename)
         wintitlelen = TM_LENSTR(windowtitle)
-        newwidth = windowwidth(windowid) * 1000.0
-        newheight = windowheight(windowid) * 1000.0
         IF ( showwindow(windowid) ) THEN
             showit = 1
         ELSE
@@ -52,8 +50,7 @@
         ENDIF
         CALL FGDWINCREATE(windowobjs(windowid),
      .                    enginename, engnamelen,
-     .                    windowtitle, wintitlelen,
-     .                    newwidth, newheight, showit)
+     .                    windowtitle, wintitlelen, showit)
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)
@@ -77,9 +74,20 @@
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
-*       Get the horizontal and vertical DPI so this is called only once
-        CALL FGDWINDPI(success, windowobjs(windowid),
-     .                 windowdpix(windowid), windowdpiy(windowid))
+*       Get the horizontal and vertical DPI,
+*       and store it so this is called only once.
+        CALL FGDWINDPI(success, windowobjs(windowid), dpix, dpiy)
+        IF ( success .EQ. 0 ) THEN
+            errmsg = ' '
+            CALL FGDERRMSG(errmsg, errmsglen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+        ENDIF
+        windowdpix(windowid) = dpix
+        windowdpiy(windowid) = dpiy
+*       Resize the window based on these DPI values
+        wdth = windowwidth(windowid) * dpix
+        hght = windowheight(windowid) * dpiy
+        CALL FGDWINSETSIZE(success, windowobjs(windowid), wdth, hght)
         IF ( success .EQ. 0 ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)

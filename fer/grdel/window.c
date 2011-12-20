@@ -5,16 +5,11 @@
  * of the Window.
  *
  * "View" refers to a rectangular subsection of the Window (possibly
- * the complete canvas of the Window).  A View has its own coordinate
- * system where the longer side has coordinates [0, 1000], and the
- * shorter side has coordinates [0, N] where N is such that the aspect
- * ratio of the Window is maintained.
+ * the complete canvas of the Window).  
  *
  * In order to draw in a Window, a View must first have been specified
- * using grdelViewBegin.  All coordinates and sizes in drawing methods
- * use View coordinates with the one exception of Font size in points.
- * When drawing in a View is complete, grdelViewEnd is called, at which
- * point the Window will be updated.
+ * using grdelViewBegin.  When drawing in a View is complete, grdelViewEnd
+ * is called, at which point the Window should be updated.
  *
  * Only one View can be active at any time.  So a switch between views
  * requires ending one view and beginning a another view.
@@ -85,8 +80,6 @@ void fgderrmsg_(char *errmsg, int *errmsglen)
  *     enginelen: actual length of the graphics engine name
  *     title: display title for the Window
  *     titlelen: actual length of the title
- *     width: width of the Window, in 0.001 inches
- *     height: height of the Window, in 0.001 inches
  *     visible: display Window on start-up?
  *
  * Returns a pointer to the window object created.
@@ -94,8 +87,7 @@ void fgderrmsg_(char *errmsg, int *errmsglen)
  * grdelerrmsg contains an explanatory message.
  */
 grdelType grdelWindowCreate(const char *engine, int enginelen,
-               const char *title, int titlelen, float width,
-               float height, grdelBool visible)
+               const char *title, int titlelen, grdelBool visible)
 {
     GDWindow *window;
     PyObject *modulename;
@@ -139,9 +131,8 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
     else {
         visiblebool = Py_False;
     }
-    window->bindings = PyObject_CallMethod(module, "createWindow", "s#s#ddO",
-                                engine, enginelen, title, titlelen,
-                                (double) width, (double) height, visiblebool);
+    window->bindings = PyObject_CallMethod(module, "createWindow", "s#s#O",
+                                engine, enginelen, title, titlelen, visiblebool);
     Py_DECREF(module);
     if ( window->bindings == NULL ) {
         sprintf(grdelerrmsg, "grdelWindowCreate: error when calling createWindow "
@@ -344,8 +335,10 @@ grdelBool grdelWindowUpdate(grdelType window)
  *
  * Arguments:
  *     window: Window to use
- *     width: width of the Window, in units of 0.001 inches
- *     height: height of the window in units of 0.001 inches
+ *     width: width of the Window, in "device units"
+ *     height: height of the window in "device units"
+ *
+ * "device units" is pixels at the current window DPI.
  *
  * Returns success (nonzero) or failure (zero).
  * If failure, grdelerrmsg contains an explanatory message.
@@ -550,20 +543,18 @@ grdelBool grdelWindowDpi(grdelType window, float *dpix, float *dpiy)
  *     enginelen: actual length of the graphics engine name
  *     title: display title for the Window
  *     titlelen: actual length of the title
- *     width: width of the Window, in 0.001 inches
- *     height: height of the Window, in 0.001 inches
  *     visible: display Window on start-up? If zero, no; if non-zero, yes.
  * Output Arguments:
  *     window: the window object created, or zero if failure.
  *             Use fgderrmsg_ to retreive the error message.
  */
-void fgdwincreate_(void **window, char *engine, int *enginelen, char *title,
-                   int *titlelen, float *width, float *height, int *visible)
+void fgdwincreate_(void **window, char *engine, int *enginelen,
+                   char *title, int *titlelen, int *visible)
 {
     grdelType mywindow;
 
-    mywindow = grdelWindowCreate(engine, *enginelen, title, *titlelen,
-                                 *width, *height, *visible);
+    mywindow = grdelWindowCreate(engine, *enginelen,
+                                 title, *titlelen, *visible);
     *window = mywindow;
 }
 
@@ -625,8 +616,9 @@ void fgdwinupdate_(int *success, void **window)
  *
  * Input Arguments:
  *     window: Window to use
- *     width: width of the Window, in units of 0.001 inches
- *     height: height of the window in units of 0.001 inches
+ *     width: width of the Window, in "device units"
+ *     height: height of the window in "device units"
+ *   "device units" is pixels at the current window DPI.
  * Output Arguments:
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
@@ -710,8 +702,7 @@ void fgdwindpi_(int *success, void **window, float *dpix, float *dpiy)
 
 /*
  * Starts a View in a Window.  "View" refers to a rectangular subsection of
- * the Window (possibly the complete canvas of the Window).  A View has its
- * own coordinate system (user or world coordinates).
+ * the Window (possibly the complete canvas of the Window).
  *
  * Arguments:
  *     window: Window object to use
@@ -723,15 +714,11 @@ void fgdwindpi_(int *success, void **window, float *dpix, float *dpiy)
  *             [0.0, 1.0] of the total width of the Window
  *     topfrac: location of the top of the View as a fraction
  *             [0.0, 1.0] of the total height of the Window
- *     leftcoord: user coordinate of the left side of the View
- *     bottomcoord: user coordinate of the bottom side of the View
- *     rightcoord: user coordinate of the right side of the View
- *     topcoord: user coordinate of the top side of the View
  *     clipit: clip drawing to this View?
  *
- * The Window and View coordinates start at the bottom left corner and
- * increase to the top right corner; thus rightfrac must be larger than
- * leftfrac, and topfrac must be larger than bottomfrac.
+ * The Window fractions start at the bottom left corner and increase
+ * to the top right corner; thus rightfrac must be larger than leftfrac,
+ * and topfrac must be larger than bottomfrac.
  *
  * Returns success (nonzero) or failure (zero).
  * If failure, grdelerrmsg contains an explanatory message.
@@ -739,8 +726,6 @@ void fgdwindpi_(int *success, void **window, float *dpix, float *dpiy)
 grdelBool grdelWindowViewBegin(grdelType window,
                                float leftfrac, float bottomfrac,
                                float rightfrac, float topfrac,
-                               float leftcoord, float bottomcoord,
-                               float rightcoord, float topcoord,
                                grdelBool clipit)
 {
     GDWindow *mywindow;
@@ -751,10 +736,8 @@ grdelBool grdelWindowViewBegin(grdelType window,
     fprintf(debuglogfile, "grdelWindowViewBegin called: "
             "window = %X, "
             "viewfrac  = (%f, %f, %f, %f) "
-            "usercoord = (%f, %f, %f, %f) "
             "clipit = %d\n",
-            window, leftfrac, bottomfrac, rightfrac, topfrac,
-            leftcoord, bottomcoord, rightcoord, topcoord, clipit);
+            window, leftfrac, bottomfrac, rightfrac, topfrac, clipit);
     fflush(debuglogfile);
 #endif
 
@@ -776,11 +759,9 @@ grdelBool grdelWindowViewBegin(grdelType window,
        clipbool = Py_False;
     }
 
-    result = PyObject_CallMethod(mywindow->bindings, "beginView", "ddddddddO",
-                                 (double) leftfrac, (double) bottomfrac,
-                                 (double) rightfrac, (double) topfrac,
-                                 (double) leftcoord, (double) bottomcoord,
-                                 (double) rightcoord, (double) topcoord,
+    result = PyObject_CallMethod(mywindow->bindings, "beginView", "ddddO",
+                                 (double) leftfrac, 1.0 - (double) bottomfrac,
+                                 (double) rightfrac, 1.0 - (double) topfrac,
                                  clipbool);
     if ( result == NULL ) {
         sprintf(grdelerrmsg, "grdelWindowViewBegin: Error when calling "
@@ -894,8 +875,7 @@ grdelBool grdelWindowViewEnd(grdelType window)
 
 /*
  * Starts a View in a Window.  "View" refers to a rectangular subsection of
- * the Window (possibly the complete canvas of the Window).  A View has its
- * own coordinate system (user or world coordinates).
+ * the Window (possibly the complete canvas of the Window). 
  *
  * Input Arguments:
  *     window: Window object to use
@@ -907,15 +887,11 @@ grdelBool grdelWindowViewEnd(grdelType window)
  *             [0.0, 1.0] of the total width of the Window
  *     topfrac: location of the top of the View as a fraction
  *             [0.0, 1.0] of the total height of the Window
- *     leftcoord: user coordinate of the left side of the View
- *     bottomcoord: user coordinate of the bottom side of the View
- *     rightcoord: user coordinate of the right side of the View
- *     topcoord: user coordinate of the top side of the View
  *     clipit: clip drawing to this View? (zero: no, non-zero: yes)
  *
- * The Window and View coordinates start at the bottom left corner and
- * increase to the top right corner; thus rightfrac must be larger than
- * leftfrac, and topfrac must be larger than bottomfrac.
+ * The Window fractions start at the bottom left corner and increase
+ * to the top right corner; thus rightfrac must be larger than leftfrac,
+ * and topfrac must be larger than bottomfrac.
  *
  * Output Arguments:
  *     success: non-zero if successful; zero if an error occurred.
@@ -924,15 +900,12 @@ grdelBool grdelWindowViewEnd(grdelType window)
 void fgdviewbegin_(int *success, void **window,
                    float *leftfrac, float *bottomfrac,
                    float *rightfrac, float *topfrac,
-                   float *leftcoord, float *bottomcoord,
-                   float *rightcoord, float *topcoord,
                    int *clipit)
 {
     grdelBool result;
 
     result = grdelWindowViewBegin(*window, *leftfrac, *bottomfrac,
-                  *rightfrac, *topfrac, *leftcoord, *bottomcoord,
-                  *rightcoord, *topcoord, *clipit);
+                                  *rightfrac, *topfrac, *clipit);
     *success = result;
 }
 

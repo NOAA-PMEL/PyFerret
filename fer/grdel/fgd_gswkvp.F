@@ -42,9 +42,9 @@
         windowwidth(windowid) = newwidth
         windowheight(windowid) = newheight
 
-*       Resize the window - uses units of 0.001 inches
-        newwidth = newwidth * 1000.0
-        newheight = newheight * 1000.0
+*       Resize the window - uses units of pixels
+        newwidth = newwidth * windowdpix(windowid)
+        newheight = newheight * windowdpiy(windowid)
         CALL FGDWINSETSIZE(success, windowobjs(windowid),
      .                     newwidth, newheight)
         IF ( success .EQ. 0 ) THEN

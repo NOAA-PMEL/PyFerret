@@ -43,9 +43,14 @@ extern char grdelerrmsg[2048];
 void fgderrmsg_(char *errmsg, int *errmsglen);
 
 /*
- * Prototypes of some Fortran functions
+ * Prototypes of some Fortran functions called by C functions.
  */
 void fgd_bkgcolor_(int *windowid, int *colorindex);
+void fgd_get_window_size_(float *width, float *height);
+void fgd_get_view_limits_(float *lftfrc, float *rgtfrc,
+                          float *btmfrc, float *topfrc,
+                          float *lftcrd, float *rgtcrd,
+                          float *btmcrd, float *topcrd);
 void fgd_getdpi_(int *windowid, float *dpix, float *dpiy);
 void fgd_gswkvp_(int *windowid, float *xmin, float *xmax,
                                 float *ymin, float *ymax);
@@ -57,8 +62,8 @@ void fgd_hide_all_windows_(void);
  * the Window is "begun", and drawing is done in that View of the Window.
  */
 
-grdelType grdelWindowCreate(const char *engine, int enginelen, const char *title,
-               int titlelen, float width, float height, grdelBool visible);
+grdelType grdelWindowCreate(const char *engine, int enginelen,
+                     const char *title, int titlelen, grdelBool visible);
 PyObject *grdelWindowVerify(grdelType window);
 grdelBool grdelWindowDelete(grdelType window);
 grdelBool grdelWindowClear(grdelType window, grdelType fillcolor);
@@ -73,8 +78,8 @@ grdelBool grdelWindowDpi(grdelType window, float *dpix, float *dpiy);
 /*
  * Fortran interfaces for the Window functions.
  */
-void fgdwincreate_(void **window, char *engine, int *enginelen, char *title,
-               int *titlelen, float *width, float *height, int *visible);
+void fgdwincreate_(void **window, char *engine, int *enginelen,
+                   char *title, int *titlelen, int *visible);
 void fgdwindelete_(int *success, void **window);
 void fgdwinclear_(int *success, void **window, void **fillcolor);
 void fgdwinupdate_(int *success, void **window);
@@ -85,18 +90,20 @@ void fgdwinsave_(int *success, void **window, char *filename, int *namelen,
 void fgdwindpi(int *success, void **window, float *dpix, float *dpiy);
 
 /*
- * A "View" refers to a rectangular subsection of the Window (possibly the
- * full Window) which has its own coordinate system.  Drawing is performed
- * using the View's coordinates.  When complete, the View is "ended".  Only
- * one view can be active at a time, so switching between views requires
- * ending one view and beginning another view.
+ * A "View" refers to a rectangular subsection of the Window, possibly
+ * the full Window.  Drawing is performed after defining a View; however,
+ * coordinates are given in "device units" (pixels, using the current
+ * Window DPI, from the top left corner).  The defined View is used to
+ * set the clipping rectangle, when desired, and to adjust line width,
+ * symbol sizes, and font sizes.  When drawing in this View is complete,
+ * the View is "ended".  Only one view can be active at a time, so
+ * switching between views requires ending one view and beginning
+ * another view.
  */
 
 grdelBool grdelWindowViewBegin(grdelType window,
                                float leftfrac, float bottomfrac,
                                float rightfrac, float topfrac,
-                               float leftcoord, float bottomcoord,
-                               float rightcoord, float topcoord,
                                int clipit);
 grdelBool grdelWindowViewClip(grdelType window, int clipit);
 grdelBool grdelWindowViewEnd(grdelType window);
@@ -107,8 +114,6 @@ grdelBool grdelWindowViewEnd(grdelType window);
 void fgdviewbegin_(int *success, void **window,
                    float *leftfrac, float *bottomfrac,
                    float *rightfrac, float *topfrac,
-                   float *leftcoord, float *bottomcoord,
-                   float *rightcoord, float *topcoord,
                    int *clipit);
 void fgdviewclip_(int *success, void **window, int *clipit);
 void fgdviewend_(int *success, void **window);

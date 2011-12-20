@@ -27,7 +27,6 @@ class PipedViewer(object):
         Currently supported viewer types are:
             "PyQtPipedViewer": PyQtPipedViewer using PyQt4
             "PyQtPipedImager": PyQtPipedImager using PyQt4
-            "PyGtkPipedImager": PyGtkPipedImager using PyGtk 2.10 or later
         '''
         super(PipedViewer, self).__init__()
         (self.__cmndrecvpipe, self.__cmndsendpipe) = Pipe(False)
@@ -46,13 +45,6 @@ class PipedViewer(object):
                 raise TypeError("The PyQt viewers requires PyQt4")
             self.__vprocess = PyQtPipedImagerProcess(self.__cmndrecvpipe,
                                                      self.__rspdsendpipe)
-        elif viewertype == "PyGtkPipedImager":
-            try:
-                from pygtkpipedimager import PyGtkPipedImagerProcess
-            except ImportError:
-                raise TypeError("The PyGtk viewers requires PyGtk 2.10 or later")
-            self.__vprocess = PyGtkPipedImagerProcess(self.__cmndrecvpipe,
-                                                      self.__rspdsendpipe)
         else:
             raise TypeError("Unknown viewer type %s" % str(viewertype))
         self.__vprocess.start()
@@ -102,192 +94,187 @@ if __name__ == "__main__":
     drawcmnds = []
     drawcmnds.append( { "action":"setTitle", "title":"Tester" } )
     drawcmnds.append( { "action":"show" } )
-    drawcmnds.append( { "action":"clear", "color":"white", "alpha": 255})
+    drawcmnds.append( { "action":"clear", "color":0xFFFFFF} )
+    drawcmnds.append( { "action":"dpi"} )
+    drawcmnds.append( { "action":"antialias", "antialias":True } )
     drawcmnds.append( { "action":"resize",
-                        "width":5000,
-                        "height":5000 } )
+                        "width":500,
+                        "height":500 } )
     drawcmnds.append( { "action":"beginView",
-                        "viewfracs": {"left":0.0, "bottom":0.5,
-                                      "right":0.5, "top":1.0 },
-                        "usercoords": {"left":0, "bottom":0,
-                                       "right":1000, "top":1000},
+                        "viewfracs":{"left":0.0, "right":0.5,
+                                     "top":0.5, "bottom":1.0},
                         "clip":True } )
     drawcmnds.append( { "action":"drawRectangle",
-                        "left": 50, "bottom":50,
-                        "right":950, "top":950,
-                        "fill":{"color":"black", "alpha":64},
-                        "outline":{"color":"blue"} } )
+                        "left": 5, "right":245, 
+                        "top":245, "bottom":495,
+                        "fill":{"color":"black", "alpha":128} } )
+    mypentapts = [ (.25 * ptx, .25 * pty + 250) for (ptx, pty) in pentagonpts ]
     drawcmnds.append( { "action":"drawPolygon",
-                        "points":pentagonpts,
+                        "points":mypentapts,
                         "fill":{"color":"lightblue"},
                         "outline":{"color":"black",
-                                   "width": 50,
+                                   "width": 5,
                                    "style":"solid",
                                    "capstyle":"round",
                                    "joinstyle":"round" } } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=100",
-                        "font":{"family":"Times", "size":200},
+                        "text":"y=480",
+                        "font":{"family":"Times", "size":50},
                         "fill":{"color":0x880000},
-                        "location":(100,100) } )
+                        "location":(50,480) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=300",
-                        "font":{"family":"Times", "size":200},
+                        "text":"y=430",
+                        "font":{"family":"Times", "size":50},
                         "fill":{"color":0x880000},
-                        "location":(100,300) } )
+                        "location":(50,430) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=500",
-                        "font":{"family":"Times", "size":200},
+                        "text":"y=380",
+                        "font":{"family":"Times", "size":50},
                         "fill":{"color":0x880000},
-                        "location":(100,500) } )
+                        "location":(50,380) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=700",
-                        "font":{"family":"Times", "size":200},
+                        "text":"y=330",
+                        "font":{"family":"Times", "size":50},
                         "fill":{"color":0x880000},
-                        "location":(100,700) } )
+                        "location":(50,330) } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"beginView",
-                        "viewfracs": {"left":0.05, "bottom":0.05,
-                                      "right":0.95, "top":0.95 },
-                        "usercoords": {"left":0, "bottom":0,
-                                       "right":1000, "top":1000},
+                        "viewfracs":{"left":0.25, "right":1.0,
+                                     "top":0.0,  "bottom":0.75},
                         "clip":True } )
     drawcmnds.append( { "action":"drawMulticolorRectangle",
-                        "left": 50, "bottom":50,
-                        "right":950, "top":950,
+                        "left":130, "right":495,
+                        "top":5, "bottom":370,
                         "numrows":2, "numcols":3,
                         "colors":( {"color":0xFF0000, "alpha":128},
-                                   {"color":0x888800, "alpha":128},
+                                   {"color":0xAA8800, "alpha":128},
                                    {"color":0x00FF00, "alpha":128},
                                    {"color":0x008888, "alpha":128},
                                    {"color":0x0000FF, "alpha":128},
                                    {"color":0x880088, "alpha":128} ) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"R",
-                        "font":{"size":200, "bold": True},
+                        "font":{"size":50, "bold": True},
                         "fill":{"color":"black"},
                         "rotate":-45,
-                        "location":(200,600) } )
+                        "location":(190,120) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"Y",
-                        "font":{"size":200, "bold": True},
+                        "font":{"size":50, "bold": True},
                         "fill":{"color":"black"},
                         "rotate":-45,
-                        "location":(200,150) } )
+                        "location":(190,300) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"G",
-                        "font":{"size":200, "bold": True},
+                        "font":{"size":50, "bold": True},
                         "fill":{"color":"black"},
                         "rotate":-45,
-                        "location":(500,600) } )
+                        "location":(310,120) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"C",
-                        "font":{"size":200, "bold": True},
+                        "font":{"size":50, "bold": True},
                         "fill":{"color":"black"},
                         "rotate":-45,
-                        "location":(500,150) } )
+                        "location":(310,300) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"B",
-                        "font":{"size":200, "bold": True},
+                        "font":{"size":50, "bold": True},
                         "fill":{"color":"black"},
                         "rotate":-45,
-                        "location":(800,600) } )
+                        "location":(430,120) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"M",
-                        "font":{"size":200, "bold": True},
+                        "font":{"size":50, "bold": True},
                         "fill":{"color":"black"},
                         "rotate":-45,
-                        "location":(800,150) } )
+                        "location":(430,300) } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"beginView",
-                        "viewfracs": {"left":0.0, "bottom":0.0,
-                                      "right":1.0, "top":1.0 },
-                        "usercoords": {"left":0, "bottom":0,
-                                       "right":1000, "top":1000},
+                        "viewfracs":{"left":0.0, "right":1.0,
+                                     "top":0.0, "bottom":1.0},
                         "clip":True } )
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (100, 100),
-                                   (100, 300),
-                                   (100, 500),
-                                   (100, 700),
-                                   (100, 900) ),
+                        "points":( (100,  50),
+                                   (100, 150),
+                                   (100, 250),
+                                   (100, 350),
+                                   (100, 450) ),
                         "symbol":".",
-                        "size":50,
+                        "size":20,
                         "color":"black" })
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (200, 100),
-                                   (200, 300),
-                                   (200, 500),
-                                   (200, 700),
-                                   (200, 900) ),
+                        "points":( (150,  50),
+                                   (150, 150),
+                                   (150, 250),
+                                   (150, 350),
+                                   (150, 450) ),
                         "symbol":"o",
-                        "size":50,
+                        "size":20,
                         "color":"black" })
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (300, 100),
-                                   (300, 300),
-                                   (300, 500),
-                                   (300, 700),
-                                   (300, 900) ),
+                        "points":( (200,  50),
+                                   (200, 150),
+                                   (200, 250),
+                                   (200, 350),
+                                   (200, 450) ),
                         "symbol":"+",
-                        "size":50,
+                        "size":20,
                         "color":"blue" })
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (400, 100),
-                                   (400, 300),
-                                   (400, 500),
-                                   (400, 700),
-                                   (400, 900) ),
+                        "points":( (250,  50),
+                                   (250, 150),
+                                   (250, 250),
+                                   (250, 350),
+                                   (250, 450) ),
                         "symbol":"x",
-                        "size":50,
+                        "size":20,
                         "color":"black" })
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (500, 100),
-                                   (500, 300),
-                                   (500, 500),
-                                   (500, 700),
-                                   (500, 900) ),
+                        "points":( (300,  50),
+                                   (300, 150),
+                                   (300, 250),
+                                   (300, 350),
+                                   (300, 450) ),
                         "symbol":"*",
-                        "size":50,
+                        "size":20,
                         "color":"black" })
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (600, 100),
-                                   (600, 300),
-                                   (600, 500),
-                                   (600, 700),
-                                   (600, 900) ),
+                        "points":( (350,  50),
+                                   (350, 150),
+                                   (350, 250),
+                                   (350, 350),
+                                   (350, 450) ),
                         "symbol":"^",
-                        "size":50,
+                        "size":20,
                         "color":"blue" })
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (700, 100),
-                                   (700, 300),
-                                   (700, 500),
-                                   (700, 700),
-                                   (700, 900) ),
+                        "points":( (400,  50),
+                                   (400, 150),
+                                   (400, 250),
+                                   (400, 350),
+                                   (400, 450) ),
                         "symbol":"#",
-                        "size":50,
+                        "size":20,
                         "color":"black" })
     drawcmnds.append( { "action":"drawMultiline",
-                        "points":( (600, 100),
-                                   (300, 300),
-                                   (700, 500),
-                                   (500, 700),
-                                   (300, 500),
-                                   (100, 900) ),
+                        "points":( (350,  50),
+                                   (200, 150),
+                                   (400, 250),
+                                   (300, 350),
+                                   (150, 250),
+                                   (100, 450) ),
                         "pen": {"color":"white",
-                                "width":8,
+                                "width":3,
                                 "style":"dash",
                                 "capstyle":"round",
                                 "joinstyle":"round"} } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"exit" } )
-
     # Test each known viewer.
-    for viewername in ( "PyQtPipedViewer", "PyQtPipedImager", ):
+    for viewername in ( "PyQtPipedViewer", ):
         print "Testing Viewer %s" % viewername
         # create the viewer
         pviewer = PipedViewer(viewername)

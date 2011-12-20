@@ -8,14 +8,53 @@
 #include "pyferret.h"
 
 /*
+ * Assigns the transformation values my, sx, sy, dx, and dy used
+ * to convert user coordinate (userx, usery) to device coordinate
+ * (devx, devy) using the formulae:
+ *    devx = userx * sx + dx
+ *    devy = (my - usery) * sy + dy
+ */
+static void getTransformValues(double *my, double *sx, double *sy,
+                               double *dx, double *dy)
+{
+   float lftfrc, rgtfrc, btmfrc, topfrc;
+   float lftcrd, rgtcrd, btmcrd, topcrd;
+   float winwidth, winheight;
+   double devlft, devtop, devwidth, devheight;
+   double usrlft, usrtop, usrwidth, usrheight;
+
+   fgd_get_view_limits_(&lftfrc, &rgtfrc, &btmfrc, &topfrc,
+                        &lftcrd, &rgtcrd, &btmcrd, &topcrd);
+   fgd_get_window_size_(&winwidth, &winheight);
+
+   devlft     = (double) lftfrc * (double) winwidth;
+   devwidth   = (double) rgtfrc * (double) winwidth;
+   devwidth  -= devlft;
+   devtop     = (1.0 - (double) topfrc) * (double) winheight;
+   devheight  = (1.0 - (double) btmfrc) * (double) winheight;
+   devheight -= devtop;
+
+   usrlft = (double) lftcrd;
+   usrwidth = (double) rgtcrd - usrlft;
+   usrtop = 0.0;
+   usrheight = (double) topcrd - (double) btmcrd;
+
+   *my = (double) topcrd;
+   *sx = devwidth / usrwidth;
+   *sy = devheight / usrheight;
+   *dx = devlft - (*sx) * usrlft;
+   *dy = devtop - (*sy) * usrtop;
+}
+
+/*
  * Draws connected line segments.
  *
  * Arguments:
- *     window: the Window with an active View to draw in
- *     ptsx: the X-coordinates of the points in View units
- *     ptsy: the Y-coordinates of the points in View units
- *     numpts: the number of coordinates in ptsx and ptsy to use
- *     pen: the Pen to use to draw the line segments
+ *     window: Window with an active View to draw in
+ *     ptsx: user X-coordinates of the endpoint
+ *     ptsy: user Y-coordinates of the endpoints
+ *     numpts: number of coordinates in ptsx and ptsy to use
+ *     pen: Pen to use to draw the line segments
  *
  * Returns success or failure.  If failure, grdelerrmsg contains
  * an explanatory message.
@@ -29,6 +68,8 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
     PyObject *ytuple;
     PyObject *fltobj;
     PyObject *result;
+    double my, sx, sy, dx, dy;
+    double transval;
     int k;
 
 #ifdef VERBOSEDEBUG
@@ -54,6 +95,9 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
         return (grdelBool) 0;
     }
 
+    /* Get the transform values for converting user to device coordinates */
+    getTransformValues(&my, &sx, &sy, &dx, &dy);
+
     xtuple = PyTuple_New( (Py_ssize_t) numpts );
     if ( xtuple == NULL ) {
         PyErr_Clear();
@@ -62,7 +106,8 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
         return (grdelBool) 0;
     }
     for (k = 0; k < numpts; k++) {
-        fltobj = PyFloat_FromDouble( (double) (ptsx[k]) );
+        transval = (double) (ptsx[k]) * sx + dx;
+        fltobj = PyFloat_FromDouble(transval);
         if ( fltobj == NULL ) {
             PyErr_Clear();
             strcpy(grdelerrmsg, "grdelDrawMultiline: problems creating "
@@ -83,7 +128,8 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
         return (grdelBool) 0;
     }
     for (k = 0; k < numpts; k++) {
-        fltobj = PyFloat_FromDouble( (double) (ptsy[k]) );
+        transval = (my - (double) (ptsy[k])) * sy + dy;
+        fltobj = PyFloat_FromDouble(transval);
         if ( fltobj == NULL ) {
             PyErr_Clear();
             strcpy(grdelerrmsg, "grdelDrawMultiline: problems creating "
@@ -117,13 +163,13 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
  * Draws discrete points.
  *
  * Arguments:
- *     window: the Window with an active View to draw in
- *     ptsx: the X-coordinates of the points in View units
- *     ptsy: the Y-coordinates of the points in View units
- *     numpts: the number of coordinates in ptsx and ptsy to use
- *     symbol: the Symbol to use to draw a point
+ *     window: Window with an active View to draw in
+ *     ptsx: user X-coordinates of the points
+ *     ptsy: user Y-coordinates of the points
+ *     numpts: number of coordinates in ptsx and ptsy to use
+ *     symbol: Symbol to use to draw a point
  *     color: color of the Symbol
- *     ptsize: size of the symbol in View units
+ *     ptsize: size of the symbol (scales with view size)
  *
  * Returns success or failure.  If failure, grdelerrmsg contains
  * an explanatory message.
@@ -139,6 +185,8 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
     PyObject *ytuple;
     PyObject *fltobj;
     PyObject *result;
+    double my, sx, sy, dx, dy;
+    double transval;
     int k;
 
 #ifdef VERBOSEDEBUG
@@ -170,6 +218,9 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
         return (grdelBool) 0;
     }
 
+    /* Get the transform values for converting user to device coordinates */
+    getTransformValues(&my, &sx, &sy, &dx, &dy);
+
     xtuple = PyTuple_New( (Py_ssize_t) numpts );
     if ( xtuple == NULL ) {
         PyErr_Clear();
@@ -178,7 +229,8 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
         return (grdelBool) 0;
     }
     for (k = 0; k < numpts; k++) {
-        fltobj = PyFloat_FromDouble( (double) (ptsx[k]) );
+        transval = (double) (ptsx[k]) * sx + dx;
+        fltobj = PyFloat_FromDouble(transval);
         if ( fltobj == NULL ) {
             PyErr_Clear();
             strcpy(grdelerrmsg, "grdelDrawPoints: problems creating "
@@ -199,7 +251,8 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
         return (grdelBool) 0;
     }
     for (k = 0; k < numpts; k++) {
-        fltobj = PyFloat_FromDouble( (double) (ptsy[k]) );
+        transval = (my - (double) (ptsy[k])) * sy + dy;
+        fltobj = PyFloat_FromDouble(transval);
         if ( fltobj == NULL ) {
             PyErr_Clear();
             strcpy(grdelerrmsg, "grdelDrawPoints: problems creating "
@@ -234,13 +287,13 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
  * Draws a polygon.
  *
  * Arguments:
- *     window: the Window with an active View to draw in
- *     ptsx: the X-coordinates of the points in View units
- *     ptsy: the Y-coordinates of the points in View units
- *     numpts: the number of coordinates in ptsx and ptsy to use
- *     brush: the Brush to use to fill the polygon; if NULL,
+ *     window: Window with an active View to draw in
+ *     ptsx: user X-coordinates of the vertices
+ *     ptsy: user Y-coordinates of the vertices
+ *     numpts: number of coordinates in ptsx and ptsy to use
+ *     brush: Brush to use to fill the polygon; if NULL,
  *             the polygon will not be filled
- *     pen: the Pen to use to outline the polygon; if NULL
+ *     pen: Pen to use to outline the polygon; if NULL
  *             the polygon will not be outlined
  *
  * Returns success or failure.  If failure, grdelerrmsg contains
@@ -257,6 +310,8 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
     PyObject *ytuple;
     PyObject *fltobj;
     PyObject *result;
+    double my, sx, sy, dx, dy;
+    double transval;
     int k;
 
 #ifdef VERBOSEDEBUG
@@ -301,6 +356,9 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
         return (grdelBool) 0;
     }
 
+    /* Get the transform values for converting user to device coordinates */
+    getTransformValues(&my, &sx, &sy, &dx, &dy);
+
     xtuple = PyTuple_New( (Py_ssize_t) numpts );
     if ( xtuple == NULL ) {
         PyErr_Clear();
@@ -309,7 +367,8 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
         return (grdelBool) 0;
     }
     for (k = 0; k < numpts; k++) {
-        fltobj = PyFloat_FromDouble( (double) (ptsx[k]) );
+        transval = (double) (ptsx[k]) * sx + dx;
+        fltobj = PyFloat_FromDouble(transval);
         if ( fltobj == NULL ) {
             PyErr_Clear();
             strcpy(grdelerrmsg, "grdelDrawPolygon: problems creating "
@@ -330,7 +389,8 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
         return (grdelBool) 0;
     }
     for (k = 0; k < numpts; k++) {
-        fltobj = PyFloat_FromDouble( (double) (ptsy[k]) );
+        transval = (my - (double) (ptsy[k])) * sy + dy;
+        fltobj = PyFloat_FromDouble(transval);
         if ( fltobj == NULL ) {
             PyErr_Clear();
             strcpy(grdelerrmsg, "grdelDrawPolygon: problems creating "
@@ -364,14 +424,14 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
  * Draws a rectangle.
  *
  * Arguments:
- *     window: the Window with an active View to draw in
- *     left: the X-coordinate of the left edge in View units
- *     bottom: the Y-coordinate of the bottom edge in View units
- *     right: the X-coordinate of the right edge in View units
- *     top: the Y-coordinate of the top edge in View units
- *     brush: the Brush to use to fill the rectangle; if NULL,
+ *     window: Window with an active View to draw in
+ *     left: user X-coordinate of the left edge
+ *     bottom: user Y-coordinate of the bottom edge
+ *     right: user X-coordinate of the right edge
+ *     top: user Y-coordinate of the top edge
+ *     brush: Brush to use to fill the rectangle; if NULL,
  *             the rectangle will not be filled
- *     pen: the Pen to use to outline the rectangle; if NULL
+ *     pen: Pen to use to outline the rectangle; if NULL
  *             the rectangle will not be outlined
  *
  * Returns success or failure.  If failure, grdelerrmsg contains
@@ -384,6 +444,8 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
     PyObject *brushobj;
     PyObject *penobj;
     PyObject *result;
+    double my, sx, sy, dx, dy;
+    double trlft, trbtm, trrgt, trtop;
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelDrawRectangle called: "
@@ -423,12 +485,18 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
     else
         penobj = Py_None;
 
+    /* Get the transform values for converting user to device coordinates */
+    getTransformValues(&my, &sx, &sy, &dx, &dy);
+    trlft = (double) left * sx + dx;
+    trrgt = (double) right * sx + dx;
+    trtop = (my - (double) top) * sy + dy;
+    trbtm = (my - (double) bottom) * sy + dy;
+
     /*
      * Call the drawRectangle method of the bindings instance.
      */
     result = PyObject_CallMethod(bindings, "drawRectangle", "ddddOO",
-                                 (double) left, (double) bottom,
-                                 (double) right, (double) top,
+                                 trlft, trbtm, trrgt, trtop,
                                  brushobj, penobj);
     if ( result == NULL ) {
         sprintf(grdelerrmsg, "grdelDrawRectangle: error when calling "
@@ -449,16 +517,16 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
  * brush) from the corresponding element in an array of colors.
  *
  * Arguments:
- *     window: the Window with an active View to draw in
- *     left: the X-coordinate of the left edge in View units
- *     bottom: the Y-coordinate of the bottom edge in View units
- *     right: the X-coordinate of the right edge in View units
- *     top: the Y-coordinate of the top edge in View units
- *     numrows: the number of equally spaced rows
+ *     window: Window with an active View to draw in
+ *     left: user X-coordinate of the left edge
+ *     bottom: user Y-coordinate of the bottom edge
+ *     right: user X-coordinate of the right edge
+ *     top: user Y-coordinate of the top edge
+ *     numrows: number of equally spaced rows
  *              to subdivide the rectangle into
- *     numcols: the number of equally spaced columns
+ *     numcols: number of equally spaced columns
  *     	        to subdivide the rectangle into
- *     colors: a flattened column-major 2-D array of colors
+ *     colors: flattened column-major 2-D array of colors
  *              specifying the color of each corresponding cell
  *
  * Returns success or failure.  If failure, grdelerrmsg contains
@@ -473,6 +541,8 @@ grdelBool grdelDrawMulticolorRectangle(grdelType window,
     PyObject *colorobj;
     PyObject *result;
     int numcolors;
+    double my, sx, sy, dx, dy;
+    double trlft, trbtm, trrgt, trtop;
     int k;
 
 #ifdef VERBOSEDEBUG
@@ -493,6 +563,14 @@ grdelBool grdelDrawMulticolorRectangle(grdelType window,
                             "numcols value");
         return (grdelBool) 0;
     }
+
+    /* Get the transform values for converting user to device coordinates */
+    getTransformValues(&my, &sx, &sy, &dx, &dy);
+    trlft = (double) left * sx + dx;
+    trrgt = (double) right * sx + dx;
+    trtop = (my - (double) top) * sy + dy;
+    trbtm = (my - (double) bottom) * sy + dy;
+
     colortuple = PyTuple_New( (Py_ssize_t) numcolors );
     if ( colortuple == NULL ) {
         PyErr_Clear();
@@ -521,8 +599,7 @@ grdelBool grdelDrawMulticolorRectangle(grdelType window,
      * Using 'N' to steal the reference to colortuple.
      */
     result = PyObject_CallMethod(bindings, "drawMulticolorRectangle", "ddddiiN",
-                                 (double) left, (double) bottom, 
-                                 (double) right, (double) top, 
+                                 trlft, trbtm, trrgt, trtop,
                                  numrows, numcols, colortuple);
     if ( result == NULL ) {
         sprintf(grdelerrmsg, "grdelDrawMulticolor: error when calling "
@@ -539,17 +616,16 @@ grdelBool grdelDrawMulticolorRectangle(grdelType window,
  * Draws text.
  *
  * Arguments:
- *     window: the Window with an active View to draw in
- *     text: the text string to draw
+ *     window: Window with an active View to draw in
+ *     text: text string to draw
  *     textlen: actual length of the text string
- *     startx: the X-coordinate of the beginning baseline
- *              of the text in View units
- *     starty: the Y-coordinate of the beginning baseline
- *              of the text in View units
- *     font: the font to use for the text
- *     color: the color to use (as a solid brush or pen)
- *              for the text
- *     rotate: the angle of the baseline in degrees
+ *     startx: user X-coordinate of the beginning
+ *              of the text baseline
+ *     starty: user Y-coordinate of the beginning 
+ *              of the text baseline
+ *     font: font to use
+ *     color: color to use (as a solid brush or pen)
+ *     rotate: angle of the text baseline in degrees
  *              clockwise from horizontal
  *
  * Returns success or failure.  If failure, grdelerrmsg contains
@@ -563,6 +639,8 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
     PyObject *fontobj;
     PyObject *colorobj;
     PyObject *result;
+    double my, sx, sy, dx, dy;
+    double trstx, trsty;
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelDrawText called: "
@@ -589,10 +667,15 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
         return (grdelBool) 0;
     }
 
+    /* Get the transform values for converting user to device coordinates */
+    getTransformValues(&my, &sx, &sy, &dx, &dy);
+    trstx = (double) startx * sx + dx;
+    trsty = (my - (double) starty) * sy + dy;
+
     /* Call the drawText method of the bindings instance. */
     result = PyObject_CallMethod(bindings, "drawText", "s#ddOOd",
-                          text, textlen, (double) startx, (double) starty,
-                          fontobj, colorobj, (double) rotate);
+                                 text, textlen, trstx, trsty,
+                                 fontobj, colorobj, (double) rotate);
     if ( result == NULL ) {
         sprintf(grdelerrmsg, "grdelDrawText: Error when calling "
                 "the binding's drawText method: %s", pyefcn_get_error());
@@ -608,11 +691,11 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
  * Draws connected line segments.
  *
  * Input Arguments:
- *     window: the Window with an active View to draw in
- *     ptsx: the X-coordinates of the points in View units
- *     ptsy: the Y-coordinates of the points in View units
- *     numpts: the number of coordinates in ptsx and ptsy to use
- *     pen: the Pen to use to draw the line segments
+ *     window: Window with an active View to draw in
+ *     ptsx: user X-coordinates of the endpoints
+ *     ptsy: user Y-coordinates of the endpoints
+ *     numpts: number of coordinates in ptsx and ptsy to use
+ *     pen: Pen to use to draw the line segments
  * Output Arguments:
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
@@ -630,13 +713,13 @@ void fgddrawmultiline_(int *success, void **window, float ptsx[],
  * Draws discrete points.
  *
  * Input Arguments:
- *     window: the Window with an active View to draw in
- *     ptsx: the X-coordinates of the points in View units
- *     ptsy: the Y-coordinates of the points in View units
- *     numpts: the number of coordinates in ptsx and ptsy to use
- *     symbol: the Symbol to use to draw a point
+ *     window: Window with an active View to draw in
+ *     ptsx: user X-coordinates of the points
+ *     ptsy: user Y-coordinates of the points
+ *     numpts: number of coordinates in ptsx and ptsy to use
+ *     symbol: Symbol to use to draw a point
  *     color: color of the Symbol
- *     ptsize: size of the symbol in View units
+ *     ptsize: size of the symbol (scales with view size)
  * Output Arguments:
  *     success: non-zero if successful; zero if an error occurred.
  *              Use fgderrmsg_ to retrieve the error message.
@@ -656,13 +739,13 @@ void fgddrawpoints_(int *success, void **window, float ptsx[],
  * Draws a polygon.
  *
  * Input Arguments:
- *     window: the Window with an active View to draw in
- *     ptsx: the X-coordinates of the points in View units
- *     ptsy: the Y-coordinates of the points in View units
- *     numpts: the number of coordinates in ptsx and ptsy to use
- *     brush: the Brush to use to fill the polygon; if NULL,
+ *     window: Window with an active View to draw in
+ *     ptsx: user X-coordinates of the vertices
+ *     ptsy: user Y-coordinates of the vertices 
+ *     numpts: number of coordinates in ptsx and ptsy to use
+ *     brush: Brush to use to fill the polygon; if NULL,
  *             the polygon will not be filled
- *     pen: the Pen to use to outline the polygon; if NULL
+ *     pen: Pen to use to outline the polygon; if NULL
  *             the polygon will not be outlined
  * Output Arguments:
  *     success: non-zero if successful; zero if an error occurred.
@@ -681,14 +764,14 @@ void fgddrawpolygon_(int *success, void **window, float ptsx[],
  * Draws a rectangle.
  *
  * Input Arguments:
- *     window: the Window with an active View to draw in
- *     left: the X-coordinate of the left edge in View units
- *     bottom: the Y-coordinate of the bottom edge in View units
- *     right: the X-coordinate of the right edge in View units
- *     top: the Y-coordinate of the top edge in View units
- *     brush: the Brush to use to fill the rectangle; if NULL,
+ *     window: Window with an active View to draw in
+ *     left: user X-coordinate of the left edge 
+ *     bottom: user Y-coordinate of the bottom edge 
+ *     right: user X-coordinate of the right edge 
+ *     top: user Y-coordinate of the top edge 
+ *     brush: Brush to use to fill the rectangle; if NULL,
  *             the rectangle will not be filled
- *     pen: the Pen to use to outline the rectangle; if NULL
+ *     pen: Pen to use to outline the rectangle; if NULL
  *             the rectangle will not be outlined
  * Output Arguments:
  *     success: non-zero if successful; zero if an error occurred.
@@ -712,16 +795,16 @@ void fgddrawrect_(int *success, void **window, float *left, float *bottom,
  * brush) from the corresponding element in an array of colors.
  *
  * Input Arguments:
- *     window: the Window with an active View to draw in
- *     left: the X-coordinate of the left edge in View units
- *     bottom: the Y-coordinate of the bottom edge in View units
- *     right: the X-coordinate of the right edge in View units
- *     top: the Y-coordinate of the top edge in View units
- *     numrows: the number of equally spaced rows
+ *     window: Window with an active View to draw in
+ *     left: user X-coordinate of the left edge
+ *     bottom: user Y-coordinate of the bottom edge 
+ *     right: user X-coordinate of the right edge 
+ *     top: user Y-coordinate of the top edge 
+ *     numrows: number of equally spaced rows
  *              to subdivide the rectangle into
- *     numcols: the number of equally spaced columns
+ *     numcols: number of equally spaced columns
  *              to subdivide the rectangle into
- *     colors: a flattened column-major 2-D array of colors
+ *     colors: flattened column-major 2-D array of colors
  *              specifying the color of each corresponding cell
  * Output Arguments:
  *     success: non-zero if successful; zero if an error occurred.
@@ -743,16 +826,15 @@ void fgddrawmulticolor_(int *success, void **window, float *left,
  *
  * Input Arguments:
  *     window: the Window with an active View to draw in
- *     text: the text string to draw
+ *     text: text string to draw
  *     textlen: actual length of the text string
- *     startx: the X-coordinate of the beginning baseline
- *              of the text in View units
- *     starty: the Y-coordinate of the beginning baseline
- *              of the text in View units
- *     font: the font to use for the text
- *     color: the color to use (as a solid brush or pen)
- *              for the text
- *     rotate: the angle of the baseline in degrees
+ *     startx: user X-coordinate of the beginning baseline
+ *              of the text 
+ *     starty: user Y-coordinate of the beginning baseline
+ *              of the text 
+ *     font: font to use 
+ *     color: color to use (as a solid brush or pen)
+ *     rotate: angle of the baseline in degrees
  *              clockwise from horizontal
  * Output Arguments:
  *     success: non-zero if successful; zero if an error occurred.

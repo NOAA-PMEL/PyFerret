@@ -27,13 +27,6 @@ from PyQt4.QtGui  import QAction, QApplication, QBrush, QColor, \
                          QPrinter, QPushButton, QScrollArea
 
 try:
-    from PyQt4.QtGui import QTransform
-    HAS_QTransform = True
-except ImportError:
-    from PyQt4.QtGui import QMatrix
-    HAS_QTransform = False
-
-try:
     from PyQt4.QtSvg  import QSvgGenerator
     HAS_QSvgGenerator = True
 except ImportError:
@@ -45,6 +38,7 @@ from multiprocessing import Pipe, Process
 import sys
 import time
 import os
+import math
 
 
 class PyQtPipedViewer(QMainWindow):
@@ -91,15 +85,12 @@ class PyQtPipedViewer(QMainWindow):
         self.__antialias = False
         # data for recreating the current view
         self.__fracsides = None
-        self.__usersides = None
         self.__clipit = True
         # number of drawing commands in the active painter
         self.__drawcount = 0
         # Limit the number of drawing commands per picture
         # to avoid the appearance of being "stuck"
         self.__maxdraws = 512
-        # maximum user Y coordinate - used by adjustPoint
-        self.__userymax = 1.0
         # scaling factor for creating the displayed scene
         self.__scalefactor = 1.0
         # values used to decide if the scene needs to be updated 
@@ -257,7 +248,7 @@ class PyQtPipedViewer(QMainWindow):
 
         The status bar will be updated with a message derived from
         statusmsg before drawing each picture.  Upon completion, the
-        status bar will be reset to the "Ready" message.
+        status bar will be cleared.
 
         The call to painter.end() will need to be made after calling
         this function.
@@ -287,7 +278,7 @@ class PyQtPipedViewer(QMainWindow):
             # draw the picture
             painter.drawPicture(myorigin, viewpic)
         # done - clear the status message
-        self.statusBar().showMessage( self.tr("Ready") )
+        self.statusBar().clearMessage()
         # restore the cursor back to normal
         QApplication.restoreOverrideCursor()
 
@@ -361,8 +352,7 @@ class PyQtPipedViewer(QMainWindow):
         self.drawLastPictures(False)
         # If there was an non-empty active View, restart it
         if restartview:
-            self.beginViewFromSides(self.__fracsides, self.__usersides,
-                                    self.__clipit)
+            self.beginViewFromSides(self.__fracsides, self.__clipit)
 
     def redrawScene(self):
         '''
@@ -382,18 +372,16 @@ class PyQtPipedViewer(QMainWindow):
         self.drawLastPictures(False)
         # If there was an active View, restart it in this new system
         if hadactiveview:
-            self.beginViewFromSides(self.__fracsides, self.__usersides,
-                                    self.__clipit)
+            self.beginViewFromSides(self.__fracsides, self.__clipit)
 
     def resizeScene(self, width, height):
         '''
-        Resize the scene to the given width and height in units
-        of 0.001 inches.
+        Resize the scene to the given width and height in units of pixels.
         '''
-        newwidth = int(width * 0.001 * self.physicalDpiX() + 0.5)
+        newwidth = int(width + 0.5)
         if newwidth < self.__minsize:
             newwidth = self.__minsize
-        newheight = int(height * 0.001 * self.physicalDpiY() + 0.5)
+        newheight = int(height + 0.5)
         if newheight < self.__minsize:
             newheight = self.__minsize
         if (newwidth != self.__scenewidth) or (newheight != self.__sceneheight):
@@ -734,6 +722,8 @@ class PyQtPipedViewer(QMainWindow):
         elif cmndact == "dpi":
             windowdpi = ( self.physicalDpiX(), self.physicalDpiY() )
             self.__rspdpipe.send(windowdpi)
+        elif cmndact == "antialias":
+            self.__antialias = bool(cmnd.get("antialias", True))
         elif cmndact == "update":
             self.updateScene()
         elif cmndact == "redraw":
@@ -781,35 +771,28 @@ class PyQtPipedViewer(QMainWindow):
                     PyQtCmndHelper.getSidesFromCmnd) giving the
                     fractions [0.0, 1.0] of the way through the
                     scene for the sides of the new View.
-            "usercoords": a dictionary of sides positions (see
-                    PyQtCmndHelper.getSidesFromCmnd) giving the
-                    user coordinates for the sides of the new View.
             "clip": clip to the new View? (default: True)
 
         Note that the view fraction values are based on (0,0) being the
-        bottom left corner and (1,1) being the top right corner.  Thus,
-        left < right and bottom < top.
+        top left corner and (1,1) being the bottom right corner.  Thus,
+        left < right and top < bottom.
 
-        Raises a KeyError if either the "viewfracs" or the "usercoords"
-        key is not given.
+        Raises a KeyError if the "viewfracs" key is not given.
         '''
         # Get the view rectangle in fractions of the full scene
         fracsides = self.__helper.getSidesFromCmnd(cmnd["viewfracs"])
-        # Get the user coordinates for this view rectangle
-        usersides = self.__helper.getSidesFromCmnd(cmnd["usercoords"])
         # Should graphics be clipped to this view?
         try:
             clipit = cmnd["clip"]
         except KeyError:
             clipit = True
-        self.beginViewFromSides(fracsides, usersides, clipit)
+        self.beginViewFromSides(fracsides, clipit)
 
-    def beginViewFromSides(self, fracsides, usersides, clipit):
+    def beginViewFromSides(self, fracsides, clipit):
         '''
         Setup a new viewport and window for drawing on a portion
         (possibly all) of the scene.  The view in fractions of
-        the full scene are given in fracsides.  The user coordinates
-        for this view are given in usersides.  Sets the clipping
+        the full scene are given in fracsides.  Sets the clipping
         rectangle to this view.  If clipit is True, graphics
         will be clipped to this view.
         '''
@@ -829,52 +812,18 @@ class PyQtPipedViewer(QMainWindow):
             raise ValueError( self.tr("Invalid left, right view fractions: " \
                                       "left in pixels = %1, right in pixels = %2") \
                                   .arg(str(leftpixel)).arg(str(rightpixel)) )
-        if (0.0 > bottompixel) or (bottompixel >= toppixel) or (toppixel > height):
+        if (0.0 > toppixel) or (toppixel >= bottompixel) or (bottompixel > height):
             raise ValueError( self.tr("Invalid bottom, top view fractions: " \
-                                      "bottom in pixels = %1, top in pixels = %2") \
-                                  .arg(str(bottompixel)).arg(str(toppixel)) )
+                                      "top in pixels = %1, bottom in pixels = %2") \
+                                  .arg(str(toppixel)).arg(str(bottompixel)) )
         # Create the view rectangle in device coordinates
-        vrectf = QRectF(leftpixel, height - toppixel,
-                       rightpixel - leftpixel, toppixel - bottompixel)
-        # Get the user coordinates for this view rectangle
-        leftcoord = usersides.left()
-        rightcoord = usersides.right()
-        bottomcoord = usersides.bottom()
-        topcoord = usersides.top()
-        if leftcoord >= rightcoord:
-            raise ValueError( self.tr("Invalid left, right user coordinates: " \
-                                      "left = %1, right = %2") \
-                                  .arg(str(leftcoord)).arg(str(rightcoord)) )
-        if bottomcoord >= topcoord:
-            raise ValueError( self.tr("Invalid bottom, top user coordinates: " \
-                                      "bottom = %1, top = %2") \
-                                  .arg(str(bottomcoord)).arg(str(topcoord)) )
-        # Create the view rectangle in user (world) coordinates
-        # adjustPoint will correct for the flipped, zero-based Y coordinate
-        wrectf = QRectF(leftcoord, 0.0, rightcoord - leftcoord, topcoord - bottomcoord)
-        # Compute the entries in the transformation matrix
-        m11 = vrectf.width() / wrectf.width()
-        m12 = 0.0
-        m21 = 0.0
-        m22 = vrectf.height() / wrectf.height()
-        dx = vrectf.left() - (m11 * wrectf.left())
-        dy = vrectf.top() - (m22 * wrectf.top())
+        vrectf = QRectF(leftpixel, toppixel,
+                       rightpixel - leftpixel, bottompixel - toppixel)
         # Create the new picture and painter, and set the view transformation
         self.__activepicture = QPicture()
         self.__activepainter = QPainter(self.__activepicture)
-        # Set the viewport and window just to be safe
-        self.__activepainter.setViewport(0, 0, self.__scenewidth, self.__sceneheight)
-        self.__activepainter.setWindow(0, 0, self.__scenewidth, self.__sceneheight)
-        # Assign the transformation to take the user coordinates to device coordinates
-        if HAS_QTransform:
-            wvtrans = QTransform(m11, m12, m21, m22, dx, dy)
-            self.__activepainter.setWorldTransform(wvtrans, True)
-        else:
-            wvtrans = QMatrix(m11, m12, m21, m22, dx, dy)
-            self.__activepainter.setWorldMatrix(wvtrans, True)
-        self.__activepainter.setWorldMatrixEnabled(True)
         # Set the clip rectangle to that of the view; this also activates clipping
-        self.__activepainter.setClipRect(wrectf, Qt.ReplaceClip)
+        self.__activepainter.setClipRect(vrectf, Qt.ReplaceClip)
         # Disable clipping if not desired at this time
         if not clipit:
             self.__activepainter.setClipping(False)
@@ -884,10 +833,7 @@ class PyQtPipedViewer(QMainWindow):
         # Save the current view sides and clipit setting for recreating the view.
         # Just save the original objects (assume calling functions do not keep them)
         self.__fracsides = fracsides
-        self.__usersides = usersides
         self.__clipit = clipit
-        # Pull out the top coordinate since this is used a lot (via adjustPoint)
-        self.__userymax = usersides.top()
 
     def clipView(self, cmnd):
         '''
@@ -930,8 +876,7 @@ class PyQtPipedViewer(QMainWindow):
         # then restart the view.
         if self.__drawcount > 0:
             self.endView(True)
-            self.beginViewFromSides(self.__fracsides, self.__usersides,
-                                    self.__clipit)
+            self.beginViewFromSides(self.__fracsides, self.__clipit)
 
     def drawMultiline(self, cmnd):
         '''
@@ -943,7 +888,7 @@ class PyQtPipedViewer(QMainWindow):
             "pen": dictionary describing the pen used to draw the
                     segments (see PyQtCmndHelper.getPenFromCmnd)
 
-        The coordinates are user coordinates from the bottom left corner.
+        The coordinates are device coordinates from the upper left corner.
 
         Raises:
             KeyError if the "points" or "pen" key is not given
@@ -952,9 +897,8 @@ class PyQtPipedViewer(QMainWindow):
         ptcoords = cmnd["points"]
         if len(ptcoords) < 2:
             raise ValueError("fewer that two endpoints given")
-        adjpts = [ self.adjustPoint(xypair) for xypair in ptcoords ]
         endpts = QPolygonF( [ QPointF(xypair[0], xypair[1]) \
-                                  for xypair in adjpts ] )
+                                  for xypair in ptcoords ] )
         mypen = self.__helper.getPenFromCmnd(cmnd["pen"])
         self.__activepainter.setRenderHint(QPainter.Antialiasing,
                                            self.__antialias)
@@ -979,7 +923,7 @@ class PyQtPipedViewer(QMainWindow):
             "color": color name or 24-bit RGB integer value (eg, 0xFF0088)
             "alpha": alpha value from 0 (transparent) to 255 (opaque)
 
-        The coordinates are user coordinates from the bottom left corner.
+        The coordinates are device coordinates from the upper left corner.
 
         Raises a KeyError if the "symbol", "points", or "size" key
         is not given.
@@ -1002,13 +946,12 @@ class PyQtPipedViewer(QMainWindow):
             mypen = QPen(mybrush, 15.0, Qt.SolidLine,
                          Qt.RoundCap, Qt.RoundJoin)
             self.__activepainter.setPen(mypen)
-        scalefactor = ptsize / 100.0
+        scalefactor = ptsize * self.viewScalingFactor() / 100.0
         for xyval in ptcoords:
-            (adjx, adjy) = self.adjustPoint( xyval )
             # save so the translation and scale are not permanent
             self.__activepainter.save()
             try:
-                self.__activepainter.translate(adjx, adjy)
+                self.__activepainter.translate( QPointF(xyval[0], xyval[1]) )
                 self.__activepainter.scale(scalefactor, scalefactor)
                 self.__activepainter.drawPath(sympath.painterPath())
             finally:
@@ -1030,16 +973,17 @@ class PyQtPipedViewer(QMainWindow):
                     If not given, the polygon will not be filled.
             "outline": dictionary describing the pen used to outline
                     the polygon; see PyQtCmndHelper.getPenFromCmnd
-                    If not given, the polygon border will not be drawn.
+                    If not given, the border will be drawn with a
+                    cosmetic pen identical to the brush used to fill
+                    the polygon.
 
-        The coordinates are user coordinates from the bottom left corner.
+        The coordinates are device coordinates from the upper left corner.
 
         Raises a KeyError if the "points" key is not given.
         '''
         mypoints = cmnd["points"]
-        adjpoints = [ self.adjustPoint(xypair) for xypair in mypoints ]
         mypolygon = QPolygonF( [ QPointF(xypair[0], xypair[1]) \
-                                     for xypair in adjpoints ] )
+                                     for xypair in mypoints ] )
         self.__activepainter.setRenderHint(QPainter.Antialiasing,
                                            self.__antialias)
         try:
@@ -1076,9 +1020,11 @@ class PyQtPipedViewer(QMainWindow):
                     If not given, the rectangle will not be filled.
             "outline": dictionary describing the pen used to outline
                     the rectangle; see PyQtCmndHelper.getPenFromCmnd
-                    If not given, the rectangle border will not be drawn.
+                    If not given, the border will be drawn with a
+                    cosmetic pen identical to the brush used to fill
+                    the rectangle.
 
-        The coordinates are user coordinates from the bottom left corner.
+        The coordinates are device coordinates from the upper left corner.
 
         Raises a ValueError if the width or height of the rectangle
         is not positive.
@@ -1086,16 +1032,13 @@ class PyQtPipedViewer(QMainWindow):
         # get the left, bottom, right, and top values
         # any keys not given get a zero value
         sides = self.__helper.getSidesFromCmnd(cmnd)
-        # adjust to actual view coordinates from the top left
-        lefttop = self.adjustPoint( (sides.left(), sides.top()) )
-        rightbottom = self.adjustPoint( (sides.right(), sides.bottom()) )
-        width = rightbottom[0] - lefttop[0]
+        width = sides.right() - sides.left()
         if width <= 0.0:
             raise ValueError("width of the rectangle in not positive")
-        height = rightbottom[1] - lefttop[1]
+        height = sides.bottom() - sides.top()
         if height <= 0.0:
             raise ValueError("height of the rectangle in not positive")
-        myrect = QRectF(lefttop[0], lefttop[1], width, height)
+        myrect = QRectF(sides.left(), sides.top(), width, height)
         self.__activepainter.setRenderHint(QPainter.Antialiasing,
                                            self.__antialias)
         try:
@@ -1138,7 +1081,7 @@ class PyQtPipedViewer(QMainWindow):
                     cells.  The first row is at the top; the first
                     column is on the left.
 
-        The coordinates are user coordinates from the bottom left corner.
+        The coordinates are device coordinates from the upper left corner.
 
         Raises:
             KeyError: if the "numrows", "numcols", or "colors" keys
@@ -1153,13 +1096,10 @@ class PyQtPipedViewer(QMainWindow):
         # get the left, bottom, right, and top values
         # any keys not given get a zero value
         sides = self.__helper.getSidesFromCmnd(cmnd)
-        # adjust to actual view coordinates from the top left
-        lefttop = self.adjustPoint( (sides.left(), sides.top()) )
-        rightbottom = self.adjustPoint( (sides.right(), sides.bottom()) )
-        width = rightbottom[0] - lefttop[0]
+        width = sides.right() - sides.left()
         if width <= 0.0:
             raise ValueError("width of the rectangle in not positive")
-        height = rightbottom[1] - lefttop[1]
+        height = sides.bottom() - sides.top()
         if height <= 0.0:
             raise ValueError("height of the rectangle in not positive")
         numrows = int( cmnd["numrows"] + 0.5 )
@@ -1177,12 +1117,12 @@ class PyQtPipedViewer(QMainWindow):
                                            self.__antialias)
         width = width / float(numcols)
         height = height / float(numrows)
-        myrect = QRectF(lefttop[0], lefttop[1], width, height)
+        myrect = QRectF(sides.left(), sides.top(), width, height)
         colorindex = 0
         for j in xrange(numcols):
-            myrect.moveLeft(lefttop[0] + j * width)
+            myrect.moveLeft(sides.left() + j * width)
             for k in xrange(numrows):
-                myrect.moveTop(lefttop[1] + k * height)
+                myrect.moveTop(sides.top() + k * height)
                 mybrush = QBrush(colors[colorindex], Qt.SolidPattern)
                 colorindex += 1
                 # cosmetic pen of the same color
@@ -1210,13 +1150,12 @@ class PyQtPipedViewer(QMainWindow):
                     If not given, the default pen for this viewer
                     is used.
             "rotate": clockwise rotation of the text in degrees
-            "location": (x,y) location (user coordinates) in the
-                    current view window for the baseline of the
-                    start of text.
+            "location": (x,y) location for the baseline of the
+                    start of text.  The coordinates are device
+                    coordinates from the upper left corner.
         '''
         mytext = cmnd["text"]
         startpt = cmnd["location"]
-        (xpos, ypos) = self.adjustPoint(startpt)
         self.__activepainter.setRenderHint(QPainter.Antialiasing,
                                            self.__antialias)
         self.__activepainter.setBrush(Qt.NoBrush)
@@ -1235,7 +1174,7 @@ class PyQtPipedViewer(QMainWindow):
                 pass
             # Move the coordinate system so the origin is at the start
             # of the text so that rotation is about this point
-            self.__activepainter.translate(xpos, ypos)
+            self.__activepainter.translate(startpt[0], startpt[1])
             try:
                 rotdeg = cmnd["rotate"]
                 self.__activepainter.rotate(rotdeg)
@@ -1250,16 +1189,17 @@ class PyQtPipedViewer(QMainWindow):
         if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
-    def adjustPoint(self, xypair):
+    def viewScalingFactor(self):
         '''
-        Returns appropriate "view" window (logical) coordinates
-        corresponding to the coordinate pair given in xypair
-        obtained from a command.
+        Return the scaling factor for line widths, point sizes, and
+        font sizes that scale with the view.  This scaling factor is
+        the length of the hypotenuse of the view rectangle expressed
+        in units of view fractions; thus goes from 0.0 to 1.4142....
         '''
-        (xpos, ypos) = xypair
-        ypos = self.__userymax - ypos
-        return (xpos, ypos)
-
+        widthfrac = self.__fracsides.right() - self.__fracsides.left()
+        heightfrac = self.__fracsides.bottom() - self.__fracsides.top()
+        factor = math.hypot(widthfrac, heightfrac)
+        return factor 
 
 class PyQtPipedViewerProcess(Process):
     '''
@@ -1337,59 +1277,56 @@ if __name__ == "__main__":
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"clear", "color":0xFFFFFF} )
     drawcmnds.append( { "action":"dpi"} )
+    drawcmnds.append( { "action":"antialias", "antialias":True } )
     drawcmnds.append( { "action":"resize",
-                        "width":5000,
-                        "height":5000 } )
+                        "width":500,
+                        "height":500 } )
     drawcmnds.append( { "action":"beginView",
-                        "viewfracs":{"left":0.0, "bottom":0.5,
-                                     "right":0.5, "top":1.0},
-                        "usercoords":{"left":0, "bottom":0,
-                                      "right":1000, "top":1000},
+                        "viewfracs":{"left":0.0, "right":0.5,
+                                     "top":0.5, "bottom":1.0},
                         "clip":True } )
     drawcmnds.append( { "action":"drawRectangle",
-                        "left": 50, "bottom":50,
-                        "right":950, "top":950,
-                        "fill":{"color":"black", "alpha":64},
-                        "outline":{"color":"blue"} } )
+                        "left": 5, "right":245, 
+                        "top":245, "bottom":495,
+                        "fill":{"color":"black", "alpha":128} } )
+    mypentapts = [ (.25 * ptx, .25 * pty + 250) for (ptx, pty) in pentagonpts ]
     drawcmnds.append( { "action":"drawPolygon",
-                        "points":pentagonpts,
+                        "points":mypentapts,
                         "fill":{"color":"lightblue"},
                         "outline":{"color":"black",
-                                   "width": 50,
+                                   "width": 5,
                                    "style":"solid",
                                    "capstyle":"round",
                                    "joinstyle":"round" } } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=100",
-                        "font":{"family":"Times", "size":200},
+                        "text":"y=480",
+                        "font":{"family":"Times", "size":50},
                         "fill":{"color":0x880000},
-                        "location":(100,100) } )
+                        "location":(50,480) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=300",
-                        "font":{"family":"Times", "size":200},
+                        "text":"y=430",
+                        "font":{"family":"Times", "size":50},
                         "fill":{"color":0x880000},
-                        "location":(100,300) } )
+                        "location":(50,430) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=500",
-                        "font":{"family":"Times", "size":200},
+                        "text":"y=380",
+                        "font":{"family":"Times", "size":50},
                         "fill":{"color":0x880000},
-                        "location":(100,500) } )
+                        "location":(50,380) } )
     drawcmnds.append( { "action":"drawText",
-                        "text":"y=700",
-                        "font":{"family":"Times", "size":200},
+                        "text":"y=330",
+                        "font":{"family":"Times", "size":50},
                         "fill":{"color":0x880000},
-                        "location":(100,700) } )
+                        "location":(50,330) } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"beginView",
-                        "viewfracs":{"left":0.05, "bottom":0.05,
-                                     "right":0.95, "top":0.95},
-                        "usercoords":{"left":0, "bottom":0,
-                                      "right":1000, "top":1000},
+                        "viewfracs":{"left":0.25, "right":1.0,
+                                     "top":0.0,  "bottom":0.75},
                         "clip":True } )
     drawcmnds.append( { "action":"drawMulticolorRectangle",
-                        "left": 50, "bottom":50,
-                        "right":950, "top":950,
+                        "left":130, "right":495,
+                        "top":5, "bottom":370,
                         "numrows":2, "numcols":3,
                         "colors":( {"color":0xFF0000, "alpha":128},
                                    {"color":0xAA8800, "alpha":128},
@@ -1399,120 +1336,118 @@ if __name__ == "__main__":
                                    {"color":0x880088, "alpha":128} ) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"R",
-                        "font":{"size":200, "bold": True},
+                        "font":{"size":50, "bold": True},
                         "fill":{"color":"black"},
                         "rotate":-45,
-                        "location":(200,600) } )
+                        "location":(190,120) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"Y",
-                        "font":{"size":200, "bold": True},
+                        "font":{"size":50, "bold": True},
                         "fill":{"color":"black"},
                         "rotate":-45,
-                        "location":(200,150) } )
+                        "location":(190,300) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"G",
-                        "font":{"size":200, "bold": True},
+                        "font":{"size":50, "bold": True},
                         "fill":{"color":"black"},
                         "rotate":-45,
-                        "location":(500,600) } )
+                        "location":(310,120) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"C",
-                        "font":{"size":200, "bold": True},
+                        "font":{"size":50, "bold": True},
                         "fill":{"color":"black"},
                         "rotate":-45,
-                        "location":(500,150) } )
+                        "location":(310,300) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"B",
-                        "font":{"size":200, "bold": True},
+                        "font":{"size":50, "bold": True},
                         "fill":{"color":"black"},
                         "rotate":-45,
-                        "location":(800,600) } )
+                        "location":(430,120) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"M",
-                        "font":{"size":200, "bold": True},
+                        "font":{"size":50, "bold": True},
                         "fill":{"color":"black"},
                         "rotate":-45,
-                        "location":(800,150) } )
+                        "location":(430,300) } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"beginView",
-                        "viewfracs":{"left":0.0, "bottom":0.0,
-                                     "right":1.0, "top":1.0},
-                        "usercoords":{"left":0, "bottom":0,
-                                      "right":1000, "top":1000},
+                        "viewfracs":{"left":0.0, "right":1.0,
+                                     "top":0.0, "bottom":1.0},
                         "clip":True } )
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (100, 100),
-                                   (100, 300),
-                                   (100, 500),
-                                   (100, 700),
-                                   (100, 900) ),
+                        "points":( (100,  50),
+                                   (100, 150),
+                                   (100, 250),
+                                   (100, 350),
+                                   (100, 450) ),
                         "symbol":".",
-                        "size":50,
+                        "size":20,
                         "color":"black" })
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (200, 100),
-                                   (200, 300),
-                                   (200, 500),
-                                   (200, 700),
-                                   (200, 900) ),
+                        "points":( (150,  50),
+                                   (150, 150),
+                                   (150, 250),
+                                   (150, 350),
+                                   (150, 450) ),
                         "symbol":"o",
-                        "size":50,
+                        "size":20,
                         "color":"black" })
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (300, 100),
-                                   (300, 300),
-                                   (300, 500),
-                                   (300, 700),
-                                   (300, 900) ),
+                        "points":( (200,  50),
+                                   (200, 150),
+                                   (200, 250),
+                                   (200, 350),
+                                   (200, 450) ),
                         "symbol":"+",
-                        "size":50,
+                        "size":20,
                         "color":"blue" })
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (400, 100),
-                                   (400, 300),
-                                   (400, 500),
-                                   (400, 700),
-                                   (400, 900) ),
+                        "points":( (250,  50),
+                                   (250, 150),
+                                   (250, 250),
+                                   (250, 350),
+                                   (250, 450) ),
                         "symbol":"x",
-                        "size":50,
+                        "size":20,
                         "color":"black" })
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (500, 100),
-                                   (500, 300),
-                                   (500, 500),
-                                   (500, 700),
-                                   (500, 900) ),
+                        "points":( (300,  50),
+                                   (300, 150),
+                                   (300, 250),
+                                   (300, 350),
+                                   (300, 450) ),
                         "symbol":"*",
-                        "size":50,
+                        "size":20,
                         "color":"black" })
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (600, 100),
-                                   (600, 300),
-                                   (600, 500),
-                                   (600, 700),
-                                   (600, 900) ),
+                        "points":( (350,  50),
+                                   (350, 150),
+                                   (350, 250),
+                                   (350, 350),
+                                   (350, 450) ),
                         "symbol":"^",
-                        "size":50,
+                        "size":20,
                         "color":"blue" })
     drawcmnds.append( { "action":"drawPoints",
-                        "points":( (700, 100),
-                                   (700, 300),
-                                   (700, 500),
-                                   (700, 700),
-                                   (700, 900) ),
+                        "points":( (400,  50),
+                                   (400, 150),
+                                   (400, 250),
+                                   (400, 350),
+                                   (400, 450) ),
                         "symbol":"#",
-                        "size":50,
+                        "size":20,
                         "color":"black" })
     drawcmnds.append( { "action":"drawMultiline",
-                        "points":( (600, 100),
-                                   (300, 300),
-                                   (700, 500),
-                                   (500, 700),
-                                   (300, 500),
-                                   (100, 900) ),
+                        "points":( (350,  50),
+                                   (200, 150),
+                                   (400, 250),
+                                   (300, 350),
+                                   (150, 250),
+                                   (100, 450) ),
                         "pen": {"color":"white",
-                                "width":10,
+                                "width":3,
                                 "style":"dash",
                                 "capstyle":"round",
                                 "joinstyle":"round"} } )

@@ -48,7 +48,7 @@
         ENDIF
 
 *       Line width
-        adjwidth = 15.0 * linewidth
+        adjwidth = linewidth
 
 *       Line type
         IF ( linestyle .EQ. 1 ) THEN

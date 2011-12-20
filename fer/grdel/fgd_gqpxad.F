@@ -13,7 +13,7 @@
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
-        REAL mywidth, myheight, dpix, dpiy
+        REAL mywidth, myheight
         INTEGER success, errmsglen
         CHARACTER*2048 errmsg
 
@@ -24,16 +24,6 @@
         ENDIF
         IF ( windowobjs(windowid) .EQ. nullobj ) THEN
             STOP 'FGD_GQPXAD: null windowobj'
-        ENDIF
-
-*       Get the number of pixels per inch for the window
-        CALL FGDWINDPI(success, windowobjs(windowid), dpix, dpiy)
-        IF ( success .EQ. 0 ) THEN
-            errmsg = ' '
-            CALL FGDERRMSG(errmsg, errmsglen)
-            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
-            istat = 1
-            RETURN
         ENDIF
 
         mywidth = right - left
@@ -50,8 +40,10 @@
      .                            - viewbottomcoord(activetransform) )
             myheight = myheight / ndcymax(windowid)
         ENDIF
-        mywidth = mywidth * windowwidth(windowid) * dpix
-        myheight = myheight * windowheight(windowid) * dpiy
+        mywidth = mywidth * windowwidth(windowid) * 
+     .                      windowdpix(windowid)
+        myheight = myheight * windowheight(windowid) * 
+     .                        windowdpiy(windowid)
 
 *       make sure the width and height are positive integers
         widthpix = INT(ABS(mywidth))

@@ -369,7 +369,7 @@ def init(arglist=None, enterferret=True):
                     raise ValueError("unrecognized option '%s'" % opt)
                 k += 1
         except ValueError, errmsg:
-            # print the error message then mark for print the help message
+            # print the error message then pritn the help message
             print >>sys.stderr, "\n%s" % errmsg
             print_help = True
         if print_help:
@@ -382,17 +382,6 @@ def init(arglist=None, enterferret=True):
             result = run("exit /program")
             # should not get here
             raise SystemExit
-    # Add PViewPyFerretBindings, as "PyQtPipedViewer" to the known bindings
-    knownengines = pyferret.graphbind.knownPyFerretEngines()
-    if not ("PyQtPipedViewer" in knownengines):
-        pyferret.graphbind.addPyFerretBindings("PyQtPipedViewer",
-                           pipedviewer.pyferretbindings.PyQtViewPyFerretBindings)
-    if not ("PyQtPipedImager" in knownengines):
-        pyferret.graphbind.addPyFerretBindings("PyQtPipedImager",
-                           pipedviewer.pyferretbindings.PyQtImagePyFerretBindings)
-    if not ("PyGtkPipedImager" in knownengines):
-        pyferret.graphbind.addPyFerretBindings("PyGtkPipedImager",
-                           pipedviewer.pyferretbindings.PyGtkImagePyFerretBindings)
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify,
           restrict=my_restrict, server=my_server,
@@ -481,7 +470,16 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
         str_metaname = ""
     else:
         str_metaname = metaname
-    # the actual call
+    # Add PyQtViewPyFerretBindings, as "PyQtPipedViewer" to the known bindings
+    knownengines = pyferret.graphbind.knownPyFerretEngines()
+    if not ("PyQtPipedViewer" in knownengines):
+        pyferret.graphbind.addPyFerretBindings("PyQtPipedViewer",
+                           pipedviewer.pyferretbindings.PyQtViewPyFerretBindings)
+    # Add PyQtImagePyFerretBindings, as "PyQtPipedImager" to the known bindings
+    if not ("PyQtPipedImager" in knownengines):
+        pyferret.graphbind.addPyFerretBindings("PyQtPipedImager",
+                           pipedviewer.pyferretbindings.PyQtImagePyFerretBindings)
+    # the actual call to ferret's start
     return _pyferret._start(flt_memsize, bool(journal), bool(verify),
                             bool(restrict), bool(server), str_metaname,
                             bool(unmapped))

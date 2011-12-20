@@ -47,7 +47,7 @@ def knownPyFerretEngines():
     '''
     return tuple( __pyferret_bindings_classes.keys() )
     
-def createWindow(engine_name, title, width, height, visible):
+def createWindow(engine_name, title, visible):
     '''
     Creates an instance of the bindings class associated with
     engine_name and calls the createWindow method of that
@@ -58,9 +58,9 @@ def createWindow(engine_name, title, width, height, visible):
         engine_name: string identifying the bindings class and
                      graphics engine to use for the Window
         title: display title for the Window
-        width: width of the Window, in inches
-        height: height of the Window, in inches
         visible: display Window on start-up?
+
+        "device units" is pixels at the current window DPI
 
     Returns the instance of the binding class associated with
     the newly created Window if the createWindow method of the
@@ -74,7 +74,7 @@ def createWindow(engine_name, title, width, height, visible):
     except KeyError:
         raise ValueError("Unknown graphics engine '%s'" % engine_name)
     bindinst = bindclass()
-    if not bindinst.createWindow(title, width, height, visible):
+    if not bindinst.createWindow(title, visible):
         del bindinst
         return None
     return bindinst
@@ -88,11 +88,11 @@ if __name__ == "__main__":
         def __init__(self):
             super(TestBindings, self).__init__()
 
-        def createWindow(self, title, width, height, visible):
+        def createWindow(self, title, visible):
             return True
 
     addPyFerretBindings(TestBindings.engine_name, TestBindings)
-    bindinst = createWindow(TestBindings.engine_name, "test", 5.0, 5.0, False)
+    bindinst = createWindow(TestBindings.engine_name, "test", False)
     if not bindinst:
         raise RuntimeError("Unsuccessful creation of a Window")
     try:

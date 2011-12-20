@@ -129,7 +129,7 @@ class PyQtCmndHelper(object):
 
         Recognized keys in the font dictionary are:
             "family": font family name (string)
-            "size": size in View units (int)
+            "size": text size (number, scales with view size)
             "italic": italicize? (False/True)
             "bold": make bold? (False/True)
             "underline": underline?  (False/True)
@@ -139,7 +139,9 @@ class PyQtCmndHelper(object):
         except KeyError:
             myfont = self.__viewer.font()
         try:
-            myfont.setPixelSize( int(fontinfo["size"] + 0.5) )
+            size  = fontinfo["size"]
+            size *= self.__viewer.viewScalingFactor()
+            myfont.setPixelSize( int(size + 0.5) )
         except KeyError:
             pass
         try:
@@ -226,7 +228,7 @@ class PyQtCmndHelper(object):
             "color": color name or 24-bit RGB integer value
                          (eg, 0xFF0088)
             "alpha": alpha value from 0 (transparent) to 255 (opaque)
-            "width": pen width (scales with the size of the view)
+            "width": pen width (number, scales with view size)
             "style": pen style name ("solid", "dash", "dot", "dashdot",
                          "dashdotdot")
             "capstyle": pen cap style name ("square", "flat", "round")
@@ -239,6 +241,7 @@ class PyQtCmndHelper(object):
             mypen = QPen()
         try:
             penwidth = float(peninfo["width"])
+            penwidth *= self.__viewer.viewScalingFactor()
             mypen.setWidthF(penwidth)
         except KeyError:
             pass
@@ -379,10 +382,10 @@ class PyQtCmndHelper(object):
         '''
         Returns a SidesQRectF based on the information in the dictionary
         rectinfo.  Recognized keys are "left", "top", "right", and "bottom",
-        and correspond to those float values in the SidesQRectF.  Values not
-        given in rectinfo are assigned as zero in the returned SidesQRectF.
+        and correspond to those float values in the SidesQRectF.  Default
+        values: "left": 0.0, "top": 0.0, "right":1.0, "bottom":1.0
         '''
-        myrect = SidesRectF(0.0, 0.0, 0.0, 0.0)
+        myrect = SidesRectF(left=0.0, top=0.0, right=1.0, bottom=1.0)
         try:
             myrect.setLeft(float(rectinfo["left"]))
         except KeyError:

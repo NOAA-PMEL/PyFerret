@@ -29,7 +29,7 @@ class AbstractPyFerretBindings(object):
         '''
         super(AbstractPyFerretBindings, self).__init__()
 
-    def createWindow(self, title, width, height, visible):
+    def createWindow(self, title, visible):
         '''
         Creates a "Window object" for this graphics engine.  Here,
         a Window is the complete drawing area.  However, no drawing
@@ -37,11 +37,9 @@ class AbstractPyFerretBindings(object):
         Initializes the graphics engine if needed.
 
         Arguments:
-           title: display title for the Window
-           width: width of the Window, in inches
-           height: height of the Window, in inches
-           visible: display Window on start-up?
-        
+            title: display title for the Window
+            visible: display Window on start-up?
+
         Returns True if a Window was successfully created.
         '''
         return False
@@ -56,14 +54,21 @@ class AbstractPyFerretBindings(object):
         '''
         return False
 
+    def setAntialias(self, antialias):
+        '''
+        Turns on (antilaias True) or off (antialias False) anti-aliasing
+        in future drawing commands.  May not be implemented and thus raise
+        an AttributeError.
+        '''
+        raise AttributeError()
+
     def beginView(self, leftfrac, bottomfrac, rightfrac, topfrac,
-                        leftcoord, bottomcoord, rightcoord, topcoord,
                         clipit):
         '''
-        Creates a "View object" for the given Window.  Here, a View is a
-        rectangular region in the drawing area with its own coordinate
-        system.  The origin for windows and views is the bottom left corner
-        (NOT the top left as in most modern GUIs).
+        Creates a "View object" for the given Window.  The view fractions
+        start at (0.0, 0.0) in the left top corner and increase to
+        (1.0, 1.0) in the right bottom corner; thus leftfrac must be less
+        than rightfrac and topfrac must be less than bottomfrac.
 
         Arguments:
             leftfrac:    [0,1] fraction of the Window width
@@ -74,18 +79,7 @@ class AbstractPyFerretBindings(object):
                          for the right side of the View
             topfrac:     [0,1] fraction of the Window height
                          for the top side of the View
-            leftcoord:   user coordinate
-                         for the left side of the View
-            bottomcoord: user coordinate
-                         for the bottom side of the View
-            rightcoord:  user coordinate
-                         for the right side of the View
-            topcoord:    user coordinate
-                         for the top side of the View
             clipit:      clip drawing to this View?
-
-        Note that leftfrac < rightfrac, bottomfrac < topfrac since the
-        origin of Windows and Views is the bottom left corner.
         '''
         raise AttributeError()
 
@@ -121,21 +115,23 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
+    def windowDpi(self):
+        '''
+        Returns a two-tuple containing the screen resolution of
+        the Window, in dots (pixels) per inch, in the horizontal
+        (X) and vertical (Y) directions.
+        '''
+        raise AttributeError()
+
     def resizeWindow(self, width, height):
         '''
         Sets the current size of the Window.
 
         Arguments:
-            width: width of the Window, in units of 0.001 inches
-            height: height of the window in units of 0.001 inches
-        '''
-        raise AttributeError()
+            width: width of the Window, in "device units"
+            height: height of the window in "device units"
 
-    def windowDpi(self):
-        '''
-        Returns a two-tuple containing the screen resolution 
-        of the Window, in dots per inch, in the horizontal (X)
-        and vertical (Y) directions.
+        "device units" is pixels at the current window DPI
         '''
         raise AttributeError()
 
@@ -198,7 +194,7 @@ class AbstractPyFerretBindings(object):
 
         Arguments:
             familyname: name of the font family (e.g., "Helvetica", "Times")
-            fontsize: desired size of the font
+            fontsize: desired size of the font (scales with view size)
             italic: use the italic version of the font?
             bold: use the bold version of the font?
             underlined: use the underlined version of the font?
@@ -222,7 +218,7 @@ class AbstractPyFerretBindings(object):
 
         Arguments:
             color: Color to use
-            width: line width (scales with the size of the View)
+            width: line width (scales with view size)
             style: line style name (e.g., "solid", "dash")
             capstyle: end-cap style name (e.g., "square")
             joinstyle: join style name (e.g., "bevel")
@@ -286,9 +282,12 @@ class AbstractPyFerretBindings(object):
         Draws connected line segments.
 
         Arguments:
-            ptsx: the X-coordinates of the points in View units
-            ptsy: the Y-coordinates of the points in View units
+            ptsx: X-coordinates of the endpoints
+            ptsy: Y-coordinates of the endpoints
             pen: the Pen to use to draw the line segments
+
+        Coordinates are measured from the upper left corner
+        in "device units" (pixels at the current window DPI).
         '''
         raise AttributeError()
 
@@ -297,11 +296,14 @@ class AbstractPyFerretBindings(object):
         Draws discrete points.
 
         Arguments:
-            ptsx: the X-coordinates of the points in View units
-            ptsy: the Y-coordinates of the points in View units
+            ptsx: X-coordinates of the points
+            ptsy: Y-coordinates of the points
             symbol: the Symbol to use to draw a point
-            color: color of the Symbol
-            ptsize: size of the Symbol (scales with the size of the View)
+            color: color of the Symbol (default color if None or empty)
+            ptsize: size of the symbol (scales with view size)
+
+        Coordinates are measured from the upper left corner
+        in "device units" (pixels at the current window DPI).
         '''
         raise AttributeError()
 
@@ -310,12 +312,15 @@ class AbstractPyFerretBindings(object):
         Draws a polygon.
 
         Arguments:
-            ptsx: the X-coordinates of the points in View units
-            ptsy: the Y-coordinates of the points in View units
+            ptsx: X-coordinates of the vertices
+            ptsy: Y-coordinates of the vertices
             brush: the Brush to use to fill the polygon; if None
                     the polygon will not be filled
             pen: the Pen to use to outline the polygon; if None
                     the polygon will not be outlined
+
+        Coordinates are measured from the upper left corner
+        in "device units" (pixels at the current window DPI).
         '''
         raise AttributeError()
 
@@ -324,15 +329,18 @@ class AbstractPyFerretBindings(object):
         Draws a rectangle.
 
         Arguments:
-            left: the X-coordinate of the left edge in View units
-            bottom: the Y-coordinate of the bottom edge in View units
-            right: the X-coordinate of the right edge in View units
-            top: the Y-coordinate of the top edge in View units
+            left: X-coordinate of the left edge
+            bottom: Y-coordinate of the bottom edge
+            right: X-coordinate of the right edge
+            top: Y-coordinate of the top edge
             brush: the Brush to use to fill the polygon; if None
                     the polygon will not be filled
             pen: the Pen to use to outline the polygon; if None
                     the polygon will not be outlined
-         '''
+
+        Coordinates are measured from the upper left corner
+        in "device units" (pixels at the current window DPI).
+        '''
         raise AttributeError()
 
     def drawMulticolorRectangle(self, left, bottom, right, top,
@@ -345,18 +353,21 @@ class AbstractPyFerretBindings(object):
         brush) from the corresponding element in an array of colors.
 
         Arguments:
-            left: the X-coordinate of the left edge in View units
-            bottom: the Y-coordinate of the bottom edge in View units
-            right: the X-coordinate of the right edge in View units
-            top: the Y-coordinate of the top edge in View units
+            left: X-coordinate of the left edge
+            bottom: Y-coordinate of the bottom edge
+            right: X-coordinate of the right edge
+            top: Y-coordinate of the top edge
             numrows: the number of equally spaced rows
                     to subdivide the rectangle into
             numcols: the number of equally spaced columns
                     to subdivide the rectangle into
-            colors: iterable representing a flattened column-major
-                    2-D array of colors specifying the color of the
-                    corresponding cell.  The first row is at the top;
-                    the first column is on the left.
+            colors: a flattened column-major 2-D list of colors
+                    specifying the color of the corresponding cell.
+                    The first row is at the top, the first column
+                    is on the left.
+
+        Coordinates are measured from the upper left corner
+        in "device units" (pixels at the current window DPI).
         '''
         raise AttributeError()
 
@@ -367,14 +378,14 @@ class AbstractPyFerretBindings(object):
         Arguments:
             text: the text string to draw
             startx: the X-coordinate of the beginning baseline
-                    of the text in View units
             starty: the Y-coordinate of the beginning baseline
-                    of the text in View units
-            font: the font to use for the text
-            color: the color to use (as a solid brush or pen)
-                    for the text
-            rotate: the angle of the baseline in degrees
+            font: the font to use
+            color: the color to use as a solid brush or pen
+            rotate: the angle of the text baseline in degrees
                     clockwise from horizontal
+
+        Coordinates are measured from the upper left corner
+        in "device units" (pixels at the current window DPI).
         '''
         raise AttributeError()
 

@@ -12,12 +12,11 @@
         INCLUDE 'fgrdel.cmn'
 
         REAL lftfrac, rgtfrac, btmfrac, topfrac,
-     .       lftcoord, rgtcoord, btmcoord, topcoord,
-     .       dpix, dpiy
+     .       lftcoord, rgtcoord, btmcoord, topcoord
         INTEGER clipit, success, errmsglen
         CHARACTER*2048 errmsg
 
-*       Sanity checks - transform 0 is an implicit transform
+*       Sanity checks - transform 0 is an implicit identity transform
         IF ( (transnum .LT. 0) .OR.
      .       (transnum .GT. maxtransforms) ) THEN
             STOP 'FGD_GSELNT: Invalid transnum value'
@@ -30,57 +29,25 @@
             STOP 'FGD_GSELNT: null active windowobj'
         ENDIF
 
+*       Set this transform number to be the active one
         activetransform = transnum
-*       Get the view limits and adjust, realizing that the
-*       full window is thought of as going from [0.0,0.0]
-*       to [ndcxmax,ndcymax] (set by FGD_GSWKWN).
-        IF ( transnum .NE. 0 ) THEN
-            lftfrac = viewleftfrac(transnum) / ndcxmax(activewindow)
-            rgtfrac = viewrightfrac(transnum) / ndcxmax(activewindow)
-            btmfrac = viewbottomfrac(transnum) / ndcymax(activewindow)
-            topfrac = viewtopfrac(transnum) / ndcymax(activewindow)
-            lftcoord = viewleftcoord(transnum)
-            btmcoord = viewbottomcoord(transnum)
-            rgtcoord = viewrightcoord(transnum)
-            topcoord = viewtopcoord(transnum)
-            IF ( (lftfrac .LT. 0.0) .OR.
-     .           (lftfrac .GE. rgtfrac) .OR.
-     .           (rgtfrac .GT. 1.0) .OR.
-     .           (btmfrac .LT. 0.0) .OR.
-     .           (btmfrac .GE. topfrac) .OR.
-     .           (topfrac .GT. 1.0) ) THEN
-                WRITE(*,*) 'lft, btm, rgt, top fracs = ',
-     .                     lftfrac, btmfrac, rgtfrac, topfrac
-                WRITE(*,*) 'lft, btm, rgt, top coords = ',
-     .                     lftcoord, btmcoord, rgtcoord, topcoord
-                STOP 'FGD_GSELNT: invalid adjusted view fractions'
-            ENDIF
-        ELSE
-*           This should be the identity transform.
-*           Normally this is only used to end a view.
-            lftfrac = 0.0
-            btmfrac = 0.0
-            rgtfrac = 1.0
-            topfrac = 1.0
-            lftcoord = 0.0
-            btmcoord = 0.0
-            CALL FGD_GETDPI(activewindow, dpix, dpiy)
-            rgtcoord = windowwidth(activewindow) * dpix
-            topcoord = windowheight(activewindow) * dpiy
-        ENDIF
+
+*       Get the view limits of this transform
+        CALL FGD_GET_VIEW_LIMITS(lftfrac, rgtfrac, btmfrac, topfrac,
+     .                       lftcoord, rgtcoord, btmcoord, topcoord)
+
 *       End any view that may currently be active
 *       There might not be one started, so ignore any errors
         CALL FGDVIEWEND(success, windowobjs(activewindow))
 
+*       Begin the new view
         IF ( cliptoview(activewindow) ) THEN
             clipit = 1
         ELSE
             clipit = 0
         ENDIF
-*       Begin the new view
         CALL FGDVIEWBEGIN(success, windowobjs(activewindow),
      .                    lftfrac, btmfrac, rgtfrac, topfrac,
-     .                    lftcoord, btmcoord, rgtcoord, topcoord,
      .                    clipit)
         IF ( success .EQ. 0 ) THEN
             errmsg = ' '

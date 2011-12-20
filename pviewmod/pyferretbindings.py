@@ -8,9 +8,6 @@ using PyQtPipedViewer as the viewer.
 The PyQtImagePyFerretBindings class is a subclass of PyFerretBindings
 using PyQtImageViewer as the viewer. 
 
-The PyGtkImagePyFerretBindings class is a subclass of PyFerretBindings
-using PyQtImageViewer as the viewer. 
-
 This package was developed by the Thermal Modeling and Analysis Project
 (TMAP) of the National Oceanographic and Atmospheric Administration's (NOAA)
 Pacific Marine Environmental Lab (PMEL).
@@ -36,8 +33,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         super(PyFerretBindings, self).__init__()
         self.__window = None
 
-    def createPipedViewerWindow(self, viewertype,
-                                title, width, height, visible):
+    def createPipedViewerWindow(self, viewertype, title, visible):
         '''
         Creates a PipedViewer of viewertype as the window of this
         instance of the bindings.
@@ -45,8 +41,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Arguments:
             viewertype: type of PipedViewer to use 
             title: display title for the Window
-            width: width of the Window, in units of 0.001 inches
-            height: height of the Window, in units of 0.001 inches
             visible: display Window on start-up?
 
         Raises a RuntimeError if an active window is already associated
@@ -61,9 +55,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.__window = PipedViewer(viewertype)
         self.__window.submitCommand( { "action":"setTitle",
                                       "title":str(title) } )
-        self.__window.submitCommand( { "action":"resize",
-                                      "width":float(width),
-                                      "height":float(height) } )
         if visible:
             self.__window.submitCommand( {"action":"show"} )
         self.checkForErrorResponse()
@@ -86,6 +77,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
         if fullresponse:
             raise RuntimeError(fullresponse)
 
+    # The remaining methods are common implementations of the required binding methods
+
     def deleteWindow(self):
         '''
         Shuts down the PyQtPipedViewer.
@@ -100,11 +93,22 @@ class PyFerretBindings(AbstractPyFerretBindings):
             self.__window = None
         return True
 
-    def beginView(self, leftfrac, bottomfrac, rightfrac, topfrac,
-                  leftcoord, bottomcoord, rightcoord, topcoord,
-                  clipit):
+    def setAntialias(self, antialias):
         '''
-        Start a view in the PyQtPipedViewer Window.
+        Turns on (antilaias True) or off (antialias False) anti-aliasing
+        in future drawing commands. 
+        '''
+        cmnd = { "action":"antialias",
+                 "antialias":bool(antialias) }
+        self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
+        
+    def beginView(self, leftfrac, bottomfrac, rightfrac, topfrac, clipit):
+        '''
+        Start a view in the PyQtPipedViewer Window.  The view fractions
+        start at (0.0, 0.0) in the left top corner and increase to
+        (1.0, 1.0) in the right bottom corner; thus leftfrac must be less
+        than rightfrac and topfrac must be less than bottomfrac.
 
         Arguments:
             leftfrac:    [0,1] fraction of the Window width
@@ -115,15 +119,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
                          for the right side of the View
             topfrac:     [0,1] fraction of the Window height
                          for the top side of the View
-            leftcoord:   user coordinate
-                         for the left side of the View
-            bottomcoord: user coordinate
-                         for the bottom side of the View
-            rightcoord:  user coordinate
-                         for the right side of the View
-            topcoord:    user coordinate
-                         for the top side of the View
-            clipit:      clip drawings to this View?
+           clipit:      clip drawings to this View?
         '''
         leftfracflt = float(leftfrac)
         bottomfracflt = float(bottomfrac)
@@ -132,24 +128,12 @@ class PyFerretBindings(AbstractPyFerretBindings):
         if (0.0 > leftfracflt) or (leftfracflt >= rightfracflt) or (rightfracflt > 1.0):
             raise ValueError("leftfrac (%f) and rightfrac (%f) must be in [0.0, 1.0] " \
                              "with leftfrac < rightfrac" % (leftfracflt, rightfracflt))
-        if (0.0 > bottomfracflt) or (bottomfracflt >= topfracflt) or (topfracflt > 1.0):
-            raise ValueError("bottomfrac (%f) and topfrac (%f) must be in [0.0, 1.0] " \
-                             "with bottomfrac < topfrac" % (bottomfracflt, topfracflt))
-        leftcoordflt = float(leftcoord)
-        bottomcoordflt = float(bottomcoord)
-        rightcoordflt = float(rightcoord)
-        topcoordflt = float(topcoord)
-        if leftcoordflt >= rightcoordflt:
-            raise ValueError("leftcoord (%f) must be less than rightcoord (%f)" \
-                             % (leftcoordflt, rightcoordflt))
-        if bottomcoordflt >= topcoordflt:
-            raise ValueError("bottomcoord (%f) must be less than topcoord (%f)" \
-                             % (bottomcoordflt, topcoordflt))
+        if (0.0 > topfracflt) or (topfracflt >= bottomfracflt) or (bottomfracflt > 1.0):
+            raise ValueError("topfrac (%f) and bottomfrac (%f) must be in [0.0, 1.0] " \
+                             "with topfrac < bottomfrac" % (topfracflt, bottomfracflt))
         cmnd = { "action":"beginView",
-                 "viewfracs":{"left":leftfracflt, "bottom":bottomfracflt,
-                              "right":rightfracflt, "top":topfracflt},
-                 "usercoords":{"left":leftcoordflt, "bottom":bottomcoordflt,
-                              "right":rightcoordflt, "top":topcoordflt},
+                 "viewfracs":{"left":leftfracflt, "right":rightfracflt,
+                              "top":topfracflt, "bottom":bottomfracflt }, 
                  "clip":bool(clipit) }
         self.__window.submitCommand(cmnd)
         self.checkForErrorResponse()
@@ -203,8 +187,10 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Sets the current size of the Window.
 
         Arguments:
-            width: width of the Window, in units of 0.001 inches
-            height: height of the window in units of 0.001 inches
+            width: width of the Window, in "device units"
+            height: height of the window in "device units"
+
+        "device units" is pixels at the current window DPI
         '''
         cmnd = { "action":"resize",
                  "width":width,
@@ -214,9 +200,9 @@ class PyFerretBindings(AbstractPyFerretBindings):
 
     def windowDpi(self):
         '''
-        Returns a two-tuple containing the screen resolution
-        of the Window, in dots per inch, in the horizontal (X)
-        and vertical (Y) directions.
+        Returns a two-tuple containing the screen resolution of
+        the Window, in dots (pixels) per inch, in the horizontal
+        (X) and vertical (Y) directions.
         '''
         cmnd = { "action":"dpi" }
         self.__window.submitCommand(cmnd)
@@ -336,7 +322,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Arguments:
             familyname: name of the font family (e.g., "Helvetica", "Times");
                         None or an empty string uses the default font
-            fontsize: desired size of the font
+            fontsize: desired size of the font (scales with view size)
             italic: use the italic version of the font?
             bold: use the bold version of the font?
             underlined: use the underlined version of the font?
@@ -366,7 +352,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
 
         Arguments:
             color: Color to use
-            width: line width (scales with the size of the View)
+            width: line width (scales with view size)
             style: line style name (e.g., "solid", "dash")
             capstyle: end-cap style name (e.g., "square")
             joinstyle: join style name (e.g., "bevel")
@@ -456,9 +442,12 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Draws connected line segments.
 
         Arguments:
-            ptsx: the X-coordinates of the points in View units
-            ptsy: the Y-coordinates of the points in View units
+            ptsx: X-coordinates of the endpoints
+            ptsy: Y-coordinates of the endpoints
             pen: the Pen to use to draw the line segments
+
+        Coordinates are measured from the upper left corner
+        in "device units" (pixels at the current window DPI).
         '''
         if len(ptsx) != len(ptsy):
             raise ValueError("the lengths of ptsx and ptsy are not the same")
@@ -474,11 +463,14 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Draws discrete points.
 
         Arguments:
-            ptsx: the X-coordinates of the points in View units
-            ptsy: the Y-coordinates of the points in View units
+            ptsx: X-coordinates of the points
+            ptsy: Y-coordinates of the points
             symbol: the Symbol to use to draw a point
-            color: color of the Symbol (if None of empty, default color used)
-            ptsize: size of the symbol (scales with the size of the View)
+            color: color of the Symbol (default color if None or empty)
+            ptsize: size of the symbol (scales with view size)
+
+        Coordinates are measured from the upper left corner
+        in "device units" (pixels at the current window DPI).
         '''
         if len(ptsx) != len(ptsy):
             raise ValueError("the lengths of ptsx and ptsy are not the same")
@@ -500,12 +492,15 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Draws a polygon.
 
         Arguments:
-            ptsx: the X-coordinates of the points in View units
-            ptsy: the Y-coordinates of the points in View units
+            ptsx: X-coordinates of the vertices
+            ptsy: Y-coordinates of the vertices
             brush: the Brush to use to fill the polygon; if None
                     the polygon will not be filled
             pen: the Pen to use to outline the polygon; if None
                     the polygon will not be outlined
+
+        Coordinates are measured from the upper left corner
+        in "device units" (pixels at the current window DPI).
         '''
         if len(ptsx) != len(ptsy):
             raise ValueError("the lengths of ptsx and ptsy are not the same")
@@ -523,15 +518,18 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Draws a rectangle.
 
         Arguments:
-            left: the X-coordinate of the left edge in View units
-            bottom: the Y-coordinate of the bottom edge in View units
-            right: the X-coordinate of the right edge in View units
-            top: the Y-coordinate of the top edge in View units
+            left: X-coordinate of the left edge
+            bottom: Y-coordinate of the bottom edge
+            right: X-coordinate of the right edge
+            top: Y-coordinate of the top edge
             brush: the Brush to use to fill the polygon; if None
                     the polygon will not be filled
             pen: the Pen to use to outline the polygon; if None
                     the polygon will not be outlined
-         '''
+
+        Coordinates are measured from the upper left corner
+        in "device units" (pixels at the current window DPI).
+        '''
         cmnd = { "action":"drawRectangle",
                  "left":left, "bottom":bottom,
                  "right":right, "top": top }
@@ -552,10 +550,10 @@ class PyFerretBindings(AbstractPyFerretBindings):
         brush) from the corresponding element in an array of colors.
 
         Arguments:
-            left: the X-coordinate of the left edge in View units
-            bottom: the Y-coordinate of the bottom edge in View units
-            right: the X-coordinate of the right edge in View units
-            top: the Y-coordinate of the top edge in View units
+            left: X-coordinate of the left edge
+            bottom: Y-coordinate of the bottom edge
+            right: X-coordinate of the right edge
+            top: Y-coordinate of the top edge
             numrows: the number of equally spaced rows
                     to subdivide the rectangle into
             numcols: the number of equally spaced columns
@@ -564,6 +562,9 @@ class PyFerretBindings(AbstractPyFerretBindings):
                     specifying the color of the corresponding cell.
                     The first row is at the top, the first column
                     is on the left.
+
+        Coordinates are measured from the upper left corner
+        in "device units" (pixels at the current window DPI).
         '''
         cmnd = { "action":"drawMulticolorRectangle",
                  "left":left, "bottom":bottom,
@@ -580,14 +581,14 @@ class PyFerretBindings(AbstractPyFerretBindings):
         Arguments:
             text: the text string to draw
             startx: the X-coordinate of the beginning baseline
-                    of the text in View units
             starty: the Y-coordinate of the beginning baseline
-                    of the text in View units
-            font: the font to use for the text
-            color: the color to use (as a solid brush or pen)
-                    for the text
-            rotate: the angle of the baseline in degrees
+            font: the font to use
+            color: the color to use as a solid brush or pen
+            rotate: the angle of the text baseline in degrees
                     clockwise from horizontal
+
+        Coordinates are measured from the upper left corner
+        in "device units" (pixels at the current window DPI).
         '''
         cmnd = { "action":"drawText", "text":text,
                  "location":(startx,starty) }
@@ -608,14 +609,12 @@ class PyQtViewPyFerretBindings(PyFerretBindings):
     PyFerretBindings using PyQtPipedViewer as the viewer.
     '''
 
-    def createWindow(self, title, width, height, visible):
+    def createWindow(self, title, visible):
         '''
         Creates PyFerret bindings using a PyQtPipedViewer.
 
         Arguments:
             title: display title for the Window
-            width: width of the Window, in units of 0.001 inches
-            height: height of the Window, in units of 0.001 inches
             visible: display Window on start-up?
 
         Raises a RuntimeError if an active window is already associated
@@ -625,7 +624,7 @@ class PyQtViewPyFerretBindings(PyFerretBindings):
         Returns True.
         '''
         result = self.createPipedViewerWindow("PyQtPipedViewer",
-                                     title, width, height, visible)
+                                              title, visible)
         return result
 
 
@@ -634,14 +633,12 @@ class PyQtImagePyFerretBindings(PyFerretBindings):
     PyFerretBindings using PyQtPipedImager as the viewer.
     '''
 
-    def createWindow(self, title, width, height, visible):
+    def createWindow(self, title, visible):
         '''
         Creates PyFerret bindings using a PyQtPipedImager.
 
         Arguments:
             title: display title for the Window
-            width: width of the Window, in units of 0.001 inches
-            height: height of the Window, in units of 0.001 inches
             visible: display Window on start-up?
 
         Raises a RuntimeError if an active window is already associated
@@ -651,32 +648,7 @@ class PyQtImagePyFerretBindings(PyFerretBindings):
         Returns True.
         '''
         result = self.createPipedViewerWindow("PyQtPipedImager",
-                                     title, width, height, visible)
-        return result
-
-class PyGtkImagePyFerretBindings(PyFerretBindings):
-    '''
-    PyFerretBindings using PyGtkPipedImager as the viewer.
-    '''
-
-    def createWindow(self, title, width, height, visible):
-        '''
-        Creates PyFerret bindings using a PyGtkPipedImager.
-
-        Arguments:
-            title: display title for the Window
-            width: width of the Window, in units of 0.001 inches
-            height: height of the Window, in units of 0.001 inches
-            visible: display Window on start-up?
-
-        Raises a RuntimeError if an active window is already associated
-        with these bindings, or if there were problems with creating
-        the window.
-
-        Returns True.
-        '''
-        result = self.createPipedViewerWindow("PyGtkPipedImager",
-                                     title, width, height, visible)
+                                              title, visible)
         return result
 
 
@@ -688,6 +660,8 @@ if __name__ == "__main__":
     # (roughly) centered in a 1000 x 1000 square
     pentaptsx = ( 504.5, 100.0, 254.5, 754.5, 909.0, )
     pentaptsy = ( 100.0, 393.9, 869.4, 869.4, 393.9, )
+    mypentax = [ 0.25 * ptx for ptx in pentaptsx ]
+    mypentay = [ 0.25 * pty + 250 for pty in pentaptsy ]
 
     # RGBA tuples of the colors to create
     colorvals = ( (0.0, 0.0, 0.0, 1.0),   #  0 opaque black
@@ -698,107 +672,109 @@ if __name__ == "__main__":
                   (0.0, 0.5, 0.5, 1.0),   #  5 opaque cyan
                   (0.0, 0.0, 1.0, 1.0),   #  6 opaque blue
                   (0.5, 0.0, 0.5, 1.0),   #  7 opaque magenta
-                  (0.0, 0.0, 0.0, 0.25),  #  8 translucent black
-                  (1.0, 1.0, 1.0, 0.25),  #  9 translucent white
-                  (1.0, 0.0, 0.0, 0.25),  # 10 translucent red
-                  (0.6, 0.5, 0.0, 0.25),  # 11 translucent yellowish
-                  (0.0, 1.0, 0.0, 0.25),  # 12 translucent green
-                  (0.0, 0.5, 0.5, 0.25),  # 13 translucent cyan
-                  (0.0, 0.0, 1.0, 0.25),  # 14 translucent blue
-                  (0.5, 0.0, 0.5, 0.25),  # 15 translucent magenta
+                  (0.0, 0.0, 0.0, 0.35),  #  8 translucent black
+                  (1.0, 1.0, 1.0, 0.35),  #  9 translucent white
+                  (1.0, 0.0, 0.0, 0.35),  # 10 translucent red
+                  (0.6, 0.5, 0.0, 0.35),  # 11 translucent yellowish
+                  (0.0, 1.0, 0.0, 0.35),  # 12 translucent green
+                  (0.0, 0.5, 0.5, 0.35),  # 13 translucent cyan
+                  (0.0, 0.0, 1.0, 0.35),  # 14 translucent blue
+                  (0.5, 0.0, 0.5, 0.35),  # 15 translucent magenta
                   (1.0, 1.0, 1.0, 0.0),   # 16 transparent white
                 )
 
     # Initiate pyferret, but stay in python
     pyferret.init(None, False)
-    for viewertype in ("PyQtPipedViewer", "PyQtPipedImager", "PyGtkPipedViewer"):
+    for viewertype in ( "PyQtPipedViewer", ):
         print "Testing bindings for %s" % viewertype
         # Create a viewer window
         title = viewertype + "Tester"
-        bindinst = pyferret.graphbind.createWindow(viewertype,
-                                      title, 5000, 5000, True)
+        bindinst = pyferret.graphbind.createWindow(viewertype, title, True)
+        # Resize the window to 500 x 500 pixels
+        bininst.resizeWindow(500, 500)
+        # Turn on anti-aliasing
+        bindinst.setAntialias(True)
         # Create the one font that will be used here
-        # - default font, 1/5th of the view in size
-        myfont = bindinst.createFont(None, 200, False, False, False)
+        myfont = bindinst.createFont(None, 50, False, False, False)
         # Create a list of colors that will be used here
         mycolors = [ bindinst.createColor(r, g, b, a) \
                      for (r, g, b, a) in colorvals ]
         # Clear the window in opaque white
         bindinst.clearWindow(mycolors[1])
-        # Create a view in the top left corner
-        bindinst.beginView(0.0, 0.5, 0.5, 1.0, 0, 0, 1000, 1000, True)
+        # Create a view in the bottom left corner
+        bindinst.beginView(0.0, 1.0, 0.5, 0.0, True)
         # Draw a translucent black rectangle over most of the view
         mybrush = bindinst.createBrush(mycolors[8], "solid")
-        bindinst.drawRectangle(50, 50, 950, 950, mybrush, None)
+        bindinst.drawRectangle(5, 495, 245, 245, mybrush, None)
         bindinst.deleteBrush(mybrush)
         # Draw a opaque blue polygon with solid black outline
         mybrush = bindinst.createBrush(mycolors[6], "solid")
-        mypen = bindinst.createPen(mycolors[0], 6, "solid", "round", "round")
-        bindinst.drawPolygon(pentaptsx, pentaptsy, mybrush, mypen)
+        mypen = bindinst.createPen(mycolors[0], 5, "solid", "round", "round")
+        bindinst.drawPolygon(mypentax, mypentay, mybrush, mypen)
         bindinst.deletePen(mypen)
         bindinst.deleteBrush(mybrush)
         # Draw some red text strings
-        bindinst.drawText("y=100", 100, 100, myfont, mycolors[2], 0)
-        bindinst.drawText("y=300", 100, 300, myfont, mycolors[2], 0)
-        bindinst.drawText("y=500", 100, 500, myfont, mycolors[2], 0)
-        bindinst.drawText("y=700", 100, 700, myfont, mycolors[2], 0)
+        bindinst.drawText("y=480", 50, 480, myfont, mycolors[2], 0)
+        bindinst.drawText("y=430", 50, 430, myfont, mycolors[2], 0)
+        bindinst.drawText("y=380", 50, 380, myfont, mycolors[2], 0)
+        bindinst.drawText("y=330", 50, 330, myfont, mycolors[2], 0)
         # End of this view
         bindinst.endView()
         # Window should already be shown, but just to make sure
         bindinst.showWindow(True)
         raw_input("Press Enter to continue")
         # Create a view of almost the whole window
-        bindinst.beginView(0.05, 0.05, 0.95, 0.95, 0, 0, 1000, 1000, True)
+        bindinst.beginView(0.25, 0.75, 1.0, 0.0, True)
         # Draw a translucent multicolor rectangle covering most of the window
-        bindinst.drawMulticolorRectangle(50, 50, 950, 950, 2, 3, mycolors[10:])
+        bindinst.drawMulticolorRectangle(130, 370, 495, 5, 2, 3, mycolors[10:])
         # Draw letters indicating the expected colors
-        bindinst.drawText("R", 200, 600, myfont, mycolors[0], -45)
-        bindinst.drawText("Y", 200, 150, myfont, mycolors[0], -45)
-        bindinst.drawText("G", 500, 600, myfont, mycolors[0], -45)
-        bindinst.drawText("C", 500, 150, myfont, mycolors[0], -45)
-        bindinst.drawText("B", 800, 600, myfont, mycolors[0], -45)
-        bindinst.drawText("M", 800, 150, myfont, mycolors[0], -45)
+        bindinst.drawText("R", 190, 120, myfont, mycolors[0], -45)
+        bindinst.drawText("Y", 190, 300, myfont, mycolors[0], -45)
+        bindinst.drawText("G", 310, 120, myfont, mycolors[0], -45)
+        bindinst.drawText("C", 310, 300, myfont, mycolors[0], -45)
+        bindinst.drawText("B", 430, 120, myfont, mycolors[0], -45)
+        bindinst.drawText("M", 430, 300, myfont, mycolors[0], -45)
         # End of this view
         bindinst.endView()
         # Window should already be shown, but just to make sure
         bindinst.showWindow(True)
         raw_input("Press Enter to continue")
         # Create a view of the whole window
-        bindinst.beginView(0.0, 0.0, 1.0, 1.0, 0, 0, 1000, 1000, True)
+        bindinst.beginView(0.0, 1.0, 1.0, 0.0, True)
         # Draw points using various symbols
-        ptsy = (100, 300, 500, 700, 900)
+        ptsy = (50, 150, 250, 350, 450)
         ptsx = (100, 100, 100, 100, 100)
         mysymbol = bindinst.createSymbol(".")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 20)
+        bindinst.deleteSymbol(mysymbol)
+        ptsx = (150, 150, 150, 150, 150)
+        mysymbol = bindinst.createSymbol("o")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (200, 200, 200, 200, 200)
-        mysymbol = bindinst.createSymbol("o")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
+        mysymbol = bindinst.createSymbol("+")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[6], 20)
+        bindinst.deleteSymbol(mysymbol)
+        ptsx = (250, 250, 250, 250, 250)
+        mysymbol = bindinst.createSymbol("x")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (300, 300, 300, 300, 300)
-        mysymbol = bindinst.createSymbol("+")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[6], 50)
+        mysymbol = bindinst.createSymbol("*")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 20)
+        bindinst.deleteSymbol(mysymbol)
+        ptsx = (350, 350, 350, 350, 350)
+        mysymbol = bindinst.createSymbol("^")
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[6], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (400, 400, 400, 400, 400)
-        mysymbol = bindinst.createSymbol("x")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
-        bindinst.deleteSymbol(mysymbol)
-        ptsx = (500, 500, 500, 500, 500)
-        mysymbol = bindinst.createSymbol("*")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
-        bindinst.deleteSymbol(mysymbol)
-        ptsx = (600, 600, 600, 600, 600)
-        mysymbol = bindinst.createSymbol("^")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[6], 50)
-        bindinst.deleteSymbol(mysymbol)
-        ptsx = (700, 700, 700, 700, 700)
         mysymbol = bindinst.createSymbol("#")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 50)
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 20)
         bindinst.deleteSymbol(mysymbol)
         # Draw a white dash line between some of the points
-        mypen = bindinst.createPen(mycolors[1], 10, "dash", "round", "round")
-        ptsx = (600, 300, 700, 500, 300, 100)
-        ptsy = (100, 300, 500, 700, 500, 900)
+        mypen = bindinst.createPen(mycolors[1], 3, "dash", "round", "round")
+        ptsx = (350, 200, 400, 300, 150, 100)
+        ptsy = ( 50, 150, 250, 350, 250, 450)
         bindinst.drawMultiline(ptsx, ptsy, mypen)
         bindinst.deletePen(mypen)
         # End of this view

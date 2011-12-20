@@ -69,9 +69,9 @@ class PyQtPipedViewer(QMainWindow):
         super(PyQtPipedViewer, self).__init__()
         self.__cmndpipe = cmndpipe
         self.__rspdpipe = rspdpipe
-        # default scene size = sqrt(0.75) * (1280, 1024)
-        self.__scenewidth = 1110
-        self.__sceneheight = 890
+        # default scene size
+        self.__scenewidth = 840
+        self.__sceneheight = 720
         # initial default color for clearScene (transparent white, but
         # with premultiplied alpha, the color here does not matter)
         self.__lastclearcolor = QColor(0xFFFFFF)
@@ -115,8 +115,6 @@ class PyQtPipedViewer(QMainWindow):
         self.createMenus()
         self.__lastfilename = ""
         self.__shuttingdown = False
-        # Put in a default message in the statusbar
-        self.statusBar().showMessage("Ready")
         # Set the initial size of the viewer
         mwwidth = self.__scenewidth + 8
         mwheight = self.__sceneheight + 8 + self.menuBar().height() + \
@@ -488,7 +486,10 @@ class PyQtPipedViewer(QMainWindow):
             else:
                 raise RuntimeError( self.tr("Unexpected file format name '%1'") \
                                         .arg(fileFilter) )
-            if (fileFormat == "png") or \
+            if (fileFormat == "pdf") or \
+               (fileFormat == "png") or \
+               (fileFormat == "ps") or \
+               (fileFormat == "svg") or \
                (fileFormat == "tiff") or \
                (fileFormat == "xpm"):
                 transparentbkg = True

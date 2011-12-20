@@ -38,7 +38,6 @@ else if ( ${fer_name} == "pyferret" ) then
    set datestamp = `date +%F`
    set fer_name = "pyferret_${datestamp}"
 endif
-rm -rf html_docs
 
 # Make a clean temporary directory for the tar file contents
 set temp_dir = "/var/tmp/fer_src_$$"
@@ -51,6 +50,9 @@ echo "Extracting FERRET source code "
 echo "from ${repository} "
 echo "to ${temp_dir}/${fer_name} "
 svn checkout -q ${repository} ${fer_name}
+
+# Remove the html_docs subdirectory from the checked-out directory
+rm -rf ${fer_name}/html_docs
 
 # Create the tar file
 set ctar_file = "${target_dir}/fer_source.tar.gz"

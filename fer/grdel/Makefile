@@ -18,12 +18,12 @@ all : optimized
 .PHONY : optimized
 optimized :
 	$(MAKE) "CFLAGS = $(CFLAGS) -DNDEBUG -O" \
-			"FFLAGS = $(FFLAGS) -DNDEBUG -O" $(LIBNAME)
+		"FFLAGS = $(FFLAGS) -DNDEBUG -O" $(LIBNAME)
 
 .PHONY : debug
 debug :
 	$(MAKE) "CFLAGS = $(CFLAGS) -DVERBOSEDEBUG -O0 -g" \
-			"FFLAGS = $(FFLAGS) -O0 -g" $(LIBNAME)
+		"FFLAGS = $(FFLAGS) -O0 -g" $(LIBNAME)
 
 $(LIBNAME) : $(COBJS) $(FOBJS)
 	$(AR) $(ARFLAGS) $(LIBNAME) $(COBJS) $(FOBJS)

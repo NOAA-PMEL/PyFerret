@@ -1,34 +1,37 @@
 /* Python.h should always be first */
 #include <Python.h>
-#include <stdio.h>
+#include <cairo/cairo.h>
+#include <string.h>
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-/* Write error message directly to grdelerrmsg */
 #include "grdel.h"
 
 /*
- * Creates and returns a pointer to a Cario instance of a
- * CFerBind struct 
+ * Creates and returns a pointer to a Cario instance of a CFerBind struct.
+ *
+ * If successful, the created bindings are returned.  If an error occurs,
+ * grdelerrmsg is assigned an appropriate error message and NULL if returned.
  */
 CFerBind *cairoCFerBind_createWindow(void)
 {
     CFerBind *bindings;
-    int k;
+    CairoCFerBindData *instdata;
 
+    /* Create the bindings structure */
     bindings = (CFerBind *) PyMem_Malloc(sizeof(CFerBind));
     if ( bindings == NULL ) {
-        sprintf(grdelerrmsg, "Out of memory for a %s CFerBind bindings", CairoCFerBindName);
+        strcpy(grdelerrmsg, "cairoCFerBind_createWindow: "
+                            "Out of memory for a CFerBind structure");
         return NULL;
     }
+    /* Zero out everything to catch errors */
+    memset(bindings, 0, sizeof(CFerBind));
+
+    /* Identify the type of bindings using the pointer address to the global name */
     bindings->enginename = CairoCFerBindName;
 
-    bindings->instancedata = (CairoCFerBindData *) PyMem_Malloc(sizeof(CairoCFerBindData));
-    if ( bindings->instancedata == NULL ) {
-        sprintf(grdelerrmsg, "Out of memory for a %s CFerBind bindings", CairoCFerBindName);
-        PyMem_Free(bindings);
-        return NULL;
-    }
-
+    /* Assign the bindings functions */
+    bindings->setImageName = cairoCFerBind_setImageName;
     bindings->deleteWindow = cairoCFerBind_deleteWindow;
     bindings->setAntialias = cairoCFerBind_setAntialias;
     bindings->beginView = cairoCFerBind_beginView;
@@ -56,6 +59,30 @@ CFerBind *cairoCFerBind_createWindow(void)
     bindings->drawRectangle = cairoCFerBind_drawRectangle;
     bindings->drawMulticoloredRectangle = cairoCFerBind_drawMulticoloredRectangle;
     bindings->drawText = cairoCFerBind_drawText;
+
+    /* Create the instance-specific data structure */
+    bindings->instancedata = (CairoCFerBindData *) PyMem_Malloc(sizeof(CairoCFerBindData));
+    if ( bindings->instancedata == NULL ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_createWindow: "
+                            "Out of memory for a CairoCFerBindData structure");
+        PyMem_Free(bindings);
+        return NULL;
+    }
+    /* Initialize everything to zero */
+    memset(bindings->instancedata, 0, sizeof(CairoCFerBindData));
+
+    /* Set non-zero default values */
+    instdata = (CairoCFerBindData *) bindings->instancedata;
+    /* image size and minimum allowed value */
+    instdata->imagewidth = 840;
+    instdata->imageheight = 720;
+    instdata->minsize = 128;
+    /* default clear color of opaque white */
+    instdata->lastclearcolor.id = CCFBColorId;
+    instdata->lastclearcolor.redfrac = 1.0;
+    instdata->lastclearcolor.greenfrac = 1.0;
+    instdata->lastclearcolor.bluefrac = 1.0;
+    instdata->lastclearcolor.opaquefrac = 1.0;
 
     return bindings;
 }

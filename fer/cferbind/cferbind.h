@@ -1,6 +1,11 @@
 #ifndef CFERBIND_H_
 #define CFERBIND_H_
 
+/* Make sure Python.h is always included first */
+#include <Python.h>
+/* Use of grdelBool (int) and grdelType (void *) is just to clarify intent */
+#include "grdel.h"
+
 /* Names of recognized engines */
 extern const char *CairoCFerBindName;
 
@@ -17,55 +22,57 @@ extern const char *CairoCFerBindName;
 typedef struct CFerBind_struct {
      const char *enginename;
      void       *instancedata;
-     int       (*deleteWindow)(struct CFerBind_struct *self);
-     int       (*setAntialias)(struct CFerBind_struct *self, int antialias);
-     int       (*beginView)(struct CFerBind_struct *self,
+     grdelBool (*setImageName)(struct CFerBind_struct *self, char *imagename,
+                               int imgnamelen, char *formatname, int fmtnamelen);
+     grdelBool (*deleteWindow)(struct CFerBind_struct *self);
+     grdelBool (*setAntialias)(struct CFerBind_struct *self, int antialias);
+     grdelBool (*beginView)(struct CFerBind_struct *self,
                             double leftfrac, double bottomfrac,
                             double rightfrac, double topfrac, int clipit);
-     int       (*clipView)(struct CFerBind_struct *self, int clipit);
-     int       (*endView)(struct CFerBind_struct *self);
-     int       (*updateWindow)(struct CFerBind_struct *self);
-     int       (*clearWindow)(struct CFerBind_struct *self, void *fillcolor);
-     double*   (*windowDpi)(struct CFerBind_struct *self);
-     int       (*resizeWindow)(struct CFerBind_struct *self,
+     grdelBool (*clipView)(struct CFerBind_struct *self, int clipit);
+     grdelBool (*endView)(struct CFerBind_struct *self);
+     grdelBool (*updateWindow)(struct CFerBind_struct *self);
+     grdelBool (*clearWindow)(struct CFerBind_struct *self, grdelType fillcolor);
+     double *  (*windowDpi)(struct CFerBind_struct *self);
+     grdelBool (*resizeWindow)(struct CFerBind_struct *self,
                                double width, double height);
-     int       (*showWindow)(struct CFerBind_struct *self, int visible);
-     int       (*saveWindow)(struct CFerBind_struct *self,
-                             char *filename, int namelen,
-                             char *format, int fmtlen, int transbkg);
-     void*     (*createColor)(struct CFerBind_struct *self,
-                              double redfrac, double greenfrac, double bluefrac);
-     int       (*deleteColor)(struct CFerBind_struct *self, void *color);
-     void*     (*createFont)(struct CFerBind_struct *self,
+     grdelBool (*showWindow)(struct CFerBind_struct *self, int visible);
+     grdelBool (*saveWindow)(struct CFerBind_struct *self, char *filename,
+                             int namelen, char *formatname, int fmtnamelen,
+                             int transbkg);
+     grdelType (*createColor)(struct CFerBind_struct *self, double redfrac,
+                              double greenfrac, double bluefrac, double opaquefrac);
+     grdelBool (*deleteColor)(struct CFerBind_struct *self, grdelType color);
+     grdelType (*createFont)(struct CFerBind_struct *self,
                              char *familyname, int namelen, double fontsize,
                              int italic, int bold, int underlined);
-     int       (*deleteFont)(struct CFerBind_struct *self, void *font);
-     void*     (*createPen)(struct CFerBind_struct *self, void *color,
+     grdelBool (*deleteFont)(struct CFerBind_struct *self, grdelType font);
+     grdelType (*createPen)(struct CFerBind_struct *self, grdelType color,
                             double width, char *style, int stlen,
                             char *capstyle, int capstlen,
                             char *joinstyle, int joinstlen);
-     int       (*deletePen)(struct CFerBind_struct *self, void *pen);
-     void*     (*createBrush)(struct CFerBind_struct *self,
-                              void *color, char *style, int stlen);
-     int       (*deleteBrush)(struct CFerBind_struct *self, void *brush);
-     void*     (*createSymbol)(struct CFerBind_struct *self,
+     grdelBool (*deletePen)(struct CFerBind_struct *self, grdelType pen);
+     grdelType (*createBrush)(struct CFerBind_struct *self,
+                              grdelType color, char *style, int stlen);
+     grdelBool (*deleteBrush)(struct CFerBind_struct *self, grdelType brush);
+     grdelType (*createSymbol)(struct CFerBind_struct *self,
                                char *symbolname, int namelen);
-     int       (*deleteSymbol)(struct CFerBind_struct *self, void *symbol);
-     int       (*drawMultiline)(struct CFerBind_struct *self,
-                                double ptsx[], double ptsy[], void *pen);
-     int       (*drawPoints)(struct CFerBind_struct *self,
-                             double ptsx[], double ptsy[], void *symbol,
-                             void *color, double ptsize);
-     int       (*drawPolygon)(struct CFerBind_struct *self, double ptsx[], 
-                              double ptsy[], void *brush, void *pen);
-     int       (*drawRectangle)(struct CFerBind_struct *self,
+     grdelBool (*deleteSymbol)(struct CFerBind_struct *self, grdelType symbol);
+     grdelBool (*drawMultiline)(struct CFerBind_struct *self,
+                                double ptsx[], double ptsy[], grdelType pen);
+     grdelBool (*drawPoints)(struct CFerBind_struct *self,
+                             double ptsx[], double ptsy[], grdelType symbol,
+                             grdelType color, double ptsize);
+     grdelBool (*drawPolygon)(struct CFerBind_struct *self, double ptsx[], 
+                              double ptsy[], grdelType brush, grdelType pen);
+     grdelBool (*drawRectangle)(struct CFerBind_struct *self,
                                 double left, double bottom, double right,
-                                double top, void *brush, void *pen);
-     int       (*drawMulticoloredRectangle)(struct CFerBind_struct *self,
+                                double top, grdelType brush, grdelType pen);
+     grdelBool (*drawMulticoloredRectangle)(struct CFerBind_struct *self,
                            double left, double bottom, double right,
-                           double top, int numrows, int numcols, void *colors[]);
-     int       (*drawText)(struct CFerBind_struct *self, char *text, int textlen,
-                           double startx, double starty, void *font, void *color,
+                           double top, int numrows, int numcols, grdelType colors[]);
+     grdelBool (*drawText)(struct CFerBind_struct *self, char *text, int textlen,
+                           double startx, double starty, grdelType font, grdelType color,
                            double rotation);
 } CFerBind;
 
@@ -77,6 +84,6 @@ CFerBind *cferbind_createWindow(char *enginename, int engnamelen,
                                 char *windowname, int winnamelen, int visible);
 
 /* The createWindow function for the Cairo engine */
-CFerBind* cairoCFerBind_createWindow(void);
+CFerBind *cairoCFerBind_createWindow(void);
 
 #endif

@@ -2,7 +2,6 @@
 #include <Python.h>
 #include <string.h>
 #include "cferbind.h"
-/* Write error message directly to grdelerrmsg */
 #include "grdel.h"
 
 /* Instantiate the globals */
@@ -12,9 +11,13 @@ const char *CairoCFerBindName = "Cairo";
  * Creates and returns a pointer to a CFerBind struct
  * appropriately assigned for the indicated graphics engine.
  *
- * Currently, "Cairo" is the only engine supported.  For this
- * engine, the windowname, winnamelen, and visible arguments 
- * are ignored as they are not applicable.
+ * Currently, "Cairo" is the only engine supported.
+ *
+ * For the "Cairo" engine, the windowname, winnamelen, and
+ * visible arguments are ignored as they is not applicable.
+ *
+ * If the engine name is not recognized, grdelerrmsg is
+ * assigned an appropriate error message and NULL is returned.
  */
 CFerBind *cferbind_createWindow(char *enginename, int engnamelen,
                                 char *windowname, int winnamelen, int visible)
@@ -22,8 +25,7 @@ CFerBind *cferbind_createWindow(char *enginename, int engnamelen,
     CFerBind *bindings;
     int k;
 
-    if ( strncmp(enginename, CairoCFerBindName,
-                      strlen(CairoCFerBindName) == 0) ) {
+    if ( strncmp(enginename, CairoCFerBindName, strlen(CairoCFerBindName) == 0) ) {
         /* Create a bindings instance for a Cairo engine */
         bindings = cairoCFerBind_createWindow();
         return bindings;

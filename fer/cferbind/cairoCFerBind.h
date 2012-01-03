@@ -53,6 +53,13 @@ typedef struct CCFBPen_Struct {
     cairo_line_join_t jointype;
 } CCFBPen;
 
+extern const char *CCFBBrushId;
+typedef struct CCFBBrush_Struct {
+    const char *id;
+    CCFBColor color;
+    cairo_pattern_t *pattern;
+} CCFBBrush;
+
 typedef struct CairoCFerBindData_struct {
     /* image size in pixels */
     int imagewidth;

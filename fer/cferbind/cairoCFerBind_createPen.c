@@ -11,7 +11,7 @@
 const char *CCFBPenId = "CCFBPenId";
 
 /*
- * Create and return a pen object for this "Window".
+ * Create a pen object for this "Window".
  *
  * Arguments:
  *     color     - color for the pen
@@ -28,7 +28,7 @@ const char *CCFBPenId = "CCFBPenId";
  *                 currently, one of "miter", "round", "bevel"
  *     joinstlen - actual length of joinstyle
  *
- * Returns a color object when successful.   If an error occurs,
+ * Returns a pen object when successful.   If an error occurs,
  * grdelerrmsg is assigned an appropriate error message and NULL
  * is returned.
  */

@@ -7,7 +7,7 @@
 #include "grdel.h"
 
 /*
- * Create and return a symbol object for this "Window".
+ * Create a symbol object for this "Window".
  *
  * Currently stubbed since it is currently not used by Ferret;
  * thus always fails.

@@ -8,7 +8,7 @@
 const char *CairoCFerBindName = "Cairo";
 
 /*
- * Creates and returns a pointer to a CFerBind struct
+ * Creates a CFerBind struct (bindings instance)
  * appropriately assigned for the indicated graphics engine.
  *
  * Currently, "Cairo" is the only engine supported.
@@ -16,6 +16,7 @@ const char *CairoCFerBindName = "Cairo";
  * For the "Cairo" engine, the windowname, winnamelen, and
  * visible arguments are ignored as they is not applicable.
  *
+ * Returns a pointer to the bindings instance if successful.
  * If an error occurs, grdelerrmsg is assigned an appropriate
  * error message and NULL is returned.
  */

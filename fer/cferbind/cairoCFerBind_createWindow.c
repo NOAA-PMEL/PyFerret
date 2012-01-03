@@ -7,10 +7,11 @@
 #include "grdel.h"
 
 /*
- * Creates and returns a pointer to a Cario instance of a CFerBind struct.
+ * Creates a Cario instance of a CFerBind struct.
  *
- * The created bindings are returned if successful.  If an error occurs,
- * grdelerrmsg is assigned an appropriate error message and NULL is returned.
+ * A pointer to created bindings instance is returned if
+ * successful.  If an error occurs, grdelerrmsg is assigned
+ * an appropriate error message and NULL is returned.
  */
 CFerBind *cairoCFerBind_createWindow(void)
 {

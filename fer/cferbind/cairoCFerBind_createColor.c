@@ -10,7 +10,7 @@
 const char *CCFBColorId = "CCFBColorId";
 
 /*
- * Create and return a color object for this "Window".
+ * Create a color object for this "Window".
  *
  * Arguments:
  *     redfrac    - red fraction [0.0, 1.0]

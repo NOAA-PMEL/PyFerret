@@ -30,13 +30,13 @@
  * If the PNG surface is created, the saveWindow function is used
  * to save the image.  Thus, imagename is only a default name that
  * may not be used.  For other surfaces, the saveWindow function
- * does nothing as the drawing commands are being written directly
- * to file and cannot be saved to another file.
+ * does nothing as the drawing is being written directly to file
+ * and cannot be saved to another file.
  *
  * Encapsulated PostScript is always used; thus, the PS and EPS
  * formats are the same.
  *
- * When successful, one is returned.  If an error occurs, grdelerrmsg
+ * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
 grdelBool cairoCFerBind_setImageName(CFerBind *self, char imagename[],

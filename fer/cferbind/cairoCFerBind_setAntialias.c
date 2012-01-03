@@ -11,10 +11,10 @@
  * Turns on or off anti-aliasing on non-text graphics.
  *
  * Arguments:
- *     antialias - if zero, do not use anti-aliasing;
- *                 otherwise, use default anti-aliasing
+ *     antialias - if zero, set to CAIRO_ANTIALIAS_NONE
+ *                 otherwise, set to CAIRO_ANTIALIAS_DEFAULT
  *
- * One is returned on success.  If an error occurs, grdelerrmsg
+ * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
 grdelBool cairoCFerBind_setAntialias(CFerBind *self, int antialias)

@@ -9,7 +9,7 @@
  * Ends a "View" for this "Window".
  * In this case (Cairo), this function currently does nothing.
  *
- * One is returned on success.  If an error occurs, grdelerrmsg
+ * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
 grdelBool cairoCFerBind_updateWindow(CFerBind *self)

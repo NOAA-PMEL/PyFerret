@@ -7,34 +7,35 @@
 #include "grdel.h"
 
 /*
- * Delete the given color object.
+ * Draw discrete points in this "Window".
+ *
+ * Currently stubbed since it is currently not used by Ferret;
+ * thus always fails.
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
-grdelBool cairoCFerBind_deleteColor(CFerBind *self, grdelType color)
+grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
+                                   grdelType symbol, grdelType color, double ptsize)
 {
     CCFBColor *colorobj;
 
-    /* Sanity checks */
+    /* Sanity check */
     if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_deleteColor: unexpected error, "
+        sprintf(grdelerrmsg, "cairoCFerBind_drawPoints: unexpected error, "
                              "self is not a %s CFerBind struct", CairoCFerBindName);
         return 0;
     }
     colorobj = (CCFBColor *) color;
     if ( colorobj->id != CCFBColorId ) {
-        strcpy(grdelerrmsg, "cairoCFerBind_deleteColor: unexpected error, "
+        strcpy(grdelerrmsg, "cairoCFerBind_drawPoints: unexpected error, "
                             "color is not CCFBColor struct");
         return 0;
     }
 
-    /* Wipe the id to detect errors */
-    colorobj->id = NULL;
-
-    /* Free the memory */
-    PyMem_Free(color);
-
-    return 1;
+    /* TODO: implement */
+    strcpy(grdelerrmsg, "cairoCFerBind_drawPoints: unexpected error, "
+                        "stubbed function");
+    return 0;
 }
 

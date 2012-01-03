@@ -38,7 +38,7 @@
  * a transparent background) is drawn onto this temporary image.
  * The temporary image is then saved to file.
  *
- * If successful, one is returned.  If an error occurs, grdelerrmsg
+ * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
 grdelBool cairoCFerBind_saveWindow(CFerBind *self, char *filename, int namelen,
@@ -200,7 +200,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, char *filename, int namelen,
         return 0;
     default:
         sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: unexpected error, "
-                             "unknown error %d while saving to '%s'", 
+                             "unknown error %d while saving to '%s'",
                              result, savename);
         return 0;
     }

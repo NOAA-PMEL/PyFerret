@@ -7,33 +7,33 @@
 #include "grdel.h"
 
 /*
- * Delete the given color object.
+ * Delete the given pen object.
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
-grdelBool cairoCFerBind_deleteColor(CFerBind *self, grdelType color)
+grdelBool cairoCFerBind_deletePen(CFerBind *self, grdelType pen)
 {
-    CCFBColor *colorobj;
+    CCFBPen *penobj;
 
     /* Sanity checks */
     if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_deleteColor: unexpected error, "
+        sprintf(grdelerrmsg, "cairoCFerBind_deletePen: unexpected error, "
                              "self is not a %s CFerBind struct", CairoCFerBindName);
         return 0;
     }
-    colorobj = (CCFBColor *) color;
-    if ( colorobj->id != CCFBColorId ) {
-        strcpy(grdelerrmsg, "cairoCFerBind_deleteColor: unexpected error, "
-                            "color is not CCFBColor struct");
+    penobj = (CCFBPen *) pen;
+    if ( penobj->id != CCFBPenId ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_deletePen: unexpected error, "
+                            "pen is not CCFBPen struct");
         return 0;
     }
 
     /* Wipe the id to detect errors */
-    colorobj->id = NULL;
+    penobj->id = NULL;
 
     /* Free the memory */
-    PyMem_Free(color);
+    PyMem_Free(pen);
 
     return 1;
 }

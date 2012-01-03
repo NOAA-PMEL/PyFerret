@@ -9,8 +9,8 @@
 /*
  * Creates and returns a pointer to a Cario instance of a CFerBind struct.
  *
- * If successful, the created bindings are returned.  If an error occurs,
- * grdelerrmsg is assigned an appropriate error message and NULL if returned.
+ * The created bindings are returned if successful.  If an error occurs,
+ * grdelerrmsg is assigned an appropriate error message and NULL is returned.
  */
 CFerBind *cairoCFerBind_createWindow(void)
 {

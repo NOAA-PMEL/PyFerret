@@ -7,10 +7,13 @@
 #include "grdel.h"
 
 /*
- * Deletes (frees) any allocated resources associated
- * with this instance of the bindings, and then the 
- * bindings itself.  After calling this function, the
- * bindings should no longer be used.
+ * Deletes (frees) any allocated resources associated with this
+ * "Window" (bindings instance), and then deletes (frees) the
+ * bindings instance.  After calling this function, this bindings
+ * instance should no longer be used.
+ *
+ * Returns one if successful.   If an error occurs, grdelerrmsg
+ * is assigned an appropriate error message and zero is returned.
  */
 grdelBool cairoCFerBind_deleteWindow(CFerBind *self)
 {

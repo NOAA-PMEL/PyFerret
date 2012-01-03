@@ -42,6 +42,17 @@ typedef struct CCFBColor_Struct {
     double opaquefrac;
 } CCFBColor;
 
+extern const char *CCFBPenId;
+typedef struct CCFBPen_Struct {
+    const char *id;
+    CCFBColor color;
+    double width;
+    int    numdashes;
+    double dashes[8];
+    cairo_line_cap_t captype;
+    cairo_line_join_t jointype;
+} CCFBPen;
+
 typedef struct CairoCFerBindData_struct {
     /* image size in pixels */
     int imagewidth;

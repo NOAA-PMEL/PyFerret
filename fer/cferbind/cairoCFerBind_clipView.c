@@ -13,7 +13,7 @@
  * Arguments:
  *     clipit - clip drawing to the current view rectangle?
  *
- * One is returned on success.  If an error occurs, grdelerrmsg
+ * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
 grdelBool cairoCFerBind_clipView(CFerBind *self, int clipit)

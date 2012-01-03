@@ -1,6 +1,7 @@
 /* Python.h should always be first */
 #include <Python.h>
 #include <stdio.h>
+#include <string.h>
 #include "cferbind.h"
 #include "cairoCFerBind.h"
 #include "grdel.h"
@@ -18,7 +19,7 @@ const char *CCFBColorId = "CCFBColorId";
  *     opaquefrac - opaque fraction [0.0, 1.0]
  *                  (0.0 is transparent, 1.0 is opaque)
  *
- * Returns a color object when successful.   If an error occurs,
+ * Returns a color object if successful.   If an error occurs,
  * grdelerrmsg is assigned an appropriate error message and NULL
  * is returned.
  */

@@ -16,8 +16,8 @@ const char *CairoCFerBindName = "Cairo";
  * For the "Cairo" engine, the windowname, winnamelen, and
  * visible arguments are ignored as they is not applicable.
  *
- * If the engine name is not recognized, grdelerrmsg is
- * assigned an appropriate error message and NULL is returned.
+ * If an error occurs, grdelerrmsg is assigned an appropriate
+ * error message and NULL is returned.
  */
 CFerBind *cferbind_createWindow(char *enginename, int engnamelen,
                                 char *windowname, int winnamelen, int visible)

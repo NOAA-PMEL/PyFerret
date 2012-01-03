@@ -7,13 +7,14 @@
 #include "grdel.h"
 
 /*
- * Returns the horizontal and vertical resolution of this "window"
- * in units of dots (pixels) per inch.  In this case (Cairo), these
- * are hard-coded values based on the surface type.
+ * Returns the horizontal and vertical resolution of this "Window"
+ * in units of dots (pixels) per inch.  In this case (Cairo),
+ * these are hard-coded values based on the surface type.
  *
- * If successful, a pair of doubles (a static array in this function)
- * containing the DPIs is returned.  If an error occurs, grdelerrmsg
- * is assigned an appropriate error message and NULL is returned.
+ * Returns a pair of doubles (a static array in this function)
+ * containing the DPIs if successful.  If an error occurs,
+ * grdelerrmsg is assigned an appropriate error message and NULL
+ * is returned.
  */
 double * cairoCFerBind_windowDpi(CFerBind *self)
 {

@@ -9,10 +9,10 @@
  * Resizes the "Window" to the given width and height.  These
  * values are assumed to be in units of pixels.  In this case
  * (Cairo), if the size changes, this function destroys any
- * existing surface and context (thus also clearing the image).
+ * existing surface and context; thus clearing the image.
  *
- * Returns zero if successful.   If an error occurs, grdelerrmsg
- * is assigned an appropriate error message and one is returned.
+ * Returns one if successful.   If an error occurs, grdelerrmsg
+ * is assigned an appropriate error message and zero is returned.
  */
 grdelBool cairoCFerBind_resizeWindow(CFerBind *self, double width, double height)
 {

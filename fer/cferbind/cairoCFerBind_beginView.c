@@ -27,7 +27,7 @@
  * The fractions are from the top left corner; thus lftfrac must be less than
  * rgtfrac and topfrac must be less than btmfrac.
  *
- * One is returned on success.  If an error occurs, grdelerrmsg
+ * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
 grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac,
@@ -110,7 +110,7 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
                                  "unknown imageformat %d", instdata->imageformat);
             return 0;
         }
-	/* Check for failure to create the surface */
+        /* Check for failure to create the surface */
         if ( cairo_surface_status(instdata->surface) != CAIRO_STATUS_SUCCESS ) {
             sprintf(grdelerrmsg, "cairoCFerBind_beginView: "
                                  "problems creating a %s surface", fmtname);

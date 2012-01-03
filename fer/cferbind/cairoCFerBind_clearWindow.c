@@ -14,8 +14,8 @@
  * color is only used as the background color in raster images
  * (PNG) if transparency if not desired.
  *
- * Returns zero if successful.   If an error occurs, grdelerrmsg
- * is assigned an appropriate error message and one is returned.
+ * Returns one if successful.   If an error occurs, grdelerrmsg
+ * is assigned an appropriate error message and zero is returned.
  */
 grdelBool cairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
 {

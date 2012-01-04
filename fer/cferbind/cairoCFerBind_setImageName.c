@@ -33,8 +33,9 @@
  * does nothing as the drawing is being written directly to file
  * and cannot be saved to another file.
  *
- * Encapsulated PostScript is always used; thus, the PS and EPS
- * formats are the same.
+ * If Cairo 1.6 or later, encapsulated PostScript is always used;
+ * otherwise, non-encapsulated PostScript is always used.
+ * Thus, the PS and EPS formats are always the same.
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.

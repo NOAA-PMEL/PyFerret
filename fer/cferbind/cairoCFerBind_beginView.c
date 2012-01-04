@@ -95,7 +95,9 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
             height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
             instdata->surface = cairo_ps_surface_create(instdata->imagename,
                                                         width, height);
+#if (CAIRO_VERSION_MAJOR > 1) || ((CAIRO_VERSION_MAJOR == 1) && (CAIRO_VERSION_MINOR >= 6))
             cairo_ps_surface_set_eps(instdata->surface, 1);
+#endif
             fmtname = "EPS";
             break;
         case CCFBIF_SVG:

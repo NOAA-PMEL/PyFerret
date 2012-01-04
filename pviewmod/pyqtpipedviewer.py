@@ -945,7 +945,7 @@ class PyQtPipedViewer(QMainWindow):
         else:
             self.__activepainter.setBrush(Qt.NoBrush)
             mypen = QPen(mybrush, 15.0, Qt.SolidLine,
-                         Qt.RoundCap, Qt.RoundJoin)
+                         Qt.SquareCap, Qt.BevelJoin)
             self.__activepainter.setPen(mypen)
         scalefactor = ptsize * self.viewScalingFactor() / 100.0
         for xyval in ptcoords:
@@ -997,7 +997,7 @@ class PyQtPipedViewer(QMainWindow):
             if ( mybrush == Qt.NoBrush ):
                 raise ValueError( self.tr('drawPolygon called without a Brush or Pen') )
             # Use a cosmetic Pen matching the brush
-            mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+            mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
         self.__activepainter.setBrush(mybrush)
         self.__activepainter.setPen(mypen)
         self.__activepainter.drawPolygon(mypolygon)
@@ -1052,7 +1052,7 @@ class PyQtPipedViewer(QMainWindow):
             if ( mybrush == Qt.NoBrush ):
                 raise ValueError( self.tr('drawPolygon called without a Brush or Pen') )
             # Use a cosmetic Pen matching the brush
-            mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+            mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
         self.__activepainter.setBrush(mybrush)
         self.__activepainter.setPen(mypen)
         self.__activepainter.drawRect(myrect)
@@ -1127,7 +1127,7 @@ class PyQtPipedViewer(QMainWindow):
                 mybrush = QBrush(colors[colorindex], Qt.SolidPattern)
                 colorindex += 1
                 # cosmetic pen of the same color
-                mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+                mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
                 self.__activepainter.setBrush(mybrush)
                 self.__activepainter.setPen(mypen)
                 self.__activepainter.drawRect(myrect)

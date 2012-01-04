@@ -4,6 +4,7 @@
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-ps.h>
 #include <cairo/cairo-svg.h>
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include "cferbind.h"
@@ -144,6 +145,11 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
     instdata->fracsides.bottom = btmfrac;
     instdata->fracsides.right = rgtfrac;
     instdata->fracsides.top = topfrac;
+
+    /* Assign the line width scaling factor for this view */
+    width = rgtfrac - lftfrac;
+    height = btmfrac - topfrac;
+    instdata->viewfactor = sqrt(width * width + height * height);
 
     /* Assign clipping */
     result = self->clipView(self, clipit);

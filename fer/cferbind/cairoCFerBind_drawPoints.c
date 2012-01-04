@@ -16,7 +16,8 @@
  * is assigned an appropriate error message and zero is returned.
  */
 grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
-                                   grdelType symbol, grdelType color, double ptsize)
+                                   int numpts, grdelType symbol, grdelType color,
+                                   double symsize)
 {
     CCFBColor *colorobj;
 

@@ -152,23 +152,19 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, char *filename, int namelen,
             return 0;
         }
 
-        /* Draw with the last clearing color */
+        /* Fill with the last clearing color */
         cairo_set_source_rgba(tempcontext,
                               instdata->lastclearcolor.redfrac,
                               instdata->lastclearcolor.greenfrac,
                               instdata->lastclearcolor.bluefrac,
                               instdata->lastclearcolor.opaquefrac);
+        cairo_paint(tempcontext);
 
         /* Create a path covering the entire image */
         cairo_new_path(tempcontext);
-        cairo_rectangle(tempcontext, 0, 0, instdata->imagewidth,
-                                           instdata->imageheight);
-
-        /*
-         * Fill the temporary surface with the clearing color,
-         * but preserve the above path for the next fill.
-         */
-        cairo_fill_preserve(tempcontext);
+        cairo_rectangle(tempcontext, 0.0, 0.0, 
+                        (double) instdata->imagewidth,
+                        (double) instdata->imageheight);
 
         /* Draw the transparent-background image onto this temporary surface */
         cairo_set_source_surface(tempcontext, instdata->surface, 0.0, 0.0);

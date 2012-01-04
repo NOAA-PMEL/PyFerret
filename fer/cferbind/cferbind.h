@@ -58,13 +58,14 @@ typedef struct CFerBind_struct {
      grdelType (*createSymbol)(struct CFerBind_struct *self,
                                char *symbolname, int namelen);
      grdelBool (*deleteSymbol)(struct CFerBind_struct *self, grdelType symbol);
-     grdelBool (*drawMultiline)(struct CFerBind_struct *self,
-                                double ptsx[], double ptsy[], grdelType pen);
-     grdelBool (*drawPoints)(struct CFerBind_struct *self,
-                             double ptsx[], double ptsy[], grdelType symbol,
-                             grdelType color, double ptsize);
-     grdelBool (*drawPolygon)(struct CFerBind_struct *self, double ptsx[], 
-                              double ptsy[], grdelType brush, grdelType pen);
+     grdelBool (*drawMultiline)(struct CFerBind_struct *self, double ptsx[],
+                                double ptsy[], int numpts, grdelType pen);
+     grdelBool (*drawPoints)(struct CFerBind_struct *self, double ptsx[],
+                             double ptsy[], int numpts, grdelType symbol,
+                             grdelType color, double symsize);
+     grdelBool (*drawPolygon)(struct CFerBind_struct *self, double ptsx[],
+                              double ptsy[], int numpts, grdelType brush,
+                              grdelType pen);
      grdelBool (*drawRectangle)(struct CFerBind_struct *self,
                                 double left, double bottom, double right,
                                 double top, grdelType brush, grdelType pen);

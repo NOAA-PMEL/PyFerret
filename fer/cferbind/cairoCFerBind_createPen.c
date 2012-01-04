@@ -58,9 +58,8 @@ grdelType cairoCFerBind_createPen(CFerBind *self, grdelType color, double width,
     }
 
     /*
-     * When drawing, the actual pen width is always at least 1 pixel.
-     * A width of exactly zero is always a cosmetic pen (1 pixel wide
-     * and solid).
+     * When drawing, the actual pen width is always at least 1 pixel;
+     * thus a width of exactly zero is always a 1 pixel wide.
      */
     if ( width < 0.0 ) {
         sprintf(grdelerrmsg, "cairoCFerBind_createPen: "
@@ -133,32 +132,33 @@ grdelType cairoCFerBind_createPen(CFerBind *self, grdelType color, double width,
     /* Copy the color structure */
     penobj->color = *colorobj;
 
-    /* Assign the appropriate dashes array */
-    if ( (linetype == 0) || (width  == 0.0) ) {
+    /* Assign the appropriate dashes array in units of line widths */
+    switch( linetype ) {
+    case 0:
         /* solid */
         penobj->numdashes = 0;
-    }
-    else if ( linetype == 1 ) {
+        break;
+    case 1:
         /* dash */
-        penobj->dashes[0] = 8.0 * width;
-        penobj->dashes[1] = 2.0 * width;
+        penobj->dashes[0] = 8.0;
+        penobj->dashes[1] = 2.0;
         penobj->numdashes = 2;
-    }
-    else if ( linetype == 2 ) {
+        break;
+    case 2:
         /* dot */
-        penobj->dashes[0] = 2.0 * width;
-        penobj->dashes[1] = 2.0 * width;
+        penobj->dashes[0] = 2.0;
+        penobj->dashes[1] = 2.0;
         penobj->numdashes = 2;
-    }
-    else if ( linetype == 3 ) {
+        break;
+    case 3:
         /* dashdot */
-        penobj->dashes[0] = 8.0 * width;
-        penobj->dashes[1] = 2.0 * width;
-        penobj->dashes[2] = 2.0 * width;
-        penobj->dashes[3] = 2.0 * width;
+        penobj->dashes[0] = 8.0;
+        penobj->dashes[1] = 2.0;
+        penobj->dashes[2] = 2.0;
+        penobj->dashes[3] = 2.0;
         penobj->numdashes = 4;
-    }
-    else {
+        break;
+    default:
         sprintf(grdelerrmsg, "cairoCFerBind_createPen: unexpected error, "
                              "linetype of %d", linetype);
         PyMem_Free(penobj);

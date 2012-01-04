@@ -91,8 +91,8 @@ typedef struct CairoCFerBindData_struct {
     int somethingdrawn;
 } CairoCFerBindData;
 
-grdelBool cairoCFerBind_setImageName(CFerBind *self, char *imagename,
-                        int imgnamelen, char *formatname, int fmtnamelen);
+grdelBool cairoCFerBind_setImageName(CFerBind *self, const char *imagename,
+                        int imgnamelen, const char *formatname, int fmtnamelen);
 grdelBool cairoCFerBind_deleteWindow(CFerBind *self);
 grdelBool cairoCFerBind_setAntialias(CFerBind *self, int antialias);
 grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac,
@@ -104,22 +104,22 @@ grdelBool cairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor);
 double *  cairoCFerBind_windowDpi(CFerBind *self);
 grdelBool cairoCFerBind_resizeWindow(CFerBind *self, double width, double height);
 grdelBool cairoCFerBind_showWindow(CFerBind *self, int visible);
-grdelBool cairoCFerBind_saveWindow(CFerBind *self, char *filename, int namelen,
-                                   char *formatname, int fmtnamelen, int transbkg);
+grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int namelen,
+                                   const char *formatname, int fmtnamelen, int transbkg);
 grdelType cairoCFerBind_createColor(CFerBind *self, double redfrac,
                         double greenfrac, double bluefrac, double opaquefrac);
 grdelBool cairoCFerBind_deleteColor(CFerBind *self, grdelType color);
-grdelType cairoCFerBind_createFont(CFerBind *self, char *familyname, int namelen,
+grdelType cairoCFerBind_createFont(CFerBind *self, const char *familyname, int namelen,
                         double fontsize, int italic, int bold, int underlined);
 grdelBool cairoCFerBind_deleteFont(CFerBind *self, grdelType font);
 grdelType cairoCFerBind_createPen(CFerBind *self, grdelType color, double width,
-                                  char *style, int stlen, char *capstyle,
-                                  int capstlen, char *joinstyle, int joinstlen);
+                                  const char *style, int stlen, const char *capstyle,
+                                  int capstlen, const char *joinstyle, int joinstlen);
 grdelBool cairoCFerBind_deletePen(CFerBind *self, grdelType pen);
 grdelType cairoCFerBind_createBrush(CFerBind *self, grdelType color,
-                                    char *style, int stlen);
+                                    const char *style, int stlen);
 grdelBool cairoCFerBind_deleteBrush(CFerBind *self, grdelType brush);
-grdelType cairoCFerBind_createSymbol(CFerBind *self, char *symbolname, int namelen);
+grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int namelen);
 grdelBool cairoCFerBind_deleteSymbol(CFerBind *self, grdelType symbol);
 grdelBool cairoCFerBind_drawMultiline(CFerBind *self, double ptsx[], double ptsy[],
                                       int numpts, grdelType pen);
@@ -130,10 +130,10 @@ grdelBool cairoCFerBind_drawPolygon(CFerBind *self, double ptsx[], double ptsy[]
                                     int numpts, grdelType brush, grdelType pen);
 grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom,
                         double right, double top, grdelType brush, grdelType pen);
-grdelBool cairoCFerBind_drawMulticoloredRectangle(CFerBind *self, double left,
+grdelBool cairoCFerBind_drawMulticolorRectangle(CFerBind *self, double left,
                         double bottom, double right, double top,
                         int numrows, int numcols, grdelType colors[]);
-grdelBool cairoCFerBind_drawText(CFerBind *self, char *text, int textlen,
+grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
                                  double startx, double starty, grdelType font,
                                  grdelType color, double rotation);
 

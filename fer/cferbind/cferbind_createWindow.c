@@ -20,8 +20,8 @@ const char *CairoCFerBindName = "Cairo";
  * If an error occurs, grdelerrmsg is assigned an appropriate
  * error message and NULL is returned.
  */
-CFerBind *cferbind_createWindow(char *enginename, int engnamelen,
-                                char *windowname, int winnamelen, int visible)
+CFerBind *cferbind_createWindow(const char *enginename, int engnamelen,
+                                const char *windowname, int winnamelen, int visible)
 {
     CFerBind *bindings;
     int k;

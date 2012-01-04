@@ -36,7 +36,7 @@ lib_list.extend(fer_lib_list)
 lib_list.extend(fer_lib_list)
 lib_list.extend(fer_lib_list)
 lib_list.append("python%i.%i" % sys.version_info[:2])
-lib_list.extend( ( "netcdff", "netcdf", "hdf5_hl", "hdf5",
+lib_list.extend( ( "cairo", "netcdff", "netcdf", "hdf5_hl", "hdf5",
                    "curl", "z", "dl", "gfortran", "m", ) )
 
 # Get the list of C source files in pyfermod

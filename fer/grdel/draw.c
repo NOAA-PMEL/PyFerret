@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "grdel.h"
+#include "cferbind.h"
 #include "pyferret.h"
 
 /*
@@ -62,8 +63,11 @@ static void getTransformValues(double *my, double *sx, double *sy,
 grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
                const float ptsy[], int numpts, grdelType pen)
 {
-    PyObject *bindings;
-    PyObject *penobj;
+    const BindObj *bindings;
+    grdelType penobj;
+    double   *xvals;
+    double   *yvals;
+    grdelBool success;
     PyObject *xtuple;
     PyObject *ytuple;
     PyObject *fltobj;
@@ -82,81 +86,108 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
     if ( bindings == NULL  ) {
         strcpy(grdelerrmsg, "grdelDrawMultiline: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     penobj = grdelPenVerify(pen, window);
     if ( penobj == NULL ) {
         strcpy(grdelerrmsg, "grdelDrawMultiline: pen argument is not "
                             "a valid grdel Pen for the window");
-        return (grdelBool) 0;
+        return 0;
     }
     if ( numpts <= 1 ) {
         strcpy(grdelerrmsg, "grdelDrawMultiline: invalid number of points");
-        return (grdelBool) 0;
+        return 0;
     }
 
     /* Get the transform values for converting user to device coordinates */
     getTransformValues(&my, &sx, &sy, &dx, &dy);
 
-    xtuple = PyTuple_New( (Py_ssize_t) numpts );
-    if ( xtuple == NULL ) {
-        PyErr_Clear();
-        strcpy(grdelerrmsg, "grdelDrawMultiline: problems creating "
-                            "a Python tuple");
-        return (grdelBool) 0;
+    if ( bindings->cferbind != NULL ) {
+        xvals = (double *) PyMem_Malloc(2 * numpts * sizeof(double));
+        if ( xvals == NULL ) {
+            sprintf(grdelerrmsg, "grdelDrawMultiline: out of memory "
+                                 "for an array of %d doubles", 2 * numpts);
+            return 0;
+        }
+        yvals = &(xvals[numpts]);
+        for (k = 0; k < numpts; k++)
+            xvals[k] = (double) (ptsx[k]) * sx + dx;
+        for (k = 0; k < numpts; k++)
+            yvals[k] = (double) (ptsy[k]) * sy + dy;
+        success = bindings->cferbind->drawMultiline(bindings->cferbind,
+                                      xvals, yvals, numpts, penobj);
+        PyMem_Free(xvals);
+        if ( ! success ) {
+            /* grdelerrmsg is already assigned */
+            return 0;
+        }
     }
-    for (k = 0; k < numpts; k++) {
-        transval = (double) (ptsx[k]) * sx + dx;
-        fltobj = PyFloat_FromDouble(transval);
-        if ( fltobj == NULL ) {
+    else if ( bindings->pyobject != NULL ) {
+        xtuple = PyTuple_New( (Py_ssize_t) numpts );
+        if ( xtuple == NULL ) {
             PyErr_Clear();
             strcpy(grdelerrmsg, "grdelDrawMultiline: problems creating "
-                                "a Python float");
-            Py_DECREF(xtuple);
-            return (grdelBool) 0;
+                                "a Python tuple");
+            return 0;
         }
-        /* PyTuple_SET_ITEM steals the reference to fltobj */
-        PyTuple_SET_ITEM(xtuple, (Py_ssize_t) k, fltobj);
-    }
+        for (k = 0; k < numpts; k++) {
+            transval = (double) (ptsx[k]) * sx + dx;
+            fltobj = PyFloat_FromDouble(transval);
+            if ( fltobj == NULL ) {
+                PyErr_Clear();
+                strcpy(grdelerrmsg, "grdelDrawMultiline: problems creating "
+                                    "a Python float");
+                Py_DECREF(xtuple);
+                return 0;
+            }
+            /* PyTuple_SET_ITEM steals the reference to fltobj */
+            PyTuple_SET_ITEM(xtuple, (Py_ssize_t) k, fltobj);
+        }
 
-    ytuple = PyTuple_New( (Py_ssize_t) numpts );
-    if ( ytuple == NULL ) {
-        PyErr_Clear();
-        strcpy(grdelerrmsg, "grdelDrawMultiline: problems creating "
-                            "a Python tuple");
-        Py_DECREF(xtuple);
-        return (grdelBool) 0;
-    }
-    for (k = 0; k < numpts; k++) {
-        transval = (my - (double) (ptsy[k])) * sy + dy;
-        fltobj = PyFloat_FromDouble(transval);
-        if ( fltobj == NULL ) {
+        ytuple = PyTuple_New( (Py_ssize_t) numpts );
+        if ( ytuple == NULL ) {
             PyErr_Clear();
             strcpy(grdelerrmsg, "grdelDrawMultiline: problems creating "
-                                "a Python float");
-            Py_DECREF(ytuple);
+                                "a Python tuple");
             Py_DECREF(xtuple);
-            return (grdelBool) 0;
+            return 0;
         }
-        /* PyTuple_SET_ITEM steals the reference to fltobj */
-        PyTuple_SET_ITEM(ytuple, (Py_ssize_t) k, fltobj);
-    }
+        for (k = 0; k < numpts; k++) {
+            transval = (my - (double) (ptsy[k])) * sy + dy;
+            fltobj = PyFloat_FromDouble(transval);
+            if ( fltobj == NULL ) {
+                PyErr_Clear();
+                strcpy(grdelerrmsg, "grdelDrawMultiline: problems creating "
+                                    "a Python float");
+                Py_DECREF(ytuple);
+                Py_DECREF(xtuple);
+                return 0;
+            }
+            /* PyTuple_SET_ITEM steals the reference to fltobj */
+            PyTuple_SET_ITEM(ytuple, (Py_ssize_t) k, fltobj);
+        }
 
-    /*
-     * Call the drawMultiline method of the bindings instance.
-     * Using 'N' to steal the reference to xtuple and to ytuple.
-     */
-    result = PyObject_CallMethod(bindings, "drawMultiline", "NNO",
-                                 xtuple, ytuple, penobj);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelDrawMultiline: error when calling "
-                "the binding's drawMultiline method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
+        /*
+         * Call the drawMultiline method of the bindings instance.
+         * Using 'N' to steal the reference to xtuple and to ytuple.
+         */
+        result = PyObject_CallMethod(bindings->pyobject, "drawMultiline",
+                          "NNO", xtuple, ytuple, (PyObject *) penobj);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelDrawMultiline: error when calling the Python "
+                    "binding's drawMultiline method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
     }
-    Py_DECREF(result);
+    else {
+        strcpy(grdelerrmsg, "grdeldrawMultiline: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
 
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*
@@ -178,9 +209,12 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
                const float ptsy[], int numpts, grdelType symbol,
                grdelType color, float ptsize)
 {
-    PyObject *bindings;
-    PyObject *symbolobj;
-    PyObject *colorobj;
+    const BindObj *bindings;
+    grdelType symbolobj;
+    grdelType colorobj;
+    double   *xvals;
+    double   *yvals;
+    grdelBool success;
     PyObject *xtuple;
     PyObject *ytuple;
     PyObject *fltobj;
@@ -199,88 +233,116 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
     if ( bindings == NULL  ) {
         strcpy(grdelerrmsg, "grdelDrawPoints: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     symbolobj = grdelSymbolVerify(symbol, window);
     if ( symbolobj == NULL ) {
         strcpy(grdelerrmsg, "grdelDrawPoints: symbol argument is not "
                             "a valid grdel Symbol for the window");
-        return (grdelBool) 0;
+        return 0;
     }
     colorobj = grdelColorVerify(color, window);
     if ( colorobj == NULL ) {
         strcpy(grdelerrmsg, "grdelDrawPoints: color argument is not "
                             "a valid grdel Color for the window");
-        return (grdelBool) 0;
+        return 0;
     }
     if ( numpts <= 0 ) {
         strcpy(grdelerrmsg, "grdelDrawPoints: invalid number of points");
-        return (grdelBool) 0;
+        return 0;
     }
 
     /* Get the transform values for converting user to device coordinates */
     getTransformValues(&my, &sx, &sy, &dx, &dy);
 
-    xtuple = PyTuple_New( (Py_ssize_t) numpts );
-    if ( xtuple == NULL ) {
-        PyErr_Clear();
-        strcpy(grdelerrmsg, "grdelDrawPoints: problems creating "
-                            "a Python tuple");
-        return (grdelBool) 0;
+    if ( bindings->cferbind != NULL ) {
+        xvals = (double *) PyMem_Malloc(2 * numpts * sizeof(double));
+        if ( xvals == NULL ) {
+            sprintf(grdelerrmsg, "grdelDrawPoints: out of memory "
+                                 "for an array of %d doubles", 2 * numpts);
+            return 0;
+        }
+        yvals = &(xvals[numpts]);
+        for (k = 0; k < numpts; k++)
+            xvals[k] = (double) (ptsx[k]) * sx + dx;
+        for (k = 0; k < numpts; k++)
+            yvals[k] = (double) (ptsy[k]) * sy + dy;
+        success = bindings->cferbind->drawPoints(bindings->cferbind,
+                                      xvals, yvals, numpts, symbolobj,
+                                      colorobj, (double) ptsize);
+        PyMem_Free(xvals);
+        if ( ! success ) {
+            /* grdelerrmsg is already assigned */
+            return 0;
+        }
     }
-    for (k = 0; k < numpts; k++) {
-        transval = (double) (ptsx[k]) * sx + dx;
-        fltobj = PyFloat_FromDouble(transval);
-        if ( fltobj == NULL ) {
+    else if ( bindings->pyobject != NULL ) {
+        xtuple = PyTuple_New( (Py_ssize_t) numpts );
+        if ( xtuple == NULL ) {
             PyErr_Clear();
             strcpy(grdelerrmsg, "grdelDrawPoints: problems creating "
-                                "a Python float");
-            Py_DECREF(xtuple);
-            return (grdelBool) 0;
+                                "a Python tuple");
+            return 0;
         }
-        /* PyTuple_SET_ITEM steals the reference to fltobj */
-        PyTuple_SET_ITEM(xtuple, (Py_ssize_t) k, fltobj);
-    }
+        for (k = 0; k < numpts; k++) {
+            transval = (double) (ptsx[k]) * sx + dx;
+            fltobj = PyFloat_FromDouble(transval);
+            if ( fltobj == NULL ) {
+                PyErr_Clear();
+                strcpy(grdelerrmsg, "grdelDrawPoints: problems creating "
+                                    "a Python float");
+                Py_DECREF(xtuple);
+                return 0;
+            }
+            /* PyTuple_SET_ITEM steals the reference to fltobj */
+            PyTuple_SET_ITEM(xtuple, (Py_ssize_t) k, fltobj);
+        }
 
-    ytuple = PyTuple_New( (Py_ssize_t) numpts );
-    if ( ytuple == NULL ) {
-        PyErr_Clear();
-        strcpy(grdelerrmsg, "grdelDrawPoints: problems creating "
-                            "a Python tuple");
-        Py_DECREF(xtuple);
-        return (grdelBool) 0;
-    }
-    for (k = 0; k < numpts; k++) {
-        transval = (my - (double) (ptsy[k])) * sy + dy;
-        fltobj = PyFloat_FromDouble(transval);
-        if ( fltobj == NULL ) {
+        ytuple = PyTuple_New( (Py_ssize_t) numpts );
+        if ( ytuple == NULL ) {
             PyErr_Clear();
             strcpy(grdelerrmsg, "grdelDrawPoints: problems creating "
-                                "a Python float");
-            Py_DECREF(ytuple);
+                                "a Python tuple");
             Py_DECREF(xtuple);
-            return (grdelBool) 0;
+            return 0;
         }
-        /* PyTuple_SET_ITEM steals the reference to fltobj */
-        PyTuple_SET_ITEM(ytuple, (Py_ssize_t) k, fltobj);
-    }
+        for (k = 0; k < numpts; k++) {
+            transval = (my - (double) (ptsy[k])) * sy + dy;
+            fltobj = PyFloat_FromDouble(transval);
+            if ( fltobj == NULL ) {
+                PyErr_Clear();
+                strcpy(grdelerrmsg, "grdelDrawPoints: problems creating "
+                                    "a Python float");
+                Py_DECREF(ytuple);
+                Py_DECREF(xtuple);
+                return 0;
+            }
+            /* PyTuple_SET_ITEM steals the reference to fltobj */
+            PyTuple_SET_ITEM(ytuple, (Py_ssize_t) k, fltobj);
+        }
 
-    /*
-     * Call the drawPoints method of the bindings instance.
-     * Using 'N' to steal the reference to xtuple and to ytuple.
-     */
-    result = PyObject_CallMethod(bindings, "drawPoints", "NNOOd",
-                                 xtuple, ytuple, symbolobj,
-                                 colorobj, (double) ptsize);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelDrawPoints: error when calling "
-                "the binding's drawPoints method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
+        /*
+         * Call the drawPoints method of the bindings instance.
+         * Using 'N' to steal the reference to xtuple and to ytuple.
+         */
+        result = PyObject_CallMethod(bindings->pyobject, "drawPoints",
+                          "NNOOd", xtuple, ytuple, (PyObject *) symbolobj,
+                          (PyObject *) colorobj, (double) ptsize);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelDrawPoints: error when calling the Python "
+                    "binding's drawPoints method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
     }
-    Py_DECREF(result);
+    else {
+        strcpy(grdelerrmsg, "grdeldrawPoints: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
 
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*
@@ -303,9 +365,12 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
                const float ptsy[], int numpts, grdelType brush,
                grdelType pen)
 {
-    PyObject *bindings;
-    PyObject *brushobj;
-    PyObject *penobj;
+    const BindObj *bindings;
+    grdelType brushobj;
+    grdelType penobj;
+    double   *xvals;
+    double   *yvals;
+    grdelBool success;
     PyObject *xtuple;
     PyObject *ytuple;
     PyObject *fltobj;
@@ -324,33 +389,33 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
     if ( bindings == NULL  ) {
         strcpy(grdelerrmsg, "grdelDrawPolygon: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     if ( (brush == NULL) && (pen == NULL) ) {
         strcpy(grdelerrmsg, "grdelDrawPolygon: neither a pen nor "
                             "a brush was specified");
-        return (grdelBool) 0;
+        return 0;
     }
     if ( brush != NULL ) {
         brushobj = grdelBrushVerify(brush, window);
         if ( brushobj == NULL ) {
             strcpy(grdelerrmsg, "grdelDrawPolygon: brush argument is not "
                                 "a valid grdel Brush for the window");
-            return (grdelBool) 0;
+            return 0;
         }
     }
     else
-        brushobj = Py_None;
+        brushobj = NULL;
     if ( pen != NULL ) {
         penobj = grdelPenVerify(pen, window);
         if ( penobj == NULL ) {
             strcpy(grdelerrmsg, "grdelDrawPolygon: pen argument is not "
                                 "a valid grdel Pen for the window");
-            return (grdelBool) 0;
+            return 0;
         }
     }
     else
-        penobj = Py_None;
+        penobj = NULL;
     if ( numpts <= 2 ) {
         strcpy(grdelerrmsg, "grdelDrawPolygon: invalid number of points");
         return (grdelBool) 0;
@@ -359,65 +424,97 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
     /* Get the transform values for converting user to device coordinates */
     getTransformValues(&my, &sx, &sy, &dx, &dy);
 
-    xtuple = PyTuple_New( (Py_ssize_t) numpts );
-    if ( xtuple == NULL ) {
-        PyErr_Clear();
-        strcpy(grdelerrmsg, "grdelDrawPolygon: problems creating "
-                            "a Python tuple");
-        return (grdelBool) 0;
+    if ( bindings->cferbind != NULL ) {
+        xvals = (double *) PyMem_Malloc(2 * numpts * sizeof(double));
+        if ( xvals == NULL ) {
+            sprintf(grdelerrmsg, "grdelDrawPolygon: out of memory "
+                                 "for an array of %d doubles", 2 * numpts);
+            return 0;
+        }
+        yvals = &(xvals[numpts]);
+        for (k = 0; k < numpts; k++)
+            xvals[k] = (double) (ptsx[k]) * sx + dx;
+        for (k = 0; k < numpts; k++)
+            yvals[k] = (double) (ptsy[k]) * sy + dy;
+        success = bindings->cferbind->drawPolygon(bindings->cferbind,
+                                      xvals, yvals, numpts, brushobj, penobj);
+        PyMem_Free(xvals);
+        if ( ! success ) {
+            /* grdelerrmsg is already assigned */
+            return 0;
+        }
     }
-    for (k = 0; k < numpts; k++) {
-        transval = (double) (ptsx[k]) * sx + dx;
-        fltobj = PyFloat_FromDouble(transval);
-        if ( fltobj == NULL ) {
+    else if ( bindings->pyobject != NULL ) {
+        xtuple = PyTuple_New( (Py_ssize_t) numpts );
+        if ( xtuple == NULL ) {
             PyErr_Clear();
             strcpy(grdelerrmsg, "grdelDrawPolygon: problems creating "
-                                "a Python float");
-            Py_DECREF(xtuple);
-            return (grdelBool) 0;
+                                "a Python tuple");
+            return 0;
         }
-        /* PyTuple_SET_ITEM steals the reference to fltobj */
-        PyTuple_SET_ITEM(xtuple, (Py_ssize_t) k, fltobj);
-    }
+        for (k = 0; k < numpts; k++) {
+            transval = (double) (ptsx[k]) * sx + dx;
+            fltobj = PyFloat_FromDouble(transval);
+            if ( fltobj == NULL ) {
+                PyErr_Clear();
+                strcpy(grdelerrmsg, "grdelDrawPolygon: problems creating "
+                                    "a Python float");
+                Py_DECREF(xtuple);
+                return 0;
+            }
+            /* PyTuple_SET_ITEM steals the reference to fltobj */
+            PyTuple_SET_ITEM(xtuple, (Py_ssize_t) k, fltobj);
+        }
 
-    ytuple = PyTuple_New( (Py_ssize_t) numpts );
-    if ( ytuple == NULL ) {
-        PyErr_Clear();
-        strcpy(grdelerrmsg, "grdelDrawPolygon: problems creating "
-                            "a Python tuple");
-        Py_DECREF(xtuple);
-        return (grdelBool) 0;
-    }
-    for (k = 0; k < numpts; k++) {
-        transval = (my - (double) (ptsy[k])) * sy + dy;
-        fltobj = PyFloat_FromDouble(transval);
-        if ( fltobj == NULL ) {
+        ytuple = PyTuple_New( (Py_ssize_t) numpts );
+        if ( ytuple == NULL ) {
             PyErr_Clear();
             strcpy(grdelerrmsg, "grdelDrawPolygon: problems creating "
-                                "a Python float");
-            Py_DECREF(ytuple);
+                                "a Python tuple");
             Py_DECREF(xtuple);
-            return (grdelBool) 0;
+            return 0;
         }
-        /* PyTuple_SET_ITEM steals the reference to fltobj */
-        PyTuple_SET_ITEM(ytuple, (Py_ssize_t) k, fltobj);
-    }
+        for (k = 0; k < numpts; k++) {
+            transval = (my - (double) (ptsy[k])) * sy + dy;
+            fltobj = PyFloat_FromDouble(transval);
+            if ( fltobj == NULL ) {
+                PyErr_Clear();
+                strcpy(grdelerrmsg, "grdelDrawPolygon: problems creating "
+                                    "a Python float");
+                Py_DECREF(ytuple);
+                Py_DECREF(xtuple);
+                return 0;
+            }
+            /* PyTuple_SET_ITEM steals the reference to fltobj */
+            PyTuple_SET_ITEM(ytuple, (Py_ssize_t) k, fltobj);
+        }
 
-    /*
-     * Call the drawPolygon method of the bindings instance.
-     * Using 'N' to steal the reference to xtuple and to ytuple.
-     */
-    result = PyObject_CallMethod(bindings, "drawPolygon", "NNOO",
-                                 xtuple, ytuple, brushobj, penobj);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelDrawPolygon: error when calling "
-                "the binding's drawPolygon method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
+        if ( brushobj == NULL )
+            brushobj = Py_None;
+        if ( penobj == NULL )
+            penobj = Py_None;
+        /*
+         * Call the drawPolygon method of the bindings instance.
+         * Using 'N' to steal the reference to xtuple and to ytuple.
+         */
+        result = PyObject_CallMethod(bindings->pyobject, "drawPolygon",
+                          "NNOO", xtuple, ytuple, 
+                          (PyObject *) brushobj, (PyObject *) penobj);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelDrawPolygon: error when calling the Python "
+                    "binding's drawPolygon method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
     }
-    Py_DECREF(result);
+    else {
+        strcpy(grdelerrmsg, "grdeldrawPolygon: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
 
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*
@@ -440,9 +537,10 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
 grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
                float right, float top, grdelType brush, grdelType pen)
 {
-    PyObject *bindings;
-    PyObject *brushobj;
-    PyObject *penobj;
+    const BindObj *bindings;
+    grdelType brushobj;
+    grdelType penobj;
+    grdelBool success;
     PyObject *result;
     double my, sx, sy, dx, dy;
     double trlft, trbtm, trrgt, trtop;
@@ -457,7 +555,7 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
     if ( bindings == NULL  ) {
         strcpy(grdelerrmsg, "grdelDrawRectangle: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     if ( (brush == NULL) && (pen == NULL) ) {
         strcpy(grdelerrmsg, "grdelDrawRectangle: neither a pen nor "
@@ -473,7 +571,7 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
         }
     }
     else
-        brushobj = Py_None;
+        brushobj = NULL;
     if ( pen != NULL ) {
         penobj = grdelPenVerify(pen, window);
         if ( penobj == NULL ) {
@@ -483,7 +581,7 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
         }
     }
     else
-        penobj = Py_None;
+        penobj = NULL;
 
     /* Get the transform values for converting user to device coordinates */
     getTransformValues(&my, &sx, &sy, &dx, &dy);
@@ -492,21 +590,41 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
     trtop = (my - (double) top) * sy + dy;
     trbtm = (my - (double) bottom) * sy + dy;
 
-    /*
-     * Call the drawRectangle method of the bindings instance.
-     */
-    result = PyObject_CallMethod(bindings, "drawRectangle", "ddddOO",
-                                 trlft, trbtm, trrgt, trtop,
-                                 brushobj, penobj);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelDrawRectangle: error when calling "
-                "the binding's drawRectangle method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
+    if ( bindings->cferbind != NULL ) {
+        success = bindings->cferbind->drawRectangle(bindings->cferbind,
+                                      trlft, trbtm, trrgt, trtop,
+                                      brushobj, penobj);
+        if ( ! success ) {
+            /* grdelerrmsg is already assigned */
+            return 0;
+        }
     }
-    Py_DECREF(result);
+    else if ( bindings->pyobject != NULL ) {
+        if ( brushobj == NULL )
+            brushobj = Py_None;
+        if ( penobj == NULL )
+            penobj = Py_None;
+        /*
+         * Call the drawRectangle method of the bindings instance.
+         */
+        result = PyObject_CallMethod(bindings->pyobject, "drawRectangle",
+                          "ddddOO", trlft, trbtm, trrgt, trtop,
+                          (PyObject *) brushobj, (PyObject *) penobj);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelDrawRectangle: error when calling the Python "
+                    "binding's drawRectangle method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdeldrawRectangle: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
 
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*
@@ -536,11 +654,13 @@ grdelBool grdelDrawMulticolorRectangle(grdelType window,
                float left, float bottom, float right, float top,
                int numrows, int numcols, const grdelType colors[])
 {
-    PyObject *bindings;
-    PyObject *colortuple;
-    PyObject *colorobj;
-    PyObject *result;
-    int numcolors;
+    const BindObj *bindings;
+    int        numcolors;
+    grdelType *colorarray;
+    grdelBool  success;
+    PyObject  *colortuple;
+    PyObject  *colorobj;
+    PyObject  *result;
     double my, sx, sy, dx, dy;
     double trlft, trbtm, trrgt, trtop;
     int k;
@@ -553,15 +673,15 @@ grdelBool grdelDrawMulticolorRectangle(grdelType window,
 
     bindings = grdelWindowVerify(window);
     if ( bindings == NULL  ) {
-        strcpy(grdelerrmsg, "grdelDrawMulticolor: window argument is not "
-                            "a grdel Window");
-        return (grdelBool) 0;
+        strcpy(grdelerrmsg, "grdelDrawMulticolorRectangle: "
+                            "window argument is not a grdel Window");
+        return 0;
     }
     numcolors = numrows * numcols;
     if ( (numrows <= 0)  || (numcols <= 0) || (numcolors <= 0) ) {
-        strcpy(grdelerrmsg, "grdelDrawMulticolor: invalid numrows and/or "
-                            "numcols value");
-        return (grdelBool) 0;
+        strcpy(grdelerrmsg, "grdelDrawMulticolorRectangle: "
+                            "invalid numrows and/or numcols value");
+        return 0;
     }
 
     /* Get the transform values for converting user to device coordinates */
@@ -571,45 +691,78 @@ grdelBool grdelDrawMulticolorRectangle(grdelType window,
     trtop = (my - (double) top) * sy + dy;
     trbtm = (my - (double) bottom) * sy + dy;
 
-    colortuple = PyTuple_New( (Py_ssize_t) numcolors );
-    if ( colortuple == NULL ) {
-        PyErr_Clear();
-        strcpy(grdelerrmsg, "grdelDrawMulticolor: problems creating "
-                            "a Python tuple");
-        return (grdelBool) 0;
-    }
-    for (k = 0; k < numrows * numcols; k++) {
-        colorobj = grdelColorVerify(colors[k], window);
-        if ( colorobj == NULL  ) {
-            sprintf(grdelerrmsg, "grdelDrawMulticolor: colors[%d] is not "
-                                 "a valid grdel Color for the window", k);
-            Py_DECREF(colortuple);
-            return (grdelBool) 0;
+    if ( bindings->cferbind != NULL ) {
+        colorarray = (grdelType *) PyMem_Malloc(numcolors * sizeof(grdelType));
+        if ( colorarray == NULL ) {
+            sprintf(grdelerrmsg, "grdelDrawMulticolorRectangle: out of memory "
+                                 "for an array of %d color object", numcolors);
+            return 0;
         }
-        /*
-         * PyTuple_SET_ITEM steals a reference to colorobj,
-         * so increment the reference count on it.
-         */
-        Py_INCREF(colorobj);
-        PyTuple_SET_ITEM(colortuple, (Py_ssize_t) k, colorobj);
+        for (k = 0; k < numrows * numcols; k++) {
+            colorarray[k] = grdelColorVerify(colors[k], window);
+            if ( colorarray[k] == NULL  ) {
+                sprintf(grdelerrmsg, "grdelDrawMulticolorRectangle: colors[%d] "
+                                     "is not a valid grdel Color for the window", k);
+                PyMem_Free(colorarray);
+                return 0;
+            }
+        }
+        success = bindings->cferbind->drawMulticolorRectangle(bindings->cferbind,
+                                      trlft, trbtm, trrgt, trtop,
+                                      numrows, numcols, colorarray);
+        PyMem_Free(colorarray);
+        if ( ! success ) {
+            /* grdelerrmsg is already assigned */
+            return 0;
+        }
     }
+    else if ( bindings->pyobject != NULL ) {
+        colortuple = PyTuple_New( (Py_ssize_t) numcolors );
+        if ( colortuple == NULL ) {
+            PyErr_Clear();
+            strcpy(grdelerrmsg, "grdelDrawMulticolorRectangle: "
+                                "problems creating a Python tuple");
+            return 0;
+        }
+        for (k = 0; k < numrows * numcols; k++) {
+            colorobj = (PyObject *) grdelColorVerify(colors[k], window);
+            if ( colorobj == NULL  ) {
+                sprintf(grdelerrmsg, "grdelDrawMulticolorRectangle: colors[%d] "
+                                     "is not a valid grdel Color for the window", k);
+                Py_DECREF(colortuple);
+                return 0;
+            }
+            /*
+             * PyTuple_SET_ITEM steals a reference to colorobj,
+             * so increment the reference count on it.
+             */
+            Py_INCREF(colorobj);
+            PyTuple_SET_ITEM(colortuple, (Py_ssize_t) k, colorobj);
+        }
 
-    /*
-     * Call the drawMulticolorRectangle method of the bindings instance.
-     * Using 'N' to steal the reference to colortuple.
-     */
-    result = PyObject_CallMethod(bindings, "drawMulticolorRectangle", "ddddiiN",
-                                 trlft, trbtm, trrgt, trtop,
-                                 numrows, numcols, colortuple);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelDrawMulticolor: error when calling "
-                "the binding's drawMulticolorRectangle method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
+        /*
+         * Call the drawMulticolorRectangle method of the bindings instance.
+         * Using 'N' to steal the reference to colortuple.
+         */
+        result = PyObject_CallMethod(bindings->pyobject, "drawMulticolorRectangle",
+                                     "ddddiiN", trlft, trbtm, trrgt, trtop,
+                                     numrows, numcols, colortuple);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelDrawMulticolorRectangle: error when calling "
+                    "the Python binding's drawMulticolorRectangle method: %s",
+                    pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
     }
-    Py_DECREF(result);
+    else {
+        strcpy(grdelerrmsg, "grdeldrawMulticolorRectangle: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
 
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*
@@ -635,9 +788,10 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
                float startx, float starty, grdelType font, grdelType color,
                float rotate)
 {
-    PyObject *bindings;
-    PyObject *fontobj;
-    PyObject *colorobj;
+    const BindObj *bindings;
+    grdelType fontobj;
+    grdelType colorobj;
+    grdelBool success;
     PyObject *result;
     double my, sx, sy, dx, dy;
     double trstx, trsty;
@@ -652,19 +806,19 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
     if ( bindings == NULL  ) {
         strcpy(grdelerrmsg, "grdelDrawText: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     fontobj = grdelFontVerify(font, window);
     if ( fontobj == NULL ) {
         strcpy(grdelerrmsg, "grdelDrawText: font argument is not "
                             "a valid grdel Font for the window");
-        return (grdelBool) 0;
+        return 0;
     }
     colorobj = grdelColorVerify(color, window);
     if ( colorobj == NULL ) {
         strcpy(grdelerrmsg, "grdelDrawText: color argument is not "
                             "a valid grdel Color for the window");
-        return (grdelBool) 0;
+        return 0;
     }
 
     /* Get the transform values for converting user to device coordinates */
@@ -672,19 +826,36 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
     trstx = (double) startx * sx + dx;
     trsty = (my - (double) starty) * sy + dy;
 
-    /* Call the drawText method of the bindings instance. */
-    result = PyObject_CallMethod(bindings, "drawText", "s#ddOOd",
-                                 text, textlen, trstx, trsty,
-                                 fontobj, colorobj, (double) rotate);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelDrawText: Error when calling "
-                "the binding's drawText method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
+    if ( bindings->cferbind != NULL ) {
+        success = bindings->cferbind->drawText(bindings->cferbind,
+                                      text, textlen, trstx, trsty,
+                                      fontobj, colorobj, (double) rotate);
+        if ( ! success ) {
+            /* grdelerrmsg is already assigned */
+            return 0;
+        }
     }
-    Py_DECREF(result);
+    else if ( bindings->pyobject != NULL ) {
+        /* Call the drawText method of the bindings instance. */
+        result = PyObject_CallMethod(bindings->pyobject, "drawText",
+                          "s#ddOOd", text, textlen, trstx, trsty,
+                          (PyObject *) fontobj, (PyObject *) colorobj,
+                          (double) rotate);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelDrawText: Error when calling the Python "
+                    "binding's drawText method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdeldrawText: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
 
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*

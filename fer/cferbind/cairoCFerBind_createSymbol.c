@@ -16,7 +16,7 @@
  * grdelerrmsg is assigned an appropriate error message and NULL
  * is returned.
  */
-grdelType cairoCFerBind_createSymbol(CFerBind *self, char *symbolname, int namelen)
+grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int namelen)
 {
     /* Sanity check */
     if ( self->enginename != CairoCFerBindName ) {

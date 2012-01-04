@@ -33,8 +33,8 @@ const char *CCFBPenId = "CCFBPenId";
  * is returned.
  */
 grdelType cairoCFerBind_createPen(CFerBind *self, grdelType color, double width,
-                                  char *style, int stlen, char *capstyle,
-                                  int capstlen, char *joinstyle, int joinstlen)
+                                  const char *style, int stlen, const char *capstyle,
+                                  int capstlen, const char *joinstyle, int joinstlen)
 {
     CCFBColor        *colorobj;
     CCFBPen          *penobj;

@@ -6,6 +6,7 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <string.h>
 #include "grdel.h"
+#include "cferbind.h"
 #include "pyferret.h"
 
 static const char *grdelfontid = "GRDEL_FONT";
@@ -13,7 +14,7 @@ static const char *grdelfontid = "GRDEL_FONT";
 typedef struct GDfont_ {
     const char *id;
     grdelType window;
-    PyObject *object;
+    grdelType object;
 } GDFont;
 
 
@@ -37,7 +38,7 @@ grdelType grdelFont(grdelType window, const char *familyname,
                int familynamelen, float fontsize, grdelBool italic,
                grdelBool bold, grdelBool underlined)
 {
-    PyObject *bindings;
+    const BindObj *bindings;
     PyObject *italicbool;
     PyObject *boldbool;
     PyObject *underlinedbool;
@@ -58,24 +59,43 @@ grdelType grdelFont(grdelType window, const char *familyname,
 
     font->id = grdelfontid;
     font->window = window;
-    if ( italic )
-        italicbool = Py_True;
-    else
-        italicbool = Py_False;
-    if ( bold )
-        boldbool = Py_True;
-    else
-        boldbool = Py_False;
-    if ( underlined )
-        underlinedbool = Py_True;
-    else
-        underlinedbool = Py_False;
-    font->object = PyObject_CallMethod(bindings, "createFont", "s#dOOO",
-                            familyname, familynamelen, (double) fontsize,
-                            italicbool, boldbool, underlinedbool);
-    if ( font->object == NULL ) {
-        sprintf(grdelerrmsg, "grdelFont: error when calling "
-                "the binding's createFont method: %s", pyefcn_get_error());
+    if ( bindings->cferbind != NULL ) {
+        font->object = bindings->cferbind->createFont(bindings->cferbind,
+                                 familyname, familynamelen, (double) fontsize, 
+                                 italic, bold, underlined);
+        if ( font->object == NULL ) {
+            /* grdelerrmsg already assigned */
+            PyMem_Free(font);
+            return NULL;
+        }
+    }
+    else if ( bindings->pyobject != NULL ) {
+        if ( italic )
+            italicbool = Py_True;
+        else
+            italicbool = Py_False;
+        if ( bold )
+            boldbool = Py_True;
+        else
+            boldbool = Py_False;
+        if ( underlined )
+            underlinedbool = Py_True;
+        else
+            underlinedbool = Py_False;
+        font->object = PyObject_CallMethod(bindings->pyobject, "createFont", 
+                                "s#dOOO", familyname, familynamelen,
+                                (double) fontsize, italicbool, boldbool,
+                                underlinedbool);
+        if ( font->object == NULL ) {
+            sprintf(grdelerrmsg, "grdelFont: error when calling the Python "
+                    "binding's createFont method: %s", pyefcn_get_error());
+            PyMem_Free(font);
+            return NULL;
+        }
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelFont: unexpected error, "
+                            "no bindings associated with this Window");
         PyMem_Free(font);
         return NULL;
     }
@@ -97,7 +117,7 @@ grdelType grdelFont(grdelType window, const char *familyname,
  * Returns a pointer to the graphic engine's font object
  * if successful.  Returns NULL if there is a problem.
  */
-PyObject *grdelFontVerify(grdelType font, grdelType window)
+grdelType grdelFontVerify(grdelType font, grdelType window)
 {
     GDFont *myfont;
 
@@ -122,8 +142,9 @@ PyObject *grdelFontVerify(grdelType font, grdelType window)
  */
 grdelBool grdelFontDelete(grdelType font)
 {
-    GDFont *myfont;
-    PyObject *bindings;
+    const BindObj *bindings;
+    GDFont   *myfont;
+    grdelBool success;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
@@ -139,23 +160,40 @@ grdelBool grdelFontDelete(grdelType font)
     }
     myfont = (GDFont *) font;
 
-    bindings = grdelWindowVerify(myfont->window);
-    /* "N" - steals the reference to this font object */
-    result = PyObject_CallMethod(bindings, "deleteFont", "N",
-                                 myfont->object);
-    if ( result == NULL )
-        sprintf(grdelerrmsg, "grdelFontDelete: error when calling "
-                "the binding's deleteFont method: %s", pyefcn_get_error());
-    else
-        Py_DECREF(result);
+    grdelerrmsg[0] = '\0';
+    success = 1;
 
+    bindings = grdelWindowVerify(myfont->window);
+    if ( bindings->cferbind != NULL ) {
+        success = bindings->cferbind->deleteFont(bindings->cferbind,
+                                                 myfont->object);
+        /* if there was a problem, grdelerrmsg is already assigned */
+    }
+    else if ( bindings->pyobject != NULL ) {
+        /* "N" - steals the reference to this font object */
+        result = PyObject_CallMethod(bindings->pyobject, "deleteFont",
+                                     "N", (PyObject *) myfont->object);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelFontDelete: error when calling "
+                    "the binding's deleteFont method: %s", pyefcn_get_error());
+            success = 0;
+        }
+        else
+            Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelFontDelete: unexpected error, "
+                            "no bindings associated with this Window");
+        success = 0;
+    }
+
+    /* regardless of success, free this Font */
     myfont->id = NULL;
     myfont->window = NULL;
     myfont->object = NULL;
     PyMem_Free(font);
 
-    grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return success;
 }
 
 /*

@@ -16,7 +16,7 @@
  * grdelerrmsg is assigned an appropriate error message and NULL
  * is returned.
  */
-grdelType cairoCFerBind_createFont(CFerBind *self, char *familyname, int namelen,
+grdelType cairoCFerBind_createFont(CFerBind *self, const char *familyname, int namelen,
                         double fontsize, int italic, int bold, int underlined)
 {
     /* Sanity check */

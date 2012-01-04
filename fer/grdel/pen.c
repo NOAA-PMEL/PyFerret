@@ -6,6 +6,7 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <string.h>
 #include "grdel.h"
+#include "cferbind.h"
 #include "pyferret.h"
 
 static const char *grdelpenid = "GRDEL_PEN";
@@ -13,7 +14,7 @@ static const char *grdelpenid = "GRDEL_PEN";
 typedef struct GDpen_ {
     const char *id;
     grdelType window;
-    PyObject *object;
+    grdelType object;
 } GDPen;
 
 
@@ -36,13 +37,13 @@ typedef struct GDpen_ {
  * NULL is returned and grdelerrmsg contains an explanatory message.
  */
 grdelType grdelPen(grdelType window, grdelType color,
-               float width, const char *style, int stylelen,
-               const char *capstyle, int capstylelen,
-               const char *joinstyle, int joinstylelen)
+                   float width, const char *style, int stylelen,
+                   const char *capstyle, int capstylelen,
+                   const char *joinstyle, int joinstylelen)
 {
-    PyObject *bindings;
-    PyObject *colorobj;
-    GDPen *pen;
+    const BindObj *bindings;
+    grdelType colorobj;
+    GDPen    *pen;
 
     bindings = grdelWindowVerify(window);
     if ( bindings == NULL ) {
@@ -65,12 +66,31 @@ grdelType grdelPen(grdelType window, grdelType color,
 
     pen->id = grdelpenid;
     pen->window = window;
-    pen->object = PyObject_CallMethod(bindings, "createPen", "Ods#s#s#",
-                           colorobj, (double) width, style, stylelen,
-                           capstyle, capstylelen, joinstyle, joinstylelen);
-    if ( pen->object == NULL ) {
-        sprintf(grdelerrmsg, "grdelPen: error when calling "
-                "the binding's createPen method: %s", pyefcn_get_error());
+    if ( bindings->cferbind != NULL ) {
+        pen->object = bindings->cferbind->createPen(bindings->cferbind,
+                                colorobj, (double) width, style, stylelen,
+                                capstyle, capstylelen, joinstyle, joinstylelen);
+        if ( pen->object == NULL ) {
+            /* grdelerrmsg already assigned */
+            PyMem_Free(pen);
+            return NULL;
+        }
+    }
+    else if ( bindings->pyobject != NULL ) {
+        pen->object = PyObject_CallMethod(bindings->pyobject, "createPen",
+                               "Ods#s#s#", (PyObject *) colorobj,
+                               (double) width, style, stylelen, capstyle,
+                               capstylelen, joinstyle, joinstylelen);
+        if ( pen->object == NULL ) {
+            sprintf(grdelerrmsg, "grdelPen: error when calling the Python "
+                    "binding's createPen method: %s", pyefcn_get_error());
+            PyMem_Free(pen);
+            return NULL;
+        }
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelPen: unexpected error, "
+                            "no bindings associated with this Window");
         PyMem_Free(pen);
         return NULL;
     }
@@ -92,7 +112,7 @@ grdelType grdelPen(grdelType window, grdelType color,
  * Returns a pointer to the graphic engine's pen object
  * if successful.  Returns NULL if there is a problem.
  */
-PyObject *grdelPenVerify(grdelType pen, grdelType window)
+grdelType grdelPenVerify(grdelType pen, grdelType window)
 {
     GDPen *mypen;
 
@@ -117,8 +137,9 @@ PyObject *grdelPenVerify(grdelType pen, grdelType window)
  */
 grdelBool grdelPenDelete(grdelType pen)
 {
-    GDPen *mypen;
-    PyObject *bindings;
+    const BindObj *bindings;
+    GDPen    *mypen;
+    grdelBool success;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
@@ -130,27 +151,44 @@ grdelBool grdelPenDelete(grdelType pen)
     if ( grdelPenVerify(pen, NULL) == NULL ) {
         strcpy(grdelerrmsg, "grdelPenDelete: pen argument is not "
                             "a grdel Pen");
-        return (grdelBool) 0;
+        return 0;
     }
     mypen = (GDPen *) pen;
 
-    bindings = grdelWindowVerify(mypen->window);
-    /* "N" - steals the reference to this pen object */
-    result = PyObject_CallMethod(bindings, "deletePen", "N",
-                                 mypen->object);
-    if ( result == NULL )
-        sprintf(grdelerrmsg, "grdelPenDelete: error when calling "
-                "the binding's deletePen method: %s", pyefcn_get_error());
-    else
-        Py_DECREF(result);
+    grdelerrmsg[0] = '\0';
+    success = 1;
 
+    bindings = grdelWindowVerify(mypen->window);
+    if ( bindings->cferbind != NULL ) {
+        success = bindings->cferbind->deletePen(bindings->cferbind,
+                                                mypen->object);
+        /* if there was a problem, grdelerrmsg is already assigned */
+    }
+    else if ( bindings->pyobject != NULL ) {
+        /* "N" - steals the reference to this pen object */
+        result = PyObject_CallMethod(bindings->pyobject, "deletePen",
+                                     "N", (PyObject *) mypen->object);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelPenDelete: error when calling the Python "
+                    "binding's deletePen method: %s", pyefcn_get_error());
+            success = 0;
+        }
+        else
+            Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelPenDelete: unexpected error, "
+                            "no bindings associated with this Window");
+        success = 0;
+    }
+
+    /* regardless of success, free this Pen */
     mypen->id = NULL;
     mypen->window = NULL;
     mypen->object = NULL;
     PyMem_Free(mypen);
 
-    grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return success;
 }
 
 /*

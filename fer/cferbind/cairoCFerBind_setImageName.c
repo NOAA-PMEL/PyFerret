@@ -39,8 +39,8 @@
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
-grdelBool cairoCFerBind_setImageName(CFerBind *self, char imagename[],
-                        int imgnamelen, char formatname[], int fmtnamelen)
+grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
+                        int imgnamelen, const char formatname[], int fmtnamelen)
 {
     int  j, k;
     char fmtext[8];

@@ -22,8 +22,8 @@ extern const char *CairoCFerBindName;
 typedef struct CFerBind_struct {
      const char *enginename;
      void       *instancedata;
-     grdelBool (*setImageName)(struct CFerBind_struct *self, char *imagename,
-                               int imgnamelen, char *formatname, int fmtnamelen);
+     grdelBool (*setImageName)(struct CFerBind_struct *self, const char *imagename,
+                               int imgnamelen, const char *formatname, int fmtnamelen);
      grdelBool (*deleteWindow)(struct CFerBind_struct *self);
      grdelBool (*setAntialias)(struct CFerBind_struct *self, int antialias);
      grdelBool (*beginView)(struct CFerBind_struct *self,
@@ -37,26 +37,26 @@ typedef struct CFerBind_struct {
      grdelBool (*resizeWindow)(struct CFerBind_struct *self,
                                double width, double height);
      grdelBool (*showWindow)(struct CFerBind_struct *self, int visible);
-     grdelBool (*saveWindow)(struct CFerBind_struct *self, char *filename,
-                             int namelen, char *formatname, int fmtnamelen,
+     grdelBool (*saveWindow)(struct CFerBind_struct *self, const char *filename,
+                             int namelen, const char *formatname, int fmtnamelen,
                              int transbkg);
      grdelType (*createColor)(struct CFerBind_struct *self, double redfrac,
                               double greenfrac, double bluefrac, double opaquefrac);
      grdelBool (*deleteColor)(struct CFerBind_struct *self, grdelType color);
      grdelType (*createFont)(struct CFerBind_struct *self,
-                             char *familyname, int namelen, double fontsize,
+                             const char *familyname, int namelen, double fontsize,
                              int italic, int bold, int underlined);
      grdelBool (*deleteFont)(struct CFerBind_struct *self, grdelType font);
      grdelType (*createPen)(struct CFerBind_struct *self, grdelType color,
-                            double width, char *style, int stlen,
-                            char *capstyle, int capstlen,
-                            char *joinstyle, int joinstlen);
+                            double width, const char *style, int stlen,
+                            const char *capstyle, int capstlen,
+                            const char *joinstyle, int joinstlen);
      grdelBool (*deletePen)(struct CFerBind_struct *self, grdelType pen);
      grdelType (*createBrush)(struct CFerBind_struct *self,
-                              grdelType color, char *style, int stlen);
+                              grdelType color, const char *style, int stlen);
      grdelBool (*deleteBrush)(struct CFerBind_struct *self, grdelType brush);
      grdelType (*createSymbol)(struct CFerBind_struct *self,
-                               char *symbolname, int namelen);
+                               const char *symbolname, int namelen);
      grdelBool (*deleteSymbol)(struct CFerBind_struct *self, grdelType symbol);
      grdelBool (*drawMultiline)(struct CFerBind_struct *self, double ptsx[],
                                 double ptsy[], int numpts, grdelType pen);
@@ -69,10 +69,10 @@ typedef struct CFerBind_struct {
      grdelBool (*drawRectangle)(struct CFerBind_struct *self,
                                 double left, double bottom, double right,
                                 double top, grdelType brush, grdelType pen);
-     grdelBool (*drawMulticoloredRectangle)(struct CFerBind_struct *self,
+     grdelBool (*drawMulticolorRectangle)(struct CFerBind_struct *self,
                            double left, double bottom, double right,
                            double top, int numrows, int numcols, grdelType colors[]);
-     grdelBool (*drawText)(struct CFerBind_struct *self, char *text, int textlen,
+     grdelBool (*drawText)(struct CFerBind_struct *self, const char *text, int textlen,
                            double startx, double starty, grdelType font, grdelType color,
                            double rotation);
 } CFerBind;
@@ -81,8 +81,8 @@ typedef struct CFerBind_struct {
  * Calls the appropriate createWindow function to create the bindings
  * instance and any other appropriate initialization for this "Window". 
  */
-CFerBind *cferbind_createWindow(char *enginename, int engnamelen,
-                                char *windowname, int winnamelen, int visible);
+CFerBind *cferbind_createWindow(const char *enginename, int engnamelen,
+                                const char *windowname, int winnamelen, int visible);
 
 /* The createWindow function for the Cairo engine */
 CFerBind *cairoCFerBind_createWindow(void);

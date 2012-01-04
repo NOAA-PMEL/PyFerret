@@ -6,6 +6,7 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <string.h>
 #include "grdel.h"
+#include "cferbind.h"
 #include "pyferret.h"
 
 static const char *grdelsymbolid = "GRDEL_SYMBOL";
@@ -13,7 +14,7 @@ static const char *grdelsymbolid = "GRDEL_SYMBOL";
 typedef struct GDsymbol_ {
     const char *id;
     grdelType window;
-    PyObject *object;
+    grdelType object;
 } GDSymbol;
 
 
@@ -29,9 +30,9 @@ typedef struct GDsymbol_ {
  * NULL is returned and grdelerrmsg contains an explanatory message.
  */
 grdelType grdelSymbol(grdelType window, const char *symbolname,
-               int symbolnamelen)
+                      int symbolnamelen)
 {
-    PyObject *bindings;
+    const BindObj *bindings;
     GDSymbol *symbol;
 
     bindings = grdelWindowVerify(window);
@@ -49,11 +50,28 @@ grdelType grdelSymbol(grdelType window, const char *symbolname,
 
     symbol->id = grdelsymbolid;
     symbol->window = window;
-    symbol->object = PyObject_CallMethod(bindings, "createSymbol", "s#",
-                                         symbolname, symbolnamelen);
-    if ( symbol->object == NULL ) {
-        sprintf(grdelerrmsg, "grdelSymbol: error when calling "
-                "the binding's createSymbol method: %s", pyefcn_get_error());
+    if ( bindings->cferbind != NULL ) {
+        symbol->object = bindings->cferbind->createSymbol(bindings->cferbind,
+                                             symbolname, symbolnamelen);
+        if ( symbol->object == NULL ) {
+            /* grdelerrmsg already assigned */
+            PyMem_Free(symbol);
+            return NULL;
+        }
+    }
+    else if ( bindings->pyobject != NULL ) {
+        symbol->object = PyObject_CallMethod(bindings->pyobject, "createSymbol",
+                                  "s#", symbolname, symbolnamelen);
+        if ( symbol->object == NULL ) {
+            sprintf(grdelerrmsg, "grdelSymbol: error when calling the Python "
+                    "binding's createSymbol method: %s", pyefcn_get_error());
+            PyMem_Free(symbol);
+            return NULL;
+        }
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelSymbol: unexpected error, "
+                            "no bindings associated with this Window");
         PyMem_Free(symbol);
         return NULL;
     }
@@ -75,7 +93,7 @@ grdelType grdelSymbol(grdelType window, const char *symbolname,
  * Returns a pointer to the graphic engine's symbol object
  * if successful.  Returns NULL if there is a problem.
  */
-PyObject *grdelSymbolVerify(grdelType symbol, grdelType window)
+grdelType grdelSymbolVerify(grdelType symbol, grdelType window)
 {
     GDSymbol *mysymbol;
 
@@ -100,8 +118,9 @@ PyObject *grdelSymbolVerify(grdelType symbol, grdelType window)
  */
 grdelBool grdelSymbolDelete(grdelType symbol)
 {
+    const BindObj *bindings;
     GDSymbol *mysymbol;
-    PyObject *bindings;
+    grdelBool success;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
@@ -113,27 +132,44 @@ grdelBool grdelSymbolDelete(grdelType symbol)
     if ( grdelSymbolVerify(symbol, NULL) == NULL ) {
         strcpy(grdelerrmsg, "grdelSymbolDelete: symbol argument is not "
                             "a grdel Symbol");
-        return (grdelBool) 0;
+        return 0;
     }
     mysymbol = (GDSymbol *) symbol;
 
-    bindings = grdelWindowVerify(mysymbol->window);
-    /* "N" - steals the reference to this symbol object */
-    result = PyObject_CallMethod(bindings, "deleteSymbol", "N",
-                                 mysymbol->object);
-    if ( result == NULL )
-        sprintf(grdelerrmsg, "grdelSymbolDelete: error when calling "
-                "the binding's deleteSymbol method: %s", pyefcn_get_error());
-    else
-        Py_DECREF(result);
+    grdelerrmsg[0] = '\0';
+    success = 1;
 
+    bindings = grdelWindowVerify(mysymbol->window);
+    if ( bindings->cferbind != NULL ) {
+        success = bindings->cferbind->deleteSymbol(bindings->cferbind,
+                                                   mysymbol->object);
+        /* if there was a problem, grdelerrmsg is already assigned */
+    }
+    else if ( bindings->pyobject != NULL ) {
+        /* "N" - steals the reference to this symbol object */
+        result = PyObject_CallMethod(bindings->pyobject, "deleteSymbol",
+                                     "N", (PyObject *) mysymbol->object);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelSymbolDelete: error when calling the Python "
+                    "binding's deleteSymbol method: %s", pyefcn_get_error());
+            success = 0;
+        }
+        else
+            Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelSymbolDelete: unexpected error, "
+                            "no bindings associated with this Window");
+        success = 0;
+    }
+
+    /* regardless of success, free this Symbol */
     mysymbol->id = NULL;
     mysymbol->window = NULL;
     mysymbol->object = NULL;
     PyMem_Free(mysymbol);
 
-    grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return success;
 }
 
 /*

@@ -5,7 +5,7 @@
  * of the Window.
  *
  * "View" refers to a rectangular subsection of the Window (possibly
- * the complete canvas of the Window).  
+ * the complete canvas of the Window).
  *
  * In order to draw in a Window, a View must first have been specified
  * using grdelViewBegin.  When drawing in a View is complete, grdelViewEnd
@@ -17,6 +17,7 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <string.h>
 #include "grdel.h"
+#include "cferbind.h"
 #include "pyferret.h"
 
 
@@ -54,7 +55,7 @@ char grdelerrmsg[2048];
 
 typedef struct GDWindow_ {
     const char *id;
-    PyObject *bindings;
+    BindObj   bindings;
     grdelBool hasview;
 } GDWindow;
 
@@ -101,12 +102,39 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
         return NULL;
     }
     window->id = grdelwindowid;
+    window->bindings.cferbind = NULL;
+    window->bindings.pyobject = NULL;
     window->hasview = 0;
 
     /*
-     * Call pyferret.graphbind.createWindow, which will create (and return)
-     * an instance of the bindings for this graphics engine and then call
-     * the createWindow method of that bindings instance to create the window.
+     * First try to create the C window bindings for this engine.
+     * This will fail if it is a Python-based engine.
+     */
+    window->bindings.cferbind = cferbind_createWindow(engine, enginelen,
+                                                      title, titlelen, visible);
+    if ( window->bindings.cferbind != NULL ) {
+        /* Success - engine found; done */
+#ifdef VERBOSEDEBUG
+        /*
+         * Since a window has to be created before anything else can happen
+         * the initialization check of debuglogfile only needs to happen here.
+         */
+        if ( debuglogfile == NULL )
+            openlogfile();
+        fprintf(debuglogfile, "grdelWindow created with C bindings: "
+                              "window = %X\n", window);
+        fflush(debuglogfile);
+#endif
+        grdelerrmsg[0] = '\0';
+        return window;
+    }
+
+    /* C bindings failed, try Pythong bindings */
+
+    /*
+     * Call pyferret.graphbind.createWindow, which, if successful,
+     * will create and return an instance of the bindings for this
+     * graphics engine.
      */
     modulename = PyString_FromString("pyferret.graphbind");
     if ( modulename == NULL ) {
@@ -125,16 +153,15 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
         PyMem_Free(window);
         return NULL;
     }
-    if ( visible ) {
+    if ( visible )
         visiblebool = Py_True;
-    }
-    else {
+    else
         visiblebool = Py_False;
-    }
-    window->bindings = PyObject_CallMethod(module, "createWindow", "s#s#O",
-                                engine, enginelen, title, titlelen, visiblebool);
+    window->bindings.pyobject = PyObject_CallMethod(module, "createWindow",
+                                         "s#s#O", engine, enginelen,
+                                         title, titlelen, visiblebool);
     Py_DECREF(module);
-    if ( window->bindings == NULL ) {
+    if ( window->bindings.pyobject == NULL ) {
         sprintf(grdelerrmsg, "grdelWindowCreate: error when calling createWindow "
                              "in pyferret.graphbind: %s", pyefcn_get_error());
         PyMem_Free(window);
@@ -142,14 +169,14 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
     }
 
 #ifdef VERBOSEDEBUG
-    /* 
+    /*
      * Since a window has to be created before anything else can happen
      * the initialization check of debuglogfile only needs to happen here.
      */
     if ( debuglogfile == NULL )
         openlogfile();
-    fprintf(debuglogfile, "grdelWindow created: "
-            "window = %X\n", window);
+    fprintf(debuglogfile, "grdelWindow created with Python bindings: "
+                          "window = %X\n", window);
     fflush(debuglogfile);
 #endif
 
@@ -164,7 +191,7 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
  * Returns the graphic engine's window bindings
  * object if it is.  Returns NULL if it is not.
  */
-PyObject *grdelWindowVerify(grdelType window)
+const BindObj *grdelWindowVerify(grdelType window)
 {
     GDWindow *mywindow;
 
@@ -173,7 +200,7 @@ PyObject *grdelWindowVerify(grdelType window)
     mywindow = (GDWindow *) window;
     if ( mywindow->id != grdelwindowid )
         return NULL;
-    return mywindow->bindings;
+    return &(mywindow->bindings);
 }
 
 /*
@@ -188,6 +215,7 @@ PyObject *grdelWindowVerify(grdelType window)
 grdelBool grdelWindowDelete(grdelType window)
 {
     GDWindow *mywindow;
+    grdelBool success;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
@@ -207,38 +235,56 @@ grdelBool grdelWindowDelete(grdelType window)
     if ( mywindow->hasview ) {
         if ( ! grdelWindowViewEnd(window) ) {
             /* grdelerrmsg already assigned */
-            return (grdelBool) 0;
+            return 0;
         }
     }
 
-    /*
-     * Call the deleteWindow method of the bindings instance.
-     * If True is returned, delete (decrement the reference to)
-     * this bindings instance and return True.
-     */
-    result = PyObject_CallMethod(mywindow->bindings, "deleteWindow", NULL);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelWindowDelete: error when calling "
-                "the binding's deleteWindow method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
+    if ( mywindow->bindings.cferbind != NULL ) {
+        /* Call the deleteWindow method to delete the bindings instance. */
+        success = mywindow->bindings.cferbind->
+                                    deleteWindow(mywindow->bindings.cferbind);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
     }
-    Py_DECREF(result);
-    /* Py_True and Py_False are singleton objects */
-    if ( result != Py_True ) {
-        sprintf(grdelerrmsg, "grdelWindowDelete: deleteWindow method "
-                             "returned False");
-        return (grdelBool) 0;
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        /*
+         * Call the deleteWindow method of the bindings instance.
+         * If True is returned, decrement the reference to this
+         * bindings instance.
+         */
+        result = PyObject_CallMethod(mywindow->bindings.pyobject,
+                                     "deleteWindow", NULL);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowDelete: error when calling the "
+                    "Python binding's deleteWindow method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
+        /* Py_True and Py_False are singleton objects */
+        if ( result != Py_True ) {
+            strcpy(grdelerrmsg, "grdelWindowDelete: deleteWindow method "
+                                "returned False");
+            return 0;
+        }
+        Py_DECREF(mywindow->bindings.pyobject);
     }
-    Py_DECREF(mywindow->bindings);
+    else {
+        strcpy(grdelerrmsg, "grdelWindowDelete: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
 
     /* Free the memory for the GDWindow */
     mywindow->id = NULL;
     mywindow->hasview = 0;
-    mywindow->bindings = NULL;
+    mywindow->bindings.cferbind = NULL;
+    mywindow->bindings.pyobject = NULL;
     PyMem_Free(window);
 
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*
@@ -255,7 +301,8 @@ grdelBool grdelWindowDelete(grdelType window)
 grdelBool grdelWindowClear(grdelType window, grdelType fillcolor)
 {
     GDWindow *mywindow;
-    PyObject *colorobj;
+    grdelType colorobj;
+    grdelBool success;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
@@ -267,27 +314,42 @@ grdelBool grdelWindowClear(grdelType window, grdelType fillcolor)
     if ( grdelWindowVerify(window) == NULL ) {
         strcpy(grdelerrmsg, "grdelWindowClear: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     mywindow = (GDWindow *) window;
     colorobj = grdelColorVerify(fillcolor, window);
     if ( colorobj == NULL ) {
         strcpy(grdelerrmsg, "grdelWindowClear: fillcolor argument is not "
                             "a valid grdel Color for the window");
-        return (grdelBool) 0;
+        return 0;
     }
 
-    result = PyObject_CallMethod(mywindow->bindings, "clearWindow", "O",
-                                 colorobj);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelWindowClear: Error when calling "
-                "the binding's clearWindow method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            clearWindow(mywindow->bindings.cferbind, colorobj);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
     }
-    Py_DECREF(result);
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "clearWindow",
+                                     "O", (PyObject *) colorobj);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowClear: Error when calling "
+                    "the Python binding's clearWindow method: %s", pyefcn_get_error());
+            return (grdelBool) 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowClear: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
 
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*
@@ -302,6 +364,7 @@ grdelBool grdelWindowClear(grdelType window, grdelType fillcolor)
 grdelBool grdelWindowUpdate(grdelType window)
 {
     GDWindow *mywindow;
+    grdelBool success;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
@@ -313,21 +376,37 @@ grdelBool grdelWindowUpdate(grdelType window)
     if ( grdelWindowVerify(window) == NULL ) {
         strcpy(grdelerrmsg, "grdelWindowUpdate: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     mywindow = (GDWindow *) window;
 
-    /* Call the updateWindow method of the bindings instance. */
-    result = PyObject_CallMethod(mywindow->bindings, "updateWindow", NULL);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelWindowUpdate: error when calling "
-                "the binding's updateWindow method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            updateWindow(mywindow->bindings.cferbind);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
     }
-    Py_DECREF(result);
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        /* Call the updateWindow method of the bindings instance. */
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "updateWindow",
+                                     NULL);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowUpdate: error when calling the "
+                    "Python binding's updateWindow method: %s", pyefcn_get_error());
+            return (grdelBool) 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowUpdate: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
 
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*
@@ -346,6 +425,7 @@ grdelBool grdelWindowUpdate(grdelType window)
 grdelBool grdelWindowSetSize(grdelType window, float width, float height)
 {
     GDWindow *mywindow;
+    grdelBool success;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
@@ -357,27 +437,43 @@ grdelBool grdelWindowSetSize(grdelType window, float width, float height)
     if ( grdelWindowVerify(window) == NULL ) {
         strcpy(grdelerrmsg, "grdelWindowSetSize: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     mywindow = (GDWindow *) window;
 
-    result = PyObject_CallMethod(mywindow->bindings, "resizeWindow", "dd",
-                                 (double) width, (double) height);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelWindowSetSize: error when calling "
-                "the binding's resizeWindow method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            resizeWindow(mywindow->bindings.cferbind,
+                                         (double) width, (double) height);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
     }
-    Py_DECREF(result);
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "resizeWindow",
+                                     "dd", (double) width, (double) height);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowSetSize: error when calling the "
+                    "Python binding's resizeWindow method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowSetSize: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
 
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*
  * Display or hide a Window.  A graphics engine that does not
- * have the ability to display a Window will always return
- * failure.
+ * have the ability to display a Window may return failure or
+ * may ignore this call.
  *
  * Arguments:
  *     window: Window to use
@@ -389,6 +485,7 @@ grdelBool grdelWindowSetSize(grdelType window, float width, float height)
 grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
 {
     GDWindow *mywindow;
+    grdelBool success;
     PyObject *visiblebool;
     PyObject *result;
 
@@ -401,28 +498,40 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
     if ( grdelWindowVerify(window) == NULL ) {
         strcpy(grdelerrmsg, "grdelWindowSetVisible: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     mywindow = (GDWindow *) window;
 
-    if ( visible ) {
-        visiblebool = Py_True;
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            showWindow(mywindow->bindings.cferbind, visible);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        if ( visible )
+            visiblebool = Py_True;
+        else
+            visiblebool = Py_False;
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "showWindow",
+                                     "O", visiblebool);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowSetVisible: error when calling the "
+                    "Python binding's showWindow method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
     }
     else {
-        visiblebool = Py_False;
+        strcpy(grdelerrmsg, "grdelWindowSetVisible: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
     }
-
-    result = PyObject_CallMethod(mywindow->bindings, "showWindow", "O",
-                                 visiblebool);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelWindowSetVisible: error when calling "
-                "the binding's showWindow method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
-    }
-    Py_DECREF(result);
 
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*
@@ -447,6 +556,7 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
                           int formatlen, grdelBool transparentbkg)
 {
     GDWindow *mywindow;
+    grdelBool success;
     PyObject *transparentbool;
     PyObject *result;
 
@@ -459,29 +569,44 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
     if ( grdelWindowVerify(window) == NULL ) {
         strcpy(grdelerrmsg, "grdelWindowSave: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     mywindow = (GDWindow *) window;
 
-    if ( transparentbkg ) {
-        transparentbool = Py_True;
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            saveWindow(mywindow->bindings.cferbind,
+                                       filename, filenamelen,
+                                       fileformat, formatlen, transparentbkg);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        if ( transparentbkg )
+            transparentbool = Py_True;
+        else
+            transparentbool = Py_False;
+        result = PyObject_CallMethod(mywindow->bindings.pyobject,
+                                     "saveWindow", "s#s#O",
+                                     filename, filenamelen,
+                                     fileformat, formatlen, transparentbool);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowSave: error when calling the "
+                    "Python binding's saveWindow method: %s", pyefcn_get_error());
+            return (grdelBool) 0;
+        }
+        Py_DECREF(result);
     }
     else {
-        transparentbool = Py_False;
+        strcpy(grdelerrmsg, "grdelWindowSave: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
     }
-
-    result = PyObject_CallMethod(mywindow->bindings, "saveWindow", "s#s#O",
-                                 filename, filenamelen,
-                                 fileformat, formatlen, transparentbool);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelWindowSave: error when calling "
-                "the binding's saveWindow method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
-    }
-    Py_DECREF(result);
 
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 
@@ -501,6 +626,7 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
 grdelBool grdelWindowDpi(grdelType window, float *dpix, float *dpiy)
 {
     GDWindow *mywindow;
+    double   *dpis;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
@@ -511,26 +637,43 @@ grdelBool grdelWindowDpi(grdelType window, float *dpix, float *dpiy)
 
     if ( grdelWindowVerify(window) == NULL ) {
         strcpy(grdelerrmsg, "grdelWindowDpi: window argument is not a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     mywindow = (GDWindow *) window;
 
-    result = PyObject_CallMethod(mywindow->bindings, "windowDpi", NULL);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelWindowDpi: error when calling the binding's "
-                             "windowDpi method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
+    if ( mywindow->bindings.cferbind != NULL ) {
+        dpis = mywindow->bindings.cferbind->windowDpi(mywindow->bindings.cferbind);
+        if ( dpis == NULL ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+        *dpix = dpis[0];
+        *dpiy = dpis[1];
+        /* dpis belongs the windowDpi method (static array) */
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "windowDpi", NULL);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowDpi: error when calling the Python "
+                                 "binding's windowDpi method: %s", pyefcn_get_error());
+            return 0;
+        }
+        if ( ! PyArg_ParseTuple(result, "ff", dpix, dpiy) ) {
+            Py_DECREF(result);
+            sprintf(grdelerrmsg, "grdelWindowDpi: Error when parsing the Python "
+                                 "binding's windowDpi return value: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowDpi: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
     }
 
-    if ( ! PyArg_ParseTuple(result, "ff", dpix, dpiy) ) {
-        Py_DECREF(result);
-        sprintf(grdelerrmsg, "grdelWindowDpi: Error when parsing the binding's "
-                             "windowDpi return value: %s", pyefcn_get_error());
-        return (grdelBool) 0;
-    }
-    Py_DECREF(result);
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 
@@ -729,6 +872,7 @@ grdelBool grdelWindowViewBegin(grdelType window,
                                grdelBool clipit)
 {
     GDWindow *mywindow;
+    grdelBool success;
     PyObject *clipbool;
     PyObject *result;
 
@@ -744,35 +888,51 @@ grdelBool grdelWindowViewBegin(grdelType window,
     if ( grdelWindowVerify(window) == NULL ) {
         strcpy(grdelerrmsg, "grdelWindowViewBegin: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     mywindow = (GDWindow *) window;
     if ( mywindow->hasview ) {
         strcpy(grdelerrmsg, "grdelWindowViewBegin: window "
                             "already has a View defined");
-        return (grdelBool) 0;
+        return 0;
     }
-    if ( clipit ) {
-       clipbool = Py_True;
+
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            beginView(mywindow->bindings.cferbind,
+                                      (double) leftfrac, 1.0 - (double) bottomfrac,
+                                      (double) rightfrac, 1.0 - (double) topfrac,
+                                      clipit);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        if ( clipit )
+            clipbool = Py_True;
+        else
+            clipbool = Py_False;
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "beginView", "ddddO",
+                                     (double) leftfrac, 1.0 - (double) bottomfrac,
+                                     (double) rightfrac, 1.0 - (double) topfrac,
+                                     clipbool);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowViewBegin: Error when calling the "
+                    "Python binding's beginView method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
     }
     else {
-       clipbool = Py_False;
+        strcpy(grdelerrmsg, "grdelWindowViewBegin: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
     }
 
-    result = PyObject_CallMethod(mywindow->bindings, "beginView", "ddddO",
-                                 (double) leftfrac, 1.0 - (double) bottomfrac,
-                                 (double) rightfrac, 1.0 - (double) topfrac,
-                                 clipbool);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelWindowViewBegin: Error when calling "
-                "the binding's beginView method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
-    }
-    Py_DECREF(result);
-
-    mywindow->hasview = (grdelBool) 1;
+    mywindow->hasview = 1;
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*
@@ -787,6 +947,7 @@ grdelBool grdelWindowViewBegin(grdelType window,
 grdelBool grdelWindowViewClip(grdelType window, grdelBool clipit)
 {
     GDWindow *mywindow;
+    grdelBool success;
     PyObject *clipbool;
     PyObject *result;
 
@@ -801,31 +962,45 @@ grdelBool grdelWindowViewClip(grdelType window, grdelBool clipit)
     if ( grdelWindowVerify(window) == NULL ) {
         strcpy(grdelerrmsg, "grdelWindowViewClip: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     mywindow = (GDWindow *) window;
     if ( ! mywindow->hasview ) {
         strcpy(grdelerrmsg, "grdelWindowViewClip: window does not "
                             "have a view defined");
-        return (grdelBool) 0;
+        return 0;
     }
-    if ( clipit ) {
-       clipbool = Py_True;
+
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            clipView(mywindow->bindings.cferbind, clipit);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        if ( clipit )
+            clipbool = Py_True;
+        else
+            clipbool = Py_False;
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "clipView",
+                                     "O", clipbool);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowViewClip: error when calling the "
+                    "Python binding's clipView method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
     }
     else {
-       clipbool = Py_False;
+        strcpy(grdelerrmsg, "grdelWindowViewClip: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
     }
-
-    result = PyObject_CallMethod(mywindow->bindings, "clipView", "O", clipbool);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelWindowViewClip: error when calling "
-                "the binding's clipView method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
-    }
-    Py_DECREF(result);
 
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*
@@ -840,6 +1015,7 @@ grdelBool grdelWindowViewClip(grdelType window, grdelBool clipit)
 grdelBool grdelWindowViewEnd(grdelType window)
 {
     GDWindow *mywindow;
+    grdelBool success;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
@@ -851,31 +1027,46 @@ grdelBool grdelWindowViewEnd(grdelType window)
     if ( grdelWindowVerify(window) == NULL ) {
         strcpy(grdelerrmsg, "grdelWindowViewEnd: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     mywindow = (GDWindow *) window;
     if ( ! mywindow->hasview ) {
         strcpy(grdelerrmsg, "grdelWindowViewEnd: window does not "
                             "have a view defined");
-        return (grdelBool) 0;
+        return 0;
     }
 
-    result = PyObject_CallMethod(mywindow->bindings, "endView", NULL);
-    if ( result == NULL ) {
-        sprintf(grdelerrmsg, "grdelWindowViewEnd: error when calling "
-                "the binding's endView method: %s", pyefcn_get_error());
-        return (grdelBool) 0;
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            endView(mywindow->bindings.cferbind);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
     }
-    Py_DECREF(result);
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "endView", NULL);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowViewEnd: error when calling the "
+                    "Python binding's endView method: %s", pyefcn_get_error());
+            return 0;
+        }
+	Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowViewEnd: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
 
-    mywindow->hasview = (grdelBool) 0;
+    mywindow->hasview = 0;
     grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return 1;
 }
 
 /*
  * Starts a View in a Window.  "View" refers to a rectangular subsection of
- * the Window (possibly the complete canvas of the Window). 
+ * the Window (possibly the complete canvas of the Window).
  *
  * Input Arguments:
  *     window: Window object to use

@@ -6,6 +6,7 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <string.h>
 #include "grdel.h"
+#include "cferbind.h"
 #include "pyferret.h"
 
 static const char *grdelcolorid = "GRDEL_COLOR";
@@ -13,7 +14,7 @@ static const char *grdelcolorid = "GRDEL_COLOR";
 typedef struct GDColor_ {
     const char *id;
     grdelType window;
-    PyObject *object;
+    grdelType object;
 } GDColor;
 
 
@@ -38,7 +39,7 @@ typedef struct GDColor_ {
 grdelType grdelColor(grdelType window, float redfrac, float greenfrac,
                                        float bluefrac, float opaquefrac)
 {
-    PyObject *bindings;
+    const BindObj *bindings;
     GDColor *color;
 
     bindings = grdelWindowVerify(window);
@@ -73,12 +74,30 @@ grdelType grdelColor(grdelType window, float redfrac, float greenfrac,
 
     color->id = grdelcolorid;
     color->window = window;
-    color->object = PyObject_CallMethod(bindings, "createColor", "dddd",
-                                 (double) redfrac, (double) greenfrac,
+    if ( bindings->cferbind != NULL ) {
+        color->object = bindings->cferbind->createColor(bindings->cferbind,
+                                  (double) redfrac, (double) greenfrac,
+                                  (double) bluefrac, (double) opaquefrac);
+        if ( color->object == NULL ) {
+            /* grdelerrmsg already assigned */
+            PyMem_Free(color);
+            return NULL;
+        }
+    }
+    else if ( bindings->pyobject != NULL ) {
+        color->object = PyObject_CallMethod(bindings->pyobject, "createColor",
+                                 "dddd", (double) redfrac, (double) greenfrac,
                                  (double) bluefrac, (double) opaquefrac);
-    if ( color->object == NULL ) {
-        sprintf(grdelerrmsg, "grdelColor: error when calling the "
-                "binding's createColor method: %s", pyefcn_get_error());
+        if ( color->object == NULL ) {
+            sprintf(grdelerrmsg, "grdelColor: error when calling the Python "
+                    "binding's createColor method: %s", pyefcn_get_error());
+            PyMem_Free(color);
+            return NULL;
+        }
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelColor: unexpected error, "
+                            "no bindings associated with this Window");
         PyMem_Free(color);
         return NULL;
     }
@@ -100,7 +119,7 @@ grdelType grdelColor(grdelType window, float redfrac, float greenfrac,
  * Returns a pointer to the graphic engine's color object
  * if successful.  Returns NULL if there is a problem.
  */
-PyObject *grdelColorVerify(grdelType color, grdelType window)
+grdelType grdelColorVerify(grdelType color, grdelType window)
 {
     GDColor *mycolor;
 
@@ -125,8 +144,9 @@ PyObject *grdelColorVerify(grdelType color, grdelType window)
  */
 grdelBool grdelColorDelete(grdelType color)
 {
-    GDColor *mycolor;
-    PyObject *bindings;
+    const BindObj *bindings;
+    GDColor  *mycolor;
+    grdelBool success;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
@@ -138,27 +158,44 @@ grdelBool grdelColorDelete(grdelType color)
     if ( grdelColorVerify(color, NULL) == NULL ) {
         strcpy(grdelerrmsg, "grdelColorDelete: color argument is not "
                             "a grdel Color");
-        return (grdelBool) 0;
+        return 0;
     }
     mycolor = (GDColor *) color;
 
-    bindings = grdelWindowVerify(mycolor->window);
-    /* "N" - steals the reference to this color object */
-    result = PyObject_CallMethod(bindings, "deleteColor", "N",
-                                           mycolor->object);
-    if ( result == NULL )
-        sprintf(grdelerrmsg, "grdelColorDelete: error when calling the "
-                "binding's deleteColor method: %s", pyefcn_get_error());
-    else
-        Py_DECREF(result);
+    grdelerrmsg[0] = '\0';
+    success = 1;
 
+    bindings = grdelWindowVerify(mycolor->window);
+    if ( bindings->cferbind != NULL ) {
+        success = bindings->cferbind->deleteColor(bindings->cferbind,
+                                                  mycolor->object);
+        /* if there was a problem, grdelerrmsg is already assigned */
+    }
+    else if ( bindings->pyobject != NULL ) {
+        /* "N" - steals the reference to this color object */
+        result = PyObject_CallMethod(bindings->pyobject, "deleteColor",
+                                     "N", (PyObject *) mycolor->object);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelColorDelete: error when calling the "
+                    "Python binding's deleteColor method: %s", pyefcn_get_error());
+            success = 0;
+        }
+        else
+            Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelColorDelete: unexpected error, "
+                            "no bindings associated with this Window");
+        success = 0;
+    }
+
+    /* regardless of success, free this Color */
     mycolor->id = NULL;
     mycolor->window = NULL;
     mycolor->object = NULL;
     PyMem_Free(color);
 
-    grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return success;
 }
 
 /*

@@ -41,11 +41,11 @@
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
-grdelBool cairoCFerBind_saveWindow(CFerBind *self, char *filename, int namelen,
-                                   char *formatname, int fmtnamelen, int transbkg)
+grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int namelen,
+                                   const char *formatname, int fmtnamelen, int transbkg)
 {
     CairoCFerBindData *instdata;
-    char              *imagename;
+    const char        *imagename;
     int                imgnamelen;
     int                j, k;
     char               fmtext[8];

@@ -24,7 +24,7 @@ const char *CCFBBrushId = "CCFBBrushId";
  * is returned.
  */
 grdelType cairoCFerBind_createBrush(CFerBind *self, grdelType color,
-                                    char *style, int stlen)
+                                    const char *style, int stlen)
 {
     CCFBColor *colorobj;
     CCFBBrush *brushobj;

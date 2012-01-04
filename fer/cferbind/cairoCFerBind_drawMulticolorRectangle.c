@@ -27,7 +27,7 @@
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
-grdelBool cairoCFerBind_drawMulticoloredRectangle(CFerBind *self,
+grdelBool cairoCFerBind_drawMulticolorRectangle(CFerBind *self,
                         double left, double bottom, double right,
                         double top, int numrows, int numcols,
                         grdelType colors[])
@@ -43,20 +43,20 @@ grdelBool cairoCFerBind_drawMulticoloredRectangle(CFerBind *self,
 
     /* Sanity checks */
     if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_drawMulticoloredRectangle: unexpected error, "
+        sprintf(grdelerrmsg, "cairoCFerBind_drawMulticolorRectangle: unexpected error, "
                              "self is not a %s CFerBind struct", CairoCFerBindName);
         return 0;
     }
     instdata = (CairoCFerBindData *) self->instancedata;
     if ( instdata->context == NULL ) {
-        strcpy(grdelerrmsg, "cairoCFerBind_drawMulticoloredRectangle: unexpected error, "
+        strcpy(grdelerrmsg, "cairoCFerBind_drawMulticolorRectangle: unexpected error, "
                             "NULL context");
         return 0;
     }
     for (q = 0; q < numrows * numcols; q++) {
         colorobj = (CCFBColor *) colors[q];
         if ( colorobj->id != CCFBColorId ) {
-            sprintf(grdelerrmsg, "cairoCFerBind_drawMulticoloredRectangle: unexpected error, "
+            sprintf(grdelerrmsg, "cairoCFerBind_drawMulticolorRectangle: unexpected error, "
                                  "colors[%d] is not CCFBColor struct", q);
             return 0;
         }

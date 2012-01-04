@@ -15,7 +15,7 @@
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
-grdelBool cairoCFerBind_drawText(CFerBind *self, char *text, int textlen,
+grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
                                  double startx, double starty, grdelType font,
                                  grdelType color, double rotation)
 {

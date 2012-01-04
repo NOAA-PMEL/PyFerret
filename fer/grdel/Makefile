@@ -6,7 +6,7 @@ include ../../site_specific.mk
 include ../../platform_specific.mk.$(BUILDTYPE)
 
 LIBNAME = ../../lib/libgrdel.a
-CHDRS = $(wildcard *.h)
+CHDRS = $(wildcard *.h) ../cferbind/cferbind.h
 CSRCS = $(wildcard *.c)
 COBJS = $(CSRCS:.c=.o)
 FSRCS = $(wildcard *.F)
@@ -17,12 +17,12 @@ all : optimized
 
 .PHONY : optimized
 optimized :
-	$(MAKE) "CFLAGS = $(CFLAGS) -DNDEBUG -O" \
+	$(MAKE) "CFLAGS = $(CFLAGS) -Wall -Werror -DNDEBUG -O" \
 		"FFLAGS = $(FFLAGS) -DNDEBUG -O" $(LIBNAME)
 
 .PHONY : debug
 debug :
-	$(MAKE) "CFLAGS = $(CFLAGS) -DVERBOSEDEBUG -O0 -g" \
+	$(MAKE) "CFLAGS = $(CFLAGS) -Wall -Werror -DVERBOSEDEBUG -O0 -g" \
 		"FFLAGS = $(FFLAGS) -O0 -g" $(LIBNAME)
 
 $(LIBNAME) : $(COBJS) $(FOBJS)

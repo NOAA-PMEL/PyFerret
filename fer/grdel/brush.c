@@ -6,6 +6,7 @@
 #include <Python.h> /* make sure Python.h is first */
 #include <string.h>
 #include "grdel.h"
+#include "cferbind.h"
 #include "pyferret.h"
 
 static const char *grdelbrushid = "GRDEL_BRUSH";
@@ -13,7 +14,7 @@ static const char *grdelbrushid = "GRDEL_BRUSH";
 typedef struct GDbrush_ {
     const char *id;
     grdelType window;
-    PyObject *object;
+    grdelType object;
 } GDBrush;
 
 
@@ -32,9 +33,9 @@ typedef struct GDbrush_ {
 grdelType grdelBrush(grdelType window, grdelType color,
                      const char *style, int stylelen)
 {
-    PyObject *bindings;
-    PyObject *colorobj;
-    GDBrush *brush;
+    const BindObj *bindings;
+    grdelType *colorobj;
+    GDBrush   *brush;
 
     bindings = grdelWindowVerify(window);
     if ( bindings == NULL ) {
@@ -57,11 +58,28 @@ grdelType grdelBrush(grdelType window, grdelType color,
 
     brush->id = grdelbrushid;
     brush->window = window;
-    brush->object = PyObject_CallMethod(bindings, "createBrush", "Os#",
-                                        colorobj, style, stylelen);
-    if ( brush->object == NULL ) {
-        sprintf(grdelerrmsg, "grdelBrush: error when calling the "
-                "binding's createBrush method: %s", pyefcn_get_error());
+    if ( bindings->cferbind != NULL ) {
+        brush->object = bindings->cferbind->createBrush(bindings->cferbind,
+                                                  colorobj, style, stylelen);
+        if ( brush->object == NULL ) {
+            /* grdelerrmsg already assigned */
+            PyMem_Free(brush);
+            return NULL;
+        }
+    }
+    else if ( bindings->pyobject != NULL ) {
+        brush->object = PyObject_CallMethod(bindings->pyobject, "createBrush",
+                                 "Os#", (PyObject *) colorobj, style, stylelen);
+        if ( brush->object == NULL ) {
+            sprintf(grdelerrmsg, "grdelBrush: error when calling the Python "
+                    "binding's createBrush method: %s", pyefcn_get_error());
+            PyMem_Free(brush);
+            return NULL;
+        }
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelBrush: unexpected error, "
+                            "no bindings associated with this Window");
         PyMem_Free(brush);
         return NULL;
     }
@@ -83,7 +101,7 @@ grdelType grdelBrush(grdelType window, grdelType color,
  * Returns a pointer to the graphic engine's brush object
  * if successful.  Returns NULL if there is a problem.
  */
-PyObject *grdelBrushVerify(grdelType brush, grdelType window)
+grdelType grdelBrushVerify(grdelType brush, grdelType window)
 {
     GDBrush *mybrush;
 
@@ -108,8 +126,9 @@ PyObject *grdelBrushVerify(grdelType brush, grdelType window)
  */
 grdelBool grdelBrushDelete(grdelType brush)
 {
-    GDBrush *mybrush;
-    PyObject *bindings;
+    const BindObj *bindings;
+    GDBrush  *mybrush;
+    grdelBool success;
     PyObject *result;
 
 #ifdef VERBOSEDEBUG
@@ -121,27 +140,44 @@ grdelBool grdelBrushDelete(grdelType brush)
     if ( grdelBrushVerify(brush, NULL) == NULL ) {
         strcpy(grdelerrmsg, "grdelBrushDelete: brush argument is not "
                             "a grdel Brush");
-        return (grdelBool) 0;
+        return 0;
     }
     mybrush = (GDBrush *) brush;
 
-    bindings = grdelWindowVerify(mybrush->window);
-    /* "N" - steals the reference to this brush object */
-    result = PyObject_CallMethod(bindings, "deleteBrush", "N",
-                                           mybrush->object);
-    if ( result == NULL )
-        sprintf(grdelerrmsg, "grdelBrushDelete: error when calling the "
-                "binding's deleteBrush method: %s", pyefcn_get_error());
-    else
-        Py_DECREF(result);
+    grdelerrmsg[0] = '\0';
+    success = 1;
 
+    bindings = grdelWindowVerify(mybrush->window);
+    if ( bindings->cferbind != NULL ) {
+        success = bindings->cferbind->deleteBrush(bindings->cferbind,
+                                                  mybrush->object);
+        /* if there was a problem, grdelerrmsg is already assigned */
+    }
+    else if ( bindings->pyobject != NULL ) {
+        /* "N" - steals the reference to this brush object */
+        result = PyObject_CallMethod(bindings->pyobject, "deleteBrush",
+                                     "N", (PyObject *) mybrush->object);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelBrushDelete: error when calling the "
+                    "Python binding's deleteBrush method: %s", pyefcn_get_error());
+            success = 0;
+        }
+        else
+            Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelBrushDelete: unexpected error, "
+                            "no bindings associated with this Window");
+        success = 0;
+    }
+
+    /* regardless of success, free this Brush */
     mybrush->id = NULL;
     mybrush->window = NULL;
     mybrush->object = NULL;
     PyMem_Free(brush);
 
-    grdelerrmsg[0] = '\0';
-    return (grdelBool) 1;
+    return success;
 }
 
 /*

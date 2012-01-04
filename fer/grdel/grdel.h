@@ -32,6 +32,21 @@ typedef void * grdelType;
 typedef int grdelBool;
 
 /*
+ * Declaration of a structure to be defined
+ * (since cferbind.h includes this file).
+ */
+struct CFerBind_struct;
+
+/*
+ * Bindings for the window.  Only one of the elements
+ * will be defined and the rest will be NULL.
+ */
+typedef struct BindObj_struct {
+    struct CFerBind_struct *cferbind;
+    PyObject *pyobject;
+} BindObj;
+
+/*
  * Global string for error messages.  When a function returns an error
  * value, some explanatory message should be assigned to this string.
  */
@@ -64,7 +79,7 @@ void fgd_hide_all_windows_(void);
 
 grdelType grdelWindowCreate(const char *engine, int enginelen,
                      const char *title, int titlelen, grdelBool visible);
-PyObject *grdelWindowVerify(grdelType window);
+const BindObj *grdelWindowVerify(grdelType window);
 grdelBool grdelWindowDelete(grdelType window);
 grdelBool grdelWindowClear(grdelType window, grdelType fillcolor);
 grdelBool grdelWindowUpdate(grdelType window);
@@ -125,30 +140,30 @@ void fgdviewend_(int *success, void **window);
 
 grdelType grdelColor(grdelType window, float redfrac,
                float greenfrac, float bluefrac, float opaquefrac);
-PyObject *grdelColorVerify(grdelType color, grdelType window);
+grdelType grdelColorVerify(grdelType color, grdelType window);
 grdelBool grdelColorDelete(grdelType color);
 
 grdelType grdelFont(grdelType window, const char *familyname,
                int familynamelen, float fontsize, grdelBool italic,
                grdelBool bold, grdelBool underlined);
-PyObject *grdelFontVerify(grdelType font, grdelType window);
+grdelType grdelFontVerify(grdelType font, grdelType window);
 grdelBool grdelFontDelete(grdelType font);
 
 grdelType grdelPen(grdelType window, grdelType color,
                float width, const char *style, int stylelen,
                const char *capstyle, int capstylelen,
                const char *joinstyle, int joinstylelen);
-PyObject *grdelPenVerify(grdelType pen, grdelType window);
+grdelType grdelPenVerify(grdelType pen, grdelType window);
 grdelBool grdelPenDelete(grdelType pen);
 
 grdelType grdelBrush(grdelType window,  grdelType color,
                const char *style, int stylelen);
-PyObject *grdelBrushVerify(grdelType brush, grdelType window);
+grdelType grdelBrushVerify(grdelType brush, grdelType window);
 grdelBool grdelBrushDelete(grdelType brush);
 
 grdelType grdelSymbol(grdelType window, const char *symbolname,
                int symbolnamelen);
-PyObject *grdelSymbolVerify(grdelType symbol, grdelType window);
+grdelType grdelSymbolVerify(grdelType symbol, grdelType window);
 grdelBool grdelSymbolDelete(grdelType symbol);
 
 /*

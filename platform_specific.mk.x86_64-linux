@@ -23,6 +23,7 @@
 	MYINCLUDES	= -I$(PYTHONINCDIR) \
 			  -I$(DIR_PREFIX)/fer/common \
 			  -I$(DIR_PREFIX)/fer/grdel \
+			  -I$(DIR_PREFIX)/fer/cferbind \
 			  -I$(DIR_PREFIX)/fmt/cmn \
 			  -I$(DIR_PREFIX)/ppl/include \
 			  -I$(DIR_PREFIX)/ppl/tmap_inc \

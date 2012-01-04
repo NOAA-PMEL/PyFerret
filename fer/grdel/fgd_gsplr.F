@@ -66,9 +66,9 @@
         ELSE
             STOP 'FGD_GSPLR: invalid linestyle'
         ENDIF
-        capstyle = 'round'
-        cstylen = 5
-        joinstyle = 'round'
+        capstyle = 'square'
+        cstylen = 6
+        joinstyle = 'bevel'
         jstylen = 5
 
 *       If a pen object already exists, delete it

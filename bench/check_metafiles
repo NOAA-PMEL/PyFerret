@@ -15,6 +15,7 @@ set mb_files = (bat.plt_*)
 set num_plt_files = `ls -l *.plt | wc -l `
 
 set err_plt = 0
+set total_plt_files = 21
 foreach plt_file ($plt_files)
 #    set size = `ls -l $plt_file | cut -b 21-27`
 #    set size2 = `ls -l metafile_masters_64bit/$plt_file | cut -b 21-27`

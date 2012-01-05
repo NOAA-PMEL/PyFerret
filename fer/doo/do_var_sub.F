@@ -53,6 +53,8 @@
 * V420: 11/95 - converted diff and mean to DP so variance is calc in DP
 *	 2/96 - fix bug introduced in 11/95: CGRID_AXIS has wrong args
 * V664:  8/10 - implement robust method for computing variances
+* V672+: 1/12 - previous checkin had wrong indices for result. Return to 
+*               divide by n, not n+1
 
 * internal variable declarations:
 !	LOGICAL	GEOG_, need_cos

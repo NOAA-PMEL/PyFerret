@@ -138,8 +138,9 @@
 
  205          CONTINUE
 
-	      res(i,j,k,pt) = 0.
-              IF (npt .GT. 1) res(i,j,k,pt) = dsum / FLOAT(npt-1)
+	      res(pt,j,k,l) = 0.
+              IF (npt .GT. 1) res(pt,j,k,l) = dsum / FLOAT(npt-1)
+              IF (npt .GT. 1) res(pt,j,k,l) = dsum / FLOAT(npt)
  210	   CONTINUE
 
 * ALONG Y AXIS
@@ -190,8 +191,9 @@
                   ENDIF
 
  305          CONTINUE
-	      res(i,j,k,pt) = 0.
-              IF (npt .GT. 1) res(i,j,k,pt) = dsum / FLOAT(npt-1)
+	      res(i,pt,k,l) = 0.
+              IF (npt .GT. 1) res(i,pt,k,l) = dsum / FLOAT(npt-1)
+              IF (npt .GT. 1) res(i,pt,k,l) = dsum / FLOAT(npt)
  310	   CONTINUE
 
 
@@ -239,8 +241,9 @@
                   ENDIF
 
  405          CONTINUE
-	      res(i,j,k,pt) = 0.
-              IF (npt .GT. 1) res(i,j,k,pt) = dsum / FLOAT(npt-1)
+	      res(i,j,pt,l) = 0.
+              IF (npt .GT. 1) res(i,j,pt,l) = dsum / FLOAT(npt-1)
+              IF (npt .GT. 1) res(i,j,pt,l) = dsum / FLOAT(npt)
  410	   CONTINUE
 
 * ALONG T AXIS
@@ -288,6 +291,7 @@
  505          CONTINUE
 	      res(i,j,k,pt) = 0.
               IF (npt .GT. 1) res(i,j,k,pt) = dsum/ FLOAT(npt-1)
+              IF (npt .GT. 1) res(i,j,k,pt) = dsum/ FLOAT(npt)
  510	   CONTINUE
 	ENDIF
 

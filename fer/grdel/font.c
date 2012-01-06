@@ -102,7 +102,7 @@ grdelType grdelFont(grdelType window, const char *familyname,
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelFont created: "
-            "window = %X, fontsize = %f, font = %X\n",
+            "window = %p, fontsize = %f, font = %p\n",
             window, fontsize, font);
     fflush(debuglogfile);
 #endif
@@ -149,7 +149,7 @@ grdelBool grdelFontDelete(grdelType font)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelFontDelete called: "
-            "font = %X\n", font);
+            "font = %p\n", font);
     fflush(debuglogfile);
 #endif
 

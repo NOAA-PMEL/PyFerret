@@ -104,7 +104,7 @@ grdelType grdelColor(grdelType window, float redfrac, float greenfrac,
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelColor created: "
-            "window = %X, rgba = (%f,%f,%f,%f), color = %X\n",
+            "window = %p, rgba = (%f,%f,%f,%f), color = %p\n",
             window, redfrac, greenfrac, bluefrac, opaquefrac, color);
     fflush(debuglogfile);
 #endif
@@ -151,7 +151,7 @@ grdelBool grdelColorDelete(grdelType color)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelColorDelete called: "
-            "color = %X\n", color);
+            "color = %p\n", color);
     fflush(debuglogfile);
 #endif
 

@@ -86,7 +86,7 @@ grdelType grdelBrush(grdelType window, grdelType color,
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelBrush created: "
-            "window = %X, color = %X, brush = %X\n",
+            "window = %p, color = %p, brush = %p\n",
             window, color, brush);
     fflush(debuglogfile);
 #endif
@@ -133,7 +133,7 @@ grdelBool grdelBrushDelete(grdelType brush)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelBrushDelete called: "
-            "brush = %X\n", brush);
+            "brush = %p\n", brush);
     fflush(debuglogfile);
 #endif
 

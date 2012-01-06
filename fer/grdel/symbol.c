@@ -78,7 +78,7 @@ grdelType grdelSymbol(grdelType window, const char *symbolname,
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelSymbol created: "
-            "window = %X, symbolname[0] = %c, symbol = %X\n",
+            "window = %p, symbolname[0] = %c, symbol = %p\n",
             window, symbolname[0], symbol);
     fflush(debuglogfile);
 #endif
@@ -125,7 +125,7 @@ grdelBool grdelSymbolDelete(grdelType symbol)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelSymbolDelete called: "
-            "symbol = %X\n", symbol);
+            "symbol = %p\n", symbol);
     fflush(debuglogfile);
 #endif
 

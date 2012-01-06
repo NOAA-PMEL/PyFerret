@@ -122,7 +122,7 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
         if ( debuglogfile == NULL )
             openlogfile();
         fprintf(debuglogfile, "grdelWindow created with C bindings: "
-                              "window = %X\n", window);
+                              "window = %p\n", window);
         fflush(debuglogfile);
 #endif
         grdelerrmsg[0] = '\0';
@@ -176,7 +176,7 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
     if ( debuglogfile == NULL )
         openlogfile();
     fprintf(debuglogfile, "grdelWindow created with Python bindings: "
-                          "window = %X\n", window);
+                          "window = %p\n", window);
     fflush(debuglogfile);
 #endif
 
@@ -203,6 +203,7 @@ const BindObj *grdelWindowVerify(grdelType window)
     return &(mywindow->bindings);
 }
 
+
 /*
  * Deletes (closes and destroys) a Window created by grdelWindowCreate.
  *
@@ -220,7 +221,7 @@ grdelBool grdelWindowDelete(grdelType window)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelWindowDelete called: "
-            "window = %X\n", window);
+            "window = %p\n", window);
     fflush(debuglogfile);
 #endif
 
@@ -288,6 +289,77 @@ grdelBool grdelWindowDelete(grdelType window)
 }
 
 /*
+ * Assigns the image filename and format.  This may just be a default
+ * filename when saving a window (for interactive graphics window), or
+ * it may be the filename which is written as the drawing proceeds (for
+ * non-interactive "batch mode" graphics without a display window).
+ *
+ * Arguments:
+ *     window:     Window to use
+ *     imagename:  filename for saving the image
+ *     imgnamelen: actual length of imagename
+ *     formatname: name of the format (case insensitive);
+ *                 eg, "PNG", "PDF", "PS".  May be NULL.
+ *     fmtnamelen: actual lenght of formatname (zero if NULL)
+ *
+ * If formatname is empty or NULL, the format is quessed for the
+ * filename extension of imagename.
+ *
+ * Returns success (nonzero) or failure (zero).
+ * If failure, grdelerrmsg contains an explanatory message.
+ */
+grdelBool grdelWindowSetImageName(grdelType window, const char *imagename,
+                     int imgnamelen, const char *formatname, int fmtnamelen)
+{
+    GDWindow *mywindow;
+    grdelBool success;
+    PyObject *result;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelWindowSetImageName called: "
+            "window = %p\n", window);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelWindowVerify(window) == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowSetImageName: window argument is not "
+                            "a grdel Window");
+        return 0;
+    }
+    mywindow = (GDWindow *) window;
+
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            setImageName(mywindow->bindings.cferbind, imagename,
+                                         imgnamelen, formatname, fmtnamelen);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "setImageName",
+                                     "s#s#", imagename, imgnamelen,
+                                     formatname, fmtnamelen);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowSetImageName: Error when calling "
+                    "the Python binding's setImageName method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowClear: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
+
+    grdelerrmsg[0] = '\0';
+
+    return 1;
+}
+
+/*
  * Clears the window of all drawings.  The window is filled
  * (initialized) with fillcolor.
  *
@@ -307,7 +379,7 @@ grdelBool grdelWindowClear(grdelType window, grdelType fillcolor)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelWindowClear called: "
-            "window = %X, fillcolor = %X\n", window, fillcolor);
+            "window = %p, fillcolor = %p\n", window, fillcolor);
     fflush(debuglogfile);
 #endif
 
@@ -338,7 +410,7 @@ grdelBool grdelWindowClear(grdelType window, grdelType fillcolor)
         if ( result == NULL ) {
             sprintf(grdelerrmsg, "grdelWindowClear: Error when calling "
                     "the Python binding's clearWindow method: %s", pyefcn_get_error());
-            return (grdelBool) 0;
+            return 0;
         }
         Py_DECREF(result);
     }
@@ -369,7 +441,7 @@ grdelBool grdelWindowUpdate(grdelType window)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelWindowUpdate called: "
-            "window = %X\n", window);
+            "window = %p\n", window);
     fflush(debuglogfile);
 #endif
 
@@ -430,7 +502,7 @@ grdelBool grdelWindowSetSize(grdelType window, float width, float height)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelWindowSetSize called: "
-            "window = %X, width = %f, height = %f\n", window, width, height);
+            "window = %p, width = %f, height = %f\n", window, width, height);
     fflush(debuglogfile);
 #endif
 
@@ -491,7 +563,7 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelWindowSetVisible called: "
-            "window = %X, visible = %d\n", window, visible);
+            "window = %p, visible = %d\n", window, visible);
     fflush(debuglogfile);
 #endif
 
@@ -562,7 +634,7 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelWindowSave called: "
-            "window = %X\n", window);
+            "window = %p\n", window);
     fflush(debuglogfile);
 #endif
 
@@ -631,7 +703,7 @@ grdelBool grdelWindowDpi(grdelType window, float *dpix, float *dpiy)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelWindowDpi called: "
-            "window = %X\n", window);
+            "window = %p\n", window);
     fflush(debuglogfile);
 #endif
 
@@ -715,6 +787,36 @@ void fgdwindelete_(int *success, void **window)
     grdelBool result;
 
     result = grdelWindowDelete(*window);
+    *success = result;
+}
+
+/*
+ * Assigns the image filename and format.  This may just be a default
+ * filename when saving a window (for interactive graphics window), or
+ * it may be the filename which is written as the drawing proceeds (for
+ * non-interactive "batch mode" graphics without a display window).
+ *
+ * If formatname is empty or NULL, the format is quessed for the
+ * filename extension of imagename.
+ *
+ * Input Arguments:
+ *     window:     Window to use
+ *     imagename:  filename for saving the image
+ *     imgnamelen: actual length of imagename
+ *     formatname: name of the format (case insensitive);
+ *                 eg, "PNG", "PDF", "PS".  May be NULL.
+ *     fmtnamelen: actual lenght of formatname (zero if NULL)
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void fgdwinimgname_(int *success, void **window, char *imagename,
+                    int *imgnamelen, char *formatname, int *fmtnamelen)
+{
+    grdelBool result;
+
+    result = grdelWindowSetImageName(*window, imagename, *imgnamelen,
+                                     formatname, *fmtnamelen);
     *success = result;
 }
 
@@ -878,7 +980,7 @@ grdelBool grdelWindowViewBegin(grdelType window,
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelWindowViewBegin called: "
-            "window = %X, "
+            "window = %p, "
             "viewfrac  = (%f, %f, %f, %f) "
             "clipit = %d\n",
             window, leftfrac, bottomfrac, rightfrac, topfrac, clipit);
@@ -953,7 +1055,7 @@ grdelBool grdelWindowViewClip(grdelType window, grdelBool clipit)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelWindowViewClip called: "
-            "window = %X "
+            "window = %p "
             "clipit = %d\n",
             window, clipit);
     fflush(debuglogfile);
@@ -1020,7 +1122,7 @@ grdelBool grdelWindowViewEnd(grdelType window)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelWindowViewEnd called: "
-            "window = %X\n", window);
+            "window = %p\n", window);
     fflush(debuglogfile);
 #endif
 

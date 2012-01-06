@@ -97,7 +97,7 @@ grdelType grdelPen(grdelType window, grdelType color,
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelPen created: "
-            "window = %X, color = %X, width = %f, pen = %X\n",
+            "window = %p, color = %p, width = %f, pen = %p\n",
             window, color, width, pen);
     fflush(debuglogfile);
 #endif
@@ -144,7 +144,7 @@ grdelBool grdelPenDelete(grdelType pen)
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelPenDelete called: "
-            "pen = %X\n", pen);
+            "pen = %p\n", pen);
     fflush(debuglogfile);
 #endif
 

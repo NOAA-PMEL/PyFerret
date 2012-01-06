@@ -78,7 +78,7 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelDrawMultiline called: "
-            "window = %X, pen = %X\n", window, pen);
+            "window = %p, pen = %p\n", window, pen);
     fflush(debuglogfile);
 #endif
 
@@ -225,7 +225,7 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelDrawPoints called: "
-            "window = %X, symbol = %X, color = %X", window, symbol, color);
+            "window = %p, symbol = %p, color = %p", window, symbol, color);
     fflush(debuglogfile);
 #endif
 
@@ -381,7 +381,7 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelDrawPolygon called: "
-            "window = %X, brush = %X, pen = %X\n", window, brush, pen);
+            "window = %p, brush = %p, pen = %p\n", window, brush, pen);
     fflush(debuglogfile);
 #endif
 
@@ -547,7 +547,7 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelDrawRectangle called: "
-            "window = %X, brush = %X, pen = %X\n", window, brush, pen);
+            "window = %p, brush = %p, pen = %p\n", window, brush, pen);
     fflush(debuglogfile);
 #endif
 
@@ -667,7 +667,7 @@ grdelBool grdelDrawMulticolorRectangle(grdelType window,
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelDrawMulticolorRectangle called: "
-            "window = %X\n", window);
+            "window = %p\n", window);
     fflush(debuglogfile);
 #endif
 
@@ -798,7 +798,7 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
 
 #ifdef VERBOSEDEBUG
     fprintf(debuglogfile, "grdelDrawText called: "
-            "window = %X, font = %X, color = %X\n", window, font, color);
+            "window = %p, font = %p, color = %p\n", window, font, color);
     fflush(debuglogfile);
 #endif
 

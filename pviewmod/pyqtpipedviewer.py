@@ -478,16 +478,17 @@ class PyQtPipedViewer(QMainWindow):
         for typePair in formattypes[1:]:
             filters.append(";;")
             filters.append(typePair[1])
-        for (fmt, fmtQName) in formattypes:
-            if fmt == self.__lastformat:
-                initformat = fmtQName
-                break
-        else:
-            initformat = formattypes[0][1]
-        # getSaveFileNameAndFilter is a PyQt (but not Qt) method
+        # getSaveFileNameAndFilter does not want to accept a default filter
+        # for (fmt, fmtQName) in formattypes:
+        #     if self.__lastformat == fmt:
+        #         dfltfilter = fmtQName
+        #         break
+        # else:
+        #     dfltfilter = formattypes[0][1]
+        # getSaveFileNameAndFilter is a PyQt (but not Qt?) method
         (fileName, fileFilter) = QFileDialog.getSaveFileNameAndFilter(self,
                                       self.tr("Save the current scene as "),
-                                      self.__lastfilename, filters, initformat)
+                                      self.__lastfilename, filters)
         if fileName:
             for (fmt, fmtQName) in formattypes:
                 if fmtQName.compare(fileFilter) == 0:

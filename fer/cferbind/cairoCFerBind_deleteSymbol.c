@@ -24,9 +24,11 @@ grdelBool cairoCFerBind_deleteSymbol(CFerBind *self, grdelType symbol)
         return 0;
     }
 
-    /* TODO: implement */
-    strcpy(grdelerrmsg, "cairoCFerBind_deleteSymbol: unexpected error, "
-                        "stubbed function");
-    return 0;
+    /*
+     * A symbol "object" is just a character value cast as a pointer type;
+     * thus nothing needs to be done to delete it.
+     */
+    grdelerrmsg[0] = '\0';
+    return 1;
 }
 

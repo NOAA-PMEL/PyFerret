@@ -6,6 +6,7 @@
 
 /* Instantiate the globals */
 const char *CairoCFerBindName = "Cairo";
+const int lenCairoCFerBindName = 5;
 
 /*
  * Creates a CFerBind struct (bindings instance)
@@ -26,7 +27,8 @@ CFerBind *cferbind_createWindow(const char *enginename, int engnamelen,
     CFerBind *bindings;
     int k;
 
-    if ( strncmp(enginename, CairoCFerBindName, strlen(CairoCFerBindName) == 0) ) {
+    if ( (engnamelen == lenCairoCFerBindName) &&
+         (strncmp(enginename, CairoCFerBindName, lenCairoCFerBindName) == 0) ) {
         /* Create a bindings instance for a Cairo engine */
         bindings = cairoCFerBind_createWindow();
         return bindings;

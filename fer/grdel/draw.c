@@ -113,7 +113,7 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
         for (k = 0; k < numpts; k++)
             xvals[k] = (double) (ptsx[k]) * sx + dx;
         for (k = 0; k < numpts; k++)
-            yvals[k] = (double) (ptsy[k]) * sy + dy;
+            yvals[k] = (my - (double) (ptsy[k])) * sy + dy;
         success = bindings->cferbind->drawMultiline(bindings->cferbind,
                                       xvals, yvals, numpts, penobj);
         PyMem_Free(xvals);
@@ -266,7 +266,7 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
         for (k = 0; k < numpts; k++)
             xvals[k] = (double) (ptsx[k]) * sx + dx;
         for (k = 0; k < numpts; k++)
-            yvals[k] = (double) (ptsy[k]) * sy + dy;
+            yvals[k] = (my - (double) (ptsy[k])) * sy + dy;
         success = bindings->cferbind->drawPoints(bindings->cferbind,
                                       xvals, yvals, numpts, symbolobj,
                                       colorobj, (double) ptsize);
@@ -435,7 +435,7 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
         for (k = 0; k < numpts; k++)
             xvals[k] = (double) (ptsx[k]) * sx + dx;
         for (k = 0; k < numpts; k++)
-            yvals[k] = (double) (ptsy[k]) * sy + dy;
+            yvals[k] = (my - (double) (ptsy[k])) * sy + dy;
         success = bindings->cferbind->drawPolygon(bindings->cferbind,
                                       xvals, yvals, numpts, brushobj, penobj);
         PyMem_Free(xvals);

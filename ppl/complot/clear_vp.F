@@ -62,22 +62,14 @@
 
 * internal variable declarations:
 	INTEGER	ivp, iseg
-	LOGICAL ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS,
-     .   its_meta, batch, meta_batch
 
-        its_meta = ITS_META_GRAPHICS()
-        batch = ITS_BATCH_GRAPHICS()
-	meta_batch = .FALSE.
-        IF (batch) THEN
-           IF (its_meta) meta_batch = .TRUE.
-        ENDIF
 	IF ( vp_num .EQ. mvp_dflt ) THEN
 
 *  clear entire screen
 	   IF ( wsid .NE. 0 ) THEN
 * explicitly delete segments to avoid XGKS memory leak
 	      DO 110 ivp =  mvp_dflt, max_viewport
-		 if (.NOT.meta_batch .AND. vp_seg0(ivp) .NE. 0 ) THEN 
+		 if ( vp_seg0(ivp) .NE. 0 ) THEN 
 	            DO 100 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
  100	            CALL FGD_GDSG( iseg ) 
 	         ENDIF

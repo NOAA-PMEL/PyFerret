@@ -188,20 +188,10 @@
 
 	LOGICAL CLEAR,CONTR,no_vpt_flag
 
-	LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
-        LOGICAL its_meta, batch, meta_batch
-
 *	*jd* linux port 12.96 Add external stmt below
 	external size, scale
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-
-        its_meta = ITS_META_GRAPHICS()
-        batch = ITS_BATCH_GRAPHICS()
-	meta_batch = .FALSE.
-	IF (batch) THEN
-	   IF (its_meta) meta_batch = .TRUE.
-	ENDIF
 
 	mainlab = 1  ! Flag: Draw the main label in calls to DAXIS
 
@@ -231,42 +221,6 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 *	   protect_used_colors = .true.
 *	endif
 
-	if ( 
-     .      ((.not.meta_actv).AND. (.not.meta_batch) ) .or.
-     .      first_meta) goto 10		!12.1.89 JD
-
-*	VPT_WAS_SET is used to check whether viewports were set the last time
-*	Ferret made a plot call. It is however cleared, when CLSPLT is invoked,
-*	as the continuity of viewport use is broken.
-
-	no_vpt_flag = .not.(vpt_was_set .and. ppl_viewports_active)!12.1.89 JD
-	if (clear .and. no_vpt_flag) then			!12.1.89 JD
-
-	   if (.not. meta_clsplt) then				!1.25.90 JD
-*             *kms* deactivate and close the workstation after FGD_SAVE_WINDOW
-*                   which relies on the workstation to do the save
-              IF ( meta_lun .NE. 0 ) THEN
-                  CALL FGD_SAVE_WINDOW(meta_file)
-                  meta_lun = 0
-              ENDIF
-              CALL FGD_GDAWK(meta_wsid)
-              CALL FGD_GCLWK(meta_wsid)
-	   end if						!11.6.89 JD
-
-*          *kms* first activate the workstation so that meta_wsid
-*                is the active workstation for OPEN_METAFILE
-           CALL FGD_GACWK(meta_wsid)
-           CALL OPEN_METAFILE
-#ifndef xgks
-	   call meta_version					!2.24.93
-#endif
-	   IF (.NOT. meta_batch) meta_actv = .true.		!11.6.89 JD
-	   meta_clsplt = .false.				!1.25.90 JD
-	end if							!11.6.89 JD
-10      if (meta_actv.OR. meta_batch) then ! Put both following stmts in if section
-           first_meta = .false.                                 !12.1.89 JD
-           vpt_was_set = ppl_viewports_active                   !12.1.89 JD
-        end if              ! to fix viewport metafile bug 11.4.93
 	IF(.NOT.SOVER .AND. .NOT.PLTOPN)CALL SIZE(WIDTH,HEIGHT)
 #ifdef unix
 *       call flush(lttout)

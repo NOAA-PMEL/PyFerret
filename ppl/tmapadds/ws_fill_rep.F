@@ -140,10 +140,6 @@ c	      write (6,'(/a)') ' PPL+ error: You''re attempting to use '//
 *	CHOOSE CUSTOM COLORS OR THE DEFAULT SELECTION
 	   if (custom_colors) then
 	      call setup_color_table (zwsid,lo_color_ndx(zwsid),shd_levels)
-#ifdef xgks
-	      if (meta_actv .and. .not. meta_clsplt) call setup_color_table 
-     .			(meta_wsid,lo_color_ndx(zwsid),shd_levels)
-#endif
 	   else
 	      call set_default_colors (zwsid,zwstype,lo_color_ndx(zwsid),
      .							shd_levels)

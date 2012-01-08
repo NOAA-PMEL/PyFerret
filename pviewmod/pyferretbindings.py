@@ -93,6 +93,33 @@ class PyFerretBindings(AbstractPyFerretBindings):
             self.__window = None
         return True
 
+    def setImageName(self, imagename, formatname):
+        '''
+        Assigns the name and format of the image file to be created.
+
+        Arguments:
+            imagename  - name for the image file (can be NULL)
+            imgnamelen - actual length of imagename (zero if NULL)
+            formatname - name of the image format (case insensitive,
+                         can be NULL)
+            fmtnamelen - actual length of formatname (zero if NULL)
+       
+        If formatname is empty or NULL, the filename extension of
+        imagename, if it exists and is recognized, will determine
+        the format.
+
+        This method only gives the default name of the image file
+        to be created by the saveWindow method.  The saveWindow
+        method must be called to save the image.
+        '''
+        cmnd = { "action":"imgname" }
+        if imagename:
+            cmnd["name"] = imagename
+        if formatname:
+            cmnd["format"] = formatname
+        self.__window.submitCommand(cmnd)
+        self.checkForErrorResponse()
+
     def setAntialias(self, antialias):
         '''
         Turns on (antilaias True) or off (antialias False) anti-aliasing
@@ -540,40 +567,6 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.__window.submitCommand(cmnd)
         self.checkForErrorResponse()
 
-    def drawMulticolorRectangle(self, left, bottom, right, top,
-                                numrows, numcols, colors):
-        '''
-        Draws a filled rectangle using an array of solid colors.
-        The rectangle is divided into a given number of equally
-        spaced rows and a number of equally spaced columns.  Each
-        of these cells is then filled with a color (using a solid
-        brush) from the corresponding element in an array of colors.
-
-        Arguments:
-            left: X-coordinate of the left edge
-            bottom: Y-coordinate of the bottom edge
-            right: X-coordinate of the right edge
-            top: Y-coordinate of the top edge
-            numrows: the number of equally spaced rows
-                    to subdivide the rectangle into
-            numcols: the number of equally spaced columns
-                    to subdivide the rectangle into
-            colors: a flattened column-major 2-D list of colors
-                    specifying the color of the corresponding cell.
-                    The first row is at the top, the first column
-                    is on the left.
-
-        Coordinates are measured from the upper left corner
-        in "device units" (pixels at the current window DPI).
-        '''
-        cmnd = { "action":"drawMulticolorRectangle",
-                 "left":left, "bottom":bottom,
-                 "right":right, "top": top,
-                 "numrows":numrows, "numcols":numcols,
-                 "colors":colors }
-        self.__window.submitCommand(cmnd)
-        self.checkForErrorResponse()
-
     def drawText(self, text, startx, starty, font, color, rotate):
         '''
         Draws text.
@@ -718,22 +711,6 @@ if __name__ == "__main__":
         bindinst.drawText("y=430", 50, 430, myfont, mycolors[2], 0)
         bindinst.drawText("y=380", 50, 380, myfont, mycolors[2], 0)
         bindinst.drawText("y=330", 50, 330, myfont, mycolors[2], 0)
-        # End of this view
-        bindinst.endView()
-        # Window should already be shown, but just to make sure
-        bindinst.showWindow(True)
-        raw_input("Press Enter to continue")
-        # Create a view of almost the whole window
-        bindinst.beginView(0.25, 0.75, 1.0, 0.0, True)
-        # Draw a translucent multicolor rectangle covering most of the window
-        bindinst.drawMulticolorRectangle(130, 370, 495, 5, 2, 3, mycolors[10:])
-        # Draw letters indicating the expected colors
-        bindinst.drawText("R", 190, 120, myfont, mycolors[0], -45)
-        bindinst.drawText("Y", 190, 300, myfont, mycolors[0], -45)
-        bindinst.drawText("G", 310, 120, myfont, mycolors[0], -45)
-        bindinst.drawText("C", 310, 300, myfont, mycolors[0], -45)
-        bindinst.drawText("B", 430, 120, myfont, mycolors[0], -45)
-        bindinst.drawText("M", 430, 300, myfont, mycolors[0], -45)
         # End of this view
         bindinst.endView()
         # Window should already be shown, but just to make sure

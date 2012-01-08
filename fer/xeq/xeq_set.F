@@ -237,11 +237,10 @@
      .                  fposition*16, fstatus*16
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
      .                  TM_HAS_STRING, TM_LEGAL_NAME, MATCH_NAME,
-     .                  ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS, 
      .                  NC_GET_ATTRIB, set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
      .                  do_ez, tregular, its_changed, ok_cal,
-     .                  coordvar, new_att_modulo, batch, its_gif, 
+     .                  coordvar, new_att_modulo,
      .                  got_it, redir_stdout, redir_stderr, redir_tee,
      .                  redir_journal, redir_append, redir_clobber, 
      .                  fexist
@@ -583,7 +582,7 @@ c *kob* 4/97
 		    mode_arg  (mode,i-1) = mode_arg  (mode,i)
  804	         CONTINUE
 	      ELSE
-* ... push the mode stack adding on a TRUE (because it's SET)
+* ... push the mode stack adding on a TRUE (because it is SET)
 	         DO 806 i = mode_stack_size, 2, -1
 	            mode_state(mode,i) = mode_state(mode,i-1) 
 		    mode_arg  (mode,i) = mode_arg  (mode,i-1)
@@ -611,37 +610,9 @@ c *kob* 4/97
 	         CALL TM_SET_FREE_EVENT(1)
 * ... mode metafile may require immediate communication with PPLUS
 	      ELSEIF ( mode .EQ. pmode_metafile ) THEN
-*     When in gif mode or batch mode, ignore SET MODE META
-	         its_gif = ITS_GIF_GRAPHICS()
-	         batch = ITS_BATCH_GRAPHICS()
-                 IF ( its_gif ) THEN
-                    CALL WARN ('in GIF mode: ignoring SET MODE METAFILE')
-                    mode_metafile = .FALSE.
-                 ELSE IF ( batch ) THEN
-                    CALL GET_METAFILE_NAME(buff1)
-
-                    CALL ECHOF_OFF
-	  	    IF ( buff2 .NE. ' ' ) THEN
-                       CALL PPLCMD
-     .			( from, line, 0, 'PLTNME '//buff2, 1, 1 )
-                    ELSE
-                       CALL GET_METAFILE_NAME(ustring)
-                       IF (STR_SAME(ustring,'dummy.plt') .EQ. 0) CALL PPLCMD
-     .			( from, line, 0, 'PLTNME ferret.png', 1, 1 )
-                    ENDIF
-
-                    IF ( gksopn .AND. first_meta) THEN
-                       CALL PPLCMD ( from, line, 0, 'RENAMPL '//buff1, 1, 1 )
-                    ENDIF
-
-                    mode_metafile = .FALSE.
-
-                 ELSE
- 	            IF ( .NOT.pplus_started ) CALL START_PPLUS     ! 1/94
-	  	    IF ( buff2 .NE. ' ' ) CALL PPLCMD
-     .			( from, line, 0, 'PLTNME '//buff2, 1, 1 )
-!	            CALL SEND_PLTYPE( mode_metafile )    ! done in DISP_INIT
-                 ENDIF
+                 IF ( .NOT. pplus_started ) CALL START_PPLUS
+                 CALL PPLCMD(from, line, 0, 'PLTNME '//buff2, 1, 1)
+                 mode_metafile = .TRUE.
 * ... mode diagnostic sends message to TMAP library
 	      ELSEIF ( mode .EQ. pmode_diagnostic ) THEN
 	         tmap_diag_on = .TRUE.
@@ -1818,10 +1789,9 @@ c *kob* 4/97
 
 * *kms* with the graphics delegate, treat it the same as set mode meta:"filename"
         buff2 = cmnd_buff(item_start(1):item_end(1))
-        IF ( buff2 .NE. ' ' ) THEN
-            IF ( .NOT. pplus_started ) CALL START_PPLUS
-            CALL PPLCMD(from, line, 0, 'PLTNME ' // buff2, 1, 1)
-        ENDIF
+        IF ( .NOT. pplus_started ) CALL START_PPLUS
+        CALL PPLCMD(from, line, 0, 'PLTNME ' // buff2, 1, 1)
+        mode_metafile = .TRUE.
 	RETURN
 
 * error exits

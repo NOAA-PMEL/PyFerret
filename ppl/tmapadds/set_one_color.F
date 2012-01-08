@@ -71,8 +71,6 @@
 	data		black/1/,white/0/
 #endif
 
-	LOGICAL ITS_BATCH_GRAPHICS
-        LOGICAL batch
 	integer		type, error
 	REAL		rd, gr, bl
 
@@ -91,10 +89,7 @@
 #endif
 	      call FGD_GQPCR(wstype,i,err,val(red),val(green),val(blue))
 	      if (err .ne. 0) goto 5
-cc	      if (meta_actv) call FGD_GSCR(wsid,i,val(red),val(green),val(blue))
 	      call FGD_GSCR(wsid,i,val(red),val(green),val(blue))
-	      if (meta_actv .and. .not. meta_clsplt) 
-     .		call FGD_GSCR(meta_wsid,i,val(red),val(green),val(blue))
 5	   continue
 	   goto 1000
 	end if
@@ -119,7 +114,6 @@ cc	      if (meta_actv) call FGD_GSCR(wsid,i,val(red),val(green),val(blue))
 10	continue
 
 #ifndef xgks
-cc	if (meta_actv) call FGD_GSCR(wsid,ndx,val(red),val(green),val(blue))
 	call FGD_GSCR(wsid,ndx,val(red),val(green),val(blue))
 #else
 *	FOR X, PERMIT ONLY WHITE OR BLACK BACKGROUNDS FOR NOW
@@ -132,45 +126,13 @@ cc	if (meta_actv) call FGD_GSCR(wsid,ndx,val(red),val(green),val(blue))
 	       call set_background (wsid,white)
 	   endif
 	else
-cc	   if (meta_actv) 
-cc     .        call FGD_GSCR(wsid,ndx,val(red),val(green),val(blue))
-
 	   call FGD_GSCR(wsid,ndx,val(red),val(green),val(blue))
 	endif
 #endif
 
-	if (meta_actv .and. .not. meta_clsplt) then
-#ifndef xgks
-           call FGD_GSCR(meta_wsid,ndx,val(red),val(green),val(blue))
-#else
-*	   FOR X, PLACE NO INDEX 0 IN METAFILE, AND INDEX 1 CANNOT BE WHITE
-	   if (ndx .eq. 0) goto 1000
-	   if (ndx .eq. 1) then
-	      if (val(red)   .eq. 1.0 .and.
-     .		  val(green) .eq. 1.0 .and. 
-     .		  val(blue)  .eq. 1.0) then 
-                  call FGD_GSCR(meta_wsid,ndx,0.0,0.0,0.0)
-	      else
-                 call FGD_GSCR(meta_wsid,ndx,val(red),val(green),val(blue))
-	      endif
-	   else
-              call FGD_GSCR(meta_wsid,ndx,val(red),val(green),val(blue))
-	   endif
-#endif
-	endif
  1000   continue
 
-
-**** trying to fix batch bug ***
-        batch = ITS_BATCH_GRAPHICS()
-        if (batch) then
-           saved_line_colors = 1
-           CALL save_line_color (ndx,val(red),val(green),val(blue))
-        endif
-**** trying to fix batch bug ***
-
 #ifndef atc_gks
-cc       if (meta_actv) call FGD_GUWK(wsid,gpostp)
         call FGD_GUWK(wsid,gpostp)
 #endif
 

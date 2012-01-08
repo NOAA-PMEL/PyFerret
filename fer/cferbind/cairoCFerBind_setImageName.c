@@ -27,6 +27,9 @@
  * will be created.  A filename consisting of only an extension
  * (e.g., ".png") will be treated as not having an extension.
  *
+ * A "GIF" format is silently converted to "PNG".  A "PLT" format
+ * is silently converted to "PDF".
+ *
  * If the PNG surface is created, the saveWindow function is used
  * to save the image.  Thus, imagename is only a default name that
  * may not be used.  For other surfaces, the saveWindow function
@@ -86,13 +89,13 @@ grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
     }
 
     /* Get the format type from the format name */
-    if ( strcmp(fmtext, "PNG") == 0 ) {
+    if ( (strcmp(fmtext, "PNG") == 0) || (strcmp(fmtext, "GIF") == 0) ) {
         imageformat = CCFBIF_PNG;
     }
-    else if ( strcmp(fmtext, "PDF") == 0 ) {
+    else if ( (strcmp(fmtext, "PDF") == 0) || (strcmp(fmtext, "PLT") == 0) ) {
         imageformat = CCFBIF_PDF;
     }
-    else if ( (strcmp(fmtext, "EPS") == 0) || (strcmp(fmtext, "ps") == 0) ) {
+    else if ( (strcmp(fmtext, "EPS") == 0) || (strcmp(fmtext, "PS") == 0) ) {
         imageformat = CCFBIF_EPS;
     }
     else if ( strcmp(fmtext, "SVG") == 0 ) {
@@ -114,6 +117,19 @@ grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
     instdata->imageformat = imageformat;
     strncpy(instdata->imagename, imagename, imgnamelen);
     instdata->imagename[imgnamelen] = '\0';
+
+    if ( strcmp(fmtext, "GIF") == 0 ) {
+        /* Change  .gif filename extension to .png */
+        if ( (imgnamelen >= 4) &&
+             (strcasecmp(&(instdata->imagename[imgnamelen-4]), ".gif") == 0) )
+            strcpy(&(instdata->imagename[imgnamelen-4]), ".png");
+    }
+    else if ( strcmp(fmtext, "PLT") == 0 ) {
+        /* Change .plt filename extension to .pdf */
+        if ( (imgnamelen >= 4) &&
+             (strcasecmp(&(instdata->imagename[imgnamelen-4]), ".plt") == 0) )
+            strcpy(&(instdata->imagename[imgnamelen-4]), ".pdf");
+    }
 
     /* Delete any existing context and surface */
     if ( instdata->context != NULL ) {

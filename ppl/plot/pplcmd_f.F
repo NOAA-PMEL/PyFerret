@@ -1,7 +1,5 @@
 	SUBROUTINE PPLCMD_F(ISI,ICMDIM,ICMSZE,pplmem)
 
-c	SUBROUTINE PPLCMD_F(FROMI,LINEI,ISI,COMBUF,ICMDIM,ICMSZE,pplmem)
-
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -252,11 +250,6 @@ CCCCCCC data	        tmapdebug/.false./
         INTEGER   TM_LENSTR, TM_LENSTR1, slen
 
 	character strr*2048
-
-* *acm*  For batch metafile 
-	LOGICAL ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS,
-     .          its_meta, batch, meta_batch, its_open
-
 
         LOGICAL TM_HAS_STRING
 	CHARACTER DTE*10,TEMP*2048,TEMP2*2048,FILE*81,FROM*80,LINE*2048
@@ -1033,11 +1026,10 @@ C	PLTNME
 *	    SYM='*PPL$PLTNME'
 *	    ISYM=LNBLK(TEMP,2048)
 *	    CALL PUTSYM(SYM,TEMP,ISYM,IER)
-*
+*           Open a "metafile"
 *           *kms* First check if this is actually a rename
-8000        IF ( meta_lun .NE. 0 ) THEN
+8000        IF ( save_on_exit .AND. imgname_sent ) THEN
                CALL FGD_SAVE_WINDOW(meta_file)
-               meta_lun = 0
             ENDIF
             IF(N.EQ.0)THEN
                 meta_file='ferret.png'
@@ -1048,6 +1040,8 @@ C	PLTNME
 	    ENDIF
 *           *kms* Mark that the graphics are to be saved
 *                 and clear the active window
+            save_on_exit = .TRUE.
+            imgname_sent = .FALSE.
             CALL OPEN_METAFILE
 	    SYM='*PPL$PLTNME'
 	    ISYM=LNBLK(TEMP,2048)
@@ -1107,8 +1101,8 @@ C	LINFIT
 8600	    I=IFIX(P(1))
 	    IF(I.GT.LINEN.OR.LLENG(I).LE.2.OR.LINEN.GE.NLINES)THEN
 		IF(.NOT.QUIETF)WRITE(LTTOUT,
-     *		'('' LINFIT ERROR -- NO ROOM OR LINE'',I3,
-     *		'' DOES NOT EXIST'')')
+     *          '('' LINFIT ERROR -- NO ROOM OR LINE'',I3,
+     *          '' DOES NOT EXIST'')')
 		GOTO 10
 	    ENDIF
 	    CALL LINFIT(I,pplmem,pplmem_nsize,IBASE,PBUF)
@@ -1342,71 +1336,29 @@ C	VPOINT
 	    CALL PUTVAL(SYM,VIEWZ,4,IER)
 	    GOTO 10
 C	CLSPLT
+*           Close a metafile
 9950	    CALL PLTYPE(ICODE)
-*	    MOD *JD* 1.25.90 to accomodate use of clsplt and metafiles
-*           *ACM* 4/5/05 After a set/win/clear need meta_actv false
-*                        so VIEW/AXES can reset sizing info 
-
-	    its_meta = ITS_META_GRAPHICS()
-	    batch = ITS_BATCH_GRAPHICS()
-	    meta_batch = .FALSE.
-	    IF (batch) THEN
-	       IF (its_meta) meta_batch = .TRUE.
-	    ENDIF
-            its_open = meta_open
-            if (meta_batch .and. ws_state.GT.0) its_open = .true.
-
-	    if (its_open .and. .not. meta_clsplt .and. .not. first_meta) then
-*              *kms* graphics delegate now does all the graphics output
-*                    so save the graphics at this time to meta_file
-*                    (before deactivating and closing the workstation)
-               IF ( meta_lun .NE. 0 ) THEN
-                   CALL FGD_SAVE_WINDOW(meta_file)
-                   meta_lun = 0
-               ENDIF
-               if (meta_actv .OR. meta_batch) call FGD_GDAWK(meta_wsid)
-               call FGD_GCLWK(meta_wsid)
-	       meta_clsplt = .true.
-               meta_actv = .false.     ! mode state is still saved in mode_metafile
-	       vpt_was_set = .false.
-	    elseif (meta_batch .and. vpt_was_set ) then
-*              *kms* graphics delegate now does all the graphics output
-*                    so save the graphics at this time to meta_file
-*                    (before deactivating and closing the workstation)
-               IF ( meta_lun .NE. 0 ) THEN
-                   CALL FGD_SAVE_WINDOW(meta_file)
-                   meta_lun = 0
-               ENDIF
-               call FGD_GDAWK(meta_wsid)
-               call FGD_GCLWK(meta_wsid)
-	       meta_clsplt = .true.
-               meta_actv = .false.
-	       vpt_was_set = .false.
-	    end if        
-
+            IF ( save_on_exit .AND. imgname_sent ) THEN
+                CALL FGD_SAVE_WINDOW(meta_file)
+            ENDIF
+            save_on_exit = .FALSE.
+            imgname_sent = .FALSE.
+            vpt_was_set = .FALSE.
 	    GOTO 10
-
 C	RENAMPL
 9960	    CONTINUE
 *	Close and rename the metafile; reopen.
+            IF ( save_on_exit .AND. imgname_sent ) THEN
+                CALL FGD_SAVE_WINDOW(meta_file)
+            ENDIF
             strr = LABEL
-	    IF (its_open .AND. first_meta) THEN
-*              *kms* graphics delegate now does all the graphics output
-*                    so save the graphics at this time to meta_file
-               IF ( meta_lun .NE. 0 ) THEN
-                   CALL FGD_SAVE_WINDOW(meta_file)
-                   meta_lun = 0
-               ENDIF
-	       CALL RENAME(strr, meta_file)
-*              *kms* graphics delegate now does all the graphics output
-*                    mark that the graphics are to be saved
-*                    and clear the active window
-               CALL OPEN_METAFILE
-	    END IF        
-
+            CALL RENAME(strr, meta_file)
+*           *kms* Mark that the graphics are to be saved
+*                 and clear the active window
+            save_on_exit = .TRUE.
+            imgname_sent = .FALSE.
+            CALL OPEN_METAFILE
 	    GOTO 10
-
-
 C     RWDSEQ & RWD
 600	    CALL OPENF(FILE,IERR)
 	    IF(IERR.NE.0)GOTO 10

@@ -72,17 +72,11 @@
 #define FORTRAN(a) a##_
 #endif
 
-/* local static variable to contain the state */
-static int its_batch=0;
-static int its_gif=0;
-static int its_ps=0;
-static int its_meta=0;
-
 /* set_batch_graphics */
 void FORTRAN(set_batch_graphics)(char *outfile)
 {
   int length;
-  char * result;
+  char *result;
   int modestate;
 
   assert(outfile);
@@ -94,7 +88,8 @@ void FORTRAN(set_batch_graphics)(char *outfile)
    * save_metafile_name if a name is given (-batch).
    */
   if ( length > 0 ) {
-    FORTRAN(save_metafile_name)(outfile, &length, &modestate);
+     FORTRAN(save_metafile_name)(outfile, &length, &modestate);
+     FORTRAN(assign_modemeta)();
   }
 
   /* 
@@ -106,29 +101,5 @@ void FORTRAN(set_batch_graphics)(char *outfile)
   FORTRAN(fgd_hide_all_windows)();
 
   return;
-}
-
-/* its_batch_graphics */
-int FORTRAN(its_batch_graphics)()
-{
-   return (its_batch);
-}
-
-      /* its_gif_graphics */
-int FORTRAN(its_gif_graphics)()
-{
-   return (its_gif);
-}
-
-      /* its_ps_graphics */
-int FORTRAN(its_ps_graphics)()
-{
-   return (its_ps);
-}
-
-      /* its_meta_graphics */
-int FORTRAN(its_meta_graphics)()
-{
-   return (its_meta);
 }
 

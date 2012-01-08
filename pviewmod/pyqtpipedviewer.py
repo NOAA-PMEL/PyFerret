@@ -108,13 +108,16 @@ class PyQtPipedViewer(QMainWindow):
         self.__scrollarea.setBackgroundRole(QPalette.Dark)
         self.setCentralWidget(self.__scrollarea)
         self.__minsize = 128
+        # default file name and format for saving the image
+        self.__lastfilename = "ferret.png"
+        self.__lastformat = "png"
+        # Control whether the window will be destroyed or hidden
+        self.__shuttingdown = False
         # command helper object
         self.__helper = PyQtCmndHelper(self)
         # Create the menubar
         self.createActions()
         self.createMenus()
-        self.__lastfilename = ""
-        self.__shuttingdown = False
         # Set the initial size of the viewer
         mwwidth = self.__scenewidth + 8
         mwheight = self.__sceneheight + 8 + self.menuBar().height() + \
@@ -475,9 +478,16 @@ class PyQtPipedViewer(QMainWindow):
         for typePair in formattypes[1:]:
             filters.append(";;")
             filters.append(typePair[1])
+        for (fmt, fmtQName) in formattypes:
+            if fmt == self.__lastformat:
+                initformat = fmtQName
+                break
+        else:
+            initformat = formattypes[0][1]
+        # getSaveFileNameAndFilter is a PyQt (but not Qt) method
         (fileName, fileFilter) = QFileDialog.getSaveFileNameAndFilter(self,
-                                        self.tr("Save the current scene as "),
-                                        self.__lastfilename, filters)
+                                      self.tr("Save the current scene as "),
+                                      self.__lastfilename, filters, initformat)
         if fileName:
             for (fmt, fmtQName) in formattypes:
                 if fmtQName.compare(fileFilter) == 0:
@@ -497,6 +507,7 @@ class PyQtPipedViewer(QMainWindow):
                 transparentbkg = False
             self.saveSceneToFile(fileName, fileFormat, transparentbkg, True)
             self.__lastfilename = fileName
+            self.__lastformat = fileFormat
 
     def saveSceneToFile(self, filename, imageformat=None,
                         transparentbkg=True, showPrintDialog=False):
@@ -530,18 +541,26 @@ class PyQtPipedViewer(QMainWindow):
                 # needs a PS QPrinter
                 myformat = 'ps'
             elif fileext == '.svg':
+                # needs a QSvgGenerator
                 myformat = 'svg'
+            elif fileext == '.plt':
+                # check for plt (gks metafile) - needs to be changed to pdf
+                myformat = 'plt'
             elif fileext == '.gif':
                 # check for gif - needs to be changed to png
                 myformat = 'gif'
             else:
-                # use a QImage and it figure out the format
+                # use a QImage and let it figure out the format
                 myformat = None
         else:
             myformat = imageformat.lower()
 
-        # Silently convert gif filename and format to png
-        if myformat == 'gif':
+        if myformat == 'plt':
+            # Silently convert plt filename and format to pdf
+            myformat = 'pdf'
+            myfilename = os.path.splitext(filename)[0] + ".pdf"
+        elif myformat == 'gif':
+            # Silently convert gif filename and format to png
             myformat = 'png'
             myfilename = os.path.splitext(filename)[0] + ".png"
         else:
@@ -713,7 +732,11 @@ class PyQtPipedViewer(QMainWindow):
         method to deal with this command.  Raises a KeyError
         if the "action" key is missing.
         '''
-        cmndact = cmnd["action"]
+        try:
+            cmndact = cmnd["action"]
+        except KeyError:
+            raise ValueError( self.tr("Unknown command %1").arg(str(cmnd)) )
+
         if cmndact == "clear":
             self.clearScene(cmnd)
         elif cmndact == "exit":
@@ -739,6 +762,13 @@ class PyQtPipedViewer(QMainWindow):
             self.saveSceneToFile(filename, fileformat, transparentbkg, False)
         elif cmndact == "setTitle":
             self.setWindowTitle(cmnd["title"])
+        elif cmndact == "imgname":
+            value = cmnd.get("name", None)
+            if value:
+                self.__lastfilename = value;
+            value = cmnd.get("format", None)
+            if value:
+                self.__lastformat = value.lower();
         elif cmndact == "show":
             self.showNormal()
         elif cmndact == "beginView":
@@ -755,8 +785,6 @@ class PyQtPipedViewer(QMainWindow):
             self.drawPolygon(cmnd)
         elif cmndact == "drawRectangle":
             self.drawRectangle(cmnd)
-        elif cmndact == "drawMulticolorRectangle":
-            self.drawMulticolorRectangle(cmnd)
         elif cmndact == "drawText":
             self.drawSimpleText(cmnd)
         else:
@@ -1061,81 +1089,6 @@ class PyQtPipedViewer(QMainWindow):
         if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
-    def drawMulticolorRectangle(self, cmnd):
-        '''
-        Draws a multi-colored rectangle in the current view using
-        the information in the dictionary cmnd.
-
-        Recognized keys from cmnd:
-            "left": x-coordinate of left edge of the rectangle
-            "bottom": y-coordinate of the bottom edge of the rectangle
-            "right": x-coordinate of the right edge of the rectangle
-            "top": y-coordinate of the top edge of the rectangle
-            "numrows": the number of equally spaced rows
-                    to subdivide the rectangle into
-            "numcols": the number of equally spaced columns
-                    to subdivide the rectangle into
-            "colors": iterable representing a flattened column-major
-                    2-D array of color dictionaries
-                    (see PyQtCmndHelper.getcolorFromCmnd) which are
-                    used to create solid brushes to fill each of the
-                    cells.  The first row is at the top; the first
-                    column is on the left.
-
-        The coordinates are device coordinates from the upper left corner.
-
-        Raises:
-            KeyError: if the "numrows", "numcols", or "colors" keys
-                    are not given; if the "color" key is not given
-                    in a color dictionary
-            ValueError: if the width or height of the rectangle is
-                    not positive; if the value of the "numrows" or
-                    "numcols" key is not positive; if a color
-                    dictionary does not produce a valid color
-            IndexError: if not enough colors were given
-        '''
-        # get the left, bottom, right, and top values
-        # any keys not given get a zero value
-        sides = self.__helper.getSidesFromCmnd(cmnd)
-        width = sides.right() - sides.left()
-        if width <= 0.0:
-            raise ValueError("width of the rectangle in not positive")
-        height = sides.bottom() - sides.top()
-        if height <= 0.0:
-            raise ValueError("height of the rectangle in not positive")
-        numrows = int( cmnd["numrows"] + 0.5 )
-        if numrows < 1:
-            raise ValueError("numrows not a positive integer value")
-        numcols = int( cmnd["numcols"] + 0.5 )
-        if numcols < 1:
-            raise ValueError("numcols not a positive integer value")
-        colors = [ self.__helper.getColorFromCmnd(colorinfo) \
-                                 for colorinfo in cmnd["colors"] ]
-        if len(colors) < (numrows * numcols):
-            raise IndexError("not enough colors given")
-
-        self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                           self.__antialias)
-        width = width / float(numcols)
-        height = height / float(numrows)
-        myrect = QRectF(sides.left(), sides.top(), width, height)
-        colorindex = 0
-        for j in xrange(numcols):
-            myrect.moveLeft(sides.left() + j * width)
-            for k in xrange(numrows):
-                myrect.moveTop(sides.top() + k * height)
-                mybrush = QBrush(colors[colorindex], Qt.SolidPattern)
-                colorindex += 1
-                # cosmetic pen of the same color
-                mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin)
-                self.__activepainter.setBrush(mybrush)
-                self.__activepainter.setPen(mypen)
-                self.__activepainter.drawRect(myrect)
-        self.__drawcount += numcols * numrows
-        # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__maxdraws:
-            self.updateScene()
-
     def drawSimpleText(self, cmnd):
         '''
         Draws a "simple" text item in the current view.
@@ -1319,58 +1272,6 @@ if __name__ == "__main__":
                         "font":{"family":"Times", "size":50},
                         "fill":{"color":0x880000},
                         "location":(50,330) } )
-    drawcmnds.append( { "action":"endView" } )
-    drawcmnds.append( { "action":"show" } )
-    drawcmnds.append( { "action":"beginView",
-                        "viewfracs":{"left":0.25, "right":1.0,
-                                     "top":0.0,  "bottom":0.75},
-                        "clip":True } )
-    drawcmnds.append( { "action":"drawMulticolorRectangle",
-                        "left":130, "right":495,
-                        "top":5, "bottom":370,
-                        "numrows":2, "numcols":3,
-                        "colors":( {"color":0xFF0000, "alpha":128},
-                                   {"color":0xAA8800, "alpha":128},
-                                   {"color":0x00FF00, "alpha":128},
-                                   {"color":0x008888, "alpha":128},
-                                   {"color":0x0000FF, "alpha":128},
-                                   {"color":0x880088, "alpha":128} ) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"R",
-                        "font":{"size":50, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(190,120) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"Y",
-                        "font":{"size":50, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(190,300) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"G",
-                        "font":{"size":50, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(310,120) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"C",
-                        "font":{"size":50, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(310,300) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"B",
-                        "font":{"size":50, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(430,120) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"M",
-                        "font":{"size":50, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(430,300) } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"beginView",

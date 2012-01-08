@@ -142,8 +142,8 @@ C       data statement of my_trans added for linux port *jd* 12.96
 
         INTEGER		cells(*), pmax
         INTEGER         j1, jn, jd
-	LOGICAL		ITS_BATCH_GRAPHICS, REGULARLY_SPACED,
-     .                  batch, irregular, plot_cell
+	LOGICAL		REGULARLY_SPACED,
+     .                  irregular, plot_cell
 
 * declarations for curvilinear coordinates
 	LOGICAL		ITS_CURVILINEAR, ITS_CURV_EDGES
@@ -173,14 +173,8 @@ C       data statement of my_trans added for linux port *jd* 12.96
 	IF (nlev2 .LT. 1) GOTO 1000
 	shd_levels = MAX (nlev2 - 1,1)
 
-* are we in no-X mode?
-	batch = ITS_BATCH_GRAPHICS()
-
 *	DETERMINE PATTERNS OR COLORS TO SET BUNDLED FILL AREA REPRESENTATIONS
 	CALL set_fill_area_rep (wsid,wstype)
-
-        IF (meta_actv .AND. .NOT. meta_clsplt) 
-     .     CALL set_fill_area_rep (meta_wsid,meta_wstype)
 
 *	GET PROPER SCALING, NDC COORDINATES, ETC FOR FILL
 	CALL FGD_GQCNTN(error,trans_no)
@@ -288,9 +282,6 @@ C       data statement of my_trans added for linux port *jd* 12.96
 
 
 *       WRITE OUT SHD_LEVELS & SHADE SETTINGS TO METAFILE (4.91)
-#ifndef xgks
-        IF (meta_actv) CALL meta_shade_set
-#endif
 c
 c* For cellarray shade plots:
 c

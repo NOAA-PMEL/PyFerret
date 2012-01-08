@@ -69,9 +69,6 @@ typedef struct CFerBind_struct {
      grdelBool (*drawRectangle)(struct CFerBind_struct *self,
                                 double left, double bottom, double right,
                                 double top, grdelType brush, grdelType pen);
-     grdelBool (*drawMulticolorRectangle)(struct CFerBind_struct *self,
-                           double left, double bottom, double right,
-                           double top, int numrows, int numcols, grdelType colors[]);
      grdelBool (*drawText)(struct CFerBind_struct *self, const char *text, int textlen,
                            double startx, double starty, grdelType font, grdelType color,
                            double rotation);

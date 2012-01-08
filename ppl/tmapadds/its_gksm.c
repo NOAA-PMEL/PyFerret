@@ -43,6 +43,6 @@
 
 int its_gksm_(int *wkid)
 {
-    return(0);
+    return 0;
 }
 

@@ -1,6 +1,5 @@
-      SUBROUTINE CK_GKS_ACTIVE( * )
+        SUBROUTINE ASSIGN_MODEMETA
 
-*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -35,44 +34,16 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* check if GKS is avtive - if not declare error and take abnormal return
-
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V200: 12/20/89
+* Simply assign mode_metafile to .TRUE. without all the other
+* effects of a SET MODE META command.  Intended only to be used
+* by the SET_BATCH_GRAPHICS C function when assigning batch mode
+* (which is done at the start of the program).
+* 
 
         include 'ferret.parm'
-        include 'errmsg.parm'
-        include 'pltcom_dat.decl'   ! with gksopn
-        include 'PLTCOM.DAT'   ! with gksopn
+        include 'xprog_state.cmn'
 
-        external errmsg
+        mode_metafile = .TRUE.
 
-* calling argument declarations:
-*       ...
-
-* internal variable declarations:
-        INTEGER state, status
-
-        IF ( .NOT. gksopn ) GOTO 4900
-
-* get GKS operating state
-        CALL FGD_GQOPS( state )
-
-* states:
-*       0 - GKS closed
-*       1 - GKS open
-*       2 - At least 1 workstation is open
-*       3 - At least 1 workstation is active
-*       4 - a segment is open
-
-        IF ( state .GE. 3 ) RETURN
-
-* GKS isn't ready !!
- 4900   CALL ERRMSG( ferr_state_not_set, status,
-     .       'graphical output device isnt ready', *5000 )
- 5000   RETURN 1
-
+        RETURN
         END

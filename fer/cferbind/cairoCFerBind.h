@@ -130,9 +130,6 @@ grdelBool cairoCFerBind_drawPolygon(CFerBind *self, double ptsx[], double ptsy[]
                                     int numpts, grdelType brush, grdelType pen);
 grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom,
                         double right, double top, grdelType brush, grdelType pen);
-grdelBool cairoCFerBind_drawMulticolorRectangle(CFerBind *self, double left,
-                        double bottom, double right, double top,
-                        int numrows, int numcols, grdelType colors[]);
 grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
                                  double startx, double starty, grdelType font,
                                  grdelType color, double rotation);

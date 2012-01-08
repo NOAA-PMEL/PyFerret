@@ -59,7 +59,6 @@
 
 * local variable declarations
 	CHARACTER buff*24
-	LOGICAL	  ITS_BATCH_GRAPHICS, batch
 
 * local parameters
         LOGICAL     physical

@@ -246,10 +246,10 @@
 
 * local variable declarations:
 	LOGICAL	MATCH4, MATCH_TEMPLATE, IS_TEMPLATE, TM_HAS_STRING,
-     .		NC_GET_ATTRIB, ITS_GIF_GRAPHICS, slash_all, limited_show, 
+     .		NC_GET_ATTRIB, slash_all, limited_show, 
      .		nothing, sdetail, only_1, done_1, sfull, svars, sfile, 
      .		sbrief, first, sxml, clobber, append, firstxml, got_it, 
-     .		coordvar, sattr, do_err, sho_out, its_gif
+     .		coordvar, sattr, do_err, sho_out
 	INTEGER TM_LENSTR1, TM_LENSTR, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
      .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM, STR_SAME,
@@ -1787,24 +1787,16 @@ c           ENDIF
 	IF ( limited_show ) RETURN
 
 * SHOW GIFFILE
- 2000   its_gif = ITS_GIF_GRAPHICS()
-        IF ( .NOT. its_gif ) THEN
-	   CALL WARN ('Not in GIF mode: GIFFILE not set')
+ 2000   CALL GET_METAFILE_NAME(outstring)
+        len = TM_LENSTR1(outstring)
+        IF ( len .GT. 0 ) THEN
+           show_str = 'Current default filename: ' //outstring(1:len)
         ELSE
-	   CALL GET_METAFILE_NAME(outstring)
- 	   len = TM_LENSTR1(outstring)
-	
- 	   IF ( outstring(len-3:len) .EQ. '.gif'
-     .       .OR. outstring(len-3:len) .EQ. '.GIF' )  THEN
- 	      show_str = 'Current default gif filename: ' //outstring(1:len)
-	  
- 	      len = TM_LENSTR1(show_str)
-	      CALL SPLIT_LIST(pttmode_explct, ttout_lun,
-     .			show_str(1:len), 0)
- 	   ENDIF
+           show_str = 'No current default filename'
         ENDIF
-
-	RETURN
+        len = TM_LENSTR1(show_str)
+        CALL SPLIT_LIST(pttmode_explct, ttout_lun, show_str(1:len), 0)
+        RETURN
 
 * SHOW FUNCTIONS
  2100   CONTINUE

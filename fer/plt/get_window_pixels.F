@@ -60,10 +60,6 @@
         include 'pltcom_dat.decl'
         include 'PLTCOM.DAT'
 
-
-        logical         ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS, 
-     .                  ITS_GIF_GRAPHICS, batch, its_meta, its_gif,  
-     .                  meta_batch
 	integer		error_status,transno,ws_id
 	integer		x_pixel_dim,y_pixel_dim
 	integer		new_trans
@@ -73,16 +69,6 @@
 	real		world(4),ndc(4),x_minw,x_maxw,y_minw,y_maxw
 
 ******************************************************************************
-
-* meta_batch flag is true when making metafiles in batch mode.
-
-	its_meta = its_meta_GRAPHICS()
-	batch = ITS_BATCH_GRAPHICS()
-	its_gif = ITS_GIF_GRAPHICS()
-	meta_batch = .FALSE.
-        IF (batch) THEN
-           IF (its_meta) meta_batch = .TRUE.
-        ENDIF
 
 * initialize in case of error (not an adequate response, really)
 	x_pixel_dim = 1
@@ -115,11 +101,8 @@
 
         CALL get_pix(ws_id,x_pixel_dim, y_pixel_dim)
 
-! If not a gif or metafile batch window get pixel workstation from gks
-
-        IF ((.NOT.meta_batch) .AND. (.NOT.its_gif)) 
-     .	CALL FGD_GQPXAD(ws_id,x_minw,y_maxw,
-     .	x_maxw,y_minw,error_status,x_pixel_dim,y_pixel_dim)
+        CALL FGD_GQPXAD(ws_id,x_minw,y_maxw,
+     .  x_maxw,y_minw,error_status,x_pixel_dim,y_pixel_dim)
 
  1000	call FGD_GSELNT(transno)
         return

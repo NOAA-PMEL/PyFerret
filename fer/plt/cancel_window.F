@@ -81,7 +81,6 @@
 	INTEGER 	n, n_lo, n_hi, lo
 	CHARACTER	buffer*24
 
-        logical         ITS_BATCH_GRAPHICS
 * local parameter declarations:
 	INTEGER		slash_all
 	PARAMETER     ( slash_all = 0+1 )
@@ -96,11 +95,6 @@
 	   GOTO 1000
 	ENDIF
         
-        if (its_batch_graphics()) then
-           call warn('Cannot cancel window when in batch mode')
-           goto 1000
-        endif
-
 * get window numbers to close
 	IF ( qual_given( slash_all ) .GT. 0 ) THEN
 * ... /ALL

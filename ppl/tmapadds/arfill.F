@@ -106,11 +106,6 @@ C     *jd* mod to allow filling single level fields
 C     DETERMINE PATTERNS OR COLORS TO SET BUNDLED FILL AREA REPRESENTATIONS
         call set_fill_area_rep(wsid,wstype)
 
-C     WRITE OUT SHD_LEVELS & SHADE SETTINGS TO METAFILE (4.91)
-#ifndef xgks
-        if (meta_actv) call meta_shade_set
-#endif
-
 C     The FILL command does not deal with curvilinear modulo axes properly.
 C     The problem is seen in polar projections where the longitude 0E and
 C     longitude 360E are not connected: a small pie wedge is left blank.

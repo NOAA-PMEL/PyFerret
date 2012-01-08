@@ -140,58 +140,6 @@ if __name__ == "__main__":
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"beginView",
-                        "viewfracs":{"left":0.25, "right":1.0,
-                                     "top":0.0,  "bottom":0.75},
-                        "clip":True } )
-    drawcmnds.append( { "action":"drawMulticolorRectangle",
-                        "left":130, "right":495,
-                        "top":5, "bottom":370,
-                        "numrows":2, "numcols":3,
-                        "colors":( {"color":0xFF0000, "alpha":128},
-                                   {"color":0xAA8800, "alpha":128},
-                                   {"color":0x00FF00, "alpha":128},
-                                   {"color":0x008888, "alpha":128},
-                                   {"color":0x0000FF, "alpha":128},
-                                   {"color":0x880088, "alpha":128} ) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"R",
-                        "font":{"size":50, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(190,120) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"Y",
-                        "font":{"size":50, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(190,300) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"G",
-                        "font":{"size":50, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(310,120) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"C",
-                        "font":{"size":50, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(310,300) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"B",
-                        "font":{"size":50, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(430,120) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"M",
-                        "font":{"size":50, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(430,300) } )
-    drawcmnds.append( { "action":"endView" } )
-    drawcmnds.append( { "action":"show" } )
-    drawcmnds.append( { "action":"beginView",
                         "viewfracs":{"left":0.0, "right":1.0,
                                      "top":0.0, "bottom":1.0},
                         "clip":True } )

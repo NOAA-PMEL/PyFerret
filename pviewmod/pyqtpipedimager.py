@@ -566,8 +566,6 @@ class PyQtPipedImager(QMainWindow):
             self.drawPolygon(cmnd)
         elif cmndact == "drawRectangle":
             self.drawRectangle(cmnd)
-        elif cmndact == "drawMulticolorRectangle":
-            self.drawMulticolorRectangle(cmnd)
         elif cmndact == "drawText":
             self.drawSimpleText(cmnd)
         else:
@@ -917,83 +915,6 @@ class PyQtPipedImager(QMainWindow):
         if self.__drawcount >= self.__maxdraws:
             self.updateScene()
 
-    def drawMulticolorRectangle(self, cmnd):
-        '''
-        Draws a multi-colored rectangle in the current view using
-        the information in the dictionary cmnd.
-
-        Recognized keys from cmnd:
-            "left": x-coordinate of left edge of the rectangle
-            "bottom": y-coordinate of the bottom edge of the rectangle
-            "right": x-coordinate of the right edge of the rectangle
-            "top": y-coordinate of the top edge of the rectangle
-            "numrows": the number of equally spaced rows
-                    to subdivide the rectangle into
-            "numcols": the number of equally spaced columns
-                    to subdivide the rectangle into
-            "colors": iterable representing a flattened column-major
-                    2-D array of color dictionaries
-                    (see PyQtCmndHelper.getcolorFromCmnd) which are
-                    used to create solid brushes to fill each of the
-                    cells.  The first row is at the top; the first
-                    column is on the left.
-
-        The coordinates are user coordinates from the bottom left corner.
-
-        Raises:
-            KeyError: if the "numrows", "numcols", or "colors" keys
-                    are not given; if the "color" key is not given
-                    in a color dictionary
-            ValueError: if the width or height of the rectangle is
-                    not positive; if the value of the "numrows" or
-                    "numcols" key is not positive; if a color
-                    dictionary does not produce a valid color
-            IndexError: if not enough colors were given
-        '''
-        # get the left, bottom, right, and top values
-        # any keys not given get a zero value
-        sides = self.__helper.getSidesFromCmnd(cmnd)
-        # adjust to actual view coordinates from the top left
-        lefttop = self.adjustPoint( (sides.left(), sides.top()) )
-        rightbottom = self.adjustPoint( (sides.right(), sides.bottom()) )
-        width = rightbottom[0] - lefttop[0]
-        if width <= 0.0:
-            raise ValueError("width of the rectangle in not positive")
-        height = rightbottom[1] - lefttop[1]
-        if height <= 0.0:
-            raise ValueError("height of the rectangle in not positive")
-        numrows = int( cmnd["numrows"] + 0.5 )
-        if numrows < 1:
-            raise ValueError("numrows not a positive integer value")
-        numcols = int( cmnd["numcols"] + 0.5 )
-        if numcols < 1:
-            raise ValueError("numcols not a positive integer value")
-        colors = [ self.__helper.getColorFromCmnd(colorinfo) \
-                                 for colorinfo in cmnd["colors"] ]
-        if len(colors) < (numrows * numcols):
-            raise IndexError("not enough colors given")
-        width = width / float(numcols)
-        height = height / float(numrows)
-        myrect = QRectF(lefttop[0], lefttop[1], width, height)
-        self.__activepainter.setRenderHint(QPainter.Antialiasing,
-                                           self.__antialias)
-        colorindex = 0
-        for j in xrange(numcols):
-            myrect.moveLeft(lefttop[0] + j * width)
-            for k in xrange(numrows):
-                myrect.moveTop(lefttop[1] + k * height)
-                mybrush = QBrush(colors[colorindex], Qt.SolidPattern)
-                colorindex += 1
-                # Use a cosmetic Pen matching the brush
-                mypen = QPen(mybrush, 0.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-                self.__activepainter.setBrush(mybrush)
-                self.__activepainter.setPen(mypen)
-                self.__activepainter.drawRect(myrect)
-        self.__drawcount += numcols * numrows
-        # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__maxdraws:
-            self.updateScene()
-
     def drawSimpleText(self, cmnd):
         '''
         Draws a "simple" text item in the current view.
@@ -1179,60 +1100,6 @@ if __name__ == "__main__":
                         "font":{"family":"Times", "size":200},
                         "fill":{"color":0x880000},
                         "location":(100,700) } )
-    drawcmnds.append( { "action":"endView" } )
-    drawcmnds.append( { "action":"show" } )
-    drawcmnds.append( { "action":"beginView",
-                        "viewfracs":{"left":0.05, "bottom":0.05,
-                                     "right":0.95, "top":0.95},
-                        "usercoords":{"left":0, "bottom":0,
-                                      "right":1000, "top":1000},
-                        "clip":True } )
-    drawcmnds.append( { "action":"drawMulticolorRectangle",
-                        "left": 50, "bottom":50,
-                        "right":950, "top":950,
-                        "numrows":2, "numcols":3,
-                        "colors":( {"color":0xFF0000, "alpha":128},
-                                   {"color":0xAA8800, "alpha":128},
-                                   {"color":0x00FF00, "alpha":128},
-                                   {"color":0x008888, "alpha":128},
-                                   {"color":0x0000FF, "alpha":128},
-                                   {"color":0x880088, "alpha":128} ) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"R",
-                        "font":{"size":200, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(200,600) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"Y",
-                        "font":{"size":200, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(200,150) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"G",
-                        "font":{"size":200, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(500,600) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"C",
-                        "font":{"size":200, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(500,150) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"B",
-                        "font":{"size":200, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(800,600) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"M",
-                        "font":{"size":200, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(800,150) } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"beginView",

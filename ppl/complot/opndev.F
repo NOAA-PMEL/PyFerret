@@ -264,14 +264,8 @@ c
 	       IF ( PPL_in_FERRET ) THEN
 	         CALL CLEAR_VP
 	       ELSE
-!	         CALL FGD_GCLRWK(WSID,0)			! original
-		 control_flag = 0				! Mod JD
+		 control_flag = 0
 	         CALL FGD_GCLRWK(WSID,control_flag)
-#ifdef xgks
-* leave out      if (meta_actv) CALL FGD_GCLRWK(meta_wsid,control_flag)
-#else
-		 if (meta_actv) call meta_clear (control_flag)	! Mod JD
-#endif
 	       ENDIF
 	    ENDIF
 * end of TMAP mods 8/26/88

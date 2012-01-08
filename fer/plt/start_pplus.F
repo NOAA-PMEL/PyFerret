@@ -92,18 +92,12 @@
 	CHARACTER	dummy_filename*1
 	PARAMETER     ( dummy_filename	  = ' ' )
 
-* internal variable declarations
-	LOGICAL		ITS_BATCH_GRAPHICS, batch
-
 * external declarations to force loading of modules used by PPLUS
 	EXTERNAL	GET_VP_FROM_FERRET, CLEAR_VP, INTERRUPT,
      .			SEG_ON, SEG_OFF
 
 * still need to cold-start graphics ?
 	IF ( pplus_started ) RETURN
-
-* are we in no-X mode?
-	batch = ITS_BATCH_GRAPHICS()
 
 * tell PPLUS that it is under FERRET control without viewports
 	PPL_in_FERRET = .TRUE.
@@ -138,12 +132,7 @@
 	CALL DISP_RESET
 
 * set correct plot device (e.g. "PLTYPE 3 WS=VSII" )
-	IF ( batch ) THEN
-	   IF ( mode_gks ) CALL SEND_PLTYPE(.TRUE.)
-	ELSE
-	   IF ( mode_gks ) CALL SEND_PLTYPE(.FALSE.) ! 1/94 was "mode_metafile"
-	ENDIF
-
+	IF ( mode_gks ) CALL SEND_PLTYPE(.FALSE.) ! 1/94 was "mode_metafile"
 	IF ( .NOT.gksopn ) RETURN	! flag was set by PPLUS
 
 * start GKS on FERRET side

@@ -71,7 +71,7 @@
 * For metafiles, setup line bundles here so we can 
 * save the color definitions.
 
-        IF (gks_open .AND. .NOT.meta_clsplt .AND. no_plots_yet.EQ.1) 
+        IF ( gks_open .AND. no_plots_yet .EQ. 1 ) 
      .      CALL SETUP_LINE_BUNDLES (wsid, wstype)
 
         RETURN

@@ -180,10 +180,9 @@
      .                  slen, iatt, igrd, iline, new_att_modulo_len,
      .			cache_size, cache_nelems, cache_preemption
 	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE, MATCH_TEMPLATE,
-     .			ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
      .			report_error, slash_all, del_perm, del_temp,
      .                  perm_var, all_dims, coordvar, do_err, 
-     .                  canout, new_att_modulo, its_gif, batch, 
+     .                  canout, new_att_modulo,
      .                  redir_cancel_stdout, redir_cancel_stderr
 
 	CHARACTER	arg*4, buff*512, arg30*30, varname*512,
@@ -415,25 +414,13 @@
 	            IF ( status .NE. ferr_ok ) RETURN
 * ... mode metafile may require immediate communication with PPLUS
 	         ELSEIF ( mode .EQ. pmode_metafile ) THEN
-                 
-*     When in gif mode or batch mode, ignore CANCEL MODE META
-	            its_gif = ITS_GIF_GRAPHICS()
-	            batch = ITS_BATCH_GRAPHICS()
-                    IF ( its_gif ) THEN
-                       mode_metafile = .FALSE.
-                    ELSE IF ( batch ) THEN
-                       mode_metafile = .FALSE.
- 	               IF ( gksopn ) THEN
-                          CALL SEND_PLTYPE( mode_metafile )
-                          CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )  ! 2/93
-                       ENDIF
+                    mode_metafile = .FALSE.
+ 	            IF ( gksopn ) THEN
+                       CALL SEND_PLTYPE( mode_metafile )
+                       CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )  ! 2/93
                     ELSE
- 	               IF ( gksopn ) THEN
-                          CALL SEND_PLTYPE( mode_metafile )
-                          CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )  ! 2/93
-                       ENDIF
+                       CALL CANCEL_SAVEONEXIT
                     ENDIF
-
 * ... mode REFRESH sends message to gnu READLINE routine to turn off refresh
 	         ELSEIF ( mode .EQ. pmode_Xwindows ) THEN
 	            CALL TM_SET_FREE_EVENT(0)
@@ -510,14 +497,7 @@
 * CANCEL VIEWPORT
  1000	IF ( num_items .EQ. 0 ) THEN
 * return to default(full) viewport
-           batch = ITS_BATCH_GRAPHICS()
-           IF (batch) THEN
-              IF ( gksopn ) THEN
-                 CALL SEND_PLTYPE( mode_metafile )
-                 CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )  ! 2/93
-              ENDIF
-           ENDIF
-	   CALL SET_VIEWPORT( mvp_dflt )	   
+	   CALL SET_VIEWPORT( mvp_dflt )
 	ELSE
 * cancel a viewport definition
 	   DO 1050 item = 1, num_items

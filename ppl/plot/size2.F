@@ -162,10 +162,9 @@ C
 #endif
         REAL width, height
 
-        LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS, TM_FPEQ
-        INTEGER ITS_GKSM 
+        LOGICAL TM_FPEQ
 
-        LOGICAL clip, its_meta, batch, meta_batch
+        LOGICAL clip
         INTEGER ier, id, itype, imeter, irx, iry
         REAL    dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,
      .          t, scale, tmxclip, tmyclip, tmxorg, tmyorg, tmsize,
@@ -177,12 +176,6 @@ C
 C
         IF ( (width .LE. 0.0) .OR. (height .LE. 0.0) ) RETURN
 
-        its_meta = ITS_META_GRAPHICS()
-        batch = ITS_BATCH_GRAPHICS()
-        meta_batch = .FALSE.
-        IF (batch) THEN
-           IF (its_meta) meta_batch = .TRUE.
-        ENDIF
 C
 C     INSURE THAT THE PARAMETERS ARE POSITIVE AND CONVERT THEM
 C     TO INTERNAL INCREMENTS.
@@ -191,18 +184,6 @@ C
         bnew = factor * ABS(height)
 
         IF ( TM_FPEQ(anew,asize) .AND. TM_FPEQ(bnew,bsize) ) THEN
-#ifdef xgks
-           IF (meta_actv .OR. meta_batch) THEN
-              IF (ITS_GKSM(meta_wsid) .EQ. 1) THEN      ! *sh* 4/97
-                 CALL FGD_GSWKWN(meta_wsid, 0.0, fctx, 0.0, fcty)
-                 CALL FGD_GSWKVP(meta_wsid, 0.0, asize/factor,
-     .                                      0.0, bsize/factor)
-              ENDIF
-           END IF
-#else
-           IF (meta_actv .OR. meta_batch)
-     .        CALL META_WS_XFORM(fctx,fcty,asize,bsize) ! JD
-#endif
            RETURN
         END IF
         asize=anew
@@ -350,18 +331,8 @@ C SET THE NDC WINDOW
 *              ENDIF
 
 C
-              IF (wsid .GT. 0 .AND. (.NOT.meta_batch)) 
+              IF ( wsid .GT. 0 )
      .           CALL FGD_GSWKWN(wsid,0.0,fctx,0.0,fcty)
-#ifdef xgks
-              IF (meta_actv .OR. meta_batch) THEN
-                 CALL FGD_GSWKWN(meta_wsid, 0.0, fctx, 0.0, fcty)
-                 CALL FGD_GSWKVP(meta_wsid, 0.0, asize/factor,
-     .                                      0.0, bsize/factor)
-              END IF
-#else
-              IF (meta_actv .OR. meta_batch)
-     .           CALL META_WS_XFORM(fctx,fcty,asize,bsize) ! JD
-#endif
 C
 C SET DEVICE (WORKSTATION) VIEWPORT
 C
@@ -379,19 +350,8 @@ C
 C
 C IF NOT AUTO WKXMN AND WKXMX ETC ARE FRACTIONS OF DMAXX AND DMAXY
 C
-              IF ( (wsid .GT. 0) .AND. (.NOT. meta_batch))
+              IF ( wsid .GT. 0 )
      .             CALL FGD_GSWKWN(wsid,0.0,fctx,0.0,fcty)
-
-#ifdef xgks
-              IF (meta_actv .OR. meta_batch) THEN
-                 CALL FGD_GSWKWN(meta_wsid, 0.0, fctx, 0.0, fcty)
-                 CALL FGD_GSWKVP(meta_wsid, 0.0, asize/factor,
-     .                                      0.0, bsize/factor)
-              END IF
-#else
-              IF (meta_actv .OR. meta_batch)
-     .           CALL META_WS_XFORM(fctx,fcty,asize,bsize) ! JD
-#endif
               XMN=DMAXX*WKXMN
               XMX=DMAXX*WKXMX
               YMN=DMAXY*WKYMN
@@ -411,7 +371,7 @@ C
            ENDIF
 
 * FERRET mod: force immediate update of display
-           IF (wsid .GT. 0 .AND. (.NOT. meta_batch) )
+           IF ( wsid .GT. 0 )
      .             CALL FGD_GUWK(wsid, 1)
         ENDIF
 C

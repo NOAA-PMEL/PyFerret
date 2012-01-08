@@ -131,18 +131,8 @@
         IF (istate .GE. 2) THEN
 
 *       SET THE SHADES                                                
-#ifdef atc_gks
-	   call FGD_GSDS(wsid,gasti,gallow) !This action necessary?
-	   if (.not. protect_used_colors) call set_fill_area_rep (wsid,wstype)
-	   call FGD_GSDS(wsid,gasap,gsuppd)
-                                                          
-#else
- 	   if (.not. protect_used_colors) 
-     .   	call set_fill_area_rep (wsid,wstype)
-           if (meta_actv) call FGD_GUWK(wsid,gpostp)
-
-#endif
-*4.91   if (meta_actv) call set_fill_area_rep (meta_wsid,meta_wstype)
+        IF ( .NOT. protect_used_colors )
+     .     CALL set_fill_area_rep(wsid,wstype)
 
         ENDIF
 	return
@@ -613,10 +603,6 @@
 	   lo_color_ndx(wsid) = 0
 	   hi_color_ndx(wsid) = 0
 	endif
-
-#ifndef xgks
-	if (meta_actv .and. .not. meta_clsplt) call meta_protect
-#endif
 
 	return
 	end

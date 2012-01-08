@@ -106,8 +106,7 @@
 
 * internal variable declarations:
 	LOGICAL TM_DIGIT, physical_chg, relocate, chg_window,
-     .		axis_ref, ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS,
-     .          its_meta, batch, meta_batch
+     .		axis_ref
 	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, wn, n,
      .          qp, ivp, colon_pos, tlen, i, s1, idone
 	REAL	dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,
@@ -138,15 +137,6 @@
 	REAL x
 	LOGICAL OUTSIDE_0_1
 	OUTSIDE_0_1( x ) = x.LT.0.0 .OR. x.GT.1.0
-
-* meta_batch flag is true when making metafiles in batch mode.
-
-	its_meta = its_meta_GRAPHICS()
-	batch = ITS_BATCH_GRAPHICS()
-	meta_batch = .FALSE.
-        IF (batch) THEN
-           IF (its_meta) meta_batch = .TRUE.
-        ENDIF
 
 * /TITLE=text
 * This text becomes the name of the workstation. The name gets truncated 
@@ -197,12 +187,6 @@ c 75        CONTINUE
 * are we in a valid GKS window environment ?
 	IF ( .NOT. gksopn	) RETURN
 
-* ... Don't create new window if batch graphics active
-        if (ITS_BATCH_GRAPHICS().and.qual_given(slash_new).gt.0) then
-           call warn('Cannot create new windows '//
-     $          'when batch mode set')
-           qual_given(slash_new) = 0
-        endif
 * get number
 	IF ( num_args .EQ. 0 .AND. qual_given(slash_new) .GT. 0 ) THEN
            
@@ -243,11 +227,6 @@ c 75        CONTINUE
  60	IF ( (n.LT.1 .OR. n.GT.(max_windows-1)) .AND. 
      .          .NOT.animate  ) CALL ERRMSG
      .		( ferr_out_of_range, status, 'legal numbers are 1-8', *5000 )
-* ... Only one window can be open with batch graphics
-        if (ITS_BATCH_GRAPHICS() .and. n.ne.1) then
-           call warn('Only one window can be open in batch mode')
-           n = 1
-        endif
 
 * clear the screen ? (which deletes all segments from window)
 * (moved from near end of routine 
@@ -267,7 +246,7 @@ c           ENDIF
 	   
 * /SIZE=q
 	qp = qual_given( slash_size )
-	physical_chg = ( (qp .GT. 0) .AND. (.NOT.meta_batch) )
+	physical_chg = ( qp .GT. 0 )
 * *kob* 1/01 - no changing of size if we are in the middle of animating
 	IF ( physical_chg .AND. .NOT.animate ) THEN
 
@@ -341,7 +320,7 @@ c           ENDIF
 * lower left location specified ?
 	qp = qual_given( slash_loc )
 	relocate = qp .GT. 0
-	IF ( relocate .AND. .NOT.meta_batch) THEN
+	IF ( relocate ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(qp):qual_end(qp)),
      .			   buffer, status )
 	   IF ( status .NE. ferr_ok ) RETURN
@@ -387,13 +366,13 @@ c           ENDIF
 
         DO 100 wn = 1, max_windows
            IF ( wn_active( wn ) ) THEN
-              IF (.NOT.meta_batch) CALL FGD_GDAWK( wn )
+              CALL FGD_GDAWK( wn )
 	      wn_active( wn ) = .FALSE.
 	   ENDIF
  100	CONTINUE
 
 * activate window
-	IF (.NOT.meta_batch) CALL FGD_GACWK(n)
+	CALL FGD_GACWK(n)
 
 *set up sizing
 * (capitalized code from Denbo's SUBROUTINE COLOR )

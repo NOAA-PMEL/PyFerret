@@ -99,26 +99,11 @@
 	ws_lun  = 111
 	ws_file = 'ppl_port'
 
-	meta_wsid = 101
-*       MOD *JD* 3.25.91 Ultrix doesn't like LUN >= 19 for GOPWK
-*	meta_lun  = 112
-*	meta_lun  = 18
-* *kms* meta_lun now used as a indicator if the graphics should be
-*       saved (non-zero) or not (zero) to meta_file,
-*       and is initialized in block data (ws_types_init.F)
-*	meta_file = 'metafile.plt' -- initialize in block data
-
 	tmp_wsid = 102
-*	tmp_lun  = 113
 	tmp_lun  = 17
 	tmp_file = 'meta.tmp'
 
-	meta_open = .false.
-	meta_actv = .false.
-	meta_clsplt = .false.
-
 	vpt_was_set = .false.
-	first_meta  = .true.
 
 	item_gclrwk    = 101
 	item_ws_xform  = 102

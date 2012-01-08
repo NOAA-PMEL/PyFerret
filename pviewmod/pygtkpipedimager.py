@@ -494,8 +494,6 @@ class PyGtkPipedImager(gtk.Window):
             self.drawPolygon(cmnd)
         elif cmndact == "drawRectangle":
             self.drawRectangle(cmnd)
-        elif cmndact == "drawMulticolorRectangle":
-            self.drawMulticolorRectangle(cmnd)
         elif cmndact == "drawText":
             self.drawSimpleText(cmnd)
         else:
@@ -823,94 +821,6 @@ class PyGtkPipedImager(gtk.Window):
                        lefttop ]
             self.queueSceneRedrawFromPoints(adjpts, gc.line_width, filled)
 
-    def drawMulticolorRectangle(self, cmnd):
-        '''
-        Draws a multi-colored rectangle in the current view using
-        the information in the dictionary cmnd.
-
-        Recognized keys from cmnd:
-            "left": x-coordinate of left edge of the rectangle
-            "bottom": y-coordinate of the bottom edge of the rectangle
-            "right": x-coordinate of the right edge of the rectangle
-            "top": y-coordinate of the top edge of the rectangle
-            "numrows": the number of equally spaced rows
-                    to subdivide the rectangle into
-            "numcols": the number of equally spaced columns
-                    to subdivide the rectangle into
-            "colors": iterable representing a flattened column-major
-                    2-D array of color dictionaries
-                    (see PyGtkCmndHelper.getcolorFromCmnd) which are
-                    used to solidly fill each of the cells.  The first
-                    row is at the top; the first column is on the left.
-
-        The coordinates are user coordinates from the bottom left corner.
-
-        Raises:
-            KeyError: if the "numrows", "numcols", or "colors" keys
-                    are not given; if the "color" key is not given
-                    in a color dictionary
-            ValueError: if the width or height of the rectangle is
-                    not positive; if the value of the "numrows" or
-                    "numcols" key is not positive; if a color
-                    dictionary does not produce a valid color
-            IndexError: if not enough colors were given
-        '''
-        # get the left, bottom, right, and top values
-        # any keys not given get a zero value
-        sides = self.__helper.getSidesFromCmnd(cmnd)
-        # convert to device coordinates from the top left
-        lefttop = self.adjustPoint( (sides.left(), sides.top()), math.floor  )
-        rightbottom = self.adjustPoint( (sides.right(), sides.bottom()), math.ceil )
-        fullwidth = rightbottom[0] - lefttop[0]
-        if fullwidth <= 0:
-            raise ValueError("width of the rectangle in not positive")
-        fullheight = rightbottom[1] - lefttop[1]
-        if fullheight <= 0:
-            raise ValueError("height of the rectangle in not positive")
-        numrows = int( cmnd["numrows"] + 0.5 )
-        if numrows < 1:
-            raise ValueError("numrows not a positive integer value")
-        numcols = int( cmnd["numcols"] + 0.5 )
-        if numcols < 1:
-            raise ValueError("numcols not a positive integer value")
-        colors = [ self.__helper.getColorFromCmnd(colorinfo) \
-                                 for colorinfo in cmnd["colors"] ]
-        if len(colors) < (numrows * numcols):
-            raise IndexError("not enough colors given")
-        # Determine the device coordinates for all the rectangles
-        fltwidth = float(fullwidth) / float(numcols)
-        lefts = [ lefttop[0] + int( fltwidth * float(j) + 0.5 ) for j in xrange(numcols) ]
-        widths = [ lefts[j] - lefts[j-1] for j in xrange(1, numcols) ]
-        widths.append(rightbottom[0] - lefts[-1])
-        fltheight = float(fullheight) / float(numrows)
-        tops = [ lefttop[1] + int( fltheight * float(k) + 0.5 ) for k in xrange(numrows) ]
-        heights = [ tops[k] - tops[k-1] for k in xrange(1, numrows) ]
-        heights.append(rightbottom[1] - tops[-1])
-        # Create the GC for this drawing
-        gc = self.__scenepixmap.new_gc(background=self.__lastclearcolor)
-        if self.__clipit:
-            gc.set_clip_rectangle(self.__cliprect)
-        gc.set_line_attributes(0, gtk.gdk.LINE_SOLID, gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_ROUND)
-        gc.set_fill(gtk.gdk.SOLID)
-        colorindex = 0
-        for j in xrange(numcols):
-            for k in xrange(numrows):
-                if (widths[j] > 0) and (heights[k] > 0):
-                    # Assign the fill color
-                    gc.set_foreground(colors[colorindex])
-                    # Draw the cell of the rectangle
-                    self.__scenepixmap.draw_rectangle(gc, True, lefts[j], tops[k],
-                                                      widths[j], heights[k])
-                colorindex += 1
-        if self.__scenedrawarea.get_property("visible"):
-            # queue redraw of the scene
-            adjpts = [ lefttop,
-                      (rightbottom[0], lefttop[1]),
-                      rightbottom,
-                      (lefttop[0], rightbottom[1]),
-                       lefttop ]
-            self.queueSceneRedrawFromPoints(adjpts, gc.line_width, True)
-
     def drawSimpleText(self, cmnd):
         '''
         Draws a "simple" text item in the current view.
@@ -1158,60 +1068,6 @@ if __name__ == "__main__":
                         "font":{"family":"Times", "size":200},
                         "fill":{"color":0x880000},
                         "location":(100,700) } )
-    drawcmnds.append( { "action":"endView" } )
-    drawcmnds.append( { "action":"show" } )
-    drawcmnds.append( { "action":"beginView",
-                        "viewfracs":{"left":0.05, "bottom":0.05,
-                                     "right":0.95, "top":0.95},
-                        "usercoords":{"left":0, "bottom":0,
-                                      "right":1000, "top":1000},
-                        "clip":True } )
-    drawcmnds.append( { "action":"drawMulticolorRectangle",
-                        "left": 50, "bottom":50,
-                        "right":950, "top":950,
-                        "numrows":2, "numcols":3,
-                        "colors":( {"color":0xFF0000, "alpha":128},
-                                   {"color":0xAA8800, "alpha":128},
-                                   {"color":0x00FF00, "alpha":128},
-                                   {"color":0x008888, "alpha":128},
-                                   {"color":0x0000FF, "alpha":128},
-                                   {"color":0x880088, "alpha":128} ) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"R",
-                        "font":{"size":200, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(200,600) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"Y",
-                        "font":{"size":200, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(200,150) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"G",
-                        "font":{"size":200, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(500,600) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"C",
-                        "font":{"size":200, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(500,150) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"B",
-                        "font":{"size":200, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(800,600) } )
-    drawcmnds.append( { "action":"drawText",
-                        "text":"M",
-                        "font":{"size":200, "bold": True},
-                        "fill":{"color":"black"},
-                        "rotate":-45,
-                        "location":(800,150) } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
     drawcmnds.append( { "action":"beginView",

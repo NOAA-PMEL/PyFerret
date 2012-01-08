@@ -1,5 +1,6 @@
 SRCS_F = \
 abs_whoi_date.F\
+assign_modemeta.F\
 axis_ends.F\
 axis_end_syms.F\
 axis_format.F\

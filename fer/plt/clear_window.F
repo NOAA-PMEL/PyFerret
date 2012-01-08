@@ -35,7 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* clear full window and close metafile
+* clear full window
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
@@ -46,6 +46,7 @@
 * V411:  9/5/95 - explicitly delete each segment before calling GCLRWK
 *	to avoid XGKS memory leak in that routine
 * V602: *acm* 1/07 Changes for metafile-batch mode
+* *kms* 1/12 "metafile" no longer closed since it is not a separate entity
 
 	include 'plot_setup.parm'
 	include 'xplot_state.cmn'		! viewport info
@@ -58,8 +59,6 @@
 * internal variable declarations:
 
         CALL FGD_GQOPS (istate)
-
-! --- start of 9/95 addition
 * explicitly delete segments to avoid XGKS memory leak
 	DO 200 ivp =  mvp_dflt, max_viewport
 	   IF ( vp_segn(ivp) .NE. 0 ) THEN 
@@ -71,15 +70,11 @@
 	   vp_seg0(ivp) = 0
 	   vp_segn(ivp) = 0
  200	CONTINUE
-! --- end of 9/95 addition
 
 * tell GKS to clear the named "workstation" (window)
 
         CALL FGD_GQOPS (istate)
 	IF (istate .GE. 2) CALL FGD_GCLRWK(wid,0)
-
-* tell PPLUS to close the metafile if it's open
-	CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )
 
 * tell PPLUS to release protected colors (on viewports and overlays)
         CALL PPL_SHASET( 'RESET' )

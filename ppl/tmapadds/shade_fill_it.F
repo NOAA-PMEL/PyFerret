@@ -202,11 +202,6 @@ c      IF (curvilinear ) THEN
 	   CALL set_fill_ndx (fill_ndx)
 	   CALL FGD_GFA(npt,px,py)
 
-*	   TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
-*	   FILL_NDX TO PRIVATE ITEM -- no, forget it *jd* 10.22.92
-*	   IF (meta_actv .AND. .NOT. area_bundles) 
-*     .				CALL meta_fill_ndx (fill_ndx)
-
 	   GOTO 40
 
 * For each y, what is the max and min x coordinate value covered

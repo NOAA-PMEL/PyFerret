@@ -94,7 +94,8 @@
 *	INITIALIZE METAFILE NAME
 
 	data		meta_file/'ferret.png'/
-	data		meta_lun/0/
+	data		save_on_exit/.FALSE./
+	data		imgname_sent/.FALSE./
 
 
 	end

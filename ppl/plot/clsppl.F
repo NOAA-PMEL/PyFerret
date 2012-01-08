@@ -111,9 +111,8 @@ C
            if ( istate .GE. 2 ) then
 *
 *             *kms* Save the graphics to meta_file if appropriate
-              IF ( meta_lun .NE. 0 ) THEN
+              IF ( save_on_exit .AND. imgname_sent ) THEN
                   CALL FGD_SAVE_WINDOW(meta_file)
-                  meta_lun = 0
               ENDIF
 
               member = 1

@@ -205,9 +205,6 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
                grdelType pen);
 grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
                float right, float top, grdelType brush, grdelType pen);
-grdelBool grdelDrawMulticolorRectangle(grdelType window,
-               float left, float bottom, float right, float top,
-               int numrows, int numcols, const grdelType colors[]);
 grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
                float startx, float starty, grdelType font, grdelType color,
                float rotate);
@@ -224,9 +221,6 @@ void fgddrawpolygon_(int *success, void **window, float ptsx[],
                float ptsy[], int *numpts, void **brush, void **pen);
 void fgddrawrect_(int *success, void **window, float *left, float *bottom,
                float *right, float *top, void **brush, void **pen);
-void fgddrawmulticolor_(int *success, void **window, float *left,
-               float *bottom, float *right, float *top, int *numrows,
-               int *numcols, void *colors[]);
 void fgddrawtext_(int *success, void **window, char *text, int *textlen,
                float *startx, float *starty, void **font, void **color,
                float *rotate);

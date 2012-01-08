@@ -1,4 +1,4 @@
-	SUBROUTINE SET_GKS_METAFILE
+        SUBROUTINE SET_GKS_METAFILE
 
 *
 *
@@ -35,22 +35,22 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-*	J Davison JISAO/PMEL/TMAP
-*	3.15.89
+*       J Davison JISAO/PMEL/TMAP
+*       3.15.89
 
-*	For GKS plots (pltype = 3 or 4) captures WS type and whether to open a
-*	GKS metafile, or not.  Opens GKS if not open, and activates/deactivates
-*	metafile WS.
+*       For GKS plots (pltype = 3 or 4) captures WS type and whether to open a
+*       GKS metafile, or not.  Opens GKS if not open, and activates/deactivates
+*       metafile WS.
 
 *       *JD* 4.22.91 No need for metafile wstype w new metafile translator
-*	*jd* 3.10.92 Mod to handle ATC GKS methods
-*	*jd* 10.7.92 Mod to use wstype default (GKS3Dwstype) in DEC
-*	*jd* 2.24.93 Mod to add PPLP version numbers in metafile
-*	*jd* 8.10.93 Mod to add XGKS options for WS types
-*	*jd* 10.26.93 Mod to eliminate version number from xgks
+*       *jd* 3.10.92 Mod to handle ATC GKS methods
+*       *jd* 10.7.92 Mod to use wstype default (GKS3Dwstype) in DEC
+*       *jd* 2.24.93 Mod to add PPLP version numbers in metafile
+*       *jd* 8.10.93 Mod to add XGKS options for WS types
+*       *jd* 10.26.93 Mod to eliminate version number from xgks
 *       *jd* 12.8.93 Mod to put line color rep info into metafile for xgks
-*	*sh* 3.4.97 Mod to support metafile-only (no X) output through a
-*		cuckoo's egg implantation of meta_wsid in place of wsid
+*       *sh* 3.4.97 Mod to support metafile-only (no X) output through a
+*               cuckoo's egg implantation of meta_wsid in place of wsid
 *       *js* 7.25.97 Added 'C' callable save_metafile_name to save string
 *               in variable 'meta_file'
 *       *acm* 2.08 Added 'C' callable get_metafile_name to retrieve string
@@ -61,198 +61,118 @@
 * V610  *acm* 3/08 Fixes for metafile batch mode
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
 
-	include 'pltcom_dat.decl'
-	include 'PLTCOM.DAT'
-	include 'cmrdl_inc.decl'
-	include 'CMRDL.INC'
-	include 'gkscm1_inc.decl'
-	include 'GKSCM1.INC'
-	include 'gkscm2.cmn'
-	include 'ws_types.cmn'
-	INCLUDE 'parampl5_dat.decl'
-	INCLUDE 'PARAMPL5.DAT'
+        include 'pltcom_dat.decl'
+        include 'PLTCOM.DAT'
+        include 'cmrdl_inc.decl'
+        include 'CMRDL.INC'
+        include 'gkscm1_inc.decl'
+        include 'GKSCM1.INC'
+        include 'gkscm2.cmn'
+        include 'ws_types.cmn'
+        INCLUDE 'parampl5_dat.decl'
+        INCLUDE 'PARAMPL5.DAT'
         INCLUDE 'pen_inc.decl'  ! with num_line_colors
         INCLUDE 'PEN.INC'
 
-	integer		beg,end,defws,ndx,type,error
-	real		red,green,blue
-	character*2048	str
-	character*5	kdefws
+        integer         beg,iend,defws,ndx,type,error
+        real            red,green,blue
+        character*2048  str
+        character*5     kdefws
 
-	LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
-        LOGICAL its_meta, batch, meta_batch
-
-#ifdef unix
-        logical         xwindows
-#else
-        integer         trnlnm,xwindows
-	character*256	name
-	external	trnlnm
-#endif
+        LOGICAL xwindows
 
 *************************************************************************
 
-*	DETERMINE IF WINDOWING IS X OR NOT
-#ifdef unix
+*       DETERMINE IF WINDOWING IS X OR NOT
         xwindows = .true.
-#else
-	xwindows = trnlnm ( 'DECW$LOGICAL_NAMES', 'DECW$SYSTEM_DEFAULTS',
-     .						 name, namelen )
-#endif
 
-* Metafile output only?
-        its_meta = ITS_META_GRAPHICS()
-        batch = ITS_BATCH_GRAPHICS()
-	meta_batch = .FALSE.
-        IF (batch) THEN
-           IF (its_meta) meta_batch = .TRUE.
+*       MASSAGE COMMAND STRING OF FORM "WS=xxx,META"
+        CALL UPNSQUISH(label,str,iend)
+
+*       OPEN GKS AND WS IF NOT ALREADY OPEN
+        IF ( gksopn ) GOTO 10
+
+*       DEFINE DEFAULT WS TYPE
+        CALL GETENV('XGKSwstype',kdefws)
+
+        IF (kdefws .NE. ' ') THEN
+           READ(UNIT=kdefws,FMT='(i5)') defws
+        ELSE
+           defws = ws_xwindow
         ENDIF
 
-*	MASSAGE COMMAND STRING OF FORM "WS=xxx,META"
-	call upnsquish (label,str,end)	 	 	   	
+*       EXTRACT WS INFO FROM PLTYPE STRING ARGUMENT
+        beg = INDEX(str,'WS')
 
-*	OPEN GKS AND WS IF NOT ALREADY OPEN
-	if (gksopn) goto 10
+*       USE DEFAULT IF WS TYPE NOT SPECIFIED BELOW
+        IF (beg .EQ. 0) THEN
+           wstype = defws
+        ELSE IF ( INDEX(str(beg+3:beg+6),'VSII') .NE. 0 ) THEN
+           IF (xwindows) THEN
+              wstype = ws_xwindow
+           ELSE 
+              wstype = ws_uis
+           ENDIF
+        ELSE IF ( INDEX(str(beg+3:beg+9),'TEK4014') .NE. 0 ) THEN
+           wstype = ws_tek4014
+        ELSE IF ( INDEX(str(beg+3:beg+9),'TEK4107') .NE. 0 ) THEN
+           wstype = ws_tek4107
+        ENDIF
+        CALL OPEN_GKS_WS
 
-*	DEFINE DEFAULT WS TYPE
-#ifdef unix
-#   ifdef atc_gks
-	call getenv ('atcGKSwstype',kdefws)
-#   elif xgks
-	call getenv ('XGKSwstype',kdefws)
-#   else
-	call getenv ('GKS3Dwstype',kdefws)
-#   endif
-# else
-*	USE TRNLNM CALL FOR VMS
-#endif
+*       EXTRACT METAFILE CMD FROM PLTYPE STRING ARGUMENT
+10      beg = INDEX(str,'META')
+        IF ( beg .NE. 0 ) THEN
+           IF ( .NOT. imgname_sent ) THEN
+               CALL OPEN_METAFILE
+           ENDIF
+        END IF
 
-#ifdef atc_gks
-	if (kdefws .ne. ' ') then
-	   read (unit=kdefws,fmt='(i5)') defws
-	else
-	   defws = ws_xwindow
-	endif
-#elif xgks
-	if (kdefws .ne. ' ') then
-	   read (unit=kdefws,fmt='(i5)') defws
-	else
-	   defws = ws_xwindow
-	endif
-
-#else
-        defws = 0
-#endif
-
-*	EXTRACT WS INFO FROM PLTYPE STRING ARGUMENT
-	beg = index (str,'WS')
-
-*	USE DEFAULT IF WS TYPE NOT SPECIFIED BELOW
-	if (beg .eq. 0) then
-	   wstype = defws
-
-	else
-	   if (index (str(beg+3:beg+6),'VSII') .ne. 0) then
-	      if (xwindows) then
-		 wstype = ws_xwindow
-	      else 
-		 wstype = ws_uis
-	      end if
-	   else if (index (str(beg+3:beg+9),'TEK4014') .ne. 0) then
-	      wstype = ws_tek4014
-	   else if (index (str(beg+3:beg+9),'TEK4107') .ne. 0) then
-	      wstype = ws_tek4107
-	   end if
-	end if
-	call open_gks_ws
-
-*	EXTRACT METAFILE CMD FROM PLTYPE STRING ARGUMENT
-10	beg = index (str,'META')
-
-	if (beg .ne. 0) then
-*	   METAFILE SHOULD BE OPEN AND ACTIVE
-
-	   if (.not. meta_open) call open_metafile
-	   if (.not. meta_open) return
-
-	   if (.not.meta_actv) then
-	      if (.not. meta_clsplt) then 
-		 call FGD_GACWK(meta_wsid)
-#ifndef xgks
-		 call meta_version
-#endif
-#ifdef xgks
-*               ALLOW NO WHITE LINES IN METAFILE (FOR NOW)
-                call FGD_GQCR(wsid,1,type,error,red,green,blue)
-                if (error .eq. 0) then
-                   if (red   .eq. 1.0 .and.
-     .                 green .eq. 1.0 .and.
-     .                 blue  .eq. 1.0) then
-                      call FGD_GSCR(meta_wsid,1,0.0,0.0,0.0)
-                    else
-                      call FGD_GSCR(meta_wsid,1,red,green,blue)
-                    endif
-                else
-                   call FGD_GSCR(meta_wsid,1,0.0,0.0,0.0)
-                endif
-
-		do ndx = 2,num_line_colors
-		   call FGD_GQCR(wsid,ndx,type,error,red,green,blue)
-		   if (batch .or. error .eq. 0) then
-		      call FGD_GSCR(meta_wsid,ndx,red,green,blue)
-		   else
-		      call FGD_GSCR(meta_wsid,ndx,0.0,0.0,0.0)
-		   endif
-		end do
-#endif
-	      endif
-! 3/97: although the metafile is in fact opened we are going to make it
-! look like the output workstation to all other software layers
-c	      IF ( batch .AND. (.NOT.meta_batch)) THEN
-	      IF ( batch) THEN
-	         meta_actv = .false.
-	         meta_open = .false.
-	      ELSE
-	         meta_actv = .true.
-	      ENDIF
-	   end if
-	else
-*	   IF NO "META" IN PLTYPE CMD DEACTIVATE METAFILE FOR NOW IF ACTIVE
-	   if (meta_actv) then
-	      if (.not. meta_clsplt) call FGD_GDAWK(meta_wsid)
-	      meta_actv = .false.
-	   end if
-	end if
-
-	return
-	end
+        RETURN
+        END
 
 
-	subroutine save_metafile_name(mname, clen)
-	implicit none
-	include 'gkscm2.cmn'
-	integer clen
+*
+* Save the image filename in meta_file.  Set the save_on_exit
+* flags to .TRUE. so the image will be saved.  Do not call
+* OPEN_METAFILE at this time since this is only called on
+* on start-up and there is no active window at this time.
+* Instead, set imgname_sent to .FALSE.
+*
+        SUBROUTINE SAVE_METAFILE_NAME(mname, clen)
+        IMPLICIT NONE
+        INCLUDE 'gkscm2.cmn'
+        INTEGER clen
 #ifdef sun
-	byte mname(clen) 
+        byte mname(clen) 
 #else   
-	integer*1 mname(clen)
+        integer*1 mname(clen)
 #endif  
-	call tm_ctof_strng(mname, meta_file, clen)
-*       *kms* set meta_lun to non-zero to indicate the graphics
-*             are to be saved.  Do not call OPEN_METAFILE since
-*             this is only called on start-up and there is no
-*             active window.
-        meta_lun = 1
-	return
-	end
-	
+        CALL TM_CTOF_STRNG(mname, meta_file, clen)
+        save_on_exit = .TRUE.
+        imgname_sent = .FALSE.
+        RETURN
+        END
 
-	subroutine get_metafile_name(filename)
-	implicit none
-	include 'gkscm2.cmn'
-        character*(*) filename
 
-	filename = meta_file
-	return
-	end
-	
+        SUBROUTINE GET_METAFILE_NAME(filename)
+        IMPLICIT NONE
+        INCLUDE 'gkscm2.cmn'
+        CHARACTER*(*) filename
+        filename = meta_file
+        RETURN
+        END
+
+
+*
+* This function is for setting save_on_exit to .FALSE. before
+* starting plot_plus, thus preventing creation of an empty
+* image file.
+*
+        SUBROUTINE CANCEL_SAVEONEXIT
+        IMPLICIT NONE
+        INCLUDE 'gkscm2.cmn'
+        save_on_exit = .FALSE.
+        RETURN
+        END
+

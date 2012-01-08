@@ -1,28 +1,27 @@
+*
+* Metafiles no longer supported.  All graphics files are now created
+* by the graphics delegate.  This routine informs the graphics engine
+* of the image filename given in meta_file and sets save_on_exit to
+* .TRUE.
+*
         SUBROUTINE OPEN_METAFILE
 
-*
-* Metafiles no longer supported.
-* All graphics files are now created by the graphics delegate.
-*
         IMPLICIT NONE
         INCLUDE 'gkscm2.cmn'
         INCLUDE 'fgrdel.cmn'
 
-*       Do not set meta_open to .True., since this tells Ferret
-*       to also write graphics commands to meta_wsid for creating
-*       the GKS metafile.  However, this means that this routine
-*       will get called with every new plot.  So rely on meta_lun
-*       instead.
+*       If the image filename has already been sent, ignore this call.
+        IF ( imgname_sent ) RETURN
 
-*       If already open, ignore this call
-        IF ( meta_lun .NE. 0 ) RETURN
-
-*       Set the flag indicating the graphics should
-*       be saved to file at the appropriate time.
-        meta_lun = 1
+*       Send the image filename to currently active window.
+        CALL FGD_SETIMGNAME(meta_file)
+        imgname_sent = .TRUE.
 
 *       Clear the currently active window
         CALL FGD_GCLRWK(activewindow, 0)
+
+*       Make sure the save_on_exit flag is set
+        save_on_exit = .TRUE.
 
         RETURN
         END

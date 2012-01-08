@@ -62,11 +62,7 @@
 
         character*80 	datarec(1), odr(1), str(1)
 
-	LOGICAL		ITS_BATCH_GRAPHICS, batch
-
 *******************************************************************************
-* initialize batch mode
-	batch = ITS_BATCH_GRAPHICS()
         pixx = -1
         pixy = -1
 
@@ -96,11 +92,6 @@
 	endif
 #elif xgks
 	call resize_xgks_window (wsid,xmax-xmin,ymax-ymin,pixx,pixy)
-c       Also need to resize the metafile window, if it is open *js* 8.97
-	if (meta_actv .and. .not. meta_clsplt) then
-	   call resize_xgks_window (meta_wsid, xmax-xmin,ymax-ymin,
-     .             pixx,pixy)
-	end if
 #else
 	call FGD_GSWKVP(wsid,xmin,xmax,ymin,ymax)
 #endif

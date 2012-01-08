@@ -219,10 +219,6 @@ c
 	call set_fill_ndx (fill_ndx) 
 	call FGD_GFA(nout,xc,yc)
 
-*	TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
-*	NDX TO PRIVATE ITEM - forget it 10.22
-*	if (meta_actv .and. .not. area_bundles) call meta_fill_ndx (fill_ndx)
-
 *      goto (10,50,30,10,10,20,20),ptype+3
 *c
 *c tekterminal

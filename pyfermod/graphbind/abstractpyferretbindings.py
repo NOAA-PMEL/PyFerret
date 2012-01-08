@@ -54,6 +54,36 @@ class AbstractPyFerretBindings(object):
         '''
         return False
 
+    def setImageName(self, imagename, imgnamelen, formatname, fmtnamelen):
+        '''
+        Assigns the name and format of the image file to be created.
+
+        Arguments:
+            imagename  - name for the image file (can be NULL)
+            imgnamelen - actual length of imagename (zero if NULL)
+            formatname - name of the image format (case insensitive,
+                         can be NULL)
+            fmtnamelen - actual length of formatname (zero if NULL)
+       
+        If formatname is empty or NULL, the filename extension of
+        imagename, if it exists and is recognized, will determine
+        the format.
+
+        This method only suggests the name of the image file to
+        be created.  A file using the given name may or may not
+        be open from this call.
+
+        If a file was opened from this call (image data written
+        to file as it is being drawn), the saveWindow method may
+        not be supported.
+
+        If a file was not opened from this call, the saveWindow
+        method must be called to save the image.  Thus, the 
+        filename provided here may only be used as a default
+        filename.
+        '''
+        raise AttributeError()
+
     def setAntialias(self, antialias):
         '''
         Turns on (antilaias True) or off (antialias False) anti-aliasing
@@ -337,34 +367,6 @@ class AbstractPyFerretBindings(object):
                     the polygon will not be filled
             pen: the Pen to use to outline the polygon; if None
                     the polygon will not be outlined
-
-        Coordinates are measured from the upper left corner
-        in "device units" (pixels at the current window DPI).
-        '''
-        raise AttributeError()
-
-    def drawMulticolorRectangle(self, left, bottom, right, top,
-                                numrows, numcols, colors):
-        '''
-        Draws a filled rectangle using an array of solid colors.
-        The rectangle is divided into a given number of equally
-        spaced rows and a number of equally spaced columns.  Each
-        of these cells is then filled with a color (using a solid
-        brush) from the corresponding element in an array of colors.
-
-        Arguments:
-            left: X-coordinate of the left edge
-            bottom: Y-coordinate of the bottom edge
-            right: X-coordinate of the right edge
-            top: Y-coordinate of the top edge
-            numrows: the number of equally spaced rows
-                    to subdivide the rectangle into
-            numcols: the number of equally spaced columns
-                    to subdivide the rectangle into
-            colors: a flattened column-major 2-D list of colors
-                    specifying the color of the corresponding cell.
-                    The first row is at the top, the first column
-                    is on the left.
 
         Coordinates are measured from the upper left corner
         in "device units" (pixels at the current window DPI).

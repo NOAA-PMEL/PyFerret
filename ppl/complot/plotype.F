@@ -108,7 +108,7 @@ C
 
 *     DETERMINE IF METAFILE WILL BE USED IN GKS, OPEN GKS IF NOT OPEN
 	if ((ptype .eq. 3 .or. ptype .eq. 4) .and. icom(1:6) .ne. 'CLSPLT') 
-     .		call set_gks_metafile		
+     .		call set_gks_metafile
 C
 C
 C     REINITIALIZE THE TEKTERMINAL TYPE IN CASE THIS IS NOT THE

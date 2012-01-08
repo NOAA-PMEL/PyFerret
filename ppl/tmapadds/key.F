@@ -348,10 +348,6 @@
 	   call set_fill_ndx (ndx)
 	   call FGD_GFA(4,px,py)
 
-*	   TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
-*	   NDX TO PRIVATE ITEM -- forget it 10.22
-*	   if (meta_actv .and. .not. area_bundles) call meta_fill_ndx (ndx)
-
 	   kpx(5) = kpx(1)
 	   kpy(5) = kpy(1)
 	   IF (.NOT. cont_key) call FGD_GPL(5,kpx,kpy)
@@ -571,10 +567,6 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 *	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
 	      call set_fill_ndx (ndx)
 	      call FGD_GFA(4,px,py)
-
-*	   TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
-*	   NDX TO PRIVATE ITEM - forget it 10.22
-*	   if (meta_actv .and. .not. area_bundles) call meta_fill_ndx (ndx)
 
               kpx(5) = kpx(1)
               kpy(5) = kpy(1)

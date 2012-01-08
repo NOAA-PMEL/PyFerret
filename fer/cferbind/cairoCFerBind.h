@@ -10,14 +10,11 @@
 /* Size of filename string arrays */
 #define CCFB_NAME_SIZE 512
 
-/* DPI to use for raster images (PNG) */
-#define CCFB_RASTER_DPI 300
-
-/* DPI to use for vector images (not PNG) */
-#define CCFB_VECTOR_DPI 1200
+/* DPI to use for the Cairo "Window" */
+#define CCFB_WINDOW_DPI 300
 
 /* Factor for converting pixels to points */
-#define CCFB_POINTS_PER_PIXEL (72.0 / (double) CCFB_VECTOR_DPI);
+#define CCFB_POINTS_PER_PIXEL (72.0 / (double) CCFB_WINDOW_DPI);
 
 typedef enum CCFBImageFormat_enum {
     CCFBIF_PNG = 0,

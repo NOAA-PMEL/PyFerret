@@ -35,10 +35,10 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
                                   double rgtfrac, double topfrac, int clipit)
 {
     CairoCFerBindData *instdata;
-    double width;
-    double height;
-    char  *fmtname;
-    int    result;
+    double  width;
+    double  height;
+    char   *fmtname;
+    int     result;
 
     /* Sanity check */
     if ( self->enginename != CairoCFerBindName ) {
@@ -95,9 +95,6 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
             height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
             instdata->surface = cairo_ps_surface_create(instdata->imagename,
                                                         width, height);
-#if (CAIRO_VERSION_MAJOR > 1) || ((CAIRO_VERSION_MAJOR == 1) && (CAIRO_VERSION_MINOR >= 6))
-            cairo_ps_surface_set_eps(instdata->surface, 1);
-#endif
             fmtname = "EPS";
             break;
         case CCFBIF_SVG:
@@ -121,6 +118,12 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
             instdata->surface = NULL;
             return 0;
         }
+        cairo_surface_set_fallback_resolution(instdata->surface, 
+                          (double) CCFB_WINDOW_DPI, (double) CCFB_WINDOW_DPI);
+#if (CAIRO_VERSION_MAJOR > 1) || ((CAIRO_VERSION_MAJOR == 1) && (CAIRO_VERSION_MINOR >= 6))
+        if ( instdata->imageformat == CCFBIF_EPS )
+            cairo_ps_surface_set_eps(instdata->surface, 1);
+#endif
     }
 
     /* Create the Context if it does not exist */
@@ -149,8 +152,10 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
     instdata->fracsides.top = topfrac;
 
     /* Assign the line width scaling factor for this view */
-    width = rgtfrac - lftfrac;
-    height = btmfrac - topfrac;
+    width   = rgtfrac - lftfrac;
+    width  *= (double) CCFB_WINDOW_DPI / 100.0;
+    height  = btmfrac - topfrac;
+    height *= (double) CCFB_WINDOW_DPI / 100.0;
     instdata->viewfactor = sqrt(width * width + height * height);
 
     /* Assign clipping */

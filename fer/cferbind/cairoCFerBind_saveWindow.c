@@ -68,8 +68,8 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
 
     /* Check the surface type */
     if ( instdata->imageformat != CCFBIF_PNG ) {
-        strcpy(grdelerrmsg, "cairoCFerBind_saveWindow: surface is not a PNG image");
-        return 0;
+        /* Silently ignore this command since this was probably called automatically */
+        return 1;
     }
 
     /* Get the image filename to use */

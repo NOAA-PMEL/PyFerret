@@ -22,7 +22,6 @@
 
         INTEGER colornum, stylen, cstylen, jstylen,
      .          success, errmsglen
-        REAL adjwidth
         CHARACTER*64 stylename, capstyle, joinstyle
         CHARACTER*2048 errmsg
 
@@ -46,9 +45,6 @@
         IF ( colorobjs(colornum, windowid) .EQ. nullobj ) THEN
             STOP 'FGD_GSPLR: null colorobj'
         ENDIF
-
-*       Line width
-        adjwidth = linewidth
 
 *       Line type
         IF ( linestyle .EQ. 1 ) THEN
@@ -85,7 +81,7 @@
 
 *       Create the new pen object
         CALL FGDPEN(penobjs(pennum, windowid), windowobjs(windowid),
-     .          colorobjs(colornum, windowid), adjwidth, stylename,
+     .          colorobjs(colornum, windowid), linewidth, stylename,
      .          stylen, capstyle, cstylen, joinstyle, jstylen)
         IF ( penobjs(pennum, windowid) .EQ. nullobj ) THEN
             errmsg = ' '

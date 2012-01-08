@@ -1146,12 +1146,12 @@ class PyQtPipedViewer(QMainWindow):
     def viewScalingFactor(self):
         '''
         Return the scaling factor for line widths, point sizes, and
-        font sizes that scale with the view.  This scaling factor is
-        the length of the hypotenuse of the view rectangle expressed
-        in units of view fractions; thus goes from 0.0 to 1.4142....
+        font sizes that scale with the view and the window DPIs.
         '''
-        widthfrac = self.__fracsides.right() - self.__fracsides.left()
-        heightfrac = self.__fracsides.bottom() - self.__fracsides.top()
+        widthfrac   = self.__fracsides.right() - self.__fracsides.left()
+        widthfrac  *= self.physicalDpiX() / 100.0;
+        heightfrac  = self.__fracsides.bottom() - self.__fracsides.top()
+        heightfrac *= self.physicalDpiY() / 100.0;
         factor = math.hypot(widthfrac, heightfrac)
         return factor 
 

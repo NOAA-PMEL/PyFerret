@@ -132,6 +132,9 @@ grdelType cairoCFerBind_createPen(CFerBind *self, grdelType color, double width,
     /* Copy the color structure */
     penobj->color = *colorobj;
 
+    /* Line width */
+    penobj->width = width;
+
     /* Assign the appropriate dashes array in units of line widths */
     switch( linetype ) {
     case 0:

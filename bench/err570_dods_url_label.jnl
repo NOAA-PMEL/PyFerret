@@ -27,6 +27,8 @@
 !!plot/x=180/y=0 sst 
 !!ppl list labels
 
+!! use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/coads_climatology.nc"
+
 
 set data "http://iridl.ldeo.columbia.edu/SOURCES/.LEVITUS/.MONTHLY/.temp/dods"
 sh data

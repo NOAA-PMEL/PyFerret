@@ -34,35 +34,8 @@
 *
 */
 
-
-
-/* batch_graphics.c
-
-* contains entries
-*     void set_batch_graphics()    ! sets program state
-* and
-*     int its_batch_graphics       ! queries program state
-
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
-* revision 0.0 - 3/5/97
-* v552 *acm* 6/5/03 check for the new flag its_gif
-* v602 *acm*  12/07 additions for metafile batch mode; new flag its_meta
-*                   and routine its_meta_graphics to check for it
-*
-* compile with
-*    cc -g -c batch_graphics.c
-*  or
-*    cc    -c batch_graphics.c
-
-*/
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <Python.h> /* make sure Python.h is first */
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include "grdel.h"
 
@@ -79,13 +52,13 @@ void FORTRAN(set_batch_graphics)(char *outfile)
   char *result;
   int modestate;
 
-  assert(outfile);
+  assert( outfile != NULL );
   length = strlen(outfile);
   modestate = 1;
   /*
-   * This can be called with (-batch) or without
+   * This can be called either with (-batch) or without
    * (-gif or -unmapped) a filename.  Only call
-   * save_metafile_name if a name is given (-batch).
+   * save_metafile_name if a filename is given (-batch).
    */
   if ( length > 0 ) {
      FORTRAN(save_metafile_name)(outfile, &length, &modestate);
@@ -93,10 +66,10 @@ void FORTRAN(set_batch_graphics)(char *outfile)
   }
 
   /* 
-   * GKS metafile format no longer supported;
-   * same work flow regardless of other formats.
-   * Batch graphics now only sets the default 
-   * visibility to FALSE for all Windows.
+   * GKS metafile format no longer supported. The "-batch",
+   * "-gif", and "-unmapped" options do not change the workflow.
+   * If one of these option is given, however, windows are not
+   * made visible.  This allows the use of a faster graphics engine.
    */
   FORTRAN(fgd_hide_all_windows)();
 

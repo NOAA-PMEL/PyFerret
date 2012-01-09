@@ -122,6 +122,21 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
             fmtext[0] = '\0';
     }
 
+    if ( strcmp(fmtext, "GIF") == 0 ) {
+        strcpy(fmtext, "PNG");
+        /* Change  .gif filename extension to .png */
+        if ( (imgnamelen >= 4) &&
+             (strcasecmp(&(savename[imgnamelen-4]), ".gif") == 0) )
+            strcpy(&(savename[imgnamelen-4]), ".png");
+    }
+    else if ( strcmp(fmtext, "PLT") == 0 ) {
+        strcpy(fmtext, "PDF");
+        /* Change .plt filename extension to .pdf */
+        if ( (imgnamelen >= 4) &&
+             (strcasecmp(&(savename[imgnamelen-4]), ".plt") == 0) )
+            strcpy(&(savename[imgnamelen-4]), ".pdf");
+    }
+
     /* Currently only PNG format is supported */
     if ( strcmp(fmtext, "PNG") != 0 ) {
         sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "

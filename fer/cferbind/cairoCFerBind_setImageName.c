@@ -119,7 +119,7 @@ grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
     instdata->imagename[imgnamelen] = '\0';
 
     if ( strcmp(fmtext, "GIF") == 0 ) {
-        /* Change  .gif filename extension to .png */
+        /* Change .gif filename extension to .png */
         if ( (imgnamelen >= 4) &&
              (strcasecmp(&(instdata->imagename[imgnamelen-4]), ".gif") == 0) )
             strcpy(&(instdata->imagename[imgnamelen-4]), ".png");

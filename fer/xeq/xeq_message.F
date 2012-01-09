@@ -148,17 +148,22 @@
 
 * Output a GIF frame if in server mode
 	IF  (IS_SERVER()) then
-	   IF (ITS_BATCH_GRAPHICS()) then
-	      DO wsid = 1, max_windows
-		 IF ( wn_active(wsid) ) then
-* output a GIF frame
-		    call PUT_TEMP_FRAME_BATCH(wsid, ctmpfile, rlen)
-		    call TM_CTOF_STRNG(ctmpfile, tmpfile, rlen)
-		    call TM_SPLIT_MESSAGE(ttout_lun,
-     1		      '<!-- ferret: gif='//tmpfile(:rlen)//' -->')
-		 endif
-	      end do
-	   endif
+
+c *acm 11/11 This appears to be a fossil; write gif image to file in
+c            /tmp when in -gif mode and a MESSAGE command is issued
+c
+c	   IF (ITS_BATCH_GRAPHICS()) then
+c	      DO wsid = 1, max_windows
+c		 IF ( wn_active(wsid) ) then
+c* output a GIF frame
+c		    call PUT_TEMP_FRAME_BATCH(wsid, ctmpfile, rlen)
+c		    call TM_CTOF_STRNG(ctmpfile, tmpfile, rlen)
+c		    call TM_SPLIT_MESSAGE(ttout_lun,
+c     1		      '<!-- ferret: gif='//tmpfile(:rlen)//' -->')
+c		 endif
+c	      end do
+c	   endif
+
  	   return
 	end if
 

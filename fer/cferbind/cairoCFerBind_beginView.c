@@ -153,10 +153,10 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
 
     /* Assign the line width scaling factor for this view */
     width   = rgtfrac - lftfrac;
-    width  *= (double) CCFB_WINDOW_DPI / 100.0;
+    width  *= (double) instdata->imagewidth / 1000.0;
     height  = btmfrac - topfrac;
-    height *= (double) CCFB_WINDOW_DPI / 100.0;
-    instdata->viewfactor = sqrt(width * width + height * height);
+    height *= (double) instdata->imageheight / 1000.0;
+    instdata->viewfactor = sqrt(width * width + height * height) / M_SQRT2;
 
     /* Assign clipping */
     result = self->clipView(self, clipit);

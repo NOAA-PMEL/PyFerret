@@ -895,7 +895,10 @@ class PyQtPipedViewer(QMainWindow):
         # Create the view rectangle in device coordinates
         vrectf = QRectF(leftpixel, toppixel,
                        rightpixel - leftpixel, bottompixel - toppixel)
-        # Create the new picture and painter, and set the view transformation
+        # Assign the view factor for line widths, symbol sizes, and font sizes
+        self.__viewfactor = math.hypot(vrectf.width() / 1000.0,
+                                       vrectf.height() / 1000.0) / 1.414213562
+        # Create the new picture and painter
         self.__activepicture = QPicture()
         self.__activepainter = QPainter(self.__activepicture)
         # Set the clip rectangle to that of the view; this also activates clipping
@@ -1198,14 +1201,13 @@ class PyQtPipedViewer(QMainWindow):
     def viewScalingFactor(self):
         '''
         Return the scaling factor for line widths, point sizes, and
-        font sizes that scale with the view and the window DPIs.
+        font sizes for the current view.  If the view is 1000 x 1000
+        pixels, 1.0 is returned.  The value changes linearly with the
+        length of the diagonal of the scene.
         '''
-        widthfrac   = self.__fracsides.right() - self.__fracsides.left()
-        widthfrac  *= self.physicalDpiX() / 100.0;
-        heightfrac  = self.__fracsides.bottom() - self.__fracsides.top()
-        heightfrac *= self.physicalDpiY() / 100.0;
-        factor = math.hypot(widthfrac, heightfrac)
-        return factor 
+        # the value is computed in the beginViewFromSides method
+        return self.__viewfactor 
+
 
 class PyQtPipedViewerProcess(Process):
     '''
@@ -1231,6 +1233,7 @@ class PyQtPipedViewerProcess(Process):
         self.__cmndpipe.close()
         self.__rspdpipe.close()
         SystemExit(result)
+
 
 #
 # The following are for testing this (and the pyqtqcmndhelper) modules

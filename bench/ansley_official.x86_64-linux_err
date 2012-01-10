@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/x86_64-linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 34156964 Jan  5 09:56 /home/users/ansley/x86_64-linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 34157750 Jan  9 15:51 /home/users/ansley/x86_64-linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/x86_64-linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix to @VAR transform: result had wrong indices, and return to dividing by n not n+1
+Note: Fixed  ticket 1910: micro-adjusting on axes from netCDF/OPeNDAP datasets w/repeated coordinates
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/x86_64-linux/FERRET/bench
-Beginning at Thu Jan 5 09:57:22 PST 2012
+Beginning at Mon Jan 9 15:51:38 PST 2012
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -670,11 +670,9 @@ define axis/from/x/name=xax/edges {6,6}
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6,6}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
- **ERROR: improper grid or axis definition: unrepairable repeated axis coords
-define axis/from/x/name=xax {6,6,6.000001,7}
+Replacing definition of axis XAX
  *** NOTE: Axis has repeated values -- micro-adjusting ...
- **ERROR: improper grid or axis definition: unrepairable repeated axis coords
-define axis/from/x/name=xax/edges {6,6,6.000001,7}
+Replacing definition of axis XAX
 Replacing definition of axis XAX2
  *** NOTE: (fyi) units are not subject to auto-conversion: BLAHS
 Replacing definition of axis XAX2
@@ -1273,11 +1271,11 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GSIGMA
  *** NOTE: Not deleted: YRISE
  *** NOTE: Axis is in use by grid GSIGMA
-ls: input.txt: No such file or directory
  *** NOTE: Not deleted: ZLAYER
  *** NOTE: Axis is in use by grid GSIGMA
  *** NOTE: Not deleted: TIME
  *** NOTE: Axis is in use by grid GSIGMA
+ls: input.txt: No such file or directory
  *** NOTE: Not deleted: Z1
  *** NOTE: Axis is in use by grid G1
  *** NOTE: Not deleted: TCAL
@@ -1447,10 +1445,9 @@ Replacing definition of axis Z1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
- *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
- *** NOTE: A dummy axis of subscripts will be used
- **ERROR: illegal limits: "DUMMY" does not exist at T=-6.3E+10
-          Axis extremes are T=0.5:32
+ *** NOTE: Axis has repeated values -- micro-adjusting TIME
+ **ERROR: illegal limits: "DUMMY" does not exist at T=JAN-1990
+          Axis extremes are T=DEC-1997:JAN-1998
 list/t=1-jan-1990 dummy
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1855,13 +1852,13 @@ Replacing definition of axis COADSX.ILLEGAL
  *** NOTE: grid  used by data set illeg_axname
  *** NOTE: Redefinition may alter apparent contents of data set
  *** NOTE: grid  used by data set illeg_axname
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  *** NOTE: Redefinition may alter apparent contents of data set
 Replacing definition of axis COADSY.ILLEGAL
  *** NOTE: grid  used by data set illeg_axname
  *** NOTE: Redefinition may alter apparent contents of data set
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
  *** NOTE: grid  used by data set illeg_axname
  *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -2062,8 +2059,6 @@ set att (COADSX81_81).axis = "Z"
  LISTing to file a.nc
  LISTing to file a.nc
  PERMANENT data cleared from memory
-syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserverefize 64000000 defmp-iridlc3) store<p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuu</b><b>taux</b><b>tauy</b><b>absuv</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
@@ -2071,6 +2066,8 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
+syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserverefize 64000000 defmp-iridlc3) store<p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuu</b><b>tauy</b><b>taux</b><b>absuv</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
 Replacing definition of grid MYGRID
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2333,8 +2330,7 @@ set axis/stride=2 NORMAL
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
- *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
- *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Axis has repeated values -- micro-adjusting TIME
  *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
  *** NOTE: Substituting coordinate midpoints
  *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
@@ -3058,6 +3054,11 @@ show grid garbage
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis TAX
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 
 Bailing out of external function "tax_datestring":
 	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
@@ -3091,11 +3092,6 @@ Bailing out of external function "tax_jday":
 
 Bailing out of external function "tax_dayfrac":
 	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices   76340081  76340082
-Replacing definition of axis TAX
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3235,6 +3231,13 @@ Replacing definition of axis TAXIS
  LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Axis has repeated values -- micro-adjusting TMIN
+ *** NOTE: Coordinates out of order or missing on axis TMIN at subscript 4
+ *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis TNEW
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  PERMANENT data cleared from memory
@@ -3322,4 +3325,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jan 5 09:59:19 PST 2012
+Ended at Mon Jan 9 15:53:13 PST 2012

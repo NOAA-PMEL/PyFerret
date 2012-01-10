@@ -1,0 +1,23 @@
+! Test the use of micro-adjusting on NetCDF read 
+! when coordinates are repeated.
+! See ticket 1910
+
+! Axis has repeated coordinate values. 
+
+use repeat_t_coord.nc
+show grid a
+show axis tmin
+list a[L=1:71:10]
+
+! Previous behavior is retained with qualifier /STRICT
+! The listing of variable aa here is identical to what is just above.
+can dat/all
+
+use/strict repeat_t_coord.nc
+show grid a
+show axis tmin
+
+define axis/t/t0=15-jan-1901/units=minute tnew = tmin
+let aa = a[gt=tnew@asn]
+list aa[L=1:71:10]
+

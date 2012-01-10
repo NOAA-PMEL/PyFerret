@@ -1,5 +1,5 @@
         SUBROUTINE CD_GET_1_AXIS(dset, cdfid, ivar, iaxis, its_epic,
-     .                           reversed, tregular, status)
+     .                           reversed, tregular, use_strict, status)
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -162,6 +162,8 @@
 *      *kms* 5/10  Fix scaling/offset bug: using iaxis instead of i inside loops 334 and 336
 *
 * V67 *acm* 1/11   WE, SN, not XX, YY in line_direction
+* V68 *acm* 1/12   Implement micro-adjusting of repeated coordinates (ticket 1910).
+*                  To keep the previous behavior the user may specify USE/STRICT.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -194,7 +196,8 @@
         include 'errmsg.parm'
 
 * argument declarations
-        LOGICAL  its_epic, reversed(max_lines:line_ceiling), tregular
+        LOGICAL  its_epic, reversed(max_lines:line_ceiling), tregular, 
+     .           use_strict
         INTEGER  cdfid, dset, ivar, iaxis, status
 
 * local parameter definitions:
@@ -213,7 +216,8 @@
      .        epic_time, west_lon, yyyymmdd_time, 
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
      .        got_edges, got_bnds, coordvar, its_irregular, 
-     .        do_scale, do_offset, scale_is_dp
+     .        do_scale, do_offset, scale_is_dp, 
+     .        has_repeated, misordered
 
       INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,      
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, 
@@ -224,12 +228,13 @@
      .        cal_id, year, month, day, hour, minute, second, slen, nc,
      .        blen, bndid, startpts(2), numpts(2), next_line_storage,
      .        d1s, d1e, d2s, d2e, len_cal, attoutflag, maxlen,
-     .        all_outflag, dir, attlen, itop, irev, attype, iatt, ibx1
+     .        all_outflag, dir, attlen, itop, irev, attype, iatt, ibx1,
+     .        i1, i2, i3, i0
 
       REAL    rbuff, delta, first_delta, val, epsilon, lm_len, 
      .        scale, offset, dummy
       REAL*8  TM_LONW2LONE, TM_WW_AXLEN, tmp8, axwwlen , rdelta, 
-     .        dscale, doffset
+     .        dscale, doffset,  micro_adj, madj
       CHARACTER*12 TM_LEFINT
       CHARACTER vname*128, ename*128, vupcase*128, words(8)*24,
      .        spacing_attr*14, bname*128
@@ -1030,11 +1035,19 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
                line_mem(ipte+ipt1-i) = tmp8
  345        CONTINUE
          ENDIF
-            
-* Check for non-monotonic ordering of data
+
+* If repeated values, apply micro-adjusting. 
+* Or report as a warning if the user requested /STRICT.
+
+         misordered = .FALSE.
          DO 350 i=ipt1+1,ipte
-           IF (line_mem(i) .LE. line_mem(i-1) ) THEN
+           IF (line_mem(i) .LT. line_mem(i-1) ) 
+     .	      misordered = .TRUE.
+	   IF (use_strict .AND. (line_mem(i) .LE. line_mem(i-1)) )
+     .	      misordered = .TRUE.
+
 * out of order axis coordinates
+	   IF (misordered) THEN
               words(1) = TM_LEFINT(i-ipt1+1, istat)
               CALL TM_NOTE(
      .             'Coordinates out of order or missing on axis '//
@@ -1044,6 +1057,79 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
               GOTO 1000
            ENDIF
   350   CONTINUE
+
+         misordered = .FALSE.
+
+         micro_adj = 1E-7 *
+     .		(line_mem(ipte) - line_mem(ipt1))
+
+* ... are there repeated values?
+         has_repeated = .FALSE.
+         DO 532 i1 = ipt1+1, ipte
+            IF (line_mem(i1-1) .EQ. line_mem(i1)) has_repeated = .TRUE.
+ 532     CONTINUE
+
+* ... make micro-adjustments if axis has repeated values (4/99)
+         IF ( has_repeated ) THEN
+            IF (micro_adj .EQ. 0.D0) THEN
+	       misordered = .TRUE.
+	       GOTO 540
+	    ENDIF
+
+            i0 = ipt1
+            DO 538  i1 = ipt1+1, ipte
+               IF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
+*    ... locate end of repeating block
+                  DO 534 i2 = i1, ipte
+                     IF (line_mem(i2) .GT. line_mem(i1)) GOTO 535
+ 534              CONTINUE
+                  i2 = ipte + 1    ! one beyond last value
+                  i0 = i1 - 2
+                  i3 = i2 - 1
+*    ... micro-adjust repeating values from i1 to i2-1
+ 535              CONTINUE
+
+                  IF (line_mem(i2) .GT. line_mem(i1)) THEN
+                     i0 = i1-1
+                     i3 = i2
+                  ENDIF
+
+* Check and readjust the size of micro_adj if too small
+                  madj = micro_adj
+                  IF (micro_adj*(i2-i1+1) .GT. 
+     .                line_mem(i3) - line_mem(i0) ) THEN
+                     madj = (line_mem(i3)-line_mem(i0))/(i2-i1+1)
+                     IF (madj .EQ. 0.D0)  THEN
+	                misordered = .TRUE.
+	                GOTO 540
+	             ENDIF
+                  ENDIF
+                  DO 536 i3 = i1, i2-1
+                     line_mem(i3) = line_mem(i3) + (i3-i1+1)* madj
+ 536              CONTINUE
+                  IF ( i2 .LT. ipte .AND. 
+     .		       (line_mem(i2-1) .GE. line_mem(i2)))  THEN
+	             misordered = .TRUE.
+	             GOTO 540
+                  ENDIF
+               ENDIF
+ 538        CONTINUE
+         ENDIF
+
+         IF ( has_repeated .AND. .NOT.misordered ) THEN
+            CALL TM_NOTE('Axis has repeated values -- micro-adjusting '//
+     .           vname(:vlen), tt)
+         ENDIF
+
+ 540	 IF (misordered) THEN
+	    words(1) = TM_LEFINT(i1, istat)
+	    CALL TM_NOTE(
+     .           'unrepairable repeated axis coords on axis '//
+     .           vname(:vlen)//' at subscript '//words(1), tt)
+	    CALL TM_NOTE(
+     .           'A dummy axis of subscripts will be used', tt)
+	    GOTO 1000
+	 ENDIF
 
 * Check if axis is actually regularly spaced (though not flagged as "even")
 * Fix bug 1483; look at each delta rather than trying to compare with first delta.

@@ -1,4 +1,4 @@
-	SUBROUTINE MC_INIT_DSET(dset_num,lunit,perm,tregular,status)
+	SUBROUTINE MC_INIT_DSET(dset_num,lunit,perm,tregular,use_strict,status)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -66,6 +66,8 @@
 * v581 *acm* 4/2005  Add sf_ndxs and sf_ndxe to use indices rather than timesteps
 *                     for indexing mc datasets in mc_read.
 * V65  *acm* 2/10- all warnings and notes to std error not std out
+* V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
+*                  repeated coordinates in netCDF/OPeDNAP datasets
 
 * arguments:
 *	dset_num	- number assigned to this data set (output)
@@ -76,7 +78,7 @@
 *
 * 
 * Argument definitions
-			LOGICAL tregular
+			LOGICAL tregular, use_strict
 	INTEGER		dset_num, lunit, perm(4), status
 
 * Parameter and common files
@@ -334,7 +336,7 @@ c	     sf_ndxe(stp_cnt) = steps_in_file + sf_ndxs(stp_cnt) - 1
 	status = merr_ok
 	
 
-	CALL CD_INIT_DSET( dset_num, perm, tregular, status)
+	CALL CD_INIT_DSET( dset_num, perm, tregular, use_strict, status)
 
 	GOTO 9990
 

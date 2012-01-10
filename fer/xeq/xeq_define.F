@@ -209,6 +209,8 @@
 * V664  8/10 *kms* Add DEFINE PYFUNC /NAME=<alias> python.module.name
 * V67   1/11 *acm* User-defined attributes are set to /OUTPUT=1  by default.
 *                  Write the calendar attribute, even if its the default Gregorian
+* V68 *acm* 1/12   Use the same micro-adjusting scheme as we are implementing for 
+*                  reading netCDF files (ticket 1910). Reset micro-adjust size if needed.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -326,7 +328,7 @@
      .            mon_by_d(366), d_in_mon(12), len_cal, n2, n3, s2len,
      .            prev_cal_id, j, num_indices, varid, attype_spec,
      .            mr_perm(max_intrp), attoutflag, attlen, coordvar, 
-     .            dset_to_add, dir, type, attype, attid, ibuff
+     .            dset_to_add, dir, type, attype, attid, ibuff, i0
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
@@ -336,7 +338,7 @@
 	REAL*8	  SECS_FROM_BC, TM_WW_AXLEN,
      .		  bc_to_t0, start, new_ww, delta, end, secs2start,
      .            micro_adj, axwwlen, rmod_len, secsperyear, small, 
-     .            new_att_modulo_len
+     .            new_att_modulo_len, madj
 	CHARACTER TM_FMT*16, 
      .            reg_name*24, buff1*128, buff2*128, buff3*128, 
      .            buff30*30, cal_name*32, buff*512,
@@ -1042,6 +1044,7 @@ C /units=months  is 1/12 of the length of the year
 	      IF ( has_repeated ) THEN
 	         CALL WARN('Axis has repeated values -- micro-adjusting ...')
 	         IF (micro_adj .EQ. 0.D0) GOTO 5560
+		 i0 = frst_pt+n
 	         DO 526  i1 = frst_pt+n+1, frst_pt+n+n
 	             IF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
 *    ... locate end of repeating block
@@ -1049,10 +1052,24 @@ C /units=months  is 1/12 of the length of the year
 	                   IF (line_mem(i2) .GT. line_mem(i1)) GOTO 521
  520		        CONTINUE
 	                i2 =  frst_pt+n+n+1    ! one beyond last value
+                        i0 = i1 - 2
+		        i3 = i2 - 1
 *    ... micro-adjust repeating values and edges from i1 to i2-1
- 521		        DO 522 i3 = i1, i2-1
+ 521		        CONTINUE
+                        IF (line_mem(i2) .GT. line_mem(i1)) THEN
+                           i0 = i1-1
+                           i3 = i2
+                        ENDIF
+
+                        madj = micro_adj
+                        IF (micro_adj*(i2-i1+1) .GT. 
+     .	                     line_mem(i3) - line_mem(i0) ) THEN
+     	                   madj = (line_mem(i3) - line_mem(i0))/(i2-i1+1)
+			   IF (madj .EQ. 0.D0) GOTO 5560
+                        ENDIF
+  		        DO 522 i3 = i1, i2-1
 	                   line_mem(i3) = line_mem(i3) +
-     .                         (i3-i1+1)*micro_adj
+     .	                     (i3-i1+1)* madj
  522		        CONTINUE
 	                IF ( i2 .LE. frst_pt+n+n
      .		       .AND. (line_mem(i2-1) .GE. line_mem(i2))) GOTO 5560
@@ -1102,22 +1119,37 @@ C /units=months  is 1/12 of the length of the year
 	      IF ( has_repeated ) THEN
 	         CALL WARN('Axis has repeated values -- micro-adjusting ...')
 	         IF (micro_adj .EQ. 0.D0) GOTO 5560
+
+		 i0 = frst_pt
 	         DO 538  i1 = frst_pt+1, frst_pt+npoints-1
 	            IF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
 *    ... locate end of repeating block
 	               DO 534 i2 = i1, frst_pt+npoints-1
 	                  IF (line_mem(i2) .GT. line_mem(i1)) GOTO 535
  534		       CONTINUE
-	                i2 =  frst_pt+npoints    ! one beyond last value
+	               i2 = frst_pt+npoints    ! one beyond last value
+                       i0 = i1 - 2
+		       i3 = i2 - 1
 *    ... micro-adjust repeating values from i1 to i2-1
- 535		        DO 536 i3 = i1, i2-1
-	                   line_mem(i3) = line_mem(i3) +
-     .	                     (i3-i1+1)*micro_adj
- 536		        CONTINUE
-	                IF ( i2 .LT. frst_pt+npoints .AND. 
-     .		        (line_mem(i2-1) .GE. line_mem(i2))) GOTO 5560
-	             ENDIF
- 538	          CONTINUE
+ 535		       CONTINUE
+                       IF (line_mem(i2) .GT. line_mem(i1)) THEN
+		          i0 = i1-1
+		          i3 = i2
+		       ENDIF
+                       madj = micro_adj
+                       IF (micro_adj*(i2-i1+1) .GT. 
+     .	                     line_mem(i3) - line_mem(i0) ) THEN
+     	                  madj = (line_mem(i3)-line_mem(i0))/(i2-i1+1)
+                       IF (madj .EQ. 0.D0) GOTO 5560
+                       ENDIF
+  		       DO 536 i3 = i1, i2-1
+	                  line_mem(i3) = line_mem(i3) +
+     .	                    (i3-i1+1)* madj
+ 536		       CONTINUE
+	               IF ( i2 .LT. frst_pt+npoints .AND. 
+     .		       (line_mem(i2-1) .GE. line_mem(i2))) GOTO 5560
+	            ENDIF
+ 538	         CONTINUE
 	      ENDIF
 
 * Bounds specified by user

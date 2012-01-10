@@ -1,4 +1,4 @@
-	SUBROUTINE CD_SCAN_VARS(dset,cdfid,reversed,tregular,status)
+	SUBROUTINE CD_SCAN_VARS(dset,cdfid,reversed,tregular,use_strict,status)
 
 *
 *
@@ -92,7 +92,9 @@
 * v67   2/11 *acm* Do the notes about no missing/fillvalue for each variable,
 *             when in diagnostic mode. So move that back to cd_get_1_dep_var.
 * V68   4/11 *acm* fix 1848: skip vars with dim>4 or string vars with dim>5
-*
+* V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
+*                  repeated coordinates in netCDF/OPeDNAP datasets
+
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *	cdfid   - id of currently open CDF file
@@ -117,7 +119,7 @@
         include 'xio.cmn_text'
 
 * argument declarations:
-	LOGICAL        reversed(max_lines:line_ceiling), tregular
+	LOGICAL        reversed(max_lines:line_ceiling), tregular, use_strict
 	INTEGER	      dset, cdfid, status
 
 * local parameter definitions:
@@ -391,7 +393,7 @@
 
 * PROCESS AN AXIS	   
  100        CALL CD_GET_1_AXIS(dset, cdfid, ivcd, iaxis,
-     .                         its_EPIC, reversed, tregular, status)
+     .                         its_EPIC, reversed, tregular, use_strict, status)
            IF ( status .NE. merr_ok ) GOTO 5900
 	   IF (iaxis .NE. 0) GOTO 1000		! iaxis>0 if axis was made
 	   failed_axis = .TRUE.			! go on and treat as a dep. var

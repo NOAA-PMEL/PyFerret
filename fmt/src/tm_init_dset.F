@@ -1,4 +1,4 @@
-	SUBROUTINE TM_INIT_DSET(dset_name,perm,dset_num,tregular,status)
+	SUBROUTINE TM_INIT_DSET(dset_name,perm,dset_num,tregular, use_strict,status)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -97,6 +97,8 @@
 * V62 : *acm* 5/09 - Check for alternative allowed calendar names as in cd_get_1_axis
 *                    (e.g. standard, which is equivalent to Gregorian.)
 * V65  *acm* 2/10- all warnings and notes to std error not std out
+* V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
+*                  repeated coordinates in netCDF/OPeDNAP datasets
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -109,7 +111,7 @@
 
 * Argument definitions
 *	CHARACTER*(*)	dset_name, dset_type  removed 4/92 kob
-	LOGICAL		tregular
+	LOGICAL		tregular, use_strict
 	INTEGER		perm(4), dset_num, status
 	CHARACTER*(*)	dset_name
 
@@ -323,7 +325,7 @@
 * netCDF file ?
  120    IF ( ds_dset_type .EQ. 'CDF' ) THEN
            ds_dset_type = ' '     ! reset the coaching shared by outside world
-           CALL CD_INIT_DSET( dset_num, perm, tregular, status )
+           CALL CD_INIT_DSET( dset_num, perm, tregular, use_strict, status )
            IF ( status .NE. merr_ok ) GOTO 9900
            RETURN
         ENDIF
@@ -481,7 +483,8 @@
 	  CALL TM_DSET_USE_GRIDS( dset_num )
 !*kob*
 	ELSE IF (d_type .EQ. '  MC') THEN
-	  CALL MC_INIT_DSET(dset_num, lunit, perm, tregular, status)
+	  CALL MC_INIT_DSET(dset_num, lunit, perm, tregular, 
+     .      use_strict, status)
 	  IF (status .NE. merr_ok) GOTO 9900
 	  CALL TM_MAKE_4D_GRIDS(dset_num,status)
 * 1/00 - need to do this for remote mc aggregations

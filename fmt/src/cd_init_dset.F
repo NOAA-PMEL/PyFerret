@@ -1,4 +1,4 @@
-	SUBROUTINE CD_INIT_DSET ( dset, perm, tregular, status )
+	SUBROUTINE CD_INIT_DSET ( dset, perm, tregular, use_strict, status )
 
 *
 *
@@ -65,9 +65,11 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
+*                  repeated coordinates in netCDF/OPeDNAP datasets
 
 * argument declarations:
-	LOGICAL tregular
+	LOGICAL tregular, use_strict
 	INTEGER	dset, perm(4), status
 
 * include files
@@ -112,7 +114,7 @@
 
 * read through the netCDF variables to read variable attributes
 * and  load the TMAP axes
-      CALL CD_SCAN_VARS( dset, cdfid, reversed, tregular, status )
+      CALL CD_SCAN_VARS( dset, cdfid, reversed, tregular, use_strict, status )
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * build grids for variables w/out parent grids and associate with variables

@@ -90,13 +90,18 @@ class PyQtPipedViewer(QMainWindow):
         self.__drawcount = 0
         # Limit the number of drawing commands per picture
         # to avoid the appearance of being "stuck"
-        self.__maxdraws = 512
+        self.__maxdraws = 1024
         # scaling factor for creating the displayed scene
         self.__scalefactor = 1.0
         # values used to decide if the scene needs to be updated 
         self.__lastpicdrawn = 0
         self.__createpixmap = True
         self.__clearpixmap = True
+        # Calculations of modified rectangular regions in QPictures
+        # currently do not account for width and height of QPictures
+        # played inside them.  So keep a expansion value.
+        self.__maxsymbolwidth = 0.0
+        self.__maxsymbolheight = 0.0
         # create the label, that will serve as the canvas, in a scrolled area
         self.__scrollarea = QScrollArea(self)
         self.__label = QLabel(self.__scrollarea)
@@ -237,7 +242,8 @@ class PyQtPipedViewer(QMainWindow):
     def aboutQtMsg(self):
         QMessageBox.aboutQt(self, self.tr("About Qt"))
 
-    def paintScene(self, painter, first, leftx, uppery, scalefactor, statusmsg):
+    def paintScene(self, painter, first, leftx, uppery, scalefactor,
+                   statusmsg, returnregion):
         '''
         Draws the pictures self.__viewpics[first:] using the QPainter
         painter.  This QPainter should have been initialized
@@ -250,6 +256,11 @@ class PyQtPipedViewer(QMainWindow):
         The status bar will be updated with a message derived from
         statusmsg before drawing each picture.  Upon completion, the
         status bar will be cleared.
+
+        If returnregion is True, a list of QRect objects describing
+        the modified regions will be computed and returned.  If
+        returnregion is False, the modified region will not be computed
+        and an empty list will be returned.
 
         The call to painter.end() will need to be made after calling
         this function.
@@ -267,6 +278,7 @@ class PyQtPipedViewer(QMainWindow):
         myorigin = QPointF(leftx, uppery)
         # set the scaling factor for the pictures
         painter.scale(scalefactor, scalefactor)
+        modrects = [ ]
         # draw the appropriate pictures
         k = first
         for viewpic in self.__viewpics[first:]:
@@ -278,10 +290,26 @@ class PyQtPipedViewer(QMainWindow):
                 self.statusBar().showMessage( mymsg.arg(str(k)) )
             # draw the picture
             painter.drawPicture(myorigin, viewpic)
+            if returnregion:
+                picrect = viewpic.boundingRect()
+                if picrect.isValid():
+                    # Expand the region to account for possible symbols
+                    xval = picrect.x() - 0.5 * self.__maxsymbolwidth
+                    yval = picrect.y() - 0.5 * self.__maxsymbolheight
+                    width = picrect.width() + self.__maxsymbolwidth
+                    height = picrect.height() + self.__maxsymbolheight
+                    # Scale and translate the region, then convert to integer
+                    xval = int( math.floor(xval * scalefactor + leftx) )
+                    width = int( math.ceil(width * scalefactor) )
+                    yval = int( math.floor(yval * scalefactor + uppery) )
+                    height = int( math.ceil(height * scalefactor) )
+                    # Add this rectangle to the list
+                    modrects.append( QRect(xval, yval, width, height) )
         # done - clear the status message
         self.statusBar().clearMessage()
         # restore the cursor back to normal
         QApplication.restoreOverrideCursor()
+        return modrects
 
     def drawLastPictures(self, ignorevis):
         '''
@@ -313,12 +341,17 @@ class PyQtPipedViewer(QMainWindow):
         # to draw (this is more than just a clear)
         if len(self.__viewpics) > self.__lastpicdrawn:
             painter = QPainter(self.__label.pixmap())
-            self.paintScene(painter, self.__lastpicdrawn, \
-                            0.0, 0.0, self.__scalefactor, "Drawing")
+            modrects = self.paintScene(painter, self.__lastpicdrawn, \
+                                       0.0, 0.0, self.__scalefactor, \
+                                       "Drawing", True)
             painter.end()
+            # update the modified regions of the scene
+            for rect in modrects:
+                self.__label.update(rect)
+        else:
+            # update the entire scene
+            self.__label.update()
         self.__lastpicdrawn = len(self.__viewpics)
-        # make sure the label known to redraw
-        self.__label.update()
 
     def clearScene(self, colorinfo):
         '''
@@ -347,6 +380,8 @@ class PyQtPipedViewer(QMainWindow):
         # Delete all the pictures from the list and
         # mark that the pixmap needs to be cleared
         self.__viewpics[:] = [ ]
+        self.__maxsymbolwidth = 0.0
+        self.__maxsymbolheight = 0.0
         self.__clearpixmap = True
         self.__lastpicdrawn = 0
         # Update the scene label if visible
@@ -620,7 +655,8 @@ class PyQtPipedViewer(QMainWindow):
                 # with the last clearing color
                 painter.fillRect(QRectF(pagerect), self.__lastclearcolor)
             # Draw the scene to the printer
-            self.paintScene(painter, 0, printleftx, printuppery, printfactor, "Saving")
+            self.paintScene(painter, 0, printleftx, printuppery, printfactor,
+                            "Saving", False)
             painter.end()
         elif myformat == 'svg':
             # if HAS_QSvgGenerator is False, it should never get here
@@ -637,7 +673,8 @@ class PyQtPipedViewer(QMainWindow):
                 # with the last clearing color
                 painter.fillRect( QRectF(0, 0, imagewidth, imageheight),
                                   self.__lastclearcolor )
-            self.paintScene(painter, 0, 0.0, 0.0, self.__scalefactor, "Saving")
+            self.paintScene(painter, 0, 0.0, 0.0, self.__scalefactor,
+                            "Saving", False)
             painter.end()
         else:
             # ARGB32_Premultiplied is reported significantly faster than ARGB32
@@ -656,7 +693,8 @@ class PyQtPipedViewer(QMainWindow):
             image.fill(fillint)
             # paint the scene to this QImage
             painter = QPainter(image)
-            self.paintScene(painter, 0, 0.0, 0.0, self.__scalefactor, "Saving")
+            self.paintScene(painter, 0, 0.0, 0.0, self.__scalefactor,
+                            "Saving", False)
             painter.end()
             # save the image to file
             image.save(myfilename, myformat)
@@ -976,7 +1014,12 @@ class PyQtPipedViewer(QMainWindow):
             mypen = QPen(mybrush, 15.0, Qt.SolidLine,
                          Qt.SquareCap, Qt.BevelJoin)
             self.__activepainter.setPen(mypen)
+        # Unmodified symbols are 100x100 pixels 
         scalefactor = ptsize * self.viewScalingFactor() / 100.0
+        if self.__maxsymbolwidth < 100.0 * scalefactor:
+            self.__maxsymbolwidth = 100.0 * scalefactor
+        if self.__maxsymbolheight < 100.0 * scalefactor:
+            self.__maxsymbolheight = 100.0 * scalefactor
         for xyval in ptcoords:
             # save so the translation and scale are not permanent
             self.__activepainter.save()
@@ -1230,7 +1273,7 @@ if __name__ == "__main__":
     drawcmnds = []
     drawcmnds.append( { "action":"setTitle", "title":"Tester" } )
     drawcmnds.append( { "action":"show" } )
-    drawcmnds.append( { "action":"clear", "color":0xFFFFFF} )
+    drawcmnds.append( { "action":"clear", "color":"black"} )
     drawcmnds.append( { "action":"dpi"} )
     drawcmnds.append( { "action":"antialias", "antialias":True } )
     drawcmnds.append( { "action":"resize",
@@ -1243,11 +1286,11 @@ if __name__ == "__main__":
     drawcmnds.append( { "action":"drawRectangle",
                         "left": 5, "right":245, 
                         "top":245, "bottom":495,
-                        "fill":{"color":"black", "alpha":128} } )
+                        "fill":{"color":"green", "alpha":128} } )
     mypentapts = [ (.25 * ptx, .25 * pty + 250) for (ptx, pty) in pentagonpts ]
     drawcmnds.append( { "action":"drawPolygon",
                         "points":mypentapts,
-                        "fill":{"color":"lightblue"},
+                        "fill":{"color":"blue"},
                         "outline":{"color":"black",
                                    "width": 5,
                                    "style":"solid",
@@ -1256,22 +1299,22 @@ if __name__ == "__main__":
     drawcmnds.append( { "action":"drawText",
                         "text":"y=480",
                         "font":{"family":"Times", "size":50},
-                        "fill":{"color":0x880000},
+                        "fill":{"color":"red"},
                         "location":(50,480) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"y=430",
                         "font":{"family":"Times", "size":50},
-                        "fill":{"color":0x880000},
+                        "fill":{"color":"red"},
                         "location":(50,430) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"y=380",
                         "font":{"family":"Times", "size":50},
-                        "fill":{"color":0x880000},
+                        "fill":{"color":"red"},
                         "location":(50,380) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"y=330",
                         "font":{"family":"Times", "size":50},
-                        "fill":{"color":0x880000},
+                        "fill":{"color":"red"},
                         "location":(50,330) } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
@@ -1287,7 +1330,7 @@ if __name__ == "__main__":
                                    (100, 450) ),
                         "symbol":".",
                         "size":20,
-                        "color":"black" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (150,  50),
                                    (150, 150),
@@ -1296,7 +1339,7 @@ if __name__ == "__main__":
                                    (150, 450) ),
                         "symbol":"o",
                         "size":20,
-                        "color":"black" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (200,  50),
                                    (200, 150),
@@ -1305,7 +1348,7 @@ if __name__ == "__main__":
                                    (200, 450) ),
                         "symbol":"+",
                         "size":20,
-                        "color":"blue" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (250,  50),
                                    (250, 150),
@@ -1314,7 +1357,7 @@ if __name__ == "__main__":
                                    (250, 450) ),
                         "symbol":"x",
                         "size":20,
-                        "color":"black" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (300,  50),
                                    (300, 150),
@@ -1323,7 +1366,7 @@ if __name__ == "__main__":
                                    (300, 450) ),
                         "symbol":"*",
                         "size":20,
-                        "color":"black" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (350,  50),
                                    (350, 150),
@@ -1332,7 +1375,7 @@ if __name__ == "__main__":
                                    (350, 450) ),
                         "symbol":"^",
                         "size":20,
-                        "color":"blue" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (400,  50),
                                    (400, 150),
@@ -1341,7 +1384,7 @@ if __name__ == "__main__":
                                    (400, 450) ),
                         "symbol":"#",
                         "size":20,
-                        "color":"black" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawMultiline",
                         "points":( (350,  50),
                                    (200, 150),

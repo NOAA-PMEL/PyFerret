@@ -5,9 +5,6 @@ methods in PipedViewer bindings for PyFerret graphics methods.
 The PyQtViewPyFerretBindings class is a subclass of PyFerretBindings
 using PyQtPipedViewer as the viewer.
 
-The PyQtImagePyFerretBindings class is a subclass of PyFerretBindings
-using PyQtImageViewer as the viewer. 
-
 This package was developed by the Thermal Modeling and Analysis Project
 (TMAP) of the National Oceanographic and Atmospheric Administration's (NOAA)
 Pacific Marine Environmental Lab (PMEL).
@@ -621,29 +618,9 @@ class PyQtViewPyFerretBindings(PyFerretBindings):
         return result
 
 
-class PyQtImagePyFerretBindings(PyFerretBindings):
-    '''
-    PyFerretBindings using PyQtPipedImager as the viewer.
-    '''
-
-    def createWindow(self, title, visible):
-        '''
-        Creates PyFerret bindings using a PyQtPipedImager.
-
-        Arguments:
-            title: display title for the Window
-            visible: display Window on start-up?
-
-        Raises a RuntimeError if an active window is already associated
-        with these bindings, or if there were problems with creating
-        the window.
-
-        Returns True.
-        '''
-        result = self.createPipedViewerWindow("PyQtPipedImager",
-                                              title, visible)
-        return result
-
+#
+# The following is for testing this module
+#
 
 if __name__ == "__main__":
     import pyferret
@@ -660,20 +637,20 @@ if __name__ == "__main__":
     colorvals = ( (0.0, 0.0, 0.0, 1.0),   #  0 opaque black
                   (1.0, 1.0, 1.0, 1.0),   #  1 opaque white
                   (1.0, 0.0, 0.0, 1.0),   #  2 opaque red
-                  (0.6, 0.5, 0.0, 1.0),   #  3 opaque yellowish
+                  (1.0, 1.0, 0.0, 1.0),   #  3 opaque yellowish
                   (0.0, 1.0, 0.0, 1.0),   #  4 opaque green
-                  (0.0, 0.5, 0.5, 1.0),   #  5 opaque cyan
+                  (0.0, 1.0, 1.0, 1.0),   #  5 opaque cyan
                   (0.0, 0.0, 1.0, 1.0),   #  6 opaque blue
-                  (0.5, 0.0, 0.5, 1.0),   #  7 opaque magenta
-                  (0.0, 0.0, 0.0, 0.35),  #  8 translucent black
-                  (1.0, 1.0, 1.0, 0.35),  #  9 translucent white
-                  (1.0, 0.0, 0.0, 0.35),  # 10 translucent red
-                  (0.6, 0.5, 0.0, 0.35),  # 11 translucent yellowish
-                  (0.0, 1.0, 0.0, 0.35),  # 12 translucent green
-                  (0.0, 0.5, 0.5, 0.35),  # 13 translucent cyan
-                  (0.0, 0.0, 1.0, 0.35),  # 14 translucent blue
-                  (0.5, 0.0, 0.5, 0.35),  # 15 translucent magenta
-                  (1.0, 1.0, 1.0, 0.0),   # 16 transparent white
+                  (1.0, 0.0, 1.0, 1.0),   #  7 opaque magenta
+                  (0.0, 0.0, 0.0, 0.5),   #  8 translucent black
+                  (1.0, 1.0, 1.0, 0.5),   #  9 translucent white
+                  (1.0, 0.0, 0.0, 0.5),   # 10 translucent red
+                  (1.0, 1.0, 0.0, 0.5),   # 11 translucent yellowish
+                  (0.0, 1.0, 0.0, 0.5),   # 12 translucent green
+                  (0.0, 1.0, 1.0, 0.5),   # 13 translucent cyan
+                  (0.0, 0.0, 1.0, 0.5),   # 14 translucent blue
+                  (1.0, 0.0, 1.0, 0.5),   # 15 translucent magenta
+                  (1.0, 1.0, 1.0, 0.0),   # 16 transparent "white"
                 )
 
     # Initiate pyferret, but stay in python
@@ -684,7 +661,7 @@ if __name__ == "__main__":
         title = viewertype + "Tester"
         bindinst = pyferret.graphbind.createWindow(viewertype, title, True)
         # Resize the window to 500 x 500 pixels
-        bininst.resizeWindow(500, 500)
+        bindinst.resizeWindow(500, 500)
         # Turn on anti-aliasing
         bindinst.setAntialias(True)
         # Create the one font that will be used here
@@ -692,15 +669,15 @@ if __name__ == "__main__":
         # Create a list of colors that will be used here
         mycolors = [ bindinst.createColor(r, g, b, a) \
                      for (r, g, b, a) in colorvals ]
-        # Clear the window in opaque white
-        bindinst.clearWindow(mycolors[1])
+        # Clear the window in black
+        bindinst.clearWindow(mycolors[0])
         # Create a view in the bottom left corner
         bindinst.beginView(0.0, 1.0, 0.5, 0.0, True)
-        # Draw a translucent black rectangle over most of the view
-        mybrush = bindinst.createBrush(mycolors[8], "solid")
+        # Draw a translucent green rectangle over most of the view
+        mybrush = bindinst.createBrush(mycolors[12], "solid")
         bindinst.drawRectangle(5, 495, 245, 245, mybrush, None)
         bindinst.deleteBrush(mybrush)
-        # Draw a opaque blue polygon with solid black outline
+        # Draw a blue polygon with solid black outline
         mybrush = bindinst.createBrush(mycolors[6], "solid")
         mypen = bindinst.createPen(mycolors[0], 5, "solid", "round", "round")
         bindinst.drawPolygon(mypentax, mypentay, mybrush, mypen)
@@ -718,35 +695,35 @@ if __name__ == "__main__":
         raw_input("Press Enter to continue")
         # Create a view of the whole window
         bindinst.beginView(0.0, 1.0, 1.0, 0.0, True)
-        # Draw points using various symbols
+        # Draw magenta points using various symbols
         ptsy = (50, 150, 250, 350, 450)
         ptsx = (100, 100, 100, 100, 100)
         mysymbol = bindinst.createSymbol(".")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 20)
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (150, 150, 150, 150, 150)
         mysymbol = bindinst.createSymbol("o")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 20)
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (200, 200, 200, 200, 200)
         mysymbol = bindinst.createSymbol("+")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[6], 20)
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (250, 250, 250, 250, 250)
         mysymbol = bindinst.createSymbol("x")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 20)
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (300, 300, 300, 300, 300)
         mysymbol = bindinst.createSymbol("*")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 20)
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (350, 350, 350, 350, 350)
         mysymbol = bindinst.createSymbol("^")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[6], 20)
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (400, 400, 400, 400, 400)
         mysymbol = bindinst.createSymbol("#")
-        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[0], 20)
+        bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20)
         bindinst.deleteSymbol(mysymbol)
         # Draw a white dash line between some of the points
         mypen = bindinst.createPen(mycolors[1], 3, "dash", "round", "round")

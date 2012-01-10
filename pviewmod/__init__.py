@@ -1,7 +1,7 @@
 '''
 The PipedViewer class is used to create, send commands, and
 shutdown viewers in this module.  Currently, the only known
-viewer types are "PyQtPipedViewer" and "PyQtPipedImager".
+viewer type is "PyQtPipedViewer".
 
 This package was developed by the Thermal Modeling and Analysis Project
 (TMAP) of the National Oceanographic and Atmospheric Administration's (NOAA)
@@ -26,7 +26,6 @@ class PipedViewer(object):
 
         Currently supported viewer types are:
             "PyQtPipedViewer": PyQtPipedViewer using PyQt4
-            "PyQtPipedImager": PyQtPipedImager using PyQt4
         '''
         super(PipedViewer, self).__init__()
         (self.__cmndrecvpipe, self.__cmndsendpipe) = Pipe(False)
@@ -37,13 +36,6 @@ class PipedViewer(object):
             except ImportError:
                 raise TypeError("The PyQt viewers requires PyQt4")
             self.__vprocess = PyQtPipedViewerProcess(self.__cmndrecvpipe,
-                                                     self.__rspdsendpipe)
-        elif viewertype == "PyQtPipedImager":
-            try:
-                from pyqtpipedimager import PyQtPipedImagerProcess
-            except ImportError:
-                raise TypeError("The PyQt viewers requires PyQt4")
-            self.__vprocess = PyQtPipedImagerProcess(self.__cmndrecvpipe,
                                                      self.__rspdsendpipe)
         else:
             raise TypeError("Unknown viewer type %s" % str(viewertype))
@@ -94,7 +86,7 @@ if __name__ == "__main__":
     drawcmnds = []
     drawcmnds.append( { "action":"setTitle", "title":"Tester" } )
     drawcmnds.append( { "action":"show" } )
-    drawcmnds.append( { "action":"clear", "color":0xFFFFFF} )
+    drawcmnds.append( { "action":"clear", "color":"black"} )
     drawcmnds.append( { "action":"dpi"} )
     drawcmnds.append( { "action":"antialias", "antialias":True } )
     drawcmnds.append( { "action":"resize",
@@ -107,11 +99,11 @@ if __name__ == "__main__":
     drawcmnds.append( { "action":"drawRectangle",
                         "left": 5, "right":245, 
                         "top":245, "bottom":495,
-                        "fill":{"color":"black", "alpha":128} } )
+                        "fill":{"color":"green", "alpha":128} } )
     mypentapts = [ (.25 * ptx, .25 * pty + 250) for (ptx, pty) in pentagonpts ]
     drawcmnds.append( { "action":"drawPolygon",
                         "points":mypentapts,
-                        "fill":{"color":"lightblue"},
+                        "fill":{"color":"blue"},
                         "outline":{"color":"black",
                                    "width": 5,
                                    "style":"solid",
@@ -120,22 +112,22 @@ if __name__ == "__main__":
     drawcmnds.append( { "action":"drawText",
                         "text":"y=480",
                         "font":{"family":"Times", "size":50},
-                        "fill":{"color":0x880000},
+                        "fill":{"color":"red"},
                         "location":(50,480) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"y=430",
                         "font":{"family":"Times", "size":50},
-                        "fill":{"color":0x880000},
+                        "fill":{"color":"red"},
                         "location":(50,430) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"y=380",
                         "font":{"family":"Times", "size":50},
-                        "fill":{"color":0x880000},
+                        "fill":{"color":"red"},
                         "location":(50,380) } )
     drawcmnds.append( { "action":"drawText",
                         "text":"y=330",
                         "font":{"family":"Times", "size":50},
-                        "fill":{"color":0x880000},
+                        "fill":{"color":"red"},
                         "location":(50,330) } )
     drawcmnds.append( { "action":"endView" } )
     drawcmnds.append( { "action":"show" } )
@@ -151,7 +143,7 @@ if __name__ == "__main__":
                                    (100, 450) ),
                         "symbol":".",
                         "size":20,
-                        "color":"black" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (150,  50),
                                    (150, 150),
@@ -160,7 +152,7 @@ if __name__ == "__main__":
                                    (150, 450) ),
                         "symbol":"o",
                         "size":20,
-                        "color":"black" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (200,  50),
                                    (200, 150),
@@ -169,7 +161,7 @@ if __name__ == "__main__":
                                    (200, 450) ),
                         "symbol":"+",
                         "size":20,
-                        "color":"blue" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (250,  50),
                                    (250, 150),
@@ -178,7 +170,7 @@ if __name__ == "__main__":
                                    (250, 450) ),
                         "symbol":"x",
                         "size":20,
-                        "color":"black" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (300,  50),
                                    (300, 150),
@@ -187,7 +179,7 @@ if __name__ == "__main__":
                                    (300, 450) ),
                         "symbol":"*",
                         "size":20,
-                        "color":"black" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (350,  50),
                                    (350, 150),
@@ -196,7 +188,7 @@ if __name__ == "__main__":
                                    (350, 450) ),
                         "symbol":"^",
                         "size":20,
-                        "color":"blue" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawPoints",
                         "points":( (400,  50),
                                    (400, 150),
@@ -205,7 +197,7 @@ if __name__ == "__main__":
                                    (400, 450) ),
                         "symbol":"#",
                         "size":20,
-                        "color":"black" })
+                        "color":"magenta" })
     drawcmnds.append( { "action":"drawMultiline",
                         "points":( (350,  50),
                                    (200, 150),

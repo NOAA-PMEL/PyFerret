@@ -330,11 +330,16 @@ class PyQtPipedViewer(QMainWindow):
             self.__label.setPixmap(mypixmap)
             self.__createpixmap = False
             self.__clearpixmap = False
+            wascleared = True
         elif self.__clearpixmap:
             # Clear the existing pixmap
             self.__label.pixmap().fill(self.__lastclearcolor)
             self.__clearpixmap = False
-        elif len(self.__viewpics) <= self.__lastpicdrawn:
+            wascleared = True
+        elif len(self.__viewpics) > self.__lastpicdrawn:
+            # New pictures to add to an existing scene
+            wascleared = False
+        else:
             # Nothing changed so just return
             return
         # Only create the QPainter if there are pictures
@@ -343,14 +348,17 @@ class PyQtPipedViewer(QMainWindow):
             painter = QPainter(self.__label.pixmap())
             modrects = self.paintScene(painter, self.__lastpicdrawn, \
                                        0.0, 0.0, self.__scalefactor, \
-                                       "Drawing", True)
+                                       "Drawing", not wascleared)
             painter.end()
-            # update the modified regions of the scene
+        # Notify the label of changes to the scene
+        if wascleared:
+            # the entire scene changed
+            self.__label.update()
+        else:
+            # the scene changed only in the modrects areas
             for rect in modrects:
                 self.__label.update(rect)
-        else:
-            # update the entire scene
-            self.__label.update()
+        # Update the record of which pictures have been displayed
         self.__lastpicdrawn = len(self.__viewpics)
 
     def clearScene(self, colorinfo):

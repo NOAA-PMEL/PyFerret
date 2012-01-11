@@ -65,6 +65,8 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
                             "attempting to save an empty image");
         return 0;
     }
+    /* Just to be safe */
+    cairo_surface_flush(instdata->surface);
 
     /* Check the surface type */
     if ( instdata->imageformat != CCFBIF_PNG ) {

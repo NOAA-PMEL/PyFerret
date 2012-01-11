@@ -29,10 +29,17 @@ grdelBool cairoCFerBind_deleteWindow(CFerBind *self)
 
     /* Delete any existing context and surface */
     if ( instdata->context != NULL ) {
+        /*
+         * Explicitly call cairo_show_page before destroying the context.
+         * Cairo 1.2 (but not 1.4 or later) requires this call.
+         */
+        cairo_show_page(instdata->context);
         cairo_destroy(instdata->context);
         instdata->context = NULL;
     }
     if ( instdata->surface != NULL ) {
+        /* Explicitly finish the surface just to be safe */
+        cairo_surface_finish(instdata->surface);
         cairo_surface_destroy(instdata->surface);
         instdata->surface = NULL;
     }

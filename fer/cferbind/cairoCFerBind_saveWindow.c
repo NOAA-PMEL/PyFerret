@@ -168,11 +168,17 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
         }
 
         /* Fill with the last clearing color */
-        cairo_set_source_rgba(tempcontext,
-                              instdata->lastclearcolor.redfrac,
-                              instdata->lastclearcolor.greenfrac,
-                              instdata->lastclearcolor.bluefrac,
-                              instdata->lastclearcolor.opaquefrac);
+        if ( instdata->usealpha )
+            cairo_set_source_rgba(tempcontext,
+                                  instdata->lastclearcolor.redfrac,
+                                  instdata->lastclearcolor.greenfrac,
+                                  instdata->lastclearcolor.bluefrac,
+                                  instdata->lastclearcolor.opaquefrac);
+        else
+            cairo_set_source_rgb(tempcontext,
+                                 instdata->lastclearcolor.redfrac,
+                                 instdata->lastclearcolor.greenfrac,
+                                 instdata->lastclearcolor.bluefrac);
         cairo_paint(tempcontext);
 
         /* Create a path covering the entire image */

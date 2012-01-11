@@ -113,10 +113,13 @@ grdelBool cairoCFerBind_drawPolygon(CFerBind *self, double ptsx[], double ptsy[]
         /* Fill pattern or solid color */
         if ( brushobj->pattern != NULL )
             cairo_set_source(instdata->context, brushobj->pattern);
+        else if ( instdata->usealpha )
+            cairo_set_source_rgba(instdata->context, brushobj->color.redfrac,
+                  brushobj->color.greenfrac, brushobj->color.bluefrac,
+                  brushobj->color.opaquefrac);
         else
-            cairo_set_source_rgba(instdata->context,
-                  brushobj->color.redfrac, brushobj->color.greenfrac,
-                  brushobj->color.bluefrac, brushobj->color.opaquefrac);
+            cairo_set_source_rgb(instdata->context, brushobj->color.redfrac,
+                  brushobj->color.greenfrac, brushobj->color.bluefrac);
         /* Fill the polygon, but preserve the path for stroking */
         cairo_fill_preserve(instdata->context);
     }
@@ -124,9 +127,13 @@ grdelBool cairoCFerBind_drawPolygon(CFerBind *self, double ptsx[], double ptsy[]
     /* Now stroke the path */
     if ( penobj != NULL ) {
         /* Assign the line color to the context */
-        cairo_set_source_rgba(instdata->context, penobj->color.redfrac,
-                              penobj->color.greenfrac, penobj->color.bluefrac,
-                              penobj->color.opaquefrac);
+        if ( instdata->usealpha )
+            cairo_set_source_rgba(instdata->context, penobj->color.redfrac,
+                  penobj->color.greenfrac, penobj->color.bluefrac,
+                  penobj->color.opaquefrac);
+        else
+            cairo_set_source_rgb(instdata->context, penobj->color.redfrac,
+                  penobj->color.greenfrac, penobj->color.bluefrac);
         /* Assign the adjusted line width */
         adjwidth = penobj->width * instdata->viewfactor;
         if ( adjwidth < 1.0 )

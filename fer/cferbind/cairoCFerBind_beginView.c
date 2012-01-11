@@ -78,6 +78,7 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
             /* Surface size is given in integer pixels */
             instdata->surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
                                       instdata->imagewidth, instdata->imageheight);
+            instdata->usealpha = 1;
             /* Note that all surface values are initialized to zero (transparent) */
             fmtname = "PNG";
             break;
@@ -87,14 +88,29 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
             height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
             instdata->surface = cairo_pdf_surface_create(instdata->imagename,
                                                          width, height);
+            instdata->usealpha = 0;
             fmtname = "PDF";
             break;
         case CCFBIF_PS:
             /* Surface size is given in (floating-point) points */
             width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
             height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
-            instdata->surface = cairo_ps_surface_create(instdata->imagename,
-                                                        width, height);
+            if ( width > height ) {
+                /*
+                 * Landscape orientation
+                 * Swap width and height and then translate and rotate (see
+                 * below) per Cairo requirements.
+                 */
+                instdata->surface = cairo_ps_surface_create(instdata->imagename,
+                                                            height, width);
+            }
+            else {
+                /* Portrait orientation */
+                instdata->surface = cairo_ps_surface_create(instdata->imagename,
+                                                            width, height);
+            }
+            /* Do not use alpha channel - prevent embedded image */
+            instdata->usealpha = 0;
             fmtname = "PS";
             break;
         case CCFBIF_SVG:
@@ -103,6 +119,7 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
             height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
             instdata->surface = cairo_svg_surface_create(instdata->imagename,
                                                          width, height);
+            instdata->usealpha = 1;
             fmtname = "SVG";
             break;
         default:
@@ -118,7 +135,7 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
             instdata->surface = NULL;
             return 0;
         }
-        cairo_surface_set_fallback_resolution(instdata->surface, 
+        cairo_surface_set_fallback_resolution(instdata->surface,
                           (double) CCFB_WINDOW_DPI, (double) CCFB_WINDOW_DPI);
     }
 
@@ -139,6 +156,32 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
             cairo_set_antialias(instdata->context, CAIRO_ANTIALIAS_DEFAULT);
         else
             cairo_set_antialias(instdata->context, CAIRO_ANTIALIAS_NONE);
+        /*
+         * If landscape PostScript, translate and rotate the coordinate system
+         * to correct for swapped width and height (per Cairo requirements).
+         */
+        if ( instdata->imageformat == CCFBIF_PS ) {
+            width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
+            height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
+            if ( width > height ) {
+                /* surface was created with coordinates (0,0) to (height, width) */
+                cairo_matrix_t transmat;
+
+                /* Add a "comment" telling PostScript it is landscape */
+                cairo_ps_surface_dsc_begin_page_setup(instdata->surface);
+                cairo_ps_surface_dsc_comment(instdata->surface,
+                                         "%%PageOrientation: Landscape");
+                /* Move to the bottom left corner */
+                cairo_translate(instdata->context, 0.0, width);
+                /* Rotate 90 degrees clockwise */
+                cairo_matrix_init(&transmat, 0.0, -1.0, 1.0, 0.0, 0.0, 0.0);
+                cairo_transform(instdata->context, &transmat);
+                /*
+                 * The transformed coordinate system goes from (0,0) at the top
+                 * left corner to (width, height) at the bottom right corner.
+                 */
+            }
+        }
     }
 
     /* Assign the view rectangle fractions */

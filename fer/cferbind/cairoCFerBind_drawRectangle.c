@@ -106,10 +106,13 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
         /* Fill pattern or solid color */
         if ( brushobj->pattern != NULL )
             cairo_set_source(instdata->context, brushobj->pattern);
+        else if ( instdata->usealpha )
+            cairo_set_source_rgba(instdata->context, brushobj->color.redfrac,
+                  brushobj->color.greenfrac, brushobj->color.bluefrac,
+                  brushobj->color.opaquefrac);
         else
-            cairo_set_source_rgba(instdata->context,
-                  brushobj->color.redfrac, brushobj->color.greenfrac,
-                  brushobj->color.bluefrac, brushobj->color.opaquefrac);
+            cairo_set_source_rgb(instdata->context, brushobj->color.redfrac,
+                  brushobj->color.greenfrac, brushobj->color.bluefrac);
         /* Fill the rectangle, but preserve the path for stroking */
         cairo_fill_preserve(instdata->context);
     }
@@ -117,9 +120,13 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
     /* Now stroke the path */
     if ( penobj != NULL ) {
         /* Assign the line color to the context */
-        cairo_set_source_rgba(instdata->context, penobj->color.redfrac,
-                              penobj->color.greenfrac, penobj->color.bluefrac,
-                              penobj->color.opaquefrac);
+        if ( instdata->usealpha )
+            cairo_set_source_rgba(instdata->context, penobj->color.redfrac,
+                  penobj->color.greenfrac, penobj->color.bluefrac,
+                  penobj->color.opaquefrac);
+        else
+            cairo_set_source_rgb(instdata->context, penobj->color.redfrac,
+                  penobj->color.greenfrac, penobj->color.bluefrac);
         /* Assign the adjusted line width */
         adjwidth = penobj->width * instdata->viewfactor;
         if ( adjwidth < 1.0 )

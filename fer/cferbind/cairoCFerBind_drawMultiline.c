@@ -81,9 +81,13 @@ grdelBool cairoCFerBind_drawMultiline(CFerBind *self, double ptsx[],
     }
 
     /* Assign the line color */
-    cairo_set_source_rgba(instdata->context, penobj->color.redfrac,
-                          penobj->color.greenfrac, penobj->color.bluefrac,
-                          penobj->color.opaquefrac);
+    if ( instdata->usealpha )
+        cairo_set_source_rgba(instdata->context, penobj->color.redfrac,
+                              penobj->color.greenfrac, penobj->color.bluefrac,
+                              penobj->color.opaquefrac);
+    else
+        cairo_set_source_rgb(instdata->context, penobj->color.redfrac,
+                             penobj->color.greenfrac, penobj->color.bluefrac);
     /* Assign the adjusted line width */
     adjwidth = penobj->width * instdata->viewfactor;
     if ( adjwidth < 1.0 )

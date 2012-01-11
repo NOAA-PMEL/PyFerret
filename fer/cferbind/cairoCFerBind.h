@@ -67,8 +67,10 @@ typedef struct CairoCFerBindData_struct {
     /* image filename and format */
     char imagename[CCFB_NAME_SIZE];
     CCFBImageFormat imageformat;
-    /* Anti-aliasing value for non-text elements */
+    /* Anti-alias non-text elements? */
     int antialias;
+    /* Use colors with an alpha channel (ARGB32)? */
+    int usealpha;
     /*
      * data for recreating the current view
      * only used to define the clipping rectangle

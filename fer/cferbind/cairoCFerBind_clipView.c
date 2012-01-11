@@ -48,7 +48,7 @@ grdelBool cairoCFerBind_clipView(CFerBind *self, int clipit)
     bottom = instdata->fracsides.bottom * instdata->imageheight;
     switch( instdata->imageformat ) {
     case CCFBIF_PDF:
-    case CCFBIF_EPS:
+    case CCFBIF_PS:
     case CCFBIF_SVG:
         left   *= CCFB_POINTS_PER_PIXEL;
         right  *= CCFB_POINTS_PER_PIXEL;

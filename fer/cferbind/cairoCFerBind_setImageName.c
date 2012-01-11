@@ -18,7 +18,7 @@
  *     imgnamelen - actual length of imagename (zero if NULL)
  *     formatname - name of the image format; currently supported
  *                  (case insensitive) values are "PNG", "PDF",
- *                  "PS", "EPS", "SVG", "", or NULL
+ *                  "PS", "SVG", "", or NULL
  *     fmtnamelen - actual length of formatname (zero if NULL)
  *
  * If formatname is "" or NULL, the filename extension of imagename,
@@ -35,10 +35,6 @@
  * may not be used.  For other surfaces, the saveWindow function
  * does nothing as the drawing is being written directly to file
  * and cannot be saved to another file.
- *
- * If Cairo 1.6 or later, encapsulated PostScript is always used;
- * otherwise, non-encapsulated PostScript is always used.
- * Thus, the PS and EPS formats are always the same.
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
@@ -95,8 +91,8 @@ grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
     else if ( (strcmp(fmtext, "PDF") == 0) || (strcmp(fmtext, "PLT") == 0) ) {
         imageformat = CCFBIF_PDF;
     }
-    else if ( (strcmp(fmtext, "EPS") == 0) || (strcmp(fmtext, "PS") == 0) ) {
-        imageformat = CCFBIF_EPS;
+    else if ( strcmp(fmtext, "PS") == 0 ) {
+        imageformat = CCFBIF_PS;
     }
     else if ( strcmp(fmtext, "SVG") == 0 ) {
         imageformat = CCFBIF_SVG;

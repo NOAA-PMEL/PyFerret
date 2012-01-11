@@ -84,7 +84,7 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
     /* Convertions factor for those surfaces that expect points instead of pixels */
     switch( instdata->imageformat ) {
     case CCFBIF_PDF:
-    case CCFBIF_EPS:
+    case CCFBIF_PS:
     case CCFBIF_SVG:
         unitfactor = CCFB_POINTS_PER_PIXEL;
         break;

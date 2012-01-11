@@ -19,7 +19,7 @@
 typedef enum CCFBImageFormat_enum {
     CCFBIF_PNG = 0,
     CCFBIF_PDF,
-    CCFBIF_EPS,
+    CCFBIF_PS,
     CCFBIF_SVG,
 } CCFBImageFormat;
 

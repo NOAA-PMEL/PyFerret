@@ -89,13 +89,13 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
                                                          width, height);
             fmtname = "PDF";
             break;
-        case CCFBIF_EPS:
+        case CCFBIF_PS:
             /* Surface size is given in (floating-point) points */
             width = (double) instdata->imagewidth * CCFB_POINTS_PER_PIXEL;
             height = (double) instdata->imageheight * CCFB_POINTS_PER_PIXEL;
             instdata->surface = cairo_ps_surface_create(instdata->imagename,
                                                         width, height);
-            fmtname = "EPS";
+            fmtname = "PS";
             break;
         case CCFBIF_SVG:
             /* Surface size is given in (floating-point) points */
@@ -120,10 +120,6 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
         }
         cairo_surface_set_fallback_resolution(instdata->surface, 
                           (double) CCFB_WINDOW_DPI, (double) CCFB_WINDOW_DPI);
-#if (CAIRO_VERSION_MAJOR > 1) || ((CAIRO_VERSION_MAJOR == 1) && (CAIRO_VERSION_MINOR >= 6))
-        if ( instdata->imageformat == CCFBIF_EPS )
-            cairo_ps_surface_set_eps(instdata->surface, 1);
-#endif
     }
 
     /* Create the Context if it does not exist */

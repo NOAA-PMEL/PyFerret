@@ -14,8 +14,9 @@
  *     'o' (lowercase oh) - unfilled circle
  *     '+' (plus) - plus
  *     'x' (lowercase ex) - ex
+ *     '*' (asterisk) - asterisk
  *     '^' (caret) - unfilled triangle
- *     'q' (lowercase cue) - unfilled square
+ *     '#' (pound sign) - unfilled square
  *
  * Returns a sybmol object if successful.   If an error occurs,
  * grdelerrmsg is assigned an appropriate error message and NULL
@@ -48,10 +49,12 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
         symbol = (grdelType) '+';
     else if ( strcmp(symname, "x") == 0 )
         symbol = (grdelType) 'x';
+    else if ( strcmp(symname, "*") == 0 )
+        symbol = (grdelType) '*';
     else if ( strcmp(symname, "^") == 0 )
         symbol = (grdelType) '^';
-    else if ( strcmp(symname, "q") == 0 )
-        symbol = (grdelType) 'q';
+    else if ( strcmp(symname, "#") == 0 )
+        symbol = (grdelType) '#';
     else {
         sprintf(grdelerrmsg, "cairoCFerBind_createSymbol: "
                              "unknown symbol '%s'", symname);

@@ -57,9 +57,9 @@ c#include "netcdf.inc"
          include 'tmap_errors.parm'
 
       INTEGER TM_LENSTR1, NCF_INQ_VAR_ATT,
-     .        dset_num, alen, flen
+     .        i, dset_num, alen, flen
 
-      PARAMETER (flen=512)      ! size of variable name string
+      PARAMETER (flen=128)      ! size of attribute name string
 
 #ifdef sun
       BYTE      fhol(flen)      ! c-type Hollerith string buffer
@@ -70,8 +70,9 @@ c#include "netcdf.inc"
       dset_num = dset
       IF (dset_num .LT. -2) dset_num = -2
 
-      slen = TM_LENSTR1( attname )
-      CALL TM_FTOC_STRNG( attname(1:slen), fhol, flen )
+      DO i = 1, flen
+         fhol(i) = 0
+      ENDDO
 
       status = NCF_INQ_VAR_ATT(dset_num, varid, attid, fhol, alen, attype, 
      .    attlen, attoutflag)

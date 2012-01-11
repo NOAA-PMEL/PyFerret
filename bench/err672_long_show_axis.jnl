@@ -1,0 +1,7 @@
+! See ticket 1905 - axes with very large number of points overflowed
+! the format in SHOW AXIS commands
+
+define axis/t=1-jan-1900:1-jan-2000:1/units=minutes huge
+sh axis huge
+can axis huge
+

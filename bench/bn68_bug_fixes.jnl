@@ -15,3 +15,7 @@ GO err672_vert_axislabel
 
 GO bn_reset
 GO err672_axis_label_prec
+
+GO bn_reset
+GO err672_long_show_axis
+

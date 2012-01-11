@@ -1938,7 +1938,7 @@ int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar
 		att.len = strlen(units);
 		att.outflag = 1;
 		att.type = NC_CHAR;
-		att.outtype = 1;
+		att.outtype = NC_CHAR;
 		att.string = (char *) malloc((att.len+1)* sizeof(char));
 		strcpy(att.string, units);
 
@@ -1948,9 +1948,11 @@ int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar
 
       /*Save attribute in linked list of attributes for this variable */	
 
-        list_insert_after(var.varattlist, &att, sizeof(ncatt));
-
+          var.attrs_list_initialized = TRUE;
         }
+
+       list_insert_after(var.varattlist, &att, sizeof(ncatt));
+ /*   } */
 
 /*Save variable in linked list of variables for this dataset */
 
@@ -2029,7 +2031,6 @@ int  FORTRAN(ncf_add_var_num_att)( int *dset, int *varid, char attname[], int *a
   list_insert_after(var_ptr->varattlist, &att, sizeof(ncatt));
 
   return_val = FERR_OK;
-  
   return return_val;
 }
 
@@ -2055,10 +2056,6 @@ int  FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[], int
     */
   varlist = ncf_get_ds_varlist(dset);
 
-
-	  
-						/*            if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading global attribute %s from file %s\n",att.name, nc.fullpath); */
-
   status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
@@ -2081,7 +2078,6 @@ int  FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[], int
    /* Increment number of attributes.  
    */
 
-  var_ptr->natts = var_ptr->natts + 1;
   var_ptr->natts = var_ptr->natts + 1;
 
    /*
@@ -2151,6 +2147,7 @@ int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *a
       /*Save attribute in linked list of attributes for variable */	
   if (!var_ptr->attrs_list_initialized) {
     if ( (var_ptr->varattlist = list_init()) == NULL ) {
+      fprintf(stderr, "ERROR: add_var_str_att: Unable to initialize attributes list.\n");
       return_val = -1;
       return return_val; 
      }

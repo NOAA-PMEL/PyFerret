@@ -235,7 +235,7 @@ class PyQtPipedViewer(QMainWindow):
             "occur and the controlling program cannot shut down the " \
             "viewer properly. " \
             "\n\n" \
-            "PyQtViewer was developed by the Thermal Modeling and Analysis " \
+            "PyQtPipedViewer was developed by the Thermal Modeling and Analysis " \
             "Project (TMAP) of the National Oceanographic and Atmospheric " \
             "Administration's (NOAA) Pacific Marine Environmental Lab (PMEL). "))
 

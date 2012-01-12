@@ -666,8 +666,8 @@ class _PyQtCommandSubmitter(QDialog):
         '''
         try:
             cmndstr = str(self.__cmndlist[self.__nextcmnd])
-            if len(cmndstr) > 115:
-                cmndstr = cmndstr[:115] + '...'
+            if len(cmndstr) > 188:
+                cmndstr = cmndstr[:188] + '...'
             print "Command: %s" % cmndstr
             self.__cmndpipe.send(self.__cmndlist[self.__nextcmnd])
             self.__nextcmnd += 1
@@ -704,16 +704,17 @@ if __name__ == "__main__":
     image.fill(0xFF000000)
     # draw some things in the image
     painter = QPainter(image)
-    painter.setBrush( QBrush(Qt.green, Qt.SolidPattern) )
-    painter.setPen( Qt.NoPen )
+    painter.setBrush( QBrush(QColor(0, 255, 0, 128), Qt.SolidPattern) )
+    painter.setPen( QPen(QBrush(QColor(255, 0, 0, 255), Qt.SolidPattern),
+                         5.0, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin) )
     painter.drawRect( QRectF(5.0, 255.0, 240.0, 240.0) )
-    painter.setBrush( QBrush(Qt.blue, Qt.SolidPattern) )
-    painter.setPen( QPen(QBrush(Qt.black, Qt.SolidPattern),
-                         5.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin) )
+    painter.setBrush( QBrush(QColor(0, 0, 255, 255), Qt.SolidPattern) )
+    painter.setPen( QPen(QBrush(QColor(0, 0, 0, 255), Qt.SolidPattern),
+                         5.0, Qt.DashLine, Qt.RoundCap, Qt.RoundJoin) )
     painter.drawPolygon( QPolygonF(
             [ QPointF(.25 * ptx, .25 * pty + 250) for (ptx, pty) in pentagonpts ] ) )
     painter.setBrush( Qt.NoBrush )
-    painter.setPen( QPen(QBrush(Qt.white, Qt.SolidPattern),
+    painter.setPen( QPen(QBrush(QColor(255, 255, 255, 255), Qt.SolidPattern),
                          3.0, Qt.DashLine, Qt.RoundCap, Qt.RoundJoin) )
     painter.drawPolyline( QPolygonF(
             [ QPointF(pts, pty) for (pts, pty) in linepts ] ) )
@@ -725,19 +726,19 @@ if __name__ == "__main__":
     # not a good way to get the pixel data
     imgdata = bytearray(imgheight * imgstride)
     k = 0
-    for ptx in xrange(imgheight):
-        for pty in xrange(imgwidth):
+    for pty in xrange(imgheight):
+        for ptx in xrange(imgwidth):
             pixval = image.pixel(ptx, pty)
-            (aval, pixval) = divmod(pixval, 256 * 256 * 256)
-            (rval, pixval) = divmod(pixval, 256 * 256)
-            (gval, bval) = divmod(pixval, 256)
-            imgdata[k] = aval
-            k += 1
-            imgdata[k] = rval
+            (aval, rgbval) = divmod(pixval, 256 * 256 * 256)
+            (rval, gbval) = divmod(rgbval, 256 * 256)
+            (gval, bval) = divmod(gbval, 256)
+            imgdata[k] = bval
             k += 1
             imgdata[k] = gval
             k += 1
-            imgdata[k] = bval
+            imgdata[k] = rval
+            k += 1
+            imgdata[k] = aval
             k += 1
     blocksize = 8192
     numblocks = (imgheight * imgstride + blocksize - 1) // blocksize
@@ -747,13 +748,13 @@ if __name__ == "__main__":
                         "stride":imgstride } )
     for k in xrange(numblocks):
         if k < (numblocks - 1):
-            blkdata = imgdata[k*numblocks:(k+1)*numblocks]
+            blkdata = imgdata[k*blocksize:(k+1)*blocksize]
         else:
-            blkdata = imgdata[k*numblocks:]
+            blkdata = imgdata[k*blocksize:]
         drawcmnds.append( { "action":"newImage",
                             "blocknum":k+1,
                             "numblocks":numblocks,
-                            "startindex":k*numblocks,
+                            "startindex":k*blocksize,
                             "blockdata":blkdata } )
     # finish the command list
     drawcmnds.append( { "action":"show" } )

@@ -129,7 +129,7 @@
       CHARACTER ch*1
 * *kob* 4/99
 * *kob* 11/00 - increase size of below to accomidate DODS files in mc sets
-      CHARACTER*1024 TM_INQ_PATH, cdf_file, raw_file
+      CHARACTER*2048 TM_INQ_PATH, cdf_file, raw_file
       CHARACTER*10 TM_FMT, errcode
       CHARACTER*1024 buff, upstr  ! for nf_ error message
       CHARACTER*30 buff30

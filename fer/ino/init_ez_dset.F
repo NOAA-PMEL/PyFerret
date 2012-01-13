@@ -95,8 +95,8 @@
 	INTEGER		TM_LENSTR1, TM_DSET_NUMBER, GRID_FROM_NAME,
      .			tmap_status, loc, skip, grid, columns,
      .			order(5), idim, s1, slen, ndigits
-	CHARACTER	TM_INQ_PATH*1024, var_list*500,
-     .			path_name*256, ezform*80, title*128, grid_name*64,
+	CHARACTER	TM_INQ_PATH*2048, var_list*500,
+     .			path_name*2048, ezform*80, title*128, grid_name*64,
      .			type*500, ctype*16, delim*24
 	REAL		rval
 

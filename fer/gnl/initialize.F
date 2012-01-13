@@ -102,7 +102,6 @@
 	INTEGER	TM_LENSTR1, ito, ifrom, mem_blk, mr, iset, status
       integer icount, irate, imax
 	REAL	DTIME, radian, cm2deg, TArray(2), dtime_res
-	CHARACTER TM_INQ_PATH*128
 
 *************** I/O ************************************************************
 # ifdef unix

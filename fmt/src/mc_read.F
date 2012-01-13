@@ -135,7 +135,7 @@
 	LOGICAL   more_to_read, TM_FPEQ, TM_DFPEQ_TOL, CD_GET_ATTVAL, 
      .            got_scale, got_off, do_warn
         PARAMETER (do_warn = .TRUE. )
-        CHARACTER*256   TM_INQ_PATH, tstep_file
+        CHARACTER*2048   TM_INQ_PATH, tstep_file
 	CHARACTER*128 vname
 	CHARACTER*64 dim_name
 	INTEGER*4 STR_CASE_BLIND_COMPARE

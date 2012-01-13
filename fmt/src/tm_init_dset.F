@@ -143,10 +143,10 @@
 	CHARACTER*13	TM_STRING
 	CHARACTER	def_ext*4, def_cdf*4, def_nc*3, ext*4, 
      .                  cdf_path*12, path*12
-        CHARACTER*1024   TM_CLEAN_FILENAME
+        CHARACTER*2048   TM_CLEAN_FILENAME
 	CHARACTER*42	reading_nml
 	CHARACTER*512   TM_INQ_PATH
-	CHARACTER*1024  des_name
+	CHARACTER*2048  des_name
 	INTEGER*4	set_cnt, lunit, cnt, aux_cnt, tcnt, dlen, dlen2,
      .			rcnt, parm_cnt, grd_cnt, equal_pos, istat
 	INTEGER*4	TM_LENSTR, TM_LENSTR1, STR_SAME,ic

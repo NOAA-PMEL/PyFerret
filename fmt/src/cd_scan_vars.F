@@ -175,10 +175,6 @@
 
 
       EQUIVALENCE ( ds_precision, cd_data_type )
-      REAL    r4_grid_start(4,maxvars),
-     .        r4_grid_end(4,maxvars)
-      EQUIVALENCE ( r4_grid_end,   ds_grid_end ),
-     .            ( r4_grid_start, ds_grid_start )
 
 * initialize: save the state of grid memory prior to any new definitions
 * ... save original start of free line memory

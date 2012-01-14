@@ -1,10 +1,9 @@
 /* Python.h should always be first */
 #include <Python.h>
-#include <cairo/cairo.h>
-#include <stdio.h>
+#include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /*
  * Returns the horizontal and vertical resolution of this "Window"
@@ -20,16 +19,15 @@ double * cairoCFerBind_windowDpi(CFerBind *self)
 {
     static double dpis[2];
 
-    /* Sanity check */
+    /* Sanity check - this should NOT be called by the PyQtCairo engine */
     if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_windowDpi: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
+        strcpy(grdelerrmsg, "cairoCFerBind_windowDpi: unexpected error, "
+                            "self is not a valid CFerBind struct");
         return NULL;
     }
 
     dpis[0] = CCFB_WINDOW_DPI;
     dpis[1] = CCFB_WINDOW_DPI;
-
     return dpis;
 }
 

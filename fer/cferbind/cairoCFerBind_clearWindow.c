@@ -1,18 +1,18 @@
 /* Python.h should always be first */
 #include <Python.h>
-#include <stdio.h>
 #include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /*
  * "Clears the Window".
- * In this case (Cairo), this function destroys any existing
- * surface and context if anything has been drawn.  The clearing
- * color is assigned to the given color; however, the clearing
- * color is only used as the background color in raster images
- * (PNG) if transparency if not desired.
+ *
+ * This function destroys any existing surface and context if
+ * anything has been drawn.  The clearing color is assigned to
+ * the given color; however, the clearing color is only used
+ * as the background color in raster images if transparency is
+ * not desired.
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
@@ -23,9 +23,10 @@ grdelBool cairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
     CCFBColor *colorobj;
 
     /* Sanity checks */
-    if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_clearWindow: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
+    if ( (self->enginename != CairoCFerBindName) &&
+         (self->enginename != PyQtCairoCFerBindName) ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_clearWindow: unexpected error, "
+                            "self is not a valid CFerBind struct");
         return 0;
     }
     instdata = (CairoCFerBindData *) self->instancedata;
@@ -36,7 +37,7 @@ grdelBool cairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
         return 0;
     }
 
-    /* If something was drawn, delete any existing context and surface */
+    /* If something was drawn, delete the context and surface */
     if ( instdata->somethingdrawn ) {
         if ( instdata->context != NULL ) {
             cairo_destroy(instdata->context);

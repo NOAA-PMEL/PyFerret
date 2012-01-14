@@ -228,7 +228,7 @@ grdelBool grdelWindowDelete(grdelType window)
     if ( grdelWindowVerify(window) == NULL ) {
         strcpy(grdelerrmsg, "grdelWindowDelete: window argument is not "
                             "a grdel Window");
-        return (grdelBool) 0;
+        return 0;
     }
     mywindow = (GDWindow *) window;
 
@@ -467,7 +467,7 @@ grdelBool grdelWindowUpdate(grdelType window)
         if ( result == NULL ) {
             sprintf(grdelerrmsg, "grdelWindowUpdate: error when calling the "
                     "Python binding's updateWindow method: %s", pyefcn_get_error());
-            return (grdelBool) 0;
+            return 0;
         }
         Py_DECREF(result);
     }
@@ -667,7 +667,7 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
         if ( result == NULL ) {
             sprintf(grdelerrmsg, "grdelWindowSave: error when calling the "
                     "Python binding's saveWindow method: %s", pyefcn_get_error());
-            return (grdelBool) 0;
+            return 0;
         }
         Py_DECREF(result);
     }

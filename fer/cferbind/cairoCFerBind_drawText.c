@@ -1,10 +1,9 @@
 /* Python.h should always be first */
 #include <Python.h>
-#include <stdio.h>
 #include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /*
  * Draw text to this "Window".
@@ -22,9 +21,10 @@ grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
     CCFBColor *colorobj;
 
     /* Sanity check */
-    if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_drawText: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
+    if ( (self->enginename != CairoCFerBindName) &&
+         (self->enginename != PyQtCairoCFerBindName) ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_drawText: unexpected error, "
+                            "self is not a valid CFerBind struct");
         return 0;
     }
     colorobj = (CCFBColor *) color;

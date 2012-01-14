@@ -2,9 +2,9 @@
 #include <Python.h>
 #include <stdio.h>
 #include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /* Instatiate the global value */
 const char *CCFBColorId = "CCFBColorId";
@@ -29,10 +29,11 @@ grdelType cairoCFerBind_createColor(CFerBind *self, double redfrac,
     CCFBColor *colorobj;
 
     /* Sanity check */
-    if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_createColor: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
-        return NULL;
+    if ( (self->enginename != CairoCFerBindName) &&
+         (self->enginename != PyQtCairoCFerBindName) ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_createColor: unexpected error, "
+                            "self is not a valid CFerBind struct");
+        return 0;
     }
 
     /* Verify valid fractions */

@@ -268,6 +268,25 @@ class PyQtPipedImager(QMainWindow):
             self.statusBar().clearMessage()
             QApplication.restoreOverrideCursor()
 
+    def resizeScene(self, width, height):
+        '''
+        Resize the scene to the given width and height in units of pixels.
+        If the size changes, this deletes the current image and clear the
+        displayed scene.
+        '''
+        newwidth = int(width + 0.5)
+        if newwidth < self.__minsize:
+            newwidth = self.__minsize
+        newheight = int(height + 0.5)
+        if newheight < self.__minsize:
+            newheight = self.__minsize
+        if (newwidth != self.__scenewidth) or (newheight != self.__sceneheight):
+            # set the new size for the empty scene
+            self.__scenewidth = newwidth
+            self.__sceneheight = newheight
+            # clear the scene with the last clearing color
+            self.clearScene(None)
+
     def loadNewSceneImage(self, imageinfo):
         '''
         Create a new scene image from the information given in this
@@ -583,10 +602,11 @@ class PyQtPipedImager(QMainWindow):
         elif cmndact == "dpi":
             windowdpi = ( self.physicalDpiX(), self.physicalDpiY() )
             self.__rspdpipe.send(windowdpi)
-        elif cmndact == "update":
-            self.updateScene(cmnd)
         elif cmndact == "redraw":
             self.redrawScene()
+        elif cmndact == "resize":
+            mysize = self.__helper.getSizeFromCmnd(cmnd)
+            self.resizeScene(mysize.width(), mysize.height())
         elif cmndact == "newImage":
             self.loadNewSceneImage(cmnd)
         elif cmndact == "save":

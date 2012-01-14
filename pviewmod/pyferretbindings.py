@@ -2,8 +2,13 @@
 The PyFerretBindings class is a base class providing common
 methods in PipedViewer bindings for PyFerret graphics methods.
 
-The PyQtViewPyFerretBindings class is a subclass of PyFerretBindings
+The PyQtViewerPyFerretBindings class is a subclass of PyFerretBindings
 using PyQtPipedViewer as the viewer.
+
+The PyQtImagerPyFerretBindings class is a subclass of PyFerretBindings
+using PyQtPipedImager as the viewer.  Note that PyQtPipedImager only
+displays completed images and does not understand many of the commands
+(including all the drawing commands) given here.
 
 This package was developed by the Thermal Modeling and Analysis Project
 (TMAP) of the National Oceanographic and Atmospheric Administration's (NOAA)
@@ -56,6 +61,27 @@ class PyFerretBindings(AbstractPyFerretBindings):
             self.__window.submitCommand( {"action":"show"} )
         self.checkForErrorResponse()
         return True
+
+    def submitCommand(self, cmnd):
+        '''
+        Submits the given command to PipedViewer.
+
+        Provided for use by functions defined in subclasses.
+        '''
+        self.__window.submitCommand(cmnd)
+
+    def checkForResponse(self, timeout=0.0):
+        '''
+        Checks the response pipe for an object within the given
+        timeout number of in seconds.  If timeout is None, this
+        method will wait indefinitely for something to be given
+        on the responds pipe.  If nothing is obtained within the
+        given timeout, None is returned.
+
+        Provided for use by functions defined in subclasses.
+        '''
+        result = self.__window.checkForResponse(timeout)
+        return result
 
     def checkForErrorResponse(self):
         '''
@@ -594,7 +620,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         self.checkForErrorResponse()
 
 
-class PyQtViewPyFerretBindings(PyFerretBindings):
+class PyQtViewerPyFerretBindings(PyFerretBindings):
     '''
     PyFerretBindings using PyQtPipedViewer as the viewer.
     '''
@@ -616,6 +642,78 @@ class PyQtViewPyFerretBindings(PyFerretBindings):
         result = self.createPipedViewerWindow("PyQtPipedViewer",
                                               title, visible)
         return result
+
+
+class PyQtImagerPyFerretBindings(PyFerretBindings):
+    '''
+    PyFerretBindings using PyQtPipedImager as the viewer.
+
+    Note that PyQtPipedImager only displays completed images
+    and at this time does not understand many of the commands
+    (including all the drawing commands) given in the base
+    class PyFerretBindings.  However, the associated methods
+    were left as-is in case future versions did implement
+    these commands.
+
+    The additional method newSceneImage sends image data
+    for the new scene to be displayed.
+    '''
+
+    def createWindow(self, title, visible):
+        '''
+        Creates PyFerret bindings using a PyQtPipedImager.
+
+        Arguments:
+            title: display title for the Window
+            visible: display Window on start-up?
+
+        Raises a RuntimeError if an active window is already associated
+        with these bindings, or if there were problems with creating
+        the window.
+
+        Returns True.
+        '''
+        result = self.createPipedViewerWindow("PyQtPipedImager",
+                                              title, visible)
+        return result
+
+
+    def newSceneImage(self, width, height, stride, imagedata):
+        '''
+        Create and display the scene created from the given
+        image data.
+
+        Arguments:
+            width: width of the scene in pixels
+            height: height of the scene in pixels
+            stride: number of bytes in a single row of the image
+            imagedata: a bytearray of the image data given in
+                       premultiplied ARGB32 format in native
+                       btye order
+        '''
+        lenimgdata = stride * height
+        if len(imagedata) < lenimgdata:
+            raise RuntimeError("newSceneImage: imagedata is too short")
+        cmnd = { "action":"newImage",
+                 "width":width,
+                 "height":height,
+                 "stride":stride }
+        self.submitCommand(cmnd)
+        self.checkForErrorResponse()
+        blocksize = 8192
+        numblocks = (lenimgdata + blocksize - 1) // blocksize
+        for k in xrange(numblocks):
+            if k < (numblocks - 1):
+                blkdata = imagedata[k*blocksize:(k+1)*blocksize]
+            else:
+                blkdata = imagedata[k*blocksize:]
+            cmnd = { "action":"newImage",
+                     "blocknum":k+1,
+                     "numblocks":numblocks,
+                     "startindex":k*blocksize,
+                     "blockdata":blkdata }
+            self.submitCommand(cmnd)
+            self.checkForErrorResponse()
 
 
 #
@@ -655,7 +753,7 @@ if __name__ == "__main__":
 
     # Initiate pyferret, but stay in python
     pyferret.init(None, False)
-    for viewertype in ( "PyQtPipedViewer", ):
+    for viewertype in ( "PyQtViewer", ):
         print "Testing bindings for %s" % viewertype
         # Create a viewer window
         title = viewertype + "Tester"

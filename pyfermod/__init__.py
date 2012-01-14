@@ -470,11 +470,15 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
         str_metaname = ""
     else:
         str_metaname = metaname
-    # Add PyQtViewPyFerretBindings, as "PyQtPipedViewer" to the known bindings
+    # Get the known viewer bindings
     knownengines = pyferret.graphbind.knownPyFerretEngines()
-    if not ("PyQtPipedViewer" in knownengines):
-        pyferret.graphbind.addPyFerretBindings("PyQtPipedViewer",
-                           pipedviewer.pyferretbindings.PyQtViewPyFerretBindings)
+    # Add PyQtViewPyFerretBindings, as "PyQtPipedViewer" to the known bindings
+    if not ("PyQtViewer" in knownengines):
+        pyferret.graphbind.addPyFerretBindings("PyQtViewer",
+                           pipedviewer.pyferretbindings.PyQtViewerPyFerretBindings)
+    if not ("PyQtImager" in knownengines):
+        pyferret.graphbind.addPyFerretBindings("PyQtImager",
+                           pipedviewer.pyferretbindings.PyQtImagerPyFerretBindings)
     # the actual call to ferret's start
     return _pyferret._start(flt_memsize, bool(journal), bool(verify),
                             bool(restrict), bool(server), str_metaname,

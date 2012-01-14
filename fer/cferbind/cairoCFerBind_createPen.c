@@ -3,9 +3,9 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /* Instatiate the global value */
 const char *CCFBPenId = "CCFBPenId";
@@ -45,10 +45,11 @@ grdelType cairoCFerBind_createPen(CFerBind *self, grdelType color, double width,
     cairo_line_join_t jointype;
 
     /* Sanity checks */
-    if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_createPen: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
-        return NULL;
+    if ( (self->enginename != CairoCFerBindName) &&
+         (self->enginename != PyQtCairoCFerBindName) ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_createPen: unexpected error, "
+                            "self is not a valid CFerBind struct");
+        return 0;
     }
     colorobj = (CCFBColor *) color;
     if ( colorobj->id != CCFBColorId ) {

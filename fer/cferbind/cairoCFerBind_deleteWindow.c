@@ -1,10 +1,10 @@
 /* Python.h should always be first */
 #include <Python.h>
 #include <cairo/cairo.h>
-#include <stdio.h>
+#include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /*
  * Deletes (frees) any allocated resources associated with this
@@ -20,9 +20,10 @@ grdelBool cairoCFerBind_deleteWindow(CFerBind *self)
     CairoCFerBindData *instdata;
 
     /* Sanity check */
-    if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_deleteWindow: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
+    if ( (self->enginename != CairoCFerBindName) &&
+         (self->enginename != PyQtCairoCFerBindName) ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_deleteWindow: unexpected error, "
+                            "self is not a valid CFerBind struct");
         return 0;
     }
     instdata = (CairoCFerBindData *) self->instancedata;

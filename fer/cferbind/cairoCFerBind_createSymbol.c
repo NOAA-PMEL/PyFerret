@@ -2,9 +2,9 @@
 #include <Python.h>
 #include <stdio.h>
 #include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /*
  * Create a symbol object for this "Window".
@@ -29,10 +29,11 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
     grdelType symbol;
 
     /* Sanity check */
-    if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_createSymbol: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
-        return NULL;
+    if ( (self->enginename != CairoCFerBindName) &&
+         (self->enginename != PyQtCairoCFerBindName) ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_createSymbol: unexpected error, "
+                            "self is not a valid CFerBind struct");
+        return 0;
     }
 
     /* null-terminate the symbol name, which should be short */

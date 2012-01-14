@@ -7,9 +7,9 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /*
  * Starts a "View" for this "Window".
@@ -41,9 +41,10 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
     int     result;
 
     /* Sanity check */
-    if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_beginView: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
+    if ( (self->enginename != CairoCFerBindName) &&
+         (self->enginename != PyQtCairoCFerBindName) ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_beginView: unexpected error, "
+                            "self is not a valid CFerBind struct");
         return 0;
     }
     instdata = (CairoCFerBindData *) self->instancedata;
@@ -135,8 +136,10 @@ grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac
             instdata->surface = NULL;
             return 0;
         }
-        cairo_surface_set_fallback_resolution(instdata->surface,
-                          (double) CCFB_WINDOW_DPI, (double) CCFB_WINDOW_DPI);
+        /* set the resolution for fallback raster images in vector drawings */
+        if ( instdata->imageformat != CCFBIF_PNG )
+            cairo_surface_set_fallback_resolution(instdata->surface,
+                              (double) CCFB_WINDOW_DPI, (double) CCFB_WINDOW_DPI);
     }
 
     /* Create the Context if it does not exist */

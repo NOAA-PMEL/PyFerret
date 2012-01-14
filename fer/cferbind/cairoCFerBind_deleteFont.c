@@ -1,10 +1,9 @@
 /* Python.h should always be first */
 #include <Python.h>
-#include <stdio.h>
 #include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /*
  * Delete a font object for this "Window".
@@ -18,9 +17,10 @@
 grdelBool cairoCFerBind_deleteFont(CFerBind *self, grdelType font)
 {
     /* Sanity check */
-    if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_deleteFont: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
+    if ( (self->enginename != CairoCFerBindName) &&
+         (self->enginename != PyQtCairoCFerBindName) ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_deleteFont: unexpected error, "
+                            "self is not a valid CFerBind struct");
         return 0;
     }
 

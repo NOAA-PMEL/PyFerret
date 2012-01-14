@@ -1,10 +1,9 @@
 /* Python.h should always be first */
 #include <Python.h>
-#include <stdio.h>
 #include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /*
  * Create a font object for this "Window".
@@ -20,10 +19,11 @@ grdelType cairoCFerBind_createFont(CFerBind *self, const char *familyname, int n
                         double fontsize, int italic, int bold, int underlined)
 {
     /* Sanity check */
-    if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_createFont: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
-        return NULL;
+    if ( (self->enginename != CairoCFerBindName) &&
+         (self->enginename != PyQtCairoCFerBindName) ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_createFont: unexpected error, "
+                            "self is not a valid CFerBind struct");
+        return 0;
     }
 
     /* TODO: implement */

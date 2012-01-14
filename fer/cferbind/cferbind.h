@@ -8,6 +8,7 @@
 
 /* Names of recognized engines */
 extern const char *CairoCFerBindName;
+extern const char *PyQtCairoCFerBindName;
 
 /*
  * The bindings structure.  All functions should be defined in a bindings
@@ -83,5 +84,8 @@ CFerBind *cferbind_createWindow(const char *enginename, int engnamelen,
 
 /* The createWindow function for the Cairo engine */
 CFerBind *cairoCFerBind_createWindow(void);
+/* The createWindow function for the PyQtCairo engine */
+CFerBind *pyqtcairoCFerBind_createWindow(const char *windowname, int windnamelen,
+                                         int visible);
 
 #endif

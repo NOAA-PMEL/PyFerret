@@ -1,10 +1,9 @@
 /* Python.h should always be first */
 #include <Python.h>
-#include <stdio.h>
 #include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /*
  * Delete the given brush object.
@@ -17,9 +16,10 @@ grdelBool cairoCFerBind_deleteBrush(CFerBind *self, grdelType brush)
     CCFBBrush *brushobj;
 
     /* Sanity checks */
-    if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_deleteBrush: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
+    if ( (self->enginename != CairoCFerBindName) &&
+         (self->enginename != PyQtCairoCFerBindName) ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_deleteBrush: unexpected error, "
+                            "self is not a valid CFerBind struct");
         return 0;
     }
     brushobj = (CCFBBrush *) brush;

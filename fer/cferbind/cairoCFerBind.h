@@ -88,6 +88,11 @@ typedef struct CairoCFerBindData_struct {
     cairo_t *context;
     /* Flag that something has been drawn to the current surface */
     int somethingdrawn;
+    /*
+     * The (PyQtPipedImager) image displayer.
+     * Only assigned and used by the PyQtCairo engine
+     */
+    grdelType viewer;
 } CairoCFerBindData;
 
 grdelBool cairoCFerBind_setImageName(CFerBind *self, const char *imagename,

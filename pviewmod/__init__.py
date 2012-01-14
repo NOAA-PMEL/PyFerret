@@ -1,7 +1,7 @@
 '''
 The PipedViewer class is used to create, send commands, and
 shutdown viewers in this module.  Currently, the only known
-viewer type is "PyQtPipedViewer".
+viewer types are "PyQtPipedViewer" and "PyQtPipedImager".
 
 This package was developed by the Thermal Modeling and Analysis Project
 (TMAP) of the National Oceanographic and Atmospheric Administration's (NOAA)
@@ -26,6 +26,7 @@ class PipedViewer(object):
 
         Currently supported viewer types are:
             "PyQtPipedViewer": PyQtPipedViewer using PyQt4
+            "PyQtPipedImager": PyQtPipedImager using PyQt4
         '''
         super(PipedViewer, self).__init__()
         (self.__cmndrecvpipe, self.__cmndsendpipe) = Pipe(False)
@@ -36,6 +37,13 @@ class PipedViewer(object):
             except ImportError:
                 raise TypeError("The PyQt viewers requires PyQt4")
             self.__vprocess = PyQtPipedViewerProcess(self.__cmndrecvpipe,
+                                                     self.__rspdsendpipe)
+        elif viewertype == "PyQtPipedImager":
+            try:
+                from pyqtpipedimager import PyQtPipedImagerProcess
+            except ImportError:
+                raise TypeError("The PyQt viewers requires PyQt4")
+            self.__vprocess = PyQtPipedImagerProcess(self.__cmndrecvpipe,
                                                      self.__rspdsendpipe)
         else:
             raise TypeError("Unknown viewer type %s" % str(viewertype))

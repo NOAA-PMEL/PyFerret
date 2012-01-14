@@ -4,9 +4,9 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /*
  * Assigns the name and format of the image file to be created.
@@ -47,10 +47,10 @@ grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
     CCFBImageFormat imageformat;
     CairoCFerBindData *instdata;
 
-    /* Sanity checks */
+    /* Sanity checks - this should NOT be called by the PyQtCairo engine */
     if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_setImageName: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
+        strcpy(grdelerrmsg, "cairoCFerBind_setImageName: unexpected error, "
+                            "self is not a valid CFerBind struct");
         return 0;
     }
     if ( imgnamelen >= CCFB_NAME_SIZE ) {

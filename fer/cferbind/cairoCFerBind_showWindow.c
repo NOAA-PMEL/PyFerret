@@ -1,9 +1,9 @@
 /* Python.h should always be first */
 #include <Python.h>
-#include <stdio.h>
+#include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /*
  * "Show" this "Window".
@@ -15,10 +15,10 @@
  */
 grdelBool cairoCFerBind_showWindow(CFerBind *self, int visible)
 {
-    /* Sanity check */
+    /* Sanity check - this should NOT be called by the PyQtCairo engine */
     if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_endView: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
+        strcpy(grdelerrmsg, "cairoCFerBind_endView: unexpected error, "
+                            "self is not a valid CFerBind struct");
         return 0;
     }
 

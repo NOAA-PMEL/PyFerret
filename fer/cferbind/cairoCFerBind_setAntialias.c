@@ -1,11 +1,10 @@
 /* Python.h should always be first */
 #include <Python.h>
 #include <cairo/cairo.h>
-#include <stdio.h>
 #include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /*
  * Turns on or off anti-aliasing on non-text graphics.
@@ -22,9 +21,10 @@ grdelBool cairoCFerBind_setAntialias(CFerBind *self, int antialias)
     CairoCFerBindData *instdata;
 
     /* Sanity check */
-    if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_setAntialias: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
+    if ( (self->enginename != CairoCFerBindName) &&
+         (self->enginename != PyQtCairoCFerBindName) ) {
+        strcpy(grdelerrmsg, "cairoCFerBind_setAntialias: unexpected error, "
+                            "self is not a valid CFerBind struct");
         return 0;
     }
     instdata = (CairoCFerBindData *) self->instancedata;

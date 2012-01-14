@@ -3,9 +3,9 @@
 #include <cairo/cairo.h>
 #include <stdio.h>
 #include <string.h>
+#include "grdel.h"
 #include "cferbind.h"
 #include "cairoCFerBind.h"
-#include "grdel.h"
 
 /*
  * Saves this "Window" to file.
@@ -53,10 +53,10 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int nam
     cairo_status_t     result;
     char               savename[CCFB_NAME_SIZE];
 
-    /* Sanity checks */
+    /* Sanity checks - this should NOT be called by the PyQtCairo engine */
     if ( self->enginename != CairoCFerBindName ) {
-        sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: unexpected error, "
-                             "self is not a %s CFerBind struct", CairoCFerBindName);
+        strcpy(grdelerrmsg, "cairoCFerBind_saveWindow: unexpected error, "
+                            "self is not a valid CFerBind struct");
         return 0;
     }
     instdata = (CairoCFerBindData *) self->instancedata;

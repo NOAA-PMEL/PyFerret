@@ -89,7 +89,9 @@
 
 * Values when creating windows.
 * These default values (especially windowtitle) may be reset.
-        DATA enginename / 'PyQtPipedViewer' /
+*       DATA enginename / 'Cairo' /
+*       DATA enginename / 'PyQtCairo' /
+        DATA enginename / 'PyQtViewer' /
         DATA windowtitle / 'FERRET' /
 
         END

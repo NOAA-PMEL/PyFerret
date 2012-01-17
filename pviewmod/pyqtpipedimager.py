@@ -62,13 +62,12 @@ class PyQtPipedImager(QMainWindow):
         self.__scenedata = None
         # flag set if in the process of reading image data from commands
         self.__loadingimage = False
-        # width, height, and stride of the unmodified scene image
+        # width and height of the unmodified scene image
         # when the image is defined
         # initialize the width and height to values that will create
         # a viewer (mainWindow) of the right size
         self.__scenewidth = 840
         self.__sceneheight = 720
-        self.__scenestride = 0
         # initial default color for clearScene (transparent white, but
         # with premultiplied alpha, the color here does not matter)
         self.__lastclearcolor = QColor(0xFFFFFF)
@@ -328,14 +327,14 @@ class PyQtPipedImager(QMainWindow):
             if (imgwidth < self.__minsize) or (imgheight < self.__minsize):
                 raise ValueError( self.tr("image width and height cannot be less than %1") \
                                       .arg(str(self.__minsize)) )
-            if imgstride < 4 * imgwidth:
-                raise ValueError( self.tr("image stride is less than four times the image width") )
+            # Newer PyQt versions allow separate specification of the stride
+            if imgstride != 4 * imgwidth:
+                raise ValueError( self.tr("image stride is not four times the image width") )
             # create the bytearray to contain the new scene data
             # automatically initialized to zero
             self.__scenedata = bytearray(imgstride * imgheight)
             self.__scenewidth = imgwidth
             self.__sceneheight = imgheight
-            self.__scenestride = imgstride
             # set the flag for subsequent calls to this method
             self.__loadingimage = True
             # change the cursor to warn the user this may take some time
@@ -372,8 +371,9 @@ class PyQtPipedImager(QMainWindow):
             self.__loadingimage = False
             self.statusBar().showMessage( self.tr("Creating new image") )
             try:
-                self.__sceneimage = QImage(self.__scenedata, self.__scenewidth,
-                                           self.__sceneheight, self.__scenestride,
+                self.__sceneimage = QImage(self.__scenedata,
+                                           self.__scenewidth,
+                                           self.__sceneheight,
                                            QImage.Format_ARGB32_Premultiplied)
                 self.statusBar().showMessage( self.tr("Drawing new image") )
                 # update the displayed scene in the label

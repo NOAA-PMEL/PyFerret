@@ -321,8 +321,6 @@ class PyQtPipedImager(QMainWindow):
         '''
         if not self.__loadingimage:
             # prepare for a new image data from subsequent calls
-            # first remove an existing scene
-            self.clearScene(None)
             # get dimensions of the new image
             imgwidth = int( imageinfo["width"] )
             imgheight = int( imageinfo["height"] )

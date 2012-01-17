@@ -611,7 +611,7 @@ class PyQtPipedImager(QMainWindow):
             filename = cmnd["filename"]
             fileformat = cmnd.get("fileformat", None)
             transparentbkg = cmnd.get("transparentbkg", False)
-            self.saveSceneToFile(filename, fileformat, transparentbkg, False)
+            self.saveSceneToFile(filename, fileformat, transparentbkg)
         elif cmndact == "setTitle":
             self.setWindowTitle(cmnd["title"])
         elif cmndact == "imgname":

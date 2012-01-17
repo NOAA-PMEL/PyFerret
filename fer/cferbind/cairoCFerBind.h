@@ -89,6 +89,11 @@ typedef struct CairoCFerBindData_struct {
     /* Flag that something has been drawn to the current surface */
     int somethingdrawn;
     /*
+     * Flag that something about the image has changed since the
+     * last update.  Only really used by the PyQtCairo engine.
+     */
+    int imagechanged;
+    /*
      * The (PyQtPipedImager) image displayer.
      * Only assigned and used by the PyQtCairo engine
      */

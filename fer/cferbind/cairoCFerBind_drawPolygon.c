@@ -122,6 +122,8 @@ grdelBool cairoCFerBind_drawPolygon(CFerBind *self, double ptsx[], double ptsy[]
                   brushobj->color.greenfrac, brushobj->color.bluefrac);
         /* Fill the polygon, but preserve the path for stroking */
         cairo_fill_preserve(instdata->context);
+        instdata->somethingdrawn = 1;
+        instdata->imagechanged = 1;
     }
 
     /* Now stroke the path */
@@ -163,6 +165,8 @@ grdelBool cairoCFerBind_drawPolygon(CFerBind *self, double ptsx[], double ptsy[]
 
     /* stroke and remove the path */
     cairo_stroke(instdata->context);
+    instdata->somethingdrawn = 1;
+    instdata->imagechanged = 1;
 
     return 1;
 }

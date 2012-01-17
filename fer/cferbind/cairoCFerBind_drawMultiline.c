@@ -109,6 +109,8 @@ grdelBool cairoCFerBind_drawMultiline(CFerBind *self, double ptsx[],
 
     /* stroke and remove the path */
     cairo_stroke(instdata->context);
+    instdata->somethingdrawn = 1;
+    instdata->imagechanged = 1;
 
     return 1;
 }

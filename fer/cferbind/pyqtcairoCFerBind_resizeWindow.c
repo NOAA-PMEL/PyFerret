@@ -60,6 +60,11 @@ grdelBool pyqtcairoCFerBind_resizeWindow(CFerBind *self, double width, double he
         /* grdleerrmsg is already assigned */
         return 0;
     }
+    /*
+     * This assumes that the resize in the viewer cleared the window.
+     * The resize in Cairo deleted the context and surface.
+     */
+    instdata->imagechanged = 0;
 
     return 1;
 }

@@ -73,6 +73,12 @@ grdelBool pyqtcairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
        return 0;
     }
 
+    /*
+     * The viewer window was cleared, and the Cairo context and
+     * surface were deleted, so the images match.
+     */
+    instdata->imagechanged = 0;
+
     return 1;
 }
 

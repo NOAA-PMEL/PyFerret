@@ -39,15 +39,22 @@ grdelBool cairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
 
     /* If something was drawn, delete the context and surface */
     if ( instdata->somethingdrawn ) {
-        if ( instdata->context != NULL ) {
-            cairo_destroy(instdata->context);
-            instdata->context = NULL;
+        if ( instdata->context == NULL ) {
+            strcpy(grdelerrmsg, "cairoCFerBind_clearWindow: unexpected error, "
+                                "something drawn without a context");
+            return 0;
         }
-        if ( instdata->surface != NULL ) {
-            cairo_surface_destroy(instdata->surface);
-            instdata->surface = NULL;
+        if ( instdata->surface == NULL ) {
+            strcpy(grdelerrmsg, "cairoCFerBind_clearWindow: unexpected error, "
+                                "something drawn without a surface");
+            return 0;
         }
+        cairo_destroy(instdata->context);
+        instdata->context = NULL;
+        cairo_surface_destroy(instdata->surface);
+        instdata->surface = NULL;
         instdata->somethingdrawn = 0;
+        instdata->imagechanged = 1;
     }
 
     /* Copy the given color structure values to lastclearcolor */

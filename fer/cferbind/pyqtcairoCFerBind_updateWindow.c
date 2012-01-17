@@ -33,9 +33,13 @@ grdelBool pyqtcairoCFerBind_updateWindow(CFerBind *self)
         return 0;
     }
     instdata = (CairoCFerBindData *) self->instancedata;
+    if ( ! instdata->imagechanged ) {
+        /* Nothing new about the image; ignore the call */
+        return 1;
+    }
     if ( (instdata->context == NULL) || (instdata->surface == NULL) ) {
-        strcpy(grdelerrmsg, "pyqtcairoCFerBind_updateWindow: "
-                            "attempting to update an empty image");
+        strcpy(grdelerrmsg, "pyqtcairoCFerBind_updateWindow: unexpected error, "
+                            "trying to update an empty image");
         return 0;
     }
 
@@ -91,6 +95,8 @@ grdelBool pyqtcairoCFerBind_updateWindow(CFerBind *self)
         return 0;
     }
     Py_DECREF(result);
+
+    instdata->imagechanged = 0;
 
     return 1;
 }

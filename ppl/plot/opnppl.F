@@ -226,7 +226,7 @@ C
 	ISYM=LNBLK(IFORM,80)
 	CALL PUTSYM(SYM,IFORM,ISYM,IER)
 	SYM='*PPL$PLTNME'
-	call putsym(sym, meta_file, LNBLK(meta_file,256), ier)
+	call putsym(sym, meta_file, LNBLK(meta_file,2048), ier)
 	SYM='*PPL$TEKNME'
 #ifdef unix
         TEMP='/dev/tty'

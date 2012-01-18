@@ -103,6 +103,7 @@ lib_get_lun.F\
 mc_init_dset.F\
 mc_read.F\
 str_case_blind_compare.F\
+str_dncase.F\
 str_same.F\
 str_upcase.F\
 nc_get_attrib.F\
@@ -286,7 +287,6 @@ xunits_data.F
 
 SRCS_C = \
 cd_rd_r8_as_r4.c\
-cd_read_dp.c\
 cd_read_scale.c\
 cd_read_sub.c\
 cd_write_att_sub.c\
@@ -299,6 +299,7 @@ deleted_list_init.c\
 deleted_list_modify.c\
 ez_delimited_read.c\
 NCF_Util.c\
+str_dncase_sub.c\
 str_case_blind_compare_sub.c\
 str_upcase_sub.c\
 string_array_clear.c\

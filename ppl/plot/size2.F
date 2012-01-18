@@ -304,7 +304,6 @@ C
               yln = tmscale * yln
 
 * ... too big to fit ?
-* "too big" no longer an issue
 *             bigness = MIN( dmaxx/xln, dmaxy/yln )
 *             IF ( bigness .LT. 1.0 ) THEN
 *                xln = xln * bigness

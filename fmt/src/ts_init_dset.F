@@ -95,7 +95,7 @@
 * Internal declarations
 	CHARACTER*13	TM_STRING
 	CHARACTER*18	reading_nml
-	CHARACTER*1024  string
+	CHARACTER*2048  string
 	INTEGER*4	var_cnt, var_pos, ivar, npos, varf_pos, cnt_varf,
      .			varf_cnt, istat, lvar, lcnt, lline, file_reclen
 	INTEGER		TM_GET_GRIDNUM, TM_LENSTR, STR_UPCASE, lenb

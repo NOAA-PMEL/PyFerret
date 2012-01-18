@@ -87,7 +87,7 @@
 *
 * LOCAL DEFINITIONS
 	CHARACTER*13	TM_STRING
-	CHARACTER*1024  string
+	CHARACTER*2048  string
 	INTEGER*4	scr, unused, nsteps, ilne, itime, ltime, iunit,
      .			i1, i2, i3, i4, i5, i6, old, nline, lenb
 	INTEGER*4	TM_FIND_LIKE_LINE, TM_LENSTR1

@@ -52,22 +52,61 @@ C                with "*(*)" for the linux port
 * V541 *acm* 3/02 -- bug fix: For small negative numbers, if label is negative 
 *                    need one more decimal place (ib)
 * V600 *acm* 1/06   prevent values of LOG10(0.0)
+* V68  *acm* 12/11  fix ticket 1907: precision of labels where axis range is in (-1,1)
 
       CHARACTER*(*) IF 
+
+      INTEGER nt
+      REAL    scale, xhi, xlo, x1, x2, pow
+
 C     THIS SUBROUTINE CHOOSE THE FORMAT   NOT ANSI STANDARD 
+
+      xhi = xmax
+      xlo = xmin
+      scale = 0
+
       DX=ABS(XMAX-XMIN)
       IF(DX.EQ.0.)DX=ABS(XMAX)
       IF(DX.EQ.0.)DX=10000.0 
       XX=ABS(XMAX) 
       IF(XX.LT.ABS(XMIN))XX=ABS(XMIN) 
       IF(XX.GE.100000..OR.XX.LT..001)GOTO 100 
+
+C When the range lies between -1 and 1, and their order
+C of magnitudes are not the same, the method didnt give enough
+C precision. Make the computation on scaled numbers, and
+C adjust back when creating the format.  (bug 1907)
+
+      IF (ABS(xhi) .LT. 1. .AND. ABS(xlo) .LT. 1.) THEN
+         scale = 1.
+	 IF (xlo .EQ. 0.) xlo = xhi
+	 IF (xhi .EQ. 0.) xhi = xlo
+	 IF (xhi .EQ. 0.) THEN
+	    xhi = 1000.
+	    xlo = 1000.
+	 ENDIF
+         X1 = ABS(ALOG10(ABS(xhi)))
+         X2 = ABS(ALOG10(ABS(xlo)))
+	 nt = IFIX(MAX(x1,x2))
+	 pow = 10.0 ** nt
+	 xhi = pow*xhi
+	 xlo = pow*xlo
+      ENDIF
+
+      DX=ABS(xhi-xlo)
+      IF(DX.EQ.0.)DX=ABS(xhi)
+      IF(DX.EQ.0.)DX=10000.0 
+      XX=ABS(xhi) 
+      IF(XX.LT.ABS(xlo))XX=ABS(xlo) 
+      IF(XX.GE.100000..OR.XX.LT..001)GOTO 100 
 200   IP=ABS(IPRES) 
       ID=IP-IFIX(ALOG10(DX)+.5) 
       IF(ID.LT.0)ID=0 
       IB=IFIX(ALOG10(XX*1.00001)) 
-      IF (xmin .LT. 0 ) ib = ib + 1
+      IF (xlo .LT. 0 ) ib = ib + 1
+      IF (scale .NE. 0) id = id + nt
       WRITE(IF,999)IB+ID+3,ID 
-999   FORMAT('(F',I2,'.',I1,')') 
+999   FORMAT('(F',I2,'.',I1,')')
       RETURN 
 100   IF(IPRES.LT.0)GOTO 200 
 

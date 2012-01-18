@@ -80,7 +80,7 @@
      .		        cdf_name, des_name, full_name_used, nc_name
 	INTEGER		STR_CASE_BLIND_COMPARE, TM_LENSTR1,
      .			vax_code, dset, full_len, short_len, status
-	CHARACTER	TM_INQ_PATH*1024, buff*1024
+	CHARACTER	TM_INQ_PATH*2048, buff*2048
 	CHARACTER*13	TM_STRING, buff13, vbuff
         REAL*8          val
 

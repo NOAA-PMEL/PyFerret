@@ -56,7 +56,7 @@
 
 * Local variable declarations
 
-        CHARACTER TM_INQ_PATH*256, cbuff*256, sname*2048
+        CHARACTER TM_INQ_PATH*2048, cbuff*2048, sname*2048
 
         LOGICAL TM_HAS_STRING
         INTEGER ok, TMAP_status

@@ -61,7 +61,7 @@
 	LOGICAL clobber
 	INTEGER dflt_cx, nvars, mrlist(*), cxlist(*), status
 	REAL	memory( mem_blk_size, max_mem_blks )
-	CHARACTER TM_INQ_PATH*200, filename*(*)
+	CHARACTER TM_INQ_PATH*2048, filename*(*)
 
 * local variable declarations
 	LOGICAL		TM_HAS_STRING, fexist

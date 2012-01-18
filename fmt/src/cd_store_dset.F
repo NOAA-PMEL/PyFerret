@@ -67,8 +67,8 @@
 * For saving dataset information in linked list
 
       INTEGER NCF_GET_DSNUM, llen, slen1, slen2
-      PARAMETER (slen1=1024)      ! size of ds_name string
-      PARAMETER (slen2=1024)      ! size of ds_des_name string (should this be even longer??)
+      PARAMETER (slen1=2048)      ! size of ds_name string
+      PARAMETER (slen2=2048)      ! size of ds_des_name string (should this be even longer??)
 
 #ifdef sun
       BYTE      fhol_dsname(slen1)      ! c-type Hollerith string buffer

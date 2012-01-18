@@ -60,8 +60,8 @@
       CALL ef_set_desc(id, 'Returns a subset of a feature collection' )
 
       CALL ef_set_num_args(id, 4)
-      CALL ef_set_axis_inheritance(id, ABSTRACT, NORMAL, 
-     .     NORMAL, NORMAL)
+      CALL ef_set_axis_inheritance(id, ABSTRACT, IMPLIED_BY_ARGS, 
+     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'index_list')
@@ -93,7 +93,7 @@
 
       CALL ef_set_arg_desc(id, arg, 
      .     'input data: 1D list from which to select features')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence(id, arg, NO, YES, YES, YES)
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -174,44 +174,79 @@
       INTEGER i1, j1, k1, l1
       INTEGER i2, j2, k2, l2
       INTEGER i4, j4, k4, l4
+      INTEGER m, n, count
+      CHARACTER*100 errtxt
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-      j=res_lo_ss(Y_AXIS)
-      k=res_lo_ss(Z_AXIS)
-      l=res_lo_ss(T_AXIS)
 
-      j1=arg_lo_ss(Y_AXIS,ARG1)
-      k1=arg_lo_ss(Z_AXIS,ARG1)
-      l1=arg_lo_ss(T_AXIS,ARG1)
+* check that the lists are 1D
 
+      errtxt = 'Argument 1 must be a 1D list'
+      n = arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1
+      DO i = Y_AXIS, T_AXIS
+         m = arg_hi_ss(i,ARG1) - arg_lo_ss(i,ARG1) + 1 
+         IF (n.GT.1 .AND. m.GT.1) GOTO 9000
+         n = MAX(n,m)
+      ENDDO
+
+      errtxt = 'Argument 2 must be a 1D list'
+      n = arg_hi_ss(X_AXIS,ARG2) - arg_lo_ss(X_AXIS,ARG2) + 1
+      DO i = Y_AXIS, T_AXIS
+         m = arg_hi_ss(i,ARG2) - arg_lo_ss(i,ARG2) + 1
+         IF (n.GT.1 .AND. m.GT.1) GOTO 9000
+         n = MAX(n,m)
+      ENDDO
+      
+* Put the requested features into the result
+
+      i2=arg_lo_ss(X_AXIS,ARG2)
       j2=arg_lo_ss(Y_AXIS,ARG2)
       k2=arg_lo_ss(Z_AXIS,ARG2)
       l2=arg_lo_ss(T_AXIS,ARG2)
 
-      j4=arg_lo_ss(Y_AXIS,ARG4)
-      k4=arg_lo_ss(Z_AXIS,ARG4)
-      l4=arg_lo_ss(T_AXIS,ARG4)
-      
       i = res_lo_ss(X_AXIS)
-      i1 = arg_lo_ss(X_AXIS,ARG1)
 
-      DO 200 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
-         IF ( arg_1(i1,j1,k1,l1) .EQ. bad_flag(1) ) 
-     .	    CALL EF_BAIL_OUT(id,'missing-data not allowed in Argument 1')
-         IF ( arg_2(i1,j2,k2,l2) .EQ. bad_flag(2) ) 
-     .	    CALL EF_BAIL_OUT(id,'missing-data not allowed in Argument 2')
+      DO 500 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+      DO 500 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+      DO 500 k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+      DO 500 l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+         IF ( arg_1(i1,j1,k1,l1) .EQ. bad_flag(1) ) GOTO 600  ! done
+         IF ( arg_2(i2,j2,k2,l2) .EQ. bad_flag(2) ) GOTO 600
 
-	 i4 = arg_1(i1,j1,k1,l1)
-         DO 100 i2 = 1, arg_2(i1,j2,k2,l2)
-            result(i,j,k,l) = arg_4(i4,j4,k4,l4)
-	    i4 = i4 + 1
-	    i = i+1
- 100     CONTINUE
+	 i4 = INT(arg_1(i1,j1,k1,l1))     ! start index
+         count = INT(arg_2(i2,j2,k2,l2))  ! number to put
 
- 200  CONTINUE
+         l4 = arg_lo_ss(T_AXIS,ARG4)
+         DO 400 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+	    k4 = arg_lo_ss(Z_AXIS,ARG2)
+            DO 300 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+               j4 = res_lo_ss(Y_AXIS)
+	       DO 200 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+
+                  DO 100 n = 1, count
+                     result(i,j,k,l) = arg_4(i4,j4,k4,l4)
+                     i4 = i4 + 1
+                     i = i + 1
+ 100              CONTINUE
+ 
+                  j4 = j4 + arg_incr(Y_AXIS,ARG4)
+ 200           CONTINUE
+               k4 = k4 + arg_incr(Z_AXIS,ARG4)
+ 300        CONTINUE
+
+            l4 = l4 + arg_incr(T_AXIS,ARG4)
+ 400     CONTINUE
+
+      i2 = i2 + arg_incr(X_AXIS,ARG2)
+      j2 = j2 + arg_incr(Y_AXIS,ARG2)
+      k2 = k2 + arg_incr(Z_AXIS,ARG2)
+      l2 = l2 + arg_incr(T_AXIS,ARG2)
+ 500  CONTINUE
+
+ 600  CONTINUE
       
 *                                                                      ^
 *                                                                      |
@@ -219,4 +254,5 @@
 * **********************************************************************
 
       RETURN 
+ 9000 CALL EF_BAIL_OUT(id, errtxt)
       END

@@ -18,7 +18,7 @@
         logical       gks_open, vpt_was_set
         logical       draftsman, save_on_exit, imgname_sent
 
-        character*256 meta_file
+        character*2048 meta_file
         character*24  ws_file,tmp_file
 
       common /gkscm2/ meta_file,gks_open,ws_lun,ws_file,item_gclrwk,

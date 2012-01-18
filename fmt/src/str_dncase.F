@@ -1,6 +1,7 @@
-      SUBROUTINE CD_GET_VAR_ATT_INFO (dset, varid, attid, attname, attype, 
-     .     attlen, attoutflag, status )
+      INTEGER FUNCTION STR_DNCASE( str_out, str_in )
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -34,51 +35,30 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Read the linked list structure for netcdf variable information: 
-* given dset, varid, and attid, return attribute name, type, and dimensions
+* convert string to lowercase
 
-* Programmer Ansley Manke
-* NOAA/PMEL, Seattle, WA - TMAP
+* programmer - Ansley Manke
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 -  12/1/2011
 
-* V600 6/05 *acm* Attribute control.
-* V602 2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-* V604 6/07 *acm* Translate attname to hollerith before NCF_INQ_VAR_ATT 
+      CHARACTER*(*) str_out, str_in
 
-* Argument declarations
+* local variable declarations:
+      INTEGER   slenout, slenin
 
-      CHARACTER*(*) attname
-      INTEGER dset, varid, attid, attype, attlen, attoutflag, 
-     .        slen, status
+* local parameter declarations:
+      INTEGER     SS__NORMAL
+      PARAMETER ( SS__NORMAL = 1 )
 
-* Internal declarations
+* initialize
+      slenout = LEN(str_out)
+      slenin  = LEN(str_in)
 
-c        include 'netcdf.decl'
-c#include "netcdf.inc"
-         include 'tmap_errors.parm'
+      CALL str_dncase_sub(str_out,slenout, str_in, slenin)
 
-      INTEGER TM_LENSTR1, NCF_INQ_VAR_ATT,
-     .        i, dset_num, alen, flen
-
-      PARAMETER (flen=128)      ! size of attribute name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
-      INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
-
-      dset_num = dset
-      IF (dset_num .LT. -2) dset_num = -2
-
-      DO i = 1, flen
-         fhol(i) = 0
-      ENDDO
-
-      status = NCF_INQ_VAR_ATT(dset_num, varid, attid, fhol, alen, attype, 
-     .    attlen, attoutflag)
-
-      attname = ' '
-      IF (status .EQ. merr_ok) CALL TM_CTOF_STRNG (fhol, attname, alen)
-
+* successful return always
+      STR_DNCASE = SS__NORMAL
       RETURN
       END

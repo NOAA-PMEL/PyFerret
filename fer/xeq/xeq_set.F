@@ -168,6 +168,8 @@
 *                  for stdout/stderr redirection
 * V66   *kms* 5/10 LIB_GET_LUN is a subroutine, not a function
 *       *kms* 2/11 return "mem_blk_size" instead of "mem_size" in reconfig
+* V68   *acm* 1/12 Implement micro-adjusting of repeated coordinates (ticket 1910).
+*                  To keep the previous behavior the user may specify USE/STRICT.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -243,7 +245,7 @@
      .                  coordvar, new_att_modulo,
      .                  got_it, redir_stdout, redir_stderr, redir_tee,
      .                  redir_journal, redir_append, redir_clobber, 
-     .                  fexist
+     .                  fexist, use_strict
 
 * local parameter declarations:
 	INTEGER		slash_set_last
@@ -437,6 +439,12 @@ c *kob* 4/97
         loc = qual_given(slash_set_data_tregular )
 	tregular = loc .GT. 0
 
+* interpret the /STRICT qualifier (do not micro-adjust axes with repeated 
+* coordinates) for netCDF data sets
+	use_strict = .FALSE.
+        loc = qual_given(slash_set_data_strict )
+	use_strict = loc .GT. 0
+
 * interpret the /ORDER permutation qualifier for a non-EZ data set
 	DO 720 idim = 1,4
  720	perm(idim) = unspecified_int4 ! set default
@@ -493,7 +501,7 @@ c *kob* 4/97
 
 * initialize a TMAP-supported data set
  	   CALL TM_INIT_DSET( cmnd_buff( item_start(item):item_end(item) ),
-     .			      perm, dset_num, tregular, tmap_status )
+     .			      perm, dset_num, tregular, use_strict, tmap_status )
 	   IF ( tmap_status .EQ. merr_no_action ) THEN
 	      GOTO 745					! already init'ed
 	   ELSEIF ( tmap_status .NE. merr_ok )	  THEN

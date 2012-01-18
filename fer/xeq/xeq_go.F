@@ -86,7 +86,7 @@
 	INTEGER	TM_LENSTR1,
      .		temp_lun, status, TMAP_status,
      .          file_opened, ier, ist, len_string
-        CHARACTER TM_INQ_PATH*256, cbuff*256
+        CHARACTER TM_INQ_PATH*2048, cbuff*2048
 
 * internal parameter declarations
 	INTEGER     slash_go_help

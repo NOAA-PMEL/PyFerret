@@ -1,4 +1,4 @@
-	SUBROUTINE TM_INIT_DSET(dset_name,perm,dset_num,tregular,status)
+	SUBROUTINE TM_INIT_DSET(dset_name,perm,dset_num,tregular, use_strict,status)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -97,6 +97,8 @@
 * V62 : *acm* 5/09 - Check for alternative allowed calendar names as in cd_get_1_axis
 *                    (e.g. standard, which is equivalent to Gregorian.)
 * V65  *acm* 2/10- all warnings and notes to std error not std out
+* V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
+*                  repeated coordinates in netCDF/OPeDNAP datasets
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -109,7 +111,7 @@
 
 * Argument definitions
 *	CHARACTER*(*)	dset_name, dset_type  removed 4/92 kob
-	LOGICAL		tregular
+	LOGICAL		tregular, use_strict
 	INTEGER		perm(4), dset_num, status
 	CHARACTER*(*)	dset_name
 
@@ -141,10 +143,10 @@
 	CHARACTER*13	TM_STRING
 	CHARACTER	def_ext*4, def_cdf*4, def_nc*3, ext*4, 
      .                  cdf_path*12, path*12
-        CHARACTER*1024   TM_CLEAN_FILENAME
+        CHARACTER*2048   TM_CLEAN_FILENAME
 	CHARACTER*42	reading_nml
 	CHARACTER*512   TM_INQ_PATH
-	CHARACTER*1024  des_name
+	CHARACTER*2048  des_name
 	INTEGER*4	set_cnt, lunit, cnt, aux_cnt, tcnt, dlen, dlen2,
      .			rcnt, parm_cnt, grd_cnt, equal_pos, istat
 	INTEGER*4	TM_LENSTR, TM_LENSTR1, STR_SAME,ic
@@ -323,7 +325,7 @@
 * netCDF file ?
  120    IF ( ds_dset_type .EQ. 'CDF' ) THEN
            ds_dset_type = ' '     ! reset the coaching shared by outside world
-           CALL CD_INIT_DSET( dset_num, perm, tregular, status )
+           CALL CD_INIT_DSET( dset_num, perm, tregular, use_strict, status )
            IF ( status .NE. merr_ok ) GOTO 9900
            RETURN
         ENDIF
@@ -481,7 +483,8 @@
 	  CALL TM_DSET_USE_GRIDS( dset_num )
 !*kob*
 	ELSE IF (d_type .EQ. '  MC') THEN
-	  CALL MC_INIT_DSET(dset_num, lunit, perm, tregular, status)
+	  CALL MC_INIT_DSET(dset_num, lunit, perm, tregular, 
+     .      use_strict, status)
 	  IF (status .NE. merr_ok) GOTO 9900
 	  CALL TM_MAKE_4D_GRIDS(dset_num,status)
 * 1/00 - need to do this for remote mc aggregations

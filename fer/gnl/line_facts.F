@@ -53,31 +53,26 @@
 *		truncated now that DEPTH(units) is the label
 *       12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * V510 *sh* 12/99 - show units even if line has no orientation
+* V68  *acm 12/11 - if npts > 1.e7 the format overflowed. Up the size.
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'ferret.parm'
 	include 'xtext_info.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'          ! 12/94 SPLIT_LIST BUFFER
-#endif
 
 * calling argument declarations
 	INTEGER	  lun, idim, grid, orient
 
 * local variable declarations:
 	LOGICAL	BKWD_AXIS, GEOG_LABEL, calendar
-	INTEGER TM_LENSTR1, lo, hi, i, line, dlen, ndec, status, nlen
+	INTEGER TM_LENSTR1, lo, hi, i, line, dlen, ndec, status,
+     .          nlen, naxlen
 	CHARACTER AX_TITLE*32, 	lo_str*20, hi_str*20, direction*1,
-     .		  title*32, reg*1, modflag*1, truncated*1
-	REAL*8	TM_WORLD, lo_val8, hi_val8
+     .		  title*32, reg*1, modflag*1, truncated*1, frmt*50
+	REAL*8	TM_WORLD, lo_val8, hi_val8, pts
+
 
 * local parameter declarations:
 	INTEGER		sig_figs
@@ -138,24 +133,34 @@
 !	   title = title(:dlen)//direction	! 12/94 removed
 
 * regularly spaced ?
-	IF ( line_regular( line ) ) THEN
-	  reg = 'r'
-	ELSE
-	  reg = 'i'
-	ENDIF
+	   IF ( line_regular( line ) ) THEN
+	     reg = 'r'
+	   ELSE
+	     reg = 'i'
+	   ENDIF
 
 * modulo ?
-	IF ( line_modulo( line ) ) THEN
-	  modflag = 'm'
-	ELSE
-	  modflag = ' '
-	ENDIF
+	   IF ( line_modulo( line ) ) THEN
+	     modflag = 'm'
+	   ELSE
+	     modflag = ' '
+	   ENDIF
 
 * allow for long axis names (6/92)
-        nlen = MAX( TM_LENSTR1(line_name(line)), 9 )
+           nlen = MAX( TM_LENSTR1(line_name(line)), 9 )
+
+	   naxlen = INT(0.5+DLOG10(DFLOAT(line_dim(line))) ) 
 
 * write info
-	   WRITE ( risc_buff, 3020 )	line_name ( line )(:nlen),
+	   int1 = 34 - (naxlen+1)
+	   naxlen = naxlen + 1
+	   IF (naxlen .LT. 10) THEN
+	      WRITE (frmt, 3020) int1, naxlen
+	   ELSE
+	      WRITE (frmt, 3030) int1, naxlen
+	   ENDIF
+
+           WRITE ( risc_buff, frmt )	line_name ( line )(:nlen),
      .				title (:41-nlen),
      .				line_dim  ( line ),
      .				modflag,
@@ -163,12 +168,17 @@
      .				direction,
      .				lo_str,
      .				hi_str
+
+
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	ENDIF
 	RETURN
 
  3010	FORMAT ( T2,A8,T12,A1 )
- 3020	FORMAT ( T2,A,1X,A14,T27,I7,3A1,T39,A20,T60,A20 )
-! old V220: 3020 FORMAT ( T2,A8,T12,A15,T27,I7,2A1,T39,A20,T60,A20 )
+c 3020	FORMAT ( T2,A,1X,A,T27,I7,3A1,T39,A20,T60,A20 )
+c 3030	FORMAT ( T2,A,1X,A,T22,I12,3A1,T39,A20,T60,A20 )
+
+ 3020   FORMAT ('(T2,A,1X,A,T',I2,',I',I1',3A1,T39,A20,T60,A20 )')
+ 3030   FORMAT ('(T2,A,1X,A,T',I2,',I',I2',3A1,T39,A20,T60,A20 )')
 
 	END

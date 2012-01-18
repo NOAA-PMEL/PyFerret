@@ -20,6 +20,7 @@
 * V581 *acm* 3/05 increase ds_title, ds_mod_title to 1024
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * v62  *acm*10/08 increase length of ds_message 
+* V68 *acm*1/12 increase ds_name, ds_des_name to 2048
 *                
 
 	COMMON/XDSET_INFO/
@@ -110,8 +111,8 @@
      .                  string_array_result1
 
 * additional calculated or derived values pertaining to data sets
-	CHARACTER*1024	ds_name
-	CHARACTER*1024	ds_des_name
+	CHARACTER*2048	ds_name
+	CHARACTER*2048	ds_des_name
 	INTEGER*4	ds_open,ds_basic_axes,ds_time_axis
 	LOGICAL		ds_regsteps, ds_var_scaleit, is_mc
 	REAL*8		ds_1step,ds_lastep,ds_delstep,

@@ -208,10 +208,10 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
         * Make a copy of the name just in case set_batch_graphics_ changes
         * something.  This also hides the graphics viewer.
         */
-       char my_meta_name[256];
+       char my_meta_name[2048];
        if ( metaname != NULL ) {
-           strncpy(my_meta_name, metaname, 256);
-           my_meta_name[255] = '\0';
+           strncpy(my_meta_name, metaname, 2048);
+           my_meta_name[2047] = '\0';
        }
        else {
            my_meta_name[0] = '\0';

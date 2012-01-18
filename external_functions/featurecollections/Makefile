@@ -25,7 +25,7 @@ include ../ef_utility/platform_specific_flags.mk.$(BUILDTYPE)
 # Targets
 #
 
-all:	ferret_cmn fc_isubset.so
+all:	ferret_cmn fc_isubset.so expnd_by_len.so
  
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug" "CFLAGS = $(CFLAGS) -g -Ddebug"  all

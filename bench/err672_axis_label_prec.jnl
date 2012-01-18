@@ -1,0 +1,29 @@
+! See ticket 1907
+! Axis label format didnt give enough precision for accurate labels 
+! for some cases where the range is between -1 and 1.
+
+! The upper tic was labeled 0.04 (or 0.05 depending on the OS and compiler)
+! Should be 0.045
+let v = {0.02, 0.047,0.007, 0.02}
+set view left
+plot v
+
+! This was a workaround
+set view right
+plot/set v
+ppl yfor (f5.3)
+ppl plot
+
+can view
+
+! Here are more variables that caused similar
+! inadequate precision in the format.
+
+let v = -1*{0.02, 0.042, 0.007, 0.02}
+set view left
+plot v
+
+! This one had labels -0.02, -0.02, -0.02, -0.01, -0.01, 0.00, 0.00, 0.1 
+let v = {-0.023, -0.01, 0.007, 0.004}
+set view right
+plot v

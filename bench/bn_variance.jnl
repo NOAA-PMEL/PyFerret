@@ -1,0 +1,10 @@
+ ! bn_variance.jnl
+ ! the @VAR transform is not tested in bn_transforms.jnl script.
+
+use coads_climatology
+list/x=100/y=10 sst[t=@var]
+list/x=100/L=1 sst[y=@var]
+list/y=10/L=1 sst[x=@var]
+
+use gt4d011.cdf
+list/y=3/l=1/x=233 u[z=@var]

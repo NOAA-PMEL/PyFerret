@@ -1,0 +1,53 @@
+! Ticket 1792: Write axes with CF-compliant units
+! and with standard name attributes for geophysical attrs.
+
+
+define axis/x=-10:10:2/units="deg" xax
+let xx = x[gx=xax]
+save/clobber/file=a.nc xx
+
+define axis/y=1:15:3/units="degrees" yax
+let yy = y[gy=yax]
+save/append/file=a.nc yy
+
+define axis/t="1-jan-2001":"5-jan-2001":1/units="DAYS"/t0="1-jan-2000" taxis
+let tt = t[gt=taxis]
+save/append/file=a.nc tt
+
+define axis/z/depth/units="meters" zaxdn = {0,10,40,100}
+let zdn = z[gz=zaxdn]
+save/append/file=a.nc zdn
+
+define axis/z/units="meters" zaxup = {0,10,40,100,200}
+let zup = z[gz=zaxup]
+save/append/file=a.nc zup
+
+sp echo "bn_axis_cf.jnl, degrees_east, degrees_north, std names on axes:" >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+
+! If the axis is defined in a file or the command line as
+! having units of "degrees" in any of its forms, write units
+! as the cf-compliant "degrees_east" or "degrees_north"
+! Previously these would have been saved as "DEGREES" and "DEG"
+
+use degrees
+sh att/all (`var,return=xaxis`)
+save/clobber/file=a.nc var
+
+define axis/units="DEG"/y=-90:90:15 yfifteen
+save/append/file=a.nc y[gy=yfifteen]
+
+sp echo "bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:" >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+
+! This dataset has time units of "DAYS since ..."
+! On output, downcase the units string.
+
+use bn_strides
+sh att/all (TTIME)
+save/clobber/file=a.nc xytvar
+
+sp echo "bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since" >> all_ncdump.out
+sp ncdump -h a.nc >> all_ncdump.out
+
+

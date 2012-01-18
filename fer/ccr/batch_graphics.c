@@ -50,18 +50,16 @@ void FORTRAN(set_batch_graphics)(char *outfile)
 {
   int length;
   char *result;
-  int modestate;
 
   assert( outfile != NULL );
   length = strlen(outfile);
-  modestate = 1;
   /*
    * This can be called either with (-batch) or without
    * (-gif or -unmapped) a filename.  Only call
    * save_metafile_name if a filename is given (-batch).
    */
   if ( length > 0 ) {
-     FORTRAN(save_metafile_name)(outfile, &length, &modestate);
+     FORTRAN(save_metafile_name)(outfile, &length);
      FORTRAN(assign_modemeta)();
   }
 

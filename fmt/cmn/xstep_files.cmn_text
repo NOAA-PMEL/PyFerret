@@ -31,7 +31,7 @@
      .				sf_ndxs  	(maxstepfiles),	! 1st time index
      .				sf_ndxe 	(maxstepfiles)	! last time index
 
-	CHARACTER*512	sf_name         ! same as s_filename in descript.def
+	CHARACTER*2048	sf_name         ! same as s_filename in descript.def
 	CHARACTER*23	sf_index
 	INTEGER		sf_setnum,sf_aux_set_num,sf_skip,sf_lunit,
      .			sf_reclen,sf_nrecperstep,sf_cpu_type,sf_ndxs,sf_ndxe

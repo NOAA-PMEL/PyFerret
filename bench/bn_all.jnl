@@ -95,6 +95,7 @@ SET MODE VERIFY
 
 ! 6/06  *acm* add bn_transforms.jnl -- there was a benchmark testing regridding
 !             transforms but not the others: smoothers, fillers, etc.
+! 1/12  *acm* add bn_variance.jnl -- testing @VAR transform
 
 ! 10/06 *acm* Remove tests of nco funcions: we dont want to require them to be installed
 !             on a system in order for it to pass the benchmarks.
@@ -515,6 +516,9 @@ go bn_reset
 go bn_transforms.jnl
 
 go bn_reset
+go bn_variance.jnl
+
+go bn_reset
 go bn_linecolors.jnl
 
 go bn_reset
@@ -765,6 +769,12 @@ GO bn_ifv
 
 GO bn_reset
 GO bn_randu2_randn2
+
+GO bn_reset
+GO bn_axis_cf
+
+GO bn_reset
+GO bn_repeated_coords
 
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not

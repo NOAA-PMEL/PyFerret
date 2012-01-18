@@ -128,10 +128,6 @@ c     .        deflate, deflate_level
 
 
       EQUIVALENCE ( ds_precision, cd_data_type )
-      REAL    r4_grid_start(4,maxvars),
-     .        r4_grid_end(4,maxvars)
-      EQUIVALENCE ( r4_grid_end,   ds_grid_end ),
-     .            ( r4_grid_start, ds_grid_start )
 
 * get the vital statistics for this variable
 

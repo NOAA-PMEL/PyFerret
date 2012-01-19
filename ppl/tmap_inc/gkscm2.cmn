@@ -5,21 +5,22 @@
 *  Ferret v5.80  New variables pixx and pixy to save the size of the 
 *                window in pixels.  Needed for PPL$XPIXEL, PPL$YPIXEL 
 *                when in gif or batch mode.
+* v6.8 Increase meta_file string to 2048, matching other filename strings.
 
-        integer       ws_lun,tmp_wsid
-        integer       tmp_lun
-        integer       item_gclrwk,item_ws_xform,item_pplpver
-        integer       item_ndx_range,item_spectrum,item_protect
-        integer       item_fill_ndx
-        integer       lbtype,lbcolor
-        integer       pixx,pixy
-        real          lbwidth,spline_tension
+        integer        ws_lun,tmp_wsid
+        integer        tmp_lun
+        integer        item_gclrwk,item_ws_xform,item_pplpver
+        integer        item_ndx_range,item_spectrum,item_protect
+        integer        item_fill_ndx
+        integer        lbtype,lbcolor
+        integer        pixx,pixy
+        real           lbwidth,spline_tension
 
-        logical       gks_open, vpt_was_set
-        logical       draftsman, save_on_exit, imgname_sent
+        logical        gks_open, vpt_was_set
+        logical        draftsman, save_on_exit, imgname_sent
 
         character*2048 meta_file
-        character*24  ws_file,tmp_file
+        character*24   ws_file,tmp_file
 
       common /gkscm2/ meta_file,gks_open,ws_lun,ws_file,item_gclrwk,
      .                item_ws_xform,tmp_wsid,tmp_lun,tmp_file,

@@ -817,7 +817,8 @@ class PyQtPipedViewer(QMainWindow):
             if value:
                 self.__lastformat = value.lower();
         elif cmndact == "show":
-            self.showNormal()
+            if self.isHidden():
+                self.showNormal()
         elif cmndact == "beginView":
             self.beginView(cmnd)
         elif cmndact == "clipView":

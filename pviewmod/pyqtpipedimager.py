@@ -622,7 +622,8 @@ class PyQtPipedImager(QMainWindow):
             if value:
                 self.__lastformat = value.lower();
         elif cmndact == "show":
-            self.showNormal()
+            if self.isHidden():
+                self.showNormal()
         else:
             raise ValueError( self.tr("Unknown command action %1") \
                                   .arg(str(cmndact)) )
@@ -758,7 +759,7 @@ if __name__ == "__main__":
             k += 1
             imgdata[k] = aval
             k += 1
-    blocksize = 8192
+    blocksize = 2000
     numblocks = (imgheight * imgstride + blocksize - 1) // blocksize
     drawcmnds.append( { "action":"newImage",
                         "width":imgwidth,

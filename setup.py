@@ -69,7 +69,7 @@ ext_mods = [ Extension("pyferret._pyferret", include_dirs = incdir_list,
 
 # Configure the setup
 setup(name = "pyferret",
-      version = "7.0.0.6",
+      version = "7.0.0.7",
       description = "python module providing ferret functionality",
       long_description = "python module providing ferret functionality",
       author = "Karl M. Smith",
@@ -80,7 +80,7 @@ setup(name = "pyferret",
       ext_modules = ext_mods)
 
 setup(name = "pipedviewer",
-      version = "0.0.0.1",
+      version = "0.0.0.2",
       description = "graphics viewer controlled by a command pipe",
       long_description = "A graphics viewer application that receives its " \
                          "drawing and other commands primarily from another " \

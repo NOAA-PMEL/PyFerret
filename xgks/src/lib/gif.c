@@ -54,6 +54,7 @@
  *             multiple Ferret processes. Do not test for .gif filename but
  *             in GIFmoClose do not call GIFFlush (which never did anything at 
  *             the point of closing). 
+ * *acm*  1/12 Fixing ticket 1913. In fact we do want to call GIFFlush on exiting.
  */
 
 /*
@@ -560,7 +561,10 @@ GIFmoClose(Metafile *mf)
   if (mf != NULL && mf->cgmo != NULL) {
     mf_cgmo *cgmo	= mf->cgmo;
     GIFmetafile *meta = find_meta(cgmo);
-    /*  status = GIFFlush(mf, meta->ws->conn); */
+	/* the call to GIFFlush had been commented out with the
+	   fix to ticket 1150.  But that means that files created 
+	   with "ferret -batch giffilename.gif" are not written. */
+    status = GIFFlush(mf, meta->ws->conn); 
 
     if (meta != 0){
       destroy_meta(cgmo, meta);

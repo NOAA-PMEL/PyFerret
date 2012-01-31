@@ -194,6 +194,7 @@
 *                  Add DEFINE PYFUNC /NAME=<alias> python.module.name
 * V68 *acm* 1/12   Add USE/STRICT; see ticket 1910.
 * V700  *kms* 3/11 Add CANCEL PYVAR /ALL /DATASET
+* V700  *kms* 1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -396,16 +397,19 @@
 	   DATA subcommands      (nsub_at1 +16)	/ 'GIFFILE'	/
 	   DATA num_qualifs      (nsub_at1 +16)	/ nqual1q	/
 	   DATA qualifier_pointer(nsub_at1 +16)	/ nqual_at1q	/
-* SET **** / ****
-		DATA qualifiers  (nqual_at1q+0)	/ '****'	/
-		DATA qualifiers  (nqual_at1q+1)	/ '****'	/
-* SET ****							  ! unused (r)
-	   DATA subcommands      (nsub_at1 +17)	/ '****'	/
-	   DATA num_qualifs      (nsub_at1 +17)	/ nqual1r	/
-	   DATA qualifier_pointer(nsub_at1 +17)	/ nqual_at1s	/
-* SET **** / ****
-		DATA qualifiers  (nqual_at1r+0)	/ '****'	/
-		DATA qualifiers  (nqual_at1r+1)	/ '****'	/
+* SET GRAPHICS							  ! set graphics engine name and other drawing details
+           DATA subcommands      (nsub_at1 +17)	/ 'GRAPHICS'	/
+           DATA num_qualifs      (nsub_at1 +17)	/ nqual1r	/
+           DATA qualifier_pointer(nsub_at1 +17)	/ nqual_at1r	/
+* SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
+                DATA qualifiers  (nqual_at1r+0)	/ 'ENGINE'	/
+                DATA qualifiers  (nqual_at1r+1)	/ 'ANTIALIA'	/
+                DATA qualifiers  (nqual_at1r+2)	/ 'NOANTIAL'	/
+                DATA qualifiers  (nqual_at1r+3)	/ '****'	/
+                DATA qualifiers  (nqual_at1r+4)	/ '****'	/
+                DATA qualifiers  (nqual_at1r+5)	/ '****'	/
+                DATA qualifiers  (nqual_at1r+6)	/ '****'	/
+                DATA qualifiers  (nqual_at1r+7)	/ '****'	/
 * SET ****							  ! unused (s)
 	   DATA subcommands      (nsub_at1 +18)	/ '****'	/
 	   DATA num_qualifs      (nsub_at1 +18)	/ nqual1s	/

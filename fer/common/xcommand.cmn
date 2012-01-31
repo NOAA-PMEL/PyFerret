@@ -39,6 +39,7 @@
 * V664  8/10 *kms* Add DEFINE PYFUNC /NAME=<alias> python.module.name
 * V6.8  *acm* 1/12 Add SET DATA/STRICT 
 * V700  *kms* 3/11 Add CANCEL PYVAR /ALL /DATASET
+* V700  *kms* 1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -113,7 +114,7 @@
      .			nqual1o = 3, nqual_at1p = nqual_at1o + nqual1o,	!'NCCACHE'
      .			nqual1p = 8, nqual_at1q = nqual_at1p + nqual1p,	!'REDIRECT'
      .			nqual1q = 0, nqual_at1r = nqual_at1q + nqual1q,	!'GIFFILE'
-     .			nqual1r = 2, nqual_at1s = nqual_at1r + nqual1r,	!'****'
+     .			nqual1r = 8, nqual_at1s = nqual_at1r + nqual1r,	!'GRAPHICS'
      .			nqual1s = 4, nqual_at1t = nqual_at1s + nqual1s,	!'****'
      .			nqual1t = 4, nqual_at2a = nqual_at1t + nqual1t	!'****'
      .		      )

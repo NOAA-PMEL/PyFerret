@@ -170,6 +170,7 @@
 *       *kms* 2/11 return "mem_blk_size" instead of "mem_size" in reconfig
 * V68   *acm* 1/12 Implement micro-adjusting of repeated coordinates (ticket 1910).
 *                  To keep the previous behavior the user may specify USE/STRICT.
+* V700  *kms* 1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -259,7 +260,7 @@
 
 * select subcommand
 	GOTO ( 100,200,300,400,500,600,700,800,900,1000,
-     .        1100,1200,1300,1400,1500,1600,1700 ) subcmnd_num
+     .        1100,1200,1300,1400,1500,1600,1700,1800 ) subcmnd_num
 
 * SET '    ' 
 * arrival at this point usually means an illegal subcommand was given
@@ -1801,6 +1802,60 @@ c *kob* 4/97
         CALL PPLCMD(from, line, 0, 'PLTNME ' // buff2, 1, 1)
         mode_metafile = .TRUE.
 	RETURN
+
+* SET GRAPHICS /ENGINE= /ANTIALIAs /NOANTIALias
+ 1800   IF ( num_args .NE. 0 ) THEN
+           CALL ERRMSG( ferr_invalid_command, status, 
+     .             'SET GRAPHICS does not take any arguments ' //
+     .             '(only qualifiers)', *5000 )
+        ENDIF
+*       Use slen as a flag that a qualifier was given
+        slen = 0
+
+*       /ENGINE=
+        lp = qual_given( slash_set_graphics_engine )
+        IF ( lp .GT. 0 ) THEN
+           CALL EQUAL_STRING( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                        title, status )
+           IF ( status .NE. ferr_ok ) RETURN
+           slen = TM_LENSTR(title)
+           IF ( slen .LE. 1 ) THEN
+               CALL ERRMSG( ferr_invalid_command, status, 
+     .              'No engine name given with SET GRAPHICS /ENGINE=',
+     .              *5000 )
+           ENDIF
+           CALL FGD_SET_ENGINE(title, status)
+           IF ( status .NE. ferr_ok ) THEN
+               CALL ERRMSG( ferr_invalid_command, status, 
+     .                 'Unknown graphics engine name "' //
+     .                 title(1:slen) // '"', *5000 )
+           ENDIF
+        ENDIF
+
+*       /ANTIALIAs and /NOANTIALias
+        lp = qual_given( slash_set_graphics_antialias )
+        loc = qual_given( slash_set_graphics_noantialias )
+        IF ( (lp .GT. 0) .AND. (loc .GT. 0) ) THEN
+           CALL ERRMSG( ferr_invalid_command, status, 
+     .             'Cannot give both /ANTIALIAS and /NOANTIALIAS',
+     .             *5000 )
+        ENDIF
+        IF ( lp .GT. 0 ) THEN
+           CALL FGD_SET_ANTIALIAS(.TRUE.)
+           slen = 1
+        ENDIF
+        IF ( loc .GT. 0 ) THEN
+           CALL FGD_SET_ANTIALIAS(.FALSE.)
+           slen = 1
+        ENDIF
+
+*       Check if any qualifiers were given
+        IF ( slen .EQ. 0 ) THEN
+           CALL ERRMSG( ferr_invalid_command, status, 
+     .             'No qualifiers given to SET GRAPHICS command',
+     .             *5000 )
+        ENDIF
+        RETURN
 
 * error exits
  5000	RETURN

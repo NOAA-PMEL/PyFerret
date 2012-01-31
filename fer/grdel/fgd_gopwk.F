@@ -26,8 +26,8 @@
 
         INTEGER TM_LENSTR
 
-        INTEGER engnamelen, wintitlelen,
-     .          showit, success, errmsglen
+        INTEGER engnamelen, wintitlelen, showit,
+     .          success, errmsglen, aaint
         CHARACTER*2048 errmsg
         REAL wdth, hght, dpix, dpiy
 
@@ -88,6 +88,18 @@
         wdth = windowwidth(windowid) * dpix
         hght = windowheight(windowid) * dpiy
         CALL FGDWINSETSIZE(success, windowobjs(windowid), wdth, hght)
+        IF ( success .EQ. 0 ) THEN
+            errmsg = ' '
+            CALL FGDERRMSG(errmsg, errmsglen)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
+        ENDIF
+*       Set the default antialias state
+        IF ( useantialiasing ) THEN
+            aaint = 1
+        ELSE
+            aaint = 0
+        ENDIF
+        CALL FGDWINSETANTIALIAS(success, windowobjs(windowid), aaint)
         IF ( success .EQ. 0 ) THEN
             errmsg = ' '
             CALL FGDERRMSG(errmsg, errmsglen)

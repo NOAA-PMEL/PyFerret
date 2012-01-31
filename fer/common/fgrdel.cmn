@@ -120,6 +120,9 @@
 * Name of the graphics engine to use when creating a window.
         CHARACTER*64 enginename
 
+* Default antialiasing state for new windows
+        LOGICAL useantialiasing
+
 * Title for the window to be created.  The program flow
 * sets this in a separate call before creating a window.
         CHARACTER*128 windowtitle
@@ -134,6 +137,6 @@
      .         viewtopcoord, activewindow, activetransform,
      .         activebrush, activepen, activesymbol, lastbrushcolor,
      .         lastbstylen, clearcolor, symbolcolor, showwindow,
-     .         cliptoview, somethingdrawn, lastbrushstyle,
-     .         enginename, windowtitle
+     .         cliptoview, somethingdrawn, useantialiasing,
+     .         lastbrushstyle, enginename, windowtitle
 

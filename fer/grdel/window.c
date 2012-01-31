@@ -482,6 +482,69 @@ grdelBool grdelWindowUpdate(grdelType window)
 }
 
 /*
+ * Turns on or off anti-aliasing on items drawn after this call.
+ *
+ * Arguments:
+ *     window: Window to be updated
+ *     antialias: if zero, turn off antialiasing;
+ *                otherwise, turn on antialiasing
+ *
+ * Returns one if successful.   If an error occurs, grdelerrmsg
+ * is assigned an appropriate error message and zero is returned.
+ */
+grdelBool grdelWindowSetAntialias(grdelType window, int antialias)
+{
+    GDWindow *mywindow;
+    grdelBool success;
+    PyObject *aaobj;
+    PyObject *result;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelWindowSetAntialias called: "
+            "window = %p, antialias = %d\n", window, antialias);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelWindowVerify(window) == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowSetAntialias: window argument is not "
+                            "a grdel Window");
+        return 0;
+    }
+    mywindow = (GDWindow *) window;
+
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            setAntialias(mywindow->bindings.cferbind, antialias);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        if ( antialias == 0 ) 
+            aaobj = Py_False;
+        else
+            aaobj = Py_True;
+        result = PyObject_CallMethod(mywindow->bindings.pyobject, "setAntialias",
+                                     "O", aaobj);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowSetAntialias: error when calling the "
+                    "Python binding's setAntiAlias method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowSetAntialias: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
+
+    grdelerrmsg[0] = '\0';
+    return 1;
+}
+
+/*
  * Sets the current size of a Window.
  *
  * Arguments:
@@ -853,6 +916,25 @@ void fgdwinupdate_(int *success, void **window)
     grdelBool result;
 
     result = grdelWindowUpdate(*window);
+    *success = result;
+}
+
+/*
+ * Turns on or off anti-aliasing on items drawn after this call.
+ *
+ * Input Arguments:
+ *     window: Window to use
+ *     antialias: if zero, turn off antialiasing;
+ *                otherwise, turn on antialiasing
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void fgdwinsetantialias_(int *success, void **window, int *antialias)
+{
+    grdelBool result;
+
+    result = grdelWindowSetAntialias(*window, *antialias);
     *success = result;
 }
 

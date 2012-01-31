@@ -47,6 +47,7 @@
 * V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
 * V664  8/10 *kms* Add EXIT /TOPYTHON
 * V68 *acm* 1/12   Add USE/STRICT; see ticket 1910.
+* V700  *kms* 1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -188,7 +189,11 @@
      .                  slash_set_redirect_journal,
      .                  slash_set_redirect_file,
      .                  slash_set_redirect_append,
-     .                  slash_set_redirect_clobber
+     .                  slash_set_redirect_clobber,
+     .
+     .                  slash_set_graphics_engine,
+     .                  slash_set_graphics_antialias,
+     .                  slash_set_graphics_noantialias
 
 	INTEGER		slash_cont_over_plot,
      .			slash_cont_set_up,
@@ -444,7 +449,11 @@
      .                  slash_set_redirect_journal = 2,
      .                  slash_set_redirect_file    = 3,
      .                  slash_set_redirect_append  = 4,
-     .                  slash_set_redirect_clobber = 5)
+     .                  slash_set_redirect_clobber = 5,
+     .
+     .                  slash_set_graphics_engine      = 1,
+     .                  slash_set_graphics_antialias   = 2,
+     .                  slash_set_graphics_noantialias = 3 )
 
 	PARAMETER     ( slash_cont_over_plot	= 9,
      .			slash_cont_set_up	= 10,

@@ -5,8 +5,8 @@
 *
 * Input Arguments:
 *     newname - name (or partial name) of the engine in
-*               uppercase; one of CAIRO, PYQTCAIRO, or
-*               PYQTVIEWER (compared in that order)
+*               uppercase; one of CAIRO, PYQTVIEWER, or
+*               PYQTCAIRO (compared in that order)
 * Output Arguments:
 *     sts - FERR_OK if successful; 
 *           FERR_INVALID_COMMAND otherwise
@@ -24,23 +24,23 @@
 *       Local variables
         INTEGER idx
 
-        idx = INDEX(newname, "CAIRO")
+        idx = INDEX("CAIRO", newname)
         IF ( idx .EQ. 1 ) THEN
             enginename = "Cairo"
             sts = FERR_OK
             RETURN
         ENDIF
 
-        idx = INDEX(newname, "PYQTCAIRO")
+        idx = INDEX("PYQTVIEWER", newname)
         IF ( idx .EQ. 1 ) THEN
-            enginename = "PyQtCairo"
+            enginename = "PyQtViewer"
             sts = FERR_OK
             RETURN
         ENDIF
 
-        idx = INDEX(newname, "PYQTVIEWER")
+        idx = INDEX("PYQTCAIRO", newname)
         IF ( idx .EQ. 1 ) THEN
-            enginename = "PyQtViewer"
+            enginename = "PyQtCairo"
             sts = FERR_OK
             RETURN
         ENDIF

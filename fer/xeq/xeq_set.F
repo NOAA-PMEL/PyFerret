@@ -1824,7 +1824,7 @@ c *kob* 4/97
      .              'No engine name given with SET GRAPHICS /ENGINE=',
      .              *5000 )
            ENDIF
-           CALL FGD_SET_ENGINE(title, status)
+           CALL FGD_SET_ENGINE(title(1:slen), status)
            IF ( status .NE. ferr_ok ) THEN
                CALL ERRMSG( ferr_invalid_command, status, 
      .                 'Unknown graphics engine name "' //

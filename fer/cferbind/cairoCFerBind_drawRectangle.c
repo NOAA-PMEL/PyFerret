@@ -51,9 +51,11 @@ grdelBool cairoCFerBind_drawRectangle(CFerBind *self, double left, double bottom
     }
     instdata = (CairoCFerBindData *) self->instancedata;
     if ( instdata->context == NULL ) {
-        strcpy(grdelerrmsg, "cairoCFerBind_drawRectangle: unexpected error, "
-                            "NULL context");
-        return 0;
+        /* Create the Cairo Surface and Context if they do not exist */
+        if ( ! cairoCFerBind_createSurface(self) ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
     }
     if ( brush != NULL ) {
         brushobj = (CCFBBrush *) brush;

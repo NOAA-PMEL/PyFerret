@@ -58,9 +58,9 @@ grdelBool pyqtcairoCFerBind_setImageName(CFerBind *self, const char imagename[],
      * Since an image surface is always used, this call by itself
      * does not trigger the need for a new surface or context if
      * they exist.  If they do not exist, defer creating a new
-     * surface and context until beginView is called.  Ferret may
-     * change size and other details before actually starting to
-     * draw.
+     * surface and context until a drawing request is made.
+     * Ferret may change size and other details before actually
+     * starting to draw.
      */
     return 1;
 }

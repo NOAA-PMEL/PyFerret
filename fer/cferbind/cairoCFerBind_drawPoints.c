@@ -18,6 +18,7 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
                                    int numpts, grdelType symbol, grdelType color,
                                    double symsize)
 {
+    CairoCFerBindData *instdata;
     CCFBColor *colorobj;
 
     /* Sanity check */
@@ -26,6 +27,14 @@ grdelBool cairoCFerBind_drawPoints(CFerBind *self, double ptsx[], double ptsy[],
         strcpy(grdelerrmsg, "cairoCFerBind_drawPoints: unexpected error, "
                             "self is not a valid CFerBind struct");
         return 0;
+    }
+    instdata = (CairoCFerBindData *) self->instancedata;
+    if ( instdata->context == NULL ) {
+        /* Create the Cairo Surface and Context if they do not exist */
+        if ( ! cairoCFerBind_createSurface(self) ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
     }
     colorobj = (CCFBColor *) color;
     if ( colorobj->id != CCFBColorId ) {

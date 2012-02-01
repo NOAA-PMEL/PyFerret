@@ -41,9 +41,11 @@ grdelBool cairoCFerBind_drawMultiline(CFerBind *self, double ptsx[],
     }
     instdata = (CairoCFerBindData *) self->instancedata;
     if ( instdata->context == NULL ) {
-        strcpy(grdelerrmsg, "cairoCFerBind_drawMultiline: unexpected error, "
-                            "NULL context");
-        return 0;
+        /* Create the Cairo Surface and Context if they do not exist */
+        if ( ! cairoCFerBind_createSurface(self) ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
     }
     penobj = (CCFBPen *) pen;
     if ( penobj->id != CCFBPenId ) {

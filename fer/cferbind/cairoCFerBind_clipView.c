@@ -7,7 +7,8 @@
 #include "cairoCFerBind.h"
 
 /*
- * Turns on or off clipping of subsequent drawing to the current view rectangle.
+ * Turns on or off clipping of subsequent drawing to the current
+ * view rectangle.
  *
  * Arguments:
  *     clipit - clip drawing to the current view rectangle?
@@ -28,10 +29,15 @@ grdelBool cairoCFerBind_clipView(CFerBind *self, int clipit)
         return 0;
     }
     instdata = (CairoCFerBindData *) self->instancedata;
+    instdata->clipit = clipit;
 
-    /* Clear any clipping rectangle that may be present */
+    if ( instdata->context == NULL ) {
+        /* No context yet, so done */
+        return 1;
+    }
+
+    /* Clear any clipping rectangle that may be present in the context */
     cairo_reset_clip(instdata->context);
-    instdata->clipit = 0;
 
     /* If no clipping desired, done */
     if ( ! clipit )

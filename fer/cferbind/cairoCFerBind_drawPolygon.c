@@ -49,9 +49,11 @@ grdelBool cairoCFerBind_drawPolygon(CFerBind *self, double ptsx[], double ptsy[]
     }
     instdata = (CairoCFerBindData *) self->instancedata;
     if ( instdata->context == NULL ) {
-        strcpy(grdelerrmsg, "cairoCFerBind_drawPolygon: unexpected error, "
-                            "NULL context");
-        return 0;
+        /* Create the Cairo Surface and Context if they do not exist */
+        if ( ! cairoCFerBind_createSurface(self) ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
     }
     if ( brush != NULL ) {
         brushobj = (CCFBBrush *) brush;

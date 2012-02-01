@@ -139,9 +139,9 @@ grdelBool cairoCFerBind_setImageName(CFerBind *self, const char imagename[],
     instdata->somethingdrawn = 0;
 
     /*
-     * Defer creating a new surface and context until beginView
-     * is called.  Ferret may change size and other details before
-     * actually starting to draw.
+     * Defer creating a new surface and context until a drawing
+     * request is made.  Ferret may change size and other details
+     * before actually starting to draw.
      */
 
     return 1;

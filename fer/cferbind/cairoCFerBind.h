@@ -102,6 +102,7 @@ typedef struct CairoCFerBindData_struct {
 
 grdelBool cairoCFerBind_setImageName(CFerBind *self, const char *imagename,
                         int imgnamelen, const char *formatname, int fmtnamelen);
+grdelBool cairoCFerBind_createSurface(CFerBind *self);
 grdelBool cairoCFerBind_deleteWindow(CFerBind *self);
 grdelBool cairoCFerBind_setAntialias(CFerBind *self, int antialias);
 grdelBool cairoCFerBind_beginView(CFerBind *self, double lftfrac, double btmfrac,

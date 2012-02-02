@@ -17,11 +17,11 @@ all : optimized
 
 .PHONY : optimized
 optimized :
-	$(MAKE) "CFLAGS = $(CFLAGS) -I/usr/include/cairo -Wall -Werror -DNDEBUG -O" $(LIBNAME)
+	$(MAKE) "CFLAGS = $(CFLAGS) -I/usr/include/cairo -Wall -Wno-pointer-to-int-cast -Werror -DNDEBUG -O" $(LIBNAME)
 
 .PHONY : debug
 debug :
-	$(MAKE) "CFLAGS = $(CFLAGS) -I/usr/include/cairo -Wall -Werror -O0 -g" $(LIBNAME)
+	$(MAKE) "CFLAGS = $(CFLAGS) -I/usr/include/cairo -Wall -Wno-pointer-to-int-cast -Werror -O0 -g" $(LIBNAME)
 
 $(LIBNAME) : $(COBJS)
 	$(AR) $(ARFLAGS) $(LIBNAME) $(COBJS)

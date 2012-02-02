@@ -28,7 +28,6 @@ grdelBool cairoCFerBind_deleteSymbol(CFerBind *self, grdelType symbol)
      * A symbol "object" is just a character value cast as a pointer type;
      * thus nothing needs to be done to delete it.
      */
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 

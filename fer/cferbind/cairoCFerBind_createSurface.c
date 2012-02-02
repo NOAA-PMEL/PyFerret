@@ -163,7 +163,6 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
         }
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 

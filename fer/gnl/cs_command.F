@@ -92,7 +92,6 @@
         include 'xinterrupt.cmn'
         include 'xplot_setup.cmn'
         include 'xplot_state.cmn'
-        include 'gkscm1_inc.decl'       ! with gks common
         include 'GKSCM1.INC'            ! with gks common
 
         IF ( interrupted ) THEN
@@ -112,6 +111,12 @@
            IF ( (cs_limit(csp)-cs_phase(csp))*cs_delta(csp)
      .          .LT. 0.0 ) THEN
 * ... yes
+              IF ( animate .AND. (wsid .GT. 0) ) THEN
+*                make sure the latest image is displayed
+                 IF ( wn_open(wsid) ) THEN
+                    CALL FGD_GUWK(wsid, 0)
+                 ENDIF
+              ENDIF
 * *kob* check to see if we need to keep looping through animation
               IF ( cs_loop(csp) .GT.1 ) THEN 
                  cs_phase( csp ) = cs_start( csp ) 
@@ -130,9 +135,20 @@
               ENDIF
            ELSE
 *       ... no - get the next command
-              IF ( animate .AND. ( (cs_phase(csp) - cs_start(csp))
-     .                             * cs_delta(csp) .GT. 0.0 ) ) THEN
-                  first_frame = .FALSE.
+              IF ( animate ) THEN
+*                make sure the latest image is displayed
+                 IF ( wsid .GT. 0 ) THEN
+                    IF ( wn_open(wsid) ) THEN
+                       CALL FGD_GUWK(wsid, 0)
+                    ENDIF
+                 ENDIF
+*                check if we are past commands for the first frame
+                 IF ( first_frame ) THEN
+                    IF ( ( (cs_phase(csp) - cs_start(csp))
+     .                         * cs_delta(csp) .GT. 0.0 ) ) THEN
+                       first_frame = .FALSE.
+                    ENDIF
+                 ENDIF
               ENDIF
               cmnd_line = cs_text( csp )
 * ... set up the default context to evaluate the command

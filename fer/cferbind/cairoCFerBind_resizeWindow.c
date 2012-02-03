@@ -59,7 +59,6 @@ grdelBool cairoCFerBind_resizeWindow(CFerBind *self, double width, double height
     if ( instdata->surface != NULL ) {
         cairo_surface_destroy(instdata->surface);
         instdata->surface = NULL;
-        instdata->imagechanged = 1;
     }
     instdata->somethingdrawn = 0;
 

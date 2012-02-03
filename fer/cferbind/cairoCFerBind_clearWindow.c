@@ -54,7 +54,6 @@ grdelBool cairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
         cairo_surface_destroy(instdata->surface);
         instdata->surface = NULL;
         instdata->somethingdrawn = 0;
-        instdata->imagechanged = 1;
     }
 
     /* Copy the given color structure values to lastclearcolor */

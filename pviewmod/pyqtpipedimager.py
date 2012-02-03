@@ -68,10 +68,9 @@ class PyQtPipedImager(QMainWindow):
         # a viewer (mainWindow) of the right size
         self.__scenewidth = 840
         self.__sceneheight = 720
-        # initial default color for clearScene (transparent white, but
-        # with premultiplied alpha, the color here does not matter)
+        # initial default color for clearScene (opaque white)
         self.__lastclearcolor = QColor(0xFFFFFF)
-        self.__lastclearcolor.setAlpha(0)
+        self.__lastclearcolor.setAlpha(0xFF)
         # scaling factor for creating the displayed scene
         self.__scalefactor = 1.0
         # minimum label width and height (for minimum scaling factor)

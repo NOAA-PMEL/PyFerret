@@ -72,10 +72,9 @@ class PyQtPipedViewer(QMainWindow):
         # default scene size
         self.__scenewidth = 840
         self.__sceneheight = 720
-        # initial default color for clearScene (transparent white, but
-        # with premultiplied alpha, the color here does not matter)
+        # initial default color for clearScene (opaque white)
         self.__lastclearcolor = QColor(0xFFFFFF)
-        self.__lastclearcolor.setAlpha(0)
+        self.__lastclearcolor.setAlpha(0xFF)
         # List of QPictures creating the current scene
         self.__viewpics = [ ]
         # QPicture/QPainter pair for the current view

@@ -21,6 +21,7 @@ grdelBool pyqtcairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
     CairoCFerBindData *instdata;
     CCFBColor *colorobj;
     grdelType  viewercolor;
+    int        inanimation;
     grdelBool  success;
 
     /* Sanity checks */
@@ -54,16 +55,17 @@ grdelBool pyqtcairoCFerBind_clearWindow(CFerBind *self, grdelType fillcolor)
        return 0;
     }
 
-    /* Tell the viewer to clear the displayed scene */
-    success = grdelWindowClear(instdata->viewer, viewercolor);
-    if ( ! success ) {
-        char myerrmsg[2048];
-        /* copy the error message (grdelColorDelete will clear it) */
-        strcpy(myerrmsg, grdelerrmsg);
-        /* delete the viewer color created hete */
-        grdelColorDelete(viewercolor);
-        /* return the error message to grdelerrmsg */
-        strcpy(grdelerrmsg, myerrmsg);
+    /* Only clear the displayed image if this is not in an animation */
+    fgd_getanimate_(&inanimation);
+    if ( ! inanimation ) {
+        /* Tell the viewer to clear the displayed scene */
+        success = grdelWindowClear(instdata->viewer, viewercolor);
+        if ( ! success ) {
+            /* delete the viewer color created here */
+            grdelColorDelete(viewercolor);
+            /* grdelerrmsg assigned by grdelWindowClear failure */
+            return 0;
+        }
     }
 
     /* Delete the viewer color object created here */

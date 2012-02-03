@@ -186,7 +186,6 @@ grdelBool grdelDrawMultiline(grdelType window, const float ptsx[],
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -341,7 +340,6 @@ grdelBool grdelDrawPoints(grdelType window, const float ptsx[],
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -513,7 +511,6 @@ grdelBool grdelDrawPolygon(grdelType window, const float ptsx[],
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -623,7 +620,6 @@ grdelBool grdelDrawRectangle(grdelType window, float left, float bottom,
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -716,7 +712,6 @@ grdelBool grdelDrawText(grdelType window, const char *text, int textlen,
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 

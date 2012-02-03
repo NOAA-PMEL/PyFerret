@@ -13,13 +13,11 @@
 
 	INTEGER		max_windows,
      .			max_viewport,
-     .			mvp_dflt,
-     .			win_id9
+     .			mvp_dflt
 	REAl		wn_dflt_scale
 	PARAMETER     ( max_windows = 9,
      .			max_viewport= 200,
      .			mvp_dflt = 0,
-     .                  win_id9 =9,
      .			wn_dflt_scale = 0.83666 )	! SQRT(0.7)
 
 	LOGICAL		wn_open,

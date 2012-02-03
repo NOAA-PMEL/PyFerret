@@ -71,7 +71,6 @@ setup_keys.F\
 start_pplus.F\
 taxis_style.F\
 trim_axis_ends.F\
-swap_active_window.F\
 viewport_number.F\
 vp_axlim2lim.F\
 whoi_date.F 

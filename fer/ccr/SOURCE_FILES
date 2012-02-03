@@ -1,6 +1,5 @@
 SRCS_C = \
 add_c_pointer.c\
-backing_store_enabled.c\
 batch_graphics.c\
 binaryRead.c\
 c_strcmp.c\
@@ -13,7 +12,6 @@ c_strcat.c\
 c_substr.c\
 c_strfloat.c\
 check_nan_data_sub.c\
-copy_buffered_window.c\
 concatenate_c_strings.c\
 compare_c_strings.c\
 copy_c_string.c\
@@ -42,6 +40,5 @@ set_null_c_string.c\
 set_null_c_string_array.c\
 signal.c\
 sizeof_pointer.c\
-unmap_animate_window.c\
 write_dods.c\
 xfer_c_ptrs.c

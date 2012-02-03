@@ -83,7 +83,6 @@ grdelType grdelSymbol(grdelType window, const char *symbolname,
     fflush(debuglogfile);
 #endif
 
-    grdelerrmsg[0] = '\0';
     return symbol;
 }
 
@@ -136,7 +135,6 @@ grdelBool grdelSymbolDelete(grdelType symbol)
     }
     mysymbol = (GDSymbol *) symbol;
 
-    grdelerrmsg[0] = '\0';
     success = 1;
 
     bindings = grdelWindowVerify(mysymbol->window);

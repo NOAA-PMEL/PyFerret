@@ -109,7 +109,6 @@ grdelType grdelColor(grdelType window, float redfrac, float greenfrac,
     fflush(debuglogfile);
 #endif
 
-    grdelerrmsg[0] = '\0';
     return color;
 }
 
@@ -162,7 +161,6 @@ grdelBool grdelColorDelete(grdelType color)
     }
     mycolor = (GDColor *) color;
 
-    grdelerrmsg[0] = '\0';
     success = 1;
 
     bindings = grdelWindowVerify(mycolor->window);

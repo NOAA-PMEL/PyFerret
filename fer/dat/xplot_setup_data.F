@@ -67,6 +67,8 @@
      .		xwhitelo	/ 1.2 /,	! PLOT+ xorigin
      .		ywhitelo	/ 1.4 /,	! PLOT+ yorigin
      .		xwhitehi	/ 1.0 /,
-     .		ywhitehi	/ 1.4 /
+     .		ywhitehi	/ 1.4 /,
+     .          animate         / .FALSE. /,
+     .          first_frame     / .TRUE. /
 
 	END

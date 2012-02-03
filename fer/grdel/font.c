@@ -107,7 +107,6 @@ grdelType grdelFont(grdelType window, const char *familyname,
     fflush(debuglogfile);
 #endif
 
-    grdelerrmsg[0] = '\0';
     return font;
 }
 
@@ -160,7 +159,6 @@ grdelBool grdelFontDelete(grdelType font)
     }
     myfont = (GDFont *) font;
 
-    grdelerrmsg[0] = '\0';
     success = 1;
 
     bindings = grdelWindowVerify(myfont->window);

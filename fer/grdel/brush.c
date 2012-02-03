@@ -91,7 +91,6 @@ grdelType grdelBrush(grdelType window, grdelType color,
     fflush(debuglogfile);
 #endif
 
-    grdelerrmsg[0] = '\0';
     return brush;
 }
 
@@ -144,7 +143,6 @@ grdelBool grdelBrushDelete(grdelType brush)
     }
     mybrush = (GDBrush *) brush;
 
-    grdelerrmsg[0] = '\0';
     success = 1;
 
     bindings = grdelWindowVerify(mybrush->window);

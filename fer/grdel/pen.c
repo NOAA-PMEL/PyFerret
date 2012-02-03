@@ -102,7 +102,6 @@ grdelType grdelPen(grdelType window, grdelType color,
     fflush(debuglogfile);
 #endif
 
-    grdelerrmsg[0] = '\0';
     return pen;
 }
 
@@ -155,7 +154,6 @@ grdelBool grdelPenDelete(grdelType pen)
     }
     mypen = (GDPen *) pen;
 
-    grdelerrmsg[0] = '\0';
     success = 1;
 
     bindings = grdelWindowVerify(mypen->window);

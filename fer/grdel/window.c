@@ -181,7 +181,6 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
 #endif
 
     /* return the pointer to the GDWindow */
-    grdelerrmsg[0] = '\0';
     return window;
 }
 
@@ -284,7 +283,6 @@ grdelBool grdelWindowDelete(grdelType window)
     mywindow->bindings.pyobject = NULL;
     PyMem_Free(window);
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -354,8 +352,6 @@ grdelBool grdelWindowSetImageName(grdelType window, const char *imagename,
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
-
     return 1;
 }
 
@@ -420,7 +416,6 @@ grdelBool grdelWindowClear(grdelType window, grdelType fillcolor)
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -477,7 +472,6 @@ grdelBool grdelWindowUpdate(grdelType window)
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -540,7 +534,6 @@ grdelBool grdelWindowSetAntialias(grdelType window, int antialias)
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -601,7 +594,6 @@ grdelBool grdelWindowSetSize(grdelType window, float width, float height)
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -665,7 +657,6 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -740,7 +731,6 @@ grdelBool grdelWindowSave(grdelType window, const char *filename,
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -807,7 +797,6 @@ grdelBool grdelWindowDpi(grdelType window, float *dpix, float *dpiy)
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -1115,7 +1104,6 @@ grdelBool grdelWindowViewBegin(grdelType window,
     }
 
     mywindow->hasview = 1;
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -1183,7 +1171,6 @@ grdelBool grdelWindowViewClip(grdelType window, grdelBool clipit)
         return 0;
     }
 
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 
@@ -1244,7 +1231,6 @@ grdelBool grdelWindowViewEnd(grdelType window)
     }
 
     mywindow->hasview = 0;
-    grdelerrmsg[0] = '\0';
     return 1;
 }
 

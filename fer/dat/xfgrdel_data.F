@@ -56,10 +56,7 @@
         DATA cliptoview / maxwindowobjs * .TRUE. /
 
 * Display the window on creation and updates.
-* Window ID 9 is for creating animations, thus not shown by default.
-        DATA showwindow / .TRUE., .TRUE., .TRUE.,
-     .                    .TRUE., .TRUE., .TRUE.,
-     .                    .TRUE., .TRUE., .FALSE. /
+        DATA showwindow / maxwindowobjs * .TRUE. /
 
 * Default factors for normalized device coordinates.
         DATA ndcxmax / maxwindowobjs * 1.0 /
@@ -90,8 +87,8 @@
 * Values when creating windows.
 * These default values (especially windowtitle) may be reset.
 *        DATA enginename / 'Cairo' /
-*        DATA enginename / 'PyQtCairo' /
-        DATA enginename / 'PyQtViewer' /
+        DATA enginename / 'PyQtCairo' /
+*        DATA enginename / 'PyQtViewer' /
         DATA windowtitle / 'FERRET' /
 
         END

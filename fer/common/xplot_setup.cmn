@@ -23,7 +23,7 @@
      .		saved_ppl_yax,
      .		ul_dolab(4),
      .		ovkey_ll_full,
-     .          animate,
+     .		animate,
      .		first_frame,
      .		need_std,
      .		need_histo
@@ -36,8 +36,7 @@
      .		novkeys_ll,
      .		key_ncolmn,
      .		ul_nlabs,
-     .		plot_axis(4), nplot_axis,
-     .		active_win_id
+     .		plot_axis(4), nplot_axis
 
 	REAL	key_yspace0,
      .		key_yspace,
@@ -75,7 +74,6 @@
      .		first_frame,
      .		need_std,
      .		need_histo,
-     .          active_win_id,
      .		key_doc,
      .		onedee_on,
      .		twodee_on,

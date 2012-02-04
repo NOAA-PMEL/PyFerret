@@ -49,7 +49,7 @@
 void FORTRAN(set_batch_graphics)(char *outfile)
 {
   int length;
-  char *result;
+  int status;
 
   assert( outfile != NULL );
   length = strlen(outfile);
@@ -70,6 +70,8 @@ void FORTRAN(set_batch_graphics)(char *outfile)
    * made visible.  This allows the use of a faster graphics engine.
    */
   FORTRAN(fgd_hide_all_windows)();
+  /* This assume GCC standard for passing Holerith strings */
+  FORTRAN(fgd_set_engine)("CAIRO", &status, 5);
 
   return;
 }

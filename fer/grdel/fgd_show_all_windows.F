@@ -1,7 +1,7 @@
 *
-* Sets the default visibility of all windows to .FALSE.
+* Sets the default visibility of all windows to .TRUE.
 *
-        SUBROUTINE FGD_HIDE_ALL_WINDOWS()
+        SUBROUTINE FGD_SHOW_ALL_WINDOWS()
 
         IMPLICIT NONE
 
@@ -10,7 +10,7 @@
         INTEGER k
 
         DO 10 k = 1, maxwindowobjs
-            showwindow(k) = .FALSE.
+            showwindow(k) = .TRUE.
   10    CONTINUE
 
         RETURN

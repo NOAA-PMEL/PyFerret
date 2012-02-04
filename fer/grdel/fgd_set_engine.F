@@ -1,12 +1,12 @@
 *
 * Set the name of the graphics engine for windows created
-* after this call.  If the engine name is not recognized
-* this call does nothing except assign sts.
+* after this call. 
 *
 * Input Arguments:
 *     newname - name (or partial name) of the engine in
-*               uppercase; one of CAIRO, PYQTVIEWER, or
-*               PYQTCAIRO (compared in that order)
+*               uppercase; standard recognized names are
+*               CAIRO, PYQTVIEWER, or PYQTCAIRO (compared
+*               in that order)
 * Output Arguments:
 *     sts - FERR_OK if successful; 
 *           FERR_INVALID_COMMAND otherwise
@@ -21,8 +21,12 @@
         INCLUDE 'errmsg.parm'
         INCLUDE 'fgrdel.cmn'
 
+*       Function declarations
+        INTEGER TM_LENSTR
+
 *       Local variables
         INTEGER idx
+        CHARACTER*256 warnmsg
 
         idx = INDEX("CAIRO", newname)
         IF ( idx .EQ. 1 ) THEN
@@ -41,6 +45,15 @@
         idx = INDEX("PYQTCAIRO", newname)
         IF ( idx .EQ. 1 ) THEN
             enginename = "PyQtCairo"
+            sts = FERR_OK
+            RETURN
+        ENDIF
+
+        idx = TM_LENSTR(newname)
+        IF ( (idx .GT. 1) .AND. (idx .LT. 65) ) THEN
+            CALL WARN('Non-standard graphics engine "'
+     .                // newname(1:idx) // '"')
+            enginename = newname
             sts = FERR_OK
             RETURN
         ENDIF

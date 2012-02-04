@@ -1803,32 +1803,60 @@ c *kob* 4/97
         mode_metafile = .TRUE.
 	RETURN
 
-* SET GRAPHICS /ENGINE= /ANTIALIAs /NOANTIALias
- 1800   IF ( num_args .NE. 0 ) THEN
-           CALL ERRMSG( ferr_invalid_command, status, 
-     .             'SET GRAPHICS does not take any arguments ' //
-     .             '(only qualifiers)', *5000 )
+* SET GRAPHICS /ENGINE= /ANTIALIAs /NOANTIALias [ unmapped | default | highquality ]
+ 1800   IF ( num_args .GT. 1 ) THEN
+           CALL ERRMSG(ferr_invalid_command, status,
+     .             'SET GRAPHICS [ unmapped | default | highquality ]',
+     .             *5000)
         ENDIF
-*       Use slen as a flag that a qualifier was given
+
+*       Use slen as a flag that something was given
         slen = 0
+
+        IF ( num_args .EQ. 1 ) THEN
+           buff2 = cmnd_buff(item_start(1):item_end(1))
+           slen = item_end(1) - item_start(1) + 1
+           IF ( MATCH4(buff2, slen, 'DEFAULT', 7) ) THEN
+               CALL FGD_SHOW_ALL_WINDOWS()
+               CALL FGD_SET_ANTIALIAS(.FALSE.)
+               CALL FGD_SET_ENGINE('PYQTCAIRO', status)
+           ELSE IF ( MATCH4(buff2, slen, "HIGHQUALITY", 11) ) THEN
+               CALL FGD_SHOW_ALL_WINDOWS()
+               CALL FGD_SET_ANTIALIAS(.TRUE.)
+               CALL FGD_SET_ENGINE('PYQTVIEWER', status)
+           ELSE IF ( MATCH4(buff2, slen, 'UNMAPPED', 8) ) THEN
+               CALL FGD_HIDE_ALL_WINDOWS()
+               CALL FGD_SET_ANTIALIAS(.FALSE.)
+               CALL FGD_SET_ENGINE('CAIRO', status)
+           ELSE
+               CALL ERRMSG(ferr_invalid_command, status,
+     .                     'Unknown SET GRAPHICS argument: ' //
+     .                     buff2(1:slen), *5000)
+           ENDIF
+           IF ( status .NE. FERR_OK ) THEN
+               CALL ERRMSG(ferr_invalid_command, status,
+     .                     'Unexpected error from SET GRAPHICS ' //
+     .                     buff2(1:slen), *5000)
+           ENDIF
+        ENDIF
 
 *       /ENGINE=
         lp = qual_given( slash_set_graphics_engine )
         IF ( lp .GT. 0 ) THEN
-           CALL EQUAL_STRING( cmnd_buff(qual_start(lp):qual_end(lp)),
-     .                        title, status )
+           CALL EQUAL_STRING(cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                       title, status)
            IF ( status .NE. ferr_ok ) RETURN
            slen = TM_LENSTR(title)
            IF ( slen .LE. 1 ) THEN
-               CALL ERRMSG( ferr_invalid_command, status, 
+               CALL ERRMSG(ferr_invalid_command, status,
      .              'No engine name given with SET GRAPHICS /ENGINE=',
-     .              *5000 )
+     .              *5000)
            ENDIF
            CALL FGD_SET_ENGINE(title(1:slen), status)
            IF ( status .NE. ferr_ok ) THEN
-               CALL ERRMSG( ferr_invalid_command, status, 
-     .                 'Unknown graphics engine name "' //
-     .                 title(1:slen) // '"', *5000 )
+               CALL ERRMSG(ferr_invalid_command, status,
+     .                     'Invalid graphics engine name "' //
+     .                     title(1:slen) // '"', *5000)
            ENDIF
         ENDIF
 
@@ -1836,9 +1864,9 @@ c *kob* 4/97
         lp = qual_given( slash_set_graphics_antialias )
         loc = qual_given( slash_set_graphics_noantialias )
         IF ( (lp .GT. 0) .AND. (loc .GT. 0) ) THEN
-           CALL ERRMSG( ferr_invalid_command, status, 
+           CALL ERRMSG(ferr_invalid_command, status,
      .             'Cannot give both /ANTIALIAS and /NOANTIALIAS',
-     .             *5000 )
+     .             *5000)
         ENDIF
         IF ( lp .GT. 0 ) THEN
            CALL FGD_SET_ANTIALIAS(.TRUE.)
@@ -1849,11 +1877,11 @@ c *kob* 4/97
            slen = 1
         ENDIF
 
-*       Check if any qualifiers were given
+*       Check if anything was given
         IF ( slen .EQ. 0 ) THEN
-           CALL ERRMSG( ferr_invalid_command, status, 
-     .             'No qualifiers given to SET GRAPHICS command',
-     .             *5000 )
+           CALL ERRMSG(ferr_invalid_command, status,
+     .             'SET GRAPHICS [ unmapped | default | highquality ]',
+     .             *5000)
         ENDIF
         RETURN
 

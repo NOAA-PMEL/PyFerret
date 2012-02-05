@@ -14,14 +14,14 @@
         IF ( imgname_sent ) RETURN
 
 *       Send the image filename to currently active window.
-        CALL FGD_SETIMGNAME(meta_file)
-        imgname_sent = .TRUE.
+        CALL FGD_SETIMGNAME(meta_file, imgname_sent)
 
-*       Clear the currently active window
-        CALL FGD_GCLRWK(activewindow, 0)
-
-*       Make sure the save_on_exit flag is set
-        save_on_exit = .TRUE.
+        IF ( imgname_sent ) THEN
+*           If successful, clear the currently active window
+            CALL FGD_GCLRWK(activewindow, 0)
+*           Make sure the save_on_exit flag is set
+            save_on_exit = .TRUE.
+        ENDIF
 
         RETURN
         END

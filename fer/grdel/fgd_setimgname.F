@@ -9,10 +9,11 @@
 *    imgname: filename for the image
 *
 
-        SUBROUTINE FGD_SETIMGNAME(imgname)
+        SUBROUTINE FGD_SETIMGNAME(imgname, namesent)
 
         IMPLICIT NONE
         CHARACTER*(*) imgname
+        LOGICAL namesent
 
         INCLUDE 'ferret.parm'
         INCLUDE 'xprog_state.cmn'
@@ -24,13 +25,14 @@
         CHARACTER*8 fmtname
         CHARACTER*2048 errmsg
 
-*       Sanity checks
+*       This could be called before creating a window
+        namesent = .FALSE.
         IF ( (activewindow .LT. 1) .OR. 
      .       (activewindow .GT. maxwindowobjs) ) THEN
-            STOP 'FGD_SETIMGNAME: Invalid activewindow value'
+            RETURN
         ENDIF
         IF ( windowobjs(activewindow) .EQ. nullobj ) THEN
-            STOP 'FGD_SETIMGNAME: null windowobj'
+            RETURN
         ENDIF
 
         imgnamelen = TM_LENSTR(imgname)
@@ -43,6 +45,7 @@
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
+        namesent = .TRUE.
 
         RETURN
         END

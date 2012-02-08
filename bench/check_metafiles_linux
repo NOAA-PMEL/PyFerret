@@ -94,5 +94,9 @@ else
 endif
 
 if ($any_error) then
-	echo "  if ImageMagick is available, run check_metafiles_ImageMagick_linux to see plot differences"
+	echo "  "
+	echo " If ImageMagick is available, run check_metafiles_ImageMagick_linux to see plot differences. "
+	echo " As the script runs, it shows the standard plot, the plot from this benchmark run, and a diff plot. "
+	echo " Delete the standard and benchmark plots first, then the diff plot. "
+	echo "  "
 endif

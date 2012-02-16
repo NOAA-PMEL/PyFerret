@@ -46,6 +46,6 @@
 void free_c_pointer_(fer_ptr)
      char*** fer_ptr;
 {
-  free( *fer_ptr);
-  return;
+   free(*fer_ptr);
+   *fer_ptr = NULL;
 }

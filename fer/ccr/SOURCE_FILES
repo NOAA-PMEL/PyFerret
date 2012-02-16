@@ -12,7 +12,6 @@ c_strcat.c\
 c_substr.c\
 c_strfloat.c\
 check_nan_data_sub.c\
-concatenate_c_strings.c\
 compare_c_strings.c\
 copy_c_string.c\
 perl_read.c\

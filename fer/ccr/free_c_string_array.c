@@ -50,17 +50,15 @@ void free_c_string_array_(fer_ptr, length)
      char*** fer_ptr;
      int* length;
 {
+   /* first free the individual strings */
+   char** each_str_ptr = *fer_ptr;
+   int i;
 
-  /* first free the individual strings */
-  char** each_str_ptr = *fer_ptr;
-  char* dbg;
-  int i;
-  for (i=0; i<*length; i++)
-    {
-      if (*each_str_ptr) free(*each_str_ptr);
+   for (i=0; i<*length; i++) {
+      if ( *each_str_ptr != NULL ) {
+         free(*each_str_ptr);
+         *each_str_ptr = NULL;
+      }
       each_str_ptr += 8/sizeof(char**);
-    }
-    
-  return;
-
+   }
 }

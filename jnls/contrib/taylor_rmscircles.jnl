@@ -1,0 +1,86 @@
+\cancel mode verify
+
+!**************************************************************
+! Description: Plot RMS semicircles centered around data ref point on bottom axis
+!
+! Usage: go taylor_rmscircles rmin [PLOT qualifiers=/line=1] [rmax] [rdelta] [sigmadata] [maxsigma]
+!
+! arg 1: minimum radius for 1st RMS semicircle
+! arg 2: plot command qualifiers
+! arg 3: maximum radius last RMS semicircle
+! arg 4: delta radius of RMS semicircles
+! arg 5: standard deviation of data (or 1.0 in case of multi-variables with 1/sigma normalization)
+! arg 6: maximum on radial axis of Taylor plot (along which the "Correlation" label is written
+!        - this is the same value as the 1st argument to taylor_frame.jnl
+!
+! Example:
+!           yes? go taylor_frame.jnl 2 0.25 " " "Standard Deviation (units)"
+!           yes? go taylor_rgraticule.jnl 0.5  
+!           yes? go taylor_rgraticule.jnl 1.0 /line=2 
+!           yes? go taylor_rgraticule.jnl 1.5 
+!           
+!           yes? go taylor_frame.jnl 3 0.2 " " "Standard Deviation (units)"
+!           yes? go taylor_rgraticule.jnl 0.4 /DASH=(0.2,0.1,0.2,0.1)/COLOR=RED/THICK=2) 2.8 0.4
+!           yes? go taylor_rgraticule.jnl 0.2 /DASH=(0.2,0.1,0.2,0.1)/COLOR=BLACK/THICK=1 2.6 0.4
+!
+! Notes: In a Taylor diagram, there are concentric semicircles focused around the data reference
+!        point on the bottom axis.  This go script adds this feature to those written by
+!        P. Brockmann and J. Orr to make Taylor plots in Ferret (see Ferret FAQ). 
+!
+! Calls: 
+!
+! Author: James Orr
+! Contact: James.Orr@cea.fr
+! $Date: 2005/11/21 17:21:19 $
+! $Name:  $
+! $Revision: 1.5 $
+! History:  Modified from taylor_rgraticule.jnl (by Patrick Brockmann)
+! Modification:
+!
+!**************************************************************
+
+let ME_rmin=$1
+def sym ME_qualifiers=$2%/line=1%
+let ME_rmax=$3%$1%
+let ME_rdelta=$4%$1%
+let ME_sigmadata=$5%$1%
+let ME_maxsigma=$6%$1%
+
+! Draw 1 circle for axis extreme (maximum radius) 
+! -----------------------------------------------
+let ME_pi = atan(1.)*4.
+let ME_deg2rad = 2*ME_pi/180
+let ME_angle = (i-1)
+!let ME_xx = cos(ME_pi*ME_angle/(100*2))
+!let ME_yy = sin(ME_pi*ME_angle/(100*2))
+let ME_xx = cos(ME_pi*ME_angle/(100))
+let ME_yy = sin(ME_pi*ME_angle/(100))
+
+let ME_nb = 1+(ME_rmax-ME_rmin)/ME_rdelta
+let ME_rcurr = ME_rmin+(k-1)*ME_rdelta
+
+! To mask values to the right of the "Correlation" line (maxsigma):
+! Determine intersecting points of the two circles (Taylor Frame & each rms semicircle)
+! See http://www.sonoma.edu/users/w/wilsonst/Papers/Geometry/circles/default.html
+! --------------------------------------------------------------------------------
+! ME_xi and ME_yi are the intersecting values (ME_yi not needed for masking below)
+  let ME_xi = ME_sigmadata/2 + (ME_maxsigma^2 - ME_rcurr^2) / (2*ME_sigmadata)
+!  let ME_yi = ( ((ME_maxsigma^2 - ME_rcurr^2) - ME_sigmadata^2)*(ME_sigmadata^2 - (ME_rcurr - ME_maxsigma)^2) )^0.5 / (2*ME_sigmadata)
+
+! Coordinates for complete semicircles
+let ME_xrms = ME_rcurr*ME_xx + ME_sigmadata  !Add x offset = sigmadata
+let ME_yrms = ME_rcurr*ME_yy
+
+! Mask portion of semicircle to the right of the intersection point 
+let ME_xrmsm = if ME_xrms le ME_xi then ME_xrms  !Mask off values that extend beyond angular axis max
+let ME_yrmsm = if ME_xrms le ME_xi then ME_yrms  !Mask off values that extend beyond angular axis max
+
+repeat/k=1:`ME_nb`:1 ( plot/over/nolab/i=1:101/vs($ME_qualifiers) ME_xrmsm, ME_yrmsm )
+
+!**************************************************************
+ cancel variable ME_*
+ cancel symbol ME_*
+
+!**************************************************************
+ set mode verify
+

@@ -47,7 +47,6 @@
 * V530: *acm* 12/00 alternative calendar types; cal_id
 *             return source and dest cal_ids for get_linear_coef
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -56,14 +55,6 @@
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xregrid.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN_TEXT'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:REGRID.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	src_grid, dst_grid, status
@@ -72,8 +63,8 @@
 	LOGICAL TM_DATE_OK
 	INTEGER	TM_GET_CALENDAR_ID ,
      .          src_line, dst_line, src_cal_id, dst_cal_id
-	REAL*4	CAL_FACTR, usrc, udst, factor
-	REAL*8  SECS_FROM_BC, at0src, at0dst
+	REAL	CAL_FACTR
+	REAL*8  SECS_FROM_BC, at0src, at0dst, usrc, udst, factor
 
 * initialize
 	tcnvrt_ok = .FALSE.

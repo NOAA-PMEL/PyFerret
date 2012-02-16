@@ -43,7 +43,10 @@ SUB_OBJS = fftinv_subs.o
 # Targets
 #
 
-all:	fftinv_subs.o fftsubs.o ffta.so fftp.so fft_amp.so fft_phas.so ffta_sample.so
+all:	fftinv_subs.o fftsubs.o fft_amp.so fft_phas.so ffta_sample.so
+
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

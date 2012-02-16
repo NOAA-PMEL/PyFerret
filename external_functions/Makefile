@@ -24,7 +24,7 @@ include ../platform_specific.mk.$(BUILDTYPE)
 # Macro Definitions
 #
 
-DIRS = contributed examples fft ncedit statistics
+DIRS = contributed examples fft statistics
 
 #
 # Targets

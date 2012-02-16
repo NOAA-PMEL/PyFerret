@@ -43,25 +43,19 @@
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm   9/06 v600 - add stdlib.h wherevfer there is stdio.h for altix build*/ 
 #include <wchar.h>
-#include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 
 void copy_c_string_(in_ptr, out_ptr)
      char** out_ptr;
      char** in_ptr;
 {
+   if ( *out_ptr != NULL )
+      free(*out_ptr);
 
-  if ( *out_ptr ) free(*out_ptr);
+   *out_ptr = (char *) malloc(sizeof(char) * (strlen(*in_ptr)+1));
+   if ( *out_ptr == NULL )
+      abort();
 
-  if ( *out_ptr = (char *) malloc(sizeof(char) * (strlen(*in_ptr)+1)) )
-    {
-      strcpy(*out_ptr, *in_ptr);
-    }
-  else
-    assert(*out_ptr);
-
-   return;
-
+   strcpy(*out_ptr, *in_ptr);
 }

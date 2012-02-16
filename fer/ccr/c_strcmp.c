@@ -34,12 +34,7 @@
 */
 
 /* 
-   Allocate storage and copy the given input string,
-   returning the output pointer
-
-   V540: *sh* 12/01
-   V552: *kob* 4/03 - change func type to void
-
+   Compare 2 strings with strcmp -- case-sensitive
 */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */

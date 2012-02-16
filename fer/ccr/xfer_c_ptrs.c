@@ -53,19 +53,17 @@ void xfer_c_ptrs_(src_ptr, src_del, src_offset,
      int* dst_offset;
      int* nptr;
 {
+   int src_delta = *src_del ? 8/sizeof(char**) : 1;
+   int dst_delta = *dst_del ? 8/sizeof(char**) : 1;
+   char** src = *src_ptr + (*src_offset * src_delta) ;
+   char** dst = *dst_ptr + (*dst_offset * dst_delta) ;
+   int i;
 
-  int src_delta = *src_del ? 8/sizeof(char**) : 1;
-  int dst_delta = *dst_del ? 8/sizeof(char**) : 1;
-  char** src = *src_ptr + (*src_offset * src_delta) ;
-  char** dst = *dst_ptr + (*dst_offset * dst_delta) ;
-  int i;
-  for (i=0; i<*nptr; i++)
-    {
+   for (i=0; i<*nptr; i++) {
+      if ( *dst != NULL )
+         free(*dst);
       *dst = *src;
       src += src_delta;
       dst += dst_delta;
-    }
-    
-  return;
-
+   }
 }

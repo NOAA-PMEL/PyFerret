@@ -14,7 +14,6 @@ c_substr.c\
 c_strfloat.c\
 check_nan_data_sub.c\
 copy_buffered_window.c\
-concatenate_c_strings.c\
 compare_c_strings.c\
 copy_c_string.c\
 perl_read.c\

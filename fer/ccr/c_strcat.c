@@ -44,9 +44,7 @@
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 #include <wchar.h>
-#include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 
 void c_strcat_(in_ptr1, in_ptr2, out_ptr)  
@@ -54,26 +52,28 @@ void c_strcat_(in_ptr1, in_ptr2, out_ptr)
      char** in_ptr2;
      char** out_ptr;
 {
+   char* tmp1; 
+   char* tmp2;
 
-  char* tmp1; 
-  char* tmp2;
+   if ( *out_ptr != NULL )
+      free(*out_ptr);
 
-  if ( *out_ptr ) free(*out_ptr);
-  if ( *out_ptr = (char *) malloc(sizeof(char)*((strlen(*in_ptr1)+strlen(*in_ptr2))+1))) 
-    {
-      tmp1 = *in_ptr1;
-      tmp2 = *out_ptr;
-      while (*tmp1) {
-	*tmp2++ = *tmp1++;
-      } 
-      tmp1 = *in_ptr2;
-      while (*tmp1) {
-	*tmp2++ = *tmp1++;
-      }
-      *tmp2 = '\0';
-    }
-  else
-    assert(*out_ptr);
-  
-  return;
+   *out_ptr = (char *) malloc(sizeof(char)*((strlen(*in_ptr1)+strlen(*in_ptr2))+1));
+   if ( *out_ptr == NULL )
+      abort();
+
+   tmp1 = *in_ptr1;
+   tmp2 = *out_ptr;
+   while ( *tmp1 != '\0' ) {
+      *tmp2 = *tmp1;
+      tmp1++;
+      tmp2++;
+   } 
+   tmp1 = *in_ptr2;
+   while ( *tmp1 != '\0' ) {
+      *tmp2 = *tmp1;
+      tmp1++;
+      tmp2++;
+   }
+   *tmp2 = '\0';
 }

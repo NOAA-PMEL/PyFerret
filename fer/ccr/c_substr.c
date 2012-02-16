@@ -37,7 +37,7 @@
    Return a substring of a given length starting from offset
    of given string.
    
-   If offset is greater than full string length, return null.  If offset is less then 
+   If offset is greater than full string length, return an empty string.  If offset is less then
    full string length, but offset+substring length is greater than full string lenght, just
    return rest of full string in substring.  
 
@@ -48,10 +48,7 @@
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 #include <wchar.h>
-#include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
 void c_substr_(in_ptr, offset, length, out_ptr)
      char** in_ptr;
@@ -59,29 +56,28 @@ void c_substr_(in_ptr, offset, length, out_ptr)
      float* length;
      char** out_ptr;     
 {
-  char* tmp;
-  char* tmp2;
-  int i, int_length;
+   char* tmp;
+   char* tmp2;
+   int i, int_length, int_offset;
 
-  if ( *out_ptr ) free(*out_ptr);
+   if ( *out_ptr != NULL )
+      free(*out_ptr);
 
-  int_length = (int)*length;
-  if ( *out_ptr = (char *) malloc(sizeof(char) * (int_length)+1))
-    {
-      /* if offset is greater than string lenght, return a null */
-      if ( *offset > strlen(*in_ptr) ) {
-	**out_ptr=(char) NULL;
-	return;
-      } else {
-	tmp = *out_ptr;
-	tmp2 = *in_ptr;
-	for (i=0; i<(*offset-1); i++) tmp2++;
-	for (i=0; i<(*length); i++) *tmp++ = *tmp2++;
-	*tmp= (char)NULL;
-      }
-    }
-  else
-    assert(*out_ptr);
+   int_length = (int)(*length + 0.5);
+   int_offset = (int)(*offset + 0.5) - 1;
 
-  return;
+   *out_ptr = (char *) malloc(sizeof(char) * (int_length + 1));
+   if ( *out_ptr == NULL )
+      abort();
+
+   tmp2 = *in_ptr;
+   for (i = 0; (i < int_offset) && (*tmp2 != '\0'); i++)
+      tmp2++;
+   tmp = *out_ptr;
+   for (i = 0; (i < int_length) && (*tmp2 != '\0'); i++) {
+      *tmp = *tmp2;
+      tmp++;
+      tmp2++;
+   }
+   *tmp = '\0';
 }

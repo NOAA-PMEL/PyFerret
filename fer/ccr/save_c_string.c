@@ -41,7 +41,6 @@
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <wchar.h>
 #include <stdlib.h>
-#include <string.h>
 
 void save_c_string_(string, inlen, fer_ptr, offset, stat)
      char* string;
@@ -50,27 +49,25 @@ void save_c_string_(string, inlen, fer_ptr, offset, stat)
      int* offset;
      int* stat;
 {
-  /* allocate memory and save the string */
-  int i;
-  char* ptr;
-  char** each_str_ptr;
+   int i;
+   char* ptr;
+   char** each_str_ptr;
 
-  if ( ptr = (char *) malloc(sizeof(char) * (*inlen + 1) ) )
-    {
-      /*      strcpy(ptr, string); */
+   ptr = (char *) malloc(sizeof(char) * (*inlen + 1));
+   if ( ptr != NULL ) {
       for (i=0; i<*inlen; i++)
-	ptr[i] = string[i];
-      ptr[*inlen] = 0;    /* null-terminate the stored string */
-      *stat = 0;
+         ptr[i] = string[i];
+      ptr[*inlen] = '\0';
       
-    } else
+      /* save the pointer to the string */
+      each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
+      each_str_ptr += *offset * 8/sizeof(char**); /* point to the desired string */ 
+      if ( *each_str_ptr != NULL )
+         free( *each_str_ptr );
+      *each_str_ptr = ptr;
+
+      *stat = 0;
+   }
+   else
       *stat = 1;
-
-  /* save the pointer to the string */
-  each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
-  each_str_ptr += *offset * 8/sizeof(char**); /* point to the desired string */ 
-  *each_str_ptr = ptr;
-
-  return;
-
 }

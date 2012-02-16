@@ -114,9 +114,9 @@
 	   i1 = i1 + di1
 	   i2 = i2 + di2
 
-             CALL CONCATENATE_C_STRINGS(com1(i1,j1,k1,l1),
-     .                                  com2(i2,j2,k2,l2),
-     .                                  res(i,j,k,l)      )
+             CALL C_STRCAT(com1(i1,j1,k1,l1),
+     .                     com2(i2,j2,k2,l2),
+     .                     res(i,j,k,l)      )
 
  200	CONTINUE
 

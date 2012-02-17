@@ -182,7 +182,7 @@
 	itmp = INDEX(cmnd(istart:),'`')
         IF ( itmp .EQ. 0 ) RETURN
 	istart = istart + itmp
-#ifdef NO__ESCAPE_SLASH
+#ifdef NO_DOUBLE_ESCAPE_SLASH
 	IF ( istart .GT. 2 ) THEN
 	   IF (cmnd(istart-2:istart-2) .EQ. '\') GOTO 10  
 	ENDIF

@@ -60,6 +60,9 @@ and optionally (non-ANSI cc compilers) with    -DNO_CC_PROTOTYPES
 
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/* *acm*  1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+/*              definition of macro DFTYPE in ferret.h */
+
 #include <wchar.h>
 #include "gks_implem.h" /* ditto */
 #include "wslist.h"
@@ -71,11 +74,8 @@ and optionally (non-ANSI cc compilers) with    -DNO_CC_PROTOTYPES
 #include <string.h>
 #include "ferret.h"
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-put_frame( ws_id, filename, errstr, format, status )
-#else
-put_frame_( ws_id, filename, errstr, format, status )
-#endif
+FORTRAN(put_frame)( ws_id, filename, errstr, format, status )
+
    char *filename, *errstr, *format;
    int *ws_id, *status;
 
@@ -100,20 +100,11 @@ put_frame_( ws_id, filename, errstr, format, status )
    return;
 }
 
-/*
-void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format,
-                               char *errmsg, int *status)
-
-void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format, char *transparent_color,
-                               , int *red, int *green, int *blue, char *errmsg, int *status)
-{
-*/
-
 /*  acm create separate GIFFlush routines for transparency. Passing the argumetns transp, red, green, blue
     in direcly into GIFFlush as arguments did not work on porter.
 */
-void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format, int *transp, float *red, float *green,
-                              float *blue, char *errmsg, int *status)
+void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format, int *transp, DFTYPE *red, DFTYPE *green,
+                              DFTYPE *blue, char *errmsg, int *status)
 {
   char oldfilename[BUFSIZ];
   WS_STATE_ENTRY *ws = OPEN_WSID(*ws_id);
@@ -171,9 +162,9 @@ void FORTRAN(put_temp_frame_batch)(int *ws_id, char *filename, int *length)
 {
   char format[BUFSIZ], errmsg[BUFSIZ];
   int status;
-  float red;
-  float green;
-  float blue;
+  DFTYPE red;
+  DFTYPE green;
+  DFTYPE blue;
   int trans;
   char *tname = tempnam("/tmp", "fer");
   WS_STATE_ENTRY *ws = OPEN_WSID(*ws_id);

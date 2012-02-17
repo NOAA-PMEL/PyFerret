@@ -76,6 +76,8 @@
 * V67  *acm* 1/11  Choose between routinesi from the NetCDF API: varm if permutations,
 *                  vars if strides but no perm, var if no strides or perm.
 
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
 *	ivar        - position in common of variable information
@@ -277,10 +279,12 @@
 *              create an axis, by specifying an offset and reading the
 *              data as double precision, applying the offset and THEN
 *              converting to single precision.
-
+*      ... when compiling as double precision, the data is read as double
+*      ... and it will be scaled below.  So we just skip this hack.
 
         already_scaled = .FALSE.
         status = merr_ok
+#ifndef double_p 
 
         IF (ds_var_scaleit( ivar ) ) THEN   ! reads data as double precision, if available.
            CALL CD_READ_SCALE(cdfid, varid, ndim, 
@@ -307,7 +311,7 @@
            ENDIF
 
         ELSE
-
+#endif
 	   CALL CD_READ_SUB(cdfid, varid, ndim, start, count,
      .		   filstride, imap,
      .             var(use_lo(1),
@@ -315,7 +319,9 @@
      .                 use_lo(3),
      .                 use_lo(4)), permuted, strided, cdfstat)
 	   IF ( cdfstat .NE. NF_NOERR ) GOTO 5500
+#ifndef double_p
         ENDIF
+#endif
 
 * if data has mean or range removed rescale it.
 * Do not scale missing data.
@@ -346,6 +352,7 @@
 
 * if user has asked for new offset and/or scale, apply those, but
 * not to any missing data.
+
         IF ( ds_var_scaleit(ivar) .AND. (.NOT. already_scaled) )
      .    CALL TM_SCALE_NOBAD(
      .       ds_var_scale(ivar), ds_var_off(ivar), var, totsize,

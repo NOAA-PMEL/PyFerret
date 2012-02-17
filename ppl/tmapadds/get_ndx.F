@@ -50,11 +50,12 @@
 *		Also had to add explicit range checks since whatever logic
 *		made rng chks mysteriously unnecessary using REAL bad_flag has
 *		changed
-*  V5.71 *acm*  6/15/04 Use TM_FPEQ when checking whether a single-level zlev is
+*  V5.71 *acm*  6/15/04 Use TM_FPEQ_SNGL when checking whether a single-level zlev is
 *               the same as datum.
 *  v581 *acm* 3/05 open levels (-INF) (INF)
 *  V62+ *acm* 6/09 fix bug 1671: data level exactly matching top of upper level 
 *                  wasnt plotted on SHADE and POLY plots
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -73,7 +74,7 @@
 * Local variable declarations
 	real	        test
 	integer		lev1, levn
-        logical         TM_FPEQ
+        logical         TM_FPEQ_SNGL
 
 ********************************************************************************
 
@@ -100,7 +101,7 @@
 
 c	      else if (levn - lev1 .LE. 1) then
 	      else if (levn .LE. 1) then
-		 if ( TM_FPEQ(datum, zlev(lev1)) ) then
+		 if ( TM_FPEQ_SNGL(datum, zlev(lev1)) ) then
 		    get_ndx = 2
 		 else
 		    get_ndx = -999

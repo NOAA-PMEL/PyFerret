@@ -11,8 +11,12 @@
 *                  to store the name of a function to call if the arguments are of
 *                  a different type than defined in the current function. E.g. 
 *                  this lets the user reference XCAT with string arguments and  
-*                  Ferret will run XCAT_STR
- * This file contains all the utility functions which
+*                  Ferret will run XCAT_STR */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+/*                                       definition of macro DFTYPE in ferret.h.*/
+
+
+/* This file contains all the utility functions which
  * External Functions need in order to interact with
  * EF "objects".
  */
@@ -30,6 +34,7 @@
 
 #include "EF_Util.h"
 #include "list.h"       /* locally added list library */
+#include "ferret.h"
 
 
 /* ................ Global Variables ................ */
@@ -39,18 +44,18 @@
  * These pointers can be accessed by the utility functions in libef_util
  * or lib_ef_c_util.  This way the EF writer does not need to see them.
  */
-extern float *GLOBAL_memory_ptr;
+extern DFTYPE *GLOBAL_memory_ptr;
 extern int   *GLOBAL_mr_list_ptr;
 extern int   *GLOBAL_cx_list_ptr;
 extern int   *GLOBAL_mres_ptr;
-extern float *GLOBAL_bad_flag_ptr;
+extern DFTYPE *GLOBAL_bad_flag_ptr;
 
 
 /* ............. Function Declarations .............. */
 
 /* ... Functions called from the EF code .... */
 
-void ef_version_test_( float * );
+void ef_version_test_( DFTYPE * );
 
 void ef_set_num_args_( int *, int * );
 void ef_set_num_work_arrays_( int *, int * );
@@ -67,11 +72,11 @@ void ef_set_axis_extend_( int *, int *, int *, int *, int * );
 
 void ef_set_arg_type_( int *, int *, int *);
 
-void ef_get_bad_flags_(int *, float *, float *);
+void ef_get_bad_flags_(int *, DFTYPE *, DFTYPE *);
 void ef_get_arg_type_(int *, int *, int *);
 void ef_get_result_type_(int *, int *);
 
-void ef_get_one_val_(int *, int *, float *);
+void ef_get_one_val_(int *, int *, DFTYPE *);
 
 void ef_put_string_(char* , int* , char** );
 void ef_put_string_ptr_(char**, char**);
@@ -85,7 +90,7 @@ void ef_get_mres_(int *);
 
 extern ExternalFunction *ef_ptr_from_id_ptr(int *);
 
-void ef_get_one_val_sub_(int *, float *, int *, float *);
+void ef_get_one_val_sub_(int *, DFTYPE *, int *, DFTYPE *);
 
 
 /* ............. Function Definitions .............. */
@@ -95,7 +100,7 @@ void ef_get_one_val_sub_(int *, float *, int *, float *);
  * Test the EF version number of the Fortran EF against
  * the EF version number of the Ferret code.
  */
-void ef_version_test_(float *version)
+void ef_version_test_(DFTYPE *version)
 {
   int int_version=0, ext_version=0;
 
@@ -365,7 +370,7 @@ void ef_set_arg_type_(int *id_ptr, int *arg, int *arg_type)
 }
 
 
-void ef_get_one_val_(int *id_ptr, int *arg_ptr, float *val_ptr)
+void ef_get_one_val_(int *id_ptr, int *arg_ptr, DFTYPE *val_ptr)
 {
   ef_get_one_val_sub_(id_ptr, GLOBAL_memory_ptr, arg_ptr, val_ptr);
 }
@@ -458,7 +463,7 @@ void ef_get_mres_(int *mres)
 
 
 
-void ef_get_bad_flags_(int *id_ptr, float *bad_flag, float *bad_flag_result)
+void ef_get_bad_flags_(int *id_ptr, DFTYPE *bad_flag, DFTYPE *bad_flag_result)
 {
   int i=0;
 
@@ -484,7 +489,7 @@ void ef_get_result_type_(int *id_ptr, int *type)
  * Find an external function based on its integer ID and
  * return the 'arg_type' information for a particular
  * argument which tells Ferret whether an argument is a 
- * float or a string.
+ * DFTYPE or a string.
  */
 void FORTRAN(ef_get_arg_type)( int *id_ptr, int *iarg_ptr, int *type)
 {
@@ -567,8 +572,8 @@ void ef_set_arg_unit_sub_(int *id_ptr, int *arg_ptr, char *text)
 } 
 
  
-void ef_set_custom_axis_sub_(int *id_ptr, int *axis_ptr, float *lo_ptr,
-			     float *hi_ptr, float *del_ptr, char *text, int *modulo_ptr)
+void ef_set_custom_axis_sub_(int *id_ptr, int *axis_ptr, DFTYPE *lo_ptr,
+			     DFTYPE *hi_ptr, DFTYPE *del_ptr, char *text, int *modulo_ptr)
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -584,7 +589,7 @@ void ef_set_custom_axis_sub_(int *id_ptr, int *axis_ptr, float *lo_ptr,
 }  
 
  
-void ef_set_freq_axis_sub_(int *id_ptr, int *axis_ptr, int *npts, float *box,
+void ef_set_freq_axis_sub_(int *id_ptr, int *axis_ptr, int *npts, DFTYPE *box,
 			     char *text, int *modulo_ptr)
 {
 

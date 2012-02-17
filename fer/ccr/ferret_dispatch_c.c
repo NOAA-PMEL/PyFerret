@@ -51,7 +51,8 @@
 
    05/25/95 - added ifdef check for trailing underscores not needed on HP *kob*
    *js* 6.99 Set line buffering if in server mode
-
+  *acm* 1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+              definition of macro DFTYPE in ferret.h 
 */
 
 /*
@@ -75,25 +76,25 @@ compile this with
 #   ifdef _NO_PROTO
 void ferret_dispatch_( );
 #   else
-void ferret_dispatch( float *memory, char *init_command, int *rtn_flags,
+void ferret_dispatch( DFTYPE *memory, char *init_command, int *rtn_flags,
 		       int *nflags, char *rtn_chars, int *nchars, int *nerrlines );
 #   endif
 #else                     /*NO_ENTRY_NAME_UNDERSCORES*/
 #   ifdef _NO_PROTO
 void ferret_dispatch_( );
 #   else
-void ferret_dispatch_( float *memory, char *init_command, int *rtn_flags,
+void ferret_dispatch_( DFTYPE *memory, char *init_command, int *rtn_flags,
 		       int *nflags, char *rtn_chars, int *nchars, int *nerrlines );
 #   endif
 #endif                    /*NO_ENTRY_NAME_UNDERSCORES*/
 
 #ifdef _NO_PROTO
 void ferret_dispatch_c( memory, init_command, sBuffer )
-float *memory;
+DFTYPE *memory;
 char *init_command;
 smPtr sBuffer;
 #else
-void ferret_dispatch_c( float *memory, char *init_command, smPtr sBuffer )
+void ferret_dispatch_c( DFTYPE *memory, char *init_command, smPtr sBuffer )
 #endif
 {
   int flag_buff_size  = NUMFLAGS;

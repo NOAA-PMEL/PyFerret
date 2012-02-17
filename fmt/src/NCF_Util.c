@@ -77,6 +77,11 @@
 /* *acm* 5/09 *acm*	  Fix bug 1664. For user variables, varid matches the uvar from Ferret. */
 /*                    therefore it may be larger than nc_ptr->nvars */
 /* *acm* 3/11 *acm*	  Fix bug 1825. Routine ncf_get_var_seq no longer called */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+/*					 definition of macro DFTYPE in ferretmacros.h.
+*/
+
+#include "ferretmacros.h"
 
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
@@ -144,12 +149,12 @@ int  FORTRAN(ncf_delete_var)( int *, char *);
 int  FORTRAN(ncf_add_var)( int *, int *, int *, int *, char *, char *, char *, double *);
 int  FORTRAN(ncf_add_coord_var)( int *, int *, int *, int *, char *, char *, double *);
 
-int  FORTRAN(ncf_add_var_num_att)( int *, int *, char *, int *, int *, int *, float *);
+int  FORTRAN(ncf_add_var_num_att)( int *, int *, char *, int *, int *, int *, DFTYPE *);
 int  FORTRAN(ncf_add_var_num_att_dp)( int *, int *, char *, int *, int *, int *, double *);
 int  FORTRAN(ncf_add_var_str_att)( int *, int *, char *, int *, int *, int *, char *);
 
 int  FORTRAN(ncf_rename_var)( int *, int *, char *);
-int  FORTRAN(ncf_repl_var_att)( int *, int *, char *, int *, int *, float *, char *);
+int  FORTRAN(ncf_repl_var_att)( int *, int *, char *, int *, int *, DFTYPE *, char *);
 int  FORTRAN(ncf_repl_var_att_dp)( int *, int *, char *, int *, int *, double *, char *);
 int  FORTRAN(ncf_set_att_flag)( int *, int *, char *, int *);
 int  FORTRAN(ncf_set_var_out_flag)( int *, int *, int *);
@@ -851,7 +856,7 @@ int FORTRAN(ncf_init_uvar_dset)(int *setnum)
        var.varid = 0;
 	   var.natts = nc.ngatts;
        var.has_fillval = FALSE;
-       var.fillval = NC_FILL_FLOAT;
+	   var.fillval = NC_FILL_FLOAT;
 	   var.all_outflag = 1;
 	   var.is_axis = FALSE;
 	   var.axis_dir = 0;
@@ -1183,6 +1188,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 				var.varid = iv+1;  
 				var.outtype = NC_FLOAT;
 				if (var.type == NC_CHAR) var.outtype = NC_CHAR;
+				var.outtype = var.type;  /* ?? */
 				
 				/* is this a coordinate variable? 
 				 */
@@ -1205,7 +1211,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 					 att.type == var.type && att.len == 1) {
 					
 					att.outflag = 1;
-					att.outtype = NC_FLOAT;
+					att.outtype = var.type;
 					var.has_fillval = TRUE;
 					if(var.type == NC_CHAR) {
 						att.outtype = NC_CHAR;
@@ -1326,7 +1332,11 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 											
 											break;
 										default:
+#ifdef double_p
+											att.outtype = NC_DOUBLE;
+#else
 											att.outtype = NC_FLOAT;
+#endif
 											att.vals = (double *) malloc(att.len * sizeof(double));
 											
 											nc_status = nc_get_att_double(*ncid, iv, att.name, att.vals );
@@ -1475,7 +1485,11 @@ int FORTRAN(ncf_init_other_dset)(int *setnum, char name[], char path[])
        var.varid = 0;
 	   var.natts = nc.ngatts;
        var.has_fillval = FALSE;
-       var.fillval = NC_FILL_FLOAT;
+#ifdef double_p
+	   var.fillval = NC_FILL_DOUBLE;
+#else
+	   var.fillval = NC_FILL_FLOAT;
+#endif
 	   var.all_outflag = 1;
 	   var.is_axis = FALSE;
 	   var.axis_dir = 0;		
@@ -1811,8 +1825,13 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
 		strcpy(att.name,"missing_value");
 		att.len = 1;
 		att.string = NULL;
+#ifdef double_p
 		att.type = NC_FLOAT;
 		att.outtype = NC_FLOAT;
+#else
+		att.type = NC_DOUBLE;
+		att.outtype = NC_DOUBLE;
+#endif
 		att.vals = (double *) malloc(att.len * sizeof(double));
 		att.vals[0] = *bad;
 
@@ -1966,7 +1985,8 @@ int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar
  * Find a variable based on its variable ID and dataset ID
  * Add a new numeric attribute.
  */
-int  FORTRAN(ncf_add_var_num_att)( int *dset, int *varid, char attname[], int *attype, int *attlen, int *outflag, float *vals)
+int  FORTRAN(ncf_add_var_num_att)( int *dset, int *varid, char attname[], 
+int *attype, int *attlen, int *outflag, DFTYPE *vals)
 
 {
   ncatt *att_ptr=NULL;
@@ -2016,7 +2036,11 @@ int  FORTRAN(ncf_add_var_num_att)( int *dset, int *varid, char attname[], int *a
   strcpy(att.name,attname);
   att.attid = var_ptr->natts;
   att.type = *attype;
+#ifdef double_p
   att.outtype = NC_FLOAT;
+#else
+  att.outtype = NC_DOUBLE;
+#endif
   att.len = *attlen;
   att.outflag = *outflag;
 	att.string = NULL;
@@ -2088,7 +2112,7 @@ int  FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[], int
   strcpy(att.name,attname);
   att.attid = var_ptr->natts;
   att.type = *attype;
-  att.outtype = NC_FLOAT;
+  att.outtype = NC_DOUBLE;
   att.len = *attlen;
   att.outflag = *outflag;
 	att.string = NULL;
@@ -2187,7 +2211,7 @@ int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *a
   strcpy(att.name,attname);
   att.attid = var_ptr->natts;
   att.type = *attype;
-  att.outtype = NC_FLOAT;
+  att.outtype = NC_CHAR;
   att.len = *attlen;
   att.outflag = *outflag;
   att.string = (char *) malloc((att.len+1)* sizeof(char));
@@ -2237,7 +2261,7 @@ int  FORTRAN(ncf_rename_var)( int *dset, int *varid, char newvarname[])
  * Find an attribute based on its variable ID and dataset ID
  * Replace the type, length, and/or value(s).
  */
-int  FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *attype, int *attlen, float *vals, char attstring[])
+int  FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *attype, int *attlen, DFTYPE *vals, char attstring[])
 
 {
   ncatt *att_ptr=NULL;
@@ -2396,7 +2420,11 @@ int  FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *a
     */
 
   att_ptr->type = *attype;
+#ifdef double_p
+  att_ptr->outtype = NC_DOUBLE;
+#else
   att_ptr->outtype = NC_FLOAT;
+#endif
   att_ptr->len = *attlen;
 
   if (*attlen == 0) /* set 0-length attributes to empty strings */

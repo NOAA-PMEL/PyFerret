@@ -44,6 +44,7 @@
 * V530   8/00 *sh* - double the memory allocation for string variables
 *			(to support 64 bit pointers)
 * V533   6/01 *sh* - use CGRID_SIZE_DELTA to allow mem vars with delta values
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -60,7 +61,11 @@
 * amount of storage space required
 	grid_size = CGRID_SIZE_DELTA( cx )
 * ... note: later we will want an array of word sizes indexed by type
+#ifdef double_p
+	IF (cx_type(cx) .EQ. ptype_string) grid_size = grid_size
+#else
 	IF (cx_type(cx) .EQ. ptype_string) grid_size = grid_size*2 ! 8 byte ptr
+#endif
 
 * claim the storage space
 	CALL GET_MEMORY( grid_size, start_block, num_blocks, status )

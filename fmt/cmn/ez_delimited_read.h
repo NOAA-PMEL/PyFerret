@@ -7,7 +7,10 @@
  * by the Ferret program
  * v600 *acm* change call to days_from_day0 needed for 64-bit build
  *
+ /*  *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret.
+
  */
+#include "ferretmacros.h"
 
 #define FTYP_MISSING 1
 #define FTYP_NUMERIC 2
@@ -21,11 +24,6 @@
 #define FANAL_OK 0
 #define FANAL_HAS_MISSING 1
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
 
 typedef struct _DelimFileInfo {
   int nfields;              /* number of variables to read in this file */
@@ -37,6 +35,25 @@ typedef struct _DelimFileInfo {
 char *nexstrtok(char *s1, char *s2);
 void analRec(char *recptr, char *delims, int* nfields, int field_type[],
 	    int max_fields);
+
+#ifdef double_p
+int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
+	      int nrec,
+	      double** numeric_fields, char*** text_fields, double bad_flags[]);
+int decode_file (char* fname, char *recptr, char *delims, int* skip,
+	       int *maxrec, int* reclen, int* nfields, int field_type[],
+	       int* nrec,
+	       double** numeric_fields, char*** text_fields, double bad_flags[]);
+
+double FORTRAN(days_from_day0) (double *days1900, int* iyr, int* imon, int* iday, double* rdum);
+
+void FORTRAN(decode_file_jacket)
+		( char* fname, char *recptr, char *delims, int *skip,
+		  int* maxrec, int* reclen, int* nfields,
+		  int field_type[], int* nrec,
+		  int mrlist[], double *memptr, int mr_blk1[], int* mblk_size,
+		  double mr_bad_flags[], char ***mr_c_ptr);
+#else
 int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	      int nrec,
 	      float** numeric_fields, char*** text_fields, float bad_flags[]);
@@ -53,6 +70,8 @@ void FORTRAN(decode_file_jacket)
 		  int field_type[], int* nrec,
 		  int mrlist[], float *memptr, int mr_blk1[], int* mblk_size,
 		  float mr_bad_flags[], char ***mr_c_ptr);
+#endif
+
 int FORTRAN(anal_file) (char *fname, char *recptr, char *delims, int *skip,
 	     int *maxrec, int* reclen, int* nfields, int field_type[],
 	     int *max_fields);

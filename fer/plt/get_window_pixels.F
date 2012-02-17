@@ -56,6 +56,7 @@
 *              from a GKS call.
 * V602: *acm* 1/07 Changes for metafile-batch mode
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
         include 'pltcom_dat.decl'
         include 'PLTCOM.DAT'
@@ -69,8 +70,8 @@
 	integer		new_trans
 	PARAMETER	( new_trans = 10 )
 
-	real		fctx,fcty
-	real		world(4),ndc(4),x_minw,x_maxw,y_minw,y_maxw
+	real*4		rzero,fctx,fcty
+	real*4		world(4),ndc(4),x_minw,x_maxw,y_minw,y_maxw
 
 ******************************************************************************
 
@@ -87,6 +88,7 @@
 * initialize in case of error (not an adequate response, really)
 	x_pixel_dim = 1
 	y_pixel_dim = 1
+	rzero = 0.0
 
 *	GET WORLD COORDINATES AND PIXEL DIMENSIONS OF FRAME
 	call  gqcntn (error_status,transno)
@@ -99,8 +101,8 @@
            FCTX=ASIZE/BSIZE
            FCTY=1.0
         ENDIF
-	CALL GSWN(new_trans, 0.0, asize, 0.0, bsize )
-	CALL GSVP(new_trans, 0.0, fctx,  0.0, fcty )
+	CALL GSWN(new_trans, rzero, asize, rzero, bsize )
+	CALL GSVP(new_trans, rzero, fctx,  rzero, fcty )
 	call gselnt (new_trans)
 
 	call gqnt (new_trans,error_status,world,ndc)

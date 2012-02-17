@@ -4,6 +4,7 @@
 * Jing Y. Li 
 * May 2006
 * 18-may-2006 ACM change to compare only the first 3 characters of the precision string.
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *
 * Returns string of dates 
 *
@@ -140,6 +141,13 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
       INTEGER id
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
@@ -147,10 +155,10 @@
      .           mem1loz:mem1hiz, mem1lot:mem1hit)
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy,
      .           mem2loz:mem2hiz, mem2lot:mem2hit)
-      REAL arg_3(2,mem3lox:mem3hix, mem3loy:mem3hiy, 
+      REAL arg_3(strdf,mem3lox:mem3hix, mem3loy:mem3hiy, 
      .     mem3loz:mem3hiz, mem3lot:mem3hit)
 
-      REAL result(2,memreslox:memreshix, memresloy:memreshiy, 
+      REAL result(strdf,memreslox:memreshix, memresloy:memreshiy, 
      .     memresloz:memreshiz, memreslot:memreshit)
 
 *  Declare work array
@@ -348,7 +356,7 @@ C     Get the string value of dates and put them in the result.
                     CALL EF_PUT_STRING (datestring, slen,
      .                    result(1,i,j,k,l))
                  ENDIF
-                 
+
                   l1 = l1 + arg_incr(T_AXIS,ARG1)
  100           CONTINUE
 

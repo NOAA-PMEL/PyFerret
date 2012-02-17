@@ -37,6 +37,7 @@
 *
 * 2/23/2005 acm
 * Do the fill for a shade plot, perhaps with a modulo offset in X
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
        INCLUDE 'parampl5_dat.decl'
        INCLUDE 'PARAMPL5.DAT'
@@ -59,6 +60,12 @@
       INTEGER nothing
       LOGICAL BAD_XY_COORD, first, xfield_is_modulo
       CHARACTER*128 buff
+
+#ifdef double_p
+      real*8 x_curv(200), y_curv(200)
+#else
+      real x_curv(200), y_curv(200)
+#endif
 
       big = ABS(bad_val4)
 
@@ -166,24 +173,28 @@ c      IF (curvilinear ) THEN
 	      npt = i - pt1 + 1
 * ... polygon chain begins along upper edge of row of cells
 	      DO 51 i1 = 1, npt
-	         px(i1) = xs(pt1+i1-1)
-	         py(i1) = ys(j+1)
+	         x_curv(i1) = xs(pt1+i1-1)
+	         y_curv(i1) = ys(j+1)
  51	      CONTINUE
 * ... and returns (closes) along lower edge of row of cells
 	      DO 52 i1 = npt+1, 2*npt
-	         px(i1) = px(2*npt+1-i1)
-	         py(i1) = ys(j)
+	         x_curv(i1) = x_curv(2*npt+1-i1)
+	         y_curv(i1) = ys(j)
  52	      CONTINUE
 	      npt = 2*npt
-	      CALL CURV_COORD_ADD (px, py, npt, xinv, yinv, xadd,
+	      CALL CURV_COORD_ADD (x_curv, y_curv, npt, xinv, yinv, xadd,
      .            first, xfield_is_modulo, status) ! xform the pts
                
-              minrowx = MIN( minrowx, px(1) )
-              minrowx = MIN( minrowx, px(2) )
-              maxrowx = MAX( maxrowx, px(1) )
-              maxrowx = MAX( maxrowx, px(2) )
-
 	      IF ( status .NE. 0 ) RETURN
+              minrowx = MIN( minrowx, x_curv(1) )
+              minrowx = MIN( minrowx, x_curv(2) )
+              maxrowx = MAX( maxrowx, x_curv(1) )
+              maxrowx = MAX( maxrowx, x_curv(2) )
+
+	      DO 522 i1 = 1, npt
+		 px(i1) = x_curv(i1)
+		 py(i1) = y_curv(i1)
+ 522	      CONTINUE
 	   ELSE
 * ... always a rectangle -- just save the corners
 	      px(1) = xs(pt1)

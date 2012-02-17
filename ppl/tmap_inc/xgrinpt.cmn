@@ -1,7 +1,8 @@
 * information about mouse actions that have just occured
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
         COMMON / XGRINPT / has_new_mouse, wmouse, xmouse, ymouse
         LOGICAL has_new_mouse
 	INTEGER wmouse
-	REAL	xmouse, ymouse
+	REAL*4	xmouse, ymouse
 

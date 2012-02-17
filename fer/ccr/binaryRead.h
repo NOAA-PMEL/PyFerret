@@ -14,6 +14,17 @@
 #define MEM_INFO_BLOCKSIZE      1048576	/* Max mem chunk size */
 #define MEM_INFO_MINTHRESH      1024 /* No closer to mmap boundary than this! */
 
+/* * 1/12 *acm* - Ferret 6.8 Changes for double-precision ferret, see the*/
+/*                define macro DFTYPE in binaryRead.h */
+/* Easier way of handling single/double floating-point declarations */
+
+#ifdef double_p
+#define DFTYPE double
+#else
+#define DFTYPE float
+#endif
+
+
 typedef struct _MemInfo {
   char *data;			/* Memory mapped file contents */
   int relPos;			/* Position relative to mem block start */
@@ -26,7 +37,7 @@ typedef struct _VarInfo {
   /*  Passed values */
   char type;			/* Data type 'b', 's', 'i', 'f', 'd' */
   int doRead;			/* If true, read data */
-  float *data;			/* Data for variable -- assumed preallocated */
+  DFTYPE *data;			/* Data for variable -- assumed preallocated */
   
   /* Calculated values */
   int dataSize;			/* Size of variable data type */
@@ -54,7 +65,7 @@ typedef struct _FileInfo {
 /*
 extern FileInfo *createBinaryReader(char *, int[MAXDIMS], int[MAXDIMS], int, int);
 extern void deleteBinaryReader(FileInfo *);
-extern int addVar(FileInfo *, float *, int, int);
+extern int addVar(FileInfo *, DFTYPE *, int, int);
 extern int readBinary(FileInfo *);
 */
 				/* TODO -- redefine FORTRAN for different arch. */

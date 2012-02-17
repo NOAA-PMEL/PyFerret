@@ -45,6 +45,7 @@
 * V533: 6/01 *sh* - @XACT doesn't need a comment if for xact strides
 * V552  4/03 *acm*  up gname_from_number to 128 characters (variable names)
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
+* V68  *acm* 1/12  changes for double-precision ferret.
 
 	include	'tmap_dims.parm'
 	include	'implicit.parm'
@@ -140,10 +141,17 @@
 	      ENDIF
 	      IF ( line_regular(axis) .AND. .NOT.stat_grid ) THEN
 * ... delta
+#ifdef double_p
 	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
+     .				 TM_FMT((line_delta(axis)),2,8,slen)
+	         mybuff = mybuff(:mlen) //
+     .				 TM_FMT((line_delta(axis)),2,8,slen)
+#else
+     	         REGRID_COMMENTS = REGRID_COMMENTS(:mlen) //
      .				 TM_FMT(SNGL(line_delta(axis)),2,8,slen)
 	         mybuff = mybuff(:mlen) //
      .				 TM_FMT(SNGL(line_delta(axis)),2,8,slen)
+#endif
 	         mlen = MIN( maxlen, mlen+slen )
 * ... units
 	         IF ( line_units(axis) .EQ. ' ' ) THEN

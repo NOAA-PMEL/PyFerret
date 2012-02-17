@@ -13,7 +13,7 @@ BUILDTYPE	= $(HOSTTYPE)
 ## Installation directory for built Ferret.  Using the "install"
 ## Makefile target circumvents the need to create the fer_*.tar.gz
 ## files just for creating a Ferret installation.
-INSTALL_FER_DIR = $(FER_DIR)
+INSTALL_FER_DIR = /home/users/ansley/ferret_install_utilities/linux
 
 ## Installation directory for HDF5 static libraries
 ## (contains include and lib or lib64 subdirectories)
@@ -21,8 +21,8 @@ INSTALL_FER_DIR = $(FER_DIR)
 # HDF5_DIR	= /usr/local
 # HDF5_DIR	= /home/users/tmap/flat_32
 # HDF5_DIR	= /home/users/tmap/flat_64
-HDF5_DIR	= /usr/local/hdf5_186
-# HDF5_DIR	= /usr/local/hdf5_187
+# HDF5_DIR	= /usr/local/hdf5_186
+HDF5_DIR	= /usr/local/hdf5_187
 
 ## Installation directory for NetCDF static libraries
 ## (contains include and lib or lib64 subdirectories)
@@ -30,8 +30,9 @@ HDF5_DIR	= /usr/local/hdf5_186
 # NETCDF4_DIR	= /usr/local
 # NETCDF4_DIR	= /home/users/tmap/flat_32
 # NETCDF4_DIR	= /home/users/tmap/flat_64
-NETCDF4_DIR	= /usr/local/netcdf_412
+# NETCDF4_DIR	= /usr/local/netcdf_412
 # NETCDF4_DIR	= /usr/local/netcdf_413
+NETCDF4_DIR	= /home/users/ansley/local/linux_nc42
 
 ## Installation directory for readline static libraries
 ## (contains include and lib or lib64 subdirectories)

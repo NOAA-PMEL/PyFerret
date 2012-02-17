@@ -71,7 +71,9 @@
 *                       complained that padding was necessary otherwise
 * 4/03 V552 *acm* Shade key improvements; kuser_loc is 4-dimensional 
 * v581 *acm*  3/05 move cont_key to CONT.INC - continuous key for any color plot
-
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
+*               as single-precision
 
 	integer		spec_size,max_windows,pattern_num
 	parameter	(spec_size=250,max_windows=12,pattern_num=50)
@@ -87,13 +89,13 @@
 
 	character*25	pattern_list(21)
 
-	real		x_lo,x_hi,y_lo,y_hi
-	real		bad_val,shd_min,shd_max
-	real		kx_lo,kx_hi,ky_lo,ky_hi,klab_size
-	real		sr(spec_size),sg(spec_size),sb(spec_size)
-	real		slvl(spec_size)
-	real		msr(spec_size),msg(spec_size),msb(spec_size)
-	real		mslvl(spec_size)
+	REAL*4		x_lo,x_hi,y_lo,y_hi
+	REAL*4		bad_val,shd_min,shd_max
+	REAL*4		kx_lo,kx_hi,ky_lo,ky_hi,klab_size
+	REAL*4		sr(spec_size),sg(spec_size),sb(spec_size)
+	REAL*4		slvl(spec_size)
+	REAL*4		msr(spec_size),msg(spec_size),msb(spec_size)
+	REAL*4		mslvl(spec_size)
 
 	logical		fill_missing,even_histo,do_key,area_bundles
 	logical		vertical_key,kuser_loc(4),custom_colors
@@ -103,7 +105,7 @@
 	integer		ilast, buffer_max, num_buffered
 	parameter	(buffer_max=50)
 
-	real		xbuff(4,buffer_max), ybuff(4,buffer_max)
+	REAL*4		xbuff(4,buffer_max), ybuff(4,buffer_max)
         logical         use_cell
 
 	common/shade_vars/ i_lo,i_hi,j_lo,j_hi,

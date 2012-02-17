@@ -55,6 +55,7 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 
 * argument definitions:
@@ -183,7 +184,11 @@
 
 * ... check that the starting alignment is "exact"
 	      mem_val = TM_WORLD ( offset, grid, idim, box_middle )
+#ifdef double_p
+	      IF (.NOT.TM_FPEQ((file_val), (mem_val))) GOTO 5100
+#else
 	      IF (.NOT.TM_FPEQ(SNGL(file_val), SNGL(mem_val))) GOTO 5100
+#endif
 
 * .. here are the synchronized subscripts
               cdflo(idim) = offset
@@ -200,7 +205,11 @@
 	      ENDIF
 	      offset = TM_SUBSC ( file_val, grid, idim,  cdfhi(idim) )
 	      mem_val = TM_WORLD ( offset, grid, idim, box_middle )
+#ifdef double_p
+	      IF (.NOT.TM_FPEQ((file_val), (mem_val))) GOTO 5100
+#else
 	      IF (.NOT.TM_FPEQ(SNGL(file_val), SNGL(mem_val))) GOTO 5100
+#endif
 
            ELSE
               cdflo(idim) = 1

@@ -67,13 +67,14 @@ C**
 *                 It should be ZLEV(I). Fixes bug 1546.
 * V610 *acm* 3/08 - add new MODE NLEVELS; default number of levels is now 40
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 	parameter	(epsilon = 1e-6)
 
 
 	DIMENSION VAL(4),INTIF(4)
         INTEGER ntop
-        LOGICAL   TM_FPEQ
+        LOGICAL   TM_FPEQ_SNGL
 
 
 	IF(LABEL.EQ.' ')THEN
@@ -154,7 +155,7 @@ C
                    ZLEV(J)=VAL(1)+VAL(3)*(I-1)
 CC		Bug fix for non zero levels that ought to be zero *jd*
 		   IF (ABS(ZLEV(J)) .LT. EPSILON*ABS(VAL(1))) ZLEV(J)=0.0	
-                   IF ( TM_FPEQ( ABS(ZLEV(J)) ,0.) ) GOTO 100
+                   IF ( TM_FPEQ_SNGL( ABS(ZLEV(J)) ,0.) ) GOTO 100
                 ENDIF
 
 		IF(ZLEV(J).GT.0)THEN

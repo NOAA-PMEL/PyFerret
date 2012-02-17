@@ -50,6 +50,8 @@
 * V540: 9/01 *sh* - DEF VIEW/AXES: viewports based on *axis* positions
 * V580: 11/04 *acm* New symbols for viewport scaling
 * V602: *acm* 1/07 Changes for metafile-batch mode
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+
 
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
@@ -73,14 +75,18 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 * internal variable declarations:
 	LOGICAL clip, newstyle_vp
 	INTEGER	iseg, i, old_vp, istate
-	REAL	scale, fctx, fcty, xclip, yclip, xfrac, yfrac,
-     .          xcei, ycei, xoei, yoei, xcv, xov, ycv, yov
+	REAL	fctx, fcty, xclip, yclip
+	REAL*4  rzero, arg1, arg2, arg3, arg4, r4_unspec, scale, 
+     .          xov, yov, xcv, ycv, xfrac, yfrac,
+     .          xcei, ycei, xoei, yoei
 
 * main window opened yet ?
 	IF ( .NOT.pplus_started ) CALL START_PPLUS
 
 * only works under GKS
 	IF ( .NOT. gksopn ) RETURN
+
+	rzero = 0.0
 
 * make this the new viewport
 	old_vp = vp_num
@@ -127,7 +133,8 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 	ENDIF
 
 * decode clipping
-	clip = vp_xclip(vp_num) .NE. unspecified_val4
+	r4_unspec = unspecified_val4
+	clip = vp_xclip(vp_num) .NE. r4_unspec
 	IF ( clip ) THEN
 	   xclip = vp_xclip( vp_num )
 	   yclip = vp_yclip( vp_num )
@@ -150,19 +157,21 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
         yov = vp_yorg(vp_num)
         ycv = yclip
         IF (vp_by_axis(vp_num)) THEN
-          CALL VP_AXLIM2LIM( scale, xov,  yov,  xcv,  ycv,
-     .                              xov,  yov,  xcv,  ycv,
-     .                              xoei, yoei, xcei, ycei )
+          CALL VP_AXLIM2LIM( scale, xov, yov, xcv, ycv, xov, yov, xcv, ycv, 
+     .                       xoei, yoei, xcei, ycei)
         ENDIF
 * set viewport in NDC to limits requested
 
-	CALL GSVP(wsid,fctx*xov, fctx*xcv,
-     .		       fcty*yov, fcty*ycv )
+	arg1 = fctx*xov
+	arg2 = fctx*xcv
+	arg3 = fcty*yov
+	arg4 = fcty*ycv
+	CALL GSVP(wsid, arg1, arg2, arg3, arg4 )
 
 * set world coordinate window to preserve 1:1 aspect
-
-	CALL GSWN(wsid, 0.0, ( xcv-xov )*asize*scale,
-     .		        0.0, ( ycv-yov )*bsize*scale  )
+	arg1 = ( xcv-xov )*asize*scale
+	arg2 = ( ycv-yov )*bsize*scale
+	CALL GSWN(wsid, rzero, arg1, rzero, arg2 )
 
 	IF ( newstyle_vp ) THEN
 

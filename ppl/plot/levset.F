@@ -51,11 +51,12 @@ C**
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 * V631 *acm* 10/09 For the fix to bug 1672(present only in 32-bit linux), the
 *                  comparison must be done with TM_FPEQ. This was the cause of bug 1707.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 	INCLUDE 'CMRDL.INC'
 
 	DIMENSION VAL(4),INTIF(4)
-	LOGICAL TM_FPEQ
+	LOGICAL TM_FPEQ_SNGL
 	REAL top
 
 	LWGH=0
@@ -76,7 +77,7 @@ C**
 		 NL = INT((VAL(2)-VAL(1))/VAL(3))+1
 		 top = VAL(1)+(NL-1)*VAL(3)
 		 IF ( (top .LT. VAL(2)) .AND. 
-     .                (.NOT.TM_FPEQ(val(2),top)) ) NL = NL + 1 
+     .                (.NOT.TM_FPEQ_SNGL(val(2),top)) ) NL = NL + 1 
 	      ELSE
 		 NL=2
 	      ENDIF

@@ -45,6 +45,7 @@ c*
 *  V665 *acm*/11/09 Fix ticket 1766, as in #762, if the axis is modulo
 *                   the year 0000 or 0001 returns as blank.  If not modulo
 *		    then we want to return the year correctly.
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
       SUBROUTINE EF_GET_AXIS_DATES(id, iarg, tax, numtimes, datebuf )
 
@@ -126,6 +127,15 @@ c* to be accessible to the external function.
 * get the axis number
 	axis = grid_line( t_dim, grid )
 	modulo = line_modulo(axis)
+#ifdef double_p	
+	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
+	   WRITE ( date, * ) (tstep)
+	   RETURN
+	ELSEIF ( line_direction(axis) .NE. 'TI' ) THEN
+	   WRITE ( date, * ) (tstep)
+	   RETURN
+	ENDIF
+#else
 	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
 	   WRITE ( date, * ) SNGL(tstep)
 	   RETURN
@@ -133,6 +143,7 @@ c* to be accessible to the external function.
 	   WRITE ( date, * ) SNGL(tstep)
 	   RETURN
 	ENDIF
+#endif
 
 * get the calendar type
 

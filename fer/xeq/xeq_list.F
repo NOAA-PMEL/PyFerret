@@ -144,6 +144,7 @@
 *                  XCHUNK,YCHUNK,ZCHUNK,TCHUNK,COMPRESSION,SHUFFLE,ENDIAN
 * V6.7  *acm* 3/11 Remove warning deprecating /RIGID. There are still valid reasons
 *                  to want to set the time axis to NOT be the record axis.
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
         include 'tmap_errors.parm'
 	include	'ferret.parm'
@@ -509,6 +510,10 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
 #ifdef reclen_in_bytes
               reclen = reclen * 4    ! SUN record length in bytes
 #endif
+#ifdef double_p
+              reclen = reclen * 2
+#endif
+
 #ifdef unix
 	      OPEN( UNIT	= default_list_lun,
      .		    FILE	= raw_name,
@@ -542,6 +547,11 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
 	         ELSE
 	            reclen = MAX(reclen,4)
 	         ENDIF
+		 
+#ifdef double_p
+	         reclen = reclen * 2
+#endif
+
  60	      CONTINUE
 	      OPEN( UNIT	= default_list_lun,
      .		    FILE	= raw_name,

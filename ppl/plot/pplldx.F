@@ -1,4 +1,6 @@
       subroutine pplldx(icode,xt,yt,npts,tstrt,tref,xdt,pplmem)
+
+
 C**
 C**    @(#)pplldx.F	1.2    9/8/88
 C**
@@ -114,6 +116,7 @@ c
 *                   memory buffer, rather than in lleng.  This way the number of
 *                   polygons that may be plotted is unlimited. Mark this with the
 *                   value of icode (first argument to pplldx_envelope)
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 * FERRET 9-21-88: replaced include files to make all declarations explicit
 ! original:
@@ -159,12 +162,17 @@ c
 !	integer*4 mtmin,tstart,tstop,time,tmin
 
         REAL pplmem(*)
-      
-	REAL xt(*),yt(*)
+
+#ifdef double_p
+	REAL*8 xt(*),yt(*), xdt
+#else
+	REAL xt(*),yt(*), xdt
+#endif
 	CHARACTER BC2WHOI*14, tstrt*(*), tref*(*)
 	REAL*8 	  WHOI2BC, tstart,tstop,time,tmin
 	INTEGER	icode, npts, i, ix, iy
-	REAL	DIFF, xdt, off, rate
+	REAL	DIFF, off, rate, xs, ys
+	LOGICAL  TM_FPEQ_SNGL
 	LOGICAL  flip			!  FERRET mod 10/93
 
 	REAL	    bad_flag
@@ -216,11 +224,13 @@ c
 	iy=ix+pplmem_nsize/2
 	if(icode.eq.0 .OR. icode.EQ.3) THEN
 	    do 100 i=1,npts
+	        xs = SNGL(xt(i))
+	        ys = SNGL(yt(i))
 * FERRET mod 10/93 - apply transformation to Y data
 * FERRET mod  3/00 - screen X and Y separately for missing values
 	        IF ( flip ) THEN
 
-	          IF ( yeq .AND. yt(i).EQ.cmyeq ) THEN
+	          IF ( yeq .AND. TM_FPEQ_SNGL(ys,cmyeq) ) THEN
 	             pplmem(iy+i) = bad_flag
 
 		  elseif (translate) then
@@ -229,20 +239,20 @@ c
 		     pplmem(iy+i)=yt(i)
 		  endif
 
-	          IF ( xeq .AND. xt(i).EQ.cmxeq ) THEN
+	          IF ( xeq .AND. TM_FPEQ_SNGL(xs,cmxeq)) THEN
 	             pplmem(ix+i) = bad_flag
 	          ELSE
 		     pplmem(ix+i)=xt(i)
 	          ENDIF
 
 	        ELSE
-	          IF ( yeq .AND. yt(i).EQ.cmyeq ) THEN
+	          IF ( yeq .AND. TM_FPEQ_SNGL(ys,cmyeq) ) THEN
 	             pplmem(iy+i) = bad_flag
 	          ELSE
 		     pplmem(iy+i)=yt(i)
 	          ENDIF
 
-	          IF ( xeq .AND. xt(i).EQ.cmxeq ) THEN
+	          IF ( xeq .AND. TM_FPEQ_SNGL(xs,cmxeq) ) THEN
 	             pplmem(ix+i) = bad_flag
 	          ELSEIF (translate) then
 		     pplmem(ix+i)=(xt(i)-1.0)*rate+off
@@ -257,8 +267,9 @@ c
 100	    continue
 	else if(icode.eq.1)then
 	    do 200 i=1,npts
+	        xs = SNGL(xt(i))
 * FERRET mod 2/89 - screen bad data
-	        IF ( ( xeq .AND. xt(i).EQ.cmxeq ) ) THEN
+	        IF ( ( xeq .AND. TM_FPEQ_SNGL(xs,cmxeq) ) ) THEN
 	           pplmem(ix+i) = bad_flag
 	           pplmem(iy+i) = i     ! 3/00 mod
 	           GOTO 200
@@ -273,8 +284,9 @@ c
 200	    continue
 	else
 	    do 300 i=1,npts
+	        ys = SNGL(yt(i))
 * FERRET mod 2/89 - screen bad data
-	        IF ( ( yeq .AND. yt(i).EQ.cmyeq ) ) THEN
+	        IF ( ( yeq .AND. TM_FPEQ_SNGL(ys,cmyeq) ) ) THEN
 	           pplmem(ix+i) = bad_flag
 	           pplmem(iy+i) = bad_flag
 	           GOTO 300

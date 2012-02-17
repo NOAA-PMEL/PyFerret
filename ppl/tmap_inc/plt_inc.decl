@@ -1,9 +1,11 @@
 * PLT_INC.DECL - converted to Unix 2.26.91            
 * COMMON for PLOT+ with all variables declared
 * created for TMAP usage by Steve Hankin 7/88
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+
 	INTEGER	ICODE
-	REAL	WIDTH
-	REAL	HEIGHT
+	REAL*4	WIDTH
+	REAL*4	HEIGHT
 	INTEGER	MOD
 	INTEGER	IR
 	INTEGER	LUN

@@ -22,6 +22,9 @@ c*                              strings being converted from c to fortran
 c*                 *acm* 1/03 - Add float_return and string_return
 c*           V6.02 *acm*11/06 - Change unspecified_int4 to -999. Fixes bug 1463 where
 c*                              where an index value of -111 was confused with this flag
+c*	     V6.8  *acm* 1/12 - Double precision Ferret. Declare arguments
+c*				and function results with either 2 or 1 as
+c*				the first (extra) dimension
 
 	integer ef_c, ef_f, yes, no, x_axis, y_axis, z_axis,
      .  arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9,
@@ -70,6 +73,5 @@ c*                              where an index value of -111 was confused with t
 	real ef_version
 
 	parameter (ef_version = 1.3) 
-
 
 

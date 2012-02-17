@@ -5,6 +5,10 @@
 ! 5/4/05 acm remove calls to writev5d, shared obj external function
 !            (put in separate file bn_ef_v5d_strings)
 
+sh mode stupid
+cancel mode stupid  ! for testing in double precision 
+
+
 ! some test files
 sp rm -f *.str_test *.string_tst
 sp touch dummy1.str_test dummy2.str_test dummy3.str_test dummy4.str_test dummy5.str_test dummy6.str_test dummy7.str_test dummy8.str_test dummy9.str_test
@@ -185,3 +189,5 @@ list a[i=@shf:-1]
 list a[i=@ave]
 list a[i=@sbx]
 list a[i=@rsum]
+
+set mode/last stupid

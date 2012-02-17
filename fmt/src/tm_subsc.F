@@ -49,6 +49,7 @@
 * *kob* 10/96   - Linux port.  Linux didn't like tabs between "include"
 *                 and what was being included.  removed them
 * V542 2/02 *sh* - added support for modulo length > axis length
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * calling arguments:
 * world_coord	- coordinate vaule to be translated to subscript
@@ -156,7 +157,11 @@
 
 * quick sol'n if axis points are regularly spaced
 	ELSEIF ( regular ) THEN
+#ifdef double_p
+	   subsc  = ( (wcoord-first)/line_delta(axis) ) + .5
+#else
 	   subsc  = SNGL( (wcoord-first)/line_delta(axis) ) + .5
+#endif
 	   isubsc = INT( subsc ) + 1		! round up if ambiguous
 
 	ELSE

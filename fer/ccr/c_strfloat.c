@@ -42,13 +42,18 @@
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm*  3/05 v581 - return bad_value if input cannot be converted to numeric */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+/*                                       definition of macro DFTYPE in ferret.h.*/
+
 #include <wchar.h>
 #include <stdlib.h>
+#include "ferret.h"
 
-float c_strfloat_(in_ptr, out_ptr, bad_ptr)
+
+DFTYPE c_strfloat_(in_ptr, out_ptr, bad_ptr)
      char** in_ptr;
-     float* out_ptr;
-     float* bad_ptr;
+     DFTYPE* out_ptr;
+     DFTYPE* bad_ptr;
 {
    double dval;
    char  *endptr;
@@ -59,6 +64,6 @@ float c_strfloat_(in_ptr, out_ptr, bad_ptr)
       *out_ptr = *bad_ptr;
    }
    else {
-      *out_ptr = (float) dval;
+      *out_ptr = (DFTYPE) dval;
    }
 }

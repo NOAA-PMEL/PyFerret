@@ -66,18 +66,17 @@
 */ 
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/*  *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+*                                        definition of macro DFTYPE in ferretmacros.h. */
+
+
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <stdlib.h>
 #include <wchar.h>
 #include <stdio.h>
 #include <netcdf.h>
 #include <assert.h>
-
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
+#include "ferretmacros.h"
 
 void FORTRAN(cd_write_att_sub) (int *cdfid, int *varid, char* attname, int *attype,
 				                int *nval, void *val, int *status )
@@ -100,8 +99,14 @@ void FORTRAN(cd_write_att_sub) (int *cdfid, int *varid, char* attname, int *atty
 
   /* DOUBLE attr */
   case NC_DOUBLE:
-      *status= nc_put_att_float (*cdfid, vid, attname, *attype,
+#ifdef double_p
+     *status= nc_put_att_double (*cdfid, vid, attname, *attype,
               *nval, (double*) val);
+#else
+     *status= nc_put_att_float (*cdfid, vid, attname, *attype,
+              *nval, (double*) val);
+#endif
+
   break;
 
   /* FLOAT attr */

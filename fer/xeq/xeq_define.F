@@ -211,6 +211,7 @@
 *                  Write the calendar attribute, even if its the default Gregorian
 * V68 *acm* 1/12   Use the same micro-adjusting scheme as we are implementing for 
 *                  reading netCDF files (ticket 1910). Reset micro-adjust size if needed.
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -331,10 +332,10 @@
      .            dset_to_add, dir, type, attype, attid, ibuff, i0
 
 	REAL	  rbuff, bad_flag, yeardays, 
-     .            xlovp, ylovp,  xhivp, yhivp,
-     .            xoei,  yoei,   xcei,  ycei, scale, val,
-     .            dummy, val_buf
+     .            val, dummy, val_buf
 
+	REAL*4	  r4_unspec, scale, xlovp, ylovp,  xhivp, yhivp,
+     .            xoei,  yoei,   xcei,  ycei
 	REAL*8	  SECS_FROM_BC, TM_WW_AXLEN,
      .		  bc_to_t0, start, new_ww, delta, end, secs2start,
      .            micro_adj, axwwlen, rmod_len, secsperyear, small, 
@@ -359,7 +360,7 @@
      .		  replmsg/'Replacing definition of '/
 
 * statement function - value between 0 and 1
-	REAL x
+	REAL x, vx, vy
 	LOGICAL OUTSIDE_0_1
 	OUTSIDE_0_1( x ) = x.LT.0.0 .OR. x.GT.1.0
 
@@ -1085,9 +1086,15 @@ C /units=months  is 1/12 of the length of the year
 	      start = line_mem(frst_pt+n)
               delta = line_mem(frst_pt+n+1) - start
               DO 530 i1 = frst_pt+n+2,frst_pt+n+n+1
+#ifdef double_p
+		 IF (.NOT.TM_FPEQ( (delta),
+     .               (line_mem(i1)-line_mem(i1-1))) )
+     .						its_reg = .FALSE.
+#else
                  IF (.NOT.TM_FPEQ( SNGL(delta),
      .               SNGL(line_mem(i1)-line_mem(i1-1))) )
      .						its_reg = .FALSE.
+#endif
  530	      CONTINUE
 
 	   ELSE
@@ -1206,9 +1213,15 @@ C /units=months  is 1/12 of the length of the year
 	         start = line_mem(frst_pt)
                  delta = line_mem(frst_pt+1) - start
                  DO 550 i1 = frst_pt+2,frst_pt+npoints-1
-                    IF (.NOT.TM_FPEQ( SNGL(delta),
+#ifdef double_p
+                    IF (.NOT.TM_FPEQ( (delta),
+     .                  (line_mem(i1)-line_mem(i1-1))) )
+     .                       its_reg = .FALSE.
+#else
+		    IF (.NOT.TM_FPEQ( SNGL(delta),
      .                  SNGL(line_mem(i1)-line_mem(i1-1))) )
      .                       its_reg = .FALSE.
+#endif
  550	         CONTINUE
               ENDIF
 
@@ -1601,6 +1614,8 @@ C /units=months  is 1/12 of the length of the year
 **************************************************************************
 * DEFINE VIEWPORT
  600	IF ( num_args .NE. 1 ) GOTO 5300
+ 
+	r4_unspec = unspecified_val4
 * check out viewport name
 	buff1 = cmnd_buff( arg_start(1):arg_end(1) )
 	ivp = VIEWPORT_NUMBER( buff1 )
@@ -1624,8 +1639,8 @@ C /units=months  is 1/12 of the length of the year
  620	vp_size ( ivp ) = 1.0
 	vp_xorg ( ivp ) = 0.0
 	vp_yorg ( ivp ) = 0.0
-	vp_xclip( ivp ) = unspecified_val4   ! old style  3/29/93
-	vp_yclip( ivp ) = unspecified_val4   ! old style  3/29/93
+	vp_xclip( ivp ) = r4_unspec   ! old style  3/29/93
+	vp_yclip( ivp ) = r4_unspec   ! old style  3/29/93
 	vp_seg0 ( ivp ) = 0
 	vp_segn ( ivp ) = 0
 
@@ -1643,7 +1658,9 @@ C /units=months  is 1/12 of the length of the year
 	   IF ( status .NE. ferr_ok ) RETURN
 	   IF ( .NOT.TM_DIGIT(buff2) .OR. INDEX(buff2,',').EQ.0 ) GOTO 5630
 	   READ ( buff2, *, ERR=5630 ) vp_xorg(ivp), vp_yorg(ivp)
-	   IF ( OUTSIDE_0_1(vp_xorg(ivp)) .OR. OUTSIDE_0_1(vp_yorg(ivp)) )
+	   vx = vp_xorg(ivp)
+	   vy = vp_yorg(ivp)
+	   IF ( OUTSIDE_0_1(vx) .OR. OUTSIDE_0_1(vy) )
      .	      							   GOTO 5620
 	ENDIF
 
@@ -1652,9 +1669,10 @@ C /units=months  is 1/12 of the length of the year
 	IF ( qp .GT. 0 ) THEN
 	   IF (vp_by_axis(ivp)) GOTO 5660
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(qp):qual_end(qp)),
-     .			   vp_size(ivp), status )
+     .			   val_buf, status )
+	   vp_size(ivp) = val_buf
 	   IF ( status .NE. ferr_ok ) RETURN
-	   IF ( vp_size(ivp) .LT. 0.0 ) GOTO 5620
+	   IF ( val_buf .LT. 0.0 ) GOTO 5620
            vp_size(ivp) = -1. * vp_size(ivp)    ! flag for old-style viewports
            CALL WARN (
      .          'The /SIZE qualifier will force Ver. 2.2 behavior'
@@ -1679,7 +1697,7 @@ C /units=months  is 1/12 of the length of the year
 
 * default clipping at 1,1 in new style viewports  (immaterial, I think ...)
 	IF ( qual_given(slash_size) .EQ. 0 ) THEN
-	   IF ( vp_xclip(ivp).EQ.unspecified_val4) THEN
+	   IF ( vp_xclip(ivp).EQ.r4_unspec) THEN
 	      vp_xclip(ivp) = 1.0
 	      vp_yclip(ivp) = 1.0
 	   ENDIF
@@ -1698,8 +1716,9 @@ C /units=months  is 1/12 of the length of the year
 	   READ ( buff2(1:pos-1), *, ERR=5630 ) vp_xorg(ivp)
 	   IF (.NOT.TM_DIGIT(buff2(pos+1:i1))  ) GOTO 5630
 	   READ ( buff2(pos+1:i1), *, ERR=5630 ) vp_xclip(ivp)
-	   IF ( OUTSIDE_0_1(vp_xorg(ivp))
-     .     .OR. OUTSIDE_0_1(vp_xclip(ivp))
+	   vx = vp_xorg(ivp)
+	   vy = vp_xclip(ivp)
+	   IF ( OUTSIDE_0_1(vx) .OR. OUTSIDE_0_1(vy)
      .     .OR. vp_xorg(ivp) .GE. vp_xclip(ivp) )  GOTO 5620
 	ENDIF
 
@@ -1716,8 +1735,9 @@ C /units=months  is 1/12 of the length of the year
 	   READ ( buff2(:pos-1), *, ERR=5630 ) vp_yorg(ivp)
 	   IF (.NOT.TM_DIGIT(buff2(pos+1:i1))  ) GOTO 5630
 	   READ ( buff2(pos+1:i1), *, ERR=5630 ) vp_yclip(ivp)
-	   IF ( OUTSIDE_0_1(vp_yorg(ivp))
-     .     .OR. OUTSIDE_0_1(vp_yclip(ivp))
+	   vx = vp_yorg(ivp)
+	   vy = vp_yclip(ivp)
+	   IF ( OUTSIDE_0_1(vx) .OR. OUTSIDE_0_1(vy)
      .     .OR. vp_yorg(ivp) .GE. vp_yclip(ivp) )  GOTO 5620
 	ENDIF
 
@@ -1726,9 +1746,10 @@ C /units=months  is 1/12 of the length of the year
 	IF ( qp .GT. 0 ) THEN
 	   IF ( qual_given(slash_size) .GT. 0 ) GOTO 5650
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(qp):qual_end(qp)),
-     .			   vp_size(ivp), status )
+     .			   val_buf, status )
 	   IF ( status .NE. ferr_ok ) RETURN
-	   IF ( vp_size(ivp) .LT. 0.001 ) GOTO 5620
+	   vp_size(ivp) = val_buf
+	   IF ( val_buf .LT. 0.001 ) GOTO 5620
 	ELSEIF ( qual_given(slash_size) .EQ. 0 ) THEN     ! auto-sizing
            vp_size(ivp) = SQRT( (vp_xclip(ivp)-vp_xorg(ivp))
      .                        * (vp_yclip(ivp)-vp_yorg(ivp)) )

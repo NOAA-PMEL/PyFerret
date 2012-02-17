@@ -49,16 +49,18 @@
 	   if
   for SGI port	 - kob 4/8/92 */
 
-/* added ifdef check for underscore in routine name for aix *kob* 10/94 */
+/* added ifdef check for underscore in routine name for aix *kob* 10/94 
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+/*					 definition of macro DFTYPE in ferretmacros.h.
+*/
+
+#include "ferretmacros.h"
+
 #define cptype_vax 0
 #define cptype_dec 1
 #define cptype_sun 2
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void tm_dfp_convert( dval, author_cpu )
-#else
-void tm_dfp_convert_( dval, author_cpu )
-#endif
+void FORTRAN(tm_dfp_convert)( dval, author_cpu )
   double *dval;
   int *author_cpu;
   {

@@ -45,6 +45,8 @@
 /*******************/
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret. */
+
 #include <wchar.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -55,9 +57,14 @@
 /* pplldv_envelope: this routine, called from FORTRAN, calls pplldv with ppl_memory
  */
 
+#ifdef double_p
+void FORTRAN(pplldv_envelope)(int *K, double *Z, int *MX, int *MY, int *IMN,int *IMX,
+                              int *JMN,int *JMX)
+#else
 void FORTRAN(pplldv_envelope)(int *K, float *Z, int *MX, int *MY, int *IMN,int *IMX,
                               int *JMN,int *JMX)
 
+#endif
 /*******************/
 
 {

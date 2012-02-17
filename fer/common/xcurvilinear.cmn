@@ -3,7 +3,8 @@
 
 * V612: 7/08 *acm*  Fix bug 1589; units_degrees flag stores whether the units of 
 *                   the x coordinates are something other than degrees
-
+* V68  *acm* 1/12  explicit REAL*4 declarations for double-precision ferret with
+*		    single-precision pplus
 	COMMON/ XCURVILINEAR/
      .		curvilinear,
      .		dim1_modulo, dim2_modulo,
@@ -48,7 +49,7 @@
      .		xpos_off0_dim2,
      .		ypos_off0_dim1,
      .		ypos_off0_dim2
-	REAL	badx, bady,
+	REAL*4	badx, bady,
      .		wwxmax, wwxmin,
      .		wwymax, wwymin
 

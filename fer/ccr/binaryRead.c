@@ -8,6 +8,10 @@
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *kob*  4/06 v600 - changes for 64-bit build */
+
+/* * 1/12 *acm* - Ferret 6.8 Changes for double-precision ferret, see the*/
+/*             definition of macro DFTYPE in binaryRead.h */
+
 #include <wchar.h>
 #include "binaryRead.h"
 #include <stdlib.h>
@@ -197,7 +201,7 @@ static void deleteBinaryReader(FileInfo *fi){
   free(fi);
 }
 
-static int addVar(FileInfo *fi, float *data, int type, int doRead){
+static int addVar(FileInfo *fi, DFTYPE *data, int type, int doRead){
   VarInfo *theVar = 0;
   int i;
 
@@ -272,7 +276,7 @@ static double SWAP64(void *i_in)
 
 static int readVars(FileInfo *file) {
   int i,j,k,l,v;
-  float *dst;
+  DFTYPE *dst;
   char *src = initMemory(file);
   int *permutes = file->permutes;
   int *lengths = file->lengths;
@@ -316,31 +320,31 @@ static int readVars(FileInfo *file) {
 	      type = var->type;
 	      switch(type){
 	      case 'b':
-		*dst = (float)*(char *)src;
+		*dst = (DFTYPE)*(char *)src;
 		break;
 	      case 's':
 		memcpy(&buf.s, src, sizeof(short));
 		if (file->doSwap)
 		 SWAP16(&buf.s);
-		*dst = (float)buf.s;
+		*dst = (DFTYPE)buf.s;
 		break;
 	      case 'i':
 		memcpy(&buf.i, src, sizeof(int));
 		if (file->doSwap)
 		  SWAP32(&buf.i);
-		*dst = (float)buf.i;
+		*dst = (DFTYPE)buf.i;
 		break;
 	      case 'f':
 		memcpy(&buf.f, src, sizeof(float));
 		if (file->doSwap)
 		  SWAP32(&buf.f);
-		*dst = buf.f;
+		*dst = (DFTYPE)buf.f;
 		break;
 	      case 'd':
 		memcpy(&buf.d, src, sizeof(double));
 		if (file->doSwap)
 		  SWAP64(&buf.d);
-		*dst = (float)buf.d;
+		*dst = (DFTYPE)buf.d;
 		break;
 	      default:
 		assert(0);
@@ -394,13 +398,13 @@ static int readBinary(FileInfo *file){
   
 int FORTRAN(br_open)(char *name, int lengths[MAXDIMS],
 				  int permutes[MAXDIMS], int *iskip){
-  int skip = (*iskip) * sizeof(float); /* Words -> bytes */
+  int skip = (*iskip) * sizeof(DFTYPE); /* Words -> bytes */
   assert(FFileInfo == 0);
   FFileInfo = createBinaryReader(name, lengths, permutes, skip, Swap);
   return FFileInfo != 0;
 }
 
-int FORTRAN(br_add_var)(float *data, int *doRead) {
+int FORTRAN(br_add_var)(DFTYPE *data, int *doRead) {
   assert(FFileInfo != 0);
   assert(Types.length > 0);
   if (Types.length != 1 && FFileInfo->nvars >= Types.length){

@@ -5,12 +5,15 @@
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 * V600: *acm* 11/05 add XDMS,YDMS for deg/min/sec labels
 * V600: *acm*  2/06 add XVALOFF,YVALOFF for deg/min/sec labels
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
+*               as single-precision
 
-	REAL	XLO
-	REAL	XHI
-	REAL	XTIC
-	REAL	XLEN
-	REAL	XCSIZE
+	REAL*4	XLO
+	REAL*4	XHI
+	REAL*4	XTIC
+	REAL*4	XLEN
+	REAL*4	XCSIZE
 	INTEGER	IAUTOX
 	INTEGER	ITYPEX
 	INTEGER	NMTCX
@@ -18,12 +21,12 @@
 	INTEGER	LABELX
 	INTEGER	NSIGX
 	INTEGER	NTICX
-	REAL	XORG
-	REAL	YLO
-	REAL	YHI
-	REAL	YTIC
-	REAL	YLEN
-	REAL	YCSIZE
+	REAL*4	XORG
+	REAL*4	YLO
+	REAL*4	YHI
+	REAL*4	YTIC
+	REAL*4	YLEN
+	REAL*4	YCSIZE
 	INTEGER	IAUTOY
 	INTEGER	ITYPEY
 	INTEGER	NMTCY
@@ -31,18 +34,18 @@
 	INTEGER	LABELY
 	INTEGER	NSIGY
 	INTEGER	NTICY
-	REAL	YORG
+	REAL*4	YORG
 	INTEGER	IAXON
         INTEGER IAXSET
-        REAL    HGRAT
-        REAL    VGRAT
+        REAL*4    HGRAT
+        REAL*4    VGRAT
         INTEGER HCOLOR
         INTEGER VCOLOR
         LOGICAL HLINE
         LOGICAL VLINE
         INTEGER XDMS
         INTEGER YDMS
-        REAL    XVALOFF
-        REAL    YVALOFF
+        REAL*4    XVALOFF
+        REAL*4    YVALOFF
 c
 * requires: INCLUDE 'PPLV11INC:AXIS.INC'                                    

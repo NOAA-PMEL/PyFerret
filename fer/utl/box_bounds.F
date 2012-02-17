@@ -46,19 +46,16 @@
 
 * for FERRET V2.00: 12/21/89
 * V3.00 changed REAL FUNCTION to SUBROUTINE (noticed by f77 3.2)
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xbox_bounds.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XBOX_BOUNDS.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL		valid
 	INTEGER		n
-	REAL		val1, bounds(n+1)
+	REAL*4		val1, bounds(n+1)
+	REAL		wval
 	CHARACTER	x_or_y*1
 
 * internal variable declarations:
@@ -78,8 +75,11 @@
 
 * pass back box edges
 	DO 100 i = 1, n
- 100	bounds(i) = SNGL( TM_WORLD (isub0+i,bb_grid,idim,box_lo_lim) )
-	bounds(n+1) = SNGL( TM_WORLD (isub0+n,bb_grid,idim,box_hi_lim) )
+	   wval =  TM_WORLD (isub0+i,bb_grid,idim,box_lo_lim)
+	   bounds(i) = wval
+ 100	CONTINUE
+	wval = TM_WORLD (isub0+n,bb_grid,idim,box_hi_lim)
+	bounds(n+1)  = wval
 
 * always (the appearance of) success
 	valid = .TRUE.

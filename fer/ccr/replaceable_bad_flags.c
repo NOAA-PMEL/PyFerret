@@ -40,9 +40,12 @@
 /*  same and not NaN, no need to replace them, so return a false
 
 /* *kob* - 2/18/99 */
+/* *acm*  1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+/*              definition of macro DFTYPE in ferret.h */
 
-int replaceable_bad_flags_ (bad1, bad2)
-     float *bad1, *bad2;
+#include "ferret.h"
+int FORTRAN(replaceable_bad_flags)(bad1, bad2)
+     DFTYPE *bad1, *bad2;
 
 {
   if (isnan(*bad1) || isnan(*bad2))

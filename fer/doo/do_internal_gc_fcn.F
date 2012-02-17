@@ -89,6 +89,8 @@
 * V600  5/06 *acm* In the fix to STRRINDEX, wrong indices in com2 
 *                  CALL C_STRLEN(com2(1,i2,j2,k2,l2),ii) led to a crash
 *                  when applying STRRINDEX to a list of strings.
+* V68   1/12 *acm* call C_SUBSTR with integers for offset and lentgh.
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -127,7 +129,7 @@
      .		si5, sj5, sk5, sl5, si6, sj6, sk6, sl6
 !     .		i3, j3, k3, l3, i4, j4, k4, l4,
 !     .		i5, j5, k5, l5, i6, j6, k6, l6,
-        INTEGER klo, khi, ndx_lo, wkblk
+        INTEGER klo, khi, ndx_lo, wkblk, ioff, ilen
         INTEGER coded_pointer, uvar, item, start, end   ! for TIMES2
 
 	REAL    bad_res,
@@ -164,8 +166,13 @@
 	REAL*8          pdays_by_1900
 	PARAMETER     ( pdays_by_1900 = 59958230400.0 / (60.*60.*24.) )
 	INTEGER	    pfloat_words, pptr_words
+#ifdef double_p
+	PARAMETER  (pfloat_words = 1,
+     .		    pptr_words   = 1 )
+#else
 	PARAMETER  (pfloat_words = 1,
      .		    pptr_words   = 2 )
+#endif
 
 * initialize commonly used variables
         status = ferr_ok
@@ -395,8 +402,11 @@
 	    DO 1410 k = mr_lo_s3(mres), mr_hi_s3(mres)
 
 * ... next Z axis value (com3) to locate
+#ifdef double_p
+             zval = (TM_WORLD(k,cx_grid(cx3),z_dim,box_middle))
+#else
              zval = SNGL(TM_WORLD(k,cx_grid(cx3),z_dim,box_middle))
-
+#endif
 * ... search the Z field (com2) for the index just below this value
 * ... note that ndx_lo is always referenced to a starting index of 1
 	     CALL HUNT_R4(memory(1,wkblk), klo, khi, zval, ndx_lo, frac)
@@ -813,10 +823,10 @@
 	   i1 = i1 + di1
 	   i2 = i2 + di2
 	   i3 = i3 + di3
-
+	     ioff = com2(1,i2,j2,k2,l2)
+	     ilen = com3(1,i3,j3,k3,l3)
 	     CALL C_SUBSTR(com1(1,i1,j1,k1,l1),
-     .                     com2(1,i2,j2,k2,l2), 
-     .                     com3(1,i3,j3,k3,l3),
+     .                     ioff, ilen, 
      .                     res(1,i,j,k,l))
 
            ENDDO

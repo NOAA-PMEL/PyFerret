@@ -1,4 +1,4 @@
-	SUBROUTINE SET_PLOT_SIZE( xsize, ysize )
+	LOGICAL FUNCTION TM_FPEQ_SNGL ( a, b )
 
 *
 *
@@ -35,35 +35,40 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* adjust PPLUS SIZE command to re-size plot
-
+* test to see if REAL*4 floating point numbers are equal to within
+* "reasonable" accuracy
+* REAL*4 (F_floating) machine error on the VAX is "approximately one part in
+* 2**23" or 1.2E-7.  Allow 4.E-7 as machine error after many typical roundoffs.
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* programmer - Ansley Manke, from tm_fpeq.F
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+*
+* 1/13/2012
+* Single-precision version of TM_FPEQ_SNGL, to be called from PPLUS.
 
-* revision 0.0 - 9/16/88 
-* Unix/RISC port - 10/9/91 - unsave previous axis lengths held by
-*                            routine setup_keys
-*                          - also restore the origin
-* V230:  11/5/92 - removed axis resizing to SET_AX_SIZES
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
- 
-	include 'plot_setup.parm'
+* calling arguments:
+	REAL*4	a, b
 
-* calling argument declarations:
-#ifdef double_p
-	REAL*4	xsize, ysize
-#else
-	REAL	xsize, ysize
-#endif
+* local parameters
+	LOGICAL    TM_DFPEQ
+	REAL*4	   VAX_epsilon
+	PARAMETER (VAX_epsilon = 4.E-7)
 
-* internal variable declarations:
-	CHARACTER buff*24
+* treat relative error case (non-zero) separate fron zero case
 
-* tell it to PPLUS
-	WRITE ( buff, 3000 ) xsize, ysize
-	CALL PPLCMD ( from, line, 0, 'SIZE '//buff, 1, 1 )
- 3000	FORMAT(2F12.3)
+	IF  (a.NE.0.0   .AND.  b.NE.0.0 )  THEN
 
+	   TM_FPEQ_SNGL =  ABS(a-b) .LE. ABS(b)*VAX_epsilon		! relative error
+
+	ELSE
+
+	   TM_FPEQ_SNGL =	ABS(a) .LT. VAX_epsilon
+     .		.AND.   ABS(b) .LT. VAX_epsilon			! absolute error
+
+	ENDIF
 	RETURN
 	END

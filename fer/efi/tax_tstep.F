@@ -4,6 +4,7 @@
 * Jing Y. Li 
 * May 31 2006
 * Finished March 24, 2009, ACM
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *
 * This function returns time step values
 *
@@ -98,6 +99,13 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
       INTEGER id
 
 * **********************************************************************
@@ -144,12 +152,19 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
       INTEGER id
 
       REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
      .           mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL arg_2(2, mem2lox:mem2hix, mem2loy:mem2hiy,
+      REAL arg_2(strdf, mem2lox:mem2hix, mem2loy:mem2hiy,
      .           mem2loz:mem2hiz, mem2lot:mem2hit)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy,

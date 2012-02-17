@@ -139,6 +139,8 @@
 * *kms*  2/11      - Make mem_size a size_t variable - malloc's expected variable type.
 *                    Change resize requests to pass mem_blk_size (an int) instead of
 *                    mem_size (a size_t) in sBuffer->flags[FRTN_IDATA1]
+* *acm*  1/12      - Ferret 6.8 ifdef for double-precision ferret, see the
+*					 definition of macro DFTYPE in ferret.h. ppl_memory remains float.
 */
 
 #include <wchar.h>
@@ -155,8 +157,9 @@ int gui_init();
 int its_script;
 char script_args[2048];
 int arg_pos;
-float **gui_get_memory();
-static void command_line_run(float **memory);
+
+DFTYPE **gui_get_memory();
+static void command_line_run(DFTYPE **memory);
 
 void help_text()
 {
@@ -208,7 +211,7 @@ main (int oargc, char *oargv[])
 {
   int status;
   smPtr sBuffer;
-  float **memory = gui_get_memory(); 
+  DFTYPE **memory = gui_get_memory(); 
   int argc = oargc;
   char **argv = oargv;
 
@@ -372,7 +375,8 @@ main (int oargc, char *oargv[])
   }
   /* Reset mem_size to exactly the size Ferret thinks it is being handed */
   mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
-  *memory = (float *) malloc(mem_size*sizeof(float));
+  *memory = (DFTYPE *) malloc(mem_size*sizeof(DFTYPE));
+
   if ( *memory == NULL ) {
     printf("Unable to allocate the requested %#.1f Mwords of memory.\n",(double)mem_size/1.E6);
     exit(0);
@@ -422,7 +426,8 @@ main (int oargc, char *oargv[])
 #endif
 }
 
-static void command_line_run(float **memory){
+  static void command_line_run(DFTYPE **memory){
+
   FILE *fp = 0;
   char init_command[2176], script_file[2048], *home = getenv("HOME");
   int ipath = 0;
@@ -529,12 +534,14 @@ static void command_line_run(float **memory){
 	  printf("new mem_blk_size = %d\n",mem_blk_size);
         */
         free( (void *) *memory );
-        *memory = (float *) malloc(mem_size*sizeof(float));
+        *memory = (DFTYPE *) malloc(mem_size*sizeof(DFTYPE));
+
         if ( *memory == NULL ) {
           printf("Unable to allocate %#.1f Mwords of memory.\n", (double)mem_size/1.E6);
           mem_blk_size = old_mem_blk_size;
-	  mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
-          *memory = (float *) malloc(mem_size*sizeof(float));
+          mem_size = (size_t)mem_blk_size * (size_t)max_mem_blks;
+          *memory = (DFTYPE *) malloc(mem_size*sizeof(DFTYPE));
+
           if ( *memory == NULL ) {
             printf("Unable to reallocate previous memory of %#.1f Mwords.\n",(double)(mem_size)/1.E6);
             exit(0);

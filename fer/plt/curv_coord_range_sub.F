@@ -47,6 +47,7 @@
 * V602:  2/2007 Fix bug 1485; when determining the range of indices to
 *               use loop over the indices used in the projection; minss_dim1
 *               minss_dim2 etc. 
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
 
 	include 'ferret.parm'
@@ -56,11 +57,19 @@
 
 * calling argument declarations:
 	INTEGER ilo, ihi, jlo, jhi, status
-	REAL    uc(*),
-     .		xfield(xpos_loss_dim1:xpos_hiss_dim1,
+#ifdef double_p
+	REAL*4  uc(*)
+	REAL*8	xfield(xpos_loss_dim1:xpos_hiss_dim1,
      .		       xpos_loss_dim2:xpos_hiss_dim2),
      .		yfield(ypos_loss_dim1:ypos_hiss_dim1,
      .		       ypos_loss_dim2:ypos_hiss_dim2)
+#else
+	REAL    uc(*)
+	REAL	xfield(xpos_loss_dim1:xpos_hiss_dim1,
+     .		       xpos_loss_dim2:xpos_hiss_dim2),
+     .		yfield(ypos_loss_dim1:ypos_hiss_dim1,
+     .		       ypos_loss_dim2:ypos_hiss_dim2)
+#endif
 
 * internal variable declarations:
 

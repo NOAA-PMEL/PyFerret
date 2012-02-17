@@ -125,5 +125,23 @@ __global float *memory;
 #endif
 #endif
 
+/* *acm*  1/12 - Ferret 6.8 double-precision ferret */
+/* Easier way of handling single/double floating-point declarations */
+
+#ifdef double_p
+#define DFTYPE double
+#else
+#define DFTYPE float
+#endif
+
+
+/* Length of an element for string pointers, bytes */
+
+#ifdef double_p
+#define SBYTE 16
+#else
+#define SBYTE 8
+#endif
+
 #endif /* _FERRET_H */
 

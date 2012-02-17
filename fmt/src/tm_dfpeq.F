@@ -41,19 +41,23 @@
 * NOAA/PMEL, Seattle, WA 
 *
 * V500 - New routine - taken from tm_fpeq.F  *kob*
+* V68  *acm* 1/12  minor changes for double-precision ferret.
 
 *
 * calling arguments:
 	REAL*8	a, b
 
 * local parameters
+	REAL*8     c, d
 	REAL*8	   epsilon
-	PARAMETER (epsilon = 4.E-16)
+	PARAMETER (epsilon = 4.E-15)
 
 * treat relative error case (non-zero) separate fron zero case
 
 	IF  (a.NE.0.0   .AND.  b.NE.0.0 )  THEN
 
+	   c = ABS(a-b)
+	   d = ABS(b)*epsilon
 	   tm_dfpeq =  ABS(a-b) .LE. ABS(b)*epsilon		! relative error
 
 	ELSE

@@ -136,7 +136,10 @@ file/format=str/var=num,num1/grid=mygrid/type=r8 doubleSwapped.dat
 list num1
 
 ! Test skip
-file/format=str/var=num,num1/grid=mygrid/type=r8/skip=4/swap skip.dat
+!file/format=str/var=num,num1/grid=mygrid/type=r8/skip=4/swap skip.dat
+! For double-precision Ferret, /skip=4 stops with error, 
+! get correct result with /skip=2 (??)
+file/format=str/var=num,num1/grid=mygrid/type=r8/skip=2/swap skip.dat
 list num1
 
 

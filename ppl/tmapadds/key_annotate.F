@@ -35,7 +35,8 @@
 *
 * Label the color key with high and low values at each end
 * (only if they're valid values) 
-*
+** V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+
 *  kpx		corners of box of color in colorbar
 *  kpy
 *  lab_digits	digits used in key labels
@@ -61,7 +62,7 @@
       INTEGER maxlen, slen, ldigits
       REAL x1, x2, x3, x4, y1, y2, y3, y4
       REAL delx, xx, yy, xxx, yyy
-      CHARACTER*20 TM_FMT_DIGITS, text
+      CHARACTER*20 TM_FMT_SNGL_DIGITS, text
 
 * save px and py values
       y1 = py(1)
@@ -81,7 +82,7 @@
 
          maxlen = 20
          ldigits = lab_digits+1
-         text = TM_FMT_DIGITS (zmin,ldigits,maxlen,slen)
+         text = TM_FMT_SNGL_DIGITS (zmin,ldigits,maxlen,slen)
 	 xx = px(1)/1000.0 - xorg - (slen/2)* height
          yy = py(1)/1000.0 - yorg - 2.1* height
 	 
@@ -93,7 +94,7 @@
 
          maxlen = 20
          ldigits = lab_digits+1
-         text = TM_FMT_DIGITS (zmax,ldigits,maxlen,slen)
+         text = TM_FMT_SNGL_DIGITS (zmax,ldigits,maxlen,slen)
 	 xx = px(1)/1000.0 - xorg - (slen/2)* height
          yy = py(3)/1000.0 - yorg + 1.1* height
 	 
@@ -105,7 +106,7 @@
 
          maxlen = 20
          ldigits = lab_digits+1
-         text = TM_FMT_DIGITS (zmin,ldigits,maxlen,slen)
+         text = TM_FMT_SNGL_DIGITS (zmin,ldigits,maxlen,slen)
 	 xx = px(1)/1000.0 - xorg - (slen)* height
          yy = py(1)/1000.0 - yorg - 0.5* height
 	 
@@ -117,7 +118,7 @@
 
          maxlen = 20
          ldigits = lab_digits+1
-         text = TM_FMT_DIGITS (zmax,ldigits,maxlen,slen)
+         text = TM_FMT_SNGL_DIGITS (zmax,ldigits,maxlen,slen)
 	 xx = px(3)/1000.0 - xorg + 0.5* height
          yy = py(3)/1000.0 - yorg - 0.5* height
 	 

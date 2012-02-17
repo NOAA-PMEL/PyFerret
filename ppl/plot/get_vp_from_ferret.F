@@ -45,6 +45,7 @@
 * V200:  3/13/90 - allow wsid.eq.0 for all windows cancelled (metafile open)
 * V300:  3/20/93 - use ABS() to avoid negative size passed to PLOT+
 * V540:  *sh* 9/01 - call VP_AXLIM2LIM to translate axis-relative VP limits
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 	include 'ferret.parm'		! with unspecified_val4
 	include 'xplot_state.cmn'		! viewport info
@@ -82,6 +83,7 @@
 	   CALL VP_AXLIM2LIM( scale, xorg, yorg, xclip, yclip,
      .                               xorg, yorg, xclip, yclip,
      .                               xoei,  yoei,  xcei,  ycei )
+    
 	ENDIF
 
 	RETURN

@@ -50,6 +50,7 @@
 * V600 - SECS_TO_DATE --> SECS_TO_DATE_OUT for better formatting
 * V610: *acm*  2/08 Fix bug 762: if the axis is not modulo, always list the
 *                   year (previously never listed year 0 or year 1)
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * Arguments:
 *	grid	 - grid containing a time axis
@@ -64,7 +65,6 @@
 	external xgt_grid_data
 	include 'ferret.parm'
 	include 'xtext_info.cmn'
-
 
 * calling argument declarations
 	CHARACTER*(*)	date
@@ -87,6 +87,16 @@
 	prec = ABS(precision)
 
 * get the axis number
+#ifdef double_p
+	axis = grid_line( t_dim, grid )
+	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
+	   WRITE ( date, * ) (tstep)
+	   RETURN
+	ELSEIF ( line_direction(axis) .NE. 'TI' ) THEN
+	   WRITE ( date, * ) (tstep)
+	   RETURN
+	ENDIF
+#else	
 	axis = grid_line( t_dim, grid )
 	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
 	   WRITE ( date, * ) SNGL(tstep)
@@ -95,7 +105,7 @@
 	   WRITE ( date, * ) SNGL(tstep)
 	   RETURN
 	ENDIF
-
+#endif
         modulo = line_modulo(axis)
 
 * get the calendar type

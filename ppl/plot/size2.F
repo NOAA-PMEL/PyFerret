@@ -81,6 +81,7 @@
 *	  workstation sizing information
 * *am* 1/07 V6.02 true batch mode for metafiles; flag meta_batch
 *	  distinguises this case from other batch modes.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 *     PLOTTER DEPENDENT ROUTINE
 *     CONTAINS PHYSICAL CHARACTERISTICS OF ALL LEGAL DEVICES.
@@ -168,7 +169,7 @@ C
 #endif
 	REAL width, height
 
-	LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS, TM_FPEQ
+	LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS, TM_FPEQ_SNGL
         LOGICAL clip, its_meta, batch, meta_batch
 	INTEGER ITS_GKSM 
 	INTEGER ier, id, itype, imeter, irx, iry
@@ -195,7 +196,7 @@ C
       ANEW = FACTOR * ABS(WIDTH)
       BNEW = FACTOR * ABS(HEIGHT)
 
-	IF ( TM_FPEQ(ANEW,ASIZE) .AND. TM_FPEQ(BNEW,BSIZE) ) THEN
+	IF ( TM_FPEQ_SNGL(ANEW,ASIZE) .AND. TM_FPEQ_SNGL(BNEW,BSIZE) ) THEN
 #ifdef xgks
 	   if (meta_actv .OR. meta_batch) then
 	      IF (ITS_GKSM(meta_wsid) .EQ. 1) THEN	! *sh* 4/97

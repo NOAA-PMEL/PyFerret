@@ -40,30 +40,27 @@
 *	Mod 3.11.93 for Ferret to capture entire screen when in viewport
 * 1/97 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
-#ifdef unix
         include 'errmsg.parm'
         include 'pltcom_dat.decl'
         include 'PLTCOM.DAT'
-#else
-        INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-        INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'
-        INCLUDE 'PPLV11INC:PLTCOM.DAT'
-#endif
 
 	integer		error_status,transno,ws_id
 	integer		x_pixel_dim,y_pixel_dim
 	integer		status,new_trans
 	PARAMETER	( new_trans = 10 )
 
-	real		fctx,fcty
-	real		world(4),ndc(4),x_minw,x_maxw,y_minw,y_maxw
+	real*4		rzero, fctx,fcty, world(4),
+     .			x_minw,x_maxw,y_minw,y_maxw,ndc(4)
 
 ******************************************************************************
 
 *	GET WORLD COORDINATES AND PIXEL DIMENSIONS OF FRAME
 	call  gqcntn (error_status,transno)
 	if (error_status .ne. 0) goto 1000
+
+	rzero = 0.0
 
         IF(ASIZE.GT.BSIZE)THEN
            FCTY=BSIZE/ASIZE
@@ -72,8 +69,8 @@
            FCTX=ASIZE/BSIZE
            FCTY=1.0
         ENDIF
-	CALL GSWN(new_trans, 0.0, asize, 0.0, bsize )
-	CALL GSVP(new_trans, 0.0, fctx,  0.0, fcty )
+	CALL GSWN(new_trans, rzero, asize, rzero, bsize )
+	CALL GSVP(new_trans, rzero, fctx,  rzero, fcty )
 	call gselnt (new_trans)
 
 	call gqnt (new_trans,error_status,world,ndc)

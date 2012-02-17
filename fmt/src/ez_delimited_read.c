@@ -44,7 +44,11 @@
 		      format yyyyddmm to be acceptable
    v600 *acm* 4/06   change call to days_from_day0 in DecodeRec becaues of
                      problems with 64-bit build
+ *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+					 definition of macro DFTYPE in ferretmacros.h.
 */
+
+
 
 /*
   Code to perform tab, comma, etc delimited reads from Ferret
@@ -66,6 +70,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "ferretmacros.h"
 #include "ez_delimited_read.h"
 
 
@@ -90,16 +95,21 @@
  mr_bad_flags - missing value flags indexed by mr_list
  *
  */
+
+
 void FORTRAN(decode_file_jacket)
 		( char* fname, char *recptr, char *delims, int *skip,
 		  int* maxrec, int* reclen, int* nfields,
 		  int field_type[], int* nrec,
-		  int mrlist[], float *memptr, int mr_blk1[], int* mblk_size,
-		  float mr_bad_flags[], char ***mr_c_ptr)
+		  int mrlist[], DFTYPE *memptr, int mr_blk1[], int* mblk_size,
+		  DFTYPE mr_bad_flags[], char ***mr_c_ptr)
+
 {
-  float **numeric_fields  = (float **) malloc(sizeof(float*) * (*nfields));
+
+  DFTYPE **numeric_fields  = (DFTYPE **) malloc(sizeof(DFTYPE*) * (*nfields));
+  DFTYPE *bad_flags        = (DFTYPE *)  malloc(sizeof(DFTYPE) * (*nfields));
+
   char ***text_fields     = (char ***) malloc(sizeof(char**) * (*nfields));
-  float *bad_flags        = (float *)  malloc(sizeof(float) * (*nfields));
   int i, mr;
   int pinc = 8/sizeof(char*);  /* pointers spaced 8 bytes apart */
 
@@ -109,7 +119,8 @@ void FORTRAN(decode_file_jacket)
       /* 
 	 compute separate pointer arrays for numeric and text fields
       */
-      numeric_fields[i] = (float *) NULL;
+
+      numeric_fields[i] = (DFTYPE *) NULL;
       text_fields[i] = (char**) NULL;
       
       if (field_type[i] == FTYP_CHARACTER )
@@ -170,10 +181,12 @@ void FORTRAN(decode_file_jacket)
  *
  */
 
+
 int decode_file (char* fname, char *recptr, char *delims, int *skip, 
 			  int* maxrec, int* reclen, int* nfields,
-			  int field_type[], int* nrec, float** numeric_fields,
-			  char*** text_fields, float bad_flags[])
+			  int field_type[], int* nrec, DFTYPE** numeric_fields,
+			  char*** text_fields, DFTYPE bad_flags[])
+
 {
 
   FILE *fp;
@@ -337,19 +350,19 @@ int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
  *
  */
 
-
 int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	      int rec,
-	      float** numeric_fields, char*** text_fields, float bad_flags[])
+	      DFTYPE** numeric_fields, char*** text_fields, DFTYPE bad_flags[])
 {
 
   char *p, *pnext, str1[2], errstr[2];
   float dummy;
+  DFTYPE rdum;
+
   int idummy1, idummy2, idummy3, i;
   char blankstr[] = " ";
   double days_1900 = 59958230400.0 / (60.*60.*24.); 
 /*  int days_1900 = 693961;  */
-  float rdum;
 
   int pinc = 8/sizeof(char*);  /* pointers spacd 8 bytes apart */
   int slen;     /* kob 12/01 needed to check for numberical string ending in e/E */
@@ -379,10 +392,12 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  (*(numeric_fields+i))[rec] = dummy;
 	else if (sscanf(p,"%f%1[Ss]",&dummy,str1) == 2)
 	  (*(numeric_fields+i))[rec] = -1 * dummy;
-	else if ( sscanf(p,"%f%1s",&((*(numeric_fields+i))[rec]),errstr ) != 1)
+	else if ( sscanf(p,"%f%1s",&dummy,errstr ) != 1)
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	else if (p[strlen(p)-1] == 'e' || p[strlen(p)-1] == 'E') 
 	    (*(numeric_fields+i))[rec] = bad_flags[i];
+	else 
+	    (*(numeric_fields+i))[rec] = dummy;
 	break;
 	
 	/* longitude */
@@ -396,8 +411,10 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	   a valid number, rather than a longitude */
 	else if (p[strlen(p)-1] == 'e' || p[strlen(p)-1] == 'E') 
 	    (*(numeric_fields+i))[rec] = dummy;
-	else if ( sscanf(p,"%f%1s",&((*(numeric_fields+i))[rec]),errstr ) != 1)
+	else if ( sscanf(p,"%f%1s",&dummy,errstr ) != 1)
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
+	else 
+	    (*(numeric_fields+i))[rec] = dummy;
 	break;
 	
 	/* date */
@@ -480,12 +497,13 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	
 	/* generic numeric field */
       case FTYP_NUMERIC:
-	if ( sscanf(p,"%f%1s",&((*(numeric_fields+i))[rec]),errstr ) != 1)
+	if ( sscanf(p,"%f%1s",&dummy,errstr ) != 1)
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	/* *kob* 12/01 - need to check for a sting ending in e or E
 	   osf and linux compiler let such a string through as 
 	   a valid number, rather than a longitude */
 	else {
+	  (*(numeric_fields+i))[rec] = dummy;
 	  slen = strlen(p);
 	  if (p[slen-1] == 'e' || p[slen-1] == 'E') 
 	    (*(numeric_fields+i))[rec] = bad_flags[i];  
@@ -536,6 +554,7 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
 
   char *p, *pnext, pstart[256], str1[2], latlon1[2];
   float dummy;
+
   int idummy1, idummy2, idummy3, i, nfields_in;
 
   p = recptr;

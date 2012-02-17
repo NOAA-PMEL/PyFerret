@@ -51,6 +51,7 @@
 *                  with &lt; etc.
 * V650  Write to show_lun which may be set to a file unit number rather than std out
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -189,7 +190,11 @@ C New form for attribute output, list values separately.
 
 * if line is subspan modulo, report its modulo cycle length
 	IF ( line_modulo(line) .AND. TM_ITS_SUBSPAN_MODULO(line) ) THEN
+#ifdef double_p
+	   buff = TM_FMT( (line_modulo_len(line)),7,32,slen)
+#else
 	   buff = TM_FMT( SNGL(line_modulo_len(line)),7,32,slen)
+#endif
            CALL ESCAPE_FOR_XML(buff, outstring, slen)
 	   WRITE (risc_buff, 2030) 'modulo_length'
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

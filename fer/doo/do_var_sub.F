@@ -146,13 +146,10 @@
  210	   CONTINUE
 
 * ALONG Y AXIS
-	ELSEIF ( idim .EQ. y_dim ) THEN
 !	   need_cos = GEOG_( idim, grid )
 	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 310 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-!	      IF ( need_cos )  = COS( deg2rad *       
-!     .             SNGL( TM_WORLD( j, grid, y_dim, box_middle )) ) 
 * ... Pass #1: determine mean
               npt = 0
 	      dsum = 0.0D0	! data

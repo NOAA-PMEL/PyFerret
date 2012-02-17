@@ -39,6 +39,7 @@
 * v663 *acm* 7/10 Fix bug where min value was not inside the lowest level.
 * v671 *acm* 6/11 For centered levels if there is (-inf) force (inf) and vice versa.
 * v673 *acm* 10/11 Fix cut-and-paste bug on first setting of nlev3.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
       include 'parampl5_dat.decl'
       include 'PARAMPL5.DAT'
@@ -54,14 +55,14 @@
       include 'CONT.INC'
       include 'errmsg.parm'
 
-      LOGICAL         TM_FPEQ
+      LOGICAL         TM_FPEQ_SNGL
       REAL    dz, fm, znp, zmp, dzf, znpf, zmpf, 
      .        znpclo,zmpclo, dzc, dzclo, dzchi, 
      .        twostd, density_factor
       INTEGER TM_LENSTR1, m, jj, nlevf, nlevc, nlev3, half_ncoarse, 
      .        slen, llen, dlen, hlen, if1, if2, i, k
 
-      CHARACTER*10 TM_FMT, lo_str, del_str, hi_str
+      CHARACTER*10 TM_FMT_SNGL, lo_str, del_str, hi_str
 
       EXTERNAL RANGE
 
@@ -204,14 +205,14 @@ c Set jj as in plotz based on fine levels.
 	 i1 = 2
       ENDIF
 
-      lo_str = TM_FMT(znpclo, 3, 10, llen)
-      del_str = TM_FMT(dzc, 3, 10, dlen)
+      lo_str = TM_FMT_SNGL(znpclo, 3, 10, llen)
+      del_str = TM_FMT_SNGL(dzc, 3, 10, dlen)
       IF (ilev .GT. 1) THEN
-         hi_str = TM_FMT(zlev(ilev-1), 3, 10, hlen)
+         hi_str = TM_FMT_SNGL(zlev(ilev-1), 3, 10, hlen)
       ELSE
-         hi_str = TM_FMT(zlev(ilev), 3, 10, hlen)
+         hi_str = TM_FMT_SNGL(zlev(ilev), 3, 10, hlen)
 	 IF (zlev(ilev) .EQ. 0) hi_str = 
-     .         TM_FMT(zlev(ilev-1), 3, 10, hlen)
+     .         TM_FMT_SNGL(zlev(ilev-1), 3, 10, hlen)
       ENDIF
       lev_str = lev_str(:slen)//'('//lo_str(:llen)//
      .          ','//hi_str(:hlen)//','//del_str(:dlen)//')'
@@ -259,10 +260,10 @@ c Set jj as in plotz based on fine levels.
 
       if2 = ilev
       IF (centered) if2 = ilev-1
-      lo_str = TM_FMT(zlev(if1), 3, 10, llen)
-      del_str = TM_FMT(dzf, 3, 10, dlen)
-      hi_str = TM_FMT(zlev(if2), 3, 10, hlen)
-      IF (zlev(if2) .EQ. 0.) hi_str = TM_FMT(zlev(if2-1), 3, 10, hlen)
+      lo_str = TM_FMT_SNGL(zlev(if1), 3, 10, llen)
+      del_str = TM_FMT_SNGL(dzf, 3, 10, dlen)
+      hi_str = TM_FMT_SNGL(zlev(if2), 3, 10, hlen)
+      IF (zlev(if2) .EQ. 0.) hi_str = TM_FMT_SNGL(zlev(if2-1), 3, 10, hlen)
       lev_str = lev_str(:slen)//'('//lo_str(:llen)//
      .          ','//hi_str(:hlen)//','//del_str(:dlen)//')'
       slen = TM_LENSTR1(lev_str)
@@ -296,11 +297,11 @@ c Set jj as in plotz based on fine levels.
 
  2000 CONTINUE
 
-      lo_str = TM_FMT(zlev(if1), 3, 10, llen)
-      del_str = TM_FMT(dzc, 3, 10, dlen)
-      hi_str = TM_FMT(zlev(ilev-1), 3, 10, hlen)
+      lo_str = TM_FMT_SNGL(zlev(if1), 3, 10, llen)
+      del_str = TM_FMT_SNGL(dzc, 3, 10, dlen)
+      hi_str = TM_FMT_SNGL(zlev(ilev-1), 3, 10, hlen)
       IF (zlev(ilev-1) .EQ. 0) 
-     .          hi_str = TM_FMT(zlev(ilev-2), 3, 10, hlen)
+     .          hi_str = TM_FMT_SNGL(zlev(ilev-2), 3, 10, hlen)
       lev_str = lev_str(:slen)//'('//lo_str(:llen)//
      .          ','//hi_str(:hlen)//','//del_str(:dlen)//')'
       slen = TM_LENSTR1(lev_str)
@@ -394,7 +395,7 @@ c Set jj as in plotz based on fine levels.
       levcount = nlev2
       zlast = zlev(1)
       do 530 i = 2, nlev2 
-         IF ( TM_FPEQ(zlev(i), zlast) .AND. i.LT.levcount ) THEN
+         IF ( TM_FPEQ_SNGL(zlev(i), zlast) .AND. i.LT.levcount ) THEN
             do 520 k = i,levcount
                zlev(k-1) = zlev(k)
                ldig(k-1) = ldig(k)
@@ -414,7 +415,7 @@ c Set jj as in plotz based on fine levels.
 	 i2 = nlev2
 	 IF (neginf) i1 = 2
 	 IF (posinf) i2 = nlev2-1
-	 IF (.NOT. TM_FPEQ(ABS(zlev(i1)), zlev(i2) ) ) THEN
+	 IF (.NOT. TM_FPEQ_SNGL(ABS(zlev(i1)), zlev(i2) ) ) THEN
 	    IF (ABS(zlev(i1)) .GT. zlev(i2)) THEN
 	       DO 109 i = nlev2+1, i2+1, -1
 	         zlev(i) = zlev(i-1)
@@ -442,7 +443,7 @@ c Set jj as in plotz based on fine levels.
          ELSE
             lwgt(i) = 3
          ENDIF
-	 IF (TM_FPEQ(zlev(i), 0.)) lwgt(i) = 2 
+	 IF (TM_FPEQ_SNGL(zlev(i), 0.)) lwgt(i) = 2 
  111  CONTINUE
 
       RETURN

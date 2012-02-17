@@ -3,10 +3,14 @@
 *	f90 date_and_time routine
 * 2/10 *acm* Changes for CLOCK symbols that work with gfortran as well as g77.
 *            see special_symbol.F
+* *acm* v68  1/12 move window title to xtoday.cmn.
 
-	COMMON/ XTODAY /cpu_last, clock_start_count, today_date, today_time
+
+	COMMON/ XTODAY /cpu_last, clock_start_count, 
+     .        today_date, today_time, window_title
 
 	CHARACTER*9 today_date
 	CHARACTER*10 today_time
+	CHARACTER*64 window_title
 	INTEGER clock_start_count
-	REAL cpu_last
+	REAL*8 cpu_last

@@ -94,6 +94,7 @@
 	include 'xplot_state.cmn'
 	include	'gkscm1_inc.decl'	! with gks common
 	include	'GKSCM1.INC'	                ! with gks common
+	include 'xtoday.cmn'		! with window_title
 
 	IF ( interrupted ) THEN
 * *kob* if we are animating, stop and reset active window

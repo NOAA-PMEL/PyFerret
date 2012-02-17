@@ -6,14 +6,17 @@ c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 * V65 *acm   2/10 If Open-ended levels were used, symbol LEV_OPNLEVS saves 
 * the /LEV command needed to duplicate the levels
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
+*               as single-precision
 
-	REAL	ZLEV,CANGLE
+	REAL*4	ZLEV,CANGLE
 	INTEGER	LDIG,IVCOMP
 	INTEGER	LWGT
 	INTEGER	LCLR
 	INTEGER	NLEV
 	INTEGER	NLEV_DFLT
-	REAL	HGT
+	REAL*4	HGT
 	INTEGER	NARC
 	INTEGER	IAUTOC
 	INTEGER	NLEV2
@@ -22,13 +25,13 @@ c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
 	
 *	Following added 8.3.95 *jd*
 	LOGICAL*4 CENTERED,SET_DELTA,NEGINF,POSINF,CONT_KEY
-	REAL	DELTA
+	REAL*4	DELTA
 
 * For open-ended color/contour levels
 	CHARACTER*120 lev_str
 	LOGICAL OPENLEV,SET_STD,SET_MEAN,SET_MIN,SET_MAX,NEED_DATA_SCAN,
      .          USE_HIST
-	REAL	LEV_STD,LEV_MEAN,LEV_MIN,LEV_MAX,LEV_HIST
+	REAL*4	LEV_STD,LEV_MEAN,LEV_MIN,LEV_MAX,LEV_HIST
 
 * requires: INCLUDE 'CONT.INC'                                    
 

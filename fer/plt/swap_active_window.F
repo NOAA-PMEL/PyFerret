@@ -40,9 +40,8 @@
 *               While animating, the inactive window is the one the 
 *               animation is being copied to.  The active window is the
 *               unmapped window in which the plots/shades are being drawn.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
-
-#ifdef unix
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
 	include 'xinterrupt.cmn'
@@ -56,20 +55,13 @@
 	include	'gkscm1_inc.decl'	! with gks common
 	include	'GKSCM1.INC'	                ! with gks common
 
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
-        REAL  xln, yln, dmaxx, dmaxy, fctx, fcty
+        REAL*4  xln, yln, dmaxx, dmaxy
         INTEGER ier, id, itype, imeter, irx, iry,i, idim,
      .          iseg, anim_id, status
         LOGICAL new_window
+	REAL*4  rzero, fctx, fcty
 
+	rzero = 0.0
 
 *    calculate size of the window open
 *     - taken from set_window.F
@@ -120,9 +112,9 @@
 *     if we've already done a plot set window size accordingly
            IF (.NOT. new_window) THEN
 *     set its correct size if we've done a plot
-              CALL GSWKWN(wsid,0.0,FCTX,0.0,FCTY)
+              CALL GSWKWN(wsid,rzero,FCTX,rzero,FCTY)
               CALL SET_WINDOW_SIZE (wsid,WKXMN,WKXMX,WKYMN,WKYMX)
-              CALL GSWKWN(anim_id,0.0,FCTX,0.0,FCTY)
+              CALL GSWKWN(anim_id,rzero,FCTX,rzero,FCTY)
               CALL SET_WINDOW_SIZE (anim_id,WKXMN,WKXMX,WKYMN,WKYMX)
            ELSE
               CALL GSELNT(wsid)

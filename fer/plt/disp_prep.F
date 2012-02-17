@@ -65,6 +65,7 @@
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 * V670  *acm* 2/11 Fix bug 1803. Centered levels confused with variance-based centered
 *                  levels.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -88,7 +89,12 @@
      .          is_centered, is_openlev, is_cv, get_more
 	INTEGER	TM_LENSTR1, lev_loc, len_loc, str_1, str_len, 
      .          ii, ilen, ier, ist
-	REAl	val
+	REAL	val
+#ifdef double_p
+	REAL*4  rbad_val4
+#else
+	REAL  rbad_val4
+#endif
 
 * v500 - 1/26/99 *kob* double buffer size for /levels text
 * v532 - 5/11/01 *kob* increase buffer size for /levels text to 1028
@@ -117,10 +123,11 @@
 	need_histo = .FALSE.
         need_std = .FALSE.
 
-	lev_mean = bad_val4
-	lev_std = bad_val4
-	lev_min = bad_val4
-	lev_max = bad_val4
+	rbad_val4 = bad_val4
+	lev_mean = rbad_val4
+	lev_std = rbad_val4
+	lev_min = rbad_val4
+	lev_max = rbad_val4
 
 	ii = 0
 
@@ -348,13 +355,13 @@
 	            openlev = .FALSE.
 	            SET_STD = .FALSE.
 	            SET_MEAN = .FALSE.
-	            LEV_STD = bad_val4
-	            LEV_MEAN = bad_val4
+	            LEV_STD = rbad_val4
+	            LEV_MEAN = rbad_val4
 	         ENDIF
 
 * If requested centered, but no mean value given, set the mean to zero.
 	         IF (centered) THEN
-	            IF (LEV_MEAN .EQ. bad_val4) LEV_MEAN = 0.
+	            IF (LEV_MEAN .EQ. rbad_val4) LEV_MEAN = 0.
 	            set_mean = .TRUE.
 	         ENDIF
 
@@ -363,7 +370,7 @@
 	         need_std = .FALSE.
 
 		 IF (OPENLEV .AND. 
-     .               ( LEV_STD.EQ.bad_val4 .OR. LEV_MEAN.EQ.bad_val4) )
+     .               ( LEV_STD.EQ.rbad_val4 .OR. LEV_MEAN.EQ.rbad_val4) )
      .              need_std = .TRUE.
 
 	      ELSE

@@ -37,6 +37,8 @@
 *
 * Set additional viewport symbols. Here is what happens with the scaling
 * 11/30/04 change names of margin symbols.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+
 
 ccc    DEFINE VIEWPORT/XLIM=xlo:xyi/YLIM=ylo:yhi[/TEXT=n/ my_view
 ccc
@@ -59,7 +61,8 @@ c        include 'xplot_setup.cmn'      ! 10/91 for saved_ppl_yax
 c        include 'PLT.INC'
 
 * calling argument declarations:
-        REAL scale, vp_size, xfrac, yfrac,
+        REAL*4 vp_size
+        REAL scale, xfrac, yfrac,
      .       xspc_lo, yspc_lo, xspc_hi, yspc_hi,
      .       xov,  yov,  xcv,  ycv
 

@@ -46,7 +46,8 @@
 * V312:  6/2/94
 * V530: *acm* 12/00 alternative calendar types; cal_id
 *             return source and dest cal_ids for get_linear_coef
-
+* V673: *acm*  2/12 see ticket 1915. All computations of these factors need 
+*             to be done in DOUBLE prcision.
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data

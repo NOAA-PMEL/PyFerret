@@ -21,7 +21,8 @@
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * v62  *acm*10/08 increase length of ds_message 
 * V68 *acm*1/12 increase ds_name, ds_des_name to 2048
-*                
+* V68  *acm* 1/12 Real variables should be declared REAL (conversion to double prec.)
+
 
 	COMMON/XDSET_INFO/
      .		ds_1step(maxdsets),ds_lastep(maxdsets),
@@ -100,7 +101,8 @@
 	CHARACTER*128	ds_var_title,ds_var_titl_mod
 	INTEGER*4	ds_grid_start,ds_grid_end,ds_grid_number,
      .			ds_ordering
-	REAL*4		ds_bad_flag,ds_missing_flag
+c	REAL*4		ds_bad_flag,ds_missing_flag  ! why was this real*4?
+	REAL		ds_bad_flag,ds_missing_flag
 *    - only in GT sets
 	INTEGER*4	ds_aux_set_num
 *    - only in TS sets

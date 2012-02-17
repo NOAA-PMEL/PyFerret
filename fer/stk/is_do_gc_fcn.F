@@ -53,6 +53,7 @@
 *                  than defined in the current function. e.g. this lets the 
 *                  user reference XCAT with string arguments and Ferret will 
 *                  run XCAT_STR
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -95,8 +96,13 @@
 * ... pfloat_words indicates that each float value in an array is 1 word
 * ... ptpr_words   indicates that each pointer     in an array is 2 word
 	INTEGER	    pfloat_words, pptr_words
+#ifdef double_p
+	PARAMETER  (pfloat_words = 1,
+     .		    pptr_words   = 1 )
+#else
 	PARAMETER  (pfloat_words = 1,
      .		    pptr_words   = 2 )
+#endif
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents

@@ -40,6 +40,8 @@
  */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/*  *acm*  1/12     - Ferret 6.8 ifdef double_p for double-precision ferret. Define dp_gui_get_memory */
+
 #include <wchar.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -81,9 +83,12 @@ int gui_init() {
   return 0;
 }
 
-static float *mem;
+static DFTYPE *mem;
 				
-float **gui_get_memory() {
+DFTYPE **gui_get_memory() {
+  return &mem;
+}	
+double **dp_gui_get_memory() {
   return &mem;
 }
 void gui_run(int *argc, char **argv){
@@ -131,7 +136,7 @@ int gui_init() {
 }
 
 				/* Global variable in ferret_shared.h */
-float **gui_get_memory() {
+DFTYPE **gui_get_memory() {
   return &memory;
 }
 

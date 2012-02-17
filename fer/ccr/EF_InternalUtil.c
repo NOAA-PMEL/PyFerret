@@ -85,6 +85,8 @@
 *                  Made external function language check more robust
 *                  Check that GLOBAL_ExternalFunctionsList is not NULL in ef_ptr_from_id_ptr
 *      *kms* 11/10 Check for libpyefcn.so in $FER_LIBS instead of $FER_DIR/lib
+* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+*					 definition of macro DFTYPE in ferret.h
 */
 
 
@@ -106,6 +108,7 @@
 #include <sys/stat.h>
 #include <sys/errno.h>
 
+#include "ferret.h"
 #include "EF_Util.h"
 #include "list.h"  /* locally added list library */
 
@@ -119,11 +122,11 @@
  */
 
 static LIST  *GLOBAL_ExternalFunctionList;
-float *GLOBAL_memory_ptr;
+DFTYPE *GLOBAL_memory_ptr;
 int   *GLOBAL_mr_list_ptr;
 int   *GLOBAL_cx_list_ptr;
 int   *GLOBAL_mres_ptr;
-float *GLOBAL_bad_flag_ptr;
+DFTYPE *GLOBAL_bad_flag_ptr;
 
 /*
  * The jumpbuffer is used by setjmp() and longjmp().
@@ -161,12 +164,12 @@ static void (*pyefcn_result_limits_func)(int, char [], char []) = NULL;
 
 /*
  * pointer to the function in libpyefcn.so:
- *     void pyefcn_compute(int id, char modname[], float *arrays[], int numarrays,
+ *     void pyefcn_compute(int id, char modname[], DFTYPE *arrays[], int numarrays,
  *                         int memlo[][4], int memhi[][4],
  *                         int steplo[][4], int stephi[][4], int incr[][4],
- *                         float badvals[], char errmsg[])
+ *                         DFTYPE badvals[], char errmsg[])
  */
-static void (*pyefcn_compute_func)(int, char [], float *[], int, int [][4], int [][4], int [][4], int [][4], int [][4], float [], char []) = NULL;
+static void (*pyefcn_compute_func)(int, char [], DFTYPE *[], int, int [][4], int [][4], int [][4], int [][4], int [][4], DFTYPE [], char []) = NULL;
 
 static int I_have_scanned_already = FALSE;
 static int I_have_warned_already = TRUE; /* Warning turned off Jan '98 */
@@ -190,8 +193,8 @@ void FORTRAN(create_pyefcn)(char fname[], int *lenfname, char pymod[], int *lenp
 
 int  FORTRAN(efcn_gather_info)( int * );
 void FORTRAN(efcn_get_custom_axes)( int *, int *, int * );
-void FORTRAN(efcn_get_result_limits)( int *, float *, int *, int *, int * );
-void FORTRAN(efcn_compute)( int *, int *, int *, int *, int *, float *, int *, float *, int * );
+void FORTRAN(efcn_get_result_limits)( int *, DFTYPE *, int *, int *, int * );
+void FORTRAN(efcn_compute)( int *, int *, int *, int *, int *, DFTYPE *, int *, DFTYPE *, int * );
 
 
 void FORTRAN(efcn_get_custom_axis_sub)( int *, int *, double *, double *, double *, char *, int * );
@@ -200,7 +203,7 @@ int  FORTRAN(efcn_get_id)( char * );
 int  FORTRAN(efcn_match_template)( int *, char * );
 
 void FORTRAN(efcn_get_name)( int *, char * );
-void FORTRAN(efcn_get_version)( int *, float * );
+void FORTRAN(efcn_get_version)( int *, DFTYPE * );
 void FORTRAN(efcn_get_descr)( int *, char * );
 void FORTRAN(efcn_get_alt_type_fcn)( int *, char * );
 int  FORTRAN(efcn_get_num_reqd_args)( int * );
@@ -225,7 +228,7 @@ int  FORTRAN(efcn_get_rtn_type)( int *);
 /* Fortran routines from the efn/ directory */
 void FORTRAN(efcn_copy_array_dims)(void);
 void FORTRAN(efcn_set_work_array_dims)(int *, int *, int *, int *, int *, int *, int *, int *, int *);
-void FORTRAN(efcn_get_workspace_addr)(float *, int *, float *);
+void FORTRAN(efcn_get_workspace_addr)(DFTYPE *, int *, DFTYPE *);
 
 static void EF_signal_handler(int);
 static void (*fpe_handler)(int);      /* function pointers */
@@ -238,7 +241,7 @@ int EF_Util_ressig();
 
 void FORTRAN(ef_err_bail_out)(int *, char *);
 
-void EF_store_globals(float *, int *, int *, int *, float *);
+void EF_store_globals(DFTYPE *, int *, int *, int *, DFTYPE *);
 
 ExternalFunction *ef_ptr_from_id_ptr(int *);
 
@@ -259,461 +262,461 @@ void FORTRAN(ffta_init)(int *);
 void FORTRAN(ffta_custom_axes)(int *);
 void FORTRAN(ffta_result_limits)(int *);
 void FORTRAN(ffta_work_size)(int *);
-void FORTRAN(ffta_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(ffta_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(fftp_init)(int *);
 void FORTRAN(fftp_custom_axes)(int *);
 void FORTRAN(fftp_result_limits)(int *);
 void FORTRAN(fftp_work_size)(int *);
-void FORTRAN(fftp_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(fftp_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(fft_im_init)(int *);
 void FORTRAN(fft_im_custom_axes)(int *);
 void FORTRAN(fft_im_result_limits)(int *);
 void FORTRAN(fft_im_work_size)(int *);
-void FORTRAN(fft_im_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(fft_im_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(fft_inverse_init)(int *);
 void FORTRAN(fft_inverse_result_limits)(int *);
 void FORTRAN(fft_inverse_work_size)(int *);
-void FORTRAN(fft_inverse_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *);
+void FORTRAN(fft_inverse_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(fft_re_init)(int *);
 void FORTRAN(fft_re_custom_axes)(int *);
 void FORTRAN(fft_re_result_limits)(int *);
 void FORTRAN(fft_re_work_size)(int *);
-void FORTRAN(fft_re_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(fft_re_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(sampleij_init)(int *);
 void FORTRAN(sampleij_result_limits)(int *);
 void FORTRAN(sampleij_work_size)(int *);
-void FORTRAN(sampleij_compute)(int *, float *, float *, float *, 
-       float *, float *, float *);
+void FORTRAN(sampleij_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+       DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplet_date_init)(int *);
 void FORTRAN(samplet_date_result_limits)(int *);
 void FORTRAN(samplet_date_work_size)(int *);
-void FORTRAN(samplet_date_compute)(int *, float *, float *,
-      float *, float *, float *, float *, float *, float *, 
-      float *, float *);
+void FORTRAN(samplet_date_compute)(int *, DFTYPE *, DFTYPE *,
+      DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+      DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplexy_init)(int *);
 void FORTRAN(samplexy_result_limits)(int *);
 void FORTRAN(samplexy_work_size)(int *);
-void FORTRAN(samplexy_compute)(int *, float *, float *,
-      float *, float *, float *, float *);
+void FORTRAN(samplexy_compute)(int *, DFTYPE *, DFTYPE *,
+      DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplexyt_init)(int *);
 void FORTRAN(samplexyt_result_limits)(int *);
 void FORTRAN(samplexyt_work_size)(int *);
-void FORTRAN(samplexyt_compute)(int *, float *, float *,
-      float *, float *, float *, float *, float *);
+void FORTRAN(samplexyt_compute)(int *, DFTYPE *, DFTYPE *,
+      DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridgauss_xy_init)(int *);
 void FORTRAN(scat2gridgauss_xy_work_size)(int *);
-void FORTRAN(scat2gridgauss_xy_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(scat2gridgauss_xy_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridgauss_xz_init)(int *);
 void FORTRAN(scat2gridgauss_xz_work_size)(int *);
-void FORTRAN(scat2gridgauss_xz_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(scat2gridgauss_xz_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridgauss_yz_init)(int *);
 void FORTRAN(scat2gridgauss_yz_work_size)(int *);
-void FORTRAN(scat2gridgauss_yz_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(scat2gridgauss_yz_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridgauss_xt_init)(int *);
 void FORTRAN(scat2gridgauss_xt_work_size)(int *);
-void FORTRAN(scat2gridgauss_xt_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(scat2gridgauss_xt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridgauss_yt_init)(int *);
 void FORTRAN(scat2gridgauss_yt_work_size)(int *);
-void FORTRAN(scat2gridgauss_yt_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(scat2gridgauss_yt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridgauss_zt_init)(int *);
 void FORTRAN(scat2gridgauss_zt_work_size)(int *);
-void FORTRAN(scat2gridgauss_zt_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(scat2gridgauss_zt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridgauss_xy_v0_init)(int *);
 void FORTRAN(scat2gridgauss_xy_v0_work_size)(int *);
-void FORTRAN(scat2gridgauss_xy_v0_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(scat2gridgauss_xy_v0_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridgauss_xz_v0_init)(int *);
 void FORTRAN(scat2gridgauss_xz_v0_work_size)(int *);
-void FORTRAN(scat2gridgauss_xz_v0_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(scat2gridgauss_xz_v0_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridgauss_yz_v0_init)(int *);
 void FORTRAN(scat2gridgauss_yz_v0_work_size)(int *);
-void FORTRAN(scat2gridgauss_yz_v0_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(scat2gridgauss_yz_v0_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridgauss_xt_v0_init)(int *);
 void FORTRAN(scat2gridgauss_xt_v0_work_size)(int *);
-void FORTRAN(scat2gridgauss_xt_v0_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(scat2gridgauss_xt_v0_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridgauss_yt_v0_init)(int *);
 void FORTRAN(scat2gridgauss_yt_v0_work_size)(int *);
-void FORTRAN(scat2gridgauss_yt_v0_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(scat2gridgauss_yt_v0_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridgauss_zt_v0_init)(int *);
 void FORTRAN(scat2gridgauss_zt_v0_work_size)(int *);
-void FORTRAN(scat2gridgauss_zt_v0_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *, float *);
+void FORTRAN(scat2gridgauss_zt_v0_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridlaplace_xy_init)(int *);
 void FORTRAN(scat2gridlaplace_xy_work_size)(int *);
-void FORTRAN(scat2gridlaplace_xy_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *);
+void FORTRAN(scat2gridlaplace_xy_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridlaplace_xz_init)(int *);
 void FORTRAN(scat2gridlaplace_xz_work_size)(int *);
-void FORTRAN(scat2gridlaplace_xz_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *);
+void FORTRAN(scat2gridlaplace_xz_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridlaplace_yz_init)(int *);
 void FORTRAN(scat2gridlaplace_yz_work_size)(int *);
-void FORTRAN(scat2gridlaplace_yz_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *);
+void FORTRAN(scat2gridlaplace_yz_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *);
 
 
 void FORTRAN(scat2gridlaplace_xt_init)(int *);
 void FORTRAN(scat2gridlaplace_xt_work_size)(int *);
-void FORTRAN(scat2gridlaplace_xt_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *);
+void FORTRAN(scat2gridlaplace_xt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridlaplace_yt_init)(int *);
 void FORTRAN(scat2gridlaplace_yt_work_size)(int *);
-void FORTRAN(scat2gridlaplace_yt_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *);
+void FORTRAN(scat2gridlaplace_yt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2gridlaplace_zt_init)(int *);
 void FORTRAN(scat2gridlaplace_zt_work_size)(int *);
-void FORTRAN(scat2gridlaplace_zt_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *, 
-                           float *, float *);
+void FORTRAN(scat2gridlaplace_zt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *);
 
 void FORTRAN(sorti_init)(int *);
 void FORTRAN(sorti_result_limits)(int *);
 void FORTRAN(sorti_work_size)(int *);
-void FORTRAN(sorti_compute)(int *, float *, float *, 
-      float *, float *);
+void FORTRAN(sorti_compute)(int *, DFTYPE *, DFTYPE *, 
+      DFTYPE *, DFTYPE *);
 
 void FORTRAN(sorti_str_init)(int *);
 void FORTRAN(sorti_str_result_limits)(int *);
 void FORTRAN(sorti_str_work_size)(int *);
-void FORTRAN(sorti_str_compute)(int *, char *, float *, 
-      char *, float *);
+void FORTRAN(sorti_str_compute)(int *, char *, DFTYPE *, 
+      char *, DFTYPE *);
                    
 void FORTRAN(sortj_init)(int *);
 void FORTRAN(sortj_result_limits)(int *);
 void FORTRAN(sortj_work_size)(int *);
-void FORTRAN(sortj_compute)(int *, float *, float *, 
-      float *, float *);
+void FORTRAN(sortj_compute)(int *, DFTYPE *, DFTYPE *, 
+      DFTYPE *, DFTYPE *);
 
 void FORTRAN(sortj_str_init)(int *);
 void FORTRAN(sortj_str_result_limits)(int *);
 void FORTRAN(sortj_str_work_size)(int *);
-void FORTRAN(sortj_str_compute)(int *, char *, float *, 
-      char *, float *);
+void FORTRAN(sortj_str_compute)(int *, char *, DFTYPE *, 
+      char *, DFTYPE *);
 
 void FORTRAN(sortk_init)(int *);
 void FORTRAN(sortk_result_limits)(int *);
 void FORTRAN(sortk_work_size)(int *);
-void FORTRAN(sortk_compute)(int *, float *, float *, 
-      float *, float *);
+void FORTRAN(sortk_compute)(int *, DFTYPE *, DFTYPE *, 
+      DFTYPE *, DFTYPE *);
 
 void FORTRAN(sortk_str_init)(int *);
 void FORTRAN(sortk_str_result_limits)(int *);
 void FORTRAN(sortk_str_work_size)(int *);
-void FORTRAN(sortk_str_compute)(int *, char *, float *, 
-      char *, float *);
+void FORTRAN(sortk_str_compute)(int *, char *, DFTYPE *, 
+      char *, DFTYPE *);
 
 void FORTRAN(sortl_init)(int *);
 void FORTRAN(sortl_result_limits)(int *);
 void FORTRAN(sortl_work_size)(int *);
-void FORTRAN(sortl_compute)(int *, float *, float *, 
-      float *, float *);
+void FORTRAN(sortl_compute)(int *, DFTYPE *, DFTYPE *, 
+      DFTYPE *, DFTYPE *);
 
 void FORTRAN(sortl_str_init)(int *);
 void FORTRAN(sortl_str_result_limits)(int *);
 void FORTRAN(sortl_str_work_size)(int *);
-void FORTRAN(sortl_str_compute)(int *, char *, float *, 
-      char *, float *);
+void FORTRAN(sortl_str_compute)(int *, char *, DFTYPE *, 
+      char *, DFTYPE *);
 
 void FORTRAN(tauto_cor_init)(int *);
 void FORTRAN(tauto_cor_result_limits)(int *);
 void FORTRAN(tauto_cor_work_size)(int *);
-void FORTRAN(tauto_cor_compute)(int *, float *, float *, float *, 
-                           float *, float *);
+void FORTRAN(tauto_cor_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *);
 
 void FORTRAN(xauto_cor_init)(int *);
 void FORTRAN(xauto_cor_result_limits)(int *);
 void FORTRAN(xauto_cor_work_size)(int *);
-void FORTRAN(xauto_cor_compute)(int *, float *, float *, float *, 
-                           float *, float *);
+void FORTRAN(xauto_cor_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *);
 						   
 void FORTRAN(eof_space_init)(int *);
 void FORTRAN(eof_space_result_limits)(int *);
 void FORTRAN(eof_space_work_size)(int *);
-void FORTRAN(eof_space_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *);
+void FORTRAN(eof_space_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 						   
 void FORTRAN(eof_stat_init)(int *);
 void FORTRAN(eof_stat_result_limits)(int *);
 void FORTRAN(eof_stat_work_size)(int *);
-void FORTRAN(eof_stat_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *);
+void FORTRAN(eof_stat_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 						   
 void FORTRAN(eof_tfunc_init)(int *);
 void FORTRAN(eof_tfunc_result_limits)(int *);
 void FORTRAN(eof_tfunc_work_size)(int *);
-void FORTRAN(eof_tfunc_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *);
+void FORTRAN(eof_tfunc_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
  
 void FORTRAN(compressi_init)(int *);
 void FORTRAN(compressi_result_limits)(int *);
-void FORTRAN(compressi_compute)(int *, float *, float *);
+void FORTRAN(compressi_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(compressj_init)(int *);
 void FORTRAN(compressj_result_limits)(int *);
-void FORTRAN(compressj_compute)(int *, float *, float *);
+void FORTRAN(compressj_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(compressk_init)(int *);
 void FORTRAN(compressk_result_limits)(int *);
-void FORTRAN(compressk_compute)(int *, float *, float *);
+void FORTRAN(compressk_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(compressl_init)(int *);
 void FORTRAN(compressl_result_limits)(int *);
-void FORTRAN(compressl_compute)(int *, float *, float *);
+void FORTRAN(compressl_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(compressi_by_init)(int *);
 void FORTRAN(compressi_by_result_limits)(int *);
-void FORTRAN(compressi_by_compute)(int *, float *, float *);
+void FORTRAN(compressi_by_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(compressj_by_init)(int *);
 void FORTRAN(compressj_by_result_limits)(int *);
-void FORTRAN(compressj_by_compute)(int *, float *, float *);
+void FORTRAN(compressj_by_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(compressk_by_init)(int *);
 void FORTRAN(compressk_by_result_limits)(int *);
-void FORTRAN(compressk_by_compute)(int *, float *, float *);
+void FORTRAN(compressk_by_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(compressl_by_init)(int *);
 void FORTRAN(compressl_by_result_limits)(int *);
-void FORTRAN(compressl_by_compute)(int *, float *, float *);
+void FORTRAN(compressl_by_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(labwid_init)(int *);
 void FORTRAN(labwid_result_limits)(int *);
-void FORTRAN(labwid_compute)(int *, float *, float *);
+void FORTRAN(labwid_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(convolvei_init)(int *);
-void FORTRAN(convolvei_compute)(int *, float *, float *, float *);
+void FORTRAN(convolvei_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(convolvej_init)(int *);
-void FORTRAN(convolvej_compute)(int *, float *, float *, float *);
+void FORTRAN(convolvej_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(convolvek_init)(int *);
-void FORTRAN(convolvek_compute)(int *, float *, float *, float *);
+void FORTRAN(convolvek_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(convolvel_init)(int *);
-void FORTRAN(convolvel_compute)(int *, float *, float *, float *);
+void FORTRAN(convolvel_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(curv_range_init)(int *);
 void FORTRAN(curv_range_result_limits)(int *);
-void FORTRAN(curv_range_compute)(int *, float *, float *, float *, float *, float *, float *, float *, float *);
+void FORTRAN(curv_range_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(curv_to_rect_map_init)(int *);
 void FORTRAN(curv_to_rect_map_result_limits)(int *);
 void FORTRAN(curv_to_rect_map_work_size)(int *);
-void FORTRAN(curv_to_rect_map_compute)(int *, float *, float *, float *, float *, float *, 
-                                       float *, float *, float *, float *, float *, float *, float *, float *);
+void FORTRAN(curv_to_rect_map_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                                       DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 void FORTRAN(curv_to_rect_init)(int *);
-void FORTRAN(curv_to_rect_compute)(int *, float *, float *, float *);
+void FORTRAN(curv_to_rect_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(rect_to_curv_init)(int *);
 void FORTRAN(rect_to_curv_work_size)(int *);
-void FORTRAN(rect_to_curv_compute)(int *, float *, float *, float *, float *, float *, 
-                                       float *, float *, float *, float *, float *, float *, float *, float *);
+void FORTRAN(rect_to_curv_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                                       DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(date1900_init)(int *);
 void FORTRAN(date1900_result_limits)(int *);
-void FORTRAN(date1900_compute)(int *, float *, float *);
+void FORTRAN(date1900_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(days1900toymdhms_init)(int *);
 void FORTRAN(days1900toymdhms_result_limits)(int *);
-void FORTRAN(days1900toymdhms_compute)(int *, float *, float *);
+void FORTRAN(days1900toymdhms_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(minutes24_init)(int *);
 void FORTRAN(minutes24_result_limits)(int *);
-void FORTRAN(minutes24_compute)(int *, float *, float *);
+void FORTRAN(minutes24_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(element_index_init)(int *);
-void FORTRAN(element_index_compute)(int *, float *, float *);
+void FORTRAN(element_index_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(element_index_str_init)(int *);
-void FORTRAN(element_index_str_compute)(int *, float *, float *);
+void FORTRAN(element_index_str_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(element_index_str_n_init)(int *);
-void FORTRAN(element_index_str_n_compute)(int *, float *, float *);
+void FORTRAN(element_index_str_n_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(expndi_by_init)(int *);
 void FORTRAN(expndi_by_result_limits)(int *);
-void FORTRAN(expndi_by_compute)(int *, float *, float *, float *, float *);
+void FORTRAN(expndi_by_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(expndi_by_t_init)(int *);
 void FORTRAN(expndi_by_t_result_limits)(int *);
-void FORTRAN(expndi_by_t_compute)(int *, float *, float *, float *, float *, float *);
+void FORTRAN(expndi_by_t_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(expndi_by_z_init)(int *);
 void FORTRAN(expndi_by_z_result_limits)(int *);
-void FORTRAN(expndi_by_z_compute)(int *, float *, float *, float *, float *, float *);
+void FORTRAN(expndi_by_z_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(findhi_init)(int *);
 void FORTRAN(findhi_result_limits)(int *);
 void FORTRAN(findhi_work_size)(int *);
-void FORTRAN(findhi_compute)(int *, float *, float *, float *, float *, 
-                            float *, float *, float *, float *);
+void FORTRAN(findhi_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                            DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(findlo_init)(int *);
 void FORTRAN(findlo_result_limits)(int *);
 void FORTRAN(findlo_work_size)(int *);
-void FORTRAN(findlo_compute)(int *, float *, float *, float *, float *, 
-                            float *, float *, float *, float *);
+void FORTRAN(findlo_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                            DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(is_element_of_init)(int *);
 void FORTRAN(is_element_of_result_limits)(int *);
-void FORTRAN(is_element_of_compute)(int *, float *, float *, float *);
+void FORTRAN(is_element_of_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(is_element_of_str_init)(int *);
 void FORTRAN(is_element_of_str_result_limits)(int *);
-void FORTRAN(is_element_of_str_compute)(int *, float *, float *, float *);
+void FORTRAN(is_element_of_str_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 
 void FORTRAN(is_element_of_str_n_init)(int *);
 void FORTRAN(is_element_of_str_n_result_limits)(int *);
-void FORTRAN(is_element_of_str_n_compute)(int *, float *, float *, float *);
+void FORTRAN(is_element_of_str_n_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(lanczos_init)(int *);
 void FORTRAN(lanczos_work_size)(int *);
-void FORTRAN(lanczos_compute)(int *, float *, float *, float *, float *, 
-                            float *, float *);
+void FORTRAN(lanczos_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                            DFTYPE *, DFTYPE *);
 
 void FORTRAN(lsl_lowpass_init)(int *);
 void FORTRAN(lsl_lowpass_work_size)(int *);
-void FORTRAN(lsl_lowpass_compute)(int *, float *, float *, float *, float *, 
-                            float *, float *, float *, float *);
+void FORTRAN(lsl_lowpass_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+                            DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 							
 
 void FORTRAN(samplexy_curv_init)(int *);
 void FORTRAN(samplexy_curv_result_limits)(int *);
 void FORTRAN(samplexy_curv_work_size)(int *);
-void FORTRAN(samplexy_curv_compute)(int *, float *, float *,
-      float *, float *, float *, float *, float *);
+void FORTRAN(samplexy_curv_compute)(int *, DFTYPE *, DFTYPE *,
+      DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplexy_curv_avg_init)(int *);
 void FORTRAN(samplexy_curv_avg_result_limits)(int *);
 void FORTRAN(samplexy_curv_avg_work_size)(int *);
-void FORTRAN(samplexy_curv_avg_compute)(int *, float *, float *,
-      float *, float *, float *, float *, float *);
+void FORTRAN(samplexy_curv_avg_compute)(int *, DFTYPE *, DFTYPE *,
+      DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplexy_curv_nrst_init)(int *);
 void FORTRAN(samplexy_curv_nrst_result_limits)(int *);
 void FORTRAN(samplexy_curv_nrst_work_size)(int *);
-void FORTRAN(samplexy_curv_nrst_compute)(int *, float *, float *,
-      float *, float *, float *, float *, float *);
+void FORTRAN(samplexy_curv_nrst_compute)(int *, DFTYPE *, DFTYPE *,
+      DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplexy_closest_init)(int *);
 void FORTRAN(samplexy_closest_result_limits)(int *);
 void FORTRAN(samplexy_closest_work_size)(int *);
-void FORTRAN(samplexy_closest_compute)(int *, float *, float *,
-      float *, float *, float *, float *);
+void FORTRAN(samplexy_closest_compute)(int *, DFTYPE *, DFTYPE *,
+      DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplexz_init)(int *);
 void FORTRAN(samplexz_result_limits)(int *);
 void FORTRAN(samplexz_work_size)(int *);
-void FORTRAN(samplexz_compute)(int *, float *, float *,
-      float *, float *, float *, float *);
+void FORTRAN(samplexz_compute)(int *, DFTYPE *, DFTYPE *,
+      DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(sampleyz_init)(int *);
 void FORTRAN(sampleyz_result_limits)(int *);
 void FORTRAN(sampleyz_work_size)(int *);
-void FORTRAN(sampleyz_compute)(int *, float *, float *,
-      float *, float *, float *, float *);
+void FORTRAN(sampleyz_compute)(int *, DFTYPE *, DFTYPE *,
+      DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2ddups_init)(int *);
 void FORTRAN(scat2ddups_result_limits)(int *);
-void FORTRAN(scat2ddups_compute)(int *, float *, float *, float *, float *, float *);
+void FORTRAN(scat2ddups_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(ave_scat2grid_t_init)(int *);
 void FORTRAN(ave_scat2grid_t_work_size)(int *);
-void FORTRAN(ave_scat2grid_t_compute)(int *, float *, float *,
-      float *, float *, float *, float *);
+void FORTRAN(ave_scat2grid_t_compute)(int *, DFTYPE *, DFTYPE *,
+      DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2grid_t_init)(int *);
 void FORTRAN(scat2grid_t_work_size)(int *);
-void FORTRAN(scat2grid_t_compute)(int *, float *, float *, float *, float *);
+void FORTRAN(scat2grid_t_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(transpose_xt_init)(int *);
 void FORTRAN(transpose_xt_result_limits)(int *);
-void FORTRAN(transpose_xt_compute)(int *, float *, float *);
+void FORTRAN(transpose_xt_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(transpose_xy_init)(int *);
 void FORTRAN(transpose_xy_result_limits)(int *);
-void FORTRAN(transpose_xy_compute)(int *, float *, float *);
+void FORTRAN(transpose_xy_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(transpose_xz_init)(int *);
 void FORTRAN(transpose_xz_result_limits)(int *);
-void FORTRAN(transpose_xz_compute)(int *, float *, float *);
+void FORTRAN(transpose_xz_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(transpose_yt_init)(int *);
 void FORTRAN(transpose_yt_result_limits)(int *);
-void FORTRAN(transpose_yt_compute)(int *, float *, float *);
+void FORTRAN(transpose_yt_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(transpose_yz_init)(int *);
 void FORTRAN(transpose_yz_result_limits)(int *);
-void FORTRAN(transpose_yz_compute)(int *, float *, float *);
+void FORTRAN(transpose_yz_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(transpose_zt_init)(int *);
 void FORTRAN(transpose_zt_result_limits)(int *);
-void FORTRAN(transpose_zt_compute)(int *, float *, float *);
+void FORTRAN(transpose_zt_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(xcat_init)(int *);
 void FORTRAN(xcat_result_limits)(int *);
-void FORTRAN(xcat_compute)(int *, float *, float *, float *);
+void FORTRAN(xcat_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(xcat_str_init)(int *);
 void FORTRAN(xcat_str_result_limits)(int *);
@@ -721,7 +724,7 @@ void FORTRAN(xcat_str_compute)(int *, char *, char *, char *);
 
 void FORTRAN(ycat_init)(int *);
 void FORTRAN(ycat_result_limits)(int *);
-void FORTRAN(ycat_compute)(int *, float *, float *, float *);
+void FORTRAN(ycat_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(ycat_str_init)(int *);
 void FORTRAN(ycat_str_result_limits)(int *);
@@ -729,7 +732,7 @@ void FORTRAN(ycat_str_compute)(int *, char *, char *, char *);
 
 void FORTRAN(zcat_init)(int *);
 void FORTRAN(zcat_result_limits)(int *);
-void FORTRAN(zcat_compute)(int *, float *, float *, float *);
+void FORTRAN(zcat_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(zcat_str_init)(int *);
 void FORTRAN(zcat_str_result_limits)(int *);
@@ -737,7 +740,7 @@ void FORTRAN(zcat_str_compute)(int *, char *, char *, char *);
 
 void FORTRAN(tcat_init)(int *);
 void FORTRAN(tcat_result_limits)(int *);
-void FORTRAN(tcat_compute)(int *, float *, float *, float *);
+void FORTRAN(tcat_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tcat_str_init)(int *);
 void FORTRAN(tcat_str_result_limits)(int *);
@@ -745,153 +748,153 @@ void FORTRAN(tcat_str_compute)(int *, char *, char *, char *);
 
 void FORTRAN(xreverse_init)(int *);
 void FORTRAN(xreverse_result_limits)(int *);
-void FORTRAN(xreverse_compute)(int *, float *, float *);
+void FORTRAN(xreverse_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(yreverse_init)(int *);
 void FORTRAN(yreverse_result_limits)(int *);
-void FORTRAN(yreverse_compute)(int *, float *, float *);
+void FORTRAN(yreverse_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(zreverse_init)(int *);
 void FORTRAN(zreverse_result_limits)(int *);
-void FORTRAN(zreverse_compute)(int *, float *, float *);
+void FORTRAN(zreverse_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(treverse_init)(int *);
 void FORTRAN(treverse_result_limits)(int *);
-void FORTRAN(treverse_compute)(int *, float *, float *);
+void FORTRAN(treverse_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(zaxreplace_avg_init)(int *);
 void FORTRAN(zaxreplace_avg_work_size)(int *);
-void FORTRAN(zaxreplace_avg_compute)(int *, float *, float *, float *, 
-             float *, float *, float *, float *, float *, float *, float *, float *);
+void FORTRAN(zaxreplace_avg_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(zaxreplace_bin_init)(int *);
 void FORTRAN(zaxreplace_bin_work_size)(int *);
-void FORTRAN(zaxreplace_bin_compute)(int *, float *, float *, float *, 
-             float *, float *, float *, float *, float *, float *, float *, float *);
+void FORTRAN(zaxreplace_bin_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(zaxreplace_rev_init)(int *);
 void FORTRAN(zaxreplace_rev_work_size)(int *);
-void FORTRAN(zaxreplace_rev_compute)(int *, float *, float *, float *, 
-             float *, float *, float *, float *, float *, float *, float *, float *);
+void FORTRAN(zaxreplace_rev_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(zaxreplace_zlev_init)(int *);
 void FORTRAN(zaxreplace_zlev_work_size)(int *);
-void FORTRAN(zaxreplace_zlev_compute)(int *, float *, float *, float *, float *, float *);
+void FORTRAN(zaxreplace_zlev_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(nco_attr_init)(int *);
 void FORTRAN(nco_attr_result_limits)(int *);
-void FORTRAN(nco_attr_compute)(int *, float *, float *, float *);
+void FORTRAN(nco_attr_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(nco_init)(int *);
 void FORTRAN(nco_result_limits)(int *);
-void FORTRAN(nco_compute)(int *, float *, float *, float *);
+void FORTRAN(nco_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 
 void FORTRAN(tax_datestring_init)(int *);
 void FORTRAN(tax_datestring_work_size)(int *);
-void FORTRAN(tax_datestring_compute)(int *, float *, float *, float *, float *);
+void FORTRAN(tax_datestring_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_day_init)(int *);
 void FORTRAN(tax_day_work_size)(int *);
-void FORTRAN(tax_day_compute)(int *, float *, float *, float *, float *);
+void FORTRAN(tax_day_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_dayfrac_init)(int *);
 void FORTRAN(tax_dayfrac_work_size)(int *);
-void FORTRAN(tax_dayfrac_compute)(int *, float *, float *, float *, float *);
+void FORTRAN(tax_dayfrac_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_jday1900_init)(int *);
 void FORTRAN(tax_jday1900_work_size)(int *);
-void FORTRAN(tax_jday1900_compute)(int *, float *, float *, float *, float *);
+void FORTRAN(tax_jday1900_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_jday_init)(int *);
 void FORTRAN(tax_jday_work_size)(int *);
-void FORTRAN(tax_jday_compute)(int *, float *, float *, float *, float *);
+void FORTRAN(tax_jday_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_month_init)(int *);
 void FORTRAN(tax_month_work_size)(int *);
-void FORTRAN(tax_month_compute)(int *, float *, float *, float *, float *);
+void FORTRAN(tax_month_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_times_init)(int *);
-void FORTRAN(tax_times_compute)(int *, float *, float *);
+void FORTRAN(tax_times_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_tstep_init)(int *);
 void FORTRAN(tax_tstep_work_size)(int *);
-void FORTRAN(tax_tstep_compute)(int *, float *, float *, float *, float *);
+void FORTRAN(tax_tstep_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_units_init)(int *);
-void FORTRAN(tax_units_compute)(int *, float *, float*);
+void FORTRAN(tax_units_compute)(int *, DFTYPE *, DFTYPE*);
 
 void FORTRAN(tax_year_init)(int *);
 void FORTRAN(tax_year_work_size)(int *);
-void FORTRAN(tax_year_compute)(int *, float *, float *, float *, float *);
+void FORTRAN(tax_year_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(tax_yearfrac_init)(int *);
 void FORTRAN(tax_yearfrac_work_size)(int *);
-void FORTRAN(tax_yearfrac_compute)(int *, float *, float *, float *, float *);
+void FORTRAN(tax_yearfrac_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(fill_xy_init)(int *);
-void FORTRAN(fill_xy_compute)(int *, float *, float *, float *, float *);
+void FORTRAN(fill_xy_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(test_opendap_init)(int *);
 void FORTRAN(test_opendap_result_limits)(int *);
-void FORTRAN(test_opendap_compute)(int *, float *, float *);
+void FORTRAN(test_opendap_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2grid_bin_xy_init)(int *);
 void FORTRAN(scat2grid_bin_xy_work_size)(int *);
-void FORTRAN(scat2grid_bin_xy_compute)(int *, float *, float *);
+void FORTRAN(scat2grid_bin_xy_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2grid_bin_xyt_init)(int *);
 void FORTRAN(scat2grid_bin_xyt_work_size)(int *);
-void FORTRAN(scat2grid_bin_xyt_compute)(int *, float *, float *, float *, 
-  float *, float *, float *, float *, float *, float *, float *, float *, 
-  float *, float *);
+void FORTRAN(scat2grid_bin_xyt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+  DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+  DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2grid_nbin_xy_init)(int *);
 void FORTRAN(scat2grid_nbin_xy_work_size)(int *);
-void FORTRAN(scat2grid_nbin_xy_compute)(int *, float *, float *);
+void FORTRAN(scat2grid_nbin_xy_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2grid_nbin_xyt_init)(int *);
 void FORTRAN(scat2grid_nbin_xyt_work_size)(int *);
-void FORTRAN(scat2grid_nbin_xyt_compute)(int *, float *, float *, float *, 
-  float *, float *, float *, float *, float *, float *, float *, float *, 
-  float *, float *);
+void FORTRAN(scat2grid_nbin_xyt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+  DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+  DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2grid_nobs_xyt_init)(int *);
 void FORTRAN(scat2grid_nobs_xyt_work_size)(int *);
-void FORTRAN(scat2grid_nobs_xyt_compute)(int *, float *, float *, float *, 
-  float *, float *, float *, float *, float *, float *, float *, float *, 
-  float *, float *, float *);
+void FORTRAN(scat2grid_nobs_xyt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+  DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+  DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(scat2grid_nobs_xy_init)(int *);
 void FORTRAN(scat2grid_nobs_xy_work_size)(int *);
-void FORTRAN(scat2grid_nobs_xy_compute)(int *, float *, float *);
+void FORTRAN(scat2grid_nobs_xy_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(unique_str2int_init)(int *);
 void FORTRAN(unique_str2int_compute)(char *, int *);
 
 void FORTRAN(bin_index_wt_init)(int *);
 void FORTRAN(bin_index_wt_result_limits)(int *);
-void FORTRAN(bin_index_wt_compute)(int *, float *, float *, float *);
+void FORTRAN(bin_index_wt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(minmax_init)(int *);
 void FORTRAN(minmax_result_limits)(int *);
-void FORTRAN(minmax_compute)(int *, float *, float *);
+void FORTRAN(minmax_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(floatstr_init)(int *);
-void FORTRAN(floatstr_compute)(int *, float *, float *, float *);
+void FORTRAN(floatstr_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(pt_in_poly_init)(int *);
 void FORTRAN(pt_in_poly_work_size)(int *);
-void FORTRAN(pt_in_poly_compute)(int *, float *, float *, float *, 
-  float *, float *, float *, float *);
+void FORTRAN(pt_in_poly_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, 
+  DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(list_value_xml_init)(int *);
 void FORTRAN(list_value_xml_result_limits)(int *);
-void FORTRAN(list_value_xml_compute)(int *, float *, float *, float *, float *, float *);
+void FORTRAN(list_value_xml_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(write_webrow_init)(int *);
 void FORTRAN(write_webrow_result_limits)(int *);
-void FORTRAN(write_webrow_compute)(int *, float *, float *, float *, float *, float *);
+void FORTRAN(write_webrow_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 /*
  *  End of declarations for internally linked external functions
@@ -1678,7 +1681,7 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
  * Query the function about abstract axes. Pass memory,
  * mr_list and cx_list info into the external function.
  */
-void FORTRAN(efcn_get_result_limits)( int *id_ptr, float *memory, int *mr_list_ptr, int *cx_list_ptr, int *status )
+void FORTRAN(efcn_get_result_limits)( int *id_ptr, DFTYPE *memory, int *mr_list_ptr, int *cx_list_ptr, int *status )
 {
   ExternalFunction *ef_ptr=NULL;
   char tempText[EF_MAX_NAME_LENGTH]="";
@@ -1828,11 +1831,11 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, float *memory, int *mr_list_p
  * the function to calculate the result.
  */
 void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mr_list_ptr, int *mres_ptr,
-	float *bad_flag_ptr, int *mr_arg_offset_ptr, float *memory, int *status )
+	DFTYPE *bad_flag_ptr, int *mr_arg_offset_ptr, DFTYPE *memory, int *status )
 {
   ExternalFunction *ef_ptr=NULL;
   ExternalFunctionInternals *i_ptr=NULL;
-  float *arg_ptr[EF_MAX_COMPUTE_ARGS];
+  DFTYPE *arg_ptr[EF_MAX_COMPUTE_ARGS];
   int xyzt=0, i=0, j=0;
   int size=0;
   char tempText[EF_MAX_NAME_LENGTH]="";
@@ -1846,42 +1849,42 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
    */
 
   void (*fptr)(int *);
-  void (*f1arg)(int *, float *, float *);
-  void (*f2arg)(int *, float *, float *, float *);
-  void (*f3arg)(int *, float *, float *, float *, float *);
-  void (*f4arg)(int *, float *, float *, float *, float *, float *);
-  void (*f5arg)(int *, float *, float *, float *, float *, float *, float *);
-  void (*f6arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *);
-  void (*f7arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *);
-  void (*f8arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *);
-  void (*f9arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *);
-  void (*f10arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *);
-  void (*f11arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *);
-  void (*f12arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *);
-  void (*f13arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *, float *);
-  void (*f14arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *, float *,
-        float *);
-  void (*f15arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *, float *,
-        float *, float *);
-  void (*f16arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *);
-  void (*f17arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *);
-  void (*f18arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *, float *);
+  void (*f1arg)(int *, DFTYPE *, DFTYPE *);
+  void (*f2arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *);
+  void (*f3arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+  void (*f4arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+  void (*f5arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+  void (*f6arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+		DFTYPE *);
+  void (*f7arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+		DFTYPE *, DFTYPE *);
+  void (*f8arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+		DFTYPE *, DFTYPE *, DFTYPE *);
+  void (*f9arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+		DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+  void (*f10arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+		DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+  void (*f11arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+		DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+  void (*f12arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+		DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+  void (*f13arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+		DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+  void (*f14arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+		DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+        DFTYPE *);
+  void (*f15arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+		DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+        DFTYPE *, DFTYPE *);
+  void (*f16arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+		DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+        DFTYPE *, DFTYPE *, DFTYPE *);
+  void (*f17arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+		DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+        DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
+  void (*f18arg)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+		DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+        DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
   /*
    * Initialize the status
@@ -1984,9 +1987,9 @@ ERROR in efcn_compute() accessing %s\n", tempText);
 
         FORTRAN(efcn_set_work_array_dims)(&iarray,&xlo,&ylo,&zlo,&tlo,&xhi,&yhi,&zhi,&thi);
 
-        size = sizeof(float) * (xhi-xlo+1) * (yhi-ylo+1) * (zhi-zlo+1) * (thi-tlo+1);
+        size = sizeof(DFTYPE) * (xhi-xlo+1) * (yhi-ylo+1) * (zhi-zlo+1) * (thi-tlo+1);
 
-        if ( (arg_ptr[i] = (float *)malloc(size)) == NULL ) { 
+        if ( (arg_ptr[i] = (DFTYPE *)malloc(size)) == NULL ) { 
           fprintf(stderr, "\n\
 ERROR in efcn_compute() allocating %d bytes of memory\n\
       work array %d:  X=%d:%d, Y=%d:%d, Z=%d:%d, T=%d:%d\n", 
@@ -2041,10 +2044,10 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 1:
 	  if (!internally_linked) {
-            f1arg  = (void (*)(int *, float *, float *))
+            f1arg  = (void (*)(int *, DFTYPE *, DFTYPE *))
              dlsym(ef_ptr->handle, tempText);
           } else {
-	    f1arg  = (void (*)(int *, float *, float *))
+	    f1arg  = (void (*)(int *, DFTYPE *, DFTYPE *))
              internal_dlsym(tempText);
           }
 	  (*f1arg)( id_ptr, arg_ptr[0], arg_ptr[1] );
@@ -2053,10 +2056,10 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 2:
 	  if (!internally_linked) {
-            f2arg  = (void (*)(int *, float *, float *, float *))
+            f2arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *))
              dlsym(ef_ptr->handle, tempText);
           } else {
-            f2arg  = (void (*)(int *, float *, float *, float *))
+            f2arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *))
              internal_dlsym(tempText);
           }
 	  (*f2arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2] );
@@ -2065,10 +2068,10 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 3:
 	  if (!internally_linked) {
-	     f3arg  = (void (*)(int *, float *, float *, float *, float *))
+	     f3arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))
               dlsym(ef_ptr->handle, tempText);
           } else {
-	     f3arg  = (void (*)(int *, float *, float *, float *, float *))
+	     f3arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))
               internal_dlsym(tempText);
           }
 	  (*f3arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3] );
@@ -2077,10 +2080,10 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 4:
 	  if (!internally_linked) {
-            f4arg  = (void (*)(int *, float *, float *, float *, float *, float *))
+            f4arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))
              dlsym(ef_ptr->handle, tempText);
           } else {
-            f4arg  = (void (*)(int *, float *, float *, float *, float *, float *))
+            f4arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))
              internal_dlsym(tempText);
           }
 	  (*f4arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4] );
@@ -2089,12 +2092,12 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 5:
 	  if (!internally_linked) {
-	    f5arg  = (void (*)(int *, float *, float *, float *, float *, float *, 
-             float *))
+	    f5arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+             DFTYPE *))
              dlsym(ef_ptr->handle, tempText);
           } else {
-	    f5arg  = (void (*)(int *, float *, float *, float *, float *, float *, 
-             float *))
+	    f5arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, 
+             DFTYPE *))
              internal_dlsym(tempText);
           }
 	  (*f5arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
@@ -2104,11 +2107,11 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 6:
 	  if (!internally_linked) {
-	    f6arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *))dlsym(ef_ptr->handle, tempText);
+	    f6arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *))dlsym(ef_ptr->handle, tempText);
           } else {
-	    f6arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *))internal_dlsym(tempText);
+	    f6arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *))internal_dlsym(tempText);
           }
 	  (*f6arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
         arg_ptr[5], arg_ptr[6] );
@@ -2117,11 +2120,11 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 7:
 	  if (!internally_linked) {
-	    f7arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *))dlsym(ef_ptr->handle, tempText);
+	    f7arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *))dlsym(ef_ptr->handle, tempText);
           } else {
-	    f7arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *))internal_dlsym(tempText);
+	    f7arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *))internal_dlsym(tempText);
           }
 	  (*f7arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
         arg_ptr[5], arg_ptr[6], arg_ptr[7] );
@@ -2130,11 +2133,11 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 8:
 	  if (!internally_linked) {
-	    f8arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+	    f8arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *))dlsym(ef_ptr->handle, tempText);
           } else {
-	    f8arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *))internal_dlsym(tempText);
+	    f8arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *))internal_dlsym(tempText);
           }
 	  (*f8arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
         arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8] );
@@ -2143,11 +2146,11 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 9:
 	  if (!internally_linked) {
-            f9arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+            f9arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))dlsym(ef_ptr->handle, tempText);
           } else {
-            f9arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *))internal_dlsym(tempText);
+            f9arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))internal_dlsym(tempText);
           }
 	  (*f9arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
         arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9] );
@@ -2156,11 +2159,11 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 10:
 	  if (!internally_linked) {
-	    f10arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+	    f10arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))dlsym(ef_ptr->handle, tempText);
           } else {
-	    f10arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *))internal_dlsym(tempText);
+	    f10arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))internal_dlsym(tempText);
           }
 	  (*f10arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
         arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10] );
@@ -2169,12 +2172,12 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 11:
 	  if (!internally_linked) {
-            f11arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *))
+            f11arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))
              dlsym(ef_ptr->handle, tempText);
           } else {
-            f11arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *))
+            f11arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))
              internal_dlsym(tempText);
           }
 	  (*f11arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
@@ -2185,12 +2188,12 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 12:
 	  if (!internally_linked) {
-	    f12arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *, float *))
+	    f12arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))
              dlsym(ef_ptr->handle, tempText);
           } else {
-	    f12arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *, float *))
+	    f12arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))
              internal_dlsym(tempText);
           }
 	  (*f12arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
@@ -2201,12 +2204,12 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 13:
 	  if (!internally_linked) {
-	    f13arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *, float *, float *))
+	    f13arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))
              dlsym(ef_ptr->handle, tempText);
           } else {
-	    f13arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *, float *, float *))
+	    f13arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))
              internal_dlsym(tempText);
           }
 	  (*f13arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
@@ -2217,13 +2220,13 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 14:
 	  if (!internally_linked) {
-	    f14arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *, float *, float *,
-             float *))dlsym(ef_ptr->handle, tempText);
+	    f14arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *))dlsym(ef_ptr->handle, tempText);
           } else {
-	    f14arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *, float *, float *,
-             float *))internal_dlsym(tempText);
+	    f14arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *))internal_dlsym(tempText);
           }
 	  (*f14arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
         arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10],
@@ -2233,13 +2236,13 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 15:
 	  if (!internally_linked) {
-	   f15arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-            float *, float *, float *, float *, float *, float *, float *, float *,
-            float *, float *))dlsym(ef_ptr->handle, tempText);
+	   f15arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+            DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+            DFTYPE *, DFTYPE *))dlsym(ef_ptr->handle, tempText);
           } else {
-	   f15arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-            float *, float *, float *, float *, float *, float *, float *, float *,
-            float *, float *))internal_dlsym(tempText);
+	   f15arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+            DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+            DFTYPE *, DFTYPE *))internal_dlsym(tempText);
           }
 	  (*f15arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
         arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10],
@@ -2249,13 +2252,13 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 16:
 	  if (!internally_linked) {
-	    f16arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+	    f16arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *))dlsym(ef_ptr->handle, tempText);
           } else {
-	    f16arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *))internal_dlsym(tempText);
+	    f16arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *))internal_dlsym(tempText);
           }
 	  (*f16arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
         arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10],
@@ -2265,13 +2268,13 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 17:
 	  if (!internally_linked) {
-            f17arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+            f17arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))dlsym(ef_ptr->handle, tempText);
           } else {
-            f17arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *))internal_dlsym(tempText);
+            f17arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))internal_dlsym(tempText);
           }
 	  (*f17arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
         arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10],
@@ -2282,13 +2285,13 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     case 18:
 	  if (!internally_linked) {
-	    f18arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+	    f18arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))dlsym(ef_ptr->handle, tempText);
           } else {
-	    f18arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *, float *, float *, float *,
-             float *, float *, float *, float *, float *))internal_dlsym(tempText);
+	    f18arg  = (void (*)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
+             DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *))internal_dlsym(tempText);
           }
 	  (*f18arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
         arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10],
@@ -2328,7 +2331,7 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
   else if ( i_ptr->language == EF_PYTHON ) {
       int   memlo[EF_MAX_COMPUTE_ARGS][4], memhi[EF_MAX_COMPUTE_ARGS][4],
             steplo[EF_MAX_COMPUTE_ARGS][4], stephi[EF_MAX_COMPUTE_ARGS][4], incr[EF_MAX_COMPUTE_ARGS][4];
-      float badflags[EF_MAX_COMPUTE_ARGS];
+      DFTYPE badflags[EF_MAX_COMPUTE_ARGS];
       char  errstring[2048];
 
       if ( pyefcn_compute_func == NULL ) {
@@ -2339,7 +2342,7 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
               *status = FERR_EF_ERROR;
               return;
           }
-          pyefcn_compute_func = (void (*)(int, char [], float *[], int, int [][4], int [][4], int [][4], int [][4], int [][4], float[], char []))
+          pyefcn_compute_func = (void (*)(int, char [], DFTYPE *[], int, int [][4], int [][4], int [][4], int [][4], int [][4], DFTYPE[], char []))
                                 dlsym(pyefcn_handle, "pyefcn_compute");
           if ( pyefcn_compute_func == NULL ) {
               fprintf(stderr, "Python-backed external functions not supported \n"
@@ -2433,7 +2436,7 @@ static void EF_signal_handler(int signo) {
   }
 
   if (signo == SIGFPE) {
-    fprintf(stderr, "\n\nERROR in external function: Floating Point Error\n");
+    fprintf(stderr, "\n\nERROR in external function: DFTYPEing Point Error\n");
     canjump = 0;
     siglongjmp(sigjumpbuffer, 1);
   } else if (signo == SIGSEGV) {
@@ -2563,7 +2566,7 @@ void FORTRAN(efcn_get_name)( int *id_ptr, char *name )
  * Find an external function based on its integer ID and
  * return the version number.
  */
-void FORTRAN(efcn_get_version)( int *id_ptr, float *version )
+void FORTRAN(efcn_get_version)( int *id_ptr, DFTYPE *version )
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -2796,7 +2799,7 @@ void FORTRAN(efcn_get_axis_limits)( int *id_ptr, int *axis_ptr, int *lo_ptr, int
  * Find an external function based on its integer ID and
  * return the 'arg_type' information for a particular
  * argument which tells Ferret whether an argument is a 
- * float or a string.
+ * DFTYPE or a string.
  */
 int FORTRAN(efcn_get_arg_type)( int *id_ptr, int *iarg_ptr )
 {
@@ -2815,7 +2818,7 @@ int FORTRAN(efcn_get_arg_type)( int *id_ptr, int *iarg_ptr )
 /*
  * Find an external function based on its integer ID and
  * return the 'rtn_type' information for the result which
- * tells Ferret whether an argument is a float or a string.
+ * tells Ferret whether an argument is a DFTYPE or a string.
  */
 int FORTRAN(efcn_get_rtn_type)( int *id_ptr )
 {
@@ -2999,8 +3002,8 @@ int EF_New( ExternalFunction *this )
  * Store the global values which will be needed by utility routines
  * in EF_ExternalUtil.c
  */
-void EF_store_globals(float *memory_ptr, int *mr_list_ptr, int *cx_list_ptr, 
-	int *mres_ptr, float *bad_flag_ptr)
+void EF_store_globals(DFTYPE *memory_ptr, int *mr_list_ptr, int *cx_list_ptr, 
+	int *mres_ptr, DFTYPE *bad_flag_ptr)
 {
   int i=0;
 

@@ -78,8 +78,14 @@ C
 *                        gks calls; else the clipping is wrong for fill 
 *                        plots in viewports that were defined with /AXES.
 *     v5.81 *acm* 4/05 Changes for FILL/MOD. Draw replications for curvilinear datasets
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
-      real x(128),y(128),xt(128),yt(128),xc(128),yc(128),xtrns,ytrns
+#ifdef double_p
+      real*8 x(128),y(128), xplus
+#else
+      real x(128),y(128), xplus
+#endif
+      real xt(128),yt(128),xc(128),yc(128),xtrns,ytrns
       integer i,nout,fill_ndx
       real xadd, lmin, lmax
 
@@ -104,6 +110,8 @@ C
 
 	INTEGER		error, trans_no
 	REAL	 	w(4), v(4), wc(4)
+
+	xplus = xadd
 
 *     Get viewport width and height in ferret; otherwise leave it alone
 
@@ -132,8 +140,13 @@ C
 *
 *     pplmod_fillpoly doesn't use the 'inverse' flag.  (Should it?)
          DO 1 i=1,npts
+#ifdef double_p
+            x(i) = DBLE(xarg(i))
+            y(i) = DBLE(yarg(i))
+#else
             x(i) = xarg(i)
             y(i) = yarg(i)
+#endif
  1       CONTINUE 
          
 *     Curvilinear section
@@ -144,7 +157,7 @@ C
 * add offset for modulo transformation.
 
            DO 48, i = 1, npts
-              x(i) = x(i) + xadd
+              x(i) = x(i) + xplus
  48        CONTINUE
 
 * What is the max and min x coordinate value covered by this call?
@@ -160,10 +173,6 @@ c scale and transform the vertices
 *jd* begin -- temporary -- no projections permitted
 
       do 5 i=1,npts
-*         if(mapproj)then
-*            xtemp=xtrns(x(i),y(i))*xscale
-*            ytemp=ytrns(x(i),y(i))*yscale
-*         else
 
 	    if (itypex .gt. 1) then
 	       xtemp = xlen*log10(x(i)/xlo)/log10(xhi/xlo)
@@ -177,14 +186,9 @@ c scale and transform the vertices
 	       ytemp = ylen*(y(i) - ylo)/(yhi-ylo)
 	    endif
 
-*            XTEMP = X(i) * XSCALE
-*            YTEMP = Y(i) * YSCALE
-
             XTEMP = xtemp * XSCALE
             YTEMP = ytemp * YSCALE
 *         endif
-*jd*	end
-
 c
          call tform(xtemp,ytemp,ztemp)
          xt(i)=anew

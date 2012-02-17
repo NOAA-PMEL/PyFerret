@@ -53,6 +53,7 @@
 * Sun port 2/92 *sh* - convert between various machine word types
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * arguments:
 *	dset_num    - internal data set # (from GT_INIT_DSET)
@@ -199,13 +200,25 @@
 	        end_time = MIN(end_time+nt_inrec,lend)
   110	      CONTINUE
               IF ( cp_convert ) CALL TM_FP_CONVERT( xw, 1, cptype )
+#ifdef double_p
+	      IF (xw .NE. (TM_WORLD(i,vgrid,1,box_middle))) GOTO 9100
+#else
 	      IF (xw .NE. SNGL(TM_WORLD(i,vgrid,1,box_middle))) GOTO 9100
+#endif
   120	    CONTINUE
             IF ( cp_convert ) CALL TM_FP_CONVERT( yw, 1, cptype )
+#ifdef double_p
+	    IF (yw .NE. (TM_WORLD(j,vgrid,2,box_middle))) GOTO 9100
+#else
 	    IF (yw .NE. SNGL(TM_WORLD(j,vgrid,2,box_middle))) GOTO 9100
+#endif
   130	  CONTINUE
           IF ( cp_convert ) CALL TM_FP_CONVERT( zw, 1, cptype )
+#ifdef double_p
+	  IF (zw .NE. (TM_WORLD(k,vgrid,3,box_middle))) GOTO 9100
+#else
 	  IF (zw .NE. SNGL(TM_WORLD(k,vgrid,3,box_middle))) GOTO 9100
+#endif
   140	CONTINUE
 
 * if file was written on a cpu with a different binary format fix things up

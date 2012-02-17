@@ -63,6 +63,8 @@
 * 6/22/2011
 *                    The XY linear regridding matches past Ferret behavior, 
 *                    not using bilinear regridding for now
+* V68  *acm* 1/12   use TM_FPEQ for double-precision ferret.
+
 
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -80,7 +82,7 @@
 
 * local variable declarations:
 
-        LOGICAL		do_bilinear
+        LOGICAL		TM_FPEQ, do_bilinear
 	INTEGER		dim1, dim2, src_grid, dst_grid,
      .                  i, j, k, l, 
      .                  isrc_lo, isrc_hi, jsrc_lo, jsrc_hi,
@@ -160,10 +162,10 @@ C interpolate in j", fills in more than previously.
 * special cases: exact overlap of source and dest points
 * This takes care of edges of the dest domain
 
-	      IF ( c1j .EQ. 1.0 .AND. c1i.EQ.1.0) THEN
+	      IF ( TM_FPEQ(c1j,1.) .AND. TM_FPEQ(c1i,1.)) THEN
                   dst(i,j,k,l) = src(iss,jss,k,l)
 
-	      ELSEIF ( (c1j .EQ. 1.0 .AND. c1i.NE.1.0) .AND.
+	      ELSEIF ( (TM_FPEQ(c1j,1.) .AND. .NOT.TM_FPEQ(c1i,1.)) .AND.
      .                 (z3.EQ.bad_src .AND. z4.EQ.bad_src) ) THEN  ! interpolate just in i at this j
 
 * interpolate
@@ -174,7 +176,7 @@ C interpolate in j", fills in more than previously.
 	              a = dst(i,j,k,l)
 	         ENDIF
 
-	      ELSEIF ( (c1j .EQ. 1.0 .AND. c1i.NE.1.0) .AND.
+	      ELSEIF ( (TM_FPEQ(c1j,1.) .AND. .NOT.TM_FPEQ(c1i,1.)) .AND.
      .                 (z1.EQ.bad_src .AND. z2.EQ.bad_src) ) THEN  ! interpolate just in i at next j
 
 * interpolate
@@ -185,7 +187,7 @@ C interpolate in j", fills in more than previously.
 	              a = dst(i,j,k,l)
 	         ENDIF
 
-	      ELSEIF ( (c1i .EQ. 1.0 .AND. c1j.NE.1.0) .AND.
+	      ELSEIF ( (TM_FPEQ(c1i,1.) .AND. .NOT.TM_FPEQ(c1j,1.)) .AND.
      .                 (z2.EQ.bad_src .AND. z3.EQ.bad_src) ) THEN  ! interpolate just in j at this i
 
 * interpolate
@@ -196,7 +198,7 @@ C interpolate in j", fills in more than previously.
 	              a = dst(i,j,k,l)
 	         ENDIF
 
-	      ELSEIF ( (c1i .EQ. 1.0 .AND. c1j.NE.1.0) .AND.
+	      ELSEIF ( (TM_FPEQ(c1i,1.) .AND. .NOT.TM_FPEQ(c1j,1.)) .AND.
      .                 (z1.EQ.bad_src .AND. z4.EQ.bad_src) ) THEN  ! interpolate just in j at next i
 
 * interpolate
@@ -265,7 +267,7 @@ C This  replicates Ferrets previous behavior
 	      c1j = 1.0 - c2j
 
 * special case: exact overlap of source and dest points
-	      IF ( c1j .EQ. 1.0 ) THEN
+	      IF ( TM_FPEQ(c1j,1.) ) THEN
 	         DO 200 i = isrc_lo, isrc_hi
  200	            work(i,j) = src(i,jss,k,l)
 	         GOTO 210
@@ -298,7 +300,7 @@ C This  replicates Ferrets previous behavior
 	      c1i = 1.0 - c2i
 
 * special case: exact overlap of source and dest points
-	      IF ( c1i .EQ. 1.0 ) THEN
+	      IF ( TM_FPEQ(c1i,1.) ) THEN
 	         DO 100 j = jdst_lo, jdst_hi
  100	         dst(i,j,k,l) = work(iss,j)
 	         GOTO 110

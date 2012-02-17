@@ -66,6 +66,7 @@
 * v580 *acm* 11/04 Fix the definition of ok_neg111; if -111 is at
 *                  either end of the interval we cannot distinguish
 *                  it as a valid index from its use as the bad flag.
+* V68  *acm* 1/12  changes for double-precision ferret.
 
 	include 'ferret.parm'
 	include 'xvariables.cmn'
@@ -80,7 +81,7 @@
      .		coef( dst_lo:dst_hi )
 
 * INTERNAL VARIABLE DECLARATIONS:
-        LOGICAL OK_neg111
+        LOGICAL TM_FPEQ, OK_neg111
 	INTEGER i, j, k, l,
      .		ss, src_lo, src_hi, src_grd, dst_grd
 	REAL	bad_src, bad_dst, z1, z2, c1, c2
@@ -126,7 +127,7 @@
 	      c1 = 1.0 - c2
 
 * special case: exact overlap of source and dest points
-	      IF ( c1 .EQ. 1.0 ) THEN
+	      IF ( TM_FPEQ(c1, 1.0) ) THEN
 	         DO 100 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 100 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 100 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
@@ -170,7 +171,7 @@
 	      c1 = 1.0 - c2
 
 * special case: exact overlap of source and dest points
-	      IF ( c1 .EQ. 1.0 ) THEN
+	      IF ( TM_FPEQ(c1, 1.0) ) THEN
 	         DO 200 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 200 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 200 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
@@ -213,7 +214,7 @@
 	      c1 = 1.0 - c2
 
 * special case: exact overlap of source and dest points
-	      IF ( c1 .EQ. 1.0 ) THEN
+	      IF ( TM_FPEQ(c1, 1.0) ) THEN
 	         DO 300 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 300 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 	         DO 300 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
@@ -256,7 +257,7 @@
 	      c1 = 1.0 - c2
 
 * special case: exact overlap of source and dest points
-	      IF ( c1 .EQ. 1.0 ) THEN
+	      IF ( TM_FPEQ(c1, 1.0) ) THEN
 	         DO 400 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 400 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 	         DO 400 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)

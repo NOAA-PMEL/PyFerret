@@ -10,12 +10,14 @@
 * 5/06 v600 *acm*  Flag no_plot_yet: changes so user can change the number of 
 *                  line colors.
 * V6.2  *acm* 5/08 new qualifier FRAME/TRANSPARENT
+* V68  *acm* 1/12  explicit REAL*4 declarations for double-precision ferret with
+*		    single-precision pplus
 
 	INTEGER		max_windows,
      .			max_viewport,
      .			mvp_dflt,
      .			win_id9
-	REAl		wn_dflt_scale
+	REAL*4		wn_dflt_scale
 	PARAMETER     ( max_windows = 9,
      .			max_viewport= 200,
      .			mvp_dflt = 0,
@@ -40,7 +42,7 @@
      .			saved_calendar_id,
      .			transparent
 
-	REAL		wn_scale,
+	REAL*4		wn_scale,
      .			vp_size ,
      .			vp_xorg ,
      .			vp_yorg ,

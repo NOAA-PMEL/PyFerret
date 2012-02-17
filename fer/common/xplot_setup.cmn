@@ -16,6 +16,7 @@
 * *acm* V600 9/05 window title: either set with SET WIN/TITLE or use 
 *                 session date/time.
 * *acm* V63  9/09 Introduction of syntax for variance-based and histogram levels
+* *acm* v68  1/12 move window title to xtoday.cmn.
 
 	LOGICAL	key_doc(0:10),
      .		onedee_on,
@@ -68,7 +69,7 @@
      .		xwhitehi,
      .		ywhitehi
 
-	CHARACTER	ppl_buff*2048, window_title*64
+	CHARACTER	ppl_buff*2048
 
 	COMMON / XPLOT_SETUP /
      .		animate,
@@ -120,8 +121,7 @@
      .		ywhitelo,
      .		xwhitehi,
      .		ywhitehi,
-     .		ppl_buff,
-     .		window_title
+     .		ppl_buff
 
 * equivalences
 	LOGICAL		use_keys

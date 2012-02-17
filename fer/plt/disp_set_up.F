@@ -148,6 +148,7 @@
 *                  then issue a warning and do linear levels instead.
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -221,7 +222,8 @@ C plus those starting w/ xbox_bounds:
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
      .                  first, last
-	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, delta
+	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, deltaz
+	REAL*4		rw1lo, rw2lo
 
         DATA axdir / 'X', 'Y', 'Z', 'T' /
 
@@ -650,6 +652,15 @@ C ACM added 8/2001 save cal id if vertical time axis
      .			size1, size2, transpz, aspect,
      .			memory(1, xblk1), mvx_temp,
      .			memory(1, yblk1), mvy_temp, s )
+	if (overlay) SOVER = .true.
+
+* load contour data into PPLUS and (possibly) regrid to regular grid
+	rw1lo = w1_lo
+	rw2lo = w2_lo
+	CALL PPLLDC_envelope ( icode, memory(1, xblk1), size1, size2,
+     .		      1, size1, 1, size2, s1_axis, s2_axis, 
+     .		      n1_regrid, n2_regrid, rw1lo, rw2lo,
+     .		      d1_regrid, d2_regrid, plot_mem_used)
 
 * load curvilinear pointers and sizes for later access from PLOT+
 	IF ( curvilinear ) THEN
@@ -664,14 +675,6 @@ C ACM added 8/2001 save cal id if vertical time axis
      .				  cx_xpos, cx_ypos, ctx, status)
 	   IF ( status .NE. ferr_ok) GOTO 5100
 	ENDIF
-
-	if (overlay) SOVER = .true.
-
-* load contour data into PPLUS and (possibly) regrid to regular grid
-	CALL PPLLDC_envelope ( icode, memory(1, xblk1), size1, size2,
-     .		      1, size1, 1, size2, s1_axis, s2_axis, 
-     .		      n1_regrid, n2_regrid, w1_lo, w2_lo,
-     .		      d1_regrid, d2_regrid, plot_mem_used)
 
 * Compute data mean and if needed for the levels setting the std, store
 * in common.  If the user set a std to use, store that.

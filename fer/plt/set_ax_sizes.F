@@ -43,6 +43,7 @@
 * V230:  11/5/92 - removed from SET_PLOT_SIZE for auto-viewports
 * V301:  11/3/93 - set PLOT+ symbols VP_WIDTH and VP_HEIGHT
 * V540 *sh* 9/01 - white space limits passed as arguments
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
 	include 'plot_setup.parm'
         include 'xplot_setup.cmn'      ! 10/91 for saved_ppl_yax
@@ -50,12 +51,11 @@
         include 'PLT.INC'
 
 * calling argument declarations:
-        REAL xfrac, yfrac, xspc_lo, yspc_lo, xspc_hi, yspc_hi
+        REAL*4 xfrac, yfrac, xspc_lo, yspc_lo, xspc_hi, yspc_hi
 
 * internal variable declarations:
 	INTEGER slen
-	REAL	xaxlen, yaxlen
-	REAL	xsize, ysize
+	REAL	xaxlen, yaxlen, xsize, ysize
 	CHARACTER TM_FMT*8, buff*24
 
 * calculate plot size

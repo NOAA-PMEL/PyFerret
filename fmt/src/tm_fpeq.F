@@ -45,13 +45,20 @@
 *
 * revision 0.00 - 11/21/85
 * revision 0.10 - 10/23/87 - all variables explicitly declared
-*
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+
 * calling arguments:
 	REAL	a, b
 
 * local parameters
+	LOGICAL    TM_DFPEQ
 	REAL	   VAX_epsilon
 	PARAMETER (VAX_epsilon = 4.E-7)
+
+#ifdef double_p
+        tm_fpeq = TM_DFPEQ(a, b)
+	RETURN
+#endif
 
 * treat relative error case (non-zero) separate fron zero case
 

@@ -68,7 +68,7 @@ C
 * v554 *acm*  2/04  After levels are set, call setlab_syms to set the LEVELS symbols
 
 * v570  4/04*acm* Fix for the section marked correction for rounding errors. 
-*                 Use TM_FPEQ to see if values are equal or close.  Also fixes 
+*                 Use TM_FPEQ_SNGL to see if values are equal or close.  Also fixes 
 *                 this adjustment when the range has negative values; was incorrect.
 * v580  8/04*acm* Fix bug 957 poly/lev=1 of a constant field needs zlev(1) to be set.
 * v581 *acm* 3/05 open levels (-INF) (INF)
@@ -76,6 +76,7 @@ C
 *                 yinv to coordinates when drawing the lines.
 * V62  *acm* 5/09 Fixing bug 1661: if the plot is TRANSPOSED, then apply 
 *                 xinv, yinv to the opposite axis.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -141,9 +142,9 @@ C
 	integer         status, nlm1
 	real		dz,znp,zmp
 	integer		i,j,uprdn, llen, ptsbase
-	logical         TM_FPEQ, line_it, fill_it
+	logical         line_it, fill_it
         integer         slen1, slen2
-        CHARACTER       TM_FMT*20, buff1*20, buff2*20, err_msg*40
+        CHARACTER       TM_FMT_SNGL*20, buff1*20, buff2*20, err_msg*40
 
         parameter       (epsilon = 1e-6)
 
@@ -376,8 +377,8 @@ C  Error exit when too many levels specified.
 C  Arrays LWGT, LDIG, and ZLEV are length ICNLEV=500
 
  5000   ii = ICNLEV
-        buff1 = TM_FMT (REAL(ICNLEV), 20, 20, slen1)
-        buff2 = TM_FMT (REAL(NLEV2), 20, 20, slen2)
+        buff1 = TM_FMT_SNGL (REAL(ICNLEV), 20, 20, slen1)
+        buff2 = TM_FMT_SNGL (REAL(NLEV2), 20, 20, slen2)
         err_msg = '# of levels > '// buff1(1:slen1) //
      .          '  (' // buff2(1:slen2) // ')'
         CALL errmsg (ferr_out_of_range, status, err_msg, *5002)

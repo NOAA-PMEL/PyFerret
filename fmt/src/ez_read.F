@@ -75,6 +75,8 @@
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use character constant instead
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
+* V68  *acm* 1/12 The variables should be declared REAL (conversion to double prec.)
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * Arguments:
 *	dset	- data set number
@@ -86,7 +88,7 @@
 *	d0...d19- (output) variable arrays
 *
 	INTEGER*4	dset, nread, ncol, columns, status, nmax
-	REAL*4		d0(ncol*nread), d1(ncol*nread), d2(ncol*nread),
+	REAL		d0(ncol*nread), d1(ncol*nread), d2(ncol*nread),
      .			d3(ncol*nread), d4(ncol*nread), d5(ncol*nread), 
      .			d6(ncol*nread), d7(ncol*nread), d8(ncol*nread), 
      .			d9(ncol*nread),
@@ -94,7 +96,7 @@
      .                  d13(ncol*nread),d14(ncol*nread),d15(ncol*nread),
      .                  d16(ncol*nread),d17(ncol*nread),d18(ncol*nread),
      .                  d19(ncol*nread)
-        REAL*4 buff(columns)
+        REAL buff(columns)
 
 *
 * Include files

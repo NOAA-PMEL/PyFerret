@@ -56,6 +56,7 @@
 * V420 - 10/95 - allow line defs to be recursive (dynamic lines) by avoiding
 *		 direct use of line_mem
 * V541 - *sh* 2/02 - added support for subspan modulo axes
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -234,9 +235,15 @@
 	         factor = 0.0
 	      ELSE
 	         wwindex = TM_WORLD(hi_look-isub0,grid, idim, box_middle)
+#ifdef double_p
+		 factor = (wwindex - wcoord)
+     .			/ (wwindex-
+     .			  TM_WORLD(lo_look-isub0,grid, idim, box_middle))
+#else
 	         factor = SNGL(wwindex - wcoord)
      .			/ SNGL(wwindex-
      .			  TM_WORLD(lo_look-isub0,grid, idim, box_middle))
+#endif
 	      ENDIF
 	      RETURN
 	   ELSE

@@ -40,6 +40,7 @@
 * V62 *acm*  5/08 Fix bug 1581. NLEV used is acutally one less
 * V65 *acm   2/10 If Open-ended levels were used, symbol LEV_OPNLEVS saves 
 * the /LEV command needed to duplicate the levels
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 *    LEV_MIN  - lowest level used on last CONTOUR, SHADE, or FILL call.
 *    LEV_MAX -  highest level used last
@@ -63,14 +64,14 @@
 
       REAL zmax, zmin, dz, diff, diff_dz
 
-      CHARACTER ppl_buff*2048, TM_FMT*10, buff*10, symbuff*30
+      CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, buff*10, symbuff*30
       INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen 
-      LOGICAL TM_FPEQ, reglevs
+      LOGICAL TM_FPEQ_SNGL, reglevs
 
 * Lowest and highest Z level
 
       zmin = zlevels(1)
-      buff = TM_FMT(zmin, -2, 10, slen)
+      buff = TM_FMT_SNGL(zmin, -2, 10, slen)
 
       ppl_buff = 'LEV_MIN '//buff
       ilen = TM_LENSTR1(ppl_buff)
@@ -79,7 +80,7 @@
       CALL SETSYM (ppl_buff, ilen, ier, ist)
 
       zmax = zlevels(nlevels)
-      buff = TM_FMT(zmax, -2, 10, slen)
+      buff = TM_FMT_SNGL(zmax, -2, 10, slen)
 
       ppl_buff = 'LEV_MAX '//buff
       ilen = TM_LENSTR1(ppl_buff)
@@ -90,7 +91,7 @@
 * Number of levels used 
 
       zmax = MAX(nlevels-1,1)
-      buff = TM_FMT(zmax, -2, 10, slen)
+      buff = TM_FMT_SNGL(zmax, -2, 10, slen)
 
       ppl_buff = 'LEV_NUM '//buff
       ilen = TM_LENSTR1(ppl_buff)
@@ -103,7 +104,7 @@
 
       IF (set_delta) THEN
 	 dz = delta
-         buff = TM_FMT(dz, -2, 10, slen)
+         buff = TM_FMT_SNGL(dz, -2, 10, slen)
 
 * Otherwise, check if levels are regularly spaced 
 
@@ -113,7 +114,7 @@
          IF (nlevels .EQ. 1) THEN
             buff = 'none'
          ELSE IF (nlevels .EQ. 2) THEN
-            buff = TM_FMT(dz, -2, 10, slen)
+            buff = TM_FMT_SNGL(dz, -2, 10, slen)
          ELSE
             reglevs = .TRUE.
             DO 100 i=3,nlevels
@@ -122,7 +123,7 @@
                IF(diff_dz .GT. 1.e-6 ) reglevs=.FALSE.
   100       CONTINUE
             IF (reglevs) THEN
-               buff = TM_FMT(dz, -2, 10, slen)
+               buff = TM_FMT_SNGL(dz, -2, 10, slen)
             ELSE
                buff = 'irregular'
             ENDIF

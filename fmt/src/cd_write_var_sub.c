@@ -67,6 +67,11 @@
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build
                       Other changes to correctly deal with the scalar case dim=0 */ 
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+/*					 definition of macro DFTYPE in ferretmacros.h.
+*/
+
+#include "ferretmacros.h"
 
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <stdlib.h>
@@ -75,11 +80,6 @@
 #include <netcdf.h>
 #include <assert.h>
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
 
 /* prototype */
 void tm_blockify_ferret_strings(void *dat, char *pbuff,
@@ -174,8 +174,13 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
 		} else
 		{
 			/* FLOAT data */
+#ifdef double_p
+			*cdfstat = nc_put_vara_double(*cdfid, vid,
+				 start, count, (DFTYPE*) dat);
+#else
 			*cdfstat = nc_put_vara_float(*cdfid, vid,
-																	 start, count, (float*) dat);
+				 start, count, (float*) dat);
+#endif
 		}
 
   return;

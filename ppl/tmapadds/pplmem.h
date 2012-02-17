@@ -35,6 +35,7 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 /* Easier way of handling FORTRAN calls with underscore/no underscore */
 #ifndef FORTRAN
@@ -49,6 +50,28 @@
 void FORTRAN(pplcmd_c)(int *, int *, int *);
 void FORTRAN(pplcmd_f)(int *, int *, int *, float * );
 
+#ifdef double_p
+void FORTRAN(pplldx_envelope)(int *, double *, double *, int *, 
+                       char *, char *, double *, int *);
+
+void FORTRAN(pplldx)( int *, double *, double *, int *, 
+                       char *, char *, double *, double * );
+
+
+void FORTRAN(pplldc_envelope)(int *, double *, int *, int *, int *, int *,
+                       int *, int *, double *, double *, int *, int *,
+                       double *, double *, double *, double *, int *);
+
+void FORTRAN(pplldc)( int *, double *, int *, int *, int *, int *, 
+                       int *, int *, double *, double *, int *, int *, 
+                       double *, double *, double *, double *, double *);
+
+void FORTRAN(pplldv_envelope)(int *, double *, int *, int *, int *, 
+                       int *, int *, int *);
+
+void FORTRAN(pplldv)( int *, double *, int *, int *, int *, int *, 
+                       int *, int *, double *);
+#else
 void FORTRAN(pplldx_envelope)(int *, float *, float *, int *, 
                        char *, char *, float *, int *);
 
@@ -69,6 +92,7 @@ void FORTRAN(pplldv_envelope)(int *, float *, int *, int *, int *,
 
 void FORTRAN(pplldv)( int *, float *, int *, int *, int *, int *, 
                        int *, int *, float *);
+#endif
 
 void FORTRAN(save_ppl_memory_size)(int *);
 void FORTRAN(get_ppl_memory_size)(int *);

@@ -67,9 +67,9 @@
 * V553 *acm* 9/03 Introduce flag check_0. On Linux, there may be a 
 *           be a level of -6.E-07 or some such, where it should be 0.
 *           Check whether the numbers for the labels are all small,
-*           in which case we leave things alone; otherwise use TM_FPEQ
+*           in which case we leave things alone; otherwise use TM_FPEQ_SNGL
 *           to see if the value should be exactly 0.  
-* V554 *acm* 11/03 Call tm_fmt_digits rather than tm_fmt: if the shakey
+* V554 *acm* 11/03 Call TM_FMT_SNGL_digits rather than TM_FMT_SNGL: if the shakey
 *                  parameter klab_dig is negative, requesting an exact
 *                  number of decimal places.  The change is to force the
 *                  same number of digits for all labels. -- more consistent 
@@ -87,14 +87,15 @@
 *                 on definition of yy
 * V600 *acm* 9/05 fix bug 1339, with (-inf) (inf) levels and the shakey setting klab_dig=0,
 *                 we had an infinite loop on DO 30. Start the loop at ndx = lev1+1, not 1.
-* V600 *acm* 1/06 Among the changes when we added tm_fmt_digits, when checking whether more 
+* V600 *acm* 1/06 Among the changes when we added TM_FMT_SNGL_digits, when checking whether more 
 *                 digits are needed, keep track of digits added; need to increase the  
-*                 argument klab_len by the same amount in subsequent calls to TM_FMT_DIGITS  
+*                 argument klab_len by the same amount in subsequent calls to TM_FMT_SNGL_DIGITS  
 *                 when we are writing the numeric labels on the key. 
 * V610 *acm* 3/08 For larger default number of levels, make fewer labels when the key is short.
 * V630 *acm* 9/09 Fix color key labels that run off the edge of the plot 
 * V670 *acm* 2/11 Fix ticket 1798. The fix to 1339 starting label loops at ndx=lev1+1 
 *                 was not applied to loop 20 for horizontal keys.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -128,12 +129,12 @@
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx
         real*8          val_n, val_last
-	character*12	text,tm_fmt, TM_FMT_DIGITS, txt_out, blanks
+	character*12	text,TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, txt_out, blanks
         character*20    buff
-	logical		TM_FPEQ, TM_DFPEQ, ITSA_AXIS_VIEW, windof_hold, 
+	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, windof_hold, 
      .                  check_0, increase_digits
 
-	external	TM_FMT, TM_FMT_DIGITS
+	external	TM_FMT_SNGL, TM_FMT_SNGL_DIGITS
 
 	equivalence 	(px(1),kpx(1)),(py(1),kpy(1))
 
@@ -161,7 +162,7 @@
         IF (posinf) levn = nlev2 - 1
 
         IF (shd_levels .GT. 1) del = zlev(lev1+1) - zlev(lev1)
-        IF (TM_FPEQ(del,0.)) check_0 = .FALSE.
+        IF (TM_FPEQ_SNGL(del,0.)) check_0 = .FALSE.
         
 ! IF (INF) levels, will force triangles to be at least 5% of length of colorbar
 
@@ -177,9 +178,9 @@
         DO WHILE (increase_digits .AND. ABS(lab_digits) .LE. klab_len )
            buff = ' '
            val = zlev(lev1)
-           IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
+           IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
  	   buff = 
-     .        TM_FMT_DIGITS (val,lab_digits,klab_len+5,str_len)
+     .        TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+5,str_len)
 
            READ (buff,*) val_last
            increase_digits = .FALSE.
@@ -187,9 +188,9 @@
            max_len = 0
 	   DO 30 ndx = lev1+1, shd_levels
              val = zlev(ndx)
-             IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
+             IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	     buff = 
-     .          TM_FMT_DIGITS (val,lab_digits,klab_len+5,str_len)
+     .          TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+5,str_len)
 
              READ (buff,*) val_n
              IF ( TM_DFPEQ(val_last, val_n) ) increase_digits = .TRUE.
@@ -303,8 +304,8 @@
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 	val = zlev(lev1)
-	IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)  
+	IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)  
         if (max_len .lt. str_len) max_len = str_len
         
         nhi = MAX(2,shd_levels+1)
@@ -360,8 +361,8 @@
 
            IF (ndx .GE. lev1 .AND. ndx .LE. levn) THEN
               val = zlev(ndx)
-              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	      text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	      text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	      if (max_len .lt. str_len) max_len = str_len
            ENDIF
 10	continue
@@ -374,13 +375,13 @@
 CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE		
 	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
              val = zlev(lev1)
-             IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+             IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 
 	   else
              val = zlev(ndx)
-             IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+             IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 
              IF (ndx .EQ. 1 .AND. neginf) text = " "
              IF (ndx .EQ. shd_levels+1 .AND. posinf) text = " "
@@ -526,8 +527,8 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	max_len = 0
 
         val = zlev(lev1)
-        IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+        IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 
 	if (max_len .lt. str_len) max_len = str_len	
 
@@ -584,8 +585,8 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
            IF (ndx .GE. lev1 .AND. ndx .LE. levn) THEN
               val = zlev(ndx)
-              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	      text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	      text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	      if (max_len .lt. str_len) max_len = str_len
            ENDIF
 1010	continue
@@ -600,12 +601,12 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE		
 	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
              val = zlev(lev1)
-             IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+             IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	   else
              val = zlev(ndx)
-             IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+             IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	     text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
              IF (ndx .EQ. 1 .AND. neginf) text = " "
              IF (ndx .EQ. levn+1 .AND. posinf) text = " "
 	   end if

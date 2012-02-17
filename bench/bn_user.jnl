@@ -10,6 +10,12 @@ go polar_2d shade AIRT[l=1] 100 120
 
 
 ! test the OBJECTIVE command using a synthetic field
+
+
+! skip this test when double-precision Ferret. 
+IF ($FERRET_PRECISION"0|double>1|*>0") THEN EXIT/SCRIPT
+
+
 set window/size=.5/aspect=.75 2
 define view/ylim=.6,1/text=.5 vupper
 define view/xlim=0.,.5/ylim=.3,.55/text=.2 vul

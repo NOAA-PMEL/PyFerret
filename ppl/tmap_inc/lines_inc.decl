@@ -1,17 +1,20 @@
 * LINES_INC.DECL - converted to Unix 2.26.91          
 * COMMON for PLOT+ with all variables declared
 * created for TMAP usage by Steve Hankin 7/88
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
+*               as single-precision
 	INTEGER	IMARK
-	REAL	HMARK
+	REAL*4	HMARK
 	INTEGER	ITYPE
-	REAL	XOFF
-	REAL	YOFF
-	REAL	XFCT
-	REAL	YFCT
-	REAL	DN1
-	REAL	UP1
-	REAL	DN2
-	REAL	UP2
+	REAL*4	XOFF
+	REAL*4	YOFF
+	REAL*4	XFCT
+	REAL*4	YFCT
+	REAL*4	DN1
+	REAL*4	UP1
+	REAL*4	DN2
+	REAL*4	UP2
 	INTEGER	LLENG
 	INTEGER	LNUM
 	INTEGER	IWIND

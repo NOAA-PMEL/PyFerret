@@ -93,6 +93,7 @@ C
 *                 highest and lowest level when doing (-inf) and (inf) levels spec.
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -120,7 +121,7 @@ C
         CHARACTER TM_FMT*20, buff1*20, buff2*20, err_msg*40
         REAL*8    DXFF, DXOF, DYFF, DYOF
         REAL      XFF, XOF, YFF, YOF, DMIN, DMAX, DZMAX
-        LOGICAL   TM_FPEQ
+        LOGICAL   TM_FPEQ_SNGL
 
 	logical		valid
 
@@ -270,10 +271,10 @@ C       ~OF - page offset to the beginning of an axis?
 	call trans(0,xmin,ymin,xtm,ytm)
 	call trans(0,xmax,ymax,xtx,ytx)
 	DXFF = (XHPLOT - XLPLOT)/(xtx-xtm)
-	IF (TM_FPEQ(xtx, xtm)) DXFF = 1.
+	IF (TM_FPEQ_SNGL(xtx, xtm)) DXFF = 1.
 	DXOF = (XLPLOT) - DXFF*xtm
 	DYFF = (YHPLOT - YLPLOT)/(ytx-ytm)
-	IF (TM_FPEQ(xtx, xtm)) DXFF = 1.
+	IF (TM_FPEQ_SNGL(xtx, xtm)) DXFF = 1.
 	DYOF = (YLPLOT) - DYFF*ytm
 
 	XFF = DXFF

@@ -4,6 +4,7 @@
 *
 * Ansley Manke
 * March 1, 2005
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -95,10 +96,17 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
       INTEGER id
 
       REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
+      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, 
      .           mem1loz:mem1hiz, mem1lot:mem1hit)
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
      .           mem2lot:mem2hit)
@@ -108,7 +116,7 @@
 
       INTEGER arg, res_lo_ss(4), res_hi_ss(4), res_incr(4)
 
-      REAL LABEL_WIDTH, height
+      REAL   LABEL_WIDTH, height
       CHARACTER*1024 strng
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
@@ -131,34 +139,31 @@
 
         CHARACTER*(*) strng
         REAL height
+	
 
 	include 'xrisc.cmn'
 
 c       INTEGER TM_LENSTR1, i1
         INTEGER n, lnbeg(500), lnend(500), numlines,
      .        npen, nfont, npnew, nfnew, nchr
-        REAL SYMWID, ss, xmn
+        REAL*4 SYMWID, ht, ss, xmn
         CHARACTER*3 fontprefix, penprefix, newfont, newpen
 
-c        i1 = TM_LENSTR1(strng)
-c        ss = 0.
-c        ss = SYMWID (height, i1, strng)
-
-
-      CALL tm_break_lines (strng, lnbeg, lnend, numlines)
+      CALL TM_BREAK_LINES (strng, lnbeg, lnend, numlines)
       nfont = 0
       npen = 0
       fontprefix = ""
       penprefix = ""
 
       ss = 0.
+      ht = height
 
       DO 40 n = 1, numlines
          CALL getlabfonts (strng, lnbeg, lnend, n, npnew, nfnew, 
      .           newfont, newpen, nchr)
 
          risc_buff = strng(lnbeg(n):lnend(n))
-	 xmn = SYMWID(height,nchr+npen+nfont,
+	 xmn = SYMWID(ht,nchr+npen+nfont,
      .           penprefix(1:npen)//fontprefix(1:nfont)//
      .           risc_buff)
 

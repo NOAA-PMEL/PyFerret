@@ -48,6 +48,8 @@
 /*******************/
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret. */
+
 #include <wchar.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -59,15 +61,22 @@
 */
 extern float *ppl_memory;
 
+#ifdef double_p
+void FORTRAN(pplldc_envelope)(int *k, double *z, int *mx, int *my,int *imn, int *imx,
+             int *jmn, int *jmx, double *pi, double *pj,int *nx1, int *ny1,
+			 double *xmin1, double *ymin1, double *dx1, double *dy1, 
+			 int *plot_mem_used)
+#else
 void FORTRAN(pplldc_envelope)(int *k, float *z, int *mx, int *my,int *imn, int *imx,
              int *jmn, int *jmx, float *pi, float *pj,int *nx1, int *ny1,
 			 float *xmin1, float *ymin1, float *dx1, float *dy1, 
 			 int *plot_mem_used)
-
+#endif
 
 {  
-/* local variable declaration */
+/* local variable declarations */
   int pmemsize;
+
 /*
   Is the currently allocated size of PLOT+ memory sufficient?
   If not, then allocate a larger array
@@ -78,7 +87,7 @@ void FORTRAN(pplldc_envelope)(int *k, float *z, int *mx, int *my,int *imn, int *
 
   if (*plot_mem_used > pmemsize) reallo_ppl_memory(plot_mem_used); 
 
-  FORTRAN(pplldc) (k, z, mx, my,imn, imx, jmn, jmx, pi, pj, nx1, ny1, 
+  FORTRAN(pplldc) (k, z, mx, my, imn, imx, jmn, jmx, pi, pj, nx1, ny1, 
                    xmin1, ymin1, dx1, dy1, ppl_memory);
 return;
 }

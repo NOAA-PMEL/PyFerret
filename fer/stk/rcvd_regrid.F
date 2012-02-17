@@ -71,6 +71,7 @@
 * v580 *acm* 11/04 Store cal_id in cx_cal_id, the calendar ID used when  
 *                  computing world coordinates
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 
 * calling argument declarations:
@@ -238,11 +239,17 @@ c	   tmp_hi_ww = SECS_TO_TSTEP(dst_grid, src_hi_ww)
 	      tmp_lo_ww = src_lo_ww
 	      tmp_hi_ww = src_hi_ww
 	   ENDIF
-
+#ifdef double_p
+	   IF ( (dst_lo_ww) .LT. (tmp_lo_ww) )
+     .	                                dst_lo_ss = dst_lo_ss + 1
+	   IF ( (dst_hi_ww) .GT. (tmp_hi_ww) )
+     .                                  dst_hi_ss = dst_hi_ss - 1
+#else
 	   IF ( SNGL(dst_lo_ww) .LT. SNGL(tmp_lo_ww) )
      .	                                dst_lo_ss = dst_lo_ss + 1
 	   IF ( SNGL(dst_hi_ww) .GT. SNGL(tmp_hi_ww) )
      .                                  dst_hi_ss = dst_hi_ss - 1
+#endif
 	ENDIF
 	IF ( dst_lo_ss .GT. dst_hi_ss ) dst_hi_ss = dst_lo_ss  !bug chk 5/93
 

@@ -50,24 +50,23 @@
 *              around call to curv_coord_sub
 * 3/05 *acm* - new routines for SHADE/MOD curvilinear data: 
 *              curv_coord_add and curv_coord_range
+* 1/12 *acm* - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+*              definition of macro DFTYPE in ferret.h
 * compile with
 *    cc -g -c save_arg_pointers.c
 *  or
 *    cc    -c save_arg_pointers.c
 */
 
+#include "ferret.h"
  
 /* global cache pointer */
-float *xpos_cache, *ypos_cache;
+DFTYPE *xpos_cache, *ypos_cache;
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void save_arg_pointers( float *xpos_arr, float *ypos_arr )
-#else
-void save_arg_pointers_( float *xpos_arr, float *ypos_arr )
-#endif
+void FORTRAN(save_arg_pointers)( DFTYPE *xpos_arr, DFTYPE *ypos_arr )
 
 {
-  extern float *xpos_cache, *ypos_cache;
+  extern DFTYPE *xpos_cache, *ypos_cache;
   xpos_cache = xpos_arr;
   ypos_cache = ypos_arr;
 
@@ -77,40 +76,20 @@ void save_arg_pointers_( float *xpos_arr, float *ypos_arr )
 /*******************/
 
 /* prototype for FORTRAN subroutine to be called */
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void curv_coord_sub ( float *xi, float *yi, int *n,
-                      float *xpos_cache, float *ypos_cache,
-                      float *xinv, float *yinv, int *status );
-#else
-void curv_coord_sub_( float *xi, float *yi, int *n,
-                      float *xpos_cache, float *ypos_cache,
-                      float *xinv, float *yinv, int *status );
-#endif
-
+void FORTRAN(curv_coord_sub) ( DFTYPE *xi, DFTYPE *yi, int *n,
+                      DFTYPE *xpos_cache, DFTYPE *ypos_cache,
+                      DFTYPE *xinv, DFTYPE *yinv, int *status );
 
 /* prototype for FORTRAN subroutine to be called */
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void curv_coord_add_sub ( float *xi, float *yi, int *n,
-                      float *xpos_cache, float *ypos_cache,
-                      float *xinv, float *yinv, float *xadd,
+void FORTRAN(curv_coord_add_sub) ( DFTYPE *xi, DFTYPE *yi, int *n,
+                      DFTYPE *xpos_cache, DFTYPE *ypos_cache,
+                      DFTYPE *xinv, DFTYPE *yinv, DFTYPE *xadd,
 		              int *first, int*xfield_is_modulo, int *status );
-#else
-void curv_coord_add_sub_( float *xi, float *yi, int *n,
-                      float *xpos_cache, float *ypos_cache,
-                      float *xinv, float *yinv, float *xadd,
-		              int *first, int*xfield_is_modulo, int *status );
-#endif
 
 /* prototype for FORTRAN subroutine to be called */
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void curv_coord_range_sub ( float *uc, float *xpos_cache, float *ypos_cache, 
+void FORTRAN(curv_coord_range_sub) ( DFTYPE *uc, DFTYPE *xpos_cache, DFTYPE *ypos_cache, 
                       int *ilo, int *ihi, int *jlo, int *jhi, 
 		      int *status );
-#else
-void curv_coord_range_sub_( float *uc, float *xpos_cache,float *ypos_cache,  
-                      int *ilo, int *ihi, int *jlo, int *jhi, 
-		      int *status );
-#endif
 
 /*******************/
 
@@ -118,20 +97,12 @@ void curv_coord_range_sub_( float *uc, float *xpos_cache,float *ypos_cache,
 arrays of X and Y positions available
  */
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void curv_coord(float *xi, float *yi, int *n,
-		float *xinv, float *yinv, int *status)
-#else
-void curv_coord_(float *xi, float *yi, int *n,
-		 float *xinv, float *yinv, int *status)
-#endif
+void FORTRAN(curv_coord)(DFTYPE *xi, DFTYPE *yi, int *n,
+		DFTYPE *xinv, DFTYPE *yinv, int *status)
+
 {
-  extern float *xpos_cache, *ypos_cache;
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-  curv_coord_sub( xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, status );
-#else
-  curv_coord_sub_( xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, status );
-#endif
+  extern DFTYPE *xpos_cache, *ypos_cache;
+  FORTRAN(curv_coord_sub)( xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, status );
   return;
 }
 
@@ -141,20 +112,13 @@ void curv_coord_(float *xi, float *yi, int *n,
 arrays of X and Y positions available, with an offset in the X coords
 */
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void curv_coord_add(float *xi, float *yi, int *n,
-		 float *xinv, float *yinv, float *xadd, int *first, int*xfield_is_modulo, int *status)
-#else
-void curv_coord_add_(float *xi, float *yi, int *n,
-		 float *xinv, float *yinv, float *xadd, int *first, int*xfield_is_modulo, int *status)
-#endif
+void FORTRAN(curv_coord_add)(DFTYPE *xi, DFTYPE *yi, int *n,
+		 DFTYPE *xinv, DFTYPE *yinv, DFTYPE *xadd, int *first, int*xfield_is_modulo, int *status)
+
 {
-  extern float *xpos_cache, *ypos_cache;
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-  curv_coord_add_sub(  xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, xadd, first, xfield_is_modulo, status );
-#else
-  curv_coord_add_sub_( xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, xadd, first, xfield_is_modulo, status );
-#endif
+  extern DFTYPE *xpos_cache, *ypos_cache;
+  FORTRAN(curv_coord_add_sub)(  xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, xadd, first, xfield_is_modulo, status );
+
   return;
 }
 
@@ -165,17 +129,11 @@ void curv_coord_add_(float *xi, float *yi, int *n,
    that were requested (x may be modulo so we need full range).
  */
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void curv_coord_range(float *uc, int *ilo, int *ihi, int *jlo, int *jhi, int *status)
-#else
-void curv_coord_range_( float *uc, int *ilo, int *ihi, int *jlo, int *jhi, int *status)
-#endif
+void FORTRAN(curv_coord_range)(DFTYPE *uc, int *ilo, int *ihi, int *jlo, int *jhi, int *status)
+
 {
-  extern float *xpos_cache, *ypos_cache;
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-  curv_coord_range_sub(uc, xpos_cache, ypos_cache, ilo, ihi, jlo, jhi, status );
-#else
-  curv_coord_range_sub_(uc, xpos_cache, ypos_cache, ilo, ihi, jlo, jhi, status );
-#endif
+  extern DFTYPE *xpos_cache, *ypos_cache;
+  FORTRAN(curv_coord_range_sub)(uc, xpos_cache, ypos_cache, ilo, ihi, jlo, jhi, status );
+
   return;
 }

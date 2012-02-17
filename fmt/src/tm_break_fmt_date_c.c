@@ -56,13 +56,15 @@ hh:mm:ss are optional (defaulting to 00:00:00) or seconds, alone may be omitted
 		 appended at the end of a routine call....
 
 */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+/*					 definition of macro DFTYPE in ferretmacros.h.
+*/
+
+#include "ferretmacros.h"
+
 
 #ifdef _NO_PROTO
-#  ifdef NO_ENTRY_NAME_UNDERSCORES
-int tm_break_fmt_date_c(date,
-#  else
-int tm_break_fmt_date_c_(date,
-#  endif
+int FORTRAN(tm_break_fmt_date_c)(date,
 			year,
 			month,
 			day,
@@ -71,20 +73,16 @@ int tm_break_fmt_date_c_(date,
 			second)
 char *date;
 int *year, *month, *day, *hour, *minute;
-float *second;
+DFTYPE *second;
 
 #else
-#  ifdef NO_ENTRY_NAME_UNDERSCORES
-int tm_break_fmt_date_c(char *date,
-#  else
-int tm_break_fmt_date_c_(char *date,
-#  endif
+int FORTRAN(tm_break_fmt_date_c)(char *date,
 			int *year,
 			int *month,
 			int *day,
 			int *hour,
 			int *minute,
-			float *second)
+			DFTYPE *second)
 
 #endif
 {

@@ -14,7 +14,9 @@ CFLAGS		= -fPIC -m32 -march=i486 -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VE
 FC		= gfortran
 F77		= gfortran
 F77SHFLAG	=
-FFLAGS		= -fPIC -m32 -march=i486 -Dunix -Dgfortran -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-length-132 -malign-double $(INCLUDES)
+FFLAGS		= -fPIC -m32 -march=i486 -Dunix -Dgfortran -Ddouble_p -fno-second-underscore \
+		  -fno-backslash -fdollar-ok -ffixed-line-length-132 -malign-double -fdefault-real-8 \
+		  -fdefault-double-8 $(INCLUDES)
 
 RANLIB		= /usr/bin/ranlib
 

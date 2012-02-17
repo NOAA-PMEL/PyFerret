@@ -1,6 +1,11 @@
 	SUBROUTINE PPLLDC(K,Z,MX,MY,IMN,IMX,JMN,JMX,
      *		PI,PJ,NX1,NY1,XMIN1,YMIN1,DX1,DY1,pplmem)
-	REAL pplmem(*),PI(*),PJ(*),Z(MX,MY)
+#ifdef double_p
+	REAL*8 PI(*),PJ(*),Z(MX,MY),DX1,DY1
+#else
+	REAL PI(*),PJ(*),Z(MX,MY)
+#endif
+	REAL pplmem(*)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -52,7 +57,7 @@ C              Mod *sh* 3.7.97 *sh* replace limits if curvilinear plot
 * V54 *acm*9/01 - changes for dynamic pplus buffer, call PPLLDC via pplldc_envelope.c
 *                  which checks pplmem_nsize (new name for NSIZE) and allocates 
 *                  more if needed.
-*      *acm* 10/01  remove VMS includes
+*      *acm* 10/01  remove VMS includes* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 c
 c	k	=0 already on an equally spaced rectangular grid
 c		=1 on a unequally spaced, but rectangular grid
@@ -161,12 +166,19 @@ C
 	INCLUDE 'DATA.INC'
 
         REAL pplmem(*)
+
+#ifdef double_p
+	REAL*8 Z(MX,MY)
+#else
 	REAL Z(MX,MY)
+#endif
+
 	COMMON/LDDXDY/ DX,DY
 ! ... end of copied from pplldc
 
 C
 C	LOAD THE SECOND SET OF GRID INFORMATION FOR VECTOR PLOTS
+C	OR FIRST SET OF COORDINATES FOR CURVILINEAR PLOTS
 C
 	IF(.NOT.(JTYPE.EQ.0.OR.JTYPE.EQ.2))RETURN
 	call rsmnmx

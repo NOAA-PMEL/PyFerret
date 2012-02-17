@@ -22,7 +22,7 @@
 CC='gcc'
 #
 # C compiler flags (default is `-O'):
-CFLAGS='-O2 -m32 -g'
+CFLAGS='-O2 -m32'
 #
 # C preprocessor flags (default is `-DNDEBUG'):
 CPPFLAGS='-DNDEBUG'
@@ -31,7 +31,7 @@ CPPFLAGS='-DNDEBUG'
 prefix=..
 
 FC='gfortran'
-FFLAGS='-O2 -m32 -g -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-length-132 -malign-double'
+FFLAGS='-O2 -m32 -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-length-132 -malign-double'
 
 OS=linux
 

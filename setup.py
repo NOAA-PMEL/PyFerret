@@ -67,9 +67,13 @@ ext_mods = [ Extension("pyferret._pyferret", include_dirs = incdir_list,
                                              libraries = lib_list,
                                              extra_link_args = addn_link_args), ]
 
+pyferret_version = os.getenv("PYFERRET_VERSION")
+if pyferret_version == None:
+    raise ValueError, "Environment variable PYFERRET_VERSION is not defined"
+
 # Configure the setup
 setup(name = "pyferret",
-      version = "7.0.0.7",
+      version = pyferret_version,
       description = "python module providing ferret functionality",
       long_description = "python module providing ferret functionality",
       author = "Karl M. Smith",
@@ -80,7 +84,7 @@ setup(name = "pyferret",
       ext_modules = ext_mods)
 
 setup(name = "pipedviewer",
-      version = "0.0.0.2",
+      version = "0.0.2",
       description = "graphics viewer controlled by a command pipe",
       long_description = "A graphics viewer application that receives its " \
                          "drawing and other commands primarily from another " \

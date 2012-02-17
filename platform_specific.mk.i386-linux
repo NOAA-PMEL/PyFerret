@@ -71,6 +71,9 @@
 	LD		= $(shell which gfortran)
 	LD_DYN_FLAGS	= -m32 -fPIC -shared -rdynamic
 
+# PyFerret version number
+	PYFERRET_VERSION = 0.0.7
+
 # cancel the default rule for .f -> .o to prevent objects from being built
 # from .f files that are out-of-date with respect to their corresponding .F file
 %.o : %.f

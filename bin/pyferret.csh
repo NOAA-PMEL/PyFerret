@@ -1,29 +1,29 @@
-#! /bin/sh
-## This Bourne shell script is used to set environment variables need by
-## pyferret, and then init and run pyferret.  The intent of this
-## script is to provide a traditional Ferret interface through pyferret.
+#! /bin/csh
+## This C-shell script is used to initialize and run Ferret using the
+## pyferret Python module.  The intent of this script is to provide a
+## traditional Ferret interface through the pyferret module.
 
 
 ## Assign the python2.x executable to use
-pyname="python2.6"
+set pyname = "python2.6"
 
 
 ## Make sure the FER_* environment variables are assigned
-if [ -z "$FER_DIR" ]; then
-##   Either source the ferret_paths script to assign the environment variables
-#    . "/my/path/to/ferret_paths.sh"
-##   or just throw an error if they should have already been defined
+if ( ! $?FER_DIR ) then
+## Either source the ferret_paths script to assign the environment variables
+#    source "/my/path/to/ferret_paths.csh"
+## or just throw an error if they should have already been defined
     echo "**ERROR: Ferret environment variables are not defined"
     exit 1
 ##
-fi
+endif
 
 
 ## Assign the directory containing the pyferret Python package (directory)
 ## One of:
 ## (a) the default user-specific site
 ##     Defining pysite not required if Python 2.6 or later.
-# pysite="${HOME}/.local/lib/${pyname}/site-packages"
+# set pysite = "${HOME}/.local/lib/${pyname}/site-packages"
 ## or:
 ## (b) the default system-wide site, typically one of:
 ##         /usr/lib/python2.x/site-packages
@@ -37,8 +37,9 @@ fi
 ## or:
 ## (c) a custom directory (for example, if installed under $FER_DIR)
 ##     Defining pysite required.
-pysite="${FER_DIR}/lib/${pyname}/site-packages"
-## pysite="${FER_DIR}/lib/${pyname}/site-packages"
+set pysite = "${FER_DIR}/lib/${pyname}/site-packages"
+##
+## set pysite = "${FER_DIR}/lib/${pyname}/site-packages"
 ## should be correct for the normal Ferret installation.
 
 
@@ -48,17 +49,17 @@ pysite="${FER_DIR}/lib/${pyname}/site-packages"
 
 
 ## Add pysite to the Python search path given by PYTHONPATH
-if [ -n "$pysite" ]; then
-    if [ -z "$PYTHONPATH" ]; then
-        export PYTHONPATH="${pysite}"
+if ( $?pysite ) then
+    if ( ! $?PYTHONPATH ) then
+        setenv PYTHONPATH "${pysite}"
     else
-        if ! echo "${PYTHONPATH}" | grep -q "${pysite}"; then
-            export PYTHONPATH="${pysite}:${PYTHONPATH}"
-        fi
-    fi
-fi
+        if ( "${PYTHONPATH}" !~ "*${pysite}*" ) then
+            setenv PYTHONPATH "${pysite}:${PYTHONPATH}"
+        endif
+    endif
+endif
 
 
-## Finally, start pyferret via the ferret.py script
+## Finally, execute an in-line Python script to run Ferret using the pyferret module
 ${pyname} -i -c "import sys; import pyferret; (errval, errmsg) = pyferret.init(sys.argv[1:], True)" $*
 

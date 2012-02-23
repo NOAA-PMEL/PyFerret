@@ -16,7 +16,7 @@
 #
 
 include ../../site_specific.mk
-include ../ef_utility/platform_specific_flags.mk.$(BUILDTYPE)
+include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 include fft_platform_specific_flags.mk.$(BUILDTYPE)
 
 #

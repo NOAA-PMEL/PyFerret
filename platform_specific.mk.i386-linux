@@ -69,6 +69,7 @@
 		-Ddouble_p 
 
 
+# Flags for compiling all C code
 	CFLAGS = \
 		$(CPP_FLAGS) \
 		-Dlint \
@@ -80,6 +81,17 @@
 		-DX_REFRESH \
 		-DXT_CODE 
 
+# Flags for compiling the PlotPlus FORTRAN code (ppl subdirectory)
+	PPLUS_FFLAGS = \
+		$(CPP_FLAGS) \
+		-fno-automatic \
+		-DFORTRAN_90 \
+		-fno-second-underscore \
+		-fdollar-ok \
+		-ffixed-line-length-132 \
+		$(FINCLUDES)
+
+# Flags for compiling non-PlotPlus FORTRAN code
 	FFLAGS = \
 		$(CPP_FLAGS) \
 		-fno-automatic \
@@ -92,15 +104,6 @@
 		-fdefault-double-8 \
 		$(FINCLUDES)
 
-
-	PPLUS_FFLAGS = \
-		$(CPP_FLAGS) \
-		-fno-automatic \
-		-DFORTRAN_90 \
-		-fno-second-underscore \
-		-fdollar-ok \
-		-ffixed-line-length-132 \
-		$(FINCLUDES)
 
 	# Below this line are macro definitions used only for the final linking of the executable
 	#

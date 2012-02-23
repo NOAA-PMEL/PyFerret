@@ -11,11 +11,13 @@
 
 	INCLUDES        = -I. \
 			  -I../fmt/cmn/ \
+			  -I$(NETCDF4_DIR)/include \
+			  -I$(READLINE_DIR)/include \
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \
 			  $(GKS_INCLUDES) \
-			  -I/use/local/include
+			  -I/usr/local/include
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			  -I../include \
@@ -27,6 +29,7 @@
 	PLATFORM = $(shell uname -s -r) 64-bit
 
 	CC              = gcc
+	CXX		= c++
 	FC		= gfortran
 	F77		= gfortran
 
@@ -50,19 +53,66 @@
 			  -DNO_PREPEND_STRING -DNO_DOUBLE_ESCAPE_SLASH \
 			  -Ddouble_p 
 
+# Flags for compiling all C code
 # -DusingDODSf2cUnderscore needed if using netcdf library...
 # also consider -ffloat-store.
-	CFLAGS          = $(CPP_FLAGS) \
+	CFLAGS		= $(CPP_FLAGS) \
 			  -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX \
 			  -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
-	FFLAGS          = $(CPP_FLAGS) \
-			  -fno-automatic -DusingDODSf2cUnderscore -fno-second-underscore \
-			  -fdollar-ok -ffixed-line-length-132 -ffpe-trap=overflow $(FINCLUDES)
-	PPLUS_FFLAGS    = $(CPP_FLAGS) \
+# Flags for compiling the PlotPlus FORTRAN code (ppl subdirectory)
+	PPLUS_FFLAGS	= $(CPP_FLAGS) \
 			  -fno-automatic -DusingDODSf2cUnderscore -fno-second-underscore \
 			  -fdollar-ok -ffixed-line-length-132 $(FINCLUDES)
+# Flags for compiling non-PlotPlus FORTRAN code
+	FFLAGS		= $(CPP_FLAGS) \
+			  -fno-automatic -DusingDODSf2cUnderscore -fno-second-underscore \
+			  -fdollar-ok -ffixed-line-length-132 -ffpe-trap=overflow \
+			  -fdefault-real-8 -fdefault-double-8 $(FINCLUDES)
 
-#	PROF_FLAGS	= -pg
+        # PROF_FLAGS	= -pg
+
+	# Below this line are macro definitions used only for the final linking of the executable
+	#
+
+	LD		= gcc
+	LDFLAGS		= -v --verbose -m64 -fPIC -export-dynamic
+
+	SYSLIB		= -lX11 \
+			  -lcurl \
+			  -ldl \
+			  $(LIBZ_DIR)/lib64/libz.a \
+			  -Wl,-Bstatic -lgfortran -Wl,-Bdynamic \
+			  -lm
+
+# -static-libgfortran can be used with gfortran 4.4 but not 4.1
+# /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortran.a
+
+	TMLIB		= ../lib/tmap_lib.a
+
+	GKSLIB		= ../xgks/src/lib/libxgks.a
+
+# For netCDF4 using new hdf5 and new zlib
+
+	CDFLIB		= $(NETCDF4_DIR)/lib64/libnetcdff.a \
+			  $(NETCDF4_DIR)/lib64/libnetcdf.a \
+			  $(HDF5_DIR)/lib64/libhdf5_hl.a \
+			  $(HDF5_DIR)/lib64/libhdf5.a \
+			  $(LIBZ_DIR)/lib64/libz.a
+
+	LINUX_OBJS	= special/linux_routines.o \
+			  dat/*.o \
+			  ../fmt/src/x*.o \
+			  ../ppl/plot/ppldata.o
+
+# Use the home-built libncurses.so to build so
+# libtinfo.so is not a requirement from RHEL6
+# builds.
+# (But use the system ncurses.so.5 for running.)
+
+	TERMCAPLIB	= -L/usr/local/lib64 -lncurses
+
+	READLINELIB	= $(READLINE_DIR)/lib64/libreadline.a \
+			  $(READLINE_DIR)/lib64/libhistory.a
 
 # cancel the default rule for .f -> .o to prevent objects from being built
 # from .f files that are out-of-date with respect to their corresponding .F file
@@ -70,7 +120,7 @@
 
 # use cpp to preprocess the .F files to .f files and then compile the .f files
 %.o : %.F
-	rm -f $*.f	 
+	rm -f $*.f
 	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
 	$(F77) $(FFLAGS) -c $*.f	 
 

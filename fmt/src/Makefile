@@ -23,7 +23,7 @@
 
 
 include ../../site_specific.mk
-include ../../fer/platform_specific_flags.mk.$(BUILDTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 include ./SOURCE_FILES
 
 OBJS= $(SRCS_F:.F=.o) $(SRCS_C:.c=.o) 

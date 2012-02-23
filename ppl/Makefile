@@ -14,7 +14,7 @@
 #
 
 include ../site_specific.mk
-include platform_specific_flags.mk.$(BUILDTYPE)
+include ../platform_specific.mk.$(BUILDTYPE)
 
 
 #
@@ -30,6 +30,12 @@ LIBS	= complot ourlib plot plotlib pplepic \
 CLEANDIRS = $(DIRS)
 
 DEPDIRS = addsxgks modsxgks pplp_only
+
+# change the standard rules for .F -> .o builds so $(PPLUS_FFLAGS) is used
+%.o : %.F
+	rm -f $*.f
+	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
+	$(F77) $(PPLUS_FFLAGS) -c $*.f	 
 
 
 #

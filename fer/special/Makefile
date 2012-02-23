@@ -13,7 +13,7 @@
 #
 
 include ../../site_specific.mk
-include ../platform_specific_flags.mk.$(BUILDTYPE)
+include ../../platform_specific.mk.$(BUILDTYPE)
 include ./SOURCE_FILES
 
 

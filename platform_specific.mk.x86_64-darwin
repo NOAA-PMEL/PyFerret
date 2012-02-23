@@ -36,12 +36,17 @@ CC              = gcc-4.2
 F77		= ifort
 
 RANLIB          = /usr/bin/ranlib
+
+# Flags for compiling all the C code
 # have to remove -02 flag due to bug in v2.96 of compiler. see
 #   for http://gcc.gnu.org/ml/gcc-bugs/2000-04/msg00716.html for info
 CFLAGS          = -g -arch x86_64 -fPIC -Dlint -Dunix -DNEED_IAND -DFORTRAN_90 -DVOID_SIGHANDLER -D_POSIX_VERSION -DDARWIN -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE $(INCLUDES)
-FFLAGS          = -g -zero -fPIC -noautomatic -c -assume no2underscores -assume nobscc -extend-source 132 -heap-arrays 10 -align dcommons -Dunix -DNEED_IAND -DFORTRAN_90 $(FINCLUDES)
 
+# Flags for compiling the PlotPlus FORTRAN code (ppl subdirectory)
 PPLUS_FFLAGS    = -g -zero -fPIC -noautomatic -c -assume no2underscores -assume nobscc -extend-source 132 -heap-arrays 10 -align dcommons -Dunix -DNEED_IAND -DFORTRAN_90 $(FINCLUDES)
+
+# Flags for compiling non-PlotPlus FORTRAN code
+FFLAGS          = -g -zero -fPIC -noautomatic -c -assume no2underscores -assume nobscc -extend-source 132 -heap-arrays 10 -align dcommons -Dunix -DNEED_IAND -DFORTRAN_90 $(FINCLUDES)
 
 CPP		= /usr/bin/cpp-4.2
 CPP_FLAGS       = $(INCLUDES) -P -Dunix -DFORTRAN_90 \

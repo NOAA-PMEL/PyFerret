@@ -21,8 +21,8 @@ INSTALL_FER_DIR = $(FER_DIR)
 # HDF5_DIR	= /usr/local
 # HDF5_DIR	= /home/users/tmap/flat_32
 # HDF5_DIR	= /home/users/tmap/flat_64
-# HDF5_DIR	= /usr/local/hdf5_186
-HDF5_DIR	= /usr/local/hdf5_187
+HDF5_DIR	= /usr/local/hdf5_186
+# HDF5_DIR	= /usr/local/hdf5_187
 
 ## Installation directory for NetCDF static libraries
 ## (contains include and lib or lib64 subdirectories)

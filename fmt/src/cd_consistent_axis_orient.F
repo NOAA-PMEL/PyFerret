@@ -307,11 +307,21 @@ c Find the grid which contains this axis and has the most dimensions.
 	    ELSE
 	       ds_grid_end(idim,tmvar) = line_dim(iaxis)
 	       ndim = ndim + 1
+	       save_order = ds_ordering(ndim,tmvar)  ! want to keep the sign
 	       ds_ordering(ndim,tmvar) = idim
-	       IF ( reversed(iaxis) ) ds_ordering(ndim,tmvar)
+
+	       IF ( reversed(iaxis) ) THEN
+	          ds_ordering(ndim,tmvar)
      .			      = -1 * ds_ordering(ndim,tmvar)
-	       IF ( perm(idim).NE.unspecified_int4 .AND. perm(idim).LT.0) 
-     .		  ds_ordering(ndim,tmvar) = -1 * ds_ordering(ndim,tmvar)
+               ELSE
+	          IF ( perm(idim).NE.unspecified_int4 .AND. perm(idim).LT.0) THEN
+		  ds_ordering(ndim,tmvar) = -1 * ds_ordering(ndim,tmvar)
+                  ELSE   ! if already had a reversed coord indicated, save that.
+                     IF ( (ABS(save_order) .EQ. ABS(ds_ordering(ndim,tmvar)) )
+     .	                 .AND.(save_order .NE. ds_ordering(ndim,tmvar)) )
+     .	               ds_ordering(ndim,tmvar) = save_order
+                  ENDIF
+               ENDIF
 	    ENDIF
 
   230    CONTINUE 

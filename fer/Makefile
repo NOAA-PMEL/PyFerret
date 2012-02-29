@@ -110,8 +110,8 @@ debug:	.FRC
 	mkdir -p ../lib
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g"  \
 		"FFLAGS = $(FFLAGS) -O0 -g" \
+		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g" \
 		"GUI_FAKES=special/gui_fakes.o" build
-
 
 ferret:	
 	- mv $(EXECNAME) $(EXECNAME)_`ls -l $(EXECNAME) | awk '{print $$6"_"$$7}' | tr [A-Z] [a-z]`

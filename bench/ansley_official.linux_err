@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-/home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 41641035 Feb 29 09:23 ../fer/ferret_c
-Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func/
+Running FERRET version ../fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 41641076 Feb 29 09:11 ../fer/ferret_c
+Using external functions from ../external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: double-precision Ferret 
+Note: fix for ticket 1774, comment 5
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func/
+FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func
 FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/linux/lib
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Wed Feb 29 09:23:48 PST 2012
+Beginning at Wed Feb 29 09:14:02 PST 2012
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -3431,4 +3431,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Feb 29 09:25:30 PST 2012
+Ended at Wed Feb 29 09:15:50 PST 2012

@@ -14,7 +14,7 @@ CFLAGS		= -fPIC -m64 -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINU
 FC		= gfortran
 F77		= gfortran
 F77SHFLAG	=
-FFLAGS		= -fPIC -m64 -Dunix -Dgfortran -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-length-132 $(INCLUDES)
+FFLAGS		= -fPIC -m64 -Dunix -Dgfortran -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-length-132 -fdefault-real-8 -fdefault-double-8 $(INCLUDES)
 
 RANLIB		= /usr/bin/ranlib
 
@@ -23,7 +23,7 @@ LD_DYN_FLAGS	= -fPIC -m64 -shared
 SYSLIBS		=
 
 CPP		= /lib/cpp
-CPP_FLAGS	= -P -traditional $(INCLUDES)
+CPP_FLAGS	= -P -traditional -Ddouble_p $(INCLUDES)
 CFLAGS_DEBUG	= -O0 -g -Ddebug
 FFLAGS_DEBUG	= -O0 -g -Ddebug
 

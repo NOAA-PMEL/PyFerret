@@ -25,7 +25,7 @@ LD_DYN_FLAGS	= -fPIC -m32 -march=i486 -shared
 SYSLIBS		=
 
 CPP		= /lib/cpp
-CPP_FLAGS	= -P -traditional $(INCLUDES)
+CPP_FLAGS	= -P -traditional Ddouble_p $(INCLUDES)
 CFLAGS_DEBUG	= -O0 -g -Ddebug
 FFLAGS_DEBUG	= -O0 -g -Ddebug
 

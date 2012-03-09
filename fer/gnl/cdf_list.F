@@ -622,6 +622,9 @@
                  DO 200 iatt = 1, nvatts
                     CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, 
      .                                        attname, status)
+                    CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .                   iatt, attname, attype, attlen, attoutflag, istat )
+                         
                     slen = TM_LENSTR1(attname)
                     IF ( MATCH_NAME (attname,  slen,
      .                               'MISSING_VALUE', 13 ) .OR. 

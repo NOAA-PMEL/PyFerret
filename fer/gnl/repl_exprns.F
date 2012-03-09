@@ -279,7 +279,7 @@
 * ... decode PRECISION = #_digits
 	      CALL EQUAL_VAL(cmnd(i:qual_end), result, status)
 	      IF ( status .NE. ferr_ok ) GOTO 5000
-	      IF (ABS(result) .GT. 10.) GOTO 5510 	         
+	      IF (ABS(result) .GT. 16.) GOTO 5510 	         
 	      use_digits = NINT(result)
 	      GOTO 131
 	   ELSEIF (cmnd(i:i).EQ.'b' .OR. cmnd(i:i).EQ.'B') THEN
@@ -801,7 +801,7 @@
      .	     //' "R=return-item"'//pCR//risc_buff, *5000)
  5510	risc_buff = cmnd(i:qual_end)
 	CALL ERRMSG( ferr_invalid_command, status,
-     .       'maximum precision is 10 digits: '
+     .       'maximum precision is 16 digits: '
      .					//risc_buff, *5000)
  5520   risc_buff = cmnd(i:qual_end)
 	CALL ERRMSG( ferr_invalid_command, status,

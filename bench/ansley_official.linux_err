@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 41620946 Mar  6 10:43 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 41550350 Mar  9 11:11 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: new symbol SESSION_PID
+Note:  changes to repl_exprns for grave-accent evaluation of DP constants
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,6 +14,7 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/linux/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNTIONS=.
 FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/linux/lib
@@ -21,7 +22,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Tue Mar 6 10:45:16 PST 2012
+Beginning at Fri Mar 9 11:11:40 PST 2012
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -86,8 +87,6 @@ message/continue "2+2=`garbage`"
  **ERROR: invalid command: grave accent doesnt evaluate to scalar
           I[i=3:5]
 message/continue "3 numbers: `I[i=3:5]`"
- **ERROR: invalid command: maximum precision is 10 digits: precision=11
-message/continue "1/3=`1/3,BAD=-999,precision=11`"
  **ERROR: command syntax: options: "P=prec","B=bad","W=width","ZW=zero-width" or "R=return-item"
           message/continue "1/3=`1/3BAD=-999`"
 message/continue "1/3=`1/3BAD=-999`"
@@ -641,12 +640,12 @@ Replacing definition of axis XAX
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
  *** NOTE: Axis has repeated values -- micro-adjusting ...
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
 Replacing definition of axis XAX
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
  *** NOTE: Axis has repeated values -- micro-adjusting ...
@@ -1279,10 +1278,10 @@ Replacing definition of axis TAX2
  *** NOTE: Not deleted: MONTHT
  *** NOTE: Axis is in use by grid TGRID
  *** NOTE: Not deleted: X10
-ls: input.txt: No such file or directory
  *** NOTE: Axis is in use by grid G10X5
  *** NOTE: Not deleted: YAX
  *** NOTE: Axis is in use by grid GFORMAT
+ls: input.txt: No such file or directory
  *** NOTE: Not deleted: XAX
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAXLEVITR1_160
@@ -1858,12 +1857,12 @@ Replacing definition of axis COADSY.ILLEGAL
 Replacing definition of axis TIME
  LISTing to file a.nc
  TEMPORARY data cleared from memory
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
  TEMPORARY data cleared from memory
  LISTing to file longtitle.nc
  PERMANENT data cleared from memory
@@ -2071,8 +2070,6 @@ Replacing definition of grid MYGRID
  LISTing to file a.nc
  *** NOTE: Converting single precision variable to double on output
  LISTing to file a.nc
-syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>absuv</b><b>taux</b><b>absuu</b><b>tauy</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -2136,9 +2133,9 @@ Replacing definition of axis TIME
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-             NetCDF: Malformed or inaccessible DAP DDS (OPeNDAP/netCDF Error code -72)
-             Data set: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods
-SET DAT/FORM=CDF "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
+             NetCDF: DAP server error (OPeNDAP/netCDF Error code -70)
+             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
+SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
  **Internet Data error
              NetCDF: I/O failure (OPeNDAP/netCDF Error code -68)
              Data set: http://noserver/a/nofile.cdf
@@ -2275,114 +2272,6 @@ set axis/stride=2/offset=1 (AX050)
 cancel axis/stride COADSX
  **ERROR: invalid command: offset must be less than stride value
 set axis/stride=2/offset=4 COADSX
-
-ERROR version mismatch:
-	External version [19129534678059450841903378109582337780693413177632044041103872382921430284485982012504989578440601485720793912844034663155672561266536981003370519316273965870616373502704041787870140372619359708798346757937450450944.00] does not match 
-	Ferret version   [1.30].
-	Please upgrade either Ferret or the
-	External Function support files from
-
-		http://tmap.pmel.noaa.gov/Ferret/
-
-
-ERROR version mismatch:
-	External version [612486834470914083105128717220894558316463625300693223664094219281522105530423535689837920481631570087148179592951732502445084168680523814402811261992582753135942528683543854463862444089481095166931697411358474705546377456277975204624374310498474192122413056.00] does not match 
-	Ferret version   [1.30].
-	Please upgrade either Ferret or the
-	External Function support files from
-
-		http://tmap.pmel.noaa.gov/Ferret/
-
-
-ERROR version mismatch:
-	External version [943893092822968508238591179895335299259815616730557593002647117598626182893780695889022639720894359015708029606813604689312049754464111004047843466348027399420964422865958247222926915297418572111940498265581060412669952.00] does not match 
-	Ferret version   [1.30].
-	Please upgrade either Ferret or the
-	External Function support files from
-
-		http://tmap.pmel.noaa.gov/Ferret/
-
-
-ERROR version mismatch:
-	External version [943893092822968508238591179895335299259815616730557593002647117598626182893780695889022639720894359015708029606813604689312049754464111004047843466348027399420964422865958247222926915297418572111940498265581060412669952.00] does not match 
-	Ferret version   [1.30].
-	Please upgrade either Ferret or the
-	External Function support files from
-
-		http://tmap.pmel.noaa.gov/Ferret/
-
-
-ERROR version mismatch:
-	External version [612486834470914083105128717220894558316463625300693223664094219281522105530423535689837920481631570087148179592951732502445084168680523814402811261992582753135942528683543854463862444089481095166931697411358474705546377456277975204624374310498474192122413056.00] does not match 
-	Ferret version   [1.30].
-	Please upgrade either Ferret or the
-	External Function support files from
-
-		http://tmap.pmel.noaa.gov/Ferret/
-
-
-ERROR version mismatch:
-	External version [612486834470914083105128717220894558316463625300693223664094219281522105530423535689837920481631570087148179592951732502445084168680523814402811261992582753135942528683543854463862444089481095166931697411358474705546377456277975204624374310498474192122413056.00] does not match 
-	Ferret version   [1.30].
-	Please upgrade either Ferret or the
-	External Function support files from
-
-		http://tmap.pmel.noaa.gov/Ferret/
-
-
-ERROR version mismatch:
-	External version [612486834470914083105128717220894558316463625300693223664094219281522105530423535689837920481631570087148179592951732502445084168680523814402811261992582753135942528683543854463862444089481095166931697411358474705546377456277975204624374310498474192122413056.00] does not match 
-	Ferret version   [1.30].
-	Please upgrade either Ferret or the
-	External Function support files from
-
-		http://tmap.pmel.noaa.gov/Ferret/
-
-
-ERROR version mismatch:
-	External version [612486834470914083105128717220894558316463625300693223664094219281522105530423535689837920481631570087148179592951732502445084168680523814402811261992582753135942528683543854463862444089481095166931697411358474705546377456277975204624374310498474192122413056.00] does not match 
-	Ferret version   [1.30].
-	Please upgrade either Ferret or the
-	External Function support files from
-
-		http://tmap.pmel.noaa.gov/Ferret/
-
-
-ERROR version mismatch:
-	External version [612486834470914083105128717220894558316463625300693223664094219281522105530423535689837920481631570087148179592951732502445084168680523814402811261992582753135942528683543854463862444089481095166931697411358474705546377456277975204624374310498474192122413056.00] does not match 
-	Ferret version   [1.30].
-	Please upgrade either Ferret or the
-	External Function support files from
-
-		http://tmap.pmel.noaa.gov/Ferret/
-
-
-ERROR version mismatch:
-	External version [612486834470914083105128717220894558316463625300693223664094219281522105530423535689837920481631570087148179592951732502445084168680523814402811261992582753135942528683543854463862444089481095166931697411358474705546377456277975204624374310498474192122413056.00] does not match 
-	Ferret version   [1.30].
-	Please upgrade either Ferret or the
-	External Function support files from
-
-		http://tmap.pmel.noaa.gov/Ferret/
-
-
-ERROR version mismatch:
-	External version [612486834470914083105128717220894558316463625300693223664094219281522105530423535689837920481631570087148179592951732502445084168680523814402811261992582753135942528683543854463862444089481095166931697411358474705546377456277975204624374310498474192122413056.00] does not match 
-	Ferret version   [1.30].
-	Please upgrade either Ferret or the
-	External Function support files from
-
-		http://tmap.pmel.noaa.gov/Ferret/
-
-
-ERROR version mismatch:
-	External version [612486834470914083105128717220894558316463625300693223664094219281522105530423535689837920481631570087148179592951732502445084168680523814402811261992582753135942528683543854463862444089481095166931697411358474705546377456277975204624374310498474192122413056.00] does not match 
-	Ferret version   [1.30].
-	Please upgrade either Ferret or the
-	External Function support files from
-
-		http://tmap.pmel.noaa.gov/Ferret/
-
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
  *** NOTE: Stride value not an integer factor of axis length: Axis loses modulo property
@@ -3278,74 +3167,10 @@ Replacing definition of axis TAXIS
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis TNEW
-
-ERROR version mismatch:
-	External version [943893092822968508238591179895335299259815616730557593002647117598626182893780695889022639720894359015708029606813604689312049754464111004047843466348027399420964422865958247222926915297418572111940498265581060412669952.00] does not match 
-	Ferret version   [1.30].
-	Please upgrade either Ferret or the
-	External Function support files from
-
-		http://tmap.pmel.noaa.gov/Ferret/
-
-
-
-ERROR in external function: Segmentation Violation
-
-
-ERROR in external function: Segmentation Violation
-
-
-ERROR in external function: Segmentation Violation
-
-
-ERROR in external function: Segmentation Violation
-
-
-ERROR in external function: Segmentation Violation
-
-
-ERROR in external function: Segmentation Violation
-
-
-ERROR in external function: Segmentation Violation
-
-
-ERROR in external function: Segmentation Violation
-
-
-ERROR in external function: Segmentation Violation
-
-
-ERROR in external function: Segmentation Violation
-
-
-ERROR in external function: Segmentation Violation
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: error in external function
-list a
- **ERROR: error in external function
-list a - sst[l=@ave]
- **ERROR: error in external function
-list b, c
- **ERROR: error in external function
-list a[i=1:20]
- **ERROR: error in external function
-list sin(a)
- **ERROR: error in external function
-list/x=50 a
  **ERROR: command syntax: unknown region name: @w
 set region/@w
- **ERROR: error in external function
-list/x=50 a[l=1]
- **ERROR: error in external function
-list/x=50 a[l=@ave,y=@sbx:11]
- **ERROR: error in external function
-list  a
- **ERROR: error in external function
-list a
- **ERROR: error in external function
-list/i=11:20 c[k=1,l=5,j=44:50@ave]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: writev5d(tr, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
@@ -3431,4 +3256,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Mar 6 10:47:04 PST 2012
+Ended at Fri Mar 9 11:13:17 PST 2012

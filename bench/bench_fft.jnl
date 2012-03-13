@@ -9,8 +9,18 @@
 SET MODE IGNORE_ERRORS
 SAY The message *** NOTE: unknown axis units: FREQ  is informational.  fcn still works.
 
+! Note, previously the time axis was defined as follows. When the
+! function is defined in terms of the time coordinate data, tpts,
+! tpts is  single-precision and so its use has precision problems.
+! (Saw this when changing to double-precision Ferret)
 
 DEFINE AXIS/t=1-Jan-1990:31-Dec-1990:24 dayt
+
+
+
+DEFINE AXIS/t=1-Jan-1990:31-Dec-1990:24/t0=1-jan-1980 dayt
+
+
 DEFINE GRID/T=dayt  tgrid
 SH GRID tgrid
 SET GRID tgrid

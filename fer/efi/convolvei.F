@@ -35,6 +35,7 @@
 ** Ansley Manke
 * Feb 1999
 * V6.2 2/2009 Fix bug 1640; treatment of missing data was incorrect.
+*     03/2012 *kms* Fix bug 1928 - do not exceed bounds with an even number of weights
 *
 *
 * This external function convolves the component grid, com, with the weight 
@@ -163,7 +164,7 @@
       REAL comp, sum, weight
       REAL xlen, ylen, zlen, tlen
       INTEGER i, j, k, l
-      INTEGER hlen, ii, wlen
+      INTEGER hlo, hhi, ii, wlen
       INTEGER i1, j1, k1, l1
       INTEGER i2, j2, k2, l2
 
@@ -174,7 +175,7 @@
       
 * CONVOLVE ALONG X AXIS (arg_1) using weights (arg_2)
 
-* Half the weighting function; weights from -hlen to hlen.
+* Half the weighting function; weights from -hlen to hlen (now: hlo to hhi)
 
 
       xlen = (arg_hi_ss(X_AXIS,ARG2) - arg_lo_ss(X_AXIS,ARG2) + 1) 
@@ -183,8 +184,9 @@
       tlen = (arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1) 
 
       wlen = max(xlen, ylen, zlen, tlen)
-      IF  (MOD(wlen,2) .EQ. 0) wlen = wlen + 1
-      hlen = wlen/ 2
+      hhi = wlen / 2
+      hlo = (-1) * hhi
+      IF ( MOD(wlen,2) .EQ. 0 ) hlo = hlo + 1
 
       j1 = arg_lo_ss(Y_AXIS,ARG1)
       DO 500 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
@@ -204,7 +206,7 @@
                   k2 = arg_lo_ss(Z_AXIS,ARG2)
                   l2 = arg_lo_ss(T_AXIS,ARG2)
 
-                  DO 100 ii = -hlen, hlen
+                  DO 100 ii = hlo, hhi
 
                      IF (i1+ii .LT. arg_lo_ss(X_AXIS,ARG1)  .OR.
      .                   i1+ii .GT. arg_hi_ss(X_AXIS,ARG1) ) THEN

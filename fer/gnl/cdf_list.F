@@ -134,7 +134,7 @@
         CHARACTER*1     crecdim
 
 * internal variable declarations:
-        LOGICAL         TM_LEGAL_NAME, MATCH_NAME, 
+        LOGICAL         TM_LEGAL_NAME, MATCH_NAME,
      .			itsa_uvar, need_doc, new, formatted, flushed,
      .			itsa_string, output_units, output_title,
      .                  output_history
@@ -191,7 +191,8 @@
 #else
       BYTE ibuff1
 #endif
-	REAL*4		rbuff4, vals(100), bad
+	REAL*4		rbuff4
+	REAL		vals(100), bad
         REAL*8          dvals(100), scalefac, addoff
 	INTEGER*4	ibuff4
 	EQUIVALENCE (rbuff4, ibuff4), (rbuff4, ibuff1)
@@ -483,7 +484,6 @@
      .                    do_warn, varcode, buff_size, attlen, 
      .                    attoutflag, buff, vals)
                        scalefac = vals(1)
-
                     ENDIF
                  ENDIF
 
@@ -633,7 +633,7 @@
                        slen = 0   ! done already
 
                     ELSE IF ( MATCH_NAME (attname,  slen,
-     .                               'SCALE_FACTOR', 13 ) .OR. 
+     .                               'SCALE_FACTOR', 12 ) .OR. 
      .                   MATCH_NAME (attname,  slen,
      .                               'ADD_OFFSET', 10 ) ) THEN
                        got_it = NC_GET_ATTRIB_DP (dset, varid, attname,

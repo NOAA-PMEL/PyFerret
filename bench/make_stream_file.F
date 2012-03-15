@@ -1,11 +1,11 @@
 	PROGRAM TEST_STREAM
 
 * For gfortran under linux 2/2012, with double-precision Ferret,
-* gfortran -o make_stream_file -Dreclen_in_bytes -Ddouble_p make_stream_file.F
+* gfortran -o make_stream_file -Dreclen_in_bytes -Ddouble_p -fdefault-real-8 -fdefault-double-8 make_stream_file.F
 
 	INTEGER i,j
 
-	REAL*4 myvar(10,5)
+	REAL myvar(10,5)
 
 * generates a test file of REAL*4 direct access values
 !	  1  2  3  4  5  6  7  8  9 10

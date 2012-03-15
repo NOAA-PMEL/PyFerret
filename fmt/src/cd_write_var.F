@@ -449,7 +449,7 @@ c      EQUIVALENCE (r100_8, r100_4)
          DO 250  idim = 1, 4
             IF ( count(idim) .GT. 0 ) npts = npts* count(idim)
  250     CONTINUE
-         CALL TM_SCALE_ALL ( r_scale, r_offset, dat, npts )
+         CALL TM_SCALE_ALL ( r_scale, r_offset, dat, vartyp, npts )
 
          scaled = .TRUE.
       ENDIF

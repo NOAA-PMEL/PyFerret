@@ -1,4 +1,4 @@
-	SUBROUTINE TM_SCALE_ALL ( factor, offset, array, n )
+	SUBROUTINE TM_SCALE_ALL ( factor, offset, array, vartyp, n  )
 
 *
 *
@@ -46,18 +46,40 @@
 *
 * To write scaled data, scale all of it by ferretdat(1./inscale) - (inoff/inscale)
 * the scaling to be used is sent into this routine.
+* v6.8 3/14/2012 *acm* fix for scaled SHORT data and double-precision Ferret.
 
+* include files
+c        include 'netcdf.decl'
+#include "netcdf.inc"
 
 * calling argument declarations:
-      INTEGER n
+      INTEGER n, vartyp
       REAL factor, offset, array(*)
 
 * internal variable declarations:
+      LOGICAL TM_FPEQ_SNGL
       INTEGER i
+      REAL*4 aa, sbad
 
-      DO 100 i = 1, n
-          array(i) = array(i)*factor + offset
- 100  CONTINUE
+* For short output datatype, the scaling and un-scaling
+* can result in data outside the range of SHORT on output.
+* FLOAT offset and scale factor are converted to DOUBLE, then
+* 1./scale is computed, and re-applied to the data.
+* This is a bit of a hack. 
+
+      IF (vartyp .EQ. NF_SHORT) THEN
+         sbad = 32767
+         DO 100 i = 1, n
+	    array(i) = array(i)*factor + offset
+	    aa = array(i)
+	    IF (TM_FPEQ_SNGL(ABS(aa),sbad) ) array(i) = sbad
+ 100     CONTINUE
+
+      ELSE
+         DO 200 i = 1, n
+             array(i) = array(i)*factor + offset
+ 200     CONTINUE
+      ENDIF
 
       RETURN
       END

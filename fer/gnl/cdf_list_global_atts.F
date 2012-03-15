@@ -54,7 +54,7 @@
         INTEGER TM_LENSTR1, varid, vartype, nvdims, vdims(8), nvatts, 
      .          all_outflag, iatt, slen, attype, attlen, attoutflag,
      .          bufflen
-	REAL*4	vals(100)
+	REAL	vals(100)
         CHARACTER*128 varname, attname, aname
         CHARACTER*2048 buff
 

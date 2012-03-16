@@ -317,7 +317,8 @@
      .	     alg_arg_descr    ( 31 ) / 'reference pressure' /,
      .       alg_fcn		( 22 ) / 'DAYS1900'  /,
      .	     alg_num_fcn_args	( 22 ) / 3 	    /
-     .	     alg_fcn_descr	( 22 ) / 'days elapsed since 1-Jan-1900'/,
+     .	     alg_fcn_descr	( 22 ) 
+     .	     / 'days elapsed since 1-Jan-1900 (standard calendar)'/,
      .	     alg_fcn_arg_ptr    ( 22 ) / 32	    /,
      .	     alg_arg_name     ( 32 ) / 'year'	    /,
      .	     alg_arg_units    ( 32 ) / ' '	    /,

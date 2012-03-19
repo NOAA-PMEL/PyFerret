@@ -47,8 +47,8 @@ def view/axes/xlim=0.1:0.9/ylim=0.095:0.9 tv
 ! The lf_* viewports are the same size and shape. They will be used to plot the
 ! left-hand axis with the corresponding depth
 
-repeat/range=`ks`:`ke`/name=m (def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` rt_`m`; \
-                          def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` lf_`m`; \
+repeat/range=`ks`:`ke`/NAME=q (def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` rt_`q`; \
+                          def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` lf_`q`; \
                           let y1 = `y1 - del`; let y2 = `y2 - del`)
 
 ! Get the y axis range to use if not specified by the user; %range returns the
@@ -104,19 +104,19 @@ PLOT/NOY/K=`ks`/AXES=0,0,0,1/VLIMITS=`xlo`:`xhi`/TITLE=" "/SET $1
    PPL YLAB " "
 PPL PLOT
 
-REPEAT/RANGE=`ks+1`:`ke`/NAME=m (  SET VIEW lf_`m`; \
+REPEAT/RANGE=`ks+1`:`ke`/NAME=q (  SET VIEW lf_`q`; \
    PPL TICS,0,0,0,0; PPL AXLSZE,0,0; \
      PLOT/SET_UP/NOY/AXES=0,0,1,0/NOLAB/COLOR=WHITE/K=`ks` $1*0; \
      PPL PLOT; \
-   LET zlab = zz[k=`m`]; \
+   LET zlab = zz[k=`q`]; \
    LABEL/NOUSER `-1*0.1*($ppl$xorg)`, `($ppl$ylen)/2`, 1, 0, 0.12, "`zlab`"; \
    PPL TICS,.125,.25,.125,.25; \ 
    PPL AXLINT,2,2; \
    PPL AXLSZE,0.1,0.1; \
    PPL AXATIC 5,5;\
    ; \
-   SET VIEW rt_`m`; \
-   PLOT/NOY/K=`m`/AXES=0,0,0,1/VLIMITS=`xlo`:`xhi`/NOLAB/SET $1; \
+   SET VIEW rt_`q`; \
+   PLOT/NOY/K=`q`/AXES=0,0,0,1/VLIMITS=`xlo`:`xhi`/NOLAB/SET $1; \
      PPL YAXIS `xlo` `xhi` `(xhi-xlo)/4` ;  PPL TICS,0,0,0,0; PPL AXLSZE,0,0; PPL PLOT) 
 
 SET MODE/LAST verify

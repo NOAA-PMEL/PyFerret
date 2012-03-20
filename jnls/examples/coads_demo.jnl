@@ -56,12 +56,12 @@ LET OMEGA = 2*3.14159/86400        ! The angular velocity of the earth
 LET DPDX = SLP[X=@DDC]*100         ! Zonal pressure gradient (in SI units)
 LET DPDY = SLP[Y=@DDC]*100         ! Meridional pressure gradient
 LET C = 3.14159/180                ! Conversion factor -- radians/degree
-LET F = 2*OMEGA*SIN(Y[G=SLP]*C)    ! The coriolis parameter
+LET FC = 2*OMEGA*SIN(Y[G=SLP]*C)    ! The coriolis parameter
 
-LET/TITLE="VG" VG = IF ABS(Y) GT 5 THEN DPDX/(F*RHO)
-LET/TITLE="UG" UG = IF ABS(Y) GT 5 THEN (-1)*DPDY/(F*RHO)
+LET/TITLE="VG" VG = IF ABS(Y) GT 5 THEN DPDX/(FC*RHO)
+LET/TITLE="UG" UG = IF ABS(Y) GT 5 THEN (-1)*DPDY/(FC*RHO)
 
-! The geostrophic wind is ill-defined near the equator as f is 0 there.
+! The geostrophic wind is ill-defined near the equator as fc is 0 there.
 ! This definition specifies ug and vg poleward of latitudes +/- 5 degrees.
 
 MESSAGE

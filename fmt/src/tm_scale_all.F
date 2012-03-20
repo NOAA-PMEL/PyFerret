@@ -59,7 +59,7 @@ c        include 'netcdf.decl'
 * internal variable declarations:
       LOGICAL TM_FPEQ_SNGL
       INTEGER i
-      REAL*4 aa, sbad
+      REAL*4 aa, sbad, sbadn
 
 * For short output datatype, the scaling and un-scaling
 * can result in data outside the range of SHORT on output.
@@ -69,10 +69,12 @@ c        include 'netcdf.decl'
 
       IF (vartyp .EQ. NF_SHORT) THEN
          sbad = 32767
+         sbadn = -32767
          DO 100 i = 1, n
 	    array(i) = array(i)*factor + offset
 	    aa = array(i)
-	    IF (TM_FPEQ_SNGL(ABS(aa),sbad) ) array(i) = sbad
+	    IF (TM_FPEQ_SNGL(aa,sbad) ) array(i) = sbad
+	    IF (TM_FPEQ_SNGL(aa,sbadn) ) array(i) = sbadn
  100     CONTINUE
 
       ELSE

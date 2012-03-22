@@ -37,6 +37,8 @@
 * Wednesday, May 02, 2001
 * 11-Jan-06 *acm* declare ylo, yhi, zlo, zhi as integer not real
 *
+* V68   3/12 Fix arg description.
+
 * This function samples 4-d data at y and z pts indicated by args 2 and 3
 * 
 *         Result is abstract on the Y axis, normal on the z axis,
@@ -89,7 +91,7 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Returns data sampled at a set of (Y,X) points, ',
+   10 FORMAT ('Returns data sampled at a set of (Y,Z) points, ',
      .   'using linear interpolation')
       CALL ef_set_desc(id, fcn_desc)
 

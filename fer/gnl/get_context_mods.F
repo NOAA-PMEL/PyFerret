@@ -141,6 +141,8 @@
 *                   there is a calendar definition for the grid and axis, 
 *                   and set the calendar ID before translating the date string 
 *                   to an axis coordinate.
+* V6.8  *acm* 3/12 remove block that checks for qual_given(slash_T0). Neither 
+*                  slash_t0 nor orient are defined here.
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -297,10 +299,6 @@
      .			      cal_name, status )
 	   IF ( status .NE. ferr_ok ) RETURN
            name = cal_name
-	ELSEIF ( orient .EQ. t_dim  .AND.  
-     .         ( qual_given(slash_T0) .GT. 0  .OR. 
-     .           cx_calendar(mods_cx)) ) THEN
-	   name = 'GREGORIAN'
 	ENDIF
 
 * 9/01 CF conventions have adopted the name 360_day for a 360-day year.

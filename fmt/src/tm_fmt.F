@@ -78,7 +78,7 @@
 	LOGICAL		exp_fmt, negative, fixed_pt
 	INTEGER		slen, sig_left, sig_full, nleft, nright, full,
      .			sig_max, full10, xtra, sig_needed, pow10,
-     .			chk10, chk10_save, waste, i
+     .			chk10, chk10_save, waste, i, need_adjust
 	REAL		aval, l10
 	CHARACTER*10	fmt
 
@@ -161,8 +161,18 @@
 
 * modify # significant digits: cannot request more digits than the integer
 * word size or the "unwasted" string length
-* but at lease sig_min digits
-	sig_full = MAX( sig_min, MIN( sig_max, max_int_len, slen-waste ) )
+* but at least sig_min digits.
+
+* For double-precision Ferret the code below that puts the digits into a 
+* integer would fail because integers cant be that large. Keep track of
+* the extra length and add it back later.
+
+        sig_full = MAX( sig_min, MIN( sig_max, slen-waste ) )
+	need_adjust = 0
+        IF (sig_full .GT. max_int_len) THEN
+	  need_adjust = sig_full - max_int_len
+	ENDIF
+        sig_full = MAX( sig_min, MIN( sig_max, max_int_len, slen-waste ) )
 
 * create an integer with all the possible digits
 * (1-eps factor is because VAX Fortran formats round 100.5-->100 whereas VAX 
@@ -276,6 +286,7 @@
 
 * FIXED POINT STRING
 	ELSE
+	   sig_needed = sig_needed + need_adjust
 	   nright = MIN( sig_needed-pow10, slen-(nleft+1) )
 	   str_len = nleft + nright + 1
 	   WRITE ( fmt, 3200 ) str_len, nright

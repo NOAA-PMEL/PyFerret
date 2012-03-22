@@ -110,6 +110,9 @@
 *                  the fix is to return at statement 500 if word_num = 0
 * v612 *acm* 7/08  Fix bug 1583: precision of grave-accent expressions upped from 5 to 7.
 * v62  *acm*11/08  Fix bug 1608: semicolon inside double quotes.
+* V68  *acm* 3/12  For double-precision Ferret, let the precision of grave-accent 
+*                  expressions increase to 14.
+
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -178,7 +181,7 @@
 #else
 	PARAMETER     ( tab = CHAR(9),
 #endif
-     .			grave_digits = 7 )
+     .			grave_digits = 14 )
 
 * intialize
 	grave_start	= 1

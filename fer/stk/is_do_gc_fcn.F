@@ -3,7 +3,7 @@
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -54,10 +54,15 @@
 *                  user reference XCAT with string arguments and Ferret will 
 *                  run XCAT_STR
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V68   3/12 *KMS/ACM* see 6D branch: working on string bugs. Remove overloading
+*                   of argument/return-type variable and predimensional (data size)
+*                   array parameter (pointer size to one in double-precision Ferret).
 
+        IMPLICIT NONE
+	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
-	include	'grid_chg_fcns.parm'
+        include 'grid_chg_fcns.parm'
 	include	'rpn.parm'
 	include	'xvariables.cmn'
 	include	'xcontext.cmn'
@@ -78,12 +83,14 @@
      .		MGRID_SIZE_DELTA, GCF_ARG_EVAL_ORDER, EFCN_GET_RTN_TYPE,
      .		ifcn, icom, iarg, num_com, mr, res_cx,
      .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, impl_grid,
-     .		typ1, typ2, typ3, typ4, typ5, typ6, typ7, typ8, typ9, typr,
-     .		frame_bottom, com_cx, res_mr, itype
+     .          typ1, typ2, typ3, typ4, typ5, typ6, typ7, typ8, typ9,
+     .          typr, pdim1, pdim2, pdim3, pdim4, pdim5, pdim6, pdim7,
+     .          pdim8, pdim9, pdimr, frame_bottom, com_cx, res_mr,
+     .          itype
         CHARACTER*40 alt_name
 
 * convenience equivalences
-	INTEGER	com(10), typ(9)
+	INTEGER	com(10), typ(9), pdim(9)
 	EQUIVALENCE (com(1),mr1), (com(2),mr2), (com(3),mr3), (com(4),mr4),
      .              (com(5),mr5),
      .		    (com(6),mr6), (com(7),mr7), (com(8),mr8), (com(9),mr9),
@@ -91,10 +98,14 @@
 	EQUIVALENCE (typ(1),typ1), (typ(2),typ2), (typ(3),typ3),
      .		    (typ(4),typ4), (typ(5),typ5), (typ(6),typ6),
      .		    (typ(7),typ7), (typ(8),typ8), (typ(9),typ9)
+        EQUIVALENCE (pdim(1),pdim1), (pdim(2),pdim2), (pdim(3),pdim3),
+     .              (pdim(4),pdim4), (pdim(5),pdim5), (pdim(6),pdim6),
+     .              (pdim(7),pdim7), (pdim(8),pdim8), (pdim(9),pdim9)
 
 * local parameter declarations
 * ... pfloat_words indicates that each float value in an array is 1 word
 * ... ptpr_words   indicates that each pointer     in an array is 2 word
+* These are assigned to pdim values
 	INTEGER	    pfloat_words, pptr_words
 #ifdef double_p
 	PARAMETER  (pfloat_words = 1,
@@ -117,9 +128,10 @@
 * on exit isp will point to the frame bottom and the result will be left there
 
 * initialize all data types to default of FLOAT
-	DO icom = 1, 9
-	  typ(icom) = pfloat_words
-	ENDDO
+        DO icom = 1, 9
+          typ(icom) = parg_type_float
+          pdim(icom) = pfloat_words
+        ENDDO
 
 * identify the text of the particular function
 *	(internal or external GC fcn handled the same)
@@ -139,11 +151,14 @@
 	   iarg = GCF_ARG_EVAL_ORDER(ifcn, icom)
 	   itype = GCF_ARG_TYPE(ifcn, iarg)
 	   com_cx  = is_cx(frame_bottom+icom-1)
-	   IF (cx_type(com_cx) .EQ. ptype_string) typ(icom)=pptr_words
+           IF ( cx_type(com_cx) .EQ. ptype_string ) THEN
+              typ(icom) = parg_type_string
+              pdim(icom) = pptr_words
+           ENDIF
 	   IF ( (cx_type(com_cx) .EQ. ptype_string)
-     .	  .NEQV.(itype .EQ. parg_type_string) ) THEN
+     .	        .NEQV. (itype .EQ. parg_type_string) ) THEN
 	      IF (itype .NE. parg_type_float_or_string)  
-     .                check_alt_fcn = .TRUE.
+     .           check_alt_fcn = .TRUE.
 	   ENDIF
  100	CONTINUE
 
@@ -156,44 +171,62 @@
            alt_name = ' '
 	   CALL efcn_get_alt_type_fcn( ifcn, alt_name )  
 	   ifcn = GCF_FIND_FCN( alt_name )
-      
-	   IF (ifcn .EQ. unspecified_int4) THEN
-              GOTO 5200
-	   ELSE
-      	      DO 101 icom = 1, num_com
-	         iarg = GCF_ARG_EVAL_ORDER(ifcn, icom)
-	         itype = GCF_ARG_TYPE(ifcn, iarg)
-	         com_cx  = is_cx(frame_bottom+icom-1)
-	         IF (cx_type(com_cx) .EQ. ptype_string) 
-     .	            typ(icom)=pptr_words
-	         IF ( (cx_type(com_cx) .EQ. ptype_string)
-     .	          .NEQV.(itype .EQ. parg_type_string) ) THEN
-	            IF (itype .NE. parg_type_float_or_string) 
-     .                GOTO 5200
-	         ENDIF
- 101	      CONTINUE
-	   ENDIF
+	   IF (ifcn .EQ. unspecified_int4) GOTO 5200
+
+* re-initialize all data types to default of FLOAT
+           DO icom = 1, 9
+             typ(icom) = parg_type_float
+             pdim(icom) = pfloat_words
+           ENDDO
+      	   DO 101 icom = 1, num_com
+	      iarg = GCF_ARG_EVAL_ORDER(ifcn, icom)
+	      itype = GCF_ARG_TYPE(ifcn, iarg)
+	      com_cx  = is_cx(frame_bottom+icom-1)
+              IF (cx_type(com_cx) .EQ. ptype_string) THEN
+                 typ(icom) = parg_type_string
+                 pdim(icom) = pptr_words
+              ENDIF
+	      IF ( (cx_type(com_cx) .EQ. ptype_string)
+     .	           .NEQV. (itype .EQ. parg_type_string) ) THEN
+	         IF (itype .NE. parg_type_float_or_string) 
+     .              GOTO 5200
+	      ENDIF
+ 101	   CONTINUE
         ENDIF
 
 !* the merged context is already nearly complete
 	res_cx = is_big_cx(lo_isp)
 
-* determine data type of result - and set corresponding word size, typr
-	cx_type(res_cx) = uvar_data_type(uvar, cx_data_set(res_cx))
-
-	IF (ifcn .GT. GFCN_NUM_INTERNAL) THEN
-          typr = EFCN_GET_RTN_TYPE (ifcn)
-          IF (typr .EQ. pptr_words)   cx_type(res_cx) = ptype_string
-          IF (typr .EQ. pfloat_words) cx_type(res_cx) = ptype_float
-          
-          uvar_data_type(uvar, cx_data_set(res_cx)) = cx_type(res_cx) 
+* determine data type of result - and set pdimr and typr
+        IF ( ifcn .LE. GFCN_NUM_INTERNAL ) THEN
+*          only truly-internal grid-changing functions get here
+*          Ferret already knows the return type since it may depend on argument type
+*          (under the get_uvar_grid - is_uvar_grid - merge_grid calling stack)
+           cx_type(res_cx) = uvar_data_type(uvar, cx_data_set(res_cx))
+           IF ( cx_type(res_cx) .EQ. ptype_string ) THEN
+              typr = pfcn_rtn_string
+              pdimr = pptr_words
+           ELSE IF ( cx_type(res_cx) .EQ. ptype_float ) THEN
+              typr = pfcn_rtn_float
+              pdimr = pfloat_words
+           ELSE
+              STOP 'IS_DO_GC_FCN cs_type(res_cx) is neither ptype_string nor ptype_float'
+           ENDIF
+        ELSE
+*          get the return type from the external function information
+*          this includes "external" functions internalized (statically linked in)
+           typr = EFCN_GET_RTN_TYPE (ifcn)
+           IF ( typr .EQ. pfcn_rtn_string ) THEN
+              cx_type(res_cx) = ptype_string
+              pdimr = pptr_words
+           ELSE IF ( typr .EQ. pfcn_rtn_float ) THEN
+              cx_type(res_cx) = ptype_float
+              pdimr = pfloat_words
+           ELSE
+              STOP 'IS_DO_GC_FCN typr is neither pfcn_rtn_string nor pfcn_rtn_float'
+           ENDIF
+           uvar_data_type(uvar, cx_data_set(res_cx)) = cx_type(res_cx) 
         ENDIF
-
-        IF (cx_type(res_cx) .EQ. ptype_string) THEN
-	   typr = pptr_words
-	ELSE
-	   typr = pfloat_words
-	ENDIF
 
 * need to fill in those axes that the function "imposes"
 	CALL GCF_IMPOSE_RESULT_LIMS( ifcn, memory, is_mr(lo_isp+1),
@@ -219,7 +252,7 @@
 	DO 310 icom = num_com+1, 9
  310	com(icom) = dummy_mr
 
-* set up 4D array limits as unsubscripted variables in COMMON
+* set up 6D array limits as unsubscripted variables in COMMON
 	CALL NON_ARRAY_SUBSC( com, 10 )
 
 * perform the operation
@@ -227,18 +260,18 @@
 	IF (IFCN .LE. GFCN_NUM_INTERNAL) THEN
 
 	  CALL DO_INTERNAL_GC_FCN( memory,
-     .			ifcn, num_com, is_cx(frame_bottom),
-     .			memory(1, mr_blk1(mr1) ), mr1, typ1,
-     .			memory(1, mr_blk1(mr2) ), mr2, typ2,
-     .			memory(1, mr_blk1(mr3) ), mr3, typ3,
-     .			memory(1, mr_blk1(mr4) ), mr4, typ4,
-     .			memory(1, mr_blk1(mr5) ), mr5, typ5,
-     .			memory(1, mr_blk1(mr6) ), mr6, typ6,
-     .			memory(1, mr_blk1(mr7) ), mr7, typ7,
-     .			memory(1, mr_blk1(mr8) ), mr8, typ8,
-     .			memory(1, mr_blk1(mr9) ), mr9, typ9,
-     .			memory(1, mr_blk1(res_mr)), res_mr, typr,
-     .			res_cx, status )
+     .		ifcn, num_com, is_cx(frame_bottom),
+     .		memory(1, mr_blk1(mr1) ), mr1, pdim1, typ1,
+     .		memory(1, mr_blk1(mr2) ), mr2, pdim2, typ2,
+     .		memory(1, mr_blk1(mr3) ), mr3, pdim3, typ3,
+     .		memory(1, mr_blk1(mr4) ), mr4, pdim4, typ4,
+     .		memory(1, mr_blk1(mr5) ), mr5, pdim5, typ5,
+     .		memory(1, mr_blk1(mr6) ), mr6, pdim6, typ6,
+     .		memory(1, mr_blk1(mr7) ), mr7, pdim7, typ7,
+     .		memory(1, mr_blk1(mr8) ), mr8, pdim8, typ8,
+     .		memory(1, mr_blk1(mr9) ), mr9, pdim9, typ9,
+     .		memory(1, mr_blk1(res_mr)), res_mr, pdimr, typr,
+     .		res_cx, status )
 	  IF ( status .NE. ferr_ok ) GOTO 5100
 
 	ELSE 
@@ -302,7 +335,7 @@
 * error exit
  5000	RETURN
  5100	CALL DELETE_VARIABLE(res_mr)
-	GOTO 5000	
+	GOTO 5000
 * 1/03 *kob* g77 port requires risc buff for arbitrary string concats
  5200	CONTINUE
 * Could not match argument types

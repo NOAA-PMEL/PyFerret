@@ -76,7 +76,7 @@
 	IF ( mr_type(mr)      .EQ. ptype_string 
      . .AND. mr_protected(mr) .NE. mr_table_entry_only ) THEN
 	   size = MGRID_SIZE_DELTA(mr)
-c	   CALL FREE_C_STRING_ARRAY(mr_c_pointer(mr), size)
+	   CALL FREE_C_STRING_ARRAY(mr_c_pointer(mr), size)
 	ENDIF
 
 * diagnostic "delete" message

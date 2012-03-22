@@ -47,7 +47,7 @@ try:
     import cdtime
 except ImportError:
     print >>sys.stderr, "    WARNING: Unable to import cdms2 and/or cdtime;\n" \
-                        "             the Python functions pyferret.get and pyferret.put will fail"
+                        "             the Python functions pyferret.get and pyferret.put are not available"
 
 import pyferret.graphbind
 import pipedviewer.pyferretbindings

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 41550350 Mar  9 11:11 /home/users/ansley/build/linux/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
+Running FERRET version ../fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 41566036 Mar 22 15:48 ../fer/ferret_c
+Using external functions from ../external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  changes to repl_exprns for grave-accent evaluation of DP constants
+Note: fixes for memory leak on string variables
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,8 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/linux/FERRET/external_functions/ext_func
-FER_EXTERNAL_FUNTIONS=.
+FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func
 FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/linux/lib
@@ -22,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Fri Mar 9 11:11:40 PST 2012
+Beginning at Thu Mar 22 15:49:33 PDT 2012
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -831,6 +830,7 @@ plot/hlog fcn
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis DAYT
 Replacing definition of grid TGRID
  **ERROR: error in external function
 LIST vw_fft
@@ -1279,9 +1279,9 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid TGRID
  *** NOTE: Not deleted: X10
  *** NOTE: Axis is in use by grid G10X5
+ls: input.txt: No such file or directory
  *** NOTE: Not deleted: YAX
  *** NOTE: Axis is in use by grid GFORMAT
-ls: input.txt: No such file or directory
  *** NOTE: Not deleted: XAX
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAXLEVITR1_160
@@ -1859,10 +1859,10 @@ Replacing definition of axis TIME
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- PERMANENT data cleared from memory
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
+ PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file longtitle.nc
  PERMANENT data cleared from memory
@@ -2073,6 +2073,8 @@ Replacing definition of grid MYGRID
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
  *** NOTE: Changing the value of attribute (COADSX).point_spacing
  *** NOTE: Changing the value of attribute (COADSY).point_spacing
  LISTing to file a.nc
@@ -2133,7 +2135,7 @@ Replacing definition of axis TIME
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
-             NetCDF: DAP server error (OPeNDAP/netCDF Error code -70)
+             NetCDF: Malformed or inaccessible DAP DDS (OPeNDAP/netCDF Error code -72)
              Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
 SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
  **Internet Data error
@@ -3256,4 +3258,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Mar 9 11:13:17 PST 2012
+Ended at Thu Mar 22 15:51:12 PDT 2012

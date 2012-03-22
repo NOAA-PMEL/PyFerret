@@ -173,7 +173,6 @@ tm_find_like_grid.F\
 tm_find_like_line.F\
 tm_find_line_slot.F\
 tm_firm_axis_orient.F\
-tm_fmt_digits.F\
 tm_fmt.F\
 tm_fmt_sngl_digits.F\
 tm_fmt_sngl.F\

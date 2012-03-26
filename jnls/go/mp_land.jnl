@@ -67,6 +67,20 @@ cancel variable mp_test
 
 
 use geo_borders
+
+! Initialize
+let landi_subx = 0
+let landi_addx = 0
+let landi_datxmin = continent_lon[x=@min]
+let landi_datxmax = continent_lon[x=@max]
+
+let landi_basemap = $2"0|basemap>1|*>0"
+IF `landi_basemap EQ 0` THEN
+
+   IF `mp_xmin LT landi_datxmin` then let landi_subx = `landi_subx - 360`
+   IF `mp_xmax GT landi_datxmax` then let landi_addx = `landi_addx + 360`
+
+ENDIF
  
 
 ! always do the continents
@@ -87,6 +101,37 @@ ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|
 ! draw it - as an overlay or as a basemap
 $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
 
+
+! Draw any lines outside 0 to 360
+IF ($1"0|*>1") THEN
+
+IF `landi_addx NE 0` THEN 
+  set grid continent_lon
+  let/quiet mp_lambda = if ((continent_lon+landi_addx) ge mp_xmin and (continent_lon+landi_addx) le mp_xmax and \
+   continent_lat ge mp_ymin and continent_lat le mp_ymax) then ((continent_lon+landi_addx) * deg2rad)
+  let/quiet mp_phi = if ((continent_lon+landi_addx) ge mp_xmin and (continent_lon+landi_addx) le mp_xmax and \
+   continent_lat ge mp_ymin and continent_lat le mp_ymax) then (continent_lat * deg2rad)
+  let/quiet masked_x_page = mp_mask * x_page
+  let/quiet masked_y_page = mp_mask * y_page
+  $1"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
+  ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
+  $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
+ENDIF
+IF `landi_subx NE 0` THEN 
+  set grid continent_lon
+  let/quiet mp_lambda = if ((continent_lon+landi_subx) ge mp_xmin and (continent_lon+landi_subx) le mp_xmax and \
+   continent_lat ge mp_ymin and continent_lat le mp_ymax) then ((continent_lon+landi_subx) * deg2rad)
+  let/quiet mp_phi = if ((continent_lon+landi_subx) ge mp_xmin and (continent_lon+landi_subx) le mp_xmax and \
+   continent_lat ge mp_ymin and continent_lat le mp_ymax) then (continent_lat * deg2rad)
+  let/quiet masked_x_page = mp_mask * x_page
+  let/quiet masked_y_page = mp_mask * y_page
+  $1"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
+  ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
+  $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
+ENDIF
+
+ENDIF  ! lines outside 0 to 360
+
 ! **** now the optional country borders
 set grid COUNTRY_LON
 let/quiet mp_lambda = if (COUNTRY_LON ge mp_xmin and COUNTRY_LON le mp_xmax and COUNTRY_LAT ge mp_ymin and COUNTRY_LAT le mp_ymax) then (COUNTRY_LON * deg2rad)
@@ -101,6 +146,35 @@ ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|
 ! draw it - as an overlay or as a basemap
 $3"query/ignore|*>ppl plot/overlay"
 
+! Draw any lines outside 0 to 360
+IF ($3"0|*>1") THEN
+
+IF `landi_addx NE 0` THEN 
+  set grid COUNTRY_LON
+  let/quiet mp_lambda = if ((country_lon+landi_addx) ge mp_xmin and (country_lon+landi_addx) le mp_xmax and \
+   country_lat ge mp_ymin and country_lat le mp_ymax) then ((country_lon+landi_addx) * deg2rad)
+  let/quiet mp_phi = if ((country_lon+landi_addx) ge mp_xmin and (country_lon+landi_addx) le mp_xmax and \
+   country_lat ge mp_ymin and country_lat le mp_ymax) then (country_lat * deg2rad)
+  let/quiet masked_x_page = mp_mask * x_page
+  let/quiet masked_y_page = mp_mask * y_page
+  $3"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
+  ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
+  $3"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
+ENDIF
+IF `landi_subx NE 0` THEN 
+  set grid COUNTRY_LON
+  let/quiet mp_lambda = if ((country_lon+landi_subx) ge mp_xmin and (country_lon+landi_subx) le mp_xmax and \
+   country_lat ge mp_ymin and country_lat le mp_ymax) then ((country_lon+landi_subx) * deg2rad)
+  let/quiet mp_phi = if ((country_lon+landi_subx) ge mp_xmin and (country_lon+landi_subx) le mp_xmax and \
+   country_lat ge mp_ymin and country_lat le mp_ymax) then (country_lat * deg2rad)
+  let/quiet masked_x_page = mp_mask * x_page
+  let/quiet masked_y_page = mp_mask * y_page
+  $3"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
+  ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
+  $3"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
+ENDIF
+
+ENDIF  ! lines outside 0 to 360
 
 ! **** now the optional state borders
 set grid STATE_LON
@@ -117,8 +191,37 @@ ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|
 $4"query/ignore|*>ppl plot/overlay"
 
 
-cancel data geo_borders
+! Draw any lines outside 0 to 360
+IF ($4"0|*>1") THEN
 
+IF `landi_addx NE 0` THEN 
+  set grid state_LON
+  let/quiet mp_lambda = if ((state_lon+landi_addx) ge mp_xmin and (state_lon+landi_addx) le mp_xmax and \
+   state_lat ge mp_ymin and state_lat le mp_ymax) then ((state_lon+landi_addx) * deg2rad)
+  let/quiet mp_phi = if ((state_lon+landi_addx) ge mp_xmin and (state_lon+landi_addx) le mp_xmax and \
+   state_lat ge mp_ymin and state_lat le mp_ymax) then (state_lat * deg2rad)
+  let/quiet masked_x_page = mp_mask * x_page
+  let/quiet masked_y_page = mp_mask * y_page
+  $4"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
+  ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
+  $4"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
+ENDIF
+IF `landi_subx NE 0` THEN 
+  set grid state_LON
+  let/quiet mp_lambda = if ((state_lon+landi_subx) ge mp_xmin and (state_lon+landi_subx) le mp_xmax and \
+   state_lat ge mp_ymin and state_lat le mp_ymax) then ((state_lon+landi_subx) * deg2rad)
+  let/quiet mp_phi = if ((state_lon+landi_subx) ge mp_xmin and (state_lon+landi_subx) le mp_xmax and \
+   state_lat ge mp_ymin and state_lat le mp_ymax) then (state_lat * deg2rad)
+  let/quiet masked_x_page = mp_mask * x_page
+  let/quiet masked_y_page = mp_mask * y_page
+  $4"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
+  ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
+  $4"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
+ENDIF
+
+ENDIF  ! lines outside 0 to 360
+
+cancel data geo_borders
 
 set grid/restore
 set data/restore

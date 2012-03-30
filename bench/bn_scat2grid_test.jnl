@@ -4,153 +4,98 @@
 ! Description: Test functions for XY XZ XT YZ YT ZT gridding of insitu data
 
 set data scat2grid.nc
-set region/x="56.0":"62.0"/y="15.6":"20.0"/z="0":"100"/t="01-Jan-1995":"31-Dec-1995"
+
+define axis/x=50:70/npoints=20/units=degrees_east x_20
+define axis/y=10:20/npoints=20/units=degrees_north y_20
+define axis/z=0:100/npoints=20/depth/units=meters z_20
+define axis/t=0:8736/unit=hours/t0="01-JAN-1995 00:00:00"/npoints=20 t_20
 
 !*********
-! insitu_setup
-
-! In order to create the time axis we need to get information
-! from the TRANGE variable in the data
-
-define symbol t0      `trange,return=taxis,return=t0`
-define symbol tstart  `trange[l=1]`
-define symbol tend    `trange[l=2]`
-define symbol tunits  `tax,return=units`
-
-!JC_NOTE: The increment here 1/100 is removed at the top of insitu_pie_~.jnl
-
-! define coordinate system for translating SET REGION info into variables
-define axis/x=-180:720:.01/unit=degrees/modulo xencode
-define axis/y=90s:90n:.01/unit=degrees yencode
-define axis/z=0:10000:.01/unit=meters zencode
-define axis/t=($tstart):($tend)/npoints=100/unit=hours/t0="($t0)" tfull
-
-let xloc = X[gx=xencode]
-let yloc = Y[gy=yencode]
-let zloc = Z[gz=zencode]
-let tloc = INT(T[gt=tfull])  !  INT(hour) resolution
-
-! save the formatted limits for labelling later
-define symbol lon_start  `xloc,return=xstart,prec=8`
-define symbol lon_end    `xloc,return=xend,prec=8`
-define symbol lat_start  `yloc,return=ystart,prec=8`
-define symbol lat_end    `yloc,return=yend,prec=8`
-define symbol dep_start  `zloc,return=zstart,prec=8`
-define symbol dep_end    `zloc,return=zend,prec=8`
-CAN REGION/T ! to make sure 'return=tstart' works properly
-define symbol day_start  `tloc,return=tstart,prec=3` 
-define symbol day_end    `tloc,return=tend,prec=3`
-
-! recapture the numerical values of the users limits
-can mode lon
-let xstart = xloc[i=`xloc,return=istart,prec=8`]
-let xend   = xloc[i=`xloc,return=iend,prec=8`]
-set mode lon
-let ystart = yloc[j=`yloc,return=jstart,prec=8`]
-let yend   = yloc[j=`yloc,return=jend,prec=8`]
-let zstart = zloc[k=`zloc,return=kstart,prec=8`]
-let zend   = zloc[k=`zloc,return=kend,prec=8`]
-let tstart = tloc[l=`tloc,return=lstart,prec=8`]
-let tend   = tloc[l=`tloc,return=lend,prec=8`]
-
-define symbol xstart `xstart`
-define symbol xend   `xend`
-define symbol ystart `ystart`
-define symbol yend   `yend`
-define symbol zstart `zstart`
-define symbol zend   `zend`
-!             tstart defined above from TRANGE variable
-!             tend   defined above from TRANGE variable
-
-
-
-! define reference map region while SET REGION still exists
-define region/default/dx=-30:30/dy=-15:15 band
-
-CANCEL REGION   ! The axis limits are now encapsulated in the masks
-
-define symbol delta 1
-let jdate  = tax
-let jlat   = yax
-let jlon   = IF xax GE 0 THEN xax ELSE xax+360
-let jdepth = zax
-define symbol ngd `xax,return=iend`
-
-define axis/x=($xstart):($xend)/npoints=20 x_20
-define axis/y=($ystart):($yend)/npoints=20 y_20
-define axis/z=($zstart):($zend)/npoints=20 z_20
-define axis/t=($tstart):($tend)/unit=hours/t0="($t0)"/npoints=20 t_20
-
-! The region defined by Ferret will have longitude values 0<xlo<360:xlo<xhi<720
-! We need to account for XAX values that are in the range 0:360
-! JC_TODO: what about XAX values in the range -180:180
-
-IF `($xend) GT 360` THEN
-  let xax_new = IF xax LT ($xstart) THEN xax+360 ELSE xax
-ELSE
-  let xax_new = xax
-ENDIF
-
-!*********
-set win/asp=0.5
-
+! SCAT2GRIDGAUSS functions
 ! XY
 
-let xy_gauss_gridded = scat2gridgauss_xy(xax_new,yax,O2_umol_kg,x[gx=x_20],y[gy=y_20],1.5,1.0,5.0,3.0)
-let xy_laplace_gridded = scat2gridlaplace_xy(xax_new,yax,O2_umol_kg,x[gx=x_20],y[gy=y_20],5,5)
+let xy_gauss_gridded = scat2gridgauss_xy(xpts,ypts,O2_umol_kg,x[gx=x_20],y[gy=y_20],1.5,1.0,5.0,3.0)
+fill/lev=30v xy_gauss_gridded
+plot/vs/over/nolab xpts,ypts
+ppl shaset reset
 
-set view left; fill/lev=30v xy_laplace_gridded
-plot/vs/over/nolab xax_new,yax
-set view right; fill/lev=($lev_opnlevs) xy_gauss_gridded
-plot/vs/over/nolab xax_new,yax
-ppl shaset reset; pause
 ! XZ
 
-let xz_gauss_gridded = scat2gridgauss_xz(xax_new,zax,O2_umol_kg,x[gx=x_20],z[gz=z_20],1.5,10,5,50)
-let xz_laplace_gridded = scat2gridlaplace_xz(xax_new,zax,O2_umol_kg,x[gx=x_20],z[gz=z_20],5,5)
+let xz_gauss_gridded = scat2gridgauss_xz(xpts,zpts,O2_umol_kg,x[gx=x_20],z[gz=z_20],1.5,10,2,20)
+fill/lev=30v xz_gauss_gridded
+plot/vs/over/nolab xpts,zpts
+ppl shaset reset
 
-set view left; fill/lev=30v xz_laplace_gridded
-plot/vs/over/nolab xax_new,zax
-set view right; fill/lev=($lev_opnlevs) xz_gauss_gridded
-plot/vs/over/nolab xax_new,zax
-ppl shaset reset; pause
 ! XT
 
-let xt_gauss_gridded = scat2gridgauss_xt(xax_new,tax,O2_umol_kg,x[gx=x_20],t[gt=t_20],1.5,720.0,5.0,2160.0)
-let xt_laplace_gridded = scat2gridlaplace_xt(xax_new,tax,O2_umol_kg,x[gx=x_20],t[gt=t_20],5,5)
+let xt_gauss_gridded = scat2gridgauss_xt(xpts,tpts,O2_umol_kg,x[gx=x_20],t[gt=t_20],1.5,720.0,5.0,2160.0)
+fill/lev=30v xt_gauss_gridded
+plot/vs/over/nolab xpts,tpts
+ppl shaset reset
 
-set view left; fill/lev=30v xt_laplace_gridded
-plot/vs/over/nolab xax_new,tax
-set view right; fill/lev=($lev_opnlevs) xt_gauss_gridded
-plot/vs/over/nolab xax_new,tax
-ppl shaset reset; pause
 ! YZ
 
-let yz_gauss_gridded = scat2gridgauss_yz(yax,zax,ysequence(O2_umol_kg),y[gy=y_20],z[gz=z_20],1.0,10,3,50)
-let yz_laplace_gridded = scat2gridlaplace_yz(yax,zax,ysequence(O2_umol_kg),y[gy=y_20],z[gz=z_20],5,5)
+let yz_gauss_gridded = scat2gridgauss_yz(ypts,zpts,ysequence(O2_umol_kg),y[gy=y_20],z[gz=z_20],1.0,10,3,50)
+fill/lev=30v yz_gauss_gridded
+plot/vs/over/nolab ypts,zpts
+ppl shaset reset
 
-set view left; fill/lev=30v yz_laplace_gridded
-plot/vs/over/nolab yax,zax
-set view right; fill/lev=($lev_opnlevs) yz_gauss_gridded
-plot/vs/over/nolab yax,zax
-ppl shaset reset; pause
 ! YT
 
-let yt_gauss_gridded = scat2gridgauss_yt(yax,tax,ysequence(O2_umol_kg),y[gy=y_20],t[gt=t_20],1.0,720,3,2160)
-let yt_laplace_gridded = scat2gridlaplace_yt(yax,tax,ysequence(O2_umol_kg),y[gy=y_20],t[gt=t_20],5,5)
+let yt_gauss_gridded = scat2gridgauss_yt(ypts,tpts,ysequence(O2_umol_kg),y[gy=y_20],t[gt=t_20],1.0,720,3,2160)
+fill/lev=30v yt_gauss_gridded
+plot/vs/over/nolab tpts,ypts
+ppl shaset reset
 
-set view left; fill/lev=30v yt_laplace_gridded
-plot/vs/over/nolab tax,yax
-set view right; fill/lev=($lev_opnlevs) yt_gauss_gridded
-plot/vs/over/nolab tax,yax
-ppl shaset reset; pause
 ! ZT
 
-let zt_gauss_gridded = scat2gridgauss_zt(zax,tax,zsequence(O2_umol_kg),z[gz=z_20],t[gt=t_20],10,720,50,2160)
-let zt_laplace_gridded = scat2gridlaplace_zt(zax,tax,zsequence(O2_umol_kg),z[gz=z_20],t[gt=t_20],5,5)
+let zt_gauss_gridded = scat2gridgauss_zt(zpts,tpts,zsequence(O2_umol_kg),z[gz=z_20],t[gt=t_20],10,720,50,2160)
+fill/lev=30v zt_gauss_gridded
+plot/vs/over/nolab tpts, zpts
 
-set view left; fill/lev=30v zt_laplace_gridded
-plot/vs/over/nolab tax, zax
-set view right; fill/lev=($lev_opnlevs) zt_gauss_gridded
-plot/vs/over/nolab tax, zax
+can mem/all
 
+! SCAT2GRIDLAPLACE functions
+exit/script  ! This crashes when scat2gridlaplace_xy loaded, only when 
+	     ! run as part of the benchmark suite
+! XY
+
+let xy_laplace_gridded = scat2gridlaplace_xy(xsequence(xpts),xsequence(ypts),xsequence(O2_umol_kg),x[gx=x_20],y[gy=y_20],2,2)
+fill/lev=30v xy_laplace_gridded
+plot/vs/over/nolab xpts,ypts
+ppl shaset reset
+
+! XZ
+
+let xz_laplace_gridded = scat2gridlaplace_xz(xpts,zpts,O2_umol_kg,x[gx=x_20],z[gz=z_20],2,2)
+fill/lev=30v xz_laplace_gridded
+plot/vs/over/nolab xpts,zpts
+ppl shaset reset
+
+! XT
+
+let xt_laplace_gridded = scat2gridlaplace_xt(xpts,tpts,O2_umol_kg,x[gx=x_20],t[gt=t_20],2,2)
+fill/lev=30v xt_laplace_gridded
+plot/vs/over/nolab xpts,tpts
+ppl shaset reset
+
+! YZ
+
+let yz_laplace_gridded = scat2gridlaplace_yz(ypts,zpts,ysequence(O2_umol_kg),y[gy=y_20],z[gz=z_20],2,2)
+fill/lev=30v yz_laplace_gridded
+plot/vs/over/nolab ypts,zpts
+ppl shaset reset
+
+! YT
+
+let yt_laplace_gridded = scat2gridlaplace_yt(ypts,tpts,ysequence(O2_umol_kg),y[gy=y_20],t[gt=t_20],2,2)
+fill/lev=30v yt_laplace_gridded
+plot/vs/over/nolab tpts,ypts
+ppl shaset reset
+
+! ZT
+
+let zt_laplace_gridded = scat2gridlaplace_zt(zpts,tpts,zsequence(O2_umol_kg),z[gz=z_20],t[gt=t_20],2,2)
+fill/lev=30v zt_laplace_gridded
+plot/vs/over/nolab tpts, zpts
+pause

@@ -16,7 +16,7 @@ GO bn_reset
 go bench_gridding 
 
 GO bn_reset
-go bn_scat2grid
+go bn_scat2grid_test
 
 GO bn_reset
 go bench_sort

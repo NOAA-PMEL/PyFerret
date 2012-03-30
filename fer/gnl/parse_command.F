@@ -756,7 +756,7 @@ cc  Allow it to be zero-length
 	IF  (cmnd_num .EQ. cmnd_set .AND. 
      .       subcmnd_num .EQ. subcmnd_set_data+1 ) THEN
 	
-	   url_buff = cmnd_buff( arg_start(1):arg_end(num_args) )
+	   IF (num_args .GT. 0) url_buff = cmnd_buff( arg_start(1):arg_end(num_args) )
 	   len_test = TM_LENSTR(url_buff)
            i = INDEX( url_buff(1:len_test), '_expr_{}' ) 
 	   IF (i .GT. 0) THEN

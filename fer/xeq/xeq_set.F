@@ -1168,9 +1168,10 @@ c *kob* 4/97
               IF ( grid_line(idim, igrd) .EQ. axis ) THEN
 *       loop through all of the file variables
                  DO 6010 i = 1, maxvars
-                    IF((ds_grid_number(i) .EQ. igrd) .AND. 
-     .                 (ds_type(ds_var_setnum(i)) .NE. 'CDF') ) 
-     .              GOTO 6088
+                    IF (ds_grid_number(i) .EQ. igrd) THEN 
+                       IF (ds_type(ds_var_setnum(i)) .NE. 'CDF')  
+     .                   GOTO 6088
+                    ENDIF
  6010            CONTINUE
               ENDIF
            GOTO 6000

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ../fer/ferret_c
--rwxr-xr-x 1 ansley tmap 41566036 Mar 22 15:48 ../fer/ferret_c
-Using external functions from ../external_functions/ext_func
+Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 41401151 Mar 30 16:30 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes for memory leak on string variables
+Note: NetCDF4.2, 3 small fixes from compiling with -fbounds-check, fix for samplet_date and scat2gridgauss_zt
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/linux/FERRET/external_functions/ext_func
 FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/linux/lib
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Thu Mar 22 15:49:33 PDT 2012
+Beginning at Fri Mar 30 16:31:54 PDT 2012
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -840,6 +840,10 @@ Replacing definition of grid TGRID
 Replacing definition of axis X10
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  **ERROR: illegal limits: VWND does not contain L=102:150
           Data are available in L =    1:60
 list tsorted_indices, tsorted_wnd
@@ -1101,10 +1105,6 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid G24
  *** NOTE: Not deleted: X4
  *** NOTE: Axis is in use by grid G4D
- *** NOTE: Not deleted: XPROJ120
- *** NOTE: Axis is in use by grid GPROJ120
- *** NOTE: Not deleted: YPROJ120
- *** NOTE: Axis is in use by grid GPROJ120
  *** NOTE: Not deleted: Y10
  *** NOTE: Axis is in use by grid G10X10
  *** NOTE: Not deleted: Y5
@@ -1159,12 +1159,12 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: TIME5
  *** NOTE: Axis is in use by grid GLB1
- *** NOTE: Not deleted: COADSY
- *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
  *** NOTE: Not deleted: MONTH_IRREG
  *** NOTE: Axis is in use by grid (G004)
+ *** NOTE: Not deleted: COADSY
+ *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: YAXLEVITR1_90
  *** NOTE: Axis is in use by grid GG2
  *** NOTE: Not deleted: ZAXLEVITR1_1
@@ -1231,10 +1231,6 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid G24
  *** NOTE: Not deleted: X4
  *** NOTE: Axis is in use by grid G4D
- *** NOTE: Not deleted: XPROJ120
- *** NOTE: Axis is in use by grid GPROJ120
- *** NOTE: Not deleted: YPROJ120
- *** NOTE: Axis is in use by grid GPROJ120
  *** NOTE: Not deleted: Y10
  *** NOTE: Axis is in use by grid G10X10
  *** NOTE: Not deleted: Y5
@@ -1279,21 +1275,21 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid TGRID
  *** NOTE: Not deleted: X10
  *** NOTE: Axis is in use by grid G10X5
-ls: input.txt: No such file or directory
  *** NOTE: Not deleted: YAX
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAX
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAXLEVITR1_160
  *** NOTE: Axis is in use by grid GG1
+ls: input.txt: No such file or directory
  *** NOTE: Not deleted: TIME4
  *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: TIME5
  *** NOTE: Axis is in use by grid GLB1
- *** NOTE: Not deleted: COADSY
- *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
+ *** NOTE: Not deleted: COADSY
+ *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: YAXLEVITR1_90
  *** NOTE: Axis is in use by grid GG2
  *** NOTE: Not deleted: ZAXLEVITR1_1
@@ -1859,14 +1855,14 @@ Replacing definition of axis TIME
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file longtitle.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2073,12 +2069,12 @@ Replacing definition of grid MYGRID
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
  *** NOTE: Changing the value of attribute (COADSX).point_spacing
  *** NOTE: Changing the value of attribute (COADSY).point_spacing
  LISTing to file a.nc
  LISTing to file a.nc
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
@@ -3258,4 +3254,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Mar 22 15:51:12 PDT 2012
+Ended at Fri Mar 30 16:33:31 PDT 2012

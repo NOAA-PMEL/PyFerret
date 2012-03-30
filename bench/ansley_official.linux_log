@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ../fer/ferret_c
--rwxr-xr-x 1 ansley tmap 41566036 Mar 22 15:48 ../fer/ferret_c
-Using external functions from ../external_functions/ext_func
+Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 41401151 Mar 30 16:30 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes for memory leak on string variables
+Note: NetCDF4.2, 3 small fixes from compiling with -fbounds-check, fix for samplet_date and scat2gridgauss_zt
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -13,7 +13,7 @@ FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /hom
 FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
-FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/linux/FERRET/external_functions/ext_func
 FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/linux/lib
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Thu Mar 22 15:49:33 PDT 2012
+Beginning at Fri Mar 30 16:31:54 PDT 2012
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10240,15 +10240,15 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.73"
 FERRET_PLATFORM = "Linux 2.6.18-274.12.1.el5PAE 32-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.2-rc2 of Mar 20 2012 09:53:45 $"
+NETCDF_VERSION = "4.2 of Mar 27 2012 16:25:15 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "22-Mar-12"
-SESSION_TIME = "15:49"
-SESSION_PID = "2312"
-DELTA_CPU = "4.88426"
-CLOCK_SECS = "6.832"
-CURRENT_DATE = "22-Mar-12"
-CURRENT_TIME = "15:49:39"
+SESSION_DATE = "30-Mar-12"
+SESSION_TIME = "16:31"
+SESSION_PID = "18751"
+DELTA_CPU = "4.87726"
+CLOCK_SECS = "7.328"
+CURRENT_DATE = "30-Mar-12"
+CURRENT_TIME = "16:32:01"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10268,15 +10268,15 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.73"
 FERRET_PLATFORM = "Linux 2.6.18-274.12.1.el5PAE 32-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.2-rc2 of Mar 20 2012 09:53:45 $"
+NETCDF_VERSION = "4.2 of Mar 27 2012 16:25:15 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "22-Mar-12"
-SESSION_TIME = "15:49"
-SESSION_PID = "2312"
-DELTA_CPU = "0"
-CLOCK_SECS = "6.832"
-CURRENT_DATE = "22-Mar-12"
-CURRENT_TIME = "15:49:39"
+SESSION_DATE = "30-Mar-12"
+SESSION_TIME = "16:31"
+SESSION_PID = "18751"
+DELTA_CPU = "0.001"
+CLOCK_SECS = "7.328"
+CURRENT_DATE = "30-Mar-12"
+CURRENT_TIME = "16:32:01"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10285,9 +10285,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "22-Mar-12"
-SESSION_TIME = "15:49"
-SESSION_PID = "2312"
+SESSION_DATE = "30-Mar-12"
+SESSION_TIME = "16:31"
+SESSION_PID = "18751"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10297,15 +10297,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "22-Mar-12"
-SESSION_TIME = "15:49"
-SESSION_PID = "2312"
+SESSION_DATE = "30-Mar-12"
+SESSION_TIME = "16:31"
+SESSION_PID = "18751"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "22-Mar-12"
-SESSION_TIME = "15:49"
-SESSION_PID = "2312"
+SESSION_DATE = "30-Mar-12"
+SESSION_TIME = "16:31"
+SESSION_PID = "18751"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10339,7 +10339,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.73"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "22-MAR-2012 15:49:39"
+LAB3 = "30-MAR-2012 16:32:01"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10437,15 +10437,15 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.73"
 FERRET_PLATFORM = "Linux 2.6.18-274.12.1.el5PAE 32-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.2-rc2 of Mar 20 2012 09:53:45 $"
+NETCDF_VERSION = "4.2 of Mar 27 2012 16:25:15 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "22-Mar-12"
-SESSION_TIME = "15:49"
-SESSION_PID = "2312"
-DELTA_CPU = "0.010998"
-CLOCK_SECS = "6.843"
-CURRENT_DATE = "22-Mar-12"
-CURRENT_TIME = "15:49:39"
+SESSION_DATE = "30-Mar-12"
+SESSION_TIME = "16:31"
+SESSION_PID = "18751"
+DELTA_CPU = "0.009999"
+CLOCK_SECS = "7.338"
+CURRENT_DATE = "30-Mar-12"
+CURRENT_TIME = "16:32:01"
 N_OPEN_DSETS = "0"
  
  
@@ -19115,29 +19115,13 @@ GO bn_user
  
 ! test the SAMPLE command using the polar plotting scripts
  
+! Skip for 6D: USER command not implemented
+ 
+! These are the windows that have always been set after bn_user.jn
 set window/size=.5/aspect=1:ax 1
-USE clim_airt_lev
-go polar_2d shade AIRT[l=1] 100 120
-Note: Polar-projected data is variable "polar" in polar_grid.dat
-NOTE: The map projection capabilities beginning with Ferret v5.0
-provide far more flexibility for plots with curvilinear coordinates.
-Run the script  mp_demo  for an introduction
-The following plotting command can be modified and reused:
->>>GO box_plot shade/x=-1:1/y=-1:1 polar[d=polar_grid.dat]
-message/continue "NOTE: The map projection capabilities beginning with Ferret v5.0"
-NOTE: The map projection capabilities beginning with Ferret v5.0
-message/continue "provide far more flexibility for plots with curvilinear coordinates."
-provide far more flexibility for plots with curvilinear coordinates.
-message/continue "Run the script  mp_demo  for an introduction"
-Run the script  mp_demo  for an introduction
+set window/size=.5/aspect=.75 2
  
- 
-! test the OBJECTIVE command using a synthetic field
- 
- 
-! skip this test when double-precision Ferret.
-IF ($FERRET_PRECISION"0|double>1|*>0") THEN EXIT/SCRIPT
- !-> IF 1 THEN EXIT/SCRIPT
+exit/script
 cancel viewports	! clean up
 set window 1		! clean up
  
@@ -22730,7 +22714,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 label/nou `($ppl$xlen)-.3`  -1.1 0 0 .16 a b c d e f g h i j k l m n o p
- !-> PPL %LABEL/nou 6.628  -1.1 0 0 .16 a b c d e f g h i j k l m n o p
+ !-> PPL %LABEL/nou 8.44  -1.1 0 0 .16 a b c d e f g h i j k l m n o p
  
 ! the following also caused an abort of ferret
 let sstb = if ( (i eq 172 and j eq 36) or (i ge 173 and i le 175 and j eq 35) or (i ge 176 and i le 178 and j eq 36) or (i eq 178 and j eq 35) ) then 1.e35 else sst
@@ -25026,7 +25010,6 @@ list out
  8    /  8:  452167.  452168.  452169.  452170.  452171.
  9    /  9:  452898.  452899.  452900.  452901.  452902.
  10   / 10:  453628.  453629.  453630.  453631.  453632.
-Thu Mar 22 15:49:46 PDT 2012
  11   / 11:  454359.  454360.  454361.  454362.  454363.
  12   / 12:  455089.  455090.  455091.  455092.  455093.
  
@@ -25044,6 +25027,7 @@ list/l=1 out
  4    /  4:  440480.  440481.  440482.  440483.  440484.
  5    /  5:  441211.  441212.  441213.  441214.  441215.
  6    /  6:  441941.  441942.  441943.  441944.  441945.
+Fri Mar 30 16:32:08 PDT 2012
  7    /  7:  442672.  442673.  442674.  442675.  442676.
  8    /  8:  443402.  443403.  443404.  443405.  443406.
  9    /  9:  444132.  444133.  444134.  444135.  444136.
@@ -31439,6 +31423,7 @@ GO bn_internal_external_functions
 ! 06/02 *kob* add bench_internal_string_functions (strlen, strcat, strindex, etc)
 ! 05/05 *acm* move bench_compress here; internally linked.
 ! 05/07 *acm* move tax_* functions and fill_xy here; internally linked.
+!  3/12 *acm* new script bn_scat2grid tests scat2grid functions in all directions
  
 GO bn_reset
 cancel mode verify
@@ -31688,6 +31673,69 @@ list/x=4:5/y=1 sgrid
  4    / 7:  0.199438
  4.5  / 8:  0.165055
  5    / 9:  0.103166
+ 
+GO bn_reset
+cancel mode verify
+go bn_scat2grid_test
+! bn_scat2grid_test.jnl
+! From JonCallahan's insitu_gaussian_*.jnl
+ 
+! Description: Test functions for XY XZ XT YZ YT ZT gridding of insitu data
+ 
+set data scat2grid.nc
+ 
+define axis/x=50:70/npoints=20/units=degrees_east x_20
+define axis/y=10:20/npoints=20/units=degrees_north y_20
+define axis/z=0:100/npoints=20/depth/units=meters z_20
+define axis/t=0:8736/unit=hours/t0="01-JAN-1995 00:00:00"/npoints=20 t_20
+ 
+!*********
+! SCAT2GRIDGAUSS functions
+! XY
+ 
+let xy_gauss_gridded = scat2gridgauss_xy(xpts,ypts,O2_umol_kg,x[gx=x_20],y[gy=y_20],1.5,1.0,5.0,3.0)
+fill/lev=30v xy_gauss_gridded
+plot/vs/over/nolab xpts,ypts
+ppl shaset reset
+ 
+! XZ
+ 
+let xz_gauss_gridded = scat2gridgauss_xz(xpts,zpts,O2_umol_kg,x[gx=x_20],z[gz=z_20],1.5,10,2,20)
+fill/lev=30v xz_gauss_gridded
+plot/vs/over/nolab xpts,zpts
+ppl shaset reset
+ 
+! XT
+ 
+let xt_gauss_gridded = scat2gridgauss_xt(xpts,tpts,O2_umol_kg,x[gx=x_20],t[gt=t_20],1.5,720.0,5.0,2160.0)
+fill/lev=30v xt_gauss_gridded
+plot/vs/over/nolab xpts,tpts
+ppl shaset reset
+ 
+! YZ
+ 
+let yz_gauss_gridded = scat2gridgauss_yz(ypts,zpts,ysequence(O2_umol_kg),y[gy=y_20],z[gz=z_20],1.0,10,3,50)
+fill/lev=30v yz_gauss_gridded
+plot/vs/over/nolab ypts,zpts
+ppl shaset reset
+ 
+! YT
+ 
+let yt_gauss_gridded = scat2gridgauss_yt(ypts,tpts,ysequence(O2_umol_kg),y[gy=y_20],t[gt=t_20],1.0,720,3,2160)
+fill/lev=30v yt_gauss_gridded
+plot/vs/over/nolab tpts,ypts
+ppl shaset reset
+ 
+! ZT
+ 
+let zt_gauss_gridded = scat2gridgauss_zt(zpts,tpts,zsequence(O2_umol_kg),z[gz=z_20],t[gt=t_20],10,720,50,2160)
+fill/lev=30v zt_gauss_gridded
+plot/vs/over/nolab tpts, zpts
+ 
+can mem/all
+ 
+! SCAT2GRIDLAPLACE functions
+exit/script  ! This crashes when scat2gridlaplace_xy loaded, only when
  
 GO bn_reset
 cancel mode verify
@@ -32339,7 +32387,7 @@ list my_vwnd
              LONGITUDE: 161W
              LATITUDE : 39N
              T        : 1
-          3.22651
+          3.22661
  
  
 let my_vwnd = samplet_date(vwnd,{1950,1950},{5,8},{16,15},{12,12},{0,0},{0,0})
@@ -32351,8 +32399,8 @@ list my_vwnd
              LATITUDE : 39N
             161W    
              90
- 1   / 1:  1.60036
- 2   / 2: -0.40618
+ 1   / 1:  1.60000
+ 2   / 2: -0.40645
  
  
  
@@ -33042,12 +33090,12 @@ list/nohead b            ! using rdstride
  strip moduloing A on X axis:    18    22
  rdstride A        C: 11 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing A on X axis:    18    20
- -DELETE A        M:344 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:326 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
  rdstride A        C: 11 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing A on X axis:     2     2
- -DELETE A        M:344 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
- nulrgd  A        M:344 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE A        M:254 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:326 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
+ nulrgd  A        M:326 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:281 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
  18   / 1:  18.0000
  20   / 2:  20.0000
@@ -33055,17 +33103,17 @@ list/nohead b            ! using rdstride
 list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
  dealloc  dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
- dealloc  dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G009)          (AX014)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G009)          (AX014)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G009)          (AX014)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- allocate dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
- strip regrid on X: A --> (G017)           @XACT
+ allocate dynamic grid (G009)          (AX014)   NORMAL    NORMAL    NORMAL
+ strip regrid on X: A --> (G009)           @XACT
  strip moduloing A on X axis:     1    25
- reading A        M:330 I:    1   20  J: -999 -999  K: -999 -999  L: -999 -999
+ reading A        M:388 I:    1   20  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing A on X axis:     1    20
- regrid  A        M:393 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
+ regrid  A        M:440 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G009)          (AX014)   NORMAL    NORMAL    NORMAL
  1    / 1:   1.0000
  4    / 2:   4.0000
  7    / 3:   7.0000
@@ -33076,8 +33124,8 @@ list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
  22   / 8:   2.0000
  25   / 9:   5.0000
 list/nohead b            ! reuse of cached result
- dealloc  dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
- -DELETE A        M:393 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G009)          (AX014)   NORMAL    NORMAL    NORMAL
+ -DELETE A        M:440 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
@@ -33087,12 +33135,12 @@ list/nohead b            ! reuse of cached result
  strip moduloing A on X axis:    18    22
  rdstride A        C: 11 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing A on X axis:    18    20
- -DELETE A        M:393 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:440 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
  rdstride A        C: 11 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing A on X axis:     2     2
- -DELETE A        M:393 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
- nulrgd  A        M:393 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE A        M:391 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:440 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
+ nulrgd  A        M:440 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE A        M:431 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
  18   / 1:  18.0000
  20   / 2:  20.0000
@@ -33294,8 +33342,8 @@ list/nohead a[i=106:145:5]
 !  ***** STRING TESTS *****
 set mode diag
 list/nohead str[i=18:23:2] ! using rdstride
- dealloc  dynamic grid (G017)          (AX010)   NORMAL    NORMAL    NORMAL
- -DELETE A        M:369 I:    1    8  J: -999 -999  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G009)          (AX010)   NORMAL    NORMAL    NORMAL
+ -DELETE A        M:396 I:    1    8  J: -999 -999  K: -999 -999  L: -999 -999
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
  dealloc  dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
@@ -33306,12 +33354,12 @@ list/nohead str[i=18:23:2] ! using rdstride
  strip moduloing STR on X axis:    18    22
  rdstride STR      C:  9 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing STR on X axis:    18    20
- -DELETE STR      M:369 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE STR      M:396 I:   18   20  J: -999 -999  K: -999 -999  L: -999 -999
  rdstride STR      C:  9 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing STR on X axis:     2     2
- -DELETE STR      M:369 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
- nulrgd  STR      M:369 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
- -DELETE STR      M:346 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE STR      M:396 I:    2    2  J: -999 -999  K: -999 -999  L: -999 -999
+ nulrgd  STR      M:396 I:    1    3  J: -999 -999  K: -999 -999  L: -999 -999
+ -DELETE STR      M:392 I:   18   22  J: -999 -999  K: -999 -999  L: -999 -999
  dealloc  dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
  18   / 1:"r"
  20   / 2:"t"
@@ -33319,17 +33367,17 @@ list/nohead str[i=18:23:2] ! using rdstride
 list/nohead str[i=1:25:3]  ! no strides --> reads full region without strides
  dealloc  dynamic grid (G004)          (AX017)   NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
- dealloc  dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G009)          (AX014)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G009)          (AX014)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G009)          (AX014)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
- allocate dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
- strip regrid on X: STR --> (G017)           @XACT
+ allocate dynamic grid (G009)          (AX014)   NORMAL    NORMAL    NORMAL
+ strip regrid on X: STR --> (G009)           @XACT
  strip moduloing STR on X axis:     1    25
- reading STR      M:346 I:    1   20  J: -999 -999  K: -999 -999  L: -999 -999
+ reading STR      M:392 I:    1   20  J: -999 -999  K: -999 -999  L: -999 -999
  doing moduloing STR on X axis:     1    20
- regrid  STR      M:280 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
- dealloc  dynamic grid (G017)          (AX014)   NORMAL    NORMAL    NORMAL
+ regrid  STR      M:293 I:    1    9  J: -999 -999  K: -999 -999  L: -999 -999
+ dealloc  dynamic grid (G009)          (AX014)   NORMAL    NORMAL    NORMAL
  1    / 1:"a"
  4    / 2:"d"
  7    / 3:"g"
@@ -34177,6 +34225,13 @@ list {"a","b","c"} NE YSEQUENCE({"a","B","c"})
              SUBSET   : 3 by 3 points (X-Y)
               1        2        3     
               1        2        3
+col1,col2,col3,col4,col5
+one,,1.1,24S,130E,,1e1,"word 1"
+    two,,2.2,24N,130W,2S,,"word 2"
+three,,3.3,24,130,3N,3e-2," wd 3 "
+
+five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
+extra line
  1   / 1:  0.00000  1.00000  1.00000
  2   / 2:  1.00000  0.00000  1.00000
  3   / 3:  1.00000  1.00000  0.00000
@@ -34218,13 +34273,6 @@ list/nohead if {0,1} THEN "hello"
 list/nohead if {0,1} THEN "hello" ELSE "goodbye"
  1   / 1:"goodbye"
  2   / 2:"hello"  
-col1,col2,col3,col4,col5
-one,,1.1,24S,130E,,1e1,"word 1"
-    two,,2.2,24N,130W,2S,,"word 2"
-three,,3.3,24,130,3N,3e-2," wd 3 "
-
-five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
-extra line
 list/nohead ysequence({"now","then"})+", " + (if {0,1} THEN "hello"+", ") + "friend"
  1   / 1:"now, friend"        "now, hello, friend" 
  2   / 2:"then, friend"       "then, hello, friend"
@@ -34513,7 +34561,6 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
              X: 0.5 to 7.5
  Column  1: V1
  Column  2: V2
-col1,col2,col3,col4,col5
  Column  3: V3
  Column  4: V4
  Column  5: V5
@@ -34670,6 +34717,11 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 2   / 2:......  2.20000  24.0000     ....  -2.0000     ..........     ....
 3   / 3:......  3.30000  24.0000  130.000   3.0000    0.030......     ....
 4   / 4:......     ....     ....     ....     ....     ..........     ....
+col1,col2,col3,col4,col5
+12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
 5   / 5:......  4.40000 -24.0000 -130.000  91.0000 -400.000......  77.0000
 6   / 6:......     ....     ....     ....     ....     ..........     ....
  
@@ -34713,10 +34765,6 @@ cancel data/all
 ! Note record of many blanks sandwiched in as record 2
 file/form=delimited bn_delimited_read_2.dat
 show data
-12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
      currently SET data sets:
     1> ./bn_delimited_read_2.dat  (default)
  name     title                             I         J         K         L
@@ -34866,6 +34914,10 @@ show data 2
  V3       V3                               1:4       ...       ...       ...
        (Time of day)
  V4       V4                               1:4       ...       ...       ...
+12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
        (Time of day)
  V5       V5                               1:4       ...       ...       ...
        (Time of day)
@@ -34892,10 +34944,6 @@ list v1,v2,v3,v4,v5,v6,v7,v8
               V1     V2       V3       V4       V5       V6       V7       V8
 1   / 1:  36493.0  36218.0  12.0000  13.7601  36493.0  36218.0  12.0000  13.7601
 2   / 2:  36494.0  36219.0   1.0037  14.7601  36494.0  36219.0   1.0037  14.7601
-12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
 3   / 3:     ....     ....     ....     ....  36495.0  36220.0   2.0000  15.7500
 4   / 4:  36496.0  36221.0   3.0000  16.7601  36496.0  36221.0   3.0000  16.7601
 show data 2
@@ -35949,19 +35997,19 @@ show mem/free
 use/ord=x-y test_100x100.nc
 list/prec=1 a[i=1:100:10] !  this looks just right!!
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G006)          (AX010)   YAX1_100  NORMAL    NORMAL
- dealloc  dynamic grid (G006)          (AX010)   YAX1_100  NORMAL    NORMAL
- allocate dynamic grid (G006)          (AX010)   YAX1_100  NORMAL    NORMAL
+ allocate dynamic grid (G010)          (AX010)   YAX1_100  NORMAL    NORMAL
+ dealloc  dynamic grid (G010)          (AX010)   YAX1_100  NORMAL    NORMAL
+ allocate dynamic grid (G010)          (AX010)   YAX1_100  NORMAL    NORMAL
  eval    EX#1     C:  4 I:    1  100  J:    1  100  K: -999 -999  L: -999 -999
- allocate dynamic grid (G006)          (AX010)   YAX1_100  NORMAL    NORMAL
- strip regrid on X: A --> (G006)           @XACT
+ allocate dynamic grid (G010)          (AX010)   YAX1_100  NORMAL    NORMAL
+ strip regrid on X: A --> (G010)           @XACT
  strip reversing A on Y axis:     1   100
  rdstride A        C:  8 I:    1   91  J:    1  100  K: -999 -999  L: -999 -999
  doing reversing A on Y axis:     1   100
  -DELETE A        M:  1 I:    1   91  J:    1  100  K: -999 -999  L: -999 -999
  nulrgd  A        M:  1 I:    1   10  J:    1  100  K: -999 -999  L: -999 -999
  -DELETE A        M:  2 I:    1   91  J:    1  100  K: -999 -999  L: -999 -999
- dealloc  dynamic grid (G006)          (AX010)   YAX1_100  NORMAL    NORMAL
+ dealloc  dynamic grid (G010)          (AX010)   YAX1_100  NORMAL    NORMAL
              VARIABLE : IF I EQ J THEN 1 ELSE A0
                         regrid: 10 delta on X
              FILENAME : test_100x100.nc
@@ -36070,8 +36118,8 @@ list/prec=1 a[i=1:100:10] !  this looks just right!!
  100   / 100:  1.  0.  0.  0.  0.  0.  0.  0.  0.  0.
 show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
- Last successful data access was on grid (G006)
-    GRID (G006)
+ Last successful data access was on grid (G010)
+    GRID (G010)
  name       axis              # pts   start                end
  (AX010)   X                   10 r   1                    91
  YAX1_100  Y                  100 r   1                    100
@@ -36081,18 +36129,18 @@ show grid
 ! should be a diagonal path of steps all the way across the plot
 shade a[i=1:100:10]
  eval    EX#1     C:  4 I:    1  100  J:    1  100  K: -999 -999  L: -999 -999
- allocate dynamic grid (G006)          (AX010)   YAX1_100  NORMAL    NORMAL
- strip regrid on X: A --> (G006)           @XACT
+ allocate dynamic grid (G010)          (AX010)   YAX1_100  NORMAL    NORMAL
+ strip regrid on X: A --> (G010)           @XACT
  strip reversing A on Y axis:     1   100
  rdstride A        C:  8 I:    1   91  J:    1  100  K: -999 -999  L: -999 -999
  doing reversing A on Y axis:     1   100
  -DELETE A        M:  2 I:    1   91  J:    1  100  K: -999 -999  L: -999 -999
  nulrgd  A        M:  2 I:    1   10  J:    1  100  K: -999 -999  L: -999 -999
  -DELETE A        M:  3 I:    1   91  J:    1  100  K: -999 -999  L: -999 -999
- dealloc  dynamic grid (G006)          (AX010)   YAX1_100  NORMAL    NORMAL
+ dealloc  dynamic grid (G010)          (AX010)   YAX1_100  NORMAL    NORMAL
 setting up 2D plot
  -DELETE A        M:  3 I:    1   10  J:    1  100  K: -999 -999  L: -999 -999
-PPL plot 256  complete
+PPL plot 267  complete
 ppl list stats
 
 
@@ -36944,8 +36992,6 @@ show axis/all
  Y2        Y                    3 r   1                    5
  X3        X                    3 r   1                    3
  X4        X                    4 r   1                    4
- XPROJ120  X                  120 r   -1                   1
- YPROJ120  Y                  120 r   -1                   1
  Y10       Y                  201 r   0                    10
  Y5        Y                    5 r   1                    5
  Z2        Z                    2 r   1                    3
@@ -37023,6 +37069,10 @@ show axis/all
  X10       X                  201 r   0                    10
  XAX5      X                   19 r   1                    10
  YAX5      Y                   19 r   1                    10
+ X_20      LONGITUDE           20mr   50E                  70E
+ Y_20      LATITUDE            20 r   10N                  20N
+ Z_20      DEPTH (m)           20 r-  0                    100
+ T_20      TIME                20 r   01-JAN-1995 00:00    31-DEC-1995 00:00
  TTT       TIME             38352 r   01-JAN-1900 00:00    01-JAN-2005 00:00
  ZAXIS_ORIG Z                   5 r   10                   50
  ZAXIS_DES Z                    9 r   345                  353
@@ -37119,8 +37169,6 @@ show axis/all
  Y2        Y                    3 r   1                    5
  X3        X                    3 r   1                    3
  X4        X                    4 r   1                    4
- XPROJ120  X                  120 r   -1                   1
- YPROJ120  Y                  120 r   -1                   1
  Y10       Y                  201 r   0                    10
  Y5        Y                    5 r   1                    5
  Z2        Z                    2 r   1                    3
@@ -37198,6 +37246,10 @@ show axis/all
  X10       X                  201 r   0                    10
  XAX5      X                   19 r   1                    10
  YAX5      Y                   19 r   1                    10
+ X_20      LONGITUDE           20mr   50E                  70E
+ Y_20      LATITUDE            20 r   10N                  20N
+ Z_20      DEPTH (m)           20 r-  0                    100
+ T_20      TIME                20 r   01-JAN-1995 00:00    31-DEC-1995 00:00
  TTT       TIME             38352 r   01-JAN-1900 00:00    01-JAN-2005 00:00
  ZAXIS_ORIG Z                   5 r   10                   50
  ZAXIS_DES Z                    9 r   345                  353
@@ -37279,8 +37331,6 @@ show axis/all
  Y2        Y                    3 r   1                    5
  X3        X                    3 r   1                    3
  X4        X                    4 r   1                    4
- XPROJ120  X                  120 r   -1                   1
- YPROJ120  Y                  120 r   -1                   1
  Y10       Y                  201 r   0                    10
  Y5        Y                    5 r   1                    5
  TIME1     TIME                 6 r   16-JAN-1900 06:00    17-JUN-1900 10:25
@@ -37358,8 +37408,6 @@ show axis/all
  Y2        Y                    3 r   1                    5
  X3        X                    3 r   1                    3
  X4        X                    4 r   1                    4
- XPROJ120  X                  120 r   -1                   1
- YPROJ120  Y                  120 r   -1                   1
  Y10       Y                  201 r   0                    10
  Y5        Y                    5 r   1                    5
  TIME1     TIME                 6 r   16-JAN-1900 06:00    17-JUN-1900 10:25
@@ -37997,37 +38045,37 @@ set mode diag; l200n/order=x $2[l=1,i=0:14:2]; set mode/last diag
  !-> list/width=200/nohead/order=x v2d_reg[l=1,i=0:14:2]
  dealloc  dynamic grid GFJ3            XAX_SUBSPANORMAL    NORMAL    TAX_SUBSPA
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G002)          (AX014)   NORMAL    NORMAL    TAX_SUBSPA
- dealloc  dynamic grid (G002)          (AX014)   NORMAL    NORMAL    TAX_SUBSPA
- allocate dynamic grid (G002)          (AX014)   NORMAL    NORMAL    TAX_SUBSPA
+ allocate dynamic grid (G015)          (AX014)   NORMAL    NORMAL    TAX_SUBSPA
+ dealloc  dynamic grid (G015)          (AX014)   NORMAL    NORMAL    TAX_SUBSPA
+ allocate dynamic grid (G015)          (AX014)   NORMAL    NORMAL    TAX_SUBSPA
  eval    EX#1     C:  4 I:    1    8  J: -999 -999  K: -999 -999  L: -999 -999
- allocate dynamic grid (G002)          (AX014)   NORMAL    NORMAL    TAX_SUBSPA
- strip regrid on X: V2D_REG --> (G002)           @XACT
+ allocate dynamic grid (G015)          (AX014)   NORMAL    NORMAL    TAX_SUBSPA
+ strip regrid on X: V2D_REG --> (G015)           @XACT
  found   V2D_REG  M: 69 I:    0   14  J: -999 -999  K: -999 -999  L:    1    1
  regrid  V2D_REG  M: 70 I:    1    8  J: -999 -999  K: -999 -999  L:    1    1
- dealloc  dynamic grid (G002)          (AX014)   NORMAL    NORMAL    TAX_SUBSPA
+ dealloc  dynamic grid (G015)          (AX014)   NORMAL    NORMAL    TAX_SUBSPA
              ....  12.0000  14.0000  16.0000  11.0000  13.0000  15.0000     ....
 l200n/order=x $2[l=1,i=0:14:7]
  !-> list/width=200/nohead/order=x v2d_reg[l=1,i=0:14:7]
         ............
 set mode diag; l200n $2[i=1,l=1:15:2]; set mode/last diag
  !-> list/width=200/nohead v2d_reg[i=1,l=1:15:2]
- dealloc  dynamic grid (G002)          (AX013)   NORMAL    NORMAL    TAX_SUBSPA
+ dealloc  dynamic grid (G015)          (AX007)   NORMAL    NORMAL    TAX_SUBSPA
  -DELETE V2D_REG  M: 71 I:    1    3  J: -999 -999  K: -999 -999  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G002)          XAX_SUBSPANORMAL    NORMAL    (AX014)
- dealloc  dynamic grid (G002)          XAX_SUBSPANORMAL    NORMAL    (AX014)
- allocate dynamic grid (G002)          XAX_SUBSPANORMAL    NORMAL    (AX014)
+ allocate dynamic grid (G015)          XAX_SUBSPANORMAL    NORMAL    (AX014)
+ dealloc  dynamic grid (G015)          XAX_SUBSPANORMAL    NORMAL    (AX014)
+ allocate dynamic grid (G015)          XAX_SUBSPANORMAL    NORMAL    (AX014)
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    8
- allocate dynamic grid (G002)          XAX_SUBSPANORMAL    NORMAL    (AX014)
- strip regrid on T: V2D_REG --> (G002)           @XACT
+ allocate dynamic grid (G015)          XAX_SUBSPANORMAL    NORMAL    (AX014)
+ strip regrid on T: V2D_REG --> (G015)           @XACT
  strip moduloing V2D_REG on T axis:     1    15
  rdstride V2D_REG  C:  9 I:    1    1  J: -999 -999  K: -999 -999  L:    1    5
  doing moduloing V2D_REG on T axis:     1     5
  -DELETE V2D_REG  M: 71 I:    1    1  J: -999 -999  K: -999 -999  L:    1    5
  nulrgd  V2D_REG  M: 71 I:    1    1  J: -999 -999  K: -999 -999  L:    1    8
  -DELETE V2D_REG  M: 72 I:    1    1  J: -999 -999  K: -999 -999  L:    1   15
- dealloc  dynamic grid (G002)          XAX_SUBSPANORMAL    NORMAL    (AX014)
+ dealloc  dynamic grid (G015)          XAX_SUBSPANORMAL    NORMAL    (AX014)
  16-JAN-0000 / 1:   11.000
  16-MAR-0000 / 2:   71.000
  15-MAY-0000 / 3:  131.000
@@ -38526,37 +38574,37 @@ set mode diag; l200n/order=x $2[l=1,i=0:14:2]; set mode/last diag
  !-> list/width=200/nohead/order=x v2d_irr[l=1,i=0:14:2]
  dealloc  dynamic grid GFJ4            XIRREG_SUBNORMAL    NORMAL    TIRREG_SUB
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G010)          (AX013)   NORMAL    NORMAL    TIRREG_SUB
- dealloc  dynamic grid (G010)          (AX013)   NORMAL    NORMAL    TIRREG_SUB
- allocate dynamic grid (G010)          (AX013)   NORMAL    NORMAL    TIRREG_SUB
+ allocate dynamic grid (G006)          (AX007)   NORMAL    NORMAL    TIRREG_SUB
+ dealloc  dynamic grid (G006)          (AX007)   NORMAL    NORMAL    TIRREG_SUB
+ allocate dynamic grid (G006)          (AX007)   NORMAL    NORMAL    TIRREG_SUB
  eval    EX#1     C:  4 I:    1    8  J: -999 -999  K: -999 -999  L: -999 -999
- allocate dynamic grid (G010)          (AX013)   NORMAL    NORMAL    TIRREG_SUB
- strip regrid on X: V2D_IRR --> (G010)           @XACT
+ allocate dynamic grid (G006)          (AX007)   NORMAL    NORMAL    TIRREG_SUB
+ strip regrid on X: V2D_IRR --> (G006)           @XACT
  found   V2D_IRR  M:146 I:    0   14  J: -999 -999  K: -999 -999  L:    1    1
  regrid  V2D_IRR  M:147 I:    1    8  J: -999 -999  K: -999 -999  L:    1    1
- dealloc  dynamic grid (G010)          (AX013)   NORMAL    NORMAL    TIRREG_SUB
+ dealloc  dynamic grid (G006)          (AX007)   NORMAL    NORMAL    TIRREG_SUB
              ....  12.0000  14.0000  16.0000  11.0000  12.1000  15.0000     ....
 l200n/order=x $2[l=1,i=0:14:7]
  !-> list/width=200/nohead/order=x v2d_irr[l=1,i=0:14:7]
         ............
 set mode diag; l200n $2[i=1,l=1:15:2]; set mode/last diag
  !-> list/width=200/nohead v2d_irr[i=1,l=1:15:2]
- dealloc  dynamic grid (G010)          (AX010)   NORMAL    NORMAL    TIRREG_SUB
+ dealloc  dynamic grid (G006)          (AX010)   NORMAL    NORMAL    TIRREG_SUB
  -DELETE V2D_IRR  M:148 I:    1    3  J: -999 -999  K: -999 -999  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G010)          XIRREG_SUBNORMAL    NORMAL    (AX013)
- dealloc  dynamic grid (G010)          XIRREG_SUBNORMAL    NORMAL    (AX013)
- allocate dynamic grid (G010)          XIRREG_SUBNORMAL    NORMAL    (AX013)
+ allocate dynamic grid (G006)          XIRREG_SUBNORMAL    NORMAL    (AX007)
+ dealloc  dynamic grid (G006)          XIRREG_SUBNORMAL    NORMAL    (AX007)
+ allocate dynamic grid (G006)          XIRREG_SUBNORMAL    NORMAL    (AX007)
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    8
- allocate dynamic grid (G010)          XIRREG_SUBNORMAL    NORMAL    (AX013)
- strip regrid on T: V2D_IRR --> (G010)           @XACT
+ allocate dynamic grid (G006)          XIRREG_SUBNORMAL    NORMAL    (AX007)
+ strip regrid on T: V2D_IRR --> (G006)           @XACT
  strip moduloing V2D_IRR on T axis:     1    15
  rdstride V2D_IRR  C:  9 I:    1    1  J: -999 -999  K: -999 -999  L:    1    5
  doing moduloing V2D_IRR on T axis:     1     5
  -DELETE V2D_IRR  M:148 I:    1    1  J: -999 -999  K: -999 -999  L:    1    5
  nulrgd  V2D_IRR  M:148 I:    1    1  J: -999 -999  K: -999 -999  L:    1    8
  -DELETE V2D_IRR  M:149 I:    1    1  J: -999 -999  K: -999 -999  L:    1   15
- dealloc  dynamic grid (G010)          XIRREG_SUBNORMAL    NORMAL    (AX013)
+ dealloc  dynamic grid (G006)          XIRREG_SUBNORMAL    NORMAL    (AX007)
  16-JAN-0000 / 1:   11.000
  15-MAR-0000 / 2:   70.248
  15-MAY-0000 / 3:  131.249
@@ -38683,9 +38731,12 @@ GO bn_lev_symbols
 ! LEV_NUM  Number of levels
 ! LEV_DEL  Delta level (irregular)
  
+can sym lev*
+define symbol lev_text = ""
+ 
 shade/i=1:15/j=1:5 i*j
 sho sym lev*
-LEV_TEXT = ""
+LEV_TEXT = """"
 LEV_MIN = "0"
 LEV_MAX = "76"
 LEV_NUM = "38"
@@ -38693,7 +38744,7 @@ LEV_DEL = "2"
  
 contour/over/i=1:15/j=1:5 i*j
 sho sym lev*
-LEV_TEXT = ""
+LEV_TEXT = """"
 LEV_MIN = "0"
 LEV_MAX = "80"
 LEV_NUM = "8"
@@ -39570,8 +39621,8 @@ list/x=160e/y=5s temp[d=2,k=1,gxy=a[d=1]]
           29.5170
 show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
- Last successful data access was on grid (G006)
-    GRID (G006)
+ Last successful data access was on grid (G010)
+    GRID (G010)
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
  COADSY    LATITUDE            90 r   89S                  89N
@@ -42319,52 +42370,52 @@ let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G017)          (AX026)   (AX022)   NORMAL    (AX028)
- dealloc  dynamic grid (G017)          (AX026)   (AX022)   NORMAL    (AX028)
- allocate dynamic grid (G017)          (AX026)   (AX022)   NORMAL    (AX028)
- allocate dynamic grid (G017)          (AX026)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G009)          (AX026)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G009)          (AX026)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G009)          (AX026)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G009)          (AX026)   (AX022)   NORMAL    (AX028)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
- allocate dynamic grid (G017)          (AX026)   (AX022)   NORMAL    (AX028)
- strip regrid on X: TAUX --> (G017)           @XACT
+ allocate dynamic grid (G009)          (AX026)   (AX022)   NORMAL    (AX028)
+ strip regrid on X: TAUX --> (G009)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -999 -999  L:    1  161
  nulrgd  TAUX     M:151 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  -DELETE TAUX     M:146 I:   50   54  J:   44   50  K: -999 -999  L:    1  161
- dealloc  dynamic grid (G017)          (AX026)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G009)          (AX026)   (AX022)   NORMAL    (AX028)
 can mem/all
  -DELETE A        M:146 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  -DELETE TAUX     M:151 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  
 def grid/like=taux agrid
- dealloc  dynamic grid (G017)          (AX026)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G009)          (AX026)   (AX022)   NORMAL    (AX028)
  getgrid EX#1     C:  6 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
 set mode diag
 let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
  dealloc  dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
- dealloc  dynamic grid (G017)          (AX026)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G009)          (AX026)   (AX022)   NORMAL    (AX028)
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G017)          (AX022)   (AX026)   NORMAL    (AX027)
- dealloc  dynamic grid (G017)          (AX022)   (AX026)   NORMAL    (AX027)
- allocate dynamic grid (G017)          (AX022)   (AX026)   NORMAL    (AX027)
- allocate dynamic grid (G017)          (AX022)   (AX026)   NORMAL    (AX027)
+ allocate dynamic grid (G009)          (AX022)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G009)          (AX022)   (AX026)   NORMAL    (AX027)
+ allocate dynamic grid (G009)          (AX022)   (AX026)   NORMAL    (AX027)
+ allocate dynamic grid (G009)          (AX022)   (AX026)   NORMAL    (AX027)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
- allocate dynamic grid (G017)          (AX022)   (AX026)   NORMAL    (AX027)
- strip regrid on X: TAUX --> (G017)           @XACT
+ allocate dynamic grid (G009)          (AX022)   (AX026)   NORMAL    (AX027)
+ strip regrid on X: TAUX --> (G009)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -999 -999  L:    1  161
  nulrgd  TAUX     M:146 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  -DELETE TAUX     M:151 I:   50   54  J:   44   50  K: -999 -999  L:    1  161
- dealloc  dynamic grid (G017)          (AX022)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G009)          (AX022)   (AX026)   NORMAL    (AX027)
  
 can mem/all
  -DELETE TAUX     M:146 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
  -DELETE A        M:151 I:    1    3  J:    1    3  K: -999 -999  L:    1   21
 can data/all
- dealloc  dynamic grid (G017)          (AX022)   (AX026)   NORMAL    (AX027)
- dealloc  dynamic grid (G017)          (AX022)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G009)          (AX022)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G009)          (AX022)   (AX026)   NORMAL    (AX027)
  
 ! Some tests taken from  bn_strides_revs_perms.jnl but with
 ! DEFINE GRID/LIKE= testing permuting and reversing axes
@@ -42405,16 +42456,16 @@ load var
 LIST VAR[i=2:4:2]
  dealloc  dynamic grid AGRID           XAX1_4    YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
- dealloc  dynamic grid (G011)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
- allocate dynamic grid (G011)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G018)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G018)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    3    6  J:    2    3  K:    1    2  L:    1    1
- allocate dynamic grid (G011)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
- strip regrid on X: VAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
+ strip regrid on X: VAR --> (G018)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    2    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:147 I:    1    2  J:    2    3  K:    1    2  L:    1    1
  -DELETE VAR      M:146 I:    2    4  J:    2    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G011)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X
              FILENAME : bn_strides.cdf
@@ -42429,19 +42480,19 @@ LIST VAR[i=2:4:2]
  2   / 2:  1222.00  1224.00
  3   / 3:  1232.00  1234.00
 LIST VAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G011)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
  -DELETE VAR      M:147 I:    1    2  J:    2    3  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX025)   (AX044)   ZAX1_2    TAX1_1
- dealloc  dynamic grid (G011)          (AX025)   (AX044)   ZAX1_2    TAX1_1
- allocate dynamic grid (G011)          (AX025)   (AX044)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G018)          (AX025)   (AX044)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX025)   (AX044)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G018)          (AX025)   (AX044)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G011)          (AX025)   (AX044)   ZAX1_2    TAX1_1
- strip regrid on X: VAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX025)   (AX044)   ZAX1_2    TAX1_1
+ strip regrid on X: VAR --> (G018)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:146 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:147 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G011)          (AX025)   (AX044)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX025)   (AX044)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -42462,19 +42513,19 @@ CANC MEM/ALL
 ! modulo requests cannot use strides (as this example shows)
 set axis/modulo XAX1_4
 LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
- dealloc  dynamic grid (G011)          (AX025)   (AX044)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX025)   (AX044)   ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
- dealloc  dynamic grid (G011)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
- allocate dynamic grid (G011)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G018)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G018)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G011)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
- strip regrid on X: VAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ strip regrid on X: VAR --> (G018)           @XACT
  strip moduloing VAR on X axis:     1    10
  reading VAR      M:151 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  doing moduloing VAR on X axis:     1     4
  regrid  VAR      M:147 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G011)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 3 delta on X
              FILENAME : bn_strides.cdf
@@ -42495,18 +42546,18 @@ cancel axis/modulo XAX1_4
  
 ! strides applied to more than one axis need special attention in IS_REGRID
 LIST VAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G011)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX044)   (AX043)   ZAX1_2    TAX1_1
- dealloc  dynamic grid (G011)          (AX044)   (AX043)   ZAX1_2    TAX1_1
- allocate dynamic grid (G011)          (AX044)   (AX043)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G018)          (AX044)   (AX043)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX044)   (AX043)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G018)          (AX044)   (AX043)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G011)          (AX044)   (AX043)   ZAX1_2    TAX1_1
- strip regrid on X: VAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX044)   (AX043)   ZAX1_2    TAX1_1
+ strip regrid on X: VAR --> (G018)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:151 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G011)          (AX044)   (AX043)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX044)   (AX043)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -42521,19 +42572,19 @@ LIST VAR[i=2:4:2,j=1:3:2]
  1   / 1:  1212.00  1214.00
  3   / 2:  1232.00  1234.00
 LIST VAR[i=2:6:2,j=1:5:2]
- dealloc  dynamic grid (G011)          (AX044)   (AX043)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX044)   (AX043)   ZAX1_2    TAX1_1
  -DELETE VAR      M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX044)   (AX025)   ZAX1_2    TAX1_1
- dealloc  dynamic grid (G011)          (AX044)   (AX025)   ZAX1_2    TAX1_1
- allocate dynamic grid (G011)          (AX044)   (AX025)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G018)          (AX044)   (AX025)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX044)   (AX025)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G018)          (AX044)   (AX025)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G011)          (AX044)   (AX025)   ZAX1_2    TAX1_1
- strip regrid on X: VAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX044)   (AX025)   ZAX1_2    TAX1_1
+ strip regrid on X: VAR --> (G018)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:151 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:147 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G011)          (AX044)   (AX025)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX044)   (AX025)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -42550,24 +42601,24 @@ LIST VAR[i=2:6:2,j=1:5:2]
  
 ! test sub-region selection on strides axis
 let a = bigvar[i=1:40:5]
- dealloc  dynamic grid (G011)          (AX044)   (AX025)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G018)          (AX044)   (AX025)   ZAX1_2    TAX1_1
  -DELETE VAR      M:151 I:    1    2  J:    1    2  K:    1    2  L:    1    1
 list/j=1/k=1/l=1 a[i=3:5]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
- dealloc  dynamic grid (G011)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
- allocate dynamic grid (G011)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
- allocate dynamic grid (G011)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G018)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G018)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G018)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G018)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    3    6  J:    1    1  K:    1    1  L:    1    1
  eval    A        C:  7 I:    3    5  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
- strip regrid on X: BIGVAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ strip regrid on X: BIGVAR --> (G018)           @XACT
  rdstride BIGVAR   C: 10 I:    1   36  J:    1    1  K:    1    1  L:    1    1
  nulrgd  BIGVAR   M:147 I:    1    8  J:    1    1  K:    1    1  L:    1    1
  -DELETE BIGVAR   M:151 I:    1   36  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G011)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G018)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
              VARIABLE : BIGVAR[I=1:40:5]
              FILENAME : bn_strides.cdf
              SUBSET   : 3 points (X)
@@ -42581,24 +42632,24 @@ list/j=1/k=1/l=1 a[i=3:5]
  21   / 5:  1131.00
  -DELETE A        M:146 I:    1    1  J:    3    5  K:    1    1  L:    1    1
 list/k=1/l=1 a[i=3:5,j=1:8:2]
- dealloc  dynamic grid (G011)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G018)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G018)          (AX044)   (AX043)   ZAX1_20   TAX1_10
- dealloc  dynamic grid (G018)          (AX044)   (AX043)   ZAX1_20   TAX1_10
- allocate dynamic grid (G018)          (AX044)   (AX043)   ZAX1_20   TAX1_10
+ allocate dynamic grid (G011)          (AX044)   (AX043)   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G011)          (AX044)   (AX043)   ZAX1_20   TAX1_10
+ allocate dynamic grid (G011)          (AX044)   (AX043)   ZAX1_20   TAX1_10
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    3    6  J:    2    4  K:    1    1  L:    1    1
- allocate dynamic grid (G018)          (AX044)   (AX043)   ZAX1_20   TAX1_10
- strip regrid on Y: A --> (G018)           @XACT
+ allocate dynamic grid (G011)          (AX044)   (AX043)   ZAX1_20   TAX1_10
+ strip regrid on Y: A --> (G011)           @XACT
  eval    A        C:  8 I:    3    5  J:    1    7  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
- strip regrid on X: BIGVAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ strip regrid on X: BIGVAR --> (G018)           @XACT
  rdstride BIGVAR   C: 11 I:    1   36  J:    1    7  K:    1    1  L:    1    1
  nulrgd  BIGVAR   M: 74 I:    1    8  J:    1    7  K:    1    1  L:    1    1
  -DELETE BIGVAR   M:146 I:    1   36  J:    1    7  K:    1    1  L:    1    1
- dealloc  dynamic grid (G011)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G018)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
  regrid  A        M:136 I:    3    5  J:    1    4  K:    1    1  L:    1    1
- dealloc  dynamic grid (G018)          (AX044)   (AX043)   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G011)          (AX044)   (AX043)   ZAX1_20   TAX1_10
              VARIABLE : BIGVAR[I=1:40:5]
                         regrid: 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -42623,19 +42674,19 @@ cancel mem/all
  
 ! basic strides
 LIST/order=x/j=1/k=1/l=1 UNEVENVAR[i=2:4:2]
- dealloc  dynamic grid (G018)          (AX044)   (AX043)   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G011)          (AX044)   (AX043)   ZAX1_20   TAX1_10
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G018)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
- dealloc  dynamic grid (G018)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
- allocate dynamic grid (G018)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G011)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G011)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G011)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    3    6  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G018)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
- strip regrid on X: UNEVENVAR --> (G018)           @XACT
+ allocate dynamic grid (G011)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ strip regrid on X: UNEVENVAR --> (G011)           @XACT
  rdstride UNE-NVAR C:  8 I:    2    4  J:    1    1  K:    1    1  L:    1    1
  nulrgd  UNE-NVAR M:147 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:151 I:    2    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G018)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G011)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X
              FILENAME : bn_strides.cdf
@@ -42653,19 +42704,19 @@ set region/i=3:6/j=2:4/k=1:2/l=1
  
 use/order=yx bn_strides
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
- dealloc  dynamic grid (G018)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G011)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  -DELETE UNE-NVAR M:147 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G018)          (AX043)   (AX045)   (AX046)   TAX1_10
- dealloc  dynamic grid (G018)          (AX043)   (AX045)   (AX046)   TAX1_10
- allocate dynamic grid (G018)          (AX043)   (AX045)   (AX046)   TAX1_10
+ allocate dynamic grid (G011)          (AX043)   (AX045)   (AX046)   TAX1_10
+ dealloc  dynamic grid (G011)          (AX043)   (AX045)   (AX046)   TAX1_10
+ allocate dynamic grid (G011)          (AX043)   (AX045)   (AX046)   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G018)          (AX043)   (AX045)   (AX046)   TAX1_10
- strip regrid on X: BIGVAR --> (G018)           @XACT
+ allocate dynamic grid (G011)          (AX043)   (AX045)   (AX046)   TAX1_10
+ strip regrid on X: BIGVAR --> (G011)           @XACT
  rdstride BIGVAR   C:  7 I:    3    9  J:    2    6  K:    1    3  L:    1    1
  nulrgd  BIGVAR   M:151 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:147 I:    3    9  J:    2    6  K:    1    3  L:    1    1
- dealloc  dynamic grid (G018)          (AX043)   (AX045)   (AX046)   TAX1_10
+ dealloc  dynamic grid (G011)          (AX043)   (AX045)   (AX046)   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on X, 2 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -42683,22 +42734,22 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  6   / 3:  1363.00  1365.00  1367.00  1369.00
 canc data/all
  -DELETE BIGVAR   M:151 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G018)          (AX043)   (AX045)   (AX046)   TAX1_10
- dealloc  dynamic grid (G011)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G011)          (AX043)   (AX045)   (AX046)   TAX1_10
+ dealloc  dynamic grid (G018)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
  
 use/order=zyx bn_strides
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX046)   (AX045)   (AX043)   TAX1_10
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   (AX043)   TAX1_10
- allocate dynamic grid (G011)          (AX046)   (AX045)   (AX043)   TAX1_10
+ allocate dynamic grid (G018)          (AX046)   (AX045)   (AX043)   TAX1_10
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   (AX043)   TAX1_10
+ allocate dynamic grid (G018)          (AX046)   (AX045)   (AX043)   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G011)          (AX046)   (AX045)   (AX043)   TAX1_10
- strip regrid on X: BIGVAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX046)   (AX045)   (AX043)   TAX1_10
+ strip regrid on X: BIGVAR --> (G018)           @XACT
  rdstride BIGVAR   C:  7 I:    3    9  J:    2    6  K:    1    3  L:    1    1
  nulrgd  BIGVAR   M:147 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:151 I:    3    9  J:    2    6  K:    1    3  L:    1    1
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   (AX043)   TAX1_10
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   (AX043)   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on X, 2 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -42716,7 +42767,7 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  6   / 3:  1363.00  1563.00  1763.00  1963.00
 canc data/all
  -DELETE BIGVAR   M:147 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   (AX043)   TAX1_10
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   (AX043)   TAX1_10
  
 ! now with xytvar
 cancel region
@@ -42725,16 +42776,16 @@ use bn_strides
  
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX045)   (AX046)   NORMAL    (AX044)
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   NORMAL    (AX044)
- allocate dynamic grid (G011)          (AX045)   (AX046)   NORMAL    (AX044)
+ allocate dynamic grid (G018)          (AX045)   (AX046)   NORMAL    (AX044)
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   NORMAL    (AX044)
+ allocate dynamic grid (G018)          (AX045)   (AX046)   NORMAL    (AX044)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- allocate dynamic grid (G011)          (AX045)   (AX046)   NORMAL    (AX044)
- strip regrid on X: XYTVAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX045)   (AX046)   NORMAL    (AX044)
+ strip regrid on X: XYTVAR --> (G018)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
  nulrgd  XYTVAR   M:151 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  -DELETE XYTVAR   M:147 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   NORMAL    (AX044)
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   NORMAL    (AX044)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
              FILENAME : bn_strides.cdf
@@ -42752,7 +42803,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  
 use/order=tyx bn_strides
 show grid xytvar
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   NORMAL    (AX044)
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   NORMAL    (AX044)
  -DELETE XYTVAR   M:151 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  getgrid EX#1     C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
     GRID EGRID
@@ -42765,16 +42816,16 @@ show grid xytvar
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  dealloc  dynamic grid EGRID           XLON      YLAT      NORMAL    TTIME
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX046)   (AX045)   NORMAL    (AX043)
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   NORMAL    (AX043)
- allocate dynamic grid (G011)          (AX046)   (AX045)   NORMAL    (AX043)
+ allocate dynamic grid (G018)          (AX046)   (AX045)   NORMAL    (AX043)
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   NORMAL    (AX043)
+ allocate dynamic grid (G018)          (AX046)   (AX045)   NORMAL    (AX043)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- allocate dynamic grid (G011)          (AX046)   (AX045)   NORMAL    (AX043)
- strip regrid on X: XYTVAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX046)   (AX045)   NORMAL    (AX043)
+ strip regrid on X: XYTVAR --> (G018)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
  nulrgd  XYTVAR   M:147 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
  -DELETE XYTVAR   M:151 I:    1    7  J:    2    6  K: -999 -999  L:    3    5
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   NORMAL    (AX043)
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   NORMAL    (AX043)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
              FILENAME : bn_strides.cdf
@@ -42791,7 +42842,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  2N   / 1:  5021.00  5023.00  5025.00  5027.00
 canc data/all
  -DELETE XYTVAR   M:147 I:    1    4  J:    1    3  K: -999 -999  L:    1    2
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   NORMAL    (AX043)
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   NORMAL    (AX043)
  
 ! map into Z instead of T
 use/order=zxy bn_strides
@@ -42808,16 +42859,16 @@ show grid xytvar
 list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
  dealloc  dynamic grid GPC5            TTIME     XLON      YLAT      NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX045)   (AX046)   (AX044)   NORMAL
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   (AX044)   NORMAL
- allocate dynamic grid (G011)          (AX045)   (AX046)   (AX044)   NORMAL
+ allocate dynamic grid (G018)          (AX045)   (AX046)   (AX044)   NORMAL
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   (AX044)   NORMAL
+ allocate dynamic grid (G018)          (AX045)   (AX046)   (AX044)   NORMAL
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K:    1    2  L:    1    2
- allocate dynamic grid (G011)          (AX045)   (AX046)   (AX044)   NORMAL
- strip regrid on X: XYTVAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX045)   (AX046)   (AX044)   NORMAL
+ strip regrid on X: XYTVAR --> (G018)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
  nulrgd  XYTVAR   M:151 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
  -DELETE XYTVAR   M:147 I:    1    7  J:    2    6  K:    3    5  L: -999 -999
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   (AX044)   NORMAL
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   (AX044)   NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X, 2 deg on Y, 2 deg on Z
              FILENAME : bn_strides.cdf
@@ -42834,7 +42885,7 @@ list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
  146   / 3:  1056.00  3056.00  5056.00  7056.00
 canc data/all
  -DELETE XYTVAR   M:151 I:    1    4  J:    1    3  K:    1    2  L: -999 -999
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   (AX044)   NORMAL
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   (AX044)   NORMAL
  
  
 cancel region; set region/l=1
@@ -42843,16 +42894,16 @@ cancel region; set region/l=1
 use/order=yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX046)   (AX045)   (AX043)   TAX1_6
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   (AX043)   TAX1_6
- allocate dynamic grid (G011)          (AX046)   (AX045)   (AX043)   TAX1_6
+ allocate dynamic grid (G018)          (AX046)   (AX045)   (AX043)   TAX1_6
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   (AX043)   TAX1_6
+ allocate dynamic grid (G018)          (AX046)   (AX045)   (AX043)   TAX1_6
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G011)          (AX046)   (AX045)   (AX043)   TAX1_6
- strip regrid on X: MIDVAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX046)   (AX045)   (AX043)   TAX1_6
+ strip regrid on X: MIDVAR --> (G018)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   (AX043)   TAX1_6
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   (AX043)   TAX1_6
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -42868,24 +42919,24 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1515.00  1555.00
 canc data/all
  -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   (AX043)   TAX1_6
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   (AX043)   TAX1_6
  
 use/order=-yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX045)   (AX046)   (AX044)   TAX1_6
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   (AX044)   TAX1_6
- allocate dynamic grid (G011)          (AX045)   (AX046)   (AX044)   TAX1_6
+ allocate dynamic grid (G018)          (AX045)   (AX046)   (AX044)   TAX1_6
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   (AX044)   TAX1_6
+ allocate dynamic grid (G018)          (AX045)   (AX046)   (AX044)   TAX1_6
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G011)          (AX045)   (AX046)   (AX044)   TAX1_6
- strip regrid on X: MIDVAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX045)   (AX046)   (AX044)   TAX1_6
+ strip regrid on X: MIDVAR --> (G018)           @XACT
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    1    5  J:    5    8  K:    3    5  L:    1    1
  doing reversing MIDVAR on Y axis:     2     5
  -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   (AX044)   TAX1_6
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   (AX044)   TAX1_6
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -42901,22 +42952,22 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1515.00  1555.00
 canc data/all
  -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   (AX044)   TAX1_6
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   (AX044)   TAX1_6
  
 ! reference output
 use/order=tyx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX046)   (AX045)   (AX043)   ZAX1_7
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   (AX043)   ZAX1_7
- allocate dynamic grid (G011)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ allocate dynamic grid (G018)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ allocate dynamic grid (G018)          (AX046)   (AX045)   (AX043)   ZAX1_7
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G011)          (AX046)   (AX045)   (AX043)   ZAX1_7
- strip regrid on X: MIDVAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ strip regrid on X: MIDVAR --> (G018)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:151 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   (AX043)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -42932,25 +42983,25 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1155.00  5155.00
 canc data/all
  -DELETE MIDVAR   M:151 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   (AX043)   ZAX1_7
  
 ! note the reversal on axes 1,2 and 3 (X,Y,Z in memory -- NOT T)
 use/order=-t-y-x bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX045)   (AX046)   (AX044)   ZAX1_7
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   (AX044)   ZAX1_7
- allocate dynamic grid (G011)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ allocate dynamic grid (G018)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ allocate dynamic grid (G018)          (AX045)   (AX046)   (AX044)   ZAX1_7
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G011)          (AX045)   (AX046)   (AX044)   ZAX1_7
- strip regrid on X: MIDVAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ strip regrid on X: MIDVAR --> (G018)           @XACT
  strip reversing MIDVAR on X axis:     1     5
  rdstride MIDVAR   C:  8 I:    2    6  J:    4    7  K:    3    5  L:    7    7
  doing reversing MIDVAR on X axis:     1     5
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:151 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   (AX044)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -42966,22 +43017,22 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  6745.00  2745.00
 canc data/all
  -DELETE MIDVAR   M:151 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   (AX044)   ZAX1_7
  
 ! reference output
 use/order=txy bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX046)   (AX045)   (AX043)   ZAX1_7
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   (AX043)   ZAX1_7
- allocate dynamic grid (G011)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ allocate dynamic grid (G018)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ allocate dynamic grid (G018)          (AX046)   (AX045)   (AX043)   ZAX1_7
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G011)          (AX046)   (AX045)   (AX043)   ZAX1_7
- strip regrid on X: MIDVAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ strip regrid on X: MIDVAR --> (G018)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   (AX043)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -42997,24 +43048,24 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1155.00  5155.00
 canc data/all
  -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G011)          (AX046)   (AX045)   (AX043)   ZAX1_7
+ dealloc  dynamic grid (G018)          (AX046)   (AX045)   (AX043)   ZAX1_7
  
 use/order=-t-x-y bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G011)          (AX045)   (AX046)   (AX044)   ZAX1_7
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   (AX044)   ZAX1_7
- allocate dynamic grid (G011)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ allocate dynamic grid (G018)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ allocate dynamic grid (G018)          (AX045)   (AX046)   (AX044)   ZAX1_7
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G011)          (AX045)   (AX046)   (AX044)   ZAX1_7
- strip regrid on X: MIDVAR --> (G011)           @XACT
+ allocate dynamic grid (G018)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ strip regrid on X: MIDVAR --> (G018)           @XACT
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    2    6  J:    5    8  K:    3    5  L:    7    7
  doing reversing MIDVAR on Y axis:     2     5
  -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:151 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   (AX044)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -43030,7 +43081,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  6755.00  2755.00
 canc data/all
  -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G011)          (AX045)   (AX046)   (AX044)   ZAX1_7
+ dealloc  dynamic grid (G018)          (AX045)   (AX046)   (AX044)   ZAX1_7
  
 ! DEFINE AXIS can get the axis too long (bug 673)
 GO bn_reset
@@ -45199,31 +45250,6 @@ LET UA_LC_T1DLV = 0.64
 LET UA_LC_BTLV = -8
 LET UA_LC_B1DLV = -0.64
 LET UA_LC_SCL = 1000
-LET VA_LC = VA12+VB12+VA13+VB13+VA14+VB14+VA15+VB15+VA16+VB16+VA17+VB17+VA18+VB18+VA19+VB19+VA20+VB20+VA21+VB21+VA22+VB22+VA23+VB23
-LET VA_LC_TPLV = 8
-LET VA_LC_T1DLV = 0.64
-LET VA_LC_BTLV = -8
-LET VA_LC_B1DLV = -0.64
-LET VA_LC_SCL = 1000
-LET SPEED = (UA_LC^2 + VA_LC^2) ^ 0.5
-LET SPEED_TPLV = 40
-LET SPEED_1DLV = 16
-LET SPEED_SCL = 100
-LET MAX_SPEED = SPEED[L=1:420@MAX]
-LET MAX_SPEED_TPLV = 40
-LET MAX_SPEED_1DLV = 16
-LET MAX_SPEED_SCL = 10
-LET MAX_ALL = HA_LC[L=1:420@MAX]
-LET MIN_MASK = IF MAX_ALL GT .001 THEN 1
-LET MAX_WAVE = MAX_ALL*MIN_MASK
-LET MAX_WAVE_TPLV = 500
-LET MAX_WAVE_1DLV = 400
-LET MAX_WAVE_SCL = 10
-LET SIG_WAVE = HA_LC[L=1:420] - MAX_WAVE
-LET MAX_TTIME = SIG_WAVE[L=1:420@LOC:0]
-LET THRESHOLD_PRCNT = .30
-LET NOISE_MASK = IF HA_LC[L=1:420] LE MAX_ALL*THRESHOLD_PRCNT THEN 0 ELSE 1
-LET ON_MASK = IF NOISE_MASK[L=1:420@RSUM] GE 1 THEN 0.5
              VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
@@ -45275,6 +45301,31 @@ DATA:
 224.60299
 224.60350
 224.60400
+LET VA_LC = VA12+VB12+VA13+VB13+VA14+VB14+VA15+VB15+VA16+VB16+VA17+VB17+VA18+VB18+VA19+VB19+VA20+VB20+VA21+VB21+VA22+VB22+VA23+VB23
+LET VA_LC_TPLV = 8
+LET VA_LC_T1DLV = 0.64
+LET VA_LC_BTLV = -8
+LET VA_LC_B1DLV = -0.64
+LET VA_LC_SCL = 1000
+LET SPEED = (UA_LC^2 + VA_LC^2) ^ 0.5
+LET SPEED_TPLV = 40
+LET SPEED_1DLV = 16
+LET SPEED_SCL = 100
+LET MAX_SPEED = SPEED[L=1:420@MAX]
+LET MAX_SPEED_TPLV = 40
+LET MAX_SPEED_1DLV = 16
+LET MAX_SPEED_SCL = 10
+LET MAX_ALL = HA_LC[L=1:420@MAX]
+LET MIN_MASK = IF MAX_ALL GT .001 THEN 1
+LET MAX_WAVE = MAX_ALL*MIN_MASK
+LET MAX_WAVE_TPLV = 500
+LET MAX_WAVE_1DLV = 400
+LET MAX_WAVE_SCL = 10
+LET SIG_WAVE = HA_LC[L=1:420] - MAX_WAVE
+LET MAX_TTIME = SIG_WAVE[L=1:420@LOC:0]
+LET THRESHOLD_PRCNT = .30
+LET NOISE_MASK = IF HA_LC[L=1:420] LE MAX_ALL*THRESHOLD_PRCNT THEN 0 ELSE 1
+LET ON_MASK = IF NOISE_MASK[L=1:420@RSUM] GE 1 THEN 0.5
 LET OFF_EVENTS = IF NOISE_MASK - NOISE_MASK[L=1:420@SHF:-1] LT 0 THEN 1 ELSE 0
 LET OFF_MASK = IF OFF_EVENTS[L=1:420@RSUM] LT 1 THEN 0.5
 LET WAVE1 = (ON_MASK+OFF_MASK)*HA_LC[L=1:420]
@@ -45778,7 +45829,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS22-MAR-2012 15:50:19
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS30-MAR-2012 16:32:40
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47197,7 +47248,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "22-Mar-12:15:49"
+WIN_TITLE = "30-Mar-12:16:31"
  
 set win/title="set the title"
 sho sym win_title
@@ -47215,7 +47266,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="22-Mar-12:15:49"
+ !-> set win/title="30-Mar-12:16:31"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47224,16 +47275,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 22-Mar-12
+ !-> DEFINE SYMBOL the_date = 30-Mar-12
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 15:49
+ !-> DEFINE SYMBOL the_time = 16:31
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="22-Mar-12:15:49"
+ !-> SET WIN/TITLE="30-Mar-12:16:31"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "22-Mar-12:15:49"
+WIN_TITLE = "30-Mar-12:16:31"
  
 GO bn_reset
 cancel mode verify
@@ -49491,8 +49542,6 @@ show axis/all
  Y2        Y                    3 r   1                    5
  X3        X                    3 r   1                    3
  X4        X                    4 r   1                    4
- XPROJ120  X                  120 r   -1                   1
- YPROJ120  Y                  120 r   -1                   1
  Y10       Y                  201 r   0                    10
  Y5        Y                    5 r   1                    5
  XAXJ      X                    1 r   1                    1
@@ -49688,6 +49737,52 @@ show att/all (`sst,return=taxis`)
      attributes for dataset: ./coads_climatology.cdf
  (TIME7).units = hour since 0000-01-01 00:00:00 
  (TIME7).time_origin = 1-JAN-0000 00:00:00 
+netcdf a {
+dimensions:
+	PSXT91_108 = 18 ;
+	PSYT35_56 = 22 ;
+	bnds = 2 ;
+	PSZT1_10 = 10 ;
+	TIME1 = UNLIMITED ; // (25 currently)
+variables:
+	double PSXT91_108(PSXT91_108) ;
+		PSXT91_108:units = "degrees_east" ;
+		PSXT91_108:modulo = 360. ;
+		PSXT91_108:point_spacing = "even" ;
+		PSXT91_108:axis = "X" ;
+		PSXT91_108:standard_name = "longitude" ;
+	double PSYT35_56(PSYT35_56) ;
+		PSYT35_56:units = "degrees_north" ;
+		PSYT35_56:point_spacing = "uneven" ;
+		PSYT35_56:axis = "Y" ;
+		PSYT35_56:standard_name = "latitude" ;
+		PSYT35_56:bounds = "PSYT35_56_bnds" ;
+	double PSYT35_56_bnds(PSYT35_56, bnds) ;
+	double PSZT1_10(PSZT1_10) ;
+		PSZT1_10:units = "METERS" ;
+		PSZT1_10:positive = "down" ;
+		PSZT1_10:point_spacing = "uneven" ;
+		PSZT1_10:axis = "Z" ;
+		PSZT1_10:standard_name = "depth" ;
+		PSZT1_10:bounds = "PSZT1_10_bnds" ;
+	double PSZT1_10_bnds(PSZT1_10, bnds) ;
+	double TIME1(TIME1) ;
+		TIME1:units = "hour since 1980-01-14 14:00:00" ;
+		TIME1:time_origin = "14-JAN-1980 14:00:00" ;
+		TIME1:axis = "T" ;
+		TIME1:standard_name = "time" ;
+	double FAREN(TIME1, PSZT1_10, PSYT35_56, PSXT91_108) ;
+		FAREN:missing_value = -1.e+34 ;
+		FAREN:_FillValue = -1.e+34 ;
+		FAREN:long_name = "TEMP*9/5 + 32" ;
+		FAREN:units = "Deg F" ;
+		FAREN:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
+		FAREN:history = "From gt4d011" ;
+
+// global attributes:
+		:history = "FERRET V6.73   30-Mar-12" ;
+		:Conventions = "CF-1.0" ;
+}
  (TIME7).modulo =   
  (TIME7).orig_file_axname = TIME 
  
@@ -49732,52 +49827,6 @@ show att/all (`sst,return=taxis`)
  (TIME7).time_origin = 15-jan-2002 
  (TIME7).modulo =   
  (TIME7).orig_file_axname = TIME 
-netcdf a {
-dimensions:
-	PSXT91_108 = 18 ;
-	PSYT35_56 = 22 ;
-	bnds = 2 ;
-	PSZT1_10 = 10 ;
-	TIME1 = UNLIMITED ; // (25 currently)
-variables:
-	double PSXT91_108(PSXT91_108) ;
-		PSXT91_108:units = "degrees_east" ;
-		PSXT91_108:modulo = 360. ;
-		PSXT91_108:point_spacing = "even" ;
-		PSXT91_108:axis = "X" ;
-		PSXT91_108:standard_name = "longitude" ;
-	double PSYT35_56(PSYT35_56) ;
-		PSYT35_56:units = "degrees_north" ;
-		PSYT35_56:point_spacing = "uneven" ;
-		PSYT35_56:axis = "Y" ;
-		PSYT35_56:standard_name = "latitude" ;
-		PSYT35_56:bounds = "PSYT35_56_bnds" ;
-	double PSYT35_56_bnds(PSYT35_56, bnds) ;
-	double PSZT1_10(PSZT1_10) ;
-		PSZT1_10:units = "METERS" ;
-		PSZT1_10:positive = "down" ;
-		PSZT1_10:point_spacing = "uneven" ;
-		PSZT1_10:axis = "Z" ;
-		PSZT1_10:standard_name = "depth" ;
-		PSZT1_10:bounds = "PSZT1_10_bnds" ;
-	double PSZT1_10_bnds(PSZT1_10, bnds) ;
-	double TIME1(TIME1) ;
-		TIME1:units = "hour since 1980-01-14 14:00:00" ;
-		TIME1:time_origin = "14-JAN-1980 14:00:00" ;
-		TIME1:axis = "T" ;
-		TIME1:standard_name = "time" ;
-	double FAREN(TIME1, PSZT1_10, PSYT35_56, PSXT91_108) ;
-		FAREN:missing_value = -1.e+34 ;
-		FAREN:_FillValue = -1.e+34 ;
-		FAREN:long_name = "TEMP*9/5 + 32" ;
-		FAREN:units = "Deg F" ;
-		FAREN:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
-		FAREN:history = "From gt4d011" ;
-
-// global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
-		:Conventions = "CF-1.0" ;
-}
  
 ! Likewise on DEFINE AXIS or SET AXIS, change units to
 ! include the correct since time_origin.
@@ -51609,7 +51658,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.73   22-Mar-12
+ .                               history         CHAR        24   T       FERRET V6.73   30-Mar-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51654,7 +51703,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.73   22-Mar-12
+ .                               history         CHAR        24   T       FERRET V6.73   30-Mar-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -52920,6 +52969,9 @@ GO bn_reset
 cancel mode verify
 GO bn_set_var_name.jnl
 ! bn_set_var_name.jnl
+Internal overflow expressing 500000.0 Mwords as words (1783793664) 
+Unable to allocate the requested 500000.0 Mwords of memory.
+Memory remaining at 0.2 Mwords.
 ! This has been in Ferret since v5.3 but never a benchmark test of it!
 ! ACM 8/2007
  
@@ -52966,9 +53018,6 @@ LIST/X=179:183/Y=40/L=3 sst
  
 GO bn_reset
 cancel mode verify
-Internal overflow expressing 500000.0 Mwords as words (1783793664) 
-Unable to allocate the requested 500000.0 Mwords of memory.
-Memory remaining at 0.2 Mwords.
 ! This routine executes a ppl error which exits us from Ferret
 ! when run in the benchmark suite. Should test this, but dont do it
 ! here, for now.
@@ -54837,8 +54886,6 @@ SHOW AXIS/ALL
  Y2        Y                    3 r   1                    5
  X3        X                    3 r   1                    3
  X4        X                    4 r   1                    4
- XPROJ120  X                  120 r   -1                   1
- YPROJ120  Y                  120 r   -1                   1
  Y10       Y                  201 r   0                    10
  Y5        Y                    5 r   1                    5
  XAXJ      X                    1 r   1                    1
@@ -55035,8 +55082,6 @@ SHOW AXIS/ALL
  Y2        Y                    3 r   1                    5
  X3        X                    3 r   1                    3
  X4        X                    4 r   1                    4
- XPROJ120  X                  120 r   -1                   1
- YPROJ120  Y                  120 r   -1                   1
  Y10       Y                  201 r   0                    10
  Y5        Y                    5 r   1                    5
  XAXJ      X                    1 r   1                    1
@@ -56114,61 +56159,6 @@ list indx_bi, samplei(bi,indx_bi)
 1   / 1:  7.000000 "0"  
 2   / 2:  1.000000 "AB" 
 3   / 3:  2.000000 "C"  
-netcdf a {
-dimensions:
-	XAX1_10 = 10 ;
-	tday = UNLIMITED ; // (31 currently)
-	lon1_5 = 5 ;
-	lat1_5 = 5 ;
-	bnds = 2 ;
-	zt = 10 ;
-	time1478 = 3 ;
-variables:
-	double XAX1_10(XAX1_10) ;
-		XAX1_10:point_spacing = "even" ;
-		XAX1_10:axis = "X" ;
-	double tday(tday) ;
-		tday:units = "days since 1998-12-31 00:00:00" ;
-		tday:axis = "T" ;
-		tday:calendar = "GREGORIAN" ;
-		tday:time_origin = "31-DEC-1998" ;
-		tday:standard_name = "time" ;
-	float MyUpperLowerCaseVar(tday, XAX1_10) ;
-		MyUpperLowerCaseVar:missing_value = -1.e+34f ;
-		MyUpperLowerCaseVar:_FillValue = -1.e+34f ;
-		MyUpperLowerCaseVar:long_name = "X[X=1:10] + T[GT=TDAY]" ;
-	double lon1_5(lon1_5) ;
-		lon1_5:point_spacing = "even" ;
-		lon1_5:axis = "X" ;
-	double lat1_5(lat1_5) ;
-		lat1_5:point_spacing = "uneven" ;
-		lat1_5:axis = "Y" ;
-		lat1_5:bounds = "lat1_5_bnds" ;
-	double lat1_5_bnds(lat1_5, bnds) ;
-	double zt(zt) ;
-		zt:units = "meters" ;
-		zt:positive = "down" ;
-		zt:point_spacing = "uneven" ;
-		zt:axis = "Z" ;
-		zt:standard_name = "depth" ;
-		zt:bounds = "zt_bnds" ;
-	double zt_bnds(zt, bnds) ;
-	double time1478(time1478) ;
-		time1478:calendar = "NOLEAP" ;
-		time1478:point_spacing = "even" ;
-		time1478:axis = "T" ;
-		time1478:standard_name = "time" ;
-	float newvar(time1478, zt, lat1_5, lon1_5) ;
-		newvar:missing_value = -999.f ;
-		newvar:_FillValue = -999.f ;
-		newvar:long_name = "outgoing longwave radiation" ;
-		newvar:units = "watts/m2" ;
-		newvar:history = "From a" ;
-
-// global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
-		:Conventions = "CF-1.0" ;
-}
 4   / 4:  4.000000 "aa" 
 5   / 5:  5.000000 "abc"
 6   / 6:      .... ""   
@@ -56400,6 +56390,61 @@ USE a1478.nc
 USE a_cartesian_bug1179.nc
  
 ! Define an output variable with some axes from each dataset.
+netcdf a {
+dimensions:
+	XAX1_10 = 10 ;
+	tday = UNLIMITED ; // (31 currently)
+	lon1_5 = 5 ;
+	lat1_5 = 5 ;
+	bnds = 2 ;
+	zt = 10 ;
+	time1478 = 3 ;
+variables:
+	double XAX1_10(XAX1_10) ;
+		XAX1_10:point_spacing = "even" ;
+		XAX1_10:axis = "X" ;
+	double tday(tday) ;
+		tday:units = "days since 1998-12-31 00:00:00" ;
+		tday:axis = "T" ;
+		tday:calendar = "GREGORIAN" ;
+		tday:time_origin = "31-DEC-1998" ;
+		tday:standard_name = "time" ;
+	float MyUpperLowerCaseVar(tday, XAX1_10) ;
+		MyUpperLowerCaseVar:missing_value = -1.e+34f ;
+		MyUpperLowerCaseVar:_FillValue = -1.e+34f ;
+		MyUpperLowerCaseVar:long_name = "X[X=1:10] + T[GT=TDAY]" ;
+	double lon1_5(lon1_5) ;
+		lon1_5:point_spacing = "even" ;
+		lon1_5:axis = "X" ;
+	double lat1_5(lat1_5) ;
+		lat1_5:point_spacing = "uneven" ;
+		lat1_5:axis = "Y" ;
+		lat1_5:bounds = "lat1_5_bnds" ;
+	double lat1_5_bnds(lat1_5, bnds) ;
+	double zt(zt) ;
+		zt:units = "meters" ;
+		zt:positive = "down" ;
+		zt:point_spacing = "uneven" ;
+		zt:axis = "Z" ;
+		zt:standard_name = "depth" ;
+		zt:bounds = "zt_bnds" ;
+	double zt_bnds(zt, bnds) ;
+	double time1478(time1478) ;
+		time1478:calendar = "NOLEAP" ;
+		time1478:point_spacing = "even" ;
+		time1478:axis = "T" ;
+		time1478:standard_name = "time" ;
+	float newvar(time1478, zt, lat1_5, lon1_5) ;
+		newvar:missing_value = -999.f ;
+		newvar:_FillValue = -999.f ;
+		newvar:long_name = "outgoing longwave radiation" ;
+		newvar:units = "watts/m2" ;
+		newvar:history = "From a" ;
+
+// global attributes:
+		:history = "FERRET V6.73   30-Mar-12" ;
+		:Conventions = "CF-1.0" ;
+}
 LET/D=2 zvar = z[gz=temp[d=2]]
 LET newvar =  0*zvar[d=2] + olr[d=1]
 SET ATT/LIKE=olr[d=1] newvar
@@ -57757,10 +57802,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "41.4687"
-CLOCK_SECS = "69.499"
-CURRENT_DATE = "22-Mar-12"
-CURRENT_TIME = "15:50:42"
+DELTA_CPU = "41.3747"
+CLOCK_SECS = "68.104"
+CURRENT_DATE = "30-Mar-12"
+CURRENT_TIME = "16:33:02"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57769,8 +57814,8 @@ CURRENT_TIME = "15:50:42"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.037995"
-CLOCK_SECS = "69.571"
+DELTA_CPU = "0.045993"
+CLOCK_SECS = "68.172"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57784,60 +57829,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.360945
+ !-> DEFINE VARIABLE ten_plots = 0.349947
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.001"
-CLOCK_SECS = "70.242"
+DELTA_CPU = "9.99E-04"
+CLOCK_SECS = "68.804"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "70.242"
+CLOCK_SECS = "68.804"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.038994
+ !-> DEFINE VARIABLE dt = 0.034996
+ !-> DEFINE VARIABLE sumcpu =0.034996
 !-> REPEAT: K=2
  !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.072989
+ !-> DEFINE VARIABLE sumcpu =0.068991
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.040994
- !-> DEFINE VARIABLE sumcpu =0.113983
+ !-> DEFINE VARIABLE dt = 0.039993
+ !-> DEFINE VARIABLE sumcpu =0.108984
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.035994
- !-> DEFINE VARIABLE sumcpu =0.149977
+ !-> DEFINE VARIABLE dt = 0.036994
+ !-> DEFINE VARIABLE sumcpu =0.145978
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.039994
- !-> DEFINE VARIABLE sumcpu =0.189971
+ !-> DEFINE VARIABLE dt = 0.035995
+ !-> DEFINE VARIABLE sumcpu =0.181973
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.037995
- !-> DEFINE VARIABLE sumcpu =0.227966
-!-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.034994
- !-> DEFINE VARIABLE sumcpu =0.26296
-!-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.037994
- !-> DEFINE VARIABLE sumcpu =0.300954
-!-> REPEAT: K=9
  !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.335949
+ !-> DEFINE VARIABLE sumcpu =0.216968
+!-> REPEAT: K=7
+ !-> DEFINE VARIABLE dt = 0.036994
+ !-> DEFINE VARIABLE sumcpu =0.253962
+!-> REPEAT: K=8
+ !-> DEFINE VARIABLE dt = 0.038994
+ !-> DEFINE VARIABLE sumcpu =0.292956
+!-> REPEAT: K=9
+ !-> DEFINE VARIABLE dt = 0.036994
+ !-> DEFINE VARIABLE sumcpu =0.32995
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.042994
- !-> DEFINE VARIABLE sumcpu =0.378943
+ !-> DEFINE VARIABLE dt = 0.036994
+ !-> DEFINE VARIABLE sumcpu =0.366944
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.378943
-0.378943
+ !-> MESSAGE/CONTINUE 0.366944
+0.366944
 sh sym CLOCK_SECS
-CLOCK_SECS = "71.156"
+CLOCK_SECS = "69.732"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "22-Mar-12"
-SESSION_TIME = "15:49"
-CURRENT_DATE = "22-Mar-12"
-CURRENT_TIME = "15:50:44"
+SESSION_DATE = "30-Mar-12"
+SESSION_TIME = "16:31"
+CURRENT_DATE = "30-Mar-12"
+CURRENT_TIME = "16:33:04"
  
  
 ! ******** V6.3 Additions below ***********
@@ -59145,7 +59190,7 @@ plot temp
  eval    EX#1     C:  4 I:   50   50  J:   45   45  K:    1    1  L:    3  170
  found   TEMP     M: 36 I:   50   51  J:   45   50  K:    1    2  L:    1  172
 setting up plot
-PPL plot 730  complete
+PPL plot 741  complete
 plot/over temp[g=u]
  dealloc  dynamic grid PS3DT1          PSXT1     PSYT1     PSZT1     TIME13
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59161,7 +59206,7 @@ plot/over temp[g=u]
  regrid  TEMP     M: 27 I:   50   50  J:   45   45  K:    1    1  L:    1    2
  doing moduloing TEMP on T axis:     1     2
 setting up plot
-PPL plot 731  complete
+PPL plot 742  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT1     TIME13
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59173,7 +59218,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day]
  regrid  TEMP     M: 23 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 26 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 732  complete
+PPL plot 743  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890]
  dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT1     TAX5DAY
  -DELETE TEMP     M: 23 I:   50   50  J:   45   45  K:    1    1  L:    2  104
@@ -59189,7 +59234,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890]
  regrid  TEMP     M: 23 I:    7    7  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 26 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 733  complete
+PPL plot 744  complete
 plot/over temp[g=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59205,7 +59250,7 @@ plot/over temp[g=u@ave]
  regrid  TEMP     M: 19 I:   50   50  J:   45   45  K:    1    1  L:    1    2
  doing moduloing TEMP on T axis:     1     2
 setting up plot
-PPL plot 734  complete
+PPL plot 745  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT1     TIME13
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59217,7 +59262,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
  regrid  TEMP     M: 17 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 18 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 735  complete
+PPL plot 746  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT1     TAX5DAY
  -DELETE TEMP     M: 17 I:   50   50  J:   45   45  K:    1    1  L:    2  104
@@ -59235,7 +59280,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  regrid  TEMP     M: 16 I:    7    7  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 13 I:   45   56  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 736  complete
+PPL plot 747  complete
 plot/over temp[g=u@asn]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59257,7 +59302,7 @@ plot/over temp[g=u@asn]
  -DELETE TEMP     M: 15 I:   50   50  J:   45   45  K:    1    1  L:    1    2
  doing moduloing TEMP on T axis:     1     2
 setting up plot
-PPL plot 737  complete
+PPL plot 748  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@asn]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT1     TIME13
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59275,7 +59320,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@asn]
  regrid  TEMP     M: 10 I:    7    7  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 11 I:    7    7  J:   45   45  K:    1    1  L:    2  104
 setting up plot
-PPL plot 738  complete
+PPL plot 749  complete
 plot/over temp[g=u,gt=u@ave]
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59287,7 +59332,7 @@ plot/over temp[g=u,gt=u@ave]
  found   TEMP     M: 24 I:   50   50  J:   45   45  K:    1    1  L:    3  170
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT1     TIME13
 setting up plot
-PPL plot 739  complete
+PPL plot 750  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT1     TIME13
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59299,7 +59344,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5da
  regrid  TEMP     M: 25 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 11 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 740  complete
+PPL plot 751  complete
 plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  dealloc  dynamic grid G5DAYG5DAYG5DAYGPSXU      PSYU      PSZT1     TAX5DAY
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59314,7 +59359,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefg
  regrid  TEMP     M: 11 I:    7    7  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 21 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 741  complete
+PPL plot 752  complete
 plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@asn]  ! invalid interpretation of data
  dealloc  dynamic grid G5_10           XAX10     PSYU      PSZW      TAX5DAY
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -59326,7 +59371,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5da
  regrid  TEMP     M:  9 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 21 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
-PPL plot 742  complete
+PPL plot 753  complete
  
  
 set mode/last diag
@@ -59887,7 +59932,250 @@ GO bn_txtype_dmy
 ! Symbol TXTYPE_SETTING contains YR, MON, DAY after the
 ! axis type has been set for the axis; lets us plot/set
 ! and then choose the time axis label style
-! Useful when going across years or plotting with /NOLAB<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+! Useful when going across years or plotting with /NOLAB
+ 
+set win/asp=1
+use gtsa056_2.cdf
+ 
+! Plot the whole series; txtype is YR
+plot/x=140w/y=-1/k=1/set temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "YR"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 0 THEN PPL TXTYPE,MON,DMY
+ppl plot
+ 
+! This will be MON
+shade/x=140w/k=1/t=1-feb-1982:15-apr-1982/set temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "MON"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 1 THEN PPL TXTYPE,MON,DMY
+ppl shade
+ 
+! Also MON so setting not changed.
+contour/x=140w/k=1/t=1-feb-1982:15-feb-1982/set temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "MON"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 1 THEN PPL TXTYPE,MON,DMY
+ppl contour
+ 
+ 
+! Is DAY so setting not changed.
+ 
+plot/set/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "DAY"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 0 THEN PPL TXTYPE,MON,DMY
+ppl plot
+ 
+! Set PPL TXTYPE with DAY,DMY
+plot/set/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "DAY"
+if ($TXTYPE_SETTING"0|DAY>1|*>0") THEN PPL TXTYPE,DAY,DMY
+ !-> if 1 THEN PPL TXTYPE,DAY,DMY
+ppl plot
+ 
+! If the type is going to be EITHER DAY or MON then set
+! the style to DMY. Leave the 1st argument blank to keep the
+! default
+plot/set/x=140w/y=-1/k=1/t=27-feb-1982:28-mar-1982 temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "MON"
+if ($TXTYPE_SETTING"0|DAY>1|MON>1|*>0") THEN PPL TXTYPE,,DMY
+ !-> if 1 THEN PPL TXTYPE,,DMY
+ppl plot
+ 
+ 
+! Same commands with the TIME axis on the vertical
+! Plot the whole series; txtype is YR
+plot/x=140w/y=-1/k=1/set temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "YR"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 0 THEN PPL TXTYPE,MON,DMY
+ppl plot
+ 
+! This will be MON
+shade/y=-1/k=1/t=1-feb-1982:15-apr-1982/set temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "MON"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 1 THEN PPL TXTYPE,MON,DMY
+ppl shade
+ 
+! Also MON so setting not changed.
+contour/y=-1/k=1/t=1-feb-1982:15-feb-1982/set temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "MON"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 1 THEN PPL TXTYPE,MON,DMY
+ppl contour
+ 
+ 
+! Is DAY so setting not changed.
+ 
+plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "DAY"
+if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
+ !-> if 0 THEN PPL TXTYPE,MON,DMY
+ppl plot
+ 
+! Set PPL TXTYPE with DAY,DMY
+plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "DAY"
+if ($TXTYPE_SETTING"0|DAY>1|*>0") THEN PPL TXTYPE,DAY,DMY
+ !-> if 1 THEN PPL TXTYPE,DAY,DMY
+ppl plot
+ 
+! If the type is going to be EITHER DAY or MON then set
+! the style to DMY. Leave the 1st argument blank to keep the
+! default
+plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:28-mar-1982 temp
+sh sym TXTYPE_SETTING
+TXTYPE_SETTING = "MON"
+if ($TXTYPE_SETTING"0|DAY>1|MON>1|*>0") THEN PPL TXTYPE,,DMY
+ !-> if 1 THEN PPL TXTYPE,,DMY
+ppl plot
+ 
+! make sure this setting doesnt persist
+plot/y=-1/k=1/t=5-mar-1982:28-mar-1982/x=144w temp
+plot/y=-1/k=1/t=5-mar-1982:28-apr-1982/x=144w temp
+ 
+GO bn_reset
+cancel mode verify
+GO bn_n_open_dsets_sym
+ !  bn_n_open_dsets_sym.jnl
+! Ferret v6.5
+! New special symbol N_OPEN_DSETS, evaulated when requested.
+! Gives a count of the number of open datasets.
+ 
+! Initially should be zero
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "0"
+ 
+! Open some datasets
+use dstitle
+use TAO_SST_clim
+use clim_airt_lev
+ 
+! Check
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "3"
+ 
+! Open a few more. Any type of data
+set data tok_short.des
+ 
+list/clobber/file=list_of_numbers.dat/nohead/norowhead {1,3,4,5,6,8,9}
+file/var=v1 list_of_numbers.dat
+ 
+! now  there are five
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "5"
+ 
+! cancel a couple
+can data 3
+can data TAO_SST_clim
+ 
+! Now three
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "3"
+ 
+can dat/all
+sh sym N_OPEN_DSETS
+N_OPEN_DSETS = "0"
+ 
+ 
+GO bn_reset
+cancel mode verify
+GO bn_multi_decade
+! bn_multi_decade.jnl
+! New default no-small tics for multi-decade plots
+! See bug 670
+ 
+def axis/t="01-JAN-1860":"30-DEC-2300":5/edges/units="Days"/cal="360d" simutaxis1
+let tvar = t[gt=simutaxis1]*-1E+34
+ 
+define view/x=0:1/y=0.000:0.125 v1
+define view/x=0:1/y=0.125:0.250 v2
+define view/x=0:1/y=0.250:0.375 v3
+define view/x=0:1/y=0.375:0.500 v4
+define view/x=0:1/y=0.500:0.625 v5
+define view/x=0:1/y=0.625:0.750 v6
+define view/x=0:1/y=0.750:0.875 v7
+define view/x=0:1/y=0.875:1.000 v8
+ 
+! Plot a variety of time axis lengths.
+set view v1; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1870]
+set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
+ 
+! New default: no small tics for multi-decade plots
+set view v3; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
+set view v4; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
+set view v5; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
+set view v6; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
+set view v7; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar
+ 
+! can plot the tics even on a multi-decade axis by specifying PPL TICS.
+set view v8; plot/nolab/ax=0,1,0,0/vlim=0:1/set tvar
+  ppl tics,0.1,0.25
+  ppl plot
+ 
+cancel view
+ 
+! Test vertical time axes.
+ 
+define view/x=0.000:0.125/y=0:1 v1
+define view/x=0.125:0.250/y=0:1 v2
+define view/x=0.250:0.375/y=0:1 v3
+define view/x=0.375:0.500/y=0:1 v4
+define view/x=0.500:0.625/y=0:1 v5
+define view/x=0.625:0.750/y=0:1 v6
+define view/x=0.750:0.875/y=0:1 v7
+define view/x=0.875:1.000/y=0:1 v8
+ 
+! Plot a variety of time axis lengths.
+set view v1; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1870]
+set view v2; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
+ 
+! New default: no small tics for multi-decade plots
+set view v3; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
+set view v4; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
+set view v5; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
+set view v6; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
+set view v7; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar
+ 
+! can plot the tics even on a multi-decade axis by specifying PPL TICS.
+set view v8; plot/trans/nolab/ax=0,0,1,0/hlim=0:1/set tvar
+  ppl tics,0.1,0.25
+  ppl plot
+ 
+cancel view
+ 
+GO bn_reset
+cancel mode verify
+GO bn_show_xml_file
+! bn_show_xml_file.jnl
+! Testing SHOW DATA/OUTFILE
+!         SHOW AXIS/OUTFILE
+!         SHOW VAR/OUTFILE
+!         SAY/OUTFILE
+!
+! Similar to LAS iosp script header.jnl
+! capability to be expanded to all SHOW commands in the future.
+ 
+use gt4d011
+ 
+DEFINE SYMBOL output_xml_file = the_xml_file.xml
+ 
+say/quiet/outfile=($output_xml_file)/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+ !-> MESSAGE/CONTINUE/quiet/outfile=the_xml_file.xml/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <data>
 <datasets>
 <dataset name="./gt4d011.cdf" default="true">
@@ -61157,46 +61445,6 @@ GO bn_txtype_dmy
 </attribute>
 <attribute name="end" type="double">
    <value>4</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-</axis>
-<axis name="XPROJ120">
-<attribute name="direction" type="char">
-   <value><![CDATA[I]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>120</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-1</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>1</value>
-</attribute>
-<attribute name="point_spacing" type="char">
-   <value><![CDATA[even]]></value>
-</attribute>
-<attribute name="modulo" type="char">
-   <value>no</value>
-</attribute>
-</axis>
-<axis name="YPROJ120">
-<attribute name="direction" type="char">
-   <value><![CDATA[J]]></value>
-</attribute>
-<attribute name="length" type="short">
-   <value>120</value>
-</attribute>
-<attribute name="start" type="double">
-   <value>-1</value>
-</attribute>
-<attribute name="end" type="double">
-   <value>1</value>
 </attribute>
 <attribute name="point_spacing" type="char">
    <value><![CDATA[even]]></value>
@@ -64491,249 +64739,6 @@ GO bn_txtype_dmy
 </axis>
 </axes>
 </data>
-
- 
-set win/asp=1
-use gtsa056_2.cdf
- 
-! Plot the whole series; txtype is YR
-plot/x=140w/y=-1/k=1/set temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "YR"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 0 THEN PPL TXTYPE,MON,DMY
-ppl plot
- 
-! This will be MON
-shade/x=140w/k=1/t=1-feb-1982:15-apr-1982/set temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "MON"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 1 THEN PPL TXTYPE,MON,DMY
-ppl shade
- 
-! Also MON so setting not changed.
-contour/x=140w/k=1/t=1-feb-1982:15-feb-1982/set temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "MON"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 1 THEN PPL TXTYPE,MON,DMY
-ppl contour
- 
- 
-! Is DAY so setting not changed.
- 
-plot/set/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "DAY"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 0 THEN PPL TXTYPE,MON,DMY
-ppl plot
- 
-! Set PPL TXTYPE with DAY,DMY
-plot/set/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "DAY"
-if ($TXTYPE_SETTING"0|DAY>1|*>0") THEN PPL TXTYPE,DAY,DMY
- !-> if 1 THEN PPL TXTYPE,DAY,DMY
-ppl plot
- 
-! If the type is going to be EITHER DAY or MON then set
-! the style to DMY. Leave the 1st argument blank to keep the
-! default
-plot/set/x=140w/y=-1/k=1/t=27-feb-1982:28-mar-1982 temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "MON"
-if ($TXTYPE_SETTING"0|DAY>1|MON>1|*>0") THEN PPL TXTYPE,,DMY
- !-> if 1 THEN PPL TXTYPE,,DMY
-ppl plot
- 
- 
-! Same commands with the TIME axis on the vertical
-! Plot the whole series; txtype is YR
-plot/x=140w/y=-1/k=1/set temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "YR"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 0 THEN PPL TXTYPE,MON,DMY
-ppl plot
- 
-! This will be MON
-shade/y=-1/k=1/t=1-feb-1982:15-apr-1982/set temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "MON"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 1 THEN PPL TXTYPE,MON,DMY
-ppl shade
- 
-! Also MON so setting not changed.
-contour/y=-1/k=1/t=1-feb-1982:15-feb-1982/set temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "MON"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 1 THEN PPL TXTYPE,MON,DMY
-ppl contour
- 
- 
-! Is DAY so setting not changed.
- 
-plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "DAY"
-if ($TXTYPE_SETTING"0|MON>1|*>0") THEN PPL TXTYPE,MON,DMY
- !-> if 0 THEN PPL TXTYPE,MON,DMY
-ppl plot
- 
-! Set PPL TXTYPE with DAY,DMY
-plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:2-mar-1982 temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "DAY"
-if ($TXTYPE_SETTING"0|DAY>1|*>0") THEN PPL TXTYPE,DAY,DMY
- !-> if 1 THEN PPL TXTYPE,DAY,DMY
-ppl plot
- 
-! If the type is going to be EITHER DAY or MON then set
-! the style to DMY. Leave the 1st argument blank to keep the
-! default
-plot/set/trans/x=140w/y=-1/k=1/t=27-feb-1982:28-mar-1982 temp
-sh sym TXTYPE_SETTING
-TXTYPE_SETTING = "MON"
-if ($TXTYPE_SETTING"0|DAY>1|MON>1|*>0") THEN PPL TXTYPE,,DMY
- !-> if 1 THEN PPL TXTYPE,,DMY
-ppl plot
- 
-! make sure this setting doesnt persist
-plot/y=-1/k=1/t=5-mar-1982:28-mar-1982/x=144w temp
-plot/y=-1/k=1/t=5-mar-1982:28-apr-1982/x=144w temp
- 
-GO bn_reset
-cancel mode verify
-GO bn_n_open_dsets_sym
- !  bn_n_open_dsets_sym.jnl
-! Ferret v6.5
-! New special symbol N_OPEN_DSETS, evaulated when requested.
-! Gives a count of the number of open datasets.
- 
-! Initially should be zero
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "0"
- 
-! Open some datasets
-use dstitle
-use TAO_SST_clim
-use clim_airt_lev
- 
-! Check
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "3"
- 
-! Open a few more. Any type of data
-set data tok_short.des
- 
-list/clobber/file=list_of_numbers.dat/nohead/norowhead {1,3,4,5,6,8,9}
-file/var=v1 list_of_numbers.dat
- 
-! now  there are five
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "5"
- 
-! cancel a couple
-can data 3
-can data TAO_SST_clim
- 
-! Now three
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "3"
- 
-can dat/all
-sh sym N_OPEN_DSETS
-N_OPEN_DSETS = "0"
- 
- 
-GO bn_reset
-cancel mode verify
-GO bn_multi_decade
-! bn_multi_decade.jnl
-! New default no-small tics for multi-decade plots
-! See bug 670
- 
-def axis/t="01-JAN-1860":"30-DEC-2300":5/edges/units="Days"/cal="360d" simutaxis1
-let tvar = t[gt=simutaxis1]*-1E+34
- 
-define view/x=0:1/y=0.000:0.125 v1
-define view/x=0:1/y=0.125:0.250 v2
-define view/x=0:1/y=0.250:0.375 v3
-define view/x=0:1/y=0.375:0.500 v4
-define view/x=0:1/y=0.500:0.625 v5
-define view/x=0:1/y=0.625:0.750 v6
-define view/x=0:1/y=0.750:0.875 v7
-define view/x=0:1/y=0.875:1.000 v8
- 
-! Plot a variety of time axis lengths.
-set view v1; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1870]
-set view v2; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
- 
-! New default: no small tics for multi-decade plots
-set view v3; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
-set view v4; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
-set view v5; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
-set view v6; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
-set view v7; plot/nolab/ax=0,1,0,0/vlim=0:1 tvar
- 
-! can plot the tics even on a multi-decade axis by specifying PPL TICS.
-set view v8; plot/nolab/ax=0,1,0,0/vlim=0:1/set tvar
-  ppl tics,0.1,0.25
-  ppl plot
- 
-cancel view
- 
-! Test vertical time axes.
- 
-define view/x=0.000:0.125/y=0:1 v1
-define view/x=0.125:0.250/y=0:1 v2
-define view/x=0.250:0.375/y=0:1 v3
-define view/x=0.375:0.500/y=0:1 v4
-define view/x=0.500:0.625/y=0:1 v5
-define view/x=0.625:0.750/y=0:1 v6
-define view/x=0.750:0.875/y=0:1 v7
-define view/x=0.875:1.000/y=0:1 v8
- 
-! Plot a variety of time axis lengths.
-set view v1; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1870]
-set view v2; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1880]
- 
-! New default: no small tics for multi-decade plots
-set view v3; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-1890]
-set view v4; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2000]
-set view v5; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2060]
-set view v6; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar[t=1-jan-1860:1-jan-2160]
-set view v7; plot/trans/nolab/ax=0,0,1,0/hlim=0:1 tvar
- 
-! can plot the tics even on a multi-decade axis by specifying PPL TICS.
-set view v8; plot/trans/nolab/ax=0,0,1,0/hlim=0:1/set tvar
-  ppl tics,0.1,0.25
-  ppl plot
- 
-cancel view
- 
-GO bn_reset
-cancel mode verify
-GO bn_show_xml_file
-! bn_show_xml_file.jnl
-! Testing SHOW DATA/OUTFILE
-!         SHOW AXIS/OUTFILE
-!         SHOW VAR/OUTFILE
-!         SAY/OUTFILE
-!
-! Similar to LAS iosp script header.jnl
-! capability to be expanded to all SHOW commands in the future.
- 
-use gt4d011
- 
-DEFINE SYMBOL output_xml_file = the_xml_file.xml
- 
-say/quiet/outfile=($output_xml_file)/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
- !-> MESSAGE/CONTINUE/quiet/outfile=the_xml_file.xml/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 say/quiet/outfile=($output_xml_file)/append <data>
  !-> MESSAGE/CONTINUE/quiet/outfile=the_xml_file.xml/append <data>
  
@@ -66063,8 +66068,8 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.73  "                                                          
- 3    /  3:" ! Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/22/12"                          
- 4    /  4:" ! 22-Mar-12 15:49     "                                                    
+ 3    /  3:" ! Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/30/12"                          
+ 4    /  4:" ! 30-Mar-12 16:31     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -68468,42 +68473,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.5240
- 2   / 2:  0.5669
- 3   / 3:  0.6097
- 4   / 4:  0.5075
- 5   / 5:  0.3510
+ 1   / 1:  0.2662
+ 2   / 2:  0.7262
+ 3   / 3:  0.9888
+ 4   / 4:  0.0403
+ 5   / 5:  0.9154
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.0732
- 2   / 2:  0.4881
- 3   / 3:  0.3089
- 4   / 4:  0.6050
- 5   / 5:  0.9364
+ 1   / 1:  0.8157
+ 2   / 2:  0.6474
+ 3   / 3:  0.2379
+ 4   / 4:  0.8713
+ 5   / 5:  0.2337
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.0311
- 2   / 2:  0.3976
- 3   / 3:  0.6357
- 4   / 4:  0.5552
- 5   / 5:  0.1167
- 6   / 6:  0.9551
+ 1   / 1:  0.8053
+ 2   / 2:  0.4643
+ 3   / 3:  0.7776
+ 4   / 4:  0.8227
+ 5   / 5:  0.3579
+ 6   / 6:  0.4494
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.1075
- 2   / 2:  0.5745
- 3   / 3:  0.4798
- 4   / 4:  0.2007
- 5   / 5:  0.7194
- 6   / 6:  0.8600
+ 1   / 1:  0.2480
+ 2   / 2:  0.1783
+ 3   / 3:  0.2499
+ 4   / 4:  0.3390
+ 5   / 5:  0.5809
+ 6   / 6:  0.9474
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -68535,42 +68540,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1: -0.2286
- 2   / 2: -0.9744
- 3   / 3:  0.1779
- 4   / 4:  0.0533
- 5   / 5:  0.5340
+ 1   / 1: -2.371
+ 2   / 2: -0.982
+ 3   / 3:  0.435
+ 4   / 4:  0.251
+ 5   / 5:  0.462
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1: -1.024
- 2   / 2:  0.120
- 3   / 3: -0.476
- 4   / 4:  0.055
- 5   / 5: -0.405
+ 1   / 1:  1.560
+ 2   / 2:  0.376
+ 3   / 3: -0.915
+ 4   / 4:  1.565
+ 5   / 5: -1.153
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.5278
- 2   / 2:  0.5415
- 3   / 3: -0.2347
- 4   / 4: -0.1028
- 5   / 5: -0.8637
- 6   / 6: -0.1948
+ 1   / 1: -1.601
+ 2   / 2:  1.259
+ 3   / 3:  0.160
+ 4   / 4:  0.833
+ 5   / 5:  1.435
+ 6   / 6: -0.243
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  1.549
- 2   / 2: -1.423
- 3   / 3:  0.205
- 4   / 4:  1.841
- 5   / 5:  1.260
- 6   / 6: -0.710
+ 1   / 1:  1.962
+ 2   / 2:  0.942
+ 3   / 3:  2.401
+ 4   / 4:  0.355
+ 5   / 5:  0.243
+ 6   / 6: -1.017
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -68605,15 +68610,15 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-            VAR2   VAR2   VAR2
-0     / 1:  1.916  1.916  1.120
-20    / 2:  1.213  1.213  1.120
-40    / 3:  1.120  1.120 -0.091
-60    / 4: -0.091 -0.091 -0.011
-80    / 5: -0.320 -0.250 -0.011
-100   / 6: -0.250 -0.320 -0.011
-120   / 7: -0.613 -0.250 -0.011
-140   / 8: -0.011 -0.011 -0.011
+            VAR2   VAR2    VAR2
+0     / 1:  1.935  1.935  0.4262
+20    / 2:  1.580  1.580  0.4262
+40    / 3:  0.323  0.426  0.3232
+60    / 4:  0.426  0.323  0.4262
+80    / 5: -0.441 -0.441  0.4262
+100   / 6: -0.946 -0.441  0.4262
+120   / 7: -0.180 -0.180  0.4262
+140   / 8:  0.551  0.551  0.5515
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -68776,8 +68781,8 @@ yes?
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/22/12
- 	22-Mar-12 15:51     
+ 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/30/12
+ 	30-Mar-12 16:33     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -69631,7 +69636,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69656,7 +69661,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69680,7 +69685,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69719,7 +69724,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69754,7 +69759,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69795,7 +69800,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69852,7 +69857,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69909,7 +69914,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69964,7 +69969,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70012,7 +70017,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70106,7 +70111,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70176,7 +70181,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70227,7 +70232,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70302,7 +70307,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70329,7 +70334,7 @@ variables:
 		X_:_FillValue = -1.308568e+26f ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -70353,7 +70358,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -70380,11 +70385,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -70415,7 +70420,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70487,7 +70492,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70531,7 +70536,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70573,7 +70578,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70679,7 +70684,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -70718,7 +70723,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -70741,7 +70746,7 @@ variables:
 		BB:another_attr = 0.f ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70767,7 +70772,7 @@ variables:
 		BB:another_attr = 0.f ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70787,7 +70792,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70808,7 +70813,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70851,7 +70856,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -70891,7 +70896,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -70929,7 +70934,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -70958,7 +70963,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70991,7 +70996,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71017,7 +71022,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71061,7 +71066,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -71166,7 +71171,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -71208,7 +71213,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71291,7 +71296,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71328,7 +71333,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71368,7 +71373,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71419,7 +71424,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71478,7 +71483,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71522,7 +71527,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71564,7 +71569,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71599,7 +71604,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71633,7 +71638,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -71663,7 +71668,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -71692,7 +71697,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -71754,7 +71759,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71799,7 +71804,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71818,37 +71823,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	float A(XAX) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71878,7 +71853,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	float A(XAX) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71931,7 +71936,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71973,7 +71978,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71991,7 +71996,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 err611_set_var_ez.jnl --- 
@@ -72010,7 +72015,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -72028,7 +72033,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -72046,7 +72051,7 @@ variables:
 		A:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72067,7 +72072,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72099,7 +72104,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -72126,7 +72131,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_axis_cf.jnl, degrees_east, degrees_north, std names on axes:
@@ -72192,7 +72197,7 @@ variables:
 		ZUP:long_name = "Z[GZ=ZAXUP]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:
@@ -72224,7 +72229,7 @@ variables:
 		Y_:_FillValue = -3.689349e+19f ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since
@@ -72257,7 +72262,7 @@ variables:
 		XYTVAR:history = "From bn_strides" ;
 
 // global attributes:
-		:history = "FERRET V6.73   22-Mar-12" ;
+		:history = "FERRET V6.73   30-Mar-12" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
@@ -72272,8 +72277,8 @@ yes?
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/22/12
- 	22-Mar-12 15:51     
+ 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/30/12
+ 	30-Mar-12 16:33     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
@@ -72283,15 +72288,15 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.73"
 FERRET_PLATFORM = "Linux 2.6.18-274.12.1.el5PAE 32-bit"
 FERRET_PRECISION = "double"
-NETCDF_VERSION = "4.2-rc2 of Mar 20 2012 09:53:45 $"
+NETCDF_VERSION = "4.2 of Mar 27 2012 16:25:15 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "22-Mar-12"
-SESSION_TIME = "15:51"
-SESSION_PID = "2715"
-DELTA_CPU = "0.036994"
-CLOCK_SECS = "0.191"
-CURRENT_DATE = "22-Mar-12"
-CURRENT_TIME = "15:51:10"
+SESSION_DATE = "30-Mar-12"
+SESSION_TIME = "16:33"
+SESSION_PID = "19132"
+DELTA_CPU = "0.035994"
+CLOCK_SECS = "0.188"
+CURRENT_DATE = "30-Mar-12"
+CURRENT_TIME = "16:33:29"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -72312,7 +72317,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "22-Mar-12:15:51"
+WIN_TITLE = "30-Mar-12:16:33"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -72371,8 +72376,8 @@ yes?
 yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/22/12
- 	22-Mar-12 15:51     
+ 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/30/12
+ 	30-Mar-12 16:33     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -72602,8 +72607,8 @@ yes?
 yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/22/12
- 	22-Mar-12 15:51     
+ 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/30/12
+ 	30-Mar-12 16:33     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -72716,8 +72721,8 @@ yes?
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/22/12
- 	22-Mar-12 15:51     
+ 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/30/12
+ 	30-Mar-12 16:33     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -72801,4 +72806,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Thu Mar 22 15:51:12 PDT 2012
+Ended at Fri Mar 30 16:33:31 PDT 2012

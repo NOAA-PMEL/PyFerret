@@ -57,7 +57,7 @@
         include 'netcdf.decl'
 #include "netcdf.inc"
 
-      INTEGER TM_LENSTR1, NCF_INQ_VAR, slen, flen, rev(5), i, ndx, istat
+      INTEGER TM_LENSTR1, NCF_INQ_VAR, slen, flen, rev(6), i, ndx, istat
       PARAMETER (flen=512)      ! size of variable name string
 
 #ifdef sun

@@ -1968,9 +1968,9 @@ int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar
       /*Save attribute in linked list of attributes for this variable */	
 
           var.attrs_list_initialized = TRUE;
+          list_insert_after(var.varattlist, &att, sizeof(ncatt));
         }
 
-       list_insert_after(var.varattlist, &att, sizeof(ncatt));
  /*   } */
 
 /*Save variable in linked list of variables for this dataset */

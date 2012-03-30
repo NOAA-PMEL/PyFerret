@@ -561,8 +561,8 @@ cbf        analogously in y direction
             DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
 
 	       IF (j1  .EQ. arg_lo_ss(Y_AXIS,ARG1) .AND.
-     .             ypt .LT. yaxdat(i1,1,1,1)       .AND. 
-     .             ypt .GT. yaxdat(i1,1,1,1)-dylo ) 
+     .             ypt .LT. yaxdat(j1,1,1,1)       .AND. 
+     .             ypt .GT. yaxdat(j1,1,1,1)-dylo ) 
      .          jbot = j1
 
                IF (ypt .GE. yaxdat(j1,1,1,1) ) jbot = j1

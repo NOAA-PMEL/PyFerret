@@ -56,6 +56,7 @@
 	include 'AXIS.INC'	! axis lengths
 #ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
+#endif
 
 * calling argument declarations
 	INTEGER line_num, style, xaxrel, yaxrel

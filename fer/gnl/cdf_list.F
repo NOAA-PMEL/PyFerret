@@ -311,6 +311,9 @@
 * upper/lowercase form of the name. If mode upcase_output is set, then upcase 
 * the variable name.
 
+* For user-defined variables, with double-precision Ferret, write as double-precision
+* unless the user has requested otherwise.
+
            itsa_uvar = cat .EQ. cat_user_var
            IF (itsa_uvar .OR. dset .EQ. pdset_irrelevant) dset = -1
            CALL CD_GET_VAR_ID (dset, varcode, varid, status)
@@ -322,7 +325,7 @@
               varcode = varname
               IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
               IF (dset .EQ. -1) THEN  !for user vars type not known in attrib structure
-                 vartype = 5
+                 vartype = 6
                  IF (itsa_string) vartype = 2
               ENDIF
               outtype = vartype

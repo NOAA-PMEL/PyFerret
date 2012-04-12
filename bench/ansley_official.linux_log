@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 41401151 Mar 30 16:30 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 55214778 Apr 10 11:24 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: NetCDF4.2, 3 small fixes from compiling with -fbounds-check, fix for samplet_date and scat2gridgauss_zt
+Note: fix bug 1931
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Fri Mar 30 16:31:54 PDT 2012
+Beginning at Tue Apr 10 11:25:04 PDT 2012
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10242,13 +10242,13 @@ FERRET_PLATFORM = "Linux 2.6.18-274.12.1.el5PAE 32-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2 of Mar 27 2012 16:25:15 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "30-Mar-12"
-SESSION_TIME = "16:31"
-SESSION_PID = "18751"
-DELTA_CPU = "4.87726"
-CLOCK_SECS = "7.328"
-CURRENT_DATE = "30-Mar-12"
-CURRENT_TIME = "16:32:01"
+SESSION_DATE = "10-Apr-12"
+SESSION_TIME = "11:25"
+SESSION_PID = "19352"
+DELTA_CPU = "5.55515"
+CLOCK_SECS = "7.489"
+CURRENT_DATE = "10-Apr-12"
+CURRENT_TIME = "11:25:11"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10270,13 +10270,13 @@ FERRET_PLATFORM = "Linux 2.6.18-274.12.1.el5PAE 32-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2 of Mar 27 2012 16:25:15 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "30-Mar-12"
-SESSION_TIME = "16:31"
-SESSION_PID = "18751"
+SESSION_DATE = "10-Apr-12"
+SESSION_TIME = "11:25"
+SESSION_PID = "19352"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "7.328"
-CURRENT_DATE = "30-Mar-12"
-CURRENT_TIME = "16:32:01"
+CLOCK_SECS = "7.49"
+CURRENT_DATE = "10-Apr-12"
+CURRENT_TIME = "11:25:11"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10285,9 +10285,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "30-Mar-12"
-SESSION_TIME = "16:31"
-SESSION_PID = "18751"
+SESSION_DATE = "10-Apr-12"
+SESSION_TIME = "11:25"
+SESSION_PID = "19352"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10297,15 +10297,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "30-Mar-12"
-SESSION_TIME = "16:31"
-SESSION_PID = "18751"
+SESSION_DATE = "10-Apr-12"
+SESSION_TIME = "11:25"
+SESSION_PID = "19352"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "30-Mar-12"
-SESSION_TIME = "16:31"
-SESSION_PID = "18751"
+SESSION_DATE = "10-Apr-12"
+SESSION_TIME = "11:25"
+SESSION_PID = "19352"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10339,7 +10339,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.73"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "30-MAR-2012 16:32:01"
+LAB3 = "10-APR-2012 11:25:11"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10439,13 +10439,13 @@ FERRET_PLATFORM = "Linux 2.6.18-274.12.1.el5PAE 32-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2 of Mar 27 2012 16:25:15 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = "30-Mar-12"
-SESSION_TIME = "16:31"
-SESSION_PID = "18751"
-DELTA_CPU = "0.009999"
-CLOCK_SECS = "7.338"
-CURRENT_DATE = "30-Mar-12"
-CURRENT_TIME = "16:32:01"
+SESSION_DATE = "10-Apr-12"
+SESSION_TIME = "11:25"
+SESSION_PID = "19352"
+DELTA_CPU = "0.011998"
+CLOCK_SECS = "7.502"
+CURRENT_DATE = "10-Apr-12"
+CURRENT_TIME = "11:25:11"
 N_OPEN_DSETS = "0"
  
  
@@ -14840,6 +14840,7 @@ load temp[g=u]
  eval    EX#1     C:  4 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  strip regrid on X: TEMP --> PS3DU2           @LIN
  reading TEMP     M: 55 I:  100  106  J:   45   50  K:    1    2  L:    3    4
+ regrid XY
  regrid  TEMP     M: 45 I:  100  105  J:   45   49  K:    1    2  L:    3    4
 load temp[g=u@lin]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
@@ -14848,6 +14849,7 @@ load temp[g=u@lin]
  eval    EX#1     C:  4 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  strip regrid on X: TEMP --> PS3DU2           @LIN
  reading TEMP     M: 43 I:  100  106  J:   45   50  K:    1    2  L:    3    4
+ regrid XY
  regrid  TEMP     M: 39 I:  100  105  J:   45   49  K:    1    2  L:    3    4
 load temp[g=u@ave,gy=@asn]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
@@ -14904,10 +14906,12 @@ stat temp[g=u] - temp[g=u@ave,gx=u@lin,gy=u@lin,gz=u@lin,gt=u@lin]  ! == 0
  eval    EX#1     C:  4 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  strip regrid on X: TEMP --> PS3DU2           @LIN
  reading TEMP     M: 22 I:  100  106  J:   45   50  K:    1    2  L:    3    4
+ regrid XY
  regrid  TEMP     M: 21 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  strip regrid on X: TEMP --> PS3DU2           @LIN
  reading TEMP     M: 16 I:  100  106  J:   45   50  K:    1    2  L:    3    4
+ regrid XY
  regrid  TEMP     M: 14 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  
@@ -14966,6 +14970,7 @@ LIST temp[g=u@ave]
  eval    EX#1     C:  4 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  strip regrid on X: TEMP --> PS3DU2           @AAV
  reading TEMP     M:  7 I:  100  106  J:   45   50  K:    1    2  L:    3    4
+ regrid XY
  regrid  TEMP     M: 27 I:  100  105  J:   45   49  K:    1    2  L:    3    4
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: U on X@AAV, on Y@AAV
@@ -15103,6 +15108,7 @@ LIST temp[g=u,gz=u@ave]	! V4.20 mod
  allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  strip regrid on X: TEMP --> PS3DU2           @LIN
  reading TEMP     M: 48 I:  100  106  J:   45   50  K:    1    2  L:    3    4
+ regrid XY
  regrid  TEMP     M:  6 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
              VARIABLE : TEMPERATURE (deg. C)
@@ -15147,6 +15153,7 @@ LIST temp[g=u,gt=u@ave]	! V4.20 mod, etc --> many more similar syntax chgs
  allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  strip regrid on X: TEMP --> PS3DU2           @LIN
  reading TEMP     M: 40 I:  100  106  J:   45   50  K:    1    2  L:    3    4
+ regrid XY
  regrid  TEMP     M: 15 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
              VARIABLE : TEMPERATURE (deg. C)
@@ -15189,6 +15196,7 @@ LIST temp[g=u]
  eval    EX#1     C:  4 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  strip regrid on X: TEMP --> PS3DU2           @LIN
  reading TEMP     M: 37 I:  100  106  J:   45   50  K:    1    2  L:    3    4
+ regrid XY
  regrid  TEMP     M: 32 I:  100  105  J:   45   49  K:    1    2  L:    3    4
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: U
@@ -15369,6 +15377,7 @@ LIST temp[g=u,gz=u@asn]
  allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  strip regrid on X: TEMP --> PS3DU2           @LIN
  reading TEMP     M: 52 I:  100  106  J:   45   50  K:    1    2  L:    3    4
+ regrid XY
  regrid  TEMP     M: 20 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
              VARIABLE : TEMPERATURE (deg. C)
@@ -15413,6 +15422,7 @@ LIST temp[g=u,gt=u@asn]
  allocate dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
  strip regrid on X: TEMP --> PS3DU2           @LIN
  reading TEMP     M: 56 I:  100  106  J:   45   50  K:    1    2  L:    3    4
+ regrid XY
  regrid  TEMP     M: 51 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
              VARIABLE : TEMPERATURE (deg. C)
@@ -15457,6 +15467,7 @@ LIST temp[g=g5day@ave]
  strip regrid on T: TEMP --> XNTERMED         @AVE
  reading TEMP     M: 44 I:  100  106  J:   45   50  K:    1    2  L:    2    5
  regrid  TEMP     M: 42 I:  100  106  J:   45   50  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M: 41 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  -DELETE TEMP     M: 42 I:  100  106  J:   45   50  K:    1    2  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
@@ -15590,6 +15601,7 @@ LIST temp[g=g5day,gz=g5day@ave]
  strip regrid on T: TEMP --> XNTERMED         @LIN
  reading TEMP     M:  9 I:  100  106  J:   45   50  K:    1    2  L:    2    5
  regrid  TEMP     M:  8 I:  100  106  J:   45   50  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M:  5 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  -DELETE TEMP     M:  8 I:  100  106  J:   45   50  K:    1    2  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
@@ -15632,6 +15644,7 @@ LIST temp[g=g5day,gt=g5day@ave]
  strip regrid on T: TEMP --> XNTERMED         @AVE
  reading TEMP     M:  8 I:  100  106  J:   45   50  K:    1    2  L:    2    5
  regrid  TEMP     M:  2 I:  100  106  J:   45   50  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M: 47 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  -DELETE TEMP     M:  2 I:  100  106  J:   45   50  K:    1    2  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
@@ -15675,6 +15688,7 @@ LIST temp[g=g5day]
  strip regrid on T: TEMP --> XNTERMED         @LIN
  reading TEMP     M:  2 I:  100  106  J:   45   50  K:    1    2  L:    2    5
  regrid  TEMP     M: 17 I:  100  106  J:   45   50  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M:  4 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  -DELETE TEMP     M: 17 I:  100  106  J:   45   50  K:    1    2  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
@@ -15852,6 +15866,7 @@ LIST temp[g=g5day,gz=g5day@asn]
  strip regrid on T: TEMP --> XNTERMED         @LIN
  reading TEMP     M: 60 I:  100  106  J:   45   50  K:    1    2  L:    2    5
  regrid  TEMP     M: 61 I:  100  106  J:   45   50  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M: 62 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  -DELETE TEMP     M: 61 I:  100  106  J:   45   50  K:    1    2  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
@@ -15894,6 +15909,7 @@ LIST temp[g=g5day,gt=g5day@asn]
  strip regrid on T: TEMP --> XNTERMED         @ASN
  reading TEMP     M: 61 I:  100  106  J:   45   50  K:    1    2  L:    2    3
  regrid  TEMP     M: 63 I:  100  106  J:   45   50  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M: 64 I:  100  105  J:   45   49  K:    1    2  L:    2    3
  -DELETE TEMP     M: 63 I:  100  106  J:   45   50  K:    1    2  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
@@ -15941,6 +15957,7 @@ LIST temp[g=g5_10@ave]
  regrid  TEMP     M: 65 I:   95  106  J:   45   50  K:    1    2  L:    2    3
  regrid  TEMP     M: 66 I:   95  106  J:   45   50  K:    1    1  L:    2    3
  -DELETE TEMP     M: 65 I:   95  106  J:   45   50  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M: 65 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  -DELETE TEMP     M: 66 I:   95  106  J:   45   50  K:    1    1  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
@@ -16017,6 +16034,7 @@ LIST temp[g=g5_10,gz=g5_10@ave]
  regrid  TEMP     M: 70 I:  100  101  J:   45   50  K:    1    2  L:    2    3
  regrid  TEMP     M: 71 I:  100  101  J:   45   50  K:    1    1  L:    2    3
  -DELETE TEMP     M: 70 I:  100  101  J:   45   50  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M: 70 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  -DELETE TEMP     M: 71 I:  100  101  J:   45   50  K:    1    1  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
@@ -16040,6 +16058,7 @@ LIST temp[g=g5_10,gt=g5_10@ave]
  regrid  TEMP     M: 72 I:  100  101  J:   45   50  K:    1    2  L:    2    3
  regrid  TEMP     M: 73 I:  100  101  J:   45   50  K:    1    1  L:    2    3
  -DELETE TEMP     M: 72 I:  100  101  J:   45   50  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M: 72 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  -DELETE TEMP     M: 73 I:  100  101  J:   45   50  K:    1    1  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
@@ -16142,6 +16161,7 @@ LIST temp[g=g5_10,gz=g5_10@asn]
  regrid  TEMP     M: 80 I:  100  101  J:   45   50  K:    1    1  L:    2    3
  regrid  TEMP     M: 81 I:  100  101  J:   45   50  K:    1    1  L:    2    3
  -DELETE TEMP     M: 80 I:  100  101  J:   45   50  K:    1    1  L:    2    3
+ regrid XY
  regrid  TEMP     M: 80 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  -DELETE TEMP     M: 81 I:  100  101  J:   45   50  K:    1    1  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
@@ -16165,6 +16185,7 @@ LIST temp[g=g5_10,gt=g5_10@asn]
  regrid  TEMP     M: 82 I:  100  101  J:   45   50  K:    1    2  L:    2    3
  regrid  TEMP     M: 83 I:  100  101  J:   45   50  K:    1    1  L:    2    3
  -DELETE TEMP     M: 82 I:  100  101  J:   45   50  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M: 82 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  -DELETE TEMP     M: 83 I:  100  101  J:   45   50  K:    1    1  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
@@ -16197,6 +16218,7 @@ load temp[g=u]
  strip modulo-void-filling TEMP on X axis:     1   161
  reading TEMP     M: 84 I:    1  160  J:    5   89  K:    1    2  L:    1    3
  doing modulo-void-filling TEMP on X axis:     1   160
+ regrid XY
  regrid  TEMP     M: 86 I:    1  160  J:    1  100  K:    1    2  L:    1    3
 load temp[g=u@lin]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
@@ -16207,6 +16229,7 @@ load temp[g=u@lin]
  strip modulo-void-filling TEMP on X axis:     1   161
  reading TEMP     M: 87 I:    1  160  J:    5   89  K:    1    2  L:    1    3
  doing modulo-void-filling TEMP on X axis:     1   160
+ regrid XY
  regrid  TEMP     M: 89 I:    1  160  J:    1  100  K:    1    2  L:    1    3
  
 load temp[g=u@ave]
@@ -16218,6 +16241,7 @@ load temp[g=u@ave]
  strip modulo-void-filling TEMP on X axis:     1   161
  reading TEMP     M: 90 I:    1  160  J:    5   89  K:    1    2  L:    1    3
  doing modulo-void-filling TEMP on X axis:     1   160
+ regrid XY
  regrid  TEMP     M: 92 I:    1  160  J:    1  100  K:    1    2  L:    1    3
 load temp[g=u,gx=u@ave]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
@@ -16308,6 +16332,7 @@ load temp[g=u]
  eval    EX#1     C:  4 I:  101  105  J:   41   42  K: -999 -999  L: -999 -999
  strip regrid on X: TEMP --> PS3DU1           @LIN
  reading TEMP     M:105 I:  101  106  J:   41   43  K:    1    2  L:    1  168
+ regrid XY
  regrid  TEMP     M:107 I:  101  105  J:   41   42  K:    1    2  L:    1  168
  
 load temp[g=u@ave]
@@ -16317,6 +16342,7 @@ load temp[g=u@ave]
  eval    EX#1     C:  4 I:  101  105  J:   41   42  K: -999 -999  L: -999 -999
  strip regrid on X: TEMP --> PS3DU1           @AAV
  reading TEMP     M:108 I:  101  106  J:   41   43  K:    1    2  L:    1  168
+ regrid XY
  regrid  TEMP     M:109 I:  101  105  J:   41   42  K:    1    2  L:    1  168
 load temp[g=u,gz=u@ave]
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
@@ -16328,6 +16354,7 @@ load temp[g=u,gz=u@ave]
  allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  strip regrid on X: TEMP --> PS3DU1           @LIN
  reading TEMP     M:110 I:  101  106  J:   41   43  K:    1    2  L:    1  168
+ regrid XY
  regrid  TEMP     M:111 I:  101  105  J:   41   42  K:    1    2  L:    1  168
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
 load temp[g=u,gt=u@ave]
@@ -16340,6 +16367,7 @@ load temp[g=u,gt=u@ave]
  allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  strip regrid on X: TEMP --> PS3DU1           @LIN
  reading TEMP     M:112 I:  101  106  J:   41   43  K:    1    2  L:    1  168
+ regrid XY
  regrid  TEMP     M:113 I:  101  105  J:   41   42  K:    1    2  L:    1  168
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  
@@ -16364,6 +16392,7 @@ load temp[g=u,gz=u@asn]
  allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  strip regrid on X: TEMP --> PS3DU1           @LIN
  reading TEMP     M:115 I:  101  106  J:   41   43  K:    1    2  L:    1  168
+ regrid XY
  regrid  TEMP     M:117 I:  101  105  J:   41   42  K:    1    2  L:    1  168
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
 load temp[g=u,gt=u@asn]
@@ -16376,6 +16405,7 @@ load temp[g=u,gt=u@asn]
  allocate dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
  strip regrid on X: TEMP --> PS3DU1           @LIN
  reading TEMP     M:118 I:  101  106  J:   41   43  K:    1    2  L:    1  168
+ regrid XY
  regrid  TEMP     M:119 I:  101  105  J:   41   42  K:    1    2  L:    1  168
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
 SET MODE/LAST IGNORE	! V.5 change
@@ -16410,6 +16440,7 @@ plot/over temp[g=u]
  strip moduloing TEMP on X axis:     0   140
  strip regrid on X: TEMP --> PS3DU2           @LIN
  reading TEMP     M:123 I:    1  141  J:   44   46  K:    1    1  L:    2    3
+ regrid XY
  regrid  TEMP     M:124 I:    1  140  J:   44   45  K:    1    1  L:    2    3
  doing moduloing TEMP on X axis:     1   140
  doing --> TEMP[Y=0@ITP,D=1]
@@ -16427,6 +16458,7 @@ plot/over temp[g=g5day]
  strip regrid on T: TEMP --> XNTERMED         @LIN
  reading TEMP     M:128 I:    1  141  J:   44   46  K:    1    1  L:    2    5
  regrid  TEMP     M:129 I:    1  141  J:   44   46  K:    1    1  L:    2    3
+ regrid XY
  regrid  TEMP     M:130 I:    1  140  J:   44   45  K:    1    1  L:    2    3
  -DELETE TEMP     M:129 I:    1  141  J:   44   46  K:    1    1  L:    2    3
  doing moduloing TEMP on X axis:     1   140
@@ -16450,6 +16482,7 @@ plot/over temp[g=g5_10]
  regrid  TEMP     M:135 I:    1  141  J:   44   46  K:    1    1  L:    2    3
  -DELETE TEMP     M:134 I:    1  141  J:   44   46  K:    1    2  L:    2    3
  doing moduloing TEMP on X axis:     1   141
+ regrid XY
  regrid  TEMP     M:136 I:    2   16  J:   44   45  K:    1    1  L:    2    3
  -DELETE TEMP     M:134 I:    0  141  J:   44   46  K:    1    1  L:    2    3
  doing --> TEMP[Y=0@ITP,D=1]
@@ -16467,6 +16500,7 @@ plot/over temp[g=u@ave]
  strip moduloing TEMP on X axis:     0   140
  strip regrid on X: TEMP --> PS3DU2           @AAV
  reading TEMP     M:139 I:    1  141  J:   44   46  K:    1    1  L:    2    3
+ regrid XY
  regrid  TEMP     M:140 I:    1  140  J:   44   45  K:    1    1  L:    2    3
  doing moduloing TEMP on X axis:     1   140
  doing --> TEMP[Y=0@ITP,D=1]
@@ -16484,6 +16518,7 @@ plot/over temp[g=g5day@ave]
  strip regrid on T: TEMP --> XNTERMED         @AVE
  reading TEMP     M:144 I:    1  141  J:   44   46  K:    1    1  L:    2    5
  regrid  TEMP     M:145 I:    1  141  J:   44   46  K:    1    1  L:    2    3
+ regrid XY
  regrid  TEMP     M:146 I:    1  140  J:   44   45  K:    1    1  L:    2    3
  -DELETE TEMP     M:145 I:    1  141  J:   44   46  K:    1    1  L:    2    3
  doing moduloing TEMP on X axis:     1   140
@@ -16507,6 +16542,7 @@ plot/over temp[g=g5_10@ave]
  regrid  TEMP     M:151 I:    1  146  J:   44   46  K:    1    1  L:    2    3
  -DELETE TEMP     M:150 I:    1  146  J:   44   46  K:    1    2  L:    2    3
  doing moduloing TEMP on X axis:     1   146
+ regrid XY
  regrid  TEMP     M:152 I:    2   16  J:   44   45  K:    1    1  L:    2    3
  -DELETE TEMP     M:150 I:    0  146  J:   44   46  K:    1    1  L:    2    3
  doing --> TEMP[Y=0@ITP,D=1]
@@ -16671,6 +16707,7 @@ plot/over temp[g=u]
  eval    EX#1     C:  5 I:   50   50  J:    5   88  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> PS3DU2           @LIN
  reading TEMP     M:189 I:   50   51  J:    5   89  K:    1    1  L:    2    3
+ regrid XY
  regrid  TEMP     M:190 I:   50   50  J:    5   88  K:    1    1  L:    2    3
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
@@ -16684,6 +16721,7 @@ plot/over temp[g=g5day]
  strip regrid on T: TEMP --> XNTERMED         @LIN
  reading TEMP     M:192 I:   50   51  J:    5   89  K:    1    1  L:    2    5
  regrid  TEMP     M:193 I:   50   51  J:    5   89  K:    1    1  L:    2    3
+ regrid XY
  regrid  TEMP     M:194 I:   50   50  J:    5   88  K:    1    1  L:    2    3
  -DELETE TEMP     M:193 I:   50   51  J:    5   89  K:    1    1  L:    2    3
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
@@ -16702,6 +16740,7 @@ plot/over temp[g=g5_10]
  regrid  TEMP     M:196 I:   50   51  J:    5   89  K:    1    2  L:    2    3
  regrid  TEMP     M:197 I:   50   51  J:    5   89  K:    1    1  L:    2    3
  -DELETE TEMP     M:196 I:   50   51  J:    5   89  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M:196 I:    7    7  J:    5   88  K:    1    1  L:    2    3
  -DELETE TEMP     M:197 I:   50   51  J:    5   89  K:    1    1  L:    2    3
  doing --> TEMP[Z=5@ITP,D=1]
@@ -16716,6 +16755,7 @@ plot/over temp[g=u@ave]
  eval    EX#1     C:  5 I:   50   50  J:    5   88  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> PS3DU2           @AAV
  reading TEMP     M:199 I:   50   51  J:    5   89  K:    1    1  L:    2    3
+ regrid XY
  regrid  TEMP     M:200 I:   50   50  J:    5   88  K:    1    1  L:    2    3
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
@@ -16729,6 +16769,7 @@ plot/over temp[g=g5day@ave]
  strip regrid on T: TEMP --> XNTERMED         @AVE
  reading TEMP     M:202 I:   50   51  J:    5   89  K:    1    1  L:    2    5
  regrid  TEMP     M:203 I:   50   51  J:    5   89  K:    1    1  L:    2    3
+ regrid XY
  regrid  TEMP     M:204 I:   50   50  J:    5   88  K:    1    1  L:    2    3
  -DELETE TEMP     M:203 I:   50   51  J:    5   89  K:    1    1  L:    2    3
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
@@ -16747,6 +16788,7 @@ plot/over temp[g=g5_10@ave]
  regrid  TEMP     M:206 I:   45   56  J:    5   89  K:    1    2  L:    2    3
  regrid  TEMP     M:207 I:   45   56  J:    5   89  K:    1    1  L:    2    3
  -DELETE TEMP     M:206 I:   45   56  J:    5   89  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M:206 I:    7    7  J:    5   88  K:    1    1  L:    2    3
  -DELETE TEMP     M:207 I:   45   56  J:    5   89  K:    1    1  L:    2    3
  doing --> TEMP[Z=5@ITP,D=1]
@@ -16902,10 +16944,12 @@ plot/over temp[g=u]
  strip moduloing TEMP on T axis:     3   170
  strip regrid on X: TEMP --> PS3DU1           @LIN
  reading TEMP     M:236 I:   50   51  J:   44   46  K:    1    1  L:    3  168
+ regrid XY
  regrid  TEMP     M:237 I:   50   50  J:   44   45  K:    1    1  L:    3  168
  doing moduloing TEMP on T axis:     3   168
  strip regrid on X: TEMP --> PS3DU1           @LIN
  reading TEMP     M:239 I:   50   51  J:   44   46  K:    1    1  L:    1    2
+ regrid XY
  regrid  TEMP     M:240 I:   50   50  J:   44   45  K:    1    1  L:    1    2
  doing moduloing TEMP on T axis:     1     2
  doing --> TEMP[Y=0@ITP,D=2]
@@ -16922,6 +16966,7 @@ plot/over temp[g=g5day]
  reading TEMP     M:242 I:   50   51  J:   44   46  K:    1    1  L:    1  168
  doing moduloing TEMP on T axis:     1   168
  regrid  TEMP     M:244 I:   50   51  J:   44   46  K:    1    1  L:    2  104
+ regrid XY
  regrid  TEMP     M:245 I:   50   50  J:   44   45  K:    1    1  L:    2  104
  -DELETE TEMP     M:244 I:   50   51  J:   44   46  K:    1    1  L:    2  104
  doing --> TEMP[Y=0@ITP,D=2]
@@ -16942,6 +16987,7 @@ plot/over temp[g=g5_10]
  regrid  TEMP     M:248 I:   50   51  J:   44   46  K:    1    2  L:    2  104
  regrid  TEMP     M:249 I:   50   51  J:   44   46  K:    1    1  L:    2  104
  -DELETE TEMP     M:248 I:   50   51  J:   44   46  K:    1    2  L:    2  104
+ regrid XY
  regrid  TEMP     M:248 I:    7    7  J:   44   45  K:    1    1  L:    2  104
  -DELETE TEMP     M:249 I:   50   51  J:   44   46  K:    1    1  L:    2  104
  doing --> TEMP[Y=0@ITP,D=2]
@@ -16957,10 +17003,12 @@ plot/over temp[g=u@ave]
  strip moduloing TEMP on T axis:     3   170
  strip regrid on X: TEMP --> PS3DU1           @AAV
  reading TEMP     M:251 I:   50   51  J:   44   46  K:    1    1  L:    3  168
+ regrid XY
  regrid  TEMP     M:252 I:   50   50  J:   44   45  K:    1    1  L:    3  168
  doing moduloing TEMP on T axis:     3   168
  strip regrid on X: TEMP --> PS3DU1           @AAV
  reading TEMP     M:254 I:   50   51  J:   44   46  K:    1    1  L:    1    2
+ regrid XY
  regrid  TEMP     M:255 I:   50   50  J:   44   45  K:    1    1  L:    1    2
  doing moduloing TEMP on T axis:     1     2
  doing --> TEMP[Y=0@ITP,D=2]
@@ -16977,6 +17025,7 @@ plot/over temp[g=g5day@ave]
  reading TEMP     M:257 I:   50   51  J:   44   46  K:    1    1  L:    1  168
  doing moduloing TEMP on T axis:     1   168
  regrid  TEMP     M:259 I:   50   51  J:   44   46  K:    1    1  L:    2  104
+ regrid XY
  regrid  TEMP     M:260 I:   50   50  J:   44   45  K:    1    1  L:    2  104
  -DELETE TEMP     M:259 I:   50   51  J:   44   46  K:    1    1  L:    2  104
  doing --> TEMP[Y=0@ITP,D=2]
@@ -16997,6 +17046,7 @@ plot/over temp[g=g5_10@ave]
  regrid  TEMP     M:263 I:   45   56  J:   44   46  K:    1    2  L:    2  104
  regrid  TEMP     M:264 I:   45   56  J:   44   46  K:    1    1  L:    2  104
  -DELETE TEMP     M:263 I:   45   56  J:   44   46  K:    1    2  L:    2  104
+ regrid XY
  regrid  TEMP     M:263 I:    7    7  J:   44   45  K:    1    1  L:    2  104
  -DELETE TEMP     M:264 I:   45   56  J:   44   46  K:    1    1  L:    2  104
  doing --> TEMP[Y=0@ITP,D=2]
@@ -17061,10 +17111,12 @@ plot/over temp[g=u,gt=u@ave]
  strip moduloing TEMP on T axis:     3   170
  strip regrid on X: TEMP --> PS3DU1           @LIN
  reading TEMP     M:276 I:   50   51  J:   44   46  K:    1    1  L:    3  168
+ regrid XY
  regrid  TEMP     M:277 I:   50   50  J:   44   45  K:    1    1  L:    3  168
  doing moduloing TEMP on T axis:     3   168
  strip regrid on X: TEMP --> PS3DU1           @LIN
  reading TEMP     M:279 I:   50   51  J:   44   46  K:    1    1  L:    1    2
+ regrid XY
  regrid  TEMP     M:280 I:   50   50  J:   44   45  K:    1    1  L:    1    2
  doing moduloing TEMP on T axis:     1     2
  dealloc  dynamic grid PS3DU1          PSXU      PSYU      PSZT      TIME1
@@ -17082,6 +17134,7 @@ plot/over temp[g=g5day,gt=g5day@ave]
  reading TEMP     M:282 I:   50   51  J:   44   46  K:    1    1  L:    1  168
  doing moduloing TEMP on T axis:     1   168
  regrid  TEMP     M:284 I:   50   51  J:   44   46  K:    1    1  L:    2  104
+ regrid XY
  regrid  TEMP     M:285 I:   50   50  J:   44   45  K:    1    1  L:    2  104
  -DELETE TEMP     M:284 I:   50   51  J:   44   46  K:    1    1  L:    2  104
  doing --> TEMP[Y=0@ITP,D=2]
@@ -17102,6 +17155,7 @@ plot/over temp[g=g5_10,gt=g5_10@ave]
  regrid  TEMP     M:288 I:   50   51  J:   44   46  K:    1    2  L:    2  104
  regrid  TEMP     M:289 I:   50   51  J:   44   46  K:    1    1  L:    2  104
  -DELETE TEMP     M:288 I:   50   51  J:   44   46  K:    1    2  L:    2  104
+ regrid XY
  regrid  TEMP     M:288 I:    7    7  J:   44   45  K:    1    1  L:    2  104
  -DELETE TEMP     M:289 I:   50   51  J:   44   46  K:    1    1  L:    2  104
  doing --> TEMP[Y=0@ITP,D=2]
@@ -17117,6 +17171,7 @@ plot/over temp[g=g5day,gt=g5day@asn]  ! invalid interpretation of data
  strip regrid on T: TEMP --> XNTERMED         @ASN
  reading TEMP     M:291 I:   50   51  J:   44   46  K:    1    1  L:    2  104
  regrid  TEMP     M:292 I:   50   51  J:   44   46  K:    1    1  L:    2  104
+ regrid XY
  regrid  TEMP     M:293 I:   50   50  J:   44   45  K:    1    1  L:    2  104
  -DELETE TEMP     M:292 I:   50   51  J:   44   46  K:    1    1  L:    2  104
  doing --> TEMP[Y=0@ITP,D=2]
@@ -19118,7 +19173,7 @@ GO bn_user
 ! Skip for 6D: USER command not implemented
  
 ! These are the windows that have always been set after bn_user.jn
-set window/size=.5/aspect=1:ax 1
+set window/size=.5/aspect=.75:ax 1
 set window/size=.5/aspect=.75 2
  
 exit/script
@@ -19225,7 +19280,7 @@ CAN MODE VERIFY
        3>  1826.97               730.485    1461.727
        4>  2557.455              730.485    2192.213
        5>  3287.94               730.485    2922.698
-       6>  4018.425              730.485    3653.182
+       6>  4018.425              730.485    3653.183
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              DATA SET : COAD
              FILENAME : coads_clim.des
@@ -25019,6 +25074,7 @@ list/l=1 out
              SUBSET   : 5 by 12 points (X-Z)
              Y        : 0.5 to 1.5
              T        : 1951
+Tue Apr 10 11:25:19 PDT 2012
                 1        2        3        4        5     
                 1        2        3        4        5
  1    /  1:  438289.  438290.  438291.  438292.  438293.
@@ -25027,7 +25083,6 @@ list/l=1 out
  4    /  4:  440480.  440481.  440482.  440483.  440484.
  5    /  5:  441211.  441212.  441213.  441214.  441215.
  6    /  6:  441941.  441942.  441943.  441944.  441945.
-Fri Mar 30 16:32:08 PDT 2012
  7    /  7:  442672.  442673.  442674.  442675.  442676.
  8    /  8:  443402.  443403.  443404.  443405.  443406.
  9    /  9:  444132.  444133.  444134.  444135.  444136.
@@ -28894,6 +28949,7 @@ stat $1[gx=xtrop,gy=ytrop]
  allocate dynamic grid (G015)          XTROP     YTROP     NORMAL    TIME4
  strip regrid on X: SST --> (G015)           @LIN
  reading SST      M:431 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ regrid XY
  regrid  SST      M:392 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  dealloc  dynamic grid (G015)          XTROP     YTROP     NORMAL    TIME4
  
@@ -28932,6 +28988,7 @@ stat $1[gx=xtrop,gy=ytrop]
  allocate dynamic grid (G015)          XTROP     YTROP     NORMAL    TIME4
  strip regrid on X: SST --> (G015)           @LIN
  reading SST      M:392 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ regrid XY
  regrid  SST      M:388 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  dealloc  dynamic grid (G015)          XTROP     YTROP     NORMAL    TIME4
  
@@ -28963,6 +29020,7 @@ stat $1[g=gxyt]
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST --> GXYT             @LIN
  reading SST      M:388 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ regrid XY
  regrid  SST      M:375 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SEA SURFACE TEMPERATURE
@@ -28995,6 +29053,7 @@ stat $1[g=gxyt]
  eval    EX#1     C:  4 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST --> GXYT             @LIN
  reading SST      M:374 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ regrid XY
  regrid  SST      M:371 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SEA SURFACE TEMPERATURE
@@ -29023,6 +29082,7 @@ stat $1xyt
  eval    SSTXYT   C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST --> GXYT             @LIN
  reading SST      M:349 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ regrid XY
  regrid  SST      M:345 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST[G=GXYT]
@@ -29055,6 +29115,7 @@ stat $1xyt
  eval    SSTXYT   C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST --> GXYT             @LIN
  reading SST      M:331 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ regrid XY
  regrid  SST      M:326 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST[G=GXYT]
@@ -29085,6 +29146,7 @@ stat $1xyt
  eval    SSTXYT   C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST --> GXYT             @LIN
  reading SST      M:344 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ regrid XY
  regrid  SST      M:300 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST[G=GXYT]
@@ -29117,6 +29179,7 @@ stat $1xyt
  eval    SSTXYT   C:  6 I: -999 -999  J: -999 -999  K: -999 -999  L:    1    1
  strip regrid on X: SST --> GXYT             @LIN
  reading SST      M:288 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
+ regrid XY
  regrid  SST      M:287 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST[G=GXYT]
@@ -29680,6 +29743,7 @@ stat $1[gx=xtrop,gy=ytrop]
  reading SST      M:346 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  constan cnst     M:278 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE cnst     M:278 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid XY
  regrid  SST5     M:278 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST+5
@@ -29715,6 +29779,7 @@ stat $1[gx=xtrop,gy=ytrop]
  reading SST      M:168 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  constan cnst     M:167 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE cnst     M:167 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid XY
  regrid  SST5     M:167 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST+5
@@ -29747,6 +29812,7 @@ stat $1[g=gxyt]
  reading SST      M:497 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  constan cnst     M:445 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE cnst     M:445 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid XY
  regrid  SST5     M:445 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST+5
@@ -29782,6 +29848,7 @@ stat $1[g=gxyt]
  reading SST      M:391 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  constan cnst     M:327 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE cnst     M:327 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid XY
  regrid  SST5     M:327 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST+5
@@ -29813,6 +29880,7 @@ stat $1xyt
  reading SST      M:290 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  constan cnst     M:210 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE cnst     M:210 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid XY
  regrid  SST5     M:210 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST5[G=GXYT]
@@ -29848,6 +29916,7 @@ stat $1xyt
  reading SST      M:106 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  constan cnst     M:479 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE cnst     M:479 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid XY
  regrid  SST5     M:479 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST5[G=GXYT]
@@ -29920,6 +29989,7 @@ stat $1xyt
  reading SST      M:293 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  constan cnst     M:283 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE cnst     M:283 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid XY
  regrid  SST5     M:283 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST5[G=GXYT]
@@ -29955,6 +30025,7 @@ stat $1xyt
  reading SST      M:428 I:   55  131  J:   35   56  K: -999 -999  L:    1    1
  constan cnst     M:107 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
  -DELETE cnst     M:107 I: -999 -999  J: -999 -999  K: -999 -999  L: -999 -999
+ regrid XY
  regrid  SST5     M:107 I:    1  151  J:    1   41  K: -999 -999  L:    1    1
  
              SST5[G=GXYT]
@@ -31693,44 +31764,44 @@ define axis/t=0:8736/unit=hours/t0="01-JAN-1995 00:00:00"/npoints=20 t_20
 ! SCAT2GRIDGAUSS functions
 ! XY
  
-let xy_gauss_gridded = scat2gridgauss_xy(xpts,ypts,O2_umol_kg,x[gx=x_20],y[gy=y_20],1.5,1.0,5.0,3.0)
+let xy_gauss_gridded = scat2gridgauss_xy(xax,yax,O2_umol_kg,x[gx=x_20],y[gy=y_20],1.5,1.0,5.0,3.0)
 fill/lev=30v xy_gauss_gridded
-plot/vs/over/nolab xpts,ypts
+plot/vs/over/nolab xax,yax
 ppl shaset reset
  
 ! XZ
  
-let xz_gauss_gridded = scat2gridgauss_xz(xpts,zpts,O2_umol_kg,x[gx=x_20],z[gz=z_20],1.5,10,2,20)
+let xz_gauss_gridded = scat2gridgauss_xz(xax,zax,O2_umol_kg,x[gx=x_20],z[gz=z_20],1.5,10,2,20)
 fill/lev=30v xz_gauss_gridded
-plot/vs/over/nolab xpts,zpts
+plot/vs/over/nolab xax,zax
 ppl shaset reset
  
 ! XT
  
-let xt_gauss_gridded = scat2gridgauss_xt(xpts,tpts,O2_umol_kg,x[gx=x_20],t[gt=t_20],1.5,720.0,5.0,2160.0)
+let xt_gauss_gridded = scat2gridgauss_xt(xax,tax,O2_umol_kg,x[gx=x_20],t[gt=t_20],1.5,720.0,5.0,2160.0)
 fill/lev=30v xt_gauss_gridded
-plot/vs/over/nolab xpts,tpts
+plot/vs/over/nolab xax,tax
 ppl shaset reset
  
 ! YZ
  
-let yz_gauss_gridded = scat2gridgauss_yz(ypts,zpts,ysequence(O2_umol_kg),y[gy=y_20],z[gz=z_20],1.0,10,3,50)
+let yz_gauss_gridded = scat2gridgauss_yz(yax,zax,ysequence(O2_umol_kg),y[gy=y_20],z[gz=z_20],1.0,10,3,50)
 fill/lev=30v yz_gauss_gridded
-plot/vs/over/nolab ypts,zpts
+plot/vs/over/nolab yax,zax
 ppl shaset reset
  
 ! YT
  
-let yt_gauss_gridded = scat2gridgauss_yt(ypts,tpts,ysequence(O2_umol_kg),y[gy=y_20],t[gt=t_20],1.0,720,3,2160)
+let yt_gauss_gridded = scat2gridgauss_yt(yax,tax,ysequence(O2_umol_kg),y[gy=y_20],t[gt=t_20],1.0,720,3,2160)
 fill/lev=30v yt_gauss_gridded
-plot/vs/over/nolab tpts,ypts
+plot/vs/over/nolab tax,yax
 ppl shaset reset
  
 ! ZT
  
-let zt_gauss_gridded = scat2gridgauss_zt(zpts,tpts,zsequence(O2_umol_kg),z[gz=z_20],t[gt=t_20],10,720,50,2160)
+let zt_gauss_gridded = scat2gridgauss_zt(zax,tax,zsequence(O2_umol_kg),z[gz=z_20],t[gt=t_20],10,720,50,2160)
 fill/lev=30v zt_gauss_gridded
-plot/vs/over/nolab tpts, zpts
+plot/vs/over/nolab tax, zax
  
 can mem/all
  
@@ -32426,9 +32497,9 @@ list/l=1:2 eofxyfcn
  1N   / 46:    -1.19    -1.08    -1.12
  1S   / 45:    -1.05    -1.92    -2.29
  ---- L:2 T:   2
- 3N   / 47:  -736.33   -38.93 -1741.28
- 1N   / 46:   906.05   802.09  -975.60
- 1S   / 45:  1701.49   557.52  -479.85
+ 3N   / 47:  -737.10   -38.97 -1743.10
+ 1N   / 46:   906.99   802.93  -976.62
+ 1S   / 45:  1703.27   558.10  -480.35
  
 LET eofstat = eof_stat(sst[X=27w:23w,Y=1S:3N], 1.)
 list/i=1:3/j=1:3 eofstat
@@ -32448,9 +32519,9 @@ list/i=1:2 eoftime
              SUBSET   : 2 by 3 points (X-TIME)
                       1        2     
                       1        2
- 16-JAN      / 1:      4.5 -10968.8
- 15-FEB      / 2:      0.3  19799.6
- 17-MAR      / 3:     -4.9  -8830.8
+ 16-JAN      / 1:      4.5 -10980.3
+ 15-FEB      / 2:      0.3  19820.3
+ 17-MAR      / 3:     -4.9  -8840.0
  
  
  
@@ -34215,6 +34286,13 @@ list reshape(a,I[I=1:1]+J[J=1:3])
 list {"a","b","c"} EQ YSEQUENCE({"A","B","C"})  ! case insensitive
              VARIABLE : {"a","b","c"} EQ YSEQUENCE({"A","B","C"})
              SUBSET   : 3 by 3 points (X-Y)
+col1,col2,col3,col4,col5
+one,,1.1,24S,130E,,1e1,"word 1"
+    two,,2.2,24N,130W,2S,,"word 2"
+three,,3.3,24,130,3N,3e-2," wd 3 "
+
+five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
+extra line
               1        2        3     
               1        2        3
  1   / 1:  1.00000  0.00000  0.00000
@@ -34225,13 +34303,6 @@ list {"a","b","c"} NE YSEQUENCE({"a","B","c"})
              SUBSET   : 3 by 3 points (X-Y)
               1        2        3     
               1        2        3
-col1,col2,col3,col4,col5
-one,,1.1,24S,130E,,1e1,"word 1"
-    two,,2.2,24N,130W,2S,,"word 2"
-three,,3.3,24,130,3N,3e-2," wd 3 "
-
-five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
-extra line
  1   / 1:  0.00000  1.00000  1.00000
  2   / 2:  1.00000  0.00000  1.00000
  3   / 3:  1.00000  1.00000  0.00000
@@ -34712,16 +34783,16 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
  Column  8: V8 is V8 (degrees_north)(Latitude)
  Column  9: V9 is V9 (degrees_north)(Latitude)
  Column 10: V10 is V10 (degrees_north)(Latitude)
-        V1  V2    V3       V4       V5       V6       V7    V8 V9    V10
-1   / 1:......  1.10000 -24.0000     ....     ....   10.000......     ....
-2   / 2:......  2.20000  24.0000     ....  -2.0000     ..........     ....
-3   / 3:......  3.30000  24.0000  130.000   3.0000    0.030......     ....
-4   / 4:......     ....     ....     ....     ....     ..........     ....
 col1,col2,col3,col4,col5
 12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
 12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
 12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
 12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+        V1  V2    V3       V4       V5       V6       V7    V8 V9    V10
+1   / 1:......  1.10000 -24.0000     ....     ....   10.000......     ....
+2   / 2:......  2.20000  24.0000     ....  -2.0000     ..........     ....
+3   / 3:......  3.30000  24.0000  130.000   3.0000    0.030......     ....
+4   / 4:......     ....     ....     ....     ....     ..........     ....
 5   / 5:......  4.40000 -24.0000 -130.000  91.0000 -400.000......  77.0000
 6   / 6:......     ....     ....     ....     ....     ..........     ....
  
@@ -34907,6 +34978,10 @@ show data 2
      currently SET data sets:
     2> ./bn_delimited_read_date_time.dat  (default)
  name     title                             I         J         K         L
+12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
  V1       V1                               1:4       ...       ...       ...
        (Time of day)
  V2       V2                               1:4       ...       ...       ...
@@ -34914,10 +34989,6 @@ show data 2
  V3       V3                               1:4       ...       ...       ...
        (Time of day)
  V4       V4                               1:4       ...       ...       ...
-12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
        (Time of day)
  V5       V5                               1:4       ...       ...       ...
        (Time of day)
@@ -40145,11 +40216,11 @@ list eofsp[k=1,l=1]
              T        : 1
               139.5W   138.5W   137.5W   136.5W   135.5W  
                 1        2        3        4        5
- 1.83S / 5: -12.2801 -12.7906 -13.2065 -13.4832 -13.6251
- 2.17S / 4: -12.3682 -12.8668 -13.2442 -13.4984 -13.6367
- 2.5S  / 3: -12.3453 -12.8097 -13.1468 -13.3773 -13.5205
- 2.83S / 2: -12.1698 -12.5715 -12.8558 -13.0566 -13.2071
- 3.17S / 1: -11.8142 -12.1337 -12.3613 -12.5343 -12.6960
+ 1.83S / 5: -12.2801 -12.7906 -13.2065 -13.4831 -13.6251
+ 2.17S / 4: -12.3682 -12.8668 -13.2441 -13.4984 -13.6366
+ 2.5S  / 3: -12.3453 -12.8097 -13.1467 -13.3772 -13.5205
+ 2.83S / 2: -12.1697 -12.5715 -12.8558 -13.0566 -13.2071
+ 3.17S / 1: -11.8142 -12.1336 -12.3613 -12.5343 -12.6960
 set view ur
 shade eofsp[k=2,l=1]
 list eofsp[k=2,l=1]
@@ -40221,11 +40292,11 @@ list eofti[l=1:5,i=1,k=1]
              DEPTH (m): 5
                          1     
                          1
- 17-AUG-1982 12 / 1:  9.87079
- 23-AUG-1982 14 / 2:  9.57659
- 29-AUG-1982 16 / 3:  9.14081
- 04-SEP-1982 18 / 4:  8.55734
- 10-SEP-1982 20 / 5:  7.77398
+ 17-AUG-1982 12 / 1:  9.87076
+ 23-AUG-1982 14 / 2:  9.57655
+ 29-AUG-1982 16 / 3:  9.14077
+ 04-SEP-1982 18 / 4:  8.55731
+ 10-SEP-1982 20 / 5:  7.77395
 set view ur
 plot eofti[i=1,k=5], eofti[i=2,k=5], eofti[i=3,k=5]
 list eofti[l=1:5,i=1,k=5]
@@ -43761,8 +43832,8 @@ list v, t[gt=v], tbox[gt=v]
 17-MAR      / 3:  28.0468  1826.97   730.48
 16-APR      / 4:  28.0000  2557.45   730.49
 16-JUN      / 5:     ....  4018.42  2191.45
-16-AUG      / 6:  28.0000  5479.39   730.48
-15-SEP      / 7:  28.0000  6209.88   730.49
+16-AUG      / 6:  28.0000  5479.39   730.49
+15-SEP      / 7:  28.0000  6209.88   730.48
 16-OCT      / 8:  28.0000  6940.36   730.48
 can data/all
  
@@ -45057,7 +45128,7 @@ list/form=tab aa
              VARIABLE : (X[GX=XAX] + Y[GY=YAX])/100
              BAD FLAG : -1.E+34       
              SUBSET   : 6 by 9 points (LONGITUDE-LATITUDE)
-  	100E     	100E(100)	100.1E   	100.2E   	100.2E   	100.3E   
+  	100E     	100E     	100.1E   	100.2E   	100.2E   	100.3E   
 0.11N	1.0011	1.0016	1.0021	1.0026	1.0031	1.0036
 0.128N	1.00128	1.00178	1.00228	1.00278	1.00328	1.00378
 0.145N	1.00146	1.00196	1.00246	1.00296	1.00346	1.00396
@@ -45244,12 +45315,6 @@ LET HA_LC_T1DLV = 16
 LET HA_LC_BTLV = -64
 LET HA_LC_B1DLV = -16
 LET HA_LC_SCL = 10
-LET UA_LC = UA12+UB12+UA13+UB13+UA14+UB14+UA15+UB15+UA16+UB16+UA17+UB17+UA18+UB18+UA19+UB19+UA20+UB20+UA21+UB21+UA22+UB22+UA23+UB23
-LET UA_LC_TPLV = 8
-LET UA_LC_T1DLV = 0.64
-LET UA_LC_BTLV = -8
-LET UA_LC_B1DLV = -0.64
-LET UA_LC_SCL = 1000
              VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
@@ -45301,6 +45366,12 @@ DATA:
 224.60299
 224.60350
 224.60400
+LET UA_LC = UA12+UB12+UA13+UB13+UA14+UB14+UA15+UB15+UA16+UB16+UA17+UB17+UA18+UB18+UA19+UB19+UA20+UB20+UA21+UB21+UA22+UB22+UA23+UB23
+LET UA_LC_TPLV = 8
+LET UA_LC_T1DLV = 0.64
+LET UA_LC_BTLV = -8
+LET UA_LC_B1DLV = -0.64
+LET UA_LC_SCL = 1000
 LET VA_LC = VA12+VB12+VA13+VB13+VA14+VB14+VA15+VB15+VA16+VB16+VA17+VB17+VA18+VB18+VA19+VB19+VA20+VB20+VA21+VB21+VA22+VB22+VA23+VB23
 LET VA_LC_TPLV = 8
 LET VA_LC_T1DLV = 0.64
@@ -45829,7 +45900,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS30-MAR-2012 16:32:40
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS10-APR-2012 11:25:55
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47248,7 +47319,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "30-Mar-12:16:31"
+WIN_TITLE = "10-Apr-12:11:25"
  
 set win/title="set the title"
 sho sym win_title
@@ -47266,7 +47337,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title="30-Mar-12:16:31"
+ !-> set win/title="10-Apr-12:11:25"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47275,16 +47346,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date = 30-Mar-12
+ !-> DEFINE SYMBOL the_date = 10-Apr-12
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 16:31
+ !-> DEFINE SYMBOL the_time = 11:25
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="30-Mar-12:16:31"
+ !-> SET WIN/TITLE="10-Apr-12:11:25"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "30-Mar-12:16:31"
+WIN_TITLE = "10-Apr-12:11:25"
  
 GO bn_reset
 cancel mode verify
@@ -49780,7 +49851,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
  (TIME7).modulo =   
@@ -51658,7 +51729,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.73   30-Mar-12
+ .                               history         CHAR        24   T       FERRET V6.73   10-Apr-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51703,7 +51774,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.73   30-Mar-12
+ .                               history         CHAR        24   T       FERRET V6.73   10-Apr-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -56442,7 +56513,7 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 LET/D=2 zvar = z[gz=temp[d=2]]
@@ -57802,10 +57873,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "41.3747"
-CLOCK_SECS = "68.104"
-CURRENT_DATE = "30-Mar-12"
-CURRENT_TIME = "16:33:02"
+DELTA_CPU = "46.8299"
+CLOCK_SECS = "75.237"
+CURRENT_DATE = "10-Apr-12"
+CURRENT_TIME = "11:26:19"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57814,8 +57885,8 @@ CURRENT_TIME = "16:33:02"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.045993"
-CLOCK_SECS = "68.172"
+DELTA_CPU = "0.043994"
+CLOCK_SECS = "75.304"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57829,60 +57900,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.349947
+ !-> DEFINE VARIABLE ten_plots = 0.360945
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "9.99E-04"
-CLOCK_SECS = "68.804"
+DELTA_CPU = "0"
+CLOCK_SECS = "76.059"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "68.804"
+CLOCK_SECS = "76.06"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.034996
- !-> DEFINE VARIABLE sumcpu =0.034996
+ !-> DEFINE VARIABLE dt = 0.040993
+ !-> DEFINE VARIABLE sumcpu =0.040993
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.068991
+ !-> DEFINE VARIABLE dt = 0.039994
+ !-> DEFINE VARIABLE sumcpu =0.080987
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.039993
- !-> DEFINE VARIABLE sumcpu =0.108984
+ !-> DEFINE VARIABLE dt = 0.046993
+ !-> DEFINE VARIABLE sumcpu =0.12798
 !-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.036994
- !-> DEFINE VARIABLE sumcpu =0.145978
+ !-> DEFINE VARIABLE dt = 0.043993
+ !-> DEFINE VARIABLE sumcpu =0.171973
 !-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.181973
+ !-> DEFINE VARIABLE dt = 0.040994
+ !-> DEFINE VARIABLE sumcpu =0.212967
 !-> REPEAT: K=6
- !-> DEFINE VARIABLE dt = 0.034995
- !-> DEFINE VARIABLE sumcpu =0.216968
+ !-> DEFINE VARIABLE dt = 0.036995
+ !-> DEFINE VARIABLE sumcpu =0.249962
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.036994
- !-> DEFINE VARIABLE sumcpu =0.253962
+ !-> DEFINE VARIABLE dt = 0.043993
+ !-> DEFINE VARIABLE sumcpu =0.293955
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.038994
- !-> DEFINE VARIABLE sumcpu =0.292956
+ !-> DEFINE VARIABLE dt = 0.041994
+ !-> DEFINE VARIABLE sumcpu =0.335949
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.036994
- !-> DEFINE VARIABLE sumcpu =0.32995
+ !-> DEFINE VARIABLE dt = 0.038994
+ !-> DEFINE VARIABLE sumcpu =0.374943
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.036994
- !-> DEFINE VARIABLE sumcpu =0.366944
+ !-> DEFINE VARIABLE dt = 0.035994
+ !-> DEFINE VARIABLE sumcpu =0.410937
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.366944
-0.366944
+ !-> MESSAGE/CONTINUE 0.410937
+0.410937
 sh sym CLOCK_SECS
-CLOCK_SECS = "69.732"
+CLOCK_SECS = "77.266"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = "30-Mar-12"
-SESSION_TIME = "16:31"
-CURRENT_DATE = "30-Mar-12"
-CURRENT_TIME = "16:33:04"
+SESSION_DATE = "10-Apr-12"
+SESSION_TIME = "11:25"
+CURRENT_DATE = "10-Apr-12"
+CURRENT_TIME = "11:26:21"
  
  
 ! ******** V6.3 Additions below ***********
@@ -59109,6 +59180,7 @@ LIST temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  regrid  TEMP     M: 42 I:   95  106  J:   45   50  K:    1    2  L:    2    3
  regrid  TEMP     M: 34 I:   95  106  J:   45   50  K:    1    1  L:    2    3
  -DELETE TEMP     M: 42 I:   95  106  J:   45   50  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M: 42 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  -DELETE TEMP     M: 34 I:   95  106  J:   45   50  K:    1    1  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
@@ -59159,6 +59231,7 @@ LIST temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefghijkl
  regrid  TEMP     M: 34 I:  100  101  J:   45   50  K:    1    2  L:    2    3
  regrid  TEMP     M: 29 I:  100  101  J:   45   50  K:    1    1  L:    2    3
  -DELETE TEMP     M: 34 I:  100  101  J:   45   50  K:    1    2  L:    2    3
+ regrid XY
  regrid  TEMP     M: 34 I:   12   12  J:   45   49  K:    1    1  L:    2    3
  -DELETE TEMP     M: 29 I:  100  101  J:   45   50  K:    1    1  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
@@ -59199,10 +59272,12 @@ plot/over temp[g=u]
  strip moduloing TEMP on T axis:     3   170
  strip regrid on X: TEMP --> PS3DU1           @LIN
  found   TEMP     M: 36 I:   50   51  J:   45   50  K:    1    2  L:    1  172
+ regrid XY
  regrid  TEMP     M: 28 I:   50   50  J:   45   45  K:    1    1  L:    3  168
  doing moduloing TEMP on T axis:     3   168
  strip regrid on X: TEMP --> PS3DU1           @LIN
  found   TEMP     M: 36 I:   50   51  J:   45   50  K:    1    2  L:    1  172
+ regrid XY
  regrid  TEMP     M: 27 I:   50   50  J:   45   45  K:    1    1  L:    1    2
  doing moduloing TEMP on T axis:     1     2
 setting up plot
@@ -59215,6 +59290,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day]
  strip regrid on T: TEMP --> XNTERMED         @LIN
  found   TEMP     M: 36 I:   50   51  J:   45   50  K:    1    2  L:    1  172
  regrid  TEMP     M: 26 I:   50   51  J:   45   46  K:    1    1  L:    2  104
+ regrid XY
  regrid  TEMP     M: 23 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 26 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
@@ -59231,6 +59307,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890]
  regrid  TEMP     M: 23 I:   50   51  J:   45   46  K:    1    2  L:    2  104
  regrid  TEMP     M: 26 I:   50   51  J:   45   46  K:    1    1  L:    2  104
  -DELETE TEMP     M: 23 I:   50   51  J:   45   46  K:    1    2  L:    2  104
+ regrid XY
  regrid  TEMP     M: 23 I:    7    7  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 26 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
@@ -59243,10 +59320,12 @@ plot/over temp[g=u@ave]
  strip moduloing TEMP on T axis:     3   170
  strip regrid on X: TEMP --> PS3DU1           @AAV
  found   TEMP     M: 36 I:   50   51  J:   45   50  K:    1    2  L:    1  172
+ regrid XY
  regrid  TEMP     M: 26 I:   50   50  J:   45   45  K:    1    1  L:    3  168
  doing moduloing TEMP on T axis:     3   168
  strip regrid on X: TEMP --> PS3DU1           @AAV
  found   TEMP     M: 36 I:   50   51  J:   45   50  K:    1    2  L:    1  172
+ regrid XY
  regrid  TEMP     M: 19 I:   50   50  J:   45   45  K:    1    1  L:    1    2
  doing moduloing TEMP on T axis:     1     2
 setting up plot
@@ -59259,6 +59338,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day@ave]
  strip regrid on T: TEMP --> XNTERMED         @AVE
  found   TEMP     M: 36 I:   50   51  J:   45   50  K:    1    2  L:    1  172
  regrid  TEMP     M: 18 I:   50   51  J:   45   46  K:    1    1  L:    2  104
+ regrid XY
  regrid  TEMP     M: 17 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 18 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
@@ -59277,6 +59357,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890@ave]
  regrid  TEMP     M: 16 I:   45   56  J:   45   46  K:    1    2  L:    2  104
  regrid  TEMP     M: 13 I:   45   56  J:   45   46  K:    1    1  L:    2  104
  -DELETE TEMP     M: 16 I:   45   56  J:   45   46  K:    1    2  L:    2  104
+ regrid XY
  regrid  TEMP     M: 16 I:    7    7  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 13 I:   45   56  J:   45   46  K:    1    1  L:    2  104
 setting up plot
@@ -59341,6 +59422,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5da
  strip regrid on T: TEMP --> XNTERMED         @AVE
  found   TEMP     M: 18 I:   45   56  J:   45   46  K:    1    2  L:    2  171
  regrid  TEMP     M: 11 I:   50   51  J:   45   46  K:    1    1  L:    2  104
+ regrid XY
  regrid  TEMP     M: 25 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 11 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
@@ -59356,6 +59438,7 @@ plot/over temp[g=g5_10g00abcdefghijklmnopqrstuvwxyz1234567890,gt=g5_10g00abcdefg
  regrid  TEMP     M: 11 I:   50   51  J:   45   46  K:    1    2  L:    2  104
  regrid  TEMP     M: 21 I:   50   51  J:   45   46  K:    1    1  L:    2  104
  -DELETE TEMP     M: 11 I:   50   51  J:   45   46  K:    1    2  L:    2  104
+ regrid XY
  regrid  TEMP     M: 11 I:    7    7  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 21 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
@@ -59368,6 +59451,7 @@ plot/over temp[g=g5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5dayg5day,gt=g5dayg5da
  strip regrid on T: TEMP --> XNTERMED         @ASN
  found   TEMP     M: 18 I:   45   56  J:   45   46  K:    1    2  L:    2  171
  regrid  TEMP     M: 21 I:   50   51  J:   45   46  K:    1    1  L:    2  104
+ regrid XY
  regrid  TEMP     M:  9 I:   50   50  J:   45   45  K:    1    1  L:    2  104
  -DELETE TEMP     M: 21 I:   50   51  J:   45   46  K:    1    1  L:    2  104
 setting up plot
@@ -60174,7 +60258,6 @@ use gt4d011
 DEFINE SYMBOL output_xml_file = the_xml_file.xml
  
 say/quiet/outfile=($output_xml_file)/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
- !-> MESSAGE/CONTINUE/quiet/outfile=the_xml_file.xml/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <data>
 <datasets>
@@ -64739,6 +64822,7 @@ say/quiet/outfile=($output_xml_file)/clobber <?xml version="1.0" encoding="ISO-8
 </axis>
 </axes>
 </data>
+ !-> MESSAGE/CONTINUE/quiet/outfile=the_xml_file.xml/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 say/quiet/outfile=($output_xml_file)/append <data>
  !-> MESSAGE/CONTINUE/quiet/outfile=the_xml_file.xml/append <data>
  
@@ -66068,8 +66152,8 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.73  "                                                          
- 3    /  3:" ! Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/30/12"                          
- 4    /  4:" ! 30-Mar-12 16:31     "                                                    
+ 3    /  3:" ! Linux 2.6.18-274.12.1.el5PAE 32-bit - 04/10/12"                          
+ 4    /  4:" ! 10-Apr-12 11:25     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -68267,7 +68351,7 @@ sh dat
  name     title                             I         J         K         L
  UCOV     UCOV                             1:6       1:9       1:3       1:1
  CONTROLE CONTROLE                         1:6       ...       ...       ...
- NIVSIGS  NIVSIGS                          ...       ...       1:3       ...
+ NIVSIGS  NIVSIGS                          1:3       ...       ...       ...
  NIVSIG   NIVSIG                           1:6       ...       ...       ...
  AP       AP                               1:6       ...       ...       ...
  
@@ -68275,7 +68359,7 @@ sh dat
  name     title                             I         J         K         L
  UCOV     UCOV                             1:6       1:9       1:3       1:1
  CONTROLE CONTROLE                         1:6       ...       ...       ...
- NIVSIGS  NIVSIGS                          ...       ...       1:3       ...
+ NIVSIGS  NIVSIGS                          1:3       ...       ...       ...
  NIVSIG   NIVSIG                           1:6       ...       ...       ...
  AP       AP                               1:6       ...       ...       ...
  
@@ -68473,42 +68557,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.2662
- 2   / 2:  0.7262
- 3   / 3:  0.9888
- 4   / 4:  0.0403
- 5   / 5:  0.9154
+ 1   / 1:  0.3177
+ 2   / 2:  0.2568
+ 3   / 3:  0.7746
+ 4   / 4:  0.8419
+ 5   / 5:  0.6043
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.8157
- 2   / 2:  0.6474
- 3   / 3:  0.2379
- 4   / 4:  0.8713
- 5   / 5:  0.2337
+ 1   / 1:  0.1421
+ 2   / 2:  0.7777
+ 3   / 3:  0.7116
+ 4   / 4:  0.3710
+ 5   / 5:  0.6711
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.8053
- 2   / 2:  0.4643
- 3   / 3:  0.7776
- 4   / 4:  0.8227
- 5   / 5:  0.3579
- 6   / 6:  0.4494
+ 1   / 1:  0.4471
+ 2   / 2:  0.4635
+ 3   / 3:  0.8358
+ 4   / 4:  0.1119
+ 5   / 5:  0.5149
+ 6   / 6:  0.2341
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.2480
- 2   / 2:  0.1783
- 3   / 3:  0.2499
- 4   / 4:  0.3390
- 5   / 5:  0.5809
- 6   / 6:  0.9474
+ 1   / 1:  0.5598
+ 2   / 2:  0.9837
+ 3   / 3:  0.3763
+ 4   / 4:  0.2381
+ 5   / 5:  0.1012
+ 6   / 6:  0.1369
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -68540,42 +68624,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1: -2.371
- 2   / 2: -0.982
- 3   / 3:  0.435
- 4   / 4:  0.251
- 5   / 5:  0.462
+ 1   / 1:  0.086
+ 2   / 2: -0.717
+ 3   / 3: -1.550
+ 4   / 4:  2.545
+ 5   / 5: -0.034
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  1.560
- 2   / 2:  0.376
- 3   / 3: -0.915
- 4   / 4:  1.565
- 5   / 5: -1.153
+ 1   / 1: -2.028
+ 2   / 2: -1.323
+ 3   / 3:  0.316
+ 4   / 4: -0.057
+ 5   / 5:  0.091
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -1.601
- 2   / 2:  1.259
- 3   / 3:  0.160
- 4   / 4:  0.833
- 5   / 5:  1.435
- 6   / 6: -0.243
+ 1   / 1: -0.064
+ 2   / 2:  1.004
+ 3   / 3:  0.276
+ 4   / 4:  0.797
+ 5   / 5:  0.449
+ 6   / 6:  0.446
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  1.962
- 2   / 2:  0.942
- 3   / 3:  2.401
- 4   / 4:  0.355
- 5   / 5:  0.243
- 6   / 6: -1.017
+ 1   / 1: -0.883
+ 2   / 2: -0.750
+ 3   / 3:  0.278
+ 4   / 4:  0.007
+ 5   / 5: -0.468
+ 6   / 6: -1.179
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -68610,15 +68694,15 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  1: VAR2 is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1)
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
-            VAR2   VAR2    VAR2
-0     / 1:  1.935  1.935  0.4262
-20    / 2:  1.580  1.580  0.4262
-40    / 3:  0.323  0.426  0.3232
-60    / 4:  0.426  0.323  0.4262
-80    / 5: -0.441 -0.441  0.4262
-100   / 6: -0.946 -0.441  0.4262
-120   / 7: -0.180 -0.180  0.4262
-140   / 8:  0.551  0.551  0.5515
+            VAR2   VAR2   VAR2
+0     / 1:  1.084  1.767  1.084
+20    / 2:  1.767  1.118  1.084
+40    / 3:  1.118  1.118 -0.037
+60    / 4: -0.037 -0.037  0.841
+80    / 5: -0.635 -0.635  0.841
+100   / 6: -0.863 -0.635  0.841
+120   / 7: -0.089 -0.089  0.841
+140   / 8:  0.841  0.841  0.841
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -68781,8 +68865,8 @@ yes?
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/30/12
- 	30-Mar-12 16:33     
+ 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 04/10/12
+ 	10-Apr-12 11:26     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -68923,23 +69007,23 @@ list a - sst[l=@ave]
              SUBSET   : 15 points (LONGITUDE)
              LATITUDE : 1S
              TIME     : 01-JAN 00:45 to 01-APR 08:12
-                 1S    
-                 45
- 151E   / 66:  0.0000
- 153E   / 67:  0.0000
- 155E   / 68:  0.0000
- 157E   / 69:  0.0000
- 159E   / 70:  0.0000
- 161E   / 71:  0.0000
- 163E   / 72:  0.0000
- 165E   / 73:  0.0000
- 167E   / 74:  0.0000
- 169E   / 75:  0.0000
- 171E   / 76:  0.0000
- 173E   / 77:  0.0000
- 175E   / 78:  0.0000
- 177E   / 79:  0.0000
- 179E   / 80:  0.0000
+                  1S      
+                  45
+ 151E   / 66:  3.553E-15
+ 153E   / 67:  0.000E+00
+ 155E   / 68:  3.553E-15
+ 157E   / 69:  0.000E+00
+ 159E   / 70:  3.553E-15
+ 161E   / 71:  3.553E-15
+ 163E   / 72:  3.553E-15
+ 165E   / 73:  0.000E+00
+ 167E   / 74:  3.553E-15
+ 169E   / 75:  3.553E-15
+ 171E   / 76: -3.553E-15
+ 173E   / 77:  3.553E-15
+ 175E   / 78:  0.000E+00
+ 177E   / 79:  3.553E-15
+ 179E   / 80:  3.553E-15
  
 can region
 let a = x[i=1:9,k=1:5] + t[l=1:5]
@@ -69636,7 +69720,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69661,7 +69745,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69685,7 +69769,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69724,7 +69808,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69759,7 +69843,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69800,7 +69884,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69857,7 +69941,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69914,7 +69998,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -69969,7 +70053,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70017,7 +70101,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70111,7 +70195,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70181,7 +70265,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70232,7 +70316,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70307,7 +70391,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70334,7 +70418,7 @@ variables:
 		X_:_FillValue = -1.308568e+26f ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -70358,7 +70442,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -70385,11 +70469,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -70420,7 +70504,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70492,7 +70576,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70536,7 +70620,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70578,7 +70662,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70684,7 +70768,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -70723,7 +70807,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -70746,7 +70830,7 @@ variables:
 		BB:another_attr = 0.f ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70772,7 +70856,7 @@ variables:
 		BB:another_attr = 0.f ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70792,7 +70876,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70813,7 +70897,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70856,7 +70940,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -70896,7 +70980,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -70934,7 +71018,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -70963,7 +71047,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -70996,7 +71080,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71022,7 +71106,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71066,7 +71150,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -71171,7 +71255,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -71213,7 +71297,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71296,7 +71380,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71333,7 +71417,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71373,7 +71457,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71424,7 +71508,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71483,7 +71567,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71527,7 +71611,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71569,7 +71653,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71604,7 +71688,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71638,7 +71722,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -71668,7 +71752,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -71697,7 +71781,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -71759,7 +71843,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71804,7 +71888,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71823,37 +71907,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	float A(XAX) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71883,7 +71937,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	float A(XAX) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -71936,7 +72020,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71978,7 +72062,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -71996,7 +72080,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 err611_set_var_ez.jnl --- 
@@ -72015,7 +72099,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -72033,7 +72117,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -72051,7 +72135,7 @@ variables:
 		A:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72072,7 +72156,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -72104,7 +72188,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -72131,7 +72215,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_axis_cf.jnl, degrees_east, degrees_north, std names on axes:
@@ -72197,7 +72281,7 @@ variables:
 		ZUP:long_name = "Z[GZ=ZAXUP]" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:
@@ -72229,7 +72313,7 @@ variables:
 		Y_:_FillValue = -3.689349e+19f ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since
@@ -72262,7 +72346,7 @@ variables:
 		XYTVAR:history = "From bn_strides" ;
 
 // global attributes:
-		:history = "FERRET V6.73   30-Mar-12" ;
+		:history = "FERRET V6.73   10-Apr-12" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
@@ -72277,8 +72361,8 @@ yes?
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/30/12
- 	30-Mar-12 16:33     
+ 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 04/10/12
+ 	10-Apr-12 11:26     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
@@ -72290,13 +72374,13 @@ FERRET_PLATFORM = "Linux 2.6.18-274.12.1.el5PAE 32-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2 of Mar 27 2012 16:25:15 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = "30-Mar-12"
-SESSION_TIME = "16:33"
-SESSION_PID = "19132"
-DELTA_CPU = "0.035994"
-CLOCK_SECS = "0.188"
-CURRENT_DATE = "30-Mar-12"
-CURRENT_TIME = "16:33:29"
+SESSION_DATE = "10-Apr-12"
+SESSION_TIME = "11:26"
+SESSION_PID = "19738"
+DELTA_CPU = "0.038993"
+CLOCK_SECS = "0.194"
+CURRENT_DATE = "10-Apr-12"
+CURRENT_TIME = "11:26:49"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -72317,7 +72401,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "30-Mar-12:16:33"
+WIN_TITLE = "10-Apr-12:11:26"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -72376,8 +72460,8 @@ yes?
 yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/30/12
- 	30-Mar-12 16:33     
+ 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 04/10/12
+ 	10-Apr-12 11:26     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -72607,8 +72691,8 @@ yes?
 yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/30/12
- 	30-Mar-12 16:33     
+ 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 04/10/12
+ 	10-Apr-12 11:26     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -72721,8 +72805,8 @@ yes?
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 03/30/12
- 	30-Mar-12 16:33     
+ 	Linux 2.6.18-274.12.1.el5PAE 32-bit - 04/10/12
+ 	10-Apr-12 11:26     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -72806,4 +72890,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Fri Mar 30 16:33:31 PDT 2012
+Ended at Tue Apr 10 11:26:51 PDT 2012

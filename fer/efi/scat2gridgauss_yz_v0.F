@@ -514,7 +514,7 @@ C  Get coordinates of output axes.
 C ACM modulo 11/9/00  Put points within cutoff of the end just beyond the
 C                     other end, and use in the gridding computation.
 
-               IF (moduloy(1)) THEN
+               IF (moduloy(2)) THEN
                   dy = yf - y1
                   IF (ny .GT. 1) dy = (yf-y1)/real(ny-1)  ! gridbox size in data units
                   ycut = cutoff*ysc/dy		          ! cutoff scaled to grid units
@@ -534,7 +534,7 @@ C                     other end, and use in the gridding computation.
                   ENDIF
                ENDIF
 
-               IF (moduloz(2)) THEN
+               IF (moduloz(3)) THEN
                   dz = zf - z1
                   IF (nz .GT. 1) dz = (zf-z1)/real(nz-1)  ! gridbox size in data units
                   zcut = cutoff*zsc/dz		          ! cutoff scaled to grid units

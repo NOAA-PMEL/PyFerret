@@ -1,0 +1,83 @@
+set mode verify always
+
+define axis/x=53:67/npoints=36/units=degrees_east x_36
+define axis/y=13:27/npoints=36/units=degrees_north y_36
+define axis/z=15:85/npoints=36/depth/units=meters z_36
+define axis/t=0:8736/unit=hours/t0="01-JAN-1995 00:00:00"/npoints=36 t_36
+
+let sinxm60 = sin((X[gx=x_36] - 60.0) * 3.14159265 / 180.0)
+let cosyp70 = cos((Y[gy=y_36] + 70.0) * 3.14159265 / 180.0)
+let logzp10 = log(Z[gz=z_36] + 10.0)
+let logtp50 = log(T[gt=t_36] + 50.0)
+
+let smxy = xsequence(sinxm60 + cosyp70)
+let smxy_xs = xsequence(1.0 * X[gx=x_36] + 0.0 * Y[gy=y_36])
+let smxy_ys = xsequence(0.0 * X[gx=x_36] + 1.0 * Y[gy=y_36])
+
+let smxz = xsequence(sinxm60 + logzp10)
+let smxz_xs = xsequence(1.0 * X[gx=x_36] + 0.0 * Z[gz=z_36])
+let smxz_zs = xsequence(0.0 * X[gx=x_36] + 1.0 * Z[gz=z_36])
+
+let smxt = xsequence(sinxm60 + logtp50)
+let smxt_xs = xsequence(1.0 * X[gx=x_36] + 0.0 * T[gt=t_36])
+let smxt_ts = xsequence(0.0 * X[gx=x_36] + 1.0 * T[gt=t_36])
+
+let smyz = ysequence(cosyp70 + logzp10)
+let smyz_ys = ysequence(1.0 * Y[gy=y_36] + 0.0 * Z[gz=z_36])
+let smyz_zs = ysequence(0.0 * Y[gy=y_36] + 1.0 * Z[gz=z_36])
+
+let smyt = ysequence(cosyp70 + logtp50)
+let smyt_ys = ysequence(1.0 * Y[gy=y_36] + 0.0 * T[gt=t_36])
+let smyt_ts = ysequence(0.0 * Y[gy=y_36] + 1.0 * T[gt=t_36])
+
+let smzt = zsequence(logzp10 + logtp50)
+let smzt_zs = zsequence(1.0 * Z[gz=z_36] + 0.0 * T[gt=t_36])
+let smzt_ts = zsequence(0.0 * Z[gz=z_36] + 1.0 * T[gt=t_36])
+
+define axis/x=50:70/npoints=21/units=degrees_east x_21
+define axis/y=10:30/npoints=21/units=degrees_north y_21
+define axis/z=0:100/npoints=21/depth/units=meters z_21
+define axis/t=0:8736/unit=hours/t0="01-JAN-1995 00:00:00"/npoints=21 t_21
+
+list /i=1:72 smxy_xs, smxy_ys, smxy
+list /i=1225:1296 smxy_xs, smxy_ys, smxy
+let xy_gauss_gridded = scat2gridgauss_xy(smxy_xs,smxy_ys,smxy,X[gx=x_21],Y[gy=y_21],1.0,1.0,1.0,0.0)
+list xy_gauss_gridded
+let xy_laplace_gridded = scat2gridlaplace_xy(smxy_xs,smxy_ys,smxy,X[gx=x_21],Y[gy=y_21],2.0,1)
+list xy_laplace_gridded
+
+list /i=1:72 smxz_xs, smxz_zs, smxz
+list /i=1225:1296 smxz_xs, smxz_zs, smxz
+let xz_gauss_gridded = scat2gridgauss_xz(smxz_xs,smxz_zs,smxz,X[gx=x_21],Z[gz=z_21],1.0,5.0,1.0,0.0)
+list xz_gauss_gridded
+let xz_laplace_gridded = scat2gridlaplace_xz(smxz_xs,smxz_zs,smxz,X[gx=x_21],Z[gz=z_21],2.0,1)
+list xz_laplace_gridded
+
+list /i=1:72 smxt_xs, smxt_ts, smxt
+list /i=1225:1296 smxt_xs, smxt_ts, smxt
+let xt_gauss_gridded = scat2gridgauss_xt(smxt_xs,smxt_ts,smxt,X[gx=x_21],T[gt=t_21],1.0,436.8,1.0,0.0)
+list xt_gauss_gridded
+let xt_laplace_gridded = scat2gridlaplace_xt(smxt_xs,smxt_ts,smxt,X[gx=x_21],T[gt=t_21],2.0,1)
+list xt_laplace_gridded
+
+list /j=1:72 smyz_ys, smyz_zs, smyz
+list /j=1225:1296 smyz_ys, smyz_zs, smyz
+let yz_gauss_gridded = scat2gridgauss_yz(smyz_ys,smyz_zs,smyz,Y[gy=y_21],Z[gz=z_21],1.0,5.0,1.0,0.0)
+list yz_gauss_gridded
+let yz_laplace_gridded = scat2gridlaplace_yz(smyz_ys,smyz_zs,smyz,Y[gy=y_21],Z[gz=z_21],2.0,1)
+list yz_laplace_gridded
+
+list /j=1:72 smyt_ys, smyt_ts, smyt
+list /j=1225:1296 smyt_ys, smyt_ts, smyt
+let yt_gauss_gridded = scat2gridgauss_yt(smyt_ys,smyt_ts,smyt,Y[gy=y_21],T[gt=t_21],1.0,436.8,1.0,0.0)
+list yt_gauss_gridded
+let yt_laplace_gridded = scat2gridlaplace_yt(smyt_ys,smyt_ts,smyt,Y[gy=y_21],T[gt=t_21],2.0,1)
+list yt_laplace_gridded
+
+list /k=1:72 smzt_zs, smzt_ts, smzt
+list /k=1225:1296 smzt_zs, smzt_ts, smzt
+let zt_gauss_gridded = scat2gridgauss_zt(smzt_zs,smzt_ts,smzt,Z[gz=z_21],T[gt=t_21],5.0,436.8,1.0,0.0)
+list zt_gauss_gridded
+let zt_laplace_gridded = scat2gridlaplace_zt(smzt_zs,smzt_ts,smzt,Z[gz=z_21],T[gt=t_21],2.0,1)
+list zt_laplace_gridded
+

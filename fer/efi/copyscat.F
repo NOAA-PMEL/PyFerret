@@ -1,5 +1,4 @@
-      SUBROUTINE copyscat (ax, nax, nrng, nscat, scatm, scat1, scat2,
-     .                     nscatout)
+      SUBROUTINE copyscat (ax, nax, nrng, nscat, scatm, scat1, scat2)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -36,17 +35,21 @@
 * ACM 11/00
 *  Called by scat2gridlaplace* gridding functions.
 *  If there is a modulo axis, mirror the points within nrng of each 
-*  end beyond the opposite end.  Changes nscat.
+*  end beyond the opposite end.  Modifies nscat, scatm, scat1, and scat2.
 
 *  ax		modulo axis
 *  nax		number of points in the modulo axis
 *  nrng		gridding parameter -- range of grid points used in gridding
-*  nscat	input: number of scattered points, output: updated number.
-*  scatm	scattered points coordinate array in the direction of the 
-*		modulo axis
-*  scat1	scattered points other coordinate array
-*  scat2	scattered points function values
+*  nscat	input: number of scattered points;
+*               output: updated number of points
+*  scatm	input: scattered points coordinate array in the direction of the modulo axis;
+*               output: extended coordinates
+*  scat1	input: scattered points other coordinate array;
+*               output: extended coordinates
+*  scat2	input: scattered points function values;
+*               output: extended function values
 
+      IMPLICIT NONE
       REAL scatm(*), scat1(*), scat2(*)
       REAL*8 ax(*)
       INTEGER nscat, nscatout, nrng, i, nax
@@ -80,6 +83,7 @@ c            scatm(nscatout) = axf + diff
 
   100 CONTINUE
 
+      nscat = nscatout
       RETURN
       END
 

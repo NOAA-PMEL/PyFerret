@@ -754,9 +754,9 @@ can data gt4d011
 use test0
 let nam = ..varnames
 
-repeat/range=1:4/name=m (def sym va = nam[i=`m`]; sh sym va; \
+repeat/range=1:4/name=q (def sym va = nam[i=`q`]; sh sym va; \
   set var/outtype=input `($va)`;\
-  if `m eq 1` THEN save/clobber/file=a.nc `($va)` \
+  if `q eq 1` THEN save/clobber/file=a.nc `($va)` \
   ELSE save/append/file=a.nc `($va)`)
 
 sp echo "bn_attributes.jnl --- 22 outtype=input" >> all_ncdump.out
@@ -992,3 +992,25 @@ set var/outtype=int faren
 save/file=a.nc/clobber faren
 
 sp ncdump -h a.nc  >> all_ncdump.out
+
+! Tests for simplified syntax for SHOW ATTRIBUTE:
+
+! SHOW ATT varname   is like SHOW ATT/ALL varname
+! SHOW ATT dset      same output as SHOW DATA/ATT dset
+
+can data/all
+use ocean_atlas_temp
+sho att temp
+sho att ocean_atlas_temp
+sho att (`temp,return=xaxis`)
+
+use levitus_climatology
+sho att 1
+sho att 2
+
+sho att temp[d=1]
+sho att temp[d=2]
+
+sho att (`temp[d=1],return=taxis`[d=1])
+
+sho att .

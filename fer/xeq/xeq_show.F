@@ -167,6 +167,7 @@
 *                  to be implemented for all SHOW subcommands in the future
 * V67   *acm* 3/11 - Fix for ticket 1819, size of arg for MODE DESPERATE
 * V67   *acm* 3/11 - Fix for ticket 1825, call cd_get_var_id instead of cd_get_var_seq
+* v675  *acm  4/12 Fix ticket 1934, simpler SHOW ATTRIBUTE syntax.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -249,7 +250,7 @@
      .		NC_GET_ATTRIB, ITS_GIF_GRAPHICS, slash_all, limited_show, 
      .		nothing, sdetail, only_1, done_1, sfull, svars, sfile, 
      .		sbrief, first, sxml, clobber, append, firstxml, got_it, 
-     .		coordvar, sattr, do_err, sho_out, its_gif
+     .		coordvar, sattr, do_err, sho_out, its_gif, sh_att_dset
 	INTEGER TM_LENSTR1, TM_LENSTR, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
      .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM, STR_SAME,
@@ -260,7 +261,7 @@
      .          flen, wsize, wkblk, len_test, len_mchars, outlist_file,
      .          j, num_indices, varid, attlen, maxlen, attype,
      .          vtype, nvdims, vdims(8), nvatts, iatt, dset_last,
-     .          llen, loc, cat, var, attoutflag, all_outflag, dot, 
+     .          llen, loc, cat, var, attoutflag, all_outflag, dot, brkt,
      .          vseq, attid, save_deleted_list_result(max_uvar),
      .          cache_size, cache_nelems, cache_preemption,
      .          sho_file, idim, ndims, nvars, ngatts, recdim, npts,
@@ -635,124 +636,11 @@ c           ENDIF
 	IF ( limited_show ) RETURN
 
 * SHOW DATA_SET
- 700 	sbrief = qual_given( slash_brief ) .GT. 0 
-	sfull  = qual_given( slash_full  ) .GT. 0
-	svars  = qual_given( slash_vars  ) .GT. 0   .OR. sfull
- 	sfile  = qual_given( slash_file  ) .GT. 0   .OR. sfull
- 	sattr  = qual_given( slash_attr  ) .GT. 0  
-        IF (sattr) sbrief = .TRUE.
- 	sxml  = qual_given( slash_xml  ) .GT. 0 
-
-* 	SHOW DATA/FILE=[/APPEND][/CLOBBER]
-        sho_file = qual_given( slash_show_data_file )
-	clobber = qual_given( slash_show_data_clobber ) .GT. 0
-	append = qual_given( slash_show_data_append ) .GT. 0
-
-	IF (sho_file .GT. 0) THEN
-	   CALL OPEN_SHOW_FILE (show_lun, sho_file,  
-     .                          clobber, append, status)
-	   IF (status .NE. ferr_ok ) GOTO 5000
-	ENDIF
-
-	only_1 = num_args .GT. 0
-	IF ( only_1 ) THEN
-	   name = cmnd_buff(arg_start(1):arg_end(1))
-	   dset = FIND_DSET_NUMBER( name )
-	   IF ( dset .EQ. unspecified_int4 ) GOTO 5071
-	ENDIF
-
-        IF (.NOT. sxml) THEN
-           WRITE ( risc_buff, 3700 )	! heading line
-           CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
-        ELSE
-           risc_buff = '<datasets>'
-           CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
-        ENDIF
-
-	risc_buff = ' '
-
-	DO 790 iset = 1, maxdsets
-	   IF ( interrupted ) CALL ERRMSG
-     .			( ferr_interrupt, status, ' ', *5000 )
-
-	   IF ( ds_name(iset) .EQ. char_init1024
-     .	   .OR. (only_1 .AND. iset .NE. dset) ) GOTO 790
-
-* ... is it the default data set?
-	   IF ( iset .EQ. cx_data_set(cx_last) ) THEN
-	      default = '(default)'
-	      len0 = 9
-	   ELSE
-	      default = ' '
-	      len0 = 1
-	   ENDIF
-	   len = TM_LENSTR1( ds_des_name( iset ) )
-           IF (sxml) THEN
-
-* Write data set name
-              IF (len0 .EQ. 1) THEN
-                 CALL ESCAPE_FOR_XML (ds_des_name(iset), outstring, len)
-                 WRITE (risc_buff,3711) outstring(:len)
-	      ENDIF
-              IF (len0 .EQ. 9) THEN
-                 CALL ESCAPE_FOR_XML (ds_des_name(iset), outstring, len)
-                 WRITE (risc_buff,3712) outstring(:len)
-              ENDIF
-	      CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
-* Write data set title
-              CALL ESCAPE_FOR_XML (ds_title(iset), outstring, len)
-	      WRITE ( risc_buff, 2020 ) outstring(1:len)
-	      CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
-
-	      len = TM_LENSTR(ds_mod_title(iset))
-	      IF (len .GT. 0) THEN
-                 CALL ESCAPE_FOR_XML (ds_mod_title(iset), outstring, len)
-	         WRITE ( risc_buff, 2030 ) outstring(1:len)
-	         CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
-              ENDIF
-
-           ELSE
-	      WRITE (risc_buff,3710) iset,ds_des_name(iset)(:len),default(:len0)
-	      CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
-           ENDIF
-
-	   risc_buff = ' '
-* ... by default only name and variables are shown
-           IF ( sxml) THEN
-              IF (svars) THEN
-                 CALL SHOW_DATA_SET_VARS_XML (show_lun, iset)
-              ELSE
-                 CALL SHOW_DATA_SET_XML (show_lun, iset)
-              ENDIF
-           ELSE
-	      IF ( svars       ) CALL SHOW_DATA_SET_PARAMS 
-     .                             (show_lun, iset)
-	      IF ( .NOT.sbrief ) CALL SHOW_DATA_SET_VARS
-     .                             (show_lun, iset, svars)
-	      IF ( sfile       ) CALL SHOW_DATA_FILES      
-     .                             (ttout_lun, iset)
-	      IF ( sattr       ) CALL SHOW_DATA_SET_ATTRS      
-     .                             (show_lun, iset)
-           ENDIF
-           IF (sxml) THEN
-              risc_buff = '</dataset>'
-              CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
-           ENDIF
- 790	CONTINUE
-
-        IF (sxml) THEN
-           risc_buff = '</datasets>'
-           CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
-        ENDIF
+ 700 	CALL SHOW_DATA(dset, status) 
+        IF (status .NE. ferr_ok) GOTO 5000
+	IF ( dset .EQ. unspecified_int4 ) GOTO 5071
 
 	IF ( limited_show ) RETURN
-
- 2020   FORMAT( '<title>', A, '</title>' )
- 2030   FORMAT( '<title_mod>', A, '</title_mod>' )
- 3700	FORMAT (T6,'currently SET data sets:')
- 3710	FORMAT (T2,I4,'> ',A,2X,A)
- 3711	FORMAT ('<dataset name="',A,'" default="false">')
- 3712	FORMAT ('<dataset name="',A,'" default="true">')
 
 * SHOW MODE mode
  800	WRITE ( risc_buff, 3800 )
@@ -1556,7 +1444,8 @@ c           ENDIF
 
            CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
            IF ( status .NE. ferr_ok ) GOTO 5000
- 
+
+           coordvar = .FALSE.
            IF (show_str(1:1) .EQ. '(') THEN
               dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
               CALL ISIT_COORD_VAR ( show_str, dset, 
@@ -1585,14 +1474,15 @@ c           ENDIF
                  IF (cx .EQ. 0 .OR. cx .EQ. unspecified_int4)
      .                cx = cx_cmnd
                 dset = cx_data_set(cx)
-             ENDIF
+              ENDIF
 	   ENDIF
-
 
 * See if the variable is a user-defined variable.
 
            varname = show_str
            dot = INDEX(show_str,'.')
+	   brkt = INDEX(show_str,'[')
+	   IF ( brkt .GT. 0 ) varname = show_str(1:brkt-1)
            IF (dot .GT. 0) varname = show_str(1:dot-1)
            CALL FIND_VAR_NAME(dset, varname, cat, var)
            IF (  var .NE. munknown_var_name .AND.
@@ -1606,8 +1496,25 @@ c           ENDIF
 	ENDIF
 
 	IF ( num_args .EQ. 0  ) GOTO 5060
-        
-        IF ( slash_all ) THEN
+
+* Is it show att dataset-name or dataset-number?
+
+        sh_att_dset = var .EQ. munknown_var_name
+	IF (coordvar) sh_att_dset = .FALSE.       ! var not set for (coordvar) syntax
+	IF (dot.GT.0) sh_att_dset = .FALSE.       ! it is show att varname.attname
+                                                  ! it is show att . for global atts.
+	IF ((dot.GT.0) .AND. TM_LENSTR(show_str) .EQ. 1) THEN
+	   sh_att_dset = .FALSE. 
+	   slash_all = .TRUE.
+	ENDIF
+
+	IF (sh_att_dset) THEN                    ! Do as for SHOW DAT/ATT
+	   qual_given( slash_attr  ) = 1
+	   CALL SHOW_DATA (dset, status)
+
+        ELSE  ! It is show att for variable
+
+        IF ( slash_all .OR. dot.EQ.0) THEN  ! SHOW ATT/ALL varname (/ALL optional)
 
            DO 1820 i = 1, num_items
 
@@ -1675,7 +1582,9 @@ c           ENDIF
 1810          CONTINUE
 
 1820       CONTINUE 
-        ELSE
+
+        ELSE  ! SHOW ATT varname.attname
+
 	   DO 1830 i = 1, num_items
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
@@ -1756,7 +1665,9 @@ c           ENDIF
 
 1830	   CONTINUE 
         ENDIF
-        
+
+        ENDIF  ! sh att dataset vs sho att variable
+
 4800	FORMAT (T6,'attributes for dataset: ', A)
 
 * successful completion

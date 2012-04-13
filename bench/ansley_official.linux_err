@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 41370470 Apr 12 15:49 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 41391902 Apr 13 15:52 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Fix for ticket 1933
+Note: Simplified SHOW ATTRIBUTE syntax (ticket 1934)
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -14,7 +14,6 @@ FER_DESCR=.
 FER_DIR=.
 FER_DSETS=.
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/linux/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/ansley/tarfiles/linux_v6725/ppl/fonts
 FER_GO=. /home/users/tmap/ferret/linux/go /home/users/tmap/ferret/linux/examples /home/users/tmap/ferret/linux/contrib /home/users/tmap/ferret/tmap_go
 FER_GRIDS=.
 FER_LIBS=/home/users/tmap/ferret/linux/lib
@@ -22,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Thu Apr 12 15:50:13 PDT 2012
+Beginning at Fri Apr 13 16:03:19 PDT 2012
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -1952,18 +1951,6 @@ Replacing definition of axis ZAX2
 sho att/all
  **ERROR: unknown data set: d=2
 show att/all temp[d=2]
- **ERROR: unknown data set: d=2
-show att/all temp[d=2]
- **ERROR: unknown data set: d=2
-show att/all temp[d=2]
- **ERROR: unknown data set: d=2
-show att/all temp[d=2]
- **ERROR: unknown data set: d=2
-show att/all temp[d=2]
- **ERROR: variable unknown or not in data set: temp[d=2]
-show att/all temp[d=2]
- **ERROR: variable unknown or not in data set: salt
-show att/all salt
  **ERROR: attribute undefined or invalid attribute name: salt.nonsense
           attribute nonsense not found for variable SALT
 sho att salt.nonsense
@@ -2074,13 +2061,13 @@ Replacing definition of grid MYGRID
  *** NOTE: Changing the value of attribute (COADSY).point_spacing
  LISTing to file a.nc
  LISTing to file a.nc
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute missing_value not representable in output type NC_INT
 LIST/FORMAT=CDF/file=a.nc/clobber/x=132w/k=1 temp
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
 set var/outtype=char broiled
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
@@ -2284,6 +2271,8 @@ set axis/stride=2 NORMAL
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: <!DOCTYPE^ html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><!--/////////////////////////////////////////////////////////////////////////////// This file is part of the "OPeNDAP 4 Data Server (aka Hyrax)" project.////// Copyright (c) 2011 OPeNDAP, Inc.// Author: Nathan David Potter <ndp@opendap.org>//// This library is free software; you can redistribute it and/or// modify it under the terms of the GNU Lesser General Public// License as published by the Free Software Foundation; either// version 2.1 of the License, or (at your option) any later version.//// This library is distributed in the hope that it will be useful,// but WITHOUT ANY WARRANTY; without even the implied warranty of// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU// Lesser General Public License for more details.//// You should have received a copy of the GNU Lesser General Public// License along with this library; if not, write to the Free Software// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA//// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112./////////////////////////////////////////////////////////////////////////////--><html xmlns="http://www.w3.org/1999/xhtml"><head> <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/> <link rel='stylesheet' href='/opendap/docs/css/contents.css' type='text/css'/> <title>Hyrax: ERROR</title> <style type="text/css"> <!-- .style1 { font-size: 24px; font-weight: bold; } --> </style></head><body><p>&nbsp;</p><h1 align="center">Hyrax Error</h1><hr size="1" noshade="noshade"/><table width="100%" border="0"> <tr> <td><img src="/opendap/docs/images/superman.jpg" alt="Bad things are happening" width="320" height="426"/></td> <td> <p align="center" class="style1">OUCH!</p> <p align="center">Something Bad Happened On This Server.</p> <p align="center">If you think that the server is broken (that the URL you submitted should have worked), then please contact the OPeNDAP user support coordinator at: <a href="mailto:support@opendap.org">support@opendap.org</a> </p> </td> </tr></table><hr size="1" noshade="noshade"/><h1 align="center">Hyrax Error</h1></body></html>
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file noleap.nc
@@ -3255,4 +3244,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Apr 12 15:51:50 PDT 2012
+Ended at Fri Apr 13 16:04:53 PDT 2012

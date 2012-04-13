@@ -103,6 +103,7 @@
 * V6.62   5/14/10  release v6.62 this week: LAS changes  
 * V6.64            BROWSE, bug fixes. Released 9/2010  
 * V6.65  10/01/10
+* V6.74   4/2011  to GFDL: double precision, netCDF4.2, fix ticket 1391 
 
 	include	'xrevision.cmn'
 

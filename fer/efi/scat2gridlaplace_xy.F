@@ -267,7 +267,7 @@
 *
       SUBROUTINE scat2gridlaplace_xy_compute(id, arg_1, arg_2, 
      .     arg_3, arg_4, arg_5, arg_6, arg_7, result, xax, yax,
-     .     zgridded, xscat, yscat, fscat)
+     .     zgridded, xscat, yscat, fscat, zpij, knxt)
 
 *  arg_1  xpts \
 *  arg_2  ypts  > scattered x,y,f(x,y) triples to be gridded. F can be fcn of z,t

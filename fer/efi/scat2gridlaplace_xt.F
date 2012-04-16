@@ -143,7 +143,7 @@
    20 FORMAT ('F(X,T) 3rd component of scattered input triples. ',
      .  'May be fcn of Y and/or Z')
       CALL ef_set_arg_desc(id, arg, buff)
-      CALL ef_set_axis_influence(id, arg, NO, YES, NO, YES)
+      CALL ef_set_axis_influence(id, arg, NO, YES, YES, NO)
 
 * Load the whole range of the output axes to force the
 * regridding to be done on the entire original region.

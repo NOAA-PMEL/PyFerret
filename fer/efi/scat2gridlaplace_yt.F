@@ -150,8 +150,8 @@
 * The size of the result will determine any subsetting.
 * 
 * Commented out extending the axes (which matches the gaussian versions).
-* The ef_unspecified_int4 extensions appears to have issues if a region
-* is not explicitly defined.
+* The ef_unspecified_int4 extensions appears to have issues, messing
+* up the axes of the result grid.
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'YAXPTS')
@@ -438,8 +438,18 @@ C  Get coordinates of output axes.
       y1 = yax(1,1,1,1)
       t1 = tax(1,1,1,1)
 
-      dy = yax(2,1,1,1) - yax(1,1,1,1)
-      dt = tax(2,1,1,1) - tax(1,1,1,1)
+      IF ( ny .GT. 1 ) THEN
+         dy = yax(2,1,1,1) - yax(1,1,1,1)
+      ELSE
+         errtxt = 'More than one output Y coordinate required'
+         GOTO 999
+      ENDIF
+      IF ( nt .GT. 1 ) THEN
+         dt = tax(2,1,1,1) - tax(1,1,1,1)
+      ELSE
+         errtxt = 'More than one output T coordinate required'
+         GOTO 999
+      ENDIF
 
       nysize = ny
       ntsize = nt

@@ -55,3 +55,12 @@ SHADE/TITLE="Gauss Gridding (6) to 20x20 grid" sgrid
 
 set view full
 set wind/clear
+
+can mem /all
+can var /all
+can axis yax5
+can axis xax5
+set grid abstract
+can grid g10x10
+can axis y10
+can axis x10

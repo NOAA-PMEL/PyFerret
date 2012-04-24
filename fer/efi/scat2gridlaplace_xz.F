@@ -150,8 +150,8 @@
 * The size of the result will determine any subsetting.
 * 
 * Commented out extending the axes (which matches the gaussian versions).
-* The ef_unspecified_int4 extensions appears to have issues if a region
-* is not explicitly defined.
+* The ef_unspecified_int4 extensions appears to have issues, messing
+* up the axes of the result grid.
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'XAXPTS')
@@ -437,8 +437,18 @@ C  Get coordinates of output axes.
       x1 = xax(1,1,1,1)
       z1 = zax(1,1,1,1)
 
-      dx = xax(2,1,1,1) - xax(1,1,1,1)
-      dz = zax(2,1,1,1) - zax(1,1,1,1)
+      IF ( nx .GT. 1 ) THEN
+         dx = xax(2,1,1,1) - xax(1,1,1,1)
+      ELSE
+         errtxt = 'More than one output X coordinate required'
+         GOTO 999
+      ENDIF
+      IF ( nz .GT. 1 ) THEN
+         dz = zax(2,1,1,1) - zax(1,1,1,1)
+      ELSE
+         errtxt = 'More than one output Z coordinate required'
+         GOTO 999
+      ENDIF
 
       nxsize = nx
       nzsize = nz

@@ -141,16 +141,21 @@ show data
 
 ! simple test - write a single record of 16 floating point values (encased
 !	in record length information) and read it back as a 2x2x2x2 grid
-sp rm -f test_stream.unf
-list/file=test_stream.unf/format=unf/order=x/i=1:16 i/100  ! was "i" until 9/95
+
 define grid/x=x2/y=x2/z=x2/t=x2 g2222
-file/grid=g2222/form=stream/skip=1 test_stream.unf
-list v1 
+
+! Unformatted files have a count value before and after which may be four or
+! eight bytes depending on the system (gfortran version), so only verify a
+! list/format=unf can then be read using file/format=unf
+sp rm -f test_stream.unf
+list/file=test_stream.unf/format=unf/order=x/i=1:16 i/10
+file/grid=g2222/form=unf/col=16 test_stream.unf
+list v1
 ! /ORDER= applies here, too
-file/grid=g2222/form=stream/skip=1/order=yzxt test_stream.unf
+file/grid=g2222/form=unf/order=yzxt/col=16 test_stream.unf
 list v1
 
-! 9/95 - also thest the **WRITING** of STREAM-formatted files (added 12/28/94)
+! 9/95 - also test the **WRITING** of STREAM-formatted files (added 12/28/94)
 sp rm -f test_stream.unf
 list/file=test_stream.unf/format=stream/order=x/i=1:16 i/100
 file/grid=g2222/form=stream test_stream.unf
@@ -174,4 +179,19 @@ file/grid=g2222/form=stream/order=yzxt test_stream.unf
 list v1
 
 ! clean up
+set grid abstract
 CANCEL DATA/ALL
+cancel grid g2222
+cancel grid g24
+cancel grid g12
+cancel grid g6yt
+cancel grid g6
+cancel axis x4
+cancel axis x3
+cancel axis x2
+sp rm -f test_stream.unf
+sp rm -f test_perm10.dat
+sp rm -f test_perm24.dat
+sp rm -f test_perm48.dat
+sp rm -f test_perm48_10.dat
+

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 33464913 Jan 10 09:44 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 41391902 Apr 13 15:52 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Link with NetCDF4.2 rc1, fix for ticket 1910: micro-adjusting duplicate coordinates from netCDF/OPeNDAP datasets
+Note: Simplified SHOW ATTRIBUTE syntax (ticket 1934)
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Tue Jan 10 10:03:11 PST 2012
+Beginning at Fri Apr 13 16:03:19 PDT 2012
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -86,8 +86,6 @@ message/continue "2+2=`garbage`"
  **ERROR: invalid command: grave accent doesnt evaluate to scalar
           I[i=3:5]
 message/continue "3 numbers: `I[i=3:5]`"
- **ERROR: invalid command: maximum precision is 10 digits: precision=11
-message/continue "1/3=`1/3,BAD=-999,precision=11`"
  **ERROR: command syntax: options: "P=prec","B=bad","W=width","ZW=zero-width" or "R=return-item"
           message/continue "1/3=`1/3BAD=-999`"
 message/continue "1/3=`1/3BAD=-999`"
@@ -214,7 +212,6 @@ contour/i=1:10/j=1:20/nolabel i
  **ERROR: invalid command: can only CONTOUR  single fields
           Use /OVERLAY for multiple variables
 contour/i=1:10/j=1:20/nolabel i/j,j/i
-gsetviewport()   52 Viewport is not within the Normalized Device Coordinate unit square
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
@@ -266,9 +263,6 @@ shade/nolabel sst, 0*x_page, y_page
 shade/nolabel sst, x_page, 0*y_page
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
- **ERROR: value out of legal range: Y coordinates
-          missing value where val is needed
-shade/nolabel sst, x_page, asin(y_page)
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
  PERMANENT data cleared from memory
@@ -516,11 +510,8 @@ Replacing definition of grid G24
  LISTing to file test_stream.unf
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis OBJ_XAX
-Replacing definition of axis OBJ_YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Replacing definition of axis X10
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **TMAP ERR: Attempt to access unsupported feature
@@ -642,18 +633,18 @@ Replacing definition of axis TAX
 Replacing definition of axis TAX
 Replacing definition of axis TAX
  *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+Replacing definition of axis XAX
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
-Replacing definition of axis XAX
- *** NOTE: Axis has repeated values -- micro-adjusting ...
-Replacing definition of axis XAX
- *** NOTE: Axis has repeated values -- micro-adjusting ...
-Replacing definition of axis XAX
- *** NOTE: Axis has repeated values -- micro-adjusting ...
-Replacing definition of axis XAX
- *** NOTE: Axis has repeated values -- micro-adjusting ...
-Replacing definition of axis XAX
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
  *** NOTE: Axis has repeated values -- micro-adjusting ...
@@ -839,6 +830,7 @@ plot/hlog fcn
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+Replacing definition of axis DAYT
 Replacing definition of grid TGRID
  **ERROR: error in external function
 LIST vw_fft
@@ -846,6 +838,10 @@ Replacing definition of grid TGRID
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis X10
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: illegal limits: VWND does not contain L=102:150
@@ -1109,18 +1105,10 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid G24
  *** NOTE: Not deleted: X4
  *** NOTE: Axis is in use by grid G4D
- *** NOTE: Not deleted: XPROJ120
- *** NOTE: Axis is in use by grid GPROJ120
- *** NOTE: Not deleted: YPROJ120
- *** NOTE: Axis is in use by grid GPROJ120
- *** NOTE: Not deleted: Y5
- *** NOTE: Axis is in use by grid G10X5
  *** NOTE: Not deleted: Y10
  *** NOTE: Axis is in use by grid G10X10
- *** NOTE: Not deleted: OBJ_YAX
- *** NOTE: Axis is in use by grid OBJ_GRID
- *** NOTE: Not deleted: OBJ_XAX
- *** NOTE: Axis is in use by grid OBJ_GRID
+ *** NOTE: Not deleted: Y5
+ *** NOTE: Axis is in use by grid G10X5
  *** NOTE: Not deleted: TIME1
  *** NOTE: Axis is in use by grid GHB1
  *** NOTE: Not deleted: TIME2
@@ -1160,7 +1148,7 @@ Replacing definition of axis TAX2
  *** NOTE: Not deleted: MONTHT
  *** NOTE: Axis is in use by grid TGRID
  *** NOTE: Not deleted: X10
- *** NOTE: Axis is in use by grid G10X10
+ *** NOTE: Axis is in use by grid G10X5
  *** NOTE: Not deleted: YAX
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAX
@@ -1171,12 +1159,12 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: TIME5
  *** NOTE: Axis is in use by grid GLB1
- *** NOTE: Not deleted: COADSY
- *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
  *** NOTE: Not deleted: MONTH_IRREG
  *** NOTE: Axis is in use by grid (G004)
+ *** NOTE: Not deleted: COADSY
+ *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: YAXLEVITR1_90
  *** NOTE: Axis is in use by grid GG2
  *** NOTE: Not deleted: ZAXLEVITR1_1
@@ -1243,18 +1231,10 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid G24
  *** NOTE: Not deleted: X4
  *** NOTE: Axis is in use by grid G4D
- *** NOTE: Not deleted: XPROJ120
- *** NOTE: Axis is in use by grid GPROJ120
- *** NOTE: Not deleted: YPROJ120
- *** NOTE: Axis is in use by grid GPROJ120
- *** NOTE: Not deleted: Y5
- *** NOTE: Axis is in use by grid G10X5
  *** NOTE: Not deleted: Y10
  *** NOTE: Axis is in use by grid G10X10
- *** NOTE: Not deleted: OBJ_YAX
- *** NOTE: Axis is in use by grid OBJ_GRID
- *** NOTE: Not deleted: OBJ_XAX
- *** NOTE: Axis is in use by grid OBJ_GRID
+ *** NOTE: Not deleted: Y5
+ *** NOTE: Axis is in use by grid G10X5
  *** NOTE: Not deleted: TIME1
  *** NOTE: Axis is in use by grid GHB1
  *** NOTE: Not deleted: TIME2
@@ -1275,7 +1255,6 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GSIGMA
  *** NOTE: Not deleted: TIME
  *** NOTE: Axis is in use by grid GSIGMA
-ls: input.txt: No such file or directory
  *** NOTE: Not deleted: Z1
  *** NOTE: Axis is in use by grid G1
  *** NOTE: Not deleted: TCAL
@@ -1295,21 +1274,22 @@ ls: input.txt: No such file or directory
  *** NOTE: Not deleted: MONTHT
  *** NOTE: Axis is in use by grid TGRID
  *** NOTE: Not deleted: X10
- *** NOTE: Axis is in use by grid G10X10
+ *** NOTE: Axis is in use by grid G10X5
  *** NOTE: Not deleted: YAX
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAX
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAXLEVITR1_160
  *** NOTE: Axis is in use by grid GG1
+ls: input.txt: No such file or directory
  *** NOTE: Not deleted: TIME4
  *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: TIME5
  *** NOTE: Axis is in use by grid GLB1
- *** NOTE: Not deleted: COADSY
- *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
+ *** NOTE: Not deleted: COADSY
+ *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: YAXLEVITR1_90
  *** NOTE: Axis is in use by grid GG2
  *** NOTE: Not deleted: ZAXLEVITR1_1
@@ -1395,11 +1375,11 @@ Replacing definition of axis XAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
- **ERROR: value out of legal range: # of contour levels > 500  (3282)
+ **ERROR: value out of legal range: # of contour levels > 500  (3283)
 CONTOUR/L=1/LEV=0.01d sst
- **ERROR: value out of legal range: # of contour levels > 500  (3282)
+ **ERROR: value out of legal range: # of contour levels > 500  (3283)
 CONTOUR/FILL/L=1/LEV=0.01d sst
- **ERROR: value out of legal range: # of shade levels > 500  (3282)
+ **ERROR: value out of legal range: # of shade levels > 500  (3283)
 SHADE/L=1/LEV=0.01d sst
  **ERROR: value out of legal range: # of levels > 500  (4094)
 POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
@@ -1856,9 +1836,6 @@ Replacing definition of axis COADSX.ILLEGAL
 Replacing definition of axis COADSY.ILLEGAL
  *** NOTE: grid  used by data set illeg_axname
  *** NOTE: Redefinition may alter apparent contents of data set
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  *** NOTE: grid  used by data set illeg_axname
  *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -1883,6 +1860,9 @@ Replacing definition of axis TIME
  LISTing to file longtitle.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1971,18 +1951,6 @@ Replacing definition of axis ZAX2
 sho att/all
  **ERROR: unknown data set: d=2
 show att/all temp[d=2]
- **ERROR: unknown data set: d=2
-show att/all temp[d=2]
- **ERROR: unknown data set: d=2
-show att/all temp[d=2]
- **ERROR: unknown data set: d=2
-show att/all temp[d=2]
- **ERROR: unknown data set: d=2
-show att/all temp[d=2]
- **ERROR: variable unknown or not in data set: temp[d=2]
-show att/all temp[d=2]
- **ERROR: variable unknown or not in data set: salt
-show att/all salt
  **ERROR: attribute undefined or invalid attribute name: salt.nonsense
           attribute nonsense not found for variable SALT
 sho att salt.nonsense
@@ -2044,9 +2012,7 @@ set att (COADSX81_81).axis = "Z"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_SHORT to match output type of variable NC_FLOAT
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_SHORT to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -2066,16 +2032,12 @@ Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
-syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: <html^><head><title>Error 404 Not Found</title></head><body><h1>Error 404: Page Not Found</h1>Error line: 80 anhtmlserver <p>Error on line 0 of stdin: interpreter thinks " .tauyyyyy" not defined<form name=stack><table border=2><tr><th><input name=stackdisplay type=checkbox onChange="if(document.getElementById){myobj=document.getElementById('stackdump');if(this.checked){myobj.style.display=''}else{myobj.style.display='none'};};">Show Current Objects</th></tr><tr id="stackdump" style="display: none"><td><ol><li> Ingrid:<li> HTMLwords<li> FSU FULL[<b>tauy</b><b>absuu</b><b>taux</b><b>absuv</b>]</ol></td></tr></table></form><form method="post" action="/fullcommand.html"><textarea name="command" rows="7" cols="50" wrap="soft"> SOURCES .FSU .FULL .tauyyyyy dods.dds</textarea> <input type="submit" value="OK" /><input type="reset" value="reset" /></form></body></html>1000
 Replacing definition of grid MYGRID
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_SHORT to match output type of variable NC_FLOAT
  LISTing to file a.nc
- *** NOTE: Converting data type of missing_value NC_SHORT to match output type of variable NC_FLOAT
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file a.nc
@@ -2104,6 +2066,8 @@ Replacing definition of grid MYGRID
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute missing_value not representable in output type NC_INT
 LIST/FORMAT=CDF/file=a.nc/clobber/x=132w/k=1 temp
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
 set var/outtype=char broiled
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
@@ -2156,8 +2120,8 @@ Replacing definition of axis TIME
 SET DAT/FORM=CDF this_is_not_a_file.nc
  **Internet Data error
              NetCDF: Malformed or inaccessible DAP DDS (OPeNDAP/netCDF Error code -72)
-             Data set: http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods
-SET DAT/FORM=CDF "http://iridl.ldeo.columbia.edu/SOURCES/.FSU/.FULL/.tauyyyyy/dods"
+             Data set: http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
+SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
  **Internet Data error
              NetCDF: I/O failure (OPeNDAP/netCDF Error code -68)
              Data set: http://noserver/a/nofile.cdf
@@ -2307,6 +2271,8 @@ set axis/stride=2 NORMAL
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: <!DOCTYPE^ html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><!--/////////////////////////////////////////////////////////////////////////////// This file is part of the "OPeNDAP 4 Data Server (aka Hyrax)" project.////// Copyright (c) 2011 OPeNDAP, Inc.// Author: Nathan David Potter <ndp@opendap.org>//// This library is free software; you can redistribute it and/or// modify it under the terms of the GNU Lesser General Public// License as published by the Free Software Foundation; either// version 2.1 of the License, or (at your option) any later version.//// This library is distributed in the hope that it will be useful,// but WITHOUT ANY WARRANTY; without even the implied warranty of// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU// Lesser General Public License for more details.//// You should have received a copy of the GNU Lesser General Public// License along with this library; if not, write to the Free Software// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA//// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112./////////////////////////////////////////////////////////////////////////////--><html xmlns="http://www.w3.org/1999/xhtml"><head> <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/> <link rel='stylesheet' href='/opendap/docs/css/contents.css' type='text/css'/> <title>Hyrax: ERROR</title> <style type="text/css"> <!-- .style1 { font-size: 24px; font-weight: bold; } --> </style></head><body><p>&nbsp;</p><h1 align="center">Hyrax Error</h1><hr size="1" noshade="noshade"/><table width="100%" border="0"> <tr> <td><img src="/opendap/docs/images/superman.jpg" alt="Bad things are happening" width="320" height="426"/></td> <td> <p align="center" class="style1">OUCH!</p> <p align="center">Something Bad Happened On This Server.</p> <p align="center">If you think that the server is broken (that the URL you submitted should have worked), then please contact the OPeNDAP user support coordinator at: <a href="mailto:support@opendap.org">support@opendap.org</a> </p> </td> </tr></table><hr size="1" noshade="noshade"/><h1 align="center">Hyrax Error</h1></body></html>
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file noleap.nc
@@ -2886,6 +2852,8 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  *** NOTE: Units on axis "ENS" are not recognized: count
  *** NOTE: They will not be convertible:
  LISTing to file mypack.nc
+NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
+ data in attribute _FillValue not representable in output type NC_SHORT
  *** NOTE: Units on axis "ENS" are not recognized: count
  *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
@@ -3059,39 +3027,6 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-
-Bailing out of external function "tax_datestring":
-	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
-
-Bailing out of external function "tax_day":
-	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
-
-Bailing out of external function "tax_dayfrac":
-	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
-
-Bailing out of external function "tax_jday1900":
-	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
-
-Bailing out of external function "tax_jday":
-	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
-
-Bailing out of external function "tax_month":
-	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
-
-Bailing out of external function "tax_year":
-	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
-
-Bailing out of external function "tax_yearfrac":
-	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices 1,2
-
-Bailing out of external function "tax_year":
-	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices   76340081  76340082
-
-Bailing out of external function "tax_jday":
-	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices   76340081  76340082
-
-Bailing out of external function "tax_dayfrac":
-	Duplicate times in ARG1, may arise from double- to single- precision conversion. At indices   76340081  76340082
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3170,34 +3105,14 @@ Replacing definition of axis XAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis TAXIS
- **ERROR: error in external function
-list/l=1:7 TAX_DATESTRING(t[gt=var,L=1:50],var[L=1:50],"seconds")
- **ERROR: error in external function
-list/l=1:7 TAX_DAY(t[gt=var], var)
- **ERROR: error in external function
-list/l=1:7 TAX_DAYFRAC(t[gt=var], var)
- **ERROR: error in external function
-list/l=1:7 TAX_jday1900(t[gt=var], var)
- **ERROR: error in external function
-list/l=1:7 TAX_jday(t[gt=var], var)
- **ERROR: error in external function
-list/l=1:7 TAX_month(t[gt=var], var)
- **ERROR: error in external function
-list/l=1:7 TAX_year(t[gt=var], var)
- **ERROR: error in external function
-list/l=1:7 TAX_yearfrac(t[gt=var], var)
- **ERROR: error in external function
-list/prec=7 a
- **ERROR: error in external function
-list/prec=7 b
- **ERROR: error in external function
-list/prec=7 c
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
  *** NOTE: Unsupported netCDF # of axes for variable. Ignoring TEMP
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3329,4 +3244,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Jan 10 10:04:53 PST 2012
+Ended at Fri Apr 13 16:04:53 PDT 2012

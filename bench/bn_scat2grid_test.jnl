@@ -1,0 +1,111 @@
+! bn_scat2grid_test.jnl
+! From JonCallahan's insitu_gaussian_*.jnl
+
+! Description: Test functions for XY XZ XT YZ YT ZT gridding of insitu data
+
+set data scat2grid.nc
+
+define axis/x=50:70/npoints=20/units=degrees_east x_20
+define axis/y=10:20/npoints=20/units=degrees_north y_20
+define axis/z=0:100/npoints=20/depth/units=meters z_20
+define axis/t=0:8736/unit=hours/t0="01-JAN-1995 00:00:00"/npoints=20 t_20
+
+!*********
+! SCAT2GRIDGAUSS functions
+! XY
+
+let xy_gauss_gridded = scat2gridgauss_xy(xax,yax,O2_umol_kg,x[gx=x_20],y[gy=y_20],1.5,1.0,5.0,3.0)
+fill/lev=30v xy_gauss_gridded
+plot/vs/over/nolab xax,yax
+ppl shaset reset
+
+! XZ
+
+let xz_gauss_gridded = scat2gridgauss_xz(xax,zax,O2_umol_kg,x[gx=x_20],z[gz=z_20],1.5,10,2,20)
+fill/lev=30v xz_gauss_gridded
+plot/vs/over/nolab xax,zax
+ppl shaset reset
+
+! XT
+
+let xt_gauss_gridded = scat2gridgauss_xt(xax,tax,O2_umol_kg,x[gx=x_20],t[gt=t_20],1.5,720.0,5.0,2160.0)
+fill/lev=30v xt_gauss_gridded
+plot/vs/over/nolab xax,tax
+ppl shaset reset
+
+! YZ
+
+let yz_gauss_gridded = scat2gridgauss_yz(yax,zax,ysequence(O2_umol_kg),y[gy=y_20],z[gz=z_20],1.0,10,3,50)
+fill/lev=30v yz_gauss_gridded
+plot/vs/over/nolab yax,zax
+ppl shaset reset
+
+! YT
+
+let yt_gauss_gridded = scat2gridgauss_yt(yax,tax,ysequence(O2_umol_kg),y[gy=y_20],t[gt=t_20],1.0,720,3,2160)
+fill/lev=30v yt_gauss_gridded
+plot/vs/over/nolab tax,yax
+ppl shaset reset
+
+! ZT
+
+let zt_gauss_gridded = scat2gridgauss_zt(zax,tax,zsequence(O2_umol_kg),z[gz=z_20],t[gt=t_20],10,720,50,2160)
+fill/lev=30v zt_gauss_gridded
+plot/vs/over/nolab tax, zax
+
+can mem/all
+
+! SCAT2GRIDLAPLACE functions
+
+! XY
+
+let xy_laplace_gridded = scat2gridlaplace_xy(xax,yax,O2_umol_kg,x[gx=x_20],y[gy=y_20],2,2)
+show grid xy_laplace_gridded
+! when the result grid axes were extended, the axis coordinates in the following were messed up
+list xy_laplace_gridded
+fill/lev=30v xy_laplace_gridded
+plot/vs/over/nolab xax,yax
+ppl shaset reset
+
+! XZ
+
+let xz_laplace_gridded = scat2gridlaplace_xz(xax,zax,O2_umol_kg,x[gx=x_20],z[gz=z_20],2,2)
+fill/lev=30v xz_laplace_gridded
+plot/vs/over/nolab xax,zax
+ppl shaset reset
+
+! XT
+
+let xt_laplace_gridded = scat2gridlaplace_xt(xax,tax,O2_umol_kg,x[gx=x_20],t[gt=t_20],2,2)
+fill/lev=30v xt_laplace_gridded
+plot/vs/over/nolab xax,tax
+ppl shaset reset
+
+! YZ
+
+let yz_laplace_gridded = scat2gridlaplace_yz(yax,zax,ysequence(O2_umol_kg),y[gy=y_20],z[gz=z_20],2,2)
+fill/lev=30v yz_laplace_gridded
+plot/vs/over/nolab yax,zax
+ppl shaset reset
+
+! YT
+
+let yt_laplace_gridded = scat2gridlaplace_yt(yax,tax,ysequence(O2_umol_kg),y[gy=y_20],t[gt=t_20],2,2)
+fill/lev=30v yt_laplace_gridded
+plot/vs/over/nolab tax,yax
+ppl shaset reset
+
+! ZT
+
+let zt_laplace_gridded = scat2gridlaplace_zt(zax,tax,zsequence(O2_umol_kg),z[gz=z_20],t[gt=t_20],2,2)
+fill/lev=30v zt_laplace_gridded
+plot/vs/over/nolab tax, zax
+
+can mem /all
+can var /all
+can data /all
+can axis t_20
+can axis z_20
+can axis y_20
+can axis x_20
+

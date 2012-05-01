@@ -7,12 +7,16 @@
 ! 06/02 *kob* add bench_internal_string_functions (strlen, strcat, strindex, etc)
 ! 05/05 *acm* move bench_compress here; internally linked.
 ! 05/07 *acm* move tax_* functions and fill_xy here; internally linked.
+!  3/12 *acm* new script bn_scat2grid tests scat2grid functions in all directions
 
 GO bn_reset
 go bench_fft
 
 GO bn_reset
 go bench_gridding 
+
+GO bn_reset
+go bn_scat2grid_test
 
 GO bn_reset
 go bench_sort

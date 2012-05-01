@@ -5,6 +5,9 @@
 ! LEV_NUM  Number of levels
 ! LEV_DEL  Delta level (irregular)
 
+can sym lev*
+define symbol lev_text = ""
+
 shade/i=1:15/j=1:5 i*j
 sho sym lev*
 

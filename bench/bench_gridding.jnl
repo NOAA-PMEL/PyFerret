@@ -30,6 +30,8 @@ let xpts = x; let ypts = y
 
 list/x=4:5/y=1 sample_function
 
+can mem /all
+
 let xpts = 10*randu(i); let ypts = 10*randu(i+2)
 
 set region/i=1:200
@@ -37,13 +39,33 @@ define axis/x=1:10:.5 xax5
 define axis/y=1:10:.5 yax5
 
 let sgrid = scat2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 5., 5)
-list/x=4:5/y=1 sgrid
+! the following in now needed since the result grid axes are no longer extended
+! load sgrid
+! otherwise the following would use a 3-element X axis and 1-element Y axis
+! list/x=4:5/y=1 sgrid
+list /order=yx sgrid
 
 let sgrid = scat2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 1.,1)
-list/x=4:5/y=1 sgrid
+! the following in now needed since the result grid axes are no longer extended
+! load perm sgrid
+! otherwise the following would use a 3-element X axis and 1-element Y axis
+! list/x=4:5/y=1 sgrid
+list /order=yx sgrid
 
 let sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 0.5, 0.5, 2, 2)
-list/x=4:5/y=1 sgrid
+! list/x=4:5/y=1 sgrid
+list /order=yx sgrid
 
 let sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 1., 1., 6, 6)
-list/x=4:5/y=1 sgrid
+! list/x=4:5/y=1 sgrid
+list /order=yx sgrid
+
+can mem /all
+can var /all
+can axis yax5
+can axis xax5
+set grid abstract
+can grid g10x10
+can axis y10
+can axis x10
+

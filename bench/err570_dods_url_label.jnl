@@ -27,11 +27,14 @@
 !!plot/x=180/y=0 sst 
 !!ppl list labels
 
-!! use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/coads_climatology.nc"
+!! Change to another server, this one not working 3/2012
+!! use "http://iridl.ldeo.columbia.edu/SOURCES/.LEVITUS/.MONTHLY/.temp/dods"
+!!sh data
+!!plot/x=180/y=0/k=1 temp
+!!ppl list labels
 
 
-set data "http://iridl.ldeo.columbia.edu/SOURCES/.LEVITUS/.MONTHLY/.temp/dods"
+use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/coads_climatology.nc"
 sh data
-plot/x=180/y=0/k=1 temp
+plot/x=180/y=0 sst 
 ppl list labels
-

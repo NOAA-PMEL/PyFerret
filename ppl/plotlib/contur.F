@@ -65,6 +65,7 @@
 *                    curvilinear data
 * V630  *acm* 9/09 change a message only
 C  v67  2/2011 *acm* Fix ticket 1799; do contouring in larger sections.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 ****************************************************************************
 C**
@@ -155,8 +156,11 @@ C	Place init into data stmt *jd* 12.96 linux
 
 C     Curvilinear coordinates declarations
         integer icurv, status
-        real x_curv(6000), y_curv(6000)
-
+#ifdef double_p
+	real*8 x_curv(6000), y_curv(6000)
+#else
+	real x_curv(6000), y_curv(6000)
+#endif
 c
 c     initialize
 c*******************************************************************************

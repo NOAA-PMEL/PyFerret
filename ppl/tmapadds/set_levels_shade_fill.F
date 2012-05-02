@@ -38,7 +38,8 @@
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
 * V631  *acm*10/09 Fix bug 1704: LEVELS=xD was incorrect.
 * V663  *acm* 5/10 Fix bug 1744: hang if /LEVELS=v and all missing data.
-	
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
 	include		'axis_inc.decl'
@@ -59,7 +60,7 @@
 * local declarations
 	REAL		dz, fm, znp, zmp, dzmax
 	INTEGER		m, jj
-        LOGICAL		TM_FPEQ
+        LOGICAL		TM_FPEQ_SNGL
 
         EXTERNAL range
 
@@ -144,7 +145,7 @@ C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
 
 c *acm* 4/08 Set jj as in plotz
 
-              IF (TM_FPEQ((ZNP + DZ*(NLEV2-1)), ZMP) .EQV. .FALSE.) THEN
+              IF (TM_FPEQ_SNGL((ZNP + DZ*(NLEV2-1)), ZMP) .EQV. .FALSE.) THEN
                  IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
 	      ENDIF
 
@@ -159,12 +160,12 @@ c *acm* 3/04 under g77 on linux this incorrectly uses
 c            low-order bits to reset NLEV2 example:
 c             yes?shade/lev=c {-1.1, 1.1}* ysequence({1,1})
 
-c       4/04  But, dont just skip this, use TM_FPEQ to see if
+c       4/04  But, dont just skip this, use TM_FPEQ_SNGL to see if
 c             values are equal... 
 c       4/04  Also fix the negative-range case.
 
 	      IF ( (ZNP + DZ*(NLEV2-1) .LT. ZMP) .AND. 
-     .              .NOT. TM_FPEQ(ZNP + DZ*(NLEV2-1), ZMP) ) THEN
+     .              .NOT. TM_FPEQ_SNGL(ZNP + DZ*(NLEV2-1), ZMP) ) THEN
 		 NLEV2 = NLEV2 + 1
 	      ENDIF
 
@@ -251,7 +252,7 @@ C      has set levels, this is already done (and the values are different).
 		    LWGT(I)=2
 		    LDIG(I)=-1
 		    IF (ABS(ZLEV(I)).LT.1.E-5*DZMAX) GOTO 106
-                    IF ( TM_FPEQ( ABS(ZLEV(I)) ,0.) ) GOTO 106
+                    IF ( TM_FPEQ_SNGL( ABS(ZLEV(I)) ,0.) ) GOTO 106
 		    IF (ZLEV(I).GT.0.) THEN
 		       LWGT(I)=1
 		    ELSE

@@ -1,6 +1,5 @@
         SUBROUTINE VECFLD(U,V,NXS,NYS,PX,PY,XF,YF)
-        real u,v,px,py,xf,yf
-        integer nxs,nys
+
 C**
 C**
 C**
@@ -71,11 +70,14 @@ C**
 * v5.81 *acm* lengthen string containing format to 40 characters.
 * V6.63 *acm* 7/10 Save a symbol PPL_VECLEN containing the Vector Length value
 * V6.65 *acm* 10/10 Draw curvilinear vectors as straight lines.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
 C
-	DIMENSION U(NXS,NYS),V(NXS,NYS),PX(NXS),PY(NYS)
+        real xf,yf
+        integer nxs,nys
+	REAL U(NXS,NYS),V(NXS,NYS),PX(NXS),PY(NYS)
 C
 C
         include 'parampl5_dat.decl'
@@ -116,9 +118,13 @@ C
 
 C     Curvilinear coordinates declarations
         integer status, ii
-        real x_curv(12), y_curv(12), curv_len, xxc, yyc
-        real tail_i, tail_j, head_i, head_j, head_len,
-     .       tail_i_orig, tail_j_orig
+#ifdef double_p
+        real*8 x_curv(12), y_curv(12)
+#else
+        real x_curv(12), y_curv(12)
+#endif
+        real curv_len, xxc, yyc, tail_i, tail_j, head_i, head_j, 
+     .       head_len, tail_i_orig, tail_j_orig
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'

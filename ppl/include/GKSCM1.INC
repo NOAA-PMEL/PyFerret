@@ -12,13 +12,13 @@ C***********************************************************************
 C**
 C**
 *	JD Corrected for v1.1 typo SH found ie, YKYMX --> WKYMX
-
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 c
 	COMMON/GKSCM1/WSID,CONID,WSTYPE,ERRFIL,CHDEV,
      *	CHPET,LCDEV,LCPET,WKSAUT,WKXMN,WKXMX,WKYMN,WKYMX
 	INTEGER WSID,CONID,WSTYPE,ERRFIL,CHDEV,CHPET,
      *	LCDEV,LCPET
-	REAL WKXMN,WKXMX,WKYMN,WKYMX
+	REAL*4 WKXMN,WKXMX,WKYMN,WKYMX
 	LOGICAL WKSAUT
 c
 c	GKS common block for workstation id, type and device

@@ -40,6 +40,7 @@
 * equal numbers of data points. This form of color management best brings out 
 * the fine structure in the data. 
 * V630  *acm* 9/09 Introduction of syntax for variance-based and histogram levels
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
@@ -54,7 +55,11 @@
 
 * calling argument declarations:
 	INTEGER nsize, status
+#ifdef double_p
+	REAL*8 z(*), wrk(*), badz
+#else
 	REAL z(*), wrk(*), badz
+#endif
 
 * internal variable declarations:
 

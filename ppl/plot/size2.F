@@ -81,6 +81,7 @@
 *         workstation sizing information
 * *am* 1/07 V6.02 true batch mode for metafiles; flag meta_batch
 *         distinguises this case from other batch modes.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 *     PLOTTER DEPENDENT ROUTINE
 *     CONTAINS PHYSICAL CHARACTERISTICS OF ALL LEGAL DEVICES.
@@ -183,11 +184,11 @@ C
         anew = factor * ABS(width)
         bnew = factor * ABS(height)
 
-        IF ( TM_FPEQ(anew,asize) .AND. TM_FPEQ(bnew,bsize) ) THEN
-           RETURN
-        END IF
-        asize=anew
-        bsize=bnew
+	IF ( TM_FPEQ_SNGL(ANEW,ASIZE) .AND. TM_FPEQ_SNGL(BNEW,BSIZE) ) THEN
+	   RETURN
+	end if
+	ASIZE=ANEW
+	BSIZE=BNEW
 C
         IF (rotat) THEN
            t=asize

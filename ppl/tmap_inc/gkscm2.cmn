@@ -6,6 +6,9 @@
 *                window in pixels.  Needed for PPL$XPIXEL, PPL$YPIXEL 
 *                when in gif or batch mode.
 * v6.8 Increase meta_file string to 2048, matching other filename strings.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
+*               as single-precision
 
         integer        ws_lun,tmp_wsid
         integer        tmp_lun
@@ -14,7 +17,8 @@
         integer        item_fill_ndx
         integer        lbtype,lbcolor
         integer        pixx,pixy
-        real           lbwidth,spline_tension
+
+        real*4         lbwidth,spline_tension
 
         logical        gks_open, vpt_was_set
         logical        draftsman, save_on_exit, imgname_sent

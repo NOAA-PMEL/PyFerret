@@ -4,15 +4,19 @@
 * *acm* 4/01    add DENSITY for flowlines
 * *acm* 5/31/01 add NEED_COS and TRANSPZ  for flowlines
 * *acm* 6/ 4/01 add FXLOC, FYLOC  for flowlines key
-	REAL	VLEN
-	REAL	VUSRLN
-	REAL	VXLOC
-	REAL	VYLOC
-	REAL	VPOS
-	REAL	VMINLN
-	REAL	ARMAX
-	REAL	ARMIN
-	REAL	HFACT
+* *acm* 1/13/12 For DP Ferret/ SP Pplus: explicitly declare REALs 
+*               as single-precision
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+
+	REAL*4	VLEN
+	REAL*4	VUSRLN
+	REAL*4	VXLOC
+	REAL*4	VYLOC
+	REAL*4	VPOS
+	REAL*4	VMINLN
+	REAL*4	ARMAX
+	REAL*4	ARMIN
+	REAL*4	HFACT
         INTEGER DENSITY
 	INTEGER VSKPX
 	INTEGER VSKPY

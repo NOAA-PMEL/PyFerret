@@ -55,6 +55,7 @@ C**
 *  ACM  Aug 2001 remove subroutine strmar to separate file (arrow-drawing)
 *      *acm* 10/01  remove VMS includes
 *  ACM  12/01 bug fix: jjndex not jjindex!
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
         include 'ferret.parm'
         include 'parampl5_dat.decl'
@@ -127,7 +128,11 @@ C  Local declarations
 
 C     Curvilinear coordinates declarations
       INTEGER status
+#ifdef double_p
+      REAL*8 x_curv, y_curv
+#else
       REAL x_curv, y_curv
+#endif
 
 C  From vector
       CALL COLOR(IPEN(1))
@@ -259,7 +264,7 @@ C     flag boxes.
             ENDIF
 
             IF (curvilinear) THEN
-               x_curv = xx
+               x_curv = DBLE
                y_curv = yy
                CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
 

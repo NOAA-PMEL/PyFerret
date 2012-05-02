@@ -45,6 +45,7 @@
 *  *acm*  12/7/01 Trap cases with dx=dy=0; atan2 fcn returns NAN under OSF.
 *                 Also remove VMS includes.
 *                 Declare all variables.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 *  Argument declarations.
       REAL xx1, yy1, xx2, yy2, vel
@@ -59,7 +60,11 @@
 
 C     Curvilinear coordinates declarations
       INTEGER status
-      REAL x_curv, y_curv
+#ifdef double_p
+      real*8 x_curv, y_curv
+#else
+      real x_curv, y_curv
+#endif
 
       REAL small, dir, addx1, addy1, addx2, addy2, xxc, yyc, xxd, yyd
 

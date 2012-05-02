@@ -44,8 +44,9 @@
 */
 
 /*******************/
-
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret. */
+
 #include <Python.h> /* make sure Python.h is first */
 #include <unistd.h>
 #include <stdio.h>
@@ -62,9 +63,15 @@
    memory available for plotting, allocate more if needed, and call pplldx.
  */
 
+#ifdef double_p
+void FORTRAN(pplldx_envelope)(int *icode, double *xt, double *yt, int *npts,
+                              char *tstrt, char *tref, double *xdt, 
+							  int *plot_mem_used) 
+#else
 void FORTRAN(pplldx_envelope)(int *icode, float *xt, float *yt, int *npts,
                               char *tstrt, char *tref, float *xdt, 
 							  int *plot_mem_used) 
+#endif
 {  
 /* local variable declaration */
   int pmemsize;

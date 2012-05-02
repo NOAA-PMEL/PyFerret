@@ -42,6 +42,7 @@ C**
 * V664:  8/10 - implement robust method for computing variances (bug 1745)
 * V666:  1/11 - fix bug 1778: missing data not treated correctly. Dont use CMZGE,
 *               so variance result is the same as other Ferret variance calculations
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
 	
 	include 'parampl5_dat.decl'
@@ -58,10 +59,19 @@ C**
 * calling argument declarations:
 	LOGICAL need_std
 	INTEGER nsize, status
+#ifdef double_p
+	REAL*8 z(*), badz
+#else
 	REAL z(*), badz
+#endif
 
 * internal variable declarations:
-	REAL datum, sum, dev, sumsq_dev, variance
+#ifdef double_p
+	REAL*8 sum, dev, sumsq_dev, variance
+#else
+	REAL sum, dev, sumsq_dev, variance
+#endif
+
 	REAL*8 x, xmean, sum2, sumc, variance_c, xdelta
 	INTEGER n
 
@@ -85,7 +95,11 @@ c Compute data mean.
 	   ENDIF
  100    CONTINUE
         IF (n .EQ. 0) GOTO 5000
+#ifdef double_p
+        zmean = sum/DBLE(n)
+#else
         zmean = sum/FLOAT(n)
+#endif
 
         IF (need_std) THEN
 

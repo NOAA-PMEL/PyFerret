@@ -40,7 +40,7 @@
 *  *acm*  12/7/01 Trap cases with dx=dy=0; atan2 fcn returns NAN under OSF.
 *                 Declare all variables.
 *  *acm&   3/06   change the scale of arrow heads; values are actually the same.
-
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 
       REAL a160
       PARAMETER (a160 = 160.0*3.1416/180.0)
@@ -53,7 +53,11 @@
 
 C     Curvilinear coordinates declarations
       INTEGER status
-      REAL x_curv, y_curv
+#ifdef double_p
+      real*8 x_curv, y_curv
+#else
+      real x_curv, y_curv
+#endif
       REAL addx1, addy1, addx2, addy2, xxc, yyc, xxd, yyd, xxe, yye
 
       DATA small/1.e-6/

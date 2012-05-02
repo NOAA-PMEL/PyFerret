@@ -1,0 +1,67 @@
+\ cancel mode verify	
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! mp_lambert_az.jnl --  Sets up variables for a Lambert Azimuthal equal area
+!                  projection using 'curvilinear coordinates' code in Ferret v4.50
+!	
+! contributed by:
+! Lev Tarasov
+! 6/10
+!uses equations from http://mathworld.wolfram.com/LambertAzimuthalEqual-AreaProjection.html
+! Description:  Sets up variables for a Lambert Azimuthal Equal Area map of the world
+!
+! Usage:                   arg1               arg2
+!  go mp_lambert_az [central meridian] [standard parallel]
+!
+! arg 1 - longitude used for the center of the projection
+! arg 2 - latitude used for the center of the projection
+
+! Example:
+!  use coads_climatology 
+!  go mp_lambert_az
+!  set grid sst
+!  shade sst[l=1], x_page, y_page
+!
+! Note 1: If you intend to plot an overlay which is a subregion
+!         of the original plot you will need to specify the two
+!         optional arguments as in:
+!
+!  use coads_climatology 
+!  go mp_lambert_az
+!  set grid sst
+!  shade sst[l=1], x_page, y_page
+!  go mp_lambert_az `mp_central_meridian` `mp_standard_parallel`
+!  set region/x=40e:110e/y=60s:20s
+!  shade/over slp[l=1], x_page, y_page
+!
+! Note 2: The x-range for the subregion to be overlayed must
+!         be: ( `mp_cent_mer` - 180 < x < `mp_cent_me`r + 180 )
+
+
+if `$2%0% gt 90` then
+    query/ignore $3"<The standard parallel must be between -90 and 90"
+elif `$2%0% lt (-90)` then
+    query/ignore $3"<The standard parallel must be between -90 and 90"
+endif
+
+let/quiet mp_x = x
+let/quiet mp_central_meridian = $1%(mp_x[i=@max] + mp_x[i=@min])/2%
+let/quiet mp_y = y
+let/quiet mp_standard_parallel = $2%(mp_y[j=@max] + mp_y[j=@min])/2%
+
+let/quiet Pi = 3.14159265
+let/quiet deg2rad = Pi / 180.0
+
+let/quiet Rk = 1. +  sin(mp_phi0)*sin(mp_phi) + cos(mp_phi0)*cos(mp_phi)*cos(mp_lambda-mp_lambda0)
+let/quiet mp_R = EXP( 0.5*LN( 2./Rk ) )
+let/quiet mp_lambda0 = mp_central_meridian * deg2rad
+let/quiet mp_lambda = mp_x * deg2rad
+let/quiet mp_phi = mp_y * deg2rad
+let/quiet mp_phi0 = mp_standard_parallel * deg2rad
+
+let/quiet x_page = mp_R * cos(mp_phi) * sin(mp_lambda-mp_lambda0)                    ! eqn (1)
+let/quiet y_page = mp_R * cos(mp_phi0) * sin(mp_phi) - sin(mp_phi0) * cos(mp_phi) * cos(mp_lambda-mp_lambda0) !eqn 2
+
+let/quiet mp_mask = if Rk gt 0 then 1
+
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+set mode/last verify

@@ -2,7 +2,13 @@
 ! objective.jnl  11/93 *sh*
 ! Description: 2D objective analysis of scattered data
 
-! NOTE: See external functions scatter2grid* for options on gridding data
+! NOTE: See external functions scat2grid* for options on gridding data
+
+SAY OBJECTIVE function has been discontinued.
+SAY See external functions scat2grid*  for options on gridding data.
+SAY SCAT2GRID_LAPLACE_XY uses underlying code identical to what the objective function used.
+
+EXIT/SCRIPT
 
 ! usage:
 !  GO objective xpts ypts zpts "xlo:xhi:xdel" "ylo:yhi:ydel" [cay] [nrng]

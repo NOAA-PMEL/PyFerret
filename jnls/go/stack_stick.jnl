@@ -51,8 +51,8 @@ def view/axes/xlim=0.:1./ylim=0.01:0.095 keyview
 ! The lf_* viewports are the same size and shape. They will be used to plot the
 ! left-hand axis with the corresponding depth
 
-repeat/range=`ks`:`ke`/name=m (def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` rt_`m`; \
-                          def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` lf_`m`; \
+repeat/range=`ks`:`ke`/name=q (def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` rt_`q`; \
+                          def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` lf_`q`; \
                           let y1 = `y1 - del`; let y2 = `y2 - del`)
 
 ! Draw the time axis by plotting a variable having no data in the vertical range.
@@ -103,19 +103,19 @@ plot/noy/k=`ks`/axes=0,0,0,1/vlimits=$3:$4/title=" "/set $1, $2
    ppl ylab " "
 PPL PLOTUV 0 1
 
-repeat/range=`ks+1`:`ke`/name=m (  set view lf_`m`; \
+repeat/range=`ks+1`:`ke`/name=q (  set view lf_`q`; \
    ppl tics,0,0,0,0; ppl axlsze,0,0; \
      plot/SET_UP/noy/axes=0,0,1,0/nolab/color=white/k=`ks` $1*0; \
      PPL PLOT; \
-   let zlab = zz[k=`m`]; \
+   let zlab = zz[k=`q`]; \
    LABEL/NOUSER `-1*0.1*($ppl$xorg)`, `($ppl$ylen)/2`, 1, 0, 0.12, "`zlab`"; \
    ppl tics,.125,.25,.125,.25; \ 
    ppl axlint,2,2; \
    ppl axlsze,0.1,0.1; \
    ppl axatic 5,5;\
    ; \
-   set view rt_`m`; \
-   plot/noy/k=`m`/axes=0,0,0,1/vlimits=$3:$4/nolab/set $1, $2; \
+   set view rt_`q`; \
+   plot/noy/k=`q`/axes=0,0,0,1/vlimits=$3:$4/nolab/set $1, $2; \
      ppl yaxis $3 $4 `($4-$3)/4` ;  ppl tics,0,0,0,0; ppl axlsze,0,0; PPL PLOTUV 0 1) 
 
 

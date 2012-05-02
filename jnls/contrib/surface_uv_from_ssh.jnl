@@ -22,18 +22,18 @@
     let omega = 7.292E-5 ! Angular speed of rotation of Earth (rad/s)
     let cm2m  = 1/100    ! convertion factor ==> from cm to m
 
-    let f     = 2 * omega * sin(y[gy=sla]*pi/180.0) ! coriolis parameter
+    let fc     = 2 * omega * sin(y[gy=sla]*pi/180.0) ! coriolis parameter
                                                     ! 2*omega*sin(phi)
     !
     !        -g    d(eta)                g    d(eta)
     !   Us = --- * ------   ;      Vs = --- * ------
-    !         f    dY                    f    dX
-    ! At equator f --> 0 & hence 1/f --> infinity....so mask the region
+    !         fc   dY                   fc    dX
+    ! At equator fc --> 0 & hence 1/fc --> infinity....so mask the region
     !    near equator using an IF condition
     !   @DDC ==> centred derivative
 
-    let Us    = IF ABS(y[gy=sla]) GT 3.0 THEN (-1*(g/f)*sla[Y=@DDC]*cm2m)
-    let Vs    = IF ABS(y[gy=sla]) GT 3.0 THEN (   (g/f)*sla[X=@DDC]*cm2m)
+    let Us    = IF ABS(y[gy=sla]) GT 3.0 THEN (-1*(g/fc)*sla[Y=@DDC]*cm2m)
+    let Vs    = IF ABS(y[gy=sla]) GT 3.0 THEN (   (g/fc)*sla[X=@DDC]*cm2m)
 
     set var/title="Surface Geostrophic U from Jason's SSH"/units=m Us
     set var/title="Surface Geostrophic V from Jason's SSH"/units=m Vs

@@ -20,7 +20,7 @@ include ../../site_specific.mk
 #
 # include platform-specific definitions
 #
-include ../../platform_specific.mk.$(BUILDTYPE)
+include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 
 #
 # Macros

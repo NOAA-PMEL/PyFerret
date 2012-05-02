@@ -25,6 +25,7 @@ include ../platform_specific.mk.$(BUILDTYPE)
 #
 
 DIRS = contributed examples fft statistics
+# DIRS = contributed examples fft sort cflib closest_in_list hinterp featurecollections romea odd_formats cat statistics tax_times gridding zaxr 
 
 #
 # Targets

@@ -23,15 +23,13 @@ INSTALL_FER_DIR	= $(FER_DIR)
 ## (contains include and lib or lib64 subdirectories)
 # HDF5_DIR	= /usr
 # HDF5_DIR	= /usr/local
-HDF5_DIR	= /usr/local/hdf5_186
-# HDF5_DIR	= /usr/local/hdf5_187
+HDF5_DIR	= /usr/local/hdf5_188
 
 ## Installation directory for NetCDF static libraries
 ## (contains include and lib or lib64 subdirectories)
 # NETCDF4_DIR	= /usr
 # NETCDF4_DIR	= /usr/local
-NETCDF4_DIR	= /usr/local/netcdf_412
-# NETCDF4_DIR	= /usr/local/netcdf_413
+NETCDF4_DIR	= /usr/local/netcdf_42
 
 ## Java 1.6 jdk home directory - this may be predefined
 ## from your shell environment.  If JAVA_HOME is defined,

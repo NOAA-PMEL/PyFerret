@@ -45,7 +45,9 @@
 /* *acm   2/11 v67  - Call nc_get_varm only if strides and permuted.
                       Call nc_get_vars if strided, and nc_get_vara if neither permuted
 					  nor strided. */
-
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+/*					 definition of macro DFTYPE in ferretmacros.h.
+*/
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
@@ -55,19 +57,15 @@
 #include <netcdf.h>
 #include <assert.h>
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
+#include "ferretmacros.h"
 
 /* prototype */
-void tm_scale_buffer(float *dat, double *dbuff,
-			   float *offset, float *scale, float *bad,
+void tm_scale_buffer(DFTYPE *dat, double *dbuff,
+			   DFTYPE *offset, DFTYPE *scale, DFTYPE *bad,
 			   int ntotal);
 
 void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims, 
-			   float *offset, float *scale, float* bad,
+			   DFTYPE *offset, DFTYPE *scale, DFTYPE* bad,
 			   int *tmp_start, int *tmp_count, 
 			   int *tmp_stride, int *tmp_imap,
 			   void *dat, int *permuted, int *strided, int *already_scaled,
@@ -171,7 +169,7 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
 	  }
 
 
-      tm_scale_buffer ((float*) dat, data_double, offset,
+      tm_scale_buffer ((DFTYPE*) dat, data_double, offset,
          scale, bad, ntotal);
 	  *already_scaled = 1;
 
@@ -184,6 +182,20 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
   {
       if (*permuted > 0)
 	  {
+#ifdef double_p
+    *cdfstat = nc_get_varm_double (*cdfid, vid, start,
+     count, stride, imap, (double*) dat); 
+	  }
+	  else if (*strided > 0)
+	  {
+    *cdfstat = nc_get_vars_double (*cdfid, vid, start,
+     count, stride, (double*) dat);
+      }
+	  else
+	  { 
+    *cdfstat = nc_get_vara_double (*cdfid, vid, start,
+     count, (double*) dat);
+#else
     *cdfstat = nc_get_varm_float (*cdfid, vid, start,
      count, stride, imap, (float*) dat); 
 	  }
@@ -196,6 +208,7 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
 	  { 
     *cdfstat = nc_get_vara_float (*cdfid, vid, start,
      count, (float*) dat);
+#endif
 	  }
   }
 
@@ -203,8 +216,8 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
 }
 
 /*  */
-void tm_scale_buffer(float *dat, double *dbuff,
-                     float *offset, float *scale, float *bad,
+void tm_scale_buffer(DFTYPE *dat, double *dbuff,
+                     DFTYPE *offset, DFTYPE *scale, DFTYPE *bad,
                      int ntotal)
 
 {

@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION TM_FPEQ ( a, b )
+	LOGICAL FUNCTION TM_FPEQ_SNGL ( a, b )
 
 *
 *
@@ -43,32 +43,30 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 *
-* revision 0.00 - 11/21/85
-* revision 0.10 - 10/23/87 - all variables explicitly declared
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* programmer - Ansley Manke, from tm_fpeq.F
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+*
+* 1/13/2012
+* Single-precision version of TM_FPEQ_SNGL, to be called from PPLUS.
+
 
 * calling arguments:
-	REAL	a, b
+	REAL*4	a, b
 
 * local parameters
 	LOGICAL    TM_DFPEQ
-	REAL	   VAX_epsilon
+	REAL*4	   VAX_epsilon
 	PARAMETER (VAX_epsilon = 4.E-7)
-
-#ifdef double_p
-        tm_fpeq = TM_DFPEQ(a, b)
-	RETURN
-#endif
 
 * treat relative error case (non-zero) separate fron zero case
 
 	IF  (a.NE.0.0   .AND.  b.NE.0.0 )  THEN
 
-	   tm_fpeq =  ABS(a-b) .LE. ABS(b)*VAX_epsilon		! relative error
+	   TM_FPEQ_SNGL =  ABS(a-b) .LE. ABS(b)*VAX_epsilon		! relative error
 
 	ELSE
 
-	   tm_fpeq =	ABS(a) .LT. VAX_epsilon
+	   TM_FPEQ_SNGL =	ABS(a) .LT. VAX_epsilon
      .		.AND.   ABS(b) .LT. VAX_epsilon			! absolute error
 
 	ENDIF

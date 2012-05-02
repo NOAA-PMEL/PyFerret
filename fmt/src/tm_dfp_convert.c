@@ -37,28 +37,31 @@
 
 
 /* tm_dfp_convert_:
-/* convert VAX D or IEEE big/little endian double precision floating point */
+ * convert VAX D or IEEE big/little endian double precision floating point */
 /* into the currently active CPU representation */
 /*** use the pre-processor to select the target word type ***   */
 
 /* *sh* - home brewed */
 /* rev. 0.0 2/14/92
-/* note: "_" is appended to TM_DFP1_CNVRT by f77 when calling this */
+ * note: "_" is appended to TM_DFP1_CNVRT by f77 when calling this */
 /* replaced "elif" syntax with
 	else
 	   if
   for SGI port	 - kob 4/8/92 */
 
-/* added ifdef check for underscore in routine name for aix *kob* 10/94 */
+/* added ifdef check for underscore in routine name for aix *kob* 10/94 
+ * *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+ *					 definition of macro DFTYPE in ferretmacros.h.
+*/
+
+#include <Python.h> /* make sure Python.h is first */
+#include "ferretmacros.h"
+
 #define cptype_vax 0
 #define cptype_dec 1
 #define cptype_sun 2
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void tm_dfp_convert( dval, author_cpu )
-#else
-void tm_dfp_convert_( dval, author_cpu )
-#endif
+void FORTRAN(tm_dfp_convert)( dval, author_cpu )
   double *dval;
   int *author_cpu;
   {

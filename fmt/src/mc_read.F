@@ -76,6 +76,7 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -346,8 +347,13 @@ c!c! uncomment this...
 		 ELSE
 		 ENDIF
 *       if an error is found, announce to user but continue on	
+#ifdef double_p
+		 IF (.NOT. TM_FPEQ((r8buff), 
+     .                        (start_read_tstep))) THEN
+#else
 		 IF (.NOT. TM_FPEQ(SNGL(r8buff), 
      .                        SNGL(start_read_tstep))) THEN
+#endif
 		    CALL TM_ERRMSG (merr_stpmtch, status, 'MC_READ',
      .           	 sf_setnum(sfcnt), sfcnt,
      .  		 TM_STRING(start_read_tstep), TM_STRING(r8buff),*70)

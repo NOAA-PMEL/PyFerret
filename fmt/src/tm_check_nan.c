@@ -36,14 +36,17 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <math.h>
+#include "ferretmacros.h"
 
 /* tm_check_nan.c :
-/*  see if value is NaN */
+ *  see if value is NaN */
 
 /* *acm* - 11/04/04 */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+*					 definition of macro DFTYPE in ferretmacros.h.
+*/
 
-/*int FORTRAN(tm_check_nan)( float *src )*/
-int tm_check_nan_( float *src )
+int FORTRAN(tm_check_nan)( DFTYPE *src )
 
 {
   int result = 0;

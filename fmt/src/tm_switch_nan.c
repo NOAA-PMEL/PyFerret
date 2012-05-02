@@ -36,19 +36,23 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <math.h>
+#include "ferretmacros.h"
+
+#define bad_val4 1.0e-34
 
 /* tm_switch_nan :
-/*  check for a missing or bad value flag of NaN.  if either flag is Nan, */
+ *  check for a missing or bad value flag of NaN.  if either flag is Nan, */
 /*  then make sure it's ds_missing_flag and if both are NaN, make sure to */
 /*  set ds_bad_flag to bad_val4     */
 
 /* *kob* - 2/18/99 */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+*					 definition of macro DFTYPE in ferretmacros.h.
+*/
 
-#define bad_val4 1.0e-34
-
-void switch_nan_(bad, missing)
-     float *bad;
-     float *missing;
+void FORTRAN(switch_nan)(bad, missing)
+     DFTYPE *bad;
+     DFTYPE *missing;
 {
   if (isnan(*bad) || isnan(*missing))
     { 
@@ -59,8 +63,4 @@ void switch_nan_(bad, missing)
 	}
     }
 }
-	
-
-
- 
 

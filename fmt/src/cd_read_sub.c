@@ -70,6 +70,8 @@
 /* *acm   2/11 v67  - Call nc_get_varm only if strides and permuted.
                       Call nc_get_vars if strided, and nc_get_vara if neither permuted
 					  nor strided. */
+/*  *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+*                                        definition of macro DFTYPE in ferretmacros.h. */
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
@@ -77,12 +79,8 @@
 #include <stdlib.h>
 #include <netcdf.h>
 #include <assert.h>
+#include "ferretmacros.h"
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
 
 /* prototype */
 void tm_unblockify_ferret_strings(void *dat, char *pbuff,
@@ -203,9 +201,25 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
       tm_unblockify_ferret_strings(dat, pbuff, bufsiz, (int)maxstrlen);
       free(pbuff);
 
-  /* FLOAT data */
+  /* Numeric data. Read as double or float */
   } else
-	  
+#ifdef double_p	  
+      if (*permuted > 0)
+	  {
+    *cdfstat = nc_get_varm_double (*cdfid, vid, start,
+     count, stride, imap, (double*) dat); 
+	  }
+	  else if (*strided > 0)
+	  {
+    *cdfstat = nc_get_vars_double (*cdfid, vid, start,
+     count, stride, (double*) dat);
+      }
+	  else
+	  { 
+    *cdfstat = nc_get_vara_double (*cdfid, vid, start,
+     count, (double*) dat);
+	  }
+#else
       if (*permuted > 0)
 	  {
     *cdfstat = nc_get_varm_float (*cdfid, vid, start,
@@ -221,7 +235,7 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
     *cdfstat = nc_get_vara_float (*cdfid, vid, start,
      count, (float*) dat);
 	  }
-
+#endif
   return;
 }
 

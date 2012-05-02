@@ -36,14 +36,17 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <math.h>
+#include "ferretmacros.h"
 
 /* tm_check_inf.c :
-/*  see if value is positive or negative Inf */
+ *  see if value is positive or negative Inf */
 
 /* *acm* - 11/03/05 */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+ *					 definition of macro DFTYPE in ferretmacros.h.
+*/
 
-/*int FORTRAN(tm_check_inf)( float *src )*/
-int tm_check_inf_( float *src )
+int FORTRAN(tm_check_inf)( DFTYPE *src )
 
 {
   int result = 0;

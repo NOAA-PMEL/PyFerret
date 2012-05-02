@@ -56,6 +56,8 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V68  *acm* 1/12 The variables should be declared REAL (conversion to double prec.)
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * Arguments:
 *	dset	- data set number
@@ -69,7 +71,7 @@
 *
 	CHARACTER*(*)	name, title, units
 	INTEGER*4	dset, vpos, grid, status
-	REAL*4		bad
+	REAL		bad
 
 	INTEGER		TM_LENSTR1, 
      .                  outtype_flag, varid, attid, attype, attlen, 

@@ -1,4 +1,4 @@
-	CHARACTER*(*) FUNCTION TM_FMT_DIGITS
+	CHARACTER*(*) FUNCTION TM_FMT_SNGL_DIGITS
      .            ( val, digits, max_len, str_len )
 
 *
@@ -41,16 +41,11 @@
 * decimal point exactly specified by digits, e.g. for digits=-2, 0 is 0.00. 
 * For consistent labels on color keys, called by key.F
 
-* programmer - Ansley Manke, from tm_fmt.F
-* NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
-* written for VAX computer under VMS operating system
+* programmer - Ansley Manke, from tm_fmt_digits.F
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
-* revision 0.00 - 11/14/03
-* *acm* 11/04  incoming value may be NaN (e.g. in a SHOW DATA/FULL if missing 
-*              flag is NaN)
-* *acm* 11/05  incoming value may be Inf (e.g. in a STAT, if data contains Inf)
-* *acm*  1/06  When val is 0, log10(aval) is infinite.  Causes trouble on IRIX;
-*              take care of val=0 case individually.
+* 1/13/2012
+* Single-precision version of TM_FMT_DIGITS, to be called from PPLUS.
 
 
 * calling arguments:
@@ -62,19 +57,19 @@
 
 * calling argument declarations:
 	INTEGER		digits, max_len, str_len
-	REAL		val
+	REAL*4		val
 
 * internal variable declarations:
 	LOGICAL		exp_fmt, negative, fixed_pt
 	INTEGER		slen, sig_left, sig_full, nleft, nright, full,
      .			sig_max, full10, xtra, sig_needed, pow10,
      .			chk10, chk10_save, waste
-	REAL		aval, l10
+	REAL*4		aval, l10
 	CHARACTER*10	fmt
 
 * local parameters:
 	INTEGER		TM_CHECK_NAN, TM_CHECK_INF, max_int_len, sig_min
-	REAL		eps, one_m_eps
+	REAL*4		eps, one_m_eps
 	PARAMETER     ( max_int_len = 8,
      .			sig_min     = 1,		! minimum sig. digits
      .			eps         = 0.6E-7,		! 1/95 - was 1.E-7
@@ -87,20 +82,20 @@
 	negative = val .LT. 0.0
 	fixed_pt = digits .LE. 0
 	aval     = ABS( val )
-	TM_FMT_DIGITS   = ' '
+	TM_FMT_SNGL_DIGITS   = ' '
 	exp_fmt  = .FALSE.
 
 * maximum length of output string (at least 1 character long)
-	slen = MIN( LEN(TM_FMT_DIGITS), max_len )
+	slen = MIN( LEN(TM_FMT_SNGL_DIGITS), max_len )
 	slen = MAX( 1, slen )
 
 * If the value is NaN, set the string here
         IF ( TM_CHECK_NAN(aval) .EQ. 1   ) THEN
            IF (slen .GE. 3) THEN
-              TM_FMT_DIGITS  = 'NaN'
+              TM_FMT_SNGL_DIGITS  = 'NaN'
               str_len = 3
            ELSE
-              TM_FMT_DIGITS = '*'
+              TM_FMT_SNGL_DIGITS = '*'
               str_len = 1
            ENDIF
 	   RETURN
@@ -109,10 +104,10 @@
 * If the value is NaN, or Inf, set the string here
         IF ( TM_CHECK_INF(val)  .EQ. 1   ) THEN
            IF (slen .GE. 3) THEN
-              TM_FMT_DIGITS  = 'Inf'
+              TM_FMT_SNGL_DIGITS  = 'Inf'
               str_len = 3
            ELSE
-              TM_FMT_DIGITS = '*'
+              TM_FMT_SNGL_DIGITS = '*'
               str_len = 1
            ENDIF
 	   RETURN
@@ -219,13 +214,13 @@
 	      xtra = 5
 	   ENDIF
 	   IF ( slen .LE. xtra ) THEN
-	      TM_FMT_DIGITS  = '******'
+	      TM_FMT_SNGL_DIGITS  = '******'
 	      str_len = slen
 	   ELSE
 	      str_len = MIN( slen, sig_needed+xtra)
 	      WRITE ( fmt, 3000 ) str_len, str_len-(xtra+1)
  3000	      FORMAT( '(1PG',I2,'.',I2,')' )
-	      WRITE ( TM_FMT_DIGITS, fmt ) val
+	      WRITE ( TM_FMT_SNGL_DIGITS, fmt ) val
 	   ENDIF
 
 * INTEGER STRING
@@ -248,7 +243,7 @@
 	   IF (str_len .LE. 0) str_len = 1  ! as in tm_fmt.F just to be sure.
 	   WRITE ( fmt, 3100 ) str_len
  3100	   FORMAT ( '(I',I2,')' )
-	   WRITE ( TM_FMT_DIGITS, fmt ) NINT(val)
+	   WRITE ( TM_FMT_SNGL_DIGITS, fmt ) NINT(val)
 
 * FIXED POINT STRING
 	ELSE
@@ -257,19 +252,19 @@
 	   str_len = nleft + nright + 1
 	   WRITE ( fmt, 3200 ) str_len, nright
  3200	   FORMAT ( '(F',I2,'.',I2,')' )
-	   WRITE ( TM_FMT_DIGITS, fmt ) val
+	   WRITE ( TM_FMT_SNGL_DIGITS, fmt ) val
 	   IF (slen .GE. 3) THEN 
-	       IF (TM_FMT_DIGITS(1:3) .EQ. ' -.') THEN
-		  TM_FMT_DIGITS(1:3) = '-0.'	! 8/96 for aix&hp
-	       ELSEIF (TM_FMT_DIGITS(1:1) .EQ. ' ') THEN
-                  TM_FMT_DIGITS(1:1) = '0'
+	       IF (TM_FMT_SNGL_DIGITS(1:3) .EQ. ' -.') THEN
+		  TM_FMT_SNGL_DIGITS(1:3) = '-0.'	! 8/96 for aix&hp
+	       ELSEIF (TM_FMT_SNGL_DIGITS(1:1) .EQ. ' ') THEN
+                  TM_FMT_SNGL_DIGITS(1:1) = '0'
 	       ENDIF	
 	   ENDIF
 	ENDIF
 	RETURN
 
 * return exact zero
- 1000	TM_FMT_DIGITS  = '0'
+ 1000	TM_FMT_SNGL_DIGITS  = '0'
 	str_len = 1
 	RETURN
 

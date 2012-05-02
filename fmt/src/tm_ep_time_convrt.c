@@ -41,13 +41,19 @@
    which was FORTRAN-accessible.  This routine user, instead a FORTRAN jacket
    *sh* 1/94
 */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+*					 definition of macro DFTYPE in ferretmacros.h.
+*/
+
+#include <Python.h> /* make sure Python.h is first */
+#include "ferretmacros.h"
 
 #define JULGREG   2299161
 
 void ep_time_to_mdyhms(time, mon, day, yr, hour, min, sec)
      long *time;
      int *mon, *day, *yr, *hour, *min;
-     float *sec;
+     DFTYPE *sec;
 {
 /*
  * convert eps time format to mdy hms
@@ -80,7 +86,7 @@ void ep_time_to_mdyhms(time, mon, day, yr, hour, min, sec)
   ja = time[1]/1000;
   *hour = ja/3600;
   *min = (ja - (*hour)*3600)/60;
-  *sec = (float)(time[1] - ((*hour)*3600 + (*min)*60)*1000)/1000.0;
+  *sec = (DFTYPE)(time[1] - ((*hour)*3600 + (*min)*60)*1000)/1000.0;
 }
 
 /* convert from eptime to mdyhms */
@@ -98,11 +104,8 @@ void ep_time_to_mdyhms(time, mon, day, yr, hour, min, sec)
 
    *sh* 1/94
 */
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void tm_ep_time_convrt(epjday,
-#else
-void tm_ep_time_convrt_(epjday,
-#endif
+
+void FORTRAN(tm_ep_time_convrt)(epjday,
 			epmsec,
 			mon,
 			day,
@@ -113,7 +116,7 @@ void tm_ep_time_convrt_(epjday,
 
 /* prototypes not allowed on TMAP SUN cc compiler.  Need ANSI ?? */
 int *epjday, *epmsec, *mon, *day, *yr, *hour, *min;
-float *sec;
+DFTYPE *sec;
 
 {
 /*  this block added by *sh* 1/94 */

@@ -9,6 +9,8 @@
 * V500 - 7/99 *sh* ==> changed char_init to "%%" so that all of the
 *			char_init*N are effectively the same definition
 * V581 - 3/05 *acm* add char_init_1024
+* V68  *acm* 1/12 Real variables should be declared REAL (conversion to double prec.)
+
 
 * codes for data sets
 	INTEGER		set_not_open,set_open,file_not_open
@@ -39,7 +41,7 @@
      .                  char_init1024*1024
 	INTEGER*2	int2_init
 	INTEGER*4	int4_init
-	REAL*4		real4_init
+	REAL		real4_init
 	REAL*8		real8_init
 	PARAMETER	(sevens = '77777777777777777777')
 ! changed this definition because use of char_init and char_initN was
@@ -77,7 +79,7 @@
      .			max_tapereclen = 2499)	! VMS restriction
 
 * bad/missing data indicators
-	REAL*4		bad_r4
+	REAL		bad_r4
 	REAL*8		bad_r8
 	PARAMETER	(bad_r4 = -1.E34 , bad_r8 = -1.E34)
 

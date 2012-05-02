@@ -11,7 +11,7 @@
 	CHARACTER*1024	d_title, d_mod_title
 	INTEGER*4	d_ntuple
 	LOGICAL		d_time_modulo
-	REAL*4		d_time_unit, d_ntegrate_tstep
+	REAL		d_time_unit, d_ntegrate_tstep
 
 * "MESSAGE RECORD"
 	LOGICAL*2	d_alert_on_open, d_alert_on_output
@@ -23,7 +23,7 @@
 	CHARACTER*12	d_precision
 	CHARACTER*24	d_var_units
 	CHARACTER*40	d_var_title, d_var_titl_mod
-	REAL*4		d_missing_flag, d_bad_flag
+	REAL		d_missing_flag, d_bad_flag
 	INTEGER*4	d_grid_start(4),d_grid_end(4), d_aux_set_num,
      .			d_var_tstart, d_var_tend, d_var_tdelta,
      .			d_ndataperrec

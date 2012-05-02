@@ -1,4 +1,4 @@
-	CHARACTER*(*) FUNCTION TM_FMT( val, digits, max_len, str_len )
+	CHARACTER*(*) FUNCTION TM_FMT_SNGL( val, digits, max_len, str_len )
 
 *
 *
@@ -39,29 +39,12 @@
 * max_len in length and with the shortest possible format( unnecerssary zeros
 * eliminated )
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
-* written for VAX computer under VMS operating system
+* programmer - Ansley Manke, from tm_fmt.F
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
-* revision 0.00 - 08/31/88
-* 	   0.10 - 7/21/89 - check if NINT increases digits
-*    1/27/95 - corrected tendency to put out tons of zeros to the right
-*    3/20/95 - the 1/27/95 correction causes this routine to blow up on
-*		OSF f77 **only** when compiled with -g
-* *sh* 9/95  - precision output bug for large values
-*     10/95  - fix missing leading zero on fixed point for some compilers (HP)
-*     12/95  - fix bug with 9.9995 displayed as 4 digits: one_m_eps made
-*		system dependent
-* *kob* 8/96 - check for a negative w/out a leading zero to prevent output
-*              looking like "0-.xxx" - for ibm and hp
-* *acm* 11/04  incoming value may be NaN (e.g. in a SHOW DATA/FULL if missing 
-*              flag is NaN)
-* *acm* 11/05  incoming value may be Inf (e.g. in a STAT, if data contains Inf)
-* *acm*  1/06  When val is 0, log10(aval) is infinite.  Causes crash on IRIX;
-*              take care of val=0 case individually.
-* *acm*  V6.1 3/08  further corrections to last fix when writing a value with 
-*              negative exponent
-* *acm*  V6.5 1/10 Fix bug 1717: If the format is going to be (I0) make it (I1)
+* 1/13/2012
+* Single-precision version of TM_FMT, to be called from PPLUS.
+
 
 * calling arguments:
 * val		- REAL*4 value to be converted
@@ -72,20 +55,20 @@
 
 * calling argument declarations:
 	INTEGER		digits, max_len, str_len
-	REAL		val
+	REAL*4		val
 
 * internal variable declarations:
 	LOGICAL		exp_fmt, negative, fixed_pt
 	INTEGER		slen, sig_left, sig_full, nleft, nright, full,
      .			sig_max, full10, xtra, sig_needed, pow10,
-     .			chk10, chk10_save, waste, i, need_adjust
-	REAL		aval, l10
+     .			chk10, chk10_save, waste, i
+	REAL*4		aval, l10
 	CHARACTER*10	fmt
 
 * local parameters:
 	INTEGER		TM_CHECK_NAN, TM_CHECK_INF, TM_LENSTR1, 
      .                  max_int_len, sig_min, added_pow10
-	REAL		eps, one_m_eps
+	REAL*4		eps, one_m_eps
 	PARAMETER     ( max_int_len = 8,
      .			sig_min     = 1,		! minimum sig. digits
      .			eps         = 0.6E-7,		! 1/95 - was 1.E-7
@@ -98,21 +81,21 @@
 	negative = val .LT. 0.0
 	fixed_pt = digits .LE. 0
 	aval     = ABS( val )
-	TM_FMT   = ' '
+	TM_FMT_SNGL   = ' '
 	exp_fmt  = .FALSE.
 	added_pow10 = 0
 
 * maximum length of output string (at least 1 character long)
-	slen = MIN( LEN(TM_FMT), max_len )
+	slen = MIN( LEN(TM_FMT_SNGL), max_len )
 	slen = MAX( 1, slen )
 
 * If the value is NaN, set the string here
         IF ( TM_CHECK_NAN(aval) .EQ. 1   ) THEN
            IF (slen .GE. 3) THEN
-              TM_FMT  = 'NaN'
+              TM_FMT_SNGL  = 'NaN'
               str_len = 3
            ELSE
-              TM_FMT = '*'
+              TM_FMT_SNGL = '*'
               str_len = 1
            ENDIF
 	   RETURN
@@ -121,10 +104,10 @@
 * If the value is NaN, or Inf, set the string here
         IF ( TM_CHECK_INF(val)  .EQ. 1   ) THEN
            IF (slen .GE. 3) THEN
-              TM_FMT  = 'Inf'
+              TM_FMT_SNGL  = 'Inf'
               str_len = 3
            ELSE
-              TM_FMT = '*'
+              TM_FMT_SNGL = '*'
               str_len = 1
            ENDIF
 	   RETURN
@@ -161,18 +144,8 @@
 
 * modify # significant digits: cannot request more digits than the integer
 * word size or the "unwasted" string length
-* but at least sig_min digits.
-
-* For double-precision Ferret the code below that puts the digits into a 
-* integer would fail because integers cant be that large. Keep track of
-* the extra length and add it back later.
-
-        sig_full = MAX( sig_min, MIN( sig_max, slen-waste ) )
-	need_adjust = 0
-        IF (sig_full .GT. max_int_len) THEN
-	  need_adjust = sig_full - max_int_len
-	ENDIF
-        sig_full = MAX( sig_min, MIN( sig_max, max_int_len, slen-waste ) )
+* but at lease sig_min digits
+	sig_full = MAX( sig_min, MIN( sig_max, max_int_len, slen-waste ) )
 
 * create an integer with all the possible digits
 * (1-eps factor is because VAX Fortran formats round 100.5-->100 whereas VAX 
@@ -243,7 +216,7 @@
 	      xtra = 5
 	   ENDIF
 	   IF ( slen .LE. xtra ) THEN
-	      TM_FMT  = '******'
+	      TM_FMT_SNGL  = '******'
 	      str_len = slen
 	   ELSE
 	      str_len = MIN( slen, sig_needed+xtra)
@@ -253,7 +226,7 @@
               IF (str_len-(xtra+1) .LT. 0) xtra = 1
 	      WRITE ( fmt, 3000 ) str_len, str_len-(xtra+1)
  3000	      FORMAT( '(1PG',I2,'.',I2,')' )
-	      WRITE ( TM_FMT, fmt ) val
+	      WRITE ( TM_FMT_SNGL, fmt ) val
 	   ENDIF
 
 * INTEGER STRING
@@ -277,8 +250,8 @@
  9000	   IF (str_len .LE. 0) str_len = 1
 	   WRITE ( fmt, 3100 ) str_len
  3100	   FORMAT ( '(I',I2,')' )
-	   WRITE ( TM_FMT, fmt ) NINT(val)
-	   IF (INDEX(TM_FMT,'*') .EQ. 1) THEN
+	   WRITE ( TM_FMT_SNGL, fmt ) NINT(val)
+	   IF (INDEX(TM_FMT_SNGL,'*') .EQ. 1) THEN
 	      str_len = str_len + 1
 	      iloop = iloop + 1
 	      IF (iloop .LT. 5) GOTO 9000
@@ -286,25 +259,24 @@
 
 * FIXED POINT STRING
 	ELSE
-	   sig_needed = sig_needed + need_adjust
 	   nright = MIN( sig_needed-pow10, slen-(nleft+1) )
 	   str_len = nleft + nright + 1
 	   WRITE ( fmt, 3200 ) str_len, nright
  3200	   FORMAT ( '(F',I2,'.',I2,')' )
-	   WRITE ( TM_FMT, fmt ) val
+	   WRITE ( TM_FMT_SNGL, fmt ) val
 	   IF (slen .GE. 3) THEN 
-	       IF (TM_FMT(1:3) .EQ. ' -.') THEN
-		  TM_FMT(1:3) = '-0.'	! 8/96 for aix&hp
-	       ELSEIF (TM_FMT(1:1) .EQ. ' ') THEN
-                  TM_FMT(1:1) = '0'
+	       IF (TM_FMT_SNGL(1:3) .EQ. ' -.') THEN
+		  TM_FMT_SNGL(1:3) = '-0.'	! 8/96 for aix&hp
+	       ELSEIF (TM_FMT_SNGL(1:1) .EQ. ' ') THEN
+                  TM_FMT_SNGL(1:1) = '0'
 	       ENDIF	
 	   ENDIF
 * Precision in computation of value of FULL can cause an extra
 * digit at the end, and so trailing 0s may still exist. Remove them.
-           slen = TM_LENSTR1( TM_FMT )
+           slen = TM_LENSTR1( TM_FMT_SNGL )
            DO 3300 i = slen,1,-1
-              IF (TM_FMT(i:i) .EQ. '0') THEN
-                 TM_FMT(i:i) = ' '
+              IF (TM_FMT_SNGL(i:i) .EQ. '0') THEN
+                 TM_FMT_SNGL(i:i) = ' '
                  str_len = str_len - 1
               ELSE
                  GOTO 3400
@@ -316,7 +288,7 @@
 	RETURN
 
 * return exact zero
- 1000	TM_FMT  = '0'
+ 1000	TM_FMT_SNGL  = '0'
 	str_len = 1
 	RETURN
 

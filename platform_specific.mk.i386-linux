@@ -37,7 +37,6 @@
 			  -Dreclen_in_bytes \
 			  -Dunix \
 			  -Dxgks \
-			  -DFULL_GUI_VERSION \
 			  -DG77_SIGNAL \
 			  -DG77 \
 			  -DINTERNAL_READ_FORMAT_BUG \
@@ -51,7 +50,6 @@
 			  -DNO_OPEN_SHARED \
 			  -DNO_PASSED_CONCAT \
 			  -DNO_PREPEND_STRING \
-			  -DNO_SNGL \
 			  -DSTAR_1_SUPPORTED \
 			  -DVOID_SIGHANDLER \
 			  -DX_REFRESH \
@@ -66,6 +64,7 @@
 	CPP_FLAGS	= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
 	CFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -Dlint -D_SSIZE_T -D_POSIX_VERSION -Dsun4
 	FFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -fno-automatic -fdollar-ok -ffixed-line-length-132
+	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -m32 -fPIC -fno-automatic -fdollar-ok -ffixed-line-length-132
 
 # LD and LD_DYN_FLAGS only used for generating external function shared-object libraries
 	LD		= $(shell which gfortran)

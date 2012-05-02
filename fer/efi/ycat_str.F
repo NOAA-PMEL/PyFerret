@@ -4,6 +4,8 @@
 * Ansley Manke
 * Nov 2008
 *
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+*
 * This function returns the values of the two variables,
 * concatenated into one long list on an abstract y axis. Other 
 * axes are unchanged.
@@ -134,13 +136,20 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
 	  INTEGER id
 
-      REAL arg_1(2,mem1lox:mem1hix, mem1loy:mem1hiy, 
+      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, 
      .           mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL arg_2(2,mem2lox:mem2hix, mem2loy:mem2hiy, 
+      REAL arg_2(strdf,mem2lox:mem2hix, mem2loy:mem2hiy, 
      .           mem2loz:mem2hiz, mem2lot:mem2hit)
-      REAL result(2,memreslox:memreshix, memresloy:memreshiy,
+      REAL result(strdf,memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit)
 
 * After initialization, the 'res_' arrays contain indexing information 

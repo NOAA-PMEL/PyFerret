@@ -37,6 +37,8 @@
 *
 * Set additional viewport symbols. Here is what happens with the scaling
 * 11/30/04 change names of margin symbols.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+
 
 ccc    DEFINE VIEWPORT/XLIM=xlo:xyi/YLIM=ylo:yhi[/TEXT=n/ my_view
 ccc
@@ -59,48 +61,49 @@ c        include 'xplot_setup.cmn'      ! 10/91 for saved_ppl_yax
 c        include 'PLT.INC'
 
 * calling argument declarations:
-        REAL scale, vp_size, xfrac, yfrac,
+        REAL*4 vp_size
+        REAL*4 scale, xfrac, yfrac,
      .       xspc_lo, yspc_lo, xspc_hi, yspc_hi,
      .       xov,  yov,  xcv,  ycv
 
 * internal variable declarations:
 	INTEGER slen
-	CHARACTER TM_FMT*8, buff*24
+	CHARACTER TM_FMT_SNGL*8, buff*24
 
-	buff = TM_FMT(scale,-3,8,slen) 
+	buff = TM_FMT_SNGL(scale,-3,8,slen) 
 	CALL PPLCMD ( from, line, 0, 'SET VP_SCALE '//buff, 1, 1 )
  
-c	buff = TM_FMT(vp_size,-3,8,slen) 
+c	buff = TM_FMT_SNGL(vp_size,-3,8,slen) 
 c	CALL PPLCMD ( from, line, 0, 'SET VP_SIZE '//buff, 1, 1 )
 
-c	buff = TM_FMT(xfrac,-3,8,slen) 
+c	buff = TM_FMT_SNGL(xfrac,-3,8,slen) 
 c	CALL PPLCMD ( from, line, 0, 'SET VP_XSC '//buff, 1, 1 )
 	
-c	buff = TM_FMT(yfrac,-3,8,slen) 
+c	buff = TM_FMT_SNGL(yfrac,-3,8,slen) 
 c	CALL PPLCMD ( from, line, 0, 'SET VP_YSC '//buff, 1, 1 )
         
-c	buff = TM_FMT(xspc_lo,-3,8,slen) 
+c	buff = TM_FMT_SNGL(xspc_lo,-3,8,slen) 
 c	CALL PPLCMD ( from, line, 0, 'SET VP_XORG '//buff, 1, 1 )
         
-	buff = TM_FMT(xspc_hi,-3,8,slen) 
+	buff = TM_FMT_SNGL(xspc_hi,-3,8,slen) 
 	CALL PPLCMD ( from, line, 0, 'SET VP_RT_MARGIN '//buff, 1, 1 )
         
-c	buff = TM_FMT(yspc_lo,-3,8,slen) 
+c	buff = TM_FMT_SNGL(yspc_lo,-3,8,slen) 
 c	CALL PPLCMD ( from, line, 0, 'SET VP_YORG '//buff, 1, 1 )
         
-	buff = TM_FMT(yspc_hi,-3,8,slen) 
+	buff = TM_FMT_SNGL(yspc_hi,-3,8,slen) 
 	CALL PPLCMD ( from, line, 0, 'SET VP_TOP_MARGIN '//buff, 1, 1 )
 
-	buff = TM_FMT(xov,-3,8,slen) 
+	buff = TM_FMT_SNGL(xov,-3,8,slen) 
 	CALL PPLCMD ( from, line, 0, 'SET VP_XLO '//buff, 1, 1 )
 
-	buff = TM_FMT(xcv,-3,8,slen) 
+	buff = TM_FMT_SNGL(xcv,-3,8,slen) 
 	CALL PPLCMD ( from, line, 0, 'SET VP_XHI '//buff, 1, 1 )
 
-	buff = TM_FMT(yov,-3,8,slen) 
+	buff = TM_FMT_SNGL(yov,-3,8,slen) 
 	CALL PPLCMD ( from, line, 0, 'SET VP_YLO '//buff, 1, 1 )
 
-	buff = TM_FMT(ycv,-3,8,slen) 
+	buff = TM_FMT_SNGL(ycv,-3,8,slen) 
 	CALL PPLCMD ( from, line, 0, 'SET VP_YHI '//buff, 1, 1 )
 
 	RETURN

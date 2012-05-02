@@ -79,6 +79,8 @@
 *		   zero as valid.
 * V672 9/11  *acm* add RANDU2,RANDN2.  The way RANDN works, with SAVEd variables,
 *                  it's not going to work well as an external function.
+* V6.8 for double-precision Ferret do the RANDU calculation
+*      with a real*4 argument. Gives consistent results with single-p.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -108,6 +110,7 @@
      .		DAYS_FROM_DAY0,
      .          bad1, bad2, bad3, bad4, bad_res, dummy
      .          op_repl
+	REAL*4  R_IN
 
 * equivalence conveniences
 * "inc" is the increments for each axis of each component
@@ -989,10 +992,12 @@
 	      res(i,j,k,l) = bad_res
 	   ELSEIF ( first ) THEN
 * ... note: floating point representation is passed as seed integer
-	      res(i,j,k,l) = RANDU( com1(i,j,k,l) )
+              R_IN = REAL(com1(i,j,k,l))  ! for possibly double-prec. arg
+	      res(i,j,k,l) = RANDU( R_IN )
 	      first = .FALSE.
 	   ELSE
-	      res(i,j,k,l) = RANDU(0.0)			!kob 12/96
+              R_IN = 0.
+	      res(i,j,k,l) = RANDU(R_IN)			!kob 12/96
 	   ENDIF
  3610	CONTINUE
 	RETURN
@@ -1009,10 +1014,12 @@
 	      res(i,j,k,l) = bad_res
 	   ELSEIF ( first ) THEN
 * ... note: floating point representation is passed as seed integer
-	      res(i,j,k,l) = RANDN( com1(i,j,k,l) )
+              R_IN = REAL(com1(i,j,k,l))  ! for possibly double-prec. arg
+	      res(i,j,k,l) = RANDN( R_IN )
 	      first = .FALSE.
 	   ELSE
-	      res(i,j,k,l) = RANDN(0.0)			!kob 12/96
+              R_IN = 0.
+	      res(i,j,k,l) = RANDN(R_IN)			!kob 12/96
 	   ENDIF
  3710	CONTINUE
 	RETURN

@@ -39,24 +39,21 @@
 /*
   Code to perform decoding of formatted dates and times
  */
-
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+*					 definition of macro DFTYPE in ferret.h.
+*/
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "ferret.h"
 
-
-float FORTRAN(time_decode) (char *strtime)
+DFTYPE FORTRAN(time_decode) (char *strtime)
 {
 
   int ih,im, ok;
-  float ss;
+  DFTYPE ss;
   char str1[2];
 
   if (sscanf(strtime,"%d:%d:%f%1s",&ih,&im,&ss,str1) == 3)

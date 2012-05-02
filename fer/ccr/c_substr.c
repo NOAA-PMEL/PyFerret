@@ -42,18 +42,21 @@
    return rest of full string in substring.  
 
    V541: *kob* 3/02
+   V680  *acm* 1/12  Call with integers for offset and length.
 
 */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
+/* *acm*  1/12 v68    change offset and length to integer (goes with double-precision changes) */
+
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 
 void c_substr_(in_ptr, offset, length, out_ptr)
      char** in_ptr;
-     float* offset;
-     float* length;
+     int* offset;
+     int* length;
      char** out_ptr;     
 {
    char* tmp;

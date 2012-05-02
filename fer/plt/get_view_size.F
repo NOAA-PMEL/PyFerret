@@ -52,21 +52,15 @@
 *
 * Unix/RISC port - 10/91
 * V300:  4/19/93 - old style vp's: use ABS() for negative vp_size
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xplot_state.cmn'
 	include	'plt_inc.decl'	! with sizing data,etc.
 	include	'PLT.INC'	! with sizing data, etc.
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE	'TMAP_PPLV11INC:PLT_INC.DECL/LIST'	! with sizing data,etc.
-	INCLUDE	'PPLV11INC:PLT.INC/LIST'	! with sizing data, etc.
-#endif
-	
+
 * calling argument declarations:
-	REAL vxsize, vysize
+	REAL*4 vxsize, vysize
 
 * internal variable declarations:
 	REAL	vxmax, vymax, scale

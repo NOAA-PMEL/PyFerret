@@ -51,6 +51,7 @@
 *                  argument grid rather than calendar name?!)
 * V601 *acm*  3/08 Allow more figs when writing values with negative exponents.
 * V650  Write to show_lun which may be set to a file unit number rather than std out
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -190,8 +191,13 @@
 	   ENDIF
 	   CALL TRANSLATE_TO_WORLD( pt_val8,idim,grid,ndec,pt_str )
 	   CALL TRANSLATE_TO_WORLD( lo_val8,idim,grid,ndec,lo_str )
+#ifdef double_p
+	   IF ( calendar ) extra = 
+     .	         	TM_FMT( (pt_val8), sig_figs, 14, dlen )
+#else
 	   IF ( calendar ) extra = 
      .	         	TM_FMT( SNGL(pt_val8), sig_figs, 14, dlen )
+#endif
            buff = TM_FMT(
      .                       BOX_SIZE(i,grid,idim), sig_figs, 9, dlen )
            IF (dlen .GT. 9) THEN

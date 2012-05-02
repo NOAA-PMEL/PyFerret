@@ -101,7 +101,7 @@
 * local parameter declarations:
 	LOGICAL		no_decims
 	INTEGER		line_length
-	PARAMETER     ( line_length  = 500,
+	PARAMETER     ( line_length  = 2048,
      .			no_decims = .FALSE. )
 	INTEGER		slash_precision, slash_norow
 	PARAMETER     (	slash_precision = 17+1,
@@ -134,7 +134,7 @@
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 	CHARACTER	KEY_STRING*128, AX_TITLE*32, VAR_UNITS*64, LEFINT*8,
      .			CX_DIM_STR*16, VAR_CODE*128, TM_FMT*16,
-     .			buff1*16, buff2*16, buff3*16, line_buff*1024,
+     .			buff1*16, buff2*16, buff3*16, line_buff*2048,
      .			row_ss_fmt*14, bad_ax*5, bad_buff*32,
      .			col_head_format*32, sep*1
 	REAL		big, small, biggest, value

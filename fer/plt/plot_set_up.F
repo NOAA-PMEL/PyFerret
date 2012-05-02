@@ -143,6 +143,7 @@
 *                  need to reinitialize delta=unspecified_val8 so that delta is
 *                  computed from the dependent data.
 * V662 *acm*  5/10 Set AX_VERT or AX_HORIZ symbol with the direction of the independent axis: X, Y, Z, T" plot_set_up.F
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
 
 	include 'tmap_dims.parm'
@@ -202,8 +203,9 @@
 	CHARACTER*1     axdir(4), ax1
 
 	REAL		val1, dt_min, lo, hi, dep_len, 
-     .			ind_len, xkeypos, ykeypos, xkeysize, ykeysize, 
-     .			lab_ht, first, last
+     .			ind_len, first, last
+	REAL		xkeypos, ykeypos, xkeysize, ykeysize, 
+     .			lab_ht, sngl_bad
 	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP,
      .			ind_min, ind_max, dep_min, dep_max, delta, tmp
 
@@ -509,6 +511,10 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	IF ( versus ) THEN               ! 1/94
 	   ppl_buff = ' '
 	   WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), indep_ax
+c#ifdef double_p
+c           sngl_bad = SNGL(mr_bad_data( mv ))
+c	   WRITE ( ppl_buff, 3005 ) sngl_bad, indep_ax
+c#endif
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1)
 	ENDIF
  3005	FORMAT ( 'LIMITS ',G15.8,1X,A1,'EQ' )
@@ -638,6 +644,10 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 
 * pass the data to PLOT+
 	   WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), dep_ax
+c#ifdef double_p
+c           sngl_bad = SNGL(mr_bad_data( mv ))
+c	   WRITE ( ppl_buff, 3005 ) sngl_bad, dep_ax
+c#endif
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	   IF ( time_axis ) THEN
               IF ( tax .EQ. mnormal .OR. tax .EQ. munknown ) THEN  ! 8/91 bug
@@ -677,6 +687,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ENDIF
 	   ENDIF
 
+	   
 	   IF ( flip ) THEN
 	      CALL PPLLDX_envelope(0,dep_dat,indep_dat,nload,
      .                             t1_date, tref, dt_min, plot_mem_used)

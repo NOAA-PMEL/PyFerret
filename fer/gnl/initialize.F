@@ -80,6 +80,8 @@
 * V65   2/10 *acm*- Changes for CLOCK symbols that work with gfortran as well as g77.
 *                   see special_symbol.F
 *     *kms* 11/10 - added cat_pystat_var string_array_init
+* V68  *acm* 1/12  declarations changes for double-precision ferret.
+
 
         include 'tmap_errors.parm'  ! error codes
 	include 'tmap_dims.parm'
@@ -103,7 +105,9 @@
 	LOGICAL	GKS_WINDOWS, fexist
 	INTEGER	TM_LENSTR1, ito, ifrom, mem_blk, mr, iset, status
       integer icount, irate, imax
-	REAL	DTIME, radian, cm2deg, TArray(2), dtime_res
+	REAL	DTIME, radian, cm2deg
+	REAL*4  TArray(2), dtime_res
+
 
 *************** I/O ************************************************************
 # ifdef unix

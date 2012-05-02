@@ -75,6 +75,8 @@
 *                  world coordinates
 * V580 *acm* 11/04- Fix divide by zero; cx_delta(idim,cx) is 0 if user
 *                   incorrectly specifies LIST/I=1:100:0 VAR
+* V68  *acm* 1/12  explicit single-precision calculations for consistent results in
+*		   for double-precision ferret
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -253,8 +255,13 @@
 * ... need to interpolate ? 
 * Note: changed to TM_FPEQ(SNGL(xxx),...) 1/94  - testing indicates that
 *		double precision time ranges are nexer used at this point
+#ifdef double_p
+	      IF (  mode_interpolate
+     .	     .AND. .NOT.TM_FPEQ((ww_given),(ww_nrst)) ) THEN
+#else
 	      IF (  mode_interpolate
      .	     .AND. .NOT.TM_FPEQ(SNGL(ww_given),SNGL(ww_nrst)) ) THEN
+#endif
 * ... set up context to interpolate
 	         IF ( cx_trans(idim,cx) .NE. trans_no_transform
      .		.AND. cx_trans(idim,cx) .NE. trans_interpolate ) GOTO 5200

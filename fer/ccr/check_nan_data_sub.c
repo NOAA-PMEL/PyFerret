@@ -38,12 +38,15 @@
 /* If the missing-flag is not NaN, replace any NaN values with the bad-flag*/
 
 /* *acm* - 8/18/10 */
+/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+/*					 definition of macro DFTYPE in ferret.h.*/
 
 #include <Python.h> /* make sure Python.h is first */
 #include <math.h>
+#include "ferret.h"
 
-void check_nan_data_sub_ ( float *src, 
-			   int *size, float *data_bad )
+void check_nan_data_sub_ ( DFTYPE *src, 
+			   int *size, DFTYPE *data_bad )
 
 {
   int i;

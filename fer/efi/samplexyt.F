@@ -455,7 +455,7 @@ C  variables for checking axis characteristics (modulo axes)
 
 	 xpt = arg_2(i2,j2,k2,l2)
 	 ypt = arg_3(i3,j3,k3,l3)
-	 tpt = arg_4(i3,j3,k3,l3)
+	 tpt = arg_4(i4,j4,k4,l4)
 
          IF (xpt .EQ. bad_flag(ARG2) .OR. ypt .EQ. bad_flag(ARG3) 
      .       .OR. tpt .EQ. bad_flag(ARG4) ) THEN
@@ -467,9 +467,9 @@ C  variables for checking axis characteristics (modulo axes)
 * Find location of TPT in grid
             Lbot = ef_unspecified_int4	! Check if tpt point in tax range.
             Lmatch = 0
-            DO 600 i4 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(t_AXIS,ARG1)
-               IF (tpt .GE. taxdatlo(i4,1,1,1)) Lbot = i4
-               IF (tpt .EQ. taxdat(i4,1,1,1)) Lmatch = i4
+            DO 600 l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(t_AXIS,ARG1)
+               IF (tpt .GE. taxdatlo(l1,1,1,1)) Lbot = l1
+               IF (tpt .EQ. taxdat(l1,1,1,1)) Lmatch = l1
  	       IF (modulo(4)) THEN
 	          DO WHILE (tpt .GE. taxdathi(thi,1,1,1) ) 
                      tpt = tpt - delmodt
@@ -601,10 +601,6 @@ cbf         IF (ypt - yaxdat(j1,1,1,1) ) .LE. eps) jmatch = j1
             k1 = arg_lo_ss(Z_AXIS,ARG1)
             DO 333 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-               l1 = arg_lo_ss(T_AXIS,ARG1)
-               l2 = arg_lo_ss(T_AXIS,ARG2)
-               l3 = arg_lo_ss(T_AXIS,ARG3)
-
 *  First interpolate in x, getting values of the fcn at (x,jbot) and (x,jtop)
 
                IF (ibot .EQ. ef_unspecified_int4  .OR.  
@@ -681,6 +677,12 @@ cbf    for matching x-axis no interpolation is need
          j3 = j3 + arg_incr(Y_AXIS,ARG3)
          k3 = k3 + arg_incr(Z_AXIS,ARG3)
          l3 = l3 + arg_incr(T_AXIS,ARG3)
+
+         i4 = i4 + arg_incr(X_AXIS,ARG4)
+         j4 = j4 + arg_incr(Y_AXIS,ARG4)
+         k4 = k4 + arg_incr(Z_AXIS,ARG4)
+         l4 = l4 + arg_incr(T_AXIS,ARG4)
+
          j = j + res_incr(Y_AXIS)
 500   CONTINUE
 

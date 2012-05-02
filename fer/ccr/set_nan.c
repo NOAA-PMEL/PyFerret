@@ -36,13 +36,14 @@
 
 /* set_nan.c:
 
-   set a float value to NaN - needed for the command
+   set a float (or double) value to NaN - needed for the command
        set variable/bad=nan var_name
       
    kob - 05/03
 * v600  4/06 *acm* - Change set_nan from a float function to void, passing
 *                    back the result as an argument. Needed for port to 64-bit 
-
+* *acm*  1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+ *             definition of macro DFTYPE in ferret.h 
 */
 
 
@@ -51,8 +52,9 @@
 #include <signal.h>
 #include <stdio.h>
 #include <math.h>
+#include "ferret.h"
 
-void set_nan_ (float *val)
+void FORTRAN(set_nan) (DFTYPE *val)
 
 
 {

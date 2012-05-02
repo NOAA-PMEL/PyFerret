@@ -39,10 +39,13 @@
  * JS 3.99
  */
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/*  *acm*  1/12     - Ferret 6.8 ifdef double_p for double-precision ferret. Define dp_gui_get_memory */
+
 #include <Python.h> /* make sure Python.h is first */
 #include "ferret.h"
 
-static float *mem;
+static DFTYPE *mem;
 
 int gui_init(void) {
     return 0;

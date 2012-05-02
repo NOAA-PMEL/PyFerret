@@ -359,7 +359,7 @@
          bmn = bmn + bsc/ 60.
          bhr = bhr + bmn/ 60.
          bda = bda + bhr/ 24.
-         date_axis(l1,1,1,1) = byr + bda/ 365.24
+         date_axis(l1,1,1,1) = byr + bda/ 365.2425
          l1 = l1 + arg_incr(T_AXIS,ARG1)
   200  CONTINUE
 
@@ -402,7 +402,7 @@
             amn = amn + asc/ 60.
             ahr = ahr + amn/ 60.
             ada = ada + ahr/ 24.
-            timepoint = ayr + ada/ 365.25
+            timepoint = ayr + ada/ 365.2425
 
 *  Search the 1st argument for the points before and after the requested time,
 *  interpolate to set the result.

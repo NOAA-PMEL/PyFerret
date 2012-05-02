@@ -71,6 +71,7 @@
 * v614 *acm* 11/08 robust fix for bug 287: filenames beginning with digits. 
 *                  Check if the filename contains characters other than digits.
 * V64  10/09 *acm* longer string length for grid_name
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -217,7 +218,11 @@
 	   IF (its_delimited) THEN
 	      type = ' '  ! to be determined in ez_init_dset
 	   ELSE
+#ifdef double_p
+	      type = 'R8'  ! default for stream reads
+#else
 	      type = 'R4'  ! default for stream reads
+#endif
 	   ENDIF
 	ELSE
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),

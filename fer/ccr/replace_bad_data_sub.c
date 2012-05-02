@@ -42,12 +42,15 @@
 /* v553 *kob* - if the new_bad is NaN, we need to replace any possible
                 NaN's in the data, and also swap the old and new bad.  This 
 		could happen if use did a set var/bad=nan - new feature */
+/* *acm*  1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+/*              definition of macro DFTYPE in ferret.h */
 
 #include <Python.h> /* make sure Python.h is first */
 #include <math.h>
+#include "ferret.h"
 
-void replace_bad_data_sub_ ( float *old_bad, float *src, 
-			   int *size, float *new_bad )
+void FORTRAN(replace_bad_data_sub)( DFTYPE *old_bad, DFTYPE *src, 
+			   int *size, DFTYPE *new_bad )
 
 {
   int i;

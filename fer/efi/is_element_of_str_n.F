@@ -36,6 +36,7 @@
 * Ansley Manke
 * August 2005
 *
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *  For string arguments, 
 *  Return logical value (integer 1 or 0); If argument 1 takes on any of 
 *  the values of the second argument, return 1, else 0.
@@ -135,6 +136,13 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
       INTEGER id
 
 * **********************************************************************
@@ -169,13 +177,20 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 *   string args need to be twice the length.
 
-      REAL arg_1(2,mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .     mem1lot:mem1hit)
-      REAL arg_2(2,mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+      REAL arg_2(strdf,mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
      .     mem2lot:mem2hit)
  
       REAL result(memreslox:memreshix, memresloy:memreshiy,

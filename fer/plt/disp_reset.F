@@ -49,6 +49,7 @@
 * V62  *acm* 4/09 - Restore default settings for AXTYPE, AXLABP, AXLINT,
 *                   TXLABP, TXLSZE, TICS, CONPRE, CONPST, DFLTFNT, palette,
 *                   Default number of colors. (Should reset the line colors??)
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
 	include 'ferret.parm'
 	include 'plot_setup.parm'
@@ -59,6 +60,7 @@
 
 * local variable declarations
 	CHARACTER buff*24
+	REAL*4 xsize, ysize
 
 * local parameters
         LOGICAL     physical
@@ -107,8 +109,7 @@ c	CALL PPLCMD ( from, line, 0, 'TXNMTC 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'AXLINT 2,2', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'CONPRE ', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'CONPST ', 1, 1 )
-
-	CALL SET_PLOT_SIZE( 10.2, 8.8 ) ! initial size
+	CALL PPLCMD ( from, line, 0, 'SIZE 10.2  8.8 ', 1, 1 )
         CALL SET_VIEWPORT( mvp_dflt )   ! remove viewports, restore axis sizes
 
 c        CALL COLOR (1)  ! ppl is not always in the right state to call this...

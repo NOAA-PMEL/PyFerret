@@ -45,15 +45,17 @@
 *                            routine setup_keys
 *                          - also restore the origin
 * V230:  11/5/92 - removed axis resizing to SET_AX_SIZES
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+
  
-#ifdef unix
 	include 'plot_setup.parm'
-#else
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-#endif
 
 * calling argument declarations:
+#ifdef double_p
+	REAL*4	xsize, ysize
+#else
 	REAL	xsize, ysize
+#endif
 
 * internal variable declarations:
 	CHARACTER buff*24

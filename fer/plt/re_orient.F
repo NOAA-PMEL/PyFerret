@@ -56,6 +56,7 @@
 * 6/06 - Fix to Andrew*s correction for XY integ., bug1348
 *12/06 - Fix to cos_factor calculation was STILL wrong. Try VEC/ASPECT plots 
 *        to see the error.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
 * procedure:	at each point
 *	   x --> xprime = A * x
@@ -124,8 +125,11 @@
 	   IF ( need_cos ) THEN
 
 c Previous calculation
-
+#ifdef double_p
+              yc = deg2rad * (TM_WORLD(j+j0,grid,y_dim,box_middle))
+#else
               yc = deg2rad * SNGL(TM_WORLD(j+j0,grid,y_dim,box_middle))
+#endif
               cos_factor = COS( yc )
   
 c Correction
@@ -140,10 +144,17 @@ C See this thread:
 C http://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2009/msg00506.html
 C And also ticket 1348.
 
+#ifdef double_p
+              ybxlo = deg2rad* 
+     .          ( TM_WORLD(j+j0,grid,y_dim,box_lo_lim) )
+              ybxhi = deg2rad* 
+     .          ( TM_WORLD(j+j0,grid,y_dim,box_hi_lim) )
+#else
               ybxlo = deg2rad* 
      .          SNGL( TM_WORLD(j+j0,grid,y_dim,box_lo_lim) )
               ybxhi = deg2rad* 
      .          SNGL( TM_WORLD(j+j0,grid,y_dim,box_hi_lim) )
+#endif
 
               cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/(deg2rad * bx)
 

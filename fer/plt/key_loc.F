@@ -44,6 +44,7 @@
 
 * V200:	  1/2/90
 * v552 *acm* 3/03 multi-line strings in key labels.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
 	include	'ferret.parm'
 	include	'plot_setup.parm'
@@ -63,6 +64,9 @@
 
 * internal variable declarations
 	INTEGER	colmn, numlines
+	REAL dylen
+
+	dylen = ylen
 
 * See if the label has more than one line
 
@@ -92,7 +96,7 @@ c	   ypos  = ovkey_yorigin - novkeys_on*ovkey_yspace
 	      ysize = ovkey_yspace  * 0.8	      
 	      ypos = 0.1 + 
      .            (numlines-1+novkeys_on-novkeys_ll)*ovkey_yspace*0.8
-	      IF (ABS(ypos+lab_ht) .GT. ylen ) xpos = -999.	! off screen
+	      IF (ABS(ypos+lab_ht) .GT. dylen ) xpos = -999.	! off screen
 	   ELSE
 * ... yes - it will fit at the lower left
 	      xsize  = ovkey_xspace

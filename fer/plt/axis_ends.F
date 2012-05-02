@@ -54,6 +54,7 @@
 *                     character too short.  this only showed up under Linux
 *        *acm* 6/01 - add logical IS_LOG  for log axis
 * V580 *acm* 12/04 Fix bug 1129; send back correct value of delta if computed here
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
 	include 'ferret.parm'
 	include 'plot_setup.parm'
@@ -72,7 +73,7 @@
 	LOGICAL		BKWD_AXIS
 	CHARACTER	val_buff*45
 	INTEGER		axtp, status
-	REAL		x1, x2, uminr, umaxr, dint
+	REAL*4		x1, x2, uminr, umaxr, dint
 	REAL*8		firstl, lastl, epsilon, eps2
 	PARAMETER	(epsilon=1.e-35)
 
@@ -109,6 +110,15 @@
 
 * Convert to single precision and reverse order if a depth plot on Y axis
 
+#ifdef double_p
+	IF ( plot_ax .EQ. 'Y'  .AND.  BKWD_AXIS(dat_ax, grid) ) THEN
+	   x2 = (first)
+	   x1 = (last)
+	ELSE
+	   x1 = (first)
+	   x2 = (last)
+	ENDIF
+#else	
 	IF ( plot_ax .EQ. 'Y'  .AND.  BKWD_AXIS(dat_ax, grid) ) THEN
 	   x2 = SNGL(first)
 	   x1 = SNGL(last)
@@ -116,7 +126,7 @@
 	   x1 = SNGL(first)
 	   x2 = SNGL(last)
 	ENDIF
-
+#endif
 
 * use Denbo's PPLUS routine to calculate the tic interval, dint
 	IF ( delta .EQ. unspecified_val8 ) THEN

@@ -83,6 +83,7 @@
 *                  line colors.
 * V602: *acm* 1/07 Changes for metafile-batch mode
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
@@ -109,9 +110,19 @@
      .		axis_ref
 	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, wn, n,
      .          qp, ivp, colon_pos, tlen, i, s1, idone
-	REAL	dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,
+#ifdef double_p
+	REAL	dmaxx, dmaxy, xln, yln, xmn, xmx, ymn, ymx,
      .		scale, xstretch, ystretch, aspect, ref_len
 *       REAL    bigness
+	REAL*4  rzero, rone, fcty, fctx, setpx, setpy,
+     .          xwlo, ywlo, xwhi, ywhi
+#else
+	REAL    dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,
+     .          bigness, scale, xstretch, ystretch, aspect,
+     .          ref_len, rzero, rone, setpx, setpy,
+     .          xwlo, ywlo, xwhi, ywhi
+#endif
+	
 	CHARACTER	UPPER_CASE*1, GKS_X_CONID*16,
      .			arg1*1, buffer*24, xwind_id*80, short_buff*24
 * ... for GKS escape call:
@@ -137,6 +148,8 @@
 	REAL x
 	LOGICAL OUTSIDE_0_1
 	OUTSIDE_0_1( x ) = x.LT.0.0 .OR. x.GT.1.0
+
+	rzero = 0.0
 
 * /TITLE=text
 * This text becomes the name of the workstation. The name gets truncated 
@@ -287,11 +300,14 @@ c           ENDIF
 	   xstretch = 1.0 / ystretch
 	   IF ( axis_ref ) THEN
 	      ref_len = SQRT( 8.0 * 6.0 )
-	      CALL SET_PLOT_SIZE( xstretch*ref_len + 2.2,
-     .                            ystretch*ref_len + 2.8 )
+	      setpx = xstretch*ref_len + 2.2
+	      setpy = ystretch*ref_len + 2.8
+	      CALL SET_PLOT_SIZE( setpx, setpy )
 	   ELSE
 	      ref_len = SQRT( 10.2 * 8.8 )
-	      CALL SET_PLOT_SIZE( xstretch*ref_len, ystretch*ref_len )
+	      setpx = xstretch*ref_len
+	      setpy = ystretch*ref_len
+	      CALL SET_PLOT_SIZE( setpx, setpy )
 	   ENDIF
 * ... clear previous plot and any viewports used within it
 	   IF ( .NOT.chg_window ) CALL SET_VIEWPORT( mvp_dflt )
@@ -341,8 +357,12 @@ c           ENDIF
 	      vp_segn(ivp) = 0
  80	   CONTINUE
            CALL SET_PLOT_SIZE( width, height )   ! from PPL COMMON PLT.INC
-           CALL SET_AX_SIZES( 1.0, 1.0,
-     .                        xwhitelo, ywhitelo, xwhitehi, ywhitehi )
+	   rone = 1.0
+	   xwlo = xwhitelo 
+	   ywlo = ywhitelo
+	   xwhi = xwhitehi
+	   ywhi = ywhitehi
+           CALL SET_AX_SIZES( rone, rone, xwlo, ywlo, xwhi, ywhi )
 	ENDIF
 
 * create new window ?
@@ -385,8 +405,8 @@ c           ENDIF
 	ENDIF
 * ... define normalization transformation n (actually selected down below)
 	IF ( chg_window ) THEN
-	   CALL FGD_GSWN(n,0.0,ASIZE,0.0,BSIZE)
-	   CALL FGD_GSVP(n, 0.0, FCTX, 0.0, FCTY )
+	   CALL FGD_GSWN(n, rzero,ASIZE, rzero,BSIZE)
+	   CALL FGD_GSVP(n, rzero, FCTX, rzero, FCTY )
 	ENDIF
 
 	IF ( .NOT.physical_chg ) GOTO 1000
@@ -427,7 +447,7 @@ c
 C
 C	SET THE NDC WINDOW
 C
-		CALL FGD_GSWKWN(n,0.0,FCTX,0.0,FCTY)
+		CALL FGD_GSWKWN(n, rzero,FCTX, rzero,FCTY)
 C
 C	SET DEVICE (WORKSTATION) VIEWPORT
 C
@@ -437,7 +457,7 @@ C
 C	IF NOT AUTO WKXMN AND WKXMX ETC ARE FRACTIONS OF DMAXX
 C	AND DMAXY
 C
-		CALL FGD_GSWKWN(n,0.0,FCTX,0.0,FCTY)
+		CALL FGD_GSWKWN(n, rzero,FCTX, rzero,FCTY)
 		XMN=DMAXX*WKXMN
 		XMX=DMAXX*WKXMX
 		YMN=DMAXY*WKYMN

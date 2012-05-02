@@ -47,6 +47,7 @@
 *		based on tm_secs_from_bc by Mark Verschell
 * V530 12/00 *sh* - bug fix: avoid crash if month is not in [1,12]
 * V600 4/06  *acm*  return the result in rdum as well, for 64-bit build
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * calling argument declarations:
 	REAL*8 date0_days
@@ -56,7 +57,8 @@
 * Local Definition
 	INTEGER		days_in_month(12), mnth
 	REAL*8		secs_in_day,
-     .			secs_in_year, secs_in_century, total_secs
+     .			secs_in_year, secs_in_century, total_secs,
+     .			total_days
 
 	PARAMETER	(secs_in_day	 = 60.*60.*24.,
      .			 secs_in_year	 = secs_in_day*365.,
@@ -97,7 +99,8 @@
 	total_secs = total_secs + secs_in_day*(day-1)
 
 * convert to days and return result
-	DAYS_FROM_DAY0 = SNGL(total_secs/secs_in_day - date0_days)
+	total_days = total_secs/secs_in_day - date0_days
+	DAYS_FROM_DAY0 = total_days
 
         rdum = DAYS_FROM_DAY0
 

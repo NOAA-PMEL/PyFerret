@@ -38,6 +38,7 @@
 *  5/2007 *acm* Fixing bug 1510. Return the result from date_decode as
 *               an argument rather than a return from function; under
 *               64-bit the return always yielded 0.
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -155,9 +156,16 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
       INTEGER id
       REAL bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .     mem1lot:mem1hit)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 

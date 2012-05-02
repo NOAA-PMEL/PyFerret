@@ -51,6 +51,7 @@
 *                   then dont try to see if we are near the branch cut.
 * V63   9/09 *acm* Fix bug 1688: curvlinear plots when the curv. coords are NOT
 *                  longitude and latitude.
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -60,12 +61,21 @@
 * calling argument declarations:
         LOGICAL first, xfield_is_modulo
 	INTEGER npt, status
-	REAL    xi(npt), yj(npt),
+#ifdef double_p
+	REAL*4  xinv, yinv, xadd
+	REAL*8	xi(npt), yj(npt),
      .		xfield(xpos_loss_dim1:xpos_hiss_dim1,
      .		       xpos_loss_dim2:xpos_hiss_dim2),
      .		yfield(ypos_loss_dim1:ypos_hiss_dim1,
-     .		       ypos_loss_dim2:ypos_hiss_dim2),
+     .		       ypos_loss_dim2:ypos_hiss_dim2)
+#else
+	REAL    xi(npt), yj(npt),
      .		xinv, yinv, xadd
+	REAL	xfield(xpos_loss_dim1:xpos_hiss_dim1,
+     .		       xpos_loss_dim2:xpos_hiss_dim2),
+     .		yfield(ypos_loss_dim1:ypos_hiss_dim1,
+     .		       ypos_loss_dim2:ypos_hiss_dim2)
+#endif
 
 * internal variable declarations:
 

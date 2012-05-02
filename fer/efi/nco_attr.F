@@ -4,6 +4,7 @@
 * Ansley Manke
 * March 1, 2005
 * V62  6/08 *acm* Increase attribute buffer size to 2048
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *
 * This function spawns a netCDF edit call, ncatted to edit 
 * an attribute (e.g. new attribute, edit or delete atttibute,
@@ -98,20 +99,27 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
 	  INTEGER id
 
       REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
+      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, 
      .           mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+      REAL arg_2(strdf,mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
      .           mem2lot:mem2hit)
-      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
+      REAL arg_3(strdf,mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
      .           mem3lot:mem3hit)
-      REAL arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz, 
+      REAL arg_4(strdf,mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz, 
      .           mem4lot:mem4hit)
-      REAL arg_5(mem5lox:mem5hix, mem5loy:mem5hiy, mem5loz:mem5hiz, 
+      REAL arg_5(strdf,mem5lox:mem5hix, mem5loy:mem5hiy, mem5loz:mem5hiz, 
      .           mem5lot:mem5hit)
-      REAL arg_6(mem6lox:mem6hix, mem6loy:mem6hiy, mem6loz:mem6hiz, 
+      REAL arg_6(strdf,mem6lox:mem6hix, mem6loy:mem6hiy, mem6loz:mem6hiz, 
      .           mem6lot:mem6hit)
       REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit)

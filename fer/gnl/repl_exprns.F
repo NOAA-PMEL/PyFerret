@@ -101,6 +101,7 @@
 * V602  4/07 *acm* - Add RETURN=xmod,tmod
 * V615 11/08 *acm* - fixing bug 1523. If the variable contains a grid-changing 
 *                    function, we will do a full evaluation to get its size
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -156,7 +157,7 @@
 #endif
 
         DATA typstring/
-     .  'Notype', 'BYTE', 'CHAR', 'SHORT', 'INT4', 'FLOAT', 'DOUBLE' /
+     .  'Notype', 'BYTE', 'CHAR', 'SHORT', 'INT4', 'FLOAT', '' /
 
 * initialize
 	did_sub = .FALSE.    	! any substitutions done?
@@ -174,7 +175,7 @@
         do_err = .TRUE.
 
 * begin the search/replace at the point specified in the call.  (This is done
-* to facilitate double grave accents condensed into single accents so they
+* to facilitate  grave accents condensed into single accents so they
 * can be passed to the command line in SPAWN commands)
 * locate the start of the next grave accent pair
  10	IF ( istart .GE. lencmnd ) RETURN
@@ -198,7 +199,7 @@
 	itmp = INDEX(cmnd(istart:),'`')
 	IF ( itmp .EQ. 0 ) GOTO 5100		! unpaired grave accent
 	IF ( itmp .EQ. 1 ) THEN
-* ... replace double grave accents with single
+* ... replace  grave accents with single
 	   cmnd = cmnd(:istart-1)//cmnd(istart+1:)
 	   istart = istart + 1			! first char following accent
 	   lencmnd = lencmnd - 1
@@ -278,7 +279,7 @@
 * ... decode PRECISION = #_digits
 	      CALL EQUAL_VAL(cmnd(i:qual_end), result, status)
 	      IF ( status .NE. ferr_ok ) GOTO 5000
-	      IF (ABS(result) .GT. 10.) GOTO 5510 	         
+	      IF (ABS(result) .GT. 16.) GOTO 5510 	         
 	      use_digits = NINT(result)
 	      GOTO 131
 	   ELSEIF (cmnd(i:i).EQ.'b' .OR. cmnd(i:i).EQ.'B') THEN
@@ -524,8 +525,8 @@
                     vartype = 2     ! NC_CHAR
                  ELSE IF (fertype .EQ. ptype_string) THEN
                     vartype = 2   ! NC_CHAR
-                 ELSE IF (fertype .EQ. ptype_double) THEN
-                    vartype = 6   ! NC_DOUBLE
+                 ELSE IF (fertype .EQ. ptype_) THEN
+                    vartype = 6   ! NC_
                  ELSE
                     vartype = 0
                  ENDIF
@@ -602,7 +603,11 @@
                     result = line_modulo_len(axis)
 
 ! If axis has modulo=" ", and units are not degrees, mod len = axis len.
+#ifdef double_p
+                    IF (result .EQ. 0) result = (TM_WW_AXLEN(axis))
+#else
                     IF (result .EQ. 0) result = SNGL(TM_WW_AXLEN(axis))
+#endif
                     repl = TM_FMT( result, use_digits, max_len, str_len)
                  ENDIF
 	      ENDIF
@@ -616,7 +621,11 @@
                     result = line_modulo_len(axis)
 
 ! If axis has modulo=" ", mod len = axis len.
+#ifdef double_p
+                    IF (result .EQ. 0) result = (TM_WW_AXLEN(axis))
+#else
                     IF (result .EQ. 0) result = SNGL(TM_WW_AXLEN(axis))
+#endif
                     repl = TM_FMT( result, use_digits, max_len, str_len)
                  ENDIF
 	      ENDIF
@@ -792,7 +801,7 @@
      .	     //' "R=return-item"'//pCR//risc_buff, *5000)
  5510	risc_buff = cmnd(i:qual_end)
 	CALL ERRMSG( ferr_invalid_command, status,
-     .       'maximum precision is 10 digits: '
+     .       'maximum precision is 16 digits: '
      .					//risc_buff, *5000)
  5520   risc_buff = cmnd(i:qual_end)
 	CALL ERRMSG( ferr_invalid_command, status,

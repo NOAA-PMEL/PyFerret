@@ -63,6 +63,9 @@
 * V65   1/10 *acm*- New special symbol N_OPEN_DSETS, counts the number of open datasets
 * V65   2/10 *acm*- Call CPU_TIME rather than DTIME for clock symbols. Works
 *                   with gfortran as well as g77.
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V68   1/12 *acm*- Symbol FERRET_PRECISION is single or double.
+* V68   3/12 *acm*- Symbol SESSION_PID for the process ID
 
 * calling argument declarations:
 	INTEGER	  isym, slen
@@ -70,7 +73,7 @@
 
 * internal parameter declaration
 	INTEGER nspecial
-	PARAMETER (nspecial = 14)
+	PARAMETER (nspecial = 16)
 
 * internal variable declarations:
 	INTEGER STR_UPCASE, TM_LENSTR, i, i1, ierr, wsid, 
@@ -88,15 +91,17 @@ c        REAL DTIME
      .	     special(3)/ 'BYTEORDER' /,
      .	     special(4)/ 'FERRET_VERSION' /,
      .	     special(5)/ 'FERRET_PLATFORM' /,
-     .	     special(6)/ 'NETCDF_VERSION' /
-     .	     special(7)/ 'FERRET_MEMORY' /,
-     .	     special(8)/ 'SESSION_DATE' /,
-     .	     special(9)/ 'SESSION_TIME' /,
-     .	     special(10)/ 'DELTA_CPU' /
-     .	     special(11)/ 'CLOCK_SECS' /
-     .	     special(12)/ 'CURRENT_DATE' /
-     .	     special(13)/ 'CURRENT_TIME' /
-     .	     special(14)/ 'N_OPEN_DSETS' /
+     .	     special(6)/ 'FERRET_PRECISION' /
+     .	     special(7)/ 'NETCDF_VERSION' /
+     .	     special(8)/ 'FERRET_MEMORY' /,
+     .	     special(9)/ 'SESSION_DATE' /,
+     .	     special(10)/ 'SESSION_TIME' /,
+     .	     special(11)/ 'SESSION_PID' /,
+     .	     special(12)/ 'DELTA_CPU' /
+     .	     special(13)/ 'CLOCK_SECS' /
+     .	     special(14)/ 'CURRENT_DATE' /
+     .	     special(15)/ 'CURRENT_TIME' /
+     .	     special(16)/ 'N_OPEN_DSETS' /
 
 #ifdef unix
 	include 'ferret.parm'
@@ -141,7 +146,7 @@ c        REAL DTIME
 	RETURN
 
  200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 
-     .        1900, 2000, 2100, 2200, 2300, 2400) i
+     .        1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600) i
 
 * PPL$XPIXEL, PPL$YPIXEL
  1100	CONTINUE
@@ -182,8 +187,18 @@ c        REAL DTIME
 	slen = TM_LENSTR(platform_type)
 	RETURN
 
-* NETCDF_VERSION
+* FERRET_PRECISION
  1600	CONTINUE
+#ifdef double_p
+        value = 'double'
+#else
+        value = 'single'
+#endif
+	slen = TM_LENSTR(value)
+	RETURN
+
+* NETCDF_VERSION
+ 1700	CONTINUE
 #ifdef usingDODSf2cUnderscore
         value = NF_INQ_LIBVERS_()
 #else
@@ -193,23 +208,30 @@ c        REAL DTIME
 	RETURN
 
 * FERRET_MEMORY
- 1700	value = TM_FMT(max_mem_blks*mem_blk_size/1.E6,3,12,llen)
+ 1800	value = TM_FMT(max_mem_blks*mem_blk_size/1.E6,3,12,llen)
 	slen = llen
 	RETURN
 
 * SESSION_DATE
- 1800	value = today_date
+ 1900	value = today_date
 	slen = 9
 	RETURN
 
 * SESSION_TIME
- 1900	value = today_time
+ 2000	value = today_time
 	slen = 5
+	RETURN
+
+* SESSION_PID
+ 2100	CONTINUE
+	i1 = GETPID()
+	count = i1
+	value =  TM_FMT(count, 10, 10, slen)
 	RETURN
 
 
 * DELTA_CPU
- 2000	CONTINUE
+ 2200	CONTINUE
 c        CALL DTIME(TArray)
 	CALL CPU_TIME(cputime_now)
         dtime_res = cputime_now - cpu_last
@@ -219,7 +241,7 @@ c        CALL DTIME(TArray)
 	RETURN
 
 * CLOCK_SECS
- 2100	CALL SYSTEM_CLOCK(icount, irate, imax)
+ 2300	CALL SYSTEM_CLOCK(icount, irate, imax)
         clock_secs = FLOAT(icount-clock_start_count)/FLOAT(irate)
 	IF (clock_secs .LT. 0) THEN
            CALL WARN('Evaluating CLOCK_SECS, call to '//
@@ -234,7 +256,7 @@ c        CALL DTIME(TArray)
 	RETURN
 
 * CURRENT_DATE
- 2200	CONTINUE
+ 2400	CONTINUE
 
 #ifdef AIX_XLF
 	CALL AIX_DATE( current_date )
@@ -248,7 +270,7 @@ c        CALL DTIME(TArray)
 	RETURN
 
 * CURRENT_TIME
- 2300	CONTINUE
+ 2500	CONTINUE
 
 #ifdef AIX_XLF
 	CALL AIX_TIME( current_time )
@@ -268,7 +290,7 @@ c        CALL DTIME(TArray)
 
 
 * N_OPEN_DSETS
- 2400	CONTINUE
+ 2600	CONTINUE
  
 	count = 0.
 	DO 790 iset = 1, maxdsets

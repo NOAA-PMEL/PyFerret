@@ -48,6 +48,7 @@
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
 * V650  Write to show_lun which may be set to a file unit number rather than std out
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -127,15 +128,25 @@
 	ENDIF
 
 * report the full span of the axis
+#ifdef double_p
+	buff =  '   Axis span (to cell edges) = '//
+     .		TM_FMT( (TM_WW_AXLEN(line)),7,32,slen )
+#else
 	buff =  '   Axis span (to cell edges) = '//
      .		TM_FMT( SNGL(TM_WW_AXLEN(line)),7,32,slen )
+#endif
 	slen = slen + 31
 
 * if line is modulo, report its modulo cycle length
 	IF ( line_modulo(line) ) THEN
 	   IF ( TM_ITS_SUBSPAN_MODULO(line) ) THEN
+#ifdef double_p
+	     buff = buff(:slen)// ' (modulo length = ' //
+     .		   TM_FMT( (line_modulo_len(line)),7,32,i )
+#else
 	     buff = buff(:slen)// ' (modulo length = ' //
      .		   TM_FMT( SNGL(line_modulo_len(line)),7,32,i )
+#endif
 	     slen = slen + i + 18
 	     buff = buff(:slen) //')'
 	     slen = slen + 1

@@ -82,6 +82,8 @@
 * V671:  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 *                    The XY linear regridding matches past Ferret behavior, 
 *                    not using bilinear regridding for now
+* V68+ 4/12  *acm*   Fix ticket 1931: the work space for XY linear regridding
+*                    was computed incorrectly.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -130,6 +132,7 @@
 	xy_regrid = ( (rgrd_trans .EQ. prgrd_xy_ave) .OR. 
      .                (rgrd_trans .EQ. prgrd_xy_lin) )
 	IF ( xy_regrid ) THEN
+	   IF ( mode_diagnostic ) WRITE (ttout_lun,*) 'regrid XY'
 	   IF (axis.NE.x_dim) CALL ERRMSG
      .		( ferr_internal, status, 'rgrd_xy_regrid', *5000 )	! diagnostic
 	   naxis = 2
@@ -245,7 +248,7 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	IF ( rgrd_trans .EQ. prgrd_xy_ave) THEN
 	   CALL GET_WORK_SPC( wk_size+wk_size2, blk1, status )
 	ELSEIF (rgrd_trans .EQ. prgrd_xy_lin) THEN
-	   nxsrc = cx_hi_ss(cx_valid,x_dim)-cx_lo_ss(cx_valid,x_dim) + 1
+	   nxsrc = cx_hi_ss(src_cx,x_dim)-cx_lo_ss(src_cx,x_dim) + 1
 	   CALL GET_WORK_SPC( nxsrc*wk_size2+2*(wk_size+wk_size2), blk1, status )
 	ELSE
 	   CALL GET_WORK_SPC( 2*wk_size, blk1, status )

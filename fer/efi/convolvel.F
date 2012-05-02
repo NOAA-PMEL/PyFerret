@@ -164,7 +164,7 @@
       INTEGER xlen, ylen, zlen, tlen, ll, nsum, null
       INTEGER i1, j1, k1, l1
       INTEGER i2, j2, k2, l2
-      INTEGER wlen, hlen
+      INTEGER wlen, hlo, hhi
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -172,7 +172,7 @@
       
 * CONVOLVE ALONG T AXIS (arg_1) using weights (arg_2)
 
-* Half the weighting function; weights from -hlen to hlen.
+* Half the weighting function; weights from -hlen to hlen (now: hlo to hhi)
 
       xlen = (arg_hi_ss(X_AXIS,ARG2) - arg_lo_ss(X_AXIS,ARG2) + 1) 
       ylen = (arg_hi_ss(Y_AXIS,ARG2) - arg_lo_ss(Y_AXIS,ARG2) + 1) 
@@ -180,8 +180,9 @@
       tlen = (arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1) 
 
       wlen = max(xlen, ylen, zlen, tlen)
-      IF  (MOD(wlen,2) .EQ. 0) wlen = wlen + 1
-      hlen = wlen/ 2
+      hhi = wlen / 2
+      hlo = (-1) * hhi
+      IF ( MOD(wlen,2) .EQ. 0 ) hlo = hlo + 1
 
       i1 = arg_lo_ss(X_AXIS,ARG1)
       DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
@@ -201,7 +202,7 @@
                   k2 = arg_lo_ss(Z_AXIS,ARG2)
                   l2 = arg_lo_ss(T_AXIS,ARG2)
 
-                  DO 100 ll = -hlen, hlen
+                  DO 100 ll = hlo, hhi
 
                      IF (l1+ll .LT. arg_lo_ss(T_AXIS,ARG1)  .OR.
      .                   l1+ll .GT. arg_hi_ss(T_AXIS,ARG1) ) THEN

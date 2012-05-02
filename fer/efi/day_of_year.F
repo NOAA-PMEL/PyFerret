@@ -66,8 +66,10 @@ C  4/2001  *ACM* add error message
        ada = ada + daymo(i)
   100 CONTINUE
 
+      daymo(2) = 28  ! value otherwise incorrectly saved
       RETURN
 
 1000  status = 1
+      daymo(2) = 28  
       RETURN
       END

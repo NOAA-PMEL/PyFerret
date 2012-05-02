@@ -46,6 +46,7 @@
 *
 * V200:	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
 * V230: 5/6/92 - COS correction checks that J location is defined         
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -116,12 +117,21 @@
      .                .AND. lo_s2.NE.unspecified_int4
 	   DO 110 j = lo_s2, hi_s2
 	   IF ( need_cos ) THEN
+#ifdef double_p
+	      cos_factor = COS( deg2rad *       
+     .             ( TM_WORLD( j, grid, y_dim, box_middle )) ) 
+              ybxlo = deg2rad* 
+     .          ( TM_WORLD(j,grid,y_dim,box_lo_lim) )
+              ybxhi = deg2rad* 
+     .          ( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+#else
 	      cos_factor = COS( deg2rad *       
      .             SNGL( TM_WORLD( j, grid, y_dim, box_middle )) ) 
               ybxlo = deg2rad* 
      .          SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
               ybxhi = deg2rad* 
      .          SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+#endif
               bx = ABS(ybxhi - ybxlo)
 	      cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/ bx
 	   ENDIF

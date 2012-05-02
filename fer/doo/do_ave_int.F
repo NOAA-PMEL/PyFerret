@@ -50,6 +50,7 @@
 * V230:  5/6/92 - COS correction checks that J location is defined
 *       8/10/92 - weights were wrong for integration within a single box
 *                 added "IF (point)" logic
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * internal variable declarations:
 	LOGICAL	GEOG_COS_FACTOR, need_cos, integrate, point
@@ -118,12 +119,21 @@
      .                .AND. cx_lo_s2(com_cx).NE.unspecified_int4
 	   DO 210 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   IF ( need_cos ) THEN
+#ifdef double_p
+	      cos_factor = COS( deg2rad *       
+     .             ( TM_WORLD( j, grid, y_dim, box_middle )) ) 
+              ybxlo = deg2rad* 
+     .          ( TM_WORLD(j,grid,y_dim,box_lo_lim) )
+              ybxhi = deg2rad* 
+     .          ( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+#else
 	      cos_factor = COS( deg2rad *       
      .             SNGL( TM_WORLD( j, grid, y_dim, box_middle )) ) 
               ybxlo = deg2rad* 
      .          SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
               ybxhi = deg2rad* 
      .          SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+#endif
               bx = ABS(ybxhi - ybxlo)
 	      cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/ bx
 	   ENDIF

@@ -48,8 +48,8 @@
 * V200:  6/6/89
 *	10/11/89 - modified array declarations using XMEM_SUBSC.CMN & com_lo/hi
 * V230: 5/6/92 - COS correction checks that J location is defined
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
@@ -59,15 +59,7 @@
 	external xunits_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
+
 
 * calling argument declarations:
 	INTEGER	idim, shf, com_mr, com_lo, com_hi, res_mr, res_cx
@@ -122,12 +114,21 @@
      .                .AND. lo_s2.NE.unspecified_int4
 	   DO 110 j = lo_s2, hi_s2
 	   IF ( need_cos ) THEN
+#ifdef double_p
+	      cos_factor = COS( deg2rad *       
+     .             ( TM_WORLD( j, grid, y_dim, box_middle )) ) 
+              ybxlo = deg2rad* 
+     .          ( TM_WORLD(j,grid,y_dim,box_lo_lim) )
+              ybxhi = deg2rad* 
+     .          ( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+#else
 	      cos_factor = COS( deg2rad *       
      .             SNGL( TM_WORLD( j, grid, y_dim, box_middle )) ) 
               ybxlo = deg2rad* 
      .          SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
               ybxhi = deg2rad* 
      .          SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
+#endif
               bx = ABS(ybxhi - ybxlo)
 	      cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/ bx
 	   ENDIF

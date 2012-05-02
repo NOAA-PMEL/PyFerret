@@ -93,6 +93,7 @@
         include 'xplot_setup.cmn'
         include 'xplot_state.cmn'
         include 'GKSCM1.INC'            ! with gks common
+	include 'xtoday.cmn'		! with window_title
 
         IF ( interrupted ) THEN
 

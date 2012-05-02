@@ -76,6 +76,8 @@
 *                 accordingly, then compound conditinals will work.
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid.
+* V68  3/12  *acm* The string operations EQ, NE, LT, etc return a float-type result.
+*                  Reset mr_type; it has already been set to string elsewhere.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -267,6 +269,7 @@
      .			 memory(1, mr_blk1(mr2) ),   mr2,
      .			 memory(1, mr_blk1(res_mr)), res_mr )
             cx_type(res_cx) = ptype_float
+            mr_type(res_mr) = ptype_float
 	  ENDIF
 	ELSE
 	  CALL OPERATE ( op_num, num_com, ifv, is_cx(frame_bottom),

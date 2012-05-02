@@ -54,6 +54,7 @@
 *                 Note can do colors and ASCII fonts, if set pen first: @P2@AC
 * V68  *acm*  4/11 - more on bug 1098. Break up labels by sending <NL> to pplus
 *                    instead of creating multiple moveable labels. 
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
 	include	'ferret.parm'
 	include	'plot_setup.parm'
@@ -69,8 +70,9 @@
         INTEGER lnbeg(250), lnend(250)
 	INTEGER	TM_LENSTR1, slen, nfont, brk_pt, nex_brk_pt, 
      .          las_brk_pt, nlines
-	REAL	SYMWID, ymid, width, ht, frac, frac_width, las_frac, xend,
+	REAL	ymid, width, ht, frac, frac_width, las_frac, xend,
      .          htsave
+        REAL*4  SYMWID, rht
 	CHARACTER*1 break_char
 
 * initialize
@@ -125,11 +127,12 @@
         ENDIF
 
         width = 0.
+        rht = ht
         DO 330 k = 1, numlines
            slen = lnend(k) - lnbeg(k) + 1
            risc_buff = string(lnbeg(k):lnend(k) )
-	      width = MAX(width, SYMWID( ht, 
-     .                           slen+nfont, font//risc_buff(:slen) ))
+           width = MAX(width, DBLE(SYMWID( rht, 
+     .          slen+nfont, font//risc_buff(:slen) )))
   330      CONTINUE
 
 	slen = TM_LENSTR1( string )
@@ -163,13 +166,16 @@
 * ... break into pieces as close to halves as possible
 	las_frac = 999.0
  100	IF ( .NOT.mode_font_ascii ) THEN
-	   frac_width = SYMWID( ht,brk_pt,string(:brk_pt) )
+	   rht = ht
+	   frac_width = DBLE(SYMWID(rht,brk_pt,string(:brk_pt) ))
 	ELSEIF ( lab_type .EQ. ppl_title ) THEN
-c	   frac_width = SYMWID( ht, brk_pt+3, '@AC'//risc_buff(:brk_pt)  )
-	   frac_width = SYMWID( ht, brk_pt, risc_buff(:brk_pt)  )
+	   rht = ht
+c	   frac_width = DBLE(SYMWID( ht, brk_pt+3, '@AC'//risc_buff(:brk_pt)  ))
+	   frac_width = DBLE(SYMWID( ht, brk_pt, risc_buff(:brk_pt)  ))
 	ELSE
-c	   frac_width = SYMWID( ht, brk_pt+3, '@AS'//risc_buff(:brk_pt)  )
-	   frac_width = SYMWID( ht, brk_pt, risc_buff(:brk_pt)  )
+	   rht = ht
+c	   frac_width = DBLE(SYMWID( ht, brk_pt+3, '@AS'//risc_buff(:brk_pt)  ))
+	   frac_width = DBLE(SYMWID( ht, brk_pt, risc_buff(:brk_pt)  ))
 	ENDIF
 	frac = frac_width / width
 	IF ( ABS(0.5-frac) .LT. ABS(0.5-las_frac) ) THEN

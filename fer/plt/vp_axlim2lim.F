@@ -42,6 +42,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V540: 9/01 *sh*
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+
 
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
@@ -51,12 +53,12 @@
         include 'PLT.INC'
 	
 * calling argument declarations:
-	REAL    scale, xloax, yloax, xhiax, yhiax,
-     .                 xlovp, ylovp, xhivp, yhivp,
-     .                 xcei, ycei, xoei, yoei
+	REAL*4	scale, xlovp, ylovp, xhivp, yhivp,
+     .		xcei, ycei, xoei, yoei,
+     .		xloax, yloax, xhiax, yhiax
 
 * internal variable declarations:
-	REAL	xcv, xov, ycv, yov, xwpi, ywpi
+	REAL*4	xcv, xov, ycv, yov, xwpi, ywpi
 
 * *** VIEWPORTS SPECIFIED BY AXIS ENDPOINTS ***
 * Previous to V5.4 all viewports were specified as the corners of the PLOT+
@@ -123,6 +125,7 @@
 * the PLOT+ origin as necessary to avoid this contradictory layout.
 
 * ... V5.22 default behaviors (viewport not specified by axis)
+
         xWPi = scale*width
         yWPi = scale*height
         xoei = xwhitelo  ! ppl xorigin

@@ -47,8 +47,8 @@
 
 * V200:	  2/2/90
 * V301:  11/5/93 - define PLOT+ symbol "LABKEY" with the key string
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'plot_setup.parm'
 	include	'xplot_setup.cmn'
@@ -57,13 +57,6 @@
 #ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
 #endif
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE	'FERRET_CMN:XPLOT_SETUP.CMN'
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'	! axis lengths
-	INCLUDE 'PPLV11INC:AXIS.INC'	! axis lengths
-#endif
 
 * calling argument declarations
 	INTEGER line_num, style, xaxrel, yaxrel
@@ -71,20 +64,22 @@
 	CHARACTER string*(*)
 
 * internal variable declarations
-	REAL	xmid, ymid, xll, yll
+	REAL	xmid, ymid, xll, yll, dxlen, dylen
 
+	dxlen = xlen
+	dylen = ylen
 * adjust positions relative to axis lengths if requested
 	xll = xpos
 	yll = ypos
 	IF ( xaxrel .EQ. lab_loc_axlen_plus ) THEN
-	   xll = xll + xlen
+	   xll = xll + dxlen
 	ELSEIF ( xaxrel .EQ. lab_loc_axlen_times ) THEN
-	   xll = xll * xlen
+	   xll = xll * dxlen
 	ENDIF
 	IF ( yaxrel .EQ. lab_loc_axlen_plus ) THEN
-	   yll = yll + ylen
+	   yll = yll + dylen
 	ELSEIF ( yaxrel .EQ. lab_loc_axlen_times ) THEN
-	   yll = yll * ylen
+	   yll = yll * dylen
 	ENDIF
 
 * x,y coords. of line specimen right end

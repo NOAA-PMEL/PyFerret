@@ -51,13 +51,8 @@
 * V300:   5/5/93 - coordinate comparisons in single precision
 * V312:	  6/7/94 - use TDST_WORLD* for simpler, faster date conversions
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER src_lo, src_hi, dst_lo, dst_hi, src_grid, dst_grid, axis

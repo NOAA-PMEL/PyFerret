@@ -68,6 +68,7 @@
 *        failed to set ybox sizes and cos correction. Still need to set these.
 * 8/10 - One further fix to #1735
 * 2/11 - One further fix to #1348: @DIN over 1 grid cell in Y
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * internal variable declarations:
 	LOGICAL GEOG_COS_FACTOR, point, yes_ax(4), no_ax(4),
@@ -227,13 +228,20 @@ C avgs in other directions but we need the ybox size at a given y
 C The top and bottom boxes extend only to the coordinate locations,
 C (Unless there is just one grid cell in the y direction.)
 
+#ifdef double_p
+	      ybxlo = deg2rad* 
+     .                (TM_WORLD(j, grid, y_dim, box_lo_lim) )
+	      ybxhi = deg2rad* 
+     .                (TM_WORLD(j, grid, y_dim, box_hi_lim) )
+#else
 	      ybxlo = deg2rad* 
      .                SNGL(TM_WORLD(j, grid, y_dim, box_lo_lim) )
+	      ybxhi = deg2rad* 
+     .                SNGL(TM_WORLD(j, grid, y_dim, box_hi_lim) )
+#endif
 	      IF (j .EQ. cx_lo_s2(com_cx) .AND. .NOT.one_y)
      .                ybxlo = deg2rad* cx_lo_ww(y_dim,res_cx)
 
-	      ybxhi = deg2rad* 
-     .                SNGL(TM_WORLD(j, grid, y_dim, box_hi_lim) )
 	      IF (j .EQ. cx_hi_s2(com_cx) .AND. .NOT.one_y)
      .                ybxhi = deg2rad* cx_hi_ww(y_dim,res_cx)
 
@@ -248,9 +256,16 @@ C (Unless there is just one grid cell in the y direction.)
  		       boxes(j+box_offset(y_dim)) =  m_radius 
 	      ENDIF
 	      ! Single-point Y axis or Y not part of the integral
+
+#ifdef double_p
+	      IF ( at_din .AND. no_ax(y_dim))
+     .           boxes(j+cos_offset) = COS( deg2rad * 
+     .           ( TM_WORLD(j,grid,y_dim,box_middle)) )
+#else
 	      IF ( at_din .AND. no_ax(y_dim))
      .           boxes(j+cos_offset) = COS( deg2rad * 
      .           SNGL( TM_WORLD(j,grid,y_dim,box_middle)) )
+#endif
  120       CONTINUE
 	ELSE
 	      DO 121 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)

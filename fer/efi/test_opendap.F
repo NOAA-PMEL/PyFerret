@@ -1,5 +1,6 @@
 *
 * test_opendap.F
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -119,6 +120,13 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
       INTEGER id
 
 * **********************************************************************
@@ -163,10 +171,17 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
+
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
 *  string args need to be twice the length.
-      REAL arg_1(2,mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .     mem1lot:mem1hit)
  
       REAL result(memreslox:memreshix, memresloy:memreshiy,

@@ -134,7 +134,7 @@
         CHARACTER*1     crecdim
 
 * internal variable declarations:
-        LOGICAL         TM_LEGAL_NAME, MATCH_NAME, 
+        LOGICAL         TM_LEGAL_NAME, MATCH_NAME,
      .			itsa_uvar, need_doc, new, formatted, flushed,
      .			itsa_string, output_units, output_title,
      .                  output_history
@@ -191,7 +191,8 @@
 #else
       BYTE ibuff1
 #endif
-	REAL*4		rbuff4, vals(100), bad
+	REAL*4		rbuff4
+	REAL		vals(100), bad
         REAL*8          dvals(100), scalefac, addoff
 	INTEGER*4	ibuff4
 	EQUIVALENCE (rbuff4, ibuff4), (rbuff4, ibuff1)
@@ -310,6 +311,9 @@
 * upper/lowercase form of the name. If mode upcase_output is set, then upcase 
 * the variable name.
 
+* For user-defined variables, with double-precision Ferret, write as double-precision
+* unless the user has requested otherwise.
+
            itsa_uvar = cat .EQ. cat_user_var
            IF (itsa_uvar .OR. dset .EQ. pdset_irrelevant) dset = -1
            CALL CD_GET_VAR_ID (dset, varcode, varid, status)
@@ -321,7 +325,7 @@
               varcode = varname
               IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
               IF (dset .EQ. -1) THEN  !for user vars type not known in attrib structure
-                 vartype = 5
+                 vartype = 6
                  IF (itsa_string) vartype = 2
               ENDIF
               outtype = vartype
@@ -483,7 +487,6 @@
      .                    do_warn, varcode, buff_size, attlen, 
      .                    attoutflag, buff, vals)
                        scalefac = vals(1)
-
                     ENDIF
                  ENDIF
 
@@ -622,6 +625,9 @@
                  DO 200 iatt = 1, nvatts
                     CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, 
      .                                        attname, status)
+                    CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .                   iatt, attname, attype, attlen, attoutflag, istat )
+                         
                     slen = TM_LENSTR1(attname)
                     IF ( MATCH_NAME (attname,  slen,
      .                               'MISSING_VALUE', 13 ) .OR. 
@@ -630,7 +636,7 @@
                        slen = 0   ! done already
 
                     ELSE IF ( MATCH_NAME (attname,  slen,
-     .                               'SCALE_FACTOR', 13 ) .OR. 
+     .                               'SCALE_FACTOR', 12 ) .OR. 
      .                   MATCH_NAME (attname,  slen,
      .                               'ADD_OFFSET', 10 ) ) THEN
                        got_it = NC_GET_ATTRIB_DP (dset, varid, attname,

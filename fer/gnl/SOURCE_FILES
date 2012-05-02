@@ -83,6 +83,7 @@ show_1_pyvar.F\
 show_1_uvar.F\
 show_1_uvar_xml.F\
 show_attribute.F\
+show_data.F\
 show_data_files.F\
 show_data_set_attrs.F\
 show_data_set_params.F\

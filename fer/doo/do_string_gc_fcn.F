@@ -60,6 +60,7 @@
 * V533: 6/01 *sh*
 * V580:10/04 *acm* Fix for bug 1037. In zaxreplace, before the loop calling 
 *                  hunt_r4, set the initial guess for ndx_lo to 1 not 0.  
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -319,8 +320,11 @@ XXXXXXX
 	    DO 1410 k = mr_lo_s3(mres), mr_hi_s3(mres)
 
 * ... next Z axis value (com3) to locate
+#ifdef double_p
+             zval = (TM_WORLD(k,cx_grid(cx3),z_dim,box_middle))
+#else
              zval = SNGL(TM_WORLD(k,cx_grid(cx3),z_dim,box_middle))
-
+#endif
 * ... search the Z field (com2) for the index just below this value
 * ... note that ndx_lo is always referenced to a starting index of 1
 	     CALL HUNT_R4(memory(1,wkblk), klo, khi, zval, ndx_lo, frac)

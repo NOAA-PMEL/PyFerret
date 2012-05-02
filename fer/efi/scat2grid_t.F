@@ -37,6 +37,7 @@
 * Ansley Manke
 * May 2003 
 * 11-Jul-2003  Clean up section where we get box limits
+* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * Input is a set of T coordinates on an abstract axis, and an output time axis.
 * Returns a time series which is the number of points that fall inside of each T cell. 
@@ -118,13 +119,6 @@ c      CALL ef_set_num_args(id, 3)
      .     'Output time axis')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
 
-c      arg = 3
-c      CALL ef_set_arg_type(id, arg, STRING_ARG)
-c      CALL ef_set_arg_name(id, arg, 'WHICH')
-c      CALL ef_set_arg_desc(id, arg, 
-c     .     'result to compute: SUM or AVG')
-c      CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
-
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -141,6 +135,13 @@ c      CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
+
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
 
       INTEGER id
 
@@ -189,6 +190,13 @@ c     .                               result, tax)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
+
+      INTEGER strdf
+#ifdef double_p
+      PARAMETER (strdf = 1)
+#else
+      PARAMETER (strdf = 2)
+#endif
 
       INTEGER id
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result

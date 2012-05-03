@@ -22,8 +22,6 @@
 include ../../site_specific.mk
 include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 
-INCLUDES += -Iferret_cmn
-
 #
 # Matlab specific. Only works for Solaris cc and f77 compiler
 # Dependent on location of MATLAB installation
@@ -46,18 +44,14 @@ OBJSf = $(SRCS_F:.f=.o)
 # Targets
 #
 
-all:	ferret_cmn matlab.so matlab_func.so
+all:	matlab.so matlab_func.so
 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
-ferret_cmn:
-	ln -s ../ef_utility/ferret_cmn ferret_cmn
-
-
 clean:
-	rm -f core *.so *.o ferret_cmn
+	rm -f core *.so *.o
 
 matlab.so: matlab.o matlab_link.o
 	$(LD) -L $(MATLAB_DIR) $(LD_DYN_FLAGS) matlab.o matlab_link.o -leng -lmat -o matlab.so	

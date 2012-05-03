@@ -41,21 +41,18 @@ DAT_OBJS = date_decode.o time_decode.o secs_to_ymdhms.o
 # Targets
 #
 
-# all:	ferret_cmn date_decode.o time_decode.o secs_to_ymdhms.o date1900.o date1900.so minutes24.o minutes24.so days1900toymdhms.o days1900toymdhms.so
+# all:	date_decode.o time_decode.o secs_to_ymdhms.o date1900.o date1900.so minutes24.o minutes24.so days1900toymdhms.o days1900toymdhms.so
 
-all:	ferret_cmn 
+all:
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)"  all
-
-ferret_cmn:
-	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so core a.out temp.* ferret_cmn
+	-rm -f *.o *.so
 
 #
 # End of Makefile

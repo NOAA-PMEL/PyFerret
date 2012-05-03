@@ -46,20 +46,17 @@ SUB_OBJS = eofsubs.o
 # Targets
 #
 
-# all:	ferret_cmn eofsubs.o eoft.so eof_space.so eof_tfunc.so eof_stat.so
-all:	ferret_cmn eofsvd_space.so eof_space_fix.so eof_tfunc_fix.so eof_stat_fix.so
+# all:	eofsubs.o eoft.so eof_space.so eof_tfunc.so eof_stat.so
+all:	eofsvd_space.so eof_space_fix.so eof_tfunc_fix.so eof_stat_fix.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
-
-ferret_cmn:
-	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so core a.out temp.* ferret_cmn
+	-rm -f *.o *.so
 
 #
 # End of Makefile

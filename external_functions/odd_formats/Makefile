@@ -35,19 +35,16 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 # Targets
 #
 
-all:	ferret_cmn index_to_grid.so
+all:	index_to_grid.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) -g -C -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
-
-ferret_cmn:
-	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 install:
 	cp *.so $(MY_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so core a.out temp.* ferret_cmn
+	-rm -f *.o *.so
 
 #
 # End of Makefile

@@ -5,27 +5,27 @@
 # platform specific macros
 # ACM 2/2001 debug flags
 
-INCLUDES	= -I. -I../../fmt/cmn -I../common -I../ef_utility/ferret_cmn -Iferret_cmn
+INCLUDES	= -I. -I../ef_utility -I../ef_utility/ferret_cmn
 
 CCSHFLAG	=
 CC		= gcc
-CFLAGS		= -fPIC -m32 -march=i486 -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -O2 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
+CFLAGS		= -fPIC -m32 -O2 $(INCLUDES)
 
 FC		= gfortran
 F77		= gfortran
 F77SHFLAG	=
-FFLAGS		= -fPIC -m32 -march=i486 -Dunix -Dgfortran -Ddouble_p -fno-second-underscore \
+FFLAGS		= -fPIC -m32 -Ddouble_p -fno-second-underscore \
 		  -fno-backslash -fdollar-ok -ffixed-line-length-132 -malign-double -fdefault-real-8 \
 		  -fdefault-double-8 $(INCLUDES)
 
 RANLIB		= /usr/bin/ranlib
 
 LD		= gfortran
-LD_DYN_FLAGS	= -fPIC -m32 -march=i486 -shared
+LD_DYN_FLAGS	= -fPIC -m32 -shared
 SYSLIBS		=
 
 CPP		= /lib/cpp
-CPP_FLAGS	= -P -traditional Ddouble_p $(INCLUDES)
+CPP_FLAGS	= -P -traditional -Ddouble_p $(INCLUDES)
 CFLAGS_DEBUG	= -O0 -g -Ddebug
 FFLAGS_DEBUG	= -O0 -g -Ddebug
 

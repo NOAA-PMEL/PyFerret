@@ -34,21 +34,18 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 # Targets
 #
 
-# all:	ferret_cmn zaxreplace_avg.so zaxreplace_bin.so zaxreplace_lin.so zaxreplace_zlev.so zaxreplace_rev.so
-all:	ferret_cmn  zaxreplace_xyt.so 
+# all:	zaxreplace_avg.so zaxreplace_bin.so zaxreplace_lin.so zaxreplace_zlev.so zaxreplace_rev.so
+all:	zaxreplace_xyt.so 
 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
-ferret_cmn:
-	ln -s ../ef_utility/ferret_cmn ferret_cmn
-
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so core a.out temp.* ferret_cmn
+	-rm -f *.o *.so
 
 #
 # End of Makefile

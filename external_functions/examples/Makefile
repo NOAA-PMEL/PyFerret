@@ -35,25 +35,21 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 # Targets
 #
 
-all:	ferret_cmn add_9.so avet.so pass_thru.so percent_good_t.so storage.so string_arg.so subtract.so factorial.so dates.so
+all:	add_9.so avet.so pass_thru.so percent_good_t.so storage.so string_arg.so subtract.so factorial.so dates.so
 
  
-new:	ferret_cmn pass_thru_string.so pick_a_string.so strings_as_args.so stringlengths.so
+new:	pass_thru_string.so pick_a_string.so strings_as_args.so stringlengths.so
  
-extra:	ferret_cmn custom.so extend.so  status.so  strings.so times_table.so
+extra:	custom.so extend.so  status.so  strings.so times_table.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug" "CFLAGS = $(CFLAGS) -g -Ddebug"  all
-
-
-ferret_cmn:
-	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so core a.out temp.* ferret_cmn
+	-rm -f *.o *.so
 
 #
 # End of Makefile

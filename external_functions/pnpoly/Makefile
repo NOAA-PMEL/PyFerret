@@ -35,21 +35,18 @@ SUB_OBJS = pnpoly_subs.o
 # Targets
 #
 
-#all:	ferret_cmn pnpoly_subs.o pt_in_poly.so pt_in_poly_curvi.so
-all:	ferret_cmn pnpoly_subs.o pt_in_poly.so
+#all:	pnpoly_subs.o pt_in_poly.so pt_in_poly_curvi.so
+all:	pnpoly_subs.o pt_in_poly.so
 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
-ferret_cmn:
-	ln -s ../ef_utility/ferret_cmn ferret_cmn
-
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so core a.out temp.* ferret_cmn
+	-rm -f *.o *.so
 
 #
 # End of Makefile

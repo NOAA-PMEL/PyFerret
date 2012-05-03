@@ -39,19 +39,16 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 # Targets
 #
 
-all:	ferret_cmn nco.so nco_attr.so 
+all:	nco.so nco_attr.so 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
-
-ferret_cmn:
-	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so core a.out temp.* ferret_cmn
+	-rm -f *.o *.so
 
 #
 # End of Makefile

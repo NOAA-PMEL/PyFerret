@@ -38,11 +38,8 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 # Targets
 #
 
-# all:    ferret_cmn minminmax.o maxminmax.o findhi.so findlo.so
-all:    ferret_cmn 
-
-ferret_cmn:
-	ln -s ../ef_utility/ferret_cmn ferret_cmn
+# all:    minminmax.o maxminmax.o findhi.so findlo.so
+all:
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
@@ -51,7 +48,7 @@ install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so core a.out temp.* ferret_cmn
+	-rm -f *.o *.so
 
 #
 # End of Makefile

@@ -43,6 +43,9 @@ GOB_OBJS = ocn_obs.o
 
 all:	ocn_obs.o godae_obs.o godae_obs.so
 
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
+
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 

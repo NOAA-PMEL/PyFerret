@@ -47,6 +47,9 @@ OBJSF = $(SRCS_F:.F=.o)
 
 all:	matlab.so matlab_func.so
 
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
+
 clean:
 	rm -f *.so *.o
 

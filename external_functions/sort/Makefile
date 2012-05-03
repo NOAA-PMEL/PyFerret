@@ -38,8 +38,10 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 #
 # Targets
 #
-
 all:    sorti_str.so bin_index_wt.so samplei_multi.so samplej_multi.so samplek_multi.so samplel_multi.so is_element_of_str_nocase.so 
+
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

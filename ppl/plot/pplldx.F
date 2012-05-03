@@ -117,6 +117,8 @@ c
 *                   polygons that may be plotted is unlimited. Mark this with the
 *                   value of icode (first argument to pplldx_envelope)
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+*      *kms* 5/12 Always use generic REAL instead of specific SNGL 
+*                 (SNGL must have a double-precision or complex argument)
 
 * FERRET 9-21-88: replaced include files to make all declarations explicit
 ! original:
@@ -224,8 +226,8 @@ c
 	iy=ix+pplmem_nsize/2
 	if(icode.eq.0 .OR. icode.EQ.3) THEN
 	    do 100 i=1,npts
-	        xs = SNGL(xt(i))
-	        ys = SNGL(yt(i))
+	        xs = REAL(xt(i))
+	        ys = REAL(yt(i))
 * FERRET mod 10/93 - apply transformation to Y data
 * FERRET mod  3/00 - screen X and Y separately for missing values
 	        IF ( flip ) THEN
@@ -267,7 +269,7 @@ c
 100	    continue
 	else if(icode.eq.1)then
 	    do 200 i=1,npts
-	        xs = SNGL(xt(i))
+	        xs = REAL(xt(i))
 * FERRET mod 2/89 - screen bad data
 	        IF ( ( xeq .AND. TM_FPEQ_SNGL(xs,cmxeq) ) ) THEN
 	           pplmem(ix+i) = bad_flag
@@ -284,7 +286,7 @@ c
 200	    continue
 	else
 	    do 300 i=1,npts
-	        ys = SNGL(yt(i))
+	        ys = REAL(yt(i))
 * FERRET mod 2/89 - screen bad data
 	        IF ( ( yeq .AND. TM_FPEQ_SNGL(ys,cmyeq) ) ) THEN
 	           pplmem(ix+i) = bad_flag

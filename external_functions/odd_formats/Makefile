@@ -38,6 +38,9 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 
 all:	index_to_grid.so
 
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) -g -C -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
+
 install:
 	cp *.so $(MY_LOCAL_EXTFCNS)
 

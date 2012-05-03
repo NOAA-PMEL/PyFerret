@@ -48,6 +48,9 @@ SUB_OBJS = eofsubs.o
 
 all:	eofsvd_space.so eof_space_fix.so eof_tfunc_fix.so eof_stat_fix.so
 
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
+
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 

@@ -36,6 +36,8 @@ SUB_OBJS = pnpoly_subs.o
 #all:	pnpoly_subs.o pt_in_poly.so pt_in_poly_curvi.so
 all:	pnpoly_subs.o pt_in_poly.so
 
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

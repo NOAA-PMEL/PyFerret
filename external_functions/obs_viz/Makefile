@@ -34,7 +34,10 @@ DAT_OBJS = flag2ddups.o
 #
 
 # all:	$(DAT_OBJS) scat2ddups.o scat2ddups.so
-all:	
+all:
+
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)"  all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

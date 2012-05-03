@@ -35,6 +35,9 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 # all:	list_good.so xcat.so ycat.so zcat.so tcat.so xreverse.so yreverse.so zreverse.so treverse.so
 all:	list_good.so
 
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
+
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 

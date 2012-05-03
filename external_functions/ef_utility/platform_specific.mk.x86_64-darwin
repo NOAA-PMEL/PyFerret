@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.i386-linux
+# platform_specific_includes.mk.x86_64-darwin
 #
 # This file is included in the External Function Makefiles and defines
 # platform specific macros
@@ -7,13 +7,13 @@
 
 INCLUDES        = -I. -I$(TMAP_LOCAL)/include
 
-FINCLUDES       = -I../../fmt/cmn -I../common -I../ef_utility/ferret_cmn -Iferret_cmn -I.
+FINCLUDES       = -I. -I../ef_utility -I../ef_utility/ferret_cmn
 
 
 CCSHFLAG        =
 CC              = gcc-4.2
 RANLIB          = /usr/bin/ranlib
-CFLAGS          = -fPIC -arch x86_64 -c -u -Dlint -DVOID_SIGHANDLER -D_POSIX_VERSION -DDARWIN -DFULL_GUI_VERSION -O2 -DX_REFRESH -DXT_CODE $(INCLUDES)
+CFLAGS          = -fPIC -arch x86_64 -c -u -DDARWIN -O2 $(INCLUDES)
 FC              = ifort
 F77		= ifort
 F77SHFLAG       = -dynamiclib

@@ -41,6 +41,9 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 
 all:	nco.so nco_attr.so
 
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
+
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 

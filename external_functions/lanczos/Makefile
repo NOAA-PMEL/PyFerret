@@ -37,6 +37,8 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 # all:    lanczos.so
 all:
 
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

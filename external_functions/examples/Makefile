@@ -42,14 +42,17 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 all:	add_9.so avet.so pass_thru.so percent_good_t.so storage.so string_arg.so subtract.so factorial.so dates.so
 
 new:	pass_thru_string.so pick_a_string.so strings_as_args.so stringlengths.so
-
+ 
 extra:	custom.so extend.so status.so strings.so times_table.so
+
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	rm -f *.o *.so core
+	-rm -f *.o *.so
 
 #
 # End of Makefile

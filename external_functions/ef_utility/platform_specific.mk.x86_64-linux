@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.i386-linux
+# platform_specific_includes.mk.x86_64-linux
 #
 # This file is included in the External Function Makefiles and defines
 # platform specific macros
@@ -14,8 +14,9 @@ CFLAGS		= -fPIC -m64 -O2 $(INCLUDES)
 FC		= gfortran
 F77		= gfortran
 F77SHFLAG	=
-FFLAGS		= -fPIC -m64 -fno-second-underscore -fno-backslash -fdollar-ok \
-		  -ffixed-line-length-132 $(INCLUDES)
+FFLAGS		= -fPIC -m64 -fno-second-underscore -fno-backslash \
+		  -fdollar-ok -ffixed-line-length-132 \
+		  $(INCLUDES)
 
 RANLIB		= /usr/bin/ranlib
 
@@ -37,5 +38,4 @@ FFLAGS_DEBUG	= -O0 -g -Ddebug
 	rm -f $*.f
 	$(CPP) $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
 	$(F77) $(FFLAGS) -c $*.f
-
 

@@ -163,7 +163,7 @@ C
 #endif
         REAL width, height
 
-        LOGICAL TM_FPEQ
+        LOGICAL TM_FPEQ_SNGL
 
         LOGICAL clip
         INTEGER ier, id, itype, imeter, irx, iry

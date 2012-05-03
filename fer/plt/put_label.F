@@ -72,6 +72,8 @@
 * 7/10 *acm* - ticket 1747: LABNUM_CALEN for automatically generated CALENDAR
 *              label, points to the PPL LAB# number.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
+*      *kms* 5/12 Always use generic REAL instead of specific SNGL 
+*                 (SNGL must have a double-precision or complex argument)
 
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'
@@ -204,11 +206,7 @@
 #ifdef double_p
            buf4 = TM_FMT(DBLE(nlabs_on),3,3,flen)      ! for Unix/RISC
 #else
-#ifdef NO_SNGL
            buf4 = TM_FMT(REAL(nlabs_on),3,3,flen)      ! for Unix/RISC
-#else
-           buf4 = TM_FMT(SNGL(nlabs_on),3,3,flen)      ! for Unix/RISC
-#endif
 #endif
 	   WRITE ( ppl_buff, 3500 ) buf4(:flen),  risc_buff(:lsym)
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )

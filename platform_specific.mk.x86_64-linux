@@ -41,7 +41,7 @@
 			  -m64 \
 			  -fPIC -Dunix -Dgfortran   \
 			  -DNO_OPEN_SHARED \
-			  -DNO_OPEN_RECORDTYPE -DNO_SNGL  \
+			  -DNO_OPEN_RECORDTYPE \
 			  -DX_REFRESH -Dreclen_in_bytes  \
 			  -DNO_OPEN_READONLY -DMANDATORY_FORMAT_WIDTHS\
 			  -DNO_OPEN_CARRIAGECONTROL -Dxgks -DSTAR_1_SUPPORTED \

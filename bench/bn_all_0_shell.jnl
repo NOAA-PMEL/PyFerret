@@ -1,9 +1,0 @@
-!bn_all_0
-
-! this "shell" is used because the Unix redirection fails to echo commands
-! from the top level command file
-! ... havn't explored the reason ... they echo fine to the screen
-! *kob* 2/02/98 - newly created - copied from bn490_all_shell.jnl
-
-
-GO bn_all_0

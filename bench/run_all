@@ -140,9 +140,9 @@ ln -s $machine_stream stream_data_link.unf
 #	./linuxize_descriptors $file >! $file:r.des
 #    end
 # else
-    foreach file (coads*.des_template)
-	cp -f $file $file:r.des
-    end
+#    foreach file (coads*.des_template)
+#	cp -f $file $file:r.des
+#    end
 # endif
 
 #set up proper stream testing jnl file - depends on endianness

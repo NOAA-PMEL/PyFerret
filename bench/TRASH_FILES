@@ -106,6 +106,7 @@ redirect_stdout.txt
 redirect.txt
 revision.nc
 snoopy.dat
+startup_tests2.plt
 string4d.nc
 t12.nc
 t2.nc

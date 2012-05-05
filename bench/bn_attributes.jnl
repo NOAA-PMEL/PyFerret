@@ -984,7 +984,6 @@ let/units="Deg F" faren = temp*9/5 + 32
 set var/outtype=double faren
 save/file=a.nc/clobber faren
 
-sp ncdump -h a.nc 
 sp ncdump -h a.nc  >> all_ncdump.out
 
 let/units="Deg F"/bad=-999 faren = temp*9/5 + 32

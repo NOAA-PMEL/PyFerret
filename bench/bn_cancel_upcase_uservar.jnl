@@ -26,6 +26,6 @@ SET ATT/LIKE=olr[d=1] newvar
 SET ATT/OUTPUT=all newvar
 
 SAVE/APPEND/FILE=a.nc newvar
-SP ncdump -h a.nc
+SP ncdump -h a.nc >> all_ncdump.out
 
 SET MODE/LAST upcase_output

@@ -96,10 +96,10 @@ FER_DIR="."
 export FER_DIR
 Fenv >> $log_file
 
-touch F.cdf snoopy.dat
-rm -f all_ncdump.out test.dat test.gt test.unf WV.J34K56L7 newjournal.jnl fort.41 bench.mgm \
-      F*.cdf test*.cdf bn*.plt* bat*.plt* p*.plt* bn*.gif* bn*.ps* bn*.png*
+rm -f all_ncdump.out fort.41 bench.mgm F*.cdf test*.cdf *.gif* *.plt* *.png* *.ps*
 rm -f `cat TRASH_FILES`
+rm -fr subdir
+touch F.cdf snoopy.dat
 
 now=`date`
 echo "Beginning at $now" >> $log_file
@@ -159,6 +159,7 @@ if [ -f ./keep.ferret ]; then
 fi
 
 rm -f `cat TRASH_FILES`
+rm -fr subdir
 
 set now = `date`
 echo  "Ended at $now" >> $err_file

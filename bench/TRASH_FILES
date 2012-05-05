@@ -13,7 +13,6 @@ b1566.jnl
 b.jnl
 b.nc
 bnplot.plt
-bn_test_stream.jnl
 c1.nc
 c2.nc
 cc.nc
@@ -107,7 +106,6 @@ redirect_stdout.txt
 redirect.txt
 revision.nc
 snoopy.dat
-stream_data_link.unf
 string4d.nc
 t12.nc
 t2.nc

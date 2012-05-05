@@ -47,6 +47,10 @@ if [ -r  $machine_stream ]; then
    rm -f stream_data_link.unf
    ln -s $machine_stream stream_data_link.unf
 else
+   echo "File $machine_stream does not exist." >> $log_file
+   echo "Benchmark bn420_stream will fail." >> $log_file
+   echo "To create $machine_stream compile make_stream_file.F and run the executable" >> $log_file
+   echo "Then rename stream10by5.unf to $machine_stream" >> $log_file
    echo "File $machine_stream does not exist."
    echo "Benchmark bn420_stream will fail."
    echo "To create $machine_stream compile make_stream_file.F and run the executable"
@@ -96,6 +100,7 @@ FER_DIR="."
 export FER_DIR
 Fenv >> $log_file
 
+# Make sure things are clean for this run
 rm -f all_ncdump.out fort.41 bench.mgm F*.cdf test*.cdf *.gif* *.plt* *.png* *.ps*
 rm -f `cat TRASH_FILES`
 rm -fr subdir
@@ -106,12 +111,13 @@ echo "Beginning at $now" >> $log_file
 cp $log_file $err_file
 echo "Beginning at $now"
 
-# always remove $HOME/.ferret so results are consistent
-rm -f ./keep.ferret
+# always replace $HOME/.ferret with default.ferret so results are consistent
+rm -f keep.ferret
 if [ -f $HOME/.ferret ]; then 
-   echo "Temporarily moving $HOME/.ferret to ./keep.ferret"
-   mv -f $HOME/.ferret ./keep.ferret
+   echo "****** Temporarily moving $HOME/.ferret to keep.ferret ******"
+   mv -f $HOME/.ferret keep.ferret
 fi
+cp ./default.ferret $HOME/.ferret
 
 # run each of the scripts in the list
 for jnl in $test_scripts; do
@@ -130,6 +136,7 @@ for jnl in $test_scripts; do
 
    if [ $jnl = "bn_startupfile.jnl" ]; then
 #     bn_startupfile.jnl needs ferret_startup as $HOME/.ferret
+      rm -f $HOME/.ferret
       cp -f ferret_startup $HOME/.ferret
    fi
 
@@ -144,6 +151,7 @@ for jnl in $test_scripts; do
    if [ $jnl = "bn_startupfile.jnl" ]; then
 #     remove the $HOME/.ferret created for bn_startupfile.jnl
       rm -f $HOME/.ferret
+      cp -f default.ferret $HOME/.ferret
    fi
 
 #  add the contents of all_ncdump.out to $ncdump_file
@@ -153,13 +161,19 @@ for jnl in $test_scripts; do
 done
 
 # Replace $HOME/.ferret if it was removed
-if [ -f ./keep.ferret ]; then
-   echo "Returning ./keep.ferret to $HOME/.ferret"
-   mv ./keep.ferret $HOME/.ferret
+rm -f $HOME/.ferret
+if [ -f keep.ferret ]; then
+   echo "****** Returning keep.ferret to $HOME/.ferret ******"
+   mv keep.ferret $HOME/.ferret
 fi
 
+# Clean-up
 rm -f `cat TRASH_FILES`
+# Remove temporary subdirectory
 rm -fr subdir
+# Remove links made by this script (not in TRASH_FILES)
+rm -f bn_test_stream.jnl
+rm -f stream_data_link.unf
 
 set now = `date`
 echo  "Ended at $now" >> $err_file

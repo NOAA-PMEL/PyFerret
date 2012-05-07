@@ -74,6 +74,7 @@
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *      *kms* 5/12 Always use generic REAL instead of specific SNGL 
 *                 (SNGL must have a double-precision or complex argument)
+* V68  *acm* 5/12  Dont write the font to xlab, ylab if they are blank strings.
 
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'
@@ -179,7 +180,8 @@
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	ELSEIF ( labnum .EQ. ppl_xlab ) THEN
 * ... XLAB
-	   CALL PPLCMD( from, line, 0,
+	   IF (risc_buff(:len_rbuff) .NE. ' ') 
+     .			CALL PPLCMD( from, line, 0,
      .			'XLAB '//font//risc_buff(:len_rbuff), 1, 1 )
 	   WRITE ( ppl_buff, 3300 ) labht
 	   CALL PPLCMD( from, line, 0, ppl_buff, 1, 1 )
@@ -187,7 +189,8 @@
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	ELSEIF ( labnum .EQ. ppl_ylab ) THEN
 * ... YLAB
-	   CALL PPLCMD( from, line, 0,
+	   IF (risc_buff(:len_rbuff) .NE. ' ') 
+     .			CALL PPLCMD( from, line, 0,
      .			'YLAB '//font//risc_buff(:len_rbuff), 1, 1 )
 	   WRITE ( ppl_buff, 3400 ) labht
 	   CALL PPLCMD( from, line, 0, ppl_buff, 1, 1 )

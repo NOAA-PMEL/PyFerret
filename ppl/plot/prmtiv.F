@@ -425,7 +425,7 @@ c	    ENDIF
 	    call color(ipen(0))
 	    CALL YAXIS1(XX,XFF,YLOW,YHIGH,YTICC,NSMTCS,LINTT,YUNIT,
      *		IPOS,FRMTX,YFF,CHSIZE,across,dms,hgrat,hcolor,hline,
-     *          yvaloff)
+     *          yvaloff,.FALSE.)
 
             CALL tm_break_lines (ylab, lnbeg, lnend, numlines)
             nfont = 0

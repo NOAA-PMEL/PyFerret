@@ -101,8 +101,7 @@ export FER_DIR
 Fenv >> $log_file
 
 # Make sure things are clean for this run
-rm -f all_ncdump.out fort.41 bench.mgm F*.cdf test*.cdf *.gif* *.plt* *.png* *.ps*
-rm -f `cat TRASH_FILES`
+rm -f ferret.jnl* bat.plt* `cat TRASH_FILES`
 rm -fr subdir
 touch F.cdf snoopy.dat
 
@@ -120,6 +119,7 @@ fi
 cp ./default.ferret $HOME/.ferret
 
 # run each of the scripts in the list
+rm -f all_ncdump.out
 for jnl in $test_scripts; do
 
    echo "Running test: $jnl" >> $log_file
@@ -168,7 +168,7 @@ if [ -f keep.ferret ]; then
 fi
 
 # Clean-up
-rm -f `cat TRASH_FILES`
+rm -f ferret.jnl* bat.plt* `cat TRASH_FILES`
 # Remove temporary subdirectory
 rm -fr subdir
 # Remove links made by this script (not in TRASH_FILES)

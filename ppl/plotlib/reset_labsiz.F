@@ -1,5 +1,5 @@
 
-        SUBROUTINE RESET_LABSIZ (ywid, ywidt, abssz)
+        SUBROUTINE RESET_LABSIZ (ywid, ywidt, abssz, noylab)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -40,21 +40,53 @@
 * reset the axis-label size for a vertical axis, so the labels dont
 * run off the edge.
 
+* 5/12  Fix the way the size is rescaled.
+*       Issue a note when the label size is reset.
+
 	REAL ywid, ywidt, abssz
+	LOGICAL noylab
 
         include 'axis_inc.decl'
         include 'AXIS.INC'
         include 'labcom_inc.decl'
         include 'LABCOM.INC'
 
-	REAL xl, frac
+	REAL xl, frac, dhylab
+	CHARACTER*100 note
+	CHARACTER*30 arg30
+	INTEGER i1, i2, len
 
-        xl = xorg-(ywid+ywidt+2.5*hylab)
+* This is irrelevant if there is no margin anyway (viewport defined with /AXES
+* up against the edge of the page.)
+	IF (xorg .LT. 1.e-6) RETURN
+
+        dhylab = 2.5*hylab
+	IF (noylab) dhylab = 0.
+        xl = xorg-(ywid+ywidt+dhylab)
         IF (xl.LT.0) THEN
-	   frac = (xorg+xl)/xorg
+	   frac = xorg/(ywid+ywidt+dhylab)
+
 	   IF (frac .LT. 0) frac = 0.5  ! margin is too small for this method. Punt.
+	   WRITE (note, 100) abssz, abssz* frac
+	   CALL WARN (note)
+	   print *, note
 	   abssz = abssz* frac
+
+	i1 = 1
+	i2 = 1
+ 1710   CALL LSTSYM(arg30,note,len,i1,i2)	! get next symbol
+	IF(i2.EQ.0)THEN
+           IF(arg30(:12) .EQ. 'LAST_GO_FILE')THEN
+	      CALL WARN (note)
+	   print *, note
+	   ELSE
+              GOTO 1710
+	   ENDIF
+	      CALL LSTSYM(arg30,note,len,i1,i2) 
+	   ENDIF
 	ENDIF
 
+ 100	FORMAT ('Adjusting Y-axis label size from ', f5.3, ' to ', f5.3, 
+     .          ', to avoid running off page. ')
 	RETURN
 	END

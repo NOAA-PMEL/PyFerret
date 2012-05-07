@@ -13,7 +13,8 @@ so Ferret will resize the entire title. Titles are sized according to the\
 ppl plot
 plot/over/i=1:100 i*sin(i/8)
 
-set mode meta multi_line_labels.plt
+! KMS - commented out for PyFerret - .plt not supported
+! set mode meta multi_line_labels.plt
 cancel mode logo
 plot/i=1:100/title="@p2two-line<NL>RED title"/set i*cos(i/8)
 ppl ylab "A four-line y label.<nl>second line<nl>third line<NL>fourth line"

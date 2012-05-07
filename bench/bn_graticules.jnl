@@ -10,7 +10,8 @@ PLOT/grat/i=1:100 sin(i/5)
 let a = sin(i/5) * cos(j/8)
 CONTOUR/color=ligh/grat=(color=red)/i=1:100/j=1:80 a
 use coads_climatology
-SHADE/grat=(color=white) sst[L=1]
+! KMS - white changed to green for PyFerret - white causing problems
+SHADE/grat=(color=green) sst[L=1]
 FILL/grat=dash sst[l=1]
 VECTOR/color=red/grat=(blue,dash) sst[l=1], sst[l=2]
 let b = {1,2,1} 
@@ -22,7 +23,8 @@ plot/grat="large(dash),small(dash,color=blue)"/i=1:100 sin(i/5)
 contour/color=ligh/grat="large(color=purple,thick=3,line),small(dash,color=blue)"/i=1:100/j=1:80 a
 shade/grat="small(color=lightblue),large(thick,color=lightblue)" sst[l=1]
 fill/i=1:50/j=1:30/grat="large(line),small(dash,color=lightblue)" i+j
-poly/thi/col=red/pal=blue/grat="lar(col=pur,thi=3,lin),sma(dash,col=whi)" b,c
+! KMS - white changed to green for PyFerret - white causing problems
+poly/thi/col=red/pal=blue/grat="lar(col=pur,thi=3,lin),sma(dash,col=green)" b,c
 vector/i=1:50/j=1:30/grat="small(color=black),large(thick,color=blue)"  sst[l=1], sst[l=2]
 
 ! /HGRAT and /VGRAT
@@ -32,7 +34,8 @@ plot/hg=small(color=red,dash,thick=1),large(color=blue,line,thick=3)/vg=large(li
 
 ! Log axes: VLOG and HLOG with large and small tics
 
-set mode meta graticules.plt
+! KMS - commented out for PyFerret - .plt not supported
+! set mode meta graticules.plt
 can mode logo 
 
 set view left

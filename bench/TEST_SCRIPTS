@@ -31,7 +31,7 @@ bn491_bug_fixes.jnl
 bn_odd_variable_name.jnl
 bn_test_stream.jnl
 bn_define_axes.jnl
-bn_pattern.jnl
+! bn_pattern.jnl - KMS - patterns not supported
 bn_polygon.jnl
 bn500_bug_fixes.jnl
 bn_sample.jnl
@@ -171,4 +171,4 @@ bn_randu2_randn2.jnl
 bn_axis_cf.jnl
 bn_repeated_coords.jnl
 bn_all_ef.jnl
-bn_startupfile_shell.jnl
+bn_startupfile.jnl

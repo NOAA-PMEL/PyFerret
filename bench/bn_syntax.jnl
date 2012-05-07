@@ -116,6 +116,7 @@ show mode metafile
 set mode metafile ./newmetafile10.plt
 show mode metafile
 set mode metafile metafile.plt
+can mode metafile
 
 ! SET - SHOW - CANCEL EXPRESSION
 SHOW EXPRESSION

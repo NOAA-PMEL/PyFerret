@@ -9,7 +9,8 @@
 
 define axis/t=1-jan-1990:1-jan-2010:1/units=months tax
 
-set mode meta timetics.plt
+! KMS - commented out for PyFerret - .plt not supported
+! set mode meta timetics.plt
 let tt = l[gt=tax]
 set view upper; plot/thick/line cos(tt/20)
 set view lower; plot/thick/line/t=1-jan-1991:1-jan-1997 cos(tt/20)
@@ -23,7 +24,8 @@ sho mode linecolors
 can win/all
 set win/new
 
-set mode meta timetics2.plt
+! KMS - commented out for PyFerret - .plt not supported
+! set mode meta timetics2.plt
 
 ppl color,7,100,50,0   ! orange
 ppl color,8,0,55,0     ! dark green

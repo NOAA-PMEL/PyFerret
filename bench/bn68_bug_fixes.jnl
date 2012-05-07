@@ -22,3 +22,5 @@ GO err672_long_show_axis
 GO bn_reset
 GO err672_axis_order
 
+GO bn_reset 
+GO err672_runoff_page

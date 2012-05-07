@@ -7,7 +7,8 @@
 ! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
 
-set mode meta vec_curv.plt
+! KMS - commented out for PyFerret - .plt not supported
+! set mode meta vec_curv.plt
 can mode logo
 use coads_climatology
 set reg/l=1
@@ -39,7 +40,8 @@ vec/over/xskip=16/yskip=8/len=15 fsst*0+yy*mp_mask,fsst*0, x_page,y_page
 
 ! Irregular axes, and manual axis scaling
 set win/asp=1
-set mode meta vec_curv2.plt
+! KMS - commented out for PyFerret - .plt not supported
+! set mode meta vec_curv2.plt
 
 def axis/from_data/x/name=xirr {0,1,2,4,6,7,8,10,14,16,20,23,24}
 def axis/from_data/y/name=yirr {0,2,4,5,6,7,8,9,12,13,14,15,18}

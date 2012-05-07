@@ -12,7 +12,8 @@
 define view/x=0.2:0.4/y=.2:.4/text=0.75/axes v1
 
 set window/clear
-set mode metafile viewaxes.plt
+! KMS - commented out for PyFerret - .plt not supported
+! set mode metafile viewaxes.plt
 
 set view v1
 go ptest
@@ -20,7 +21,8 @@ go ptest
 set window/clear
 
 ! can mode meta
-set mode meta
+! KMS - commented out for PyFerret - .plt not supported
+! set mode meta
 
 set view v1
 shade/i=1:12/j=1:12 i+j

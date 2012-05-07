@@ -16,7 +16,8 @@ vector/aspect u,v
 vector/flow/over/len=10  u,v
 
 GO bn_reset
-set mode meta flowlines.plt
+! KMS - commented out for PyFerret - .plt not supported
+! set mode meta flowlines.plt
 can mode logo
 
 can region

@@ -20,7 +20,7 @@ shift
 bmarker="$USER"
 bcomment="$*"
 
-test_scripts=`cat TEST_SCRIPTS`
+test_scripts=`grep -v '^!' TEST_SCRIPTS`
 
 umask 002
 

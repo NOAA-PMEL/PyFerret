@@ -22,7 +22,8 @@ shade/nolabel sst, x_page, y_page
 !
 ! A more complex projection
 !
-set mode meta bnplot.plt
+! KMS - commented out for PyFerret - .plt not supported
+! set mode meta bnplot.plt
 go mp_orthographic 210 45
 set grid sst
 let masked_sst = sst * mp_mask
@@ -73,7 +74,8 @@ can mode meta
 shade/nolabel sst, x_page[j=1:12], y_page ! DELIBERATE ERROR
 shade/nolabel sst, x_page, asin(y_page) ! DELIBERATE ERROR
 
-shade/nolabel sst, x_page, y_page ! DELIBERATE gsetviewport() ERROR
+! KMS - commented out for PyFerret - error not caught by ferret
+! shade/nolabel sst, x_page, y_page ! DELIBERATE gsetviewport() ERROR
 
 
 can win 1
@@ -86,4 +88,5 @@ shade/nolabel sst, x_page, y_page
 shade/nolabel sst, x_page[j=1:12], y_page ! DELIBERATE ERROR
 can mode ignore
 
-set mode meta bnplot.plt
+! KMS - commented out for PyFerret - .plt not supported
+! set mode meta bnplot.plt

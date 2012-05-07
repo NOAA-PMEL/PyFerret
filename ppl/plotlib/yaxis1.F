@@ -1,6 +1,6 @@
       SUBROUTINE YAXIS1(X,XFACT,YLO,YHI,YTIC,NSMTCY,LINTY,YUNIT,LABEL,
      *    IFORMT,YFACT,CSIZE,xacross,ydms,hgrat,hcolor,hline,
-     *    yvaloff)
+     *    yvaloff, noylab)
 
 *
 *
@@ -76,6 +76,7 @@ C**
         LOGICAL hline          ! If true, do the lines across.
         LOGICAL solid          ! solid lines across at tics
         LOGICAL dashed         ! dashed lines across at tics
+	LOGICAL noylab
 
 	CHARACTER IFORMT*(*),YLAB*20
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
@@ -253,9 +254,10 @@ C (ITYPE=3 arg to SCINOT)
 
 * Use origin and label-size info that is in common to possibly
 * reset the axis-label size for this axis only, so the labels dont
-* run off the edge.
+* run off the edge. (Only do this if the axis is labeled on the left.
+* means we are ignoring axes at the right of the page, labeled on the right.)
 
-        CALL RESET_LABSIZ (YWID, YWIDT, ABSSZ)
+        IF (label .EQ. -1) CALL RESET_LABSIZ (YWID, YWIDT, ABSSZ, NOYLAB)
 
 * Now make the labels.
 

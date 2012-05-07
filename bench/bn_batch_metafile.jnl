@@ -67,7 +67,8 @@ cancel viewports
 ! intentional errors and ignored commands
 ! set and cancel mode metafile are ignored
 
-set mode metafile new.plt
+! KMS - commented out for PyFerret - .plt not supported
+! set mode metafile new.plt
 
 cancel mode metafile
 

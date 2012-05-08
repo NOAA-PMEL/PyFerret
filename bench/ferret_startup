@@ -5,7 +5,8 @@ CAN MODE VERIFY
 
 SET MEMORY/SIZE=31
 SET MODE journal startup_tests.jnl
-SET MODE meta startup_tests.plt
+! KMS - commented out for PyFerret - .plt not supported
+! SET MODE meta startup_tests.plt
 
 SET MODE NLEVELS 100
 SET MODE LINEC:7

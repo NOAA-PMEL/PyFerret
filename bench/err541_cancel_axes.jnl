@@ -5,16 +5,16 @@ cancel data climatological_axes
 let tt = t[gt=month_irreg] + 50*x[i=1:10]
 load tt
 
-show axis/all
+show axis month*
 cancel axis month_irreg
 
-show axis/all
+show axis month*
 
 ! Pre V5.42, this causes a crash: axes were cancelled, but not fully.
 cancel axis/all
-show axis/all
+show axis month*
 
 cancel var tt
 cancel axis/all
 
-show axis/all
+show axis month*

@@ -64,6 +64,10 @@
 	      call SPLIT_LIST(pttmode_help, err_lun,
      1	        'This command is not allowed.', 0)
 	   else
+*             Flush Fortran stdout and stderr so that any output from
+*             the system command will appear in the appropriate place.
+              CALL FLUSH(ttout_lun)
+              CALL FLUSH(err_lun)
 	      call system( cmnd_buff(arg_start(1):arg_end(1)) )
 	   end if
 	ELSE

@@ -69,7 +69,6 @@
 	   IF (frac .LT. 0) frac = 0.5  ! margin is too small for this method. Punt.
 	   WRITE (note, 100) abssz, abssz* frac
 	   CALL WARN (note)
-	   print *, note
 	   abssz = abssz* frac
 
 	i1 = 1
@@ -78,7 +77,6 @@
 	IF(i2.EQ.0)THEN
            IF(arg30(:12) .EQ. 'LAST_GO_FILE')THEN
 	      CALL WARN (note)
-	   print *, note
 	   ELSE
               GOTO 1710
 	   ENDIF

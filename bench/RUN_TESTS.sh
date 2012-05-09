@@ -7,7 +7,7 @@ if [ $# -lt 2 ]; then
    echo "where:"
    echo "       Ferret is the ferret executable or pyferret script to use"
    echo "       ExtFuncsDir is the external functions directory to use"
-   echo "           (if '.', bn_all_ef_shell.jnl will not be run)"
+   echo "           (if '.', bn_all_ef.jnl will not be run)"
    echo "       Any remaining arguments are used as comments in the log files"
    echo ""
    exit 1
@@ -20,7 +20,13 @@ shift
 bmarker="$USER"
 bcomment="$*"
 
-test_scripts=`cat TEST_SCRIPTS`
+# allow tests to be commented out by beginning with the line with a '!'
+# remove bn_all_ef.jnl from the list if $efdir is "."
+if [ "$efdir" = "." ]; then
+   test_scripts=`grep -v '^!' TEST_SCRIPTS | grep -v "bn_all_ef\.jnl"`
+else
+   test_scripts=`grep -v '^!' TEST_SCRIPTS`
+fi
 
 umask 002
 
@@ -85,7 +91,7 @@ FER_EXTERNAL_FUNCTIONS="$efdir"
 export FER_EXTERNAL_FUNCTIONS
 
 #set up a generic data environment
-echo "***** Restricting Ferret paths to bench directory *****" >> $log_file
+echo "****** Restricting Ferret paths to bench directory ******" >> $log_file
 FER_DATA="."
 export FER_DATA
 FER_DESCR="."
@@ -122,17 +128,10 @@ cp ./default.ferret $HOME/.ferret
 rm -f all_ncdump.out
 for jnl in $test_scripts; do
 
-   echo "Running test: $jnl" >> $log_file
-   echo "Running test: $jnl" >> $err_file
-   echo "Running test: $jnl" > all_ncdump.out
+   echo "*** Running test: $jnl" >> $log_file
+   echo "*** Running test: $jnl" >> $err_file
+   echo "*** Running test: $jnl" > all_ncdump.out
    echo "Running test: $jnl"
-
-   if [ $jnl = "bn_all_ef.jnl" ]; then
-#     only run bn_all_ef.jnl if $efdir is not '.'
-      if [ "$efdir" = "." ]; then
-         continue
-      fi
-   fi
 
    if [ $jnl = "bn_startupfile.jnl" ]; then
 #     bn_startupfile.jnl needs ferret_startup as $HOME/.ferret
@@ -175,7 +174,7 @@ rm -fr subdir
 rm -f bn_test_stream.jnl
 rm -f stream_data_link.unf
 
-set now = `date`
+now=`date`
 echo  "Ended at $now" >> $err_file
 echo  "Ended at $now" >> $log_file
 echo  "Ended at $now"

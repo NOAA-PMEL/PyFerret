@@ -6,8 +6,11 @@
 !
 ! Similar to LAS iosp script header.jnl
 ! capability to be expanded to all SHOW commands in the future.
+! 5/2012:
+! Do this on a dataset with just one variable.
+! Dont do show axis/all. Just the axes for one variable is a lot of output.
 
-use gt4d011
+USE ocean_atlas_temp.cdf
 
 DEFINE SYMBOL output_xml_file = the_xml_file.xml
 
@@ -16,7 +19,10 @@ say/quiet/outfile=($output_xml_file)/append <data>
 
 show var/xml/append/outfile=($output_xml_file)
 show data/var/xml/append/outfile=($output_xml_file)
-show axis/all/xml/append/outfile=($output_xml_file)
+show axis/xml/append/outfile=($output_xml_file) `temp,return=xaxis`
+show axis/xml/append/outfile=($output_xml_file) `temp,return=yaxis`
+show axis/xml/append/outfile=($output_xml_file) `temp,return=zaxis`
+show axis/xml/append/outfile=($output_xml_file) `temp,return=taxis`
 say/quiet/outfile=($output_xml_file)/append </data>
 
 ! on 32-bit machine the cat command below doesnt show file contents if

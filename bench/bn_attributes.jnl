@@ -865,7 +865,6 @@ sp ncdump -h a.nc >> all_ncdump.out
 go bn_reset
 
 ! User-defined axes and variables
-show axis/all
 
 def axis/x=1:200:1  x2ax
 sh att/all (x2ax)

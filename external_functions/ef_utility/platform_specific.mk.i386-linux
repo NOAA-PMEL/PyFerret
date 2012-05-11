@@ -21,8 +21,9 @@ FFLAGS		= -fPIC -m32 -fno-second-underscore -fno-backslash \
 RANLIB		= /usr/bin/ranlib
 
 LD		= gfortran
-LD_DYN_FLAGS	= -fPIC -m32 -shared -rdynamic -Xlinker --no-undefined
-SYSLIBS		= $(INSTALL_FER_DIR)/lib/python2.6/site-packages/pyferret/_pyferret.so
+LD_DYN_FLAGS	= -fPIC -m32 -shared -rdynamic -Xlinker --no-undefined \
+		  -Xlinker -rpath -Xlinker $(INSTALL_FER_DIR)/lib/python2.6/site-packages/pyferret 
+SYSLIBS		= -L$(INSTALL_FER_DIR)/lib/python2.6/site-packages/pyferret -lpyferret
 
 CPP		= /lib/cpp
 CPP_FLAGS	= -P -traditional $(INCLUDES)

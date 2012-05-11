@@ -59,13 +59,13 @@ for srcname in os.listdir(dirname):
     if (srcname[0] == 'x') and (srcname[-7:] == "_data.o"):
         addnobjs_list.append(os.path.join(dirname, srcname))
 
-# Create the pyferret._pyferret Extension
-ext_mods = [ Extension("pyferret._pyferret", include_dirs = incdir_list,
-                                             sources = src_list,
-                                             extra_objects = addnobjs_list,
-                                             library_dirs = libdir_list,
-                                             libraries = lib_list,
-                                             extra_link_args = addn_link_args), ]
+# Create the pyferret.libpyferret Extension
+ext_mods = [ Extension("pyferret.libpyferret", include_dirs = incdir_list,
+                                               sources = src_list,
+                                               extra_objects = addnobjs_list,
+                                               library_dirs = libdir_list,
+                                               libraries = lib_list,
+                                               extra_link_args = addn_link_args), ]
 
 pyferret_version = os.getenv("PYFERRET_VERSION")
 if pyferret_version == None:

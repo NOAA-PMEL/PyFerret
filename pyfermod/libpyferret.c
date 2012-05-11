@@ -63,7 +63,7 @@ void fgdtest_(void **mywindow);
 /* Ferret's OK return status value */
 #define FERR_OK 3
 
-/* Special return value from _pyferret._run indicating the program should shut down */
+/* Special return value from libpyferret._run indicating the program should shut down */
 #define FERR_EXIT_PROGRAM -3
 
 /* Ferret's unspecified integer value */
@@ -1692,8 +1692,8 @@ static struct PyMethodDef pyferretMethods[] = {
 static char pyferretModuleDocstring[] =
 "An extension module enabling the use of Ferret from Python \n";
 
-/* For the _pyferret module, this function must be named init_pyferret */
-PyMODINIT_FUNC init_pyferret(void)
+/* For the libpyferret module, this function must be named initlibpyferret */
+PyMODINIT_FUNC initlibpyferret(void)
 {
     char names[64][32];
     int  values[64];
@@ -1701,7 +1701,7 @@ PyMODINIT_FUNC init_pyferret(void)
     int  k;
 
     /* Create the module with the indicated methods */
-    PyObject *mod = Py_InitModule3("_pyferret", pyferretMethods, pyferretModuleDocstring);
+    PyObject *mod = Py_InitModule3("libpyferret", pyferretMethods, pyferretModuleDocstring);
 
     /* Add ferret parameter values */
     get_ferret_params_(names, values, &numvals);
@@ -1745,7 +1745,7 @@ PyMODINIT_FUNC init_pyferret(void)
     PyModule_AddIntConstant(mod, "TIMEARRAY_MINUTEINDEX", TIMEARRAY_MINUTEINDEX);
     PyModule_AddIntConstant(mod, "TIMEARRAY_SECONDINDEX", TIMEARRAY_SECONDINDEX);
 
-    /* Private parameter return value from _pyferret._run indicating the program should shut down */
+    /* Private parameter return value from libpyferret._run indicating the program should shut down */
     PyModule_AddIntConstant(mod, "_FERR_EXIT_PROGRAM", FERR_EXIT_PROGRAM);
     /* Private parameter giving the maximum number of axis allowed in Ferret */
     PyModule_AddIntConstant(mod, "_MAX_FERRET_NDIM", 4);

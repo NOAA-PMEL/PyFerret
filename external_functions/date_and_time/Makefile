@@ -34,11 +34,11 @@ DAT_OBJS = date_decode.o time_decode.o secs_to_ymdhms.o
 
 .c.so:
 	$(CC) ${CFLAGS} -c $<
-	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so
+	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o $(SYSLIBS) -o $*.so
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so
+	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o $(SYSLIBS) -o $*.so
 
 #
 # Targets

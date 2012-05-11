@@ -27,7 +27,7 @@ DAT_OBJS = flag2ddups.o
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so
+	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o $(SYSLIBS) -o $*.so
 
 #
 # Targets

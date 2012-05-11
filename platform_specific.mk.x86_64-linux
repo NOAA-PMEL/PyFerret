@@ -72,7 +72,7 @@
 	LD_DYN_FLAGS	= -m64 -fPIC -shared -rdynamic
 
 # PyFerret version number
-	PYFERRET_VERSION = 0.0.7
+	PYFERRET_VERSION = 0.0.8
 
 # cancel the default rule for .f -> .o to prevent objects from being built
 # from .f files that are out-of-date with respect to their corresponding .F file

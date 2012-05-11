@@ -31,11 +31,11 @@ GOB_OBJS = ocn_obs.o
 
 .c.so:
 	cc ${CFLAGS} -c $<
-	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so
+	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o $(SYSLIBS) -o $*.so
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so
+	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o $(SYSLIBS) -o $*.so
 
 #
 # Targets

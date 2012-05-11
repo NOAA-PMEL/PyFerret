@@ -38,7 +38,7 @@ SUB_OBJS = fftinv_subs.o
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so
+	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o $(SYSLIBS) -o $*.so
 
 #
 # Targets

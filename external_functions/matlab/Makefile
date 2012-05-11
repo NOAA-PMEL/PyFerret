@@ -54,11 +54,12 @@ clean:
 	rm -f *.so *.o
 
 matlab.so: matlab.o matlab_link.o
-	$(LD) -L $(MATLAB_DIR) $(LD_DYN_FLAGS) matlab.o matlab_link.o -leng -lmat -o matlab.so	
+	$(LD) -L $(MATLAB_DIR) $(LD_DYN_FLAGS) matlab.o \
+		matlab_link.o -leng -lmat $(SYSLIBS) -o matlab.so	
 
 matlab_func.so: matlab_func.o matlab_func_link.o
 	$(LD) -L $(MATLAB_DIR) $(LD_DYN_FLAGS) matlab_func.o \
-                matlab_func_link.o -leng -lmat -o matlab_func.so
+		matlab_func_link.o -leng -lmat $(SYSLIBS) -o matlab_func.so
 
 #
 # End of Makefile

@@ -284,7 +284,7 @@
       INTEGER nx, ny, nt
 
       REAL x1, y1, xf, yf, tol, diff
-      REAL xx, yy, tt, ff
+      REAL xx, yy, tt, ff, c, fac
 
       CHARACTER*250 errtxt
 
@@ -466,7 +466,7 @@ C  Get coordinates of output axes.
             l1 = 1
             DO 600 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-               IF( counts(i,j,1,L) .GT. 0. ) THEN
+               IF( counts(i,j,1,L) .GT. 1. ) THEN
                   result(i,j,k,l) = result(i,j,k,l)/counts(i,j,1,L)
                ELSE
                   result(i,j,k,l) = bad_flag_result
@@ -511,10 +511,13 @@ C  Get coordinates of output axes.
 
                   l1 = 1
                   DO 700 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+		     IF (result(i,j,k,l) .NE. bad_flag_result) THEN
                      IF (tt.GE.taxlo(l1,1,1,1) .AND.
-     .                   tt.LT.taxhi(l1,1,1,1)) THEN
+     .                   tt.LT.taxhi(l1,1,1,1) .AND.
+     .                   result(i,j,k,l) .NE. bad_flag_result) THEN
                         diff = ff - result(i,j,k,l)
                         counts(i,j,2,L) = counts(i,j,2,L) + diff*diff
+                     ENDIF
                      ENDIF
 
                     l1 = l1 + 1
@@ -544,7 +547,9 @@ C  Get coordinates of output axes.
             DO 810 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
                IF( counts(i,j,1,L) .GT. 0. ) THEN
-                  result(i,j,k,l) = SQRT(counts(i,j,2,L)/counts(i,j,1,L))
+	          c = counts(i,j,1,L)
+	          fac = c/(c-1)
+                  result(i,j,k,l) = fac*SQRT(counts(i,j,2,L)/c)
                ELSE
                   result(i,j,k,l) = bad_flag_result
                ENDIF

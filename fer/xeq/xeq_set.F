@@ -1804,10 +1804,10 @@ c *kob* 4/97
         mode_metafile = .TRUE.
 	RETURN
 
-* SET GRAPHICS /ENGINE= /ANTIALIAs /NOANTIALias [ unmapped | default | highquality ]
+* SET GRAPHICS /ENGINE= /ANTIALIAS /NOANTIALIAS [ DRAFT | HIGHQUALITY | UNMAPPED ]
  1800   IF ( num_args .GT. 1 ) THEN
            CALL ERRMSG(ferr_invalid_command, status,
-     .             'SET GRAPHICS [ unmapped | default | highquality ]',
+     .             'SET GRAPHICS [ DRAFT | HIGHQUALITY | UNMAPPED ]',
      .             *5000)
         ENDIF
 
@@ -1817,7 +1817,7 @@ c *kob* 4/97
         IF ( num_args .EQ. 1 ) THEN
            buff2 = cmnd_buff(item_start(1):item_end(1))
            slen = item_end(1) - item_start(1) + 1
-           IF ( MATCH4(buff2, slen, 'DEFAULT', 7) ) THEN
+           IF ( MATCH4(buff2, slen, 'DRAFT', 5) ) THEN
                CALL FGD_SHOW_ALL_WINDOWS()
                CALL FGD_SET_ANTIALIAS(.FALSE.)
                CALL FGD_SET_ENGINE('PYQTCAIRO', status)
@@ -1827,7 +1827,7 @@ c *kob* 4/97
                CALL FGD_SET_ENGINE('PYQTVIEWER', status)
            ELSE IF ( MATCH4(buff2, slen, 'UNMAPPED', 8) ) THEN
                CALL FGD_HIDE_ALL_WINDOWS()
-               CALL FGD_SET_ANTIALIAS(.FALSE.)
+               CALL FGD_SET_ANTIALIAS(.TRUE.)
                CALL FGD_SET_ENGINE('CAIRO', status)
            ELSE
                CALL ERRMSG(ferr_invalid_command, status,
@@ -1881,7 +1881,7 @@ c *kob* 4/97
 *       Check if anything was given
         IF ( slen .EQ. 0 ) THEN
            CALL ERRMSG(ferr_invalid_command, status,
-     .             'SET GRAPHICS [ unmapped | default | highquality ]',
+     .             'SET GRAPHICS [ DRAFT | HIGHQUALITY | UNMAPPED ]',
      .             *5000)
         ENDIF
         RETURN

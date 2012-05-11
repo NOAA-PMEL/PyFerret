@@ -113,22 +113,22 @@ class PyQtPipedImager(QMainWindow):
         of the actions are not transferred in addAction, thus the need
         to maintain references here.
         '''
-        self.__saveact = QAction(self.tr("&Save"), self,
-                                shortcut=self.tr("Ctrl+S"),
-                                statusTip=self.tr("Save the scene to file"),
-                                triggered=self.inquireSaveFilename)
         self.__scaleact = QAction(self.tr("Sc&ale"), self,
                                 shortcut=self.tr("Ctrl+A"),
-                                statusTip=self.tr("Scale the scene (canvas and drawn images change)"),
+                                statusTip=self.tr("Scale the image (canvas and image change size)"),
                                 triggered=self.inquireSceneScale)
+        self.__saveact = QAction(self.tr("&Save As..."), self,
+                                shortcut=self.tr("Ctrl+S"),
+                                statusTip=self.tr("Save the image to file"),
+                                triggered=self.inquireSaveFilename)
         self.__redrawact = QAction(self.tr("&Redraw"), self,
                                 shortcut=self.tr("Ctrl+R"),
-                                statusTip=self.tr("Clear and redraw the scene"),
+                                statusTip=self.tr("Clear and redraw the image"),
                                 triggered=self.redrawScene)
-        self.__hideact = QAction(self.tr("&Hide"), self,
-                                shortcut=self.tr("Ctrl+H"),
-                                statusTip=self.tr("Hide the viewer"),
-                                triggered=self.hide)
+        # self.__hideact = QAction(self.tr("&Hide"), self,
+        #                         shortcut=self.tr("Ctrl+H"),
+        #                         statusTip=self.tr("Hide the viewer"),
+        #                         triggered=self.hide)
         self.__aboutact = QAction(self.tr("&About"), self,
                                 statusTip=self.tr("Show information about this viewer"),
                                 triggered=self.aboutMsg)
@@ -145,12 +145,12 @@ class PyQtPipedImager(QMainWindow):
         using the previously created actions.
         '''
         menuBar = self.menuBar()
-        sceneMenu = menuBar.addMenu(menuBar.tr("&Scene"))
-        sceneMenu.addAction(self.__saveact)
+        sceneMenu = menuBar.addMenu(menuBar.tr("&Image"))
         sceneMenu.addAction(self.__scaleact)
+        sceneMenu.addAction(self.__saveact)
         sceneMenu.addAction(self.__redrawact)
-        sceneMenu.addSeparator()
-        sceneMenu.addAction(self.__hideact)
+        # sceneMenu.addSeparator()
+        # sceneMenu.addAction(self.__hideact)
         helpMenu = menuBar.addMenu(menuBar.tr("&Help"))
         helpMenu.addAction(self.__aboutact)
         helpMenu.addAction(self.__aboutqtact)
@@ -184,9 +184,9 @@ class PyQtPipedImager(QMainWindow):
             "receives its displayed image and commands primarily from " \
             "another application through a pipe.  A limited number " \
             "of commands are provided by the viewer itself to allow " \
-            "saving and some manipulation of the displayed scene.  " \
+            "saving and some manipulation of the displayed image.  " \
             "The controlling application, however, may be unaware " \
-            "of these modifications made to the scene. " \
+            "of these modifications made to the image. " \
             "\n\n" \
             "Normally, the controlling program will exit the viewer " \
             "when it is no longer needed.  The Help -> Exit menu item " \
@@ -389,8 +389,8 @@ class PyQtPipedImager(QMainWindow):
         '''
         labelwidth = int(self.__scenewidth * self.__scalefactor + 0.5)
         labelheight = int(self.__sceneheight * self.__scalefactor + 0.5)
-        scaledlg = PyQtScaleDialog(self.tr("Scene Size Scaling"),
-                       self.tr("Scaling factor (both horiz. and vert.) for the scene"),
+        scaledlg = PyQtScaleDialog(self.tr("Image Size Scaling"),
+                       self.tr("Scaling factor (both horiz. and vert.) for the image"),
                        self.__scalefactor, labelwidth, labelheight,
                        self.__minsize, self.__minsize, self)
         if scaledlg.exec_():
@@ -464,7 +464,7 @@ class PyQtPipedImager(QMainWindow):
         #     dfltfilter = formattypes[0][1]
         # getSaveFileNameAndFilter is a PyQt (but not Qt?) method
         (fileName, fileFilter) = QFileDialog.getSaveFileNameAndFilter(self,
-                                      self.tr("Save the current scene as "),
+                                      self.tr("Save the current image as "),
                                       self.__lastfilename, filters)
         if fileName:
             for (fmt, fmtQName) in formattypes:

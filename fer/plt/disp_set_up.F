@@ -222,7 +222,7 @@ C plus those starting w/ xbox_bounds:
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
      .                  first, last
-	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, deltaz
+	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, delta
 	REAL*4		rw1lo, rw2lo
 
         DATA axdir / 'X', 'Y', 'Z', 'T' /

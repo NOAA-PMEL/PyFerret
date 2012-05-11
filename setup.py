@@ -84,7 +84,7 @@ setup(name = "pyferret",
       ext_modules = ext_mods)
 
 setup(name = "pipedviewer",
-      version = "0.0.2",
+      version = "0.0.3",
       description = "graphics viewer controlled by a command pipe",
       long_description = "A graphics viewer application that receives its " \
                          "drawing and other commands primarily from another " \

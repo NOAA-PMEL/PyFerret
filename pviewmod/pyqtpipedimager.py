@@ -113,12 +113,12 @@ class PyQtPipedImager(QMainWindow):
         of the actions are not transferred in addAction, thus the need
         to maintain references here.
         '''
-        self.__scaleact = QAction(self.tr("Sc&ale"), self,
-                                shortcut=self.tr("Ctrl+A"),
+        self.__scaleact = QAction(self.tr("&Scale"), self,
+                                shortcut=self.tr("Ctrl+S"),
                                 statusTip=self.tr("Scale the image (canvas and image change size)"),
                                 triggered=self.inquireSceneScale)
-        self.__saveact = QAction(self.tr("&Save As..."), self,
-                                shortcut=self.tr("Ctrl+S"),
+        self.__saveact = QAction(self.tr("Save &As..."), self,
+                                shortcut=self.tr("Ctrl+A"),
                                 statusTip=self.tr("Save the image to file"),
                                 triggered=self.inquireSaveFilename)
         self.__redrawact = QAction(self.tr("&Redraw"), self,
@@ -135,7 +135,7 @@ class PyQtPipedImager(QMainWindow):
         self.__aboutqtact = QAction(self.tr("About &Qt"), self,
                                 statusTip=self.tr("Show information about the Qt library"),
                                 triggered=self.aboutQtMsg)
-        self.__exitact = QAction(self.tr("E&xit"), self,
+        self.__exitact = QAction(self.tr("&Exit"), self,
                                 statusTip=self.tr("Shut down the viewer"),
                                 triggered=self.exitViewer)
 

@@ -362,8 +362,6 @@ def init(arglist=None, enterferret=True):
                             raise ValueError("a script filename must be given for the -script value")
                     except:
                         raise ValueError("a script filename must be given for the -script value")
-                    # -script implies -nojnl
-                    my_journal = False
                     break
                 else:
                     raise ValueError("unrecognized option '%s'" % opt)
@@ -389,9 +387,6 @@ def init(arglist=None, enterferret=True):
     # define all the Ferret standard Python external functions
     for fname in std_pyefs:
         result = run("DEFINE PYFUNC pyferret.%s" % fname)
-    # if journaling desired, now turn on journaling
-    if my_journal and (script == None):
-        result = run("SET MODE JOURNAL")
     # run the ${HOME}/.ferret script if it exists
     home_val = os.environ.get('HOME')
     if home_val:
@@ -415,6 +410,9 @@ def init(arglist=None, enterferret=True):
         result = run('exit /program')
         # should not get here
         raise SystemExit
+    # if journaling desired, now turn on journaling
+    if my_journal:
+        result = run("SET MODE JOURNAL")
     # if they don't want to enter ferret, return the success value from run
     if not my_enterferret:
         return (libpyferret.FERR_OK, '')
@@ -472,10 +470,11 @@ def start(memsize=25.6, journal=True, verify=True, restrict=False,
         str_metaname = metaname
     # Get the known viewer bindings
     knownengines = pyferret.graphbind.knownPyFerretEngines()
-    # Add PyQtViewPyFerretBindings, as "PyQtPipedViewer" to the known bindings
+    # Add PyQtViewerPyFerretBindings, as "PyQtViewer" to the known bindings
     if not ("PyQtViewer" in knownengines):
         pyferret.graphbind.addPyFerretBindings("PyQtViewer",
                            pipedviewer.pyferretbindings.PyQtViewerPyFerretBindings)
+    # Add PyQtImagerPyFerretBindings, as "PyQtImager" to the known bindings
     if not ("PyQtImager" in knownengines):
         pyferret.graphbind.addPyFerretBindings("PyQtImager",
                            pipedviewer.pyferretbindings.PyQtImagerPyFerretBindings)

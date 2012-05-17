@@ -1479,7 +1479,7 @@ def ferret_pyfunc():
                             by 1) beyond the implied axis of the result.
                             [optional; default: no extensions assigned]
                       NOTE: If an "extends" pair is given for an axis, the "axes"
-                            value for this axis must be either AXIS_IMPLIED_BY_ARGS
+                            value for this axis must be AXIS_IMPLIED_BY_ARGS
                             (the default).  The "extends" pair more precisely means
                             the axis in the argument, exactly as provided in the
                             Ferret command, is larger by the indicated amount from

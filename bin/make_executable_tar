@@ -1,18 +1,22 @@
-#! /bin/csh
+#! /bin/sh
 
 # mycp needs to recursively copy subdirectories for the lib/python* directories
 # verbose flag used to create info messages when running this script
-set mycp = "/bin/cp -v -r --preserve=timestamp"
-set mylns = "/bin/ln -v -s"
+mycp="/bin/cp -v -r --preserve=timestamp"
+mylns="/bin/ln -v -s"
 
 echo ""
-if ( $#argv == 3 ) then
-    if ( "$3" == "-y" ) then
-        set auto_ans = "y"
-    endif
-endif
-if ( ($#argv < 2) || ($#argv > 3) || \
-     (($#argv == 3) && (! $?auto_ans)) ) then
+if [ $# -eq 3 ]; then
+    if [ "$3" = "-y" ]; then
+        auto_ans="y"
+    fi
+fi
+if [ $# -lt 2 -o $# -gt 3 ]; then
+   argerror="true"
+elif [ $# -eq 3 -a -z "${auto_ans}" ]; then
+   argerror="true"
+fi
+if [ -n "${argerror}" ]; then
    echo "Usage:  $0  <ferret_dir>  <target_dir>  [ -y ] "
    echo ""
    echo "    Creates the Ferret installation file fer_executables.tar.gz. "
@@ -26,98 +30,97 @@ if ( ($#argv < 2) || ($#argv > 3) || \
    echo "    will be automatically answered with 'y'. "
    echo ""
    exit 1
-endif
+fi
 
-if ( ! -d "$1" ) then
+if [ ! -d "$1" ]; then
    echo "$1 does not exist or is not a directory"
    echo ""
    exit 1
-endif
-set ferret_dir = `cd "$1" ; pwd`
-if ( ! -d "$2" ) then
+fi
+ferret_dir=`cd "$1" ; pwd`
+if [ ! -d "$2" ]; then
    echo "$2 does not exist or is not a directory"
    echo ""
    exit 1
-endif
-set target_dir = `cd "$2" ; pwd`
+fi
+target_dir=`cd "$2" ; pwd`
 
-set pyferret_dir = "${ferret_dir}/pyferret_install"
-if ( ! -d "${pyferret_dir}" ) then
+pyferret_dir="${ferret_dir}/pyferret_install"
+if [ ! -d "${pyferret_dir}" ]; then
    echo "${pyferret_dir} does not exist or is not a directory"
    echo "    pyferret module not created"
    echo ""
-   set pyferret_dir = ""
-endif
+   pyferret_dir=""
+fi
 
 # Get the version of ferret recorded in the code
-set version = `awk '/revision_level/ {print $4}' ${ferret_dir}/fer/dat/xrevision_data.F`
-if ( ($status != 0) || ("${version}" == "") ) then
+version=`awk '/revision_level/ {print $4}' ${ferret_dir}/fer/dat/xrevision_data.F`
+if [ $? -ne 0 -o "${version}" = "" ]; then
    echo "Unable to read the version number from xrevision_data.F in ${ferret_dir}/fer/dat"
    echo ""
    exit 1
-endif
+fi
 echo "Ferret version number is ${version}"
 echo ""
 
 # Make a clean temporary directory for the tar file contents
-set temp_dir = "/var/tmp/fer_exe_$$"
+temp_dir="/var/tmp/fer_exe_$$"
 rm -fr ${temp_dir}
 mkdir ${temp_dir}
-
 mkdir ${temp_dir}/bin
 
 # Copy fer/ferret_c
-if ( -x ${ferret_dir}/fer/ferret_c ) then
+if [ -x ${ferret_dir}/fer/ferret_c ]; then
    ${mycp} ${ferret_dir}/fer/ferret_c ${temp_dir}/bin/ferret_v${version}
    cd ${temp_dir}/bin
    ${mylns} ferret_v${version} ferret
 else
    echo "No ferret_c executable found in ${ferret_dir}/fer"
 #  An error only if pyferret_dir was not given
-   if ( "${pyferret_dir}" == "" ) then
+   if [ "${pyferret_dir}" = "" ]; then
       echo ""
       exit 1
    else
       echo "   ferret_v<n> and ferret symbolic link not created"
       echo ""
-   endif
-endif
+   fi
+fi
 
 # Copy the external function shared-object library files
 mkdir -p ${temp_dir}/ext_func/libs
 # If pyferret, do not copy the .so files at this time due to pyferret bug
-if ( "${pyferret_dir}" == "" ) then
+if [ "${pyferret_dir}" = "" ]; then
    find ${ferret_dir}/external_functions -type f -perm -100 -name \*.so -exec ${mycp} {} ${temp_dir}/ext_func/libs \;
-endif
+fi
 
 # Copy font files from bin/build_fonts/unix/
-set fer_files = ${ferret_dir}/bin/build_fonts/unix/f*
-if ( ($status != 0) || ("${fer_files}" == "") ) then
+fer_files=${ferret_dir}/bin/build_fonts/unix/f*
+if [ $? -ne 0 -o "${fer_files}" = "" ]; then
    echo "No font files found in ${ferret_dir}/bin/build_fonts/unix"
    echo ""
    exit 1
-endif
+fi
 mkdir ${temp_dir}/ppl
 mkdir ${temp_dir}/ppl/fonts
 ${mycp} ${fer_files} ${temp_dir}/ppl/fonts
 
 # Copy threddsBrowser/threddsBrowser.jar
-set tb_jar = ${ferret_dir}/threddsBrowser/threddsBrowser.jar
-if ( ! -r ${tb_jar} ) then
+tb_jar=${ferret_dir}/threddsBrowser/threddsBrowser.jar
+if [ ! -r ${tb_jar} ]; then
    echo "No threddsBrowser.jar file found ${ferret_dir}/threddsBrowser"
    echo ""
    exit 1
-endif
+fi
 mkdir ${temp_dir}/lib
 ${mycp} ${tb_jar} ${temp_dir}/lib
 
 # Either copy threddsBrowser/toolsUI/toolsUI-4.1.jar ...
-# set toolsui_jar = ${ferret_dir}/threddsBrowser/toolsUI/toolsUI-4.1.jar
-# if ( ! -r ${toolsui_jar} ) then
+# toolsui_jar=${ferret_dir}/threddsBrowser/toolsUI/toolsUI-4.1.jar
+# if [ ! -r ${toolsui_jar} ]; then
 #    echo "No toolsUI-4.1.jar file found ${ferret_dir}/threddsBrowser/toolsUI"
 #    echo ""
 #    exit 1
-# endif
+# fi
 # ${mycp} ${toolsui_jar} ${temp_dir}/lib
 # ... or print a message about how to get toolsUI-4.1.jar
 echo "To minimize size, the toolsUI-4.1.jar file is not included."
@@ -131,34 +134,34 @@ cd ${temp_dir}/lib
 ${mylns} toolsUI-4.1.jar toolsUI.jar
 
 # Copy pyferret files
-if ( "${pyferret_dir}" != "" ) then
-   set python_dirs = `find ${pyferret_dir} -type d -name python\*`
-   if ( ($status != 0) || ("${python_dirs}" == "") ) then
+if [ "${pyferret_dir}" != "" ]; then
+   python_dirs=`find ${pyferret_dir} -type d -name python\*`
+   if [ $? -ne 0 -o "${python_dirs}" = "" ]; then
       echo "No python* directories found under ${pyferret_dir}"
       echo ""
       exit 1
-   endif
+   fi
    ${mycp} ${python_dirs} ${temp_dir}/lib
-endif
+fi
 
 # Create the tar file
-set ctar_file = "${target_dir}/fer_executables.tar.gz"
+ctar_file="${target_dir}/fer_executables.tar.gz"
 echo ""
 echo "The tar file will be created from the contents of "
 echo "${temp_dir}"
 echo "(which can now be examined or tweaked from another shell/window)"
 echo ""
 echo -n "Create gzipped tar file ${ctar_file} (y/n)? "
-if ( $?auto_ans ) then
-    set ans = "${auto_ans}"
+if [ -n "$auto_ans" ]; then
+    ans="${auto_ans}"
 else
-    set ans = $<
-endif
-while ( ("${ans}" != "y") && ("${ans}" != "n") )
+    read ans
+fi
+while [ "${ans}" != "y" -a "${ans}" != "n" ]; do
    echo -n "Answer either y or n: "
-   set ans = $<
-end
-if ( "${ans}" == "y" ) then
+   read ans
+done
+if [ "${ans}" = "y" ]; then
    echo ""
    cd ${temp_dir}
    rm -f "${ctar_file}"
@@ -168,7 +171,7 @@ if ( "${ans}" == "y" ) then
 else
    echo ""
    echo "Tar file NOT created"
-endif
+fi
 
 # Clean up
 echo ""

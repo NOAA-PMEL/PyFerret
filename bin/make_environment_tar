@@ -1,13 +1,17 @@
-#! /bin/csh
+#! /bin/sh
 
 echo ""
-if ( $#argv == 3 ) then
-    if ( "$3" == "-y" ) then
-        set auto_ans = "y"
-    endif
-endif
-if ( ($#argv < 2) || ($#argv > 3) || \
-     (($#argv == 3) && (! $?auto_ans)) ) then
+if [ $# -eq 3 ]; then
+    if [ "$3" = "-y" ]; then
+        auto_ans="y"
+    fi
+fi
+if [ $# -lt 2 -o $# -gt 3 ]; then
+   argerror="true"
+elif [ $# -eq 3 -a -z "${auto_ans}" ]; then
+   argerror="true"
+fi
+if [ -n "${argerror}" ]; then
    echo "Usage:  $0  <svn_repository>  <target_dir>  [ -y ] "
    echo ""
    echo "    Creates the Ferret installation file fer_environment.tar.gz. "
@@ -29,31 +33,31 @@ if ( ($#argv < 2) || ($#argv > 3) || \
    echo "        bin/make_environment_tar . <target_dir> "
    echo ""
    exit 1
-endif
+fi
 
-if ( "$1" == "." ) then
-    set source_dir = `pwd`
+if [ "$1" = "." ]; then
+    source_dir=`pwd`
 else
-    set info = `svn info "$1"`
-    if ( "${info}" == "" ) then
+    info=`svn info "$1"`
+    if [ -z "${info}" ]; then
 #  svn has printed an appropriate error message
 #  (but still returned a zero status)
        echo ""
        exit 1
-    endif
-endif
-set repository = "$1"
+    fi
+fi
+repository="$1"
 
-if ( ! -d "$2" ) then
+if [ ! -d "$2" ]; then
    echo "$2 does not exist "
    echo ""
    exit 1
-endif
+fi
 # Make sure target_dir is a full pathname
-set target_dir = `cd "$2" ; pwd`
+target_dir=`cd "$2" ; pwd`
 
 # Make a clean temporary directory for the tar file contents
-set temp_dir = "/var/tmp/fer_env_$$"
+temp_dir="/var/tmp/fer_env_$$"
 rm -fr ${temp_dir}
 mkdir ${temp_dir}
 cd ${temp_dir}
@@ -61,13 +65,13 @@ cd ${temp_dir}
 # Copy or checkout the required files.  The copying intentionally
 # makes exactly the same directory structure as the check-out in
 # order to minimize the divergent parts of this script.
-if ( "${repository}" == "." ) then
+if [ "${repository}" = "." ]; then
     echo "Copying FERRET environment files "
     echo "from ${source_dir} "
     echo "to ${temp_dir} "
     echo "   shell scripts"
     cp -f -r ${source_dir}/bin .
-    rm -f ./bin/build_fonts/unix/binary ./bin/build_fonts/unix/fnt*.* >& /dev/null
+    rm -f ./bin/build_fonts/unix/binary ./bin/build_fonts/unix/fnt*.* 2>&1 1> /dev/null
     echo "   journal files"
     cp -f -r ${source_dir}/jnls .
     echo "   external function source files"
@@ -89,7 +93,7 @@ else
     svn checkout -q ${repository}/external_functions
     echo "   palettes"
     svn checkout -q ${repository}/palettes
-endif
+fi
 
 # Move files into thier proper position
 echo "Doing a bit of rearranging"
@@ -101,15 +105,15 @@ mv external_functions ext_func/src
 
 # Remove files that should not be distributed
 echo "Removing clutter"
-rm -f bin/Fapropos* >& /dev/null
-rm -f bin/Fhelp* >& /dev/null
-rm -f bin/Findex* >& /dev/null
-rm -f bin/Finstall.[^c]* >& /dev/null
-rm -f bin/Ftoc* >& /dev/null
-rm -f bin/ferret_paths*_template >& /dev/null
-rm -f bin/make_*_tar >& /dev/null
-rm -fr bin/fonts_* >& /dev/null
-rm -fr bin/build_fonts/original >& /dev/null
+rm -f bin/Fapropos* 2>&1 1> /dev/null
+rm -f bin/Fhelp* 2>&1 1> /dev/null
+rm -f bin/Findex* 2>&1 1> /dev/null
+rm -f bin/Finstall.[^c]* 2>&1 1> /dev/null
+rm -f bin/Ftoc* 2>&1 1> /dev/null
+rm -f bin/ferret_paths*_template 2>&1 1> /dev/null
+rm -f bin/make_*_tar 2>&1 1> /dev/null
+rm -fr bin/fonts_* 2>&1 1> /dev/null
+rm -fr bin/build_fonts/original 2>&1 1> /dev/null
 
 # Now set up the proper symbolic links
 echo "Setting up symbolic links"
@@ -120,23 +124,23 @@ ln -s Fprint_template Fprint
 cd ..
 
 # Create the tar file
-set ctar_file = "${target_dir}/fer_environment.tar.gz"
+ctar_file="${target_dir}/fer_environment.tar.gz"
 echo ""
 echo "The tar file will be created from the contents of "
 echo "${temp_dir}"
 echo "(which can now be examined or tweaked from another shell/window)"
 echo ""
 echo -n "Create gzipped tar file ${ctar_file} (y/n)? "
-if ( $?auto_ans ) then
-    set ans = "${auto_ans}"
+if [ -n "$auto_ans" ]; then
+    ans="${auto_ans}"
 else
-    set ans = $<
-endif
-while ( ("${ans}" != "y") && ("${ans}" != "n") )
+    read ans
+fi
+while [ "${ans}" != "y"  -a "${ans}" != "n" ]; do
    echo -n "Answer either y or n: "
-   set ans = $<
-end
-if ( "${ans}" == "y" ) then
+   read ans
+done
+if [ "${ans}" = "y" ]; then
    echo ""
    rm -f "${ctar_file}"
    tar cvzf "${ctar_file}" --exclude .svn *
@@ -145,7 +149,7 @@ if ( "${ans}" == "y" ) then
 else
    echo ""
    echo "Tar file NOT created"
-endif
+fi
 
 # Clean up
 echo ""

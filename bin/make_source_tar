@@ -1,6 +1,6 @@
-#! /bin/csh
+#! /bin/sh
 
-if ( $#argv != 2 ) then
+if [ $# -ne 2 ]; then
    echo "Usage:  $0  <svn_repository>  <target_dir> "
    echo ""
    echo "    The required files will be extracted from <svn_repository> "
@@ -10,37 +10,36 @@ if ( $#argv != 2 ) then
    echo "    <target_dir>, which must already exist. "
    echo ""
    exit 1
-endif
+fi
 
-set info = `svn info "$1"`
-if ( "${info}" == "" ) then
+info=`svn info "$1"`
+if [ -z "${info}" ]; then
 #  svn has printed an appropriate error message
 #  (but still returned a zero status)
    echo ""
    exit 1
-endif
-set repository = "$1"
+fi
+repository="$1"
 
-if ( ! -d "$2" ) then
+if [ ! -d "$2" ]; then
    echo "$2 does not exist or is not a directory "
    echo ""
    exit 1
-endif
+fi
 # Make sure target_dir is a full pathname
-set target_dir = `cd "$2" ; pwd`
+target_dir=`cd "$2" ; pwd`
 
 # Decide what to call the directory checked-out from svn
-set fer_name = ${repository:t}
-if ( ${fer_name} == "trunk" ) then
-   set datestamp = `date +%F`
-   set fer_name = "ferret_${datestamp}"
-else if ( ${fer_name} == "pyferret" ) then
-   set datestamp = `date +%F`
-   set fer_name = "pyferret_${datestamp}"
-endif
+datestamp=`date +%F`
+echo ${repository} | grep -q 'pyferret$'
+if [ $? -eq 0 ]; then
+   fer_name="pyferret_${datestamp}"
+else
+   fer_name="ferret_${datestamp}"
+fi
 
 # Make a clean temporary directory for the tar file contents
-set temp_dir = "/var/tmp/fer_src_$$"
+temp_dir="/var/tmp/fer_src_$$"
 rm -fr ${temp_dir}
 mkdir ${temp_dir}
 cd ${temp_dir}
@@ -71,7 +70,7 @@ echo 'NOTE: The bench/metafile_masters_* directories are not included.'
 rm -fr ${fer_name}/bench/metafile_masters_*
 
 # Create the tar file
-set ctar_file = "${target_dir}/fer_source.tar.gz"
+ctar_file="${target_dir}/fer_source.tar.gz"
 echo ""
 echo "The tar file will be created from the contents "
 echo "(except for the .svn subdirectories) of "
@@ -79,12 +78,12 @@ echo "${temp_dir}"
 echo "(which can now be examined or tweaked from another shell/window)"
 echo ""
 echo -n "Create gzipped tar file ${ctar_file} (y/n)? "
-set ans = $<
-while ( ("${ans}" != "y") && ("${ans}" != "n") )
+read ans
+while [ "${ans}" != "y" -a "${ans}" != "n" ]; do
    echo -n "Answer either y or n: "
-   set ans = $<
-end
-if ( "${ans}" == "y" ) then
+   read ans
+done
+if [ "${ans}" = "y" ]; then
    echo ""
    rm -f "${ctar_file}"
    tar cvzf "${ctar_file}" --exclude .svn "${fer_name}"
@@ -93,7 +92,7 @@ if ( "${ans}" == "y" ) then
 else
    echo ""
    echo "Tar file NOT created"
-endif
+fi
 
 # Clean up
 echo ""

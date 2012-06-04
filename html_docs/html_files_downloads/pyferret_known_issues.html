@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>PyFerret Known Issues</title>
+<link rel="stylesheet" type="text/css" href="pyferret.css" />
+</head>
+
+<body>
+
+<h1>PyFerret Known Issues</h1>
+
+<p>
+The following are the currently known issues with PyFerret.  
+These are issues specific to PyFerret and does not include issues 
+with the Ferret engine contained within PyFerret.
+</p>
+
+<h3>Changes in behavior</h3>
+
+<dl>
+<dt>"Metafile" name used for image files in any supported format</dt>
+    <dd>
+    The filename specified in the <i>-batch filename</i> comand-line 
+    option and the <i>SET MODE METAFILE:filename</i> Ferret command is 
+    now used for saving images in any of the supported formats.  When 
+    PyFerret stops, or when the filename is changed in a Ferret session, 
+    the current image is saved to file using that name.  The format for 
+    the image file is guessed from the filename extension (for example, 
+    PNG for <i>.png</i>, PostScript to <i>.ps</i>, PDF for <i>.pdf</i>).
+    </dd>
+<dt>GIF files are no longer created</dt>
+    <dd>
+    PyFerret does not produce GIF image files since the underlying 
+    graphics engines do not support creating images in GIF format.  
+    Instead, the image will be saved in PNG format in a file with 
+    the same name except with a <i>.png</i> extension instead of a 
+    <i>.gif</i> extension to support existing scripts.
+    </dd>
+<dt>GKS metafiles (<i>.plt</i> files) are no longer created</dt>
+    <dd>
+    PyFerret does not produce GKS metafiles since the underlying graphics 
+    engines do not support creating GKS metafiles.  Instead, the image 
+    will be saved as a PostScript file with the same name except with a 
+    <i>.ps</i> extension instead of a <i>.plt</i> extension to support 
+    existing scripts.
+    </dd>
+</dl>
+
+<h3>Problems to be fixed</h3>
+
+<dl>
+<dt>Traditional Ferret external functions do not work properly.</dt>
+    <dd>
+    These functions are from Fortran source files that are compiled and 
+    linked to create a .so library file.  These .so library files are 
+    contained in a directory listed in the <i>$FER_EXTERNAL_FUNCTIONS</i> 
+    environment variable.  The problem observed is the indices in the 
+    Fortran common block <i>EF_MEM_SUBSC</i> are not updated.  (The 
+    common block in the external functions is not the same common block 
+    used in the Ferret engine in PyFerret.)
+    </dd>
+<dt>Shared time axis not always recognized with putdata and put functions</dt>
+    <dd>
+    When bringing Python data into Ferret using the PyFerret put or 
+    putdata functions, sometimes a time axis in common with an existing 
+    time axis in Ferret is not recognized.  This is most likely due to 
+    trying to map times derived from the six array values (year, month, 
+    day, hour, minute, second) to a single floating point time value.
+    </dd>
+<dt>Command-line options <i>-unmapped</i>, <i>-gif</i>, <i>-batch</i> do not 
+    turn on anti-aliasing</dt>
+    <dd>
+    When the <i>pyferret</i> script is called with either the 
+    <i>-unmapped</i>, <i>-gif</i>, or <i>-batch</i> command-line options, 
+    anti-aliasing is not automatically turned on.  To be consistent with 
+    the Ferret command <i>SET GRAPHICS UNMAPPED</i>, anti-aliasing should 
+    be turned on by default.  The work-around for this is to issue the 
+    Ferret command <i>SET GRAPHICS /ANTIALIAS</i> at the beginning of the 
+    Ferret session or script.
+    </dd>
+<dt>PLOT+ patterns are not supported</dt>
+    <dd>
+    PLOT+ pattern files are not yet supported by the new graphics engines.  
+    Thus <i>/pattern</i> qualifiers on Ferret plotting commands usually 
+    will result in an error.
+    </dd>
+<dt>PPL COLOR command does not work</dt>
+    <dd>
+    The PPL COLOR command does not change the color used for a color/pen
+    number in subsequent drawing commands.
+    </dd>
+<dt>A "metafile" name with a <i>.plt</i> extension can sometimes cause errors</dt>
+    <dd>
+    Setting the "metafile" name (using the <i>SET MODE METAFILE:filename</i> 
+    Ferret command) to a filename with the <i>.plt</i> extension can 
+    sometimes cause errors.  PyFerret should automatically convert to using 
+    PostScript format in these case, using the filename with a <i>.ps</i> 
+    extension instead of the <i>.plt</i> extension.  But under some 
+    circumstances this process fails.
+    </dd>
+<dt>White default symbols fail</dt>
+    <dd>
+    Errors have been observed when plotting using a default symbol in white.
+    </dd>
+<dt>PDF files are not compressed on RHEL5 systems</dt>
+    <dd>
+    PDF files are not compressed when created using PyFerret on RHEL5 
+    systems with the version of Qt4 and Cairo provided by the RedHat 
+    software repository.  However, these uncompressed files can still 
+    be read by standard viewing programs such as acroread and evince.  
+    PDF files are compressed when created on RHEL6 and other Linux 
+    systems.
+    </dd>
+<dt>Window name not set in the default first window</dt>
+    <dd>
+    The default first window displayed does not have the window title set 
+    to the standard <i>FERRET_(windownumber)_(datestamp)</i>.  Instead it 
+    displays the name of the display application (PyQtPipedImager or 
+    PyQtPipedViewer).
+    </dd>
+</dl>
+
+<br />
+<br />
+
+<p>
+Please send bug reports to
+<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#111;&#97;&#114;&#46;&#112;&#109;&#101;&#108;&#46;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#95;&#102;&#101;&#114;&#114;&#101;&#116;&#64;&#110;&#111;&#97;&#97;&#46;&#103;&#111;&#118;">
+  &#111;&#97;&#114;&#46;&#112;&#109;&#101;&#108;&#46;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#95;&#102;&#101;&#114;&#114;&#101;&#116;&#64;&#110;&#111;&#97;&#97;&#46;&#103;&#111;&#118; </a> 
+</p>
+
+<p>
+<a href="http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/">Return to PyFerret documentation</a>
+</p>
+
+<table border="1">
+<tr>
+<td> <a class="nav" href="http://www.doc.gov/">US Department of Commerce</a> </td >
+<td> <a class="nav" href="http://www.noaa.gov/">NOAA</a> </td>
+<td> <a class="nav" href="http://www.oar.noaa.gov/">OAR</a> </td>
+<td> <a class="nav" href="http://www.pmel.noaa.gov/">PMEL</a> </td>
+<td> <a class="nav" href="http://www.pmel.noaa.gov/home/persons.shtml">Contacts</a> </td>
+<td> <a class="nav" href="http://www.noaa.gov/privacy.html">Privacy Policy</a> </td>
+<td> <a class="nav" href="http://www.noaa.gov/disclaimer.html">Disclaimer</a> </td>
+</tr>
+</table>
+
+<p style="text-align:left;"><strong>
+NOAA/OAR/PMEL<br />
+Pacific Marine Environmental Laboratory<br>
+7600 Sand Point Way NE, Seattle, WA 98115<br>
+Phone: (206) 526-6239 ~ Fax: (206) 526-6815 
+Email: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#111;&#97;&#114;&#46;&#112;&#109;&#101;&#108;&#46;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#95;&#102;&#101;&#114;&#114;&#101;&#116;&#64;&#110;&#111;&#97;&#97;&#46;&#103;&#111;&#118;">
+        &#111;&#97;&#114;&#46;&#112;&#109;&#101;&#108;&#46;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#95;&#102;&#101;&#114;&#114;&#101;&#116;&#64;&#110;&#111;&#97;&#97;&#46;&#103;&#111;&#118; </a>
+</strong></p>
+
+</body>
+</html>

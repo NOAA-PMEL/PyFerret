@@ -48,7 +48,7 @@ void c_strlen_(in_ptr, out_ptr)
      int* out_ptr;
 {
    /* this treats an undefined string the same as an empty string */
-   if ( in_ptr == NULL )
+   if ( *in_ptr == NULL )
       *out_ptr = 0;
    else
       *out_ptr = strlen(*in_ptr);

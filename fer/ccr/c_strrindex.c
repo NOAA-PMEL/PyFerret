@@ -52,7 +52,7 @@ void c_strrindex_(in_ptr1, in_ptr2, out_ptr)
    char *result;
    char *tmp;
 
-   if ( (in_ptr1 == NULL) || (in_ptr2 == NULL) ) {
+   if ( (*in_ptr1 == NULL) || (*in_ptr2 == NULL) ) {
       /* an undefined string given, so set to no match found */
       *out_ptr = 0;
       return;

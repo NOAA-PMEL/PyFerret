@@ -55,7 +55,7 @@ void c_strfloat_(in_ptr, out_ptr, bad_ptr)
    double dval;
    char  *endptr;
 
-   if ( in_ptr == NULL ) {
+   if ( *in_ptr == NULL ) {
       /* no string defined, so set to the bad value */
       *out_ptr = *bad_ptr;
       return;

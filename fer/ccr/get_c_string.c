@@ -48,7 +48,7 @@ void get_c_string_(ptr_ptr, outstring, maxlen)
     char *str1;
 
    /* treats an undefined string the same as an empty string */
-   if ( ptr_ptr == NULL )
+   if ( *ptr_ptr == NULL )
       str1 = "";
    else
       str1 = *ptr_ptr;

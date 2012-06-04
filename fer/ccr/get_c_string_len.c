@@ -35,20 +35,19 @@
 
 
 /* 
-   Return the *FORTRAN* length of the saved string
-*/
+ *  Return the length of the null-terminated string as given by FORTRAN.
+ */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <Python.h> /* make sure Python.h is first */
-#include <stdlib.h>
 #include <string.h>
 
 int get_c_string_len_(ptr_ptr)
      char** ptr_ptr;
 {
-  return (int)strlen(*ptr_ptr);
+   /* treats an undefined string the same as an empty string */
+   if ( ptr_ptr == NULL )
+      return 0;
+
+   return (int)strlen(*ptr_ptr);
 }
-
-
-
 

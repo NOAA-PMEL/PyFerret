@@ -36,27 +36,22 @@
 
 
 
-/* save_arg_pointers.c
-
-   Cache pointers passed from FORTRAN.
-   Later these pointers can be used to access the arrays in SUBROUTINES
-   which did not get these args passed.
-
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
-* revision 0.0 - 3/5/97
-* 8/97 *kob* - had to add another ifdef check for entry_name_underscores
-*              around call to curv_coord_sub
-* 3/05 *acm* - new routines for SHADE/MOD curvilinear data: 
-*              curv_coord_add and curv_coord_range
-* 1/12 *acm* - Ferret 6.8 ifdef double_p for double-precision ferret, see the
-*              definition of macro DFTYPE in ferret.h
-* compile with
-*    cc -g -c save_arg_pointers.c
-*  or
-*    cc    -c save_arg_pointers.c
-*/
+/*
+ * save_arg_pointers.c
+ *
+ * Cache pointers passed from FORTRAN.
+ * Later these pointers can be used to access the arrays in SUBROUTINES
+ * which did not get these args passed.
+ *
+ * programmer - steve hankin
+ * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+ *
+ * revision 0.0 - 3/5/97
+ * 3/05 *acm* - new routines for SHADE/MOD curvilinear data: 
+ *              curv_coord_add and curv_coord_range
+ * 1/12 *acm* - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+ *              definition of macro DFTYPE in ferret.h
+ */
 
 #include "ferret.h"
  

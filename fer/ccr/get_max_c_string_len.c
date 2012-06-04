@@ -35,35 +35,31 @@
 
 
 /* 
-   Return the *FORTRAN* length of the saved string
-*/
+ *  Return the maximum length of the array of null-terminated strings
+ *  as given by FORTRAN.
+ */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <Python.h> /* make sure Python.h is first */
-#include <stdlib.h>
 #include <string.h>
 
 int get_max_c_string_len_(fer_ptr, nstr)
      char*** fer_ptr;
      int* nstr;
 {
-  char** each_str_ptr;
-  int max=0;
-  int i, slen;
+   char** each_str_ptr;
+   int max=0;
+   int i, slen;
 
-  each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
+   each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
 
-  for (i=0; i<*nstr; i++)
-    {
-      slen = strlen(*each_str_ptr);
-      if (slen > max) max = slen;
+   for (i = 0; i < *nstr; i++) {
+      if ( *each_str_ptr != NULL ) {
+         slen = strlen(*each_str_ptr);
+         if (slen > max) max = slen;
+      }
       each_str_ptr += 8/sizeof(char**);
-    }
+   }
 
-  return max;
+   return max;
 }
-
-
-
-
 

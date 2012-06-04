@@ -18,7 +18,7 @@ optimized :
 	mkdir -p $(DIR_PREFIX)/lib
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
-	$(MAKE) "CFLAGS = $(CFLAGS) -O2" pymod_optimized
+	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod_optimized
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 .PHONY : debug
@@ -97,7 +97,7 @@ install_exes :
 	( cd $(INSTALL_FER_DIR) ; tar xvzf fer_executables.tar.gz )
 	cp -f threddsBrowser/toolsUI/toolsUI-4.1.jar $(INSTALL_FER_DIR)/lib/
 
-## The following is for installing the updated threddsBrowser.jar, _pyferret.so, 
+## The following is for installing the updated threddsBrowser.jar, libpyferret.so, 
 ## and python scripts into $(INSTALL_FER_DIR)/lib without having to go
 ## through the make_executables_tar script.
 .PHONY : update
@@ -109,5 +109,18 @@ update :
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
 	  $(PYTHON_EXE) setup.py install -O2 --prefix=$(INSTALL_FER_DIR) )
+
+## The following are for building the Fortran external functions.  This must be done
+## after libpyferret.so has been built and installed so that it can be found for
+## linking and for later execution.
+.PHONY : efs_optimized
+efs_optimized :
+	$(MAKE) -C $(DIR_PREFIX)/external_functions optimized
+	$(MAKE) "FER_LOCAL_EXTFCNS = $(INSTALL_FER_DIR)/ext_func/libs" -C $(DIR_PREFIX)/external_functions install
+
+.PHONY : efs_debug
+efs_debug :
+	$(MAKE) -C $(DIR_PREFIX)/external_functions debug
+	$(MAKE) "FER_LOCAL_EXTFCNS = $(INSTALL_FER_DIR)/ext_func/libs" -C $(DIR_PREFIX)/external_functions install
 
 ##

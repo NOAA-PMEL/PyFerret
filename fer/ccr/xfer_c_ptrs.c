@@ -35,11 +35,10 @@
 
 
 /* 
-   Copy pointer values from the source array of pointers to the destination
-   Pointer may be spaced "naturally" (_del=0) or at 8 byte intervals (_del=1).
-*/
+ *  Copy pointer values from the source array of pointers to the destination
+ *  Pointer may be spaced "naturally" (_del=0) or at 8 byte intervals (_del=1).
+ */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 

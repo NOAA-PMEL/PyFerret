@@ -34,20 +34,15 @@
 */
 
 /* 
-   Return last occurence of substring in string, i.e. search 
-   from the right
-   
-   *kob* 3/02
-   V552: *kob* 4/03 - change func type to void
+ * Return last occurence of substring in string, i.e. search 
+ * from the right
+ * 
+ * *kob* 3/02
+ * V552: *kob* 4/03 - change func type to void
+ *
+ */
 
-*/
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 #include <Python.h> /* make sure Python.h is first */
-#include <assert.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 
 void c_strrindex_(in_ptr1, in_ptr2, out_ptr)
@@ -55,19 +50,24 @@ void c_strrindex_(in_ptr1, in_ptr2, out_ptr)
      char** in_ptr2;
      int* out_ptr;
 {
-  char * result;
-  char * tmp;
+   char *result;
+   char *tmp;
 
-  result = strstr(*in_ptr1, *in_ptr2); 
-  
-  if ( result) {
-    while (result) {
-      tmp = result;
-      result = strstr(++result, *in_ptr2); 
-    }
-    *out_ptr = (tmp-(*in_ptr1)+1); 
-  } else {
-    *out_ptr = 0;
-  }
+   if ( (in_ptr1 == NULL) || (in_ptr2 == NULL) ) {
+      /* an undefined string given, so set to no match found */
+      *out_ptr = 0;
+      return;
+   }
 
+   result = strstr(*in_ptr1, *in_ptr2); 
+   if ( result != NULL ) {
+      while (result) {
+         tmp = result;
+         result = strstr(++result, *in_ptr2); 
+      }
+      *out_ptr = (tmp-(*in_ptr1)+1); 
+   }
+   else {
+      *out_ptr = 0;
+   }
 }

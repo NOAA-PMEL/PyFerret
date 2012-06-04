@@ -35,12 +35,10 @@
 
 
 /* 
-   Return (copy) the null-terminated string to the array provided
-*/
+ *  Return (copy) the null-terminated string to the array provided
+ */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <Python.h> /* make sure Python.h is first */
-#include <stdlib.h>
 #include <string.h>
 
 void get_c_string_(ptr_ptr, outstring, maxlen)
@@ -48,10 +46,14 @@ void get_c_string_(ptr_ptr, outstring, maxlen)
      char* outstring;
      int* maxlen;
 {
-  strncpy(outstring, *ptr_ptr, *maxlen );
-  return;
+    char *str1;
+
+   /* treats an undefined string the same as an empty string */
+   if ( ptr_ptr == NULL )
+      str1 = "";
+   else
+      str1 = *ptr_ptr;
+
+   strncpy(outstring, str1, *maxlen);
 }
-
-
-
 

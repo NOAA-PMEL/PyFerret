@@ -35,14 +35,11 @@
 
 
 /* 
-   Allocate dynamic memory and save a string returning the pointer to it
-*/
+ *  return the size (in units of bytes) of a pointer to a character
+ */
 
 int sizeof_pointer_()
 {
   return (int) sizeof(char*);
 }
-
-
-
 

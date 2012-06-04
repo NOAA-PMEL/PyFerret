@@ -35,14 +35,13 @@
 
 
 /* 
- *sh* 9/2000
- *sh* 6/01 - allow null pointers (free memory only if non-null)
+ * *sh* 9/2000
+ * *sh* 6/01 - allow null pointers (free memory only if non-null)
+ * 
+ *   Free the string arrays pointed to by this Ferret variable 
+ *   Note: for portability the Ferret array is 8-byte
+ */
 
-   Free the string arrays pointed to by this Ferret variable 
-   Note: for porttability the Ferret array is 8-byte
-*/
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 
@@ -50,10 +49,10 @@ void free_c_string_array_(fer_ptr, length)
      char*** fer_ptr;
      int* length;
 {
-   /* first free the individual strings */
    char** each_str_ptr = *fer_ptr;
    int i;
 
+   /* free the individual strings */
    for (i=0; i<*length; i++) {
       if ( *each_str_ptr != NULL ) {
          free(*each_str_ptr);
@@ -61,4 +60,5 @@ void free_c_string_array_(fer_ptr, length)
       }
       each_str_ptr += 8/sizeof(char**);
    }
+   /* memory for the array itself is from Ferret's memory block */
 }

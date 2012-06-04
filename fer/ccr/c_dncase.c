@@ -34,14 +34,12 @@
 */
 
 /* 
-   Return string in all lowercase
-   
-   V541: *kob* 3/02
+ * Return string in all lowercase
+ * 
+ * V541: *kob* 3/02
+ *
+ */
 
-*/
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 #include <Python.h> /* make sure Python.h is first */
 #include <ctype.h>
 #include <stdlib.h>
@@ -56,6 +54,11 @@ void c_dncase_(in_ptr, out_ptr)
 
    if ( *out_ptr != NULL )
       free(*out_ptr);
+   if ( *in_ptr == NULL ) {
+      /* undefined string given, so return an undefined string */
+      *out_ptr = NULL;
+      return;
+   }
   
    *out_ptr = (char *) malloc(sizeof(char) * (strlen(*in_ptr)+1));
    if ( *out_ptr == NULL )
@@ -64,9 +67,9 @@ void c_dncase_(in_ptr, out_ptr)
    tmp = *out_ptr;
    tmp2 = *in_ptr;
    while ( *tmp2 != '\0' ) {
-       *tmp = tolower(*tmp2);
-       tmp++;
-       tmp2++;
+      *tmp = tolower(*tmp2);
+      tmp++;
+      tmp2++;
    }
    *tmp = '\0';
 }

@@ -34,20 +34,21 @@
 *
 */
 
-#include <Python.h> /* make sure Python.h is first */
-#include <math.h>
-
 /*
  * replaceable_bad_flags :
  *  check for a missing or bad value flag of NaN.  if either flag is Nan,
- *  or if the flags differ, return a true. otherwise, if both flags are the
+ *  or if the flags differ, return a true. otherwise, if both flags are the 
  *  same and not NaN, no need to replace them, so return a false
- * *kob* - 2/18/99
+ *
+ * *kob* - 2/18/99 
+ * *acm*  1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+ *              definition of macro DFTYPE in ferret.h
  */
-/* *acm*  1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
-/*              definition of macro DFTYPE in ferret.h */
 
+#include <Python.h> /* make sure Python.h is first */
+#include <math.h>
 #include "ferret.h"
+
 int FORTRAN(replaceable_bad_flags)(bad1, bad2)
      DFTYPE *bad1, *bad2;
 

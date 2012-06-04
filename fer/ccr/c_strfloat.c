@@ -34,23 +34,21 @@
 */
 
 /* 
-   Return a float value from a character string
-
-   v5.41 *kob*  3/02
-
-*/
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm*  3/05 v581 - return bad_value if input cannot be converted to numeric */
-/* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
-/*                                       definition of macro DFTYPE in ferret.h.*/
+ * Return a float value from a character string
+ *
+ * v5.41 *kob*  3/02
+ *
+ * *acm*  3/05 v581 - return bad_value if input cannot be converted to numeric
+ * *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+ *                                       definition of macro DFTYPE in ferret.h.
+ *
+ */
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdlib.h>
 #include "ferret.h"
 
-
-DFTYPE c_strfloat_(in_ptr, out_ptr, bad_ptr)
+void c_strfloat_(in_ptr, out_ptr, bad_ptr)
      char** in_ptr;
      DFTYPE* out_ptr;
      DFTYPE* bad_ptr;
@@ -58,12 +56,19 @@ DFTYPE c_strfloat_(in_ptr, out_ptr, bad_ptr)
    double dval;
    char  *endptr;
 
+   if ( in_ptr == NULL ) {
+      /* no string defined, so set to the bad value */
+      *out_ptr = *bad_ptr;
+      return;
+   }
+
    dval = strtod(*in_ptr, &endptr);
    if ( endptr == *in_ptr ) {
-      /* Not numeric, so set to the bad value */
+      /* not numeric, so set to the bad value */
       *out_ptr = *bad_ptr;
    }
    else {
       *out_ptr = (DFTYPE) dval;
    }
 }
+

@@ -34,19 +34,12 @@
 */
 
 /* 
-   Find first occurence of substring in string
-
-   v5.41: *kob* 3/02
-   V552: *kob* 4/03 - change func type to void
-
-*/
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
-#include <wchar.h>
-#include <assert.h>
-#include <stdlib.h>
-#include <stdio.h>
+ * Find first occurence of substring in string
+ *
+ * v5.41: *kob* 3/02
+ * V552: *kob* 4/03 - change func type to void
+ *
+ */ 
 #include <string.h>
 
 void c_strindex_(in_ptr1, in_ptr2, out_ptr)
@@ -54,16 +47,18 @@ void c_strindex_(in_ptr1, in_ptr2, out_ptr)
      char** in_ptr2;
      int* out_ptr;
 {
-  char * result;
-  
-   result = strstr(*in_ptr1, *in_ptr2); 
-   
-   if ( result) {
-     *out_ptr = (result-(*in_ptr1)+1); 
-   } else {
-     *out_ptr = 0;
+   char * result;
+
+   if ( (in_ptr1 == NULL) || (in_ptr2 == NULL) ) {
+      /* an undefined string given, so set to no match found */
+      *out_ptr = 0;
+      return;
    }
 
-  
-
+   result = strstr(*in_ptr1, *in_ptr2); 
+   if ( result != NULL ) {
+      *out_ptr = (result-(*in_ptr1)+1); 
+   } else {
+      *out_ptr = 0;
+   }
 }

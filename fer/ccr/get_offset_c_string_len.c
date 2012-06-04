@@ -35,26 +35,24 @@
 
 
 /* 
-   Return the *FORTRAN* length of the saved string
-*/
+ * Return the length of the null-terminated string as given by FORTRAN.
+ */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
-#include <stdlib.h>
 #include <string.h>
 
 int get_offset_c_string_len_(fer_ptr, offset)
      char*** fer_ptr;
      int* offset;
 {
-  char** each_str_ptr;
+   char** each_str_ptr;
 
-  each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
-  each_str_ptr += *offset * 8/sizeof(char**);  /* point to the desired strng */ 
+   /* treats an undefined string the same as an empty string */
+   each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
+   each_str_ptr += *offset * 8/sizeof(char**);  /* point to the desired strng */ 
 
-  return (int)strlen(*each_str_ptr);
+   if ( *each_str_ptr == NULL )
+      return 0;
+
+   return (int)strlen(*each_str_ptr);
 }
-
-
-
 

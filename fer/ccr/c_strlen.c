@@ -34,23 +34,22 @@
 */
 
 /* 
-   Return length of string argument
-   
-   V541: *kob* 3/02
-   V552: *kob* 4/03 - change func type to void
-*/
+ * Return length of string argument
+ *
+ * V541: *kob* 3/02
+ * V552: *kob* 4/03 - change func type to void
+ *
+ */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
-#include <stdlib.h>
 #include <string.h>
 
 void c_strlen_(in_ptr, out_ptr)
      char** in_ptr;
      int* out_ptr;
 {
-
-  *out_ptr = strlen(*in_ptr);
-
-  return;
+   /* this treats an undefined string the same as an empty string */
+   if ( in_ptr == NULL )
+      *out_ptr = 0;
+   else
+      *out_ptr = strlen(*in_ptr);
 }

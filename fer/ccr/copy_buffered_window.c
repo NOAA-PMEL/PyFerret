@@ -37,24 +37,20 @@
 * copy the contents of the active plotting window to the double buffered
 * window for animation purposes
 
-* */
+*/
 
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
-#include "gks_implem.h"
-#include "wslist.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include "gks_implem.h"
+#include "wslist.h"
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
-copy_buffered_window(ws_id, anim_id)
+void copy_buffered_window(ws_id, anim_id)
 #else
-copy_buffered_window_(ws_id, anim_id)
+void copy_buffered_window_(ws_id, anim_id)
 #endif
      int *ws_id, *anim_id;
 
@@ -70,14 +66,13 @@ copy_buffered_window_(ws_id, anim_id)
 /* determine the XGKS ws state entry structure from ws_id */
   ws  = OPEN_WSID (*ws_id);
   anim = OPEN_WSID(*anim_id);
-  
 
   /*
    * Get the parameters of the window being dumped.
    */
   if(!XGetWindowAttributes(ws->dpy, ws->win, &win_info)) 
     {
-      fprintf (stderr, "Can't get target window attributes.");
+      fputs("Can't get target window attributes.", stderr);
       exit(1);
     }
   
@@ -86,11 +81,8 @@ copy_buffered_window_(ws_id, anim_id)
   width = win_info.width;
   height = win_info.height;
 
-
   XCopyArea(ws->dpy, ws->win, anim->win, DefaultGC(ws->dpy,
 	    DefaultScreen(ws->dpy)), 0, 0,
 	    width, height, 0,0);  
-
-
 }
 

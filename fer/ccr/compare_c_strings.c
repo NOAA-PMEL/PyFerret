@@ -34,22 +34,28 @@
 */
 
 /* 
-   Compare 2 strings with strcasecmp -- case-insensitive
-*/
+ * Compare 2 strings with strcasecmp -- case-insensitive
+ */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
 #include <string.h>
 
 int compare_c_strings_(ptr_1, ptr_2)
      char** ptr_2;
      char** ptr_1;
 {
+   char *str1;
+   char *str2;
 
-  return strcasecmp(*ptr_1, *ptr_2);
+   /* this treats undefined strings the same as empty strings */
+   if ( *ptr_1 == NULL )
+      str1 = "";
+   else
+      str1 = *ptr_1;
+   if ( *ptr_2 == NULL )
+      str2 = "";
+   else
+      str2 = *ptr_2;
 
+   return strcasecmp(str1, str2);
 }
-
-
-
 

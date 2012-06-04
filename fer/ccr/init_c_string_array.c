@@ -34,12 +34,10 @@
 */
 
 /* 
-   Save the address of Ferrets "memory(1,mr_blk1(mr))" as the contents
-   of fer_ptr
-*/
+ *  Save the address of Ferrets "memory(1,mr_blk1(mr))" as the contents
+ *  of fer_ptr
+ */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
 #include <stdlib.h>
 
 void init_c_string_array_(length, mr_blk1, fer_ptr)
@@ -47,21 +45,16 @@ void init_c_string_array_(length, mr_blk1, fer_ptr)
      char** mr_blk1;
      char*** fer_ptr;
 {
+   int i;
+   char** ptr;
 
-  int i;
-  char** ptr;
-
-  /* save the pointer */
+   /* save the pointer */
    *fer_ptr = mr_blk1;
 
    /* good house-keepping */
    ptr = mr_blk1;
-   for (i=0; i<*length; i++)
-     {
-       *ptr = NULL;
-       ptr += (8/sizeof(char**));
-     }
-
-  return;
-
+   for (i=0; i<*length; i++) {
+      *ptr = NULL;
+      ptr += (8/sizeof(char**));
+   }
 }

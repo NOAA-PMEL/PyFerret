@@ -34,22 +34,18 @@
 */
 
 /* 
-   Return a substring of a given length starting from offset
-   of given string.
-   
-   If offset is greater than full string length, return an empty string.  If offset is less then
-   full string length, but offset+substring length is greater than full string lenght, just
-   return rest of full string in substring.  
+ * Return a substring of a given length starting from offset
+ * of given string.
+ * 
+ * If offset is greater than full string length, return an empty string.  If offset is less then
+ * full string length, but offset+substring length is greater than full string lenght, just
+ * return rest of full string in substring.  
+ *
+ * V541: *kob* 3/02
+ * V680  *acm* 1/12  Call with integers for offset and length. (goes with double-precision changes)
+ *
+ */
 
-   V541: *kob* 3/02
-   V680  *acm* 1/12  Call with integers for offset and length.
-
-*/
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
-/* *acm*  1/12 v68    change offset and length to integer (goes with double-precision changes) */
-#include <wchar.h>
 #include <stdlib.h>
 
 void c_substr_(in_ptr, offset, length, out_ptr)
@@ -64,6 +60,11 @@ void c_substr_(in_ptr, offset, length, out_ptr)
 
    if ( *out_ptr != NULL )
       free(*out_ptr);
+   if ( *in_ptr == NULL ) {
+      /* undefined string given, so return an undefined string */
+      *out_ptr = NULL;
+      return;
+   }
 
    int_length = (int)(*length + 0.5);
    int_offset = (int)(*offset + 0.5) - 1;

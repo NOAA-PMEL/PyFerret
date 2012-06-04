@@ -43,7 +43,6 @@ save_c_string.c\
 set_nan.c\
 set_null_c_string.c\
 set_null_c_string_array.c\
-signal.c\
 sizeof_pointer.c\
 unmap_animate_window.c\
 wgif.c\

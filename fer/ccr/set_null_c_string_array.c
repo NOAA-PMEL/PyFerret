@@ -35,35 +35,27 @@
 
 
 /* 
-   Fill the indicated region of memory with pointers to null strings
-*/
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
-#include <wchar.h>
-#include <assert.h>
+ *   Fill the indicated region of memory with pointers to null strings
+ */
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
 void set_null_c_string_array_(fer_ptr, nstr)
      char*** fer_ptr;
      int* nstr;
 {
-  char** each_str_ptr;
-  int i;
+   char** each_str_ptr;
+   int i;
 
-  each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
+   each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
 
-  for (i=0; i<*nstr; i++)
-    {
-
+   for (i=0; i<*nstr; i++) {
+      if ( *each_str_ptr != NULL )
+         free(*each_str_ptr);
       *each_str_ptr = (char *) malloc(sizeof(char));
-      assert(*each_str_ptr);
+      if ( *each_str_ptr == NULL )
+         abort();
       **each_str_ptr = '\0';
 
       each_str_ptr += 8/sizeof(char**);
-    }
-
-  return;
+   }
 }

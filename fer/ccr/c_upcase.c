@@ -34,15 +34,12 @@
 */
 
 /* 
-   Return string in all uppercase
-   
-   V541: *kob* 3/02
+ * Return string in all uppercase
+ * 
+ * V541: *kob* 3/02
+ *
+ */
 
-*/
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
-#include <wchar.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,17 +53,22 @@ void c_upcase_(in_ptr, out_ptr)
 
    if ( *out_ptr != NULL )
       free(*out_ptr);
+   if ( *in_ptr == NULL ) {
+      /* undefined string given, so return an undefined string */
+      *out_ptr = NULL;
+      return;
+   }
 
-   *out_ptr = (char *) malloc(sizeof(char) * (strlen(*in_ptr)+1));
+   *out_ptr = (char *) malloc(sizeof(char) * (strlen(*in_ptr) + 1));
    if ( *out_ptr == NULL )
       abort();
 
    tmp = *out_ptr;
    tmp2 = *in_ptr;
    while ( *tmp2 != '\0' ) {
-       *tmp = toupper(*tmp2);
-       tmp++;
-       tmp2++;
+      *tmp = toupper(*tmp2);
+      tmp++;
+      tmp2++;
    }
    *tmp = '\0';
 }

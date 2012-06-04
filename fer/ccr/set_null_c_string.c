@@ -34,30 +34,21 @@
 */
 
 /* 
-   V533 *sh* 6/01 
-  
-   Allocate storage for null string and set into Ferret string array
-*/
+ * V533 *sh* 6/01 
+ *
+ * Allocate storage for null string and set into Ferret string array
+ */
 
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
-#include <wchar.h>
-#include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
 void set_null_c_string_(out_ptr)
      char** out_ptr;
 {
+   if ( *out_ptr != NULL )
+      free(*out_ptr);
 
-  if ( *out_ptr ) free(*out_ptr);
-
-  *out_ptr = (char *) malloc(sizeof(char));
-  assert(*out_ptr);
-  **out_ptr = '\0';
-      
-
-   return;
-
+   *out_ptr = (char *) malloc(sizeof(char));
+   if ( *out_ptr == NULL )
+      abort();
+   **out_ptr = '\0';
 }

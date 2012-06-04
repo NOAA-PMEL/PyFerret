@@ -32,7 +32,6 @@
  *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <wchar.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>

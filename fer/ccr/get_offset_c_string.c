@@ -33,15 +33,12 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
 */
 
+#include <stdlib.h>
 
 /* 
-   Return (copy) the null-terminated string to the array provided
-*/
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
-#include <stdlib.h>
-#include <string.h>
+ *  Return (copy) the null-terminated string to the array provided,
+ *  converting to blank-terminated strings.
+ */
 
 void get_offset_c_string_(fer_ptr, offset, outstring, maxlen)
      char*** fer_ptr;
@@ -49,29 +46,25 @@ void get_offset_c_string_(fer_ptr, offset, outstring, maxlen)
      char* outstring;
      int* maxlen;
 {
-  char** each_str_ptr;
-  char* str_ptr;
-  int i=0;
+   char** each_str_ptr;
+   char* str_ptr;
+   int i = 0;
 
-  each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
-  each_str_ptr += *offset * 8/sizeof(char**); /* point to the desired strng */ 
-  str_ptr = *each_str_ptr;
+   /* treats an undefined string (in the array) the same as an empty string */
+   each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
+   each_str_ptr += *offset * 8/sizeof(char**); /* point to the desired strng */ 
+   str_ptr = *each_str_ptr;
 
-  /* copy the characters of the string, itself, up to maxlen */
-  while (i<*maxlen && *str_ptr!=0)
-    {
-      outstring[i++] = *(str_ptr++);
-    }
+   /* copy the characters of the string, itself, up to maxlen */
+   if ( str_ptr != NULL ) {
+      while ( (i < *maxlen) && (*str_ptr != '\0') ) {
+         outstring[i++] = *(str_ptr++);
+      }
+   }
 
-  /* pad the remainder with blanks */
-  while (i<*maxlen)
-    {
+   /* pad the remainder with blanks */
+   while ( i < *maxlen ) {
       outstring[i++] = ' ';
-    }
-
-  return;
+   }
 }
-
-
-
 

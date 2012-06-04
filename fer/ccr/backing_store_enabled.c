@@ -33,21 +33,18 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-
+*
 * *kob* v5.41 - check to see if X server is currently enabled with
 *               backing store.
+*
+*/
 
-* */
 
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
-#include "gks_implem.h"
-#include "wslist.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include "gks_implem.h"
+#include "wslist.h"
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 backing_store_enabled(ws_id, bs)

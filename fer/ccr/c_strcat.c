@@ -34,16 +34,12 @@
 */
 
 /* 
-   Concatenate two strings, returning the output pointer 
-   to the new string
+ * Concatenate two strings, returning the output pointer to the new string
+ *
+ * v5.41 *kob*  3/02
+ *
+ */
 
-   v5.41 *kob*  3/02
-
-*/
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
-#include <wchar.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -54,26 +50,42 @@ void c_strcat_(in_ptr1, in_ptr2, out_ptr)
 {
    char* tmp1; 
    char* tmp2;
+   int len1;
+   int len2;
 
    if ( *out_ptr != NULL )
       free(*out_ptr);
 
-   *out_ptr = (char *) malloc(sizeof(char)*((strlen(*in_ptr1)+strlen(*in_ptr2))+1));
+   /* this treats an undefined string the same as an empty string */
+   if ( *in_ptr1 == NULL )
+      len1 = 0;
+   else
+      len1 = strlen(*in_ptr1);
+   if ( *in_ptr2 == NULL )
+      len2 = 0;
+   else
+      len2 = strlen(*in_ptr2);
+
+   *out_ptr = (char *) malloc(sizeof(char) * (len1 + len2 + 1));
    if ( *out_ptr == NULL )
       abort();
 
-   tmp1 = *in_ptr1;
    tmp2 = *out_ptr;
-   while ( *tmp1 != '\0' ) {
-      *tmp2 = *tmp1;
-      tmp1++;
-      tmp2++;
+   if ( *in_ptr1 != NULL ) {
+      tmp1 = *in_ptr1;
+      while ( *tmp1 != '\0' ) {
+         *tmp2 = *tmp1;
+         tmp1++;
+         tmp2++;
+      } 
    } 
-   tmp1 = *in_ptr2;
-   while ( *tmp1 != '\0' ) {
-      *tmp2 = *tmp1;
-      tmp1++;
-      tmp2++;
+   if ( *in_ptr2 != NULL ) {
+      tmp1 = *in_ptr2;
+      while ( *tmp1 != '\0' ) {
+         *tmp2 = *tmp1;
+         tmp1++;
+         tmp2++;
+      }
    }
    *tmp2 = '\0';
 }

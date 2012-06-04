@@ -34,19 +34,22 @@
 *
 */
 
-/* replace_bad_data_sub.c :
-/*  replace the missing value if it is either NaN, or if it is equal to */
-/*  the old bad value */
-
-/* *kob* - 2/18/99 */
-/* v553 *kob* - if the new_bad is NaN, we need to replace any possible
+/*
+ * replace_bad_data_sub.c :
+ *  replace the missing value if it is either NaN, or if it is equal to
+ *  the old bad value
+ *
+ * *kob* - 2/18/99
+ * v553 *kob* - if the new_bad is NaN, we need to replace any possible
                 NaN's in the data, and also swap the old and new bad.  This 
-		could happen if use did a set var/bad=nan - new feature */
-/* *acm*  1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
-/*              definition of macro DFTYPE in ferret.h */
+		could happen if use did a set var/bad=nan - new feature
+ * *acm*  1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
+ *              definition of macro DFTYPE in ferret.h
+ */
 
-
+#include <math.h>
 #include "ferret.h"
+
 void FORTRAN(replace_bad_data_sub)( DFTYPE *old_bad, DFTYPE *src, 
 			   int *size, DFTYPE *new_bad )
 
@@ -72,5 +75,4 @@ void FORTRAN(replace_bad_data_sub)( DFTYPE *old_bad, DFTYPE *src,
     }
   }
 }
-
 

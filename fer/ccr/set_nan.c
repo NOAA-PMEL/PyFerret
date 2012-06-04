@@ -34,40 +34,34 @@
 *
 */
 
-/* set_nan.c:
+/*
+ * set_nan.c:
+ *
+ *  set a float (or double) value to NaN - needed for the command
+ *      set variable/bad=nan var_name
+ *
+ *  kob - 05/03
+ * v600  4/06 *acm* - Change set_nan from a float function to void, passing
+ *                    back the result as an argument. Needed for port to 64-bit 
+ * *acm*  1/12 - Ferret 6.8 ifdef double_p for double-precision ferret,
+ *               see the definition of macro DFTYPE in ferret.h 
+ */
 
-   set a float (or double) value to NaN - needed for the command
-       set variable/bad=nan var_name
-      
-   kob - 05/03
-* v600  4/06 *acm* - Change set_nan from a float function to void, passing
-*                    back the result as an argument. Needed for port to 64-bit 
-* *acm*  1/12 - Ferret 6.8 ifdef double_p for double-precision ferret, see the
- *             definition of macro DFTYPE in ferret.h 
-*/
-
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
 #include <signal.h>
 #include <stdio.h>
 #include <math.h>
 #include "ferret.h"
 
 void FORTRAN(set_nan) (DFTYPE *val)
-
-
 {
-
   sigset_t block_fpe;
 
   /* initialize the signal mask */
   sigemptyset(&block_fpe);
-  sigaddset (&block_fpe, SIGFPE); 
-  
-  
+  sigaddset(&block_fpe, SIGFPE); 
+
   /* block SIGFPE so we don't have problems generating NaN */
-  sigprocmask (SIG_BLOCK, &block_fpe, NULL); 
+  sigprocmask(SIG_BLOCK, &block_fpe, NULL); 
 
   /* calculating the inverse hyperbolic cosine of a value less
      than 1 will result in NaN - seems better than doing a divide
@@ -76,8 +70,7 @@ void FORTRAN(set_nan) (DFTYPE *val)
   /*val = 1./0.; */
 
   /* unblock SIGFPE */
-  sigprocmask (SIG_UNBLOCK, &block_fpe, NULL); 
+  sigprocmask(SIG_UNBLOCK, &block_fpe, NULL); 
 
   return;
-  
 }

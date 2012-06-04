@@ -34,15 +34,13 @@
 */
 
 /* 
-   Allocate storage and copy the given input string,
-   returning the output pointer
+ * Allocate storage and copy the given input string,
+ * returning the output pointer
+ *
+ *  V540: *sh* 9/01 - added support for string arrays
+ *
+ */
 
-    V540: *sh* 9/01 - added support for string arrays
-*/
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-/* *acm   9/06 v600 - add stdlib.h wherevfer there is stdio.h for altix build*/ 
-#include <wchar.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -52,8 +50,12 @@ void copy_c_string_(in_ptr, out_ptr)
 {
    if ( *out_ptr != NULL )
       free(*out_ptr);
+   if ( *in_ptr == NULL ) {
+     *out_ptr = NULL;
+     return;
+   }
 
-   *out_ptr = (char *) malloc(sizeof(char) * (strlen(*in_ptr)+1));
+   *out_ptr = (char *) malloc(sizeof(char) * (strlen(*in_ptr) + 1));
    if ( *out_ptr == NULL )
       abort();
 

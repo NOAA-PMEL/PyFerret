@@ -36,34 +36,25 @@
 
 
 
-/* batch_graphics.c
+/*
+ * batch_graphics.c
+ *
+ * contains entries
+ *     void set_batch_graphics()    ! sets program state
+ * and
+ *     int its_batch_graphics       ! queries program state
+ *
+ * programmer - steve hankin
+ * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+ *
+ * revision 0.0 - 3/5/97
+ * v552 *acm* 6/5/03 check for the new flag its_gif
+ * v602 *acm*  12/07 additions for metafile batch mode; new flag its_meta
+ *                   and routine its_meta_graphics to check for it
+ *
+ */
 
-* contains entries
-*     void set_batch_graphics()    ! sets program state
-* and
-*     int its_batch_graphics       ! queries program state
-
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
-* revision 0.0 - 3/5/97
-* v552 *acm* 6/5/03 check for the new flag its_gif
-* v602 *acm*  12/07 additions for metafile batch mode; new flag its_meta
-*                   and routine its_meta_graphics to check for it
-*
-* compile with
-*    cc -g -c batch_graphics.c
-*  or
-*    cc    -c batch_graphics.c
-
-*/
-
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
-#include <wchar.h>
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
@@ -84,7 +75,6 @@ void FORTRAN(set_batch_graphics)(char *outfile)
   int length;
   char * result;
   int modestate;
-
 
   assert(outfile);
   length = strlen(outfile);
@@ -130,8 +120,4 @@ int FORTRAN(its_meta_graphics)()
 {
    return (its_meta);
 }
-
-
-      
-
 

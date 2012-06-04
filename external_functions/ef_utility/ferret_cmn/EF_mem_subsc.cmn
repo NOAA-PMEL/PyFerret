@@ -21,6 +21,7 @@
 	INTEGER		ef_max_mem_args
 	PARAMETER     ( ef_max_mem_args = 12 )
 
+        EXTERNAL EF_MEM_SUBSC
 	COMMON / EF_MEM_SUBSC /
      .		mem1lox, mem2lox, mem3lox, mem4lox,  mem5lox,  mem6lox,
      .		mem7lox, mem8lox, mem9lox, mem10lox, mem11lox, mem12lox,
@@ -102,58 +103,4 @@
      .		wrk7hiz, wrk8hiz, wrk9hiz, wrk10hiz, wrk11hiz, wrk12hiz,
      .		wrk1hit, wrk2hit, wrk3hit, wrk4hit,  wrk5hit,  wrk6hit,
      .		wrk7hit, wrk8hit, wrk9hit, wrk10hit, wrk11hit, wrk12hit
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

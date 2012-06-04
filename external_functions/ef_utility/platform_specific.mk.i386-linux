@@ -9,7 +9,7 @@ INCLUDES	= -I. -I../ef_utility -I../ef_utility/ferret_cmn
 
 CCSHFLAG	=
 CC		= gcc
-CFLAGS		= -fPIC -m32 -O2 $(INCLUDES)
+CFLAGS		= -fPIC -m32 -O $(INCLUDES)
 
 FC		= gfortran
 F77		= gfortran

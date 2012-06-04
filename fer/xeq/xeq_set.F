@@ -1819,15 +1819,15 @@ c *kob* 4/97
            slen = item_end(1) - item_start(1) + 1
            IF ( MATCH4(buff2, slen, 'DRAFT', 5) ) THEN
                CALL FGD_SHOW_ALL_WINDOWS()
-               CALL FGD_SET_ANTIALIAS(.FALSE.)
+               CALL FGD_SET_ANTIALIAS(0)
                CALL FGD_SET_ENGINE('PYQTCAIRO', status)
            ELSE IF ( MATCH4(buff2, slen, "HIGHQUALITY", 11) ) THEN
                CALL FGD_SHOW_ALL_WINDOWS()
-               CALL FGD_SET_ANTIALIAS(.TRUE.)
+               CALL FGD_SET_ANTIALIAS(1)
                CALL FGD_SET_ENGINE('PYQTVIEWER', status)
            ELSE IF ( MATCH4(buff2, slen, 'UNMAPPED', 8) ) THEN
                CALL FGD_HIDE_ALL_WINDOWS()
-               CALL FGD_SET_ANTIALIAS(.TRUE.)
+               CALL FGD_SET_ANTIALIAS(1)
                CALL FGD_SET_ENGINE('CAIRO', status)
            ELSE
                CALL ERRMSG(ferr_invalid_command, status,
@@ -1870,11 +1870,11 @@ c *kob* 4/97
      .             *5000)
         ENDIF
         IF ( lp .GT. 0 ) THEN
-           CALL FGD_SET_ANTIALIAS(.TRUE.)
+           CALL FGD_SET_ANTIALIAS(1)
            slen = 1
         ENDIF
         IF ( loc .GT. 0 ) THEN
-           CALL FGD_SET_ANTIALIAS(.FALSE.)
+           CALL FGD_SET_ANTIALIAS(0)
            slen = 1
         ENDIF
 

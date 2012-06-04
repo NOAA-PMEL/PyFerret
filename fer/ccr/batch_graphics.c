@@ -50,6 +50,7 @@ void FORTRAN(set_batch_graphics)(char *outfile)
 {
   int length;
   int status;
+  int aaint;
 
   assert( outfile != NULL );
   length = strlen(outfile);
@@ -72,7 +73,8 @@ void FORTRAN(set_batch_graphics)(char *outfile)
   FORTRAN(fgd_hide_all_windows)();
   /* This assume GCC standard for passing Holerith strings */
   FORTRAN(fgd_set_engine)("CAIRO", &status, 5);
-
-  return;
+  /* Turn on antialiasing to match the Ferret command SET GRAPHICS UNMAPPED */
+  aaint = 1;
+  FORTRAN(fgd_set_antialias)(&aaint);
 }
 

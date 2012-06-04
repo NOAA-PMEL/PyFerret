@@ -3,27 +3,27 @@
 * in all existing and future windows.
 *
 * Input Arguments:
-*     antialias - turn on antialiasing?
+*     aaint - if non-zero, turn on antialiasing;
+*             if zero, turn off antialiasing
 *
-        SUBROUTINE FGD_SET_ANTIALIAS(antialias)
+* TODO: when SET WIN /ANTIALIAS implemented, have this function
+*       only set antialiasing for future windows.
+*
+        SUBROUTINE FGD_SET_ANTIALIAS(aaint)
 
         IMPLICIT NONE
-        LOGICAL antialias
+        INTEGER aaint
 
         INCLUDE 'ferret.parm'
         INCLUDE 'xprog_state.cmn'
         INCLUDE 'fgrdel.cmn'
 
 *       Local variables
-        INTEGER k, aaint, success, errmsglen
+        INTEGER k, success, errmsglen
         CHARACTER*2048 errmsg
 
 *       Inform all existing windows
-        IF ( antialias ) THEN
-            aaint = 1
-        ELSE
-            aaint = 0
-        ENDIF
+*       To be eliminated when SET WIN /ANTIALIAS implemented
         DO 10 k = 1, maxwindowobjs
             IF ( windowobjs(k) .NE. nullobj ) THEN
                 CALL FGDWINSETANTIALIAS(success, windowobjs(k), aaint)
@@ -35,8 +35,14 @@
                 ENDIF
             ENDIF
    10   CONTINUE
+
 *       Set the default for future windows
-        useantialiasing = antialias
+        IF ( aaint .NE. 0 ) THEN
+           useantialiasing = .TRUE.
+        ELSE
+           useantialiasing = .FALSE.
+        ENDIF
+
         RETURN
         END
 

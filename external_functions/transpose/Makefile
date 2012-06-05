@@ -16,7 +16,6 @@
 
 include ../../site_specific.mk
 include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
- 
 
 #
 # Macros
@@ -35,8 +34,8 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 #
 # Targets
 #
-# all:    transpose_xz.so transpose_xy.so transpose_xt.so transpose_yz.so transpose_yt.so transpose_zt.so
 
+# all:    transpose_xz.so transpose_xy.so transpose_xt.so transpose_yz.so transpose_yt.so transpose_zt.so
 all:
 
 debug:

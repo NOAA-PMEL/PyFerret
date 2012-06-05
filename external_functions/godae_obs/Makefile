@@ -27,7 +27,7 @@ GOB_OBJS = ocn_obs.o
 #
 
 .c.so:
-	$(CC) ${GOBFLAGS} ${CFLAGS} -c $<
+	$(CC) $(GOBFLAGS) $(CFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so 
 
 .F.so:

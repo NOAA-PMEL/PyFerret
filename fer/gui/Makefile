@@ -49,23 +49,13 @@ LIB    = ../../lib/libgui.a
 
 all:	$(LIB)
 
-
 $(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)
 	$(RANLIB) $@
 
-
-depend:
-	makedepend $(CFLAGS) $(GUI_INCLUDES) $(SRCS_C)
- 
-
 clean:
-	rm -f core *.o *.a $(LIB)
-
+	rm -f *.o $(LIB)
 
 #
 # End of Makefile
 #
-# DO NOT DELETE
-# DO NOT DELETE THIS LINE -- make depend depends on it.
-

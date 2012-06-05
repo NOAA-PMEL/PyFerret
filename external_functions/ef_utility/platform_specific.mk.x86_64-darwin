@@ -11,18 +11,18 @@ FINCLUDES       = -I. -I../ef_utility -I../ef_utility/ferret_cmn
 
 
 CCSHFLAG        =
-CC              = gcc-4.2
+CC              = gcc
 RANLIB          = /usr/bin/ranlib
 CFLAGS          = -fPIC -arch x86_64 -c -u -DDARWIN -O2 $(INCLUDES)
-FC              = ifort
-F77		= ifort
+FC              = gfortran
+F77		= gfortran
 F77SHFLAG       = -dynamiclib
 FFLAGS          = -fPIC -c -assume no2underscores -assume nobscc -zero -noautomatic -extend-source 132 -heap-arrays 10 $(FINCLUDES)
-LD		= gcc-4.2
+LD		= gcc
 LD_DYN_FLAGS    = -arch x86_64 -dynamiclib -undefined dynamic_lookup
 SYSLIBS         = -lc
 
-CPP             = cpp-4.2
+CPP             = cpp
 CPP_FLAGS       = -P -traditional $(INCLUDES)
 CFLAGS_DEBUG	= -g -Ddebug
 FFLAGS_DEBUG	= -g -Ddebug

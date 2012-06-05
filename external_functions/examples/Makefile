@@ -29,14 +29,12 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 .F.so:
 	$(F77) $(FFLAGS) -c  $<
 	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o -o $*.so
- 
 
 #
 # Targets
 #
 
 all:	add_9.so avet.so pass_thru.so percent_good_t.so storage.so string_arg.so subtract.so factorial.so dates.so
-
  
 new:	pass_thru_string.so pick_a_string.so strings_as_args.so stringlengths.so
  

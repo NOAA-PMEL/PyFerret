@@ -28,15 +28,14 @@ SUB_OBJS = scat2grid_subs.o
 # Rules
 #
 
-
 .F.so:
 	$(F77) $(FFLAGS) -c  $<
 	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $(SYSLIBS) $*.o -o $*.so
  
 .c.o:
-	$(CC) ${CFLAGS} -c $<
+	$(CC) $(CFLAGS) -c $<
 
-.f.o:
+.F.o:
 	$(F77) $(FFLAGS) -c  $<
 
 #
@@ -61,7 +60,7 @@ install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so *.f
+	-rm -f *.o *.so
 
 #
 # End of Makefile

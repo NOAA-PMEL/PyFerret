@@ -12,7 +12,6 @@
 include ../../site_specific.mk
 include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
  
-
 #
 # Macros
 #
@@ -33,7 +32,6 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 
 # all:    lanczos.so
 all:
-
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

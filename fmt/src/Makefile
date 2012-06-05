@@ -20,6 +20,7 @@
 # 11/14/96 - *kob* - Add Linux entry similar to that of AIX - linux f77
 #		     doesn't use pre-processor
 # 08/19/97 - *kob* - added "-Dreclen_in_bytes" to aix flags
+# 06/05/12 - *kms* - change name to libtmap.a to simplify linking
 
 
 include ../../site_specific.mk
@@ -29,16 +30,10 @@ include ./SOURCE_FILES
 OBJS= $(SRCS_F:.F=.o) $(SRCS_C:.c=.o) 
 
 LIBLOC=../../lib
-$(LIBLOC)/tmap_lib.a:	$(OBJS)
-	ar r $(LIBLOC)/tmap_lib.a $(OBJS)
-	$(RANLIB) $(LIBLOC)/tmap_lib.a
-
-links:
-	rm -f tmap_format
-	ln -s ../cmn tmap_format
-
-
+$(LIBLOC)/libtmap.a:	$(OBJS)
+	ar r $(LIBLOC)/libtmap.a $(OBJS)
+	$(RANLIB) $(LIBLOC)/libtmap.a
 
 clean:
-	rm -f *.o *.f $(LIBLOC)/tmap_lib.a
+	rm -f *.o $(LIBLOC)/libtmap.a
 

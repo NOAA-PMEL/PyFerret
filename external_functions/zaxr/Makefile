@@ -14,7 +14,6 @@
 
 include ../../site_specific.mk
 include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
- 
 
 #
 # Macros
@@ -36,7 +35,6 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 
 # all:	zaxreplace_avg.so zaxreplace_bin.so zaxreplace_lin.so zaxreplace_zlev.so zaxreplace_rev.so
 all:	zaxreplace_xyt.so 
-
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

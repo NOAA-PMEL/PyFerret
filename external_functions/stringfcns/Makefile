@@ -16,7 +16,6 @@
 
 include ../../site_specific.mk
 include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
- 
 
 #
 # Macros
@@ -33,9 +32,9 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
 
 .c.o:
-	$(CC) ${CFLAGS} -c $<
+	$(CC) $(CFLAGS) -c $<
 
-.f.o:
+.F.o:
 	$(F77) $(FFLAGS) -c $<
 
 #
@@ -43,7 +42,6 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 #
 
 all:	str_missing.so efstrings.so maxstrlen.so pass_thru_string.so pick_a_string.so string_cat3.so string_len_sum.so strings_as_args.so length_of_strings.so
-
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

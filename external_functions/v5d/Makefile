@@ -14,7 +14,6 @@
 include ../../site_specific.mk
 include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 include v5d_platform_specific_flags.mk.$(BUILDTYPE)
- 
 
 #
 # Macros
@@ -29,7 +28,7 @@ V5D_OBJS = binio.o v5d.o
 #
 
 .c.o:
-	$(CC) ${V5DFLAGS} ${CFLAGS} -c $<
+	$(CC) $(V5DFLAGS) $(CFLAGS) -c $<
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<

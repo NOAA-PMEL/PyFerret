@@ -29,7 +29,7 @@
 #                     created threddsBrowser target and added it to all
 # v6.7 4/11 *kms* - renamed old "all" target to "build" and made the "all"
 #                   target go to the desired default target ncdf4;
-#                   cleaned-up tages
+#                   cleaned-up tags
 # 
 # include platform specific macro definitions
 #
@@ -57,10 +57,10 @@ CLEANDIRS = $(DIRS)
 
 DEPDIRS = ccr
 
-FERLIBS = -L../lib -lxeq -lgnl -lferplt -lrpn -lstk -ldoo -locn \
+FERLIBS = -lxeq -lgnl -lferplt -lrpn -lstk -ldoo -locn \
 	-lctx -lfmt -lino -lmem -lutl -ldat -lccr -lefi -lefn
 
-PPLLIBS = -L../lib -lplt -lpll -lsym -lcmp -lour -lepi -lusr 
+PPLLIBS = -lplt -lpll -lsym -lcmp -lour -lepi -lusr -ltmap
 
 FERMAIN = ccr/fermain_c.o ccr/gui_init.o
 
@@ -87,11 +87,14 @@ EF_CMNS = common/EF_Util.cmn common/EF_Util.parm common/EF_mem_subsc.cmn
 # Targets
 #
 
+.PHONY: all
 all: ncdf4
 
+.PHONY: build
 build: update fmt_libraries fer_libraries ppl_libraries special_code ferret threddsBrowser
 
-ncdf4:	.FRC
+.PHONY: ncdf4
+ncdf4:
 	mkdir -p ../lib
 	$(MAKE) "CFLAGS=$(CFLAGS) -O -DNDEBUG" \
 		"FFLAGS=$(FFLAGS) -O -DNDEBUG" \
@@ -99,65 +102,67 @@ ncdf4:	.FRC
 		build
 
 # Dont seem to have all the static libraries we need for this.
-ncdf4_static:	.FRC
+.PHONY: ncdf4_static
+ncdf4_static:
 	mkdir -p ../lib
 	$(MAKE) "CFLAGS=$(CFLAGS) -O -DNDEBUG" \
 		"FFLAGS=$(FFLAGS) -O -DNDEBUG" \
 		"LDFLAGS=$(LDFLAGS) -static" \
 		"GUI_FAKES=special/gui_fakes.o" build
 
-debug:	.FRC
+.PHONY: debug
+debug:
 	mkdir -p ../lib
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g"  \
 		"FFLAGS = $(FFLAGS) -O0 -g" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) -O0 -g" \
 		"GUI_FAKES=special/gui_fakes.o" build
 
+.PHONY: ferret
 ferret:	
 	- mv $(EXECNAME) $(EXECNAME)_`ls -l $(EXECNAME) | awk '{print $$6"_"$$7}' | tr [A-Z] [a-z]`
-	- $(LD) $(LDFLAGS) -o $(EXECNAME) \
+	- $(LD) $(LDFLAGS) -L../lib \
 		$(FERMAIN) \
 		$(FEROBJS) \
 		$(GUI_FAKES) \
-		$(XTRA_OBJ) \
-		$(GKSOBJ) \
 		$(PPLOBJS) \
 		$(EFUOBJS) \
 		$(EFIOBJS) \
-		$(BDEAD) \
 		$(FERLIBS) \
 		$(PPLLIBS) \
-		$(MOVIELIB) \
-		$(TMLIB) \
 		$(READLINELIB) \
 		$(TERMCAPLIB) \
 		$(CDFLIB) \
 		$(HDFLIB) \
 		$(GKSLIB) \
-		$(SYSLIB)
+		$(SYSLIB) \
+		-o $(EXECNAME)
 	chmod +x $(EXECNAME)
 
-update: .FRC
+.PHONY: update
+update:
 	- mv $(EXECNAME) $(EXECNAME)_`ls -l $(EXECNAME) | awk '{print $$6"_"$$7}' | tr [A-Z] [a-z]`
 	${MAKE} update_date DATE=`/bin/date +%D`
 	rm -f special/xrevision_type_data.[Ffo]
 	sed -e 's&mmmmmmmm&($(DEBUG_TITLE)/$(GUI))&' -e 's&(/&(&' -e 's&/)&)&' < special/xrevision_type_data.template > special/xrevision_type_data.F 
 	rm -f special/xplatform_type_data.[Ffo]
 	sed -e 's&mmmmmmmm&$(PLATFORM)&' -e 's&(/&(&' -e 's&/)&)&' < special/xplatform_type_data.template > special/xplatform_type_data.F 
-	(cd special;make)
+	(cd special; make)
 
+.PHONY: update_date
 update_date:
 	rm -f special/xmake_date_data.[Ffo]
 	sed "s&xxxxxxxx&$(DATE)&" <special/xmake_date_data.template >special/xmake_date_data.F
 
-
+.PHONY: libraries
 libraries: ppl_libraries fer_libraries
 
-
-fmt_libraries: .FRC
+.PHONY: fmt_libraries
+fmt_libraries:
 	$(MAKE) -C ../fmt/src
 
-fer_libraries: .FRC
+.PHONY: fer_libraries
+fer_libraries:
 	for i in $(LIBS) ; \
         do \
             if ! $(MAKE) -C $$i ; then \
@@ -165,46 +170,39 @@ fer_libraries: .FRC
             fi ; \
         done
 
-
-ppl_libraries: .FRC
+.PHONY: ppl_libraries
+ppl_libraries:
 	$(MAKE) -C ../ppl all
 
-special_code: .FRC
+.PHONY: special_code
+special_code:
 	$(MAKE) -C special all
 
-threddsBrowser: .FRC
+.PHONY: threddsBrowser
+threddsBrowser:
 	$(MAKE) -C threddsBrowser all
 
+.PHONY: clean
 clean: fmt_clean ppl_clean fer_clean 
 	- mv $(EXECNAME) $(EXECNAME)_`ls -l $(EXECNAME) | awk '{print $$6"_"$$7}' | tr [A-Z] [a-z]`
 	rm -f ../lib/*.a ../lib/*.so
 	rm -f special/xmake_date_data.F special/xplatform_type_data.F special/xrevision_type_data.F
 
-ppl_clean: .FRC
+.PHONY: ppl_clean
+ppl_clean:
 	$(MAKE) -C ../ppl clean
 
-fer_clean: .FRC
+.PHONY: fer_clean
+fer_clean:
 	for i in $(CLEANDIRS) ; \
         do \
             $(MAKE) -C $$i clean ; \
         done
 
-fmt_clean: .FRC
+.PHONY: fmt_clean
+fmt_clean:
 	$(MAKE) -C ../fmt/src clean
-
-depend: .FRC
-	$(MAKE) -C ../ppl depend
-	for i in $(DEPDIRS) ; \
-        do \
-            $(MAKE) -C $$i $@ ; \
-        done
-
-
-
-
-.FRC:
 
 #
 # End of Makefile
 #
-# DO NOT DELETE THIS LINE -- make depend depends on it.

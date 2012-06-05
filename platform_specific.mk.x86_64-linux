@@ -61,11 +61,11 @@
 			  -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 
 # Flags for compiling the PlotPlus FORTRAN code (ppl subdirectory)
 	PPLUS_FFLAGS	= $(CPP_FLAGS) \
-			  -fno-automatic -DusingDODSf2cUnderscore -fno-second-underscore \
+			  -fno-automatic -fno-second-underscore \
 			  -fdollar-ok -ffixed-line-length-132 $(FINCLUDES)
 # Flags for compiling non-PlotPlus FORTRAN code
 	FFLAGS		= $(CPP_FLAGS) \
-			  -fno-automatic -DusingDODSf2cUnderscore -fno-second-underscore \
+			  -fno-automatic -fno-second-underscore \
 			  -fdollar-ok -ffixed-line-length-132 -ffpe-trap=overflow \
 			  -fdefault-real-8 -fdefault-double-8 $(FINCLUDES)
 
@@ -86,8 +86,6 @@
 
 # -static-libgfortran can be used with gfortran 4.4 but not 4.1
 # /usr/lib/gcc/x86_64-redhat-linux/4.1.2/libgfortran.a
-
-	TMLIB		= ../lib/tmap_lib.a
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
 
@@ -114,15 +112,20 @@
 	READLINELIB	= $(READLINE_DIR)/lib64/libreadline.a \
 			  $(READLINE_DIR)/lib64/libhistory.a
 
-# cancel the default rule for .f -> .o to prevent objects from being built
-# from .f files that are out-of-date with respect to their corresponding .F file
-%.o : %.f
+## cancel the default rule for .f -> .o to prevent objects from being built
+## from .f files that are out-of-date with respect to their corresponding .F file
+#%.o : %.f
+#
+## use cpp to preprocess the .F files to .f files and then compile the .f files
+#%.o : %.F
+#	rm -f $*.f
+#	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
+#	$(F77) $(FFLAGS) -c $*.f	 
 
-# use cpp to preprocess the .F files to .f files and then compile the .f files
+# Directly compile the .F source files to the .o object files
+# since gfortran can handle the C compiler directives in Fortran code
 %.o : %.F
-	rm -f $*.f
-	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
-	$(F77) $(FFLAGS) -c $*.f	 
+	$(FC) $(FFLAGS) -c $*.F -o $*.o
 
 #
 # End of platform_specific_includes.mk.x86_64-linux

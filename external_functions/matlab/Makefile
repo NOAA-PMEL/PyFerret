@@ -39,19 +39,17 @@ FFLAGS += -PIC
 OBJSF = $(SRCS_F:.F=.o)
 OBJSf = $(SRCS_F:.f=.o)
 
-
 #
 # Targets
 #
 
 all:	matlab.so matlab_func.so
 
-
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 clean:
-	rm -f core *.so *.o
+	rm -f *.so *.o
 
 matlab.so: matlab.o matlab_link.o
 	$(LD) -L $(MATLAB_DIR) $(LD_DYN_FLAGS) matlab.o matlab_link.o -leng -lmat -o matlab.so	
@@ -62,4 +60,4 @@ matlab_func.so: matlab_func.o matlab_func_link.o
 
 #
 # End of Makefile
-
+#

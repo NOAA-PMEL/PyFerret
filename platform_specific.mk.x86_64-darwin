@@ -30,11 +30,11 @@ FINCLUDES	= -I$(TMAP_LOCAL)/ppl/tmap_inc \
 GUI_INCLUDES	= -I/usr/X11R6/include
  
 # New platform type var - *kob* 10/01
-PLATFORM := $(shell uname -rs) (ifort)
+PLATFORM := $(shell uname -rs)
 
-CC              = gcc-4.2
-F77		= ifort
-
+CC              = gcc
+FC		= gfortran
+F77		= gfortran
 RANLIB          = /usr/bin/ranlib
 
 # Flags for compiling all the C code
@@ -62,12 +62,10 @@ LD		= gcc-4.2
 LDFLAGS		= -v --verbose -fpic -arch x86_64 -L/usr/X11R6/lib 
 LD_DYN_FLAGS	= -v -fpic -arch x86_64 -dynamiclib -L/usr/X11R6/lib -L$(TMAP_LOCAL)/lib -lefi
 #LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib  -static 
- 
+
 
 
 SYSLIB		= -L/usr/X11R6/lib -L/usr/local/lib/ -L$(TMAP_LOCAL)/lib -ldl -lXpm -lXft -lXrender -lfontconfig -llist -lc /usr/local/lib/libXm.a -lXt -lXext -lX11 -lXp -lSM -lICE -lc /opt/intel/Compiler/11.1/058/lib/lib{ifcore,ifport,irc,imf,svml}.a
-
-TMLIB		= ../lib/tmap_lib.a
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 
@@ -82,13 +80,15 @@ DODS_LIBS   	= -L$(TMAP_LOCAL)/src/DODS/lib -L$(TMAP_LOCAL)/src/DODS/packages/li
 
 LINUX_OBJS  = dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 
-# .IGNORE:
+#.F.o:
+#	rm -f $*__.f
+#	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e        's/de	/de /g' | sed -e  's/de 	/de /g' > $*__.f
+#	$(F77) $(FFLAGS) $*__.f; mv $*__.o $*.o
 
-.F.o:
-	rm -f $*__.f
-	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e        's/de	/de /g' | sed -e  's/de 	/de /g' > $*__.f
-	$(F77) $(FFLAGS) $*__.f; mv $*__.o $*.o
-
+# Directly compile the .F source files to the .o object files
+# since gfortran can handle the C compiler directives in Fortran code
+%.o : %.F
+	$(FC) $(FFLAGS) -c $*.F -o $*.o
 
 #
 # End of platform_specific_flags.mk.x86_64-darwin

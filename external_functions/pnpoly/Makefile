@@ -7,13 +7,11 @@
 include ../../site_specific.mk
 include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
  
-
 #
 # Macros
 #
 
 .SUFFIXES: .so
-
 
 SUB_OBJS = pnpoly_subs.o
 
@@ -26,9 +24,9 @@ SUB_OBJS = pnpoly_subs.o
 	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so 
 
 .c.o:
-	$(CC) ${CFLAGS} -c $<
+	$(CC) $(CFLAGS) -c $<
 
-.f.o:
+.F.o:
 	$(F77) $(FFLAGS) -c $<
 
 #
@@ -37,7 +35,6 @@ SUB_OBJS = pnpoly_subs.o
 
 #all:	pnpoly_subs.o pt_in_poly.so pt_in_poly_curvi.so
 all:	pnpoly_subs.o pt_in_poly.so
-
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

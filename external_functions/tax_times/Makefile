@@ -13,7 +13,6 @@
 include ../../site_specific.mk
 include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
  
-
 #
 # Macros
 #
@@ -27,14 +26,12 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 .F.so:
 	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o -o $*.so
- 
 
 #
 # Targets
 #
 
 #all:	tax
-
 all:	tax_index_datestring.so
 
 tax:    tax_year.so tax_month.so tax_day.so tax_units.so \

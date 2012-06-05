@@ -12,8 +12,8 @@ include ../../../platform_specific.mk.$(BUILDTYPE)
 
 all:    binary 
 
-binary:	binary.f
-	$(F77) $(FFLAGS) -o binary binary.f
+binary:	binary.F
+	$(F77) $(FFLAGS) -o binary binary.F
 	./binary   in_fnt01a.chr  fnt01.chr
 	./binary   in_fnt02a.chr  fnt02.chr
 	./binary   in_fnt03a.chr  fnt03.chr

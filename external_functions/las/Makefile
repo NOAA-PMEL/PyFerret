@@ -16,7 +16,6 @@
 
 include ../../site_specific.mk
 include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
- 
 
 #
 # Macros
@@ -33,9 +32,9 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
 
 .c.o:
-	$(CC) ${CFLAGS} -c $<
+	$(CC) $(CFLAGS) -c $<
 
-.f.o:
+.F.o:
 	$(F77) $(FFLAGS) -c $<
 
 #

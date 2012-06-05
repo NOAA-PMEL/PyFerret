@@ -45,7 +45,7 @@ int get_c_string_len_(ptr_ptr)
      char** ptr_ptr;
 {
    /* treats an undefined string the same as an empty string */
-   if ( ptr_ptr == NULL )
+   if ( *ptr_ptr == NULL )
       return 0;
 
    return (int)strlen(*ptr_ptr);

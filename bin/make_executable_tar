@@ -133,6 +133,9 @@ echo 'and put it under the $FER_LIBS ($FER_DIR/lib) subdirectory'
 cd ${temp_dir}/lib
 ${mylns} toolsUI-4.1.jar toolsUI.jar
 
+# Copy libferret_ef_mem_subsc.so
+${mycp} ${ferret_dir}/lib/libferret_ef_mem_subsc.so ${temp_dir}/lib
+
 # Copy pyferret files
 if [ "${pyferret_dir}" != "" ]; then
    python_dirs=`find ${pyferret_dir} -type d -name python\*`

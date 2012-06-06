@@ -21,11 +21,11 @@ DATE := $(shell /bin/date +%D)
 # Macros
 #
 
-DIRS = ccr cferbind ctx dat doo efi efn ef_utility fmt gnl grdel ino mem \
-       ocn plt pyf rpn special stk utl xeq
+DIRS = ccr cferbind ctx dat doo efi efn efmem ef_utility fmt gnl grdel \
+       ino mem ocn plt pyf rpn stk utl xeq special
 
-LIBS = ccr cferbind ctx dat doo efi efn ef_utility fmt gnl grdel ino mem \
-       ocn plt pyf rpn stk utl xeq 
+LIBS = ccr cferbind ctx dat doo efi efn efmem ef_utility fmt gnl grdel \
+       ino mem ocn plt pyf rpn stk utl xeq 
 
 #
 # Targets

@@ -67,7 +67,7 @@
 	FFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -fno-automatic -fdollar-ok -ffixed-line-length-132
 	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -fno-automatic -fdollar-ok -ffixed-line-length-132
 
-# LD and LD_DYN_FLAGS only used for generating external function shared-object libraries
+# LD and LD_DYN_FLAGS only used for generating libferret_ef_mem_subsc.so
 	LD		= $(shell which gfortran)
 	LD_DYN_FLAGS	= -m64 -fPIC -shared -rdynamic
 

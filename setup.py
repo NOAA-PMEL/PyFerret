@@ -3,7 +3,7 @@ import sys
 import os
 import os.path
 
-# Make sure everything is resolved
+# Make sure functions are externally visible and that everything is resolved
 addn_link_args = [ "-fPIC", "-rdynamic", "-Xlinker", "--no-undefined", ]
 
 # (Non-standard) Directories containing .h include files
@@ -16,10 +16,10 @@ incdir_list = [ "pyfermod",
 # Non-standard directories containing libraries to link
 hdf5_libdir = os.getenv("HDF5_LIBDIR")
 if hdf5_libdir == None:
-    raise ValueError, "Environment variable HDF5_LIBDIR is not defined"
+    raise ValueError("Environment variable HDF5_LIBDIR is not defined")
 netcdf4_libdir = os.getenv("NETCDF4_LIBDIR")
 if netcdf4_libdir == None:
-    raise ValueError, "Environment variable NETCDF4_LIBDIR is not defined"
+    raise ValueError("Environment variable NETCDF4_LIBDIR is not defined")
 libdir_list = [ "lib", str(hdf5_libdir), str(netcdf4_libdir), ]
 
 # Get the list of ferret static libraries
@@ -35,6 +35,7 @@ lib_list.extend(fer_lib_list)
 lib_list.extend(fer_lib_list)
 lib_list.extend(fer_lib_list)
 lib_list.extend(fer_lib_list)
+# Add required system libraries to the list to link in
 lib_list.append("python%i.%i" % sys.version_info[:2])
 lib_list.extend( ( "cairo", "netcdff", "netcdf", "hdf5_hl", "hdf5",
                    "curl", "z", "dl", "gfortran", "m", ) )
@@ -69,16 +70,16 @@ ext_mods = [ Extension("pyferret.libpyferret", include_dirs = incdir_list,
 
 pyferret_version = os.getenv("PYFERRET_VERSION")
 if pyferret_version == None:
-    raise ValueError, "Environment variable PYFERRET_VERSION is not defined"
+    raise ValueError("Environment variable PYFERRET_VERSION is not defined")
 
 # Configure the setup
 setup(name = "pyferret",
       version = pyferret_version,
-      description = "python module providing ferret functionality",
-      long_description = "python module providing ferret functionality",
+      description = "python module providing Ferret functionality",
+      long_description = "python module providing Ferret functionality",
       author = "Karl M. Smith",
       author_email = "karl.smith@noaa.gov",
-      url = "http://ferret.pmel.noaa.gov/Ferret",
+      url = "http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret",
       packages = [ "pyferret", "pyferret.fershp", "pyferret.graphbind", "pyferret.stats", ],
       package_dir = { "pyferret":"pyfermod", },
       ext_modules = ext_mods)
@@ -95,7 +96,7 @@ setup(name = "pipedviewer",
                          "of these modifications made to the scene.",
       author = "Karl M. Smith",
       author_email = "karl.smith@noaa.gov",
-      url = "http://ferret.pmel.noaa.gov/Ferret",
+      url = "http://ferret.pmel.noaa.gov/Ferret/documentation/pyferret",
       packages = [ "pipedviewer", ],
       package_dir = { "pipedviewer":"pviewmod", })
 

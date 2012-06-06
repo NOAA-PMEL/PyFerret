@@ -23,6 +23,7 @@ c*                 *ac* 5/06 Add ef_set_result_type
 
       EXTERNAL ef_bail_out
       EXTERNAL ef_get_arg_info
+      EXTERNAL ef_get_arg_mem_subscripts
       EXTERNAL ef_get_arg_ss_extremes
       EXTERNAL ef_get_arg_string
       EXTERNAL ef_get_arg_subscripts
@@ -35,7 +36,9 @@ c*                 *ac* 5/06 Add ef_set_result_type
       EXTERNAL ef_get_coordinates
       EXTERNAL ef_get_one_val_sub
       EXTERNAL ef_get_one_val_sub_sub
+      EXTERNAL ef_get_res_mem_subscripts
       EXTERNAL ef_get_res_subscripts
+      EXTERNAL ef_get_wrk_mem_subscripts
       EXTERNAL ef_set_arg_desc
       EXTERNAL ef_set_arg_name
       EXTERNAL ef_set_arg_unit

@@ -1,7 +1,6 @@
 #
-# Makefile for building and installing the ferret shared-object library
-# (libferret.so), the pyferret module with its shared-object library
-# (_pyferret.so), and the ferret.py script.
+# Makefile for building and installing the pyferret module 
+# and the modules and libraries associated with it.
 #
 
 # Site-specific defines
@@ -29,9 +28,10 @@ debug :
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" pymod_debug
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
-## The following builds _pyferret.so, then installs that shared-object library and all the
-## python scripts into $(DIR_PREFIX)/pyferret_install.  This install directory can then be
-## used for the <pyferret_install_dir> argument to make_executables_tar.
+## The following builds libpyferret.so, then installs that shared-object
+## library and all the python scripts into $(DIR_PREFIX)/pyferret_install.
+## This install directory can then be used for the <pyferret_install_dir>
+## argument to make_executables_tar.
 .PHONY : pymod_optimized
 pymod_optimized :
 	rm -fr $(DIR_PREFIX)/build $(DIR_PREFIX)/pyferret_install
@@ -103,6 +103,7 @@ install_exes :
 .PHONY : update
 update :
 	mkdir -p $(INSTALL_FER_DIR)/lib
+	cp -f $(DIR_PREFIX)/lib/libferret_ef_mem_subsc.so $(INSTALL_FER_DIR)/lib
 	cp -f $(DIR_PREFIX)/threddsBrowser/threddsBrowser.jar $(INSTALL_FER_DIR)/lib
 	( cd $(DIR_PREFIX) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \

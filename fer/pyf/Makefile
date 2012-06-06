@@ -1,8 +1,4 @@
 #
-# Makefile (for the FERRET/fer/pyf code)
-#
-
-#
 # Site-specific defines
 #
 include ../../site_specific.mk
@@ -29,14 +25,12 @@ OBJS = $(SRCS_F:.F=.o)
 
 all:	$(LIB)
 
-
 $(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)
 	$(RANLIB) $@
 
-
 clean:
-	rm -f *.o *.f $(LIB)
+	rm -f *.o $(LIB)
 
 #
 # End of Makefile

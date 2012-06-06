@@ -33,7 +33,7 @@ $(COBJS) : $(CHDRS)
 
 .PHONY : clean
 clean :
-	rm -f *.o *.f $(LIBNAME)
+	rm -f *.o $(LIBNAME)
 
 #
 # End of Makefile

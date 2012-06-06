@@ -18,6 +18,7 @@ optimized :
 	$(MAKE) -C $(DIR_PREFIX)/fer optimized
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod_optimized
+	$(MAKE) "CFLAGS = $(CFLAGS) -O" -C $(DIR_PREFIX)/efmem 
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 .PHONY : debug
@@ -26,6 +27,7 @@ debug :
 	$(MAKE) -C $(DIR_PREFIX)/fer debug
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" pymod_debug
+	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" -C $(DIR_PREFIX)/efmem 
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 ## The following builds libpyferret.so, then installs that shared-object
@@ -103,7 +105,7 @@ install_exes :
 .PHONY : update
 update :
 	mkdir -p $(INSTALL_FER_DIR)/lib
-	cp -f $(DIR_PREFIX)/lib/libferret_ef_mem_subsc.so $(INSTALL_FER_DIR)/lib
+	cp -f $(DIR_PREFIX)/lib/ferret_ef_mem_subsc.so $(INSTALL_FER_DIR)/lib
 	cp -f $(DIR_PREFIX)/threddsBrowser/threddsBrowser.jar $(INSTALL_FER_DIR)/lib
 	( cd $(DIR_PREFIX) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \

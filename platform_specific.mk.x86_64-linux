@@ -67,9 +67,9 @@
 	FFLAGS		= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -fno-automatic -fdollar-ok -ffixed-line-length-132
 	PPLUS_FFLAGS	= $(MYINCLUDES) $(MYDEFINES) -m64 -fPIC -fno-automatic -fdollar-ok -ffixed-line-length-132
 
-# LD and LD_DYN_FLAGS only used for generating libferret_ef_mem_subsc.so
+# LD and LD_DYN_FLAGS only used for generating ferret_ef_mem_subsc.so
 	LD		= $(shell which gfortran)
-	LD_DYN_FLAGS	= -m64 -fPIC -shared -rdynamic
+	LD_DYN_FLAGS	= -m64 -fPIC -shared -rdynamic -Xlinker --no-undefined
 
 # PyFerret version number
 	PYFERRET_VERSION = 0.0.9

@@ -1,16 +1,16 @@
 #
 # Site-specific defines
 #
-include ../../site_specific.mk
+include ../site_specific.mk
 
 #
 # include platform specific definitions of:
 #       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
 #
-include ../../platform_specific.mk.$(BUILDTYPE)
+include ../platform_specific.mk.$(BUILDTYPE)
 
 #
-# The shared-object library libferret_ef_mem_subsc.so contains an external
+# The shared-object library ferret_ef_mem_subsc.so contains an external
 # copy of the common block FERRET_EF_MEM_SUBSC in a function which copies
 # the values from Ferret's internal copy of the common block.  These values
 # are obtained by calling the Ferret functions ef_get_arg_mem_subscripts,
@@ -22,7 +22,9 @@ include ../../platform_specific.mk.$(BUILDTYPE)
 # dlopen (for encapsulation), thus the reason Ferret's internal copy of the
 # common block is not seen by the Fortran external functions.
 #
-EFMEMLIB = ../../lib/libferret_ef_mem_subsc.so
+# The name intentionally does not start with "lib" since this library should
+# not be linked with anything.  Ferret loads it dynamically with dlopen.
+EFMEMLIB = ../lib/ferret_ef_mem_subsc.so
 
 #
 # Targets
@@ -31,10 +33,13 @@ EFMEMLIB = ../../lib/libferret_ef_mem_subsc.so
 all: $(EFMEMLIB)
 
 $(EFMEMLIB): copy_ferret_ef_mem_subsc.o
-	$(LD) $(LD_DYN_FLAGS) copy_ferret_ef_mem_subsc.o -o $(EFMEMLIB)
+	$(LD) $(LD_DYN_FLAGS) copy_ferret_ef_mem_subsc.o \
+	-L ../pyferret_install/lib/$(PYTHON_EXE)/site-packages/pyferret \
+	-L ../pyferret_install/lib64/$(PYTHON_EXE)/site-packages/pyferret \
+	-lpyferret -o $(EFMEMLIB)
 
 clean:
-	rm -f *.o ../../lib/ferret_ef_mem_subsc.so
+	rm -f *.o $(EFMEMLIB)
 
 #
 # End of Makefile

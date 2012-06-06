@@ -147,6 +147,7 @@ static volatile sig_atomic_t canjump;
 static int I_have_scanned_already = FALSE;
 static int I_have_warned_already = TRUE; /* Warning turned off Jan '98 */
 
+static void *ferret_ef_mem_subsc_so_ptr;
 
 /* ............. Function Declarations .............. */
 /*
@@ -1906,6 +1907,16 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
       }
 
     }
+
+    /*
+     * Copy the contents of Ferret's internal copy of the common block
+     * FERRET_EF_MEM_SUBSC to the external copy of this same common
+     * block using load_ferret_ef_mem_subsc_ in libferret_ef_mem_subsc.so
+     * Because libferret_ef_mem_subsc.so was loaded with RTLD_GLOBAL,
+     * this external copy of the common block will be seen by other
+     * Ferret Fotran external functions in shared-object libraries.
+     */
+    /*ferret_ef_mem_subsc_so_ptr......*/
 
     /*
      * Prepare for bailout possibilities by setting a signal handler for

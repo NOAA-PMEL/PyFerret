@@ -30,7 +30,7 @@ GOB_OBJS = ocn_obs.o
 #
 
 .c.so:
-	cc ${CFLAGS} -c $<
+	$(CC) $(CFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o $(SYSLIBS) -o $*.so
 
 .F.so:

@@ -40,7 +40,6 @@ FFLAGS += -PIC
 
 OBJSF = $(SRCS_F:.F=.o)
 
-
 #
 # Targets
 #
@@ -63,4 +62,4 @@ matlab_func.so: matlab_func.o matlab_func_link.o
 
 #
 # End of Makefile
-
+#

@@ -31,7 +31,6 @@ LIBS = ccr cferbind ctx dat doo efi efn ef_utility fmt gnl grdel ino mem \
 # Targets
 #
 
-
 .PHONY : all
 all: optimized
 
@@ -108,3 +107,6 @@ fer_clean:
         done
 	rm -f special/xmake_date_data.F special/xrevision_type_data.F special/xplatform_type_data.F
 
+#
+# End of Makefile
+#

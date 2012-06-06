@@ -1,13 +1,4 @@
 #
-# Makefile (for the FERRET/fer/ccr code)
-#
-# August 11 1997
-# Jonathan Callahan (with some help from Joe Sirott)
-# 10/97 *kob*  - pltform specific files will reside in ppl directory and be
-#		 links to actual files in fer directory
-#
-
-#
 # Site-specific defines
 #
 include ../../site_specific.mk
@@ -33,13 +24,12 @@ OBJS = $(SRCS_C:.c=.o) $(SRCS_F:.F=.o)
 
 all:	$(LIB)
 
-
 $(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)
 	$(RANLIB) $@
 
 clean:
-	rm -f *.o *.f $(LIB)
+	rm -f *.o $(LIB)
 
 #
 # End of Makefile

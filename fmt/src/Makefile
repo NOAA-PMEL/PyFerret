@@ -20,6 +20,7 @@
 # 11/14/96 - *kob* - Add Linux entry similar to that of AIX - linux f77
 #		     doesn't use pre-processor
 # 08/19/97 - *kob* - added "-Dreclen_in_bytes" to aix flags
+# 06/05/12 - *kms* - change name to libtmap.a to simplify linking
 
 include ../../site_specific.mk
 include ../../platform_specific.mk.$(BUILDTYPE)
@@ -33,5 +34,5 @@ $(LIB): $(OBJS)
 	$(RANLIB) $(LIB)
 
 clean:
-	rm -f *.o *.f $(LIB)
+	rm -f *.o $(LIB)
 

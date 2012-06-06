@@ -149,7 +149,7 @@ c-----------------------------------------------------------------------
 c
 c     ..profile observations
 c
-#ifdef 0
+#if 0
       if (obs_typ(1:4) .eq. 'prof') then
          open (45, file='report.profile', status='unknown',
      *             form='formatted')
@@ -215,7 +215,7 @@ c-----------------------------------------------------------------------
 c
 c     ..mcsst observations
 c
-#ifdef 0
+#if 0
       else if (obs_typ(1:5) .eq. 'mcsst') then
          open (45, file='report.mcsst', status='unknown',
      *             form='formatted')
@@ -247,7 +247,7 @@ c-----------------------------------------------------------------------
 c
 c     ..altimeter observations
 c
-#ifdef 0
+#if 0
       else if (obs_typ(1:5) .eq. 'altim') then
          open (45, file='report.altim', status='unknown',
      *             form='formatted')
@@ -279,7 +279,7 @@ c-----------------------------------------------------------------------
 c
 c     ..SSM/I sea ice observations
 c
-#ifdef 0
+#if 0
       else if (obs_typ(1:4) .eq. 'ssmi') then
          open (45, file='report.ssmi', status='unknown',
      *             form='formatted')

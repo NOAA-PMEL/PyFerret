@@ -41,7 +41,6 @@ SUB_OBJS = eofsubs.o
 	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $*.o $(SYSLIBS) -o $*.so
 
-
 #
 # Targets
 #

@@ -18,7 +18,6 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 
 .SUFFIXES: .so
 
-
 SUB_OBJS = pnpoly_subs.o
 
 #

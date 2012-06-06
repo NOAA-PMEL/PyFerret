@@ -33,7 +33,7 @@ DAT_OBJS = date_decode.o time_decode.o secs_to_ymdhms.o
 #
 
 .c.so:
-	$(CC) ${CFLAGS} -c $<
+	$(CC) $(CFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o $(SYSLIBS) -o $*.so
 
 .F.so:

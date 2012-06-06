@@ -13,7 +13,6 @@
 # include site specific macro definitions
 #
 include ../../site_specific.mk
- 
 
 #
 # include platform specific macro definitions

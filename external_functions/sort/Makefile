@@ -38,7 +38,8 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 #
 # Targets
 #
-all:    sorti_str.so bin_index_wt.so samplei_multi.so samplej_multi.so samplek_multi.so samplel_multi.so is_element_of_str_nocase.so 
+
+all:    sorti_str.so bin_index_wt.so samplei_multi.so samplej_multi.so samplek_multi.so samplel_multi.so is_element_of_str.so 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
@@ -47,7 +48,7 @@ install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so *.f
+	-rm -f *.o *.so
 
 #
 # End of Makefile

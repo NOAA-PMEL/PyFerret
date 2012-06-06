@@ -1,17 +1,4 @@
 #
-# Makefile (for the $(FER_LINK_DIR)/	ppl/addsxgks code)
-#
-# July 28 1997
-# Jonathan Callahan (with some help from Joe Sirott)
-#
-# 10/97 *kob*  - pltform specific files will reside in ppl directory and be
-#		 links to actual files in fer directory
-# 2/03 *kob* g77 port - move include for platform specifics file
-#                       to correct place and fix f77 macro reference
-# 2/03 *kob* - remove unneedd .F dependency - get it from platform specifics
-#              flag	
-
-#
 # Site-specific defines
 #
 include ../../site_specific.mk
@@ -32,10 +19,16 @@ include ./LIB_NAME
 OBJS = $(SRCS_C:.c=.o) $(SRCS_F:.F=.o)
 
 # change the standard rules for .F -> .o builds so $(PPLUS_FFLAGS) is used
+
+#%.o : %.F
+#	rm -f $*.f
+#	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
+#	$(F77) $(PPLUS_FFLAGS) -c $*.f	 
+
+# Directly compile the .F source files to the .o object files
+# since gfortran can handle the C compiler directives in Fortran code
 %.o : %.F
-	rm -f $*.f
-	$(CPP) -P -traditional $(CPP_FLAGS) $(<F) | sed -e 's/de    /de /g' | sed -e 's/de         /de /g' > $*.f
-	$(F77) $(PPLUS_FFLAGS) -c $*.f	 
+	$(FC) $(PPLUS_FFLAGS) -c $*.F -o $*.o
 
 
 #
@@ -48,12 +41,9 @@ $(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)
 	$(RANLIB) $@
 
-
 clean:
-	rm -f *.o *.f $(LIB)
-
+	rm -f *.o $(LIB)
 
 #
 # End of Makefile
 #
-# DO NOT DELETE THIS LINE -- make depend depends on it.

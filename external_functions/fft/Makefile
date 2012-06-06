@@ -53,7 +53,7 @@ install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so *.f
+	-rm -f *.o *.so
 
 #
 # End of Makefile

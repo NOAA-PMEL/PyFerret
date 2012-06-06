@@ -38,7 +38,7 @@ OBJS = $(SRCS_C:.c=.o) $(SRCS_F:.F=.o)
 all:	$(OBJS)
 
 clean:
-	rm -f *.o *.f
+	rm -f *.o
 
 #
 # End of Makefile

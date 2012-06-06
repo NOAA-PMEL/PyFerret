@@ -1,3 +1,13 @@
+!**************************************************************
+! Author: Patrick Brockmann
+! Contact: Patrick.Brockmann@ipsl.jussieu.fr
+! $Date$
+! $Name: FAST_608_1_3 $
+! $Revision$
+! History:
+! Modification:
+!
+!**************************************************************
 
 set window 1
 
@@ -28,13 +38,9 @@ go taylor_rgraticule.jnl 0.2 /DASH=(0.2,0.1,0.2,0.1)/COLOR=BLACK/THICK=1 2.6 0.4
 
 message
 
-go taylor_frame 3.0 
-use bias_zonalanommap.nc
-! plot data
-go taylor_rgraticule.jnl `Q_SIGMAG[l=1]` /DASH=(0.2,0.1,0.2,0.1)/COLOR=RED/THICK=2
-go taylor_label `Q_SIGMAG[l=1]`  1.0 "DATA"
-! plot models
-repeat/l=1:15 ( \
-   go taylor_polymark P_SIGMAG RCOEFFG /line/fill/nokey/lev=(1,15,1) `l` circle 1.5 ; \
-   go taylor_label P_SIGMAG RCOEFFG "`l`" )
+go taylor_frame.jnl 3 .2 " " "Standard Deviation (units)" 2
+go taylor_agraticule.jnl 3 " " 10 90 10 2
+go taylor_agraticule.jnl 3 " " 91 99 1 2
+go taylor_rgraticule.jnl 0.4 /DASH=(0.2,0.1,0.2,0.1)/COLOR=RED/THICK=2 2.8 0.4 2
+go taylor_rgraticule.jnl 0.2 /DASH=(0.2,0.1,0.2,0.1)/COLOR=BLACK/THICK=1 2.6 0.4 2
 

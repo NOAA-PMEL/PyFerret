@@ -34,10 +34,7 @@ EFMEMLIB = ferret_ef_mem_subsc.so
 all: $(EFMEMLIB)
 
 $(EFMEMLIB): copy_ferret_ef_mem_subsc.o
-	$(LD) $(LD_DYN_FLAGS) copy_ferret_ef_mem_subsc.o \
-	-L ../pyferret_install/lib/$(PYTHON_EXE)/site-packages/pyferret \
-	-L ../pyferret_install/lib64/$(PYTHON_EXE)/site-packages/pyferret \
-	-lpyferret -o $(EFMEMLIB)
+	$(LD) $(LD_DYN_FLAGS) copy_ferret_ef_mem_subsc.o -lpyferret -o $(EFMEMLIB)
 
 clean:
 	rm -f *.o $(EFMEMLIB)

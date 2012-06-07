@@ -3,13 +3,14 @@
 !**************************************************************
 ! Description: Plot graticules (lines) at specified angles (relative to correlation)
 !
-! Usage: go taylor_agraticule rmax [PLOT qualifiers=/line=1] [amin=10] [amax=90] [adelta=10]
+! Usage: go taylor_agraticule rmax [PLOT qualifiers=/line=1] [amin=10] [amax=90] [adelta=10] [quadrants=1]
 !
 ! arg 1: maximum radius of graticules 
 ! arg 2: plot command qualifiers
-! arg 2: minimum angle of graticules
-! arg 3: maximum angle of graticules 
-! arg 4: delta angle of graticules
+! arg 3: minimum angle of graticules
+! arg 4: maximum angle of graticules 
+! arg 5: delta angle of graticules
+! arg 6: quadrants (1 = normal diagram (R positive); 2 = full diagram (R negative & positive)
 !
 ! Example:
 !           yes? go taylor_frame.jnl 3 0.2 " " "Standard Deviation (units)"
@@ -23,7 +24,7 @@
 ! Author: Patrick Brockmann
 ! Contact: Patrick.Brockmann@ipsl.jussieu.fr
 ! $Date$
-! $Name$
+! $Name: FAST_672_1_0 $
 ! $Revision$
 ! History:
 ! Modification:
@@ -35,12 +36,20 @@ def sym ME_qualifiers=$2%/line=1%
 let ME_amin=$3%10%
 let ME_amax=$4%90%
 let ME_adelta=$5%10%
+def sym quadrants $6%1%      !can be 1 (normal case) or 2 (when R's are negative & positive)
+
 
 ! ----------------------------------------------
 let ME_angle  =  j/100
 let ME_xx = ME_rmax*cos(acos(ME_angle))
 let ME_yy = ME_rmax*sin(acos(ME_angle))
 repeat/j=`ME_amin`:`ME_amax`:`ME_adelta` plot/nolab/over/vs($ME_qualifiers) {0,`ME_xx`},{0,`ME_yy`}
+if ($quadrants%|2>TRUE|*>FALSE%) then
+  let ME_xx = ME_rmax*cos(acos(ME_angle*(-1)))
+  repeat/j=`ME_amin`:`ME_amax`:`ME_adelta` plot/nolab/over/vs($ME_qualifiers) {0,`ME_xx`},{0,`ME_yy`}
+endif
+
+
 
 !**************************************************************
 cancel variable ME_*

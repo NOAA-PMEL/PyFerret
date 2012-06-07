@@ -1,0 +1,90 @@
+\cancel mode verify
+
+!**************************************************************
+! Description:
+!
+! Usage: go taylor_frame_accurate [max=3]  [ticks=0.2]  [format="(f4.1)"]   [xy_label="Standard Deviation"]
+!
+! arg 1: maximum axis length (in user units) 
+! arg 2: delta (length) between major ticks
+! arg 3: ppl format for x and y axes
+! arg 4: Label on X and Y (r-axis) 
+!        (e.g.,  "Standard Deviation (Normalized)"
+!           or   "Standard Deviation (^oC)"
+!
+! Example: 
+!           yes? go taylor_frame_accurate.jnl 
+!           yes? go taylor_frame_accurate.jnl 3 .2 " " "Standard Deviation (units)"
+! 
+!           yes? go taylor_frame_accurate.jnl 3 .2 " " "Standard Deviation (units)"
+!           yes? go taylor_agraticule.jnl 3 " " 10 90 10
+!           yes? go taylor_agraticule.jnl 3 " " 91 99 1
+!           yes? go taylor_rgraticule.jnl 0.4 /DASH=(0.2,0.1,0.2,0.1)/COLOR=RED/THICK=2) 2.8 0.4
+!           yes? go taylor_rgraticule.jnl 0.2 /DASH=(0.2,0.1,0.2,0.1)/COLOR=BLACK/THICK=1 2.6 0.4
+!
+! Notes:
+!
+! Calls: go ratio_set
+!
+! Author: Patrick Brockmann
+! Contact: Patrick.Brockmann@ipsl.jussieu.fr
+! $Date: 2009/05/14 15:04:00 $
+! $Name: FAST_608_1_3 $
+! $Revision: 1.1.1.3 $
+! History:
+! Modification:
+!
+!**************************************************************
+
+go ratio_set 1
+
+let ME_rmax=$1%3%
+let ME_tick=$2%.2%
+def sym ME_axfmt=$3%(f4.1)%
+def sym ME_labaxis=$4%Standard Deviation%
+
+! Draw 1 circle for axis extreme (maximum radius) 
+! -----------------------------------------------
+let ME_pi = atan(1.)*4.
+let ME_deg2rad = 2*ME_pi/180
+let ME_angle = (i-1)
+let ME_xx = ME_rmax*cos(ME_pi*ME_angle/(100*2))
+let ME_yy = ME_rmax*sin(ME_pi*ME_angle/(100*2))
+
+plot/set_up/axes=(0,1,1,0)/nolab/i=1:101/line=1/hlimits=0:`ME_rmax`:`ME_tick`/vlimits=0:`ME_rmax`:`ME_tick`/vs ME_xx,ME_yy
+ppl xfor "($ME_axfmt)"
+ppl yfor "($ME_axfmt)"
+ppl xlab "($ME_labaxis)"
+ppl ylab "($ME_labaxis)"
+ppl plot
+
+! Label  curved "Correlation axis"
+! -----------------------------------------------
+let ME_xx = 1.08 * ME_rmax * cos(ME_pi/4)
+let ME_yy = 1.08 * ME_rmax * sin(ME_pi/4) 
+label `ME_xx` `ME_yy`  0 -45 .12 "Correlation"
+
+! Make ticks on curved "Correlation axis"
+! ----------------------------------------------
+let ME_angle  =  j/100
+let ME_xx = ME_rmax*cos(acos(ME_angle))
+let ME_yy = ME_rmax*sin(acos(ME_angle))
+repeat/j=10:90:10 plot/nolab/over/line=1/vs {`0.95*ME_xx`,`ME_xx`},{`0.95*ME_yy`,`ME_yy`}
+repeat/j=5:95:10 plot/nolab/over/line=1/vs {`0.97*ME_xx`,`ME_xx`},{`0.97*ME_yy`,`ME_yy`}
+repeat/j=91:99:1 plot/nolab/over/line=1/vs {`0.99*ME_xx`,`ME_xx`},{`0.99*ME_yy`,`ME_yy`}
+
+! Label ticks on curved "Standard Deviation axis"
+! -----------------------------------------------
+let ME_xx = 1.01 * ME_rmax * cos(acos(ME_angle))
+let ME_yy = 1.01 * ME_rmax * sin(acos(ME_angle))
+let ME_angletext = 2*acos(ME_angle)/ME_deg2rad
+repeat/j=10:90:10 label `ME_xx` `ME_yy`  -1 `ME_angletext` .09 "`0.9+ME_angle/10.,P=3`"
+repeat/j=95:95:1  label `ME_xx` `ME_yy`  -1 `ME_angletext` .09 "`0.9+ME_angle/10.,P=3`"
+
+!**************************************************************
+cancel variable ME_*
+cancel symbol ME_*
+
+!**************************************************************
+set mode verify
+

@@ -1,0 +1,13 @@
+
+set window 1
+
+go taylor_frame
+
+let a=xsequence({2.4, 0.8, 2.3 })
+let b=xsequence({0.6, 0.9, 0.8})
+let c=xsequence({"Mod1","Mod2","Mod3"})
+
+list a,b,c
+
+repeat/i=1:`a[i=@ngd]` (go taylor_polymark a b /line/fill/pal=red;  go taylor_label a b "_<NL>`c`")
+

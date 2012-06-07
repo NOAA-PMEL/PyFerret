@@ -3,12 +3,13 @@
 !**************************************************************
 ! Description: Plot graticules (lines) at specified radius (relative to standard deviation)
 !
-! Usage: go taylor_rgraticule rmin [PLOT qualifiers=/line=1] [rmax] [rdelta]
+! Usage: go taylor_rgraticule rmin [PLOT qualifiers=/line=1] [rmax] [rdelta] [quadrants=1]
 !
 ! arg 1: minimum radius of graticules
 ! arg 2: plot command qualifiers
 ! arg 3: maximum radius of graticules 
 ! arg 4: delta radius of graticules
+! arg 5: quadrants (1 = normal diagram (R positive); 2 = full diagram (R negative & positive)
 !
 ! Example:
 !           yes? go taylor_frame.jnl 2 0.25 " " "Standard Deviation (units)"
@@ -27,7 +28,7 @@
 ! Author: Patrick Brockmann
 ! Contact: Patrick.Brockmann@ipsl.jussieu.fr
 ! $Date$
-! $Name$
+! $Name: $
 ! $Revision$
 ! History:
 ! Modification:
@@ -38,6 +39,7 @@ let ME_rmin=$1
 def sym ME_qualifiers=$2%/line=1%
 let ME_rmax=$3%$1%
 let ME_rdelta=$4%$1%
+def sym quadrants $5%1%      !can be 1 (normal case) or 2 (when R's are negative & positive)
 
 ! Draw 1 circle for axis extreme (maximum radius) 
 ! -----------------------------------------------
@@ -50,7 +52,13 @@ let ME_yy = sin(ME_pi*ME_angle/(100*2))
 let ME_nb = 1+(ME_rmax-ME_rmin)/ME_rdelta
 let ME_rcurr = ME_rmin+(k-1)*ME_rdelta
 
-repeat/k=1:`ME_nb`:1 ( plot/over/nolab/i=1:101/vs($ME_qualifiers) ME_rcurr*ME_xx, ME_rcurr*ME_yy )
+! Standard case (1st quadrant - do this in either case) 
+  repeat/k=1:`ME_nb`:1 ( plot/over/nolab/i=1:101/vs($ME_qualifiers) ME_rcurr*ME_xx, ME_rcurr*ME_yy )
+! Exceptional case (2 quadrants, i.e., when R values are negative) -- do this only for 2nd quadrant
+if ($quadrants%|2>TRUE|*>FALSE%) then
+  ! repeat/k=1:`ME_nb`:1 ( plot/over/nolab/i=1:201/vs($ME_qualifiers) ME_rcurr*ME_xx, ME_rcurr*ME_yy )
+  repeat/k=1:`ME_nb`:1 ( plot/over/nolab/i=1:101/vs($ME_qualifiers) ME_rcurr*ME_xx*(-1), ME_rcurr*ME_yy )
+endif
 
 !**************************************************************
 cancel variable ME_*

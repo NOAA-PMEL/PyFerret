@@ -24,7 +24,8 @@ include ../platform_specific.mk.$(BUILDTYPE)
 #
 # The name intentionally does not start with "lib" since this library should
 # not be linked with anything.  Ferret loads it dynamically with dlopen.
-EFMEMLIB = ../lib/ferret_ef_mem_subsc.so
+#
+EFMEMLIB = ferret_ef_mem_subsc.so
 
 #
 # Targets

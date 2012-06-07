@@ -19,6 +19,7 @@ optimized :
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O" pymod_optimized
 	$(MAKE) "CFLAGS = $(CFLAGS) -O" -C $(DIR_PREFIX)/efmem 
+	$(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/pyferret_install" -C $(DIR_PREFIX)/external_functions optimized
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 .PHONY : debug
@@ -28,6 +29,7 @@ debug :
 	$(MAKE) -C $(DIR_PREFIX)/threddsBrowser
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" pymod_debug
 	$(MAKE) "CFLAGS = $(CFLAGS) -O0 -g" -C $(DIR_PREFIX)/efmem 
+	$(MAKE) "INSTALL_FER_DIR = $(DIR_PREFIX)/pyferret_install" -C $(DIR_PREFIX)/external_functions debug
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
 ## The following builds libpyferret.so, then installs that shared-object
@@ -65,10 +67,9 @@ pymod_debug :
 ## Remove everything that was built
 .PHONY : clean
 clean :
-	rm -fr fer_executables.tar.gz
-	rm -fr fer_environment.tar.gz
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix clean
 	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
+	$(MAKE) -C $(DIR_PREFIX)/efmem clean
 	rm -fr $(DIR_PREFIX)/pyferret_install $(DIR_PREFIX)/build ferret.jnl*
 	find $(DIR_PREFIX)/pviewmod -name '*.py[co]' -exec rm -f {} ';'
 	find $(DIR_PREFIX)/pyfermod -name '*.py[co]' -exec rm -f {} ';'
@@ -105,25 +106,13 @@ install_exes :
 .PHONY : update
 update :
 	mkdir -p $(INSTALL_FER_DIR)/lib
-	cp -f $(DIR_PREFIX)/lib/ferret_ef_mem_subsc.so $(INSTALL_FER_DIR)/lib
+	cp -f $(DIR_PREFIX)/efmem/ferret_ef_mem_subsc.so $(INSTALL_FER_DIR)/lib
 	cp -f $(DIR_PREFIX)/threddsBrowser/threddsBrowser.jar $(INSTALL_FER_DIR)/lib
 	( cd $(DIR_PREFIX) ; \
 	  export HDF5_LIBDIR=$(HDF5_LIBDIR) ; \
 	  export NETCDF4_LIBDIR=$(NETCDF4_LIBDIR) ; \
 	  export PYFERRET_VERSION=$(PYFERRET_VERSION) ; \
 	  $(PYTHON_EXE) setup.py install -O2 --prefix=$(INSTALL_FER_DIR) )
-
-## The following are for building the Fortran external functions.  This must be done
-## after libpyferret.so has been built and installed so that it can be found for
-## linking and for later execution.
-.PHONY : efs_optimized
-efs_optimized :
-	$(MAKE) -C $(DIR_PREFIX)/external_functions optimized
-	$(MAKE) "FER_LOCAL_EXTFCNS = $(INSTALL_FER_DIR)/ext_func/libs" -C $(DIR_PREFIX)/external_functions install
-
-.PHONY : efs_debug
-efs_debug :
-	$(MAKE) -C $(DIR_PREFIX)/external_functions debug
-	$(MAKE) "FER_LOCAL_EXTFCNS = $(INSTALL_FER_DIR)/ext_func/libs" -C $(DIR_PREFIX)/external_functions install
+#	$(MAKE) "FER_LOCAL_EXTFCNS = $(INSTALL_FER_DIR)/ext_func/libs" -C $(DIR_PREFIX)/external_functions install
 
 ##

@@ -148,6 +148,7 @@ static int I_have_scanned_already = FALSE;
 static int I_have_warned_already = TRUE; /* Warning turned off Jan '98 */
 
 static void *ferret_ef_mem_subsc_so_ptr;
+static void (*copy_ferret_ef_mem_subsc_ptr)(void);
 
 /* ............. Function Declarations .............. */
 /*
@@ -894,7 +895,6 @@ void FORTRAN(write_webrow_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *
  */
 int FORTRAN(efcn_scan)( int *gfcn_num_internal )
 {
-  
   FILE *file_ptr=NULL;
   ExternalFunction ef; 
  
@@ -1072,6 +1072,34 @@ struct {
     return return_val;
   }
 
+  /*
+   * Open $FER_LIBS/ferret_ef_mem_subsc.so with RTLD_GLOBAL flag to create
+   * the external copy of the FERRET_EF_MEM_SUBSC common block.
+   */
+  path_ptr = getenv("FER_LIBS");
+  if ( path_ptr == NULL ) {
+     fputs("**ERROR: efcn_scan: FER_LIBS is not defined\n", stderr);
+     return_val = -1;
+     return return_val;
+  }
+  sprintf(path, "%s/ferret_ef_mem_subsc.so", path_ptr);
+  ferret_ef_mem_subsc_so_ptr = dlopen(path, RTLD_LAZY | RTLD_GLOBAL);
+  if ( ferret_ef_mem_subsc_so_ptr == NULL ) {
+     fprintf(stderr, "**ERROR: efcn_scan: dlopen of $FER_LIBS/ferret_ef_mem_subsc.so\n"
+                     "  failed -- %s\n", dlerror());
+     return_val = -1;
+     return return_val;
+  }
+  copy_ferret_ef_mem_subsc_ptr = 
+          (void (*)(void)) dlsym(ferret_ef_mem_subsc_so_ptr,
+                                 "copy_ferret_ef_mem_subsc_");
+  if ( copy_ferret_ef_mem_subsc_ptr == NULL ) {
+     fprintf(stderr, "**ERROR: efcn_scan: copy_ferret_ef_mem_subsc_\n"
+                     "  not found in $FER_LIBS/ferret_ef_mem_subsc.so\n"
+                     "  -- %s\n", dlerror());
+     return_val = -1;
+     return return_val;
+  }
 
   /*
    * Get internally linked external functions;  and add all 
@@ -1916,7 +1944,7 @@ void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *m
      * this external copy of the common block will be seen by other
      * Ferret Fotran external functions in shared-object libraries.
      */
-    /*ferret_ef_mem_subsc_so_ptr......*/
+    (*copy_ferret_ef_mem_subsc_ptr)();
 
     /*
      * Prepare for bailout possibilities by setting a signal handler for

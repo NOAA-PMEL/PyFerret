@@ -88,10 +88,7 @@ fi
 
 # Copy the external function shared-object library files
 mkdir -p ${temp_dir}/ext_func/libs
-# If pyferret, do not copy the .so files at this time due to pyferret bug
-if [ "${pyferret_dir}" = "" ]; then
-   find ${ferret_dir}/external_functions -type f -perm -100 -name \*.so -exec ${mycp} {} ${temp_dir}/ext_func/libs \;
-fi
+find ${ferret_dir}/external_functions -type f -perm -100 -name \*.so -exec ${mycp} {} ${temp_dir}/ext_func/libs \;
 
 # Copy font files from bin/build_fonts/unix/
 fer_files=${ferret_dir}/bin/build_fonts/unix/f*
@@ -134,7 +131,7 @@ cd ${temp_dir}/lib
 ${mylns} toolsUI-4.1.jar toolsUI.jar
 
 # Copy ferret_ef_mem_subsc.so
-${mycp} ${ferret_dir}/lib/ferret_ef_mem_subsc.so ${temp_dir}/lib
+${mycp} ${ferret_dir}/efmem/ferret_ef_mem_subsc.so ${temp_dir}/lib
 
 # Copy pyferret files
 if [ "${pyferret_dir}" != "" ]; then

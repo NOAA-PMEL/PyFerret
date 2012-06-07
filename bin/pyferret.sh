@@ -9,7 +9,7 @@ pyname="python2.6"
 
 
 ## Make sure the FER_* environment variables are assigned
-if [ -z "$FER_DIR" ]; then
+if [ -z "${FER_LIBS}" ]; then
 ## Either source the ferret_paths script to assign the environment variables
 #    . "/my/path/to/ferret_paths.sh"
 ## or just throw an error if they should have already been defined
@@ -33,13 +33,13 @@ fi
 ##     Run: 
 ##        python2.x -c "import sys; print sys.path"
 ##     to show locations searched.
-##     Do not define pysite.
+# pysite="/usr/local/lib/${pyname}/site-packages"
 ## or:
 ## (c) a custom directory (for example, if installed under $FER_DIR)
 ##     Defining pysite required.
-pysite="${FER_DIR}/lib/${pyname}/site-packages"
+pysite="${FER_LIBS}/${pyname}/site-packages"
 ##
-## pysite="${FER_DIR}/lib/${pyname}/site-packages"
+## pysite="${FER_LIBS}/${pyname}/site-packages"
 ## should be correct for the normal Ferret installation.
 
 
@@ -49,13 +49,21 @@ pysite="${FER_DIR}/lib/${pyname}/site-packages"
 
 
 ## Add pysite to the Python search path given by PYTHONPATH
-if [ -n "$pysite" ]; then
-    if [ -z "$PYTHONPATH" ]; then
-        export PYTHONPATH="${pysite}"
-    else
-        if ! echo "${PYTHONPATH}" | grep -q "${pysite}"; then
-            export PYTHONPATH="${pysite}:${PYTHONPATH}"
-        fi
+if [ -z "${PYTHONPATH}" ]; then
+    export PYTHONPATH="${pysite}"
+else
+    if ! echo "${PYTHONPATH}" | grep -q "${pysite}"; then
+        export PYTHONPATH="${pysite}:${PYTHONPATH}"
+    fi
+fi
+
+
+## Add $pysite/pyferret to the shared-object library search path given by LD_LIBRARY_PATH
+if [ -z "${LD_LIBRARY_PATH}" ]; then
+    export LD_LIBRARY_PATH="${pysite}/pyferret"
+else
+    if ! echo "${LD_LIBRARY_PATH}" | grep -q "${pysite}/pyferret"; then
+        export LD_LIBRARY_PATH="${pysite}/pyferret:${LD_LIBRARY_PATH}"
     fi
 fi
 

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/linux/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 41631711 May  8 15:41 /home/users/ansley/build/linux/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 41638834 Jun  8 14:05 /home/users/ansley/build/linux/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/linux/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: shorten some of the SHOW AXIS output in the benchmark scripts"
+Note: new test bn_xml_header.jnl testing fix for ticket 1945: show dat/var/xml/outfile=  didnt list the output to the file.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/linux/FERRET/bench
-Beginning at Tue May 8 15:41:46 PDT 2012
+Beginning at Fri Jun 8 14:07:31 PDT 2012
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -10238,17 +10238,17 @@ PPL$XPIXEL = "406"
 PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.73"
-FERRET_PLATFORM = "Linux 2.6.18-308.4.1.el5PAE 32-bit"
+FERRET_PLATFORM = "Linux 2.6.18-308.8.1.el5PAE 32-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2 of Apr 23 2012 16:36:47 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 8-May-12"
-SESSION_TIME = "15:41"
-SESSION_PID = "829"
-DELTA_CPU = "4.74328"
-CLOCK_SECS = "7.059"
-CURRENT_DATE = " 8-May-12"
-CURRENT_TIME = "15:41:53"
+SESSION_DATE = " 8-Jun-12"
+SESSION_TIME = "14:07"
+SESSION_PID = "10744"
+DELTA_CPU = "4.83326"
+CLOCK_SECS = "6.978"
+CURRENT_DATE = " 8-Jun-12"
+CURRENT_TIME = "14:07:38"
 N_OPEN_DSETS = "0"
  
 ! define some symbols ... syntax variations
@@ -10266,17 +10266,17 @@ PPL$XPIXEL = "406"
 PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.73"
-FERRET_PLATFORM = "Linux 2.6.18-308.4.1.el5PAE 32-bit"
+FERRET_PLATFORM = "Linux 2.6.18-308.8.1.el5PAE 32-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2 of Apr 23 2012 16:36:47 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 8-May-12"
-SESSION_TIME = "15:41"
-SESSION_PID = "829"
+SESSION_DATE = " 8-Jun-12"
+SESSION_TIME = "14:07"
+SESSION_PID = "10744"
 DELTA_CPU = "0.001"
-CLOCK_SECS = "7.06"
-CURRENT_DATE = " 8-May-12"
-CURRENT_TIME = "15:41:53"
+CLOCK_SECS = "6.979"
+CURRENT_DATE = " 8-Jun-12"
+CURRENT_TIME = "14:07:38"
 N_OPEN_DSETS = "0"
 S1 = "hello"
 S2 = ""hello""
@@ -10285,9 +10285,9 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 8-May-12"
-SESSION_TIME = "15:41"
-SESSION_PID = "829"
+SESSION_DATE = " 8-Jun-12"
+SESSION_TIME = "14:07"
+SESSION_PID = "10744"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10297,15 +10297,15 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 8-May-12"
-SESSION_TIME = "15:41"
-SESSION_PID = "829"
+SESSION_DATE = " 8-Jun-12"
+SESSION_TIME = "14:07"
+SESSION_PID = "10744"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 8-May-12"
-SESSION_TIME = "15:41"
-SESSION_PID = "829"
+SESSION_DATE = " 8-Jun-12"
+SESSION_TIME = "14:07"
+SESSION_PID = "10744"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10339,7 +10339,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6.73"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "08-MAY-2012 15:41:53"
+LAB3 = "08-JUN-2012 14:07:38"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10435,17 +10435,17 @@ PPL$XPIXEL = "406"
 PPL$YPIXEL = "406"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.73"
-FERRET_PLATFORM = "Linux 2.6.18-308.4.1.el5PAE 32-bit"
+FERRET_PLATFORM = "Linux 2.6.18-308.8.1.el5PAE 32-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2 of Apr 23 2012 16:36:47 $"
 FERRET_MEMORY = "25.6"
-SESSION_DATE = " 8-May-12"
-SESSION_TIME = "15:41"
-SESSION_PID = "829"
-DELTA_CPU = "0.009999"
-CLOCK_SECS = "7.07"
-CURRENT_DATE = " 8-May-12"
-CURRENT_TIME = "15:41:53"
+SESSION_DATE = " 8-Jun-12"
+SESSION_TIME = "14:07"
+SESSION_PID = "10744"
+DELTA_CPU = "0.009998"
+CLOCK_SECS = "6.989"
+CURRENT_DATE = " 8-Jun-12"
+CURRENT_TIME = "14:07:38"
 N_OPEN_DSETS = "0"
  
  
@@ -25285,7 +25285,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Tue May  8 15:42:01 PDT 2012
+Fri Jun  8 14:07:46 PDT 2012
  
 GO bn_reset
 cancel mode verify
@@ -45637,7 +45637,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS08-MAY-2012 15:42:32
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @AS08-JUN-2012 14:08:17
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.800E+00 0.120    0  SYSTEM  @ASLONGITUDE : 179E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47056,7 +47056,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "8-May-12:15:41"
+WIN_TITLE = "8-Jun-12:14:07"
  
 set win/title="set the title"
 sho sym win_title
@@ -47074,7 +47074,7 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 8-May-12:15:41"
+ !-> set win/title=" 8-Jun-12:14:07"
  
 ! If the date or time starts with a blank then we get an extra
 ! underscore in the window title. Evaluating the symbols into
@@ -47083,16 +47083,16 @@ set win/title="($session_date):($session_time)"
 ! If so substitute another string.
  
 DEFINE SYMBOL the_date = ($session_date"SESSION_DATE")
- !-> DEFINE SYMBOL the_date =  8-May-12
+ !-> DEFINE SYMBOL the_date =  8-Jun-12
 DEFINE SYMBOL the_time = ($session_time"SESSION_TIME")
- !-> DEFINE SYMBOL the_time = 15:41
+ !-> DEFINE SYMBOL the_time = 14:07
 SET WIN/TITLE="($the_date):($the_time)"
- !-> SET WIN/TITLE="8-May-12:15:41"
+ !-> SET WIN/TITLE="8-Jun-12:14:07"
  
 can win/all
 set win/new
 sh sym win_title
-WIN_TITLE = "8-May-12:15:41"
+WIN_TITLE = "8-Jun-12:14:07"
  
 GO bn_reset
 cancel mode verify
@@ -51384,7 +51384,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.73    8-May-12
+ .                               history         CHAR        24   T       FERRET V6.73    8-Jun-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -51429,7 +51429,7 @@ sho dat/att
  Variable    VarType(in dset)    AttributeName   AttType     Size OutFlag AttValue
 ------------------------------------------------------------------------------------------
   
- .                               history         CHAR        24   T       FERRET V6.73    8-May-12
+ .                               history         CHAR        24   T       FERRET V6.73    8-Jun-12
                                  Conventions     CHAR        6    F       CF-1.0
   
 (PSXT91_108)           DOUBLE    units           CHAR        12   T       degrees_east
@@ -53009,6 +53009,8 @@ ADD_9(A,B,C,D,E,F,G,H,I)
 AVET(A)
 DATES(var)
 EXPND_BY_LEN(var,len,nx)
+EXPNDI_BY_Z_COUNTS(dat,counts,max_profile_len)
+EXPNDI_ID_BY_Z_COUNTS(counts,max profile len)
 FACTORIAL(A)
 FC_ISUBSET(index_list,lengths,nx,FullData)
 FFT_AMP(A)
@@ -53345,7 +53347,7 @@ GO bn_test_opendap
 list test_opendap ("http://test.opendap.org/opendap/data/nc/test.nc")
              VARIABLE : TEST_OPENDAP ("http://test.opendap.org/opendap/data/nc/test.nc")
              X        : 1
-         -72.00000
+          0.0000000
 list test_opendap ("http://test.opendap.NOT.org/opendap/data/nc/test.nc")
              VARIABLE : TEST_OPENDAP ("http://test.opendap.NOT.org/opendap/data/nc/test.nc")
              X        : 1
@@ -57164,10 +57166,10 @@ SH GRID am
  
 GO bn_clock_syms
 SH SYM delta_cpu, clock_secs, current_date, current_time
-DELTA_CPU = "39.0441"
-CLOCK_SECS = "65.827"
-CURRENT_DATE = " 8-May-12"
-CURRENT_TIME = "15:42:52"
+DELTA_CPU = "38.3802"
+CLOCK_SECS = "68.215"
+CURRENT_DATE = " 8-Jun-12"
+CURRENT_TIME = "14:08:39"
 ! test special symbols DELTA_CPU, CLOCK_SECS
 !
 ! NOTE THAT THE VALUES OF THE SYMBOLS WILL VARY FROM ONE
@@ -57176,8 +57178,8 @@ CURRENT_TIME = "15:42:52"
 use gt4d011
 shade/k=1 temp[L=@ave]
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.034994"
-CLOCK_SECS = "65.884"
+DELTA_CPU = "0.034995"
+CLOCK_SECS = "68.274"
  
 repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=1
@@ -57191,60 +57193,60 @@ repeat/k=1:10 shade temp[L=@ave]
 !-> REPEAT: K=9
 !-> REPEAT: K=10
 let ten_plots = ($DELTA_CPU)
- !-> DEFINE VARIABLE ten_plots = 0.301955
+ !-> DEFINE VARIABLE ten_plots = 0.296955
 sh sym DELTA_CPU, CLOCK_SECS
-DELTA_CPU = "0.001"
-CLOCK_SECS = "66.407"
+DELTA_CPU = "0"
+CLOCK_SECS = "68.815"
  
 let  sumclock = 0
 let  sumcpu = 0
 sh sym CLOCK_SECS
-CLOCK_SECS = "66.407"
+CLOCK_SECS = "68.816"
 repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);\
 let sumcpu =`sumcpu + dt`)
  !-> repeat/k=1:10 (shade/pal=rnb2 temp[L=@ave]; let dt = ($DELTA_CPU);let sumcpu =`sumcpu + dt`)
 !-> REPEAT: K=1
- !-> DEFINE VARIABLE dt = 0.030995
- !-> DEFINE VARIABLE sumcpu =0.030995
+ !-> DEFINE VARIABLE dt = 0.032996
+ !-> DEFINE VARIABLE sumcpu =0.032996
 !-> REPEAT: K=2
- !-> DEFINE VARIABLE dt = 0.032995
- !-> DEFINE VARIABLE sumcpu =0.06399
+ !-> DEFINE VARIABLE dt = 0.028995
+ !-> DEFINE VARIABLE sumcpu =0.061991
 !-> REPEAT: K=3
- !-> DEFINE VARIABLE dt = 0.029996
- !-> DEFINE VARIABLE sumcpu =0.093986
-!-> REPEAT: K=4
- !-> DEFINE VARIABLE dt = 0.034994
- !-> DEFINE VARIABLE sumcpu =0.12898
-!-> REPEAT: K=5
- !-> DEFINE VARIABLE dt = 0.035995
- !-> DEFINE VARIABLE sumcpu =0.164975
-!-> REPEAT: K=6
  !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.094986
+!-> REPEAT: K=4
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.126981
+!-> REPEAT: K=5
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.159976
+!-> REPEAT: K=6
+ !-> DEFINE VARIABLE dt = 0.037994
  !-> DEFINE VARIABLE sumcpu =0.19797
 !-> REPEAT: K=7
- !-> DEFINE VARIABLE dt = 0.033995
- !-> DEFINE VARIABLE sumcpu =0.231965
+ !-> DEFINE VARIABLE dt = 0.032995
+ !-> DEFINE VARIABLE sumcpu =0.230965
 !-> REPEAT: K=8
- !-> DEFINE VARIABLE dt = 0.031995
- !-> DEFINE VARIABLE sumcpu =0.26396
+ !-> DEFINE VARIABLE dt = 0.028996
+ !-> DEFINE VARIABLE sumcpu =0.259961
 !-> REPEAT: K=9
- !-> DEFINE VARIABLE dt = 0.030995
- !-> DEFINE VARIABLE sumcpu =0.294955
+ !-> DEFINE VARIABLE dt = 0.031995
+ !-> DEFINE VARIABLE sumcpu =0.291956
 !-> REPEAT: K=10
- !-> DEFINE VARIABLE dt = 0.029996
- !-> DEFINE VARIABLE sumcpu =0.324951
+ !-> DEFINE VARIABLE dt = 0.029995
+ !-> DEFINE VARIABLE sumcpu =0.321951
  
 say `sumcpu`
- !-> MESSAGE/CONTINUE 0.324951
-0.324951
+ !-> MESSAGE/CONTINUE 0.321951
+0.321951
 sh sym CLOCK_SECS
-CLOCK_SECS = "67.219"
+CLOCK_SECS = "69.697"
  
 SH SYM session_date, current_date, session_time, current_time
-SESSION_DATE = " 8-May-12"
-SESSION_TIME = "15:41"
-CURRENT_DATE = " 8-May-12"
-CURRENT_TIME = "15:42:54"
+SESSION_DATE = " 8-Jun-12"
+SESSION_TIME = "14:07"
+CURRENT_DATE = " 8-Jun-12"
+CURRENT_TIME = "14:08:41"
  
  
 ! ******** V6.3 Additions below ***********
@@ -59578,6 +59580,39 @@ list/clobber/file=dummy.dat 1
 sp cat the_xml_file.xml
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <data>
+<datasets>
+<dataset name="./ocean_atlas_temp.cdf" default="true">
+<title> </title>
+<var name="TEMP">
+<attribute name="units" type="char">
+   <value><![CDATA[Deg C]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[Temperature]]></value>
+</attribute>
+<attribute name="_FillValue" type="float">
+   <value>-1.E+34</value>
+</attribute>
+<attribute name="missing_value" type="float">
+   <value>-1.E+34</value>
+</attribute>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<grid name="GBS1">
+<axes>
+<xaxis>XAX_LEV9421_380</xaxis>
+<yaxis>YAX_LEV94</yaxis>
+<zaxis>ZAXLEVIT191_1</zaxis>
+<taxis>TIME3</taxis>
+</axes>
+</grid>
+</var>
+</dataset>
+</datasets>
 <axes>
 <axis name="XAX_LEV9421_380">
 <attribute name="direction" type="char">
@@ -61038,8 +61073,8 @@ list contents
              SUBSET   : 45 points (X)
  1    /  1:" ! NOAA/PMEL TMAP"                                                          
  2    /  2:" ! FERRET v6.73  "                                                          
- 3    /  3:" ! Linux 2.6.18-308.4.1.el5PAE 32-bit - 05/08/12"                           
- 4    /  4:" !  8-May-12 15:41     "                                                    
+ 3    /  3:" ! Linux 2.6.18-308.8.1.el5PAE 32-bit - 06/08/12"                           
+ 4    /  4:" !  8-Jun-12 14:07     "                                                    
  5    /  5:""                                                                           
  6    /  6:"! "                                                                         
  7    /  7:"!! --- 22. produce some output to stdout and stderr"                        
@@ -63456,42 +63491,42 @@ load randu2(xbig,-1)
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.8608
- 2   / 2:  0.5323
- 3   / 3:  0.0115
- 4   / 4:  0.6301
- 5   / 5:  0.5197
+ 1   / 1:  0.2517
+ 2   / 2:  0.0150
+ 3   / 3:  0.9476
+ 4   / 4:  0.7970
+ 5   / 5:  0.5293
 can mem
 list/i=1:5 randu2(xbig,-1)
              VARIABLE : RANDU2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.4168
- 2   / 2:  0.6470
- 3   / 3:  0.0002
- 4   / 4:  0.0488
- 5   / 5:  0.0575
+ 1   / 1:  0.8003
+ 2   / 2:  0.0612
+ 3   / 3:  0.8915
+ 4   / 4:  0.1168
+ 5   / 5:  0.4031
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDU2 with 0 seed to continue from previous seed. These should be different
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.2657
- 2   / 2:  0.5336
- 3   / 3:  0.7289
- 4   / 4:  0.2181
- 5   / 5:  0.6598
- 6   / 6:  0.4483
+ 1   / 1:  0.9810
+ 2   / 2:  0.5002
+ 3   / 3:  0.1576
+ 4   / 4:  0.3215
+ 5   / 5:  0.5004
+ 6   / 6:  0.7220
 can mem
 list randu2(xx,0)
              VARIABLE : RANDU2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.6269
- 2   / 2:  0.1361
- 3   / 3:  0.5884
- 4   / 4:  0.5061
- 5   / 5:  0.1149
- 6   / 6:  0.5679
+ 1   / 1:  0.6108
+ 2   / 2:  0.6955
+ 3   / 3:  0.7763
+ 4   / 4:  0.2475
+ 5   / 5:  0.5931
+ 6   / 6:  0.8067
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDU2 with user-set seed. These should be duplicates
@@ -63523,42 +63558,42 @@ load randn2(xbig,-1)
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1:  0.154
- 2   / 2:  1.107
- 3   / 3: -0.920
- 4   / 4:  0.859
- 5   / 5: -0.187
+ 1   / 1:  1.823
+ 2   / 2: -0.468
+ 3   / 3: -0.606
+ 4   / 4:  0.355
+ 5   / 5: -0.509
 can mem
 list/i=1:5 randn2(xbig,-1)
              VARIABLE : RANDN2(XBIG,-1)
              SUBSET   : 5 points (X)
- 1   / 1: -0.088
- 2   / 2:  0.988
- 3   / 3: -0.360
- 4   / 4: -0.227
- 5   / 5: -2.254
+ 1   / 1:  1.964
+ 2   / 2:  0.565
+ 3   / 3: -1.648
+ 4   / 4:  0.372
+ 5   / 5: -0.240
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! RANDN2 with 0 seed to continue from previous seed. These should be different
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1:  0.747
- 2   / 2:  0.616
- 3   / 3: -1.078
- 4   / 4: -0.191
- 5   / 5: -1.246
- 6   / 6:  0.228
+ 1   / 1:  0.995
+ 2   / 2: -1.793
+ 3   / 3:  0.035
+ 4   / 4:  1.721
+ 5   / 5: -0.665
+ 6   / 6:  0.464
 can mem
 list randn2(xx,0)
              VARIABLE : RANDN2(XX,0)
              SUBSET   : 6 points (X)
- 1   / 1: -0.150
- 2   / 2:  0.945
- 3   / 3: -1.087
- 4   / 4: -1.473
- 5   / 5:  0.042
- 6   / 6:  0.867
+ 1   / 1:  0.608
+ 2   / 2:  0.580
+ 3   / 3:  0.230
+ 4   / 4:  1.312
+ 5   / 5:  0.396
+ 6   / 6:  0.405
  
 ! ******** This result should be consistent with each run of the benchmark scripts
 ! RANDN2 with user-set seed. These should be duplicates
@@ -63594,14 +63629,14 @@ list/z=1:140 var2, var2[z=@med:3], var2[z=@med:9]
  Column  2: VAR2[Z=@MED:3] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 3 pts on Z)
  Column  3: VAR2[Z=@MED:9] is COS(Z[GZ=ZAX]/30) + RANDU2(1+K[GZ=ZAX],-1) (median smoothed by 9 pts on Z)
             VAR2   VAR2    VAR2
-0     / 1:  1.263  1.263  0.6088
-20    / 2:  1.165  1.165  0.6088
-40    / 3:  0.609  0.609  0.5342
-60    / 4:  0.534  0.534  0.5342
-80    / 5: -0.862 -0.860  0.5342
-100   / 6: -0.860 -0.860  0.5342
-120   / 7: -0.322 -0.322  0.5342
-140   / 8:  0.193  0.193  0.5342
+0     / 1:  1.921  1.921  0.9511
+20    / 2:  1.494  1.494  0.9511
+40    / 3:  0.951  0.951  0.2705
+60    / 4:  0.270  0.270  0.2705
+80    / 5: -0.711 -0.097  0.2705
+100   / 6: -0.097 -0.103  0.2705
+120   / 7: -0.103 -0.097  0.2705
+140   / 8:  0.162  0.162  0.2705
  
 ! ******** This result may differ with each run of the benchmark scripts
 ! one for randn2
@@ -63751,6 +63786,4708 @@ list aa[L=1:71:10]
  01-JAN-2001 01:10:00 / 8:  0.6997
  
  
+GO bn_reset
+cancel mode verify
+GO bn_xml_header
+! bn_xml_header.jnl
+! run the exact script that LAS uses to make XML header files
+ 
+go xml_header_script.jnl xml_use_coads.jnl xml_out.xml
+!header.jnl
+! argument 1 is a script that opens the dataset
+! argument 2 is the name of the xml file to write
+! Requires Ferret v6.5 or higher
+ 
+! This is the header.jnl script from LAS; comment out can mode verify
+ 
+! cancel mode verify
+IF `($ferret_version) LT 6.5` THEN
+ !-> IF 0 THEN
+ENDIF
+ 
+go "$1"
+ !-> go "xml_use_coads.jnl"
+use coads_climatology
+ 
+DEFINE SYMBOL output_xml_file = $2
+ !-> DEFINE SYMBOL output_xml_file = xml_out.xml
+ 
+say/quiet/outfile="($output_xml_file)"/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+ !-> MESSAGE/CONTINUE/quiet/outfile="xml_out.xml"/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+say/quiet/outfile="($output_xml_file)"/append <data>
+ !-> MESSAGE/CONTINUE/quiet/outfile="xml_out.xml"/append <data>
+ 
+show data/var/xml/append/outfile="($output_xml_file)"
+ !-> show data/var/xml/append/outfile="xml_out.xml"
+show axis/all/xml/append/outfile="($output_xml_file)"
+ !-> show axis/all/xml/append/outfile="xml_out.xml"
+say/quiet/append/outfile="($output_xml_file)" </data>
+ !-> MESSAGE/CONTINUE/quiet/append/outfile="xml_out.xml" </data>
+sp cat xml_out.xml
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<data>
+<datasets>
+<dataset name="./coads_climatology.cdf" default="true">
+<title> </title>
+<var name="SST">
+<attribute name="units" type="char">
+   <value><![CDATA[Deg C]]></value>
+</attribute>
+<attribute name="long_name" type="char">
+   <value><![CDATA[SEA SURFACE TEMPERATURE]]></value>
+</attribute>
+<attribute name="_FillValue" type="float">
+   <value>-1.E+34</value>
+</attribute>
+<attribute name="missing_value" type="float">
+   <value>-1.E+34</value>
+</attribute>
+<attribute name="ferret_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[FLOAT]]></value>
+</attribute>
+<grid name="GSQ1">
+<axes>
+<xaxis>COADSX</xaxis>
+<yaxis>COADSY</yaxis>
+<taxis>TIME10</taxis>
+</axes>
+</grid>
+</var>
+</dataset>
+</datasets>
+<axes>
+<axis name="XEVEN">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>20</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XODD">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>19</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YEVEN">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>20</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YODD">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>19</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZEVEN">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>20</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZODD">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>19</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TEVEN">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 1980-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1980-01-03 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1980-01-21 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1980-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="TODD">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 1980-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1980-01-02 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1980-01-20 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1980-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="XCOARSE">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>5.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>95.5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="YIR">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>12</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>50</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YCOARSE">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>5.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>95.5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XAX_SUBSPAN">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>6</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>41</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>46</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>100</value>
+</attribute>
+</axis>
+<axis name="YFINE">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>6</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>19.7002</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>19.70274</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TAX48">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[HOURS since 1920-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>367</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1980-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1982-01-02 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1920-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="XEZ1">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>3</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XEZ2">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YEZ">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>3</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZEZ">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XEZ3">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>8</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>8</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="LON_FIELD_J_AXIS">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>50</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>65</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="LAT_FIELD_I_AXIS">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>17</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>50</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>66</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="LAT_FIELD_J_AXIS">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>160</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>200</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XIRREG_SUBSPAN">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>6</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>41</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>46</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>100</value>
+</attribute>
+</axis>
+<axis name="LON_FIELD_I_AXIS">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>7</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>160</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>208</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XIRREG">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>8281</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TCENTURY">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAY since 1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>39448</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1902-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2010-01-01 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="TAX5DAY">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[HOUR since 1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>159</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1982-01-15 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1984-03-15 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="XAX10">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>19</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>120</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>300</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="TAX_SUBSPAN">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-01-16 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-05-15 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>365.2485</value>
+</attribute>
+</axis>
+<axis name="TIRREG_SUBSPAN">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-01-16 12:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-05-15 05:57:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>365.2485</value>
+</attribute>
+</axis>
+<axis name="T1980S">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[HOURS since 1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>120</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1981-01-15 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1990-12-15 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="XTEST">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>21</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-10</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YTEST">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>21</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-10</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="Y1">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-67.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>67.5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZIRR">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>70</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="X5">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TAX1">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[YEAR since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1188</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0001-01-15 23:59:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0099-12-15 23:59:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[360_DAY]]></value>
+</attribute>
+</axis>
+<axis name="ZLOG">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2.718282</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>22026.47</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="Z1">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>3</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="X2">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>7</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="Z2">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>3</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="HOPE_MONTH">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[MONTH since 1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>11</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1966-07-16 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1967-05-16 08:51:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="DAYT">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4998</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>4998</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YQ">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>46</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-90</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>90</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="Y5">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XAXJ">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TIME1">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>6</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>6</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TIME2">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[hour since 1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1900-01-16 06:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1900-05-17 23:56:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="'COADSX.ILLEGAL'">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>21</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>21</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>61</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="DLOG">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>20</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2.718282</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>4.851652E+08</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="DDLOG">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0.0001234098</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="Y3AX">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>3</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TAX2">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[YR since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1188</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0001-01-15 23:59:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0099-12-15 23:59:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[360_DAY]]></value>
+</attribute>
+</axis>
+<axis name="TT">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[YEARS since 0500-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0599-02-07 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0600-02-07 05:49:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0500-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="X_AX">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>211</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>216.2</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TDAYS">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>733</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1988-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1990-01-01 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[ALL_LEAP]]></value>
+</attribute>
+</axis>
+<axis name="XAXSHIFT">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>360</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-180</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>179</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+</axis>
+<axis name="XFINE">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>204.8992</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>204.9013</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="XQ">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>73</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>360</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="LAYER_BETWEEN_TWO_PRESSURE_DIFFERENCE_FROM_GROUND">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TIME">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>3</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TJUL">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[HOURS since 1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>12</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1997-01-16 12:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1997-12-16 12:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[JULIAN]]></value>
+</attribute>
+</axis>
+<axis name="AAX">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>20</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>20</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="'COADSY.ILLEGAL'">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>16</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>35</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>65</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XFULL">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-180</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>360</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="LON">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>96</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>356.25</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+</axis>
+<axis name="TNOLEAP">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1826</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2000-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2005-01-01 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[NOLEAP]]></value>
+</attribute>
+</axis>
+<axis name="TGREG">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1828</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2000-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2005-01-01 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="SIMUTAXIS1">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 1800-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>31752</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1860-01-03 12:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2300-12-28 12:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1800-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[360D]]></value>
+</attribute>
+</axis>
+<axis name="ZAX2">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>13</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2849</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="X2AX">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="Z4AX">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>4</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="T2AX">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XIRR">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>13</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>24</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="YFULL">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-90</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>90</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XIR">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>6</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="MON_IRREG_NLP">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 0001-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>12</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-01-16 12:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-12-16 12:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0001-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[NOLEAP]]></value>
+</attribute>
+</axis>
+<axis name="Z5">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>15</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>15</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TIME9">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[MONTHS since 0001-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0001-01-31 10:29:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0001-04-02 07:27:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0001-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="X1">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>90</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>270</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+</axis>
+<axis name="X4">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>4</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="Y4">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0.1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0.4</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="Z4">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0.01</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0.04</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="T4">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0.001</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0.004</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XCHANNEL">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[KM]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>11</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-50</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>50</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YRISE">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[KM]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>7</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-30</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>30</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZLAYER">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[LAYER]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>6</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>11</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YIRR">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>13</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>18</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TSUB">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-09-30 20:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-06-01 04:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>365.2425</value>
+</attribute>
+</axis>
+<axis name="XSUB">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>16</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>130</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>280</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="TIMENOLEAP">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>731</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2000-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2002-01-01 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[NOLEAP]]></value>
+</attribute>
+</axis>
+<axis name="YAXIS">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>61</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-60</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>60</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZAXIS_ORIG">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>50</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZAXIS_DES">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>9</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>345</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>353</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XOBS">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>3</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TAXIS">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 2000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2001-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2001-01-05 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[2000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="T1">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 1990-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>364</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1991-01-01 12:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1991-12-30 12:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1990-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="TCAL">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[HOURS since 1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>24</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1951-01-15 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1952-12-15 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="TSAMPLES">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 1990-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>28</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1990-01-21 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1993-01-05 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1990-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="TDAY">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 1998-12-31 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>31</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1999-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1999-01-31 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1998-12-31 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="X100">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>100</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>100</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="T31">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 1999-12-31 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>31</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2000-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2000-01-31 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1999-12-31 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="MYZAXIS">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XTROP">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>151</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>130</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>280</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="YTROP">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>41</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-20</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>20</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="CAXIS">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TSEC">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[SECONDS since 1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>361</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1902-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1902-01-01 00:30:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="VERT_AXIS_UP">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1000</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>10000</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="Y2">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZUP">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>51</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>100</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="JMONTHS">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[MONTHS(JULIAN) since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>13</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-12-31 06:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[JULIAN]]></value>
+</attribute>
+</axis>
+<axis name="T_AXIS">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>6</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>6</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>13</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZDN">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>101</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>200</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TAX_C">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 0001-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>12</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-01-16 12:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-12-16 12:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0001-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[NOLEAP]]></value>
+</attribute>
+</axis>
+<axis name="VERT_AXIS_DN">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1000</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>10000</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XAX">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>11</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-10</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="MONTHT">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[HOURS since 1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>24</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1949-01-16 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1950-12-17 01:30:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="XLONG">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>11</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>300</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>400</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="X10">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>201</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TIME6">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[day since 1990-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>20</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1990-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1990-01-20 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1990-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="TIME8">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[day since 1970-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2004-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2004-01-01 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1970-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[JULIAN]]></value>
+</attribute>
+</axis>
+<axis name="TIME11">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[hour since 1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>6</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1900-01-16 06:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1900-06-17 10:25:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1900-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="MYX">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="MYY">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="MYAXIS">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>13</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>6</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TAX">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[YEAR since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>6</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-07-01 14:54:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0005-07-01 20:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="LAT1">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>72</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-90</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>90</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="LAT2">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>92</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-90</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>90</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZAX">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>51</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1000</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="MYTAXIS">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[SECONDS since 2008-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>94608001</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2008-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2010-12-31 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[2008-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="ZAXDN">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>100</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YAX">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>6</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>16</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZAXUP">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>200</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YFIFTEEN">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>13</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-90</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>90</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TNEW">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[MINUTE since 1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>71</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2001-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2001-01-01 01:10:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="X2AX1">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+</axis>
+<axis name="Z4AX1">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="T2AX1">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="PSXT91_108">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>18</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>220.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>237.5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="PSYT35_56">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>22</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-3.499985</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>3.500016</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="PSZT1_10">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>95</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="PSZT1_5">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>25</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="(AX131)">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>41</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-10</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>-2</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="PSZT1">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>27</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>3824</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="LON_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>36</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>105.1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>455</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+</axis>
+<axis name="LON_U">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>37</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>100</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>460</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="LAT_T">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>36</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-76.4638</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>76.4638</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="LAT_U">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>37</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-90</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>90</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TIME10">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[hour since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-01-16 06:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-03-17 02:58:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>8765.82</value>
+</attribute>
+</axis>
+<axis name="(AX052)">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>18</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-83</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>87</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>COADSY</value>
+</attribute>
+</axis>
+<axis name="(AX050)">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>90</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>23</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>379</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>COADSX</value>
+</attribute>
+</axis>
+<axis name="LON1_15">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>15</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>148.951</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>149.539</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="LAT1_1">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-45.1438</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>-45.1438</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TIME7">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[days since 1970-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>2003-12-31 12:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2003-12-31 12:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1970-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="DAYT1">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 1990-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1990-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1990-01-10 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1990-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="XAX1_4">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>4</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YAX1_3">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>3</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZAX1_2">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>2</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TAX1_1">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XAX1_9">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>9</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>9</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YAX1_8">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>8</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>8</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZAX1_7">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>7</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>7</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TAX1_6">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>6</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>6</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XAX1_40">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>40</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>40</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YAX1_30">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>30</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>30</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZAX1_20">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>20</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>20</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TAX1_10">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>10</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XUNEVEN">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>10</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="YUNEVEN">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>8</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1.80618</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZAX1_6">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>6</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>6</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TAX1_4">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>4</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="XLON">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>40</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>141</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>180</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="YLAT">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>30</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>30</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TTIME">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>20</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1995-01-01 00:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1995-01-20 00:00:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1901-01-15 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="TIME3">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[hour since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-01-16 06:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-02-15 16:29:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>8765.82</value>
+</attribute>
+</axis>
+<axis name="MONTH_IRREG">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[DAYS since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>12</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-01-16 12:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-12-15 17:49:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="MONTH_REG">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[hour since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>12</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-01-16 06:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-12-16 01:20:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="SEASONAL_REG">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[HOURS since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-02-15 15:43:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-11-15 14:05:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+</axis>
+<axis name="LON_TRUE">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-1.875</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>13.125</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="LON_MODERR">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[meters]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>15</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="LON_FALSE">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-1.875</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>13.125</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="LON_MOD_NOUNITS">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>15</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+</axis>
+<axis name="LON_USUAL">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>5</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>15</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="TIME_TRUE">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[days since 0000-11-15 14:05:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>30</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>150</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+</axis>
+<axis name="TIME_MODERR">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[meters since 0000-11-15 14:05:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>30</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>150</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value>uneven</value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TIME_FALSE">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[days since 0000-11-15 14:05:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>120</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>150</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TIME_MOD_NOUNITS">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>120</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>150</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+</axis>
+<axis name="TIME_USUAL">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[days since 0000-11-15 14:05:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>4</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>120</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>150</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+</axis>
+<axis name="(AX020)">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>401</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-20</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>20</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+<attribute name="infile_datatype" type="char">
+   <value><![CDATA[DOUBLE]]></value>
+</attribute>
+<attribute name="orig_file_axname" type="char">
+   <value>COADSY</value>
+</attribute>
+</axis>
+<axis name="XAXLEVITR1_160">
+<attribute name="direction" type="char">
+   <value><![CDATA[I]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_east]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>160</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>20.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>179.5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>360</value>
+</attribute>
+</axis>
+<axis name="YAXLEVITR1_90">
+<attribute name="direction" type="char">
+   <value><![CDATA[J]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[degrees_north]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>90</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>-89.5</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>-0.5</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="ZAXLEVITR1_1">
+<attribute name="direction" type="char">
+   <value><![CDATA[K]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[METERS]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>1</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0</value>
+</attribute>
+<attribute name="positive" type="char">
+   <value><![CDATA[down]]></value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value>no</value>
+</attribute>
+</axis>
+<axis name="TIME4">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[hour since 1980-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>3</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>1980-01-16 06:00:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>1980-03-17 02:58:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+   <value><![CDATA[1980-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="calendar" type="char">
+   <value><![CDATA[GREGORIAN]]></value>
+</attribute>
+<attribute name="modulo_length" type="short">
+   <value>8765.82</value>
+</attribute>
+</axis>
+<axis name="TIME5">
+<attribute name="direction" type="char">
+   <value><![CDATA[L]]></value>
+</attribute>
+<attribute name="units" type="char">
+   <value><![CDATA[hour since 0000-01-01 00:00:00]]></value>
+</attribute>
+<attribute name="length" type="short">
+   <value>2</value>
+</attribute>
+<attribute name="start" type="double">
+   <value>0000-05-16 23:56:00</value>
+</attribute>
+<attribute name="end" type="double">
+   <value>0000-06-16 10:25:00</value>
+</attribute>
+<attribute name="point_spacing" type="char">
+   <value><![CDATA[even]]></value>
+</attribute>
+<attribute name="modulo" type="char">
+   <value><![CDATA[yes]]></value>
+</attribute>
+<attribute name="time_origin" type="char">
+ 
+ 
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not
 ! tested in the benchmarks.
@@ -63764,8 +68501,8 @@ yes?
 yes? GO bn_all_ef
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-308.4.1.el5PAE 32-bit - 05/08/12
- 	 8-May-12 15:43     
+ 	Linux 2.6.18-308.8.1.el5PAE 32-bit - 06/08/12
+ 	 8-Jun-12 14:09     
 
 SET MODE VERIFY
 ! bn_all_ef.jnl
@@ -64619,7 +69356,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64644,7 +69381,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64668,7 +69405,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64707,7 +69444,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64742,7 +69479,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64783,7 +69520,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64840,7 +69577,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64897,7 +69634,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -64952,7 +69689,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65000,7 +69737,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65094,7 +69831,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65164,7 +69901,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65215,7 +69952,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65290,7 +70027,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65317,7 +70054,7 @@ variables:
 		X_:_FillValue = -1.308568e+26f ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
@@ -65341,7 +70078,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
@@ -65368,11 +70105,11 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_long_revision_num.jnl --- history attribute
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 bn_bounds_defineax.jnl --- N+1 def of bounds.
 netcdf irrxzt {
 dimensions:
@@ -65403,7 +70140,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65475,7 +70212,7 @@ variables:
 		VAR_B:long_name = "my strings" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65519,7 +70256,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65561,7 +70298,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65667,7 +70404,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 6 after CANCEL MODE upcase_output
@@ -65706,7 +70443,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 7 outtput flags to control attribute output
@@ -65729,7 +70466,7 @@ variables:
 		BB:another_attr = 0.f ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65755,7 +70492,7 @@ variables:
 		BB:another_attr = 0.f ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65775,7 +70512,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65796,7 +70533,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65839,7 +70576,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 12 Check that settings hold for child axis.
@@ -65879,7 +70616,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 13 cancel output of attributes of the variable.
@@ -65917,7 +70654,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 14 attributes of data from ez data.
@@ -65946,7 +70683,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -65979,7 +70716,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -66005,7 +70742,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -66049,7 +70786,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
@@ -66154,7 +70891,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 		:dt_internal = 15. ;
 }
@@ -66196,7 +70933,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -66279,7 +71016,7 @@ variables:
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -66316,7 +71053,7 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -66356,7 +71093,7 @@ variables:
 		VWND:units = "M/S" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -66407,7 +71144,7 @@ variables:
 		T2:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -66466,7 +71203,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -66510,7 +71247,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -66552,7 +71289,7 @@ variables:
 		T2:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -66587,7 +71324,7 @@ variables:
 		TEMP:units = "DEG C" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -66621,7 +71358,7 @@ variables:
 		TWO:history = "From levitus_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 27 attributes of  user-defined axes
@@ -66651,7 +71388,7 @@ variables:
 		AXY:long_name = "RESHAPE (A,RVAR)" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- 28 Define a new global attribute
@@ -66680,7 +71417,7 @@ variables:
 		BROILED:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 		:glob = "Global attribute" ;
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
@@ -66742,7 +71479,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -66787,7 +71524,7 @@ variables:
 		FAREN:history = "From gt4d011" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -66806,37 +71543,7 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
-		:Conventions = "CF-1.0" ;
-data:
-
- XAX = 1.5, 3, 6, 8.5 ;
-
- XAX_bnds =
-  1, 2,
-  2, 4,
-  4, 8,
-  8, 9 ;
-
- A = 1.5, 3, 6, 8.5 ;
-}
-netcdf a {
-dimensions:
-	XAX = 4 ;
-	bnds = 2 ;
-variables:
-	double XAX(XAX) ;
-		XAX:point_spacing = "uneven" ;
-		XAX:axis = "X" ;
-		XAX:bounds = "XAX_bnds" ;
-	double XAX_bnds(XAX, bnds) ;
-	double A(XAX) ;
-		A:missing_value = -1.e+34 ;
-		A:_FillValue = -1.e+34 ;
-		A:long_name = "X[GX=XAX]" ;
-
-// global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -66866,7 +71573,37 @@ variables:
 		A:long_name = "X[GX=XAX]" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
+		:Conventions = "CF-1.0" ;
+data:
+
+ XAX = 1.5, 3, 6, 8.5 ;
+
+ XAX_bnds =
+  1, 2,
+  2, 4,
+  4, 8,
+  8, 9 ;
+
+ A = 1.5, 3, 6, 8.5 ;
+}
+netcdf a {
+dimensions:
+	XAX = 4 ;
+	bnds = 2 ;
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	double A(XAX) ;
+		A:missing_value = -1.e+34 ;
+		A:_FillValue = -1.e+34 ;
+		A:long_name = "X[GX=XAX]" ;
+
+// global attributes:
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -66919,7 +71656,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -66961,7 +71698,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -66979,7 +71716,7 @@ variables:
 		V:long_name = "Y[GY=YAXIS]" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 err611_set_var_ez.jnl --- 
@@ -66998,7 +71735,7 @@ variables:
 		MY_ASC:history = "From dat.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 netcdf a {
@@ -67016,7 +71753,7 @@ variables:
 		MY_UNF:history = "From unf.dat" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_attributes.jnl --- SET VAR/OUTTYPE for user variable
@@ -67034,7 +71771,7 @@ variables:
 		A:Ferret_Precision_Note = "This variable written by Ferret was converted from FLOAT to DOUBLE" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -67055,7 +71792,7 @@ variables:
 		A:long_name = "{ 3.77, 4.00, 4.10, 4.33, 4.38, 4.27, 4.31, 4.40, 4.75, 5.01, 5.27, 5.52}" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 data:
 
@@ -67115,7 +71852,7 @@ variables:
 		newvar:history = "From a" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_keep_axisnames.jnl --- test SAVE/KEEP_AXISNAMES
@@ -67142,7 +71879,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_keep_axisnames.jnl --- without /KEEP_AXISNAMES
@@ -67169,7 +71906,7 @@ variables:
 		A:long_name = "X[GX=X100] + T[GT=T31]" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_axis_cf.jnl, degrees_east, degrees_north, std names on axes:
@@ -67235,7 +71972,7 @@ variables:
 		ZUP:long_name = "Z[GZ=ZAXUP]" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_axis_cf.jnl, Convert forms of DEG, degrees to degrees_east:
@@ -67267,7 +72004,7 @@ variables:
 		Y_:_FillValue = -3.689349e+19f ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 bn_axis_cf.jnl, Downcase units, e.g. in time axis DAYS since
@@ -67300,7 +72037,7 @@ variables:
 		XYTVAR:history = "From bn_strides" ;
 
 // global attributes:
-		:history = "FERRET V6.73    8-May-12" ;
+		:history = "FERRET V6.73    8-Jun-12" ;
 		:Conventions = "CF-1.0" ;
 }
 -----
@@ -67315,8 +72052,8 @@ yes?
 yes? GO bn_startupfile
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-308.4.1.el5PAE 32-bit - 05/08/12
- 	 8-May-12 15:43     
+ 	Linux 2.6.18-308.8.1.el5PAE 32-bit - 06/08/12
+ 	 8-Jun-12 14:09     
 
 CAN MODE VERIFY
  Current size of FERRET memory cache: 31 MegaWords  (1 word = 4 bytes)
@@ -67324,17 +72061,17 @@ PPL$XPIXEL = "656"
 PPL$YPIXEL = "492"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6.73"
-FERRET_PLATFORM = "Linux 2.6.18-308.4.1.el5PAE 32-bit"
+FERRET_PLATFORM = "Linux 2.6.18-308.8.1.el5PAE 32-bit"
 FERRET_PRECISION = "double"
 NETCDF_VERSION = "4.2 of Apr 23 2012 16:36:47 $"
 FERRET_MEMORY = "31"
-SESSION_DATE = " 8-May-12"
-SESSION_TIME = "15:43"
-SESSION_PID = "1215"
-DELTA_CPU = "0.035994"
-CLOCK_SECS = "0.198"
-CURRENT_DATE = " 8-May-12"
-CURRENT_TIME = "15:43:13"
+SESSION_DATE = " 8-Jun-12"
+SESSION_TIME = "14:09"
+SESSION_PID = "11131"
+DELTA_CPU = "0.037993"
+CLOCK_SECS = "0.199"
+CURRENT_DATE = " 8-Jun-12"
+CURRENT_TIME = "14:09:01"
 N_OPEN_DSETS = "0"
 LAST_GO_FILE = "./bn_startupfile.jnl"
 PPL$FORMAT = "(3F10.2)"
@@ -67355,7 +72092,7 @@ PPL$VIEW_X = "0.000"
 PPL$VIEW_Y = "0.000"
 PPL$VIEW_Z = "0.000"
 PPL$COMMAND_FILE = "$$MEMBUF$$"
-WIN_TITLE = "8-May-12:15:43"
+WIN_TITLE = "8-Jun-12:14:09"
 VP_WIDTH = "10.2"
 VP_HEIGHT = "8.8"
 VP_SCALE = "1"
@@ -67414,8 +72151,8 @@ yes?
 yes? GO bn_gif
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-308.4.1.el5PAE 32-bit - 05/08/12
- 	 8-May-12 15:43     
+ 	Linux 2.6.18-308.8.1.el5PAE 32-bit - 06/08/12
+ 	 8-Jun-12 14:09     
 
 ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -67645,8 +72382,8 @@ yes?
 yes? GO bn_ps
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-308.4.1.el5PAE 32-bit - 05/08/12
- 	 8-May-12 15:43     
+ 	Linux 2.6.18-308.8.1.el5PAE 32-bit - 06/08/12
+ 	 8-Jun-12 14:09     
 
 ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -67759,8 +72496,8 @@ yes?
 yes? GO bn_batch_metafile
  	NOAA/PMEL TMAP
  	FERRET v6.73  
- 	Linux 2.6.18-308.4.1.el5PAE 32-bit - 05/08/12
- 	 8-May-12 15:43     
+ 	Linux 2.6.18-308.8.1.el5PAE 32-bit - 06/08/12
+ 	 8-Jun-12 14:09     
 
 ! bn_batch_metafile.jnl
 ! Run at the end of the benchmark scripts, starting ferret with the flags
@@ -67844,4 +72581,4 @@ set window/location=0.1,0.1/title="another title"
  
 set mode/last logo
 exit/command
-Ended at Tue May 8 15:43:14 PDT 2012
+Ended at Fri Jun 8 14:09:03 PDT 2012

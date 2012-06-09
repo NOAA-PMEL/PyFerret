@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/x86/FERRET/fer/ferret_c
--rwxr-xr-x 1 ansley tmap 42066082 Apr 13 15:05 /home/users/ansley/build/x86/FERRET/fer/ferret_c
+-rwxr-xr-x 1 ansley tmap 42364542 Jun  8 12:31 /home/users/ansley/build/x86/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/x86/FERRET/external_functions/ext_func
 Running the tests of external functions y
-Benchmark run by ansely
-Note: fix ticket 1933: line length for list_multi_sub
+Benchmark run by ansley
+Note: new test bn_xml_header.jnl testing fix for ticket 1945: show dat/var/xml/outfile=  didnt list the output to the file.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DAT=.
@@ -21,7 +21,7 @@ FER_LINK_DIR=/home/users/tmap/ferret_link/linux
 FER_PALETTE=. /home/users/tmap/ferret/x86_64-linux/ppl
 FER_WEB_BROWSER=netscape -ncols 60
 PWD=/home/users/ansley/build/x86/FERRET/bench
-Beginning at Fri Apr 13 15:11:34 PDT 2012
+Beginning at Fri Jun 8 12:39:50 PDT 2012
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
         SET EXPRESSION has not been given or implied
@@ -557,6 +557,7 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ Cached data cleared from memory
  **ERROR: command syntax: v2-and-minus
           - before and is illegal
 list v2-and-minus
@@ -573,6 +574,7 @@ list 'i'
  **ERROR: command syntax: v2-and-minus[i=5:15@ddc]
           - before and is illegal
 list v2-and-minus[i=5:15@ddc]
+ Cached data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file permutedBinaryTest.dat
@@ -642,9 +644,6 @@ Replacing definition of axis XAX
 Replacing definition of axis XAX
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
  *** NOTE: Axis has repeated values -- micro-adjusting ...
@@ -784,7 +783,6 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist]
  **ERROR: unknown defining grid: GX=A[D=1]
 load/x=160e/y=5s v2
 Replacing definition of axis Y1
-Replacing definition of axis X2
 Replacing definition of axis Y2
 Replacing definition of grid MYGRID
  PERMANENT data cleared from memory
@@ -797,6 +795,9 @@ Replacing definition of axis TWEEKS
 Replacing definition of axis TWEEKS
 Replacing definition of axis TWEEKS
  LISTing to file calsst.cdf
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
  *** NOTE: /UNIT=MONTHS  ... using 1/12 of 360.00 days
 Replacing definition of grid TGRID
 Replacing definition of axis TDAYS
@@ -838,6 +839,14 @@ Replacing definition of grid TGRID
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis X10
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Not deleted: X10
+ *** NOTE: Axis is in use by grid G10X5
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1099,14 +1108,6 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid G5_10
  *** NOTE: Not deleted: X5
  *** NOTE: Axis is in use by grid GSRC
- *** NOTE: Not deleted: Y2
- *** NOTE: Axis is in use by grid G10X2
- *** NOTE: Not deleted: X3
- *** NOTE: Axis is in use by grid G24
- *** NOTE: Not deleted: X4
- *** NOTE: Axis is in use by grid G4D
- *** NOTE: Not deleted: Y10
- *** NOTE: Axis is in use by grid G10X10
  *** NOTE: Not deleted: Y5
  *** NOTE: Axis is in use by grid G10X5
  *** NOTE: Not deleted: TIME1
@@ -1115,6 +1116,8 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GCQ1
  *** NOTE: Not deleted: TAX
  *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: X4
+ *** NOTE: Axis is in use by grid G4D
  *** NOTE: Not deleted: Y4
  *** NOTE: Axis is in use by grid G4D
  *** NOTE: Not deleted: Z4
@@ -1141,8 +1144,8 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: Y1
  *** NOTE: Axis is in use by grid GSRC
- *** NOTE: Not deleted: X2
- *** NOTE: Axis is in use by grid G24
+ *** NOTE: Not deleted: Y2
+ *** NOTE: Axis is in use by grid G10X2
  *** NOTE: Not deleted: JMONTHS
  *** NOTE: Axis is in use by grid JGRID
  *** NOTE: Not deleted: MONTHT
@@ -1225,14 +1228,6 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid G5_10
  *** NOTE: Not deleted: X5
  *** NOTE: Axis is in use by grid GSRC
- *** NOTE: Not deleted: Y2
- *** NOTE: Axis is in use by grid G10X2
- *** NOTE: Not deleted: X3
- *** NOTE: Axis is in use by grid G24
- *** NOTE: Not deleted: X4
- *** NOTE: Axis is in use by grid G4D
- *** NOTE: Not deleted: Y10
- *** NOTE: Axis is in use by grid G10X10
  *** NOTE: Not deleted: Y5
  *** NOTE: Axis is in use by grid G10X5
  *** NOTE: Not deleted: TIME1
@@ -1241,6 +1236,8 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GCQ1
  *** NOTE: Not deleted: TAX
  *** NOTE: Axis is in use by grid GFORMAT
+ *** NOTE: Not deleted: X4
+ *** NOTE: Axis is in use by grid G4D
  *** NOTE: Not deleted: Y4
  *** NOTE: Axis is in use by grid G4D
  *** NOTE: Not deleted: Z4
@@ -1267,8 +1264,8 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: Y1
  *** NOTE: Axis is in use by grid GSRC
- *** NOTE: Not deleted: X2
- *** NOTE: Axis is in use by grid G24
+ *** NOTE: Not deleted: Y2
+ *** NOTE: Axis is in use by grid G10X2
  *** NOTE: Not deleted: JMONTHS
  *** NOTE: Axis is in use by grid JGRID
  *** NOTE: Not deleted: MONTHT
@@ -1281,7 +1278,6 @@ Replacing definition of axis TAX2
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAXLEVITR1_160
  *** NOTE: Axis is in use by grid GG1
-ls: input.txt: No such file or directory
  *** NOTE: Not deleted: TIME4
  *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: TIME5
@@ -1390,6 +1386,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ls: input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
@@ -1860,9 +1857,6 @@ Replacing definition of axis TIME
  LISTing to file longtitle.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-
-Bailing out of external function "ffta":
-	 Time axis must be a regular axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1909,6 +1903,9 @@ Replacing definition of axis TGREG
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  LISTing to file revision.nc
+
+Bailing out of external function "ffta":
+	 Time axis must be a regular axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -1933,6 +1930,7 @@ repeat/range=1:3/name=L (use coads_climatology; list/nohead [sst=I=1,j=1])
 LOAD vw_fft
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Adjusting Y-axis label size from 0.100 to 0.094, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
@@ -1951,18 +1949,6 @@ Replacing definition of axis ZAX2
 sho att/all
  **ERROR: unknown data set: d=2
 show att/all temp[d=2]
- **ERROR: unknown data set: d=2
-show att/all temp[d=2]
- **ERROR: unknown data set: d=2
-show att/all temp[d=2]
- **ERROR: unknown data set: d=2
-show att/all temp[d=2]
- **ERROR: unknown data set: d=2
-show att/all temp[d=2]
- **ERROR: variable unknown or not in data set: temp[d=2]
-show att/all temp[d=2]
- **ERROR: variable unknown or not in data set: salt
-show att/all salt
  **ERROR: attribute undefined or invalid attribute name: salt.nonsense
           attribute nonsense not found for variable SALT
 sho att salt.nonsense
@@ -2073,8 +2059,6 @@ Replacing definition of grid MYGRID
  *** NOTE: Changing the value of attribute (COADSY).point_spacing
  LISTing to file a.nc
  LISTing to file a.nc
-syntax error, unexpected WORD_STRING, expecting WORD_WORD
-context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
@@ -2115,6 +2099,8 @@ Replacing definition of axis TIME
  *** NOTE: Converting single precision variable to double on output
  LISTing to file a.nc
  LISTing to file a.nc
+syntax error, unexpected WORD_STRING, expecting WORD_WORD
+context: Error { code = 404; message = "data/PMEL/COADS/coads_nothing.cdf"^;};
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -2364,6 +2350,7 @@ set axis/stride=2 NORMAL
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
 Replacing definition of axis YAX
+ *** NOTE: Adjusting Y-axis label size from 0.100 to 0.096, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: invalid command: "300": Number of contour levels must be between 1 and 250
@@ -2857,6 +2844,7 @@ load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ *** NOTE: Adjusting Y-axis label size from 0.100 to 0.093, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  *** NOTE: Units on axis "ENS" are not recognized: count
@@ -2941,6 +2929,10 @@ LIST/FORMAT=CDF/file=nc4_deflate4bigchunk.nc/clobber/ncformat=4/deflate=1/xchunk
  TEMPORARY data cleared from memory
  LISTing to file a.nc
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Not deleted: X10
+ *** NOTE: Axis is in use by grid G10X5
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -3120,13 +3112,19 @@ Replacing definition of axis TAXIS
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 Replacing definition of axis XAX
+ *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
  *** NOTE: Unsupported netCDF # of axes for variable. Ignoring TEMP
+ *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
+ *** NOTE: Adjusting Y-axis label size from 0.100 to 0.030, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ *** NOTE: Adjusting Y-axis label size from 0.100 to 0.089, to avoid running off page.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: IFV I GT 3 THEN ( IFV I LT 5 THEN I ELSE -9 ) ELSE .333
@@ -3165,6 +3163,8 @@ Replacing definition of axis TAXIS
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis TNEW
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: command syntax: unknown region name: @w
@@ -3254,4 +3254,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
  *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Apr 13 15:13:19 PDT 2012
+Ended at Fri Jun 8 12:41:21 PDT 2012

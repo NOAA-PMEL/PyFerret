@@ -49,7 +49,7 @@
 	include 'xprog_state.cmn'
 	include 'xrisc.cmn' 
 
-	INTEGER dset, stastus
+	INTEGER dset, status
 
 	LOGICAL sbrief, sfull, svars, sfile, sattr, sxml, clobber, 
      .          append, only_1
@@ -183,6 +183,9 @@
            risc_buff = '</datasets>'
            CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
         ENDIF
+
+	IF (sho_file .GT. 0) CLOSE (UNIT = show_lun)
+
 
  2020   FORMAT( '<title>', A, '</title>' )
  2030   FORMAT( '<title_mod>', A, '</title_mod>' )

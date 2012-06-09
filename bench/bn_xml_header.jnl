@@ -1,0 +1,6 @@
+! bn_xml_header.jnl
+! run the exact script that LAS uses to make XML header files
+
+go xml_header_script.jnl xml_use_coads.jnl xml_out.xml
+sp cat xml_out.xml
+

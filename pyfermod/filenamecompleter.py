@@ -1,4 +1,5 @@
 #! /usr/bin/python
+
 '''
 Module that defines a readline completer class with a complete 
 method that returns filenames matching the given partial name.
@@ -103,6 +104,10 @@ class FilenameCompleter(object):
         except IndexError:
             return None
 
+
+#
+#  The following is just for testing
+#
 
 if __name__ == '__main__':
     completer = FilenameCompleter()

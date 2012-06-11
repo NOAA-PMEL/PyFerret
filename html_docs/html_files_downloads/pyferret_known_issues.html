@@ -59,14 +59,8 @@ with the Ferret engine contained within PyFerret.
     Fortran common block <i>EF_MEM_SUBSC</i> are not updated.  (The 
     common block in the external functions is not the same common block 
     used in the Ferret engine in PyFerret.)
-    </dd>
-<dt>Shared time axis not always recognized with putdata and put functions</dt>
-    <dd>
-    When bringing Python data into Ferret using the PyFerret put or 
-    putdata functions, sometimes a time axis in common with an existing 
-    time axis in Ferret is not recognized.  This is most likely due to 
-    trying to map times derived from the six array values (year, month, 
-    day, hour, minute, second) to a single floating point time value.
+    <br />
+    <i>This has been fixed in the next release of PyFerret.</i>
     </dd>
 <dt>Command-line options <i>-unmapped</i>, <i>-gif</i>, <i>-batch</i> do not 
     turn on anti-aliasing</dt>
@@ -78,6 +72,40 @@ with the Ferret engine contained within PyFerret.
     be turned on by default.  The work-around for this is to issue the 
     Ferret command <i>SET GRAPHICS /ANTIALIAS</i> at the beginning of the 
     Ferret session or script.
+    <br />
+    <i>This has been fixed in the next release of PyFerret.</i>
+    </dd>
+<dt>Name completion using the <b>TAB</b> key does not work</dt>
+    <dd>
+    In Ferret, the <b>TAB</b> key will complete a partial filename or
+    provide a list of matching filenames if there is more than one.
+    In PyFerret, this readline functionality does not work, and if 
+    implemented using the Python readline module, will normally 
+    provide a list of matching Python functions and variables.
+    <br />
+    <i>This has been fixed in the next release of PyFerret.
+    With this fix, matching filenames will be presented at the Ferret
+    prompt.  At the Python prompt, however, whatever completion method
+    was install with readline will still be used.</i>
+    </dd>
+<dt><i>$PYTHONSTARTUP</i> file not read</dt>
+    <dd>
+    If the name of a file of Python commands is given by the environment 
+    variable PYTHONSTARTUP, normally the commands in this file are executed
+    when Python starts.  However, the Python session started using the
+    <i>pyferret</i> script does not read this file.  This is because the
+    <i>pyferret</i> script starts Python using the <i>-i</i> command-line 
+    option, which disables reading the <i>$PYTHONSTARTUP</i> file.
+    <br />
+    <i>This has been fixed in the next release of PyFerret.
+    With this fix, the pyferret script explicitly processes the
+    contents of the $PYTHONSTARTUP file, if it exists and if the 
+    -secure command-line option is not given.</i>
+    </dd>
+<dt>PPL COLOR command does not work</dt>
+    <dd>
+    The PPL COLOR command does not change the color used for a color/pen
+    number in subsequent drawing commands.
     </dd>
 <dt>PLOT+ patterns are not supported</dt>
     <dd>
@@ -85,10 +113,13 @@ with the Ferret engine contained within PyFerret.
     Thus <i>/pattern</i> qualifiers on Ferret plotting commands usually 
     will result in an error.
     </dd>
-<dt>PPL COLOR command does not work</dt>
+<dt>Shared time axis not always recognized with putdata and put functions</dt>
     <dd>
-    The PPL COLOR command does not change the color used for a color/pen
-    number in subsequent drawing commands.
+    When bringing Python data into Ferret using the PyFerret put or 
+    putdata functions, sometimes a time axis in common with an existing 
+    time axis in Ferret is not recognized.  This is most likely due to 
+    trying to map times derived from the six array values (year, month, 
+    day, hour, minute, second) to a single floating point time value.
     </dd>
 <dt>A "metafile" name with a <i>.plt</i> extension can sometimes cause errors</dt>
     <dd>

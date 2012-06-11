@@ -37,9 +37,6 @@ functions provided by this module are:
 
 import sys
 import os
-# import rlcompleter to install a default readline completer
-import rlcompleter
-# import readline so that raw_input makes use of it
 import readline
 import numpy
 import numpy.ma
@@ -124,18 +121,6 @@ def init(arglist=None, enterferret=True):
        -script:    execute the script <scriptname> with any arguments specified,
                    and exit (THIS MUST BE SPECIFIED LAST)
     """
-
-    # Install a default readline tab completer
-    readline.parse_and_bind("tab: complete")
-
-    # Source the user's default python start-up file.
-    # The python -i command-line option, used the the pyferret script,
-    # prevents the PYTHONSTARTUP file from being read.
-    if arglist:
-        if not '-secure' in arglist:
-            startfname = os.getenv('PYTHONSTARTUP')
-            if startfname:
-                execfile(startfname)
 
     # Create the list of standard ferret PyEFs to create
     std_pyefs = [ ]

@@ -1,27 +1,25 @@
-#! /usr/bin/python
-
-'''
+"""
 Module that defines a readline completer class with a complete 
 method that returns filenames matching the given partial name.
 Thus the readline suggestions from using this completer will 
 be names of existing files that match the partially specified 
 directory/file name.
-'''
+"""
 
 import os.path
 
 class FilenameCompleter(object):
-    '''
+    """
     A readline completer class whose complete method returns 
     filenames matching the given partial name.  Thus the readline 
     suggestions from using this completer will be names of existing 
     files that match the partially specified directory/file name.
-    '''
+    """
     def __init__(self):
         self.__matches = []
 
     def complete(self, text, state):
-        '''
+        """
         Returns a filename matching the partial name given in text.
 
         If the partial name contains one single-quote character or 
@@ -50,7 +48,7 @@ class FilenameCompleter(object):
         from the last saved listing is returned (and, thus, the
         value of text is ignored).  If state is larger than the 
         number of names in the last saved listing, None is returned.
-        '''
+        """
         if state == 0:
             # first call; get the substring to match
             if text.count("'") == 1:
@@ -75,7 +73,7 @@ class FilenameCompleter(object):
             try:
                 if head == '':
                     # use the contents of the current directory
-                    dirlist = os.listdir('.')
+                    dirlist = os.listdir(os.curdir)
                 else:
                     # use the contents of the directory given by head
                     dirlist = os.listdir(head)
@@ -113,7 +111,7 @@ if __name__ == '__main__':
     completer = FilenameCompleter()
 
     # Test an empty string
-    actdirlist = os.listdir('.')
+    actdirlist = os.listdir(os.curdir)
     actdirlist.sort()
     print 'Contents of current directory'
     cmpdirlist = []
@@ -129,46 +127,51 @@ if __name__ == '__main__':
                          (str(actdirlist), str(cmpdirlist)))
 
     # Test with a tilde string
+    tildedir = '~' + os.sep
     print ''
-    print 'Contents of ~/'
+    print 'Contents of %s' % tildedir
     tildenames = []
     k = 0
-    fnam = completer.complete('~/', 0)
+    fnam = completer.complete(tildedir, 0)
     while fnam != None:
         print '    %s' % fnam
         tildenames.append(fnam)
         k += 1
-        fnam = completer.complete('~/', k)
+        fnam = completer.complete(tildedir, k)
     
     # Test with an environment variable
+    homedir = '$HOME' + os.sep
     print ''
-    print 'Contents of $HOME/'
+    print 'Contents of %s' % homedir
     homenames = []
     k = 0
-    fnam = completer.complete('$HOME/', 0)
+    fnam = completer.complete(homedir, 0)
     while fnam != None:
         print '    %s' % fnam
         homenames.append(fnam)
         k += 1
-        fnam = completer.complete('$HOME/', k)
+        fnam = completer.complete(homedir, k)
 
     # ~ and $HOME should be the same
     if tildenames != homenames:
-        raise ValueError('~ and $HOME lists do not match')
+        raise ValueError('%s and %s lists do not match' % (tildedir, homedir))
 
     # Try with an invalid directory
-    invalid_name = 'hopefully/a/non/existant/directory/name'
+    invalid_name = 'hopefully' + os.sep + 'a' + os.sep + 'non' + os.sep \
+                 + 'existant' + os.sep + 'directory' + os.sep + 'name'
     fnam = completer.complete(invalid_name, 0)
     if fnam != None:
-        raise ValueError('completing "%s" failure; expected: None, found: %s' % \
+        raise ValueError('complete "%s" failure; expected: None, found: %s' % \
                          (invalid_name, fnam))
 
-    # Try with an unreadable directory
+    # Try with an unreadable directory (on unix systems)
     invalid_name = '/lost+found/'
     fnam = completer.complete(invalid_name, 0)
     if fnam != None:
-        raise ValueError('completing "%s" failure; expected: None, found: %s' % \
+        raise ValueError('complete "%s" failure; expected: None, found: %s' % \
                          (invalid_name, fnam))
 
+    # All tests successful
     print ''
     print 'Success'
+

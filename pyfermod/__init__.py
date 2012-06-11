@@ -37,6 +37,8 @@ functions provided by this module are:
 
 import sys
 import os
+# import rlcompleter to install a default readline completer
+import rlcompleter
 # import readline so that raw_input makes use of it
 import readline
 import numpy
@@ -49,10 +51,20 @@ except ImportError:
     print >>sys.stderr, "    WARNING: Unable to import cdms2 and/or cdtime;\n" \
                         "             the Python functions pyferret.get and pyferret.put are not available"
 
+import pyferret.filenamecompleter
 import pyferret.graphbind
 import pipedviewer.pyferretbindings
+# import everything from libpyferret so constants
+# in that module are seen as part of this module
 from libpyferret import *
 
+# also define some calendar type string constants
+CALTYPE_360DAY = 'CALTYPE_360DAY'
+CALTYPE_NOLEAP = 'CALTYPE_NOLEAP'
+CALTYPE_GREGORIAN = 'CALTYPE_GREGORIAN'
+CALTYPE_JULIAN = 'CALTYPE_JULIAN'
+CALTYPE_ALLLEAP = 'CALTYPE_ALLLEAP'
+CALTYPE_NONE = 'CALTYPE_NONE'
 
 def init(arglist=None, enterferret=True):
     """
@@ -112,6 +124,18 @@ def init(arglist=None, enterferret=True):
        -script:    execute the script <scriptname> with any arguments specified,
                    and exit (THIS MUST BE SPECIFIED LAST)
     """
+
+    # Install a default readline tab completer
+    readline.parse_and_bind("tab: complete")
+
+    # Source the user's default python start-up file.
+    # The python -i command-line option, used the the pyferret script,
+    # prevents the PYTHONSTARTUP file from being read.
+    if arglist:
+        if not '-secure' in arglist:
+            startfname = os.getenv('PYTHONSTARTUP')
+            if startfname:
+                execfile(startfname)
 
     # Create the list of standard ferret PyEFs to create
     std_pyefs = [ ]
@@ -380,15 +404,18 @@ def init(arglist=None, enterferret=True):
             result = run("exit /program")
             # should not get here
             raise SystemExit
+
     # start ferret without journaling
     start(memsize=my_memsize, journal=False, verify=my_verify,
           restrict=my_restrict, server=my_server,
           metaname=my_metaname, unmapped=my_unmapped)
+
     # define all the Ferret standard Python external functions
     for fname in std_pyefs:
-        result = run("DEFINE PYFUNC pyferret.%s" % fname)
+        result = run("define pyfunc pyferret.%s" % fname)
+
     # run the ${HOME}/.ferret script if it exists
-    home_val = os.environ.get('HOME')
+    home_val = os.getenv('HOME')
     if home_val:
         init_script = os.path.join(home_val, '.ferret')
         if os.path.exists(init_script):
@@ -399,6 +426,7 @@ def init(arglist=None, enterferret=True):
                 result = run('exit /program')
                 # should not get here
                 raise SystemExit
+
     # if a command-line script is given, run the script and exit completely
     if script != None:
         script_line = " ".join(script)
@@ -410,12 +438,15 @@ def init(arglist=None, enterferret=True):
         result = run('exit /program')
         # should not get here
         raise SystemExit
+
     # if journaling desired, now turn on journaling
     if my_journal:
-        result = run("SET MODE JOURNAL")
+        result = run("set mode journal")
+
     # if they don't want to enter ferret, return the success value from run
     if not my_enterferret:
         return (libpyferret.FERR_OK, '')
+
     # otherwise, go into Ferret command-line processing until "exit /topy" or "exit /program"
     result = run()
     return result
@@ -539,8 +570,18 @@ def run(command=None):
         str_command = ""
     else:
         str_command = command
-    # the actual call
+    # if going into Ferret-command mode, 
+    # use the filename completer for readline name completion
+    if str_command == "":
+        old_completer = readline.get_completer()
+        filename_completer_obj = pyferret.filenamecompleter.FilenameCompleter()
+        readline.set_completer(filename_completer_obj.complete)
+    # the actual Ferret function call
     retval = libpyferret._run(str_command)
+    # return to the original readline completer
+    if str_command == "":
+        readline.set_completer(old_completer)
+        del filename_completer_obj
     return retval
 
 
@@ -683,13 +724,14 @@ def getdata(name, create_mask=True):
             'axis_names': a list of strings giving the name of each axis
             'axis_units': a list of strings giving the unit of each axis.
                     If the axis type is AXISTYPE_TIME, this names the calendar
-                    used for the timestamps, as one of the following strings:
-                        'CALTYPE_360DAY'
-                        'CALTYPE_NOLEAP'
-                        'CALTYPE_GREGORIAN'
-                        'CALTYPE_JULIAN'
-                        'CALTYPE_ALLLEAP'
-                        'CALTYPE_NONE'    (calendar not specified)
+                    used for the timestamps, as one of the following strings
+                    defined by the pyferret module:
+                        CALTYPE_360DAY
+                        CALTYPE_NOLEAP
+                        CALTYPE_GREGORIAN
+                        CALTYPE_JULIAN
+                        CALTYPE_ALLLEAP
+                        CALTYPE_NONE    (calendar not specified)
             'axis_coords': a list of NumPy ndarrays giving the coordinate values
                     for each axis.  If the axis type is neither AXISTYPE_TIME
                     nor AXISTYPE_NORMAL, a NumPy float64 ndarray is given.  If
@@ -836,18 +878,18 @@ def get(name, create_mask=True):
                 timevals.append( cdtime.comptime(year,month,day,hour,minute,second) )
             newaxis = cdms2.createAxis(timevals, id=axis_names[k])
             # designate the calendar
-            if axis_units[k] == "CALTYPE_360DAY":
+            if axis_units[k] == CALTYPE_360DAY:
                 calendar_type = cdtime.Calendar360
-            elif axis_units[k] == "CALTYPE_NOLEAP":
+            elif axis_units[k] == CALTYPE_NOLEAP:
                 calendar_type = cdtime.NoLeapCalendar
-            elif axis_units[k] == "CALTYPE_GREGORIAN":
+            elif axis_units[k] == CALTYPE_GREGORIAN:
                 calendar_type = cdtime.GregorianCalendar
-            elif axis_units[k] == "CALTYPE_JULIAN":
+            elif axis_units[k] == CALTYPE_JULIAN:
                 calendar_type = cdtime.JulianCalendar
             else:
-                if axis_units[k] == "CALTYPE_ALLLEAP":
+                if axis_units[k] == CALTYPE_ALLLEAP:
                     raise ValueError("The all-leap calendar not support by cdms2")
-                if axis_units[k] == "CALTYPE_NONE":
+                if axis_units[k] == CALTYPE_NONE:
                     raise ValueError("Undesignated calendar not support by cdms2")
                 raise RuntimeError("Unexpected calendar type of %s" % axis_units[k])
             newaxis.designateTime(calendar=calendar_type)
@@ -1017,13 +1059,13 @@ def put(datavar, axis_pos=None):
                 # assign the axis_units value to the CALTYPE_ calendar type string
                 calendar_type = axis.getCalendar()
                 if calendar_type == cdtime.Calendar360:
-                    axis_units[k] = "CALTYPE_360DAY"
+                    axis_units[k] = CALTYPE_360DAY
                 elif calendar_type == cdtime.NoLeapCalendar:
-                    axis_units[k] = "CALTYPE_NOLEAP"
+                    axis_units[k] = CALTYPE_NOLEAP
                 elif calendar_type == cdtime.GregorianCalendar:
-                    axis_units[k] = "CALTYPE_GREGORIAN"
+                    axis_units[k] = CALTYPE_GREGORIAN
                 elif calendar_type == cdtime.JulianCalendar:
-                    axis_units[k] = "CALTYPE_JULIAN"
+                    axis_units[k] = CALTYPE_JULIAN
                 else:
                     if calendar_type == cdtime.MixedCalendar:
                         raise ValueError("The cdtime.MixedCalendar not support by pyferret")
@@ -1106,15 +1148,16 @@ def putdata(datavar_dict, axis_pos=None):
                     Ferret will generate names if needed.
             'axis_units': a list of strings giving the unit of each axis.
                     If the axis type is AXISTYPE_TIME, this names the calendar
-                    used for the timestamps, as one of the following strings:
-                        'CALTYPE_360DAY'
-                        'CALTYPE_NOLEAP'
-                        'CALTYPE_GREGORIAN'
-                        'CALTYPE_JULIAN'
-                        'CALTYPE_ALLLEAP'
-                        'CALTYPE_NONE'    (calendar not specified)
+                    used for the timestamps, as one of the following strings
+                    defined by the pyferret module:
+                        CALTYPE_360DAY
+                        CALTYPE_NOLEAP
+                        CALTYPE_GREGORIAN
+                        CALTYPE_JULIAN
+                        CALTYPE_ALLLEAP
+                        CALTYPE_NONE    (calendar not specified)
                     If not given, 'DEGREES_E' will be used for AXISTYPE_LONGITUDE,
-                    'DEGREES_N' for AXISTYPE_LATITUDE, 'CALTYPE_GREGORIAN' for
+                    'DEGREES_N' for AXISTYPE_LATITUDE, CALTYPE_GREGORIAN for
                     AXISTYPE_TIME, and no units will be given for other axis types.
             'axis_coords': a list of arrays of coordinates for each axis.
                     If the axis type is neither AXISTYPE_TIME nor AXISTYPE_NORMAL,
@@ -1249,7 +1292,7 @@ def putdata(datavar_dict, axis_pos=None):
                 raise ValueError("number of coordinates for axis %d does not match the number of data points" % (k+1))
         elif axis_types[k] == libpyferret.AXISTYPE_TIME:
             if not axis_units[k]:
-                axis_units[k] = "CALTYPE_GREGORIAN"
+                axis_units[k] = CALTYPE_GREGORIAN
             axis_coords[k] = numpy.array(axis_coords[k], dtype=numpy.int32, order='C', copy=1)
             if axis_coords[k].shape[0] != shape[k]:
                 raise ValueError("number of coordinates for axis %d does not match the number of data points" % (k+1))

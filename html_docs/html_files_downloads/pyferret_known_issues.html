@@ -77,16 +77,16 @@ with the Ferret engine contained within PyFerret.
     </dd>
 <dt>Name completion using the <b>TAB</b> key does not work</dt>
     <dd>
-    In Ferret, the <b>TAB</b> key will complete a partial filename or
-    provide a list of matching filenames if there is more than one.
-    In PyFerret, this readline functionality does not work, and if 
-    implemented using the Python readline module, will normally 
-    provide a list of matching Python functions and variables.
+    In Ferret, the <b>TAB</b> key will complete a partial file name or
+    provide a list of matching file names if there is more than one.
+    In PyFerret, this name completion does not work, and if implemented
+    using the Python readline module, will normally examine matching
+    Python function and variable names instead of file names.
     <br />
     <i>This has been fixed in the next release of PyFerret.
-    With this fix, matching filenames will be presented at the Ferret
+    With this fix, matching file names will be presented at the Ferret
     prompt.  At the Python prompt, however, whatever completion method
-    was install with readline will still be used.</i>
+    was used with the readline module will still be used.</i>
     </dd>
 <dt><i>$PYTHONSTARTUP</i> file not read</dt>
     <dd>

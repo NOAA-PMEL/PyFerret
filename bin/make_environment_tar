@@ -101,6 +101,7 @@ mv jnls/* .
 rm -rf jnls
 mv palettes ppl
 mkdir ext_func
+mv external_functions/site_specific.mk ext_func
 mv external_functions ext_func/src
 
 # Remove files that should not be distributed

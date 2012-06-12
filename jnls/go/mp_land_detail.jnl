@@ -2,6 +2,8 @@
 ! overlaying coastal outline using detailed geo_borders_intermed data.
 
 ! Description: Plot outlines of continents, countries, and/or states
+! History: Simplified 6/11/2012 to remove SET GRID commands, and to
+!	   handle longitude replications differently
 
 ! usage:   go mp_land_detail arg1 [arg2] [arg3] [arg4] [arg5] [arg6] [arg7]
 !
@@ -67,24 +69,24 @@ query/ignore $7%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|
 set data/save
 set grid/save
 
-let/quiet mp_x = x
-let/quiet mp_xmin = `mp_x[i=@min]`
-let/quiet mp_xmax = `mp_x[i=@max]`
-let/quiet mp_y = y
-let/quiet mp_ymin = `mp_y[j=@min]`
-let/quiet mp_ymax = `mp_y[j=@max]`
-let/quiet mp_std_parallel_north = mp_ymax
-let/quiet mp_std_parallel_south = mp_ymin
+LET/QUIET mp_x = x
+LET/QUIET mp_xmin = `mp_x[i=@min]`
+LET/QUIET mp_xmax = `mp_x[i=@max]`
+LET/QUIET mp_y = y
+LET/QUIET mp_ymin = `mp_y[j=@min]`
+LET/QUIET mp_ymax = `mp_y[j=@max]`
+LET/QUIET mp_std_parallel_north = mp_ymax
+LET/QUIET mp_std_parallel_south = mp_ymin
 
 ! This test will keep the central meridians defined by "from space" views
 !
-let/quiet mp_test = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
+LET/QUIET mp_test = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
 if `mp_test eq 0` then
-   let/quiet mp_central_meridian = `(mp_x[i=@max] + mp_x[i=@min])/2`
+   LET/QUIET mp_central_meridian = `(mp_x[i=@max] + mp_x[i=@min])/2`
 endif
-let/quiet mp_test = `mp_standard_parallel` - `(mp_y[j=@max] + mp_y[j=@min])/2`
+LET/QUIET mp_test = `mp_standard_parallel` - `(mp_y[j=@max] + mp_y[j=@min])/2`
 if `mp_test eq 0` then
-   let/quiet mp_standard_parallel = `(mp_y[j=@max] + mp_y[j=@min])/2`
+   LET/QUIET mp_standard_parallel = `(mp_y[j=@max] + mp_y[j=@min])/2`
 endif
 cancel variable mp_test
 
@@ -95,7 +97,6 @@ use geo_borders_intermed
 
 
 ! Initialize
-let landi_subx = 0
 let landi_addx = 0
 let landi_datxmin = continent_lon[x=@min]
 let landi_datxmax = continent_lon[x=@max]
@@ -103,18 +104,28 @@ let landi_datxmax = continent_lon[x=@max]
 let landi_basemap = $2"0|basemap>1|*>0"
 IF `landi_basemap EQ 0` THEN
 
-   IF `mp_xmin LT landi_datxmin` then let landi_subx = `landi_subx - 360`
-   IF `mp_xmax GT landi_datxmax` then let landi_addx = `landi_addx + 360`
+   IF `mp_xmin LT landi_datxmin` then let landi_addx = -360
+   IF `mp_xmax GT landi_datxmax` then let landi_addx = 360
 
 ENDIF
 
-
 ! always do the continents
-set grid continent_lon
-let/quiet mp_lambda = if (continent_lon ge mp_xmin and continent_lon le mp_xmax and continent_lat ge mp_ymin and continent_lat le mp_ymax) then (continent_lon * deg2rad)
-let/quiet mp_phi = if (continent_lon ge mp_xmin and continent_lon le mp_xmax and continent_lat ge mp_ymin and continent_lat le mp_ymax) then (continent_lat * deg2rad)
-let/quiet masked_x_page = mp_mask * x_page
-let/quiet masked_y_page = mp_mask * y_page
+
+! Add replication of longitudes if necessary to match whats on the map.
+IF `landi_addx NE 0` THEN 
+   SET VAR/NAME=continent_lon_in continent_lon
+   SET VAR/NAME=continent_lat_in continent_lat
+   LET continent_lon = XCAT(continent_lon_in, continent_lon_in + (landi_addx))
+   LET continent_lat = XCAT(continent_lat_in, continent_lat_in)
+ENDIF
+
+LET/QUIET mp_x = x[gx=continent_lon]
+LET/QUIET mp_y = y[gy=continent_lon]
+
+LET/QUIET mp_lambda = continent_lon * deg2rad
+LET/QUIET mp_phi = continent_lat * deg2rad
+LET/QUIET masked_x_page = mp_mask * x_page
+LET/QUIET masked_y_page = mp_mask * y_page
 
 $1"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
 
@@ -125,181 +136,118 @@ ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>
 
 $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
 
-
-! Draw any lines outside 0 to 360
-IF ($1"0|*>1") THEN
-
-IF `landi_addx NE 0` THEN 
-  set grid continent_lon
-  let/quiet mp_lambda = if ((continent_lon+landi_addx) ge mp_xmin and (continent_lon+landi_addx) le mp_xmax and \
-   continent_lat ge mp_ymin and continent_lat le mp_ymax) then ((continent_lon+landi_addx) * deg2rad)
-  let/quiet mp_phi = if ((continent_lon+landi_addx) ge mp_xmin and (continent_lon+landi_addx) le mp_xmax and \
-   continent_lat ge mp_ymin and continent_lat le mp_ymax) then (continent_lat * deg2rad)
-  let/quiet masked_x_page = mp_mask * x_page
-  let/quiet masked_y_page = mp_mask * y_page
-  $1"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
-  ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
-  $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
-ENDIF
-IF `landi_subx NE 0` THEN 
-  set grid continent_lon
-  let/quiet mp_lambda = if ((continent_lon+landi_subx) ge mp_xmin and (continent_lon+landi_subx) le mp_xmax and \
-   continent_lat ge mp_ymin and continent_lat le mp_ymax) then ((continent_lon+landi_subx) * deg2rad)
-  let/quiet mp_phi = if ((continent_lon+landi_subx) ge mp_xmin and (continent_lon+landi_subx) le mp_xmax and \
-   continent_lat ge mp_ymin and continent_lat le mp_ymax) then (continent_lat * deg2rad)
-  let/quiet masked_x_page = mp_mask * x_page
-  let/quiet masked_y_page = mp_mask * y_page
-  $1"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
-  ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
-  $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
-ENDIF
-
-ENDIF  ! lines outside 0 to 360
+CANCEL VAR continent*
 
 
 ! **** now the optional country borders
-set grid COUNTRY_LON
-let/quiet mp_lambda = if (COUNTRY_LON ge mp_xmin and COUNTRY_LON le mp_xmax and COUNTRY_LAT ge mp_ymin and COUNTRY_LAT le mp_ymax) then (COUNTRY_LON * deg2rad)
-let/quiet mp_phi = if (COUNTRY_LON ge mp_xmin and COUNTRY_LON le mp_xmax and COUNTRY_LAT ge mp_ymin and COUNTRY_LAT le mp_ymax) then (COUNTRY_LAT * deg2rad)
-let/quiet masked_x_page = mp_mask * x_page
-let/quiet masked_y_page = mp_mask * y_page
-$3"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
+IF ($3%0|*>1%) THEN
+
+! Add replication of longitudes if necessary to match whats on the map.
+   IF `landi_addx NE 0` THEN 
+      SET VAR/NAME=country_lon_in country_lon
+      SET VAR/NAME=country_lat_in country_lat
+      LET country_lon = XCAT(country_lon_in, country_lon_in + (landi_addx))
+      LET country_lat = XCAT(country_lat_in, country_lat_in)
+   ENDIF
+
+   LET/QUIET mp_x = x[gx=country_lon]
+   LET/QUIET mp_y = y[gy=country_lon]
+
+   LET/QUIET mp_lambda = country_lon * deg2rad
+   LET/QUIET mp_phi = country_lat * deg2rad
+
+   LET/QUIET masked_x_page = mp_mask * x_page
+   LET/QUIET masked_y_page = mp_mask * y_page
+   $3"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
 
 ! select line style and plot
-ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+   ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
 
 ! draw it - as an overlay or as a basemap
-$3"query/ignore|*>ppl plot/overlay"
+   $3"query/ignore|*>ppl plot/overlay"
 
-
-! Draw any lines outside 0 to 360
-IF ($3"0|*>1") THEN
-
-IF `landi_addx NE 0` THEN 
-  set grid COUNTRY_LON
-  let/quiet mp_lambda = if ((country_lon+landi_addx) ge mp_xmin and (country_lon+landi_addx) le mp_xmax and \
-   country_lat ge mp_ymin and country_lat le mp_ymax) then ((country_lon+landi_addx) * deg2rad)
-  let/quiet mp_phi = if ((country_lon+landi_addx) ge mp_xmin and (country_lon+landi_addx) le mp_xmax and \
-   country_lat ge mp_ymin and country_lat le mp_ymax) then (country_lat * deg2rad)
-  let/quiet masked_x_page = mp_mask * x_page
-  let/quiet masked_y_page = mp_mask * y_page
-  $3"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
-  ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
-  $3"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
+   CANCEL VAR country*
 ENDIF
-IF `landi_subx NE 0` THEN 
-  set grid COUNTRY_LON
-  let/quiet mp_lambda = if ((country_lon+landi_subx) ge mp_xmin and (country_lon+landi_subx) le mp_xmax and \
-   country_lat ge mp_ymin and country_lat le mp_ymax) then ((country_lon+landi_subx) * deg2rad)
-  let/quiet mp_phi = if ((country_lon+landi_subx) ge mp_xmin and (country_lon+landi_subx) le mp_xmax and \
-   country_lat ge mp_ymin and country_lat le mp_ymax) then (country_lat * deg2rad)
-  let/quiet masked_x_page = mp_mask * x_page
-  let/quiet masked_y_page = mp_mask * y_page
-  $3"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
-  ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
-  $3"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
-ENDIF
-
-ENDIF  ! lines outside 0 to 360
-
-
 
 ! **** now the optional state borders
-set grid STATE_LON
-let/quiet mp_lambda = if (STATE_LON ge mp_xmin and STATE_LON le mp_xmax and STATE_LAT ge mp_ymin and STATE_LAT le mp_ymax) then (STATE_LON * deg2rad)
-let/quiet mp_phi = if (STATE_LON ge mp_xmin and STATE_LON le mp_xmax and STATE_LAT ge mp_ymin and STATE_LAT le mp_ymax) then (STATE_LAT * deg2rad)
-let/quiet masked_x_page = mp_mask * x_page
-let/quiet masked_y_page = mp_mask * y_page
-$4"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
+IF ($4%0|*>1%) THEN
+
+   IF `landi_addx NE 0` THEN 
+      SET VAR/NAME=state_lon_in state_lon
+      SET VAR/NAME=state_lat_in state_lat
+      LET state_lon = XCAT(state_lon_in, state_lon_in + (landi_addx))
+      LET state_lat = XCAT(state_lat_in, state_lat_in)
+   ENDIF
+
+   LET/QUIET mp_x = x[gx=state_lon]
+   LET/QUIET mp_y = y[gy=state_lon]
+
+   LET/QUIET mp_lambda = state_lon * deg2rad
+   LET/QUIET mp_phi = state_lat * deg2rad
+   
+   LET/QUIET masked_x_page = mp_mask * x_page
+   LET/QUIET masked_y_page = mp_mask * y_page
+   $4"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
 
 ! select line style and plot
-ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+   ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
 
 ! draw it - as an overlay
-$4"query/ignore|*>ppl plot/overlay"
+   $4"query/ignore|*>ppl plot/overlay"
 
-
-! Draw any lines outside 0 to 360
-IF ($4"0|*>1") THEN
-
-IF `landi_addx NE 0` THEN 
-  set grid state_LON
-  let/quiet mp_lambda = if ((state_lon+landi_addx) ge mp_xmin and (state_lon+landi_addx) le mp_xmax and \
-   state_lat ge mp_ymin and state_lat le mp_ymax) then ((state_lon+landi_addx) * deg2rad)
-  let/quiet mp_phi = if ((state_lon+landi_addx) ge mp_xmin and (state_lon+landi_addx) le mp_xmax and \
-   state_lat ge mp_ymin and state_lat le mp_ymax) then (state_lat * deg2rad)
-  let/quiet masked_x_page = mp_mask * x_page
-  let/quiet masked_y_page = mp_mask * y_page
-  $4"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
-  ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
-  $4"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
-ENDIF
-IF `landi_subx NE 0` THEN 
-  set grid state_LON
-  let/quiet mp_lambda = if ((state_lon+landi_subx) ge mp_xmin and (state_lon+landi_subx) le mp_xmax and \
-   state_lat ge mp_ymin and state_lat le mp_ymax) then ((state_lon+landi_subx) * deg2rad)
-  let/quiet mp_phi = if ((state_lon+landi_subx) ge mp_xmin and (state_lon+landi_subx) le mp_xmax and \
-   state_lat ge mp_ymin and state_lat le mp_ymax) then (state_lat * deg2rad)
-  let/quiet masked_x_page = mp_mask * x_page
-  let/quiet masked_y_page = mp_mask * y_page
-  $4"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
-  ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
-  $4"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
+   CANCEL VAR state*
 ENDIF
 
-ENDIF  ! lines outside 0 to 360
 
 ! **** now the optional rivers (secondary ones first)
-set grid RIVER1_2_LON
-let/quiet mp_lambda = if (RIVER1_2_LON ge mp_xmin and RIVER1_2_LON le mp_xmax and RIVER1_2_LAT ge mp_ymin and RIVER1_2_LAT le mp_ymax) then (RIVER1_2_LON * deg2rad)
-let/quiet mp_phi = if (RIVER1_2_LON ge mp_xmin and RIVER1_2_LON le mp_xmax and RIVER1_2_LAT ge mp_ymin and RIVER1_2_LAT le mp_ymax) then (RIVER1_2_LAT * deg2rad)
-let/quiet masked_x_page = mp_mask * x_page
-let/quiet masked_y_page = mp_mask * y_page
-$6"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
+IF ($6%0|*>1%) THEN
+
+   IF `landi_addx NE 0` THEN 
+      SET VAR/NAME=river1_2_lon_in river1_2_lon
+      SET VAR/NAME=river1_2_lat_in river1_2_lat
+      LET river1_2_lon = XCAT(river1_2_lon_in, river1_2_lon_in + (landi_addx))
+      LET river1_2_lat = XCAT(river1_2_lat_in, river1_2_lat_in)
+   ENDIF
+
+   LET/QUIET mp_x = x[gx=river1_2_lon]
+   LET/QUIET mp_y = y[gy=river1_2_lon]
+
+   LET/QUIET mp_lambda = river1_2_lon * deg2rad
+   LET/QUIET mp_phi = river1_2_lat * deg2rad
+
+   LET/QUIET masked_x_page = mp_mask * x_page
+   LET/QUIET masked_y_page = mp_mask * y_page
+
+   $6"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
 
 ! select line style and plot
-ppl pen 1 $6"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+   ppl pen 1 $6"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
 
 ! draw it - as an overlay or as a basemap
-$6"query/ignore|*>ppl plot/overlay"
+   $6"query/ignore|*>ppl plot/overlay"
 
-
-! Draw any lines outside 0 to 360
-IF ($6"0|*>1") THEN
-
-IF `landi_addx NE 0` THEN 
-  set grid RIVER1_2_LON
-  let/quiet mp_lambda = if ((RIVER1_2_lon+landi_addx) ge mp_xmin and (RIVER1_2_lon+landi_addx) le mp_xmax and \
-   RIVER1_2_lat ge mp_ymin and RIVER1_2_lat le mp_ymax) then ((RIVER1_2_lon+landi_addx) * deg2rad)
-  let/quiet mp_phi = if ((RIVER1_2_lon+landi_addx) ge mp_xmin and (RIVER1_2_lon+landi_addx) le mp_xmax and \
-   RIVER1_2_lat ge mp_ymin and RIVER1_2_lat le mp_ymax) then (RIVER1_2_lat * deg2rad)
-  let/quiet masked_x_page = mp_mask * x_page
-  let/quiet masked_y_page = mp_mask * y_page
-  $6"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
-  ppl pen 1 $6"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
-  $6"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
-ENDIF
-IF `landi_subx NE 0` THEN 
-  set grid RIVER1_2_LON
-  let/quiet mp_lambda = if ((RIVER1_2_lon+landi_subx) ge mp_xmin and (RIVER1_2_lon+landi_subx) le mp_xmax and \
-   RIVER1_2_lat ge mp_ymin and RIVER1_2_lat le mp_ymax) then ((RIVER1_2_lon+landi_subx) * deg2rad)
-  let/quiet mp_phi = if ((RIVER1_2_lon+landi_subx) ge mp_xmin and (RIVER1_2_lon+landi_subx) le mp_xmax and \
-   RIVER1_2_lat ge mp_ymin and RIVER1_2_lat le mp_ymax) then (RIVER1_2_lat * deg2rad)
-  let/quiet masked_x_page = mp_mask * x_page
-  let/quiet masked_y_page = mp_mask * y_page
-  $6"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
-  ppl pen 1 $6"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
-  $6"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
+   CANCEL VAR river1_2*
 ENDIF
 
-ENDIF  ! lines outside 0 to 360
 
 ! **** now the optional rivers (primary ones second)
-set grid RIVER1_LON
-let/quiet mp_lambda = if (RIVER1_LON ge mp_xmin and RIVER1_LON le mp_xmax and RIVER1_LAT ge mp_ymin and RIVER1_LAT le mp_ymax) then (RIVER1_LON * deg2rad)
-let/quiet mp_phi = if (RIVER1_LON ge mp_xmin and RIVER1_LON le mp_xmax and RIVER1_LAT ge mp_ymin and RIVER1_LAT le mp_ymax) then (RIVER1_LAT * deg2rad)
-let/quiet masked_x_page = mp_mask * x_page
-let/quiet masked_y_page = mp_mask * y_page
+IF ($5%0|*>1%) THEN
+
+   IF `landi_addx NE 0` THEN 
+      SET VAR/NAME=river1_lon_in river1_lon
+      SET VAR/NAME=river1_lat_in river1_lat
+      LET river1_lon = XCAT(river1_lon_in, river1_lon_in + (landi_addx))
+      LET river1_lat = XCAT(river1_lat_in, river1_lat_in)
+   ENDIF
+
+   LET/QUIET mp_x = x[gx=river1_lon]
+   LET/QUIET mp_y = y[gy=river1_lon]
+
+   LET/QUIET mp_lambda = river1_lon * deg2rad
+   LET/QUIET mp_phi = river1_lat * deg2rad
+   
+   LET/QUIET masked_x_page = mp_mask * x_page
+   LET/QUIET masked_y_page = mp_mask * y_page
 $5"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
 
 ! select line style and plot
@@ -308,103 +256,62 @@ ppl pen 1 $5"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>
 ! draw it - as an overlay or as a basemap
 $5"query/ignore|*>ppl plot/overlay"
 
-
-
-! Draw any lines outside 0 to 360
-IF ($5"0|*>1") THEN
-
-IF `landi_addx NE 0` THEN 
-  set grid RIVER1_LON
-  let/quiet mp_lambda = if ((RIVER1_lon+landi_addx) ge mp_xmin and (RIVER1_lon+landi_addx) le mp_xmax and \
-   RIVER1_lat ge mp_ymin and RIVER1_lat le mp_ymax) then ((RIVER1_lon+landi_addx) * deg2rad)
-  let/quiet mp_phi = if ((RIVER1_lon+landi_addx) ge mp_xmin and (RIVER1_lon+landi_addx) le mp_xmax and \
-   RIVER1_lat ge mp_ymin and RIVER1_lat le mp_ymax) then (RIVER1_lat * deg2rad)
-  let/quiet masked_x_page = mp_mask * x_page
-  let/quiet masked_y_page = mp_mask * y_page
-  $5"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
-  ppl pen 1 $5"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
-  $5"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
-ENDIF
-IF `landi_subx NE 0` THEN 
-  set grid RIVER1_LON
-  let/quiet mp_lambda = if ((RIVER1_lon+landi_subx) ge mp_xmin and (RIVER1_lon+landi_subx) le mp_xmax and \
-   RIVER1_lat ge mp_ymin and RIVER1_lat le mp_ymax) then ((RIVER1_lon+landi_subx) * deg2rad)
-  let/quiet mp_phi = if ((RIVER1_lon+landi_subx) ge mp_xmin and (RIVER1_lon+landi_subx) le mp_xmax and \
-   RIVER1_lat ge mp_ymin and RIVER1_lat le mp_ymax) then (RIVER1_lat * deg2rad)
-  let/quiet masked_x_page = mp_mask * x_page
-  let/quiet masked_y_page = mp_mask * y_page
-  $5"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
-  ppl pen 1 $5"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
-  $5"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
+   CANCEL VAR river1*
 ENDIF
 
-ENDIF  ! lines outside 0 to 360
 
 ! **** now the optional marine boundaries
-set grid MARINE_LON
-let/quiet mp_lambda = if (MARINE_LON ge mp_xmin and MARINE_LON le mp_xmax and MARINE_LAT ge mp_ymin and MARINE_LAT le mp_ymax) then (MARINE_LON * deg2rad)
-let/quiet mp_phi = if (MARINE_LON ge mp_xmin and MARINE_LON le mp_xmax and MARINE_LAT ge mp_ymin and MARINE_LAT le mp_ymax) then (MARINE_LAT * deg2rad)
-let/quiet masked_x_page = mp_mask * x_page
-let/quiet masked_y_page = mp_mask * y_page
-$7"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
+
+IF ($7%0|*>1%) THEN
+
+   IF `landi_addx NE 0` THEN 
+      SET VAR/NAME=marine_lon_in marine_lon
+      SET VAR/NAME=marine_lat_in marine_lat
+      LET marine_lon = XCAT(marine_lon_in, marine_lon_in + (landi_addx))
+      LET marine_lat = XCAT(marine_lat_in, marine_lat_in)
+   ENDIF
+
+   LET/QUIET mp_x = x[gx=marine_lon]
+   LET/QUIET mp_y = y[gy=marine_lon]
+
+   LET/QUIET mp_lambda = marine_lon * deg2rad
+   LET/QUIET mp_phi = marine_lat * deg2rad
+   
+   LET/QUIET masked_x_page = mp_mask * x_page
+   LET/QUIET masked_y_page = mp_mask * y_page
+
+   $7"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
 
 ! select line style and plot
-ppl pen 1 $7"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+   ppl pen 1 $7"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
 
 ! draw it - as an overlay or as a basemap
-$7"query/ignore|*>ppl plot/overlay"
+   $7"query/ignore|*>ppl plot/overlay"
 
-
-! Draw any lines outside 0 to 360
-IF ($7"0|*>1") THEN
-
-IF `landi_addx NE 0` THEN 
-  set grid MARINE_LON
-  let/quiet mp_lambda = if ((MARINE_lon+landi_addx) ge mp_xmin and (MARINE_lon+landi_addx) le mp_xmax and \
-   MARINE_lat ge mp_ymin and MARINE_lat le mp_ymax) then ((MARINE_lon+landi_addx) * deg2rad)
-  let/quiet mp_phi = if ((MARINE_lon+landi_addx) ge mp_xmin and (MARINE_lon+landi_addx) le mp_xmax and \
-   MARINE_lat ge mp_ymin and MARINE_lat le mp_ymax) then (MARINE_lat * deg2rad)
-  let/quiet masked_x_page = mp_mask * x_page
-  let/quiet masked_y_page = mp_mask * y_page
-  $7"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
-  ppl pen 1 $7"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
-  $7"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
-ENDIF
-IF `landi_subx NE 0` THEN 
-  set grid MARINE_LON
-  let/quiet mp_lambda = if ((MARINE_lon+landi_subx) ge mp_xmin and (MARINE_lon+landi_subx) le mp_xmax and \
-   MARINE_lat ge mp_ymin and MARINE_lat le mp_ymax) then ((MARINE_lon+landi_subx) * deg2rad)
-  let/quiet mp_phi = if ((MARINE_lon+landi_subx) ge mp_xmin and (MARINE_lon+landi_subx) le mp_xmax and \
-   MARINE_lat ge mp_ymin and MARINE_lat le mp_ymax) then (MARINE_lat * deg2rad)
-  let/quiet masked_x_page = mp_mask * x_page
-  let/quiet masked_y_page = mp_mask * y_page
-  $7"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
-  ppl pen 1 $7"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
-  $7"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
+   CANCEL VAR marine*
 ENDIF
 
-ENDIF  ! lines outside 0 to 360
 
 cancel data geo_borders_intermed
 
-
 set grid/restore
 set data/restore
-let/quiet mp_x = x
-let/quiet mp_y = y
-let/quiet mp_test = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
+
+LET/QUIET mp_x = x
+LET/QUIET mp_y = y
+LET/QUIET mp_test = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
 if `mp_test eq 0` then
-   let/quiet mp_central_meridian = (mp_x[i=@max] + mp_x[i=@min])/2
+   LET/QUIET mp_central_meridian = (mp_x[i=@max] + mp_x[i=@min])/2
 endif
-let/quiet mp_test = `mp_standard_parallel` - `(mp_y[j=@max] + mp_y[j=@min])/2`
+LET/QUIET mp_test = `mp_standard_parallel` - `(mp_y[j=@max] + mp_y[j=@min])/2`
 if `mp_test eq 0` then
-   let/quiet mp_standard_parallel = (mp_y[j=@max] + mp_y[j=@min])/2
+   LET/QUIET mp_standard_parallel = (mp_y[j=@max] + mp_y[j=@min])/2
 endif
 cancel variable mp_test
-let/quiet mp_std_parallel_north = mp_y[j=@max]
-let/quiet mp_std_parallel_south = mp_y[j=@min]
-let/quiet mp_lambda = mp_x * deg2rad
-let/quiet mp_phi = mp_y * deg2rad
+LET/QUIET mp_std_parallel_north = mp_y[j=@max]
+LET/QUIET mp_std_parallel_south = mp_y[j=@min]
+LET/QUIET mp_lambda = mp_x * deg2rad
+LET/QUIET mp_phi = mp_y * deg2rad
 
 set region save
 set mode/last verify

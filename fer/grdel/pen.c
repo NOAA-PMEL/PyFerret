@@ -126,6 +126,70 @@ grdelType grdelPenVerify(grdelType pen, grdelType window)
 }
 
 /*
+ * Replace the color in the given pen object with that in
+ * the given color object.
+ *
+ * Returns one if successful.   If an error occurs, grdelerrmsg
+ * is assigned an appropriate error message and zero is returned.
+ */
+grdelBool grdelPenReplaceColor(grdelType pen, grdelType color)
+{
+    const BindObj *bindings;
+    GDPen     *mypen;
+    grdelType *colorobj;
+    grdelBool  success;
+    PyObject  *result;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelPenReplaceColor called: "
+            "pen = %p, color = %p\n", pen, color);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelPenVerify(pen, NULL) == NULL ) {
+        strcpy(grdelerrmsg, "grdelPenReplaceColor: pen argument is not "
+                            "a grdel Pen");
+        return 0;
+    }
+    mypen = (GDPen *) pen;
+
+    colorobj = grdelColorVerify(color, mypen->window);
+    if ( colorobj == NULL ) {
+        strcpy(grdelerrmsg, "grdelPenReplaceColor: color argument is not "
+                            "a valid grdel Color for the window");
+        return 0;
+    }
+
+    success = 1;
+
+    bindings = grdelWindowVerify(mypen->window);
+    if ( bindings->cferbind != NULL ) {
+        success = bindings->cferbind->replacePenColor(bindings->cferbind,
+                                                mypen->object, colorobj);
+        /* if there was a problem, grdelerrmsg is already assigned */
+    }
+    else if ( bindings->pyobject != NULL ) {
+        result = PyObject_CallMethod(bindings->pyobject, "replacePenColor",
+                                     "OO", (PyObject *) mypen->object,
+                                           (PyObject *) colorobj);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelPenDelete: error when calling the "
+                    "Python binding's replacePenColor method: %s", pyefcn_get_error());
+            success = 0;
+        }
+        else
+            Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelPenReplaceColor: unexpected error, "
+                            "no bindings associated with this Window");
+        success = 0;
+    }
+
+    return success;
+}
+
+/*
  * Delete a Pen created by grdelPen
  *
  * Arguments:
@@ -216,6 +280,24 @@ void fgdpen_(void **pen, void **window, void **color, float *width,
     mypen = grdelPen(*window, *color, *width, style, *stylelen,
                      capstyle, *capstylelen, joinstyle, *joinstylelen);
     *pen = mypen;
+}
+
+/*
+ * Replace a color used in a pen
+ *
+ * Input Arguments:
+ *     pen: Pen to be modified
+ *     color: new Color to use in pen
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void fgdpenreplacecolor_(int *success, void **pen, void **color)
+{
+    grdelBool result;
+
+    result = grdelPenReplaceColor(*pen, *color);
+    *success = result;
 }
 
 /*

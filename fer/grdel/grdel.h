@@ -161,11 +161,13 @@ grdelType grdelPen(grdelType window, grdelType color,
                const char *capstyle, int capstylelen,
                const char *joinstyle, int joinstylelen);
 grdelType grdelPenVerify(grdelType pen, grdelType window);
+grdelBool grdelPenReplaceColor(grdelType brush, grdelType color);
 grdelBool grdelPenDelete(grdelType pen);
 
 grdelType grdelBrush(grdelType window,  grdelType color,
                const char *style, int stylelen);
 grdelType grdelBrushVerify(grdelType brush, grdelType window);
+grdelBool grdelBrushReplaceColor(grdelType brush, grdelType color);
 grdelBool grdelBrushDelete(grdelType brush);
 
 grdelType grdelSymbol(grdelType window, const char *symbolname,
@@ -187,10 +189,12 @@ void fgdfontdel_(int *success, void **font);
 void fgdpen_(void **pen, void **window, void **color, float *width,
                char *style, int *stylelen, char *capstyle, int *capstylelen,
                char *joinstyle, int *joinstylelen);
+void fgdpenreplacecolor_(int *success, void **pen, void **color);
 void fgdpendel_(int *success, void **pen);
 
 void fgdbrush_(void **brush, void **window, void **color,
                char *style, int *stylelen);
+void fgdbrushreplacecolor_(int *success, void **brush, void **color);
 void fgdbrushdel_(int *success, void **brush);
 
 void fgdsymbol_(void **symbol, void **window, char *symbolname, int *namelen);

@@ -125,9 +125,13 @@ grdelBool cairoCFerBind_deleteFont(CFerBind *self, grdelType font);
 grdelType cairoCFerBind_createPen(CFerBind *self, grdelType color, double width,
                                   const char *style, int stlen, const char *capstyle,
                                   int capstlen, const char *joinstyle, int joinstlen);
+grdelBool cairoCFerBind_replacePenColor(CFerBind *self,
+                                        grdelType pen, grdelType color);
 grdelBool cairoCFerBind_deletePen(CFerBind *self, grdelType pen);
 grdelType cairoCFerBind_createBrush(CFerBind *self, grdelType color,
                                     const char *style, int stlen);
+grdelBool cairoCFerBind_replaceBrushColor(CFerBind *self,
+                                          grdelType brush, grdelType color);
 grdelBool cairoCFerBind_deleteBrush(CFerBind *self, grdelType brush);
 grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int namelen);
 grdelBool cairoCFerBind_deleteSymbol(CFerBind *self, grdelType symbol);

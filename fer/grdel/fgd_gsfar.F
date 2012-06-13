@@ -92,6 +92,7 @@
             CALL FGDERRMSG(errmsg, errmsglen)
             CALL SPLIT_LIST(pttmode_help, err_lun, errmsg, errmsglen)
         ENDIF
+        brushcolor(brushnum, windowid) = colornum
 
         RETURN
         END

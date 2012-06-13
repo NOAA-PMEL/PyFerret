@@ -16,6 +16,7 @@
         INTEGER colornum, success, errmsglen
         REAL opaquefrac
         CHARACTER*2048 errmsg
+        INTEGER brushnum, pennum
 
 *       Sanity checks
         IF ( (windowid .LT. 1) .OR. 
@@ -68,6 +69,38 @@
         colorrgb(1, colornum, windowid) = redfrac
         colorrgb(2, colornum, windowid) = greenfrac
         colorrgb(3, colornum, windowid) = bluefrac
+
+*       Update any brushes that used this color number
+        DO 10 brushnum = 1, maxbrushobjs
+            IF ( (brushobjs(brushnum, windowid)  .NE. nullobj) .AND.
+     .           (brushcolor(brushnum, windowid) .EQ. colornum) ) THEN
+                CALL FGDBRUSHREPLACECOLOR(success,
+     .                       brushobjs(brushnum, windowid),
+     .                       colorobjs(colornum, windowid))
+                IF ( success .EQ. 0 ) THEN
+                    errmsg = ' '
+                    CALL FGDERRMSG(errmsg, errmsglen)
+                    CALL SPLIT_LIST(pttmode_help, err_lun,
+     .                              errmsg, errmsglen)
+                ENDIF
+            ENDIF
+   10   CONTINUE
+
+*       Update any pens that used this color number
+        DO 20 pennum = 1, maxpenobjs
+            IF ( (penobjs(pennum, windowid)  .NE. nullobj) .AND.
+     .           (pencolor(pennum, windowid) .EQ. colornum) ) THEN
+                CALL FGDPENREPLACECOLOR(success,
+     .                     penobjs(pennum, windowid),
+     .                     colorobjs(colornum, windowid))
+                IF ( success .EQ. 0 ) THEN
+                    errmsg = ' '
+                    CALL FGDERRMSG(errmsg, errmsglen)
+                    CALL SPLIT_LIST(pttmode_help, err_lun,
+     .                              errmsg, errmsglen)
+                ENDIF
+            ENDIF
+   20   CONTINUE
 
         RETURN
         END

@@ -115,6 +115,70 @@ grdelType grdelBrushVerify(grdelType brush, grdelType window)
 }
 
 /*
+ * Replace the color in the given brush object with that in
+ * the given color object.
+ *
+ * Returns one if successful.   If an error occurs, grdelerrmsg
+ * is assigned an appropriate error message and zero is returned.
+ */
+grdelBool grdelBrushReplaceColor(grdelType brush, grdelType color)
+{
+    const BindObj *bindings;
+    GDBrush   *mybrush;
+    grdelType *colorobj;
+    grdelBool  success;
+    PyObject  *result;
+
+#ifdef VERBOSEDEBUG
+    fprintf(debuglogfile, "grdelBrushReplaceColor called: "
+            "brush = %p, color = %p\n", brush, color);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelBrushVerify(brush, NULL) == NULL ) {
+        strcpy(grdelerrmsg, "grdelBrushReplaceColor: brush argument is not "
+                            "a grdel Brush");
+        return 0;
+    }
+    mybrush = (GDBrush *) brush;
+
+    colorobj = grdelColorVerify(color, mybrush->window);
+    if ( colorobj == NULL ) {
+        strcpy(grdelerrmsg, "grdelBrushReplaceColor: color argument is not "
+                            "a valid grdel Color for the window");
+        return 0;
+    }
+
+    success = 1;
+
+    bindings = grdelWindowVerify(mybrush->window);
+    if ( bindings->cferbind != NULL ) {
+        success = bindings->cferbind->replaceBrushColor(bindings->cferbind,
+                                                  mybrush->object, colorobj);
+        /* if there was a problem, grdelerrmsg is already assigned */
+    }
+    else if ( bindings->pyobject != NULL ) {
+        result = PyObject_CallMethod(bindings->pyobject, "replaceBrushColor",
+                                     "OO", (PyObject *) mybrush->object,
+                                           (PyObject *) colorobj);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelBrushDelete: error when calling the "
+                    "Python binding's replaceBrushColor method: %s", pyefcn_get_error());
+            success = 0;
+        }
+        else
+            Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelBrushReplaceColor: unexpected error, "
+                            "no bindings associated with this Window");
+        success = 0;
+    }
+
+    return success;
+}
+
+/*
  * Delete a Brush created by grdelBrush
  *
  * Arguments:
@@ -197,6 +261,24 @@ void fgdbrush_(void **brush, void **window, void **color,
 
     mybrush = grdelBrush(*window, *color, style, *stylelen);
     *brush = mybrush;
+}
+
+/*
+ * Replace a color used in a brush
+ *
+ * Input Arguments:
+ *     brush: Brush to be modified
+ *     color: new Color to use in brush
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void fgdbrushreplacecolor_(int *success, void **brush, void **color)
+{
+    grdelBool result;
+
+    result = grdelBrushReplaceColor(*brush, *color);
+    *success = result;
 }
 
 /*

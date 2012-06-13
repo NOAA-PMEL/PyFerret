@@ -113,6 +113,12 @@
 * Only used for inquiries about colors
         REAL colorrgb(3, maxcolorobjs, maxwindowobjs)
 
+* Color ID number used in brushes (for color updates)
+        INTEGER brushcolor(maxbrushobjs, maxwindowobjs)
+
+* Color ID number used in pens (for color updates)
+        INTEGER pencolor(maxpenobjs, maxwindowobjs)
+
 * Color ID number and sizes to use to draw the symbol object
         INTEGER symbolcolor(maxsymbolobjs, maxwindowobjs)
         REAL symbolsize(maxsymbolobjs, maxwindowobjs)
@@ -136,7 +142,7 @@
      .         viewleftcoord, viewbottomcoord, viewrightcoord,
      .         viewtopcoord, activewindow, activetransform,
      .         activebrush, activepen, activesymbol, lastbrushcolor,
-     .         lastbstylen, clearcolor, symbolcolor, showwindow,
-     .         cliptoview, somethingdrawn, useantialiasing,
-     .         lastbrushstyle, enginename, windowtitle
+     .         lastbstylen, clearcolor, brushcolor, pencolor,
+     .         symbolcolor, showwindow, cliptoview, somethingdrawn,
+     .         useantialiasing, lastbrushstyle, enginename, windowtitle
 

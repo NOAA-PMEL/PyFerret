@@ -423,6 +423,18 @@ class PyFerretBindings(AbstractPyFerretBindings):
             pen["joinstyle"] = joinstyle
         return pen
 
+    def replacePenColor(self, pen, newcolor):
+        '''
+        Replaces the color in pen with newcolor.
+        
+        Arguments:
+            pen: Pen object to modify
+            newcolor: Color to use
+
+        Raises an error if unable to replace the Color in the Pen.
+        '''
+        pen.update(newcolor)
+
     def deletePen(self, pen):
         '''
         Delete a Pen object created by createPen
@@ -449,6 +461,18 @@ class PyFerretBindings(AbstractPyFerretBindings):
         if style:
             brush["style"] = style
         return brush
+
+    def replaceBrushColor(self, brush, newcolor):
+        '''
+        Replaces the color in brush with newcolor.
+        
+        Arguments:
+            brush: Brush object to modify
+            newcolor: Color to use
+
+        Raises an error if unable to replace the Color in the Brush.
+        '''
+        brush.update(newcolor)
 
     def deleteBrush(self, brush):
         '''

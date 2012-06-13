@@ -30,7 +30,7 @@
 
         IF ( (activebrush .GE. 1) .AND.
      .       (activebrush .LE. maxbrushobjs) ) THEN
-*           Use the predefined brusch
+*           Use the predefined brush
             fillbrush = brushobjs(activebrush, activewindow)
             IF ( fillbrush .EQ. nullobj ) THEN
                 STOP 'FGD_GFA: null activebrush'

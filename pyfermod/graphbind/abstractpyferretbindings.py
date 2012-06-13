@@ -257,6 +257,18 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError()
 
+    def replacePenColor(self, pen, newcolor):
+        '''
+        Replaces the color in pen with newcolor.
+        
+        Arguments:
+            pen: Pen object to modify
+            newcolor: Color to use
+
+        Raises an error if unable to replace the Color in the Pen.
+        '''
+        raise AttributeError()
+
     def deletePen(self, pen):
         '''
         Delete a Pen object created by createPen
@@ -275,6 +287,18 @@ class AbstractPyFerretBindings(object):
             style: fill style name (e.g., "solid", "cross")
 
         Raises an error if unable to create the Brush object.
+        '''
+        raise AttributeError()
+
+    def replaceBrushColor(self, brush, newcolor):
+        '''
+        Replaces the color in brush with newcolor.
+        
+        Arguments:
+            brush: Brush object to modify
+            newcolor: Color to use
+
+        Raises an error if unable to replace the Color in the Brush.
         '''
         raise AttributeError()
 

@@ -48,8 +48,10 @@ CFerBind *cairoCFerBind_createWindow(void)
     bindings->createFont = cairoCFerBind_createFont;
     bindings->deleteFont = cairoCFerBind_deleteFont;
     bindings->createPen = cairoCFerBind_createPen;
+    bindings->replacePenColor = cairoCFerBind_replacePenColor;
     bindings->deletePen = cairoCFerBind_deletePen;
     bindings->createBrush = cairoCFerBind_createBrush;
+    bindings->replaceBrushColor = cairoCFerBind_replaceBrushColor;
     bindings->deleteBrush = cairoCFerBind_deleteBrush;
     bindings->createSymbol = cairoCFerBind_createSymbol;
     bindings->deleteSymbol = cairoCFerBind_deleteSymbol;

@@ -52,9 +52,13 @@ typedef struct CFerBind_struct {
                             double width, const char *style, int stlen,
                             const char *capstyle, int capstlen,
                             const char *joinstyle, int joinstlen);
+     grdelBool (*replacePenColor)(struct CFerBind_struct *self,
+                                  grdelType pen, grdelType color);
      grdelBool (*deletePen)(struct CFerBind_struct *self, grdelType pen);
      grdelType (*createBrush)(struct CFerBind_struct *self,
                               grdelType color, const char *style, int stlen);
+     grdelBool (*replaceBrushColor)(struct CFerBind_struct *self,
+                                    grdelType brush, grdelType color);
      grdelBool (*deleteBrush)(struct CFerBind_struct *self, grdelType brush);
      grdelType (*createSymbol)(struct CFerBind_struct *self,
                                const char *symbolname, int namelen);

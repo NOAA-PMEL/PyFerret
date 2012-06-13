@@ -45,6 +45,21 @@ with the Ferret engine contained within PyFerret.
     <i>.ps</i> extension instead of a <i>.plt</i> extension to support 
     existing scripts.
     </dd>
+<dt>Changing a color does not change previously drawn items</dt>
+    <dd>
+    In Ferret, the XGKS graphics engine uses color values in a color 
+    table when drawing and when refreshing a displayed image.  The 
+    PPL COLOR command updates the values for a color table entry.  
+    So this command modifies the color of all items drawn that use
+    the modified color table entry, including items drawn prior to
+    the PPL COLOR command.
+    <br />
+    In PyFerret, the graphics engines use the color values in the 
+    color table only at the time of initial drawing of an item.  
+    Thus the PPL COLOR command will only affect the color of items 
+    drawn after the command.  All items drawn prior to the PPL COLOR 
+    command will remain unchanged.
+    </dd>
 </dl>
 
 <h3>Problems to be fixed</h3>
@@ -104,14 +119,26 @@ with the Ferret engine contained within PyFerret.
     </dd>
 <dt>PPL COLOR command does not work</dt>
     <dd>
-    The PPL COLOR command does not change the color used for a color/pen
-    number in subsequent drawing commands.
+    The PPL COLOR command does not change the color value used 
+    for a color number in subsequent drawing commands.
+    <br />
+    <i>This has been fixed in the next release of PyFerret.</i>
     </dd>
 <dt>PLOT+ patterns are not supported</dt>
     <dd>
     PLOT+ pattern files are not yet supported by the new graphics engines.  
     Thus <i>/pattern</i> qualifiers on Ferret plotting commands usually 
     will result in an error.
+    </dd>
+<dt>Images automatically saved have a transparent background</dt>
+    <dd>
+    In PyFerret, using the <i>-batch filename</i> command-line option 
+    or the <i>SET MODE METAFILE:filename</i> Ferret command has the 
+    effect of automatically saving the final image to <i>filename</i> 
+    when PyFerret ends.  However, the image is saved (if possible) 
+    with a transparent background.  Instead, the image should be saved 
+    with a white background.  A <i>-transparent</i> command-line option 
+    should be provided for those wanting a transparent background.
     </dd>
 <dt>Shared time axis not always recognized with putdata and put functions</dt>
     <dd>

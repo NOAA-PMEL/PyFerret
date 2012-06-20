@@ -466,6 +466,7 @@ C  variables for checking axis characteristics (modulo axes)
       DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
          ibot = ef_unspecified_int4	! Check if xpt points in xax range.
+         itop = ef_unspecified_int4
          imatch = 0
 
 	 xpt = arg_2(i2,j2,k2,l2)
@@ -479,27 +480,12 @@ C  variables for checking axis characteristics (modulo axes)
 
          ELSE
 
-            DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
-	       IF (i1  .EQ. arg_lo_ss(X_AXIS,ARG1) .AND.
-     .             xpt .LT. xaxdat(i1,1,1,1)       .AND. 
-     .             xpt .GT. xaxdat(i1,1,1,1)-dxhi  .AND. .NOT.modulo(1) ) 
-     .           ibot = i1
-
-               IF (xpt .GE. xaxdat(i1,1,1,1)) ibot = i1
-                 
-               IF (xpt .EQ. xaxdat(i1,1,1,1)) imatch = i1
-
-cbf      may be some derivation from the exact value can be allowed:
-cbf      if (xpt - xaxdat(i1,1,1,1)).le.eps)   imatch = i1
-
-  100       CONTINUE
-
 *  Locate the X point within the range of modulo X axis 
 *  If we have the whole span, then use the point at the other
 *  end to handle points within a half-grid cell of the edge.
 
-             xflag = 0
-             IF (modulo(1) .AND. full_span ) THEN
+            xflag = 0
+            IF (modulo(1) .AND. full_span ) THEN
                IF (xpt .GE. xaxdat(ihi,1,1,1) .AND.
      .             xpt .LE. xaxdat(ihi,1,1,1)+dxhi) THEN
                   ibot = ihi
@@ -522,6 +508,22 @@ cbf      if (xpt - xaxdat(i1,1,1,1)).le.eps)   imatch = i1
 
             ENDIF
 
+            DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+	       IF (i1  .EQ. arg_lo_ss(X_AXIS,ARG1) .AND.
+     .             xpt .LT. xaxdat(i1,1,1,1)       .AND. 
+     .             xpt .GT. xaxdat(i1,1,1,1)-dxhi  .AND. .NOT.modulo(1) ) 
+     .           ibot = i1
+
+               IF (xpt .GE. xaxdat(i1,1,1,1)) ibot = i1
+                 
+               IF (xpt .EQ. xaxdat(i1,1,1,1)) imatch = i1
+
+cbf      may be some derivation from the exact value can be allowed:
+cbf      if (xpt - xaxdat(i1,1,1,1)).le.eps)   imatch = i1
+
+  100       CONTINUE
+
+  111       CONTINUE
             i1 = arg_hi_ss(X_AXIS,ARG1)
 	    IF (.NOT.modulo(1) ) THEN
                IF (xpt .GT. xaxdat(i1,1,1,1)  .AND.

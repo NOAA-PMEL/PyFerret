@@ -24,3 +24,6 @@ GO err672_axis_order
 
 GO bn_reset 
 GO err672_runoff_page
+
+GO bn_reset 
+GO err672_samplexy_modulo

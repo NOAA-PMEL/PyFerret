@@ -49,17 +49,10 @@
 *			should go to disk file, not to screen
 * V6.6  *kms* 5/10 - monitor redirect_*_flags for stdout/stderr redirection.
 
-#ifdef unix
 	include 'ferret.parm'
         include 'gui.parm'
 	include 'xprog_state.cmn'
         include 'xgui.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-        INCLUDE 'FERRET_CMN:GUI.PARM'
-        INCLUDE 'FERRET_CMN:XGUI.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling arguments
 	INTEGER	      mode, out_lun, line_len

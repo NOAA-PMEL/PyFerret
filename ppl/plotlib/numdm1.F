@@ -55,13 +55,18 @@ C                with "*(*)" for the linux port
 *  *acm* 12/00 Change calendars to match NetCDF standard 
 *  V5.70 *acm* 5/2004 Include the century in year iy, to get correct
 *              evaluation of whether it is a leap year! (Bug 882)
+* V68  *acm* 6/12  changes for double-precision ferret, single-precision pplus
 
       INCLUDE 'calendar.decl'
       INCLUDE 'calendar.cmn'
 
 C     THIS FUNCTION RETURNS NO. OF DAYS IN CURRENT MONTH
 
-      REAL yeardays
+#ifdef double_p
+	real*8 yeardays
+#else
+	real yeardays
+#endif
       CHARACTER*(*) it
 
       call time3(it,iy,im,idd,ih,ix,isec,icen) 

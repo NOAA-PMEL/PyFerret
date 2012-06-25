@@ -268,7 +268,7 @@
      .          var_num, vartype, outflag
 	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
-     .		default*10, show_str*2048, arg*24, name*32, arg30*30
+     .		default*10, show_str*2048, arg*128, name*128, arg30*30
 	CHARACTER	varatt*641, varname*512, attname*128,
      .			efname*40, upname*40, aname*128, outstring*2048,
      .                  dname*128

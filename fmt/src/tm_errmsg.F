@@ -108,9 +108,9 @@
 	INTEGER		status_in, status_out, dset_num, sf_num
 
 * local definitions
-	CHARACTER*512	TM_CMPRSS, expbuff, fndbuff
-	CHARACTER*512	errbuf	! introduced for GUI-SPLIT messages
-        CHARACTER*1028  symbuf  ! for symbol FER_LAST_ERROR
+	CHARACTER*2048	TM_CMPRSS, expbuff, fndbuff
+	CHARACTER*2048	errbuf	! introduced for GUI-SPLIT messages
+        CHARACTER*2048  symbuf  ! for symbol FER_LAST_ERROR
 	INTEGER		sf_len, des_len, TM_LENSTR1, msg_len, exp_len,
      .			fnd_len, rtn_len, len_symbuf, ier, ist, cdferr
 

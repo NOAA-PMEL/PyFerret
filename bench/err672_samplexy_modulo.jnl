@@ -1,0 +1,20 @@
+! err672_samplexy_modulo.jnl
+! See ticket 1950: samplexy doesnt correctly do modulo operations.
+
+use coads_climatology
+! There is data at x=-20,y=0:
+list  sst[x=-20,y=0]
+
+! But samplexy doesn't find it.
+! Previously the last column was all-missing.
+list samplexy(sst,{160,180,-20},{0,0,0})
+
+! Check that we get data back at the edges of the longitude axis
+list  samplexy(sst,{21,379},{-41,-41})
+
+! Check samplexyt
+let t1 = `t[gt=sst,L=1]`
+list samplexyt(sst,{160,180,-20},{0,0,0},{`t1`,`t1`,`t1`})
+
+
+

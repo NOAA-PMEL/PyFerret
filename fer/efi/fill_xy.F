@@ -6,8 +6,8 @@
 *
 * This function fill missing values by averaging over the neigbourhood
 *
-
-
+* *acm*  v6.8 6/19/2012 fix bug in loop 102, setting bad flags
+*
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -233,7 +233,7 @@
 	          IF (work_new(i1,j1) .NE. bad_flag(1)) THEN
                      result(i,j,k,l) = work_new(i1,j1)
 		  ELSE
-		     result(i,j,k,1) = bad_flag_result
+		     result(i,j,k,l) = bad_flag_result
 		  ENDIF
                   i1 = i1 + arg_incr(X_AXIS,ARG1)
  102           CONTINUE

@@ -482,6 +482,18 @@ c	      next_char = istart + naxes - 1
 	               ENDIF
  112	            CONTINUE
  114	            IF ( state .NE. done_looking ) GOTO 5056
+
+* What if it's x[d=1,i=1:3]  ?  dend is pointing at the last bracket.
+		    ii = dend
+	            DO 113 i = dstart+1,dend
+		       IF ( name(i:i) .EQ. ',' ) THEN
+		          ii = i-1
+			  GOTO 115
+		       ENDIF
+ 113	            CONTINUE
+ 115		    CONTINUE
+		    dend = ii
+
 	            gdset = FIND_DSET_NUMBER( name(dstart:dend) )
 	            gdset_included = .TRUE.
 *33333333333333333

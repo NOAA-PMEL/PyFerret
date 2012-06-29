@@ -14,7 +14,9 @@ CFLAGS		= -fPIC -m64 -O2 $(INCLUDES)
 FC		= gfortran
 F77		= gfortran
 F77SHFLAG	=
-FFLAGS		= -fPIC -m64 -fno-second-underscore -fno-backslash -fdollar-ok -ffixed-line-length-132 -fdefault-real-8 -fdefault-double-8 $(INCLUDES)
+FFLAGS		= -fPIC -m64 -Ddouble_p -fno-second-underscore \
+		  -fno-backslash -fdollar-ok -ffixed-line-length-132 \
+		  -fdefault-real-8 -fdefault-double-8 $(INCLUDES)
 
 RANLIB		= /usr/bin/ranlib
 

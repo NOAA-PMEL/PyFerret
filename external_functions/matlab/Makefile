@@ -19,7 +19,7 @@
 #       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
 #
 
-include ../../site_specific.mk
+include ../ef_utility/site_specific.mk
 include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 
 #

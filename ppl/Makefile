@@ -11,7 +11,7 @@ include ../platform_specific.mk.$(BUILDTYPE)
 #
 
 DIRS	= tmapadds complot ourlib plot \
-	plotlib pplepic pplp_only pplusr symlib
+	plotlib pplepic pplusr symlib
 
 LIBS	= complot ourlib plot plotlib pplepic \
 	pplusr symlib

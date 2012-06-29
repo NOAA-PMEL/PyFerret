@@ -39,6 +39,8 @@
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP
+*
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
 * include files
 
@@ -82,7 +84,6 @@
       badd = bad
 
       dset_num = dset
-      IF (dset_num .NE. -2) dset_num = -2
       status = NCF_ADD_COORD_VAR( dset_num, varid, type, coordvar,
      .                      vhol, uhol, badd)
 

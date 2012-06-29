@@ -216,7 +216,7 @@ int decode_file (char* fname, char *recptr, char *delims, int *skip,
 	  /* overwrite the newline record terminator with a NULL */
 	  if ((slen = strlen(recptr)) > 0)
 	    if (recptr[slen-1] == '\n')
-	      recptr[slen-1] = NULL;
+	      recptr[slen-1] = '\0';
 	  
 	  decodeRec(recptr, delims, nfields, field_type, *nrec,
 		    numeric_fields, text_fields, bad_flags);
@@ -295,7 +295,7 @@ int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
 
 	  /* overwrite the newline record terminator with a NULL */
 	  if ((slen = strlen(recptr)) > 0)
-	    recptr[slen-1] = NULL;
+	    recptr[slen-1] = '\0';
 	  
 	  analRec(recptr, delims, nfields, field_type, *max_fields);
 
@@ -372,8 +372,8 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
     pnext = nexstrtok(p, delims);
     if ( field_type[i] == FTYP_MISSING ) {
       /* do nothing -- a skipped field */
-
-    } else if (p==NULL || *p == NULL) {
+      ;
+    } else if (p==NULL || *p == '\0') {
       /* missing data field */
       if ( field_type[i] == FTYP_CHARACTER ) {
 	(*(text_fields+i))[rec*pinc] = (char *) malloc(sizeof(char)*2);
@@ -515,7 +515,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	{
 	  /* remove surrounding quotations, if any */
 	  if (strlen(p)>1 && *p=='"' && *(p+strlen(p)-1)=='"') {
-	    *(p+strlen(p)-1) = NULL;
+	    *(p+strlen(p)-1) = '\0';
 	    p++;
 	  }
 	  (*(text_fields+i))[rec*pinc] =
@@ -565,7 +565,7 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
      if the analysis differs from a previous then call it a character field */
   while (p  != NULL) {
     pnext = nexstrtok(p, delims);
-    if (*p == NULL)
+    if (*p == '\0')
       /* null field like 2 commas in a row */
       {
 	/* retain previous information */
@@ -719,7 +719,7 @@ char *nexstrtok(char *s1, char *s2)
       /* skip trailing blanks in this field */
       while (*(p2-1)==' ')
 	p2--;
-      *p2 = NULL;
+      *p2 = '\0';
 
       /* Skip leading blanks in next field */
       while (*nex==' ')

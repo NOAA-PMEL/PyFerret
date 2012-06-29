@@ -1,8 +1,8 @@
 	SUBROUTINE MC_READ ( dset, ivar,
-     .                       a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .                       a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			     use_lo, use_hi, stride,
-     .			     var, sf_num, status )
+     .			a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
+     .			a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
+     .			use_lo, use_hi, stride,
+     .			var, sf_num, status )
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -77,6 +77,28 @@
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+
+* include files
+#include "netcdf.inc"
+        include 'tmap_errors.parm'
+#include "tmap_dset.parm"
+        include 'tmap_dims.parm'                ! data set dimension
+#include "gt_lib.parm"
+        include 'xdset_info.cmn_text'   ! data set info common
+        external xdset_info_data
+        include 'xstep_files.cmn_text'  ! step file common
+        external xstep_files_data
+        include 'xdset_info.cd_equiv'
+        include 'xtm_grid.cmn_text'
+        include 'xprog_state.cmn'
+#ifdef sun
+        include 'xmachine_byte.cmn'
+#else
+        include 'xmachine_int1.cmn'
+#endif
+        include 'xsys_names.cmn_text'
+
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -89,41 +111,23 @@
 *	status      - error status upon completion (output)
 *
 	INTEGER		dset, ivar, sf_num, status, ndim,
-     .                  a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .                  a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			use_lo(4), use_hi(4), stride(4)
+     .			a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
+     .			a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
+     .			use_lo(nferdims), use_hi(nferdims), stride(nferdims)
 	REAL		var(a_lo_x:a_hi_x,
      .                      a_lo_y:a_hi_y,
      .                      a_lo_z:a_hi_z,
-     .                      a_lo_t:a_hi_t)
-
-* include files
-        include 'netcdf.decl'
-#include "netcdf.inc"
-	include 'tmap_errors.parm'
-#include "tmap_dset.parm"
-	include 'tmap_dims.parm'		! data set dimension
-#include "gt_lib.parm"
-	include 'xdset_info.cmn_text'	! data set info common
-	external xdset_info_data
-	include 'xstep_files.cmn_text'	! step file common
-	external xstep_files_data
-        include 'xdset_info.cd_equiv'
-	include 'xtm_grid.cmn_text'
-	include 'xprog_state.cmn'
-#ifdef sun
-        include 'xmachine_byte.cmn'
-#else
-        include 'xmachine_int1.cmn'
-#endif
-	include 'xsys_names.cmn_text'
+     .                      a_lo_t:a_hi_t,
+     .                      a_lo_e:a_hi_e,
+     .                      a_lo_f:a_hi_f)
 
 ! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
 #include "netcdf_declareUnderscore.inc"
 
 * local definitions
-	INTEGER*4 tmp_lo(4), tmp_hi(4), start_read_lstep,end_read_lstep,
+	INTEGER*4 tmp_lo(nferdims), tmp_hi(nferdims), 
+     .            start_read_lstep,end_read_lstep,
      .            idim,sfcnt,nsteps_to_read,
      .            grid, cdfstat, cdfid, l_sf1,offset,
      .            hi_offset,a_lo_t_offset,
@@ -150,7 +154,7 @@
 	start_read_lstep = a_lo_t
         end_lstep = a_hi_t
 	start_read_tstep = start_tstep
-	do 10 idim=1,3
+	do 10 idim=1, nferdims
 		tmp_lo(idim) = use_lo(idim)
 		tmp_hi(idim) = use_hi(idim)
  10	continue
@@ -192,11 +196,11 @@
 
 *read the data
 	   CALL CD_READ( dset, ivar,
-     .		a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .		a_hi_x, a_hi_y, a_hi_z, a_hi_t,
+     .		a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
+     .		a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
      .		use_lo, use_hi, stride,
      .		var(a_lo_x, a_lo_y, a_lo_z,
-     .		a_lo_t),
+     .		a_lo_t, a_hi_e, a_hi_f),
      .		mc_init_stepfile(dset), status)
 
 * 7/97 - *kob* error check as in tm_choose_read.F
@@ -369,7 +373,6 @@ c!c! uncomment this...
 * determine local start and end indices
  70	   tmp_lo(4) = start_read_lstep -offset
 	   tmp_hi(4) = tmp_lo(4) + (end_read_lstep - start_read_lstep)
-		
 
 * determine local scale and offset
            vlen = TM_LENSTR1(vname)
@@ -383,11 +386,12 @@ c!c! uncomment this...
 
 * let's read the data (finally)
 	   CALL CD_READ( dset, ivar,
-     .		a_lo_x, a_lo_y, a_lo_z, a_lo_t_offset,
-     .		a_hi_x, a_hi_y, a_hi_z, a_hi_t_offset,
+     .		a_lo_x, a_lo_y, a_lo_z, a_lo_t_offset, a_lo_e, a_lo_f,
+     .		a_hi_x, a_hi_y, a_hi_z, a_hi_t_offset, a_hi_e, a_hi_f, 
      .	        tmp_lo, tmp_hi, stride,
      .	        var(a_lo_x, a_lo_y, a_lo_z,
-     .	        a_lo_t+(start_read_lstep-use_lo(4))),
+     .	        a_lo_t+(start_read_lstep-use_lo(4)),
+     .	        a_lo_e, a_lo_f),
      .		sfcnt, status)
 * 7/97 - *kob* error check as in tm_choose_read.F
 	   if (status .NE. merr_ok) GOTO 5000

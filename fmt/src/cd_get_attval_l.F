@@ -56,7 +56,8 @@
 *               linked list structure
 *             CD_GET_ATTVAL replaced by NC_GET_ATTRIB, which now returns  
 *               strings or real values according to attrib type
- 
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+
 * argument definitions:
 *	dset	 - dataset number for already opened CDF file
 *       varid    - variable id in netCDF file
@@ -72,7 +73,6 @@
       LOGICAL       val
 
       include 'xio.parm'
-      include 'netcdf.decl'
 #include "netcdf.inc"
       include 'xrisc_buff.cmn'         !1/03 *kob*
       include 'tmap_errors.parm'

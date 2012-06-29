@@ -86,7 +86,6 @@
       INTEGER       status
       CHARACTER*(*) path_list, fname, def_ext
 
-#ifdef unix
 **************************** UNIX **********************************
 
 * local variable declarations
@@ -338,47 +337,4 @@
      .                no_errstring, *9900)
  9900 RETURN
 
-
-#else
-**************************** VMS **********************************
-
-      INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-      INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-
-* local variable declarations
-      LOGICAL file_exist
-      INTEGER TM_LENSTR1
-      INTEGER plen, flen
-
-* initialize
-      plen = TM_LENSTR1( path_list )
-      flen = TM_LENSTR1( fname )
-      status = merr_erreq
-
-      INQUIRE ( FILE	        = fname,
-     .		DEFAULTFILE	= path_list(:plen)//def_ext,
-     .		NAME		= TM_PATH_LIST,
-     .          EXIST           = file_exist,
-     .		ERR 		= 5000)
-
-      IF ( file_exist ) THEN
-	   status = merr_ok
-      ELSE
-	   status = merr_notmounted
-           TM_PATH_LIST = ' '
-           IF (do_errmsg) GOTO 5000
-      ENDIF	   
-
-* done. 
-      RETURN
-
-* error exits
- 5000 CALL TM_ERRMSG (status, status, 'TM_PATH_LIST',
-     .			unspecified_int4, no_stepfile,
-     .			path_list(:plen)//fname(:flen)//def_ext,
-     .                  no_errstring, *9900)
- 9900 RETURN
-
-#endif
-     
       END

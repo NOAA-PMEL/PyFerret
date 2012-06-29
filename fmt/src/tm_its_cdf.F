@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V5.0 5/99 *sh* (used for strides, reversals, and permutates of netCDF files)
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *	dset	- data set number
@@ -50,19 +51,13 @@
 * argument declarations
       INTEGER dset
 
-#ifdef unix
-      include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
       include 'tmap_dims.parm'
       include 'xdset_info.cmn_text'
       external xdset_info_data
       include 'xdset_info.cd_equiv'
-#else
-      INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-      INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
+
 
 * internal variable declarations:
         LOGICAL result

@@ -43,7 +43,7 @@
 * V600 6/05 *acm* Attribute control.
 *      6/06 *acm* missing declarations of ncf functions
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * include files
 #include "gt_lib.parm"
@@ -56,7 +56,6 @@
 
 * Internal declarations
 
-        include 'netcdf.decl'
 #include "netcdf.inc"
 
       CHARACTER*512 abuff

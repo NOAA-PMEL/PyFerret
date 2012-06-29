@@ -1,7 +1,5 @@
-	INTEGER FUNCTION GT_FULL_GRID ( grid_num, idim )
-
-*
-*
+	SUBROUTINE CD_PUT_AGG_MEMB_GRID (agg_dset, vname, imemb, igrid, status)
+*  
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -34,46 +32,32 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+* Programmer Ansley Manke
+* NOAA/PMEL, Seattle, WA - TMAP 
 *
-* find the full range of the indicated grid on the indicated axis in SUBSCRIPT
-* values
+* Given aggregate datset, variable name in the set, aggregate member number,
+* store a new grid number.
 
-* programmer - mark verschell (from GRID_SUBSCRIPT_EXTREMES by steve hankin)
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* revision 0.00 - 04/23/87
-* revision 0.10 - 07/19/88 - Simplified grid/line location in common
-* revision 0.20 - 11/29/88 - Unknown/normal line check done on grid_line now
-*			     and removed references to munknown, mnormal
-*
-* include files
-#ifdef unix
-#include "gt_lib.parm"
-	include 'tmap_dims.parm'
-        include 'xtm_grid.cmn_text'
-        external xgt_grid_data
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
+* for var in aggregate member-dataset:
+* for members of the aggregate, imemb (id= sequence number 1,2,3,...
+*   igrid    Ferret grid number
+*   iline    Ferret line number of aggregate dimension
+*   vtype    1=file-var, 3=user-var
+*   mdset    Ferret dataset number
+*   nv       sequence number in ds_var_code or uvar_name_code
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
-* calling argument declarations
-	INTEGER		grid_num, idim
+* Argument declarations
+  
+	CHARACTER*(*) vname
+	INTEGER agg_dset, imemb, igrid, status
 
-* local variable declarations
-	INTEGER		line_len, line_num, nline
+* Local variable declarations
+	INTEGER NCF_ADD_AGG_VAR_INFO, varid
 
-* locate line in common storage
-	line_num = grid_line( idim, grid_num )
-	line_len = line_dim( line_num )
+	CALL CD_GET_VAR_ID (agg_dset, vname, varid, status)
 
-	IF ( line_num .EQ. mpsunkn .OR. line_num .EQ. mpsnorm) THEN
-	  GT_FULL_GRID = 1
-	ELSE
-	  GT_FULL_GRID = line_len
-	ENDIF
+	status = NCF_PUT_AGG_MEMB_GRID( agg_dset, varid, imemb, igrid)
 
 	RETURN
 	END

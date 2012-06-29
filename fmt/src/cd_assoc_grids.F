@@ -57,6 +57,8 @@
 *             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* TODO: initially leave this as 4D -- what to do with old files that have 4 slab min/max?
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -65,7 +67,7 @@
 *	status	    - return status
 
 * include files
-        include 'netcdf.decl'
+
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
@@ -75,14 +77,13 @@
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-        include 'xdset_info.cd_equiv'
+	        include 'xdset_info.cd_equiv'
 
 * argument declarations
 	INTEGER	 dset, status
         LOGICAL  reversed(max_lines:line_ceiling)
 * 4/99 *kob* 
-	CHARACTER*64 temp_axnams(4,max_temp_grid)
+	CHARACTER*128 temp_axnams(nferdims,max_temp_grid)
 
 * local parameter definitions:
       INTEGER     str_eq
@@ -101,12 +102,12 @@
 * variables for final (unnecessary?) check
       CHARACTER TM_STRING*13, vname*128, buff*128
       INTEGER TM_LENSTR1,
-     .        vartyp, nvdim, vdims(6), nvatts, dim, npts, vlen
+     .        vartyp, nvdim, vdims(8), nvatts, dim, npts, vlen
       LOGICAL coordvar
 
 * *kob* explicit definitions not allowed on decl line in linux...moved it to parameter line
-      CHARACTER*1     dimnam(4)
-      DATA dimnam/'I', 'J', 'K', 'L'/
+      CHARACTER*1     dimnam(nferdims)
+      DATA dimnam/'I', 'J', 'K', 'L', 'M', 'N'/
 
 * loop through each variable in this TMAP data set
 * if it has a "parent_grid" then associate it with that grid
@@ -141,7 +142,7 @@
 * set ds_ordering if not explicitly given in file
 * e.g. map X NORMAL Z T to 1 3 4 0
  110      IF ( ds_ordering(1,tmvar) .EQ. unspecified_int4 ) THEN
-             DO 190 idim = 1, 4
+             DO 190 idim = 1, nferdims
  190         ds_ordering(idim,tmvar) = 0
              ndim = 0
              DO 200 idim = 1, 4
@@ -162,7 +163,7 @@
              DO 300 idim = 1, 4
  300         ds_grid_start(idim,tmvar) = 1
           ENDIF
-
+	  
 * set ds_grid_end if not explicitly given in file
           IF ( ds_grid_end(1,tmvar) .EQ. unspecified_int4 ) THEN
              DO 400 idim = 1, 4
@@ -174,6 +175,11 @@
                 ENDIF
  400         CONTINUE
           ENDIF
+
+* TODO won't need this after implementing full 6D treatment here.
+          DO 410 idim = 5, nferdims
+             ds_grid_start(idim,tmvar) = 1
+ 410         ds_grid_end(idim,tmvar) = 1
 
 * check that the parent lo/hi limits are consistent with the variable slab size
 

@@ -100,7 +100,8 @@
 * V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
 *                  repeated coordinates in netCDF/OPeDNAP datasets
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
-
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+*
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
 *	dset_num	- number assigned to this data set (output)
@@ -113,22 +114,22 @@
 * Argument definitions
 *	CHARACTER*(*)	dset_name, dset_type  removed 4/92 kob
 	LOGICAL		tregular, use_strict
-	INTEGER		perm(4), dset_num, status
+	INTEGER		perm(*), dset_num, status
 	CHARACTER*(*)	dset_name
 
 * Parameter and common files
-	include 'tmap_errors.parm'		! error codes
+        include 'tmap_errors.parm'              ! error codes
 #include "tmap_dset.parm"
-	include 'tmap_dims.parm'		! data set dimensions	
+        include 'tmap_dims.parm'                ! data set dimensions
 #include "gt_lib.parm"
-	include 'xio.parm'
-	include 'xdset_info.cmn_text'	! data set common
-	external xdset_info_data
+        include 'xio.parm'
+        include 'xdset_info.cmn_text'   ! data set common
+        external xdset_info_data
         include 'xsys_names.cmn_text'
         external xsys_names_data
         include 'xdiag_ctrl.cmn_text'
         external xdiag_ctrl_data
-	include 'xrisc_buff.cmn'
+        include 'xrisc_buff.cmn'
 
 * Define variables from Set File namelist records
 	include 'descript.def'

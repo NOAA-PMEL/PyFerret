@@ -43,6 +43,7 @@
 * V600 6/05 *acm* Attribute control.
 * V602 2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * V604 6/07 *acm* Translate attname to hollerith before NCF_INQ_VAR_ATT 
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Argument declarations
 

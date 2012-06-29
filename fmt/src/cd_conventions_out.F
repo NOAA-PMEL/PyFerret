@@ -43,6 +43,7 @@
 * 7/2007 from CD_STAMP_OUT
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *       append  - logical control to create or append
@@ -56,7 +57,6 @@
         CHARACTER*(*) string
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
         include 'cd_lib.parm'

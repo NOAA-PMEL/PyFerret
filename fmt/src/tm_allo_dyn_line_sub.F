@@ -67,9 +67,9 @@
 
 * 10/3/95 for Ferret version 4.2
 * V510 *sh* added "hook" arg so this can be used for tmp lines, too
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Include files
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
@@ -77,14 +77,6 @@
 	include 'xtm_grid.cmn_text'
 	include 'xio.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
-#endif
 
 * Argument definitions
 	INTEGER hook, line, status

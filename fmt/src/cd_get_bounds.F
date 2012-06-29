@@ -57,23 +57,22 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
-
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* TODO: initially leave this as 4D -- what to do with old files that have 4 slab min/max?
 
 * argument definitions:
 *	cdfid   - id of currently open CDF file
 *       ivar    - CDF variable ID of the desired variable
-*       lo      - array of (4) lower bounds subscripts
-*       hi      - array of (4) upper bounds subscripts
-*       tmrecdim- returned axis (1-4) which is CDF record dimension (or 0)
+*       lo      - array of (nferdims) lower bounds subscripts
+*       hi      - array of (nferdims) upper bounds subscripts
+*       tmrecdim- returned axis (1-nferdims) which is CDF record dimension (or 0)
 *       status  - returned TMAP status
 
-* argument declarations:
-	INTEGER	 cdfid, ivar, lo(4), hi(4), tmrecdim, status
-
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
+	include 'tmap_dims.parm'
+#include "gt_lib.parm"
 	include 'cd_lib.parm'
         include 'xio.cmn_text'
         external xio_data
@@ -83,6 +82,9 @@
 #include "netcdf_declareUnderscore.inc"
 
 
+* argument declarations:
+	INTEGER	 cdfid, ivar, lo(nferdims), hi(nferdims), tmrecdim, status
+
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
@@ -91,9 +93,9 @@
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1,
      .        ndims, nvars, cdfstat, vbacklo, vbackhi, idim,
-     .        vartyp, nvdim, vdims(6), nvatts, vlen,
+     .        vartyp, nvdim, vdims(8), nvatts, vlen,
      .        ngatts, npts, recdim
-      REAL    r4_lo(4), r4_hi(4)
+      REAL    r4_lo(nferdims), r4_hi(nferdims)
       CHARACTER vname*128, buff*128
 
       INTEGER tt  ! nice short name
@@ -132,19 +134,27 @@
 
 * get the lower bounds
         got_lo = CD_GET_ATTVAL( cdfid, ivar, 'slab_min_index',
-     .           do_warn,vname(:vlen),r4_lo,4,vbacklo )
+     .           do_warn,vname(:vlen),r4_lo,nferdims,vbacklo )
         IF ( got_lo ) THEN
           DO 100 idim = 1, 4
  100      lo(idim) = r4_lo(idim) !fp->int
+	  IF (nferdims .GT. 4) THEN
+          DO 110 idim = 5, nferdims
+ 110         lo(idim) = unspecified_int4
+	  ENDIF
         ENDIF
 
 * get the upper bounds
         got_hi = CD_GET_ATTVAL( cdfid, ivar, 'slab_max_index',
-     .           do_warn,vname(:vlen),r4_hi, 4, vbackhi )
+     .           do_warn,vname(:vlen),r4_hi, nferdims, vbackhi )
 
         IF ( got_hi ) THEN
           DO 200 idim = 1, 4
  200      hi(idim) = r4_hi(idim) !fp->int
+	  IF (nferdims .GT. 4) THEN
+             DO 220 idim = 5, nferdims
+ 220         hi(idim) = unspecified_int4
+	  ENDIF
         ENDIF
 
 * check for consistency

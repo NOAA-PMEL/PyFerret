@@ -49,7 +49,6 @@
 
 * Internal declarations
 
-        include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
 

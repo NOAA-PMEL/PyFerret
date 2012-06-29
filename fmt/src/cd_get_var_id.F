@@ -45,6 +45,7 @@
 *           *acm* Get rid of call to isit_coord_var, which could get us in 
 *                 an endless loop (isit_coord_var calls cd_get_var_id).
 * V611  5/08 *acm* Fix bug 1578, dataset specifier on the variable var[d=1].attr
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * include files
 #include "gt_lib.parm"
@@ -57,7 +58,6 @@
 
 * Internal declarations
 
-        include 'netcdf.decl'
 #include "netcdf.inc"
 
       CHARACTER*512 buff

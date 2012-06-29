@@ -80,7 +80,7 @@
 * 
 * Argument definitions
 			LOGICAL tregular, use_strict
-	INTEGER		dset_num, lunit, perm(4), status
+	INTEGER		dset_num, lunit, perm(*), status
 
 * Parameter and common files
 

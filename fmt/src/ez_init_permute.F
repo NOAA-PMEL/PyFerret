@@ -46,26 +46,18 @@
 * Linux port -kob - 3/97 - Modify include for tmap_dset.parm to be a
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * calling arguments:
 * varnum - the variable number in COMMON
 	INTEGER varnum
 
-#ifdef unix
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
         include 'xtm_grid.cmn_text'
         include 'xdset_info.cmn_text'
         include 'xez_order.cmn_text'
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-        INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN_TEXT'
-	INCLUDE 'TMAP_FORMAT:XEZ_ORDER.CMN'
-#endif
 
 * local variable definitions:
 	INTEGER idim, gridnum, line
@@ -76,7 +68,7 @@
 * ezii    - the "current" subscript, zero referenced
 * ezorder - the permuted ordering
 * eznn    - the length of each axis
-	DO 100 idim = 1, 4
+	DO 100 idim = 1, nferdims
 	   ezii(idim) = 0
 	   ezorder(idim) = ds_ordering(idim, varnum)
 	   line = grid_line(idim, gridnum)

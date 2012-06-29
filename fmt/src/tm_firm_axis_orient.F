@@ -39,13 +39,13 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V500 *sh* 6/99 - new -- to help with SET DATA/ORDER=
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *	axis	    - input:  axis in TMAP COMMON
-*	orientation - output: a value 1-4 if orientation is firm
+*	orientation - output: a value 1-nferdims if orientation is firm
 
 * include files
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
@@ -53,16 +53,6 @@
 	external xgt_grid_data
 	include 'xunits.cmn_text'
 	external xunits_data
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'  ! untested
-#include "netcdf.inc"
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-#endif
 
 * argument declarations
 	INTEGER	 axis, orientation

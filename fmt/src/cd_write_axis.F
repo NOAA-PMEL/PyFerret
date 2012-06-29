@@ -89,13 +89,14 @@
 * V67  *acm* 3/11  Fix bug 1750. Revert to older behavior: if grid uses same axis
 *                  name but different contents, write both to file with the name
 *                  Ferret uses internally.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
 *               info from linked-list structure  
 *     cdfid   - netCDF id number for already opened CDF file
 *     grid    - TMAP grid id
-*     idim    - axis orientation (1-4)
+*     idim    - axis orientation (1-nferdims)
 *     recdim  - is this to be the CDF record axis ? (input)
 *     loss    - lo subscript (child axis, only)
 *     hiss    - hi subscript (child axis, only)
@@ -103,19 +104,19 @@
 
 * include files
 
-        include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
-        include 'cdf_tmap.parm'
+	include 'cdf_tmap.parm'
 #include "gt_lib.parm"
-	include 'cd_lib.parm'
-	include 'xdset_info.cmn_text'
-	external xdset_info_data
-	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-	include 'xunits.cmn_text'
+        include 'cd_lib.parm'
+        include 'xdset_info.cmn_text'
+        external xdset_info_data
+        include 'xtm_grid.cmn_text'
+        external xgt_grid_data
+        include 'xunits.cmn_text'
+
 
 ! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
@@ -149,7 +150,7 @@
 * *kob* 3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
 *                    name to 64 from 24 to match longer line_name
 * *acm* 6/06 - change axis name lengths to 128
-      CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_OUTNAME*64,
+      CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_OUTNAME*128,
      .       name*128, name_in*128, units*48, datebuff*40, 
      .       buff*140, buff2*140, attname*128
 
@@ -713,6 +714,12 @@
           ELSE IF (idim .eq. t_dim) THEN
              IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
      .        	     ( cdfid, axid, attname, 1, 'T' )
+          ELSE IF (idim .eq. e_dim) THEN
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
+     .        	     ( cdfid, axid, attname, 1, 'E' )
+          ELSE IF (idim .eq. f_dim) THEN
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT_
+     .        	     ( cdfid, axid, attname, 1, 'F' )
           ENDIF
 #else
           IF (idim .eq. x_dim) THEN
@@ -727,6 +734,12 @@
           ELSE IF (idim .eq. t_dim) THEN
              IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
      .        	     ( cdfid, axid, attname, 1, 'T' )
+          ELSE IF (idim .eq. e_dim) THEN
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
+     .        	     ( cdfid, axid, attname, 1, 'E' )
+          ELSE IF (idim .eq. f_dim) THEN
+             IF (attoutflag .EQ. 1) cdfstat = NF_PUT_ATT_TEXT
+     .        	     ( cdfid, axid, attname, 1, 'F' )
           ENDIF
 #endif
        ENDIF

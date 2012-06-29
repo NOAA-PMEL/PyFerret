@@ -1,4 +1,4 @@
-	INTEGER*4 FUNCTION TM_Find_like_line ( iline )
+	INTEGER*4 FUNCTION TM_FIND_LIKE_LINE ( iline )
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -44,20 +44,14 @@
 * revision 0.01 - 11/21/88 - variable used check changed to specific char_initXX
 * revision 0.02 - 09/21/89 - *sh* irregular line coordinate comparison fixed
 * revision 0.02 - 2/92 - *sh* removed guts of routine to TM_SAME_LINE_DEF
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Include files
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * Argument definitions
 	INTEGER*4	iline

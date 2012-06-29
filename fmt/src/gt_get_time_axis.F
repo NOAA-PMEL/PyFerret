@@ -82,6 +82,7 @@
 * V663 *acm* 6/10 Fix bug where error message on bad time axis in des file 
 *                 overflows its text buffer
 * v67  *ACM* 5/11 lengthen string for error messages: long filenames overran string
+*      *acm* 3/12 not reading GT files any more but this routine is called for MC files.
 
 * CALLING ARGUMENTS
 *	dset_num - the data set fow which a time axis is desired

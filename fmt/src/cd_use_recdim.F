@@ -52,6 +52,7 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 
 * argument definitions:
@@ -63,7 +64,6 @@
 	INTEGER	      cdfid, varid, status
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
 
@@ -73,7 +73,7 @@
 
 * local variable declarations:
       INTEGER ndims, nvars, ngatts, recdim, cdfstat, vartyp, nvdims,
-     .        vdims(6), nvatts
+     .        vdims(8), nvatts
       CHARACTER vname*128
 
 *initialize

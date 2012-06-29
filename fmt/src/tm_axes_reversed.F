@@ -35,7 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* return an array of length 4 indicating containing the axes that are reversed
+* return an array of length nferdims indicating containing the axes that are reversed
 * and the value of the function is the number that are reversed
 
 * ... to hide TMAP COMMON from FERRET
@@ -45,20 +45,15 @@
 * written for VAX computer under VMS operating system
 *
 * V320: 2/16/94
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN_TEXT'
-#endif
 
 * calling argument declarations:
 * *kob* 8/95 - changed decl. of axes from LOGICAL to INTEGER
-	INTEGER	axes(4)
+	INTEGER	axes(nferdims)
 	INTEGER	var
 
 * internal variable declarations
@@ -71,8 +66,8 @@
 * note that for netCDF files the array ds_ordering contains a list of only
 * those dimensions that are relevant to the variable.  For example, the
 * variable SST, which contains axes X (1), Y (2), and T (3) would have
-* ds_ordering(1-4,SST_var) = 1,2,4,0
-	DO 100 i = 1, 4
+* ds_ordering(1-nferdims,SST_var) = 1,2,4,0
+	DO 100 i = 1, nferdims
 	   IF ( ds_ordering(i,var) .LT. 0 ) THEN
 	      number = number + 1
 	      axes(number) = ABS(ds_ordering(i,var))

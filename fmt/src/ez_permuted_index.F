@@ -43,6 +43,7 @@
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 
 * revision 0.00 -  3/4/94 *sh*
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * calling arguments:
 * None - all indexing is done in COMMON to maximize speed (and because
@@ -51,11 +52,8 @@
 
 * internal variable declarations:
 
-#ifdef unix
+	include 'tmap_dims.parm'
         include 'xez_order.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:XEZ_ORDER.CMN'
-#endif
 
 * convenience equivalences
 	INTEGER	nx, ny, nz,

@@ -42,7 +42,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 * V600 6/05 *acm* Attribute control.
 * V65  *acm* 2/10- all warnings and notes to std error not std out
-
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -52,7 +52,6 @@
 	INTEGER	      dset, cdfid, status
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
 	include 'tmap_dims.parm'

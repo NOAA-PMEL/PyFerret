@@ -4,7 +4,7 @@
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  Administration''s (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
 *
 *  Access and use of this software shall impose the following
@@ -42,24 +42,22 @@
 * V500 
 * V570 - New routine - taken from tm_fpeq.F  *acm*
 *      - e.g. fix for bug 857, called from mc_read.F, use eps=4.e-15
-
+*     *kms*  3/12 modified to actually use the maximum absolute error
 *
+
 * calling arguments:
-	REAL*8	a, b, abmin, epsilon
+	REAL*8 a, b, epsilon
 
+* local variables
+        REAL*8 abmin, eps
 
-        abmin = MIN(abs(a), abs(b))
+* set the maximum relative error
+        abmin = MIN( ABS(a), ABS(b) )
+        eps = abmin * ABS(epsilon)
+* if close to zero, set the maximum absolute error
+        IF ( eps .LT. ABS(epsilon) ) eps = ABS(epsilon)
 
-* treat relative error case (non-zero) separate fron zero case
+	TM_DFPEQ_TOL = ( ABS(a-b) .LE. eps )
 
-	IF  (a.NE.0.0   .AND.  b.NE.0.0 )  THEN
-	   tm_dfpeq_tol = (ABS(a-b) .LE. ABS(abmin)*epsilon)  ! relative error
-
-
-	ELSE
-	   tm_dfpeq_tol =	ABS(a) .LT. epsilon
-     .		.AND.   ABS(b) .LT. epsilon			! absolute error
-
-	ENDIF
 	RETURN
 	END

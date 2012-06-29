@@ -47,6 +47,7 @@
 *                        than just the current one.
 *  Sun Port 1/30/92 -kob-  added 'ifdef sun' because SUN uses BYTE where DECstation uses
 *                          INTEGER*1
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * calling argument declarations:
         CHARACTER*(*) name, vernam, path
@@ -55,11 +56,8 @@
 	INTEGER	nlen
         INTEGER TM_LENSTR1
 
-#ifdef unix
         include 'tmap_errors.parm'
-#endif
 
-#ifdef unix
         INTEGER slen,plen
         PARAMETER  ( slen = 128 )
 #ifdef sun
@@ -83,9 +81,6 @@
 * translate new version name to FORTRAN style
         CALL TM_CTOF_STRNG( vhol, vernam, slen )
 
-#else
-        STOP 'TM_NEXT_VER_NAME isn't used by VMS'
-#endif
 	RETURN
 	END
 

@@ -42,6 +42,8 @@
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * V65  *acm* 1/10  Make sure parameters values are consistent with 
 *                              whats in netcdf.inc from netcdf4.
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+
 * Argument declarations
 
       CHARACTER*(*) attname
@@ -49,7 +51,6 @@
 
 * Internal declarations
 
-        include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
       include 'xrisc_buff.cmn'

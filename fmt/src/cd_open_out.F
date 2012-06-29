@@ -51,6 +51,7 @@
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
 * V67  *acm* 4/11  Fix ticket 1832, open file correctly for NetCDF4.1.2 and higher.
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *       cdfname - desired output file name
@@ -66,7 +67,6 @@
 	
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
         include 'cdf_tmap.parm'
         include 'tmap_errors.parm'

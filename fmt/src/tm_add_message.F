@@ -41,12 +41,9 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * 2/28/95
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
-#ifdef unix
 	include 'xalt_messages.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:XALT_MESSAGES.CMN_TEXT'
-#endif
 
 * calling arguments
 	CHARACTER*(*) next_line

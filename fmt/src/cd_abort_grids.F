@@ -45,21 +45,14 @@
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
 * V500: 7/99 *sh* - bug fix: need conosotent use of char_init16 on line_name
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * include files
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
         include 'xbuild_grids.cmn'
-#else
-        INCLUDE 'TMAP_FORMAT:XBUILD_GRIDS.CMN'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * local variable declarations
 	INTEGER status

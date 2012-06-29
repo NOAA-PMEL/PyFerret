@@ -43,6 +43,7 @@
 * written for VAX/VMS
 *
 * revision 0.00 - 10/23/89 - code lifted from TM_INIT_DSET by Mark Verschell
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * arguments:
 *	path_name	- full path name of descriptor file
@@ -51,18 +52,11 @@
 	CHARACTER*(*)	path_name
 
 * Parameter and common files
-#ifdef unix
 	include 'tmap_errors.parm'		! error codes
 	include 'tmap_dims.parm'		! data set dimensions
 #include "gt_lib.parm"
 	include 'xdset_info.cmn_text'		! data set common
 	external xdset_info_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! Error codes
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! Data set dimensions
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'		! Data set common
-#endif
 
 * Internal declarations
 	INTEGER		set_cnt

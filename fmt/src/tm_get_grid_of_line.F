@@ -39,20 +39,12 @@
 * If no match is found the value unspecified_int4 is returned.
 
 * V510 *sh* 5/00 - based on TM_GET_GRIDNUM
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
-#ifdef unix
 # include "tmap_dset.parm"	
 	include 'tmap_dims.parm'	! 
-#include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'	! pre-defined grid common
-	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'	! Data set constants
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'	! 
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'	! 
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'	! pre-defined grid common
-#endif
-
+	
 * input arguments
 	INTEGER		line
 
@@ -62,7 +54,7 @@
 * check the static grids
 	DO 100 igrd=1,max_grids
 	  IF (grid_name(igrd) .EQ. char_init16) GOTO 100
-	  DO 90 idim = 1, 4
+	  DO 90 idim = 1, nferdims
 	    IF ( grid_line(idim, igrd) .EQ. line ) THEN
 	      TM_GET_GRID_OF_LINE = igrd
 	      GOTO 900 
@@ -73,7 +65,7 @@
 * check the dynamic grids
 	igrd = 0
  200	CALL TM_NEXT_DYN_GRID( igrd, *299)
-	  DO 190 idim = 1, 4
+	  DO 190 idim = 1, nferdims
 	    IF ( grid_line(idim, igrd) .EQ. line ) THEN
 	      TM_GET_GRID_OF_LINE = igrd
 	      GOTO 900 

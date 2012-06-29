@@ -41,6 +41,7 @@
 
 * 10/3/95 for Ferret version 4.2
 * V5.1 *sh* 4/00 - allow static lines to be deallocated, too
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Since FORTRAN is not recursive this routine implements a poor man's
 * recursion so that the deallocation can trace down the lineage of
@@ -53,19 +54,11 @@
 	INTEGER TM_DEALLO_DYN_LINE_SUB, gonner
 
 * Include files
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * initialize
 	gonner = line

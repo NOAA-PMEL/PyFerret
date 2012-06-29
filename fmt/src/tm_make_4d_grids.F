@@ -66,6 +66,9 @@
 *                   context
 * V541 2/02 *sh* - minor change to support line_modulo_len
 * 4/03 *acm* - Use STR_SAME to compare strings
+*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+*       *acm* 3/12 removing use of old GT and TS data formats (routine 
+*	           GT_GET_TIME_AXIS is still used for MC datasets).
 
 * CALLING ARGUMENTS
 *	dnum - the data set fow which a time axis is desired
@@ -80,8 +83,7 @@
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-	include 'xstep_files.cmn_text'
+		include 'xstep_files.cmn_text'
 	external xstep_files_data
 
 *
@@ -93,7 +95,7 @@
 	LOGICAL		use_ext_tax
 	CHARACTER*13    TM_STRING
 	INTEGER*4	ivar, iv, ngrd, ilne, ngrid, ext_tax, sf
-	INTEGER*4	GT_GET_TIME_AXIS, TS_GET_TIME_AXIS,
+	INTEGER*4	GT_GET_TIME_AXIS, 
      .			TM_FIND_LIKE_GRID, STR_UPCASE
 * local parameter declarations:
         INTEGER*4 STR_SAME, new
@@ -127,7 +129,7 @@
   100	    CONTINUE
 
 * .. If time axis unknown create an auto time axis (once, only)
-*	and build a new 4D grid in position 0 with time info
+*	and build a new nferdims-D grid in position 0 with time info
 * *kob* 12/00 also do this if all the variables are time independent
 	    IF ( grid_line(4,ngrd) .EQ. mpsunkn .OR. 
      .             ( (STR_SAME(ds_type(dnum), '  MC') .EQ. 0) .AND. 
@@ -145,8 +147,6 @@
 	         ELSEIF ((STR_SAME(ds_type(dnum), '  GT') .EQ. 0) .OR. 
      .                   (STR_SAME(ds_type(dnum), '  MC') .EQ. 0) ) THEN
 	           ds_time_axis(dnum) = GT_GET_TIME_AXIS(dnum,status)
-	         ELSEIF (STR_SAME(ds_type(dnum), '  TS') .EQ. 0) THEN
-	           ds_time_axis(dnum) = TS_GET_TIME_AXIS(dnum,ivar,status)
 	         ELSE
 	           GOTO 9200
 	         ENDIF

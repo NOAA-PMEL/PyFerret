@@ -38,10 +38,10 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * include files
 
-        include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 
@@ -53,7 +53,7 @@
 
 * Local declarations
       LOGICAL CD_GET_ATTVAL, got_bad, got_missing, scaled, got_it, tf2
-      INTEGER TM_LENSTR1, vartyp, nvdim, vdims(6), nvatts, vlen, i,
+      INTEGER TM_LENSTR1, vartyp, nvdim, vdims(8), nvatts, vlen, i,
      .        attype
      
       REAL missing_flag, bad_flag, scale_factor, add_offset

@@ -29,8 +29,8 @@
      .                  deg2m  = deg2km * 1000.  )
 
 * names of dimensions
-	INTEGER		  x_dim,   y_dim,   z_dim,   t_dim
-	PARAMETER	( x_dim=1, y_dim=2, z_dim=3, t_dim=4 )
+	INTEGER		  x_dim,   y_dim,   z_dim,   t_dim,   e_dim,   f_dim
+	PARAMETER	( x_dim=1, y_dim=2, z_dim=3, t_dim=4, e_dim=5, f_dim=6 )
 
 * Unspecified values
 	REAL*8		  unspecified_val8

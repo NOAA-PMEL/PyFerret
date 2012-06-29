@@ -54,6 +54,7 @@
 *             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib 
 *             from linked list structure
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -65,11 +66,11 @@
 
 * include files
 
-        include 'netcdf.decl'
+
 #include "netcdf.inc"
-#include "gt_lib.parm"
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
+#include "gt_lib.parm"
         include 'tmap_errors.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -86,7 +87,7 @@
      .        nparm, iatt,  ndims, nvars, ngatts, recdim, 
      .        i, varid, maxlen, attlen, attoutflag
       CHARACTER*13 TM_STRING
-      CHARACTER    name*64, tmap_att*64, buff*2048
+      CHARACTER    name*128, tmap_att*128, buff*2048
       REAL vals(10)
 
       INTEGER tt                ! nice short name

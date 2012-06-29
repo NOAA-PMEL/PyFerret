@@ -43,22 +43,17 @@
 * revision 0.00 - 11/22/85
 * revision 0.10 - 02/15/89 - renamed to TM_ONLY1_STEP and changed GT_CLOSE_STEP
 *			     to TM_CLOSE_STEP, renamed sf_num to f_num
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+
 * arguments:
 *	ds_num	- data set number (see COMMON /XSTEP_FILES/)
 *	f_num	- file number within COMMON/XSTEP_FILES to leave open
 
-#ifdef unix
 	include 'tmap_errors.parm'		! error code parameter defs
 #include "tmap_dset.parm"
 	include 'tmap_dims.parm'
 	include 'xstep_files.cmn_text'
 	external xstep_files_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! error code PARAMETER defs
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'
-#endif
 
 	INTEGER		ds_num,f_num,status,ierr,i
 

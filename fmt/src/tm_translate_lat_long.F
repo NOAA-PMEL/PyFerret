@@ -49,15 +49,12 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.00 - 12/14/88 - from program by Steve Hankin
-*
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+
 * include files
-#ifdef unix
 	include 'tmap_errors.parm'
 #include "gt_lib.parm"
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-#endif
+
 
 	CHARACTER*(*)	string
 	LOGICAL		n_given, s_given, e_given, w_given

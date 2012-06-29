@@ -51,6 +51,7 @@
 * 3/22/95 - check for non-positive DAY value as an error
 * V530: *acm* 12/00 alternative calendar types; cal_id
 * V63  *acm* 10/09 Changes for gfortran build
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * ARGUMENT DEFINITIONS
 *  date  - date to process
@@ -61,17 +62,10 @@
      .                  cal_id
 *
 * INCLUDE FILES
-#ifdef unix
 	include 'tmap_errors.parm'
         include 'calendar.decl'
         include 'calendar.cmn'
 #include "gt_lib.parm"
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-        INCLUDE 'TMAP_PPLV11INC:CALENDAR.DECL'
-        INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
-#endif
 *
 * LOCAL DEFINITIONS
 	CHARACTER*20	fill_in

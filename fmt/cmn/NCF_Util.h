@@ -37,6 +37,7 @@
  *
  * Ansley Manke
  * Ferret V600 April 2005
+/* *acm*  5/12 Additions for creating aggregate datasets
  *
  * This is the header file to be included by routines which
  * are part of the Ferret NetCDF attribute handling library.
@@ -91,6 +92,10 @@ typedef struct  {
 	int fer_dsetnum;
 	int fer_current;
 	int its_epic;
+	int its_agg;
+	int num_agg_members;
+	LIST *agg_dsetlist;
+	int agg_list_initialized;
 } ncdset;
 
 typedef struct  {          /* variable */
@@ -103,15 +108,18 @@ typedef struct  {          /* variable */
 	int natts;
 	int varid;
 	int is_axis;           /* coordinate variable */
-	int axis_dir;          /* coordinate direction 1,2,3,4 for X,Y,Z,T */
+	int axis_dir;          /* coordinate direction 1,2,3,4, for X,Y,Z,T, etc*/
 	int has_fillval;
 	int all_outflag;       /* 0 write no attrs, 
 	                          1 check individual attr flags
 	                          2 write all attrs,
-	                          3 reset attr flags to Ferret defaults
-                           */
+	                          3 reset attr flags to Ferret defaults */
 	double fillval;
 	int attrs_list_initialized;
+	LIST *varagglist;      /* if an aggregate dataset, for each var,
+	                          list the members of the aggregate components. */
+	int agg_list_initialized;
+	int nmemb;
 } ncvar;
 
 typedef struct {			/* attribute */
@@ -126,10 +134,21 @@ typedef struct {			/* attribute */
 	double *vals;       /* for numeric attributes of all types */
 } ncatt;
 
+typedef struct {			/* aggregate member-dataset */
+	int dsetnum;			/* Ferret dataset number */
+} ncagg;
+
+typedef struct {			/* for var in aggregate member-dataset: */
+	int imemb;		        /* for members of the aggregate, member sequence number */
+	int vtype;		        /* for members of the aggregate, type: user-var or file-var */
+	int datid;		        /* for members of the aggregate, Ferret dataset id */
+	int gnum;               /* Ferret grid numbers */
+	int iline;              /* Ferret line number for the aggregate dimension */
+	int nv;                 /* Ferret sequence # in ds_var_code or uvar_name_code */
+} ncagg_var_descr;
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 #define FORTRAN(a) a
 #else
 #define FORTRAN(a) a##_
 #endif
-

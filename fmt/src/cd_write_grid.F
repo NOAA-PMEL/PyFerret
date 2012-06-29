@@ -62,6 +62,7 @@
 * V67  *acm* 3/11  Fix bug 1750. Revert to older behavior: if grid uses same axis
 *                  name but different contents, write both to file with the name
 *                  Ferret uses internally.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -74,7 +75,6 @@
 *     status  - return status
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
@@ -88,22 +88,20 @@
 ! The ones without trailing underscore are declared in netcdf.inc
 #include "netcdf_declareUnderscore.inc"
 
-
 * argument declarations
       LOGICAL itsa_slab, do_bounds, mode_upcase_output
-      INTEGER cdfid, dset, grid, lo(4), hi(4), recdim, edges_flag, status
+      INTEGER cdfid, dset, grid, lo(nferdims), hi(nferdims), recdim, 
+     .        edges_flag, status
       CHARACTER*(*) gname
 
 * local variable declarations:
       LOGICAL gmod, name_from_grid
       INTEGER TM_LENSTR1, 
      .        defid, defdim, nlen, slen, cdfstat, iaxis, idim, glen, i
-* *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
-*                    lname to 64 from 24 to match longer line_name
-      CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_OUTNAME*64,
-     .		names*132, lname*64
-      CHARACTER*1 ww_dim_name(4)
-      DATA ww_dim_name/'X', 'Y', 'Z', 'T'/
+      CHARACTER CD_CHILDAX_NAME*132, CD_AXIS_OUTNAME*132,
+     .		names*132, lname*132
+      CHARACTER*1 ww_dim_name(nferdims)
+      DATA ww_dim_name/'X', 'Y', 'Z', 'T', 'E', 'F'/
 
 * are the axes, alone, enough of a grid definition
       IF ( .NOT.itsa_slab ) GOTO 100
@@ -137,7 +135,7 @@
       gmod = .FALSE.
       names = ' '
       nlen = 1
-      DO 50 idim = 1, 4
+      DO 50 idim = 1, nferdims
          iaxis = grid_line(idim, grid)
 
          lname = CD_AXIS_OUTNAME(dset, grid, idim, slen)
@@ -191,7 +189,7 @@
 #endif
 
 * create the parent axes
- 100  DO 200 idim = 1, 4
+ 100  DO 200 idim = 1, nferdims
          IF ( grid_line(idim, grid) .NE. mpsnorm
      .  .AND. lo(idim) .NE. unspecified_int4     ) THEN
             CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, 

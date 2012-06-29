@@ -75,8 +75,7 @@
 
 	INTEGER		TM_LENSTR1, 
      .                  outtype_flag, varid, attid, attype, attlen, 
-     .			attoutflag, vartype, nvdims, nvatts, vdims(8), 
-     .			varoutflag
+     .			attoutflag
 	REAL		dummy
 	CHARACTER	varattname*512, varname*128, attname*128, buf*2
 *

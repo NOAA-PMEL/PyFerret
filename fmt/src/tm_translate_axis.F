@@ -55,15 +55,11 @@
 *
 * 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an character constant instead
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Include files
-#ifdef unix
 	include 'tmap_errors.parm'
 #include "gt_lib.parm"
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-#endif
 
 * calling argument declarations:
 	CHARACTER*(*)	string

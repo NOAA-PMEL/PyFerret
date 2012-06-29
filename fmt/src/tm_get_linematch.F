@@ -45,18 +45,12 @@
 
 
 * V510 *sh* 4/00
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Include files
-#ifdef unix
 #include "tmap_dset.parm"	
 	include 'tmap_dims.parm'	! 
 #include "gt_lib.parm"
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'	! Data set constants
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'	! 
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'	! 
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'	! pre-defined grid common
-#endif
 
 * argument variables
 	LOGICAL		dup_name, dup_guts

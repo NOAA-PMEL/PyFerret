@@ -43,6 +43,8 @@
 
 * V600 6/05 *acm* Attribute control.
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
 * Argument declarations
 
@@ -54,10 +56,9 @@
 * Internal declarations
 
 #include "gt_lib.parm"
-        include 'netcdf.decl'
 #include "netcdf.inc"
 
-      INTEGER TM_LENSTR1, NCF_INQ_VAR, slen, flen, rev(6), i, ndx, istat
+      INTEGER TM_LENSTR1, NCF_INQ_VAR, slen, flen, rev(8), i, ndx, istat
       PARAMETER (flen=512)      ! size of variable name string
 
 #ifdef sun
@@ -78,7 +79,6 @@
       CALL TM_FTOC_STRNG( vname(1:slen), fhol, flen )
 
       dset_num = dset
-      IF (dset_num .LT. -2) dset_num = -2
       cdfstat = NCF_INQ_VAR(dset_num, ivar, fhol, slen, vartype, 
      .            nvdims, nvatts, coordvar, outflag, rev)
       slen = MIN(slen, flen)

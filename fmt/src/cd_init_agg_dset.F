@@ -1,5 +1,6 @@
-      SUBROUTINE CD_SET_VAR_TYPE (dset, varid, iflag, status )
+	SUBROUTINE CD_INIT_AGG_DSET (dset, dname, status)
 
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -33,33 +34,41 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Set the variable type to iflag 
+* Initialize an aggregate dataset in linked list structure.
 
 * Programmer Ansley Manke
-* NOAA/PMEL, Seattle, WA - TMAP
+* NOAA/PMEL, Seattle, WA - TMAP 
+*
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
-* V600 2/06 *acm* Attribute control.
-* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* argument definitions:
+*       dset    - pointer to TMAP data set
+*       name    - string, name of the dataset
+*	status	- return status
 
-* Argument declarations
+* argument declarations:
+	INTEGER	      dset, status
+	CHARACTER*(*) dname
 
-      INTEGER dset, varid, iflag, status
 
-* Internal declarations
+* local variable declarations:
+	INTEGER NCF_INIT_AGG_DSET, TM_LENSTR1
+	INTEGER llen, slen1, slen2
+	PARAMETER (slen1=2048)      ! size of ds_name string
 
-#include "netcdf.inc"
-      include 'tmap_errors.parm'
-      include 'xrisc_buff.cmn'
+#ifdef sun
+	BYTE      fhol_dsname(slen1)      ! c-type Hollerith string buffer
+#else
+	INTEGER*1 fhol_dsname(slen1)      ! c-type Hollerith string buffer
+#endif
 
-      INTEGER NCF_SET_VAR_OUTTYPE, dset_num
+* Save dataset info in GLOBAL_NCdsetList for attribute handling
 
-      dset_num = dset
-      IF (dset_num .LT. -2) dset_num = -2
+	llen = TM_LENSTR1( dname )
+	CALL TM_FTOC_STRNG( dname(1:llen), fhol_dsname, slen1 )
+	status = NCF_INIT_AGG_DSET (dset, fhol_dsname) 
 
-* set type flag for this variable
-
-      status = NCF_SET_VAR_OUTTYPE( dset_num, varid, iflag)
-
-      RETURN
-      END
+* successful completion
+	
+	RETURN
+	END

@@ -42,6 +42,7 @@
 * V600 6/05 *acm* Attribute control.
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -51,7 +52,6 @@
 	INTEGER	      dset, status
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
 	include 'tmap_dims.parm'

@@ -79,6 +79,7 @@
 /* *acm* 3/11 *acm*	  Fix bug 1825. Routine ncf_get_var_seq no longer called */
 /* *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
 /*					 definition of macro DFTYPE in ferretmacros.h.
+/* *acm*  5/12       V6.8 Additions for creating aggregate datasets
 */
 
 #include "ferretmacros.h"
@@ -135,6 +136,9 @@ int  FORTRAN(ncf_get_var_attr_name) (int *, int *, int *, int *, char*);
 int  FORTRAN(ncf_get_var_attr_id) (int *, int *, char* , int*);
 int  FORTRAN(ncf_get_var_attr_id_case) (int *, int *, char* , int*);
 int  FORTRAN(ncf_get_var_attr) (int *, int *, char* , char* , int *, double *);
+int  FORTRAN(ncf_get_var_attr) (int *, int *, char* , char* , int *, double *);
+int  FORTRAN(ncf_get_attr_from_id) (int *, int *, int * , int *, double* );
+
 int  FORTRAN(ncf_get_var_outflag) (int *, int *, int *);
 int  FORTRAN(ncf_get_var_outtype) (int *, int *,  int *);
 
@@ -162,11 +166,20 @@ int  FORTRAN(ncf_set_var_outtype)( int *, int *, int *);
 int  FORTRAN(ncf_set_axdir)(int *, int *, int *);
 int  FORTRAN(ncf_transfer_att)(int *, int *, int *, int *, int *);
  
+int  FORTRAN(ncf_init_agg_dset)( int *, char *);
+int  FORTRAN(ncf_add_agg_member)( int *, int *);
+int  FORTRAN(ncf_get_agg_count)( int *, int *);
+int  FORTRAN(ncf_add_agg_var_info)( int *, int *, int *, int *, int *, int *, int *, int *);
+int  FORTRAN(ncf_get_agg_var_info)( int *, int *, int *, int *, int *, int *, int *, int *);
+int  FORTRAN(ncf_put_agg_memb_grid)( int *, int *, int *, int *);
+
 /* .... Functions called internally .... */
 
 ncdset *ncf_ptr_from_dset(int *);
 LIST *ncf_get_ds_varlist( int *);
+LIST *ncf_get_ds_agglist( int *);
 LIST *ncf_get_ds_var_attlist (int *, int *);
+LIST *ncf_get_ds_var_gridlist (int *, int *);
 
 int initialize_output_flag (char *);
 int NCF_ListTraverse_FoundDsetName( char *, char * );
@@ -177,8 +190,7 @@ int NCF_ListTraverse_FoundVarID( char *, char * );
 int NCF_ListTraverse_FoundVarAttName( char *, char * );
 int NCF_ListTraverse_FoundVarAttNameCase( char *, char * );
 int NCF_ListTraverse_FoundVarAttID( char *, char * );
-
-void list_free(LIST *, int ); 
+int NCF_ListTraverse_FoundVariMemb( char *, char * );
 
 /*
  * Find a dataset based on its integer ID and return the scalar information:
@@ -250,7 +262,7 @@ int  FORTRAN(ncf_inq_ds_dims)( int *dset, int *idim, char dname[], int *namelen,
    * Get the list of variables.  
    */
   varlist = ncf_get_ds_varlist(dset);
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) {
     return_val = ATOM_NOT_FOUND;
     return return_val;
@@ -276,7 +288,6 @@ int  FORTRAN(ncf_inq_ds_dims)( int *dset, int *idim, char dname[], int *namelen,
   return return_val;
 }
 
-
 /* ----
  * Find a variable in a dataset based on the dataset integer ID and 
  * variable id. Return the variable output type.
@@ -300,7 +311,7 @@ int  FORTRAN(ncf_inq_ds_dims)( int *dset, int *idim, char dname[], int *namelen,
    * Get the list of variables.  
    */
   varlist = ncf_get_ds_varlist(dset);
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) {
     return_val = ATOM_NOT_FOUND;
     return return_val;
@@ -336,7 +347,7 @@ int  FORTRAN(ncf_inq_var_att)( int *dset, int *varid, int *attid, char attname[]
    */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -347,7 +358,7 @@ int  FORTRAN(ncf_inq_var_att)( int *dset, int *varid, int *attid, char attname[]
    */
   varattlist = ncf_get_ds_var_attlist(dset, varid);
 
-  status = list_traverse(varattlist, attid, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varattlist, (char *) attid, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) {
     return_val = ATOM_NOT_FOUND;
     return return_val;
@@ -565,7 +576,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
    * Get the list of variables.  
    */
   varlist = ncf_get_ds_varlist(dset);
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) {
     return_val = ATOM_NOT_FOUND;
     return return_val;
@@ -579,7 +590,6 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
   return_val = FERR_OK;
   return return_val;
 }
-
 
 /* ----
  * Find a variable in a dataset based on the dataset integer ID and 
@@ -602,7 +612,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
    * Get the list of variables and the variable based on its id
    */
   varlist = ncf_get_ds_varlist(dset);
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) {
     return_val = ATOM_NOT_FOUND;
     return return_val;
@@ -636,7 +646,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
    */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -683,7 +693,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
    */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -731,7 +741,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
    */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -779,7 +789,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
    */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -816,6 +826,66 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
   return return_val;
 }
 
+
+/*----
+ * Find a numeric attribute based on the dataset ID and variable ID and attribute id.
+ * On input, len is the max len to load.
+ * Return the attribute, len, and or numeric value.
+ */
+ int FORTRAN(ncf_get_attr_from_id) (int *dset, int *varid, int *attid, int *len, double* val)
+
+{
+  ncdset *nc_ptr=NULL;
+  ncvar *var_ptr=NULL;
+  ncatt *att_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+  int i;
+  LIST *varlist;
+  LIST *varattlist;
+
+   /*
+   * Get the list of variables.  
+   */
+  varlist = ncf_get_ds_varlist(dset);
+
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+  if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
+
+   /*
+   * Get the list of attributes for the variable in the dataset. 
+   * Find the attribute from its ID
+   */
+  varattlist = ncf_get_ds_var_attlist(dset, varid);
+
+  status = list_traverse(varattlist, (char *) attid, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+
+  if ( status != LIST_OK ) {
+    return_val = ATOM_NOT_FOUND;
+    return return_val;
+    }
+  
+  att_ptr=(ncatt *)list_curr(varattlist); 
+
+  val[0] = NC_FILL_DOUBLE;
+  if (att_ptr->type == NC_CHAR)
+	{
+	  fprintf(stderr, "ERROR: ncf_get_attr_from_id: Atribute is CHAR. This function only for numberic.\n");
+	  return_val = -1;
+	  return return_val; 
+          }
+  else 
+  { for (i = 0; i < att_ptr->len; i++) {
+	  val[i] = att_ptr->vals[i]; }
+  }
+  *len = att_ptr->len;
+  return_val = FERR_OK;
+  return return_val;
+}
+
 /* ----
  * Initialize new dataset to contain user variables and 
  * save in GLOBAL_ncdsetList for attribute handling 
@@ -842,7 +912,9 @@ int FORTRAN(ncf_init_uvar_dset)(int *setnum)
     nc.ngatts = 1;
     nc.nvars = 0;
 	nc.recdim = -1;   /* never used, but initialize anyway*/
-	nc.ndims = 4;     /* never used, but initialize anyway*/
+	nc.ndims = 6;     /* never used, but initialize anyway*/
+	nc.its_agg = 0;
+	nc.num_agg_members = 0;
     nc.vars_list_initialized = FALSE;
 
    /* set one global attribute, treat as pseudo-variable . the list of variables */
@@ -881,7 +953,7 @@ int FORTRAN(ncf_init_uvar_dset)(int *setnum)
           var.attrs_list_initialized = TRUE;
 	  }
 
-       list_insert_after(var.varattlist, &att, sizeof(ncatt));
+       list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
 
        /* global attributes list complete */
 
@@ -895,7 +967,7 @@ int FORTRAN(ncf_init_uvar_dset)(int *setnum)
           nc.vars_list_initialized = TRUE;
         }
 
-       list_insert_after(nc.dsetvarlist, &var, sizeof(ncvar));
+       list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar));
 
 /* Add dataset to global nc dataset linked list*/ 
   if (!list_initialized) {
@@ -907,7 +979,7 @@ int FORTRAN(ncf_init_uvar_dset)(int *setnum)
     list_initialized = TRUE;
   }
 
-  list_insert_after(GLOBAL_ncdsetList, &nc, sizeof(ncdset));
+  list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset));
   return_val = FERR_OK;
   return return_val;
   }
@@ -938,6 +1010,7 @@ int FORTRAN(ncf_init_uax_dset)(int *setnum)
     nc.ngatts = 1;
     nc.nvars = 0;
 	nc.recdim = -1;   /* never used, but initialize anyway*/
+	nc.its_agg = 0;
     nc.vars_list_initialized = FALSE;
 
    /* set one global attribute, treat as pseudo-variable . the list of variables */
@@ -976,7 +1049,7 @@ int FORTRAN(ncf_init_uax_dset)(int *setnum)
           var.attrs_list_initialized = TRUE;
 	  }
 
-       list_insert_after(var.varattlist, &att, sizeof(ncatt));
+       list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
 
        /* global attributes list complete */
 
@@ -990,7 +1063,7 @@ int FORTRAN(ncf_init_uax_dset)(int *setnum)
           nc.vars_list_initialized = TRUE;
         }
 
-       list_insert_after(nc.dsetvarlist, &var, sizeof(ncvar));
+       list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar));
 
 /* Add dataset to global nc dataset linked list*/ 
   if (!list_initialized) {
@@ -1002,7 +1075,7 @@ int FORTRAN(ncf_init_uax_dset)(int *setnum)
     list_initialized = TRUE;
   }
 
-  list_insert_after(GLOBAL_ncdsetList, &nc, sizeof(ncdset));
+  list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset));
   return_val = FERR_OK;
   return return_val;
   }
@@ -1037,6 +1110,8 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 	strcpy(nc.fername, name);
 	strcpy(nc.fullpath, path);
 	nc.fer_dsetnum = *setnum;
+	nc.its_agg = 0;
+	nc.num_agg_members = 0;
 	
 	/* Set attribute with initialization values*/
 	
@@ -1159,7 +1234,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
             var.attrs_list_initialized = TRUE;
   	      }
 					
-					list_insert_after(var.varattlist, &att, sizeof(ncatt));
+					list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
 				}    /* global attributes list complete */
 			
       /*Save variable in linked list of variables for this dataset */	
@@ -1172,7 +1247,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 				nc.vars_list_initialized = TRUE;
 			}
 			
-			list_insert_after(nc.dsetvarlist, &var, sizeof(ncvar));
+			list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar));
 			
 		}    
 	
@@ -1370,7 +1445,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 									var.attrs_list_initialized = TRUE;
 								}
 								
-								list_insert_after(var.varattlist, &att, sizeof(ncatt));
+								list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
 							}    /* variable attributes from file complete */
 					}  /* if var.natts > 0*/ 
 				
@@ -1414,7 +1489,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 							var.attrs_list_initialized = TRUE;
 							}
 								
-							list_insert_after(var.varattlist, &att, sizeof(ncatt));
+							list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
 					}
 
 				/*Save variable in linked list of variables for this dataset */	
@@ -1427,7 +1502,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
           nc.vars_list_initialized = TRUE;
         }
 				
-				list_insert_after(nc.dsetvarlist, &var, sizeof(ncvar));
+				list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar));
 				
 			}    /* variables list complete */
 	
@@ -1441,7 +1516,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
     list_initialized = TRUE;
   }
 	
-  list_insert_after(GLOBAL_ncdsetList, &nc, sizeof(ncdset));
+  list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset));
   return return_val;
 }
 
@@ -1471,7 +1546,9 @@ int FORTRAN(ncf_init_other_dset)(int *setnum, char name[], char path[])
     nc.ngatts = 1;
     nc.nvars = 0;
 	nc.recdim = -1;   /* not used, but initialize anyway*/
-	nc.ndims = 4;   
+	nc.ndims = 6;
+	nc.its_agg = 0;
+	nc.num_agg_members = 0;
     nc.vars_list_initialized = FALSE;
 
    /* set up pseudo-variable . the list of variables */
@@ -1512,14 +1589,14 @@ int FORTRAN(ncf_init_other_dset)(int *setnum, char name[], char path[])
       /*Save attribute in linked list of attributes for variable .*/	
        if (!var.attrs_list_initialized) {
           if ( (var.varattlist = list_init()) == NULL ) {
-            fprintf(stderr, "ERROR: ncf_init_uvar_dset: Unable to initialize GLOBAL attributes list.\n");
+            fprintf(stderr, "ERROR: ncf_init_other_dset: Unable to initialize GLOBAL attributes list.\n");
             return_val = -1;
             return return_val; 
           }
           var.attrs_list_initialized = TRUE;
 	  }
 
-       list_insert_after(var.varattlist, &att, sizeof(ncatt));
+       list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
 
        /* global attributes list complete */
 
@@ -1533,7 +1610,7 @@ int FORTRAN(ncf_init_other_dset)(int *setnum, char name[], char path[])
           nc.vars_list_initialized = TRUE;
         }
 
-       list_insert_after(nc.dsetvarlist, &var, sizeof(ncvar));
+       list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar));
 
 /* Add dataset to global nc dataset linked list*/ 
   if (!list_initialized) {
@@ -1545,7 +1622,7 @@ int FORTRAN(ncf_init_other_dset)(int *setnum, char name[], char path[])
     list_initialized = TRUE;
   }
 
-  list_insert_after(GLOBAL_ncdsetList, &nc, sizeof(ncdset));
+  list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset));
   return_val = FERR_OK;
   return return_val;
   }
@@ -1558,7 +1635,7 @@ ncdset *ncf_ptr_from_dset(int *dset)
   static ncdset *nc_ptr=NULL;
   int status=LIST_OK;
 
-  status = list_traverse(GLOBAL_ncdsetList, dset, NCF_ListTraverse_FoundDsetID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(GLOBAL_ncdsetList, (char *) dset, NCF_ListTraverse_FoundDsetID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
 
   /*
    * If the search failed, print a warning message and return.
@@ -1606,7 +1683,7 @@ LIST *ncf_get_ds_var_attlist( int *dset, int *varid)
    */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return NULL;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -1615,6 +1692,49 @@ LIST *ncf_get_ds_var_attlist( int *dset, int *varid)
   return att_ptr;
 }
 
+/* ----
+ * Find a dataset based on its integer ID and return a pointer to its aggregate member list
+ */
+
+LIST *ncf_get_ds_agglist( int *dset)
+{
+  ncdset *nc_ptr=NULL;
+  static LIST *list_ptr=NULL;
+
+  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL ) { return NULL; }
+
+  list_ptr=nc_ptr->agg_dsetlist; 
+  return list_ptr;
+}
+
+/* ----
+ * Find a variable based on its dataset and variable IDs 
+ * and return a pointer to its aggregate-grid list
+ */
+
+LIST *ncf_get_ds_var_gridlist( int *dset, int *varid)
+{
+  ncdset *nc_ptr=NULL;
+  ncvar *var_ptr=NULL;
+  static LIST *varlist=NULL;
+  static LIST *grids_ptr=NULL;
+  int status;
+
+   /*
+   * Get the list of variables.  
+   */
+  varlist = ncf_get_ds_varlist(dset);
+
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return NULL;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+  grids_ptr=var_ptr->varagglist; 
+  return grids_ptr;
+}
+
+/* ----
 /*
  * Deallocates ncatts for a ncvar.
  */
@@ -1706,6 +1826,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
   ncdset *nc_ptr=NULL;
   ncatt att;
   ncvar var;
+  ncagg_var_descr vdescr;
   int status=LIST_OK;
   static int return_val;
   int *i;
@@ -1749,7 +1870,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
   strcpy(var.name,varname);
   var.type = *type;
   var.outtype = *type;
-  var.ndims = 4;
+  var.ndims = 6;
   var.natts = 0;  
   var.varid = *varid;
   var.is_axis = *coordvar;
@@ -1760,7 +1881,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
   var.attrs_list_initialized = FALSE;
 
   if ( (var.varattlist = list_init()) == NULL ) {
-      fprintf(stderr, "ERROR: ncf_init_uvar_dset: Unable to initialize attributes list.\n");
+      fprintf(stderr, "ERROR: ncf_add_var: Unable to initialize attributes list.\n");
       return_val = -1;
       return return_val; 
       }
@@ -1786,7 +1907,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
     att.vals[0] = 0; 
 
     /*Save attribute in linked list of attributes for variable .*/
-    list_insert_after(var.varattlist, &att, sizeof(ncatt));
+    list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
 
 /*  Now the units, if given
  *  For the units string, allocate one more than the att.len, 
@@ -1811,7 +1932,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
 
 
 /*Save attribute in linked list of attributes for this variable */	
-	  list_insert_after(var.varattlist, &att, sizeof(ncatt));
+	  list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
 		}
 
 
@@ -1842,12 +1963,28 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, int *coordvar, char
 
       /*Save attribute in linked list of attributes for this variable */	
 
-       list_insert_after(var.varattlist, &att, sizeof(ncatt));
- /*   } */
+       list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
+ /* 
+
+    /* If this is an aggregate dataset, initialize the list of member-info
+	    for the variable. The values will be filled in later. */
+
+       var.agg_list_initialized = FALSE;
+
+         if ( (var.varagglist = list_init()) == NULL ) {
+             fprintf(stderr, "ERROR: ncf_add_var: Unable to initialize aggregate info list.\n");
+             return_val = -1;
+             return return_val; 
+             }
+         var.agg_list_initialized = TRUE;
+
+         vdescr.imemb = 0;
+         vdescr.gnum = 0;
+         list_insert_after(var.varagglist, (char *) &vdescr, sizeof(ncatt));
 
 /*Save variable in linked list of variables for this dataset */
 
-    list_insert_after(nc_ptr->dsetvarlist, &var, sizeof(ncvar));
+  list_insert_after(nc_ptr->dsetvarlist, (char *) &var, sizeof(ncvar));
 
   return_val = FERR_OK;
   return return_val;
@@ -1924,7 +2061,7 @@ int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar
   strcpy(var.name,varname);
   var.type = *type;
   var.outtype = *type;
-  var.ndims = 4;
+  var.ndims = 6;
   var.natts = 0;  
   var.varid = nc_ptr->nvars;
   *varid = nc_ptr->nvars;
@@ -1968,14 +2105,14 @@ int  FORTRAN(ncf_add_coord_var)( int *dset, int *varid, int *type, int *coordvar
       /*Save attribute in linked list of attributes for this variable */	
 
           var.attrs_list_initialized = TRUE;
-          list_insert_after(var.varattlist, &att, sizeof(ncatt));
+          list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
         }
 
  /*   } */
 
 /*Save variable in linked list of variables for this dataset */
 
-    list_insert_after(nc_ptr->dsetvarlist, &var, sizeof(ncvar));
+    list_insert_after(nc_ptr->dsetvarlist, (char *) &var, sizeof(ncvar));
   
   return_val = FERR_OK;
   return return_val;
@@ -2004,7 +2141,7 @@ int *attype, int *attlen, int *outflag, DFTYPE *vals)
     */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -2052,7 +2189,7 @@ int *attype, int *attlen, int *outflag, DFTYPE *vals)
 
    /*Save attribute in linked list of attributes for this variable */	
 
-  list_insert_after(var_ptr->varattlist, &att, sizeof(ncatt));
+  list_insert_after(var_ptr->varattlist, (char *) &att, sizeof(ncatt));
 
   return_val = FERR_OK;
   return return_val;
@@ -2080,7 +2217,7 @@ int  FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[], int
     */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -2124,7 +2261,7 @@ int  FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[], int
 
    /*Save attribute in linked list of attributes for this variable */	
 
-  list_insert_after(var_ptr->varattlist, &att, sizeof(ncatt));
+  list_insert_after(var_ptr->varattlist, (char *) &att, sizeof(ncatt));
 
   return_val = FERR_OK;
   return return_val;
@@ -2160,7 +2297,7 @@ int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *a
     */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -2220,7 +2357,7 @@ int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *a
       /*Save attribute in linked list of attributes for this variable */	
 
 
- list_insert_after(var_ptr->varattlist, &att, sizeof(ncatt));
+ list_insert_after(var_ptr->varattlist, (char *) &att, sizeof(ncatt));
 
   return_val = FERR_OK;
   return return_val;
@@ -2245,7 +2382,7 @@ int  FORTRAN(ncf_rename_var)( int *dset, int *varid, char newvarname[])
     */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -2277,7 +2414,7 @@ int  FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *atty
     */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -2375,7 +2512,7 @@ int  FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *a
     */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -2480,7 +2617,7 @@ int  FORTRAN(ncf_delete_var_att)( int *dset, int *varid, char attname[])
     */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -2512,7 +2649,7 @@ int  FORTRAN(ncf_delete_var_att)( int *dset, int *varid, char attname[])
   for (i = 1; i <= var_ptr->natts; i++ )
 	  {
 
-	  status = list_traverse(varattlist, &i, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+	  status = list_traverse(varattlist, (char *) &i, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
 	  if ( status != LIST_OK ) 
 		  {
 		  return_val = ATOM_NOT_FOUND;
@@ -2550,7 +2687,6 @@ int  FORTRAN(ncf_delete_var_att)( int *dset, int *varid, char attname[])
   return return_val;
   }
 
-
 /* ---- 
  * Find an attribute based on its variable ID and dataset ID
  * Change its output flag: 1=output it, 0=dont.
@@ -2571,7 +2707,7 @@ int  FORTRAN(ncf_set_att_flag)( int *dset, int *varid, char attname[], int *atto
     */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -2605,8 +2741,6 @@ int  FORTRAN(ncf_set_att_flag)( int *dset, int *varid, char attname[], int *atto
   return return_val;
 }
 
-
-
 /* ---- 
  * Find variable based on its variable ID and dataset ID
  * Change the variable flag: 
@@ -2633,7 +2767,7 @@ int  FORTRAN(ncf_set_var_out_flag)( int *dset, int *varid, int *all_outflag)
     */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -2667,7 +2801,7 @@ int  FORTRAN(ncf_set_var_out_flag)( int *dset, int *varid, int *all_outflag)
 	  {
 	  /* *iatt = i; */
 
-	  status = list_traverse(varattlist, &i, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+	  status = list_traverse(varattlist, (char *) &i, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
 	  if ( status != LIST_OK ) 
 		  {
 		  return_val = ATOM_NOT_FOUND;
@@ -2705,7 +2839,7 @@ int  FORTRAN(ncf_set_var_out_flag)( int *dset, int *varid, int *all_outflag)
   for (i = 1; i <= var_ptr->natts; i++ )
  {
 	 /* *iatt = i; */
-	 status = list_traverse(varattlist, &i, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+	 status = list_traverse(varattlist, (char *) &i, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
 	  if ( status != LIST_OK ) 
 		  {
 		  return_val = ATOM_NOT_FOUND;
@@ -2744,7 +2878,7 @@ int  FORTRAN(ncf_set_var_out_flag)( int *dset, int *varid, int *all_outflag)
   for (i = 1; i <= var_ptr->natts; i++ )
 	  {
 	  /* *iatt = i; */
-	  status = list_traverse(varattlist, &i, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+	  status = list_traverse(varattlist, (char *) &i, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
 	  if ( status != LIST_OK ) {
 	    return_val = ATOM_NOT_FOUND;
 	    return return_val;
@@ -2770,7 +2904,6 @@ int  FORTRAN(ncf_set_var_out_flag)( int *dset, int *varid, int *all_outflag)
   return return_val;
 }
 
-
 /* ---- 
  * Find variable based on its variable ID and dataset ID
  * Change the variable output type.
@@ -2788,7 +2921,7 @@ int  FORTRAN(ncf_set_var_outtype)( int *dset, int *varid, int *outtype)
     */
   varlist = ncf_get_ds_varlist(dset);
 
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -2821,7 +2954,7 @@ int  FORTRAN(ncf_set_axdir)( int *dset, int *varid, int *axdir)
   varlist = ncf_get_ds_varlist(dset);
 
   return_val = ATOM_NOT_FOUND;
-  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr=(ncvar *)list_curr(varlist); 
@@ -2864,7 +2997,7 @@ int  FORTRAN(ncf_transfer_att)(int *dset1, int *varid1, int *iatt, int *dset2, i
     */
   varlist1 = ncf_get_ds_varlist(dset1);
 
-  status = list_traverse(varlist1, varid1, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist1, (char *) varid1, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr1=(ncvar *)list_curr(varlist1); 
@@ -2876,7 +3009,7 @@ int  FORTRAN(ncf_transfer_att)(int *dset1, int *varid1, int *iatt, int *dset2, i
     */
   varattlist1 = ncf_get_ds_var_attlist(dset1, varid1);
 
-  status = list_traverse(varattlist1, iatt, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varattlist1, (char *) iatt, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) {
     return_val = ATOM_NOT_FOUND;
     return return_val;
@@ -2892,7 +3025,7 @@ int  FORTRAN(ncf_transfer_att)(int *dset1, int *varid1, int *iatt, int *dset2, i
     */
   varlist2 = ncf_get_ds_varlist(dset2);
 
-  status = list_traverse(varlist2, varid2, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varlist2, (char *) varid2, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) return ATOM_NOT_FOUND;
 
   var_ptr2=(ncvar *)list_curr(varlist2); 
@@ -2935,12 +3068,11 @@ int  FORTRAN(ncf_transfer_att)(int *dset1, int *varid1, int *iatt, int *dset2, i
 
   /*Save attribute in linked list of attributes for this variable */	
 
-  list_insert_after(var_ptr2->varattlist, &att, sizeof(ncatt));
+  list_insert_after(var_ptr2->varattlist, (char *) &att, sizeof(ncatt));
 
   return_val = FERR_OK;
   return return_val;
 }
-
 
 /* ---- 
  * Find variable based on the dataset ID and variable name
@@ -2992,6 +3124,318 @@ int  FORTRAN(ncf_delete_var)( int *dset, char *varname)
   return return_val;
   }
 
+/* ----
+ * Initialize new dataset to contain an aggregate dataset 
+ * save in GLOBAL_ncdsetList for attribute handling 
+ */
+
+int FORTRAN(ncf_init_agg_dset)(int *setnum, char name[])
+
+{
+  ncdset nc; 
+  static int return_val=FERR_OK; /* static because it needs to exist after the return statement */
+  
+    int i;				/* loop controls */
+	int ia;
+	int iv;
+    ncatt att;			/* attribute */
+    ncvar var;			/* variable */
+	ncagg agg;			/* list of aggregate datset members */
+	att.vals = NULL;
+	att.string = NULL;
+    strcpy(nc.fername, name);
+    nc.fer_dsetnum = *setnum;
+
+    nc.ngatts = 1;
+    nc.nvars = 0;
+	nc.recdim = -1;
+	nc.ndims = 6;
+	nc.its_agg = 1;
+	nc.num_agg_members = 0;
+    nc.vars_list_initialized = FALSE;
+    nc.agg_list_initialized = FALSE;
+
+   /* set up pseudo-variable . the list of variables */
+
+       strcpy(var.name, ".");
+
+       var.attrs_list_initialized = FALSE;
+
+       var.type = NC_CHAR;
+       var.outtype = NC_CHAR;
+       var.varid = 0;
+	   var.natts = nc.ngatts;
+       var.has_fillval = FALSE;
+#ifdef double_p
+	   var.fillval = NC_FILL_DOUBLE;
+#else
+	   var.fillval = NC_FILL_FLOAT;
+#endif
+	   var.all_outflag = 1;
+	   var.is_axis = FALSE;
+	   var.axis_dir = 0;		
+	   var.ndims = 0;
+	   var.attrs_list_initialized = FALSE; 
+
+   /* set global attribute, aggregate name */
+
+		  att.outflag = 1;
+          att.type = NC_CHAR;
+          att.outtype = NC_CHAR;
+          att.outflag = 0;
+          att.attid = 1;
+		  att.len = strlen(name);
+          strcpy(att.name, "aggregate name" );
+
+	      att.string = (char *) malloc((att.len+1)* sizeof(char));
+		  strcpy(att.string, name );
+
+      /*Save attribute in linked list of attributes for variable .*/	
+       if (!var.attrs_list_initialized) {
+          if ( (var.varattlist = list_init()) == NULL ) {
+            fprintf(stderr, "ERROR: ncf_init_agg_dset: Unable to initialize GLOBAL attributes list.\n");
+            return_val = -1;
+            return return_val; 
+          }
+          var.attrs_list_initialized = TRUE;
+       }
+
+		  list_insert_after(var.varattlist, (char *) &att, sizeof(ncatt));
+
+       /* global attributes list complete */
+
+   /* Initialize linked list of variables for this dataset */	
+       if (!nc.vars_list_initialized) {
+          if ( (nc.dsetvarlist = list_init()) == NULL ) {
+            fprintf(stderr, "ERROR: ncf_init_agg_dset: Unable to initialize variable list.\n");
+            return_val = -1;
+            return return_val; 
+          }
+          nc.vars_list_initialized = TRUE;
+        }
+
+       list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar));
+
+  /*Initialize list of aggregate members for this dataset */	
+       if (!nc.agg_list_initialized) {
+          if ( (nc.agg_dsetlist = list_init()) == NULL ) {
+            fprintf(stderr, "ERROR: ncf_init_agg_dset: Unable to initialize aggregate list.\n");
+            return_val = -1;
+            return return_val; 
+          }
+          nc.agg_list_initialized = TRUE;
+        }
+       
+
+/* Add dataset to global nc dataset linked list*/ 
+  if (!list_initialized) {
+    if ( (GLOBAL_ncdsetList = list_init()) == NULL ) {
+      fprintf(stderr, "ERROR: ncf_init_uvar_dset: Unable to initialize GLOBAL_ncDsetList.\n");
+      return_val = -1;
+      return return_val; 
+	}
+    list_initialized = TRUE;
+  }
+
+  list_insert_after(GLOBAL_ncdsetList, (char *) &nc, sizeof(ncdset));
+  return_val = FERR_OK;
+  return return_val;
+  }
+
+/* ----
+ * Add a new aggregate member to an aggregate dataset.
+ */
+int  FORTRAN(ncf_add_agg_member)( int *dset, int *member_dset)
+
+{
+  ncdset *nc_ptr=NULL;
+  int status=LIST_OK;
+  static int return_val;
+  LIST *elist=NULL;
+  ncagg agg_ptr;
+  int i;
+
+   /*
+   * Get the dataset pointer.  
+   */
+  return_val = ATOM_NOT_FOUND;  
+  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL )return return_val;
+
+  /*Save aggregate member number in linked list of aggregate members for this dataset */	
+
+   /*
+   * Get the list of aggregate members. Put the new info at the end.
+   */
+  elist = ncf_get_ds_agglist(dset);
+  agg_ptr.dsetnum = *member_dset;
+
+  list_insert_after(nc_ptr->agg_dsetlist, (char *) &agg_ptr, sizeof(agg_ptr));
+
+  nc_ptr->num_agg_members = nc_ptr->num_agg_members + 1;
+
+  return_val = FERR_OK;
+  return return_val;
+}
+
+/* ----
+ * Find a dataset based on its integer ID and return the 
+ * number of aggregate member datasets
+ */
+
+int  FORTRAN(ncf_get_agg_count)( int *dset, int *num_agg_dsets)
+{
+  ncdset *nc_ptr=NULL;
+  int return_val;
+
+  return_val = ATOM_NOT_FOUND;
+  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL ) { return return_val; }
+
+  *num_agg_dsets = nc_ptr->num_agg_members;
+
+  return_val = FERR_OK; 
+  return return_val; 
+}
+
+/* ----
+ * Add description for variable in aggregate aggregate dataset.
+ * Given the aggregate dataset, and the varid of the variable, and 
+ * the aggregate sequence-number, save the variable type (1=file-variable, 
+ * 3=user-var), the Ferret datset id, the grid, the Ferret line number
+ * for the aggregate dimension, and the sequence number in ds_var_code 
+ * or uvar_name_code.
+ */
+int  FORTRAN(ncf_add_agg_var_info)( int *dset, int *varid, int *imemb,
+int *vtype, int *datid, int *igrid, int *iline, int *nv)
+
+{
+  ncvar *var_ptr=NULL;
+  ncagg_var_descr vdescr;
+  int status=LIST_OK;
+  static int return_val;
+  int i;
+  LIST *varlist;
+  LIST *varagglist;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+
+  varlist = ncf_get_ds_varlist(dset);
+
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+    /*
+    * Get the list of members for the variable in the dataset
+    */
+  varagglist = ncf_get_ds_var_gridlist(dset, varid);
+
+  vdescr.imemb = *imemb;
+  vdescr.vtype = *vtype;
+  vdescr.datid = *datid;
+  vdescr.gnum  = *igrid;
+  vdescr.iline  = *iline;
+  vdescr.nv    = *nv;
+
+   /* Increment number of grid values saved.  
+   */
+
+  var_ptr->nmemb = var_ptr->nmemb + 1;
+
+   /*Save grid number in linked list of grid for this variable */	
+
+  list_insert_after(var_ptr->varagglist, (char *) &vdescr, sizeof(ncagg_var_descr));
+
+
+  return_val = FERR_OK;
+  return return_val;
+}
+	  
+/* ----
+ * For a variable in aggregate aggregate dataset, store its grid.
+ * Given the aggregate dataset, the varid of the variable, and 
+ * the aggregate sequence-number, save the grid of the variable.
+ */
+int  FORTRAN(ncf_put_agg_memb_grid)( int *dset, int *varid, int *imemb, int *igrid)
+
+{
+  ncvar *var_ptr=NULL;
+  ncagg_var_descr vdescr;
+  int status=LIST_OK;
+  static int return_val;
+  int i;
+  LIST *varlist;
+  LIST *varagglist;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+
+  varlist = ncf_get_ds_varlist(dset);
+
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+    /*
+    * Get the list of members for the variable in the dataset. Reset grid number.
+    */
+  varagglist = ncf_get_ds_var_gridlist(dset, varid);
+  vdescr.gnum  = *igrid;
+
+  return_val = FERR_OK;
+  return return_val;
+}
+
+/* ----
+ *
+ * Given the aggregate dataset, varid, and member number, return the 
+ * variable type (1=file-variable, 3=user-var), the Ferret datset id, 
+ * the grid and the sequence number in ds_var_code or uvar_name_code.
+ */
+int  FORTRAN(ncf_get_agg_var_info)( int *dset, int *varid, int *imemb, int* vtype, 
+ int* datid, int *igrid, int *iline, int *nv)
+
+{
+	
+  ncvar *var_ptr=NULL;
+  ncagg_var_descr *vdescr_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+  LIST *varlist;
+  LIST *varagglist;
+
+   /*
+   * Get the list of variables, find variable varid.
+   */
+  varlist = ncf_get_ds_varlist(dset);
+
+  status = list_traverse(varlist, (char *) varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+   /*
+   * Get the list of aggregate-grids for the variable in the dataset
+   */
+  varagglist = ncf_get_ds_var_gridlist(dset, varid);
+
+  status = list_traverse(varagglist, (char *) imemb, NCF_ListTraverse_FoundVariMemb, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return ATOM_NOT_FOUND;
+
+  vdescr_ptr=(ncagg_var_descr *)list_curr(varagglist); 
+
+  *vtype = vdescr_ptr->vtype;
+  *datid = vdescr_ptr->datid;
+  *igrid = vdescr_ptr->gnum;
+  *iline = vdescr_ptr->iline;
+  *nv    = vdescr_ptr->nv;
+  return_val = FERR_OK;
+  return return_val;
+}
 
 /* ---- 
  * For attributes that Ferret always writes, set the output flag to 1
@@ -3051,7 +3495,6 @@ int initialize_output_flag (char *attname)
 
 }
 
-
 /* ---- 
  * See if the name in data matches the ferret dset name in 
  * curr. Ferret always capitalizes everything so be case INsensitive.
@@ -3066,7 +3509,6 @@ int NCF_ListTraverse_FoundDsetName( char *data, char *curr )
     return TRUE;
 }
 
-
 /* ---- 
  * See if the dataset id in data matches the ferret dset id in curr.
  */
@@ -3080,7 +3522,6 @@ int NCF_ListTraverse_FoundDsetID( char *data, char *curr )
   } else
     return TRUE;
 }
-
 
 /* ---- 
  * See if the name in data matches the variable name in 
@@ -3125,7 +3566,6 @@ int NCF_ListTraverse_FoundVarID( char *data, char *curr )
     return TRUE;
 }
 
-
 /* ---- 
  * See if the name in data matches the attribute name in curr.
  */
@@ -3161,6 +3601,20 @@ int NCF_ListTraverse_FoundVarAttID( char *data, char *curr )
   int ID=*((int *)data);
 
   if ( ID== att_ptr->attid)  {
+    return FALSE; /* found match */
+  } else
+    return TRUE;
+}
+
+/* ---- 
+ * See if there is an ID in data matches the dset-member id.
+ */
+int NCF_ListTraverse_FoundVariMemb( char *data, char *curr )
+{
+  ncagg_var_descr *vdescr_ptr=(ncagg_var_descr *)curr;
+  int ID=*((int *)data);
+
+  if ( ID== vdescr_ptr->imemb)  {
     return FALSE; /* found match */
   } else
     return TRUE;

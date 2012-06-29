@@ -42,6 +42,7 @@
 * V600 6/05 *acm* Attribute control.
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * v62  *acm* 6/08 cleanup; no need for the variable called buff.
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -52,7 +53,6 @@
 	INTEGER	      dset, cdfid, status
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
 	include 'tmap_dims.parm'

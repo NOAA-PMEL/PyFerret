@@ -39,16 +39,19 @@
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP
-
+*
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
+*
 * include files
 
       INCLUDE "tmap_dtypes.parm"
       INCLUDE "netcdf.inc"
 
 * Argument declarations
+      LOGICAL coordvar
 
       CHARACTER*(*) varname, title, units
-      INTEGER dset, varid, type, coordvar, status
+      INTEGER dset, varid, type, status
       REAL bad
 
 * Internal declarations
@@ -87,7 +90,6 @@
       badd = bad
 
       dset_num = dset
-      IF (dset_num .LT. -2) dset_num = -2
       status = NCF_ADD_VAR( dset_num, varid, type, coordvar,
      .                      vhol, thol, uhol, badd)
 

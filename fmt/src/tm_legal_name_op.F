@@ -1,5 +1,6 @@
-      SUBROUTINE CD_SET_VAR_TYPE (dset, varid, iflag, status )
-
+	LOGICAL FUNCTION TM_LEGAL_NAME_OP( name )
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -32,34 +33,41 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+* determine whether a particular string is an operator or IF keyword.
+
+
+* programmer - Ansley Manke
+* NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
+* 5/2012
+
+        include 'ferret.parm'
+        include 'errmsg.parm'
+        include 'xalgebra.cmn'
+
+* calling argument declarations:
+	CHARACTER*(*) name
 *
-* Set the variable type to iflag 
+* internal variable declarations:
+	LOGICAL STR_MATCH
+	INTEGER	TM_LENSTR1, STR_SAME, slen
+	
+* string length
+	slen = TM_LENSTR1( name )
 
-* Programmer Ansley Manke
-* NOAA/PMEL, Seattle, WA - TMAP
+* Is it an operator or IF or ELSE ? 
+        imatch = STR_MATCH ( name(:slen),
+     .                       alg_op, num_operators )
+        IF ( imatch .NE. atom_not_found ) GOTO 5000
 
-* V600 2/06 *acm* Attribute control.
-* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+	IF ( STR_SAME (name, 'if') .EQ. 0) GOTO 5000	
+	IF ( STR_SAME (name, 'else') .EQ. 0) GOTO 5000
 
-* Argument declarations
+* it's ok
+	TM_LEGAL_NAME_OP = .TRUE.
+	RETURN
+*
+* it's bad
+ 5000	TM_LEGAL_NAME_OP = .FALSE.
+	RETURN
 
-      INTEGER dset, varid, iflag, status
-
-* Internal declarations
-
-#include "netcdf.inc"
-      include 'tmap_errors.parm'
-      include 'xrisc_buff.cmn'
-
-      INTEGER NCF_SET_VAR_OUTTYPE, dset_num
-
-      dset_num = dset
-      IF (dset_num .LT. -2) dset_num = -2
-
-* set type flag for this variable
-
-      status = NCF_SET_VAR_OUTTYPE( dset_num, varid, iflag)
-
-      RETURN
-      END
+	END

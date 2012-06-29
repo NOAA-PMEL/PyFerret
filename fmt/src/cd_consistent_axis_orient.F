@@ -43,6 +43,7 @@
 * V67 1/11 *acm*  Ticket 1774. Changes for making sure axes have the same direction
 *                 in all  grids of a dataset.
 * V672 8/11 *acm* When reordering axes, dont wipe out an existing axis that is not being moved.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * argument definitions:
 *      dset        - TMAP data set pointer
@@ -51,7 +52,6 @@
 *      status       - return status
 
 * include files
-      include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
       include 'tmap_dims.parm'
@@ -63,22 +63,21 @@
       include 'xio.cmn_text'
       external xio_data
       include 'xtm_grid.cmn_text'
-      external xgt_grid_data
-      include 'xunits.cmn_text'
+            include 'xunits.cmn_text'
       external xunits_data
       include 'xdset_info.cd_equiv'
 
 * argument declarations
       LOGICAL  reversed(max_lines:line_ceiling), already_noted(max_lines:line_ceiling)
-      INTEGER dset, perm(4), status
+      INTEGER dset, perm(*), status
 
 * local variable declarations:
 
       INTEGER TM_LENSTR1, i, j, igrid, igrid_min, igrid_max, idim, iaxis, 
      .        disordered, reordered, n_in_grid,  
-     .        grid_save(4), igrid1, ipos1, igrid2, ipos2, kk, 
+     .        grid_save(nferdims), igrid1, ipos1, igrid2, ipos2, kk, 
      .        iaxis_last, iax, iorder, tmvar, ivar, vartyp, nvdims, 
-     .        vdims(8), nvatts, vlen, istat, lastdim, tmplines(4)
+     .        vdims(8), nvatts, vlen, istat, lastdim, tmplines(nferdims)
       LOGICAL shift_ok, need_iterate, coordvar, all_outflag, permuted
       REAL axes_out_of_order(100)
       CHARACTER vname*128
@@ -86,13 +85,13 @@
       INTEGER grid_ndims (max_grids:grid_ceiling), 
      .        line_use_dir(0:3000)
 
-      INTEGER copy_of_grids (4, 500)
+      INTEGER copy_of_grids (nferdims, 500)
 
       iter = 0
       reordered = 0
 
       DO igrid = 501, 508
-      DO idim = 1, 4
+      DO idim = 1, nferdims
          copy_of_grids(idim, igrid-500) = grid_line(idim, igrid)
       ENDDO
       ENDDO
@@ -122,7 +121,7 @@
       igrid = 0               ! to get start of linked list
   10  CALL TM_NEXT_TMP_GRID( igrid, *19)
 
-      DO 100 idim = 1, 4
+      DO 100 idim = 1, nferdims
          iaxis = grid_line(idim, igrid)
 
          IF (iaxis  .GT. 0) THEN
@@ -149,7 +148,7 @@
       igrid = 0 
   20  CALL TM_NEXT_TMP_GRID( igrid, *29)
       grid_ndims(igrid) = 0
-      DO 110 idim = 1, 4
+      DO 110 idim = 1, nferdims
          IF (grid_line(idim,igrid) .GT. 0) 
      .            grid_ndims(igrid) = grid_ndims(igrid) + 1 
   110 CONTINUE
@@ -182,7 +181,7 @@ c Find the grid which contains this axis and has the most dimensions.
 	    
             igrid = 0 
   40        CALL TM_NEXT_TMP_GRID( igrid, *49)
-            DO 130 idim = 1, 4
+            DO 130 idim = 1, nferdims
                IF (grid_line(idim, igrid) .EQ. iaxis .AND. 
      .             grid_ndims(igrid) .GT. n_in_grid) THEN
                   igrid1 = igrid
@@ -201,7 +200,7 @@ c Find the grid which contains this axis and has the most dimensions.
             IF (igrid .NE. igrid1) THEN
                ipos2 = 0
                igrid2 = 0
-               DO 150 idim = 1, 4
+               DO 150 idim = 1, nferdims
                   IF (grid_line(idim, igrid).EQ. iaxis .AND. 
      .                 idim .NE. ipos1)  THEN
                      igrid2 = igrid
@@ -221,7 +220,7 @@ c Find the grid which contains this axis and has the most dimensions.
      .                       shift_ok = .TRUE.
   160             CONTINUE
                   IF (shift_ok) THEN
-                     DO 170 idim = 1, 4
+                     DO 170 idim = 1, nferdims
                         grid_save(idim) = grid_line(idim,igrid2)
   170                CONTINUE
 
@@ -229,7 +228,7 @@ c Find the grid which contains this axis and has the most dimensions.
                      line_use_dir(grid_line(ipos1,igrid1)) = ipos1
                      grid_line(ipos2,igrid2) = mpsnorm
 
-                     DO 180 idim = ipos2+1, 4
+                     DO 180 idim = ipos2+1, nferdims
                         IF (grid_save(idim-1).NE.mpsnorm) THEN
                            grid_line(idim-1,igrid2) = grid_save(idim)
 			   need_iterate = .TRUE.
@@ -273,7 +272,7 @@ c Find the grid which contains this axis and has the most dimensions.
 * attempt to fix the grids?
 
          ncheck = 0
-         DO 200 idim = 1, 4
+         DO 200 idim = 1, nferdims
 	       IF (grid_line(idim,igrid) .GT. 0) ncheck = ncheck + 1
   200     CONTINUE 
 
@@ -291,14 +290,14 @@ c Find the grid which contains this axis and has the most dimensions.
 * Restore grids as they were read. At least the data can be viewed
 * and perhaps used to fix the file.
 
-            DO 210 idim = 1, 4
+            DO 210 idim = 1, nferdims
 	       grid_line(idim,igrid) = copy_of_grids(idim,igrid-500)
   210       CONTINUE 
  
          ENDIF
 
 	 ndim = 0
-	 DO 230 idim = 1, 4
+	 DO 230 idim = 1, nferdims
 	    iaxis = grid_line(idim, igrid)
 	    ds_grid_start(idim,tmvar) = 1
 	    ds_grid_end(idim,tmvar) = 1
@@ -330,7 +329,7 @@ c Find the grid which contains this axis and has the most dimensions.
 	 permuted  = .FALSE.
 
         lastdim = 0
-        DO 240 idim = 1, 4
+        DO 240 idim = 1, nferdims
            tmplines(idim) = ds_ordering(idim,tmvar)
 
            IF (perm(idim).EQ.0 .OR. perm(idim).EQ.unspecified_int4) GOTO 240

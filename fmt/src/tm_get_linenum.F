@@ -45,20 +45,14 @@
 * *kob* 10/96 	- Linux port.  Linux didn't like tabs between "include"
 *	          and what was being included.  removed them
 * V510 *sh* 4/00 - conversion to dynamic grids and axes -- check 'em
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Include files
-#ifdef unix
 #include "tmap_dset.parm"	
 	include 'tmap_dims.parm'	! 
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'	! pre-defined grid common
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'	! Data set constants
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'	! 
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'	! 
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'	! pre-defined grid common
-#endif
 
 	CHARACTER*(*)	user_line
 	INTEGER*4	nline, istat

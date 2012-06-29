@@ -48,6 +48,7 @@
 * v540 *acm* 10/01  remove VMS include statements
 * V581 *acm*/3/05 - increase length of strings for dataset title to 1024 
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * Arguments:
 *	dset	- data set number
@@ -95,7 +96,7 @@
 	  ds_grid_number(vcnt) = grid
 * Fill in the data order  *kob* 1/94
 	  IF (order(1) .NE. int4_init) THEN
-	    DO 150 idim=1,4
+	    DO 150 idim=1,nferdims
 	    ds_ordering(idim,vcnt) = order(idim) 
  150	  CONTINUE
 	  ENDIF

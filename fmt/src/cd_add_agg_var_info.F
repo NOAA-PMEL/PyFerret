@@ -1,5 +1,6 @@
-      SUBROUTINE CD_SET_VAR_TYPE (dset, varid, iflag, status )
-
+	SUBROUTINE CD_ADD_AGG_VAR_INFO (agg_dset, vname, imemb, 
+     .      vtype, mdset, igrid, iline, nv, status)
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -32,34 +33,35 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* Set the variable type to iflag 
-
 * Programmer Ansley Manke
-* NOAA/PMEL, Seattle, WA - TMAP
+* NOAA/PMEL, Seattle, WA - TMAP 
+*
+* Given aggregate datset, variable name in the set, aggregate member number,
+* add the member-variable information for the variable to the linked-list 
+* structrure.
 
-* V600 2/06 *acm* Attribute control.
-* V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
-* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* for var in aggregate member-dataset:
+* for members of the aggregate, imemb (id= sequence number 1,2,3,...
+*   igrid    Ferret grid number
+*   iline    Ferret line number of aggregate dimension
+*   vtype    1=file-var, 3=user-var
+*   mdset    Ferret dataset number
+*   nv       sequence number in ds_var_code or uvar_name_code
+* V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 
 * Argument declarations
+  
+	CHARACTER*(*) vname
+	INTEGER agg_dset, imemb, vtype, mdset, igrid, iline, nv, status
+	REAL bad
 
-      INTEGER dset, varid, iflag, status
+* Local variable declarations
+	INTEGER NCF_ADD_AGG_VAR_INFO, varid
 
-* Internal declarations
+	CALL CD_GET_VAR_ID (agg_dset, vname, varid, status)
 
-#include "netcdf.inc"
-      include 'tmap_errors.parm'
-      include 'xrisc_buff.cmn'
+	status = NCF_ADD_AGG_VAR_INFO( agg_dset, varid, imemb, vtype,
+     .		mdset, igrid, iline, nv)
 
-      INTEGER NCF_SET_VAR_OUTTYPE, dset_num
-
-      dset_num = dset
-      IF (dset_num .LT. -2) dset_num = -2
-
-* set type flag for this variable
-
-      status = NCF_SET_VAR_OUTTYPE( dset_num, varid, iflag)
-
-      RETURN
-      END
+	RETURN
+	END

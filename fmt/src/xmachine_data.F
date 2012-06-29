@@ -52,15 +52,12 @@
 *                 and what was being included.  removed themy
 
 * revision 0.00 - 03/25/91
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 #ifdef sun
         include 'xmachine_byte.cmn'
 #else
-#	if unix
                 include 'xmachine_int1.cmn'
-#	else
-                INCLUDE 'TMAP_FORMAT:XMACHINE_BYTE.CMN'
-#	endif
 #endif
 
 #ifdef sun

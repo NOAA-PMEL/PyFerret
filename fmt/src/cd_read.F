@@ -1,8 +1,8 @@
 	SUBROUTINE CD_READ ( dset, ivar,
-     .                       a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .                       a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			     use_lo, use_hi, stride,
-     .			     var, sf_num, status )
+     .		a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
+     .		a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
+     .		use_lo, use_hi, stride,
+     .		var, sf_num, status )
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -75,31 +75,10 @@
 *                  linked with OPeNDAP library.
 * V67  *acm* 1/11  Choose between routinesi from the NetCDF API: varm if permutations,
 *                  vars if strides but no perm, var if no strides or perm.
-
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
-
-* arguments:
-*	dset        - internal data set # (from GT_INIT_DSET)
-*	ivar        - position in common of variable information
-*       actual_dims - "a_" full dimensions of data_grid array passed
-*	use_lo      - low indices of model data block desired
-*	use_hi      - high indices of model data block desired
-*	stride	    - every nth point to be read from disk file
-*	var         - array containing model data (output)
-*	sf_num      - stepfile number (returned from GT_FIND_TSTEP (output)
-*	status      - error status upon completion (output)
-*
-	INTEGER		dset, ivar, sf_num, status, ndim,
-     .                  a_lo_x, a_lo_y, a_lo_z, a_lo_t,
-     .                  a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			use_lo(4), use_hi(4), stride(4)
-	REAL     	var(a_lo_x:a_hi_x,
-     .                      a_lo_y:a_hi_y,
-     .                      a_lo_z:a_hi_z,
-     .                      a_lo_t:a_hi_t)
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'		! data set dimension
@@ -115,6 +94,30 @@
         include 'xmachine_int1.cmn'
 #endif
 
+
+* arguments:
+*	dset        - internal data set # (from GT_INIT_DSET)
+*	ivar        - position in common of variable information
+*       actual_dims - "a_" full dimensions of data_grid array passed
+*	use_lo      - low indices of model data block desired
+*	use_hi      - high indices of model data block desired
+*	stride	    - every nth point to be read from disk file
+*	var         - array containing model data (output)
+*	sf_num      - stepfile number (returned from GT_FIND_TSTEP (output)
+*	status      - error status upon completion (output)
+*
+	INTEGER		dset, ivar, sf_num, status, ndim,
+     .		a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
+     .		a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
+     .			use_lo(nferdims), use_hi(nferdims), stride(nferdims)
+	REAL     	var(a_lo_x:a_hi_x,
+     .                      a_lo_y:a_hi_y,
+     .                      a_lo_z:a_hi_z,
+     .                      a_lo_t:a_hi_t,
+     .                      a_lo_e:a_hi_e,
+     .                      a_lo_f:a_hi_f)
+
+
 * local definitions
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
@@ -123,16 +126,17 @@
      .               coordvar
         INTEGER      TM_LENSTR1,
      .               cdfid, varid, idim, lasdim, cdfstat, dim, idim2,
-     .               start(4), filsize(4), totsize, dim_lo(4),dim_hi(4),
-     .		     imap(4), trans(4), memsize(4), count(4),
-     .		     grid_dims(4), fildim, memdim, filstride(4),
+     .               start(nferdims), filsize(nferdims), totsize, 
+     .               dim_lo(nferdims),dim_hi(nferdims), imap(nferdims), 
+     .		     trans(nferdims), memsize(nferdims), count(nferdims),
+     .		     grid_dims(nferdims), fildim, memdim, filstride(nferdims),
      .               maxlen, attlen, attoutflag, vtype, nvdims, nvatts, 
      .               outflag, dlen, err_status, i, permuted, strided
         REAL vdims(10), val
-	CHARACTER*1	dimnam(4)
+	CHARACTER*1	dimnam(nferdims)
 	CHARACTER*13	TM_STRING
         CHARACTER*128   buff, vname
-	DATA  		dimnam/'I','J','K','L'/
+	DATA  		dimnam/'I','J','K','L','M','N'/
 	CHARACTER*1024 ebuff, upstr  ! for nf_ error message
 	CHARACTER*10 TM_FMT, errcode
 
@@ -158,16 +162,20 @@
         dim_lo(2) = a_lo_y
         dim_lo(3) = a_lo_z
         dim_lo(4) = a_lo_t
+        dim_lo(5) = a_lo_e
+        dim_lo(6) = a_lo_f
         dim_hi(1) = a_hi_x
         dim_hi(2) = a_hi_y
         dim_hi(3) = a_hi_z
         dim_hi(4) = a_hi_t
+        dim_hi(5) = a_hi_e
+        dim_hi(6) = a_hi_f
 	permuted  = 0
 	strided  = 0
         do_warn = .TRUE.
 
 * check for error conditions
-        DO 10 idim = 1, 4
+        DO 10 idim = 1, nferdims
 	   IF ( use_lo(idim) .LT. ds_grid_start(idim,ivar) .OR.
      .	        use_hi(idim) .GT. ds_grid_end(idim,ivar) ) GOTO 5200
 	   IF ( use_lo(idim) .GT. use_hi(idim)
@@ -178,7 +186,7 @@
 * summarize the axis permutation specification in ds_order
         lasdim = 0
 	ndim = 0
-        DO 20 idim = 1, 4
+        DO 20 idim = 1, nferdims
            IF ( ds_ordering(idim,ivar) .EQ. 0 ) GOTO 20
 	   ndim = ndim + 1
            IF ( ABS(ds_ordering(idim,ivar)) .LE. lasdim )
@@ -186,7 +194,7 @@
            lasdim = ABS(ds_ordering(idim,ivar))
  20     CONTINUE
 * ... sort the list of relevant axes into grid_dims
-	DO 30 idim = 1, 4
+	DO 30 idim = 1, nferdims
 	   trans(idim) =  ABS(ds_ordering(idim,ivar))
 	   grid_dims(idim) = trans(idim)
  30	CONTINUE
@@ -209,10 +217,10 @@
 * (fully supported in GT and TS libs but only partially supported here)
 * it is supported if the sub-region is contiguous - i.e. the sub-limits
 * are along the slowest axis of non-unity size
-        DO 60 idim = 1, 4
+        DO 60 idim = 1, nferdims
            IF ( dim_lo(idim) .NE. use_lo(idim)
      .     .OR. dim_hi(idim) .NE. use_hi(idim) ) THEN
-              DO 50 idim2 = idim+1, 4
+              DO 50 idim2 = idim+1, nferdims
  50           IF ( dim_lo(idim2) .NE. dim_hi(idim2) ) GOTO 5400
            ENDIF
  60     CONTINUE
@@ -235,13 +243,13 @@
 *  note: transposed compared to filsize
 * *kob* 7/00 - totsize calculation now takes striding into account
 	totsize = 1
-	DO 200 idim = 1, 4
+	DO 200 idim = 1, nferdims
 	   memsize(idim) =  (use_hi(idim)-use_lo(idim))/stride(idim) + 1
 	   totsize = totsize * memsize(idim)
  200	CONTINUE
 
 * compute the map vector (for strides, reversals, and permutations)
-	DO 210 idim = 1, 4
+	DO 210 idim = 1, nferdims
  210	imap(idim) = 0
 * for netCDF V3 the imap array is set up in number of array elements, not bytes
 	imap(trans(1)) = 1
@@ -253,7 +261,7 @@
 * ... compress the gaps out of the map -- e.g. XYT ==> has a zero in imap(3)
 *     and other arrays
 	idim2 = 0
-	DO 225 idim = 1, 4
+	DO 225 idim = 1, nferdims
 	   IF (imap(idim) .EQ. 0) GOTO 225
 	   idim2 = idim2 + 1
 	   imap(idim2)      = imap(idim)
@@ -295,7 +303,9 @@
      .             var(use_lo(1),
      .                 use_lo(2),
      .                 use_lo(3),
-     .                 use_lo(4)), 
+     .                 use_lo(4),
+     .                 use_lo(5),
+     .                 use_lo(6)), 
      .             permuted, strided, already_scaled, cdfstat, status)
            IF ( cdfstat .NE. NF_NOERR ) GOTO 5500           
 
@@ -306,7 +316,9 @@
      .             var(use_lo(1),
      .                 use_lo(2),
      .                 use_lo(3),
-     .                 use_lo(4)), permuted, strided, cdfstat)
+     .                 use_lo(4),
+     .                 use_lo(5),
+     .                 use_lo(6)), permuted, strided, cdfstat)
 	      IF ( cdfstat .NE. NF_NOERR ) GOTO 5500
            ENDIF
 
@@ -317,7 +329,9 @@
      .             var(use_lo(1),
      .                 use_lo(2),
      .                 use_lo(3),
-     .                 use_lo(4)), permuted, strided, cdfstat)
+     .                 use_lo(4),
+     .                 use_lo(5),
+     .                 use_lo(6)), permuted, strided, cdfstat)
 	   IF ( cdfstat .NE. NF_NOERR ) GOTO 5500
 #ifndef double_p
         ENDIF

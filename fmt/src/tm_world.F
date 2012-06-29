@@ -61,18 +61,13 @@
 * *sh* 9/99 - allow input subscript to be unspecified_int4 as long as the
 *		underlying axis is modulo
 * V530 *sh* 10/00 - guts extracted into TM_WORLD_AX
+* V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
 * Include files
-#ifdef unix
 #include "gt_lib.parm"
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	isubscript, grid_num, idim, where_in_box

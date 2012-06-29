@@ -64,6 +64,7 @@
 *                  attribute.
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -79,16 +80,15 @@
 #include "gt_lib.parm"
         include 'xbuild_grids.cmn'
 	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-        include 'xdset_info.cmn_text'
-        include 'netcdf.decl'
+	        include 'xdset_info.cmn_text'
+
 #include "netcdf.inc"
 
 
 * argument declarations
 	INTEGER	 dset, cdfid, status
 *4/99 *kob*
-        CHARACTER*64 temp_axnams(4,max_temp_grid)
+        CHARACTER*128 temp_axnams(nferdims,max_temp_grid)
 
 * local parameter definitions:
       INTEGER     max_grd_per_cdf
@@ -125,7 +125,7 @@
  110	igrid = 0		! to get start of linked list
  250	CALL TM_NEXT_TMP_GRID( igrid, *260)
 	   count = tmp_nam_ptr(igrid)
-           DO 240 idim = 1, 4 
+           DO 240 idim = 1, nferdims 
               vname = temp_axnams(idim, count)
 !              IF ( vname .EQ. 'RECORD' ) THEN
 !* ... the CDF term "RECORD" is the last dim'ed axis (like "UNKNOWN" for GT)

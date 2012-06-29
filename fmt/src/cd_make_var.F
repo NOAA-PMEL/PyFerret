@@ -81,6 +81,7 @@
 * V67  *acm* 3/11  Fix bug 1750. Revert to older behavior: if grid uses same axis
 *                  name but different contents, write both to file with the name
 *                  Ferret uses internally.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -104,7 +105,6 @@
 *     status  - return status
 
 * include files
-        include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
@@ -115,8 +115,7 @@
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-	include 'xio.cmn_text'
+		include 'xio.cmn_text'
 
 ! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
@@ -124,7 +123,7 @@
 
 * argument declarations
       LOGICAL enhead, new, do_bounds, edges_flag, mode_upcase_output
-      INTEGER cdfid, dset, type, maxstrlen, grid, lo(4), hi(4),
+      INTEGER cdfid, dset, type, maxstrlen, grid, lo(nferdims), hi(nferdims),
      .        recdim, keepax_flag, netcdf4_type, xchunk_size, 
      .        ychunk_size, zchunk_size, tchunk_size, 
      .        deflate_lev, shuffle_flag, endian_code, status
@@ -132,11 +131,11 @@
 
 * local variable declarations:
       LOGICAL TM_ABSTRACT_AXIS, CD_USE_RECDIM, 
-     .        itsa_slab, need_child(4), itsa_strvar, name_from_grid(4)
+     .        itsa_slab, need_child(nferdims), itsa_strvar, name_from_grid(nferdims)
       INTEGER TM_LENSTR1, CD_ISIT_RECDIM, CD_WRITE_STRDIM,
-     .        dimid(5), iaxis, cdfstat, dims, idim, varid, vartyp,
-     .        nvdims, vdims(6), nvatts, nlen, glen, vlen, ax_type,
-     .        lo2(4), hi2(4), what_recdim, strdim, dimsize
+     .        dimid(8), iaxis, cdfstat, dims, idim, varid, vartyp,
+     .        nvdims, vdims(8), nvatts, nlen, glen, vlen, ax_type,
+     .        lo2(nferdims), hi2(nferdims), what_recdim, strdim, dimsize
 * *kob*  - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME, lname,
 *          cdfname, vname and gname to 64 from 24
 * acm* vname to 128
@@ -145,14 +144,14 @@
      .          TM_FMT*12, c_str*12, d_str*12
 
       INTEGER dlen, clen
-      INTEGER chunks(4)  
+      INTEGER chunks(nferdims)  
 
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
-      CHARACTER*1     dimnam(4)
-      CHARACTER*1     ww_dim_nam(4)
-      DATA dimnam/'I', 'J', 'K', 'L'/
-      DATA ww_dim_nam/'X', 'Y', 'Z', 'T'/
+      CHARACTER*1     dimnam(nferdims)
+      CHARACTER*1     ww_dim_nam(nferdims)
+      DATA dimnam/'I', 'J', 'K', 'L', 'M', 'N'/
+      DATA ww_dim_nam/'X', 'Y', 'Z', 'T', 'E', 'F'/
 
 * has the variable already been created ?
       vname = varname    ! Ultrix f77 is fussy about CHAR*(*) vars
@@ -192,7 +191,7 @@
 	   nvdims = nvdims - 1
 	 ENDIF
          dims = 0
-         DO 100 idim = 1, 4
+         DO 100 idim = 1, nferdims
             IF ( grid_line(idim,grid) .EQ. mpsnorm
      .      .OR. lo(idim) .EQ. unspecified_int4    ) GOTO 100
             dims = dims + 1
@@ -224,7 +223,7 @@
 
 * determine if this variable needs parent/child axes
       itsa_slab = .FALSE.
-      DO 200 idim = 1, 4
+      DO 200 idim = 1, nferdims
          need_child(idim) = .FALSE.
          IF ( idim .EQ. recdim ) GOTO 200
          iaxis = grid_line(idim,grid)
@@ -254,7 +253,7 @@
          IF ( status .NE. merr_ok ) RETURN
 
 * create child axes where this variable doesn't run full-span on an axis
-         DO 250 idim = 1, 4
+         DO 250 idim = 1, nferdims
             IF ( need_child(idim) ) THEN
                CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, .FALSE.,
      .                   lo(idim), hi(idim), pcdf_child_span, 
@@ -267,7 +266,7 @@
          IF ( status .NE. merr_ok ) GOTO 5900
       ELSE
 * 1/95 - create the full-span or sub-span axes as appropriate
-         DO 260 idim = 1, 4
+         DO 260 idim = 1, nferdims
 	    IF ( grid_line(idim, grid) .NE. mpsnorm
      .      .AND. lo(idim) .NE. unspecified_int4     ) THEN
 	      IF (need_child(idim)) THEN
@@ -287,7 +286,7 @@
          IF ( status .NE. merr_ok ) GOTO 5900
       ENDIF
 
-      do idim = 1, 5
+      do idim = 1, nferdims+1
 	 dimid(idim) = 0
       enddo
 
@@ -301,7 +300,7 @@
 
 * get axis name. If mode upcase_output is set, then upcase the name.
 
-      DO 300 idim = 1, 4
+      DO 300 idim = 1, nferdims
          iaxis = grid_line(idim,grid)
          buff = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
 	 IF (name_from_grid(idim)) THEN 
@@ -377,7 +376,7 @@
 * If any chunk was set, then all must be set for the dimensions that are present.
 
       IF (chunk_set .GT. 0) THEN
-         DO 350 idim = 1, 4
+         DO 350 idim = 1, nferdims
             IF (dimid(idim) .GT. 0 .AND. chunks(idim) .EQ. 0) GOTO 5600
  350     CONTINUE
       ENDIF
@@ -402,7 +401,7 @@ C     Turn on deflate_lev and chunking
       ENDIF ! netcdf4
 
 * if the "unlimited" record dimension is in use place no limits on that axis
-      DO 400 idim = 1, 4
+      DO 400 idim = 1, nferdims
          IF ( lo(idim) .EQ. unspecified_int4 ) THEN
             lo2(idim) = 1
             hi2(idim) = 1
@@ -417,6 +416,8 @@ C     Turn on deflate_lev and chunking
       ENDIF
  
 * assign attributes if this is a hyperslab of the parent grid
+* TODO: the whole mechanism of parent grids needs developing with 6D
+
       IF ( itsa_slab .AND. enhead) THEN
          glen = TM_LENSTR1( gname )
 

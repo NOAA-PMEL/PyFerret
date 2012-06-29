@@ -72,6 +72,7 @@
 					  nor strided. */
 /*  *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
 *                                        definition of macro DFTYPE in ferretmacros.h. */
+/*  V674 2/12 *acm* 6D Ferret: use NFERDIMS rather than 4 for dimension indexing */
 
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
@@ -89,7 +90,7 @@ void tm_unblockify_ferret_strings(void *dat, char *pbuff,
 void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims, 
 			   int *tmp_start, int *tmp_count, 
 			   int *tmp_stride, int *tmp_imap,
-			   void *dat, int *permuted, int *strided,
+			   double *dat, int *permuted, int *strided,
 			   int *cdfstat )
 {
 
@@ -99,8 +100,8 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
      *kob* need start,count,stride and imap variables of the same type
            as is predfined for each O.S.
   */
-  size_t start[5], count[5];
-  ptrdiff_t stride[5], imap[5], tmp_ptrdiff_t;
+  size_t start[7], count[7];
+  ptrdiff_t stride[7], imap[7], tmp_ptrdiff_t;
 
   int i, ndimsp, *dimids;
   size_t bufsiz, tmp, tmpstride, maxstrlen;
@@ -115,7 +116,7 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
 
   /* cast passed in int values (from fortran) to proper types, which can
      be different depending on o.s       *kob* 11/01 */
-  for (i=0; i<5; i++) {
+  for (i=0; i<7; i++) {
     start[i] = (size_t)tmp_start[i];
     count[i] = (size_t)tmp_count[i];
     stride[i] = (ptrdiff_t)tmp_stride[i];
@@ -174,7 +175,8 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
          for (i=0; i<=ndim; i++) bufsiz *= count[i];
 	 }
       pbuff = (char *) malloc(sizeof(char) * bufsiz);
-      assert(pbuff);
+      if ( pbuff == NULL )
+         abort();
       /* update variable dimensions to include string dimension */
       start[ndimsp]  = 0;
       count[ndimsp]  = maxstrlen;

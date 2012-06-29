@@ -20,3 +20,8 @@
 #else
 #define DFTYPE float
 #endif
+
+/* Also define the max number of dimensions in Ferret grids */
+
+#define NFERDIMS 6
+#define NFERDIMSP1 7

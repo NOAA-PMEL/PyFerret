@@ -64,37 +64,16 @@
 	allocating any.  It is a good idea to use alloca(0) in
 	your main control loop, etc. to force garbage collection.
 */
+
+#include <stdlib.h>
+
 #ifndef lint
 static char	SCCSid[] = "@(#)alloca.c	1.1";	/* for the "what" utility */
 #endif
 
-#ifdef emacs
-/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
-#include <wchar.h>
-#include "config.h"
-#ifdef static
-/* actually, only want this if static is defined as ""
-   -- this is for usg, in which emacs must undefine static
-   in order to make unexec workable
-   */
-#ifndef STACK_DIRECTION
-you
-lose
--- must know STACK_DIRECTION at compile-time
-#endif /* STACK_DIRECTION undefined */
-#endif /* static *kob* complete comment*/
-#endif /* emacs *kob* complete comment */
 
-#ifdef X3J11
-typedef void	*pointer;		/* generic pointer type */
-#else
-typedef char	*pointer;		/* generic pointer type */
-#endif
-
-#define	NULL	0			/* null pointer constant */
-
-extern void	free();
-extern pointer	malloc();
+/* generic pointer type */
+typedef void *pointer;
 
 /*
 	Define STACK_DIRECTION if you know the direction of stack
@@ -110,9 +89,9 @@ extern pointer	malloc();
 #define	STACK_DIRECTION	0		/* direction unknown */
 #endif
 
-#if STACK_DIRECTION != 0
+#if STACK_DIRECTION != 0 /* known at compile-time */
 
-#define	STACK_DIR	STACK_DIRECTION	/* known at compile-time */
+#define	STACK_DIR STACK_DIRECTION
 
 #else	/* STACK_DIRECTION == 0; need run-time code */
 
@@ -120,7 +99,7 @@ static int	stack_dir;		/* 1 or -1 once known */
 #define	STACK_DIR	stack_dir
 
 static void
-find_stack_direction (/* void */)
+find_stack_direction (void)
 {
   static char	*addr = NULL;	/* address of first
 				   `dummy', once known */

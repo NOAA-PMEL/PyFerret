@@ -63,6 +63,7 @@
 *                  but set an output attribute containing the Ferret default.
 * v67   2/11 *acm* Do the notes about no missing/fillvalue for each variable,
 *             when in diagnostic mode. So move that back to cd_get_1_dep_var.
+* V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -76,16 +77,16 @@
 
 * argument declarations:
 	INTEGER	      dset, cdfid, ivcd, las_pos, ivtm, status
-	REAL*4	      global_bad
+	REAL	      global_bad
 
 * include files
 
-        include 'netcdf.decl'
+
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
-#include "gt_lib.parm"
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
+#include "gt_lib.parm"
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
         include 'xdset_info.cd_equiv'
@@ -101,11 +102,9 @@
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1, TM_FERRET_VARTYPE, 
      .        cdfstat, idim,
-     .        vartyp, nvdim, vdims(6), nvatts, vlen,
+     .        vartyp, nvdim, vdims(8), nvatts, vlen,
      .        recdim, istat, lasdim, attype, attlen, attoutflag, 
      .        maxlen, all_outflag, attid
-c      INTEGER cdfformat, contiguous, chunks(4), shuffle,
-c     .        deflate, deflate_level
       REAL    val
 * 4/99 *kob* increase size of vname
       CHARACTER    vname*128, aname*128, buff*128
@@ -156,7 +155,7 @@ c     .        deflate, deflate_level
           cd_scale_factor(ivtm) = 1.0
           cd_add_offset(ivtm)   = 0.0
           cd_scaled(ivtm)       = .FALSE.
-	  DO 160 idim = 1,4
+	  DO 160 idim = 1, nferdims
              ds_grid_start(idim,ivtm)= unspecified_int4
              ds_grid_end  (idim,ivtm)= unspecified_int4
   	     ds_ordering(idim,ivtm)= unspecified_int4
@@ -167,7 +166,7 @@ c     .        deflate, deflate_level
 	  ds_var_type(ivtm) = TM_FERRET_VARTYPE(vartyp)  ! 6/01
 
 * is it a supported dimensionality ?
-          IF ( nvdim .GT. 5 ) THEN
+          IF ( nvdim .GT. nferdims+1 ) THEN
              CALL TM_NOTE('Unsupported netCDF # of axes for variable '
      .             //vname(:vlen), tt )
              GOTO 200
@@ -326,13 +325,13 @@ c        ENDIF
 
 * see what special FERRET attributes can be read: axis ordering and
 * sub-hyperslab bounds
-             maxlen = 4
+             maxlen = nferdims
              got_it = NC_GET_ATTRIB( dset, ivcd, 'axis_order',
      .                do_warn, vname(:vlen), maxlen, attlen, 
      .                attoutflag, buff, val)
              lasdim = 0
              IF (got_it) THEN
-                DO 170 idim = 1, 4
+                DO 170 idim = 1, nferdims
                    IF ( buff(idim:idim) .EQ. ' ' ) THEN
                      ds_ordering(idim,ivtm) = 0
                      GOTO 170
@@ -342,7 +341,7 @@ c        ENDIF
                      ds_ordering(idim,ivtm) = ICHAR(buff(idim:idim))-87 ! XYZ->123
                   ENDIF
                   IF ( ds_ordering(idim,ivtm) .LT. 0
-     .            .OR. ds_ordering(idim,ivtm) .GT. 4 ) THEN 
+     .            .OR. ds_ordering(idim,ivtm) .GT. nferdims ) THEN 
                      CALL TM_NOTE(
      .                     'Illegal netCDF "axis_order" for variable '
      .                     //vname(:vlen), tt )

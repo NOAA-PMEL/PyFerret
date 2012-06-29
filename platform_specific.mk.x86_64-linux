@@ -16,6 +16,7 @@
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \
+			  -I../../fer/common \
 			  $(GKS_INCLUDES) \
 			  -I/usr/local/include
 

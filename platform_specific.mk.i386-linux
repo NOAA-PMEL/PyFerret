@@ -15,6 +15,7 @@
 		-I../../fmt/cmn \
 		-I../common \
 		-I../../ppl/include \
+		-I../../fer/common \
 		$(GKS_INCLUDES) \
 		-I$(READLINE_DIR)/include \
 		-I$(NETCDF4_DIR)/include \

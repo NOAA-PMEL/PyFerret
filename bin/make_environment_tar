@@ -71,6 +71,8 @@ if ( "${repository}" == "." ) then
     cp -f -r ${source_dir}/jnls .
     echo "   external function source files"
     cp -f -r ${source_dir}/external_functions .
+#   Environment tar file - make sure no compiled code
+    make -C ${temp_dir}/external_functions clean
     echo "   palettes"
     cp -f -r ${source_dir}/palettes .
 else

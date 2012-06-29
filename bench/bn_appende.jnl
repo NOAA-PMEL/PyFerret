@@ -1,0 +1,51 @@
+! bn_appende.jnl
+
+set mode verify always
+
+show func /detail appende
+
+def axis /X=10E:50E:10 myxax
+def axis /Y=5S:5N:5 myyax
+! def axis /Z /depth /units=meters myzax={0,10,20}
+! def axis /T=01-JAN-2001:01-JAN-2002 /edges /t0=01-JAN-2001 /units=days /npoints=4 mytax
+! def grid /x=myxax /y=myyax /z=myzax /t=mytax mygrid
+def grid /x=myxax /y=myyax mygrid
+set grid mygrid
+
+! let val1 = x + y + log(z+10.0) + log(t+100.0)
+let val1 = x + y
+list val1
+! let val2 = x + y + log(z+10.0) - log(t+100.0)
+let val2 = x - y
+list val2
+! let val3 = x + y - log(z+10.0) - log(t+100.0)
+let val3 = x + y / 2.0
+list val3
+! let val4 = x - y - log(z+10.0) - log(t+100.0)
+let val4 = x - y / 2.0
+list val4
+
+let xtd12 = appende(val1,val2)
+list xtd12
+let xtd13 = appende(xtd12,val3)
+list xtd13
+let xtd14 = appende(xtd13,val4)
+list xtd14
+show grid xtd14
+
+list /format=cdf /file=xtdfile.cdf /clobber xtd14
+
+cancel mem /all
+cancel var /all
+set grid abstract
+cancel grid mygrid
+! cancel axis mytax
+! cancel axis myzax
+cancel axis myyax
+cancel axis myxax
+
+use xtdfile
+show data
+show grid xtd14
+list xtd14
+

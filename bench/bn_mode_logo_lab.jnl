@@ -1,6 +1,7 @@
 
 ! bn_mode_logo_lab.jnl
 ! cancel both logo and labels
+! NOTE this script redefined the pre-defined viewports ul, ur, ll, lr...
 
 
 def view /xlim=0.:0.33/ylim=0.5:1 ul

@@ -1,0 +1,20 @@
+! bn_samplexz.jnl
+! check the samplexz function
+
+define axis /x=0:360:30 /units=longitude /edges /modulo=360 xlong
+define axis /z /depth /units=meters zdep={0,10,20,30,50,75,100,150,250}
+define grid /x=xlong /z=zdep xzgrid
+
+let my_data = x[g=xzgrid] + z[g=xzgrid]
+show var my_data
+show grid my_data
+list z[g=xzgrid]
+
+define axis /z=-25:325:50 /depth /units=meters zsampax
+let zpts = xsequence(z[gz=zsampax])
+let xpts = xsequence((randu(zpts) - 0.5) * 360)
+let sampl_pts = samplexz(my_data,xpts,zpts)
+ 
+! check the results with a listing
+list xpts, zpts, sampl_pts
+

@@ -1,0 +1,168 @@
+! bn_regrid_transforms_6d.jnl
+! benchmark to test regridding transformations and syntax
+! version of bn_regrid_transforms, using E and F directions.
+
+use gtsa056_1_ef
+set mode diag
+
+define axis/f=15-jan-1982:15-mar-1984:120/unit=hour fax5day
+define axis/x=120e:60w:10/unit=degrees xax10
+define grid/like=temp/f=fax5day g5day
+
+set reg/x=130w:125w/y=0:1.5/e=1:2/f=23-JAN-1982:24-jan-1982/t=21-JAN-1982/z=5
+
+use gtsa056_1_ef    	!kob 4/99
+
+! valid syntax tests
+load temp
+load temp[g=g5day]
+load temp[g=g5day@lin]
+load temp[g=g5day@ave,gf=@asn]
+load temp[g=g5day@lin,gf=@asn]
+load temp[g=g5day,ge=@ave,gf=@asn]
+stat temp[g=g5day] - temp[g=g5day@ave]  
+
+! basic regrid tests
+LIST temp[g=g5day@ave]
+LIST temp[g=g5day,ge=g5day@ave]	! V4.20 mod
+LIST temp[g=g5day,gf=g5day@ave]	! V4.20 mod, etc --> many more similar syntax chgs
+
+LIST temp[g=g5day]
+LIST temp[g=g5day@asn]
+LIST temp[g=g5day,ge=g5day@asn]
+LIST temp[g=g5day,gf=g5day@asn]
+
+! Z and T axes different
+LIST temp[g=g5day@ave]
+LIST temp[g=g5day,ge=g5day@ave]
+LIST temp[g=g5day,gf=g5day@ave]
+
+LIST temp[g=g5day]
+LIST temp[g=g5day@asn]
+LIST temp[g=g5day,ge=g5day@asn]
+LIST temp[g=g5day,gf=g5day@asn]
+
+! all 4 axes different
+LIST temp[g=g5day@ave]
+LIST temp[g=g5day,ge=g5day@ave]
+LIST temp[g=g5day,gf=g5day@ave]
+
+LIST temp[g=g5day@asn]
+LIST temp[g=g5day,ge=g5day@asn]
+LIST temp[g=g5day,gf=g5day@asn]
+
+! unspecified regions
+SET MODE IGNORE	! V.5 change
+canc reg
+set reg/n=1:3/t=21-JAN-1982/z=5  ! x,y,e unspecified
+load temp
+load temp[g=g5day]
+load temp[g=g5day@lin]
+
+load temp[g=g5day@ave]
+load temp[g=g5day,ge=g5day@ave]
+load temp[g=g5day,gf=g5day@ave]
+
+load temp[g=g5day@asn]
+load temp[g=g5day,ge=g5day@asn]
+load temp[g=g5day,gf=g5day@asn]
+
+canc reg
+set reg/i=101:105/j=41:42/t=21-JAN-1982/z=5  ! e,f unspecified
+load temp[g=g5day]
+
+load temp[g=g5day@ave]
+load temp[g=g5day,ge=g5day@ave]
+load temp[g=g5day,gf=g5day@ave]
+
+load temp[g=g5day@asn]
+load temp[g=g5day,ge=g5day@asn]
+load temp[g=g5day,gf=g5day@asn]
+SET MODE/LAST IGNORE	! V.5 change
+
+! plot verifications
+set mode interp    ! regridding is also an interpolation
+cancel viewports
+set window/size=.5/aspect=.4 1
+
+! E axis
+use gtsa056_1_ef 		!kob 4/99
+set region/x=180E/y=0/f=23-JAN-1982/t=21-JAN-1982/z=5
+plot temp
+plot/over temp[g=g5day]
+plot/over temp[g=g5day]
+plot/over temp[g=g5day]
+plot/over temp[g=g5day@ave]
+plot/over temp[g=g5day@ave]
+plot/over temp[g=g5day@ave]
+plot/over temp[g=g5day@asn]
+plot/over temp[g=g5day@asn]
+plot/over temp[g=g5day,ge=g5day@ave]
+plot/over temp[g=g5day,ge=g5day@ave]
+plot/over temp[g=g5day,ge=g5day@ave]
+plot/over temp[g=g5day@asn]   ! invalid interpretation of data
+
+! F axis
+set region/x=180/y=20s:20n/e=2/t=21-JAN-1982/z=5
+plot temp
+plot/over temp[g=g5day]
+plot/over temp[g=g5day]
+plot/over temp[g=g5day]
+plot/over temp[g=g5day@ave]
+plot/over temp[g=g5day@ave]
+plot/over temp[g=g5day@ave]
+plot/over temp[g=g5day@asn]
+plot/over temp[g=g5day@asn]
+plot/over temp[g=g5day,gf=g5day@ave]
+plot/over temp[g=g5day,gf=g5day@ave]
+plot/over temp[g=g5day,gf=g5day@ave]
+plot/over temp[g=g5day@asn]  ! invalid interpretation of data
+
+set mode/last interp
+cancel region
+
+! test 2D regrid
+define axis/e=1.1:2.1:1 eoffset
+define axis/e=2.5/npoints=1 e1pt
+define axis/e=1.5:2.5:1 e2pt
+define axis/e=1.5:2.5:.5 e4pt
+
+define axis/f=15-jan-1982:15-mar-1982:4/unit=day fax4day
+define axis/f=21-jan-1982/npoints=1/unit=day f1pt
+define axis/f=21-jan-1982:25-jan-1982/npoints=48/unit=hour f2pt
+define axis/f=15-jan-1982:15-mar-1982:96/unit=hour fax4day
+
+
+let a1 = _e[ge=e1pt]+_f[gf=f1pt]
+let a2 = _e[ge=e2pt]+_f[gf=f2pt]
+
+list a1[ge=eoffset@ave, gf=fax4day@ave]
+list a1[ge=eoffset@sum, gf=fax4day@sum]
+list a1[ge=eoffset@var, gf=fax4day@var] ! should be all missing
+
+list a2[ge=eoffset@ave, gf=fax4day@ave]
+list a2[ge=eoffset@sum, gf=fax4day@sum] 
+list a2[ge=eoffset@var, gf=fax4day@var]
+
+! 1/00 additions to check details of @MIN,@MAX bevavior
+
+let a1 = _e[ge=e1pt]
+let a2 = _e[ge=e2pt]
+let a4 = _e[ge=e4pt]
+
+list a1[ge=eoffset@max]
+list a2[ge=eoffset@max]
+list a4[ge=eoffset@max]
+list a4[ge=eoffset@min]
+list a4[ge=eoffset@sum] ! 5+5.5+6+6.5=23
+
+! time axes with different encodings
+define axis/f=1-jan-1990:5-jan-1990:1/units=days eday
+define axis/f=1-jan-1990:5-jan-1990:24/units=hours ehour
+let afcst = _f[gf=eday]
+list afcst
+show grid
+list afcst[gf=ehour@max]
+show grid
+
+set mode/last diag

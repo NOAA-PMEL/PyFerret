@@ -1,0 +1,21 @@
+! bn_interpolate_6d.JNL
+! benchmark interpolation along various axes 
+! including the E and F axis
+
+SET LIST/PRECISION=6
+SET MODE LATITUDE:4
+
+LET v = x + 10*y + 100*_e + 1000*_f
+SET REGION/X=1:3/Y=1:3/E=1:3/F=1:3
+DEF REG/X=1.5 xpt
+DEF REG/Y=1.05 ypt
+DEF REG/E=1.005 ept
+DEF REG/F=1.0005 fpt
+
+! first without interpolation
+CANCEL MODE INTERPOLATE
+GO bn_interpolate_6d.sub
+
+! then with interpolation
+SET MODE INTERPOLATE
+GO bn_interpolate_6d.sub

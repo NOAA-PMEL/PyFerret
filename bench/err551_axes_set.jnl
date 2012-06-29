@@ -11,5 +11,3 @@ PPL PLOT
 
 SET VIEW lower  
 plot/i=1:100/title="PLOT (no quals); all axes plotted" i*cos(i/12)
-
-CAN view

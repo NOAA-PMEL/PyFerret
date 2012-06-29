@@ -11,5 +11,3 @@ set view mid1
 shade/x=1:10/y=1:10 x+y
 set view mid2
 shade/x=1:10/y=1:10 x-y
-
-can view

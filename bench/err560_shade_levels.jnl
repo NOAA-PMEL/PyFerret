@@ -7,5 +7,3 @@
 ! Here is a simpler example (acm)
 set view upper; shade/i=1:10/j=1:10 i*j*0.0034   !levels only go up to 0.003
 set view lower; shade/i=1:10/j=1:10 -1*i*j*0.0034  
-
-can view

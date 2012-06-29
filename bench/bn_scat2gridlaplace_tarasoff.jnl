@@ -1,0 +1,33 @@
+! bn_scat2gridlaplace_tarasoff
+! check for error reported by Lev Tarasoff 5/10/2006
+! trac ticket #1412
+! tests modulo of the X axis in the scat2gridlaplace_xy function
+
+let xlnb = { -4.06, -5.07, -3.77, -3.02,  0.83,  0.31,  1.02,  0.33, -1.35, -2.54, \
+             -3.75, -5.48, -5.25,  2.98,  3.50, 36.15, 29.40, 19.45, 19.00}
+let ylt = {  52.47, 51.66, 51.58, 51.35, 51.70, 51.46, 51.07, 50.84, 50.80, 50.62, \
+             50.39, 50.13, 56.07, 55.02, 52.50, 69.10, 70.09, 70.15, 69.80}
+let wgt = {0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.03,0.02,0.00,1.34,1.17,0.22,0.49}
+
+def axis/x=12.5w:119.5e/npoints=133/units=deg/modulo xlonef
+def axis/y=47.25N:83.25n/npoints=73/units=deg ylatef
+
+let xln = if xlnb lt 0. then xlnb+360. else xlnb
+let wgtl = scat2gridlaplace_xy(xln,ylt, wgt, x[gx=xlonef], y[gy=ylatef], 2., 1)
+
+show grid wgtl
+load wgtl
+! shade wgtl ! Result is shifted in X:
+! data shows up at 70e that should be at 35e
+
+! the folowing are listed /order=yx so no data will be skipped
+
+! the following should show three regions of data
+list /order=yx wgtl[X=15E:40E,Y=68N:72N]
+! the following should completely undefined
+list /order=yx wgtl[X=55E:80E,Y=68N:72N]
+
+cancel data /all
+cancel var /all
+cancel axis xlonef
+cancel axis ylatef

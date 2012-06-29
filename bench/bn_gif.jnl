@@ -159,16 +159,6 @@ set v ll; plot/dash x[gx=0:20:.05]
 set v lr; plot/dash x[gx=0:20:.01]
 frame/file=gif_dashbug.gif
 
-! The fix for LAS ticket 1150
-! Change the working gif filename from .gif to another name
-show giffile
-set giffile newname.gif
-show giffile
-
-use coads_climatology
-shade/nokey/lev=50 sst[L=1]
-frame/file=anothername.gif
-
 exit/command
 
 

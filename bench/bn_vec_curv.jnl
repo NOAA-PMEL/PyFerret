@@ -66,6 +66,5 @@ let mxpage = mx + 0*my
 let mypage = my + 0*mx
 vec/title="Stretched grid" a,b,mxpage,mypage
 
-can view
 can mode meta
 set mode logo

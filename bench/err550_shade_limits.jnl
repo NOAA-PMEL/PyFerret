@@ -7,5 +7,3 @@ use coads_climatology
 set view upper; shade sst[l=1]
 
 set view lower; shade/hlimits=212:324/vlimits=-34:23 sst[l=1]
-
-can view

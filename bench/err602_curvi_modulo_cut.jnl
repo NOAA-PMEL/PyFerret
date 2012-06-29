@@ -14,5 +14,3 @@ set view upper
 shade/hlim=75:85/vlim=-10:0/mod/pal=rnb2 0*u+mod(i+j,2),geolon_c,geolat_c
 set view lower
 fill/hlim=75:85/vlim=-10:0/mod u,geolon_c,geolat_c
-
-cancel view

@@ -4,7 +4,7 @@
 
 ! bug 287 (never had a benchmark test)
 
-REPEAT/RANGE=1:12:2/NAME=m \
+REPEAT/RANGE=1:12:2/name=m \
   (LIST/CLOBBER/NOHEAD/NOROWHEAD/I=1:3/FILE=`m`a.dat i; \
    FILE/VAR="a`m`" `m`a.dat; LIST a`m`)
 SHOW DATA

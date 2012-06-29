@@ -1,0 +1,33 @@
+! bn_unique_str2int.jnl
+
+SHOW FUNC/DETAIL unique_str2int
+
+let alist = { \
+   "a rat in the house will eat the zucchini", \
+   "a rat in the house will eat the ice cream", \
+   "ze rats in the house will eat the ice cream",\
+   "A rat in the house will eat the ICE CREAM", \
+   "", \
+   "", \
+   "A rat in the house will eat the ICE CREAM", \
+   "A rat in the house will eat the ICE CREAM", \
+   "ze rats in the house will eat the ice cream",\
+   "ze rats in the house will eat the ice cream",\
+   "" \
+}
+
+let blist = { \
+   "ze rats in the house will eat the ice cream",\
+   "", \
+   "Something new has been added", \
+   "A rat in the house will eat the ICE CREAM", \
+   "A rat in the house will eat the ICE CREAM", \
+   "" \
+}
+
+! check that it works when first called
+list unique_str2int(alist), alist
+
+! check if the same values are returned for a second call matching strings
+list unique_str2int(blist), blist
+

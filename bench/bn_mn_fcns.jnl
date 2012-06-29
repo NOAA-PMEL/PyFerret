@@ -1,0 +1,77 @@
+! bn_mn_fcns.jnl
+! test functions in the E/F directions: 
+! compress, reverse, sort, sample, convolve
+
+
+define axis/y=-20:20:1/units=degrees_north yaxis
+define axis/e=1:22:2 eaxis
+define axis/f=1-jan-1990:9-jan-1990:1/units=days/t0=1-jan-1980 faxis
+
+let yfvar = y[gy=yaxis] + 30*sin(_f[gf=faxis])
+
+let/bad=999 fgap = if yfvar gt  -30  and yfvar lt -19 then 999 else yfvar
+set view ul;
+shade fgap
+
+set view ur; shade compressn(fgap)
+
+set view ll; shade freverse(fgap)
+
+let sortv = sortn(yfvar[y=5])
+set view lr; shade samplen(yfvar, sortv[y=5])
+
+list/y=5 yfvar, fgap, compressn(fgap), freverse(fgap), samplen(yfvar[y=5], sortv)
+
+can view
+
+let ee = e[ge=eaxis]
+let yevar = y[gy=yaxis] + 30*sin(_e[ge=eaxis]/6)
+
+let/bad=999 egap = if yevar gt 20  and yevar lt 23 then 999 else yevar
+
+
+set view ul; shade/trans egap
+
+set view ur; shade/trans compressm(egap)
+set view ll; shade/trans ereverse(egap)
+
+let sortv = sortm(yevar[y=5])
+set view lr; shade/trans samplem(yevar,sortv)
+
+list/y=5 yevar, egap, compressm(egap), ereverse(egap), samplem(yevar[y=5], sortv)
+
+
+
+
+! test convolutions, including with missing-data.
+! compare behavior with smoothing transform spz.
+
+! In I
+let a = {0,1,1,0,1,0,0,0,,0,0,0}
+list a, a[i=@spz], convolvei(a,{.25,.5,.25})
+
+! In M
+let b = esequence({0,1,1,0,1,0,0,0,,0,0,0})
+let bpat = esequence({.25,.5,.25})
+list b, b[l=@spz], convolvem(b,{.25,.5,.25})
+
+! in N
+let d = fsequence({0,1,1,0,1,0,0,0,,0,0,0})
+let dpat = fsequence({.25,.5,.25})
+list d, d[l=@spz], convolven(d,{.25,.5,.25})
+
+! In I
+! 2D - convolvei convolves in x ...
+let a = {0,1,1,0,1,0,0,0,,0,0,0} + y[y=1:2]
+list a, a[i=@spz], convolvei(a,{.25,.5,.25})
+
+! In M
+! 2D - convolvem convolves in e ...
+let a = b + y[y=1:2]
+list/order=ey  a, a[n=@spz], convolvem(a,{.25,.5,.25})
+
+! In N
+! 2D - convolvem convolves in e ...
+let a = d + y[y=1:2]
+list/order=fy  a, a[n=@spz], convolven(a,{.25,.5,.25})
+

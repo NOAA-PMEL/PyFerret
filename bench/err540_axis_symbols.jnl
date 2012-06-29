@@ -23,5 +23,3 @@ let zpts = {1,2,3,4,5,1, 2, 3, 4, 5, 1, 2, 3, 4, 5}
 plot/vs/trans/line xpts,ypts
 sh sym XAXIS_MAX
 !go polytube polygon/trans/over xpts,ypts,zpts
-
-can view

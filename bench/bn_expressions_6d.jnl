@@ -1,0 +1,112 @@
+! bn_expressions_6d.jnl
+! testing expressions syntax in E and F directions.
+! Note pseudo-variables are _E, 
+
+! test grid creation for a variety of combos
+let c1 = 2
+let m1 = _m
+let n1 = _n
+
+! ... constant plus variable or pseudovariable
+set reg/m=1:3
+list/order=e _m + 2
+list/order=e 2 + _m
+list/order=e m1 + 2
+list/order=e 2 + m1
+list/order=e _m + c1
+list/order=e c1 + _m
+list/order=e m1 + c1
+list/order=e c1 + m1
+
+! ... constant plus variable or pseudovariable with modified region
+set reg/m=11:13
+list/order=e _m[m=1:3] + 2
+list/order=e 2 + _m[m=1:3]
+list/order=e m1[m=1:3] + 2
+list/order=e 2 + m1[m=1:3]
+list/order=e _m[m=1:3] + c1
+list/order=e c1 + _m[m=1:3]
+list/order=e m1[m=1:3] + c1
+list/order=e c1 + m1[m=1:3]
+
+! ... two variables or pseudovariables
+set reg/m=1:3/n=2
+list/order=e _m + _n
+list/order=e _m + n1
+list/order=e n1 + _m
+
+! ... two variables or pseudovariables with modified region
+set reg/m=1:3/n=1
+list/order=e _m + _n[n=2]
+list/order=e _m + n1[n=2]
+list/order=e n1[n=2] + _m
+
+! operators
+CANCEL REGION
+SET REGION/m=1:5/n=1:5
+LIST 10+2
+LIST/order=e  _m
+LIST/order=e  _m*3
+LIST/order=e  _m/3
+LIST/order=e  _m+3
+LIST/order=e  _m-3
+LIST/order=e  _m^3
+LIST/order=e  _m EQ 3
+LIST/order=e  _m NE 3
+LIST/order=e  _m GT 3
+LIST/order=e  _m GE 3
+LIST/order=e  _m LT 3
+LIST/order=e  _m LE 3
+LIST/order=e  (_m LT 3) OR (_m GT 3)
+LIST/order=e  (_m LE 3) AND (_m GE 3)
+LIST/order=e  (_m+3)*3 - 9 - (_m+_m+_m)
+LIST/order=e  _n * ( (_m+3)*3 - 9 - (_m+_m+_m) )
+
+! IF, THEN, ELSE
+LIST/order=e  IF _m GT 3 THEN _m
+LIST/order=e  IF _m GT 3 THEN _m ELSE 0
+! error: nested IF tests
+SET MODE IGNORE_ERRORS
+LIST/order=e  IF _m GT 3 THEN ( IF _m LT 5 THEN _m ELSE -9 ) ELSE .333	! err
+LET A = IF _m LT 5 THEN _m ELSE -9					! err
+SET MODE/LAST IGNORE_ERRORS
+LET A = IF _m LT 5 THEN _m ELSE (-9)
+LIST/order=e  IF _m GT 3 THEN ( A ) ELSE .333
+
+! functions
+LIST/order=e  MAX(_m,3)
+LIST/order=e  MIN(_m,3)
+LIST/order=e  INT(_m/3)
+LIST/order=e  ABS(_m-3)
+LIST/order=e  EXP(_m)
+LIST/order=e  LN(_m)
+LIST/order=e  LN(EXP(_m))
+LIST/order=e  EXP(LN(_m))
+LIST/order=e  LOG(_m)
+LIST/order=e  LOG(10^_m)
+LIST/order=e  10^LOG(_m)
+LIST/order=e  SIN(_m)
+LIST/order=e  ASIN(SIN(_m/3))
+LIST/order=e  COS(_m)
+LIST/order=e  ACOS(COS(_m/3))
+LIST/order=e  TAN(_m)
+LIST/order=e  ATAN(TAN(_m/3))
+LIST/n=1:3    ATAN2(_n-1,_m-1)
+LIST/order=e  MOD(_m,3)
+LIST/order=e  IGNORE0(_m-3)
+LIST/order=e  MISSING( IGNORE0(_m-3),-9 )
+LIST/order=e  RANDU(_m)
+LIST/order=e  RANDN(_m)
+
+! syntax errors
+SET MODE IGNORE_ERRORS
+load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
+SET MODE/LAST IGNORE_ERRORS
+
+! test formatted output where the output field is too small
+LIST/m=1:3/FORMAT=(F6.2) 1/(_m-2)		! single column test
+LIST/m=1:3/FORMAT=(2F6.2) 1/(_m-2),2/(_m-2)	! multi-column test
+
+! test grid box limit pseudo-variables
+LIST/m=5:7 EBOXLO, EBOXHI 
+LIST/n=5:7 FBOXLO, FBOXHI 

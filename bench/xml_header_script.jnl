@@ -1,0 +1,22 @@
+!header.jnl
+! argument 1 is a script that opens the dataset
+! argument 2 is the name of the xml file to write
+! Requires Ferret v6.5 or higher
+
+! This is the header.jnl script from LAS; comment out can mode verify
+
+! cancel mode verify
+IF `($ferret_version) LT 6.5` THEN
+ say header.jnl requires Ferret v6.5 or higher
+ exit/script
+ENDIF
+
+go "$1"
+DEFINE SYMBOL output_xml_file = $2
+
+say/quiet/outfile="($output_xml_file)"/clobber <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+say/quiet/outfile="($output_xml_file)"/append <data>
+
+show data/var/xml/append/outfile="($output_xml_file)"
+show axis/all/xml/append/outfile="($output_xml_file)"
+say/quiet/append/outfile="($output_xml_file)" </data> 

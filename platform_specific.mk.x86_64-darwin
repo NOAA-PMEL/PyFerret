@@ -20,12 +20,15 @@ INCLUDES        = -I/usr/include \
                   -Ipplinc/xgks \
 		  -I../common \
 		  -I$(TMAP_LOCAL)/fmt/cmn \
-		  -I$(TMAP_LOCAL)/ppl/include
+		  -I$(TMAP_LOCAL)/ppl/include \
+		  -I$(TMAP_LOCAL)/fer/common
 
 FINCLUDES	= -I$(TMAP_LOCAL)/ppl/tmap_inc \
-		   -I../include -I$(TMAP_LOCAL)/fmt/cmn \
-		   -I../common \
-		   -I$(TMAP_LOCAL)/ppl/include  -I$(TMAP_LOCAL)/fer/common
+		  -I../include \
+		  -I$(TMAP_LOCAL)/fmt/cmn \
+		  -I../common \
+		  -I$(TMAP_LOCAL)/ppl/include \
+		  -I$(TMAP_LOCAL)/fer/common
 
 GUI_INCLUDES	= -I/usr/X11R6/include
  
